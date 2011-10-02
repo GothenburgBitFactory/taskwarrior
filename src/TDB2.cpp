@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream> // TODO Remove.
 #include <sstream>
 #include <algorithm>
@@ -34,6 +36,7 @@
 #include <Context.h>
 #include <Color.h>
 #include <Date.h>
+#include <i18n.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -83,15 +86,11 @@ void TF2::target (const std::string& f)
   _read_only = false;
   if (_file.exists () && ! _file.writable ())
     _read_only = true;
-
-//  std::cout << "# TF2::target " << f << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task>& TF2::get_tasks ()
 {
-//  std::cout << "# TF2::get_tasks " << _file._data << "\n";
-
   if (! _loaded_tasks)
   {
     load_tasks ();
@@ -100,8 +99,6 @@ const std::vector <Task>& TF2::get_tasks ()
     std::vector <Task>::iterator i;
     for (i = _added_tasks.begin (); i != _added_tasks.end (); ++i)
       _tasks.push_back (*i);
-
-//    std::cout << "# TF2::get_tasks added " << _added_tasks.size () << " tasks\n";
   }
 
   return _tasks;
@@ -110,8 +107,6 @@ const std::vector <Task>& TF2::get_tasks ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <std::string>& TF2::get_lines ()
 {
-//  std::cout << "# TF2::get_lines " << _file._data << "\n";
-
   if (! _loaded_lines)
   {
     load_lines ();
@@ -120,8 +115,6 @@ const std::vector <std::string>& TF2::get_lines ()
     std::vector <std::string>::iterator i;
     for (i = _added_lines.begin (); i != _added_lines.end (); ++i)
       _lines.push_back (*i);
-
-//    std::cout << "# TF2::get_lines added " << _added_lines.size () << " lines\n";
   }
 
   return _lines;
@@ -130,8 +123,6 @@ const std::vector <std::string>& TF2::get_lines ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::string& TF2::get_contents ()
 {
-//  std::cout << "# TF2::get_contents " << _file._data << "\n";
-
   if (! _loaded_contents)
     load_contents ();
 
@@ -141,12 +132,10 @@ const std::string& TF2::get_contents ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::add_task (const Task& task)
 {
-//  std::cout << "# TF2::add_task " << _file._data << "\n";
-
   _tasks.push_back (task);           // For subsequent queries
   _added_tasks.push_back (task);     // For commit/synch
 
-/*
+/* TODO handle 'add' and 'log'.
   int id = context.tdb2.next_id ();
   _I2U[id] = task.get ("uuid");
   _U2I[task.get ("uuid")] = id;
@@ -158,8 +147,6 @@ void TF2::add_task (const Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::modify_task (const Task& task)
 {
-//  std::cout << "# TF2::modify_task " << _file._data << "\n";
-
   // Modify in-place.
   std::string uuid = task.get ("uuid");
   std::vector <Task>::iterator i;
@@ -167,9 +154,6 @@ void TF2::modify_task (const Task& task)
   {
     if (i->get ("uuid") == uuid)
     {
-//      std::cout << "# TF2::modify_task overwriting:\n"
-//                << "#   old " << i->composeF4 ()
-//                << "#   new " << task.composeF4 ();
       *i = task;
       break;
     }
@@ -182,8 +166,6 @@ void TF2::modify_task (const Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::add_line (const std::string& line)
 {
-//  std::cout << "# TF2::add_line " << _file._data << "\n";
-
   _lines.push_back (line);
   _added_lines.push_back (line);
   _dirty = true;
@@ -193,7 +175,6 @@ void TF2::add_line (const std::string& line)
 // This is so that synch.key can just overwrite and not grow.
 void TF2::clear_lines ()
 {
-//  std::cout << "# TF2::clear_lines " << _file._data << "\n";
   _lines.clear ();
   _dirty = true;
 }
@@ -202,8 +183,6 @@ void TF2::clear_lines ()
 // Top-down recomposition.
 void TF2::commit ()
 {
-//  std::cout << "# TF2::commit " << _file._data << "\n";
-
   // The _dirty flag indicates that the file needs to be written.
   if (_dirty)
   {
@@ -277,7 +256,6 @@ void TF2::commit ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_tasks ()
 {
-//  std::cout << "# TF2::load_tasks " << _file._data << "\n";
   context.timer_load.start ();
 
   if (! _loaded_lines)
@@ -288,8 +266,6 @@ void TF2::load_tasks ()
     std::vector <std::string>::iterator i;
     for (i = _added_lines.begin (); i != _added_lines.end (); ++i)
       _lines.push_back (*i);
-
-//    std::cout << "# TF2::load_tasks added " << _added_lines.size () << " lines\n";
   }
 
   int line_number = 0;
@@ -322,7 +298,7 @@ void TF2::load_tasks ()
 
   catch (std::string& e)
   {
-    throw e + format (" in {1} at line {2}", _file._data, line_number);
+    throw e + format (STRING_TDB2_PARSE_ERROR, _file._data, line_number);
   }
 
   context.timer_load.stop ();
@@ -331,8 +307,6 @@ void TF2::load_tasks ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_lines ()
 {
-//  std::cout << "# TF2::load_lines " << _file._data << "\n";
-
   if (! _loaded_contents)
     load_contents ();
 
@@ -343,8 +317,6 @@ void TF2::load_lines ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_contents ()
 {
-//  std::cout << "# TF2::load_contents " << _file._data << "\n";
-
   _contents = "";
 
   if (_file.open ())
@@ -355,7 +327,6 @@ void TF2::load_contents ()
     _file.read (_contents);
     _loaded_contents = true;
   }
-  // TODO Error handling?
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -369,8 +340,6 @@ std::string TF2::uuid (int id)
     std::vector <Task>::iterator i;
     for (i = _added_tasks.begin (); i != _added_tasks.end (); ++i)
       _tasks.push_back (*i);
-
-//    std::cout << "# TF2::uuid added " << _added_tasks.size () << " tasks\n";
   }
 
   std::map <int, std::string>::const_iterator i;
@@ -391,8 +360,6 @@ int TF2::id (const std::string& uuid)
     std::vector <Task>::iterator i;
     for (i = _added_tasks.begin (); i != _added_tasks.end (); ++i)
       _tasks.push_back (*i);
-
-//    std::cout << "# TF2::id added " << _added_tasks.size () << " tasks\n";
   }
 
   std::map <std::string, int>::const_iterator i;
@@ -434,14 +401,6 @@ void TF2::clear ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <label> <rw><dirty> <tasks> <lines> <contents>
-//
-// label:    <label %+14s>
-// rw:       <rw>
-// dirty:    <!|->
-// tasks:    T<tasks %04d>+<added %03d>~<changed %03d>
-// lines:    L<lines %04d>+<added %03d>
-// contents: C<bytes %06d>
 const std::string TF2::dump ()
 {
   Color red    ("rgb500 on rgb100");
@@ -507,7 +466,6 @@ TDB2::~TDB2 ()
 // read.
 void TDB2::set_location (const std::string& location)
 {
-//  std::cout << "# TDB2::set_location " << location << "\n";
   _location = location;
 
   pending.target   (location + "/pending.data");
@@ -521,15 +479,13 @@ void TDB2::set_location (const std::string& location)
 // Add the new task to the appropriate file.
 void TDB2::add (Task& task)
 {
-//  std::cout << "# TDB2::add\n";
-
   // Ensure the task is consistent, and provide defaults if necessary.
   task.validate ();
 
   // If the tasks are loaded, then verify that this uuid is not already in
   // the file.
   if (!verifyUniqueUUID (task.get ("uuid")))
-    throw format ("Cannot add task because the uuid '{1}' is not unique.", task.get ("uuid"));
+    throw format (STRING_TDB2_UUID_NOT_UNIQUE, task.get ("uuid"));
 
   // Add new task to either pending or completed.
   std::string status = task.get ("status");
@@ -554,8 +510,6 @@ void TDB2::add (Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::modify (Task& task)
 {
-//  std::cout << "# TDB2::modify\n";
-
   // Ensure the task is consistent, and provide defaults if necessary.
   task.validate ();
 
@@ -638,7 +592,7 @@ void readTaskmods (std::vector <std::string> &input,
       stream >> ts;
 
       if (stream.fail ())
-        throw std::string ("There was a problem reading the timestamp from the undo.data file.");
+        throw std::string (STRING_TDB2_UNDO_TIMESTAMP);
 
       // 'time' is the first line of a modification
       // thus we will (re)set the taskmod object
@@ -692,11 +646,11 @@ void TDB2::merge (const std::string& mergeFile)
   // load merge file (undo file of right/remote branch)
   std::vector <std::string> r;
   if (! File::read (mergeFile, r))
-    throw std::string ("Could not read '") + mergeFile + "'.";
+    throw format (STRING_TDB2_UNREADABLE, mergeFile);
 
   // file has to contain at least one entry
   if (r.size () < 3)
-    throw std::string ("There are no changes to merge.");
+    throw std::string (STRING_TDB2_NO_CHANGES);
 
   if (! undo._file.exists ())
     undo._file.create ();
@@ -704,7 +658,7 @@ void TDB2::merge (const std::string& mergeFile)
   // load undo file (left/local branch)
   std::vector <std::string> l;
   if (! File::read (undo._file._data, l))
-    throw std::string ("Could not read '") + undo._file._data + "'.";
+    throw format (STRING_TDB2_UNREADABLE, undo._file._data);
 
   std::string rline, lline;
   std::vector <std::string>::iterator rit, lit;
@@ -795,6 +749,7 @@ void TDB2::merge (const std::string& mergeFile)
       if (lmod_it->isNew ())
       {
 /*
+        // TODO Don't forget L10N.
         std::cout << "New local task                     "
                   << (context.color () ? colorAdded.colorize (lmod_it->getUuid ()) : lmod_it->getUuid ())
                   << "\n";
@@ -821,6 +776,7 @@ void TDB2::merge (const std::string& mergeFile)
       if (tmod.isNew ())
       {
 /*
+        // TODO Don't forget L10N.
         std::cout << "Adding new remote task             "
                   << (context.color () ? colorAdded.colorize (tmod.getUuid ()) : tmod.getUuid ())
                   << "\n";
@@ -897,9 +853,9 @@ void TDB2::merge (const std::string& mergeFile)
               // which one is newer?
               if (tmod_r > tmod_l)
               {
-                std::cout << "Found remote change to        "
-                          << (context.color () ? colorChanged.colorize (uuid) : uuid)
-                          << "  \"" << cutOff (tmod_r.getBefore ().get ("description"), 10) << "\""
+                std::cout << format (STRING_TDB2_REMOTE_CHANGE,
+                                     (context.color () ? colorChanged.colorize (uuid) : uuid),
+                                     cutOff (tmod_r.getBefore ().get ("description"), 10))
                           << "\n";
 
                 mods.push_front(tmod_r);
@@ -913,9 +869,9 @@ void TDB2::merge (const std::string& mergeFile)
               }
               else
               {
-                std::cout << "Retaining local changes to    "
-                          << (context.color () ? colorRejected.colorize (uuid) : uuid)
-                          << "  \"" << cutOff (tmod_l.getBefore ().get ("description"), 10) << "\""
+                std::cout << format (STRING_TDB2_LOCAL_CHANGE,
+                                     (context.color () ? colorChanged.colorize (uuid) : uuid),
+                                     cutOff (tmod_l.getBefore ().get ("description"), 10))
                           << "\n";
 
                 // inserting right mod into history of local database
@@ -997,7 +953,7 @@ void TDB2::merge (const std::string& mergeFile)
     {
       mods.clear ();
       lmods.clear ();
-      throw std::string ("Database is up-to-date, no merge required.");
+      throw std::string (STRING_TDB2_UP_TO_DATE);
     }
   }
   else // lit == l.end ()
@@ -1025,10 +981,10 @@ void TDB2::merge (const std::string& mergeFile)
     std::vector <std::string> completed_lines;
 
     if (! File::read (pending._file._data, pending_lines))
-      throw std::string ("Could not read '") + pending._file._data + "'.";
+      throw format (STRING_TDB2_UNREADABLE, pending._file._data);
 
     if (! File::read (completed._file._data, completed_lines))
-      throw std::string ("Could not read '") + completed._file._data + "'.";
+      throw format (STRING_TDB2_UNREADABLE, completed._file._data);
 
     // iterate over taskmod list
     std::list<Taskmod>::iterator it;
@@ -1099,9 +1055,9 @@ void TDB2::merge (const std::string& mergeFile)
             if (it->find ("uuid:\"" + uuid) != std::string::npos)
             {
               // Update the pending record.
-              std::cout << "Found remote change to        "
-                        << (context.color () ? colorChanged.colorize (uuid) : uuid)
-                        << "  \"" << cutOff (tmod.getBefore ().get ("description"), 10) << "\""
+              std::cout << format (STRING_TDB2_REMOTE_CHANGE,
+                                   (context.color () ? colorChanged.colorize (uuid) : uuid),
+                                   cutOff (tmod.getBefore ().get ("description"), 10))
                         << "\n";
 
               // remove the \n from composeF4() string
@@ -1134,9 +1090,9 @@ void TDB2::merge (const std::string& mergeFile)
 
         if (!found)
         {
-          std::cout << "Missing                       "
-                    << (context.color () ? colorRejected.colorize (uuid) : uuid)
-                    << "  \"" << cutOff (tmod.getBefore ().get ("description"), 10) << "\""
+          std::cout << format (STRING_TDB2_MISSING,
+                               (context.color () ? colorRejected.colorize (uuid) : uuid),
+                               cutOff (tmod.getBefore ().get ("description"), 10))
                     << "\n";
           mods.erase (current);
         }
@@ -1160,9 +1116,9 @@ void TDB2::merge (const std::string& mergeFile)
 
         if (!found)
         {
-          std::cout << "Merging new remote task       "
-                    << (context.color () ? colorAdded.colorize (uuid) : uuid)
-                    << "  \"" << cutOff (tmod.getAfter ().get ("description"), 10) << "\""
+          std::cout << format (STRING_TDB2_MERGING,
+                               (context.color () ? colorAdded.colorize (uuid) : uuid),
+                               cutOff (tmod.getAfter ().get ("description"), 10))
                     << "\n";
 
           // remove the \n from composeF4() string
@@ -1179,11 +1135,11 @@ void TDB2::merge (const std::string& mergeFile)
 
     // write pending file
     if (! File::write (pending._file._data, pending_lines))
-      throw std::string ("Could not write '") + pending._file._data + "'.";
+      throw format (STRING_TDB2_UNWRITABLE, pending._file._data);
 
     // write completed file
     if (! File::write (completed._file._data, completed_lines))
-      throw std::string ("Could not write '") + completed._file._data + "'.";
+      throw format (STRING_TDB2_UNWRITABLE, completed._file._data);
   }
 
   if (!mods.empty() || !lmods.empty() || !mods_history.empty()) {
@@ -1201,7 +1157,7 @@ void TDB2::merge (const std::string& mergeFile)
 
     // write undo file
     if (! File::write (undo._file._data, undo_lines, false))
-      throw std::string ("Could not write '") + undo._file._data + "'.";
+      throw format (STRING_TDB2_UNWRITABLE, undo._file._data);
   }
 
   // delete objects
@@ -1215,7 +1171,7 @@ void TDB2::revert ()
 {
   std::vector <std::string> u = undo.get_lines ();
   if (u.size () < 3)
-    throw std::string ("There are no recorded transactions to undo.");
+    throw std::string (STRING_TDB2_NO_UNDO);
 
   // pop last tx
   u.pop_back (); // separator.
@@ -1248,8 +1204,7 @@ void TDB2::revert ()
   if (context.config.get ("undo.style") == "side")
   {
     std::cout << "\n"
-              << "The last modification was made "
-              << lastChange.toString ()
+              << format (STRING_TDB2_LAST_MOD, lastChange.toString ())
               << "\n";
 
     // Attributes are all there is, so figure the different attribute names
@@ -1258,8 +1213,8 @@ void TDB2::revert ()
     view.width (context.getWidth ());
     view.intraPadding (2);
     view.add (Column::factory ("string", ""));
-    view.add (Column::factory ("string", "Prior Values"));
-    view.add (Column::factory ("string", "Current Values"));
+    view.add (Column::factory ("string", STRING_TDB2_UNDO_PRIOR));
+    view.add (Column::factory ("string", STRING_TDB2_UNDO_CURRENT));
 
     Task after (current);
 
@@ -1359,12 +1314,14 @@ void TDB2::revert ()
     view.add (Column::factory ("string", ""));
 
     int row = view.addRow ();
-    view.set (row, 0, "--- previous state", color_red);
-    view.set (row, 1, "Undo will restore this state", color_red);
+    view.set (row, 0, STRING_TDB2_DIFF_PREV, color_red);
+    view.set (row, 1, STRING_TDB2_DIFF_PREV_DESC, color_red);
 
     row = view.addRow ();
-    view.set (row, 0, "+++ current state ", color_green);  // Note trailing space.
-    view.set (row, 1, "Change made " + lastChange.toString (context.config.get ("dateformat")), color_green);
+    view.set (row, 0, STRING_TDB2_DIFF_CURR, color_green);  // Note trailing space.
+    view.set (row, 1, format (STRING_TDB2_DIFF_CURR_DESC,
+                              lastChange.toString (context.config.get ("dateformat"))),
+                      color_green);
 
     view.addRow ();
 
@@ -1452,9 +1409,9 @@ void TDB2::revert ()
 
   // Output displayed, now confirm.
   if (context.config.getBoolean ("confirmation") &&
-      !confirm ("The undo command is not reversible.  Are you sure you want to revert to the previous state?"))
+      !confirm (STRING_TDB2_UNDO_CONFIRM))
   {
-    std::cout << "No changes made.\n";
+    std::cout << STRING_CMD_CONFIG_NO_CHANGE << "\n";
     return;
   }
 
@@ -1464,7 +1421,7 @@ void TDB2::revert ()
   if (uuidAtt != std::string::npos)
     uuid = current.substr (uuidAtt, 43); // 43 = uuid:"..."
   else
-    throw std::string ("Cannot locate UUID in task to undo.");
+    throw std::string (STRING_TDB2_MISSING_UUID);
 
   // load pending.data
   std::vector <std::string> p = pending.get_lines ();
@@ -1481,12 +1438,12 @@ void TDB2::revert ()
       if (prior != "")
       {
         *task = prior;
-        std::cout << "Modified task reverted.\n";
+        std::cout << STRING_TDB2_REVERTED << "\n";
       }
       else
       {
         p.erase (task);
-        std::cout << "Task removed.\n";
+        std::cout << STRING_TDB2_REMOVED << "\n";
       }
 
       // Rewrite files.
@@ -1516,7 +1473,7 @@ void TDB2::revert ()
         File::write (completed._file._data, c);
         File::write (pending._file._data, p);
         File::write (undo._file._data, u);
-        std::cout << "Modified task reverted.\n";
+        std::cout << STRING_TDB2_REVERTED << "\n";
         context.debug ("TDB::undo - task belongs in pending.data");
       }
       else
@@ -1524,21 +1481,21 @@ void TDB2::revert ()
         *task = prior;
         File::write (completed._file._data, c);
         File::write (undo._file._data, u);
-        std::cout << "Modified task reverted.\n";
+        std::cout << STRING_TDB2_REVERTED << "\n";
         context.debug ("TDB::undo - task belongs in completed.data");
       }
 
-      std::cout << "Undo complete.\n";
+      std::cout << STRING_TDB2_UNDO_COMPLETE << "\n";
       return;
     }
   }
 
   // Perhaps user hand-edited the data files?
   // Perhaps the task was in completed.data, which was still in file format 3?
-  std::cout << "Task with UUID "
-            << uuid.substr (6, 36)
-            << " not found in data.\n"
-            << "No undo possible.\n";
+  std::cout << format (STRING_TDB2_MISSING_TASK, uuid.substr (6, 36))
+            << "\n"
+            << STRING_TDB2_UNDO_IMPOSSIBLE
+            << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

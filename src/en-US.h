@@ -575,6 +575,34 @@
 #define STRING_TASKMOD_OLD           "old "
 #define STRING_TASKMOD_NEW           "new "
 
+// TDB2
+#define STRING_TDB2_PARSE_ERROR      " in {1} at line {2}"
+#define STRING_TDB2_UUID_NOT_UNIQUE  "Cannot add task because the uuid '{1}' is not unique."
+#define STRING_TDB2_UNDO_TIMESTAMP   "There was a problem reading the timestamp from the undo.data file."
+#define STRING_TDB2_UNREADABLE       "Could not read '{1}'."
+#define STRING_TDB2_UNWRITABLE       "Could not write '{1}'."
+#define STRING_TDB2_NO_CHANGES       "There are no changes to merge."
+#define STRING_TDB2_REMOTE_CHANGE    "Found remote change to        {1}  \"{2}\""
+#define STRING_TDB2_LOCAL_CHANGE     "Retaining local changes to    {1}  \"{2}\""
+#define STRING_TDB2_MISSING          "Missing                       {1}  \"{2}\""
+#define STRING_TDB2_MERGING          "Merging new remote task       {1}  \"{2}\""
+#define STRING_TDB2_UP_TO_DATE       "Database is up-to-date, no merge required."
+#define STRING_TDB2_NO_UNDO          "There are no recorded transactions to undo."
+#define STRING_TDB2_LAST_MOD         "The last modification was made {1}"
+#define STRING_TDB2_UNDO_PRIOR       "Prior Values"
+#define STRING_TDB2_UNDO_CURRENT     "Current Values"
+#define STRING_TDB2_DIFF_PREV        "--- previous state"             // Same length
+#define STRING_TDB2_DIFF_PREV_DESC   "Undo will restore this state"   //   ||
+#define STRING_TDB2_DIFF_CURR        "+++ current state "             // Same length
+#define STRING_TDB2_DIFF_CURR_DESC   "Change made {1}"
+#define STRING_TDB2_UNDO_CONFIRM     "The undo command is not reversible.  Are you sure you want to revert to the previous state?"
+#define STRING_TDB2_MISSING_UUID     "Cannot locate UUID in task to undo."
+#define STRING_TDB2_REVERTED         "Modified task reverted."
+#define STRING_TDB2_REMOVED          "Task removed."
+#define STRING_TDB2_UNDO_COMPLETE    "Undo complete."
+#define STRING_TDB2_MISSING_TASK     "Task with UUID {1} not found in data."
+#define STRING_TDB2_UNDO_IMPOSSIBLE  "No undo possible."
+
 // text
                                      // A comma-separated list of commands is appended.
 #define STRING_TEXT_AMBIGUOUS        "Ambiguous {1} '{2}' - could be either of "

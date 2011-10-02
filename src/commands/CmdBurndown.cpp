@@ -959,9 +959,7 @@ int CmdBurndownMonthly::execute (std::string& output)
   // Use any filter as a title.
   if (context.a3.size () > 2)
   {
-    std::string combined = "("
-                         + context.a3.extract_filter ().combine ()
-                         + ")";
+    std::string combined = "(" + context.a3.extract_filter ().combine () + ")";
     chart.description (combined);
   }
 
@@ -997,9 +995,7 @@ int CmdBurndownWeekly::execute (std::string& output)
   // Use any filter as a title.
   if (context.a3.size () > 2)
   {
-    std::string combined = "("
-                         + context.a3.extract_filter ().combine ()
-                         + ")";
+    std::string combined = "(" + context.a3.extract_filter ().combine () + ")";
     chart.description (combined);
   }
 
@@ -1035,9 +1031,7 @@ int CmdBurndownDaily::execute (std::string& output)
   // Use any filter as a title.
   if (context.a3.size () > 2)
   {
-    std::string combined = "("
-                         + context.a3.extract_filter ().combine ()
-                         + ")";
+    std::string combined = "(" + context.a3.extract_filter ().combine () + ")";
     chart.description (combined);
   }
 
