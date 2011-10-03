@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
+#include <i18n.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -42,7 +43,7 @@ CmdCalendar::CmdCalendar ()
 {
   _keyword     = "calendar";
   _usage       = "task          calendar [due|month year|year]";
-  _description = "Shows a calendar, with due tasks marked.";
+  _description = STRING_CMD_CAL_USAGE;
   _read_only   = true;
   _displays_id = true;
 }
@@ -90,18 +91,8 @@ int CmdCalendar::execute (std::string& output)
 
   // Set up a vector of months, for autoComplete.
   std::vector <std::string> monthNames;
-  monthNames.push_back ("january");
-  monthNames.push_back ("february");
-  monthNames.push_back ("march");
-  monthNames.push_back ("april");
-  monthNames.push_back ("may");
-  monthNames.push_back ("june");
-  monthNames.push_back ("july");
-  monthNames.push_back ("august");
-  monthNames.push_back ("september");
-  monthNames.push_back ("october");
-  monthNames.push_back ("november");
-  monthNames.push_back ("december");
+  for (int i = 1; i <= 12; ++i)
+    monthNames.push_back (lowerCase (Date::monthName (i)));
 
   // For autoComplete results.
   std::vector <std::string> matches;
@@ -137,7 +128,7 @@ int CmdCalendar::execute (std::string& output)
     {
       argMonth = strtol (arg->c_str (), NULL, 10);
       if (argMonth < 1 || argMonth > 12)
-        throw std::string ("Argument '") + *arg + "' is not a valid month.";
+        throw format (STRING_CMD_CAL_BAD_MONTH, *arg);
     }
 
     // "January" etc.
@@ -145,11 +136,11 @@ int CmdCalendar::execute (std::string& output)
     {
       argMonth = Date::monthOfYear (matches[0]);
       if (argMonth == -1)
-        throw std::string ("Argument '") + *arg + "' is not a valid month.";
+        throw format (STRING_CMD_CAL_BAD_MONTH, *arg);
     }
 
     else
-      throw std::string ("Could not recognize argument '") + *arg + "'.";
+      throw format (STRING_CMD_CAL_BAD_ARG, *arg);
   }
 
   // Supported combinations:
@@ -180,7 +171,7 @@ int CmdCalendar::execute (std::string& output)
   if (getpendingdate == true)
   {
     // Find the oldest pending due date.
-    Date oldest (12,31,2037);
+    Date oldest (12, 31, 2037);
     std::vector <Task>::iterator task;
     for (task = tasks.begin (); task != tasks.end (); ++task)
     {
@@ -364,8 +355,8 @@ int CmdCalendar::execute (std::string& output)
 
       ViewText holTable;
       holTable.width (context.getWidth ());
-      holTable.add (Column::factory ("string", "Date"));
-      holTable.add (Column::factory ("string", "Holiday"));
+      holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_DATE));
+      holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_HOL));
 
       std::vector <std::string>::iterator it;
       for (it = holidays.begin (); it != holidays.end (); ++it)
@@ -413,8 +404,7 @@ std::string CmdCalendar::renderMonths (
   // What day of the week does the user consider the first?
   int weekStart = Date::dayOfWeek (context.config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
-    throw std::string ("The 'weekstart' configuration variable may "
-                       "only contain 'Sunday' or 'Monday'.");
+    throw std::string (STRING_CMD_CAL_SUN_MON);
 
   // Build table for the number of months to be displayed.
   ViewText view;
@@ -424,24 +414,24 @@ std::string CmdCalendar::renderMonths (
     if (weekStart == 1)
     {
       view.add (Column::factory ("string.right", "    "));
-      view.add (Column::factory ("string.right", "Mo"));
-      view.add (Column::factory ("string.right", "Tu"));
-      view.add (Column::factory ("string.right", "We"));
-      view.add (Column::factory ("string.right", "Th"));
-      view.add (Column::factory ("string.right", "Fr"));
-      view.add (Column::factory ("string.right", "Sa"));
-      view.add (Column::factory ("string.right", "Su"));
+      view.add (Column::factory ("string.right", Date::dayName (1).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (2).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (3).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (4).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (5).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (6).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (0).substr (0, 2)));
     }
     else
     {
       view.add (Column::factory ("string.right", "    "));
-      view.add (Column::factory ("string.right", "Su"));
-      view.add (Column::factory ("string.right", "Mo"));
-      view.add (Column::factory ("string.right", "Tu"));
-      view.add (Column::factory ("string.right", "We"));
-      view.add (Column::factory ("string.right", "Th"));
-      view.add (Column::factory ("string.right", "Fr"));
-      view.add (Column::factory ("string.right", "Sa"));
+      view.add (Column::factory ("string.right", Date::dayName (0).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (1).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (2).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (3).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (4).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (5).substr (0, 2)));
+      view.add (Column::factory ("string.right", Date::dayName (6).substr (0, 2)));
     }
   }
 
