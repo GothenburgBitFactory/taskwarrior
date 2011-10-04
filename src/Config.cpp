@@ -324,7 +324,7 @@ std::string Config::_defaults =
   "# Dateformat:    due date format in reports\n"
   "\n"
   "# task long\n"
-  "report.long.description=Lists all task, all data, matching the specified criteria\n"
+  "report.long.description=Lists all tasks, matching the specified criteria\n"
   "report.long.columns=id,project,priority,entry,start,due,recur,due.countdown,entry.age,depends,tags,description\n"
   "report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Countdown,Age,Deps,Tags,Description\n"
   "report.long.sort=due+,priority-,project+,description+\n"

@@ -371,7 +371,6 @@
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 #define STRING_CMD_INSTALL_USAGE     "Installs extensions and external scripts"
 #define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."
-#define STRING_CMD_MODIFY_USAGE2     "The 'modify' keyword is optional."
 #define STRING_CMD_MODIFY_NO_DUE     "You cannot specify a recurring task without a due date."
 #define STRING_CMD_MODIFY_UNTIL      "You cannot specify an until date for a non-recurring task."
 #define STRING_CMD_MODIFY_REM_DUE    "You cannot remove the due date from a recurring task."
@@ -440,6 +439,7 @@
 #define STRING_CMD_CAL_LABEL_DATE    "Date"
 #define STRING_CMD_CAL_LABEL_HOL     "Holiday"
 #define STRING_CMD_CAL_SUN_MON       "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'."
+#define STRING_CMD_EDIT_USAGE        "Launches an editor to let you modify all aspects of a task directly"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."

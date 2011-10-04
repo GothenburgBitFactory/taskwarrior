@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <Duration.h>
 #include <Context.h>
+#include <i18n.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -42,8 +43,7 @@ CmdEdit::CmdEdit ()
 {
   _keyword     = "edit";
   _usage       = "task <filter> edit";
-  _description = "Launches an editor to let you modify all aspects of a task "
-                 "directly, therefore it is to be used carefully.";
+  _description = STRING_CMD_EDIT_USAGE;
   _read_only   = false;
   _displays_id = true;
 }
@@ -144,7 +144,7 @@ std::string CmdEdit::formatTask (Task task)
   if (verbose)
     before << "# The 'task edit <id>' command allows you to modify all aspects of a task\n"
            << "# using a text editor.  Below is a representation of all the task details.\n"
-           << "# Modify what you wish, and when you save and quit your editor, \n"
+           << "# Modify what you wish, and when you save and quit your editor,\n"
            << "# taskwarrior will read this file, determine what changed, and apply\n"
            << "# those changes.  If you exit your editor without saving or making\n"
            << "# modifications, taskwarrior will do nothing.\n"
