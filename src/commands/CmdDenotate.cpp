@@ -95,6 +95,7 @@ int CmdDenotate::execute (std::string& output)
       if (i->second == pattern)
       {
         match = true;
+        anno = i->second;
         annotations.erase (i);
         task->setAnnotations (annotations);
         break;
@@ -107,6 +108,7 @@ int CmdDenotate::execute (std::string& output)
         std::string::size_type loc = find (i->second, pattern, sensitive);
         if (loc != std::string::npos)
         {
+          anno = i->second;
           annotations.erase (i);
           task->setAnnotations (annotations);
           break;

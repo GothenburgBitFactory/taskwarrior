@@ -203,6 +203,7 @@
    description.  They are now stripped (thanks to Aikido Guy).
  + Fixed bug #856, which prevented filters on missing project from working
    (thanks to Michelle Crane).
+ + Fixed bug #862, which suppressed feedback from the 'denotate' command.
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
