@@ -203,6 +203,8 @@
    description.  They are now stripped (thanks to Aikido Guy).
  + Fixed bug #856, which prevented filters on missing project from working
    (thanks to Michelle Crane).
+ + Fixed bug #859, which used only one color for the 'ghistory.*' report
+   legends (thanks to Uli Martens).
  + Fixed bug #862, which suppressed feedback from the 'denotate' command.
 
 # Untracked Bugs, biggest first.

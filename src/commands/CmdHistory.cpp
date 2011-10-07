@@ -518,8 +518,8 @@ int CmdGHistoryMonthly::execute (std::string& output)
     if (context.color ())
       out << format (STRING_CMD_HISTORY_LEGEND,
                      color_add.colorize (STRING_CMD_HISTORY_ADDED),
-                     color_add.colorize (STRING_CMD_HISTORY_COMP),
-                     color_add.colorize (STRING_CMD_HISTORY_DEL))
+                     color_done.colorize (STRING_CMD_HISTORY_COMP),
+                     color_delete.colorize (STRING_CMD_HISTORY_DEL))
           << optionalBlankLine ()
           << "\n";
     else
@@ -708,8 +708,8 @@ int CmdGHistoryAnnual::execute (std::string& output)
     if (context.color ())
       out << format (STRING_CMD_HISTORY_LEGEND,
                      color_add.colorize (STRING_CMD_HISTORY_ADDED),
-                     color_add.colorize (STRING_CMD_HISTORY_COMP),
-                     color_add.colorize (STRING_CMD_HISTORY_DEL))
+                     color_done.colorize (STRING_CMD_HISTORY_COMP),
+                     color_delete.colorize (STRING_CMD_HISTORY_DEL))
           << optionalBlankLine ()
           << "\n";
     else
