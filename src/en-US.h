@@ -189,7 +189,7 @@
 #define STRING_CMD_CONFLICT          "Custom report '{1}' conflicts with built-in task command."
 #define STRING_CMD_VERSION_USAGE     "Shows the taskwarrior version number"
 #define STRING_CMD_VERSION_USAGE2    "Shows only the taskwarrior version number"
-#define STRING_CMD_VERSION_GPL       "Taskwarrior may be copied only under the terms of the GNU General Public License, which may be found in the taskwarrior source kit."
+#define STRING_CMD_VERSION_MIT       "Taskwarrior may be copied only under the terms of the MIT license, which may be found in the taskwarrior source kit."
 #define STRING_CMD_VERSION_DOCS      "Documentation for taskwarrior can be found using 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' or at http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} built for "
 #define STRING_CMD_VERSION_UNKNOWN   "unknown"

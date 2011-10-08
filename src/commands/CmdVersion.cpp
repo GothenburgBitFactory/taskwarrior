@@ -60,7 +60,7 @@ int CmdVersion::execute (std::string& output)
   ViewText disclaimer;
   disclaimer.width (width);
   disclaimer.add (Column::factory ("string", ""));
-  disclaimer.set (disclaimer.addRow (), 0, STRING_CMD_VERSION_GPL);
+  disclaimer.set (disclaimer.addRow (), 0, STRING_CMD_VERSION_MIT);
 
   // Create a table for the URL.
   ViewText link;
