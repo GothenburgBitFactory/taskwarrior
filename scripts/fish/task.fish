@@ -1,5 +1,6 @@
-# Taskwarrior <http://taskwarrior.org> tab completions for the Fish shell
-# <http://fishshell.org>.
+# tab completions for the Fish shell <http://fishshell.org>
+#
+# taskwarrior - a command line task list manager.
 #
 # Copy this script to ~/.config/fish/completions/task.fish, open a new shell,
 # and enjoy.
@@ -11,14 +12,27 @@
 #  * Tags
 #  * Attribute names and modifiers
 #
-# License:
 #  Copyright 2009 - 2011 Mick Koch <kchmck@gmail.com>
 #
-#  This script is free software. It comes without any warranty, to the extent
-#  permitted by applicable law. You can redistribute it and/or modify it under
-#  the terms of the Do What The Fuck You Want To Public License, Version 2, as
-#  published by Sam Hocevar. See http://sam.zoy.org/wtfpl/COPYING for more
-#  details.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
 
 function __fish.task.bare
     test (count (commandline -c -o)) -eq 1
