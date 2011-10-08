@@ -357,8 +357,8 @@ Copyright (C) 2006 \- 2011 P. Beckingham, F. Hernandez.
 The sync capabilities were written by J. Schlatow.
 Parts copyright (C) 2010 - 2011 J. Schlatow.
 
-task is distributed under the GNU General Public License. See
-http://www.gnu.org/licenses/gpl-2.0.txt for more information.
+Taskwarrior is distributed under the MIT license. See
+http://www.opensource.org/licenses/mit-license.php for more information.
 
 .SH SEE ALSO
 .BR task(1),
