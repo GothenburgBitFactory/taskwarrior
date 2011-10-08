@@ -49,7 +49,7 @@ like ($output, qr/You must specify a command or a task to modify./m, 'missing co
 # Test the version command.
 $output = qx{../src/task rc:basic.rc version};
 like ($output, qr/task $version/, 'version - task version number');
-like ($output, qr/GNU\s+General\s+Public\s+License/, 'version - license');
+like ($output, qr/MIT\slicense/, 'version - license');
 like ($output, qr/http:\/\/taskwarrior\.org/, 'version - url');
 
 # Test the _version command.
