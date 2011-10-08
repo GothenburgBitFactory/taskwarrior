@@ -11,7 +11,7 @@ function install ()
          'Simply says goodbye',            -- Description
          'Paul Beckingham',                -- Author
          'paul@beckingham.net',            -- Contact
-         'GPLv2',                          -- License
+         'MIT',                            -- License
          '© 2011, Göteborg Bit Factory'    -- Copyright
 end
 
