@@ -222,7 +222,7 @@ project:
     $ task config color.project.Home 'on blue'
 
 We use quotes around 'on blue' because there are two words, but they represent
-one value in the .taskrc file.  Now suppose we which to use a bold yellow text
+one value in the .taskrc file.  Now suppose we wish to use a bold yellow text
 color for all cleaning work:
 
     $ task config color.keyword.clean 'bold yellow'
