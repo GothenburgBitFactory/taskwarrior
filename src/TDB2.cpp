@@ -25,10 +25,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
-#include <iostream> // TODO Remove.
+#include <iostream>
 #include <sstream>
 #include <algorithm>
 #include <list>
