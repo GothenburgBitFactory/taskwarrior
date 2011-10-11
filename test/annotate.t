@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 31;
+use Test::More tests => 25;
 
 # Create the rc file.
 if (open my $fh, '>', 'annotate.rc')
@@ -114,26 +114,14 @@ like ($output, qr/three.+\d{1,6}\s+\d{1,6}\s+baz1/ms,'dateformat - first  annota
 like ($output, qr/4 tasks/, 'count');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'annotate.rc';
-ok (!-r 'annotate.rc', 'Removed annotate.rc');
-
-unlink 'annotate2.rc';
-ok (!-r 'annotate2.rc', 'Removed annotate2.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key annotate.rc annotate2.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'annotate.rc'    &&
+    ! -r 'annotate2.rc', 'Cleanup');
 
 exit 0;
 
