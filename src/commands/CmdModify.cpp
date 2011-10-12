@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <iostream>
@@ -34,6 +33,7 @@
 #include <Permission.h>
 #include <main.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 #include <CmdModify.h>
 
@@ -52,6 +52,7 @@ CmdModify::CmdModify ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdModify::execute (std::string& output)
 {
+  int rc = 0;
   int count = 0;
   std::stringstream out;
 
@@ -102,63 +103,61 @@ int CmdModify::execute (std::string& output)
          task->get ("recur") == ""))
       throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
 
-    if (taskDiff (before, *task) &&
-        permission.confirmed (*task, taskDifferences (before, *task) + "Proceed with change?"))
+    // Delete the specified task.
+    std::string question = format (STRING_CMD_MODIFY_QUESTION,
+                                   task->id,
+                                   task->get ("description"));
+
+    if (permission.confirmed (*task, taskDifferences (before, *task) + question))
     {
-      // Checks passed, modify the task.
-      ++count;
+      updateRecurrenceMask (*task);
       context.tdb2.modify (*task);
-      if (before.get ("project") != task->get ("project"))
-        context.footnote (onProjectChange (before, *task));
+      ++count;
 
-      // Make all changes.
-      bool warned = false;
-      std::vector <Task> siblings = context.tdb2.siblings (*task);
-      std::vector <Task>::iterator sibling;
-      for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
+      if (context.verbose ("affected") ||
+          context.config.getBoolean ("echo.command")) // Deprecated 2.0
+        out << format (task->has ("parent")
+                         ? STRING_CMD_MODIFY_RECURRING
+                         : STRING_CMD_MODIFY_SIMPLE,
+                       task->id,
+                       task->get ("description"))
+            << "\n";
+
+      dependencyChainOnModify (before, *task);
+      context.footnote (onProjectChange (*task, true));
+
+      // Delete siblings.
+      if (task->has ("parent"))
       {
-        if (before.has ("parent") && !warned)
+        std::vector <Task> siblings = context.tdb2.siblings (*task);
+        if (siblings.size () &&
+            confirm (STRING_CMD_MODIFY_RECUR))
         {
-          warned = true;
-          std::cout << format (STRING_CMD_MODIFY_INSTANCES, before.id) << "\n";
-        }
-
-        Task alternate (*sibling);
-
-        // If a task is being made recurring, there are other cascading
-        // changes.
-        if (!before.has ("recur") &&
-            task->has ("recur"))
-        {
-          sibling->setStatus (Task::recurring);
-          sibling->set ("mask", "");
-
-          std::cout << format (STRING_CMD_MODIFY_NOW_RECUR, sibling->id) << "\n";
-        }
-
-        // Apply other deltas.
-        modify_task_description_replace (*sibling, modifications);
-
-        if (taskDiff (alternate, *sibling))
-        {
-          if (permission.confirmed (alternate,
-                                    taskDifferences (alternate, *sibling) +
-                                                     STRING_CMD_MODIFY_PROCEED))
+          std::vector <Task>::iterator sibling;
+          for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
           {
-            // TODO Are dependencies being explicitly removed?
-            //      Either we scan context.task for negative IDs "depends:-n"
-            //      or we ask deltaAttributes (above) to record dependency
-            //      removal.
-            dependencyChainOnModify (alternate, *sibling);
+            Task alternate (*sibling);
+            modify_task_description_replace (*sibling, modifications);
+            updateRecurrenceMask (*sibling);
             context.tdb2.modify (*sibling);
+            dependencyChainOnModify (alternate, *sibling);
+            context.footnote (onProjectChange (*sibling, true));
             ++count;
 
-            if (alternate.get ("project") != sibling->get ("project"))
-              context.footnote (onProjectChange (alternate, *sibling));
-
+            if (context.verbose ("affected") ||
+                context.config.getBoolean ("echo.command")) // Deprecated 2.0
+              out << format (STRING_CMD_MODIFY_RECURRING,
+                             sibling->id,
+                             sibling->get ("description"))
+                  << "\n";
           }
         }
       }
+    }
+    else
+    {
+      out << STRING_CMD_MODIFY_NOT << "\n";
+      rc  = 1;
     }
   }
 
@@ -166,15 +165,14 @@ int CmdModify::execute (std::string& output)
 
   if (context.verbose ("affected") ||
       context.config.getBoolean ("echo.command")) // Deprecated 2.0
-  {
-    if (count == 1)
-      out << format (STRING_CMD_MODIFY_TASK, count) << "\n";
-    else
-      out << format (STRING_CMD_MODIFY_TASKS, count) << "\n";
-  }
+    out << format ((count == 1
+                      ? STRING_CMD_MODIFY_TASK
+                      : STRING_CMD_MODIFY_TASKS),
+                   count)
+        << "\n";
 
   output = out.str ();
-  return 0;
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
