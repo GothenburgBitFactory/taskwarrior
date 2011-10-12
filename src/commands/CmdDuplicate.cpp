@@ -25,11 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <sstream>
 #include <Context.h>
+#include <Permission.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -64,12 +64,17 @@ int CmdDuplicate::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the completed task.
+  // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
+
+  Permission permission;
+  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
+    permission.bigSequence ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
+    // Duplicate the specified task.
     Task dup (*task);
     dup.set ("uuid", uuid ());     // Needs a new UUID.
     dup.setStatus (Task::pending); // Does not inherit status.
@@ -78,7 +83,7 @@ int CmdDuplicate::execute (std::string& output)
     dup.remove ("entry");          // Does not inherit entry date.
 
     // Recurring tasks are duplicated and downgraded to regular tasks.
-    if (task->getStatus () == Task::recurring)
+    if (dup.has ("parent"))
     {
       dup.remove ("parent");
       dup.remove ("recur");
@@ -91,26 +96,44 @@ int CmdDuplicate::execute (std::string& output)
     }
 
     modify_task_annotate (dup, modifications);
-    context.tdb2.add (dup);
-    ++count;
 
-    if (context.verbose ("affected") ||
-        context.config.getBoolean ("echo.command")) // Deprecated 2.0
-      out << format (STRING_CMD_DUPLICATE_DONE,
-                     task->id,
-                     task->get ("description"))
-          << "\n";
+    if (permission.confirmed (dup,
+                             format (STRING_CMD_DONE_QUESTION,
+                                     task->id,
+                                     task->get ("description"))))
+    {
+      context.tdb2.add (dup);
+      ++count;
 
-    // TODO This should be a call in to feedback.cpp.
-    if (context.verbose ("new-id"))
-      out << format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
+      if (context.verbose ("affected") ||
+          context.config.getBoolean ("echo.command")) // Deprecated 2.0
+        out << format (STRING_CMD_DUPLICATE_DUP,
+                       task->id,
+                       task->get ("description"))
+            << "\n";
 
-    context.footnote (onProjectChange (dup));
+      if (context.verbose ("new-id"))
+        out << format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
+
+      context.footnote (onProjectChange (*task, false));
+    }
+    else
+    {
+      out << STRING_CMD_DUPLICATE_NOT << "\n";
+      rc  = 1;
+    }
   }
 
-  // TODO Add count summary, like the 'done' command.
-
   context.tdb2.commit ();
+
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
+    out << format ((count == 1
+                      ? STRING_CMD_DUPLICATE_DUP_1
+                      : STRING_CMD_DUPLICATE_DUP_N),
+                   count)
+        << "\n";
+
   output = out.str ();
   return rc;
 }
