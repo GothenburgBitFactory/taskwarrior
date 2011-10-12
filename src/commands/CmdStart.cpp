@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <sstream>
@@ -33,6 +32,7 @@
 #include <Permission.h>
 #include <main.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 #include <CmdStart.h>
 
@@ -64,7 +64,7 @@ int CmdStart::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the started task.
+  // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
 
   Permission permission;
@@ -79,34 +79,42 @@ int CmdStart::execute (std::string& output)
     {
       Task before (*task);
 
-      modify_task_annotate (*task, modifications);
+      // Complete the specified task.
+      std::string question = format (STRING_CMD_START_QUESTION,
+                                     task->id,
+                                     task->get ("description"));
 
-      // Add a start time.
+      modify_task_annotate (*task, modifications);
       task->setStart ();
 
       if (context.config.getBoolean ("journal.time"))
         task->addAnnotation (context.config.get ("journal.time.start.annotation"));
 
-      if (taskDiff (before, *task))
+      if (permission.confirmed (*task, taskDifferences (before, *task) + question))
       {
-        if (permission.confirmed (before, taskDifferences (before, *task) + STRING_CMD_DONE_PROCEED))
-        {
-          context.tdb2.modify (*task);
-          ++count;
+        updateRecurrenceMask (*task);
+        context.tdb2.modify (*task);
+        if (!nagged)
+          nagged = nag (*task);
+        ++count;
 
-          if (context.verbose ("affected") ||
-              context.config.getBoolean ("echo.command")) // Deprecated 2.0
-            out << format (STRING_CMD_START_DONE,
-                           task->id,
-                           task->get ("description"))
-                << "\n";
+        if (context.verbose ("affected") ||
+            context.config.getBoolean ("echo.command")) // Deprecated 2.0
+          out << format (task->has ("parent")
+                           ? STRING_CMD_START_RECURRING
+                           : STRING_CMD_START_TASK,
+                         task->id,
+                         task->get ("description"))
+              << "\n";
 
-          dependencyChainOnStart (*task);
-        }
+        dependencyChainOnStart (*task);
+        context.footnote (onProjectChange (*task, false));
       }
-
-      if (!nagged)
-        nagged = nag (*task);
+      else
+      {
+        out << format (STRING_CMD_START_NOT, task->id) << "\n";
+        rc  = 1;
+      }
     }
     else
     {
@@ -119,6 +127,15 @@ int CmdStart::execute (std::string& output)
   }
 
   context.tdb2.commit ();
+
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
+    out << format ((count == 1
+                      ? STRING_CMD_START_STARTED
+                      : STRING_CMD_START_STARTED_N),
+                   count)
+        << "\n";
+
   output = out.str ();
   return rc;
 }
