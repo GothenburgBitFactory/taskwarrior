@@ -25,13 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <sstream>
 #include <Context.h>
 #include <Permission.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 #include <main.h>
 #include <CmdDenotate.h>
@@ -54,6 +54,7 @@ int CmdDenotate::execute (std::string& output)
   int rc = 0;
   int count = 0;
   std::stringstream out;
+  bool sensitive = context.config.getBoolean ("search.case.sensitive");
 
   // Apply filter.
   std::vector <Task> filtered;
@@ -63,8 +64,6 @@ int CmdDenotate::execute (std::string& output)
     context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
     return 1;
   }
-
-  bool sensitive = context.config.getBoolean ("search.case.sensitive");
 
   // Apply the command line modifications to the completed task.
   A3 words = context.a3.extract_modifications ();
@@ -119,8 +118,11 @@ int CmdDenotate::execute (std::string& output)
 
     if (taskDiff (before, *task))
     {
-      if (permission.confirmed (before,
-                                taskDifferences (before, *task) + STRING_CMD_DONE_PROCEED))
+      std::string question = format (STRING_CMD_DENO_QUESTION,
+                                     task->id,
+                                     task->get ("description"));
+
+      if (permission.confirmed (*task, taskDifferences (before, *task) + question))
       {
         ++count;
         context.tdb2.modify (*task);
@@ -131,11 +133,23 @@ int CmdDenotate::execute (std::string& output)
       }
     }
     else
+    {
       out << format (STRING_CMD_DENO_NOMATCH, pattern)
           << "\n";
+      rc = 1;
+    }
   }
 
   context.tdb2.commit ();
+
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
+    out << format ((count == 1
+                      ? STRING_CMD_DENO_TASK
+                      : STRING_CMD_DENO_TASKS),
+                   count)
+        << "\n";
+
   output = out.str ();
   return rc;
 }
