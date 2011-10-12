@@ -31,9 +31,10 @@
 #include <sstream>
 #include <Context.h>
 #include <Permission.h>
-#include <main.h>
+#include <util.h>
 #include <text.h>
 #include <i18n.h>
+#include <main.h>
 #include <CmdPrepend.h>
 
 extern Context context;
@@ -64,7 +65,7 @@ int CmdPrepend::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the started task.
+  // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
   if (!modifications.size ())
     throw std::string (STRING_CMD_XPEND_NEED_TEXT);
@@ -73,43 +74,68 @@ int CmdPrepend::execute (std::string& output)
   if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
     permission.bigSequence ();
 
-  // A non-zero value forces a file write.
-  int changes = 0;
-
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
+    Task before (*task);
+
+    // Prepend to the specified task.
+    std::string question = format (STRING_CMD_PREPEND_QUESTION,
+                                   task->id,
+                                   task->get ("description"));
+
     modify_task_description_prepend (*task, modifications);
-    context.tdb2.modify (*task);
-    ++changes;
 
-    std::vector <Task> siblings = context.tdb2.siblings (*task);
-    std::vector <Task>::iterator sibling;
-    for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
+    if (permission.confirmed (*task, taskDifferences (before, *task) + question))
     {
-      Task before (*sibling);
+      context.tdb2.modify (*task);
+      ++count;
 
-      // Apply other deltas.
-      modify_task_description_prepend (*sibling, modifications);
+      if (context.verbose ("affected") ||
+          context.config.getBoolean ("echo.command")) // Deprecated 2.0
+        out << format (task->has ("parent")
+                         ? STRING_CMD_PREPEND_RECURRING
+                         : STRING_CMD_PREPEND_DELETING,
+                       task->id,
+                       task->get ("description"))
+            << "\n";
 
-      if (taskDiff (before, *sibling))
+      context.footnote (onProjectChange (*task, true));
+
+      // Prepend to siblings.
+      if (task->has ("parent"))
       {
-        if (changes && permission.confirmed (before, taskDifferences (before, *sibling) + "Proceed with change?"))
+        std::vector <Task> siblings = context.tdb2.siblings (*task);
+        if (siblings.size () &&
+            confirm (STRING_CMD_PREPEND_CONF_REC))
         {
-          context.tdb2.modify (*sibling);
-          ++changes;
+          std::vector <Task>::iterator sibling;
+          for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
+          {
+            modify_task_description_prepend (*sibling, modifications);
+            context.tdb2.modify (*sibling);
+            ++count;
 
-          if (context.verbose ("affected") ||
-              context.config.getBoolean ("echo.command")) // Deprecated 2.0
-            out << format (STRING_CMD_PREPEND_DONE, sibling->id)
-                << "\n";
+            if (context.verbose ("affected") ||
+                context.config.getBoolean ("echo.command")) // Deprecated 2.0
+              out << format (STRING_CMD_PREPEND_RECURRING,
+                             sibling->id,
+                             sibling->get ("description"))
+                  << "\n";
+          }
 
-          if (before.get ("project") != sibling->get ("project"))
-            context.footnote (onProjectChange (before, *sibling));
-
-          ++count;
+          // Prepend to the parent
+          Task parent;
+          context.tdb2.get (task->get ("parent"), parent);
+          modify_task_description_prepend (parent, modifications);
+          context.tdb2.modify (parent);
         }
       }
+    }
+    else
+    {
+      out << STRING_CMD_DELETE_NOT << "\n";
+      rc  = 1;
     }
   }
 
