@@ -57,8 +57,8 @@ like ($output, qr/Tags\s+tag/,        'duplicate added tag');
 
 # Test the output of the duplicate command - returning id of duplicated task
 $output = qx{../src/task rc:dup.rc 1 duplicate};
-like ($output, qr/Duplicated\s+1\s+'foo'/, 'duplicate output task id and description');
-like ($output, qr/Created\s+task\s+4/,     'duplicate output of new task id');
+like ($output, qr/Duplicated\stask\s1\s'foo'/, 'duplicate output task id and description');
+like ($output, qr/Created\s+task\s+4/,         'duplicate output of new task id');
 
 # Cleanup.
 unlink 'pending.data';
