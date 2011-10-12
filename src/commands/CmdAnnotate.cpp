@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <sstream>
@@ -33,6 +32,7 @@
 #include <Permission.h>
 #include <main.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 #include <CmdAnnotate.h>
 
@@ -64,7 +64,7 @@ int CmdAnnotate::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the completed task.
+  // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
   if (!modifications.size ())
     throw std::string (STRING_CMD_XPEND_NEED_TEXT);
@@ -77,24 +77,65 @@ int CmdAnnotate::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Task before (*task);
+
+    // Annotate the specified task.
+    std::string question = format (STRING_CMD_ANNO_QUESTION,
+                                   task->id,
+                                   task->get ("description"));
+
     modify_task_annotate (*task, modifications);
 
-    if (taskDiff (before, *task))
+    if (permission.confirmed (*task, taskDifferences (before, *task) + question))
     {
-      if (permission.confirmed (before,
-                                taskDifferences (before, *task)
-                                + STRING_CMD_DONE_PROCEED))
-      {
-        context.tdb2.modify (*task);
-        ++count;
+      context.tdb2.modify (*task);
+      ++count;
 
-        if (context.verbose ("affected") ||
-            context.config.getBoolean ("echo.command")) // Deprecated 2.0
-          out << format (STRING_CMD_ANNO_DONE,
-                         task->id,
-                         task->get ("description"))
-              << "\n";
+      if (context.verbose ("affected") ||
+          context.config.getBoolean ("echo.command")) // Deprecated 2.0
+        out << format (task->has ("parent")
+                         ? STRING_CMD_ANNO_RECURRING
+                         : STRING_CMD_ANNO_DELETING,
+                       task->id,
+                       task->get ("description"))
+            << "\n";
+
+      dependencyChainOnComplete (*task);
+      context.footnote (onProjectChange (*task, true));
+
+      // Annotate siblings.
+      if (task->has ("parent"))
+      {
+        std::vector <Task> siblings = context.tdb2.siblings (*task);
+        if (siblings.size () &&
+            confirm (STRING_CMD_ANNO_CONF_RECUR))
+        {
+          std::vector <Task>::iterator sibling;
+          for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
+          {
+            modify_task_annotate (*sibling, modifications);
+            context.tdb2.modify (*sibling);
+            ++count;
+
+            if (context.verbose ("affected") ||
+                context.config.getBoolean ("echo.command")) // Deprecated 2.0
+              out << format (STRING_CMD_ANNO_RECURRING,
+                             sibling->id,
+                             sibling->get ("description"))
+                  << "\n";
+          }
+
+          // Annotate the parent
+          Task parent;
+          context.tdb2.get (task->get ("parent"), parent);
+          modify_task_annotate (parent, modifications);
+          context.tdb2.modify (parent);
+        }
       }
+    }
+    else
+    {
+      out << STRING_CMD_DELETE_NOT << "\n";
+      rc  = 1;
     }
   }
 
