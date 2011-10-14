@@ -25,15 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
-#include <sstream>
+#include <iostream>
 #include <Context.h>
-#include <Permission.h>
-#include <main.h>
+#include <util.h>
 #include <text.h>
 #include <i18n.h>
+#include <main.h>
 #include <CmdDone.h>
 
 extern Context context;
@@ -53,7 +52,6 @@ int CmdDone::execute (std::string& output)
 {
   int rc = 0;
   int count = 0;
-  std::stringstream out;
 
   // Apply filter.
   std::vector <Task> filtered;
@@ -64,70 +62,62 @@ int CmdDone::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the completed task.
+  // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
-
-  Permission permission;
-  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
-    permission.bigSequence ();
 
   bool nagged = false;
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
+    Task before (*task);
+
     if (task->getStatus () == Task::pending ||
         task->getStatus () == Task::waiting)
     {
-      Task before (*task);
+      // Complete the specified task.
+      std::string question = format (STRING_CMD_DONE_CONFIRM,
+                                     task->id,
+                                     task->get ("description"));
+
       modify_task_annotate (*task, modifications);
       task->setStatus (Task::completed);
+      if (! task->has ("end"))
+        task->setEnd ();
 
       // Stop the task, if started.
       if (task->has ("start") &&
           context.config.getBoolean ("journal.time"))
         task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
 
-      if (taskDiff (before, *task))
+      if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
       {
-        if (permission.confirmed (before, taskDifferences (before, *task) + STRING_CMD_DONE_PROCEED))
-        {
-          context.tdb2.modify (*task);
-          ++count;
-
-          if (context.verbose ("affected") ||
-              context.config.getBoolean ("echo.command")) // Deprecated 2.0
-            out << format (STRING_CMD_DONE_COMPLETED, task->id, task->get ("description"))
-                << "\n";
-
-          dependencyChainOnComplete (*task);
-          context.footnote (onProjectChange (*task, false));
-
-        }
+        updateRecurrenceMask (*task);
+        context.tdb2.modify (*task);
+        ++count;
+        feedback_affected (STRING_CMD_DONE_TASK, *task);
+        if (!nagged)
+          nagged = nag (*task);
+        dependencyChainOnComplete (*task);
+        context.footnote (onProjectChange (*task, false));
       }
-
-      updateRecurrenceMask (*task);
-      if (!nagged)
-        nagged = nag (*task);
+      else
+      {
+        std::cout << STRING_CMD_DONE_NO << "\n";
+        rc  = 1;
+      }
     }
     else
     {
-      out << format (STRING_CMD_DONE_NOT_PENDING, task->id, task->get ("description"))
-          << "\n";
+      std::cout << format (STRING_CMD_DONE_NOTPEND,
+                           task->id,
+                           task->get ("description"))
+                << "\n";
       rc = 1;
     }
   }
 
   context.tdb2.commit ();
-
-  if (context.verbose ("affected") ||
-      context.config.getBoolean ("echo.command")) // Deprecated 2.0
-    out << format ((count == 1
-                      ? STRING_CMD_DONE_MARKED
-                      : STRING_CMD_DONE_MARKED_N),
-                   count)
-        << "\n";
-
-  output = out.str ();
+  feedback_affected (count == 1 ? STRING_CMD_DONE_1 : STRING_CMD_DONE_N, count);
   return rc;
 }
 

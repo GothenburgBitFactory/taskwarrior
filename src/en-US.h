@@ -262,12 +262,15 @@
 #define STRING_CMD_GHISTORY_YEAR     "Year"
 #define STRING_CMD_GHISTORY_MONTH    "Month"
 #define STRING_CMD_GHISTORY_NUMBER   "Number Added/Completed/Deleted"
+
 #define STRING_CMD_DONE_USAGE        "Marks the specified task as completed"
-#define STRING_CMD_DONE_QUESTION     "Complete task {1} '{2}'?"
-#define STRING_CMD_DONE_NOT          "Task not completed."
-#define STRING_CMD_DONE_NOT_PENDING  "Task {1} '{2}' is neither pending nor waiting."
+#define STRING_CMD_DONE_CONFIRM      "Complete task {1} '{2}'?"
+#define STRING_CMD_DONE_TASK         "Completed task {1} '{2}'."
+#define STRING_CMD_DONE_NO           "Task not completed."
+#define STRING_CMD_DONE_NOTPEND      "Task {1} '{2}' is neither pending nor waiting."
 #define STRING_CMD_DONE_1            "Completed {1} task."
 #define STRING_CMD_DONE_N            "Completed {1} tasks."
+
 #define STRING_CMD_PROJECTS_USAGE    "Shows a list of all project names used, and how many tasks are in each"
 #define STRING_CMD_PROJECTS_USAGE_2  "Shows only a list of all project names used"
 #define STRING_CMD_PROJECTS_NO       "No projects."
