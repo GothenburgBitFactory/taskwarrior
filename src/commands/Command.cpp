@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <iostream>
@@ -200,16 +199,20 @@ Command::Command ()
 , _description ("")
 , _read_only (true)
 , _displays_id (true)
+, _permission_quit (false)
+, _permission_all (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Command::Command (const Command& other)
 {
-  _usage       = other._usage;
-  _description = other._description;
-  _read_only   = other._read_only;
-  _displays_id = other._displays_id;
+  _usage           = other._usage;
+  _description     = other._description;
+  _read_only       = other._read_only;
+  _displays_id     = other._displays_id;
+  _permission_quit = other._permission_quit;
+  _permission_all  = other._permission_all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -217,10 +220,12 @@ Command& Command::operator= (const Command& other)
 {
   if (this != &other)
   {
-    _usage       = other._usage;
-    _description = other._description;
-    _read_only   = other._read_only;
-    _displays_id = other._displays_id;
+    _usage           = other._usage;
+    _description     = other._description;
+    _read_only       = other._read_only;
+    _displays_id     = other._displays_id;
+    _permission_quit = other._permission_quit;
+    _permission_all  = other._permission_all;
   }
 
   return *this;
@@ -549,6 +554,64 @@ void Command::safety ()
       throw std::string (STRING_TASK_SAFETY_FAIL);
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Returns true or false indicating whether to proceed with a write command, on
+// a per-task basis, after (potentially) asking for permission.
+//
+// Factors:
+//   filtered.size ()
+//   rc.bulk
+//   rc.confirmation
+//   this->_read_only
+bool Command::permission (
+  const Task& task,
+  const std::string& question,
+  unsigned int quantity)
+{
+  // Read-only commands do not need to seek permission.  Write commands are
+  // granted permission automatically if the 'all' selection was made in an
+  // earlier call.  Or if the 'all' option has already been made.
+  if (_read_only ||
+      _permission_all)
+    return true;
+
+  // If the 'quit' selection has already been made.
+  if (_permission_quit)
+    return false;
+
+  // What remains are write commands that have not yet selected 'all' or 'quit'.
+  // Describe the task.
+  bool         confirmation = context.config.getBoolean ("confirmation");
+  unsigned int bulk         = context.config.getInteger ("bulk");
+
+  // Quantity 1 modifications have optional confirmation, and only (y/n).
+  if (quantity == 1)
+  {
+    if (!confirmation)
+      return true;
+
+    bool answer = confirm (question);
+    return answer;
+  }
+
+  // Quantity < bulk modifications have optional confirmation, in the (y/n/a/q)
+  // style.
+  if (quantity < bulk && !confirmation)
+     return true;
+
+  int answer = confirm4 (question);
+  std::cout << "\n";       // #499
+  switch (answer)
+  {
+  case 1:                           return true;     // yes
+  case 2: _permission_all  = true;  return true;     // all
+  case 3: _permission_quit = true;  return false;    // quit
+  case 4:                           return false;    // no
+  }
+
+  return false;  // This line keeps the compiler happy.
 }
 
 ////////////////////////////////////////////////////////////////////////////////

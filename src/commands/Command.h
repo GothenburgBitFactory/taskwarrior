@@ -65,6 +65,7 @@ protected:
   void modify_task (Task&, const A3&, std::string&);
 
   void safety ();
+  bool permission (const Task&, const std::string&, unsigned int);
 
   bool next_mod_group (const A3&, Arg&, unsigned int&);
 
@@ -74,6 +75,10 @@ protected:
   std::string _description;
   bool        _read_only;
   bool        _displays_id;
+
+  // Permission support
+  bool        _permission_quit;
+  bool        _permission_all;
 };
 
 #endif
