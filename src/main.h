@@ -74,8 +74,9 @@ bool taskDiff (const Task&, const Task&);
 std::string taskDifferences (const Task&, const Task&);
 std::string taskInfoDifferences (const Task&, const Task&);
 std::string renderAttribute (const std::string&, const std::string&);
-void feedback_affected (const std::string&, const Task&);
+void feedback_affected (const std::string&);
 void feedback_affected (const std::string&, int);
+void feedback_affected (const std::string&, const Task&);
 
 // sort.cpp
 void sort_tasks (std::vector <Task>&, std::vector <int>&, const std::string&);

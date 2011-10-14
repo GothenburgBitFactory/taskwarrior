@@ -27,9 +27,8 @@
 
 #define L10N                                           // Localization complete.
 
-#include <sstream>
+#include <iostream>
 #include <Context.h>
-#include <Permission.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -53,7 +52,6 @@ int CmdDenotate::execute (std::string& output)
 {
   int rc = 0;
   int count = 0;
-  std::stringstream out;
   bool sensitive = context.config.getBoolean ("search.case.sensitive");
 
   // Apply filter.
@@ -71,10 +69,6 @@ int CmdDenotate::execute (std::string& output)
     throw std::string (STRING_CMD_DENO_WORDS);
 
   std::string pattern = words.combine ();
-
-  Permission permission;
-  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
-    permission.bigSequence ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -118,39 +112,26 @@ int CmdDenotate::execute (std::string& output)
 
     if (taskDiff (before, *task))
     {
-      std::string question = format (STRING_CMD_DENO_QUESTION,
+      std::string question = format (STRING_CMD_DENO_CONFIRM,
                                      task->id,
                                      task->get ("description"));
 
-      if (permission.confirmed (*task, taskDifferences (before, *task) + question))
+      if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
       {
         ++count;
         context.tdb2.modify (*task);
-        if (context.verbose ("affected") ||
-            context.config.getBoolean ("echo.command")) // Deprecated 2.0
-          out << format (STRING_CMD_DENO_FOUND, anno)
-              << "\n";
+        feedback_affected (format (STRING_CMD_DENO_FOUND, anno));
       }
     }
     else
     {
-      out << format (STRING_CMD_DENO_NOMATCH, pattern)
-          << "\n";
+      std::cout << format (STRING_CMD_DENO_NOMATCH, pattern) << "\n";
       rc = 1;
     }
   }
 
   context.tdb2.commit ();
-
-  if (context.verbose ("affected") ||
-      context.config.getBoolean ("echo.command")) // Deprecated 2.0
-    out << format ((count == 1
-                      ? STRING_CMD_DENO_TASK
-                      : STRING_CMD_DENO_TASKS),
-                   count)
-        << "\n";
-
-  output = out.str ();
+  feedback_affected (count == 1 ? STRING_CMD_DENO_1 : STRING_CMD_DENO_N, count);
   return rc;
 }
 

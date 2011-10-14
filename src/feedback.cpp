@@ -297,6 +297,18 @@ std::string renderAttribute (const std::string& name, const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implements:
+//    <string>
+void feedback_affected (const std::string& effect)
+{
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
+  {
+    std::cout << effect << "\n";
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Implements:
 //    Deleted 3 tasks
 //
 // The 'effect' string should contain:
