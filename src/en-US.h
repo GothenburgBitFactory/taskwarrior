@@ -311,7 +311,6 @@
 #define STRING_CMD_START_USAGE       "Marks specified task as started"
 #define STRING_CMD_START_NO          "Task not started."
 #define STRING_CMD_START_ALREADY     "Task {1} '{2}' already started."
-#define STRING_CMD_START_RECURRING   "Starting recurring task {1} '{2}'."
 #define STRING_CMD_START_TASK        "Starting task {1} '{2}'."
 #define STRING_CMD_START_CONFIRM     "Start task {1} '{2}'?"
 #define STRING_CMD_START_1           "Started {1} task."
@@ -320,7 +319,6 @@
 #define STRING_CMD_STOP_USAGE        "Removes the 'start' time from a task"
 #define STRING_CMD_STOP_NO           "Task not stopped."
 #define STRING_CMD_STOP_ALREADY      "Task {1} '{2}' not started."
-#define STRING_CMD_STOP_RECURRING    "Stopping recurring task {1} '{2}'."
 #define STRING_CMD_STOP_TASK         "Stopping task {1} '{2}'."
 #define STRING_CMD_STOP_CONFIRM      "Stop task {1} '{2}'?"
 #define STRING_CMD_STOP_1            "Stopped {1} task."
@@ -423,9 +421,7 @@
 #define STRING_CMD_MODIFY_1          "Modified {1} task."
 #define STRING_CMD_MODIFY_N          "Modified {1} tasks."
 #define STRING_CMD_MODIFY_NO         "Task not modified."
-
 #define STRING_CMD_MODIFY_CONFIRM    "Modify task {1} '{2}'?"
-#define STRING_CMD_MODIFY_SIMPLE     "Modiying task {1} '{2}'."
 #define STRING_CMD_MODIFY_RECUR      "This is a recurring task.  Do you want to modify all pending recurrences of this same task?"
 #define STRING_CMD_MODIFY_NEED_TEXT  "Additional text must be provided."
 
