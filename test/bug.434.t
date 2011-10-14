@@ -33,7 +33,8 @@ use Test::More tests => 8;
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=off\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }
@@ -43,7 +44,7 @@ if (open my $fh, '>', 'bug.rc')
 # Add a task that is waiting
 qx{../src/task rc:bug.rc add One wait:tomorrow};
 my $output = qx{../src/task rc:bug.rc 1 done};
-like ($output, qr/Marked 1 task as done\./, 'Waiting task marked completed');
+like ($output, qr/Completed 1 task\./, 'Waiting task marked completed');
 
 # Cleanup.
 unlink 'pending.data';

@@ -36,7 +36,8 @@ if (open my $fh, '>', 'bug.rc')
   print $fh "data.location=.\n",
             "dateformat=SNHDMY\n",
             "report.foo.columns=entry,start,end,description\n",
-            "report.foo.dateformat=SNHDMY\n";
+            "report.foo.dateformat=SNHDMY\n",
+            "confirmation=off\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }

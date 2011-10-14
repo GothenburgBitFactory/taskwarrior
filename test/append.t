@@ -33,7 +33,8 @@ use Test::More tests => 4;
 # Create the rc file.
 if (open my $fh, '>', 'append.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=off\n";
   close $fh;
   ok (-r 'append.rc', 'Created append.rc');
 }

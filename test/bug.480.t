@@ -34,7 +34,8 @@ use Test::More tests => 37;
 if (open my $fh, '>', 'bug.rc')
 {
   print $fh "data.location=.\n",
-            "defaultwidth=0\n";
+            "defaultwidth=0\n",
+            "confirmation=off\n";
 
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
