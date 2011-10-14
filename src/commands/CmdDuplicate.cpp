@@ -27,9 +27,8 @@
 
 #define L10N                                           // Localization complete.
 
-#include <sstream>
+#include <iostream>
 #include <Context.h>
-#include <Permission.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -53,7 +52,6 @@ int CmdDuplicate::execute (std::string& output)
 {
   int rc = 0;
   int count = 0;
-  std::stringstream out;
 
   // Apply filter.
   std::vector <Task> filtered;
@@ -66,10 +64,6 @@ int CmdDuplicate::execute (std::string& output)
 
   // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
-
-  Permission permission;
-  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
-    permission.bigSequence ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -91,50 +85,36 @@ int CmdDuplicate::execute (std::string& output)
       dup.remove ("imak");
       dup.remove ("imask");
 
-      out << format (STRING_CMD_DUPLICATE_NON_REC, task->id)
+      std::cout << format (STRING_CMD_DUPLICATE_NON_REC, task->id)
           << "\n";
     }
 
     modify_task_annotate (dup, modifications);
 
-    if (permission.confirmed (dup,
-                             format (STRING_CMD_DONE_QUESTION,
-                                     task->id,
-                                     task->get ("description"))))
+    if (permission (dup,
+                    format (STRING_CMD_DUPLICATE_CONFIRM,
+                            task->id,
+                            task->get ("description")),
+                    filtered.size ()))
     {
       context.tdb2.add (dup);
       ++count;
-
-      if (context.verbose ("affected") ||
-          context.config.getBoolean ("echo.command")) // Deprecated 2.0
-        out << format (STRING_CMD_DUPLICATE_DUP,
-                       task->id,
-                       task->get ("description"))
-            << "\n";
+      feedback_affected (STRING_CMD_DUPLICATE_TASK, *task);
 
       if (context.verbose ("new-id"))
-        out << format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
+        std::cout << format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
 
       context.footnote (onProjectChange (*task, false));
     }
     else
     {
-      out << STRING_CMD_DUPLICATE_NOT << "\n";
+      std::cout << STRING_CMD_DUPLICATE_NO << "\n";
       rc  = 1;
     }
   }
 
   context.tdb2.commit ();
-
-  if (context.verbose ("affected") ||
-      context.config.getBoolean ("echo.command")) // Deprecated 2.0
-    out << format ((count == 1
-                      ? STRING_CMD_DUPLICATE_DUP_1
-                      : STRING_CMD_DUPLICATE_DUP_N),
-                   count)
-        << "\n";
-
-  output = out.str ();
+  feedback_affected (count == 1 ? STRING_CMD_DUPLICATE_1 : STRING_CMD_DUPLICATE_N, count);
   return rc;
 }
 

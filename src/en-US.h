@@ -302,10 +302,11 @@
 
 #define STRING_CMD_DUPLICATE_USAGE   "Duplicates the specified tasks, and allows modifications"
 #define STRING_CMD_DUPLICATE_NON_REC "Note: task {1} was a recurring task.  The duplicate task is not."
-#define STRING_CMD_DUPLICATE_DUP     "Duplicated task {1} '{2}'."
-#define STRING_CMD_DUPLICATE_NOT     "Task not duplicated."
-#define STRING_CMD_DUPLICATE_DUP_1   "Duplicated {1} task."
-#define STRING_CMD_DUPLICATE_DUP_N   "Duplicated {1} tasks."
+#define STRING_CMD_DUPLICATE_CONFIRM "Duplicate task {1} '{2}'?"
+#define STRING_CMD_DUPLICATE_TASK    "Duplicated task {1} '{2}'."
+#define STRING_CMD_DUPLICATE_NO      "Task not duplicated."
+#define STRING_CMD_DUPLICATE_1       "Duplicated {1} task."
+#define STRING_CMD_DUPLICATE_N       "Duplicated {1} tasks."
 
 #define STRING_CMD_START_USAGE       "Marks specified task as started"
 #define STRING_CMD_START_NO          "Task not started."
