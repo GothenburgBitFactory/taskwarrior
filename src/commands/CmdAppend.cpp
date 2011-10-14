@@ -65,7 +65,7 @@ int CmdAppend::execute (std::string& output)
   // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
   if (!modifications.size ())
-    throw std::string (STRING_CMD_XPEND_NEED_TEXT);
+    throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)

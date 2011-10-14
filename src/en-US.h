@@ -320,8 +320,6 @@
 #define STRING_CMD_STOP_STOPPED      "Stopped {1} task."
 #define STRING_CMD_STOP_STOPPED_N    "Stopped {1} tasks."
 
-#define STRING_CMD_DELETE_NOTPEND    "Task {1} '{2}' is neither pending nor waiting."
-
 #define STRING_CMD_APPEND_USAGE      "Appends text to an existing task description"
 #define STRING_CMD_APPEND_1          "Appended {1} task."
 #define STRING_CMD_APPEND_N          "Appended {1} tasks."
@@ -333,13 +331,14 @@
 #define STRING_CMD_APPEND_NO         "Task not appended."
 
 #define STRING_CMD_PREPEND_USAGE     "Prepends text to an existing task description"
-#define STRING_CMD_PREPEND_SUMMARY   "Prepended {1} task."
-#define STRING_CMD_PREPEND_SUMMARY_N "Prepended {1} tasks."
-#define STRING_CMD_PREPEND_QUESTION  "Prepend to task {1} '{2}'?"
-#define STRING_CMD_PREPEND_RECURRING "Prepending to recurring task {1} '{2}'."
+#define STRING_CMD_PREPEND_1         "Prepended {1} task."
+#define STRING_CMD_PREPEND_N         "Prepended {1} tasks."
+#define STRING_CMD_PREPEND_TASK      "Prepending to task {1} '{2}'."
+#define STRING_CMD_PREPEND_TASK_R    "Prepending to recurring task {1} '{2}'."
 #define STRING_CMD_PREPEND_DELETING  "Prepending to task {1} '{2}'."
-#define STRING_CMD_PREPEND_CONF_REC  "This is a recurring task.  Do you want to prepend to all pending recurrences of this same task?"
-#define STRING_CMD_XPEND_NEED_TEXT   "Additional text must be provided."
+#define STRING_CMD_PREPEND_CONFIRM_R "This is a recurring task.  Do you want to prepend to all pending recurrences of this same task?"
+#define STRING_CMD_PREPEND_CONFIRM   "Prepend to task {1} '{2}'?"
+#define STRING_CMD_PREPEND_NO        "Task not prepended."
 
 #define STRING_CMD_ANNO_USAGE        "Adds an annotation to an existing task"
 #define STRING_CMD_ANNO_CONFIRM      "Annotate task {1} '{2}'?"
@@ -419,6 +418,7 @@
 #define STRING_CMD_MODIFY_SIMPLE     "Modiying task {1} '{2}'."
 #define STRING_CMD_MODIFY_NOT        "Task not modified."
 #define STRING_CMD_MODIFY_RECUR      "This is a recurring task.  Do you want to modify all pending recurrences of this same task?"
+#define STRING_CMD_MODIFY_NEED_TEXT  "Additional text must be provided."
 #define STRING_CMD_COLOR_USAGE       "Displays all possible colors, a named sample, or a legend containing all currently defined colors"
 #define STRING_CMD_COLOR_HERE        "Here are the colors currently in use:"
 #define STRING_CMD_COLOR_COLOR       "Color"
