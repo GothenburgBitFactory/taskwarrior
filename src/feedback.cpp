@@ -25,10 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
-#include <string>
+#include <iostream>
 #include <sstream>
 #include <vector>
+#include <string>
 #include <stdlib.h>
 #include <inttypes.h>
 #include <Context.h>
@@ -296,12 +296,40 @@ std::string renderAttribute (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Implement all the post-command feedback here.  This includes project
-//      completion percentages, "3 tasks modified", all warnings, and so on.
-std::string feedback (const Task&, const Task&)
+// Implements:
+//    Deleted 3 tasks
+//
+// The 'effect' string should contain:
+//    {1}    Quantity
+void feedback_affected (const std::string& effect, int quantity)
 {
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
+  {
+    std::cout << format (effect, quantity)
+              << "\n";
+  }
+}
 
-  return "";
+////////////////////////////////////////////////////////////////////////////////
+// Implements:
+//    Deleting task 123 'This is a test'
+//
+// The 'effect' string should contain:
+//    {1}    ID
+//    {2}    Description
+void feedback_affected (const std::string& effect, const Task& task)
+{
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
+  {
+    if (task.id)
+      std::cout << format (effect, task.id, task.get ("description"))
+                << "\n";
+    else
+      std::cout << format (effect, task.get ("uuid"), task.get ("description"))
+                << "\n";
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
