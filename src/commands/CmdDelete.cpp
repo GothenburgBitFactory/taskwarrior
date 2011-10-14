@@ -52,7 +52,6 @@ int CmdDelete::execute (std::string& output)
 {
   int rc = 0;
   int count = 0;
-  //std::stringstream out;
 
   // Apply filter.
   std::vector <Task> filtered;
@@ -89,7 +88,7 @@ int CmdDelete::execute (std::string& output)
         updateRecurrenceMask (*task);
         context.tdb2.modify (*task);
         ++count;
-        feedback_affected (STRING_CMD_DELETE_TASK *task);
+        feedback_affected (STRING_CMD_DELETE_TASK, *task);
         dependencyChainOnComplete (*task);
         context.footnote (onProjectChange (*task, true));
 
