@@ -21,7 +21,6 @@ set (task_SRCS A3.cpp A3.h
                JSON.cpp JSON.h
                Nibbler.cpp Nibbler.h
                Path.cpp Path.h
-               Permission.cpp Permission.h
                RX.cpp RX.h
                TDB2.cpp TDB2.h
                Task.cpp Task.h
