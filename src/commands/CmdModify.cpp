@@ -28,9 +28,7 @@
 #define L10N                                           // Localization complete.
 
 #include <iostream>
-#include <sstream>
 #include <Context.h>
-#include <Permission.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>
@@ -54,7 +52,6 @@ int CmdModify::execute (std::string& output)
 {
   int rc = 0;
   int count = 0;
-  std::stringstream out;
 
   // Apply filter.
   std::vector <Task> filtered;
@@ -68,11 +65,7 @@ int CmdModify::execute (std::string& output)
   // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
   if (!modifications.size ())
-    throw std::string (STRING_CMD_XPEND_NEED_TEXT);
-
-  Permission permission;
-  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
-    permission.bigSequence ();
+    throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -104,25 +97,16 @@ int CmdModify::execute (std::string& output)
       throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
 
     // Delete the specified task.
-    std::string question = format (STRING_CMD_MODIFY_QUESTION,
+    std::string question = format (STRING_CMD_MODIFY_CONFIRM,
                                    task->id,
                                    task->get ("description"));
 
-    if (permission.confirmed (*task, taskDifferences (before, *task) + question))
+    if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
     {
       updateRecurrenceMask (*task);
       context.tdb2.modify (*task);
       ++count;
-
-      if (context.verbose ("affected") ||
-          context.config.getBoolean ("echo.command")) // Deprecated 2.0
-        out << format (task->has ("parent")
-                         ? STRING_CMD_MODIFY_RECURRING
-                         : STRING_CMD_MODIFY_SIMPLE,
-                       task->id,
-                       task->get ("description"))
-            << "\n";
-
+      feedback_affected (STRING_CMD_MODIFY_TASK, *task);
       dependencyChainOnModify (before, *task);
       context.footnote (onProjectChange (*task, true));
 
@@ -143,35 +127,20 @@ int CmdModify::execute (std::string& output)
             dependencyChainOnModify (alternate, *sibling);
             context.footnote (onProjectChange (*sibling, true));
             ++count;
-
-            if (context.verbose ("affected") ||
-                context.config.getBoolean ("echo.command")) // Deprecated 2.0
-              out << format (STRING_CMD_MODIFY_RECURRING,
-                             sibling->id,
-                             sibling->get ("description"))
-                  << "\n";
+            feedback_affected (STRING_CMD_MODIFY_TASK_R, *sibling);
           }
         }
       }
     }
     else
     {
-      out << STRING_CMD_MODIFY_NOT << "\n";
+      std::cout << STRING_CMD_MODIFY_NO << "\n";
       rc  = 1;
     }
   }
 
   context.tdb2.commit ();
-
-  if (context.verbose ("affected") ||
-      context.config.getBoolean ("echo.command")) // Deprecated 2.0
-    out << format ((count == 1
-                      ? STRING_CMD_MODIFY_TASK
-                      : STRING_CMD_MODIFY_TASKS),
-                   count)
-        << "\n";
-
-  output = out.str ();
+  feedback_affected (count == 1 ? STRING_CMD_MODIFY_1 : STRING_CMD_MODIFY_N, count);
   return rc;
 }
 
