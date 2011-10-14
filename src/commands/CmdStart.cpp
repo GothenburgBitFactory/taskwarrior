@@ -27,9 +27,8 @@
 
 #define L10N                                           // Localization complete.
 
-#include <sstream>
+#include <iostream>
 #include <Context.h>
-#include <Permission.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>
@@ -53,7 +52,6 @@ int CmdStart::execute (std::string& output)
 {
   int rc = 0;
   int count = 0;
-  std::stringstream out;
 
   // Apply filter.
   std::vector <Task> filtered;
@@ -67,10 +65,6 @@ int CmdStart::execute (std::string& output)
   // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
 
-  Permission permission;
-  if (filtered.size () > (size_t) context.config.getInteger ("bulk"))
-    permission.bigSequence ();
-
   bool nagged = false;
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -79,8 +73,8 @@ int CmdStart::execute (std::string& output)
     {
       Task before (*task);
 
-      // Complete the specified task.
-      std::string question = format (STRING_CMD_START_QUESTION,
+      // Start the specified task.
+      std::string question = format (STRING_CMD_START_CONFIRM,
                                      task->id,
                                      task->get ("description"));
 
@@ -90,53 +84,35 @@ int CmdStart::execute (std::string& output)
       if (context.config.getBoolean ("journal.time"))
         task->addAnnotation (context.config.get ("journal.time.start.annotation"));
 
-      if (permission.confirmed (*task, taskDifferences (before, *task) + question))
+      if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
       {
         updateRecurrenceMask (*task);
         context.tdb2.modify (*task);
+        ++count;
+        feedback_affected (STRING_CMD_START_TASK, *task);
         if (!nagged)
           nagged = nag (*task);
-        ++count;
-
-        if (context.verbose ("affected") ||
-            context.config.getBoolean ("echo.command")) // Deprecated 2.0
-          out << format (task->has ("parent")
-                           ? STRING_CMD_START_RECURRING
-                           : STRING_CMD_START_TASK,
-                         task->id,
-                         task->get ("description"))
-              << "\n";
-
         dependencyChainOnStart (*task);
         context.footnote (onProjectChange (*task, false));
       }
       else
       {
-        out << format (STRING_CMD_START_NOT, task->id) << "\n";
+        std::cout << STRING_CMD_START_NO << "\n";
         rc  = 1;
       }
     }
     else
     {
-      out << format (STRING_CMD_START_ALREADY,
-                     task->id,
-                     task->get ("description"))
-          << "\n";
+      std::cout << format (STRING_CMD_START_ALREADY,
+                           task->id,
+                           task->get ("description"))
+                << "\n";
       rc = 1;
     }
   }
 
   context.tdb2.commit ();
-
-  if (context.verbose ("affected") ||
-      context.config.getBoolean ("echo.command")) // Deprecated 2.0
-    out << format ((count == 1
-                      ? STRING_CMD_START_STARTED
-                      : STRING_CMD_START_STARTED_N),
-                   count)
-        << "\n";
-
-  output = out.str ();
+  feedback_affected (count == 1 ? STRING_CMD_START_1 : STRING_CMD_START_N, count);
   return rc;
 }
 
