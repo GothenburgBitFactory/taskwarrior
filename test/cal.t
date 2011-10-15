@@ -43,7 +43,8 @@ if (open my $fh, '>', 'cal.rc')
             "color.calendar.weeknumber=black on white\n",
             "color.calendar.overdue=black on red\n",
             "color.calendar.weekend=white on bright black\n",
-            "confirmation=no\n";
+            "confirmation=off\n",
+            "bulk=10\n";
   close $fh;
   ok (-r 'cal.rc', 'Created cal.rc');
 }
