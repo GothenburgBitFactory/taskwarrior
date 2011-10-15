@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -47,7 +47,8 @@ qx{../src/task rc:bug.rc add Test due:3d rec:1w};
 
 # Result: Immediately delete the created task
 my $output = qx{../src/task rc:bug.rc 1 done};
-unlike ($output, qr/Completed/ms, 'New recurring task cannot be immediately completed.');
+like   ($output, qr/is neither pending nor waiting/, 'Parent task not completable');
+unlike ($output, qr/Completed 1/ms, 'New recurring task cannot be immediately completed.');
 
 # Cleanup.
 unlink 'pending.data';
