@@ -596,7 +596,7 @@ bool Command::permission (
     return answer;
   }
 
-  // Quantity < bulk modifications have optional confirmation, in the (y/n/a/q)
+  // 1 < Quantity < bulk modifications have optional confirmation, in the (y/n/a/q)
   // style.
   if (quantity < bulk && !confirmation)
      return true;
@@ -608,7 +608,6 @@ bool Command::permission (
   case 1:                           return true;     // yes
   case 2: _permission_all  = true;  return true;     // all
   case 3: _permission_quit = true;  return false;    // quit
-  case 4:                           return false;    // no
   }
 
   return false;  // This line keeps the compiler happy.

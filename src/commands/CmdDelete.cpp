@@ -40,11 +40,11 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdDelete::CmdDelete ()
 {
-  _keyword     = "delete";
-  _usage       = "task <filter> delete <mods>";
-  _description = STRING_CMD_DELETE_USAGE;
-  _read_only   = false;
-  _displays_id = false;
+  _keyword       = "delete";
+  _usage         = "task <filter> delete <mods>";
+  _description   = STRING_CMD_DELETE_USAGE;
+  _read_only     = false;
+  _displays_id   = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

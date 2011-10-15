@@ -815,7 +815,7 @@
   "\n"
 
 // util
-#define STRING_UTIL_CONFIRM_YN       " (y/n) "
+#define STRING_UTIL_CONFIRM_YN       " (yes/no) "
 #define STRING_UTIL_CONFIRM_YES      "yes"
 #define STRING_UTIL_CONFIRM_YES_U    "Yes"
 #define STRING_UTIL_CONFIRM_NO       "no"
