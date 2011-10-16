@@ -6,9 +6,7 @@ Deprecated Code
   This is code that is going to be phased out soon, and therefore is not worth
   fixing or documenting.  Don't waste your time.
 
-  - Location.{h,cpp}
-  - TDB.{h,cpp}
-  - Att.{h,cpp}
+  - There is no deprecated code.  There will be soon.
 
 New Code Needs
   This is code that needs to be written, usually down at the C++ function level.
@@ -28,9 +26,6 @@ New Code Needs
                "    one.two.three"
                "  one.four"
                "two"
-  - Take all the Config::checkXXX methods and create a new legacy.cpp file
-    that handles dealing with all legacy checks.  To be called from
-    src/commands/CmdShow.cpp.
   - Need export_sql.yy script.  Any language.  This would have value as an
     example, or template script serving as a starting-point for anyone who
     needed this format.
@@ -41,7 +36,6 @@ New Code Needs
   - The JSON.{h,cpp} code is fast and efficient up to a point, but has a non-
     linear performance curve, implying a slowdown due to fragmentation.  Fix it.
     Test rig and sample data available on request.
-  - Devise a complete rule set for Task::validate.  What should it warn about?
   - Need a function that can optimize color codes.  For example, if a string
     contains this:
       <red>one two </red><red>three four</red>
@@ -56,10 +50,8 @@ Documentation Needed
   update.
 
   - Wiki/How-To: Date Handling
-  - Wiki/How-To: Urgency Customization
   - Wiki/How-To: Custom Reports, including performance considerations
   - Wiki/How-To: Aliases, particularly new enhanced aliases
-  - Wiki: Export formats
 
 Holiday Data Needed
   We are moving the holiday data to http://holidata.net, and providing a
@@ -77,8 +69,6 @@ Unit Tests Needed
     renamed.  We have long talked of 'basic functionality' that includes add,
     delete, done, and list commands.  We need unit tests that prove that basic
     functionality is working, and it should be called basic.t.
-  - None of the current unit tests remove the new backlog.data file, and they
-    all should.
   - None of the current unit tests remove the 'extensions' directory, and they
     all should.
   - Need tests of command line expressions.
@@ -86,7 +76,7 @@ Unit Tests Needed
   - Test regex support.
   - Need unit tests for each bug in the issue list, if suitable.
 
-  * Note that running the unit tests required the Perl JSON module to be
+  * Note that running the unit tests require the Perl JSON module to be
     installed.
 
 Work in Progress
@@ -108,19 +98,17 @@ Current Codebase Condition
     - 1.9.4 release, current, locked.
 
   '2.0.0' branch:
-    - Unit tests passing ~94%.
+    - Unit tests passing >99%.
     - Basic commands working (add, list, done).
     - Expressions E9.{h,cpp} working.
     - DOM access DOM.{h,cpp} not working well.
-    - Aiming for an August beta1.
-    - Aiming for an early September beta2.
-    - Aiming for a release in 2011, probably October, but when it is ready.
+    - Aiming for a release in 2011, but when it is ready.
 
 ---
 
+2011-10-16 Removed obsolete entries.
 2011-08-21 Small changes, new work listed.
 2011-08-01 Removed code already obsoleted or completed.
 2011-07-29 Added more needed code descriptions.
 2011-07-27 Updated with holiday data info.
 2011-07-25 Created file.
-
