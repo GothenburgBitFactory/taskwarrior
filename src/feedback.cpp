@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <algorithm>
 #include <sstream>
 #include <vector>
 #include <string>
@@ -120,8 +121,13 @@ std::string taskDifferences (const Task& before, const Task& after)
   }
 
   for (name = beforeAtts.begin (); name != beforeAtts.end (); ++name)
+  {
+    // Ignore UUID differences, and find values that changed, but are not also
+    // in the beforeOnly and afterOnly lists, which have been handled above..
     if (*name              != "uuid" &&
-        before.get (*name) != after.get (*name))
+        before.get (*name) != after.get (*name) &&
+        std::find (beforeOnly.begin (), beforeOnly.end (), *name) == beforeOnly.end () &&
+        std::find (afterOnly.begin (),  afterOnly.end (),  *name) == afterOnly.end ())
     {
       if (*name == "depends")
       {
@@ -152,6 +158,7 @@ std::string taskDifferences (const Task& before, const Task& after)
             << renderAttribute (*name, after.get (*name))
             << "'.\n";
     }
+  }
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
