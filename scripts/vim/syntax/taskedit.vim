@@ -5,7 +5,7 @@
 "
 " Copyright 2009 - 2011 John Florian
 "
-" This file is available under the GNU Public License version 2 or later.
+" This file is available under the MIT license.
 " For the full text of this license, see COPYING.
 
 
