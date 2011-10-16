@@ -72,70 +72,72 @@ int CmdModify::execute (std::string& output)
   {
     Task before (*task);
     modify_task_description_replace (*task, modifications);
-
-    // Perform some logical consistency checks.
-    if (task->has ("recur")  &&
-        !task->has ("due")   &&
-        !before.has ("due"))
-      throw std::string (STRING_CMD_MODIFY_NO_DUE);
-
-    if (task->has ("until")  &&
-        !task->has ("recur") &&
-        !before.has ("recur"))
-      throw std::string (STRING_CMD_MODIFY_UNTIL);
-
-    if (before.has ("recur") &&
-        before.has ("due")   &&
-        (!task->has ("due")  ||
-         task->get ("due") == ""))
-      throw std::string (STRING_CMD_MODIFY_REM_DUE);
-
-    if (before.has ("recur")  &&
-        task->has ("recur")   &&
-        (!task->has ("recur") ||
-         task->get ("recur") == ""))
-      throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
-
-    // Delete the specified task.
-    std::string question = format (STRING_CMD_MODIFY_CONFIRM,
-                                   task->id,
-                                   task->get ("description"));
-
-    if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
+    if (taskDiff (before, *task))
     {
-      updateRecurrenceMask (*task);
-      context.tdb2.modify (*task);
-      ++count;
-      feedback_affected (STRING_CMD_MODIFY_TASK, *task);
-      dependencyChainOnModify (before, *task);
-      context.footnote (onProjectChange (*task, true));
+      // Perform some logical consistency checks.
+      if (task->has ("recur")  &&
+          !task->has ("due")   &&
+          !before.has ("due"))
+        throw std::string (STRING_CMD_MODIFY_NO_DUE);
 
-      // Delete siblings.
-      if (task->has ("parent"))
+      if (task->has ("until")  &&
+          !task->has ("recur") &&
+          !before.has ("recur"))
+        throw std::string (STRING_CMD_MODIFY_UNTIL);
+
+      if (before.has ("recur") &&
+          before.has ("due")   &&
+          (!task->has ("due")  ||
+           task->get ("due") == ""))
+        throw std::string (STRING_CMD_MODIFY_REM_DUE);
+
+      if (before.has ("recur")  &&
+          task->has ("recur")   &&
+          (!task->has ("recur") ||
+           task->get ("recur") == ""))
+        throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
+
+      // Delete the specified task.
+      std::string question = format (STRING_CMD_MODIFY_CONFIRM,
+                                     task->id,
+                                     task->get ("description"));
+
+      if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
       {
-        std::vector <Task> siblings = context.tdb2.siblings (*task);
-        if (siblings.size () &&
-            confirm (STRING_CMD_MODIFY_RECUR))
+        updateRecurrenceMask (*task);
+        context.tdb2.modify (*task);
+        ++count;
+        feedback_affected (STRING_CMD_MODIFY_TASK, *task);
+        dependencyChainOnModify (before, *task);
+        context.footnote (onProjectChange (*task, true));
+
+        // Delete siblings.
+        if (task->has ("parent"))
         {
-          std::vector <Task>::iterator sibling;
-          for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
+          std::vector <Task> siblings = context.tdb2.siblings (*task);
+          if (siblings.size () &&
+              confirm (STRING_CMD_MODIFY_RECUR))
           {
-            Task alternate (*sibling);
-            modify_task_description_replace (*sibling, modifications);
-            updateRecurrenceMask (*sibling);
-            context.tdb2.modify (*sibling);
-            dependencyChainOnModify (alternate, *sibling);
-            context.footnote (onProjectChange (*sibling, true));
-            ++count;
-            feedback_affected (STRING_CMD_MODIFY_TASK_R, *sibling);
+            std::vector <Task>::iterator sibling;
+            for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
+            {
+              Task alternate (*sibling);
+              modify_task_description_replace (*sibling, modifications);
+              updateRecurrenceMask (*sibling);
+              context.tdb2.modify (*sibling);
+              dependencyChainOnModify (alternate, *sibling);
+              context.footnote (onProjectChange (*sibling, true));
+              ++count;
+              feedback_affected (STRING_CMD_MODIFY_TASK_R, *sibling);
+            }
           }
         }
       }
-    }
-    else
-    {
-      std::cout << STRING_CMD_MODIFY_NO << "\n";
-      rc  = 1;
+      else
+      {
+        std::cout << STRING_CMD_MODIFY_NO << "\n";
+        rc  = 1;
+      }
     }
   }
 
