@@ -75,6 +75,7 @@ protected:
   std::string _description;
   bool        _read_only;
   bool        _displays_id;
+  bool        _needs_confirm;
 
   // Permission support
   bool        _permission_quit;

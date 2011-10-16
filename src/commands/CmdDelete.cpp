@@ -45,6 +45,7 @@ CmdDelete::CmdDelete ()
   _description   = STRING_CMD_DELETE_USAGE;
   _read_only     = false;
   _displays_id   = false;
+  _needs_confirm = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

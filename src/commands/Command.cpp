@@ -199,6 +199,7 @@ Command::Command ()
 , _description ("")
 , _read_only (true)
 , _displays_id (true)
+, _needs_confirm (false)
 , _permission_quit (false)
 , _permission_all (false)
 {
@@ -211,6 +212,7 @@ Command::Command (const Command& other)
   _description     = other._description;
   _read_only       = other._read_only;
   _displays_id     = other._displays_id;
+  _needs_confirm   = other._needs_confirm;
   _permission_quit = other._permission_quit;
   _permission_all  = other._permission_all;
 }
@@ -224,6 +226,7 @@ Command& Command::operator= (const Command& other)
     _description     = other._description;
     _read_only       = other._read_only;
     _displays_id     = other._displays_id;
+    _needs_confirm   = other._needs_confirm;
     _permission_quit = other._permission_quit;
     _permission_all  = other._permission_all;
   }
@@ -234,10 +237,11 @@ Command& Command::operator= (const Command& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Command::operator== (const Command& other) const
 {
-  return _usage       == other._usage       &&
-         _description == other._description &&
-         _read_only   == other._read_only   &&
-         _displays_id == other._displays_id;
+  return _usage         == other._usage       &&
+         _description   == other._description &&
+         _read_only     == other._read_only   &&
+         _displays_id   == other._displays_id &&
+         _needs_confirm == other._needs_confirm;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -589,7 +593,8 @@ bool Command::permission (
   // Quantity 1 modifications have optional confirmation, and only (y/n).
   if (quantity == 1)
   {
-    if (!confirmation)
+    if (!_needs_confirm ||
+        !confirmation)
       return true;
 
     bool answer = confirm (question);
@@ -598,7 +603,7 @@ bool Command::permission (
 
   // 1 < Quantity < bulk modifications have optional confirmation, in the (y/n/a/q)
   // style.
-  if (quantity < bulk && !confirmation)
+  if (quantity < bulk && (!_needs_confirm || !confirmation))
      return true;
 
   int answer = confirm4 (question);
