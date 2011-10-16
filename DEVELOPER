@@ -6,7 +6,7 @@ Deprecated Code
   This is code that is going to be phased out soon, and therefore is not worth
   fixing or documenting.  Don't waste your time.
 
-  - There is no deprecated code.  There will be soon.
+  - There is no deprecated code at the moment.  I'm sure there will be soon.
 
 New Code Needs
   This is code that needs to be written, usually down at the C++ function level.
@@ -63,7 +63,49 @@ Holiday Data Needed
   ideally it could go up on holidata.net for everyone to share.
 
 Unit Tests Needed
-  There are always more unit tests needed.
+  There are always more unit tests needed.  More specifically, better unit tests
+  are always needed.  The convention is that there are four types of unit test:
+
+  1. High level tests that exercise large features, or combinations of commands.
+     For example, dependencies.t runs through a long list of commands that test
+     dependencies, but do so by using 'add', 'modify', 'done' and 'delete'.
+  2. Regression tests that ensure certain bugs are fixed and stay fixed.  These
+     tests are named bug.NNN.t where NNN refers to the Redmine issue number.
+     While it is not worth creating tests for small fixes like typos, it is for
+     changes to the logic.
+  3. Small feature tests.  When small features are added, we would like small,
+     low-level feature tests named feature.NNN.t, where NNN is the Redmine
+     issue number.
+  4. Code tests.  These are tests written in C++ that exercise C++ objects, or
+     function calls.  These are the lowest level tests.  It is important that
+     these kind of tests be extensive and thorough, because the software depends
+     on this code the most.
+
+  The tests are mainly written in Perl, and all use TAP.  Here is how to get the
+  code and run the test suite:
+     git clone git://tasktools.org:task.git
+     cd task.git
+     cmake .
+     make
+     make test
+
+  Alternately, you go to the test directory and run the following:
+
+     cd task.git/test
+     make
+     make test
+
+  Either way, a TAP file 'all.log' is written that contains all test results.
+  once this file is created, you can see the failing tests using this script:
+
+    task.git/test/problems
+
+  If you make a habit of running the test suite, consider downloading the
+  vramsteg utility to show a nice colorful progress bar, from:
+
+    git://tasktools.org/vramsteg.git     
+
+  Tests needed:
 
   - The basic.t unit tests are a misnomer, and should be either removed or
     renamed.  We have long talked of 'basic functionality' that includes add,
@@ -99,13 +141,12 @@ Current Codebase Condition
 
   '2.0.0' branch:
     - Unit tests passing >99%.
-    - Basic commands working (add, list, done).
-    - Expressions E9.{h,cpp} working.
     - DOM access DOM.{h,cpp} not working well.
     - Aiming for a release in 2011, but when it is ready.
 
 ---
 
+2011-10-16 Removed obsolete entries, added test suite description.
 2011-10-16 Removed obsolete entries.
 2011-08-21 Small changes, new work listed.
 2011-08-01 Removed code already obsoleted or completed.
