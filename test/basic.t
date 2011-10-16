@@ -75,7 +75,7 @@ sub slurp
         s/, support.*$//;
         close  $fh;
         return $_;
-      }  
+      }
     }
   }
   '';

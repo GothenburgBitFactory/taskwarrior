@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
@@ -51,23 +51,13 @@ $output = qx{../src/task rc:recur.rc rc.recurrence.limit:4 long};
 is (scalar @tasks, 4, 'recurrence.limit override to 4');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'recur.rc';
-ok (!-r 'recur.rc', 'Removed recur.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key recur.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'recur.rc', 'Cleanup');
 
 exit 0;
 

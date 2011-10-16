@@ -28,49 +28,68 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
 {
   print $fh "data.location=.\n",
-            "report.asc.columns=id,recur,description\n",
-            "report.asc.sort=recur+\n",
-            "report.desc.columns=id,recur,description\n",
-            "report.desc.sort=recur-\n";
+            "recurrent.limit=1\n";
   close $fh;
   ok (-r 'recur.rc', 'Created recur.rc');
 }
 
-# Create a few recurring tasks, and test the sort order of the recur column.
-qx{../src/task rc:recur.rc add due:tomorrow recur:daily  first};
-qx{../src/task rc:recur.rc add due:tomorrow recur:weekly second};
-qx{../src/task rc:recur.rc add due:tomorrow recur:3d     third};
+# Create a recurring and non-recurring task.
+qx{../src/task rc:recur.rc add simple};
+qx{../src/task rc:recur.rc add complex due:today recur:daily};
 
-my $output = qx{../src/task rc:recur.rc asc};
-like ($output, qr/first .* third .* second/msx, 'daily 3d weekly');
+# List tasks to generate child tasks.  Should result in:
+#   1 simple
+#   3 complex
+#   4 complex
+my $output = qx{../src/task rc:recur.rc minimal};
+like ($output, qr/1.+simple$/ms, '1 simple');
+like ($output, qr/3.+complex$/ms, '3 complex');
+like ($output, qr/4.+complex$/ms, '4 complex');
 
-$output = qx{../src/task rc:recur.rc desc};
-like ($output, qr/second .* third .* first/msx, 'weekly 3d daily');
+# TODO Modify a child task and do not propagate the change.
+$output = qx{echo '-- n' | ../src/task rc:recur.rc 3 modify complex2};
+diag ('---');
+diag ($output);
+diag ('---');
+
+# TODO Modify a child task and propagate the change.
+$output = qx{echo '-- y' | ../src/task rc:recur.rc 3 modify complex2};
+diag ('---');
+diag ($output);
+diag ('---');
+
+# TODO Delete a child task.
+$output = qx{echo '-- n' | ../src/task rc:recur.rc 3 delete};
+diag ('---');
+diag ($output);
+diag ('---');
+
+# TODO Delete a recurring task.
+$output = qx{echo '-- y' | ../src/task rc:recur.rc 4 delete};
+diag ('---');
+diag ($output);
+diag ('---');
+
+# TODO Wait a recurring task
+# TODO Upgrade a task to a recurring task
+# TODO Downgrade a recurring task to a regular task
+# TODO Duplicate a recurring child task
+# TODO Duplicate a recurring parent task
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'recur.rc';
-ok (!-r 'recur.rc', 'Removed recur.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key recur.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'recur.rc', 'Cleanup');
 
 exit 0;
 

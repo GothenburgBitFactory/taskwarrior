@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 24;
+use Test::More tests => 18;
 
 # Create the rc file.
 if (open my $fh, '>', 'shadow.rc')
@@ -70,26 +70,14 @@ like ($file, qr/Unique tags\s+0\n/,                    'Unique tags 0');
 like ($file, qr/Projects\s+0\n/,                       'Projects 0');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'shadow.rc';
-ok (!-r 'shadow.rc', 'Removed shadow.rc');
-
-unlink 'shadow.txt';
-ok (!-r 'shadow.txt', 'Removed shadow.txt');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key shadow.txt shadow.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'shadow.txt'     &&
+    ! -r 'shadow.rc', 'Cleanup');
 
 exit 0;
 

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'nag.rc')
@@ -55,23 +55,13 @@ like   (qx{../src/task rc:nag.rc 2 do}, qr/NAG/, 'do due:tomorrow -> nag');
 unlike (qx{../src/task rc:nag.rc 1 do}, qr/NAG/, 'do due:yesterday -> no nag');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'nag.rc';
-ok (!-r 'nag.rc', 'Removed nag.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key nag.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'nag.rc', 'Cleanup');
 
 exit 0;
 

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 59;
+use Test::More tests => 54;
 
 # Create the rc file.
 if (open my $fh, '>', 'oldest.rc')
@@ -128,23 +128,13 @@ like   ($output, qr/ten/,    'newest: ten');
 like   ($output, qr/eleven/, 'newest: eleven');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'oldest.rc';
-ok (!-r 'oldest.rc', 'Removed oldest.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key oldest.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'oldest.rc', 'Cleanup');
 
 exit 0;
 

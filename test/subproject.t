@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'sp.rc')
@@ -63,23 +63,13 @@ $output = qx{../src/task rc:sp.rc list project:abcd};
 like ($output, qr/No matches./, 'abc,ab,a,b | abcd -> nul');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'sp.rc';
-ok (!-r 'sp.rc', 'Removed sp.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key sp.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'sp.rc', 'Cleanup');
 
 exit 0;
 

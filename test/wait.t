@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 13;
 
 # Create the rc file.
 if (open my $fh, '>', 'wait.rc')
@@ -78,22 +78,12 @@ $output = qx{../src/task rc:wait.rc add Complain due:today wait:tomorrow};
 like ($output, qr/Warning: You have specified a 'wait' date that is after the 'due' date\./, 'warning on wait after due');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'wait.rc';
-ok (!-r 'wait.rc', 'Removed wait.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key wait.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'wait.rc', 'Cleanup');
 
 exit 0;

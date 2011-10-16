@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 3;
 
 # Create the rc file.
 if (open my $fh, '>', '441.rc')
@@ -47,22 +47,12 @@ my $output = qx{../src/task rc:441.rc ls};
 like ($output, qr/one two: three/ms, 'Substitution with colon worked');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink '441.rc';
-ok (!-r '441.rc', 'Removed 441.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key 441.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r '441.rc', 'Cleanup');
 
 exit 0;

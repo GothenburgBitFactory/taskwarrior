@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'color.rc')
@@ -49,23 +49,13 @@ unlike ($output, qr/\033\[31m/, 'color.disable - no color red');
 unlike ($output, qr/\033\[0m/,  'color.disable - no color reset');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'color.rc';
-ok (!-r 'color.rc', 'Removed color.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key color.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'color.rc', 'Cleanup');
 
 exit 0;
 

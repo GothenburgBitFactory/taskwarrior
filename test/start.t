@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 27;
+use Test::More tests => 17;
 
 # Create the rc file.
 if (open my $fh, '>', 'start.rc')
@@ -102,30 +102,15 @@ $output = qx{../src/task rc:start3.rc list};
 like ($output, qr/Nu.+stannar.+vi/ms, 'one stopped and annotated with custom description');
 
 # Cleanup.
-ok (-r 'pending.data', 'Need to remove pending.data');
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-ok (-r 'completed.data', 'Need to remove completed.data');
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-ok (-r 'undo.data', 'Need to remove undo.data');
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'start.rc';
-ok (!-r 'start.rc', 'Removed start.rc');
-unlink 'start2.rc';
-ok (!-r 'start2.rc', 'Removed start2.rc');
-unlink 'start3.rc';
-ok (!-r 'start3.rc', 'Removed start3.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key start.rc start2.rc start3.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'start.rc'       &&
+    ! -r 'start2.rc'      &&
+    ! -r 'start3.rc', 'Cleanup');
 
 exit 0;
 

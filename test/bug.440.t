@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', '440.rc')
@@ -60,22 +60,12 @@ unlike ($output2, qr/Foo/, 'simultaneous append and subst - subst');
 like ($output2, qr/\w+ Appendtext/, 'simultaneous append and subst - append');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink '440.rc';
-ok (!-r '440.rc', 'Removed 440.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key 440.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r '440.rc', 'Cleanup');
 
 exit 0;

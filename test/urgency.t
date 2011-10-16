@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 51;
+use Test::More tests => 46;
 
 # Create the rc file.
 if (open my $fh, '>', 'urgency.rc')
@@ -301,22 +301,12 @@ $output = qx{../src/task rc:urgency.rc 43 _urgency};
 like ($output, qr/urgency 28$/ms, '+TAG = 28');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'urgency.rc';
-ok (!-r 'urgency.rc', 'Removed urgency.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key urgency.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'urgency.rc', 'Cleanup');
 
 exit 0;

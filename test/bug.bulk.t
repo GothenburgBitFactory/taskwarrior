@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 17;
+use Test::More tests => 12;
 
 # Create the rc file.
 if (open my $fh, '>', 'bulk.rc')
@@ -70,23 +70,13 @@ like ($output, qr/Project\s+p1/, 'project applied to 6');
 like ($output, qr/Priority\s+M/, 'priority applied to 6');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'bulk.rc';
-ok (!-r 'bulk.rc', 'Removed bulk.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key bulk.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'bulk.rc', 'Cleanup');
 
 exit 0;
 

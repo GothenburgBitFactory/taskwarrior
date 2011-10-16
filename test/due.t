@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'due.rc')
@@ -65,23 +65,13 @@ $output = qx{../src/task rc:due.rc list due.is:today};
 like ($output, qr/three/, 'due.is:today works as a filter');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'due.rc';
-ok (!-r 'due.rc', 'Removed due.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key due.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'due.rc', 'Cleanup');
 
 exit 0;
 

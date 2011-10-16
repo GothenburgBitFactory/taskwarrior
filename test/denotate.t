@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 32;
+use Test::More tests => 27;
 
 # Create the rc file.
 if (open my $fh, '>', 'denotate.rc')
@@ -100,22 +100,12 @@ like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       'Delet
 unlike ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'Delete partial match - Kermit and Miss Piggy');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'denotate.rc';
-ok (!-r 'denotate.rc', 'Removed denotate.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key denotate.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'denotate.rc', 'Cleanup');
 
 exit 0;

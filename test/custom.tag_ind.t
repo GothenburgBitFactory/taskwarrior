@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'custom.rc')
@@ -55,23 +55,13 @@ like ($output,   qr/1\s+TAG/, 'Custom ag indicator t1');
 unlike ($output, qr/2\s+TAG/, 'No custom tag indicator t2');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'custom.rc';
-ok (!-r 'custom.rc', 'Removed custom.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key custom.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'custom.rc', 'Cleanup');
 
 exit 0;
 

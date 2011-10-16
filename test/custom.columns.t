@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 3;
 
 # Create the rc file.
 if (open my $fh, '>', 'custom.rc')
@@ -47,23 +47,13 @@ my $output = qx{../src/task rc:custom.rc foo 2>&1};
 like ($output, qr/Unrecognized column name 'foo'\.\n/, 'custom report spotted invalid column');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'custom.rc';
-ok (!-r 'custom.rc', 'Removed custom.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key custom.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'custom.rc', 'Cleanup');
 
 exit 0;
 

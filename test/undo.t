@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 17;
+use Test::More tests => 9;
 
 # Create the rc file.
 if (open my $fh, '>', 'undo.rc')
@@ -57,26 +57,13 @@ $output = qx{../src/task rc:undo.rc 1 do; ../src/task rc:undo.rc list};
 like ($output, qr/No matches/, 'No matches');
 
 # Cleanup.
-ok (-r 'pending.data', 'Need to remove pending.data');
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-ok (-r 'completed.data', 'Need to remove completed.data');
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-ok (-r 'undo.data', 'Need to remove undo.data');
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'undo.rc';
-ok (!-r 'undo.rc', 'Removed undo.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key undo.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'undo.rc', 'Cleanup');
 
 exit 0;
 

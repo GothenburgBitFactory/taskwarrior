@@ -30,7 +30,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 89;
+use Test::More tests => 84;
 
 # Create the rc file.
 if (open my $fh, '>', 'cal.rc')
@@ -259,22 +259,12 @@ like   ($output, qr/30;103m15/,    'Holiday BBBBBB is color-coded');
 like   ($output, qr/30;103m25/,    'Holiday åäö is color-coded');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'details.rc';
-ok (!-r 'details.rc', 'Removed details.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key details.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'details.rc', 'Cleanup');
 
 exit 0;

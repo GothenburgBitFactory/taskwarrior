@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 11;
 
 # Create the rc file.
 if (open my $fh, '>', 'pro.rc')
@@ -67,23 +67,13 @@ $output = qx{../src/task rc:pro.rc 3 modify pro:\\"foo bar\\"};
 like ($output, qr/The project 'foo bar' has changed\./, 'project with spaces');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'pro.rc';
-ok (!-r 'pro.rc', 'Removed pro.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key pro.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'pro.rc', 'Cleanup');
 
 exit 0;
 

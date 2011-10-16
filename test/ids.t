@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'ids.rc')
@@ -56,23 +56,13 @@ $output = qx{../src/task rc:ids.rc ids +A -B};
 like ($output, qr/^2$/ms, 'ids +A -B --> 2');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'ids.rc';
-ok (!-r 'ids.rc', 'Removed ids.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key ids.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'ids.rc', 'Cleanup');
 
 exit 0;
 

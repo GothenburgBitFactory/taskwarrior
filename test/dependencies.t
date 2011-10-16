@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 43;
+use Test::More tests => 38;
 
 # Create the rc file.
 if (open my $fh, '>', 'dep.rc')
@@ -224,23 +224,13 @@ like ($output, qr/\s1\s+One\s*\n\s2\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - 
 # TODO - test depend.any and depend.none report filters
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'dep.rc';
-ok (!-r 'dep.rc', 'Removed dep.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key dep.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'dep.rc', 'Cleanup');
 
 exit 0;
 

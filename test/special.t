@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'special.rc')
@@ -57,23 +57,13 @@ $output = qx{../src/task rc:special.rc 2 done};
 unlike ($output, qr/NAG/, '+nonag suppressed nagging for task 2');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'special.rc';
-ok (!-r 'special.rc', 'Removed special.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key special.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'special.rc', 'Cleanup');
 
 exit 0;
 

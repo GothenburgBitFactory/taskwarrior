@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 3;
 
 # Create the rc file.
 if (open my $fh, '>', '425.rc')
@@ -52,22 +52,12 @@ my $output = qx{../src/task rc:425.rc 1 ls};
 like ($output, qr/1\s+Bar in Bar/m, 'parser - interpret \'in\' in description');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink '425.rc';
-ok (!-r '425.rc', 'Removed 425.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key 425.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r '425.rc', 'Cleanup');
 
 exit 0;

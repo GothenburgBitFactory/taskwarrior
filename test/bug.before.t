@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 17;
 
 # Create the rc file.
 if (open my $fh, '>', 'before.rc')
@@ -81,23 +81,13 @@ unlike ($output, qr/foo/, 'no foo after 5/1/2009');
 unlike ($output, qr/bar/, 'no bar after 5/1/2009');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'before.rc';
-ok (!-r 'before.rc', 'Removed before.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key before.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'before.rc', 'Cleanup');
 
 exit 0;
 

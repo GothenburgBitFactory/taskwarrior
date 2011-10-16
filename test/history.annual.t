@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'time.rc')
@@ -68,22 +68,12 @@ like ($output, qr/2\s+3\s+3\s+-4/, 'history.annual - this year');
 like ($output, qr/4\s+2\s+1\s+1/, 'history.annual - average');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'time.rc';
-ok (!-r 'time.rc', 'Removed time.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key time.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'time.rc', 'Cleanup');
 
 exit 0;

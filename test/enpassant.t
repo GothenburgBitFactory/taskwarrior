@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'enp.rc')
@@ -54,23 +54,13 @@ like ($output, qr/Priority\s+H/,          'en passant 2 description change');
 like ($output, qr/Tags\s+tag/,            'en passant 2 description change');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'enp.rc';
-ok (!-r 'enp.rc', 'Removed enp.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key enp.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'enp.rc', 'Cleanup');
 
 exit 0;
 

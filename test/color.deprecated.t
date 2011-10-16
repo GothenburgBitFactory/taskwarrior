@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 3;
 
 # Create the rc file.
 if (open my $fh, '>', 'color.rc')
@@ -45,20 +45,13 @@ my $output = qx{../src/task rc:color.rc show};
 like   ($output, qr/that use deprecated underscores/ms,  'Deprecated color detected');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'color.rc';
-ok (!-r 'color.rc', 'Removed color.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key color.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'color.rc', 'Cleanup');
 
 exit 0;
 

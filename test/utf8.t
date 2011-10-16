@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'utf8.rc')
@@ -70,23 +70,13 @@ $output = qx{../src/task rc:utf8.rc ls +Zwölf};
 like ($output, qr/utf8 in tag/, 'utf8 in tag works');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'utf8.rc';
-ok (!-r 'utf8.rc', 'Removed utf8.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key utf8.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'utf8.rc', 'Cleanup');
 
 exit 0;
 

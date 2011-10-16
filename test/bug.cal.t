@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 34;
+use Test::More tests => 29;
 
 # Create the rc file.
 if (open my $fh, '>', 'cal.rc')
@@ -104,22 +104,12 @@ $output = qx{../src/task rc:cal.rc cal due 2010 donkey 2>&1};
 unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal due 2010 donkey');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'cal.rc';
-ok (!-r 'cal.rc', 'Removed cal.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key cal.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'cal.rc', 'Cleanup');
 
 exit 0;

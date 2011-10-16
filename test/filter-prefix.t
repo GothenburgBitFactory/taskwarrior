@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 63;
+use Test::More tests => 58;
 
 # Create the rc file.
 if (open my $fh, '>', 'filter.rc')
@@ -119,23 +119,13 @@ like   ($output, qr/seven/, 'i7');
 like   ($output, qr/eight/, 'i8');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'filter.rc';
-ok (!-r 'filter.rc', 'Removed filter.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key filter.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'filter.rc', 'Cleanup');
 
 exit 0;
 

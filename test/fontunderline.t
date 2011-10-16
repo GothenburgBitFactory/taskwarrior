@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'font.rc')
@@ -73,23 +73,13 @@ $output = qx{../src/task 1 info rc:font.rc rc.color:on rc._forcecolor:on rc.font
 unlike ($output, qr/--------/, '1,1,1 -> underline');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'font.rc';
-ok (!-r 'font.rc', 'Removed font.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key font.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'font.rc', 'Cleanup');
 
 exit 0;
 

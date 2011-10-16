@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', '455.rc')
@@ -50,22 +50,12 @@ like ($output, qr/\s{7}abc/ms, 'bug 455 - correct spacing in utf8 task');
 like ($output, qr/\s{7}def/ms, 'bug 455 - correct spacing in non utf8 task');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink '455.rc';
-ok (!-r '455.rc', 'Removed 455.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key 455.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r '455.rc', 'Cleanup');
 
 exit 0;

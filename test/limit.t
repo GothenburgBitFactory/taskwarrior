@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'limit.rc')
@@ -83,23 +83,13 @@ $output = qx{../src/task rc:limit.rc ls limit:page};
 like ($output, qr/^30 tasks, truncated to 18 lines$/ms, 'limited to page');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'limit.rc';
-ok (!-r 'limit.rc', 'Removed limit.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key limit.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'limit.rc', 'Cleanup');
 
 exit 0;
 

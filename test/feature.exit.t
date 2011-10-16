@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'exit.rc')
@@ -46,23 +46,13 @@ my $exit_bad  = system ('../src/task rc:exit.rc ls bar 2>&1 >>/dev/null');
 isnt ($exit_bad, 0, 'task returns non-zero on failure');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'backlog.data';
-ok (!-r 'backlog.data', 'Removed backlog.data');
-
-unlink 'synch.key';
-ok (!-r 'synch.key', 'Removed synch.key');
-
-unlink 'exit.rc';
-ok (!-r 'exit.rc', 'Removed exit.rc');
+unlink qw(pending.data completed.data undo.data backlog.data synch.key exit.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'exit.rc', 'Cleanup');
 
 exit 0;
 
