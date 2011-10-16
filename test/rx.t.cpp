@@ -87,9 +87,15 @@ int main (int argc, char** argv)
   ut.ok (r9.match (start, end, text),        "e there are matches");
   ut.is (start.size (), (size_t) 6,          "e == 6 matches");
 
-  RX r10 ("\\bthe\\b");
+  RX r10 ("\\bthe");
   text = "this is the end.";
-  ut.ok (r10.match (text), text + " =~ /\\bthe\\b/");
+  ut.ok (r10.match (text), text + " =~ /\\bthe/");
+
+  RX r11 ("the\\b");
+  ut.ok (r11.match (text), text + " =~ /the\\b/");
+
+  RX r12 ("\\bthe\\b");
+  ut.ok (r12.match (text), text + " =~ /\\bthe\\b/");
 
   return 0;
 }
