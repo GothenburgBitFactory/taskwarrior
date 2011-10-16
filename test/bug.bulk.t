@@ -35,7 +35,7 @@ if (open my $fh, '>', 'bulk.rc')
 {
   print $fh "data.location=.\n",
             "confirmation=yes\n",
-            "bulk=2\n";
+            "bulk=3\n";
   close $fh;
   ok (-r 'bulk.rc', 'Created bulk.rc');
 }

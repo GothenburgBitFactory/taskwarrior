@@ -271,8 +271,8 @@ Controls left and right padding around each row of the report output.  Default i
 Controls padding between columns of the report output.  Default is "1".
 
 .TP
-.B bulk=2
-Is a number, defaulting to 2.  When more than this number of tasks are modified
+.B bulk=3
+Is a number, defaulting to 3.  When this number or greater tasks are modified
 in a single command, confirmation will be required, unless the
 .B confirmation
 variable is "no".
