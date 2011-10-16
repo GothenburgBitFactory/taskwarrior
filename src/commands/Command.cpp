@@ -466,6 +466,12 @@ void Command::modify_task (
             }
           }
 
+          // Priorities are converted to upper case.
+          else if (name == "priority")
+          {
+            task.set (name, upperCase (value));
+          }
+
           // Dates are special, maybe.
           else if (column->type () == "date")
           {
