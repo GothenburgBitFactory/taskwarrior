@@ -107,28 +107,11 @@ const std::string DOM::get (const std::string& name)
   else if (len > 8 &&
            name.substr (0, 8) == "context.")
   {
-    if (name == "context.program")
-      return /*_cache[name] =*/ context.a3[0]._raw;
-
-    else if (name == "context.args")
-    {
-      return /*_cache[name] =*/ context.a3.combine ();
-    }
-    else if (name == "context.width")
-    {
-      std::stringstream s;
-      s << context.terminal_width;
-      return /*_cache[name] =*/ s.str ();
-    }
-    else if (name == "context.height")
-    {
-      std::stringstream s;
-      s << context.terminal_height;
-      return /*_cache[name] =*/ s.str ();
-    }
-
-    else
-      throw format (STRING_DOM_UNREC, name);
+         if (name == "context.program") return /*_cache[name] =*/ context.a3[0]._raw;
+    else if (name == "context.args")    return /*_cache[name] =*/ context.a3.combine ();
+    else if (name == "context.width")   return /*_cache[name] =*/ format (context.terminal_width);
+    else if (name == "context.height")  return /*_cache[name] =*/ format (context.terminal_height);
+    else                                throw format (STRING_DOM_UNREC, name);
   }
 
   // TODO stats.<name>
@@ -246,7 +229,7 @@ const std::string DOM::get (const std::string& name, const Task& task)
 
            if (attr == "id")                       return format (ref.id);
       else if (attr == "urgency")                  return format (ref.urgency_c (), 4, 3);
-      else if (A3::is_attribute (name, canonical)) return ref.get (canonical);
+      else if (A3::is_attribute (attr, canonical)) return ref.get (canonical);
     }
   }
 
@@ -266,7 +249,7 @@ const std::string DOM::get (const std::string& name, const Task& task)
 
            if (name == "id")                       return format (ref.id);
       else if (name == "urgency")                  return format (ref.urgency_c (), 4, 3);
-      else if (A3::is_attribute (name, canonical)) return ref.get (canonical);
+      else if (A3::is_attribute (attr, canonical)) return ref.get (canonical);
     }
   }
 

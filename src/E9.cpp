@@ -159,7 +159,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
       value_stack.push_back (result);
     }
 
-    // Operand.
+    // Operand (non-op).
     else
     {
       // Derive _value from _raw, and push on the stack.
