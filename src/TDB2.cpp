@@ -271,6 +271,9 @@ void TF2::load_tasks ()
   int line_number = 0;
   try
   {
+    // Reduce unnecessary allocations/copies.
+    _tasks.reserve (_lines.size ());
+
     std::vector <std::string>::iterator i;
     for (i = _lines.begin (); i != _lines.end (); ++i)
     {
@@ -1519,6 +1522,10 @@ int TDB2::gc ()
     std::vector <Task> pending_tasks_after;
     std::vector <Task> completed_tasks_after;
 
+    // Reduce unnecessary allocation/copies.
+    pending_tasks_after.reserve (pending_tasks.size ());
+    completed_tasks_after.reserve (completed_tasks.size ());
+
     // Scan all pending tasks, looking for any that need to be relocated to
     // completed, or need to be 'woken'.
     Date now;
@@ -1624,8 +1631,15 @@ int TDB2::next_id ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task> TDB2::all_tasks ()
 {
-  std::vector <Task> all = pending.get_tasks ();
-  std::vector <Task> extra = completed.get_tasks ();
+  std::vector <Task> all (pending._tasks.size () +
+               pending._added_tasks.size () +
+               completed._tasks.size () +
+               completed._added_tasks.size ());
+  all = pending.get_tasks ();
+
+  std::vector <Task> extra (completed._tasks.size () +
+                            completed._added_tasks.size ());
+  extra = completed.get_tasks ();
 
   std::vector <Task>::iterator task;
   for (task = extra.begin (); task != extra.end (); ++task)
