@@ -109,7 +109,7 @@ int CmdModify::execute (std::string& output)
         ++count;
         feedback_affected (STRING_CMD_MODIFY_TASK, *task);
         dependencyChainOnModify (before, *task);
-        context.footnote (onProjectChange (*task, true));
+        context.footnote (onProjectChange (before, *task));
 
         // Delete siblings.
         if (task->has ("parent"))
@@ -126,7 +126,7 @@ int CmdModify::execute (std::string& output)
               updateRecurrenceMask (*sibling);
               context.tdb2.modify (*sibling);
               dependencyChainOnModify (alternate, *sibling);
-              context.footnote (onProjectChange (*sibling, true));
+              context.footnote (onProjectChange (alternate, *sibling));
               ++count;
               feedback_affected (STRING_CMD_MODIFY_TASK_R, *sibling);
             }
