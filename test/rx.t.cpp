@@ -33,7 +33,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest ut (21);
+  UnitTest ut (23);
 
   std::string text = "This is a test.";
 
