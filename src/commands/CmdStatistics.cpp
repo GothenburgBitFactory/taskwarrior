@@ -256,6 +256,13 @@ int CmdStatistics::execute (std::string& output)
     view.set (row, 1, format (STRING_CMD_STATS_CHARS, (int) (descLength / totalT)));
   }
 
+  row = view.addRow ();
+  view.set (row, 0, STRING_CMD_STATS_LAST_SYNCH);
+  if (context.tdb2.synch_key._file.exists ())
+    view.set (row, 1, Date (context.tdb2.synch_key._file.mtime ()).toISO ());
+  else
+    view.set (row, 1, "-");
+
   // If an alternating row color is specified, notify the table.
   if (context.color ())
   {

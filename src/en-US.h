@@ -237,6 +237,7 @@
 #define STRING_CMD_STATS_AVG_PEND    "Average time pending"
 #define STRING_CMD_STATS_DESC_LEN    "Average desc length"
 #define STRING_CMD_STATS_CHARS       "{1} characters"
+#define STRING_CMD_STATS_LAST_SYNCH  "Last server synchronization"
 #define STRING_CMD_REPORTS_USAGE     "Lists all supported reports"
 #define STRING_CMD_REPORTS_REPORT    "Report"
 #define STRING_CMD_REPORTS_DESC      "Description"
