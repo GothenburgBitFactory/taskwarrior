@@ -495,6 +495,7 @@
 #define STRING_CONFIG_BAD_WRITE      "Could not write to '{1}'."
 #define STRING_CONFIG_DEPRECATED_US  "Your .taskrc file contains color settings that use deprecated underscores.  Please check:"
 #define STRING_CONFIG_DEPRECATED_COL "Your .taskrc file contains reports with deprecated columns.  Please check for entry_time, start_time or end_time in:"
+#define STRING_CONFIG_DEPRECATED_VAR "Your .taskrc file contains variables that are deprecated:"
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so taskwarrior can proceed?"

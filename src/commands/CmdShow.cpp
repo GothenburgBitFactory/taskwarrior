@@ -284,6 +284,16 @@ int CmdShow::execute (std::string& output)
       << (view.rows () == 0 ? STRING_CMD_SHOW_NONE : "")
       << (view.rows () == 0 ? "\n\n" : "\n");
 
+  if (default_values.size ())
+  {
+    out << STRING_CMD_SHOW_DIFFER;
+
+    if (context.color ())
+      out << "  "
+          << format (STRING_CMD_SHOW_DIFFER_COLOR, warning.colorize ("color"))
+          << "\n\n";
+  }
+
   // Display the unrecognized variables.
   if (unrecognized.size ())
   {
@@ -298,14 +308,7 @@ int CmdShow::execute (std::string& output)
     out << "\n\n";
   }
 
-  if (default_values.size ())
-  {
-    out << STRING_CMD_SHOW_DIFFER;
-
-    if (context.color ())
-      out << "  " << format (STRING_CMD_SHOW_DIFFER_COLOR, warning.colorize ("color"));
-  }
-
+  out << legacyCheckForDeprecatedVariables ();
   out << legacyCheckForDeprecatedColor ();
   out << legacyCheckForDeprecatedColumns ();
 

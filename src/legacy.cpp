@@ -135,6 +135,39 @@ std::string legacyCheckForDeprecatedColor ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string legacyCheckForDeprecatedVariables ()
+{
+  std::vector <std::string> deprecated;
+  std::map <std::string, std::string>::const_iterator it;
+  for (it = context.config.begin (); it != context.config.end (); ++it)
+  {
+    // report.*.limit
+    if (it->first.substr (0, 7) == "report." &&
+        it->first.substr (it->first.length () - 6) == ".limit")
+      deprecated.push_back (it->first);
+
+    if (it->first == "echo.command" ||
+        it->first == "edit.verbose")
+      deprecated.push_back (it->first);
+  }
+
+  std::stringstream out;
+  if (deprecated.size ())
+  {
+    out << STRING_CONFIG_DEPRECATED_VAR
+        << "\n";
+
+    std::vector <std::string>::iterator it2;
+    for (it2 = deprecated.begin (); it2 != deprecated.end (); ++it2)
+      out << "  " << *it2 << "\n";
+
+    out << "\n";
+  }
+
+  return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string legacyCheckForDeprecatedColumns ()
 {
   std::vector <std::string> deprecated;
