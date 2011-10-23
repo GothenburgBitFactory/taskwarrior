@@ -147,7 +147,6 @@ public:
   Chart& operator= (const Chart&);   // Unimplemented
   ~Chart ();
 
-  void description (const std::string&);
   void scan (std::vector <Task>&);
   std::string render ();
 
@@ -207,17 +206,36 @@ Chart::Chart (char type)
   // Rates are calculated last.
   find_rate = 0.0;
   fix_rate = 0.0;
+
+  // Set the title.
+  title = "(";
+  bool before_command = true;
+  std::vector <Arg>::const_iterator arg;
+  for (arg = context.a3.begin (); arg != context.a3.end (); ++arg)
+  {
+    if (arg->_category == Arg::cat_command)
+      before_command = false;
+
+    if (arg->_category == Arg::cat_program  ||
+        arg->_category == Arg::cat_rc       ||
+        arg->_category == Arg::cat_override ||
+        arg->_category == Arg::cat_command  ||
+        arg->_category == Arg::cat_terminator)
+      ;
+    else
+    {
+      if (title.length () > 1)
+        title += " ";
+
+      title += arg->_raw;
+    }
+  }
+  title += ")";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Chart::~Chart ()
 {
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Chart::description (const std::string& value)
-{
-  title = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -956,14 +974,6 @@ int CmdBurndownMonthly::execute (std::string& output)
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('M');
-
-  // Use any filter as a title.
-  if (context.a3.size () > 2)
-  {
-    std::string combined = "(" + context.a3.extract_filter ().combine () + ")";
-    chart.description (combined);
-  }
-
   chart.scan (filtered);
   output = chart.render ();
   return rc;
@@ -992,14 +1002,6 @@ int CmdBurndownWeekly::execute (std::string& output)
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('W');
-
-  // Use any filter as a title.
-  if (context.a3.size () > 2)
-  {
-    std::string combined = "(" + context.a3.extract_filter ().combine () + ")";
-    chart.description (combined);
-  }
-
   chart.scan (filtered);
   output = chart.render ();
   return rc;
@@ -1028,14 +1030,6 @@ int CmdBurndownDaily::execute (std::string& output)
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('D');
-
-  // Use any filter as a title.
-  if (context.a3.size () > 2)
-  {
-    std::string combined = "(" + context.a3.extract_filter ().combine () + ")";
-    chart.description (combined);
-  }
-
   chart.scan (filtered);
   output = chart.render ();
   return rc;
