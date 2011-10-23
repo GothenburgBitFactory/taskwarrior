@@ -76,6 +76,8 @@ Newly deprecated features in taskwarrior 2.0.0
     instead.
   - Use of 'export.ical.class' configuration variable.  Value is now specified
     in the scripts/add-ons/export-ical.pl script.
+  - Use of 'report.<name>.limit' configuration variable.  This is now handled
+    in the report filter as 'limit:<tasks>'.
 
 ---
 

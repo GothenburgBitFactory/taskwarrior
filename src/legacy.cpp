@@ -146,8 +146,10 @@ std::string legacyCheckForDeprecatedVariables ()
         it->first.substr (it->first.length () - 6) == ".limit")
       deprecated.push_back (it->first);
 
-    if (it->first == "echo.command" ||
-        it->first == "edit.verbose")
+    if (it->first == "echo.command"      ||
+        it->first == "edit.verbose"      ||
+        it->first == "next"              ||
+        it->first == "export.ical.class")
       deprecated.push_back (it->first);
   }
 
