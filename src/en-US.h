@@ -297,7 +297,7 @@
 #define STRING_CMD_DELETE_TASK_R     "Deleting recurring task {1} '{2}'."
 #define STRING_CMD_DELETE_CONFIRM_R  "This is a recurring task.  Do you want to delete all pending recurrences of this same task?"
 #define STRING_CMD_DELETE_NO         "Task not deleted."
-#define STRING_CMD_DELETE_NOTPEND    "Task {1} '{2}' is neither pending nor waiting."
+#define STRING_CMD_DELETE_NOT_DEL    "Task {1} '{2}' is not deletable."
 #define STRING_CMD_DELETE_1          "Deleted {1} task."
 #define STRING_CMD_DELETE_N          "Deleted {1} tasks."
 

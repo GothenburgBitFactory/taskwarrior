@@ -71,13 +71,20 @@ int CmdDelete::execute (std::string& output)
   {
     Task before (*task);
 
-    if (task->getStatus () == Task::pending ||
+    if (task->getStatus () == Task::pending   ||
+        task->getStatus () == Task::completed ||
         task->getStatus () == Task::waiting)
     {
       // Delete the specified task.
-      std::string question = format (STRING_CMD_DELETE_CONFIRM,
-                                     task->id,
-                                     task->get ("description"));
+      std::string question;
+      if (task->id)
+        question = format (STRING_CMD_DELETE_CONFIRM,
+                           task->id,
+                           task->get ("description"));
+      else
+        question = format (STRING_CMD_DELETE_CONFIRM,
+                           task->get ("uuid"),
+                           task->get ("description"));
 
       modify_task_annotate (*task, modifications);
       task->setStatus (Task::deleted);
@@ -133,7 +140,7 @@ int CmdDelete::execute (std::string& output)
     }
     else
     {
-      std::cout << format (STRING_CMD_DELETE_NOTPEND,
+      std::cout << format (STRING_CMD_DELETE_NOT_DEL,
                            task->id,
                            task->get ("description"))
           << "\n";

@@ -568,7 +568,14 @@ void TDB2::synch ()
 {
   context.timer_synch.start ();
 
-  // TODO Need stub here.
+  // TODO Get local synch_key.
+  // TODO Get backlog.
+  // TODO Compose synch ticket.
+  // TODO Issue synch ticket.
+  // TODO Receive synch response.
+  // TODO Extract remotes.
+  // TODO Apply remotes.
+  // TODO Store synch_key.
 
   context.timer_synch.stop ();
 }
