@@ -145,7 +145,7 @@ void TF2::add_task (const Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TF2::modify_task (const Task& task)
+bool TF2::modify_task (const Task& task)
 {
   // Modify in-place.
   std::string uuid = task.get ("uuid");
@@ -155,12 +155,13 @@ void TF2::modify_task (const Task& task)
     if (i->get ("uuid") == uuid)
     {
       *i = task;
-      break;
+      _modified_tasks.push_back (task);
+      _dirty = true;
+      return true;
     }
   }
 
-  _modified_tasks.push_back (task);
-  _dirty = true;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -522,17 +523,9 @@ void TDB2::modify (Task& task)
 
   if (taskDiff (original, task))
   {
-    std::string status = original.get ("status");
-    if (status == "pending" ||
-        status == "waiting" ||
-        status == "recurring")
-    {
-      pending.modify_task (task);
-    }
-    else
-    {
+    // Update the task, wherever it is.
+    if (!pending.modify_task (task))
       completed.modify_task (task);
-    }
 
     // time <time>
     // old <task>

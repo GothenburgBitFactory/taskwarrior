@@ -51,7 +51,7 @@ public:
   const std::string&               get_contents ();
 
   void add_task (const Task&);
-  void modify_task (const Task&);
+  bool modify_task (const Task&);
   void add_line (const std::string&);
   void clear_lines ();
   void commit ();

@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 # Create the rc file.
 if (open my $fh, '>', 'delete.rc')
@@ -69,6 +69,16 @@ qx{../src/task rc:delete.rc 1 delete foo pri:H};
 $output = qx{../src/task rc:delete.rc 1 info};
 like ($output, qr/foo/, 'Deletion annotation successful');
 like ($output, qr/H/,   'Deletion modification successful');
+
+# Add a task, complete it, then delete it.
+qx{../src/task rc:delete.rc add three};
+$output = qx{../src/task rc:delete.rc 2 info};
+like ($output, qr/three/, 'added and verified new task');
+my ($uuid) = $output =~ /UUID\s+(\S+)/;
+qx{../src/task rc:delete.rc 2 done};
+qx{../src/task rc:delete.rc $uuid delete};
+$output = qx{../src/task rc:delete.rc $uuid info};
+like ($output, qr/Deleted/, 'task added, completed, then deleted');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key delete.rc);
