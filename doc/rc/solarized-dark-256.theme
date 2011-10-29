@@ -1,4 +1,4 @@
-###############################################################################
+################################################################################
 # Taskwarrior solarized-dark-256 theme created by Stefan A. Keel.
 #
 # taskwarrior - a command line task list manager.
@@ -8,14 +8,16 @@
 # Colors used are based on the Solarized palette created by Ethan Schoonover 
 # <http://ethanschoonover.com/solarized>
 #
-# Colors 0 through 15 in this theme are based on the 16 color positions defined
-# in the Xresources file distributed with the Solarized color palette.
-#
 # This theme was designed to work with a terminal application that is using
 # a Solarized "Dark" color theme, otherwise colors will look odd. 
 # Solarized includes themes for iTerm2, OSX Terminal.app, and Xresources.
 # Others are also available, i.e.:
 # Gnome Terminal <https://github.com/sigurdga/gnome-terminal-colors-solarized>
+#
+# Colors 0 through 15 in this theme are based on the 16 color positions defined
+# in the Xresources file distributed with the Solarized color palette.  Some 
+# of the colors used are "named" in order to use the bold feature.  The color
+# "name" is based on the color's original name as the terminal understands it.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,12 +39,12 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-###############################################################################
+################################################################################
 
 color=on
 
-color.active=color0 on color9
-color.alternate=on color0
+color.active=bold red
+color.alternate=on black #color0
 
 color.blocked=color0 on color10
 
@@ -69,9 +71,9 @@ color.history.add=color0 on color1
 color.history.delete=color0 on color3
 color.history.done=color0 on color10
 
-color.pri.H=color14
-color.pri.M=color12
-color.pri.L=color11
+color.pri.H=bold blue #color14
+color.pri.M=bold yellow #color12
+color.pri.L=bold green #color11
 color.pri.none=
 
 color.project.none=
@@ -85,7 +87,7 @@ color.sync.changed=color9
 color.sync.rejected=color13
 
 color.tag.none=
-color.tagged=color6
+color.tagged=color10
 
 color.undo.after=color2
 color.undo.before=color1
