@@ -33,6 +33,7 @@
 #include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <inttypes.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
@@ -633,7 +634,7 @@ const std::string Config::get (const std::string& key)
 const int Config::getInteger (const std::string& key)
 {
   if ((*this).find (key) != (*this).end ())
-    return atoi ((*this)[key].c_str ());
+    return strtoimax ((*this)[key].c_str (), NULL, 10);
 
   return 0;
 }
@@ -642,7 +643,7 @@ const int Config::getInteger (const std::string& key)
 const double Config::getReal (const std::string& key)
 {
   if ((*this).find (key) != (*this).end ())
-    return atof ((*this)[key].c_str ());
+    return strtod ((*this)[key].c_str (), NULL);
 
   return 0.0;
 }
