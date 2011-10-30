@@ -25,13 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
 #include <main.h>
+#include <text.h>
 #include <util.h>
 #include <i18n.h>
 #include <CmdIDs.h>
@@ -135,6 +135,35 @@ int CmdZshCompletionIds::execute (std::string& output)
           << "\n";
 
   output = out.str ();
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CmdUUIDs::CmdUUIDs ()
+{
+  _keyword     = "uuids";
+  _usage       = "task <filter> uuids";
+  _description = STRING_CMD_UUIDS_USAGE;
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdUUIDs::execute (std::string& output)
+{
+  // Apply filter.
+  handleRecurrence ();
+  std::vector <Task> filtered;
+  filter (filtered);
+  context.tdb2.commit ();
+
+  std::vector <std::string> uuids;
+  std::vector <Task>::iterator task;
+  for (task = filtered.begin (); task != filtered.end (); ++task)
+    uuids.push_back (task->get ("uuid"));
+
+  join (output, ",", uuids);
+  output += "\n";
   return 0;
 }
 

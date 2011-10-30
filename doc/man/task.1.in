@@ -178,6 +178,17 @@ This example first gets the IDs for the project:Home filter, then sets
 the priority to H for each of those tasks.
 
 .TP
+.B task <filter> uuids
+Applies the filter then extracts only the task UUIDs and presents them as
+a comma-separated list.  This is useful as input to a task command, to achieve
+this:
+
+	task $(task project:Home status:completed uuids) modify status:pending
+
+This example first gets the UUIDs for the project:Home and status:completed
+filter, then makes each of those tasks pending again.
+
+.TP
 .B task <filter> information
 Shows all data and metadata for the specified tasks.
 

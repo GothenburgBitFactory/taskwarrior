@@ -209,6 +209,7 @@
 #define STRING_CMD_IDS_USAGE_RANGE   "Shows the IDs of matching tasks, as a range"
 #define STRING_CMD_IDS_USAGE_LIST    "Shows only the IDs of matching tasks, in the form of a list"
 #define STRING_CMD_IDS_USAGE_ZSH     "Shows the IDs and descriptions of matching tasks"
+#define STRING_CMD_UUIDS_USAGE       "Shows the UUIDs of matching tasks"
 #define STRING_CMD_EXPORT_USAGE      "Exports tasks in JSON format"
 #define STRING_CMD_INFO_USAGE        "Shows all data and metadata"
 #define STRING_CMD_INFO_BLOCKED      "This task blocked by"

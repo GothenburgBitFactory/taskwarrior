@@ -156,6 +156,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdTimesheet ();          all[c->keyword ()] = c;
   c = new CmdUndo ();               all[c->keyword ()] = c;
   c = new CmdUrgency ();            all[c->keyword ()] = c;
+  c = new CmdUUIDs ();              all[c->keyword ()] = c;
   c = new CmdVersion ();            all[c->keyword ()] = c;
   c = new CmdZshCommands ();        all[c->keyword ()] = c;
   c = new CmdZshCompletionIds ();   all[c->keyword ()] = c;

@@ -53,5 +53,12 @@ public:
   int execute (std::string&);
 };
 
+class CmdUUIDs : public Command
+{
+public:
+  CmdUUIDs ();
+  int execute (std::string&);
+};
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////

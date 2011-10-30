@@ -6,7 +6,8 @@
 # Untracked Features, biggest first.
  + autoconf eliminated.
  + New 'ids' command that returns a filtered set of task ID numbers, instead
-   of the actual tasks.  For advanced pipeline use.
+   of the actual tasks.  Similarly there is a 'uuids' commands.  For advanced
+   pipeline use.
  + Now supplements the command line with data read from standard input, which
    allows commands like:  echo 'add Pay the bills' | task
  + Corrected sorting to use std::stable_sort instead of std::sort, which is not
@@ -38,6 +39,7 @@
  + The configuration variable 'json.array' determines whether 'query' command
    output is enclosed by '[...]'.
  + The duration 'm' is now interpreted as 'months', not 'minutes'.
+ 
 
 # Tracked Features, sorted by ID.
  + Added feature #278, which provides a more consistent command line grammar.

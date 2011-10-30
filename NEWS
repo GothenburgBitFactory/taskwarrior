@@ -2,7 +2,8 @@
 New Features in taskwarrior 2.0.0
 
   - New 'ids' command that returns a filtered set of task ID numbers, instead
-    of the actual tasks.  For advanced pipeline use.
+    of the actual tasks.  Similarly, there is a 'uuids' command.  For advanced
+    pipeline use.
   - Now supplements the command line with data read from standard input, which
     allows commands like:  echo 'add Pay the bills' | task
   - Attribute modifiers may be prefixed with '~' to return the opposite of a
