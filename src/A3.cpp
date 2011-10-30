@@ -1072,8 +1072,9 @@ const A3 A3::expand (const A3& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Convert:     1-3,5 7
-// To:          (id=1 or id=2 or id=3 or id=5 or id=7)
+// Convert:     1-3,5 7 92bea814-2e3f-487b-92a1-3286dd1a7eda
+// To:          (id=1 or id=2 or id=3 or id=5 or id=7 or
+//               uuid=92bea814-2e3f-487b-92a1-3286dd1a7eda)
 const A3 A3::sequence (const A3& input) const
 {
   A3 sequenced;
@@ -1281,6 +1282,8 @@ bool A3::is_attr (Nibbler& n, Arg& arg)
         // Most attributes are standard, some are pseudo-attributes, such as
         // 'limit:page', which is not represented by a column object, and
         // therefore not stored.
+
+        // I suspect this is auto-vivifying context.columns["limit"].  Bugger.
         Column* col = context.columns[name];
         if (col)
           arg._type = Arg::type_id (col->type ());
@@ -1345,7 +1348,8 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
 */
 
             arg._raw      = name + '.' + modifier + ':' + value;
-            arg._type     = Arg::type_id (context.columns[name]->type ());
+            Column* col = context.columns[name];
+            arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
             arg._category = Arg::cat_attmod;
             return true;
           }
@@ -1457,7 +1461,8 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
   {
     result = format (id) + '.' + name;
     arg._raw      = result;
-    arg._type     = Arg::type_id (context.columns[name]->type ());
+    Column* col = context.columns[name];
+    arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
     arg._category = Arg::cat_dom;
     return true;
   }
@@ -1472,7 +1477,8 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
       is_attribute (name, name))
   {
     arg._raw      = uuid + '.' + name;
-    arg._type     = Arg::type_id (context.columns[name]->type ());
+    Column* col = context.columns[name];
+    arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
     arg._category = Arg::cat_dom;
     return true;
   }
@@ -1484,10 +1490,14 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
       name.length ()   &&
       is_attribute (name, name))
   {
-    arg._raw      = name;
-    arg._type     = Arg::type_id (context.columns[name]->type ());
-    arg._category = Arg::cat_dom;
-    return true;
+    if (name != "limit")
+    {
+      arg._raw      = name;
+      Column* col = context.columns[name];
+      arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
+      arg._category = Arg::cat_dom;
+      return true;
+    }
   }
 
   n.restore ();

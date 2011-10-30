@@ -223,6 +223,8 @@
  + Fixed burndown chart y-axis height calculation (thanks to Ben Boeckel).
  + Fixed missing recurrence values in zsh completion script (thanks to Ben
    Boeckel).
+ + Fixed problem with DOM-checking the 'limit' pseudo-attribute (thanks to
+   Barton Meeks).
 
 ------ old releases ------------------------------
 
