@@ -53,7 +53,9 @@ int CmdExec::execute (std::string& output)
   for (arg = context.a3.begin (); arg != context.a3.end (); ++arg)
   {
     if (arg != context.a3.begin () &&
-        arg->_raw != "execute")
+        arg->_raw != "execute" &&
+        arg->_category != Arg::cat_rc &&
+        arg->_category != Arg::cat_override)
     {
       if (command_line.length ())
         command_line += " ";
