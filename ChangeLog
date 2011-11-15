@@ -203,6 +203,8 @@
    to Matt Kraai).
  + Fixed bug #831, which prevented some date fields from being properly parsed.
  + Fixed bug #835, which prevented hierarchical projects from being recognized.
+ + Fixed bug #836, which preserves numeric arguments as-is (thanks to Matt Kraai
+   for the patch).
  + Fixed bug #839, which caused problems when recurrence frequencies of '1m'
    were used.  This is an obsolete form, and should now be '1mo' (thanks to
    Gour D).

@@ -686,7 +686,6 @@ const A3 A3::tokenize (const A3& input) const
 
   std::string s;
   int i;
-  double d;
   time_t t;
   while (! n.depleted ())
   {
@@ -815,9 +814,9 @@ const A3 A3::tokenize (const A3& input) const
         }
       }
 
-      else if (is_number (n, d))
+      else if (is_number (n, s))
       {
-        output.push_back (Arg (format (d), Arg::type_number, Arg::cat_literal));
+        output.push_back (Arg (s, Arg::type_number, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -1699,10 +1698,10 @@ bool A3::is_tag (Nibbler& n, std::string& result)
 // <number> followed by either: \0, ), +, -, *, /, ' '.
 //
 // This prevents the interpretation of '3M' as a number.
-bool A3::is_number (Nibbler& n, double& d)
+bool A3::is_number (Nibbler& n, std::string& result)
 {
   n.save ();
-  if (n.getNumber (d))
+  if (n.getNumber (result))
   {
     char next = n.next ();
     if (next == '\0' ||

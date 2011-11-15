@@ -87,7 +87,7 @@ public:
   static bool is_id (Nibbler&, std::string&);
   static bool is_uuid (Nibbler&, std::string&);
   static bool is_tag (Nibbler&, std::string&);
-  static bool is_number (Nibbler&, double&);
+  static bool is_number (Nibbler&, std::string&);
   static bool is_integer (Nibbler&, int&);
   static bool is_operator (std::vector <std::string>&, Nibbler&, std::string&);
 

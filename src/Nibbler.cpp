@@ -377,7 +377,7 @@ bool Nibbler::getUnsignedInt (int& result)
 // e:
 //   e|E (+|-)?
 // 
-bool Nibbler::getNumber (double& result)
+bool Nibbler::getNumber (std::string& result)
 {
   std::string::size_type i = _cursor;
 
@@ -417,7 +417,7 @@ bool Nibbler::getNumber (double& result)
         while (i < _length && isdigit (_input[i]))
           ++i;
 
-        result = strtof (_input.substr (_cursor, i - _cursor).c_str (), NULL);
+        result = _input.substr (_cursor, i - _cursor);
         _cursor = i;
         return true;
       }
@@ -425,12 +425,26 @@ bool Nibbler::getNumber (double& result)
       return false;
     }
 
-    result = strtof (_input.substr (_cursor, i - _cursor).c_str (), NULL);
+    result = _input.substr (_cursor, i - _cursor);
     _cursor = i;
     return true;
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getNumber (double &result)
+{
+  bool isnumber;
+  std::string s;
+
+  isnumber = getNumber (s);
+  if (isnumber)
+  {
+    result = strtof (s.c_str (), NULL);
+  }
+  return isnumber;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
