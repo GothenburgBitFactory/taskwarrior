@@ -43,7 +43,7 @@ if (open my $fh, '>', 'time.rc')
 
 my @timeArray = localtime(time);
 my $now     = time ();
-my $lastmonth   =  $now - $timeArray[3] * 86_400;
+my $lastmonth   =  $now - ($timeArray[3] + 1) * 86_400;
 
 if (open my $fh, '>', 'pending.data')
 {
