@@ -93,6 +93,15 @@
 #define INCLUDED_STRINGS
 #define L10N                                           // Localization complete.
 
+// Note that for English, the following two lines are not displayed.  For all
+// other localizations, these lines will appear in the output of the 'version'
+// and 'diagnostics' commands.
+//
+// DO NOT include a copyright in the translation.
+//
+#define STRING_LOCALIZATION_DESC     "English localization"
+#define STRING_LOCALIZATION_AUTHOR   "Translated into English by A. Person."
+
 // A3
 #define STRING_A3_ALTERNATE_RC       "Using alternate .taskrc file {1}"
 #define STRING_A3_ALTERNATE_DATA     "Using alternate date.location {1}"

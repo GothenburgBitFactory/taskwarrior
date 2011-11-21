@@ -97,6 +97,11 @@ int CmdVersion::execute (std::string& output)
       << "-lua"
 #endif
 
+#if PACKAGE_LANGUAGE != LANGUAGE_EN_US
+      << " "
+      << STRING_LOCALIZATION_DESC
+#endif
+
       << "\n"
       << STRING_CMD_VERSION_COPY
       << "\n"
@@ -109,6 +114,12 @@ int CmdVersion::execute (std::string& output)
       << "\n"
       << link.render ()
       << "\n";
+
+#if PACKAGE_LANGUAGE != LANGUAGE_EN_US
+  out << STRING_LOCALIZATION_AUTHOR
+      << "\n"
+      << "\n";
+#endif
 
   output = out.str ();
   return 0;

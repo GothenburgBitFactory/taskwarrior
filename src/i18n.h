@@ -43,11 +43,14 @@
 
 #include <cmake.h>
 
+// Translators:
+//   Duplicate these three lines, changing "EN_US" and "en-US" to the new
+//   localization.
 #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
 #include <en-US.h>
 #endif
 
-// Other languages here.
+// Add other languages here.
 
 #define CCOLOR_BOLD             500
 #define CCOLOR_UNDERLINE        501
