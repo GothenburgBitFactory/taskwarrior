@@ -38,7 +38,7 @@ if ($@)
 }
 
 # Use the taskwarrior 2.0+ export command to filter and return JSON
-my $command = join (' ', ("env PATH=$ENV{PATH} task export", @ARGV));
+my $command = join (' ', ("env PATH='$ENV{PATH}' task export", @ARGV));
 if ($command =~ /No matches/)
 {
   printf STDERR $command;
