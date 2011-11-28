@@ -195,6 +195,9 @@ std::string Uri::ToString ()
   if (!_parsed)
     return std::string ();
 
+  if (is_local ())
+    return _data;
+
   std::string result;
   // strip password from _user
   std::string::size_type pos = _user.find (":");
