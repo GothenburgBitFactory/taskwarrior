@@ -190,6 +190,30 @@ bool Uri::expand (const std::string& configPrefix )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string Uri::ToString ()
+{
+  if (!_parsed)
+    return std::string ();
+
+  std::string result;
+  // strip password from _user
+  std::string::size_type pos = _user.find (":");
+  result = _protocol + "://";
+
+  if (_user.length () > 0)
+    result += _user.substr (0, pos) + "@";
+  
+  result += _host;
+  
+  if (_port.length () > 0)
+    result += + ":" + _port;
+  
+  result += "/" + _path;
+
+  return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Uri::parse ()
 {
   if (_parsed)

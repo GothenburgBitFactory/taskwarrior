@@ -97,7 +97,7 @@ int CmdMerge::execute (std::string& output)
     if (tmpfile != "")
       remove (tmpfile.c_str ());
 
-    if (((sAutopush == "ask") && (confirm (format (STRING_CMD_MERGE_CONFIRM, uri._data))))
+    if (((sAutopush == "ask") && (confirm (format (STRING_CMD_MERGE_CONFIRM, uri.ToString ()))))
        || (bAutopush))
     {
       // Derive autopush uri from merge.default.uri? otherwise: change prompt above

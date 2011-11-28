@@ -112,7 +112,7 @@ int CmdPull::execute (std::string& output)
       }
 		}
 
-    output += format (STRING_CMD_PULL_TRANSFERRED, uri._data) + "\n";
+    output += format (STRING_CMD_PULL_TRANSFERRED, uri.ToString ()) + "\n";
   }
   else
     throw std::string (STRING_CMD_PULL_NO_URI);

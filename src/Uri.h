@@ -51,6 +51,7 @@ public:
   std::string name () const;
   std::string parent () const;
   std::string extension () const;
+  std::string ToString();
   bool is_directory () const;
   bool is_local () const;
   bool append (const std::string&);

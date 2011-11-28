@@ -96,7 +96,7 @@ int CmdPush::execute (std::string& output)
       ofile3 << ifile3.rdbuf();
 		}
 
-    output += format (STRING_CMD_PUSH_TRANSFERRED, uri._data) + "\n";
+    output += format (STRING_CMD_PUSH_TRANSFERRED, uri.ToString ()) + "\n";
   }
   else
     throw std::string (STRING_CMD_PUSH_NO_URI);
