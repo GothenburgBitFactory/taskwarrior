@@ -226,6 +226,9 @@ int CmdShow::execute (std::string& output)
           i->substr (0,  7) != "report."               &&
           i->substr (0,  6) != "alias."                &&
           i->substr (0,  5) != "hook."                 &&
+          i->substr (0,  5) != "push."                 &&
+          i->substr (0,  5) != "pull."                 &&
+          i->substr (0,  6) != "merge."                &&
           i->substr (0, 21) != "urgency.user.project." &&
           i->substr (0, 17) != "urgency.user.tag.")
       {
