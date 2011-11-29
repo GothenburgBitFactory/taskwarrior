@@ -294,7 +294,7 @@ void Uri::parse ()
   }
 
   // path is absolute for ssh:// syntax
-  if ( (_protocol == "ssh") && (pathDelimiter == "/") )
+  if ( (_protocol == "ssh") && (pathDelimiter == "/") && (_path[0] != '~') )
   {
     _path = "/" + _path;
   }
