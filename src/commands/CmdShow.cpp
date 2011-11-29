@@ -38,6 +38,7 @@
 #include <Directory.h>
 #include <ViewText.h>
 #include <CmdShow.h>
+#include <Uri.h>
 
 extern Context context;
 
@@ -276,9 +277,20 @@ int CmdShow::execute (std::string& output)
       else if (std::find (default_values.begin (), default_values.end (), *i) != default_values.end ())
         color = warning;
 
+      std::string value = context.config.get (*i);
+      // hide sensible information
+      if ( (i->substr (0, 5) == "push."   ||
+            i->substr (0, 5) == "pull."   ||
+            i->substr (0, 6) == "merge.") && (i->find (".uri") != std::string::npos) ) {
+
+        Uri uri (value);
+        uri.parse ();
+        value = uri.ToString ();
+      }
+
       int row = view.addRow ();
       view.set (row, 0, *i, color);
-      view.set (row, 1, context.config.get (*i), color);
+      view.set (row, 1, value, color);
     }
   }
 

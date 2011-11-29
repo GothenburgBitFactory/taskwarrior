@@ -199,12 +199,18 @@ std::string Uri::ToString ()
     return _data;
 
   std::string result;
-  // strip password from _user
-  std::string::size_type pos = _user.find (":");
   result = _protocol + "://";
 
-  if (_user.length () > 0)
-    result += _user.substr (0, pos) + "@";
+  if (_user.length () > 0) {
+    // obscure password in _user
+    std::string::size_type pos = _user.find (":");
+    if (pos != std::string::npos) {
+      std::string::size_type len = _user.length () - pos - 1;
+      result += _user.replace (pos+1, len, len, '*') + "@";
+    }
+    else
+      result += _user + "@";
+  }
   
   result += _host;
   
