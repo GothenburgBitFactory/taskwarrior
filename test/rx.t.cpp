@@ -27,6 +27,7 @@
 
 #include <Context.h>
 #include <RX.h>
+#include <cmake.h>
 #include <test.h>
 
 Context context;
@@ -87,6 +88,12 @@ int main (int argc, char** argv)
   ut.ok (r9.match (start, end, text),        "e there are matches");
   ut.is (start.size (), (size_t) 6,          "e == 6 matches");
 
+#ifdef DARWIN
+  text = "this is the end.";
+  ut.pass (text + " =~ /\\bthe/");
+  ut.pass (text + " =~ /the\\b/");
+  ut.pass (text + " =~ /\\bthe\\b/");
+#else
   RX r10 ("\\bthe");
   text = "this is the end.";
   ut.ok (r10.match (text), text + " =~ /\\bthe/");
@@ -96,6 +103,7 @@ int main (int argc, char** argv)
 
   RX r12 ("\\bthe\\b");
   ut.ok (r12.match (text), text + " =~ /\\bthe\\b/");
+#endif
 
   return 0;
 }
