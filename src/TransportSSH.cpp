@@ -31,6 +31,7 @@
 #include <text.h>
 #include <i18n.h>
 #include <TransportSSH.h>
+#include <util.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 TransportSSH::TransportSSH(const Uri& uri) : Transport(uri)
@@ -60,11 +61,11 @@ void TransportSSH::send(const std::string& source)
 
 	if (_uri._user != "")
 	{
-		_arguments.push_back (_uri._user + "@" + _uri._host + ":" + _uri._path);
+		_arguments.push_back (_uri._user + "@" + _uri._host + ":" + escape (_uri._path, ' '));
 	}
 	else
 	{
-		_arguments.push_back (_uri._host + ":" + _uri._path);
+		_arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
 	}
 
 	if (execute())
@@ -91,11 +92,11 @@ void TransportSSH::recv(std::string target)
 
 	if (_uri._user != "")
 	{
-		_arguments.push_back (_uri._user + "@" + _uri._host + ":" + _uri._path);
+		_arguments.push_back (_uri._user + "@" + _uri._host + ":" + escape (_uri._path, ' '));
 	}
 	else
 	{
-		_arguments.push_back (_uri._host + ":" + _uri._path);
+		_arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
 	}
 
 	_arguments.push_back (target);

@@ -405,22 +405,26 @@ int execute(const std::string& executable, std::vector<std::string> arguments)
   if (executable == "")
     return -1;
 
+  // create command line before forking because the parent process also needs this for 
+  // calling context.debug()
+  char shell[] = "bash";
+  char opt[]   = "-c";
+
+  std::string cmdline = executable;
+
+  std::vector <std::string>::iterator it;
+  for (it = arguments.begin(); it != arguments.end(); ++it)
+  {
+    cmdline += " " + (std::string)*it;
+  }
+
+	context.debug ("Executing: " + std::string(shell) + " " + std::string(opt) + " " + cmdline);
+
   pid_t child_pid = fork();
 
   if (child_pid == 0)
   {
     // this is done by the child process
-    char shell[] = "bash";
-    char opt[]   = "-c";
-
-    std::string cmdline = executable;
-
-    std::vector <std::string>::iterator it;
-    for (it = arguments.begin(); it != arguments.end(); ++it)
-    {
-      cmdline += " " + (std::string)*it;
-    }
-
     char** argv = new char*[4];
     argv[0] = shell;                  // bash
     argv[1] = opt;                    // -c
@@ -530,6 +534,27 @@ const std::string decode (const std::string& value)
   str_replace (modified, "&squot;", "'");  // Deprecated 2.0
   str_replace (modified, "&comma;", ",");  // Deprecated 2.0
   str_replace (modified, "&colon;", ":");  // Deprecated 2.0
+
+  return modified;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Escapes any unescaped character of type c within the given string
+// e.g. ' ' -> '\ '
+const std::string escape (const std::string& value, char c)
+{
+  std::string modified = value;
+  char tmp[2] = {c, '\0'};
+  std::string search  = tmp;
+  std::string replace = "\\" + search;
+
+  std::string::size_type pos = modified.find (search);
+  while (pos != std::string::npos) {
+    if ( modified[pos-1] != '\\' )
+      modified.replace (pos, 1, replace);
+
+    pos = modified.find (search, pos+1);
+  }
 
   return modified;
 }

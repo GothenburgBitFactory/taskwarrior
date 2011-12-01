@@ -63,12 +63,12 @@ void TransportCurl::send(const std::string& source)
       throw format (STRING_TRANSPORT_URI_NODIR, _uri._path);
 
     _arguments.push_back ("-T");
-    _arguments.push_back ("\"" + source + "\"");
+    _arguments.push_back ("\"" + escape (source, ' ') + "\"");
   }
   else
   {
     _arguments.push_back ("-T");
-    _arguments.push_back (source);
+    _arguments.push_back (escape (source, ' '));
   }
 
   // cmd line is: curl -T source protocol://host:port/path
@@ -103,6 +103,7 @@ void TransportCurl::recv(std::string target)
     _arguments.push_back(_uri._user);
   }
 
+  std::vector<std::string> targetargs;
 
   if (is_filelist(_uri._path))
   {
@@ -124,15 +125,16 @@ void TransportCurl::recv(std::string target)
     suffix = toSplit.substr (pos+1);
     split (splitted, toSplit.substr(0, pos), ',');
 
-    target = "";
-
     std::vector <std::string>::iterator file;
-    for (file = splitted.begin (); file != splitted.end (); ++file)
-      target += " -o " + prefix + *file + suffix;
+    for (file = splitted.begin (); file != splitted.end (); ++file) {
+      targetargs.push_back ("-o");
+      targetargs.push_back (prefix + *file + suffix);
+    }
   }
   else
   {
-    target = "-o " + target;
+    targetargs.push_back ("-o");
+    targetargs.push_back (target);
   }
 
   // cmd line is: curl protocol://host:port/path/to/source/file -o path/to/target/file
@@ -145,7 +147,7 @@ void TransportCurl::recv(std::string target)
     _arguments.push_back (_uri._protocol + "://" + _uri._host + "/" + _uri._path);
   }
 
-  _arguments.push_back (target);
+  _arguments.insert (_arguments.end (), targetargs.begin (), targetargs.end ());
 
   int result = execute();
   if (result)

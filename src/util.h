@@ -80,5 +80,7 @@ unsigned burndown_size (unsigned ntasks);
 const std::string encode (const std::string&);
 const std::string decode (const std::string&);
 
+const std::string escape (const std::string&, char);
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////

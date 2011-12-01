@@ -72,6 +72,22 @@ Transport* Transport::getTransport(const Uri& uri)
 ////////////////////////////////////////////////////////////////////////////////
 int Transport::execute()
 {
+  // quote arguments
+  std::vector<std::string>::iterator it = _arguments.begin ();
+  for (; it != _arguments.end (); it++)
+  {
+    // quote until the first appearance of '{'
+    size_t pos = it->find('{');
+    if (pos != 0)
+    {
+      // '{' is not the first character
+      it->insert(0, "\"");
+      if (pos != std::string::npos)
+        it->insert(pos+1, "\"");
+      else
+        it->append("\"");
+    }
+  }
   return ::execute(_executable, _arguments);
 }
 
