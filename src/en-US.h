@@ -596,9 +596,30 @@
 #define STRING_FEEDBACK_NO_MATCH     "No matches."
 #define STRING_FEEDBACK_TASKS_SINGLE "(1 task)"
 #define STRING_FEEDBACK_TASKS_PLURAL "({1} tasks)"
+#define STRING_FEEDBACK_DELETED      "{1} will be deleted."
+#define STRING_FEEDBACK_DEP_SET      "Dependencies will be set to '{1}'."
+#define STRING_FEEDBACK_DEP_MOD      "Dependencies will be changed from '{1}' to '{2}'."
+#define STRING_FEEDBACK_DEP_DEL      "Dependencies '{1}' deleted."
+#define STRING_FEEDBACK_DEP_WAS_SET  "Dependencies set to '{1}'."
+#define STRING_FEEDBACK_DEP_WAS_MOD  "Dependencies changed from '{1}' to '{2}'."
+#define STRING_FEEDBACK_ATT_SET      "{1} will be set to '{2}'."
+#define STRING_FEEDBACK_ATT_MOD      "{1} will be changed from '{2}' to '{3}'."
+#define STRING_FEEDBACK_ATT_DEL      "{1} deleted."
+#define STRING_FEEDBACK_ATT_WAS_SET  "{1} set to '{2}'."
+#define STRING_FEEDBACK_ATT_WAS_MOD  "{1} changed from '{2}' to '{3}'."
+#define STRING_FEEDBACK_ANN_ADD      "Annotation of '{1}' added."
+#define STRING_FEEDBACK_ANN_DEL      "Annotation '{1} deleted."
+#define STRING_FEEDBACK_ANN_WAS_MOD  "Annotation changed to '{1}'."
+#define STRING_FEEDBACK_NOP          "No changes will be made."
+#define STRING_FEEDBACK_WAS_NOP      "No changes made."
 
 // File
 #define STRING_FILE_PERMS            "Task does not have the correct permissions for '{1}'."
+
+// helpers
+#define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."
+#define STRING_HELPER_PROJECT_COMPL  "Project '{1}' is {2}% complete"
+#define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
 
 // interactive
 #define STRING_INTERACTIVE_WIDTH     "Context::getWidth: determined width of {1} characters"

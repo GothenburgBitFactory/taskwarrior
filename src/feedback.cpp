@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
+
 #include <iostream>
 #include <algorithm>
 #include <sstream>
@@ -36,6 +38,7 @@
 #include <main.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <cmake.h>
 
 extern Context context;
@@ -94,8 +97,8 @@ std::string taskDifferences (const Task& before, const Task& after)
   std::vector <std::string>::iterator name;
   for (name = beforeOnly.begin (); name != beforeOnly.end (); ++name)
     out << "  - "
-        << ucFirst(*name)
-        << " will be deleted.\n";
+        << format (STRING_FEEDBACK_DELETED, ucFirst (*name))
+        << "\n";
 
   for (name = afterOnly.begin (); name != afterOnly.end (); ++name)
   {
@@ -107,17 +110,15 @@ std::string taskDifferences (const Task& before, const Task& after)
       join (to, ", ", deps_after);
 
       out << "  - "
-          << "Dependencies"
-          << " will be set to '"
-          << to
-          << "'.\n";
+          << format (STRING_FEEDBACK_DEP_SET, to)
+          << "\n";
     }
     else
       out << "  - "
-          << ucFirst(*name)
-          << " will be set to '"
-          << renderAttribute (*name, after.get (*name))
-          << "'.\n";
+          << format (STRING_FEEDBACK_ATT_SET,
+                     ucFirst (*name),
+                     renderAttribute (*name, after.get (*name)))
+          << "\n";
   }
 
   for (name = beforeAtts.begin (); name != beforeAtts.end (); ++name)
@@ -142,27 +143,24 @@ std::string taskDifferences (const Task& before, const Task& after)
         join (to, ", ", deps_after);
 
         out << "  - "
-            << "Dependencies"
-            << " will be changed from '"
-            << from
-            << "' to '"
-            << to
-            << "'.\n";
+            << format (STRING_FEEDBACK_DEP_MOD, from, to)
+            << "\n";
       }
       else
         out << "  - "
-            << ucFirst(*name)
-            << " will be changed from '"
-            << renderAttribute (*name, before.get (*name))
-            << "' to '"
-            << renderAttribute (*name, after.get (*name))
-            << "'.\n";
+            << format (STRING_FEEDBACK_ATT_MOD,
+                       ucFirst (*name),
+                       renderAttribute (*name, before.get (*name)),
+                       renderAttribute (*name, after.get (*name)))
+            << "\n";
     }
   }
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
-    out << "  - No changes will be made.\n";
+    out << "  - "
+        << STRING_FEEDBACK_NOP
+        << "\n";
 
   return out.str ();
 }
@@ -197,20 +195,18 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
         std::string from;
         join (from, ", ", deps_before);
 
-        out << "Dependencies '"
-            << from
-            << "' deleted.\n";
+        out << format (STRING_FEEDBACK_DEP_DEL, from)
+            << "\n";
     }
     else if (name->substr (0, 11) == "annotation_")
     {
-      out << "Annotation '"
-          << before.get (*name)
-          << "' deleted.\n";
+      out << format (STRING_FEEDBACK_ANN_DEL, before.get (*name))
+          << "\n";
     }
     else
     {
-      out << ucFirst (*name)
-          << " deleted.\n";
+      out << format (STRING_FEEDBACK_ATT_DEL, ucFirst (*name))
+          << "\n";
     }
   }
 
@@ -223,22 +219,19 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
       std::string to;
       join (to, ", ", deps_after);
 
-      out << "Dependencies"
-          << " set to '"
-          << to
-          << "'.\n";
+      out << format (STRING_FEEDBACK_DEP_WAS_SET, to)
+          << "\n";
     }
     else if (name->substr (0, 11) == "annotation_")
     {
-      out << "Annotation of '"
-          << after.get (*name)
-          << "' added.\n";
+      out << format (STRING_FEEDBACK_ANN_ADD, after.get (*name))
+          << "\n";
     }
     else
-      out << ucFirst(*name)
-          << " set to '"
-          << renderAttribute (*name, after.get (*name))
-          << "'.\n";
+      out << format (STRING_FEEDBACK_ATT_WAS_SET,
+                     ucFirst (*name),
+                     renderAttribute (*name, after.get (*name)))
+          << "\n";
   }
 
   for (name = beforeAtts.begin (); name != beforeAtts.end (); ++name)
@@ -258,31 +251,26 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
         std::string to;
         join (to, ", ", deps_after);
 
-        out << "Dependencies"
-            << " changed from '"
-            << from
-            << "' to '"
-            << to
-            << "'.\n";
+        out << format (STRING_FEEDBACK_DEP_WAS_MOD, from, to)
+            << "\n";
       }
       else if (name->substr (0, 11) == "annotation_")
       {
-        out << "Annotation changed to '"
-            << after.get (*name)
-            << "'.\n";
+        out << format (STRING_FEEDBACK_ANN_WAS_MOD, after.get (*name))
+            << "\n";
       }
       else
-        out << ucFirst(*name)
-            << " changed from '"
-            << renderAttribute (*name, before.get (*name))
-            << "' to '"
-            << renderAttribute (*name, after.get (*name))
-            << "'.\n";
+        out << format (STRING_FEEDBACK_ATT_WAS_MOD,
+                       ucFirst (*name),
+                       renderAttribute (*name, before.get (*name)),
+                       renderAttribute (*name, after.get (*name)))
+            << "\n";
     }
 
   // Shouldn't just say nothing.
   if (out.str ().length () == 0)
-    out << "No changes made.\n";
+    out << STRING_FEEDBACK_WAS_NOP
+        << "\n";
 
   return out.str ();
 }

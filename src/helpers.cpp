@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define L10N                                           // Localization complete.
 
 #include <iostream>
 #include <iomanip>
@@ -46,6 +47,7 @@
 #include <ViewText.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 #include <main.h>
 
 static void countTasks (const std::vector <Task>&, const std::string&, int&, int&);
@@ -127,9 +129,8 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
   if (project != "")
   {
     if (scope)
-      msg << "The project '"
-          << project
-          << "' has changed.  ";
+      msg << format (STRING_HELPER_PROJECT_CHANGE, project)
+          << "  ";
 
     // Count pending and done tasks, for this project.
     int count_pending = 0;
@@ -151,15 +152,10 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
     else
       percentage = (count_done * 100 / (count_done + count_pending));
 
-    msg << "Project '"
-        << project
-        << "' is "
-        << percentage
-        << "% complete ("
-        << count_pending
-        << " of "
-        << (count_pending + count_done)
-        << " tasks remaining).\n";
+    msg << format (STRING_HELPER_PROJECT_COMPL, project, percentage)
+        << " "
+        << format (STRING_HELPER_PROJECT_REM, count_pending, count_pending + count_done)
+        << "\n";
   }
 
   return msg.str ();
