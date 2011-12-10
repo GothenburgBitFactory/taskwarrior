@@ -815,6 +815,10 @@ biweekly, fortnight
 Every two weeks.
 
 .TP
+monthly, month, 1mo, 2mo, ...
+Every month.
+
+.TP
 quarterly, 1qtr, 2qtrs, ...
 Every three months, a quarter, or a number of quarters.
 
