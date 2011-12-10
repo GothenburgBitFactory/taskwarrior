@@ -43,7 +43,6 @@ New Code Needs
       <red>one two three four</red>
     This is only possible if there is nothing between </red> and <red> and the
     colors match.
-  - Make sure the update-holidays.pl script is doing the right thing.
 
 Documentation Needed
   Various forms of documentation that are needed, or are in need of review or
