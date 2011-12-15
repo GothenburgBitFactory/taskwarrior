@@ -957,6 +957,15 @@ Urgency coefficients for tags
 .RS
 Urgency coefficients for annotations
 .RE
+.B urgency.age.coefficient=0.0
+.RS
+Urgency coefficients for the age of tasks
+.RE
+.B urgency.age.max=0.0
+.RS
+Maximum (or minimum if negative) urgency a task can reach due to aging. If
+this is set to zero, the term will be unlimited.
+.RE
 
 The coefficients reflect the relative importance of the various terms in the
 urgency calculation.  These are default values, and may be modified to suit your

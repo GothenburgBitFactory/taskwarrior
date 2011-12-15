@@ -1231,6 +1231,8 @@ float Task::urgency_c () const
   value += urgency_next ()        * context.config.getReal ("urgency.next.coefficient");
   value += urgency_due ()         * context.config.getReal ("urgency.due.coefficient");
   value += urgency_blocking ()    * context.config.getReal ("urgency.blocking.coefficient");
+  value += urgency_age             (context.config.getReal ("urgency.age.coefficient"),
+                                    context.config.getReal ("urgency.age.max"));
 
   // Tag- and project-specific coefficients.
   std::vector <std::string> all;
@@ -1394,6 +1396,30 @@ float Task::urgency_due () const
     else if (days_overdue >= -12) return 0.24;
     else if (days_overdue >= -13) return 0.20;
     else                          return 0.16;
+  }
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_age (float coefficient, float max) const
+{
+  if (coefficient == 0) {
+    return 0.0;
+  }
+  else if (has ("entry"))
+  {
+    Date now;
+    Date entry (get_date ("entry"));
+
+    int age    = (now - entry) / 86400;
+    float result = age * coefficient;
+    if (max == 0)    // unlimited
+      return result;
+    else if (max > 0)
+      return (result > max) ? max : result;
+    else
+      return (result < max) ? max : result;
   }
 
   return 0.0;

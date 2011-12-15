@@ -196,6 +196,8 @@ int CmdShow::execute (std::string& output)
     " urgency.project.coefficient"
     " urgency.tags.coefficient"
     " urgency.waiting.coefficient"
+    " urgency.age.coefficient"
+    " urgency.age.max"
     " verbose"
     " weekstart"
     " xterm.title"

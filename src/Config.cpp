@@ -147,6 +147,8 @@ std::string Config::_defaults =
   "urgency.project.coefficient=3.0                # Urgency coefficients for projects\n"
   "urgency.tags.coefficient=2.0                   # Urgency coefficients for tags\n"
   "urgency.annotations.coefficient=1.0            # Urgency coefficients for annotations\n"
+  "urgency.age.coefficient=0                      # Urgency coefficients for age\n"
+  "urgency.age.max=0                              # Maximum urgency offset for age\n"
   "\n"
   "#urgency.user.project.foo.coefficient=5.0      # Urgency coefficients for 'foo' project\n"
   "#urgency.user.tag.foo.coefficient=5.0          # Urgency coefficients for 'foo' tag\n"
