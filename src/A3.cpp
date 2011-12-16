@@ -41,6 +41,7 @@
 #include <util.h>
 #include <i18n.h>
 #include <A3.h>
+#include <cmake.h>
 
 extern Context context;
 
@@ -1012,7 +1013,11 @@ const A3 A3::expand (const A3& input) const
       {
         expanded.push_back (Arg (name,                  Arg::type_string, Arg::cat_dom));
         expanded.push_back (Arg ("~",                                     Arg::cat_op));
+#ifdef SOLARIS
+        expanded.push_back (Arg ("\\<" + value + "\\>", Arg::type_string, Arg::cat_rx));
+#else
         expanded.push_back (Arg ("\\b" + value + "\\b", Arg::type_string, Arg::cat_rx));
+#endif
       }
 
       // name.noword:value  -->  name !~ \bvalue\n
@@ -1020,7 +1025,11 @@ const A3 A3::expand (const A3& input) const
       {
         expanded.push_back (Arg (name,                  Arg::type_string, Arg::cat_dom));
         expanded.push_back (Arg ("!~",                                    Arg::cat_op));
+#ifdef SOLARIS
+        expanded.push_back (Arg ("\\<" + value + "\\>", Arg::type_string, Arg::cat_rx));
+#else
         expanded.push_back (Arg ("\\b" + value + "\\b", Arg::type_string, Arg::cat_rx));
+#endif
       }
       else
         throw format (STRING_A3_UNKNOWN_ATTMOD, mod);

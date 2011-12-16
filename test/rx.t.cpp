@@ -94,6 +94,17 @@ int main (int argc, char** argv)
   ut.pass (text + " =~ /the\\b/");
   ut.pass (text + " =~ /\\bthe\\b/");
 #else
+#ifdef SOLARIS
+  RX r10 ("\\<the");
+  text = "this is the end.";
+  ut.ok (r10.match (text), text + " =~ /\\<the/");
+
+  RX r11 ("the\\>");
+  ut.ok (r11.match (text), text + " =~ /the\\>/");
+
+  RX r12 ("\\<the\\>");
+  ut.ok (r12.match (text), text + " =~ /\\<the\\>/");
+#else
   RX r10 ("\\bthe");
   text = "this is the end.";
   ut.ok (r10.match (text), text + " =~ /\\bthe/");
@@ -103,6 +114,7 @@ int main (int argc, char** argv)
 
   RX r12 ("\\bthe\\b");
   ut.ok (r12.match (text), text + " =~ /\\bthe\\b/");
+#endif
 #endif
 
   return 0;
