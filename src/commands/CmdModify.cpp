@@ -92,7 +92,6 @@ int CmdModify::execute (std::string& output)
         throw std::string (STRING_CMD_MODIFY_REM_DUE);
 
       if (before.has ("recur")  &&
-          task->has ("recur")   &&
           (!task->has ("recur") ||
            task->get ("recur") == ""))
         throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
