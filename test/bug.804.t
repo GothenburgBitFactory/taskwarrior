@@ -48,13 +48,13 @@ qx{../src/task rc:bug.rc 1 annotate abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr
 
 # List with rc.hyphenate=on.
 my $output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:on ls};
-like ($output, qr/vwx-$/ms, 'hyphenated 1');
-like ($output, qr/tuv-$/ms, 'hyphenated 2');
+like ($output, qr/vwx-\n/ms, 'hyphenated 1');
+like ($output, qr/tuv-\n/ms, 'hyphenated 2');
 
 # List with rc.hyphenate=off.
 $output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:off ls};
-like ($output, qr/vwxy$/ms, 'not hyphenated 1');
-like ($output, qr/uvwx$/ms, 'not hyphenated 2');
+like ($output, qr/vwxy\n/ms, 'not hyphenated 1');
+like ($output, qr/uvwx\n/ms, 'not hyphenated 2');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
