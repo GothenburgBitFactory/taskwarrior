@@ -961,10 +961,9 @@ Urgency coefficients for annotations
 .RS
 Urgency coefficients for the age of tasks
 .RE
-.B urgency.age.max=0.0
+.B urgency.age.max=365
 .RS
-Maximum (or minimum if negative) urgency a task can reach due to aging. If
-this is set to zero, the term will be unlimited.
+Maximum age in days. After this number of days has elapsed, the urgency of a task won't increase any more because of aging.
 .RE
 
 The coefficients reflect the relative importance of the various terms in the

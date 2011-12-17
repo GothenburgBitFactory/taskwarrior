@@ -117,7 +117,7 @@ private:
   inline float urgency_next () const;
   inline float urgency_due () const;
   inline float urgency_blocking () const;
-  inline float urgency_age (float, float) const;
+  inline float urgency_age () const;
 };
 
 #endif

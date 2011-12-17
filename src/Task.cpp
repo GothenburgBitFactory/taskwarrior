@@ -1231,8 +1231,7 @@ float Task::urgency_c () const
   value += urgency_next ()        * context.config.getReal ("urgency.next.coefficient");
   value += urgency_due ()         * context.config.getReal ("urgency.due.coefficient");
   value += urgency_blocking ()    * context.config.getReal ("urgency.blocking.coefficient");
-  value += urgency_age             (context.config.getReal ("urgency.age.coefficient"),
-                                    context.config.getReal ("urgency.age.max"));
+  value += urgency_age ()         * context.config.getReal ("urgency.age.coefficient");
 
   // Tag- and project-specific coefficients.
   std::vector <std::string> all;
@@ -1402,24 +1401,22 @@ float Task::urgency_due () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_age (float coefficient, float max) const
+float Task::urgency_age () const
 {
-  if (coefficient == 0) {
-    return 0.0;
-  }
-  else if (has ("entry"))
+  if (has ("entry"))
   {
     Date now;
     Date entry (get_date ("entry"));
+    int   age  = (now - entry) / 86400;  // in days
+    float max  = context.config.getReal ("urgency.age.max");
 
-    int age    = (now - entry) / 86400;
-    float result = age * coefficient;
-    if (max == 0)    // unlimited
-      return result;
-    else if (max > 0)
-      return (result > max) ? max : result;
+    if (max == 0)
+      return 1.0;
+
+    if (age > max)
+      return 1.0;
     else
-      return (result < max) ? max : result;
+      return (1.0 * age/max);
   }
 
   return 0.0;
