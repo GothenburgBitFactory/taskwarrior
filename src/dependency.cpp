@@ -25,12 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <stack>
 #include <Context.h>
 #include <text.h>
 #include <util.h>
@@ -38,9 +38,6 @@
 #include <main.h>
 
 extern Context context;
-
-////////////////////////////////////////////////////////////////////////////////
-static bool followUpstream (const Task&, const Task&, std::vector <std::string>&);
 
 ////////////////////////////////////////////////////////////////////////////////
 // A task is blocked if it depends on tasks that are pending or waiting.
@@ -116,49 +113,38 @@ void dependencyGetBlocking (const Task& task, std::vector <Task>& blocking)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Terminology:
-//   -->    if a depends on b, then it can be said that a --> b
-//   Head   if a --> b, then b is the head
-//   Tail   if a --> b, then a is the tail
-//
-// Algorithm:
-//   Keep walking the chain, recording the links (a --> b, b --> c, ...) until
-//   either the end of the chain is found (therefore not circular), or the chain
-//   loops and a repeat link is spotted (therefore circular).
+// Returns true if the supplied task adds a cycle to the dependency chain.
 bool dependencyIsCircular (const Task& task)
 {
-  std::vector <std::string> seen;
-  return followUpstream (task, task, seen);
-}
+  std::stack <Task> s;
+  std::vector <int> deps_current;
 
-////////////////////////////////////////////////////////////////////////////////
-// Returns true if a task is encountered twice in a chain walk, and therefore
-// indicates circularity.  Recursive.
-static bool followUpstream (
-  const Task& task,
-  const Task& original,
-  std::vector <std::string>& seen)
-{
-  std::vector <Task> blocking;
-  dependencyGetBlocking (task, blocking);
-  std::vector <Task>::iterator b;
-  for (b = blocking.begin (); b != blocking.end (); ++b)
+  std::string task_uuid = task.get ("uuid");
+
+  s.push (task);
+  while (!s.empty ())
   {
-    std::string link = task.get ("uuid") + " -> " + b->get ("uuid");
+    Task& current = s.top ();
+    current.getDependencies (deps_current);
 
-    // Have we seen this link before?  If so, circularity has been detected.
-    if (std::find (seen.begin (), seen.end (), link) != seen.end ())
-      return true;
+    // This is a basic depth first search that always terminates given the
+    // assumption that any cycles in the dependency graph must have been
+    // introduced by the task that is being checked.
+    // Since any previous cycles would have been prevented by this very
+    // function, this is a reasonable assumption.
+    for (unsigned int i = 0; i < deps_current.size (); i++)
+    {
+      context.tdb2.get (deps_current[i], current);
 
-    seen.push_back (link);
+      if (task_uuid == current.get ("uuid"))
+        {
+          // Cycle found, initial task reached for the second time!
+          return true;
+        }
 
-    // Use 'original' over '*b' if they both refer to the same task, otherwise
-    // '*b' is from TDB2's committed list, and lacks recent modifications.
-    if (followUpstream (
-          (b->get ("uuid") == original.get ("uuid") ? original : *b),
-          original,
-          seen))
-      return true;
+      s.push (current);
+    }
+    s.pop ();
   }
 
   return false;
@@ -167,7 +153,7 @@ static bool followUpstream (
 ////////////////////////////////////////////////////////////////////////////////
 // Determine whether a dependency chain is being broken, assuming that 'task' is
 // either completed or deleted.
-//           
+//
 //   blocked task blocking action
 //   ------- ---- -------- -----------------------------
 //           [1]  2        Chain broken
@@ -306,7 +292,7 @@ void dependencyChainOnModify (Task& before, Task& after)
 
     // before   dep:2,3
     // after    dep:2
-    // 
+    //
     // any tasks blocked by after might should be repaired to depend on 3.
 
     std::vector <Task> blocked;
