@@ -36,7 +36,8 @@ Dispatch
 
 Command Objects
   Every task command is implemented by a command object.  The command object
-  provides metadata, 
+  provides metadata, usage and one-line help in addition to the ::execute method
+  that implements the command.
 
 
 Column Objects
