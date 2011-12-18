@@ -106,7 +106,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
 
     int min_desc = longestWord (description);
     int min_anno = indent + Date::length (format);
-    minimum = max (min_desc, min_anno);
+    minimum = std::max (min_desc, min_anno);
     maximum = description.length ();
 
     std::map <std::string, std::string> annos;
@@ -136,7 +136,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
 
     int min_desc = longestWord (description);
     int min_anno = Date::length (format);
-    minimum = max (min_desc, min_anno);
+    minimum = std::max (min_desc, min_anno);
     maximum = description.length ();
 
     std::map <std::string, std::string> annos;

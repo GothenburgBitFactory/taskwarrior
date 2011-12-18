@@ -40,14 +40,6 @@
 #include <uuid/uuid.h>
 #endif
 
-#ifndef min
-#define min(a,b) ((a) < (b) ? (a) : (b))
-#endif
-
-#ifndef max
-#define max(a,b) ((a) > (b) ? (a) : (b))
-#endif
-
 // util.cpp
 bool confirm (const std::string&);
 int confirm3 (const std::string&);

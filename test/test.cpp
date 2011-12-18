@@ -60,7 +60,7 @@ UnitTest::~UnitTest ()
 {
   float percentPassed = 0.0;
   if (mPlanned > 0)
-    percentPassed = (100.0 * mPassed) / max (mPlanned, mPassed + mFailed + mSkipped);
+    percentPassed = (100.0 * mPassed) / std::max (mPlanned, mPassed + mFailed + mSkipped);
 
   if (mCounter < mPlanned)
   {
