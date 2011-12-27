@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <iostream>
@@ -559,6 +558,54 @@ const std::string escape (const std::string& value, char c)
   return modified;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Accept a list of projects, and return an indented list
+// that reflects the hierarchy.
+//
+//      Input  - "one"
+//               "one.two"
+//               "one.two.three"
+//               "one.four"
+//               "two"
+//      Output - "one"
+//               "  one.two"
+//               "    one.two.three"
+//               "  one.four"
+//               "two"
+//
+// There are two optional arguments, 'whitespace', and 'delimiter',
+//
+//  - whitespace is the string used to build the prefixes of indented items.
+//    - defaults to two spaces, "  "
+//  - delimiter is the character used to split up projects into subprojects.
+//    - defaults to the period, '.'
+//
+const std::vector<std::string> indentTree (
+  const std::vector<std::string>& values,
+  const std::string& whitespace /* = "  " */,
+  char delimiter/* = '.' */)
+{
+  std::vector <std::string> modified;
+  std::vector <std::string>::const_iterator i;
+  for (i = values.begin (); i != values.end (); ++i)
+  {
+    // Count the delimiters in *i.
+    int count = 0;
+    std::string::size_type pos = 0;
+    while ((pos = i->find (delimiter, pos + 1)) != std::string::npos)
+      ++count;
+
+    // Construct a prefix string which is a concatenated set of whitespace
+    // strings.
+    std::string prefix;
+    for (int indent = 0; indent < count; ++indent)
+      prefix += whitespace;
+
+    modified.push_back (prefix + *i);
+  }
+
+  return modified;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

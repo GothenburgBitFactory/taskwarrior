@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (30);
+  UnitTest t (36);
 
   // TODO bool confirm (const std::string&);
   // TODO int confirm3 (const std::string&);
@@ -112,6 +112,22 @@ int main (int argc, char** argv)
   t.is (vleft[2], 3,      "1,2,3,4 + 3,4,5 -> 1,2,3,4,5");
   t.is (vleft[3], 4,      "1,2,3,4 + 3,4,5 -> 1,2,3,4,5");
   t.is (vleft[4], 5,      "1,2,3,4 + 3,4,5 -> 1,2,3,4,5");
+
+  // std::vector<std::string> indentTree (const std::vector<std::string>&, const std::string whitespace="  ", char delimiter='.');
+  std::vector <std::string> flat;
+  flat.push_back ("one");
+  flat.push_back ("one.two");
+  flat.push_back ("one.two.three");
+  flat.push_back ("one.four");
+  flat.push_back ("two");
+
+  std::vector <std::string> structured = indentTree (flat, "  ", '.');
+  t.is (structured.size (), (size_t) 5, "indentTree yields 5 strings");
+  t.is (structured[0], "one",               "indentTree 'one'           -> 'one'");
+  t.is (structured[1], "  one.two",         "indentTree 'one.two'       -> '  one.two'");
+  t.is (structured[2], "    one.two.three", "indentTree 'one.two.three' -> '    one.two.three'");
+  t.is (structured[3], "  one.four",        "indentTree 'one.four'      -> '  one.four'");
+  t.is (structured[4], "two",               "indentTree 'two'           -> 'two'");
 
   return 0;
 }

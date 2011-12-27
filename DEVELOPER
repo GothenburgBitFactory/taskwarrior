@@ -13,19 +13,6 @@ New Code Needs
 
   - text.cpp extractLines needs to be rewritten in a UTF8-aware and color-code
     sensitive manner.
-  - Need a function to accept a list of projects, and return an indented list
-    that reflects the hierarchy.  This will likely go into the new 'projects'
-    command.  Something like:
-      Input  - "one"
-               "one.two"
-               "one.two.three"
-               "one.four"
-               "two"
-      Output - "one"
-               "  one.two"
-               "    one.two.three"
-               "  one.four"
-               "two"
   - Need export_sql.yy script.  Any language.  This would have value as an
     example, or template script serving as a starting-point for anyone who
     needed this format.
@@ -145,6 +132,7 @@ Current Codebase Condition
 
 ---
 
+2011-12-23 Removed entry for tree-indentation function.
 2011-10-16 Removed obsolete entries, added test suite description.
 2011-10-16 Removed obsolete entries.
 2011-08-21 Small changes, new work listed.

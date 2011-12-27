@@ -74,5 +74,10 @@ const std::string decode (const std::string&);
 
 const std::string escape (const std::string&, char);
 
+const std::vector<std::string> indentTree (
+  const std::vector<std::string>&,
+  const std::string& whitespace = "  ",
+  char delimiter='.');
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////
