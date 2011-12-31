@@ -1292,9 +1292,9 @@ bool A3::is_attr (Nibbler& n, Arg& arg)
         // therefore not stored.
 
         // I suspect this is auto-vivifying context.columns["limit"].  Bugger.
-        Column* col = context.columns[name];
-        if (col)
-          arg._type = Arg::type_id (col->type ());
+        std::map<std::string, Column*>::iterator i = context.columns.find (name);
+        if (i != context.columns.end ())
+          arg._type = Arg::type_id (i->second->type ());
         else
           arg._type = Arg::type_pseudo;
 
