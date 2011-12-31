@@ -1290,8 +1290,6 @@ bool A3::is_attr (Nibbler& n, Arg& arg)
         // Most attributes are standard, some are pseudo-attributes, such as
         // 'limit:page', which is not represented by a column object, and
         // therefore not stored.
-
-        // I suspect this is auto-vivifying context.columns["limit"].  Bugger.
         std::map<std::string, Column*>::iterator i = context.columns.find (name);
         if (i != context.columns.end ())
           arg._type = Arg::type_id (i->second->type ());

@@ -219,6 +219,8 @@
  + Fixed bug #860, which prevented lower-case priority values from being
    accepted (thanks to Michelle Crane).
  + Fixed bug #862, which suppressed feedback from the 'denotate' command.
+ + Fixed bug #892, which caused a segfault due to misuse of
+   std::map::operator[] (thanks to Dmitriy Samborskiy).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
