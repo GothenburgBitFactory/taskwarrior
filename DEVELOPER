@@ -103,6 +103,9 @@ Unit Tests Needed
   - Test propagation of modifications to recurring tasks.
   - Test regex support.
   - Need unit tests for each bug in the issue list, if suitable.
+  - We have bugs in the unit tests that only manifest on days such as December
+    31st.  Clearly there is some bad date math going on, most likely in the
+    tests themselves, rather than in taskwarrior.
 
   * Note that running the unit tests require the Perl JSON module to be
     installed.
@@ -132,6 +135,7 @@ Current Codebase Condition
 
 ---
 
+2011-12-31 Added note about bad unit tests at EOY.
 2011-12-23 Removed entry for tree-indentation function.
 2011-10-16 Removed obsolete entries, added test suite description.
 2011-10-16 Removed obsolete entries.
