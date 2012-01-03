@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <sstream>
@@ -64,7 +63,10 @@ int CmdStatistics::execute (std::string& output)
   size_t dataSize = context.tdb2.pending._file.size ()
                   + context.tdb2.completed._file.size ()
                   + context.tdb2.undo._file.size ()
+/*
+                  // TODO Re-enable this once 2.1 has taskd support.
                   + context.tdb2.backlog._file.size ()
+*/
                   + context.tdb2.synch_key._file.size ();
 
   // Count the undo transactions.

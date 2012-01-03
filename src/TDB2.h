@@ -128,7 +128,7 @@ public:
   TF2 pending;
   TF2 completed;
   TF2 undo;
-  TF2 backlog;
+//  TF2 backlog;
   TF2 synch_key;
 
 private:

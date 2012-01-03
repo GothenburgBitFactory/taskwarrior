@@ -475,7 +475,9 @@ void TDB2::set_location (const std::string& location)
   pending.target   (location + "/pending.data");
   completed.target (location + "/completed.data");
   undo.target      (location + "/undo.data");
+/*
   backlog.target   (location + "/backlog.data");
+*/
   synch_key.target (location + "/synch.key");
 }
 
@@ -507,8 +509,10 @@ void TDB2::add (Task& task)
   undo.add_line ("new " + task.composeF4 ());
   undo.add_line ("---\n");
 
+/*
   // Add task to backlog.
   backlog.add_task (task);
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -536,8 +540,10 @@ void TDB2::modify (Task& task)
     undo.add_line ("new " + task.composeF4 ());
     undo.add_line ("---\n");
 
+/*
     // Add modified task to backlog.
     backlog.add_task (task);
+*/
   }
 }
 
@@ -550,7 +556,9 @@ void TDB2::commit ()
   pending.commit ();
   completed.commit ();
   undo.commit ();
+/*
   backlog.commit ();
+*/
   synch_key.commit ();
 
   context.timer_commit.stop ();
@@ -1790,7 +1798,9 @@ bool TDB2::read_only ()
   return pending._read_only   ||
          completed._read_only ||
          undo._read_only      ||
+/*
          backlog._read_only   ||
+*/
          synch_key._read_only;
 }
 
@@ -1800,7 +1810,9 @@ void TDB2::clear ()
   pending.clear ();
   completed.clear ();
   undo.clear ();
+/*
   backlog.clear ();
+*/
   synch_key.clear ();
 
   _location = "";
@@ -1815,7 +1827,9 @@ void TDB2::dump ()
     context.debug (pending.dump ());
     context.debug (completed.dump ());
     context.debug (undo.dump ());
+/*
     context.debug (backlog.dump ());
+*/
     context.debug (synch_key.dump ());
     context.debug ("");
   }
