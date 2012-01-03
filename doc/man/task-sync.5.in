@@ -352,10 +352,10 @@ unable to merge.  The change transactions stored in the undo.data file are
 used for synchronization.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2011 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.
 
 The sync capabilities were written by J. Schlatow.
-Parts copyright (C) 2010 - 2011 J. Schlatow.
+Parts copyright (C) 2010 - 2012 J. Schlatow.
 
 Taskwarrior is distributed under the MIT license. See
 http://www.opensource.org/licenses/mit-license.php for more information.

@@ -12,7 +12,7 @@
 #  * Tags
 #  * Attribute names and modifiers
 #
-#  Copyright 2009 - 2011 Mick Koch <kchmck@gmail.com>
+#  Copyright 2009 - 2012 Mick Koch <kchmck@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

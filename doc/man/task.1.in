@@ -957,7 +957,7 @@ The file that contains the synchronization key, if the task
 server is configured.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2011 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
 http://www.opensource.org/licenses/mit-license.php for more information.
