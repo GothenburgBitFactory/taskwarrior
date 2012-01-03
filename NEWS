@@ -27,6 +27,7 @@ New Features in taskwarrior 2.0.0
     task and annotations.
   - New 'columns' command to list the supported columns and formats.
   - New 'eoq' and 'soq' dates to refer to the end and start of the quarter.
+  - Urgency now has an 'age' component.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -66,6 +67,8 @@ New configuration options in taskwarrior 2.0.0
     broken during text-wrapping.
   - New 'defaultheight' setting overrides the assumed 24 lines when 'detection'
     is disabled.  This setting only affects charts.
+  - New 'urgency.age.coefficient' and 'urgency.age.max' settings control the new
+    age component to the urgency value.
 
 Newly deprecated features in taskwarrior 2.0.0
 
@@ -84,7 +87,7 @@ Newly deprecated features in taskwarrior 2.0.0
 
 Taskwarrior has been built and tested on the following configurations:
 
-  * OS X 10.6 Snow Leopard and 10.5 Leopard
+  * OS X 10.7 Lion, 10.6 Snow Leopard and 10.5 Leopard
   * Fedora 14 Laughlin, 13 Goddard
   * Ubuntu 10.10 Maverick Meerkat, 10.04 Lucid Lynx
   * Debian Sid

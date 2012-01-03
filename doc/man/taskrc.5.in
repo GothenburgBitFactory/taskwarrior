@@ -957,7 +957,7 @@ Urgency coefficients for tags
 .RS
 Urgency coefficients for annotations
 .RE
-.B urgency.age.coefficient=0.0
+.B urgency.age.coefficient=5.0
 .RS
 Urgency coefficients for the age of tasks
 .RE
