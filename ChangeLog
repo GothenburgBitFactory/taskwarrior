@@ -232,6 +232,8 @@
    Boeckel).
  + Fixed problem with DOM-checking the 'limit' pseudo-attribute (thanks to
    Barton Meeks).
+ + Fixed problem with duplicate 'project changed' messages (thanks to Owen
+   Clarke).
 
 ------ old releases ------------------------------
 
