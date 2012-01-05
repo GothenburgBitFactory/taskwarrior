@@ -26,8 +26,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <Context.h>
-#include <Date.h>
 #include <Nibbler.h>
+#ifdef NIBBLER_FEATURE_DATE
+#include <Date.h>
+#endif
 #include <test.h>
 
 Context context;
@@ -35,7 +37,19 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
+#ifdef NIBBLER_FEARURE_DATE
+#ifdef NIBBLER_FEATURE_REGEX
   UnitTest t (292);
+#else
+  UnitTest t (268);
+#endif
+#else
+#ifdef NIBBLER_FEATURE_REGEX
+  UnitTest t (242);
+#else
+  UnitTest t (218);
+#endif
+#endif
 
   try
   {
@@ -44,7 +58,10 @@ int main (int argc, char** argv)
     int i;
     double d;
     time_t ti;
+
+#ifdef NIBBLER_FEATURE_DATE
     Date dt;
+#endif
     std::vector <std::string> options;
 
     // Make sure the nibbler behaves itself with trivial input.
@@ -65,7 +82,9 @@ int main (int argc, char** argv)
     t.notok (n.getUntilEOL (s),          "trivial: getUntilEOL");
     t.notok (n.getUntilEOS (s),          "trivial: getUntilEOS");
     t.notok (n.getDateISO (ti),          "trivial: getDateISO");
+#ifdef NIBBLER_FEATURE_DATE
     t.notok (n.getDate ("YYYYMMDD", ti), "trivial: getDate");
+#endif
     t.notok (n.getOneOf (options, s),    "trivial: getOneOf");
     t.ok    (n.depleted (),              "trivial: depleted");
 
@@ -81,6 +100,7 @@ int main (int argc, char** argv)
     t.notok (n.getUntil (' ', s),        "        '' :       getUntil (' ')    -> false");
     t.ok    (n.depleted (),              "        '' :       depleted ()       -> true");
 
+#ifdef NIBBLER_FEATURE_REGEX
     // bool getUntilRx (const std::string&, std::string&);
     t.diag ("Nibbler::getUntilRx");
     n = Nibbler ("one two");
@@ -95,6 +115,7 @@ int main (int argc, char** argv)
     t.ok    (n.getUntilRx ("$", s),      "     'two' :     getUntilRx ('$')    -> true");
     t.is    (s, "two",                   "     'two' :     getUntilRx ('$')    -> 'two'");
     t.ok    (n.depleted (),              "        '' :       depleted ()       -> true");
+#endif
 
     // bool getUntilOneOf (const std::string&, std::string&);
     t.diag ("Nibbler::getUntilOneOf");
@@ -170,6 +191,7 @@ int main (int argc, char** argv)
     t.is    (s, "foo",                "     'foo' :    getUntilEOS ()       -> 'foo'");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
 
+#ifdef NIBBLER_FEATURE_REGEX
     // bool skipRx (const std::string&);
     t.diag ("Nibbler::skipRx");
     n = Nibbler ("one two");
@@ -178,6 +200,7 @@ int main (int argc, char** argv)
     t.ok    (n.skipRx ("e+"),         "   'e two' :         skipRx ('e+')   -> true");
     t.ok    (n.skipRx ("...."),       "    ' two' :         skipRx ('....') -> true");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
+#endif
 
     // bool getQuoted (char, std::string&);
     t.diag ("Nibbler::getQuoted");
@@ -280,6 +303,7 @@ int main (int argc, char** argv)
     t.ok    (n.getLiteral ("bar"),    "     'bar' :     getLiteral ('bar')  -> true");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
 
+#ifdef NIBBLER_FEATURE_REGEX
     // bool getRx (const std::string&, std::string&);
     t.diag ("Nibbler::getRx");
     n = Nibbler ("one two three");
@@ -293,6 +317,7 @@ int main (int argc, char** argv)
     t.ok    (n.getRx ("th...", s),    "        'three' :   getRx ('th...')   -> true");
     t.is    (s, "three",              "        'three' :   getRx ('th...')   -> 'three'");
     t.ok    (n.depleted (),           "             '' :       depleted ()   -> true");
+#endif
 
     // bool getUUID (std::string&);
     t.diag ("Nibbler::getUUID");
@@ -321,6 +346,7 @@ int main (int argc, char** argv)
     t.is    (ti, 1234567890,          "'20090213T233130Z': getDateISO ()  -> 1234567890");
     t.ok    (n.depleted (),           "depleted");
 
+#ifdef NIBBLER_FEATURE_DATE
     // bool getDate (time_t&, const std::string&);
     t.diag ("Nibbler::getDate");
     n = Nibbler ("1/1/2008");
@@ -401,6 +427,7 @@ int main (int argc, char** argv)
     t.is (dt.hour (),     12, "ctor (std::string) -> h");
     t.is (dt.minute (),   34, "ctor (std::string) -> N");
     t.is (dt.second (),   56, "ctor (std::string) -> S");
+#endif
 
     // bool getOneOf (const std::vector <std::string>&, std::string&);
     t.diag ("Nibbler::getOneOf");

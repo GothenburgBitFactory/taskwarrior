@@ -29,6 +29,12 @@
 #define INCLUDED_NIBBLER
 #define L10N                                           // Localization complete.
 
+#define NIBBLER_FEATURE_DATE
+//#undef  NIBBLER_FEATURE_DATE
+
+#define NIBBLER_FEATURE_REGEX
+//#undef  NIBBLER_FEATURE_REGEX
+
 #include <string>
 #include <vector>
 
@@ -44,7 +50,9 @@ public:
 
   bool getUntil (char, std::string&);
   bool getUntil (const std::string&, std::string&);
+#ifdef NIBBLER_FEATURE_REGEX
   bool getUntilRx (const std::string&, std::string&);
+#endif
   bool getUntilOneOf (const std::string&, std::string&);
   bool getUntilWS (std::string&);
   bool getUntilEOL (std::string&);
@@ -64,10 +72,14 @@ public:
   bool getNumber (double&);
   bool getUnsignedNumber (double&);
   bool getLiteral (const std::string&);
+#ifdef NIBBLER_FEATURE_REGEX
   bool getRx (const std::string&, std::string&);
+#endif
   bool getUUID (std::string&);
   bool getDateISO (time_t&);
+#ifdef NIBBLER_FEATURE_DATE
   bool getDate (const std::string&, time_t&);
+#endif
   bool getOneOf (const std::vector <std::string>&, std::string&);
   bool getName (std::string&);
   bool getWord (std::string&);
@@ -77,7 +89,9 @@ public:
   bool skipAll (char);
   bool skipAllOneOf (const std::string&);
   bool skipWS ();
+#ifdef NIBBLER_FEATURE_REGEX
   bool skipRx (const std::string&);
+#endif
 
   char next ();
   std::string next (const int quantity);
@@ -89,6 +103,7 @@ public:
 
   bool depleted ();
 
+  static bool isPunctuation (char);
   std::string dump ();
 
 private:

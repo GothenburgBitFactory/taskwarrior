@@ -29,9 +29,6 @@
 #include <iomanip>
 #include <string.h>
 #include <math.h>
-#include <main.h>
-#include <util.h>
-#include <text.h>
 #include <test.h>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -394,9 +391,9 @@ void UnitTest::is (
 ///////////////////////////////////////////////////////////////////////////////
 void UnitTest::diag (const std::string& text)
 {
-  std::string trimmed = trim (text, " \t\n\r\f");
-
-  std::cout << "# " << trimmed << "\n";
+  std::string::size_type start = text.find_first_not_of (" \t\n\r\f");
+  std::string::size_type end   = text.find_last_not_of  (" \t\n\r\f");
+  std::cout << "# " << text.substr (start, end - start + 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

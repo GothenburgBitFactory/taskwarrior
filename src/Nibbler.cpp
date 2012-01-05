@@ -25,20 +25,20 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
-#define L10N                                           // Localization complete.
-
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
 #include <inttypes.h>
 #include <Nibbler.h>
+#ifdef NIBBLER_FEATURE_DATE
 #include <Date.h>
-#include <text.h>
+#endif
+#ifdef NIBBLER_FEATURE_REGEX
 #include <RX.h>
+#endif
 
-const char* c_digits = "0123456789";
+const char* c_digits = "0123456789"; // TODO Not used?
 
 ////////////////////////////////////////////////////////////////////////////////
 Nibbler::Nibbler ()
@@ -139,6 +139,7 @@ bool Nibbler::getUntil (const std::string& terminator, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+#ifdef NIBBLER_FEATURE_REGEX
 bool Nibbler::getUntilRx (const std::string& regex, std::string& result)
 {
   if (_cursor < _length)
@@ -162,6 +163,7 @@ bool Nibbler::getUntilRx (const std::string& regex, std::string& result)
 
   return false;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
@@ -529,6 +531,7 @@ bool Nibbler::getLiteral (const std::string& literal)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+#ifdef NIBBLER_FEATURE_REGEX
 bool Nibbler::getRx (const std::string& regex, std::string& result)
 {
   if (_cursor < _length)
@@ -553,6 +556,7 @@ bool Nibbler::getRx (const std::string& regex, std::string& result)
 
   return false;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUUID (std::string& result)
@@ -685,6 +689,7 @@ bool Nibbler::getDateISO (time_t& t)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+#ifdef NIBBLER_FEATURE_DATE
 bool Nibbler::getDate (const std::string& format, time_t& t)
 {
   std::string::size_type i = _cursor;
@@ -989,6 +994,7 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
   _cursor = i;
   return true;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Assumes that the options are sorted by decreasing length, so that if the
@@ -1120,6 +1126,7 @@ bool Nibbler::skipWS ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+#ifdef NIBBLER_FEATURE_REGEX
 bool Nibbler::skipRx (const std::string& regex)
 {
   if (_cursor < _length)
@@ -1143,6 +1150,7 @@ bool Nibbler::skipRx (const std::string& regex)
 
   return false;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipAllOneOf (const std::string& chars)
@@ -1217,6 +1225,21 @@ bool Nibbler::depleted ()
     return true;
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Override of ispunct, that considers #, $ and @ not to be punctuation.
+//
+// ispunct:      ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
+// Punctuation:  ! "     % & ' ( ) * + , - . / : ; < = > ?   [ \ ] ^ _ ` { | } ~
+// delta:            # $                                   @
+//
+bool Nibbler::isPunctuation (char c)
+{
+  if (c == '@' || c == '#' || c == '$')
+    return false;
+
+  return ispunct (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
