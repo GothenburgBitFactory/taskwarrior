@@ -672,7 +672,7 @@ bool Nibbler::getDateISO (time_t& t)
       tms.tm_sec   = second;
 
       char *tz = getenv ("TZ");
-      setenv ("TZ", "", 1);
+      setenv ("TZ", "UTC", 1);
       tzset ();
       t = mktime (&tms);
       if (tz)

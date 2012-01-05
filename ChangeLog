@@ -234,6 +234,7 @@
    Barton Meeks).
  + Fixed problem with duplicate 'project changed' messages (thanks to Owen
    Clarke).
+ + Fixed problem with non-UTC defaults for "TZ" (thanks to Owen Clarke).
 
 ------ old releases ------------------------------
 
