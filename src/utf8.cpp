@@ -76,6 +76,8 @@ unsigned int utf8_codepoint (const std::string& input)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Iterates along a UTF8 string.
+//   - argument i counts bytes advanced through the string
+//   - returns the next character
 unsigned int utf8_next_char (const std::string& input, std::string::size_type& i)
 {
   // How many bytes in the sequence?

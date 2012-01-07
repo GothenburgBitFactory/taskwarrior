@@ -11,11 +11,6 @@ Deprecated Code
 New Code Needs
   This is code that needs to be written, usually down at the C++ function level.
 
-  - text.cpp extractLines needs to be rewritten in a UTF8-aware and color-code
-    sensitive manner.
-  - Need export_sql.yy script.  Any language.  This would have value as an
-    example, or template script serving as a starting-point for anyone who
-    needed this format.
   - Need export_viz.yy script.  Any language.  This would have value as an
     example, or template script serving as a starting-point for anyone who
     needed this format.
@@ -135,6 +130,8 @@ Current Codebase Condition
 
 ---
 
+2012-01-10 Removed entry for extractLines, which was rewritten.
+2012-01-07 Removed entry for export-sql.yy.  Example exists now.
 2011-12-31 Added note about bad unit tests at EOY.
 2011-12-23 Removed entry for tree-indentation function.
 2011-10-16 Removed obsolete entries, added test suite description.

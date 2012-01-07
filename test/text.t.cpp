@@ -37,7 +37,6 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (262);
-
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width, bool hyphenate)
   std::string text = "This is a test of the line wrapping code.";
   std::vector <std::string> lines;
@@ -66,7 +65,7 @@ int main (int argc, char** argv)
   text = "This ☺ is a test of utf8 line extraction.";
   std::string line;
   extractLine (text, line, 7, true);
-  t.is (line, "line 1", "extractLine 7 'This ☺ is a test of utf8 line extraction.' -> 'This ☺'");
+  t.is (line, "This ☺", "extractLine 7 'This ☺ is a test of utf8 line extraction.' -> 'This ☺'");
 
   // void extractLine (std::string& text, std::string& line, int length)
   text = "line 1\nlengthy second line that exceeds width";

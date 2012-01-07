@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <algorithm>
@@ -318,66 +317,98 @@ int longestLine (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Walk the input text looking for a break point.  A break point is one of:
+//   - EOS
+//   - \n
+//   - last space before 'length' characters
+//   - first 'length' characters
 void extractLine (
   std::string& text,
   std::string& line,
   int length,
   bool hyphenate)
 {
-  size_t eol = text.find ("\n");
-
-  // Special case: found \n in first length characters.
-  if (eol != std::string::npos && eol < (unsigned) length)
+  std::string::size_type bytes      = 0;
+  std::string::size_type previous   = std::string::npos;
+  std::string::size_type last_space = std::string::npos;
+  int character;
+  int chars;
+  for (chars = 0; chars < length; ++chars)
   {
-    line = text.substr (0, eol); // strip \n
-    text = text.substr (eol + 1);
-    return;
+    previous = bytes;
+    character = utf8_next_char (text, bytes);
+
+    // Record last seen space.
+    if (character == ' ')
+      last_space = previous;
+
+    // Newline is an early break point.
+    if (character == '\n')
+    {
+      line = text.substr (0, bytes - 1);
+      text = text.substr (bytes);
+      return;
+    }
+
+    // EOS is an early break point.
+    if (character == 0)
+    {
+      line = text;
+      text = "";
+      return;
+    }
   }
 
-  // Special case: no \n, and less than length characters total.
-  // special case: text.find ("\n") == std::string::npos && text.length () < length
-  if (eol == std::string::npos && utf8_text_length (text) <= length)
+  // Case where EOS was not quite reached.
+  //  012345
+  // |eleven|\0
+  if (text[bytes] == '\0')
   {
     line = text;
     text = "";
     return;
   }
 
-  // Safe to ASSERT text.length () > length
-
-  // Look for the last space prior to length
-  eol = length;
-  while (eol && text[eol] != ' ' && text[eol] != '\n')
-    --eol;
-
-  // If a space was found, break there.
-  if (eol)
+  // Case where a word ends at the right margin.
+  //  012345
+  // |eleven|_
+  if (text[bytes] == ' ')
   {
-    line = text.substr (0, eol);
-    text = text.substr (eol + 1);
+    line = text.substr (0, bytes);
+    text = text.substr (bytes + 1);
+    return;
   }
 
-  // If no space was found, hyphenate.
+  // Case where a word straddles the margin, but there is an earlier space
+  // to break on.
+  //  012345
+  // |one_tw|o
+  if (last_space != std::string::npos)
+  {
+    line = text.substr (0, last_space);
+    text = text.substr (last_space + 1);
+    return;
+  }
+
+  // Case where a word needs to be split, and there is no last_space.
+  // Hyphenation becomes the issue.
+  //  012345
+  // |fiftee|n
+  // |fifte-|en
   else
   {
-    if (length > 1)
+    if (hyphenate)
     {
-      if (hyphenate)
-      {
-        line = text.substr (0, length - 1) + "-";
-        text = text.substr (length - 1);
-      }
-      else
-      {
-        line = text.substr (0, length);
-        text = text.substr (length);
-      }
+      line = text.substr (0, previous) + "-";
+      text = text.substr (previous);
     }
     else
     {
-      line = text.substr (0, 1);
-      text = text.substr (length);
+      line = text.substr (0, bytes);
+      text = text.substr (bytes);
     }
+
+    return;
   }
 }
 

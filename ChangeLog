@@ -40,6 +40,7 @@
    output is enclosed by '[...]'.
  + The duration 'm' is now interpreted as 'months', not 'minutes'.
  + Urgency now has an 'age' component.
+ + Improved text wrapping of UTF8 text.
  
 
 # Tracked Features, sorted by ID.
