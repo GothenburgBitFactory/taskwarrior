@@ -130,8 +130,13 @@ Current Codebase Condition
 
 ---
 
+<<<<<<< HEAD
 2012-01-10 Removed entry for extractLines, which was rewritten.
 2012-01-07 Removed entry for export-sql.yy.  Example exists now.
+||||||| merged common ancestors
+=======
+2012-01-07 Removed entry for export-sql.yy.  Example exists now.
+>>>>>>> 76e87173e1f9c490e4148346f6b9fdd47e2da6d5
 2011-12-31 Added note about bad unit tests at EOY.
 2011-12-23 Removed entry for tree-indentation function.
 2011-10-16 Removed obsolete entries, added test suite description.
