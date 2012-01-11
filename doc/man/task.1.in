@@ -53,7 +53,7 @@ More filter examples:
 By default, filter elements are combined with an implicit 'and' operator,
 but 'or' and 'xor' may also be used, provided parentheses are included:
 
-  task '(/[Cc]at|[Dd]og/ or /[0-9]+/)'      <command> <mods>
+  task '( /[Cc]at|[Dd]og/ or /[0-9]+/ )'      <command> <mods>
 
 The parentheses isolate the logical term from any default command filter or
 implicit report filter.
@@ -671,7 +671,7 @@ You can use the following operators in filter expressions:
 For example:
 
   task due.before:eom priority.not:L list
-  task '(due < eom or priority != L)'  list
+  task '( due < eom or priority != L )'  list
 
 Note that the parentheses are required when using a logical operator other than
 the 'and' operator.  The reason is that some report contains filters that must
@@ -698,11 +698,11 @@ The implied 'and' operator makes it:
 This is a precedence error - the 'and' and 'or' need to be grouped using
 parentheses, like this:
 
-  task status:pending and (project:Home or project:Garden) list
+  task status:pending and ( project:Home or project:Garden ) list
 
 The original example therefore must be entered as:
 
-  task '(project:Home or project:Garden)' list
+  task '( project:Home or project:Garden )' list
 
 This includes quotes to escape the parentheses, so that the shell doesn't
 interpret them and hide them from taskwarrior.
