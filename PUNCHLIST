@@ -1,17 +1,9 @@
 Beta1 Punch List
 - DOM access
-- Working merge command
 - task.1 man page that is accurate
 - taskrc.5 man page that is accurate
 
-Beta 2/3 Punch List
-- Task server integration
-- ...
-
 Release Punch List
 - All updated man pages
-- New tutorials scripted, recorded
-- Working "synch" command
 - All important bug fixes
-- ...
 
