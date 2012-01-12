@@ -223,6 +223,8 @@
  + Fixed bug #862, which suppressed feedback from the 'denotate' command.
  + Fixed bug #892, which caused a segfault due to misuse of
    std::map::operator[] (thanks to Dmitriy Samborskiy).
+ + Fixed bug #897, which adds the UUID field to the 'completed' report
+   (thanks to Eli Lev).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
