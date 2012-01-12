@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'verbose.rc')
@@ -46,11 +46,24 @@ like ($output, qr/Logged task/, '\'affected\' verbosity good');
 $output = qx{../src/task rc:verbose.rc log bar rc.verbose:off};
 unlike ($output, qr/Logged task/, '\'affected\' verbosity good');
 
-# TODO Verbosity: 'new-id'
+# Verbosity: 'new-id'
+$output = qx{../src/task rc:verbose.rc rc.verbose:on add Sample1};
+like ($output, qr/Created task \d/, '\'new-id\' verbosity good');
+
+$output = qx{../src/task rc:verbose.rc rc.verbose:off add Sample2};
+unlike ($output, qr/Created task \d/, '\'new-id\' verbosity good');
+
+# Verbosity: 'label', 'footer'
+$output = qx{../src/task rc:verbose.rc ls rc.verbose:on};
+like ($output, qr/ID.+Project.+Pri.+Description/, '\'label\' verbosity good');
+like ($output, qr/^\d+ tasks$/ms, '\'footer\' verbosity good');
+
+$output = qx{../src/task rc:verbose.rc list rc.verbose:off};
+unlike ($output, qr/ID.+Project.+Pri.+Description/, '\'label\' verbosity good');
+unlike ($output, qr/^\d+ tasks$/ms, '\'footer\' verbosity good');
+
 # TODO Verbosity: 'blank'
-# TODO Verbosity: 'label'
 # TODO Verbosity: 'header'
-# TODO Verbosity: 'footer'
 # TODO Verbosity: 'edit'
 
 # Cleanup.
