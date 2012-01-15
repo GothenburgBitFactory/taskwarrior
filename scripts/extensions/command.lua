@@ -22,13 +22,6 @@ function usage ()
 end
 
 -- Arguments: None
--- Returns:   Valid Taskwarrior BNF, minimally defining a production rule that
---            has the same name as the command itself
-function syntax ()
-  return 'random ::= "random" ;'
-end
-
--- Arguments: None
 -- Returns:   1 --> command does not modify data
 --            0 --> command modifies data
 function read_only ()

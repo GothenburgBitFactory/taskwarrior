@@ -23,7 +23,7 @@ end
 
 -- Arguments: None
 -- Returns:   0 --> success only
-function goodbye ()
+function execute ()
   print ('Goodbye.')
 end
 

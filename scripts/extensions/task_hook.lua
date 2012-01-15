@@ -24,7 +24,7 @@ end
 -- Arguments: None
 -- Returns:   1 --> failure
 --            0 --> success
-function encourage ()
+function execute (uuid)
   -- Only provide encouragement if the verbosity settings allow it.
   verbosity = task_get ('rc.verbose')
   if string.find (verbosity, 'encourage') ~= nil

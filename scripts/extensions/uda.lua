@@ -45,7 +45,8 @@ end
 -- Arguments: Raw data
 -- Returns:   Formatted data
 -- Note:      Shown here is a pass-through format, doing no formatting.  This is
---            the default behavior if the format function is not implemented.
+--            also the default behavior if the format function is not
+--            implemented.
 function format (value)
   return value
 end
@@ -53,8 +54,8 @@ end
 -- Arguments: Value
 -- Returns:   Urgency Term
 -- Note:      Should reference rc.urgency.<field>.coefficient
-function urgency (value)
-  coefficient = task_get ('urgency.priority.coefficient')
+function urgency (uuid)
+  coefficient = task_get ('rc.urgency.priority.coefficient')
 
   -- TODO Urgency calculation here
 

@@ -18,6 +18,9 @@ end
 -- Arguments: The DOM reference to evaluate
 -- Returns:   The value from the DOM lookup
 function lookup (name)
-  return 1.23 -- Fake load average
+  if name == 'system.load.average'
+  then
+    return 1.23 -- Fake load average
+  end
 end
 
