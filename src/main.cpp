@@ -46,6 +46,7 @@ Context context;
 #define srand(x) srandom(x)
 #endif
 
+////////////////////////////////////////////////////////////////////////////////
 int main (int argc, const char** argv)
 {
   // Set up randomness.
@@ -59,23 +60,30 @@ int main (int argc, const char** argv)
 
   int status = 0;
 
-  try
+  if (argc == 2 && !strcmp (argv[1], "--version"))
   {
-    status = context.initialize (argc, argv);
-    if (status == 0)
-      status = context.run ();
+    std::cout << VERSION << "\n";
   }
-
-  catch (std::string& error)
+  else
   {
-    std::cout << error << "\n";
-    status = -1;
-  }
+    try
+    {
+      status = context.initialize (argc, argv);
+      if (status == 0)
+        status = context.run ();
+    }
 
-  catch (...)
-  {
-    std::cerr << STRING_UNKNOWN_ERROR << "\n";
-    status = -2;
+    catch (std::string& error)
+    {
+      std::cout << error << "\n";
+      status = -1;
+    }
+
+    catch (...)
+    {
+      std::cerr << STRING_UNKNOWN_ERROR << "\n";
+      status = -2;
+    }
   }
 
   return status;
