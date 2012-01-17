@@ -28,6 +28,7 @@
 #define L10N                                           // Localization complete.
 
 #include <iostream>
+#include <cstring>
 #include <stdlib.h>
 
 #ifdef CYGWIN
