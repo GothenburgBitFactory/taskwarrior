@@ -387,7 +387,7 @@ std::string Date::monthName (int month)
     STRING_DATE_AUGUST_LONG,
     STRING_DATE_SEPTEMBER_LONG,
     STRING_DATE_OCTOBER_LONG,
-    STRING_DATE_NOEMBER_LONG,
+    STRING_DATE_NOVEMBER_LONG,
     STRING_DATE_DECEMBER_LONG,
   };
 
@@ -496,7 +496,7 @@ int Date::monthOfYear (const std::string& input)
   if (in == STRING_DATE_AUGUST_LONG    || in == STRING_DATE_AUGUST_SHORT   )     return  8;
   if (in == STRING_DATE_SEPTEMBER_LONG || in == STRING_DATE_SEPTEMBER_SHORT)     return  9;
   if (in == STRING_DATE_OCTOBER_LONG   || in == STRING_DATE_OCTOBER_SHORT  )     return 10;
-  if (in == STRING_DATE_NOEMBER_LONG   || in == STRING_DATE_NOEMBER_SHORT  )     return 11;
+  if (in == STRING_DATE_NOVEMBER_LONG  || in == STRING_DATE_NOVEMBER_SHORT )     return 11;
   if (in == STRING_DATE_DECEMBER_LONG  || in == STRING_DATE_DECEMBER_SHORT )     return 12;
 
   return -1;

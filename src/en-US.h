@@ -531,7 +531,7 @@
 #define STRING_DATE_AUGUST_LONG      "august"
 #define STRING_DATE_SEPTEMBER_LONG   "september"
 #define STRING_DATE_OCTOBER_LONG     "october"
-#define STRING_DATE_NOEMBER_LONG     "november"
+#define STRING_DATE_NOVEMBER_LONG    "november"
 #define STRING_DATE_DECEMBER_LONG    "december"
 
 #define STRING_DATE_JANUARY_SHORT    "jan"
@@ -544,7 +544,7 @@
 #define STRING_DATE_AUGUST_SHORT     "aug"
 #define STRING_DATE_SEPTEMBER_SHORT  "sep"
 #define STRING_DATE_OCTOBER_SHORT    "oct"
-#define STRING_DATE_NOEMBER_SHORT    "nov"
+#define STRING_DATE_NOVEMBER_SHORT   "nov"
 #define STRING_DATE_DECEMBER_SHORT   "dec"
 
 #define STRING_DATE_SUNDAY_LONG      "sunday"
