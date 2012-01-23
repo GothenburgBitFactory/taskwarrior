@@ -117,7 +117,7 @@ void dependencyGetBlocking (const Task& task, std::vector <Task>& blocking)
 bool dependencyIsCircular (const Task& task)
 {
   std::stack <Task> s;
-  std::vector <int> deps_current;
+  std::vector <std::string> deps_current;
 
   std::string task_uuid = task.get ("uuid");
 
