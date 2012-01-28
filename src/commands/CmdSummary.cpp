@@ -120,11 +120,11 @@ int CmdSummary::execute (std::string& output)
   // Create a table for output.
   ViewText view;
   view.width (context.getWidth ());
-  view.add (Column::factory ("string", STRING_CMD_SUMMARY_PROJECT));
-  view.add (Column::factory ("string.right", STRING_CMD_SUMMARY_REMAINING));
-  view.add (Column::factory ("string.right", STRING_CMD_SUMMARY_AVG_AGE));
-  view.add (Column::factory ("string.right", STRING_CMD_SUMMARY_COMPLETE));
-  view.add (Column::factory ("string", "0%                        100%"));
+  view.add (Column::factory ("string",            STRING_CMD_SUMMARY_PROJECT));
+  view.add (Column::factory ("string.right",      STRING_CMD_SUMMARY_REMAINING));
+  view.add (Column::factory ("string.right",      STRING_CMD_SUMMARY_AVG_AGE));
+  view.add (Column::factory ("string.right",      STRING_CMD_SUMMARY_COMPLETE));
+  view.add (Column::factory ("string.left_fixed", "0%                        100%"));
 
   Color bar_color (context.config.get ("color.summary.bar"));
   Color bg_color  (context.config.get ("color.summary.background"));
