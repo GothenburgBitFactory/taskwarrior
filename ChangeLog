@@ -44,7 +44,11 @@
  
 
 # Tracked Features, sorted by ID.
+ + Added feature #52, which provides improved text-wrapping support for UTF-8
+   descriptions.
  + Added feature #278, which provides a more consistent command line grammar.
+ + Added feature #318, which shows a full edit history in the 'info' report,
+   when enabled by 'journal.info=on'
  + Added feature #330, which supports the 'inverse' color attribute.
  + Added feature #340, which implements new color rules 'color.completed' and
    'color.deleted'.
@@ -197,6 +201,9 @@
    (thanks to Owen Clarke).
  + Fixed bug #808, which generated compiler warnings on Solarix (thanks to
    Owen Clarke).
+ + Fixed bug #817, which caused a build problem with a Core2 Duo processor on a
+   Mac OSX 10.6 machine.  Notes updated in INSTALL file (thanks to John
+   Hammond).
  + Fixed bug #822, #845, which generated incorrect IDs (thanks to Matt Kraai and
    Michelle Crane).
  + Fixed bug #823, so that recurring task change propagations are now always
