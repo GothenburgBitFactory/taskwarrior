@@ -504,8 +504,10 @@ void Context::createDefaultConfig ()
   config.createDefaultData (data_dir);
 
   // Create extension directory, if necessary.
+/* TODO Enable this when the time is right, say for 2.1
   if (! extension_dir.exists ())
     extension_dir.create ();
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
