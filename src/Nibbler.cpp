@@ -234,6 +234,7 @@ bool Nibbler::getQuoted (
 {
   bool inquote = false;
   bool inescape = false;
+  char previous = 0;
   char current = 0;
   result = "";
 
@@ -250,6 +251,7 @@ bool Nibbler::getQuoted (
     if (current == '\\' && !inescape)
     {
       inescape = true;
+      previous = current;
       continue;
     }
 
@@ -270,6 +272,12 @@ bool Nibbler::getQuoted (
     }
     else
     {
+      if (previous)
+      {
+        result += previous;
+        previous = 0;
+      }
+
       result += current;
       inescape = false;
     }

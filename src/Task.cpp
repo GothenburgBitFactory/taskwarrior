@@ -309,7 +309,7 @@ void Task::parse (const std::string& input)
             nl.skip (':')           &&
             nl.getQuoted ('"', value))
         {
-          // Experimental legacy value translation.
+          // Experimental legacy value translation of 'recur:m' --> 'recur:mo'.
           if (name == "recur" &&
               digitsOnly (value.substr (0, value.length () - 1)) &&
               value[value.length () - 1] == 'm')

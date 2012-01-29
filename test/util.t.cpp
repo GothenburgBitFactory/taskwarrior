@@ -129,6 +129,9 @@ int main (int argc, char** argv)
   t.is (structured[3], "  one.four",        "indentTree 'one.four'      -> '  one.four'");
   t.is (structured[4], "two",               "indentTree 'two'           -> 'two'");
 
+  // TODO const std::string encode (const std::string& value);
+  // TODO const std::string decode (const std::string& value);
+
   return 0;
 }
 

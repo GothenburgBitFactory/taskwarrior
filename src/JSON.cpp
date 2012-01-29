@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <text.h>
@@ -410,10 +409,10 @@ std::string json::encode (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Pointers might speed this up.
 std::string json::decode (const std::string& input)
 {
   std::string output;
-
   for (unsigned int i = 0; i < input.length (); ++i)
   {
     if (input[i] == '\\')
@@ -437,7 +436,7 @@ std::string json::decode (const std::string& input)
         i += 3;
         break;
 
-      // If it is an unrecognized seqeence, do nothing.
+      // If it is an unrecognized sequence, do nothing.
       default:
         output += '\\';
         output += input[i];

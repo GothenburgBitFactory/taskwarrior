@@ -492,11 +492,9 @@ unsigned burndown_size (unsigned ntasks)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Encode values prior to serialization.
-//   \t -> &tab;
 //   "  -> &dquot;
 //   [  -> &open;
 //   ]  -> &close;
-//   \  -> \\               (extra chars to disambiguate multi-line comment)
 const std::string encode (const std::string& value)
 {
   std::string modified = value;
@@ -510,9 +508,8 @@ const std::string encode (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Decode values after parse.
-//   \t <- &tab;
-//   "  <- &quot; or &dquot;
-//   '  <- &squot;
+//   "  <- &dquot;
+//   '  <- &squot; or &quot;
 //   ,  <- &comma;
 //   [  <- &open;
 //   ]  <- &close;

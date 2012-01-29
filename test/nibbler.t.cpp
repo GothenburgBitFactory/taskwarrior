@@ -39,15 +39,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (292);
+  UnitTest t (296);
 #else
-  UnitTest t (268);
+  UnitTest t (272);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (242);
+  UnitTest t (246);
 #else
-  UnitTest t (218);
+  UnitTest t (222);
 #endif
 #endif
 
@@ -210,36 +210,44 @@ int main (int argc, char** argv)
 
     n = Nibbler ("'\"'");
     t.ok    (n.getQuoted ('\'', s),   "      ''\"'' :     getQuoted (''')    -> true");
-    t.is    (s, "\"",                  "     ''\"'' :      getQuoted (''')    -> '\"'"); // 81
+    t.is    (s, "\"",                  "     ''\"'' :      getQuoted (''')    -> '\"'");
 
     n = Nibbler ("'x'");
     t.ok    (n.getQuoted ('\'', s),   "      ''x'' :     getQuoted (''')    -> true");
-    t.is    (s, "x",                  "      ''x'' :     getQuoted (''')    -> ''");     // 83
+    t.is    (s, "x",                  "      ''x'' :     getQuoted (''')    -> ''");
 
     n = Nibbler ("'x");
     t.notok (n.getQuoted ('\'', s),   "      ''x' :      getQuoted (''')    -> false");
 
     n = Nibbler ("x");
-    t.notok (n.getQuoted ('\'', s),   "       'x' :      getQuoted (''')    -> false");
+    t.notok (n.getQuoted ('\'', s),   "       'x' :      getQuoted (''')    -> false"); // 90
 
     n = Nibbler ("\"one\\\"two\"");
-    t.notok (n.getQuoted ('\'', s),   "\"one\\\"two\" :      getQuoted (''')    -> false");             // 86
+    t.notok (n.getQuoted ('\'', s),   "\"one\\\"two\" :      getQuoted (''')    -> false");
 
     n = Nibbler ("\"one\\\"two\"");
-    t.ok (n.getQuoted ('"', s, false), "\"one\\\"two\" :      getQuoted ('\"', false, false) -> true"); // 87
-    t.is (s, "one\"two", "getQuoted ('\"', false) -> one\"two");                                        // 88
+    t.ok (n.getQuoted ('"', s, false), "\"one\\\"two\" :      getQuoted ('\"', false, false) -> true");
+    t.is (s, "one\\\"two", "getQuoted ('\"', false) -> one\\\"two");
 
     n = Nibbler ("\"one\\\"two\"");
-    t.ok (n.getQuoted ('"', s, true),  "\"one\\\"two\" :      getQuoted ('\"', false, true)  -> true"); // 89
-    t.is (s, "\"one\"two\"", "getQuoted ('\"', true) -> \"one\"two\"");                                 // 90
+    t.ok (n.getQuoted ('"', s, true),  "\"one\\\"two\" :      getQuoted ('\"', false, true)  -> true");
+    t.is (s, "\"one\\\"two\"", "getQuoted ('\"', true) -> \"one\\\"two\"");
 
     n = Nibbler ("\"one\\\"two\"");
-    t.ok (n.getQuoted ('"', s, false), "\"one\\\"two\" :      getQuoted ('\"', true,  false) -> true"); // 91
-    t.is (s, "one\"two", "getQuoted ('\"', false) -> one\"two");                                        // 92
+    t.ok (n.getQuoted ('"', s, false), "\"one\\\"two\" :      getQuoted ('\"', true,  false) -> true");
+    t.is (s, "one\\\"two", "getQuoted ('\"', false) -> one\\\"two");
 
     n = Nibbler ("\"one\\\"two\"");
-    t.ok (n.getQuoted ('"', s, true),  "\"one\\\"two\" :      getQuoted ('\"', true,  true)  -> true"); // 93
-    t.is (s, "\"one\"two\"", "getQuoted ('\"', true) -> \"one\"two\"");                                 // 94
+    t.ok (n.getQuoted ('"', s, true),  "\"one\\\"two\" :      getQuoted ('\"', s,  true)  -> true");
+    t.is (s, "\"one\\\"two\"", "getQuoted ('\"', s, true) -> \"one\\\"two\"");
+
+    n = Nibbler ("\"one\\\\\"");
+    t.ok (n.getQuoted ('\"', s, true), "\"one\\\" :           getQuoted ('\"', s, true)      -> true");
+    t.is (s, "\"one\\\\\"",                                   "getQuoted ('\"', s, true)      -> \"one\\\\\"");
+
+    n = Nibbler ("\"one\\\\\"");
+    t.ok (n.getQuoted ('\"', s, false), "one\\ :              getQuoted ('\"', s, false)      -> true");
+    t.is (s, "one\\\\",                                       "getQuoted ('\"', s, false)      -> \"one\\\\\"");
 
     // bool getDigit (int&);
     t.diag ("Nibbler::getDigit");
