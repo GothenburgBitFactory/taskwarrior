@@ -71,6 +71,8 @@
  + Added feature #559, that causes Taskwarrior to exit if the ~/.task (or
    rc.data.location override) does not exist, controlled by the
    rc.exit.on.missing.db configuration variable (thanks to Sander Marechal).
+ + Added feature #571, which provides descriptive feedback when a special tag
+   is applied.
  + Added feature #607, which allows modification of a task during annotation
    (thanks to Peter De Poorter).
  + Added feature #612, so that the 'info' command displays the sum of all

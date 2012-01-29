@@ -340,4 +340,29 @@ void feedback_affected (const std::string& effect, const Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Implements feedback when adding special tags to a task.
+void feedback_special_tags (const Task& task, const std::string& tag)
+{
+  if (context.verbose ("special"))
+  {
+    std::string msg;
+    std::string explanation;
+         if (tag == "nocolor") msg = STRING_FEEDBACK_TAG_NOCOLOR;
+    else if (tag == "nonag")   msg = STRING_FEEDBACK_TAG_NONAG;
+    else if (tag == "nocal")   msg = STRING_FEEDBACK_TAG_NOCAL;
+    else if (tag == "next")    msg = STRING_FEEDBACK_TAG_NEXT;
+
+    if (msg.length ())
+    {
+      if (task.id)
+        std::cout << format (msg, task.id)
+                  << "\n";
+      else
+        std::cout << format (msg, task.get ("uuid"))
+                  << "\n";
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 

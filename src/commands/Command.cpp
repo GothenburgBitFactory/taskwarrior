@@ -520,7 +520,10 @@ void Command::modify_task (
       A3::extract_tag (arg._raw, type, value);
 
       if (type == '+')
+      {
         task.addTag (value);
+        feedback_special_tags (task, value);
+      }
       else
         task.removeTag (value);
     }

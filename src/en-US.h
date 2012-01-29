@@ -680,6 +680,10 @@
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Annotation changed to '{1}'."
 #define STRING_FEEDBACK_NOP          "No changes will be made."
 #define STRING_FEEDBACK_WAS_NOP      "No changes made."
+#define STRING_FEEDBACK_TAG_NOCOLOR  "The 'nocolor' special tag will disable color rules for this task."
+#define STRING_FEEDBACK_TAG_NONAG    "The 'nonag' special tag will prevent nagging when this task is modified."
+#define STRING_FEEDBACK_TAG_NOCAL    "The 'nocal' special tag will keep this task off the calendar report."
+#define STRING_FEEDBACK_TAG_NEXT     "The 'next' special tag will boost the urgency of this task so it appears on the 'next' report."
 
 // File
 #define STRING_FILE_PERMS            "Task does not have the correct permissions for '{1}'."

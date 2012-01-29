@@ -65,6 +65,7 @@ unlike ($output, qr/^\d+ tasks$/ms, '\'footer\' verbosity good');
 # TODO Verbosity: 'blank'
 # TODO Verbosity: 'header'
 # TODO Verbosity: 'edit'
+# TODO Verbosity: 'special'
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key verbose.rc);

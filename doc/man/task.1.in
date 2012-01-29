@@ -487,6 +487,7 @@ exempt from all color rules.  The supported special tags are:
     +nocolor     Disable color rules processing for this task
     +nonag       Completion of this task suppresses all nag messages
     +nocal       This task will not appear on the calendar
+    +next        Elevates task so it appears on 'next' report
 
 .TP
 .B project:<project-name>
