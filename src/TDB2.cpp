@@ -92,14 +92,7 @@ void TF2::target (const std::string& f)
 const std::vector <Task>& TF2::get_tasks ()
 {
   if (! _loaded_tasks)
-  {
     load_tasks ();
-
-    // Apply previously added tasks.
-    std::vector <Task>::iterator i;
-    for (i = _added_tasks.begin (); i != _added_tasks.end (); ++i)
-      _tasks.push_back (*i);
-  }
 
   return _tasks;
 }
@@ -108,14 +101,7 @@ const std::vector <Task>& TF2::get_tasks ()
 const std::vector <std::string>& TF2::get_lines ()
 {
   if (! _loaded_lines)
-  {
     load_lines ();
-
-    // Apply previously added lines.
-    std::vector <std::string>::iterator i;
-    for (i = _added_lines.begin (); i != _added_lines.end (); ++i)
-      _lines.push_back (*i);
-  }
 
   return _lines;
 }

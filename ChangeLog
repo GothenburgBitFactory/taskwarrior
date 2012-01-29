@@ -234,6 +234,8 @@
    std::map::operator[] (thanks to Dmitriy Samborskiy).
  + Fixed bug #897, which adds the UUID field to the 'completed' report
    (thanks to Eli Lev).
+ + Fixed bug #899, which displayed incorrect project completion numbers (thanks
+   to Paul-Gheorghe Barbu).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
