@@ -129,7 +129,7 @@ public:
   TF2 completed;
   TF2 undo;
 //  TF2 backlog;
-  TF2 synch_key;
+//  TF2 synch_key;
 
 private:
   std::string _location;

@@ -477,8 +477,8 @@ void TDB2::set_location (const std::string& location)
   undo.target      (location + "/undo.data");
 /*
   backlog.target   (location + "/backlog.data");
-*/
   synch_key.target (location + "/synch.key");
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -558,8 +558,8 @@ void TDB2::commit ()
   undo.commit ();
 /*
   backlog.commit ();
-*/
   synch_key.commit ();
+*/
 
   context.timer_commit.stop ();
 }
@@ -1797,11 +1797,11 @@ bool TDB2::read_only ()
 {
   return pending._read_only   ||
          completed._read_only ||
-         undo._read_only      ||
-/*
+         undo._read_only      /*||
          backlog._read_only   ||
+         synch_key._read_only
 */
-         synch_key._read_only;
+         ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1812,8 +1812,8 @@ void TDB2::clear ()
   undo.clear ();
 /*
   backlog.clear ();
-*/
   synch_key.clear ();
+*/
 
   _location = "";
   _id = 1;
@@ -1829,8 +1829,8 @@ void TDB2::dump ()
     context.debug (undo.dump ());
 /*
     context.debug (backlog.dump ());
-*/
     context.debug (synch_key.dump ());
+*/
     context.debug ("");
   }
 }

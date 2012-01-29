@@ -66,8 +66,9 @@ int CmdStatistics::execute (std::string& output)
 /*
                   // TODO Re-enable this once 2.1 has taskd support.
                   + context.tdb2.backlog._file.size ()
+                  + context.tdb2.synch_key._file.size ()
 */
-                  + context.tdb2.synch_key._file.size ();
+                  ;
 
   // Count the undo transactions.
   std::vector <std::string> undoTxns = context.tdb2.undo.get_lines ();
