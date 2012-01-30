@@ -516,22 +516,27 @@ const std::string encode (const std::string& value)
 //   :  <- &colon;
 const std::string decode (const std::string& value)
 {
-  std::string modified = value;
+  if (value.find ('&') != std::string::npos)
+  {
+    std::string modified = value;
 
-  // Supported encodings.
-  str_replace (modified, "&dquot;", "\"");
-  str_replace (modified, "&quot;",  "'");
-  str_replace (modified, "&open;",  "[");
-  str_replace (modified, "&close;", "]");
+    // Supported encodings.
+    str_replace (modified, "&dquot;", "\"");
+    str_replace (modified, "&quot;",  "'");
+    str_replace (modified, "&open;",  "[");
+    str_replace (modified, "&close;", "]");
 
-  // Support for deprecated encodings.  These cannot be removed or old files
-  // will not be parsable.  Not just old files - completed.data can contain
-  // tasks formatted/encoded using these.
-  str_replace (modified, "&squot;", "'");  // Deprecated 2.0
-  str_replace (modified, "&comma;", ",");  // Deprecated 2.0
-  str_replace (modified, "&colon;", ":");  // Deprecated 2.0
+    // Support for deprecated encodings.  These cannot be removed or old files
+    // will not be parsable.  Not just old files - completed.data can contain
+    // tasks formatted/encoded using these.
+    str_replace (modified, "&squot;", "'");  // Deprecated 2.0
+    str_replace (modified, "&comma;", ",");  // Deprecated 2.0
+    str_replace (modified, "&colon;", ":");  // Deprecated 2.0
 
-  return modified;
+    return modified;
+  }
+
+  return value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
