@@ -175,8 +175,7 @@ int CmdCustom::execute (std::string& output)
   }
   else
   {
-    out << STRING_FEEDBACK_NO_MATCH
-        << std::endl;  // Yes, flush required.
+    context.footnote (STRING_FEEDBACK_NO_MATCH);
     rc = 1;
   }
 

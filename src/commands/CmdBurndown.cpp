@@ -428,7 +428,7 @@ std::string Chart::render ()
   }
 
   if (max_value == 0)
-    return std::string (STRING_FEEDBACK_NO_MATCH) + "\n";
+    context.footnote (STRING_FEEDBACK_NO_MATCH);
 
   // Create a grid, folded into a string.
   grid = "";
