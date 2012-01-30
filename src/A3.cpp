@@ -450,7 +450,8 @@ void A3::inject_defaults ()
     if (arg->_category == Arg::cat_command)
       found_command = true;
 
-/* TODO no "id" or "uuid" categories exist at this time.  Hmm.
+/* TODO no "id" or "uuid" categories exist at this time.
+        This kills the auto-info feature.
     else if (arg->_category == Arg::cat_id ||
              arg->_category == Arg::cat_uuid)
       found_sequence = true;
@@ -789,19 +790,6 @@ const A3 A3::tokenize (const A3& input) const
           found_something_after_sequence = true;
       }
 
-      else if (is_id (n, s))
-      {
-        if (found_something_after_sequence)
-        {
-          output.push_back (Arg (s, Arg::type_number, Arg::cat_literal));
-        }
-        else
-        {
-          output.push_back (Arg (s, Arg::type_number, Arg::cat_id));
-          found_sequence = true;
-        }
-      }
-
       else if (is_uuid (n, s))
       {
         if (found_something_after_sequence)
@@ -811,6 +799,19 @@ const A3 A3::tokenize (const A3& input) const
         else
         {
           output.push_back (Arg (s, Arg::type_string, Arg::cat_uuid));
+          found_sequence = true;
+        }
+      }
+
+      else if (is_id (n, s))
+      {
+        if (found_something_after_sequence)
+        {
+          output.push_back (Arg (s, Arg::type_number, Arg::cat_literal));
+        }
+        else
+        {
+          output.push_back (Arg (s, Arg::type_number, Arg::cat_id));
           found_sequence = true;
         }
       }

@@ -238,6 +238,8 @@
    (thanks to Eli Lev).
  + Fixed bug #899, which displayed incorrect project completion numbers (thanks
    to Paul-Gheorghe Barbu).
+ + Fixed bug #901, which was preventing multiple IDs and UUIDs from being used
+   as a filter (thanks to Bryce Harrington).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
