@@ -1,0 +1,47 @@
+rm pending.data completed.data undo.data rc
+
+cat <<EOF >>rc
+
+data.location=.
+confirmation=off
+_forcecolor=on
+
+#include ~/task-2.0.0.git/doc/rc/light-16.theme
+#include ~/task-2.0.0.git/doc/rc/dark-16.theme
+#include ~/task-2.0.0.git/doc/rc/light-256.theme
+#include ~/task-2.0.0.git/doc/rc/dark-256.theme
+#include ~/task-2.0.0.git/doc/rc/dark-gray-256.theme
+#include ~/task-2.0.0.git/doc/rc/dark-red-256.theme
+#include ~/task-2.0.0.git/doc/rc/dark-green-256.theme
+#include ~/task-2.0.0.git/doc/rc/dark-blue-256.theme
+include ~/task-2.0.0.git/doc/rc/dark-violets-256.theme
+#include ~/task-2.0.0.git/doc/rc/dark-yellow-green.theme
+#include ~/task-2.0.0.git/doc/rc/solarized-dark-256.theme
+#include ~/task-2.0.0.git/doc/rc/solarized-light-256.theme
+
+EOF
+
+task rc:rc add Ordinary task
+task rc:rc add Started task
+task rc:rc 2 start
+task rc:rc add High priority task pri:H
+task rc:rc add Medium priority task pri:M
+task rc:rc add Low priority task pri:L
+task rc:rc add Household task project:Home
+task rc:rc add Outdoor task project:Garden
+task rc:rc add Overdue task due:yesterday
+task rc:rc add Due task due:tomorrow
+task rc:rc add Not yet due tasks due:2/14/2012
+task rc:rc add Recurring task due:eom recur:monthly
+task rc:rc add Tagged task +tag1
+task rc:rc add Blocking task
+task rc:rc add Dependent task
+
+task rc:rc log Completed_1 project:Garden
+task rc:rc log Completed_2 project:Garden
+task rc:rc log Completed_3 project:Home
+task rc:rc add Deleted_1
+
+task rc:rc 14 mod depends:13
+task rc:rc 15 delete
+
