@@ -252,11 +252,11 @@ int main (int argc, char** argv)
     // bool getDigit (int&);
     t.diag ("Nibbler::getDigit");
     n = Nibbler ("12x");
-    t.ok    (n.getDigit (i),          "     '12x' :         getdigit ()     -> true");
-    t.is    (i, 1,                    "     '12x' :         getdigit ()     -> 1");
-    t.ok    (n.getDigit (i),          "      '2x' :         getdigit ()     -> true");
-    t.is    (i, 2,                    "      '2x' :         getdigit ()     -> 2");
-    t.notok (n.getDigit (i),          "       'x' :         getdigit ()     -> false");
+    t.ok    (n.getDigit (i),          "     '12x' :         getDigit ()     -> true");
+    t.is    (i, 1,                    "     '12x' :         getDigit ()     -> 1");
+    t.ok    (n.getDigit (i),          "      '2x' :         getDigit ()     -> true");
+    t.is    (i, 2,                    "      '2x' :         getDigit ()     -> 2");
+    t.notok (n.getDigit (i),          "       'x' :         getDigit ()     -> false");
 
     // bool getInt (int&);
     t.diag ("Nibbler::getInt");
