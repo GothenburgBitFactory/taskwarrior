@@ -82,7 +82,7 @@ int CmdDuplicate::execute (std::string& output)
       dup.remove ("parent");
       dup.remove ("recur");
       dup.remove ("until");
-      dup.remove ("imak");
+      dup.remove ("mask");
       dup.remove ("imask");
 
       std::cout << format (STRING_CMD_DUPLICATE_NON_REC, task->id)

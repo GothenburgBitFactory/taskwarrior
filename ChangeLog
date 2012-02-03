@@ -240,6 +240,8 @@
    to Paul-Gheorghe Barbu).
  + Fixed bug #901, which was preventing multiple IDs and UUIDs from being used
    as a filter (thanks to Bryce Harrington).
+ + Fixed bug #910, which caused unexpected behavior when duplicating a recurring
+   task (thanks to Jennifer Cormier).
  + Fixed bug #917, which mis-encoded quotes (thanks to Uli Martens).
 
 # Untracked Bugs, biggest first.
