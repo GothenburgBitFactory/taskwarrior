@@ -492,14 +492,12 @@ unsigned burndown_size (unsigned ntasks)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Encode values prior to serialization.
-//   "  -> &dquot;
 //   [  -> &open;
 //   ]  -> &close;
 const std::string encode (const std::string& value)
 {
   std::string modified = value;
 
-  str_replace (modified, "\"", "&dquot;");
   str_replace (modified, "[",  "&open;");
   str_replace (modified, "]",  "&close;");
 
@@ -521,14 +519,14 @@ const std::string decode (const std::string& value)
     std::string modified = value;
 
     // Supported encodings.
-    str_replace (modified, "&dquot;", "\"");
-    str_replace (modified, "&quot;",  "'");
     str_replace (modified, "&open;",  "[");
     str_replace (modified, "&close;", "]");
 
     // Support for deprecated encodings.  These cannot be removed or old files
     // will not be parsable.  Not just old files - completed.data can contain
     // tasks formatted/encoded using these.
+    str_replace (modified, "&dquot;", "\"");
+    str_replace (modified, "&quot;",  "'");
     str_replace (modified, "&squot;", "'");  // Deprecated 2.0
     str_replace (modified, "&comma;", ",");  // Deprecated 2.0
     str_replace (modified, "&colon;", ":");  // Deprecated 2.0

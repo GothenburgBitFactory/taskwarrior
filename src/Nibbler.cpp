@@ -67,10 +67,10 @@ Nibbler::Nibbler (const std::string& input)
 
 ////////////////////////////////////////////////////////////////////////////////
 Nibbler::Nibbler (const Nibbler& other)
+: _input (other._input)
+, _length (other._length)
+, _cursor (other._cursor)
 {
-  _input  = other._input;
-  _length = other._length;
-  _cursor = other._cursor;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
