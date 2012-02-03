@@ -75,6 +75,8 @@
    is applied.
  + Added feature #607, which allows modification of a task during annotation
    (thanks to Peter De Poorter).
+ + Added feature #609, which allows suppression of output labels and verbose
+   text.
  + Added feature #612, so that the 'info' command displays the sum of all
    active (start/stop) times for a task, if the 'journal.info' configuration
    variable is set (thanks to Andy Kriger).
