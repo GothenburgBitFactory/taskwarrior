@@ -1341,8 +1341,8 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
 // TODO Need more things recognized before it falls through to getUntilEOS.
 //              n.getDate     (context.config.get ("dateformat"), date)  ||
 //              need Duration too.
-              n.getName     (value)       ||
               n.getUntilWS  (value)       ||
+              n.getName     (value)       ||
               n.getUntilEOS (value)       ||  // Redundant?
               n.depleted ())
           {
@@ -1355,7 +1355,7 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
 */
 
             arg._raw      = name + '.' + modifier + ':' + value;
-            Column* col = context.columns[name];
+            Column* col   = context.columns[name];
             arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
             arg._category = Arg::cat_attmod;
             return true;
