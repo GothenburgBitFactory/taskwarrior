@@ -50,14 +50,6 @@ Nibbler::Nibbler ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Nibbler::Nibbler (const char* input)
-: _input (input)
-, _length (strlen (input))
-, _cursor (0)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Nibbler::Nibbler (const std::string& input)
 : _input (input)
 , _length (input.length ())

@@ -42,7 +42,6 @@ class Nibbler
 {
 public:
   Nibbler ();                          // Default constructor
-  Nibbler (const char*);               // Constructor
   Nibbler (const std::string&);        // Constructor
   Nibbler (const Nibbler&);            // Copy constructor
   Nibbler& operator= (const Nibbler&); // Assignment operator
