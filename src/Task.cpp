@@ -1114,11 +1114,6 @@ void Task::validate ()
       throw std::string (format (STRING_TASK_VALID_RECUR, get ("recur")));
   }
 
-  // TODO Remove this restriction.
-  if (has ("wait") &&
-      getStatus () == Task::recurring)
-    throw std::string (STRING_TASK_VALID_WAIT_RECUR);
-
   // Priorities must be valid.
   if (has ("priority"))
   {

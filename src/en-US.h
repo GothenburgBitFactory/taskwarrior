@@ -756,7 +756,6 @@
 #define STRING_TASK_VALID_REC_DUE    "A recurring task must also have a 'due' date."
 #define STRING_TASK_VALID_UNTIL      "Only recurring tasks may have an 'until' date."
 #define STRING_TASK_VALID_RECUR      "The recurrence value '{1}' is not valid."
-#define STRING_TASK_VALID_WAIT_RECUR "You cannot create a task that is both waiting and recurring."
 #define STRING_TASK_VALID_PRIORITY   "Priority values may be 'H', 'M' or 'L', not '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all tasks.  Are you sure?"
 #define STRING_TASK_SAFETY_FAIL      "Command prevented from running."

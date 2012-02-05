@@ -27,7 +27,6 @@
 
 #define L10N                                           // Localization complete.
 
-#include <iostream> // TODO Remove.
 #include <iomanip>
 #include <sstream>
 #include <time.h>
