@@ -49,7 +49,7 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (643);
+  UnitTest t (644);
 
   Duration d;
 
@@ -791,6 +791,10 @@ int main (int argc, char** argv)
     left -= right;
     t.is ((int)(time_t)left,   1, "3 -= 2, 3 is now 1");
     t.is ((int)(time_t)right,  2, "3 -= 2, 2 is still 2");
+
+    // Assorted regression tests.
+    left = Duration ("-864000.00000");
+    t.is ((int)(time_t)left, 864000, "-864000.00000 -> 864000");
   }
 
   catch (const std::string& e) { t.diag (e); }

@@ -25,45 +25,28 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef INCLUDED_COLUDA
+#define INCLUDED_COLUDA
 #define L10N                                           // Localization complete.
 
-#include <stdlib.h>
-#include <Context.h>
-#include <i18n.h>
-#include <CmdExec.h>
+#include <vector>
+#include <string>
+#include <Column.h>
+#include <Color.h>
+#include <Task.h>
 
-extern Context context;
-
-////////////////////////////////////////////////////////////////////////////////
-CmdExec::CmdExec ()
+class ColumnUDA : public Column
 {
-  _keyword     = "execute";
-  _usage       = "task          execute <external command>";
-  _description = STRING_CMD_EXEC_USAGE;
-  _read_only   = false;
-  _displays_id = true;
-}
+public:
+  ColumnUDA ();
+  ~ColumnUDA ();
 
-////////////////////////////////////////////////////////////////////////////////
-int CmdExec::execute (std::string& output)
-{
-  std::string command_line;
-  std::vector <Arg>::iterator arg;
-  for (arg = context.a3.begin (); arg != context.a3.end (); ++arg)
-  {
-    if (arg != context.a3.begin () &&
-        arg->_raw != "execute" &&
-        arg->_category != Arg::cat_rc &&
-        arg->_category != Arg::cat_override)
-    {
-      if (command_line.length ())
-        command_line += " ";
+  void measure (Task&, int&, int&);
+  void render (std::vector <std::string>&, Task&, int, Color&);
 
-      command_line += arg->_raw;
-    }
-  }
+private:
+  bool _hyphenate;
+};
 
-  return system (command_line.c_str ());
-}
-
+#endif
 ////////////////////////////////////////////////////////////////////////////////

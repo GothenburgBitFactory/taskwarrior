@@ -574,7 +574,7 @@
 #define STRING_DOM_CANNOT_SET        "DOM: Cannot set '{1}'."
 
 // Duration
-#define STRING_DURATION_UNRECOGNIZED "The duration '{1}' was not recognized."
+#define STRING_DURATION_UNRECOGNIZED "The date/duration '{1}' was not recognized."
 
 // E9
 #define STRING_E9_UNSUPPORTED        "Unsupported operator '{1}'."
@@ -657,6 +657,8 @@
 #define STRING_TRIVIAL_INPUT         "You must specify a command or a task to modify."
 #define STRING_ASSUME_INFO           "No command specified - assuming 'information'."
 #define STRING_INFINITE_LOOP         "Terminated substitution because more than {1} changes were made - infinite loop protection."
+#define STRING_UDA_TYPE              "User defined attributes may only be of type 'string', 'date', 'duration' or 'numeric'."
+#define STRING_UDA_NUMERIC           "The value '{1}' is not a valid numeric value."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "No tasks."

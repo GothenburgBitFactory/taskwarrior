@@ -39,15 +39,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (296);
+  UnitTest t (299);
 #else
-  UnitTest t (272);
+  UnitTest t (275);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (246);
+  UnitTest t (249);
 #else
-  UnitTest t (222);
+  UnitTest t (225);
 #endif
 #endif
 
@@ -302,6 +302,11 @@ int main (int argc, char** argv)
     t.ok    (n.getNumber (d),         "'2.0' : getNumber ()                -> true");
     t.is    (d, 2.0, 0.000001,        "'2.0' : getNumber ()                -> '2.0'");
     t.ok    (n.depleted (),           "            '' : depleted ()        -> true");
+
+    n = Nibbler ("-864000.00000");
+    t.ok    (n.getNumber (d),         "'-864000.00000' : getNumber ()      -> true");
+    t.is    (d, -864000.0,            "'-864000.00000' : getNumber ()      -> -864000.0");
+    t.ok    (n.depleted (),           "             '' : depleted ()       -> true");
 
     // bool getLiteral (const std::string&);
     t.diag ("Nibbler::getLiteral");

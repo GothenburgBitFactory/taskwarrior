@@ -50,6 +50,7 @@
 #include <ColUntil.h>
 #include <ColUrgency.h>
 #include <ColUUID.h>
+#include <ColUDA.h>
 #include <ColWait.h>
 #include <text.h>
 #include <i18n.h>
@@ -103,6 +104,11 @@ Column* Column::factory (const std::string& name, const std::string& report)
 
   // Special non-task column.
   else if (column_name == "string")      c = new ColumnString ();
+
+  // UDA.
+  else if (context.config.get ("uda." + column_name + ".type") != "")
+    c = Column::uda (column_name);
+
   else
     throw format (STRING_COLUMN_BAD_NAME, column_name);
 
@@ -138,6 +144,55 @@ void Column::factory (std::map <std::string, Column*>& all)
   c = new ColumnUrgency ();        all[c->_name] = c;
   c = new ColumnUUID ();           all[c->_name] = c;
   c = new ColumnWait ();           all[c->_name] = c;
+
+  Column::uda (all);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Column::uda (std::map <std::string, Column*>& all)
+{
+  // For each UDA, instantiate and initialize ColumnUDA().
+  std::map <std::string, int> udas;
+  std::vector <std::string> names;
+  context.config.all (names);
+
+  std::vector <std::string>::iterator i;
+  for (i = names.begin (); i != names.end (); ++i)
+  {
+    if (i->substr (0, 4) == "uda.")
+    {
+      std::string::size_type period = 4;
+      if ((period = i->find ('.', period)) != std::string::npos)
+        udas[i->substr (4, period - 4)] = 0;
+    }
+  }
+
+  std::map <std::string, int>::iterator uda;
+  for (uda = udas.begin (); uda != udas.end (); ++uda)
+  {
+    Column* c = Column::uda (uda->first);
+    all[c->_name] = c;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Column* Column::uda (const std::string& name)
+{
+  Column* c = new ColumnUDA ();
+  c->_name = name;
+
+  std::string key = "uda." + name + ".type";
+  c->_type = context.config.get (key);
+  if (c->_type != "string"   &&
+      c->_type != "date"     &&
+      c->_type != "duration" &&
+      c->_type != "numeric")
+    throw std::string (STRING_UDA_TYPE);
+
+  key = "uda." + name + ".label";
+  if (context.config.get (key) != "")
+    c->_label = context.config.get (key);
+  return c;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

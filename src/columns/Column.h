@@ -39,6 +39,8 @@ class Column
 public:
   static Column* factory (const std::string&, const std::string&);
   static void factory (std::map <std::string, Column*>&);
+  static void uda (std::map <std::string, Column*>&);
+  static Column* uda (const std::string&);
 
   Column ();
   Column (const Column&);

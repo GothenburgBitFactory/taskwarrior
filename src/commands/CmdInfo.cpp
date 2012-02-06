@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <sstream>
@@ -307,6 +306,23 @@ int CmdInfo::execute (std::string& output)
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_URGENCY);
     view.set (row, 1, trimLeft (format (task->urgency (), 4, 4)));
+
+    // Show any UDAs
+    std::vector <std::string> all = task->all ();
+    std::vector <std::string>::iterator att;
+    for (att = all.begin (); att != all.end (); ++att)
+    {
+      if (context.config.get ("uda." + *att + ".type") != "")
+      {
+        Column* col = context.columns[*att];
+        if (col)
+        {
+          row = view.addRow ();
+          view.set (row, 0, col->label ());
+          view.set (row, 1, task->get (*att));
+        }
+      }
+    }
 
     // Create a second table, containing undo log change details.
     ViewText journal;

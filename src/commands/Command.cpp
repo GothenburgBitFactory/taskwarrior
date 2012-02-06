@@ -30,6 +30,8 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
+#include <Date.h>
+#include <Duration.h>
 #include <E9.h>
 #include <text.h>
 #include <util.h>
@@ -487,15 +489,56 @@ void Command::modify_task (
 
             // If the date value is less than 5 years, it is a duration, not a
             // date, therefore add 'now'.
-            long l = strtol (result.c_str (), NULL, 10);
+            long l = (long) strtod (result.c_str (), NULL);
             if (labs (l) < 5 * 365 * 86400)
             {
+              Duration dur (result);
               Date now;
               now += l;
+              //now += dur;
               task.set (name, now.toEpochString ());
             }
             else
+            {
+              Date d (result, context.config.get ("dateformat"));
+              task.set (name, d.toEpochString ());
+            }
+          }
+
+          // Durations too.
+          else if (column->type () == "duration")
+          {
+            // All values must be eval'd first.
+            A3 value_tokens;
+            value_tokens.capture (value);
+            value_tokens = value_tokens.postfix (value_tokens.tokenize (value_tokens));
+
+            E9 e (value_tokens);
+            std::string result = e.evalExpression (task);
+            context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
+
+            Duration d (result);
+            task.set (name, result);
+          }
+
+          // Need handling for numeric types, used by UDAs.
+          else if (column->type () == "numeric")
+          {
+            A3 value_tokens;
+            value_tokens.capture (value);
+            value_tokens = value_tokens.postfix (value_tokens.tokenize (value_tokens));
+
+            E9 e (value_tokens);
+            std::string result = e.evalExpression (task);
+            context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
+
+            Nibbler n (result);
+            double d;
+            if (n.getNumber (d) &&
+                n.depleted ())
               task.set (name, result);
+            else
+              throw format (STRING_UDA_NUMERIC, result);
           }
 
           // By default, just add/remove it.

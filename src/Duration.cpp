@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <sstream>
@@ -400,6 +399,13 @@ void Duration::parse (const std::string& input)
   }
   else
     _negative = false;
+
+  // If no units are provided, assume seconds.
+  if (n.depleted ())
+  {
+    _secs = (long) value;
+    return;
+  }
 
   std::string units;
   n.getUntilEOS (units);

@@ -27,6 +27,7 @@ set (columns_SRCS Column.cpp Column.h
                   ColTags.cpp ColTags.h
                   ColUntil.cpp ColUntil.h
                   ColUrgency.cpp ColUrgency.h
+                  ColUDA.cpp ColUDA.h
                   ColUUID.cpp ColUUID.h
                   ColWait.cpp ColWait.h)
 

@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #define L10N                                           // Localization complete.
 
 #include <vector>
@@ -232,6 +231,7 @@ int CmdShow::execute (std::string& output)
           i->substr (0,  5) != "push."                 &&
           i->substr (0,  5) != "pull."                 &&
           i->substr (0,  6) != "merge."                &&
+          i->substr (0,  4) != "uda."                  &&
           i->substr (0, 21) != "urgency.user.project." &&
           i->substr (0, 17) != "urgency.user.tag.")
       {
