@@ -33,6 +33,7 @@
 #include <ColUDA.h>
 #include <text.h>
 #include <i18n.h>
+#include <stdlib.h>
 
 extern Context context;
 
