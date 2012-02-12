@@ -247,6 +247,8 @@
  + Fixed bug #910, which caused unexpected behavior when duplicating a recurring
    task (thanks to Jennifer Cormier).
  + Fixed bug #917, which mis-encoded quotes (thanks to Uli Martens).
+ + Fixed bug #929, which corrected argument handling for aliases (thanks to Uli
+   Martens).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.

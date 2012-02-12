@@ -399,6 +399,9 @@ void A3::resolve_aliases ()
         this->push_back (Arg (*e));
 
       expanded.clear ();
+
+      // The push_back destroyed categorization, redo that now.
+      categorize ();
     }
   }
   while (something && --safety_valve > 0);
