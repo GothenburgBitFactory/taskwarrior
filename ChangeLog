@@ -208,6 +208,7 @@
  + Fixed bug #817, which caused a build problem with a Core2 Duo processor on a
    Mac OSX 10.6 machine.  Notes updated in INSTALL file (thanks to John
    Hammond).
+ + Fixed bug #818, which caused partial tag matching (thanks to Joe Holloway).
  + Fixed bug #822, #845, which generated incorrect IDs (thanks to Matt Kraai and
    Michelle Crane).
  + Fixed bug #823, so that recurring task change propagations are now always

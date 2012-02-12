@@ -1017,10 +1017,14 @@ const A3 A3::expand (const A3& input) const
       {
         expanded.push_back (Arg (name,                  Arg::type_string, Arg::cat_dom));
         expanded.push_back (Arg ("~",                                     Arg::cat_op));
+#ifdef DARWIN
+        expanded.push_back (Arg (value,                 Arg::type_string, Arg::cat_literal));
+#else
 #ifdef SOLARIS
         expanded.push_back (Arg ("\\<" + value + "\\>", Arg::type_string, Arg::cat_rx));
 #else
         expanded.push_back (Arg ("\\b" + value + "\\b", Arg::type_string, Arg::cat_rx));
+#endif
 #endif
       }
 
@@ -1029,10 +1033,14 @@ const A3 A3::expand (const A3& input) const
       {
         expanded.push_back (Arg (name,                  Arg::type_string, Arg::cat_dom));
         expanded.push_back (Arg ("!~",                                    Arg::cat_op));
+#ifdef DARWIN
+        expanded.push_back (Arg (value,                 Arg::type_string, Arg::cat_literal));
+#else
 #ifdef SOLARIS
         expanded.push_back (Arg ("\\<" + value + "\\>", Arg::type_string, Arg::cat_rx));
 #else
         expanded.push_back (Arg ("\\b" + value + "\\b", Arg::type_string, Arg::cat_rx));
+#endif
 #endif
       }
       else
@@ -1048,7 +1056,15 @@ const A3 A3::expand (const A3& input) const
 
       expanded.push_back (Arg ("tags",                   Arg::type_string, Arg::cat_dom));
       expanded.push_back (Arg (type == '+' ? "~" : "!~",                   Arg::cat_op));
+#ifdef DARWIN
       expanded.push_back (Arg (value,                    Arg::type_string, Arg::cat_literal));
+#else
+#ifdef SOLARIS
+      expanded.push_back (Arg ("\\<" + value + "\\>",    Arg::type_string, Arg::cat_rx));
+#else
+      expanded.push_back (Arg ("\\b" + value + "\\b",    Arg::type_string, Arg::cat_rx));
+#endif
+#endif
     }
 
     // word  -->  description ~ word
