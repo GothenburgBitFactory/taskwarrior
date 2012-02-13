@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'verbose.rc')
@@ -39,28 +39,25 @@ if (open my $fh, '>', 'verbose.rc')
   ok (-r 'verbose.rc', 'Created verbose.rc');
 }
 
-# Verbosity: 'affected'
-my $output = qx{../src/task rc:verbose.rc log foo rc.verbose:on};
-like ($output, qr/Logged task/, '\'affected\' verbosity good');
-
-$output = qx{../src/task rc:verbose.rc log bar rc.verbose:off};
-unlike ($output, qr/Logged task/, '\'affected\' verbosity good');
-
 # Verbosity: 'new-id'
-$output = qx{../src/task rc:verbose.rc rc.verbose:on add Sample1};
+my $output = qx{../src/task rc:verbose.rc rc.verbose:new-id add Sample1};
 like ($output, qr/Created task \d/, '\'new-id\' verbosity good');
 
 $output = qx{../src/task rc:verbose.rc rc.verbose:off add Sample2};
 unlike ($output, qr/Created task \d/, '\'new-id\' verbosity good');
 
-# Verbosity: 'label', 'footer'
-$output = qx{../src/task rc:verbose.rc ls rc.verbose:on};
+# Verbosity: 'label'
+$output = qx{../src/task rc:verbose.rc ls rc.verbose:label};
 like ($output, qr/ID.+Project.+Pri.+Description/, '\'label\' verbosity good');
-like ($output, qr/^\d+ tasks$/ms, '\'footer\' verbosity good');
 
-$output = qx{../src/task rc:verbose.rc list rc.verbose:off};
+# Verbosity: 'affected'
+$output = qx{../src/task rc:verbose.rc ls rc.verbose:affected};
+like ($output, qr/^\d+ tasks$/ms, '\'affected\' verbosity good');
+
+# Off
+$output = qx{../src/task rc:verbose.rc ls rc.verbose:off};
+unlike ($output, qr/^\d+ tasks$/ms, '\'affected\' verbosity good');
 unlike ($output, qr/ID.+Project.+Pri.+Description/, '\'label\' verbosity good');
-unlike ($output, qr/^\d+ tasks$/ms, '\'footer\' verbosity good');
 
 # TODO Verbosity: 'blank'
 # TODO Verbosity: 'header'
