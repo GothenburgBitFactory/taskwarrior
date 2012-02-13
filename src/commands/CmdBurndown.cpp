@@ -129,11 +129,11 @@ Bar::~Bar ()
 //   DD                  1  1  1  1  1  1  1
 //   --  ------------------------------------
 //
-//   5 |             SS DD          DD DD DD 
-//   4 |             SS SS DD DD DD SS SS SS 
-//   3 |             PP PP SS SS SS PP PP PP 
-//   2 |          PP PP PP PP PP PP PP PP PP 
-//   1 |       PP PP PP PP PP PP PP PP PP PP 
+//   5 |             SS DD          DD DD DD
+//   4 |             SS SS DD DD DD SS SS SS
+//   3 |             PP PP SS SS SS PP PP PP
+//   2 |          PP PP PP PP PP PP PP PP PP
+//   1 |       PP PP PP PP PP PP PP PP PP PP
 //   0 +-------------------------------------
 //       30 31 01 02 03 04 05 06 07 08 09 10
 //       Oct   Nov
@@ -560,21 +560,37 @@ std::string Chart::render ()
 
   optimizeGrid ();
 
-  // Colorize the grid.
-  Color color_pending (context.config.get ("color.burndown.pending"));
-  Color color_done    (context.config.get ("color.burndown.done"));
-  Color color_started (context.config.get ("color.burndown.started"));
+  if (context.color ())
+  {
+    // Colorize the grid.
+    Color color_pending (context.config.get ("color.burndown.pending"));
+    Color color_done    (context.config.get ("color.burndown.done"));
+    Color color_started (context.config.get ("color.burndown.started"));
 
-  // Replace DD, SS, PP with colored strings.
-  std::string::size_type i;
-  while ((i = grid.find ("PP")) != std::string::npos)
-    grid.replace (i, 2, color_pending.colorize ("  "));
+    // Replace DD, SS, PP with colored strings.
+    std::string::size_type i;
+    while ((i = grid.find ("PP")) != std::string::npos)
+      grid.replace (i, 2, color_pending.colorize ("  "));
 
-  while ((i = grid.find ("SS")) != std::string::npos)
-    grid.replace (i, 2, color_started.colorize ("  "));
+    while ((i = grid.find ("SS")) != std::string::npos)
+      grid.replace (i, 2, color_started.colorize ("  "));
 
-  while ((i = grid.find ("DD")) != std::string::npos)
-    grid.replace (i, 2, color_done.colorize ("  "));
+    while ((i = grid.find ("DD")) != std::string::npos)
+      grid.replace (i, 2, color_done.colorize ("  "));
+  }
+  else
+  {
+    // Replace DD, SS, PP with ./+/X strings.
+    std::string::size_type i;
+    while ((i = grid.find ("PP")) != std::string::npos)
+      grid.replace (i, 2, " X");
+
+    while ((i = grid.find ("SS")) != std::string::npos)
+      grid.replace (i, 2, " +");
+
+    while ((i = grid.find ("DD")) != std::string::npos)
+      grid.replace (i, 2, " .");
+  }
 
   return grid;
 }
