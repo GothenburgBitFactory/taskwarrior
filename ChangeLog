@@ -265,6 +265,8 @@
  + Fixed problem with duplicate 'project changed' messages (thanks to Owen
    Clarke).
  + Fixed problem with non-UTC defaults for "TZ" (thanks to Owen Clarke).
+ + Removed use of Lua API call that is deprecated in 5.1 and removed from 5.2
+   (thanks to Michal Vyskocil).
 
 ------ old releases ------------------------------
 

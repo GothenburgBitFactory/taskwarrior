@@ -131,7 +131,7 @@ API::~API ()
 void API::initialize ()
 {
   // Initialize Lua.
-  _state = lua_open ();
+  _state = luaL_newstate ();
   luaL_openlibs (_state);  // TODO Error handling
 
   // Register all the API functions in Lua global space.
