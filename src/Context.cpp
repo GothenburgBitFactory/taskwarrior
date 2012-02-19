@@ -91,6 +91,15 @@ int Context::initialize (int argc, const char** argv)
     a3.categorize ();
     a3.rc_override (home_dir, rc_file);
 
+    // TASKRC environment variable overrides the command line.
+    char* override = getenv ("TASKRC");
+    if (override)
+    {
+      rc_file = File (override);
+      debug ("TASKRC override: ");
+      header (format (STRING_CONTEXT_RC_OVERRIDE, rc_file._data));
+    }
+
     // Dump any existing values and load rc file.
     config.clear ();
     config.load  (rc_file);
@@ -101,7 +110,18 @@ int Context::initialize (int argc, const char** argv)
     std::string location;
     a3.get_data_location (location);
     data_dir = Directory (location);
+
+    override = getenv ("TASKDATA");
+    if (override)
+    {
+      data_dir = Directory (override);
+      config.set ("data.location", data_dir._data);
+      header (format (STRING_CONTEXT_DATA_OVERRIDE, data_dir._data));
+    }
+
+/* TODO Enable this when the time is right, say for 2.1
     extension_dir = data_dir._data + "/extensions";
+*/
 
     // Create missing config file and data directory, if necessary.
     createDefaultConfig ();

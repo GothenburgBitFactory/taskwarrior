@@ -75,7 +75,6 @@ public:
 
 private:
   void assumeLocations ();
-  void determineDataLocation ();
   void createDefaultConfig ();
   void loadAliases ();
   void updateXtermTitle ();

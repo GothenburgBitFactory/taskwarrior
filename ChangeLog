@@ -80,6 +80,8 @@
  + Added feature #612, so that the 'info' command displays the sum of all
    active (start/stop) times for a task, if the 'journal.info' configuration
    variable is set (thanks to Andy Kriger).
+ + Added feature #632, which allows environment variables TASKRC and TASKDATA
+   to override .taskrc and .task directory locations (thanks to Steve Rader).
  + Added feature #657 & #658, using the 'ids' command, tasks matching a filter
    can now be modified as a group (thanks to Bryce Harrington, Eric Fluger).
  + Added feature #679, which makes color rules match project names in a left-

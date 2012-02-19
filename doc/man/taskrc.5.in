@@ -124,6 +124,17 @@ This includes two standard files that are distributed with taskwarrior, which
 define a set of US holidays, and set up a 16-color theme to use, to color the
 reports and calendar.
 
+.SH ENVIRONMENT VARIABLES
+These environmant variables override defaults and command line arguments.
+
+.TP
+.B TASKDATA=~/.task
+The overrides the default path for the taskwarrior data files.
+
+.TP
+.B TASKRC=~/.taskrc
+The overrides the default RC file.
+
 .SH CONFIGURATION VARIABLES
 Valid variable names and their default values are:
 
