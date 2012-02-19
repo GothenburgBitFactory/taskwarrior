@@ -67,6 +67,7 @@ private:
   void operator_divide   (Arg&, Arg&, Arg&);
   void operator_add      (Arg&, Arg&, Arg&);
   void operator_subtract (Arg&, Arg&, Arg&);
+  void operator_hastag   (Arg&, Arg&, bool, const Task&);
 
   const Arg coerce (const Arg&, const Arg::type);
   bool get_bool (const Arg&);

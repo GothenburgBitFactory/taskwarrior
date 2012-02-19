@@ -178,6 +178,7 @@ const std::string Arg::category_name (Arg::category c)
   case Arg::cat_pattern:    return "pattern";
   case Arg::cat_tag:        return "tag";
   case Arg::cat_dom:        return "dom";
+  case Arg::cat_dom_:       return "[dom]";
   case Arg::cat_op:         return "op";
   case Arg::cat_literal:    return "literal";
   }

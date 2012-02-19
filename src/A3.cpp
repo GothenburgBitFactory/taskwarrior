@@ -74,30 +74,34 @@ static struct
   char        associativity;
 } operators[] =
 {
-  // Operator  Precedence  Type  Symbol  Associativity
-  {  "and",     5,         'b',  0,      'l' },    // Conjunction
-  {  "xor",     4,         'b',  0,      'l' },    // Disjunction
+  // Operator   Precedence  Type  Symbol  Associativity
+  {  "and",      5,         'b',  0,      'l' },    // Conjunction
+  {  "xor",      4,         'b',  0,      'l' },    // Disjunction
 
-  {  "or",      3,         'b',  0,      'l' },    // Disjunction
-  {  "<=",     10,         'b',  1,      'l' },    // Less than or equal
-  {  ">=",     10,         'b',  1,      'l' },    // Greater than or equal
-  {  "!~",      9,         'b',  1,      'l' },    // Regex non-match
-  {  "!=",      9,         'b',  1,      'l' },    // Inequal
+  {  "or",       3,         'b',  0,      'l' },    // Disjunction
+  {  "<=",      10,         'b',  1,      'l' },    // Less than or equal
+  {  ">=",      10,         'b',  1,      'l' },    // Greater than or equal
+  {  "!~",       9,         'b',  1,      'l' },    // Regex non-match
+  {  "!=",       9,         'b',  1,      'l' },    // Inequal
 
-  {  "=",       9,         'b',  1,      'l' },    // Equal
-//  {  "^",      16,         'b',  1,      'r' },    // Exponent
-  {  ">",      10,         'b',  1,      'l' },    // Greater than
-  {  "~",       9,         'b',  1,      'l' },    // Regex match
-  {  "!",      15,         'u',  1,      'r' },    // Not
-//  {  "-",      15,         'u',  1,      'r' },    // Unary minus
-  {  "*",      13,         'b',  1,      'l' },    // Multiplication
-  {  "/",      13,         'b',  1,      'l' },    // Division
-//  {  "%",      13,         'b',  1,      'l' },    // Modulus
-  {  "+",      12,         'b',  1,      'l' },    // Addition
-  {  "-",      12,         'b',  1,      'l' },    // Subtraction
-  {  "<",      10,         'b',  1,      'l' },    // Less than
-  {  "(",       0,         'b',  1,      'l' },    // Precedence start
-  {  ")",       0,         'b',  1,      'l' },    // Precedence end
+  {  "=",        9,         'b',  1,      'l' },    // Equal
+//  {  "^",       16,         'b',  1,      'r' },    // Exponent
+  {  ">",       10,         'b',  1,      'l' },    // Greater than
+  {  "~",        9,         'b',  1,      'l' },    // Regex match
+  {  "!",       15,         'u',  1,      'r' },    // Not
+
+  {  "_hastag_", 9,         'b',  0,      'l'},     // +tag  [Pseudo-op]
+  {  "_notag_",  9,         'b',  0,      'l'},     // -tag  [Pseudo-op]
+
+//  {  "-",       15,         'u',  1,      'r' },    // Unary minus
+  {  "*",       13,         'b',  1,      'l' },    // Multiplication
+  {  "/",       13,         'b',  1,      'l' },    // Division
+//  {  "%",       13,         'b',  1,      'l' },    // Modulus
+  {  "+",       12,         'b',  1,      'l' },    // Addition
+  {  "-",       12,         'b',  1,      'l' },    // Subtraction
+  {  "<",       10,         'b',  1,      'l' },    // Less than
+  {  "(",        0,         'b',  1,      'l' },    // Precedence start
+  {  ")",        0,         'b',  1,      'l' },    // Precedence end
 };
 
 #define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
@@ -1047,24 +1051,16 @@ const A3 A3::expand (const A3& input) const
         throw format (STRING_A3_UNKNOWN_ATTMOD, mod);
     }
 
-    // [+-]value  -->  tags ~/!~ value
+    // [+-]value  -->  tags _hastag_/_notag_ value
     else if (arg->_category == Arg::cat_tag)
     {
       char type;
       std::string value;
       extract_tag (arg->_raw, type, value);
 
-      expanded.push_back (Arg ("tags",                   Arg::type_string, Arg::cat_dom));
-      expanded.push_back (Arg (type == '+' ? "~" : "!~",                   Arg::cat_op));
-#ifdef DARWIN
+      expanded.push_back (Arg ("tags",                   Arg::type_string, Arg::cat_dom_));
+      expanded.push_back (Arg (type == '+' ? "_hastag_" : "_notag_",       Arg::cat_op));
       expanded.push_back (Arg (value,                    Arg::type_string, Arg::cat_literal));
-#else
-#ifdef SOLARIS
-      expanded.push_back (Arg ("\\<" + value + "\\>",    Arg::type_string, Arg::cat_rx));
-#else
-      expanded.push_back (Arg ("\\b" + value + "\\b",    Arg::type_string, Arg::cat_rx));
-#endif
-#endif
     }
 
     // word  -->  description ~ word
@@ -2053,23 +2049,24 @@ void A3::dump (const std::string& label)
     color_map[Arg::cat_program]    = Color ("bold blue on blue");
     color_map[Arg::cat_command]    = Color ("bold cyan on cyan");
     color_map[Arg::cat_rc]         = Color ("bold red on red");
-    color_map[Arg::cat_override]   = Color ("bold red on red");
+    color_map[Arg::cat_override]   = color_map[Arg::cat_rc];
     color_map[Arg::cat_terminator] = Color ("bold yellow on yellow");
     color_map[Arg::cat_literal]    = Color ("white on gray4");
 
     // Filter colors.
     color_map[Arg::cat_attr]       = Color ("bold red on gray4");
-    color_map[Arg::cat_attmod]     = Color ("bold red on gray4");
+    color_map[Arg::cat_attmod]     = color_map[Arg::cat_attr];
     color_map[Arg::cat_pattern]    = Color ("cyan on gray4");
     color_map[Arg::cat_subst]      = Color ("bold cyan on gray4");
     color_map[Arg::cat_op]         = Color ("green on gray4");
     color_map[Arg::type_string]    = Color ("bold yellow on gray4");
-    color_map[Arg::cat_rx]         = Color ("bold yellow on gray4");
-    color_map[Arg::type_date]      = Color ("bold yellow on gray4");
+    color_map[Arg::cat_rx]         = color_map[Arg::type_string];
+    color_map[Arg::type_date]      = color_map[Arg::type_string];
     color_map[Arg::cat_dom]        = Color ("bold white on gray4");
+    color_map[Arg::cat_dom_]       = color_map[Arg::cat_dom];
     color_map[Arg::type_duration]  = Color ("magenta on gray4");
     color_map[Arg::cat_id]         = Color ("white on gray4");
-    color_map[Arg::cat_uuid]       = Color ("white on gray4");
+    color_map[Arg::cat_uuid]       = color_map[Arg::cat_id];
 
     // Default.
     color_map[Arg::cat_none]       = Color ("black on white");

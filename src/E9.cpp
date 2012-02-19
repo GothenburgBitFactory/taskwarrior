@@ -135,21 +135,23 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
         Arg left = value_stack.back ();
         value_stack.pop_back ();
 
-             if (arg->_raw == "and") operator_and      (result, left, right);
-        else if (arg->_raw == "or")  operator_or       (result, left, right);
-        else if (arg->_raw == "xor") operator_xor      (result, left, right);
-        else if (arg->_raw == "<")   operator_lt       (result, left, right);
-        else if (arg->_raw == "<=")  operator_lte      (result, left, right);
-        else if (arg->_raw == ">=")  operator_gte      (result, left, right);
-        else if (arg->_raw == ">")   operator_gt       (result, left, right);
-        else if (arg->_raw == "!=")  operator_inequal  (result, left, right, case_sensitive);
-        else if (arg->_raw == "=")   operator_equal    (result, left, right, case_sensitive);
-        else if (arg->_raw == "~")   operator_match    (result, left, right, case_sensitive, task);
-        else if (arg->_raw == "!~")  operator_nomatch  (result, left, right, case_sensitive, task);
-        else if (arg->_raw == "*")   operator_multiply (result, left, right);
-        else if (arg->_raw == "/")   operator_divide   (result, left, right);
-        else if (arg->_raw == "+")   operator_add      (result, left, right);
-        else if (arg->_raw == "-")   operator_subtract (result, left, right);
+             if (arg->_raw == "and")      operator_and      (result, left, right);
+        else if (arg->_raw == "or")       operator_or       (result, left, right);
+        else if (arg->_raw == "xor")      operator_xor      (result, left, right);
+        else if (arg->_raw == "<")        operator_lt       (result, left, right);
+        else if (arg->_raw == "<=")       operator_lte      (result, left, right);
+        else if (arg->_raw == ">=")       operator_gte      (result, left, right);
+        else if (arg->_raw == ">")        operator_gt       (result, left, right);
+        else if (arg->_raw == "!=")       operator_inequal  (result, left, right, case_sensitive);
+        else if (arg->_raw == "=")        operator_equal    (result, left, right, case_sensitive);
+        else if (arg->_raw == "~")        operator_match    (result, left, right, case_sensitive, task);
+        else if (arg->_raw == "!~")       operator_nomatch  (result, left, right, case_sensitive, task);
+        else if (arg->_raw == "*")        operator_multiply (result, left, right);
+        else if (arg->_raw == "/")        operator_divide   (result, left, right);
+        else if (arg->_raw == "+")        operator_add      (result, left, right);
+        else if (arg->_raw == "-")        operator_subtract (result, left, right);
+        else if (arg->_raw == "_hastag_") operator_hastag   (result,       right, false, task);
+        else if (arg->_raw == "_notag_")  operator_hastag   (result,       right, true,  task);
         else
           throw format (STRING_E9_UNSUPPORTED, arg->_raw);
       }
@@ -626,6 +628,23 @@ void E9::operator_add (Arg& result, Arg& left, Arg& right)
 void E9::operator_subtract (Arg& result, Arg& left, Arg& right)
 {
 //  std::cout << "# " << left << " <operator_subtract> " << right << " --> " << result << "\n";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void E9::operator_hastag (
+  Arg& result,
+  Arg& right,
+  bool invert,
+  const Task& task)
+{
+  result._type = Arg::type_bool;
+
+  if (task.hasTag (right._raw))
+    result._value = invert ? "false" : "true";
+  else
+    result._value = invert ? "true" : "false";
+
+  std::cout << "# tags" << (invert ? " <operator_notag> " : " <operator_hastag> ") << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

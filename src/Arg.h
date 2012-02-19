@@ -36,7 +36,7 @@
 class Arg
 {
 public:
-  enum category {cat_none=1, cat_terminator, cat_program, cat_command, cat_rc, cat_override, cat_attr, cat_attmod, cat_id, cat_uuid, cat_subst, cat_pattern, cat_rx, cat_tag, cat_dom, cat_op, cat_literal};
+  enum category {cat_none=1, cat_terminator, cat_program, cat_command, cat_rc, cat_override, cat_attr, cat_attmod, cat_id, cat_uuid, cat_subst, cat_pattern, cat_rx, cat_tag, cat_dom_, cat_dom, cat_op, cat_literal};
   enum type     {type_none=20, type_pseudo, type_bool, type_string, type_date, type_duration, type_number};
 
   Arg ();
