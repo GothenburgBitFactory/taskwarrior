@@ -44,6 +44,7 @@ public:
   void start ();
   void stop ();
   unsigned long total () const;
+  void subtract (unsigned long);
 
 private:
   std::string    _description;

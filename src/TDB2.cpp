@@ -1503,6 +1503,7 @@ void TDB2::revert ()
 int TDB2::gc ()
 {
   context.timer_gc.start ();
+  unsigned long load_start = context.timer_load.total ();
 
   // Allowed as a temporary override.
   if (context.config.getBoolean ("gc"))
@@ -1611,7 +1612,11 @@ int TDB2::gc ()
     // TODO Remove dangling dependencies
   }
 
+  // Stop and remove accumulated load time from the GC time, because they
+  // overlap.
   context.timer_gc.stop ();
+  context.timer_gc.subtract (context.timer_load.total () - load_start);
+
   return 0;
 }
 
