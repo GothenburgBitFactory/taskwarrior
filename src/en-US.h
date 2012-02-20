@@ -312,7 +312,8 @@
 #define STRING_CMD_DELETE_N          "Deleted {1} tasks."
 
 #define STRING_CMD_DUPLICATE_USAGE   "Duplicates the specified tasks"
-#define STRING_CMD_DUPLICATE_NON_REC "Note: task {1} was a recurring task.  The duplicate task is not."
+#define STRING_CMD_DUPLICATE_REC     "Note: task {1} was a parent recurring task.  The duplicated task is too."
+#define STRING_CMD_DUPLICATE_NON_REC "Note: task {1} was a recurring task.  The duplicated task is not."
 #define STRING_CMD_DUPLICATE_CONFIRM "Duplicate task {1} '{2}'?"
 #define STRING_CMD_DUPLICATE_TASK    "Duplicated task {1} '{2}'."
 #define STRING_CMD_DUPLICATE_NO      "Task not duplicated."

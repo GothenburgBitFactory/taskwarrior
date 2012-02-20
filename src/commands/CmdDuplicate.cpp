@@ -71,23 +71,33 @@ int CmdDuplicate::execute (std::string& output)
     // Duplicate the specified task.
     Task dup (*task);
     dup.set ("uuid", uuid ());     // Needs a new UUID.
-    dup.setStatus (Task::pending); // Does not inherit status.
     dup.remove ("start");          // Does not inherit start date.
     dup.remove ("end");            // Does not inherit end date.
     dup.remove ("entry");          // Does not inherit entry date.
 
-    // Recurring tasks are duplicated and downgraded to regular tasks.
+    // When duplicating a child task, downgrade it to a plain task.
     if (dup.has ("parent"))
     {
       dup.remove ("parent");
       dup.remove ("recur");
       dup.remove ("until");
-      dup.remove ("mask");
       dup.remove ("imask");
 
       std::cout << format (STRING_CMD_DUPLICATE_NON_REC, task->id)
           << "\n";
     }
+
+    // When duplicating a parent task, create a new parent task.
+    else if (dup.getStatus () == Task::recurring)
+    {
+      dup.remove ("mask");
+
+      std::cout << format (STRING_CMD_DUPLICATE_REC, task->id)
+          << "\n";
+    }
+
+    dup.setStatus (Task::pending); // Does not inherit status.
+                                   // Must occur after Task::recurring check.
 
     modify_task_annotate (dup, modifications);
 

@@ -41,7 +41,8 @@
  + The duration 'm' is now interpreted as 'months', not 'minutes'.
  + Urgency now has an 'age' component.
  + Improved text wrapping of UTF8 text.
- 
+ + When duplicating a parent recurring task, a new recurring parent task is
+   created.  When a child recurring task is duplicated, a plain task is created.
 
 # Tracked Features, sorted by ID.
  + Added feature #52, which provides improved text-wrapping support for UTF-8
