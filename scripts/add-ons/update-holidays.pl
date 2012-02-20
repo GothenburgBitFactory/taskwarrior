@@ -45,6 +45,13 @@ if ($@)
   exit 1;
 }
 
+eval "use Encode";
+if ($@)
+{
+  print "Error: You need to install the Encode Perl module.\n";
+  exit 1;
+}
+
 # Command line options, argument validation.
 my $help;
 my $locale;
@@ -147,8 +154,8 @@ print "\n",
 
 # Without data, cannot proceed.
 my $data;
-$data .= $data_current if defined $data_current;
-$data .= $data_next    if defined $data_next;
+$data .= decode ('utf-8', $data_current) if defined $data_current;
+$data .= decode ('utf-8', $data_next)    if defined $data_next;
 exit (1) if !defined $data || $data eq '';
 
 # Filter the holidays according to @regions.
@@ -170,8 +177,7 @@ for my $holiday (split /\n/ms, $data)
 }
 
 # Overwrite the file.
-if (open my $fh, '>', $file)
-#if (open my $fh, '>:encoding(UTF-8)', $file)
+if (open my $fh, '>:utf8', $file)
 {
   print $fh
         "# International Holiday Data provided by Holidata.net\n",
