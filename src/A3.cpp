@@ -31,6 +31,7 @@
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/select.h>
 #include <Context.h>
 #include <Directory.h>

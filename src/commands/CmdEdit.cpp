@@ -30,6 +30,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
+#include <unistd.h>
 #include <Duration.h>
 #include <Context.h>
 #include <i18n.h>
