@@ -38,7 +38,8 @@
 #include <RX.h>
 #endif
 
-const char* c_digits = "0123456789"; // TODO Not used?
+static const char*        _uuid_pattern    = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+static const unsigned int _uuid_min_length = 8;
 
 ////////////////////////////////////////////////////////////////////////////////
 Nibbler::Nibbler ()
@@ -608,6 +609,36 @@ bool Nibbler::getUUID (std::string& result)
       _cursor = i + 36;
       return true;
     }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getPartialUUID (std::string& result)
+{
+  std::string::size_type i;
+  for (i = 0; i < 36 && i < (_length - _cursor); i++)
+  {
+    if (_uuid_pattern[i] == 'x' && !isxdigit (_input[_cursor + i]))
+      break;
+
+    else if (_uuid_pattern[i] == '-' && _input[_cursor + i] != '-')
+      break;
+  }
+
+  // If the partial match found is long enough, consider it a match.
+  if (i >= _uuid_min_length)
+  {
+    // Fail if there is another hex digit.
+    if (_cursor + i < _length &&
+        isxdigit (_input[_cursor + i]))
+      return false;
+
+    result = _input.substr (_cursor, i);
+    _cursor += i;
+
+    return true;
   }
 
   return false;

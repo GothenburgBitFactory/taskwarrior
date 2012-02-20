@@ -115,6 +115,7 @@
  + Added feature #827, which allows augmentation of default.command with extra
    arguments, when default.command itself contains mulitple arguments (thanks to
    Aikido Guy).
+ + Added feature #891, which allows for leftmost partial matches of UUID values.
 
 # Tracked Bugs, sorted by ID.
  + Fixed bug #208, which addresses various problems with recurring tasks, and

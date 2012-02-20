@@ -39,15 +39,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (299);
+  UnitTest t (388);
 #else
-  UnitTest t (275);
+  UnitTest t (364);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (249);
+  UnitTest t (338);
 #else
-  UnitTest t (225);
+  UnitTest t (314);
 #endif
 #endif
 
@@ -346,6 +346,157 @@ int main (int argc, char** argv)
     t.ok (n.getUUID (s),                             "uuid 2 -> found");
     t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5", "uuid 2 -> correct");
     t.ok (n.depleted (),                             "depleted");
+
+    // bool getPartialUUID (std::string&);
+    t.diag ("Nibbler::getPartialUUID");
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [36] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5", "partial uuid [36] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [35] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d",  "partial uuid [35] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [34] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4",   "partial uuid [34] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [33] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c",    "partial uuid [33] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [32] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3",     "partial uuid [32] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [31] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b",      "partial uuid [31] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [30] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2",       "partial uuid [30] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1a");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [29] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a",        "partial uuid [29] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [28] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1",         "partial uuid [28] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [27] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F",          "partial uuid [27] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [26] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0",           "partial uuid [26] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [25] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E",            "partial uuid [25] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [24] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-",             "partial uuid [24] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [23] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9",              "partial uuid [23] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [22] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D",               "partial uuid [22] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [21] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C8",                "partial uuid [21] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [20] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-C",                 "partial uuid [20] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7-");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [19] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7-",                  "partial uuid [19] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B7");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [18] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B7",                   "partial uuid [18] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6B");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [17] found");
+    t.is (s, "a0b1c2d3-e4f5-A6B",                    "partial uuid [17] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A6");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [16] found");
+    t.is (s, "a0b1c2d3-e4f5-A6",                     "partial uuid [16] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-A");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [15] found");
+    t.is (s, "a0b1c2d3-e4f5-A",                      "partial uuid [15] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5-");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [14] found");
+    t.is (s, "a0b1c2d3-e4f5-",                       "partial uuid [14] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f5");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [13] found");
+    t.is (s, "a0b1c2d3-e4f5",                        "partial uuid [13] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4f");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [12] found");
+    t.is (s, "a0b1c2d3-e4f",                         "partial uuid [12] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e4");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [11] found");
+    t.is (s, "a0b1c2d3-e4",                          "partial uuid [11] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-e");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [10] found");
+    t.is (s, "a0b1c2d3-e",                           "partial uuid [10] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3-");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [9] found");
+    t.is (s, "a0b1c2d3-",                            "partial uuid [9] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d3");
+    t.ok (n.getPartialUUID (s),                      "partial uuid [8] found");
+    t.is (s, "a0b1c2d3",                             "partial uuid [8] -> correct");
+    t.ok (n.depleted (),                             "depleted");
+
+    n = Nibbler ("a0b1c2d");
+    t.notok (n.getPartialUUID (s),                   "partial uuid [7] not found");
+    t.notok (n.depleted (),                          "not depleted");
 
     // bool getDateISO (time_t&);
     t.diag ("Nibbler::getDateISO");

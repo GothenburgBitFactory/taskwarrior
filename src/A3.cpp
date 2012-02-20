@@ -1145,12 +1145,23 @@ const A3 A3::sequence (const A3& input) const
 
   for (unsigned int i = 0; i < uuids.size (); ++i)
   {
-    if (ids.size ())
+    if (ids.size () + i > 0)
       sequenced.push_back (Arg ("or", Arg::cat_op));
 
-    sequenced.push_back (Arg ("uuid",        Arg::type_string, Arg::cat_dom));
-    sequenced.push_back (Arg ("=",                             Arg::cat_op));
-    sequenced.push_back (Arg (uuids[i],      Arg::type_string, Arg::cat_literal));
+    // A full-length UUID requires a string comparison.
+    if (uuids[i].length () == 36)
+    {
+      sequenced.push_back (Arg ("uuid",         Arg::type_string, Arg::cat_dom));
+      sequenced.push_back (Arg ("=",                              Arg::cat_op));
+      sequenced.push_back (Arg (uuids[i],       Arg::type_string, Arg::cat_literal));
+    }
+    // A UUID fragment is a leftmost comparison.
+    else
+    {
+      sequenced.push_back (Arg ("uuid",         Arg::type_string, Arg::cat_dom));
+      sequenced.push_back (Arg ("~",                              Arg::cat_op));
+      sequenced.push_back (Arg ("^" + uuids[i], Arg::type_string, Arg::cat_rx));
+    }
   }
 
   sequenced.push_back (Arg (")", Arg::cat_op));
@@ -1674,11 +1685,11 @@ bool A3::is_uuid (Nibbler& n, std::string& result)
   n.save ();
   result = "";
   std::string uuid;
-  if (n.getUUID (uuid))
+  if (n.getPartialUUID (uuid))
   {
     result += uuid;
     while (n.skip (',') &&
-           n.getUUID (uuid))
+           n.getPartialUUID (uuid))
     {
       result += ',' + uuid;
     }
@@ -1997,13 +2008,13 @@ bool A3::extract_uuid (
   Nibbler n (input);
 
   std::string uuid;
-  if (n.getUUID (uuid))
+  if (n.getPartialUUID (uuid))
   {
     sequence.push_back (uuid);
 
     while (n.skip (','))
     {
-      if (!n.getUUID (uuid))
+      if (!n.getPartialUUID (uuid))
         throw std::string (STRING_A3_UUID_AFTER_COMMA);
 
       sequence.push_back (uuid);

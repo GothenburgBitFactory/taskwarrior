@@ -75,6 +75,7 @@ public:
   bool getRx (const std::string&, std::string&);
 #endif
   bool getUUID (std::string&);
+  bool getPartialUUID (std::string&);
   bool getDateISO (time_t&);
 #ifdef NIBBLER_FEATURE_DATE
   bool getDate (const std::string&, time_t&);
