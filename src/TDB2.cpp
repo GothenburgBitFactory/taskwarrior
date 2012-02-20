@@ -1500,12 +1500,17 @@ void TDB2::revert ()
 // moves them to the completed.data file.  Returns a count of tasks moved.
 // Now reverts expired waiting tasks to pending.
 // Now cleans up dangling dependencies.
+//
+// Possible scenarios:
+// - task in pending that needs to be in completed
+// - task in completed that needs to be in pending
+// - waiting task in pending that needs to be un-waited
 int TDB2::gc ()
 {
   context.timer_gc.start ();
   unsigned long load_start = context.timer_load.total ();
 
-  // Allowed as a temporary override.
+  // Allowed as an override, but not recommended.
   if (context.config.getBoolean ("gc"))
   {
     std::vector <Task> pending_tasks   = pending.get_tasks ();
@@ -1748,6 +1753,36 @@ const std::vector <Task> TDB2::siblings (Task& task)
             results.push_back (*i);
           }
         }
+      }
+    }
+  }
+
+  return results;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <Task> TDB2::children (Task& task)
+{
+  std::vector <Task> results;
+  std::string parent = task.get ("uuid");
+
+  // First load and scan pending.
+  if (! pending._loaded_tasks)
+    pending.load_tasks ();
+
+  std::vector <Task>::iterator i;
+  for (i = pending._tasks.begin (); i != pending._tasks.end (); ++i)
+  {
+    // Do not include self in results.
+    if (i->id != task.id)
+    {
+      // Do not include completed or deleted tasks.
+      if (i->getStatus () != Task::completed &&
+          i->getStatus () != Task::deleted)
+      {
+        // If task has the same parent, it is a sibling.
+        if (i->get ("parent") == parent)
+          results.push_back (*i);
       }
     }
   }

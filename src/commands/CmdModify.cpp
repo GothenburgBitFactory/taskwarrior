@@ -110,7 +110,7 @@ int CmdModify::execute (std::string& output)
         dependencyChainOnModify (before, *task);
         context.footnote (onProjectChange (before, *task));
 
-        // Delete siblings.
+        // Task potentially has siblings - modify them.
         if (task->has ("parent"))
         {
           std::vector <Task> siblings = context.tdb2.siblings (*task);
@@ -128,6 +128,28 @@ int CmdModify::execute (std::string& output)
               context.footnote (onProjectChange (alternate, *sibling));
               ++count;
               feedback_affected (STRING_CMD_MODIFY_TASK_R, *sibling);
+            }
+          }
+        }
+
+        // Task potentially has child tasks - modify them.
+        else if (task->get ("status") == "recurring")
+        {
+          std::vector <Task> children = context.tdb2.children (*task);
+          if (children.size () &&
+              confirm (STRING_CMD_MODIFY_RECUR))
+          {
+            std::vector <Task>::iterator child;
+            for (child = children.begin (); child != children.end (); ++child)
+            {
+              Task alternate (*child);
+              modify_task_description_replace (*child, modifications);
+              updateRecurrenceMask (*child);
+              context.tdb2.modify (*child);
+              dependencyChainOnModify (alternate, *child);
+              context.footnote (onProjectChange (alternate, *child));
+              ++count;
+              feedback_affected (STRING_CMD_MODIFY_TASK_R, *child);
             }
           }
         }

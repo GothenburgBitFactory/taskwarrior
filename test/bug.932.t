@@ -28,43 +28,38 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 11;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
   print $fh "data.location=.\n",
-            "confirmation=no\n";
+            "confirmation=off\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }
 
-# Setup: Add a recurring task, generate an instance, then add a project.
-qx{../src/task rc:bug.rc add foo due:tomorrow recur:daily};
-qx{../src/task rc:bug.rc ls};
+# Bug 932: Modifying recurring task's recurrence period - strange outcome
+# - add a recurring task with multiple child tasks
+# - modify a child task and test for propagation
+# - modify the parent task and test for propagation
+qx{../src/task rc:bug.rc add R due:yesterday recur:daily};
+my $output = qx{../src/task rc:bug.rc list};
+like ($output, qr/2.+R/ms, 'Found child 0');
+like ($output, qr/3.+R/ms, 'Found child 1');
+like ($output, qr/4.+R/ms, 'Found child 2');
 
-# Result: trying to add the project generates an error about removing
-# recurrence from a task.
-my $output = qx{echo '-- y' | ../src/task rc:bug.rc 1 modify project:bar};
-unlike ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'No recurrence removal error');
+qx{echo '-- y' | ../src/task rc:bug.rc 2 mod project:P};
+$output = qx{../src/task rc:bug.rc list};
+like ($output, qr/2\s+P.+R/ms, 'Found modified child 0');
+like ($output, qr/3\s+P.+R/ms, 'Found modified child 1 (propagated from 0)');
+like ($output, qr/4\s+P.+R/ms, 'Found modified child 2 (propagated from 0)');
 
-# Now try to generate the error above via regular means - ie, is it actually
-# doing what it should?
-# TODO Removing recur: from a recurring task should also remove imask and parent.
-$output = qx{../src/task rc:bug.rc 2 modify recur:};
-like ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'Recurrence removal error');
-
-# Prevent removal of the due date from a recurring task.
-# TODO Removing due: from a recurring task should also remove recur, imask and parent
-$output = qx{../src/task rc:bug.rc 2 modify due:};
-like ($output, qr/You cannot remove the due date from a recurring task./ms, 'Cannot remove due date from a recurring task');
-
-# Allow removal of the due date from a non-recurring task.
-qx{../src/task rc:bug.rc add nonrecurring};
-$output = qx{../src/task rc:bug.rc ls};
-my ($id) = $output =~ /(\d+)\s+nonrecurring/;
-$output = qx{../src/task rc:bug.rc $id modify due:};
-unlike ($output, qr/You cannot remove the due date from a recurring task./ms, 'Can remove due date from a non-recurring task');
+qx{echo '-- y' | ../src/task rc:bug.rc 1 mod priority:H};
+$output = qx{../src/task rc:bug.rc list};
+like ($output, qr/2\s+P.+H.+R/ms, 'Found modified child 0 (propagated from parent');
+like ($output, qr/3\s+P.+H.+R/ms, 'Found modified child 1 (propagated from parent)');
+like ($output, qr/4\s+P.+H.+R/ms, 'Found modified child 2 (propagated from parent)');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);

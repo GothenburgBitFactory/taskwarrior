@@ -122,7 +122,7 @@ qx{../src/task rc:dep.rc add Six recurring due:tomorrow recur:daily};
 
 # [20]
 qx{../src/task rc:dep.rc ls}; # To force handleRecurrence call.
-$output = qx{../src/task rc:dep.rc 6 modify dep:5};
+$output = qx{echo '-- y' | ../src/task rc:dep.rc 6 modify dep:5};
 like ($output, qr/Modified \d+ task/, 'dependencies - recurring task depending on another task');
 
 # [21]

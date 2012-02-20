@@ -110,6 +110,7 @@ public:
   bool get (int, Task&);
   bool get (const std::string&, Task&);
   const std::vector <Task> siblings (Task&);
+  const std::vector <Task> children (Task&);
 
   // ID <--> UUID mapping.
   std::string uuid (int);
