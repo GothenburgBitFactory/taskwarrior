@@ -1,0 +1,9 @@
+#! /bin/bash
+
+for i in holidays*rc
+do
+  locale=${i:9:5}
+  echo $locale
+  ../../scripts/add-ons/update-holidays.pl --locale $locale --file holidays.${locale}.rc
+done
+

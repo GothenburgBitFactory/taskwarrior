@@ -1,7 +1,7 @@
-################################################################################
-# Sample calendar for the Netherlands
-#
-# taskwarrior - a command line task list manager.
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/nl-NL/2012.json
+# http://holidata.net/nl-NL/2013.json
 #
 # Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 #
@@ -25,67 +25,61 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-################################################################################
+###############################################################################
 
-calendar.holidays=sparse
-
-# 2011
-holiday.nieuwjaar.name=Nieuwjaar
-holiday.nieuwjaar.date=20110101
-holiday.goedevrijdag.name=Goede Vrijdag
-holiday.goedevrijdag.date=20110422
-holiday.pasen.name=Pasen
-holiday.pasen.date=20110424
-holiday.pasen.name=Tweede Paasdag
-holiday.pasen.date=20100425
-holiday.koninginnedag.name=Koninginnedag
-holiday.koninginnedag.date=20110430
-holiday.dodenherdenking.name=Dodenherdenking
-holiday.dodenherdenking.date=20110504
-holiday.bevrijdingsdag.name=Bevrijdingsdag
-holiday.bevrijdingsdag.date=20110505
-holiday.hemelvaartsdag.name=Hemelvaartsdag
-holiday.hemelvaartsdag.date=20110602
-holiday.pinksteren.name= Pinksteren
-holiday.pinksteren.date=20110612
-holiday.pinksteren.name=Tweede Pinksterdag
-holiday.pinksteren.date=20110613
-holiday.sinterklaas.name=Sinterklaas
-holiday.sinterklaas.date=20111205
-holiday.koninkrijksdag.name=Koninkrijksdag
-holiday.koninkrijksdag.date=20111215
-holiday.kerstmis.name=Kerstmis
-holiday.kerstmis.date=20111225
-holiday.kerstmis.name=Tweede Kerstdag
-holiday.kerstmis.date=20111226
-
-# 2012
-#holiday.nieuwjaar.name=Nieuwjaar
-#holiday.nieuwjaar.date=20120101
-#holiday.goedevrijdag.name=Goede Vrijdag
-#holiday.goedevrijdag.date=20120406
-#holiday.pasen.name=Pasen
-#holiday.pasen.date=20120408
-#holiday.pasen.name=Tweede Pasdag
-#holiday.pasen.date=20120409
-#holiday.koninginnedag.name=Koninginnedag
-#holiday.koninginnedag.date=20120430
-#holiday.dodenherdenking.name=Dodenherdenking
-#holiday.dodenherdenking.date=20120504
-#holiday.bevrijdingsdag.name=Bevrijdingsdag
-#holiday.bevrijdingsdag.date=20120505
-#holiday.hemelvaartsdag.name=Hemelvaartsdag
-#holiday.hemelvaartsdag.date=20120617
-#holiday.pinksteren.name= Pinksteren
-#holiday.pinksteren.date=20120627
-#holiday.pinksteren.name=Tweede Pinksterdag
-#holiday.pinksteren.date=20120628
-#holiday.sinterklaas.name=Sinterklaas
-#holiday.sinterklaas.date=20121205
-#holiday.koninkrijksdag.name=Koninkrijksdag
-#holiday.koninkrijksdag.date=20121215
-#holiday.kerstmis.name=Kerstmis
-#holiday.kerstmis.date=20121225
-#holiday.kerstmis.name=Tweede Kerstdag
-#holiday.kerstmis.date=20121226
-
+holiday.nl-NL1.name=Nieuwjaar
+holiday.nl-NL1.date=2012-01-01
+holiday.nl-NL2.name=Goede Vrijdag
+holiday.nl-NL2.date=2012-04-06
+holiday.nl-NL3.name=Pasen
+holiday.nl-NL3.date=2012-04-08
+holiday.nl-NL4.name=Tweede Pasdag
+holiday.nl-NL4.date=2012-04-09
+holiday.nl-NL5.name=Koninginnedag
+holiday.nl-NL5.date=2012-04-30
+holiday.nl-NL6.name=Dodenherdenking
+holiday.nl-NL6.date=2012-05-04
+holiday.nl-NL7.name=Bevrijdingsdag
+holiday.nl-NL7.date=2012-05-05
+holiday.nl-NL8.name=Hemelvaartsdag
+holiday.nl-NL8.date=2012-05-17
+holiday.nl-NL9.name=Pinksteren
+holiday.nl-NL9.date=2012-05-27
+holiday.nl-NL10.name=Tweede Pinksterdag
+holiday.nl-NL10.date=2012-05-28
+holiday.nl-NL11.name=Sinterklaas
+holiday.nl-NL11.date=2012-12-05
+holiday.nl-NL12.name=Koninkrijksdag
+holiday.nl-NL12.date=2012-12-15
+holiday.nl-NL13.name=Kerstmis
+holiday.nl-NL13.date=2012-12-25
+holiday.nl-NL14.name=Tweede Kerstdag
+holiday.nl-NL14.date=2012-12-26
+holiday.nl-NL15.name=Nieuwjaar
+holiday.nl-NL15.date=2013-01-01
+holiday.nl-NL16.name=Goede Vrijdag
+holiday.nl-NL16.date=2013-03-29
+holiday.nl-NL17.name=Pasen
+holiday.nl-NL17.date=2013-03-31
+holiday.nl-NL18.name=Tweede Pasdag
+holiday.nl-NL18.date=2013-04-01
+holiday.nl-NL19.name=Koninginnedag
+holiday.nl-NL19.date=2013-04-30
+holiday.nl-NL20.name=Dodenherdenking
+holiday.nl-NL20.date=2013-05-04
+holiday.nl-NL21.name=Bevrijdingsdag
+holiday.nl-NL21.date=2013-05-05
+holiday.nl-NL22.name=Hemelvaartsdag
+holiday.nl-NL22.date=2013-05-09
+holiday.nl-NL23.name=Pinksteren
+holiday.nl-NL23.date=2013-05-19
+holiday.nl-NL24.name=Tweede Pinksterdag
+holiday.nl-NL24.date=2013-05-20
+holiday.nl-NL25.name=Sinterklaas
+holiday.nl-NL25.date=2013-12-05
+holiday.nl-NL26.name=Koninkrijksdag
+holiday.nl-NL26.date=2013-12-15
+holiday.nl-NL27.name=Kerstmis
+holiday.nl-NL27.date=2013-12-25
+holiday.nl-NL28.name=Tweede Kerstdag
+holiday.nl-NL28.date=2013-12-26

@@ -1,7 +1,7 @@
-################################################################################
-# Sample calendar for France
-#
-# taskwarrior - a command line task list manager.
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/fr-FR/2012.json
+# http://holidata.net/fr-FR/2013.json
 #
 # Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 #
@@ -25,29 +25,49 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-################################################################################
+###############################################################################
 
-calendar.holidays=sparse
-
-# 2011
-holiday.jourdelan.name=Jour de l'an
-holiday.jourdelan.date=20110101
-holiday.travail.name=Fête du premier mai
-holiday.travail.date=20110501
-holiday.victoire.name=la Fête de Victoire 45
-holiday.victoire.date=20110508
-holiday.ascencion.name=l'Ascencion
-holiday.ascencion.date=20110602
-holiday.pentecôte.name=la Pentecôte
-holiday.pentecôte.date=20110612
-holiday.bastille.name=Fête nationale
-holiday.bastille.date=20110714
-holiday.assomption.name=Assomption
-holiday.assomption.date=20110815
-holiday.toussaint.name=La Toussaint
-holiday.toussaint.date=20111101
-holiday.armistice.name=Jour d'armistice
-holiday.armistice.date=20111111
-holiday.noël.name=Noël
-holiday.noël.date=20111225
-
+holiday.fr-FR1.name=Jour de l'an
+holiday.fr-FR1.date=2012-01-01
+holiday.fr-FR2.name=Lundi de Pâques
+holiday.fr-FR2.date=2012-04-09
+holiday.fr-FR3.name=Fête du premier mai
+holiday.fr-FR3.date=2012-05-01
+holiday.fr-FR4.name=Armistice 1945
+holiday.fr-FR4.date=2012-05-08
+holiday.fr-FR5.name=Ascencion
+holiday.fr-FR5.date=2012-05-17
+holiday.fr-FR6.name=Pentecôte
+holiday.fr-FR6.date=2012-05-28
+holiday.fr-FR7.name=Fête nationale
+holiday.fr-FR7.date=2012-07-14
+holiday.fr-FR8.name=Assomption
+holiday.fr-FR8.date=2012-08-15
+holiday.fr-FR9.name=Toussaint
+holiday.fr-FR9.date=2012-11-01
+holiday.fr-FR10.name=Armistice 1918
+holiday.fr-FR10.date=2012-11-11
+holiday.fr-FR11.name=Noël
+holiday.fr-FR11.date=2012-12-25
+holiday.fr-FR12.name=Jour de l'an
+holiday.fr-FR12.date=2013-01-01
+holiday.fr-FR13.name=Lundi de Pâques
+holiday.fr-FR13.date=2013-04-01
+holiday.fr-FR14.name=Fête du premier mai
+holiday.fr-FR14.date=2013-05-01
+holiday.fr-FR15.name=Armistice 1945
+holiday.fr-FR15.date=2013-05-08
+holiday.fr-FR16.name=Ascencion
+holiday.fr-FR16.date=2013-05-09
+holiday.fr-FR17.name=Pentecôte
+holiday.fr-FR17.date=2013-05-19
+holiday.fr-FR18.name=Fête nationale
+holiday.fr-FR18.date=2013-07-14
+holiday.fr-FR19.name=Assomption
+holiday.fr-FR19.date=2013-08-15
+holiday.fr-FR20.name=Toussaint
+holiday.fr-FR20.date=2013-11-01
+holiday.fr-FR21.name=Armistice 1918
+holiday.fr-FR21.date=2013-11-11
+holiday.fr-FR22.name=Noël
+holiday.fr-FR22.date=2013-12-25

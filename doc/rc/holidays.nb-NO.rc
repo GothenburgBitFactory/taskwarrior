@@ -1,7 +1,7 @@
-################################################################################
-# Sample calendar for Norway
-#
-# taskwarrior - a command line task list manager.
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/nb-NO/2012.json
+# http://holidata.net/nb-NO/2013.json
 #
 # Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 #
@@ -25,79 +25,73 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-################################################################################
+###############################################################################
 
-calendar.holidays=sparse
-
-# 2011
-holiday.nyttårsdag.name=Nyttårsdag
-holiday.nyttårsdag.date=20110101
-holiday.fastelavn.name=Fastelavn
-holiday.fastelavn.date=20110306
-holiday.palmesøndag.name=Palmesøndag
-holiday.palmesøndag.date=20110417
-holiday.skjærtorsdag.name=Skjærtorsdag
-holiday.skjærtorsdag.date=20110421
-holiday.langfredag.name=Langfredag
-holiday.langfredag.date=20110422
-holiday.påskedag.name=Påskedag
-holiday.påskedag.date=20110424
-holiday.påskedag2.name=Påskedag
-holiday.påskedag2.date=20110425
-holiday.offentlighøytidsdag.name=Offentlig Høytidsdag
-holiday.offentlighøytidsdag.date=20110501
-holiday.frigjøringsdag.name=Frigjøringsdag 1945
-holiday.frigjøringsdag.date=20110508
-holiday.grunnlovsdag.name=Grunnlovsdag
-holiday.grunnlovsdag.date=20110517
-holiday.KristiHimmelfartsdag.name=Kristi Himmelfartsdag
-holiday.KristiHimmelfartsdag.date=20110602
-holiday.pinsedag.name=Pinsedag
-holiday.pinsedag.date=20110612
-holiday.pinsedag2.name=Pinsedag
-holiday.pinsedag2.date=20110613
-holiday.julaften.name=Julaften
-holiday.julaften.date=20111224
-holiday.juledag.name=Juledag
-holiday.juledag.date=20111225
-holiday.juledag2.name=Juledag
-holiday.juledag2.date=20111226
-holiday.nyttårsaften.name=Nyttårsaften
-holiday.nyttårsaften.date=20111231
-
-# 2012
-#holiday.nyttårsdag.name=Nyttårsdag
-#holiday.nyttårsdag.date=20120101
-#holiday.fastelavn.name=Fastelavn
-#holiday.fastelavn.date=20120219
-#holiday.palmesøndag.name=Palmesøndag
-#holiday.palmesøndag.date=20120401
-#holiday.skjærtorsdag.name=Skjærtorsdag
-#holiday.skjærtorsdag.date=20120405
-#holiday.langfredag.name=Langfredag
-#holiday.langfredag.date=20120406
-#holiday.påskedag.name=Påskedag
-#holiday.påskedag.date=20120408
-#holiday.påskedag2.name=Påskedag
-#holiday.påskedag2.date=20120409
-#holiday.offentlighøytidsdag.name=Offentlig Høytidsdag
-#holiday.offentlighøytidsdag.date=20120501
-#holiday.frigjøringsdag.name=Frigjøringsdag 1945
-#holiday.frigjøringsdag.date=20120508
-#holiday.grunnlovsdag.name=Grunnlovsdag
-#holiday.grunnlovsdag.date=20120517
-#holiday.KristiHimmelfartsdag.name=Kristi Himmelfartsdag
-#holiday.KristiHimmelfartsdag.date=20120517
-#holiday.pinsedag.name=Pinsedag
-#holiday.pinsedag.date=20120527
-#holiday.pinsedag2.name=Pinsedag
-#holiday.pinsedag2.date=20120528
-#holiday.julaften.name=Julaften
-#holiday.julaften.date=20121224
-#holiday.juledag.name=Juledag
-#holiday.juledag.date=20121225
-#holiday.juledag2.name=Juledag
-#holiday.juledag2.date=20121226
-#holiday.nyttårsaften.name=Nyttårsaften
-#holiday.nyttårsaften.date=20121231
-
+holiday.nb-NO1.name=Nyttårsdag
+holiday.nb-NO1.date=2012-01-01
+holiday.nb-NO2.name=Fastelavn
+holiday.nb-NO2.date=2012-02-19
+holiday.nb-NO3.name=Palmesøndag
+holiday.nb-NO3.date=2012-04-01
+holiday.nb-NO4.name=Skjærtorsdag
+holiday.nb-NO4.date=2012-04-05
+holiday.nb-NO5.name=Langfredag
+holiday.nb-NO5.date=2012-04-06
+holiday.nb-NO6.name=Påskedag
+holiday.nb-NO6.date=2012-04-08
+holiday.nb-NO7.name=Påskedag
+holiday.nb-NO7.date=2012-04-09
+holiday.nb-NO8.name=Offentlig Høytidsdag
+holiday.nb-NO8.date=2012-05-01
+holiday.nb-NO9.name=Frigjøringsdag 1945
+holiday.nb-NO9.date=2012-05-08
+holiday.nb-NO10.name=Grunnlovsdag
+holiday.nb-NO10.date=2012-05-17
+holiday.nb-NO11.name=Kristi Himmelfartsdag
+holiday.nb-NO11.date=2012-05-17
+holiday.nb-NO12.name=Pinsedag
+holiday.nb-NO12.date=2012-05-27
+holiday.nb-NO13.name=Pinsedag
+holiday.nb-NO13.date=2012-05-28
+holiday.nb-NO14.name=Julaften
+holiday.nb-NO14.date=2012-12-24
+holiday.nb-NO15.name=Juledag
+holiday.nb-NO15.date=2012-12-25
+holiday.nb-NO16.name=Juledag
+holiday.nb-NO16.date=2012-12-26
+holiday.nb-NO17.name=Nyttårsaften
+holiday.nb-NO17.date=2012-12-31
+holiday.nb-NO18.name=Nyttårsdag
+holiday.nb-NO18.date=2013-01-01
+holiday.nb-NO19.name=Fastelavn
+holiday.nb-NO19.date=2013-02-10
+holiday.nb-NO20.name=Palmesøndag
+holiday.nb-NO20.date=2013-03-24
+holiday.nb-NO21.name=Skjærtorsdag
+holiday.nb-NO21.date=2013-03-28
+holiday.nb-NO22.name=Langfredag
+holiday.nb-NO22.date=2013-03-29
+holiday.nb-NO23.name=Påskedag
+holiday.nb-NO23.date=2013-03-31
+holiday.nb-NO24.name=Påskedag
+holiday.nb-NO24.date=2013-04-01
+holiday.nb-NO25.name=Offentlig Høytidsdag
+holiday.nb-NO25.date=2013-05-01
+holiday.nb-NO26.name=Frigjøringsdag 1945
+holiday.nb-NO26.date=2013-05-08
+holiday.nb-NO27.name=Grunnlovsdag
+holiday.nb-NO27.date=2013-05-17
+holiday.nb-NO28.name=Kristi Himmelfartsdag
+holiday.nb-NO28.date=2013-05-09
+holiday.nb-NO29.name=Pinsedag
+holiday.nb-NO29.date=2013-05-19
+holiday.nb-NO30.name=Pinsedag
+holiday.nb-NO30.date=2013-05-20
+holiday.nb-NO31.name=Julaften
+holiday.nb-NO31.date=2013-12-24
+holiday.nb-NO32.name=Juledag
+holiday.nb-NO32.date=2013-12-25
+holiday.nb-NO33.name=Juledag
+holiday.nb-NO33.date=2013-12-26
+holiday.nb-NO34.name=Nyttårsaften
+holiday.nb-NO34.date=2013-12-31

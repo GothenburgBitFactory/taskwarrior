@@ -1,7 +1,7 @@
-################################################################################
-# Sample calendar for the UK
-#
-# taskwarrior - a command line task list manager.
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/cs-CZ/2012.json
+# http://holidata.net/cs-CZ/2013.json
 #
 # Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 #
@@ -25,45 +25,57 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-################################################################################
+###############################################################################
 
-calendar.holidays=sparse
-
-# 2011
-holiday.newyear.name=Nový rok, Den obnovy samostatnosti českého státu
-holiday.newyear.date=20110101
-
-# this one differs for each year
-holiday.eastermonday.name=Velikonoční pondělí
-holiday.eastermonday.date=20110425
-
-holiday.mayday.name=Svátek práce
-holiday.mayday.date=20110501
-
-holiday.victoryday.name=Den vítězství
-holiday.victoryday.date=20110508
-
-holiday.cyrilmetodej.name=Den slovanských věrozvěstů
-holiday.cyrilmetodej.date=20110705
-
-holiday.husburntodeath.name=Den upálení mistra Jana Husa
-holiday.husburntodeath.date=20110706
-
-holiday.statehoodday.name=Den české státnosti
-holiday.statehoodday.date=20110928
-
-holiday.independentcs.name=Den vzniku samostatného československého státu
-holiday.independentcs.date=20111028
-
-holiday.democracyfight.name=Den boje za svobodu a demokracii
-holiday.democracyfight.date=20111117
-
-holiday.christmaseve.name=Štědrý den
-holiday.christmaseve.date=20111224
-
-holiday.christmasdayone.name=1. svátek vánoční
-holiday.christmasdayone.date=20111225
-
-holiday.christmasdaytwo.name=2. svátek vánoční
-holiday.christmasdaytwo.date=20111226
-
+holiday.cs-CZ1.name=Nový rok
+holiday.cs-CZ1.date=2012-01-01
+holiday.cs-CZ2.name=Den obnovy samostatnosti českého státu
+holiday.cs-CZ2.date=2012-01-01
+holiday.cs-CZ3.name=Velikonoční pondělí
+holiday.cs-CZ3.date=2012-04-09
+holiday.cs-CZ4.name=Svátek práce
+holiday.cs-CZ4.date=2012-05-01
+holiday.cs-CZ5.name=Den vítězství
+holiday.cs-CZ5.date=2012-05-08
+holiday.cs-CZ6.name=Den slovanských věrozvěstů
+holiday.cs-CZ6.date=2012-07-05
+holiday.cs-CZ7.name=Den upálení mistra Jana Husa
+holiday.cs-CZ7.date=2012-07-06
+holiday.cs-CZ8.name=Den české státnosti
+holiday.cs-CZ8.date=2012-09-28
+holiday.cs-CZ9.name=Den vzniku samostatného československého státu
+holiday.cs-CZ9.date=2012-10-28
+holiday.cs-CZ10.name=Den boje za svobodu a demokracii
+holiday.cs-CZ10.date=2012-11-17
+holiday.cs-CZ11.name=Štědrý den
+holiday.cs-CZ11.date=2012-12-24
+holiday.cs-CZ12.name=1. svátek vánoční
+holiday.cs-CZ12.date=2012-12-25
+holiday.cs-CZ13.name=2. svátek vánoční
+holiday.cs-CZ13.date=2012-12-26
+holiday.cs-CZ14.name=Nový rok
+holiday.cs-CZ14.date=2013-01-01
+holiday.cs-CZ15.name=Den obnovy samostatnosti českého státu
+holiday.cs-CZ15.date=2013-01-01
+holiday.cs-CZ16.name=Velikonoční pondělí
+holiday.cs-CZ16.date=2013-04-01
+holiday.cs-CZ17.name=Svátek práce
+holiday.cs-CZ17.date=2013-05-01
+holiday.cs-CZ18.name=Den vítězství
+holiday.cs-CZ18.date=2013-05-08
+holiday.cs-CZ19.name=Den slovanských věrozvěstů
+holiday.cs-CZ19.date=2013-07-05
+holiday.cs-CZ20.name=Den upálení mistra Jana Husa
+holiday.cs-CZ20.date=2013-07-06
+holiday.cs-CZ21.name=Den české státnosti
+holiday.cs-CZ21.date=2013-09-28
+holiday.cs-CZ22.name=Den vzniku samostatného československého státu
+holiday.cs-CZ22.date=2013-10-28
+holiday.cs-CZ23.name=Den boje za svobodu a demokracii
+holiday.cs-CZ23.date=2013-11-17
+holiday.cs-CZ24.name=Štědrý den
+holiday.cs-CZ24.date=2013-12-24
+holiday.cs-CZ25.name=1. svátek vánoční
+holiday.cs-CZ25.date=2013-12-25
+holiday.cs-CZ26.name=2. svátek vánoční
+holiday.cs-CZ26.date=2013-12-26

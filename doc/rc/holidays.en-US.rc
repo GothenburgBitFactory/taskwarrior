@@ -1,7 +1,7 @@
-################################################################################
-# Sample calendar for the US
-#
-# taskwarrior - a command line task list manager.
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/en-US/2012.json
+# http://holidata.net/en-US/2013.json
 #
 # Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 #
@@ -25,33 +25,55 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-################################################################################
+###############################################################################
 
-calendar.holidays=sparse
-
-# 2011
-holiday.newyearsday.name=New Year's Day
-holiday.newyearsday.date=20110101
-holiday.martinlutherkingday.name=Birthday of Martin Luther King, Jr.
-holiday.martinlutherkingday.date=20110117
-holiday.presidentsday.name=Washington's Birthday
-holiday.presidentsday.date=20110221
-holiday.patriotsday.name=Patriots' Day
-holiday.patriotsday.date=20110419
-holiday.memorialday.name=Memorial Day
-holiday.memorialday.date=20110530
-holiday.independenceday.name=Independence Day
-holiday.independenceday.date=20110704
-holiday.laborday.name=Labor Day
-holiday.laborday.date=20110905
-holiday.columbusday.name=Columbus Day
-holiday.columbusday.date=20111010
-holiday.veteransdays.name=Veterans Day
-holiday.veteransdays.date=20111111
-holiday.thanksgiving.name=Thanksgiving Day
-holiday.thanksgiving.date=20111124
-holiday.christmasday.name=Christmas Day
-holiday.christmasday.date=20111225
-holiday.newyearseve.name=New Year's Eve
-holiday.newyearseve.date=20111231
-
+holiday.en-US1.name=New Year's Day
+holiday.en-US1.date=2012-01-01
+holiday.en-US2.name=New Year's Day
+holiday.en-US2.date=2012-01-02
+holiday.en-US3.name=Birthday of Martin Luther King, Jr.
+holiday.en-US3.date=2012-01-16
+holiday.en-US4.name=Washington's Birthday
+holiday.en-US4.date=2012-02-20
+holiday.en-US5.name=Patriots' Day
+holiday.en-US5.date=2012-04-16
+holiday.en-US6.name=Patriots' Day
+holiday.en-US6.date=2012-04-16
+holiday.en-US7.name=Memorial Day
+holiday.en-US7.date=2012-05-28
+holiday.en-US8.name=Independence Day
+holiday.en-US8.date=2012-07-04
+holiday.en-US9.name=Labor Day
+holiday.en-US9.date=2012-09-03
+holiday.en-US10.name=Columbus Day
+holiday.en-US10.date=2012-10-08
+holiday.en-US11.name=Veterans Day
+holiday.en-US11.date=2012-11-12
+holiday.en-US12.name=Thanksgiving Day
+holiday.en-US12.date=2012-11-22
+holiday.en-US13.name=Christmas Day
+holiday.en-US13.date=2012-12-25
+holiday.en-US14.name=New Year's Day
+holiday.en-US14.date=2013-01-01
+holiday.en-US15.name=Birthday of Martin Luther King, Jr.
+holiday.en-US15.date=2013-01-21
+holiday.en-US16.name=Washington's Birthday
+holiday.en-US16.date=2013-02-18
+holiday.en-US17.name=Patriots' Day
+holiday.en-US17.date=2013-04-15
+holiday.en-US18.name=Patriots' Day
+holiday.en-US18.date=2013-04-15
+holiday.en-US19.name=Memorial Day
+holiday.en-US19.date=2013-05-27
+holiday.en-US20.name=Independence Day
+holiday.en-US20.date=2013-07-04
+holiday.en-US21.name=Labor Day
+holiday.en-US21.date=2013-09-02
+holiday.en-US22.name=Columbus Day
+holiday.en-US22.date=2013-10-14
+holiday.en-US23.name=Veterans Day
+holiday.en-US23.date=2013-11-11
+holiday.en-US24.name=Thanksgiving Day
+holiday.en-US24.date=2013-11-28
+holiday.en-US25.name=Christmas Day
+holiday.en-US25.date=2013-12-25

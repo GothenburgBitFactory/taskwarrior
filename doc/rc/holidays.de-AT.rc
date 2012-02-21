@@ -1,7 +1,7 @@
-################################################################################
-# Sample calendar for Austria
-#
-# taskwarrior - a command line task list manager.
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/de-AT/2012.json
+# http://holidata.net/de-AT/2013.json
 #
 # Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 #
@@ -25,54 +25,97 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-################################################################################
+###############################################################################
 
-calendar.holidays=sparse
-
-# 2011
-holiday.neujahr.name=Neujahr
-holiday.neujahr.date=20110101
-holiday.heiligedreikonige.name=Heilige drei KÃ¶nige
-holiday.heiligedreikonige.date=20110106
-holiday.josef.name=Josef (K, St, T, V)
-holiday.josef.date=20110319
-holiday.karfreitag.name=Karfreitag
-holiday.karfreitag.date=20110422
-holiday.ostersonntag.name=Ostersonntag
-holiday.ostersonntag.date=20110424
-holiday.ostermontag.name=Ostermontag
-holiday.ostermontag.date=20110425
-holiday.staatsfeiertag.name=Staatsfeiertag
-holiday.staatsfeiertag.date=20110501
-holiday.florian.name=Florian (OÃ)
-holiday.florian.date=20110504
-holiday.christihimmelfahrt.name=Christi Himmelfahrt
-holiday.christihimmelfahrt.date=20110602
-holiday.pfingstsonntag.name=Pfingstsonntag
-holiday.pfingstsonntag.date=20110612
-holiday.pfingstmontag.name=Pfingstmontag
-holiday.pfingstmontag.date=20110613
-holiday.fronleichnam.name=Fronleichnam
-holiday.fronleichnam.date=20110623
-holiday.mariahimmelfahrt.name=MariÃ€ Himmelfahrt
-holiday.mariahimmelfahrt.date=20110815
-holiday.rupert.name=Rupert (S)
-holiday.rupert.date=20110924
-holiday.kvolksabst.name=Tag der Volksabstimmung (K)
-holiday.kvolksabst.date=20111010
-holiday.allerheiligen.name=Allerheiligen
-holiday.allerheiligen.date=20111101
-holiday.martin.name=Martin (B)
-holiday.martin.date=20111111
-holiday.leopold.name=Leopold (W, NÃ)
-holiday.leopold.date=20111115
-holiday.mariaempfaengnis.name=MariÃ€ EmpfÃ€ngnis
-holiday.mariaempfaengnis.date=20111208
-holiday.heiligerabend.name=Heiliger Abend
-holiday.heiligerabend.date=20111224
-holiday.christtag.name=Christtag
-holiday.christtag.date=20111225
-holiday.stefanitag.name=Stefanitag
-holiday.stefanitag.date=20111226
-holiday.silvester.name=Silvester
-holiday.silvester.date=20111231
+holiday.de-AT1.name=Neujahr
+holiday.de-AT1.date=2012-01-01
+holiday.de-AT2.name=Heilige drei KÃ¶nige
+holiday.de-AT2.date=2012-01-06
+holiday.de-AT3.name=Josef (K, St, T, V)
+holiday.de-AT3.date=2012-03-19
+holiday.de-AT4.name=Karfreitag
+holiday.de-AT4.date=2012-04-06
+holiday.de-AT5.name=Ostersonntag
+holiday.de-AT5.date=2012-04-08
+holiday.de-AT6.name=Ostermontag
+holiday.de-AT6.date=2012-04-09
+holiday.de-AT7.name=Staatsfeiertag
+holiday.de-AT7.date=2012-05-01
+holiday.de-AT8.name=Florian (O)
+holiday.de-AT8.date=2012-05-04
+holiday.de-AT9.name=Christi Himmelfahrt
+holiday.de-AT9.date=2012-05-17
+holiday.de-AT10.name=Pfingstsonntag
+holiday.de-AT10.date=2012-05-27
+holiday.de-AT11.name=Pfingstmontag
+holiday.de-AT11.date=2012-05-28
+holiday.de-AT12.name=Fronleichnam
+holiday.de-AT12.date=2012-06-07
+holiday.de-AT13.name=Mariä Himmelfahrt
+holiday.de-AT13.date=2012-08-15
+holiday.de-AT14.name=Rupert (S)
+holiday.de-AT14.date=2012-09-24
+holiday.de-AT15.name=Tag der Volksabstimmung (K)
+holiday.de-AT15.date=2012-10-10
+holiday.de-AT16.name=Allerheiligen
+holiday.de-AT16.date=2012-11-01
+holiday.de-AT17.name=Martin (B)
+holiday.de-AT17.date=2012-11-11
+holiday.de-AT18.name=Leopold (W, N)
+holiday.de-AT18.date=2012-11-15
+holiday.de-AT19.name=Mariä Empfängnis
+holiday.de-AT19.date=2012-12-08
+holiday.de-AT20.name=Heiliger Abend
+holiday.de-AT20.date=2012-12-24
+holiday.de-AT21.name=Christtag
+holiday.de-AT21.date=2012-12-25
+holiday.de-AT22.name=Stefanitag
+holiday.de-AT22.date=2012-12-26
+holiday.de-AT23.name=Silvester
+holiday.de-AT23.date=2012-12-31
+holiday.de-AT24.name=Neujahr
+holiday.de-AT24.date=2013-01-01
+holiday.de-AT25.name=Heilige drei KÃ¶nige
+holiday.de-AT25.date=2013-01-06
+holiday.de-AT26.name=Josef (K, St, T, V)
+holiday.de-AT26.date=2013-03-19
+holiday.de-AT27.name=Karfreitag
+holiday.de-AT27.date=2013-03-29
+holiday.de-AT28.name=Ostersonntag
+holiday.de-AT28.date=2013-03-31
+holiday.de-AT29.name=Ostermontag
+holiday.de-AT29.date=2013-04-01
+holiday.de-AT30.name=Staatsfeiertag
+holiday.de-AT30.date=2013-05-01
+holiday.de-AT31.name=Florian (O)
+holiday.de-AT31.date=2013-05-04
+holiday.de-AT32.name=Christi Himmelfahrt
+holiday.de-AT32.date=2013-05-09
+holiday.de-AT33.name=Pfingstsonntag
+holiday.de-AT33.date=2013-05-19
+holiday.de-AT34.name=Pfingstmontag
+holiday.de-AT34.date=2013-05-20
+holiday.de-AT35.name=Fronleichnam
+holiday.de-AT35.date=2013-05-30
+holiday.de-AT36.name=Mariä Himmelfahrt
+holiday.de-AT36.date=2013-08-15
+holiday.de-AT37.name=Rupert (S)
+holiday.de-AT37.date=2013-09-24
+holiday.de-AT38.name=Tag der Volksabstimmung (K)
+holiday.de-AT38.date=2013-10-10
+holiday.de-AT39.name=Allerheiligen
+holiday.de-AT39.date=2013-11-01
+holiday.de-AT40.name=Martin (B)
+holiday.de-AT40.date=2013-11-11
+holiday.de-AT41.name=Leopold (W, N)
+holiday.de-AT41.date=2013-11-15
+holiday.de-AT42.name=Mariä Empfängnis
+holiday.de-AT42.date=2013-12-08
+holiday.de-AT43.name=Heiliger Abend
+holiday.de-AT43.date=2013-12-24
+holiday.de-AT44.name=Christtag
+holiday.de-AT44.date=2013-12-25
+holiday.de-AT45.name=Stefanitag
+holiday.de-AT45.date=2013-12-26
+holiday.de-AT46.name=Silvester
+holiday.de-AT46.date=2013-12-31

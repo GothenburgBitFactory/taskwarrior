@@ -1,7 +1,7 @@
-################################################################################
-# Sample calendar for New Zealand
-#
-# taskwarrior - a command line task list manager.
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/en-NZ/2012.json
+# http://holidata.net/en-NZ/2013.json
 #
 # Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 #
@@ -25,81 +25,45 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-################################################################################
+###############################################################################
 
-calendar.holidays=sparse
-
-# 2011
-holiday.newyear.name=New Year's Day
-holiday.newyear.date=20110101
-holiday.dayafternewyearsday.name=Day after New Years Day
-holiday.dayafternewyearsday.date=20110102
-holiday.waitangiday.name=Waitangi Day
-holiday.waitangiday.date=20110206
-
-holiday.goodfriday.name=Good Friday
-holiday.goodfriday.date=20110422
-holiday.eastermonday.name=Easter Monday
-holiday.eastermonday.date=20110425
-
-holiday.anzacday.name=ANZAC Day
-holiday.anzacday.date=20110425
-holiday.queensbirthday.name=Queen's Birthday
-holiday.queensbirthday.date=20110606
-holiday.labourday.name=Labour Day
-holiday.labourday.date=20111024
-
-holiday.christmas.name=Christmas Day
-holiday.christmas.date=20111225
-holiday.boxingday.name=Boxing Day
-holiday.boxingday.date=20111226
-
-# 2012
-#holiday.newyear.name=New Year's Day
-#holiday.newyear.date=20120101
-#holiday.dayafternewyearsday.name=Day after New Years Day
-#holiday.dayafternewyearsday.date=20120102
-#holiday.waitangiday.name=Waitangi Day
-#holiday.waitangiday.date=20120206
-
-#holiday.goodfriday.name=Good Friday
-#holiday.goodfriday.date=20120406
-#holiday.eastermonday.name=Easter Monday
-#holiday.eastermonday.date=20120409
-
-#holiday.anzacday.name=ANZAC Day
-#holiday.anzacday.date=20120425
-#holiday.queensbirthday.name=Queen's Birthday
-#holiday.queensbirthday.date=20120604
-#holiday.labourday.name=Labour Day
-#holiday.labourday.date=20121022
-
-#holiday.christmas.name=Christmas Day
-#holiday.christmas.date=20121225
-#holiday.boxingday.name=Boxing Day
-#holiday.boxingday.date=20121226
-
-# 2013
-#holiday.newyear.name=New Year's Day
-#holiday.newyear.date=20130101
-#holiday.dayafternewyearsday.name=Day after New Years Day
-#holiday.dayafternewyearsday.date=20130102
-#holiday.waitangiday.name=Waitangi Day
-#holiday.waitangiday.date=20130206
-
-#holiday.goodfriday.name=Good Friday
-#holiday.goodfriday.date=20130329
-#holiday.eastermonday.name=Easter Monday
-#holiday.eastermonday.date=20130401
-
-#holiday.anzacday.name=ANZAC Day
-#holiday.anzacday.date=20130425
-#holiday.queensbirthday.name=Queen's Birthday
-#holiday.queensbirthday.date=20130603
-#holiday.labourday.name=Labour Day
-#holiday.labourday.date=20131028
-
-#holiday.christmas.name=Christmas Day
-#holiday.christmas.date=20131225
-#holiday.boxingday.name=Boxing Day
-#holiday.boxingday.date=20131226
+holiday.en-NZ1.name=New Year's Day
+holiday.en-NZ1.date=2012-01-01
+holiday.en-NZ2.name=Day after New Years Day
+holiday.en-NZ2.date=2012-01-02
+holiday.en-NZ3.name=Waitangi Day
+holiday.en-NZ3.date=2012-02-06
+holiday.en-NZ4.name=Good Friday
+holiday.en-NZ4.date=2012-04-06
+holiday.en-NZ5.name=Easter Monday
+holiday.en-NZ5.date=2012-04-09
+holiday.en-NZ6.name=ANZAC Day
+holiday.en-NZ6.date=2012-04-25
+holiday.en-NZ7.name=Queen's Birthday
+holiday.en-NZ7.date=2012-06-04
+holiday.en-NZ8.name=Labour Day
+holiday.en-NZ8.date=2012-10-22
+holiday.en-NZ9.name=Christmas Day
+holiday.en-NZ9.date=2012-12-25
+holiday.en-NZ10.name=Boxing Day
+holiday.en-NZ10.date=2012-12-26
+holiday.en-NZ11.name=New Year's Day
+holiday.en-NZ11.date=2013-01-01
+holiday.en-NZ12.name=Day after New Years Day
+holiday.en-NZ12.date=2013-01-02
+holiday.en-NZ13.name=Waitangi Day
+holiday.en-NZ13.date=2013-02-06
+holiday.en-NZ14.name=Good Friday
+holiday.en-NZ14.date=2013-03-29
+holiday.en-NZ15.name=Easter Monday
+holiday.en-NZ15.date=2013-04-01
+holiday.en-NZ16.name=ANZAC Day
+holiday.en-NZ16.date=2013-04-25
+holiday.en-NZ17.name=Queen's Birthday
+holiday.en-NZ17.date=2013-06-03
+holiday.en-NZ18.name=Labour Day
+holiday.en-NZ18.date=2013-10-28
+holiday.en-NZ19.name=Christmas Day
+holiday.en-NZ19.date=2013-12-25
+holiday.en-NZ20.name=Boxing Day
+holiday.en-NZ20.date=2013-12-26

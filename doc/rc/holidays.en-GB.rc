@@ -1,7 +1,7 @@
-################################################################################
-# Sample calendar for the UK
-#
-# taskwarrior - a command line task list manager.
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/en-GB/2012.json
+# http://holidata.net/en-GB/2013.json
 #
 # Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 #
@@ -25,25 +25,41 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-################################################################################
+###############################################################################
 
-calendar.holidays=sparse
-
-# 2011
-holiday.newyear.name=New Year's Day
-holiday.newyear.date=20110101
-holiday.goodfriday.name=Good Friday
-holiday.goodfriday.date=20110422
-holiday.eastermonday.name=Easter Monday
-holiday.eastermonday.date=20110425
-holiday.may.name=Early May Bank Holiday
-holiday.may.date=20110502
-holiday.spring.name=Spring Bank Holiday
-holiday.spring.date=20110530
-holiday.august.name=August Bank Holiday
-holiday.august.date=20110829
-holiday.christmas.name=Christmas Day
-holiday.christmas.date=20111225
-holiday.boxingday.name=Boxing Day
-holiday.boxingday.date=20111226
-
+holiday.en-GB1.name=New Year's Day
+holiday.en-GB1.date=2012-01-01
+holiday.en-GB2.name=New Year's Day Holiday
+holiday.en-GB2.date=2012-01-02
+holiday.en-GB3.name=Good Friday
+holiday.en-GB3.date=2012-04-06
+holiday.en-GB4.name=Easter Monday
+holiday.en-GB4.date=2012-04-09
+holiday.en-GB5.name=Early May Bank Holiday
+holiday.en-GB5.date=2012-05-07
+holiday.en-GB6.name=Spring Bank Holiday
+holiday.en-GB6.date=2012-06-04
+holiday.en-GB7.name=Queen's Diamond Jubilee
+holiday.en-GB7.date=2012-06-05
+holiday.en-GB8.name=August Bank Holiday
+holiday.en-GB8.date=2012-08-27
+holiday.en-GB9.name=Christmas Day
+holiday.en-GB9.date=2012-12-25
+holiday.en-GB10.name=Boxing Day
+holiday.en-GB10.date=2012-12-26
+holiday.en-GB11.name=New Year's Day
+holiday.en-GB11.date=2013-01-01
+holiday.en-GB12.name=Good Friday
+holiday.en-GB12.date=2013-03-29
+holiday.en-GB13.name=Easter Monday
+holiday.en-GB13.date=2013-04-01
+holiday.en-GB14.name=Early May Bank Holiday
+holiday.en-GB14.date=2013-05-06
+holiday.en-GB15.name=Spring Bank Holiday
+holiday.en-GB15.date=2013-05-27
+holiday.en-GB16.name=August Bank Holiday
+holiday.en-GB16.date=2013-08-26
+holiday.en-GB17.name=Christmas Day
+holiday.en-GB17.date=2013-12-25
+holiday.en-GB18.name=Boxing Day
+holiday.en-GB18.date=2013-12-26

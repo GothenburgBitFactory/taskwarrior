@@ -1,7 +1,7 @@
-################################################################################
-# Sample calendar for IT
-#
-# taskwarrior - a command line task list manager.
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/it-IT/2012.json
+# http://holidata.net/it-IT/2013.json
 #
 # Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 #
@@ -25,44 +25,53 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-################################################################################
+###############################################################################
 
-calendar.holidays=sparse
-
-# 2011
-
-# fisse (legali)
-holiday.capodanno.name=Capodanno
-holiday.capodanno.date=20110101
-holiday.sanmarco.name=Festa della liberazione
-holiday.sanmarco.date=20110425
-holiday.lavoratori.name=Festa del lavoro
-holiday.lavoratori.date=20110501
-holiday.repubblica.name=Festa della repubblica
-holiday.repubblica.date=20110602
-
-# fisse (cristiane)
-holiday.epifania.name=Epifania
-holiday.epifania.date=20110106
-holiday.ferragosto.name=Assunzione (ferragosto)
-holiday.ferragosto.date=20110815
-holiday.ognissanti.name=Ognissanti
-holiday.ognissanti.date=20111101
-holiday.madonna.name=Immacolata concezione
-holiday.madonna.date=20111208
-holiday.natale.name=Natale
-holiday.natale.date=20111225
-holiday.sstefano.name=S.to Stefano
-holiday.sstefano.date=20111226
-
-# variabili (cristiane)
-holiday.carnevale.name=Carnevale
-holiday.carnevale.date=20110308
-holiday.pasqua.name=Pasqua
-holiday.pasqua.date=20110424
-# nel 2011 coincide con la festa della liberazione
-#holiday.pasqua.name=Pasquetta
-#holiday.pasqua.date=20110425
-
-# 2012
-
+holiday.it-IT1.name=Capodanno
+holiday.it-IT1.date=2012-01-01
+holiday.it-IT2.name=Epifania
+holiday.it-IT2.date=2012-01-06
+holiday.it-IT3.name=Carnevale
+holiday.it-IT3.date=2012-03-08
+holiday.it-IT4.name=Pasqua
+holiday.it-IT4.date=2012-04-09
+holiday.it-IT5.name=Festa della liberazione
+holiday.it-IT5.date=2012-04-25
+holiday.it-IT6.name=Festa del lavoro
+holiday.it-IT6.date=2012-05-01
+holiday.it-IT7.name=Festa della repubblica
+holiday.it-IT7.date=2012-06-02
+holiday.it-IT8.name=Assunzione (ferragosto)
+holiday.it-IT8.date=2012-08-15
+holiday.it-IT9.name=Ognissanti
+holiday.it-IT9.date=2012-11-01
+holiday.it-IT10.name=Immacolata concezione
+holiday.it-IT10.date=2012-12-08
+holiday.it-IT11.name=Natale
+holiday.it-IT11.date=2012-12-25
+holiday.it-IT12.name=S.to Stefano
+holiday.it-IT12.date=2012-12-26
+holiday.it-IT13.name=Capodanno
+holiday.it-IT13.date=2013-01-01
+holiday.it-IT14.name=Epifania
+holiday.it-IT14.date=2013-01-06
+holiday.it-IT15.name=Carnevale
+holiday.it-IT15.date=2013-02-10
+holiday.it-IT16.name=Pasqua
+holiday.it-IT16.date=2013-04-01
+holiday.it-IT17.name=Festa della liberazione
+holiday.it-IT17.date=2013-04-25
+holiday.it-IT18.name=Festa del lavoro
+holiday.it-IT18.date=2013-05-01
+holiday.it-IT19.name=Festa della repubblica
+holiday.it-IT19.date=2013-06-02
+holiday.it-IT20.name=Assunzione (ferragosto)
+holiday.it-IT20.date=2013-08-15
+holiday.it-IT21.name=Ognissanti
+holiday.it-IT21.date=2013-11-01
+holiday.it-IT22.name=Immacolata concezione
+holiday.it-IT22.date=2013-12-08
+holiday.it-IT23.name=Natale
+holiday.it-IT23.date=2013-12-25
+holiday.it-IT24.name=S.to Stefano
+holiday.it-IT24.date=2013-12-26

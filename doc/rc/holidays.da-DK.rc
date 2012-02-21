@@ -1,7 +1,7 @@
-################################################################################
-# Sample calendar for Denmark
-#
-# taskwarrior - a command line task list manager.
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/da-DK/2012.json
+# http://holidata.net/da-DK/2013.json
 #
 # Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 #
@@ -25,58 +25,53 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 #
-################################################################################
+###############################################################################
 
-calendar.holidays=sparse
-
-# 2011
-holiday.nytårsdag.name=Nytårsdag
-holiday.nytårsdag.date=20110101
-holiday.palmesøndag.name=Palmesøndag
-holiday.palmesøndag.date=20110417
-holiday.skærtorsdag.name=Skærtorsdag
-holiday.skærtorsdag.date=20110421
-holiday.langfredag.name=Langfredag
-holiday.langfredag.date=20110422
-holiday.påskedag.name=Påskedag
-holiday.påskedag.date=20110424
-holiday.andenpåskedag.name=Anden påskedag
-holiday.andenpåskedag.date=20110425
-holiday.storebededag.name=Store bededag
-holiday.storebededag.date=20110520
-holiday.kristihimmelfartsdag.name=Kristi himmelfartsdag
-holiday.kristihimmelfartsdag.date=20110602
-holiday.pinsedag.name=Pinsedag
-holiday.pinsedag.date=20110612
-holiday.andenpinsedag.name=Anden pinsedag
-holiday.andenpinsedag.date=20110613
-holiday.juledag.name=Juledag
-holiday.juledag.date=20111225
-holiday.andenjuledag.name=Anden juledag
-holiday.andenjuledag.date=20111226
-
-# 2012
-#holiday.nytårsdag.name=Nytårsdag
-#holiday.nytårsdag.date=20120101
-#holiday.palmesøndag.name=Palmesøndag
-#holiday.palmesøndag.date=20120401
-#holiday.skærtorsdag.name=Skærtorsdag
-#holiday.skærtorsdag.date=20120405
-#holiday.langfredag.name=Langfredag
-#holiday.langfredag.date=20120406
-#holiday.påskedag.name=Påskedag
-#holiday.påskedag.date=20120408
-#holiday.andenpåskedag.name=Anden påskedag
-#holiday.andenpåskedag.date=20120409
-#holiday.storebededag.name=Store bededag
-#holiday.storebededag.date=20120504
-#holiday.kristihimmelfartsdag.name=Kristi himmelfartsdag
-#holiday.kristihimmelfartsdag.date=20120517
-#holiday.pinsedag.name=Pinsedag
-#holiday.pinsedag.date=20120527
-#holiday.andenpinsedag.name=Anden pinsedag
-#holiday.andenpinsedag.date=20120528
-#holiday.juledag.name=Juledag
-#holiday.juledag.date=20121225
-#holiday.andenjuledag.name=Anden juledag
-#holiday.andenjuledag.date=20121226
+holiday.da-DK1.name=Nytårsdag
+holiday.da-DK1.date=2012-01-01
+holiday.da-DK2.name=Palmesøndag
+holiday.da-DK2.date=2012-04-01
+holiday.da-DK3.name=Skærtorsdag
+holiday.da-DK3.date=2012-04-05
+holiday.da-DK4.name=Langfredag
+holiday.da-DK4.date=2012-04-06
+holiday.da-DK5.name=Påskedag
+holiday.da-DK5.date=2012-04-08
+holiday.da-DK6.name=Anden påskedag
+holiday.da-DK6.date=2012-04-09
+holiday.da-DK7.name=Store bededag
+holiday.da-DK7.date=2012-05-04
+holiday.da-DK8.name=Kristi himmelfartsdag
+holiday.da-DK8.date=2012-05-17
+holiday.da-DK9.name=Pinsedag
+holiday.da-DK9.date=2012-05-27
+holiday.da-DK10.name=Anden pinsedag
+holiday.da-DK10.date=2012-05-28
+holiday.da-DK11.name=Juledag
+holiday.da-DK11.date=2012-12-25
+holiday.da-DK12.name=Anden juledag
+holiday.da-DK12.date=2012-12-26
+holiday.da-DK13.name=Nytårsdag
+holiday.da-DK13.date=2013-01-01
+holiday.da-DK14.name=Palmesøndag
+holiday.da-DK14.date=2013-03-24
+holiday.da-DK15.name=Skærtorsdag
+holiday.da-DK15.date=2013-03-28
+holiday.da-DK16.name=Langfredag
+holiday.da-DK16.date=2013-03-29
+holiday.da-DK17.name=Påskedag
+holiday.da-DK17.date=2013-03-31
+holiday.da-DK18.name=Anden påskedag
+holiday.da-DK18.date=2013-04-01
+holiday.da-DK19.name=Store bededag
+holiday.da-DK19.date=2013-04-26
+holiday.da-DK20.name=Kristi himmelfartsdag
+holiday.da-DK20.date=2013-05-09
+holiday.da-DK21.name=Pinsedag
+holiday.da-DK21.date=2013-05-19
+holiday.da-DK22.name=Anden pinsedag
+holiday.da-DK22.date=2013-05-20
+holiday.da-DK23.name=Juledag
+holiday.da-DK23.date=2013-12-25
+holiday.da-DK24.name=Anden juledag
+holiday.da-DK24.date=2013-12-26
