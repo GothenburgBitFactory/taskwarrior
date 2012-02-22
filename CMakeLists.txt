@@ -4,7 +4,7 @@ include (CheckFunctionExists)
 set (HAVE_CMAKE true)
 
 project (task)
-set (PROJECT_VERSION "2.0.0.beta5")
+set (PROJECT_VERSION "2.0.0.RC1")
 
 SET (TASK_MAN1DIR share/man/man1 CACHE STRING "Installation directory for man pages, section 1")
 SET (TASK_MAN5DIR share/man/man5 CACHE STRING "Installation directory for man pages, section 5")
