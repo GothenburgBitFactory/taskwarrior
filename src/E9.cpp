@@ -644,7 +644,7 @@ void E9::operator_hastag (
   else
     result._value = invert ? "true" : "false";
 
-  std::cout << "# tags" << (invert ? " <operator_notag> " : " <operator_hastag> ") << right << " --> " << result << "\n";
+//  std::cout << "# tags" << (invert ? " <operator_notag> " : " <operator_hastag> ") << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
