@@ -328,7 +328,7 @@ bool json::object::parse_pair (
       throw format (STRING_JSON_MISSING_COLON, (int) n.cursor ());
   }
 
-  return NULL;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
