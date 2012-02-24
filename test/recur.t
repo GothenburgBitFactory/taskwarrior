@@ -48,9 +48,9 @@ qx{../src/task rc:recur.rc add complex due:today recur:daily};
 #   3 complex
 #   4 complex
 my $output = qx{../src/task rc:recur.rc minimal};
-like ($output, qr/1.+simple$/ms, '1 simple');
-like ($output, qr/3.+complex$/ms, '3 complex');
-like ($output, qr/4.+complex$/ms, '4 complex');
+like ($output, qr/1.+simple\n/ms, '1 simple');
+like ($output, qr/3.+complex\n/ms, '3 complex');
+like ($output, qr/4.+complex\n/ms, '4 complex');
 
 # TODO Modify a child task and do not propagate the change.
 $output = qx{echo '-- n' | ../src/task rc:recur.rc 3 modify complex2};
