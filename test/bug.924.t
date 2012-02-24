@@ -43,9 +43,9 @@ qx{../src/task rc:bug.rc add release 1.0};
 qx{../src/task rc:bug.rc add 'release 2.0'};
 qx{../src/task rc:bug.rc add "release 3.0"};
 my $output = qx{../src/task rc:bug.rc list};
-like ($output, qr/\s1.0$/ms, 'Plain text floating point preserved');
-like ($output, qr/\s2.0$/ms, 'Single quote floating point preserved');
-like ($output, qr/\s3.0$/ms, 'Double quote floating point preserved');
+like ($output, qr/\s1.0\n/ms, 'Plain text floating point preserved');
+like ($output, qr/\s2.0\n/ms, 'Single quote floating point preserved');
+like ($output, qr/\s3.0\n/ms, 'Double quote floating point preserved');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
