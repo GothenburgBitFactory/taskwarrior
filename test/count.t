@@ -48,19 +48,19 @@ qx{../src/task rc:count.rc add four wait:eom};
 qx{../src/task rc:count.rc add five due:eom recur:monthly};
 
 my $output = qx{../src/task rc:count.rc count};
-like ($output, qr/^5$/ms, 'count');
+like ($output, qr/^5\n/ms, 'count');
 
 $output = qx{../src/task rc:count.rc count status:deleted rc.debug:1};
-like ($output, qr/^1$/ms, 'count status:deleted');
+like ($output, qr/^1\n/ms, 'count status:deleted');
 
 $output = qx{../src/task rc:count.rc count e};
-like ($output, qr/^3$/ms, 'count e');
+like ($output, qr/^3\n/ms, 'count e');
 
 $output = qx{../src/task rc:count.rc count description.startswith:f};
-like ($output, qr/^2$/ms, 'count description.startswith:f');
+like ($output, qr/^2\n/ms, 'count description.startswith:f');
 
 $output = qx{../src/task rc:count.rc count due.any:};
-like ($output, qr/^1$/ms, 'count due.any:');
+like ($output, qr/^1\n/ms, 'count due.any:');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key count.rc);
