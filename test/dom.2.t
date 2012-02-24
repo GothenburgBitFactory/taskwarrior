@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2011, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'dom.rc')
@@ -39,10 +39,16 @@ if (open my $fh, '>', 'dom.rc')
   ok (-r 'dom.rc', 'Created dom.rc');
 }
 
+# DOM reference to other task.
 qx{../src/task rc:dom.rc add one due:20110901};
 qx{../src/task rc:dom.rc add two due:1.due};
 my $output = qx{../src/task rc:dom.rc 2 info};
 like ($output, qr/Due\s+20110901/, 'Found due date duplicated via dom');
+
+# DOM reference to the current task.
+qx{../src/task rc:dom.rc add three due:20110901 wait:due};
+$output = qx{../src/task rc:dom.rc 3 info};
+like ($output, qr/Waiting until\s+20110901/, 'Found wait date duplicated from due date');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key dom.rc);
