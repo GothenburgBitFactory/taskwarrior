@@ -93,7 +93,7 @@ void Timer::stop ()
     struct timeval end;
     gettimeofday (&end, NULL);
     _running = false;
-    _total += (end.tv_sec - _start.tv_sec) * 1000000.0
+    _total += (end.tv_sec - _start.tv_sec) * 1000000
             + (end.tv_usec - _start.tv_usec);
   }
 }
