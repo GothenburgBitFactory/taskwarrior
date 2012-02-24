@@ -64,14 +64,21 @@ int CmdUrgency::execute (std::string& output)
   std::stringstream out;
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
+  {
     if (task->id)
+    {
       out << format (STRING_CMD_URGENCY_RESULT,
                      task->id, task->urgency ())
           << "\n";
+    }
     else
+    {
+      std::string uuid = task->get ("uuid");
       out << format (STRING_CMD_URGENCY_RESULT,
-                     task->get ("uuid"), task->urgency ())
+                     uuid, task->urgency ())
           << "\n";
+    }
+  }
 
   output = out.str ();
   return 0;
