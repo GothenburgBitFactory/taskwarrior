@@ -260,6 +260,8 @@
    Martens).
  + Fixed bug #932, which fixed change propagation for recurring tasks (thanks to
    Jennifer Cormier).
+ + Fixed bug #936, which caused tests to fail on Solaris (thanks to Owen Clarke).
+ + Fixed bug #937, which failed 'stat' calls on Solaris (thanks to Owen Clarke).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
