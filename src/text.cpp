@@ -956,6 +956,18 @@ const std::string format (
 ////////////////////////////////////////////////////////////////////////////////
 const std::string format (
   const std::string& fmt,
+  const std::string& arg1,
+  double arg2)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", arg1);
+  replace_positional (output, "{2}", trim (format (arg2, 6, 3)));
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
   int arg1,
   const std::string& arg2)
 {
