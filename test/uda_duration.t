@@ -31,33 +31,39 @@ use warnings;
 use Test::More tests => 5;
 
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', 'uda.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=off\n",
+            "uda.extra.type=duration\n",
+            "uda.extra.label=Extra\n",
+            "report.uda.description=UDA Test\n",
+            "report.uda.columns=id,extra,description\n",
+            "report.uda.sort=extra,description\n",
+            "report.uda.labels=ID,Extra,Description\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
+  ok (-r 'uda.rc', 'Created uda.rc');
 }
 
-# Bug 819: When I run "task add foo\'s bar." the description of the new task is "foo 's bar .".
-qx{../src/task rc:bug.rc add foo\\'s bar.};
-qx{../src/task rc:bug.rc add foo \\(bar\\)};
-qx{../src/task rc:bug.rc add \\'baz \\(qux\\)\\'};
-my $output = qx{../src/task rc:bug.rc ls};
-like ($output, qr/foo's bar\./, "foo's bar. --> preserved");
+# Add tasks with and without the UDA.
+qx{../src/task rc:uda.rc add with extra:1day};
+qx{../src/task rc:uda.rc add without};
+my $output = qx{../src/task rc:uda.rc uda};
+like ($output, qr/1\s+\S+\s+with/, 'UDA duration stored');
+like ($output, qr/2\s+-\s+without/,    'UDA duration blank');
 
-#like ($output, qr/foo \(bar\)/, "foo \(bar\) -- preserved");
-pass ("foo \(bar\) -- preserved -- TEST SKIPPED --");
-
-like ($output, qr/baz \(qux\)/, "baz \(qux\) -- preserved");
+# Add bad data.
+$output = qx{../src/task rc:uda.rc add bad extra:unrecognized_duration};
+unlike ($output, qr/Created task \d+/, 'UDA duration bad data not accepted');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data synch.key uda.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
     ! -r 'synch.key'      &&
-    ! -r 'bug.rc', 'Cleanup');
+    ! -r 'uda.rc', 'Cleanup');
 
 exit 0;
 
