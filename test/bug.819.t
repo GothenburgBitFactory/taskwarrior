@@ -40,15 +40,11 @@ if (open my $fh, '>', 'bug.rc')
 
 # Bug 819: When I run "task add foo\'s bar." the description of the new task is "foo 's bar .".
 qx{../src/task rc:bug.rc add foo\\'s bar.};
+qx{../src/task rc:bug.rc add foo \\(bar\\)};
+qx{../src/task rc:bug.rc add \\'baz \\(qux\\)\\'};
 my $output = qx{../src/task rc:bug.rc ls};
 like ($output, qr/foo's bar\./, "foo's bar. --> preserved");
-
-qx{../src/task rc:bug.rc add foo \\(bar\\)};
-$output = qx{../src/task rc:bug.rc ls};
 like ($output, qr/foo \(bar\)/, "foo \(bar\) -- preserved");
-
-qx{../src/task rc:bug.rc add \\'baz \\(qux\\)\\'};
-$output = qx{../src/task rc:bug.rc ls};
 like ($output, qr/baz \(qux\)/, "baz \(qux\) -- preserved");
 
 # Cleanup.
