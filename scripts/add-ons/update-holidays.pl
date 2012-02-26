@@ -165,6 +165,9 @@ for my $holiday (split /\n/ms, $data)
 {
   my $parsed = from_json ($holiday);
 
+  # Change date format from YYYY-MM-DD to YYYYMMDD.
+  $parsed->{'date'} =~ s/-//g;
+
   if (@regions == 0 ||
       (@regions > 0 && ($parsed->{'region'} eq '' ||
                         exists $region_hash{$parsed->{'region'}})))
