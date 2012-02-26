@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -46,6 +46,10 @@ like ($output, qr/foo's bar\./, "foo's bar. --> preserved");
 qx{../src/task rc:bug.rc add foo \\(bar\\)};
 $output = qx{../src/task rc:bug.rc ls};
 like ($output, qr/foo \(bar\)/, "foo \(bar\) -- preserved");
+
+qx{../src/task rc:bug.rc add \\'baz \\(qux\\)\\'};
+$output = qx{../src/task rc:bug.rc ls};
+like ($output, qr/baz \(qux\)/, "baz \(qux\) -- preserved");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
