@@ -43,7 +43,7 @@ if (open my $fh, '>', 'verbose.rc')
 my $output = qx{../src/task rc:verbose.rc rc.verbose:new-id add Sample1};
 like ($output, qr/Created task \d/, '\'new-id\' verbosity good');
 
-$output = qx{../src/task rc:verbose.rc rc.verbose:off add Sample2};
+$output = qx{../src/task rc:verbose.rc rc.verbose:nothing add Sample2};
 unlike ($output, qr/Created task \d/, '\'new-id\' verbosity good');
 
 # Verbosity: 'label'
@@ -55,7 +55,7 @@ $output = qx{../src/task rc:verbose.rc ls rc.verbose:affected};
 like ($output, qr/^\d+ tasks$/ms, '\'affected\' verbosity good');
 
 # Off
-$output = qx{../src/task rc:verbose.rc ls rc.verbose:off};
+$output = qx{../src/task rc:verbose.rc ls rc.verbose:nothing};
 unlike ($output, qr/^\d+ tasks$/ms, '\'affected\' verbosity good');
 unlike ($output, qr/ID.+Project.+Pri.+Description/, '\'label\' verbosity good');
 

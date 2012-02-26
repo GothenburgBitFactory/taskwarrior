@@ -79,8 +79,9 @@ std::string Config::_defaults =
   "\n"
   "# Miscellaneous\n"
   "verbose=yes                                    # Provide maximal feedback\n"
-  "#verbose=no                                    # Provide minimal feedback\n"
-  "#verbose=list                                  # Comma-separated list.  May contain any subset of:\n"
+  "#verbose=no                                    # Provide regular feedback\n"
+  "#verbose=nothing                               # Provide no feedback\n"
+  "#                                              # Comma-separated list.  May contain any subset of:\n"
   "#verbose=blank,header,footnote,label,new-id,affected,edit,special\n"
   "confirmation=yes                               # Confirmation on delete, big changes\n"
   "annotations=full                               # Level of verbosity for annotations: full, sparse or none\n"
@@ -654,15 +655,15 @@ const bool Config::getBoolean (const std::string& key)
   if ((*this).find (key) != (*this).end ())
   {
     std::string value = lowerCase ((*this)[key]);
-    if (value == "t"      ||
+    if (value == "t"      ||  // TODO Deprecate
         value == "true"   ||
         value == "1"      ||
-        value == "+"      ||
+        value == "+"      ||  // TODO Deprecate
         value == "y"      ||
         value == "yes"    ||
         value == "on"     ||
-        value == "enable" ||
-        value == "enabled")
+        value == "enable" ||  // TODO Deprecate
+        value == "enabled")   // TODO Deprecate
       return true;
   }
 

@@ -132,6 +132,8 @@
    variable forces taskwarrior to never use the last column.
  + Fixed bugs #533 and #536, which prevented having correct paths for themes
    in .taskrc (thanks to Juergen Daubert)
+ + Fixed bug #552, where 'rc.verbose=off' suppressed warnings (thanks to Peter
+   De Poorter).
  + Fixed bug #594, which broke the 'all' report with a combination of bad regex
    handling and a formatting bug (thanks to Steve Rader).
  + Fixed bug #605, which gave misleading project completion percentages under
@@ -240,6 +242,8 @@
  + Fixed bug #860, which prevented lower-case priority values from being
    accepted (thanks to Michelle Crane).
  + Fixed bug #862, which suppressed feedback from the 'denotate' command.
+ + Fixed bug #863, which suppressed report labels with rc.verbose=off (thanks to
+   Michelle Crane).
  + Fixed bug #879, which mis-parsed escaped characters in the data file (thanks
    to Michelle Crane).
  + Fixed bug #880, which listed the wrong file paths for themes (thanks to Peter

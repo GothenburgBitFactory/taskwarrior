@@ -129,11 +129,12 @@ int CmdCustom::execute (std::string& output)
 
   // How many lines taken up by table header?
   // TODO Consider rc.verbose
-  int table_header;
-  if (context.color () && context.config.getBoolean ("fontunderline"))
-    table_header = 1;  // Underlining doesn't use extra line.
-  else
-    table_header = 2;  // Dashes use an extra line.
+  int table_header = 0;
+  if (context.verbose ("label"))
+    if (context.color () && context.config.getBoolean ("fontunderline"))
+      table_header = 1;  // Underlining doesn't use extra line.
+    else
+      table_header = 2;  // Dashes use an extra line.
 
   // Report output can be limited by rows or lines.
   int maxrows = 0;
@@ -141,15 +142,13 @@ int CmdCustom::execute (std::string& output)
   getLimits (_keyword, maxrows, maxlines);
 
   // Adjust for fluff in the output.
-  // TODO Consider rc.verbose
   if (maxlines)
     maxlines -= (context.verbose ("blank") ? 1 : 0)
               + table_header
-              + context.footnotes.size ()
+              + (context.verbose ("footnote") ? context.footnotes.size () : 0)
               + 1;  // "X tasks shown ..."
 
   // Render.
-  // TODO Consider rc.verbose
   std::stringstream out;
   if (filtered.size ())
   {
@@ -174,7 +173,8 @@ int CmdCustom::execute (std::string& output)
       out << ", "
           << format (STRING_CMD_CUSTOM_TRUNCATED, maxlines - table_header);
 
-    out << "\n";
+    if (context.verbose ("affected"))
+      out << "\n";
   }
   else
   {

@@ -68,6 +68,7 @@ public:
   void header (const std::string&);    // Header message sink
   void footnote (const std::string&);  // Footnote message sink
   void debug (const std::string&);     // Debug message sink
+  void error (const std::string&);     // Error message sink - non-maskable
   void clearMessages ();
   void clear ();
 
@@ -101,6 +102,7 @@ public:
   std::vector <std::string>           verbosity;
   std::vector <std::string>           headers;
   std::vector <std::string>           footnotes;
+  std::vector <std::string>           errors;
   std::vector <std::string>           debugMessages;
 /*
   bool                                inShadow;

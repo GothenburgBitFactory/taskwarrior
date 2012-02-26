@@ -179,15 +179,15 @@ int Context::initialize (int argc, const char** argv)
     hooks.trigger ("on-launch");
   }
 
-  catch (const std::string& error)
+  catch (const std::string& message)
   {
-    footnote (error);
+    error (message);
     rc = 2;
   }
 
   catch (...)
   {
-    footnote (STRING_UNKNOWN_ERROR);
+    error (STRING_UNKNOWN_ERROR);
     rc = 3;
   }
 
@@ -222,6 +222,18 @@ int Context::initialize (int argc, const char** argv)
         std::cout << colorizeFootnote (*f) << "\n";
       else
         std::cout << *f << "\n";
+  }
+
+  // Dump all errors, non-maskable.
+  // Colorized as footnotes.
+  if (rc)
+  {
+    std::vector <std::string>::iterator e;
+    for (e = errors.begin (); e != errors.end (); ++e)
+      if (color ())
+        std::cout << colorizeFootnote (*e) << "\n";
+      else
+        std::cout << *e << "\n";
   }
 
   timer_init.stop ();
@@ -270,15 +282,15 @@ int Context::run ()
     debug (s.str ());
   }
 
-  catch (const std::string& error)
+  catch (const std::string& message)
   {
-    footnote (error);
+    error (message);
     rc = 2;
   }
 
   catch (...)
   {
-    footnote (STRING_UNKNOWN_ERROR);
+    error (STRING_UNKNOWN_ERROR);
     rc = 3;
   }
 
@@ -317,6 +329,15 @@ int Context::run ()
       else
         std::cout << *f << "\n";
   }
+
+  // Dump all errors, non-maskable.
+  // Colorized as footnotes.
+  std::vector <std::string>::iterator e;
+  for (e = errors.begin (); e != errors.end (); ++e)
+    if (color ())
+      std::cout << colorizeFootnote (*e) << "\n";
+    else
+      std::cout << *e << "\n";
 
   hooks.trigger ("on-exit");
   return rc;
@@ -402,17 +423,56 @@ bool Context::color ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Support verbosity levels.
+// Support verbosity levels:
+//
+//   rc.verbose=1          Show all feedback.
+//   rc.verbose=0          Show regular feedback.
+//   rc.verbose=nothing    Show the absolute minimum.
+//   rc.verbose=one,two    Show verbosity for 'one' and 'two' only.
+//
 bool Context::verbose (const std::string& token)
 {
   if (! verbosity.size ())
   {
     verbosity_legacy = config.getBoolean ("verbose");
     split (verbosity, config.get ("verbose"), ',');
+
+    // Regular feedback means almost everything.
+    if (!verbosity_legacy               &&
+        verbosity.size () == 1          &&
+        verbosity[0]      != "nothing"  &&
+        verbosity[0]      != "blank"    &&  // This list must be complete.
+        verbosity[0]      != "header"   &&  //
+        verbosity[0]      != "footnote" &&  //
+        verbosity[0]      != "label"    &&  //
+        verbosity[0]      != "new-id"   &&  //
+        verbosity[0]      != "affected" &&  //
+        verbosity[0]      != "edit"     &&  //
+        verbosity[0]      != "special")     //
+    {
+      verbosity.clear ();
+
+      // This list emulates rc.verbose=off in version 1.9.4.
+      verbosity.push_back ("blank");
+      verbosity.push_back ("footnote");
+      verbosity.push_back ("label");
+      verbosity.push_back ("new-id");
+      verbosity.push_back ("affected");
+      verbosity.push_back ("edit");
+      verbosity.push_back ("special");
+    }
   }
 
-  if (verbosity_legacy ||
-      std::find (verbosity.begin (), verbosity.end (), token) != verbosity.end ())
+  // rc.verbose=true|y|yes|1|on overrides all.
+  if (verbosity_legacy)
+    return true;
+
+  // rc.verbose=nothing overrides all.
+  if (verbosity[0] == "nothing")
+    return false;
+
+  // Specific token match.
+  if (std::find (verbosity.begin (), verbosity.end (), token) != verbosity.end ())
     return true;
 
   return false;
@@ -626,6 +686,13 @@ void Context::footnote (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Context::error (const std::string& input)
+{
+  if (input.length ())
+    errors.push_back (input);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Context::debug (const std::string& input)
 {
   debugMessages.push_back (input);
@@ -636,6 +703,7 @@ void Context::clearMessages ()
 {
   headers.clear ();
   footnotes.clear ();
+  errors.clear ();
   debugMessages.clear ();
 }
 
