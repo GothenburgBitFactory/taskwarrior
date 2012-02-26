@@ -28,8 +28,7 @@
 
 use strict;
 use warnings;
-#use Test::More tests => 175;
-use Test::More tests => 128;
+use Test::More tests => 156;
 
 # Create the rc file.
 if (open my $fh, '>', 'filter.rc')
@@ -211,7 +210,7 @@ unlike ($output, qr/six/,   'r6');
 unlike ($output, qr/seven/, 'r7');
 
 # Regex filters.
-#$output = qx{../src/task rc:filter.rc list rc.regex:on project:[A-Z]};
+#$output = qx{../src/task rc:filter.rc list rc.regex:on project:/[A-Z]/};
 #like   ($output, qr/one/,   's1');
 #like   ($output, qr/two/,   's2');
 #like   ($output, qr/three/, 's3');
@@ -229,16 +228,16 @@ unlike ($output, qr/seven/, 'r7');
 #unlike ($output, qr/six/,   't6');
 #unlike ($output, qr/seven/, 't7');
 
-#$output = qx{../src/task rc:filter.rc rc.regex:on list fo\{2\}};
-#like   ($output, qr/one/,   'u1');
-#unlike ($output, qr/two/,   'u2');
-#unlike ($output, qr/three/, 'u3');
-#unlike ($output, qr/four/,  'u4');
-#unlike ($output, qr/five/,  'u5');
-#like   ($output, qr/six/,   'u6');
-#like   ($output, qr/seven/, 'u7');
+$output = qx{../src/task rc:filter.rc rc.regex:on list /fo\{2\}/};
+like   ($output, qr/one/,   'u1');
+unlike ($output, qr/two/,   'u2');
+unlike ($output, qr/three/, 'u3');
+unlike ($output, qr/four/,  'u4');
+unlike ($output, qr/five/,  'u5');
+like   ($output, qr/six/,   'u6');
+like   ($output, qr/seven/, 'u7');
 
-#$output = qx{../src/task rc:filter.rc rc.regex:on list f.. b..};
+#$output = qx{../src/task rc:filter.rc rc.regex:on list /f../ /b../};
 #unlike ($output, qr/one/,   'v1');
 #unlike ($output, qr/two/,   'v2');
 #unlike ($output, qr/three/, 'v3');
@@ -247,32 +246,32 @@ unlike ($output, qr/seven/, 'r7');
 #unlike ($output, qr/six/,   'v6');
 #like   ($output, qr/seven/, 'v7');
 
-#$output = qx{../src/task rc:filter.rc rc.regex:on list ^s};
-#unlike ($output, qr/one/,   'w1');
-#unlike ($output, qr/two/,   'w2');
-#unlike ($output, qr/three/, 'w3');
-#unlike ($output, qr/four/,  'w4');
-#unlike ($output, qr/five/,  'w5');
-#like   ($output, qr/six/,   'w6');
-#like   ($output, qr/seven/, 'w7');
+$output = qx{../src/task rc:filter.rc rc.regex:on list /^s/};
+unlike ($output, qr/one/,   'w1');
+unlike ($output, qr/two/,   'w2');
+unlike ($output, qr/three/, 'w3');
+unlike ($output, qr/four/,  'w4');
+unlike ($output, qr/five/,  'w5');
+like   ($output, qr/six/,   'w6');
+like   ($output, qr/seven/, 'w7');
 
-#$output = qx{../src/task rc:filter.rc rc.regex:on list ^.i};
-#unlike ($output, qr/one/,   'x1');
-#unlike ($output, qr/two/,   'x2');
-#unlike ($output, qr/three/, 'x3');
-#unlike ($output, qr/four/,  'x4');
-#like   ($output, qr/five/,  'x5');
-#like   ($output, qr/six/,   'x6');
-#unlike ($output, qr/seven/, 'x7');
+$output = qx{../src/task rc:filter.rc rc.regex:on list /^.i/};
+unlike ($output, qr/one/,   'x1');
+unlike ($output, qr/two/,   'x2');
+unlike ($output, qr/three/, 'x3');
+unlike ($output, qr/four/,  'x4');
+like   ($output, qr/five/,  'x5');
+like   ($output, qr/six/,   'x6');
+unlike ($output, qr/seven/, 'x7');
 
-#$output = qx{../src/task rc:filter.rc rc.regex:on list "two|five"};
-#unlike ($output, qr/one/,   'y1');
-#like   ($output, qr/two/,   'y2');
-#unlike ($output, qr/three/, 'y3');
-#unlike ($output, qr/four/,  'y4');
-#like   ($output, qr/five/,  'y5');
-#unlike ($output, qr/six/,   'y6');
-#unlike ($output, qr/seven/, 'y7');
+$output = qx{../src/task rc:filter.rc rc.regex:on list "/two|five/"};
+unlike ($output, qr/one/,   'y1');
+like   ($output, qr/two/,   'y2');
+unlike ($output, qr/three/, 'y3');
+unlike ($output, qr/four/,  'y4');
+like   ($output, qr/five/,  'y5');
+unlike ($output, qr/six/,   'y6');
+unlike ($output, qr/seven/, 'y7');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key filter.rc);
