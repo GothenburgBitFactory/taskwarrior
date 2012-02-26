@@ -28,13 +28,14 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
 {
   print $fh "data.location=.\n",
-            "recurrent.limit=1\n";
+            "confirmation=off\n",
+            "recurrence.limit=1\n";
   close $fh;
   ok (-r 'recur.rc', 'Created recur.rc');
 }
@@ -52,29 +53,36 @@ like ($output, qr/1.+simple\n/ms, '1 simple');
 like ($output, qr/3.+complex\n/ms, '3 complex');
 like ($output, qr/4.+complex\n/ms, '4 complex');
 
-# TODO Modify a child task and do not propagate the change.
+# Modify a child task and do not propagate the change.
 $output = qx{echo '-- n' | ../src/task rc:recur.rc 3 modify complex2};
-diag ('---');
-diag ($output);
-diag ('---');
+$output = qx{../src/task rc:recur.rc 3 info};
+like ($output, qr/Description\s+complex2\s/ms, '3 modified');
+$output = qx{../src/task rc:recur.rc 4 info};
+like ($output, qr/Description\s+complex\s/ms, '4 not modified');
 
-# TODO Modify a child task and propagate the change.
-$output = qx{echo '-- y' | ../src/task rc:recur.rc 3 modify complex2};
-diag ('---');
-diag ($output);
-diag ('---');
 
-# TODO Delete a child task.
+# Modify a child task and propagate the change.
+$output = qx{echo '-- y' | ../src/task rc:recur.rc 3 modify complex3};
+$output = qx{../src/task rc:recur.rc 3 info};
+like ($output, qr/Description\s+complex3\s/ms, '3 modified');
+$output = qx{../src/task rc:recur.rc 4 info};
+like ($output, qr/Description\s+complex3\s/ms, '4 not modified');
+
+# Delete a child task, not propagate.
 $output = qx{echo '-- n' | ../src/task rc:recur.rc 3 delete};
-diag ('---');
-diag ($output);
-diag ('---');
+like ($output, qr/Deleted 1 task\./, '3 deleted');
+
+# Delete a child task, propagate.
+#$output = qx{../src/task rc:recur.rc minimal};
+#$output = qx{echo '-- y' | ../src/task rc:recur.rc 3 delete};
+#like ($output, qr/Deleted 1 task\./, 'Child + parent deleted');
+#$output = qx{../src/task rc:recur.rc minimal};
 
 # TODO Delete a recurring task.
-$output = qx{echo '-- y' | ../src/task rc:recur.rc 4 delete};
-diag ('---');
-diag ($output);
-diag ('---');
+#$output = qx{echo '-- y' | ../src/task rc:recur.rc 4 delete};
+#diag ('---');
+#diag ($output);
+#diag ('---');
 
 # TODO Wait a recurring task
 # TODO Upgrade a task to a recurring task
