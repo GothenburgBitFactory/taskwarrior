@@ -95,6 +95,8 @@ int CmdDone::execute (std::string& output)
         context.tdb2.modify (*task);
         ++count;
         feedback_affected (STRING_CMD_DONE_TASK, *task);
+        feedback_unblocked (*task);
+        context.tdb2.modify (*task);
         if (!nagged)
           nagged = nag (*task);
         dependencyChainOnComplete (*task);

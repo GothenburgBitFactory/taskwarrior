@@ -94,9 +94,10 @@ int CmdDelete::execute (std::string& output)
       if (permission (*task, question, filtered.size ()))
       {
         updateRecurrenceMask (*task);
-        context.tdb2.modify (*task);
         ++count;
+        context.tdb2.modify (*task);
         feedback_affected (STRING_CMD_DELETE_TASK, *task);
+        feedback_unblocked (*task);
         dependencyChainOnComplete (*task);
         context.footnote (onProjectChange (*task, true));
 
@@ -117,8 +118,9 @@ int CmdDelete::execute (std::string& output)
 
               updateRecurrenceMask (*sibling);
               context.tdb2.modify (*sibling);
-              ++count;
               feedback_affected (STRING_CMD_DELETE_TASK_R, *sibling);
+              feedback_unblocked (*sibling);
+              ++count;
             }
 
             // Delete the parent

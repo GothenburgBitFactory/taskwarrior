@@ -365,4 +365,45 @@ void feedback_special_tags (const Task& task, const std::string& tag)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Called on completion, deletion and update.  If this task is blocking another
+// task, then if this was the *only* blocking task, that other task is now
+// unblocked.  Mention it.
+//
+// Implements:
+//    Unblocked <id> '<description>'
+void feedback_unblocked (const Task& task)
+{
+  if (context.verbose ("affected") ||
+      context.config.getBoolean ("echo.command")) // Deprecated 2.0
+  {
+    // Get a list of tasks that depended on this task.
+    std::vector <Task> blocked;
+    dependencyGetBlocked (task, blocked);
 
+    // Scan all the tasks that were blocked by this task
+    std::vector <Task>::iterator i;
+    for (i = blocked.begin (); i != blocked.end (); ++i)
+    {
+      std::vector <Task> blocking;
+      dependencyGetBlocking (*i, blocking);
+      if (blocking.size () == 0)
+      {
+        if (i->id)
+          std::cout << format (STRING_FEEDBACK_UNBLOCKED,
+                               i->id,
+                               i->get ("description"))
+                    << "\n";
+        else
+        {
+          std::string uuid = i->get ("uuid");
+          std::cout << format (STRING_FEEDBACK_UNBLOCKED,
+                               i->get ("uuid"),
+                               i->get ("description"))
+                    << "\n";
+        }
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////

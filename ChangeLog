@@ -94,6 +94,7 @@
  + Added feature #710, which adds an attribute modifier prefix to return the
    complement of a filtered set (thanks to Dan White).
  + Added feature #714, including Belarus holidays (thanks to Alexei Romanoff).
+ + Added feature #725, which provides feedback when tasks become unblocked.
  + Added feature #733, including Czech holidays (thanks to Tomas Cech).
  + Added feature #740, that allows for indented annotations, controlled by the
    'indent.annotation' configuration variable (thanks to Steve Rader, Tomas

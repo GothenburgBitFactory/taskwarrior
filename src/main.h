@@ -78,6 +78,7 @@ void feedback_affected (const std::string&);
 void feedback_affected (const std::string&, int);
 void feedback_affected (const std::string&, const Task&);
 void feedback_special_tags (const Task&, const std::string&);
+void feedback_unblocked (const Task&);
 
 // sort.cpp
 void sort_tasks (std::vector <Task>&, std::vector <int>&, const std::string&);

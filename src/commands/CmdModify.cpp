@@ -104,10 +104,11 @@ int CmdModify::execute (std::string& output)
       if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
       {
         updateRecurrenceMask (*task);
-        context.tdb2.modify (*task);
+        dependencyChainOnModify (before, *task);
         ++count;
         feedback_affected (STRING_CMD_MODIFY_TASK, *task);
-        dependencyChainOnModify (before, *task);
+        feedback_unblocked (*task);
+        context.tdb2.modify (*task);
         context.footnote (onProjectChange (before, *task));
 
         // Task potentially has siblings - modify them.
@@ -123,11 +124,12 @@ int CmdModify::execute (std::string& output)
               Task alternate (*sibling);
               modify_task_description_replace (*sibling, modifications);
               updateRecurrenceMask (*sibling);
-              context.tdb2.modify (*sibling);
               dependencyChainOnModify (alternate, *sibling);
-              context.footnote (onProjectChange (alternate, *sibling));
               ++count;
               feedback_affected (STRING_CMD_MODIFY_TASK_R, *sibling);
+              feedback_unblocked (*sibling);
+              context.tdb2.modify (*sibling);
+              context.footnote (onProjectChange (alternate, *sibling));
             }
           }
         }
