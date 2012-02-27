@@ -287,6 +287,7 @@
  + Fixed problem where update-holidays.pl did not properly handle UTF8 JSON
    data.
  + Fixed problem where update-holidays.pl did not use the YYYYMMDD date foramt.
+ + Fixed problem where urgency was not properly calculated for waiting tasks.
 
 ------ old releases ------------------------------
 

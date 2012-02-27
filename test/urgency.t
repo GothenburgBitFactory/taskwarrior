@@ -42,7 +42,7 @@ if (open my $fh, '>', 'urgency.rc')
             "urgency.blocked.coefficient=10\n",
             "urgency.annotations.coefficient=10\n",
             "urgency.tags.coefficient=10\n",
-            "urgency.waiting.coefficient=10\n",
+            "urgency.waiting.coefficient=-10\n",
             "urgency.next.coefficient=10\n",
             "urgency.user.project.PROJECT.coefficient=10\n",
             "urgency.user.tag.TAG.coefficient=10\n",
@@ -61,37 +61,37 @@ qx{../src/task rc:urgency.rc add 1a pri:H};                  # task 2
 qx{../src/task rc:urgency.rc add 1b pri:M};                  # task 3
 qx{../src/task rc:urgency.rc add 1c pri:L};                  # task 4
 
-# priority: 10 (pending)
+# priority: 0 (pending)
 my $output = qx{../src/task rc:urgency.rc 1 _urgency};
-like ($output, qr/urgency 10$/ms, 'Control = 10');
+like ($output, qr/urgency 0$/ms, 'Control = 0');
 
-# priority: 10 (pri:H) + 10 (pending)
+# priority: 10 (pri:H)
 $output = qx{../src/task rc:urgency.rc 2 _urgency};
-like ($output, qr/urgency 20$/ms, 'pri:H = 20');
+like ($output, qr/urgency 10$/ms, 'pri:H = 10');
 
-# priority: 6.5 (pri:M) + 10 (pending)
+# priority: 6.5 (pri:M)
 $output = qx{../src/task rc:urgency.rc 3 _urgency};
-like ($output, qr/urgency 16\.5$/ms, 'pri:M = 16.5');
+like ($output, qr/urgency 6\.5$/ms, 'pri:M = 6.5');
 
-# priority: 3 (pri:L) + 10 (pending)
+# priority: 3 (pri:L)
 $output = qx{../src/task rc:urgency.rc 4 _urgency};
-like ($output, qr/urgency 13$/ms, 'pri:L = 13');
+like ($output, qr/urgency 3$/ms, 'pri:L = 3');
 
-# project: 10 (project) + 10 (pending)
+# project: 10 (project)
 qx{../src/task rc:urgency.rc add 2a project:P};              # task 5
 $output = qx{../src/task rc:urgency.rc 5 _urgency};
-like ($output, qr/urgency 20$/ms, 'pro:P = 20');
+like ($output, qr/urgency 10$/ms, 'pro:P = 10');
 
-# active: 10 (active) + 10 (pending)
+# active: 10 (active)
 qx{../src/task rc:urgency.rc add 3a};                        # task 6
 qx{../src/task rc:urgency.rc 6 start};
 $output = qx{../src/task rc:urgency.rc 6 _urgency};
-like ($output, qr/urgency 20$/ms, 'active = 20');
+like ($output, qr/urgency 10$/ms, 'active = 10');
 
-# next: 10 (+next) + 8 (1 tag) + 10 (pending)
+# next: 10 (+next) + 8 (1 tag)
 qx{../src/task rc:urgency.rc add 4a +next};                  # task 7
 $output = qx{../src/task rc:urgency.rc 7 _urgency};
-like ($output, qr/urgency 28$/ms, '+next = 28');
+like ($output, qr/urgency 18$/ms, '+next = 18');
 
 # tags
 qx{../src/task rc:urgency.rc add 5a +one};                   # task 8
@@ -99,21 +99,21 @@ qx{../src/task rc:urgency.rc add 5b +one +two};              # task 9
 qx{../src/task rc:urgency.rc add 5c +one +two +three};       # task 10
 qx{../src/task rc:urgency.rc add 5d +one +two +three +four}; # task 11
 
-# tags: 8 (1 tag) + 10 (pending)
+# tags: 8 (1 tag)
 $output = qx{../src/task rc:urgency.rc 8 _urgency};
-like ($output, qr/urgency 18$/ms, '+one = 18');
+like ($output, qr/urgency 8$/ms, '+one = 8');
 
-# tags: 9 (2 tags) + 10 (pending)
+# tags: 9 (2 tags)
 $output = qx{../src/task rc:urgency.rc 9 _urgency};
-like ($output, qr/urgency 19$/ms, '+one +two = 19');
+like ($output, qr/urgency 9$/ms, '+one +two = 9');
 
-# tags: 10 (3 tags) + 10 (pending)
+# tags: 10 (3 tags)
 $output = qx{../src/task rc:urgency.rc 10 _urgency};
-like ($output, qr/urgency 20$/ms, '+one +two +three = 20');
+like ($output, qr/urgency 10$/ms, '+one +two +three = 10');
 
-# tags: 10 (4 tags) + 10 (pending)
+# tags: 10 (4 tags)
 $output = qx{../src/task rc:urgency.rc 10 _urgency};
-like ($output, qr/urgency 20$/ms, '+one +two +three +four = 20');
+like ($output, qr/urgency 10$/ms, '+one +two +three +four = 10');
 
 # annotations
 qx{../src/task rc:urgency.rc add 6a};                        # task 12
@@ -131,35 +131,35 @@ qx{../src/task rc:urgency.rc 15 annotate B};
 qx{../src/task rc:urgency.rc 15 annotate C};
 qx{../src/task rc:urgency.rc 15 annotate D};
 
-# annotations: 8 (1 annotation) + 10 (pending)
+# annotations: 8 (1 annotation)
 $output = qx{../src/task rc:urgency.rc 12 _urgency};
-like ($output, qr/urgency 18$/ms, '1 annotation = 18');
+like ($output, qr/urgency 8$/ms, '1 annotation = 8');
 
-# annotations: 9 (2 annotations) + 10 (pending)
+# annotations: 9 (2 annotations)
 $output = qx{../src/task rc:urgency.rc 13 _urgency};
-like ($output, qr/urgency 19$/ms, '2 annotations = 19');
+like ($output, qr/urgency 9$/ms, '2 annotations = 9');
 
-# annotations: 10 (3 annotations) + 10 (pending)
+# annotations: 10 (3 annotations)
 $output = qx{../src/task rc:urgency.rc 14 _urgency};
-like ($output, qr/urgency 20$/ms, '3 annotations = 20');
+like ($output, qr/urgency 10$/ms, '3 annotations = 10');
 
-# annotations: 10 (4 annotations) + 10 (pending)
+# annotations: 10 (4 annotations)
 $output = qx{../src/task rc:urgency.rc 15 _urgency};
-like ($output, qr/urgency 20$/ms, '4 annotations = 20');
+like ($output, qr/urgency 10$/ms, '4 annotations = 10');
 
-# waiting: 10
+# waiting: -10
 qx{../src/task rc:urgency.rc add 7a wait:10s};               # task 16
 $output = qx{../src/task rc:urgency.rc 16 _urgency};
-like ($output, qr/urgency 0$/ms, 'waiting = 0');
+like ($output, qr/urgency -10$/ms, 'waiting = -10');
 
-# blocked: 10 (pending) + 10 (blocked)
+# blocked: 10 (blocked)
 qx{../src/task rc:urgency.rc add 8a depends:1};              # task 17
 $output = qx{../src/task rc:urgency.rc 17 _urgency};
-like ($output, qr/urgency 20$/ms, 'blocked = 20');
+like ($output, qr/urgency 10$/ms, 'blocked = 10');
 
-# blocking: 10 (blocking) + 10 (pending)
+# blocking: 10 (blocking)
 $output = qx{../src/task rc:urgency.rc 1 _urgency};
-like ($output, qr/urgency 20$/ms, 'blocking = 20');
+like ($output, qr/urgency 10$/ms, 'blocking = 10');
 
 # due
 #
@@ -194,111 +194,111 @@ qx{../src/task rc:urgency.rc add 9v due:313h};               # task 39
 qx{../src/task rc:urgency.rc add 9w due:337h};               # task 40
 qx{../src/task rc:urgency.rc add 9x due:361h};               # task 41
 
-# due: 10 (due:-10d) + 10 (pending)
+# due: 10 (due:-10d)
 $output = qx{../src/task rc:urgency.rc 18 _urgency};
-like ($output, qr/urgency 20$/ms, 'due:-10d = 20');
+like ($output, qr/urgency 10$/ms, 'due:-10d = 10');
 
-# due: 10 (due:-7d) + 10 (pending)
+# due: 10 (due:-7d)
 $output = qx{../src/task rc:urgency.rc 19 _urgency};
-like ($output, qr/urgency 20$/ms, 'due:-7d = 20');
+like ($output, qr/urgency 10$/ms, 'due:-7d = 10');
 
-# due: 9.6 (due:-6d) + 10 (pending)
+# due: 9.6 (due:-6d)
 $output = qx{../src/task rc:urgency.rc 20 _urgency};
-like ($output, qr/urgency 19.6/ms, 'due:-6d = 19.6');
+like ($output, qr/urgency 9.6/ms, 'due:-6d = 9.6');
 
-# due: 9.2 (due:-5d) + 10 (pending)
+# due: 9.2 (due:-5d)
 $output = qx{../src/task rc:urgency.rc 21 _urgency};
-like ($output, qr/urgency 19.2/ms, 'due:-5d = 19.2');
+like ($output, qr/urgency 9.2/ms, 'due:-5d = 9.2');
 
-# due: 8.8 (due:-4d) + 10 (pending)
+# due: 8.8 (due:-4d)
 $output = qx{../src/task rc:urgency.rc 22 _urgency};
-like ($output, qr/urgency 18.8/ms, 'due:-4d = 18.8');
+like ($output, qr/urgency 8.8/ms, 'due:-4d = 8.8');
 
-# due: 8.4 (due:-3d) + 10 (pending)
+# due: 8.4 (due:-3d)
 $output = qx{../src/task rc:urgency.rc 23 _urgency};
-like ($output, qr/urgency 18.4/ms, 'due:-3d = 18.4');
+like ($output, qr/urgency 8.4/ms, 'due:-3d = 8.4');
 
-# due: 8 (due:-2d) + 10 (pending)
+# due: 8 (due:-2d)
 $output = qx{../src/task rc:urgency.rc 24 _urgency};
-like ($output, qr/urgency 18/ms, 'due:-2d = 18');
+like ($output, qr/urgency 8/ms, 'due:-2d = 8');
 
-# due: 7.6 (due:-1d) + 10 (pending)
+# due: 7.6 (due:-1d)
 $output = qx{../src/task rc:urgency.rc 25 _urgency};
-like ($output, qr/urgency 17.6/ms, 'due:-1d = 17.6');
+like ($output, qr/urgency 7.6/ms, 'due:-1d = 7.6');
 
-# due: 7.2 (due:now) + 10 (pending)
+# due: 7.2 (due:now)
 $output = qx{../src/task rc:urgency.rc 26 _urgency};
-like ($output, qr/urgency 17.2$/ms, 'due:now = 17.2');
+like ($output, qr/urgency 7.2$/ms, 'due:now = 7.2');
 
-# due: 6.8 (due:1d) + 10 (pending)
+# due: 6.8 (due:1d)
 $output = qx{../src/task rc:urgency.rc 27 _urgency};
-like ($output, qr/urgency 16.8/ms, 'due:1d = 16.8');
+like ($output, qr/urgency 6.8/ms, 'due:1d = 6.8');
 
-# due: 6.4 (due:2d) + 10 (pending)
+# due: 6.4 (due:2d)
 $output = qx{../src/task rc:urgency.rc 28 _urgency};
-like ($output, qr/urgency 16.4/ms, 'due:2d = 16.4');
+like ($output, qr/urgency 6.4/ms, 'due:2d = 6.4');
 
-# due: 6 (due:3d) + 10 (pending)
+# due: 6 (due:3d)
 $output = qx{../src/task rc:urgency.rc 29 _urgency};
-like ($output, qr/urgency 16/ms, 'due:3d = 16');
+like ($output, qr/urgency 6/ms, 'due:3d = 6');
 
-# due: 5.6 (due:4d) + 10 (pending)
+# due: 5.6 (due:4d)
 $output = qx{../src/task rc:urgency.rc 30 _urgency};
-like ($output, qr/urgency 15.6/ms, 'due:4d = 15.6');
+like ($output, qr/urgency 5.6/ms, 'due:4d = 5.6');
 
-# due: 5.2 (due:5d) + 10 (pending)
+# due: 5.2 (due:5d)
 $output = qx{../src/task rc:urgency.rc 31 _urgency};
-like ($output, qr/urgency 15.2/ms, 'due:5d = 15.2');
+like ($output, qr/urgency 5.2/ms, 'due:5d = 5.2');
 
-# due: 4.8 (due:6d) + 10 (pending)
+# due: 4.8 (due:6d)
 $output = qx{../src/task rc:urgency.rc 32 _urgency};
-like ($output, qr/urgency 14.8/ms, 'due:6d = 14.8');
+like ($output, qr/urgency 4.8/ms, 'due:6d = 4.8');
 
-# due: 4.4 (due:7d) + 10 (pending)
+# due: 4.4 (due:7d)
 $output = qx{../src/task rc:urgency.rc 33 _urgency};
-like ($output, qr/urgency 14.4/ms, 'due:7d = 14.4');
+like ($output, qr/urgency 4.4/ms, 'due:7d = 4.4');
 
-# due: 4 (due:8d) + 10 (pending)
+# due: 4 (due:8d)
 $output = qx{../src/task rc:urgency.rc 34 _urgency};
-like ($output, qr/urgency 14/ms, 'due:8d = 14');
+like ($output, qr/urgency 4/ms, 'due:8d = 4');
 
-# due: 3.6 (due:9d) + 10 (pending)
+# due: 3.6 (due:9d)
 $output = qx{../src/task rc:urgency.rc 35 _urgency};
-like ($output, qr/urgency 13.6/ms, 'due:9d = 13.6');
+like ($output, qr/urgency 3.6/ms, 'due:9d = 3.6');
 
-# due: 3.2 (due:10d) + 10 (pending)
+# due: 3.2 (due:10d)
 $output = qx{../src/task rc:urgency.rc 36 _urgency};
-like ($output, qr/urgency 13.2/ms, 'due:10d = 13.2');
+like ($output, qr/urgency 3.2/ms, 'due:10d = 3.2');
 
-# due: 2.8 (due:11d) + 10 (pending)
+# due: 2.8 (due:11d)
 $output = qx{../src/task rc:urgency.rc 37 _urgency};
-like ($output, qr/urgency 12.8/ms, 'due:11d = 12.8');
+like ($output, qr/urgency 2.8/ms, 'due:11d = 2.8');
 
-# due: 2.4 (due:12d) + 10 (pending)
+# due: 2.4 (due:12d)
 $output = qx{../src/task rc:urgency.rc 38 _urgency};
-like ($output, qr/urgency 12.4/ms, 'due:12d = 12.4');
+like ($output, qr/urgency 2.4/ms, 'due:12d = 2.4');
 
-# due: 2 (due:13d) + 10 (pending)
+# due: 2 (due:13d)
 $output = qx{../src/task rc:urgency.rc 39 _urgency};
-like ($output, qr/urgency 12/ms, 'due:13d = 12');
+like ($output, qr/urgency 2/ms, 'due:13d = 2');
 
-# due: 1.6 (due:14d) + 10 (pending)
+# due: 1.6 (due:14d)
 $output = qx{../src/task rc:urgency.rc 40 _urgency};
-like ($output, qr/urgency 11.6/ms, 'due:14d = 11.6');
+like ($output, qr/urgency 1.6/ms, 'due:14d = 1.6');
 
-# due: 1.6 (due:20d) + 10 (pending)
+# due: 1.6 (due:20d)
 $output = qx{../src/task rc:urgency.rc 41 _urgency};
-like ($output, qr/urgency 11.6$/ms, 'due:20d = 11.6');
+like ($output, qr/urgency 1.6$/ms, 'due:20d = 1.6');
 
-# user.project: 10 (pro:PROJECT) + 10 (project) + 10 (pending)
+# user.project: 10 (pro:PROJECT) + 10 (project)
 qx{../src/task rc:urgency.rc add 10a project:PROJECT};        # task 42
 $output = qx{../src/task rc:urgency.rc 42 _urgency};
-like ($output, qr/urgency 30$/ms, 'pro:PROJECT = 30');
+like ($output, qr/urgency 20$/ms, 'pro:PROJECT = 20');
 
-# user.tag: 10 (+TAG) + 8 (1 tag) + 10 (pending)
+# user.tag: 10 (+TAG) + 8 (1 tag)
 qx{../src/task rc:urgency.rc add 11a +TAG};                   # task 43
 $output = qx{../src/task rc:urgency.rc 43 _urgency};
-like ($output, qr/urgency 28$/ms, '+TAG = 28');
+like ($output, qr/urgency 18$/ms, '+TAG = 18');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key urgency.rc);

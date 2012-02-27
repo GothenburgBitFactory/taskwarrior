@@ -27,6 +27,7 @@
 
 #define L10N                                           // Localization complete.
 
+//#include <iostream>
 #include <sstream>
 #include <stdlib.h>
 #include <algorithm>
@@ -1228,6 +1229,21 @@ float Task::urgency_c () const
   value += urgency_blocking ()    * context.config.getReal ("urgency.blocking.coefficient");
   value += urgency_age ()         * context.config.getReal ("urgency.age.coefficient");
 
+/* 
+  std::cout << "# Urgency for " << id << ":\n"
+          << "#     pri " << (urgency_priority ()    * context.config.getReal ("urgency.priority.coefficient"))
+          << "#     pro " << (urgency_project ()     * context.config.getReal ("urgency.project.coefficient"))
+          << "#     act " << (urgency_active ()      * context.config.getReal ("urgency.active.coefficient"))
+          << "#     wai " << (urgency_waiting ()     * context.config.getReal ("urgency.waiting.coefficient"))
+          << "#     blk " << (urgency_blocked ()     * context.config.getReal ("urgency.blocked.coefficient"))
+          << "#     ann " << (urgency_annotations () * context.config.getReal ("urgency.annotations.coefficient"))
+          << "#     tag " << (urgency_tags ()        * context.config.getReal ("urgency.tags.coefficient"))
+          << "#     nex " << (urgency_next ()        * context.config.getReal ("urgency.next.coefficient"))
+          << "#     due " << (urgency_due ()         * context.config.getReal ("urgency.due.coefficient"))
+          << "#     bkg " << (urgency_blocking ()    * context.config.getReal ("urgency.blocking.coefficient"))
+          << "#     age " << (urgency_age ()         * context.config.getReal ("urgency.age.coefficient"));
+*/
+
   // Tag- and project-specific coefficients.
   std::vector <std::string> all;
   context.config.all (all);
@@ -1310,7 +1326,7 @@ float Task::urgency_active () const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_waiting () const
 {
-  if (get ("status") == "pending")
+  if (get ("status") == "waiting")
     return 1.0;
 
   return 0.0;
