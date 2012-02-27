@@ -168,25 +168,26 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
 
       if (operand._category == Arg::cat_dom && _dom)
       {
+        operand._category = Arg::cat_literal;
         operand._value    = context.dom.get (operand._raw, task);
-        operand._category = Arg::cat_literal;
       }
-      else if (operand._type     == Arg::type_date &&
-               operand._category == Arg::cat_literal)
+      else if (operand._type == Arg::type_date)
       {
-        operand._value    = Date (operand._raw, _dateformat).toEpochString ();
         operand._category = Arg::cat_literal;
+        operand._value    = (operand._raw != "")
+                            ? Date (operand._raw, _dateformat).toEpochString ()
+                            : "";
       }
-      else if (operand._type     == Arg::type_duration &&
-               operand._category == Arg::cat_literal)
+      else if (operand._type == Arg::type_duration)
       {
-        operand._value    = (std::string)Duration (operand._raw);
         operand._category = Arg::cat_literal;
+        operand._value    = (operand._raw != "")
+                            ? (std::string)Duration (operand._raw)
+                            : "";
       }
       else
         operand._value = operand._raw;
 
-      // std::cout << "# E9::eval operand " << operand << "\n";
       value_stack.push_back (operand);
     }
   }
