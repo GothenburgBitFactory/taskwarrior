@@ -123,6 +123,8 @@
  + Fixed bug #208, which addresses various problems with recurring tasks, and
    change propagation.
  + Fixed bug #403, which disambiguates certain commands involving numbers.
+ + Fixed bug #447, #942, which only allowed dates to be edited if they changed
+   day (thanks to Michelle Crane and Owen Clarke).
  + Fixed bug #458, removing the ambiguous 'm' as a duration, leaving 'mi[nutes]'
    and 'mo[nths]' requiring at least two characters for a match.
  + Fixed bug #475, which allowed a blank annotation command to be entered
@@ -271,8 +273,6 @@
  + Fixed bug #937, which failed 'stat' calls on Solaris (thanks to Owen Clarke).
  + Fixed bug #938, which corrected compiler warnings on Solaris (thanks to Owen
    Clarke).
- + Fixed bug #942, which only allowed dates to be edited if they changed day
-   (thanks to Owen Clarke).
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.
