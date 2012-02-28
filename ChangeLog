@@ -43,6 +43,7 @@
  + Improved text wrapping of UTF8 text.
  + When duplicating a parent recurring task, a new recurring parent task is
    created.  When a child recurring task is duplicated, a plain task is created.
+ + The 'diagnostics' command now checks for duplicate UUID values in the data.
 
 # Tracked Features, sorted by ID.
  + Added feature #52, which provides improved text-wrapping support for UTF-8
