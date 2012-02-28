@@ -38,6 +38,7 @@
 
 extern Context context;
 
+////////////////////////////////////////////////////////////////////////////////
 std::ostream& operator<< (std::ostream& out, const Arg& term)
 {
   out << term._value                        << "|"
@@ -115,6 +116,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
       }
 
       // TODO Not sure this is correct.
+      // TODO No longer sure why I was unsure in the first place.
       else if (arg->_raw == "-" && value_stack.size () < 2)
       {
         Arg right = value_stack.back ();
@@ -173,10 +175,25 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
       }
       else if (operand._type == Arg::type_date)
       {
+        // Could be a date, could be a duration, added to 'now'.
         operand._category = Arg::cat_literal;
-        operand._value    = (operand._raw != "")
-                            ? Date (operand._raw, _dateformat).toEpochString ()
-                            : "";
+        if (operand._raw != "")
+        {
+          if (Date::valid (operand._raw, _dateformat))
+            operand._value = Date (operand._raw, _dateformat).toEpochString ();
+
+          else if (Duration::valid (operand._raw))
+          {
+            Duration dur (operand._raw);
+            Date now;
+            now += (int)(time_t) dur;
+            operand._value  = now.toEpochString ();
+          }
+          else
+            operand._value = "";
+        }
+        else
+          operand._value = "";
       }
       else if (operand._type == Arg::type_duration)
       {

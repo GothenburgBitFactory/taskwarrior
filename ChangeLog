@@ -237,6 +237,8 @@
    handling multiple arguments (thanks to Uli Martens).
  + Fixed bug #850, which failed when newline characters were in a modified task
    description.  They are now stripped (thanks to Aikido Guy).
+ + Fixed bug #851, which failed to recognize durations like '1day' when
+   filtering date attributes (thanks to Philipp Woelfel).
  + Fixed bug #856, which prevented filters on missing project from working
    (thanks to Michelle Crane).
  + Fixed bug #859, which used only one color for the 'ghistory.*' report
