@@ -291,7 +291,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
     Date edited (strtol (value.c_str (), NULL, 10));
 
     Date original (task.get_date ("entry"));
-    if (!original.sameDay (edited))
+    if (original != edited)
     {
       context.footnote (STRING_EDIT_ENTRY_MOD);
       task.set ("entry", value);
@@ -309,7 +309,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
     if (task.get ("start") != "")
     {
       Date original (task.get_date ("start"));
-      if (!original.sameDay (edited))
+      if (original != edited)
       {
         context.footnote (STRING_EDIT_START_MOD);
         task.set ("start", value);
@@ -339,7 +339,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
     if (task.get ("end") != "")
     {
       Date original (task.get_date ("end"));
-      if (!original.sameDay (edited))
+      if (original != edited)
       {
         context.footnote (STRING_EDIT_END_MOD);
         task.set ("end", value);
@@ -367,7 +367,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
     if (task.get ("due") != "")
     {
       Date original (task.get_date ("due"));
-      if (!original.sameDay (edited))
+      if (original != edited)
       {
         context.footnote (STRING_EDIT_DUE_MOD);
         task.set ("due", value);
@@ -405,7 +405,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
     if (task.get ("until") != "")
     {
       Date original (task.get_date ("until"));
-      if (!original.sameDay (edited))
+      if (original != edited)
       {
         context.footnote (STRING_EDIT_UNTIL_MOD);
         task.set ("until", value);
@@ -467,7 +467,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
     if (task.get ("wait") != "")
     {
       Date original (task.get_date ("wait"));
-      if (!original.sameDay (edited))
+      if (original != edited)
       {
         context.footnote (STRING_EDIT_WAIT_MOD);
         task.set ("wait", value);
