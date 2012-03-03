@@ -50,7 +50,6 @@
 #include <i18n.h>
 #include <main.h>
 
-static void countTasks (const std::vector <Task>&, const std::string&, int&, int&);
 
 extern Context context;
 
@@ -118,91 +117,6 @@ std::string getDueDate (Task& task, const std::string& format)
   }
 
   return due;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-std::string onProjectChange (Task& task, bool scope /* = true */)
-{
-  std::stringstream msg;
-  std::string project = task.get ("project");
-
-  if (project != "")
-  {
-    if (scope)
-      msg << format (STRING_HELPER_PROJECT_CHANGE, project)
-          << "  ";
-
-    // Count pending and done tasks, for this project.
-    int count_pending = 0;
-    int count_done = 0;
-    std::vector <Task> all = context.tdb2.all_tasks ();
-    countTasks (all, project, count_pending, count_done);
-
-    // count_done  count_pending  percentage
-    // ----------  -------------  ----------
-    //          0              0          0%
-    //         >0              0        100%
-    //          0             >0          0%
-    //         >0             >0  calculated
-    int percentage = 0;
-    if (count_done == 0)
-      percentage = 0;
-    else if (count_pending == 0)
-      percentage = 100;
-    else
-      percentage = (count_done * 100 / (count_done + count_pending));
-
-    msg << format (STRING_HELPER_PROJECT_COMPL, project, percentage)
-        << " "
-        << format (STRING_HELPER_PROJECT_REM, count_pending, count_pending + count_done)
-        << "\n";
-  }
-
-  return msg.str ();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-std::string onProjectChange (Task& task1, Task& task2)
-{
-  if (task1.get ("project") == task2.get ("project"))
-    return onProjectChange (task1);
-
-  std::string messages = onProjectChange (task1);
-  messages            += onProjectChange (task2);
-
-  return messages;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-static void countTasks (
-  const std::vector <Task>& all,
-  const std::string& project,
-  int& count_pending,
-  int& count_done)
-{
-  std::vector <Task>::const_iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
-  {
-    if (it->get ("project") == project)
-    {
-      switch (it->getStatus ())
-      {
-      case Task::pending:
-      case Task::waiting:
-        ++count_pending;
-        break;
-
-      case Task::completed:
-        ++count_done;
-        break;
-
-      case Task::deleted:
-      case Task::recurring:
-      default:
-        break;
-      }
-    }
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

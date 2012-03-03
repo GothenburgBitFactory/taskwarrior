@@ -51,8 +51,6 @@ bool nag (Task&);
 // helpers.cpp
 std::string getFullDescription (Task&, const std::string&);
 std::string getDueDate (Task&, const std::string&);
-std::string onProjectChange (Task&, bool scope = true);
-std::string onProjectChange (Task&, Task&);
 
 // rules.cpp
 void initializeColorRules ();
@@ -81,6 +79,8 @@ void feedback_affected (const std::string&, int);
 void feedback_affected (const std::string&, const Task&);
 void feedback_special_tags (const Task&, const std::string&);
 void feedback_unblocked (const Task&);
+std::string onProjectChange (Task&, bool scope = true);
+std::string onProjectChange (Task&, Task&);
 
 // sort.cpp
 void sort_tasks (std::vector <Task>&, std::vector <int>&, const std::string&);
