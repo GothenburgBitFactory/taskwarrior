@@ -389,6 +389,7 @@ int Context::dispatch (std::string &out)
 ////////////////////////////////////////////////////////////////////////////////
 bool Context::color ()
 {
+#ifdef FEATURE_COLOR
   if (determine_color_use)
   {
     // What the config says.
@@ -420,6 +421,9 @@ bool Context::color ()
 
   // Cached result.
   return use_color;
+#else
+  return false;
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

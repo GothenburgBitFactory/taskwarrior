@@ -29,6 +29,8 @@
 #define INCLUDED_MAIN
 #define L10N                                           // Localization complete.
 
+#define FEATURE_COLOR  1                               // Enable color.
+
 #include <string>
 #include <vector>
 #include <map>

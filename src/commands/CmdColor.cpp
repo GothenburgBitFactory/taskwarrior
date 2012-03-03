@@ -30,6 +30,7 @@
 #include <sstream>
 #include <ViewText.h>
 #include <Context.h>
+#include <main.h>
 #include <Color.h>
 #include <text.h>
 #include <i18n.h>
@@ -52,6 +53,7 @@ int CmdColor::execute (std::string& output)
 {
   int rc = 0;
 
+#ifdef FEATURE_COLOR
   // Get the non-attribute, non-fancy command line arguments.
   bool legend = false;
   std::vector <std::string> words = context.a3.extract_words ();
@@ -262,6 +264,10 @@ int CmdColor::execute (std::string& output)
   }
 
   output = out.str ();
+#else
+  output = "Color not supported.\n";
+#endif
+
   return rc;
 }
 
