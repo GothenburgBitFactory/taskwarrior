@@ -50,7 +50,6 @@ bool nag (Task&);
 
 // helpers.cpp
 std::string getFullDescription (Task&, const std::string&);
-std::string getDueDate (Task&, const std::string&);
 
 // rules.cpp
 void initializeColorRules ();

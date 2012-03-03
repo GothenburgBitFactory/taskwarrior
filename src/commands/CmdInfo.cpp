@@ -219,7 +219,8 @@ int CmdInfo::execute (std::string& output)
       if (format == "")
         format = context.config.get ("dateformat");
 
-      view.set (row, 1, getDueDate (*task, format));
+      Date dt (task->get_date ("due"));
+      view.set (row, 1, dt.toString (context.config.get ("dateformat")));
     }
 
     // wait

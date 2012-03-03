@@ -120,7 +120,13 @@ int CmdTimesheet::execute (std::string& output)
           if (format == "")
             format = context.config.get ("dateformat");
           completed.set (row, 1, task->get ("project"), c);
-          completed.set (row, 2, getDueDate (*task, format), c);
+
+          if(task->has ("due"))
+          {
+            Date dt (task->get_date ("due"));
+            completed.set (row, 2, dt.toString (format));
+          }
+
           completed.set (row, 3, getFullDescription (*task, "timesheet"), c);
         }
       }
@@ -158,7 +164,13 @@ int CmdTimesheet::execute (std::string& output)
           if (format == "")
             format = context.config.get ("dateformat");
           started.set (row, 1, task->get ("project"), c);
-          started.set (row, 2, getDueDate (*task, format), c);
+
+          if(task->has ("due"))
+          {
+            Date dt (task->get_date ("due"));
+            started.set (row, 2, dt.toString (format));
+          }
+
           started.set (row, 3, getFullDescription (*task, "timesheet"), c);
 
         }

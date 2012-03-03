@@ -374,7 +374,7 @@ int CmdShow::execute (std::string& output)
 #endif
 
   // Check for bad values in rc.annotations.
-  // TODO Reconsider this.
+  // TODO Deprecated.
   std::string annotations = context.config.get ("annotations");
   if (annotations != "full"   &&
       annotations != "sparse" &&

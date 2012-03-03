@@ -106,17 +106,4 @@ std::string getFullDescription (Task& task, const std::string& report)
   return desc;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-std::string getDueDate (Task& task, const std::string& format)
-{
-  std::string due = task.get ("due");
-  if (due.length ())
-  {
-    Date d (atoi (due.c_str ()));
-    due = d.toString (format);
-  }
-
-  return due;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
