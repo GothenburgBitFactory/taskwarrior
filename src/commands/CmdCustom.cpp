@@ -131,10 +131,12 @@ int CmdCustom::execute (std::string& output)
   // TODO Consider rc.verbose
   int table_header = 0;
   if (context.verbose ("label"))
+  {
     if (context.color () && context.config.getBoolean ("fontunderline"))
       table_header = 1;  // Underlining doesn't use extra line.
     else
       table_header = 2;  // Dashes use an extra line.
+  }
 
   // Report output can be limited by rows or lines.
   int maxrows = 0;
