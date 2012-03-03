@@ -322,13 +322,14 @@ int CmdInfo::execute (std::string& output)
           {
             row = view.addRow ();
             view.set (row, 0, col->label ());
-            //view.set (row, 1, value);
-
+            view.set (row, 1, value);
+/*
             std::vector <std::string> lines;
             Color color;
             col->render (lines, *task, 0, color);
             join (value, " ", lines);
             view.set (row, 1, value);
+*/
           }
         }
       }
