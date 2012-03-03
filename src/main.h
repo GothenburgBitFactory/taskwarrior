@@ -48,9 +48,6 @@ void updateRecurrenceMask (Task&);
 int getDueState (const std::string&);
 bool nag (Task&);
 
-// helpers.cpp
-std::string getFullDescription (Task&, const std::string&);
-
 // rules.cpp
 void initializeColorRules ();
 void autoColorize (Task&, Color&);

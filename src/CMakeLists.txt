@@ -33,7 +33,6 @@ set (task_SRCS A3.cpp A3.h
                Uri.cpp Uri.h
                ViewTask.cpp ViewTask.h
                ViewText.cpp ViewText.h
-               helpers.cpp
                dependency.cpp
                feedback.cpp
                i18n.h

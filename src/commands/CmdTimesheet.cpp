@@ -127,7 +127,20 @@ int CmdTimesheet::execute (std::string& output)
             completed.set (row, 2, dt.toString (format));
           }
 
-          completed.set (row, 3, getFullDescription (*task, "timesheet"), c);
+          std::string description = task->get ("description");
+          int indent = context.config.getInteger ("indent.annotation");
+
+          std::map <std::string, std::string> annotations;
+          task->getAnnotations (annotations);
+          std::map <std::string, std::string>::iterator ann;
+          for (ann = annotations.begin (); ann != annotations.end (); ++ann)
+            description += "\n"
+                         + std::string (indent, ' ')
+                         + Date (ann->first.substr (11)).toString (context.config.get ("dateformat"))
+                         + " "
+                         + ann->second;
+
+          completed.set (row, 3, description, c);
         }
       }
     }
@@ -171,8 +184,20 @@ int CmdTimesheet::execute (std::string& output)
             started.set (row, 2, dt.toString (format));
           }
 
-          started.set (row, 3, getFullDescription (*task, "timesheet"), c);
+          std::string description = task->get ("description");
+          int indent = context.config.getInteger ("indent.annotation");
 
+          std::map <std::string, std::string> annotations;
+          task->getAnnotations (annotations);
+          std::map <std::string, std::string>::iterator ann;
+          for (ann = annotations.begin (); ann != annotations.end (); ++ann)
+            description += "\n"
+                         + std::string (indent, ' ')
+                         + Date (ann->first.substr (11)).toString (context.config.get ("dateformat"))
+                         + " "
+                         + ann->second;
+
+          started.set (row, 3, description, c);
         }
       }
     }
