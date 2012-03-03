@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
@@ -49,6 +49,9 @@ is (scalar @tasks, 1, 'recurrence.limit default to 1');
 $output = qx{../src/task rc:recur.rc rc.recurrence.limit:4 long};
 @tasks = $output =~ /(ONE)/g;
 is (scalar @tasks, 4, 'recurrence.limit override to 4');
+
+$output = qx{../src/task rc:recur.rc diag};
+like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key recur.rc);

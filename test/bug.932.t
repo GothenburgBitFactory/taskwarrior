@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -60,6 +60,9 @@ $output = qx{../src/task rc:bug.rc list};
 like ($output, qr/2\s+P.+H.+R/ms, 'Found modified child 0 (propagated from parent');
 like ($output, qr/3\s+P.+H.+R/ms, 'Found modified child 1 (propagated from parent)');
 like ($output, qr/4\s+P.+H.+R/ms, 'Found modified child 2 (propagated from parent)');
+
+$output = qx{../src/task rc:bug.rc diag};
+like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);

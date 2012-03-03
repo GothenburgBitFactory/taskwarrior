@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 40;
+use Test::More tests => 41;
 
 # Create the rc file.
 if (open my $fh, '>', 'period.rc')
@@ -152,6 +152,9 @@ like ($output, qr/\b2w\b/,         'verify 2w');
 like ($output, qr/\b2m\b/,         'verify 2m');
 like ($output, qr/\b2q\b/,         'verify 2q');
 like ($output, qr/\b2y\b/,         'verify 2y');
+
+$output = qx{../src/task rc:period.rc diag};
+like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key period.rc);

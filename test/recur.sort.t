@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
@@ -52,6 +52,9 @@ like ($output, qr/first .* third .* second/msx, 'daily 3d weekly');
 
 $output = qx{../src/task rc:recur.rc desc};
 like ($output, qr/second .* third .* first/msx, 'weekly 3d daily');
+
+$output = qx{../src/task rc:recur.rc diag};
+like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key recur.rc);

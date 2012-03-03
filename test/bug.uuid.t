@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'uuid.rc')
@@ -80,6 +80,9 @@ $unique_uuids{$uuid} = undef;
 
 is (scalar (@all_uuids), 6, '6 tasks created');
 is (scalar (keys %unique_uuids), 6, '6 unique UUIDs');
+
+$output = qx{../src/task rc:uuid.rc diag};
+like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key uuid.rc);

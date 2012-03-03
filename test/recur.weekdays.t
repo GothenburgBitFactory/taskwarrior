@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
@@ -48,6 +48,9 @@ like ($output, qr/Recurrence\s+weekdays/, 'task recurs every weekday');
 
 qx{../src/task rc:recur.rc 1 do};
 $output = qx{../src/task rc:recur.rc list};
+
+$output = qx{../src/task rc:recur.rc diag};
+like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key recur.rc);

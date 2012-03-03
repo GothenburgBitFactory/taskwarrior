@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 # Create the rc file.
 if (open my $fh, '>', 'annual.rc')
@@ -67,6 +67,9 @@ like ($output, qr/8\s+1\/1\/2006\s+(?:-|\d+\ssecs?)\s+foo/,  'synthetic 8 no cre
 like ($output, qr/9\s+1\/1\/2007\s+(?:-|\d+\ssecs?)\s+foo/,  'synthetic 9 no creep');
 like ($output, qr/10\s+1\/1\/2008\s+(?:-|\d+\ssecs?)\s+foo/, 'synthetic 10 no creep');
 like ($output, qr/11\s+1\/1\/2009\s+(?:-|\d+\ssecs?)\s+foo/, 'synthetic 11 no creep');
+
+$output = qx{../src/task rc:annual.rc diag};
+like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key annual.rc);

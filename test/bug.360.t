@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -65,6 +65,9 @@ $output = qx{../src/task rc:bug.rc ls};
 my ($id) = $output =~ /(\d+)\s+nonrecurring/;
 $output = qx{../src/task rc:bug.rc $id modify due:};
 unlike ($output, qr/You cannot remove the due date from a recurring task./ms, 'Can remove due date from a non-recurring task');
+
+$output = qx{../src/task rc:bug.rc diag};
+like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);

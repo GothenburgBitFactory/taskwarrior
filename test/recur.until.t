@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
@@ -54,6 +54,9 @@ qx{../src/task rc:recur.rc 4 do};
 qx{../src/task rc:recur.rc 5 do};
 $output = qx{../src/task rc:recur.rc list};
 like ($output, qr/and has been deleted/, 'Parent task deleted');
+
+$output = qx{../src/task rc:recur.rc diag};
+like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key recur.rc);
