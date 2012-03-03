@@ -17,7 +17,6 @@ New Code Needs
   - Need new export_xxx.yy scripts - the more the better.  Any language.
   - The JSON.{h,cpp} code is fast and efficient up to a point, but has a non-
     linear performance curve, implying a slowdown due to fragmentation.  Fix it.
-    Test rig and sample data available on request.
   - Need a function that can optimize color codes.  For example, if a string
     contains this:
       <red>one two </red><red>three four</red>
@@ -33,15 +32,7 @@ Documentation Needed
   - Wiki/How-To: Date Handling
   - Wiki/How-To: Custom Reports, including performance considerations
   - Wiki/How-To: Aliases, particularly new enhanced aliases
-
-Holiday Data Needed
-  We are moving the holiday data to http://holidata.net, and providing a
-  script that can automatically update taskwarrior holiday files from the
-  web.  This allows us to provide corrections and additional data without
-  the need for a corresponding taskwarrior release.
-
-  If you can provide regional holiday data, we would be very grateful, and
-  ideally it could go up on holidata.net for everyone to share.
+  - Wiki/Features: All sections
 
 Unit Tests Needed
   There are always more unit tests needed.  More specifically, better unit tests
@@ -82,7 +73,7 @@ Unit Tests Needed
     task.git/test/problems
 
   If you make a habit of running the test suite, consider downloading the
-  vramsteg utility to show a nice colorful progress bar, from:
+  vramsteg utility to show a colorful progress bar, from:
 
     git://tasktools.org/vramsteg.git     
 
@@ -94,7 +85,6 @@ Unit Tests Needed
     functionality is working, and it should be called basic.t.
   - None of the current unit tests remove the 'extensions' directory, and they
     all should.
-  - Need tests of command line expressions.
   - Test propagation of modifications to recurring tasks.
   - Test regex support.
   - Need unit tests for each bug in the issue list, if suitable.
@@ -109,14 +99,7 @@ Work in Progress
   Things that are currently in flux, which is another way of saying leave it
   alone while it is being worked on.
 
-  - The E9.{h,cpp} (Expression) object is being completed and tested.
-  - L10N (Localization) is in progress.  This means moving all user-presented
-    strings into en-US.h, which is included by i18n.h.  Language selection will
-    be a cmake-controlled #define.  This is 86% complete.  This makes
-    translation possible, but there is no active project to make this happen.
-    It is expected that translation files will trickle in, and create a
-    maintenance burden.  We don't know how we're going to deal with this yet.
-    They will probably be downloadable files.
+  - None.
 
 Current Codebase Condition
 
@@ -124,20 +107,14 @@ Current Codebase Condition
     - 1.9.4 release, current, locked.
 
   '2.0.0' branch:
-    - Unit tests passing >99%.
-    - DOM access DOM.{h,cpp} not working well.
-    - Aiming for a release in 2011, but when it is ready.
+    - Rapidly approaching completion, and merged to master.
+
+  '2.0.1' branch:
+    - Will be ready for any emergency fixes.
+
+  '2.1.0' branch:
+    - Future development effort.
 
 ---
 
-2012-01-10 Removed entry for extractLines, which was rewritten.
-2012-01-07 Removed entry for export-sql.yy.  Example exists now.
-2011-12-31 Added note about bad unit tests at EOY.
-2011-12-23 Removed entry for tree-indentation function.
-2011-10-16 Removed obsolete entries, added test suite description.
-2011-10-16 Removed obsolete entries.
-2011-08-21 Small changes, new work listed.
-2011-08-01 Removed code already obsoleted or completed.
-2011-07-29 Added more needed code descriptions.
-2011-07-27 Updated with holiday data info.
-2011-07-25 Created file.
+2012-03-03 Updated text, removed old history info.
