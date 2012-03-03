@@ -65,6 +65,9 @@ int CmdDuplicate::execute (std::string& output)
   // Apply the command line modifications to the new task.
   A3 modifications = context.a3.extract_modifications ();
 
+  // Accumulated project change notifications.
+  std::map <std::string, std::string> projectChanges;
+
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
@@ -114,7 +117,7 @@ int CmdDuplicate::execute (std::string& output)
       if (context.verbose ("new-id"))
         std::cout << format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
 
-      context.footnote (onProjectChange (*task, false));
+      projectChanges[task->get ("project")] = onProjectChange (*task, false);
     }
     else
     {
@@ -122,6 +125,12 @@ int CmdDuplicate::execute (std::string& output)
       rc  = 1;
     }
   }
+
+  // Now list the project changes.
+  std::map <std::string, std::string>::iterator i;
+  for (i = projectChanges.begin (); i != projectChanges.end (); ++i)
+    if (i->first != "")
+      context.footnote (i->second);
 
   context.tdb2.commit ();
   feedback_affected (count == 1 ? STRING_CMD_DUPLICATE_1 : STRING_CMD_DUPLICATE_N, count);

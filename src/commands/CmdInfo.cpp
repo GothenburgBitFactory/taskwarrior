@@ -317,9 +317,19 @@ int CmdInfo::execute (std::string& output)
         Column* col = context.columns[*att];
         if (col)
         {
-          row = view.addRow ();
-          view.set (row, 0, col->label ());
-          view.set (row, 1, task->get (*att));
+          std::string value = task->get (*att);
+          if (value != "")
+          {
+            row = view.addRow ();
+            view.set (row, 0, col->label ());
+            //view.set (row, 1, value);
+
+            std::vector <std::string> lines;
+            Color color;
+            col->render (lines, *task, 0, color);
+            join (value, " ", lines);
+            view.set (row, 1, value);
+          }
         }
       }
     }

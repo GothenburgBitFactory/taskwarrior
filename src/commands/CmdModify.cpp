@@ -67,6 +67,9 @@ int CmdModify::execute (std::string& output)
   if (!modifications.size ())
     throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
 
+  // Accumulated project change notifications.
+  std::map <std::string, std::string> projectChanges;
+
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
@@ -109,7 +112,7 @@ int CmdModify::execute (std::string& output)
         feedback_affected (STRING_CMD_MODIFY_TASK, *task);
         feedback_unblocked (*task);
         context.tdb2.modify (*task);
-        context.footnote (onProjectChange (before, *task));
+        projectChanges[task->get ("project")] = onProjectChange (before, *task);
 
         // Task potentially has siblings - modify them.
         if (task->has ("parent"))
@@ -129,7 +132,7 @@ int CmdModify::execute (std::string& output)
               feedback_affected (STRING_CMD_MODIFY_TASK_R, *sibling);
               feedback_unblocked (*sibling);
               context.tdb2.modify (*sibling);
-              context.footnote (onProjectChange (alternate, *sibling));
+              projectChanges[sibling->get ("project")] = onProjectChange (alternate, *sibling);
             }
           }
         }
@@ -149,7 +152,7 @@ int CmdModify::execute (std::string& output)
               updateRecurrenceMask (*child);
               context.tdb2.modify (*child);
               dependencyChainOnModify (alternate, *child);
-              context.footnote (onProjectChange (alternate, *child));
+              projectChanges[child->get ("project")] = onProjectChange (alternate, *child);
               ++count;
               feedback_affected (STRING_CMD_MODIFY_TASK_R, *child);
             }
@@ -163,6 +166,12 @@ int CmdModify::execute (std::string& output)
       }
     }
   }
+
+  // Now list the project changes.
+  std::map <std::string, std::string>::iterator i;
+  for (i = projectChanges.begin (); i != projectChanges.end (); ++i)
+    if (i->first != "")
+      context.footnote (i->second);
 
   context.tdb2.commit ();
   feedback_affected (count == 1 ? STRING_CMD_MODIFY_1 : STRING_CMD_MODIFY_N, count);
