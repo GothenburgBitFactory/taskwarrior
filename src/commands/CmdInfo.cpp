@@ -105,10 +105,22 @@ int CmdInfo::execute (std::string& output)
     // description
     Color c;
     autoColorize (*task, c);
+    std::string description = task->get ("description");
+    int indent = context.config.getInteger ("indent.annotation");
+
+    std::map <std::string, std::string> annotations;
+    task->getAnnotations (annotations);
+    std::map <std::string, std::string>::iterator ann;
+    for (ann = annotations.begin (); ann != annotations.end (); ++ann)
+      description += "\n"
+                   + std::string (indent, ' ')
+                   + Date (ann->first.substr (11)).toString (context.config.get ("dateformat"))
+                   + " "
+                   + ann->second;
 
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_DESC);
-    view.set (row, 1, getFullDescription (*task, "info"), c);
+    view.set (row, 1, description, c);
 
     // status
     row = view.addRow ();
