@@ -279,6 +279,7 @@
  + Fixed bug #937, which failed 'stat' calls on Solaris (thanks to Owen Clarke).
  + Fixed bug #938, which corrected compiler warnings on Solaris (thanks to Owen
    Clarke).
+ + Fixed bug #944, which caused a test to fail when it was run on an NFS share.
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.

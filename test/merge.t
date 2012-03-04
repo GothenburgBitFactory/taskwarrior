@@ -203,6 +203,7 @@ if (open my $fh, 'local/undo.data') {
 			}
 		}
 	}
+	close $fh;
 } else {
 	fail ("could not open local/undo.data");
 }
@@ -223,6 +224,7 @@ if (open my $fh, 'remote/undo.data') {
 			}
 		}
 	}
+	close $fh;
 } else {
 	fail ("could not open remote/undo.data");
 }
