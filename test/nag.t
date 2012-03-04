@@ -52,7 +52,8 @@ like   (qx{../src/task rc:nag.rc 5 do}, qr/NAG/, 'do pri:L -> nag');
 like   (qx{../src/task rc:nag.rc 4 do}, qr/NAG/, 'do pri:M-> nag');
 like   (qx{../src/task rc:nag.rc 3 do}, qr/NAG/, 'do pri:H-> nag');
 like   (qx{../src/task rc:nag.rc 2 do}, qr/NAG/, 'do due:tomorrow -> nag');
-unlike (qx{../src/task rc:nag.rc 1 do}, qr/NAG/, 'do due:yesterday -> no nag');
+my $output = qx{../src/task rc:nag.rc 1 do};
+unlike ($output, qr/NAG/, 'do due:yesterday -> no nag');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key nag.rc);
