@@ -55,7 +55,7 @@ set (commands_SRCS Command.cpp        Command.h
 add_library (commands STATIC ${commands_SRCS})
 
 set (CMAKE_BUILD_TYPE debug)
-set (CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG}   -ggdb3 -Wall")
+set (CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG}   -g -Wall")
 set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -Wall")
 
 #SET(CMAKE_BUILD_TYPE gcov)
