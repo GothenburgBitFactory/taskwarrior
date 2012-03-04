@@ -67,7 +67,7 @@ used to annotate the configuration file. All text after the character to the end
 of the line is ignored.
 
 Note that taskwarrior is flexible about the values used to represent Boolean
-items.  You can use "on", "yes", "y", "1", "true", "t", "+", "enabled".
+items.  You can use "on", "yes", "y", "1" and "true".
 Anything else means "off".
 
 .SH EDITING
