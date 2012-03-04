@@ -212,15 +212,27 @@ std::string CmdEdit::formatTask (Task task)
   before << "  Annotation:        " << now.toString (context.config.get ("dateformat.annotation")) << " -- \n";
 
   // Add dependencies here.
-  std::vector <int> dependencies;
+  std::vector <std::string> dependencies;
   task.getDependencies (dependencies);
-  std::string allDeps;
-  join (allDeps, ",", dependencies);
+  std::stringstream allDeps;
+  for (unsigned int i = 0; i < dependencies.size (); ++i)
+  {
+    if (i)
+      allDeps << ",";
+
+    Task t;
+    context.tdb2.get (dependencies[i], t);
+    if (t.getStatus () == Task::pending ||
+        t.getStatus () == Task::waiting)
+      allDeps << t.id;
+    else
+      allDeps << dependencies[i];
+  }
 
   if (verbose)
     before << "# " << STRING_EDIT_DEP_SEP << "\n";
 
-  before << "  Dependencies:      " << allDeps << "\n";
+  before << "  Dependencies:      " << allDeps.str () << "\n";
 
   before << "# " << STRING_EDIT_END << "\n";
   return before.str ();
@@ -582,9 +594,18 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   std::vector <std::string>::iterator dep;
   for (dep = dependencies.begin (); dep != dependencies.end (); ++dep)
   {
-    int id = atoi (dep->c_str ());
+    int id = 0;
+
+    // Crude UUID check.
+    if (dep->length () == 36)
+      id = context.tdb2.pending.id (*dep);
+    else
+      id = atoi (dep->c_str ());
+
     if (id)
       task.addDependency (id);
+    else
+      task.addDependency (*dep);
   }
 }
 

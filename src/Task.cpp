@@ -744,6 +744,32 @@ void Task::addDependency (int id)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Task::addDependency (const std::string& uuid)
+{
+  if (uuid == get ("uuid"))
+    throw std::string (STRING_TASK_DEPEND_ITSELF);
+
+  // Store the dependency.
+  std::string depends = get ("depends");
+  if (depends != "")
+  {
+    // Check for extant dependency.
+    if (depends.find (uuid) == std::string::npos)
+      set ("depends", depends + "," + uuid);
+    else
+      throw format (STRING_TASK_DEPEND_DUP, this->get ("uuid"), uuid);
+  }
+  else
+    set ("depends", uuid);
+
+  // Prevent circular dependencies.
+  if (dependencyIsCircular (*this))
+    throw std::string (STRING_TASK_DEPEND_CIRCULAR);
+
+  recalc_urgency = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Task::removeDependency (const std::string& uuid)
 {
   std::vector <std::string> deps;
@@ -1333,10 +1359,25 @@ float Task::urgency_waiting () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// A task is blocked only if the task it depends upon is pending/waiting.
 float Task::urgency_blocked () const
 {
   if (has ("depends"))
-    return 1.0;
+  {
+    std::vector <std::string> deps;
+    getDependencies (deps);
+
+    std::vector <std::string>::iterator d;
+    for (d = deps.begin (); d != deps.end (); ++d)
+    {
+      Task t;
+      if (context.tdb2.get (*d, t) &&
+          (t.getStatus () == Task::pending || t.getStatus () == Task::waiting))
+      {
+        return 1.0;
+      }
+    }
+  }
 
   return 0.0;
 }

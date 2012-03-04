@@ -91,6 +91,7 @@ public:
   void removeAnnotations ();
 
   void addDependency (int);
+  void addDependency (const std::string&);
   void removeDependency (int);
   void removeDependency (const std::string&);
   void getDependencies (std::vector <int>&) const;
