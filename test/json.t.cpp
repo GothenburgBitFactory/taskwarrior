@@ -130,7 +130,8 @@ int main (int argc, char** argv)
     try
     {
       json::value* root = json::parse (negative_tests[i]);
-      t.is (root, NULL, std::string ("negative: ") + negative_tests[i]);
+      t.is ((const char*) root, (const char*) NULL,
+            std::string ("negative: ") + negative_tests[i]);
     }
 
     catch (const std::string& e) { t.pass (e); }
