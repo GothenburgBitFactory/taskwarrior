@@ -90,7 +90,7 @@ int main (int argc, char** argv)
   // Task::get_ulong
   task.set ("two", "4294967295");
   t.is (task.composeF4 (), "[name:\"value\" one:\"1\" two:\"4294967295\"]\n", "Task::set");
-  t.is ((size_t)task.get_ulong ("two"), (size_t)4294967295, "Task::get_ulong");
+  t.is ((size_t)task.get_ulong ("two"), (size_t)4294967295UL, "Task::get_ulong");
 
   // Task::remove
   task.remove ("one");
