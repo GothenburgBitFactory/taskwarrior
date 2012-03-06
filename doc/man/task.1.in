@@ -3,8 +3,6 @@
 .SH NAME
 task \- A command line todo manager.
 
-NOTE THAT THIS DOCUMENT HAS NOT BEEN FULLY UPDATED FOR THE 2.0 RELEASE.
-
 .SH SYNOPSIS
 .B task <filter> <command> [ <mods> | <args> ]
 
@@ -23,24 +21,34 @@ list program when you modify the configuration file to have the output displayed
 the way you want to see it.
 
 .SH FILTER
-The <filter> consists of zero or more search criteria to select.  For example,
-to list all tasks belonging to the 'Home' project:
+The <filter> consists of zero or more search criteria that select tasks.  For
+example, to list all tasks belonging to the 'Home' project:
 
   task project:Home list
 
-You can specify multiple filters, each of which further restrict the results:
+You can specify multiple filter terms, each of which further restrict the
+result:
 
   task project:Home +weekend garden list
 
 This example applies three filters: the 'Home' project, the 'weekend' tag, and
-the description or annotations must contain the characters 'garden'.  In this
-example, 'garden' is translated internally to:
+the description or annotations must contain the character sequence 'garden'.
+In this example, 'garden' is translated internally to:
 
   description.contains:garden
 
 as a convenient shortcut.  The 'contains' here is an attribute modifier, which
 is used to exert more control over the filter than simply absence or presence.
 See 'ATTRIBUTE MODIFIERS' for a complete list of modifiers.
+
+Note that a filter may have zero terms, which means that all tasks apply to the
+command.  This can be dangerous, and this special case is confirmed, and
+cannot be overridden.  For example, this command:
+
+  task modify +work
+  This command has no filter, and will modify all tasks.  Are you sure? (yes/no)
+
+will add the 'work' tag to all tasks, but only after confirmation.
 
 More filter examples:
 
@@ -50,13 +58,13 @@ More filter examples:
   task project:Home due.before:today        <command> <mods>
   task ebeeab00-ccf8-464b-8b58-f7f2d606edfb <command> <mods>
 
-By default, filter elements are combined with an implicit 'and' operator,
+By default filter elements are combined with an implicit 'and' operator,
 but 'or' and 'xor' may also be used, provided parentheses are included:
 
   task '( /[Cc]at|[Dd]og/ or /[0-9]+/ )'      <command> <mods>
 
 The parentheses isolate the logical term from any default command filter or
-implicit report filter.
+implicit report filter which would be combined with an implicit 'and'.
 
 A filter may target specific tasks using ID or UUID numbers.  To specify
 multiple tasks use one of these forms:
@@ -92,6 +100,10 @@ the configuration file. See also the man page taskrc(5).  There are also other
 read subcommands that are not reports.
 
 .TP
+.B task <filter>
+With no command specified, the default command is run, and the filter applied.
+
+.TP
 .B task <filter> active
 Shows all tasks matching the filter that are started but not completed.
 
@@ -101,7 +113,7 @@ Shows all tasks matching the filter, including parents of recurring tasks.
 
 .TP
 .B task <filter> blocked
-Shows all blocked tasks, that are dependent on other tasks, matching the filter.
+Shows all tasks matching the filter, that have dependencies on other tasks.
 
 .TP
 .B task <filter> burndown.daily
@@ -117,8 +129,13 @@ Shows a graphical burndown chart, by week.
 Shows a graphical burndown chart, by month.
 
 .TP
-.B task calendar [ y | due [y] | month year [y] | year ]
-Shows a monthly calendar with due tasks marked.
+.B task calendar [due|<month> <year>|<year>] [y]
+Shows a monthly calendar with due tasks marked.  Shows one horizontal line of
+months.  If the 'y' argument is provided, will show at least one complete year.
+If a year is provided, such as '2012', then that full year is shown.  If both
+a month and a year are specified ('6 2012') then the months displayed begin at
+the specified month and year.  If the 'due' argument is provided, will show
+the starting month of the earliest due task.
 
 .TP
 .B task colors [sample | legend]
@@ -127,7 +144,8 @@ currently defined colors.
 
 .TP
 .B task columns
-Displays all supported columns and formatting styles.
+Displays all supported columns and formatting styles.  Useful when creating
+custom reports.
 
 .TP
 .B task <filter> completed
@@ -175,7 +193,11 @@ to achieve this:
 	task $(task project:Home ids) modify priority:H
 
 This example first gets the IDs for the project:Home filter, then sets
-the priority to H for each of those tasks.
+the priority to H for each of those tasks.  This can also be achieved directly:
+
+  task project:Home modify priority:H
+
+This command is mainly of use to external scripts.
 
 .TP
 .B task <filter> uuids
@@ -188,9 +210,12 @@ this:
 This example first gets the UUIDs for the project:Home and status:completed
 filter, then makes each of those tasks pending again.
 
+This command is mainly of use to external scripts.
+
 .TP
 .B task <filter> information
-Shows all data and metadata for the specified tasks.
+Shows all data and metadata for the specified tasks.  This is the only means of
+displaying all aspects of a given task, including the change history.
 
 .TP
 .B task <filter> list
@@ -236,7 +261,7 @@ Shows all recurring tasks matching the filter.
 
 .TP
 .B task <filter> unblocked
-Shows all tasks that are not blocked by dependencies, matching the filter.
+Shows all tasks that do not have dependencies, matching the filter.
 
 .TP
 .B task <filter> waiting
@@ -246,7 +271,7 @@ Shows all waiting tasks matching the filter.
 
 .TP
 .B task add <mods>
-Adds a new task to the task list.
+Adds a new pending task to the task list.
 
 .TP
 .B task <filter> annotate <mods>
@@ -282,7 +307,7 @@ In general, this is not the recommended method of modifying tasks, but is
 provided for exceptional circumstances.  Use carefully.
 
 .TP
-.B task import \fIfile
+.B task import <file> [<file> ...]
 Imports tasks in the JSON format.  The standard task release comes with a few
 example scripts, such as import-yaml.pl.
 
@@ -369,6 +394,9 @@ It includes compiler, library and software information.  It does not include
 any personal information, other than the location and size of your task data
 files.
 
+This command also performs a diagnostic scan of your data files looking for
+common problems, such as duplicate UUIDs.
+
 .TP
 .B task execute <external command>
 Executes the specified command.  Not useful by itself, but when used in
@@ -376,7 +404,7 @@ conjunction with aliases and extensions can provide seamless integration.
 
 .TP
 .B task logo
-Displays the taskwarrior logo.
+Displays the Taskwarrior logo.
 
 .TP
 .B task reports
@@ -399,11 +427,7 @@ Shows statistics of the tasks defined by the filter.
 
 .TP
 .B task <filter> summary
-Shows a report of task status by project.
-
-.TP
-.B task synchronize
-Synchronizes task data with the task server, if configured.
+Shows a report of aggregated task status by project.
 
 .TP
 .B task <filter> tags
@@ -468,12 +492,13 @@ Shows the IDs and descriptions of matching tasks.
 .TP
 .B ID
 Tasks can be specified uniquely by IDs, which are simply the index of the
-task in a report. Be careful, as the IDs of tasks may change after a
-modification to the database. Always run a report to check you have the right
-ID for a task. IDs can be given to task as a sequences, for example,
+task in the data file.  The ID of a task may therefore change, but only when
+a command is run that displays IDs.  When modifying tasks, it is safe to
+rely on the last displayed ID.  Always run a report to check you have the right
+ID for a task. IDs can be given to task as a sequence, for example,
 .br
 .B
-task 1,4-10,19 del
+task 1,4-10,19 delete
 
 .TP
 .B +tag|-tag
@@ -494,7 +519,7 @@ exempt from all color rules.  The supported special tags are:
 Specifies the project to which a task is related to.
 
 .TP
-.B priority:H|M|L    or    priority:
+.B priority:H|M|L or priority:
 Specifies High, Medium, Low and no priority for a task.
 
 .TP
@@ -664,9 +689,6 @@ You can use the following operators in filter expressions:
 
   and  or  xor            Logical operators
   <  <=  =  !=  >=  >     Relational operators
-  +  -                    Addition, subtraction
-  !                       Inversion
-  ~  !~                   Match, no match
   (  )                    Precedence
 
 For example:
@@ -730,6 +752,10 @@ in the taskwarrior configuration file.
 .TP
 Exact specification
 task ... due:7/14/2008
+
+.TP
+ISO-8601
+task ... due:20120314T223000Z
 
 .TP
 Relative wording
@@ -866,10 +892,9 @@ abbreviation.minimum=3
 .RE
 
 .SH SPECIFYING DESCRIPTIONS
-Some task descriptions need to be escaped because of the shell
-and the special meaning of some characters to the shell. This can be
-done either by adding quotes to the description or escaping the special
-character:
+Some task descriptions need to be escaped because of the shell and the special
+meaning of some characters to the shell. This can be done either by adding
+quotes to the description or escaping the special character:
 
 .RS
 $ task add "quoted ' quote"
@@ -897,18 +922,34 @@ is broken up into several arguments, which is corrected with quotes:
 $ task 123 modify "/from this/to that/"
 .RE
 
+It is sometimes necessary to force the shell to pass quotes to Taskwarrior
+intact, so you can use:
+
+.RS
+$ task add project:\\'Three Word Project\\' description
+.RE
+
 .SH CONFIGURATION FILE AND OVERRIDE OPTIONS
 Taskwarrior stores its configuration in a file in the user's home directory:
-~/.taskrc . The default configuration file can be overridden with
+~/.taskrc. The default configuration file can be overridden with:
 
 .TP
-.B task rc:<path-to-alternate-file>
+.B task rc:<path-to-alternate-file> ...
 Specifies an alternate configuration file.
+
+.TP TASKRC=/tmp/.taskrc task ..
+The environment variable overrides the default and the command line
+specification of the .taskrc file.
 
 .TP
 .B task rc.<name>:<value> ...
 .B task rc.<name>=<value> ...
 Specifies individual configuration file overrides.
+
+.TP
+.B TASKDATA=/tmp/.task task ...
+The environment variable overrides the default, the command line, and
+the 'data.location' configuration setting of the task data directory.
 
 .SH MORE EXAMPLES
 
@@ -924,16 +965,21 @@ or the online documentation starting at
 <http://taskwarrior.org/projects/taskwarrior/wiki>
 .RE
 
+Note that the online documentation is more detailed and more current than this
+man page.
+
 .SH FILES
 
 .TP
 ~/.taskrc
-User configuration file - see also taskrc(5).
+User configuration file - see also taskrc(5).  Note that this can be
+overridden on the command line or by the TASKRC environment variable.
 
 .TP
 ~/.task
 The default directory where task stores its data files. The location
-can be configured in the configuration file.
+can be configured in the configuration variable 'data.location', or
+overridden with the TASKDATA environment variable..
 
 .TP
 ~/.task/pending.data
@@ -946,16 +992,6 @@ The file that contains the completed "done" tasks.
 .TP
 ~/.task/undo.data
 The file that contains the information to the "undo" command.
-
-.TP
-~/.task/backlog.data
-The file that contains un-synched tasks, if the task server
-is configured.
-
-.TP
-~/.task/synch.key
-The file that contains the synchronization key, if the task
-server is configured.
 
 .SH "CREDITS & COPYRIGHTS"
 Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.
@@ -970,7 +1006,7 @@ http://www.opensource.org/licenses/mit-license.php for more information.
 .BR task-color(5),
 .BR task-sync(5)
 
-For more information regarding taskwarrior, the following may be referenced:
+For more information regarding taskwarrior, see the following:
 
 .TP
 The official site at
@@ -981,10 +1017,11 @@ The official code repository at
 <git://tasktools.org/task.git/>
 
 .TP
-You can contact the project by writing an email to
+You can contact the project by emailing
 <support@taskwarrior.org>
 
 .SH REPORTING BUGS
 .TP
 Bugs in taskwarrior may be reported to the issue-tracker at
 <http://taskwarrior.org>
+
