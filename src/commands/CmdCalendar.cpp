@@ -44,7 +44,7 @@ extern Context context;
 CmdCalendar::CmdCalendar ()
 {
   _keyword     = "calendar";
-  _usage       = "task          calendar [due|month year|year]";
+  _usage       = "task          calendar [due|<month> <year>|<year>] [y]";
   _description = STRING_CMD_CAL_USAGE;
   _read_only   = true;
   _displays_id = true;

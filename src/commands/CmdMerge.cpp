@@ -43,7 +43,7 @@ extern Context context;
 CmdMerge::CmdMerge ()
 {
   _keyword     = "merge";
-  _usage       = "task          merge URL";
+  _usage       = "task          merge <URL>";
   _description = STRING_CMD_MERGE_USAGE;
   _read_only   = false;
   _displays_id = false;

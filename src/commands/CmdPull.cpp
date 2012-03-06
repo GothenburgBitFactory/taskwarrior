@@ -42,7 +42,7 @@ extern Context context;
 CmdPull::CmdPull ()
 {
   _keyword     = "pull";
-  _usage       = "task          pull URL";
+  _usage       = "task          pull <URL>";
   _description = STRING_CMD_PULL_USAGE;
   _read_only   = true;
   _displays_id = false;

@@ -833,7 +833,7 @@
   "http://taskwarrior.org\n" \
   "\n" \
   "The general form of commands is:\n" \
-  "  task <filter> <command> <mods>\n" \
+  "  task [<filter>] <command> [<mods>]\n" \
   "\n" \
   "The <filter> consists of zero or more restrictions on which tasks to select, " \
   "such as:\n" \
@@ -895,9 +895,6 @@
   "Alternately algebraic expressions support:\n" \
   "  and  or  xor            Logical operators\n" \
   "  <  <=  =  !=  >=  >     Relational operators\n" \
-  "  +  -                    Addition, subtraction\n" \
-  "  !                       Inversion\n" \
-  "  ~  !~                   Match, no match\n" \
   "  (  )                    Precedence\n" \
   "\n" \
   "  task due.before:eom priority.not:L   list\n" \
@@ -926,6 +923,14 @@
   "Many characters have special meaning to the shell, including:\n" \
   "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~\n" \
   "\n"
+
+/*
+  To be included later, before the 'precendence' line.
+ 
+  "  +  -                    Addition, subtraction\n" \
+  "  !                       Inversion\n" \
+  "  ~  !~                   Match, no match\n" \
+*/
 
 // util
 #define STRING_UTIL_CONFIRM_YN       " (yes/no) "

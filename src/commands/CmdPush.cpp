@@ -42,7 +42,7 @@ extern Context context;
 CmdPush::CmdPush ()
 {
   _keyword     = "push";
-  _usage       = "task          push URL";
+  _usage       = "task          push <URL>";
   _description = STRING_CMD_PUSH_USAGE;
   _read_only   = true;
   _displays_id = false;
