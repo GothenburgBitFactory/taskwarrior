@@ -145,9 +145,15 @@ std::string legacyCheckForDeprecatedVariables ()
         it->first.substr (it->first.length () - 6) == ".limit")
       deprecated.push_back (it->first);
 
+    // report.*.annotaitons
+    if (it->first.substr (0, 7) == "report." &&
+        it->first.substr (it->first.length () - 12) == ".annotations")
+      deprecated.push_back (it->first);
+
     if (it->first == "echo.command"      ||
         it->first == "edit.verbose"      ||
         it->first == "next"              ||
+        it->first == "annotations"       ||
         it->first == "export.ical.class")
       deprecated.push_back (it->first);
   }
