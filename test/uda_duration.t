@@ -50,7 +50,7 @@ qx{../src/task rc:uda.rc add with extra:1day};
 qx{../src/task rc:uda.rc add without};
 my $output = qx{../src/task rc:uda.rc uda};
 like ($output, qr/1\s+1d\s+with/,  'UDA duration stored');
-like ($output, qr/2\s+-\s+without/, 'UDA duration blank');
+like ($output, qr/2\s+without/, 'UDA duration blank');
 
 # Add bad data.
 $output = qx{../src/task rc:uda.rc add bad extra:unrecognized_duration};
