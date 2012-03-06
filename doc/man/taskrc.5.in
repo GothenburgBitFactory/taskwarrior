@@ -6,7 +6,9 @@ taskrc \- Configuration file for the task(1) command
 .SH SYNOPSIS
 .B $HOME/.taskrc
 .br
-.B task rc:<directory-path>/.taskrc
+.B task rc:<directory-path>/.taskrc ...
+.br
+.B TASKRC=<directory-path>/.taskrc task ...
 
 .SH DESCRIPTION
 .B taskwarrior
@@ -23,15 +25,27 @@ The default location can be overridden using the
 attribute when running task:
 
 .RS
-$ task rc:<directory-path>/.taskrc
+$ task rc:<directory-path>/.taskrc ...
 .RE
 
-Individual option can be overridden by using the
+or usign the TASKRC environment variable:
+
+.RS
+$ TASKRC=/tmp/.taskrc task ...
+.RE
+
+Individual options can be overridden by using the
 .I rc.<name>:
 attribute when running task:
 
 .RS
 $ task rc.<name>:<value> ...
+.RE
+
+or
+
+.RS
+$ task rc.<name>=<value> ...
 .RE
 
 If
@@ -41,8 +55,8 @@ default, sample
 .I .taskrc
 file in the user's home directory.
 
-The taskwarrior configuration file consists of a series of "assignments" in each
-line.  The "assignments" have the syntax:
+The taskwarrior configuration file consists of a series of assignments in each
+line.  The assignments have the syntax:
 
 .RS
 <name-of-configuration-variable>=<value-to-be-set>
@@ -62,7 +76,7 @@ is the value the variable is to be set to.
 and set a configuration variable to a certain value. The equal sign ("=") is
 used to separate the variable name from the value to be set.
 
-The hash mark, or pound sign ("#") is used as a "comment" character. It can be
+The hash mark, or pound sign ("#") is used as a comment character. It can be
 used to annotate the configuration file. All text after the character to the end
 of the line is ignored.
 
@@ -149,6 +163,8 @@ Note that you can use the
 .B ~
 shell meta character, which will be properly expanded.
 
+Note that the TASKDATA environment variable overrides this setting.
+
 .TP
 .B locking=on
 Determines whether to use file locking when accessing the pending.data and
@@ -162,12 +178,12 @@ task) may write to the task.pending file at the same time.
 Can be used to temporarily suspend garbage collection (gc), so that task IDs
 don't change.  Note that this should be used in the form of a command line
 override (task rc.gc=off ...), and not permanently used in the .taskrc file,
-as this significantly affects performance.
+as this significantly affects performance in the long term.
 
 .TP
 .B exit.on.missing.db=no
 When set to 'yes' causes the program to exit if the database (~/.task or
-rc.data.location override) is missing.  Default value is 'no'.
+rc.data.location or TASKDATA override) is missing.  Default value is 'no'.
 
 .SS TERMINAL
 .TP
@@ -252,18 +268,7 @@ for safety.
 .B echo.command=yes
 May be "yes" or "no", and causes the display of the ID and description of any
 task when you run the start, stop, do, undo or delete commands. The default
-value is "yes".  Deprecated - use verbosity token 'affected'.
-
-.TP
-.B annotations=full
-.TP
-.B report.X.annotations=full
-Controls the display of annotations in reports. Defaults to full - all
-annotations are displayed. Set to "sparse" only the last (newest) annotation
-is displayed and if there are more than one present for a task a "+" sign is
-added to the description. Set to "none" the output of annotations is disabled
-and a "+" sign will be added if there are any annotations present.  The default
-value is "full".
+value is "yes".  Deprecated - use verbosity tokens 'header' and  'affected'.
 
 .TP
 .B indent.annotation=2
@@ -439,16 +444,6 @@ Taskwarrior supports command aliases.  This alias provides an alternate name
 (rm) for the delete command.  You can use aliases to provide alternate names for
 any of the commands.  Several commands you may use are actually aliases -
 the 'history' report, for example, or 'export'.
-
-.SS SYNCH SERVER
-.TP
-.B taskd.server=<server>:<port>
-The server and port address of the task server with which you synchronize.
-
-.TP
-.B taskd.credentials=<org>:<user>:<key>
-These are your server credentials.  Keep this information private and secure!
-Note that these credentials must match the server account.
 
 .SS EXTENSIONS
 .TP
@@ -929,19 +924,19 @@ The urgency calculation uses a polynomial with several terms, each of which
 has a configurable coefficient.  Those coefficients are:
 
 .TP
-.B urgency.next.coefficient=10.0
+.B urgency.next.coefficient=15.0
 .RS
 Urgency coefficients for 'next' special tag
 .RE
-.B urgency.blocking.coefficient=9.0
+.B urgency.blocking.coefficient=8.0
 .RS
 Urgency coefficients for blocking tasks
 .RE
-.B urgency.blocked.coefficient=-8.0
+.B urgency.blocked.coefficient=-5.0
 .RS
 Urgency coefficients for blocked tasks
 .RE
-.B urgency.due.coefficient=7.0
+.B urgency.due.coefficient=12.0
 .RS
 Urgency coefficients for due dates
 .RE
@@ -949,7 +944,7 @@ Urgency coefficients for due dates
 .RS
 Urgency coefficients for priorities
 .RE
-.B urgency.waiting.coefficient=5.0
+.B urgency.waiting.coefficient=-3.0
 .RS
 Urgency coefficients for waiting status
 .RE
@@ -957,11 +952,11 @@ Urgency coefficients for waiting status
 .RS
 Urgency coefficients for active tasks
 .RE
-.B urgency.project.coefficient=3.0
+.B urgency.project.coefficient=1.0
 .RS
 Urgency coefficients for projects
 .RE
-.B urgency.tags.coefficient=2.0
+.B urgency.tags.coefficient=1.0
 .RS
 Urgency coefficients for tags
 .RE
@@ -969,13 +964,21 @@ Urgency coefficients for tags
 .RS
 Urgency coefficients for annotations
 .RE
-.B urgency.age.coefficient=5.0
+.B urgency.age.coefficient=2.0
 .RS
 Urgency coefficients for the age of tasks
 .RE
 .B urgency.age.max=365
 .RS
 Maximum age in days. After this number of days has elapsed, the urgency of a task won't increase any more because of aging.
+.RE
+.B urgency.user.tag.<tag>.coefficient=...
+.RS
+Specific tag coefficient.
+.RE
+.B urgency.user.project.<project>.coefficient=...
+.RS
+Specific project coefficient.
 .RE
 
 The coefficients reflect the relative importance of the various terms in the
@@ -1144,7 +1147,7 @@ section for details on the sequence placeholders.
 This adds the possibility to control the output of annotations for a task in a
 report. See the
 .B annotations
-variable for details on the possible values.
+variable for details on the possible values.  Deprecated.
 
 .TP
 .B report.X.limit
@@ -1154,6 +1157,10 @@ generated report.  Deprecated.
 .TP
 Taskwarrior comes with a number of predefined reports in its default
 configuration file. These reports are:
+
+.TP
+.B next
+Lists the most important tasks.
 
 .TP
 .B long
@@ -1204,8 +1211,8 @@ Lists all waiting tasks matching the specified criteria.
 Lists all tasks matching the specified criteria.
 
 .TP
-.B next
-Lists the most important tasks.
+.B blocked
+List all tasks that have dependencies.
 
 .SH "CREDITS & COPYRIGHTS"
 Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.
@@ -1222,7 +1229,7 @@ http://www.opensource.org/licenses/mit-license.php for more information.
 .BR task-color(5),
 .BR task-sync(5)
 
-For more information regarding taskwarrior, the following may be referenced:
+For more information regarding taskwarrior, see the following:
 
 .TP
 The official site at
@@ -1233,10 +1240,11 @@ The official code repository at
 <git://tasktools.org/task.git/>
 
 .TP
-You can contact the project by writing an email to
+You can contact the project by emailing
 <support@taskwarrior.org>
 
 .SH REPORTING BUGS
 .TP
 Bugs in taskwarrior may be reported to the issue-tracker at
 <http://taskwarrior.org>
+
