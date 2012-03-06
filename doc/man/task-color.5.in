@@ -1,7 +1,7 @@
 .TH task-color 5 2011-03-03 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
-task-color \- A color tutorial for the task(1) command line todo manager.
+task-color \- A color tutorial for the taskwarrior command line todo manager.
 
 .SH SETUP
 The first thing you need is a terminal program that supports color.  All
