@@ -62,38 +62,42 @@ ColumnUDA::~ColumnUDA ()
 //
 void ColumnUDA::measure (Task& task, int& minimum, int& maximum)
 {
+  minimum = maximum = 0;
+
   if (_style == "default")
   {
     std::string value = task.get (_name);
+    if (value != "")
+    {
+      if (_type == "date")
+      {
+        // Determine the output date format, which uses a hierarchy of definitions.
+        //   rc.report.<report>.dateformat
+        //   rc.dateformat.report
+        //   rc.dateformat.
+        Date date ((time_t) strtol (value.c_str (), NULL, 10));
+        std::string format = context.config.get ("report." + _report + ".dateformat");
+        if (format == "")
+          format = context.config.get ("dateformat.report");
+        if (format == "")
+          format = context.config.get ("dateformat");
 
-    if (_type == "date")
-    {
-      // Determine the output date format, which uses a hierarchy of definitions.
-      //   rc.report.<report>.dateformat
-      //   rc.dateformat.report
-      //   rc.dateformat.
-      Date date ((time_t) strtol (value.c_str (), NULL, 10));
-      std::string format = context.config.get ("report." + _report + ".dateformat");
-      if (format == "")
-        format = context.config.get ("dateformat.report");
-      if (format == "")
-        format = context.config.get ("dateformat");
-
-      minimum = maximum = date.toString (format).length ();
-    }
-    else if (_type == "duration")
-    {
-      minimum = maximum = Duration (value).formatCompact ().length ();
-    }
-    else if (_type == "string")
-    {
-      std::string stripped = Color::strip (value);
-      maximum = longestLine (stripped);
-      minimum = longestWord (stripped);
-    }
-    else if (_type == "numeric")
-    {
-      minimum = maximum = value.length ();
+        minimum = maximum = date.toString (format).length ();
+      }
+      else if (_type == "duration")
+      {
+        minimum = maximum = Duration (value).formatCompact ().length ();
+      }
+      else if (_type == "string")
+      {
+        std::string stripped = Color::strip (value);
+        maximum = longestLine (stripped);
+        minimum = longestWord (stripped);
+      }
+      else if (_type == "numeric")
+      {
+        minimum = maximum = value.length ();
+      }
     }
   }
   else
@@ -110,45 +114,47 @@ void ColumnUDA::render (
   if (_style == "default")
   {
     std::string value = task.get (_name);
+    if (value != "")
+    {
+      if (_type == "date")
+      {
+        // Determine the output date format, which uses a hierarchy of definitions.
+        //   rc.report.<report>.dateformat
+        //   rc.dateformat.report
+        //   rc.dateformat.
+        std::string format = context.config.get ("report." + _report + ".dateformat");
+        if (format == "")
+          format = context.config.get ("dateformat.report");
+        if (format == "")
+          format = context.config.get ("dateformat");
 
-    if (_type == "date")
-    {
-      // Determine the output date format, which uses a hierarchy of definitions.
-      //   rc.report.<report>.dateformat
-      //   rc.dateformat.report
-      //   rc.dateformat.
-      std::string format = context.config.get ("report." + _report + ".dateformat");
-      if (format == "")
-        format = context.config.get ("dateformat.report");
-      if (format == "")
-        format = context.config.get ("dateformat");
+        lines.push_back (
+          color.colorize (
+            leftJustify (
+              Date ((time_t) strtol (value.c_str (), NULL, 10))
+                .toString (format), width)));
+      }
+      else if (_type == "duration")
+      {
+        lines.push_back (
+          color.colorize (
+            rightJustify (
+              Duration (value).formatCompact (),
+              width)));
+      }
+      else if (_type == "string")
+      {
+        std::vector <std::string> raw;
+        wrapText (raw, value, width, _hyphenate);
 
-      lines.push_back (
-        color.colorize (
-          leftJustify (
-            Date ((time_t) strtol (value.c_str (), NULL, 10))
-              .toString (format), width)));
-    }
-    else if (_type == "duration")
-    {
-      lines.push_back (
-        color.colorize (
-          rightJustify (
-            Duration (value).formatCompact (),
-            width)));
-    }
-    else if (_type == "string")
-    {
-      std::vector <std::string> raw;
-      wrapText (raw, value, width, _hyphenate);
-
-      std::vector <std::string>::iterator i;
-      for (i = raw.begin (); i != raw.end (); ++i)
-        lines.push_back (color.colorize (leftJustify (*i, width)));
-    }
-    else if (_type == "numeric")
-    {
-      lines.push_back (color.colorize (rightJustify (value, width)));
+        std::vector <std::string>::iterator i;
+        for (i = raw.begin (); i != raw.end (); ++i)
+          lines.push_back (color.colorize (leftJustify (*i, width)));
+      }
+      else if (_type == "numeric")
+      {
+        lines.push_back (color.colorize (rightJustify (value, width)));
+      }
     }
   }
 }

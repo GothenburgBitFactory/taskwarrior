@@ -35,7 +35,7 @@ if (open my $fh, '>', 'uda.rc')
 {
   print $fh "data.location=.\n",
             "confirmation=off\n",
-            "uda.extra.type=duration\n",
+            "uda.extra.type=date\n",
             "uda.extra.label=Extra\n",
             "report.uda.description=UDA Test\n",
             "report.uda.columns=id,extra,description\n",
@@ -46,15 +46,15 @@ if (open my $fh, '>', 'uda.rc')
 }
 
 # Add tasks with and without the UDA.
-qx{../src/task rc:uda.rc add with extra:1day};
+qx{../src/task rc:uda.rc add with extra:tomorrow};
 qx{../src/task rc:uda.rc add without};
 my $output = qx{../src/task rc:uda.rc uda};
-like ($output, qr/1\s+1d\s+with/,  'UDA duration stored');
-like ($output, qr/2\s+-\s+without/, 'UDA duration blank');
+like ($output, qr/1\s+[\d\/]+\s+with/, 'UDA date stored');
+like ($output, qr/2\s+without/,        'UDA date blank');
 
 # Add bad data.
-$output = qx{../src/task rc:uda.rc add bad extra:unrecognized_duration};
-unlike ($output, qr/Created task \d+/, 'UDA duration bad data not accepted');
+$output = qx{../src/task rc:uda.rc add bad extra:unrecognized_date};
+unlike ($output, qr/Created task \d+/, 'UDA date bad data not accepted');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key uda.rc);

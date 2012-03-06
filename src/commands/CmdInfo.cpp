@@ -323,9 +323,11 @@ int CmdInfo::execute (std::string& output)
     // Show any UDAs
     std::vector <std::string> all = task->all ();
     std::vector <std::string>::iterator att;
+    std::string type;
     for (att = all.begin (); att != all.end (); ++att)
     {
-      if (context.config.get ("uda." + *att + ".type") != "")
+      type = context.config.get ("uda." + *att + ".type");
+      if (type != "")
       {
         Column* col = context.columns[*att];
         if (col)
@@ -335,14 +337,25 @@ int CmdInfo::execute (std::string& output)
           {
             row = view.addRow ();
             view.set (row, 0, col->label ());
+
+            if (type == "date")
+            {
+              // Determine the output date format, which uses a hierarchy of definitions.
+              //   rc.report.<report>.dateformat
+              //   rc.dateformat.report
+              //   rc.dateformat.
+              std::string format = context.config.get ("report.info.dateformat");
+              if (format == "")
+                format = context.config.get ("dateformat.report");
+              if (format == "")
+                format = context.config.get ("dateformat");
+
+              value = Date (value).toString (format);
+            }
+            else if (type == "duration")
+              value = Duration (value).formatCompact ();
+
             view.set (row, 1, value);
-/*
-            std::vector <std::string> lines;
-            Color color;
-            col->render (lines, *task, 0, color);
-            join (value, " ", lines);
-            view.set (row, 1, value);
-*/
           }
         }
       }
