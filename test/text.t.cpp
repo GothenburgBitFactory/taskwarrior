@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (262);
+  UnitTest t (261);
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width, bool hyphenate)
   std::string text = "This is a test of the line wrapping code.";
   std::vector <std::string> lines;
@@ -132,9 +132,6 @@ int main (int argc, char** argv)
   unsplit = "";
   split (items, unsplit, "--");
   t.is (items.size (), (size_t) 0, "split '' '--' -> 0 items");
-
-  split_minimal (items, unsplit, "--");
-  t.is (items.size (), (size_t) 0, "split '' '--' -> 0");
 
   unsplit = "a";
   split (items, unsplit, "--");
