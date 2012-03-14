@@ -208,13 +208,9 @@ Chart::Chart (char type)
 
   // Set the title.
   title = "(";
-  bool before_command = true;
   std::vector <Arg>::const_iterator arg;
   for (arg = context.a3.begin (); arg != context.a3.end (); ++arg)
   {
-    if (arg->_category == Arg::cat_command)
-      before_command = false;
-
     if (arg->_category == Arg::cat_program  ||
         arg->_category == Arg::cat_rc       ||
         arg->_category == Arg::cat_override ||
