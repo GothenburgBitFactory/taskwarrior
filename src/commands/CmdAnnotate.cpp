@@ -84,7 +84,6 @@ int CmdAnnotate::execute (std::string& output)
       context.tdb2.modify (*task);
       ++count;
       feedback_affected (STRING_CMD_ANNO_TASK, *task);
-      dependencyChainOnComplete (*task);
       context.footnote (onProjectChange (*task, true));
 
       // Annotate siblings.

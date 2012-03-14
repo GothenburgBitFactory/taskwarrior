@@ -283,6 +283,8 @@
  + Fixed bug #946, which caused 'edit' command problems when
    'dateformat.annotation' did not contain any date elements (thanks to Tuomas
    Toivola).
+ + Fixed bug #950, which warned about dependency chain problems during
+   annotation, which makes no sense (thanks to Uli Martens).
  + Fixed bug #951, which caused tag filtering to fail (thanks to Max Muller).
  + Fixed bug #952, which generated cmake warnings on Cygwin.
 
