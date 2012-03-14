@@ -280,7 +280,11 @@
  + Fixed bug #938, which corrected compiler warnings on Solaris (thanks to Owen
    Clarke).
  + Fixed bug #944, which caused a test to fail when it was run on an NFS share.
+ + Fixed bug #946, which caused 'edit' command problems when
+   'dateformat.annotation' did not contain any date elements (thanks to Tuomas
+   Toivola).
  + Fixed bug #951, which caused tag filtering to fail (thanks to Max Muller).
+ + Fixed bug #952, which generated cmake warnings on Cygwin.
 
 # Untracked Bugs, biggest first.
  + Fixed bug that required the '%YAML' prologue in a YAML import.

@@ -204,12 +204,12 @@ std::string CmdEdit::formatTask (Task task)
   for (anno = annotations.begin (); anno != annotations.end (); ++anno)
   {
     Date dt (strtol (anno->first.substr (11).c_str (), NULL, 10));
-    before << "  Annotation:        " << dt.toString (context.config.get ("dateformat.annotation"))
+    before << "  Annotation:        " << dt.toString (context.config.get ("dateformat"))
            << " -- "                  << anno->second << "\n";
   }
 
   Date now;
-  before << "  Annotation:        " << now.toString (context.config.get ("dateformat.annotation")) << " -- \n";
+  before << "  Annotation:        " << now.toString (context.config.get ("dateformat")) << " -- \n";
 
   // Add dependencies here.
   std::vector <std::string> dependencies;
