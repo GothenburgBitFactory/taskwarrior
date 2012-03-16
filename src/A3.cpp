@@ -280,7 +280,7 @@ bool A3::is_command (
 void A3::append_stdin ()
 {
   // Delay, to give it a chance to buffer the input.
-  delay (0.01);
+  delay (0.05);
 
   // Use 'select' to determine whether there is any std::cin content buffered
   // before trying to read it, to prevent blocking.
