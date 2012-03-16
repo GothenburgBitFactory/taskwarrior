@@ -279,28 +279,30 @@ bool A3::is_command (
 // Add an Arg for every word from std::cin.
 void A3::append_stdin ()
 {
-  // Delay, to give it a chance to buffer the input.
-  delay (0.05);
-
   // Use 'select' to determine whether there is any std::cin content buffered
   // before trying to read it, to prevent blocking.
   struct timeval tv;
-  fd_set fds;
   tv.tv_sec = 0;
-  tv.tv_usec = 0;
+  tv.tv_usec = 1000;
+
+  fd_set fds;
   FD_ZERO (&fds);
   FD_SET (STDIN_FILENO, &fds);
-  select (STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
-  if (FD_ISSET (0, &fds))
-  {
-    std::string arg;
-    while (std::cin >> arg)
-    {
-      // It the terminator token is found, stop reading.
-      if (arg == "--")
-        break;
 
-      this->push_back (Arg (arg));
+  int result = select (STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
+  if (result && result != -1)
+  {
+    if (FD_ISSET (0, &fds))
+    {
+      std::string arg;
+      while (std::cin >> arg)
+      {
+        // It the terminator token is found, stop reading.
+        if (arg == "--")
+          break;
+
+        this->push_back (Arg (arg));
+      }
     }
   }
 }
