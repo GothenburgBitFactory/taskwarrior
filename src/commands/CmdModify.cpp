@@ -112,7 +112,8 @@ int CmdModify::execute (std::string& output)
         feedback_affected (STRING_CMD_MODIFY_TASK, *task);
         feedback_unblocked (*task);
         context.tdb2.modify (*task);
-        projectChanges[task->get ("project")] = onProjectChange (before, *task);
+        if (context.verbose ("project"))
+          projectChanges[task->get ("project")] = onProjectChange (before, *task);
 
         // Task potentially has siblings - modify them.
         if (task->has ("parent"))
@@ -132,7 +133,8 @@ int CmdModify::execute (std::string& output)
               feedback_affected (STRING_CMD_MODIFY_TASK_R, *sibling);
               feedback_unblocked (*sibling);
               context.tdb2.modify (*sibling);
-              projectChanges[sibling->get ("project")] = onProjectChange (alternate, *sibling);
+              if (context.verbose ("project"))
+                projectChanges[sibling->get ("project")] = onProjectChange (alternate, *sibling);
             }
           }
         }
@@ -152,7 +154,8 @@ int CmdModify::execute (std::string& output)
               updateRecurrenceMask (*child);
               context.tdb2.modify (*child);
               dependencyChainOnModify (alternate, *child);
-              projectChanges[child->get ("project")] = onProjectChange (alternate, *child);
+              if (context.verbose ("project"))
+                projectChanges[child->get ("project")] = onProjectChange (alternate, *child);
               ++count;
               feedback_affected (STRING_CMD_MODIFY_TASK_R, *child);
             }

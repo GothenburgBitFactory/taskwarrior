@@ -63,6 +63,7 @@ unlike ($output, qr/ID.+Project.+Pri.+Description/, '\'label\' verbosity good');
 # TODO Verbosity: 'header'
 # TODO Verbosity: 'edit'
 # TODO Verbosity: 'special'
+# TODO Verbosity: 'project'
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key verbose.rc);

@@ -56,12 +56,11 @@ int CmdAdd::execute (std::string& output)
   modify_task_description_replace (task, context.a3.extract_modifications ());
   context.tdb2.add (task);
 
-  // TODO This should be a call in to feedback.cpp.
   if (context.verbose ("new-id"))
     output = format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
 
-  // TODO verbosity token.
-  context.footnote (onProjectChange (task));
+  if (context.verbose ("project"))
+    context.footnote (onProjectChange (task));
 
   context.tdb2.commit ();
   return rc;

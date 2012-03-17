@@ -92,7 +92,8 @@ int CmdStop::execute (std::string& output)
         ++count;
         feedback_affected (STRING_CMD_STOP_TASK, *task);
         dependencyChainOnStart (*task);
-        projectChanges[task->get ("project")] = onProjectChange (*task, false);
+        if (context.verbose ("project"))
+          projectChanges[task->get ("project")] = onProjectChange (*task, false);
       }
       else
       {

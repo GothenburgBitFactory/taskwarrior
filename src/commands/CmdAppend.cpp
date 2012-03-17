@@ -87,7 +87,8 @@ int CmdAppend::execute (std::string& output)
       context.tdb2.modify (*task);
       ++count;
       feedback_affected (STRING_CMD_APPEND_TASK, *task);
-      projectChanges[task->get ("project")] = onProjectChange (*task, true);
+      if (context.verbose ("project"))
+        projectChanges[task->get ("project")] = onProjectChange (*task, true);
 
       // Append to siblings.
       if (task->has ("parent"))

@@ -452,7 +452,8 @@ bool Context::verbose (const std::string& token)
         verbosity[0]      != "new-id"   &&  //
         verbosity[0]      != "affected" &&  //
         verbosity[0]      != "edit"     &&  //
-        verbosity[0]      != "special")     //
+        verbosity[0]      != "special"  &&  //
+        verbosity[0]      != "project")     //
     {
       verbosity.clear ();
 
@@ -464,6 +465,7 @@ bool Context::verbose (const std::string& token)
       verbosity.push_back ("affected");
       verbosity.push_back ("edit");
       verbosity.push_back ("special");
+      verbosity.push_back ("project");
     }
   }
 

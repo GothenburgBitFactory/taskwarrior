@@ -65,7 +65,8 @@ int CmdLog::execute (std::string& output)
     throw std::string (STRING_CMD_LOG_NO_WAITING);
 
   context.tdb2.add (task);
-  context.footnote (onProjectChange (task));
+  if (context.verbose ("project"))
+    context.footnote (onProjectChange (task));
   context.tdb2.commit ();
 
   if (context.verbose ("affected") ||

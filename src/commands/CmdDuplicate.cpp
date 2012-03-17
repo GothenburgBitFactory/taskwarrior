@@ -117,7 +117,8 @@ int CmdDuplicate::execute (std::string& output)
       if (context.verbose ("new-id"))
         std::cout << format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
 
-      projectChanges[task->get ("project")] = onProjectChange (*task, false);
+      if (context.verbose ("project"))
+        projectChanges[task->get ("project")] = onProjectChange (*task, false);
     }
     else
     {

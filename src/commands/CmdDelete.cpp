@@ -102,7 +102,8 @@ int CmdDelete::execute (std::string& output)
         feedback_affected (STRING_CMD_DELETE_TASK, *task);
         feedback_unblocked (*task);
         dependencyChainOnComplete (*task);
-        projectChanges[task->get ("project")] = onProjectChange (*task, true);
+        if (context.verbose ("project"))
+          projectChanges[task->get ("project")] = onProjectChange (*task, true);
 
         // Delete siblings.
         if (task->has ("parent"))
