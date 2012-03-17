@@ -42,7 +42,7 @@ if (open my $fh, '>', 'confirm.rc')
 # Create the response file.
 if (open my $fh, '>', 'response.txt')
 {
-  print $fh "-- \n\nn\n";
+  print $fh "\n\nn\n";
   close $fh;
   ok (-r 'response.txt', 'Created response.txt');
 }
@@ -50,44 +50,44 @@ if (open my $fh, '>', 'response.txt')
 qx{../src/task rc:confirm.rc add foo} for 1..10;
 
 # Test the various forms of "Yes".
-my $output = qx{echo "-- Yes" | ../src/task rc:confirm.rc 1 del};
+my $output = qx{echo "Yes" | ../src/task rc:confirm.rc 1 del};
 like ($output, qr/Permanently delete task 1 'foo'\? \(yes\/no\)/, 'confirmation - Yes works');
 unlike ($output, qr/Task not deleted\./, 'confirmation - Yes works');
 
-$output = qx{echo "-- ye" | ../src/task rc:confirm.rc 2 del};
+$output = qx{echo "ye" | ../src/task rc:confirm.rc 2 del};
 like ($output, qr/Permanently delete task 2 'foo'\? \(yes\/no\)/, 'confirmation - ye works');
 unlike ($output, qr/Task not deleted\./, 'confirmation - ye works');
 
-$output = qx{echo "-- y" | ../src/task rc:confirm.rc 3 del};
+$output = qx{echo "y" | ../src/task rc:confirm.rc 3 del};
 like ($output, qr/Permanently delete task 3 'foo'\? \(yes\/no\)/, 'confirmation - y works');
 unlike ($output, qr/Task not deleted\./, 'confirmation - y works');
 
-$output = qx{echo "-- YES" | ../src/task rc:confirm.rc 4 del};
+$output = qx{echo "YES" | ../src/task rc:confirm.rc 4 del};
 like ($output, qr/Permanently delete task 4 'foo'\? \(yes\/no\)/, 'confirmation - YES works');
 unlike ($output, qr/Task not deleted\./, 'confirmation - YES works'); # 10
 
-$output = qx{echo "-- YE" | ../src/task rc:confirm.rc 5 del};
+$output = qx{echo "YE" | ../src/task rc:confirm.rc 5 del};
 like ($output, qr/Permanently delete task 5 'foo'\? \(yes\/no\)/, 'confirmation - YE works');
 unlike ($output, qr/Task not deleted\./, 'confirmation - YE works');
 
-$output = qx{echo "-- Y" | ../src/task rc:confirm.rc 6 del};
+$output = qx{echo "Y" | ../src/task rc:confirm.rc 6 del};
 like ($output, qr/Permanently delete task 6 'foo'\? \(yes\/no\)/, 'confirmation - Y works');
 unlike ($output, qr/Task not deleted\./, 'confirmation - Y works');
 
 # Test the various forms of "no".
-$output = qx{echo "-- no" | ../src/task rc:confirm.rc 7 del};
+$output = qx{echo "no" | ../src/task rc:confirm.rc 7 del};
 like ($output, qr/Permanently delete task 7 'foo'\? \(yes\/no\)/, 'confirmation - no works');
 like ($output, qr/Task not deleted\./, 'confirmation - no works');
 
-$output = qx{echo "-- n" | ../src/task rc:confirm.rc 7 del};
+$output = qx{echo "n" | ../src/task rc:confirm.rc 7 del};
 like ($output, qr/Permanently delete task 7 'foo'\? \(yes\/no\)/, 'confirmation - n works');
 like ($output, qr/Task not deleted\./, 'confirmation - n works');
 
-$output = qx{echo "-- NO" | ../src/task rc:confirm.rc 7 del};
+$output = qx{echo "NO" | ../src/task rc:confirm.rc 7 del};
 like ($output, qr/Permanently delete task 7 'foo'\? \(yes\/no\)/, 'confirmation - NO works');
 like ($output, qr/Task not deleted\./, 'confirmation - NO works'); # 20
 
-$output = qx{echo "-- N" | ../src/task rc:confirm.rc 7 del};
+$output = qx{echo "N" | ../src/task rc:confirm.rc 7 del};
 like ($output, qr/Permanently delete task 7 'foo'\? \(yes\/no\)/, 'confirmation - N works');
 like ($output, qr/Task not deleted\./, 'confirmation - N works');
 

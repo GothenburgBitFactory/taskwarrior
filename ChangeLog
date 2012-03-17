@@ -6,10 +6,7 @@
 # Untracked Features, biggest first.
  + autoconf eliminated.
  + New 'ids' command that returns a filtered set of task ID numbers, instead
-   of the actual tasks.  Similarly there is a 'uuids' commands.  For advanced
-   pipeline use.
- + Now supplements the command line with data read from standard input, which
-   allows commands like:  echo 'add Pay the bills' | task
+   of the actual tasks.  Similarly there is a 'uuids' commands.
  + Corrected sorting to use std::stable_sort instead of std::sort, which is not
    guaranteed stable (thanks to Stefan Hacker).
  + Enhanced diagnostics command.

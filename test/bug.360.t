@@ -45,7 +45,7 @@ qx{../src/task rc:bug.rc ls};
 
 # Result: trying to add the project generates an error about removing
 # recurrence from a task.
-my $output = qx{echo '-- y' | ../src/task rc:bug.rc 1 modify project:bar};
+my $output = qx{echo 'y' | ../src/task rc:bug.rc 1 modify project:bar};
 unlike ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'No recurrence removal error');
 
 # Now try to generate the error above via regular means - ie, is it actually

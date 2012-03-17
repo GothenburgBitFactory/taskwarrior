@@ -44,10 +44,10 @@ my $output = qx{../src/task rc:bug.rc 1 annotate};
 like ($output, qr/Additional text must be provided/, 'failed on blank annotation');
 
 # Attempt an annotation without ID
-$output = qx{echo "-- n" | ../src/task rc:bug.rc annotate bar};
+$output = qx{echo "n" | ../src/task rc:bug.rc annotate bar};
 like ($output, qr/Command prevented from running/, 'Filter-less write command inhibited');
 
-$output = qx{echo "-- y" | ../src/task rc:bug.rc annotate bar};
+$output = qx{echo "y" | ../src/task rc:bug.rc annotate bar};
 unlike ($output, qr/Command prevented from running/, 'Filter-less write command permitted');
 
 # Cleanup.

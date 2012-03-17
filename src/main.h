@@ -30,6 +30,7 @@
 #define L10N                                           // Localization complete.
 
 #define FEATURE_COLOR  1                               // Enable color.
+//#define FEATURE_STDIN  1                             // Enable reading stdin.
 
 #include <string>
 #include <vector>

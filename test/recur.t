@@ -54,7 +54,7 @@ like ($output, qr/3.+complex\n/ms, '3 complex');
 like ($output, qr/4.+complex\n/ms, '4 complex');
 
 # Modify a child task and do not propagate the change.
-$output = qx{echo '-- n' | ../src/task rc:recur.rc 3 modify complex2};
+$output = qx{echo 'n' | ../src/task rc:recur.rc 3 modify complex2};
 $output = qx{../src/task rc:recur.rc 3 info};
 like ($output, qr/Description\s+complex2\s/ms, '3 modified');
 $output = qx{../src/task rc:recur.rc 4 info};
@@ -62,24 +62,24 @@ like ($output, qr/Description\s+complex\s/ms, '4 not modified');
 
 
 # Modify a child task and propagate the change.
-$output = qx{echo '-- y' | ../src/task rc:recur.rc 3 modify complex3};
+$output = qx{echo 'y' | ../src/task rc:recur.rc 3 modify complex3};
 $output = qx{../src/task rc:recur.rc 3 info};
 like ($output, qr/Description\s+complex3\s/ms, '3 modified');
 $output = qx{../src/task rc:recur.rc 4 info};
 like ($output, qr/Description\s+complex3\s/ms, '4 not modified');
 
 # Delete a child task, not propagate.
-$output = qx{echo '-- n' | ../src/task rc:recur.rc 3 delete};
+$output = qx{echo 'n' | ../src/task rc:recur.rc 3 delete};
 like ($output, qr/Deleted 1 task\./, '3 deleted');
 
 # Delete a child task, propagate.
 #$output = qx{../src/task rc:recur.rc minimal};
-#$output = qx{echo '-- y' | ../src/task rc:recur.rc 3 delete};
+#$output = qx{echo 'y' | ../src/task rc:recur.rc 3 delete};
 #like ($output, qr/Deleted 1 task\./, 'Child + parent deleted');
 #$output = qx{../src/task rc:recur.rc minimal};
 
 # TODO Delete a recurring task.
-#$output = qx{echo '-- y' | ../src/task rc:recur.rc 4 delete};
+#$output = qx{echo 'y' | ../src/task rc:recur.rc 4 delete};
 #diag ('---');
 #diag ($output);
 #diag ('---');

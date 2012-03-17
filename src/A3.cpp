@@ -32,7 +32,6 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/select.h>
 #include <Context.h>
 #include <Directory.h>
 #include <Date.h>
@@ -41,8 +40,13 @@
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
+#include <main.h>
 #include <A3.h>
 #include <cmake.h>
+
+#ifdef FEATURE_STDIN
+#include <sys/select.h>
+#endif
 
 extern Context context;
 
@@ -279,6 +283,7 @@ bool A3::is_command (
 // Add an Arg for every word from std::cin.
 void A3::append_stdin ()
 {
+#ifdef FEATURE_STDIN
   // Use 'select' to determine whether there is any std::cin content buffered
   // before trying to read it, to prevent blocking.
   struct timeval tv;
@@ -305,6 +310,7 @@ void A3::append_stdin ()
       }
     }
   }
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

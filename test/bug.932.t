@@ -49,13 +49,13 @@ like ($output, qr/2.+R/ms, 'Found child 0');
 like ($output, qr/3.+R/ms, 'Found child 1');
 like ($output, qr/4.+R/ms, 'Found child 2');
 
-qx{echo '-- y' | ../src/task rc:bug.rc 2 mod project:P};
+qx{echo 'y' | ../src/task rc:bug.rc 2 mod project:P};
 $output = qx{../src/task rc:bug.rc list};
 like ($output, qr/2\s+P.+R/ms, 'Found modified child 0');
 like ($output, qr/3\s+P.+R/ms, 'Found modified child 1 (propagated from 0)');
 like ($output, qr/4\s+P.+R/ms, 'Found modified child 2 (propagated from 0)');
 
-qx{echo '-- y' | ../src/task rc:bug.rc 1 mod priority:H};
+qx{echo 'y' | ../src/task rc:bug.rc 1 mod priority:H};
 $output = qx{../src/task rc:bug.rc list};
 like ($output, qr/2\s+P.+H.+R/ms, 'Found modified child 0 (propagated from parent');
 like ($output, qr/3\s+P.+H.+R/ms, 'Found modified child 1 (propagated from parent)');

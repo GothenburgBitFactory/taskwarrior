@@ -66,38 +66,38 @@ qx{../src/task rc:bulk.rc add eighteen};
 # 'yes' tests:
 
 # Test with 1 task.  1 is a special case.
-my $output = qx{echo '-- y' | ../src/task rc:bulk.rc rc.confirmation=off 1 delete};
+my $output = qx{echo 'y' | ../src/task rc:bulk.rc rc.confirmation=off 1 delete};
 unlike ($output, qr/\(yes\/no\)/,            'Single delete with no confirmation');
 unlike ($output, qr/\(yes\/no\/all\/quit\)/, 'Single delete with no bulk confirmation');
 like   ($output, qr/Deleting task 1/,        'Verified delete 1');
 
-$output = qx{echo '-- y' | ../src/task rc:bulk.rc rc.confirmation=on 2 delete};
+$output = qx{echo 'y' | ../src/task rc:bulk.rc rc.confirmation=on 2 delete};
 like   ($output, qr/\(yes\/no\)/,            'Single delete with confirmation');
 unlike ($output, qr/\(yes\/no\/all\/quit\)/, 'Single delete with no bulk confirmation');
 like   ($output, qr/Deleting task 2/,        'Verified delete 2');
 
 # Test with 2 tasks.  2 is greater than 1 and less than bulk.
-$output = qx{echo '-- y' | ../src/task rc:bulk.rc rc.confirmation=off 3-4 delete};
+$output = qx{echo 'y' | ../src/task rc:bulk.rc rc.confirmation=off 3-4 delete};
 unlike ($output, qr/\(yes\/no\)/,            'Multiple delete with no confirmation');
 unlike ($output, qr/\(yes\/no\/all\/quit\)/, 'Multiple delete with no bulk confirmation');
 like   ($output, qr/Deleting task 3/,        'Verified delete 3');
 like   ($output, qr/Deleting task 4/,        'Verified delete 4');
 
-$output = qx{echo -e ' -- y\ny\n' | ../src/task rc:bulk.rc rc.confirmation=on 5-6 delete};
+$output = qx{printf 'y\ny\n' | ../src/task rc:bulk.rc rc.confirmation=on 5-6 delete};
 unlike ($output, qr/\(yes\/no\)/,            'Multiple delete with confirmation');
 like   ($output, qr/\(yes\/no\/all\/quit\)/, 'Multiple delete with bulk confirmation');
 like   ($output, qr/Deleting task 5/,        'Verified delete 5');
 like   ($output, qr/Deleting task 6/,        'Verified delete 6');
 
 # Test with 3 tasks.  3 is considered bulk.
-$output = qx{echo -e ' -- y\ny\ny\n' | ../src/task rc:bulk.rc rc.confirmation=off 7-9 delete};
+$output = qx{printf 'y\ny\ny\n' | ../src/task rc:bulk.rc rc.confirmation=off 7-9 delete};
 unlike ($output, qr/\(yes\/no\)/,            'Bulk delete with no confirmation');
 like   ($output, qr/\(yes\/no\/all\/quit\)/, 'Bulk delete with no bulk confirmation');
 like   ($output, qr/Deleting task 7/,        'Verified delete 7');
 like   ($output, qr/Deleting task 8/,        'Verified delete 8');
 like   ($output, qr/Deleting task 9/,        'Verified delete 9');
 
-$output = qx{echo -e ' -- y\ny\ny\n' | ../src/task rc:bulk.rc rc.confirmation=on 10-12 delete};
+$output = qx{printf 'y\ny\ny\n' | ../src/task rc:bulk.rc rc.confirmation=on 10-12 delete};
 unlike ($output, qr/\(yes\/no\)/,            'Bulk delete with confirmation');
 like   ($output, qr/\(yes\/no\/all\/quit\)/, 'Bulk delete with bulk confirmation');
 like   ($output, qr/Deleting task 10/,       'Verified delete 10');
@@ -107,25 +107,25 @@ like   ($output, qr/Deleting task 12/,       'Verified delete 12');
 # 'no' tests:
 
 # Test with 1 task, denying delete.
-$output = qx{echo '-- n' | ../src/task rc:bulk.rc rc.confirmation=on 13 delete};
+$output = qx{echo 'n' | ../src/task rc:bulk.rc rc.confirmation=on 13 delete};
 like   ($output, qr/\(yes\/no\)/,            'Single delete with confirmation');
 unlike ($output, qr/\(yes\/no\/all\/quit\)/, 'Single delete with no bulk confirmation');
 unlike ($output, qr/Deleting task/,          'Verified no delete 13');
 
 # Test with 2 tasks, denying delete.
-$output = qx{echo -e ' -- n\nn\n' | ../src/task rc:bulk.rc rc.confirmation=on 13-14 delete};
+$output = qx{printf 'n\nn\n' | ../src/task rc:bulk.rc rc.confirmation=on 13-14 delete};
 unlike ($output, qr/\(yes\/no\)/,            'Multiple delete with confirmation');
 like   ($output, qr/\(yes\/no\/all\/quit\)/, 'Multiple delete with no bulk confirmation');
 unlike ($output, qr/Deleting task/,          'Verified no delete 13-14');
 
 # Test with 3 tasks, denying delete.
-$output = qx{echo -e ' -- n\nn\nn\n' | ../src/task rc:bulk.rc rc.confirmation=on 13-15 delete};
+$output = qx{printf 'n\nn\nn\n' | ../src/task rc:bulk.rc rc.confirmation=on 13-15 delete};
 unlike ($output, qr/\(yes\/no\)/,            'Bulk delete with confirmation');
 like   ($output, qr/\(yes\/no\/all\/quit\)/, 'Bulk delete with no bulk confirmation');
 unlike ($output, qr/Deleting task/,          'Verified no delete 13-15');
 
 # 'all' tests:
-$output = qx{echo '-- all' | ../src/task rc:bulk.rc rc.confirmation=on 13-15 delete};
+$output = qx{echo 'all' | ../src/task rc:bulk.rc rc.confirmation=on 13-15 delete};
 unlike ($output, qr/\(yes\/no\)/,            'Bulk delete with confirmation');
 like   ($output, qr/\(yes\/no\/all\/quit\)/, 'Bulk delete with bulk confirmation');
 like   ($output, qr/Deleting task/,          'Verified delete 13');
@@ -133,7 +133,7 @@ like   ($output, qr/Deleting task/,          'Verified delete 14');
 like   ($output, qr/Deleting task/,          'Verified delete 15');
 
 # 'quit' tests:
-$output = qx{echo '-- quit' | ../src/task rc:bulk.rc rc.confirmation=on 16-18 delete};
+$output = qx{echo 'quit' | ../src/task rc:bulk.rc rc.confirmation=on 16-18 delete};
 unlike ($output, qr/\(yes\/no\)/,            'Bulk delete with no confirmation');
 like   ($output, qr/\(yes\/no\/all\/quit\)/, 'Bulk delete with no bulk confirmation');
 unlike ($output, qr/Deleting task/,          'Verified delete 16');
