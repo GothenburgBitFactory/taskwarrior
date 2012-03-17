@@ -1,7 +1,11 @@
 
 ------ current release ---------------------------
 
-2.0.0 (2012-03-17)
+2.0.1 ()
+
+------ old releases ------------------------------
+
+2.0.0 (2012-03-17) 03799eba9f230e48c4fa6d6ebddabe91bef7998f
 
 # Untracked Features, biggest first.
  + autoconf eliminated.
@@ -305,8 +309,6 @@
  + Fixed problem where urgency was not properly calculated for waiting tasks.
  + Fixed problem where 'project' was not supported as a verbosity token (thanks
    to Adam Gibbins).
-
------- old releases ------------------------------
 
 1.9.4 (03/03/2011) b9bae255f4fa03970eced3ac0876935271d1d7a1
  + Added burndown charts - 'burndown.daily', 'burndown.weekly',
