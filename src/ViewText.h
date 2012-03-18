@@ -39,7 +39,7 @@ class ViewText
 {
 public:
   ViewText ();
-  ~ViewText () {}
+  ~ViewText ();
 
   // View specifications.
   void add (Column* col)          { _columns.push_back (col);    }

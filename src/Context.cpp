@@ -66,6 +66,13 @@ Context::Context ()
 ////////////////////////////////////////////////////////////////////////////////
 Context::~Context ()
 {
+  std::map<std::string, Command*>::iterator com;
+  for (com = commands.begin (); com != commands.end (); ++com)
+    delete com->second;
+
+  std::map<std::string, Column*>::iterator col;
+  for (col = columns.begin (); col != columns.end (); ++col)
+    delete col->second;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -564,6 +571,10 @@ const std::vector <std::string> Context::getCommands () const
 ////////////////////////////////////////////////////////////////////////////////
 void Context::assumeLocations ()
 {
+  // Note that this pointer is deliberately not free()'d, even though valgrind
+  // complains about it.  It is either not necessary, or forbidden, depending
+  // on OS.
+
   // Set up default locations.
   struct passwd* pw = getpwuid (getuid ());
   if (!pw)

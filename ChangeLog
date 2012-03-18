@@ -2,6 +2,7 @@
 ------ current release ---------------------------
 
 2.0.1 ()
+ + Addressed valgrind complaints (thanks to Bryce Harrington).
 
 ------ old releases ------------------------------
 

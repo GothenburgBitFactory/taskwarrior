@@ -39,7 +39,7 @@ class ViewTask
 {
 public:
   ViewTask ();
-  ~ViewTask () {}
+  ~ViewTask ();
 
   // View specifications.
   void add (Column* column)       { _columns.push_back (column); }

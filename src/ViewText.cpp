@@ -56,6 +56,16 @@ ViewText::ViewText ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+ViewText::~ViewText ()
+{
+  std::vector <Column*>::iterator i;
+  for (i = _columns.begin (); i != _columns.end (); ++i)
+    delete *i;
+
+  _columns.clear ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int ViewText::addRow ()
 {
   _data.push_back (std::vector <std::string> (_columns.size (), ""));
