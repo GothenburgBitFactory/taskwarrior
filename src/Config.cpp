@@ -84,7 +84,6 @@ std::string Config::_defaults =
   "#                                              # Comma-separated list.  May contain any subset of:\n"
   "#verbose=blank,header,footnote,label,new-id,affected,edit,special,project\n"
   "confirmation=yes                               # Confirmation on delete, big changes\n"
-  "annotations=full                               # Level of verbosity for annotations: full, sparse or none\n"
   "indent.annotation=2                            # Indent spaces for annotations\n"
   "indent.report=0                                # Indent spaces for whole report\n"
   "row.padding=0                                  # Left and right padding for each row of report\n"
