@@ -684,7 +684,7 @@
 #define STRING_FEEDBACK_ATT_WAS_SET  "{1} set to '{2}'."
 #define STRING_FEEDBACK_ATT_WAS_MOD  "{1} changed from '{2}' to '{3}'."
 #define STRING_FEEDBACK_ANN_ADD      "Annotation of '{1}' added."
-#define STRING_FEEDBACK_ANN_DEL      "Annotation '{1} deleted."
+#define STRING_FEEDBACK_ANN_DEL      "Annotation '{1}' deleted."
 #define STRING_FEEDBACK_ANN_WAS_MOD  "Annotation changed to '{1}'."
 #define STRING_FEEDBACK_NOP          "No changes will be made."
 #define STRING_FEEDBACK_WAS_NOP      "No changes made."

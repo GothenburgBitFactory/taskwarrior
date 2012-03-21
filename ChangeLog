@@ -4,6 +4,7 @@
 2.0.1 ()
  + Addressed valgrind complaints (thanks to Bryce Harrington).
  + Removed default configuration value for the obsolete 'annotations' setting.
+ + Fixed grammar in feedback string (thanks to Uli Martens).
 
 ------ old releases ------------------------------
 
