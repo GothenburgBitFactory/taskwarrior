@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (36);
+  UnitTest t (40);
 
   // TODO bool confirm (const std::string&);
   // TODO int confirm3 (const std::string&);
@@ -128,6 +128,12 @@ int main (int argc, char** argv)
   t.is (structured[2], "    one.two.three", "indentTree 'one.two.three' -> '    one.two.three'");
   t.is (structured[3], "  one.four",        "indentTree 'one.four'      -> '  one.four'");
   t.is (structured[4], "two",               "indentTree 'two'           -> 'two'");
+
+  // std::vector<std::string> indentProject (const std::string&, const std::string whitespace="  ", char delimiter='.');
+  t.is (indentProject (""),              "",                  "indentProject '' -> ''");
+  t.is (indentProject ("one"),           "one",               "indentProject 'one' -> 'one'");
+  t.is (indentProject ("one.two"),       "  one.two",         "indentProject 'one.two' -> '  one.two'");
+  t.is (indentProject ("one.two.three"), "    one.two.three", "indentProject 'one.two.three' -> '    one.two.three'");
 
   // TODO const std::string encode (const std::string& value);
   // TODO const std::string decode (const std::string& value);

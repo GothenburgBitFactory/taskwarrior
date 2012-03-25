@@ -588,23 +588,24 @@ const std::vector<std::string> indentTree (
   std::vector <std::string> modified;
   std::vector <std::string>::const_iterator i;
   for (i = values.begin (); i != values.end (); ++i)
-  {
-    // Count the delimiters in *i.
-    int count = 0;
-    std::string::size_type pos = 0;
-    while ((pos = i->find (delimiter, pos + 1)) != std::string::npos)
-      ++count;
-
-    // Construct a prefix string which is a concatenated set of whitespace
-    // strings.
-    std::string prefix;
-    for (int indent = 0; indent < count; ++indent)
-      prefix += whitespace;
-
-    modified.push_back (prefix + *i);
-  }
+    modified.push_back (indentProject (*i, whitespace, delimiter));
 
   return modified;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string indentProject (
+  const std::string& project,
+  const std::string& whitespace /* = "  " */,
+  char delimiter /* = '.' */)
+{
+  // Count the delimiters in *i.
+  std::string prefix = "";
+  std::string::size_type pos = 0;
+  while ((pos = project.find (delimiter, pos + 1)) != std::string::npos)
+    prefix += whitespace;
+
+  return prefix + project;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
