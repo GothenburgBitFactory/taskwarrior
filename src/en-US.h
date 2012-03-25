@@ -300,6 +300,7 @@
 #define STRING_CMD_SUMMARY_REMAINING "Remaining"
 #define STRING_CMD_SUMMARY_AVG_AGE   "Avg age"
 #define STRING_CMD_SUMMARY_COMPLETE  "Complete"
+#define STRING_CMD_SUMMARY_NONE      "(none)"
 #define STRING_CMD_COUNT_USAGE       "Counts matching tasks"
 
 #define STRING_CMD_DELETE_USAGE      "Deletes the specified task"

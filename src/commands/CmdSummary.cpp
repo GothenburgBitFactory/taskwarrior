@@ -33,6 +33,7 @@
 #include <ViewText.h>
 #include <Duration.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 #include <main.h>
 #include <CmdSummary.h>
@@ -135,7 +136,10 @@ int CmdSummary::execute (std::string& output)
     if (countPending[i->first] > 0)
     {
       int row = view.addRow ();
-      view.set (row, 0, (i->first == "" ? "(none)" : i->first));
+      view.set (row, 0, (i->first == ""
+                          ? STRING_CMD_SUMMARY_NONE
+                          : indentProject (i->first, "  ", '.')));
+
       view.set (row, 1, countPending[i->first]);
       if (counter[i->first])
         view.set (row, 2, Duration ((int) (sumEntry[i->first] / (double)counter[i->first])).format ());
