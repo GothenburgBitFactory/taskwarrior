@@ -104,17 +104,15 @@ Work in Progress
 Current Codebase Condition
 
   'master' branch:
-    - 1.9.4 release, current, locked.
-
-  '2.0.0' branch:
-    - Rapidly approaching completion, and merged to master.
+    - 2.0.0 release, current, locked.
 
   '2.0.1' branch:
-    - Will be ready for any emergency fixes.
+    - All current development.
 
   '2.1.0' branch:
     - Future development effort.
 
 ---
 
+2012-03-25 Corrected codebase condition details.
 2012-03-03 Updated text, removed old history info.
