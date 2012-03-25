@@ -30,6 +30,7 @@
 #include <Context.h>
 #include <ColProject.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 
 extern Context context;
@@ -44,9 +45,11 @@ ColumnProject::ColumnProject ()
 
   _styles.push_back ("full");
   _styles.push_back ("parent");
+  _styles.push_back ("indented");
 
   _examples.push_back (STRING_COLUMN_EXAMPLES_PROJ);
   _examples.push_back (STRING_COLUMN_EXAMPLES_PAR);
+  _examples.push_back (STRING_COLUMN_EXAMPLES_IND);
 
   _hyphenate = context.config.getBoolean ("hyphenate");
 }
@@ -74,8 +77,13 @@ void ColumnProject::measure (Task& task, int& minimum, int& maximum)
     if (period != std::string::npos)
       project = project.substr (0, period);
   }
-  else if (_style != "default" &&
-           _style != "full")
+  else if (_style == "indented")
+  {
+    project = indentProject (project, "  ", '.');
+  }
+  else if (_style != "default"  &&
+           _style != "full"     &&
+           _style != "indented")
     throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 
   minimum = longestWord (project);
@@ -95,6 +103,10 @@ void ColumnProject::render (
     std::string::size_type period = project.find ('.');
     if (period != std::string::npos)
       project = project.substr (0, period);
+  }
+  else if (_style == "indented")
+  {
+    project = indentProject (project, "  ", '.');
   }
 
   std::vector <std::string> raw;

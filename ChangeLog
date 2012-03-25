@@ -2,9 +2,14 @@
 ------ current release ---------------------------
 
 2.0.1 ()
+
+Features
+ + Added the new 'indented' format for the 'project' attribute.
+
+Bugs
+ + Fixed grammar in feedback string (thanks to Uli Martens).
  + Addressed valgrind complaints (thanks to Bryce Harrington).
  + Removed default configuration value for the obsolete 'annotations' setting.
- + Fixed grammar in feedback string (thanks to Uli Martens).
 
 ------ old releases ------------------------------
 

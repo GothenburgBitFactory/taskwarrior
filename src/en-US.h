@@ -187,6 +187,7 @@
 #define STRING_COLUMN_EXAMPLES_TAGS  "home @chore"
 #define STRING_COLUMN_EXAMPLES_PROJ  "home.garden"
 #define STRING_COLUMN_EXAMPLES_PAR   "home"
+#define STRING_COLUMN_EXAMPLES_IND   "  home.garden"
 #define STRING_COLUMN_EXAMPLES_DESC  "Move your clothes down on to the lower peg"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Immediately before your lunch"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "If you are playing in the match this afternoon"
