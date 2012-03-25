@@ -31,6 +31,7 @@
 #include <Context.h>
 #include <ViewText.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 #include <main.h>
 #include <CmdProjects.h>
@@ -116,7 +117,9 @@ int CmdProjects::execute (std::string& output)
     for (project = unique.begin (); project != unique.end (); ++project)
     {
       int row = view.addRow ();
-      view.set (row, 0, (project->first == "" ? STRING_CMD_PROJECTS_NONE : project->first));
+      view.set (row, 0, (project->first == ""
+                          ? STRING_CMD_PROJECTS_NONE
+                          : indentProject (project->first, "  ", '.')));
       view.set (row, 1, project->second);
       view.set (row, 2, none[project->first]);
       view.set (row, 3, low[project->first]);

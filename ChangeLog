@@ -5,6 +5,7 @@
 
 Features
  + Added the new 'indented' format for the 'project' attribute.
+ + The 'projects' report now uses 'project.indented' format.
 
 Bugs
  + Fixed grammar in feedback string (thanks to Uli Martens).
