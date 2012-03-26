@@ -12,6 +12,8 @@ Bugs
  + Fixed grammar in feedback string (thanks to Uli Martens).
  + Addressed valgrind complaints (thanks to Bryce Harrington).
  + Removed default configuration value for the obsolete 'annotations' setting.
+ + Corrected rounding errors on burndown chart bar size calculations (thanks to
+   Uli Martens).
 
 ------ old releases ------------------------------
 

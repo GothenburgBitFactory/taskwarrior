@@ -518,18 +518,18 @@ std::string Chart::render ()
     // If it fits within the allowed space.
     if (bar.offset < actual_bars)
     {
-      int pending = (bar.pending                 * graph_height) / labels[2];
-      int started = (bar.started                 * graph_height) / labels[2];
-      int done    = ((bar.done + carryover_done) * graph_height) / labels[2];
+      int pending = ( bar.pending                                            * graph_height) / labels[2];
+      int started = ((bar.pending + bar.started)                             * graph_height) / labels[2];
+      int done    = ((bar.pending + bar.started + bar.done + carryover_done) * graph_height) / labels[2];
 
       for (int b = 0; b < pending; ++b)
         grid.replace (LOC (graph_height - b, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "PP");
 
-      for (int b = 0; b < started; ++b)
-        grid.replace (LOC (graph_height - b - pending, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "SS");
+      for (int b = pending; b < started; ++b)
+        grid.replace (LOC (graph_height - b, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "SS");
 
-      for (int b = 0; b < done; ++b)
-        grid.replace (LOC (graph_height - b - pending - started, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "DD");
+      for (int b = started; b < done; ++b)
+        grid.replace (LOC (graph_height - b, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "DD");
     }
   }
 
