@@ -323,6 +323,15 @@ non-exact match:
 This will remove the second annotation - the first non-exact match.
 
 .TP
+.B Q: How do I show tasks completed on certain day?
+The day in question has to be boxed by a range, like this:
+
+    task end.after:3/29/2012 end.before:3/30/2012 completed
+
+Note that a single date, such as 3/29/2012 does not refer to a whole day, but
+to a single point in time, 3/20/2012 0:00:00.
+
+.TP
 .B Q: Why Lua as an extension language?
 Lua has many positive attributes:
 
