@@ -24,6 +24,10 @@ New Code Needs
       <red>one two three four</red>
     This is only possible if there is nothing between </red> and <red> and the
     colors match.
+  - Need an external script that can locate and correct duplicate UUIDs in the
+    data file, as found by 'task diag'.  This should check to see if there is
+    a suitable UUID generator installed.  This should also be careful to
+    properly handle recurring tasks.
 
 Documentation Needed
   Various forms of documentation that are needed, or are in need of review or
