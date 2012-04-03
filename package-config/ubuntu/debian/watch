@@ -1,5 +1,0 @@
-# Compulsory line, this is a version 3 file
-version=3
- 
-# the main taskwarrior download website
-http://taskwarrior.org/wiki/taskwarrior/Download http://www.taskwarrior.org/download/task-(.*)\.tar\.gz
