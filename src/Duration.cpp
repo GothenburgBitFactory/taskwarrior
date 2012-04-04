@@ -236,8 +236,8 @@ std::string Duration::format () const
     sprintf (formatted, "%s%.1f yrs", (_negative ? "-" : ""), (days / 365));
   else if (_secs > 86400 * 84)
     sprintf (formatted, "%s%1d mth%s",
-                        (_negative ? "-" : ""),  (int) (float) (days / 30.6),
-                        ((int) (float) (days / 30.6) == 1 ? "" : "s"));
+                        (_negative ? "-" : ""),  (int) (float) (days / 30),
+                        ((int) (float) (days / 30) == 1 ? "" : "s"));
   else if (_secs > 86400 * 13)
     sprintf (formatted, "%s%d wk%s",
                         (_negative ? "-" : ""),  (int) (float) (days / 7.0),
@@ -270,12 +270,12 @@ std::string Duration::formatCompact () const
   char formatted[24];
   float days = (float) _secs / 86400.0;
 
-       if (_secs >= 86400 * 365) sprintf (formatted, "%s%.1fy", (_negative ? "-" : ""), (days / 365));
-  else if (_secs >= 86400 * 84)  sprintf (formatted, "%s%1dmo", (_negative ? "-" : ""), (int) (float) (days / 30.6));
+       if (_secs >= 86400 * 365) sprintf (formatted, "%s%.1fy", (_negative ? "-" : ""), (days / 365.0));
+  else if (_secs >= 86400 * 84)  sprintf (formatted, "%s%1dmo", (_negative ? "-" : ""), (int) (days / 30));
   else if (_secs >= 86400 * 13)  sprintf (formatted, "%s%dwk",  (_negative ? "-" : ""), (int) (float) (days / 7.0));
   else if (_secs >= 86400)       sprintf (formatted, "%s%dd",   (_negative ? "-" : ""), (int) days);
-  else if (_secs >= 3600)        sprintf (formatted, "%s%dh",   (_negative ? "-" : ""), (int) (float) (_secs / 3600));
-  else if (_secs >= 60)          sprintf (formatted, "%s%dm",   (_negative ? "-" : ""), (int) (float) (_secs / 60));
+  else if (_secs >= 3600)        sprintf (formatted, "%s%dh",   (_negative ? "-" : ""), (int) (_secs / 3600));
+  else if (_secs >= 60)          sprintf (formatted, "%s%dm",   (_negative ? "-" : ""), (int) (_secs / 60));
   else if (_secs >= 1)           sprintf (formatted, "%s%ds",   (_negative ? "-" : ""), (int) _secs);
   else                           strcpy (formatted, "-");
 

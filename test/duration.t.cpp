@@ -74,7 +74,7 @@ int main (int argc, char** argv)
   d = Duration (85 * 86400 - 1);  t.is (d.format (), "2 mths",  "85 days - 1 sec -> 2 mths");
   d = Duration (85 * 86400);      t.is (d.format (), "2 mths",  "85 days -> 2 mths");
   d = Duration (85 * 86400 + 1);  t.is (d.format (), "2 mths",  "85 days + 1 sec -> 2 mths");
-  d = Duration (365 * 86400 - 1); t.is (d.format (), "11 mths", "365 days - 1 sec -> 11 mths");
+  d = Duration (365 * 86400 - 1); t.is (d.format (), "12 mths", "365 days - 1 sec -> 12 mths");
   d = Duration (365 * 86400);     t.is (d.format (), "1.0 yrs", "365 days -> 1.0 yrs");
   d = Duration (365 * 86400 + 1); t.is (d.format (), "1.0 yrs", "365 days + 1 sec -> 1.0 yrs");
 
@@ -99,7 +99,7 @@ int main (int argc, char** argv)
   d = Duration (85 * 86400 - 1),  t.is (d.formatCompact (), "2mo",  "85 days - 1 sec -> 2mo");
   d = Duration (85 * 86400),      t.is (d.formatCompact (), "2mo",  "85 days -> 2mo");
   d = Duration (85 * 86400 + 1),  t.is (d.formatCompact (), "2mo",  "85 days + 1 sec -> 2mo");
-  d = Duration (365 * 86400 - 1), t.is (d.formatCompact (), "11mo", "365 days - 1 sec -> 11mo");
+  d = Duration (365 * 86400 - 1), t.is (d.formatCompact (), "12mo", "365 days - 1 sec -> 12mo");
   d = Duration (365 * 86400),     t.is (d.formatCompact (), "1.0y", "365 days -> 1.0y");
   d = Duration (365 * 86400 + 1), t.is (d.formatCompact (), "1.0y", "365 days + 1 sec -> 1.0y");
 
@@ -224,9 +224,9 @@ int main (int argc, char** argv)
   d = Duration ( 87*86400), t.is (d.formatCompact (), "2mo", "87*86400 -> 2mo");
   d = Duration ( 88*86400), t.is (d.formatCompact (), "2mo", "88*86400 -> 2mo");
   d = Duration ( 89*86400), t.is (d.formatCompact (), "2mo", "89*86400 -> 2mo");
-  d = Duration ( 90*86400), t.is (d.formatCompact (), "2mo", "90*86400 -> 2mo");
+  d = Duration ( 90*86400), t.is (d.formatCompact (), "3mo", "90*86400 -> 3mo");
 
-  d = Duration ( 91*86400), t.is (d.formatCompact (), "2mo", "91*86400 -> 2mo");
+  d = Duration ( 91*86400), t.is (d.formatCompact (), "3mo", "91*86400 -> 3mo");
   d = Duration ( 92*86400), t.is (d.formatCompact (), "3mo", "92*86400 -> 3mo");
   d = Duration ( 93*86400), t.is (d.formatCompact (), "3mo", "93*86400 -> 3mo");
   d = Duration ( 94*86400), t.is (d.formatCompact (), "3mo", "94*86400 -> 3mo");
@@ -257,10 +257,10 @@ int main (int argc, char** argv)
   d = Duration (117*86400), t.is (d.formatCompact (), "3mo", "117*86400 -> 3mo");
   d = Duration (118*86400), t.is (d.formatCompact (), "3mo", "118*86400 -> 3mo");
   d = Duration (119*86400), t.is (d.formatCompact (), "3mo", "119*86400 -> 3mo");
-  d = Duration (120*86400), t.is (d.formatCompact (), "3mo", "120*86400 -> 3mo");
+  d = Duration (120*86400), t.is (d.formatCompact (), "4mo", "120*86400 -> 4mo");
 
-  d = Duration (121*86400), t.is (d.formatCompact (), "3mo", "121*86400 -> 3mo");
-  d = Duration (122*86400), t.is (d.formatCompact (), "3mo", "122*86400 -> 3mo");
+  d = Duration (121*86400), t.is (d.formatCompact (), "4mo", "121*86400 -> 4mo");
+  d = Duration (122*86400), t.is (d.formatCompact (), "4mo", "122*86400 -> 4mo");
   d = Duration (123*86400), t.is (d.formatCompact (), "4mo", "123*86400 -> 4mo");
   d = Duration (124*86400), t.is (d.formatCompact (), "4mo", "124*86400 -> 4mo");
   d = Duration (125*86400), t.is (d.formatCompact (), "4mo", "125*86400 -> 4mo");
@@ -290,10 +290,10 @@ int main (int argc, char** argv)
   d = Duration (147*86400), t.is (d.formatCompact (), "4mo", "147*86400 -> 4mo");
   d = Duration (148*86400), t.is (d.formatCompact (), "4mo", "148*86400 -> 4mo");
   d = Duration (149*86400), t.is (d.formatCompact (), "4mo", "149*86400 -> 4mo");
-  d = Duration (150*86400), t.is (d.formatCompact (), "4mo", "150*86400 -> 4mo");
+  d = Duration (150*86400), t.is (d.formatCompact (), "5mo", "150*86400 -> 5mo");
 
-  d = Duration (151*86400), t.is (d.formatCompact (), "4mo", "151*86400 -> 4mo");
-  d = Duration (152*86400), t.is (d.formatCompact (), "4mo", "152*86400 -> 4mo");
+  d = Duration (151*86400), t.is (d.formatCompact (), "5mo", "151*86400 -> 5mo");
+  d = Duration (152*86400), t.is (d.formatCompact (), "5mo", "152*86400 -> 5mo");
   d = Duration (153*86400), t.is (d.formatCompact (), "5mo", "153*86400 -> 5mo");
   d = Duration (154*86400), t.is (d.formatCompact (), "5mo", "154*86400 -> 5mo");
   d = Duration (155*86400), t.is (d.formatCompact (), "5mo", "155*86400 -> 5mo");
@@ -323,11 +323,11 @@ int main (int argc, char** argv)
   d = Duration (177*86400), t.is (d.formatCompact (), "5mo", "177*86400 -> 5mo");
   d = Duration (178*86400), t.is (d.formatCompact (), "5mo", "178*86400 -> 5mo");
   d = Duration (179*86400), t.is (d.formatCompact (), "5mo", "179*86400 -> 5mo");
-  d = Duration (180*86400), t.is (d.formatCompact (), "5mo", "180*86400 -> 5mo");
+  d = Duration (180*86400), t.is (d.formatCompact (), "6mo", "180*86400 -> 6mo");
 
-  d = Duration (181*86400), t.is (d.formatCompact (), "5mo", "181*86400 -> 5mo");
-  d = Duration (182*86400), t.is (d.formatCompact (), "5mo", "182*86400 -> 5mo");
-  d = Duration (183*86400), t.is (d.formatCompact (), "5mo", "183*86400 -> 5mo");
+  d = Duration (181*86400), t.is (d.formatCompact (), "6mo", "181*86400 -> 6mo");
+  d = Duration (182*86400), t.is (d.formatCompact (), "6mo", "182*86400 -> 6mo");
+  d = Duration (183*86400), t.is (d.formatCompact (), "6mo", "183*86400 -> 6mo");
   d = Duration (184*86400), t.is (d.formatCompact (), "6mo", "184*86400 -> 6mo");
   d = Duration (185*86400), t.is (d.formatCompact (), "6mo", "185*86400 -> 6mo");
   d = Duration (186*86400), t.is (d.formatCompact (), "6mo", "186*86400 -> 6mo");
@@ -356,12 +356,12 @@ int main (int argc, char** argv)
   d = Duration (207*86400), t.is (d.formatCompact (), "6mo", "207*86400 -> 6mo");
   d = Duration (208*86400), t.is (d.formatCompact (), "6mo", "208*86400 -> 6mo");
   d = Duration (209*86400), t.is (d.formatCompact (), "6mo", "209*86400 -> 6mo");
-  d = Duration (210*86400), t.is (d.formatCompact (), "6mo", "210*86400 -> 6mo");
+  d = Duration (210*86400), t.is (d.formatCompact (), "7mo", "210*86400 -> 7mo");
 
-  d = Duration (211*86400), t.is (d.formatCompact (), "6mo", "211*86400 -> 6mo");
-  d = Duration (212*86400), t.is (d.formatCompact (), "6mo", "212*86400 -> 6mo");
-  d = Duration (213*86400), t.is (d.formatCompact (), "6mo", "213*86400 -> 6mo");
-  d = Duration (214*86400), t.is (d.formatCompact (), "6mo", "214*86400 -> 6mo");
+  d = Duration (211*86400), t.is (d.formatCompact (), "7mo", "211*86400 -> 7mo");
+  d = Duration (212*86400), t.is (d.formatCompact (), "7mo", "212*86400 -> 7mo");
+  d = Duration (213*86400), t.is (d.formatCompact (), "7mo", "213*86400 -> 7mo");
+  d = Duration (214*86400), t.is (d.formatCompact (), "7mo", "214*86400 -> 7mo");
   d = Duration (215*86400), t.is (d.formatCompact (), "7mo", "215*86400 -> 7mo");
   d = Duration (216*86400), t.is (d.formatCompact (), "7mo", "216*86400 -> 7mo");
   d = Duration (217*86400), t.is (d.formatCompact (), "7mo", "217*86400 -> 7mo");
@@ -389,12 +389,12 @@ int main (int argc, char** argv)
   d = Duration (237*86400), t.is (d.formatCompact (), "7mo", "237*86400 -> 7mo");
   d = Duration (238*86400), t.is (d.formatCompact (), "7mo", "238*86400 -> 7mo");
   d = Duration (239*86400), t.is (d.formatCompact (), "7mo", "239*86400 -> 7mo");
-  d = Duration (240*86400), t.is (d.formatCompact (), "7mo", "240*86400 -> 7mo");
+  d = Duration (240*86400), t.is (d.formatCompact (), "8mo", "240*86400 -> 8mo");
 
-  d = Duration (241*86400), t.is (d.formatCompact (), "7mo", "241*86400 -> 7mo");
-  d = Duration (242*86400), t.is (d.formatCompact (), "7mo", "242*86400 -> 7mo");
-  d = Duration (243*86400), t.is (d.formatCompact (), "7mo", "243*86400 -> 7mo");
-  d = Duration (244*86400), t.is (d.formatCompact (), "7mo", "244*86400 -> 7mo");
+  d = Duration (241*86400), t.is (d.formatCompact (), "8mo", "241*86400 -> 8mo");
+  d = Duration (242*86400), t.is (d.formatCompact (), "8mo", "242*86400 -> 8mo");
+  d = Duration (243*86400), t.is (d.formatCompact (), "8mo", "243*86400 -> 8mo");
+  d = Duration (244*86400), t.is (d.formatCompact (), "8mo", "244*86400 -> 8mo");
   d = Duration (245*86400), t.is (d.formatCompact (), "8mo", "245*86400 -> 8mo");
   d = Duration (246*86400), t.is (d.formatCompact (), "8mo", "246*86400 -> 8mo");
   d = Duration (247*86400), t.is (d.formatCompact (), "8mo", "247*86400 -> 8mo");
@@ -422,13 +422,13 @@ int main (int argc, char** argv)
   d = Duration (267*86400), t.is (d.formatCompact (), "8mo", "267*86400 -> 8mo");
   d = Duration (268*86400), t.is (d.formatCompact (), "8mo", "268*86400 -> 8mo");
   d = Duration (269*86400), t.is (d.formatCompact (), "8mo", "269*86400 -> 8mo");
-  d = Duration (270*86400), t.is (d.formatCompact (), "8mo", "270*86400 -> 8mo");
+  d = Duration (270*86400), t.is (d.formatCompact (), "9mo", "270*86400 -> 9mo");
 
-  d = Duration (271*86400), t.is (d.formatCompact (), "8mo", "271*86400 -> 8mo");
-  d = Duration (272*86400), t.is (d.formatCompact (), "8mo", "272*86400 -> 8mo");
-  d = Duration (273*86400), t.is (d.formatCompact (), "8mo", "273*86400 -> 8mo");
-  d = Duration (274*86400), t.is (d.formatCompact (), "8mo", "274*86400 -> 8mo");
-  d = Duration (275*86400), t.is (d.formatCompact (), "8mo", "275*86400 -> 8mo");
+  d = Duration (271*86400), t.is (d.formatCompact (), "9mo", "271*86400 -> 9mo");
+  d = Duration (272*86400), t.is (d.formatCompact (), "9mo", "272*86400 -> 9mo");
+  d = Duration (273*86400), t.is (d.formatCompact (), "9mo", "273*86400 -> 9mo");
+  d = Duration (274*86400), t.is (d.formatCompact (), "9mo", "274*86400 -> 9mo");
+  d = Duration (275*86400), t.is (d.formatCompact (), "9mo", "275*86400 -> 9mo");
   d = Duration (276*86400), t.is (d.formatCompact (), "9mo", "276*86400 -> 9mo");
   d = Duration (277*86400), t.is (d.formatCompact (), "9mo", "277*86400 -> 9mo");
   d = Duration (278*86400), t.is (d.formatCompact (), "9mo", "278*86400 -> 9mo");
@@ -455,13 +455,13 @@ int main (int argc, char** argv)
   d = Duration (297*86400), t.is (d.formatCompact (), "9mo", "297*86400 -> 9mo");
   d = Duration (298*86400), t.is (d.formatCompact (), "9mo", "298*86400 -> 9mo");
   d = Duration (299*86400), t.is (d.formatCompact (), "9mo", "299*86400 -> 9mo");
-  d = Duration (300*86400), t.is (d.formatCompact (), "9mo", "300*86400 -> 9mo");
+  d = Duration (300*86400), t.is (d.formatCompact (), "10mo", "300*86400 -> 10mo");
 
-  d = Duration (301*86400), t.is (d.formatCompact (), "9mo", "301*86400 -> 9mo");
-  d = Duration (302*86400), t.is (d.formatCompact (), "9mo", "302*86400 -> 9mo");
-  d = Duration (303*86400), t.is (d.formatCompact (), "9mo", "303*86400 -> 9mo");
-  d = Duration (304*86400), t.is (d.formatCompact (), "9mo", "304*86400 -> 9mo");
-  d = Duration (305*86400), t.is (d.formatCompact (), "9mo", "305*86400 -> 9mo");
+  d = Duration (301*86400), t.is (d.formatCompact (), "10mo", "301*86400 -> 10mo");
+  d = Duration (302*86400), t.is (d.formatCompact (), "10mo", "302*86400 -> 10mo");
+  d = Duration (303*86400), t.is (d.formatCompact (), "10mo", "303*86400 -> 10mo");
+  d = Duration (304*86400), t.is (d.formatCompact (), "10mo", "304*86400 -> 10mo");
+  d = Duration (305*86400), t.is (d.formatCompact (), "10mo", "305*86400 -> 10mo");
   d = Duration (306*86400), t.is (d.formatCompact (), "10mo", "306*86400 -> 10mo");
   d = Duration (307*86400), t.is (d.formatCompact (), "10mo", "307*86400 -> 10mo");
   d = Duration (308*86400), t.is (d.formatCompact (), "10mo", "308*86400 -> 10mo");
@@ -488,14 +488,14 @@ int main (int argc, char** argv)
   d = Duration (327*86400), t.is (d.formatCompact (), "10mo", "327*86400 -> 10mo");
   d = Duration (328*86400), t.is (d.formatCompact (), "10mo", "328*86400 -> 10mo");
   d = Duration (329*86400), t.is (d.formatCompact (), "10mo", "329*86400 -> 10mo");
-  d = Duration (330*86400), t.is (d.formatCompact (), "10mo", "330*86400 -> 10mo");
+  d = Duration (330*86400), t.is (d.formatCompact (), "11mo", "330*86400 -> 11mo");
 
-  d = Duration (331*86400), t.is (d.formatCompact (), "10mo", "331*86400 -> 10mo");
-  d = Duration (332*86400), t.is (d.formatCompact (), "10mo", "332*86400 -> 10mo");
-  d = Duration (333*86400), t.is (d.formatCompact (), "10mo", "333*86400 -> 10mo");
-  d = Duration (334*86400), t.is (d.formatCompact (), "10mo", "334*86400 -> 10mo");
-  d = Duration (335*86400), t.is (d.formatCompact (), "10mo", "335*86400 -> 10mo");
-  d = Duration (336*86400), t.is (d.formatCompact (), "10mo", "336*86400 -> 10mo");
+  d = Duration (331*86400), t.is (d.formatCompact (), "11mo", "331*86400 -> 11mo");
+  d = Duration (332*86400), t.is (d.formatCompact (), "11mo", "332*86400 -> 11mo");
+  d = Duration (333*86400), t.is (d.formatCompact (), "11mo", "333*86400 -> 11mo");
+  d = Duration (334*86400), t.is (d.formatCompact (), "11mo", "334*86400 -> 11mo");
+  d = Duration (335*86400), t.is (d.formatCompact (), "11mo", "335*86400 -> 11mo");
+  d = Duration (336*86400), t.is (d.formatCompact (), "11mo", "336*86400 -> 11mo");
   d = Duration (337*86400), t.is (d.formatCompact (), "11mo", "337*86400 -> 11mo");
   d = Duration (338*86400), t.is (d.formatCompact (), "11mo", "338*86400 -> 11mo");
   d = Duration (339*86400), t.is (d.formatCompact (), "11mo", "339*86400 -> 11mo");
@@ -521,12 +521,12 @@ int main (int argc, char** argv)
   d = Duration (357*86400), t.is (d.formatCompact (), "11mo", "357*86400 -> 11mo");
   d = Duration (358*86400), t.is (d.formatCompact (), "11mo", "358*86400 -> 11mo");
   d = Duration (359*86400), t.is (d.formatCompact (), "11mo", "359*86400 -> 11mo");
-  d = Duration (360*86400), t.is (d.formatCompact (), "11mo", "360*86400 -> 11mo");
+  d = Duration (360*86400), t.is (d.formatCompact (), "12mo", "360*86400 -> 12mo");
 
-  d = Duration (361*86400), t.is (d.formatCompact (), "11mo", "361*86400 -> 11mo");
-  d = Duration (362*86400), t.is (d.formatCompact (), "11mo", "362*86400 -> 11mo");
-  d = Duration (363*86400), t.is (d.formatCompact (), "11mo", "363*86400 -> 11mo");
-  d = Duration (364*86400), t.is (d.formatCompact (), "11mo", "364*86400 -> 11mo");
+  d = Duration (361*86400), t.is (d.formatCompact (), "12mo", "361*86400 -> 12mo");
+  d = Duration (362*86400), t.is (d.formatCompact (), "12mo", "362*86400 -> 12mo");
+  d = Duration (363*86400), t.is (d.formatCompact (), "12mo", "363*86400 -> 12mo");
+  d = Duration (364*86400), t.is (d.formatCompact (), "12mo", "364*86400 -> 12mo");
   d = Duration (365*86400), t.is (d.formatCompact (), "1.0y", "365*86400 -> 1.0y");
 
   d = Duration ("86400"),   t.is (d.formatCompact (), "1d",   "string '86400' -> 1d");

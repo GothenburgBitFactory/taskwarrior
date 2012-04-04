@@ -14,6 +14,8 @@ Bugs
  + Removed default configuration value for the obsolete 'annotations' setting.
  + Corrected rounding errors on burndown chart bar size calculations (thanks to
    Uli Martens).
+ + Fixed bug where '6 months' was interpreted as 180 days, but when rendered
+   was shown as '5 months' (thanks to Aikido Guy).
 
 ------ old releases ------------------------------
 
