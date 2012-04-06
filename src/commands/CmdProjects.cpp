@@ -109,9 +109,9 @@ int CmdProjects::execute (std::string& output)
     view.add (Column::factory ("string",       STRING_COLUMN_LABEL_PROJECT));
     view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_TASKS));
     view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_N));
-    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_H));
-    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_M));
     view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_L));
+    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_M));
+    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_H));
 
     std::map <std::string, int>::iterator project;
     for (project = unique.begin (); project != unique.end (); ++project)

@@ -9,6 +9,8 @@ Features
  + The 'summary' report now uses 'project.indented' format.
 
 Bugs
+ + Fixed bug #964, where the 'projects' command showed the wrong priority labels
+   (thanks to Ali Mousavi).
  + Fixed grammar in feedback string (thanks to Uli Martens).
  + Addressed valgrind complaints (thanks to Bryce Harrington).
  + Removed default configuration value for the obsolete 'annotations' setting.
