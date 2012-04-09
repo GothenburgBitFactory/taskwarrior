@@ -131,13 +131,13 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
   if (isRelativeDate (input))
     return;
 
-  // Parse an ISO date.
+  // Parse a formatted date.
   Nibbler n (input);
-  if (n.getDateISO (_t) && n.depleted ())
+  if (n.getDate (format, _t) && n.depleted ())
     return;
 
-  // Parse a formatted date.
-  if (n.getDate (format, _t) && n.depleted ())
+  // Parse an ISO date.
+  if (n.getDateISO (_t) && n.depleted ())
     return;
 
   // Perhaps it is an epoch date, in string form?

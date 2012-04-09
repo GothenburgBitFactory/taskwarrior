@@ -18,6 +18,8 @@ Bugs
    Uli Martens).
  + Fixed bug where '6 months' was interpreted as 180 days, but when rendered
    was shown as '5 months' (thanks to Aikido Guy).
+ + Fixed bug where ISO dates were parsed and the TZ was modified, which should
+   have no bearing on a Zulu time.
 
 ------ old releases ------------------------------
 

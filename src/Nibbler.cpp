@@ -694,24 +694,16 @@ bool Nibbler::getDateISO (time_t& t)
 
       // Convert to epoch.
       struct tm tms = {0};
-      tms.tm_isdst = -1;   // Requests that mktime determine summer time effect.
-      tms.tm_mday  = day;
-      tms.tm_mon   = month - 1;
-      tms.tm_year  = year - 1900;
-      tms.tm_hour  = hour;
-      tms.tm_min   = minute;
-      tms.tm_sec   = second;
+      tms.tm_isdst  = -1;   // Requests that mktime determine summer time effect.
+      tms.tm_mday   = day;
+      tms.tm_mon    = month - 1;
+      tms.tm_year   = year - 1900;
+      tms.tm_hour   = hour;
+      tms.tm_min    = minute;
+      tms.tm_sec    = second;
+      tms.tm_gmtoff = 0;
 
-      char *tz = getenv ("TZ");
-      setenv ("TZ", "UTC", 1);
-      tzset ();
-      t = mktime (&tms);
-      if (tz)
-        setenv ("TZ", tz, 1);
-      else
-        unsetenv ("TZ");
-      tzset();
-
+      t = timegm (&tms);
       return true;
     }
   }
