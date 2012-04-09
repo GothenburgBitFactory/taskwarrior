@@ -359,7 +359,7 @@ just single words associated with the task.  I can go to the print shop at the
 mall, and do all the invitation tasks, so let's tag them all.
 
 .RS
-$ task 3,5,6 modfy +mall
+$ task 3,5,6 modify +mall
 .br
 
 .br
@@ -714,64 +714,6 @@ ID Project Pri Due Active Age     Description
 
 .br
 8 tasks
-.RE
-
-You can choose to display annotations in different ways.
-
-.RS
-$ task rc.annotations:full list
-.br
-
-.br
-ID Project Pri Due Active Age     Description
-.br
--- ------- --- --- ------ ------- ---------------------------------
-.br
- 1 party   H              49 mins Select a free weekend in November
-.br
-                                  10/16/2010 the 13th looks good
-.br
-                                  10/16/2010 or the 14th
-.br
-
-.br
-1 task
-.br
-Configuration override annotations:full
-.br
-$ task rc.annotations:sparse list
-.br
-
-.br
-ID Project Pri Due Active Age     Description
-.br
--- ------- --- --- ------ ------- ----------------------------------
-.br
- 1 party   H              49 mins +Select a free weekend in November
-.br
-                                  10/16/2010 or the 14th
-.br
-
-.br
-1 task
-.br
-Configuration override annotations:sparse
-.br
-$ task rc.annotations:none list
-.br
-
-.br
-ID Project Pri Due Active Age     Description
-.br
--- ------- --- --- ------ ------- ----------------------------------
-.br
- 1 party   H              49 mins +Select a free weekend in November
-.br
-
-.br
-1 task
-.br
-Configuration override annotations:none
 .RE
 
 Annotations can be removed by providing a matching pattern.
