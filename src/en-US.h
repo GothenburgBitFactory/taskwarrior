@@ -634,7 +634,7 @@
 #define STRING_EDIT_BG_DEL           "Background color removed."
 
 // These four blocks can be replaced, but the number of lines must not change.
-#define STRING_EDIT_HEADER_1         "The 'task edit <id>' command allows you to modify all aspects of a task"
+#define STRING_EDIT_HEADER_1         "The 'task <id> edit' command allows you to modify all aspects of a task"
 #define STRING_EDIT_HEADER_2         "using a text editor.  Below is a representation of all the task details."
 #define STRING_EDIT_HEADER_3         "Modify what you wish, and when you save and quit your editor,"
 #define STRING_EDIT_HEADER_4         "taskwarrior will read this file, determine what changed, and apply"
