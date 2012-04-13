@@ -1,0 +1,43 @@
+[Make window 116x32 for movie recording, light text, dark background]
+
+This is the script from which a 2.0-specific movie will be made.  On the left
+are the typed commands, and on the right is the voice track.
+
+It is intended that the left and right be combined and the result will be a new
+task-tutorial.5 man page.
+
+
+
+---------------------------------------- Active tasks ----------------------------------------------
+
+task 2 start                             I'm selecting a venue, so let's indicate that task 2 is
+task list                                active by starting it.  See how active tasks are affected
+                                         by the color rules.
+
+task active                              There is an active report that shows only active tasks, and
+task 2 stop                              you can mark any active task as inactive, by stopping it.
+
+task config journal.time on (y)          There is a journalling feature that records the start and
+
+task config dateformat.annotation 'Y/m/d H:N' (y)
+
+task 2 start                             stop times as annotations.  We'll turn that on, and add
+task list venue                          the time to the annotation date format.
+task 2 stop
+task list venue
+
+---------------------------------------- End -------------------------------------------------------
+
+task list
+task 2 start
+
+task 2 info
+sleep 4
+task 2 info
+task 2 stop
+
+task 2 start
+sleep 2
+task 2 stop
+task 2 info
+

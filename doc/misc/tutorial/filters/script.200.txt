@@ -1,0 +1,55 @@
+[Make window 116x32 for movie recording, light text, dark background]
+
+This is the script from which a 2.0-specific movie will be made.  On the left
+are the typed commands, and on the right is the voice track.
+
+It is intended that the left and right be combined and the result will be a new
+task-tutorial.5 man page.
+
+
+
+---------------------------------------- Advanced Filters ------------------------------------------
+
+task list                                Filters are a very powerful tool.  First here is an
+task list invit                          unfiltered list, which shows all tasks.  Now again, but with
+                                         the text 'invit', which acts as a filter on the description
+                                         field.
+
+task list description.contains:invit     This is the equivalent form using attribute modifiers.  In
+                                         this example we are filtering on descriptions that contain
+                                         the word fragment.  Here we are using the 'contains'
+                                         modifier, but there are many others.
+
+task list desc.word:the                  All tasks containing the whole word 'the'.  See how
+                                         annotations are also searched?
+
+task list desc.noword:invitations        Here is a list of all tasks that do not contain the whole
+                                         word 'invitations'.
+
+task list pro:party                      Here list all tasks in the 'party' project.
+task list pro.is:party                   And the full equivalent.
+task list pro.not:party                  Here list tasks that are not in the 'party' project.  I
+                                         could have also used 'isnt' here - there are several
+                                         synonyms for modifiers, so that the filter can be written
+                                         so that it reads naturally.
+
+task list pro:party pri.over:L           Here the 'over' modifier is filtering on priorities that
+                                         sort higher than 'Low', and also filtering on the 'party'
+                                         project.  There are two terms in this filter.
+
+task list pro:party limit:2              Same again, but only show me the first two tasks.
+task list limit:page                     Now all tasks, but just show the first page of tasks.  I
+                                         don't have a page full of tasks here, but you get the idea.
+
+task all status:pending                  Now you can see how some of the built-in reports work.  The
+                                         'list' report is just all tasks, filtered so that only the
+                                         pending tasks are shown.
+
+task all status:waiting                  The 'waiting' report is similarly defined.
+
+---------------------------------------- End -------------------------------------------------------
+
+Show boolean combinations
+Show regexes
+Show substitutions
+

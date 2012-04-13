@@ -1,0 +1,40 @@
+[Make window 116x32 for movie recording, light text, dark background]
+
+This is the script from which a 2.0-specific movie will be made.  On the left
+are the typed commands, and on the right is the voice track.
+
+It is intended that the left and right be combined and the result will be a new
+task-tutorial.5 man page.
+
+
+
+---------------------------------------- Configuration ---------------------------------------------
+
+task show                                There is a 'show' command, that is used to display the
+                                         active configuration.  There are hundreds of settings that
+                                         can be changed, and every one has a sensible default.
+
+man taskrc                               If you want a complete list of all the settings and their
+                                         meanings, read the man page.
+
+task config answer 42                    The 'config' command is used to modify the settings, and in
+                                         this case the configuration variable 'answer' is given the
+                                         value of 42.
+
+task show answer                         The 'show' command indicates that the value was changed,
+task config answer                       and also that the variable is unrecognized.  The show
+                                         command performs a detailed check on your configuration, and
+                                         alerts you to several kinds of problem.  The config command
+                                         can also remove a value.
+
+task rc.report.list.sort=description+ list
+                                         A very powerful feature is the ability to override the
+                                         configuration variables temporarily.  Here I am requesting
+                                         an ascending sort on the description field only.
+
+---------------------------------------- End -------------------------------------------------------
+
+Mention minimal asspect of ~/.taskrc
+Mention rc override of file
+Mention rc overrides of values
+

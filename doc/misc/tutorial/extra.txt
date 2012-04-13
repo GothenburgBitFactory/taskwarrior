@@ -1,0 +1,30 @@
+
+Calendar trick
+  ln -s `which task` ./cal
+  ./cal
+
+Synch
+  push
+  pull
+  merge
+
+Logo
+
+Version
+
+Verbosity
+
+Formats
+
+Setup
+  First time use
+  Where the files are
+  Using the man pages
+  http://tasktools.org/latest
+
+Next Report
+  Usage
+  Configuration
+  Urgency
+  +next special tag
+

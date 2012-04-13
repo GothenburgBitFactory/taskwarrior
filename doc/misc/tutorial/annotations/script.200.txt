@@ -1,0 +1,27 @@
+[Make window 116x32 for movie recording, light text, dark background]
+
+This is the script from which a 2.0-specific movie will be made.  On the left
+are the typed commands, and on the right is the voice track.
+
+It is intended that the left and right be combined and the result will be a new
+task-tutorial.5 man page.
+
+
+
+---------------------------------------- Annotations -----------------------------------------------
+
+task 1 annotate the 12th looks good      Annotations are little notes that can be added to a task.
+task 1 annotate or the 13th              There can be any number, and each has a time stamp.
+task list
+task list rc.annotations:full            You can choose to display annotations in different ways.
+task list rc.annotations:sparse
+task list rc.annotations:none
+
+task 1 denotate 13th                     Annotations can be removed by providing a matching pattern.
+task list
+
+---------------------------------------- End -------------------------------------------------------
+
+Remove rc.annotations.*
+Illustrate different annotation formats.
+Searching in annotations

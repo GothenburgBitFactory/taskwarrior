@@ -1,0 +1,46 @@
+[Make window 116x32 for movie recording, light text, dark background]
+
+This is the script from which a 2.0-specific movie will be made.  On the left
+are the typed commands, and on the right is the voice track.
+
+It is intended that the left and right be combined and the result will be a new
+task-tutorial.5 man page.
+
+
+
+---------------------------------------- Tags ------------------------------------------------------
+
+task list                                A task may only have one project, but it may have any number
+                                         of tags, which are just single words associated with the task.
+
+task 3,5,6 +mall                         I can go to the print shop at the mall, and do all the
+                                         invitation tasks, so let's tag them all.
+
+task long                                The long report shows tags, too,
+
+task list +mall                          and I can use tags as a filter to any report too.
+
+task 3 -mall                             I made a mistake - I can't mail out the invitations at the
+                                         mall, so let's remove that tag.
+
+---------------------------------------- Special Tags ----------------------------------------------
+
+task 6 +nocolor                          You've seen tags, but there are also 'special tags' that
+task list                                have effects on individual tasks.  The 'nocolor' special
+                                         tag causes the color rules to be bypassed.
+
+task tags                                Special tags are highlighted by the 'tags' command.
+
+task 6 -nocolor                          There are others - the 'nonag' special tag prevents the
+                                         generation of nag messages when you work on low priority
+                                         tasks when there are more important ones.
+
+                                         The 'nocal' special tag will prevent a task from appearing
+                                         on the calendar.
+
+---------------------------------------- End -------------------------------------------------------
+
+Show 'nocal'
+Show 'nonag'
+Show 'next'
+Show how adding a special tag generates feedback.
