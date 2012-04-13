@@ -681,6 +681,7 @@ $ task 1 annotate the 13th looks good
 Annotated 1 with 'the 13th looks good'.
 .br
 $ task 1 annotate or the 14th
+.br
 Annotated 1 with 'or the 14th'
 .br
 $ task list
