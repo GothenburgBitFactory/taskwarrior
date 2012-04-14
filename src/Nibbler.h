@@ -93,6 +93,8 @@ public:
   bool skipRx (const std::string&);
 #endif
 
+  void getRemainder (std::string&);
+
   char next ();
   std::string next (const int quantity);
 

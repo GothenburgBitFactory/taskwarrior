@@ -1176,6 +1176,14 @@ bool Nibbler::skipRx (const std::string& regex)
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+void Nibbler::getRemainder (std::string& result)
+{
+  if (_cursor < _length)
+    result = _input.substr (_cursor);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipAllOneOf (const std::string& chars)
 {
   if (_cursor < _length)
