@@ -22,6 +22,7 @@ Bugs
  + Fixed bug where ISO dates were parsed and the TZ was modified, which should
    have no bearing on a Zulu time.
  + Fixed man page typos.
+ + Fixed incorrect Lua API return value (thanks to Oleksii Tsai).
 
 ------ old releases ------------------------------
 

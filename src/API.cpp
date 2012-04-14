@@ -63,8 +63,7 @@ static int api_task_debug_message (lua_State* L)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Causes the shell or interactive mode task to exit.  Ordinarily this does not
-// occur.
+// Causes the shell mode task to exit.  Ordinarily this does not occur.
 static int api_task_exit (lua_State*)
 {
   // TODO Is this the correct exception?  How does the shell handle this?
@@ -88,7 +87,7 @@ static int api_task_get (lua_State* L)
     lua_pushstring (L, "");
   }
 
-  return 0;
+  return 1;  // 1 returned value.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
