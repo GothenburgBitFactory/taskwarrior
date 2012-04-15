@@ -120,6 +120,10 @@ int CmdImport::execute (std::string& output)
             if (i->first == "id")
               ;
 
+            // Urgency, if present, is ignored.
+            if (i->first == "urgency")
+              ;
+
             // Dates are converted from ISO to epoch.
             else if (col->type () == "date")
             {
