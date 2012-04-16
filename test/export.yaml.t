@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 22;
 
 # Create the rc file.
 if (open my $fh, '>', 'export.rc')
@@ -61,15 +61,17 @@ like ($lines[5],  qr/^    id: \d+$/,             'export YAML line 6');
 like ($lines[6],  qr/^    priority: H$/,         'export YAML line 7');
 like ($lines[7],  qr/^    project: A$/,          'export YAML line 8');
 like ($lines[8],  qr/^    status: pending$/,     'export YAML line 9');
-like ($lines[9],  qr/^    uuid: .+$/,            'export YAML line 10');
-like ($lines[10], qr/^  task:$/,                 'export YAML line 11');
-like ($lines[11], qr/^    description: two$/,    'export YAML line 12');
-like ($lines[12], qr/^    entry: \d{8}T\d{6}Z$/, 'export YAML line 13');
-like ($lines[13], qr/^    id: \d+$/,             'export YAML line 14');
-like ($lines[14], qr/^    status: pending$/,     'export YAML line 15');
-like ($lines[15], qr/^    tags: tag1,tag2$/,     'export YAML line 16');
-like ($lines[16], qr/^    uuid: .+$/,            'export YAML line 17');
-like ($lines[17], qr/^\.\.\.$/,                  'export YAML line 18');
+like ($lines[9],  qr/^    urgency: .+$/,         'export YAML line 10');
+like ($lines[10], qr/^    uuid: .+$/,            'export YAML line 11');
+like ($lines[11], qr/^  task:$/,                 'export YAML line 12');
+like ($lines[12], qr/^    description: two$/,    'export YAML line 13');
+like ($lines[13], qr/^    entry: \d{8}T\d{6}Z$/, 'export YAML line 14');
+like ($lines[14], qr/^    id: \d+$/,             'export YAML line 15');
+like ($lines[15], qr/^    status: pending$/,     'export YAML line 16');
+like ($lines[16], qr/^    tags: tag1,tag2$/,     'export YAML line 17');
+like ($lines[17], qr/^    urgency: .+$/,         'export YAML line 18');
+like ($lines[18], qr/^    uuid: .+$/,            'export YAML line 19');
+like ($lines[19], qr/^\.\.\.$/,                  'export YAML line 20');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key export.rc export.txt);

@@ -646,6 +646,12 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
     out << "]";
   }
 
+  // Include urgency.
+  out << ","
+      << "\"urgency\":\""
+      << urgency_c ()
+      <<"\"";
+
   out << "}";
   return out.str ();
 }
