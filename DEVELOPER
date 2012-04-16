@@ -6,17 +6,21 @@ Deprecated Code
   This is code that is going to be phased out soon, and therefore is not worth
   fixing or documenting.  Don't waste your time.
 
-  - There is no deprecated code at the moment.  I'm sure there will be soon.
+  - 'shell' command.
+  - Shadow file support in core.
+  - Support for 'fg:' and 'bg:' attributes.
 
 New Code Needs
-  This is code that needs to be written, usually down at the C++ function level.
+  This is code that needs to be written, usually down at the C++ function/method
+  level.
 
   - Need export_viz.yy script.  Any language.  This would have value as an
     example, or template script serving as a starting-point for anyone who
     needed this format.
   - Need new export_xxx.yy scripts - the more the better.  Any language.
   - The JSON.{h,cpp} code is fast and efficient up to a point, but has a non-
-    linear performance curve, implying a slowdown due to fragmentation.  Fix it.
+    linear performance curve, implying a slowdown due to fragmentation.  Find
+    it, fix it.
   - Need a function that can optimize color codes.  For example, if a string
     contains this:
       <red>one two </red><red>three four</red>
@@ -28,6 +32,11 @@ New Code Needs
     data file, as found by 'task diag'.  This should check to see if there is
     a suitable UUID generator installed.  This should also be careful to
     properly handle recurring tasks.
+  - Need an external implementation equivalent to, or better than the 'shell'
+    command.  We are hoping to move the weak 'shell' command out of the core,
+    which means it can be developed separately.  There are several pending
+    feature requests for this, including creative prompts, readline and auto-
+    clear.
 
 Documentation Needed
   Various forms of documentation that are needed, or are in need of review or
@@ -118,5 +127,6 @@ Current Codebase Condition
 
 ---
 
+2012-04-16 Updated document.
 2012-03-25 Corrected codebase condition details.
 2012-03-03 Updated text, removed old history info.
