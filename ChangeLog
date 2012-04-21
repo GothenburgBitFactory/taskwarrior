@@ -16,6 +16,8 @@ Bugs
  + Fixed bug #968, a typo in the 'edit' command text (thanks to Victor Roetman).
  + Fixed bug #973, including 'urgency' in the 'export' output (thanks to Andy
    Spiegl).
+ + Fixed bug #986, so that the 'info' report uses the correct date format
+   (thanks to Louis-Claude Canon).
  + Fixed grammar in feedback string (thanks to Uli Martens).
  + Addressed valgrind complaints (thanks to Bryce Harrington).
  + Removed default configuration value for the obsolete 'annotations' setting.

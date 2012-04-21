@@ -75,6 +75,20 @@ int CmdInfo::execute (std::string& output)
   if (context.config.getBoolean ("journal.info"))
     undo = context.tdb2.undo.get_lines ();
 
+  // Determine the output date format, which uses a hierarchy of definitions.
+  //   rc.report.<report>.dateformat
+  //   rc.dateformat.report
+  //   rc.dateformat.
+  std::string dateformat = context.config.get ("report.info.dateformat");
+  if (dateformat == "")
+    dateformat = context.config.get ("dateformat.report");
+  if (dateformat == "")
+    dateformat = context.config.get ("dateformat");
+
+  std::string dateformatanno = context.config.get ("dateformat.annotation");
+  if (dateformatanno == "")
+    dateformatanno = dateformat;
+
   // Render each task.
   std::stringstream out;
   std::vector <Task>::iterator task;
@@ -114,7 +128,7 @@ int CmdInfo::execute (std::string& output)
     for (ann = annotations.begin (); ann != annotations.end (); ++ann)
       description += "\n"
                    + std::string (indent, ' ')
-                   + Date (ann->first.substr (11)).toString (context.config.get ("dateformat"))
+                   + Date (ann->first.substr (11)).toString (dateformatanno)
                    + " "
                    + ann->second;
 
@@ -190,14 +204,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_CMD_INFO_RECUR_UNTIL);
-
-      Date dt (task->get ("until"));
-      std::string format = context.config.get ("reportdateformat");
-      if (format == "")
-        format = context.config.get ("dateformat");
-
-      std::string until = dt.toString (context.config.get ("dateformat"));
-      view.set (row, 1, until);
+      view.set (row, 1, Date (task->get_date ("until")).toString (dateformat));
     }
 
     // mask
@@ -226,13 +233,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_DUE);
-
-      std::string format = context.config.get ("reportdateformat");
-      if (format == "")
-        format = context.config.get ("dateformat");
-
-      Date dt (task->get_date ("due"));
-      view.set (row, 1, dt.toString (context.config.get ("dateformat")));
+      view.set (row, 1, Date (task->get_date ("due")).toString (dateformat));
     }
 
     // wait
@@ -240,8 +241,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_WAITING);
-      Date dt (task->get_date ("wait"));
-      view.set (row, 1, dt.toString (context.config.get ("dateformat")));
+      view.set (row, 1, Date (task->get_date ("wait")).toString (dateformat));
     }
 
     // start
@@ -249,8 +249,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_START);
-      Date dt (task->get_date ("start"));
-      view.set (row, 1, dt.toString (context.config.get ("dateformat")));
+      view.set (row, 1, Date (task->get_date ("start")).toString (dateformat));
     }
 
     // end
@@ -258,8 +257,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_END);
-      Date dt (task->get_date ("end"));
-      view.set (row, 1, dt.toString (context.config.get ("dateformat")));
+      view.set (row, 1, Date (task->get_date ("end")).toString (dateformat));
     }
 
     // tags ...
@@ -285,7 +283,7 @@ int CmdInfo::execute (std::string& output)
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_ENTERED);
     Date dt (task->get_date ("entry"));
-    std::string entry = dt.toString (context.config.get ("dateformat"));
+    std::string entry = dt.toString (dateformat);
 
     std::string age;
     std::string created = task->get ("entry");
@@ -339,19 +337,7 @@ int CmdInfo::execute (std::string& output)
             view.set (row, 0, col->label ());
 
             if (type == "date")
-            {
-              // Determine the output date format, which uses a hierarchy of definitions.
-              //   rc.report.<report>.dateformat
-              //   rc.dateformat.report
-              //   rc.dateformat.
-              std::string format = context.config.get ("report.info.dateformat");
-              if (format == "")
-                format = context.config.get ("dateformat.report");
-              if (format == "")
-                format = context.config.get ("dateformat");
-
-              value = Date (value).toString (format);
-            }
+              value = Date (value).toString (dateformat);
             else if (type == "duration")
               value = Duration (value).formatCompact ();
 
@@ -402,7 +388,7 @@ int CmdInfo::execute (std::string& output)
             int row = journal.addRow ();
 
             Date timestamp (strtol (when.substr (5).c_str (), NULL, 10));
-            journal.set (row, 0, timestamp.toString (context.config.get ("dateformat")));
+            journal.set (row, 0, timestamp.toString (dateformat));
 
             Task before (previous.substr (4));
             Task after (current.substr (4));
