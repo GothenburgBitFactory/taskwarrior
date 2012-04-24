@@ -21,6 +21,8 @@ Bugs
    Spiegl).
  + Fixed bug #986, so that the 'info' report uses the correct date format
    (thanks to Louis-Claude Canon).
+ + Fixed bug #988, updating the documentation so that 'undo.data' usage is more
+   clearly stated (thanks to Louis-Claude Canon).
  + Fixed grammar in feedback string (thanks to Uli Martens).
  + Addressed valgrind complaints (thanks to Bryce Harrington).
  + Removed default configuration value for the obsolete 'annotations' setting.

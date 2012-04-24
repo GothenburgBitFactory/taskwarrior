@@ -198,10 +198,12 @@ You need it if you want the undo capability, or the merge capability mentioned
 above.  But if it gets large, you can certainly truncate it to save space, just
 be careful to delete lines from the top of the file, up to and including a
 separator '---'.  The simplest way is to simply delete the undo.data file.  Note
-that it does not slow down taskwarrior, because it is never read until you want
-to undo.  Otherwise taskwarrior only appends to the file.
+that it does not slow down taskwarrior in performance-sensitive areas, because
+it is typically not read until you want to undo, or report total active time in
+the 'info' command.  Taskwarrior generally only appends to the file.
 
-It is not recommended that you delete the undo.data file.
+It is not recommended that you delete the undo.data file, as it limits
+functionality.
 
 .TP
 .B Q: How do I know whether my terminal support 256 colors?
