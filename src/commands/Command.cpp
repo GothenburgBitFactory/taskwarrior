@@ -338,8 +338,6 @@ void Command::filter (std::vector <Task>& output)
         if (e.evalFilter (*task))
           output.push_back (*task);
     }
-    else
-      context.debug ("Command::filter skipping completed.data");
   }
   else
   {
@@ -372,7 +370,37 @@ bool Command::filter_shortcut (const A3& filter)
       filter[0]._raw                  == "status"          &&
       filter[1]._raw.find ("pending") != std::string::npos &&
       filter[2]._raw                  == "=")
+  {
+    context.debug ("Command::filter skipping completed.data (status:pending only)");
     return true;
+  }
+
+  // Shortcut: If the filter contains no 'or' or 'xor' operators, IDs and no UUIDs.
+  int countId   = 0;
+  int countUUID = 0;
+  int countOr   = 0;
+  int countXor  = 0;
+  std::vector <Arg>::const_iterator i;
+  for (i = filter.begin (); i != filter.end (); ++i)
+  {
+    if (i->_category == Arg::cat_op)
+    {
+      if (i->_raw == "or")  ++countOr;
+      if (i->_raw == "xor") ++countXor;
+
+    }
+    else if (i->_category == Arg::cat_id)   ++countId;
+    else if (i->_category == Arg::cat_uuid) ++countUUID;
+  }
+
+  if (countOr   == 0 &&
+      countXor  == 0 &&
+      countUUID == 0 &&
+      countId    > 0)
+  {
+    context.debug ("Command::filter skipping completed.data (IDs, no OR, no XOR, no UUID)");
+    return true;
+  }
 
   return false;
 }
