@@ -753,8 +753,6 @@ alias.history                   history.monthly
 .br
 alias.rm                        delete
 .br
-annotations                     full
-.br
  ...
 .br
 weekstart                       Sunday

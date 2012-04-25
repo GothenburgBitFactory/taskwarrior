@@ -372,15 +372,6 @@ int CmdShow::execute (std::string& output)
   }
 #endif
 
-  // Check for bad values in rc.annotations.
-  // TODO Deprecated.
-  std::string annotations = context.config.get ("annotations");
-  if (annotations != "full"   &&
-      annotations != "sparse" &&
-      annotations != "none")
-    out << format (STRING_CMD_SHOW_CONFIG_ERROR, "annotations", annotations)
-        << "\n";
-
   // Check for bad values in rc.calendar.details.
   std::string calendardetails = context.config.get ("calendar.details");
   if (calendardetails != "full"   &&
