@@ -76,10 +76,10 @@ static bool sort_compare (int left, int right)
   int right_number;
   std::string left_string;
   std::string right_string;
-  time_t left_date;
-  time_t right_date;
   float left_real;
   float right_real;
+  char left_char;
+  char right_char;
 
   std::vector <std::string>::iterator k;
   for (k = global_keys.begin (); k != global_keys.end (); ++k)
@@ -152,19 +152,20 @@ static bool sort_compare (int left, int right)
     // Priority.
     else if (field == "priority")
     {
-      left_string  = (*global_data)[left].get  (field);
-      right_string = (*global_data)[right].get (field);
-      if (left_string == right_string)
+      left_char  = ((*global_data)[left].get  (field))[0];
+      right_char = ((*global_data)[right].get (field))[0];
+
+      if (left_char == right_char)
         continue;
 
       if (ascending)
-        return (left_string == ""  && right_string != "")                           ||
-               (left_string == "L" && (right_string == "M" || right_string == "H")) ||
-               (left_string == "M" && right_string == "H");
+        return (left_char == '\0'  && right_char != '\0')                           ||
+               (left_char == 'L' && (right_char == 'M' || right_char == 'H')) ||
+               (left_char == 'M' && right_char == 'H');
 
-      return (left_string != ""  && right_string == "")                           ||
-             (left_string == "M" && right_string == "L")                          ||
-             (left_string == "H" && (right_string == "M" || right_string == "L"));
+      return (left_char != '\0'  && right_char == '\0')                           ||
+             (left_char == 'M' && right_char == 'L')                          ||
+             (left_char == 'H' && (right_char == 'M' || right_char == 'L'));
     }
 
     // Due Date.
@@ -182,13 +183,10 @@ static bool sort_compare (int left, int right)
       if (left_string == right_string)
         continue;
 
-      left_date  = atoi (left_string.c_str ());
-      right_date = atoi (right_string.c_str ());
-
       if (ascending)
-        return left_date < right_date;
+        return left_string < right_string;
 
-      return left_date > right_date;
+      return left_string > right_string;
     }
 
     // Date.
@@ -204,13 +202,10 @@ static bool sort_compare (int left, int right)
       if (left_string == right_string)
         continue;
 
-      left_date  = atoi (left_string.c_str ());
-      right_date = atoi (right_string.c_str ());
-
       if (ascending)
-        return left_date < right_date;
+        return left_string < right_string;
 
-      return left_date > right_date;
+      return left_string > right_string;
     }
 
     // Duration.

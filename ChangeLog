@@ -12,6 +12,7 @@ Features
  + Introduced a new filter optimization that recognizes filters with no 'OR', or
    'XOR' operators, includes IDs, but does not include UUIDs.  This combination
    means completed.data is not referenced.
+ + Sped up task sorting by skipping re-interpretation of certain data types.
 
 Bugs
  + Fixed bug #964, where the 'projects' command showed the wrong priority labels
