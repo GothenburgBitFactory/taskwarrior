@@ -401,10 +401,13 @@ int CmdInfo::execute (std::string& output)
               // task started
               total_time -= timestamp.toEpoch ();
             }
-            else if (before.get ("start") != ""
-                   && after.get ("start") == "")
+            else if (((before.get ("start") != "" &&
+                       after.get ("start") == "") ||
+                      (before.get ("status") != "completed" &&
+                       after.get ("status") == "completed")) &&
+                     total_time < 0)
             {
-              // task stopped
+              // task stopped or done
               total_time += timestamp.toEpoch ();
             }
           }
