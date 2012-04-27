@@ -66,9 +66,7 @@ TF2::TF2 ()
 , _dirty (false)
 , _loaded_tasks (false)
 , _loaded_lines (false)
-, _loaded_contents (false)
 , _has_ids (false)
-, _contents ("")
 {
 }
 
@@ -104,15 +102,6 @@ const std::vector <std::string>& TF2::get_lines ()
     load_lines ();
 
   return _lines;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string& TF2::get_contents ()
-{
-  if (! _loaded_contents)
-    load_contents ();
-
-  return _contents;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -297,25 +286,13 @@ void TF2::load_tasks ()
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::load_lines ()
 {
-  if (! _loaded_contents)
-    load_contents ();
-
-  split_minimal (_lines, _contents, '\n');
-  _loaded_lines = true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TF2::load_contents ()
-{
-  _contents = "";
-
   if (_file.open ())
   {
     if (context.config.getBoolean ("locking"))
       _file.lock ();
 
-    _file.read (_contents);
-    _loaded_contents = true;
+    _file.read (_lines);
+    _loaded_lines = true;
   }
 }
 
@@ -373,9 +350,6 @@ void TF2::clear ()
   _dirty           = false;
   _loaded_tasks    = false;
   _loaded_lines    = false;
-  _loaded_contents = false;
-
-  _contents        = "";
 
   // Note that the actual file name, and _has_ids are deliberately not cleared.
   //_file._data      = "";
@@ -418,10 +392,9 @@ const std::string TF2::dump ()
   std::string tasks_modified = yellow.colorize (rightJustifyZero ((int) _modified_tasks.size (), 3));
   std::string lines          = green.colorize  (rightJustifyZero ((int) _lines.size (),          4));
   std::string lines_added    = red.colorize    (rightJustifyZero ((int) _added_lines.size (),    3));
-  std::string contents       = green.colorize  (rightJustifyZero ((int) _contents.size (),       6));
 
   char buffer[256];  // Composed string is actually 246 bytes.  Yikes.
-  snprintf (buffer, 256, "%14s %s %s T%s+%s~%s L%s+%s C%s",
+  snprintf (buffer, 256, "%14s %s %s T%s+%s~%s L%s+%s",
             label.c_str (),
             mode.c_str (),
             hygiene.c_str (),
@@ -429,8 +402,7 @@ const std::string TF2::dump ()
             tasks_added.c_str (),
             tasks_modified.c_str (),
             lines.c_str (),
-            lines_added.c_str (),
-            contents.c_str ());
+            lines_added.c_str ());
 
   return std::string (buffer);
 }
