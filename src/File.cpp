@@ -200,6 +200,7 @@ void File::read (std::string& contents)
   if (in.good ())
   {
     std::string line;
+    line.reserve (1024);
     while (getline (in, line))
       contents += line + "\n";
 
@@ -217,6 +218,7 @@ void File::read (std::vector <std::string>& contents)
   if (in.good ())
   {
     std::string line;
+    line.reserve (1024);
     while (getline (in, line))
       contents.push_back (line);
 
@@ -357,6 +359,7 @@ std::string File::read (const std::string& name)
   if (in.good ())
   {
     std::string line;
+    line.reserve (1024);
     while (getline (in, line))
       contents += line + "\n";
 
@@ -375,6 +378,7 @@ bool File::read (const std::string& name, std::string& contents)
   if (in.good ())
   {
     std::string line;
+    line.reserve (1024);
     while (getline (in, line))
       contents += line + "\n";
 
@@ -394,6 +398,7 @@ bool File::read (const std::string& name, std::vector <std::string>& contents)
   if (in.good ())
   {
     std::string line;
+    line.reserve (1024);
     while (getline (in, line))
       contents.push_back (line);
 

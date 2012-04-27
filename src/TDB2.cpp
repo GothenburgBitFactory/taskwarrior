@@ -1470,8 +1470,8 @@ void TDB2::revert ()
 ////////////////////////////////////////////////////////////////////////////////
 // Scans the pending tasks for any that are completed or deleted, and if so,
 // moves them to the completed.data file.  Returns a count of tasks moved.
-// Now reverts expired waiting tasks to pending.
-// Now cleans up dangling dependencies.
+// Reverts expired waiting tasks to pending.
+// Cleans up dangling dependencies.
 //
 // Possible scenarios:
 // - task in pending that needs to be in completed
@@ -1508,13 +1508,14 @@ int TDB2::gc ()
          ++task)
     {
       status = task->get ("status");
-      if (status == "pending" || status == "recurring")
+      if (status == "pending" ||
+          status == "recurring")
       {
         pending_tasks_after.push_back (*task);
       }
       else if (status == "waiting")
       {
-        Date wait (task->get ("wait"));
+        Date wait (task->get_date ("wait"));
         if (wait < now)
         {
           task->set ("status", "pending");
@@ -1540,11 +1541,25 @@ int TDB2::gc ()
     {
       status = task->get ("status");
       if (status == "pending" ||
-          status == "waiting")
+          status == "recurring")
       {
         pending_tasks_after.push_back (*task);
         pending_changes = true;
         completed_changes = true;
+      }
+      else if (status == "waiting")
+      {
+        Date wait (task->get_date ("wait"));
+        if (wait < now)
+        {
+          task->set ("status", "pending");
+          task->remove ("wait");
+          pending_tasks_after.push_back (*task);
+          pending_changes = true;
+          completed_changes = true;
+        }
+
+        pending_tasks_after.push_back (*task);
       }
       else
       {
@@ -1555,17 +1570,16 @@ int TDB2::gc ()
     // Only recreate the pending.data file if necessary.
     if (pending_changes)
     {
-      pending.clear ();
+      pending._tasks = pending_tasks_after;
       pending._dirty = true;
       pending._loaded_tasks = true;
       _id = 1;
 
-      for (task = pending_tasks_after.begin ();
-           task != pending_tasks_after.end ();
+      for (task = pending._tasks.begin ();
+           task != pending._tasks.end ();
            ++task)
       {
         task->id = _id++;
-        pending._tasks.push_back (*task);
       }
 
       // Note: deliberately no commit.
@@ -1574,14 +1588,9 @@ int TDB2::gc ()
     // Only recreate the completed.data file if necessary.
     if (completed_changes)
     {
-      completed.clear ();
+      completed._tasks = completed_tasks_after;
       completed._dirty = true;
       completed._loaded_tasks = true;
-
-      for (task = completed_tasks_after.begin ();
-           task != completed_tasks_after.end ();
-           ++task)
-        completed._tasks.push_back (*task);
 
       // Note: deliberately no commit.
     }
