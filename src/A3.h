@@ -35,8 +35,6 @@
 #include <Nibbler.h>
 #include <File.h>
 
-#define ARGUMENTS_SEQUENCE_MAX_RANGE 1000
-
 class A3 : public std::vector <Arg>
 {
 public:

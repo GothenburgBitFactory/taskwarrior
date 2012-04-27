@@ -31,8 +31,6 @@
 
 #include <string>
 
-#define ARGUMENTS_SEQUENCE_MAX_RANGE 1000
-
 class Arg
 {
 public:
