@@ -20,8 +20,8 @@ Bugs
  + Fixed bug #968, a typo in the 'edit' command text (thanks to Victor Roetman).
  + Fixed bug #973, including 'urgency' in the 'export' output (thanks to Andy
    Spiegl).
- + Fixed bug #986, so that the 'info' report uses the correct date format
-   (thanks to Louis-Claude Canon).
+ + Fixed bug #986, so that the 'info' report uses the correct date format, also
+   applied patch to correct documentation (thanks to Louis-Claude Canon).
  + Applied patch for bug #987, so that total active time does not continue to
    accumulate after an active task is completed (thanks to Louis-Claude Canon).
  + Fixed bug #988, updating the documentation so that 'undo.data' usage is more
