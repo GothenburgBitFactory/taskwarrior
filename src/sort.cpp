@@ -74,8 +74,6 @@ static bool sort_compare (int left, int right)
 
   int left_number;
   int right_number;
-  std::string left_string;
-  std::string right_string;
   float left_real;
   float right_real;
   char left_char;
@@ -105,8 +103,8 @@ static bool sort_compare (int left, int right)
     else if (field == "depends")
     {
       // Raw data is a comma-separated list of uuids
-      left_string  = (*global_data)[left].get  (field);
-      right_string = (*global_data)[right].get (field);
+      const std::string& left_string  = (*global_data)[left].get_ref  (field);
+      const std::string& right_string = (*global_data)[right].get_ref (field);
 
       if (left_string == right_string)
         continue;
@@ -137,8 +135,8 @@ static bool sort_compare (int left, int right)
              field == "tags"        ||
              field == "uuid")
     {
-      left_string  = (*global_data)[left].get  (field);
-      right_string = (*global_data)[right].get (field);
+      const std::string& left_string  = (*global_data)[left].get_ref  (field);
+      const std::string& right_string = (*global_data)[right].get_ref (field);
 
       if (left_string == right_string)
         continue;
@@ -171,8 +169,8 @@ static bool sort_compare (int left, int right)
     // Due Date.
     else if (field == "due")
     {
-      left_string  = (*global_data)[left].get  (field);
-      right_string = (*global_data)[right].get (field);
+      const std::string& left_string  = (*global_data)[left].get_ref  (field);
+      const std::string& right_string = (*global_data)[right].get_ref (field);
 
       if (left_string != "" && right_string == "")
         return true;
@@ -196,8 +194,8 @@ static bool sort_compare (int left, int right)
              field == "until" ||
              field == "wait")
     {
-      left_string  = (*global_data)[left].get  (field);
-      right_string = (*global_data)[right].get (field);
+      const std::string& left_string  = (*global_data)[left].get_ref  (field);
+      const std::string& right_string = (*global_data)[right].get_ref (field);
 
       if (left_string == right_string)
         continue;
@@ -211,8 +209,8 @@ static bool sort_compare (int left, int right)
     // Duration.
     else if (field == "recur")
     {
-      left_string  = (*global_data)[left].get  (field);
-      right_string = (*global_data)[right].get (field);
+      const std::string& left_string  = (*global_data)[left].get_ref  (field);
+      const std::string& right_string = (*global_data)[right].get_ref (field);
 
       if (left_string == right_string)
         continue;

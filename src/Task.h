@@ -70,6 +70,7 @@ public:
   bool has (const std::string&) const;
   std::vector <std::string> all ();
   const std::string get (const std::string&) const;
+  const std::string& get_ref (const std::string&) const;
   int get_int (const std::string&) const;
   unsigned long get_ulong (const std::string&) const;
   time_t get_date (const std::string&) const;

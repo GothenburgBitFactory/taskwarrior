@@ -238,6 +238,16 @@ const std::string Task::get (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string& Task::get_ref (const std::string& name) const
+{
+  Task::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return i->second;
+
+  return dummy;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Task::get_int (const std::string& name) const
 {
   Task::const_iterator i = this->find (name);
@@ -1375,7 +1385,7 @@ float Task::urgency ()
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_priority () const
 {
-  std::string value = get ("priority");
+  const std::string& value = get_ref ("priority");
 
        if (value == "H") return 1.0;
   else if (value == "M") return 0.65;
@@ -1405,7 +1415,7 @@ float Task::urgency_active () const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_waiting () const
 {
-  if (get ("status") == "waiting")
+  if (get_ref ("status") == "waiting")
     return 1.0;
 
   return 0.0;
