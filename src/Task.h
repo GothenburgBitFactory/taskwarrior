@@ -34,6 +34,9 @@
 #include <string>
 #include <stdio.h>
 
+
+void initializeUrgencyCoefficients ();
+
 class Task : public std::map <std::string, std::string>
 {
 public:

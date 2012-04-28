@@ -140,6 +140,10 @@ int Context::initialize (int argc, const char** argv)
     // Apply rc overrides to Context::config, capturing raw args for later use.
     a3.apply_overrides ();
 
+    // Now that the final RC is in place, initialize the urgency coefficients
+    // to speed the 'next' report.
+    initializeUrgencyCoefficients ();
+
     // Initialize the color rules, if necessary.
     if (color ())
       initializeColorRules ();

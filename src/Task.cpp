@@ -27,9 +27,9 @@
 
 #define L10N                                           // Localization complete.
 
-//#include <iostream>
 #include <sstream>
 #include <stdlib.h>
+#include <math.h>
 #include <algorithm>
 #include <Context.h>
 #include <Nibbler.h>
@@ -46,6 +46,52 @@
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
 extern Context context;
+
+static const float epsilon = 0.000001;
+
+static std::map <std::string, float> coefficients;
+float urgencyPriorityCoefficient    = 0.0;
+float urgencyProjectCoefficient     = 0.0;
+float urgencyActiveCoefficient      = 0.0;
+float urgencyWaitingCoefficient     = 0.0;
+float urgencyBlockedCoefficient     = 0.0;
+float urgencyAnnotationsCoefficient = 0.0;
+float urgencyTagsCoefficient        = 0.0;
+float urgencyNextCoefficient        = 0.0;
+float urgencyDueCoefficient         = 0.0;
+float urgencyBlockingCoefficient    = 0.0;
+float urgencyAgeCoefficient         = 0.0;
+
+static const std::string dummy ("");
+
+////////////////////////////////////////////////////////////////////////////////
+// Non-method.
+//
+// This is essentialy a cache of float values to save iteration and hash lookup
+// in the whole config at time of Task::urgency_C.
+void initializeUrgencyCoefficients ()
+{
+  urgencyPriorityCoefficient    = context.config.getReal ("urgency.priority.coefficient");
+  urgencyProjectCoefficient     = context.config.getReal ("urgency.project.coefficient");
+  urgencyActiveCoefficient      = context.config.getReal ("urgency.active.coefficient");
+  urgencyWaitingCoefficient     = context.config.getReal ("urgency.waiting.coefficient");
+  urgencyBlockedCoefficient     = context.config.getReal ("urgency.blocked.coefficient");
+  urgencyAnnotationsCoefficient = context.config.getReal ("urgency.annotations.coefficient");
+  urgencyTagsCoefficient        = context.config.getReal ("urgency.tags.coefficient");
+  urgencyNextCoefficient        = context.config.getReal ("urgency.next.coefficient");
+  urgencyDueCoefficient         = context.config.getReal ("urgency.due.coefficient");
+  urgencyBlockingCoefficient    = context.config.getReal ("urgency.blocking.coefficient");
+  urgencyAgeCoefficient         = context.config.getReal ("urgency.age.coefficient");
+
+  // Tag- and project-specific coefficients.
+  std::vector <std::string> all;
+  context.config.all (all);
+
+  std::vector <std::string>::iterator var;
+  for (var = all.begin (); var != all.end (); ++var)
+    if (var->substr (0, 13) == "urgency.user.")
+      coefficients[*var] = context.config.getReal (*var);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task ()
@@ -1249,61 +1295,62 @@ int Task::determineVersion (const std::string& line)
 float Task::urgency_c () const
 {
   float value = 0.0;
-  value += urgency_priority ()    * context.config.getReal ("urgency.priority.coefficient");
-  value += urgency_project ()     * context.config.getReal ("urgency.project.coefficient");
-  value += urgency_active ()      * context.config.getReal ("urgency.active.coefficient");
-  value += urgency_waiting ()     * context.config.getReal ("urgency.waiting.coefficient");
-  value += urgency_blocked ()     * context.config.getReal ("urgency.blocked.coefficient");
-  value += urgency_annotations () * context.config.getReal ("urgency.annotations.coefficient");
-  value += urgency_tags ()        * context.config.getReal ("urgency.tags.coefficient");
-  value += urgency_next ()        * context.config.getReal ("urgency.next.coefficient");
-  value += urgency_due ()         * context.config.getReal ("urgency.due.coefficient");
-  value += urgency_blocking ()    * context.config.getReal ("urgency.blocking.coefficient");
-  value += urgency_age ()         * context.config.getReal ("urgency.age.coefficient");
+  value += fabsf (urgencyPriorityCoefficient)    > epsilon ? (urgency_priority ()    * urgencyPriorityCoefficient)    : 0.0;
+  value += fabsf (urgencyProjectCoefficient)     > epsilon ? (urgency_project ()     * urgencyProjectCoefficient)     : 0.0;
+  value += fabsf (urgencyActiveCoefficient)      > epsilon ? (urgency_active ()      * urgencyActiveCoefficient)      : 0.0;
+  value += fabsf (urgencyWaitingCoefficient)     > epsilon ? (urgency_waiting ()     * urgencyWaitingCoefficient)     : 0.0;
+  value += fabsf (urgencyBlockedCoefficient)     > epsilon ? (urgency_blocked ()     * urgencyBlockedCoefficient)     : 0.0;
+  value += fabsf (urgencyAnnotationsCoefficient) > epsilon ? (urgency_annotations () * urgencyAnnotationsCoefficient) : 0.0;
+  value += fabsf (urgencyTagsCoefficient)        > epsilon ? (urgency_tags ()        * urgencyTagsCoefficient)        : 0.0;
+  value += fabsf (urgencyNextCoefficient)        > epsilon ? (urgency_next ()        * urgencyNextCoefficient)        : 0.0;
+  value += fabsf (urgencyDueCoefficient)         > epsilon ? (urgency_due ()         * urgencyDueCoefficient)         : 0.0;
+  value += fabsf (urgencyBlockingCoefficient)    > epsilon ? (urgency_blocking ()    * urgencyBlockingCoefficient)    : 0.0;
+  value += fabsf (urgencyAgeCoefficient)         > epsilon ? (urgency_age ()         * urgencyAgeCoefficient)         : 0.0;
 
 /* 
+  // Very useful for debugging urgency problems.
   std::cout << "# Urgency for " << id << ":\n"
-          << "#     pri " << (urgency_priority ()    * context.config.getReal ("urgency.priority.coefficient"))
-          << "#     pro " << (urgency_project ()     * context.config.getReal ("urgency.project.coefficient"))
-          << "#     act " << (urgency_active ()      * context.config.getReal ("urgency.active.coefficient"))
-          << "#     wai " << (urgency_waiting ()     * context.config.getReal ("urgency.waiting.coefficient"))
-          << "#     blk " << (urgency_blocked ()     * context.config.getReal ("urgency.blocked.coefficient"))
-          << "#     ann " << (urgency_annotations () * context.config.getReal ("urgency.annotations.coefficient"))
-          << "#     tag " << (urgency_tags ()        * context.config.getReal ("urgency.tags.coefficient"))
-          << "#     nex " << (urgency_next ()        * context.config.getReal ("urgency.next.coefficient"))
-          << "#     due " << (urgency_due ()         * context.config.getReal ("urgency.due.coefficient"))
-          << "#     bkg " << (urgency_blocking ()    * context.config.getReal ("urgency.blocking.coefficient"))
-          << "#     age " << (urgency_age ()         * context.config.getReal ("urgency.age.coefficient"));
+          << "#     pri " << (urgency_priority ()    * urgencyPriorityCoefficient)
+          << "#     pro " << (urgency_project ()     * urgencyProjectCoefficient)
+          << "#     act " << (urgency_active ()      * urgencyActiveCoefficient)
+          << "#     wai " << (urgency_waiting ()     * urgencyWaitingCoefficient)
+          << "#     blk " << (urgency_blocked ()     * urgencyBlockedCoefficient)
+          << "#     ann " << (urgency_annotations () * urgencyAnnotationsCoefficient)
+          << "#     tag " << (urgency_tags ()        * urgencyTagsCoefficient)
+          << "#     nex " << (urgency_next ()        * urgencyNextCoefficient)
+          << "#     due " << (urgency_due ()         * urgencyDueCoefficient)
+          << "#     bkg " << (urgency_blocking ()    * urgencyBlockingCoefficient)
+          << "#     age " << (urgency_age ()         * urgencyAgeCoefficient);
 */
 
   // Tag- and project-specific coefficients.
-  std::vector <std::string> all;
-  context.config.all (all);
-
-  std::vector <std::string>::iterator var;
-  for (var = all.begin (); var != all.end (); ++var)
+  std::map <std::string, float>::iterator var;
+  for (var = coefficients.begin (); var != coefficients.end (); ++var)
   {
-    if (var->substr (0, 13) == "urgency.user.")
+    if (var->second > epsilon)
     {
-      // urgency.user.project.<project>.coefficient
-      std::string::size_type end = std::string::npos;
-      if (var->substr (13, 8) == "project." &&
-          (end = var->find (".coefficient")) != std::string::npos)
+      if (var->first.substr (0, 13) == "urgency.user.")
       {
-        std::string project = var->substr (21, end - 21);
+        // urgency.user.project.<project>.coefficient
+        std::string::size_type end = std::string::npos;
+        if (var->first.substr (13, 8) == "project." &&
+            (end = var->first.find (".coefficient")) != std::string::npos)
+        {
+          std::string project = var->first.substr (21, end - 21);
 
-        if (get ("project").find (project) == 0)
-          value += context.config.getReal (*var);
-      }
+          if (get ("project").find (project) == 0)
+            value += var->second;
+        }
 
-      // urgency.user.tag.<tag>.coefficient
-      if (var->substr (13, 4) == "tag." &&
-          (end = var->find (".coefficient")) != std::string::npos)
-      {
-        std::string tag = var->substr (17, end - 17);
+        // urgency.user.tag.<tag>.coefficient
+        if (var->first.substr (13, 4) == "tag." &&
+            (end = var->first.find (".coefficient")) != std::string::npos)
+        {
+          std::string tag = var->first.substr (17, end - 17);
 
-        if (hasTag (tag))
-          value += context.config.getReal (*var);
+          if (hasTag (tag))
+            value += var->second;
+        }
       }
     }
   }
