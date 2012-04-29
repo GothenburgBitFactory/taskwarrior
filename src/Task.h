@@ -74,7 +74,6 @@ public:
   int get_int (const std::string&) const;
   unsigned long get_ulong (const std::string&) const;
   time_t get_date (const std::string&) const;
-  time_t get_duration (const std::string&) const;
   void set (const std::string&, const std::string&);
   void set (const std::string&, int);
   void remove (const std::string&);

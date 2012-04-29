@@ -278,16 +278,6 @@ time_t Task::get_date (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-time_t Task::get_duration (const std::string& name) const
-{
-  Task::const_iterator i = this->find (name);
-  if (i != this->end ())
-    return (time_t) strtoul (i->second.c_str (), NULL, 10);
-
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void Task::set (const std::string& name, const std::string& value)
 {
   (*this)[name] = value;
