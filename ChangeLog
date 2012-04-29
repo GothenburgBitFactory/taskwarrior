@@ -15,6 +15,8 @@ Features
  + Sped up task sorting by skipping re-interpretation of certain data types.
 
 Bugs
+ + Fixed bug #954, which caused bulk deletions when using a UUID filter term and
+   the delete command (thanks to Bryce Harrington).
  + Fixed bug #964, where the 'projects' command showed the wrong priority labels
    (thanks to Ali Mousavi).
  + Fixed bug #968, a typo in the 'edit' command text (thanks to Victor Roetman).
