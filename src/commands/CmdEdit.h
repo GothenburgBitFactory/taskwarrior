@@ -41,7 +41,6 @@ public:
 
 private:
   std::string findValue (const std::string&, const std::string&);
-  std::string findDate (const std::string&, const std::string&);
   std::string formatDate (Task&, const std::string&);
   std::string formatTask (Task);
   void parseTask (Task&, const std::string&);

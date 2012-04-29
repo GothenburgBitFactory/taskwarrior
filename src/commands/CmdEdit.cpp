@@ -98,32 +98,6 @@ std::string CmdEdit::findValue (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CmdEdit::findDate (
-  const std::string& text,
-  const std::string& name)
-{
-  std::string::size_type found = text.find (name);
-  if (found != std::string::npos)
-  {
-    std::string::size_type eol = text.find ("\n", found + 1);
-    if (eol != std::string::npos)
-    {
-      std::string value = trim (text.substr (
-        found + name.length (),
-        eol - (found + name.length ())), "\t ");
-
-      if (value != "")
-      {
-        Date dt (value, context.config.get ("dateformat"));
-        return format ((int) dt.toEpoch ());
-      }
-    }
-  }
-
-  return "";
-}
-
-////////////////////////////////////////////////////////////////////////////////
 std::string CmdEdit::formatDate (
   Task& task,
   const std::string& attribute)
@@ -297,13 +271,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   }
 
   // entry
-  value = findDate (after, "\n  Created:");
+  value = findValue (after, "\n  Created:");
   if (value != "")
   {
-    Date edited (strtol (value.c_str (), NULL, 10));
-
     Date original (task.get_date ("entry"));
-    if (original != edited)
+    std::string formatted = original.toString (context.config.get ("dateformat"));
+
+    if (formatted != value)
     {
       context.footnote (STRING_EDIT_ENTRY_MOD);
       task.set ("entry", value);
@@ -313,15 +287,15 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
     throw std::string (STRING_EDIT_ENTRY_REMOVE_ERR);
 
   // start
-  value = findDate (after, "\n  Started:");
+  value = findValue (after, "\n  Started:");
   if (value != "")
   {
-    Date edited (strtol (value.c_str (), NULL, 10));
-
     if (task.get ("start") != "")
     {
       Date original (task.get_date ("start"));
-      if (original != edited)
+      std::string formatted = original.toString (context.config.get ("dateformat"));
+
+      if (formatted != value)
       {
         context.footnote (STRING_EDIT_START_MOD);
         task.set ("start", value);
@@ -343,15 +317,15 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   }
 
   // end
-  value = findDate (after, "\n  Ended:");
+  value = findValue (after, "\n  Ended:");
   if (value != "")
   {
-    Date edited (strtol (value.c_str (), NULL, 10));
-
     if (task.get ("end") != "")
     {
       Date original (task.get_date ("end"));
-      if (original != edited)
+      std::string formatted = original.toString (context.config.get ("dateformat"));
+
+      if (formatted != value)
       {
         context.footnote (STRING_EDIT_END_MOD);
         task.set ("end", value);
@@ -371,15 +345,15 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   }
 
   // due
-  value = findDate (after, "\n  Due:");
+  value = findValue (after, "\n  Due:");
   if (value != "")
   {
-    Date edited (strtol (value.c_str (), NULL, 10));
-
     if (task.get ("due") != "")
     {
       Date original (task.get_date ("due"));
-      if (original != edited)
+      std::string formatted = original.toString (context.config.get ("dateformat"));
+
+      if (formatted != value)
       {
         context.footnote (STRING_EDIT_DUE_MOD);
         task.set ("due", value);
@@ -409,15 +383,15 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   }
 
   // until
-  value = findDate (after, "\n  Until:");
+  value = findValue (after, "\n  Until:");
   if (value != "")
   {
-    Date edited (strtol (value.c_str (), NULL, 10));
-
     if (task.get ("until") != "")
     {
       Date original (task.get_date ("until"));
-      if (original != edited)
+      std::string formatted = original.toString (context.config.get ("dateformat"));
+
+      if (formatted != value)
       {
         context.footnote (STRING_EDIT_UNTIL_MOD);
         task.set ("until", value);
@@ -471,15 +445,15 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   }
 
   // wait
-  value = findDate (after, "\n  Wait until:");
+  value = findValue (after, "\n  Wait until:");
   if (value != "")
   {
-    Date edited (strtol (value.c_str (), NULL, 10));
-
     if (task.get ("wait") != "")
     {
       Date original (task.get_date ("wait"));
-      if (original != edited)
+      std::string formatted = original.toString (context.config.get ("dateformat"));
+
+      if (formatted != value)
       {
         context.footnote (STRING_EDIT_WAIT_MOD);
         task.set ("wait", value);
@@ -568,6 +542,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
       std::string::size_type gap = value.find (" -- ");
       if (gap != std::string::npos)
       {
+        // TODO keeping the initial dates even if dateformat approximates them
+        // is complex as finding the correspondence between each original line
+        // and edited line may be impossible (bug #705). It would be simpler if
+        // each annotation was put on a line with a distinguishable id (then
+        // for each line: if the annotation is the same, then it is copied; if
+        // the annotation is modified, then its original date may be kept; and
+        // if there is no corresponding id, then a new unique date is created).
         Date when (value.substr (0, gap), context.config.get ("dateformat"));
 
         // This guarantees that if more than one annotation has the same date,
