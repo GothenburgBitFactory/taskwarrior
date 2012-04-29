@@ -168,7 +168,7 @@ std::string taskDifferences (const Task& before, const Task& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string taskInfoDifferences (const Task& before, const Task& after)
+std::string taskInfoDifferences (const Task& before, const Task& after, const std::string& dateformat)
 {
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
@@ -232,7 +232,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
     else
       out << format (STRING_FEEDBACK_ATT_WAS_SET,
                      ucFirst (*name),
-                     renderAttribute (*name, after.get (*name)))
+                     renderAttribute (*name, after.get (*name), dateformat))
           << "\n";
   }
 
@@ -264,8 +264,8 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
       else
         out << format (STRING_FEEDBACK_ATT_WAS_MOD,
                        ucFirst (*name),
-                       renderAttribute (*name, before.get (*name)),
-                       renderAttribute (*name, after.get (*name)))
+                       renderAttribute (*name, before.get (*name), dateformat),
+                       renderAttribute (*name, after.get (*name), dateformat))
             << "\n";
     }
 
@@ -278,7 +278,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string renderAttribute (const std::string& name, const std::string& value)
+std::string renderAttribute (const std::string& name, const std::string& value, const std::string& format /* = "" */)
 {
   Column* col = context.columns[name];
   if (col                    &&
@@ -286,7 +286,14 @@ std::string renderAttribute (const std::string& name, const std::string& value)
       value != "")
   {
     Date d ((time_t)strtol (value.c_str (), NULL, 10));
-    return d.toString (context.config.get ("dateformat"));
+    if (format == "")
+    {
+      return d.toString (context.config.get ("dateformat"));
+    }
+    else
+    {
+      return d.toString (format);
+    }
   }
 
   return value;

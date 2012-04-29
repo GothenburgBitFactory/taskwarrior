@@ -69,8 +69,8 @@ void dependencyChainOnModify (Task&, Task&);
 // feedback.cpp
 bool taskDiff (const Task&, const Task&);
 std::string taskDifferences (const Task&, const Task&);
-std::string taskInfoDifferences (const Task&, const Task&);
-std::string renderAttribute (const std::string&, const std::string&);
+std::string taskInfoDifferences (const Task&, const Task&, const std::string&);
+std::string renderAttribute (const std::string&, const std::string&, const std::string& format = "");
 void feedback_affected (const std::string&);
 void feedback_affected (const std::string&, int);
 void feedback_affected (const std::string&, const Task&);

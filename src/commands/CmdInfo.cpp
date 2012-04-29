@@ -392,7 +392,7 @@ int CmdInfo::execute (std::string& output)
 
             Task before (previous.substr (4));
             Task after (current.substr (4));
-            journal.set (row, 1, taskInfoDifferences (before, after));
+            journal.set (row, 1, taskInfoDifferences (before, after, dateformat));
 
             // calculate the total active time
             if (before.get ("start") == ""
