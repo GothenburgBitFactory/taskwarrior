@@ -748,7 +748,7 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
 
     case 'd':
       if (i + 2 <= _length        &&
-          isdigit (_input[i + 1]) &&
+          isdigit (_input[i + 0]) &&
           isdigit (_input[i + 1]))
       {
         day = atoi (_input.substr (i, 2).c_str ());
