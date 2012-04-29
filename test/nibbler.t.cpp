@@ -39,15 +39,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (388);
+  UnitTest t (385);
 #else
-  UnitTest t (364);
+  UnitTest t (361);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (338);
+  UnitTest t (335);
 #else
-  UnitTest t (314);
+  UnitTest t (311);
 #endif
 #endif
 
@@ -490,12 +490,7 @@ int main (int argc, char** argv)
     t.ok (n.depleted (),                             "depleted");
 
     n = Nibbler ("a0b1c2d3");
-    t.ok (n.getPartialUUID (s),                      "partial uuid [8] found");
-    t.is (s, "a0b1c2d3",                             "partial uuid [8] -> correct");
-    t.ok (n.depleted (),                             "depleted");
-
-    n = Nibbler ("a0b1c2d");
-    t.notok (n.getPartialUUID (s),                   "partial uuid [7] not found");
+    t.notok (n.getPartialUUID (s),                   "partial uuid [8] not found");
     t.notok (n.depleted (),                          "not depleted");
 
     // bool getDateISO (time_t&);

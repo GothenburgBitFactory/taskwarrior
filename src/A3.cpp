@@ -739,6 +739,19 @@ const A3 A3::tokenize (const A3& input) const
           found_something_after_sequence = true;
       }
 
+      else if (is_uuid (n, s))
+      {
+        if (found_something_after_sequence)
+        {
+          output.push_back (Arg (s, Arg::type_string, Arg::cat_literal));
+        }
+        else
+        {
+          output.push_back (Arg (s, Arg::type_string, Arg::cat_uuid));
+          found_sequence = true;
+        }
+      }
+
       // Must be higher than number.
       // Must be higher than operator.
       // Note that Nibbler::getDate does not read durations.
@@ -807,19 +820,6 @@ const A3 A3::tokenize (const A3& input) const
         output.push_back (Arg (Date (t).toISO (), Arg::type_date, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
-      }
-
-      else if (is_uuid (n, s))
-      {
-        if (found_something_after_sequence)
-        {
-          output.push_back (Arg (s, Arg::type_string, Arg::cat_literal));
-        }
-        else
-        {
-          output.push_back (Arg (s, Arg::type_string, Arg::cat_uuid));
-          found_sequence = true;
-        }
       }
 
       else if (is_id (n, s))

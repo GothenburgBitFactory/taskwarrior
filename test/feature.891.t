@@ -157,7 +157,7 @@ like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{8})/;
 $output = qx{../src/task rc:bug.rc $short list};
-like ($output, qr/one/, "Found with $short");
+unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{7})/;
 $output = qx{../src/task rc:bug.rc $short list};
