@@ -568,7 +568,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
       std::string::size_type gap = value.find (" -- ");
       if (gap != std::string::npos)
       {
-        Date when (value.substr (0, gap), context.config.get ("dateformat.annotation"));
+        Date when (value.substr (0, gap), context.config.get ("dateformat"));
 
         // This guarantees that if more than one annotation has the same date,
         // that the seconds will be different, thus unique, thus not squashed.
