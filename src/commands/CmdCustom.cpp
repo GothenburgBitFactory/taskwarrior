@@ -162,21 +162,20 @@ int CmdCustom::execute (std::string& output)
         << optionalBlankLine ();
 
     if (context.verbose ("affected"))
+    {
       out << (filtered.size () == 1
                 ? STRING_CMD_CUSTOM_COUNT
                 : format (STRING_CMD_CUSTOM_COUNTN, filtered.size ()));
 
-    // TODO Conditional
-    if (maxrows && maxrows < (int)filtered.size ())
-      out << ", " << format (STRING_CMD_CUSTOM_SHOWN, maxrows);
+      if (maxrows && maxrows < (int)filtered.size ())
+        out << ", " << format (STRING_CMD_CUSTOM_SHOWN, maxrows);
 
-    // TODO Conditional
-    if (maxlines && maxlines < (int)filtered.size ())
-      out << ", "
-          << format (STRING_CMD_CUSTOM_TRUNCATED, maxlines - table_header);
+      if (maxlines && maxlines < (int)filtered.size ())
+        out << ", "
+            << format (STRING_CMD_CUSTOM_TRUNCATED, maxlines - table_header);
 
-    if (context.verbose ("affected"))
       out << "\n";
+    }
   }
   else
   {

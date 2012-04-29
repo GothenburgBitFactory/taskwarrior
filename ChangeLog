@@ -28,6 +28,8 @@ Bugs
    clearly stated (thanks to Louis-Claude Canon).
  + Applied patch for bug #991, which removes an obsolete consistency check
    (thanks to Louis-Claude Canon).
+ + Fixed bug #997, so that output is correctly conrolled by the 'affected'
+   verbosity token.
  + Fixed grammar in feedback string (thanks to Uli Martens).
  + Addressed valgrind complaints (thanks to Bryce Harrington).
  + Removed default configuration value for the obsolete 'annotations' setting.
