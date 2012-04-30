@@ -17,13 +17,16 @@ Features
 Bugs
  + Fixed bug #954, which caused bulk deletions when using a UUID filter term and
    the delete command (thanks to Bryce Harrington).
+ + Fixed bug #959, which forces use of dateformat for annotations when using the
+   'edit' command (thanks to Louis-Claude Canon).
  + Fixed bug #964, where the 'projects' command showed the wrong priority labels
    (thanks to Ali Mousavi).
  + Fixed bug #968, a typo in the 'edit' command text (thanks to Victor Roetman).
  + Fixed bug #973, including 'urgency' in the 'export' output (thanks to Andy
    Spiegl).
  + Fixed bug #986, so that the 'info' report uses the correct date format, also
-   applied patch to correct documentation (thanks to Louis-Claude Canon).
+   applied patch to correct documentation and add unit tests (thanks to
+   Louis-Claude Canon).
  + Applied patch for bug #987, so that total active time does not continue to
    accumulate after an active task is completed (thanks to Louis-Claude Canon).
  + Fixed bug #988, updating the documentation so that 'undo.data' usage is more
