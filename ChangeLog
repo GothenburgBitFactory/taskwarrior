@@ -32,6 +32,9 @@ Bugs
    (thanks to Louis-Claude Canon).
  + Fixed bug #995, which mis-parsed UUIDs in filters as other elements (thanks
    to Bryce Harrington).
+ + Fixed bug #996, so that verbosity code and documentation are in agreement,
+   and that the 'verbose=off' works as intended (thanks to Peter De Poorter,
+   Louis-Claude Canon).
  + Fixed bug #997, so that output is correctly conrolled by the 'affected'
    verbosity token.
  + Fixed grammar in feedback string (thanks to Uli Martens).

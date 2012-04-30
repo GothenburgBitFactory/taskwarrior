@@ -470,13 +470,9 @@ bool Context::verbose (const std::string& token)
 
       // This list emulates rc.verbose=off in version 1.9.4.
       verbosity.push_back ("blank");
-      verbosity.push_back ("footnote");
       verbosity.push_back ("label");
       verbosity.push_back ("new-id");
-      verbosity.push_back ("affected");
       verbosity.push_back ("edit");
-      verbosity.push_back ("special");
-      verbosity.push_back ("project");
     }
   }
 
