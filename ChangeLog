@@ -4,7 +4,7 @@
 2.0.1 ()
 
 Features
- + Feature #516, which allows the duplication of compelted tasks (thanks to
+ + Feature #516, which allows the duplication of completed tasks (thanks to
    Peter De Poorter, Ethan Schoonover).
  + Added the new 'indented' format for the 'project' attribute.
  + The 'projects' report now uses 'project.indented' format.
@@ -38,7 +38,7 @@ Bugs
  + Fixed bug #996, so that verbosity code and documentation are in agreement,
    and that the 'verbose=off' works as intended (thanks to Peter De Poorter,
    Louis-Claude Canon).
- + Fixed bug #997, so that output is correctly conrolled by the 'affected'
+ + Fixed bug #997, so that output is correctly controlled by the 'affected'
    verbosity token.
  + Fixed grammar in feedback string (thanks to Uli Martens).
  + Addressed valgrind complaints (thanks to Bryce Harrington).
