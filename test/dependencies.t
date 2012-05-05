@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 38;
+use Test::More tests => 49;
 
 # Create the rc file.
 if (open my $fh, '>', 'dep.rc')
@@ -216,6 +216,39 @@ like ($output, qr/\s1\s+One\s*\n\s2\s+1\s+Four\s*\n\s3\s+2\s+Five/, 'dependencie
 qx{../src/task rc:dep.rc 2 modify dep:-1};
 $output = qx{../src/task rc:dep.rc depreport};
 like ($output, qr/\s1\s+One\s*\n\s2\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - chain should not be automatically repaired after manually removing a dependency');
+
+# [38]
+unlink 'pending.data';
+ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
+
+# Bug when adding a range of dependencies - 'task 3 mod dep:1-2' interprets the
+# range 1-2 as the id 1
+
+qx{../src/task rc:dep.rc add test1};
+qx{../src/task rc:dep.rc add test2};
+qx{../src/task rc:dep.rc add test3};
+qx{../src/task rc:dep.rc add test4};
+qx{../src/task rc:dep.rc add test5};
+my $output = qx{../src/task rc:dep.rc 5 info};
+my ($uuid) = $output =~ /UUID\s+(\S+)/;
+
+# [39-43] test a comma-separated list of IDs, UUIDs, and ID ranges for creation
+qx{../src/task rc:dep.rc add test6 dep:1-3,4,$uuid};
+$output = qx{../src/task rc:dep.rc 6 info};
+like ($output, qr/test1/ms, 'Dependency appearing for task1');
+like ($output, qr/test2/ms, 'Dependency appearing for task2');
+like ($output, qr/test3/ms, 'Dependency appearing for task3');
+like ($output, qr/test4/ms, 'Dependency appearing for task4');
+like ($output, qr/test5/ms, 'Dependency appearing for task5');
+
+# [44-48] test a comma-separated list of IDs, UUIDs, and ID ranges for deletion
+qx{../src/task rc:dep.rc 6 mod dep:-1-3,-4,-$uuid};
+$output = qx{../src/task rc:dep.rc 6 info};
+unlike ($output, qr/test1/ms, 'Dependency not appearing for task1');
+unlike ($output, qr/test2/ms, 'Dependency not appearing for task2');
+unlike ($output, qr/test3/ms, 'Dependency not appearing for task3');
+unlike ($output, qr/test4/ms, 'Dependency not appearing for task4');
+unlike ($output, qr/test5/ms, 'Dependency not appearing for task5');
 
 # TODO - test dependency.confirmation config variable
 # TODO - test undo on backing out chain gap repair

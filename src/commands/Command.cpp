@@ -478,10 +478,10 @@ void Command::modify_task (
         }
         else
         {
-          // Dependencies must be resolved to UUIDs.
+          // Dependencies are used as IDs.
           if (name == "depends")
           {
-            // Convert ID to UUID.
+            // Parse IDs
             std::vector <std::string> deps;
             split (deps, value, ',');
 
@@ -489,11 +489,31 @@ void Command::modify_task (
             std::vector <std::string>::iterator i;
             for (i = deps.begin (); i != deps.end (); i++)
             {
-              int id = strtol (i->c_str (), NULL, 10);
-              if (id < 0)
-                task.removeDependency (-id);
+              bool removal = false;
+              std::string& dep = *i;
+
+              if (dep[0] == '-')
+              {
+                removal = true;
+                dep = i->substr(1, std::string::npos);
+              }
+
+              std::vector <int> ids;
+              // Crude UUID check
+              if (dep.length () == 36)
+              {
+                int id = context.tdb2.pending.id (dep);
+                ids.push_back (id);
+              }
               else
-                task.addDependency (id);
+                A3::extract_id (dep, ids);
+
+              std::vector <int>::iterator id;
+              for (id = ids.begin (); id != ids.end(); id++)
+                if (removal)
+                  task.removeDependency (*id);
+                else
+                  task.addDependency (*id);
             }
           }
 

@@ -767,32 +767,16 @@ void Task::removeAnnotations ()
 ////////////////////////////////////////////////////////////////////////////////
 void Task::addDependency (int id)
 {
-  if (id == this->id)
-    throw std::string (STRING_TASK_DEPEND_ITSELF);
-
   // Check that id is resolvable.
   std::string uuid = context.tdb2.pending.uuid (id);
   if (uuid == "")
-    throw format (STRING_TASK_DEPEND_MISSING, id);
+    throw format (STRING_TASK_DEPEND_MISS_CREA, id);
 
-  // Store the dependency.
   std::string depends = get ("depends");
-  if (depends != "")
-  {
-    // Check for extant dependency.
-    if (depends.find (uuid) == std::string::npos)
-      set ("depends", depends + "," + uuid);
-    else
-      throw format (STRING_TASK_DEPEND_DUP, this->id, id);
-  }
-  else
-    set ("depends", uuid);
+  if (depends.find (uuid) != std::string::npos)
+    throw format (STRING_TASK_DEPEND_DUP, this->id, id);
 
-  // Prevent circular dependencies.
-  if (dependencyIsCircular (*this))
-    throw std::string (STRING_TASK_DEPEND_CIRCULAR);
-
-  recalc_urgency = true;
+  addDependency(uuid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -849,11 +833,12 @@ void Task::removeDependency (const std::string& uuid)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::removeDependency (int id)
 {
+  std::string depends = get ("depends");
   std::string uuid = context.tdb2.pending.uuid (id);
-  if (uuid != "")
+  if (uuid != "" && depends.find (uuid) != std::string::npos)
     removeDependency (uuid);
   else
-    throw std::string (STRING_TASK_DEPEND_NO_UUID);
+    throw format (STRING_TASK_DEPEND_MISS_DEL, id);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

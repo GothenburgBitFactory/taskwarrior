@@ -566,7 +566,9 @@ Date until task becomes pending.
 .B depends:<id1,id2 ...>
 Declares this task to be dependent on id1 and id2.  This means that the tasks
 id1 and id2 should be completed before this task.  Consequently, this task will
-then show up on the 'blocked' report.
+then show up on the 'blocked' report.  It accepts a comma-separated list of ID
+numbers, UUID numbers and ID ranges.  When prefixing any element of this list
+by '-', the specified tasks are removed from the dependency list.
 
 .TP
 .B entry:<entry-date>
