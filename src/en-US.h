@@ -599,7 +599,7 @@
 #define STRING_EDIT_UNPARSEABLE      "Taskwarrior couldn't handle your edits.  Would you like to try again?"
 #define STRING_EDIT_UNWRITABLE       "Your data.location directory is not writable."
 #define STRING_EDIT_TAG_SEP          "Separate the tags with spaces, like this: tag1 tag2"
-#define STRING_EDIT_DEP_SEP          "Dependencies should be a comma-separated list of task IDs/UUIDs, with no spaces."
+#define STRING_EDIT_DEP_SEP          "Dependencies should be a comma-separated list of task IDs/UUIDs or ID ranges, with no spaces."
 #define STRING_EDIT_END              "End"
 
 #define STRING_EDIT_PROJECT_MOD      "Project modified."

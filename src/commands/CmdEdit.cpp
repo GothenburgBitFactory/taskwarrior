@@ -575,18 +575,20 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   std::vector <std::string>::iterator dep;
   for (dep = dependencies.begin (); dep != dependencies.end (); ++dep)
   {
-    int id = 0;
+    std::vector <int> ids;
 
-    // Crude UUID check.
+    // Crude UUID check
     if (dep->length () == 36)
-      id = context.tdb2.pending.id (*dep);
+    {
+      int id = context.tdb2.pending.id (*dep);
+      ids.push_back (id);
+    }
     else
-      id = atoi (dep->c_str ());
+      A3::extract_id (*dep, ids);
 
-    if (id)
-      task.addDependency (id);
-    else
-      task.addDependency (*dep);
+    std::vector <int>::iterator id;
+    for (id = ids.begin (); id != ids.end(); id++)
+      task.addDependency (*id);
   }
 }
 
