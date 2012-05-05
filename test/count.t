@@ -45,6 +45,11 @@ qx{../src/task rc:count.rc log two};
 qx{../src/task rc:count.rc add three};
 qx{../src/task rc:count.rc 2 delete};
 qx{../src/task rc:count.rc add four wait:eom};
+
+# TODO This fails when today == eom.  For example, on 2012-04-30 at 8:00:00, the
+#      value for 'eom' is 2012-04-30 0:00:00, which is already past due, which
+#      means a second child task is generated.  This would be fixed by 'eom'
+#      expanding to 2012-04-30 24:00:00, as per ISO-8601.
 qx{../src/task rc:count.rc add five due:eom recur:monthly};
 
 my $output = qx{../src/task rc:count.rc count};

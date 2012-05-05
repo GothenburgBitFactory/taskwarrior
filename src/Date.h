@@ -85,16 +85,16 @@ public:
   int minute () const;
   int second () const;
 
-  bool operator== (const Date&);
-  bool operator!= (const Date&);
-  bool operator<  (const Date&);
-  bool operator>  (const Date&);
-  bool operator<= (const Date&);
-  bool operator>= (const Date&);
-  bool sameHour   (const Date&);
-  bool sameDay    (const Date&);
-  bool sameMonth  (const Date&);
-  bool sameYear   (const Date&);
+  bool operator== (const Date&) const;
+  bool operator!= (const Date&) const;
+  bool operator<  (const Date&) const;
+  bool operator>  (const Date&) const;
+  bool operator<= (const Date&) const;
+  bool operator>= (const Date&) const;
+  bool sameHour   (const Date&) const;
+  bool sameDay    (const Date&) const;
+  bool sameMonth  (const Date&) const;
+  bool sameYear   (const Date&) const;
 
   Date operator+  (const int);
   Date operator-  (const int);

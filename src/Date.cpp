@@ -602,43 +602,43 @@ int Date::second () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Date::operator== (const Date& rhs)
+bool Date::operator== (const Date& rhs) const
 {
   return rhs._t == _t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Date::operator!= (const Date& rhs)
+bool Date::operator!= (const Date& rhs) const
 {
   return rhs._t != _t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Date::operator<  (const Date& rhs)
+bool Date::operator<  (const Date& rhs) const
 {
   return _t < rhs._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Date::operator>  (const Date& rhs)
+bool Date::operator>  (const Date& rhs) const
 {
   return _t > rhs._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Date::operator<= (const Date& rhs)
+bool Date::operator<= (const Date& rhs) const
 {
   return _t <= rhs._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Date::operator>= (const Date& rhs)
+bool Date::operator>= (const Date& rhs) const
 {
   return _t >= rhs._t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Date::sameHour (const Date& rhs)
+bool Date::sameHour (const Date& rhs) const
 {
   if (this->year ()  == rhs.year ()  &&
       this->month () == rhs.month () &&
@@ -650,7 +650,7 @@ bool Date::sameHour (const Date& rhs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Date::sameDay (const Date& rhs)
+bool Date::sameDay (const Date& rhs) const
 {
   if (this->year ()  == rhs.year ()  &&
       this->month () == rhs.month () &&
@@ -661,7 +661,7 @@ bool Date::sameDay (const Date& rhs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Date::sameMonth (const Date& rhs)
+bool Date::sameMonth (const Date& rhs) const
 {
   if (this->year ()  == rhs.year () &&
       this->month () == rhs.month ())
@@ -671,7 +671,7 @@ bool Date::sameMonth (const Date& rhs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Date::sameYear (const Date& rhs)
+bool Date::sameYear (const Date& rhs) const
 {
   if (this->year () == rhs.year ())
     return true;

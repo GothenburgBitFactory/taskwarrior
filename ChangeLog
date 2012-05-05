@@ -9,10 +9,10 @@ Features
  + Added the new 'indented' format for the 'project' attribute.
  + The 'projects' report now uses 'project.indented' format.
  + The 'summary' report now uses 'project.indented' format.
- + Introduced a new filter optimization that recognizes filters with no 'OR', or
-   'XOR' operators, includes IDs, but does not include UUIDs.  This combination
-   means completed.data is not referenced.
- + Sped up task sorting by skipping re-interpretation of certain data types.
+ + Performance improvements:
+   + Added parse-free convenience functions
+   + Filter optimization: with no 'OR' or 'XOR' operators, no UUIDS but with IDs
+     the completed.data file is not referenced
 
 Bugs
  + Fixed bug #954, which caused bulk deletions when using a UUID filter term and
