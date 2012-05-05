@@ -50,7 +50,7 @@ qx{../src/task rc:dep.rc add Two};
 
 # [2]
 my $output = qx{../src/task rc:dep.rc 1 modify dep:-2};
-like ($output, qr/Modified 0 tasks\./, 'dependencies - remove nonexistent dependency');
+like ($output, qr/Could not delete a dependency on task 2 - not found\./, 'dependencies - remove nonexistent dependency');
 
 # [3]
 $output = qx{../src/task rc:dep.rc 1 modify dep:99};
