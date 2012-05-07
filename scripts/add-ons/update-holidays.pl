@@ -161,6 +161,7 @@ exit (1) if !defined $data || $data eq '';
 # Filter the holidays according to @regions.
 my $id = 1;
 my $content;
+my %seen;
 for my $holiday (split /\n/ms, $data)
 {
   my $parsed = from_json ($holiday);
@@ -172,6 +173,7 @@ for my $holiday (split /\n/ms, $data)
       (@regions > 0 && ($parsed->{'region'} eq '' ||
                         exists $region_hash{$parsed->{'region'}})))
   {
+    next if $seen{ $parsed->{'description'} . ':' . $parsed->{'date'} }++;
     $content .= "holiday.${locale}${id}.name=" . $parsed->{'description'} .  "\n" .
                 "holiday.${locale}${id}.date=" . $parsed->{'date'} .         "\n";
   }

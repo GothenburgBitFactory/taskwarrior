@@ -6,6 +6,8 @@
 Features
  + Feature #516, which allows the duplication of completed tasks (thanks to
    Peter De Poorter, Ethan Schoonover).
+ + Applied patch for feature #1005, which prevents the update-holidays.pl script
+   from creating duplicate holidays (thanks to Jörg Plate).
  + Added the new 'indented' format for the 'project' attribute.
  + The 'projects' report now uses 'project.indented' format.
  + The 'summary' report now uses 'project.indented' format.
