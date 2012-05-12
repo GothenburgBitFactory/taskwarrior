@@ -114,6 +114,9 @@ static struct
 
 //static const char* non_word_chars = " +-*/%()=<>!~";
 
+// Alias expansion limit.  Any more would indicate some kind of error.
+const int safetyValveDefault = 10;
+
 ////////////////////////////////////////////////////////////////////////////////
 A3::A3 ()
 : _read_only_command (true)
@@ -374,7 +377,7 @@ void A3::resolve_aliases ()
 {
   std::vector <std::string> expanded;
   bool something;
-  int safety_valve = 10;
+  int safety_valve = safetyValveDefault;
 
   do
   {
@@ -423,7 +426,7 @@ void A3::resolve_aliases ()
   while (something && --safety_valve > 0);
 
   if (safety_valve <= 0)
-    context.debug ("Nested alias limit of 10 reached.");
+    context.debug (format ("Nested alias limit of {1} reached.", safetyValveDefault));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
