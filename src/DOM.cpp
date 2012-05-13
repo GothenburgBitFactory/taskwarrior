@@ -161,7 +161,7 @@ const std::string DOM::get (const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 // DOM Supported References:
 //
-//   TODO <id>.{entry,start,end,due,until,wait}
+//   TODO <id>.{entry,start,end,scheduled,due,until,wait}
 //   TODO <id>.description
 //   TODO <id>.project
 //   TODO <id>.priority
@@ -172,7 +172,7 @@ const std::string DOM::get (const std::string& name)
 //   TODO <id>.recur
 //   TODO <id>.depends
 //
-//   TODO <uuid>.{entry,start,end,due,until,wait}
+//   TODO <uuid>.{entry,start,end,scheduled,due,until,wait}
 //   TODO <uuid>.description
 //   TODO <uuid>.project
 //   TODO <uuid>.priority
@@ -183,7 +183,7 @@ const std::string DOM::get (const std::string& name)
 //   TODO <uuid>.recur
 //   TODO <uuid>.depends
 //
-//   {entry,start,end,due,until,wait}
+//   {entry,start,end,scheduled,due,until,wait}
 //   description
 //   project
 //   priority

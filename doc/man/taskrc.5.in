@@ -925,7 +925,7 @@ Colors the output of the merge command.
 .RE
 
 .TP
-.B rule.precedence.color=due.today,active,blocked,overdue,due,keyword,project,tag,recurring,pri,tagged,completed,deleted
+.B rule.precedence.color=due.today,active,blocked,overdue,due,scheduled,keyword,project,tag,recurring,pri,tagged,completed,deleted
 .RS
 This setting specifies the precedence of the color rules, from highest to
 lowest.  Note that the prefix 'color.' is omitted (for brevity), and that any

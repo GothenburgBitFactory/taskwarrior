@@ -252,6 +252,12 @@ Shows a page of the most urgent tasks, sorted by urgency, which is a calculated
 value.
 
 .TP
+.B task <filter> ready
+Shows a page of the most urgent ready tasks, sorted by urgency.  A ready task is
+one that is either unscheduled, or has a scheduled date that is past and has no
+wait date.
+
+.TP
 .B task <filter> oldest
 Shows the oldest tasks matching the filter.
 
