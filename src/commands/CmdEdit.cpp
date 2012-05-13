@@ -159,6 +159,7 @@ std::string CmdEdit::formatTask (Task task)
          << "  Created:           " << formatDate (task, "entry")                       << "\n"
          << "  Started:           " << formatDate (task, "start")                       << "\n"
          << "  Ended:             " << formatDate (task, "end")                         << "\n"
+         << "  Scheduled:         " << formatDate (task, "scheduled")                   << "\n"
          << "  Due:               " << formatDate (task, "due")                         << "\n"
          << "  Until:             " << formatDate (task, "until")                       << "\n"
          << "  Recur:             " << task.get ("recur")                               << "\n"
@@ -341,6 +342,37 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
       context.footnote (STRING_EDIT_END_DEL);
       task.setStatus (Task::pending);
       task.remove ("end");
+    }
+  }
+
+  // scheduled
+  value = findValue (after, "\n  Scheduled:");
+  if (value != "")
+  {
+    if (task.get ("scheduled") != "")
+    {
+      Date original (task.get_date ("scheduled"));
+      std::string formatted = original.toString (context.config.get ("dateformat"));
+
+      if (formatted != value)
+      {
+        context.footnote (STRING_EDIT_SCHED_MOD);
+        task.set ("scheduled", value);
+      }
+    }
+    else
+    {
+      context.footnote (STRING_EDIT_SCHED_MOD);
+      task.set ("scheduled", value);
+    }
+  }
+  else
+  {
+    if (task.get ("scheduled") != "")
+    {
+      context.footnote (STRING_EDIT_SCHED_DEL);
+      task.setStatus (Task::pending);
+      task.remove ("scheduled");
     }
   }
 

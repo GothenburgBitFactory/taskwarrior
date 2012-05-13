@@ -21,6 +21,7 @@ set (columns_SRCS Column.cpp Column.h
                   ColPriority.cpp ColPriority.h
                   ColProject.cpp ColProject.h
                   ColRecur.cpp ColRecur.h
+                  ColScheduled.cpp ColScheduled.h
                   ColStart.cpp ColStart.h
                   ColStatus.cpp ColStatus.h
                   ColString.cpp ColString.h

@@ -110,10 +110,12 @@ public:
 private:
   int determineVersion (const std::string&);
   void legacyParse (const std::string&);
+  void validate_before (const std::string&, const std::string&);
 
   inline float urgency_priority () const;
   inline float urgency_project () const;
   inline float urgency_active () const;
+  inline float urgency_scheduled () const;
   inline float urgency_waiting () const;
   inline float urgency_blocked () const;
   inline float urgency_annotations () const;

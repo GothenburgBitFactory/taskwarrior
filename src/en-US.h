@@ -182,6 +182,7 @@
 #define STRING_COLUMN_LABEL_COLUMN   "Columns"
 #define STRING_COLUMN_LABEL_STYLES   "Supported Formats"
 #define STRING_COLUMN_LABEL_EXAMPLES "Example"
+#define STRING_COLUMN_LABEL_SCHED    "Scheduled"
 
 // Column Examples
 #define STRING_COLUMN_EXAMPLES_TAGS  "home @chore"
@@ -615,6 +616,8 @@
 #define STRING_EDIT_END_MOD          "End date modified."
 #define STRING_EDIT_END_DEL          "End date removed."
 #define STRING_EDIT_END_SET_ERR      "Cannot set a done date on a pending task."
+#define STRING_EDIT_SCHED_MOD        "Scheduled date modified."
+#define STRING_EDIT_SCHED_DEL        "Scheduled date removed."
 #define STRING_EDIT_DUE_MOD          "Due date modified."
 #define STRING_EDIT_DUE_DEL          "Due date removed."
 #define STRING_EDIT_DUE_DEL_ERR      "Cannot remove a due date from a recurring task."
@@ -761,9 +764,7 @@
 #define STRING_TASK_DEPEND_CIRCULAR  "Circular dependency detected and disallowed."
 #define STRING_TASK_VALID_DESC       "A task must have a description."
 #define STRING_TASK_VALID_BLANK      "Cannot add a task that is blank."
-#define STRING_TASK_VALID_WAIT       "Warning: You have specified a 'wait' date that is after the 'due' date."
-#define STRING_TASK_VALID_START      "Warning: You have specified a 'start' date that is before the 'entry' date."
-#define STRING_TASK_VALID_END        "Warning: You have specified an 'end' date that is before the 'entry' date."
+#define STRING_TASK_VALID_BEFORE     "Warning: You have specified that the '{1}' date is after the '{2}' date."
 #define STRING_TASK_VALID_REC_DUE    "A recurring task must also have a 'due' date."
 #define STRING_TASK_VALID_UNTIL      "Only recurring tasks may have an 'until' date."
 #define STRING_TASK_VALID_RECUR      "The recurrence value '{1}' is not valid."
@@ -873,12 +874,14 @@
   "  priority:       Priority\n" \
   "  due:            Due date\n" \
   "  recur:          Recurrence frequency\n" \
-  "  until:          Recurrence end date\n" \
+  "  until:          Expiration date of a task\n" \
   "  limit:          Desired number of rows in report, or 'page'\n" \
   "  wait:           Date until task becomes pending\n" \
   "  entry:          Date task was created\n" \
   "  end:            Date task was completed/deleted\n" \
   "  start:          Date task was started\n" \
+  "  scheduled:      Date task is scheduled to start\n" \
+  "  depends:        Other tasks that this task depends upon\n" \
   "\n" \
   "Attribute modifiers make filters more precise.  Supported modifiers are:\n" \
   "  before     (synonyms under, below)\n" \

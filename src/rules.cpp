@@ -140,6 +140,14 @@ static void colorizeActive (Task& task, const std::string& rule, Color& c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+static void colorizeScheduled (Task& task, const std::string& rule, Color& c)
+{
+  if (gsColor[rule].nontrivial () &&
+      task.has ("scheduled"))
+    c.blend (gsColor[rule]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 static void colorizeTag (Task& task, const std::string& rule, Color& c)
 {
   if (task.hasTag (rule.substr (10)))
@@ -291,6 +299,7 @@ void autoColorize (Task& task, Color& c)
     else if (*r == "color.pri.H")                  colorizePriorityH    (task, *r, c);
     else if (*r == "color.pri.none")               colorizePriorityNone (task, *r, c);
     else if (*r == "color.active")                 colorizeActive       (task, *r, c);
+    else if (*r == "color.scheduled")              colorizeScheduled    (task, *r, c);
     else if (*r == "color.project.none")           colorizeProjectNone  (task, *r, c);
     else if (*r == "color.tag.none")               colorizeTagNone      (task, *r, c);
     else if (*r == "color.due")                    colorizeDue          (task, *r, c);

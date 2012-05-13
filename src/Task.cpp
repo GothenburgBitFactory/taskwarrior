@@ -53,6 +53,7 @@ static std::map <std::string, float> coefficients;
 float urgencyPriorityCoefficient    = 0.0;
 float urgencyProjectCoefficient     = 0.0;
 float urgencyActiveCoefficient      = 0.0;
+float urgencyScheduledCoefficient   = 0.0;
 float urgencyWaitingCoefficient     = 0.0;
 float urgencyBlockedCoefficient     = 0.0;
 float urgencyAnnotationsCoefficient = 0.0;
@@ -74,6 +75,7 @@ void initializeUrgencyCoefficients ()
   urgencyPriorityCoefficient    = context.config.getReal ("urgency.priority.coefficient");
   urgencyProjectCoefficient     = context.config.getReal ("urgency.project.coefficient");
   urgencyActiveCoefficient      = context.config.getReal ("urgency.active.coefficient");
+  urgencyScheduledCoefficient   = context.config.getReal ("urgency.scheduled.coefficient");
   urgencyWaitingCoefficient     = context.config.getReal ("urgency.waiting.coefficient");
   urgencyBlockedCoefficient     = context.config.getReal ("urgency.blocked.coefficient");
   urgencyAnnotationsCoefficient = context.config.getReal ("urgency.annotations.coefficient");
@@ -1131,35 +1133,14 @@ void Task::validate ()
 
   // 2) To provide suitable warnings about odd states
 
-  // When a task has a due date, other dates should conform.
-  if (has ("due"))
-  {
-    Date due (get_date ("due"));
-
-    // Verify wait < due
-    if (has ("wait"))
-    {
-      Date wait (get_date ("wait"));
-      if (wait > due)
-        context.footnote (STRING_TASK_VALID_WAIT);
-    }
-
-    Date entry (get_date ("entry"));
-
-    if (has ("start"))
-    {
-      Date start (get_date ("start"));
-      if (entry > start)
-        context.footnote (STRING_TASK_VALID_START);
-    }
-
-    if (has ("end"))
-    {
-      Date end (get_date ("end"));
-      if (entry > end)
-        context.footnote (STRING_TASK_VALID_END);
-    }
-  }
+  // Date relationships.
+  validate_before ("wait",      "due");
+  validate_before ("entry",     "start");
+  validate_before ("entry",     "end");
+  validate_before ("wait",      "scheduled");
+  validate_before ("scheduled", "start");
+  validate_before ("scheduled", "due");
+  validate_before ("scheduled", "end");
 
   // 3) To generate errors when the inconsistencies are not fixable
 
@@ -1193,6 +1174,19 @@ void Task::validate ()
         priority != "M" &&
         priority != "L")
       throw format (STRING_TASK_VALID_PRIORITY, priority);
+  }
+}
+
+void Task::validate_before (const std::string& left, const std::string& right)
+{
+  if (has (left) &&
+      has (right))
+  {
+    Date date_left (get_date (left));
+    Date date_right (get_date (right));
+
+    if (date_left > date_right)
+      context.footnote (format (STRING_TASK_VALID_BEFORE, left, right));
   }
 }
 
@@ -1290,6 +1284,7 @@ float Task::urgency_c () const
   value += fabsf (urgencyPriorityCoefficient)    > epsilon ? (urgency_priority ()    * urgencyPriorityCoefficient)    : 0.0;
   value += fabsf (urgencyProjectCoefficient)     > epsilon ? (urgency_project ()     * urgencyProjectCoefficient)     : 0.0;
   value += fabsf (urgencyActiveCoefficient)      > epsilon ? (urgency_active ()      * urgencyActiveCoefficient)      : 0.0;
+  value += fabsf (urgencyScheduledCoefficient)   > epsilon ? (urgency_scheduled ()   * urgencyScheduledCoefficient)   : 0.0;
   value += fabsf (urgencyWaitingCoefficient)     > epsilon ? (urgency_waiting ()     * urgencyWaitingCoefficient)     : 0.0;
   value += fabsf (urgencyBlockedCoefficient)     > epsilon ? (urgency_blocked ()     * urgencyBlockedCoefficient)     : 0.0;
   value += fabsf (urgencyAnnotationsCoefficient) > epsilon ? (urgency_annotations () * urgencyAnnotationsCoefficient) : 0.0;
@@ -1305,6 +1300,7 @@ float Task::urgency_c () const
           << "#     pri " << (urgency_priority ()    * urgencyPriorityCoefficient)
           << "#     pro " << (urgency_project ()     * urgencyProjectCoefficient)
           << "#     act " << (urgency_active ()      * urgencyActiveCoefficient)
+          << "#     sch " << (urgency_scheduled ()   * urgencyScheduledCoefficient)
           << "#     wai " << (urgency_waiting ()     * urgencyWaitingCoefficient)
           << "#     blk " << (urgency_blocked ()     * urgencyBlockedCoefficient)
           << "#     ann " << (urgency_annotations () * urgencyAnnotationsCoefficient)
@@ -1389,6 +1385,16 @@ float Task::urgency_project () const
 float Task::urgency_active () const
 {
   if (has ("start"))
+    return 1.0;
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+float Task::urgency_scheduled () const
+{
+  if (has ("scheduled") &&
+      get_date ("scheduled") < time (NULL))
     return 1.0;
 
   return 0.0;

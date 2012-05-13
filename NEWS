@@ -3,6 +3,8 @@ New Features in taskwarrior 2.0.1
 
   - The new 'project.indented' format is available and used in the 'projects'
     and 'summary' commands.
+  - Support for the 'scheduled' date for a task, which represent the earliest
+    opportunity to work on a task.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
@@ -13,7 +15,8 @@ New commands in taskwarrior 2.0.1
 
 New configuration options in taskwarrior 2.0.1
 
-  - None
+  - urgency.scheduled.coefficient
+  - color.scheduled
 
 Newly deprecated features in taskwarrior 2.0.1
 

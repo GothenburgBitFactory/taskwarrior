@@ -733,6 +733,9 @@ Task is due today
 .B color.active
 Task is started, therefore active.
 .br
+.B color.scheduled
+Task is scheduled, therefore ready for work.
+.br
 .B color.blocked
 Task is blocked by a dependency.
 .br
@@ -944,47 +947,51 @@ has a configurable coefficient.  Those coefficients are:
 .TP
 .B urgency.next.coefficient=15.0
 .RS
-Urgency coefficients for 'next' special tag
+Urgency coefficient for 'next' special tag
 .RE
 .B urgency.blocking.coefficient=8.0
 .RS
-Urgency coefficients for blocking tasks
+Urgency coefficient for blocking tasks
 .RE
 .B urgency.blocked.coefficient=-5.0
 .RS
-Urgency coefficients for blocked tasks
+Urgency coefficient for blocked tasks
 .RE
 .B urgency.due.coefficient=12.0
 .RS
-Urgency coefficients for due dates
+Urgency coefficient for due dates
 .RE
 .B urgency.priority.coefficient=6.0
 .RS
-Urgency coefficients for priorities
+Urgency coefficient for priorities
 .RE
 .B urgency.waiting.coefficient=-3.0
 .RS
-Urgency coefficients for waiting status
+Urgency coefficient for waiting status
 .RE
 .B urgency.active.coefficient=4.0
 .RS
-Urgency coefficients for active tasks
+Urgency coefficient for active tasks
+.RE
+.B urgency.scheduled.coefficient=5.0
+.RS
+Urgency coefficient for scheduled tasks
 .RE
 .B urgency.project.coefficient=1.0
 .RS
-Urgency coefficients for projects
+Urgency coefficient for projects
 .RE
 .B urgency.tags.coefficient=1.0
 .RS
-Urgency coefficients for tags
+Urgency coefficient for tags
 .RE
 .B urgency.annotations.coefficient=1.0
 .RS
-Urgency coefficients for annotations
+Urgency coefficient for annotations
 .RE
 .B urgency.age.coefficient=2.0
 .RS
-Urgency coefficients for the age of tasks
+Urgency coefficient for the age of tasks
 .RE
 .B urgency.age.max=365
 .RS

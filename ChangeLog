@@ -13,6 +13,8 @@ Features
  + The 'summary' report now uses 'project.indented' format.
  + Applied patch to allow ID ranges and UUIDs when editing dependencies (thanks
    to Louis-Claude Canon).
+ + Supports 'scheduled' date for tasks, which represent the earliest opportunity
+   to work on a task.
  + Performance improvements:
    + Added parse-free convenience functions
    + Filter optimization: with no 'OR' or 'XOR' operators, no UUIDS but with IDs

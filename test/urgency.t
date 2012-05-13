@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 46;
+use Test::More tests => 48;
 
 # Create the rc file.
 if (open my $fh, '>', 'urgency.rc')
@@ -299,6 +299,16 @@ like ($output, qr/urgency 20$/ms, 'pro:PROJECT = 20');
 qx{../src/task rc:urgency.rc add 11a +TAG};                   # task 43
 $output = qx{../src/task rc:urgency.rc 43 _urgency};
 like ($output, qr/urgency 18$/ms, '+TAG = 18');
+
+# scheduled 0 (scheduled future)
+qx {../src/task rc:urgency.rc add 12a scheduled:eom};
+$output = qx{../src/task rc:urgency.rc 44 _urgency};
+like ($output, qr/urgency 0$/ms, 'scheduled future = 0');
+
+# scheduled 5 (scheduled past)
+qx {../src/task rc:urgency.rc add 12b scheduled:yesterday};
+$output = qx{../src/task rc:urgency.rc 45 _urgency};
+like ($output, qr/urgency 5$/ms, 'scheduled past = 5');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key urgency.rc);

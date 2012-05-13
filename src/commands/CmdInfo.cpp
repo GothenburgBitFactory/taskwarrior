@@ -244,6 +244,14 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 1, Date (task->get_date ("wait")).toString (dateformat));
     }
 
+    // scheduled
+    if (task->has ("scheduled"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, STRING_COLUMN_LABEL_SCHED);
+      view.set (row, 1, Date (task->get_date ("scheduled")).toString (dateformat));
+    }
+
     // start
     if (task->has ("start"))
     {

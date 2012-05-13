@@ -43,6 +43,7 @@
 #include <ColPriority.h>
 #include <ColProject.h>
 #include <ColRecur.h>
+#include <ColScheduled.h>
 #include <ColStart.h>
 #include <ColStatus.h>
 #include <ColString.h>
@@ -94,6 +95,7 @@ Column* Column::factory (const std::string& name, const std::string& report)
   else if (column_name == "priority")    c = new ColumnPriority ();
   else if (column_name == "project")     c = new ColumnProject ();
   else if (column_name == "recur")       c = new ColumnRecur ();
+  else if (column_name == "scheduled")   c = new ColumnScheduled ();
   else if (column_name == "start")       c = new ColumnStart ();
   else if (column_name == "status")      c = new ColumnStatus ();
   else if (column_name == "tags")        c = new ColumnTags ();
@@ -137,6 +139,7 @@ void Column::factory (std::map <std::string, Column*>& all)
   c = new ColumnPriority ();       all[c->_name] = c;
   c = new ColumnProject ();        all[c->_name] = c;
   c = new ColumnRecur ();          all[c->_name] = c;
+  c = new ColumnScheduled ();      all[c->_name] = c;
   c = new ColumnStart ();          all[c->_name] = c;
   c = new ColumnStatus ();         all[c->_name] = c;
   c = new ColumnTags ();           all[c->_name] = c;
