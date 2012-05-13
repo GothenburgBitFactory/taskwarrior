@@ -145,7 +145,7 @@ static void colorizeScheduled (Task& task, const std::string& rule, Color& c)
 {
   if (gsColor[rule].nontrivial () &&
       task.has ("scheduled") &&
-      Date (task.get_date ("scheduled")) < now)
+      Date (task.get_date ("scheduled")) <= now)
     c.blend (gsColor[rule]);
 }
 
