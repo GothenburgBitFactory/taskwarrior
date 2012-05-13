@@ -39,6 +39,7 @@ extern Context context;
 
 static std::map <std::string, Color> gsColor;
 static std::vector <std::string> gsPrecedence;
+static Date now;
 
 ////////////////////////////////////////////////////////////////////////////////
 void initializeColorRules ()
@@ -143,7 +144,8 @@ static void colorizeActive (Task& task, const std::string& rule, Color& c)
 static void colorizeScheduled (Task& task, const std::string& rule, Color& c)
 {
   if (gsColor[rule].nontrivial () &&
-      task.has ("scheduled"))
+      task.has ("scheduled") &&
+      Date (task.get_date ("scheduled")) < now)
     c.blend (gsColor[rule]);
 }
 
