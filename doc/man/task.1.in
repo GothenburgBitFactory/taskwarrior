@@ -546,8 +546,8 @@ Specifies the due-date of a task.
 Specifies the frequency of a recurrence of a task.
 
 .TP
-.B until:<end-date-of-recurrence>
-Specifies the Recurrence end-date of a task.
+.B until:<expiration date of task>
+Specifies the expiration date of a task, after which it will be deleted.
 
 .TP
 .B fg:<color-spec>

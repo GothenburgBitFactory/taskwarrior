@@ -4,6 +4,8 @@
 2.0.1 ()
 
 Features
+ + Feature #457, tasks may now be given an 'until' date, after which they expire
+   and are deleted.
  + Feature #516, which allows the duplication of completed tasks (thanks to
    Peter De Poorter, Ethan Schoonover).
  + Applied patch for feature #1005, which prevents the update-holidays.pl script

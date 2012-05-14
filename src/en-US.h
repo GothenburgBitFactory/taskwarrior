@@ -225,7 +225,7 @@
 #define STRING_CMD_INFO_USAGE        "Shows all data and metadata"
 #define STRING_CMD_INFO_BLOCKED      "This task blocked by"
 #define STRING_CMD_INFO_BLOCKING     "This task is blocking"
-#define STRING_CMD_INFO_RECUR_UNTIL  "Recur until"
+#define STRING_CMD_INFO_UNTIL        "Until"
 #define STRING_CMD_INFO_MODIFICATION "Modification"
 #define STRING_CMD_INFO_TOTAL_ACTIVE "Total active time"
 #define STRING_CMD_UNDO_USAGE        "Reverts the most recent change to a task"
@@ -698,6 +698,7 @@
 #define STRING_FEEDBACK_TAG_NOCAL    "The 'nocal' special tag will keep this task off the calendar report."
 #define STRING_FEEDBACK_TAG_NEXT     "The 'next' special tag will boost the urgency of this task so it appears on the 'next' report."
 #define STRING_FEEDBACK_UNBLOCKED    "Unblocked {1} '{2}'."
+#define STRING_FEEDBACK_EXPIRED      "Task {1} '{2}' expired and was deleted."
 
 // File
 #define STRING_FILE_PERMS            "Task does not have the correct permissions for '{1}'."
@@ -731,9 +732,6 @@
 #define STRING_RECORD_EMPTY          "Empty record in input."
 #define STRING_RECORD_JUNK_AT_EOL    "Unrecognized characters at end of line."
 #define STRING_RECORD_NOT_FF4        "Record not recognized as format 4."
-
-// recur
-#define STRING_RECUR_PAST_UNTIL      "Task ({1}) has past its 'until' date, and has been deleted."
 
 // 'show' command
 #define STRING_CMD_SHOW              "Shows all configuration variables or subset"

@@ -56,6 +56,7 @@ extern Context context;
 void handleRecurrence ()
 {
   std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
+  Date now;
 
   // Look at all tasks and find any recurring ones.
   std::vector <Task>::iterator t;
@@ -68,12 +69,10 @@ void handleRecurrence ()
       std::vector <Date> due;
       if (!generateDueDates (*t, due))
       {
-        std::cout << format (STRING_RECUR_PAST_UNTIL, trim (t->get ("description")))
-                  << "\n";
-
         // Determine the end date.
         t->setStatus (Task::deleted);
         context.tdb2.modify (*t);
+        context.footnote (onExpiration (*t));
         continue;
       }
 
@@ -135,6 +134,18 @@ void handleRecurrence ()
       {
         t->set ("mask", mask);
         context.tdb2.modify (*t);
+      }
+    }
+
+    // Non-recurring tasks expire too.
+    else
+    {
+      if (t->has ("until") &&
+          Date (t->get_date ("until")) < now)
+      {
+        t->setStatus (Task::deleted);
+        context.tdb2.modify(*t);
+        context.footnote (onExpiration (*t));
       }
     }
   }

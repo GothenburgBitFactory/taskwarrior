@@ -53,7 +53,7 @@ qx{../src/task rc:recur.rc 3 do};
 qx{../src/task rc:recur.rc 4 do};
 qx{../src/task rc:recur.rc 5 do};
 $output = qx{../src/task rc:recur.rc list};
-like ($output, qr/and has been deleted/, 'Parent task deleted');
+like ($output, qr/and was deleted/, 'Parent task deleted');
 
 $output = qx{../src/task rc:recur.rc diag};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');

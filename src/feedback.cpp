@@ -469,6 +469,18 @@ std::string onProjectChange (Task& task1, Task& task2)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+std::string onExpiration (Task& task)
+{
+  std::stringstream msg;
+
+  if (context.verbose ("affected"))
+    msg << format (STRING_FEEDBACK_EXPIRED, task.id, task.get ("description"))
+        << "\n";
+
+  return msg.str ();
+}
+
+///////////////////////////////////////////////////////////////////////////////
 static void countTasks (
   const std::vector <Task>& all,
   const std::string& project,

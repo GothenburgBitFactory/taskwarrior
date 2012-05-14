@@ -5,13 +5,15 @@ New Features in taskwarrior 2.0.1
     and 'summary' commands.
   - Support for the 'scheduled' date for a task, which represent the earliest
     opportunity to work on a task.
+  - All tasks may now be given an 'until' date, after which they will expire
+    and are deleted.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
 
 New commands in taskwarrior 2.0.1
 
-  - None
+  - New 'ready' report that lists tasks ready for work, sorted by urgency.
 
 New configuration options in taskwarrior 2.0.1
 

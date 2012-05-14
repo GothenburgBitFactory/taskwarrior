@@ -1154,10 +1154,6 @@ void Task::validate ()
   if (! has ("due") && has ("recur"))
     throw std::string (STRING_TASK_VALID_REC_DUE);
 
-  // Cannot have an until date no recurrence frequency.
-  if (has ("until") && !has ("recur"))
-    throw std::string (STRING_TASK_VALID_UNTIL);
-
   // Recur durations must be valid.
   if (has ("recur"))
   {

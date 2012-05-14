@@ -203,7 +203,7 @@ int CmdInfo::execute (std::string& output)
     if (task->has ("until"))
     {
       row = view.addRow ();
-      view.set (row, 0, STRING_CMD_INFO_RECUR_UNTIL);
+      view.set (row, 0, STRING_CMD_INFO_UNTIL);
       view.set (row, 1, Date (task->get_date ("until")).toString (dateformat));
     }
 

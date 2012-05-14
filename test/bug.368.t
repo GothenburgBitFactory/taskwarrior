@@ -45,8 +45,8 @@ qx{../src/task rc:bug.rc add foo due:today recur:daily until:eom};
 my $output = qx{../src/task rc:bug.rc info 1};
 
 # Result: Make sure the 'until' date is rendered as a date, not an epoch.
-unlike ($output, qr/Recur until\s+\d{10}/,          'until is not shown as an epoch');
-  like ($output, qr/Recur until\s+\d+\/\d+\/\d{4}/, 'until is shown as a date');
+unlike ($output, qr/Until\s+\d{10}/,          'until is not shown as an epoch');
+  like ($output, qr/Until\s+\d+\/\d+\/\d{4}/, 'until is shown as a date');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
