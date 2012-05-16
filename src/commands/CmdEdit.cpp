@@ -281,7 +281,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
     if (formatted != value)
     {
       context.footnote (STRING_EDIT_ENTRY_MOD);
-      task.set ("entry", value);
+      task.set ("entry", Date(value, dateformat).toEpochString ());
     }
   }
   else
@@ -299,13 +299,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_START_MOD);
-        task.set ("start", value);
+        task.set ("start", Date(value, dateformat).toEpochString ());
       }
     }
     else
     {
       context.footnote (STRING_EDIT_START_MOD);
-      task.set ("start", value);
+      task.set ("start", Date(value, dateformat).toEpochString ());
     }
   }
   else
@@ -329,7 +329,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_END_MOD);
-        task.set ("end", value);
+        task.set ("end", Date(value, dateformat).toEpochString ());
       }
     }
     else if (task.getStatus () != Task::deleted)
@@ -357,13 +357,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_SCHED_MOD);
-        task.set ("scheduled", value);
+        task.set ("scheduled", Date(value, dateformat).toEpochString ());
       }
     }
     else
     {
       context.footnote (STRING_EDIT_SCHED_MOD);
-      task.set ("scheduled", value);
+      task.set ("scheduled", Date(value, dateformat).toEpochString ());
     }
   }
   else
@@ -388,13 +388,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_DUE_MOD);
-        task.set ("due", value);
+        task.set ("due", Date(value, dateformat).toEpochString ());
       }
     }
     else
     {
       context.footnote (STRING_EDIT_DUE_MOD);
-      task.set ("due", value);
+      task.set ("due", Date(value, dateformat).toEpochString ());
     }
   }
   else
@@ -426,13 +426,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_UNTIL_MOD);
-        task.set ("until", value);
+        task.set ("until", Date(value, dateformat).toEpochString ());
       }
     }
     else
     {
       context.footnote (STRING_EDIT_UNTIL_MOD);
-      task.set ("until", value);
+      task.set ("until", Date(value, dateformat).toEpochString ());
     }
   }
   else
@@ -488,14 +488,14 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
       if (formatted != value)
       {
         context.footnote (STRING_EDIT_WAIT_MOD);
-        task.set ("wait", value);
+        task.set ("wait", Date(value, dateformat).toEpochString ());
         task.setStatus (Task::waiting);
       }
     }
     else
     {
       context.footnote (STRING_EDIT_WAIT_MOD);
-      task.set ("wait", value);
+      task.set ("wait", Date(value, dateformat).toEpochString ());
       task.setStatus (Task::waiting);
     }
   }
