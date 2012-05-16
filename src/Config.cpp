@@ -109,6 +109,7 @@ std::string Config::_defaults =
   "# Dates\n"
   "dateformat=m/d/Y                               # Preferred input and display date format\n"
   "dateformat.holiday=YMD                         # Preferred input date format for holidays\n"
+  "dateformat.edit=m/d/Y H:N:S                    # Preferred display date format when editing\n"
   "dateformat.info=m/d/Y H:N:S                    # Preferred display date format for information\n"
   "dateformat.report=m/d/Y                        # Preferred display date format for reports\n"
   "dateformat.annotation=m/d/Y                    # Preferred display date format for annotations\n"

@@ -631,8 +631,12 @@ bool CmdEdit::editFile (Task& task)
   file << "task." << getpid () << "." << task.id << ".task";
   std::string path = location._data + "/" + file.str ();
 
-  // Determine the output date format
-  std::string dateformat = context.config.get ("dateformat");
+  // Determine the output date format, which uses a hierarchy of definitions.
+  //   rc.dateformat.edit
+  //   rc.dateformat
+  std::string dateformat = context.config.get ("dateformat.edit");
+  if (dateformat == "")
+    dateformat = context.config.get ("dateformat");
 
   // Format the contents, T -> text, write to a file.
   std::string before = formatTask (task, dateformat);

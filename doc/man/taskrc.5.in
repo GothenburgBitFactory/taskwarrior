@@ -475,6 +475,8 @@ Enables the extension system.  Defaults to on.
 .TP
 .B dateformat.holiday=YMD
 .TP
+.B dateformat.edit=m/d/Y H:N:S
+.TP
 .B dateformat.info=m/d/Y H:N:S
 .TP
 .B dateformat.annotation=m/d/Y

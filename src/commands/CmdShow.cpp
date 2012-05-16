@@ -128,6 +128,7 @@ int CmdShow::execute (std::string& output)
     " data.location"
     " dateformat"
     " dateformat.annotation"
+    " dateformat.edit"
     " dateformat.holiday"
     " dateformat.info"
     " dateformat.report"
