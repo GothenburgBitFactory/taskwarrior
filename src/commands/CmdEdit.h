@@ -41,9 +41,9 @@ public:
 
 private:
   std::string findValue (const std::string&, const std::string&);
-  std::string formatDate (Task&, const std::string&);
-  std::string formatTask (Task);
-  void parseTask (Task&, const std::string&);
+  std::string formatDate (Task&, const std::string&, const std::string&);
+  std::string formatTask (Task, const std::string&);
+  void parseTask (Task&, const std::string&, const std::string&);
   bool editFile (Task&);
 };
 

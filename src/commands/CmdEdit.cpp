@@ -100,20 +100,21 @@ std::string CmdEdit::findValue (
 ////////////////////////////////////////////////////////////////////////////////
 std::string CmdEdit::formatDate (
   Task& task,
-  const std::string& attribute)
+  const std::string& attribute,
+  const std::string& dateformat)
 {
   std::string value = task.get (attribute);
   if (value.length ())
   {
     Date dt (strtol (value.c_str (), NULL, 10));
-    value = dt.toString (context.config.get ("dateformat"));
+    value = dt.toString (dateformat);
   }
 
   return value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CmdEdit::formatTask (Task task)
+std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 {
   std::stringstream before;
   bool verbose = context.verbose ("edit") ||
@@ -156,14 +157,14 @@ std::string CmdEdit::formatTask (Task task)
 
   before << "  Tags:              " << allTags                                          << "\n"
          << "  Description:       " << task.get ("description")                         << "\n"
-         << "  Created:           " << formatDate (task, "entry")                       << "\n"
-         << "  Started:           " << formatDate (task, "start")                       << "\n"
-         << "  Ended:             " << formatDate (task, "end")                         << "\n"
-         << "  Scheduled:         " << formatDate (task, "scheduled")                   << "\n"
-         << "  Due:               " << formatDate (task, "due")                         << "\n"
-         << "  Until:             " << formatDate (task, "until")                       << "\n"
+         << "  Created:           " << formatDate (task, "entry", dateformat)           << "\n"
+         << "  Started:           " << formatDate (task, "start", dateformat)           << "\n"
+         << "  Ended:             " << formatDate (task, "end", dateformat)             << "\n"
+         << "  Scheduled:         " << formatDate (task, "scheduled", dateformat)       << "\n"
+         << "  Due:               " << formatDate (task, "due", dateformat)             << "\n"
+         << "  Until:             " << formatDate (task, "until", dateformat)           << "\n"
          << "  Recur:             " << task.get ("recur")                               << "\n"
-         << "  Wait until:        " << formatDate (task, "wait")                        << "\n"
+         << "  Wait until:        " << formatDate (task, "wait", dateformat)            << "\n"
          << "  Parent:            " << task.get ("parent")                              << "\n"
          << "  Foreground color:  " << task.get ("fg")                                  << "\n"
          << "  Background color:  " << task.get ("bg")                                  << "\n";
@@ -179,12 +180,12 @@ std::string CmdEdit::formatTask (Task task)
   for (anno = annotations.begin (); anno != annotations.end (); ++anno)
   {
     Date dt (strtol (anno->first.substr (11).c_str (), NULL, 10));
-    before << "  Annotation:        " << dt.toString (context.config.get ("dateformat"))
+    before << "  Annotation:        " << dt.toString (dateformat)
            << " -- "                  << anno->second << "\n";
   }
 
   Date now;
-  before << "  Annotation:        " << now.toString (context.config.get ("dateformat")) << " -- \n";
+  before << "  Annotation:        " << now.toString (dateformat) << " -- \n";
 
   // Add dependencies here.
   std::vector <std::string> dependencies;
@@ -214,7 +215,7 @@ std::string CmdEdit::formatTask (Task task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CmdEdit::parseTask (Task& task, const std::string& after)
+void CmdEdit::parseTask (Task& task, const std::string& after, const std::string& dateformat)
 {
   // project
   std::string value = findValue (after, "\n  Project:");
@@ -275,7 +276,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   value = findValue (after, "\n  Created:");
   if (value != "")
   {
-    std::string formatted = formatDate (task, "entry");
+    std::string formatted = formatDate (task, "entry", dateformat);
 
     if (formatted != value)
     {
@@ -292,7 +293,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("start") != "")
     {
-      std::string formatted = formatDate (task, "start");
+      std::string formatted = formatDate (task, "start", dateformat);
 
       if (formatted != value)
       {
@@ -321,7 +322,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("end") != "")
     {
-      std::string formatted = formatDate (task, "end");
+      std::string formatted = formatDate (task, "end", dateformat);
 
       if (formatted != value)
       {
@@ -348,7 +349,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("scheduled") != "")
     {
-      std::string formatted = formatDate (task, "scheduled");
+      std::string formatted = formatDate (task, "scheduled", dateformat);
 
       if (formatted != value)
       {
@@ -378,7 +379,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("due") != "")
     {
-      std::string formatted = formatDate (task, "due");
+      std::string formatted = formatDate (task, "due", dateformat);
 
       if (formatted != value)
       {
@@ -415,7 +416,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("until") != "")
     {
-      std::string formatted = formatDate (task, "until");
+      std::string formatted = formatDate (task, "until", dateformat);
 
       if (formatted != value)
       {
@@ -476,7 +477,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("wait") != "")
     {
-      std::string formatted = formatDate (task, "wait");
+      std::string formatted = formatDate (task, "wait", dateformat);
 
       if (formatted != value)
       {
@@ -574,7 +575,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
         // for each line: if the annotation is the same, then it is copied; if
         // the annotation is modified, then its original date may be kept; and
         // if there is no corresponding id, then a new unique date is created).
-        Date when (value.substr (0, gap), context.config.get ("dateformat"));
+        Date when (value.substr (0, gap), dateformat);
 
         // This guarantees that if more than one annotation has the same date,
         // that the seconds will be different, thus unique, thus not squashed.
@@ -630,8 +631,11 @@ bool CmdEdit::editFile (Task& task)
   file << "task." << getpid () << "." << task.id << ".task";
   std::string path = location._data + "/" + file.str ();
 
+  // Determine the output date format
+  std::string dateformat = context.config.get ("dateformat");
+
   // Format the contents, T -> text, write to a file.
-  std::string before = formatTask (task);
+  std::string before = formatTask (task, dateformat);
   int ignored = chdir (location._data.c_str ());
   ++ignored; // Keep compiler quiet.
   File::write (file.str (), before);
@@ -672,7 +676,7 @@ ARE_THESE_REALLY_HARMFUL:
 
     try
     {
-      parseTask (task, after);
+      parseTask (task, after, dateformat);
     }
 
     catch (std::string& e)
