@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -47,18 +47,14 @@ if (open my $fh, '>', 'bug.rc')
 qx{../src/task rc:bug.rc add test};
 qx{../src/task rc:bug.rc test start};
 
-# Test that report.info.dateformat has precedence over dateformat.report and
-# dateformat and that no other format is applied
-my $output = qx{../src/task rc:bug.rc test info rc.dateformat:m/d/Y rc.dateformat.report:m/d/Y rc.report.info.dateformat:__};
-like ($output, qr/__/ms, 'Date formatted according to report.info.dateformat');
+# Test that dateformat.info has precedence over dateformat and that no other
+# format is applied
+my $output = qx{../src/task rc:bug.rc test info rc.dateformat:m/d/Y rc.dateformat.info:__};
+like ($output, qr/__/ms, 'Date formatted according to dateformat.info');
 unlike ($output, qr/[0-9]*\/[0-9]*\/20[0-9]*/ms, 'No date is incorrectly formatted');
 
-# Similar for dateformat.report (no need to check that another format is applied again)
-$output = qx{../src/task rc:bug.rc test info rc.dateformat:m/d/Y rc.dateformat.report:__ rc.report.info.dateformat:};
-like ($output, qr/__/ms, 'Date formatted according to dateformat.report');
-
 # Similar for dateformat
-$output = qx{../src/task rc:bug.rc test info rc.dateformat:__ rc.dateformat.report: rc.report.info.dateformat:};
+$output = qx{../src/task rc:bug.rc test info rc.dateformat:__ rc.dateformat.info:};
 like ($output, qr/__/ms, 'Date formatted according to dateformat');
 
 ### Cleanup.

@@ -76,12 +76,9 @@ int CmdInfo::execute (std::string& output)
     undo = context.tdb2.undo.get_lines ();
 
   // Determine the output date format, which uses a hierarchy of definitions.
-  //   rc.report.<report>.dateformat
-  //   rc.dateformat.report
-  //   rc.dateformat.
-  std::string dateformat = context.config.get ("report.info.dateformat");
-  if (dateformat == "")
-    dateformat = context.config.get ("dateformat.report");
+  //   rc.dateformat.info
+  //   rc.dateformat
+  std::string dateformat = context.config.get ("dateformat.info");
   if (dateformat == "")
     dateformat = context.config.get ("dateformat");
 

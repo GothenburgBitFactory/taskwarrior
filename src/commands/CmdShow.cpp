@@ -129,6 +129,7 @@ int CmdShow::execute (std::string& output)
     " dateformat"
     " dateformat.annotation"
     " dateformat.holiday"
+    " dateformat.info"
     " dateformat.report"
     " debug"
     " default.command"

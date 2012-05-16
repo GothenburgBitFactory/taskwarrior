@@ -35,7 +35,7 @@ if (open my $fh, '>', 'dom.rc')
 {
   print $fh "data.location=.\n",
             "dateformat=YMD\n",
-            "report.info.dateformat=YMD\n";
+            "dateformat.info=YMD\n";
   close $fh;
   ok (-r 'dom.rc', 'Created dom.rc');
 }

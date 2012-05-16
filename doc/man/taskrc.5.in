@@ -475,15 +475,16 @@ Enables the extension system.  Defaults to on.
 .TP
 .B dateformat.holiday=YMD
 .TP
+.B dateformat.info=m/d/Y H:N:S
+.TP
 .B dateformat.annotation=m/d/Y
 .TP
 .B report.X.dateformat=m/d/Y
 This is a string of characters that define how taskwarrior formats date values.
 The precedence order for the configuration variable is report.X.dateformat then
-dateformat.report then dateformat.  While report.X.dateformat only formats the
-due date in reports, report.info.dateformat formats all the displayed dates of
-"task info". dateformat.report formats the date both in reports
-and "task info".  If both of these are not set then dateformat will be applied
+dateformat.report then dateformat for formating the due dates in reports.
+If both report.X.dateformat and dateformat.report are not set then dateformat
+will be applied
 to the date.  Entered dates as well as all other displayed dates in reports
 are formatted according to dateformat.
 
