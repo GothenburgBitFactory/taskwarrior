@@ -275,8 +275,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   value = findValue (after, "\n  Created:");
   if (value != "")
   {
-    Date original (task.get_date ("entry"));
-    std::string formatted = original.toString (context.config.get ("dateformat"));
+    std::string formatted = formatDate (task, "entry");
 
     if (formatted != value)
     {
@@ -293,8 +292,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("start") != "")
     {
-      Date original (task.get_date ("start"));
-      std::string formatted = original.toString (context.config.get ("dateformat"));
+      std::string formatted = formatDate (task, "start");
 
       if (formatted != value)
       {
@@ -323,8 +321,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("end") != "")
     {
-      Date original (task.get_date ("end"));
-      std::string formatted = original.toString (context.config.get ("dateformat"));
+      std::string formatted = formatDate (task, "end");
 
       if (formatted != value)
       {
@@ -351,8 +348,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("scheduled") != "")
     {
-      Date original (task.get_date ("scheduled"));
-      std::string formatted = original.toString (context.config.get ("dateformat"));
+      std::string formatted = formatDate (task, "scheduled");
 
       if (formatted != value)
       {
@@ -382,8 +378,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("due") != "")
     {
-      Date original (task.get_date ("due"));
-      std::string formatted = original.toString (context.config.get ("dateformat"));
+      std::string formatted = formatDate (task, "due");
 
       if (formatted != value)
       {
@@ -420,8 +415,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("until") != "")
     {
-      Date original (task.get_date ("until"));
-      std::string formatted = original.toString (context.config.get ("dateformat"));
+      std::string formatted = formatDate (task, "until");
 
       if (formatted != value)
       {
@@ -482,8 +476,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after)
   {
     if (task.get ("wait") != "")
     {
-      Date original (task.get_date ("wait"));
-      std::string formatted = original.toString (context.config.get ("dateformat"));
+      std::string formatted = formatDate (task, "wait");
 
       if (formatted != value)
       {
