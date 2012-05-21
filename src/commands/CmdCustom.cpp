@@ -85,7 +85,7 @@ int CmdCustom::execute (std::string& output)
 
   // Prepend the argument list with those from the report filter.
   std::vector <std::string> filterArgs;
-  split (filterArgs, reportFilter, ' ');
+  splitq (filterArgs, reportFilter, ' ');
   std::vector <std::string>::iterator arg;
   for (arg = filterArgs.begin (); arg != filterArgs.end (); ++ arg)
     context.a3.capture_first (*arg);

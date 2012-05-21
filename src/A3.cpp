@@ -114,7 +114,7 @@ static struct
 
 //static const char* non_word_chars = " +-*/%()=<>!~";
 
-// Alias expansion limit.  Any more would indicate some kind of error.
+// Alias expansion limit.  Any more indicates some kind of error.
 const int safetyValveDefault = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -365,7 +365,7 @@ void A3::get_data_location (std::string& data)
       }
     }
 
-    // Keep scanning, because if there are multiple overrides, we want the last
+    // Keep looping, because if there are multiple overrides, we want the last
     // one to dominate.
   }
 }
@@ -445,7 +445,7 @@ void A3::apply_overrides ()
       if (n.getLiteral ("rc.")         &&  // rc.
           n.getUntilOneOf (":=", name) &&  //    xxx
           (n.skip (':') || n.skip ('=')))  //       [:=]
-       {
+      {
         n.getUntilEOS (value);  // May be blank.
 
         context.config.set (name, value);
