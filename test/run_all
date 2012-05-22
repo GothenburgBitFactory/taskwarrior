@@ -33,7 +33,7 @@ ENDEPOCH=`perl -e 'print time'`
 
 RUNTIME=$(($ENDEPOCH - $STARTEPOCH))
 
-printf "Pass:    %5d\n" $(grep ^ok all.log | wc -l)
-printf "Fail:    %5d\n" $(grep ^not all.log | wc -l)
-printf "Skipped: %5d\n" $(grep ^skip all.log | wc -l)
+printf "Pass:    %5d\n" $(grep -c ^ok all.log)
+printf "Fail:    %5d\n" $(grep -c ^not all.log)
+printf "Skipped: %5d\n" $(grep -c ^skip all.log)
 printf "Runtime: %5d seconds\n" $RUNTIME
