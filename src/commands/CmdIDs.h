@@ -60,5 +60,19 @@ public:
   int execute (std::string&);
 };
 
+class CmdCompletionUuids : public Command
+{
+public:
+  CmdCompletionUuids ();
+  int execute (std::string&);
+};
+
+class CmdZshCompletionUuids : public Command
+{
+public:
+  CmdZshCompletionUuids ();
+  int execute (std::string&);
+};
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////

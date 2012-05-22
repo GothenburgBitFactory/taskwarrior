@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'ids.rc')
@@ -47,13 +47,29 @@ qx{../src/task rc:ids.rc add four        };
 qx{../src/task rc:ids.rc add five   +A +B};
 
 my $output = qx{../src/task rc:ids.rc ids +A};
-like ($output, qr/^1-3,5$/ms, 'ids +A --> 1-3,5');
+like ($output, qr/^1-3,5$/, 'ids +A --> 1-3,5');
 
 $output = qx{../src/task rc:ids.rc ids +B};
-like ($output, qr/^1,3,5$/ms, 'ids +B --> 1,3,5');
+like ($output, qr/^1,3,5$/, 'ids +B --> 1,3,5');
 
 $output = qx{../src/task rc:ids.rc ids +A -B};
-like ($output, qr/^2$/ms, 'ids +A -B --> 2');
+like ($output, qr/^2$/, 'ids +A -B --> 2');
+
+$output = qx{../src/task rc:ids.rc _ids +A};
+like ($output, qr/^1\n2\n3\n5$/, '_ids +A --> 1\n2\n3\n5');
+
+$output = qx{../src/task rc:ids.rc _zshids +A};
+like ($output, qr/^1:one\n2:two\n3:three\n5:five$/, '_zshids +A --> 1:one\n2:two\n3:three\n5:five');
+
+$output = qx{../src/task rc:ids.rc uuids +A};
+like ($output, qr/^[0-9a-f-]+,[0-9a-f-]+,[0-9a-f-]+,[0-9a-f-]+$/, 'uuids +A --> uuid,uuid,uuid,uuid');
+
+$output = qx{../src/task rc:ids.rc _uuids +A};
+like ($output, qr/^[0-9a-f-]+\n[0-9a-f-]+\n[0-9a-f-]+\n[0-9a-f-]+$/, '_uuids +A --> uuid\nuuid\nuuid\nuuid');
+
+# The order of the task may not be respected with _zshuuids
+$output = qx{../src/task rc:ids.rc _zshuuids +A};
+like ($output, qr/^[0-9a-f-]+:[a-z]+\n[0-9a-f-]+:[a-z]+\n[0-9a-f-]+:[a-z]+\n[0-9a-f-]+:[a-z]+$/, '_zshuuids +A --> uuid:*\nuuid:*\nuuid:*\nuuid:*');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key ids.rc);

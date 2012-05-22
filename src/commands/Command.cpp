@@ -114,6 +114,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdCompletionCommands (); all[c->keyword ()] = c;
   c = new CmdCompletionConfig ();   all[c->keyword ()] = c;
   c = new CmdCompletionIds ();      all[c->keyword ()] = c;
+  c = new CmdCompletionUuids ();    all[c->keyword ()] = c;
   c = new CmdCompletionProjects (); all[c->keyword ()] = c;
   c = new CmdCompletionTags ();     all[c->keyword ()] = c;
   c = new CmdCompletionVersion ();  all[c->keyword ()] = c;
@@ -162,6 +163,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdVersion ();            all[c->keyword ()] = c;
   c = new CmdZshCommands ();        all[c->keyword ()] = c;
   c = new CmdZshCompletionIds ();   all[c->keyword ()] = c;
+  c = new CmdZshCompletionUuids (); all[c->keyword ()] = c;
 
   // Instantiate a command object for each custom report.
   std::vector <std::string> variables;

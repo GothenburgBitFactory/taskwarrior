@@ -22,6 +22,8 @@ Features
    + Filter optimization: with no 'OR' or 'XOR' operators, no UUIDS but with IDs
      the completed.data file is not referenced
    + Reduced excessive number of sort columns on certain reports
+ + Similar helper subcommands for 'uuids' as for there is for 'ids' (_uuids and
+   _zshuuids).
 
 Bugs
  + Fixed bug #954, which caused bulk deletions when using a UUID filter term and

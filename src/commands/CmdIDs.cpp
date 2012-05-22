@@ -143,7 +143,7 @@ CmdUUIDs::CmdUUIDs ()
 {
   _keyword     = "uuids";
   _usage       = "task <filter> uuids";
-  _description = STRING_CMD_UUIDS_USAGE;
+  _description = STRING_CMD_UUIDS_USAGE_RANGE;
   _read_only   = true;
   _displays_id = false;
 }
@@ -168,3 +168,63 @@ int CmdUUIDs::execute (std::string& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+CmdCompletionUuids::CmdCompletionUuids ()
+{
+  _keyword     = "_uuids";
+  _usage       = "task <filter> _uuids";
+  _description = STRING_CMD_UUIDS_USAGE_LIST;
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdCompletionUuids::execute (std::string& output)
+{
+  // Apply filter.
+  handleRecurrence ();
+  std::vector <Task> filtered;
+  filter (filtered);
+  context.tdb2.commit ();
+
+  std::vector <std::string> uuids;
+  std::vector <Task>::iterator task;
+  for (task = filtered.begin (); task != filtered.end (); ++task)
+    uuids.push_back (task->get ("uuid"));
+
+  join (output, "\n", uuids);
+  output += "\n";
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CmdZshCompletionUuids::CmdZshCompletionUuids ()
+{
+  _keyword     = "_zshuuids";
+  _usage       = "task <filter> _zshuuids";
+  _description = STRING_CMD_UUIDS_USAGE_ZSH;
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdZshCompletionUuids::execute (std::string& output)
+{
+  // Apply filter.
+  handleRecurrence ();
+  std::vector <Task> filtered;
+  filter (filtered);
+  context.tdb2.commit ();
+
+  std::stringstream out;
+  std::vector <Task>::iterator task;
+  for (task = filtered.begin (); task != filtered.end (); ++task)
+    out << task->get ("uuid")
+        << ":"
+        << task->get ("description")
+        << "\n";
+
+  output = out.str ();
+  return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
