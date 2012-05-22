@@ -62,6 +62,8 @@ Bugs
    have no bearing on a Zulu time.
  + Fixed man page typos.
  + Fixed incorrect Lua API return value (thanks to Oleksii Tsai).
+ + Fixed bug #956, which prevents 'ids', 'uuids' and helper commands to be used
+   directly by external script when a variable is override.
 
 ------ old releases ------------------------------
 

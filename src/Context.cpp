@@ -365,6 +365,8 @@ int Context::dispatch (std::string &out)
   {
     updateXtermTitle ();
 
+    updateVerbosity ();
+
     Command* c = commands[command];
 
     // GC is invoked prior to running any command that displays task IDs, if
@@ -685,6 +687,23 @@ void Context::updateXtermTitle ()
     std::string title;
     join (title, " ", a3.list ());
     std::cout << "]0;task " << command << " " << title << "" << std::endl;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// This function allows a clean output if the command is a helper subcommand or
+// a command aimed at being used by an external script.
+void Context::updateVerbosity ()
+{
+  std::string command;
+  a3.find_command (command);
+
+  if (command[0] == '_'  ||
+      command == "ids"   ||
+      command == "uuids")
+  {
+    verbosity.clear ();
+    verbosity.push_back ("nothing");
   }
 }
 

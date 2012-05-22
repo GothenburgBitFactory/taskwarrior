@@ -93,7 +93,8 @@ Taskwarrior supports different kinds of commands.  There are read commands,
 write commands, miscellaneous commands and script helper commands.  Read
 commands do not allow modification of tasks.  Write commands can alter almost
 any aspect of a task.  Script helper commands are provided to help you write
-add-on scripts, for example, shell completion.
+add-on scripts, for example, shell completion (only minimal output is
+generated, as with verbose=nothing).
 
 .SH READ SUBCOMMANDS
 
@@ -206,7 +207,8 @@ the priority to H for each of those tasks.  This can also be achieved directly:
 
   task project:Home modify priority:H
 
-This command is mainly of use to external scripts.
+This command is mainly of use to external scripts.  As such, only minimal output
+is generated (equivalent to verbose=nothing).
 
 .TP
 .B task <filter> uuids
@@ -219,7 +221,8 @@ this:
 This example first gets the UUIDs for the project:Home and status:completed
 filter, then makes each of those tasks pending again.
 
-This command is mainly of use to external scripts.
+This command is mainly of use to external scripts.  As such, only minimal
+output is generated (equivalent to verbose=nothing).
 
 .TP
 .B task <filter> information
