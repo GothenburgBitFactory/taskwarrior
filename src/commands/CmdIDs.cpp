@@ -96,12 +96,8 @@ int CmdCompletionIds::execute (std::string& output)
       ids.push_back (task->id);
 
   std::sort (ids.begin (), ids.end ()); 
-  std::stringstream out;
-  std::vector <int>::iterator id;
-  for (id = ids.begin (); id != ids.end (); ++id)
-    out << *id << "\n";
-
-  output = out.str ();
+  join (output, "\n", ids);
+  output += "\n";
   return 0;
 }
 
@@ -162,6 +158,7 @@ int CmdUUIDs::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
     uuids.push_back (task->get ("uuid"));
 
+  std::sort (uuids.begin (), uuids.end ()); 
   join (output, ",", uuids);
   output += "\n";
   return 0;
@@ -191,6 +188,7 @@ int CmdCompletionUuids::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
     uuids.push_back (task->get ("uuid"));
 
+  std::sort (uuids.begin (), uuids.end ()); 
   join (output, "\n", uuids);
   output += "\n";
   return 0;

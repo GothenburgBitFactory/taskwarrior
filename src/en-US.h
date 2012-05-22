@@ -218,7 +218,7 @@
 #define STRING_CMD_LOG_NO_WAITING    "You cannot log waiting tasks."
 #define STRING_CMD_LOG_LOGGED        "Logged task."
 #define STRING_CMD_IDS_USAGE_RANGE   "Shows the IDs of matching tasks, as a range"
-#define STRING_CMD_IDS_USAGE_LIST    "Shows only the IDs of matching tasks, in the form of a list"
+#define STRING_CMD_IDS_USAGE_LIST    "Shows the IDs of matching tasks, in the form of a list"
 #define STRING_CMD_IDS_USAGE_ZSH     "Shows the IDs and descriptions of matching tasks"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Shows the UUIDs of matching tasks, as a comma-separated list"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Shows the UUIDs of matching tasks, as a list"
