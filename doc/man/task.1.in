@@ -212,7 +212,8 @@ is generated (equivalent to verbose=nothing).
 
 .TP
 .B task <filter> uuids
-Applies the filter then extracts only the task UUIDs and presents them as
+Applies the filter on all tasks (even deleted and completed tasks)
+then extracts only the task UUIDs and presents them as
 a comma-separated list.  This is useful as input to a task command, to achieve
 this:
 
@@ -483,7 +484,8 @@ Shows only the IDs of matching tasks, in the form of a list.
 
 .TP
 .B task <filter> _uuids
-Shows only the UUIDs of matching tasks, in the form of a list.
+Shows only the UUIDs of matching tasks among all tasks (even deleted and
+completed tasks), in the form of a list.
 
 .TP
 .B task <filter> _projects
