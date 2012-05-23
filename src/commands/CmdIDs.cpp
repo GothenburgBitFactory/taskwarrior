@@ -95,7 +95,7 @@ int CmdCompletionIds::execute (std::string& output)
         task->getStatus () != Task::completed)
       ids.push_back (task->id);
 
-  std::sort (ids.begin (), ids.end ()); 
+  std::sort (ids.begin (), ids.end ());
   join (output, "\n", ids);
   output += "\n";
   return 0;
@@ -158,7 +158,7 @@ int CmdUUIDs::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
     uuids.push_back (task->get ("uuid"));
 
-  std::sort (uuids.begin (), uuids.end ()); 
+  std::sort (uuids.begin (), uuids.end ());
   join (output, ",", uuids);
   output += "\n";
   return 0;
@@ -188,7 +188,7 @@ int CmdCompletionUuids::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
     uuids.push_back (task->get ("uuid"));
 
-  std::sort (uuids.begin (), uuids.end ()); 
+  std::sort (uuids.begin (), uuids.end ());
   join (output, "\n", uuids);
   output += "\n";
   return 0;
