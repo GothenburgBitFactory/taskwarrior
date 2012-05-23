@@ -48,8 +48,7 @@ qx{../src/task rc:bug.rc 1 annotate des};
 my $output = qx{../src/task rc:bug.rc 1 info};
 unlike ($output, qr/description/ms, 'Attribute not completed in description');
 
-$output = qx{../src/task test rc:bug.rc rc.report.test.columns:des rc.report.test.labels:__};
-diag ($output);
+$output = qx{../src/task test rc:bug.rc rc.report.test.columns:description rc.report.test.labels:__};
 like ($output, qr/__/ms, 'Custom column present in the output');
 
 ### Cleanup.
