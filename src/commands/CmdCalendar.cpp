@@ -361,6 +361,7 @@ int CmdCalendar::execute (std::string& output)
       holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_HOL));
 
       std::vector <std::string>::iterator it;
+      std::map <time_t, std::string> hm;
       for (it = holidays.begin (); it != holidays.end (); ++it)
         if (it->substr (0, 8) == "holiday.")
           if (it->substr (it->size () - 4) == "name")
@@ -371,19 +372,26 @@ int CmdCalendar::execute (std::string& output)
 
             if (date_after < hDate && hDate < date_before)
             {
-              std::string format = context.config.get ("report." +
-                                                       context.config.get ("calendar.details.report") +
-                                                       ".dateformat");
-              if (format == "")
-                format = context.config.get ("dateformat.report");
-              if (format == "")
-                format = context.config.get ("dateformat");
-
-              int row = holTable.addRow ();
-              holTable.set (row, 0, hDate.toString (format));
-              holTable.set (row, 1, holName);
+              hm[hDate.toEpoch()] = holName;
             }
           }
+
+      std::string format = context.config.get ("report." +
+                                               context.config.get ("calendar.details.report") +
+                                               ".dateformat");
+      if (format == "")
+        format = context.config.get ("dateformat.report");
+      if (format == "")
+        format = context.config.get ("dateformat");
+
+      std::map <time_t, std::string>::iterator hm_it;
+      for (hm_it = hm.begin(); hm_it != hm.end(); ++hm_it)
+      {
+        int row = holTable.addRow ();
+        Date hDate (hm_it->first);
+        holTable.set (row, 0, hDate.toString (format));
+        holTable.set (row, 1, hm_it->second);
+      }
 
       out << optionalBlankLine ()
           << holTable.render ()
