@@ -35,7 +35,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (25);
+  UnitTest t (35);
 
   // Directory (const File&);
   // Directory (const Path&);
@@ -103,6 +103,22 @@ int main (int argc, char** argv)
   File::create (d8._data + "/f1");
   t.ok (d7.remove (), "Directory::remove /tmp/to_be_removed");
   t.notok (d7.exists (), "Directory /tmp/to_be_removed gone");
+
+  // static std::string cwd ();
+  std::string cwd = Directory::cwd ();
+  t.ok (cwd.length () > 0, "Directory::cwd returned a value");
+
+  // bool parent (std::string&) const;
+  Directory d9 ("/one/two/three/four.txt");
+  t.ok (d9.up (),                   "parent /one/two/three/four.txt --> true");
+  t.is (d9._data, "/one/two/three", "parent /one/two/three/four.txt --> /one/two/three");
+  t.ok (d9.up (),                   "parent /one/two/three --> true");
+  t.is (d9._data, "/one/two",       "parent /one/two/three --> /one/two");
+  t.ok (d9.up (),                   "parent /one/two --> true");
+  t.is (d9._data, "/one",           "parent /one/two --> /one");
+  t.ok (d9.up (),                   "parent /one --> true");
+  t.is (d9._data, "/",              "parent /one --> /");
+  t.notok (d9.up (),                "parent / --> false");
 
   return 0;
 }

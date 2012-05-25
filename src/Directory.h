@@ -49,6 +49,9 @@ public:
   std::vector <std::string> list ();
   std::vector <std::string> listRecursive ();
 
+  static std::string cwd ();
+  bool up ();
+
 private:
   void list (const std::string&, std::vector <std::string>&, bool);
   bool remove_directory (const std::string&);

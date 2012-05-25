@@ -143,6 +143,35 @@ std::vector <std::string> Directory::listRecursive ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string Directory::cwd ()
+{
+  char buf[PATH_MAX];
+  getcwd (buf, PATH_MAX - 1);
+  return std::string (buf);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Directory::up ()
+{
+  if (_data == "/")
+    return false;
+
+  std::string::size_type slash = _data.rfind ('/');
+  if (slash == 0)
+  {
+    _data = "/";  // Root dir should retain the slash.
+    return true;
+  }
+  else if (slash != std::string::npos)
+  {
+    _data = _data.substr (0, slash);
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Directory::list (
   const std::string& base,
   std::vector <std::string>& results,
