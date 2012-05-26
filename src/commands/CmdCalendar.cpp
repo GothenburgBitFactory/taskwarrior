@@ -361,7 +361,7 @@ int CmdCalendar::execute (std::string& output)
       holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_HOL));
 
       std::vector <std::string>::iterator it;
-      std::map <time_t, std::string> hm;
+      std::map <time_t, std::vector<std::string> > hm; // we need to store multiple holidays per day
       for (it = holidays.begin (); it != holidays.end (); ++it)
         if (it->substr (0, 8) == "holiday.")
           if (it->substr (it->size () - 4) == "name")
@@ -372,7 +372,7 @@ int CmdCalendar::execute (std::string& output)
 
             if (date_after < hDate && hDate < date_before)
             {
-              hm[hDate.toEpoch()] = holName;
+              hm[hDate.toEpoch()].push_back(holName);
             }
           }
 
@@ -384,13 +384,18 @@ int CmdCalendar::execute (std::string& output)
       if (format == "")
         format = context.config.get ("dateformat");
 
-      std::map <time_t, std::string>::iterator hm_it;
+      std::map <time_t, std::vector<std::string> >::iterator hm_it;
       for (hm_it = hm.begin(); hm_it != hm.end(); ++hm_it)
       {
-        int row = holTable.addRow ();
+        std::vector <std::string> v = hm_it->second;
         Date hDate (hm_it->first);
-        holTable.set (row, 0, hDate.toString (format));
-        holTable.set (row, 1, hm_it->second);
+        std::string d = hDate.toString (format);
+        for (size_t i = 0; i < v.size(); i++)
+        {
+          int row = holTable.addRow ();
+          holTable.set (row, 0, d);
+          holTable.set (row, 1, v[i]);
+        }
       }
 
       out << optionalBlankLine ()
