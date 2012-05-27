@@ -134,31 +134,35 @@ static void colorizePriorityNone (Task& task, const std::string& rule, Color& c)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeActive (Task& task, const std::string& rule, Color& c)
 {
-  if (gsColor[rule].nontrivial () &&
-      task.has ("start")          &&
-      !task.has ("end"))
-    c.blend (gsColor[rule]);
+  if (gsColor[rule].nontrivial ())
+    if (task.has ("start") &&
+        !task.has ("end"))
+      c.blend (gsColor[rule]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeScheduled (Task& task, const std::string& rule, Color& c)
 {
-  if (gsColor[rule].nontrivial () &&
-      task.has ("scheduled") &&
-      Date (task.get_date ("scheduled")) <= now)
-    c.blend (gsColor[rule]);
+  if (gsColor[rule].nontrivial ())
+    if (task.has ("scheduled") &&
+        Date (task.get_date ("scheduled")) <= now)
+      c.blend (gsColor[rule]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeTag (Task& task, const std::string& rule, Color& c)
 {
-  if (task.hasTag (rule.substr (10)))
-    c.blend (gsColor[rule]);
+  if (gsColor[rule].nontrivial ())
+    if (task.hasTag (rule.substr (10)))
+      c.blend (gsColor[rule]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeProject (Task& task, const std::string& rule, Color& c)
 {
+  if (!gsColor[rule].nontrivial ())
+    return;
+
   // Observe the case sensitivity setting.
   bool sensitive = context.config.getBoolean ("search.case.sensitive");
 
@@ -174,20 +178,25 @@ static void colorizeProject (Task& task, const std::string& rule, Color& c)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeProjectNone (Task& task, const std::string& rule, Color& c)
 {
-  if (task.get ("project") == "")
-    c.blend (gsColor[rule]);
+  if (gsColor[rule].nontrivial ())
+    if (task.get ("project") == "")
+      c.blend (gsColor[rule]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeTagNone (Task& task, const std::string& rule, Color& c)
 {
-  if (task.getTagCount () == 0)
-    c.blend (gsColor[rule]);
+  if (gsColor[rule].nontrivial ())
+    if (task.getTagCount () == 0)
+      c.blend (gsColor[rule]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeKeyword (Task& task, const std::string& rule, Color& c)
 {
+  if (!gsColor[rule].nontrivial ())
+    return;
+
   // Observe the case sensitivity setting.
   bool sensitive = context.config.getBoolean ("search.case.sensitive");
 
@@ -216,6 +225,9 @@ static void colorizeKeyword (Task& task, const std::string& rule, Color& c)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeDue (Task& task, const std::string& rule, Color& c)
 {
+  if (!gsColor[rule].nontrivial ())
+    return;
+
   Task::status status = task.getStatus ();
 
   if (task.has ("due")          &&
@@ -230,6 +242,9 @@ static void colorizeDue (Task& task, const std::string& rule, Color& c)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeDueToday (Task& task, const std::string& rule, Color& c)
 {
+  if (!gsColor[rule].nontrivial ())
+    return;
+
   Task::status status = task.getStatus ();
 
   if (task.has ("due")          &&
@@ -244,6 +259,9 @@ static void colorizeDueToday (Task& task, const std::string& rule, Color& c)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeOverdue (Task& task, const std::string& rule, Color& c)
 {
+  if (!gsColor[rule].nontrivial ())
+    return;
+
   Task::status status = task.getStatus ();
 
   if (task.has ("due")          &&
@@ -266,15 +284,17 @@ static void colorizeRecurring (Task& task, const std::string& rule, Color& c)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeCompleted (Task& task, const std::string& rule, Color& c)
 {
-  if (task.getStatus () == Task::completed)
-    c.blend (gsColor[rule]);
+  if (gsColor[rule].nontrivial ())
+    if (task.getStatus () == Task::completed)
+      c.blend (gsColor[rule]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeDeleted (Task& task, const std::string& rule, Color& c)
 {
-  if (task.getStatus () == Task::completed)
-    c.blend (gsColor[rule]);
+  if (gsColor[rule].nontrivial ())
+    if (task.getStatus () == Task::completed)
+      c.blend (gsColor[rule]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

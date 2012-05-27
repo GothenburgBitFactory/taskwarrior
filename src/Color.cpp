@@ -348,6 +348,9 @@ Color::operator int () const
 void Color::blend (const Color& other)
 {
 #ifdef FEATURE_COLOR
+  if (!other.nontrivial ())
+    return;
+
   Color c (other);
   _value |= (c._value & _COLOR_UNDERLINE);    // Always inherit underline.
   _value |= (c._value & _COLOR_INVERSE);      // Always inherit inverse.
@@ -443,7 +446,7 @@ void Color::upgrade ()
 std::string Color::colorize (const std::string& input)
 {
 #ifdef FEATURE_COLOR
-  if (_value == 0)
+  if (!nontrivial ())
     return input;
 
   int count = 0;
@@ -486,7 +489,7 @@ std::string Color::colorize (const std::string& input)
   }
 
   // 16 color
-  if (_value != 0)
+  else
   {
     result << "\033[";
 
@@ -570,7 +573,7 @@ std::string Color::colorize (const std::string& input, const std::string& spec)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Color::nontrivial ()
+bool Color::nontrivial () const
 {
   return _value != 0 ? true : false;
 }
