@@ -314,27 +314,27 @@ void autoColorize (Task& task, Color& c)
   std::vector <std::string>::reverse_iterator r;
   for (r = gsPrecedence.rbegin (); r != gsPrecedence.rend (); ++r)
   {
-         if (*r == "color.blocked")                colorizeBlocked      (task, *r, c);
-    else if (*r == "color.tagged")                 colorizeTagged       (task, *r, c);
-    else if (*r == "color.pri.L")                  colorizePriorityL    (task, *r, c);
-    else if (*r == "color.pri.M")                  colorizePriorityM    (task, *r, c);
-    else if (*r == "color.pri.H")                  colorizePriorityH    (task, *r, c);
-    else if (*r == "color.pri.none")               colorizePriorityNone (task, *r, c);
-    else if (*r == "color.active")                 colorizeActive       (task, *r, c);
-    else if (*r == "color.scheduled")              colorizeScheduled    (task, *r, c);
-    else if (*r == "color.project.none")           colorizeProjectNone  (task, *r, c);
-    else if (*r == "color.tag.none")               colorizeTagNone      (task, *r, c);
-    else if (*r == "color.due")                    colorizeDue          (task, *r, c);
-    else if (*r == "color.due.today")              colorizeDueToday     (task, *r, c);
-    else if (*r == "color.overdue")                colorizeOverdue      (task, *r, c);
-    else if (*r == "color.recurring")              colorizeRecurring    (task, *r, c);
-    else if (*r == "color.completed")              colorizeCompleted    (task, *r, c);
-    else if (*r == "color.deleted")                colorizeDeleted      (task, *r, c);
+         if (*r == "color.blocked")                 colorizeBlocked      (task, *r, c);
+    else if (*r == "color.tagged")                  colorizeTagged       (task, *r, c);
+    else if (*r == "color.pri.L")                   colorizePriorityL    (task, *r, c);
+    else if (*r == "color.pri.M")                   colorizePriorityM    (task, *r, c);
+    else if (*r == "color.pri.H")                   colorizePriorityH    (task, *r, c);
+    else if (*r == "color.pri.none")                colorizePriorityNone (task, *r, c);
+    else if (*r == "color.active")                  colorizeActive       (task, *r, c);
+    else if (*r == "color.scheduled")               colorizeScheduled    (task, *r, c);
+    else if (*r == "color.project.none")            colorizeProjectNone  (task, *r, c);
+    else if (*r == "color.tag.none")                colorizeTagNone      (task, *r, c);
+    else if (*r == "color.due")                     colorizeDue          (task, *r, c);
+    else if (*r == "color.due.today")               colorizeDueToday     (task, *r, c);
+    else if (*r == "color.overdue")                 colorizeOverdue      (task, *r, c);
+    else if (*r == "color.recurring")               colorizeRecurring    (task, *r, c);
+    else if (*r == "color.completed")               colorizeCompleted    (task, *r, c);
+    else if (*r == "color.deleted")                 colorizeDeleted      (task, *r, c);
 
     // Wildcards
-    else if (r->substr (0,  9) == "color.tag")     colorizeTag          (task, *r, c);
-    else if (r->substr (0, 13) == "color.project") colorizeProject      (task, *r, c);
-    else if (r->substr (0, 13) == "color.keyword") colorizeKeyword      (task, *r, c);
+    else if (r->substr (0, 10) == "color.tag.")     colorizeTag          (task, *r, c);
+    else if (r->substr (0, 14) == "color.project.") colorizeProject      (task, *r, c);
+    else if (r->substr (0, 14) == "color.keyword.") colorizeKeyword      (task, *r, c);
   }
 }
 

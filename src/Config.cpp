@@ -265,7 +265,7 @@ std::string Config::_defaults =
   "# Here is the rule precedence order, highest to lowest.\n"
   "# Note that these are just the color rule names, without the leading 'color.'\n"
   "#      and any trailing '.value'.\n"
-  "rule.precedence.color=due.today,active,blocked,overdue,due,scheduled,keyword,project,tag,recurring,pri,tagged,completed,deleted\n"
+  "rule.precedence.color=due.today,active,blocked,overdue,due,scheduled,keyword.,project.,tag.,recurring,pri.,tagged,completed,deleted\n"
   "\n"
   "# Shadow file support\n"
   "#shadow.file=/tmp/shadow.txt                   # Location of shadow file\n"

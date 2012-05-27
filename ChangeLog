@@ -69,6 +69,8 @@ Bugs
  + Fixed incorrect Lua API return value (thanks to Oleksii Tsai).
  + Fixed bug #956, which prevents 'ids', 'uuids' and helper commands to be used
    directly by external script when a variable is override.
+ + Fixed bug #990, which prevents color precedence to be applied correctly for
+   tagged tasks.
 
 ------ old releases ------------------------------
 
