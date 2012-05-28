@@ -338,7 +338,7 @@ int CmdCalendar::execute (std::string& output)
       context.a3.clear ();
       context.a3.push_back (Arg ("task", Arg::cat_program));
 
-      report_filter += " due.after:" + after + " due.before:" + before;
+      report_filter += " due.after:" + after + " due.before:" + before + " -nocal";
       context.config.set ("report." + report + ".filter", report_filter);
 
       // Display all due task in the report colorized not only the imminet ones
