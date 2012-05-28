@@ -183,6 +183,9 @@
 #define STRING_COLUMN_LABEL_STYLES   "Supported Formats"
 #define STRING_COLUMN_LABEL_EXAMPLES "Example"
 #define STRING_COLUMN_LABEL_SCHED    "Scheduled"
+#define STRING_COLUMN_LABEL_UDA      "Name"
+#define STRING_COLUMN_LABEL_TYPE     "Type"
+#define STRING_COLUMN_LABEL_LABEL    "Label"
 
 // Column Examples
 #define STRING_COLUMN_EXAMPLES_TAGS  "home @chore"
@@ -220,6 +223,8 @@
 #define STRING_CMD_IDS_USAGE_RANGE   "Shows the IDs of matching tasks, as a range"
 #define STRING_CMD_IDS_USAGE_LIST    "Shows the IDs of matching tasks, in the form of a list"
 #define STRING_CMD_IDS_USAGE_ZSH     "Shows the IDs and descriptions of matching tasks"
+#define STRING_CMD_UDAS_USAGE        "Shows all the defined UDA details"
+#define STRING_CMD_UDAS_COMPL_USAGE  "Shows the defined UDAs for completion purposes"
 #define STRING_CMD_UUIDS_USAGE_RANGE "Shows the UUIDs of matching tasks, as a comma-separated list"
 #define STRING_CMD_UUIDS_USAGE_LIST  "Shows the UUIDs of matching tasks, as a list"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Shows the UUIDs and descriptions of matching tasks"
@@ -305,6 +310,10 @@
 #define STRING_CMD_SUMMARY_COMPLETE  "Complete"
 #define STRING_CMD_SUMMARY_NONE      "(none)"
 #define STRING_CMD_COUNT_USAGE       "Counts matching tasks"
+
+#define STRING_CMD_UDAS_NO           "No UDAs defined."
+#define STRING_CMD_UDAS_SUMMARY      "{1} UDA defined"
+#define STRING_CMD_UDAS_SUMMARY2     "{1} UDAs defined"
 
 #define STRING_CMD_DELETE_USAGE      "Deletes the specified task"
 #define STRING_CMD_DELETE_CONFIRM    "Permanently delete task {1} '{2}'?"

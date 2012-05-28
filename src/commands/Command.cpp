@@ -85,6 +85,7 @@
 //#include <CmdSynch.h>
 #include <CmdTags.h>
 #include <CmdTimesheet.h>
+#include <CmdUDAs.h>
 #include <CmdUndo.h>
 #include <CmdUrgency.h>
 #include <CmdVersion.h>
@@ -114,6 +115,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdCompletionCommands (); all[c->keyword ()] = c;
   c = new CmdCompletionConfig ();   all[c->keyword ()] = c;
   c = new CmdCompletionIds ();      all[c->keyword ()] = c;
+  c = new CmdCompletionUDAs ();     all[c->keyword ()] = c;
   c = new CmdCompletionUuids ();    all[c->keyword ()] = c;
   c = new CmdCompletionProjects (); all[c->keyword ()] = c;
   c = new CmdCompletionTags ();     all[c->keyword ()] = c;
@@ -157,6 +159,7 @@ void Command::factory (std::map <std::string, Command*>& all)
 //  c = new CmdSynch ();              all[c->keyword ()] = c;
   c = new CmdTags ();               all[c->keyword ()] = c;
   c = new CmdTimesheet ();          all[c->keyword ()] = c;
+  c = new CmdUDAs ();               all[c->keyword ()] = c;
   c = new CmdUndo ();               all[c->keyword ()] = c;
   c = new CmdUrgency ();            all[c->keyword ()] = c;
   c = new CmdUUIDs ();              all[c->keyword ()] = c;

@@ -226,6 +226,10 @@ This command is mainly of use to external scripts.  As such, only minimal
 output is generated (equivalent to verbose=nothing).
 
 .TP
+.B task udas
+Shows a list of UDAs that are defined, including their name, type and label.
+
+.TP
 .B task <filter> information
 Shows all data and metadata for the specified tasks.  This is the only means of
 displaying all aspects of a given task, including the change history.
@@ -486,6 +490,10 @@ Shows only the IDs of matching tasks, in the form of a list.
 .B task <filter> _uuids
 Shows only the UUIDs of matching tasks among all tasks (even deleted and
 completed tasks), in the form of a list.
+
+.TP
+.B task _udas
+Shows only defined UDA names, in the form of a list.
 
 .TP
 .B task <filter> _projects

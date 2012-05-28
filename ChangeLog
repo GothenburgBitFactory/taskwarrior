@@ -8,6 +8,8 @@ Features
    expire and are deleted.
  + Feature #516, which allows the duplication of completed tasks (thanks to
    Peter De Poorter, Ethan Schoonover).
+ + Feature #921, which implements a 'udas' command that describes defined UDAs,
+   and a '_udas' for completion purposes.
  + Applied patch for feature #1005, which prevents the update-holidays.pl script
    from creating duplicate holidays (thanks to Jörg Plate).
  + Added the new 'indented' format for the 'project' attribute.

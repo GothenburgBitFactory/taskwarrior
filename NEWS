@@ -14,6 +14,8 @@ New Features in taskwarrior 2.0.1
 New commands in taskwarrior 2.0.1
 
   - New 'ready' report that lists tasks ready for work, sorted by urgency.
+  - New 'udas' command shows UDA details.
+  - New '_udas' helper command lists UDA names for completion purposes.
 
 New configuration options in taskwarrior 2.0.1
 
