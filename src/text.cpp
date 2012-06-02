@@ -676,12 +676,16 @@ bool compare (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool closeEnough (const std::string& reference, const std::string& attempt)
+bool closeEnough (
+  const std::string& reference,
+  const std::string& attempt,
+  unsigned int minLength /* = 0 */)
 {
   if (compare (reference, attempt, false))
     return true;
 
-  if (attempt.length () < reference.length ())
+  if (attempt.length () < reference.length () &&
+      attempt.length () >= minLength)
     return compare (reference.substr (0, attempt.length ()), attempt, false);
 
   return false;
