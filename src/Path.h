@@ -29,6 +29,7 @@
 #define INCLUDED_PATH
 #define L10N                                           // Localization complete.
 
+#include <iostream>
 #include <vector>
 #include <string>
 
@@ -61,6 +62,8 @@ public:
 public:
   std::string _data;
 };
+
+std::ostream& operator<< (std::ostream&, const Path&);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////
