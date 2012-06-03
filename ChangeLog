@@ -30,6 +30,7 @@ Features
  + Possible to specify the date format when editing with 'dateformat.edit'.
  + Possible to specify the date format when showing information about a task
    with 'dateformat.info'.
+ + Bash script improvement (column names are now completed).
 
 Bugs
  + Applied patch for bug #919, so the holidays listed on the 'calendar' report
@@ -84,6 +85,8 @@ Bugs
    that lack description or entry date (thanks to Nicholas Rabenau).
  + Fixed bug #1017, which exported invalid JSON when there were no tasks (thanks
    to Nicholas Rabenau).
+ + Fixed bug #962 that rename the bash completion script in prevision of future
+   2.0 bash release.
 
 ------ old releases ------------------------------
 

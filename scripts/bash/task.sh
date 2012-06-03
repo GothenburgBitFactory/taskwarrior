@@ -59,6 +59,14 @@ _task_get_config() {
     task _config
 }
 
+_task_offer_dependencies() {
+    COMPREPLY=( $(compgen -W "$(task _ids)" -- ${cur/*:/}) )
+}
+
+_task_offer_priorities() {
+    COMPREPLY=( $(compgen -W "L M H" -- ${cur/*:/}) )
+}
+
 _task_offer_projects() {
     COMPREPLY=( $(compgen -W "$(task _projects)" -- ${cur/*:/}) )
 }
@@ -80,11 +88,19 @@ _task()
 #   echo "prev='$prev'"
 #   echo "prev2='$prev2'"
 
-    opts="$(task _commands) $(task _ids)"
+    opts="$(task _commands) $(task _ids) $(task _columns)"
 
     case "${prev}" in
         :)
             case "${prev2}" in
+                dep*)
+                    _task_offer_dependencies
+                    return 0
+                    ;;
+                pri*)
+                    _task_offer_priorities
+                    return 0
+                    ;;
                 pro*)
                     _task_offer_projects
                     return 0
@@ -99,6 +115,14 @@ _task()
                     ;;
                 :)
                     case "${prev}" in
+                        dep*)
+                            _task_offer_dependencies
+                            return 0
+                            ;;
+                        pri*)
+                            _task_offer_priorities
+                            return 0
+                            ;;
                         pro*)
                             _task_offer_projects
                             return 0
