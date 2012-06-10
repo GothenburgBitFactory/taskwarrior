@@ -625,6 +625,10 @@ int main (int argc, char** argv)
     t.ok    (n.skip ('9'),        "                '' skip 9  -> ok");
     t.ok    (n.depleted (),       "depleted");
 
+    n = Nibbler ("entrée");
+    t.ok (n.getName (s), "'entrée' -> ok");
+    t.is (s, "entrée",   "'entrée' -> 'entrée'");
+
     // bool getWord (std::string&);
     t.diag ("Nibbler::getWord");
     n = Nibbler ("one two th3ee");
