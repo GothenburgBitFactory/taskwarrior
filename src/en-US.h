@@ -396,6 +396,8 @@
 #define STRING_CMD_IMPORT_FILE       "Importing '{1}'"
 #define STRING_CMD_IMPORT_BAD_ATT    "Unrecognized attribute '{1}'"
 #define STRING_CMD_IMPORT_NOT_JSON   "Not a JSON object: {1}"
+#define STRING_CMD_IMPORT_NO_DESC    "Annotation is missing a description: {1}"
+#define STRING_CMD_IMPORT_NO_ENTRY   "Annotation is missing an entry date: {1}"
 #define STRING_CMD_SHELL_USAGE       "Launches an interactive shell"
 #define STRING_CMD_SHELL_HELP1       "Enter any task command (such as 'list'), or hit 'Enter'."
 #define STRING_CMD_SHELL_HELP2       "There is no need to include the 'task' command itself."

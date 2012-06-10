@@ -76,6 +76,8 @@ Bugs
  + Fixed bug #1008, which failed to remove tasks with the special tag '+nocal'
    from the calendar report output with 'calendar.details=full' set (thanks to
    Bryan Kam).
+ + Fixed bug #1016, which caused segfaults when importing JSON with annotations
+   that lack description or entry date (thanks to Nicholas Rabenau).
 
 ------ old releases ------------------------------
 

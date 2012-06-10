@@ -172,6 +172,12 @@ int CmdImport::execute (std::string& output)
                 json::string* when = (json::string*)annotation->_data["entry"];
                 json::string* what = (json::string*)annotation->_data["description"];
 
+                if (! when)
+                  throw format (STRING_CMD_IMPORT_NO_ENTRY, *line);
+
+                if (! what)
+                  throw format (STRING_CMD_IMPORT_NO_DESC, *line);
+
                 std::string name = "annotation_" + Date (when->_data).toEpochString ();
 
                 annos.insert (std::make_pair (name, what->_data));
