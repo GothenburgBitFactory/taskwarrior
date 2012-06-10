@@ -34,13 +34,13 @@
 #
 # To use these routines:
 #
-#    1) Copy this file to somewhere (e.g. ~/.bash_completion.d/.task_completion.sh).
+#    1) Copy this file to somewhere (e.g. ~/.bash_completion.d/.task.sh).
 #    2) Added the following line to your .bashrc:
-#        source ~/.bash_completion.d/task_completion.sh
+#        source ~/.bash_completion.d/task.sh
 #
 #    OR
 #
-#    3) Copy the file to /etc/bash_complettion.d
+#    3) Copy the file to /etc/bash_completion.d
 #    4) source /etc/bash_completion
 #
 # To submit patches/bug reports:
