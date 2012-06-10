@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -51,7 +51,11 @@ unlike ($output, qr/description/ms, 'Attribute not completed in description');
 $output = qx{../src/task test rc:bug.rc rc.report.test.columns:description rc.report.test.labels:__};
 like ($output, qr/__/ms, 'Custom column present in the output');
 
-### Cleanup.
+$output = qx{../src/task rc:bug.rc add entrée interdite};
+$output = qx{../src/task rc:bug.rc list interdite};
+like ($output, qr/entrée interdite/, "'entrée' left intact");
+
+# Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&

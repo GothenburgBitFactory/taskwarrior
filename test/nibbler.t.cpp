@@ -39,15 +39,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (385);
+  UnitTest t (387);
 #else
-  UnitTest t (361);
+  UnitTest t (363);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (335);
+  UnitTest t (337);
 #else
-  UnitTest t (311);
+  UnitTest t (313);
 #endif
 #endif
 

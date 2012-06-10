@@ -1048,12 +1048,14 @@ bool Nibbler::getName (std::string& result)
 
   if (i < _length)
   {
-    if (isalpha (_input[i]))
+    if (! isdigit (_input[i]) &&
+        ! ispunct (_input[i]) &&
+        ! isspace (_input[i]))
     {
       ++i;
       while (i < _length &&
-             (isalpha (_input[i]) ||
-              isdigit (_input[i])))
+             ! ispunct (_input[i]) &&
+             ! isspace (_input[i]))
       {
         ++i;
       }
