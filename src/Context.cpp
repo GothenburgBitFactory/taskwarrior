@@ -396,7 +396,10 @@ int Context::dispatch (std::string &out)
     return rc;
   }
 
-  return commands["help"]->execute (out);
+  if (commands["help"])
+    return commands["help"]->execute (out);
+
+  return 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
