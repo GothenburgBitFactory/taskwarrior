@@ -4,6 +4,7 @@
 2.0.1 ()
 
 Features
+ + Feature #325, User Defined Attributes.
  + Feature #457, #922, tasks may now be given an 'until' date, after which they
    expire and are deleted.
  + Feature #516, which allows the duplication of completed tasks (thanks to
