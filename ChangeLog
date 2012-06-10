@@ -78,6 +78,8 @@ Bugs
    Bryan Kam).
  + Fixed bug #1016, which caused segfaults when importing JSON with annotations
    that lack description or entry date (thanks to Nicholas Rabenau).
+ + Fixed bug #1017, which exported invalid JSON when there were no tasks (thanks
+   to Nicholas Rabenau).
 
 ------ old releases ------------------------------
 

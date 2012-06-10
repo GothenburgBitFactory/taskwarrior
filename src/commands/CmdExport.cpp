@@ -53,12 +53,6 @@ int CmdExport::execute (std::string& output)
   std::vector <Task> filtered;
   filter (filtered);
 
-  if (filtered.size () == 0)
-  {
-    context.footnote (STRING_FEEDBACK_NO_MATCH);
-    return 1;
-  }
-
   // Note: "limit:" feature not supported.
   // TODO Why not?
 
@@ -72,16 +66,17 @@ int CmdExport::execute (std::string& output)
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
-    if (task != filtered.begin ())
-      output += ",\n";
-
     output += task->composeJSON (true);
+
+    if (task != filtered.begin ())
+      output += ",";
+
+    output += "\n";
   }
 
   if (json_array)
-    output += "\n]";
+    output += "]\n";
 
-  output += "\n";
   return rc;
 }
 
