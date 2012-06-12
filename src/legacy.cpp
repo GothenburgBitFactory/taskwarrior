@@ -146,7 +146,7 @@ std::string legacyCheckForDeprecatedVariables ()
         it->first.substr (it->first.length () - 6) == ".limit")
       deprecated.push_back (it->first);
 
-    // report.*.annotaitons
+    // report.*.annotations
     if (it->first.length () > 19 &&
         it->first.substr (0, 7) == "report." &&
         it->first.substr (it->first.length () - 12) == ".annotations")

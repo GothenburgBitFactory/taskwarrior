@@ -159,7 +159,7 @@ _regex_words -t ':' default 'task attributes' \
 	'wa*it:Date until task becomes pending:$task_dates' \
 	're*cur:Recurrence frequency:$task_freqs' \
 	'pri*ority:priority:$task_priorities' \
-	'un*til:Recurrence end date:$task_dates' \
+	'un*til:Expiration date:$task_dates' \
 	'fg:Foreground color' \
 	'bg:Background color' \
 	'li*mit:Desired number of rows in report'

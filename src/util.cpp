@@ -200,7 +200,7 @@ int autoComplete (
   const std::string& partial,
   const std::vector<std::string>& list,
   std::vector<std::string>& matches,
-  int minimum/* = 2*/)
+  int minimum/* = 1*/)
 {
   matches.clear ();
 
