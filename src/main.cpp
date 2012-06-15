@@ -76,7 +76,7 @@ int main (int argc, const char** argv)
 
     catch (std::string& error)
     {
-      std::cout << error << "\n";
+      std::cerr << error << "\n";
       status = -1;
     }
 

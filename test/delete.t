@@ -53,11 +53,11 @@ $output = qx{echo 'y' | ../src/task rc:delete.rc undo; ../src/task rc:delete.rc 
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 ok (-r 'completed.data', 'completed.data created');
 
-$output = qx{../src/task rc:delete.rc 1 delete; ../src/task rc:delete.rc list};
+$output = qx{../src/task rc:delete.rc 1 delete; ../src/task rc:delete.rc list 2>&1 >/dev/null};
 like ($output, qr/No matches./, 'No matches');
 ok (-r 'completed.data', 'completed.data created');
 
-$output = qx{../src/task rc:delete.rc info 1};
+$output = qx{../src/task rc:delete.rc info 1 2>&1 >/dev/null};
 like ($output, qr/No matches\./, 'No matches');  # 10
 
 # Add a task, delete it, and modify on the fly.

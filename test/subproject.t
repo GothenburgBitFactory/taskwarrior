@@ -59,7 +59,7 @@ like ($output, qr/\bab\s*$/m,  'abc,ab,a,b | a -> ab');
 $output = qx{../src/task rc:sp.rc list project:abc};
 like ($output, qr/\babc\s*$/m, 'abc,ab,a,b | a -> abc');
 
-$output = qx{../src/task rc:sp.rc list project:abcd};
+$output = qx{../src/task rc:sp.rc list project:abcd 2>&1 >/dev/null};
 like ($output, qr/No matches./, 'abc,ab,a,b | abcd -> nul');
 
 # Cleanup.

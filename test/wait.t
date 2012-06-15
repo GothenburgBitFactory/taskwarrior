@@ -74,7 +74,7 @@ unlike ($output, qr/tomorrow/ms, 'waiting task invisible');
 $output = qx{../src/task rc:wait.rc all status:waiting wait:tomorrow};
 like ($output, qr/tomorrow/ms, 'waiting task visible when specifically queried');
 
-$output = qx{../src/task rc:wait.rc add Complain due:today wait:tomorrow};
+$output = qx{../src/task rc:wait.rc add Complain due:today wait:tomorrow 2>&1 >/dev/null};
 like ($output, qr/Warning: You have specified that the 'wait' date is after the 'due' date\./, 'warning on wait after due');
 
 # Cleanup.

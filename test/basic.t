@@ -43,7 +43,7 @@ if (open my $fh, '>', 'basic.rc')
 my $version = slurp ('../../configure.ac');
 
 # Test the usage command.
-my $output = qx{../src/task rc:basic.rc};
+my $output = qx{../src/task rc:basic.rc 2>&1 >/dev/null};
 like ($output, qr/You must specify a command or a task to modify./m, 'missing command and ID');
 
 # Test the version command.

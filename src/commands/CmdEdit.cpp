@@ -691,7 +691,7 @@ ARE_THESE_REALLY_HARMFUL:
 
     if (oops)
     {
-      std::cout << STRING_ERROR_PREFIX << problem << "\n";
+      std::cerr << STRING_ERROR_PREFIX << problem << "\n";
 
       // Preserve the edits.
       before = after;

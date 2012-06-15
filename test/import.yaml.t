@@ -73,7 +73,7 @@ EOF
 qx{../scripts/add-ons/import-yaml.pl <import.txt >import.json};
 
 # Import the JSON.
-my $output = qx{../src/task rc:import.rc import import.json};
+my $output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
 like ($output, qr/Imported 3 tasks\./, '3 tasks imported');
 
 $output = qx{../src/task rc:import.rc list};
@@ -100,7 +100,7 @@ unlike ($output, qr/2.+B.+one/,        't2 missing');
 like   ($output, qr/9\/4\/2011.+two/, 't3 present');
 
 # Make sure that a duplicate task cannot be imported.
-$output = qx{../src/task rc:import.rc import import.json};
+$output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
 like ($output, qr/Cannot add task because the uuid '.{36}' is not unique\./, 'error on duplicate uuid');
 
 # Create import file.
@@ -125,7 +125,7 @@ EOF
 qx{../scripts/add-ons/import-yaml.pl <import.txt >import.json};
 
 # Import the JSON.
-$output = qx{../src/task rc:import.rc import import.json};
+$output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
 like ($output, qr/Imported 1 tasks\./, '1 task imported');
 
 # Verify.

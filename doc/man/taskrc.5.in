@@ -273,6 +273,9 @@ Here are the shortcut equivalents:
     verbose=nothing
     verbose=
 
+Those additional comments are sent to the standard error for header, footnote
+and project.  The others are sent to standard output.
+
 .TP
 .B confirmation=yes
 May be "yes" or "no", and determines whether taskwarrior will ask for

@@ -147,7 +147,6 @@ int CmdCustom::execute (std::string& output)
   if (maxlines)
     maxlines -= (context.verbose ("blank") ? 1 : 0)
               + table_header
-              + (context.verbose ("footnote") ? context.footnotes.size () : 0)
               + 1;  // "X tasks shown ..."
 
   // Render.
@@ -161,6 +160,7 @@ int CmdCustom::execute (std::string& output)
         << view.render (filtered, sequence)
         << optionalBlankLine ();
 
+    // Print the number of rendered tasks
     if (context.verbose ("affected"))
     {
       out << (filtered.size () == 1

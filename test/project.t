@@ -40,30 +40,30 @@ if (open my $fh, '>', 'pro.rc')
 }
 
 # Test the project status numbers.
-my $output = qx{../src/task rc:pro.rc add one pro:foo};
+my $output = qx{../src/task rc:pro.rc add one pro:foo 2>&1 >/dev/null};
 like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(1 of 1 tasks remaining\)\./, 'add one');
 
-$output = qx{../src/task rc:pro.rc add two pro:'foo'};
+$output = qx{../src/task rc:pro.rc add two pro:'foo' 2>&1 >/dev/null};
 like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(2 of 2 tasks remaining\)\./, 'add two');
 
-$output = qx{../src/task rc:pro.rc add three pro:'foo'};
+$output = qx{../src/task rc:pro.rc add three pro:'foo' 2>&1 >/dev/null};
 like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(3 of 3 tasks remaining\)\./, 'add three');
 
-$output = qx{../src/task rc:pro.rc add four pro:'foo'};
+$output = qx{../src/task rc:pro.rc add four pro:'foo' 2>&1 >/dev/null};
 like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(4 of 4 tasks remaining\)\./, 'add four');
 
-$output = qx{../src/task rc:pro.rc 1 done};
+$output = qx{../src/task rc:pro.rc 1 done 2>&1 >/dev/null};
 like ($output, qr/Project 'foo' is 25% complete \(3 of 4 tasks remaining\)\./, 'done one');
 
-$output = qx{../src/task rc:pro.rc 2 delete};
+$output = qx{../src/task rc:pro.rc 2 delete 2>&1 >/dev/null};
 like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 33% complete \(2 of 3 tasks remaining\)\./, 'delete two');
 
-$output = qx{../src/task rc:pro.rc 3 modify pro:bar};
+$output = qx{../src/task rc:pro.rc 3 modify pro:bar 2>&1 >/dev/null};
 like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 50% complete \(1 of 2 tasks remaining\)\./, 'change project');
 like ($output, qr/The project 'bar' has changed\.  Project 'bar' is 0% complete \(1 of 1 tasks remaining\)\./, 'change project');
 
 # Test projects with spaces in them.
-$output = qx{../src/task rc:pro.rc 3 modify pro:\\"foo bar\\"};
+$output = qx{../src/task rc:pro.rc 3 modify pro:\\"foo bar\\" 2>&1 >/dev/null};
 like ($output, qr/The project 'foo bar' has changed\./, 'project with spaces');
 
 # Cleanup.

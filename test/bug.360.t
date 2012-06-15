@@ -45,25 +45,25 @@ qx{../src/task rc:bug.rc ls};
 
 # Result: trying to add the project generates an error about removing
 # recurrence from a task.
-my $output = qx{echo 'y' | ../src/task rc:bug.rc 1 modify project:bar};
+my $output = qx{echo 'y' | ../src/task rc:bug.rc 1 modify project:bar 2>&1 >/dev/null};
 unlike ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'No recurrence removal error');
 
 # Now try to generate the error above via regular means - ie, is it actually
 # doing what it should?
 # TODO Removing recur: from a recurring task should also remove imask and parent.
-$output = qx{../src/task rc:bug.rc 2 modify recur:};
+$output = qx{../src/task rc:bug.rc 2 modify recur: 2>&1 >/dev/null};
 like ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'Recurrence removal error');
 
 # Prevent removal of the due date from a recurring task.
 # TODO Removing due: from a recurring task should also remove recur, imask and parent
-$output = qx{../src/task rc:bug.rc 2 modify due:};
+$output = qx{../src/task rc:bug.rc 2 modify due: 2>&1 >/dev/null};
 like ($output, qr/You cannot remove the due date from a recurring task./ms, 'Cannot remove due date from a recurring task');
 
 # Allow removal of the due date from a non-recurring task.
 qx{../src/task rc:bug.rc add nonrecurring};
 $output = qx{../src/task rc:bug.rc ls};
 my ($id) = $output =~ /(\d+)\s+nonrecurring/;
-$output = qx{../src/task rc:bug.rc $id modify due:};
+$output = qx{../src/task rc:bug.rc $id modify due: 2>&1 >/dev/null};
 unlike ($output, qr/You cannot remove the due date from a recurring task./ms, 'Can remove due date from a non-recurring task');
 
 $output = qx{../src/task rc:bug.rc diag};

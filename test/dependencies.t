@@ -49,15 +49,15 @@ qx{../src/task rc:dep.rc add One};
 qx{../src/task rc:dep.rc add Two};
 
 # [2]
-my $output = qx{../src/task rc:dep.rc 1 modify dep:-2};
+my $output = qx{../src/task rc:dep.rc 1 modify dep:-2 2>&1 >/dev/null};
 like ($output, qr/Could not delete a dependency on task 2 - not found\./, 'dependencies - remove nonexistent dependency');
 
 # [3]
-$output = qx{../src/task rc:dep.rc 1 modify dep:99};
+$output = qx{../src/task rc:dep.rc 1 modify dep:99 2>&1 >/dev/null};
 like ($output, qr/Could not create a dependency on task 99 - not found\./, 'dependencies - add dependency for nonexistent task');
 
 # [4]
-$output = qx{../src/task rc:dep.rc 99 modify dep:1};
+$output = qx{../src/task rc:dep.rc 99 modify dep:1 2>&1 >/dev/null};
 like ($output, qr/No tasks specified\./, 'dependencies - add dependency to nonexistent task');
 
 # [5,6] t 1 dep:2; t info 1 => blocked by 2
@@ -71,16 +71,16 @@ unlike ($output, qr/This task blocked by/,              'dependencies - trivial 
 like ($output, qr/This task is blocking\s+1 One\nUUID/, 'dependencies - trivial blocking');
 
 # [9] t 1 dep:2 (again)
-$output = qx{../src/task rc:dep.rc 1 modify dep:2};
+$output = qx{../src/task rc:dep.rc 1 modify dep:2 2>&1 >/dev/null};
 like ($output, qr/Task 1 already depends on task 2\./, 'dependencies - add already existing dependency');
 
 # [10,11] t 1 dep:1 => error
-$output = qx{../src/task rc:dep.rc 1 modify dep:1};
+$output = qx{../src/task rc:dep.rc 1 modify dep:1 2>&1};
 like   ($output, qr/A task cannot be dependent on itself\./, 'dependencies - cannot depend on self');
 unlike ($output, qr/Modified 1 task\./,                      'dependencies - cannot depend on self');
 
 # [12,13] t 1 dep:2; t 2 dep:1 => error
-$output = qx{../src/task rc:dep.rc 2 modify dep:1};
+$output = qx{../src/task rc:dep.rc 2 modify dep:1 2>&1};
 like   ($output, qr/Circular dependency detected and disallowed\./, 'dependencies - trivial circular');
 unlike ($output, qr/Modified 1 task\./,                             'dependencies - trivial circular');
 
@@ -105,7 +105,7 @@ qx{../src/task rc:dep.rc add Five};
 qx{../src/task rc:dep.rc 5 modify dep:4; ../src/task rc:dep.rc 4 modify dep:3; ../src/task rc:dep.rc 3 modify dep:2; ../src/task rc:dep.rc 2 modify dep:1};
 
 # [17,18] 5 dep 4 dep 3 dep 2 dep 1 dep 5 => error
-$output = qx{../src/task rc:dep.rc 1 modify dep:5};
+$output = qx{../src/task rc:dep.rc 1 modify dep:5 2>&1 >/dev/null};
 like   ($output, qr/Circular dependency detected and disallowed\./, 'dependencies - nontrivial circular');
 unlike ($output, qr/Modified 1 task\./,                             'dependencies - nontrivial circular');
 

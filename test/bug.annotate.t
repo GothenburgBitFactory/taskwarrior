@@ -40,14 +40,14 @@ if (open my $fh, '>', 'bug.rc')
 
 # Attempt a blank annotation.
 qx{../src/task rc:bug.rc add foo};
-my $output = qx{../src/task rc:bug.rc 1 annotate};
+my $output = qx{../src/task rc:bug.rc 1 annotate 2>&1 >/dev/null};
 like ($output, qr/Additional text must be provided/, 'failed on blank annotation');
 
 # Attempt an annotation without ID
-$output = qx{echo "n" | ../src/task rc:bug.rc annotate bar};
+$output = qx{echo "n" | ../src/task rc:bug.rc annotate bar 2>&1 >/dev/null};
 like ($output, qr/Command prevented from running/, 'Filter-less write command inhibited');
 
-$output = qx{echo "y" | ../src/task rc:bug.rc annotate bar};
+$output = qx{echo "y" | ../src/task rc:bug.rc annotate bar 2>&1 >/dev/null};
 unlike ($output, qr/Command prevented from running/, 'Filter-less write command permitted');
 
 # Cleanup.

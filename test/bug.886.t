@@ -42,7 +42,7 @@ if (open my $fh, '>', 'bug.rc')
 my $output = qx{../src/task rc:bug.rc add one due:sund};
 like ($output, qr/Created task 1\./, 'sund --> valid date');
 
-$output = qx{../src/task rc:bug.rc add two due:donkey};
+$output = qx{../src/task rc:bug.rc add two due:donkey 2>&1 >/dev/null};
 like ($output, qr/was not recognized\./, 'donkey --> invalid date');
 
 # Cleanup.

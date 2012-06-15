@@ -89,7 +89,22 @@ int CmdMerge::execute (std::string& output)
     else
       file = uri._path;
 
-    context.tdb2.merge (file);
+    // XXX the following function could indicate whether a modification was
+    // performed without an exception (by returning a boolean, within a status
+    // object or with a specific function)
+    try
+    {
+        context.tdb2.merge (file);
+    }
+    catch (std::string& e) {
+        if (e == STRING_TDB2_UP_TO_DATE)
+        {
+            output += e + "\n";
+            return 0;
+        }
+        else
+            throw e;
+    }
 
     output += std::string (STRING_CMD_MERGE_COMPLETE) + "\n";
 

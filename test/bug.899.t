@@ -40,16 +40,16 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 899: task log does not behave correctly when logging into a project
-my $output = qx{../src/task rc:bug.rc add one pro:A};
+my $output = qx{../src/task rc:bug.rc add one pro:A 2>&1 >/dev/null};
 like ($output, qr/ 0% complete \(1 of 1 /, '1 of 1 tasks remaining - 0%');
 
-$output = qx{../src/task rc:bug.rc add two pro:A};
+$output = qx{../src/task rc:bug.rc add two pro:A 2>&1 >/dev/null};
 like ($output, qr/ 0% complete \(2 of 2 /, '2 of 2 tasks remaining - 0%');
 
-$output = qx{../src/task rc:bug.rc 1 done};
+$output = qx{../src/task rc:bug.rc 1 done 2>&1 >/dev/null};
 like ($output, qr/ 50% complete \(1 of 2 /, '1 of 2 tasks remaining - 50%');
 
-$output = qx{../src/task rc:bug.rc log three pro:A};
+$output = qx{../src/task rc:bug.rc log three pro:A 2>&1 >/dev/null};
 like ($output, qr/ 66% complete \(1 of 3 /, '1 of 3 tasks remaining - 66%');
 
 # Cleanup.

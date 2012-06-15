@@ -45,12 +45,12 @@ if (open my $fh, '>', 'bug.rc')
 qx{../src/task rc:bug.rc add One project:p1};
 
 # Delete the task and note the completion status of the project.
-my $output = qx{echo 'y' | ../src/task rc:bug.rc 1 delete};
+my $output = qx{echo 'y' | ../src/task rc:bug.rc 1 delete 2>&1 >/dev/null};
 like ($output, qr/is 0\% complete/ms, 'Empty project correctly reported as being 0% completed.');
 
 # Add another task, complete it and note the completion status of hte project.
 qx{../src/task rc:bug.rc add Two project:p1};
-$output = qx{../src/task rc:bug.rc 2 done};
+$output = qx{../src/task rc:bug.rc 2 done 2>&1 >/dev/null};
 like ($output, qr/is 100\% complete/ms, 'Empty project correctly reported as being 100% completed.');
 
 # Cleanup.

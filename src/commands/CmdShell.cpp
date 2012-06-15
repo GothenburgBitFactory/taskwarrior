@@ -113,7 +113,7 @@ int CmdShell::execute (std::string&)
 
       catch (std::string& error)
       {
-        std::cout << error << "\n";
+        std::cerr << error << "\n";
       }
 
       catch (...)

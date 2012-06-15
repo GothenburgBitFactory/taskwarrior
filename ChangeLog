@@ -31,6 +31,7 @@ Features
  + Possible to specify the date format when showing information about a task
    with 'dateformat.info'.
  + Bash script improvement (column names are now completed).
+ + Output error, header, footnote and debug messages on standard error.
 
 Bugs
  + Applied patch for bug #919, so the holidays listed on the 'calendar' report

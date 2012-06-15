@@ -52,7 +52,7 @@ qx{../src/task rc:recur.rc 2 do};
 qx{../src/task rc:recur.rc 3 do};
 qx{../src/task rc:recur.rc 4 do};
 qx{../src/task rc:recur.rc 5 do};
-$output = qx{../src/task rc:recur.rc list};
+$output = qx{../src/task rc:recur.rc list 2>&1 >/dev/null};
 like ($output, qr/and was deleted/, 'Parent task deleted');
 
 $output = qx{../src/task rc:recur.rc diag};

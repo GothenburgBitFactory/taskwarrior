@@ -51,9 +51,9 @@ extern Context context;
 #define DEBUG_OUTPUT 0
 
 #if DEBUG_OUTPUT > 0
-  #define DEBUG_STR(str)       std::cout << "DEBUG: " << str << "\n"; std::cout.flush()
-  #define DEBUG_STR_PART(str)  std::cout << "DEBUG: " << str; std::cout.flush()
-  #define DEBUG_STR_END(str)   std::cout << str << "\n"; std::cout.flush()
+  #define DEBUG_STR(str)       std::cerr << "DEBUG: " << str << "\n"; std::cerr.flush()
+  #define DEBUG_STR_PART(str)  std::cerr << "DEBUG: " << str; std::cerr.flush()
+  #define DEBUG_STR_END(str)   std::cerr << str << "\n"; std::cerr.flush()
 #else
   #define DEBUG_STR(str)
   #define DEBUG_STR_PART(str)

@@ -51,7 +51,7 @@ EOF
   ok (-r 'import.txt', 'Created sample import data');
 }
 
-my $output = qx{../src/task rc:import.rc import import.txt};
+my $output = qx{../src/task rc:import.rc import import.txt 2>&1 >/dev/null};
 like ($output, qr/Imported 3 tasks\./, 'no errors');
 # Imported 3 tasks successfully.
 
@@ -79,7 +79,7 @@ unlike ($output, qr/2.+B.+one/,        't2 missing');
 like   ($output, qr/2\/13\/2009.+two/, 't3 present');
 
 # Make sure that a duplicate task cannot be imported.
-$output = qx{../src/task rc:import.rc import import.txt};
+$output = qx{../src/task rc:import.rc import import.txt 2>&1 >/dev/null};
 like ($output, qr/Cannot add task because the uuid .+ is not unique\./, 'error on duplicate uuid');
 
 # Create import file.
@@ -93,7 +93,7 @@ EOF
   ok (-r 'import2.txt', 'Created second sample import data');
 }
 
-$output = qx{../src/task rc:import.rc import import2.txt};
+$output = qx{../src/task rc:import.rc import import2.txt 2>&1 >/dev/null};
 like ($output, qr/Imported 1 tasks\./, 'no errors');
 # Imported 1 tasks successfully.
 

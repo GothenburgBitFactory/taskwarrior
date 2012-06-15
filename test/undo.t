@@ -53,7 +53,7 @@ $output = qx{../src/task rc:undo.rc undo; ../src/task rc:undo.rc info 1};
 ok (-r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
-$output = qx{../src/task rc:undo.rc 1 do; ../src/task rc:undo.rc list};
+$output = qx{../src/task rc:undo.rc 1 do; ../src/task rc:undo.rc list 2>&1 >/dev/null};
 like ($output, qr/No matches/, 'No matches');
 
 # Cleanup.

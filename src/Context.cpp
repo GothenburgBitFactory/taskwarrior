@@ -208,9 +208,9 @@ int Context::initialize (int argc, const char** argv)
     std::vector <std::string>::iterator d;
     for (d = debugMessages.begin (); d != debugMessages.end (); ++d)
       if (color ())
-        std::cout << colorizeDebug (*d) << "\n";
+        std::cerr << colorizeDebug (*d) << "\n";
       else
-        std::cout << *d << "\n";
+        std::cerr << *d << "\n";
   }
 
   // Dump all headers, controlled by 'header' verbosity token.
@@ -219,9 +219,9 @@ int Context::initialize (int argc, const char** argv)
     std::vector <std::string>::iterator h;
     for (h = headers.begin (); h != headers.end (); ++h)
       if (color ())
-        std::cout << colorizeHeader (*h) << "\n";
+        std::cerr << colorizeHeader (*h) << "\n";
       else
-        std::cout << *h << "\n";
+        std::cerr << *h << "\n";
   }
 
   // Dump all footnotes, controlled by 'footnote' verbosity token.
@@ -230,9 +230,9 @@ int Context::initialize (int argc, const char** argv)
     std::vector <std::string>::iterator f;
     for (f = footnotes.begin (); f != footnotes.end (); ++f)
       if (color ())
-        std::cout << colorizeFootnote (*f) << "\n";
+        std::cerr << colorizeFootnote (*f) << "\n";
       else
-        std::cout << *f << "\n";
+        std::cerr << *f << "\n";
   }
 
   // Dump all errors, non-maskable.
@@ -242,9 +242,9 @@ int Context::initialize (int argc, const char** argv)
     std::vector <std::string>::iterator e;
     for (e = errors.begin (); e != errors.end (); ++e)
       if (color ())
-        std::cout << colorizeFootnote (*e) << "\n";
+        std::cerr << colorizeFootnote (*e) << "\n";
       else
-        std::cout << *e << "\n";
+        std::cerr << *e << "\n";
   }
 
   timer_init.stop ();
@@ -311,9 +311,9 @@ int Context::run ()
     std::vector <std::string>::iterator d;
     for (d = debugMessages.begin (); d != debugMessages.end (); ++d)
       if (color ())
-        std::cout << colorizeDebug (*d) << "\n";
+        std::cerr << colorizeDebug (*d) << "\n";
       else
-        std::cout << *d << "\n";
+        std::cerr << *d << "\n";
   }
 
   // Dump all headers, controlled by 'header' verbosity token.
@@ -322,9 +322,9 @@ int Context::run ()
     std::vector <std::string>::iterator h;
     for (h = headers.begin (); h != headers.end (); ++h)
       if (color ())
-        std::cout << colorizeHeader (*h) << "\n";
+        std::cerr << colorizeHeader (*h) << "\n";
       else
-        std::cout << *h << "\n";
+        std::cerr << *h << "\n";
   }
 
   // Dump the report output.
@@ -336,9 +336,9 @@ int Context::run ()
     std::vector <std::string>::iterator f;
     for (f = footnotes.begin (); f != footnotes.end (); ++f)
       if (color ())
-        std::cout << colorizeFootnote (*f) << "\n";
+        std::cerr << colorizeFootnote (*f) << "\n";
       else
-        std::cout << *f << "\n";
+        std::cerr << *f << "\n";
   }
 
   // Dump all errors, non-maskable.
@@ -346,9 +346,9 @@ int Context::run ()
   std::vector <std::string>::iterator e;
   for (e = errors.begin (); e != errors.end (); ++e)
     if (color ())
-      std::cout << colorizeFootnote (*e) << "\n";
+      std::cerr << colorizeFootnote (*e) << "\n";
     else
-      std::cout << *e << "\n";
+      std::cerr << *e << "\n";
 
   hooks.trigger ("on-exit");
   return rc;

@@ -47,12 +47,12 @@ my $setup = "../src/task rc:nag.rc add due:yesterday one;"
           . "../src/task rc:nag.rc add six;";
 qx{$setup};
 
-like   (qx{../src/task rc:nag.rc 6 do}, qr/NAG/, 'do pri: -> nag');
-like   (qx{../src/task rc:nag.rc 5 do}, qr/NAG/, 'do pri:L -> nag');
-like   (qx{../src/task rc:nag.rc 4 do}, qr/NAG/, 'do pri:M-> nag');
-like   (qx{../src/task rc:nag.rc 3 do}, qr/NAG/, 'do pri:H-> nag');
-like   (qx{../src/task rc:nag.rc 2 do}, qr/NAG/, 'do due:tomorrow -> nag');
-my $output = qx{../src/task rc:nag.rc 1 do};
+like   (qx{../src/task rc:nag.rc 6 do 2>&1 >/dev/null}, qr/NAG/, 'do pri: -> nag');
+like   (qx{../src/task rc:nag.rc 5 do 2>&1 >/dev/null}, qr/NAG/, 'do pri:L -> nag');
+like   (qx{../src/task rc:nag.rc 4 do 2>&1 >/dev/null}, qr/NAG/, 'do pri:M-> nag');
+like   (qx{../src/task rc:nag.rc 3 do 2>&1 >/dev/null}, qr/NAG/, 'do pri:H-> nag');
+like   (qx{../src/task rc:nag.rc 2 do 2>&1 >/dev/null}, qr/NAG/, 'do due:tomorrow -> nag');
+my $output = qx{../src/task rc:nag.rc 1 do 2>&1 >/dev/null};
 unlike ($output, qr/NAG/, 'do due:yesterday -> no nag');
 
 # Cleanup.
