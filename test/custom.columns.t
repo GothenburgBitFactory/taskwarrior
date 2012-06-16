@@ -43,7 +43,7 @@ if (open my $fh, '>', 'custom.rc')
 }
 
 # Generate the usage screen, and locate the custom report on it.
-my $output = qx{../src/task rc:custom.rc foo 2>&1};
+my $output = qx{../src/task rc:custom.rc foo 2>&1 >/dev/null};
 like ($output, qr/Unrecognized column name 'foo'\.\n/, 'custom report spotted invalid column');
 
 # Cleanup.

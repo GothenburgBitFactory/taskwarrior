@@ -47,7 +47,7 @@ qx{../src/task rc:pri.rc add one   pri:H};
 qx{../src/task rc:pri.rc add two   pri:M};
 qx{../src/task rc:pri.rc add three pri:L};
 
-my $output = qx{../src/task rc:pri.rc foo 2>&1};
+my $output = qx{../src/task rc:pri.rc foo};
 like ($output,   qr/ID.+Pri/,    'priority.long indicator heading');
 like ($output,   qr/1\s+High/,   'priority.long High');
 like ($output,   qr/2\s+Medium/, 'priority.long Medium');
