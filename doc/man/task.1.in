@@ -207,8 +207,7 @@ the priority to H for each of those tasks.  This can also be achieved directly:
 
   task project:Home modify priority:H
 
-This command is mainly of use to external scripts.  As such, only minimal output
-is generated (equivalent to verbose=nothing).
+This command is mainly of use to external scripts.
 
 .TP
 .B task <filter> uuids
@@ -222,8 +221,7 @@ this:
 This example first gets the UUIDs for the project:Home and status:completed
 filter, then makes each of those tasks pending again.
 
-This command is mainly of use to external scripts.  As such, only minimal
-output is generated (equivalent to verbose=nothing).
+This command is mainly of use to external scripts.
 
 .TP
 .B task udas

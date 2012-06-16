@@ -694,16 +694,13 @@ void Context::updateXtermTitle ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// This function allows a clean output if the command is a helper subcommand or
-// a command aimed at being used by an external script.
+// This function allows a clean output if the command is a helper subcommand.
 void Context::updateVerbosity ()
 {
   std::string command;
   a3.find_command (command);
 
-  if (command[0] == '_'  ||
-      command == "ids"   ||
-      command == "uuids")
+  if (command[0] == '_')
   {
     verbosity.clear ();
     verbosity.push_back ("nothing");
