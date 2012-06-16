@@ -688,8 +688,6 @@ void TDB2::merge (const std::string& mergeFile)
     }
   }
 
-  std::cout << "\n";
-
   ///////////////////////////////////////
   // branch-off point found:
   if (found)
@@ -912,10 +910,10 @@ void TDB2::merge (const std::string& mergeFile)
   }
   else if (rit == r.end ())
   {
-    // nothing happend on the remote branch
+    // nothing happened on the remote branch
     // local branch is up-to-date
 
-    // nothing happend on the local branch either
+    // nothing happened on the local branch either
 
     // break, to suppress autopush
     if (lit == l.end ())
