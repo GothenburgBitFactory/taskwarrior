@@ -103,7 +103,6 @@ int Context::initialize (int argc, const char** argv)
     if (override)
     {
       rc_file = File (override);
-      debug ("TASKRC override: ");
       header (format (STRING_CONTEXT_RC_OVERRIDE, rc_file._data));
     }
 
@@ -731,7 +730,8 @@ void Context::error (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 void Context::debug (const std::string& input)
 {
-  debugMessages.push_back (input);
+  if (input.length ())
+    debugMessages.push_back (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
