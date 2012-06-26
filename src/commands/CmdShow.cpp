@@ -100,6 +100,7 @@ int CmdShow::execute (std::string& output)
     " color.deleted"
     " color.due"
     " color.due.today"
+    " color.error"
     " color.footnote"
     " color.header"
     " color.history.add"

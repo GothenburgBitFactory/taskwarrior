@@ -1283,6 +1283,8 @@ color.due                 red
 .br
 color.due.today           red
 .br
+color.error               yellow
+.br
 color.footnote            yellow
 .br
 color.header              yellow

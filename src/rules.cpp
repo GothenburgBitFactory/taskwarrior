@@ -357,6 +357,15 @@ std::string colorizeFootnote (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string colorizeError (const std::string& input)
+{
+  if (gsColor["color.error"].nontrivial ())
+    return gsColor["color.error"].colorize (input);
+
+  return input;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string colorizeDebug (const std::string& input)
 {
   if (gsColor["color.debug"].nontrivial ())

@@ -32,6 +32,7 @@ Features
    with 'dateformat.info'.
  + Bash script improvement (column names are now completed).
  + Feature #1013, output error, header, footnote and debug messages on standard error.
+ + Color error messages with a specific configuration variable 'color.error'.
 
 Bugs
  + Applied patch for bug #919, so the holidays listed on the 'calendar' report

@@ -55,6 +55,7 @@ void initializeColorRules ();
 void autoColorize (Task&, Color&);
 std::string colorizeHeader (const std::string&);
 std::string colorizeFootnote (const std::string&);
+std::string colorizeError (const std::string&);
 std::string colorizeDebug (const std::string&);
 
 // dependency.cpp

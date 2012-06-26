@@ -159,6 +159,7 @@ std::string Config::_defaults =
 #ifdef LINUX
   "color.header=color3                            # Color of header messages\n"
   "color.footnote=color3                          # Color of footnote messages\n"
+  "color.error=color3                             # Color of error messages\n"
   "color.debug=color3                             # Color of diagnostic output\n"
   "color.alternate=on color233                    # Alternate color for line coloring\n"
   "\n"
@@ -211,6 +212,7 @@ std::string Config::_defaults =
 #else
   "color.header=yellow                            # Color of header messages\n"
   "color.footnote=yellow                          # Color of footnote messages\n"
+  "color.error=yellow                             # Color of error messages\n"
   "color.debug=yellow                             # Color of diagnostic output\n"
   "color.alternate=                               # Alternate color for line coloring\n"
   "\n"

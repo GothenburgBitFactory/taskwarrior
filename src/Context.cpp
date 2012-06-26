@@ -345,7 +345,7 @@ int Context::run ()
   std::vector <std::string>::iterator e;
   for (e = errors.begin (); e != errors.end (); ++e)
     if (color ())
-      std::cerr << colorizeFootnote (*e) << "\n";
+      std::cerr << colorizeError (*e) << "\n";
     else
       std::cerr << *e << "\n";
 

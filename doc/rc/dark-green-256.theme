@@ -30,6 +30,7 @@
 color=on
 color.header=rgb031
 color.footnote=rgb031
+color.error=rgb031
 color.debug=rgb031
 
 color.summary.bar=white on rgb030

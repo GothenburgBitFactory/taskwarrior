@@ -813,6 +813,11 @@ Colors any task where the description or any annotation contains X.
 .RE
 
 .TP
+.B color.error=green
+Colors any of the error messages.
+.RE
+
+.TP
 .B color.header=green
 Colors any of the messages printed prior to the report output.
 .RE

@@ -30,6 +30,7 @@
 color=on
 color.header=blue
 color.footnote=blue
+color.error=blue
 color.debug=blue
 
 color.summary.bar=black on green

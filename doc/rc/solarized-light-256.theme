@@ -60,6 +60,7 @@ color.calendar.today=color7 on color4
 color.calendar.weekend=on color7
 color.calendar.weeknumber=color14
 
+color.error=color2
 color.debug=color3
 color.due=color9
 color.due.today=color1

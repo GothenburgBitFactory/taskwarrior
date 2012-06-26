@@ -30,6 +30,7 @@
 color=on
 color.header=color8
 color.footnote=color8
+color.error=color8
 color.debug=color8
 
 color.summary.bar=black on gray12
