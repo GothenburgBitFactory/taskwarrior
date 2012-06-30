@@ -449,8 +449,7 @@ std::string onProjectChange (Task& task, bool scope /* = true */)
 
     msg << format (STRING_HELPER_PROJECT_COMPL, project, percentage)
         << " "
-        << format (STRING_HELPER_PROJECT_REM, count_pending, count_pending + count_done)
-        << "\n";
+        << format (STRING_HELPER_PROJECT_REM, count_pending, count_pending + count_done);
   }
 
   return msg.str ();
@@ -462,10 +461,13 @@ std::string onProjectChange (Task& task1, Task& task2)
   if (task1.get ("project") == task2.get ("project"))
     return onProjectChange (task1);
 
-  std::string messages = onProjectChange (task1);
-  messages            += onProjectChange (task2);
+  std::string messages1 = onProjectChange (task1);
+  std::string messages2 = onProjectChange (task2);
 
-  return messages;
+  if (messages1.length () && messages2.length ())
+    return messages1 + '\n' + messages2;
+
+  return messages1 + messages2;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -474,8 +476,7 @@ std::string onExpiration (Task& task)
   std::stringstream msg;
 
   if (context.verbose ("affected"))
-    msg << format (STRING_FEEDBACK_EXPIRED, task.id, task.get ("description"))
-        << "\n";
+    msg << format (STRING_FEEDBACK_EXPIRED, task.id, task.get ("description"));
 
   return msg.str ();
 }
