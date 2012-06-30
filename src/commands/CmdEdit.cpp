@@ -629,7 +629,6 @@ bool CmdEdit::editFile (Task& task)
   // Create a temp file name in data.location.
   std::stringstream file;
   file << "task." << getpid () << "." << task.id << ".task";
-  std::string path = location._data + "/" + file.str ();
 
   // Determine the output date format, which uses a hierarchy of definitions.
   //   rc.dateformat.edit
@@ -638,10 +637,13 @@ bool CmdEdit::editFile (Task& task)
   if (dateformat == "")
     dateformat = context.config.get ("dateformat");
 
-  // Format the contents, T -> text, write to a file.
-  std::string before = formatTask (task, dateformat);
+  // Change directory for the editor
+  char* current_dir = get_current_dir_name ();
   int ignored = chdir (location._data.c_str ());
   ++ignored; // Keep compiler quiet.
+
+  // Format the contents, T -> text, write to a file.
+  std::string before = formatTask (task, dateformat);
   File::write (file.str (), before);
 
   // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
@@ -711,6 +713,8 @@ ARE_THESE_REALLY_HARMFUL:
 
   // Cleanup.
   File::remove (file.str ());
+  ignored = chdir (current_dir);
+  free (current_dir);
   return changes;
 }
 

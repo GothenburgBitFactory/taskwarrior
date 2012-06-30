@@ -32,6 +32,7 @@
 #include <Context.h>
 #include <Uri.h>
 #include <Transport.h>
+#include <assert.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
@@ -131,6 +132,7 @@ int CmdMerge::execute (std::string& output)
       context.a3.push_back (Arg (uri._data, Arg::cat_literal));
 
       std::string out;
+      assert (context.commands["push"]);
       context.commands["push"]->execute (out);
     }
   }

@@ -31,6 +31,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <assert.h>
 #include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -395,8 +396,8 @@ int Context::dispatch (std::string &out)
     return rc;
   }
 
-  if (commands["help"])
-    return commands["help"]->execute (out);
+  assert (commands["help"]);
+  return commands["help"]->execute (out);
 
   return 1;
 }
