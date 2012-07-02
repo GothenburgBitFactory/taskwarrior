@@ -638,7 +638,7 @@ bool CmdEdit::editFile (Task& task)
     dateformat = context.config.get ("dateformat");
 
   // Change directory for the editor
-  char* current_dir = get_current_dir_name ();
+  std::string current_dir = Directory::cwd ();
   int ignored = chdir (location._data.c_str ());
   ++ignored; // Keep compiler quiet.
 
@@ -713,8 +713,7 @@ ARE_THESE_REALLY_HARMFUL:
 
   // Cleanup.
   File::remove (file.str ());
-  ignored = chdir (current_dir);
-  free (current_dir);
+  ignored = chdir (current_dir.c_str ());
   return changes;
 }
 
