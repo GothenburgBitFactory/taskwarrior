@@ -61,7 +61,7 @@ like ($stderr, qr/^Configuration override rc.debug:on$/ms, 'Footnotes are sent t
 
 # Check that debugs are sent to standard error
 $stdout = qx{../src/task rc:outerr.rc rc.debug:on list 2> /dev/null};
-unlike ($stdout, qr/^Perf task /ms, 'Debugs are not sent to stdout');
+unlike ($stdout, qr/^Timer Config::load \(outerr.rc\) /ms, 'Debugs are not sent to stdout');
 $stderr = qx{../src/task rc:outerr.rc rc.debug:on list 2>&1 >/dev/null};
 like ($stderr, qr/^Timer Config::load \(outerr.rc\) /ms, 'Debugs are sent to stderr');
 

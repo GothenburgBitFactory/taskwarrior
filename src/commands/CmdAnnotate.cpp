@@ -117,10 +117,10 @@ int CmdAnnotate::execute (std::string& output)
     else
     {
       std::cout << STRING_CMD_ANNO_NO << "\n";
-      rc  = 1;
+      rc = 1;
+      if (_permission_quit)
+        break;
     }
-    if (_permission_quit)
-      break;
   }
 
   // Now list the project changes.

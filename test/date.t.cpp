@@ -41,7 +41,7 @@ int main (int argc, char** argv)
   {
     Date now;
     Date yesterday;
-    yesterday -= 1;
+    yesterday -= 86400;
 
     t.ok    (yesterday <= now,       "yesterday <= now");
     t.ok    (yesterday <  now,       "yesterday < now");
@@ -140,7 +140,7 @@ int main (int argc, char** argv)
     t.is (happyNewYear.day (),       1, "1/1/2008 == 1");
     t.is (happyNewYear.year (),   2008, "1/1/2008 == 2008");
 
-    t.is (now - yesterday, 1, "today - yesterday == 1");
+    t.is (now - yesterday, 86400, "today - yesterday == 1");
 
     t.is (happyNewYear.toString (), "1/1/2008", "toString 1/1/2008");
 

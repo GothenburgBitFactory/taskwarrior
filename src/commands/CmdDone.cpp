@@ -99,7 +99,6 @@ int CmdDone::execute (std::string& output)
         ++count;
         feedback_affected (STRING_CMD_DONE_TASK, *task);
         feedback_unblocked (*task);
-        context.tdb2.modify (*task);
         if (!nagged)
           nagged = nag (*task);
         dependencyChainOnComplete (*task);
@@ -109,10 +108,10 @@ int CmdDone::execute (std::string& output)
       else
       {
         std::cout << STRING_CMD_DONE_NO << "\n";
-        rc  = 1;
+        rc = 1;
+        if (_permission_quit)
+          break;
       }
-      if (_permission_quit)
-        break;
     }
     else
     {

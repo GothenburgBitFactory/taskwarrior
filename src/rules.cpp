@@ -273,7 +273,7 @@ static void colorizeCompleted (Task& task, const Color& base, Color& c)
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeDeleted (Task& task, const Color& base, Color& c)
 {
-  if (task.getStatus () == Task::completed)
+  if (task.getStatus () == Task::deleted)
     c.blend (base);
 }
 
