@@ -683,6 +683,7 @@
 #define STRING_INFINITE_LOOP         "Terminated substitution because more than {1} changes were made - infinite loop protection."
 #define STRING_UDA_TYPE              "User defined attributes may only be of type 'string', 'date', 'duration' or 'numeric'."
 #define STRING_UDA_NUMERIC           "The value '{1}' is not a valid numeric value."
+#define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "No tasks."

@@ -41,8 +41,12 @@ public:
   ColumnUDA ();
   ~ColumnUDA ();
 
+  bool validate (std::string&);
   void measure (Task&, int&, int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
+
+public:
+  std::vector <std::string> _values;
 
 private:
   bool _hyphenate;

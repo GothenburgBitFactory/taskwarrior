@@ -58,6 +58,23 @@ ColumnUDA::~ColumnUDA ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ColumnUDA::validate (std::string& value)
+{
+  // No restrictions.
+  if (_values.size () == 0)
+    return true;
+
+  // Look for exact match value.
+  std::vector <std::string>::iterator i;
+  for (i = _values.begin (); i != _values.end (); ++i)
+    if (*i == value)
+      return true;
+
+  // Fail if not found.
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 //
 void ColumnUDA::measure (Task& task, int& minimum, int& maximum)

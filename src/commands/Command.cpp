@@ -596,7 +596,12 @@ void Command::modify_task (
 
           // By default, just add/remove it.
           else
-            task.set (name, value);
+          {
+            if (column->validate (value))
+              task.set (name, value);
+            else
+              throw format (STRING_INVALID_MOD, name, value);
+          }
 
           // Warn about deprecated/obsolete attribute usage.
           legacyAttributeCheck (name);

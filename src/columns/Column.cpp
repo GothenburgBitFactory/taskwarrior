@@ -181,7 +181,7 @@ void Column::uda (std::map <std::string, Column*>& all)
 ////////////////////////////////////////////////////////////////////////////////
 Column* Column::uda (const std::string& name)
 {
-  Column* c = new ColumnUDA ();
+  ColumnUDA* c = new ColumnUDA ();
   c->_name = name;
 
   std::string key = "uda." + name + ".type";
@@ -195,6 +195,11 @@ Column* Column::uda (const std::string& name)
   key = "uda." + name + ".label";
   if (context.config.get (key) != "")
     c->_label = context.config.get (key);
+
+  key = "uda." + name + ".values";
+  if (context.config.get (key) != "")
+    split (c->_values, context.config.get (key), ',');
+
   return c;
 }
 
