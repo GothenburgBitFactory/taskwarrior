@@ -41,15 +41,15 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 674: ID numbers change between reports when marking tasks as done
 
 # Setup: Add a few tasks
-qx{../src/task rc:bug.rc add One};
-qx{../src/task rc:bug.rc add Two};
-qx{../src/task rc:bug.rc add Three};
+qx{../src/task rc:bug.rc add One 2>&1};
+qx{../src/task rc:bug.rc add Two 2>&1};
+qx{../src/task rc:bug.rc add Three 2>&1};
 
 # Complete task 1 and then attempt to complete task 2
-qx{../src/task rc:bug.rc 1 done};
+qx{../src/task rc:bug.rc 1 done 2>&1};
 
 # Result: Immediately delete the created task
-my $output = qx{../src/task rc:bug.rc 2 done};
+my $output = qx{../src/task rc:bug.rc 2 done 2>&1};
 like ($output, qr/Two/ms, 'IDs correctly remain unchanged after done');
 
 # Cleanup.

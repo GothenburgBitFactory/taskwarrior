@@ -38,11 +38,11 @@ if (open my $fh, '>', 'bug.rc')
   ok (-r 'bug.rc', 'Created bug.rc');
 }
 
-qx{../src/task rc:bug.rc add pro:main.subproject Test};
-my $output = qx{../src/task rc:bug.rc ls};
+qx{../src/task rc:bug.rc add pro:main.subproject Test 2>&1};
+my $output = qx{../src/task rc:bug.rc ls 2>&1};
 like ($output, qr/main\.subproject/, "hierarchical project ok");
 
-qx{../src/task rc:bug.rc \\(pro:main.subproject\\) ls};
+qx{../src/task rc:bug.rc \\(pro:main.subproject\\) ls 2>&1};
 like ($output, qr/main\.subproject/, "Parens tolerated");
 unlike ($output, qr/Mismatched parentheses in expression/, "No 'mismatch' error generated");
 

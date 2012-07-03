@@ -40,14 +40,14 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug #417: Sorting by countdown_compact not working
-qx{../src/task rc:bug.rc add due:yesterday before};
-qx{../src/task rc:bug.rc add due:today     now};
-qx{../src/task rc:bug.rc add due:tomorrow  after};
+qx{../src/task rc:bug.rc add due:yesterday before 2>&1};
+qx{../src/task rc:bug.rc add due:today     now 2>&1};
+qx{../src/task rc:bug.rc add due:tomorrow  after 2>&1};
 
-my $output = qx{../src/task rc:bug.rc rc.report.long.sort:due+ long};
+my $output = qx{../src/task rc:bug.rc rc.report.long.sort:due+ long 2>&1};
 like ($output, qr/before.+now.+after/ms, 'rc.report.long.sort:due+ works');
 
-$output = qx{../src/task rc:bug.rc rc.report.long.sort:due- long};
+$output = qx{../src/task rc:bug.rc rc.report.long.sort:due- long 2>&1};
 like ($output, qr/after.+now.+before/ms, 'rc.report.long.sort:due- works');
 
 # Cleanup.

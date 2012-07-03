@@ -40,43 +40,43 @@ if (open my $fh, '>', 'op.rc')
 }
 
 # Setup: Add a task
-qx{../src/task rc:op.rc add one   project:A priority:H};
-qx{../src/task rc:op.rc add two   project:A           };
-qx{../src/task rc:op.rc add three           priority:H};
-qx{../src/task rc:op.rc add four                      };
+qx{../src/task rc:op.rc add one   project:A priority:H 2>&1};
+qx{../src/task rc:op.rc add two   project:A            2>&1};
+qx{../src/task rc:op.rc add three           priority:H 2>&1};
+qx{../src/task rc:op.rc add four                       2>&1};
 
 # Test the 'and' operator.
-my $output = qx{../src/task rc:op.rc ls project:A priority:H};
+my $output = qx{../src/task rc:op.rc ls project:A priority:H 2>&1};
 like   ($output, qr/one/,   'ls project:A priority:H --> one');
 unlike ($output, qr/two/,   'ls project:A priority:H --> !two');
 unlike ($output, qr/three/, 'ls project:A priority:H --> !three');
 unlike ($output, qr/four/,  'ls project:A priority:H --> !four');
 
-$output = qx{../src/task rc:op.rc ls project:A and priority:H};
+$output = qx{../src/task rc:op.rc ls project:A and priority:H 2>&1};
 like   ($output, qr/one/,   'ls project:A priority:H --> one');
 unlike ($output, qr/two/,   'ls project:A priority:H --> !two');
 unlike ($output, qr/three/, 'ls project:A priority:H --> !three');
 unlike ($output, qr/four/,  'ls project:A priority:H --> !four');
 
-$output = qx{../src/task rc:op.rc ls project:A and priority.not:H};
+$output = qx{../src/task rc:op.rc ls project:A and priority.not:H 2>&1};
 unlike ($output, qr/one/,   'ls project:A priority:H --> !one');
 like   ($output, qr/two/,   'ls project:A priority:H --> two');
 unlike ($output, qr/three/, 'ls project:A priority:H --> !three');
 unlike ($output, qr/four/,  'ls project:A priority:H --> !four');
 
-$output = qx{../src/task rc:op.rc ls project=A priority=H};
+$output = qx{../src/task rc:op.rc ls project=A priority=H 2>&1};
 like   ($output, qr/one/,   'ls project:A priority:H --> one');
 unlike ($output, qr/two/,   'ls project:A priority:H --> !two');
 unlike ($output, qr/three/, 'ls project:A priority:H --> !three');
 unlike ($output, qr/four/,  'ls project:A priority:H --> !four');
 
-$output = qx{../src/task rc:op.rc ls project=A and priority=H};
+$output = qx{../src/task rc:op.rc ls project=A and priority=H 2>&1};
 like   ($output, qr/one/,   'ls project:A priority:H --> one');
 unlike ($output, qr/two/,   'ls project:A priority:H --> !two');
 unlike ($output, qr/three/, 'ls project:A priority:H --> !three');
 unlike ($output, qr/four/,  'ls project:A priority:H --> !four');
 
-$output = qx{../src/task rc:op.rc ls project=A and priority!=H};
+$output = qx{../src/task rc:op.rc ls project=A and priority!=H 2>&1};
 unlike ($output, qr/one/,   'ls project:A priority:H --> !one');
 like   ($output, qr/two/,   'ls project:A priority:H --> two');
 unlike ($output, qr/three/, 'ls project:A priority:H --> !three');

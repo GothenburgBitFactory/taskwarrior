@@ -40,13 +40,13 @@ if (open my $fh, '>', 'completed.rc')
 }
 
 # Add two tasks, mark 1 as done, the other as deleted.
-qx{../src/task rc:completed.rc add one};
-qx{../src/task rc:completed.rc add two};
-qx{../src/task rc:completed.rc 1 done};
-qx{../src/task rc:completed.rc 2 delete};
+qx{../src/task rc:completed.rc add one 2>&1};
+qx{../src/task rc:completed.rc add two 2>&1};
+qx{../src/task rc:completed.rc 1 done 2>&1};
+qx{../src/task rc:completed.rc 2 delete 2>&1};
 
 # Generate completed report.
-my $output = qx{../src/task rc:completed.rc completed};
+my $output = qx{../src/task rc:completed.rc completed 2>&1};
 like ($output, qr/one/, 'one -> completed');
 unlike ($output, qr/two/, 'two -> deleted');
 

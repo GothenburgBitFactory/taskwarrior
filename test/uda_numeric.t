@@ -46,14 +46,14 @@ if (open my $fh, '>', 'uda.rc')
 }
 
 # Add tasks with and without the UDA.
-qx{../src/task rc:uda.rc add with extra:123};
-qx{../src/task rc:uda.rc add without};
-my $output = qx{../src/task rc:uda.rc uda};
+qx{../src/task rc:uda.rc add with extra:123 2>&1};
+qx{../src/task rc:uda.rc add without 2>&1};
+my $output = qx{../src/task rc:uda.rc uda 2>&1};
 like ($output, qr/1\s+\d+\s+with/, 'UDA numeric stored');
 like ($output, qr/2\s+without/,    'UDA numeric blank');
 
 # Add bad data.
-$output = qx{../src/task rc:uda.rc add bad extra:unrecognized_numeric};
+$output = qx{../src/task rc:uda.rc add bad extra:unrecognized_numeric 2>&1};
 unlike ($output, qr/Created task \d+/, 'UDA numeric bad data not accepted');
 
 # Cleanup.

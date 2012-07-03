@@ -41,11 +41,11 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 694: Potential bug for "due" and "annotate"
 
 # Setup: Add a tasks, annotate with long word.
-qx{../src/task rc:bug.rc add One};
-qx{../src/task rc:bug.rc 1 annotate foo due:today};
+qx{../src/task rc:bug.rc add One 2>&1};
+qx{../src/task rc:bug.rc 1 annotate foo due:today 2>&1};
 
 # List with rc.hyphenate=on.
-my $output = qx{../src/task rc:bug.rc 1 info};
+my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
 like ($output, qr/One/, 'found One');
 like ($output, qr/foo/, 'found foo');
 like ($output, qr/Due/, 'found Due');

@@ -45,10 +45,10 @@ if (open my $fh, '>', 'bug.rc')
 # First noticed in 1.9.4 commit 2d50d1c
 
 # Setup: Add a recurring task
-qx{../src/task rc:bug.rc add First recurring task due:tomorrow rec:daily};
+qx{../src/task rc:bug.rc add First recurring task due:tomorrow rec:daily 2>&1};
 
 # Result: Ensure the second recurring task has an ID of 2
-my $output = qx{../src/task rc:bug.rc add Second recurring task due:tomorrow rec:daily};
+my $output = qx{../src/task rc:bug.rc add Second recurring task due:tomorrow rec:daily 2>&1};
 like   ($output, qr/Created task 2\./ms, 'Recurring task assigned correct ID.');
 
 # Cleanup.

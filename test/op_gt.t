@@ -40,37 +40,37 @@ if (open my $fh, '>', 'op.rc')
 }
 
 # Setup: Add a task
-qx{../src/task rc:op.rc add one   due:yesterday priority:H};
-qx{../src/task rc:op.rc add two   due:tomorrow  priority:M};
-qx{../src/task rc:op.rc add three               priority:L};
-qx{../src/task rc:op.rc add four                          };
+qx{../src/task rc:op.rc add one   due:yesterday priority:H 2>&1};
+qx{../src/task rc:op.rc add two   due:tomorrow  priority:M 2>&1};
+qx{../src/task rc:op.rc add three               priority:L 2>&1};
+qx{../src/task rc:op.rc add four                           2>&1};
 
 # Test the '>' operator.
-my $output = qx{../src/task rc:op.rc ls due.after:today};
+my $output = qx{../src/task rc:op.rc ls due.after:today 2>&1};
 unlike ($output, qr/one/,   'ls due.after:today --> !one');
 like   ($output, qr/two/,   'ls due.after:today --> two');
 unlike ($output, qr/three/, 'ls due.after:today --> !three');
 unlike ($output, qr/four/,  'ls due.after:today --> !four');
 
-$output = qx{../src/task rc:op.rc ls 'due > today'};
+$output = qx{../src/task rc:op.rc ls 'due > today' 2>&1};
 unlike ($output, qr/one/,   'ls due > today --> !one');
 like   ($output, qr/two/,   'ls due > today --> two');
 unlike ($output, qr/three/, 'ls due > today --> !three');
 unlike ($output, qr/four/,  'ls due > today --> !four');
 
-$output = qx{../src/task rc:op.rc ls priority.above:L};
+$output = qx{../src/task rc:op.rc ls priority.above:L 2>&1};
 like   ($output, qr/one/,   'ls priority.above:L --> one');
 like   ($output, qr/two/,   'ls priority.above:L --> two');
 unlike ($output, qr/three/, 'ls priority.above:L --> !three');
 unlike ($output, qr/four/,  'ls priority.above:L --> !four');
 
-$output = qx{../src/task rc:op.rc ls 'priority > L'};
+$output = qx{../src/task rc:op.rc ls 'priority > L' 2>&1};
 like   ($output, qr/one/,   'ls priority > L --> one');
 like   ($output, qr/two/,   'ls priority > L --> two');
 unlike ($output, qr/three/, 'ls priority > L --> !three');
 unlike ($output, qr/four/,  'ls priority > L --> !four');
 
-$output = qx{../src/task rc:op.rc ls 'description > t'};
+$output = qx{../src/task rc:op.rc ls 'description > t' 2>&1};
 unlike ($output, qr/one/,   'ls description > t --> !one');
 like   ($output, qr/two/,   'ls description > t --> two');
 like   ($output, qr/three/, 'ls description > t --> three');

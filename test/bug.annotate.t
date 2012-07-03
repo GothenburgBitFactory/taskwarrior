@@ -39,7 +39,7 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Attempt a blank annotation.
-qx{../src/task rc:bug.rc add foo};
+qx{../src/task rc:bug.rc add foo 2>&1};
 my $output = qx{../src/task rc:bug.rc 1 annotate 2>&1 >/dev/null};
 like ($output, qr/Additional text must be provided/, 'failed on blank annotation');
 

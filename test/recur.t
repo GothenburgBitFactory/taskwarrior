@@ -41,45 +41,45 @@ if (open my $fh, '>', 'recur.rc')
 }
 
 # Create a recurring and non-recurring task.
-qx{../src/task rc:recur.rc add simple};
-qx{../src/task rc:recur.rc add complex due:today recur:daily};
+qx{../src/task rc:recur.rc add simple 2>&1};
+qx{../src/task rc:recur.rc add complex due:today recur:daily 2>&1};
 
 # List tasks to generate child tasks.  Should result in:
 #   1 simple
 #   3 complex
 #   4 complex
-my $output = qx{../src/task rc:recur.rc minimal};
+my $output = qx{../src/task rc:recur.rc minimal 2>&1};
 like ($output, qr/1.+simple\n/ms, '1 simple');
 like ($output, qr/3.+complex\n/ms, '3 complex');
 like ($output, qr/4.+complex\n/ms, '4 complex');
 
 # Modify a child task and do not propagate the change.
-$output = qx{echo 'n' | ../src/task rc:recur.rc 3 modify complex2};
-$output = qx{../src/task rc:recur.rc 3 info};
+$output = qx{echo 'n' | ../src/task rc:recur.rc 3 modify complex2 2>&1};
+$output = qx{../src/task rc:recur.rc 3 info 2>&1};
 like ($output, qr/Description\s+complex2\s/ms, '3 modified');
-$output = qx{../src/task rc:recur.rc 4 info};
+$output = qx{../src/task rc:recur.rc 4 info 2>&1};
 like ($output, qr/Description\s+complex\s/ms, '4 not modified');
 
 
 # Modify a child task and propagate the change.
-$output = qx{echo 'y' | ../src/task rc:recur.rc 3 modify complex3};
-$output = qx{../src/task rc:recur.rc 3 info};
+$output = qx{echo 'y' | ../src/task rc:recur.rc 3 modify complex3 2>&1};
+$output = qx{../src/task rc:recur.rc 3 info 2>&1};
 like ($output, qr/Description\s+complex3\s/ms, '3 modified');
-$output = qx{../src/task rc:recur.rc 4 info};
+$output = qx{../src/task rc:recur.rc 4 info 2>&1};
 like ($output, qr/Description\s+complex3\s/ms, '4 not modified');
 
 # Delete a child task, not propagate.
-$output = qx{echo 'n' | ../src/task rc:recur.rc 3 delete};
+$output = qx{echo 'n' | ../src/task rc:recur.rc 3 delete 2>&1};
 like ($output, qr/Deleted 1 task\./, '3 deleted');
 
 # Delete a child task, propagate.
-#$output = qx{../src/task rc:recur.rc minimal};
-#$output = qx{echo 'y' | ../src/task rc:recur.rc 3 delete};
+#$output = qx{../src/task rc:recur.rc minimal 2>&1};
+#$output = qx{echo 'y' | ../src/task rc:recur.rc 3 delete 2>&1};
 #like ($output, qr/Deleted 1 task\./, 'Child + parent deleted');
-#$output = qx{../src/task rc:recur.rc minimal};
+#$output = qx{../src/task rc:recur.rc minimal 2>&1};
 
 # TODO Delete a recurring task.
-#$output = qx{echo 'y' | ../src/task rc:recur.rc 4 delete};
+#$output = qx{echo 'y' | ../src/task rc:recur.rc 4 delete 2>&1};
 #diag ('---');
 #diag ($output);
 #diag ('---');
@@ -90,7 +90,7 @@ like ($output, qr/Deleted 1 task\./, '3 deleted');
 # TODO Duplicate a recurring child task
 # TODO Duplicate a recurring parent task
 
-$output = qx{../src/task rc:recur.rc diag};
+$output = qx{../src/task rc:recur.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.

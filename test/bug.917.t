@@ -40,14 +40,14 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 917: escaping runs amok
-qx{../src/task rc:bug.rc add one \\'two\\' three};
-qx{../src/task rc:bug.rc add four \\"five\\" six};
-my $output = qx{../src/task rc:bug.rc list};
+qx{../src/task rc:bug.rc add one \\'two\\' three 2>&1};
+qx{../src/task rc:bug.rc add four \\"five\\" six 2>&1};
+my $output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/one 'two' three/, 'Single quote preserved');
 like ($output, qr/four "five" six/, 'Double quote preserved');
 
-qx{../src/task rc:bug.rc 1,2 mod +tag};
-$output = qx{../src/task rc:bug.rc list};
+qx{../src/task rc:bug.rc 1,2 mod +tag 2>&1};
+$output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/one 'two' three/, 'Single quote preserved after modification');
 like ($output, qr/four "five" six/, 'Double quote preserved after modification');
 

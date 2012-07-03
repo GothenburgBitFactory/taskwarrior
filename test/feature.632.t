@@ -47,37 +47,37 @@ if (open my $fh, '>', 'rc2')
 }
 
 # Feature #632: task environment variables: TASKRC and TASKDATA
-qx{../src/task rc:rc1 add one};
-qx{../src/task rc:rc2 add two};
+qx{../src/task rc:rc1 add one 2>&1};
+qx{../src/task rc:rc2 add two 2>&1};
 
 # All in agreement: 1
-my $output = qx{../src/task rc:rc1 list};
+my $output = qx{../src/task rc:rc1 list 2>&1};
 like ($output, qr/one/, 'rc1');
 
-$output = qx{TASKDATA=./data1 ../src/task rc:rc1 list};
+$output = qx{TASKDATA=./data1 ../src/task rc:rc1 list 2>&1};
 like ($output, qr/one/, 'TASKDATA, rc1');
 
-$output = qx{TASKRC=./rc1 ../src/task list};
+$output = qx{TASKRC=./rc1 ../src/task list 2>&1};
 like ($output, qr/one/, 'TASKRC');
 
-$output = qx{TASKDATA=./data1 TASKRC=./rc1 ../src/task list};
+$output = qx{TASKDATA=./data1 TASKRC=./rc1 ../src/task list 2>&1};
 like ($output, qr/one/, 'TASKDATA, TASKRC, rc1');
 
 # All in agreement: 2
-$output = qx{../src/task rc:rc2 list};
+$output = qx{../src/task rc:rc2 list 2>&1};
 like ($output, qr/two/, 'rc2');
 
-$output = qx{TASKDATA=./data2 ../src/task rc:rc2 list};
+$output = qx{TASKDATA=./data2 ../src/task rc:rc2 list 2>&1};
 like ($output, qr/two/, 'TASKDATA, rc2');
 
-$output = qx{TASKRC=./rc2 ../src/task list};
+$output = qx{TASKRC=./rc2 ../src/task list 2>&1};
 like ($output, qr/two/, 'TASKRC');
 
-$output = qx{TASKDATA=./data2 TASKRC=./rc2 ../src/task list};
+$output = qx{TASKDATA=./data2 TASKRC=./rc2 ../src/task list 2>&1};
 like ($output, qr/two/, 'TASKDATA, TASKRC, rc2');
 
 # rc: overrides TASKRC, TASKDATA
-$output = qx{TASKDATA=./data1 TASKRC=./rc1 ../src/task rc:rc2 list};
+$output = qx{TASKDATA=./data1 TASKRC=./rc1 ../src/task rc:rc2 list 2>&1};
 like ($output, qr/one/, 'overrides TASKDATA, TASKRC override rc:');
 
 rmtree ('./data1', 0 , 1);

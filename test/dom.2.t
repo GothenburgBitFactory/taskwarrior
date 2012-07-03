@@ -41,14 +41,14 @@ if (open my $fh, '>', 'dom.rc')
 }
 
 # DOM reference to other task.
-qx{../src/task rc:dom.rc add one due:20110901};
-qx{../src/task rc:dom.rc add two due:1.due};
-my $output = qx{../src/task rc:dom.rc 2 info};
+qx{../src/task rc:dom.rc add one due:20110901 2>&1};
+qx{../src/task rc:dom.rc add two due:1.due 2>&1};
+my $output = qx{../src/task rc:dom.rc 2 info 2>&1};
 like ($output, qr/Due\s+20110901/, 'Found due date duplicated via dom');
 
 # DOM reference to the current task.
-qx{../src/task rc:dom.rc add three due:20110901 wait:due};
-$output = qx{../src/task rc:dom.rc 3 info};
+qx{../src/task rc:dom.rc add three due:20110901 wait:due 2>&1};
+$output = qx{../src/task rc:dom.rc 3 info 2>&1};
 like ($output, qr/Waiting until\s+20110901/, 'Found wait date duplicated from due date');
 
 # Cleanup.

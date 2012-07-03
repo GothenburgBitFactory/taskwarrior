@@ -56,109 +56,109 @@ if (open my $fh, '>', 'urgency.rc')
 # calculated.
 
 # priority
-qx{../src/task rc:urgency.rc add control};                   # task 1
-qx{../src/task rc:urgency.rc add 1a pri:H};                  # task 2
-qx{../src/task rc:urgency.rc add 1b pri:M};                  # task 3
-qx{../src/task rc:urgency.rc add 1c pri:L};                  # task 4
+qx{../src/task rc:urgency.rc add control 2>&1};                   # task 1
+qx{../src/task rc:urgency.rc add 1a pri:H 2>&1};                  # task 2
+qx{../src/task rc:urgency.rc add 1b pri:M 2>&1};                  # task 3
+qx{../src/task rc:urgency.rc add 1c pri:L 2>&1};                  # task 4
 
 # priority: 0 (pending)
-my $output = qx{../src/task rc:urgency.rc 1 _urgency};
+my $output = qx{../src/task rc:urgency.rc 1 _urgency 2>&1};
 like ($output, qr/urgency 0$/ms, 'Control = 0');
 
 # priority: 10 (pri:H)
-$output = qx{../src/task rc:urgency.rc 2 _urgency};
+$output = qx{../src/task rc:urgency.rc 2 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, 'pri:H = 10');
 
 # priority: 6.5 (pri:M)
-$output = qx{../src/task rc:urgency.rc 3 _urgency};
+$output = qx{../src/task rc:urgency.rc 3 _urgency 2>&1};
 like ($output, qr/urgency 6\.5$/ms, 'pri:M = 6.5');
 
 # priority: 3 (pri:L)
-$output = qx{../src/task rc:urgency.rc 4 _urgency};
+$output = qx{../src/task rc:urgency.rc 4 _urgency 2>&1};
 like ($output, qr/urgency 3$/ms, 'pri:L = 3');
 
 # project: 10 (project)
-qx{../src/task rc:urgency.rc add 2a project:P};              # task 5
-$output = qx{../src/task rc:urgency.rc 5 _urgency};
+qx{../src/task rc:urgency.rc add 2a project:P 2>&1};              # task 5
+$output = qx{../src/task rc:urgency.rc 5 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, 'pro:P = 10');
 
 # active: 10 (active)
-qx{../src/task rc:urgency.rc add 3a};                        # task 6
-qx{../src/task rc:urgency.rc 6 start};
-$output = qx{../src/task rc:urgency.rc 6 _urgency};
+qx{../src/task rc:urgency.rc add 3a 2>&1};                        # task 6
+qx{../src/task rc:urgency.rc 6 start 2>&1};
+$output = qx{../src/task rc:urgency.rc 6 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, 'active = 10');
 
 # next: 10 (+next) + 8 (1 tag)
-qx{../src/task rc:urgency.rc add 4a +next};                  # task 7
-$output = qx{../src/task rc:urgency.rc 7 _urgency};
+qx{../src/task rc:urgency.rc add 4a +next 2>&1};                  # task 7
+$output = qx{../src/task rc:urgency.rc 7 _urgency 2>&1};
 like ($output, qr/urgency 18$/ms, '+next = 18');
 
 # tags
-qx{../src/task rc:urgency.rc add 5a +one};                   # task 8
-qx{../src/task rc:urgency.rc add 5b +one +two};              # task 9
-qx{../src/task rc:urgency.rc add 5c +one +two +three};       # task 10
-qx{../src/task rc:urgency.rc add 5d +one +two +three +four}; # task 11
+qx{../src/task rc:urgency.rc add 5a +one 2>&1};                   # task 8
+qx{../src/task rc:urgency.rc add 5b +one +two 2>&1};              # task 9
+qx{../src/task rc:urgency.rc add 5c +one +two +three 2>&1};       # task 10
+qx{../src/task rc:urgency.rc add 5d +one +two +three +four 2>&1}; # task 11
 
 # tags: 8 (1 tag)
-$output = qx{../src/task rc:urgency.rc 8 _urgency};
+$output = qx{../src/task rc:urgency.rc 8 _urgency 2>&1};
 like ($output, qr/urgency 8$/ms, '+one = 8');
 
 # tags: 9 (2 tags)
-$output = qx{../src/task rc:urgency.rc 9 _urgency};
+$output = qx{../src/task rc:urgency.rc 9 _urgency 2>&1};
 like ($output, qr/urgency 9$/ms, '+one +two = 9');
 
 # tags: 10 (3 tags)
-$output = qx{../src/task rc:urgency.rc 10 _urgency};
+$output = qx{../src/task rc:urgency.rc 10 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, '+one +two +three = 10');
 
 # tags: 10 (4 tags)
-$output = qx{../src/task rc:urgency.rc 10 _urgency};
+$output = qx{../src/task rc:urgency.rc 10 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, '+one +two +three +four = 10');
 
 # annotations
-qx{../src/task rc:urgency.rc add 6a};                        # task 12
-qx{../src/task rc:urgency.rc 12 annotate A};
-qx{../src/task rc:urgency.rc add 6b};                        # task 13
-qx{../src/task rc:urgency.rc 13 annotate A};
-qx{../src/task rc:urgency.rc 13 annotate B};
-qx{../src/task rc:urgency.rc add 6c};                        # task 14
-qx{../src/task rc:urgency.rc 14 annotate A};
-qx{../src/task rc:urgency.rc 14 annotate B};
-qx{../src/task rc:urgency.rc 14 annotate C};
-qx{../src/task rc:urgency.rc add 6d};                        # task 15
-qx{../src/task rc:urgency.rc 15 annotate A};
-qx{../src/task rc:urgency.rc 15 annotate B};
-qx{../src/task rc:urgency.rc 15 annotate C};
-qx{../src/task rc:urgency.rc 15 annotate D};
+qx{../src/task rc:urgency.rc add 6a 2>&1};                        # task 12
+qx{../src/task rc:urgency.rc 12 annotate A 2>&1};
+qx{../src/task rc:urgency.rc add 6b 2>&1};                        # task 13
+qx{../src/task rc:urgency.rc 13 annotate A 2>&1};
+qx{../src/task rc:urgency.rc 13 annotate B 2>&1};
+qx{../src/task rc:urgency.rc add 6c 2>&1};                        # task 14
+qx{../src/task rc:urgency.rc 14 annotate A 2>&1};
+qx{../src/task rc:urgency.rc 14 annotate B 2>&1};
+qx{../src/task rc:urgency.rc 14 annotate C 2>&1};
+qx{../src/task rc:urgency.rc add 6d 2>&1};                        # task 15
+qx{../src/task rc:urgency.rc 15 annotate A 2>&1};
+qx{../src/task rc:urgency.rc 15 annotate B 2>&1};
+qx{../src/task rc:urgency.rc 15 annotate C 2>&1};
+qx{../src/task rc:urgency.rc 15 annotate D 2>&1};
 
 # annotations: 8 (1 annotation)
-$output = qx{../src/task rc:urgency.rc 12 _urgency};
+$output = qx{../src/task rc:urgency.rc 12 _urgency 2>&1};
 like ($output, qr/urgency 8$/ms, '1 annotation = 8');
 
 # annotations: 9 (2 annotations)
-$output = qx{../src/task rc:urgency.rc 13 _urgency};
+$output = qx{../src/task rc:urgency.rc 13 _urgency 2>&1};
 like ($output, qr/urgency 9$/ms, '2 annotations = 9');
 
 # annotations: 10 (3 annotations)
-$output = qx{../src/task rc:urgency.rc 14 _urgency};
+$output = qx{../src/task rc:urgency.rc 14 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, '3 annotations = 10');
 
 # annotations: 10 (4 annotations)
-$output = qx{../src/task rc:urgency.rc 15 _urgency};
+$output = qx{../src/task rc:urgency.rc 15 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, '4 annotations = 10');
 
 # waiting: -10
-qx{../src/task rc:urgency.rc add 7a wait:10s};               # task 16
-$output = qx{../src/task rc:urgency.rc 16 _urgency};
+qx{../src/task rc:urgency.rc add 7a wait:10s 2>&1};               # task 16
+$output = qx{../src/task rc:urgency.rc 16 _urgency 2>&1};
 like ($output, qr/urgency -10$/ms, 'waiting = -10');
 
 # blocked: 10 (blocked)
-qx{../src/task rc:urgency.rc add 8a depends:1};              # task 17
-$output = qx{../src/task rc:urgency.rc 17 _urgency};
+qx{../src/task rc:urgency.rc add 8a depends:1 2>&1};              # task 17
+$output = qx{../src/task rc:urgency.rc 17 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, 'blocked = 10');
 
 # blocking: 10 (blocking)
-$output = qx{../src/task rc:urgency.rc 1 _urgency};
+$output = qx{../src/task rc:urgency.rc 1 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, 'blocking = 10');
 
 # due
@@ -169,145 +169,145 @@ like ($output, qr/urgency 10$/ms, 'blocking = 10');
 #  has due date                  ->  0.3
 #  no due date                   ->  0.0
 
-qx{../src/task rc:urgency.rc add 9a due:-10d};               # task 18
-qx{../src/task rc:urgency.rc add 9b due:-7d};                # task 19
-qx{../src/task rc:urgency.rc add 9c due:-6d};                # task 20
-qx{../src/task rc:urgency.rc add 9d due:-5d};                # task 21
-qx{../src/task rc:urgency.rc add 9e due:-4d};                # task 22
-qx{../src/task rc:urgency.rc add 9f due:-3d};                # task 23
-qx{../src/task rc:urgency.rc add 9g due:-2d};                # task 24
-qx{../src/task rc:urgency.rc add 9h due:-1d};                # task 25
-qx{../src/task rc:urgency.rc add 9i due:now};                # task 26
-qx{../src/task rc:urgency.rc add 9j due:25h};                # task 27
-qx{../src/task rc:urgency.rc add 9k due:49h};                # task 28
-qx{../src/task rc:urgency.rc add 9l due:73h};                # task 29
-qx{../src/task rc:urgency.rc add 9m due:97h};                # task 30
-qx{../src/task rc:urgency.rc add 9n due:121h};               # task 31
-qx{../src/task rc:urgency.rc add 9o due:145h};               # task 32
-qx{../src/task rc:urgency.rc add 9p due:169h};               # task 33
-qx{../src/task rc:urgency.rc add 9q due:193h};               # task 34
-qx{../src/task rc:urgency.rc add 9r due:217h};               # task 35
-qx{../src/task rc:urgency.rc add 9s due:241h};               # task 36
-qx{../src/task rc:urgency.rc add 9t due:265h};               # task 37
-qx{../src/task rc:urgency.rc add 9u due:289h};               # task 38
-qx{../src/task rc:urgency.rc add 9v due:313h};               # task 39
-qx{../src/task rc:urgency.rc add 9w due:337h};               # task 40
-qx{../src/task rc:urgency.rc add 9x due:361h};               # task 41
+qx{../src/task rc:urgency.rc add 9a due:-10d 2>&1};               # task 18
+qx{../src/task rc:urgency.rc add 9b due:-7d 2>&1};                # task 19
+qx{../src/task rc:urgency.rc add 9c due:-6d 2>&1};                # task 20
+qx{../src/task rc:urgency.rc add 9d due:-5d 2>&1};                # task 21
+qx{../src/task rc:urgency.rc add 9e due:-4d 2>&1};                # task 22
+qx{../src/task rc:urgency.rc add 9f due:-3d 2>&1};                # task 23
+qx{../src/task rc:urgency.rc add 9g due:-2d 2>&1};                # task 24
+qx{../src/task rc:urgency.rc add 9h due:-1d 2>&1};                # task 25
+qx{../src/task rc:urgency.rc add 9i due:now 2>&1};                # task 26
+qx{../src/task rc:urgency.rc add 9j due:25h 2>&1};                # task 27
+qx{../src/task rc:urgency.rc add 9k due:49h 2>&1};                # task 28
+qx{../src/task rc:urgency.rc add 9l due:73h 2>&1};                # task 29
+qx{../src/task rc:urgency.rc add 9m due:97h 2>&1};                # task 30
+qx{../src/task rc:urgency.rc add 9n due:121h 2>&1};               # task 31
+qx{../src/task rc:urgency.rc add 9o due:145h 2>&1};               # task 32
+qx{../src/task rc:urgency.rc add 9p due:169h 2>&1};               # task 33
+qx{../src/task rc:urgency.rc add 9q due:193h 2>&1};               # task 34
+qx{../src/task rc:urgency.rc add 9r due:217h 2>&1};               # task 35
+qx{../src/task rc:urgency.rc add 9s due:241h 2>&1};               # task 36
+qx{../src/task rc:urgency.rc add 9t due:265h 2>&1};               # task 37
+qx{../src/task rc:urgency.rc add 9u due:289h 2>&1};               # task 38
+qx{../src/task rc:urgency.rc add 9v due:313h 2>&1};               # task 39
+qx{../src/task rc:urgency.rc add 9w due:337h 2>&1};               # task 40
+qx{../src/task rc:urgency.rc add 9x due:361h 2>&1};               # task 41
 
 # due: 10 (due:-10d)
-$output = qx{../src/task rc:urgency.rc 18 _urgency};
+$output = qx{../src/task rc:urgency.rc 18 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, 'due:-10d = 10');
 
 # due: 10 (due:-7d)
-$output = qx{../src/task rc:urgency.rc 19 _urgency};
+$output = qx{../src/task rc:urgency.rc 19 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, 'due:-7d = 10');
 
 # due: 9.6 (due:-6d)
-$output = qx{../src/task rc:urgency.rc 20 _urgency};
+$output = qx{../src/task rc:urgency.rc 20 _urgency 2>&1};
 like ($output, qr/urgency 9.6/ms, 'due:-6d = 9.6');
 
 # due: 9.2 (due:-5d)
-$output = qx{../src/task rc:urgency.rc 21 _urgency};
+$output = qx{../src/task rc:urgency.rc 21 _urgency 2>&1};
 like ($output, qr/urgency 9.2/ms, 'due:-5d = 9.2');
 
 # due: 8.8 (due:-4d)
-$output = qx{../src/task rc:urgency.rc 22 _urgency};
+$output = qx{../src/task rc:urgency.rc 22 _urgency 2>&1};
 like ($output, qr/urgency 8.8/ms, 'due:-4d = 8.8');
 
 # due: 8.4 (due:-3d)
-$output = qx{../src/task rc:urgency.rc 23 _urgency};
+$output = qx{../src/task rc:urgency.rc 23 _urgency 2>&1};
 like ($output, qr/urgency 8.4/ms, 'due:-3d = 8.4');
 
 # due: 8 (due:-2d)
-$output = qx{../src/task rc:urgency.rc 24 _urgency};
+$output = qx{../src/task rc:urgency.rc 24 _urgency 2>&1};
 like ($output, qr/urgency 8/ms, 'due:-2d = 8');
 
 # due: 7.6 (due:-1d)
-$output = qx{../src/task rc:urgency.rc 25 _urgency};
+$output = qx{../src/task rc:urgency.rc 25 _urgency 2>&1};
 like ($output, qr/urgency 7.6/ms, 'due:-1d = 7.6');
 
 # due: 7.2 (due:now)
-$output = qx{../src/task rc:urgency.rc 26 _urgency};
+$output = qx{../src/task rc:urgency.rc 26 _urgency 2>&1};
 like ($output, qr/urgency 7.2$/ms, 'due:now = 7.2');
 
 # due: 6.8 (due:1d)
-$output = qx{../src/task rc:urgency.rc 27 _urgency};
+$output = qx{../src/task rc:urgency.rc 27 _urgency 2>&1};
 like ($output, qr/urgency 6.8/ms, 'due:1d = 6.8');
 
 # due: 6.4 (due:2d)
-$output = qx{../src/task rc:urgency.rc 28 _urgency};
+$output = qx{../src/task rc:urgency.rc 28 _urgency 2>&1};
 like ($output, qr/urgency 6.4/ms, 'due:2d = 6.4');
 
 # due: 6 (due:3d)
-$output = qx{../src/task rc:urgency.rc 29 _urgency};
+$output = qx{../src/task rc:urgency.rc 29 _urgency 2>&1};
 like ($output, qr/urgency 6/ms, 'due:3d = 6');
 
 # due: 5.6 (due:4d)
-$output = qx{../src/task rc:urgency.rc 30 _urgency};
+$output = qx{../src/task rc:urgency.rc 30 _urgency 2>&1};
 like ($output, qr/urgency 5.6/ms, 'due:4d = 5.6');
 
 # due: 5.2 (due:5d)
-$output = qx{../src/task rc:urgency.rc 31 _urgency};
+$output = qx{../src/task rc:urgency.rc 31 _urgency 2>&1};
 like ($output, qr/urgency 5.2/ms, 'due:5d = 5.2');
 
 # due: 4.8 (due:6d)
-$output = qx{../src/task rc:urgency.rc 32 _urgency};
+$output = qx{../src/task rc:urgency.rc 32 _urgency 2>&1};
 like ($output, qr/urgency 4.8/ms, 'due:6d = 4.8');
 
 # due: 4.4 (due:7d)
-$output = qx{../src/task rc:urgency.rc 33 _urgency};
+$output = qx{../src/task rc:urgency.rc 33 _urgency 2>&1};
 like ($output, qr/urgency 4.4/ms, 'due:7d = 4.4');
 
 # due: 4 (due:8d)
-$output = qx{../src/task rc:urgency.rc 34 _urgency};
+$output = qx{../src/task rc:urgency.rc 34 _urgency 2>&1};
 like ($output, qr/urgency 4/ms, 'due:8d = 4');
 
 # due: 3.6 (due:9d)
-$output = qx{../src/task rc:urgency.rc 35 _urgency};
+$output = qx{../src/task rc:urgency.rc 35 _urgency 2>&1};
 like ($output, qr/urgency 3.6/ms, 'due:9d = 3.6');
 
 # due: 3.2 (due:10d)
-$output = qx{../src/task rc:urgency.rc 36 _urgency};
+$output = qx{../src/task rc:urgency.rc 36 _urgency 2>&1};
 like ($output, qr/urgency 3.2/ms, 'due:10d = 3.2');
 
 # due: 2.8 (due:11d)
-$output = qx{../src/task rc:urgency.rc 37 _urgency};
+$output = qx{../src/task rc:urgency.rc 37 _urgency 2>&1};
 like ($output, qr/urgency 2.8/ms, 'due:11d = 2.8');
 
 # due: 2.4 (due:12d)
-$output = qx{../src/task rc:urgency.rc 38 _urgency};
+$output = qx{../src/task rc:urgency.rc 38 _urgency 2>&1};
 like ($output, qr/urgency 2.4/ms, 'due:12d = 2.4');
 
 # due: 2 (due:13d)
-$output = qx{../src/task rc:urgency.rc 39 _urgency};
+$output = qx{../src/task rc:urgency.rc 39 _urgency 2>&1};
 like ($output, qr/urgency 2/ms, 'due:13d = 2');
 
 # due: 1.6 (due:14d)
-$output = qx{../src/task rc:urgency.rc 40 _urgency};
+$output = qx{../src/task rc:urgency.rc 40 _urgency 2>&1};
 like ($output, qr/urgency 1.6/ms, 'due:14d = 1.6');
 
 # due: 1.6 (due:20d)
-$output = qx{../src/task rc:urgency.rc 41 _urgency};
+$output = qx{../src/task rc:urgency.rc 41 _urgency 2>&1};
 like ($output, qr/urgency 1.6$/ms, 'due:20d = 1.6');
 
 # user.project: 10 (pro:PROJECT) + 10 (project)
-qx{../src/task rc:urgency.rc add 10a project:PROJECT};        # task 42
-$output = qx{../src/task rc:urgency.rc 42 _urgency};
+qx{../src/task rc:urgency.rc add 10a project:PROJECT 2>&1};        # task 42
+$output = qx{../src/task rc:urgency.rc 42 _urgency 2>&1};
 like ($output, qr/urgency 20$/ms, 'pro:PROJECT = 20');
 
 # user.tag: 10 (+TAG) + 8 (1 tag)
-qx{../src/task rc:urgency.rc add 11a +TAG};                   # task 43
-$output = qx{../src/task rc:urgency.rc 43 _urgency};
+qx{../src/task rc:urgency.rc add 11a +TAG 2>&1};                   # task 43
+$output = qx{../src/task rc:urgency.rc 43 _urgency 2>&1};
 like ($output, qr/urgency 18$/ms, '+TAG = 18');
 
 # scheduled 0 (scheduled future)
-qx {../src/task rc:urgency.rc add 12a scheduled:eom};
-$output = qx{../src/task rc:urgency.rc 44 _urgency};
+qx {../src/task rc:urgency.rc add 12a scheduled:eom 2>&1};
+$output = qx{../src/task rc:urgency.rc 44 _urgency 2>&1};
 like ($output, qr/urgency 0$/ms, 'scheduled future = 0');
 
 # scheduled 5 (scheduled past)
-qx {../src/task rc:urgency.rc add 12b scheduled:yesterday};
-$output = qx{../src/task rc:urgency.rc 45 _urgency};
+qx {../src/task rc:urgency.rc add 12b scheduled:yesterday 2>&1};
+$output = qx{../src/task rc:urgency.rc 45 _urgency 2>&1};
 like ($output, qr/urgency 5$/ms, 'scheduled past = 5');
 
 # Cleanup.

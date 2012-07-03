@@ -40,81 +40,81 @@ if (open my $fh, '>', 'seq.rc')
 }
 
 # Test sequences in done/undo
-qx{../src/task rc:seq.rc add one mississippi};
-qx{../src/task rc:seq.rc add two mississippi};
-qx{../src/task rc:seq.rc 1,2 do};
-my $output = qx{../src/task rc:seq.rc info 1};
+qx{../src/task rc:seq.rc add one mississippi 2>&1};
+qx{../src/task rc:seq.rc add two mississippi 2>&1};
+qx{../src/task rc:seq.rc 1,2 do 2>&1};
+my $output = qx{../src/task rc:seq.rc info 1 2>&1};
 like ($output, qr/Status\s+Completed/, 'sequence do 1');
-$output = qx{../src/task rc:seq.rc info 2};
+$output = qx{../src/task rc:seq.rc info 2 2>&1};
 like ($output, qr/Status\s+Completed/, 'sequence do 2');
-qx{../src/task rc:seq.rc undo};
-qx{../src/task rc:seq.rc undo};
-$output = qx{../src/task rc:seq.rc info 1};
+qx{../src/task rc:seq.rc undo 2>&1};
+qx{../src/task rc:seq.rc undo 2>&1};
+$output = qx{../src/task rc:seq.rc info 1 2>&1};
 like ($output, qr/Status\s+Pending/, 'sequence undo 1');
-$output = qx{../src/task rc:seq.rc info 2};
+$output = qx{../src/task rc:seq.rc info 2 2>&1};
 like ($output, qr/Status\s+Pending/, 'sequence undo 2');
 
 # Test sequences in delete/undelete
-qx{../src/task rc:seq.rc 1,2 delete};
-$output = qx{../src/task rc:seq.rc info 1};
+qx{../src/task rc:seq.rc 1,2 delete 2>&1};
+$output = qx{../src/task rc:seq.rc info 1 2>&1};
 like ($output, qr/Status\s+Deleted/, 'sequence delete 1');
-$output = qx{../src/task rc:seq.rc info 2};
+$output = qx{../src/task rc:seq.rc info 2 2>&1};
 like ($output, qr/Status\s+Deleted/, 'sequence delete 2');
-qx{../src/task rc:seq.rc undo};
-qx{../src/task rc:seq.rc undo};
-$output = qx{../src/task rc:seq.rc info 1};
+qx{../src/task rc:seq.rc undo 2>&1};
+qx{../src/task rc:seq.rc undo 2>&1};
+$output = qx{../src/task rc:seq.rc info 1 2>&1};
 like ($output, qr/Status\s+Pending/, 'sequence undo 1');
-$output = qx{../src/task rc:seq.rc info 2};
+$output = qx{../src/task rc:seq.rc info 2 2>&1};
 like ($output, qr/Status\s+Pending/, 'sequence undo 2');
 
 # Test sequences in start/stop
-qx{../src/task rc:seq.rc 1,2 start};
-$output = qx{../src/task rc:seq.rc info 1};
+qx{../src/task rc:seq.rc 1,2 start 2>&1};
+$output = qx{../src/task rc:seq.rc info 1 2>&1};
 like ($output, qr/Start/, 'sequence start 1');
-$output = qx{../src/task rc:seq.rc info 2};
+$output = qx{../src/task rc:seq.rc info 2 2>&1};
 like ($output, qr/Start/, 'sequence start 2');
-qx{../src/task rc:seq.rc 1,2 stop};
-$output = qx{../src/task rc:seq.rc info 1};
+qx{../src/task rc:seq.rc 1,2 stop 2>&1};
+$output = qx{../src/task rc:seq.rc info 1 2>&1};
 like ($output, qr/Start\sdeleted/, 'sequence stop 1');
-$output = qx{../src/task rc:seq.rc info 2};
+$output = qx{../src/task rc:seq.rc info 2 2>&1};
 like ($output, qr/Start\sdeleted/, 'sequence stop 2');
 
 # Test sequences in modify
-qx{../src/task rc:seq.rc 1,2 modify +tag};
-$output = qx{../src/task rc:seq.rc info 1};
+qx{../src/task rc:seq.rc 1,2 modify +tag 2>&1};
+$output = qx{../src/task rc:seq.rc info 1 2>&1};
 like ($output, qr/Tags\s+tag/, 'sequence modify 1');
-$output = qx{../src/task rc:seq.rc info 2};
+$output = qx{../src/task rc:seq.rc info 2 2>&1};
 like ($output, qr/Tags\s+tag/, 'sequence modify 2');
-qx{../src/task rc:seq.rc 1,2 modify -tag};
-$output = qx{../src/task rc:seq.rc info 1};
+qx{../src/task rc:seq.rc 1,2 modify -tag 2>&1};
+$output = qx{../src/task rc:seq.rc info 1 2>&1};
 unlike ($output, qr/Tags\s+tag/, 'sequence unmodify 1');
-$output = qx{../src/task rc:seq.rc info 2};
+$output = qx{../src/task rc:seq.rc info 2 2>&1};
 unlike ($output, qr/Tags\s+tag/, 'sequence unmodify 2');
 
 # Test sequences in substitutions
-qx{../src/task rc:seq.rc 1,2 modify /miss/Miss/};
-$output = qx{../src/task rc:seq.rc info 1};
+qx{../src/task rc:seq.rc 1,2 modify /miss/Miss/ 2>&1};
+$output = qx{../src/task rc:seq.rc info 1 2>&1};
 like ($output, qr/Description\s+one Miss/, 'sequence substitution 1');
-$output = qx{../src/task rc:seq.rc info 2};
+$output = qx{../src/task rc:seq.rc info 2 2>&1};
 like ($output, qr/Description\s+two Miss/, 'sequence substitution 2');
 
 # Test sequences in info
-$output = qx{../src/task rc:seq.rc info 1,2};
+$output = qx{../src/task rc:seq.rc info 1,2 2>&1};
 like ($output, qr/Description\s+one Miss/, 'sequence info 1');
 like ($output, qr/Description\s+two Miss/, 'sequence info 2');
 
 # Test sequences in duplicate
-qx{../src/task rc:seq.rc 1,2 duplicate pri:H};
-$output = qx{../src/task rc:seq.rc info 3};
+qx{../src/task rc:seq.rc 1,2 duplicate pri:H 2>&1};
+$output = qx{../src/task rc:seq.rc info 3 2>&1};
 like ($output, qr/Priority\s+H/, 'sequence duplicate 1');
-$output = qx{../src/task rc:seq.rc info 4};
+$output = qx{../src/task rc:seq.rc info 4 2>&1};
 like ($output, qr/Priority\s+H/, 'sequence duplicate 2');
 
 # Test sequences in annotate
-qx{../src/task rc:seq.rc 1,2 annotate note};
-$output = qx{../src/task rc:seq.rc info 1};
+qx{../src/task rc:seq.rc 1,2 annotate note 2>&1};
+$output = qx{../src/task rc:seq.rc info 1 2>&1};
 like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence 1 annotate');
-$output = qx{../src/task rc:seq.rc info 2};
+$output = qx{../src/task rc:seq.rc info 2 2>&1};
 like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence 2 annotate');
 
 # Cleanup.

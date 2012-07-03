@@ -44,14 +44,14 @@ if (open my $fh, '>', 'bug.rc')
 # - deleting task with UUID 874e146d-07a2-2d2c-7808-a76e74b1a332
 # - searching for tasks "foo" and "bar"
 
-qx{../src/task rc:bug.rc add foo};
-qx{../src/task rc:bug.rc add bar};
-my $output = qx{../src/task rc:bug.rc list};
+qx{../src/task rc:bug.rc add foo 2>&1};
+qx{../src/task rc:bug.rc add bar 2>&1};
+my $output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/foo/ms, 'Task foo added');
 like ($output, qr/bar/ms, 'Task bar added');
-qx{../src/task rc:bug.rc rc.confirmation=off rc.verbose=nothing rc.bulk=1000 874e146d-07a2-2d2c-7808-a76e74b1a332 delete};
+qx{../src/task rc:bug.rc rc.confirmation=off rc.verbose=nothing rc.bulk=1000 874e146d-07a2-2d2c-7808-a76e74b1a332 delete 2>&1};
 
-$output = qx{../src/task rc:bug.rc list};
+$output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/foo/ms, 'Task foo not deleted');
 like ($output, qr/bar/ms, 'Task bar not deleted');
 

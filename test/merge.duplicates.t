@@ -95,83 +95,83 @@ if (open my $fh, '>', '3.rc')
 
 #######################################
 # Create tasks on 1st resource
-qx{../src/task rc:1.rc add Task1};
+qx{../src/task rc:1.rc add Task1 2>&1};
 diag ("7 second delay");
 sleep(1);
-qx{../src/task rc:1.rc add Task2};
+qx{../src/task rc:1.rc add Task2 2>&1};
 sleep(1);
-qx{../src/task rc:1.rc add Task3};
+qx{../src/task rc:1.rc add Task3 2>&1};
 sleep(1);
-qx{../src/task rc:1.rc add Task4};
+qx{../src/task rc:1.rc add Task4 2>&1};
 
 # Merge with backup
-my $output = qx{../src/task rc:1.rc push ./backup/};
+my $output = qx{../src/task rc:1.rc push ./backup/ 2>&1};
 
 #######################################
 # Modify on 2nd resource
 
 # first merge
-$output = qx{../src/task rc:2.rc merge};
+$output = qx{../src/task rc:2.rc merge 2>&1};
 like ($output, qr/Merge complete/, "res2: pre-merge completed");
 
 # complete Task1
-qx{../src/task rc:2.rc 1 done};
+qx{../src/task rc:2.rc 1 done 2>&1};
 sleep(1);
 
 #######################################
 # Modify on 3rd resource
 
 # first merge
-$output = qx{../src/task rc:3.rc merge};
+$output = qx{../src/task rc:3.rc merge 2>&1};
 like ($output, qr/Merge complete/, "res3: pre-merge completed");
 
 # complete Task1
-qx{../src/task rc:3.rc 1 done};
+qx{../src/task rc:3.rc 1 done 2>&1};
 sleep(1);
 
 # now merge 3rd resource
-$output = qx{../src/task rc:3.rc merge};
+$output = qx{../src/task rc:3.rc merge 2>&1};
 like ($output, qr/Merge complete/, "res3: post-merge completed");
 unlike ($output, qr/Missing/, "no missing entry");
 
 # and merge 2nd resource
-$output = qx{../src/task rc:2.rc merge};
+$output = qx{../src/task rc:2.rc merge 2>&1};
 like ($output, qr/Merge complete/, "res2: post-merge completed");
 unlike ($output, qr/Missing/, "no missing entry");
 
 # merge 3rd
-$output = qx{../src/task rc:3.rc merge};
+$output = qx{../src/task rc:3.rc merge 2>&1};
 like ($output, qr/Merge complete/, "res3: post-merge completed");
 unlike ($output, qr/Missing/, "no missing entry");
 like ($output, qr/Retain/,  "retained changes");  # 16
 
 # pre-merge 1st
-$output = qx{../src/task rc:1.rc merge};
+$output = qx{../src/task rc:1.rc merge 2>&1};
 like ($output, qr/Merge complete/, "res1: pre-merge completed");   # 17
 unlike ($output, qr/Missing/, "no missing entry");
 
-qx{../src/task rc:1.rc add Task5};
+qx{../src/task rc:1.rc add Task5 2>&1};
 sleep(1);
-qx(../src/task rc:1.rc 4 done);
+qx{../src/task rc:1.rc 4 done 2>&1};
 sleep(1);
 
 # merge
-$output = qx{../src/task rc:1.rc merge};
+$output = qx{../src/task rc:1.rc merge 2>&1};
 like ($output, qr/Merge complete/, "res1: post-merge completed");
 unlike ($output, qr/Missing/, "no missing entry");
 
 # pre-merge 2nd res
-$output = qx{../src/task rc:2.rc merge};
+$output = qx{../src/task rc:2.rc merge 2>&1};
 like ($output, qr/Merge complete/, "res2: pre-merge completed");
 unlike ($output, qr/Missing/, "no missing entry");
 
 # merge
-$output = qx{../src/task rc:1.rc merge};
+$output = qx{../src/task rc:1.rc merge 2>&1};
 like ($output, qr/up-to-date/, "res1: up-to-date");
 unlike ($output, qr/Missing/, "no missing entry");
 
 # pre-merge 2nd res
-$output = qx{../src/task rc:2.rc merge};
+$output = qx{../src/task rc:2.rc merge 2>&1};
 like ($output, qr/up-to-date/, "res2: up-to-date");
 unlike ($output, qr/Missing/, "no missing entry");
 

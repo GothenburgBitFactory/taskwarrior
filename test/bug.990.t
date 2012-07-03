@@ -44,8 +44,8 @@ if (open my $fh, '>', 'color.rc')
 # Bug that colored any task with both priority:L and a tag as though
 # rc.color.tagged had a higher precedence than rc.color.pri.L, which it is not.
 
-qx{../src/task rc:color.rc add test +test pri:L};
-my $output = qx{../src/task rc:color.rc list};
+qx{../src/task rc:color.rc add test +test pri:L 2>&1};
+my $output = qx{../src/task rc:color.rc list 2>&1};
 like ($output, qr/ \033\[32m        .* test .* \033\[0m /x, 'Colored with the priority color, which has precedence over the tagged color');
 
 # Cleanup.

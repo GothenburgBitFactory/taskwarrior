@@ -43,17 +43,17 @@ if (open my $fh, '>', 'recur.rc')
 }
 
 # Create a few recurring tasks, and test the sort order of the recur column.
-qx{../src/task rc:recur.rc add due:tomorrow recur:daily  first};
-qx{../src/task rc:recur.rc add due:tomorrow recur:weekly second};
-qx{../src/task rc:recur.rc add due:tomorrow recur:3d     third};
+qx{../src/task rc:recur.rc add due:tomorrow recur:daily  first 2>&1};
+qx{../src/task rc:recur.rc add due:tomorrow recur:weekly second 2>&1};
+qx{../src/task rc:recur.rc add due:tomorrow recur:3d     third 2>&1};
 
-my $output = qx{../src/task rc:recur.rc asc};
+my $output = qx{../src/task rc:recur.rc asc 2>&1};
 like ($output, qr/first .* third .* second/msx, 'daily 3d weekly');
 
-$output = qx{../src/task rc:recur.rc desc};
+$output = qx{../src/task rc:recur.rc desc 2>&1};
 like ($output, qr/second .* third .* first/msx, 'weekly 3d daily');
 
-$output = qx{../src/task rc:recur.rc diag};
+$output = qx{../src/task rc:recur.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.

@@ -40,10 +40,10 @@ if (open my $fh, '>', 'range.rc')
 }
 
 # Add three tasks, and attempt to list the middle one within a range.
-qx{../src/task rc:range.rc add one due:8/1/2009};
-qx{../src/task rc:range.rc add two due:8/3/2009};
-qx{../src/task rc:range.rc add three due:8/5/2009};
-my $output = qx{../src/task rc:range.rc ls due.after:8/2/2009 due.before:8/4/2009};
+qx{../src/task rc:range.rc add one due:8/1/2009 2>&1};
+qx{../src/task rc:range.rc add two due:8/3/2009 2>&1};
+qx{../src/task rc:range.rc add three due:8/5/2009 2>&1};
+my $output = qx{../src/task rc:range.rc ls due.after:8/2/2009 due.before:8/4/2009 2>&1};
 unlike ($output, qr/one/,   'Missing prior to range');
 like   ($output, qr/two/,   'Found within range');
 unlike ($output, qr/three/, 'Missing after range');

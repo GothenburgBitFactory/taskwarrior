@@ -41,8 +41,8 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Setup: Add a recurring task, generate an instance, then add a project.
-qx{../src/task rc:bug.rc add foo due:today recur:daily until:eom};
-my $output = qx{../src/task rc:bug.rc info 1};
+qx{../src/task rc:bug.rc add foo due:today recur:daily until:eom 2>&1};
+my $output = qx{../src/task rc:bug.rc info 1 2>&1};
 
 # Result: Make sure the 'until' date is rendered as a date, not an epoch.
 unlike ($output, qr/Until\s+\d{10}/,          'until is not shown as an epoch');

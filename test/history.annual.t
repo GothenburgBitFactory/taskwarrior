@@ -62,7 +62,7 @@ EOF
   ok (-r 'pending.data', 'Created pending.data');
 }
 
-my $output = qx{../src/task rc:time.rc history.annual};
+my $output = qx{../src/task rc:time.rc history.annual 2>&1};
 like ($output, qr/7\s+1\s+0\s+6/, 'history.annual - last year');
 like ($output, qr/2\s+3\s+3\s+-4/, 'history.annual - this year');
 like ($output, qr/4\s+2\s+1\s+1/, 'history.annual - average');

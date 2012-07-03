@@ -41,10 +41,10 @@ if (open my $fh, '>', 'export.rc')
 
 # Add two tasks, export, examine result.
 # TODO Add annotations.
-qx{../src/task rc:export.rc add priority:H project:A one};
-qx{../src/task rc:export.rc add +tag1 +tag2 two};
+qx{../src/task rc:export.rc add priority:H project:A one 2>&1};
+qx{../src/task rc:export.rc add +tag1 +tag2 two 2>&1};
 
-my $output = qx{../src/task rc:export.rc export | ../scripts/add-ons/export-yaml.pl > ./export.txt};
+my $output = qx{../src/task rc:export.rc export | ../scripts/add-ons/export-yaml.pl > ./export.txt 2>&1};
 my @lines;
 if (open my $fh, '<', './export.txt')
 {

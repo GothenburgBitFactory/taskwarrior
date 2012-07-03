@@ -61,15 +61,15 @@ if (open my $fh, '>', 'remote.rc')
 }
 
 # add a remote task
-qx{../src/task rc:remote.rc add remote task};
+qx{../src/task rc:remote.rc add remote task 2>&1};
 
 # add a local task
-qx(../src/task rc:local.rc add local task);
+qx{../src/task rc:local.rc add local task 2>&1};
 
 # merge and autopush
-qx{../src/task rc:local.rc merge};
+qx{../src/task rc:local.rc merge 2>&1};
 
-my $output = qx{../src/task rc:remote.rc ls};
+my $output = qx{../src/task rc:remote.rc ls 2>&1};
 like ($output, qr/local task/,    "autopush failed");
 
 # Cleanup.

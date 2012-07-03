@@ -41,37 +41,37 @@ if (open my $fh, '>', 'wait.rc')
 }
 
 # Add a waiting task, check it is not there, wait, then check it is.
-qx{../src/task rc:wait.rc add yeswait wait:2s};
-qx{../src/task rc:wait.rc add nowait};
+qx{../src/task rc:wait.rc add yeswait wait:2s 2>&1};
+qx{../src/task rc:wait.rc add nowait 2>&1};
 
-my $output = qx{../src/task rc:wait.rc ls};
+my $output = qx{../src/task rc:wait.rc ls 2>&1};
 like ($output, qr/nowait/ms, 'non-waiting task visible');
 unlike ($output, qr/yeswait/ms, 'waiting task invisible');
 
 diag ("3 second delay");
 sleep 3;
 
-$output = qx{../src/task rc:wait.rc ls};
+$output = qx{../src/task rc:wait.rc ls 2>&1};
 like ($output, qr/nowait/ms, 'non-waiting task still visible');
 like ($output, qr/yeswait/ms, 'waiting task now visible');
 
-qx{../src/task rc:wait.rc 1 modify wait:2s};
-$output = qx{../src/task rc:wait.rc ls};
+qx{../src/task rc:wait.rc 1 modify wait:2s 2>&1};
+$output = qx{../src/task rc:wait.rc ls 2>&1};
 like ($output, qr/nowait/ms, 'non-waiting task visible');
 unlike ($output, qr/yeswait/ms, 'waiting task invisible');
 
 diag ("3 second delay");
 sleep 3;
 
-$output = qx{../src/task rc:wait.rc ls};
+$output = qx{../src/task rc:wait.rc ls 2>&1};
 like ($output, qr/nowait/ms, 'non-waiting task still visible');
 like ($output, qr/yeswait/ms, 'waiting task now visible');
 
-qx{../src/task rc:wait.rc add wait:tomorrow tomorrow};
-$output = qx{../src/task rc:wait.rc ls};
+qx{../src/task rc:wait.rc add wait:tomorrow tomorrow 2>&1};
+$output = qx{../src/task rc:wait.rc ls 2>&1};
 unlike ($output, qr/tomorrow/ms, 'waiting task invisible');
 
-$output = qx{../src/task rc:wait.rc all status:waiting wait:tomorrow};
+$output = qx{../src/task rc:wait.rc all status:waiting wait:tomorrow 2>&1};
 like ($output, qr/tomorrow/ms, 'waiting task visible when specifically queried');
 
 $output = qx{../src/task rc:wait.rc add Complain due:today wait:tomorrow 2>&1 >/dev/null};

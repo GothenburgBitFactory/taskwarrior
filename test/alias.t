@@ -41,15 +41,15 @@ if (open my $fh, '>', 'alias.rc')
 }
 
 # Add a task with certain project, then access that task via aliases.
-qx{../src/task rc:alias.rc add project:ALIAS foo};
+qx{../src/task rc:alias.rc add project:ALIAS foo 2>&1};
 
-my $output = qx{../src/task rc:alias.rc _projects};
+my $output = qx{../src/task rc:alias.rc _projects 2>&1};
 like ($output, qr/ALIAS/, 'task _projects -> ALIAS');
 
-$output = qx{../src/task rc:alias.rc foo};
+$output = qx{../src/task rc:alias.rc foo 2>&1};
 like ($output, qr/ALIAS/, 'task foo -> _projects -> ALIAS');
 
-$output = qx{../src/task rc:alias.rc bar};
+$output = qx{../src/task rc:alias.rc bar 2>&1};
 like ($output, qr/ALIAS/, 'task bar -> foo -> _projects -> ALIAS');
 
 # Cleanup.

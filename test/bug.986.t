@@ -44,17 +44,17 @@ if (open my $fh, '>', 'bug.rc')
 
 # Create one task (with a creation date) and one journal entry (with a
 # timestamp and a date inside the entry)
-qx{../src/task rc:bug.rc add test};
-qx{../src/task rc:bug.rc test start};
+qx{../src/task rc:bug.rc add test 2>&1};
+qx{../src/task rc:bug.rc test start 2>&1};
 
 # Test that dateformat.info has precedence over dateformat and that no other
 # format is applied
-my $output = qx{../src/task rc:bug.rc test info rc.dateformat:m/d/Y rc.dateformat.info:__};
+my $output = qx{../src/task rc:bug.rc test info rc.dateformat:m/d/Y rc.dateformat.info:__ 2>&1};
 like ($output, qr/__/ms, 'Date formatted according to dateformat.info');
 unlike ($output, qr/[0-9]*\/[0-9]*\/20[0-9]*/ms, 'No date is incorrectly formatted');
 
 # Similar for dateformat
-$output = qx{../src/task rc:bug.rc test info rc.dateformat:__ rc.dateformat.info:};
+$output = qx{../src/task rc:bug.rc test info rc.dateformat:__ rc.dateformat.info: 2>&1};
 like ($output, qr/__/ms, 'Date formatted according to dateformat');
 
 ### Cleanup.

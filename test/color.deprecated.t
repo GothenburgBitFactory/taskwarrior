@@ -41,7 +41,7 @@ if (open my $fh, '>', 'color.rc')
 }
 
 # Test the add command.
-my $output = qx{../src/task rc:color.rc show};
+my $output = qx{../src/task rc:color.rc show 2>&1};
 like   ($output, qr/that use deprecated underscores/ms,  'Deprecated color detected');
 
 # Cleanup.

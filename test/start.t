@@ -39,30 +39,30 @@ if (open my $fh, '>', 'start.rc')
 }
 
 # Test the add/start/stop commands.
-qx{../src/task rc:start.rc add one};
-qx{../src/task rc:start.rc add two};
-my $output = qx{../src/task rc:start.rc active};
+qx{../src/task rc:start.rc add one 2>&1};
+qx{../src/task rc:start.rc add two 2>&1};
+my $output = qx{../src/task rc:start.rc active 2>&1};
 unlike ($output, qr/one/, 'one not active');
 unlike ($output, qr/two/, 'two not active');
 
-qx{../src/task rc:start.rc 1 start};
-qx{../src/task rc:start.rc 2 start};
-$output = qx{../src/task rc:start.rc active};
+qx{../src/task rc:start.rc 1 start 2>&1};
+qx{../src/task rc:start.rc 2 start 2>&1};
+$output = qx{../src/task rc:start.rc active 2>&1};
 like ($output, qr/one/, 'one active');
 like ($output, qr/two/, 'two active');
 
-qx{../src/task rc:start.rc 1 stop};
-$output = qx{../src/task rc:start.rc active};
+qx{../src/task rc:start.rc 1 stop 2>&1};
+$output = qx{../src/task rc:start.rc active 2>&1};
 unlike ($output, qr/one/, 'one not active');
 like   ($output, qr/two/, 'two active');
 
-qx{../src/task rc:start.rc 2 stop};
-$output = qx{../src/task rc:start.rc active};
+qx{../src/task rc:start.rc 2 stop 2>&1};
+$output = qx{../src/task rc:start.rc active 2>&1};
 unlike ($output, qr/one/, 'one not active');
 unlike ($output, qr/two/, 'two not active');
 
-qx{../src/task rc:start.rc 2 done};
-$output = qx{../src/task rc:start.rc list};
+qx{../src/task rc:start.rc 2 done 2>&1};
+$output = qx{../src/task rc:start.rc list 2>&1};
 unlike ($output, qr/two/, 'two deleted');
 
 # Create the rc file.
@@ -74,12 +74,12 @@ if (open my $fh, '>', 'start2.rc')
   ok (-r 'start2.rc', 'Created start2.rc');
 }
 
-qx{../src/task rc:start2.rc 1 start};
-$output = qx{../src/task rc:start2.rc list};
+qx{../src/task rc:start2.rc 1 start 2>&1};
+$output = qx{../src/task rc:start2.rc list 2>&1};
 like ($output, qr/Started task/, 'one start and annotated');
 
-qx{../src/task rc:start2.rc 1 stop};
-$output = qx{../src/task rc:start2.rc list};
+qx{../src/task rc:start2.rc 1 stop 2>&1};
+$output = qx{../src/task rc:start2.rc list 2>&1};
 like ($output, qr/Stopped task/, 'one stopped and annotated');
 
 # Create the rc file.
@@ -93,12 +93,12 @@ if (open my $fh, '>', 'start3.rc')
   ok (-r 'start3.rc', 'Created start3.rc');
 }
 
-qx{../src/task rc:start3.rc 1 start};
-$output = qx{../src/task rc:start3.rc list};
+qx{../src/task rc:start3.rc 1 start 2>&1};
+$output = qx{../src/task rc:start3.rc list 2>&1};
 like ($output, qr/Nu.+kör.+vi/ms, 'one start and annotated with custom description');
 
-qx{../src/task rc:start3.rc 1 stop};
-$output = qx{../src/task rc:start3.rc list};
+qx{../src/task rc:start3.rc 1 stop 2>&1};
+$output = qx{../src/task rc:start3.rc list 2>&1};
 like ($output, qr/Nu.+stannar.+vi/ms, 'one stopped and annotated with custom description');
 
 # Cleanup.

@@ -39,13 +39,13 @@ if (open my $fh, '>', 'prepend.rc')
 }
 
 # Add a task, then prepend more decsription.
-qx{../src/task rc:prepend.rc add bar};
-qx{../src/task rc:prepend.rc 1 prepend foo};
-my $output = qx{../src/task rc:prepend.rc info 1};
+qx{../src/task rc:prepend.rc add bar 2>&1};
+qx{../src/task rc:prepend.rc 1 prepend foo 2>&1};
+my $output = qx{../src/task rc:prepend.rc info 1 2>&1};
 like ($output, qr/Description\s+foo\sbar\n/, 'prepend worked');
 
 # Should cause an error when nothing is appended.
-$output = qx{../src/task rc:prepend.rc 1 prepend};
+$output = qx{../src/task rc:prepend.rc 1 prepend 2>&1};
 unlike ($output, qr/Prepended 0 tasks/, 'blank prepend failed');
 
 # Cleanup.

@@ -43,16 +43,16 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 708: Bad Math in Project is % Complete
 
 # Setup: Add a few tasks
-qx{../src/task rc:bug.rc add One pro:p1};
-qx{../src/task rc:bug.rc add Two pro:p1};
-qx{../src/task rc:bug.rc add Three pro:p1};
-qx{../src/task rc:bug.rc add Four pro:p1};
-qx{../src/task rc:bug.rc add Five pro:p1};
-qx{../src/task rc:bug.rc add Six  pro:p1};
-qx{../src/task rc:bug.rc add Seven pro:p1};
-qx{../src/task rc:bug.rc add Eight pro:p1};
-qx{../src/task rc:bug.rc add Nine pro:p1};
-qx{../src/task rc:bug.rc add Ten pro:p1};
+qx{../src/task rc:bug.rc add One pro:p1 2>&1};
+qx{../src/task rc:bug.rc add Two pro:p1 2>&1};
+qx{../src/task rc:bug.rc add Three pro:p1 2>&1};
+qx{../src/task rc:bug.rc add Four pro:p1 2>&1};
+qx{../src/task rc:bug.rc add Five pro:p1 2>&1};
+qx{../src/task rc:bug.rc add Six  pro:p1 2>&1};
+qx{../src/task rc:bug.rc add Seven pro:p1 2>&1};
+qx{../src/task rc:bug.rc add Eight pro:p1 2>&1};
+qx{../src/task rc:bug.rc add Nine pro:p1 2>&1};
+qx{../src/task rc:bug.rc add Ten pro:p1 2>&1};
 
 # Complete three tasks and ensure pending and done counts are updated correctly.
 my $output = qx{../src/task rc:bug.rc 1-3 do 2>&1 >/dev/null};

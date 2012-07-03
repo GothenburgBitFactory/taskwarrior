@@ -55,8 +55,8 @@ if (open my $fh, '>', 'annual.rc')
 # 11             13/29/2008          - foo
 # 12             12/29/2009          - foo
 
-qx{../src/task rc:annual.rc add foo due:1/1/2000 recur:annual until:1/1/2009};
-my $output = qx{../src/task rc:annual.rc list};
+qx{../src/task rc:annual.rc add foo due:1/1/2000 recur:annual until:1/1/2009 2>&1};
+my $output = qx{../src/task rc:annual.rc list 2>&1};
 like ($output, qr/2\s+1\/1\/2000\s+(?:-|\d+\ssecs?)\s+foo/,  'synthetic 2 no creep');
 like ($output, qr/3\s+1\/1\/2001\s+(?:-|\d+\ssecs?)\s+foo/,  'synthetic 3 no creep');
 like ($output, qr/4\s+1\/1\/2002\s+(?:-|\d+\ssecs?)\s+foo/,  'synthetic 4 no creep');
@@ -68,7 +68,7 @@ like ($output, qr/9\s+1\/1\/2007\s+(?:-|\d+\ssecs?)\s+foo/,  'synthetic 9 no cre
 like ($output, qr/10\s+1\/1\/2008\s+(?:-|\d+\ssecs?)\s+foo/, 'synthetic 10 no creep');
 like ($output, qr/11\s+1\/1\/2009\s+(?:-|\d+\ssecs?)\s+foo/, 'synthetic 11 no creep');
 
-$output = qx{../src/task rc:annual.rc diag};
+$output = qx{../src/task rc:annual.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.

@@ -72,13 +72,13 @@ EOF
   ok (-r 'pending.data', 'Created pending.data');
 }
 
-my $output = qx{../src/task rc:time.rc timesheet};
+my $output = qx{../src/task rc:time.rc timesheet 2>&1};
 like ($output, qr/Completed.+C0.+Started.+PS0/ms, 'one week of started and completed');
 
-$output = qx{../src/task rc:time.rc timesheet 2};
+$output = qx{../src/task rc:time.rc timesheet 2 2>&1};
 like ($output, qr/Completed.+C0.+Started.+PS0.+Completed.+C1.+Started.+PS1/ms, 'two weeks of started and completed');
 
-$output = qx{../src/task rc:time.rc timesheet 3};
+$output = qx{../src/task rc:time.rc timesheet 3 2>&1};
 like ($output, qr/Completed.+C0.+Started.+PS0.+Completed.+C1.+Started.+PS1.+Completed.+C2.+Started.+PS2/ms, 'three weeks of started and completed');
 
 # Cleanup.

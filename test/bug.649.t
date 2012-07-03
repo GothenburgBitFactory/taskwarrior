@@ -43,10 +43,10 @@ if (open my $fh, '>', 'bug.rc')
 # marked completed
 
 # Setup: Add a recurring task
-qx{../src/task rc:bug.rc add Test due:3d rec:1w};
+qx{../src/task rc:bug.rc add Test due:3d rec:1w 2>&1};
 
 # Result: Immediately delete the created task
-my $output = qx{../src/task rc:bug.rc 1 done};
+my $output = qx{../src/task rc:bug.rc 1 done 2>&1};
 like   ($output, qr/is neither pending nor waiting/, 'Parent task not completable');
 unlike ($output, qr/Completed 1/ms, 'New recurring task cannot be immediately completed.');
 

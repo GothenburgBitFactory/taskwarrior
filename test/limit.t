@@ -39,47 +39,47 @@ if (open my $fh, '>', 'limit.rc')
 }
 
 # Add a large number of tasks (> 25).
-qx{../src/task rc:limit.rc add one};
-qx{../src/task rc:limit.rc add two};
-qx{../src/task rc:limit.rc add three};
-qx{../src/task rc:limit.rc add four};
-qx{../src/task rc:limit.rc add five};
-qx{../src/task rc:limit.rc add six};
-qx{../src/task rc:limit.rc add seven};
-qx{../src/task rc:limit.rc add eight};
-qx{../src/task rc:limit.rc add nine};
-qx{../src/task rc:limit.rc add ten};
-qx{../src/task rc:limit.rc add eleven};
-qx{../src/task rc:limit.rc add twelve};
-qx{../src/task rc:limit.rc add thirteen};
-qx{../src/task rc:limit.rc add fourteen};
-qx{../src/task rc:limit.rc add fifteen};
-qx{../src/task rc:limit.rc add sixteen};
-qx{../src/task rc:limit.rc add seventeen};
-qx{../src/task rc:limit.rc add eighteen};
-qx{../src/task rc:limit.rc add nineteen};
-qx{../src/task rc:limit.rc add twenty};
-qx{../src/task rc:limit.rc add twenty one};
-qx{../src/task rc:limit.rc add twenty two};
-qx{../src/task rc:limit.rc add twenty three};
-qx{../src/task rc:limit.rc add twenty four};
-qx{../src/task rc:limit.rc add twenty five};
-qx{../src/task rc:limit.rc add twenty six};
-qx{../src/task rc:limit.rc add twenty seven};
-qx{../src/task rc:limit.rc add twenty eight};
-qx{../src/task rc:limit.rc add twenty nine};
-qx{../src/task rc:limit.rc add thirty};
+qx{../src/task rc:limit.rc add one 2>&1};
+qx{../src/task rc:limit.rc add two 2>&1};
+qx{../src/task rc:limit.rc add three 2>&1};
+qx{../src/task rc:limit.rc add four 2>&1};
+qx{../src/task rc:limit.rc add five 2>&1};
+qx{../src/task rc:limit.rc add six 2>&1};
+qx{../src/task rc:limit.rc add seven 2>&1};
+qx{../src/task rc:limit.rc add eight 2>&1};
+qx{../src/task rc:limit.rc add nine 2>&1};
+qx{../src/task rc:limit.rc add ten 2>&1};
+qx{../src/task rc:limit.rc add eleven 2>&1};
+qx{../src/task rc:limit.rc add twelve 2>&1};
+qx{../src/task rc:limit.rc add thirteen 2>&1};
+qx{../src/task rc:limit.rc add fourteen 2>&1};
+qx{../src/task rc:limit.rc add fifteen 2>&1};
+qx{../src/task rc:limit.rc add sixteen 2>&1};
+qx{../src/task rc:limit.rc add seventeen 2>&1};
+qx{../src/task rc:limit.rc add eighteen 2>&1};
+qx{../src/task rc:limit.rc add nineteen 2>&1};
+qx{../src/task rc:limit.rc add twenty 2>&1};
+qx{../src/task rc:limit.rc add twenty one 2>&1};
+qx{../src/task rc:limit.rc add twenty two 2>&1};
+qx{../src/task rc:limit.rc add twenty three 2>&1};
+qx{../src/task rc:limit.rc add twenty four 2>&1};
+qx{../src/task rc:limit.rc add twenty five 2>&1};
+qx{../src/task rc:limit.rc add twenty six 2>&1};
+qx{../src/task rc:limit.rc add twenty seven 2>&1};
+qx{../src/task rc:limit.rc add twenty eight 2>&1};
+qx{../src/task rc:limit.rc add twenty nine 2>&1};
+qx{../src/task rc:limit.rc add thirty 2>&1};
 
-my $output = qx{../src/task rc:limit.rc ls};
+my $output = qx{../src/task rc:limit.rc ls 2>&1};
 like ($output, qr/^30 tasks$/ms, 'unlimited');
 
-$output = qx{../src/task rc:limit.rc ls limit:0};
+$output = qx{../src/task rc:limit.rc ls limit:0 2>&1};
 like ($output, qr/^30 tasks$/ms, 'limited to 0 - unlimited');
 
-$output = qx{../src/task rc:limit.rc ls limit:3};
+$output = qx{../src/task rc:limit.rc ls limit:3 2>&1};
 like ($output, qr/^30 tasks, 3 shown$/ms, 'limited to 3');
 
-$output = qx{../src/task rc:limit.rc ls limit:page};
+$output = qx{../src/task rc:limit.rc ls limit:page 2>&1};
 like ($output, qr/^30 tasks, truncated to 18 lines$/ms, 'limited to page');
 
 # Cleanup.

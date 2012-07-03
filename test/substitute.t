@@ -40,38 +40,38 @@ if (open my $fh, '>', 'subst.rc')
 }
 
 # Test the substitution command.
-qx{../src/task rc:subst.rc add foo foo foo};
-qx{../src/task rc:subst.rc 1 modify /foo/FOO/};
-my $output = qx{../src/task rc:subst.rc info 1};
+qx{../src/task rc:subst.rc add foo foo foo 2>&1};
+qx{../src/task rc:subst.rc 1 modify /foo/FOO/ 2>&1};
+my $output = qx{../src/task rc:subst.rc info 1 2>&1};
 like ($output, qr/FOO foo foo/, 'substitution in description');
 
-qx{../src/task rc:subst.rc 1 modify /foo/FOO/g};
-$output = qx{../src/task rc:subst.rc info 1};
+qx{../src/task rc:subst.rc 1 modify /foo/FOO/g 2>&1};
+$output = qx{../src/task rc:subst.rc info 1 2>&1};
 like ($output, qr/FOO FOO FOO/, 'global substitution in description');
 
 # Test the substitution command on annotations.
-qx{../src/task rc:subst.rc 1 annotate bar bar bar};
-qx{../src/task rc:subst.rc 1 modify /bar/BAR/};
-$output = qx{../src/task rc:subst.rc info 1};
+qx{../src/task rc:subst.rc 1 annotate bar bar bar 2>&1};
+qx{../src/task rc:subst.rc 1 modify /bar/BAR/ 2>&1};
+$output = qx{../src/task rc:subst.rc info 1 2>&1};
 like ($output, qr/BAR bar bar/, 'substitution in annotation');
 
-qx{../src/task rc:subst.rc 1 modify /bar/BAR/g};
-$output = qx{../src/task rc:subst.rc info 1};
+qx{../src/task rc:subst.rc 1 modify /bar/BAR/g 2>&1};
+$output = qx{../src/task rc:subst.rc info 1 2>&1};
 like ($output, qr/BAR BAR BAR/, 'global substitution in annotation');
 
-qx{../src/task rc:subst.rc 1 modify /FOO/aaa/};
-qx{../src/task rc:subst.rc 1 modify /FOO/bbb/};
-qx{../src/task rc:subst.rc 1 modify /FOO/ccc/};
-$output = qx{../src/task rc:subst.rc info 1};
+qx{../src/task rc:subst.rc 1 modify /FOO/aaa/ 2>&1};
+qx{../src/task rc:subst.rc 1 modify /FOO/bbb/ 2>&1};
+qx{../src/task rc:subst.rc 1 modify /FOO/ccc/ 2>&1};
+$output = qx{../src/task rc:subst.rc info 1 2>&1};
 like ($output, qr/aaa bbb ccc/, 'individual successive substitution in description');
 
-qx{../src/task rc:subst.rc 1 modify /bbb//};
-$output = qx{../src/task rc:subst.rc info 1};
+qx{../src/task rc:subst.rc 1 modify /bbb// 2>&1};
+$output = qx{../src/task rc:subst.rc info 1 2>&1};
 like ($output, qr/aaa  ccc/, 'word deletion in description');
 
 # Regexes
-qx{../src/task rc:subst.rc rc.regex:on 1 modify "/c{3}/CcC/"};
-$output = qx{../src/task rc:subst.rc info 1};
+qx{../src/task rc:subst.rc rc.regex:on 1 modify "/c{3}/CcC/" 2>&1};
+$output = qx{../src/task rc:subst.rc info 1 2>&1};
 like ($output, qr/aaa  CcC/, 'regex');
 
 # Cleanup.

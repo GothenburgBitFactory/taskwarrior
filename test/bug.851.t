@@ -39,17 +39,17 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 851: Filtering by due dates with ordinal and d/wks/etc. doesn't work
-qx{../src/task rc:bug.rc add yesterday due:-2days};
-qx{../src/task rc:bug.rc add tomorrow due:2days};
-my $output = qx{../src/task rc:bug.rc ls};
+qx{../src/task rc:bug.rc add yesterday due:-2days 2>&1};
+qx{../src/task rc:bug.rc add tomorrow due:2days 2>&1};
+my $output = qx{../src/task rc:bug.rc ls 2>&1};
 like ($output, qr/yesterday/, "yesterday - task added");
 like ($output, qr/tomorrow/, "tomorrow - task added");
 
-$output = qx{../src/task rc:bug.rc list due.before:1d};
+$output = qx{../src/task rc:bug.rc list due.before:1d 2>&1};
 like ($output, qr/yesterday/, "yesterday - found before:1d");
 unlike ($output, qr/tomorrow/, "tomorrow - not found before:1d");
 
-$output = qx{../src/task rc:bug.rc list due.after:1d};
+$output = qx{../src/task rc:bug.rc list due.after:1d 2>&1};
 unlike ($output, qr/yesterday/, "yesterday - not found after:1d");
 like ($output, qr/tomorrow/, "tomorrow - found after:1d");
 

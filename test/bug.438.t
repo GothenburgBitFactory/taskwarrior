@@ -46,39 +46,39 @@ if (open my $fh, '>', 'bug.rc')
 #           time is included.
 
 # Ensure the two tasks have a 1 second delta in entry.
-qx{../src/task rc:bug.rc add older};
+qx{../src/task rc:bug.rc add older 2>&1};
 diag ("1 second delay");
 sleep 1;
-qx{../src/task rc:bug.rc add newer};
+qx{../src/task rc:bug.rc add newer 2>&1};
 
-my $output = qx{../src/task rc:bug.rc rc.report.foo.sort:entry+ foo};
+my $output = qx{../src/task rc:bug.rc rc.report.foo.sort:entry+ foo 2>&1};
 like ($output, qr/older.+newer/ms, 'sort:entry+ -> older newer');
 
-$output = qx{../src/task rc:bug.rc rc.report.foo.sort:entry- foo};
+$output = qx{../src/task rc:bug.rc rc.report.foo.sort:entry- foo 2>&1};
 like ($output, qr/newer.+older/ms, 'sort:entry- -> newer older');
 
 # Ensure the two tasks have a 1 second delta in start.
-qx{../src/task rc:bug.rc 1 start};
+qx{../src/task rc:bug.rc 1 start 2>&1};
 diag ("1 second delay");
 sleep 1;
-qx{../src/task rc:bug.rc 2 start};
+qx{../src/task rc:bug.rc 2 start 2>&1};
 
-$output = qx{../src/task rc:bug.rc rc.report.foo.sort:start+ foo};
+$output = qx{../src/task rc:bug.rc rc.report.foo.sort:start+ foo 2>&1};
 like ($output, qr/older.+newer/ms, 'sort:start+ -> older newer');
 
-$output = qx{../src/task rc:bug.rc rc.report.foo.sort:start- foo};
+$output = qx{../src/task rc:bug.rc rc.report.foo.sort:start- foo 2>&1};
 like ($output, qr/newer.+older/ms, 'sort:start- -> newer older');
 
 # Ensure the two tasks have a 1 second delta in end.
-qx{../src/task rc:bug.rc 1 done};
+qx{../src/task rc:bug.rc 1 done 2>&1};
 diag ("1 second delay");
 sleep 1;
-qx{../src/task rc:bug.rc 2 done};
+qx{../src/task rc:bug.rc 2 done 2>&1};
 
-$output = qx{../src/task rc:bug.rc rc.report.foo.sort:end+ foo};
+$output = qx{../src/task rc:bug.rc rc.report.foo.sort:end+ foo 2>&1};
 like ($output, qr/older.+newer/ms, 'sort:end+ -> older newer');
 
-$output = qx{../src/task rc:bug.rc rc.report.foo.sort:end- foo};
+$output = qx{../src/task rc:bug.rc rc.report.foo.sort:end- foo 2>&1};
 like ($output, qr/newer.+older/ms, 'sort:end- -> newer older');
 
 # Cleanup.

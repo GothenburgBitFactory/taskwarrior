@@ -40,30 +40,30 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 906: escaping runs amok
-qx{../src/task rc:bug.rc add zero};
-qx{../src/task rc:bug.rc add one  pro:a.b};
-qx{../src/task rc:bug.rc add two  pro:a};
-my $output = qx{../src/task rc:bug.rc list};
+qx{../src/task rc:bug.rc add zero 2>&1};
+qx{../src/task rc:bug.rc add one  pro:a.b 2>&1};
+qx{../src/task rc:bug.rc add two  pro:a 2>&1};
+my $output = qx{../src/task rc:bug.rc list 2>&1};
 like   ($output, qr/zero/, 'list - zero included');
 like   ($output, qr/one/,  'list - one included');
 like   ($output, qr/two/,  'list - two included');
 
-$output = qx{../src/task rc:bug.rc list pro:a};
+$output = qx{../src/task rc:bug.rc list pro:a 2>&1};
 unlike ($output, qr/zero/, 'list - zero excluded');
 like   ($output, qr/one/,  'list - one included');
 like   ($output, qr/two/,  'list - two included');
 
-$output = qx{../src/task rc:bug.rc list pro:a.b};
+$output = qx{../src/task rc:bug.rc list pro:a.b 2>&1};
 unlike ($output, qr/zero/, 'list - zero included');
 like   ($output, qr/one/,  'list - one excluded');
 unlike ($output, qr/two/,  'list - two included');
 
-$output = qx{../src/task rc:bug.rc list pro.not:a};
+$output = qx{../src/task rc:bug.rc list pro.not:a 2>&1};
 like   ($output, qr/zero/, 'list - zero included');
 unlike ($output, qr/one/,  'list - one excluded');
 unlike ($output, qr/two/,  'list - two excluded');
 
-$output = qx{../src/task rc:bug.rc list pro.not:a.b};
+$output = qx{../src/task rc:bug.rc list pro.not:a.b 2>&1};
 like   ($output, qr/zero/, 'list - zero included');
 unlike ($output, qr/one/,  'list - one excluded');
 like   ($output, qr/two/,  'list - two included');

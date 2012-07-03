@@ -44,12 +44,12 @@ if (open my $fh, '>', 'custom.rc')
 }
 
 # Generate the help screen, and locate the custom report on it.
-my $output = qx{../src/task rc:custom.rc help};
+my $output = qx{../src/task rc:custom.rc help 2>&1};
 like ($output, qr/task <filter> foo\s+DESC\n/m, 'report.foo');
 
-qx{../src/task rc:custom.rc add project:A one};
-qx{../src/task rc:custom.rc add two};
-$output = qx{../src/task rc:custom.rc foo};
+qx{../src/task rc:custom.rc add project:A one 2>&1};
+qx{../src/task rc:custom.rc add two 2>&1};
+$output = qx{../src/task rc:custom.rc foo 2>&1};
 like ($output,   qr/ID/,          'custom label for id column');
 like ($output,   qr/DESCRIPTION/, 'custom label for description column');
 like ($output,   qr/one/,         'custom filter included');

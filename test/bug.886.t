@@ -39,7 +39,7 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 886: tw doesn't warn the user if, e.g., a weekday cannot be resolved properly
-my $output = qx{../src/task rc:bug.rc add one due:sund};
+my $output = qx{../src/task rc:bug.rc add one due:sund 2>&1};
 like ($output, qr/Created task 1\./, 'sund --> valid date');
 
 $output = qx{../src/task rc:bug.rc add two due:donkey 2>&1 >/dev/null};

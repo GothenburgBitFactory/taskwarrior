@@ -64,57 +64,57 @@ if (open my $fh, '>', 'import.txt')
 }
 
 # Convert todo.sh --> task JSON.
-qx{../scripts/add-ons/import-todo.sh.pl <import.txt >import.json};
+qx{../scripts/add-ons/import-todo.sh.pl <import.txt >import.json 2>&1};
 
 # Import the JSON.
-my $output = qx{../src/task rc:import.rc import import.json};
+my $output = qx{../src/task rc:import.rc import import.json 2>&1};
 diag ($output);
 
-$output = qx{../src/task rc:import.rc info 1};
+$output = qx{../src/task rc:import.rc info 1 2>&1};
 like ($output, qr/^Priority.+H/ms, '1 pri:H');
 like ($output, qr/^Tags.+phone/ms, '1 +phone');
 like ($output, qr/^Description.+\@phone thank Mom for the meatballs/ms, '1 <desc>');
 
-$output = qx{../src/task rc:import.rc info 2};
+$output = qx{../src/task rc:import.rc info 2 2>&1};
 like ($output, qr/^Priority.+M/ms, '2 pri:M');
 like ($output, qr/^Project.+GarageSale/ms, '2 <project>');
 like ($output, qr/^Description.+/ms, '2 <desc>');
 
-$output = qx{../src/task rc:import.rc info 3};
+$output = qx{../src/task rc:import.rc info 3 2>&1};
 like ($output, qr/^Project.+GarageSale/ms, '3 <project>');
 like ($output, qr/^Description.+\+GarageSale \@home post signs around the neighborhood/ms, '3 <desc>');
 
-$output = qx{../src/task rc:import.rc info 4};
+$output = qx{../src/task rc:import.rc info 4 2>&1};
 like ($output, qr/^Description.+\@shopping Eskimo pies/ms, '4 <desc>');
 
-$output = qx{../src/task rc:import.rc info 5};
+$output = qx{../src/task rc:import.rc info 5 2>&1};
 like ($output, qr/^Priority.+H/ms, '5 pri:H');
 like ($output, qr/^Description.+Call Mom/ms, '5 <desc>');
 
-$output = qx{../src/task rc:import.rc info 6};
+$output = qx{../src/task rc:import.rc info 6 2>&1};
 like ($output, qr/^Description.+Really gotta call Mom \(A\) \@phone \@someday/ms, '6 <desc>');
 
-$output = qx{../src/task rc:import.rc info 7};
+$output = qx{../src/task rc:import.rc info 7 2>&1};
 like ($output, qr/^Description.+\(b\)->get back to the boss/ms, '7 <desc>');
 
-$output = qx{../src/task rc:import.rc info 8};
+$output = qx{../src/task rc:import.rc info 8 2>&1};
 like ($output, qr/^Project.+TodoTxt/ms, '8 <project>');
 like ($output, qr/^Description.+Document \+TodoTxt task format/ms, '8 <desc>');
 
-$output = qx{../src/task rc:import.rc info 9};
+$output = qx{../src/task rc:import.rc info 9 2>&1};
 like ($output, qr/^Priority.+H/ms, '9 pri:H');
 like ($output, qr/^Description.+Call Mom/ms, '9 <desc>');
 
-$output = qx{../src/task rc:import.rc info 10};
+$output = qx{../src/task rc:import.rc info 10 2>&1};
 like ($output, qr/^Priority.+H/ms, '10 pri:H');
 like ($output, qr/^Description.+Call Mom 2011-03-02/ms, '10 <desc>');
 
-$output = qx{../src/task rc:import.rc info 11};
+$output = qx{../src/task rc:import.rc info 11 2>&1};
 like ($output, qr/^Priority.+H/ms, '11 pri:H');
 like ($output, qr/^Project.+Family/ms, '8 <project>');
 like ($output, qr/^Description.+Call Mom \+Family \+PeaceLoveAndHappiness \@iphone \@phone/ms, '11 <desc>');
 
-$output = qx{../src/task rc:import.rc info 12};
+$output = qx{../src/task rc:import.rc info 12 2>&1};
 like ($output, qr/^Description.+xylophone lesson/ms, '12 <desc>');
 
 # TODO and now the completed ones.

@@ -40,27 +40,27 @@ if (open my $fh, '>', 'feature.rc')
 }
 
 # Feature 725: Feedback when tasks become unblocked.
-qx{../src/task rc:feature.rc add one};
-qx{../src/task rc:feature.rc add two};
-qx{../src/task rc:feature.rc add three};
-qx{../src/task rc:feature.rc add four};
-qx{../src/task rc:feature.rc 1 modify depends:2,3};
-qx{../src/task rc:feature.rc 4 modify depends:1};
-my $output = qx{../src/task rc:feature.rc long};
+qx{../src/task rc:feature.rc add one 2>&1};
+qx{../src/task rc:feature.rc add two 2>&1};
+qx{../src/task rc:feature.rc add three 2>&1};
+qx{../src/task rc:feature.rc add four 2>&1};
+qx{../src/task rc:feature.rc 1 modify depends:2,3 2>&1};
+qx{../src/task rc:feature.rc 4 modify depends:1 2>&1};
+my $output = qx{../src/task rc:feature.rc long 2>&1};
 like ($output, qr/1.+2\s3/, 'Dependencies in place [1]');
 like ($output, qr/4.+1/,    'Dependencies in place [4]');
 
 # Trigger the feedback based on completion.
-$output = qx{../src/task rc:feature.rc 2 done};
+$output = qx{../src/task rc:feature.rc 2 done 2>&1};
 unlike ($output, qr/Unblocked/, 'Completing first dependency does not trigger message');
 
-$output = qx{../src/task rc:feature.rc 3 done};
+$output = qx{../src/task rc:feature.rc 3 done 2>&1};
 like ($output, qr/Unblocked/, 'Completing second dependency triggers message');
 
 # Now trigger the feedback based on deletion.
-$output = qx{../src/task rc:feature.rc long};
+$output = qx{../src/task rc:feature.rc long 2>&1};
 like ($output, qr/2.+1/,    'Dependencies in place [2]');
-$output = qx{../src/task rc:feature.rc 1 delete};
+$output = qx{../src/task rc:feature.rc 1 delete 2>&1};
 like ($output, qr/Unblocked/, 'Deleting dependency triggers message');
 
 # Cleanup.

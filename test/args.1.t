@@ -40,18 +40,18 @@ if (open my $fh, '>', 'args.rc')
 }
 
 # Test id before command, and id after command.
-qx{../src/task rc:args.rc add one};
-qx{../src/task rc:args.rc add two};
-qx{../src/task rc:args.rc add three};
-my $output = qx{../src/task rc:args.rc list};
+qx{../src/task rc:args.rc add one 2>&1};
+qx{../src/task rc:args.rc add two 2>&1};
+qx{../src/task rc:args.rc add three 2>&1};
+my $output = qx{../src/task rc:args.rc list 2>&1};
 like ($output, qr/one/,   'task 1 added');
 like ($output, qr/two/,   'task 2 added');
 like ($output, qr/three/, 'task 3 added');
 
-$output = qx{../src/task rc:args.rc 1 done};
+$output = qx{../src/task rc:args.rc 1 done 2>&1};
 like ($output, qr/^Completed 1 /ms, 'COMMAND after ID');
 
-$output = qx{../src/task rc:args.rc done 2};
+$output = qx{../src/task rc:args.rc done 2 2>&1};
 unlike ($output, qr/^Completed 2 /ms, 'ID after COMMAND');
 
 # Cleanup.

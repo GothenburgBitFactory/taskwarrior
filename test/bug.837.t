@@ -40,20 +40,20 @@ if (open my $fh, '>', 'bug.rc')
 
 # Bug 837: When a task is completed, tasks that depended upon it don't have
 #          correct urgency and depend on 0 when edited
-qx{../src/task rc:bug.rc add one};
-qx{../src/task rc:bug.rc add two dep:1};
-my $output = qx{../src/task rc:bug.rc long};
+qx{../src/task rc:bug.rc add one 2>&1};
+qx{../src/task rc:bug.rc add two dep:1 2>&1};
+my $output = qx{../src/task rc:bug.rc long 2>&1};
 
-$output = qx{../src/task rc:bug.rc 1 _urgency};
+$output = qx{../src/task rc:bug.rc 1 _urgency 2>&1};
 like ($output, qr/ 8\n/, 'blocking urgency == 8');
 
-$output = qx{../src/task rc:bug.rc 2 _urgency};
+$output = qx{../src/task rc:bug.rc 2 _urgency 2>&1};
 like ($output, qr/ -5\n/, 'blocked urgency == -5');
 
-qx{../src/task rc:bug.rc 1 done};
-qx{../src/task rc:bug.rc list};
+qx{../src/task rc:bug.rc 1 done 2>&1};
+qx{../src/task rc:bug.rc list 2>&1};
 
-$output = qx{../src/task rc:bug.rc 1 _urgency};
+$output = qx{../src/task rc:bug.rc 1 _urgency 2>&1};
 like ($output, qr/ 0\n/, 'unblocked urgency == 0');
 
 # Cleanup.

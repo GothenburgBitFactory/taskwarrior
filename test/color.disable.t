@@ -41,8 +41,8 @@ if (open my $fh, '>', 'color.rc')
 }
 
 # Test the add command.
-qx{../src/task rc:color.rc add priority:H red};
-my $output = qx{../src/task rc:color.rc list};
+qx{../src/task rc:color.rc add priority:H red 2>&1};
+my $output = qx{../src/task rc:color.rc list 2>&1};
 
 like   ($output, qr/red/,       'color.disable - found red');
 unlike ($output, qr/\033\[31m/, 'color.disable - no color red');

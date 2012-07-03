@@ -41,19 +41,19 @@ if (open my $fh, '>', 'delete.rc')
 }
 
 # Add a task, delete it, undelete it.
-my $output = qx{../src/task rc:delete.rc add one; ../src/task rc:delete.rc info 1};
+my $output = qx{../src/task rc:delete.rc add one 2>&1; ../src/task rc:delete.rc info 1 2>&1};
 ok (-r 'pending.data', 'pending.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
-$output = qx{../src/task rc:delete.rc 1 delete; ../src/task rc:delete.rc info 1};
+$output = qx{../src/task rc:delete.rc 1 delete 2>&1; ../src/task rc:delete.rc info 1 2>&1};
 like ($output, qr/Status\s+Deleted\n/, 'Deleted');
 ok (-r 'completed.data', 'completed.data created');
 
-$output = qx{echo 'y' | ../src/task rc:delete.rc undo; ../src/task rc:delete.rc info 1};
+$output = qx{echo 'y' | ../src/task rc:delete.rc undo 2>&1; ../src/task rc:delete.rc info 1 2>&1};
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 ok (-r 'completed.data', 'completed.data created');
 
-$output = qx{../src/task rc:delete.rc 1 delete; ../src/task rc:delete.rc list 2>&1 >/dev/null};
+$output = qx{../src/task rc:delete.rc 1 delete 2>&1; ../src/task rc:delete.rc list 2>&1 >/dev/null};
 like ($output, qr/No matches./, 'No matches');
 ok (-r 'completed.data', 'completed.data created');
 
@@ -61,23 +61,23 @@ $output = qx{../src/task rc:delete.rc info 1 2>&1 >/dev/null};
 like ($output, qr/No matches\./, 'No matches');  # 10
 
 # Add a task, delete it, and modify on the fly.
-qx{../src/task rc:delete.rc add one two};
-$output = qx{../src/task rc:delete.rc list};
+qx{../src/task rc:delete.rc add one two 2>&1};
+$output = qx{../src/task rc:delete.rc list 2>&1};
 like ($output, qr/one two/, 'Second task added');
 
-qx{../src/task rc:delete.rc 1 delete foo pri:H};
-$output = qx{../src/task rc:delete.rc 1 info};
+qx{../src/task rc:delete.rc 1 delete foo pri:H 2>&1};
+$output = qx{../src/task rc:delete.rc 1 info 2>&1};
 like ($output, qr/foo/, 'Deletion annotation successful');
 like ($output, qr/H/,   'Deletion modification successful');
 
 # Add a task, complete it, then delete it.
-qx{../src/task rc:delete.rc add three};
-$output = qx{../src/task rc:delete.rc 2 info};
+qx{../src/task rc:delete.rc add three 2>&1};
+$output = qx{../src/task rc:delete.rc 2 info 2>&1};
 like ($output, qr/three/, 'added and verified new task');
 my ($uuid) = $output =~ /UUID\s+(\S+)/;
-qx{../src/task rc:delete.rc 2 done};
-qx{../src/task rc:delete.rc $uuid delete};
-$output = qx{../src/task rc:delete.rc $uuid info};
+qx{../src/task rc:delete.rc 2 done 2>&1};
+qx{../src/task rc:delete.rc $uuid delete 2>&1};
+$output = qx{../src/task rc:delete.rc $uuid info 2>&1};
 like ($output, qr/Deleted/, 'task added, completed, then deleted');
 
 # Cleanup.

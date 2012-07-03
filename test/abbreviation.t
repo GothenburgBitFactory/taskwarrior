@@ -40,53 +40,53 @@ if (open my $fh, '>', 'abbrev.rc')
 }
 
 # Test the priority attribute abbrevations.
-qx{../src/task rc:abbrev.rc add priority:H with};
-qx{../src/task rc:abbrev.rc add without};
+qx{../src/task rc:abbrev.rc add priority:H with 2>&1};
+qx{../src/task rc:abbrev.rc add without 2>&1};
 
-my $output = qx{../src/task rc:abbrev.rc list priority:H};
+my $output = qx{../src/task rc:abbrev.rc list priority:H 2>&1};
 like   ($output, qr/\bwith\b/,    'priority:H with');
 unlike ($output, qr/\bwithout\b/, 'priority:H without');
 
-$output = qx{../src/task rc:abbrev.rc list priorit:H};
+$output = qx{../src/task rc:abbrev.rc list priorit:H 2>&1};
 like   ($output, qr/\bwith\b/,    'priorit:H with');
 unlike ($output, qr/\bwithout\b/, 'priorit:H without');
 
-$output = qx{../src/task rc:abbrev.rc list priori:H};
+$output = qx{../src/task rc:abbrev.rc list priori:H 2>&1};
 like   ($output, qr/\bwith\b/,    'priori:H with');
 unlike ($output, qr/\bwithout\b/, 'priori:H without');
 
-$output = qx{../src/task rc:abbrev.rc list prior:H};
+$output = qx{../src/task rc:abbrev.rc list prior:H 2>&1};
 like   ($output, qr/\bwith\b/,    'prior:H with');
 unlike ($output, qr/\bwithout\b/, 'prior:H without');
 
-$output = qx{../src/task rc:abbrev.rc list prio:H};
+$output = qx{../src/task rc:abbrev.rc list prio:H 2>&1};
 like   ($output, qr/\bwith\b/,    'prio:H with');
 unlike ($output, qr/\bwithout\b/, 'prio:H without');
 
-$output = qx{../src/task rc:abbrev.rc list pri:H};
+$output = qx{../src/task rc:abbrev.rc list pri:H 2>&1};
 like   ($output, qr/\bwith\b/,    'pri:H with');
 unlike ($output, qr/\bwithout\b/, 'pri:H without');
 
 # Test the version command abbreviations.
-$output = qx{../src/task rc:abbrev.rc version};
+$output = qx{../src/task rc:abbrev.rc version 2>&1};
 like ($output, qr/MIT\s+license/, 'version');
 
-$output = qx{../src/task rc:abbrev.rc versio};
+$output = qx{../src/task rc:abbrev.rc versio 2>&1};
 like ($output, qr/MIT\s+license/, 'version');
 
-$output = qx{../src/task rc:abbrev.rc versi};
+$output = qx{../src/task rc:abbrev.rc versi 2>&1};
 like ($output, qr/MIT\s+license/, 'version');
 
-$output = qx{../src/task rc:abbrev.rc vers};
+$output = qx{../src/task rc:abbrev.rc vers 2>&1};
 like ($output, qr/MIT\s+license/, 'version');
 
-$output = qx{../src/task rc:abbrev.rc ver};
+$output = qx{../src/task rc:abbrev.rc ver 2>&1};
 like ($output, qr/MIT\s+license/, 'version');
 
-$output = qx{../src/task rc:abbrev.rc ve};
+$output = qx{../src/task rc:abbrev.rc ve 2>&1};
 like ($output, qr/MIT\s+license/, 'version');
 
-$output = qx{../src/task rc:abbrev.rc v};
+$output = qx{../src/task rc:abbrev.rc v 2>&1};
 like ($output, qr/MIT\s+license/, 'version');
 
 # Cleanup.

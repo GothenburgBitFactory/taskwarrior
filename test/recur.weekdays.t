@@ -39,17 +39,17 @@ if (open my $fh, '>', 'recur.rc')
 }
 
 # Create a few recurring tasks, and test the sort order of the recur column.
-qx{../src/task rc:recur.rc add due:friday recur:weekdays one};
-my $output = qx{../src/task rc:recur.rc list};
+qx{../src/task rc:recur.rc add due:friday recur:weekdays one 2>&1};
+my $output = qx{../src/task rc:recur.rc list 2>&1};
 like ($output, qr/one/, 'recur weekdays');
 
-$output = qx{../src/task rc:recur.rc info 1};
+$output = qx{../src/task rc:recur.rc info 1 2>&1};
 like ($output, qr/Recurrence\s+weekdays/, 'task recurs every weekday');
 
-qx{../src/task rc:recur.rc 1 do};
-$output = qx{../src/task rc:recur.rc list};
+qx{../src/task rc:recur.rc 1 do 2>&1};
+$output = qx{../src/task rc:recur.rc list 2>&1};
 
-$output = qx{../src/task rc:recur.rc diag};
+$output = qx{../src/task rc:recur.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.

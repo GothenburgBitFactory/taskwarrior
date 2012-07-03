@@ -40,8 +40,8 @@ if (open my $fh, '>', 'log.rc')
 }
 
 # Test the log command.
-qx{../src/task rc:log.rc log This is a test};
-my $output = qx{../src/task rc:log.rc completed};
+qx{../src/task rc:log.rc log This is a test 2>&1};
+my $output = qx{../src/task rc:log.rc completed 2>&1};
 like ($output, qr/This is a test/, 'log description');
 
 # Cleanup.

@@ -43,14 +43,14 @@ if (open my $fh, '>', 'custom.rc')
 }
 
 # Generate the usage screen, and locate the custom report on it.
-qx{../src/task rc:custom.rc add foo +tag};
-qx{../src/task rc:custom.rc add bar};
-my $output = qx{../src/task rc:custom.rc foo};
+qx{../src/task rc:custom.rc add foo +tag 2>&1};
+qx{../src/task rc:custom.rc add bar 2>&1};
+my $output = qx{../src/task rc:custom.rc foo 2>&1};
 like ($output,   qr/ID.+T/,  'Tag indicator heading');
 like ($output,   qr/1\s+\+/, 'Tag indicator t1');
 unlike ($output, qr/2\s+\+/, 'No tag indicator t2');
 
-$output = qx{../src/task rc:custom.rc foo rc.tag.indicator=TAG};
+$output = qx{../src/task rc:custom.rc foo rc.tag.indicator=TAG 2>&1};
 like ($output,   qr/1\s+TAG/, 'Custom ag indicator t1');
 unlike ($output, qr/2\s+TAG/, 'No custom tag indicator t2');
 

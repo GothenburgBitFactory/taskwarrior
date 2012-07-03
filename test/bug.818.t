@@ -40,27 +40,27 @@ if (open my $fh, '>', 'bug.rc')
 
 # Bug #818: Filtering by tag counter-intuitively uses partial match
 
-qx{../src/task rc:bug.rc add +hannah +anna Buy some bananas};
-my $output = qx{../src/task rc:bug.rc list +hannah};
+qx{../src/task rc:bug.rc add +hannah +anna Buy some bananas 2>&1};
+my $output = qx{../src/task rc:bug.rc list +hannah 2>&1};
 like ($output, qr/bananas/, 'Containing tag query');
 
-$output = qx{../src/task rc:bug.rc list +anna};
+$output = qx{../src/task rc:bug.rc list +anna 2>&1};
 like ($output, qr/bananas/, 'Contained tag query');
 
-qx{../src/task rc:bug.rc add +anna +hannah Buy tickets to Santana};
-$output = qx{../src/task rc:bug.rc list +anna};
+qx{../src/task rc:bug.rc add +anna +hannah Buy tickets to Santana 2>&1};
+$output = qx{../src/task rc:bug.rc list +anna 2>&1};
 like ($output, qr/Santana/, 'Contained tag query');
 
-$output = qx{../src/task rc:bug.rc list +hannah};
+$output = qx{../src/task rc:bug.rc list +hannah 2>&1};
 like ($output, qr/Santana/, 'Containing tag query');
 
 # Buy some bananas        +hannah +anna
 # Buy tickets to Santana  +anna +hannah
 # AAA                     +hannah
 # BBB                     +anna
-qx{../src/task rc:bug.rc add +hannah AAA};
-qx{../src/task rc:bug.rc add +anna BBB};
-$output = qx{../src/task rc:bug.rc long +anna};
+qx{../src/task rc:bug.rc add +hannah AAA 2>&1};
+qx{../src/task rc:bug.rc add +anna BBB 2>&1};
+$output = qx{../src/task rc:bug.rc long +anna 2>&1};
 like   ($output, qr/bananas/, '+anna --> bananas');
 like   ($output, qr/Santana/, '+anna --> Santana');
 unlike ($output, qr/AAA/,     '+anna !-> AAA');

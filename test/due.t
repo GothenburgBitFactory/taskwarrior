@@ -51,17 +51,17 @@ my $just = sprintf ("%d/%d/%d", $m + 1, $d, $y + 1900);
 ($d, $m, $y) = (localtime (time + 5 * 86_400))[3..5];
 my $almost = sprintf ("%d/%d/%d", $m + 1, $d, $y + 1900);
 
-qx{../src/task rc:due.rc add one due:$just};
-qx{../src/task rc:due.rc add two due:$almost};
-my $output = qx{../src/task rc:due.rc list};
+qx{../src/task rc:due.rc add one due:$just 2>&1};
+qx{../src/task rc:due.rc add two due:$almost 2>&1};
+my $output = qx{../src/task rc:due.rc list 2>&1};
 like ($output, qr/\[31m.+$just.+\[0m/, 'one marked due');
 like ($output, qr/\s+$almost\s+/, 'two not marked due');
 
-qx{../src/task rc:due.rc add three due:today};
-$output = qx{../src/task rc:due.rc list due:today};
+qx{../src/task rc:due.rc add three due:today 2>&1};
+$output = qx{../src/task rc:due.rc list due:today 2>&1};
 like ($output, qr/three/, 'due:today works as a filter');
 
-$output = qx{../src/task rc:due.rc list due.is:today};
+$output = qx{../src/task rc:due.rc list due.is:today 2>&1};
 like ($output, qr/three/, 'due.is:today works as a filter');
 
 # Cleanup.

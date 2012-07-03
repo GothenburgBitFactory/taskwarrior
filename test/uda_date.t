@@ -46,14 +46,14 @@ if (open my $fh, '>', 'uda.rc')
 }
 
 # Add tasks with and without the UDA.
-qx{../src/task rc:uda.rc add with extra:tomorrow};
-qx{../src/task rc:uda.rc add without};
-my $output = qx{../src/task rc:uda.rc uda};
+qx{../src/task rc:uda.rc add with extra:tomorrow 2>&1};
+qx{../src/task rc:uda.rc add without 2>&1};
+my $output = qx{../src/task rc:uda.rc uda 2>&1};
 like ($output, qr/1\s+[\d\/]+\s+with/, 'UDA date stored');
 like ($output, qr/2\s+without/,        'UDA date blank');
 
 # Add bad data.
-$output = qx{../src/task rc:uda.rc add bad extra:unrecognized_date};
+$output = qx{../src/task rc:uda.rc add bad extra:unrecognized_date 2>&1};
 unlike ($output, qr/Created task \d+/, 'UDA date bad data not accepted');
 
 # Cleanup.

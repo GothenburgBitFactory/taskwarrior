@@ -41,19 +41,19 @@ if (open my $fh, '>', 'bug.rc')
 # Bug #414: Tags filtering not working with unicode characters
 
 # Add a task with a UTF-8 tag.
-qx{../src/task rc:bug.rc add one +osobní};
-my $output = qx{../src/task rc:bug.rc ls +osobní};
+qx{../src/task rc:bug.rc add one +osobní 2>&1};
+my $output = qx{../src/task rc:bug.rc ls +osobní 2>&1};
 like ($output, qr/one/, 'found UTF8 tag osobní');
 
-$output = qx{../src/task rc:bug.rc ls -osobní};
+$output = qx{../src/task rc:bug.rc ls -osobní 2>&1};
 unlike ($output, qr/one/, 'not found UTF8 tag osobní');
 
 # And a different one
-qx{../src/task rc:bug.rc add two +föo};
-$output = qx{../src/task rc:bug.rc ls +föo};
+qx{../src/task rc:bug.rc add two +föo 2>&1};
+$output = qx{../src/task rc:bug.rc ls +föo 2>&1};
 like ($output, qr/two/, 'found UTF8 tag föo');
 
-$output = qx{../src/task rc:bug.rc ls -föo};
+$output = qx{../src/task rc:bug.rc ls -föo 2>&1};
 unlike ($output, qr/two/, 'not found UTF8 tag föo');
 
 # Cleanup.

@@ -43,25 +43,25 @@ if (open my $fh, '>', 'bug.rc')
 # - add a recurring task with multiple child tasks
 # - modify a child task and test for propagation
 # - modify the parent task and test for propagation
-qx{../src/task rc:bug.rc add R due:yesterday recur:daily};
-my $output = qx{../src/task rc:bug.rc list};
+qx{../src/task rc:bug.rc add R due:yesterday recur:daily 2>&1};
+my $output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/2.+R/ms, 'Found child 0');
 like ($output, qr/3.+R/ms, 'Found child 1');
 like ($output, qr/4.+R/ms, 'Found child 2');
 
-qx{echo 'y' | ../src/task rc:bug.rc 2 mod project:P};
-$output = qx{../src/task rc:bug.rc list};
+qx{echo 'y' | ../src/task rc:bug.rc 2 mod project:P 2>&1};
+$output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/2\s+P.+R/ms, 'Found modified child 0');
 like ($output, qr/3\s+P.+R/ms, 'Found modified child 1 (propagated from 0)');
 like ($output, qr/4\s+P.+R/ms, 'Found modified child 2 (propagated from 0)');
 
-qx{echo 'y' | ../src/task rc:bug.rc 1 mod priority:H};
-$output = qx{../src/task rc:bug.rc list};
+qx{echo 'y' | ../src/task rc:bug.rc 1 mod priority:H 2>&1};
+$output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/2\s+P.+H.+R/ms, 'Found modified child 0 (propagated from parent');
 like ($output, qr/3\s+P.+H.+R/ms, 'Found modified child 1 (propagated from parent)');
 like ($output, qr/4\s+P.+H.+R/ms, 'Found modified child 2 (propagated from parent)');
 
-$output = qx{../src/task rc:bug.rc diag};
+$output = qx{../src/task rc:bug.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.

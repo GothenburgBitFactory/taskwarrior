@@ -45,7 +45,7 @@ if (open my $fh, '>', 'pending.data')
   ok (-r 'pending.data', 'Created pending.data');
 }
 
-my $output = qx{../src/task rc:bug.rc list};
+my $output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/One/, 'task listed');
 unlike ($output, qr/The recurrence value '1m' is not valid\./, 'recu:1m => no error');
 

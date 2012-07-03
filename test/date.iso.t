@@ -40,13 +40,13 @@ if (open my $fh, '>', 'iso.rc')
 }
 
 # Test use of ISO date format, despite rc.dateformat.
-qx{../src/task rc:iso.rc add one due:20110901T120000Z};
-my $output = qx{../src/task rc:iso.rc 1 info};
+qx{../src/task rc:iso.rc add one due:20110901T120000Z 2>&1};
+my $output = qx{../src/task rc:iso.rc 1 info 2>&1};
 like ($output, qr/Due\s+9\/1\/2011/, 'ISO format recognized.');
 
 # Test use of epoch date format, despite rc.dateformat.
-qx{../src/task rc:iso.rc add one due:1234524690};
-$output = qx{../src/task rc:iso.rc 2 info};
+qx{../src/task rc:iso.rc add one due:1234524690 2>&1};
+$output = qx{../src/task rc:iso.rc 2 info 2>&1};
 like ($output, qr/Due\s+2\/13\/2009/, 'Epoch format recognized.');
 
 # Cleanup.

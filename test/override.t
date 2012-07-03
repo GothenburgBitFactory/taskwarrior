@@ -45,9 +45,9 @@ if (open my $fh, '>', 'or.rc')
 
 # The zzz report is defined with an override in the filter that contradicts
 # the value in the rc.  The filter override should prevail.
-qx{../src/task rc:or.rc add ONE};
-qx{../src/task rc:or.rc 1 annotate TWO};
-my $output = qx{../src/task rc:or.rc zzz};
+qx{../src/task rc:or.rc add ONE 2>&1};
+qx{../src/task rc:or.rc 1 annotate TWO 2>&1};
+my $output = qx{../src/task rc:or.rc zzz 2>&1};
 like ($output, qr/ONE.+TWO/ms, 'filter override > rc setting');
 
 # Cleanup.

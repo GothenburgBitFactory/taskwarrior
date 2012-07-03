@@ -39,34 +39,34 @@ if (open my $fh, '>', 'utf8.rc')
 }
 
 # Add a task with UTF8 in the description.
-qx{../src/task rc:utf8.rc add Çirçös};
-qx{../src/task rc:utf8.rc add Hello world ☺};
-qx{../src/task rc:utf8.rc add ¥£€\$¢₡₢₣₤₥₦₧₨₩₪₫₭₮₯};
-qx{../src/task rc:utf8.rc add Pchnąć w tę łódź jeża lub ośm skrzyń fig};
-qx{../src/task rc:utf8.rc add ๏ เป็นมนุษย์สุดประเสริฐเลิศคุณค่า};
-qx{../src/task rc:utf8.rc add イロハニホヘト チリヌルヲ ワカヨタレソ ツネナラム};
-qx{../src/task rc:utf8.rc add いろはにほへとちりぬるを};
-qx{../src/task rc:utf8.rc add D\\'fhuascail Íosa, Úrmhac na hÓighe Beannaithe, pór Éava agus Ádhaimh};
-qx{../src/task rc:utf8.rc add Árvíztűrő tükörfúrógép};
-qx{../src/task rc:utf8.rc add Kæmi ný öxi hér ykist þjófum nú bæði víl og ádrepa};
-qx{../src/task rc:utf8.rc add Sævör grét áðan því úlpan var ónýt};
-qx{../src/task rc:utf8.rc add Quizdeltagerne spiste jordbær med fløde, mens cirkusklovnen Wolther spillede på xylofon.};
-qx{../src/task rc:utf8.rc add Falsches Üben von Xylophonmusik quält jeden größeren Zwerg};
-qx{../src/task rc:utf8.rc add Zwölf Boxkämpfer jagten Eva quer über den Sylter Deich};
-qx{../src/task rc:utf8.rc add Heizölrückstoßabdämpfung};
-qx{../src/task rc:utf8.rc add Γαζέες καὶ μυρτιὲς δὲν θὰ βρῶ πιὰ στὸ χρυσαφὶ ξέφωτο};
-qx{../src/task rc:utf8.rc add Ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία};
+qx{../src/task rc:utf8.rc add Çirçös 2>&1};
+qx{../src/task rc:utf8.rc add Hello world ☺ 2>&1};
+qx{../src/task rc:utf8.rc add ¥£€\$¢₡₢₣₤₥₦₧₨₩₪₫₭₮₯ 2>&1};
+qx{../src/task rc:utf8.rc add Pchnąć w tę łódź jeża lub ośm skrzyń fig 2>&1};
+qx{../src/task rc:utf8.rc add ๏ เป็นมนุษย์สุดประเสริฐเลิศคุณค่า 2>&1};
+qx{../src/task rc:utf8.rc add イロハニホヘト チリヌルヲ ワカヨタレソ ツネナラム 2>&1};
+qx{../src/task rc:utf8.rc add いろはにほへとちりぬるを 2>&1};
+qx{../src/task rc:utf8.rc add D\\'fhuascail Íosa, Úrmhac na hÓighe Beannaithe, pór Éava agus Ádhaimh 2>&1};
+qx{../src/task rc:utf8.rc add Árvíztűrő tükörfúrógép 2>&1};
+qx{../src/task rc:utf8.rc add Kæmi ný öxi hér ykist þjófum nú bæði víl og ádrepa 2>&1};
+qx{../src/task rc:utf8.rc add Sævör grét áðan því úlpan var ónýt 2>&1};
+qx{../src/task rc:utf8.rc add Quizdeltagerne spiste jordbær med fløde, mens cirkusklovnen Wolther spillede på xylofon. 2>&1};
+qx{../src/task rc:utf8.rc add Falsches Üben von Xylophonmusik quält jeden größeren Zwerg 2>&1};
+qx{../src/task rc:utf8.rc add Zwölf Boxkämpfer jagten Eva quer über den Sylter Deich 2>&1};
+qx{../src/task rc:utf8.rc add Heizölrückstoßabdämpfung 2>&1};
+qx{../src/task rc:utf8.rc add Γαζέες καὶ μυρτιὲς δὲν θὰ βρῶ πιὰ στὸ χρυσαφὶ ξέφωτο 2>&1};
+qx{../src/task rc:utf8.rc add Ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία 2>&1};
 
-my $output = qx{../src/task rc:utf8.rc ls};
+my $output = qx{../src/task rc:utf8.rc ls 2>&1};
 diag ($output);
 like ($output, qr/17/, 'all 17 tasks shown');
 
-qx{../src/task rc:utf8.rc add project:Çirçös utf8 in project};
-$output = qx{../src/task rc:utf8.rc ls project:Çirçös};
+qx{../src/task rc:utf8.rc add project:Çirçös utf8 in project 2>&1};
+$output = qx{../src/task rc:utf8.rc ls project:Çirçös 2>&1};
 like ($output, qr/Çirçös.+utf8 in project/, 'utf8 in project works');
 
-qx{../src/task rc:utf8.rc add utf8 in tag +Zwölf};
-$output = qx{../src/task rc:utf8.rc ls +Zwölf};
+qx{../src/task rc:utf8.rc add utf8 in tag +Zwölf 2>&1};
+$output = qx{../src/task rc:utf8.rc ls +Zwölf 2>&1};
 like ($output, qr/utf8 in tag/, 'utf8 in tag works');
 
 # Cleanup.

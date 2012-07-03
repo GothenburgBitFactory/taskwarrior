@@ -42,13 +42,13 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 635: /OLD/NEW/g is broken?
 
 # Setup: Add a task with two identical spelling mistakes
-qx{../src/task rc:bug.rc add Pay teh rent on teh 31st};
+qx{../src/task rc:bug.rc add Pay teh rent on teh 31st 2>&1};
 
 # Process: Global replace incorrect text
-qx{../src/task rc:bug.rc 1 modify /teh/the/g};
+qx{../src/task rc:bug.rc 1 modify /teh/the/g 2>&1};
 
 # Result: Verify corrected output
-my $output = qx{../src/task rc:bug.rc ls 1};
+my $output = qx{../src/task rc:bug.rc ls 1 2>&1};
 like ($output, qr/Pay the rent on the 31st/ms, 'Global replace performed correctly.');
 
 # Cleanup.

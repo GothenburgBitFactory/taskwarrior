@@ -41,18 +41,18 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 856: "task list project.none:" does not work.
 # Note: Not using "assigned" and "unassigned" because one is a subset of the
 # other.
-qx{../src/task rc:bug.rc add assigned project:X};
-qx{../src/task rc:bug.rc add floating};
+qx{../src/task rc:bug.rc add assigned project:X 2>&1};
+qx{../src/task rc:bug.rc add floating 2>&1};
 
-my $output = qx{../src/task rc:bug.rc ls project:};
+my $output = qx{../src/task rc:bug.rc ls project: 2>&1};
 like   ($output, qr/floating/, 'project:  matches floating');
 unlike ($output, qr/assigned/, 'project:  does not match assigned');
 
-$output = qx{../src/task rc:bug.rc ls project:''};
+$output = qx{../src/task rc:bug.rc ls project:'' 2>&1};
 like   ($output, qr/floating/, 'project:\'\'  matches floating');
 unlike ($output, qr/assigned/, 'project:\'\'  does not match assigned');
 
-$output = qx{../src/task rc:bug.rc ls project.none:};
+$output = qx{../src/task rc:bug.rc ls project.none: 2>&1};
 like   ($output, qr/floating/, 'project.none:  matches floating');
 unlike ($output, qr/assigned/, 'project.none:  does not match assigned');
 

@@ -40,8 +40,8 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Setup: Add a recurring task, generate an instance, then add a project.
-qx{../src/task rc:bug.rc add foo due:tomorrow recur:daily};
-qx{../src/task rc:bug.rc ls};
+qx{../src/task rc:bug.rc add foo due:tomorrow recur:daily 2>&1};
+qx{../src/task rc:bug.rc ls 2>&1};
 
 # Result: trying to add the project generates an error about removing
 # recurrence from a task.
@@ -60,13 +60,13 @@ $output = qx{../src/task rc:bug.rc 2 modify due: 2>&1 >/dev/null};
 like ($output, qr/You cannot remove the due date from a recurring task./ms, 'Cannot remove due date from a recurring task');
 
 # Allow removal of the due date from a non-recurring task.
-qx{../src/task rc:bug.rc add nonrecurring};
-$output = qx{../src/task rc:bug.rc ls};
+qx{../src/task rc:bug.rc add nonrecurring 2>&1};
+$output = qx{../src/task rc:bug.rc ls 2>&1};
 my ($id) = $output =~ /(\d+)\s+nonrecurring/;
 $output = qx{../src/task rc:bug.rc $id modify due: 2>&1 >/dev/null};
 unlike ($output, qr/You cannot remove the due date from a recurring task./ms, 'Can remove due date from a non-recurring task');
 
-$output = qx{../src/task rc:bug.rc diag};
+$output = qx{../src/task rc:bug.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.

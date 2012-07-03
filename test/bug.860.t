@@ -39,8 +39,8 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 869: lower case priorities aren't accepted.
-qx{../src/task rc:bug.rc add foo pri:h};
-my $output = qx{../src/task rc:bug.rc 1 info};
+qx{../src/task rc:bug.rc add foo pri:h 2>&1};
+my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
 like ($output, qr/Priority\s+H/, "pri:h --> pri:H");
 
 # Cleanup.

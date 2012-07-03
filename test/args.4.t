@@ -40,30 +40,30 @@ if (open my $fh, '>', 'args.rc')
 }
 
 # Test 'start' with en-passant changes.
-qx{../src/task rc:args.rc add one};
-qx{../src/task rc:args.rc add two};
-qx{../src/task rc:args.rc add three};
-qx{../src/task rc:args.rc add four};
-qx{../src/task rc:args.rc add five};
+qx{../src/task rc:args.rc add one 2>&1};
+qx{../src/task rc:args.rc add two 2>&1};
+qx{../src/task rc:args.rc add three 2>&1};
+qx{../src/task rc:args.rc add four 2>&1};
+qx{../src/task rc:args.rc add five 2>&1};
 
-qx{../src/task rc:args.rc 1 start oneanno};
-my $output = qx{../src/task rc:args.rc 1 info};
+qx{../src/task rc:args.rc 1 start oneanno 2>&1};
+my $output = qx{../src/task rc:args.rc 1 info 2>&1};
 like ($output, qr/oneanno/, 'start enpassant anno');
 
-qx{../src/task rc:args.rc 2 start /two/TWO/};
-$output = qx{../src/task rc:args.rc 2 info};
+qx{../src/task rc:args.rc 2 start /two/TWO/ 2>&1};
+$output = qx{../src/task rc:args.rc 2 info 2>&1};
 like ($output, qr/Description\s+TWO/, 'start enpassant subst');
 
-qx{../src/task rc:args.rc 3 start +threetag};
-$output = qx{../src/task rc:args.rc 3 info};
+qx{../src/task rc:args.rc 3 start +threetag 2>&1};
+$output = qx{../src/task rc:args.rc 3 info 2>&1};
 like ($output, qr/Tags\s+threetag/, 'start enpassant tag');
 
-qx{../src/task rc:args.rc 4 start pri:H};
-$output = qx{../src/task rc:args.rc 4 info};
+qx{../src/task rc:args.rc 4 start pri:H 2>&1};
+$output = qx{../src/task rc:args.rc 4 info 2>&1};
 like ($output, qr/Priority\s+H/, 'start enpassant priority');
 
-qx{../src/task rc:args.rc 5 start pro:A};
-$output = qx{../src/task rc:args.rc 5 info};
+qx{../src/task rc:args.rc 5 start pro:A 2>&1};
+$output = qx{../src/task rc:args.rc 5 info 2>&1};
 like ($output, qr/Project\s+A/, 'start enpassant project');
 
 # Cleanup.

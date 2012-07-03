@@ -40,7 +40,7 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug #555 - log with a project segfaults.
-my $output = qx{../src/task rc:bug.rc log description project:p};
+my $output = qx{../src/task rc:bug.rc log description project:p 2>&1};
 unlike ($output, qr/Segmentation fault/, 'no segfault from log with project');
 
 # Cleanup.

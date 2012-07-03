@@ -47,12 +47,12 @@ if (open my $fh, '>', 'bug.rc')
 #
 #   Thisisanewdescription
 
-qx{../src/task rc:bug.rc add This is the original text};
-my $output = qx{../src/task rc:bug.rc info 1};
+qx{../src/task rc:bug.rc add This is the original text 2>&1};
+my $output = qx{../src/task rc:bug.rc info 1 2>&1};
 like ($output, qr/Description\s+This is the original text/, 'original correct');
 
-qx{../src/task rc:bug.rc 1 modify This is the modified text};
-$output = qx{../src/task rc:bug.rc info 1};
+qx{../src/task rc:bug.rc 1 modify This is the modified text 2>&1};
+$output = qx{../src/task rc:bug.rc info 1 2>&1};
 like ($output, qr/Description\s+This is the modified text\n/, 'modified correct');
 
 # When a task is added like this:
@@ -63,8 +63,8 @@ like ($output, qr/Description\s+This is the modified text\n/, 'modified correct'
 #
 #   aaabbb:ccc ddd
 
-qx{../src/task rc:bug.rc add aaa bbb:ccc ddd};
-$output = qx{../src/task rc:bug.rc info 2};
+qx{../src/task rc:bug.rc add aaa bbb:ccc ddd 2>&1};
+$output = qx{../src/task rc:bug.rc info 2 2>&1};
 like ($output, qr/Description\s+aaa bbb:ccc ddd\n/, 'properly concatenated');
 
 # Cleanup.

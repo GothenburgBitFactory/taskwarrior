@@ -40,17 +40,17 @@ if (open my $fh, '>', 'add.rc')
 }
 
 # Test the add command.
-qx{../src/task rc:add.rc add This is a test};
-my $output = qx{../src/task rc:add.rc info 1};
+qx{../src/task rc:add.rc add This is a test 2>&1};
+my $output = qx{../src/task rc:add.rc info 1 2>&1};
 like ($output, qr/ID\s+1\n/, 'add ID');
 like ($output, qr/Description\s+This is a test\n/, 'add ID');
 like ($output, qr/Status\s+Pending\n/, 'add Pending');
 like ($output, qr/UUID\s+[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\n/, 'add UUID');
 
 # Test the /// modifier.
-qx{../src/task rc:add.rc 1 modify /test/TEST/};
-qx{../src/task rc:add.rc 1 modify "/is //"};
-$output = qx{../src/task rc:add.rc info 1};
+qx{../src/task rc:add.rc 1 modify /test/TEST/ 2>&1};
+qx{../src/task rc:add.rc 1 modify "/is //" 2>&1};
+$output = qx{../src/task rc:add.rc info 1 2>&1};
 like ($output, qr/ID\s+1\n/, 'add ID');
 like ($output, qr/Status\s+Pending\n/, 'add Pending');
 like ($output, qr/Description\s+This a TEST\n/, 'add Description');

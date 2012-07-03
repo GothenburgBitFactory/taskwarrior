@@ -54,22 +54,22 @@ if (open my $fh, '>', 'font.rc')
 #
 # * When isatty (fileno (stdout)) is false, color is automatically disabled.
 
-qx{../src/task rc:font.rc add foo};
-my $output = qx{../src/task 1 info rc:font.rc rc.color:off rc._forcecolor:off rc.fontunderline:off};
+qx{../src/task rc:font.rc add foo 2>&1};
+my $output = qx{../src/task 1 info rc:font.rc rc.color:off rc._forcecolor:off rc.fontunderline:off 2>&1};
 like   ($output, qr/--------/, '0,0,0 -> dashes');
-$output = qx{../src/task 1 info rc:font.rc rc.color:off rc._forcecolor:off rc.fontunderline:on};
+$output = qx{../src/task 1 info rc:font.rc rc.color:off rc._forcecolor:off rc.fontunderline:on 2>&1};
 like   ($output, qr/--------/, '0,0,1 -> dashes');
-$output = qx{../src/task 1 info rc:font.rc rc.color:off rc._forcecolor:on rc.fontunderline:off};
+$output = qx{../src/task 1 info rc:font.rc rc.color:off rc._forcecolor:on rc.fontunderline:off 2>&1};
 like   ($output, qr/--------/, '0,1,0 -> dashes');
-$output = qx{../src/task 1 info rc:font.rc rc.color:off rc._forcecolor:on rc.fontunderline:on};
+$output = qx{../src/task 1 info rc:font.rc rc.color:off rc._forcecolor:on rc.fontunderline:on 2>&1};
 unlike ($output, qr/--------/, '0,1,1 -> underline');
-$output = qx{../src/task 1 info rc:font.rc rc.color:on rc._forcecolor:off rc.fontunderline:off};
+$output = qx{../src/task 1 info rc:font.rc rc.color:on rc._forcecolor:off rc.fontunderline:off 2>&1};
 like   ($output, qr/--------/, '1,0,0 -> dashes');
-$output = qx{../src/task 1 info rc:font.rc rc.color:on rc._forcecolor:off rc.fontunderline:on};
+$output = qx{../src/task 1 info rc:font.rc rc.color:on rc._forcecolor:off rc.fontunderline:on 2>&1};
 like   ($output, qr/--------/, '1,0,1 -> dashes');
-$output = qx{../src/task 1 info rc:font.rc rc.color:on rc._forcecolor:on rc.fontunderline:off};
+$output = qx{../src/task 1 info rc:font.rc rc.color:on rc._forcecolor:on rc.fontunderline:off 2>&1};
 like   ($output, qr/--------/, '1,1,0 -> dashes');
-$output = qx{../src/task 1 info rc:font.rc rc.color:on rc._forcecolor:on rc.fontunderline:on};
+$output = qx{../src/task 1 info rc:font.rc rc.color:on rc._forcecolor:on rc.fontunderline:on 2>&1};
 unlike ($output, qr/--------/, '1,1,1 -> underline');
 
 # Cleanup.

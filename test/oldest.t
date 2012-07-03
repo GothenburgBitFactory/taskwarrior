@@ -39,43 +39,43 @@ if (open my $fh, '>', 'oldest.rc')
 }
 
 # Add 11 tasks.  Oldest should show 1-10, newest should show 2-11.
-qx{../src/task rc:oldest.rc add one};
+qx{../src/task rc:oldest.rc add one 2>&1};
 diag ("3 second delay");
 sleep 1;
-qx{../src/task rc:oldest.rc add two};
+qx{../src/task rc:oldest.rc add two 2>&1};
 sleep 1;
-qx{../src/task rc:oldest.rc add three};
+qx{../src/task rc:oldest.rc add three 2>&1};
 sleep 1;
-my $output = qx{../src/task rc:oldest.rc oldest};
+my $output = qx{../src/task rc:oldest.rc oldest 2>&1};
 like ($output, qr/one/,               'oldest: one');
 like ($output, qr/two/,               'oldest: two');
 like ($output, qr/three/,             'oldest: three');
 like ($output, qr/one.*two.*three/ms, 'oldest: sort');
 
-$output = qx{../src/task rc:oldest.rc newest};
+$output = qx{../src/task rc:oldest.rc newest 2>&1};
 like ($output, qr/three/,             'newest: three');
 like ($output, qr/two/,               'newest: two');
 like ($output, qr/one/,               'newest: one');
 like ($output, qr/three.*two.*one/ms, 'newest: sort');
 
-qx{../src/task rc:oldest.rc add four};
+qx{../src/task rc:oldest.rc add four 2>&1};
 diag ("7 second delay");
 sleep 1;
-qx{../src/task rc:oldest.rc add five};
+qx{../src/task rc:oldest.rc add five 2>&1};
 sleep 1;
-qx{../src/task rc:oldest.rc add six};
+qx{../src/task rc:oldest.rc add six 2>&1};
 sleep 1;
-qx{../src/task rc:oldest.rc add seven};
+qx{../src/task rc:oldest.rc add seven 2>&1};
 sleep 1;
-qx{../src/task rc:oldest.rc add eight};
+qx{../src/task rc:oldest.rc add eight 2>&1};
 sleep 1;
-qx{../src/task rc:oldest.rc add nine};
+qx{../src/task rc:oldest.rc add nine 2>&1};
 sleep 1;
-qx{../src/task rc:oldest.rc add ten};
+qx{../src/task rc:oldest.rc add ten 2>&1};
 sleep 1;
-qx{../src/task rc:oldest.rc add eleven};
+qx{../src/task rc:oldest.rc add eleven 2>&1};
 
-$output = qx{../src/task rc:oldest.rc oldest};
+$output = qx{../src/task rc:oldest.rc oldest 2>&1};
 like   ($output, qr/one/,    'oldest: one');   # 10
 like   ($output, qr/two/,    'oldest: two');
 like   ($output, qr/three/,  'oldest: three');
@@ -88,7 +88,7 @@ like   ($output, qr/nine/,   'oldest: nine');
 like   ($output, qr/ten/,    'oldest: ten');
 unlike ($output, qr/eleven/, 'no: eleven');   # 20
 
-$output = qx{../src/task rc:oldest.rc oldest limit:3};
+$output = qx{../src/task rc:oldest.rc oldest limit:3 2>&1};
 like   ($output, qr/one/,    'oldest: one');
 like   ($output, qr/two/,    'oldest: two');
 like   ($output, qr/three/,  'oldest: three');
@@ -101,7 +101,7 @@ unlike ($output, qr/nine/,   'no: nine');
 unlike ($output, qr/ten/,    'no: ten');    # 30
 unlike ($output, qr/eleven/, 'no: eleven');
 
-$output = qx{../src/task rc:oldest.rc newest};
+$output = qx{../src/task rc:oldest.rc newest 2>&1};
 unlike ($output, qr/one/,    'no: one');
 like   ($output, qr/two/,    'newest: two');
 like   ($output, qr/three/,  'newest: three');
@@ -114,7 +114,7 @@ like   ($output, qr/nine/,   'newest: nine');   # 40
 like   ($output, qr/ten/,    'newest: ten');
 like   ($output, qr/eleven/, 'newest: eleven');
 
-$output = qx{../src/task rc:oldest.rc newest limit:3};
+$output = qx{../src/task rc:oldest.rc newest limit:3 2>&1};
 unlike ($output, qr/one/,    'no: one');
 unlike ($output, qr/two/,    'no: two');
 unlike ($output, qr/three/,  'no: three');

@@ -42,10 +42,10 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 634: confirmation=off not honored by undo
 
 # Setup: Add a task
-qx{../src/task rc:bug.rc add Test};
+qx{../src/task rc:bug.rc add Test 2>&1};
 
 # Result: Attempt to undo add with confirmation=off
-my $output = qx{echo 'n' |../src/task rc:bug.rc rc.confirmation=off undo};
+my $output = qx{echo 'n' |../src/task rc:bug.rc rc.confirmation=off undo 2>&1};
 unlike ($output, qr/Are you sure/ms, 'Undo honours confirmation=off.');
 
 # Cleanup.

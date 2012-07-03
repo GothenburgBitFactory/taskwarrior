@@ -43,10 +43,10 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 628: task wait: with non-standard dateformat bug
 
 # Setup: Add a task
-qx{../src/task rc:bug.rc add wait:\\"Wed Jan 01 2020\\" A buggy task};
+qx{../src/task rc:bug.rc add wait:\\"Wed Jan 01 2020\\" A buggy task 2>&1};
 
 # Result: Immediately delete the created task
-my $output = qx{../src/task rc:bug.rc waiting};
+my $output = qx{../src/task rc:bug.rc waiting 2>&1};
 like   ($output, qr/1\/1\/2020/ms, 'a b D Y dateformat correctly parsed.');
 
 # Cleanup.

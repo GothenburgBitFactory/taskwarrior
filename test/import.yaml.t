@@ -70,13 +70,13 @@ EOF
 }
 
 # Convert YAML --> task JSON.
-qx{../scripts/add-ons/import-yaml.pl <import.txt >import.json};
+qx{../scripts/add-ons/import-yaml.pl <import.txt >import.json 2>&1};
 
 # Import the JSON.
 my $output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
 like ($output, qr/Imported 3 tasks\./, '3 tasks imported');
 
-$output = qx{../src/task rc:import.rc list};
+$output = qx{../src/task rc:import.rc list 2>&1};
 # ID Project Pri Due Active Age     Description
 # -- ------- --- --- ------ ------- -----------
 #  1 A                      1.5 yrs zero
@@ -88,7 +88,7 @@ like   ($output, qr/1.+A.+zero/, 't1 present');
 like   ($output, qr/2.+B.+one/,  't2 present');
 unlike ($output, qr/3.+two/,     't3 missing');
 
-$output = qx{../src/task rc:import.rc completed};
+$output = qx{../src/task rc:import.rc completed 2>&1};
 # Complete  Project Pri Age     Description
 # --------- ------- --- ------- -----------
 # 2/13/2009             1.5 yrs two
@@ -122,14 +122,14 @@ EOF
 }
 
 # Convert YAML --> task JSON.
-qx{../scripts/add-ons/import-yaml.pl <import.txt >import.json};
+qx{../scripts/add-ons/import-yaml.pl <import.txt >import.json 2>&1};
 
 # Import the JSON.
 $output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
 like ($output, qr/Imported 1 tasks\./, '1 task imported');
 
 # Verify.
-$output = qx{../src/task rc:import.rc list};
+$output = qx{../src/task rc:import.rc list 2>&1};
 # ID Project Pri Due Active Age  Description
 # -- ------- --- --- ------ ---- -----------
 #  3                        2.6y three

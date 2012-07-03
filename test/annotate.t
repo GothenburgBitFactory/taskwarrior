@@ -46,18 +46,18 @@ if (open my $fh, '>', 'annotate.rc')
 }
 
 # Add four tasks, annotate one three times, one twice, one just once and one none.
-qx{../src/task rc:annotate.rc add one};
-qx{../src/task rc:annotate.rc add two};
-qx{../src/task rc:annotate.rc add three};
-qx{../src/task rc:annotate.rc add four};
-qx{../src/task rc:annotate.rc 1 annotate foo1};
-qx{../src/task rc:annotate.rc 1 annotate foo2};
-qx{../src/task rc:annotate.rc 1 annotate foo3};
-qx{../src/task rc:annotate.rc 2 annotate bar1};
-qx{../src/task rc:annotate.rc 2 annotate bar2};
-qx{../src/task rc:annotate.rc 3 annotate baz1};
+qx{../src/task rc:annotate.rc add one 2>&1};
+qx{../src/task rc:annotate.rc add two 2>&1};
+qx{../src/task rc:annotate.rc add three 2>&1};
+qx{../src/task rc:annotate.rc add four 2>&1};
+qx{../src/task rc:annotate.rc 1 annotate foo1 2>&1};
+qx{../src/task rc:annotate.rc 1 annotate foo2 2>&1};
+qx{../src/task rc:annotate.rc 1 annotate foo3 2>&1};
+qx{../src/task rc:annotate.rc 2 annotate bar1 2>&1};
+qx{../src/task rc:annotate.rc 2 annotate bar2 2>&1};
+qx{../src/task rc:annotate.rc 3 annotate baz1 2>&1};
 
-my $output = qx{../src/task rc:annotate.rc rrr};
+my $output = qx{../src/task rc:annotate.rc rrr 2>&1};
 
 # ID Description                    
 # -- -------------------------------
@@ -100,7 +100,7 @@ if (open my $fh, '>', 'annotate2.rc')
   ok (-r 'annotate2.rc', 'Created annotate2.rc');
 }
 
-$output = qx{../src/task rc:annotate2.rc rrr};
+$output = qx{../src/task rc:annotate2.rc rrr 2>&1};
 like ($output, qr/1 one/,   'task 1'); # 14
 like ($output, qr/2 two/,   'task 2');
 like ($output, qr/3 three/, 'task 3');

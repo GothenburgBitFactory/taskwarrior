@@ -45,15 +45,15 @@ if (open my $fh, '>', 'special.rc')
 }
 
 # Prove that +nocolor suppresses all color for a task.
-qx{../src/task rc:special.rc add should have no red +nocolor priority:H};
-qx{../src/task rc:special.rc add should be red +nonag};
-my $output = qx{../src/task rc:special.rc ls};
+qx{../src/task rc:special.rc add should have no red +nocolor priority:H 2>&1};
+qx{../src/task rc:special.rc add should be red +nonag 2>&1};
+my $output = qx{../src/task rc:special.rc ls 2>&1};
 like ($output, qr/\s1\s+H\s+should have no red/,      'no red in first task due to +nocolor');
 like ($output, qr/\033\[31mshould be red\s+\033\[0m/, 'red in second task');
 
 # Prove that +nonag suppresses nagging when a low priority task is completed
 # ahead of a high priority one.
-$output = qx{../src/task rc:special.rc 2 done};
+$output = qx{../src/task rc:special.rc 2 done 2>&1};
 unlike ($output, qr/NAG/, '+nonag suppressed nagging for task 2');
 
 # Cleanup.

@@ -41,39 +41,39 @@ if (open my $fh, '>', 'uuid.rc')
 
 # Add a task, dup it, add a recurring task, list.  Then make sure they all have
 # unique UUID values.
-qx{../src/task rc:uuid.rc add simple};
-qx{../src/task rc:uuid.rc 1 duplicate};
-qx{../src/task rc:uuid.rc add periodic recur:daily due:yesterday};
-qx{../src/task rc:uuid.rc ls};
+qx{../src/task rc:uuid.rc add simple 2>&1};
+qx{../src/task rc:uuid.rc 1 duplicate 2>&1};
+qx{../src/task rc:uuid.rc add periodic recur:daily due:yesterday 2>&1};
+qx{../src/task rc:uuid.rc ls 2>&1};
 
 my @all_uuids;
 my %unique_uuids;
-my $output = qx{../src/task rc:uuid.rc 1 info};
+my $output = qx{../src/task rc:uuid.rc 1 info 2>&1};
 my ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../src/task rc:uuid.rc 2 info};
+$output = qx{../src/task rc:uuid.rc 2 info 2>&1};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../src/task rc:uuid.rc 3 info};
+$output = qx{../src/task rc:uuid.rc 3 info 2>&1};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../src/task rc:uuid.rc 4 info};
+$output = qx{../src/task rc:uuid.rc 4 info 2>&1};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../src/task rc:uuid.rc 5 info};
+$output = qx{../src/task rc:uuid.rc 5 info 2>&1};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../src/task rc:uuid.rc 6 info};
+$output = qx{../src/task rc:uuid.rc 6 info 2>&1};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
@@ -81,7 +81,7 @@ $unique_uuids{$uuid} = undef;
 is (scalar (@all_uuids), 6, '6 tasks created');
 is (scalar (keys %unique_uuids), 6, '6 unique UUIDs');
 
-$output = qx{../src/task rc:uuid.rc diag};
+$output = qx{../src/task rc:uuid.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.

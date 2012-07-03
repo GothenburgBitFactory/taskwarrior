@@ -41,12 +41,12 @@ if (open my $fh, '>', 'next.rc')
 
 # Add two tasks for each of two projects, then run next.  There should be only
 # one task from each project shown.
-qx{../src/task rc:next.rc add project:A priority:H AH};
-qx{../src/task rc:next.rc add project:A priority:M AM};
-qx{../src/task rc:next.rc add project:B priority:H BH};
-qx{../src/task rc:next.rc add project:B Bnone};
+qx{../src/task rc:next.rc add project:A priority:H AH 2>&1};
+qx{../src/task rc:next.rc add project:A priority:M AM 2>&1};
+qx{../src/task rc:next.rc add project:B priority:H BH 2>&1};
+qx{../src/task rc:next.rc add project:B Bnone 2>&1};
 
-my $output = qx{../src/task rc:next.rc next};
+my $output = qx{../src/task rc:next.rc next 2>&1};
 like ($output, qr/AH/, 'AH shown');
 like ($output, qr/BH/, 'BH shown');
 

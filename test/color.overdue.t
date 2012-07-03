@@ -41,9 +41,9 @@ if (open my $fh, '>', 'color.rc')
 }
 
 # Test the add command.
-qx{../src/task rc:color.rc add due:tomorrow nothing};
-qx{../src/task rc:color.rc add due:yesterday red};
-my $output = qx{../src/task rc:color.rc list};
+qx{../src/task rc:color.rc add due:tomorrow nothing 2>&1};
+qx{../src/task rc:color.rc add due:yesterday red 2>&1};
+my $output = qx{../src/task rc:color.rc list 2>&1};
 
 like ($output, qr/ (?!<\033\[\d\dm) \d{1,2}\/\d{1,2}\/\d{4} (?!>\033\[0m) .* nothing /x, 'none');
 like ($output, qr/ \033\[31m        .* red .* \033\[0m/x, 'color.overdue');

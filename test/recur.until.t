@@ -39,23 +39,23 @@ if (open my $fh, '>', 'recur.rc')
 }
 
 # Create a few recurring tasks, and test the sort order of the recur column.
-qx{../src/task rc:recur.rc add foo due:now recur:2sec until:5sec};
+qx{../src/task rc:recur.rc add foo due:now recur:2sec until:5sec 2>&1};
 diag ("Sleeping for 6 seconds");
 sleep 6;
-my $output = qx{../src/task rc:recur.rc list};
+my $output = qx{../src/task rc:recur.rc list 2>&1};
 like ($output, qr/^\s+2/ms, 'Found 2');
 like ($output, qr/^\s+3/ms, 'Found 3');
 like ($output, qr/^\s+4/ms, 'Found 4');
 like ($output, qr/^\s+5/ms, 'Found 5');
 
-qx{../src/task rc:recur.rc 2 do};
-qx{../src/task rc:recur.rc 3 do};
-qx{../src/task rc:recur.rc 4 do};
-qx{../src/task rc:recur.rc 5 do};
+qx{../src/task rc:recur.rc 2 do 2>&1};
+qx{../src/task rc:recur.rc 3 do 2>&1};
+qx{../src/task rc:recur.rc 4 do 2>&1};
+qx{../src/task rc:recur.rc 5 do 2>&1};
 $output = qx{../src/task rc:recur.rc list 2>&1 >/dev/null};
 like ($output, qr/and was deleted/, 'Parent task deleted');
 
-$output = qx{../src/task rc:recur.rc diag};
+$output = qx{../src/task rc:recur.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.

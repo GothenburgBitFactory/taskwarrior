@@ -39,15 +39,15 @@ if (open my $fh, '>', 'filter.rc')
 }
 
 # Test the filters.
-qx{../src/task rc:filter.rc add project:A priority:H +tag one foo};
-qx{../src/task rc:filter.rc add project:A priority:H      two};
-qx{../src/task rc:filter.rc add project:A                 three};
-qx{../src/task rc:filter.rc add           priority:H      four};
-qx{../src/task rc:filter.rc add                      +tag five};
-qx{../src/task rc:filter.rc add                           six foo};
-qx{../src/task rc:filter.rc add           priority:L      seven bar foo};
+qx{../src/task rc:filter.rc add project:A priority:H +tag one foo 2>&1};
+qx{../src/task rc:filter.rc add project:A priority:H      two 2>&1};
+qx{../src/task rc:filter.rc add project:A                 three 2>&1};
+qx{../src/task rc:filter.rc add           priority:H      four 2>&1};
+qx{../src/task rc:filter.rc add                      +tag five 2>&1};
+qx{../src/task rc:filter.rc add                           six foo 2>&1};
+qx{../src/task rc:filter.rc add           priority:L      seven bar foo 2>&1};
 
-my $output = qx{../src/task rc:filter.rc list};
+my $output = qx{../src/task rc:filter.rc list 2>&1};
 like   ($output, qr/one/,   'a1');
 like   ($output, qr/two/,   'a2');
 like   ($output, qr/three/, 'a3');
@@ -56,7 +56,7 @@ like   ($output, qr/five/,  'a5');
 like   ($output, qr/six/,   'a6');
 like   ($output, qr/seven/, 'a7');
 
-$output = qx{../src/task rc:filter.rc list project:A};
+$output = qx{../src/task rc:filter.rc list project:A 2>&1};
 like   ($output, qr/one/,   'b1');
 like   ($output, qr/two/,   'b2');
 like   ($output, qr/three/, 'b3');
@@ -65,7 +65,7 @@ unlike ($output, qr/five/,  'b5');
 unlike ($output, qr/six/,   'b6');
 unlike ($output, qr/seven/, 'b7');
 
-$output = qx{../src/task rc:filter.rc list priority:H};
+$output = qx{../src/task rc:filter.rc list priority:H 2>&1};
 like   ($output, qr/one/,   'c1');
 like   ($output, qr/two/,   'c2');
 unlike ($output, qr/three/, 'c3');
@@ -74,7 +74,7 @@ unlike ($output, qr/five/,  'c5');
 unlike ($output, qr/six/,   'c6');
 unlike ($output, qr/seven/, 'c7');
 
-$output = qx{../src/task rc:filter.rc list priority:};
+$output = qx{../src/task rc:filter.rc list priority: 2>&1};
 unlike ($output, qr/one/,   'd1');
 unlike ($output, qr/two/,   'd2');
 like   ($output, qr/three/, 'd3');
@@ -83,7 +83,7 @@ like   ($output, qr/five/,  'd5');
 like   ($output, qr/six/,   'd6');
 unlike ($output, qr/seven/, 'd7');
 
-$output = qx{../src/task rc:filter.rc list foo};
+$output = qx{../src/task rc:filter.rc list foo 2>&1};
 like   ($output, qr/one/,   'e1');
 unlike ($output, qr/two/,   'e2');
 unlike ($output, qr/three/, 'e3');
@@ -92,7 +92,7 @@ unlike ($output, qr/five/,  'e5');
 like   ($output, qr/six/,   'e6');
 like   ($output, qr/seven/, 'e7');
 
-$output = qx{../src/task rc:filter.rc list foo bar};
+$output = qx{../src/task rc:filter.rc list foo bar 2>&1};
 unlike ($output, qr/one/,   'f1');
 unlike ($output, qr/two/,   'f2');
 unlike ($output, qr/three/, 'f3');
@@ -101,7 +101,7 @@ unlike ($output, qr/five/,  'f5');
 unlike ($output, qr/six/,   'f6');
 like   ($output, qr/seven/, 'f7');
 
-$output = qx{../src/task rc:filter.rc list +tag};
+$output = qx{../src/task rc:filter.rc list +tag 2>&1};
 like   ($output, qr/one/,   'g1');
 unlike ($output, qr/two/,   'g2');
 unlike ($output, qr/three/, 'g3');
@@ -110,7 +110,7 @@ like   ($output, qr/five/,  'g5');
 unlike ($output, qr/six/,   'g6');
 unlike ($output, qr/seven/, 'g7');
 
-$output = qx{../src/task rc:filter.rc list -tag};
+$output = qx{../src/task rc:filter.rc list -tag 2>&1};
 unlike ($output, qr/one/,   'h1');
 like   ($output, qr/two/,   'h2');
 like   ($output, qr/three/, 'h3');
@@ -119,7 +119,7 @@ unlike ($output, qr/five/,  'h5');
 like   ($output, qr/six/,   'h6');
 like   ($output, qr/seven/, 'h7');
 
-$output = qx{../src/task rc:filter.rc list -missing};
+$output = qx{../src/task rc:filter.rc list -missing 2>&1};
 like   ($output, qr/one/,   'i1');
 like   ($output, qr/two/,   'i2');
 like   ($output, qr/three/, 'i3');
@@ -128,7 +128,7 @@ like   ($output, qr/five/,  'i5');
 like   ($output, qr/six/,   'i6');
 like   ($output, qr/seven/, 'i7');
 
-$output = qx{../src/task rc:filter.rc list +tag -tag};
+$output = qx{../src/task rc:filter.rc list +tag -tag 2>&1};
 unlike ($output, qr/one/,   'j1');
 unlike ($output, qr/two/,   'j2');
 unlike ($output, qr/three/, 'j3');
@@ -137,7 +137,7 @@ unlike ($output, qr/five/,  'j5');
 unlike ($output, qr/six/,   'j6');
 unlike ($output, qr/seven/, 'j7');
 
-$output = qx{../src/task rc:filter.rc list project:A priority:H};
+$output = qx{../src/task rc:filter.rc list project:A priority:H 2>&1};
 like   ($output, qr/one/,   'k1');
 like   ($output, qr/two/,   'k2');
 unlike ($output, qr/three/, 'k3');
@@ -146,7 +146,7 @@ unlike ($output, qr/five/,  'k5');
 unlike ($output, qr/six/,   'k6');
 unlike ($output, qr/seven/, 'k7');
 
-$output = qx{../src/task rc:filter.rc list project:A priority:};
+$output = qx{../src/task rc:filter.rc list project:A priority: 2>&1};
 unlike ($output, qr/one/,   'l1');
 unlike ($output, qr/two/,   'l2');
 like   ($output, qr/three/, 'l3');
@@ -155,7 +155,7 @@ unlike ($output, qr/five/,  'l5');
 unlike ($output, qr/six/,   'l6');
 unlike ($output, qr/seven/, 'l7');
 
-$output = qx{../src/task rc:filter.rc list project:A foo};
+$output = qx{../src/task rc:filter.rc list project:A foo 2>&1};
 like   ($output, qr/one/,   'm1');
 unlike ($output, qr/two/,   'm2');
 unlike ($output, qr/three/, 'm3');
@@ -164,7 +164,7 @@ unlike ($output, qr/five/,  'm5');
 unlike ($output, qr/six/,   'm6');
 unlike ($output, qr/seven/, 'm7');
 
-$output = qx{../src/task rc:filter.rc list project:A +tag};
+$output = qx{../src/task rc:filter.rc list project:A +tag 2>&1};
 like   ($output, qr/one/,   'n1');
 unlike ($output, qr/two/,   'n2');
 unlike ($output, qr/three/, 'n3');
@@ -173,7 +173,7 @@ unlike ($output, qr/five/,  'n5');
 unlike ($output, qr/six/,   'n6');
 unlike ($output, qr/seven/, 'n7');
 
-$output = qx{../src/task rc:filter.rc list project:A priority:H foo};
+$output = qx{../src/task rc:filter.rc list project:A priority:H foo 2>&1};
 like   ($output, qr/one/,   'o1');
 unlike ($output, qr/two/,   'o2');
 unlike ($output, qr/three/, 'o3');
@@ -182,7 +182,7 @@ unlike ($output, qr/five/,  'o5');
 unlike ($output, qr/six/,   'o6');
 unlike ($output, qr/seven/, 'o7');
 
-$output = qx{../src/task rc:filter.rc list project:A priority:H +tag};
+$output = qx{../src/task rc:filter.rc list project:A priority:H +tag 2>&1};
 like   ($output, qr/one/,   'p1');
 unlike ($output, qr/two/,   'p2');
 unlike ($output, qr/three/, 'p3');
@@ -191,7 +191,7 @@ unlike ($output, qr/five/,  'p5');
 unlike ($output, qr/six/,   'p6');
 unlike ($output, qr/seven/, 'p7');
 
-$output = qx{../src/task rc:filter.rc list project:A priority:H foo +tag};
+$output = qx{../src/task rc:filter.rc list project:A priority:H foo +tag 2>&1};
 like   ($output, qr/one/,   'q1');
 unlike ($output, qr/two/,   'q2');
 unlike ($output, qr/three/, 'q3');
@@ -200,7 +200,7 @@ unlike ($output, qr/five/,  'q5');
 unlike ($output, qr/six/,   'q6');
 unlike ($output, qr/seven/, 'q7');
 
-$output = qx{../src/task rc:filter.rc list project:A priority:H foo +tag baz};
+$output = qx{../src/task rc:filter.rc list project:A priority:H foo +tag baz 2>&1};
 unlike ($output, qr/one/,   'r1');
 unlike ($output, qr/two/,   'r2');
 unlike ($output, qr/three/, 'r3');
@@ -210,7 +210,7 @@ unlike ($output, qr/six/,   'r6');
 unlike ($output, qr/seven/, 'r7');
 
 # Regex filters.
-#$output = qx{../src/task rc:filter.rc list rc.regex:on project:/[A-Z]/};
+#$output = qx{../src/task rc:filter.rc list rc.regex:on project:/[A-Z]/ 2>&1};
 #like   ($output, qr/one/,   's1');
 #like   ($output, qr/two/,   's2');
 #like   ($output, qr/three/, 's3');
@@ -219,7 +219,7 @@ unlike ($output, qr/seven/, 'r7');
 #unlike ($output, qr/six/,   's6');
 #unlike ($output, qr/seven/, 's7');
 
-#$output = qx{../src/task rc:filter.rc list rc.regex:on project:.};
+#$output = qx{../src/task rc:filter.rc list rc.regex:on project:. 2>&1};
 #like   ($output, qr/one/,   't1');
 #like   ($output, qr/two/,   't2');
 #like   ($output, qr/three/, 't3');
@@ -228,7 +228,7 @@ unlike ($output, qr/seven/, 'r7');
 #unlike ($output, qr/six/,   't6');
 #unlike ($output, qr/seven/, 't7');
 
-$output = qx{../src/task rc:filter.rc rc.regex:on list /fo\{2\}/};
+$output = qx{../src/task rc:filter.rc rc.regex:on list /fo\{2\}/ 2>&1};
 like   ($output, qr/one/,   'u1');
 unlike ($output, qr/two/,   'u2');
 unlike ($output, qr/three/, 'u3');
@@ -237,7 +237,7 @@ unlike ($output, qr/five/,  'u5');
 like   ($output, qr/six/,   'u6');
 like   ($output, qr/seven/, 'u7');
 
-#$output = qx{../src/task rc:filter.rc rc.regex:on list /f../ /b../};
+#$output = qx{../src/task rc:filter.rc rc.regex:on list /f../ /b../ 2>&1};
 #unlike ($output, qr/one/,   'v1');
 #unlike ($output, qr/two/,   'v2');
 #unlike ($output, qr/three/, 'v3');
@@ -246,7 +246,7 @@ like   ($output, qr/seven/, 'u7');
 #unlike ($output, qr/six/,   'v6');
 #like   ($output, qr/seven/, 'v7');
 
-$output = qx{../src/task rc:filter.rc rc.regex:on list /^s/};
+$output = qx{../src/task rc:filter.rc rc.regex:on list /^s/ 2>&1};
 unlike ($output, qr/one/,   'w1');
 unlike ($output, qr/two/,   'w2');
 unlike ($output, qr/three/, 'w3');
@@ -255,7 +255,7 @@ unlike ($output, qr/five/,  'w5');
 like   ($output, qr/six/,   'w6');
 like   ($output, qr/seven/, 'w7');
 
-$output = qx{../src/task rc:filter.rc rc.regex:on list /^.i/};
+$output = qx{../src/task rc:filter.rc rc.regex:on list /^.i/ 2>&1};
 unlike ($output, qr/one/,   'x1');
 unlike ($output, qr/two/,   'x2');
 unlike ($output, qr/three/, 'x3');
@@ -264,7 +264,7 @@ like   ($output, qr/five/,  'x5');
 like   ($output, qr/six/,   'x6');
 unlike ($output, qr/seven/, 'x7');
 
-$output = qx{../src/task rc:filter.rc rc.regex:on list "/two|five/"};
+$output = qx{../src/task rc:filter.rc rc.regex:on list "/two|five/" 2>&1};
 unlike ($output, qr/one/,   'y1');
 like   ($output, qr/two/,   'y2');
 unlike ($output, qr/three/, 'y3');

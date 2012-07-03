@@ -40,13 +40,13 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Setup: Add three unique tasks with different project names.
-qx{../src/task rc:bug.rc add project:one foo};
-qx{../src/task rc:bug.rc add project:two bar};
-qx{../src/task rc:bug.rc add project:three baz};
+qx{../src/task rc:bug.rc add project:one foo 2>&1};
+qx{../src/task rc:bug.rc add project:two bar 2>&1};
+qx{../src/task rc:bug.rc add project:three baz 2>&1};
 
 # Result: Run list but exclude two of the three projects names using
 # project.hasnt:<name>
-my $output = qx{../src/task rc:bug.rc list project.isnt:one project.isnt:two};
+my $output = qx{../src/task rc:bug.rc list project.isnt:one project.isnt:two 2>&1};
 unlike ($output, qr/one.*foo/ms, 'project.isnt:one project.isnt:two - no foo');
 unlike ($output, qr/two.*bar/ms, 'project.isnt:one project.isnt:two - no bar');
 like   ($output, qr/three.*baz/ms, 'project.isnt:one project.isnt:two - yes baz');

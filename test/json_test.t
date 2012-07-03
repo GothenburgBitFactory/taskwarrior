@@ -36,7 +36,7 @@ plan tests => scalar @files;
 my $output;
 for my $file (@files)
 {
-  $output = qx{./json_test $file};
+  $output = qx{./json_test $file 2>&1};
   unlike ($output, qr/^Error/, "json_test $file");
 }
 

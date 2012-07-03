@@ -38,16 +38,16 @@ if (open my $fh, '>', 'bug_sort.rc')
   ok (-r 'bug_sort.rc', 'Created bug_sort.rc');
 }
 
-my $setup = "../src/task rc:bug_sort.rc add one;"
-          . "../src/task rc:bug_sort.rc add two;"
-          . "../src/task rc:bug_sort.rc add three recur:daily due:eom;";
+my $setup = "../src/task rc:bug_sort.rc add one 2>&1;"
+          . "../src/task rc:bug_sort.rc add two 2>&1;"
+          . "../src/task rc:bug_sort.rc add three recur:daily due:eom 2>&1;";
 qx{$setup};
 
-my $output = qx{../src/task rc:bug_sort.rc list};
+my $output = qx{../src/task rc:bug_sort.rc list 2>&1};
 like ($output, qr/three.*(?:one.*two|two.*one)/msi, 'list did not hang');
 
-qx{../src/task rc:bug_sort.rc 1 modify priority:H};
-$output = qx{../src/task rc:bug_sort.rc list};
+qx{../src/task rc:bug_sort.rc 1 modify priority:H 2>&1};
+$output = qx{../src/task rc:bug_sort.rc list 2>&1};
 like ($output, qr/three.*one.*two/msi, 'list did not hang after pri:H on 1');
 
 # Cleanup.

@@ -40,19 +40,19 @@ if (open my $fh, '>', 'op.rc')
 }
 
 # Setup: Add a task
-qx{../src/task rc:op.rc add one   priority:H};
-qx{../src/task rc:op.rc add two   priority:M};
-qx{../src/task rc:op.rc add three priority:L};
-qx{../src/task rc:op.rc add four            };
+qx{../src/task rc:op.rc add one   priority:H 2>&1};
+qx{../src/task rc:op.rc add two   priority:M 2>&1};
+qx{../src/task rc:op.rc add three priority:L 2>&1};
+qx{../src/task rc:op.rc add four             2>&1};
 
 # Test the '<=' operator.
-my $output = qx{../src/task rc:op.rc ls 'priority <= M'};
+my $output = qx{../src/task rc:op.rc ls 'priority <= M' 2>&1};
 unlike ($output, qr/one/,   'ls priority <= H --> !one');
 like   ($output, qr/two/,   'ls priority <= H --> two');
 like   ($output, qr/three/, 'ls priority <= H --> three');
 like   ($output, qr/four/,  'ls priority <= H --> four');
 
-$output = qx{../src/task rc:op.rc ls 'description <= t'};
+$output = qx{../src/task rc:op.rc ls 'description <= t' 2>&1};
 like   ($output, qr/one/,   'ls description <= t --> one');
 unlike ($output, qr/two/,   'ls description <= t --> !two');
 unlike ($output, qr/three/, 'ls description <= t --> !three');

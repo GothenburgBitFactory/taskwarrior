@@ -39,17 +39,17 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 879: Backslash at end of description/annotation causes problems.
-qx{../src/task rc:bug.rc add one\\\\};
-my $output = qx{../src/task rc:bug.rc list};
+qx{../src/task rc:bug.rc add one\\\\ 2>&1};
+my $output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/one\\/, 'Backslash preserved in description');
 
-qx{../src/task rc:bug.rc 1 annotate foo\\\\};
-$output = qx{../src/task rc:bug.rc list};
+qx{../src/task rc:bug.rc 1 annotate foo\\\\ 2>&1};
+$output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/one\\/, 'Backslash preserved in description');
 like ($output, qr/foo\\/, 'Backslash preserved in annotation 1');
 
-qx{../src/task rc:bug.rc 1 annotate bar\\\\};
-$output = qx{../src/task rc:bug.rc list};
+qx{../src/task rc:bug.rc 1 annotate bar\\\\ 2>&1};
+$output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/one\\/, 'Backslash preserved in description');
 like ($output, qr/foo\\/, 'Backslash preserved in annotation 1');
 like ($output, qr/bar\\/, 'Backslash preserved in annotation 2');

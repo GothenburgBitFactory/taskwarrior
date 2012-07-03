@@ -45,11 +45,11 @@ if (open my $fh, '>', 'color.rc')
 }
 
 # Test the add command.
-qx{../src/task rc:color.rc add priority:H red};
-qx{../src/task rc:color.rc add priority:M green};
-qx{../src/task rc:color.rc add priority:L blue};
-qx{../src/task rc:color.rc add yellow};
-my $output = qx{../src/task rc:color.rc list};
+qx{../src/task rc:color.rc add priority:H red 2>&1};
+qx{../src/task rc:color.rc add priority:M green 2>&1};
+qx{../src/task rc:color.rc add priority:L blue 2>&1};
+qx{../src/task rc:color.rc add yellow 2>&1};
+my $output = qx{../src/task rc:color.rc list 2>&1};
 
 like ($output, qr/ \033\[31m .* red    .* \033\[0m /x, 'color.pri.H');
 like ($output, qr/ \033\[32m .* green  .* \033\[0m /x, 'color.pri.M');

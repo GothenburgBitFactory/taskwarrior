@@ -41,7 +41,7 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 956 - 'task ids' prints the header, which prevents using the command in
 # external script (it applies also for 'uuids' and helper subcommands).
 
-qx{../src/task rc:bug.rc add test};
+qx{../src/task rc:bug.rc add test 2>&1};
 
 my $output = qx{TASKRC=bug.rc ../src/task rc:bug.rc ids};
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "ids"');
@@ -49,7 +49,7 @@ unlike ($output, qr/TASKRC/ms, 'The header does not appear with "ids"');
 $output = qx{TASKRC=bug.rc ../src/task uuids};
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "uuids"');
 
-$output = qx{TASKRC=bug.rc ../src/task _ids};
+$output = qx{TASKRC=bug.rc ../src/task _ids 2>&1};
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "_ids"');
 
 ### Cleanup.

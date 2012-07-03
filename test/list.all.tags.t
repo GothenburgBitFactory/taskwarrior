@@ -41,18 +41,18 @@ if (open my $fh, '>', 'tags.rc')
 
 # Create a data set of two tasks, with unique project names, one
 # pending, one completed.
-qx{../src/task rc:tags.rc add +t1 one};
-qx{../src/task rc:tags.rc add +t2 two};
-qx{../src/task rc:tags.rc 1 done};
-my $output = qx{../src/task rc:tags.rc long};
+qx{../src/task rc:tags.rc add +t1 one 2>&1};
+qx{../src/task rc:tags.rc add +t2 two 2>&1};
+qx{../src/task rc:tags.rc 1 done 2>&1};
+my $output = qx{../src/task rc:tags.rc long 2>&1};
 unlike ($output, qr/t1/, 't1 done');
 like ($output, qr/t2/, 't2 pending');
 
-$output = qx{../src/task rc:tags.rc tags};
+$output = qx{../src/task rc:tags.rc tags 2>&1};
 unlike ($output, qr/t1/, 't1 done');
 like ($output, qr/t2/, 't2 pending');
 
-$output = qx{../src/task rc:tags.rc rc.list.all.tags:yes tags};
+$output = qx{../src/task rc:tags.rc rc.list.all.tags:yes tags 2>&1};
 like ($output, qr/t1/, 't1 listed');
 like ($output, qr/t2/, 't2 listed');
 

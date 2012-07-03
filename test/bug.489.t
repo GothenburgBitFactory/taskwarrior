@@ -40,9 +40,9 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug #489 - tags.none: is not filtering tagless tasks
-qx{../src/task rc:bug.rc add with +tag};
-qx{../src/task rc:bug.rc add without};
-my $output = qx{../src/task rc:bug.rc list tags.none:};
+qx{../src/task rc:bug.rc add with +tag 2>&1};
+qx{../src/task rc:bug.rc add without 2>&1};
+my $output = qx{../src/task rc:bug.rc list tags.none: 2>&1};
 unlike ($output, qr/with /,   'tags.none: skips tagged');
 like   ($output, qr/without/, 'tags.none: finds tagless');
 

@@ -40,36 +40,36 @@ if (open my $fh, '>', 'args.rc')
 }
 
 # Test 'stop' with en-passant changes.
-qx{../src/task rc:args.rc add one};
-qx{../src/task rc:args.rc add two};
-qx{../src/task rc:args.rc add three};
-qx{../src/task rc:args.rc add four};
-qx{../src/task rc:args.rc add five};
+qx{../src/task rc:args.rc add one 2>&1};
+qx{../src/task rc:args.rc add two 2>&1};
+qx{../src/task rc:args.rc add three 2>&1};
+qx{../src/task rc:args.rc add four 2>&1};
+qx{../src/task rc:args.rc add five 2>&1};
 
-qx{../src/task rc:args.rc 1 start};
-qx{../src/task rc:args.rc 2 start};
-qx{../src/task rc:args.rc 3 start};
-qx{../src/task rc:args.rc 4 start};
-qx{../src/task rc:args.rc 5 start};
+qx{../src/task rc:args.rc 1 start 2>&1};
+qx{../src/task rc:args.rc 2 start 2>&1};
+qx{../src/task rc:args.rc 3 start 2>&1};
+qx{../src/task rc:args.rc 4 start 2>&1};
+qx{../src/task rc:args.rc 5 start 2>&1};
 
-qx{../src/task rc:args.rc 1 stop oneanno};
-my $output = qx{../src/task rc:args.rc 1 info};
+qx{../src/task rc:args.rc 1 stop oneanno 2>&1};
+my $output = qx{../src/task rc:args.rc 1 info 2>&1};
 like ($output, qr/oneanno/, 'stop enpassant anno');
 
-qx{../src/task rc:args.rc 2 stop /two/TWO/};
-$output = qx{../src/task rc:args.rc 2 info};
+qx{../src/task rc:args.rc 2 stop /two/TWO/ 2>&1};
+$output = qx{../src/task rc:args.rc 2 info 2>&1};
 like ($output, qr/Description\s+TWO/, 'stop enpassant subst');
 
-qx{../src/task rc:args.rc 3 stop +threetag};
-$output = qx{../src/task rc:args.rc 3 info};
+qx{../src/task rc:args.rc 3 stop +threetag 2>&1};
+$output = qx{../src/task rc:args.rc 3 info 2>&1};
 like ($output, qr/Tags\s+threetag/, 'stop enpassant tag');
 
-qx{../src/task rc:args.rc 4 stop pri:H};
-$output = qx{../src/task rc:args.rc 4 info};
+qx{../src/task rc:args.rc 4 stop pri:H 2>&1};
+$output = qx{../src/task rc:args.rc 4 info 2>&1};
 like ($output, qr/Priority\s+H/, 'stop enpassant priority');
 
-qx{../src/task rc:args.rc 5 stop pro:A};
-$output = qx{../src/task rc:args.rc 5 info};
+qx{../src/task rc:args.rc 5 stop pro:A 2>&1};
+$output = qx{../src/task rc:args.rc 5 info 2>&1};
 like ($output, qr/Project\s+A/, 'stop enpassant project');
 
 # Cleanup.

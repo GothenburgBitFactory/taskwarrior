@@ -40,22 +40,22 @@ if (open my $fh, '>', 'verbose.rc')
 }
 
 # Verbosity: 'new-id'
-my $output = qx{../src/task rc:verbose.rc rc.verbose:new-id add Sample1};
+my $output = qx{../src/task rc:verbose.rc rc.verbose:new-id add Sample1 2>&1};
 like ($output, qr/Created task \d/, '\'new-id\' verbosity good');
 
-$output = qx{../src/task rc:verbose.rc rc.verbose:nothing add Sample2};
+$output = qx{../src/task rc:verbose.rc rc.verbose:nothing add Sample2 2>&1};
 unlike ($output, qr/Created task \d/, '\'new-id\' verbosity good');
 
 # Verbosity: 'label'
-$output = qx{../src/task rc:verbose.rc ls rc.verbose:label};
+$output = qx{../src/task rc:verbose.rc ls rc.verbose:label 2>&1};
 like ($output, qr/ID.+Project.+Pri.+Description/, '\'label\' verbosity good');
 
 # Verbosity: 'affected'
-$output = qx{../src/task rc:verbose.rc ls rc.verbose:affected};
+$output = qx{../src/task rc:verbose.rc ls rc.verbose:affected 2>&1};
 like ($output, qr/^\d+ tasks$/ms, '\'affected\' verbosity good');
 
 # Off
-$output = qx{../src/task rc:verbose.rc ls rc.verbose:nothing};
+$output = qx{../src/task rc:verbose.rc ls rc.verbose:nothing 2>&1};
 unlike ($output, qr/^\d+ tasks$/ms, '\'affected\' verbosity good');
 unlike ($output, qr/ID.+Project.+Pri.+Description/, '\'label\' verbosity good');
 

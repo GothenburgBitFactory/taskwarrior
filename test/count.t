@@ -40,31 +40,31 @@ if (open my $fh, '>', 'count.rc')
 }
 
 # Test the count command.
-qx{../src/task rc:count.rc add one};
-qx{../src/task rc:count.rc log two};
-qx{../src/task rc:count.rc add three};
-qx{../src/task rc:count.rc 2 delete};
-qx{../src/task rc:count.rc add four wait:eom};
+qx{../src/task rc:count.rc add one 2>&1};
+qx{../src/task rc:count.rc log two 2>&1};
+qx{../src/task rc:count.rc add three 2>&1};
+qx{../src/task rc:count.rc 2 delete 2>&1};
+qx{../src/task rc:count.rc add four wait:eom 2>&1};
 
 # TODO This fails when today == eom.  For example, on 2012-04-30 at 8:00:00, the
 #      value for 'eom' is 2012-04-30 0:00:00, which is already past due, which
 #      means a second child task is generated.  This would be fixed by 'eom'
 #      expanding to 2012-04-30 24:00:00, as per ISO-8601.
-qx{../src/task rc:count.rc add five due:eom recur:monthly};
+qx{../src/task rc:count.rc add five due:eom recur:monthly 2>&1};
 
-my $output = qx{../src/task rc:count.rc count};
+my $output = qx{../src/task rc:count.rc count 2>&1};
 like ($output, qr/^5\n/ms, 'count');
 
-$output = qx{../src/task rc:count.rc count status:deleted rc.debug:1};
+$output = qx{../src/task rc:count.rc count status:deleted rc.debug:1 2>&1};
 like ($output, qr/^1\n/ms, 'count status:deleted');
 
-$output = qx{../src/task rc:count.rc count e};
+$output = qx{../src/task rc:count.rc count e 2>&1};
 like ($output, qr/^3\n/ms, 'count e');
 
-$output = qx{../src/task rc:count.rc count description.startswith:f};
+$output = qx{../src/task rc:count.rc count description.startswith:f 2>&1};
 like ($output, qr/^2\n/ms, 'count description.startswith:f');
 
-$output = qx{../src/task rc:count.rc count due.any:};
+$output = qx{../src/task rc:count.rc count due.any: 2>&1};
 like ($output, qr/^1\n/ms, 'count due.any:');
 
 # Cleanup.

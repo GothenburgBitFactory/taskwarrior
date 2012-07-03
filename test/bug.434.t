@@ -42,8 +42,8 @@ if (open my $fh, '>', 'bug.rc')
 # Bug #434: Task shouldn't prevent users from marking as done tasks with status:waiting
 
 # Add a task that is waiting
-qx{../src/task rc:bug.rc add One wait:tomorrow};
-my $output = qx{../src/task rc:bug.rc 1 done};
+qx{../src/task rc:bug.rc add One wait:tomorrow 2>&1};
+my $output = qx{../src/task rc:bug.rc 1 done 2>&1};
 like ($output, qr/Completed 1 task\./, 'Waiting task marked completed');
 
 # Cleanup.

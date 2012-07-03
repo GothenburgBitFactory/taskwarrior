@@ -42,30 +42,30 @@ if (open my $fh, '>', 'bulk.rc')
 
 # Add some tasks with project, prioriy and due date, some with only due date.
 # Bulk add a project and priority to the tasks that were without.
-qx{../src/task rc:bulk.rc add t1 pro:p1 pri:H due:monday};
-qx{../src/task rc:bulk.rc add t2 pro:p1 pri:M due:tuesday};
-qx{../src/task rc:bulk.rc add t3 pro:p1 pri:L due:wednesday};
-qx{../src/task rc:bulk.rc add t4              due:thursday};
-qx{../src/task rc:bulk.rc add t5              due:friday};
-qx{../src/task rc:bulk.rc add t6              due:saturday};
+qx{../src/task rc:bulk.rc add t1 pro:p1 pri:H due:monday 2>&1};
+qx{../src/task rc:bulk.rc add t2 pro:p1 pri:M due:tuesday 2>&1};
+qx{../src/task rc:bulk.rc add t3 pro:p1 pri:L due:wednesday 2>&1};
+qx{../src/task rc:bulk.rc add t4              due:thursday 2>&1};
+qx{../src/task rc:bulk.rc add t5              due:friday 2>&1};
+qx{../src/task rc:bulk.rc add t6              due:saturday 2>&1};
 
-my $output = qx{echo "quit"|../src/task rc:bulk.rc 4 5 6  modify pro:p1 pri:M};
+my $output = qx{echo "quit"|../src/task rc:bulk.rc 4 5 6  modify pro:p1 pri:M 2>&1};
 like ($output, qr/Modified 0 tasks/, '"quit" prevents any further modifications');
 
-$output = qx{echo "All"|../src/task rc:bulk.rc 4 5 6  mod pro:p1 pri:M};
+$output = qx{echo "All"|../src/task rc:bulk.rc 4 5 6  mod pro:p1 pri:M 2>&1};
 unlike ($output, qr/Task 4 "t4"\n  - No changes were made/, 'Task 4 modified');
 unlike ($output, qr/Task 5 "t5"\n  - No changes were made/, 'Task 5 modified');
 unlike ($output, qr/Task 6 "t6"\n  - No changes were made/, 'Task 6 modified');
 
-$output = qx{../src/task rc:bulk.rc info 4};
+$output = qx{../src/task rc:bulk.rc info 4 2>&1};
 like ($output, qr/Project\s+p1/, 'project applied to 4');
 like ($output, qr/Priority\s+M/, 'priority applied to 4');
 
-$output = qx{../src/task rc:bulk.rc info 5};
+$output = qx{../src/task rc:bulk.rc info 5 2>&1};
 like ($output, qr/Project\s+p1/, 'project applied to 5');
 like ($output, qr/Priority\s+M/, 'priority applied to 5');
 
-$output = qx{../src/task rc:bulk.rc info 6};
+$output = qx{../src/task rc:bulk.rc info 6 2>&1};
 like ($output, qr/Project\s+p1/, 'project applied to 6');
 like ($output, qr/Priority\s+M/, 'priority applied to 6');
 

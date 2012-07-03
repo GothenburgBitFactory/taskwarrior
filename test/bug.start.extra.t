@@ -39,10 +39,10 @@ if (open my $fh, '>', 'extra.rc')
   ok (-r 'extra.rc', 'Created extra.rc');
 }
 
-qx{../src/task rc:extra.rc add foo};
-qx{../src/task rc:extra.rc 1 start pri:L};
-qx{../src/task rc:extra.rc 1 stop pro:bar};
-my $output = qx{../src/task rc:extra.rc list};
+qx{../src/task rc:extra.rc add foo 2>&1};
+qx{../src/task rc:extra.rc 1 start pri:L 2>&1};
+qx{../src/task rc:extra.rc 1 stop pro:bar 2>&1};
+my $output = qx{../src/task rc:extra.rc list 2>&1};
 like ($output, qr/foo/,    'Task shown');
 like ($output, qr/1 task/, 'Correct count');
 like ($output, qr/L/,      'Correct priority');

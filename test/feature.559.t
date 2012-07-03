@@ -41,7 +41,7 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Feature 559: rc.exit.on.missing.db should cause exit if rc.data.location is missing.
-qx{../src/task rc:bug.rc add foo rc.debug:1};
+qx{../src/task rc:bug.rc add foo rc.debug:1 2>&1};
 my $output = qx{../src/task rc:bug.rc list 2>&1 >/dev/null};
 unlike ($output, qr/Error.+does not exist/, 'No error on existant rc.data.location');
 

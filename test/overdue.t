@@ -41,10 +41,10 @@ if (open my $fh, '>', 'due.rc')
 
 # Add an overdue task, a due task, and a regular task.  The "overdue" report
 # should list only the one task.
-qx{../src/task rc:due.rc add due:yesterday one};
-qx{../src/task rc:due.rc add due:tomorrow two};
-qx{../src/task rc:due.rc add due:eoy three};
-my $output = qx{../src/task rc:due.rc overdue};
+qx{../src/task rc:due.rc add due:yesterday one 2>&1};
+qx{../src/task rc:due.rc add due:tomorrow two 2>&1};
+qx{../src/task rc:due.rc add due:eoy three 2>&1};
+my $output = qx{../src/task rc:due.rc overdue 2>&1};
 like   ($output, qr/one/,   'overdue: task 1 shows up');
 unlike ($output, qr/two/,   'overdue: task 2 does not show up');
 unlike ($output, qr/three/, 'overdue: task 3 does not show up');

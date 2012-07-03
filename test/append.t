@@ -40,13 +40,13 @@ if (open my $fh, '>', 'append.rc')
 }
 
 # Add a task, then append more description.
-qx{../src/task rc:append.rc add foo};
-qx{../src/task rc:append.rc 1 append bar};
-my $output = qx{../src/task rc:append.rc info 1};
+qx{../src/task rc:append.rc add foo 2>&1};
+qx{../src/task rc:append.rc 1 append bar 2>&1};
+my $output = qx{../src/task rc:append.rc info 1 2>&1};
 like ($output, qr/Description\s+foo\sbar\n/, 'append worked');
 
 # Should cause an error when nothing is appended.
-$output = qx{../src/task rc:append.rc 1 append};
+$output = qx{../src/task rc:append.rc 1 append 2>&1};
 unlike ($output, qr/Appended 0 tasks/, 'blank append failed');
 
 # Cleanup.

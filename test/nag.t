@@ -39,12 +39,12 @@ if (open my $fh, '>', 'nag.rc')
   ok (-r 'nag.rc', 'Created nag.rc');
 }
 
-my $setup = "../src/task rc:nag.rc add due:yesterday one;"
-          . "../src/task rc:nag.rc add due:tomorrow two;"
-          . "../src/task rc:nag.rc add priority:H three;"
-          . "../src/task rc:nag.rc add priority:M four;"
-          . "../src/task rc:nag.rc add priority:L five;"
-          . "../src/task rc:nag.rc add six;";
+my $setup = "../src/task rc:nag.rc add due:yesterday one 2>&1;"
+          . "../src/task rc:nag.rc add due:tomorrow two 2>&1;"
+          . "../src/task rc:nag.rc add priority:H three 2>&1;"
+          . "../src/task rc:nag.rc add priority:M four 2>&1;"
+          . "../src/task rc:nag.rc add priority:L five 2>&1;"
+          . "../src/task rc:nag.rc add six 2>&1;";
 qx{$setup};
 
 like   (qx{../src/task rc:nag.rc 6 do 2>&1 >/dev/null}, qr/NAG/, 'do pri: -> nag');

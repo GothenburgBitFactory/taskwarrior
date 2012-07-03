@@ -39,12 +39,12 @@ if (open my $fh, '>', 'sorting.rc')
 }
 
 # Test assorted sort orders.
-qx{../src/task rc:sorting.rc add                                    zero};
-qx{../src/task rc:sorting.rc add priority:H project:A due:yesterday one};
-qx{../src/task rc:sorting.rc add priority:M project:B due:today     two};
-qx{../src/task rc:sorting.rc add priority:L project:C due:tomorrow  three};
-qx{../src/task rc:sorting.rc add priority:H project:C due:today     four};
-qx{../src/task rc:sorting.rc 2 start};
+qx{../src/task rc:sorting.rc add                                    zero 2>&1};
+qx{../src/task rc:sorting.rc add priority:H project:A due:yesterday one 2>&1};
+qx{../src/task rc:sorting.rc add priority:M project:B due:today     two 2>&1};
+qx{../src/task rc:sorting.rc add priority:L project:C due:tomorrow  three 2>&1};
+qx{../src/task rc:sorting.rc add priority:H project:C due:today     four 2>&1};
+qx{../src/task rc:sorting.rc 2 start 2>&1};
 #diag (qx{../src/task rc:sorting.rc list});
 
 my %tests =
@@ -169,7 +169,7 @@ my %tests =
 
 for my $sort (sort keys %tests)
 {
-  my $output = qx{../src/task rc:sorting.rc rc.report.list.sort:${sort} list};
+  my $output = qx{../src/task rc:sorting.rc rc.report.list.sort:${sort} list 2>&1};
   for my $expectation (@{$tests{$sort}})
   {
     like ($output, qr/$expectation/ms, "sort:${sort}");

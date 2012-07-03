@@ -43,8 +43,8 @@ if (open my $fh, '>', 'bug.rc')
 # - showing the list of default configuration variables
 # - checking that there is no error, no deprecated variable and no unrecognized variables
 
-qx{../src/task rc:bug.rc add foo};
-my $output = qx{../src/task rc:bug.rc show};
+qx{../src/task rc:bug.rc add foo 2>&1};
+my $output = qx{../src/task rc:bug.rc show 2>&1};
 unlike ($output, qr/Configuration error/ms, 'No configuration error');
 unlike ($output, qr/deprecated/ms, 'No deprecated variable');
 unlike ($output, qr/unrecognized/ms, 'No unrecognized variable');

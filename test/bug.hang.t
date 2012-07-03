@@ -56,9 +56,9 @@ eval
 {
   $SIG{'ALRM'} = sub {die "alarm\n"};
   alarm 10;
-  my $output = qx{../src/task rc:hang.rc list;
-                  ../src/task rc:hang.rc add due:today recur:1d infinite loop;
-                  ../src/task rc:hang.rc info 1};
+  my $output = qx{../src/task rc:hang.rc list 2>&1;
+                  ../src/task rc:hang.rc add due:today recur:1d infinite loop 2>&1;
+                  ../src/task rc:hang.rc info 1 2>&1};
   alarm 0;
 
   like ($output, qr/^Description\s+infinite loop\n/m, 'no hang');

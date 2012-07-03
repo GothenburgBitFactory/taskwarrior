@@ -40,35 +40,35 @@ if (open my $fh, '>', 'hasnt.rc')
 }
 
 # 1
-qx{../src/task rc:hasnt.rc add foo};
+qx{../src/task rc:hasnt.rc add foo 2>&1};
 
 # 2
-qx{../src/task rc:hasnt.rc add foo};
-qx{../src/task rc:hasnt.rc 2 annotate bar};
+qx{../src/task rc:hasnt.rc add foo 2>&1};
+qx{../src/task rc:hasnt.rc 2 annotate bar 2>&1};
 
 # 3
-qx{../src/task rc:hasnt.rc add foo};
-qx{../src/task rc:hasnt.rc 3 annotate bar};
-qx{../src/task rc:hasnt.rc 3 annotate baz};
+qx{../src/task rc:hasnt.rc add foo 2>&1};
+qx{../src/task rc:hasnt.rc 3 annotate bar 2>&1};
+qx{../src/task rc:hasnt.rc 3 annotate baz 2>&1};
 
 # 4
-qx{../src/task rc:hasnt.rc add bar};
+qx{../src/task rc:hasnt.rc add bar 2>&1};
 
 # 5
-qx{../src/task rc:hasnt.rc add bar};
-qx{../src/task rc:hasnt.rc 5 annotate foo};
+qx{../src/task rc:hasnt.rc add bar 2>&1};
+qx{../src/task rc:hasnt.rc 5 annotate foo 2>&1};
 
 # 6
-qx{../src/task rc:hasnt.rc add bar};
-qx{../src/task rc:hasnt.rc 6 annotate foo};
-qx{../src/task rc:hasnt.rc 6 annotate baz};
+qx{../src/task rc:hasnt.rc add bar 2>&1};
+qx{../src/task rc:hasnt.rc 6 annotate foo 2>&1};
+qx{../src/task rc:hasnt.rc 6 annotate baz 2>&1};
 
 #7
-qx{../src/task rc:hasnt.rc add one};
-qx{../src/task rc:hasnt.rc 7 annotate two};
-qx{../src/task rc:hasnt.rc 7 annotate three};
+qx{../src/task rc:hasnt.rc add one 2>&1};
+qx{../src/task rc:hasnt.rc 7 annotate two 2>&1};
+qx{../src/task rc:hasnt.rc 7 annotate three 2>&1};
 
-my $output = qx{../src/task rc:hasnt.rc ls description.has:foo};
+my $output = qx{../src/task rc:hasnt.rc ls description.has:foo 2>&1};
 like   ($output, qr/\n 1/, '1 has foo -> yes');
 like   ($output, qr/\n 2/, '2 has foo -> yes');
 like   ($output, qr/\n 3/, '3 has foo -> yes');
@@ -77,7 +77,7 @@ like   ($output, qr/\n 5/, '5 has foo -> yes');
 like   ($output, qr/\n 6/, '6 has foo -> yes');
 unlike ($output, qr/\n 7/, '7 has foo -> no');
 
-$output = qx{../src/task rc:hasnt.rc ls description.hasnt:foo};
+$output = qx{../src/task rc:hasnt.rc ls description.hasnt:foo 2>&1};
 unlike ($output, qr/\n 1/, '1 hasnt foo -> no');
 unlike ($output, qr/\n 2/, '2 hasnt foo -> no');  # 10
 unlike ($output, qr/\n 3/, '3 hasnt foo -> no');

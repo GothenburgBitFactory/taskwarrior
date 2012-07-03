@@ -62,9 +62,9 @@ EOF
   ok (-r 'pending.data', 'Created completed.data');
 }
 
-qx{../src/task rc:uuid.rc 9deed7ca-843d-4259-b2c4-40ce73e8e4f3 modify ONE};
-qx{../src/task rc:uuid.rc 2 modify TWO};
-my $output = qx{../src/task rc:uuid.rc list};
+qx{../src/task rc:uuid.rc 9deed7ca-843d-4259-b2c4-40ce73e8e4f3 modify ONE 2>&1};
+qx{../src/task rc:uuid.rc 2 modify TWO 2>&1};
+my $output = qx{../src/task rc:uuid.rc list 2>&1};
 like ($output, qr/ONE/, 'task list ONE');
 like ($output, qr/TWO/, 'task list TWO');
 like ($output, qr/three/, 'task list three');
@@ -74,8 +74,8 @@ unlike ($output, qr/five/, 'task does not list five');
 unlike ($output, qr/eenndd/, 'task does not list eenndd');
 unlike ($output, qr/UUNNDDOO/, 'task does not list UUNNDDOO');
 
-qx{../src/task rc:uuid.rc ea3b4822-574c-464b-8025-7f7be9f3cc57 modify FOUR};
-$output = qx{../src/task rc:uuid.rc completed};
+qx{../src/task rc:uuid.rc ea3b4822-574c-464b-8025-7f7be9f3cc57 modify FOUR 2>&1};
+$output = qx{../src/task rc:uuid.rc completed 2>&1};
 unlike ($output, qr/ONE/, 'task does not list ONE');
 unlike ($output, qr/TWO/, 'task does not list TWO');
 unlike ($output, qr/three/, 'task does not list three');
@@ -85,23 +85,23 @@ like ($output, qr/five/, 'did not modify task five');
 like ($output, qr/eenndd/, 'did not modify task eenndd');
 like ($output, qr/UUNNDDOO/, 'did not modify task UUNNDDOO');
 
-qx{../src/task rc:uuid.rc c1361003-948e-43e8-85c8-15d28dc3c71c modify status:pending};
-$output = qx{../src/task rc:uuid.rc list};
+qx{../src/task rc:uuid.rc c1361003-948e-43e8-85c8-15d28dc3c71c modify status:pending 2>&1};
+$output = qx{../src/task rc:uuid.rc list 2>&1};
 like ($output, qr/UUNNDDOO/, 'task UUNNDDOO modified status to pending');
-$output = qx{../src/task rc:uuid.rc completed};
+$output = qx{../src/task rc:uuid.rc completed 2>&1};
 unlike ($output, qr/UUNNDDOO/, 'task does not list UUNNDDOO after modification');
 
-qx{../src/task rc:uuid.rc d71d3566-7a6b-4c32-8f0b-6de75bb9397b modify start:1293796800};
-$output = qx{../src/task rc:uuid.rc long};
+qx{../src/task rc:uuid.rc d71d3566-7a6b-4c32-8f0b-6de75bb9397b modify start:1293796800 2>&1};
+$output = qx{../src/task rc:uuid.rc long 2>&1};
 like ($output, qr/12\/31\/2010/, 'modified start date of task ssttaarrtt');
 
-qx{../src/task rc:uuid.rc 727baa6c-65b8-485e-a810-e133e3cd83dc modify end:1293796800};
-$output = qx{../src/task rc:uuid.rc completed};
+qx{../src/task rc:uuid.rc 727baa6c-65b8-485e-a810-e133e3cd83dc modify end:1293796800 2>&1};
+$output = qx{../src/task rc:uuid.rc completed 2>&1};
 like ($output, qr/12\/31\/2010/, 'modified end date of task eenndd');
 
-qx{../src/task rc:uuid.rc aa4abef1-1dc5-4a43-b6a0-7872df3094bb modify entry:1293710400};
-qx{../src/task rc:uuid.rc aa4abef1-1dc5-4a43-b6a0-7872df3094bb modify start:1293883200};
-$output = qx{../src/task rc:uuid.rc long};
+qx{../src/task rc:uuid.rc aa4abef1-1dc5-4a43-b6a0-7872df3094bb modify entry:1293710400 2>&1};
+qx{../src/task rc:uuid.rc aa4abef1-1dc5-4a43-b6a0-7872df3094bb modify start:1293883200 2>&1};
+$output = qx{../src/task rc:uuid.rc long 2>&1};
 like ($output, qr/12\/30\/2010/, 'modified entry date of task three');
 like ($output, qr/1\/1\/2011/, 'added start date of task three with modify');
 

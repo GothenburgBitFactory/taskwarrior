@@ -46,14 +46,14 @@ if (open my $fh, '>', 'datesort.rc')
   ok (-r 'datesort.rc', 'Created datesort.rc');
 }
 
-qx{../src/task rc:datesort.rc add two   due:20100201};
-qx{../src/task rc:datesort.rc add one   due:20100101};
-qx{../src/task rc:datesort.rc add three due:20100301};
+qx{../src/task rc:datesort.rc add two   due:20100201 2>&1};
+qx{../src/task rc:datesort.rc add one   due:20100101 2>&1};
+qx{../src/task rc:datesort.rc add three due:20100301 2>&1};
 
-my $output = qx{../src/task rc:datesort.rc small_list};
+my $output = qx{../src/task rc:datesort.rc small_list 2>&1};
 like ($output, qr/one.+two.+three/ms, 'Sorting by due+ with format MD works');
 
-$output = qx{../src/task rc:datesort.rc rc.report.small_list.sort=due- small_list};
+$output = qx{../src/task rc:datesort.rc rc.report.small_list.sort=due- small_list 2>&1};
 like ($output, qr/three.+two.+one/ms, 'Sorting by due- with format MD works');
 
 # Cleanup.

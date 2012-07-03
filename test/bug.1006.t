@@ -43,16 +43,16 @@ if (open my $fh, '>', 'bug.rc')
 # This is because DOM elements are checked before standard words when strings
 # are tokenized.
 
-qx{../src/task rc:bug.rc add des};
-qx{../src/task rc:bug.rc 1 annotate des};
-my $output = qx{../src/task rc:bug.rc 1 info};
+qx{../src/task rc:bug.rc add des 2>&1};
+qx{../src/task rc:bug.rc 1 annotate des 2>&1};
+my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
 unlike ($output, qr/description/ms, 'Attribute not completed in description');
 
-$output = qx{../src/task test rc:bug.rc rc.report.test.columns:description rc.report.test.labels:__};
+$output = qx{../src/task test rc:bug.rc rc.report.test.columns:description rc.report.test.labels:__ 2>&1};
 like ($output, qr/__/ms, 'Custom column present in the output');
 
-$output = qx{../src/task rc:bug.rc add entrée interdite};
-$output = qx{../src/task rc:bug.rc list interdite};
+$output = qx{../src/task rc:bug.rc add entrée interdite 2>&1};
+$output = qx{../src/task rc:bug.rc list interdite 2>&1};
 like ($output, qr/entrée interdite/, "'entrée' left intact");
 
 # Cleanup.

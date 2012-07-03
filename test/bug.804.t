@@ -43,16 +43,16 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 804: URL link and break line
 
 # Setup: Add a tasks, annotate with long word.
-qx{../src/task rc:bug.rc add One};
-qx{../src/task rc:bug.rc 1 annotate abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz};
+qx{../src/task rc:bug.rc add One 2>&1};
+qx{../src/task rc:bug.rc 1 annotate abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz 2>&1};
 
 # List with rc.hyphenate=on.
-my $output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:on ls};
+my $output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:on ls 2>&1};
 like ($output, qr/vwx-\n/ms, 'hyphenated 1');
 like ($output, qr/tuv-\n/ms, 'hyphenated 2');
 
 # List with rc.hyphenate=off.
-$output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:off ls};
+$output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:off ls 2>&1};
 like ($output, qr/vwxy\n/ms, 'not hyphenated 1');
 like ($output, qr/uvwx\n/ms, 'not hyphenated 2');
 

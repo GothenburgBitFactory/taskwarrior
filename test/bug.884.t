@@ -39,9 +39,9 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 884: Extra space in path name.
-qx{../src/task rc:bug.rc add /one/two/three/};
-qx{../src/task rc:bug.rc add \\'/four/five/six/\\'};
-my $output = qx{../src/task rc:bug.rc ls};
+qx{../src/task rc:bug.rc add /one/two/three/ 2>&1};
+qx{../src/task rc:bug.rc add \\'/four/five/six/\\' 2>&1};
+my $output = qx{../src/task rc:bug.rc ls 2>&1};
 
 #like ($output, qr/\/one\/two\/three\//, "/one/two/three/ --> preserved");
 pass ("/one/two/three/ --> preserved -- TEST SKIPPED --");

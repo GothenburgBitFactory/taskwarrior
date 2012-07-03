@@ -44,14 +44,14 @@ if (open my $fh, '>', '440.rc')
 
 # Create a task and attempt simultaneous subst and appends, both permutations
 
-qx{../src/task rc:440.rc add Foo};
-qx{../src/task rc:440.rc add Foo};
+qx{../src/task rc:440.rc add Foo 2>&1};
+qx{../src/task rc:440.rc add Foo 2>&1};
 
-qx{../src/task rc:440.rc 1 append /Foo/Bar/ Appendtext};
-qx{../src/task rc:440.rc 2 append Appendtext /Foo/Bar/};
+qx{../src/task rc:440.rc 1 append /Foo/Bar/ Appendtext 2>&1};
+qx{../src/task rc:440.rc 2 append Appendtext /Foo/Bar/ 2>&1};
 
-my $output1 = qx{../src/task rc:440.rc 1 ls};
-my $output2 = qx{../src/task rc:440.rc 2 ls};
+my $output1 = qx{../src/task rc:440.rc 1 ls 2>&1};
+my $output2 = qx{../src/task rc:440.rc 2 ls 2>&1};
 
 unlike ($output1, qr/Foo/, 'simultaneous subst and append - subst');
 like ($output1, qr/\w+ Appendtext/, 'simultaneous subst and append - append');

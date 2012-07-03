@@ -41,10 +41,10 @@ if (open my $fh, '>', 'color.rc')
 }
 
 # Test the add command.
-qx{../src/task rc:color.rc add nothing};
-qx{../src/task rc:color.rc add red};
-qx{../src/task rc:color.rc 2 start};
-my $output = qx{../src/task rc:color.rc list};
+qx{../src/task rc:color.rc add nothing 2>&1};
+qx{../src/task rc:color.rc add red 2>&1};
+qx{../src/task rc:color.rc 2 start 2>&1};
+my $output = qx{../src/task rc:color.rc list 2>&1};
 
 like ($output, qr/ (?!<\033\[\d\dm) .* nothing .* (?!>\033\[0m) /x, 'none');
 like ($output, qr/ \033\[31m        .* red     .* \033\[0m /x, 'color.active');

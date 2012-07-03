@@ -41,10 +41,10 @@ if (open my $fh, '>', '455.rc')
 
 # Bug #455 - Text alignment in reports is broken when text contains utf8 characters
 
-qx{../src/task rc:455.rc add abc pro:Bar\x{263A}};
-qx{../src/task rc:455.rc add def pro:Foo!};
+qx{../src/task rc:455.rc add abc pro:Bar\x{263A} 2>&1};
+qx{../src/task rc:455.rc add def pro:Foo! 2>&1};
 
-my $output = qx{../src/task rc:455.rc ls};
+my $output = qx{../src/task rc:455.rc ls 2>&1};
 
 like ($output, qr/\s{7}abc/ms, 'bug 455 - correct spacing in utf8 task');
 like ($output, qr/\s{7}def/ms, 'bug 455 - correct spacing in non utf8 task');

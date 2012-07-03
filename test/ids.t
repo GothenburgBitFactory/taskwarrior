@@ -40,19 +40,19 @@ if (open my $fh, '>', 'ids.rc')
 }
 
 # Test the count command.
-qx{../src/task rc:ids.rc add one    +A +B};
-qx{../src/task rc:ids.rc add two    +A   };
-qx{../src/task rc:ids.rc add three  +A +B};
-qx{../src/task rc:ids.rc add four        };
-qx{../src/task rc:ids.rc add five   +A +B};
+qx{../src/task rc:ids.rc add one    +A +B 2>&1};
+qx{../src/task rc:ids.rc add two    +A    2>&1};
+qx{../src/task rc:ids.rc add three  +A +B 2>&1};
+qx{../src/task rc:ids.rc add four         2>&1};
+qx{../src/task rc:ids.rc add five   +A +B 2>&1};
 
-my $output = qx{../src/task rc:ids.rc ids +A};
+my $output = qx{../src/task rc:ids.rc ids +A 2>/dev/null};
 like ($output, qr/^1-3,5$/, 'ids +A --> 1-3,5');
 
-$output = qx{../src/task rc:ids.rc ids +B};
+$output = qx{../src/task rc:ids.rc ids +B 2>/dev/null};
 like ($output, qr/^1,3,5$/, 'ids +B --> 1,3,5');
 
-$output = qx{../src/task rc:ids.rc ids +A -B};
+$output = qx{../src/task rc:ids.rc ids +A -B 2>/dev/null};
 like ($output, qr/^2$/, 'ids +A -B --> 2');
 
 $output = qx{../src/task rc:ids.rc _ids +A};
@@ -61,7 +61,7 @@ like ($output, qr/^1\n2\n3\n5$/, '_ids +A --> 1\n2\n3\n5');
 $output = qx{../src/task rc:ids.rc _zshids +A};
 like ($output, qr/^1:one\n2:two\n3:three\n5:five$/, '_zshids +A --> 1:one\n2:two\n3:three\n5:five');
 
-$output = qx{../src/task rc:ids.rc uuids +A};
+$output = qx{../src/task rc:ids.rc uuids +A 2>/dev/null};
 like ($output, qr/^[0-9a-f-]+,[0-9a-f-]+,[0-9a-f-]+,[0-9a-f-]+$/, 'uuids +A --> uuid,uuid,uuid,uuid');
 
 $output = qx{../src/task rc:ids.rc _uuids +A};
