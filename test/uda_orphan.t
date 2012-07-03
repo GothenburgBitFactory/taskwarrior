@@ -57,7 +57,7 @@ if (open my $fh, '>', 'uda.rc')
 
 # Observe the UDA properly reported by the 'info' command.
 $output = qx{../src/task rc:uda.rc 1 info 2>&1};
-like ($output, qr/UDA Orphan\s+foo/, 'UDA orphan shown');
+like ($output, qr/extra\s+foo/, 'UDA orphan shown');
 
 # Modify the task, ensure UDA preserved.
 qx{../src/task rc:uda.rc 1 modify /one/two/ 2>&1};

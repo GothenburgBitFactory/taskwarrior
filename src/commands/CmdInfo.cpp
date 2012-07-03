@@ -352,6 +352,16 @@ int CmdInfo::execute (std::string& output)
       }
     }
 
+    // Show any orphaned UDAs, which are identified by not being represented in
+    // the context.columns map.
+    for (att = all.begin (); att != all.end (); ++att)
+      if (context.columns.find (*att) == context.columns.end ())
+      {
+         row = view.addRow ();
+         view.set (row, 0, "[" + *att);
+         view.set (row, 1, task->get (*att) + "]");
+      }
+
     // Create a second table, containing undo log change details.
     ViewText journal;
 
