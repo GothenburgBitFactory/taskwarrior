@@ -121,6 +121,8 @@ int CmdDenotate::execute (std::string& output)
         ++count;
         context.tdb2.modify (*task);
         feedback_affected (format (STRING_CMD_DENO_FOUND, anno));
+        if (context.verbose ("project"))
+          context.footnote (onProjectChange (*task, false));
       }
     }
     else

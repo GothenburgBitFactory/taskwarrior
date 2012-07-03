@@ -85,7 +85,7 @@ int CmdAnnotate::execute (std::string& output)
       ++count;
       feedback_affected (STRING_CMD_ANNO_TASK, *task);
       if (context.verbose ("project"))
-        context.footnote (onProjectChange (*task, true));
+        context.footnote (onProjectChange (*task, false));
 
       // Annotate siblings.
       if (task->has ("parent"))

@@ -88,7 +88,7 @@ int CmdAppend::execute (std::string& output)
       ++count;
       feedback_affected (STRING_CMD_APPEND_TASK, *task);
       if (context.verbose ("project"))
-        projectChanges[task->get ("project")] = onProjectChange (*task, true);
+        projectChanges[task->get ("project")] = onProjectChange (*task, false);
 
       // Append to siblings.
       if (task->has ("parent"))

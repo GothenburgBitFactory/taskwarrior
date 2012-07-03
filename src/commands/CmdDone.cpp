@@ -104,7 +104,7 @@ int CmdDone::execute (std::string& output)
           nagged = nag (*task);
         dependencyChainOnComplete (*task);
         if (context.verbose ("project"))
-          projectChanges[task->get ("project")] = onProjectChange (*task, false);
+          projectChanges[task->get ("project")] = onProjectChange (*task);
       }
       else
       {

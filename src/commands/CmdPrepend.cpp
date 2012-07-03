@@ -88,7 +88,7 @@ int CmdPrepend::execute (std::string& output)
       ++count;
       feedback_affected (STRING_CMD_PREPEND_TASK, *task);
       if (context.verbose ("project"))
-        projectChanges[task->get ("project")] = onProjectChange (*task, true);
+        projectChanges[task->get ("project")] = onProjectChange (*task, false);
 
       // Prepend to siblings.
       if (task->has ("parent"))
