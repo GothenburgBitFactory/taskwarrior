@@ -68,6 +68,9 @@ int CmdDenotate::execute (std::string& output)
   if (!words.size ())
     throw std::string (STRING_CMD_DENO_WORDS);
 
+  // Accumulated project change notifications.
+  std::map <std::string, std::string> projectChanges;
+
   std::string pattern = words.combine ();
 
   std::vector <Task>::iterator task;
@@ -122,7 +125,7 @@ int CmdDenotate::execute (std::string& output)
         context.tdb2.modify (*task);
         feedback_affected (format (STRING_CMD_DENO_FOUND, anno));
         if (context.verbose ("project"))
-          context.footnote (onProjectChange (*task, false));
+          projectChanges[task->get ("project")] = onProjectChange (*task, false);
       }
     }
     else
@@ -131,6 +134,12 @@ int CmdDenotate::execute (std::string& output)
       rc = 1;
     }
   }
+
+  // Now list the project changes.
+  std::map <std::string, std::string>::iterator i;
+  for (i = projectChanges.begin (); i != projectChanges.end (); ++i)
+    if (i->first != "")
+      context.footnote (i->second);
 
   context.tdb2.commit ();
   feedback_affected (count == 1 ? STRING_CMD_DENO_1 : STRING_CMD_DENO_N, count);

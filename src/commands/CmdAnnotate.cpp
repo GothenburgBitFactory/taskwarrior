@@ -67,6 +67,9 @@ int CmdAnnotate::execute (std::string& output)
   if (!modifications.size ())
     throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
 
+  // Accumulated project change notifications.
+  std::map <std::string, std::string> projectChanges;
+
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
@@ -85,7 +88,7 @@ int CmdAnnotate::execute (std::string& output)
       ++count;
       feedback_affected (STRING_CMD_ANNO_TASK, *task);
       if (context.verbose ("project"))
-        context.footnote (onProjectChange (*task, false));
+        projectChanges[task->get ("project")] = onProjectChange (*task, false);
 
       // Annotate siblings.
       if (task->has ("parent"))
@@ -117,6 +120,12 @@ int CmdAnnotate::execute (std::string& output)
       rc  = 1;
     }
   }
+
+  // Now list the project changes.
+  std::map <std::string, std::string>::iterator i;
+  for (i = projectChanges.begin (); i != projectChanges.end (); ++i)
+    if (i->first != "")
+      context.footnote (i->second);
 
   context.tdb2.commit ();
   feedback_affected (count == 1 ? STRING_CMD_ANNO_1 : STRING_CMD_ANNO_N, count);
