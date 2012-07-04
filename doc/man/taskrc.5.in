@@ -1249,6 +1249,59 @@ Lists all tasks matching the specified criteria.
 .B blocked
 List all tasks that have dependencies.
 
+.SS USER DEFINED ATTRIBUTES
+
+User defined attributes (UDAs) are an extension mechanism that allows you to
+define new attributes for Taskwarrior to store.  One such example is
+an 'estimate' attribute that could be used to store time estimates associated
+with a task.  This 'estimate' attribute is not built in to Taskwarrior, but with
+a few simple configuration settings you can instruct Taskwarrior to store this
+item, and provide access to it for custom reports and filters.
+
+This allows you to augment Taskwarrior to accomodate your workflow, or bend the
+rules and use Taskwarrior to store and synch data that is not necessarily
+task-related.
+
+One important restriction is that because this is an open system that allows
+the definition of any new attribute, Taskwarrior cannot understand the meaning
+of that attribute.  So while Taskwarrior will faithfully store, modify, report,
+sort and filter your UDA, it does not understand anything about it.  For example
+if you define a UDA named 'estimate', Taskwarrior will not know that this value
+is weeks, hours, minutes, money, or some other resource count.
+
+.TP
+.B uda.<name>.type=string|numeric|date|duration
+.RS
+Defines a UDA called '<name>', of the specified type.
+.RE
+
+.TP
+.B uda.<name>.label=<column heading>
+.RS
+Provides a default report label for the UDA called '<name>'.
+.RE
+
+.TP
+.B uda.<name>.values=A,B,C
+.RS
+For type 'string' UDAs only, this provides a comma-separated list of acceptable
+values.  In this example, the '<name>' UDA may only contain values 'A', 'B',
+or 'C', but may also contain no value.
+.RE
+
+.TP
+.B Example 'estimate' UDA
+This example shows an 'estimate' UDA that stores specific values for the size
+of a task.
+
+.RS
+.B uda.estimate.type=string
+.br
+.B uda.estimate.label=Size Estimate
+.br
+.B uda.estimate.values=trivial,small,medium,large,huge
+.RE
+
 .SH "CREDITS & COPYRIGHTS"
 Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.
 

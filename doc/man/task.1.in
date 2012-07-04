@@ -225,7 +225,8 @@ This command is mainly of use to external scripts.
 
 .TP
 .B task udas
-Shows a list of UDAs that are defined, including their name, type and label.
+Shows a list of UDAs that are defined, including their name, type, label and
+allowed values.  Also shows UDA usage and any orphan UDAs.
 
 .TP
 .B task <filter> information
