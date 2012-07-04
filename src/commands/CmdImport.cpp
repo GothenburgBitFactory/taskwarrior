@@ -154,6 +154,7 @@ int CmdImport::execute (std::string& output)
           //   mask
           //   imask
           //   parent
+          //   UDA orphans
           else
           {
             // Annotations are an array of JSON objects with 'entry' and
@@ -194,8 +195,11 @@ int CmdImport::execute (std::string& output)
               task.set (i->first, unquoteText (i->second->dump ()));
             }
 
+            // UDA Orphan - must be preserved.
             else
-              throw format (STRING_CMD_IMPORT_BAD_ATT, i->first);
+            {
+              task.set (i->first, unquoteText (i->second->dump ()));
+            }
           }
         }
 
