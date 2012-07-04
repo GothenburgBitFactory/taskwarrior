@@ -82,6 +82,9 @@ Bugs
  + Fixed bug #990, which prevents color precedence to be applied correctly for
    tagged tasks.
  + Fixed bug #1001, which caused a segv (thanks to Bryce Harrington).
+ + Fixed bug #1006, #1024, which caused words like the German 'im' and 'des' in
+   a description to be expanded into 'imask' and 'description' (thanks to
+   Louis-Claude Canon and Martin U).
  + Fixed bug #1008, which failed to remove tasks with the special tag '+nocal'
    from the calendar report output with 'calendar.details=full' set (thanks to
    Bryan Kam).

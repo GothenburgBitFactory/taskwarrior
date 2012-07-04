@@ -1301,12 +1301,13 @@ bool A3::is_attr (Nibbler& n, Arg& arg)
 {
   n.save ();
   std::string name;
+  std::string canonical;
   std::string value;
 
   // If there is a valid attribute name.
   if (n.getName (name) &&
       name.length ()   &&
-      is_attribute (name, name))
+      is_attribute (name, canonical))
   {
     if (n.skip (':'))
     {
@@ -1326,13 +1327,13 @@ bool A3::is_attr (Nibbler& n, Arg& arg)
           return false;
 */
 
-        arg._raw      = name + ':' + value;
+        arg._raw      = canonical + ':' + value;
         arg._category = Arg::cat_attr;
 
         // Most attributes are standard, some are pseudo-attributes, such as
         // 'limit:page', which is not represented by a column object, and
         // therefore not stored.
-        std::map<std::string, Column*>::iterator i = context.columns.find (name);
+        std::map<std::string, Column*>::iterator i = context.columns.find (canonical);
         if (i != context.columns.end ())
           arg._type = Arg::type_id (i->second->type ());
         else
@@ -1353,6 +1354,7 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
 {
   n.save ();
   std::string name;
+  std::string canonical;
   std::string modifier;
   std::string value;
 //  time_t date;
@@ -1360,7 +1362,7 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
   // If there is a valid attribute name.
   if (n.getName (name) &&
       name.length ()   &&
-      is_attribute (name, name))
+      is_attribute (name, canonical))
   {
     if (n.skip ('.'))
     {
@@ -1395,8 +1397,8 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
               return false;
 */
 
-            arg._raw      = name + '.' + modifier + ':' + value;
-            Column* col   = context.columns[name];
+            arg._raw      = canonical + '.' + modifier + ':' + value;
+            Column* col   = context.columns[canonical];
             arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
             arg._category = Arg::cat_attmod;
             return true;
@@ -1472,6 +1474,7 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
 {
   n.save ();
   std::string name;
+  std::string canonical;
   int id;
   std::string uuid;
 
@@ -1505,11 +1508,12 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
       n.skip ('.')     &&
       n.getName (name) &&
       name.length ()   &&
-      is_attribute (name, name))
+      is_attribute (name, canonical))
   {
-    result = format (id) + '.' + name;
+    name          = canonical;
+    result        = format (id) + '.' + name;
     arg._raw      = result;
-    Column* col = context.columns[name];
+    Column* col   = context.columns[name];
     arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
     arg._category = Arg::cat_dom;
     return true;
@@ -1522,10 +1526,11 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
       n.skip ('.')     &&
       n.getName (name) &&
       name.length ()   &&
-      is_attribute (name, name))
+      is_attribute (name, canonical))
   {
+    name          = canonical;
     arg._raw      = uuid + '.' + name;
-    Column* col = context.columns[name];
+    Column* col   = context.columns[name];
     arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
     arg._category = Arg::cat_dom;
     return true;
@@ -1536,12 +1541,13 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
   // Attribute.
   if (n.getName (name) &&
       name.length ()   &&
-      is_attribute (name, name))
+      is_attribute (name, canonical))
   {
     if (name != "limit")
     {
       arg._raw      = name;
-      Column* col = context.columns[name];
+      arg._value    = canonical;
+      Column* col   = context.columns[canonical];
       arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
       arg._category = Arg::cat_dom;
       return true;

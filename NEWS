@@ -7,6 +7,7 @@ New Features in taskwarrior 2.0.1
     opportunity to work on a task.
   - All tasks may now be given an 'until' date, after which they will expire
     and are deleted.
+  - User defined attributes.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
