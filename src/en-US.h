@@ -186,6 +186,7 @@
 #define STRING_COLUMN_LABEL_UDA      "Name"
 #define STRING_COLUMN_LABEL_TYPE     "Type"
 #define STRING_COLUMN_LABEL_LABEL    "Label"
+#define STRING_COLUMN_LABEL_VALUES   "Allowed Values"
 
 // Column Examples
 #define STRING_COLUMN_EXAMPLES_TAGS  "home @chore"

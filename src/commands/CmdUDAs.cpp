@@ -81,13 +81,15 @@ int CmdUDAs::execute (std::string& output)
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_UDA));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_TYPE));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_LABEL));
+    view.add (Column::factory ("string", STRING_COLUMN_LABEL_VALUES));
 
 
     std::vector <std::string>::iterator uda;
     for (uda = udas.begin (); uda != udas.end (); ++uda)
     {
-      std::string type  = context.config.get ("uda." + *uda + ".type");
-      std::string label = context.config.get ("uda." + *uda + ".label");
+      std::string type   = context.config.get ("uda." + *uda + ".type");
+      std::string label  = context.config.get ("uda." + *uda + ".label");
+      std::string values = context.config.get ("uda." + *uda + ".values");
       if (label == "")
         label = *uda;
 
@@ -95,6 +97,7 @@ int CmdUDAs::execute (std::string& output)
       view.set (row, 0, *uda);
       view.set (row, 1, type);
       view.set (row, 2, label);
+      view.set (row, 3, values);
     }
 
     out << optionalBlankLine ()
