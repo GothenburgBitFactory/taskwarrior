@@ -92,6 +92,8 @@ Bugs
    that lack description or entry date (thanks to Nicholas Rabenau).
  + Fixed bug #1017, which exported invalid JSON when there were no tasks (thanks
    to Nicholas Rabenau).
+ + Fixed bug #1023, which applied default.project and default.priority during
+   modification (thanks to Christoph Lange).
 
 ------ old releases ------------------------------
 

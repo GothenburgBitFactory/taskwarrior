@@ -102,7 +102,7 @@ public:
 
   void substitute (const std::string&, const std::string&, bool);
 
-  void validate ();
+  void validate (bool applyDefault = true);
 
   float urgency_c () const;
   float urgency ();

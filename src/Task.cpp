@@ -1066,7 +1066,7 @@ void Task::substitute (
 //   2) To provide suitable warnings about odd states
 //   3) To generate errors when the inconsistencies are not fixable
 //
-void Task::validate ()
+void Task::validate (bool applyDefault /* = true */)
 {
   Task::status status = getStatus ();
 
@@ -1105,7 +1105,7 @@ void Task::validate ()
     setEnd ();
 
   // Override with default.project, if not specified.
-  if (! has ("project"))
+  if (applyDefault && ! has ("project"))
   {
     std::string defaultProject = context.config.get ("default.project");
     if (defaultProject != "" &&
@@ -1114,7 +1114,7 @@ void Task::validate ()
   }
 
   // Override with default.priority, if not specified.
-  if (get ("priority") == "")
+  if (applyDefault && get ("priority") == "")
   {
     std::string defaultPriority = context.config.get ("default.priority");
     if (defaultPriority != "" &&
@@ -1123,7 +1123,7 @@ void Task::validate ()
   }
 
   // Override with default.due, if not specified.
-  if (get ("due") == "")
+  if (applyDefault && get ("due") == "")
   {
     std::string defaultDue = context.config.get ("default.due");
     if (defaultDue != "" &&

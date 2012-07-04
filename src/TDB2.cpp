@@ -477,7 +477,7 @@ void TDB2::add (Task& task)
 void TDB2::modify (Task& task)
 {
   // Ensure the task is consistent, and provide defaults if necessary.
-  task.validate ();
+  task.validate (false);
 
   // Find task, overwrite it.
   Task original;
