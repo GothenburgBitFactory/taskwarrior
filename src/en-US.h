@@ -187,6 +187,8 @@
 #define STRING_COLUMN_LABEL_TYPE     "Type"
 #define STRING_COLUMN_LABEL_LABEL    "Label"
 #define STRING_COLUMN_LABEL_VALUES   "Allowed Values"
+#define STRING_COLUMN_LABEL_UDACOUNT "Usage Count"
+#define STRING_COLUMN_LABEL_ORPHAN   "Orphan UDA"
 
 // Column Examples
 #define STRING_COLUMN_EXAMPLES_TAGS  "home @chore"
@@ -315,6 +317,8 @@
 #define STRING_CMD_UDAS_NO           "No UDAs defined."
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA defined"
 #define STRING_CMD_UDAS_SUMMARY2     "{1} UDAs defined"
+#define STRING_CMD_UDAS_ORPHAN       "{1} Orphan UDA"
+#define STRING_CMD_UDAS_ORPHANS      "{1} Orphan UDAs"
 
 #define STRING_CMD_DELETE_USAGE      "Deletes the specified task"
 #define STRING_CMD_DELETE_CONFIRM    "Permanently delete task {1} '{2}'?"

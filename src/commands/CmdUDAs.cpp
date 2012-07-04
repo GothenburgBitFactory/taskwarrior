@@ -71,6 +71,10 @@ int CmdUDAs::execute (std::string& output)
     }
   }
 
+  // Load/filter all data.
+  std::vector <Task> filtered;
+  filter (filtered);
+
   if (udas.size ())
   {
     std::sort (udas.begin (), udas.end ());
@@ -82,7 +86,7 @@ int CmdUDAs::execute (std::string& output)
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_TYPE));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_LABEL));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_VALUES));
-
+    view.add (Column::factory ("string", STRING_COLUMN_LABEL_UDACOUNT));
 
     std::vector <std::string>::iterator uda;
     for (uda = udas.begin (); uda != udas.end (); ++uda)
@@ -93,11 +97,19 @@ int CmdUDAs::execute (std::string& output)
       if (label == "")
         label = *uda;
 
+      // Count UDA usage by UDA.
+      int count = 0;
+      std::vector <Task>::iterator i;
+      for (i = filtered.begin (); i != filtered.end (); ++i)
+        if (i->has (*uda))
+          ++count;
+
       int row = view.addRow ();
       view.set (row, 0, *uda);
       view.set (row, 1, type);
       view.set (row, 2, label);
       view.set (row, 3, values);
+      view.set (row, 4, count);
     }
 
     out << optionalBlankLine ()
@@ -112,6 +124,43 @@ int CmdUDAs::execute (std::string& output)
   {
     out << STRING_CMD_UDAS_NO << "\n";
     rc = 1;
+  }
+
+  // Orphans are task attributes that are not represented in context.columns.
+  std::map <std::string, int> orphans;
+  std::vector <Task>::iterator i;
+  for (i = filtered.begin (); i != filtered.end (); ++i)
+  {
+    std::map <std::string, std::string>::iterator att;
+    for (att = i->begin (); att != i->end (); ++att)
+      if (att->first.substr (0, 11) != "annotation_" &&
+          context.columns.find (att->first) == context.columns.end ())
+        orphans[att->first]++;
+  }
+
+  if (orphans.size ())
+  {
+    // Display the orphans and their counts.
+    ViewText orphanView;
+    orphanView.width (context.getWidth ());
+    orphanView.add (Column::factory ("string", STRING_COLUMN_LABEL_ORPHAN));
+    orphanView.add (Column::factory ("string", STRING_COLUMN_LABEL_UDACOUNT));
+
+    std::map <std::string, int>::iterator o;
+    for (o = orphans.begin (); o != orphans.end (); ++o)
+    {
+      int row = orphanView.addRow ();
+      orphanView.set (row, 0, o->first);
+      orphanView.set (row, 1, o->second);
+    }
+
+    out << optionalBlankLine ()
+        << orphanView.render ()
+        << optionalBlankLine ()
+        << (udas.size () == 1
+              ? format (STRING_CMD_UDAS_ORPHAN,  udas.size ())
+              : format (STRING_CMD_UDAS_ORPHANS, udas.size ()))
+        << "\n";
   }
 
   output = out.str ();
