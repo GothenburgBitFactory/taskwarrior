@@ -66,7 +66,7 @@ like ($output, qr/extra\s+foo/, 'UDA orphan preserved by modification');
 
 # Make sure an orphan UDA is exported.
 $output = qx{../src/task rc:uda.rc export 2>&1};
-like ($output, qr/"extra":"two"/, 'UDA orphan exported');
+like ($output, qr/"extra":"foo"/, 'UDA orphan exported');
 
 # Make sure an orphan UDA can be exported.
 if (open my $fh, '>', 'import.txt')
