@@ -173,6 +173,9 @@ void Column::uda (std::map <std::string, Column*>& all)
   std::map <std::string, int>::iterator uda;
   for (uda = udas.begin (); uda != udas.end (); ++uda)
   {
+    if (all.find (uda->first) != all.end ())
+      throw format (STRING_UDA_COLLISION, uda->first);
+
     Column* c = Column::uda (uda->first);
     all[c->_name] = c;
   }
