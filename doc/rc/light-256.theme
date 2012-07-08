@@ -70,6 +70,7 @@ color.pri.M=color237
 color.pri.L=color242
 color.tagged=rgb020
 color.blocked=gray12 on gray4
+color.blocking=gray12 on gray6
 color.project.none=
 color.tag.none=
 color.alternate=on color254

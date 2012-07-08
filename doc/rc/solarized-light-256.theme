@@ -47,6 +47,7 @@ color.active=bold red #color9
 color.alternate=on white #color7 (allows bold for alternate rows)
 
 color.blocked=on color14
+color.blocking=on color14
 
 color.burndown.done=color0 on color4
 color.burndown.pending=color0 on color1

@@ -70,6 +70,7 @@ color.pri.M=rgb400
 color.pri.L=rgb300
 color.tagged=color246
 color.blocked=white on rgb100
+color.blocking=white on rgb200
 color.project.none=
 color.tag.none=
 color.alternate=on color233

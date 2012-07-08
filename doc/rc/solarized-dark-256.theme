@@ -47,6 +47,7 @@ color.active=bold red
 color.alternate=on black #color0
 
 color.blocked=color0 on color10
+color.blocking=color15 on color10
 
 color.burndown.done=color0 on color4
 color.burndown.pending=color0 on color1

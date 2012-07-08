@@ -70,6 +70,7 @@ color.pri.M=black
 color.pri.L=
 color.tagged=green
 color.blocked=white on black
+color.blocking=bold white on black
 color.project.none=
 color.tag.none=
 color.alternate=
