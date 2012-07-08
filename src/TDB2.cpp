@@ -105,6 +105,46 @@ const std::vector <std::string>& TF2::get_lines ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Locate task by id.
+bool TF2::get (int id, Task& task)
+{
+  if (! _loaded_tasks)
+    load_tasks ();
+
+  std::vector <Task>::iterator i;
+  for (i = _tasks.begin (); i != _tasks.end (); ++i)
+  {
+    if (i->id == id)
+    {
+      task = *i;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Locate task by uuid.
+bool TF2::get (const std::string& uuid, Task& task)
+{
+  if (! _loaded_tasks)
+    load_tasks ();
+
+  std::vector <Task>::iterator i;
+  for (i = _tasks.begin (); i != _tasks.end (); ++i)
+  {
+    if (i->get ("uuid") == uuid)
+    {
+      task = *i;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void TF2::add_task (const Task& task)
 {
   _tasks.push_back (task);           // For subsequent queries
@@ -1632,75 +1672,19 @@ const std::vector <Task> TDB2::all_tasks ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Locate task by ID.
+// Locate task by ID, wherever it is.
 bool TDB2::get (int id, Task& task)
 {
-  // First load and scan pending.
-  if (! pending._loaded_tasks)
-    pending.load_tasks ();
-
-  std::vector <Task>::iterator i;
-  for (i = pending._tasks.begin (); i != pending._tasks.end (); ++i)
-  {
-    if (i->id == id)
-    {
-      task = *i;
-      return true;
-    }
-  }
-
-  // Next load and scan completed.
-  // Note that this is harmless, because it is only performed if the above
-  // load and search fails.
-  if (! completed._loaded_tasks)
-    completed.load_tasks ();
-
-  for (i = completed._tasks.begin (); i != completed._tasks.end (); ++i)
-  {
-    if (i->id == id)
-    {
-      task = *i;
-      return true;
-    }
-  }
-
-  return false;
+  return pending.get   (id, task) ||
+         completed.get (id, task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Locate task by UUID.
+// Locate task by UUID, wherever it is.
 bool TDB2::get (const std::string& uuid, Task& task)
 {
-  // First load and scan pending.
-  if (! pending._loaded_tasks)
-    pending.load_tasks ();
-
-  std::vector <Task>::iterator i;
-  for (i = pending._tasks.begin (); i != pending._tasks.end (); ++i)
-  {
-    if (i->get ("uuid") == uuid)
-    {
-      task = *i;
-      return true;
-    }
-  }
-
-  // Next load and scan completed.
-  // Note that this is harmless, because it is only performed if the above
-  // load and search fails.
-  if (! completed._loaded_tasks)
-    completed.load_tasks ();
-
-  for (i = completed._tasks.begin (); i != completed._tasks.end (); ++i)
-  {
-    if (i->get ("uuid") == uuid)
-    {
-      task = *i;
-      return true;
-    }
-  }
-
-  return false;
+  return pending.get   (uuid, task) ||
+         completed.get (uuid, task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

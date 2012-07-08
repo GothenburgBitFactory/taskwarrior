@@ -49,6 +49,9 @@ public:
   const std::vector <Task>&        get_tasks ();
   const std::vector <std::string>& get_lines ();
 
+  bool get (int, Task&);
+  bool get (const std::string&, Task&);
+
   void add_task (const Task&);
   bool modify_task (const Task&);
   void add_line (const std::string&);
