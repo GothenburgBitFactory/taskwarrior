@@ -42,9 +42,9 @@ if (open my $fh, '>', 'outerr.rc')
 # error
 
 # Check that errors are sent to standard error
-my $stdout = qx{../src/task rc:outerr.rc add due:__ 2> /dev/null};
+my $stdout = qx{../src/task rc:outerr.rc add due:__ foo 2> /dev/null};
 unlike ($stdout, qr/^The duration '__' was not recognized as valid, with correct units like '3days'.$/ms, 'Errors are not sent to stdout');
-my $stderr = qx{../src/task rc:outerr.rc add due:__ 2>&1 >/dev/null};
+my $stderr = qx{../src/task rc:outerr.rc add due:__ bar 2>&1 >/dev/null};
 like ($stderr, qr/^The duration '__' was not recognized as valid, with correct units like '3days'.$/ms, 'Errors are sent to stderr');
 
 # Check that headers are sent to standard error

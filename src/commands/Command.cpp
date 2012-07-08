@@ -545,10 +545,9 @@ void Command::modify_task (
             long l = (long) strtod (result.c_str (), NULL);
             if (labs (l) < 5 * 365 * 86400)
             {
-              Duration dur (result);
+              Duration dur (value);
               Date now;
               now += l;
-              //now += dur;
               task.set (name, now.toEpochString ());
             }
             else
@@ -562,7 +561,7 @@ void Command::modify_task (
           else if (name == "recur" ||
                    column->type () == "duration")
           {
-            // All values must be eval'd first.
+            // All values must be eval'd first, in this case, just to catch errors.
             A3 value_tokens;
             value_tokens.capture (value);
             value_tokens = value_tokens.postfix (value_tokens.tokenize (value_tokens));
@@ -571,8 +570,11 @@ void Command::modify_task (
             std::string result = e.evalExpression (task);
             context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
 
-            Duration d (result);
-            task.set (name, result);
+            Duration d (value);
+
+            // Deliberately storing the 'raw' value, which is necessary for
+            // durations like 'weekday'..
+            task.set (name, value);
           }
 
           // Need handling for numeric types, used by UDAs.

@@ -135,11 +135,16 @@ Duration::Duration (const std::string& input)
 {
   if (digitsOnly (input))
   {
-    _secs = (time_t) strtol (input.c_str (), NULL, 10);
-    _negative = false;
+    time_t value = (time_t) strtol (input.c_str (), NULL, 10);
+    if (value == 0 || value > 60)
+    {
+      _secs = value;
+      _negative = false;
+      return;
+    }
   }
-  else
-    parse (input);
+
+  parse (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -362,8 +367,9 @@ bool Duration::valid (const std::string& input)
   n.getUntilEOS (units);
 
   // Non-trivial value with no units means the duration is specified in
-  // seconds, and therefore a time_t.  Consider it valid.
-  if (value != 0.0 &&
+  // seconds, and therefore a time_t.  Consider it valid provided it is >= 60.
+  if (value != 0.0  &&
+      value >= 60.0 &&
       units == "")
     return true;
 
@@ -401,13 +407,13 @@ void Duration::parse (const std::string& input)
     _negative = false;
 
   // If no units are provided, assume seconds.
-  if (n.depleted ())
+  std::string units;
+  if (n.depleted () && value >= 60)
   {
     _secs = (long) value;
     return;
   }
 
-  std::string units;
   n.getUntilEOS (units);
 
   // Auto complete against all supported durations.
