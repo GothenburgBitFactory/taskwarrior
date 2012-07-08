@@ -39,7 +39,11 @@ extern Context context;
 ColumnRecur::ColumnRecur ()
 {
   _name  = "recur";
+
+  // This is 'string', and not 'duration' to force the value to be stored as a
+  // raw duration, so that it can be reevaluated every time.
   _type  = "string";
+
   _style = "duration";
   _label = STRING_COLUMN_LABEL_RECUR;
 

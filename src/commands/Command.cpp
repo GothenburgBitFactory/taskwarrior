@@ -559,7 +559,8 @@ void Command::modify_task (
           }
 
           // Durations too.
-          else if (column->type () == "duration")
+          else if (name == "recur" ||
+                   column->type () == "duration")
           {
             // All values must be eval'd first.
             A3 value_tokens;
@@ -737,19 +738,7 @@ bool Command::next_mod_group (const A3& input, Arg& arg, unsigned int& pos)
   {
     arg = input[pos++];
 
-    // Date attributes aggregate durations and operators.
-    if (arg._type == Arg::type_date &&
-        arg._category == Arg::cat_attr)
-    {
-      while (pos < input.size () &&
-             (input[pos]._type     == Arg::type_duration ||
-              input[pos]._category == Arg::cat_op))
-      {
-        arg._raw += " " + input[pos++]._raw;
-      }
-    }
-
-    else if (arg._raw == "depends")
+    if (arg._raw == "depends")
     {
       while (pos < input.size () &&
              (input[pos]._category == Arg::cat_op ||

@@ -600,7 +600,7 @@
 #define STRING_DOM_CANNOT_SET        "DOM: Cannot set '{1}'."
 
 // Duration
-#define STRING_DURATION_UNRECOGNIZED "The date/duration '{1}' was not recognized."
+#define STRING_DURATION_UNRECOGNIZED "The duration '{1}' was not recognized as valid, with correct units like '3days'."
 
 // E9
 #define STRING_E9_UNSUPPORTED        "Unsupported operator '{1}'."

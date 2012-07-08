@@ -28,22 +28,21 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 3;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "recurrence.limit=1\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }
 
-# Bug 886: tw doesn't warn the user if, e.g., a weekday cannot be resolved properly
-my $output = qx{../src/task rc:bug.rc add one due:sund 2>&1};
-like ($output, qr/Created task 1\./, 'sund --> valid date');
-
-$output = qx{../src/task rc:bug.rc add two due:donkey 2>&1 >/dev/null};
-like ($output, qr/was not recognized/, 'donkey --> invalid date');
+# Bug 972: A recurrence period of "7" is interpreted as "7s", not "7d" as
+# intended.
+my $output = qx{../src/task rc:bug.rc add foo due:now recur:2 2>&1};
+like ($output, qr/ not recognized as valid, /, 'recur:2 is not valid');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);

@@ -27,7 +27,6 @@
 
 #define L10N                                           // Localization complete.
 
-#include <iostream>
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
@@ -1335,7 +1334,13 @@ bool A3::is_attr (Nibbler& n, Arg& arg)
         // therefore not stored.
         std::map<std::string, Column*>::iterator i = context.columns.find (canonical);
         if (i != context.columns.end ())
-          arg._type = Arg::type_id (i->second->type ());
+        {
+          // Special-case: override the type, which is 'string'.
+          if (canonical == "recur")
+            arg._type = Arg::type_duration;
+          else
+            arg._type = Arg::type_id (i->second->type ());
+        }
         else
           arg._type = Arg::type_pseudo;
 
@@ -2072,7 +2077,7 @@ bool A3::which_operator (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3::dump (const std::string& label)
+void A3::dump (const std::string& label) const
 {
   if (context.config.getBoolean ("debug"))
   {

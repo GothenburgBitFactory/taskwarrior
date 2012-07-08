@@ -45,7 +45,7 @@ if (open my $fh, '>', 'color.rc')
 
 # Test the errors colors
 my $output = qx{../src/task rc:color.rc rc.debug:on add due:__ 2>&1 >/dev/null};
-like ($output, qr/^\033\[33mThe\ date\/duration\ '__'\ was\ not\ recognized.\033\[0m$/xms, 'color.error');
+like ($output, qr/^\033\[33mThe\ duration\ '__'\ was\ not\ recognized\ as\ valid,\ with\ correct\ units\ like\ '3days'\.\033\[0m$/xms, 'color.error');
 like ($output, qr/^\033\[32mTimer\ Config::load\ \(color.rc\) .* \033\[0m$/xms, 'color.debug');
 like ($output, qr/^\033\[34mUsing\ alternate\ .taskrc\ file\ color.rc\033\[0m$/xms, 'color.header');
 like ($output, qr/^\033\[31mConfiguration\ override\ rc.debug:on\033\[0m$/xms, 'color.footnote');
