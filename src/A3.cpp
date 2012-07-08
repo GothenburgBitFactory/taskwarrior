@@ -892,6 +892,9 @@ const A3 A3::tokenize (const A3& input) const
 //
 const A3 A3::infix (const A3& input) const
 {
+  if (input.size () == 1)
+    return input;
+
   Arg previous ("?", Arg::cat_op);
 
   A3 modified;
@@ -1229,6 +1232,9 @@ const A3 A3::sequence (const A3& input) const
 //
 const A3 A3::postfix (const A3& input) const
 {
+  if (input.size () == 1)
+    return input;
+
   A3 converted;
   converted._limit = input._limit;
 
