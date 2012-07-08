@@ -20,17 +20,18 @@ General Statement
   - Take a look at the bug database.  It is the nature of software to contain
     bugs, and there is a continuous effort to fix them.  Looking at open bugs
     and confirming them, perhaps determining that it is already fixed, or just
-    adding clarifying information are all very useful contributions.
+    adding clarifying information are all very useful contributions and much
+    needed.
 
   - Fix a bug.  For this you'll need C++ and git skills, but this is one of
     the largest ways you can contribute.  We welcome all bug fixes, provided
     the work is done well and doesn't create other problems or introduce new
     dependencies.
 
-  - Add unit tests.  Unit tests are possibly the most useful contributions,
-    because they not only improve the quality of the code, but prevent future
-    regressions.  Plus, broken tests are a great motivator for us to fix the
-    causal bug.
+  - Add unit tests.  Unit tests are possibly the most useful contributions of
+    all, because they not only improve the quality of the code, but prevent
+    future regressions.  Plus, broken tests are a great motivator for us to fix
+    the causal bug.
 
   - Add a feature.  Well, let's be very clear about this: adding a feature is
     not usually well-received, and if you add a feature and send a patch, it
@@ -53,8 +54,8 @@ Deprecated Code
   This is code that is going to be phased out soon, and therefore is not worth
   fixing or documenting.  Don't waste your time.
 
-  - 'shell' command.
-  - Shadow file support in core.
+  - 'shell' command.  It will migrate to become an external script.
+  - Shadow file support in core.  It will migrate to become an external script.
   - Support for 'fg:' and 'bg:' attributes.
 
 New Code Needs
@@ -93,7 +94,6 @@ Documentation Needed
   update.
 
   - Wiki/How-To: Date Handling
-  - Wiki/How-To: Custom Reports, including performance considerations
   - Wiki/How-To: Aliases, particularly new enhanced aliases
   - Wiki/Features: All sections
 
@@ -133,7 +133,8 @@ Unit Tests Needed
   Either way, a TAP file 'all.log' is written that contains all test results.
   once this file is created, you can see the failing tests using this script:
 
-    task.git/test/problems
+    cd task.git/test
+    ./problems
 
   If you make a habit of running the test suite, consider downloading the
   vramsteg utility to show a colorful progress bar, from:
@@ -162,7 +163,10 @@ Work in Progress
   Things that are currently in flux, which is another way of saying leave it
   alone while it is being worked on.
 
-  - Command line parser.
+  - Command line parser (A3).
+  - Expression evaluation (E9).
+  - All columns/Col*::validate methods.
+  - New columns/Col*::modify methods.
 
 Current Codebase Condition
 

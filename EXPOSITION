@@ -153,7 +153,7 @@ Test Suite
   mostly written in Perl, and utilize the Test::More module to generate TAP
   output.  Some tests are written in C++ and also generate TAP.
 
-  There are currently around 5,000 unit tests, that take a minute or two to run
+  There are currently over 5,000 unit tests, that take a minute or two to run
   in total.
 
   There is a tinderbox that runs on a variable frequency.  As a release
