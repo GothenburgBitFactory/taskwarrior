@@ -131,6 +131,7 @@ int Context::initialize (int argc, const char** argv)
 */
 
     // Create missing config file and data directory, if necessary.
+    a3.apply_overrides ();
     createDefaultConfig ();
 
     // Handle Aliases.
@@ -596,7 +597,8 @@ void Context::createDefaultConfig ()
   // Do we need to create a default rc?
   if (! rc_file.exists ())
   {
-    if (!confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
+    if (config.getBoolean ("confirmation") &&
+        !confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
       throw std::string (STRING_CONTEXT_NEED_RC);
 
     config.createDefaultRC (rc_file, data_dir);
@@ -710,28 +712,32 @@ void Context::updateVerbosity ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::header (const std::string& input)
 {
-  if (input.length ())
+  if (input.length () &&
+      std::find (headers.begin (), headers.end (), input) == headers.end ())
     headers.push_back (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Context::footnote (const std::string& input)
 {
-  if (input.length ())
+  if (input.length () &&
+      std::find (footnotes.begin (), footnotes.end (), input) == footnotes.end ())
     footnotes.push_back (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Context::error (const std::string& input)
 {
-  if (input.length ())
+  if (input.length () &&
+      std::find (errors.begin (), errors.end (), input) == errors.end ())
     errors.push_back (input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Context::debug (const std::string& input)
 {
-  if (input.length ())
+  if (input.length () &&
+      std::find (debugMessages.begin (), debugMessages.end (), input) == debugMessages.end ())
     debugMessages.push_back (input);
 }
 

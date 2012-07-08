@@ -32,6 +32,10 @@ Features
    with 'dateformat.info'.
  + Bash script improvement (column names are now completed).
  + Feature #1013, output error, header, footnote and debug messages on standard error.
+ + Feature #1026, command line overrides are now applied before and after the
+   creation of the default rc file and data directory, which allows for
+   programmatic initialization without keystroke synthesis (thanks to Nicholas
+   Rabenau).
  + Color error messages with a specific configuration variable 'color.error'.
 
 Bugs
