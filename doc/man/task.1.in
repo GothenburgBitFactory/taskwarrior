@@ -598,9 +598,7 @@ by '-', the specified tasks are removed from the dependency list.
 
 .TP
 .B entry:<entry-date>
-For report purposes, specifies the date that a task was created.  The entry
-attribute cannot be directly specified using task add, and should not be edited
-after creating the task.
+For report purposes, specifies the date that a task was created.
 
 .SH ATTRIBUTE MODIFIERS
 Attribute modifiers improve filters.  Supported modifiers are:
