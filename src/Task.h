@@ -59,6 +59,9 @@ public:
   float urgency_value;
   bool recalc_urgency;
 
+  bool is_blocked;
+  bool is_blocking;
+
   // Series of helper functions.
   static status textToStatus (const std::string&);
   static std::string statusToText (status);

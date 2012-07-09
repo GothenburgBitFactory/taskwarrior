@@ -40,28 +40,6 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-// A task is blocked if it depends on tasks that are pending or waiting.
-//
-//   1 --> 2(pending)    = blocked
-//   3 --> 4(completed)  = not blocked any more
-bool dependencyIsBlocked (const Task& task)
-{
-  std::string depends = task.get ("depends");
-  if (depends != "")
-  {
-    const std::vector <Task>& all = context.tdb2.pending.get_tasks ();
-    std::vector <Task>::const_iterator it;
-    for (it = all.begin (); it != all.end (); ++it)
-      if ((it->getStatus () == Task::pending  ||
-           it->getStatus () == Task::waiting) &&
-          depends.find (it->get ("uuid")) != std::string::npos)
-        return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void dependencyGetBlocked (const Task& task, std::vector <Task>& blocked)
 {
   std::string uuid = task.get ("uuid");
@@ -74,26 +52,6 @@ void dependencyGetBlocked (const Task& task, std::vector <Task>& blocked)
         it->has ("depends")                 &&
         it->get ("depends").find (uuid) != std::string::npos)
       blocked.push_back (*it);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// To be a blocking task, there must be at least one other task that depends on
-// this task, that is either pending or waiting.
-bool dependencyIsBlocking (const Task& task)
-{
-  std::string uuid = task.get ("uuid");
-
-  const std::vector <Task>& all = context.tdb2.pending.get_tasks ();
-  std::vector <Task>::const_iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
-    if ((it->getStatus () == Task::pending  ||
-         it->getStatus () == Task::waiting) &&
-        it->has ("depends")                 &&
-        it->get ("depends").find (uuid) != std::string::npos)
-      return true;
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

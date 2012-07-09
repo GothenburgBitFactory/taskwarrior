@@ -66,8 +66,12 @@ public:
   int id (const std::string&);
 
   void has_ids ();
+  void auto_dep_scan ();
   void clear ();
   const std::string dump ();
+
+private:
+  void dependency_scan ();
 
 public:
   bool _read_only;
@@ -75,6 +79,7 @@ public:
   bool _loaded_tasks;
   bool _loaded_lines;
   bool _has_ids;
+  bool _auto_dep_scan;
   std::vector <Task> _tasks;
   std::vector <Task> _added_tasks;
   std::vector <Task> _modified_tasks;

@@ -38,6 +38,7 @@ if (open my $fh, '>', 'special.rc')
             "color.alternate=\n",
             "color.tagged=\n",
             "color.pri.H=\n",
+            "color.completed=\n",
             "nag=NAG\n",
             "_forcecolor=1\n";
   close $fh;
@@ -47,6 +48,7 @@ if (open my $fh, '>', 'special.rc')
 # Prove that +nocolor suppresses all color for a task.
 qx{../src/task rc:special.rc add should have no red +nocolor priority:H 2>&1};
 qx{../src/task rc:special.rc add should be red +nonag 2>&1};
+
 my $output = qx{../src/task rc:special.rc ls 2>&1};
 like ($output, qr/\s1\s+H\s+should have no red/,      'no red in first task due to +nocolor');
 like ($output, qr/\033\[31mshould be red\s+\033\[0m/, 'red in second task');

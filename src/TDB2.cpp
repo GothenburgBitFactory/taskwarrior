@@ -67,6 +67,7 @@ TF2::TF2 ()
 , _loaded_tasks (false)
 , _loaded_lines (false)
 , _has_ids (false)
+, _auto_dep_scan (false)
 {
 }
 
@@ -311,6 +312,9 @@ void TF2::load_tasks ()
         _U2I[task.get ("uuid")] = task.id;
       }
     }
+ 
+    if (_auto_dep_scan)
+      dependency_scan ();
 
     _loaded_tasks = true;
   }
@@ -383,6 +387,12 @@ void TF2::has_ids ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void TF2::auto_dep_scan ()
+{
+  _auto_dep_scan = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Completely wipe it all clean.
 void TF2::clear ()
 {
@@ -391,9 +401,10 @@ void TF2::clear ()
   _loaded_tasks    = false;
   _loaded_lines    = false;
 
-  // Note that the actual file name, and _has_ids are deliberately not cleared.
+  // Note that these are deliberately not cleared.
   //_file._data      = "";
   //_has_ids         = false;
+  //_auto_dep_scan   = false;
 
   _tasks.clear ();
   _added_tasks.clear ();
@@ -402,6 +413,49 @@ void TF2::clear ()
   _added_lines.clear ();
   _I2U.clear ();
   _U2I.clear ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// For any task that has depenencies, follow the chain of dependencies until the
+// end.  Along the way, update the Task::is_blocked and Task::is_blocking data
+// cache.
+void TF2::dependency_scan ()
+{
+  // Iterate and modify TDB2 in-place.  Don't do this at home.
+  std::vector <Task>::iterator left;
+  for (left  = _tasks.begin ();
+       left != _tasks.end ();
+       ++left)
+  {
+    if (left->has ("depends"))
+    {
+      std::vector <std::string> deps;
+      left->getDependencies (deps);
+
+      std::vector <std::string>::iterator d;
+      for (d = deps.begin (); d != deps.end (); ++d)
+      {
+        std::vector <Task>::iterator right;
+        for (right  = _tasks.begin ();
+             right != _tasks.end ();
+             ++right)
+        {
+          if (right->get ("uuid") == *d)
+          {
+            Task::status status = right->getStatus ();
+            if (status != Task::completed &&
+                status != Task::deleted)
+            {
+              left->is_blocked = true;
+              right->is_blocking = true;
+            }
+
+            break;
+          }
+        }
+      }
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -454,6 +508,10 @@ TDB2::TDB2 ()
 {
   // Mark the pending file as the only one that has ID numbers.
   pending.has_ids ();
+
+  // Indicate that dependencies should be automatically scanned on startup,
+  // setting Task::is_blocked and Task::is_blocking accordingly.
+  pending.auto_dep_scan ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

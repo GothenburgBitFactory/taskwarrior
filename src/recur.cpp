@@ -505,12 +505,12 @@ bool nag (Task& task)
     }
 
     // General form is "if there are no more deserving tasks", suppress the nag.
-    if (isOverdue                                                 ) return false;
-    if (pri == 'H' && !overdue                                    ) return false;
-    if (pri == 'M' && !overdue && !high                           ) return false;
-    if (pri == 'L' && !overdue && !high && !medium                ) return false;
-    if (pri == ' ' && !overdue && !high && !medium && !low        ) return false;
-    if (dependencyIsBlocking (task) && !dependencyIsBlocked (task)) return false;
+    if (isOverdue                                          ) return false;
+    if (pri == 'H' && !overdue                             ) return false;
+    if (pri == 'M' && !overdue && !high                    ) return false;
+    if (pri == 'L' && !overdue && !high && !medium         ) return false;
+    if (pri == ' ' && !overdue && !high && !medium && !low ) return false;
+    if (task.is_blocking && !task.is_blocked               ) return false;
 
     // All the excuses are made, all that remains is to nag the user.
     context.footnote (nagMessage);

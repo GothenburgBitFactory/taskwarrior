@@ -85,6 +85,7 @@ int CmdShow::execute (std::string& output)
     " color.active"
     " color.alternate"
     " color.blocked"
+    " color.blocking"
     " color.burndown.done"
     " color.burndown.pending"
     " color.burndown.started"

@@ -207,6 +207,7 @@ std::string Config::_defaults =
   "color.pri.L=rgb245                             # Color of priority:L tasks\n"
   "color.tagged=rgb031                            # Color of tagged tasks\n"
   "color.blocked=white on color8                  # Color of blocked tasks\n"
+  "color.blocking=white on color7                # Color of blocking tasks\n"
   "#color.completed=on blue                       # Color of completed tasks\n"
   "#color.deleted=on blue                         # Color of deleted tasks\n"
 #else
@@ -267,7 +268,7 @@ std::string Config::_defaults =
   "# Here is the rule precedence order, highest to lowest.\n"
   "# Note that these are just the color rule names, without the leading 'color.'\n"
   "#      and any trailing '.value'.\n"
-  "rule.precedence.color=due.today,active,blocked,overdue,due,scheduled,keyword.,project.,tag.,recurring,pri.,tagged,completed,deleted\n"
+  "rule.precedence.color=due.today,active,blocking,blocked,overdue,due,scheduled,keyword.,project.,tag.,recurring,pri.,tagged,completed,deleted\n"
   "\n"
   "# Shadow file support\n"
   "#shadow.file=/tmp/shadow.txt                   # Location of shadow file\n"

@@ -100,6 +100,8 @@ Task::Task ()
 : id (0)
 , urgency_value (0.0)
 , recalc_urgency (true)
+, is_blocked (false)
+, is_blocking (false)
 {
 }
 
@@ -119,6 +121,8 @@ Task& Task::operator= (const Task& other)
     id             = other.id;
     urgency_value  = other.urgency_value;
     recalc_urgency = other.recalc_urgency;
+    is_blocked     = other.is_blocked;
+    is_blocking    = other.is_blocking;
   }
 
   return *this;
@@ -1409,22 +1413,8 @@ float Task::urgency_waiting () const
 // A task is blocked only if the task it depends upon is pending/waiting.
 float Task::urgency_blocked () const
 {
-  if (has ("depends"))
-  {
-    std::vector <std::string> deps;
-    getDependencies (deps);
-
-    std::vector <std::string>::iterator d;
-    for (d = deps.begin (); d != deps.end (); ++d)
-    {
-      Task t;
-      if (context.tdb2.get (*d, t) &&
-          (t.getStatus () == Task::pending || t.getStatus () == Task::waiting))
-      {
-        return 1.0;
-      }
-    }
-  }
+  if (is_blocked)
+    return 1.0;
 
   return 0.0;
 }
@@ -1524,7 +1514,7 @@ float Task::urgency_age () const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_blocking () const
 {
-  if (dependencyIsBlocking (*this))
+  if (is_blocking)
     return 1.0;
 
   return 0.0;
