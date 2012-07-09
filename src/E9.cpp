@@ -27,7 +27,6 @@
 
 #define L10N                                           // Localization complete.
 
-//#include <iostream>
 #include <stdlib.h>
 #include <Context.h>
 #include <Date.h>

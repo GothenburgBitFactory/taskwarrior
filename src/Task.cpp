@@ -150,6 +150,8 @@ Task::Task (const std::string& input)
   id = 0;
   urgency_value = 0.0;
   recalc_urgency = true;
+  is_blocked = false;
+  is_blocking = false;
   parse (input);
 }
 

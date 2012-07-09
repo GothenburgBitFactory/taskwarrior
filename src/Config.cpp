@@ -207,7 +207,7 @@ std::string Config::_defaults =
   "color.pri.L=rgb245                             # Color of priority:L tasks\n"
   "color.tagged=rgb031                            # Color of tagged tasks\n"
   "color.blocked=white on color8                  # Color of blocked tasks\n"
-  "color.blocking=white on color7                # Color of blocking tasks\n"
+  "color.blocking=white on color6                 # Color of blocking tasks\n"
   "#color.completed=on blue                       # Color of completed tasks\n"
   "#color.deleted=on blue                         # Color of deleted tasks\n"
 #else
@@ -261,6 +261,7 @@ std::string Config::_defaults =
   "color.pri.L=                                   # Color of priority:L tasks\n"
   "color.tagged=green                             # Color of tagged tasks\n"
   "color.blocked=black on white                   # Color of blocked tasks\n"
+  "color.blocking=black on bright white           # Color of blocking tasks\n"
   "#color.completed=on blue                       # Color of completed tasks\n"
   "#color.deleted=on blue                         # Color of deleted tasks\n"
 #endif
