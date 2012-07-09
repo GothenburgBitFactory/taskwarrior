@@ -40,8 +40,8 @@ if (open my $fh, '>', 'minus.rc')
 
 # Bug 982: Missing words when adding a description with NUMBER-SOMETHING
 
-qx{../src/task rc:minus.rc add 1-test 1+tag};
-my $output = qx{../src/task rc:minus.rc 1 info};
+qx{../src/task rc:minus.rc add 1-test 1+tag 2>&1};
+my $output = qx{../src/task rc:minus.rc 1 info 2>&1};
 like ($output, qr/^Description 1-test 1\+tag$/ms, 'Description contains plus and minus signs');
 
 # Cleanup.
@@ -54,4 +54,3 @@ ok (! -r 'pending.data'   &&
     ! -r 'minus.rc', 'Cleanup');
 
 exit 0;
-
