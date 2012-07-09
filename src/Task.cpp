@@ -29,6 +29,7 @@
 
 #include <sstream>
 #include <stdlib.h>
+#include <assert.h>
 #include <math.h>
 #include <algorithm>
 #include <Context.h>
@@ -1494,23 +1495,17 @@ float Task::urgency_due () const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_age () const
 {
-  if (has ("entry"))
-  {
-    Date now;
-    Date entry (get_date ("entry"));
-    int   age  = (now - entry) / 86400;  // in days
-    float max  = context.config.getReal ("urgency.age.max");
+  assert (has ("entry"));
 
-    if (max == 0)
-      return 1.0;
+  Date now;
+  Date entry (get_date ("entry"));
+  int   age  = (now - entry) / 86400;  // in days
+  float max  = context.config.getReal ("urgency.age.max");
 
-    if (age > max)
-      return 1.0;
-    else
-      return (1.0 * age/max);
-  }
+  if (max == 0 || age > max)
+    return 1.0;
 
-  return 0.0;
+  return (1.0 * age/max);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
