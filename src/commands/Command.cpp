@@ -574,7 +574,7 @@ void Command::modify_task (
 
             // Deliberately storing the 'raw' value, which is necessary for
             // durations like 'weekday'..
-            task.set (name, value);
+            task.set (name, name == "recur" ? value : result);
           }
 
           // Need handling for numeric types, used by UDAs.
