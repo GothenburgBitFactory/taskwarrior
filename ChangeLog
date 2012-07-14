@@ -105,6 +105,8 @@ Bugs
    was completed (thanks to Arkady Grudzinsky).
  + Fixed bug #1023, which applied default.project and default.priority during
    modification (thanks to Christoph Lange).
+ + Fixed bug #1028, so that UDA durations are stored in seconds, not in raw form
+   (thank to Uli Martens).
 
 ------ old releases ------------------------------
 

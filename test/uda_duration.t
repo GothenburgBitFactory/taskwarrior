@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'uda.rc')
@@ -51,6 +51,10 @@ qx{../src/task rc:uda.rc add without 2>&1};
 my $output = qx{../src/task rc:uda.rc uda 2>&1};
 like ($output, qr/1\s+1d\s+with/,  'UDA duration stored');
 like ($output, qr/2\s+without/, 'UDA duration blank');
+
+# Ensure 'extra' is stored as seconds.
+$output = qx{../src/task rc:uda.rc 1 export 2>&1};
+like ($output, qr/"extra":"86400"/, 'UDA duration stored in seconds');
 
 # Add bad data.
 $output = qx{../src/task rc:uda.rc add bad extra:unrecognized_duration 2>&1};
