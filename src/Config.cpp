@@ -404,7 +404,7 @@ std::string Config::_defaults =
   "\n"
   "report.ready.description=Lists the most urgent tasks\n"
   "report.ready.columns=id,project,priority,due,start.active,entry.age,urgency,description\n"
-  "report.ready.filter=status:pending limit:page wait.none: (scheduled.none: or scheduled.before:now)\n"
+  "report.ready.filter=status:pending limit:page wait.none: '(scheduled.none: or scheduled.before:now )'\n"
   "report.ready.labels=ID,Project,Pri,Due,A,Age,Urgency,Description\n"
   "report.ready.sort=urgency-,due+,priority-,start-,project+\n"
   "\n"
