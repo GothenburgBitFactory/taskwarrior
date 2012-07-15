@@ -88,6 +88,13 @@ New Code Needs
   - Need an external implementation equivalent to, or better than the 'shadow
     file' feature.  Simply because shadow file capability *can* be implemented
     outside the core code, we want to make it be that way.
+  - Take a look at:
+
+      http://taskwarrior.org/versions/show/42
+
+    This 'extension' release is a collection of all the requested features that
+    lie outside of the core product, and will be implemented as external scripts
+    by anyone who wishes to participate.
 
 Documentation Needed
   Various forms of documentation that are needed, or are in need of review or
@@ -173,10 +180,10 @@ Current Codebase Condition
   'master' branch:
     - 2.0.0 release, current, locked.
 
-  '2.0.1' branch:
+  '2.0.1' branch (to be released as 2.1.0):
     - All current development.
 
-  '2.1.0' branch:
+  '2.2.0' branch:
     - Future development effort.
 
 ---
