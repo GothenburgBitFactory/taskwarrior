@@ -47,6 +47,7 @@ static const char* newline = "\n";
 static const char* noline  = "";
 
 static void replace_positional (std::string&, const std::string&, const std::string&);
+extern "C" int mk_wcwidth (wchar_t);
 
 ///////////////////////////////////////////////////////////////////////////////
 void wrapText (
@@ -260,7 +261,7 @@ int longestWord (const std::string& input)
       length = 0;
     }
     else
-      ++length;
+      length += mk_wcwidth (character);
   }
 
   return longest;
@@ -284,7 +285,7 @@ int longestLine (const std::string& input)
       length = 0;
     }
     else
-      ++length;
+      length += mk_wcwidth (character);
   }
 
   if (length > longest)
@@ -309,8 +310,8 @@ void extractLine (
   std::string::size_type previous   = std::string::npos;
   std::string::size_type last_space = std::string::npos;
   int character;
-  int chars;
-  for (chars = 0; chars < length; ++chars)
+  int width = 0;
+  while (width < length)
   {
     previous = bytes;
     character = utf8_next_char (text, bytes);
@@ -334,6 +335,8 @@ void extractLine (
       text = "";
       return;
     }
+
+    width += mk_wcwidth (character);
   }
 
   // Case where EOS was not quite reached.

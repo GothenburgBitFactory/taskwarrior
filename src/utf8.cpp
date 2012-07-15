@@ -173,6 +173,7 @@ int utf8_sequence (unsigned int character)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Length of a string in characters.
 int utf8_length (const std::string& str)
 {
   int byteLength = str.length ();

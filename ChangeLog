@@ -47,6 +47,8 @@ Bugs
    'edit' command (thanks to Louis-Claude Canon).
  + Fixed bug #964, where the 'projects' command showed the wrong priority labels
    (thanks to Ali Mousavi).
+ + Fixed bug #967, which did not properly determine character widths for UTF8
+   characters (thanks to Victor Roetman, Jörg Plate, Markus Kuhn).
  + Fixed bug #968, improving online documentation or dependencies (thanks to
    Marek Vitek).
  + Fixed bug #972, #1018, which caused a recurrence of "7" to be interpreted as
