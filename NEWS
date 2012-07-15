@@ -33,22 +33,23 @@ Newly deprecated features in taskwarrior 2.1.0
 
 Taskwarrior has been built and tested on the following configurations:
 
-  * OS X 10.7 Lion, 10.6 Snow Leopard and 10.5 Leopard
-  * Fedora 14 Laughlin, 13 Goddard
-  * Ubuntu 10.10 Maverick Meerkat, 10.04 Lucid Lynx
-  * Debian Sid
-  * Slackware 12.2
+  * OS X 10.7 Lion, 10.6 Snow Leopard
+  * Fedora 17 Beefy Miracle and 16 Verne
+  * Ubuntu 12.04 Precise Pangolin and 11.10 Oneiric Ocelot
+  * Debian 6.0 Squeeze (stable)i and 5.0 Lenny (oldstable) plus Sid (testing)
+  * Slackware 13.37
   * Arch Linux
   * Gentoo Linux
+  * Sabayon Linux
   * SliTaz Linux
   * CRUX Linux
-  * SuSE 11.3
+  * SuSE
+  * derivatives/customizations/flavors of the above Linux distributions
   * Solaris 10 and 8
-  * OpenBSD 4.5
+  * OpenBSD
   * FreeBSD
   * NetBSD
-  * Cygwin 1.7 and 1.5
-  * Haiku R1/alpha1
+  * Cygwin 1.7
 
 ---
 
