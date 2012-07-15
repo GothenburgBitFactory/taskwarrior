@@ -114,6 +114,21 @@ std::string CmdEdit::formatDate (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string CmdEdit::formatDuration (
+  Task& task,
+  const std::string& attribute)
+{
+  std::string value = task.get (attribute);
+  if (value.length ())
+  {
+    Duration dur (strtol (value.c_str (), NULL, 10));
+    value = dur.formatPrecise ();
+  }
+
+  return value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 {
   std::stringstream before;
@@ -209,6 +224,55 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
     before << "# " << STRING_EDIT_DEP_SEP << "\n";
 
   before << "  Dependencies:      " << allDeps.str () << "\n";
+
+  // UDAs
+  std::vector <std::string> udas;
+  std::map <std::string, Column*>::iterator col;
+  for (col = context.columns.begin (); col != context.columns.end (); ++col)
+    if (context.config.get ("uda." + col->first + ".type") != "")
+      udas.push_back (col->first);
+
+  if (udas.size ())
+  {
+    before << "# " << STRING_EDIT_UDA_SEP << "\n";
+    std::sort (udas.begin (), udas.end ());
+    std::vector <std::string>::iterator uda;
+    for (uda = udas.begin (); uda != udas.end (); ++uda)
+    {
+      int pad = 13 - uda->length ();
+      std::string padding = "";
+      if (pad > 0)
+        padding = std::string (pad, ' ');
+
+      std::string type = context.config.get ("uda." + *uda + ".type");
+      if (type == "string" || type == "numeric")    
+        before << "  UDA " << *uda << ": " << padding << task.get (*uda) << "\n";
+      else if (type == "date")
+        before << "  UDA " << *uda << ": " << padding << formatDate (task, *uda, dateformat) << "\n";
+      else if (type == "duration")
+        before << "  UDA " << *uda << ": " << padding << formatDuration (task, *uda) << "\n";
+    }
+  }
+
+  // UDA orphans
+  std::vector <std::string> orphans;
+  task.getUDAOrphans (orphans);
+
+  if (orphans.size ())
+  {
+    before << "# " << STRING_EDIT_UDA_ORPHAN_SEP << "\n";
+    std::sort (orphans.begin (), orphans.end ());
+    std::vector <std::string>::iterator orphan;
+    for (orphan = orphans.begin (); orphan != orphans.end (); ++orphan)
+    {
+      int pad = 6 - orphan->length ();
+      std::string padding = "";
+      if (pad > 0)
+        padding = std::string (pad, ' ');
+
+      before << "  UDA Orphan " << *orphan << ": " << padding << task.get (*orphan) << "\n";
+    }
+  }
 
   before << "# " << STRING_EDIT_END << "\n";
   return before.str ();
@@ -616,6 +680,10 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     for (id = ids.begin (); id != ids.end(); id++)
       task.addDependency (*id);
   }
+
+  // TODO UDAs
+
+  // TODO UDA orphans
 }
 
 ////////////////////////////////////////////////////////////////////////////////
