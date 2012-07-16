@@ -355,7 +355,8 @@ int CmdInfo::execute (std::string& output)
     // Show any orphaned UDAs, which are identified by not being represented in
     // the context.columns map.
     for (att = all.begin (); att != all.end (); ++att)
-      if (context.columns.find (*att) == context.columns.end ())
+      if (att->substr (0, 11) != "annotation_" &&
+          context.columns.find (*att) == context.columns.end ())
       {
          row = view.addRow ();
          view.set (row, 0, "[" + *att);
