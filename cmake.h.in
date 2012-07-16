@@ -57,6 +57,12 @@ Override PACKAGE_LANGUAGE, then
 /* Found srandom */
 #cmakedefine HAVE_SRANDOM
 
+/* Found tm_gmtoff */
+#cmakedefine HAVE_TM_GMTOFF
+
+/* Found timegm */
+#cmakedefine HAVE_TIMEGM
+
 /* Found the uuid library */
 #cmakedefine HAVE_UUID
 #cmakedefine HAVE_UUID_UNPARSE_LOWER

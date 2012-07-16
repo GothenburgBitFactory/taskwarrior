@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 
 include (CheckFunctionExists)
+include (CheckStructHasMember)
 
 set (HAVE_CMAKE true)
 
@@ -65,6 +66,9 @@ endif (LUA51_FOUND)
 
 check_function_exists (random  HAVE_RANDOM)
 check_function_exists (srandom HAVE_SRANDOM)
+check_function_exists (timegm  HAVE_TIMEGM)
+
+check_struct_has_member ("struct tm" tm_gmtoff time.h HAVE_TM_GMTOFF)
 
 message ("-- Looking for libuuid")
 if (DARWIN)

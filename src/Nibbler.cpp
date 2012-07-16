@@ -37,6 +37,7 @@
 #ifdef NIBBLER_FEATURE_REGEX
 #include <RX.h>
 #endif
+#include <cmake.h>
 
 static const char*        _uuid_pattern    = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 static const unsigned int _uuid_min_length = 9;
@@ -701,7 +702,9 @@ bool Nibbler::getDateISO (time_t& t)
       tms.tm_hour   = hour;
       tms.tm_min    = minute;
       tms.tm_sec    = second;
+#ifdef HAVE_TM_GMTOFF
       tms.tm_gmtoff = 0;
+#endif
 
       t = timegm (&tms);
       return true;

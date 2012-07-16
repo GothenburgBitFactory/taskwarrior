@@ -110,6 +110,8 @@ Bugs
    modification (thanks to Christoph Lange).
  + Fixed bug #1028, so that UDA durations are stored in seconds, not in raw form
    (thank to Uli Martens).
+ + Fixed bug #1030, which defines a portable implementation of timegm and removes
+   the use of tm_gmtoff for non GNU/BSD platforms.
 
 ------ old releases ------------------------------
 

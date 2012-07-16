@@ -84,5 +84,9 @@ const std::string indentProject (
   const std::string& whitespace = "  ",
   char delimiter = '.');
 
+#ifndef HAVE_TIMEGM
+  time_t timegm (struct tm *tm);
+#endif
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////
