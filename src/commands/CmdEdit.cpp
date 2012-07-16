@@ -30,6 +30,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
+#include <algorithm>
 #include <unistd.h>
 #include <Duration.h>
 #include <Context.h>
