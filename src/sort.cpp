@@ -34,6 +34,7 @@
 #include <Duration.h>
 #include <Task.h>
 #include <text.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -71,6 +72,8 @@ static bool sort_compare (int left, int right)
 {
   std::string field;
   bool ascending;
+
+  Column* column;
 
   int left_number;
   int right_number;
@@ -239,9 +242,9 @@ static bool sort_compare (int left, int right)
     }
 
     // UDAs.
-    else
+    else if ((column = context.columns[field]) != NULL)
     {
-      std::string type = context.columns[field]->type ();
+      std::string type = column->type ();
       if (type == "numeric")
       {
         left_real  = (*global_data)[left].urgency ();
@@ -297,6 +300,8 @@ static bool sort_compare (int left, int right)
         return left_duration > right_duration;
       }
     }
+    else
+      throw format (STRING_INVALID_SORT_COL, field);
   }
 
   return false;
