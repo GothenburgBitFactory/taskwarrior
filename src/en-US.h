@@ -654,6 +654,8 @@
 #define STRING_EDIT_FG_DEL           "Foreground color removed."
 #define STRING_EDIT_BG_MOD           "Background color modified."
 #define STRING_EDIT_BG_DEL           "Background color removed."
+#define STRING_EDIT_UDA_MOD          "UDA {1} modified."
+#define STRING_EDIT_UDA_DEL          "UDA {1} deleted."
 
 // These four blocks can be replaced, but the number of lines must not change.
 #define STRING_EDIT_HEADER_1         "The 'task <id> edit' command allows you to modify all aspects of a task"

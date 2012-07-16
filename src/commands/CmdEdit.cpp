@@ -98,6 +98,35 @@ std::string CmdEdit::findValue (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string> CmdEdit::findValues (
+  const std::string& text,
+  const std::string& name)
+{
+  std::vector <std::string> results;
+  std::string::size_type found = 0;
+
+  while (found != std::string::npos)
+  {
+    found = text.find (name, found + 1);
+    if (found != std::string::npos)
+    {
+      std::string::size_type eol = text.find ("\n", found + 1);
+      if (eol != std::string::npos)
+      {
+        std::string value = text.substr (
+          found + name.length (),
+          eol - (found + name.length ()));
+
+        found = eol - 1;
+        results.push_back (trim (value, "\t "));
+      }
+    }
+  }
+
+  return results;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string CmdEdit::formatDate (
   Task& task,
   const std::string& attribute,
@@ -106,7 +135,7 @@ std::string CmdEdit::formatDate (
   std::string value = task.get (attribute);
   if (value.length ())
   {
-    Date dt (strtol (value.c_str (), NULL, 10));
+    Date dt (value);
     value = dt.toString (dateformat);
   }
 
@@ -121,8 +150,8 @@ std::string CmdEdit::formatDuration (
   std::string value = task.get (attribute);
   if (value.length ())
   {
-    Duration dur (strtol (value.c_str (), NULL, 10));
-    value = dur.formatPrecise ();
+    Duration dur (value);
+    value = dur.formatSeconds ();
   }
 
   return value;
@@ -681,9 +710,71 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       task.addDependency (*id);
   }
 
-  // TODO UDAs
+  // UDAs
+  std::map <std::string, Column*>::iterator col;
+  for (col = context.columns.begin (); col != context.columns.end (); ++col)
+  {
+    std::string type = context.config.get ("uda." + col->first + ".type");
+    if (type != "")
+    {
+      std::string value = findValue (after, "\n  UDA " + col->first + ":");
+      if (task.get (col->first) != value)
+      {
+        if (value != "")
+        {
+          context.footnote (format (STRING_EDIT_UDA_MOD, col->first));
 
-  // TODO UDA orphans
+          if (type == "string")
+          {
+            task.set (col->first, value);
+          }
+          else if (type == "numeric")
+          {
+            Nibbler n (value);
+            double d;
+            if (n.getNumber (d) &&
+                n.depleted ())
+              task.set (col->first, value);
+            else
+              throw format (STRING_UDA_NUMERIC, value);
+          }
+          else if (type == "date")
+          {
+            Date d (value, dateformat);
+            task.set (col->first, d.toEpochString ());
+          }
+          else if (type == "duration")
+          {
+            Duration d (value);
+            task.set (col->first, (time_t) d);
+          }
+        }
+        else
+        {
+          context.footnote (format (STRING_EDIT_UDA_DEL, col->first));
+          task.remove (col->first);
+        }
+      }
+    }
+  }
+  
+  // UDA orphans
+  std::vector <std::string> orphanValues = findValues (after, "\n  UDA Orphan ");
+  std::vector <std::string>::iterator orphan;
+  for (orphan = orphanValues.begin (); orphan != orphanValues.end (); ++orphan)
+  {
+    std::string::size_type colon = orphan->find (':');
+    if (colon != std::string::npos)
+    {
+      std::string name  = trim (orphan->substr (0, colon),  "\t ");
+      std::string value = trim (orphan->substr (colon + 1), "\t ");
+
+      if (value != "")
+        task.set (name, value);
+      else
+        task.remove (name);
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

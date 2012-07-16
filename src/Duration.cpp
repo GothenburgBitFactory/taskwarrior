@@ -303,6 +303,15 @@ std::string Duration::formatPrecise () const
   return std::string (formatted);
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Duration::formatSeconds () const
+{
+  char formatted[24];
+  sprintf (formatted, "%s%ldsec", (_negative ? "-" : ""), _secs);
+  return std::string (formatted);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::operator< (const Duration& other)
 {

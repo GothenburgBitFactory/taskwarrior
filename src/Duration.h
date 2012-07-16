@@ -57,6 +57,7 @@ public:
   std::string format () const;
   std::string formatCompact () const;
   std::string formatPrecise () const;
+  std::string formatSeconds () const;
 
   bool negative () const;
   static bool valid (const std::string&);
