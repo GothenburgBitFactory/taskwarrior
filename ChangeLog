@@ -25,6 +25,7 @@ Features
    + Filter optimization: with no 'OR' or 'XOR' operators, no UUIDS but with IDs
      the completed.data file is not referenced
    + Reduced excessive number of sort columns on certain reports
+   + Speed boost for 'next' report
  + Similar helper subcommands for 'uuids' as for there is for 'ids' (_uuids and
    _zshuuids).
  + Possible to specify the date format when editing with 'dateformat.edit'.

@@ -158,8 +158,8 @@ int CmdUDAs::execute (std::string& output)
         << orphanView.render ()
         << optionalBlankLine ()
         << (udas.size () == 1
-              ? format (STRING_CMD_UDAS_ORPHAN,  udas.size ())
-              : format (STRING_CMD_UDAS_ORPHANS, udas.size ()))
+              ? format (STRING_CMD_UDAS_ORPHAN,  orphans.size ())
+              : format (STRING_CMD_UDAS_ORPHANS, orphans.size ()))
         << "\n";
   }
 
