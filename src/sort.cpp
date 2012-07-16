@@ -84,8 +84,23 @@ static bool sort_compare (int left, int right)
   {
     context.decomposeSortField (*k, field, ascending);
 
+    // Urgency.
+    if (field == "urgency")
+    {
+      left_real  = (*global_data)[left].urgency ();
+      right_real = (*global_data)[right].urgency ();
+
+      if (left_real == right_real)
+        continue;
+
+      if (ascending)
+        return left_real < right_real;
+
+      return left_real > right_real;
+    }
+
     // Number.
-    if (field == "id")
+    else if (field == "id")
     {
       left_number  = (*global_data)[left].id;
       right_number = (*global_data)[right].id;
@@ -223,19 +238,64 @@ static bool sort_compare (int left, int right)
       return left_duration > right_duration;
     }
 
-    // Urgency.
-    else if (field == "urgency")
+    // UDAs.
+    else
     {
-      left_real  = (*global_data)[left].urgency ();
-      right_real = (*global_data)[right].urgency ();
+      std::string type = context.columns[field]->type ();
+      if (type == "numeric")
+      {
+        left_real  = (*global_data)[left].urgency ();
+        right_real = (*global_data)[right].urgency ();
 
-      if (left_real == right_real)
-        continue;
+        if (left_real == right_real)
+          continue;
 
-      if (ascending)
-        return left_real < right_real;
+        if (ascending)
+          return left_real < right_real;
 
-      return left_real > right_real;
+        return left_real > right_real;
+      }
+      else if (type == "string")
+      {
+        const std::string& left_string  = (*global_data)[left].get_ref  (field);
+        const std::string& right_string = (*global_data)[right].get_ref (field);
+
+        if (left_string == right_string)
+          continue;
+
+        if (ascending)
+          return left_string < right_string;
+
+        return left_string > right_string;
+      }
+      else if (type == "date")
+      {
+        const std::string& left_string  = (*global_data)[left].get_ref  (field);
+        const std::string& right_string = (*global_data)[right].get_ref (field);
+
+        if (left_string == right_string)
+          continue;
+
+        if (ascending)
+          return left_string < right_string;
+
+        return left_string > right_string;
+      }
+      else if (type == "duration")
+      {
+        const std::string& left_string  = (*global_data)[left].get_ref  (field);
+        const std::string& right_string = (*global_data)[right].get_ref (field);
+
+        if (left_string == right_string)
+          continue;
+
+        Duration left_duration (left_string);
+        Duration right_duration (right_string);
+        if (ascending)
+          return left_duration < right_duration;
+
+        return left_duration > right_duration;
+      }
     }
   }
 
