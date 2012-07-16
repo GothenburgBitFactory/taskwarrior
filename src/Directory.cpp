@@ -35,6 +35,10 @@
 #include <Directory.h>
 #include <cmake.h>
 
+#ifdef SOLARIS
+#include <limits.h>
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 Directory::Directory ()
 {
