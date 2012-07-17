@@ -41,7 +41,7 @@
 #include <util.h>
 
 static const char*        _uuid_pattern    = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-static const unsigned int _uuid_min_length = 9;
+static const unsigned int _uuid_min_length = 14;
 
 ////////////////////////////////////////////////////////////////////////////////
 Nibbler::Nibbler ()

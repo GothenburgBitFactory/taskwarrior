@@ -9,6 +9,8 @@ New Features in taskwarrior 2.1.0
     and are deleted.
   - Improved UTF8 handling for wide characters.
   - User defined attributes.
+  - Partial UUIDs must now be at least 14 characters, up from 9.  This
+    disambiguates a commonly date format.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.

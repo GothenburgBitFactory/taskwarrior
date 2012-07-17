@@ -39,15 +39,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (387);
+  UnitTest t (382);
 #else
-  UnitTest t (363);
+  UnitTest t (358);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (337);
+  UnitTest t (332);
 #else
-  UnitTest t (313);
+  UnitTest t (308);
 #endif
 #endif
 
@@ -465,29 +465,24 @@ int main (int argc, char** argv)
     t.ok (n.depleted (),                             "depleted");
 
     n = Nibbler ("a0b1c2d3-e4f5");
-    t.ok (n.getPartialUUID (s),                      "partial uuid [13] found");
-    t.is (s, "a0b1c2d3-e4f5",                        "partial uuid [13] -> correct");
-    t.ok (n.depleted (),                             "depleted");
+    t.notok (n.getPartialUUID (s),                   "partial uuid [13] not found");
+    t.notok (n.depleted (),                          "depleted");
 
     n = Nibbler ("a0b1c2d3-e4f");
-    t.ok (n.getPartialUUID (s),                      "partial uuid [12] found");
-    t.is (s, "a0b1c2d3-e4f",                         "partial uuid [12] -> correct");
-    t.ok (n.depleted (),                             "depleted");
+    t.notok (n.getPartialUUID (s),                   "partial uuid [12] not found");
+    t.notok (n.depleted (),                          "depleted");
 
     n = Nibbler ("a0b1c2d3-e4");
-    t.ok (n.getPartialUUID (s),                      "partial uuid [11] found");
-    t.is (s, "a0b1c2d3-e4",                          "partial uuid [11] -> correct");
-    t.ok (n.depleted (),                             "depleted");
+    t.notok (n.getPartialUUID (s),                   "partial uuid [11] not found");
+    t.notok (n.depleted (),                          "depleted");
 
     n = Nibbler ("a0b1c2d3-e");
-    t.ok (n.getPartialUUID (s),                      "partial uuid [10] found");
-    t.is (s, "a0b1c2d3-e",                           "partial uuid [10] -> correct");
-    t.ok (n.depleted (),                             "depleted");
+    t.notok (n.getPartialUUID (s),                   "partial uuid [10] not found");
+    t.notok (n.depleted (),                          "depleted");
 
     n = Nibbler ("a0b1c2d3-");
-    t.ok (n.getPartialUUID (s),                      "partial uuid [9] found");
-    t.is (s, "a0b1c2d3-",                            "partial uuid [9] -> correct");
-    t.ok (n.depleted (),                             "depleted");
+    t.notok (n.getPartialUUID (s),                   "partial uuid [9] not found");
+    t.notok (n.depleted (),                          "depleted");
 
     n = Nibbler ("a0b1c2d3");
     t.notok (n.getPartialUUID (s),                   "partial uuid [8] not found");
