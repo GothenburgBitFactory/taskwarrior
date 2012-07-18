@@ -1340,7 +1340,7 @@ float Task::urgency_c () const
   std::map <std::string, float>::iterator var;
   for (var = coefficients.begin (); var != coefficients.end (); ++var)
   {
-    if (var->second > epsilon)
+    if (fabs (var->second) > epsilon)
     {
       if (var->first.substr (0, 13) == "urgency.user.")
       {

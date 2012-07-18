@@ -112,6 +112,8 @@ Bugs
    (thank to Uli Martens).
  + Fixed bug #1030, which defines a portable implementation of timegm and removes
    the use of tm_gmtoff for non GNU/BSD platforms.
+ + Fixed bug #1032, which prevented negative urgency coefficients from working
+   for projects and tags.
 
 ------ old releases ------------------------------
 
