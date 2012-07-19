@@ -37,6 +37,7 @@ Features
    creation of the default rc file and data directory, which allows for
    programmatic initialization without keystroke synthesis (thanks to Nicholas
    Rabenau).
+ + Feature #1033 allows UDAs to contribute to urgency (thanks to Max Muller).
  + Color error messages with a specific configuration variable 'color.error'.
 
 Bugs

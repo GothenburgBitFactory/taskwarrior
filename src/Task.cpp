@@ -92,8 +92,11 @@ void initializeUrgencyCoefficients ()
 
   std::vector <std::string>::iterator var;
   for (var = all.begin (); var != all.end (); ++var)
-    if (var->substr (0, 13) == "urgency.user.")
+  {
+    if (var->substr (0, 13) == "urgency.user." ||
+        var->substr (0, 12) == "urgency.uda.")
       coefficients[*var] = context.config.getReal (*var);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1364,6 +1367,14 @@ float Task::urgency_c () const
           if (hasTag (tag))
             value += var->second;
         }
+      }
+      else if (var->first.substr (0, 12) == "urgency.uda.")
+      {
+        // urgency.uda.<name>.coefficient
+        std::string::size_type end = var->first.find (".coefficient");
+        if (end != std::string::npos)
+          if (has (var->first.substr (12, end - 12)))
+            value += var->second;
       }
     }
   }

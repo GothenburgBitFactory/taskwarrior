@@ -153,6 +153,7 @@ std::string Config::_defaults =
   "\n"
   "#urgency.user.project.foo.coefficient=5.0      # Urgency coefficients for 'foo' project\n"
   "#urgency.user.tag.foo.coefficient=5.0          # Urgency coefficients for 'foo' tag\n"
+  "#urgency.uda.foo.coefficient=5.0               # Urgency coefficients for UDA 'foo'\n"
   "\n"
   "# Color controls.\n"
   "color=on                                       # Enable color\n"
