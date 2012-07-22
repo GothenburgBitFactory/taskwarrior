@@ -80,12 +80,14 @@ int CmdVersion::execute (std::string& output)
       << "solaris"
 #elif defined (CYGWIN)
       << "cygwin"
-#elif defined (OPENBSD)
-      << "openbsd"
 #elif defined (HAIKU)
       << "haiku"
+#elif defined (OPENBSD)
+      << "openbsd"
 #elif defined (FREEBSD)
       << "freebsd"
+#elif defined (NETBSD)
+      << "netbsd"
 #elif defined (LINUX)
       << "linux"
 #else

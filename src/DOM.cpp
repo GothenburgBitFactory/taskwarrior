@@ -138,12 +138,14 @@ const std::string DOM::get (const std::string& name)
       return /*_cache[name] =*/ "Solaris";
 #elif defined (CYGWIN)
       return /*_cache[name] =*/ "Cygwin";
-#elif defined (OPENBSD)
-      return /*_cache[name] =*/ "OpenBSD";
 #elif defined (HAIKU)
       return /*_cache[name] =*/ "Haiku";
+#elif defined (OPENBSD)
+      return /*_cache[name] =*/ "OpenBSD";
 #elif defined (FREEBSD)
       return /*_cache[name] =*/ "FreeBSD";
+#elif defined (NETBSD)
+      return /*_cache[name] =*/ "NetBSD";
 #elif defined (LINUX)
       return /*_cache[name] =*/ "Linux";
 #else

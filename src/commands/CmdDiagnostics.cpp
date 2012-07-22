@@ -82,12 +82,14 @@ int CmdDiagnostics::execute (std::string& output)
          "Solaris"
 #elif defined (CYGWIN)
          "Cygwin"
-#elif defined (OPENBSD)
-         "OpenBSD"
 #elif defined (HAIKU)
          "Haiku"
+#elif defined (OPENBSD)
+         "OpenBSD"
 #elif defined (FREEBSD)
          "FreeBSD"
+#elif defined (NETBSD)
+         "NetBSD"
 #elif defined (LINUX)
          "Linux"
 #else

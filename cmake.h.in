@@ -36,6 +36,7 @@ Override PACKAGE_LANGUAGE, then
 #cmakedefine CYGWIN
 #cmakedefine FREEBSD
 #cmakedefine OPENBSD
+#cmakedefine NETBSD
 #cmakedefine HAIKU
 #cmakedefine SOLARIS
 #cmakedefine WIN32
