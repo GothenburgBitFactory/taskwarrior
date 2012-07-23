@@ -1,4 +1,4 @@
-.TH task-faq 5 2012-03-17 "${PACKAGE_STRING}" "User Manuals"
+.TH task-faq 5 2012-07-23 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 task-faq \- A FAQ for the task(1) command line todo manager.
