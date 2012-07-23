@@ -566,6 +566,10 @@ Specifies the due-date of a task.
 Specifies the frequency of a recurrence of a task.
 
 .TP
+.B scheduled:<ready-date>
+Specifies the date after which a task can be accomplished.
+
+.TP
 .B until:<expiration date of task>
 Specifies the expiration date of a task, after which it will be deleted.
 
