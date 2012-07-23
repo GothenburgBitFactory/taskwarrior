@@ -4,8 +4,8 @@
 task-faq \- A FAQ for the task(1) command line todo manager.
 
 .SH WELCOME
-Welcome to the taskwarrior FAQ.  If you have would like to see a question answered
-here, please send us a note at <support@taskwarrior.org>.
+Welcome to the taskwarrior FAQ.  If you would like to see a question answered
+here, please send us a note to <support@taskwarrior.org>.
 
 .TP
 .B Q: When I redirect the output to a file, I lose all the colors.  How do I fix this?
@@ -20,7 +20,7 @@ or by temporarily overriding the value on the command line:
 
     task ... rc._forcecolor=on
 
-There is an additional problem using pagers such as 'less' and 'more', because
+There is an additional problem when using pagers such as 'less' and 'more', because
 color control codes are stripped.  When using less, these options will preserve
 the color codes:
 
@@ -112,7 +112,7 @@ required.
 .TP
 .B Q: Do colors work under Cygwin?
 They do, but only in a limited way. You can use regular foreground colors
-(black, red, green ...) and you can regular background colors (on_black, on_red,
+(black, red, green ...) and regular background colors (on_black, on_red,
 on_green ...), but underline and bold are not supported.
 
 If you run the command:
@@ -174,6 +174,13 @@ folder, by modifying the:
 
 configuration variable.  Check out DropBox at http://www.dropbox.com.
 
+You might also want to share the same .taskrc file. You can do this by putting an alias in the .bashrc file along the lines of
+
+alias task="task rc:/home/username/Dropbox/mysharedtaskrc"
+
+An alternative to Dropbox is to use the push/pull/merge features built into Taskwarrior. See 'man task-sync' for details.
+
+
 .TP
 .B Q: I don't want to use dropbox. Is there another way to synchronize my tasks?
 Of course. Especially if you want to modify tasks offline on both machines and
@@ -206,7 +213,7 @@ It is not recommended that you delete the undo.data file, as it limits
 functionality.
 
 .TP
-.B Q: How do I know whether my terminal support 256 colors?
+.B Q: How do I know whether my terminal supports 256 colors?
 You will need to make sure your TERM environment variable is set to xterm-color,
 otherwise the easiest way is to just try it!  With version 1.9 or later, you
 simply run
@@ -276,7 +283,7 @@ efficiency.
 
 .TP
 .B Q: How do I list tasks that are either priority 'H' or 'M', but not 'L'?
-Taskwarrior's filters are all by default combined with and implicit logical AND
+Taskwarrior's filters are all by default combined with an implicit logical AND
 operator, so if you were to try this:
 
     task priority:H priority:M list
@@ -325,7 +332,7 @@ non-exact match:
 This will remove the second annotation - the first non-exact match.
 
 .TP
-.B Q: How do I show tasks completed on certain day?
+.B Q: How do I show tasks completed on a certain day?
 The day in question has to be boxed by a range, like this:
 
     task end.after:3/29/2012 end.before:3/30/2012 completed

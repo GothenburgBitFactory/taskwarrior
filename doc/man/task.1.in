@@ -28,7 +28,7 @@ example, to list all tasks belonging to the 'Home' project:
 
   task project:Home list
 
-You can specify multiple filter terms, each of which further restrict the
+You can specify multiple filter terms, each of which further restricts the
 result:
 
   task project:Home +weekend garden list
@@ -41,7 +41,7 @@ In this example, 'garden' is translated internally to:
 
 as a convenient shortcut.  The 'contains' here is an attribute modifier, which
 is used to exert more control over the filter than simply absence or presence.
-See 'ATTRIBUTE MODIFIERS' for a complete list of modifiers.
+See the section 'ATTRIBUTE MODIFIERS' below for a complete list of modifiers.
 
 Note that a filter may have zero terms, which means that all tasks apply to the
 command.  This can be dangerous, and this special case is confirmed, and
@@ -219,7 +219,7 @@ this:
 	task $(task project:Home status:completed uuids) modify status:pending
 
 This example first gets the UUIDs for the project:Home and status:completed
-filter, then makes each of those tasks pending again.
+filters, then makes each of those tasks pending again.
 
 This command is mainly of use to external scripts.
 
@@ -352,7 +352,7 @@ argument. URL may have the following syntaxes:
 	/path/to/local/.task/
 
 You can set aliases for frequently used URLs in the .taskrc. Further
-documentation can be found in task-sync(5) man page.
+documentation can be found in the task-sync(5) man page.
 
 .TP
 .B task <filter> modify <mods>
@@ -369,7 +369,7 @@ Overwrites the task database with those files found at the URL.
 
 .TP
 .B task push <URL>
-Pushes the task database to a remote another location for distributing the
+Pushes the task database to a remote location for distributing the
 changes made by the merge command.
 (See 'merge' command for valid URL syntax.)
 
@@ -439,7 +439,7 @@ Launches an interactive shell with all the task commands available.
 
 .TP
 .B task show [all | substring]
-Shows all the current settings in the taskwarrior configuration file.  If a
+Shows all the current settings.  If a
 substring is specified just the settings containing that substring will be
 displayed.
 
@@ -526,8 +526,8 @@ Shows the UUIDs and descriptions of matching tasks.
 
 .TP
 .B ID
-Tasks can be specified uniquely by IDs, which are simply the index of the
-task in the data file.  The ID of a task may therefore change, but only when
+Tasks can be specified uniquely by IDs, which are simply the indexes of the
+tasks in the data file.  The ID of a task may therefore change, but only when
 a command is run that displays IDs.  When modifying tasks, it is safe to
 rely on the last displayed ID.  Always run a report to check you have the right
 ID for a task. IDs can be given to task as a sequence, for example,
@@ -541,7 +541,7 @@ Tags are arbitrary words associated with a task. Use + to add a tag and - to
 remove a tag from a task. A task can have any quantity of tags.
 
 Certain tags (called 'special tags'), can be used to affect the way tasks are
-treated.  For example, is a task has the special tag 'nocolor', then it is
+treated.  For example, if a task has the special tag 'nocolor', then it is
 exempt from all color rules.  The supported special tags are:
 
     +nocolor     Disable color rules processing for this task
@@ -736,7 +736,7 @@ For example:
   task '( due < eom or priority != L )'  list
 
 Note that the parentheses are required when using a logical operator other than
-the 'and' operator.  The reason is that some report contains filters that must
+the 'and' operator.  The reason is that some reports contain filters that must
 be combined with the command line.  Consider this example:
 
   task project:Home or project:Garden list
@@ -785,7 +785,7 @@ Taskwarrior reads dates from the command line and displays dates in the
 reports.  The expected and desired date format is determined by the
 configuration variable
 .I dateformat
-in the taskwarrior configuration file.
+.
 
 .RS
 .TP
@@ -1026,11 +1026,11 @@ The file that contains the tasks that are not yet done.
 
 .TP
 ~/.task/completed.data
-The file that contains the completed "done" tasks.
+The file that contains the completed ("done") tasks.
 
 .TP
 ~/.task/undo.data
-The file that contains the information to the "undo" command.
+The file that contains information needed by the "undo" and "merge" commands.
 
 .SH "CREDITS & COPYRIGHTS"
 Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.

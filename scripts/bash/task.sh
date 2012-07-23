@@ -35,7 +35,7 @@
 # To use these routines:
 #
 #    1) Copy this file to somewhere (e.g. ~/.bash_completion.d/task.sh).
-#    2) Added the following line to your .bashrc:
+#    2) Add the following line to your .bashrc:
 #        source ~/.bash_completion.d/task.sh
 #
 #    OR
@@ -45,7 +45,7 @@
 #
 # To submit patches/bug reports:
 #
-#    *) Go to the projects website at
+#    *) Go to the project's website at
 #
 #       http://taskwarrior.org
 #

@@ -28,7 +28,7 @@ attribute when running task:
 $ task rc:<directory-path>/.taskrc ...
 .RE
 
-or usign the TASKRC environment variable:
+or using the TASKRC environment variable:
 
 .RS
 $ TASKRC=/tmp/.taskrc task ...
@@ -143,11 +143,11 @@ These environmant variables override defaults and command line arguments.
 
 .TP
 .B TASKDATA=~/.task
-The overrides the default path for the taskwarrior data files.
+This overrides the default path for the taskwarrior data files.
 
 .TP
 .B TASKRC=~/.taskrc
-The overrides the default RC file.
+This overrides the default RC file.
 
 .SH CONFIGURATION VARIABLES
 Valid variable names and their default values are:
@@ -194,14 +194,14 @@ using, for text wrapping.
 .TP
 .B defaultwidth=80
 The width of output used when auto-detection support is not available. Defaults
-to 80.  If set to 0, is interpreted as infinite width, therefore with no
-word-wrapping; useful when redirecting report output to a file for subsequent
+to 80.  If set to 0, it is interpreted as infinite width, therefore with no
+word-wrapping; this is useful when redirecting report output to a file for subsequent
 handling.
 
 .TP
 .B defaultheight=24
 The height of output used when auto-detection support is not available. Defaults
-to 24.  If set to 0, is interpreted as infinite height.  Useful when redirecting
+to 24.  If set to 0, it is interpreted as infinite height. This is useful when redirecting
 charts to a file for subsequent handling.
 
 .TP
@@ -243,7 +243,7 @@ output from Taskwarrior.  Setting this to "off" means that you would see regular
 output.
 
 The special value "nothing" can be used to eliminate all optional output, which
-results in only the formatted data being show, with nothing else.  This output
+results in only the formatted data being shown, with nothing else.  This output
 is most readily parsed and used by shell scripts.
 
 Alternatively, you can specify a comma-separated list of verbosity tokens that
@@ -308,7 +308,7 @@ Controls padding between columns of the report output.  Default is "1".
 
 .TP
 .B bulk=3
-Is a number, defaulting to 3.  When this number or greater tasks are modified
+Is a number, defaulting to 3.  When this number or greater of tasks are modified
 in a single command, confirmation will be required, unless the
 .B confirmation
 variable is "no".
@@ -330,7 +330,7 @@ default value is "no".
 
 .TP
 .B list.all.projects=yes
-May be yes or no, and determines whether 'projects' command lists all the project
+May be yes or no, and determines whether the 'projects' command lists all the project
 names you have used, or just the ones used in active tasks.  The default value is
 "no".
 
@@ -485,7 +485,7 @@ Enables the extension system.  Defaults to on.
 .B dateformat.annotation=m/d/Y
 .TP
 .B report.X.dateformat=m/d/Y
-This is a string of characters that define how taskwarrior formats date values.
+This is a string of characters that defines how taskwarrior formats date values.
 The precedence order for the configuration variable is report.X.dateformat then
 dateformat.report then dateformat for formating the due dates in reports.
 If both report.X.dateformat and dateformat.report are not set then dateformat
@@ -560,7 +560,7 @@ yMD.HN       would do an output as "110124.2342"
 .br
 m/d/Y H:N    would do an output as "1/24/2011 10:42"
 .br
-a D b Y H:N:S would do and output as "Mon 24 Jan 2011 11:19:42"
+a D b Y H:N:S would do an output as "Mon 24 Jan 2011 11:19:42"
 .RE
 .RE
 
@@ -591,7 +591,7 @@ is "sparse".
 
 .TP
 .B calendar.details.report=list
-The report to run when displaying the details of tasks with due date when
+The report to run when displaying the details of tasks with due dates when
 running the "task calendar" command.  The default value is "list".
 
 .TP
@@ -942,7 +942,7 @@ Colors the output of the merge command.
 .RS
 This setting specifies the precedence of the color rules, from highest to
 lowest.  Note that the prefix 'color.' is omitted (for brevity), and that any
-wildcard values (color.tag.XXX) is shortened to 'tag.', which places all
+wildcard value (color.tag.XXX) is shortened to 'tag.', which places all
 specific tag rules at the same precedence, again for brevity.
 .RE
 
@@ -1205,7 +1205,7 @@ Lists the most important tasks.
 
 .TP
 .B long
-Lists all task, all data, matching the specified criteria.
+Lists all tasks and all data, matching the specified criteria.
 
 .TP
 .B list
@@ -1253,18 +1253,18 @@ Lists all tasks matching the specified criteria.
 
 .TP
 .B blocked
-List all tasks that have dependencies.
+Lists all tasks that have dependencies.
 
 .SS USER DEFINED ATTRIBUTES
 
 User defined attributes (UDAs) are an extension mechanism that allows you to
-define new attributes for Taskwarrior to store.  One such example is
+define new attributes for Taskwarrior to store and display.  One such example is
 an 'estimate' attribute that could be used to store time estimates associated
 with a task.  This 'estimate' attribute is not built in to Taskwarrior, but with
 a few simple configuration settings you can instruct Taskwarrior to store this
 item, and provide access to it for custom reports and filters.
 
-This allows you to augment Taskwarrior to accomodate your workflow, or bend the
+This allows you to augment Taskwarrior to accommodate your workflow, or bend the
 rules and use Taskwarrior to store and synch data that is not necessarily
 task-related.
 
