@@ -1,6 +1,10 @@
 
 ------ current release ---------------------------
 
+2.2.0 ()
+
+------ old releases ------------------------------
+
 2.1.0 (2012-07-23) a413331c9450b48065f94639e7ab0455eaa74293
 
 Features
@@ -115,8 +119,6 @@ Bugs
    the use of tm_gmtoff for non GNU/BSD platforms.
  + Fixed bug #1032, which prevented negative urgency coefficients from working
    for projects and tags.
-
------- old releases ------------------------------
 
 2.0.0 (2012-03-17) 03799eba9f230e48c4fa6d6ebddabe91bef7998f
 
