@@ -104,8 +104,6 @@ int CmdStart::execute (std::string& output)
         std::cout << STRING_CMD_START_NO << "\n";
         rc  = 1;
       }
-      if (context.verbose ("blank"))
-        std::cout << "\n";
     }
     else
     {

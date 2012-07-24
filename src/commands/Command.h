@@ -80,6 +80,7 @@ protected:
   // Permission support
   bool        _permission_quit;
   bool        _permission_all;
+  bool        _first_iteration;
 };
 
 #endif

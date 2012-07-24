@@ -210,6 +210,7 @@ Command::Command ()
 , _needs_confirm (false)
 , _permission_quit (false)
 , _permission_all (false)
+, _first_iteration (true)
 {
 }
 
@@ -223,6 +224,7 @@ Command::Command (const Command& other)
   _needs_confirm   = other._needs_confirm;
   _permission_quit = other._permission_quit;
   _permission_all  = other._permission_all;
+  _first_iteration = other._first_iteration;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -237,6 +239,7 @@ Command& Command::operator= (const Command& other)
     _needs_confirm   = other._needs_confirm;
     _permission_quit = other._permission_quit;
     _permission_all  = other._permission_all;
+    _first_iteration = other._first_iteration;
   }
 
   return *this;
@@ -718,9 +721,12 @@ bool Command::permission (
   // 1 < Quantity < bulk modifications have optional confirmation, in the (y/n/a/q)
   // style.
   if (quantity < bulk && (!_needs_confirm || !confirmation))
-     return true;
+    return true;
 
+  if (context.verbose ("blank") && !_first_iteration)
+    std::cout << "\n";
   int answer = confirm4 (question);
+  _first_iteration = false;
   switch (answer)
   {
   case 1:                           return true;     // yes
