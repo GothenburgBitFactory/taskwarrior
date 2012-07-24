@@ -47,6 +47,8 @@ Features
  + Color error messages with a specific configuration variable 'color.error'.
 
 Bugs
+ + Fixed bug #734, which allows a sequence of IDs to work when modifying the
+   attribute "depends" (thanks to Andreas Kalex).
  + Applied patch for bug #919, so the holidays listed on the 'calendar' report
    are sorted (thanks to Jörg Plate).
  + Fixed bug #954, which caused bulk deletions when using a UUID filter term and
