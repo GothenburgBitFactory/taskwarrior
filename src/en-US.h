@@ -392,6 +392,7 @@
 #define STRING_CMD_DENO_CONFIRM      "Denotate task {1} '{2}'?"
 #define STRING_CMD_DENO_FOUND        "Found annotation '{1}' and deleted it."
 #define STRING_CMD_DENO_NOMATCH      "Did not find any matching annotation to be deleted for '{1}'."
+#define STRING_CMD_DENO_NO           "Task not denotated."
 #define STRING_CMD_DENO_1            "Denotated {1} task."
 #define STRING_CMD_DENO_N            "Denotated {1} tasks."
 

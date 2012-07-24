@@ -127,6 +127,11 @@ int CmdDenotate::execute (std::string& output)
         if (context.verbose ("project"))
           projectChanges[task->get ("project")] = onProjectChange (*task, false);
       }
+      else
+      {
+        std::cout << STRING_CMD_DENO_NO << "\n";
+        rc  = 1;
+      }
       if (context.verbose ("blank"))
         std::cout << "\n";
     }
