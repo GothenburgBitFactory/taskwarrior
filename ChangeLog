@@ -1,6 +1,6 @@
 ------ current release ---------------------------
 
-2.1.1 ()
+2.1.1 (2012-07-24)
 
 Bugs
  + Fixed bug that caused miplaced commas in JSON export (thanks to greenskeleton).

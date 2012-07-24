@@ -1,4 +1,4 @@
-.TH task-tutorial 5 2012-07-23 "${PACKAGE_STRING}" "User Manuals"
+.TH task-tutorial 5 2012-07-24 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 task-tutorial \- A tutorial for the task(1) command line todo manager.
