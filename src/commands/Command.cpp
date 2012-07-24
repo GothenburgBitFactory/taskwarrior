@@ -721,7 +721,6 @@ bool Command::permission (
      return true;
 
   int answer = confirm4 (question);
-  std::cout << "\n";       // #499
   switch (answer)
   {
   case 1:                           return true;     // yes

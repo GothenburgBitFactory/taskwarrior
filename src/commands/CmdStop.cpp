@@ -109,6 +109,8 @@ int CmdStop::execute (std::string& output)
                 << "\n";
       rc = 1;
     }
+    if (context.verbose ("blank"))
+      std::cout << "\n";
   }
 
   // Now list the project changes.
