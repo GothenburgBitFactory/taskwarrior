@@ -448,7 +448,6 @@
 
 #define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."
 #define STRING_CMD_MODIFY_NO_DUE     "You cannot specify a recurring task without a due date."
-#define STRING_CMD_MODIFY_UNTIL      "You cannot specify an until date for a non-recurring task."
 #define STRING_CMD_MODIFY_REM_DUE    "You cannot remove the due date from a recurring task."
 #define STRING_CMD_MODIFY_REC_ALWAYS "You cannot remove the recurrence from a recurring task."
 #define STRING_CMD_MODIFY_TASK       "Modifying task {1} '{2}'."

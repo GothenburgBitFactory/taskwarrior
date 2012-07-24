@@ -83,11 +83,6 @@ int CmdModify::execute (std::string& output)
           !before.has ("due"))
         throw std::string (STRING_CMD_MODIFY_NO_DUE);
 
-      if (task->has ("until")  &&
-          !task->has ("recur") &&
-          !before.has ("recur"))
-        throw std::string (STRING_CMD_MODIFY_UNTIL);
-
       if (before.has ("recur") &&
           before.has ("due")   &&
           (!task->has ("due")  ||

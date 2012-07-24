@@ -1,9 +1,15 @@
-
 ------ current release ---------------------------
 
 2.2.0 ()
 
 ------ old releases ------------------------------
+
+2.1.1 (2012-07-24) 46c5f8b826838ce96d9df7fcd3039de3c43483dd
+
+Bugs
+ + Fixed bug that caused miplaced commas in JSON export (thanks to greenskeleton).
+ + Fixed bug #1036, which prevents 'until' attributes to be modified for
+   non-recurring tasks (thanks to Stéphane Pezennec).
 
 2.1.0 (2012-07-23) a413331c9450b48065f94639e7ab0455eaa74293
 
@@ -45,6 +51,8 @@ Features
  + Color error messages with a specific configuration variable 'color.error'.
 
 Bugs
+ + Fixed bug #734, which allows a sequence of IDs to work when modifying the
+   attribute "depends" (thanks to Andreas Kalex).
  + Applied patch for bug #919, so the holidays listed on the 'calendar' report
    are sorted (thanks to Jörg Plate).
  + Fixed bug #954, which caused bulk deletions when using a UUID filter term and
