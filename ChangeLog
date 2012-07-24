@@ -4,6 +4,8 @@
 
 Bugs
  + Fixed bug that caused miplaced commas in JSON export (thanks to greenskeleton).
+ + Fixed bug #1036, which prevents 'until' attributes to be modified for
+   non-recurring tasks (thanks to Stéphane Pezennec).
 
 ------ old releases ------------------------------
 
