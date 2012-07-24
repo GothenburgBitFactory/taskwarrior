@@ -18,13 +18,11 @@ At the core, taskwarrior is a list processing program. You add text and
 additional related parameters and redisplay the information in a nice way.  It
 turns into a todo list program when you add due dates and recurrence. It turns
 into an organized todo list program when you add priorities, tags (one word
-descriptors), project groups, etc.  Taskwarrior turns into an organized to do
-list program when you modify the configuration file to have the output displayed
-the way you want to see it.
+descriptors), project groups, etc.
 
 .SH FILTER
 The <filter> consists of zero or more search criteria that select tasks.  For
-example, to list all tasks belonging to the 'Home' project:
+example, to list all pending tasks belonging to the 'Home' project:
 
   task project:Home list
 

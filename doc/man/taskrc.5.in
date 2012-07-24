@@ -280,7 +280,7 @@ and project.  The others are sent to standard output.
 .B confirmation=yes
 May be "yes" or "no", and determines whether taskwarrior will ask for
 confirmation before deleting a task, performing bulk changes, or the undo
-command.  The default value is "yes".  Consider leaving this setting as "no",
+command.  The default value is "yes".  Consider leaving this setting as "yes",
 for safety.
 
 .TP
@@ -1196,8 +1196,7 @@ An optional value to a report limiting the number of displayed tasks in the
 generated report.  Deprecated.
 
 .TP
-Taskwarrior comes with a number of predefined reports in its default
-configuration file. These reports are:
+Taskwarrior comes with a number of predefined reports, which are:
 
 .TP
 .B next
@@ -1205,7 +1204,7 @@ Lists the most important tasks.
 
 .TP
 .B long
-Lists all tasks and all data, matching the specified criteria.
+Lists all pending tasks and all data, matching the specified criteria.
 
 .TP
 .B list
