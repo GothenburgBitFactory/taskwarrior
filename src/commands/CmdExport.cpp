@@ -66,13 +66,14 @@ int CmdExport::execute (std::string& output)
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
-    output += task->composeJSON (true);
-
     if (task != filtered.begin ())
-      output += ",";
+      output += ",\n";
 
-    output += "\n";
+    output += task->composeJSON (true);
   }
+
+  if (filtered.size ())
+    output += "\n";
 
   if (json_array)
     output += "]\n";
