@@ -1,6 +1,9 @@
 ------ current release ---------------------------
 
 2.2.0 ()
+ + Fixed bug #1038, which prints blank lines with bulk changes and when the
+   verbose attributes does not specify it. Lines do a better separation between
+   each changes also.
 
 ------ old releases ------------------------------
 
