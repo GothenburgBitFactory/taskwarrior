@@ -111,6 +111,8 @@ int CmdDone::execute (std::string& output)
         std::cout << STRING_CMD_DONE_NO << "\n";
         rc  = 1;
       }
+      if (_permission_quit)
+        break;
     }
     else
     {

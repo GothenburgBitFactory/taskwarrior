@@ -2,6 +2,9 @@
 
 2.2.0 ()
 
+Features
+ + Stop consider new tasks after quitting a bulk change.
+
 Bugs
  + Fixed bug #1038, which prints blank lines with bulk changes and when the
    verbose attributes does not specify it. Lines do a better separation between
