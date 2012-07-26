@@ -1,34 +1,21 @@
 
-New Features in taskwarrior 2.1.0
+New Features in taskwarrior 2.2.0
 
-  - The new 'project.indented' format is available and used in the 'projects'
-    and 'summary' commands.
-  - Support for the 'scheduled' date for a task, which represent the earliest
-    opportunity to work on a task.
-  - All tasks may now be given an 'until' date, after which they will expire
-    and are deleted.
-  - Improved UTF8 handling for wide characters.
-  - User defined attributes.
-  - Partial UUIDs must now be at least 14 characters, up from 9.  This
-    disambiguates a commonly date format.
+  - Deprectated 'fg' and 'bg' attributes removed.  Any residual use of those
+    will appear as orphaned UDAs.
 
   Please refer to the ChangeLog file for full details.  There are too many to
   list here.
 
-New commands in taskwarrior 2.1.0
+New commands in taskwarrior 2.2.0
 
-  - New 'ready' report that lists tasks ready for work, sorted by urgency.
-  - New 'udas' command shows UDA details and warnings.
-  - New '_udas' helper command lists UDA names for completion purposes.
+  - 
 
-New configuration options in taskwarrior 2.1.0
+New configuration options in taskwarrior 2.2.0
 
-  - urgency.scheduled.coefficient
-  - urgency.uda.<name>.coefficient
-  - color.scheduled
-  - color.blocking
+  - 
 
-Newly deprecated features in taskwarrior 2.1.0
+Newly deprecated features in taskwarrior 2.2.0
 
   - None
 

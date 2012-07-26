@@ -4,6 +4,7 @@
 
 Features
  + Stop consider new tasks after quitting a bulk change.
+ + Removed deprecated 'fg:' and 'bg:' attributes.
 
 Bugs
  + Fixed bug #1038, which prints blank lines with bulk changes and when the

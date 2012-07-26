@@ -572,14 +572,6 @@ Specifies the date after which a task can be accomplished.
 Specifies the expiration date of a task, after which it will be deleted.
 
 .TP
-.B fg:<color-spec>
-Specifies foreground color. Deprecated.
-
-.TP
-.B bg:<color-spec>
-Specifies background color. Deprecated.
-
-.TP
 .B limit:<number-of-rows>
 Specifies the desired number of tasks a report should show, if a positive
 integer is given.  The value 'page' may also be used, and will limit the

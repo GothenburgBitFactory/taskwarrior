@@ -300,24 +300,6 @@ int CmdInfo::execute (std::string& output)
 
     view.set (row, 1, entry + " (" + age + ")");
 
-    // fg TODO deprecated 2.0
-    std::string color = task->get ("fg");
-    if (color != "")
-    {
-      row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_FG);
-      view.set (row, 1, color);
-    }
-
-    // bg TODO deprecated 2.0
-    color = task->get ("bg");
-    if (color != "")
-    {
-      row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_BG);
-      view.set (row, 1, color);
-    }
-
     // Task::urgency
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_URGENCY);

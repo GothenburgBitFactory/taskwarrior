@@ -111,7 +111,7 @@ int CmdTimesheet::execute (std::string& output)
         Date compDate (task->get_date ("end"));
         if (compDate >= start && compDate < end)
         {
-          Color c (task->get ("fg") + " " + task->get ("bg"));
+          Color c;
           if (context.color ())
             autoColorize (*task, c);
 
@@ -168,7 +168,7 @@ int CmdTimesheet::execute (std::string& output)
         Date startDate (task->get_date ("start"));
         if (startDate >= start && startDate < end)
         {
-          Color c (task->get ("fg") + " " + task->get ("bg"));
+          Color c;
           if (context.color ())
             autoColorize (*task, c);
 

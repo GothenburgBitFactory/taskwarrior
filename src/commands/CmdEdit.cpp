@@ -210,9 +210,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
          << "  Until:             " << formatDate (task, "until", dateformat)           << "\n"
          << "  Recur:             " << task.get ("recur")                               << "\n"
          << "  Wait until:        " << formatDate (task, "wait", dateformat)            << "\n"
-         << "  Parent:            " << task.get ("parent")                              << "\n"
-         << "  Foreground color:  " << task.get ("fg")                                  << "\n"
-         << "  Background color:  " << task.get ("bg")                                  << "\n";
+         << "  Parent:            " << task.get ("parent")                              << "\n";
 
   if (verbose)
     before << "# " << STRING_EDIT_HEADER_13 << "\n"
@@ -610,38 +608,6 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     {
       context.footnote (STRING_EDIT_PARENT_DEL);
       task.remove ("parent");
-    }
-  }
-
-  // fg
-  value = findValue (after, "\n  Foreground color:");
-  if (value != task.get ("fg"))
-  {
-    if (value != "")
-    {
-      context.footnote (STRING_EDIT_FG_MOD);
-      task.set ("fg", value);
-    }
-    else
-    {
-      context.footnote (STRING_EDIT_FG_DEL);
-      task.remove ("fg");
-    }
-  }
-
-  // bg
-  value = findValue (after, "\n  Background color:");
-  if (value != task.get ("bg"))
-  {
-    if (value != "")
-    {
-      context.footnote (STRING_EDIT_BG_MOD);
-      task.set ("bg", value);
-    }
-    else
-    {
-      context.footnote (STRING_EDIT_BG_DEL);
-      task.remove ("bg");
     }
   }
 
