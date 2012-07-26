@@ -788,6 +788,8 @@ task ... due:20120314T223000Z
 
 .TP
 Relative wording
+task ... due:now
+.br
 task ... due:today
 .br
 task ... due:yesterday
@@ -805,7 +807,7 @@ task ... due:1day
 task ... due:9hrs
 
 .TP
-Start of (work) week (Monday), calendar week (Sunday or Monday), month, quarter and year
+Start of next (work) week (Monday), calendar week (Sunday or Monday), month, quarter and year
 .br
 task ... due:sow
 .br
@@ -820,7 +822,7 @@ task ... due:soq
 task ... due:soy
 
 .TP
-End of (work) week (Friday), calendar week (Saturday or Sunday), month, quarter and year
+End of current (work) week (Friday), calendar week (Saturday or Sunday), month, quarter and year
 .br
 task ... due:eow
 .br
