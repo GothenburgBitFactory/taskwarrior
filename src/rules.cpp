@@ -214,42 +214,45 @@ static void colorizeKeyword (Task& task, const std::string& rule, const Color& b
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeDue (Task& task, const Color& base, Color& c)
 {
+  if (task.has ("due"))
+  {
   Task::status status = task.getStatus ();
-
-  if (task.has ("due")          &&
-      status != Task::completed &&
+    if (status != Task::completed &&
       status != Task::deleted)
   {
     if (getDueState (task.get ("due")) == 1)
       c.blend (base);
+  }
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeDueToday (Task& task, const Color& base, Color& c)
 {
+  if (task.has ("due"))
+  {
   Task::status status = task.getStatus ();
-
-  if (task.has ("due")          &&
-      status != Task::completed &&
+    if (status != Task::completed &&
       status != Task::deleted)
   {
     if (getDueState (task.get ("due")) == 2)
       c.blend (base);
+  }
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeOverdue (Task& task, const Color& base, Color& c)
 {
+  if (task.has ("due"))
+  {
   Task::status status = task.getStatus ();
-
-  if (task.has ("due")          &&
-      status != Task::completed &&
+    if (status != Task::completed &&
       status != Task::deleted)
   {
     if (getDueState (task.get ("due")) == 3)
       c.blend (base);
+  }
   }
 }
 
