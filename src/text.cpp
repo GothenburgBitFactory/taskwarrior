@@ -36,6 +36,7 @@
 #include <strings.h>
 #include <ctype.h>
 #include <Context.h>
+#include <math.h>
 #include <util.h>
 #include <text.h>
 #include <utf8.h>
@@ -857,6 +858,15 @@ const std::string format (float value, int width, int precision)
   std::stringstream s;
   s.width (width);
   s.precision (precision);
+  if (0 < value && value < 1)
+  {
+    // For value close to zero, width - 2 (2 accounts for the first zero and
+    // the dot) is the number of digits after zero that are significant
+    double factor = 1;
+    for (int i = 2; i < width; i++)
+      factor *= 10;
+    value = roundf (value * factor) / factor;
+  }
   s << value;
   return s.str ();
 }
@@ -867,6 +877,15 @@ const std::string format (double value, int width, int precision)
   std::stringstream s;
   s.width (width);
   s.precision (precision);
+  if (0 < value && value < 1)
+  {
+    // For value close to zero, width - 2 (2 accounts for the first zero and
+    // the dot) is the number of digits after zero that are significant
+    double factor = 1;
+    for (int i = 2; i < width; i++)
+      factor *= 10;
+    value = round (value * factor) / factor;
+  }
   s << value;
   return s.str ();
 }

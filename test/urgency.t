@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 48;
+use Test::More tests => 49;
 
 # Create the rc file.
 if (open my $fh, '>', 'urgency.rc')
@@ -309,6 +309,11 @@ like ($output, qr/urgency 0$/ms, 'scheduled future = 0');
 qx {../src/task rc:urgency.rc add 12b scheduled:yesterday 2>&1};
 $output = qx{../src/task rc:urgency.rc 45 _urgency 2>&1};
 like ($output, qr/urgency 5$/ms, 'scheduled past = 5');
+
+# urgency values between 0 and 1
+qx {../src/task rc:urgency.rc add 13 pri:H 2>&1};
+$output = qx{../src/task rc:urgency.rc rc.urgency.priority.coefficient:0.01234 46 info 2>&1};
+like ($output, qr/Urgency     0.01$/ms, 'near-zero urgency is truncated');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key urgency.rc);
