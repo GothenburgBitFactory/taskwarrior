@@ -71,12 +71,12 @@ lists them and their defaults plus the CMAKE_INSTALL_PREFIX:
   TASK_MAN5DIR          share/man/man5
 
 The corresponding TASK_* variables will be combined with CMAKE_INSTALL_PREFIX to
-get absolute installation directoris:
+get absolute installation directories:
 
-  CMAKE_INSTALL_PREFIZ/TASK_BINDIR   /usr/local/bin
-  CMAKE_INSTALL_PREFIZ/TASK_DOCDIR   /usr/local/share/doc/task
-  CMAKE_INSTALL_PREFIZ/TASK_MAN1DIR  /usr/local/share/man/man1
-  CMAKE_INSTALL_PREFIZ/TASK_MAN5DIR  /usr/local/share/man/man5
+  CMAKE_INSTALL_PREFIX/TASK_BINDIR   /usr/local/bin
+  CMAKE_INSTALL_PREFIX/TASK_DOCDIR   /usr/local/share/doc/task
+  CMAKE_INSTALL_PREFIX/TASK_MAN1DIR  /usr/local/share/man/man1
+  CMAKE_INSTALL_PREFIX/TASK_MAN5DIR  /usr/local/share/man/man5
 
 
 Uninstallation
@@ -143,7 +143,7 @@ may be compiler errors and warnings when running 'make'.  Sometimes you will run
 CMake with no reported problems, and the build will fail later.  This is
 almost always because CMake is mistaken about some assumption.
 
-If a build does not succeed, please send the contents of the 'CMakeCache.txt' 
+If a build does not succeed, please send the contents of the 'CMakeCache.txt'
 and 'CMakeFiles/CMakeOutput.log' files to support@taskwarrior.org, or post a
 message in the support forums at taskwarrior.org along with the information.
 
