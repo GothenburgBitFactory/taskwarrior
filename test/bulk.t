@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 45;
+use Test::More tests => 44;
 
 # Create the rc file.
 if (open my $fh, '>', 'bulk.rc')
@@ -128,17 +128,16 @@ unlike ($output, qr/Deleting task/,          'Verified no delete 13-15');
 $output = qx{echo 'all' | ../src/task rc:bulk.rc rc.confirmation=on 13-15 delete 2>&1};
 unlike ($output, qr/\(yes\/no\)/,            'Bulk delete with confirmation');
 like   ($output, qr/\(yes\/no\/all\/quit\)/, 'Bulk delete with bulk confirmation');
-like   ($output, qr/Deleting task/,          'Verified delete 13');
-like   ($output, qr/Deleting task/,          'Verified delete 14');
-like   ($output, qr/Deleting task/,          'Verified delete 15');
+like   ($output, qr/Deleting task 13/,       'Verified delete 13');
+like   ($output, qr/Deleting task 14/,       'Verified delete 14');
+like   ($output, qr/Deleting task 15/,       'Verified delete 15');
 
 # 'quit' tests:
 $output = qx{echo 'quit' | ../src/task rc:bulk.rc rc.confirmation=on 16-18 delete 2>&1};
 unlike ($output, qr/\(yes\/no\)/,            'Bulk delete with no confirmation');
 like   ($output, qr/\(yes\/no\/all\/quit\)/, 'Bulk delete with no bulk confirmation');
-unlike ($output, qr/Deleting task/,          'Verified delete 16');
-unlike ($output, qr/Deleting task/,          'Verified delete 17');
-unlike ($output, qr/Deleting task/,          'Verified delete 18');
+like   ($output, qr/Deleted 0 tasks./,       'No task deleted');
+unlike ($output, qr/delete task 17/,         'No question asked for subsequent tasks');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bulk.rc);
