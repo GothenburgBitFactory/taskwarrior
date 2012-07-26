@@ -10,6 +10,8 @@ Bugs
  + Fixed bug #1038, which prints blank lines with bulk changes and when the
    verbose attributes does not specify it. Lines do a better separation between
    each changes also.
+ + Fixed bug #1042, where the 'diagnostics' command failed to detect missing
+   external utilities on Solaris and NetBSD
 
 ------ old releases ------------------------------
 

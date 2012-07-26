@@ -229,7 +229,7 @@ int CmdDiagnostics::execute (std::string& output)
     std::vector <std::string> matches;
     char buffer [1024] = {0};
     FILE* fp;
-    if ((fp = popen ("scp 2>&1", "r")))
+    if ((fp = popen ("/usr/bin/env scp 2>&1", "r")))
     {
       char* p = fgets (buffer, 1023, fp);
       pclose (fp);
@@ -243,7 +243,7 @@ int CmdDiagnostics::execute (std::string& output)
             << "\n";
     }
 
-    if ((fp = popen ("rsync --version 2>&1", "r")))
+    if ((fp = popen ("/usr/bin/env rsync --version 2>&1", "r")))
     {
       char* p = fgets (buffer, 1023, fp);
       pclose (fp);
@@ -260,7 +260,7 @@ int CmdDiagnostics::execute (std::string& output)
       }
     }
 
-    if ((fp = popen ("curl --version 2>&1", "r")))
+    if ((fp = popen ("/usr/bin/env curl --version 2>&1", "r")))
     {
       char* p = fgets (buffer, 1023, fp);
       pclose (fp);
