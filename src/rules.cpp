@@ -216,13 +216,11 @@ static void colorizeDue (Task& task, const Color& base, Color& c)
 {
   if (task.has ("due"))
   {
-  Task::status status = task.getStatus ();
+    Task::status status = task.getStatus ();
     if (status != Task::completed &&
-      status != Task::deleted)
-  {
-    if (getDueState (task.get ("due")) == 1)
+        status != Task::deleted   &&
+        getDueState (task.get ("due")) == 1)
       c.blend (base);
-  }
   }
 }
 
@@ -231,13 +229,11 @@ static void colorizeDueToday (Task& task, const Color& base, Color& c)
 {
   if (task.has ("due"))
   {
-  Task::status status = task.getStatus ();
+    Task::status status = task.getStatus ();
     if (status != Task::completed &&
-      status != Task::deleted)
-  {
-    if (getDueState (task.get ("due")) == 2)
+        status != Task::deleted   &&
+        getDueState (task.get ("due")) == 2)
       c.blend (base);
-  }
   }
 }
 
@@ -246,13 +242,11 @@ static void colorizeOverdue (Task& task, const Color& base, Color& c)
 {
   if (task.has ("due"))
   {
-  Task::status status = task.getStatus ();
+    Task::status status = task.getStatus ();
     if (status != Task::completed &&
-      status != Task::deleted)
-  {
-    if (getDueState (task.get ("due")) == 3)
+        status != Task::deleted   &&
+        getDueState (task.get ("due")) == 3)
       c.blend (base);
-  }
   }
 }
 
