@@ -189,7 +189,7 @@
 #define STRING_COLUMN_LABEL_ORPHAN   "Orphan UDA"
 
 // Column Examples
-#define STRING_COLUMN_EXAMPLES_TAGS  "home @chore"
+#define STRING_COLUMN_EXAMPLES_TAGS  "home @chore next"
 #define STRING_COLUMN_EXAMPLES_PROJ  "home.garden"
 #define STRING_COLUMN_EXAMPLES_PAR   "home"
 #define STRING_COLUMN_EXAMPLES_IND   "  home.garden"
