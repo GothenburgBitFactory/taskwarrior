@@ -65,13 +65,13 @@ int CmdProjects::execute (std::string& output)
       tasks.push_back (*task);
   }
 
-  int quantity = tasks.size ();
-
   context.tdb2.commit ();
 
   // Apply filter.
   std::vector <Task> filtered;
   filter (tasks, filtered);
+
+  int quantity = filtered.size ();
 
   std::stringstream out;
 
@@ -88,6 +88,12 @@ int CmdProjects::execute (std::string& output)
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
+    if (task->getStatus () == Task::deleted)
+    {
+      --quantity;
+      continue;
+    }
+
     project = task->get ("project");
     priority = task->get ("priority");
 

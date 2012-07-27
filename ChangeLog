@@ -12,6 +12,8 @@ Bugs
    each changes also.
  + Fixed bug #1042, where the 'diagnostics' command failed to detect missing
    external utilities on Solaris and NetBSD
+ + Fixed bug #1044, where 'task projects' considers newly deleted tasks and
+   provides an incorrect summary.
 
 ------ old releases ------------------------------
 
