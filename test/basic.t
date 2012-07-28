@@ -40,7 +40,7 @@ if (open my $fh, '>', 'basic.rc')
 }
 
 # Get the version number from configure.ac
-my $version = slurp ('../../configure.ac');
+my $version = slurp ('../CMakeLists.txt');
 
 # Test the usage command.
 my $output = qx{../src/task rc:basic.rc 2>&1 >/dev/null};
@@ -54,7 +54,7 @@ like ($output, qr/http:\/\/taskwarrior\.org/, 'version - url');
 
 # Test the _version command.
 $output = qx{../src/task rc:basic.rc _version 2>&1};
-like ($output, qr/$version/, '_version - task version number');
+like ($output, qr/[a-f0-9]{8}/, '_version - task version number');
 
 # Cleanup.
 unlink 'basic.rc';
@@ -69,10 +69,10 @@ sub slurp
   if (open my $fh, '<', $file)
   {
     while (<$fh>) {
-      if (/AC_INIT/) {
+      if (/PROJECT_VERSION/) {
         chomp;
-        s/^AC_INIT\(task, //;
-        s/, support.*$//;
+        s/^set \(PROJECT_VERSION "//;
+        s/"\).*$//;
         close  $fh;
         return $_;
       }
