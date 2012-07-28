@@ -468,6 +468,10 @@ Shows the taskwarrior version number.
 .SH HELPER SUBCOMMANDS
 
 .TP
+.B task _aliases
+Generates a list of all aliases, for autocompletion purposes.
+
+.TP
 .B task _columns
 Displays only a list of supported columns.
 

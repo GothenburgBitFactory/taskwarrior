@@ -1,6 +1,8 @@
 
 New Features in taskwarrior 2.2.0
 
+  - Bash autocompletion now works with aliases.
+
   - Deprectated 'fg' and 'bg' attributes removed.  Any residual use of those
     will appear as orphaned UDAs.
 
@@ -9,7 +11,7 @@ New Features in taskwarrior 2.2.0
 
 New commands in taskwarrior 2.2.0
 
-  - 
+  - New '_aliases' helper command lists aliases for completion purposes.
 
 New configuration options in taskwarrior 2.2.0
 

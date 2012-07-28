@@ -443,6 +443,7 @@
 #define STRING_CMD_PULL_NOT_DIR      "The uri '{1}' is not a directory.  Did you forget a trailing '/'?"
 #define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
+#define STRING_CMD_ALIASES_USAGE     "Generates a list of all aliases, for autocompletion purposes"
 #define STRING_CMD_INSTALL_USAGE     "Installs extensions and external scripts"
 
 #define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."

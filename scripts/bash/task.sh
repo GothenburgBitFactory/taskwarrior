@@ -88,7 +88,8 @@ _task()
 #   echo "prev='$prev'"
 #   echo "prev2='$prev2'"
 
-    opts="$(task _commands) $(task _ids) $(task _columns)"
+    commands_aliases=$(echo $(task _commands; task _aliases) | tr " " "\n"|sort|tr "\n" " ")
+    opts="$commands_aliases $(task _ids) $(task _columns)"
 
     case "${prev}" in
         :)
