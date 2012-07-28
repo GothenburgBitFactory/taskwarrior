@@ -141,6 +141,16 @@ int CmdDiagnostics::execute (std::string& output)
 #else
       << "n/a"
 #endif
+      << "\n";
+
+  out << "   libuuid: "
+#if defined (HAVE_UUID) and defined (HAVE_UUID_UNPARSE_LOWER)
+      << "libuuid + uuid_unparse_lower"
+#elif defined (HAVE_UUID) and !defined (HAVE_UUID_UNPARSE_LOWER)
+      << "libuuid, no uuid_unparse_lower"
+#else
+      << "n/a"
+#endif
       << "\n\n";
 
   out << bold.colorize (STRING_CMD_DIAG_FEATURES)
