@@ -50,11 +50,13 @@ _task_conjunctions=(
    'and' \
    'or' \
 	'xor' \
-	'\)'
+	'\)' \
 	'\('
 )
-_task_cmds=($(task _commands))
+_task_cmds=($(task _commands; task _aliases))
 _task_zshcmds=( ${(f)"$(task _zshcommands)"} )
+
+_task_aliases=($(task _aliases))
 
 _task() {
     _arguments -s -S \
@@ -242,6 +244,7 @@ _task_default() {
 
 	_describe -t commands 'task command' _task_zshcmds
 	_describe -t values 'task IDs' _task_zshids
+	_describe -t aliases 'task aliases' _task_aliases
 	_call_function ret _task_filter
 
 	return ret
