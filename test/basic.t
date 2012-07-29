@@ -54,7 +54,7 @@ like ($output, qr/http:\/\/taskwarrior\.org/, 'version - url');
 
 # Test the _version command.
 $output = qx{../src/task rc:basic.rc _version 2>&1};
-like ($output, qr/[a-f0-9]{8}/, '_version - task version number');
+like ($output, qr/[a-f0-9]{7}/, '_version - task version number');
 
 # Cleanup.
 unlink 'basic.rc';
