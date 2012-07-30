@@ -564,6 +564,22 @@ a D b Y H:N:S would do an output as "Mon 24 Jan 2011 11:19:42"
 .RE
 .RE
 
+.RS
+Undefined fields are put to their minimal valid values (1 for month and day and
+0 for hour, minutes and seconds) when there is at least one more global date
+field that is set.  Otherwise, they are set to the corresponding values of
+"now".  For example:
+.RE
+
+.RS
+.RS
+.br
+8/1/2012  with m/d/Y   implies August 1, 2012 at midnight (inferred)
+.br
+8/1 20:40 with m/d H:N implies August 1, 2012 (inferred) at 20:40
+.RE
+.RE
+
 .TP
 .B weekstart=Sunday
 Determines the day a week starts. Valid values are Sunday or Monday only. The

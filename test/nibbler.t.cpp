@@ -39,15 +39,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (382);
+  UnitTest t (396);
 #else
-  UnitTest t (358);
+  UnitTest t (372);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (332);
+  UnitTest t (346);
 #else
-  UnitTest t (308);
+  UnitTest t (322);
 #endif
 #endif
 
@@ -581,6 +581,27 @@ int main (int argc, char** argv)
     t.is (dt.hour (),     12, "ctor (std::string) -> h");
     t.is (dt.minute (),   34, "ctor (std::string) -> N");
     t.is (dt.second (),   56, "ctor (std::string) -> S");
+
+    n = Nibbler ("2010");
+    t.ok (n.getDate ("Y", ti), "Y ok");
+    dt = Date (ti);
+    t.is (dt.month (),     1, "ctor (std::string) -> m");
+    t.is (dt.day (),       1, "ctor (std::string) -> d");
+    t.is (dt.year (),   2010, "ctor (std::string) -> Y");
+    t.is (dt.hour (),      0, "ctor (std::string) -> h");
+    t.is (dt.minute (),    0, "ctor (std::string) -> N");
+    t.is (dt.second (),    0, "ctor (std::string) -> S");
+
+    n = Nibbler ("17:18:19");
+    t.ok (n.getDate ("H:N:S", ti), "H:N:S ok");
+    dt = Date (ti);
+    Date now = Date ();
+    t.is (dt.month (), now.month(), "ctor (std::string) -> m");
+    t.is (dt.day (),     now.day(), "ctor (std::string) -> d");
+    t.is (dt.year (),   now.year(), "ctor (std::string) -> Y");
+    t.is (dt.hour (),           17, "ctor (std::string) -> h");
+    t.is (dt.minute (),         18, "ctor (std::string) -> N");
+    t.is (dt.second (),         19, "ctor (std::string) -> S");
 #endif
 
     // bool getOneOf (const std::vector <std::string>&, std::string&);

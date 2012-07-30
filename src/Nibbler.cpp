@@ -697,8 +697,8 @@ bool Nibbler::getDateISO (time_t& t)
       // Convert to epoch.
       struct tm tms = {0};
       tms.tm_isdst  = -1;   // Requests that mktime determine summer time effect.
-      tms.tm_mday   = day;
       tms.tm_mon    = month - 1;
+      tms.tm_mday   = day;
       tms.tm_year   = year - 1900;
       tms.tm_hour   = hour;
       tms.tm_min    = minute;
@@ -721,12 +721,12 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
 {
   std::string::size_type i = _cursor;
 
-  int month  = 0;
-  int day    = 0;
-  int year   = -1;   // So we can check later.
-  int hour   = 0;
-  int minute = 0;
-  int second = 0;
+  int month  = -1;   // So we can check later.
+  int day    = -1;
+  int year   = -1;
+  int hour   = -1;
+  int minute = -1;
+  int second = -1;
 
   for (unsigned int f = 0; f < format.length (); ++f)
   {
@@ -983,13 +983,41 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
     }
   }
 
-  // Default the year to the current year, for formats that lack Y/y.
+  // By default, the most global date variables that are undefined are put to
+  // the current date (for instance, the year to the current year for formats
+  // that lack Y/y). If even 'second' is undefined, then the date is parsed as
+  // now.
   if (year == -1)
   {
-    time_t now = time (NULL);
-    struct tm* default_year = localtime (&now);
-    year = default_year->tm_year + 1900;
+    Date now = Date ();
+    year = now.year ();
+    if (month == -1)
+    {
+      month = now.month ();
+      if (day == -1)
+      {
+        day = now.day ();
+        if (hour == -1)
+        {
+          hour = now.hour ();
+          if (minute == -1)
+          {
+            minute = now.minute ();
+            if (second == -1)
+              second = now.second ();
+          }
+        }
+      }
+    }
   }
+
+  // Put all remaining undefined date variables to their default values (0 or
+  // 1).
+  month  = (month  == -1) ? 1 : month;
+  day    = (day    == -1) ? 1 : day;
+  hour   = (hour   == -1) ? 0 : hour;
+  minute = (minute == -1) ? 0 : minute;
+  second = (second == -1) ? 0 : second;
 
   // Convert to epoch.
   struct tm tms = {0};
