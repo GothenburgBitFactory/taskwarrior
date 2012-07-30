@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#! /usr/bin/env perl
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
