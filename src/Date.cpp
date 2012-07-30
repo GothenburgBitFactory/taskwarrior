@@ -992,21 +992,21 @@ bool Date::isRelativeDate (const std::string& input)
   }
 
   // Support "21st" to indicate the next date that is the 21st day.
-  else if (input.length () <= 4 &&
-           isdigit (input[0]))
+  else if (in.length () <= 4 &&
+           isdigit (in[0]))
   {
     int number;
     std::string ordinal;
 
-    if (isdigit (input[1]))
+    if (isdigit (in[1]))
     {
-      number = atoi (input.substr (0, 2).c_str ());
-      ordinal = lowerCase (input.substr (2));
+      number = atoi (in.substr (0, 2).c_str ());
+      ordinal = lowerCase (in.substr (2));
     }
     else
     {
-      number = atoi (input.substr (0, 2).c_str ());
-      ordinal = lowerCase (input.substr (1));
+      number = atoi (in.substr (0, 2).c_str ());
+      ordinal = lowerCase (in.substr (1));
     }
 
     // Sanity check.

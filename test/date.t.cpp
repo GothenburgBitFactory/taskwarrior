@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (174);
+  UnitTest t (177);
 
   try
   {
@@ -341,6 +341,13 @@ int main (int argc, char** argv)
 
     Date r16 ("soy");
     t.notok (r16.sameYear (now), "soy not in same year as now");
+
+    Date first ("1st");
+    t.notok (first.sameMonth (now), "1st not in same month as now");
+    t.is (first.day (),   1, "1st day is 1");
+
+    Date FIRST ("1ST");
+    t.ok (FIRST == first, "1st == 1ST");
 
     Date later ("later");
     t.is (later.month (),   1, "later -> m = 1");
