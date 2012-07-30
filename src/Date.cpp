@@ -339,7 +339,7 @@ bool Date::valid (const int d, const int y)
   if (y < 0)
     return false;
 
-  if (d < 0 || d > 365)
+  if (d < 1 || d > Date::daysInYear (y))
     return false;
 
   return true;
@@ -369,6 +369,12 @@ int Date::daysInMonth (int month, int year)
   };
 
   return days[Date::leapYear (year) ? 1 : 0][month - 1];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Date::daysInYear (int year)
+{
+  return Date::leapYear (year) ? 366 : 365;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

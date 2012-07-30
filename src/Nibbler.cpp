@@ -734,7 +734,7 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
     {
     case 'm':
       if (i + 2 <= _length &&
-          (_input[i + 0] == '0' || _input[i + 0] == '1') &&
+          isdigit (_input[i + 0]) &&
           isdigit (_input[i + 1]))
       {
         month = atoi (_input.substr (i, 2).c_str ());
@@ -882,7 +882,7 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
 
     case 'h':
       if (i + 2 <= _length &&
-          (_input[i + 0] == '0' || _input[i + 0] == '1') &&
+          isdigit (_input[i + 0]) &&
           isdigit (_input[i + 1]))
       {
         hour = atoi (_input.substr (i, 2).c_str ());
@@ -1019,27 +1019,15 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
   minute = (minute == -1) ? 0 : minute;
   second = (second == -1) ? 0 : second;
 
+  // Check that values are correct
+  if (! Date::valid (month, day, year, hour, minute, second))
+    return false;
+
   // Convert to epoch.
   struct tm tms = {0};
   tms.tm_isdst = -1;   // Requests that mktime determine summer time effect.
-
-  if (month == 0 && day >= 0 && day <= 365)
-  {
-    tms.tm_yday  = day;
-    tms.tm_mon   = 0;
-
-    if (! Date::valid (day, year))
-      return false;
-  }
-  else
-  {
-    tms.tm_mday  = day;
-    tms.tm_mon   = month > 0 ? month - 1 : 0;
-
-    if (! Date::valid (month, day, year))
-      return false;
-  }
-
+  tms.tm_mon   = month - 1;
+  tms.tm_mday  = day;
   tms.tm_year  = year - 1900;
   tms.tm_hour  = hour;
   tms.tm_min   = minute;

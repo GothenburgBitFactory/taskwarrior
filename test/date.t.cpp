@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (177);
+  UnitTest t (179);
 
   try
   {
@@ -85,6 +85,9 @@ int main (int argc, char** argv)
 
     t.ok    (Date::valid ("2/29/2008"), "valid: 2/29/2008");
     t.notok (Date::valid ("2/29/2007"), "invalid: 2/29/2007");
+
+    t.ok    (Date::valid (366, 2008), "valid: 366 days in 2008");
+    t.notok (Date::valid (366, 2007), "invalid: 366 days in 2007");
 
     // Time validity.
     t.ok    (Date::valid (2, 28, 2010,  0,  0,  0), "valid 2/28/2010 0:00:00");

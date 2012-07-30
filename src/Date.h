@@ -67,6 +67,7 @@ public:
   static time_t easter (int year);
   static bool leapYear (int);
   static int daysInMonth (int, int);
+  static int daysInYear (int);
   static std::string monthName (int);
   static void dayName (int, std::string&);
   static std::string dayName (int);
