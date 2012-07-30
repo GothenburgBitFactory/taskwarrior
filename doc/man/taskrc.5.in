@@ -493,7 +493,7 @@ will be applied
 to the date.  Entered dates as well as all other displayed dates in reports
 are formatted according to dateformat.
 
-The default value is: m/d/Y.  The string should contain the characters:
+The default value is: m/d/Y.  The string can contain the characters:
 
 .RS
 .RS
@@ -501,13 +501,13 @@ m  minimal-digit month,   for example 1 or 12
 .br
 d  minimal-digit day,     for example 1 or 30
 .br
-y  two-digit year,        for example 09
+y  two-digit year,        for example 09 or 12
 .br
 D  two-digit day,         for example 01 or 30
 .br
 M  two-digit month,       for example 01 or 12
 .br
-Y  four-digit year,       for example 2009
+Y  four-digit year,       for example 2009 or 2012
 .br
 a  short name of weekday, for example Mon or Wed
 .br
@@ -517,14 +517,27 @@ b  short name of month,   for example Jan or Aug
 .br
 B  long name of month,    for example January or August
 .br
-V  weeknumber,            for example 03 or 37
+v  minimal-digit week,    for example 3 or 37
 .br
-H  two-digit hour,        for example 03 or 11
+V  two-digit week,        for example 03 or 37
+.br
+h  minimal-digit hour,    for example 3 or 21
+.br
+n  minimal-digit minutes, for example 5 or 42
+.br
+s  minimal-digit seconds, for example 7 or 47
+.br
+H  two-digit hour,        for example 03 or 21
 .br
 N  two-digit minutes,     for example 05 or 42
 .br
 S  two-digit seconds,     for example 07 or 47
 .RE
+.RE
+
+.RS
+The characters 'v', 'V', 'a' and 'A' can only be used for formatting printed
+dates (not to parse them).
 .RE
 
 .RS
@@ -550,15 +563,15 @@ Examples for other values of dateformat.report:
 .RS
 .RS
 .br
-a D b Y (V)  would do an output as "Fri 24 Jul 2009 (30)"
+a D b Y (V)   would do an output as "Fri 24 Jul 2009 (30)"
 .br
-A, B D, Y    would do an output as "Friday, July 24, 2009"
+A, B D, Y     would do an output as "Friday, July 24, 2009"
 .br
-vV a Y-M-D   would do an output as "v30 Fri 2009-07-24"
+wV a Y-M-D    would do an output as "w30 Fri 2009-07-24"
 .br
-yMD.HN       would do an output as "110124.2342"
+yMD.HN        would do an output as "110124.2342"
 .br
-m/d/Y H:N    would do an output as "1/24/2011 10:42"
+m/d/Y H:N     would do an output as "1/24/2011 10:42"
 .br
 a D b Y H:N:S would do an output as "Mon 24 Jan 2011 11:19:42"
 .RE

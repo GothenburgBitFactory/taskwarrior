@@ -545,8 +545,8 @@ int main (int argc, char** argv)
     t.is (dt.day (),     1, "ctor (std::string) -> d");
     t.is (dt.year (), 2008, "ctor (std::string) -> y");
 
-    n = Nibbler ("v01 Tue 2008-01-01");
-    t.ok (n.getDate ("vV a Y-M-D", ti), "vV a Y-M-D ok");
+    n = Nibbler ("w01 Tue 2008-01-01");
+    t.ok (n.getDate ("wV a Y-M-D", ti), "wV a Y-M-D ok");
     dt = Date (ti);
     t.is (dt.month (),   1, "ctor (std::string) -> m");
     t.is (dt.day (),     1, "ctor (std::string) -> d");

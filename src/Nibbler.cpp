@@ -717,6 +717,47 @@ bool Nibbler::getDateISO (time_t& t)
 
 ////////////////////////////////////////////////////////////////////////////////
 #ifdef NIBBLER_FEATURE_DATE
+// Parse the longest integer using the next 'limit' characters of 'result'
+// following position 'i' (when strict is true, the number of digits must be
+// equal to limit).
+bool Nibbler::parseDigits(std::string::size_type& i,
+  int& result,
+  unsigned int limit,
+  bool strict /* = true */)
+{
+  // If the result has already been set
+  if (result != -1)
+    return false;
+  for (unsigned int f = limit; f > 0; --f)
+  {
+    // Check that the nibbler has enough unparsed characters
+    if (i + f <= _length)
+    {
+      // Check that 'f' of them are digits
+      unsigned int g;
+      for (g = 0; g < f; g++)
+        if (! isdigit (_input[i + g]))
+            break;
+      // Parse the integer when it is the case
+      if (g == f)
+      {
+        if (f == 1)
+          result = _input[i] - '0';
+        else
+          result = atoi (_input.substr (i, f).c_str ());
+        // Update the global cursor before returning
+        i += f;
+        return true;
+      }
+    }
+    // Do not try smaller limits if the option is strict on the size
+    if (strict)
+      break;
+  }
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getDate (const std::string& format, time_t& t)
 {
   std::string::size_type i = _cursor;
@@ -728,246 +769,85 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
   int minute = -1;
   int second = -1;
 
+  // For parsing, unused.
+  int wday    = -1;
+  int week    = -1;
+
   for (unsigned int f = 0; f < format.length (); ++f)
   {
     switch (format[f])
     {
     case 'm':
-      if (i + 2 <= _length &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]))
-      {
-        month = atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else if (i + 1 <= _length &&
-               isdigit (_input[i + 0]))
-      {
-        month = _input[i] - '0';
-        i += 1;
-      }
-      else
+    case 'M':
+      if (! parseDigits(i, month, 2, format[f] == 'M'))
         return false;
       break;
 
     case 'd':
-      if (i + 2 <= _length        &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]))
-      {
-        day = atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else if (i + 1 <= _length &&
-               isdigit (_input[i + 0]))
-      {
-        day = _input[i] - '0';
-        i += 1;
-      }
-      else
+    case 'D':
+      if (! parseDigits(i, day, 2, format[f] == 'D'))
         return false;
       break;
 
     case 'y':
-      if (i + 2 <= _length &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]))
-      {
-        year = 2000 + atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else
+    case 'Y':
+      if (! parseDigits(i, year, format[f] == 'y' ? 2 : 4))
+        return false;
+      if (format[f] == 'y')
+          year += 2000;
+      break;
+
+    case 'h':
+    case 'H':
+      if (! parseDigits(i, hour, 2, format[f] == 'H'))
         return false;
       break;
 
-    case 'M':
-      if (i + 2 <= _length &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]))
-      {
-        month = atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else
+    case 'n':
+    case 'N':
+      if (! parseDigits(i, minute, 2, format[f] == 'N'))
         return false;
       break;
 
-    case 'D':
-      if (i + 2 <= _length &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]))
-      {
-        day = atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else
+    case 's':
+    case 'S':
+      if (! parseDigits(i, second, 2, format[f] == 'S'))
         return false;
       break;
 
     // Merely parse, not extract.
+    case 'v':
     case 'V':
-      if (i + 2 <= _length &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]))
-      {
-        day = atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else
-        return false;
-      break;
-
-    case 'Y':
-      if (i + 4 <= _length &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]) &&
-          isdigit (_input[i + 2]) &&
-          isdigit (_input[i + 3]))
-      {
-        year = atoi (_input.substr (i, 4).c_str ());
-        i += 4;
-      }
-      else
+      if (! parseDigits(i, week, 2, format[f] == 'V'))
         return false;
       break;
 
     // Merely parse, not extract.
     case 'a':
-      if (i + 3 <= _length          &&
-          ! isdigit (_input[i + 0]) &&
-          ! isdigit (_input[i + 1]) &&
-          ! isdigit (_input[i + 2]))
-        i += 3;
-      else
-        return false;
-      break;
-
-    // Merely parse, not extract.
-    case 'b':
-      if (i + 3 <= _length          &&
-          ! isdigit (_input[i + 0]) &&
-          ! isdigit (_input[i + 1]) &&
-          ! isdigit (_input[i + 2]))
-      {
-        month = Date::monthOfYear (_input.substr (i, 3).c_str());
-        i += 3;
-      }
-      else
-        return false;
-      break;
-
-    // Merely parse, not extract.
     case 'A':
       if (i + 3 <= _length          &&
           ! isdigit (_input[i + 0]) &&
           ! isdigit (_input[i + 1]) &&
           ! isdigit (_input[i + 2]))
-        i += Date::dayName (Date::dayOfWeek (_input.substr (i, 3).c_str ())).size ();
+      {
+        wday = Date::dayOfWeek (_input.substr (i, 3).c_str ());
+        i += (format[f] == 'a') ? 3 : Date::dayName (wday).size ();
+      }
       else
         return false;
       break;
 
+    case 'b':
     case 'B':
       if (i + 3 <= _length          &&
           ! isdigit (_input[i + 0]) &&
           ! isdigit (_input[i + 1]) &&
           ! isdigit (_input[i + 2]))
       {
-        month = Date::monthOfYear (_input.substr (i, 3).c_str ());
-        i += Date::monthName (month).size ();
-      }
-      else
-        return false;
-      break;
-
-    case 'h':
-      if (i + 2 <= _length &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]))
-      {
-        hour = atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else if (i + 1 <= _length &&
-               isdigit (_input[i + 0]))
-      {
-        hour = atoi (_input.substr (i, 1).c_str ());
-        i += 1;
-      }
-      else
-        return false;
-      break;
-
-    case 'H':
-      if (i + 2 <= _length &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]))
-      {
-        hour = atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else
-        return false;
-      break;
-
-    case 'N':
-      if (i + 2 <= _length &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]))
-      {
-        minute = atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else
-        return false;
-      break;
-
-    case 'S':
-      if (i + 2 <= _length &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]))
-      {
-        second = atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else
-        return false;
-      break;
-
-    case 'j':
-      if (i + 3 <= _length        &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]) &&
-          isdigit (_input[i + 2]))
-      {
-        day = atoi (_input.substr (i, 3).c_str ());
-        i += 3;
-      }
-      else if (i + 2 <= _length        &&
-               isdigit (_input[i + 0]) &&
-               isdigit (_input[i + 1]))
-      {
-        day = atoi (_input.substr (i, 2).c_str ());
-        i += 2;
-      }
-      else if (i + 1 <= _length &&
-               isdigit (_input[i + 0]))
-      {
-        day = atoi (_input.substr (i, 1).c_str ());
-        i += 1;
-      }
-      else
-        return false;
-      break;
-
-    case 'J':
-      if (i + 3 <= _length        &&
-          isdigit (_input[i + 0]) &&
-          isdigit (_input[i + 1]) &&
-          isdigit (_input[i + 2]))
-      {
-        day = atoi (_input.substr (i, 3).c_str ());
-        i += 3;
+        if (month != -1)
+          return false;
+        month = Date::monthOfYear (_input.substr (i, 3).c_str());
+        i += (format[f] == 'b') ? 3 : Date::monthName (month).size ();
       }
       else
         return false;

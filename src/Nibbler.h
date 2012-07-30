@@ -78,6 +78,7 @@ public:
   bool getPartialUUID (std::string&);
   bool getDateISO (time_t&);
 #ifdef NIBBLER_FEATURE_DATE
+  bool parseDigits(std::string::size_type&, int&, unsigned int, bool strict = true);
   bool getDate (const std::string&, time_t&);
 #endif
   bool getOneOf (const std::vector <std::string>&, std::string&);

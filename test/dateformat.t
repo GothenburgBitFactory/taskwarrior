@@ -57,8 +57,8 @@ if (open my $fh, '>', 'date3.rc')
             "dateformat=m/d/y\n",
             "dateformat=m/d/y\n",
             "weekstart=Monday\n",
-            "dateformat.info=A D B Y (vV)\n",
-            "dateformat.report=A D B Y (vV)\n";
+            "dateformat.info=A D B Y (wV)\n",
+            "dateformat.report=A D B Y (wV)\n";
   close $fh;
   ok (-r 'date3.rc', 'Created date3.rc');
 }
@@ -79,7 +79,7 @@ ok (!-r 'pending.data', 'Removed pending.data');
 
 qx{../src/task rc:date3.rc add foo due:4/8/10 2>&1};
 $output = qx{../src/task rc:date3.rc list 2>&1};
-like ($output, qr/Thursday 08 April 2010 \(v14\)/, 'date format A D B Y (vV) parsed');
+like ($output, qr/Thursday 08 April 2010 \(w14\)/, 'date format A D B Y (wV) parsed');
 $output = qx{../src/task rc:date3.rc rc.dateformat.report:"D b Y - a" list 2>&1};
 like ($output, qr/08 Apr 2010 - Thu/, 'date format D b Y - a parsed');
 
