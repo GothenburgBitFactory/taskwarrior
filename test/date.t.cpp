@@ -366,7 +366,9 @@ int main (int argc, char** argv)
     t.is (eoq.month () % 3, 0, "eoq month is 3, 6, 9 or 12");
 
     // Note: these fail during the night of daylight savings end.
-    t.ok (soq.sameYear (now),  "soq is in same year as now");
+    t.ok (soq.sameYear (now) ||
+          now.month () >= 10 &&
+          soq.year () == now.year () + 1, "soq is in same year as now");
     t.ok (eoq.sameYear (now),  "eoq is in same year as now");
 
     // Date::sameHour
