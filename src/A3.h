@@ -79,6 +79,7 @@ public:
   static bool is_attribute (const std::string&, std::string&);
   static bool is_modifier (const std::string&, std::string&);
   static bool is_dom (Nibbler&, Arg&);
+  static bool is_date (Nibbler&, std::string&);
   static bool is_duration (Nibbler&, std::string&);
   static bool is_pattern (Nibbler&, std::string&);
   static bool is_subst (Nibbler&, std::string&);

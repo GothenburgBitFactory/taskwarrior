@@ -694,9 +694,6 @@ const A3 A3::tokenize (const A3& input) const
   // List of operators for recognition.
   std::vector <std::string> operators = A3::operator_list ();
 
-  // Date format, for both parsing and rendering.
-  std::string date_format = context.config.get ("dateformat");
-
   // Nibble them apart.
   A3 output;
   Nibbler n (combined);
@@ -757,9 +754,9 @@ const A3 A3::tokenize (const A3& input) const
       // Must be higher than number.
       // Must be higher than operator.
       // Note that Nibbler::getDate does not read durations.
-      else if (n.getDate (date_format, t))
+      else if (is_date (n, s))
       {
-        output.push_back (Arg (Date (t).toString (date_format), Arg::type_date, Arg::cat_literal));
+        output.push_back (Arg (s, Arg::type_date, Arg::cat_literal));
         if (found_sequence)
           found_something_after_sequence = true;
       }
@@ -1563,6 +1560,23 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
       arg._category = Arg::cat_dom;
       return true;
     }
+  }
+
+  n.restore ();
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool A3::is_date (Nibbler& n, std::string& result)
+{
+  std::string date_format = context.config.get ("dateformat");
+  std::string::size_type start = n.save ();
+  time_t t;
+
+  if (n.getDate (date_format, t))
+  {
+    result = n.str ().substr (start, n.cursor () - start);
+    return true;
   }
 
   n.restore ();
