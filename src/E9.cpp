@@ -116,7 +116,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
 
       // TODO Not sure this is correct.
       // TODO No longer sure why I was unsure in the first place.
-      else if (arg->_raw == "-" && value_stack.size () < 2)
+      else if (arg->_raw == "-" && value_stack.size () == 1)
       {
         Arg right = value_stack.back ();
         value_stack.pop_back ();

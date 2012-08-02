@@ -17,6 +17,8 @@ Bugs
    external utilities on Solaris and NetBSD
  + Fixed bug #1044, where 'task projects' considers newly deleted tasks and
    provides an incorrect summary.
+ + Fixed bug #1048, which segfaulted rather than complain about syntax (thanks
+   to Bryce Harrington, Štěpán Henek).
 
 ------ old releases ------------------------------
 
