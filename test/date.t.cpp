@@ -367,8 +367,8 @@ int main (int argc, char** argv)
 
     // Note: these fail during the night of daylight savings end.
     t.ok (soq.sameYear (now) ||
-          now.month () >= 10 &&
-          soq.year () == now.year () + 1, "soq is in same year as now");
+          (now.month () >= 10 &&
+           soq.year () == now.year () + 1), "soq is in same year as now");
     t.ok (eoq.sameYear (now),  "eoq is in same year as now");
 
     // Date::sameHour
