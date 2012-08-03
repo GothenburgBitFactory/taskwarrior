@@ -50,17 +50,18 @@
 #       http://taskwarrior.org
 #
 ################################################################################
+taskcommand='task'
 
 _task_get_tags() {
-    task _tags
+    $taskcommand _tags
 }
 
 _task_get_config() {
-    task _config
+    $taskcommand _config
 }
 
 _task_offer_dependencies() {
-    COMPREPLY=( $(compgen -W "$(task _ids)" -- ${cur/*:/}) )
+    COMPREPLY=( $(compgen -W "$($taskcommand _ids)" -- ${cur/*:/}) )
 }
 
 _task_offer_priorities() {
@@ -68,7 +69,7 @@ _task_offer_priorities() {
 }
 
 _task_offer_projects() {
-    COMPREPLY=( $(compgen -W "$(task _projects)" -- ${cur/*:/}) )
+    COMPREPLY=( $(compgen -W "$($taskcommand _projects)" -- ${cur/*:/}) )
 }
 
 _task() 
@@ -88,8 +89,8 @@ _task()
 #   echo "prev='$prev'"
 #   echo "prev2='$prev2'"
 
-    commands_aliases=$(echo $(task _commands; task _aliases) | tr " " "\n"|sort|tr "\n" " ")
-    opts="$commands_aliases $(task _ids) $(task _columns)"
+    commands_aliases=$(echo $($taskcommand _commands; $taskcommand _aliases) | tr " " "\n"|sort|tr "\n" " ")
+    opts="$commands_aliases $($taskcommand _ids) $($taskcommand _columns)"
 
     case "${prev}" in
         :)
