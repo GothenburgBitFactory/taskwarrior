@@ -31,6 +31,7 @@
 #    *) task subcommands
 #    *) project names
 #    *) tag names
+#    *) aliases
 #
 # To use these routines:
 #
@@ -50,6 +51,7 @@
 #       http://taskwarrior.org
 #
 ################################################################################
+#the following variable is substituted for by ../../test/bash_completion.t
 taskcommand='task'
 
 _task_get_tags() {
@@ -85,6 +87,7 @@ _task()
     else
         prev2=""
     fi
+#   useful for debugging:
 #   echo -e "\ncur='$cur'"
 #   echo "prev='$prev'"
 #   echo "prev2='$prev2'"

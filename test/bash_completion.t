@@ -59,18 +59,17 @@ if (open my $target, '>', 'task.sh')
       }
     }
     close ($source);
-    print $target 'COMP_WORDS=("$@")';
-    print $target "\n";
-    print $target 'COMP_CWORD=$(($#-1))';
-    print $target "\n";
-    print $target '_task';
-    print $target "\n";
-    print $target 'for reply_iter in "${COMPREPLY[@]}"; do';
-    print $target "\n";
-    print $target '  echo $reply_iter';
-    print $target "\n";
-    print $target 'done';
-
+    print $target 'COMP_WORDS=("$@")',
+                  "\n",
+                  'COMP_CWORD=$(($#-1))',
+                  "\n",
+                  '_task',
+                  "\n",
+                  'for reply_iter in "${COMPREPLY[@]}"; do',
+                  "\n",
+                  '  echo $reply_iter',
+                  "\n",
+                  'done';
     close $target;
     ok (-r 'task.sh', 'Created task.sh');
   }
