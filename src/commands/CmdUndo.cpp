@@ -48,7 +48,7 @@ int CmdUndo::execute (std::string& output)
 {
   // Detect attemps to modify the task.
   if (context.a3.extract_modifications ().size () > 0)
-    throw STRING_CMD_UNDO_MODS;
+    throw std::string (STRING_CMD_UNDO_MODS);
 
   context.tdb2.revert ();
   context.tdb2.commit ();

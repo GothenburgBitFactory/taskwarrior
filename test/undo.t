@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 11;
 
 # Create the rc file.
 if (open my $fh, '>', 'undo.rc')
@@ -56,6 +56,11 @@ like ($output, qr/Status\s+Pending\n/, 'Pending');
 $output = qx{../src/task rc:undo.rc 1 do 2>&1; ../src/task rc:undo.rc list 2>&1 >/dev/null};
 like ($output, qr/No matches/, 'No matches');
 
+# Bug 1060: Test that if undo is given an argument it catches and reports the correct error.
+$output = qx{../src/task rc:undo.rc undo 1 2>&1};
+unlike ($output, qr/Unknown error/, 'No unknown error');
+like ($output, qr/The undo command does not allow further task modification/, 'Correct error caught and reported');
+
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key undo.rc);
 ok (! -r 'pending.data'   &&
@@ -66,4 +71,3 @@ ok (! -r 'pending.data'   &&
     ! -r 'undo.rc', 'Cleanup');
 
 exit 0;
-
