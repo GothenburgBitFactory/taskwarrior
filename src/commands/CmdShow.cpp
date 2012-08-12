@@ -264,6 +264,9 @@ int CmdShow::execute (std::string& output)
   Color error ("bold white on red");
   Color warning ("black on yellow");
 
+  bool issue_error = false;
+  bool issue_warning = false;
+
   std::string section;
 
   // Look for the first plausible argument which could be a pattern 
@@ -281,9 +284,15 @@ int CmdShow::execute (std::string& output)
       // Look for unrecognized.
       Color color;
       if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
+      {
+        issue_error = true;
         color = error;
+      }
       else if (std::find (default_values.begin (), default_values.end (), *i) != default_values.end ())
+      {
+        issue_warning = true;
         color = warning;
+      }
 
       std::string value = context.config.get (*i);
       // hide sensible information
@@ -307,7 +316,7 @@ int CmdShow::execute (std::string& output)
       << (view.rows () == 0 ? STRING_CMD_SHOW_NONE : "")
       << (view.rows () == 0 ? "\n\n" : "\n");
 
-  if (default_values.size ())
+  if (issue_warning)
   {
     out << STRING_CMD_SHOW_DIFFER;
 
@@ -318,7 +327,7 @@ int CmdShow::execute (std::string& output)
   }
 
   // Display the unrecognized variables.
-  if (unrecognized.size ())
+  if (issue_error)
   {
     out << STRING_CMD_SHOW_UNREC << "\n";
 
