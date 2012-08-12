@@ -2,7 +2,7 @@
 New Features in taskwarrior 2.2.0
 
   - Bash autocompletion now works with aliases.
-
+  - Virtual tags provide a tag query interface to more complex states.
   - Deprectated 'fg' and 'bg' attributes removed.  Any residual use of those
     will appear as orphaned UDAs.
 

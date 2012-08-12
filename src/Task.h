@@ -81,6 +81,10 @@ public:
   void set (const std::string&, int);
   void remove (const std::string&);
 
+  bool is_due () const;
+  bool is_duetoday () const;
+  bool is_overdue () const;
+
   status getStatus () const;
   void setStatus (status);
 

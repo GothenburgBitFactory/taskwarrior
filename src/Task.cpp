@@ -330,6 +330,60 @@ void Task::setStatus (Task::status status)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Task::is_due () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      if (getDueState (get ("due")) == 1)
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::is_duetoday () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      if (getDueState (get ("due")) == 2)
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::is_overdue () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      if (getDueState (get ("due")) == 3)
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Task::parse, and in the event of an error
 // try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
 //
@@ -885,6 +939,15 @@ int Task::getTagCount () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::hasTag (const std::string& tag) const
 {
+  // Synthetic tags - dynamically generated, but do not occupy storage space.
+  if (tag == "BLOCKED")   return is_blocked;
+  if (tag == "UNBLOCKED") return !is_blocked;
+  if (tag == "BLOCKING")  return is_blocking;
+  if (tag == "DUE")       return is_due ();
+  if (tag == "DUETODAY")  return is_duetoday ();
+  if (tag == "OVERDUE")   return is_overdue ();
+
+  // Concrete tags.
   std::vector <std::string> tags;
   split (tags, get ("tags"), ',');
 
@@ -1324,19 +1387,19 @@ float Task::urgency_c () const
 
 /* 
   // Very useful for debugging urgency problems.
-  std::cout << "# Urgency for " << id << ":\n"
-          << "#     pri " << (urgency_priority ()    * urgencyPriorityCoefficient)
-          << "#     pro " << (urgency_project ()     * urgencyProjectCoefficient)
-          << "#     act " << (urgency_active ()      * urgencyActiveCoefficient)
-          << "#     sch " << (urgency_scheduled ()   * urgencyScheduledCoefficient)
-          << "#     wai " << (urgency_waiting ()     * urgencyWaitingCoefficient)
-          << "#     blk " << (urgency_blocked ()     * urgencyBlockedCoefficient)
-          << "#     ann " << (urgency_annotations () * urgencyAnnotationsCoefficient)
-          << "#     tag " << (urgency_tags ()        * urgencyTagsCoefficient)
-          << "#     nex " << (urgency_next ()        * urgencyNextCoefficient)
-          << "#     due " << (urgency_due ()         * urgencyDueCoefficient)
-          << "#     bkg " << (urgency_blocking ()    * urgencyBlockingCoefficient)
-          << "#     age " << (urgency_age ()         * urgencyAgeCoefficient);
+  std::cout << "# Urgency for " << get ("uuid") << ":\n"
+          << "#     pri " << (urgency_priority ()    * urgencyPriorityCoefficient)    << "\n"
+          << "#     pro " << (urgency_project ()     * urgencyProjectCoefficient)     << "\n"
+          << "#     act " << (urgency_active ()      * urgencyActiveCoefficient)      << "\n"
+          << "#     sch " << (urgency_scheduled ()   * urgencyScheduledCoefficient)   << "\n"
+          << "#     wai " << (urgency_waiting ()     * urgencyWaitingCoefficient)     << "\n"
+          << "#     blk " << (urgency_blocked ()     * urgencyBlockedCoefficient)     << "\n"
+          << "#     ann " << (urgency_annotations () * urgencyAnnotationsCoefficient) << "\n"
+          << "#     tag " << (urgency_tags ()        * urgencyTagsCoefficient)        << "\n"
+          << "#     nex " << (urgency_next ()        * urgencyNextCoefficient)        << "\n"
+          << "#     due " << (urgency_due ()         * urgencyDueCoefficient)         << "\n"
+          << "#     bkg " << (urgency_blocking ()    * urgencyBlockingCoefficient)    << "\n"
+          << "#     age " << (urgency_age ()         * urgencyAgeCoefficient)         << "\n";
 */
 
   // Tag- and project-specific coefficients.
@@ -1498,7 +1561,7 @@ float Task::urgency_due () const
     Date due (get_date ("due"));
     int days_overdue = (now - due) / 86400;
 
-         if (days_overdue >=  7)  return 1.0;
+         if (days_overdue >=  7)  return 1.0;  // 7 days ago
     else if (days_overdue >=  6)  return 0.96;
     else if (days_overdue >=  5)  return 0.92;
     else if (days_overdue >=  4)  return 0.88;
@@ -1519,7 +1582,7 @@ float Task::urgency_due () const
     else if (days_overdue >= -11) return 0.28;
     else if (days_overdue >= -12) return 0.24;
     else if (days_overdue >= -13) return 0.20;
-    else                          return 0.16;
+    else                          return 0.16; // two weeks from now
   }
 
   return 0.0;
