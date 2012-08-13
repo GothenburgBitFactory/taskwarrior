@@ -12,7 +12,7 @@ if [ -x $VRAMSTEG ]; then
   START=$($VRAMSTEG --now)
 fi
 
-for i in *.t
+for i in *.t *.t.exe
 do
   echo '#' $i >>all.log
 
