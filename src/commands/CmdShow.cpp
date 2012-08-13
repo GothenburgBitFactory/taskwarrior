@@ -60,7 +60,7 @@ int CmdShow::execute (std::string& output)
   // Obtain the arguments from the description.  That way, things like '--'
   // have already been handled.
   std::vector <std::string> words = context.a3.extract_words ();
-  if (words.size () > 2)
+  if (words.size () > 1)
     throw std::string (STRING_CMD_SHOW_ARGS);
 
   int width = context.getWidth ();
@@ -276,9 +276,10 @@ int CmdShow::execute (std::string& output)
   if (section == "all")
     section = "";
 
+  std::string::size_type loc;
   for (i = all.begin (); i != all.end (); ++i)
   {
-    std::string::size_type loc = i->find (section, 0);
+    loc = i->find (section, 0);
     if (loc != std::string::npos)
     {
       // Look for unrecognized.
