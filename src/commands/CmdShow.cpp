@@ -336,7 +336,7 @@ int CmdShow::execute (std::string& output)
       out << "  " << *i << "\n";
 
     if (context.color ())
-      out << "\n  " << format (STRING_CMD_SHOW_DIFFER_COLOR, error.colorize ("color"));
+      out << "\n" << format (STRING_CMD_SHOW_DIFFER_COLOR, error.colorize ("color"));
 
     out << "\n\n";
   }
