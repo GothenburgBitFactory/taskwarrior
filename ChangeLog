@@ -3,6 +3,8 @@
 2.2.0 ()
 
 Features
+ + Added Feature #1069, which gives a clearer error when a UDA
+   is added without the uda.<uda-name>.type variable.
  + Added framework for testing bash autocompletion.
  + New helper command '_aliases' for autocompletion purposes.
  + Stop consider new tasks after quitting a bulk change.
