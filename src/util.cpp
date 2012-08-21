@@ -406,7 +406,7 @@ int execute(const std::string& executable, std::vector<std::string> arguments)
 
   // create command line before forking because the parent process also needs this for 
   // calling context.debug()
-  char shell[] = "bash";
+  char shell[] = "sh";
   char opt[]   = "-c";
 
   std::string cmdline = executable;
@@ -425,7 +425,7 @@ int execute(const std::string& executable, std::vector<std::string> arguments)
   {
     // this is done by the child process
     char** argv = new char*[4];
-    argv[0] = shell;                  // bash
+    argv[0] = shell;                  // sh
     argv[1] = opt;                    // -c
     argv[2] = (char*)cmdline.c_str();	// e.g. scp undo.data user@host:.task/
     argv[3] = NULL;                   // required by execv
