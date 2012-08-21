@@ -1,7 +1,7 @@
-#! /bin/bash
+#! /bin/sh
 
 date > all.log
-STARTEPOCH=`perl -e 'print time'`
+STARTEPOCH=`date +%s`
 
 VRAMSTEG=/usr/local/bin/vramsteg
 BAR=0
@@ -18,7 +18,7 @@ do
 
   if [ $BAR == 1 ]; then
     $VRAMSTEG --label 'All tests' --min 0 --max $TOTAL --current $COUNT --percentage --start $START --estimate
-    COUNT=$[COUNT + 1]
+    COUNT=`expr $COUNT + 1`
   fi
 
   ./$i >> all.log 2>&1
@@ -29,9 +29,9 @@ if [ $BAR == 1 ]; then
 fi
 
 date >> all.log
-ENDEPOCH=`perl -e 'print time'`
+ENDEPOCH=`date +%s`
 
-RUNTIME=$(($ENDEPOCH - $STARTEPOCH))
+RUNTIME=`expr $ENDEPOCH - $STARTEPOCH`
 
 printf "Pass:    %5d\n" $(grep -c ^ok all.log)
 printf "Fail:    %5d\n" $(grep -c ^not all.log)
