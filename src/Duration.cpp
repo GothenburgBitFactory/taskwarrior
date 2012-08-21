@@ -308,7 +308,7 @@ std::string Duration::formatPrecise () const
 std::string Duration::formatSeconds () const
 {
   char formatted[24];
-  sprintf (formatted, "%s%ldsec", (_negative ? "-" : ""), _secs);
+  sprintf (formatted, "%s%usec", (_negative ? "-" : ""), (unsigned int)_secs);
   return std::string (formatted);
 }
 
