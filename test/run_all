@@ -1,6 +1,9 @@
 #! /bin/sh
 
 date > all.log
+
+# Perl is used here to get the time in seconds
+# because 'date +%s' isn't supported on Solaris.
 STARTEPOCH=`perl -e 'print time'`
 
 VRAMSTEG=`which vramsteg`
@@ -29,8 +32,8 @@ if [ $BAR -eq 1 ]; then
 fi
 
 date >> all.log
-ENDEPOCH=`perl -e 'print time'`
 
+ENDEPOCH=`perl -e 'print time'`
 RUNTIME=`expr $ENDEPOCH - $STARTEPOCH`
 
 printf "Pass:    %5d\n" `grep -c '^ok' all.log`
