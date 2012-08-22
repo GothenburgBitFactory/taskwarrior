@@ -1,22 +1,22 @@
 #! /bin/sh
 
 date > all.log
-STARTEPOCH=`date +%s`
+STARTEPOCH=`perl -e 'print time'`
 
-VRAMSTEG=/usr/local/bin/vramsteg
+VRAMSTEG=`which vramsteg`
 BAR=0
-if [ -x $VRAMSTEG ]; then
+if [ -x "$VRAMSTEG" ]; then
   BAR=1
   COUNT=0
-  TOTAL=$(ls *.t | wc -l)
-  START=$($VRAMSTEG --now)
+  TOTAL=`ls *.t | wc -l`
+  START=`$VRAMSTEG --now`
 fi
 
 for i in *.t *.t.exe
 do
   echo '#' $i >>all.log
 
-  if [ $BAR == 1 ]; then
+  if [ $BAR -eq 1 ]; then
     $VRAMSTEG --label 'All tests' --min 0 --max $TOTAL --current $COUNT --percentage --start $START --estimate
     COUNT=`expr $COUNT + 1`
   fi
@@ -24,16 +24,16 @@ do
   ./$i >> all.log 2>&1
 done
 
-if [ $BAR == 1 ]; then
+if [ $BAR -eq 1 ]; then
   $VRAMSTEG --remove
 fi
 
 date >> all.log
-ENDEPOCH=`date +%s`
+ENDEPOCH=`perl -e 'print time'`
 
 RUNTIME=`expr $ENDEPOCH - $STARTEPOCH`
 
-printf "Pass:    %5d\n" $(grep -c ^ok all.log)
-printf "Fail:    %5d\n" $(grep -c ^not all.log)
-printf "Skipped: %5d\n" $(grep -c ^skip all.log)
+printf "Pass:    %5d\n" `grep -c '^ok' all.log`
+printf "Fail:    %5d\n" `grep -c '^not' all.log`
+printf "Skipped: %5d\n" `grep -c '^skip' all.log`
 printf "Runtime: %5d seconds\n" $RUNTIME
