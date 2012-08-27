@@ -88,13 +88,12 @@ int main (int argc, char** argv)
   ut.ok (r9.match (start, end, text),        "e there are matches");
   ut.is (start.size (), (size_t) 6,          "e == 6 matches");
 
-#ifdef DARWIN
+#if defined(DARWIN) || defined(CYGWIN)
   text = "this is the end.";
   ut.pass (text + " =~ /\\bthe/");
   ut.pass (text + " =~ /the\\b/");
   ut.pass (text + " =~ /\\bthe\\b/");
-#else
-#ifdef SOLARIS
+#elif defined(SOLARIS)
   RX r10 ("\\<the");
   text = "this is the end.";
   ut.ok (r10.match (text), text + " =~ /\\<the/");
@@ -114,7 +113,6 @@ int main (int argc, char** argv)
 
   RX r12 ("\\bthe\\b");
   ut.ok (r12.match (text), text + " =~ /\\bthe\\b/");
-#endif
 #endif
 
   return 0;

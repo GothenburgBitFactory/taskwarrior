@@ -1,22 +1,35 @@
 #! /bin/sh
 
-date > all.log
+if [ x"$1" = x"--verbose" ];
+then
+  for i in *.t *.t.exe
+  do
+    echo '#' $i
+    ./$i > test.log 2>&1
+    while read LINE
+    do
+      echo $LINE
+    done < test.log
+    rm test.log
+  done
+else
+  date > all.log
 
-# Perl is used here to get the time in seconds
-# because 'date +%s' isn't supported on Solaris.
-STARTEPOCH=`perl -e 'print time'`
+  # Perl is used here to get the time in seconds
+  # because 'date +%s' isn't supported on Solaris.
+  STARTEPOCH=`perl -e 'print time'`
 
-VRAMSTEG=`which vramsteg`
-BAR=0
-if [ -x "$VRAMSTEG" ]; then
+  VRAMSTEG=`which vramsteg`
+  BAR=0
+  if [ -x "$VRAMSTEG" ]; then
   BAR=1
   COUNT=0
   TOTAL=`ls *.t | wc -l`
   START=`$VRAMSTEG --now`
-fi
+  fi
 
-for i in *.t *.t.exe
-do
+  for i in *.t *.t.exe
+  do
   echo '#' $i >>all.log
 
   if [ $BAR -eq 1 ]; then
@@ -25,18 +38,19 @@ do
   fi
 
   ./$i >> all.log 2>&1
-done
+  done
 
-if [ $BAR -eq 1 ]; then
+  if [ $BAR -eq 1 ]; then
   $VRAMSTEG --remove
+  fi
+
+  date >> all.log
+
+  ENDEPOCH=`perl -e 'print time'`
+  RUNTIME=`expr $ENDEPOCH - $STARTEPOCH`
+
+  printf "Pass:    %5d\n" `grep -c '^ok' all.log`
+  printf "Fail:    %5d\n" `grep -c '^not' all.log`
+  printf "Skipped: %5d\n" `grep -c '^skip' all.log`
+  printf "Runtime: %5d seconds\n" $RUNTIME
 fi
-
-date >> all.log
-
-ENDEPOCH=`perl -e 'print time'`
-RUNTIME=`expr $ENDEPOCH - $STARTEPOCH`
-
-printf "Pass:    %5d\n" `grep -c '^ok' all.log`
-printf "Fail:    %5d\n" `grep -c '^not' all.log`
-printf "Skipped: %5d\n" `grep -c '^skip' all.log`
-printf "Runtime: %5d seconds\n" $RUNTIME
