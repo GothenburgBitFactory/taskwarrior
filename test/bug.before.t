@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Date::Parse;
+use Time::Local;
 use Test::More tests => 17;
 
 # Create the rc file.
@@ -44,8 +44,8 @@ if (open my $fh, '>', 'before.rc')
 # Create some example data directly.
 if (open my $fh, '>', 'pending.data')
 {
-  my $timeA = str2time("2008-12-22 12:00:00");
-  my $timeB = str2time("2009-04-17 12:00:00");
+  my $timeA = timegm (00,00,12,22,11,2008);
+  my $timeB = timegm (00,00,12,17,03,2009);
   print $fh <<EOF;
 [description:"foo" entry:"$timeA" start:"$timeA" status:"pending" uuid:"27097693-91c2-4cbe-ba89-ddcc87e5582c"]
 [description:"bar" entry:"$timeB" start:"$timeB" status:"pending" uuid:"08f72d91-964c-424b-8fd5-556434648b6b"]
