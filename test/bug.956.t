@@ -43,10 +43,10 @@ if (open my $fh, '>', 'bug.rc')
 
 qx{../src/task rc:bug.rc add test 2>&1};
 
-my $output = qx{TASKRC=bug.rc ../src/task rc:bug.rc ids};
+my $output = qx{TASKRC=bug.rc ../src/task rc:bug.rc ids 2>&1};
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "ids"');
 
-$output = qx{TASKRC=bug.rc ../src/task uuids};
+$output = qx{TASKRC=bug.rc ../src/task uuids 2>&1};
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "uuids"');
 
 $output = qx{TASKRC=bug.rc ../src/task _ids 2>&1};

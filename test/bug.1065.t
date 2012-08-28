@@ -55,7 +55,7 @@ ok ($? == 0, 'Exit status check');
 unlike ($output, qr/Some of your .taskrc variables differ/, 'Message is not shown when no non-default matches in pattern');
 
 # Bug 1065 - CmdShow should not display the unrecognized message if no non-default in matched elements.
-my $output = qx{../src/task rc:bug.rc show notrecog 2>&1};
+$output = qx{../src/task rc:bug.rc show notrecog 2>&1};
 ok ($? == 0, 'Exit status check');
 like ($output, qr/Your .taskrc file contains these unrecognized variables:/, 'Message is shown when unrecognized matches in pattern');
 
