@@ -41,7 +41,7 @@ if (open my $fh, '>', 'before.rc')
   ok (-r 'before.rc', 'Created before.rc');
 }
 
-# Create some exampel data directly.
+# Create some example data directly.
 if (open my $fh, '>', 'pending.data')
 {
   my $timeA = str2time("2008-12-22 12:00:00");

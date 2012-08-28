@@ -1,8 +1,0 @@
-* text.t                      5
-PB need to use a UTF-8 friendly way of doing input[--eol].
-
-* bug.360.t                   2
-
-* rx.t                        1
-
-* dom.2.t                     1
