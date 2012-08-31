@@ -39,7 +39,6 @@ Override PACKAGE_LANGUAGE, then
 #cmakedefine NETBSD
 #cmakedefine HAIKU
 #cmakedefine SOLARIS
-#cmakedefine WIN32
 #cmakedefine UNKNOWN
 
 /* Found the lua library */
