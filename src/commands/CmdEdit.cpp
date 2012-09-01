@@ -50,7 +50,7 @@ CmdEdit::CmdEdit ()
   _usage       = "task <filter> edit";
   _description = STRING_CMD_EDIT_USAGE;
   _read_only   = false;
-  _displays_id = true;
+  _displays_id = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -14,6 +14,7 @@ Features
  + Virtual tags.
 
 Bugs
+ + Fixed bug #1059, where CmdEdit was running garbage collection.
  + Fixed bug #1065, where CmdShow issued messages in incorrect situations.
  + Fixed bug #1060, where an error was not thrown correctly.
  + Fixed bug #1043, where aliases were not recognized by bash autocompletion.
