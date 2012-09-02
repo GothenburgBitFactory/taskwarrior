@@ -402,7 +402,7 @@ int main (int argc, char** argv)
     t.is (r26.toString ("YMDHNS"), "20100314235959", "increment across spring DST boundary");
   }
 
-  catch (std::string& e)
+  catch (const std::string& e)
   {
     t.fail ("Exception thrown.");
     t.diag (e);

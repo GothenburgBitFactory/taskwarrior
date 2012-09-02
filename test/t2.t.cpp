@@ -42,33 +42,33 @@ int main (int argc, char** argv)
   Task task;
 
   try {task = Task ("");}
-  catch (std::string& e){t.diag (e); good = false;}
+  catch (const std::string& e){t.diag (e); good = false;}
   t.notok (good, "Task::Task ('')");
 
   // []
   good = true;
   try {task = Task ("[]");}
-  catch (std::string& e){t.diag (e); good = false;}
+  catch (const std::string& e){t.diag (e); good = false;}
   t.notok (good, "Task::Task ('[]')");
 
   // [name:"value"]
   good = true;
   try {task = Task ("[name:\"value\"]");}
-  catch (std::string& e){t.diag (e); good = false;}
+  catch (const std::string& e){t.diag (e); good = false;}
   t.ok (good, "Task::Task ('[name:\"value\"]')");
   t.is (task.get ("name"), "value", "name=value");
 
   // [name:"one two"]
   good = true;
   try {task = Task ("[name:\"one two\"]");}
-  catch (std::string& e){t.diag (e); good = false;}
+  catch (const std::string& e){t.diag (e); good = false;}
   t.ok (good, "Task::Task ('[name:\"one two\"]')");
   t.is (task.get ("name"), "one two", "name=one two");
 
   // [one:two three:four]
   good = true;
   try {task = Task ("[one:\"two\" three:\"four\"]");}
-  catch (std::string& e){t.diag (e); good = false;}
+  catch (const std::string& e){t.diag (e); good = false;}
   t.ok (good, "Task::Task ('[one:\"two\" three:\"four\"]')");
   t.is (task.get ("one"), "two", "one=two");
   t.is (task.get ("three"), "four", "three=four");

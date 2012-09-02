@@ -69,7 +69,7 @@ int main (int argc, char** argv)
     // TODO dom.set rc.name
   }
 
-  catch (std::string& error)
+  catch (const std::string& error)
   {
     t.diag (error);
     return -1;

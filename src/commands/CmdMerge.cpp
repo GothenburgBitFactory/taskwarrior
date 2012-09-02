@@ -97,7 +97,7 @@ int CmdMerge::execute (std::string& output)
     {
         context.tdb2.merge (file);
     }
-    catch (std::string& e) {
+    catch (const std::string& e) {
         if (e == STRING_TDB2_UP_TO_DATE)
         {
             output += e + "\n";

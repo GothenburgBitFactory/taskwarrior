@@ -747,7 +747,7 @@ int main (int argc, char** argv)
     t.is (n.next (1), "b",            "    'bcde' :           skip ()       -> 'b'");
   }
 
-  catch (std::string& e) {t.diag (e);}
+  catch (const std::string& e) {t.diag (e);}
 
   return 0;
 }

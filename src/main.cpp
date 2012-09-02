@@ -74,7 +74,7 @@ int main (int argc, const char** argv)
         status = context.run ();
     }
 
-    catch (std::string& error)
+    catch (const std::string& error)
     {
       std::cerr << error << "\n";
       status = -1;

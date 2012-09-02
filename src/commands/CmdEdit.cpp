@@ -811,7 +811,7 @@ ARE_THESE_REALLY_HARMFUL:
       parseTask (task, after, dateformat);
     }
 
-    catch (std::string& e)
+    catch (const std::string& e)
     {
       problem = e;
       oops = true;

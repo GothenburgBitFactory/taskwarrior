@@ -126,7 +126,7 @@ int main (int argc, char** argv)
     // TODO gc
   }
 
-  catch (std::string& error)
+  catch (const std::string& error)
   {
     t.diag (error);
     return -1;

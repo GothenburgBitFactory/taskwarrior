@@ -175,7 +175,7 @@ int main (int argc, char** argv)
     t.ok (string_view.lines () > 4, "View::lines > 4");
   }
 
-  catch (std::string& e)
+  catch (const std::string& e)
   {
     t.fail ("Exception thrown.");
     t.diag (e);

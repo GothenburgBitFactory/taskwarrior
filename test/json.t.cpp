@@ -175,7 +175,7 @@ int main (int argc, char** argv)
     t.is (json::decode (encoded), "one\\",   "json::decode one\\\\\\\\ -> one\\\\");
   }
 
-  catch (std::string& e) {t.diag (e);}
+  catch (const std::string& e) {t.diag (e);}
 
   return 0;
 }

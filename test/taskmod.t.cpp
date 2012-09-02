@@ -75,7 +75,7 @@ int main (int argc, char** argv)
   good = true;
   try {
 	  empty.getUuid();
-  } catch (std::string& e) { t.diag(e); good = false; }
+  } catch (const std::string& e) { t.diag(e); good = false; }
   t.notok (good, "Taskmod::getUuid() not");
 
   // issetAfter() not
@@ -87,7 +87,7 @@ int main (int argc, char** argv)
   try {
 	 std::string uuid = newMod.getUuid();
 	 t.is(uuid, "df95dac3-5f2b-af88-5416-03a3163d00fd", "Taskmod::getUuid()");
-  } catch (std::string& e) {
+  } catch (const std::string& e) {
     t.diag(e);
 	 t.fail("Taskmod::getUuid()");
   }

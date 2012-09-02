@@ -58,7 +58,7 @@ int main (int argc, char** argv)
     t.is (format ("pre {3}{1}{2} post", "one", "two", "three"), "pre threeonetwo post", "format 3b");
   }
 
-  catch (std::string& error)
+  catch (const std::string& error)
   {
     t.diag (error);
     return -1;

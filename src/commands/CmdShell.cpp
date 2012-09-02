@@ -111,7 +111,7 @@ int CmdShell::execute (std::string&)
         context.run ();
       }
 
-      catch (std::string& error)
+      catch (const std::string& error)
       {
         std::cerr << error << "\n";
       }

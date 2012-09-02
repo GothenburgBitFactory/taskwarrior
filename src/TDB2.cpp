@@ -319,7 +319,7 @@ void TF2::load_tasks ()
     _loaded_tasks = true;
   }
 
-  catch (std::string& e)
+  catch (const std::string& e)
   {
     throw e + format (STRING_TDB2_PARSE_ERROR, _file._data, line_number);
   }
