@@ -443,7 +443,7 @@ void Task::parse (const std::string& input)
       throw std::string (STRING_RECORD_NOT_FF4);
   }
 
-  catch (std::string& e)
+  catch (const std::string&)
   {
     legacyParse (copy);
   }
