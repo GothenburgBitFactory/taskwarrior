@@ -33,22 +33,38 @@
 #include <assert.h>
 #include <Taskmod.h>
 
+unsigned long Taskmod::curSequenceNumber = 0;
+
+bool compareTaskmod (Taskmod first, Taskmod second)
+{
+  if (first._timestamp == second._timestamp)
+  {
+    return first._sequenceNumber < second._sequenceNumber;
+  }
+  else
+  {
+    return first._timestamp < second._timestamp;
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 Taskmod::Taskmod ()
 {
   _timestamp = 0;
   _bAfterSet = false;
   _bBeforeSet = false;
+  _sequenceNumber = curSequenceNumber++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Taskmod::Taskmod (const Taskmod& other)
 {
-  this->_before     = other._before;
-  this->_after      = other._after;
-  this->_timestamp  = other._timestamp;
-  this->_bAfterSet  = other._bAfterSet;
-  this->_bBeforeSet = other._bBeforeSet;
+  this->_before         = other._before;
+  this->_after          = other._after;
+  this->_timestamp      = other._timestamp;
+  this->_bAfterSet      = other._bAfterSet;
+  this->_bBeforeSet     = other._bBeforeSet;
+  this->_sequenceNumber = other._sequenceNumber;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,11 +103,12 @@ Taskmod& Taskmod::operator= (const Taskmod& other)
 {
   if (this != &other)
   {
-    this->_before     = other._before;
-    this->_after      = other._after;
-    this->_timestamp  = other._timestamp;
-    this->_bAfterSet  = other._bAfterSet;
-    this->_bBeforeSet = other._bBeforeSet;
+    this->_before         = other._before;
+    this->_after          = other._after;
+    this->_timestamp      = other._timestamp;
+    this->_bAfterSet      = other._bAfterSet;
+    this->_bBeforeSet     = other._bBeforeSet;
+	 this->_sequenceNumber = other._sequenceNumber;
   }
 
   return *this;
@@ -100,9 +117,10 @@ Taskmod& Taskmod::operator= (const Taskmod& other)
 ////////////////////////////////////////////////////////////////////////////////
 void Taskmod::reset (long timestamp)
 {
-  this->_bAfterSet  = false;
-  this->_bBeforeSet = false;
-  this->_timestamp  = timestamp;
+  this->_bAfterSet      = false;
+  this->_bBeforeSet     = false;
+  this->_timestamp      = timestamp;
+  this->_sequenceNumber = curSequenceNumber++;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -178,6 +196,12 @@ void Taskmod::setTimestamp (long timestamp)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Taskmod::incSequenceNumber ()
+{
+  this->_sequenceNumber++;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Task& Taskmod::getAfter ()
 {
   return _after;
@@ -193,6 +217,12 @@ Task& Taskmod::getBefore ()
 long Taskmod::getTimestamp () const
 {
   return _timestamp;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+unsigned long Taskmod::getSequenceNumber () const
+{
+  return _sequenceNumber;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
