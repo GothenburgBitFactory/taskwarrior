@@ -2,6 +2,10 @@
 
 2.1.2 ()
 
+Bugs
+ + Bug fix release regarding #1104, which causes duplicate UUIDs during
+   the merge command.
+
 ------ old releases ------------------------------
 
 2.1.1 (2012-07-24) 46c5f8b826838ce96d9df7fcd3039de3c43483dd
