@@ -2,7 +2,7 @@
 
 if [ x"$1" = x"--verbose" ];
 then
-  for i in *.t *.t.exe
+  for i in ${TESTBLOB}
   do
     echo '#' $i
     ./$i > test.log 2>&1
@@ -24,11 +24,11 @@ else
   if [ -x "$VRAMSTEG" ]; then
     BAR=1
     COUNT=0
-    TOTAL=`ls *.t | wc -l`
+    TOTAL=`ls ${TESTBLOB} | wc -l`
     START=`$VRAMSTEG --now`
   fi
 
-  for i in *.t *.t.exe
+  for i in ${TESTBLOB}
   do
     echo '#' $i >>all.log
 
