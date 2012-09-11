@@ -1,39 +1,56 @@
-#! /bin/bash
+#! /bin/sh
 
-date > all.log
-STARTEPOCH=`perl -e 'print time'`
+if [ x"$1" = x"--verbose" ];
+then
+  for i in *.t *.t.exe
+  do
+    echo '#' $i
+    ./$i > test.log 2>&1
+    while read LINE
+    do
+      echo $LINE
+    done < test.log
+    rm test.log
+  done
+else
+  date > all.log
 
-VRAMSTEG=/usr/local/bin/vramsteg
-BAR=0
-if [ -x $VRAMSTEG ]; then
-  BAR=1
-  COUNT=0
-  TOTAL=$(ls *.t | wc -l)
-  START=$($VRAMSTEG --now)
-fi
+  # Perl is used here to get the time in seconds
+  # because 'date +%s' isn't supported on Solaris.
+  STARTEPOCH=`perl -e 'print time'`
 
-for i in *.t *.t.exe
-do
-  echo '#' $i >>all.log
-
-  if [ $BAR == 1 ]; then
-    $VRAMSTEG --label 'All tests' --min 0 --max $TOTAL --current $COUNT --percentage --start $START --estimate
-    COUNT=$[COUNT + 1]
+  VRAMSTEG=`which vramsteg`
+  BAR=0
+  if [ -x "$VRAMSTEG" ]; then
+    BAR=1
+    COUNT=0
+    TOTAL=`ls *.t | wc -l`
+    START=`$VRAMSTEG --now`
   fi
 
-  ./$i >> all.log 2>&1
-done
+  for i in *.t *.t.exe
+  do
+    echo '#' $i >>all.log
 
-if [ $BAR == 1 ]; then
-  $VRAMSTEG --remove
+    if [ $BAR -eq 1 ]; then
+      $VRAMSTEG --label 'All tests' --min 0 --max $TOTAL --current $COUNT --percentage --start $START --estimate
+      COUNT=`expr $COUNT + 1`
+    fi
+
+    ./$i >> all.log 2>&1
+  done
+
+  if [ $BAR -eq 1 ]; then
+    $VRAMSTEG --remove
+  fi
+
+  date >> all.log
+
+  ENDEPOCH=`perl -e 'print time'`
+  RUNTIME=`expr $ENDEPOCH - $STARTEPOCH`
+
+  printf "Pass:    %5d\n" `grep -c '^ok' all.log`
+  printf "Fail:    %5d\n" `grep -c '^not' all.log`
+  printf "Skipped: %5d\n" `grep -c '^skip' all.log`
+  printf "Runtime: %5d seconds\n" $RUNTIME
 fi
-
-date >> all.log
-ENDEPOCH=`perl -e 'print time'`
-
-RUNTIME=$(($ENDEPOCH - $STARTEPOCH))
-
-printf "Pass:    %5d\n" $(grep -c ^ok all.log)
-printf "Fail:    %5d\n" $(grep -c ^not all.log)
-printf "Skipped: %5d\n" $(grep -c ^skip all.log)
-printf "Runtime: %5d seconds\n" $RUNTIME
