@@ -95,9 +95,15 @@ int CmdModify::execute (std::string& output)
         throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
 
       // Delete the specified task.
-      std::string question = format (STRING_CMD_MODIFY_CONFIRM,
-                                     task->id,
-                                     task->get ("description"));
+      std::string question;
+      if (task->id != 0)
+        question = format (STRING_CMD_MODIFY_CONFIRM,
+                           task->id,
+                           task->get ("description"));
+      else
+        question = format (STRING_CMD_MODIFY_CONFIRM,
+                           task->get ("uuid"),
+                           task->get ("description"));
 
       if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
       {

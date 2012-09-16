@@ -27,6 +27,8 @@ Bugs
    provides an incorrect summary.
  + Fixed bug #1048, which segfaulted rather than complain about syntax (thanks
    to Bryce Harrington, Štěpán Henek).
+ + Partially fixed #1083, which showed 'task 0 ...' when modifying a non-
+   pending task (thanks to Aikido Guy).
 
 ------ old releases ------------------------------
 
