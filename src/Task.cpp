@@ -945,9 +945,9 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "BLOCKING")  return is_blocking;
   if (tag == "DUE")       return is_due ();
   if (tag == "DUETODAY")  return is_duetoday ();
+  if (tag == "TODAY")     return is_duetoday ();
   if (tag == "OVERDUE")   return is_overdue ();
 /*
-  TODO TODAY     - due today
   TODO YESTERDAY - due yesterday
   TODO TOMORROW  - due tomorrow
   TODO WEEK      - due this week
