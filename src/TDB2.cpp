@@ -759,6 +759,10 @@ void TDB2::merge (const std::string& mergeFile)
         break;
     }
   }
+  else
+  {
+	  undo_lines.push_back (lline + "\n");
+  }
 
   // Add some color.
   Color colorAdded    (context.config.get ("color.sync.added"));
@@ -768,10 +772,12 @@ void TDB2::merge (const std::string& mergeFile)
   // at this point we can assume: (lline==rline) || (lit == l.end())
   // thus we search for the first non-equal lines or the EOF
   bool found = false;
-  for ( ; (lit != l.end ()) && (rit != r.end ()); ++lit, ++rit)
+  for (std::vector<std::string>::const_iterator tmp_lit = lit, tmp_rit = rit;
+       (tmp_lit != l.end ()) && (tmp_rit != r.end ());
+		 ++tmp_lit, ++tmp_rit)
   {
-    lline = *lit;
-    rline = *rit;
+    lline = *tmp_lit;
+    rline = *tmp_rit;
 
     // found first non-matching lines?
     if (lline.compare (rline) != 0)
@@ -779,11 +785,26 @@ void TDB2::merge (const std::string& mergeFile)
       found = true;
       break;
     }
-    else
+    else if (tmp_lit->substr (0, 3) == "---")
     {
-      // push the line to the new undo.data
-      undo_lines.push_back (lline + "\n");
+      while (lit != tmp_lit)
+      {
+        ++lit;
+        ++rit;
+        undo_lines.push_back(*lit + "\n");
+      }
+      // at this point, all iterators (tmp_{lit,rit}, lit and rit) are at the same line
     }
+  }
+
+  if (!found)
+  {
+    // set iterators to r.end() or l.end() if they are point to the last line
+    if (++rit != r.end())
+      --rit;
+
+    if (++lit != l.end())
+      --lit;
   }
 
   ///////////////////////////////////////
@@ -1883,3 +1904,4 @@ void TDB2::dump ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// vim: ts=2 et sw=2

@@ -66,6 +66,8 @@ int CmdIDs::execute (std::string& output)
 
   std::sort (ids.begin (), ids.end ());
   output = compressIds (ids) + "\n";
+  
+  context.headers.clear ();
   return 0;
 }
 
@@ -98,6 +100,8 @@ int CmdCompletionIds::execute (std::string& output)
   std::sort (ids.begin (), ids.end ());
   join (output, "\n", ids);
   output += "\n";
+
+  context.headers.clear ();
   return 0;
 }
 
@@ -131,6 +135,8 @@ int CmdZshCompletionIds::execute (std::string& output)
           << "\n";
 
   output = out.str ();
+
+  context.headers.clear ();
   return 0;
 }
 
@@ -161,6 +167,8 @@ int CmdUUIDs::execute (std::string& output)
   std::sort (uuids.begin (), uuids.end ());
   join (output, ",", uuids);
   output += "\n";
+
+  context.headers.clear ();
   return 0;
 }
 
@@ -191,6 +199,8 @@ int CmdCompletionUuids::execute (std::string& output)
   std::sort (uuids.begin (), uuids.end ());
   join (output, "\n", uuids);
   output += "\n";
+
+  context.headers.clear ();
   return 0;
 }
 
@@ -222,6 +232,8 @@ int CmdZshCompletionUuids::execute (std::string& output)
         << "\n";
 
   output = out.str ();
+
+  context.headers.clear ();
   return 0;
 }
 
