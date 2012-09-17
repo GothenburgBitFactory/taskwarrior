@@ -28,13 +28,14 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 25;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
   print $fh "data.location=.\n";
   print $fh "alias.samplealias=long\n";
+  print $fh "abbreviation.minimum=5\n";
 
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
@@ -76,13 +77,56 @@ if (open my $target, '>', 'task.sh')
 }
 
 # aliases should be expanded
-my $output = qx{bash ./task.sh task sampleali};
+my $output = qx{bash ./task.sh task sampleali 2>&1};
 ok ($? == 0, 'Exit status check');
 like ($output, qr/samplealias/, 'Aliases are expanded');
 
-$output = qx{bash ./task.sh task m};
+# commands should be expanded
+$output = qx{bash ./task.sh task m 2>&1};
 ok ($? == 0, 'Exit status check');
 like ($output, qr/modify/, 'expansion of \'m\' includes \'modify\'');
+
+# "project:" should be expanded correctly and dependent on abbreviation.minimum
+qx{../src/task rc:bug.rc add testing project expansion project:todd 2>&1};
+
+# note the spaces between "projABC", ":", and "to" for correct bash parsing
+$output = qx{bash ./task.sh task projeABC : to 2>&1};
+ok ($? == 0, 'Exit status check');
+unlike ($output, qr/todd/, '\'projeABC:\' does not expand');
+
+$output = qx{bash ./task.sh task proje : to 2>&1};
+ok ($? == 0, 'Exit status check');
+like ($output, qr/todd/, '\'proje:\' does expand');
+
+$output = qx{bash ./task.sh task proj : to 2>&1};
+ok ($? == 0, 'Exit status check');
+unlike ($output, qr/todd/, '\'proj:\' does not expand if abbreviation.minimum is 5');
+
+# "priority:" should be expanded correctly and dependent on abbreviation.minimum
+$output = qx{bash ./task.sh task priorABC : 2>&1};
+ok ($? == 0, 'Exit status check');
+unlike ($output, qr/H/, '\'priorABC:\' does not expand');
+
+$output = qx{bash ./task.sh task prior : 2>&1};
+ok ($? == 0, 'Exit status check');
+like ($output, qr/H/, '\'prior:\' does expand');
+
+$output = qx{bash ./task.sh task prio : 2>&1};
+ok ($? == 0, 'Exit status check');
+unlike ($output, qr/H/, '\'prio:\' does not expand if abbreviation.minimum is 5');
+
+# "depends:" should be expanded correctly and dependent on abbreviation.minimum
+$output = qx{bash ./task.sh task depenABC : 2>&1};
+ok ($? == 0, 'Exit status check');
+unlike ($output, qr/1/, '\'depenABC:\' does not expand');
+
+$output = qx{bash ./task.sh task depen : 2>&1};
+ok ($? == 0, 'Exit status check');
+like ($output, qr/1/, '\'depen:\' does expand');
+
+$output = qx{bash ./task.sh task depe : 2>&1};
+ok ($? == 0, 'Exit status check');
+unlike ($output, qr/1/, '\'depe:\' does not expand if abbreviation.minimum is 5');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc task.sh);

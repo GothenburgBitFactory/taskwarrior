@@ -92,44 +92,57 @@ _task()
 #   echo "prev='$prev'"
 #   echo "prev2='$prev2'"
 
+    abbrev_min=$($taskcommand show | grep "abbreviation.minimum" | awk {'print  $2'})
     commands_aliases=$(echo $($taskcommand _commands; $taskcommand _aliases) | tr " " "\n"|sort|tr "\n" " ")
     opts="$commands_aliases $($taskcommand _ids) $($taskcommand _columns)"
 
     case "${prev}" in
         :)
             case "${prev2}" in
-                dep*)
-                    _task_offer_dependencies
+                dep|depe|depen|depend|depends)
+                    if [ ${#prev2} -ge $abbrev_min ]; then
+                        _task_offer_dependencies
+                    fi
                     return 0
                     ;;
-                pri*)
-                    _task_offer_priorities
+                pri|prior|priori|priorit|priority)
+                    if [ ${#prev2} -ge $abbrev_min ]; then
+                        _task_offer_priorities
+                    fi
                     return 0
                     ;;
-                pro*)
-                    _task_offer_projects
+                pro|proj|proje|projec|project)
+                    if [ ${#prev2} -ge $abbrev_min ]; then
+                        _task_offer_projects
+                    fi
                     return 0
                     ;;
             esac
             ;;
         *)
             case "${cur}" in
-                pro*:*)
+                pro:*|proj:*|proje:*|projec:*|project:*)
                     _task_offer_projects
                     return 0
                     ;;
                 :)
                     case "${prev}" in
-                        dep*)
-                            _task_offer_dependencies
+                        dep|depe|depen|depend|depends)
+                            if [ ${#prev} -ge $abbrev_min ]; then
+                                _task_offer_dependencies
+                            fi
                             return 0
                             ;;
-                        pri*)
-                            _task_offer_priorities
+                        pri|prior|priori|priorit|priority)
+                            if [ ${#prev} -ge $abbrev_min ]; then
+                                _task_offer_priorities
+                            fi
                             return 0
                             ;;
-                        pro*)
-                            _task_offer_projects
+                        pro|proj|proje|projec|project)
+                            if [ ${#prev} -ge $abbrev_min ]; then
+                                _task_offer_projects
+                            fi
                             return 0
                             ;;
                     esac
