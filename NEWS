@@ -6,20 +6,17 @@ New Features in taskwarrior 2.2.0
   - Deprectated 'fg' and 'bg' attributes removed.  Any residual use of those
     will appear as orphaned UDAs.
 
-  Please refer to the ChangeLog file for full details.  There are too many to
-  list here.
-
 New commands in taskwarrior 2.2.0
 
   - New '_aliases' helper command lists aliases for completion purposes.
 
 New configuration options in taskwarrior 2.2.0
 
-  - 
+  -
 
 Newly deprecated features in taskwarrior 2.2.0
-
-  - None
+  
+  -
 
 ---
 

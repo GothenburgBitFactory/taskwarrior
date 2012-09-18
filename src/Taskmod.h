@@ -33,6 +33,8 @@
 #include <Task.h>
 
 class Taskmod {
+  friend bool compareTaskmod (Taskmod first, Taskmod second);
+
 public:
   Taskmod ();
   Taskmod (const Taskmod& other);
@@ -59,11 +61,13 @@ public:
   void setAfter (const Task& after);
   void setBefore (const Task& before);
   void setTimestamp (long timestamp);
+  void incSequenceNumber ();
 
   // getter
   Task& getAfter ();
   Task& getBefore ();
   long getTimestamp () const;
+  unsigned long getSequenceNumber () const;
   std::string getTimeStr () const;
 
 protected:
@@ -72,7 +76,12 @@ protected:
   long _timestamp;
   bool _bAfterSet;
   bool _bBeforeSet;
+  unsigned long _sequenceNumber;
+
+  static unsigned long curSequenceNumber;
 };
+
+bool compareTaskmod (Taskmod first, Taskmod second);
 
 #endif
 

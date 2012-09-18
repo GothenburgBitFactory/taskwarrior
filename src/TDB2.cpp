@@ -1024,8 +1024,8 @@ void TDB2::merge (const std::string& mergeFile)
     mods.splice (mods.begin (), rmods);
 
     DEBUG_STR ("sorting taskmod list");
-    mods.sort ();
-    mods_history.sort ();
+    mods.sort (compareTaskmod);
+    mods_history.sort (compareTaskmod);
   }
   else if (rit == r.end ())
   {
@@ -1232,7 +1232,7 @@ void TDB2::merge (const std::string& mergeFile)
     // at this point undo contains the lines up to the branch-off point
     // now we merge mods (new modifications from mergefile)
     // with lmods (part of old undo.data)
-    lmods.sort();
+    lmods.sort(compareTaskmod);
     mods.merge (lmods);
     mods.merge (mods_history);
 

@@ -142,37 +142,37 @@ int main (int argc, char** argv)
   try
   {
     // Regular unit tests.
-    t.is (json::encode ("1\b2"), "1\\b2",    "json::encode \\b -> \\\\b");
-    t.is (json::decode ("1\\b2"), "1\b2",    "json::decode \\\\b -> \\b");
+    t.is (json::encode ("1\b2"), "1\\b2",    "json::encode slashslashb -> slashslashslashslashb");
+    t.is (json::decode ("1\\b2"), "1\b2",    "json::decode slashslashslashslashb -> slashslashb");
 
-    t.is (json::encode ("1\n2"), "1\\n2",    "json::encode \\n -> \\\\n");
-    t.is (json::decode ("1\\n2"), "1\n2",    "json::decode \\\\n -> \\n");
+    t.is (json::encode ("1\n2"), "1\\n2",    "json::encode slashslashn -> slashslashslashslashn");
+    t.is (json::decode ("1\\n2"), "1\n2",    "json::decode slashslashslashslashn -> slashslashn");
 
-    t.is (json::encode ("1\r2"), "1\\r2",    "json::encode \\r -> \\\\r");
-    t.is (json::decode ("1\\r2"), "1\r2",    "json::decode \\\\r -> \\r");
+    t.is (json::encode ("1\r2"), "1\\r2",    "json::encode slashslashr -> slashslashslashslashr");
+    t.is (json::decode ("1\\r2"), "1\r2",    "json::decode slashslashslashslashr -> slashslashr");
 
-    t.is (json::encode ("1\t2"), "1\\t2",    "json::encode \\t -> \\\\t");
-    t.is (json::decode ("1\\t2"), "1\t2",    "json::decode \\\\t -> \\t");
+    t.is (json::encode ("1\t2"), "1\\t2",    "json::encode slashslasht -> slashslashslashslasht");
+    t.is (json::decode ("1\\t2"), "1\t2",    "json::decode slashslashslashslasht -> slashslasht");
 
-    t.is (json::encode ("1\\2"), "1\\\\2",   "json::encode \\ -> \\\\");
-    t.is (json::decode ("1\\\\2"), "1\\2",   "json::decode \\\\ -> \\");
+    t.is (json::encode ("1\\2"), "1\\\\2",   "json::encode slashslash -> slashslashslashslash");
+    t.is (json::decode ("1\\\\2"), "1\\2",   "json::decode slashslashslashslash -> slashslash");
 
-    t.is (json::encode ("1\x2"), "1\x2",     "json::encode \\x -> \\x (NOP)");
-    t.is (json::decode ("1\x2"), "1\x2",     "json::decode \\x -> \\x (NOP)");
+    t.is (json::encode ("1\x2"), "1\x2",     "json::encode slashslashx -> slashslashx(NOP)");
+    t.is (json::decode ("1\x2"), "1\x2",     "json::decode slashslashx -> slashslashx(NOP)");
 
     t.is (json::encode ("1€2"), "1€2",       "json::encode € -> €");
-    t.is (json::decode ("1\\u20ac2"), "1€2", "json::decode \\u20ac -> €");
+    t.is (json::decode ("1\\u20ac2"), "1€2", "json::decode slashslashu20ac -> €");
 
     std::string encoded = json::encode ("one\\");
-    t.is (encoded, "one\\\\",                "json::encode one\\\\ -> one\\\\\\\\");
-    t.is ((int)encoded.length (), 5,         "json::encode one\\\\ -> length 5");
-    t.is (encoded[0], 'o',                   "json::encode one\\\\[0] -> o");
-    t.is (encoded[1], 'n',                   "json::encode one\\\\[1] -> n");
-    t.is (encoded[2], 'e',                   "json::encode one\\\\[2] -> e");
-    t.is (encoded[3], '\\',                  "json::encode one\\\\[3] -> \\");
-    t.is (encoded[4], '\\',                  "json::encode one\\\\[4] -> \\");
+    t.is (encoded, "one\\\\",                "json::encode oneslashslashslashslash -> oneslashslashslashslashslashslashslashslash");
+    t.is ((int)encoded.length (), 5,         "json::encode oneslashslashslashslash -> length 5");
+    t.is (encoded[0], 'o',                   "json::encode oneslashslashslashslash[0] -> o");
+    t.is (encoded[1], 'n',                   "json::encode oneslashslashslashslash[1] -> n");
+    t.is (encoded[2], 'e',                   "json::encode oneslashslashslashslash[2] -> e");
+    t.is (encoded[3], '\\',                  "json::encode oneslashslashslashslash[3] -> slashslash");
+    t.is (encoded[4], '\\',                  "json::encode oneslashslashslashslash[4] -> slashslash");
 
-    t.is (json::decode (encoded), "one\\",   "json::decode one\\\\\\\\ -> one\\\\");
+    t.is (json::decode (encoded), "one\\",   "json::decode oneslashslashslashslashslashslashslashslash -> oneslashslashslashslash");
   }
 
   catch (const std::string& e) {t.diag (e);}

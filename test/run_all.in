@@ -2,7 +2,7 @@
 
 if [ x"$1" = x"--verbose" ];
 then
-  for i in *.t *.t.exe
+  for i in ${TESTBLOB}
   do
     echo '#' $i
     ./$i > test.log 2>&1
@@ -22,26 +22,26 @@ else
   VRAMSTEG=`which vramsteg`
   BAR=0
   if [ -x "$VRAMSTEG" ]; then
-  BAR=1
-  COUNT=0
-  TOTAL=`ls *.t | wc -l`
-  START=`$VRAMSTEG --now`
+    BAR=1
+    COUNT=0
+    TOTAL=`ls ${TESTBLOB} | wc -l`
+    START=`$VRAMSTEG --now`
   fi
 
-  for i in *.t *.t.exe
+  for i in ${TESTBLOB}
   do
-  echo '#' $i >>all.log
+    echo '#' $i >>all.log
 
-  if [ $BAR -eq 1 ]; then
-    $VRAMSTEG --label 'All tests' --min 0 --max $TOTAL --current $COUNT --percentage --start $START --estimate
-    COUNT=`expr $COUNT + 1`
-  fi
+    if [ $BAR -eq 1 ]; then
+      $VRAMSTEG --label 'All tests' --min 0 --max $TOTAL --current $COUNT --percentage --start $START --estimate
+      COUNT=`expr $COUNT + 1`
+    fi
 
-  ./$i >> all.log 2>&1
+    ./$i >> all.log 2>&1
   done
 
   if [ $BAR -eq 1 ]; then
-  $VRAMSTEG --remove
+    $VRAMSTEG --remove
   fi
 
   date >> all.log
