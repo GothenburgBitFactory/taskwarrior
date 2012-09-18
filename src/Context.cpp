@@ -503,6 +503,7 @@ void Context::shadow ()
 {
   std::string file_name = config.get ("shadow.file");
   std::string command   = config.get ("shadow.command");
+  std::string rcfile    = rc_file;
 
   // A missing shadow file command uses the default command instead.
   if (command == "")
@@ -534,13 +535,14 @@ void Context::shadow ()
 
     // Compose the command.  Put the rc overrides up front, so that they may
     // be overridden by rc.shadow.command.
-    command = program             +
-              " rc.detection:off" +  // No need to determine terminal size
-              " rc.color:off"     +  // Color off by default
-              " rc.gc:off "       +  // GC off, to reduce headaches
-              command             +  // User specified command
-              " >"                +  // Capture
-              shadow_file._data;  // User specified file
+    command = program               +
+              " rc.detection:off"   +  // No need to determine terminal size
+              " rc.color:off"       +  // Color off by default
+              " rc.gc:off "         +  // GC off, to reduce headaches
+              " rc:" + rcfile + " " +  // Use specified rc file
+              command               +  // User specified command
+              " >"                  +  // Capture
+              shadow_file._data;       // User specified file
 
     debug ("Running shadow command: " + command);
     system (command.c_str ());
