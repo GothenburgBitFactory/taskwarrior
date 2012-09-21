@@ -27,6 +27,7 @@
 
 #define L10N                                           // Localization complete.
 
+#include <algorithm>
 #include <sstream>
 #include <Context.h>
 #include <ViewText.h>
@@ -119,9 +120,22 @@ int CmdProjects::execute (std::string& output)
     view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_M));
     view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_H));
 
+    std::vector <std::string> processed;
     std::map <std::string, int>::iterator project;
     for (project = unique.begin (); project != unique.end (); ++project)
     {
+      const std::vector <std::string> parents = extractParents (project->first);
+      std::vector <std::string>::const_iterator parent;
+      for (parent = parents.begin (); parent != parents.end (); parent++)
+      {
+        if (std::find (processed.begin (), processed.end (), *parent)
+           == processed.end ())
+        {
+          int row = view.addRow ();
+          view.set (row, 0, indentProject (*parent));
+          processed.push_back (*parent);
+        }
+      }
       int row = view.addRow ();
       view.set (row, 0, (project->first == ""
                           ? STRING_CMD_PROJECTS_NONE
@@ -131,6 +145,7 @@ int CmdProjects::execute (std::string& output)
       view.set (row, 3, low[project->first]);
       view.set (row, 4, medium[project->first]);
       view.set (row, 5, high[project->first]);
+      processed.push_back (project->first);
     }
 
     int number_projects = unique.size ();

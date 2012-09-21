@@ -84,6 +84,10 @@ const std::string indentProject (
   const std::string& whitespace = "  ",
   char delimiter = '.');
 
+const std::vector <std::string> extractParents (
+  const std::string&,
+  const char& delimiter = '.');
+
 #ifndef HAVE_TIMEGM
   time_t timegm (struct tm *tm);
 #endif

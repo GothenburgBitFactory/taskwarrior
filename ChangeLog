@@ -9,6 +9,8 @@ Bugs
    .taskrc file (thanks to Pietro Cerutti).
 
 Features
+ + The 'projects' command now outputs abstract parents and reduces
+   repetition by not printing parent names in front of children names.
  + Added Feature #1069, which gives a clearer error when a UDA
    is added without the uda.<uda-name>.type variable.
  + Added framework for testing bash autocompletion.

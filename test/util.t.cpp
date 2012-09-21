@@ -113,6 +113,7 @@ int main (int argc, char** argv)
   t.is (vleft[3], 4,      "1,2,3,4 + 3,4,5 -> 1,2,3,4,5");
   t.is (vleft[4], 5,      "1,2,3,4 + 3,4,5 -> 1,2,3,4,5");
 
+  // see also indirect tests of indentProject and extractParents in `project.t'.
   // std::vector<std::string> indentTree (const std::vector<std::string>&, const std::string whitespace="  ", char delimiter='.');
   std::vector <std::string> flat;
   flat.push_back ("one");
@@ -124,16 +125,16 @@ int main (int argc, char** argv)
   std::vector <std::string> structured = indentTree (flat, "  ", '.');
   t.is (structured.size (), (size_t) 5, "indentTree yields 5 strings");
   t.is (structured[0], "one",               "indentTree 'one'           -> 'one'");
-  t.is (structured[1], "  one.two",         "indentTree 'one.two'       -> '  one.two'");
-  t.is (structured[2], "    one.two.three", "indentTree 'one.two.three' -> '    one.two.three'");
-  t.is (structured[3], "  one.four",        "indentTree 'one.four'      -> '  one.four'");
+  t.is (structured[1], "  two",         "indentTree 'one.two'       -> '  two'");
+  t.is (structured[2], "    three", "indentTree 'one.two.three' -> '  three'");
+  t.is (structured[3], "  four",        "indentTree 'one.four'      -> '  four'");
   t.is (structured[4], "two",               "indentTree 'two'           -> 'two'");
 
   // std::vector<std::string> indentProject (const std::string&, const std::string whitespace="  ", char delimiter='.');
   t.is (indentProject (""),              "",                  "indentProject '' -> ''");
   t.is (indentProject ("one"),           "one",               "indentProject 'one' -> 'one'");
-  t.is (indentProject ("one.two"),       "  one.two",         "indentProject 'one.two' -> '  one.two'");
-  t.is (indentProject ("one.two.three"), "    one.two.three", "indentProject 'one.two.three' -> '    one.two.three'");
+  t.is (indentProject ("one.two"),       "  two",         "indentProject 'one.two' -> '  two'");
+  t.is (indentProject ("one.two.three"), "    three", "indentProject 'one.two.three' -> '    three'");
 
   // TODO const std::string encode (const std::string& value);
   // TODO const std::string decode (const std::string& value);

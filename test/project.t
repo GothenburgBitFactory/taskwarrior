@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 18;
 
 # Create the rc file.
 if (open my $fh, '>', 'pro.rc')
@@ -65,6 +65,91 @@ like ($output, qr/The project 'bar' has changed\.  Project 'bar' is 0% complete 
 # Test projects with spaces in them.
 $output = qx{../src/task rc:pro.rc 3 modify pro:\\"foo bar\\" 2>&1 >/dev/null};
 like ($output, qr/The project 'foo bar' has changed\./, 'project with spaces');
+
+# Bug 1056: Project indentation.
+# see also the tests of helper functions for CmdProjects in util.t.cpp
+qx{../src/task rc:pro.rc add testing project:existingParent 2>&1 >/dev/null};
+qx{../src/task rc:pro.rc add testing project:existingParent.child 2>&1 >/dev/null};
+qx{../src/task rc:pro.rc add testing project:abstractParent.kid 2>&1 >/dev/null};
+qx{../src/task rc:pro.rc add testing project:.myProject 2>&1 >/dev/null};
+qx{../src/task rc:pro.rc add testing project:myProject. 2>&1 >/dev/null};
+qx{../src/task rc:pro.rc add testing project:.myProject. 2>&1 >/dev/null};
+
+$output = qx{../src/task rc:pro.rc projects 2>&1};
+my @lines = split ('\n',$output);
+
+# It's easier to make a pattern for the end than the beginning because priority
+# counts are more predictable than project names.
+my $project_name_column;
+if ($lines[4] =~ s/\d+\s+\d+\s+\d+\s+\d+\s+\d+$//)
+{
+  $project_name_column = $lines[4];
+}
+else
+{
+  $project_name_column = "error";
+}
+like ($project_name_column, qr/^\.myProject\s*$/, '\'.myProject\' not indented');
+
+if ($lines[5] =~ s/\d+\s+\d+\s+\d+\s+\d+\s+\d+$//)
+{
+  $project_name_column = $lines[5];
+}
+else
+{
+  $project_name_column = "error";
+}
+like ($project_name_column, qr/^\.myProject\.\s*$/, '\'.myProject.\' not indented');
+
+if ($lines[6] =~ s/\d+\s+\d+\s+\d+\s+\d+\s+\d+$//)
+{
+  $project_name_column = "error";
+}
+else
+{
+  $project_name_column = $lines[6];
+}
+like ($project_name_column, qr/^abstractParent\s*$/, 'abstract parent not indented and no priority columns');
+
+if ($lines[7] =~ s/\d+\s+\d+\s+\d+\s+\d+\s+\d+$//)
+{
+  $project_name_column = $lines[7];
+}
+else
+{
+  $project_name_column = "error";
+}
+like ($project_name_column, qr/^  kid\s*$/, 'child indented and without parent name');
+
+if ($lines[8] =~ s/\d+\s+\d+\s+\d+\s+\d+\s+\d+$//)
+{
+  $project_name_column = $lines[8];
+}
+else
+{
+  $project_name_column = "error";
+}
+like ($project_name_column, qr/^existingParent\s*$/, 'existing parent not indented and has priority columns');
+
+if ($lines[9] =~ s/\d+\s+\d+\s+\d+\s+\d+\s+\d+$//)
+{
+  $project_name_column = $lines[9];
+}
+else
+{
+  $project_name_column = "error";
+}
+like ($project_name_column, qr/^  child\s*$/, 'child of existing parent indented and without parent name');
+
+if ($lines[12] =~ s/\d+\s+\d+\s+\d+\s+\d+\s+\d+$//)
+{
+  $project_name_column = $lines[12];
+}
+else
+{
+  $project_name_column = "error";
+}
+like ($project_name_column, qr/^myProject\.\s*$/, '\'myProject.\' not indented');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key pro.rc);

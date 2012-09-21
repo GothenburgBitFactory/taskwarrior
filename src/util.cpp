@@ -602,10 +602,42 @@ const std::string indentProject (
   // Count the delimiters in *i.
   std::string prefix = "";
   std::string::size_type pos = 0;
+  std::string::size_type lastpos = 0;
   while ((pos = project.find (delimiter, pos + 1)) != std::string::npos)
-    prefix += whitespace;
+  {
+    if (pos != project.size () - 1)
+    {
+      prefix += whitespace;
+      lastpos = pos;
+    }
+  }
 
-  return prefix + project;
+  std::string child = "";
+  if (lastpos == 0)
+    child = project;
+  else
+    child = project.substr (lastpos + 1);
+
+  return prefix + child;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> extractParents (
+  const std::string& project,
+  const char& delimiter /* = '.' */)
+{
+  std::vector <std::string> vec;
+  std::string::size_type pos = 0;
+  std::string::size_type copyUntil = 0;
+  while ((copyUntil = project.find (delimiter, pos + 1)) != std::string::npos)
+  {
+    if (copyUntil != project.size () - 1)
+      vec.push_back (project.substr (0, copyUntil));
+    pos = copyUntil;
+  }
+  return vec;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
