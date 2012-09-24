@@ -3,6 +3,7 @@
 2.1.2 (2012-09-18) 1e3176ed70d2b50faf03838d0df279b2a4ae93b2
 
 Bugs
+ + Fix bug #1056, where CmdSummary did not print abstract parents.
  + Bug fix release regarding #1104, which causes duplicate UUIDs during
    the merge command.
  + Fixed bug where shadow files are not properly created when there is a missing

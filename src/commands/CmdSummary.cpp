@@ -27,6 +27,7 @@
 
 #define L10N                                           // Localization complete.
 
+#include <algorithm>
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
@@ -130,11 +131,25 @@ int CmdSummary::execute (std::string& output)
   Color bg_color  (context.config.get ("color.summary.background"));
 
   int barWidth = 30;
+  std::vector <std::string> processed;
   std::map <std::string, bool>::iterator i;
   for (i = allProjects.begin (); i != allProjects.end (); ++i)
   {
     if (countPending[i->first] > 0)
     {
+      const std::vector <std::string> parents = extractParents (i->first);
+      std::vector <std::string>::const_iterator parent;
+      for (parent = parents.begin (); parent != parents.end (); parent++)
+      {
+        if (std::find (processed.begin (), processed.end (), *parent)
+           == processed.end ())
+        {
+          int row = view.addRow ();
+          view.set (row, 0, indentProject (*parent));
+          processed.push_back (*parent);
+        }
+      }
+
       int row = view.addRow ();
       view.set (row, 0, (i->first == ""
                           ? STRING_CMD_SUMMARY_NONE
@@ -165,6 +180,7 @@ int CmdSummary::execute (std::string& output)
       char percent[12];
       sprintf (percent, "%d%%", 100 * c / (c + p));
       view.set (row, 3, percent);
+      processed.push_back (i->first);
     }
   }
 
