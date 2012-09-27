@@ -7,6 +7,7 @@ New Features in taskwarrior 2.2.0
     appear as orphaned UDAs.
   - Tasks now have a 'modified' attribute, which indicates the last time, if at
     all, that they were modified.
+  - Statistics now report total number of blocked and blocking tasks.
 
 New commands in taskwarrior 2.2.0
 

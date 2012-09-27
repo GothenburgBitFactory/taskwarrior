@@ -94,6 +94,8 @@ int CmdStatistics::execute (std::string& output)
   int taggedT       = 0;
   int annotationsT  = 0;
   int recurringT    = 0;
+  int blockingT     = 0;
+  int blockedT      = 0;
   float daysPending = 0.0;
   int descLength    = 0;
   std::map <std::string, int> allTags;
@@ -113,6 +115,9 @@ int CmdStatistics::execute (std::string& output)
     case Task::recurring: ++recurringT; break;
     case Task::waiting:   ++waitingT;   break;
     }
+
+    if (task->is_blocked)  ++blockedT;
+    if (task->is_blocking) ++blockingT;
 
     time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
     if (entry < earliest) earliest = entry;
@@ -188,6 +193,14 @@ int CmdStatistics::execute (std::string& output)
   row = view.addRow ();
   view.set (row, 0, STRING_CMD_STATS_PROJECTS);
   view.set (row, 1, (int)allProjects.size ());
+
+  row = view.addRow ();
+  view.set (row, 0, STRING_CMD_STATS_BLOCKED);
+  view.set (row, 1, blockedT);
+
+  row = view.addRow ();
+  view.set (row, 0, STRING_CMD_STATS_BLOCKING);
+  view.set (row, 1, blockingT);
 
   row = view.addRow ();
   view.set (row, 0, STRING_CMD_STATS_DATA_SIZE);
