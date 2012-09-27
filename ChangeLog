@@ -3,6 +3,8 @@
 2.2.0 () -
 
 Features
+ + Added Feature #685, which provides a 'blocking' report, and new color rule
+   (thanks to Michelle Crane).
  + Added Feature #1069, which gives a clearer error when a UDA
    is added without the uda.<uda-name>.type variable.
  + The 'projects' command now outputs abstract parents and reduces

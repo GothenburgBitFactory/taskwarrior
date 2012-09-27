@@ -955,6 +955,7 @@ bool Task::hasTag (const std::string& tag) const
   TODO YEAR      - due this year
   TODO ANNOTATED - has any annotations
   TODO ACTIVE    - is active
+  TODO READY     - is ready
   TODO SCHEDULED - is scheduled
   TODO WAITING   - is waiting
   TODO CHILD     - is a child
