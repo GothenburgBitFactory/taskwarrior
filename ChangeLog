@@ -1,19 +1,12 @@
 ------ current release ---------------------------
 
-2.1.2 (2012-09-18) 1e3176ed70d2b50faf03838d0df279b2a4ae93b2
-
-Bugs
- + Fix bug #1056, where CmdSummary did not print abstract parents.
- + Bug fix release regarding #1104, which causes duplicate UUIDs during
-   the merge command.
- + Fixed bug where shadow files are not properly created when there is a missing
-   .taskrc file (thanks to Pietro Cerutti).
+2.2.0 () -
 
 Features
- + The 'projects' command now outputs abstract parents and reduces
-   repetition by not printing parent names in front of children names.
  + Added Feature #1069, which gives a clearer error when a UDA
    is added without the uda.<uda-name>.type variable.
+ + The 'projects' command now outputs abstract parents and reduces
+   repetition by not printing parent names in front of children names.
  + Added framework for testing bash autocompletion.
  + New helper command '_aliases' for autocompletion purposes.
  + Stop consider new tasks after quitting a bulk change.
@@ -23,25 +16,38 @@ Features
  + Virtual tags.
 
 Bugs
- + No more bash completion of, for example, 'projABC:', or of 'proj:' if
-   abbreviation.minimum is greater than 4.
- + Fixed bug #1059, where CmdEdit was running garbage collection.
- + Fixed bug #1065, where CmdShow issued messages in incorrect situations.
- + Fixed bug #1060, where an error was not thrown correctly.
- + Fixed bug #1043, where aliases were not recognized by bash autocompletion.
+ + Fixed bug #1031, which kept expanding aliases after the '--' operator (thanks
+   to Jim B).
  + Fixed bug #1038, which prints blank lines with bulk changes and when the
    verbose attributes does not specify it. Lines do a better separation between
    each changes also.
  + Fixed bug #1042, where the 'diagnostics' command failed to detect missing
    external utilities on Solaris and NetBSD.
+ + Fixed bug #1043, where aliases were not recognized by bash autocompletion.
  + Fixed bug #1044, where 'task projects' considers newly deleted tasks and
    provides an incorrect summary.
  + Fixed bug #1048, which segfaulted rather than complain about syntax (thanks
    to Bryce Harrington, Štěpán Henek).
+ + Fixed bug #1056, where CmdSummary did not print abstract parents.
+ + Fixed bug #1059, where CmdEdit was running garbage collection.
+ + Fixed bug #1060, where an error was not thrown correctly.
+ + Fixed bug #1065, where CmdShow issued messages in incorrect situations.
  + Partially fixed #1083, which showed 'task 0 ...' when modifying a non-
    pending task (thanks to Aikido Guy).
+ + No more bash completion of, for example, 'projABC:', or of 'proj:' if
+   abbreviation.minimum is greater than 4.
+ + Fixed bug where shadow files are not properly created when there is a missing
+   .taskrc file (thanks to Pietro Cerutti).
 
 ------ old releases ------------------------------
+
+2.1.2 (2012-09-18) 1e3176ed70d2b50faf03838d0df279b2a4ae93b2
+
+Bugs
+ + Bug fix release regarding #1104, which causes duplicate UUIDs during
+   the merge command.
+ + Fixed bug where shadow files are not properly created when there is a missing
+   .taskrc file (thanks to Pietro Cerutti).
 
 2.1.1 (2012-07-24) 46c5f8b826838ce96d9df7fcd3039de3c43483dd
 

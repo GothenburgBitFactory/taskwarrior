@@ -384,6 +384,10 @@ void A3::resolve_aliases ()
     std::vector <Arg>::iterator arg;
     for (arg = this->begin (); arg != this->end (); ++arg)
     {
+      // The -- operator stops alias expansion.
+      if (arg->_raw == "--")
+        break;
+
       std::map <std::string, std::string>::iterator match =
         context.aliases.find (arg->_raw);
 
@@ -407,6 +411,10 @@ void A3::resolve_aliases ()
       else
         expanded.push_back (arg->_raw);
     }
+
+    // Copy any residual tokens.
+    for (; arg != this->end (); ++arg)
+      expanded.push_back (arg->_raw);
 
     // Only overwrite if something happened.
     if (something)
