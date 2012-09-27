@@ -16,6 +16,8 @@ Features
  + The 'diagnostics' command now reports libuuid details.
  + New characters for parsing and formating dates ('n', 's' and 'v').
  + Virtual tags.
+ + New 'modified' attribute, which contains the most recent modification date,
+   if a modification has occurred.
 
 Bugs
  + Fixed bug #1031, which kept expanding aliases after the '--' operator (thanks

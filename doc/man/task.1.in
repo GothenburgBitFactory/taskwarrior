@@ -121,7 +121,11 @@ Shows all tasks matching the filter, including parents of recurring tasks.
 
 .TP
 .B task <filter> blocked
-Shows all tasks matching the filter, that have dependencies on other tasks.
+Shows all tasks matching the filter, that are currently blocked by other tasks.
+
+.TP
+.B task <filter> blocking
+Shows all tasks matching the filter, that block other tasks.
 
 .TP
 .B task <filter> burndown.daily
@@ -281,7 +285,8 @@ Shows all recurring tasks matching the filter.
 
 .TP
 .B task <filter> unblocked
-Shows all tasks that do not have dependencies, matching the filter.
+Shows all tasks that are not currently blocked by other tasks, matching the
+filter.
 
 .TP
 .B task <filter> waiting

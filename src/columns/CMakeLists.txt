@@ -15,6 +15,7 @@ set (columns_SRCS Column.cpp Column.h
                   ColID.cpp ColID.h
                   ColIMask.cpp ColIMask.h
                   ColMask.cpp ColMask.h
+                  ColModified.cpp ColModified.h
                   ColParent.cpp ColParent.h
                   ColPriority.cpp ColPriority.h
                   ColProject.cpp ColProject.h

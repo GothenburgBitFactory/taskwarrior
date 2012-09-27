@@ -577,6 +577,9 @@ void TDB2::modify (Task& task)
   // Ensure the task is consistent, and provide defaults if necessary.
   task.validate (false);
 
+  // All modified tasks are timestamped.
+  task.setModified ();
+
   // Find task, overwrite it.
   Task original;
   get (task.get ("uuid"), original);

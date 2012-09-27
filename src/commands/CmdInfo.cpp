@@ -305,6 +305,19 @@ int CmdInfo::execute (std::string& output)
     view.set (row, 0, STRING_COLUMN_LABEL_URGENCY);
     view.set (row, 1, trimLeft (format (task->urgency (), 4, 4)));
 
+    // modified
+    if (task->has ("modified"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, STRING_CMD_INFO_MODIFIED);
+
+      Date mod (task->get_date ("modified"));
+
+      std::string age = Duration (now - mod).format ();
+      view.set (row, 1, Date (task->get_date ("modified")).toString (dateformat) +
+                              " (" + age + ")");
+    }
+
     // Show any UDAs
     std::vector <std::string> all = task->all ();
     std::vector <std::string>::iterator att;

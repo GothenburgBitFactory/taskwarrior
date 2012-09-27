@@ -69,6 +69,7 @@ public:
   void setEntry ();
   void setEnd ();
   void setStart ();
+  void setModified ();
 
   bool has (const std::string&) const;
   std::vector <std::string> all ();
