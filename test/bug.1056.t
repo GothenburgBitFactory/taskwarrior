@@ -34,7 +34,9 @@ use Test::More tests => 9;
 if (open my $fh, '>', 'bug.1056')
 {
   print $fh "data.location=.\n",
-            "confirmation=off\n";
+            "confirmation=off\n",
+            "color=off\n",
+            "verbose=nothing\n";
   close $fh;
   ok (-r 'bug.1056', 'Created pro.rc');
 }
@@ -50,78 +52,13 @@ qx{../src/task rc:bug.1056 add testing project:.myProject. 2>&1 >/dev/null};
 my $output = qx{../src/task rc:bug.1056 summary 2>&1};
 my @lines = split ('\n',$output);
 
-# It's easier to make a pattern for the end than the beginning because
-# project names can have spaces.
-my $project_name_column;
-if ($lines[4] =~ s/\s+\d+\s+-\s+\d+%$//)
-{
-  $project_name_column = $lines[4];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^\.myProject\s*$/, '\'.myProject\' not indented');
-
-if ($lines[5] =~ s/\s+\d+\s+-\s+\d+%$//)
-{
-  $project_name_column = $lines[5];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^\.myProject\.\s*$/, '\'.myProject.\' not indented');
-
-if ($lines[6] =~ s/\s+\d+\s+-\s+\d+%$//)
-{
-  $project_name_column = "error";
-}
-else
-{
-  $project_name_column = $lines[6];
-}
-like ($project_name_column, qr/^abstractParent\s*$/, 'abstract parent not indented and no priority columns');
-
-if ($lines[7] =~ s/\s+\d+\s+-\s+\d+%$//)
-{
-  $project_name_column = $lines[7];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^  kid\s*$/, 'child indented and without parent name');
-
-if ($lines[8] =~ s/\s+\d+\s+-\s+\d+%$//)
-{
-  $project_name_column = $lines[8];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^existingParent\s*$/, 'existing parent not indented and has priority columns');
-
-if ($lines[9] =~ s/\s+\d+\s+-\s+\d+%$//)
-{
-  $project_name_column = $lines[9];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^  child\s*$/, 'child of existing parent indented and without parent name');
-
-if ($lines[10] =~ s/\s+\d+\s+-\s+\d+%$//)
-{
-  $project_name_column = $lines[10];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^myProject\.\s*$/, '\'myProject.\' not indented');
+like ($lines[0], qr/^\.myProject\s/,       "'.myProject'        not indented");
+like ($lines[1], qr/^\.myProject\.\s/,     "'.myProject.'       not indented");
+like ($lines[2], qr/^abstractParent\s*$/,  "'abstractParent'    not indented, no data");
+like ($lines[3], qr/^\s\skid\s+\d/,        "'  kid'             indented, without parent, with data");
+like ($lines[4], qr/^existingParent\s+\d/, "'existingParent'    not indented, with data");
+like ($lines[5], qr/^\s\schild\s+\d/,      "'  child'           indented, without parent, with data");
+like ($lines[6], qr/^myProject\.\s+\d/,    "'myProject.'        not indented, with data");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.1056);
