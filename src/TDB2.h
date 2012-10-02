@@ -103,7 +103,6 @@ public:
   void add (Task&);
   void modify (Task&);
   void commit ();
-  void synch ();
   void merge (const std::string&);
   void revert ();
   int  gc ();
@@ -133,8 +132,7 @@ public:
   TF2 pending;
   TF2 completed;
   TF2 undo;
-//  TF2 backlog;
-//  TF2 synch_key;
+  TF2 backlog;
 
 private:
   std::string _location;
