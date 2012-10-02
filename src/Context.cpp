@@ -525,13 +525,8 @@ void Context::shadow ()
     if (shadow_file._data == location + "/undo.data")
       throw std::string (STRING_CONTEXT_SHADOW_U);
 
-/*
     if (shadow_file._data == location + "/backlog.data")
       throw std::string (STRING_CONTEXT_SHADOW_B);
-*/
-
-    if (shadow_file._data == location + "/synch.key")
-      throw std::string (STRING_CONTEXT_SHADOW_S);
 
     // Compose the command.  Put the rc overrides up front, so that they may
     // be overridden by rc.shadow.command.

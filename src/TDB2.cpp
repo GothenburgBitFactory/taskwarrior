@@ -189,7 +189,6 @@ void TF2::add_line (const std::string& line)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// This is so that synch.key can just overwrite and not grow.
 void TF2::clear_lines ()
 {
   _lines.clear ();

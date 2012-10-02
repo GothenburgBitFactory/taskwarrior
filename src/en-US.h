@@ -543,7 +543,6 @@
 #define STRING_CONTEXT_SHADOW_C      "Configuration variable 'shadow.file' is set to " "overwrite your completed tasks.  Please change it."
 #define STRING_CONTEXT_SHADOW_U      "Configuration variable 'shadow.file' is set to " "overwrite your undo log.  Please change it."
 #define STRING_CONTEXT_SHADOW_B      "Configuration variable 'shadow.file' is set to " "overwrite your backlog file.  Please change it."
-#define STRING_CONTEXT_SHADOW_S      "Configuration variable 'shadow.file' is set to " "overwrite your synch.key file.  Please change it."
 #define STRING_CONTEXT_SHADOW_UPDATE "[Shadow file '{1}' updated.]"
 
 // Date
