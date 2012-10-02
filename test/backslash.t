@@ -44,12 +44,11 @@ my $output = qx{../src/task rc:backslash.rc ls 2>&1};
 like ($output, qr/\\/, 'Backslash preserved, no parsing issues');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key backslash.rc);
+unlink qw(pending.data completed.data undo.data backlog.data backslash.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'backslash.rc', 'Cleanup');
 
 exit 0;

@@ -49,12 +49,11 @@ like ($output, qr/L/,      'Correct priority');
 like ($output, qr/bar/,    'Correct annotation');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key extra.rc);
+unlink qw(pending.data completed.data undo.data backlog.data extra.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'extra.rc', 'Cleanup');
 
 exit 0;

@@ -51,12 +51,11 @@ $output = qx{../src/task rc:bug.rc 1 mod /test/Test/ 2>&1};
 like ($output, qr/^Modifying task 1 'Test'.$/ms, 'Task with "until" attribute modified');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.rc', 'Cleanup');
 
 exit 0;

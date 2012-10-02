@@ -85,12 +85,11 @@ $output = qx{../src/task rc:uuid.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key uuid.rc);
+unlink qw(pending.data completed.data undo.data backlog.data uuid.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'uuid.rc', 'Cleanup');
 
 exit 0;

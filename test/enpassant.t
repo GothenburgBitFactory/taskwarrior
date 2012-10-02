@@ -54,12 +54,11 @@ like ($output, qr/Priority\s+H/,          'en passant 2 description change');
 like ($output, qr/Tags\s+tag/,            'en passant 2 description change');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key enp.rc);
+unlink qw(pending.data completed.data undo.data backlog.data enp.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'enp.rc', 'Cleanup');
 
 exit 0;

@@ -63,12 +63,11 @@ $output = qx{../src/task rc:sp.rc list project:abcd 2>&1 >/dev/null};
 like ($output, qr/No matches./, 'abc,ab,a,b | abcd -> nul');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key sp.rc);
+unlink qw(pending.data completed.data undo.data backlog.data sp.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'sp.rc', 'Cleanup');
 
 exit 0;

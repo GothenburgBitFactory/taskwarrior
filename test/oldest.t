@@ -128,12 +128,11 @@ like   ($output, qr/ten/,    'newest: ten');
 like   ($output, qr/eleven/, 'newest: eleven');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key oldest.rc);
+unlink qw(pending.data completed.data undo.data backlog.data oldest.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'oldest.rc', 'Cleanup');
 
 exit 0;

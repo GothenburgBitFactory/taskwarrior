@@ -83,12 +83,11 @@ $output = qx{../src/task rc:limit.rc ls limit:page 2>&1};
 like ($output, qr/^30 tasks, truncated to 18 lines$/ms, 'limited to page');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key limit.rc);
+unlink qw(pending.data completed.data undo.data backlog.data limit.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'limit.rc', 'Cleanup');
 
 exit 0;

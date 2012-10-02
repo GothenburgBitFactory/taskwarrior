@@ -63,12 +63,11 @@ $output = qx{../src/task rc:uda.rc bad 2>&1};
 like ($output, qr/Unrecognized column name/, 'UDA Orphan causes error');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key uda.rc import.txt);
+unlink qw(pending.data completed.data undo.data backlog.data uda.rc import.txt);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'uda.rc'         &&
     ! -r 'import.txt', 'Cleanup');
 

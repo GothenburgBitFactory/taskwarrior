@@ -118,12 +118,11 @@ $output = qx{../src/task rc:seq.rc info 2 2>&1};
 like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence 2 annotate');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key seq.rc);
+unlink qw(pending.data completed.data undo.data backlog.data seq.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'seq.rc', 'Cleanup');
 
 exit 0;

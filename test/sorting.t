@@ -177,12 +177,11 @@ for my $sort (sort keys %tests)
 }
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key sorting.rc);
+unlink qw(pending.data completed.data undo.data backlog.data sorting.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'sorting.rc', 'Cleanup');
 
 exit 0;

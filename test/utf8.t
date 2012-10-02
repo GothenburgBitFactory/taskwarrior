@@ -70,12 +70,11 @@ $output = qx{../src/task rc:utf8.rc ls +Zwölf 2>&1};
 like ($output, qr/utf8 in tag/, 'utf8 in tag works');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key utf8.rc);
+unlink qw(pending.data completed.data undo.data backlog.data utf8.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'utf8.rc', 'Cleanup');
 
 exit 0;

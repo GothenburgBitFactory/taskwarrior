@@ -73,12 +73,11 @@ $output = qx{../src/task 1 info rc:font.rc rc.color:on rc._forcecolor:on rc.font
 unlike ($output, qr/--------/, '1,1,1 -> underline');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key font.rc);
+unlink qw(pending.data completed.data undo.data backlog.data font.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'font.rc', 'Cleanup');
 
 exit 0;

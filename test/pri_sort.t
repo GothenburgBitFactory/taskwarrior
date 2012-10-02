@@ -93,12 +93,11 @@ $output = qx{../src/task rc:pri.rc ls priority.over: 2>&1};
 unlike ($output, qr/_/, 'pri _ !> _');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key pri.rc);
+unlink qw(pending.data completed.data undo.data backlog.data pri.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'pri.rc', 'Cleanup');
 
 exit 0;

@@ -65,12 +65,11 @@ $output = qx{../src/task rc:due.rc list due.is:today 2>&1};
 like ($output, qr/three/, 'due.is:today works as a filter');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key due.rc);
+unlink qw(pending.data completed.data undo.data backlog.data due.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'due.rc', 'Cleanup');
 
 exit 0;

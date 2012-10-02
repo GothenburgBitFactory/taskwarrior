@@ -61,12 +61,11 @@ like ($output, qr/Duplicated\stask\s1\s'foo'/, 'duplicate output task id and des
 like ($output, qr/Created\s+task\s+4/,         'duplicate output of new task id');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key dup.rc);
+unlink qw(pending.data completed.data undo.data backlog.data dup.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'dup.rc', 'Cleanup');
 
 exit 0;

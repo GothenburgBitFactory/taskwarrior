@@ -114,12 +114,11 @@ like ($output, qr/three.+\d{1,6}\s+\d{1,6}\s+baz1/ms,'dateformat - first  annota
 like ($output, qr/4 tasks/, 'count');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key annotate.rc annotate2.rc);
+unlink qw(pending.data completed.data undo.data backlog.data annotate.rc annotate2.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'annotate.rc'    &&
     ! -r 'annotate2.rc', 'Cleanup');
 

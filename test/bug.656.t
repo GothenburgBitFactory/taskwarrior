@@ -56,12 +56,11 @@ my $output = qx{../src/task rc:bug.rc ls 2>&1};
 unlike   ($output, qr/^\s3\s*Second recurring task\s*$/ms, 'Extra task detected.');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.rc', 'Cleanup');
 
 exit 0;

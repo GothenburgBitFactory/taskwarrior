@@ -70,12 +70,11 @@ like ($file, qr/Unique tags\s+0\n/,                    'Unique tags 0');
 like ($file, qr/Projects\s+0\n/,                       'Projects 0');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key shadow.txt shadow.rc);
+unlink qw(pending.data completed.data undo.data backlog.data shadow.txt shadow.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'shadow.txt'     &&
     ! -r 'shadow.rc', 'Cleanup');
 

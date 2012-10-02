@@ -53,12 +53,11 @@ like ($output, qr/one/, 'custom filter included');
 unlike ($output, qr/two/, 'custom filter excluded');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key custom.rc);
+unlink qw(pending.data completed.data undo.data backlog.data custom.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'custom.rc', 'Cleanup');
 
 exit 0;

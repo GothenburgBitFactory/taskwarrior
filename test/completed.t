@@ -51,12 +51,11 @@ like ($output, qr/one/, 'one -> completed');
 unlike ($output, qr/two/, 'two -> deleted');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key completed.rc);
+unlink qw(pending.data completed.data undo.data backlog.data completed.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'completed.rc', 'Cleanup');
 
 exit 0;

@@ -119,12 +119,11 @@ $output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:no ls descripti
 like ($output, qr/four five six/, 'one two three\nfour five six -> ls description.contains:Six caseless = succeed');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key caseless.rc);
+unlink qw(pending.data completed.data undo.data backlog.data caseless.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'caseless.rc', 'Cleanup');
 
 exit 0;

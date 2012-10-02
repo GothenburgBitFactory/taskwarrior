@@ -55,12 +55,11 @@ like ($output, qr/foo\\/, 'Backslash preserved in annotation 1');
 like ($output, qr/bar\\/, 'Backslash preserved in annotation 2');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.rc', 'Cleanup');
 
 exit 0;

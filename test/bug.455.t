@@ -50,12 +50,11 @@ like ($output, qr/\s{7}abc/ms, 'bug 455 - correct spacing in utf8 task');
 like ($output, qr/\s{7}def/ms, 'bug 455 - correct spacing in non utf8 task');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key 455.rc);
+unlink qw(pending.data completed.data undo.data backlog.data 455.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r '455.rc', 'Cleanup');
 
 exit 0;

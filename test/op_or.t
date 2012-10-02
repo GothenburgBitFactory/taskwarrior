@@ -71,12 +71,11 @@ like   ($output, qr/three/, 'ls project=A or priority=H --> three');
 unlike ($output, qr/four/,  'ls project=A or priority=H --> !four');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key op.rc);
+unlink qw(pending.data completed.data undo.data backlog.data op.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'op.rc', 'Cleanup');
 
 exit 0;

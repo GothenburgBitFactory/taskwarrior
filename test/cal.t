@@ -259,12 +259,11 @@ like   ($output, qr/30;103m15/,    'Holiday BBBBBB is color-coded');
 like   ($output, qr/30;103m25/,    'Holiday åäö is color-coded');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key details.rc);
+unlink qw(pending.data completed.data undo.data backlog.data details.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'details.rc', 'Cleanup');
 
 exit 0;

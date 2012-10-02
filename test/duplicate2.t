@@ -72,12 +72,11 @@ like ($output, qr/Status\s+Pending/,           'Found duplicated child task');
 like ($output, qr/Parent/,                     'Found duplicated child task - with parent');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key dup.rc);
+unlink qw(pending.data completed.data undo.data backlog.data dup.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'dup.rc', 'Cleanup');
 
 exit 0;

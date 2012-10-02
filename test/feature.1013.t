@@ -66,12 +66,11 @@ $stderr = qx{../src/task rc:outerr.rc rc.debug:on list 2>&1 >/dev/null};
 like ($stderr, qr/^Timer Config::load \(outerr.rc\) /ms, 'Debugs are sent to stderr');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key outerr.rc);
+unlink qw(pending.data completed.data undo.data backlog.data outerr.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'outerr.rc', 'Cleanup');
 
 exit 0;

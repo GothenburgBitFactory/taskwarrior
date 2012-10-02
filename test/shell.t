@@ -54,12 +54,11 @@ unlink 'shell.rc';
 ok (!-r 'shell.rc', 'Removed shell.rc');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key shell.rc);
+unlink qw(pending.data completed.data undo.data backlog.data shell.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'shell.rc', 'Cleanup');
 
 exit 0;

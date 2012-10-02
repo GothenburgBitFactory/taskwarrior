@@ -45,12 +45,11 @@ my $output = qx{../src/task rc:minus.rc 1 info 2>&1};
 like ($output, qr/^Description 1-test 1\+tag$/ms, 'Description contains plus and minus signs');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key minus.rc);
+unlink qw(pending.data completed.data undo.data backlog.data minus.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'minus.rc', 'Cleanup');
 
 exit 0;

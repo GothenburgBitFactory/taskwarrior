@@ -67,12 +67,11 @@ $output = qx{../src/task rc:args.rc 5 info 2>&1};
 like ($output, qr/Project\s+A/, 'start enpassant project');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key args.rc);
+unlink qw(pending.data completed.data undo.data backlog.data args.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'args.rc', 'Cleanup');
 
 exit 0;

@@ -129,12 +129,11 @@ ok ($? == 0, 'Exit status check');
 unlike ($output, qr/1/, '\'depe:\' does not expand if abbreviation.minimum is 5');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc task.sh);
+unlink qw(pending.data completed.data undo.data backlog.data bug.rc task.sh);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.rc'         &&
     ! -r 'task.sh', 'Cleanup');
 

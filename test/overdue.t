@@ -50,12 +50,11 @@ unlike ($output, qr/two/,   'overdue: task 2 does not show up');
 unlike ($output, qr/three/, 'overdue: task 3 does not show up');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key due.rc);
+unlink qw(pending.data completed.data undo.data backlog.data due.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'due.rc', 'Cleanup');
 
 exit 0;

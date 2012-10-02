@@ -82,12 +82,11 @@ $output = qx{../src/task rc:time.rc timesheet 3 2>&1};
 like ($output, qr/Completed.+C0.+Started.+PS0.+Completed.+C1.+Started.+PS1.+Completed.+C2.+Started.+PS2/ms, 'three weeks of started and completed');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key time.rc);
+unlink qw(pending.data completed.data undo.data backlog.data time.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'time.rc', 'Cleanup');
 
 exit 0;

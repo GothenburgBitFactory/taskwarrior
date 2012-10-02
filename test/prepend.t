@@ -49,12 +49,11 @@ $output = qx{../src/task rc:prepend.rc 1 prepend 2>&1};
 unlike ($output, qr/Prepended 0 tasks/, 'blank prepend failed');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key prepend.rc);
+unlink qw(pending.data completed.data undo.data backlog.data prepend.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'prepend.rc', 'Cleanup');
 
 exit 0;

@@ -48,12 +48,11 @@ like ($output, qr/\s2.0\n/ms, 'Single quote floating point preserved');
 like ($output, qr/\s3.0\n/ms, 'Double quote floating point preserved');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.rc', 'Cleanup');
 
 exit 0;

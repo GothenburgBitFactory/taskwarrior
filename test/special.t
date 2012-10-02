@@ -59,12 +59,11 @@ $output = qx{../src/task rc:special.rc 2 done 2>&1};
 unlike ($output, qr/NAG/, '+nonag suppressed nagging for task 2');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key special.rc);
+unlink qw(pending.data completed.data undo.data backlog.data special.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'special.rc', 'Cleanup');
 
 exit 0;

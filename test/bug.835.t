@@ -47,12 +47,11 @@ like ($output, qr/main\.subproject/, "Parens tolerated");
 unlike ($output, qr/Mismatched parentheses in expression/, "No 'mismatch' error generated");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.rc', 'Cleanup');
 
 exit 0;

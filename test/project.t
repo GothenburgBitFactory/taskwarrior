@@ -152,12 +152,11 @@ else
 like ($project_name_column, qr/^myProject\.\s*$/, '\'myProject.\' not indented');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key pro.rc);
+unlink qw(pending.data completed.data undo.data backlog.data pro.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'pro.rc', 'Cleanup');
 
 exit 0;

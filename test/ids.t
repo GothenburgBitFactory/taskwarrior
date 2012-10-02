@@ -72,12 +72,11 @@ $output = qx{../src/task rc:ids.rc _zshuuids +A};
 like ($output, qr/^[0-9a-f-]+:[a-z]+\n[0-9a-f-]+:[a-z]+\n[0-9a-f-]+:[a-z]+\n[0-9a-f-]+:[a-z]+$/, '_zshuuids +A --> uuid:*\nuuid:*\nuuid:*\nuuid:*');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key ids.rc);
+unlink qw(pending.data completed.data undo.data backlog.data ids.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'ids.rc', 'Cleanup');
 
 exit 0;

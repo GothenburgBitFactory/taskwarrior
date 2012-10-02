@@ -63,12 +63,11 @@ $output = qx{../src/task rc:tag.rc 1 modify -missing 2>&1; ../src/task rc:tag.rc
 unlike ($output, qr/^Tags/m, '-missing NOP');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key tag.rc);
+unlink qw(pending.data completed.data undo.data backlog.data tag.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'tag.rc', 'Cleanup');
 
 exit 0;

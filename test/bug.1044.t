@@ -51,12 +51,11 @@ my $output = qx{../src/task rc:bug.rc project:B projects 2>&1};
 like ($output, qr/^1 project \(1 task\)$/ms, 'Summary filtered new deleted task 3 and project A');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.rc', 'Cleanup');
 
 exit 0;

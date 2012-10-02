@@ -59,12 +59,11 @@ like ($output, qr/ \033\[32m        .* green      .* \033\[0m      /x, 'color.ke
 like ($output, qr/ \033\[33m        .* annotation .* \033\[0m      /x, 'color.keyword.yellow (annotation)');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key color.rc);
+unlink qw(pending.data completed.data undo.data backlog.data color.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'color.rc', 'Cleanup');
 
 exit 0;

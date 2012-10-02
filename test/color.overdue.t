@@ -49,12 +49,11 @@ like ($output, qr/ (?!<\033\[\d\dm) \d{1,2}\/\d{1,2}\/\d{4} (?!>\033\[0m) .* not
 like ($output, qr/ \033\[31m        .* red .* \033\[0m/x, 'color.overdue');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key color.rc);
+unlink qw(pending.data completed.data undo.data backlog.data color.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'color.rc', 'Cleanup');
 
 exit 0;

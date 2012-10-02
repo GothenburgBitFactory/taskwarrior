@@ -53,12 +53,11 @@ $output = qx{../src/task rc:uda.rc add three smell:toxic 2>&1};
 unlike ($output, qr/Created task 3/, 'UDA smell:toxic disallowed');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key uda.rc);
+unlink qw(pending.data completed.data undo.data backlog.data uda.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'uda.rc', 'Cleanup');
 
 exit 0;

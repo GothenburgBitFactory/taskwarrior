@@ -140,12 +140,11 @@ like ($output, qr/2.+B.+one/,  't2 present');
 like ($output, qr/3.+three/,   't3 present');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key import.rc import.txt import.json);
+unlink qw(pending.data completed.data undo.data backlog.data  import.rc import.txt import.json);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'import.rc'      &&
     ! -r 'import.txt'     &&
     ! -r 'import.json', 'Cleanup');

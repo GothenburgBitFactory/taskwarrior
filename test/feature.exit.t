@@ -46,12 +46,11 @@ my $exit_bad  = system ('../src/task rc:exit.rc ls bar >/dev/null 2>&1');
 isnt ($exit_bad, 0, 'task returns non-zero on failure');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key exit.rc);
+unlink qw(pending.data completed.data undo.data backlog.data  exit.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'exit.rc', 'Cleanup');
 
 exit 0;

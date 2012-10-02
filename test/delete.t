@@ -81,12 +81,11 @@ $output = qx{../src/task rc:delete.rc $uuid info 2>&1};
 like ($output, qr/Deleted/, 'task added, completed, then deleted');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key delete.rc);
+unlink qw(pending.data completed.data undo.data backlog.data delete.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'delete.rc', 'Cleanup');
 
 exit 0;

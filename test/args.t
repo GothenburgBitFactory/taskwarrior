@@ -61,12 +61,11 @@ $output = qx{../src/task rc:args.rc info 1 2>&1};
 like ($output, qr/Description\s+project:p\spri:H\s\+tag\sfoo\n/ms, 'task 1 modify -- project:p pri:H +tag foo');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key args.rc);
+unlink qw(pending.data completed.data undo.data backlog.data args.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'args.rc', 'Cleanup');
 
 exit 0;

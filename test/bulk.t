@@ -140,12 +140,11 @@ like   ($output, qr/Deleted 0 tasks./,       'No task deleted');
 unlike ($output, qr/delete task 17/,         'No question asked for subsequent tasks');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bulk.rc);
+unlink qw(pending.data completed.data undo.data backlog.data bulk.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bulk.rc', 'Cleanup');
 
 exit 0;

@@ -87,12 +87,11 @@ unlike ($output, qr/\n 6/, '6 hasnt foo -> no');
 like   ($output, qr/\n 7/, '7 hasnt foo -> yes');  # 15
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key hasnt.rc);
+unlink qw(pending.data completed.data undo.data backlog.data hasnt.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'hasnt.rc', 'Cleanup');
 
 exit 0;

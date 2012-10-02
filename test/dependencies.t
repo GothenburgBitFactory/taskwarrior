@@ -257,12 +257,11 @@ unlike ($output, qr/test5/ms, 'Dependency not appearing for task5');
 # TODO - test depend.any and depend.none report filters
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key dep.rc);
+unlink qw(pending.data completed.data undo.data backlog.data dep.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'dep.rc', 'Cleanup');
 
 exit 0;

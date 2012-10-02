@@ -90,12 +90,11 @@ $output = qx{../src/task rc:abbrev.rc v 2>&1};
 like ($output, qr/MIT\s+license/, 'version');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key abbrev.rc);
+unlink qw(pending.data completed.data undo.data backlog.data abbrev.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'abbrev.rc', 'Cleanup');
 
 exit 0;

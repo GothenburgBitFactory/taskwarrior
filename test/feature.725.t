@@ -64,12 +64,11 @@ $output = qx{../src/task rc:feature.rc 1 delete 2>&1};
 like ($output, qr/Unblocked/, 'Deleting dependency triggers message');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key feature.rc);
+unlink qw(pending.data completed.data undo.data backlog.data feature.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'feature.rc', 'Cleanup');
 
 exit 0;

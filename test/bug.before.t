@@ -82,12 +82,11 @@ unlike ($output, qr/foo/, 'no foo after 5/1/2009');
 unlike ($output, qr/bar/, 'no bar after 5/1/2009');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key before.rc);
+unlink qw(pending.data completed.data undo.data backlog.data before.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'before.rc', 'Cleanup');
 
 exit 0;

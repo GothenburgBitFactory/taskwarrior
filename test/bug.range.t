@@ -49,12 +49,11 @@ like   ($output, qr/two/,   'Found within range');
 unlike ($output, qr/three/, 'Missing after range');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key range.rc);
+unlink qw(pending.data completed.data undo.data backlog.data range.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'range.rc', 'Cleanup');
 
 exit 0;

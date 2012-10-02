@@ -66,12 +66,11 @@ unlike ($output, qr/ID.+Project.+Pri.+Description/, '\'label\' verbosity good');
 # TODO Verbosity: 'project'
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key verbose.rc);
+unlink qw(pending.data completed.data undo.data backlog.data verbose.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'verbose.rc', 'Cleanup');
 
 exit 0;

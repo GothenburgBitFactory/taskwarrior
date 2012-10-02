@@ -51,12 +51,11 @@ $output = qx{echo "y" | ../src/task rc:bug.rc annotate bar 2>&1 >/dev/null};
 unlike ($output, qr/Command prevented from running/, 'Filter-less write command permitted');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.rc', 'Cleanup');
 
 exit 0;

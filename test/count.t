@@ -68,12 +68,11 @@ $output = qx{../src/task rc:count.rc count due.any: 2>&1};
 like ($output, qr/^1\n/ms, 'count due.any:');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key count.rc);
+unlink qw(pending.data completed.data undo.data backlog.data count.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'count.rc', 'Cleanup');
 
 exit 0;

@@ -52,12 +52,11 @@ $output = qx{../src/task rc:dom.rc 3 info 2>&1};
 like ($output, qr/Waiting until\s+20110901/, 'Found wait date duplicated from due date');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key dom.rc);
+unlink qw(pending.data completed.data undo.data backlog.data dom.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'dom.rc', 'Cleanup');
 
 exit 0;

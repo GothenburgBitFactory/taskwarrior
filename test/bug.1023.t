@@ -59,12 +59,11 @@ unlike ($output, qr/Project\s*garden/, "default project not re-applied on attrib
 unlike ($output, qr/Project\s*home/, "default project not re-applied on attribute removal.");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.rc', 'Cleanup');
 
 exit 0;

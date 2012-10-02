@@ -176,40 +176,36 @@ like ($output, qr/up-to-date/, "res2: up-to-date");
 unlike ($output, qr/Missing/, "no missing entry");
 
 # Cleanup.
-unlink qw(data1/pending.data data1/completed.data data1/undo.data data1/undo.save data1/backlog.data data1/synch.key 1.rc);
+unlink qw(data1/pending.data data1/completed.data data1/undo.data data1/undo.save data1/backlog.data data1/ 1.rc);
 ok (! -r 'data1/pending.data'   &&
     ! -r 'data1/completed.data' &&
     ! -r 'data1/undo.data'      &&
     ! -r 'data1/undo.save'      &&
     ! -r 'data1/backlog.data'   &&
-    ! -r 'data1/synch.key'      &&
     ! -r '1.rc', 'data1 Cleanup');
 
-unlink qw(data2/pending.data data2/completed.data data2/undo.data data2/undo.save data2/backlog.data data2/synch.key 2.rc);
+unlink qw(data2/pending.data data2/completed.data data2/undo.data data2/undo.save data2/backlog.data 2.rc);
 ok (! -r 'data2/pending.data'   &&
     ! -r 'data2/completed.data' &&
     ! -r 'data2/undo.data'      &&
     ! -r 'data2/undo.save'      &&
     ! -r 'data2/backlog.data'   &&
-    ! -r 'data2/synch.key'      &&
     ! -r '2.rc', 'data2 Cleanup');
 
-unlink qw(data3/pending.data data3/completed.data data3/undo.data data3/undo.save data3/backlog.data data3/synch.key 3.rc);
+unlink qw(data3/pending.data data3/completed.data data3/undo.data data3/undo.save data3/backlog.data 3.rc);
 ok (! -r 'data3/pending.data'   &&
     ! -r 'data3/completed.data' &&
     ! -r 'data3/undo.data'      &&
     ! -r 'data3/undo.save'      &&
     ! -r 'data3/backlog.data'   &&
-    ! -r 'data3/synch.key'      &&
     ! -r '3.rc', 'data3 Cleanup');
 
-unlink qw(backup/pending.data backup/completed.data backup/undo.data backup/undo.save backup/backlog.data backup/synch.key);
+unlink qw(backup/pending.data backup/completed.data backup/undo.data backup/undo.save backup/backlog.data);
 ok (! -r 'backup/pending.data'   &&
     ! -r 'backup/completed.data' &&
     ! -r 'backup/undo.data'      &&
     ! -r 'backup/undo.save'      &&
     ! -r 'backup/backlog.data'   &&
-    ! -r 'backup/synch.key', 'backup Cleanup');
 
 rmtree (['data1/extensions', 'data1', 'data2/extensions', 'data2', 'data3/extensions', 'data3', 'backup/extensions', 'backup'], 0, 1);
 ok (! -e 'data1/extensions'  &&

@@ -51,12 +51,11 @@ like ($output, qr/ \033\[32m        .* nothing .* \033\[0m /x, 'color.project.no
 like ($output, qr/ \033\[31m        .* red     .* \033\[0m /x, 'color.project.red');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key color.rc);
+unlink qw(pending.data completed.data undo.data backlog.data color.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'color.rc', 'Cleanup');
 
 exit 0;

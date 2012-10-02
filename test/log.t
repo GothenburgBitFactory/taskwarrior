@@ -45,12 +45,11 @@ my $output = qx{../src/task rc:log.rc completed 2>&1};
 like ($output, qr/This is a test/, 'log description');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key log.rc);
+unlink qw(pending.data completed.data undo.data backlog.data  log.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'log.rc', 'Cleanup');
 
 exit 0;

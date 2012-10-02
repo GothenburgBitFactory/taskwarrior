@@ -104,12 +104,11 @@ $output = qx{../src/task rc:cal.rc cal due 2010 donkey 2>&1};
 unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal due 2010 donkey');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key cal.rc);
+unlink qw(pending.data completed.data undo.data backlog.data cal.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'cal.rc', 'Cleanup');
 
 exit 0;

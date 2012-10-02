@@ -55,12 +55,11 @@ like ($output,   qr/3\s+RE/, 'Custom recurrence indicator t1');
 unlike ($output, qr/2\s+RE/, 'No custom recurrence indicator t2');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key custom.rc);
+unlink qw(pending.data completed.data undo.data backlog.data custom.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'custom.rc', 'Cleanup');
 
 exit 0;

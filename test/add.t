@@ -56,12 +56,11 @@ like ($output, qr/Status\s+Pending\n/, 'add Pending');
 like ($output, qr/Description\s+This a TEST\n/, 'add Description');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key add.rc);
+unlink qw(pending.data completed.data undo.data backlog.data add.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'add.rc', 'Cleanup');
 
 exit 0;

@@ -56,12 +56,11 @@ my $output = qx{../src/task rc:nag.rc 1 do 2>&1 >/dev/null};
 unlike ($output, qr/NAG/, 'do due:yesterday -> no nag');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key nag.rc);
+unlink qw(pending.data completed.data undo.data backlog.data nag.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'nag.rc', 'Cleanup');
 
 exit 0;

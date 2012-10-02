@@ -102,12 +102,11 @@ $output = qx{../src/task rc:start3.rc list 2>&1};
 like ($output, qr/Nu.+stannar.+vi/ms, 'one stopped and annotated with custom description');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key start.rc start2.rc start3.rc);
+unlink qw(pending.data completed.data undo.data backlog.data start.rc start2.rc start3.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'start.rc'       &&
     ! -r 'start2.rc'      &&
     ! -r 'start3.rc', 'Cleanup');

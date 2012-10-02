@@ -54,12 +54,11 @@ like ($output,   qr/2\s+Medium/, 'priority.long Medium');
 like ($output,   qr/3\s+Low/,    'priority.long Low');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key pri.rc);
+unlink qw(pending.data completed.data undo.data backlog.data pri.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'pri.rc', 'Cleanup');
 
 exit 0;

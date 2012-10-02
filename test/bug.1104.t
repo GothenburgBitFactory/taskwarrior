@@ -137,24 +137,21 @@ ok ($? == 0, 'Exit status check');
 unlike ($output, qr/Retaining/, "Must not retain changes");
 
 # Cleanup.
-unlink qw(1.rc 1/pending.data 1/completed.data 1/undo.data 1/backlog.data 1/synch.key 2/pending.data 2/completed.data 2/undo.data 2.rc 2/backlog.data 2/synch.key dropbox/completed.data dropbox/pending.data dropbox/undo.data 3/pending.data 3/undo.data 3/completed.data 3/backlog.data 3/synch.key 3.rc);
+unlink qw(1.rc 1/pending.data 1/completed.data 1/undo.data 1/backlog.data 2/pending.data 2/completed.data 2/undo.data 2.rc 2/backlog.data dropbox/completed.data dropbox/pending.data dropbox/undo.data 3/pending.data 3/undo.data 3/completed.data 3/backlog.data 3.rc);
 ok (! -r '1/pending.data'         &&
     ! -r '1/completed.data'       &&
     ! -r '1/undo.data'            &&
     ! -r '1/backlog.data'         &&
-    ! -r '1/synch.key'            &&
     ! -r '1.rc'                   &&
     ! -r '2/pending.data'         &&
     ! -r '2/completed.data'       &&
     ! -r '2/undo.data'            &&
     ! -r '2/backlog.data'         &&
-    ! -r '2/synch.key'            &&
     ! -r '2.rc'                   &&
     ! -r '3/pending.data'         &&
     ! -r '3/completed.data'       &&
     ! -r '3/undo.data'            &&
     ! -r '3/backlog.data'         &&
-    ! -r '3/synch.key'            &&
     ! -r '3.rc'                   &&
     ! -r 'dropbox/pending.data'   &&
     ! -r 'dropbox/completed.data' &&

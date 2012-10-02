@@ -61,12 +61,11 @@ like ($lines[5], qr/^\s\schild\s+\d/,      "'  child'           indented, withou
 like ($lines[6], qr/^myProject\.\s+\d/,    "'myProject.'        not indented, with data");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.1056);
+unlink qw(pending.data completed.data undo.data backlog.data bug.1056);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.1056', 'Cleanup');
 
 exit 0;

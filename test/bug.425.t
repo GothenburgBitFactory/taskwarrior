@@ -52,12 +52,11 @@ my $output = qx{../src/task rc:425.rc 1 ls 2>&1};
 like ($output, qr/1\s+Bar in Bar/m, 'parser - interpret \'in\' in description');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key 425.rc);
+unlink qw(pending.data completed.data undo.data backlog.data 425.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r '425.rc', 'Cleanup');
 
 exit 0;

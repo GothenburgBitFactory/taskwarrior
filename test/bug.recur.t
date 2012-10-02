@@ -45,12 +45,11 @@ my $output = qx{../src/task rc:recur.rc info 1 2>&1};
 unlike ($output, qr/Description\s+foo/, 'task not created - missing due date');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key recur.rc);
+unlink qw(pending.data completed.data undo.data backlog.data recur.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'recur.rc', 'Cleanup');
 
 exit 0;

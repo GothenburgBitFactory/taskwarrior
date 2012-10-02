@@ -53,12 +53,11 @@ $output = qx{../src/task rc:alias.rc bar 2>&1};
 like ($output, qr/ALIAS/, 'task bar -> foo -> _projects -> ALIAS');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key alias.rc);
+unlink qw(pending.data completed.data undo.data backlog.data alias.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'alias.rc', 'Cleanup');
 
 exit 0;

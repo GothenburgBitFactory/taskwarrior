@@ -84,12 +84,11 @@ $output = qx{../src/task rc:date3.rc rc.dateformat.report:"D b Y - a" list 2>&1}
 like ($output, qr/08 Apr 2010 - Thu/, 'date format D b Y - a parsed');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key date1.rc date2.rc date3.rc);
+unlink qw(pending.data completed.data undo.data backlog.data date1.rc date2.rc date3.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'date1.rc'       &&
     ! -r 'date2.rc'       &&
     ! -r 'date3.rc', 'Cleanup');

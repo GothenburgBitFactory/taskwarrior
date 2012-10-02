@@ -55,12 +55,11 @@ like ($output, qr/Status\s+Pending/,    'Upgraded child: good status');
 like ($output, qr/Recurrence\s+weekly/, 'Upgraded child: good recurrence');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key upgrade.rc);
+unlink qw(pending.data completed.data undo.data backlog.data upgrade.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'upgrade.rc', 'Cleanup');
 
 exit 0;

@@ -74,12 +74,11 @@ like ($lines[18], qr/^    uuid: .+$/,            'export YAML line 19');
 like ($lines[19], qr/^\.\.\.$/,                  'export YAML line 20');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key export.rc export.txt);
+unlink qw(pending.data completed.data undo.data backlog.data export.rc export.txt);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'export.rc'      &&
     ! -r 'export.txt', 'Cleanup');
 

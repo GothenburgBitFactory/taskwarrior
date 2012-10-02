@@ -47,12 +47,11 @@ like ($output, qr/Your .taskrc file contains these unrecognized variables:\n/,
 like ($output, qr/  foo\n/, 'unsupported configuration variable');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key obsolete.rc);
+unlink qw(pending.data completed.data undo.data backlog.data obsolete.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'obsolete.rc', 'Cleanup');
 
 exit 0;

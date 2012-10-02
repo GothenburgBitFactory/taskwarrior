@@ -66,13 +66,12 @@ like ($output, qr/1.+A.+H.+\d+\/\d+\/\d+.+(?:-|\d+).+one/,       '2 round trips 
 like ($output, qr/2.+\d+\/\d+\/\d+.+(?:-|\d+).+tag1\stag2\stwo/, '2 round trips task 2 identical');
 
 # Cleanup.
-unlink qw(roundtrip.txt pending.data completed.data undo.data backlog.data synch.key roundtrip.rc);
+unlink qw(roundtrip.txt pending.data completed.data undo.data backlog.data roundtrip.rc);
 ok (! -r 'roundtrip.txt'  &&
     ! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'roundtrip.rc', 'Cleanup');
 
 exit 0;

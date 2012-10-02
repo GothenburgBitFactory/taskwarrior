@@ -175,12 +175,11 @@ like ($output, qr/\bthree\b.+\btwo/ms,          'downc: three < two');
 like ($output, qr/\btwo\b.+\bone\b/ms,          'downc: two < one');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key countdown.rc);
+unlink qw(pending.data completed.data undo.data backlog.data countdown.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'countdown.rc', 'Cleanup');
 
 exit 0;

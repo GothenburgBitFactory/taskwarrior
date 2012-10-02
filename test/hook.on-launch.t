@@ -60,12 +60,11 @@ else
 }
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key hook hook.rc);
+unlink qw(pending.data completed.data undo.data backlog.data hook hook.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'hook'           &&
     ! -r 'hook.rc', 'Cleanup');
 

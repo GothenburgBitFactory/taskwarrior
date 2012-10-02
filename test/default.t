@@ -84,12 +84,11 @@ like   ($output, qr/ M /, 'priority:M included in default command');
 unlike ($output, qr/ L /, 'priority:L excluded from default command');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key default.rc);
+unlink qw(pending.data completed.data undo.data backlog.data default.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'default.rc', 'Cleanup');
 
 exit 0;

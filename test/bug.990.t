@@ -49,12 +49,11 @@ my $output = qx{../src/task rc:color.rc list 2>&1};
 like ($output, qr/ \033\[32m        .* test .* \033\[0m /x, 'Colored with the priority color, which has precedence over the tagged color');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key color.rc);
+unlink qw(pending.data completed.data undo.data backlog.data color.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'color.rc', 'Cleanup');
 
 exit 0;

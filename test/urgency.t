@@ -316,12 +316,11 @@ $output = qx{../src/task rc:urgency.rc rc.urgency.priority.coefficient:0.01234 4
 like ($output, qr/Urgency     0.01$/ms, 'near-zero urgency is truncated');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key urgency.rc);
+unlink qw(pending.data completed.data undo.data backlog.data urgency.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'urgency.rc', 'Cleanup');
 
 exit 0;

@@ -96,12 +96,11 @@ $output = qx{cat response.txt | ../src/task rc:confirm.rc 7 del 2>&1};
 like ($output, qr/(Permanently delete task 7 'foo'\? \(yes\/no\)) \1 \1/, 'confirmation - \n re-prompt works'); # 43
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key confirm.rc response.txt);
+unlink qw(pending.data completed.data undo.data backlog.data confirm.rc response.txt);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'confirm.rc'     &&
     ! -r 'response.txt', 'Cleanup');
 

@@ -119,12 +119,11 @@ like   ($output, qr/seven/, 'i7');
 like   ($output, qr/eight/, 'i8');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key filter.rc);
+unlink qw(pending.data completed.data undo.data backlog.data filter.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'filter.rc', 'Cleanup');
 
 exit 0;

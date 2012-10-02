@@ -47,12 +47,11 @@ my $output = qx{../src/task rc:441.rc ls 2>&1};
 like ($output, qr/one two: three/ms, 'Substitution with colon worked');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key 441.rc);
+unlink qw(pending.data completed.data undo.data backlog.data 441.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r '441.rc', 'Cleanup');
 
 exit 0;

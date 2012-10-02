@@ -64,12 +64,11 @@ $output = qx{TASKRC=bug.rc ../src/task _ids 2>/dev/null};
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "_ids" (2>/dev/null)');
 
 ### Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'bug.rc', 'Cleanup');
 
 exit 0;

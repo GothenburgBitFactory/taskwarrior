@@ -106,12 +106,11 @@ like ($output, qr/12\/30\/2010/, 'modified entry date of task three');
 like ($output, qr/1\/1\/2011/, 'added start date of task three with modify');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key uuid.rc);
+unlink qw(pending.data completed.data undo.data backlog.data uuid.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'uuid.rc', 'Cleanup');
 
 exit 0;

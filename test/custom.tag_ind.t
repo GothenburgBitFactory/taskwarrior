@@ -55,12 +55,11 @@ like ($output,   qr/1\s+TAG/, 'Custom ag indicator t1');
 unlike ($output, qr/2\s+TAG/, 'No custom tag indicator t2');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key custom.rc);
+unlink qw(pending.data completed.data undo.data backlog.data custom.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'custom.rc', 'Cleanup');
 
 exit 0;

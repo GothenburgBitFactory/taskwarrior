@@ -57,12 +57,11 @@ $output = qx{../src/task rc:datesort.rc rc.report.small_list.sort=due- small_lis
 like ($output, qr/three.+two.+one/ms, 'Sorting by due- with format MD works');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key datesort.rc);
+unlink qw(pending.data completed.data undo.data backlog.data datesort.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'datesort.rc', 'Cleanup');
 
 exit 0;

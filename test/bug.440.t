@@ -60,12 +60,11 @@ unlike ($output2, qr/Foo/, 'simultaneous append and subst - subst');
 like ($output2, qr/\w+ Appendtext/, 'simultaneous append and subst - append');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key 440.rc);
+unlink qw(pending.data completed.data undo.data backlog.data 440.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r '440.rc', 'Cleanup');
 
 exit 0;

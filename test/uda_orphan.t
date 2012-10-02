@@ -85,12 +85,11 @@ $output = qx{../src/task rc:uda.rc 2 info 2>&1};
 like ($output, qr/extra\s+bar/, 'UDA orphan imported and visible');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key uda.rc import.txt);
+unlink qw(pending.data completed.data undo.data backlog.data uda.rc import.txt);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'uda.rc'         &&
     ! -r 'import.txt', 'Cleanup');
 

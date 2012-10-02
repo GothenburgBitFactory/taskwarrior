@@ -57,12 +57,11 @@ $output = qx{../src/task rc:uda.rc add bad extra:unrecognized_numeric 2>&1};
 unlike ($output, qr/Created task \d+/, 'UDA numeric bad data not accepted');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key uda.rc);
+unlink qw(pending.data completed.data undo.data backlog.data uda.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'uda.rc', 'Cleanup');
 
 exit 0;

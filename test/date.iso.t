@@ -50,12 +50,11 @@ $output = qx{../src/task rc:iso.rc 2 info 2>&1};
 like ($output, qr/Due\s+2\/13\/2009/, 'Epoch format recognized.');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key iso.rc);
+unlink qw(pending.data completed.data undo.data backlog.data iso.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'iso.rc', 'Cleanup');
 
 exit 0;

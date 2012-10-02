@@ -231,21 +231,19 @@ if (open my $fh, 'remote/undo.data') {
 ok ($good, "remote-merge: timestamps ok");
 
 # Cleanup.
-unlink qw(local/pending.data local/completed.data local/undo.data local/undo.save local/backlog.data local/synch.key local.rc);
+unlink qw(local/pending.data local/completed.data local/undo.data local/undo.save local/backlog.data local.rc);
 ok (! -r 'local/pending.data'   &&
     ! -r 'local/completed.data' &&
     ! -r 'local/undo.data'      &&
     ! -r 'local/undo.save'      &&
     ! -r 'local/backlog.data'   &&
-    ! -r 'local/synch.key'      &&
     ! -r 'local.rc', 'Local Cleanup');
 
-unlink qw(remote/pending.data remote/completed.data remote/undo.data remote/backlog.data remote/synch.key remote.rc);
+unlink qw(remote/pending.data remote/completed.data remote/undo.data remote/backlog.data remote.rc);
 ok (! -r 'remote/pending.data'   &&
     ! -r 'remote/completed.data' &&
     ! -r 'remote/undo.data'      &&
     ! -r 'remote/backlog.data'   &&
-    ! -r 'remote/synch.key'      &&
     ! -r 'remote.rc', 'Remove Cleanup');
 
 rmtree (['remote/extensions', 'remote', 'local/extensions', 'local'], 0, 1);

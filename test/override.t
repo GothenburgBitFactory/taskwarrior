@@ -51,12 +51,11 @@ my $output = qx{../src/task rc:or.rc zzz 2>&1};
 like ($output, qr/ONE.+TWO/ms, 'filter override > rc setting');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key or.rc);
+unlink qw(pending.data completed.data undo.data backlog.data or.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'or.rc', 'Cleanup');
 
 exit 0;

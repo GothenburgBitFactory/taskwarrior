@@ -78,12 +78,11 @@ $output = qx{../src/task rc:wait.rc add Complain due:today wait:tomorrow 2>&1 >/
 like ($output, qr/Warning: You have specified that the 'wait' date is after the 'due' date\./, 'warning on wait after due');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key wait.rc);
+unlink qw(pending.data completed.data undo.data backlog.data wait.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'wait.rc', 'Cleanup');
 
 exit 0;

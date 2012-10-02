@@ -62,12 +62,11 @@ unlike ($output, qr/Unknown error/, 'No unknown error');
 like ($output, qr/The undo command does not allow further task modification/, 'Correct error caught and reported');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key undo.rc);
+unlink qw(pending.data completed.data undo.data backlog.data undo.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'undo.rc', 'Cleanup');
 
 exit 0;

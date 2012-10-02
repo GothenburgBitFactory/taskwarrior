@@ -98,14 +98,13 @@ like ($output, qr/Imported 1 tasks\./, 'no errors');
 # Imported 1 tasks successfully.
 
 # Cleanup.
-unlink qw(import.txt import2.txt pending.data completed.data undo.data backlog.data synch.key import.rc);
+unlink qw(import.txt import2.txt pending.data completed.data undo.data backlog.data  import.rc);
 ok (! -r 'import.txt'     &&
     ! -r 'import2.txt'    &&
     ! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'import.rc', 'Cleanup');
 
 exit 0;

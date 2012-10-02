@@ -48,10 +48,7 @@ int main (int argc, char** argv)
     unlink ("./pending.data");
     unlink ("./completed.data");
     unlink ("./undo.data");
-/*
     unlink ("./backlog.data");
-*/
-    unlink ("./synch.key");
 
     // Set the context to allow GC.
     context.config.set ("gc", "on");
@@ -63,18 +60,12 @@ int main (int argc, char** argv)
     std::vector <Task> pending          = context.tdb2.pending.get_tasks ();
     std::vector <Task> completed        = context.tdb2.completed.get_tasks ();
     std::vector <std::string> undo      = context.tdb2.undo.get_lines ();
-/*
     std::vector <Task> backlog          = context.tdb2.backlog.get_tasks ();
-    std::vector <std::string> synch_key = context.tdb2.synch_key.get_lines ();
-*/
 
     t.is ((int) pending.size (),   0, "TDB2 Read empty pending");
     t.is ((int) completed.size (), 0, "TDB2 Read empty completed");
     t.is ((int) undo.size (),      0, "TDB2 Read empty undo");
-/*
     t.is ((int) backlog.size (),   0, "TDB2 Read empty backlog");
-    t.is ((int) synch_key.size (), 0, "TDB2 Read empty synch.key");
-*/
 
     // Add a task.
     Task task ("[description:\"description\" name:\"value\"]");
@@ -83,18 +74,12 @@ int main (int argc, char** argv)
     pending   = context.tdb2.pending.get_tasks ();
     completed = context.tdb2.completed.get_tasks ();
     undo      = context.tdb2.undo.get_lines ();
-/*
     backlog   = context.tdb2.backlog.get_tasks ();
-    synch_key = context.tdb2.synch_key.get_lines ();
-*/
 
     t.is ((int) pending.size (),   1, "TDB2 after add, 1 pending task");
     t.is ((int) completed.size (), 0, "TDB2 after add, 0 completed tasks");
     t.is ((int) undo.size (),      3, "TDB2 after add, 3 undo lines");
-/*
     t.is ((int) backlog.size (),   1, "TDB2 after add, 1 backlog task");
-    t.is ((int) synch_key.size (), 0, "TDB2 after add, 0 synch.key");
-*/
 
     task.set ("description", "This is a test");
     context.tdb2.modify (task);
@@ -102,18 +87,12 @@ int main (int argc, char** argv)
     pending   = context.tdb2.pending.get_tasks ();
     completed = context.tdb2.completed.get_tasks ();
     undo      = context.tdb2.undo.get_lines ();
-/*
     backlog   = context.tdb2.backlog.get_tasks ();
-    synch_key = context.tdb2.synch_key.get_lines ();
-*/
 
     t.is ((int) pending.size (),   1, "TDB2 after add, 1 pending task");
     t.is ((int) completed.size (), 0, "TDB2 after add, 0 completed tasks");
     t.is ((int) undo.size (),      7, "TDB2 after add, 7 undo lines");
-/*
     t.is ((int) backlog.size (),   2, "TDB2 after add, 2 backlog task");
-    t.is ((int) synch_key.size (), 0, "TDB2 after add, 0 synch.key");
-*/
 
     context.tdb2.commit ();
 
@@ -143,7 +122,6 @@ int main (int argc, char** argv)
   unlink ("./completed.data");
   unlink ("./undo.data");
   unlink ("./backlog.data");
-  unlink ("./synch.key");
 
   return 0;
 }

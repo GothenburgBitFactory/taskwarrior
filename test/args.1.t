@@ -55,12 +55,11 @@ $output = qx{../src/task rc:args.rc done 2 2>&1};
 unlike ($output, qr/^Completed 2 /ms, 'ID after COMMAND');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key args.rc);
+unlink qw(pending.data completed.data undo.data backlog.data args.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'args.rc', 'Cleanup');
 
 exit 0;

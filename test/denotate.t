@@ -100,12 +100,11 @@ like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       'Delet
 unlike ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'Delete partial match - Kermit and Miss Piggy');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key denotate.rc);
+unlink qw(pending.data completed.data undo.data backlog.data denotate.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'denotate.rc', 'Cleanup');
 
 exit 0;

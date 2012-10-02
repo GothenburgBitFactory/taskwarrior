@@ -70,13 +70,12 @@ if ($@ eq "alarm\n")
 }
 
 # Cleanup.
-unlink qw(shadow.txt pending.data completed.data undo.data backlog.data synch.key hang.rc);
+unlink qw(shadow.txt pending.data completed.data undo.data backlog.data hang.rc);
 ok (! -r 'shadow.txt'     &&
     ! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'hang.rc', 'Cleanup');
 
 exit 0;

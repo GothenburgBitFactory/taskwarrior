@@ -51,12 +51,11 @@ like ($output, qr/^\033\[34mUsing\ alternate\ .taskrc\ file\ color.rc\033\[0m$/x
 like ($output, qr/^\033\[31mConfiguration\ override\ rc.debug:on\033\[0m$/xms, 'color.footnote');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key color.rc);
+unlink qw(pending.data completed.data undo.data backlog.data color.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'color.rc', 'Cleanup');
 
 exit 0;

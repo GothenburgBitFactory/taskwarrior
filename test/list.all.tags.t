@@ -57,12 +57,11 @@ like ($output, qr/t1/, 't1 listed');
 like ($output, qr/t2/, 't2 listed');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key tags.rc);
+unlink qw(pending.data completed.data undo.data backlog.data  tags.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'tags.rc', 'Cleanup');
 
 exit 0;

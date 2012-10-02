@@ -54,12 +54,11 @@ $output = qx{../src/task rc:summary.rc summary 2>&1};
 like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, 'summary correctly shows 50% after report');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key summary.rc);
+unlink qw(pending.data completed.data undo.data backlog.data summary.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'summary.rc', 'Cleanup');
 
 exit 0;

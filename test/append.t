@@ -50,12 +50,11 @@ $output = qx{../src/task rc:append.rc 1 append 2>&1};
 unlike ($output, qr/Appended 0 tasks/, 'blank append failed');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key append.rc);
+unlink qw(pending.data completed.data undo.data backlog.data append.rc);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r 'append.rc', 'Cleanup');
 
 exit 0;
