@@ -25,56 +25,19 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef INCLUDED_CMDSYNC
+#define INCLUDED_CMDSYNC
 #define L10N                                           // Localization complete.
 
-#include <iostream>
-#include <Context.h>
-#include <text.h>
-#include <i18n.h>
-#include <CmdSynch.h>
+#include <string>
+#include <Command.h>
 
-extern Context context;
-
-////////////////////////////////////////////////////////////////////////////////
-CmdSynch::CmdSynch ()
+class CmdSync : public Command
 {
-  _keyword     = "synchronize";
-  _usage       = "task          synchronize";
-  _description = STRING_CMD_SYNCH_USAGE;
-  _read_only   = false;
-  _displays_id = true;
-}
+public:
+  CmdSync ();
+  int execute (std::string&);
+};
 
-////////////////////////////////////////////////////////////////////////////////
-int CmdSynch::execute (std::string& output)
-{
-  // TODO Tempporary.
-  std::cout << "\n"
-            << "Task Server Synchronization is not implemented in 2.0.0beta3.\n"
-            << "\n";
-
-  // If no server is set up, quit.
-  std::string connection = context.config.get ("taskd.server");
-  if (connection == "" ||
-      connection.find (':') == std::string::npos)
-    throw std::string (STRING_CMD_SYNCH_NO_SERVER);
-
-  // Obtain credentials.
-  std::string credentials = context.config.get ("taskd.credentials");
-
-  // TODO Obtain synch key.
-
-  // TODO Compose backlog into ticket.
-  // TODO Request synch.
-
-  // TODO Receive synch data.
-  // TODO Extract remote mods.
-  // TODO Extract new synch key.
-  // TODO Apply remote mods.
-  // TODO Store new synch key.
-  // TODO Truncate backlog.
-
-  return 1;
-}
-
+#endif
 ////////////////////////////////////////////////////////////////////////////////

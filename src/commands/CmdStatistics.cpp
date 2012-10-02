@@ -273,10 +273,10 @@ int CmdStatistics::execute (std::string& output)
   }
 
 /*
-  // TODO Re-enable this when 2.1 has taskd support.  Until then, it makes no
+  // TODO Re-enable this when 2.3 has taskd support.  Until then, it makes no
   //      sense to include this.
   row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_LAST_SYNCH);
+  view.set (row, 0, STRING_CMD_STATS_LAST_SYNC);
   if (context.tdb2.synch_key._file.exists ())
     view.set (row, 1, Date (context.tdb2.synch_key._file.mtime ()).toISO ());
   else

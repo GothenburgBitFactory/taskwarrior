@@ -83,7 +83,7 @@
 #include <CmdStatistics.h>
 #include <CmdStop.h>
 #include <CmdSummary.h>
-//#include <CmdSynch.h>
+#include <CmdSync.h>
 #include <CmdTags.h>
 #include <CmdTimesheet.h>
 #include <CmdUDAs.h>
@@ -158,7 +158,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdStatistics ();         all[c->keyword ()] = c;
   c = new CmdStop ();               all[c->keyword ()] = c;
   c = new CmdSummary ();            all[c->keyword ()] = c;
-//  c = new CmdSynch ();              all[c->keyword ()] = c;
+  c = new CmdSync ();               all[c->keyword ()] = c;
   c = new CmdTags ();               all[c->keyword ()] = c;
   c = new CmdTimesheet ();          all[c->keyword ()] = c;
   c = new CmdUDAs ();               all[c->keyword ()] = c;

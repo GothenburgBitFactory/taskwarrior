@@ -25,19 +25,47 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CMDSYNCH
-#define INCLUDED_CMDSYNCH
 #define L10N                                           // Localization complete.
 
-#include <string>
-#include <Command.h>
+#include <iostream>
+#include <Context.h>
+#include <text.h>
+#include <i18n.h>
+#include <CmdSync.h>
 
-class CmdSynch : public Command
+extern Context context;
+
+////////////////////////////////////////////////////////////////////////////////
+CmdSync::CmdSync ()
 {
-public:
-  CmdSynch ();
-  int execute (std::string&);
-};
+  _keyword     = "synchronize";
+  _usage       = "task          synchronize";
+  _description = STRING_CMD_SYNC_USAGE;
+  _read_only   = false;
+  _displays_id = true;
+}
 
-#endif
+////////////////////////////////////////////////////////////////////////////////
+int CmdSync::execute (std::string& output)
+{
+  // If no server is set up, quit.
+  std::string connection = context.config.get ("taskd.server");
+  if (connection == "" ||
+      connection.find (':') == std::string::npos)
+    throw std::string (STRING_CMD_SYNC_NO_SERVER);
+
+  // Obtain credentials.
+  std::string credentials = context.config.get ("taskd.credentials");
+
+  // TODO Read backlog.data.
+  // TODO Send backlog.data in 'sync' request..
+
+  // TODO Receive response.
+  // TODO Apply tasks.
+  // TODO Truncate backlog.data.
+  // TODO Store new synch key.
+
+  return 1;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
