@@ -32,6 +32,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <pwd.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <Path.h>
 #include <cmake.h>
@@ -168,6 +169,22 @@ bool Path::writable () const
 bool Path::executable () const
 {
   return access (_data.c_str (), X_OK) ? false : true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::rename (const std::string& new_name)
+{
+  std::string expanded = expand (new_name);
+  if (_data != expanded)
+  {
+    if (::rename (_data.c_str (), expanded.c_str ()) == 0)
+    {
+      _data = expanded;
+      return true;
+    }
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

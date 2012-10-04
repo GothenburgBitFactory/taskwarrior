@@ -54,6 +54,7 @@ public:
   bool readable () const;
   bool writable () const;
   bool executable () const;
+  bool rename (const std::string&);
 
   // Statics
   static std::string expand (const std::string&);
