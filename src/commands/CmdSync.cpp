@@ -59,7 +59,11 @@ int CmdSync::execute (std::string& output)
     throw std::string (STRING_CMD_SYNC_NO_SERVER);
 
   // Obtain credentials.
-  std::string credentials = context.config.get ("taskd.credentials");
+  std::string credentials_string = context.config.get ("taskd.credentials");
+  std::vector <std::string> credentials;
+  split (credentials, credentials_string, "/");
+  if (credentials.size () != 3)
+    throw std::string (STRING_CMD_SYNC_BAD_CRED);
 
   // Read backlog.data.
   std::string payload = "";
@@ -70,6 +74,10 @@ int CmdSync::execute (std::string& output)
   // Send 'sync' + payload.
   Msg request, response;
   request.set ("type", "sync");
+  request.set ("org",  credentials[0]);
+  request.set ("user", credentials[1]);
+  request.set ("key",  credentials[2]);
+
   // TODO Add the other header fields.
 
   request.setPayload (payload);
@@ -81,22 +89,29 @@ int CmdSync::execute (std::string& output)
   {
     std::cout << "# response:\n"
               << response.serialize ();
-    if (response.get ("code") == "200")
+    std::string code = response.get ("code");
+    if (code == "200")
     {
       payload = response.getPayload ();
       std::vector <std::string> lines;
       split (lines, payload, '\n');
+      std::cout << "# received " << lines.size () << " lines of data\n";
 
-      // TODO Load all tasks.
+      // Load all tasks.
+      std::vector <Task> all = context.tdb2.all_tasks ();
 
-      std::string synch_key;
+      std::string synch_key = "";
       std::vector <std::string>::iterator line;
       for (line = lines.begin (); line != lines.end (); ++line)
       {
         if ((*line)[0] == '[')
         {
-          // TODO Apply tasks.
           std::cout << "# task: " << *line << "\n";
+          Task from_server (*line);
+          std::cout << "  " << from_server.get ("uuid")
+                    << " "  << from_server.get ("description")
+                    << "\n";
+          context.tdb2.modify (from_server);
         }
         else
         {
@@ -105,19 +120,47 @@ int CmdSync::execute (std::string& output)
         }
       }
 
-      // TODO Truncate backlog.data.
-      // TODO Store new synch key.
+      // Only update everything if there is a new synch_key.  No synch_key means
+      // something horrible happened on the other end of the wire.
+      if (synch_key != "")
+      {
+        // Truncate backlog.data, save new synch_key.
+        context.tdb2.backlog.clear ();
+        context.tdb2.backlog.add_line (synch_key + "\n");
 
-      // TODO Commit.
+        // Commit all changes.
+        context.tdb2.commit ();
+      }
+    }
+    else if (code == "430")
+    {
+      context.error ("Not authorized.  Could be incorrect credentials or "
+                     "server account not enabled.");
+      status = 2;
     }
     else
     {
-      context.error ("Task Server problem.");
+      context.error ("Task Server error: " + code + " " + response.get ("status"));
       status = 2;
     }
 
-    // TODO Display all errors returned.
+    // Display all errors returned.  This is required by the server protocol.
+    std::string to_be_displayed = response.get ("messages");
+    if (to_be_displayed != "")
+    {
+      if (context.verbose ("footnote"))
+        context.footnote (to_be_displayed);
+      else
+        context.debug (to_be_displayed);
+    }
   }
+
+  // Some kind of low-level error:
+  //   - Server down
+  //   - Wrong address
+  //   - Wrong port
+  //   - Firewall
+  //   - Network error
   else
   {
     context.error ("Could not connect to Task Server.");

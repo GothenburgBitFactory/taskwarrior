@@ -1,23 +1,17 @@
 
-New Features in taskwarrior 2.2.0
+New Features in taskwarrior 2.3.0
 
-  - Bash autocompletion now works with aliases.
-  - Virtual tags provide a tag query interface to more complex states.
-  - Deprecated 'fg' and 'bg' attributes removed.  Any residual use of those will
-    appear as orphaned UDAs.
-  - Tasks now have a 'modified' attribute, which indicates the last time, if at
-    all, that they were modified.
-  - Statistics now report total number of blocked and blocking tasks.
+  - 
 
-New commands in taskwarrior 2.2.0
+New commands in taskwarrior 2.3.0
 
-  - New '_aliases' helper command lists aliases for completion purposes.
+  - New 'sync' command to synchronize data with a Task Server.
 
-New configuration options in taskwarrior 2.2.0
+New configuration options in taskwarrior 2.3.0
 
   -
 
-Newly deprecated features in taskwarrior 2.2.0
+Newly deprecated features in taskwarrior 2.3.0
   
   -
 

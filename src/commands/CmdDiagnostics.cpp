@@ -95,9 +95,6 @@ int CmdDiagnostics::execute (std::string& output)
 #else
          STRING_CMD_DIAG_UNKNOWN
 #endif
-      << "\n"
-      << STRING_CMD_DIAG_SERVER << ": "
-      << context.config.get ("taskd.server")
       << "\n\n";
 
   // Compiler.
