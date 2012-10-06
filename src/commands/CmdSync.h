@@ -31,12 +31,16 @@
 
 #include <string>
 #include <Command.h>
+#include <Msg.h>
 
 class CmdSync : public Command
 {
 public:
   CmdSync ();
   int execute (std::string&);
+
+private:
+  bool send (const std::string&, const Msg&, Msg&);
 };
 
 #endif

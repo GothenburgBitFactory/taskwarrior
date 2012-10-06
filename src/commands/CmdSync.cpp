@@ -28,7 +28,9 @@
 #define L10N                                           // Localization complete.
 
 #include <iostream>
+#include <inttypes.h>
 #include <Context.h>
+#include <Socket.h>
 #include <text.h>
 #include <i18n.h>
 #include <CmdSync.h>
@@ -66,6 +68,44 @@ int CmdSync::execute (std::string& output)
   // TODO Store new synch key.
 
   return 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CmdSync::send (
+  const std::string& to,
+  const Msg& out,
+  Msg& in)
+{
+  std::string::size_type colon = to.find (':');
+  if (colon == std::string::npos)
+    throw std::string ("ERROR: Malformed configuration setting '") + to + "'";
+
+  std::string server = to.substr (0, colon);
+  int port = strtoimax (to.substr (colon + 1).c_str (), NULL, 10);
+
+  try
+  {
+    Socket s (AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    s.connect (server, port);
+    s.write (out.serialize () + "\r\n");
+
+    std::string response;
+    s.read (response);
+    s.close ();
+
+    in.parse (response);
+
+    // Indicate message sent.
+    return true;
+  }
+
+  catch (std::string& error)
+  {
+    // TODO Report as diagnostics?
+  }
+
+  // Indicate message failed.
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

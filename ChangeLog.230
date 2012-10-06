@@ -3,7 +3,8 @@
 2.3.0 () -
 
 Features
- + 
+ + Stores un-synched transactions in <data.location>/backlog.data.
+ + Adds a new "synchronize" command to sync data with a task server.
 
 Bugs
  +
