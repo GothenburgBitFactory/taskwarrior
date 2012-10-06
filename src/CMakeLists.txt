@@ -40,6 +40,7 @@ set (task_SRCS A3.cpp A3.h
                legacy.cpp
                recur.cpp
                rules.cpp
+               Socket.cpp Socket.h
                sort.cpp
                text.cpp text.h
                utf8.cpp utf8.h
