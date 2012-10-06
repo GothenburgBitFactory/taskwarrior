@@ -416,6 +416,25 @@ void feedback_unblocked (const Task& task)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+void feedback_backlog ()
+{
+  if (context.config.get ("taskd.server") != "" &&
+      context.verbose ("sync"))
+  {
+    std::vector <std::string> lines = context.tdb2.backlog.get_lines ();
+    std::vector <std::string>::iterator line;
+    for (line = lines.begin (); line != lines.end (); ++line)
+    {
+      if ((*line)[0] == '[')
+      {
+        context.footnote ("There are local changes.  Sync required.");
+        break;
+      }
+    }
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 std::string onProjectChange (Task& task, bool scope /* = true */)
 {
   std::stringstream msg;

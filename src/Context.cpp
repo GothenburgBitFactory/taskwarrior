@@ -451,6 +451,9 @@ bool Context::color ()
 //   rc.verbose=nothing    Show the absolute minimum.
 //   rc.verbose=one,two    Show verbosity for 'one' and 'two' only.
 //
+// TODO This mechanism is clunky, and should slowly evolve into something more
+//      logical and consistent.  This should probably mean that 'nothing' should
+//      take the place of '0'.
 bool Context::verbose (const std::string& token)
 {
   if (! verbosity.size ())
@@ -470,7 +473,8 @@ bool Context::verbose (const std::string& token)
         verbosity[0]      != "affected" &&  //
         verbosity[0]      != "edit"     &&  //
         verbosity[0]      != "special"  &&  //
-        verbosity[0]      != "project")     //
+        verbosity[0]      != "project"  &&  //
+        verbosity[0]      != "sync")        //
     {
       verbosity.clear ();
 

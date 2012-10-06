@@ -60,6 +60,9 @@ int CmdSync::execute (std::string& output)
 
   // Obtain credentials.
   std::string credentials_string = context.config.get ("taskd.credentials");
+  if (credentials_string == "")
+    throw std::string (STRING_CMD_SYNC_BAD_CRED);
+
   std::vector <std::string> credentials;
   split (credentials, credentials_string, "/");
   if (credentials.size () != 3)

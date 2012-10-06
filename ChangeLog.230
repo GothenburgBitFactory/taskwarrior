@@ -3,10 +3,15 @@
 2.3.0 () -
 
 Features
+ + Added Feature #934, support for 'reserved.lines' to accomodate multi-line
+   shell prompts when used in conjunction with 'limit:page' (thanks to Robert
+   Gill).
  + Stores un-synched transactions in <data.location>/backlog.data.
- + Adds a new "synchronize" command to sync data with a task server.
+ + Adds a new 'synchronize' command to sync data with a task server.
+ + Adds a new 'sync' verbosity token, which will reminds when a backlog builds
+   up and needs a sync.
 
 Bugs
- +
+ + Fixed bug so that 'limit:page' now considers footnote messages.
 
 ------ old releases ------------------------------

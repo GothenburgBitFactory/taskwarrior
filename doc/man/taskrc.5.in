@@ -230,9 +230,9 @@ that you would see a smaller, more compact representation of the task, with no
 help text.  Deprecated - use verbosity token 'edit'.
 
 .TP
-.B locale=en-US.UTF8
-Locale to be used by Taskwarrior for synchronization with the task server.  The
-default value is currently blank.
+.B reserved.lines=1
+This is the number of lines reserved at the bottom of the screen for the shell
+prompt.  This is only referenced when 'limit:page' is used.
 
 .SS MISCELLANEOUS
 
@@ -258,6 +258,7 @@ control specific occasions when output is generated.  This list may contain:
     edit       Used the verbose template for the 'edit' command
     special    Feedback when applying special tags
     project    Feedback about project status changes
+    sync       Feedback about the need for sync
 
 Note that the "on" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
@@ -265,7 +266,7 @@ and the "nothing" setting is equivalent to none of the tokens being specified.
 Here are the shortcut equivalents:
 
     verbose=on
-    verbose=blank,header,footnote,label,new-id,affected,edit,special,project
+    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync
 
     verbose=off
     verbose=blank,label,new-id,edit

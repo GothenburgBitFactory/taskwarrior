@@ -145,9 +145,11 @@ int CmdCustom::execute (std::string& output)
 
   // Adjust for fluff in the output.
   if (maxlines)
-    maxlines -= (context.verbose ("blank") ? 1 : 0)
-              + table_header
-              + 1;  // "X tasks shown ..."
+    maxlines -= table_header
+              + (context.verbose ("blank") ? 1 : 0)
+              + (context.verbose ("footnote") ? context.footnotes.size () : 0)
+              + (context.verbose ("affected") ? 1 : 0)
+              + context.config.getInteger ("reserved.lines");  // For prompt, etc.
 
   // Render.
   std::stringstream out;
@@ -183,6 +185,7 @@ int CmdCustom::execute (std::string& output)
     rc = 1;
   }
 
+  feedback_backlog ();
   context.tdb2.commit ();
   output = out.str ();
   return rc;

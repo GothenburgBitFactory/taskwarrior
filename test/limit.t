@@ -79,8 +79,19 @@ like ($output, qr/^30 tasks$/ms, 'limited to 0 - unlimited');
 $output = qx{../src/task rc:limit.rc ls limit:3 2>&1};
 like ($output, qr/^30 tasks, 3 shown$/ms, 'limited to 3');
 
+# Default height is 24 lines:
+#   - header
+#   - blank
+#   - labels
+#   - underline
+#   - (data)
+#   - blank
+#   - affected
+#   - reserved.lines
+#  ------------
+#   = 17 lines
 $output = qx{../src/task rc:limit.rc ls limit:page 2>&1};
-like ($output, qr/^30 tasks, truncated to 18 lines$/ms, 'limited to page');
+like ($output, qr/^30 tasks, truncated to 17 lines$/ms, 'limited to page');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data limit.rc);

@@ -178,6 +178,7 @@ int CmdShow::execute (std::string& output)
     " recurrence.indicator"
     " recurrence.limit"
     " regex"
+    " reserved.lines"
     " row.padding"
     " rule.precedence.color"
     " search.case.sensitive"

@@ -76,6 +76,7 @@ void feedback_affected (const std::string&, int);
 void feedback_affected (const std::string&, const Task&);
 void feedback_special_tags (const Task&, const std::string&);
 void feedback_unblocked (const Task&);
+void feedback_backlog ();
 std::string onProjectChange (Task&, bool scope = true);
 std::string onProjectChange (Task&, Task&);
 std::string onExpiration (Task&);
