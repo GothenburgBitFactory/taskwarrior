@@ -44,7 +44,7 @@ CmdSync::CmdSync ()
   _usage       = "task          synchronize";
   _description = STRING_CMD_SYNC_USAGE;
   _read_only   = false;
-  _displays_id = true;
+  _displays_id = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +87,8 @@ int CmdSync::execute (std::string& output)
       std::vector <std::string> lines;
       split (lines, payload, '\n');
 
+      // TODO Load all tasks.
+
       std::string synch_key;
       std::vector <std::string>::iterator line;
       for (line = lines.begin (); line != lines.end (); ++line)
@@ -105,6 +107,8 @@ int CmdSync::execute (std::string& output)
 
       // TODO Truncate backlog.data.
       // TODO Store new synch key.
+
+      // TODO Commit.
     }
     else
     {
