@@ -74,7 +74,7 @@ int CmdDiagnostics::execute (std::string& output)
       << bold.colorize (PACKAGE_STRING)
       << "\n";
 
-  out << "  " << STRING_CMD_DIAG_PLATFORM << ": "
+  out << "   " << STRING_CMD_DIAG_PLATFORM << ": "
       <<
 #if defined (DARWIN)
          "Darwin"
@@ -95,16 +95,19 @@ int CmdDiagnostics::execute (std::string& output)
 #else
          STRING_CMD_DIAG_UNKNOWN
 #endif
+      << "\n"
+      << STRING_CMD_DIAG_SERVER << ": "
+      << context.config.get ("taskd.server")
       << "\n\n";
 
   // Compiler.
   out << bold.colorize (STRING_CMD_DIAG_COMPILER)
       << "\n"
 #ifdef __VERSION__
-      << "   " << STRING_CMD_DIAG_VERSION << ": "
+      << "    " << STRING_CMD_DIAG_VERSION << ": "
       << __VERSION__ << "\n"
 #endif
-      << "      " << STRING_CMD_DIAG_CAPS << ":"
+      << "       " << STRING_CMD_DIAG_CAPS << ":"
 #ifdef __STDC__
       << " +stdc"
 #endif
@@ -135,7 +138,7 @@ int CmdDiagnostics::execute (std::string& output)
   out << bold.colorize (STRING_CMD_DIAG_LIBRARIES)
       << "\n";
 
-  out << "       Lua: "
+  out << "        Lua: "
 #ifdef HAVE_LIBLUA
       << LUA_RELEASE
 #else
@@ -143,7 +146,7 @@ int CmdDiagnostics::execute (std::string& output)
 #endif
       << "\n";
 
-  out << "   libuuid: "
+  out << "    libuuid: "
 #if defined (HAVE_UUID) and defined (HAVE_UUID_UNPARSE_LOWER)
       << "libuuid + uuid_unparse_lower"
 #elif defined (HAVE_UUID) and !defined (HAVE_UUID_UNPARSE_LOWER)
@@ -157,10 +160,10 @@ int CmdDiagnostics::execute (std::string& output)
       << "\n"
 
   // Build date.
-      << "     " << STRING_CMD_DIAG_BUILT << ": " << __DATE__ << " " << __TIME__ << "\n"
-      << "    " << STRING_CMD_DIAG_COMMIT << ": " << COMMIT << "\n"
-      << "     CMake: " << CMAKE_VERSION << "\n"
-      << "      " << STRING_CMD_DIAG_CAPS << ":"
+      << "      " << STRING_CMD_DIAG_BUILT << ": " << __DATE__ << " " << __TIME__ << "\n"
+      << "     " << STRING_CMD_DIAG_COMMIT << ": " << COMMIT << "\n"
+      << "      CMake: " << CMAKE_VERSION << "\n"
+      << "       " << STRING_CMD_DIAG_CAPS << ":"
 #ifdef HAVE_LIBPTHREAD
       << " +pthreads"
 #else
@@ -189,7 +192,7 @@ int CmdDiagnostics::execute (std::string& output)
   // Config: .taskrc found, readable, writable
   out << bold.colorize (STRING_CMD_DIAG_CONFIG)
       << "\n"
-      << "      File: " << context.config._original_file._data << " "
+      << "       File: " << context.config._original_file._data << " "
       << (context.config._original_file.exists ()
            ? STRING_CMD_DIAG_FOUND
            : STRING_CMD_DIAG_MISSING)
@@ -201,7 +204,7 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Config: data.location found, readable, writable
   File location (context.config.get ("data.location"));
-  out << "      Data: " << location._data << " "
+  out << "       Data: " << location._data << " "
       << (location.exists ()
            ? STRING_CMD_DIAG_FOUND
            : STRING_CMD_DIAG_MISSING)
@@ -211,11 +214,11 @@ int CmdDiagnostics::execute (std::string& output)
       << location.mode ()
       << "\n";
 
-  out << "    Server: "
+  out << "     Server: "
       << context.config.get ("taskd.server")
       << "\n";
 
-  out << "   Locking: "
+  out << "    Locking: "
       << (context.config.getBoolean ("locking")
            ? STRING_CMD_DIAG_ENABLED
            : STRING_CMD_DIAG_DISABLED)
@@ -224,11 +227,11 @@ int CmdDiagnostics::execute (std::string& output)
   // Determine rc.editor/$EDITOR/$VISUAL.
   char* peditor;
   if (context.config.get ("editor") != "")
-    out << " rc.editor: " << context.config.get ("editor") << "\n";
+    out << "  rc.editor: " << context.config.get ("editor") << "\n";
   else if ((peditor = getenv ("VISUAL")) != NULL)
-    out << "   $VISUAL: " << peditor << "\n";
+    out << "    $VISUAL: " << peditor << "\n";
   else if ((peditor = getenv ("EDITOR")) != NULL)
-    out << "   $EDITOR: " << peditor << "\n";
+    out << "    $EDITOR: " << peditor << "\n";
 
   out << "\n";
 
@@ -246,7 +249,7 @@ int CmdDiagnostics::execute (std::string& output)
 
       RX r ("usage", false);
       if (p)
-        out << "       scp: "
+        out << "        scp: "
             << (r.match (buffer)
                  ? STRING_CMD_DIAG_FOUND
                  : STRING_CMD_DIAG_MISSING)
@@ -264,7 +267,7 @@ int CmdDiagnostics::execute (std::string& output)
         RX r ("version ([0-9]+\\.[0-9]+\\.[0-9]+)", false);
         matches.clear ();
         r.match (matches, buffer);
-        out << "     rsync: "
+        out << "      rsync: "
             << (matches.size () ? matches[0] : STRING_CMD_DIAG_MISSING)
             << "\n";
       }
@@ -281,7 +284,7 @@ int CmdDiagnostics::execute (std::string& output)
         RX r ("curl ([0-9]+\\.[0-9]+\\.[0-9]+)", false);
         matches.clear ();
         r.match (matches, buffer);
-        out << "      curl: "
+        out << "       curl: "
             << (matches.size () ? matches[0] :  STRING_CMD_DIAG_MISSING)
             << "\n";
       }
@@ -294,7 +297,7 @@ int CmdDiagnostics::execute (std::string& output)
   out << bold.colorize (STRING_CMD_DIAG_TESTS)
       << "\n";
   {
-    out << "  UUID gen: ";
+    out << "   UUID gen: ";
     std::vector <std::string> uuids;
     std::string id;
     for (int i = 0; i < 1000; i++)
@@ -314,7 +317,7 @@ int CmdDiagnostics::execute (std::string& output)
 
     // Determine terminal details.
     const char* term = getenv ("TERM");
-    out << "     $TERM: "
+    out << "      $TERM: "
         << (term ? term : STRING_CMD_DIAG_NONE)
         << " ("
         << context.getWidth ()
@@ -337,7 +340,7 @@ int CmdDiagnostics::execute (std::string& output)
          seen[uuid] = 0;
     }
 
-    out << "      Dups: "
+    out << "       Dups: "
         << format (STRING_CMD_DIAG_UUID_SCAN, all.size ())
         << "\n";
 
@@ -345,11 +348,11 @@ int CmdDiagnostics::execute (std::string& output)
     {
       std::vector <std::string>::iterator d;
       for (d = dups.begin (); d != dups.end (); ++d)
-        out << "            " << format (STRING_CMD_DIAG_UUID_DUP, *d) << "\n";
+        out << "             " << format (STRING_CMD_DIAG_UUID_DUP, *d) << "\n";
     }
     else
     {
-      out << "            " << STRING_CMD_DIAG_UUID_NO_DUP
+      out << "             " << STRING_CMD_DIAG_UUID_NO_DUP
           << "\n";
     }
   }

@@ -433,6 +433,7 @@
 #define STRING_CMD_DIAG_UUID_SCAN    "Scanned {1} tasks for duplicate UUIDs:"
 #define STRING_CMD_DIAG_UUID_DUP     "Found duplicate {1}"
 #define STRING_CMD_DIAG_UUID_NO_DUP  "No duplicates found"
+#define STRING_CMD_DIAG_SERVER       "Task Server"
 #define STRING_CMD_DIAG_NONE         "-none-"
 #define STRING_CMD_PUSH_USAGE        "Pushes the local files to the URL"
 #define STRING_CMD_PUSH_SAME         "Cannot push files when the source and destination are the same."
