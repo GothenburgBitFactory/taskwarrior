@@ -50,6 +50,8 @@ CmdSync::CmdSync ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdSync::execute (std::string& output)
 {
+  int status = 0;
+
   // If no server is set up, quit.
   std::string connection = context.config.get ("taskd.server");
   if (connection == "" ||
@@ -59,22 +61,73 @@ int CmdSync::execute (std::string& output)
   // Obtain credentials.
   std::string credentials = context.config.get ("taskd.credentials");
 
-  // TODO Read backlog.data.
-  // TODO Send backlog.data in 'sync' request..
+  // Read backlog.data.
+  std::string payload = "";
+  File backlog (context.config.get ("data.location") + "/backlog.data");
+  if (backlog.exists ())
+    backlog.read (payload);
 
-  // TODO Receive response.
-  // TODO Apply tasks.
-  // TODO Truncate backlog.data.
-  // TODO Store new synch key.
+  // Send 'sync' + payload.
+  Msg request, response;
+  request.set ("type", "sync");
+  // TODO Add the other header fields.
 
-  return 1;
+  request.setPayload (payload);
+  std::cout << "# request:\n"
+            << request.serialize ();
+
+  context.debug ("sync with " + connection);
+  if (send (connection, request, response))
+  {
+    std::cout << "# response:\n"
+              << response.serialize ();
+    if (response.get ("code") == "200")
+    {
+      payload = response.getPayload ();
+      std::vector <std::string> lines;
+      split (lines, payload, '\n');
+
+      std::string synch_key;
+      std::vector <std::string>::iterator line;
+      for (line = lines.begin (); line != lines.end (); ++line)
+      {
+        if ((*line)[0] == '[')
+        {
+          // TODO Apply tasks.
+          std::cout << "# task: " << *line << "\n";
+        }
+        else
+        {
+          synch_key = *line;
+          context.debug ("Synch key " + synch_key);
+        }
+      }
+
+      // TODO Truncate backlog.data.
+      // TODO Store new synch key.
+    }
+    else
+    {
+      context.error ("Task Server problem.");
+      status = 2;
+    }
+
+    // TODO Display all errors returned.
+  }
+  else
+  {
+    context.error ("Could not connect to Task Server.");
+    status = 1;
+  }
+
+  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CmdSync::send (
   const std::string& to,
-  const Msg& out,
-  Msg& in)
+  const Msg& request,
+  Msg& response)
 {
   std::string::size_type colon = to.find (':');
   if (colon == std::string::npos)
@@ -87,21 +140,22 @@ bool CmdSync::send (
   {
     Socket s (AF_INET, SOCK_STREAM, IPPROTO_TCP);
     s.connect (server, port);
-    s.write (out.serialize () + "\r\n");
+    s.write (request.serialize () + "\r\n");
 
-    std::string response;
-    s.read (response);
+    std::string incoming;
+    s.read (incoming);
     s.close ();
 
-    in.parse (response);
+    response.parse (incoming);
 
     // Indicate message sent.
+    context.debug ("sync tx complete");
     return true;
   }
 
   catch (std::string& error)
   {
-    // TODO Report as diagnostics?
+    context.error (error);
   }
 
   // Indicate message failed.
