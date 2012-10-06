@@ -19,6 +19,7 @@ set (task_SRCS A3.cpp A3.h
                File.cpp File.h
                Hooks.cpp Hooks.h
                JSON.cpp JSON.h
+               Msg.cpp Msg.h
                Nibbler.cpp Nibbler.h
                Path.cpp Path.h
                RX.cpp RX.h

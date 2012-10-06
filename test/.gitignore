@@ -12,6 +12,7 @@ file.t
 i18n.t
 json.t
 list.t
+msg.t
 nibbler.t
 path.t
 rx.t
