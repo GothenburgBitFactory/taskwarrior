@@ -249,6 +249,7 @@
 #define STRING_CMD_STATS_PROJECTS    "Projects"
 #define STRING_CMD_STATS_DATA_SIZE   "Data size"
 #define STRING_CMD_STATS_UNDO_TXNS   "Undo transactions"
+#define STRING_CMD_STATS_BACKLOG     "Sync backlog transactions"
 #define STRING_CMD_STATS_TAGGED      "Tasks tagged"
 #define STRING_CMD_STATS_OLDEST      "Oldest task"
 #define STRING_CMD_STATS_NEWEST      "Newest task"

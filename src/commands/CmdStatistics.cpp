@@ -73,6 +73,13 @@ int CmdStatistics::execute (std::string& output)
     if (*tx == "---")
       ++undoCount;
 
+  // Count the backlog transactions.
+  std::vector <std::string> backlogTxns = context.tdb2.backlog.get_lines ();
+  int backlogCount = 0;
+  for (tx = backlogTxns.begin (); tx != backlogTxns.end (); ++tx)
+    if ((*tx)[0] == '[')
+      ++backlogCount;
+
   // Get all the tasks.
   std::vector <Task> all = context.tdb2.all_tasks ();
   std::vector <Task> filtered;
@@ -204,6 +211,10 @@ int CmdStatistics::execute (std::string& output)
   row = view.addRow ();
   view.set (row, 0, STRING_CMD_STATS_UNDO_TXNS);
   view.set (row, 1, undoCount);
+
+  row = view.addRow ();
+  view.set (row, 0, STRING_CMD_STATS_BACKLOG);
+  view.set (row, 1, backlogCount);
 
   if (totalT)
   {
