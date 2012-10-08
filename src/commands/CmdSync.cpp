@@ -109,12 +109,29 @@ int CmdSync::execute (std::string& output)
       {
         if ((*line)[0] == '[')
         {
-          std::cout << "# task: " << *line << "\n";
           Task from_server (*line);
-          std::cout << "  " << from_server.get ("uuid")
-                    << " "  << from_server.get ("description")
-                    << "\n";
-          context.tdb2.modify (from_server);
+          std::string uuid = from_server.get ("uuid");
+
+          // Is it a new task from the server, or an update to an existing one?
+          Task dummy;
+          if (context.tdb2.get (uuid, dummy))
+          {
+            std::cout << "  modify "
+                      << uuid
+                      << " '"
+                      << from_server.get ("description")
+                      << "'\n";
+            context.tdb2.modify (from_server, false);
+          }
+          else
+          {
+            std::cout << "  add    "
+                      << uuid
+                      << " '"
+                      << from_server.get ("description")
+                      << "'\n";
+            context.tdb2.add (from_server, false);
+          }
         }
         else if (*line != "")
         {
@@ -137,7 +154,19 @@ int CmdSync::execute (std::string& output)
 
         // Commit all changes.
         context.tdb2.commit ();
+
+        context.footnote ("Sync complete.  Changes applied.");
+/*
+  TODO We can do better:
+
+  Sync complete.  2 changes sent, 1 addition, 3 modifications received.
+  Sync complete.  2 local changes, 4 remote changes.
+*/
       }
+    }
+    else if (code == "201")
+    {
+      context.footnote ("Sync complete.  No Change.");
     }
     else if (code == "430")
     {
@@ -194,16 +223,13 @@ bool CmdSync::send (
   {
     Socket s (AF_INET, SOCK_STREAM, IPPROTO_TCP);
     s.connect (server, port);
-    s.write (request.serialize () + "\r\n");
+    s.write (request.serialize () + "\n");
 
     std::string incoming;
     s.read (incoming);
     s.close ();
 
     response.parse (incoming);
-
-    // Indicate message sent.
-    context.debug ("sync tx complete");
     return true;
   }
 
