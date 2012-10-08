@@ -542,7 +542,7 @@ void TDB2::set_location (const std::string& location)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Add the new task to the appropriate file.
-void TDB2::add (Task& task)
+void TDB2::add (Task& task, bool add_to_backlog /* = true */)
 {
   // Ensure the task is consistent, and provide defaults if necessary.
   task.validate ();
@@ -569,11 +569,12 @@ void TDB2::add (Task& task)
   undo.add_line ("---\n");
 
   // Add task to backlog.
-  backlog.add_task (task);
+  if (add_to_backlog)
+    backlog.add_task (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TDB2::modify (Task& task)
+void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
 {
   // Ensure the task is consistent, and provide defaults if necessary.
   task.validate (false);
@@ -601,7 +602,8 @@ void TDB2::modify (Task& task)
     undo.add_line ("---\n");
 
     // Add modified task to backlog.
-    backlog.add_task (task);
+    if (add_to_backlog)
+      backlog.add_task (task);
   }
 }
 

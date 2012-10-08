@@ -101,8 +101,8 @@ public:
   ~TDB2 ();
 
   void set_location (const std::string&);
-  void add (Task&);
-  void modify (Task&);
+  void add (Task&, bool add_to_backlog = true);
+  void modify (Task&, bool add_to_backlog = true);
   void commit ();
   void merge (const std::string&);
   void revert ();
