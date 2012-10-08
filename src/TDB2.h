@@ -55,6 +55,7 @@ public:
   void add_task (const Task&);
   bool modify_task (const Task&);
   void add_line (const std::string&);
+  void clear_tasks ();
   void clear_lines ();
   void commit ();
 

@@ -98,9 +98,9 @@ int CmdSync::execute (std::string& output)
       payload = response.getPayload ();
       std::vector <std::string> lines;
       split (lines, payload, '\n');
-      std::cout << "# received " << lines.size () << " lines of data\n";
 
       // Load all tasks.
+      // TODO This is not necessary if only a synch key was received.
       std::vector <Task> all = context.tdb2.all_tasks ();
 
       std::string synch_key = "";
@@ -116,11 +116,13 @@ int CmdSync::execute (std::string& output)
                     << "\n";
           context.tdb2.modify (from_server);
         }
-        else
+        else if (*line != "")
         {
           synch_key = *line;
           context.debug ("Synch key " + synch_key);
         }
+
+        // Otherwise line is blank, so ignore it.
       }
 
       // Only update everything if there is a new synch_key.  No synch_key means
@@ -128,7 +130,9 @@ int CmdSync::execute (std::string& output)
       if (synch_key != "")
       {
         // Truncate backlog.data, save new synch_key.
-        context.tdb2.backlog.clear ();
+        context.tdb2.backlog._file.truncate ();
+        context.tdb2.backlog.clear_tasks ();
+        context.tdb2.backlog.clear_lines ();
         context.tdb2.backlog.add_line (synch_key + "\n");
 
         // Commit all changes.

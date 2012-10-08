@@ -189,6 +189,13 @@ void TF2::add_line (const std::string& line)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void TF2::clear_tasks ()
+{
+  _tasks.clear ();
+  _dirty = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void TF2::clear_lines ()
 {
   _lines.clear ();
@@ -243,7 +250,7 @@ void TF2::commit ()
         // Truncate the file and rewrite.
         _file.truncate ();
 
-        // only write out _tasks, because any deltas have already been applied.
+        // Only write out _tasks, because any deltas have already been applied.
         std::vector <Task>::iterator task;
         for (task = _tasks.begin ();
              task != _tasks.end ();
