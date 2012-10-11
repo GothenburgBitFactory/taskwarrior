@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+// TODO Localize new messages, when they stabilize.
 #define L10N                                           // Localization complete.
 
 #include <iostream>
@@ -76,10 +77,11 @@ int CmdSync::execute (std::string& output)
 
   // Send 'sync' + payload.
   Msg request, response;
-  request.set ("type", "sync");
-  request.set ("org",  credentials[0]);
-  request.set ("user", credentials[1]);
-  request.set ("key",  credentials[2]);
+  request.set ("protocol", "v1");
+  request.set ("type",     "sync");
+  request.set ("org",      credentials[0]);
+  request.set ("user",     credentials[1]);
+  request.set ("key",      credentials[2]);
 
   // TODO Add the other header fields.
 
@@ -101,6 +103,7 @@ int CmdSync::execute (std::string& output)
 
       // Load all tasks.
       // TODO This is not necessary if only a synch key was received.
+      // TODO Furthermore, 'all' is not used.
       std::vector <Task> all = context.tdb2.all_tasks ();
 
       std::string synch_key = "";
@@ -155,28 +158,28 @@ int CmdSync::execute (std::string& output)
         // Commit all changes.
         context.tdb2.commit ();
 
-        context.footnote ("Sync complete.  Changes applied.");
-/*
-  TODO We can do better:
-
-  Sync complete.  2 changes sent, 1 addition, 3 modifications received.
-  Sync complete.  2 local changes, 4 remote changes.
-*/
+        context.footnote ("Sync successful.");
+        // TODO Sync successful.  2 tasks uploaded.
+        // TODO Sync successful.  4 tasks downloaded.
+        // TODO Sync successful.  2 tasks uploaded, 4 tasks downloaded.
       }
     }
     else if (code == "201")
     {
-      context.footnote ("Sync complete.  No Change.");
+      context.footnote ("Sync successful.  No updates required.");
     }
     else if (code == "430")
     {
-      context.error ("Not authorized.  Could be incorrect credentials or "
-                     "server account not enabled.");
+      context.error ("Sync failed.  Either your credentials are incorrect, or "
+                     "your Task Server account is not enabled.");
       status = 2;
     }
     else
     {
-      context.error ("Task Server error: " + code + " " + response.get ("status"));
+      context.error ("Sync failed.  The Task Server returned error: " +
+                     code +
+                     " " +
+                     response.get ("status"));
       status = 2;
     }
 
@@ -199,7 +202,7 @@ int CmdSync::execute (std::string& output)
   //   - Network error
   else
   {
-    context.error ("Could not connect to Task Server.");
+    context.error ("Sync failed.  Could not connect to the Task Server.");
     status = 1;
   }
 
