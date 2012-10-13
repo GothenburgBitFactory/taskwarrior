@@ -20,6 +20,7 @@ Features
  + Virtual tags.
  + New 'modified' attribute, which contains the most recent modification date,
    if a modification has occurred.
+ + Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
 
 Bugs
  + Fixed bug #1031, which kept expanding aliases after the '--' operator (thanks

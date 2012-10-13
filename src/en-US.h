@@ -64,27 +64,28 @@
 //   2. Modify all the strings below.
 //        i.e. change "Unknown error." to "Unbekannter Fehler.".
 //
-//   3. Add your new translation to the task.git/src/i18n.h file by changing:
+//   3. Add your new translation to the task.git/src/i18n.h file, if necessary,
+//      by inserting:
 //
-//        #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
-//        #include <en-US.h>
-//        #endif
-//
-//      to:
-//
-//        #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
-//        #include <en-US.h>
 //        #elif PACKAGE_LANGUAGE == LANGUAGE_DE_DE
 //        #include <de-DE.h>
-//        #endif
 //
-//   4. Build your localized Taskwarrior with these commands:
+//   4. Add your new language to task.git/CMakeLists.txt, making sure that
+//      number is unique:
+//
+//        set (LANGUAGE_DE_DE 3)
+//
+//   5. Add your new language to task.git/cmake.h.in:
+//
+//        #define LANGUAGE_DE_DE ${LANGUAGE_DE_DE}                                        
+//
+//   6. Build your localized Taskwarrior with these commands:
 //
 //      cd task.git
-//      cmake -D PACKAGE_LANGUAGE=LANGUAGE_DE_DE .
+//      cmake -D LANGUAGE=3 .
 //      make
 //
-//   5. Submit your translation to support@taskwarrior.org, where it will be
+//   7. Submit your translation to support@taskwarrior.org, where it will be
 //      shared with others.
 //
 ////////////////////////////////////////////////////////////////////////////////

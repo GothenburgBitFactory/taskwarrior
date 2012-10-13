@@ -44,13 +44,16 @@
 #include <cmake.h>
 
 // Translators:
-//   Duplicate these three lines, changing "EN_US" and "en-US" to the new
-//   localization.
+//   Add more, as appropriate.
 #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
 #include <en-US.h>
+#elif PACKAGE_LANGUAGE == LANGUAGE_ES_ES
+#include <es-ES.h>
+#elif PACKAGE_LANGUAGE == LANGUAGE_DE_DE
+#include <de-DE.h>
+#elif PACKAGE_LANGUAGE == LANGUAGE_FR_FR
+#include <fr-FR.h>
 #endif
-
-// Add other languages here.
 
 #define CCOLOR_BOLD             500
 #define CCOLOR_UNDERLINE        501
