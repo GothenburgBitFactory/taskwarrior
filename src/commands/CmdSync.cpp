@@ -25,13 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// TODO Localize new messages, when they stabilize.
 #define L10N                                           // Localization complete.
 
 #include <iostream>
 #include <inttypes.h>
 #include <Context.h>
 #include <Socket.h>
+#include <Color.h>
 #include <text.h>
 #include <i18n.h>
 #include <CmdSync.h>
@@ -52,6 +52,7 @@ CmdSync::CmdSync ()
 int CmdSync::execute (std::string& output)
 {
   int status = 0;
+  context.timer_sync.start ();
 
   // If no server is set up, quit.
   std::string connection = context.config.get ("taskd.server");
@@ -75,36 +76,49 @@ int CmdSync::execute (std::string& output)
   if (backlog.exists ())
     backlog.read (payload);
 
+  // Count the number of tasks being uploaded.
+  int upload_count = 0;
+  {
+    std::vector <std::string> lines;
+    split (lines, payload, "\n");
+    std::vector <std::string>::iterator i;
+    for (i = lines.begin (); i != lines.end (); ++i)
+      if ((*i)[0] == '[')
+        ++upload_count;
+  }
+
   // Send 'sync' + payload.
-  Msg request, response;
+  Msg request;
   request.set ("protocol", "v1");
   request.set ("type",     "sync");
   request.set ("org",      credentials[0]);
   request.set ("user",     credentials[1]);
   request.set ("key",      credentials[2]);
 
-  // TODO Add the other header fields.
+  // TODO Add the other necessary header fields.
 
   request.setPayload (payload);
-  std::cout << "# request:\n"
-            << request.serialize ();
 
-  context.debug ("sync with " + connection);
+  std::cout << format (STRING_CMD_SYNC_PROGRESS, connection)
+            << "\n";
+
+  Msg response;
   if (send (connection, request, response))
   {
-    std::cout << "# response:\n"
-              << response.serialize ();
     std::string code = response.get ("code");
     if (code == "200")
     {
+      Color colorAdded    (context.config.get ("color.sync.added"));                
+      Color colorChanged  (context.config.get ("color.sync.changed"));              
+
+      int download_count = 0;
       payload = response.getPayload ();
       std::vector <std::string> lines;
       split (lines, payload, '\n');
 
-      // Load all tasks.
       // TODO This is not necessary if only a synch key was received.
-      // TODO Furthermore, 'all' is not used.
-      std::vector <Task> all = context.tdb2.all_tasks ();
+      // Load all tasks.
+      context.tdb2.all_tasks ();
 
       std::string synch_key = "";
       std::vector <std::string>::iterator line;
@@ -112,6 +126,8 @@ int CmdSync::execute (std::string& output)
       {
         if ((*line)[0] == '[')
         {
+          ++download_count;
+
           Task from_server (*line);
           std::string uuid = from_server.get ("uuid");
 
@@ -119,19 +135,21 @@ int CmdSync::execute (std::string& output)
           Task dummy;
           if (context.tdb2.get (uuid, dummy))
           {
-            std::cout << "  modify "
-                      << uuid
-                      << " '"
-                      << from_server.get ("description")
-                      << "'\n";
+            std::cout << "  "
+                      << colorChanged.colorize (
+                           format (STRING_CMD_SYNC_MOD,
+                                   uuid,
+                                   from_server.get ("description")))
+                      << "\n";
             context.tdb2.modify (from_server, false);
           }
           else
           {
-            std::cout << "  add    "
-                      << uuid
-                      << " '"
-                      << from_server.get ("description")
+            std::cout << "  "
+                      << colorAdded.colorize (
+                           format (STRING_CMD_SYNC_ADD,
+                                   uuid,
+                                   from_server.get ("description")))
                       << "'\n";
             context.tdb2.add (from_server, false);
           }
@@ -158,28 +176,31 @@ int CmdSync::execute (std::string& output)
         // Commit all changes.
         context.tdb2.commit ();
 
-        context.footnote ("Sync successful.");
-        // TODO Sync successful.  2 tasks uploaded.
-        // TODO Sync successful.  4 tasks downloaded.
-        // TODO Sync successful.  2 tasks uploaded, 4 tasks downloaded.
+        // Present a clear status message.
+        if (upload_count == 0 && download_count == 0)
+          context.footnote (STRING_CMD_SYNC_SUCCESS0);
+        else if (upload_count == 0 && download_count > 0)
+          context.footnote (format (STRING_CMD_SYNC_SUCCESS2, download_count));
+        else if (upload_count > 0 && download_count == 0)
+          context.footnote (format (STRING_CMD_SYNC_SUCCESS1, upload_count));
+        else if (upload_count > 0 && download_count > 0)
+          context.footnote (format (STRING_CMD_SYNC_SUCCESS3, upload_count, download_count));
       }
     }
     else if (code == "201")
     {
-      context.footnote ("Sync successful.  No updates required.");
+      context.footnote (STRING_CMD_SYNC_SUCCESS_NOP);
     }
     else if (code == "430")
     {
-      context.error ("Sync failed.  Either your credentials are incorrect, or "
-                     "your Task Server account is not enabled.");
+      context.error (STRING_CMD_SYNC_FAIL_ACCOUNT);
       status = 2;
     }
     else
     {
-      context.error ("Sync failed.  The Task Server returned error: " +
-                     code +
-                     " " +
-                     response.get ("status"));
+      context.error (format (STRING_CMD_SYNC_FAIL_ERROR,
+                             code,
+                             response.get ("status")));
       status = 2;
     }
 
@@ -200,12 +221,14 @@ int CmdSync::execute (std::string& output)
   //   - Wrong port
   //   - Firewall
   //   - Network error
+  //   - No signal/cable
   else
   {
-    context.error ("Sync failed.  Could not connect to the Task Server.");
+    context.error (STRING_CMD_SYNC_FAIL_CONNECT);
     status = 1;
   }
 
+  context.timer_sync.stop ();
   return status;
 }
 
@@ -217,7 +240,7 @@ bool CmdSync::send (
 {
   std::string::size_type colon = to.find (':');
   if (colon == std::string::npos)
-    throw std::string ("ERROR: Malformed configuration setting '") + to + "'";
+    throw format (STRING_CMD_SYNC_BAD_SERVER, to);
 
   std::string server = to.substr (0, colon);
   int port = strtoimax (to.substr (colon + 1).c_str (), NULL, 10);

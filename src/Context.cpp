@@ -276,7 +276,7 @@ int Context::run ()
 
       << " init:"   << timer_init.total ()
       << " load:"   << timer_load.total ()
-      << " synch:"  << timer_synch.total ()
+      << " synch:"  << timer_sync.total ()
       << " gc:"     << timer_gc.total ()
       << " filter:" << timer_filter.total ()
       << " commit:" << timer_commit.total ()
@@ -284,7 +284,7 @@ int Context::run ()
       << " render:" << timer_render.total ()
       << " total:"  << (timer_init.total ()   +
                         timer_load.total ()   +
-                        timer_synch.total ()  +
+                        timer_sync.total ()  +
                         timer_gc.total ()     +
                         timer_filter.total () +
                         timer_commit.total () +
