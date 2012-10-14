@@ -15,13 +15,11 @@
 #define TASK_RCDIR "${CMAKE_INSTALL_PREFIX}/${TASK_DOCDIR}/rc"
 
 /* Localization */
-#define PACKAGE_LANGUAGE  1
-#define LANGUAGE_EN_US 1
-
-/*
-Override PACKAGE_LANGUAGE, then
-#define LANGUAGE_XX_YY 2
-*/
+#define PACKAGE_LANGUAGE  ${PACKAGE_LANGUAGE}
+#define LANGUAGE_EN_US ${LANGUAGE_EN_US}
+#define LANGUAGE_ES_ES ${LANGUAGE_ES_ES}
+#define LANGUAGE_DE_DE ${LANGUAGE_DE_DE}
+#define LANGUAGE_FR_FR ${LANGUAGE_FR_FR}
 
 /* git information */
 #cmakedefine HAVE_COMMIT
