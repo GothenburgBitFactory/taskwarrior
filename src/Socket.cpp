@@ -29,45 +29,29 @@
 #include <stdarg.h>
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <sys/errno.h>
+#include <netdb.h>
 #include <unistd.h>
 #include <string.h>
 #include <Socket.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-Socket::Socket (int family, int type, int protocol) :
-  _port (0),
-  _family (family),
+Socket::Socket () :
   _socket (0),
-  _debug (false),
-  _limit (0) // Unlimited
+  _limit (0), // Unlimited
+  _debug (false)
 {
-  // family:   AF_INET (IPv4), AF_INET6 (IPv6), AF_LOCAL, AF_ROUTE, AF_KEY.
-  // type:     SOCK_STREAM, SOCK_DGRAM, SOCK_SEQPACKET, SOCK_RAW, SOCK_PACKET (Linux).
-  // protocol: IPPROTO_TCP, IPPROTO_UDP, IPPROTO_SCTP.
-  if ((_socket = ::socket (family, type, protocol)) < 0)
-    // This looks like a blank error message, but don't forget that the Error
-    // class will use ::strerror and append a system error message if errno is
-    // non-zero.
-    throw "ERROR: " + std::string (::strerror (errno));
-
-  // When a socket is closed, it remains unavailable for a while (netstat -an).
-  // Setting SO_REUSEADDR allows this program to assume control of a closed, but
-  // unavailable socket.
-  int on = 1;
-  if (::setsockopt (_socket, SOL_SOCKET, SO_REUSEADDR, (const void*)&on, sizeof (on)) < 0)
-    throw "ERROR: " + std::string (::strerror (errno));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Socket::Socket (int s) :
-  _port (0),
-  _family (AF_UNSPEC),
   _socket (s),
-  _debug (false),
-  _limit (0) // Unlimited
+  _limit (0), // Unlimited
+  _debug (false)
 {
 }
 
@@ -79,49 +63,50 @@ Socket::~Socket ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // For clients.
-void Socket::connect (const std::string& host, const int port)
+void Socket::connect (const std::string& host, const std::string& port)
 {
-  _port = port;
-  std::string machine;
+  // use IPv4 or IPv6, does not matter.
+  struct addrinfo hints;
+  memset (&hints, 0, sizeof hints);
+  hints.ai_family   = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags    = AI_PASSIVE; // use my IP
 
-  // If the address is of the form \d+\.\d+\.\d+\.\d+
-  bool ip = true;
-  for (unsigned int i = 0; i < host.length (); ++i)
-    if (!isdigit (host[i]) && host[i] != '.')
+  struct addrinfo* res;
+  if (::getaddrinfo (host.c_str (), port.c_str (), &hints, &res) != 0)
+    throw "ERROR: " + std::string (::gai_strerror (errno));
+
+  // Try them all, stop on success.
+  struct addrinfo* p;
+  for (p = res; p != NULL; p = p->ai_next)
+  {
+    if ((_socket = ::socket (p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
+      continue;
+
+    // When a socket is closed, it remains unavailable for a while (netstat -an).
+    // Setting SO_REUSEADDR allows this program to assume control of a closed,
+    // but unavailable socket.
+    int on = 1;
+    if (::setsockopt (_socket,
+                      SOL_SOCKET,
+                      SO_REUSEADDR,
+                      (const void*) &on,
+                      sizeof (on)) == -1)
+      throw "ERROR: " + std::string (::strerror (errno));
+
+    if (::connect (_socket, p->ai_addr, p->ai_addrlen) == -1)
     {
-      ip = false;
-      break;
+      close ();
+      continue;
     }
 
-  if (ip)
-  {
-    struct in_addr in;
-    in.s_addr = inet_addr (host.c_str ());
-    struct hostent* he = gethostbyaddr ((char*) &in,
-                                        sizeof (in.s_addr),
-                                        AF_INET);
-    if (!he)
-      throw std::string ("ERROR: Cannot resolve host from ") + host;
-
-    machine = he->h_name;
-  }
-  else
-  {
-    struct hostent* he = gethostbyname (host.c_str ());
-    if (!he)
-      throw std::string ("ERROR: Cannot resolve host from ") + host;
-
-    machine = inet_ntoa (*((struct in_addr*)he->h_addr));
+    break;
   }
 
-  struct sockaddr_in server = {0};
-  server.sin_family = _family;
-  server.sin_port = htons (_port);
-  if (::inet_pton (_family, machine.c_str (), &server.sin_addr) != 1)
-    throw "ERROR: " + std::string (::strerror (errno));
+  free (res);
 
-  if (::connect (_socket, (struct sockaddr*) &server, sizeof (server)) < 0)
-    throw "ERROR: " + std::string (::strerror (errno));
+  if (p == NULL)
+    throw "ERROR: Could not connect to " + host + " " + port;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,15 +119,36 @@ void Socket::close ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // For servers.
-void Socket::bind (int family, int port)
+void Socket::bind (const std::string& port)
 {
-  struct sockaddr_in server;
-  memset (&server, 0, sizeof (server));
-  server.sin_family = _family = family;
-  server.sin_addr.s_addr = htonl (INADDR_ANY);
-  server.sin_port = htons (_port = port);
+  // use IPv4 or IPv6, does not matter.
+  struct addrinfo hints;
+  memset (&hints, 0, sizeof hints);
+  hints.ai_family   = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags    = AI_PASSIVE; // use my IP
 
-  if (::bind (_socket, (struct sockaddr*) &server, sizeof (server)) < 0)
+  struct addrinfo* res;
+  if (::getaddrinfo (NULL, port.c_str (), &hints, &res) != 0)
+    throw "ERROR: " + std::string (::gai_strerror (errno));
+
+  if ((_socket = ::socket (res->ai_family,
+                           res->ai_socktype,
+                           res->ai_protocol)) == -1)
+    throw "ERROR: Can not bind to port " + port;
+
+  // When a socket is closed, it remains unavailable for a while (netstat -an).
+  // Setting SO_REUSEADDR allows this program to assume control of a closed, but
+  // unavailable socket.
+  int on = 1;
+  if (::setsockopt (_socket,
+                    SOL_SOCKET,
+                    SO_REUSEADDR,
+                    (const void*) &on,
+                    sizeof (on)) == -1)
+    throw "ERROR: " + std::string (::strerror (errno));
+
+  if (::bind (_socket, res->ai_addr, res->ai_addrlen) == -1)
     throw "ERROR: " + std::string (::strerror (errno));
 }
 
@@ -156,8 +162,8 @@ void Socket::listen (int queue /*= 5*/)
 ////////////////////////////////////////////////////////////////////////////////
 int Socket::accept ()
 {
-  struct sockaddr_in client;
-  socklen_t length = sizeof (client);
+  struct sockaddr_storage client;
+  socklen_t length = sizeof client;
   int connection;
 
   do
@@ -285,6 +291,16 @@ void Socket::limit (int max)
 void Socket::debug ()
 {
   _debug = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// get sockaddr, IPv4 or IPv6:
+void* Socket::get_in_addr (struct sockaddr* sa)
+{
+  if (sa->sa_family == AF_INET)
+    return &(((struct sockaddr_in*) sa)->sin_addr);
+
+  return &(((struct sockaddr_in6*) sa)->sin6_addr);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

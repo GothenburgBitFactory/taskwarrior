@@ -28,6 +28,7 @@
 #define L10N                                           // Localization complete.
 
 #include <iostream>
+#include <sstream>
 #include <inttypes.h>
 #include <Context.h>
 #include <Socket.h>
@@ -54,10 +55,12 @@ int CmdSync::execute (std::string& output)
   int status = 0;
   context.timer_sync.start ();
 
+  std::stringstream out;
+
   // If no server is set up, quit.
   std::string connection = context.config.get ("taskd.server");
   if (connection == "" ||
-      connection.find (':') == std::string::npos)
+      connection.rfind (':') == std::string::npos)
     throw std::string (STRING_CMD_SYNC_NO_SERVER);
 
   // Obtain credentials.
@@ -99,8 +102,8 @@ int CmdSync::execute (std::string& output)
 
   request.setPayload (payload);
 
-  std::cout << format (STRING_CMD_SYNC_PROGRESS, connection)
-            << "\n";
+  out << format (STRING_CMD_SYNC_PROGRESS, connection)
+      << "\n";
 
   Msg response;
   if (send (connection, request, response))
@@ -135,22 +138,22 @@ int CmdSync::execute (std::string& output)
           Task dummy;
           if (context.tdb2.get (uuid, dummy))
           {
-            std::cout << "  "
-                      << colorChanged.colorize (
-                           format (STRING_CMD_SYNC_MOD,
-                                   uuid,
-                                   from_server.get ("description")))
-                      << "\n";
+            out << "  "
+                << colorChanged.colorize (
+                     format (STRING_CMD_SYNC_MOD,
+                             uuid,
+                             from_server.get ("description")))
+                << "\n";
             context.tdb2.modify (from_server, false);
           }
           else
           {
-            std::cout << "  "
-                      << colorAdded.colorize (
-                           format (STRING_CMD_SYNC_ADD,
-                                   uuid,
-                                   from_server.get ("description")))
-                      << "'\n";
+            out << "  "
+                << colorAdded.colorize (
+                     format (STRING_CMD_SYNC_ADD,
+                             uuid,
+                             from_server.get ("description")))
+                << "\n";
             context.tdb2.add (from_server, false);
           }
         }
@@ -228,6 +231,8 @@ int CmdSync::execute (std::string& output)
     status = 1;
   }
 
+  out << "\n";
+  output = out.str ();
   context.timer_sync.stop ();
   return status;
 }
@@ -238,16 +243,16 @@ bool CmdSync::send (
   const Msg& request,
   Msg& response)
 {
-  std::string::size_type colon = to.find (':');
+  std::string::size_type colon = to.rfind (':');
   if (colon == std::string::npos)
     throw format (STRING_CMD_SYNC_BAD_SERVER, to);
 
   std::string server = to.substr (0, colon);
-  int port = strtoimax (to.substr (colon + 1).c_str (), NULL, 10);
+  std::string port = to.substr (colon + 1);
 
   try
   {
-    Socket s (AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    Socket s;
     s.connect (server, port);
     s.write (request.serialize () + "\n");
 
@@ -261,7 +266,7 @@ bool CmdSync::send (
 
   catch (std::string& error)
   {
-    context.error (error);
+    context.debug (error);
   }
 
   // Indicate message failed.

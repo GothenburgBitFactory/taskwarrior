@@ -38,25 +38,32 @@
 class Socket
 {
 public:
-  Socket (int, int, int);
+  Socket ();
   Socket (int);
   ~Socket ();
-  void connect (const std::string&, const int);
-  void close ();
-  void bind (int, int);
+
+  // Client
+  void connect (const std::string&, const std::string&);
+
+  // Server
+  void bind (const std::string&);
   void listen (int queue = 5);
   int accept ();
   void read (std::string&);
   void write (const std::string&);
+
+  void close ();
+
   void limit (int);
   void debug ();
 
 private:
-  int  _port;
-  int  _family;
+  void* get_in_addr (struct sockaddr*);
+
+private:
   int  _socket;
-  bool _debug;
   int  _limit;
+  bool _debug;
 };
 
 #endif

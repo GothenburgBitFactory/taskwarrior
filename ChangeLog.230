@@ -10,6 +10,7 @@ Features
  + Adds a new 'synchronize' command to sync data with a task server.
  + Adds a new 'sync' verbosity token, which will reminds when a backlog builds
    up and needs a sync.
+ + Supports IPv4 and IPv6 server addresses.
 
 Bugs
  + Fixed bug so that 'limit:page' now considers footnote messages.
