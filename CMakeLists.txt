@@ -72,6 +72,7 @@ check_function_exists (srandom HAVE_SRANDOM)
 check_function_exists (timegm  HAVE_TIMEGM)
 
 check_struct_has_member ("struct tm" tm_gmtoff time.h HAVE_TM_GMTOFF)
+check_struct_has_member ("struct stat" st_birthtime "sys/types.h;sys/stat.h" HAVE_ST_BIRTHTIME)
 
 message ("-- Looking for libuuid")
 if (DARWIN)
