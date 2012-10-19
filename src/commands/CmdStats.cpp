@@ -37,12 +37,12 @@
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
-#include <CmdStatistics.h>
+#include <CmdStats.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdStatistics::CmdStatistics ()
+CmdStats::CmdStats ()
 {
   _keyword     = "stats";
   _usage       = "task <filter> stats";
@@ -52,7 +52,7 @@ CmdStatistics::CmdStatistics ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdStatistics::execute (std::string& output)
+int CmdStats::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;

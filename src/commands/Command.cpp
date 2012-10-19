@@ -80,7 +80,7 @@
 #include <CmdShell.h>
 #include <CmdShow.h>
 #include <CmdStart.h>
-#include <CmdStatistics.h>
+#include <CmdStats.h>
 #include <CmdStop.h>
 #include <CmdSummary.h>
 //#include <CmdSynch.h>
@@ -155,7 +155,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdShell ();              all[c->keyword ()] = c;
   c = new CmdShow ();               all[c->keyword ()] = c;
   c = new CmdStart ();              all[c->keyword ()] = c;
-  c = new CmdStatistics ();         all[c->keyword ()] = c;
+  c = new CmdStats ();              all[c->keyword ()] = c;
   c = new CmdStop ();               all[c->keyword ()] = c;
   c = new CmdSummary ();            all[c->keyword ()] = c;
 //  c = new CmdSynch ();              all[c->keyword ()] = c;

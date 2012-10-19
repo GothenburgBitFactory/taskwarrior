@@ -43,7 +43,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdShell.cpp       CmdShell.h
                    CmdShow.cpp        CmdShow.h
                    CmdStart.cpp       CmdStart.h
-                   CmdStatistics.cpp  CmdStatistics.h
+                   CmdStats.cpp       CmdStats.h
                    CmdStop.cpp        CmdStop.h
                    CmdSummary.cpp     CmdSummary.h
                    CmdSynch.cpp       CmdSynch.h

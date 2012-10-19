@@ -25,17 +25,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CMDSTATISTICS
-#define INCLUDED_CMDSTATISTICS
+#ifndef INCLUDED_CMDSTATS
+#define INCLUDED_CMDSTATS
 #define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>
 
-class CmdStatistics : public Command
+class CmdStats : public Command
 {
 public:
-  CmdStatistics ();
+  CmdStats ();
   int execute (std::string&);
 };
 
