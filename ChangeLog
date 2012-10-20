@@ -23,6 +23,9 @@ Features
  + Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
 
 Bugs
+ + Improved hyphenation by splitting on commas (even if no whitespace after).
+   Leads to better output of, for example, 'task show', where comma-separated
+   lists are common.
  + Fixed bug #1031, which kept expanding aliases after the '--' operator (thanks
    to Jim B).
  + Fixed bug #1038, which prints blank lines with bulk changes and when the

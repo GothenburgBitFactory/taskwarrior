@@ -300,6 +300,7 @@ int longestLine (const std::string& input)
 //   - EOS
 //   - \n
 //   - last space before 'length' characters
+//   - last comma before 'length' characters, even if not followed by a space
 //   - first 'length' characters
 void extractLine (
   std::string& text,
@@ -310,6 +311,7 @@ void extractLine (
   std::string::size_type bytes      = 0;
   std::string::size_type previous   = std::string::npos;
   std::string::size_type last_space = std::string::npos;
+  std::string::size_type last_comma = std::string::npos;
   int character;
   int width = 0;
   while (width < length)
@@ -320,6 +322,10 @@ void extractLine (
     // Record last seen space.
     if (character == ' ')
       last_space = previous;
+
+    // Record last seen comma.
+    if (character == ',')
+      last_comma = previous;
 
     // Newline is an early break point.
     if (character == '\n')
@@ -371,7 +377,15 @@ void extractLine (
     return;
   }
 
-  // Case where a word needs to be split, and there is no last_space.
+  if (last_comma != std::string::npos)
+  {
+    line = text.substr (0, last_comma + 1);
+    text = text.substr (last_comma + 1);
+    return;
+  }
+
+  // Case where a word needs to be split, and there is no last_space
+  // or last_comma.
   // Hyphenation becomes the issue.
   //  012345
   // |fiftee|n
