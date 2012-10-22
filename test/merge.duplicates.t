@@ -205,7 +205,7 @@ ok (! -r 'backup/pending.data'   &&
     ! -r 'backup/completed.data' &&
     ! -r 'backup/undo.data'      &&
     ! -r 'backup/undo.save'      &&
-    ! -r 'backup/backlog.data'   &&
+    ! -r 'backup/backlog.data');
 
 rmtree (['data1/extensions', 'data1', 'data2/extensions', 'data2', 'data3/extensions', 'data3', 'backup/extensions', 'backup'], 0, 1);
 ok (! -e 'data1/extensions'  &&
