@@ -17,6 +17,7 @@
 /* Localization */
 #define PACKAGE_LANGUAGE  1
 #define LANGUAGE_EN_US 1
+#define LANGUAGE_ES_ES 2
 
 /*
 Override PACKAGE_LANGUAGE, then
@@ -46,10 +47,6 @@ Override PACKAGE_LANGUAGE, then
 
 /* Found the pthread library */
 #cmakedefine HAVE_LIBPTHREAD
-
-/* Found the readline library */
-#cmakedefine HAVE_READLINE
-#cmakedefine HAVE_LIBREADLINE
 
 /* Found random */
 #cmakedefine HAVE_RANDOM

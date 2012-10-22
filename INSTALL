@@ -79,6 +79,19 @@ get absolute installation directories:
   CMAKE_INSTALL_PREFIX/TASK_MAN5DIR  /usr/local/share/man/man5
 
 
+Localizations
+-------------
+
+To make use of a translation, specify a language number, as found in cmake.h:
+
+  $ cmake -DLANGUAGE=2 .
+
+Currently the defined languages are:
+
+  en-US    1
+  es-ES    2
+
+
 Uninstallation
 --------------
 
