@@ -36,10 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-/*
-  UnitTest t (15);
-*/
-  UnitTest t (9);
+  UnitTest t (12);
 
   try
   {
