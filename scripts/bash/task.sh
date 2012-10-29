@@ -117,6 +117,15 @@ _task()
                     fi
                     return 0
                     ;;
+                rc)
+                    # not activated when only "rc:" but is activated if anything after "rc:"
+                   _filedir
+                   return 0
+                    ;;
+                rc.data.location)
+                   _filedir -d
+                   return 0
+                   ;;
             esac
             ;;
         *)
@@ -143,6 +152,17 @@ _task()
                             if [ ${#prev} -ge $abbrev_min ]; then
                                 _task_offer_projects
                             fi
+                            return 0
+                            ;;
+                        rc)
+                            # activated only when "rc:"
+                            cur="" # otherwise ":" is passed.
+                            _filedir
+                            return 0
+                            ;;
+                        rc.data.location)
+                            cur=""
+                            _filedir -d
                             return 0
                             ;;
                     esac
