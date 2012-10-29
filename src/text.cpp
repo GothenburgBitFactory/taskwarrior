@@ -48,7 +48,6 @@ static const char* newline = "\n";
 static const char* noline  = "";
 
 static void replace_positional (std::string&, const std::string&, const std::string&);
-extern "C" int mk_wcwidth (wchar_t);
 
 ///////////////////////////////////////////////////////////////////////////////
 void wrapText (
