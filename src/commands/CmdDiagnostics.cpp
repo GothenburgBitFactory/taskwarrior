@@ -46,6 +46,10 @@ extern "C"
 }
 #endif
 
+#ifdef HAVE_LIBGNUTLS
+#include <gnutls/gnutls.h>
+#endif
+
 #include <CmdDiagnostics.h>
 
 extern Context context;
@@ -151,6 +155,14 @@ int CmdDiagnostics::execute (std::string& output)
 #else
       << "n/a"
 #endif
+      << "\n";
+
+  out << "  libgnutls: "
+#ifdef HAVE_LIBGNUTLS
+      << GNUTLS_VERSION
+#else
+      << "n/a"
+#endif
       << "\n\n";
 
   out << bold.colorize (STRING_CMD_DIAG_FEATURES)
@@ -183,6 +195,12 @@ int CmdDiagnostics::execute (std::string& output)
       << " +uuid"
 #else
       << " -uuid"
+#endif
+
+#ifdef HAVE_LIBGNUTLS
+      << " +tls"
+#else
+      << " -tls"
 #endif
       << "\n\n";
 

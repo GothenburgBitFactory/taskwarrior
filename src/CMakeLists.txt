@@ -46,7 +46,7 @@ set (task_SRCS A3.cpp A3.h
                text.cpp text.h
                utf8.cpp utf8.h
                util.cpp util.h
-               wcwidth6.c)
+               wcwidth6.cpp)
 
 add_library (task STATIC ${task_SRCS})
 add_executable (task_executable main.cpp)

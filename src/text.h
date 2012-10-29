@@ -91,5 +91,7 @@ std::string rightJustifyZero (const int, const int);
 std::string rightJustify (const int, const int);
 std::string rightJustify (const std::string&, const int);
 
+int mk_wcwidth (wchar_t);
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////

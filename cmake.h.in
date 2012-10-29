@@ -42,6 +42,9 @@ Override PACKAGE_LANGUAGE, then
 #cmakedefine SOLARIS
 #cmakedefine UNKNOWN
 
+/* Found the GnuTLS library */
+#cmakedefine HAVE_LIBGNUTLS
+
 /* Found the lua library */
 #cmakedefine HAVE_LIBLUA
 
