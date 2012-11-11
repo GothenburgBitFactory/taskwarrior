@@ -64,28 +64,27 @@
 //   2. Modify all the strings below.
 //        i.e. change "Unknown error." to "Unbekannter Fehler.".
 //
-//   3. Add your new translation to the task.git/src/i18n.h file, if necessary,
-//      by inserting:
+//   3. Add your new translation to the task.git/src/i18n.h file by changing:
 //
+//        #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
+//        #include <en-US.h>
+//        #endif
+//
+//      to:
+//
+//        #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
+//        #include <en-US.h>
 //        #elif PACKAGE_LANGUAGE == LANGUAGE_DE_DE
 //        #include <de-DE.h>
+//        #endif
 //
-//   4. Add your new language to task.git/CMakeLists.txt, making sure that
-//      number is unique:
-//
-//        set (LANGUAGE_DE_DE 3)
-//
-//   5. Add your new language to task.git/cmake.h.in:
-//
-//        #define LANGUAGE_DE_DE ${LANGUAGE_DE_DE}                                        
-//
-//   6. Build your localized Taskwarrior with these commands:
+//   4. Build your localized Taskwarrior with these commands:
 //
 //      cd task.git
-//      cmake -D LANGUAGE=3 .
+//      cmake -D PACKAGE_LANGUAGE=LANGUAGE_DE_DE .
 //      make
 //
-//   7. Submit your translation to support@taskwarrior.org, where it will be
+//   5. Submit your translation to support@taskwarrior.org, where it will be
 //      shared with others.
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,7 +99,7 @@
 //
 // DO NOT include a copyright in the translation.
 //
-#define STRING_LOCALIZATION_DESC     "Localización española"
+#define STRING_LOCALIZATION_DESC     "- localización española"
 #define STRING_LOCALIZATION_AUTHOR   "Traducido al español por Fidel Mato."
 
 // A3
@@ -199,7 +198,7 @@
 #define STRING_COLUMN_EXAMPLES_PROJ  "casa.jardin"
 #define STRING_COLUMN_EXAMPLES_PAR   "casa"
 #define STRING_COLUMN_EXAMPLES_IND   "  casa.jardin"
-#define STRING_COLUMN_EXAMPLES_DESC  "Mueve tus ropa a la percha de abajo"
+#define STRING_COLUMN_EXAMPLES_DESC  "Mueve tu ropa a la percha de abajo"
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Inmediatamente antes de comer"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Si juegas en el partido de esta tarde"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Antes de que escribas a casa"
@@ -208,7 +207,7 @@
 // commands/Cmd*
 #define STRING_CMD_CONFLICT          "informe personalizado '{1}' en conflicto con comando interno de task."
 #define STRING_CMD_VERSION_USAGE     "Muestra el número de versión de taskwarrior"
-#define STRING_CMD_VERSION_USAGE2    "Muestra el número de versión (solo) de taskwarrior"
+#define STRING_CMD_VERSION_USAGE2    "Muestra el número de versión (solamente) de taskwarrior"
 #define STRING_CMD_VERSION_MIT       "Taskwarrior solamente se puede copiar bajo los términos de la licencia MIT, que se pueden encontrar en el conjunto de código fuente de taskwarrior."
 
 #define STRING_CMD_VERSION_DOCS      "La documentación de taskwarrior se puede consultar usando 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync' y 'man task-faq' o en http://taskwarrior.org"
@@ -282,6 +281,7 @@
 #define STRING_CMD_TAGS_PLURAL       "{1} marcas"
 #define STRING_CMD_TAGS_NO_TAGS      "No hay marcas."
 #define STRING_CMD_HISTORY_USAGE_M   "Muestra un informe de historia de tareas, por mes"
+
 #define STRING_CMD_HISTORY_YEAR      "Año"
 #define STRING_CMD_HISTORY_MONTH     "Mes"
 #define STRING_CMD_HISTORY_ADDED     "Añadida"
@@ -308,7 +308,7 @@
 #define STRING_CMD_DONE_N            "Completadas {1} tareas."
 
 #define STRING_CMD_PROJECTS_USAGE    "Muestra todos los nombres de proyecto en uso"
-#define STRING_CMD_PROJECTS_USAGE_2  "Muestra una lista de todos los nombres (solo) de proyecto en uso"
+#define STRING_CMD_PROJECTS_USAGE_2  "Muestra una lista de todos los nombres (solamente) de proyecto en uso"
 #define STRING_CMD_PROJECTS_NO       "No hay proyectos."
 #define STRING_CMD_PROJECTS_PRI_N    "Pri:None"
 #define STRING_CMD_PROJECTS_PRI_H    "Pri:H"
@@ -337,15 +337,15 @@
 #define STRING_CMD_DELETE_CONFIRM    "¿Suprimir permanentemente la tarea {1} '{2}'?"
 #define STRING_CMD_DELETE_TASK       "Suprimiendo tarea {1} '{2}'."
 #define STRING_CMD_DELETE_TASK_R     "Suprimiendo tarea recurrente {1} '{2}'."
-#define STRING_CMD_DELETE_CONFIRM_R  "Esta es una tarea recurrente.  ¿Quiere suprimir todas las recurrencias pendientes de esta misma tarea?"
+#define STRING_CMD_DELETE_CONFIRM_R  "Esta es una tarea recurrente. ¿Quiere suprimir todas las recurrencias pendientes de esta misma tarea?"
 #define STRING_CMD_DELETE_NO         "Tarea no suprimida."
 #define STRING_CMD_DELETE_NOT_DEL    "La tarea {1} '{2}' no es suprimible."
 #define STRING_CMD_DELETE_1          "Suprimida {1} tarea."
 #define STRING_CMD_DELETE_N          "Suprimidas {1} tareas."
 
 #define STRING_CMD_DUPLICATE_USAGE   "Duplica las tareas especificadas"
-#define STRING_CMD_DUPLICATE_REC     "Nota: la tarea {1} era una tarea madre recurrente.  La tarea duplicada también lo es."
-#define STRING_CMD_DUPLICATE_NON_REC "Nota: la tarea {1} era una tarea recurrente.  La tarea duplicada no lo es."
+#define STRING_CMD_DUPLICATE_REC     "Nota: la tarea {1} era una tarea madre recurrente. La tarea duplicada también lo es."
+#define STRING_CMD_DUPLICATE_NON_REC "Nota: la tarea {1} era una tarea recurrente. La tarea duplicada no lo es."
 #define STRING_CMD_DUPLICATE_CONFIRM "¿Duplicar tarea {1} '{2}'?"
 #define STRING_CMD_DUPLICATE_TASK    "Duplicada tarea {1} '{2}'."
 #define STRING_CMD_DUPLICATE_NO      "Tarea no duplicada."
@@ -374,7 +374,7 @@
 #define STRING_CMD_APPEND_N          "Añadiendo texto a {1} tareas."
 #define STRING_CMD_APPEND_TASK       "Añadiendo texto a la tarea {1} '{2}'."
 #define STRING_CMD_APPEND_TASK_R     "Añadiendo texto a la tarea recurrente {1} '{2}'."
-#define STRING_CMD_APPEND_CONFIRM_R  "Esta es una tarea recurrente.  ¿Quiere añadir a todas las recurrencias pendientes de esta misma tarea?"
+#define STRING_CMD_APPEND_CONFIRM_R  "Esta es una tarea recurrente. ¿Quiere añadir a todas las recurrencias pendientes de esta misma tarea?"
 #define STRING_CMD_APPEND_CONFIRM    "¿Añadir a la tarea {1} '{2}'?"
 #define STRING_CMD_APPEND_NO         "Texto no añadido a la tarea."
 
@@ -383,7 +383,7 @@
 #define STRING_CMD_PREPEND_N         "Antepuesto texto a {1} tareas."
 #define STRING_CMD_PREPEND_TASK      "Anteponiendo texto a la tarea {1} '{2}'."
 #define STRING_CMD_PREPEND_TASK_R    "Antepuesto texto a la tarea recurrente {1} '{2}'."
-#define STRING_CMD_PREPEND_CONFIRM_R "Esta es una tarea recurrente.  ¿Quiere anteponer texto a todas las recurrencias pendientes de esta misma tarea?"
+#define STRING_CMD_PREPEND_CONFIRM_R "Esta es una tarea recurrente. ¿Quiere anteponer texto a todas las recurrencias pendientes de esta misma tarea?"
 #define STRING_CMD_PREPEND_CONFIRM   "¿Anteponer texto a la tarea {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Texto no antepuesto."
 
@@ -391,7 +391,7 @@
 #define STRING_CMD_ANNO_CONFIRM      "¿Anotar la tarea {1} '{2}'?"
 #define STRING_CMD_ANNO_TASK         "Anotando la tarea {1} '{2}'."
 #define STRING_CMD_ANNO_TASK_R       "Anotando la tarea recurrente {1} '{2}'."
-#define STRING_CMD_ANNO_CONFIRM_R    "Esta es una tarea recurrente.  ¿Quiere anotar todas las recurrencias pendientes de esta misma tarea?"
+#define STRING_CMD_ANNO_CONFIRM_R    "Esta es una tarea recurrente. ¿Quiere anotar todas las recurrencias pendientes de esta misma tarea?"
 #define STRING_CMD_ANNO_NO           "Tarea no anotada."
 #define STRING_CMD_ANNO_1            "Anotada {1} tarea."
 #define STRING_CMD_ANNO_N            "Anotadas {1} tareas."
@@ -429,11 +429,11 @@
 #define STRING_CMD_DIAG_UNKNOWN      "<desconocido>"
 #define STRING_CMD_DIAG_COMPILER     "Compilador"
 #define STRING_CMD_DIAG_VERSION      "Versión"
-#define STRING_CMD_DIAG_CAPS         "Mayúsculas"
+#define STRING_CMD_DIAG_CAPS         "Capacidades"
 #define STRING_CMD_DIAG_LIBRARIES    "Librerías"
 #define STRING_CMD_DIAG_FEATURES     "Características Constructivas"
 #define STRING_CMD_DIAG_BUILT        "Construido"
-#define STRING_CMD_DIAG_COMMIT       "Envío"   // Commit
+#define STRING_CMD_DIAG_COMMIT       "Commit"
 #define STRING_CMD_DIAG_FOUND        "(encontrado)"
 #define STRING_CMD_DIAG_MISSING      "(no encontrado)"
 #define STRING_CMD_DIAG_ENABLED      "Habilitado"
@@ -451,13 +451,13 @@
 #define STRING_CMD_PUSH_SAME         "No se puede enviar archivos cuando origen y destino son los mismos."
 #define STRING_CMD_PUSH_NONLOCAL     "El uri '{1}' no es un directorio local."
 #define STRING_CMD_PUSH_TRANSFERRED  "Tareas locales transferidas a {1}"
-#define STRING_CMD_PUSH_NO_URI       "No se especificó un uri pera el envío.  Especifique el uri de un directorio .task remoto, o cree una entrada 'push.default.uri' en su archivo .taskrc ."
+#define STRING_CMD_PUSH_NO_URI       "No se especificó un uri pera el envío. Especifique el uri de un directorio .task remoto, o cree una entrada 'push.default.uri' en su archivo .taskrc ."
 #define STRING_CMD_PULL_USAGE        "Trae archivos remotos desde el URL"
 #define STRING_CMD_PULL_SAME         "No se puede traer archivos cuando origen y destino son los mismos."
 #define STRING_CMD_PULL_TRANSFERRED  "Tareas locales transferidas desde {1}"
-#define STRING_CMD_PULL_NO_URI       "No se especificó un uri desde el que traer.  Especifique el uri de un directorio .task remoto, o cree una entrada 'pull.default.uri' en su archivo .taskrc ."
+#define STRING_CMD_PULL_NO_URI       "No se especificó un uri desde el que traer. Especifique el uri de un directorio .task remoto, o cree una entrada 'pull.default.uri' en su archivo .taskrc ."
 #define STRING_CMD_PULL_MISSING      "Al menos uno de los archivos de base de datos en '{1}' no está presente."
-#define STRING_CMD_PULL_NOT_DIR      "El uri '{1}' no es un directorio.  ¿Olvidó un '/' final?"
+#define STRING_CMD_PULL_NOT_DIR      "El uri '{1}' no es un directorio. ¿Olvidó un '/' final?"
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera una lista de todos los comandos, con fines de auto-completado"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera una lista de todos los comandos, con fines de auto-completado zsh"
 #define STRING_CMD_ALIASES_USAGE     "Genera una lista de todos los alias, con fines de auto-completado"
@@ -474,12 +474,12 @@
 #define STRING_CMD_MODIFY_N          "Modificada {1} tareas."
 #define STRING_CMD_MODIFY_NO         "Tarea no modificada."
 #define STRING_CMD_MODIFY_CONFIRM    "¿Modificar tarea {1} '{2}'?"
-#define STRING_CMD_MODIFY_RECUR      "Esta es una tarea recurrente.  ¿Quiere modificar todas las recurrencias pendientes de esta misma tarea?"
+#define STRING_CMD_MODIFY_RECUR      "Esta es una tarea recurrente. ¿Quiere modificar todas las recurrencias pendientes de esta misma tarea?"
 #define STRING_CMD_MODIFY_NEED_TEXT  "Se debe proveer texto adicional."
 //#define STRING_CMD_MODIFY_NEED_TEXT  "Additional text must be provided."  COMPROBAR adicional
 
 #define STRING_CMD_COLOR_USAGE       "Todos los colores, una muestra, o una leyenda"
-#define STRING_CMD_COLOR_HERE        "Aquí estan los colores en uso actualmente:"
+#define STRING_CMD_COLOR_HERE        "Aquí están los colores en uso actualmente:"
 #define STRING_CMD_COLOR_COLOR       "Color"
 #define STRING_CMD_COLOR_DEFINITION  "Definición"
 #define STRING_CMD_COLOR_EXPLANATION "Use este comando para ver como los colores son mostrados por su terminal."
@@ -492,7 +492,7 @@
 #define STRING_CMD_COLOR_RAMP        "Rampa de grises"
 #define STRING_CMD_COLOR_TRY         "Intente ejecutar '{1}'."
 //#define STRING_CMD_COLOR_TRY         "Try running '{1}'."
-#define STRING_CMD_COLOR_OFF         "El color está actualmente desactivado en su archivo .taskrc .  Para activar el color elimine la línea 'color=off', o cambie el 'off' a 'on'."
+#define STRING_CMD_COLOR_OFF         "El color está actualmente desactivado en su archivo .taskrc . Para activar el color elimine la línea 'color=off', o cambie el 'off' a 'on'."
 #define STRING_CMD_CONFIG_USAGE      "Cambia los ajustes en la configuración de task"
 #define STRING_CMD_CONFIG_CONFIRM    "¿Está seguro de querer cambiar el valor de '{1}' de '{2}' a '{3}'?"
 #define STRING_CMD_CONFIG_CONFIRM2   "¿Está seguro de querer añadir '{1}' con un valor de '{2}'?"
@@ -503,10 +503,9 @@
 #define STRING_CMD_CONFIG_NO_NAME    "Especifique el nombre de una variable de configuración a modificar."
 #define STRING_CMD_HCONFIG_USAGE     "Lista todas las variables de configuración soportadas, a fines de completado"
 #define STRING_CMD_CUSTOM_MISMATCH   "Hay diferente número de columnas y etiquetas para el informe '{1}'."
-#define STRING_CMD_CUSTOM_OLD_SORT   "Empleado campo de ordenación en desuso '{1}'.  Por favor modifique esto a '{2}'."
-#define STRING_CMD_CUSTOM_OLD_FIELD  "Empleado campo de informe en desuso '{1}'.  Por favor modifique esto a '{2}'."
-#define STRING_CMD_CUSTOM_SHOWN      "{1} mostrada"
-//#define STRING_CMD_CUSTOM_SHOWN      "{1} mostrado"  ¿?
+#define STRING_CMD_CUSTOM_OLD_SORT   "Empleado campo de ordenación en desuso '{1}'. Por favor modifique esto a '{2}'."
+#define STRING_CMD_CUSTOM_OLD_FIELD  "Empleado campo de informe en desuso '{1}'. Por favor modifique esto a '{2}'."
+#define STRING_CMD_CUSTOM_SHOWN      "{1} mostrada(s)"
 #define STRING_CMD_CUSTOM_COUNT      "1 tarea"
 #define STRING_CMD_CUSTOM_COUNTN     "{1} tareas"
 #define STRING_CMD_CUSTOM_TRUNCATED  "truncado a {1} líneas"
@@ -516,7 +515,7 @@
 #define STRING_CMD_MERGE_USAGE       "Combina los archivos remotos con los locales"
 #define STRING_CMD_MERGE_COMPLETE    "Combinación completa."
 #define STRING_CMD_MERGE_CONFIRM     "¿Quiere propagar los cambios combinados a '{1}'?"
-#define STRING_CMD_MERGE_NO_URI      "No se especificó un uri para el combinado.  Especifique el uri de un directorio .task remoto, o cree una entrada 'merge.default.uri' en su archivo .taskrc ."
+#define STRING_CMD_MERGE_NO_URI      "No se especificó un uri para el combinado. Especifique el uri de un directorio .task remoto, o cree una entrada 'merge.default.uri' en su archivo .taskrc ."
 #define STRING_CMD_BURN_USAGE_M      "Muestra un diagrama burndown, por meses"
 #define STRING_CMD_BURN_USAGE_W      "Muestra un diagrama burndown, por semanas"
 #define STRING_CMD_BURN_USAGE_D      "Muestra un diagrama burndown, por días"
@@ -538,7 +537,7 @@
 #define STRING_CMD_CAL_BAD_ARG       "No se pudo reconocer el argumento '{1}'."
 #define STRING_CMD_CAL_LABEL_DATE    "Fecha"
 #define STRING_CMD_CAL_LABEL_HOL     "Festivo"
-#define STRING_CMD_CAL_SUN_MON       "La variable de configuración 'weekstart' solo puede contener 'Sunday' o 'Monday'."
+#define STRING_CMD_CAL_SUN_MON       "La variable de configuración 'weekstart' solamente puede contener 'Sunday' (domingo) o 'Monday' (lunes)."
 #define STRING_CMD_EDIT_USAGE        "Lanza un editor para modificar una tarea directamente"
 
 // Config
@@ -548,25 +547,24 @@
 #define STRING_CONFIG_BAD_ENTRY      "Formato incorrecto en entrada '{1}' en archivo de configuración."
 #define STRING_CONFIG_BAD_WRITE      "No se pudo escribir a '{1}'."
 #define STRING_CONFIG_DEPRECATED_US  "Su archivo .taskrc contiene ajustes de color que emplean subrayados, en desuso. Por favor, consulte:"
-#define STRING_CONFIG_DEPRECATED_COL "Su archivo .taskrc contiene informes con columnas en desuso.  Por favor, consulte entry_time, start_time o end_time en:"
+#define STRING_CONFIG_DEPRECATED_COL "Su archivo .taskrc contiene informes con columnas en desuso. Por favor, consulte entry_time, start_time o end_time en:"
 #define STRING_CONFIG_DEPRECATED_VAR "Su archivo .taskrc contiene variables que están en desuso:"
 
 // Context
 #define STRING_CONTEXT_CREATE_RC     "No se pudo encontrar un archivo de configuración en {1}\n\n¿Desearía que se creara un {2} de ejemplo, para que taskwarrior pueda continuar?"
-#define STRING_CONTEXT_NEED_RC       "No se puede continuar sin archivo de configuración."
+#define STRING_CONTEXT_NEED_RC       "No se puede continuar sin archivo de configuración (rc)."
 #define STRING_CONTEXT_RC_OVERRIDE   "TASKRC sobreescrito: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA sobreescrito: {1}"
-#define STRING_CONTEXT_SHADOW_P      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir sus tareas pendientes.  Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_C      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir sus tareas completadas.  Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_U      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su registro de deshacer.  Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_B      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su archivo backlog.  Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_S      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su archivo synch.key.  Por favor, cambie esto."
+#define STRING_CONTEXT_SHADOW_P      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir sus tareas pendientes. Por favor, cambie esto."
+#define STRING_CONTEXT_SHADOW_C      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir sus tareas completadas. Por favor, cambie esto."
+#define STRING_CONTEXT_SHADOW_U      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su registro de deshacer. Por favor, cambie esto."
+#define STRING_CONTEXT_SHADOW_B      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su archivo backlog. Por favor, cambie esto."
+#define STRING_CONTEXT_SHADOW_S      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su archivo synch.key. Por favor, cambie esto."
 #define STRING_CONTEXT_SHADOW_UPDATE "[Archivo shadow '{1}' actualizado.]"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' no es una fecha válida según el formato '{2}'."
-#define STRING_DATE_BAD_WEEKSTART    "La variable de configuración 'weekstart' solo puede contener 'domingo' o 'lunes'."
-//#define STRING_DATE_BAD_WEEKSTART    "La variable de configuración 'weekstart' solo puede contener 'Sunday' o 'Monday'."
+#define STRING_DATE_BAD_WEEKSTART    "La variable de configuración 'weekstart' solamente puede contener 'Sunday' (domingo) o 'Monday' (lunes)."
 
 #define STRING_DATE_JANUARY_LONG     "enero"
 #define STRING_DATE_FEBRUARY_LONG    "febrero"
@@ -635,12 +633,12 @@
 #define STRING_EDIT_COMPLETE         "Edición completada."
 #define STRING_EDIT_LAUNCHING        "Lanzando '{1}' ahora..."
 #define STRING_EDIT_CHANGES          "Se detectaron modificaciones."
-#define STRING_EDIT_UNPARSEABLE      "Taskwarrior no pudo manejar sus modificaciones.  ¿Quiere intentarlo de nuevo?"
+#define STRING_EDIT_UNPARSEABLE      "Taskwarrior no pudo manejar sus modificaciones. ¿Quiere intentarlo de nuevo?"
 #define STRING_EDIT_UNWRITABLE       "No tiene permiso de escritura en su directorio data.location ."
 #define STRING_EDIT_TAG_SEP          "Separe las marcas mediante espacios, así: marca1 marca2"
 #define STRING_EDIT_DEP_SEP          "Las dependencias deben ser una lista separada por comas de IDs/UUIDs de tareas o intervalos de ID, sin espacios."
 #define STRING_EDIT_UDA_SEP          "Atributos Definidos por el Usuario"
-#define STRING_EDIT_UDA_ORPHAN_SEP   "Huérfanos de Atributos Definidos por el Usuario"
+#define STRING_EDIT_UDA_ORPHAN_SEP   "Huérfanos de Atributo Definido por el Usuario"
 #define STRING_EDIT_END              "Fin"
 
 #define STRING_EDIT_PROJECT_MOD      "Proyecto modificado."
@@ -676,17 +674,17 @@
 
 // These four blocks can be replaced, but the number of lines must not change.
 #define STRING_EDIT_HEADER_1         "El comando 'task <id> edit' le permite modificar todos los detalles de"
-#define STRING_EDIT_HEADER_2         "una tarea usando un editor de textos.  Más abajo hay una representación"
+#define STRING_EDIT_HEADER_2         "una tarea usando un editor de textos. Más abajo hay una representación"
 #define STRING_EDIT_HEADER_3         "de todos los detalles de la tarea. Modifique lo que desee y, cuando grabe"
 #define STRING_EDIT_HEADER_4         "y salga del editor, taskwarrior leerá este archivo, determinará qué ha"
-#define STRING_EDIT_HEADER_5         "cambiado, y aplicará esos cambios.  Si sale del editor sin grabar o sin"
+#define STRING_EDIT_HEADER_5         "cambiado, y aplicará esos cambios. Si sale del editor sin grabar o sin"
 #define STRING_EDIT_HEADER_6         "hacer modificaciones, taskwarrior no hará nada."
 
 #define STRING_EDIT_HEADER_7         "Las líneas que comienzan con # representan datos que no puede cambiar, como ID."
 #define STRING_EDIT_HEADER_8         "Si es demasiado creativo con sus modificaciones, taskwarrior le enviará de vuelta"
 #define STRING_EDIT_HEADER_9         "al editor para que lo intente de nuevo."
 
-#define STRING_EDIT_HEADER_10        "Si queda atrapado en un ciclo sin fín, volviendo a editar el mismo archivo"
+#define STRING_EDIT_HEADER_10        "Si queda atrapado en un ciclo sin fin, volviendo a editar el mismo archivo"
 #define STRING_EDIT_HEADER_11        "una y otra vez, simplemente abandone el editor sin hacer ningún cambio."
 #define STRING_EDIT_HEADER_12        "Taskwarrior lo advertirá y detendrá el proceso."
 
@@ -706,7 +704,7 @@
 #define STRING_TRIVIAL_INPUT         "Debe especificar un comando o una tarea a modificar."
 #define STRING_ASSUME_INFO           "No especificó un comando - asumido 'information'."
 #define STRING_INFINITE_LOOP         "Sustitución terminada debido a que se hicieron más de {1} cambios - protección contra ciclo eterno."
-#define STRING_UDA_TYPE              "Los atributos definidos por el usuario sólo pueden ser de los tipos 'string', 'date', 'duration' o 'numeric'."
+#define STRING_UDA_TYPE              "Los atributos definidos por el usuario solamente pueden ser de los tipos 'string', 'date', 'duration' o 'numeric'."
 #define STRING_UDA_TYPE_MISSING      "No se encontró uda.{1}.type . El UDA '{1}' debe tener algún tipo especificado."
 #define STRING_UDA_NUMERIC           "El valor '{1}' no es un valor numérico válido."
 #define STRING_UDA_COLLISION         "El UDA denominado '{1}' es el mismo que un atributo del núcleo, y no está permitido."
@@ -723,7 +721,7 @@
 #define STRING_FEEDBACK_DEP_SET      "Las dependencias se ajustarán a '{1}'."
 #define STRING_FEEDBACK_DEP_MOD      "Las dependencias se cambiarán de '{1}' a '{2}'."
 #define STRING_FEEDBACK_DEP_DEL      "Dependencias '{1}' eliminadas."
-#define STRING_FEEDBACK_DEP_WAS_SET  "Dependencies ajustadas a '{1}'."
+#define STRING_FEEDBACK_DEP_WAS_SET  "Dependencias ajustadas a '{1}'."
 #define STRING_FEEDBACK_DEP_WAS_MOD  "Dependencias cambiadas de '{1}' a '{2}'."
 #define STRING_FEEDBACK_ATT_SET      "{1} se establecerá como '{2}'."
 #define STRING_FEEDBACK_ATT_MOD      "{1} se cambiará de '{2}' a '{3}'."
@@ -743,8 +741,7 @@
 #define STRING_FEEDBACK_EXPIRED      "La tarea {1} '{2}' caducó y fué eliminada."
 
 // File
-#define STRING_FILE_PERMS            "Task no tiene los permisos adecuados para '{1}'."
-//#define STRING_FILE_PERMS            "Task does not have the correct permissions for '{1}'."
+#define STRING_FILE_PERMS            "Taskwarrior no tiene los permisos adecuados para '{1}'."
 
 // helpers
 #define STRING_HELPER_PROJECT_CHANGE "El proyecto '{1}' ha cambiado."
@@ -774,7 +771,7 @@
 // Record
 #define STRING_RECORD_EMPTY          "Registro vacío en la entrada."
 #define STRING_RECORD_JUNK_AT_EOL    "Caracteres no reconocidos al final de línea."
-#define STRING_RECORD_NOT_FF4        "Registro no reconocido como format 4."
+#define STRING_RECORD_NOT_FF4        "Registro no reconocido como formato 4."
 
 // 'show' command
 #define STRING_CMD_SHOW              "Muestra todas las variables de configuración o un subconjunto"
@@ -793,9 +790,9 @@
 
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior ya no admite el formato de archivo 1, usado originalmente entre el 27 de noviembre del 2006 y el 31 de diciembre del 2007."
-#define STRING_TASK_PARSE_ANNO_BRACK "Faltan paréntesis de anotación."  // o corchetes
-#define STRING_TASK_PARSE_ATT_BRACK  "Faltan paréntesis de atributo."   // o corchetes
-#define STRING_TASK_PARSE_TAG_BRACK  "Faltan paréntesis de marca."      // o corchetes
+#define STRING_TASK_PARSE_ANNO_BRACK "Faltan corchetes de anotación."
+#define STRING_TASK_PARSE_ATT_BRACK  "Faltan corchetes de atributo."
+#define STRING_TASK_PARSE_TAG_BRACK  "Faltan corchetes de marca."
 #define STRING_TASK_PARSE_TOO_SHORT  "Línea demasiado corta."
 #define STRING_TASK_PARSE_UNREC_FF   "Formato de archivo taskwarrior no reconocido."
 #define STRING_TASK_DEPEND_ITSELF    "Una tarea no puede depender de sí misma."
@@ -809,7 +806,7 @@
 #define STRING_TASK_VALID_REC_DUE    "Una tarea recurrente debe tener también una fecha límite."
 #define STRING_TASK_VALID_RECUR      "El valor de recurrencia '{1}' no es válido."
 #define STRING_TASK_VALID_PRIORITY   "Valores de prioridad pueden ser 'H', 'M' o 'L', no '{1}'."
-#define STRING_TASK_SAFETY_VALVE     "Este comando no tiene filtro, y modificará todas las tareas.  ¿Está seguro?"
+#define STRING_TASK_SAFETY_VALVE     "Este comando no tiene filtro, y modificará todas las tareas. ¿Está seguro?"
 #define STRING_TASK_SAFETY_FAIL      "Se impidió la ejecución del comando."
 
 // Taskmod
@@ -839,7 +836,7 @@
 #define STRING_TDB2_DIFF_PREV_DESC   "Deshacer restaurará este estado"//   ||
 #define STRING_TDB2_DIFF_CURR        "+++ estado actual "             // Same length
 #define STRING_TDB2_DIFF_CURR_DESC   "Cambio hecho {1}"
-#define STRING_TDB2_UNDO_CONFIRM     "El comando undo es irreversible.  ¿Está seguro de querer revertir al estado anterior?"
+#define STRING_TDB2_UNDO_CONFIRM     "El comando undo es irreversible. ¿Está seguro de querer revertir al estado anterior?"
 #define STRING_TDB2_MISSING_UUID     "No se pudo localizar el UUID en la tarea a deshacer."
 #define STRING_TDB2_REVERTED         "Tarea modificada revertida."
 #define STRING_TDB2_REMOVED          "Tarea eliminada."
@@ -854,14 +851,14 @@
 
 // Transport
 #define STRING_TRANSPORT_URI_NODIR   "El uri '{1}' no parece ser un directorio."
-#define STRING_TRANSPORT_CURL_URI    "Cuando se use el protocolo 'curl' el uri debe contener un nombre de máquina."
+#define STRING_TRANSPORT_CURL_URI    "Cuando se usa el protocolo 'curl' el uri debe contener un nombre de máquina."
 #define STRING_TRANSPORT_CURL_WILDCD "Cuando se usa el protocolo 'curl' no están soportados los comodines."
-#define STRING_TRANSPORT_CURL_NORUN  "No se pudo lanzar curl.  ¿Está instalado y disponible en $PATH?"
+#define STRING_TRANSPORT_CURL_NORUN  "No se pudo lanzar curl. ¿Está instalado y disponible en $PATH?"
 #define STRING_TRANSPORT_CURL_FAIL   "Curl falló, consulte los mensajes precedentes."
-#define STRING_TRANSPORT_RSYNC_URI   "Cuando se use el protocolo 'rsync' el uri debe contener un nombre de máquina."
-#define STRING_TRANSPORT_RSYNC_NORUN "No se pudo lanzar rsync.  ¿Está instalado y disponible en $PATH?"
-#define STRING_TRANSPORT_SSH_URI     "Cuando se use el protocolo 'ssh' el uri debe contener un nombre de máquina."
-#define STRING_TRANSPORT_SSH_NORUN   "No se pudo lanzar ssh.  ¿Está instalado y disponible en $PATH?"
+#define STRING_TRANSPORT_RSYNC_URI   "Cuando se usa el protocolo 'rsync' el uri debe contener un nombre de máquina."
+#define STRING_TRANSPORT_RSYNC_NORUN "No se pudo lanzar rsync. ¿Está instalado y disponible en $PATH?"
+#define STRING_TRANSPORT_SSH_URI     "Cuando se usa el protocolo 'ssh' el uri debe contener un nombre de máquina."
+#define STRING_TRANSPORT_SSH_NORUN   "No se pudo lanzar ssh. ¿Está instalado y disponible en $PATH?"
 
 // Uri
 #define STRING_URI_QUOTES            "No se pudo interpretar el uri '{1}', uso erróneo de comillas simples."
@@ -895,7 +892,7 @@
   "La forma general para los comandos es:\n" \
   "  task [<filter>] <command> [<mods>]\n" \
   "\n" \
-  "<filter> consiste en cero o más restricciones sobre que tareas seleccionar, " \
+  "<filter> consiste en cero o más restricciones sobre qué tareas seleccionar, " \
   "como en:\n" \
   "  task                                      <command> <mods>\n" \
   "  task 28                                   <command> <mods>\n" \
@@ -907,7 +904,7 @@
   "'or' y 'xor' también se pueden usar, siempre que se incluyan paréntesis:\n" \
   "  task '(/[Cc]at|[Dd]og/ or /[0-9]+/)'      <command> <mods>\n" \
   "\n" \
-  "Un filtro puede dirigirse a tareas específicas mediante números ID o UUID.  Para especificar " \
+  "Un filtro puede dirigirse a tareas específicas mediante números ID o UUID. Para especificar " \
   "multiples tareas use una de estas formas:\n" \
   "  task 1,2,3                                    delete\n" \
   "  task 1-3                                      info\n" \
@@ -940,7 +937,7 @@
   "  scheduled:      Fecha programada para que la tarea comience\n" \
   "  depends:        Otras tareas de las que esta tarea depende\n" \
   "\n" \
-  "Los modificadores de atributos hacen a los filtros más precisos.  Modificadores soportados son:\n" \
+  "Los modificadores de atributos hacen a los filtros más precisos. Modificadores soportados son:\n" \
   "  before     (sinónimos under, below)\n" \
   "  after      (sinónimos over, above)\n" \
   "  none\n" \
@@ -956,7 +953,7 @@
   "\n" \
   "Soporte de expresiones algebráicas alternativas:\n" \
   "  and  or  xor            Operadores lógicos\n" \
-  "  <  <=  =  !=  >=  >     operadores relacionales\n" \
+  "  <  <=  =  !=  >=  >     Operadores relacionales\n" \
   "  (  )                    Precedencia\n" \
   "\n" \
   "  task due.before:eom priority.not:L   list\n" \
