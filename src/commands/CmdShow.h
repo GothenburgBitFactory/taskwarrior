@@ -39,5 +39,12 @@ public:
   int execute (std::string&);
 };
 
+class CmdShowRaw : public Command
+{
+public:
+  CmdShowRaw ();
+  int execute (std::string&);
+};
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////

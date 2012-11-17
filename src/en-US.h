@@ -772,6 +772,7 @@
 #define STRING_CMD_SHOW_LOC_EXIST    "Configuration error: data.location contains a directory name that doesn't exist, or is unreadable."
 #define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
 #define STRING_CMD_SHOW_CONF_VALUE   "Value"
+#define STRING_CMD_SHOWRAW           "Shows all configuration settings in a machine-readable format"
 
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior no longer supports file format 1, originally used between 27 November 2006 and 31 December 2007."

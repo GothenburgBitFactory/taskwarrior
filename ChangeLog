@@ -9,6 +9,9 @@ Features
    tasks to the 'statistics' command output (thanks to T. Charles Yun).
  + Added Feature #1069, which gives a clearer error when a UDA
    is added without the uda.<uda-name>.type variable.
+ + Added Feature #1124, which provides a '_show' command that displays all
+   configuration defaults and settings, for use by third-party software (thanks
+   to Jake Bell).
  + The 'projects' command now outputs abstract parents and reduces
    repetition by not printing parent names in front of children names.
  + Added framework for testing bash autocompletion.

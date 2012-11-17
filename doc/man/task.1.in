@@ -493,6 +493,11 @@ Lists all supported configuration variables, for completion purposes.
 Shows only the IDs of matching tasks, in the form of a list.
 
 .TP
+.B task _show
+Shows the combined defaults and overrides of the configuration settings, for use
+by third-party applications.
+
+.TP
 .B task <filter> _uuids
 Shows only the UUIDs of matching tasks among all tasks (even deleted and
 completed tasks), in the form of a list.

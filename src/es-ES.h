@@ -787,6 +787,7 @@
 #define STRING_CMD_SHOW_LOC_EXIST    "Error de configuración: data.location contiene un nombre de directorio que no existe o no se puede leer."
 #define STRING_CMD_SHOW_CONF_VAR     "Variable Config"
 #define STRING_CMD_SHOW_CONF_VALUE   "Valor"
+#define STRING_CMD_SHOWRAW           "Shows all configuration settings in a machine-readable format"
 
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior ya no admite el formato de archivo 1, usado originalmente entre el 27 de noviembre del 2006 y el 31 de diciembre del 2007."

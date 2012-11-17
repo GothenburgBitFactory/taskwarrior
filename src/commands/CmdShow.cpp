@@ -438,3 +438,33 @@ int CmdShow::execute (std::string& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+CmdShowRaw::CmdShowRaw ()
+{
+  _keyword     = "_show";
+  _usage       = "task          _show";
+  _description = STRING_CMD_SHOWRAW;
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdShowRaw::execute (std::string& output)
+{
+  // Get all the settings.
+  std::vector <std::string> all;
+  context.config.all (all);
+
+  // Sort alphabetically by name.
+  std::sort (all.begin (), all.end ());
+
+  // Display them all.
+  std::vector <std::string>::iterator i;
+  std::stringstream out;
+  for (i = all.begin (); i != all.end (); ++i)
+    out << *i << '=' << context.config.get (*i) << "\n";
+
+  output = out.str ();
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////

@@ -154,6 +154,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdReports ();            all[c->keyword ()] = c;
   c = new CmdShell ();              all[c->keyword ()] = c;
   c = new CmdShow ();               all[c->keyword ()] = c;
+  c = new CmdShowRaw ();            all[c->keyword ()] = c;
   c = new CmdStart ();              all[c->keyword ()] = c;
   c = new CmdStats ();              all[c->keyword ()] = c;
   c = new CmdStop ();               all[c->keyword ()] = c;
