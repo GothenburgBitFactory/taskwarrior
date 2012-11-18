@@ -202,10 +202,10 @@
 #define STRING_COLUMN_EXAMPLES_ANNO1 "Inmediatamente antes de comer"
 #define STRING_COLUMN_EXAMPLES_ANNO2 "Si juegas en el partido de esta tarde"
 #define STRING_COLUMN_EXAMPLES_ANNO3 "Antes de que escribas a casa"
-#define STRING_COLUMN_EXAMPLES_ANNO4 "Si no te está cortando el pelo"
+#define STRING_COLUMN_EXAMPLES_ANNO4 "Si no te estás cortando el pelo"
 
 // commands/Cmd*
-#define STRING_CMD_CONFLICT          "informe personalizado '{1}' en conflicto con comando interno de task."
+#define STRING_CMD_CONFLICT          "informe personalizado '{1}' en conflicto con comando interno de taskwarrior."
 #define STRING_CMD_VERSION_USAGE     "Muestra el número de versión de taskwarrior"
 #define STRING_CMD_VERSION_USAGE2    "Muestra el número de versión (solamente) de taskwarrior"
 #define STRING_CMD_VERSION_MIT       "Taskwarrior solamente se puede copiar bajo los términos de la licencia MIT, que se pueden encontrar en el conjunto de código fuente de taskwarrior."
@@ -254,7 +254,7 @@
 #define STRING_CMD_STATS_UNIQUE_TAGS "Marcas únicas"
 #define STRING_CMD_STATS_PROJECTS    "Proyectos"
 #define STRING_CMD_STATS_DATA_SIZE   "Tamaño de datos"
-#define STRING_CMD_STATS_UNDO_TXNS   "Deshacer transacciones"
+#define STRING_CMD_STATS_UNDO_TXNS   "Transacciones deshacer"
 #define STRING_CMD_STATS_TAGGED      "Tareas marcadas"
 #define STRING_CMD_STATS_OLDEST      "Tarea más antigua"
 #define STRING_CMD_STATS_NEWEST      "Tarea más reciente"
@@ -412,7 +412,7 @@
 #define STRING_CMD_DENO_N            "Desanotadas {1} tareas."
 
 #define STRING_CMD_IMPORT_USAGE      "Importa archivos JSON"
-#define STRING_CMD_IMPORT_SUMMARY    "Imortadas {1} tareas."
+#define STRING_CMD_IMPORT_SUMMARY    "Importadas {1} tareas."
 #define STRING_CMD_IMPORT_NOFILE     "Debe especificar un archivo a importar."
 #define STRING_CMD_IMPORT_FILE       "Importando '{1}'"
 #define STRING_CMD_IMPORT_NOT_JSON   "No es un objeto JSON: {1}"
@@ -609,7 +609,7 @@
 #define STRING_DATE_SATURDAY_SHORT   "sab"
 
 // dependency
-#define STRING_DEPEND_BLOCKED        "La tarea {1} está boqueada por:"
+#define STRING_DEPEND_BLOCKED        "La tarea {1} está bloqueada por:"
 #define STRING_DEPEND_BLOCKING       "y está bloqueando:"
 #define STRING_DEPEND_FIX_CHAIN      "¿Desea que la cadena de dependencias sea arreglada?"
 
@@ -738,7 +738,7 @@
 #define STRING_FEEDBACK_TAG_NOCAL    "La marca especial 'nocal' mantendrá esta tarea fuera del informe 'calendar'."
 #define STRING_FEEDBACK_TAG_NEXT     "La etiqueta especial 'next' aumentará la urgencia de esta tarea para que aparezca en el informe 'next'."
 #define STRING_FEEDBACK_UNBLOCKED    "Desbloqueada {1} '{2}'."
-#define STRING_FEEDBACK_EXPIRED      "La tarea {1} '{2}' caducó y fué eliminada."
+#define STRING_FEEDBACK_EXPIRED      "La tarea {1} '{2}' caducó y fue eliminada."
 
 // File
 #define STRING_FILE_PERMS            "Taskwarrior no tiene los permisos adecuados para '{1}'."
@@ -787,7 +787,7 @@
 #define STRING_CMD_SHOW_LOC_EXIST    "Error de configuración: data.location contiene un nombre de directorio que no existe o no se puede leer."
 #define STRING_CMD_SHOW_CONF_VAR     "Variable Config"
 #define STRING_CMD_SHOW_CONF_VALUE   "Valor"
-#define STRING_CMD_SHOWRAW           "Shows all configuration settings in a machine-readable format"
+#define STRING_CMD_SHOWRAW           "Muestra todas las variables de configuración en un formato legible por la máquina"
 
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior ya no admite el formato de archivo 1, usado originalmente entre el 27 de noviembre del 2006 y el 31 de diciembre del 2007."
@@ -801,7 +801,7 @@
 #define STRING_TASK_DEPEND_MISS_DEL  "No se pudo eliminar una dependencia de la tarea {1} - no encontrada."
 #define STRING_TASK_DEPEND_DUP       "La tarea {1} ya depende de la tarea {2}."
 #define STRING_TASK_DEPEND_CIRCULAR  "Dependencia circular detectada y anulada."
-#define STRING_TASK_VALID_DESC       "Una tarea debe tener una descripción."
+#define STRING_TASK_VALID_DESC       "Una tarea debe tener descripción."
 #define STRING_TASK_VALID_BLANK      "No se puede añadir una tarea que está en blanco."
 #define STRING_TASK_VALID_BEFORE     "Advertencia: ha especificado que la fecha '{1}' es después de la fecha '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Una tarea recurrente debe tener también una fecha límite."
@@ -866,8 +866,8 @@
 #define STRING_URI_BAD_FORMAT        "El uri '{1}' no está en el formato esperado."
 
 // utf8
-#define STRING_UTF8_INVALID_CP_REP   "Invalid codepoint representation."
-#define STRING_UTF8_INVALID_CP       "Invalid Unicode codepoint."
+#define STRING_UTF8_INVALID_CP_REP   "Representación de codepoint no válida."
+#define STRING_UTF8_INVALID_CP       "Codepoint Unicode no válido."
 
 // ****************************************************************************************************
 // Usage text.  This is an exception, and contains \n characters and formatting.
@@ -906,7 +906,7 @@
   "  task '(/[Cc]at|[Dd]og/ or /[0-9]+/)'      <command> <mods>\n" \
   "\n" \
   "Un filtro puede dirigirse a tareas específicas mediante números ID o UUID. Para especificar " \
-  "multiples tareas use una de estas formas:\n" \
+  "múltiples tareas use una de estas formas:\n" \
   "  task 1,2,3                                    delete\n" \
   "  task 1-3                                      info\n" \
   "  task 1,2-5,19                                 modify pri:H\n" \
@@ -922,7 +922,7 @@
   "  +marca     El + significa añade la marca\n" \
   "  -marca     El - significa quita la marca\n" \
   "\n" \
-  "Built-in attributes are:\n" \
+  "Son atributos internos:\n" \
   "  description:    Texto descriptivo de la tarea\n" \
   "  status:         Estatus de la tarea - pendiente, completada, eliminada, esperando\n" \
   "  project:        Nombre del proyecto\n" \
@@ -952,7 +952,7 @@
   "  word\n" \
   "  noword\n" \
   "\n" \
-  "Soporte de expresiones algebráicas alternativas:\n" \
+  "Soporte de expresiones algebraicas alternativas:\n" \
   "  and  or  xor            Operadores lógicos\n" \
   "  <  <=  =  !=  >=  >     Operadores relacionales\n" \
   "  (  )                    Precedencia\n" \
@@ -976,7 +976,7 @@
   "  task add \"quoted ' quote\"\n" \
   "  task add escaped \\' quote\n" \
   "\n" \
-  "El argumento -- indica a taskwarrior que trate todos los retantes argumentos como descripción, incluso " \
+  "El argumento -- indica a taskwarrior que trate todos los restantes argumentos como descripción, incluso " \
   "aunque de otra manera hubieran sido argumentos o marcas:\n" \
   "  task add -- project:Home needs scheduling\n" \
   "\n" \
