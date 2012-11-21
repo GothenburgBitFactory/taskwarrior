@@ -39,7 +39,12 @@ bool compareTaskmod (Taskmod first, Taskmod second)
 {
   if (first._timestamp == second._timestamp)
   {
-    return first._sequenceNumber < second._sequenceNumber;
+    // preserve relative order within the same resource
+    if (first._resource == second._resource)
+      return first._sequenceNumber < second._sequenceNumber;
+    // sort by UUID if mods where made on different resources
+    else
+      return first._resource < second._resource;
   }
   else
   {
@@ -54,6 +59,16 @@ Taskmod::Taskmod ()
   _bAfterSet = false;
   _bBeforeSet = false;
   _sequenceNumber = curSequenceNumber++;
+  _resource  = -1;
+}
+
+Taskmod::Taskmod (int resourceID)
+{
+  _timestamp = 0;
+  _bAfterSet = false;
+  _bBeforeSet = false;
+  _sequenceNumber = curSequenceNumber++;
+  _resource = resourceID;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,6 +80,7 @@ Taskmod::Taskmod (const Taskmod& other)
   this->_bAfterSet      = other._bAfterSet;
   this->_bBeforeSet     = other._bBeforeSet;
   this->_sequenceNumber = other._sequenceNumber;
+  this->_resource       = other._resource;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +124,8 @@ Taskmod& Taskmod::operator= (const Taskmod& other)
     this->_timestamp      = other._timestamp;
     this->_bAfterSet      = other._bAfterSet;
     this->_bBeforeSet     = other._bBeforeSet;
-	 this->_sequenceNumber = other._sequenceNumber;
+    this->_sequenceNumber = other._sequenceNumber;
+    this->_resource       = other._resource;
   }
 
   return *this;
@@ -223,6 +240,12 @@ long Taskmod::getTimestamp () const
 unsigned long Taskmod::getSequenceNumber () const
 {
   return _sequenceNumber;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Taskmod::getResource () const
+{
+  return _resource;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

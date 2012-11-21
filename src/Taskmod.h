@@ -37,6 +37,7 @@ class Taskmod {
 
 public:
   Taskmod ();
+  Taskmod (int resourceID);
   Taskmod (const Taskmod& other);
   ~Taskmod ();
 
@@ -68,6 +69,7 @@ public:
   Task& getBefore ();
   long getTimestamp () const;
   unsigned long getSequenceNumber () const;
+  int getResource () const;
   std::string getTimeStr () const;
 
 protected:
@@ -77,6 +79,7 @@ protected:
   bool _bAfterSet;
   bool _bBeforeSet;
   unsigned long _sequenceNumber;
+  int  _resource;
 
   static unsigned long curSequenceNumber;
 };

@@ -646,8 +646,9 @@ void readTaskmods (std::vector <std::string> &input,
                    std::vector <std::string>::iterator &start,
                    std::list<Taskmod> &list)
 {
+  static int   resourceID = 1;
   std::string  line;
-  Taskmod      tmod_tmp;
+  Taskmod      tmod_tmp(resourceID++);
 
   DEBUG_STR ("reading taskmods from file: ");
 
@@ -745,26 +746,31 @@ void TDB2::merge (const std::string& mergeFile)
   ///////////////////////////////////////
   // find the branch-off point:
 
-  // first lines are not equal => assuming mergeFile starts at a
+  // first mods are not equal => assuming mergeFile starts at a
   // later point in time
-  if (lline.compare (rline) != 0)
-  {
-    // iterate in local file to find rline
-    for ( ; lit != l.end (); ++lit)
-    {
-      lline = *lit;
+  if (lline.compare (rline) == 0) {
+    std::vector<std::string>::const_iterator tmp_lit = lit;
+    std::vector<std::string>::const_iterator tmp_rit = rit;
+    tmp_lit++;
+    tmp_rit++;
 
-      // push the line to the new undo.data
-      undo_lines.push_back (lline + "\n");
-
-      // found first matching lines?
-      if (lline.compare (rline) == 0)
-        break;
+    int lookahead = 1;
+    if (tmp_lit->substr (0, 3) == "old") {
+      lookahead = 2;
     }
-  }
-  else
-  {
-	  undo_lines.push_back (lline + "\n");
+
+    while (lookahead--) {
+      if (tmp_lit->compare(*tmp_rit) != 0) {
+        break;
+      }
+      tmp_lit++;
+      tmp_rit++;
+    }
+    
+    if (lookahead == -1) {
+      // at this point we know that the first lines are the same
+      undo_lines.push_back (lline + "\n");
+    }
   }
 
   // Add some color.
@@ -802,7 +808,7 @@ void TDB2::merge (const std::string& mergeFile)
 
   if (!found)
   {
-    // set iterators to r.end() or l.end() if they are point to the last line
+    // set iterators to r.end() or l.end() if they point to the last line
     if (++rit != r.end())
       --rit;
 
@@ -823,14 +829,14 @@ void TDB2::merge (const std::string& mergeFile)
     std::set<std::string> uuid_new, uuid_left;
 
     // 1. read taskmods out of the remaining lines
-    readTaskmods (l, lit, lmods);
     readTaskmods (r, rit, rmods);
+    readTaskmods (l, lit, lmods);
 
     // 2. move new uuids into mods
     DEBUG_STR_PART ("adding new uuids (left) to skip list...");
 
     // modifications on the left side are already in the database
-    // we just need them to merge conflicts, so we add new the mods for
+    // we just need them to merge conflicts, so we add the mods for
     // new uuids to the skip-list 'uuid_left'
     std::list<Taskmod>::iterator lmod_it;
     for (lmod_it = lmods.begin (); lmod_it != lmods.end (); lmod_it++)
@@ -1236,8 +1242,8 @@ void TDB2::merge (const std::string& mergeFile)
     // now we merge mods (new modifications from mergefile)
     // with lmods (part of old undo.data)
     lmods.sort(compareTaskmod);
-    mods.merge (lmods);
-    mods.merge (mods_history);
+    mods.merge (lmods, compareTaskmod);
+    mods.merge (mods_history, compareTaskmod);
 
     // generate undo.data format
     std::list<Taskmod>::iterator it;
