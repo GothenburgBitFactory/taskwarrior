@@ -867,9 +867,27 @@ void TDB2::merge (const std::string& mergeFile)
       std::list<Taskmod>::iterator current = rmod_it++;
       Taskmod tmod = *current;
 
-      // new uuid?
-      if (tmod.isNew ())
+      if (uuid_left.find (tmod.getUuid ()) != uuid_left.end ())
       {
+        // check whether the remote side has added a task with the same UUID
+        //  this happens if it inserted a modification with an older timestamp
+        //  into the undo.data and thereby moved the branch point to an earlier
+        //  point in time. Normally this case will be solved by the merge logic,
+        //  BUT if the UUID is considered new the merge logic will be skipped.
+        //
+        //  This flaw resulted in a couple of duplication issues and bloated 
+        //  undo files (e.g. #1104).
+        //
+        //  This is just a "hack" which discards all the modifications of the
+        //  remote side to UUIDs that are considered new by both sides.
+        //  There may be more issues with the algorithm; probably a redesign
+        //  and proper encapsulation of the merge algorithm is due.
+
+        rmods.erase(current);
+      }
+      else if (tmod.isNew ())
+      {
+        // new uuid?
 /*
         // TODO Don't forget L10N.
         std::cout << "Adding new remote task             "
