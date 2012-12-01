@@ -31,6 +31,7 @@ Features
  + New 'modified' attribute, which contains the most recent modification date,
    if a modification has occurred.
  + Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
+ + Added new export script: export-tsv.pl.
 
 Bugs
  + Improved hyphenation by splitting on commas (even if no whitespace after).
