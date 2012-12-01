@@ -54,6 +54,8 @@ Bugs
  + Fixed bug #1065, where CmdShow issued messages in incorrect situations.
  + Partially fixed #1083, which showed 'task 0 ...' when modifying a non-
    pending task (thanks to Aikido Guy).
+ + Fixed bug #1123, which caused the undo of a 'log' command to corrupt the data
+   file (thanks to Tim None).
  + No more bash completion of, for example, 'projABC:', or of 'proj:' if
    abbreviation.minimum is greater than 4.
  + Fixed bug where shadow files are not properly created when there is a missing
