@@ -12,6 +12,8 @@ Features
  + Added Feature #1124, which provides a '_show' command that displays all
    configuration defaults and settings, for use by third-party software (thanks
    to Jake Bell).
+ + Added Feature #1099, which supports the 'color.uda.<uda-name>' color rule
+   (thanks to Florian Hollerweger).
  + The 'projects' command now outputs abstract parents and reduces
    repetition by not printing parent names in front of children names.
  + Added framework for testing bash autocompletion.

@@ -15,7 +15,7 @@ New commands in taskwarrior 2.2.0
 
 New configuration options in taskwarrior 2.2.0
 
-  -
+  - New color rule 'color.uda.<uda-name>'.
 
 Newly deprecated features in taskwarrior 2.2.0
   
