@@ -7,6 +7,8 @@ Features
    (thanks to Michelle Crane).
  + Added Feature #953, which includes the total number of blocked and blocking
    tasks to the 'statistics' command output (thanks to T. Charles Yun).
+ + Added Feature #1061, which allows the 'columns' command to use a search
+   string for the column name (thanks to Uli Martens).
  + Added Feature #1069, which gives a clearer error when a UDA
    is added without the uda.<uda-name>.type variable.
  + Added Feature #1124, which provides a '_show' command that displays all

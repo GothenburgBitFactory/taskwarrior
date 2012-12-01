@@ -398,8 +398,8 @@
 
 #define STRING_CMD_COLUMNS_USAGE     "Todas las columnas y estilos de formato soportados"
 #define STRING_CMD_COLUMNS_NOTE      "* Significa formato por defecto, y por lo tanto opcional. Por ejemplo 'due' y 'due.formatted' son equivalentes."
-
 #define STRING_CMD_COLUMNS_USAGE2    "Muestra una lista de columnas (solo nombres) soportadas"
+#define STRING_CMD_COLUMNS_ARGS      "Solo puede especificar un término de búsqueda."
 
 #define STRING_CMD_DENO_USAGE        "Elimina una anotación"
 #define STRING_CMD_DENO_WORDS        "Se debe proporcionar un patrón de anotación."

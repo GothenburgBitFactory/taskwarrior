@@ -388,6 +388,7 @@
 #define STRING_CMD_COLUMNS_USAGE     "All supported columns and formatting styles"
 #define STRING_CMD_COLUMNS_NOTE      "* Means default format, and therefore optional.  For example, 'due' and 'due.formatted' are equivalent."
 #define STRING_CMD_COLUMNS_USAGE2    "Displays only a list of supported columns"
+#define STRING_CMD_COLUMNS_ARGS      "You can only specify one search string."
 
 #define STRING_CMD_DENO_USAGE        "Deletes an annotation"
 #define STRING_CMD_DENO_WORDS        "An annotation pattern must be provided."
