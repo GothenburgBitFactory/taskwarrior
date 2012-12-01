@@ -9,6 +9,8 @@ New Features in taskwarrior 2.2.0
     all, that they were modified.
   - Statistics now report total number of blocked and blocking tasks.
   - The 'columns' command now supports search term for the column name.
+  - New date shortcuts, 'socm' and 'eocm', meaning start and end of current
+    month.
 
 New commands in taskwarrior 2.2.0
 

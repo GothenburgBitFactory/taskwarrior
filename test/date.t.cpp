@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (179);
+  UnitTest t (181);
 
   try
   {
@@ -324,26 +324,32 @@ int main (int argc, char** argv)
     Date r11 ("eow");
     t.ok (r11 < now + (8 * 86400), "eow < 7 days away");
 
-    Date r20 ("eocw");
-    t.ok (r20 < now + (8 * 86400), "eocw < 7 days away");
+    Date r12 ("eocw");
+    t.ok (r12 < now + (8 * 86400), "eocw < 7 days away");
 
-    Date r12 ("eom");
-    t.ok (r12.sameMonth (now), "eom in same month as now");
+    Date r13 ("eom");
+    t.ok (r13.sameMonth (now), "eom in same month as now");
 
-    Date r13 ("eoy");
-    t.ok (r13.sameYear (now), "eoy in same year as now");
+    Date r14 ("eocm");
+    t.ok (r14.sameMonth (now), "eocm in same month as now");
 
-    Date r14 ("sow");
-    t.ok (r14 < now + (8 * 86400), "sow < 7 days away");
+    Date r15 ("eoy");
+    t.ok (r15.sameYear (now), "eoy in same year as now");
 
-    Date r21 ("socw");
-    t.ok (r21 < now + (8 * 86400), "sow < 7 days away");
+    Date r16 ("sow");
+    t.ok (r16 < now + (8 * 86400), "sow < 7 days away");
 
-    Date r15 ("som");
-    t.notok (r15.sameMonth (now), "som not in same month as now");
+    Date r23 ("socw");
+    t.ok (r23 < now + (8 * 86400), "sow < 7 days away");
 
-    Date r16 ("soy");
-    t.notok (r16.sameYear (now), "soy not in same year as now");
+    Date r17 ("som");
+    t.notok (r17.sameMonth (now), "som not in same month as now");
+
+    Date r18 ("socm");
+    t.ok (r18.sameMonth (now), "socm in same month as now");
+
+    Date r19 ("soy");
+    t.notok (r19.sameYear (now), "soy not in same year as now");
 
     Date first ("1st");
     t.notok (first.sameMonth (now), "1st not in same month as now");
@@ -372,34 +378,34 @@ int main (int argc, char** argv)
     t.ok (eoq.sameYear (now),  "eoq is in same year as now");
 
     // Date::sameHour
-    Date r17 ("6/7/2010 01:00:00", "m/d/Y H:N:S");
-    Date r18 ("6/7/2010 01:59:59", "m/d/Y H:N:S");
-    t.ok (r17.sameHour (r18), "two dates within the same hour");
+    Date r20 ("6/7/2010 01:00:00", "m/d/Y H:N:S");
+    Date r21 ("6/7/2010 01:59:59", "m/d/Y H:N:S");
+    t.ok (r20.sameHour (r21), "two dates within the same hour");
 
-    Date r19 ("6/7/2010 00:59:59", "m/d/Y H:N:S");
-    t.notok (r17.sameHour (r19), "two dates not within the same hour");
+    Date r22 ("6/7/2010 00:59:59", "m/d/Y H:N:S");
+    t.notok (r20.sameHour (r22), "two dates not within the same hour");
 
     // Date::operator-
-    Date r22 (1234567890);
-    t.is ((r22 - 1).toEpoch (), 1234567889, "1234567890 - 1 = 1234567889");
+    Date r25 (1234567890);
+    t.is ((r25 - 1).toEpoch (), 1234567889, "1234567890 - 1 = 1234567889");
 
     // Date::operator--
-    Date r23 (11, 7, 2010, 23, 59, 59);
-    r23--;
-    t.is (r23.toString ("YMDHNS"), "20101106235959", "decrement across fall DST boundary");
+    Date r26 (11, 7, 2010, 23, 59, 59);
+    r26--;
+    t.is (r26.toString ("YMDHNS"), "20101106235959", "decrement across fall DST boundary");
 
-    Date r24 (3, 14, 2010, 23, 59, 59);
-    r24--;
-    t.is (r24.toString ("YMDHNS"), "20100313235959", "decrement across spring DST boundary");
+    Date r27 (3, 14, 2010, 23, 59, 59);
+    r27--;
+    t.is (r27.toString ("YMDHNS"), "20100313235959", "decrement across spring DST boundary");
 
     // Date::operator++
-    Date r25 (11, 6, 2010, 23, 59, 59);
-    r25++;
-    t.is (r25.toString ("YMDHNS"), "20101107235959", "increment across fall DST boundary");
+    Date r28 (11, 6, 2010, 23, 59, 59);
+    r28++;
+    t.is (r28.toString ("YMDHNS"), "20101107235959", "increment across fall DST boundary");
 
-    Date r26 (3, 13, 2010, 23, 59, 59);
-    r26++;
-    t.is (r26.toString ("YMDHNS"), "20100314235959", "increment across spring DST boundary");
+    Date r29 (3, 13, 2010, 23, 59, 59);
+    r29++;
+    t.is (r29.toString ("YMDHNS"), "20100314235959", "increment across spring DST boundary");
   }
 
   catch (const std::string& e)
