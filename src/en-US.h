@@ -551,6 +551,7 @@
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' is not a valid date in the '{2}' format."
 #define STRING_DATE_BAD_WEEKSTART    "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'."
+#define STRING_DATE_TOO_MUCH         "The date is too far into the future."
 
 #define STRING_DATE_JANUARY_LONG     "january"
 #define STRING_DATE_FEBRUARY_LONG    "february"
