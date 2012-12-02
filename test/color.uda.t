@@ -37,6 +37,7 @@ if (open my $fh, '>', 'color.rc')
             "color.uda.x=red\n",
             "uda.x.type=numeric\n",
             "uda.x.label=X\n",
+            "color.alternate=\n",
             "_forcecolor=1\n";
   close $fh;
   ok (-r 'color.rc', 'Created color.rc');
@@ -44,7 +45,7 @@ if (open my $fh, '>', 'color.rc')
 
 qx{../src/task rc:color.rc add one 2>&1};
 qx{../src/task rc:color.rc add two x:3 2>&1};
-my $output = qx{../src/task rc:color.rc list 2>&1};
+my $output = qx{../src/task rc:color.rc list 2>/dev/null};
 
 unlike ($output, qr/ \033\[32m .* one .* \033\[0m /x, 'No color.uda');
 like   ($output, qr/ \033\[31m .* two .* \033\[0m /x, 'Found color.uda');
