@@ -485,7 +485,7 @@
 #define STRING_CMD_COLOR_EXPLANATION "Use este comando para ver como los colores son mostrados por su terminal."
 #define STRING_CMD_COLOR_16          "Uso de 16-colores (soporta subrayado, negrita, fondo brillante):"
 #define STRING_CMD_COLOR_256         "Uso de 256-colores (soporta subrayado):"
-#define STRING_CMD_COLOR_YOURS       "Su muestra:"                                                         << "\n"
+#define STRING_CMD_COLOR_YOURS       "Su muestra:"
 #define STRING_CMD_COLOR_BASIC       "Colores básicos"
 #define STRING_CMD_COLOR_EFFECTS     "Efectos"
 #define STRING_CMD_COLOR_CUBE        "Cubo de color rgb"

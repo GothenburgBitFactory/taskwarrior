@@ -472,7 +472,7 @@
 #define STRING_CMD_COLOR_EXPLANATION "Use this command to see how colors are displayed by your terminal."
 #define STRING_CMD_COLOR_16          "16-color usage (supports underline, bold text, bright background):"
 #define STRING_CMD_COLOR_256         "256-color usage (supports underline):"
-#define STRING_CMD_COLOR_YOURS       "Your sample:"                                                        << "\n"
+#define STRING_CMD_COLOR_YOURS       "Your sample:"
 #define STRING_CMD_COLOR_BASIC       "Basic colors"
 #define STRING_CMD_COLOR_EFFECTS     "Effects"
 #define STRING_CMD_COLOR_CUBE        "Color cube rgb"

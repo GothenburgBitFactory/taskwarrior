@@ -134,7 +134,7 @@ int CmdColor::execute (std::string& output)
           << "  " << five.colorize ("task color underline grey10 on grey3")        << "\n"
           << "  " << six.colorize ("task color red on color173")                   << "\n"
           << "\n"
-          << STRING_CMD_COLOR_YOURS                                                << "\n"
+          << STRING_CMD_COLOR_YOURS                                                << "\n\n"
           << "  " << sample.colorize ("task color " + swatch)                      << "\n\n";
     }
 
