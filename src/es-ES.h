@@ -398,8 +398,8 @@
 
 #define STRING_CMD_COLUMNS_USAGE     "Todas las columnas y estilos de formato soportados"
 #define STRING_CMD_COLUMNS_NOTE      "* Significa formato por defecto, y por lo tanto opcional. Por ejemplo 'due' y 'due.formatted' son equivalentes."
-
 #define STRING_CMD_COLUMNS_USAGE2    "Muestra una lista de columnas (solo nombres) soportadas"
+#define STRING_CMD_COLUMNS_ARGS      "Solo puede especificar un término de búsqueda."
 
 #define STRING_CMD_DENO_USAGE        "Elimina una anotación"
 #define STRING_CMD_DENO_WORDS        "Se debe proporcionar un patrón de anotación."
@@ -565,6 +565,7 @@
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' no es una fecha válida según el formato '{2}'."
 #define STRING_DATE_BAD_WEEKSTART    "La variable de configuración 'weekstart' solamente puede contener 'Sunday' (domingo) o 'Monday' (lunes)."
+#define STRING_DATE_TOO_MUCH         "The date is too far into the future."
 
 #define STRING_DATE_JANUARY_LONG     "enero"
 #define STRING_DATE_FEBRUARY_LONG    "febrero"

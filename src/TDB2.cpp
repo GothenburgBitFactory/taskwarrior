@@ -1576,26 +1576,37 @@ void TDB2::revert ()
     {
       context.debug ("TDB::undo - task found in completed.data");
 
-      // If task now belongs back in pending.data
-      if (prior.find ("status:\"pending\"")   != std::string::npos ||
-          prior.find ("status:\"waiting\"")   != std::string::npos ||
-          prior.find ("status:\"recurring\"") != std::string::npos)
+      // Either revert if there was a prior state, or remove the task.
+      if (prior != "")
       {
-        c.erase (task);
-        p.push_back (prior);
-        File::write (completed._file._data, c);
-        File::write (pending._file._data, p);
-        File::write (undo._file._data, u);
-        std::cout << STRING_TDB2_REVERTED << "\n";
-        context.debug ("TDB::undo - task belongs in pending.data");
+        *task = prior;
+        if (task->find ("status:\"pending\"")   != std::string::npos ||
+            task->find ("status:\"waiting\"")   != std::string::npos ||
+            task->find ("status:\"recurring\"") != std::string::npos)
+        {
+          c.erase (task);
+          p.push_back (prior);
+          File::write (completed._file._data, c);
+          File::write (pending._file._data, p);
+          File::write (undo._file._data, u);
+          std::cout << STRING_TDB2_REVERTED << "\n";
+          context.debug ("TDB::undo - task belongs in pending.data");
+        }
+        else
+        {
+          File::write (completed._file._data, c);
+          File::write (undo._file._data, u);
+          std::cout << STRING_TDB2_REVERTED << "\n";
+          context.debug ("TDB::undo - task belongs in completed.data");
+        }
       }
       else
       {
-        *task = prior;
+        c.erase (task);
         File::write (completed._file._data, c);
         File::write (undo._file._data, u);
         std::cout << STRING_TDB2_REVERTED << "\n";
-        context.debug ("TDB::undo - task belongs in completed.data");
+        context.debug ("TDB::undo - task removed");
       }
 
       std::cout << STRING_TDB2_UNDO_COMPLETE << "\n";

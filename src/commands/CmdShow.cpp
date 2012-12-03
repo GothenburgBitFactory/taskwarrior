@@ -229,6 +229,7 @@ int CmdShow::execute (std::string& output)
       if (i->substr (0, 14) != "color.keyword."        &&
           i->substr (0, 14) != "color.project."        &&
           i->substr (0, 10) != "color.tag."            &&
+          i->substr (0, 10) != "color.uda."            &&
           i->substr (0,  8) != "holiday."              &&
           i->substr (0,  7) != "report."               &&
           i->substr (0,  6) != "alias."                &&

@@ -8,6 +8,9 @@ New Features in taskwarrior 2.2.0
   - Tasks now have a 'modified' attribute, which indicates the last time, if at
     all, that they were modified.
   - Statistics now report total number of blocked and blocking tasks.
+  - The 'columns' command now supports search term for the column name.
+  - New date shortcuts, 'socm' and 'eocm', meaning start and end of current
+    month.
 
 New commands in taskwarrior 2.2.0
 
@@ -15,7 +18,7 @@ New commands in taskwarrior 2.2.0
 
 New configuration options in taskwarrior 2.2.0
 
-  -
+  - New color rule 'color.uda.<uda-name>'.
 
 Newly deprecated features in taskwarrior 2.2.0
   

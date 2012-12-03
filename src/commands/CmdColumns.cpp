@@ -42,7 +42,7 @@ extern Context context;
 CmdColumns::CmdColumns ()
 {
   _keyword     = "columns";
-  _usage       = "task          columns";
+  _usage       = "task          columns [substring]";
   _description = STRING_CMD_COLUMNS_USAGE;
   _read_only   = true;
   _displays_id = false;
@@ -51,6 +51,12 @@ CmdColumns::CmdColumns ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdColumns::execute (std::string& output)
 {
+  // Obtain the arguments from the description.  That way, things like '--'
+  // have already been handled.
+  std::vector <std::string> words = context.a3.extract_words ();
+  if (words.size () > 1)
+    throw std::string (STRING_CMD_COLUMNS_ARGS);
+
   // Include all columns in the table.
   std::vector <std::string> names;
   std::map <std::string, Column*>::const_iterator col;
@@ -73,15 +79,19 @@ int CmdColumns::execute (std::string& output)
   std::vector <std::string>::iterator name;
   for (name = names.begin (); name != names.end (); ++name)
   {
-    const std::vector <std::string> styles   = context.columns[*name]->styles ();
-    const std::vector <std::string> examples = context.columns[*name]->examples ();
-
-    for (unsigned int i = 0; i < styles.size (); ++i)
+    if (words.size () == 0 ||
+        find (*name, words[0], false) != std::string::npos)
     {
-      int row = formats.addRow ();
-      formats.set (row, 0, i == 0 ? *name : "");
-      formats.set (row, 1, styles[i] + (i == 0 ? "*" : ""));
-      formats.set (row, 2, i < examples.size () ? examples[i] : "");
+      const std::vector <std::string> styles   = context.columns[*name]->styles ();
+      const std::vector <std::string> examples = context.columns[*name]->examples ();
+
+      for (unsigned int i = 0; i < styles.size (); ++i)
+      {
+        int row = formats.addRow ();
+        formats.set (row, 0, i == 0 ? *name : "");
+        formats.set (row, 1, styles[i] + (i == 0 ? "*" : ""));
+        formats.set (row, 2, i < examples.size () ? examples[i] : "");
+      }
     }
   }
 

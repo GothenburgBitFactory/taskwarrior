@@ -46,26 +46,26 @@ if ($command =~ /No matches/)
 }
 
 # Generate output.
-print "'uuid','status','tags','entry','start','due','recur','end','project',",
-      "'priority','fg','bg','description'\n";
+print "uuid\tstatus\ttags\tentry\tstart\tdue\trecur\tend\tproject\t",
+      "priority\tfg\tbg\tdescription\n";
 
 for my $task (split /,$/ms, qx{$command})
 {
   my $data = from_json ($task);
 
-  print "'$data->{'uuid'}',",
-        "'$data->{'status'}',",
-        "'", (exists $data->{'tags'} ? join (' ', @{$data->{'tags'}}) : ''), "',",
-        "'$data->{'entry'}',",
-        "'", ($data->{'start'}    || ''), "',",
-        "'", ($data->{'due'}      || ''), "',",
-        "'", ($data->{'recur'}    || ''), "',",
-        "'", ($data->{'end'}      || ''), "',",
-        "'", ($data->{'project'}  || ''), "',",
-        "'", ($data->{'priority'} || ''), "',",
-        "'", ($data->{'fg'}       || ''), "',",
-        "'", ($data->{'bg'}       || ''), "',",
-        "'$data->{'description'}'",
+  print "$data->{'uuid'}\t",
+        "$data->{'status'}\t",
+        (exists $data->{'tags'} ? join (' ', @{$data->{'tags'}}) : ''), "\t",
+        "$data->{'entry'}\t",
+        ($data->{'start'}    || ''), "\t",
+        ($data->{'due'}      || ''), "\t",
+        ($data->{'recur'}    || ''), "\t",
+        ($data->{'end'}      || ''), "\t",
+        ($data->{'project'}  || ''), "\t",
+        ($data->{'priority'} || ''), "\t",
+        ($data->{'fg'}       || ''), "\t",
+        ($data->{'bg'}       || ''), "\t",
+        "$data->{'description'}",
         "\n";
 
   # Note that this format ignores:

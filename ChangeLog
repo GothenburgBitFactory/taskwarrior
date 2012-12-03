@@ -7,11 +7,18 @@ Features
    (thanks to Michelle Crane).
  + Added Feature #953, which includes the total number of blocked and blocking
    tasks to the 'statistics' command output (thanks to T. Charles Yun).
+ + Added Feature #1039, which adds new date shortcuts, 'socm' and 'eocm',
+   meaning start and end of current month (thanks to Thomas Sullivan,
+   Louis-Claude Canon).
+ + Added Feature #1061, which allows the 'columns' command to use a search
+   string for the column name (thanks to Uli Martens).
  + Added Feature #1069, which gives a clearer error when a UDA
    is added without the uda.<uda-name>.type variable.
  + Added Feature #1124, which provides a '_show' command that displays all
    configuration defaults and settings, for use by third-party software (thanks
    to Jake Bell).
+ + Added Feature #1099, which supports the 'color.uda.<uda-name>' color rule
+   (thanks to Florian Hollerweger).
  + The 'projects' command now outputs abstract parents and reduces
    repetition by not printing parent names in front of children names.
  + Added framework for testing bash autocompletion.
@@ -24,13 +31,11 @@ Features
  + New 'modified' attribute, which contains the most recent modification date,
    if a modification has occurred.
  + Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
+ + Added new export script: export-tsv.pl.
 
 Bugs
- + Improved hyphenation by splitting on commas (even if no whitespace after).
-   Leads to better output of, for example, 'task show', where comma-separated
-   lists are common.
- + Fixed bug #1031, which kept expanding aliases after the '--' operator (thanks
-   to Jim B).
+ + Fixed bug #947, #1031, which kept expanding aliases after the '--' operator
+   (thanks to Jim B).
  + Fixed bug #1038, which prints blank lines with bulk changes and when the
    verbose attributes does not specify it. Lines do a better separation between
    each changes also.
@@ -47,6 +52,11 @@ Bugs
  + Fixed bug #1065, where CmdShow issued messages in incorrect situations.
  + Partially fixed #1083, which showed 'task 0 ...' when modifying a non-
    pending task (thanks to Aikido Guy).
+ + Fixed bug #1123, which caused the undo of a 'log' command to corrupt the data
+   file (thanks to Tim None).
+ + Improved hyphenation by splitting on commas (even if no whitespace after).
+   Leads to better output of, for example, 'task show', where comma-separated
+   lists are common.
  + No more bash completion of, for example, 'projABC:', or of 'proj:' if
    abbreviation.minimum is greater than 4.
  + Fixed bug where shadow files are not properly created when there is a missing

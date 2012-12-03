@@ -211,6 +211,7 @@ std::string Config::_defaults =
   "color.blocking=white on color6                 # Color of blocking tasks\n"
   "#color.completed=on blue                       # Color of completed tasks\n"
   "#color.deleted=on blue                         # Color of deleted tasks\n"
+  "#color.uda.estimate=on green                   # Color of UDA\n"
 #else
   "color.header=yellow                            # Color of header messages\n"
   "color.footnote=yellow                          # Color of footnote messages\n"
@@ -265,12 +266,13 @@ std::string Config::_defaults =
   "color.blocking=black on bright white           # Color of blocking tasks\n"
   "#color.completed=on blue                       # Color of completed tasks\n"
   "#color.deleted=on blue                         # Color of deleted tasks\n"
+  "#color.uda.estimate=on green                   # Color of UDA\n"
 #endif
   "\n"
   "# Here is the rule precedence order, highest to lowest.\n"
   "# Note that these are just the color rule names, without the leading 'color.'\n"
   "#      and any trailing '.value'.\n"
-  "rule.precedence.color=due.today,active,blocking,blocked,overdue,due,scheduled,keyword.,project.,tag.,recurring,pri.,tagged,completed,deleted\n"
+  "rule.precedence.color=due.today,active,blocking,blocked,overdue,due,scheduled,keyword.,project.,tag.,uda.,recurring,pri.,tagged,completed,deleted\n"
   "\n"
   "# Shadow file support\n"
   "#shadow.file=/tmp/shadow.txt                   # Location of shadow file\n"

@@ -212,6 +212,13 @@ static void colorizeKeyword (Task& task, const std::string& rule, const Color& b
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+static void colorizeUDA (Task& task, const std::string& rule, const Color& base, Color& c)
+{
+  if (task.has (rule.substr (10)))
+    c.blend (base);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 static void colorizeDue (Task& task, const Color& base, Color& c)
 {
   if (task.has ("due"))
@@ -313,6 +320,7 @@ void autoColorize (Task& task, Color& c)
       else if (r->substr (0, 10) == "color.tag.")     colorizeTag          (task, *r, base, c);
       else if (r->substr (0, 14) == "color.project.") colorizeProject      (task, *r, base, c);
       else if (r->substr (0, 14) == "color.keyword.") colorizeKeyword      (task, *r, base, c);
+      else if (r->substr (0, 10) == "color.uda.")     colorizeUDA          (task, *r, base, c);
     }
   }
 }

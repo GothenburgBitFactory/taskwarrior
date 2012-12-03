@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#! /usr/bin/env perl
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
@@ -28,56 +28,37 @@
 
 use strict;
 use warnings;
+use Test::More tests => 8;
 
-# Give a nice error if the (non-standard) JSON module is not installed.
-eval "use JSON";
-if ($@)
+# Create the rc file.
+if (open my $fh, '>', 'bug.rc')
 {
-  print "Error: You need to install the JSON Perl module.\n";
-  exit 1;
+  print $fh "data.location=.\n",
+            "color=off\n";
+  close $fh;
+  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
-# Use the taskwarrior 2.0+ export command to filter and return JSON
-my $command = join (' ', ("env PATH=$ENV{PATH} task export", @ARGV));
-if ($command =~ /No matches/)
-{
-  printf STDERR $command;
-  exit 1;
-}
+# Test:  task columns
+#        task columns descr
+my $output = qx{../src/task rc:bug.rc columns 2>/dev/null};
+like ($output, qr/description/, 'columns - found description');
+like ($output, qr/uuid/,        'columns - found uuid');
+like ($output, qr/project/,     'columns - found project');
 
-# Generate output.
-print "'uuid','status','tags','entry','start','due','recur','end','project',",
-      "'priority','fg','bg','description'\n";
+$output = qx{../src/task rc:bug.rc columns escr 2>/dev/null};
+like   ($output, qr/description/, 'columns - found \'escr\' in description');
+unlike ($output, qr/uuid/,        'columns - did not find \'escr\' in uuid');
+unlike ($output, qr/project/,     'columns - did not find \'escr\' in project');
 
-for my $task (split /,$/ms, qx{$command})
-{
-  my $data = from_json ($task);
-
-  print "'$data->{'uuid'}',",
-        "'$data->{'status'}',",
-        "'", (exists $data->{'tags'} ? join (' ', @{$data->{'tags'}}) : ''), "',",
-        "'$data->{'entry'}',",
-        "'", ($data->{'start'}    || ''), "',",
-        "'", ($data->{'due'}      || ''), "',",
-        "'", ($data->{'recur'}    || ''), "',",
-        "'", ($data->{'end'}      || ''), "',",
-        "'", ($data->{'project'}  || ''), "',",
-        "'", ($data->{'priority'} || ''), "',",
-        "'", ($data->{'fg'}       || ''), "',",
-        "'", ($data->{'bg'}       || ''), "',",
-        "'$data->{'description'}'",
-        "\n";
-
-  # Note that this format ignores:
-  #   wait
-  #   until
-  #   annotations
-  #   mask
-  #   imask
-  #   UDAs
-}
+# Cleanup.
+unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'bug.rc', 'Cleanup');
 
 exit 0;
-
-################################################################################
 

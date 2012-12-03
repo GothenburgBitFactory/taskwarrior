@@ -155,9 +155,10 @@ Displays all possible colors, a named sample, or a legend containing all
 currently defined colors.
 
 .TP
-.B task columns
+.B task columns [substring]
 Displays all supported columns and formatting styles.  Useful when creating
-custom reports.
+custom reports.  If a substring is provided, only matching column names are
+shown.
 
 .TP
 .B task <filter> completed

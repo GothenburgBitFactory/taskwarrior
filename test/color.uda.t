@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#! /usr/bin/env perl
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
@@ -28,56 +28,36 @@
 
 use strict;
 use warnings;
+use Test::More tests => 4;
 
-# Give a nice error if the (non-standard) JSON module is not installed.
-eval "use JSON";
-if ($@)
+# Create the rc file.
+if (open my $fh, '>', 'color.rc')
 {
-  print "Error: You need to install the JSON Perl module.\n";
-  exit 1;
+  print $fh "data.location=.\n",
+            "color.uda.x=red\n",
+            "uda.x.type=numeric\n",
+            "uda.x.label=X\n",
+            "color.alternate=\n",
+            "_forcecolor=1\n";
+  close $fh;
+  ok (-r 'color.rc', 'Created color.rc');
 }
 
-# Use the taskwarrior 2.0+ export command to filter and return JSON
-my $command = join (' ', ("env PATH=$ENV{PATH} task export", @ARGV));
-if ($command =~ /No matches/)
-{
-  printf STDERR $command;
-  exit 1;
-}
+qx{../src/task rc:color.rc add one 2>&1};
+qx{../src/task rc:color.rc add two x:3 2>&1};
+my $output = qx{../src/task rc:color.rc list 2>/dev/null};
 
-# Generate output.
-print "'uuid','status','tags','entry','start','due','recur','end','project',",
-      "'priority','fg','bg','description'\n";
+unlike ($output, qr/ \033\[32m .* one .* \033\[0m /x, 'No color.uda');
+like   ($output, qr/ \033\[31m .* two .* \033\[0m /x, 'Found color.uda');
 
-for my $task (split /,$/ms, qx{$command})
-{
-  my $data = from_json ($task);
-
-  print "'$data->{'uuid'}',",
-        "'$data->{'status'}',",
-        "'", (exists $data->{'tags'} ? join (' ', @{$data->{'tags'}}) : ''), "',",
-        "'$data->{'entry'}',",
-        "'", ($data->{'start'}    || ''), "',",
-        "'", ($data->{'due'}      || ''), "',",
-        "'", ($data->{'recur'}    || ''), "',",
-        "'", ($data->{'end'}      || ''), "',",
-        "'", ($data->{'project'}  || ''), "',",
-        "'", ($data->{'priority'} || ''), "',",
-        "'", ($data->{'fg'}       || ''), "',",
-        "'", ($data->{'bg'}       || ''), "',",
-        "'$data->{'description'}'",
-        "\n";
-
-  # Note that this format ignores:
-  #   wait
-  #   until
-  #   annotations
-  #   mask
-  #   imask
-  #   UDAs
-}
+# Cleanup.
+unlink qw(pending.data completed.data undo.data backlog.data synch.key color.rc);
+ok (! -r 'pending.data'   &&
+    ! -r 'completed.data' &&
+    ! -r 'undo.data'      &&
+    ! -r 'backlog.data'   &&
+    ! -r 'synch.key'      &&
+    ! -r 'color.rc', 'Cleanup');
 
 exit 0;
-
-################################################################################
 

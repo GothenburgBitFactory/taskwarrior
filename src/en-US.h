@@ -388,6 +388,7 @@
 #define STRING_CMD_COLUMNS_USAGE     "All supported columns and formatting styles"
 #define STRING_CMD_COLUMNS_NOTE      "* Means default format, and therefore optional.  For example, 'due' and 'due.formatted' are equivalent."
 #define STRING_CMD_COLUMNS_USAGE2    "Displays only a list of supported columns"
+#define STRING_CMD_COLUMNS_ARGS      "You can only specify one search string."
 
 #define STRING_CMD_DENO_USAGE        "Deletes an annotation"
 #define STRING_CMD_DENO_WORDS        "An annotation pattern must be provided."
@@ -550,6 +551,7 @@
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' is not a valid date in the '{2}' format."
 #define STRING_DATE_BAD_WEEKSTART    "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'."
+#define STRING_DATE_TOO_MUCH         "The date is too far into the future."
 
 #define STRING_DATE_JANUARY_LONG     "january"
 #define STRING_DATE_FEBRUARY_LONG    "february"
