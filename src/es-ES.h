@@ -104,7 +104,7 @@
 
 // A3
 #define STRING_A3_ALTERNATE_RC       "Usando el archivo .taskrc alternativo {1}"
-#define STRING_A3_ALTERNATE_DATA     "Usando date.location alternativa {1}"
+#define STRING_A3_ALTERNATE_DATA     "Usando data.location alternativa {1}"
 // Sobrescritura: de R.A.E. sobrescribir
 #define STRING_A3_OVERRIDE_RC        "Sobrescritura de configuración rc.{1}:{2}"
 #define STRING_A3_OVERRIDE_PROBLEM   "Problema con sobrescritura: {1}"

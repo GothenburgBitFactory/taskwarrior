@@ -105,7 +105,7 @@
 
 // A3
 #define STRING_A3_ALTERNATE_RC       "Using alternate .taskrc file {1}"
-#define STRING_A3_ALTERNATE_DATA     "Using alternate date.location {1}"
+#define STRING_A3_ALTERNATE_DATA     "Using alternate data.location {1}"
 #define STRING_A3_OVERRIDE_RC        "Configuration override rc.{1}:{2}"
 #define STRING_A3_OVERRIDE_PROBLEM   "Problem with override: {1}"
 #define STRING_A3_UNKNOWN_ATTMOD     "Error: unrecognized attribute modifier '{1}'."
