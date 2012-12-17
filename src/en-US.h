@@ -713,6 +713,7 @@
 #define STRING_FEEDBACK_ATT_SET      "{1} will be set to '{2}'."
 #define STRING_FEEDBACK_ATT_MOD      "{1} will be changed from '{2}' to '{3}'."
 #define STRING_FEEDBACK_ATT_DEL      "{1} deleted."
+#define STRING_FEEDBACK_ATT_DEL_DUR  "{1} deleted (duration: {2})."
 #define STRING_FEEDBACK_ATT_WAS_SET  "{1} set to '{2}'."
 #define STRING_FEEDBACK_ATT_WAS_MOD  "{1} changed from '{2}' to '{3}'."
 #define STRING_FEEDBACK_ANN_ADD      "Annotation of '{1}' added."

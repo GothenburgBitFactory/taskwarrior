@@ -381,7 +381,7 @@ int CmdInfo::execute (std::string& output)
       std::string previous;
       std::string current;
       unsigned int i = 0;
-      long total_time = 0;
+      long total_time = 0, last_timestamp = 0;
       while (i < undo.size ())
       {
         when = undo[i++];
@@ -403,7 +403,7 @@ int CmdInfo::execute (std::string& output)
 
             Task before (previous.substr (4));
             Task after (current.substr (4));
-            journal.set (row, 1, taskInfoDifferences (before, after, dateformat));
+            journal.set (row, 1, taskInfoDifferences (before, after, dateformat, last_timestamp, timestamp.toEpoch()));
 
             // calculate the total active time
             if (before.get ("start") == ""
