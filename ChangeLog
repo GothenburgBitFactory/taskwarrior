@@ -48,6 +48,8 @@ Bugs
    provides an incorrect summary.
  + Fixed bug #1048, which segfaulted rather than complain about syntax (thanks
    to Bryce Harrington, Štěpán Henek).
+ + Fixed bug #1053, where ' characters were not escaped by export-csv.pl (thanks
+   to John Florian).
  + Fixed bug #1056, where CmdSummary did not print abstract parents.
  + Fixed bug #1059, where CmdEdit was running garbage collection.
  + Fixed bug #1060, where an error was not thrown correctly.

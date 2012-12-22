@@ -53,6 +53,9 @@ for my $task (split /,$/ms, qx{$command})
 {
   my $data = from_json ($task);
 
+  my $desc = $data->{'description'};
+  $desc =~ s/'/\\'/g;
+
   print "'$data->{'uuid'}',",
         "'$data->{'status'}',",
         "'", (exists $data->{'tags'} ? join (' ', @{$data->{'tags'}}) : ''), "',",
@@ -65,7 +68,7 @@ for my $task (split /,$/ms, qx{$command})
         "'", ($data->{'priority'} || ''), "',",
         "'", ($data->{'fg'}       || ''), "',",
         "'", ($data->{'bg'}       || ''), "',",
-        "'$data->{'description'}'",
+        "'$desc'",
         "\n";
 
   # Note that this format ignores:
