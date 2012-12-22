@@ -56,6 +56,8 @@ Bugs
    pending task (thanks to Aikido Guy).
  + Fixed bug #1123, which caused the undo of a 'log' command to corrupt the data
    file (thanks to Tim None).
+ + Fixed bug #1150, which referenced deprecated features in the tutorial man
+   page (thanks to Benjamin Weber).
  + Improved hyphenation by splitting on commas (even if no whitespace after).
    Leads to better output of, for example, 'task show', where comma-separated
    lists are common.

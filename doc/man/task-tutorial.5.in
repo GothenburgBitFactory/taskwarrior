@@ -1096,49 +1096,6 @@ ID Project Pri Due Active Age     Description
 What you see is the result of a set of color rules being applied to the tasks.
 There is a hierarchy of color rules that colorize a task based on the metadata.
 
-Here is an example of an explicit override to the color rules where a specific
-task is given a red background.
-
-.RS
-$ task 1 modify bg:on_red
-.br
-modified 1 task.
-.br
-$ task list
-.br
-
-.br
-ID Project Pri Due Active Age     Description
-.br
--- ------- --- --- ------ ------- ----------------------------------
-.br
- 1 party   H                 1 hr Select a free weekend in November
-.br
-                                  10/16/2010 the 13th looks good
-.br
- 2 party   H                 1 hr Select and book a venue
-.br
- 5 party   H              59 mins Design invitations
-.br
- 8                        33 mins Select some Music for after dinner
-.br
- 7 home                   50 mins Pay rent at the end of the month
-.br
- 3 party                     1 hr Mail invitations
-.br
- 4 party                     1 hr Select a caterer
-.br
- 6 party                  59 mins Print invitations
-.br
-
-.br
-8 tasks
-.br
-$ task 1 modify bg:
-.br
-Modified 1 task.
-.RE
-
 Taskwarrior supports 256 colors on certain terminal emulators, and this shows
 the range of colors available.  Note that your terminal may show fewer colors.
 
