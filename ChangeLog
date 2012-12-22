@@ -14,11 +14,11 @@ Features
    string for the column name (thanks to Uli Martens).
  + Added Feature #1069, which gives a clearer error when a UDA
    is added without the uda.<uda-name>.type variable.
+ + Added Feature #1099, which supports the 'color.uda.<uda-name>' color rule
+   (thanks to Florian Hollerweger).
  + Added Feature #1124, which provides a '_show' command that displays all
    configuration defaults and settings, for use by third-party software (thanks
    to Jake Bell).
- + Added Feature #1099, which supports the 'color.uda.<uda-name>' color rule
-   (thanks to Florian Hollerweger).
  + Added feature #1147, applying patch to display duration of each activity
    session (thanks to Justin Forest).
  + The 'projects' command now outputs abstract parents and reduces
@@ -56,6 +56,8 @@ Bugs
    pending task (thanks to Aikido Guy).
  + Fixed bug #1123, which caused the undo of a 'log' command to corrupt the data
    file (thanks to Tim None).
+ + Fixed bug #1128, which caused 'age' columns to be right-justified instead of
+   left-justified (thanks to Steve Rader).
  + Fixed bug #1150, which referenced deprecated features in the tutorial man
    page (thanks to Benjamin Weber).
  + Improved hyphenation by splitting on commas (even if no whitespace after).

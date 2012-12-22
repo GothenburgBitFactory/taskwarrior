@@ -178,7 +178,7 @@ void ColumnDate::render (
 
       lines.push_back (
         color.colorize (
-          rightJustify (
+          leftJustify (
             Duration (now - date).formatCompact (), width)));
     }
   }
