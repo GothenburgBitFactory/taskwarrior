@@ -381,7 +381,8 @@ int CmdInfo::execute (std::string& output)
       std::string previous;
       std::string current;
       unsigned int i = 0;
-      long total_time = 0, last_timestamp = 0;
+      long total_time = 0;
+      long last_timestamp = 0;
       while (i < undo.size ())
       {
         when = undo[i++];

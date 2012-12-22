@@ -206,9 +206,10 @@ std::string taskInfoDifferences (const Task& before, const Task& after, const st
       out << format (STRING_FEEDBACK_ANN_DEL, before.get (*name))
           << "\n";
     }
-    else if (*name == "start") {
+    else if (*name == "start")
+    {
       out << format (STRING_FEEDBACK_ATT_DEL_DUR, ucFirst (*name),
-          Duration(current_timestamp - last_timestamp).formatPrecise())
+                     Duration(current_timestamp - last_timestamp).formatPrecise())
           << "\n";
     }
     else
@@ -239,6 +240,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after, const st
     {
       if (*name == "start")
           last_timestamp = current_timestamp;
+
       out << format (STRING_FEEDBACK_ATT_WAS_SET,
                      ucFirst (*name),
                      renderAttribute (*name, after.get (*name), dateformat))
