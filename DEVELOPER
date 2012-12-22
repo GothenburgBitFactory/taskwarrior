@@ -19,11 +19,11 @@ General Statement
 
   - Take a look at the bug database.  It is the nature of software to contain
     bugs, and there is a continuous effort to fix them.  Looking at open bugs
-    and confirming them, perhaps determining that it is already fixed, or just
-    adding clarifying information are all very useful contributions and much
-    needed.
+    and confirming them, perhaps determining that they are already fixed, or
+    just adding clarifying information are all very useful contributions and
+    much needed.
 
-  - Fix a bug.  For this you'll need C++ and git skills, but this is one of
+  - Fix a bug.  For this you'll need C++ and Git skills, but this is one of
     the largest ways you can contribute.  We welcome all bug fixes, provided
     the work is done well and doesn't create other problems or introduce new
     dependencies.
@@ -44,9 +44,10 @@ General Statement
     already rejected such a feature for some very good reasons.  So please
     check first, so we don't duplicate effort or waste anyone's time.
 
-  - Spread the word. Help others become more effective at managing tasks.
+  - Spread the word.  Help others become more effective at managing tasks.
 
-  - Encouragement. Tell us what works for you, and what doesn't. It's all good.
+  - Encouragement.  Tell us what works for you, and what doesn't.  It's all
+    good.
 
   Following are specific areas that could use some attention.
 
@@ -138,7 +139,7 @@ Unit Tests Needed
      make test
 
   Either way, a TAP file 'all.log' is written that contains all test results.
-  once this file is created, you can see the failing tests using this script:
+  Once this file is created, you can see the failing tests using this script:
 
     cd task.git/test
     ./problems
@@ -146,14 +147,15 @@ Unit Tests Needed
   If you make a habit of running the test suite, consider downloading the
   vramsteg utility to show a colorful progress bar, from:
 
-    git://tasktools.org/vramsteg.git     
+    git://tasktools.org/vramsteg.git
 
   Tests needed:
 
   - The basic.t unit tests are a misnomer, and should be either removed or
     renamed.  We have long talked of 'basic functionality' that includes add,
     delete, done, and list commands.  We need unit tests that prove that basic
-    functionality is working, and it should be called basic.t.
+    functionality is working, and the file containing them should be called
+    basic.t.
   - None of the current unit tests remove the 'extensions' directory, and they
     all should.
   - Test propagation of modifications to recurring tasks.
@@ -161,9 +163,9 @@ Unit Tests Needed
   - Need unit tests for each bug in the issue list, if suitable.
   - We have bugs in the unit tests that only manifest on days such as December
     31st.  Clearly there is some bad date math going on, most likely in the
-    tests themselves, rather than in taskwarrior.
+    tests themselves, rather than in Taskwarrior.
 
-  * Note that running the unit tests require the Perl JSON module to be
+  * Note that running the unit tests requires the Perl JSON module to be
     installed.
 
 Work in Progress
