@@ -685,7 +685,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     if (type != "")
     {
       std::string value = findValue (after, "\n  UDA " + col->first + ":");
-      if (task.get (col->first) != value)
+      if ((task.get (col->first) != value) &&
+          (type == "date" && task.get (col->first)
+           != Date(value, dateformat).toEpochString ()))
       {
         if (value != "")
         {
