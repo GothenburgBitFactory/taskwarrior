@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (261);
+  UnitTest t (264);
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width, bool hyphenate)
   std::string text = "This is a test of the line wrapping code.";
   std::vector <std::string> lines;
@@ -48,7 +48,6 @@ int main (int argc, char** argv)
   t.is (lines[3], "wrapping",      "wrapText line 3 -> 'wrapping'");
   t.is (lines[4], "code.",         "wrapText line 4 -> 'code.'");
 
-  // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width)
   text = "This ☺ is a test of utf8 line extraction.";
   lines.clear ();
   wrapText (lines, text, 7, true);
@@ -60,6 +59,13 @@ int main (int argc, char** argv)
   t.is (lines[4], "line",          "wrapText line 4 -> 'line'");
   t.is (lines[5], "extrac-",       "wrapText line 5 -> 'extrac-'");
   t.is (lines[6], "tion.",         "wrapText line 6 -> 'tion.'");
+
+  text = "one two three\n  four";
+  lines.clear ();
+  wrapText (lines, text, 13, true);
+  t.is (lines.size (), (size_t) 2, "wrapText 'one two three\\n  four' -> 2 lines");
+  t.is (lines[0], "one two three", "wrapText line 0 -> 'one two three'");
+  t.is (lines[1], "  four",        "wrapText line 1 -> '  four'");
 
   // void extractLine (std::string& text, std::string& line, int length, bool hyphenate)
   text = "This ☺ is a test of utf8 line extraction.";

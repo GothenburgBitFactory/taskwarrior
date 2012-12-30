@@ -497,7 +497,7 @@ void E9::operator_equal (
     // Bug 856.
     //
     // Special case for checking absent projects.  Without the explicit "" check
-    // the right._value.lenghth() is used, which is 0, and therefore generates
+    // the right._value.length() is used, which is 0, and therefore generates
     // a false match.
     if (right._value == "")
     {
