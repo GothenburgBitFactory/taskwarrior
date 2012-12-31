@@ -85,7 +85,11 @@ void ColumnPriority::measure (Task& task, int& minimum, int& maximum)
 {
   std::string priority = task.get (_name);
 
-  minimum = maximum = 1;
+  if (priority == "")
+    minimum = maximum = 0;
+  else
+    minimum = maximum = 1;
+
   if (_style == "long")
   {
          if (priority == "H") minimum = maximum = 4;

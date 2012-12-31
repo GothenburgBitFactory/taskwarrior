@@ -113,6 +113,9 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 {
   context.timer_render.start ();
 
+  bool const print_empty_columns = context.config.getBoolean ("print.empty.columns");
+  std::vector <Column*> nonempty_columns;
+
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
   std::vector <int> ideal;
@@ -121,7 +124,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   for (i = _columns.begin (); i != _columns.end (); ++i)
   {
     // Headers factor in to width calculations.
-    int global_min = utf8_length ((*i)->label ());
+    int global_min = 0;
     int global_ideal = global_min;
 
     for (unsigned int s = 0; s < sequence.size (); ++s)
@@ -141,9 +144,23 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       if (ideal > global_ideal) global_ideal = ideal;
     }
 
-    minimal.push_back (global_min);
-    ideal.push_back (global_ideal);
+    if (print_empty_columns || global_min != 0)
+    {
+      int label_length = utf8_length ((*i)->label ());
+      if (label_length > global_min) global_min = label_length;
+      if (label_length > global_ideal) global_ideal = label_length;
+      minimal.push_back (global_min);
+      ideal.push_back (global_ideal);
+    }
+
+    if (!print_empty_columns && global_min != 0)
+    {
+      nonempty_columns.push_back(*i);
+    }
   }
+
+  if (!print_empty_columns)
+    _columns = nonempty_columns;
 
   // Sum the minimal widths.
   int sum_minimal = 0;

@@ -34,6 +34,7 @@ Features
    if a modification has occurred.
  + Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
  + Added new export script: export-tsv.pl.
+ + Added the configuration variable 'print.empty.columns'.
 
 Bugs
  + Fixed bug #947, #1031, which kept expanding aliases after the '--' operator
