@@ -71,6 +71,8 @@ Bugs
    abbreviation.minimum is greater than 4.
  + Fixed bug where shadow files are not properly created when there is a missing
    .taskrc file (thanks to Pietro Cerutti).
+ + Fixed bug with 'socm' date calculation that failed on some days, by
+   simplifying the implementation.
 
 ------ old releases ------------------------------
 

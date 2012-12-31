@@ -830,8 +830,7 @@ bool Date::isRelativeDate (const std::string& input)
         found == "eocw" ||
         found == "sow"  ||
         found == "soww" ||
-        found == "socw" ||
-        found == "socm")
+        found == "socw")
     {
       if (found == "eow" || found == "eoww")
         dow = 5;
@@ -849,9 +848,6 @@ bool Date::isRelativeDate (const std::string& input)
         today += (dow - today.dayOfWeek () + 7) * 86400;
       else
         today += (dow - today.dayOfWeek ()) * 86400;
-
-      if (found == "socm")
-        today -= (today.day () - 1) * 86400;
 
       int m, d, y;
       today.toMDY (m, d, y);
@@ -904,6 +900,14 @@ bool Date::isRelativeDate (const std::string& input)
     else if (found == "eoy")
     {
       Date then (12, 31, today.year ());
+      _t = then._t;
+      return true;
+    }
+    else if (found == "socm")
+    {
+      int m = today.month ();
+      int y = today.year ();
+      Date then (m, 1, y);
       _t = then._t;
       return true;
     }
