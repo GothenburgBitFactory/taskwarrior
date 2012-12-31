@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -44,6 +44,9 @@ qx{../src/task rc:bug.rc 1 done 2>&1};
 
 my $output = qx{../src/task all status:Completed rc:bug.rc 2>&1};
 like ($output, qr/ToBeCompleted/, 'status:Completed returns completed tasks');
+
+$output = qx{../src/task all status:completed rc:bug.rc 2>&1};
+like ($output, qr/ToBeCompleted/, 'status:completed returns completed tasks');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc);

@@ -52,18 +52,22 @@ qx{../src/task rc:count.rc add four wait:eom 2>&1};
 #      expanding to 2012-04-30 24:00:00, as per ISO-8601.
 qx{../src/task rc:count.rc add five due:eom recur:monthly 2>&1};
 
+diag ("Problem: the next test fails at EOM");
 my $output = qx{../src/task rc:count.rc count 2>&1};
 like ($output, qr/^5\n/ms, 'count');
 
 $output = qx{../src/task rc:count.rc count status:deleted rc.debug:1 2>&1};
 like ($output, qr/^1\n/ms, 'count status:deleted');
 
+diag ("Problem: the next test fails at EOM");
 $output = qx{../src/task rc:count.rc count e 2>&1};
 like ($output, qr/^3\n/ms, 'count e');
 
+diag ("Problem: the next test fails at EOM");
 $output = qx{../src/task rc:count.rc count description.startswith:f 2>&1};
 like ($output, qr/^2\n/ms, 'count description.startswith:f');
 
+diag ("Problem: the next test fails at EOM");
 $output = qx{../src/task rc:count.rc count due.any: 2>&1};
 like ($output, qr/^1\n/ms, 'count due.any:');
 

@@ -301,7 +301,7 @@ $output = qx{../src/task rc:urgency.rc 43 _urgency 2>&1};
 like ($output, qr/urgency 18$/ms, '+TAG = 18');
 
 # scheduled 0 (scheduled future)
-qx {../src/task rc:urgency.rc add 12a scheduled:eom 2>&1};
+qx {../src/task rc:urgency.rc add 12a scheduled:30d 2>&1};
 $output = qx{../src/task rc:urgency.rc 44 _urgency 2>&1};
 like ($output, qr/urgency 0$/ms, 'scheduled future = 0');
 
