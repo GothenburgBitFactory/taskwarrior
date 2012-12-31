@@ -36,8 +36,8 @@ Features
  + Added new export script: export-tsv.pl.
 
 Bugs
- + Fixed bug #1110, which did not treat 'status:Completed' the same
-   as 'status:completed' (thanks to Aikido Guy).
+ + Fixed bug #947, #1031, which kept expanding aliases after the '--' operator
+   (thanks to Jim B).
  + Fixed bug #1038, which prints blank lines with bulk changes and when the
    verbose attributes does not specify it. Lines do a better separation between
    each changes also.
@@ -56,6 +56,8 @@ Bugs
  + Fixed bug #1065, where CmdShow issued messages in incorrect situations.
  + Partially fixed #1083, which showed 'task 0 ...' when modifying a non-
    pending task (thanks to Aikido Guy).
+ + Fixed bug #1110, which did not treat 'status:Completed' the same
+   as 'status:completed' (thanks to Aikido Guy).
  + Fixed bug #1123, which caused the undo of a 'log' command to corrupt the data
    file (thanks to Tim None).
  + Fixed bug #1128, which caused 'age' columns to be right-justified instead of
