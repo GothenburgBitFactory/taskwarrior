@@ -533,6 +533,14 @@ void E9::operator_equal (
                 : "false";
   }
 
+  // Case-insensitive comparison for status. Fixes #1110.
+  else if (left._raw == "status")
+  {
+    result._value = compare (left._value, right._value, false)
+                ? "true"
+                : "false";
+  }
+
   // Regular equality matching.
   else
   {
