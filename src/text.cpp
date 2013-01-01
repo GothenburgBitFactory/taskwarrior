@@ -264,6 +264,9 @@ int longestWord (const std::string& input)
       length += mk_wcwidth (character);
   }
 
+  if (length > longest)
+    longest = length;
+
   return longest;
 }
 

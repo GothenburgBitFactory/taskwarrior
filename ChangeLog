@@ -75,6 +75,9 @@ Bugs
    .taskrc file (thanks to Pietro Cerutti).
  + Fixed bug with 'socm' date calculation that failed on some days, by
    simplifying the implementation.
+ + Fix a bug where 'print.empty.columns=no' resulted in never printing the
+   project column.
+
 
 ------ old releases ------------------------------
 
