@@ -173,6 +173,7 @@ int CmdShow::execute (std::string& output)
     " monthsperline"
     " nag"
     " patterns"
+    " print.empty.columns"
     " pull.default.uri"
     " push.default.uri"
     " recurrence.indicator"

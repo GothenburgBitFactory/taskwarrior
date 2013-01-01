@@ -19,6 +19,7 @@ New commands in taskwarrior 2.2.0
 New configuration options in taskwarrior 2.2.0
 
   - New color rule 'color.uda.<uda-name>'.
+  + Added the configuration variable 'print.empty.columns'.
 
 Newly deprecated features in taskwarrior 2.2.0
   
