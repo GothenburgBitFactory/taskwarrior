@@ -534,7 +534,9 @@ void E9::operator_equal (
   }
 
   // Case-insensitive comparison for status. Fixes #1110.
-  else if (left._raw == "status")
+  // Also priority, fixing #1154.
+  else if (left._raw == "status" ||
+           left._raw == "priority")
   {
     result._value = compare (left._value, right._value, false)
                 ? "true"

@@ -65,6 +65,7 @@ Bugs
    left-justified (thanks to Steve Rader).
  + Fixed bug #1150, which referenced deprecated features in the tutorial man
    page (thanks to Benjamin Weber).
+ + Fixed bug #1154, which now allows priorities to be specified in any case.
  + Improved hyphenation by splitting on commas (even if no whitespace after).
    Leads to better output of, for example, 'task show', where comma-separated
    lists are common.
