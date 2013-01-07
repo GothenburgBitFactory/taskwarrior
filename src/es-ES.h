@@ -137,7 +137,7 @@
 #define STRING_COLUMN_LABEL_DEP      "Depende"
 #define STRING_COLUMN_LABEL_DEP_S    "Dep"
 #define STRING_COLUMN_LABEL_DESC     "Descripción"
-#define STRING_COLUMN_LABEL_DUE      "Límite"
+#define STRING_COLUMN_LABEL_DUE      "Vencimiento"
 #define STRING_COLUMN_LABEL_END      "Fin"
 #define STRING_COLUMN_LABEL_ENTERED  "Entrada"
 #define STRING_COLUMN_LABEL_COUNT    "Recuento"
@@ -465,8 +465,8 @@
 
 #define STRING_CMD_MODIFY_USAGE1     "Modifica la tarea existente con los argumentos provistos."
 //#define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."
-#define STRING_CMD_MODIFY_NO_DUE     "No puede especificar una tarea recurrente sin una fecha límite."
-#define STRING_CMD_MODIFY_REM_DUE    "No puede eliminar la fecha límite de una tarea recurrente."
+#define STRING_CMD_MODIFY_NO_DUE     "No puede especificar una tarea recurrente sin una fecha de vencimiento."
+#define STRING_CMD_MODIFY_REM_DUE    "No puede eliminar la fecha de vencimiento de una tarea recurrente."
 #define STRING_CMD_MODIFY_REC_ALWAYS "No puede eliminar la recurrencia de una tarea recurrente."
 #define STRING_CMD_MODIFY_TASK       "Modificando tarea {1} '{2}'."
 #define STRING_CMD_MODIFY_TASK_R     "Modificando tarea recurrente {1} '{2}'."
@@ -657,14 +657,14 @@
 #define STRING_EDIT_END_SET_ERR      "No se puede establecer una fecha de completado en una tarea pendiente."
 #define STRING_EDIT_SCHED_MOD        "Fecha programada modificada."
 #define STRING_EDIT_SCHED_DEL        "Fecha programada eliminada."
-#define STRING_EDIT_DUE_MOD          "Fecha límite modificada."
-#define STRING_EDIT_DUE_DEL          "Fecha límite eliminada."
-#define STRING_EDIT_DUE_DEL_ERR      "No se puede eliminar una fecha límite de una tarea recurrente."
+#define STRING_EDIT_DUE_MOD          "Fecha de vencimiento modificada."
+#define STRING_EDIT_DUE_DEL          "Fecha de vencimiento eliminada."
+#define STRING_EDIT_DUE_DEL_ERR      "No se puede eliminar una fecha de vencimiento de una tarea recurrente."
 #define STRING_EDIT_UNTIL_MOD        "Fecha 'hasta' modificada."
 #define STRING_EDIT_UNTIL_DEL        "Fecha 'hasta' eliminada."
 #define STRING_EDIT_RECUR_MOD        "Recurrencia modificada."
 #define STRING_EDIT_RECUR_DEL        "Recurrencia eliminada."
-#define STRING_EDIT_RECUR_DUE_ERR    "Una tarea recurrente debe tener una fecha límite."
+#define STRING_EDIT_RECUR_DUE_ERR    "Una tarea recurrente debe tener una fecha de vencimiento."
 #define STRING_EDIT_RECUR_ERR        "No es una duración de recurrencia válida."
 #define STRING_EDIT_WAIT_MOD         "Fecha de espera modificada."
 #define STRING_EDIT_WAIT_DEL         "Fecha de espera eliminada."
@@ -806,7 +806,7 @@
 #define STRING_TASK_VALID_DESC       "Una tarea debe tener descripción."
 #define STRING_TASK_VALID_BLANK      "No se puede añadir una tarea que está en blanco."
 #define STRING_TASK_VALID_BEFORE     "Advertencia: ha especificado que la fecha '{1}' es después de la fecha '{2}'."
-#define STRING_TASK_VALID_REC_DUE    "Una tarea recurrente debe tener también una fecha límite."
+#define STRING_TASK_VALID_REC_DUE    "Una tarea recurrente debe tener también una fecha de vencimiento."
 #define STRING_TASK_VALID_RECUR      "El valor de recurrencia '{1}' no es válido."
 #define STRING_TASK_VALID_PRIORITY   "Valores de prioridad pueden ser 'H', 'M' o 'L', no '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "Este comando no tiene filtro, y modificará todas las tareas. ¿Está seguro?"
@@ -929,7 +929,7 @@
   "  status:         Estatus de la tarea - pendiente, completada, eliminada, esperando\n" \
   "  project:        Nombre del proyecto\n" \
   "  priority:       Prioridad\n" \
-  "  due:            Fecha límite\n" \
+  "  due:            Fecha de vencimiento\n" \
   "  recur:          Frecuencia de recurrencia\n" \
   "  until:          Fecha de caducidad de la tarea\n" \
   "  limit:          Número de filas deseado en un informe, o 'page'\n" \
