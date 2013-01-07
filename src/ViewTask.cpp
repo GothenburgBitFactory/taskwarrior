@@ -124,8 +124,8 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   for (i = _columns.begin (); i != _columns.end (); ++i)
   {
     // Headers factor in to width calculations.
-    int global_min = 0;
-    int global_ideal = global_min;
+    unsigned int global_min = 0;
+    unsigned int global_ideal = global_min;
 
     for (unsigned int s = 0; s < sequence.size (); ++s)
     {
@@ -136,9 +136,11 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
         break;
 
       // Determine minimum and ideal width for this column.
-      int min;
-      int ideal;
-      (*i)->measure (data[sequence[s]], min, ideal);
+      int min_;
+      int ideal_;
+      (*i)->measure (data[sequence[s]], min_, ideal_);
+      unsigned int min = min_;
+      unsigned int ideal = ideal_;
 
       if (min   > global_min)   global_min = min;
       if (ideal > global_ideal) global_ideal = ideal;
@@ -146,7 +148,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
     if (print_empty_columns || global_min != 0)
     {
-      int label_length = utf8_length ((*i)->label ());
+      unsigned int label_length = utf8_length ((*i)->label ());
       if (label_length > global_min) global_min = label_length;
       if (label_length > global_ideal) global_ideal = label_length;
       minimal.push_back (global_min);

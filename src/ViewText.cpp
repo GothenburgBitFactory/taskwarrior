@@ -122,15 +122,17 @@ std::string ViewText::render ()
   for (unsigned int col = 0; col < _columns.size (); ++col)
   {
     // Headers factor in to width calculations.
-    int global_min = utf8_length (_columns[col]->label ());
-    int global_ideal = global_min;
+    unsigned int global_min = utf8_length (_columns[col]->label ());
+    unsigned int global_ideal = global_min;
 
     for (unsigned int row = 0; row < _data.size (); ++row)
     {
       // Determine minimum and ideal width for this column.
-      int min;
-      int ideal;
-      _columns[col]->measure (_data[row][col], min, ideal);
+      int min_;
+      int ideal_;
+      _columns[col]->measure (_data[row][col], min_, ideal_);
+      unsigned int min = min_;
+      unsigned int ideal = ideal_;
 
       if (min   > global_min)   global_min = min;
       if (ideal > global_ideal) global_ideal = ideal;
