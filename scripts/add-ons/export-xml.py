@@ -31,7 +31,7 @@ import commands
 import json
 
 # Use the taskwarrior 2.0+ export command to filter and return JSON
-command = "/usr/local/bin/task export " + " ".join (sys.argv[1:])
+command = "/usr/local/bin/task rc.verbose=nothing rc.json.array=no export " + " ".join (sys.argv[1:])
 
 # Generate output.
 print "<tasks>"

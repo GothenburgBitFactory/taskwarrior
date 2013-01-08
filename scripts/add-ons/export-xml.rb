@@ -30,7 +30,7 @@ require 'rubygems'
 require 'json'
 
 # Use the taskwarrior 2.0+ export command to filter and return JSON
-lines = IO.popen("/usr/local/bin/task export " + ARGV.join(" ")).readlines
+lines = IO.popen("/usr/local/bin/task rc.verbose=nothing rc.json.array=no export " + ARGV.join(" ")).readlines
 
 # Generate output.
 print "<tasks>\n"
