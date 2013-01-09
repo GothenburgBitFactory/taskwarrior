@@ -81,7 +81,7 @@ void ColumnPriority::setStyle (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnPriority::measure (Task& task, int& minimum, int& maximum)
+void ColumnPriority::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   std::string priority = task.get (_name);
 

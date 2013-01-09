@@ -56,7 +56,7 @@ ColumnUrgency::~ColumnUrgency ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnUrgency::measure (Task& task, int& minimum, int& maximum)
+void ColumnUrgency::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   if (_style == "default" ||
       _style == "real")

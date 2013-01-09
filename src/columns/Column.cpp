@@ -299,14 +299,14 @@ bool Column::validate (std::string& input)
 
 ////////////////////////////////////////////////////////////////////////////////
 // No L10N.
-void Column::measure (const std::string&, int&, int&)
+void Column::measure (const std::string&, unsigned int&, unsigned int&)
 {
   throw std::string ("Virtual method Column::measure not overriden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // No L10N.
-void Column::measure (Task&, int&, int&)
+void Column::measure (Task&, unsigned int&, unsigned int&)
 {
   throw std::string ("Virtual method Column::measure not overriden.");
 }

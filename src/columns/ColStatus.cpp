@@ -73,7 +73,7 @@ void ColumnStatus::setStyle (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnStatus::measure (Task& task, int& minimum, int& maximum)
+void ColumnStatus::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   Task::status status = task.getStatus ();
 

@@ -74,7 +74,7 @@ void ColumnScheduled::setStyle (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnScheduled::measure (Task& task, int& minimum, int& maximum)
+void ColumnScheduled::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
 

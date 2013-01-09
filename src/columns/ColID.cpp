@@ -62,7 +62,7 @@ bool ColumnID::validate (std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnID::measure (Task& task, int& minimum, int& maximum)
+void ColumnID::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   int length;
 

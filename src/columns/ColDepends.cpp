@@ -79,7 +79,7 @@ void ColumnDepends::setStyle (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnDepends::measure (Task& task, int& minimum, int& maximum)
+void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   std::vector <Task> blocking;
   dependencyGetBlocking (task, blocking);
@@ -101,7 +101,7 @@ void ColumnDepends::measure (Task& task, int& minimum, int& maximum)
       join (all, " ", blocking_ids);
       maximum = all.length ();
 
-      int length;
+      unsigned int length;
       for (i = blocking.begin (); i != blocking.end (); ++i)
       {
         length = format (i->id).length ();

@@ -60,8 +60,8 @@ public:
   virtual void setReport (const std::string& value) { _report = value; }
 
   virtual bool validate (std::string&);
-  virtual void measure (const std::string&, int&, int&);
-  virtual void measure (Task&, int&, int&);
+  virtual void measure (const std::string&, unsigned int&, unsigned int&);
+  virtual void measure (Task&, unsigned int&, unsigned int&);
   virtual void renderHeader (std::vector <std::string>&, int, Color&);
   virtual void render (std::vector <std::string>&, const std::string&, int, Color&);
   virtual void render (std::vector <std::string>&, Task&, int, Color&);

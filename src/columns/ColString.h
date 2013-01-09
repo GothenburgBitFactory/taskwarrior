@@ -42,7 +42,7 @@ public:
   ~ColumnString ();
 
   void setReport (const std::string&);
-  void measure (const std::string&, int&, int&);
+  void measure (const std::string&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, const std::string&, int, Color&);
 
 private:

@@ -78,7 +78,7 @@ void ColumnRecur::setStyle (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnRecur::measure (Task& task, int& minimum, int& maximum)
+void ColumnRecur::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   if (_style == "default" ||
       _style == "duration")

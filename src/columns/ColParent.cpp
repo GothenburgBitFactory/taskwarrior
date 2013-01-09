@@ -64,7 +64,7 @@ bool ColumnParent::validate (std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnParent::measure (Task&, int& minimum, int& maximum)
+void ColumnParent::measure (Task&, unsigned int& minimum, unsigned int& maximum)
 {
        if (_style == "default" || _style == "long") minimum = maximum = 36;
   else if (_style == "short")                       minimum = maximum = 8;

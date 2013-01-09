@@ -67,7 +67,7 @@ bool ColumnProject::validate (std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnProject::measure (Task& task, int& minimum, int& maximum)
+void ColumnProject::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   std::string project = task.get (_name);
 

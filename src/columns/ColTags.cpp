@@ -83,7 +83,7 @@ void ColumnTags::setStyle (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnTags::measure (Task& task, int& minimum, int& maximum)
+void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
 
        if (_style == "indicator") minimum = maximum = context.config.get ("tag.indicator").length ();
@@ -101,8 +101,11 @@ void ColumnTags::measure (Task& task, int& minimum, int& maximum)
       split (all, tags, ',');
       std::vector <std::string>::iterator i;
       for (i = all.begin (); i != all.end (); ++i)
-        if ((int)i->length () > minimum)
+      {
+        unsigned int length_ = i->length ();
+        if (length_ > minimum)
           minimum = i->length () + 1;
+      }
     }
   }
   else

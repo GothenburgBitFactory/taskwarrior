@@ -88,7 +88,7 @@ bool ColumnDescription::validate (std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
+void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   std::string description = task.get (_name);
 
@@ -113,7 +113,7 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
     std::map <std::string, std::string>::iterator i;
     for (i = annos.begin (); i != annos.end (); i++)
     {
-      int len = min_anno + 1 + i->second.length ();
+      unsigned int len = min_anno + 1 + i->second.length ();
       if (len > maximum)
         maximum = len;
     }

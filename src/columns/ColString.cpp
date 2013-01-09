@@ -71,7 +71,7 @@ void ColumnString::setReport (const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 //
-void ColumnString::measure (const std::string& value, int& minimum, int& maximum)
+void ColumnString::measure (const std::string& value, unsigned int& minimum, unsigned int& maximum)
 {
   if (_style == "left"  ||
       _style == "right" ||
