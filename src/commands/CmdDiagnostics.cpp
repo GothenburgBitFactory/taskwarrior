@@ -39,13 +39,6 @@
 #include <cmake.h>
 #include <commit.h>
 
-#ifdef HAVE_LIBLUA
-extern "C"
-{
-  #include <lua.h>
-}
-#endif
-
 #ifdef HAVE_LIBGNUTLS
 #include <gnutls/gnutls.h>
 #endif
@@ -137,14 +130,6 @@ int CmdDiagnostics::execute (std::string& output)
       << "\n\n";
 
   out << bold.colorize (STRING_CMD_DIAG_LIBRARIES)
-      << "\n";
-
-  out << "        Lua: "
-#ifdef HAVE_LIBLUA
-      << LUA_RELEASE
-#else
-      << "n/a"
-#endif
       << "\n";
 
   out << "    libuuid: "

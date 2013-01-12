@@ -35,13 +35,6 @@
 #include <DOM.h>
 #include <cmake.h>
 
-#ifdef HAVE_LIBLUA
-extern "C"
-{
-  #include <lua.h>
-}
-#endif
-
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +57,6 @@ const std::vector <std::string> DOM::get_references () const
   refs.push_back ("context.width");
   refs.push_back ("context.height");
   refs.push_back ("system.version");
-  refs.push_back ("system.lua.version");
   refs.push_back ("system.os");
 
   return refs;
@@ -82,7 +74,6 @@ const std::vector <std::string> DOM::get_references () const
 //   TODO stats.<name>           <-- context.stats
 //
 //   system.version
-//   system.lua.version
 //   system.os
 const std::string DOM::get (const std::string& name)
 {
@@ -123,12 +114,6 @@ const std::string DOM::get (const std::string& name)
     // Taskwarrior version number.
     if (name == "system.version")
       return /*_cache[name] =*/ VERSION;
-
-#ifdef HAVE_LIBLUA
-    // Lua version number.
-    else if (name == "system.lua.version")
-      return /*_cache[name] =*/ LUA_RELEASE;
-#endif
 
     // OS type.
     else if (name == "system.os")
@@ -258,8 +243,6 @@ const std::string DOM::get (const std::string& name, const Task& task)
   // Delegate to the context-free version of DOM::get.
   return this->get (name);
 }
-
-// TODO Need a context-specific DOM::set.  For Lua.  Probably.
 
 ////////////////////////////////////////////////////////////////////////////////
 void DOM::set (const std::string& name, const std::string& value)

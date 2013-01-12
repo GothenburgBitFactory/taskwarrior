@@ -94,10 +94,6 @@ int CmdVersion::execute (std::string& output)
       << STRING_CMD_VERSION_UNKNOWN
 #endif
 
-#ifdef HAVE_LIBLUA
-      << "-lua"
-#endif
-
 #if PACKAGE_LANGUAGE != LANGUAGE_EN_US
       << " "
       << STRING_LOCALIZATION_DESC
@@ -106,10 +102,6 @@ int CmdVersion::execute (std::string& output)
       << "\n"
       << STRING_CMD_VERSION_COPY
       << "\n"
-#ifdef HAVE_LIBLUA
-      << STRING_CMD_VERSION_COPY2
-      << "\n"
-#endif
       << "\n"
       << disclaimer.render ()
       << "\n"

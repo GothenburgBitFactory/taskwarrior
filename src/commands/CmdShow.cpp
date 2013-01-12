@@ -350,46 +350,6 @@ int CmdShow::execute (std::string& output)
   // TODO Check for referenced but missing string files.
   // TODO Check for referenced but missing tips files.
 
-  // Check for referenced but missing hook scripts.
-#ifdef HAVE_LIBLUA
-  std::vector <std::string> missing_scripts;
-  for (i = all.begin (); i != all.end (); ++i)
-  {
-    if (i->substr (0, 5) == "hook.")
-    {
-      std::string value = context.config.get (*i);
-      Nibbler n (value);
-
-      // <path>:<function> [, ...]
-      while (!n.depleted ())
-      {
-        std::string file;
-        std::string function;
-        if (n.getUntil (':', file) &&
-            n.skip (':')           &&
-            n.getUntil (',', function))
-        {
-          Path script (file);
-          if (!script.exists () || !script.readable ())
-            missing_scripts.push_back (file);
-
-          (void) n.skip (',');
-        }
-      }
-    }
-  }
-
-  if (missing_scripts.size ())
-  {
-    out << STRING_CMD_SHOW_HOOKS << "\n";
-
-    for (i = missing_scripts.begin (); i != missing_scripts.end (); ++i)
-      out << "  " << *i << "\n";
-
-    out << "\n";
-  }
-#endif
-
   // Check for bad values in rc.calendar.details.
   std::string calendardetails = context.config.get ("calendar.details");
   if (calendardetails != "full"   &&

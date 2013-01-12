@@ -64,25 +64,10 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
 
   4.1 The test suite exists to prove that we do not break taskwarrior features
     from one release to the next.  While this is not a perfect solution, it has
-    saved us many times from releasing code that is inferior.
-
-    The first step is to modify the test suite Makefile to remove the Lua line.
-    This is because we do not yet have dynamic detection of the Lua library for
-    the unit tests.
+    saved us many times from releasing code that is broken.  Build the unit
+    tests:
 
     $ cd ~/task-package.git/src/tests
-    $ vi Makefile
-
-    Any text editor will do, but look for this line (line 5):
-
-      LFLAGS  = -L/usr/local/lib -llua
-
-    and change it to:
-
-      LFLAGS  = -L/usr/local/lib
-
-    Now build the unit tests:
-
     $ make -j 2
     ...
 
@@ -97,8 +82,8 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
     Runtime:    86
 
     The output should look something like this, with 0 failed, and 0 skipped
-    tests.  If there are any failures or skips, stop and mailed the log file,
-    named 'all.log' to Paul & Fredde.
+    tests.  If there are any failures or skips, stop and mail the log file,
+    named 'all.log' to Paul and/or Fredde.
 
 5. Assemble the parts
 

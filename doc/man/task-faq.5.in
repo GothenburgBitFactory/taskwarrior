@@ -341,17 +341,6 @@ Note that a single date, such as 3/29/2012 does not refer to a whole day, but
 to a single point in time, 3/20/2012 0:00:00.
 
 .TP
-.B Q: Why Lua as an extension language?
-Lua has many positive attributes:
-
- - Lua is written using tight, fast, standard C
- - Lua is a breeze to integrate into any product
- - The Lua source code is beautifully written
- - Lua is a small language
-
-Guile, Scheme and Neko were also considered.
-
-.TP
 .B Q: How can I help?
 There are lots of ways.  Here are some:
 

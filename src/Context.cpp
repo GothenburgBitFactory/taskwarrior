@@ -502,7 +502,7 @@ bool Context::verbose (const std::string& token)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// This needs to be taken out and shot, as soon as Lua extensions will allow.
+// This needs to be taken out and shot, as soon as hooks will allow.
 void Context::shadow ()
 {
   std::string file_name = config.get ("shadow.file");

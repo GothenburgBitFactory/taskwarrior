@@ -31,7 +31,6 @@
 
 #include <vector>
 #include <string>
-#include <API.h>
 #include <cmake.h>
 
 // Hook class representing a single hook, which is just a three-way map.
@@ -68,9 +67,6 @@ private:
   bool validTaskEvent (const std::string&);
 
 private:
-#ifdef HAVE_LIBLUA
-  API _api;
-#endif
   std::vector <Hook> _all;           // All current hooks.
 
   std::vector <std::string> _validProgramEvents;

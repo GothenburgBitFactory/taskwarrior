@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-install (DIRECTORY bash fish vim zsh extensions
+install (DIRECTORY bash fish vim zsh
          DESTINATION ${TASK_DOCDIR}/scripts)
 install (DIRECTORY add-ons
          DESTINATION ${TASK_DOCDIR}/scripts

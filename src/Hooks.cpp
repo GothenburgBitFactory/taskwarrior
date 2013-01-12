@@ -103,10 +103,6 @@ Hooks::~Hooks ()
 // that if it isn't called, a script will not be loaded.
 void Hooks::initialize ()
 {
-#ifdef HAVE_LIBLUA
-  _api.initialize ();
-#endif
-
   // Allow a master switch to turn the whole thing off.
   bool big_red_switch = context.config.getBoolean ("extensions");
   if (big_red_switch)
@@ -147,7 +143,7 @@ void Hooks::initialize ()
             (void) n.skip (',');
           }
           else
-            throw std::string (format (STRING_LUA_BAD_HOOK_DEF, *it));
+            ; // Was: throw std::string (format ("Malformed hook definition '{1}'.", *it));
         }
       }
     }
@@ -160,54 +156,14 @@ void Hooks::initialize ()
 // Program hooks.
 bool Hooks::trigger (const std::string& event)
 {
-#ifdef HAVE_LIBLUA
-  std::vector <Hook>::iterator it;
-  for (it = _all.begin (); it != _all.end (); ++it)
-  {
-    if (it->_event == event)
-    {
-      Timer timer (std::string ("Hooks::trigger ") + event);
-
-      if (validProgramEvent (event))
-      {
-        context.debug (std::string ("Event ") + event + " triggered");
-        if (! _api.callProgramHook (it->_file, it->_function))
-          return false;
-      }
-      else
-        throw std::string (format (STRING_LUA_BAD_EVENT, event));
-    }
-  }
-#endif
-
-  return true;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Task hooks.
 bool Hooks::trigger (const std::string& event, Task& task)
 {
-#ifdef HAVE_LIBLUA
-  std::vector <Hook>::iterator it;
-  for (it = _all.begin (); it != _all.end (); ++it)
-  {
-    if (it->_event == event)
-    {
-      Timer timer (std::string ("Hooks::trigger ") + event);
-
-      if (validTaskEvent (event))
-      {
-        context.debug (std::string ("Event ") + event + " triggered");
-        if (! _api.callTaskHook (it->_file, it->_function, task))
-          return false;
-      }
-      else
-        throw std::string (format (STRING_LUA_BAD_EVENT, event));
-    }
-  }
-#endif
-
-  return true;
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
