@@ -77,6 +77,7 @@ Bugs
    simplifying the implementation.
  + Fix a bug where 'print.empty.columns=no' resulted in never printing the
    project column.
+ + Integrated latest UTF8 character width calculations from Markus Kuhn.
 
 
 ------ old releases ------------------------------
