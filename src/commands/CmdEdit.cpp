@@ -772,6 +772,7 @@ bool CmdEdit::editFile (Task& task)
 
   // Format the contents, T -> text, write to a file.
   std::string before = formatTask (task, dateformat);
+  std::string before_orig = before;
   File::write (file.str (), before);
 
   // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
@@ -802,7 +803,7 @@ ARE_THESE_REALLY_HARMFUL:
 
   // Update task based on what can be parsed back out of the file, but only
   // if changes were made.
-  if (before != after)
+  if (before_orig != after)
   {
     std::cout << STRING_EDIT_CHANGES << "\n";
     std::string problem = "";

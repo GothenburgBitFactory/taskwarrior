@@ -60,6 +60,8 @@ Bugs
  + Fixed bug #1091, allowing filters to use 'urgency.over:4.5'.
  + Fixed bug #1110, which did not treat 'status:Completed' the same
    as 'status:completed' (thanks to Aikido Guy).
+ + Fixed bug #1118, which dropped changes after edits were rejected (thanks to
+   Ben Boeckel).
  + Fixed bug #1123, which caused the undo of a 'log' command to corrupt the data
    file (thanks to Tim None).
  + Fixed bug #1128, which caused 'age' columns to be right-justified instead of
