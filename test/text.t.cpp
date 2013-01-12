@@ -478,9 +478,9 @@ int main (int argc, char** argv)
   t.is (rightJustify ("föo", 5), "  föo", "rightJustify föo,5 -> '  föo'");
 
   // int utf8_length (const std::string&);
-  t.is (utf8_length ("Çirçös"),            6, "utf8_length (Çirçös) == 6");
-  t.is (utf8_length ("ツネナラム"),        5, "utf8_length (ツネナラム) == 5");
-  t.is (utf8_length ("Zwölf Boxkämpfer"), 16, "utf8_length (Zwölf Boxkämpfer) == 16");
+  t.is ((int) utf8_length ("Çirçös"),            6, "utf8_length (Çirçös) == 6");
+  t.is ((int) utf8_length ("ツネナラム"),        5, "utf8_length (ツネナラム) == 5");
+  t.is ((int) utf8_length ("Zwölf Boxkämpfer"), 16, "utf8_length (Zwölf Boxkämpfer) == 16");
 
   return 0;
 }
