@@ -45,7 +45,6 @@ public:
   void set (const std::string&, const std::string&);
 
 private:
-  std::map <std::string, std::string> _cache;
 };
 
 #endif

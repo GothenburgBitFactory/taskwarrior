@@ -86,13 +86,6 @@ const std::vector <std::string> DOM::get_references () const
 //   system.os
 const std::string DOM::get (const std::string& name)
 {
-  // Cache test.
-/*
-  std::map <std::string, std::string>::iterator hit = _cache.find (name);
-  if (hit != _cache.end ())
-    return hit->second;
-*/
-
   int len = name.length ();
   Nibbler n (name);
 
@@ -100,17 +93,17 @@ const std::string DOM::get (const std::string& name)
   if (len > 3 &&
       name.substr (0, 3) == "rc.")
   {
-    return /*_cache[name] =*/ context.config.get (name.substr (3));
+    return context.config.get (name.substr (3));
   }
 
   // context.*
   else if (len > 8 &&
            name.substr (0, 8) == "context.")
   {
-         if (name == "context.program") return /*_cache[name] =*/ context.a3[0]._raw;
-    else if (name == "context.args")    return /*_cache[name] =*/ context.a3.combine ();
-    else if (name == "context.width")   return /*_cache[name] =*/ format (context.terminal_width);
-    else if (name == "context.height")  return /*_cache[name] =*/ format (context.terminal_height);
+         if (name == "context.program") return context.a3[0]._raw;
+    else if (name == "context.args")    return context.a3.combine ();
+    else if (name == "context.width")   return format (context.terminal_width);
+    else if (name == "context.height")  return format (context.terminal_height);
     else                                throw format (STRING_DOM_UNREC, name);
   }
 
@@ -122,34 +115,34 @@ const std::string DOM::get (const std::string& name)
   {
     // Taskwarrior version number.
     if (name == "system.version")
-      return /*_cache[name] =*/ VERSION;
+      return VERSION;
 
 #ifdef HAVE_LIBLUA
     // Lua version number.
     else if (name == "system.lua.version")
-      return /*_cache[name] =*/ LUA_RELEASE;
+      return LUA_RELEASE;
 #endif
 
     // OS type.
     else if (name == "system.os")
 #if defined (DARWIN)
-      return /*_cache[name] =*/ "Darwin";
+      return "Darwin";
 #elif defined (SOLARIS)
-      return /*_cache[name] =*/ "Solaris";
+      return "Solaris";
 #elif defined (CYGWIN)
-      return /*_cache[name] =*/ "Cygwin";
+      return "Cygwin";
 #elif defined (HAIKU)
-      return /*_cache[name] =*/ "Haiku";
+      return "Haiku";
 #elif defined (OPENBSD)
-      return /*_cache[name] =*/ "OpenBSD";
+      return "OpenBSD";
 #elif defined (FREEBSD)
-      return /*_cache[name] =*/ "FreeBSD";
+      return "FreeBSD";
 #elif defined (NETBSD)
-      return /*_cache[name] =*/ "NetBSD";
+      return "NetBSD";
 #elif defined (LINUX)
-      return /*_cache[name] =*/ "Linux";
+      return "Linux";
 #else
-      return /*_cache[name] =*/ STRING_DOM_UNKNOWN;
+      return STRING_DOM_UNKNOWN;
 #endif
 
     else
@@ -157,7 +150,7 @@ const std::string DOM::get (const std::string& name)
   }
 
   // Pass-through.
-  return /*_cache[name] =*/ name;
+  return name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -198,13 +191,6 @@ const std::string DOM::get (const std::string& name)
 //
 const std::string DOM::get (const std::string& name, const Task& task)
 {
-  // Cache test.
-/*
-  std::map <std::string, std::string>::iterator hit = _cache.find (name);
-  if (hit != _cache.end ())
-    return hit->second;
-*/
-
   Nibbler n (name);
   int id;
   std::string uuid;
@@ -270,7 +256,7 @@ void DOM::set (const std::string& name, const std::string& value)
   if (len > 3 &&
       name.substr (0, 3) == "rc.")
   {
-    context.config.set (name.substr (3), /*_cache[name] =*/ value);
+    context.config.set (name.substr (3), value);
   }
 
   // Unrecognized --> error.
