@@ -57,6 +57,7 @@ Bugs
  + Fixed bug #1065, where CmdShow issued messages in incorrect situations.
  + Partially fixed #1083, which showed 'task 0 ...' when modifying a non-
    pending task (thanks to Aikido Guy).
+ + Fixed bug #1091, allowing filters to use 'urgency.over:4.5'.
  + Fixed bug #1110, which did not treat 'status:Completed' the same
    as 'status:completed' (thanks to Aikido Guy).
  + Fixed bug #1123, which caused the undo of a 'log' command to corrupt the data

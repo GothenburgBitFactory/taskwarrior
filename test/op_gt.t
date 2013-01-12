@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 26;
 
 # Create the rc file.
 if (open my $fh, '>', 'op.rc')
@@ -75,6 +75,12 @@ unlike ($output, qr/one/,   'ls description > t --> !one');
 like   ($output, qr/two/,   'ls description > t --> two');
 like   ($output, qr/three/, 'ls description > t --> three');
 unlike ($output, qr/four/,  'ls description > t --> !four');
+
+$output = qx{../src/task rc:op.rc 'urgency > 10.0' ls 2>&1};
+like   ($output, qr/one/,   'ls urgency > 10 --> one');
+like   ($output, qr/two/,   'ls urgency > 10 --> two');
+unlike ($output, qr/three/, 'ls urgency > 10 --> !three');
+unlike ($output, qr/four/,  'ls urgency > 10 --> !four');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key op.rc);
