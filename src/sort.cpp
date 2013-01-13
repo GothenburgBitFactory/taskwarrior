@@ -72,9 +72,7 @@ static bool sort_compare (int left, int right)
 {
   std::string field;
   bool ascending;
-
   Column* column;
-
   int left_number;
   int right_number;
   float left_real;
@@ -96,10 +94,8 @@ static bool sort_compare (int left, int right)
       if (left_real == right_real)
         continue;
 
-      if (ascending)
-        return left_real < right_real;
-
-      return left_real > right_real;
+      return ascending ? (left_real < right_real)
+                       : (left_real > right_real);
     }
 
     // Number.
@@ -111,10 +107,8 @@ static bool sort_compare (int left, int right)
       if (left_number == right_number)
         continue;
 
-      if (ascending)
-        return left_number < right_number;
-
-      return left_number > right_number;
+      return ascending ? (left_number < right_number)
+                       : (left_number > right_number);
     }
 
     // Depends string.
@@ -140,10 +134,8 @@ static bool sort_compare (int left, int right)
       if (left_number == right_number)
         continue;
 
-      if (ascending)
-        return left_number < right_number;
-
-      return left_number > right_number;
+      return ascending ? (left_number < right_number)
+                       : (left_number > right_number);
     }
 
     // String.
@@ -159,10 +151,8 @@ static bool sort_compare (int left, int right)
       if (left_string == right_string)
         continue;
 
-      if (ascending)
-        return left_string < right_string;
-
-      return left_string > right_string;
+      return ascending ? (left_string < right_string)
+                       : (left_string > right_string);
     }
 
     // Priority.
@@ -199,10 +189,8 @@ static bool sort_compare (int left, int right)
       if (left_string == right_string)
         continue;
 
-      if (ascending)
-        return left_string < right_string;
-
-      return left_string > right_string;
+      return ascending ? (left_string < right_string)
+                       : (left_string > right_string);
     }
 
     // Date.
@@ -218,10 +206,8 @@ static bool sort_compare (int left, int right)
       if (left_string == right_string)
         continue;
 
-      if (ascending)
-        return left_string < right_string;
-
-      return left_string > right_string;
+      return ascending ? (left_string < right_string)
+                       : (left_string > right_string);
     }
 
     // Duration.
@@ -235,10 +221,8 @@ static bool sort_compare (int left, int right)
 
       Duration left_duration (left_string);
       Duration right_duration (right_string);
-      if (ascending)
-        return left_duration < right_duration;
-
-      return left_duration > right_duration;
+      return ascending ? (left_duration < right_duration)
+                       : (left_duration > right_duration);
     }
 
     // UDAs.
@@ -253,10 +237,8 @@ static bool sort_compare (int left, int right)
         if (left_real == right_real)
           continue;
 
-        if (ascending)
-          return left_real < right_real;
-
-        return left_real > right_real;
+        return ascending ? (left_real < right_real)
+                         : (left_real > right_real);
       }
       else if (type == "string")
       {
@@ -266,10 +248,8 @@ static bool sort_compare (int left, int right)
         if (left_string == right_string)
           continue;
 
-        if (ascending)
-          return left_string < right_string;
-
-        return left_string > right_string;
+        return ascending ? (left_string < right_string)
+                         : (left_string > right_string);
       }
       else if (type == "date")
       {
@@ -279,10 +259,8 @@ static bool sort_compare (int left, int right)
         if (left_string == right_string)
           continue;
 
-        if (ascending)
-          return left_string < right_string;
-
-        return left_string > right_string;
+        return ascending ? (left_string < right_string)
+                         : (left_string > right_string);
       }
       else if (type == "duration")
       {
@@ -294,10 +272,8 @@ static bool sort_compare (int left, int right)
 
         Duration left_duration (left_string);
         Duration right_duration (right_string);
-        if (ascending)
-          return left_duration < right_duration;
-
-        return left_duration > right_duration;
+        return ascending ? (left_duration < right_duration)
+                         : (left_duration > right_duration);
       }
     }
     else
