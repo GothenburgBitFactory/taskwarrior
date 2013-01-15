@@ -38,6 +38,8 @@
 
 extern Context context;
 
+std::string zshColonReplacement = ",";
+
 ////////////////////////////////////////////////////////////////////////////////
 CmdIDs::CmdIDs ()
 {
@@ -131,7 +133,7 @@ int CmdZshCompletionIds::execute (std::string& output)
         task->getStatus () != Task::completed)
       out << task->id
           << ":"
-          << task->get ("description")
+          << str_replace(task->get ("description"), ":", zshColonReplacement)
           << "\n";
 
   output = out.str ();
@@ -228,7 +230,7 @@ int CmdZshCompletionUuids::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
     out << task->get ("uuid")
         << ":"
-        << task->get ("description")
+        << str_replace (task->get ("description"), ":", zshColonReplacement)
         << "\n";
 
   output = out.str ();

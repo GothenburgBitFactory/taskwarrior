@@ -528,6 +528,16 @@ const std::string str_replace (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string str_replace (
+  const std::string& str,
+  const std::string& search,
+  const std::string& replacement)
+{
+  std::string modified = str;
+  return str_replace (modified, search, replacement);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const char* optionalBlankLine ()
 {
   return context.verbose ("blank") ? newline : noline;
