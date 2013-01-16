@@ -231,3 +231,29 @@ unsigned int utf8_text_length (const std::string& str)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string utf8_substr (
+  const std::string& input,
+  unsigned int start,
+  unsigned int length /*=0*/)
+{
+  // Find the starting index.
+  std::string::size_type index_start = 0;
+  for (unsigned int i = 0; i < start; i++)
+    utf8_next_char (input, index_start);
+
+  std::string result;
+  if (length)
+  {
+    std::string::size_type index_end = index_start;
+    for (unsigned int i = 0; i < length; i++)
+      utf8_next_char (input, index_end);
+
+    result = input.substr (index_start, index_end - index_start);
+  }
+  else
+    result = input.substr (index_start);
+
+  return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////

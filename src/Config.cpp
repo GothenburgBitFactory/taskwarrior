@@ -113,7 +113,9 @@ std::string Config::_defaults =
   "dateformat.info=m/d/Y H:N:S                    # Preferred display date format for information\n"
   "dateformat.report=m/d/Y                        # Preferred display date format for reports\n"
   "dateformat.annotation=m/d/Y                    # Preferred display date format for annotations\n"
-  "weekstart=Sunday                               # Sunday or Monday only\n"
+  "weekstart="
+             STRING_DATE_SUNDAY_LONG
+                  "                               # Sunday or Monday only\n"
   "displayweeknumber=yes                          # Show week numbers on calendar\n"
   "due=7                                          # Task is considered due in 7 days\n"
   "\n"

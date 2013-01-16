@@ -21,6 +21,7 @@ taskmod.t
 tdb2.t
 text.t
 uri.t
+utf8.t
 util.t
 view.t
 

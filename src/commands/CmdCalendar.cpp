@@ -35,6 +35,7 @@
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
+#include <utf8.h>
 #include <main.h>
 #include <CmdCalendar.h>
 
@@ -429,24 +430,24 @@ std::string CmdCalendar::renderMonths (
     if (weekStart == 1)
     {
       view.add (Column::factory ("string.right", "    "));
-      view.add (Column::factory ("string.right", Date::dayName (1).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (2).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (3).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (4).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (5).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (6).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (0).substr (0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (1), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (2), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (3), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (4), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (5), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (6), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (0), 0, 2)));
     }
     else
     {
       view.add (Column::factory ("string.right", "    "));
-      view.add (Column::factory ("string.right", Date::dayName (0).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (1).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (2).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (3).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (4).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (5).substr (0, 2)));
-      view.add (Column::factory ("string.right", Date::dayName (6).substr (0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (0), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (1), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (2), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (3), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (4), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (5), 0, 2)));
+      view.add (Column::factory ("string.right", utf8_substr (Date::dayName (6), 0, 2)));
     }
   }
 
