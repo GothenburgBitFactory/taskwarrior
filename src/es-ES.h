@@ -537,7 +537,7 @@
 #define STRING_CMD_CAL_BAD_ARG       "No se pudo reconocer el argumento '{1}'."
 #define STRING_CMD_CAL_LABEL_DATE    "Fecha"
 #define STRING_CMD_CAL_LABEL_HOL     "Festivo"
-#define STRING_CMD_CAL_SUN_MON       "La variable de configuración 'weekstart' solamente puede contener 'Sunday' (domingo) o 'Monday' (lunes)."
+#define STRING_CMD_CAL_SUN_MON       "La variable de configuración 'weekstart' solamente puede contener 'domingo' o 'lunes'."
 #define STRING_CMD_EDIT_USAGE        "Lanza un editor para modificar una tarea directamente"
 
 // Config
