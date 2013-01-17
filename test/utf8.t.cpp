@@ -32,10 +32,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (4);
+  UnitTest t (6);
 
   std::string ascii_text = "This is a test";
   std::string utf8_text  = "más sábado miércoles";
+
+  std::string ascii_text_color = "This [1mis[0m a test";
+  std::string utf8_text_color  = "más [1msábado[0m miércoles";
 
   // TODO unsigned int utf8_codepoint (const std::string&);
   // TODO unsigned int utf8_next_char (const std::string&, std::string::size_type&);
@@ -46,7 +49,9 @@ int main (int argc, char** argv)
   t.is (utf8_length (ascii_text), 14, "ASCII utf8_length");
   t.is (utf8_length (utf8_text),  20, "UTF8 utf8_length");
 
-  // TODO unsigned int utf8_text_length (const std::string&);
+  // unsigned int utf8_text_length (const std::string&);
+  t.is (utf8_text_length (ascii_text_color), 14, "ASCII utf8_text_length");
+  t.is (utf8_text_length (utf8_text_color),  20, "UTF8 utf8_text_length");
 
   // const std::string utf8_substr (const std::string&, unsigned int, unsigned int length = 0);
   t.is (utf8_substr (ascii_text, 0, 2), "Th", "ASCII utf8_substr");
