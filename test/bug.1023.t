@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 11;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -50,11 +50,17 @@ like ($output, qr/Project\s*garden/, "default project not applied when otherwise
 $output = qx{../src/task rc:bug.rc 2 info 2>&1};
 like ($output, qr/Project\s*home/, "default project applied when blank.");
 
+$output = qx{../src/task rc:bug.rc 3 info 2>&1};
+like ($output, qr/^Description\s+baz$/m, "task baz shown.");
+unlike ($output, qr/Project\s*home/, "no project applied when default project is blank.");
+
 $output = qx{../src/task rc:bug.rc 3 modify +tag 2>&1};
+like ($output, qr/^Modified 1 task.$/m, "task modified.");
 unlike ($output, qr/Project\s*home/, "default project not applied on modification.");
 
 qx{../src/task rc:bug.rc 1 modify project: 2>&1};
 $output = qx{../src/task rc:bug.rc 1 info 2>&1};
+like ($output, qr/^Description\s+foo$/m, "task foo shown.");
 unlike ($output, qr/Project\s*garden/, "default project not re-applied on attribute removal.");
 unlike ($output, qr/Project\s*home/, "default project not re-applied on attribute removal.");
 

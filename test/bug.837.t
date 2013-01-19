@@ -42,9 +42,9 @@ if (open my $fh, '>', 'bug.rc')
 #          correct urgency and depend on 0 when edited
 qx{../src/task rc:bug.rc add one 2>&1};
 qx{../src/task rc:bug.rc add two dep:1 2>&1};
-my $output = qx{../src/task rc:bug.rc long 2>&1};
+qx{../src/task rc:bug.rc long 2>&1};
 
-$output = qx{../src/task rc:bug.rc 1 _urgency 2>&1};
+my $output = qx{../src/task rc:bug.rc 1 _urgency 2>&1};
 like ($output, qr/ 8\n/, 'blocking urgency == 8');
 
 $output = qx{../src/task rc:bug.rc 2 _urgency 2>&1};

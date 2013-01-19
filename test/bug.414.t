@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -46,7 +46,7 @@ my $output = qx{../src/task rc:bug.rc ls +osobní 2>&1};
 like ($output, qr/one/, 'found UTF8 tag osobní');
 
 $output = qx{../src/task rc:bug.rc ls -osobní 2>&1};
-unlike ($output, qr/one/, 'not found UTF8 tag osobní');
+like ($output, qr/^No matches.$/m, 'not found UTF8 tag osobní');
 
 # And a different one
 qx{../src/task rc:bug.rc add two +föo 2>&1};
@@ -54,6 +54,7 @@ $output = qx{../src/task rc:bug.rc ls +föo 2>&1};
 like ($output, qr/two/, 'found UTF8 tag föo');
 
 $output = qx{../src/task rc:bug.rc ls -föo 2>&1};
+like ($output, qr/one/, 'found UTF8 tag osobní');
 unlike ($output, qr/two/, 'not found UTF8 tag föo');
 
 # Cleanup.

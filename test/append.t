@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'append.rc')
@@ -41,13 +41,15 @@ if (open my $fh, '>', 'append.rc')
 
 # Add a task, then append more description.
 qx{../src/task rc:append.rc add foo 2>&1};
-qx{../src/task rc:append.rc 1 append bar 2>&1};
-my $output = qx{../src/task rc:append.rc info 1 2>&1};
+my $output = qx{../src/task rc:append.rc 1 append bar 2>&1};
+like ($output, qr/^Appended 1 task.$/m, 'append worked');
+$output = qx{../src/task rc:append.rc info 1 2>&1};
 like ($output, qr/Description\s+foo\sbar\n/, 'append worked');
 
 # Should cause an error when nothing is appended.
 $output = qx{../src/task rc:append.rc 1 append 2>&1};
-unlike ($output, qr/Appended 0 tasks/, 'blank append failed');
+like ($output, qr/^Additional text must be provided.$/m, 'blank append failed');
+unlike ($output, qr/^Appended 1 task.$/, 'blank append failed');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key append.rc);

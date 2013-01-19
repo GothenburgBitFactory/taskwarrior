@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 14;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -45,22 +45,28 @@ qx{../src/task rc:bug.rc add test 2>&1};
 
 # Solution 1: rc.verbose=nothing
 my $output = qx{TASKRC=bug.rc ../src/task rc:bug.rc rc.verbose=nothing ids 2>&1};
+like ($output, qr/^1$/m, 'ID 1 shown');
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "ids" (rc.verbose=nothing)');
 
 $output = qx{TASKRC=bug.rc ../src/task rc.verbose=nothing uuids 2>&1};
+like ($output, qr/^[0-9a-f-]*$/m, 'UUID shown');
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "uuids" (rc.verbose=nothing)');
 
 $output = qx{TASKRC=bug.rc ../src/task rc.verbose=nothing uuids 2>&1};
+like ($output, qr/^[0-9a-f-]*$/m, 'UUID shown');
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "uuids" (rc.verbose=nothing)');
 
 # Solution 2: task ... 2>/dev/null
 $output = qx{TASKRC=bug.rc ../src/task rc:bug.rc ids 2>/dev/null};
+like ($output, qr/^1$/m, 'ID 1 shown');
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "ids" (2>/dev/null)');
 
 $output = qx{TASKRC=bug.rc ../src/task _ids 2>/dev/null};
+like ($output, qr/^[0-9a-f-]*$/m, 'UUID shown');
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "_ids" (2>/dev/null)');
 
 $output = qx{TASKRC=bug.rc ../src/task _ids 2>/dev/null};
+like ($output, qr/^[0-9a-f-]*$/m, 'UUID shown');
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "_ids" (2>/dev/null)');
 
 ### Cleanup.

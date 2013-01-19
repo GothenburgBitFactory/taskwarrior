@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 7;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -45,9 +45,11 @@ my $output = qx{../src/task rc:bug.rc _aliases 2>&1};
 like ($output, qr/samplealias/, 'aliases are listed in _aliases');
 
 $output = qx{../src/task rc:bug.rc _commands 2>&1};
+like ($output, qr/^information$/m, 'info is listed in _commands');
 unlike ($output, qr/samplealias/, 'aliases are not listed in _commands');
 
 $output = qx{../src/task rc:bug.rc _zshcommands 2>&1};
+like ($output, qr/^information:/m, 'info is listed in _zshcommands');
 unlike ($output, qr/samplealias/, 'aliases are not listed in _zshcommands');
 
 # Cleanup.
