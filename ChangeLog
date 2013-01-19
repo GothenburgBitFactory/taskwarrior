@@ -54,6 +54,8 @@ Bugs
  + Fixed bug #1056, where CmdSummary did not print abstract parents.
  + Fixed bug #1059, where CmdEdit was running garbage collection.
  + Fixed bug #1060, where an error was not thrown correctly.
+ + Fixed bug #1063, so that numeric UDA fields are now sortable (thanks to Max
+   Muller).
  + Fixed bug #1065, where CmdShow issued messages in incorrect situations.
  + Partially fixed #1083, which showed 'task 0 ...' when modifying a non-
    pending task (thanks to Aikido Guy).
