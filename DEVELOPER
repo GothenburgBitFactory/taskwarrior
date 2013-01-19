@@ -168,6 +168,8 @@ Unit Tests Needed
   * Note that running the unit tests requires the Perl JSON module to be
     installed.
 
+  Note that all new unit tests should follow the test/template.t standard.
+
 Work in Progress
   Things that are currently in flux, which is another way of saying leave it
   alone while it is being worked on.
