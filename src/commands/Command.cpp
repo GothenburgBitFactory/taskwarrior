@@ -424,7 +424,10 @@ void Command::modify_task_description_replace (Task& task, const A3& arguments)
   modify_task (task, arguments, description);
 
   if (description.length ())
-   task.set ("description", description);
+  {
+    _needs_confirm = true;
+    task.set ("description", description);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
