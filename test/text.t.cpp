@@ -37,6 +37,7 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (264);
+
   // void wrapText (std::vector <std::string>& lines, const std::string& text, const int width, bool hyphenate)
   std::string text = "This is a test of the line wrapping code.";
   std::vector <std::string> lines;
@@ -67,34 +68,35 @@ int main (int argc, char** argv)
   t.is (lines[0], "one two three", "wrapText line 0 -> 'one two three'");
   t.is (lines[1], "  four",        "wrapText line 1 -> '  four'");
 
-  // void extractLine (std::string& text, std::string& line, int length, bool hyphenate)
+  // void extractLine (std::string& text, std::string& line, int length, bool hyphenate, unsigned int& offset)
   text = "This ☺ is a test of utf8 line extraction.";
+  unsigned int offset = 0;
   std::string line;
-  extractLine (text, line, 7, true);
+  extractLine (line, text, 7, true, offset);
   t.is (line, "This ☺", "extractLine 7 'This ☺ is a test of utf8 line extraction.' -> 'This ☺'");
 
-  // void extractLine (std::string& text, std::string& line, int length)
+  // void extractLine (std::string& text, std::string& line, int length, bool hyphenate, unsigned int& offset)
   text = "line 1\nlengthy second line that exceeds width";
-  extractLine (text, line, 10, true);
+  offset = 0;
+  extractLine (line, text, 10, true, offset);
   t.is (line, "line 1", "extractLine 10 'line 1\\nlengthy second line that exceeds width' -> 'line 1'");
 
-  extractLine (text, line, 10, true);
+  extractLine (line, text, 10, true, offset);
   t.is (line, "lengthy", "extractLine 10 'lengthy second line that exceeds width' -> 'lengthy'");
 
-  extractLine (text, line, 10, true);
+  extractLine (line, text, 10, true, offset);
   t.is (line, "second", "extractLine 10 'second line that exceeds width' -> 'second'");
 
-  extractLine (text, line, 10, true);
+  extractLine (line, text, 10, true, offset);
   t.is (line, "line that", "extractLine 10 'line that exceeds width' -> 'line that'");
 
-  extractLine (text, line, 10, true);
+  extractLine (line, text, 10, true, offset);
   t.is (line, "exceeds", "extractLine 10 'exceeds width' -> 'exceeds'");
 
-  extractLine (text, line, 10, true);
+  extractLine (line, text, 10, true, offset);
   t.is (line, "width", "extractLine 10 'width' -> 'width'");
 
-  extractLine (text, line, 10, true);
-  t.is (line, "", "extractLine 10 '' -> ''");
+  t.notok (extractLine (line, text, 10, true, offset), "extractLine 10 '' -> ''");
 
   // void split (std::vector<std::string>& results, const std::string& input, const char delimiter)
   std::vector <std::string> items;

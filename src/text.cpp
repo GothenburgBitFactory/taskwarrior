@@ -56,16 +56,10 @@ void wrapText (
   const int width,
   bool hyphenate)
 {
-  std::string copy = text;
   std::string line;
-
-  int modified_width = width > 0 ? width : 1;
-
-  while (copy.length ())  // Used as Boolean, therefore UTF8 safe.
-  {
-    extractLine (copy, line, modified_width, hyphenate);
+  unsigned int offset = 0;
+  while (extractLine (line, text, width, hyphenate, offset))
     lines.push_back (line);
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -297,118 +291,115 @@ int longestLine (const std::string& input)
   return longest;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 // Walk the input text looking for a break point.  A break point is one of:
 //   - EOS
 //   - \n
 //   - last space before 'length' characters
-//   - last comma before 'length' characters, even if not followed by a space
+//   - last punctuation (, ; . :) before 'length' characters, even if not
+//     followed by a space
 //   - first 'length' characters
-void extractLine (
-  std::string& text,
+
+// text       "one two three\n  four"
+// bytes       0123456789012 3456789
+// characters  1234567890a23 4567890
+//
+// leading_ws
+// ws             ^   ^       ^^
+// punct
+// break                     ^
+bool extractLine (
   std::string& line,
-  int length,
-  bool hyphenate)
+  const std::string& text,
+  int width,
+  bool hyphenate,
+  unsigned int& offset)
 {
-  std::string::size_type bytes      = 0;
-  std::string::size_type previous   = std::string::npos;
-  std::string::size_type last_space = std::string::npos;
-  std::string::size_type last_comma = std::string::npos;
+  // Terminate processing.
+  // Note: bytes vs bytes.
+  if (offset >= text.length ())
+    return false;
+
+  std::string::size_type last_last_bytes = offset;
+  std::string::size_type last_bytes = offset;
+  std::string::size_type bytes = offset;
+  unsigned int last_ws = 0;
   int character;
-  int width = 0;
-  while (width < length)
+  int char_width = 0;
+  int line_width = 0;
+  while (1)
   {
-    previous = bytes;
+    last_last_bytes = last_bytes;
+    last_bytes = bytes;
     character = utf8_next_char (text, bytes);
 
-    // Record last seen space.
-    if (character == ' ')
-      last_space = previous;
-
-    // Record last seen comma.
-    else if (character == ',' ||
-             character == ';' ||
-             character == '.')
-      last_comma = previous;
-
-    // Newline is an early break point.
-    else if (character == '\n')
+    if (character == 0 ||
+        character == '\n')
     {
-      line = text.substr (0, previous);
-      text = text.substr (bytes);
-      return;
+      line = text.substr (offset, last_bytes - offset);
+      offset = bytes;
+      break;
+    }
+    else if (character == ' ')
+      last_ws = last_bytes;
+
+    char_width = mk_wcwidth (character);
+    if (line_width + char_width > width)
+    {
+      int last_last_character = text[last_last_bytes];
+      int last_character = text[last_bytes];
+
+      // [case 1] one| two --> last_last != 32, last == 32, ws == 0
+      if (last_last_character != ' ' &&
+          last_character      == ' ')
+      {
+        line = text.substr (offset, last_bytes - offset);
+        offset = last_bytes + 1;
+        break;
+      }
+
+      // [case 2] one |two --> last_last == 32, last != 32, ws != 0
+      else if (last_last_character == ' ' &&
+               last_character      != ' ' &&
+               last_ws             != 0)
+      {
+        line = text.substr (offset, last_bytes - offset - 1);
+        offset = last_bytes;
+        break;
+      }
+
+      else if (last_last_character != ' ' &&
+               last_character      != ' ')
+      {
+        // [case 3] one t|wo --> last_last != 32, last != 32, ws != 0
+        if (last_ws != 0)
+        {
+          line = text.substr (offset, last_ws - offset);
+          offset = last_ws + 1;
+          break;
+        }
+        // [case 4] on|e two --> last_last != 32, last != 32, ws == 0
+        else
+        {
+          if (hyphenate)
+          {
+            line = text.substr (offset, last_bytes - offset - 1) + "-";
+            offset = last_last_bytes;
+          }
+          else
+          {
+            line = text.substr (offset, last_bytes - offset);
+            offset = last_bytes;
+          }
+        }
+
+        break;
+      }
     }
 
-    // EOS is an early break point.
-    else if (character == 0)
-    {
-      line = text;
-      text = "";
-      return;
-    }
-
-    width += mk_wcwidth (character);
+    line_width += char_width;
   }
 
-  // Case where EOS was not quite reached.
-  //  012345
-  // |eleven|\0
-  if (text[bytes] == '\0')
-  {
-    line = text;
-    text = "";
-    return;
-  }
-
-  // Case where a word ends at the right margin.
-  //  012345
-  // |eleven|_
-  if (text[bytes] == ' ')
-  {
-    line = text.substr (0, bytes);
-    text = text.substr (bytes + 1);
-    return;
-  }
-
-  // Case where a word straddles the margin, but there is an earlier space
-  // to break on.
-  //  012345
-  // |one_tw|o
-  if (last_space != std::string::npos)
-  {
-    line = text.substr (0, last_space);
-    text = text.substr (last_space + 1);
-    return;
-  }
-
-  if (last_comma != std::string::npos)
-  {
-    line = text.substr (0, last_comma + 1);
-    text = text.substr (last_comma + 1);
-    return;
-  }
-
-  // Case where a word needs to be split, and there is no last_space
-  // or last_comma.
-  // Hyphenation becomes the issue.
-  //  012345
-  // |fiftee|n
-  // |fifte-|en
-  else
-  {
-    if (hyphenate)
-    {
-      line = text.substr (0, previous) + "-";
-      text = text.substr (previous);
-    }
-    else
-    {
-      line = text.substr (0, bytes);
-      text = text.substr (bytes);
-    }
-
-    return;
-  }
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

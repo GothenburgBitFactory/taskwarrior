@@ -41,7 +41,7 @@ std::string trim (const std::string& in, const std::string& t = " ");
 std::string unquoteText (const std::string&);
 int longestWord (const std::string&);
 int longestLine (const std::string&);
-void extractLine (std::string&, std::string&, int, bool);
+bool extractLine (std::string&, const std::string&, int, bool, unsigned int&);
 void splitq (std::vector<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const std::string&);
