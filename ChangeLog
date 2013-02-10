@@ -71,6 +71,8 @@ Bugs
  + Fixed bug #1150, which referenced deprecated features in the tutorial man
    page (thanks to Benjamin Weber).
  + Fixed bug #1154, which now allows priorities to be specified in any case.
+ + Fixed bug #1178, which included binary libraries in the released source
+   package (thanks to Jakub Wilk).
  + Improved hyphenation by splitting on commas (even if no whitespace after).
    Leads to better output of, for example, 'task show', where comma-separated
    lists are common.
