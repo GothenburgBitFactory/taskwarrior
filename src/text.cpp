@@ -326,19 +326,21 @@ void extractLine (
       last_space = previous;
 
     // Record last seen comma.
-    if (character == ',')
+    else if (character == ',' ||
+             character == ';' ||
+             character == '.')
       last_comma = previous;
 
     // Newline is an early break point.
-    if (character == '\n')
+    else if (character == '\n')
     {
-      line = text.substr (0, bytes - 1);
+      line = text.substr (0, previous);
       text = text.substr (bytes);
       return;
     }
 
     // EOS is an early break point.
-    if (character == 0)
+    else if (character == 0)
     {
       line = text;
       text = "";
