@@ -37,6 +37,8 @@ Features
  + Added the configuration variable 'print.empty.columns'.
 
 Bugs
+ + Fixed bug #642, so that the default 'data.location=~/.task' preserves the
+   '~', leading to more portable .taskrc files (thanks to alparo).
  + Fixed bug #947, #1031, which kept expanding aliases after the '--' operator
    (thanks to Jim B).
  + Fixed bug #1038, which prints blank lines with bulk changes and when the

@@ -53,12 +53,16 @@ Path::Path ()
 Path::Path (const Path& other)
 {
   if (this != &other)
-    _data = other._data;
+  {
+    _original = other._original;
+    _data     = other._data;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Path::Path (const std::string& in)
 {
+  _original = in;
   _data = expand (in);
 }
 
@@ -71,7 +75,10 @@ Path::~Path ()
 Path& Path::operator= (const Path& other)
 {
   if (this != &other)
-    this->_data = other._data;
+  {
+    this->_original = other._original;
+    this->_data     = other._data;
+  }
 
   return *this;
 }

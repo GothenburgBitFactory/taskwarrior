@@ -32,7 +32,6 @@
 #include <sstream>
 #include <algorithm>
 #include <assert.h>
-#include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -579,18 +578,8 @@ const std::vector <std::string> Context::getCommands () const
 ////////////////////////////////////////////////////////////////////////////////
 void Context::assumeLocations ()
 {
-  // Note that this pointer is deliberately not free()'d, even though valgrind
-  // complains about it.  It is either not necessary, or forbidden, depending
-  // on OS.
-
-  // Set up default locations.
-  struct passwd* pw = getpwuid (getuid ());
-  if (!pw)
-    throw std::string (STRING_NO_HOME);
-
-  home_dir = pw->pw_dir;
-  rc_file  = File      (home_dir + "/.taskrc");
-  data_dir = Directory (home_dir + "/.task");
+  rc_file  = File      ("~/.taskrc");
+  data_dir = Directory ("~/.task");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -603,14 +592,14 @@ void Context::createDefaultConfig ()
         !confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
       throw std::string (STRING_CONTEXT_NEED_RC);
 
-    config.createDefaultRC (rc_file, data_dir);
+    config.createDefaultRC (rc_file, data_dir._original);
   }
 
   // Create data location, if necessary.
   config.createDefaultData (data_dir);
 
   // Create extension directory, if necessary.
-/* TODO Enable this when the time is right, say for 2.1
+/* TODO Enable this when the time is right, say for 2.4
   if (! extension_dir.exists ())
     extension_dir.create ();
 */

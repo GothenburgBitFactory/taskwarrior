@@ -61,6 +61,7 @@ public:
   static std::vector<std::string> glob (const std::string&);
 
 public:
+  std::string _original;
   std::string _data;
 };
 

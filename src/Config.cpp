@@ -31,12 +31,10 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <inttypes.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <pwd.h>
 #include <Directory.h>
 #include <Date.h>
 #include <File.h>
