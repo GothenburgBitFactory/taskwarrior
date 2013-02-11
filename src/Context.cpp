@@ -538,6 +538,7 @@ void Context::shadow ()
               " rc.detection:off"   +  // No need to determine terminal size
               " rc.color:off"       +  // Color off by default
               " rc.gc:off "         +  // GC off, to reduce headaches
+              " rc.locking:off"     +  // No file locking
               " rc:" + rcfile + " " +  // Use specified rc file
               command               +  // User specified command
               " >"                  +  // Capture
