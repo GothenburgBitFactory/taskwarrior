@@ -49,6 +49,8 @@ Bugs
  + Fixed bug #1043, where aliases were not recognized by bash autocompletion.
  + Fixed bug #1044, where 'task projects' considers newly deleted tasks and
    provides an incorrect summary.
+ + Fixed bug #1047, which caused extra commas in exported JSON when UDA orphans
+   were present (thanks to Thomas Sullivan).
  + Fixed bug #1048, which segfaulted rather than complain about syntax (thanks
    to Bryce Harrington, Štěpán Henek).
  + Fixed bug #1053, where ' characters were not escaped by export-csv.pl (thanks
