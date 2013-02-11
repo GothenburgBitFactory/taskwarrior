@@ -70,8 +70,8 @@ Bugs
    file (thanks to Tim None).
  + Fixed bug #1128, which caused 'age' columns to be right-justified instead of
    left-justified (thanks to Steve Rader).
- + Fixed bug #1136, which incorrectly line-wrapped tasks with annotations
-   (thanks to Steve Rader).
+ + Fixed bug #1136, #1177, which incorrectly line-wrapped tasks with annotations
+   (thanks to Steve Rader, T. Charles Yun).
  + Fixed bug #1150, which referenced deprecated features in the tutorial man
    page (thanks to Benjamin Weber).
  + Fixed bug #1154, which now allows priorities to be specified in any case.
