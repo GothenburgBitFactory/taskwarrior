@@ -102,31 +102,47 @@ $output = qx{bash ./task.sh task proj : to 2>&1};
 ok ($? == 0, 'Exit status check');
 unlike ($output, qr/todd/, '\'proj:\' does not expand if abbreviation.minimum is 5');
 
-# "priority:" should be expanded correctly and dependent on abbreviation.minimum
-$output = qx{bash ./task.sh task priorABC : 2>&1};
-ok ($? == 0, 'Exit status check');
-unlike ($output, qr/H/, '\'priorABC:\' does not expand');
+# The following tests were removed because we no longer expand task IDs after
+# depends. This expansion was stopped because it was using the _ids command
+# which runs _ids and can lead to confusing behavior for the user. See:
+# https://groups.google.com/forum/#!topic/taskwarrior-dev/KwHnb9MOOqA
 
-$output = qx{bash ./task.sh task prior : 2>&1};
-ok ($? == 0, 'Exit status check');
-like ($output, qr/H/, '\'prior:\' does expand');
+## "priority:" should be expanded correctly and dependent on abbreviation.minimum
+#$output = qx{bash ./task.sh task priorABC : 2>&1};
+#ok ($? == 0, 'Exit status check');
+#unlike ($output, qr/H/, '\'priorABC:\' does not expand');
+#
+#$output = qx{bash ./task.sh task prior : 2>&1};
+#ok ($? == 0, 'Exit status check');
+#like ($output, qr/H/, '\'prior:\' does expand');
+#
+#$output = qx{bash ./task.sh task prio : 2>&1};
+#ok ($? == 0, 'Exit status check');
+#unlike ($output, qr/H/, '\'prio:\' does not expand if abbreviation.minimum is 5');
+#
+## "depends:" should be expanded correctly and dependent on abbreviation.minimum
+#$output = qx{bash ./task.sh task depenABC : 2>&1};
+#ok ($? == 0, 'Exit status check');
+#unlike ($output, qr/1/, '\'depenABC:\' does not expand');
+#
+#$output = qx{bash ./task.sh task depen : 2>&1};
+#ok ($? == 0, 'Exit status check');
+#like ($output, qr/1/, '\'depen:\' does expand');
+#
+#$output = qx{bash ./task.sh task depe : 2>&1};
+#ok ($? == 0, 'Exit status check');
+#unlike ($output, qr/1/, '\'depe:\' does not expand if abbreviation.minimum is 5');
 
-$output = qx{bash ./task.sh task prio : 2>&1};
+# there should be no gc coming from bash completion
+qx{../src/task rc:bug.rc add this task should be number 2 and stay number 2 2>&1};
 ok ($? == 0, 'Exit status check');
-unlike ($output, qr/H/, '\'prio:\' does not expand if abbreviation.minimum is 5');
-
-# "depends:" should be expanded correctly and dependent on abbreviation.minimum
-$output = qx{bash ./task.sh task depenABC : 2>&1};
+qx{../src/task rc:bug.rc rc.confirmation:off 1 delete 2>&1};
 ok ($? == 0, 'Exit status check');
-unlike ($output, qr/1/, '\'depenABC:\' does not expand');
-
-$output = qx{bash ./task.sh task depen : 2>&1};
+qx{bash ./task.sh task depends : 2>&1};
 ok ($? == 0, 'Exit status check');
-like ($output, qr/1/, '\'depen:\' does expand');
-
-$output = qx{bash ./task.sh task depe : 2>&1};
-ok ($? == 0, 'Exit status check');
-unlike ($output, qr/1/, '\'depe:\' does not expand if abbreviation.minimum is 5');
+$output = qx{../src/task rc:bug.rc rc.confirmation:off 2 modify shouldreplacetext 2>&1};
+ok ($? == 0, 'Should exit with 0 because task should exist');
+like ($output, qr/shouldreplacetext/, 'no gc was run');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data synch.key bug.rc task.sh);

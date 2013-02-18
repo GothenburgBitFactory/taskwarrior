@@ -24,7 +24,8 @@ New configuration options in taskwarrior 2.2.0
 
 Newly deprecated features in taskwarrior 2.2.0
   
-  -
+  - The bash completion script no longer expands IDs after 'depends:'.
+    (Such expansion required running gc() which is not correct.)
 
 ---
 

@@ -62,10 +62,6 @@ _task_get_config() {
     $taskcommand _config
 }
 
-_task_offer_dependencies() {
-    COMPREPLY=( $(compgen -W "$($taskcommand _ids)" -- ${cur/*:/}) )
-}
-
 _task_offer_priorities() {
     COMPREPLY=( $(compgen -W "L M H" -- ${cur/*:/}) )
 }
@@ -94,17 +90,11 @@ _task()
 
     abbrev_min=$($taskcommand show | grep "abbreviation.minimum" | awk {'print  $2'})
     commands_aliases=$(echo $($taskcommand _commands; $taskcommand _aliases) | tr " " "\n"|sort|tr "\n" " ")
-    opts="$commands_aliases $($taskcommand _ids) $($taskcommand _columns)"
+    opts="$commands_aliases $($taskcommand _columns)"
 
     case "${prev}" in
         :)
             case "${prev2}" in
-                dep|depe|depen|depend|depends)
-                    if [ ${#prev2} -ge $abbrev_min ]; then
-                        _task_offer_dependencies
-                    fi
-                    return 0
-                    ;;
                 pri|prior|priori|priorit|priority)
                     if [ ${#prev2} -ge $abbrev_min ]; then
                         _task_offer_priorities
@@ -136,12 +126,6 @@ _task()
                     ;;
                 :)
                     case "${prev}" in
-                        dep|depe|depen|depend|depends)
-                            if [ ${#prev} -ge $abbrev_min ]; then
-                                _task_offer_dependencies
-                            fi
-                            return 0
-                            ;;
                         pri|prior|priori|priorit|priority)
                             if [ ${#prev} -ge $abbrev_min ]; then
                                 _task_offer_priorities

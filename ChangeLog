@@ -95,6 +95,7 @@ Bugs
  + Integrated latest UTF8 character width calculations from Markus Kuhn.
  + Fixed bug where localized UTF8 strings were not properly substr'd (thanks to
    Fidel Mato).
+ + Fixed a bug where the bash completion script was causing gc() to be run.
 
 
 ------ old releases ------------------------------
