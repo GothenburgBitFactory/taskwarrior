@@ -96,7 +96,8 @@ Bugs
  + Fixed bug where localized UTF8 strings were not properly substr'd (thanks to
    Fidel Mato).
  + Fixed a bug where the bash completion script was causing gc() to be run.
-
+ + Fixed manpages that were not installed when running an out-of-source build
+   (thanks to Vincent Petithory).
 
 ------ old releases ------------------------------
 
