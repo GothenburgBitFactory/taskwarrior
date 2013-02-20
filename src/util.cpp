@@ -70,8 +70,8 @@ static inline unsigned round_up_to (unsigned n, unsigned target)
 bool confirm (const std::string& question)
 {
   std::vector <std::string> options;
-  options.push_back ("yes");
-  options.push_back ("no");
+  options.push_back (STRING_UTIL_CONFIRM_YES);
+  options.push_back (STRING_UTIL_CONFIRM_NO);
 
   std::string answer;
   std::vector <std::string> matches;

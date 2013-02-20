@@ -98,6 +98,7 @@ Bugs
  + Fixed a bug where the bash completion script was causing gc() to be run.
  + Fixed manpages that were not installed when running an out-of-source build
    (thanks to Vincent Petithory).
+ + Added missing localized confirmation strings (thanks to Rainer Müller).
 
 ------ old releases ------------------------------
 
