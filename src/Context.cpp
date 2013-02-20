@@ -683,7 +683,7 @@ void Context::updateXtermTitle ()
 
     std::string title;
     join (title, " ", a3.list ());
-    std::cout << "]0;task " << command << " " << title << "" << std::endl;
+    std::cout << "]0;task " << command << " " << title << "";
   }
 }
 

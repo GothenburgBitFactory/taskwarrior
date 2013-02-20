@@ -99,6 +99,8 @@ Bugs
  + Fixed manpages that were not installed when running an out-of-source build
    (thanks to Vincent Petithory).
  + Added missing localized confirmation strings (thanks to Rainer Müller).
+ + Fixed bug that added an extra newline after setting the terminal title
+   (thanks to Rainer Müller).
 
 ------ old releases ------------------------------
 
