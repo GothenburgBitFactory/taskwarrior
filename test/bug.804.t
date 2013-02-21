@@ -36,6 +36,7 @@ if (open my $fh, '>', 'bug.rc')
   print $fh "data.location=.\n";
   print $fh "bulk=100\n";
   print $fh "confirmation=no\n";
+  print $fh "print.empty.columns=yes\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }

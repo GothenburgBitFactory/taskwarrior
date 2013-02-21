@@ -35,6 +35,7 @@ if (open my $fh, '>', 'verbose.rc')
 {
   print $fh "data.location=.\n",
             "echo.command=off\n";
+  print $fh "print.empty.columns=yes\n";
   close $fh;
   ok (-r 'verbose.rc', 'Created verbose.rc');
 }

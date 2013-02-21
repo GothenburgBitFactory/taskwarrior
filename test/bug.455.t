@@ -34,6 +34,7 @@ use Test::More tests => 4;
 if (open my $fh, '>', '455.rc')
 {
   print $fh "data.location=.\n";
+  print $fh "print.empty.columns=yes\n";
 
   close $fh;
   ok (-r '455.rc', 'Created 455.rc');

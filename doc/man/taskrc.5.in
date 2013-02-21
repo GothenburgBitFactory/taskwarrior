@@ -347,9 +347,9 @@ names you have used, or just the ones used in active tasks.  The default value i
 "no".
 
 .TP
-.B print.empty.columns=yes
+.B print.empty.columns=no
 May be yes or no, and determines whether columns with no data for any task are
-printed.  Defaults to yes.
+printed.  Defaults to no.
 
 .TP
 .B search.case.sensitive=yes
