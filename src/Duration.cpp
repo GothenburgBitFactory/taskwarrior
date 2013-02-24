@@ -282,7 +282,7 @@ std::string Duration::formatCompact () const
   else if (_secs >= 3600)        sprintf (formatted, "%s%dh",   (_negative ? "-" : ""), (int) (_secs / 3600));
   else if (_secs >= 60)          sprintf (formatted, "%s%dm",   (_negative ? "-" : ""), (int) (_secs / 60));
   else if (_secs >= 1)           sprintf (formatted, "%s%ds",   (_negative ? "-" : ""), (int) _secs);
-  else                           strcpy (formatted, "-");
+  else                           formatted[0] = '\0';
 
   return std::string (formatted);
 }

@@ -79,7 +79,7 @@ int main (int argc, char** argv)
   d = Duration (365 * 86400 + 1); t.is (d.format (), "1.0 yrs", "365 days + 1 sec -> 1.0 yrs");
 
   // std::string formatCompact ();
-  d = Duration (0),               t.is (d.formatCompact (), "-",    "0 -> -");
+  d = Duration (0),               t.is (d.formatCompact (), "",     "0 ->");
   d = Duration (1),               t.is (d.formatCompact (), "1s",   "1 -> 1s");
   d = Duration (2),               t.is (d.formatCompact (), "2s",   "2 -> 2s");
   d = Duration (59),              t.is (d.formatCompact (), "59s",  "59 -> 59s");
