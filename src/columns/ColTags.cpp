@@ -85,7 +85,6 @@ void ColumnTags::setStyle (const std::string& value)
 // Set the minimum and maximum widths for the value.
 void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-
        if (_style == "indicator") minimum = maximum = context.config.get ("tag.indicator").length ();
   else if (_style == "count")     minimum = maximum = 3;
   else if (_style == "default" ||

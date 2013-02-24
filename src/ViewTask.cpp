@@ -140,14 +140,14 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       unsigned int ideal;
       (*i)->measure (data[sequence[s]], min, ideal);
 
-      if (min   > global_min)   global_min = min;
+      if (min   > global_min)   global_min   = min;
       if (ideal > global_ideal) global_ideal = ideal;
     }
 
     if (print_empty_columns || global_min != 0)
     {
       unsigned int label_length = utf8_length ((*i)->label ());
-      if (label_length > global_min) global_min = label_length;
+      if (label_length > global_min)   global_min   = label_length;
       if (label_length > global_ideal) global_ideal = label_length;
       minimal.push_back (global_min);
       ideal.push_back (global_ideal);
