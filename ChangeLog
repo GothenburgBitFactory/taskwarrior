@@ -81,6 +81,7 @@ Bugs
  + Fixed bug #1154, which now allows priorities to be specified in any case.
  + Fixed bug #1178, which included binary libraries in the released source
    package (thanks to Jakub Wilk).
+ + Fixed bug #1183, correcting error message typos (thanks to Jakub Wilk).
  + Improved hyphenation by splitting on commas (even if no whitespace after).
    Leads to better output of, for example, 'task show', where comma-separated
    lists are common.
