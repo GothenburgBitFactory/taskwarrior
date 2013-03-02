@@ -24,6 +24,7 @@ uri.t
 utf8.t
 util.t
 view.t
+width.t
 
 json_test
 
