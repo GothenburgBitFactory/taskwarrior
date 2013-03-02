@@ -32,6 +32,7 @@
 #include <Date.h>
 #include <ColUDA.h>
 #include <text.h>
+#include <utf8.h>
 #include <i18n.h>
 #include <stdlib.h>
 
@@ -99,11 +100,11 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
         if (format == "")
           format = context.config.get ("dateformat");
 
-        minimum = maximum = date.toString (format).length ();
+        minimum = maximum = utf8_width (date.toString (format));
       }
       else if (_type == "duration")
       {
-        minimum = maximum = Duration (value).formatCompact ().length ();
+        minimum = maximum = utf8_width (Duration (value).formatCompact ());
       }
       else if (_type == "string")
       {
@@ -113,7 +114,7 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
       }
       else if (_type == "numeric")
       {
-        minimum = maximum = value.length ();
+        minimum = maximum = utf8_width (value);
       }
     }
   }

@@ -146,7 +146,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
     if (print_empty_columns || global_min != 0)
     {
-      unsigned int label_length = utf8_length ((*i)->label ());
+      unsigned int label_length = utf8_width ((*i)->label ());
       if (label_length > global_min)   global_min   = label_length;
       if (label_length > global_ideal) global_ideal = label_length;
       minimal.push_back (global_min);

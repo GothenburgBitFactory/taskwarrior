@@ -30,6 +30,7 @@
 #include <Context.h>
 #include <ColProject.h>
 #include <text.h>
+#include <utf8.h>
 #include <util.h>
 #include <i18n.h>
 
@@ -87,7 +88,7 @@ void ColumnProject::measure (Task& task, unsigned int& minimum, unsigned int& ma
     throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 
   minimum = longestWord (project);
-  maximum = project.length ();
+  maximum = utf8_width (project);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

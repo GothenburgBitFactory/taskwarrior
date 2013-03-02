@@ -32,6 +32,7 @@
 #include <Date.h>
 #include <ColDescription.h>
 #include <text.h>
+#include <utf8.h>
 #include <util.h>
 #include <i18n.h>
 
@@ -106,14 +107,14 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
     int min_desc = longestWord (description);
     int min_anno = indent + Date::length (format);
     minimum = std::max (min_desc, min_anno);
-    maximum = description.length ();
+    maximum = utf8_width (description);
 
     std::map <std::string, std::string> annos;
     task.getAnnotations (annos);
     std::map <std::string, std::string>::iterator i;
     for (i = annos.begin (); i != annos.end (); i++)
     {
-      unsigned int len = min_anno + 1 + i->second.length ();
+      unsigned int len = min_anno + 1 + utf8_width (i->second);
       if (len > maximum)
         maximum = len;
     }
@@ -122,7 +123,7 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
   // Just the text
   else if (_style == "desc")
   {
-    maximum = description.length ();
+    maximum = utf8_width (description);
     minimum = longestWord (description);
   }
 
@@ -136,20 +137,20 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
     int min_desc = longestWord (description);
     int min_anno = Date::length (format);
     minimum = std::max (min_desc, min_anno);
-    maximum = description.length ();
+    maximum = utf8_width (description);
 
     std::map <std::string, std::string> annos;
     task.getAnnotations (annos);
     std::map <std::string, std::string>::iterator i;
     for (i = annos.begin (); i != annos.end (); i++)
-      maximum += i->second.length () + minimum + 1;
+      maximum += utf8_width (i->second) + minimum + 1;
   }
 
   // The te...
   else if (_style == "truncated")
   {
     minimum = 4;
-    maximum = description.length ();
+    maximum = utf8_width (description);
   }
 
   // The text [2]
@@ -159,7 +160,7 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
     task.getAnnotations (annos);
 
     // <description> + ' ' + '[' + <count> + ']'
-    maximum = description.length () + 3 + format ((int)annos.size ()).length ();
+    maximum = utf8_width (description) + 3 + utf8_width (format ((int)annos.size ()));
     minimum = longestWord (description);
   }
 
@@ -249,7 +250,7 @@ void ColumnDescription::render (
   // This is a des...
   else if (_style == "truncated")
   {
-    int len = description.length ();
+    int len = utf8_width (description);
     if (len > width)
       lines.push_back (color.colorize (description.substr (0, width - 3) + "..."));
     else
