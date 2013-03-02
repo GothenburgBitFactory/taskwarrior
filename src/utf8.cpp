@@ -28,6 +28,7 @@
 #define L10N                                           // Localization complete.
 
 #include <string>
+#include <text.h>
 #include <utf8.h>
 #include <i18n.h>
 
@@ -190,6 +191,19 @@ unsigned int utf8_length (const std::string& str)
   }
 
   return charLength;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Width of a string in character cells.
+unsigned int utf8_width (const std::string& str)
+{
+  unsigned int length = 0;
+  std::string::size_type i = 0;
+  unsigned int c;
+  while ((c = utf8_next_char (str, i)))
+    length += mk_wcwidth (c);
+
+  return length;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

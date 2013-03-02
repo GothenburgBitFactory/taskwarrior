@@ -37,6 +37,7 @@ std::string utf8_character (unsigned int);
 int utf8_sequence (unsigned int);
 unsigned int utf8_length (const std::string&);
 unsigned int utf8_text_length (const std::string&);
+unsigned int utf8_width (const std::string& str);
 const std::string utf8_substr (const std::string&, unsigned int, unsigned int length = 0);
 
 

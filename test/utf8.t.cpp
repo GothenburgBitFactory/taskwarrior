@@ -32,7 +32,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (6);
+  UnitTest t (10);
 
   std::string ascii_text = "This is a test";
   std::string utf8_text  = "más sábado miércoles";
@@ -56,6 +56,12 @@ int main (int argc, char** argv)
   // const std::string utf8_substr (const std::string&, unsigned int, unsigned int length = 0);
   t.is (utf8_substr (ascii_text, 0, 2), "Th", "ASCII utf8_substr");
   t.is (utf8_substr (utf8_text, 0, 2),  "má", "UTF8 utf8_substr");
+
+  // unsigned int utf8_width (const std::string&);
+  t.is (utf8_width ("one"), 3, "utf8_width 'one' --> 3");
+  t.is (utf8_width ("más sábado miércoles"), 20, "utf8_width 'más sábado miércoles' --> 20");
+  t.is (utf8_width ("改变各种颜色"), 12, "utf8_width '改变各种颜色' --> 12");
+  t.is (utf8_width ("改"), 2, "utf8_width '改' --> 2");
 
   return 0;
 }
