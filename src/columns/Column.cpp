@@ -301,28 +301,28 @@ bool Column::validate (std::string& input)
 // No L10N.
 void Column::measure (const std::string&, unsigned int&, unsigned int&)
 {
-  throw std::string ("Virtual method Column::measure not overriden.");
+  throw std::string ("Virtual method Column::measure not overridden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // No L10N.
 void Column::measure (Task&, unsigned int&, unsigned int&)
 {
-  throw std::string ("Virtual method Column::measure not overriden.");
+  throw std::string ("Virtual method Column::measure not overridden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // No L10N.
 void Column::render (std::vector <std::string>&, const std::string&, int, Color&)
 {
-  throw std::string ("Virtual method Column::render not overriden.");
+  throw std::string ("Virtual method Column::render not overridden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // No L10N.
 void Column::render (std::vector <std::string>&, Task&, int, Color&)
 {
-  throw std::string ("Virtual method Column::render not overriden.");
+  throw std::string ("Virtual method Column::render not overridden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

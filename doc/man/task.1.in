@@ -983,7 +983,8 @@ Taskwarrior stores its configuration in a file in the user's home directory:
 .B task rc:<path-to-alternate-file> ...
 Specifies an alternate configuration file.
 
-.TP TASKRC=/tmp/.taskrc task ..
+.TP
+.B TASKRC=/tmp/.taskrc task ..
 The environment variable overrides the default and the command line
 specification of the .taskrc file.
 
