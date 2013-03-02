@@ -245,6 +245,32 @@ unsigned int utf8_text_length (const std::string& str)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+unsigned int utf8_text_width (const std::string& str)
+{
+  bool in_color = false;
+
+  unsigned int length = 0;
+  std::string::size_type i = 0;
+  unsigned int c;
+  while ((c = utf8_next_char (str, i)))
+  {
+    if (in_color)
+    {
+      if (c == 'm')
+        in_color = false;
+    }  
+    else if (c == 033)
+    {
+      in_color = true;
+    }
+    else
+      length += mk_wcwidth (c);
+  }
+
+  return length;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const std::string utf8_substr (
   const std::string& input,
   unsigned int start,

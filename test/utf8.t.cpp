@@ -32,13 +32,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (10);
+  UnitTest t (15);
 
-  std::string ascii_text = "This is a test";
-  std::string utf8_text  = "más sábado miércoles";
+  std::string ascii_text      = "This is a test";
+  std::string utf8_text       = "más sábado miércoles";
+  std::string utf8_wide_text  = "改变各种颜色";
 
-  std::string ascii_text_color = "This [1mis[0m a test";
-  std::string utf8_text_color  = "más [1msábado[0m miércoles";
+  std::string ascii_text_color      = "This [1mis[0m a test";
+  std::string utf8_text_color       = "más [1msábado[0m miércoles";
+  std::string utf8_wide_text_color  = "改[1m变各种[0m颜色";
 
   // TODO unsigned int utf8_codepoint (const std::string&);
   // TODO unsigned int utf8_next_char (const std::string&, std::string::size_type&);
@@ -46,22 +48,29 @@ int main (int argc, char** argv)
   // TODO int utf8_sequence (unsigned int);
 
   // unsigned int utf8_length (const std::string&);
-  t.is ((int) utf8_length (ascii_text), 14, "ASCII utf8_length");
-  t.is ((int) utf8_length (utf8_text),  20, "UTF8 utf8_length");
-
-  // unsigned int utf8_text_length (const std::string&);
-  t.is ((int) utf8_text_length (ascii_text_color), 14, "ASCII utf8_text_length");
-  t.is ((int) utf8_text_length (utf8_text_color),  20, "UTF8 utf8_text_length");
-
-  // const std::string utf8_substr (const std::string&, unsigned int, unsigned int length = 0);
-  t.is (utf8_substr (ascii_text, 0, 2), "Th", "ASCII utf8_substr");
-  t.is (utf8_substr (utf8_text, 0, 2),  "má", "UTF8 utf8_substr");
+  t.is ((int) utf8_length (ascii_text),     14, "ASCII utf8_length");
+  t.is ((int) utf8_length (utf8_text),      20, "UTF8 utf8_length");
+  t.is ((int) utf8_length (utf8_wide_text),  6, "UTF8 wide utf8_length");
 
   // unsigned int utf8_width (const std::string&);
-  t.is (utf8_width ("one"), 3, "utf8_width 'one' --> 3");
-  t.is (utf8_width ("más sábado miércoles"), 20, "utf8_width 'más sábado miércoles' --> 20");
-  t.is (utf8_width ("改变各种颜色"), 12, "utf8_width '改变各种颜色' --> 12");
-  t.is (utf8_width ("改"), 2, "utf8_width '改' --> 2");
+  t.is ((int) utf8_width (ascii_text),     14, "ASCII utf8_width");
+  t.is ((int) utf8_width (utf8_text),      20, "UTF8 utf8_width");
+  t.is ((int) utf8_width (utf8_wide_text), 12, "UTF8 wide utf8_width");
+
+  // unsigned int utf8_text_length (const std::string&);
+  t.is ((int) utf8_text_length (ascii_text_color),     14, "ASCII utf8_text_length");
+  t.is ((int) utf8_text_length (utf8_text_color),      20, "UTF8 utf8_text_length");
+  t.is ((int) utf8_text_length (utf8_wide_text_color),  6, "UTF8 wide utf8_text_length");
+
+  // unsigned int utf8_text_width (const std::string&);
+  t.is ((int) utf8_text_width (ascii_text_color),     14, "ASCII utf8_text_width");
+  t.is ((int) utf8_text_width (utf8_text_color),      20, "UTF8 utf8_text_width");
+  t.is ((int) utf8_text_width (utf8_wide_text_color), 12, "UTF8 wide utf8_text_width");
+
+  // const std::string utf8_substr (const std::string&, unsigned int, unsigned int length = 0);
+  t.is (utf8_substr (ascii_text, 0, 2),      "Th", "ASCII utf8_substr");
+  t.is (utf8_substr (utf8_text, 0, 2),       "má", "UTF8 utf8_substr");
+  t.is (utf8_substr (utf8_wide_text, 0, 2),  "改变", "UTF8 wide utf8_substr");
 
   return 0;
 }
