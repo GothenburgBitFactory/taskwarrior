@@ -427,7 +427,7 @@ int execute(const std::string& executable, std::vector<std::string> arguments)
     char** argv = new char*[4];
     argv[0] = shell;                  // sh
     argv[1] = opt;                    // -c
-    argv[2] = (char*)cmdline.c_str();	// e.g. scp undo.data user@host:.task/
+    argv[2] = (char*)cmdline.c_str(); // e.g. scp undo.data user@host:.task/
     argv[3] = NULL;                   // required by execv
 
     int ret = execvp(shell, argv);

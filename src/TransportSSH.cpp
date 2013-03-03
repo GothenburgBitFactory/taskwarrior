@@ -35,73 +35,73 @@
 ////////////////////////////////////////////////////////////////////////////////
 TransportSSH::TransportSSH(const Uri& uri) : Transport(uri)
 {
-	_executable = "scp";
+  _executable = "scp";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::send(const std::string& source)
 {
-	if (_uri._host == "")
-		throw std::string (STRING_TRANSPORT_SSH_URI);
+  if (_uri._host == "")
+    throw std::string (STRING_TRANSPORT_SSH_URI);
 
-	// Is there more than one file to transfer?
-	// Then path has to end with a '/'
-	if (is_filelist(source) && !_uri.is_directory())
+  // Is there more than one file to transfer?
+  // Then path has to end with a '/'
+  if (is_filelist(source) && !_uri.is_directory())
     throw format (STRING_TRANSPORT_URI_NODIR, _uri._path);
 
-	// cmd line is: scp [-p port] [user@]host:path
-	if (_uri._port != "")
-	{
-		_arguments.push_back ("-P");
-		_arguments.push_back (_uri._port);
-	}
+  // cmd line is: scp [-p port] [user@]host:path
+  if (_uri._port != "")
+  {
+    _arguments.push_back ("-P");
+    _arguments.push_back (_uri._port);
+  }
 
-	_arguments.push_back (source);
+  _arguments.push_back (source);
 
-	if (_uri._user != "")
-	{
-		_arguments.push_back (_uri._user + "@" + _uri._host + ":" + escape (_uri._path, ' '));
-	}
-	else
-	{
-		_arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
-	}
+  if (_uri._user != "")
+  {
+    _arguments.push_back (_uri._user + "@" + _uri._host + ":" + escape (_uri._path, ' '));
+  }
+  else
+  {
+    _arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
+  }
 
-	if (execute ())
-		throw std::string (STRING_TRANSPORT_SSH_FAIL);
+  if (execute ())
+    throw std::string (STRING_TRANSPORT_SSH_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::recv(std::string target)
 {
-	if (_uri._host == "")
-		throw std::string (STRING_TRANSPORT_SSH_URI);
+  if (_uri._host == "")
+    throw std::string (STRING_TRANSPORT_SSH_URI);
 
-	// Is there more than one file to transfer?
-	// Then target has to end with a '/'
-	if (is_filelist(_uri._path) && !is_directory(target))
+  // Is there more than one file to transfer?
+  // Then target has to end with a '/'
+  if (is_filelist(_uri._path) && !is_directory(target))
     throw format (STRING_TRANSPORT_URI_NODIR, target);
 
-	// cmd line is: scp [-p port] [user@]host:path
-	if (_uri._port != "")
-	{
-		_arguments.push_back ("-P");
-		_arguments.push_back (_uri._port);
-	}
+  // cmd line is: scp [-p port] [user@]host:path
+  if (_uri._port != "")
+  {
+    _arguments.push_back ("-P");
+    _arguments.push_back (_uri._port);
+  }
 
-	if (_uri._user != "")
-	{
-		_arguments.push_back (_uri._user + "@" + _uri._host + ":" + escape (_uri._path, ' '));
-	}
-	else
-	{
-		_arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
-	}
+  if (_uri._user != "")
+  {
+    _arguments.push_back (_uri._user + "@" + _uri._host + ":" + escape (_uri._path, ' '));
+  }
+  else
+  {
+    _arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
+  }
 
-	_arguments.push_back (target);
+  _arguments.push_back (target);
 
-	if (execute ())
-		throw std::string (STRING_TRANSPORT_SSH_FAIL);
+  if (execute ())
+    throw std::string (STRING_TRANSPORT_SSH_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

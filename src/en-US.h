@@ -838,7 +838,7 @@
 
 // Transport
 #define STRING_TRANSPORT_NORUN       "Could not run '{1}'.  Is it installed, and available in $PATH?"
-#define STRING_TRANSPORT_NOFORK      "Could not run '{1}': {2}. Are you out of system resources?"
+#define STRING_TRANSPORT_NOFORK      "Could not run '{1}': {2}.  Are you out of system resources?"
 #define STRING_TRANSPORT_URI_NODIR   "The uri '{1}' does not appear to be a directory."
 #define STRING_TRANSPORT_CURL_URI    "When using the 'curl' protocol, the uri must contain a hostname."
 #define STRING_TRANSPORT_CURL_WILDCD "When using the 'curl' protocol, wildcards are not supported."

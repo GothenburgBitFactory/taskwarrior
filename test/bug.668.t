@@ -41,12 +41,12 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 668: URL should allow users with dot character
 
 my $output = qx{../src/task rc:bug.rc merge user.name\@taskwarrior.org:undo.data 2>&1};
-like ($output, qr/^Could not run ssh.  Is it installed, and available in \$PATH\?$/m, 'ssh does not connect');
+like ($output, qr/ssh failed/, 'ssh does not connect');
 unlike ($output, qr/not a valid modifier/, 'scp syntax with dots');
 unlike ($output, qr/not in the expected format/, 'scp syntax with dots');
 
 $output = qx{../src/task rc:bug.rc merge ssh://user.name\@taskwarrior.org/undo.data 2>&1};
-like ($output, qr/^Could not run ssh.  Is it installed, and available in \$PATH\?$/m, 'ssh does not connect');
+like ($output, qr/ssh failed/, 'ssh does not connect');
 unlike ($output, qr/not a valid modifier/, 'standard syntax with dots');
 unlike ($output, qr/not in the expected format/, 'standard syntax with dots');
 

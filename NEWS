@@ -11,6 +11,7 @@ New Features in taskwarrior 2.2.0
   - The 'columns' command now supports search term for the column name.
   - New date shortcuts, 'socm' and 'eocm', meaning start and end of current
     month.
+  - Improved error messages for 'push' and 'pull' transport problems.
 
 New commands in taskwarrior 2.2.0
 

@@ -93,7 +93,8 @@ int Transport::execute()
   }
   int result = ::execute (_executable, _arguments);
   int err;
-  switch (result) {
+  switch (result)
+  {
   case 127:
     throw format (STRING_TRANSPORT_NORUN, _executable);
   case -1:

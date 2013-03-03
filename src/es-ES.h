@@ -853,16 +853,16 @@
 #define STRING_TEXT_AMBIGUOUS        "Ambiguo {1} '{2}' - puede ser "
 
 // Transport
-#define STRING_TRANSPORT_NORUN       "Could not run '{1}'.  Is it installed, and available in $PATH?"
+#define STRING_TRANSPORT_NORUN       "No se pudo lanzar '{1}'. ¿Está instalado y disponible en $PATH?"
 #define STRING_TRANSPORT_NOFORK      "Could not run '{1}': {2}. Are you out of system resources?"
 #define STRING_TRANSPORT_URI_NODIR   "El uri '{1}' no parece ser un directorio."
 #define STRING_TRANSPORT_CURL_URI    "Cuando se usa el protocolo 'curl' el uri debe contener un nombre de máquina."
 #define STRING_TRANSPORT_CURL_WILDCD "Cuando se usa el protocolo 'curl' no están soportados los comodines."
 #define STRING_TRANSPORT_CURL_FAIL   "Curl falló, consulte los mensajes precedentes."
 #define STRING_TRANSPORT_RSYNC_URI   "Cuando se usa el protocolo 'rsync' el uri debe contener un nombre de máquina."
-#define STRING_TRANSPORT_RSYNC_FAIL  "rsync failed, see output above."
+#define STRING_TRANSPORT_RSYNC_FAIL  "Rsync falló, consulte los mensajes precedentes."
 #define STRING_TRANSPORT_SSH_URI     "Cuando se usa el protocolo 'ssh' el uri debe contener un nombre de máquina."
-#define STRING_TRANSPORT_SSH_FAIL    "ssh failed, see output above."
+#define STRING_TRANSPORT_SSH_FAIL    "Ssh falló, consulte los mensajes precedentes."
 
 // Uri
 #define STRING_URI_QUOTES            "No se pudo interpretar el uri '{1}', uso erróneo de comillas simples."

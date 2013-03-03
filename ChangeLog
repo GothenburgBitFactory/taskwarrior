@@ -35,6 +35,8 @@ Features
  + Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
  + Added new export script: export-tsv.pl.
  + Added the configuration variable 'print.empty.columns'.
+ + The 'push' and 'pull' commands now properly distinguish between a missing
+   transport utility and other errors (thanks to Russell Steicke).
 
 Bugs
  + Fixed bug #642, so that the default 'data.location=~/.task' preserves the
