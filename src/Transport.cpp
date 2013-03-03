@@ -30,6 +30,10 @@
 #include <iostream>
 #include <stdlib.h>
 #include <util.h>
+#include <string.h>
+#include <errno.h>
+#include <text.h>
+#include <i18n.h>
 #include <Transport.h>
 #include <TransportSSH.h>
 #include <TransportRSYNC.h>
@@ -87,7 +91,17 @@ int Transport::execute()
         it->append("\"");
     }
   }
-  return ::execute(_executable, _arguments);
+  int result = ::execute (_executable, _arguments);
+  int err;
+  switch (result) {
+  case 127:
+    throw format (STRING_TRANSPORT_NORUN, _executable);
+  case -1:
+    err = errno;
+    throw format (STRING_TRANSPORT_NOFORK, _executable, ::strerror(err));
+  default:
+    return result;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

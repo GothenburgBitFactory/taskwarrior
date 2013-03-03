@@ -67,8 +67,8 @@ void TransportSSH::send(const std::string& source)
 		_arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
 	}
 
-	if (execute())
-    throw std::string (STRING_TRANSPORT_SSH_NORUN);
+	if (execute ())
+		throw std::string (STRING_TRANSPORT_SSH_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,8 +100,8 @@ void TransportSSH::recv(std::string target)
 
 	_arguments.push_back (target);
 
-	if (execute())
-    throw std::string (STRING_TRANSPORT_SSH_NORUN);
+	if (execute ())
+		throw std::string (STRING_TRANSPORT_SSH_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

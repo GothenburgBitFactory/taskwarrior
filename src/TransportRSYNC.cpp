@@ -65,8 +65,8 @@ void TransportRSYNC::send(const std::string& source)
 		_arguments.push_back (_uri._host + "::" + _uri._path);
 	}
 
-	if (execute())
-    throw std::string (STRING_TRANSPORT_RSYNC_NORUN);
+	if (execute ())
+    throw std::string (STRING_TRANSPORT_RSYNC_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -95,8 +95,8 @@ void TransportRSYNC::recv(std::string target)
 
 	_arguments.push_back (target);
 
-	if (execute())
-    throw std::string (STRING_TRANSPORT_RSYNC_NORUN);
+	if (execute ())
+    throw std::string (STRING_TRANSPORT_RSYNC_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

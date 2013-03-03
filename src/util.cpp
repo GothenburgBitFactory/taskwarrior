@@ -417,7 +417,7 @@ int execute(const std::string& executable, std::vector<std::string> arguments)
     cmdline += " " + (std::string)*it;
   }
 
-	context.debug ("Executing: " + std::string(shell) + " " + std::string(opt) + " " + cmdline);
+  context.debug ("Executing: " + std::string(shell) + " " + std::string(opt) + " " + cmdline);
 
   pid_t child_pid = fork();
 
@@ -435,6 +435,10 @@ int execute(const std::string& executable, std::vector<std::string> arguments)
 
     exit(ret);
   }
+  else if (child_pid == -1)
+  {
+    return -1;
+  }
   else
   {
     // this is done by the parent process
@@ -445,7 +449,7 @@ int execute(const std::string& executable, std::vector<std::string> arguments)
     if (pid == -1)
       return -1;
     else
-      return child_status;
+      return WEXITSTATUS (child_status);
   }
 }
 

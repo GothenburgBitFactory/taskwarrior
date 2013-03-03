@@ -80,14 +80,8 @@ void TransportCurl::send(const std::string& source)
     _arguments.push_back (_uri._protocol + "://" + _uri._host + "/" + _uri._path);
   }
 
-  int result = execute();
-  if (result)
-  {
-    if (result == 127) // command not found
-      throw std::string (STRING_TRANSPORT_CURL_NORUN);
-    else
-      throw std::string (STRING_TRANSPORT_CURL_FAIL);
-  }
+  if (execute ())
+    throw std::string (STRING_TRANSPORT_CURL_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -148,14 +142,8 @@ void TransportCurl::recv(std::string target)
 
   _arguments.insert (_arguments.end (), targetargs.begin (), targetargs.end ());
 
-  int result = execute();
-  if (result)
-  {
-    if (result == 127) // command not found
-      throw std::string (STRING_TRANSPORT_CURL_NORUN);
-    else
-      throw std::string (STRING_TRANSPORT_CURL_FAIL);
-  }
+  if (execute ())
+    throw std::string (STRING_TRANSPORT_CURL_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
