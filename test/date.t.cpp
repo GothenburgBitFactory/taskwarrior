@@ -264,8 +264,8 @@ int main (int argc, char** argv)
     t.is (e5.toString (), "4/4/2010", "Easter 4/4/2010");
     Date e6 (Date::easter(2011));
     t.is (e6.toString (), "4/24/2011", "Easter 4/24/2011");
-    Date e7 (Date::easter(2013));
-    t.is (e7.toString (), "4/8/2013", "Easter 4/8/2013");
+    Date e7 (Date::easter(2012));
+    t.is (e7.toString (), "4/8/2012", "Easter 4/8/2012");
     Date e8 (Date::easter(2020));
     t.is (e8.toString (), "4/12/2020", "Easter 4/12/2020");
 
