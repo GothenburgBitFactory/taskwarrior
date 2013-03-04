@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/be-BY/2012.json
 # http://holidata.net/be-BY/2013.json
+# http://holidata.net/be-BY/2014.json
 #
-# Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+# Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,42 +28,42 @@
 ###############################################################################
 
 holiday.be-BY1.name=Новы Год
-holiday.be-BY1.date=20120101
+holiday.be-BY1.date=20130101
 holiday.be-BY2.name=Раство Хрыстова(праваслаўнае)
-holiday.be-BY2.date=20120107
+holiday.be-BY2.date=20130107
 holiday.be-BY3.name=Міжнародны жаночы дзень
-holiday.be-BY3.date=20120803
+holiday.be-BY3.date=20130803
 holiday.be-BY4.name=Пасха(праваслаўная)
-holiday.be-BY4.date=20120415
+holiday.be-BY4.date=20130505
 holiday.be-BY5.name=Радуніца
-holiday.be-BY5.date=20120424
+holiday.be-BY5.date=20130514
 holiday.be-BY6.name=Свята працы
-holiday.be-BY6.date=20120501
+holiday.be-BY6.date=20130501
 holiday.be-BY7.name=Дзень Перамогі
-holiday.be-BY7.date=20120509
+holiday.be-BY7.date=20130509
 holiday.be-BY8.name=Дзень незалежнаці
-holiday.be-BY8.date=20120703
+holiday.be-BY8.date=20130703
 holiday.be-BY9.name=Дзень Кастрычніцкай рэвалюцыі
-holiday.be-BY9.date=20121107
+holiday.be-BY9.date=20131107
 holiday.be-BY10.name=Раство Хрыстова(у заходніх хрысціян)
-holiday.be-BY10.date=20121225
+holiday.be-BY10.date=20131225
 holiday.be-BY11.name=Новы Год
-holiday.be-BY11.date=20130101
+holiday.be-BY11.date=20140101
 holiday.be-BY12.name=Раство Хрыстова(праваслаўнае)
-holiday.be-BY12.date=20130107
+holiday.be-BY12.date=20140107
 holiday.be-BY13.name=Міжнародны жаночы дзень
-holiday.be-BY13.date=20130803
+holiday.be-BY13.date=20140803
 holiday.be-BY14.name=Пасха(праваслаўная)
-holiday.be-BY14.date=20130505
+holiday.be-BY14.date=20140420
 holiday.be-BY15.name=Радуніца
-holiday.be-BY15.date=20130514
+holiday.be-BY15.date=20140529
 holiday.be-BY16.name=Свята працы
-holiday.be-BY16.date=20130501
+holiday.be-BY16.date=20140501
 holiday.be-BY17.name=Дзень Перамогі
-holiday.be-BY17.date=20130509
+holiday.be-BY17.date=20140509
 holiday.be-BY18.name=Дзень незалежнаці
-holiday.be-BY18.date=20130703
+holiday.be-BY18.date=20140703
 holiday.be-BY19.name=Дзень Кастрычніцкай рэвалюцыі
-holiday.be-BY19.date=20131107
+holiday.be-BY19.date=20141107
 holiday.be-BY20.name=Раство Хрыстова(у заходніх хрысціян)
-holiday.be-BY20.date=20131225
+holiday.be-BY20.date=20141225

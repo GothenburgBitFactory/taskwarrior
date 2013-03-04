@@ -182,14 +182,19 @@ Work in Progress
 Current Codebase Condition
 
   'master' branch:
-    - 2.0.0 release, current, locked.
+    - 2.1.2 release, current, locked.
 
-  '2.0.1' branch (to be released as 2.1.0):
-    - All current development.
+  '2.1.2' branch:
+    - Current release.  Locked.
 
   '2.2.0' branch:
-    - Future development effort.
+    - Currently in beta.
+
+  '2.3.0' branch:
+    - Future release with sync features.
+
 
 ---
 
 2012-05-12 Added general statement about how to contribute.
+2013-03-04 Updated branch inco.
