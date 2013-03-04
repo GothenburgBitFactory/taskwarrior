@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/es-ES/2012.json
 # http://holidata.net/es-ES/2013.json
+# http://holidata.net/es-ES/2014.json
 #
-# Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+# Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,52 +28,54 @@
 ###############################################################################
 
 holiday.es-ES1.name=Año Nuevo
-holiday.es-ES1.date=20120101
+holiday.es-ES1.date=20130101
 holiday.es-ES2.name=Día de los Reyes
-holiday.es-ES2.date=20120106
+holiday.es-ES2.date=20130106
 holiday.es-ES3.name=Viernes Santo
-holiday.es-ES3.date=20120406
-holiday.es-ES4.name=Fiesta del Trabajo
-holiday.es-ES4.date=20120501
-holiday.es-ES5.name=Asunción de la Virgen
-holiday.es-ES5.date=20120815
-holiday.es-ES6.name=Fiesta Nacional de España
-holiday.es-ES6.date=20121012
-holiday.es-ES7.name=Dia de todos los Santos
-holiday.es-ES7.date=20121101
-holiday.es-ES8.name=Dia de la Constitución
-holiday.es-ES8.date=20121206
-holiday.es-ES9.name=Inmaculada Concepción
-holiday.es-ES9.date=20121208
-holiday.es-ES10.name=Noche Buena
-holiday.es-ES10.date=20121224
-holiday.es-ES11.name=Navidad
-holiday.es-ES11.date=20121225
-holiday.es-ES12.name=Noche Vieja
-holiday.es-ES12.date=20121231
-holiday.es-ES13.name=Año Nuevo
-holiday.es-ES13.date=20130101
-holiday.es-ES14.name=Día de los Reyes
-holiday.es-ES14.date=20130106
-holiday.es-ES15.name=Viernes Santo
-holiday.es-ES15.date=20130329
-holiday.es-ES16.name=Pascua
-holiday.es-ES16.date=20130331
-holiday.es-ES17.name=Fiesta del Trabajo
-holiday.es-ES17.date=20130501
-holiday.es-ES18.name=Asunción de la Virgen
-holiday.es-ES18.date=20130815
-holiday.es-ES19.name=Fiesta Nacional de España
-holiday.es-ES19.date=20131012
-holiday.es-ES20.name=Dia de todos los Santos
-holiday.es-ES20.date=20131101
-holiday.es-ES21.name=Dia de la Constitución
-holiday.es-ES21.date=20131206
-holiday.es-ES22.name=Inmaculada Concepción
-holiday.es-ES22.date=20131208
-holiday.es-ES23.name=Noche Buena
-holiday.es-ES23.date=20131224
-holiday.es-ES24.name=Navidad
-holiday.es-ES24.date=20131225
-holiday.es-ES25.name=Noche Vieja
-holiday.es-ES25.date=20131231
+holiday.es-ES3.date=20130329
+holiday.es-ES4.name=Pascua
+holiday.es-ES4.date=20130331
+holiday.es-ES5.name=Fiesta del Trabajo
+holiday.es-ES5.date=20130501
+holiday.es-ES6.name=Asunción de la Virgen
+holiday.es-ES6.date=20130815
+holiday.es-ES7.name=Fiesta Nacional de España
+holiday.es-ES7.date=20131012
+holiday.es-ES8.name=Dia de todos los Santos
+holiday.es-ES8.date=20131101
+holiday.es-ES9.name=Dia de la Constitución
+holiday.es-ES9.date=20131206
+holiday.es-ES10.name=Inmaculada Concepción
+holiday.es-ES10.date=20131208
+holiday.es-ES11.name=Noche Buena
+holiday.es-ES11.date=20131224
+holiday.es-ES12.name=Navidad
+holiday.es-ES12.date=20131225
+holiday.es-ES13.name=Noche Vieja
+holiday.es-ES13.date=20131231
+holiday.es-ES14.name=Año Nuevo
+holiday.es-ES14.date=20140101
+holiday.es-ES15.name=Día de los Reyes
+holiday.es-ES15.date=20140106
+holiday.es-ES16.name=Viernes Santo
+holiday.es-ES16.date=20140418
+holiday.es-ES17.name=Pascua
+holiday.es-ES17.date=20140420
+holiday.es-ES18.name=Fiesta del Trabajo
+holiday.es-ES18.date=20140501
+holiday.es-ES19.name=Asunción de la Virgen
+holiday.es-ES19.date=20140815
+holiday.es-ES20.name=Fiesta Nacional de España
+holiday.es-ES20.date=20141012
+holiday.es-ES21.name=Dia de todos los Santos
+holiday.es-ES21.date=20141101
+holiday.es-ES22.name=Dia de la Constitución
+holiday.es-ES22.date=20141206
+holiday.es-ES23.name=Inmaculada Concepción
+holiday.es-ES23.date=20141208
+holiday.es-ES24.name=Noche Buena
+holiday.es-ES24.date=20141224
+holiday.es-ES25.name=Navidad
+holiday.es-ES25.date=20141225
+holiday.es-ES26.name=Noche Vieja
+holiday.es-ES26.date=20141231

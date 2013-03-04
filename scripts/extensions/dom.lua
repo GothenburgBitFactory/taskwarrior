@@ -12,7 +12,7 @@ function install ()
          'Paul Beckingham',                -- Author
          'paul@beckingham.net',            -- Contact
          'MIT',                            -- License
-         '© 2012, Göteborg Bit Factory'    -- Copyright
+         '© 2013, Göteborg Bit Factory'    -- Copyright
 end
 
 -- Arguments: The DOM reference to evaluate

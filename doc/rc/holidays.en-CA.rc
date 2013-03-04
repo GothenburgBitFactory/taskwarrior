@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/en-CA/2012.json
 # http://holidata.net/en-CA/2013.json
+# http://holidata.net/en-CA/2014.json
 #
-# Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+# Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,58 +28,28 @@
 ###############################################################################
 
 holiday.en-CA1.name=New Year's Day
-holiday.en-CA1.date=20120101
-holiday.en-CA2.name=New Year's Day (obs.)
-holiday.en-CA2.date=20120102
-holiday.en-CA3.name=Family Day
-holiday.en-CA3.date=20120220
-holiday.en-CA4.name=Good Friday
-holiday.en-CA4.date=20120406
-holiday.en-CA5.name=Easter Monday
-holiday.en-CA5.date=20120409
-holiday.en-CA6.name=Victoria Day
-holiday.en-CA6.date=20120521
-holiday.en-CA7.name=Canada Day
-holiday.en-CA7.date=20120701
-holiday.en-CA8.name=Canada Day (obs.)
-holiday.en-CA8.date=20120702
-holiday.en-CA9.name=First Monday of August
-holiday.en-CA9.date=20120806
-holiday.en-CA10.name=Labour Day
-holiday.en-CA10.date=20120903
-holiday.en-CA11.name=Thanksgiving Day
-holiday.en-CA11.date=20121008
-holiday.en-CA12.name=Remembrance Day
-holiday.en-CA12.date=20121111
-holiday.en-CA13.name=Christmas Day
-holiday.en-CA13.date=20121225
-holiday.en-CA14.name=Boxing Day
-holiday.en-CA14.date=20121226
-holiday.en-CA15.name=New Year's Eve
-holiday.en-CA15.date=20121231
-holiday.en-CA16.name=New Year's Day
-holiday.en-CA16.date=20130101
-holiday.en-CA17.name=Family Day
-holiday.en-CA17.date=20130218
-holiday.en-CA18.name=Good Friday
-holiday.en-CA18.date=20130329
-holiday.en-CA19.name=Easter Monday
-holiday.en-CA19.date=20130401
-holiday.en-CA20.name=Victoria Day
-holiday.en-CA20.date=20130520
-holiday.en-CA21.name=Canada Day
-holiday.en-CA21.date=20130701
-holiday.en-CA22.name=First Monday of August
-holiday.en-CA22.date=20130805
-holiday.en-CA23.name=Labour Day
-holiday.en-CA23.date=20130902
-holiday.en-CA24.name=Thanksgiving Day
-holiday.en-CA24.date=20131014
-holiday.en-CA25.name=Remembrance Day
-holiday.en-CA25.date=20131111
-holiday.en-CA26.name=Christmas Day
-holiday.en-CA26.date=20131225
-holiday.en-CA27.name=Boxing Day
-holiday.en-CA27.date=20131226
-holiday.en-CA28.name=New Year's Eve
-holiday.en-CA28.date=20131231
+holiday.en-CA1.date=20130101
+holiday.en-CA2.name=Family Day
+holiday.en-CA2.date=20130218
+holiday.en-CA3.name=Good Friday
+holiday.en-CA3.date=20130329
+holiday.en-CA4.name=Easter Monday
+holiday.en-CA4.date=20130401
+holiday.en-CA5.name=Victoria Day
+holiday.en-CA5.date=20130520
+holiday.en-CA6.name=Canada Day
+holiday.en-CA6.date=20130701
+holiday.en-CA7.name=First Monday of August
+holiday.en-CA7.date=20130805
+holiday.en-CA8.name=Labour Day
+holiday.en-CA8.date=20130902
+holiday.en-CA9.name=Thanksgiving Day
+holiday.en-CA9.date=20131014
+holiday.en-CA10.name=Remembrance Day
+holiday.en-CA10.date=20131111
+holiday.en-CA11.name=Christmas Day
+holiday.en-CA11.date=20131225
+holiday.en-CA12.name=Boxing Day
+holiday.en-CA12.date=20131226
+holiday.en-CA13.name=New Year's Eve
+holiday.en-CA13.date=20131231

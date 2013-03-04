@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Taskwarrior Lua API
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 // Copyright © 1994–2008 Lua.org, PUC-Rio.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -46,10 +46,10 @@ qx{../src/task rc:count.rc add three 2>&1};
 qx{../src/task rc:count.rc 2 delete 2>&1};
 qx{../src/task rc:count.rc add four wait:eom 2>&1};
 
-# TODO This fails when today == eom.  For example, on 2012-04-30 at 8:00:00, the
-#      value for 'eom' is 2012-04-30 0:00:00, which is already past due, which
+# TODO This fails when today == eom.  For example, on 2013-04-30 at 8:00:00, the
+#      value for 'eom' is 2013-04-30 0:00:00, which is already past due, which
 #      means a second child task is generated.  This would be fixed by 'eom'
-#      expanding to 2012-04-30 24:00:00, as per ISO-8601.
+#      expanding to 2013-04-30 24:00:00, as per ISO-8601.
 qx{../src/task rc:count.rc add five due:eom recur:monthly 2>&1};
 
 diag ("Problem: the next test fails at EOM");

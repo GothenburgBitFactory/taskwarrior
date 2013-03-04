@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/da-DK/2012.json
 # http://holidata.net/da-DK/2013.json
+# http://holidata.net/da-DK/2014.json
 #
-# Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+# Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,50 +28,26 @@
 ###############################################################################
 
 holiday.da-DK1.name=Nytårsdag
-holiday.da-DK1.date=20120101
+holiday.da-DK1.date=20130101
 holiday.da-DK2.name=Palmesøndag
-holiday.da-DK2.date=20120401
+holiday.da-DK2.date=20130324
 holiday.da-DK3.name=Skærtorsdag
-holiday.da-DK3.date=20120405
+holiday.da-DK3.date=20130328
 holiday.da-DK4.name=Langfredag
-holiday.da-DK4.date=20120406
+holiday.da-DK4.date=20130329
 holiday.da-DK5.name=Påskedag
-holiday.da-DK5.date=20120408
+holiday.da-DK5.date=20130331
 holiday.da-DK6.name=Anden påskedag
-holiday.da-DK6.date=20120409
+holiday.da-DK6.date=20130401
 holiday.da-DK7.name=Store bededag
-holiday.da-DK7.date=20120504
+holiday.da-DK7.date=20130426
 holiday.da-DK8.name=Kristi himmelfartsdag
-holiday.da-DK8.date=20120517
+holiday.da-DK8.date=20130509
 holiday.da-DK9.name=Pinsedag
-holiday.da-DK9.date=20120527
+holiday.da-DK9.date=20130519
 holiday.da-DK10.name=Anden pinsedag
-holiday.da-DK10.date=20120528
+holiday.da-DK10.date=20130520
 holiday.da-DK11.name=Juledag
-holiday.da-DK11.date=20121225
+holiday.da-DK11.date=20131225
 holiday.da-DK12.name=Anden juledag
-holiday.da-DK12.date=20121226
-holiday.da-DK13.name=Nytårsdag
-holiday.da-DK13.date=20130101
-holiday.da-DK14.name=Palmesøndag
-holiday.da-DK14.date=20130324
-holiday.da-DK15.name=Skærtorsdag
-holiday.da-DK15.date=20130328
-holiday.da-DK16.name=Langfredag
-holiday.da-DK16.date=20130329
-holiday.da-DK17.name=Påskedag
-holiday.da-DK17.date=20130331
-holiday.da-DK18.name=Anden påskedag
-holiday.da-DK18.date=20130401
-holiday.da-DK19.name=Store bededag
-holiday.da-DK19.date=20130426
-holiday.da-DK20.name=Kristi himmelfartsdag
-holiday.da-DK20.date=20130509
-holiday.da-DK21.name=Pinsedag
-holiday.da-DK21.date=20130519
-holiday.da-DK22.name=Anden pinsedag
-holiday.da-DK22.date=20130520
-holiday.da-DK23.name=Juledag
-holiday.da-DK23.date=20131225
-holiday.da-DK24.name=Anden juledag
-holiday.da-DK24.date=20131226
+holiday.da-DK12.date=20131226

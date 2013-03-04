@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/en-NZ/2012.json
 # http://holidata.net/en-NZ/2013.json
+# http://holidata.net/en-NZ/2014.json
 #
-# Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+# Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,42 +28,22 @@
 ###############################################################################
 
 holiday.en-NZ1.name=New Year's Day
-holiday.en-NZ1.date=20120101
+holiday.en-NZ1.date=20130101
 holiday.en-NZ2.name=Day after New Years Day
-holiday.en-NZ2.date=20120102
+holiday.en-NZ2.date=20130102
 holiday.en-NZ3.name=Waitangi Day
-holiday.en-NZ3.date=20120206
+holiday.en-NZ3.date=20130206
 holiday.en-NZ4.name=Good Friday
-holiday.en-NZ4.date=20120406
+holiday.en-NZ4.date=20130329
 holiday.en-NZ5.name=Easter Monday
-holiday.en-NZ5.date=20120409
+holiday.en-NZ5.date=20130401
 holiday.en-NZ6.name=ANZAC Day
-holiday.en-NZ6.date=20120425
+holiday.en-NZ6.date=20130425
 holiday.en-NZ7.name=Queen's Birthday
-holiday.en-NZ7.date=20120604
+holiday.en-NZ7.date=20130603
 holiday.en-NZ8.name=Labour Day
-holiday.en-NZ8.date=20121022
+holiday.en-NZ8.date=20131028
 holiday.en-NZ9.name=Christmas Day
-holiday.en-NZ9.date=20121225
+holiday.en-NZ9.date=20131225
 holiday.en-NZ10.name=Boxing Day
-holiday.en-NZ10.date=20121226
-holiday.en-NZ11.name=New Year's Day
-holiday.en-NZ11.date=20130101
-holiday.en-NZ12.name=Day after New Years Day
-holiday.en-NZ12.date=20130102
-holiday.en-NZ13.name=Waitangi Day
-holiday.en-NZ13.date=20130206
-holiday.en-NZ14.name=Good Friday
-holiday.en-NZ14.date=20130329
-holiday.en-NZ15.name=Easter Monday
-holiday.en-NZ15.date=20130401
-holiday.en-NZ16.name=ANZAC Day
-holiday.en-NZ16.date=20130425
-holiday.en-NZ17.name=Queen's Birthday
-holiday.en-NZ17.date=20130603
-holiday.en-NZ18.name=Labour Day
-holiday.en-NZ18.date=20131028
-holiday.en-NZ19.name=Christmas Day
-holiday.en-NZ19.date=20131225
-holiday.en-NZ20.name=Boxing Day
-holiday.en-NZ20.date=20131226
+holiday.en-NZ10.date=20131226

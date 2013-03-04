@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -209,7 +209,7 @@
 #define STRING_CMD_VERSION_DOCS      "Documentation for taskwarrior can be found using 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' or at http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} built for "
 #define STRING_CMD_VERSION_UNKNOWN   "unknown"
-#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2012 P. Beckingham, F. Hernandez."
+#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2013 P. Beckingham, F. Hernandez."
 #define STRING_CMD_VERSION_COPY2     "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio."
 #define STRING_CMD_LOGO_USAGE        "Displays the Taskwarrior logo"
 #define STRING_CMD_LOGO_COLOR_REQ    "The logo command requires that color support is enabled."
