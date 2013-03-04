@@ -1,4 +1,4 @@
-.TH task-sync 5 2012-09-18 "${PACKAGE_STRING}" "User Manuals"
+.TH task-sync 5 2013-03-04 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 task-sync \- A tutorial for the task(1) data synchronization capabilities.
@@ -352,10 +352,10 @@ unable to merge.  The change transactions stored in the undo.data file are
 used for synchronization.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
 
 The sync capabilities were written by J. Schlatow.
-Parts copyright (C) 2010 - 2012 J. Schlatow.
+Parts copyright (C) 2010 - 2013 J. Schlatow.
 
 Taskwarrior is distributed under the MIT license. See
 http://www.opensource.org/licenses/mit-license.php for more information.

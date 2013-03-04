@@ -1,4 +1,4 @@
-.TH taskrc 5 2012-09-18 "${PACKAGE_STRING}" "User Manuals"
+.TH taskrc 5 2013-03-04 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 taskrc \- Configuration file for the task(1) command
@@ -512,7 +512,7 @@ D  two-digit day,         for example 01 or 30
 .br
 M  two-digit month,       for example 01 or 12
 .br
-Y  four-digit year,       for example 2009 or 2012
+Y  four-digit year,       for example 2009 or 2013
 .br
 a  short name of weekday, for example Mon or Wed
 .br
@@ -592,9 +592,9 @@ field that is set.  Otherwise, they are set to the corresponding values of
 .RS
 .RS
 .br
-8/1/2012  with m/d/Y   implies August 1, 2012 at midnight (inferred)
+8/1/2013  with m/d/Y   implies August 1, 2013 at midnight (inferred)
 .br
-8/1 20:40 with m/d H:N implies August 1, 2012 (inferred) at 20:40
+8/1 20:40 with m/d H:N implies August 1, 2013 (inferred) at 20:40
 .RE
 .RE
 
@@ -1347,7 +1347,7 @@ of a task.
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez.
 

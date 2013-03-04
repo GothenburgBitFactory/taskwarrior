@@ -1,4 +1,4 @@
-.TH task-faq 5 2012-09-18 "${PACKAGE_STRING}" "User Manuals"
+.TH task-faq 5 2013-03-04 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 task-faq \- A FAQ for the task(1) command line todo manager.
@@ -335,10 +335,10 @@ This will remove the second annotation - the first non-exact match.
 .B Q: How do I show tasks completed on a certain day?
 The day in question has to be boxed by a range, like this:
 
-    task end.after:3/29/2012 end.before:3/30/2012 completed
+    task end.after:3/29/2013 end.before:3/30/2013 completed
 
-Note that a single date, such as 3/29/2012 does not refer to a whole day, but
-to a single point in time, 3/20/2012 0:00:00.
+Note that a single date, such as 3/29/2013 does not refer to a whole day, but
+to a single point in time, 3/20/2013 0:00:00.
 
 .TP
 .B Q: Why Lua as an extension language?
@@ -366,7 +366,7 @@ There are lots of ways.  Here are some:
  - Fix bugs
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
 http://www.opensource.org/licenses/mit-license.php for more information.

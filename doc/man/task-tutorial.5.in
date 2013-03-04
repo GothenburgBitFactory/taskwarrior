@@ -1,4 +1,4 @@
-.TH task-tutorial 5 2012-09-18 "${PACKAGE_STRING}" "User Manuals"
+.TH task-tutorial 5 2013-03-04 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 task-tutorial \- A tutorial for the task(1) command line todo manager.
@@ -3170,7 +3170,7 @@ $ task help
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez, and has been modified and supplemented by Paul Beckingham.
 
