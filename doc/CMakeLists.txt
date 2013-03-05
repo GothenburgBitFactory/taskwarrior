@@ -3,8 +3,8 @@ message ("-- Configuring man pages")
 set (man_FILES task-color.5 task-faq.5 task-sync.5 task-tutorial.5 task.1 taskrc.5)
 foreach (man_FILE ${man_FILES})
   configure_file (
-    ${CMAKE_CURRENT_SOURCE_DIR}/man/${man_FILE}.in
-    ${CMAKE_CURRENT_SOURCE_DIR}/man/${man_FILE})
+    man/${man_FILE}.in
+    man/${man_FILE})
 endforeach (man_FILE)
 
 install (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man/   DESTINATION ${TASK_MAN1DIR}
