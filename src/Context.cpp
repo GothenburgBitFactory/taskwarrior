@@ -676,7 +676,7 @@ void Context::clear ()
 // this output?'.
 void Context::updateXtermTitle ()
 {
-  if (config.getBoolean ("xterm.title"))
+  if (config.getBoolean ("xterm.title") && isatty (fileno (stdout)))
   {
     std::string command;
     a3.find_command (command);
