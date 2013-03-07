@@ -312,7 +312,7 @@ void TF2::load_tasks ()
         _U2I[task.get ("uuid")] = task.id;
       }
     }
- 
+
     if (_auto_dep_scan)
       dependency_scan ();
 

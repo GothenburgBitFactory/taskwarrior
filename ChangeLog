@@ -93,6 +93,8 @@ Bugs
    builds (thanks to Jakub Wilk).
  + Fixed bug #1189, which caused wide Asian UTF8 characters to be measured as
    narrow characters (thanks to Roy Zuo).
+ + Fixed bug #1191, which kept file locks active for longer than necessary,
+   and caused the 'execute' command to be considered a 'write' command.
  + Improved hyphenation by splitting on commas (even if no whitespace after).
    Leads to better output of, for example, 'task show', where comma-separated
    lists are common.
