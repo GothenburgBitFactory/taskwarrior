@@ -336,6 +336,7 @@ void TF2::load_lines ()
       _file.waitForLock ();
 
     _file.read (_lines);
+    _file.close ();
     _loaded_lines = true;
   }
 }
