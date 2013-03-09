@@ -25,19 +25,48 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CMDSHELL
-#define INCLUDED_CMDSHELL
 #define L10N                                           // Localization complete.
 
-#include <string>
-#include <Command.h>
+#include <Readline.h>
 
-class CmdShell : public Command
+////////////////////////////////////////////////////////////////////////////////
+std::string Readline::gets (const std::string& prompt)
 {
-public:
-  CmdShell ();
-  int execute (std::string&);
-};
+  // Get a line from the user.
+  char *line_read = rl::readline (prompt.c_str ());
 
-#endif
+  // If the line has any text in it, save it on the history.
+  if (line_read && *line_read)
+    rl::add_history (line_read);
+
+  std::string ret (line_read);
+  free (line_read);
+
+  return ret;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Wordexp::Wordexp (const std::string &str)
+{
+  wordexp (str.c_str (), &_p, 0);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Wordexp::~Wordexp ()
+{
+  wordfree(&_p);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Wordexp::argc ()
+{
+  return _p.we_wordc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+char** Wordexp::argv ()
+{
+  return _p.we_wordv;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
