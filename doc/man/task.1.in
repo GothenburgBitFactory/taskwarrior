@@ -457,7 +457,9 @@ Shows a report of aggregated task status by project.
 
 .TP
 .B task <filter> tags
-Show a list of all tags used.  Any special tags used are highlighted.
+Show a list of all tags used.  Any special tags used are highlighted.  Note that
+virtual tags are not listed - they don't really exist, and are just a convenient
+notation for other task metadata.
 
 .TP
 .B task timesheet [weeks]
@@ -561,6 +563,21 @@ exempt from all color rules.  The supported special tags are:
     +nonag       Completion of this task suppresses all nag messages
     +nocal       This task will not appear on the calendar
     +next        Elevates task so it appears on 'next' report
+
+There are also virtual tags, which represent task metadata in tag form.  These
+tags do not exist, but can be used to filter tasks.  The supported virtual tags
+are:
+
+    BLOCKED      Matches if the task is blocked
+    UNBLOCKED    Matches if the task is not blocked
+    BLOCKING     Matches if the task is blocking
+    DUE          Matches if the task is due
+    DUETODAY     Matches if the task is due today
+    TODAY        Matches if the task is due today
+    OVERDUE      Matches if the task is overdue
+
+You can use +BLOCKED to filter blocked tasks, or -BLOCKED for unblocked tasks.
+Similarly, -BLOCKED is equivalent to +UNBLOCKED.
 
 .TP
 .B project:<project-name>
