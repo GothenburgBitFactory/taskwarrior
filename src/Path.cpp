@@ -31,6 +31,7 @@
 #include <glob.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -207,19 +208,22 @@ std::string Path::expand (const std::string& in)
 
   if (tilde != std::string::npos)
   {
-    struct passwd* pw = getpwuid (getuid ());
+    const char *home = getenv("HOME");
+    if (home == NULL)
+    {
+      struct passwd* pw = getpwuid (getuid ());
+      home = pw->pw_dir;
+    }
 
     // Convert: ~ --> /home/user
     if (copy.length () == 1)
-    {
-      copy = pw->pw_dir;
-    }
+      copy = home;
 
     // Convert: ~/x --> /home/user/x
     else if (copy.length () > tilde + 1 &&
              copy[tilde + 1] == '/')
     {
-      copy.replace (tilde, 1, pw->pw_dir);
+      copy.replace (tilde, 1, home);
     }
 
     // Convert: ~foo/x --> /home/foo/x

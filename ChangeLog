@@ -95,6 +95,8 @@ Bugs
    narrow characters (thanks to Roy Zuo).
  + Fixed bug #1191, which kept file locks active for longer than necessary,
    and caused the 'execute' command to be considered a 'write' command.
+ + Fixed bug #1194, so that $HOME has precedence over the passwd db when looking
+   for the user's home directory (thanks to Jakub Wilk).
  + Improved hyphenation by splitting on commas (even if no whitespace after).
    Leads to better output of, for example, 'task show', where comma-separated
    lists are common.
