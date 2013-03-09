@@ -67,6 +67,19 @@ endif (GNUTLS_FOUND)
 #  set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${PTHREAD_LIBRARIES})
 #endif (PTHREAD_INCLUDE_DIR AND PTHREAD_LIBRARY)
 
+# include the readline library finder module
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
+
+# find readline
+message ("-- Looking for GNU Readline")
+find_package (Readline)
+if (READLINE_FOUND)
+  message ("-- Found GNU Readline: ${READLINE_LIBRARIES}")
+  set (HAVE_LIBREADLINE true)
+  set (TASK_INCLUDE_DIRS ${TASK_INCLUDE_DIRS} ${READLINE_INCLUDE_DIR})
+  set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${READLINE_LIBRARIES})
+endif (READLINE_FOUND)
+
 check_function_exists (random  HAVE_RANDOM)
 check_function_exists (srandom HAVE_SRANDOM)
 check_function_exists (timegm  HAVE_TIMEGM)
