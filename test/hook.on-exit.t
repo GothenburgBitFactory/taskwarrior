@@ -53,7 +53,7 @@ if ($output =~ /PUC-Rio/)
 {
   # Test the hook.
   $output = qx{../src/task rc:hook.rc _version 2>&1};
-  like ($output, qr/\w{7}\nmarker/ms, 'Found marker after output');
+  like ($output, qr/(\w{7}|[\d.]+)\nmarker/ms, 'Found marker after output');
 }
 else
 {

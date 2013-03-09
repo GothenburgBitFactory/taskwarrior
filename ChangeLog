@@ -117,6 +117,7 @@ Bugs
    (thanks to Rainer Müller).
  + Fixed a bug where the terminal title was tried to be set without a tty
    (thanks to Rainer Müller).
+ + Fixed hook tests to work on released code (thanks to Jakub Wilk).
 
 ------ old releases ------------------------------
 
