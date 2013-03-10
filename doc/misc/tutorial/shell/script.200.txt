@@ -10,7 +10,7 @@ task-tutorial.5 man page.
 
 ---------------------------------------- Shell -----------------------------------------------------
 
-task shell                               You can use the shell command to create a more immersive
+tasksh                                   You can use the tasksh shell to create a more immersive
 task> projects                           environment.  Any task command you run outside the shell
 task> tags                               can also be run inside the shell, without the need to prefix
 task> list                               every command with "task".

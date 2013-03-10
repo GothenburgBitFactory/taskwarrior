@@ -42,12 +42,12 @@ if (open my $fh, '>', 'shell.rc')
 }
 
 # Test the prompt.
-my $output = qx{echo "quit" | ../src/task rc:shell.rc shell 2>&1};
+my $output = qx{printf "rc:test.rc add foo\nquit" | ../src/shell/tasksh 2>&1};
 like ($output, qr/testprompt>/, 'custom prompt is being used');
 
 # Test a simple add, then info.
-qx{echo "add foo" | ../src/task rc:shell.rc shell 2>&1};
-$output = qx{echo "1 info" | ../src/task rc:shell.rc shell 2>&1};
+qx{echo "rc:shell.rc add foo" | ../src/shell/tasksh 2>&1};
+$output = qx{echo "rc:shell.rc 1 info" | ../src/shell/tasksh 2>&1};
 like ($output, qr/Description\s+foo/, 'add/info working');
 
 unlink 'shell.rc';

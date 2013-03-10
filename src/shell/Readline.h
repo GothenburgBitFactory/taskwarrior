@@ -49,6 +49,7 @@ class Readline
 {
 public:
   static std::string gets (const std::string& prompt);
+  static bool interactive_mode (const std::istream& in);
 
 private:
   // No construction or destruction.

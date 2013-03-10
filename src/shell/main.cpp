@@ -27,6 +27,7 @@
 
 #define L10N                                           // Localization complete.
 
+#include <fstream>
 #include <iostream>
 #include <cstring>
 #include <stdlib.h>
@@ -63,82 +64,133 @@ int main (int argc, const char** argv)
 #endif
 
   int status = 0;
+  bool read_from_file = false;
 
-  if (argc == 2 && !strcmp (argv[1], "--version"))
+  if (argc > 2)
   {
-    std::cout << VERSION << "\n";
+    std::cout << STRING_SHELL_USAGE << "\n";
+    return -1;
   }
-  else
+  else if (argc == 2)
   {
-    if (argc > 1)
+    if (!strcmp (argv[1], "--version"))
     {
-      std::cerr << STRING_SHELL_UNKOWN_OPTION << argv[1] << "\n";
+      std::cout << VERSION << "\n";
+      return 0;
     }
-
-    // Begining initilaization
-    status = context.initialize (0, NULL);
-
-    // Display some kind of welcome message.
-    Color bold (Color::nocolor, Color::nocolor, false, true, false);
-    std::cout << (context.color () ? bold.colorize (PACKAGE_STRING) : PACKAGE_STRING)
-              << " shell\n\n"
-              << STRING_CMD_SHELL_HELP1 << "\n"
-              << STRING_CMD_SHELL_HELP2 << "\n"
-              << STRING_CMD_SHELL_HELP3 << "\n\n";
-
-    // Make a copy because context.clear will delete them.
-    std::string permanent_overrides;
-    std::vector <Arg>::iterator i;
-    for (i = context.a3.begin (); i != context.a3.end (); ++i)
+    else if (!strcmp (argv[1], "--help"))
     {
-      if (i->_category == Arg::cat_rc ||
-          i->_category == Arg::cat_override)
-      {
-        if (i != context.a3.begin ())
-          permanent_overrides += " ";
-
-        permanent_overrides += i->_raw;
+      std::cout << STRING_SHELL_USAGE << "\n";
+      return 0;
+    }
+    else
+    {
+      // The user has give tasksh a task commands file to execute
+      File input_file = File (argv[1]);
+      if (!input_file.exists ()) {
+        std::cout << STRING_SHELL_NO_FILE;
+        std::cout << STRING_SHELL_USAGE << "\n";
+        return -1;
       }
+
+      read_from_file = true;
     }
+  }
 
-    std::string input, prompt(context.config.get ("shell.prompt") + " ");
+  // if a file is given, read from it
+  std::ifstream fin;
+  if (read_from_file) {
+    fin.open(argv[1]);
+  }
 
-    std::vector <std::string> quit_commands;
-    quit_commands.push_back ("quit");
-    quit_commands.push_back ("exit");
-    quit_commands.push_back ("bye");
+  // commands may be redirected too
+  std::istream &in = read_from_file ? fin : std::cin;
 
-    // The event loop.
-    while (1)
+  // Begining initilaization
+  status = context.initialize (0, NULL);
+
+  // Display some kind of welcome message.
+  Color bold (Color::nocolor, Color::nocolor, false, true, false);
+
+  std::cout << (context.color () ? bold.colorize (PACKAGE_STRING) : PACKAGE_STRING)
+            << " shell\n\n"
+            << STRING_CMD_SHELL_HELP1 << "\n"
+            << STRING_CMD_SHELL_HELP2 << "\n"
+            << STRING_CMD_SHELL_HELP3 << "\n\n";
+
+  // Make a copy because context.clear will delete them.
+  std::string permanent_overrides;
+  std::vector <Arg>::iterator i;
+  for (i = context.a3.begin (); i != context.a3.end (); ++i)
+  {
+    if (i->_category == Arg::cat_rc ||
+        i->_category == Arg::cat_override)
     {
-      context.clear ();
+      if (i != context.a3.begin ())
+        permanent_overrides += " ";
 
+      permanent_overrides += i->_raw;
+    }
+  }
+
+  std::string input;
+
+  std::vector <std::string> quit_commands;
+  quit_commands.push_back ("quit");
+  quit_commands.push_back ("exit");
+  quit_commands.push_back ("bye");
+
+  // The event loop.
+  while (in)
+  {
+    std::string prompt(context.config.get ("shell.prompt") + " ");
+    context.clear ();
+
+    if (Readline::interactive_mode(in))
+    {
       input = Readline::gets (prompt);
-      if (std::find (quit_commands.begin (), quit_commands.end (),
-                     lowerCase (input)) != quit_commands.end ())
-        break;
+    }
+    else
+    {
+      std::getline (in, input);
 
-      try
-      {
-        Wordexp w ("task " + trim (input + permanent_overrides));
-        status = context.initialize (w.argc (), (const char**)w.argv ());
-        if (status == 0)
-          status = context.run ();
+      // if a string has nothing but whitespaces, ignore it
+      if (input.find_first_not_of (" \t") == std::string::npos)
+        continue;
+
+      std::cout << prompt << input << "\n";
+    }
+
+    try
+    {
+      Wordexp w ("task " + trim (input + permanent_overrides));
+
+      for (int i = 0; i < w.argc (); ++i) {
+        if (std::find (quit_commands.begin (), quit_commands.end (),
+                       lowerCase (w.argv ()[i])) != quit_commands.end ())
+        {
+          context.clearMessages ();
+          return status;
+        }
       }
 
-      catch (const std::string& error)
-      {
-        std::cerr << error << "\n";
-        status = -1;
-        break;
-      }
+      status = context.initialize (w.argc (), (const char**)w.argv ());
+      if (status == 0)
+        status = context.run ();
+    }
 
-      catch (...)
-      {
-        std::cerr << STRING_UNKNOWN_ERROR << "\n";
-        status = -2;
-        break;
-      }
+    catch (const std::string& error)
+    {
+      std::cerr << error << "\n";
+      status = -1;
+      break;
+    }
+
+    catch (...)
+    {
+      std::cerr << STRING_UNKNOWN_ERROR << "\n";
+      status = -2;
+      break;
     }
   }
 

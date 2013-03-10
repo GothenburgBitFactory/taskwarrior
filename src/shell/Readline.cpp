@@ -27,6 +27,8 @@
 
 #define L10N                                           // Localization complete.
 
+#include <iostream>
+#include <unistd.h>
 #include <Readline.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +45,12 @@ std::string Readline::gets (const std::string& prompt)
   free (line_read);
 
   return ret;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Readline::interactive_mode (const std::istream& in)
+{
+  return (&in == &std::cin && isatty(0) == 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
