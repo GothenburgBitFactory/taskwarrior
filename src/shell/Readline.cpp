@@ -28,6 +28,7 @@
 #define L10N                                           // Localization complete.
 
 #include <iostream>
+#include <stdlib.h>
 #include <unistd.h>
 #include <cmake.h>
 #include <Readline.h>
