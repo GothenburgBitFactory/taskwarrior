@@ -63,7 +63,6 @@ int main (int argc, const char** argv)
   srand (tv.tv_usec);
 #endif
 
-  int status = 0;
   bool read_from_file = false;
 
   if (argc > 2)
@@ -85,9 +84,10 @@ int main (int argc, const char** argv)
     }
     else
     {
-      // The user has give tasksh a task commands file to execute
+      // The user has given tasksh a task commands file to execute
       File input_file = File (argv[1]);
-      if (!input_file.exists ()) {
+      if (!input_file.exists ())
+      {
         std::cout << STRING_SHELL_NO_FILE;
         std::cout << STRING_SHELL_USAGE << "\n";
         return -1;
@@ -99,15 +99,16 @@ int main (int argc, const char** argv)
 
   // if a file is given, read from it
   std::ifstream fin;
-  if (read_from_file) {
-    fin.open(argv[1]);
+  if (read_from_file)
+  {
+    fin.open (argv[1]);
   }
 
   // commands may be redirected too
   std::istream &in = read_from_file ? fin : std::cin;
 
   // Begining initilaization
-  status = context.initialize (0, NULL);
+  context.initialize (0, NULL);
 
   // Display some kind of welcome message.
   Color bold (Color::nocolor, Color::nocolor, false, true, false);
@@ -143,10 +144,10 @@ int main (int argc, const char** argv)
   // The event loop.
   while (in)
   {
-    std::string prompt(context.config.get ("shell.prompt") + " ");
+    std::string prompt (context.config.get ("shell.prompt") + " ");
     context.clear ();
 
-    if (Readline::interactive_mode(in))
+    if (Readline::interactive_mode (in))
     {
       input = Readline::gets (prompt);
     }
@@ -165,38 +166,35 @@ int main (int argc, const char** argv)
     {
       Wordexp w ("task " + trim (input + permanent_overrides));
 
-      for (int i = 0; i < w.argc (); ++i) {
+      for (int i = 0; i < w.argc (); ++i)
+      {
         if (std::find (quit_commands.begin (), quit_commands.end (),
                        lowerCase (w.argv ()[i])) != quit_commands.end ())
         {
           context.clearMessages ();
-          return status;
+          return 0;
         }
       }
 
-      status = context.initialize (w.argc (), (const char**)w.argv ());
+      int status = context.initialize (w.argc (), (const char**)w.argv ());
       if (status == 0)
-        status = context.run ();
+        context.run ();
     }
 
     catch (const std::string& error)
     {
       std::cerr << error << "\n";
-      status = -1;
-      break;
+      return -1;
     }
 
     catch (...)
     {
       std::cerr << STRING_UNKNOWN_ERROR << "\n";
-      status = -2;
-      break;
+      return -2;
     }
   }
 
-  // No need to repeat any overrides after the shell quits.
-  context.clearMessages ();
-  return status;
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
