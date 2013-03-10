@@ -306,20 +306,7 @@ printf "y\ny\n" | task 11 delete      # y, y
 echo $ task list
 task list
 
-# 17 Shell
-echo Shell --------------------------------------------------------------
-echo $ task shell
-#task shell
-echo '> projects'
-#> projects
-echo '> tags'
-#> tags
-echo '> list'
-#> list
-echo '> quit'
-#> quit
-
-# 18 Special tags
+# 17 Special tags
 echo Special tags --------------------------------------------------------------
 echo $ task 6 +nocolor
 task 6 +nocolor
@@ -330,7 +317,7 @@ task tags
 echo $ task 6 -nocolor
 task 6 -nocolor
 
-# 19 Waiting
+# 18 Waiting
 echo Waiting --------------------------------------------------------------
 echo $ task add Look for new apartment due:eoy
 task add Look for new apartment due:eoy
@@ -354,7 +341,7 @@ task list
 echo $ task 11 rc.confirmation:no delete
 task 11 rc.confirmation:no delete
 
-# 20 Dependencies
+# 19 Dependencies
 echo Dependencies --------------------------------------------------------------
 echo $ task list pro:party
 task list pro:party
@@ -385,7 +372,7 @@ echo 'y' | task  2 done
 echo $ task 1 info
 task  1 info
 
-# 21 Reports
+# 20 Reports
 echo Reports --------------------------------------------------------------
 echo $ task minimal
 task  minimal
@@ -414,7 +401,7 @@ task  timesheet
 echo $ task next
 task  next
 
-# 22 Custom report
+# 21 Custom report
 echo Custom report --------------------------------------------------------------
 echo 'report.foo.description=My own report'     >> x
 echo 'report.foo.columns=id,entry,description'  >> x
@@ -428,7 +415,7 @@ task  show report.foo
 echo $ task foo
 task  foo
 
-# 23 Charts
+# 22 Charts
 echo Charts --------------------------------------------------------------
 echo $ task history
 task history
@@ -441,7 +428,7 @@ task ghistory.annual
 echo $ task summary
 task summary
 
-# 24 Advanced filters
+# 23 Advanced filters
 echo Advanced filters --------------------------------------------------------------
 echo $ task list
 task  list
@@ -470,7 +457,7 @@ task  all status:pending
 echo $ task all status:waiting
 task  all status:waiting
 
-# 25 Import/export
+# 24 Import/export
 echo Import/export --------------------------------------------------------------
 echo $ task export.csv
 task  export.csv
@@ -507,7 +494,7 @@ printf "y\n" | task  import file.yaml
 echo $ task new limit:2
 task  new limit:2
 
-# 26 Help
+# 25 Help
 echo Help --------------------------------------------------------------
 echo $ task help
 task  help
@@ -524,7 +511,7 @@ echo $ man task-faq
 echo $ man task-sync
 #man task-sync
 
-# 27 Wrap up
+# 26 Wrap up
 echo Wrap up --------------------------------------------------------------
 echo $ task version
 task  version

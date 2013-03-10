@@ -3,9 +3,10 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
+                     ${CMAKE_SOURCE_DIR}/src/shell
                      ${TASK_INCLUDE_DIRS})
 
-set (tasksh_SRCS shell.cpp shell.h)
+set (tasksh_SRCS Readline.cpp Readline.h)
 
 add_library (tasksh STATIC ${tasksh_SRCS})
 add_executable (tasksh_executable main.cpp)

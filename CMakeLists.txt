@@ -75,7 +75,7 @@ message ("-- Looking for GNU Readline")
 find_package (Readline)
 if (READLINE_FOUND)
   message ("-- Found GNU Readline: ${READLINE_LIBRARIES}")
-  set (HAVE_LIBREADLINE true)
+  set (HAVE_READLINE true)
   set (TASK_INCLUDE_DIRS ${TASK_INCLUDE_DIRS} ${READLINE_INCLUDE_DIR})
   set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${READLINE_LIBRARIES})
 endif (READLINE_FOUND)
@@ -121,7 +121,12 @@ configure_file (
 add_subdirectory (src)
 add_subdirectory (src/commands)
 add_subdirectory (src/columns)
+
+# Doesn't make sense to build shell without Readline.
+if (HAVE_READLINE)
 add_subdirectory (src/shell)
+endif (HAVE_READLINE)
+
 add_subdirectory (doc)
 add_subdirectory (i18n)
 add_subdirectory (scripts)

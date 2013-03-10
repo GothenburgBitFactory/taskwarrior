@@ -396,7 +396,6 @@
 #define STRING_CMD_IMPORT_NOT_JSON   "Not a JSON object: {1}"
 #define STRING_CMD_IMPORT_NO_DESC    "Annotation is missing a description: {1}"
 #define STRING_CMD_IMPORT_NO_ENTRY   "Annotation is missing an entry date: {1}"
-#define STRING_CMD_SHELL_USAGE       "Launches an interactive shell"
 #define STRING_CMD_SHELL_HELP1       "Enter any task command (such as 'list'), or hit 'Enter'."
 #define STRING_CMD_SHELL_HELP2       "There is no need to include the 'task' command itself."
 #define STRING_CMD_SHELL_HELP3       "Enter 'quit' (or 'bye', 'exit') to end the session."
@@ -969,6 +968,9 @@
 #define STRING_UTIL_MEBIBYTES        "MiB"
 #define STRING_UTIL_KIBIBYTES        "KiB"
 #define STRING_UTIL_BYTES            "B"
+
+// shell
+#define STRING_SHELL_UNKOWN_OPTION   "Ignoring unkown option: "
 
 #endif
 

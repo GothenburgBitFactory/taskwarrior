@@ -77,7 +77,6 @@
 #include <CmdPull.h>
 #include <CmdPush.h>
 #include <CmdReports.h>
-#include <CmdShell.h>
 #include <CmdShow.h>
 #include <CmdStart.h>
 #include <CmdStatistics.h>
@@ -152,7 +151,6 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdPull ();               all[c->keyword ()] = c;
   c = new CmdPush ();               all[c->keyword ()] = c;
   c = new CmdReports ();            all[c->keyword ()] = c;
-  c = new CmdShell ();              all[c->keyword ()] = c;
   c = new CmdShow ();               all[c->keyword ()] = c;
   c = new CmdStart ();              all[c->keyword ()] = c;
   c = new CmdStatistics ();         all[c->keyword ()] = c;

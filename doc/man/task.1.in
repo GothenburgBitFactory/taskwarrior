@@ -437,10 +437,6 @@ Lists all supported reports.  This includes the built-in reports, and any custom
 reports you have defined.
 
 .TP
-.B task shell
-Launches an interactive shell with all the task commands available.
-
-.TP
 .B task show [all | substring]
 Shows all the current settings.  If a
 substring is specified just the settings containing that substring will be
