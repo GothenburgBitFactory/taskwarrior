@@ -3,7 +3,9 @@
 2.3.0 () -
 
 Features
- + Added Feature #934, support for 'reserved.lines' to accomodate multi-line
+ + #328 Replaced the 'shell' command with a standalone 'tasksh' binary, which
+   includes GNU readline support (thanks to Haitham Gad).
+ + #934 support for 'reserved.lines' to accomodate multi-line
    shell prompts when used in conjunction with 'limit:page' (thanks to Robert
    Gill).
  + Stores un-synched transactions in <data.location>/backlog.data.

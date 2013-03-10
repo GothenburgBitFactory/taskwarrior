@@ -1,11 +1,14 @@
 
 New Features in taskwarrior 2.3.0
 
-  - 
+  - New task server sync capabilities.
+  - New shell with Readline support.
 
 New commands in taskwarrior 2.3.0
 
   - New 'sync' command to synchronize data with a Task Server.
+  - New 'tasksh' command which replaces the old 'task shell' with an improved
+    standalone shell, featuring Readline support.
 
 New configuration options in taskwarrior 2.3.0
 
