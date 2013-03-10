@@ -45,6 +45,9 @@ Override PACKAGE_LANGUAGE, then
 /* Found the GnuTLS library */
 #cmakedefine HAVE_LIBGNUTLS
 
+/* Found the Readline library */
+#cmakedefine HAVE_READLINE
+
 /* Found the pthread library */
 #cmakedefine HAVE_LIBPTHREAD
 

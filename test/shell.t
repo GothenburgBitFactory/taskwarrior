@@ -42,7 +42,7 @@ if (open my $fh, '>', 'shell.rc')
 }
 
 # Test the prompt.
-my $output = qx{printf "rc:test.rc add foo\nquit" | ../src/shell/tasksh 2>&1};
+my $output = qx{printf "rc:shell.rc add foo\nquit" | ../src/shell/tasksh 2>&1};
 like ($output, qr/testprompt>/, 'custom prompt is being used');
 
 # Test a simple add, then info.

@@ -42,7 +42,6 @@
 #include <i18n.h>
 #include <Color.h>
 #include <Context.h>
-#include <cmake.h>
 #include <Readline.h>
 
 Context context;

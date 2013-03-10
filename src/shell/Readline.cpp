@@ -29,20 +29,37 @@
 
 #include <iostream>
 #include <unistd.h>
+#include <cmake.h>
 #include <Readline.h>
+
+#ifdef HAVE_READLINE
+#include <readline/readline.h>
+#include <readline/history.h>
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Readline::gets (const std::string& prompt)
 {
+#ifdef HAVE_READLINE
   // Get a line from the user.
-  char *line_read = rl::readline (prompt.c_str ());
+  char *line_read = readline (prompt.c_str ());
+#else
+  std::string line_read;
+  std::cout << prompt;
+  std::getline (std::cin, line_read);
+#endif
 
+#ifdef HAVE_READLINE
   // If the line has any text in it, save it on the history.
   if (line_read && *line_read)
-    rl::add_history (line_read);
+    add_history (line_read);
+#endif
 
   std::string ret (line_read);
+
+#ifdef HAVE_READLINE
   free (line_read);
+#endif
 
   return ret;
 }

@@ -121,12 +121,7 @@ configure_file (
 add_subdirectory (src)
 add_subdirectory (src/commands)
 add_subdirectory (src/columns)
-
-# Doesn't make sense to build shell without Readline.
-if (HAVE_READLINE)
 add_subdirectory (src/shell)
-endif (HAVE_READLINE)
-
 add_subdirectory (doc)
 add_subdirectory (i18n)
 add_subdirectory (scripts)

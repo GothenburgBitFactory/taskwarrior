@@ -33,17 +33,6 @@
 #include <stdio.h>
 #include <wordexp.h>
 
-namespace rl
-{
-  // Wrapping readline.h in a namespace to
-  // avoid cluttering the global namespace.
-  extern "C"
-  {
-    #include <readline/readline.h>
-    #include <readline/history.h>
-  }
-}
-
 // Static class that offers a C++ API to readline C functions.
 class Readline
 {
