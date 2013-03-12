@@ -59,7 +59,7 @@ int CmdExec::execute (std::string& output)
       if (command_line.length ())
         command_line += " ";
 
-      command_line += arg->_raw;
+      command_line += "'" + arg->_raw + "'";
     }
   }
 
