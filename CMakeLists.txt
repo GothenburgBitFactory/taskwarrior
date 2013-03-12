@@ -1,4 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
+set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 
 include (CheckFunctionExists)
 include (CheckStructHasMember)
@@ -108,6 +109,9 @@ add_subdirectory (scripts)
 if (EXISTS test)
   add_subdirectory (test EXCLUDE_FROM_ALL)
 endif (EXISTS test)
+if (EXISTS performance)
+  add_subdirectory (performance EXCLUDE_FROM_ALL)
+endif (EXISTS performance)
 
 set (doc_FILES NEWS ChangeLog README INSTALL AUTHORS COPYING)
 foreach (doc_FILE ${doc_FILES})
