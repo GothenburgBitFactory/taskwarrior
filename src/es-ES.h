@@ -854,7 +854,8 @@
 
 // Transport
 #define STRING_TRANSPORT_NORUN       "No se pudo lanzar '{1}'. ¿Está instalado y disponible en $PATH?"
-#define STRING_TRANSPORT_NOFORK      "Could not run '{1}': {2}. Are you out of system resources?"
+#define STRING_TRANSPORT_NOFORK      "No se pudo ejecutar '{1}': {2}. ¿Puede ser que su sistema esté sin recursos?"
+
 #define STRING_TRANSPORT_URI_NODIR   "El uri '{1}' no parece ser un directorio."
 #define STRING_TRANSPORT_CURL_URI    "Cuando se usa el protocolo 'curl' el uri debe contener un nombre de máquina."
 #define STRING_TRANSPORT_CURL_WILDCD "Cuando se usa el protocolo 'curl' no están soportados los comodines."
