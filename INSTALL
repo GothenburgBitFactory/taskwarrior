@@ -12,8 +12,8 @@ from source.
 
 More information on cmake can be obtained at http://cmake.org
 
-Optionally, you might want to have Lua installed, if you wish to write plugins
-and modify taskwarrior.
+It is HIGHLY RECOMMENDED that you build with a library that provides uuid_*
+functions, such as libuuid.
 
 
 Basic Installation
