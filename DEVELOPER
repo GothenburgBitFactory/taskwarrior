@@ -14,14 +14,12 @@ General Statement
     quickest way to get help, or confirm a bug.
 
   - Review documentation: there are man pages, wiki articles, tutorials and so
-    on, and these may contain errors, or more importantly, they may not convey
-    ideas in the best way.  Perhaps you can help improve it.
+    on, and these may contain errors, or they may not convey ideas in the best
+    way.  Perhaps you can help improve it.
 
-  - Take a look at the bug database.  It is the nature of software to contain
-    bugs, and there is a continuous effort to fix them.  Looking at open bugs
-    and confirming them, perhaps determining that they are already fixed, or
-    just adding clarifying information are all very useful contributions and
-    much needed.
+  - Take a look at the bug database, and help triage the bug list.  This is a
+    review process that involves confirming bugs, providing additional data,
+    information or analysis.  Bug triage is very useful and much needed.
 
   - Fix a bug.  For this you'll need C++ and Git skills, but this is one of
     the largest ways you can contribute.  We welcome all bug fixes, provided
@@ -44,6 +42,12 @@ General Statement
     already rejected such a feature for some very good reasons.  So please
     check first, so we don't duplicate effort or waste anyone's time.
 
+  - Donate some server time to the testing effort, by participating in the
+    continuous integration of all changes, with our Flod software.  See this
+    page for an example:  http://tasktools.org/tinderbox
+    Ask us about running a Flod satellite, we're always looking for exotic
+    platforms to test on.
+
   - Spread the word.  Help others become more effective at managing tasks.
 
   - Encouragement.  Tell us what works for you, and what doesn't.  It's all
@@ -55,9 +59,7 @@ Deprecated Code
   This is code that is going to be phased out soon, and therefore is not worth
   fixing or documenting.  Don't waste your time.
 
-  - 'shell' command.  It will migrate to become an external script.
   - Shadow file support in core.  It will migrate to become an external script.
-  - Support for 'fg:' and 'bg:' attributes.
 
 New Code Needs
   This is code that needs to be written, usually down at the C++ function/method
@@ -81,11 +83,6 @@ New Code Needs
     data file, as found by 'task diag'.  This should check to see if there is
     a suitable UUID generator installed.  This should also be careful to
     properly handle recurring tasks.
-  - Need an external implementation equivalent to, or better than the 'shell'
-    command.  We are hoping to move the weak 'shell' command out of the core,
-    which means it can be developed separately.  There are several pending
-    feature requests for this, including creative prompts, readline and auto-
-    clear.
   - Need an external implementation equivalent to, or better than the 'shadow
     file' feature.  Simply because shadow file capability *can* be implemented
     outside the core code, we want to make it be that way.
@@ -191,8 +188,7 @@ Current Codebase Condition
     - Currently in beta.
 
   '2.3.0' branch:
-    - Future release with sync features.
-
+    - Future release with sync features, and new tasksh.
 
 ---
 
