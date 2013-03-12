@@ -120,6 +120,7 @@ Bugs
  + Fixed a bug where the terminal title was tried to be set without a tty
    (thanks to Rainer Müller).
  + Fixed hook tests to work on released code (thanks to Jakub Wilk).
+ + Fixed bug where arguments passed to 'task execute' needed double escaping.
 
 ------ old releases ------------------------------
 
