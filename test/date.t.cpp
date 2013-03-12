@@ -35,13 +35,15 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (181);
+  UnitTest t (184);
 
   try
   {
     Date now;
     Date yesterday;
     yesterday -= 86400;
+    Date tomorrow;
+    tomorrow += 86400;
 
     t.ok    (yesterday <= now,       "yesterday <= now");
     t.ok    (yesterday <  now,       "yesterday < now");
@@ -49,6 +51,13 @@ int main (int argc, char** argv)
     t.ok    (yesterday != now,       "yesterday != now");
     t.ok    (now       >= yesterday, "now >= yesterday");
     t.ok    (now       >  yesterday, "now > yesterday");
+
+    t.ok    (tomorrow >= now,        "tomorrow >= now");
+    t.ok    (tomorrow >  now,        "tomorrow > now");
+    t.notok (tomorrow == now,        "!(tomorrow == now)");
+    t.ok    (tomorrow != now,        "tomorrow != now");
+    t.ok    (now      <= tomorrow,   "now <= tomorrow");
+    t.ok    (now      <  tomorrow,   "now < tomorrow");
 
     // Date::Date ("now")
     Date relative_now ("now");
@@ -142,8 +151,6 @@ int main (int argc, char** argv)
     t.is (happyNewYear.month (),     1, "1/1/2008 == January");
     t.is (happyNewYear.day (),       1, "1/1/2008 == 1");
     t.is (happyNewYear.year (),   2008, "1/1/2008 == 2008");
-
-    t.is (now - yesterday, 86400, "today - yesterday == 1");
 
     t.is (happyNewYear.toString (), "1/1/2008", "toString 1/1/2008");
 
@@ -272,12 +279,6 @@ int main (int argc, char** argv)
     // Relative dates.
     Date r1 ("today");
     t.ok (r1.sameDay (now), "today = now");
-
-    Date r2 ("tomorrow");
-    t.ok (r2.sameDay (now + 86400), "tomorrow = now + 1d");
-
-    Date r3 ("yesterday");
-    t.ok (r3.sameDay (now - 86400), "yesterday = now - 1d");
 
     Date r4 ("sunday");
     if (now.dayOfWeek () >= 0)

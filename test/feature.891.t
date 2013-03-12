@@ -28,7 +28,8 @@
 
 use strict;
 use warnings;
-use Test::More tests => 36;
+use Time::Local;
+use Test::More tests => 37;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -39,8 +40,21 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Feature 891: UUID filter should be uuid.endswith by default
-qx{../src/task rc:bug.rc add one 2>&1};
-qx{../src/task rc:bug.rc add two 2>&1};
+# Create some example data directly.  This is so that we have complete control
+# over the UUID.
+if (open my $fh, '>', 'pending.data')
+{
+  my $timeA = timegm (00,00,12,22,11,2008);
+  my $timeB = timegm (00,00,12,17,03,2009);
+  print $fh <<EOF;
+[description:"one" entry:"$timeA" status:"pending" uuid:"a7097693-91c2-4cbe-ba89-ddcc87e5582c"]
+[description:"two" entry:"$timeB" status:"pending" uuid:"e8f72d91-964c-424b-8fd5-556434648b6b"]
+EOF
+
+  close $fh;
+  ok (-r 'pending.data', 'Created pending.data');
+}
+
 my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
 my ($uuid) = $output =~ /UUID\s+(\S{36})/ms;
 
