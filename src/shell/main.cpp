@@ -31,7 +31,6 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
-#include <stdlib.h>
 
 #ifdef CYGWIN
 #include <time.h>
@@ -115,8 +114,8 @@ int main (int argc, const char** argv)
 
   std::cout << (context.color () ? bold.colorize (PACKAGE_STRING) : PACKAGE_STRING)
             << " shell\n\n"
-            << STRING_CMD_SHELL_HELP1 << "\n"
-            << STRING_CMD_SHELL_HELP2 << "\n"
+            << STRING_CMD_SHELL_HELP1 << '\n'
+            << STRING_CMD_SHELL_HELP2 << '\n'
             << STRING_CMD_SHELL_HELP3 << "\n\n";
 
   // Make a copy because context.clear will delete them.
@@ -147,9 +146,13 @@ int main (int argc, const char** argv)
     std::string prompt (context.config.get ("shell.prompt") + " ");
     context.clear ();
 
-    if (Readline::interactive_mode (in))
+    if (Readline::interactiveMode (in))
     {
       input = Readline::gets (prompt);
+
+      // if a string has nothing but whitespaces, ignore it
+      if (input.find_first_not_of (" \t") == std::string::npos)
+        continue;
     }
     else
     {
@@ -159,7 +162,7 @@ int main (int argc, const char** argv)
       if (input.find_first_not_of (" \t") == std::string::npos)
         continue;
 
-      std::cout << prompt << input << "\n";
+      std::cout << prompt << input << '\n';
     }
 
     try
@@ -169,7 +172,7 @@ int main (int argc, const char** argv)
       for (int i = 0; i < w.argc (); ++i)
       {
         if (std::find (quit_commands.begin (), quit_commands.end (),
-                       lowerCase (w.argv ()[i])) != quit_commands.end ())
+                       lowerCase (w.argv (i))) != quit_commands.end ())
         {
           context.clearMessages ();
           return 0;
@@ -183,13 +186,13 @@ int main (int argc, const char** argv)
 
     catch (const std::string& error)
     {
-      std::cerr << error << "\n";
+      std::cerr << error << '\n';
       return -1;
     }
 
     catch (...)
     {
-      std::cerr << STRING_UNKNOWN_ERROR << "\n";
+      std::cerr << STRING_UNKNOWN_ERROR << '\n';
       return -2;
     }
   }
