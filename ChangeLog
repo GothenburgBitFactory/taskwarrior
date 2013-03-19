@@ -97,6 +97,8 @@ Bugs
    and caused the 'execute' command to be considered a 'write' command.
  + Fixed bug #1194, so that $HOME has precedence over the passwd db when looking
    for the user's home directory (thanks to Jakub Wilk).
+ + Fixed bug #1209, spelling mistake in reference page (thanks to Friedrich
+   Heusler).
  + Improved hyphenation by splitting on commas (even if no whitespace after).
    Leads to better output of, for example, 'task show', where comma-separated
    lists are common.
