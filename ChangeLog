@@ -99,6 +99,8 @@ Bugs
    for the user's home directory (thanks to Jakub Wilk).
  + Fixed bug #1209, spelling mistake in reference page (thanks to Friedrich
    Heusler).
+ + Fixed bug #1210 so that widths are taken from localized strings instead of
+   hardcoded.
  + Improved hyphenation by splitting on commas (even if no whitespace after).
    Leads to better output of, for example, 'task show', where comma-separated
    lists are common.
