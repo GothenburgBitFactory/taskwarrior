@@ -15,6 +15,7 @@ Features
  + Supports IPv4 and IPv6 server addresses.
 
 Bugs
+ + Fixed bug #1197 so that 'tasksh' now recognized Ctrl-D to exit.
  + Fixed bug so that 'limit:page' now considers footnote messages.
 
 ------ old releases ------------------------------
