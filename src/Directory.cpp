@@ -111,7 +111,7 @@ bool Directory::remove_directory (const std::string& dir)
 
 #if defined (SOLARIS) || defined (HAIKU)
       struct stat s;
-      stat ((dir + "/" + de->d_name).c_str (), &s);
+      lstat ((dir + "/" + de->d_name).c_str (), &s);
       if (s.st_mode & S_IFDIR)
         remove_directory (dir + "/" + de->d_name);
       else
