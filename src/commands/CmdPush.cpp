@@ -68,6 +68,7 @@ int CmdPush::execute (std::string& output)
 		Transport* transport;
 		if ((transport = Transport::getTransport (uri)) != NULL )
 		{
+      std::vector<std::string> sourcelist;
 			transport->send (location._data + "/{pending,undo,completed}.data");
 			delete transport;
 		}

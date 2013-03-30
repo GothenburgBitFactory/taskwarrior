@@ -41,13 +41,11 @@ TransportSSH::TransportSSH(const Uri& uri) : Transport(uri)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::send(const std::string& source)
 {
+  std::vector<std::string> sourcelist;
+  std::vector<std::string>::const_iterator source_iter;
+
   if (_uri._host == "")
     throw std::string (STRING_TRANSPORT_SSH_URI);
-
-  // Is there more than one file to transfer?
-  // Then path has to end with a '/'
-  if (is_filelist(source) && !_uri.is_directory())
-    throw format (STRING_TRANSPORT_URI_NODIR, _uri._path);
 
   // cmd line is: scp [-p port] [user@]host:path
   if (_uri._port != "")
@@ -56,7 +54,22 @@ void TransportSSH::send(const std::string& source)
     _arguments.push_back (_uri._port);
   }
 
-  _arguments.push_back (source);
+  if (is_filelist (source))
+  {
+    expand_braces (source, _uri._data, sourcelist);
+    // Is there more than one source?
+    // Then path has to end with a '/'
+    if (sourcelist.size () > 1 && !_uri.is_directory ())
+      throw format (STRING_TRANSPORT_URI_NODIR, _uri);
+
+    for (source_iter = sourcelist.begin (); source_iter != sourcelist.end (); ++source_iter) {
+      _arguments.push_back (*source_iter);
+    }
+  }
+  else
+  {
+    _arguments.push_back (source);
+  }
 
   if (_uri._user != "")
   {
@@ -88,6 +101,8 @@ void TransportSSH::recv(std::string target)
     _arguments.push_back ("-P");
     _arguments.push_back (_uri._port);
   }
+
+  // We do not do {} expansion of the URI, as ssh servers do that for us.
 
   if (_uri._user != "")
   {

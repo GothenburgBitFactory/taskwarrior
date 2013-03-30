@@ -40,13 +40,11 @@ TransportRSYNC::TransportRSYNC(const Uri& uri) : Transport(uri)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportRSYNC::send(const std::string& source)
 {
+  std::vector<std::string> sourcelist;
+  std::vector<std::string>::const_iterator source_iter;
+
   if (_uri._host == "")
     throw std::string (STRING_TRANSPORT_RSYNC_URI);
-
-  // Is there more than one file to transfer?
-  // Then path has to end with a '/'
-  if (is_filelist(source) && !_uri.is_directory())
-    throw format (STRING_TRANSPORT_URI_NODIR, _uri._path);
 
   // cmd line is: rsync [--port=PORT] source [user@]host::path
   if (_uri._port != "")
@@ -54,7 +52,22 @@ void TransportRSYNC::send(const std::string& source)
     _arguments.push_back ("--port=" + _uri._port);
   }
 
-  _arguments.push_back (source);
+  if (is_filelist (source))
+  {
+    expand_braces (source, _uri._data, sourcelist);
+    // Is there more than one file to transfer?
+    // Then path has to end with a '/'
+    if (sourcelist.size () > 1 && !_uri.is_directory ())
+      throw format (STRING_TRANSPORT_URI_NODIR, _uri);
+
+    for (source_iter = sourcelist.begin (); source_iter != sourcelist.end (); ++source_iter) {
+      _arguments.push_back (*source_iter);
+    }
+  }
+  else
+  {
+    _arguments.push_back (source);
+  }
 
   if (_uri._user != "")
   {
@@ -72,21 +85,36 @@ void TransportRSYNC::send(const std::string& source)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportRSYNC::recv(std::string target)
 {
+  std::vector<std::string> paths;
+  std::vector<std::string>::const_iterator paths_iter;
+
   if (_uri._host == "")
     throw std::string (STRING_TRANSPORT_RSYNC_URI);
-
-  // Is there more than one file to transfer?
-  // Then target has to end with a '/'
-  if (is_filelist(_uri._path) && !is_directory(target))
-    throw format (STRING_TRANSPORT_URI_NODIR, target);
 
   // cmd line is: rsync [--port=PORT] [user@]host::path target
   if (_uri._port != "")
     _arguments.push_back ("--port=" + _uri._port);
 
-  if (_uri._user != "")
-  {
-    _arguments.push_back (_uri._user + "@" + _uri._host + "::" + _uri._path);
+  if (is_filelist(_uri._path)) {
+
+    // Rsync servers do not to {} expansion, so we have to do it on the client.
+    expand_braces  (_uri._path, target, paths);
+
+    // Is there more than one file to transfer?
+    // Then target has to end with a '/'
+    if (paths.size () > 1 && ! is_directory (target))
+      throw format (STRING_TRANSPORT_URI_NODIR, target);
+
+    for (paths_iter = paths.begin (); paths_iter != paths.end (); ++paths_iter) {
+      if (_uri._user != "")
+      {
+        _arguments.push_back (_uri._user + "@" + _uri._host + "::" + *paths_iter);
+      }
+      else
+      {
+        _arguments.push_back (_uri._host + "::" + *paths_iter);
+      }
+    }
   }
   else
   {

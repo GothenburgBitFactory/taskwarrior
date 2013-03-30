@@ -126,4 +126,42 @@ bool Transport::is_filelist(const std::string& path)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Transport::expand_braces(const std::string& path,
+                              const std::string& sourceortarget,
+                              std::vector<std::string>& paths)
+{
+  // Is is_filelist appropriate here?  We only care about {}
+  if (is_filelist(path))
+  {
+    std::string::size_type pos;
+    pos = path.find("{");
 
+    if (pos == std::string::npos)
+      throw std::string (STRING_TRANSPORT_CURL_WILDCD);
+
+    if (!is_directory(sourceortarget))
+      throw format (STRING_TRANSPORT_URI_NODIR, sourceortarget);
+
+    std::string toSplit;
+    std::string suffix;
+    std::string prefix = path.substr (0, pos);
+    std::vector<std::string> splitted;
+    toSplit = path.substr (pos+1);
+    pos = toSplit.find ("}");
+    suffix = toSplit.substr (pos+1);
+    split (splitted, toSplit.substr(0, pos), ',');
+
+    std::vector <std::string>::iterator file;
+    for (file = splitted.begin (); file != splitted.end (); ++file) {
+      std::cout << "    -- " << (prefix + *file + suffix) << "\n";
+      paths.push_back (prefix + *file + suffix);
+    }
+  }
+  else
+  {
+    // Not brace expandable - use the path as is.
+    paths.push_back (path);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////

@@ -41,16 +41,26 @@ TransportShell::TransportShell(const Uri& uri) : Transport(uri)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportShell::send(const std::string& source)
 {
+  std::vector<std::string> sourcelist;
+  std::vector<std::string>::const_iterator source_iter;
+
   if (_uri._path == "")
     throw std::string (STRING_TRANSPORT_SHELL_NOPATH);
 
-  // Is there more than one file to transfer?
-  // Then path has to end with a '/'
-  if (is_filelist(source) && !_uri.is_directory())
-    throw format (STRING_TRANSPORT_URI_NODIR, _uri._path);
-
-  _arguments.push_back (source);
-
+  if (is_filelist(source))
+  {
+    expand_braces (source, _uri._path, sourcelist);
+    // Is there more than one file to transfer?
+    // Then path has to end with a '/'
+    if (sourcelist.size() > 1 && !_uri.is_directory())
+      throw format (STRING_TRANSPORT_URI_NODIR, _uri._path);
+    for (source_iter = sourcelist.begin (); source_iter != sourcelist.end (); ++source_iter)
+      _arguments.push_back (*source_iter);
+  }
+  else
+  {
+    _arguments.push_back (source);
+  }
   _arguments.push_back (_uri._path);
 
   if (execute ())
@@ -60,15 +70,28 @@ void TransportShell::send(const std::string& source)
 ////////////////////////////////////////////////////////////////////////////////
 void TransportShell::recv(std::string target)
 {
+  std::vector<std::string> paths;
+  std::vector<std::string>::const_iterator paths_iter;
+
   if (_uri._path == "")
     throw std::string (STRING_TRANSPORT_SHELL_NOPATH);
 
-  // Is there more than one file to transfer?
-  // Then target has to end with a '/'
-  if (is_filelist(_uri._path) && !is_directory(target))
-    throw format (STRING_TRANSPORT_URI_NODIR, target);
+  if (is_filelist(_uri._path))
+  {
+    expand_braces (_uri._path, target, paths);
 
-  _arguments.push_back (_uri._path);
+    // Is there more than one file to transfer?
+    // Then target has to end with a '/'
+    if (paths.size() > 1 && !is_directory(target))
+      throw format (STRING_TRANSPORT_URI_NODIR, target);
+
+    for (paths_iter = paths.begin (); paths_iter != paths.end (); ++paths_iter)
+      _arguments.push_back (*paths_iter);
+  }
+  else
+  {
+    _arguments.push_back (_uri._path);
+  }
 
   _arguments.push_back (target);
 
