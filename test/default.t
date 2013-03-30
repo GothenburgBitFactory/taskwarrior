@@ -37,7 +37,8 @@ if (open my $fh, '>', 'default.rc')
             "default.command=list\n",
             "default.project=PROJECT\n",
             "default.priority=M\n",
-            "default.due=eom\n";
+            "default.due=eom\n",
+            "dateformat=m/d/Y\n";
   close $fh;
   ok (-r 'default.rc', 'Created default.rc');
 }

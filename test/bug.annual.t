@@ -33,7 +33,8 @@ use Test::More tests => 13;
 # Create the rc file.
 if (open my $fh, '>', 'annual.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "dateformat=m/d/Y\n";
   close $fh;
   ok (-r 'annual.rc', 'Created annual.rc');
 }

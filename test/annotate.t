@@ -40,7 +40,8 @@ if (open my $fh, '>', 'annotate.rc')
             "report.rrr.description=rrr\n",
             "report.rrr.columns=id,description\n",
             "report.rrr.sort=id+\n",
-            "color=off\n";
+            "color=off\n",
+            "dateformat=m/d/Y\n";
   close $fh;
   ok (-r 'annotate.rc', 'Created annotate.rc');
 }

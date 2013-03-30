@@ -40,7 +40,8 @@ if (open my $fh, '>', 'uda.rc')
             "report.uda.description=UDA Test\n",
             "report.uda.columns=id,extra,description\n",
             "report.uda.sort=extra,description\n",
-            "report.uda.labels=ID,Extra,Description\n";
+            "report.uda.labels=ID,Extra,Description\n",
+            "dateformat=m/d/Y\n";
   close $fh;
   ok (-r 'uda.rc', 'Created uda.rc');
 }

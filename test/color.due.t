@@ -35,7 +35,8 @@ if (open my $fh, '>', 'color.rc')
 {
   print $fh "data.location=.\n",
             "color.due=red\n",
-            "_forcecolor=1\n";
+            "_forcecolor=1\n",
+            "dateformat=m/d/Y\n";
   close $fh;
   ok (-r 'color.rc', 'Created color.rc');
 }

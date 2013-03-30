@@ -34,7 +34,7 @@ use Test::More tests => 4;
 if (open my $fh, '>', 'iso.rc')
 {
   print $fh "data.location=.\n",
-            "dateformat=m/d/Y\n";
+            "dateformat.info=m/d/Y\n";
   close $fh;
   ok (-r 'iso.rc', 'Created iso.rc');
 }

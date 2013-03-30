@@ -34,7 +34,7 @@ use Test::More tests => 4;
 if (open my $fh, '>', 'bug.rc')
 {
   print $fh "data.location=.\n",
-            "dateformat=m/d/Y\n",
+            "dateformat.info=m/d/Y\n",
             "confirmation=no\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');

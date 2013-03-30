@@ -34,7 +34,8 @@ use Test::More tests => 5;
 if (open my $fh, '>', 'range.rc')
 {
   print $fh "data.location=.\n",
-            "confirmation=no\n";
+            "confirmation=no\n",
+            "dateformat=m/d/Y\n";
   close $fh;
   ok (-r 'range.rc', 'Created range.rc');
 }
