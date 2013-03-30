@@ -284,10 +284,10 @@
 
 #define STRING_CMD_HISTORY_YEAR      "Año"
 #define STRING_CMD_HISTORY_MONTH     "Mes"
-#define STRING_CMD_HISTORY_ADDED     "Añadida"
-#define STRING_CMD_HISTORY_COMP      "Completada"
-#define STRING_CMD_HISTORY_DEL       "Suprimida"
-#define STRING_CMD_HISTORY_NET       "Neta"
+#define STRING_CMD_HISTORY_ADDED     "Añadidas"
+#define STRING_CMD_HISTORY_COMP      "Completadas"
+#define STRING_CMD_HISTORY_DEL       "Suprimidas"
+#define STRING_CMD_HISTORY_NET       "Netas"
 #define STRING_CMD_HISTORY_USAGE_A   "Muestra un informe de historia de tareas, por año"
 #define STRING_CMD_HISTORY_AVERAGE   "Media"
 #define STRING_CMD_HISTORY_LEGEND    "Leyenda: {1}, {2}, {3}"
@@ -864,8 +864,8 @@
 #define STRING_TRANSPORT_RSYNC_FAIL  "Rsync falló, consulte los mensajes precedentes."
 #define STRING_TRANSPORT_SSH_URI     "Cuando se usa el protocolo 'ssh' el uri debe contener un nombre de máquina."
 #define STRING_TRANSPORT_SSH_FAIL    "Ssh falló, consulte los mensajes precedentes."
-#define STRING_TRANSPORT_SHELL_NOPATH "When using the 'sh+cp' protocol to copy multiple files, a path must be specified."
-#define STRING_TRANSPORT_SHELL_FAIL  "shell command failed, see output above."
+#define STRING_TRANSPORT_SHELL_NOPATH "Cuando se utiliza el protocolo 'sh + cp' para copiar varios archivos se debe especificar un path."
+#define STRING_TRANSPORT_SHELL_FAIL  "Fallo de comando del entorno, consulte la salida anterior."
 
 // Uri
 #define STRING_URI_QUOTES            "No se pudo interpretar el uri '{1}', uso erróneo de comillas simples."
