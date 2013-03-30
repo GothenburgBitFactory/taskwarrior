@@ -38,6 +38,7 @@
 #include <TransportSSH.h>
 #include <TransportRSYNC.h>
 #include <TransportCurl.h>
+#include <TransportShell.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 Transport::Transport (const Uri& uri)
@@ -67,6 +68,10 @@ Transport* Transport::getTransport(const Uri& uri)
          || (uri._protocol == "ftp") )
   {
     return new TransportCurl(uri);
+  }
+  else if ( uri._protocol == "sh+cp")
+  {
+    return new TransportShell(uri);
   }
 
   return NULL;

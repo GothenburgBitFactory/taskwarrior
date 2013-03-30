@@ -197,6 +197,10 @@ std::string Uri::ToString ()
   if (is_local ())
     return _data;
 
+  // No password to obscure, return the original.
+  if (_protocol == "sh+cp")
+    return _data;
+
   std::string result;
   result = _protocol + "://";
 
@@ -254,6 +258,13 @@ void Uri::parse ()
     _protocol = "ssh";
     // scp-like syntax: [user@]host.xz:path/to/undo.data
     pathDelimiter = ":";
+  }
+
+  if (_protocol == "sh+cp")
+  {
+    _path = _data;
+    _parsed = true;
+    return;
   }
 
   // user delimited by single quotes?

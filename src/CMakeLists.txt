@@ -30,6 +30,7 @@ set (task_SRCS A3.cpp A3.h
                TransportCurl.cpp TransportCurl.h
                TransportRSYNC.cpp TransportRSYNC.h
                TransportSSH.cpp TransportSSH.h
+               TransportShell.cpp TransportShell.h
                Uri.cpp Uri.h
                ViewTask.cpp ViewTask.h
                ViewText.cpp ViewText.h

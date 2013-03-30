@@ -864,6 +864,8 @@
 #define STRING_TRANSPORT_RSYNC_FAIL  "Rsync falló, consulte los mensajes precedentes."
 #define STRING_TRANSPORT_SSH_URI     "Cuando se usa el protocolo 'ssh' el uri debe contener un nombre de máquina."
 #define STRING_TRANSPORT_SSH_FAIL    "Ssh falló, consulte los mensajes precedentes."
+#define STRING_TRANSPORT_SHELL_NOPATH "When using the 'sh+cp' protocol to copy multiple files, a path must be specified."
+#define STRING_TRANSPORT_SHELL_FAIL  "shell command failed, see output above."
 
 // Uri
 #define STRING_URI_QUOTES            "No se pudo interpretar el uri '{1}', uso erróneo de comillas simples."

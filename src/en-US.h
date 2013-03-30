@@ -847,6 +847,8 @@
 #define STRING_TRANSPORT_RSYNC_FAIL  "rsync failed, see output above."
 #define STRING_TRANSPORT_SSH_URI     "When using the 'ssh' protocol, the uri must contain a hostname."
 #define STRING_TRANSPORT_SSH_FAIL    "ssh failed, see output above."
+#define STRING_TRANSPORT_SHELL_NOPATH "When using the 'sh+cp' protocol to copy multiple files, a path must be specified."
+#define STRING_TRANSPORT_SHELL_FAIL  "shell command failed, see output above."
 
 // Uri
 #define STRING_URI_QUOTES            "Could not parse uri '{1}', wrong usage of single quotes."
