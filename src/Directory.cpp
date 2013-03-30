@@ -117,7 +117,8 @@ bool Directory::remove_directory (const std::string& dir)
       else
         unlink ((dir + "/" + de->d_name).c_str ());
 #else
-      if (de->d_type == DT_DIR)
+      if (de->d_type == DT_DIR ||
+          de->d_type == DT_UNKNOWN)
         remove_directory (dir + "/" + de->d_name);
       else
         unlink ((dir + "/" + de->d_name).c_str ());

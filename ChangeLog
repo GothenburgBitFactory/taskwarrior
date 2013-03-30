@@ -97,6 +97,8 @@ Bugs
    and caused the 'execute' command to be considered a 'write' command.
  + Fixed bug #1194, so that $HOME has precedence over the passwd db when looking
    for the user's home directory (thanks to Jakub Wilk).
+ + Fixed bug #1200, where directory removal didn't handle d_type==DT_UNKNOWN
+   (thanks to Jakub Wilk).
  + Fixed bug #1209, spelling mistake in reference page (thanks to Friedrich
    Heusler).
  + Fixed bug #1210 so that widths are taken from localized strings instead of
