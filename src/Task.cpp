@@ -955,6 +955,12 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "DUETODAY")  return is_duetoday ();
   if (tag == "TODAY")     return is_duetoday ();
   if (tag == "OVERDUE")   return is_overdue ();
+  if (tag == "ACTIVE")    return has ("start");
+  if (tag == "SCHEDULED") return has ("scheduled");
+  if (tag == "CHILD")     return has ("parent");
+  if (tag == "UNTIL")     return has ("until");
+  if (tag == "WAITING")   return has ("wait");
+
 /*
   TODO YESTERDAY - due yesterday
   TODO TOMORROW  - due tomorrow
@@ -962,13 +968,9 @@ bool Task::hasTag (const std::string& tag) const
   TODO MONTH     - due this month
   TODO YEAR      - due this year
   TODO ANNOTATED - has any annotations
-  TODO ACTIVE    - is active
   TODO READY     - is ready
-  TODO SCHEDULED - is scheduled
   TODO WAITING   - is waiting
-  TODO CHILD     - is a child
   TODO PARENT    - is a parent
-  TODO UNTIL     - will expire
 */
 
   // Concrete tags.

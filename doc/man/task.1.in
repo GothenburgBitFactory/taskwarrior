@@ -575,6 +575,11 @@ are:
     DUETODAY     Matches if the task is due today
     TODAY        Matches if the task is due today
     OVERDUE      Matches if the task is overdue
+    ACTIVE       Matches if the task is started
+    SCHEDULED    Matches if the task is scheduled
+    CHILD        Matches if the task has a parent
+    UNTIL        Matches if the task expires
+    WAITING      Matches if the task is waiting
 
 You can use +BLOCKED to filter blocked tasks, or -BLOCKED for unblocked tasks.
 Similarly, -BLOCKED is equivalent to +UNBLOCKED.

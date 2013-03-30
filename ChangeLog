@@ -29,7 +29,8 @@ Features
  + Removed deprecated 'fg:' and 'bg:' attributes.
  + The 'diagnostics' command now reports libuuid details.
  + New characters for parsing and formating dates ('n', 's' and 'v').
- + Virtual tags.
+ + Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, TODAY, OVERDUE,
+   ACTIVE, SCHEDULED, CHILD, UNTIL and WAITING).
  + New 'modified' attribute, which contains the most recent modification date,
    if a modification has occurred.
  + Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
