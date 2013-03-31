@@ -1,7 +1,3 @@
-
-Developer
-  http://tasktools.org
-
 Calendar trick
   ln -s `which task` ./cal
   ./cal
@@ -36,4 +32,6 @@ Setup
     TASKDATA=
     TASKRC=
   http://tasktools.org/latest
+
+Reporting bugs
 

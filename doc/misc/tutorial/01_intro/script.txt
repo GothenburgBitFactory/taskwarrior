@@ -7,28 +7,12 @@ left and right are aligned, the audio should match the commands.
 ---------------------------------------- Intro -----------------------------------------------------
 
 # Hi.                                    Hello, and welcome to Taskwarrior.  This is the first of
-                                         many tutorials, and covers first-time use.  Let's start
-                                         by talking about some important resources.
-
-# http//taskwarrior.org                  If you find you have any questions, you can get answers in
-                                         several ways.  The website has user forums, issue tracking
-                                         and online documentation, including this tutorial.
-
-# IRC #taskwarrior                       You can join the Taskwarrior IRC channel to pose questions,
-                                         or join in the discussion.
-
-# support@taskwarrior.org                Or you can submit your request by email.  The various
-                                         support options are all volunteer-run.
-
-man task                                 Finally, you have several man pages installed that contain
-                                         all the written documentation, including this tutorial.
-
-                                         ---
+                                         many tutorials, and covers first-time use.
 
                                          As a first-time user, you are going to need a configuration
                                          file and a data directory.  Taskwarrior will create both of
-                                         these for you, in your home directory.  The first time you
-                                         run taskwarrior, you will be asked if you wish to do this.
+                                         these for you, in your home directory, the first time you
+                                         run taskwarrior.
 
 task version                             Answer 'yes' to the question.  After creating the missing
                                          file and directory, you'll see the current version
@@ -40,7 +24,8 @@ cat ~/.taskrc                            The configuration file contains very li
                                          defaults.
 
 ls -l ~/.task                            The task data directory is empty.  That's because we have
-                                         added no tasks.
+                                         added no tasks.  Typically you won't need to look in that
+                                         directory.
 
                                          ---
 
