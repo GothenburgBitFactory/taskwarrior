@@ -32,7 +32,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (15);
+  UnitTest t (17);
 
   std::string ascii_text      = "This is a test";
   std::string utf8_text       = "más sábado miércoles";
@@ -42,7 +42,10 @@ int main (int argc, char** argv)
   std::string utf8_text_color       = "más [1msábado[0m miércoles";
   std::string utf8_wide_text_color  = "改[1m变各种[0m颜色";
 
-  // TODO unsigned int utf8_codepoint (const std::string&);
+  // unsigned int utf8_codepoint (const std::string&);
+  t.is ((int) utf8_codepoint ("\\u0020"), 32, "\\u0020 --> ' '");
+  t.is ((int) utf8_codepoint ("U+0020"),  32, "U+0020 --> ' '");
+
   // TODO unsigned int utf8_next_char (const std::string&, std::string::size_type&);
   // TODO std::string utf8_character (unsigned int);
   // TODO int utf8_sequence (unsigned int);

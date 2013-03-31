@@ -179,18 +179,15 @@ Work in Progress
 Current Codebase Condition
 
   'master' branch:
-    - 2.1.2 release, current, locked.
-
-  '2.1.2' branch:
-    - Current release.  Locked.
+    - 2.2.0 Current release, locked.
 
   '2.2.0' branch:
-    - Currently in beta.
+    - Current release.  Locked.
 
   '2.3.0' branch:
-    - Future release with sync features, and new tasksh.
+    - Current development branch with sync features, and new tasksh.
 
 ---
 
 2012-05-12 Added general statement about how to contribute.
-2013-03-04 Updated branch inco.
+2013-03-31 Updated branch info.
