@@ -2,6 +2,8 @@ Calendar trick
   ln -s `which task` ./cal
   ./cal
 
+Metadata
+
 Sync
   push
   pull
@@ -34,4 +36,6 @@ Setup
   http://tasktools.org/latest
 
 Reporting bugs
+
+Holidays
 

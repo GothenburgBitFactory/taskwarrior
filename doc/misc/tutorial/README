@@ -24,4 +24,11 @@ having many, smaller sections that explore features at a greater depth.
     IRC
     Email
     Man pages
+    Reporting bugs
+
+NN_configuration
+  show command
+  config command
+  rc overrides
+  TASKDATA, TASKRC
 
