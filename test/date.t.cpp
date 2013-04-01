@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (184);
+  UnitTest t (205);
 
   try
   {
@@ -407,6 +407,30 @@ int main (int argc, char** argv)
     Date r29 (3, 13, 2010, 23, 59, 59);
     r29++;
     t.is (r29.toString ("YMDHNS"), "20100314235959", "increment across spring DST boundary");
+
+    // int Date::length (const std::string&);
+    t.is (Date::length ("m"), 2,  "length 'm' --> 2");
+    t.is (Date::length ("M"), 2,  "length 'M' --> 2");
+    t.is (Date::length ("d"), 2,  "length 'd' --> 2");
+    t.is (Date::length ("D"), 2,  "length 'D' --> 2");
+    t.is (Date::length ("y"), 2,  "length 'y' --> 2");
+    t.is (Date::length ("Y"), 4,  "length 'Y' --> 4");
+    t.is (Date::length ("a"), 3,  "length 'a' --> 3");
+    t.is (Date::length ("A"), 10, "length 'A' --> 10");
+    t.is (Date::length ("b"), 3,  "length 'b' --> 3");
+    t.is (Date::length ("B"), 10, "length 'B' --> 10");
+    t.is (Date::length ("v"), 2,  "length 'v' --> 2");
+    t.is (Date::length ("V"), 2,  "length 'V' --> 2");
+    t.is (Date::length ("h"), 2,  "length 'h' --> 2");
+    t.is (Date::length ("H"), 2,  "length 'H' --> 2");
+    t.is (Date::length ("n"), 2,  "length 'n' --> 2");
+    t.is (Date::length ("N"), 2,  "length 'N' --> 2");
+    t.is (Date::length ("s"), 2,  "length 's' --> 2");
+    t.is (Date::length ("S"), 2,  "length 'S' --> 2");
+    t.is (Date::length ("j"), 3,  "length 'j' --> 3");
+    t.is (Date::length ("J"), 3,  "length 'J' --> 3");
+
+    t.is (Date::length (" "), 1, "length ' ' --> 1");
   }
 
   catch (const std::string& e)

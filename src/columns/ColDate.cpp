@@ -95,7 +95,13 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
       if (format == "")
         format = context.config.get ("dateformat");
 
-      minimum = maximum = date.toString (format).length ();
+      minimum = maximum = Date::length (format);
+    }
+    else if (_style == "countdown")
+    {
+      Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
+      Date now;
+      minimum = maximum = Duration (now - date).format ().length ();
     }
     else if (_style == "julian")
     {
@@ -134,7 +140,7 @@ void ColumnDate::render (
       // Determine the output date format, which uses a hierarchy of definitions.
       //   rc.report.<report>.dateformat
       //   rc.dateformat.report
-      //   rc.dateformat.
+      //   rc.dateformat
       std::string format = context.config.get ("report." + _report + ".dateformat");
       if (format == "")
         format = context.config.get ("dateformat.report");
@@ -146,6 +152,16 @@ void ColumnDate::render (
           leftJustify (
             Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
               .toString (format), width)));
+    }
+    else if (_style == "countdown")
+    {
+      Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
+      Date now;
+
+      lines.push_back (
+        color.colorize (
+          rightJustify (
+            Duration (now - date).format (), width)));
     }
     else if (_style == "julian")
     {

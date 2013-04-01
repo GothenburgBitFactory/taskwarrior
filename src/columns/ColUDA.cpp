@@ -92,7 +92,7 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
         // Determine the output date format, which uses a hierarchy of definitions.
         //   rc.report.<report>.dateformat
         //   rc.dateformat.report
-        //   rc.dateformat.
+        //   rc.dateformat
         Date date ((time_t) strtol (value.c_str (), NULL, 10));
         std::string format = context.config.get ("report." + _report + ".dateformat");
         if (format == "")
@@ -100,7 +100,7 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
         if (format == "")
           format = context.config.get ("dateformat");
 
-        minimum = maximum = utf8_width (date.toString (format));
+        minimum = maximum = Date::length (format);
       }
       else if (_type == "duration")
       {
