@@ -858,6 +858,9 @@
 #define STRING_UTF8_INVALID_CP_REP   "Invalid codepoint representation."
 #define STRING_UTF8_INVALID_CP       "Invalid Unicode codepoint."
 
+// View
+#define STRING_VIEW_TOO_SMALL        "The report has a minimum width of {1} and does not fit in the available width of {2}."
+
 // Usage text.  This is an exception, and contains \n characters and formatting.
 #define STRING_CMD_HELP_TEXT \
   "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man " \

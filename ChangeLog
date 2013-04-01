@@ -109,6 +109,8 @@ Bugs
    Heusler).
  + Fixed bug #1210 so that widths are taken from localized strings instead of
    hardcoded.
+ + Fixed bug #1218 so that description columns minimum width is calculated
+   correctly.
  + Improved hyphenation by splitting on commas (even if no whitespace after).
    Leads to better output of, for example, 'task show', where comma-separated
    lists are common.

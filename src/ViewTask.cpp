@@ -27,11 +27,13 @@
 
 #define L10N                                           // Localization complete.
 
+#include <numeric>
 #include <ViewTask.h>
 #include <Context.h>
 #include <Timer.h>
 #include <text.h>
 #include <utf8.h>
+#include <i18n.h>
 #include <main.h>
 
 extern Context context;
@@ -153,41 +155,56 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       ideal.push_back (global_ideal);
     }
 
-    if (!print_empty_columns && global_min != 0)
+    if (! print_empty_columns && global_min != 0)
     {
-      nonempty_columns.push_back(*i);
+      nonempty_columns.push_back (*i);
     }
   }
 
-  if (!print_empty_columns)
+  if (! print_empty_columns)
     _columns = nonempty_columns;
 
-  // Sum the minimal widths.
-  int sum_minimal = 0;
-  std::vector <int>::iterator c;
-  for (c = minimal.begin (); c != minimal.end (); ++c)
-    sum_minimal += *c;
+  int all_extra = _left_margin
+                + (2 * _extra_padding)
+                + ((_columns.size () - 1) * _intra_padding);
 
-  // Sum the ideal widths.
-  int sum_ideal = 0;
-  for (c = ideal.begin (); c != ideal.end (); ++c)
-    sum_ideal += *c;
+  // Sum the widths.
+  int sum_minimal = std::accumulate (minimal.begin (), minimal.end (), 0);
+  int sum_ideal   = std::accumulate (ideal.begin (),   ideal.end (),   0);
+
 
   // Calculate final column widths.
-  int overage = _width
-              - _left_margin
-              - (2 * _extra_padding)
-              - ((_columns.size () - 1) * _intra_padding);
+  int overage = _width - sum_minimal - all_extra;
+  context.debug (format ("ViewTask::render min={1} ideal={2} overage={3}", 
+                         sum_minimal + all_extra,
+                         sum_ideal + all_extra,
+                         overage));
 
   std::vector <int> widths;
-  if (_width == 0 || sum_ideal <= overage)
+
+  // Ideal case.  Everything fits.
+  if (_width == 0 || sum_ideal + all_extra <= _width)
+  {
     widths = ideal;
-  else if (sum_minimal > overage || overage < 0)
+  }
+
+  // Not enough for minimum.
+  else if (overage < 0)
+  {
+    context.error (format (STRING_VIEW_TOO_SMALL, sum_minimal + all_extra, _width));
     widths = minimal;
+  }
+
+  // Perfect minimal width.
+  else if (overage == 0)
+  {
+    widths = minimal;
+  }
+
+  // Extra space to share.
   else if (overage > 0)
   {
     widths = minimal;
-    overage -= sum_minimal;
 
     // Spread 'overage' among columns where width[i] < ideal[i]
     bool needed = true;

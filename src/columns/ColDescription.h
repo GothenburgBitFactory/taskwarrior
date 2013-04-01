@@ -47,6 +47,8 @@ public:
 
 private:
   bool _hyphenate;
+  std::string _dateformat;
+  int _indent;
 };
 
 #endif
