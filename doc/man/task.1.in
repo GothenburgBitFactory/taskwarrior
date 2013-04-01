@@ -580,6 +580,7 @@ are:
     CHILD        Matches if the task has a parent
     UNTIL        Matches if the task expires
     WAITING      Matches if the task is waiting
+    ANNOTATED    Matches if the task has annotations
 
 You can use +BLOCKED to filter blocked tasks, or -BLOCKED for unblocked tasks.
 Similarly, -BLOCKED is equivalent to +UNBLOCKED.

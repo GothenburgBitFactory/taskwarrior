@@ -106,6 +106,7 @@ Task::Task ()
 , recalc_urgency (true)
 , is_blocked (false)
 , is_blocking (false)
+, annotation_count (0)
 {
 }
 
@@ -122,11 +123,12 @@ Task& Task::operator= (const Task& other)
   {
     std::map <std::string, std::string>::operator= (other);
 
-    id             = other.id;
-    urgency_value  = other.urgency_value;
-    recalc_urgency = other.recalc_urgency;
-    is_blocked     = other.is_blocked;
-    is_blocking    = other.is_blocking;
+    id               = other.id;
+    urgency_value    = other.urgency_value;
+    recalc_urgency   = other.recalc_urgency;
+    is_blocked       = other.is_blocked;
+    is_blocking      = other.is_blocking;
+    annotation_count = other.annotation_count;
   }
 
   return *this;
@@ -156,6 +158,7 @@ Task::Task (const std::string& input)
   recalc_urgency = true;
   is_blocked = false;
   is_blocking = false;
+  annotation_count = 0;
   parse (input);
 }
 
@@ -436,6 +439,9 @@ void Task::parse (const std::string& input)
               value[value.length () - 1] == 'm')
             value += 'o';
 
+          if (name.substr (0, 11) == "annotation_")
+            ++annotation_count;
+
           (*this)[name] = decode (json::decode (value));
         }
 
@@ -611,6 +617,7 @@ void Task::legacyParse (const std::string& line)
                   std::string name = pair.substr (0, colon);
                   std::string value = pair.substr (colon + 2, pair.length () - colon - 3);
                   set ("annotation_" + name, value);
+                  ++annotation_count;
                 }
               }
 
@@ -676,7 +683,6 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
 
   // First the non-annotations.
   int attributes_written = 0;
-  int annotation_count = 0;
   Task::const_iterator i;
   for (i = this->begin (); i != this->end (); ++i)
   {
@@ -685,15 +691,9 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
 
     Column* column = context.columns[i->first];
 
-    // Annotations are simply counted.
-    if (i->first.substr (0, 11) == "annotation_")
-    {
-      ++annotation_count;
-    }
-
     // Date fields are written as ISO 8601.
-    else if (column &&
-             column->type () == "date")
+    if (column &&
+        column->type () == "date")
     {
       Date d (i->second);
       out << "\""
@@ -777,6 +777,12 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Task::hasAnnotations () const
+{
+  return annotation_count ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Task::getAnnotations (std::map <std::string, std::string>& annotations) const
 {
   annotations.clear ();
@@ -797,6 +803,7 @@ void Task::setAnnotations (const std::map <std::string, std::string>& annotation
   for (ci = annotations.begin (); ci != annotations.end (); ++ci)
     this->insert (*ci);
 
+  annotation_count = annotations.size ();
   recalc_urgency = true;
 }
 
@@ -819,6 +826,7 @@ void Task::addAnnotation (const std::string& description)
   while (has (key));
 
   (*this)[key] = description;
+  ++annotation_count;
   recalc_urgency = true;
 }
 
@@ -830,7 +838,10 @@ void Task::removeAnnotations ()
   while (i != this->end ())
   {
     if (i->first.substr (0, 11) == "annotation_")
+    {
+      --annotation_count;
       this->erase (i++);
+    }
     else
       i++;
   }
@@ -960,6 +971,7 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "CHILD")     return has ("parent");
   if (tag == "UNTIL")     return has ("until");
   if (tag == "WAITING")   return has ("wait");
+  if (tag == "ANNOTATED") return hasAnnotations ();
 
 /*
   TODO YESTERDAY - due yesterday
@@ -967,7 +979,6 @@ bool Task::hasTag (const std::string& tag) const
   TODO WEEK      - due this week
   TODO MONTH     - due this month
   TODO YEAR      - due this year
-  TODO ANNOTATED - has any annotations
   TODO READY     - is ready
   TODO WAITING   - is waiting
   TODO PARENT    - is a parent
@@ -1547,12 +1558,9 @@ float Task::urgency_blocked () const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_annotations () const
 {
-  std::map <std::string, std::string> annos;
-  getAnnotations (annos);
-
-       if (annos.size () >= 3) return 1.0;
-  else if (annos.size () == 2) return 0.9;
-  else if (annos.size () == 1) return 0.8;
+       if (annotation_count >= 3) return 1.0;
+  else if (annotation_count == 2) return 0.9;
+  else if (annotation_count == 1) return 0.8;
 
   return 0.0;
 }

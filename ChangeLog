@@ -30,7 +30,7 @@ Features
  + The 'diagnostics' command now reports libuuid details.
  + New characters for parsing and formating dates ('n', 's' and 'v').
  + Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, TODAY, OVERDUE,
-   ACTIVE, SCHEDULED, CHILD, UNTIL and WAITING).
+   ACTIVE, SCHEDULED, CHILD, UNTIL, WAITING and ANNOTATED).
  + New 'modified' attribute, which contains the most recent modification date,
    if a modification has occurred.
  + Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
