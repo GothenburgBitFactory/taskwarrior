@@ -1,0 +1,65 @@
+[Make window 116x32 for movie recording, light text, dark background]
+
+On the left are the typed commands.  On the right is the audio track.  Where the
+left and right are aligned, the audio should match the commands.
+
+
+---------------------------------------- Intro -----------------------------------------------------
+
+# Hi.                                    Hello, and welcome to Taskwarrior.  This is the first of
+                                         many tutorials, and covers first-time use.
+
+                                         As a first-time user, you are going to need a configuration
+                                         file and a data directory.  Taskwarrior will create both of
+                                         these for you, in your home directory, the first time you
+                                         run taskwarrior.
+
+task version                             Answer 'yes' to the question.  After creating the missing
+                                         file and directory, you'll see the current version
+                                         displayed.
+
+cat ~/.taskrc                            The configuration file contains very little.  This is
+                                         because Taskwarrior has a built-in set of sensible defaults
+                                         and the configuration file just contains overrides to those
+                                         defaults.
+
+ls -l ~/.task                            The task data directory is empty.  That's because we have
+                                         added no tasks.  Typically you won't need to look in that
+                                         directory.
+
+                                         ---
+
+                                         Let's get started with tasks.  Here is the 30-second
+                                         tutorial on basic takwarrior usage.
+
+task add Read task documents later       We Add two tasks.
+task add priority:H Pay bills            
+
+                                         Easy. Do you see that second one has a High priority?
+
+task ls                                  Now let's look at those tasks.  They are ordered by
+                                         priority. Let's mark number 2 as done:
+
+task 2 done
+task ls
+
+                                         Task 2 is now gone.  Now we can delete that remaining task,
+                                         because, well, why bother now we are already using task:
+
+task 1 delete
+task ls
+
+                                         And that's all you *need* to know.  These four commands
+                                         will allow you to use taskwarrior effectively.  If you are
+                                         new to taskwarrior, it is recommended that you stop here,
+                                         and go manage your task lists.  We don't want you to be
+                                         overwhelmed, when what you really need is a way to
+                                         organize and get things done.
+
+                                         When you are comfortable with basic taskwarrior usage,
+                                         there are many other features you can learn about.  While
+                                         you are not expected to learn all of them, or even find
+                                         them useful, you might just find exactly what you need.
+
+---------------------------------------- End -------------------------------------------------------
+

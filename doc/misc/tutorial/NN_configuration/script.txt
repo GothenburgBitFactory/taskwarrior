@@ -1,0 +1,64 @@
+[Make window 116x32 for movie recording, light text, dark background]
+
+On the left are the typed commands.  On the right is the audio track.  Where the
+left and right are aligned, the audio should match the commands.
+
+
+---------------------------------------- Configuration ---------------------------------------------
+
+cat ~/.taskrc                            The taskwarrior configuration file is minimal.  This means
+                                         it contains only what is needed to override the default
+                                         settings.  Initially you see that the config file contains
+                                         just one setting which points to your data directory.
+
+task show                                The 'show' command displays all the configuration settings
+                                         with their current values.  These are all described in the
+                                         taskrc man page.
+
+task show hyph                           You can provide a pattern, to limit the results to only
+                                         settings that match the pattern.
+
+task config hypenate off                 The config command is used to modify the configuration,
+                                         here we are turning off hyphenation.  Notice that changes
+                                         require confirmation.
+
+task show hyph                           Now when we look at the setting, we see that it is now
+                                         highlighted to indicate that it not longer has the default
+                                         value.
+
+task config hyphenate on                 We can turn that setting back on.
+
+task config hyphenate                    Alternatively we can just remove the setting, and rely on
+                                         the default.  This is a better choice because it de-
+                                         clutters your configuration file.
+
+task config answer 42                    In this example, we set the configuration variable 'answer'
+                                         to have a value of 42.
+
+task show answer                         The 'show' command indicates that the setting is not
+                                         recognized.  This could indicate a mistake with the setting
+                                         name.  It is harmless to have unrecognized settings, but
+                                         also pointless.
+
+task config answer ''                    Specifying an empty value using quotes is how you would
+                                         set a blank value without restoring default settings.
+
+task config answer                       In this case, deleting the setting is correct.
+
+                                         ---
+
+task rc.hyphenate=off list               A very powerful feature is the ability to override the
+                                         configuration variables temporarily.  Here we are running
+                                         the 'list' report with hyphenation temporarily disabled.
+
+task rc.data.location=/other/path list   You can also override the data directory to use a different
+                                         task list ...
+
+task rc:~/.other_taskrc list             Or you can override the configuration file completely.
+
+TASKDATA=/other/path task list           The TASKDATA environment variable can also be used to
+                                         specify an alternate data directory, and ...
+
+TASKRC=~/.other_taskrc list              The TASKRC variable can override the configuration file.
+
+---------------------------------------- End -------------------------------------------------------

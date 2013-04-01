@@ -1,30 +1,41 @@
-
 Calendar trick
   ln -s `which task` ./cal
   ./cal
 
-Synch
+Metadata
+
+Sync
   push
   pull
   merge
+  sync (needs 2.3.0 & task server)
 
-Logo
+Logo?
 
 Version
 
 Verbosity
+  on
+  off
+  nothing
 
 Formats
-
-Setup
-  First time use
-  Where the files are
-  Using the man pages
-  http://tasktools.org/latest
 
 Next Report
   Usage
   Configuration
   Urgency
   +next special tag
+
+Setup
+  Where the files are
+    themes
+    external scripts
+    TASKDATA=
+    TASKRC=
+  http://tasktools.org/latest
+
+Reporting bugs
+
+Holidays
 

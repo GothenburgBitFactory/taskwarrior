@@ -468,19 +468,19 @@ Enables the extension system.  Defaults to on.
 .SS DATES
 
 .TP
-.B dateformat=m/d/Y
+.B dateformat=Y-M-D
 .TP
-.B dateformat.report=m/d/Y
+.B dateformat.report=
 .TP
 .B dateformat.holiday=YMD
 .TP
-.B dateformat.edit=m/d/Y H:N:S
+.B dateformat.edit=Y-M-D H:N:S
 .TP
-.B dateformat.info=m/d/Y H:N:S
+.B dateformat.info=Y-M-D H:N:S
 .TP
-.B dateformat.annotation=m/d/Y
+.B dateformat.annotation=
 .TP
-.B report.X.dateformat=m/d/Y
+.B report.X.dateformat=Y-M-D
 This is a string of characters that defines how taskwarrior formats date values.
 The precedence order for the configuration variable is report.X.dateformat then
 dateformat.report then dateformat for formating the due dates in reports.
@@ -489,7 +489,8 @@ will be applied
 to the date.  Entered dates as well as all other displayed dates in reports
 are formatted according to dateformat.
 
-The default value is: m/d/Y.  The string can contain the characters:
+The default value is the ISO-8601 standard: Y-M-D.  The string can contain the
+characters:
 
 .RS
 .RS

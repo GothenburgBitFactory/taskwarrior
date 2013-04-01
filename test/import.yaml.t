@@ -33,7 +33,8 @@ use Test::More tests => 16;
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "dateformat=m/d/Y\n";
   close $fh;
   ok (-r 'import.rc', 'Created import.rc');
 }

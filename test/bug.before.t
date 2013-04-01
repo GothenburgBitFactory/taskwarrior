@@ -36,7 +36,8 @@ if (open my $fh, '>', 'before.rc')
 {
   print $fh "data.location=.\n",
             "confirmation=no\n",
-            "dateformat=m/d/Y\n";
+            "dateformat=m/d/Y\n",
+            "dateformat.info=m/d/Y\n";
   close $fh;
   ok (-r 'before.rc', 'Created before.rc');
 }

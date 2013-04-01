@@ -36,7 +36,8 @@ if (open my $fh, '>', 'roundtrip.rc')
   print $fh "data.location=.\n",
             "verbose=off\n",
             "confirmation=no\n",
-            "defaultwidth=100\n";
+            "defaultwidth=100\n",
+            "dateformat=m/d/Y\n";
   close $fh;
   ok (-r 'roundtrip.rc', 'Created roundtrip.rc');
 }

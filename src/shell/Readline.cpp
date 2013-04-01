@@ -44,6 +44,11 @@ std::string Readline::gets (const std::string& prompt)
 #ifdef HAVE_READLINE
   // Get a line from the user.
   char *line_read = readline (prompt.c_str ());
+  if (!line_read) // Exit when CTRL-D is pressed
+  {
+    std::cout << "exit\n";
+    return "exit";
+  }
 #else
   std::string line_read;
   std::cout << prompt;
@@ -52,11 +57,11 @@ std::string Readline::gets (const std::string& prompt)
 
 #ifdef HAVE_READLINE
   // If the line has any text in it, save it on the history.
-  if (line_read && *line_read)
+  if (*line_read)
     add_history (line_read);
 #endif
 
-  std::string ret (line_read);
+  std::string ret(line_read);
 
 #ifdef HAVE_READLINE
   free (line_read);
@@ -66,7 +71,7 @@ std::string Readline::gets (const std::string& prompt)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Readline::interactive_mode (const std::istream& in)
+bool Readline::interactiveMode (const std::istream& in)
 {
   return (&in == &std::cin && isatty (0) == 1);
 }
@@ -74,7 +79,9 @@ bool Readline::interactive_mode (const std::istream& in)
 ////////////////////////////////////////////////////////////////////////////////
 Wordexp::Wordexp (const std::string &str)
 {
-  wordexp (str.c_str (), &_p, 0);
+  std::string tmpStr(str);
+  escapeSpecialChars(tmpStr);
+  wordexp (tmpStr.c_str (), &_p, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -93,6 +100,23 @@ int Wordexp::argc ()
 char** Wordexp::argv ()
 {
   return _p.we_wordv;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+char* Wordexp::argv (int i)
+{
+  return _p.we_wordv[i];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Wordexp::escapeSpecialChars(std::string& str)
+{
+  size_t i = 0;
+  while ((i = str.find_first_of ("$*?!|&;<>(){}~#@", i)) != std::string::npos)
+  {
+    str.insert(i, 1, '\\');
+    i += 2;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

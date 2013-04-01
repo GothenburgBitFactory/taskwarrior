@@ -34,7 +34,8 @@ use Test::More tests => 26;
 if (open my $fh, '>', 'seq.rc')
 {
   print $fh "data.location=.\n",
-            "confirmation=off\n";
+            "confirmation=off\n",
+            "dateformat.annotation=m/d/Y\n";
   close $fh;
   ok (-r 'seq.rc', 'Created seq.rc');
 }

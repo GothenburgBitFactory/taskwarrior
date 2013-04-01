@@ -39,7 +39,8 @@ if (open my $fh, '>', 'denotate.rc')
             "confirmation=off\n",
             "report.rrr.description=rrr\n",
             "report.rrr.columns=id,description\n",
-            "report.rrr.sort=id+\n";
+            "report.rrr.sort=id+\n",
+            "dateformat=m/d/Y\n";
   close $fh;
   ok (-r 'denotate.rc', 'Created denotate.rc');
 }

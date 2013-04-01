@@ -38,7 +38,7 @@ class Readline
 {
 public:
   static std::string gets (const std::string& prompt);
-  static bool interactive_mode (const std::istream& in);
+  static bool interactiveMode (const std::istream& in);
 
 private:
   // No construction or destruction.
@@ -52,11 +52,14 @@ private:
 class Wordexp
 {
 public:
-  Wordexp (const std::string &str);
+  Wordexp (const std::string& str);
   ~Wordexp ();
 
   int argc ();
   char** argv ();
+  char* argv (int i);
+
+  void escapeSpecialChars(std::string& str);
 
 private:
   wordexp_t _p;
