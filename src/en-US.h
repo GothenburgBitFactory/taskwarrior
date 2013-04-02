@@ -118,15 +118,6 @@
 #define STRING_A3_RANGE_INVERTED     "Inverted range 'high-low' instead of 'low-high'"
 #define STRING_A3_UUID_AFTER_COMMA   "Unrecognized UUID after comma."
 
-// API
-#define STRING_API_EXITING           "Exiting."
-#define STRING_API_NOFUNC            "The Lua function '{1}' was not found."
-#define STRING_API_ERROR_CALLING     "Error calling '{1}' - {2}."
-#define STRING_API_ERROR_FAIL        "Error: '{1}' did not return a success indicator."
-#define STRING_API_ERROR_NORET       "Error: '{1}' did not return a message or nil."
-#define STRING_API_WARNING           "Warning: {1}"
-#define STRING_API_ERROR             "Error: {1}"
-
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "The color '{1}' is not recognized."
 
@@ -210,7 +201,6 @@
 #define STRING_CMD_VERSION_BUILT     "{1} {2} built for "
 #define STRING_CMD_VERSION_UNKNOWN   "unknown"
 #define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2013 P. Beckingham, F. Hernandez."
-#define STRING_CMD_VERSION_COPY2     "Portions of this software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio."
 #define STRING_CMD_LOGO_USAGE        "Displays the Taskwarrior logo"
 #define STRING_CMD_LOGO_COLOR_REQ    "The logo command requires that color support is enabled."
 #define STRING_CMD_EXEC_USAGE        "Executes external commands and scripts"
@@ -751,10 +741,6 @@
 
 // Legacy
 #define STRING_LEGACY_FEATURE        "Note: the '{1}' feature is deprecated."
-
-// Lua
-#define STRING_LUA_BAD_HOOK_DEF      "Malformed hook definition '{1}'."
-#define STRING_LUA_BAD_EVENT         "Unrecognized hook event '{1}'."
 
 // Record
 #define STRING_RECORD_EMPTY          "Empty record in input."

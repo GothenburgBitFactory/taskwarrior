@@ -39,9 +39,6 @@
 #cmakedefine SOLARIS
 #cmakedefine UNKNOWN
 
-/* Found the lua library */
-#cmakedefine HAVE_LIBLUA
-
 /* Found the pthread library */
 #cmakedefine HAVE_LIBPTHREAD
 

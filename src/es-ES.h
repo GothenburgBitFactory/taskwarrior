@@ -118,15 +118,6 @@
 #define STRING_A3_RANGE_INVERTED     "Rango invertido 'alto-bajo' en vez de 'bajo-alto'"
 #define STRING_A3_UUID_AFTER_COMMA   "UUID no reconocido tras coma."
 
-// API
-#define STRING_API_EXITING           "Saliendo."
-#define STRING_API_NOFUNC            "No se encontró la función Lua '{1}'."
-#define STRING_API_ERROR_CALLING     "Error al llamar '{1}' - {2}."
-#define STRING_API_ERROR_FAIL        "Error: '{1}' no devolvió un indicador de éxito."
-#define STRING_API_ERROR_NORET       "Error: '{1}' no devolvió un mensaje o nulo."
-#define STRING_API_WARNING           "Advertencia: {1}"
-#define STRING_API_ERROR             "Error: {1}"
-
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "El color '{1}' no se reconoce."
 
@@ -214,7 +205,6 @@
 #define STRING_CMD_VERSION_BUILT     "{1} {2} construido para "
 #define STRING_CMD_VERSION_UNKNOWN   "desconocido"
 #define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2013 P. Beckingham, F. Hernandez."
-#define STRING_CMD_VERSION_COPY2     "Partes de este software Copyright (C) 1994 – 2008 Lua.org, PUC-Rio."
 #define STRING_CMD_LOGO_USAGE        "Muestra el logo de Taskwarrior"
 #define STRING_CMD_LOGO_COLOR_REQ    "El comando logo requiere que el soporte de color esté habilitado."
 #define STRING_CMD_EXEC_USAGE        "Ejecuta comandos y scripts externos"
@@ -765,10 +755,6 @@
 
 // Legacy
 #define STRING_LEGACY_FEATURE        "Note: la función '{1}' está en desuso."
-
-// Lua
-#define STRING_LUA_BAD_HOOK_DEF      "Definición de hook incorrecta '{1}'."
-#define STRING_LUA_BAD_EVENT         "Evento hook no reconocido '{1}'."
 
 // Record
 #define STRING_RECORD_EMPTY          "Registro vacío en la entrada."

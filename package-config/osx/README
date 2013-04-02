@@ -66,23 +66,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
     from one release to the next.  While this is not a perfect solution, it has
     saved us many times from releasing code that is inferior.
 
-    The first step is to modify the test suite Makefile to remove the Lua line.
-    This is because we do not yet have dynamic detection of the Lua library for
-    the unit tests.
-
     $ cd ~/task-package.git/src/tests
-    $ vi Makefile
-
-    Any text editor will do, but look for this line (line 5):
-
-      LFLAGS  = -L/usr/local/lib -llua
-
-    and change it to:
-
-      LFLAGS  = -L/usr/local/lib
-
-    Now build the unit tests:
-
     $ make -j 2
     ...
 

@@ -112,11 +112,6 @@ Cygwin
   again, or reinstall Cygwin under your normal Windows login.
 
 
-Darwin
-  If you're having trouble with Lua, check to see if the include files were
-  installed. If you're using fink, this will require the lua51-dev package in
-  addition to lua51.
-
 Darwin, 32bit
   The taskwarrior packages will not work on a 32-bit OSX installation on Core
   Duo hardware.  You will need to build Taskwarrior from source, and use this
@@ -134,7 +129,7 @@ Darwin, 32bit
 Troubleshooting
 ---------------
 
-If you've recently made changes to dependencies (by reinstalling Lua, for
+If you've recently made changes to dependencies (by reinstalling them, for
 example) be sure to rerun 'cmake .' before trying to execute 'make' again.
 
 CMake will run and locate all the necessary pieces for the build, and create

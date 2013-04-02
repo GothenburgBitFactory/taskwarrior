@@ -39,13 +39,6 @@
 #include <cmake.h>
 #include <commit.h>
 
-#ifdef HAVE_LIBLUA
-extern "C"
-{
-  #include <lua.h>
-}
-#endif
-
 #include <CmdDiagnostics.h>
 
 extern Context context;
@@ -132,27 +125,6 @@ int CmdDiagnostics::execute (std::string& output)
       << " +vp" << sizeof (void*)
       << "\n\n";
 
-  out << bold.colorize (STRING_CMD_DIAG_LIBRARIES)
-      << "\n";
-
-  out << "       Lua: "
-#ifdef HAVE_LIBLUA
-      << LUA_RELEASE
-#else
-      << "n/a"
-#endif
-      << "\n";
-
-  out << "   libuuid: "
-#if defined (HAVE_UUID) and defined (HAVE_UUID_UNPARSE_LOWER)
-      << "libuuid + uuid_unparse_lower"
-#elif defined (HAVE_UUID) and !defined (HAVE_UUID_UNPARSE_LOWER)
-      << "libuuid, no uuid_unparse_lower"
-#else
-      << "n/a"
-#endif
-      << "\n\n";
-
   out << bold.colorize (STRING_CMD_DIAG_FEATURES)
       << "\n"
 
@@ -183,6 +155,15 @@ int CmdDiagnostics::execute (std::string& output)
       << " +uuid"
 #else
       << " -uuid"
+#endif
+      << "\n";
+  out << "   libuuid: "
+#if defined (HAVE_UUID) and defined (HAVE_UUID_UNPARSE_LOWER)
+      << "libuuid + uuid_unparse_lower"
+#elif defined (HAVE_UUID) and !defined (HAVE_UUID_UNPARSE_LOWER)
+      << "libuuid, no uuid_unparse_lower"
+#else
+      << "n/a"
 #endif
       << "\n\n";
 

@@ -29,6 +29,7 @@ Newly deprecated features in taskwarrior 2.2.0
   
   - The bash completion script no longer expands IDs after 'depends:'.
     (Such expansion required running gc() which is not correct.)
+  - The incomplete support for Lua extensions was removed.
 
 ---
 
