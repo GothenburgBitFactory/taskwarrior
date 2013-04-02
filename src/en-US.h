@@ -409,7 +409,6 @@
 #define STRING_CMD_DIAG_COMPILER     "Compiler"
 #define STRING_CMD_DIAG_VERSION      "Version"
 #define STRING_CMD_DIAG_CAPS         "Caps"
-#define STRING_CMD_DIAG_LIBRARIES    "Libraries"
 #define STRING_CMD_DIAG_FEATURES     "Build Features"
 #define STRING_CMD_DIAG_BUILT        "Built"
 #define STRING_CMD_DIAG_COMMIT       "Commit"

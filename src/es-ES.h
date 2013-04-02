@@ -420,7 +420,6 @@
 #define STRING_CMD_DIAG_COMPILER     "Compilador"
 #define STRING_CMD_DIAG_VERSION      "Versión"
 #define STRING_CMD_DIAG_CAPS         "Capacidades"
-#define STRING_CMD_DIAG_LIBRARIES    "Librerías"
 #define STRING_CMD_DIAG_FEATURES     "Características Constructivas"
 #define STRING_CMD_DIAG_BUILT        "Construido"
 #define STRING_CMD_DIAG_COMMIT       "Commit"

@@ -38,7 +38,6 @@
 #include <util.h>
 #include <cmake.h>
 #include <commit.h>
-
 #include <CmdDiagnostics.h>
 
 extern Context context;
