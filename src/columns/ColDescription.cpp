@@ -110,7 +110,7 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
 
     if (task.annotation_count)
     {
-      int min_anno = _indent + Date::length (_dateformat);
+      unsigned int min_anno = _indent + Date::length (_dateformat);
       if (min_anno > minimum)
         minimum = min_anno;
 
@@ -141,7 +141,7 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
 
     if (task.annotation_count)
     {
-      int min_anno = Date::length (_dateformat);
+      unsigned int min_anno = Date::length (_dateformat);
       std::map <std::string, std::string> annos;
       task.getAnnotations (annos);
       std::map <std::string, std::string>::iterator i;
