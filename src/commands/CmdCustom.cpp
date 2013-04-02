@@ -86,11 +86,12 @@ int CmdCustom::execute (std::string& output)
   // Prepend the argument list with those from the report filter.
   std::vector <std::string> filterArgs;
   splitq (filterArgs, reportFilter, ' ');
-  std::vector <std::string>::iterator arg;
-  for (arg = filterArgs.begin (); arg != filterArgs.end (); ++ arg)
+  std::vector <std::string>::reverse_iterator arg;
+  for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
     context.a3.capture_first (*arg);
 
   context.a3.categorize ();
+  context.a3.dump ("A3::categorize");
 
   // Load the data.
   handleRecurrence ();

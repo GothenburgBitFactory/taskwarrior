@@ -136,6 +136,8 @@ Bugs
    (thanks to Rainer Müller).
  + Fixed hook tests to work on released code (thanks to Jakub Wilk).
  + Fixed bug where arguments passed to 'task execute' needed double escaping.
+ + Fixed a bug so that the report filter order is preserved, to enable an
+   optimization that was being skipped.
 
 ------ old releases ------------------------------
 
