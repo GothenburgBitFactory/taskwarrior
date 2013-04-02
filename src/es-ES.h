@@ -876,7 +876,7 @@
 #define STRING_UTF8_INVALID_CP       "Codepoint Unicode no válido."
 
 // View
-#define STRING_VIEW_TOO_SMALL        "The report has a minimum width of {1} and does not fit in the available width of {2}."
+#define STRING_VIEW_TOO_SMALL        "El informe tiene una anchura mínima de {1} y no cabe en la disponible, que es {2}."
 
 // ****************************************************************************************************
 // Usage text.  This is an exception, and contains \n characters and formatting.
