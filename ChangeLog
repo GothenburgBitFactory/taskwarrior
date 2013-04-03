@@ -39,6 +39,7 @@ Features
  + The 'push' and 'pull' commands now properly distinguish between a missing
    transport utility and other errors (thanks to Russell Steicke).
  + Removed support for Lua extensions.
+ + Added tips.fr-FR (thanks to YBSAR).
 
 Bugs
  + Fixed bug #642, so that the default 'data.location=~/.task' preserves the
