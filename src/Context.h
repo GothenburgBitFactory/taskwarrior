@@ -117,7 +117,6 @@ public:
 
   Timer                               timer_init;
   Timer                               timer_load;
-  Timer                               timer_sync;
   Timer                               timer_gc;
   Timer                               timer_filter;
   Timer                               timer_commit;

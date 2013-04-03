@@ -53,7 +53,8 @@ CmdSync::CmdSync ()
 int CmdSync::execute (std::string& output)
 {
   int status = 0;
-  context.timer_sync.start ();
+  Timer timer_sync;
+  timer_sync.start ();
 
   std::stringstream out;
 
@@ -233,7 +234,18 @@ int CmdSync::execute (std::string& output)
 
   out << "\n";
   output = out.str ();
-  context.timer_sync.stop ();
+
+/*
+  timer_sync.stop ();
+  std::stringstream s;
+  s << "Sync "
+    << Date ().toISO ()
+    << " sync:"
+    << timer_sync.total ()
+    << "\n";
+  debug (s.str ());
+*/
+
   return status;
 }
 
