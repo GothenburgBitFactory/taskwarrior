@@ -2,7 +2,7 @@
 
 echo 'Performance: setup'
 echo '  - This step will take several minutes'
-rm ./{pending,completed,undo}.data perf.rc
+rm -f ./pending.data ./completed.data ./undo.data perf.rc
 ./load
 
 # Run benchmarks.
