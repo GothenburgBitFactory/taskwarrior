@@ -13,10 +13,11 @@ Features
  + Adds a new 'sync' verbosity token, which will reminds when a backlog builds
    up and needs a sync.
  + Supports IPv4 and IPv6 server addresses.
- + The 'dateformat' settings now default to the ISO-8601 standard of 'Y-M-D'.
 
 Bugs
- + Fixed bug #1197 so that 'tasksh' now recognized Ctrl-D to exit.
+ + #1197 Now 'tasksh' recognizes Ctrl-D to exit.
+ + #1211 The 'dateformat' settings now default to the ISO-8601 standard of
+   'Y-M-D' (thanks to Robin Björklin).
  + Fixed bug so that 'limit:page' now considers footnote messages.
 
 ------ old releases ------------------------------
