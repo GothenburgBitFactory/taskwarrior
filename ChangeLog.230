@@ -18,6 +18,8 @@ Bugs
  + #1197 Now 'tasksh' recognizes Ctrl-D to exit.
  + #1211 The 'dateformat' settings now default to the ISO-8601 standard of
    'Y-M-D' (thanks to Robin Björklin).
+ + #1222 The 'summary' report now obeys the 'color.label' setting (thanks to
+   Steve Rader).
  + Fixed bug so that 'limit:page' now considers footnote messages.
 
 ------ old releases ------------------------------

@@ -118,6 +118,7 @@ int CmdSummary::execute (std::string& output)
     }
   }
 
+
   // Create a table for output.
   ViewText view;
   view.width (context.getWidth ());
@@ -129,6 +130,9 @@ int CmdSummary::execute (std::string& output)
 
   Color bar_color (context.config.get ("color.summary.bar"));
   Color bg_color  (context.config.get ("color.summary.background"));
+  Color label (context.config.get ("color.label"));
+
+  view.colorHeader (label);
 
   int barWidth = 30;
   std::vector <std::string> processed;
