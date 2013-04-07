@@ -170,8 +170,6 @@
 #define STRING_COLUMN_LABEL_MASK     "Máscara"
 #define STRING_COLUMN_LABEL_MASK_IDX "Máscara de Índice"
 #define STRING_COLUMN_LABEL_PARENT   "Tarea madre"
-#define STRING_COLUMN_LABEL_FG       "Color frontal"
-#define STRING_COLUMN_LABEL_BG       "Color de fondo"
 #define STRING_COLUMN_LABEL_DATE     "Fecha"
 #define STRING_COLUMN_LABEL_COLUMN   "Columnas"
 #define STRING_COLUMN_LABEL_STYLES   "Formatos soportados"
