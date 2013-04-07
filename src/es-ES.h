@@ -133,7 +133,7 @@
 #define STRING_COLUMN_LABEL_ENTERED  "Entrada"
 #define STRING_COLUMN_LABEL_COUNT    "Recuento"
 #define STRING_COLUMN_LABEL_COMPLETE "Completada"
-#define STRING_COLUMN_LABEL_MOD      "Modified"
+#define STRING_COLUMN_LABEL_MOD      "Modificada"
 #define STRING_COLUMN_LABEL_ADDED    "Añadida"
 #define STRING_COLUMN_LABEL_AGE      "Edad"
 #define STRING_COLUMN_LABEL_ID       "ID"
