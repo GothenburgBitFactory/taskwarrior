@@ -35,6 +35,7 @@ if (open my $fh, '>', 'color.rc')
 {
   print $fh "data.location=.\n",
             "color.due.today=red\n",
+            "color.alternate=\n",
             "_forcecolor=1\n",
             "dateformat=m/d/Y\n";
   close $fh;
@@ -46,8 +47,8 @@ qx{../src/task rc:color.rc add due:12/31/2037 nothing 2>&1};
 qx{../src/task rc:color.rc add due:5minutes red 2>&1};
 my $output = qx{../src/task rc:color.rc list 2>&1};
 
-like ($output, qr/ (?!<\033\[\d\dm) \d{1,2}\/\d{1,2}\/\d{4} (?!>\033\[0m) .* nothing /x, 'none');
-like ($output, qr/ (?:\033\[31m|\033\[38;5;9m)        .* red .* \033\[0m/x, 'color.due.today');
+like ($output, qr/(?!<\033\[\d\dm) \d{1,2}\/\d{1,2}\/\d{4} (?!>\033\[0m) .* nothing /x, 'none');
+like ($output, qr/\033\[31mred\s+\033\[0m/x, 'color.due.today');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data color.rc);
