@@ -2,7 +2,7 @@
 Si vous utilisez bash, essayez 'alias t=task' pour économiser quelques
 frappes de clavier.
 %
-Avez-vous essayé 'task edit 1' pour modifier n'importe quel aspect de
+Avez-vous essayé 'task 1 edit' pour modifier n'importe quel aspect de
 la tâche 1 à l'aide de votre éditeur de texte ?
 %
 Saviez-vous que 'task 1 wait:eom' permet de masquer la tâche 1 jusqu'à

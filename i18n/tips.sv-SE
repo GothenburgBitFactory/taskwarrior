@@ -1,7 +1,7 @@
 %
 För bash användare, med 'alias t=task' kan du spara på nedslagningar på tangentbordet.
 %
-Har du försökt att använda 'task edit 1' för att ändra alla aspekter av task 1 i din texteditor?
+Har du försökt att använda 'task 1 edit' för att ändra alla aspekter av task 1 i din texteditor?
 %
 Med 'task 1 wait:eom' kan du göma task 1 fram till slutet av månaden. För att se
 alla task som väntar kan du använda 'task waiting'.

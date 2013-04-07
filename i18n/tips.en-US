@@ -1,7 +1,7 @@
 %
 For bash users, try 'alias t=task' to save some keystrokes.
 %
-Have you tried 'task edit 1' to use your text editor to modify all aspects of
+Have you tried 'task 1 edit' to use your text editor to modify all aspects of
 task 1?
 %
 Did you know that 'task 1 wait:eom' will hide task 1 until the end of the
