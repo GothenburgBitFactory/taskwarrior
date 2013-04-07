@@ -52,6 +52,7 @@ int main (int argc, char** argv)
     context.config.set ("tag.indicator", "+");
     context.config.set ("dependency.indicator", "D");
     context.config.set ("recurrence.indicator", "R");
+    context.config.set ("active.indicator", "A");
     context.config.set ("dateformat", "Y-M-D");
     context.config.set ("indent.annotation", "2");
 

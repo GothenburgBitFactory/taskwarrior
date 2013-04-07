@@ -54,7 +54,7 @@ int main (int argc, char** argv)
   Duration d;
 
   // std::string format ();
-  d = Duration (0);               t.is (d.format (), "-",       "0 -> -");
+  d = Duration (0);               t.is (d.format (), "-",       "0 -> -");                        // 1
   d = Duration (1);               t.is (d.format (), "1 sec",   "1 -> 1 sec");
   d = Duration (2);               t.is (d.format (), "2 secs",  "2 -> 2 secs");
   d = Duration (59);              t.is (d.format (), "59 secs", "59 -> 59 secs");
@@ -79,7 +79,7 @@ int main (int argc, char** argv)
   d = Duration (365 * 86400 + 1); t.is (d.format (), "1.0 yrs", "365 days + 1 sec -> 1.0 yrs");
 
   // std::string formatCompact ();
-  d = Duration (0);               t.is (d.formatCompact (), "-",    "0 -> -");
+  d = Duration (0);               t.is (d.formatCompact (), "-",    "0 -> -");                    // 24
   d = Duration (1);               t.is (d.formatCompact (), "1s",   "1 -> 1s");
   d = Duration (2);               t.is (d.formatCompact (), "2s",   "2 -> 2s");
   d = Duration (59);              t.is (d.formatCompact (), "59s",  "59 -> 59s");
@@ -104,7 +104,7 @@ int main (int argc, char** argv)
   d = Duration (365 * 86400 + 1); t.is (d.formatCompact (), "1.0y", "365 days + 1 sec -> 1.0y");
 
   // std::string formatPrecise ();
-  d = Duration (0);               t.is (d.formatPrecise (), "0:00:00",       "0 -> 0:00:00");
+  d = Duration (0);               t.is (d.formatPrecise (), "0:00:00",       "0 -> 0:00:00");      // 47
   d = Duration (1);               t.is (d.formatPrecise (), "0:00:01",       "1 -> 0:00:01");
   d = Duration (2);               t.is (d.formatPrecise (), "0:00:02",       "2 -> 0:00:02");
   d = Duration (59);              t.is (d.formatPrecise (), "0:00:59",       "59 -> 0:00:59");
@@ -118,16 +118,16 @@ int main (int argc, char** argv)
   d = Duration (86399);           t.is (d.formatPrecise (), "23:59:59",      "86399 -> 23:59:59");
   d = Duration (86400);           t.is (d.formatPrecise (), "1d 0:00:00",    "86400 -> 1d 0:00:00");
   d = Duration (86401);           t.is (d.formatPrecise (), "1d 0:00:01",    "86401 -> 1d 0:00:01");
-  d = Duration (14 * 86400 - 1);  t.is (d.formatPrecise (), "13d 23:59:59",  "(14 * 86400) - 1 sec -> 13d 23:59:59");
-  d = Duration (14 * 86400);      t.is (d.formatPrecise (), "14d 0:00:00",   "(14 * 86400) -> 14d 0:00:00");
-  d = Duration (14 * 86400 + 1);  t.is (d.formatPrecise (), "14d 0:00:01",   "(14 * 86400) + 1 -> 14d 0:00:01");
+  d = Duration (14 * 86400 - 1);  t.is (d.formatPrecise (), "13d 23:59:59",  "(14 x 86400) - 1 sec -> 13d 23:59:59");
+  d = Duration (14 * 86400);      t.is (d.formatPrecise (), "14d 0:00:00",   "(14 x 86400) -> 14d 0:00:00");
+  d = Duration (14 * 86400 + 1);  t.is (d.formatPrecise (), "14d 0:00:01",   "(14 x 86400) + 1 -> 14d 0:00:01");
   d = Duration (365 * 86400 - 1); t.is (d.formatPrecise (), "364d 23:59:59", "365 days - 1 sec -> 364d 23:59:59");
   d = Duration (365 * 86400);     t.is (d.formatPrecise (), "365d 0:00:00",  "365 days -> 365d 0:00:00");
   d = Duration (365 * 86400 + 1); t.is (d.formatPrecise (), "365d 0:00:01",  "365 days + 1 sec -> 365d 0:00:01");
 
   // Iterate for a whole year.  Why?  Just to see where the boundaries are,
   // so that changes can be made with some reference point.
-  d = Duration (  1*86400); t.is (d.formatCompact (), "1d", "1*86400 -> 1d");
+  d = Duration (  1*86400); t.is (d.formatCompact (), "1d", "1*86400 -> 1d");                     // 67
   d = Duration (  2*86400); t.is (d.formatCompact (), "2d", "2*86400 -> 2d");
   d = Duration (  3*86400); t.is (d.formatCompact (), "3d", "3*86400 -> 3d");
   d = Duration (  4*86400); t.is (d.formatCompact (), "4d", "4*86400 -> 4d");
