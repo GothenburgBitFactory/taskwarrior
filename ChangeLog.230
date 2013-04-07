@@ -13,6 +13,8 @@ Features
  + Adds a new 'sync' verbosity token, which will reminds when a backlog builds
    up and needs a sync.
  + Supports IPv4 and IPv6 server addresses.
+ + A new 'verify_l10n' utility ensures the localizations are in sync (thanks to
+   Wim Schuermann).
 
 Bugs
  + #1197 Now 'tasksh' recognizes Ctrl-D to exit.
