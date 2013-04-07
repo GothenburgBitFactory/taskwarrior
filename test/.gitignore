@@ -1,4 +1,5 @@
 *.o
+*.pyc
 *.data
 *.log
 autocomplete.t
