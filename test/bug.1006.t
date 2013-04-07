@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -47,13 +47,14 @@ if (open my $fh, '>', 'bug.rc')
 qx{../src/task rc:bug.rc add des 2>&1};
 qx{../src/task rc:bug.rc 1 annotate des 2>&1};
 my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
+like ($output, qr/^Description\s+des$/ms, 'Attribute not completed in description');
 unlike ($output, qr/description/ms, 'Attribute not completed in description');
 
 # Check that the completion works when needed
 $output = qx{../src/task rc:bug.rc des:des 2>&1};
-unlike ($output, qr/No matches./ms, 'Task found using its description');
+like ($output, qr/^1 task.$/ms, 'Task found using its description');
 
-$output = qx{../src/task rc:bug.rc add entrée interdite 2>&1};
+qx{../src/task rc:bug.rc add entrée interdite 2>&1};
 $output = qx{../src/task rc:bug.rc list interdite 2>&1};
 like ($output, qr/entrée interdite/, "'entrée' left intact");
 

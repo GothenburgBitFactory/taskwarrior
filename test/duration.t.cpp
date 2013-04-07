@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -79,29 +79,29 @@ int main (int argc, char** argv)
   d = Duration (365 * 86400 + 1); t.is (d.format (), "1.0 yrs", "365 days + 1 sec -> 1.0 yrs");
 
   // std::string formatCompact ();
-  d = Duration (0);               t.is (d.formatCompact (), "-",    "0 -> -");                    // 24
-  d = Duration (1);               t.is (d.formatCompact (), "1s",   "1 -> 1s");
-  d = Duration (2);               t.is (d.formatCompact (), "2s",   "2 -> 2s");
-  d = Duration (59);              t.is (d.formatCompact (), "59s",  "59 -> 59s");
-  d = Duration (60);              t.is (d.formatCompact (), "1m",   "60 -> 1m");
-  d = Duration (119);             t.is (d.formatCompact (), "1m",   "119 -> 1m");
-  d = Duration (120);             t.is (d.formatCompact (), "2m",   "120 -> 2m");
-  d = Duration (121);             t.is (d.formatCompact (), "2m",   "121 -> 2m");
-  d = Duration (3599);            t.is (d.formatCompact (), "59m",  "3599 -> 59m");
-  d = Duration (3600);            t.is (d.formatCompact (), "1h",   "3600 -> 1h");
-  d = Duration (3601);            t.is (d.formatCompact (), "1h",   "3601 -> 1h");
-  d = Duration (86399);           t.is (d.formatCompact (), "23h",  "86399 -> 23h");
-  d = Duration (86400);           t.is (d.formatCompact (), "1d",   "86400 -> 1d");
-  d = Duration (86401);           t.is (d.formatCompact (), "1d",   "86401 -> 1d");
-  d = Duration (14 * 86400 - 1);  t.is (d.formatCompact (), "1wk",  "14 days - 1 sec -> 1wk");
-  d = Duration (14 * 86400);      t.is (d.formatCompact (), "2wk",  "14 days -> 2wk");
-  d = Duration (14 * 86400 + 1);  t.is (d.formatCompact (), "2wk",  "14 days + 1 sec -> 2wk");
-  d = Duration (85 * 86400 - 1);  t.is (d.formatCompact (), "2mo",  "85 days - 1 sec -> 2mo");
-  d = Duration (85 * 86400);      t.is (d.formatCompact (), "2mo",  "85 days -> 2mo");
-  d = Duration (85 * 86400 + 1);  t.is (d.formatCompact (), "2mo",  "85 days + 1 sec -> 2mo");
-  d = Duration (365 * 86400 - 1); t.is (d.formatCompact (), "12mo", "365 days - 1 sec -> 12mo");
-  d = Duration (365 * 86400);     t.is (d.formatCompact (), "1.0y", "365 days -> 1.0y");
-  d = Duration (365 * 86400 + 1); t.is (d.formatCompact (), "1.0y", "365 days + 1 sec -> 1.0y");
+  d = Duration (0);               t.is (d.formatCompact (), "",     "0 ->");                    // 24
+  d = Duration (1),               t.is (d.formatCompact (), "1s",   "1 -> 1s");
+  d = Duration (2),               t.is (d.formatCompact (), "2s",   "2 -> 2s");
+  d = Duration (59),              t.is (d.formatCompact (), "59s",  "59 -> 59s");
+  d = Duration (60),              t.is (d.formatCompact (), "1m",   "60 -> 1m");
+  d = Duration (119),             t.is (d.formatCompact (), "1m",   "119 -> 1m");
+  d = Duration (120),             t.is (d.formatCompact (), "2m",   "120 -> 2m");
+  d = Duration (121),             t.is (d.formatCompact (), "2m",   "121 -> 2m");
+  d = Duration (3599),            t.is (d.formatCompact (), "59m",  "3599 -> 59m");
+  d = Duration (3600),            t.is (d.formatCompact (), "1h",   "3600 -> 1h");
+  d = Duration (3601),            t.is (d.formatCompact (), "1h",   "3601 -> 1h");
+  d = Duration (86399),           t.is (d.formatCompact (), "23h",  "86399 -> 23h");
+  d = Duration (86400),           t.is (d.formatCompact (), "1d",   "86400 -> 1d");
+  d = Duration (86401),           t.is (d.formatCompact (), "1d",   "86401 -> 1d");
+  d = Duration (14 * 86400 - 1),  t.is (d.formatCompact (), "1wk",  "14 days - 1 sec -> 1wk");
+  d = Duration (14 * 86400),      t.is (d.formatCompact (), "2wk",  "14 days -> 2wk");
+  d = Duration (14 * 86400 + 1),  t.is (d.formatCompact (), "2wk",  "14 days + 1 sec -> 2wk");
+  d = Duration (85 * 86400 - 1),  t.is (d.formatCompact (), "2mo",  "85 days - 1 sec -> 2mo");
+  d = Duration (85 * 86400),      t.is (d.formatCompact (), "2mo",  "85 days -> 2mo");
+  d = Duration (85 * 86400 + 1),  t.is (d.formatCompact (), "2mo",  "85 days + 1 sec -> 2mo");
+  d = Duration (365 * 86400 - 1), t.is (d.formatCompact (), "12mo", "365 days - 1 sec -> 12mo");
+  d = Duration (365 * 86400),     t.is (d.formatCompact (), "1.0y", "365 days -> 1.0y");
+  d = Duration (365 * 86400 + 1), t.is (d.formatCompact (), "1.0y", "365 days + 1 sec -> 1.0y");
 
   // std::string formatPrecise ();
   d = Duration (0);               t.is (d.formatPrecise (), "0:00:00",       "0 -> 0:00:00");      // 47

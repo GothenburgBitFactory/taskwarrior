@@ -1,4 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
+set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 
 include (CheckFunctionExists)
 include (CheckStructHasMember)
@@ -85,6 +86,7 @@ check_function_exists (srandom HAVE_SRANDOM)
 check_function_exists (timegm  HAVE_TIMEGM)
 
 check_struct_has_member ("struct tm" tm_gmtoff time.h HAVE_TM_GMTOFF)
+check_struct_has_member ("struct stat" st_birthtime "sys/types.h;sys/stat.h" HAVE_ST_BIRTHTIME)
 
 message ("-- Looking for libuuid")
 if (DARWIN)
@@ -113,6 +115,18 @@ else (HAVE_UUID AND HAVE_UUID_UNPARSE_LOWER)
   message ("-- libuuid not found, using internal uuid")
 endif (HAVE_UUID AND HAVE_UUID_UNPARSE_LOWER)
 
+# Set the package language.
+if (LANGUAGE)
+  set (PACKAGE_LANGUAGE ${LANGUAGE})
+else (LANGUAGE)
+  set (PACKAGE_LANGUAGE 1)
+endif (LANGUAGE)
+
+set (LANGUAGE_EN_US 1)
+set (LANGUAGE_ES_ES 2)
+set (LANGUAGE_DE_DE 3)
+set (LANGUAGE_FR_FR 4)
+
 message ("-- Configuring cmake.h")
 configure_file (
   ${CMAKE_SOURCE_DIR}/cmake.h.in
@@ -128,6 +142,9 @@ add_subdirectory (scripts)
 if (EXISTS test)
   add_subdirectory (test EXCLUDE_FROM_ALL)
 endif (EXISTS test)
+if (EXISTS performance)
+  add_subdirectory (performance EXCLUDE_FROM_ALL)
+endif (EXISTS performance)
 
 set (doc_FILES NEWS ChangeLog README INSTALL AUTHORS COPYING)
 foreach (doc_FILE ${doc_FILES})
@@ -139,8 +156,8 @@ endforeach (doc_FILE)
 set (CPACK_SOURCE_GENERATOR "TGZ")
 set (CPACK_SOURCE_PACKAGE_FILE_NAME ${PACKAGE_NAME}-${PACKAGE_VERSION})
 set (CPACK_SOURCE_IGNORE_FILES  "CMakeCache" "CMakeFiles" "CPackConfig" "CPackSourceConfig"
-                                "_CPack_Packages" "cmake_install" "install_manifest"
-                                "Makefile$" "test" "package-config" "misc/*"
-                                "src/task$" "src/libtask.a" "auto.h$"
-                                "/\\.gitignore" "/\\.git/" "swp$")
+                                "_CPack_Packages" "cmake_install" "install_manifest" "Makefile$"
+				"test" "package-config" "misc/*" "src/task$" "src/libtask.a"
+				"src/columns/libcolumns.a" "src/commands/libcommands.a"
+                                "auto.h$" "/\\.gitignore" "/\\.git/" "swp$")
 include (CPack)

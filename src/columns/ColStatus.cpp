@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@
 #include <ColStatus.h>
 #include <text.h>
 #include <i18n.h>
+#include <utf8.h>
 
 extern Context context;
 
@@ -73,24 +74,23 @@ void ColumnStatus::setStyle (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnStatus::measure (Task& task, int& minimum, int& maximum)
+void ColumnStatus::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   Task::status status = task.getStatus ();
 
   if (_style == "default" ||
       _style == "long")
   {
-    if (status == Task::pending ||
-        status == Task::deleted ||
-        status == Task::waiting)
-    {
-      minimum = maximum = 7;
-    }
-    else if (status == Task::completed ||
-             status == Task::recurring)
-    {
-      minimum = maximum = 9;
-    }
+    if (status == Task::pending)
+      minimum = maximum = utf8_width (STRING_COLUMN_LABEL_STAT_PE);
+    else if (status == Task::deleted)
+      minimum = maximum = utf8_width (STRING_COLUMN_LABEL_STAT_DE);
+    else if (status == Task::waiting)
+      minimum = maximum = utf8_width (STRING_COLUMN_LABEL_STAT_WA);
+    else if (status == Task::completed)
+      minimum = maximum = utf8_width (STRING_COLUMN_LABEL_STAT_CO);
+    else if (status == Task::recurring)
+      minimum = maximum = utf8_width (STRING_COLUMN_LABEL_STAT_RE);
   }
   else if (_style == "short")
     minimum = maximum = 1;

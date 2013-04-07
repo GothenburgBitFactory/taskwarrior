@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -134,7 +134,7 @@ int CmdColor::execute (std::string& output)
           << "  " << five.colorize ("task color underline grey10 on grey3")        << "\n"
           << "  " << six.colorize ("task color red on color173")                   << "\n"
           << "\n"
-          << STRING_CMD_COLOR_YOURS                                                << "\n"
+          << STRING_CMD_COLOR_YOURS                                                << "\n\n"
           << "  " << sample.colorize ("task color " + swatch)                      << "\n\n";
     }
 

@@ -1,7 +1,7 @@
 %
 Se usi bash, puoi digitare qualche carattere in meno con 'alias t=task'.
 %
-Hai provato 'task edit 1' per modificare tutti gli aspetti del task 1 con il tuo
+Hai provato 'task 1 edit' per modificare tutti gli aspetti del task 1 con il tuo
 editor preferito!
 %
 Lo sapevi che con 'task 1 wait:eom' puoi nascondere il task 1 fino alla fine del

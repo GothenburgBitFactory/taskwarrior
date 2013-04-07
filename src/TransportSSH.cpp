@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2010 - 2012, Johannes Schlatow.
+// Copyright 2010 - 2013, Johannes Schlatow.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,73 +35,88 @@
 ////////////////////////////////////////////////////////////////////////////////
 TransportSSH::TransportSSH(const Uri& uri) : Transport(uri)
 {
-	_executable = "scp";
+  _executable = "scp";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::send(const std::string& source)
 {
-	if (_uri._host == "")
-		throw std::string (STRING_TRANSPORT_SSH_URI);
+  std::vector<std::string> sourcelist;
+  std::vector<std::string>::const_iterator source_iter;
 
-	// Is there more than one file to transfer?
-	// Then path has to end with a '/'
-	if (is_filelist(source) && !_uri.is_directory())
-    throw format (STRING_TRANSPORT_URI_NODIR, _uri._path);
+  if (_uri._host == "")
+    throw std::string (STRING_TRANSPORT_SSH_URI);
 
-	// cmd line is: scp [-p port] [user@]host:path
-	if (_uri._port != "")
-	{
-		_arguments.push_back ("-P");
-		_arguments.push_back (_uri._port);
-	}
+  // cmd line is: scp [-p port] [user@]host:path
+  if (_uri._port != "")
+  {
+    _arguments.push_back ("-P");
+    _arguments.push_back (_uri._port);
+  }
 
-	_arguments.push_back (source);
+  if (is_filelist (source))
+  {
+    expand_braces (source, _uri._data, sourcelist);
+    // Is there more than one source?
+    // Then path has to end with a '/'
+    if (sourcelist.size () > 1 && !_uri.is_directory ())
+      throw format (STRING_TRANSPORT_URI_NODIR, _uri);
 
-	if (_uri._user != "")
-	{
-		_arguments.push_back (_uri._user + "@" + _uri._host + ":" + escape (_uri._path, ' '));
-	}
-	else
-	{
-		_arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
-	}
+    for (source_iter = sourcelist.begin (); source_iter != sourcelist.end (); ++source_iter) {
+      _arguments.push_back (*source_iter);
+    }
+  }
+  else
+  {
+    _arguments.push_back (source);
+  }
 
-	if (execute())
-    throw std::string (STRING_TRANSPORT_SSH_NORUN);
+  if (_uri._user != "")
+  {
+    _arguments.push_back (_uri._user + "@" + _uri._host + ":" + escape (_uri._path, ' '));
+  }
+  else
+  {
+    _arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
+  }
+
+  if (execute ())
+    throw std::string (STRING_TRANSPORT_SSH_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportSSH::recv(std::string target)
 {
-	if (_uri._host == "")
-		throw std::string (STRING_TRANSPORT_SSH_URI);
+  if (_uri._host == "")
+    throw std::string (STRING_TRANSPORT_SSH_URI);
 
-	// Is there more than one file to transfer?
-	// Then target has to end with a '/'
-	if (is_filelist(_uri._path) && !is_directory(target))
+  // Is there more than one file to transfer?
+  // Then target has to end with a '/'
+  if (is_filelist(_uri._path) && !is_directory(target))
     throw format (STRING_TRANSPORT_URI_NODIR, target);
 
-	// cmd line is: scp [-p port] [user@]host:path
-	if (_uri._port != "")
-	{
-		_arguments.push_back ("-P");
-		_arguments.push_back (_uri._port);
-	}
+  // cmd line is: scp [-p port] [user@]host:path
+  if (_uri._port != "")
+  {
+    _arguments.push_back ("-P");
+    _arguments.push_back (_uri._port);
+  }
 
-	if (_uri._user != "")
-	{
-		_arguments.push_back (_uri._user + "@" + _uri._host + ":" + escape (_uri._path, ' '));
-	}
-	else
-	{
-		_arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
-	}
+  // We do not do {} expansion of the URI, as ssh servers do that for us.
 
-	_arguments.push_back (target);
+  if (_uri._user != "")
+  {
+    _arguments.push_back (_uri._user + "@" + _uri._host + ":" + escape (_uri._path, ' '));
+  }
+  else
+  {
+    _arguments.push_back (_uri._host + ":" + escape (_uri._path, ' '));
+  }
 
-	if (execute())
-    throw std::string (STRING_TRANSPORT_SSH_NORUN);
+  _arguments.push_back (target);
+
+  if (execute ())
+    throw std::string (STRING_TRANSPORT_SSH_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

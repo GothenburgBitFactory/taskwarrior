@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ ColumnUrgency::~ColumnUrgency ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnUrgency::measure (Task& task, int& minimum, int& maximum)
+void ColumnUrgency::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   if (_style == "default" ||
       _style == "real")

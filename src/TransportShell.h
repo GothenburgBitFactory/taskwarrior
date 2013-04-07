@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2010 - 2013, Johannes Schlatow.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,19 +25,21 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CMDSTATISTICS
-#define INCLUDED_CMDSTATISTICS
+#ifndef INCLUDED_TRANSPORTSHELL
+#define INCLUDED_TRANSPORTSHELL
 #define L10N                                           // Localization complete.
 
 #include <string>
-#include <Command.h>
+#include <Transport.h>
 
-class CmdStatistics : public Command
-{
+class TransportShell : public Transport {
 public:
-  CmdStatistics ();
-  int execute (std::string&);
+  TransportShell (const Uri&);
+
+  virtual void send (const std::string&);
+  virtual void recv (std::string);
+
 };
 
 #endif
-////////////////////////////////////////////////////////////////////////////////
+

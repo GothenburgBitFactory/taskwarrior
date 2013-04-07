@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -70,8 +70,8 @@ static inline unsigned round_up_to (unsigned n, unsigned target)
 bool confirm (const std::string& question)
 {
   std::vector <std::string> options;
-  options.push_back ("yes");
-  options.push_back ("no");
+  options.push_back (STRING_UTIL_CONFIRM_YES);
+  options.push_back (STRING_UTIL_CONFIRM_NO);
 
   std::string answer;
   std::vector <std::string> matches;
@@ -417,7 +417,7 @@ int execute(const std::string& executable, std::vector<std::string> arguments)
     cmdline += " " + (std::string)*it;
   }
 
-	context.debug ("Executing: " + std::string(shell) + " " + std::string(opt) + " " + cmdline);
+  context.debug ("Executing: " + std::string(shell) + " " + std::string(opt) + " " + cmdline);
 
   pid_t child_pid = fork();
 
@@ -427,13 +427,17 @@ int execute(const std::string& executable, std::vector<std::string> arguments)
     char** argv = new char*[4];
     argv[0] = shell;                  // sh
     argv[1] = opt;                    // -c
-    argv[2] = (char*)cmdline.c_str();	// e.g. scp undo.data user@host:.task/
+    argv[2] = (char*)cmdline.c_str(); // e.g. scp undo.data user@host:.task/
     argv[3] = NULL;                   // required by execv
 
     int ret = execvp(shell, argv);
     delete[] argv;
 
     exit(ret);
+  }
+  else if (child_pid == -1)
+  {
+    return -1;
   }
   else
   {
@@ -445,7 +449,7 @@ int execute(const std::string& executable, std::vector<std::string> arguments)
     if (pid == -1)
       return -1;
     else
-      return child_status;
+      return WEXITSTATUS (child_status);
   }
 }
 
@@ -622,8 +626,6 @@ const std::string indentProject (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
 const std::vector <std::string> extractParents (
   const std::string& project,
   const char& delimiter /* = '.' */)
@@ -639,8 +641,6 @@ const std::vector <std::string> extractParents (
   }
   return vec;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef HAVE_TIMEGM
@@ -660,5 +660,6 @@ time_t timegm (struct tm *tm)
   return ret;
 }
 #endif
+
 ////////////////////////////////////////////////////////////////////////////////
 

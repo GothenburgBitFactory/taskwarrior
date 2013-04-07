@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ void dependencyChainOnModify (Task&, Task&);
 // feedback.cpp
 bool taskDiff (const Task&, const Task&);
 std::string taskDifferences (const Task&, const Task&);
-std::string taskInfoDifferences (const Task&, const Task&, const std::string&);
+std::string taskInfoDifferences (const Task&, const Task&, const std::string&, long&, const long);
 std::string renderAttribute (const std::string&, const std::string&, const std::string& format = "");
 void feedback_affected (const std::string&);
 void feedback_affected (const std::string&, int);

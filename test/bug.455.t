@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -34,20 +34,23 @@ use Test::More tests => 4;
 if (open my $fh, '>', '455.rc')
 {
   print $fh "data.location=.\n";
+  print $fh "print.empty.columns=yes\n";
 
   close $fh;
   ok (-r '455.rc', 'Created 455.rc');
 }
 
-# Bug #455 - Text alignment in reports is broken when text contains utf8 characters
+# Bug #455 - Text alignment in reports is broken when text contains wide utf8
+#            characters
 
 qx{../src/task rc:455.rc add abc pro:Bar\x{263A} 2>&1};
 qx{../src/task rc:455.rc add def pro:Foo! 2>&1};
 
 my $output = qx{../src/task rc:455.rc ls 2>&1};
 
-like ($output, qr/\s{7}abc/ms, 'bug 455 - correct spacing in utf8 task');
-like ($output, qr/\s{7}def/ms, 'bug 455 - correct spacing in non utf8 task');
+# ' ' + 'Pri' + ' ' == 5
+like ($output, qr/\S\s{5}abc/ms, 'bug 455 - correct spacing in utf8 task');
+like ($output, qr/\S\s{5}def/ms, 'bug 455 - correct spacing in non utf8 task');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data 455.rc);

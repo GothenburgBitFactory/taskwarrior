@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 10;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -45,29 +45,32 @@ qx{../src/task rc:bug.rc ls 2>&1};
 
 # Result: trying to add the project generates an error about removing
 # recurrence from a task.
-my $output = qx{echo 'y' | ../src/task rc:bug.rc 1 modify project:bar 2>&1 >/dev/null};
-unlike ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'No recurrence removal error');
+my $output = qx{echo 'y' | ../src/task rc:bug.rc 1 modify project:bar 2>&1};
+like ($output, qr/^Modified 2 tasks.$/ms, '2 tasks modified');
+unlike ($output, qr/^You cannot remove the recurrence from a recurring task.$/ms, 'No recurrence removal error');
 
 # Now try to generate the error above via regular means - ie, is it actually
 # doing what it should?
 # TODO Removing recur: from a recurring task should also remove imask and parent.
 $output = qx{../src/task rc:bug.rc 2 modify recur: 2>&1 >/dev/null};
-like ($output, qr/You cannot remove the recurrence from a recurring task./ms, 'Recurrence removal error');
+like ($output, qr/^You cannot remove the recurrence from a recurring task.$/ms, 'Recurrence removal error');
 
 # Prevent removal of the due date from a recurring task.
 # TODO Removing due: from a recurring task should also remove recur, imask and parent
 $output = qx{../src/task rc:bug.rc 2 modify due: 2>&1 >/dev/null};
-like ($output, qr/You cannot remove the due date from a recurring task./ms, 'Cannot remove due date from a recurring task');
+like ($output, qr/^You cannot remove the due date from a recurring task.$/ms, 'Cannot remove due date from a recurring task');
 
 # Allow removal of the due date from a non-recurring task.
-qx{../src/task rc:bug.rc add nonrecurring 2>&1};
+qx{../src/task rc:bug.rc add nonrecurring due:today 2>&1};
 $output = qx{../src/task rc:bug.rc ls 2>&1};
+like ($output, qr/^2 task.$/ms, '2 tasks shown');
 my ($id) = $output =~ /(\d+)\s+nonrecurring/;
-$output = qx{../src/task rc:bug.rc $id modify due: 2>&1 >/dev/null};
-unlike ($output, qr/You cannot remove the due date from a recurring task./ms, 'Can remove due date from a non-recurring task');
+$output = qx{../src/task rc:bug.rc $id modify due: 2>&1};
+like ($output, qr/^Modified 1 task.$/ms, 'no task modified');
+unlike ($output, qr/^You cannot remove the due date from a recurring task.$/ms, 'Can remove due date from a non-recurring task');
 
 $output = qx{../src/task rc:bug.rc diag 2>&1};
-like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
+like ($output, qr/^\s+No duplicates found$/m, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);

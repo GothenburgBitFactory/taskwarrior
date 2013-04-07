@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -337,6 +337,32 @@ void E9::operator_lt (Arg& result, Arg& left, Arg& right)
                     : "false";
     }
   }
+  else if (left._type  == Arg::type_duration ||
+           right._type == Arg::type_duration)
+  {
+    if (left._value == "" ||
+        right._value == "")
+      result._value = "false";
+    else
+    {
+      Duration left_duration  (left._value);
+      Duration right_duration (right._value);
+
+      result._value = (left_duration < right_duration)
+                    ? "true"
+                    : "false";
+    }
+  }
+  else if (left._type  == Arg::type_number ||
+           right._type == Arg::type_number)
+  {
+    float left_number  = strtof (left._value.c_str (), NULL);
+    float right_number = strtof (right._value.c_str (), NULL);
+
+    result._value = (left_number < right_number)
+                  ? "true"
+                  : "false";
+  }
   else
   {
     result._value = (left._value < right._value)
@@ -375,6 +401,32 @@ void E9::operator_lte (Arg& result, Arg& left, Arg& right)
                     ? "true"
                     : "false";
     }
+  }
+  else if (left._type  == Arg::type_duration ||
+           right._type == Arg::type_duration)
+  {
+    if (left._value == "" ||
+        right._value == "")
+      result._value = "false";
+    else
+    {
+      Duration left_duration  (left._value);
+      Duration right_duration (right._value);
+
+      result._value = (left_duration <= right_duration)
+                    ? "true"
+                    : "false";
+    }
+  }
+  else if (left._type  == Arg::type_number ||
+           right._type == Arg::type_number)
+  {
+    float left_number  = strtof (left._value.c_str (), NULL);
+    float right_number = strtof (right._value.c_str (), NULL);
+
+    result._value = (left_number <= right_number)
+                  ? "true"
+                  : "false";
   }
   else
   {
@@ -415,6 +467,32 @@ void E9::operator_gte (Arg& result, Arg& left, Arg& right)
                     : "false";
     }
   }
+  else if (left._type  == Arg::type_duration ||
+           right._type == Arg::type_duration)
+  {
+    if (left._value == "" ||
+        right._value == "")
+      result._value = "false";
+    else
+    {
+      Duration left_duration  (left._value);
+      Duration right_duration (right._value);
+
+      result._value = (left_duration >= right_duration)
+                    ? "true"
+                    : "false";
+    }
+  }
+  else if (left._type  == Arg::type_number ||
+           right._type == Arg::type_number)
+  {
+    float left_number  = strtof (left._value.c_str (), NULL);
+    float right_number = strtof (right._value.c_str (), NULL);
+
+    result._value = (left_number >= right_number)
+                  ? "true"
+                  : "false";
+  }
   else
   {
     result._value = (left._value >= right._value)
@@ -452,6 +530,32 @@ void E9::operator_gt (Arg& result, Arg& left, Arg& right)
                                     ? "true"
                                     : "false";
     }
+  }
+  else if (left._type  == Arg::type_duration ||
+           right._type == Arg::type_duration)
+  {
+    if (left._value == "" ||
+        right._value == "")
+      result._value = "false";
+    else
+    {
+      Duration left_duration  (left._value);
+      Duration right_duration (right._value);
+
+      result._value = result._value = (left_duration > right_duration)
+                                    ? "true"
+                                    : "false";
+    }
+  }
+  else if (left._type  == Arg::type_number ||
+           right._type == Arg::type_number)
+  {
+    float left_number  = strtof (left._value.c_str (), NULL);
+    float right_number = strtof (right._value.c_str (), NULL);
+
+    result._value = (left_number > right_number)
+                  ? "true"
+                  : "false";
   }
   else
   {
@@ -497,7 +601,7 @@ void E9::operator_equal (
     // Bug 856.
     //
     // Special case for checking absent projects.  Without the explicit "" check
-    // the right._value.lenghth() is used, which is 0, and therefore generates
+    // the right._value.length() is used, which is 0, and therefore generates
     // a false match.
     if (right._value == "")
     {
@@ -529,6 +633,16 @@ void E9::operator_equal (
     Date right_date (right._value, _dateformat);
 
     result._value = (left_date == right_date)
+                ? "true"
+                : "false";
+  }
+
+  // Case-insensitive comparison for status. Fixes #1110.
+  // Also priority, fixing #1154.
+  else if (left._raw == "status" ||
+           left._raw == "priority")
+  {
+    result._value = compare (left._value, right._value, false)
                 ? "true"
                 : "false";
   }

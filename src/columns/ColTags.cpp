@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@
 #include <ColTags.h>
 #include <text.h>
 #include <i18n.h>
+#include <utf8.h>
 
 extern Context context;
 
@@ -83,17 +84,16 @@ void ColumnTags::setStyle (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnTags::measure (Task& task, int& minimum, int& maximum)
+void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-
-       if (_style == "indicator") minimum = maximum = context.config.get ("tag.indicator").length ();
+       if (_style == "indicator") minimum = maximum = utf8_width (context.config.get ("tag.indicator"));
   else if (_style == "count")     minimum = maximum = 3;
   else if (_style == "default" ||
            _style == "list")
   {
     std::string tags = task.get (_name);
     minimum = 0;
-    maximum = tags.length ();
+    maximum = utf8_width (tags);
 
     if (maximum)
     {
@@ -101,8 +101,11 @@ void ColumnTags::measure (Task& task, int& minimum, int& maximum)
       split (all, tags, ',');
       std::vector <std::string>::iterator i;
       for (i = all.begin (); i != all.end (); ++i)
-        if ((int)i->length () > minimum)
-          minimum = i->length () + 1;
+      {
+        unsigned int length = utf8_width (*i);
+        if (length > minimum)
+          minimum = length;
+      }
     }
   }
   else
@@ -119,7 +122,18 @@ void ColumnTags::render (
   std::string tags = task.get (_name);
   if (tags != "")
   {
-    if (_style == "indicator")
+    if (_style == "default" ||
+        _style == "list")
+    {
+      std::replace (tags.begin (), tags.end (), ',', ' ');
+      std::vector <std::string> all;
+      wrapText (all, tags, width, _hyphenate);
+
+      std::vector <std::string>::iterator i;
+      for (i = all.begin (); i != all.end (); ++i)
+        lines.push_back (color.colorize (leftJustify (*i, width)));
+    }
+    else if (_style == "indicator")
     {
       lines.push_back (
         color.colorize (
@@ -132,17 +146,6 @@ void ColumnTags::render (
       lines.push_back (
         color.colorize (
           rightJustify ("[" + format ((int)all.size ()) + "]", width)));
-    }
-    else if (_style == "default" ||
-             _style == "list")
-    {
-      std::replace (tags.begin (), tags.end (), ',', ' ');
-      std::vector <std::string> all;
-      wrapText (all, tags, width, _hyphenate);
-
-      std::vector <std::string>::iterator i;
-      for (i = all.begin (); i != all.end (); ++i)
-        lines.push_back (color.colorize (leftJustify (*i, width)));
     }
   }
 }

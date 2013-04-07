@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,11 +27,13 @@
 
 #define L10N                                           // Localization complete.
 
+#include <numeric>
 #include <ViewTask.h>
 #include <Context.h>
 #include <Timer.h>
 #include <text.h>
 #include <utf8.h>
+#include <i18n.h>
 #include <main.h>
 
 extern Context context;
@@ -113,6 +115,9 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 {
   context.timer_render.start ();
 
+  bool const print_empty_columns = context.config.getBoolean ("print.empty.columns");
+  std::vector <Column*> nonempty_columns;
+
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
   std::vector <int> ideal;
@@ -121,8 +126,8 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   for (i = _columns.begin (); i != _columns.end (); ++i)
   {
     // Headers factor in to width calculations.
-    int global_min = utf8_length ((*i)->label ());
-    int global_ideal = global_min;
+    unsigned int global_min = 0;
+    unsigned int global_ideal = global_min;
 
     for (unsigned int s = 0; s < sequence.size (); ++s)
     {
@@ -133,44 +138,73 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
         break;
 
       // Determine minimum and ideal width for this column.
-      int min;
-      int ideal;
+      unsigned int min;
+      unsigned int ideal;
       (*i)->measure (data[sequence[s]], min, ideal);
 
-      if (min   > global_min)   global_min = min;
+      if (min   > global_min)   global_min   = min;
       if (ideal > global_ideal) global_ideal = ideal;
     }
 
-    minimal.push_back (global_min);
-    ideal.push_back (global_ideal);
+    if (print_empty_columns || global_min != 0)
+    {
+      unsigned int label_length = utf8_width ((*i)->label ());
+      if (label_length > global_min)   global_min   = label_length;
+      if (label_length > global_ideal) global_ideal = label_length;
+      minimal.push_back (global_min);
+      ideal.push_back (global_ideal);
+    }
+
+    if (! print_empty_columns && global_min != 0)
+    {
+      nonempty_columns.push_back (*i);
+    }
   }
 
-  // Sum the minimal widths.
-  int sum_minimal = 0;
-  std::vector <int>::iterator c;
-  for (c = minimal.begin (); c != minimal.end (); ++c)
-    sum_minimal += *c;
+  if (! print_empty_columns)
+    _columns = nonempty_columns;
 
-  // Sum the ideal widths.
-  int sum_ideal = 0;
-  for (c = ideal.begin (); c != ideal.end (); ++c)
-    sum_ideal += *c;
+  int all_extra = _left_margin
+                + (2 * _extra_padding)
+                + ((_columns.size () - 1) * _intra_padding);
+
+  // Sum the widths.
+  int sum_minimal = std::accumulate (minimal.begin (), minimal.end (), 0);
+  int sum_ideal   = std::accumulate (ideal.begin (),   ideal.end (),   0);
+
 
   // Calculate final column widths.
-  int overage = _width
-              - _left_margin
-              - (2 * _extra_padding)
-              - ((_columns.size () - 1) * _intra_padding);
+  int overage = _width - sum_minimal - all_extra;
+  context.debug (format ("ViewTask::render min={1} ideal={2} overage={3}", 
+                         sum_minimal + all_extra,
+                         sum_ideal + all_extra,
+                         overage));
 
   std::vector <int> widths;
-  if (_width == 0 || sum_ideal <= overage)
+
+  // Ideal case.  Everything fits.
+  if (_width == 0 || sum_ideal + all_extra <= _width)
+  {
     widths = ideal;
-  else if (sum_minimal > overage || overage < 0)
+  }
+
+  // Not enough for minimum.
+  else if (overage < 0)
+  {
+    context.error (format (STRING_VIEW_TOO_SMALL, sum_minimal + all_extra, _width));
     widths = minimal;
+  }
+
+  // Perfect minimal width.
+  else if (overage == 0)
+  {
+    widths = minimal;
+  }
+
+  // Extra space to share.
   else if (overage > 0)
   {
     widths = minimal;
-    overage -= sum_minimal;
 
     // Spread 'overage' among columns where width[i] < ideal[i]
     bool needed = true;

@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -45,6 +45,7 @@ if (open my $fh, '>', 'bug.rc')
 
 qx{../src/task rc:bug.rc add foo 2>&1};
 my $output = qx{../src/task rc:bug.rc show 2>&1};
+like ($output, qr/^Config Variable\s+Value$/m, 'Variables shown');
 unlike ($output, qr/Configuration error/ms, 'No configuration error');
 unlike ($output, qr/deprecated/ms, 'No deprecated variable');
 unlike ($output, qr/unrecognized/ms, 'No unrecognized variable');

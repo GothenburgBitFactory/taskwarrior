@@ -1,4 +1,4 @@
-.TH task 1 2012-09-18 "${PACKAGE_STRING}" "User Manuals"
+.TH task 1 2013-04-07 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 task \- A command line todo manager.
@@ -144,8 +144,8 @@ Shows a graphical burndown chart, by month.
 .B task calendar [due|<month> <year>|<year>] [y]
 Shows a monthly calendar with due tasks marked.  Shows one horizontal line of
 months.  If the 'y' argument is provided, will show at least one complete year.
-If a year is provided, such as '2012', then that full year is shown.  If both
-a month and a year are specified ('6 2012') then the months displayed begin at
+If a year is provided, such as '2013', then that full year is shown.  If both
+a month and a year are specified ('6 2013') then the months displayed begin at
 the specified month and year.  If the 'due' argument is provided, will show
 the starting month of the earliest due task.
 
@@ -155,9 +155,10 @@ Displays all possible colors, a named sample, or a legend containing all
 currently defined colors.
 
 .TP
-.B task columns
+.B task columns [substring]
 Displays all supported columns and formatting styles.  Useful when creating
-custom reports.
+custom reports.  If a substring is provided, only matching column names are
+shown.
 
 .TP
 .B task <filter> completed
@@ -452,7 +453,9 @@ Shows a report of aggregated task status by project.
 
 .TP
 .B task <filter> tags
-Show a list of all tags used.  Any special tags used are highlighted.
+Show a list of all tags used.  Any special tags used are highlighted.  Note that
+virtual tags are not listed - they don't really exist, and are just a convenient
+notation for other task metadata.
 
 .TP
 .B task timesheet [weeks]
@@ -487,6 +490,11 @@ Lists all supported configuration variables, for completion purposes.
 .TP
 .B task <filter> _ids
 Shows only the IDs of matching tasks, in the form of a list.
+
+.TP
+.B task _show
+Shows the combined defaults and overrides of the configuration settings, for use
+by third-party applications.
 
 .TP
 .B task <filter> _uuids
@@ -551,6 +559,27 @@ exempt from all color rules.  The supported special tags are:
     +nonag       Completion of this task suppresses all nag messages
     +nocal       This task will not appear on the calendar
     +next        Elevates task so it appears on 'next' report
+
+There are also virtual tags, which represent task metadata in tag form.  These
+tags do not exist, but can be used to filter tasks.  The supported virtual tags
+are:
+
+    BLOCKED      Matches if the task is blocked
+    UNBLOCKED    Matches if the task is not blocked
+    BLOCKING     Matches if the task is blocking
+    DUE          Matches if the task is due
+    DUETODAY     Matches if the task is due today
+    TODAY        Matches if the task is due today
+    OVERDUE      Matches if the task is overdue
+    ACTIVE       Matches if the task is started
+    SCHEDULED    Matches if the task is scheduled
+    CHILD        Matches if the task has a parent
+    UNTIL        Matches if the task expires
+    WAITING      Matches if the task is waiting
+    ANNOTATED    Matches if the task has annotations
+
+You can use +BLOCKED to filter blocked tasks, or -BLOCKED for unblocked tasks.
+Similarly, -BLOCKED is equivalent to +UNBLOCKED.
 
 .TP
 .B project:<project-name>
@@ -789,7 +818,7 @@ task ... due:7/14/2008
 
 .TP
 ISO-8601
-task ... due:20120314T223000Z
+task ... due:20130314T223000Z
 
 .TP
 Relative wording
@@ -973,7 +1002,8 @@ Taskwarrior stores its configuration in a file in the user's home directory:
 .B task rc:<path-to-alternate-file> ...
 Specifies an alternate configuration file.
 
-.TP TASKRC=/tmp/.taskrc task ..
+.TP
+.B TASKRC=/tmp/.taskrc task ..
 The environment variable overrides the default and the command line
 specification of the .taskrc file.
 
@@ -1030,7 +1060,7 @@ The file that contains the completed ("done") tasks.
 The file that contains information needed by the "undo" and "merge" commands.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2012 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
 http://www.opensource.org/licenses/mit-license.php for more information.

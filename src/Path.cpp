@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,9 @@
 #include <glob.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 #include <pwd.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <Path.h>
 #include <cmake.h>
@@ -52,12 +54,16 @@ Path::Path ()
 Path::Path (const Path& other)
 {
   if (this != &other)
-    _data = other._data;
+  {
+    _original = other._original;
+    _data     = other._data;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Path::Path (const std::string& in)
 {
+  _original = in;
   _data = expand (in);
 }
 
@@ -70,7 +76,10 @@ Path::~Path ()
 Path& Path::operator= (const Path& other)
 {
   if (this != &other)
-    this->_data = other._data;
+  {
+    this->_original = other._original;
+    this->_data     = other._data;
+  }
 
   return *this;
 }
@@ -171,6 +180,22 @@ bool Path::executable () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Path::rename (const std::string& new_name)
+{
+  std::string expanded = expand (new_name);
+  if (_data != expanded)
+  {
+    if (::rename (_data.c_str (), expanded.c_str ()) == 0)
+    {
+      _data = expanded;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // ~      --> /home/user
 // ~foo/x --> /home/foo/s
 // ~/x    --> /home/foo/x
@@ -183,19 +208,22 @@ std::string Path::expand (const std::string& in)
 
   if (tilde != std::string::npos)
   {
-    struct passwd* pw = getpwuid (getuid ());
+    const char *home = getenv("HOME");
+    if (home == NULL)
+    {
+      struct passwd* pw = getpwuid (getuid ());
+      home = pw->pw_dir;
+    }
 
     // Convert: ~ --> /home/user
     if (copy.length () == 1)
-    {
-      copy = pw->pw_dir;
-    }
+      copy = home;
 
     // Convert: ~/x --> /home/user/x
     else if (copy.length () > tilde + 1 &&
              copy[tilde + 1] == '/')
     {
-      copy.replace (tilde, 1, pw->pw_dir);
+      copy.replace (tilde, 1, home);
     }
 
     // Convert: ~foo/x --> /home/foo/x

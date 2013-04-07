@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'args.rc')
@@ -49,10 +49,11 @@ like ($output, qr/two/,   'task 2 added');
 like ($output, qr/three/, 'task 3 added');
 
 $output = qx{../src/task rc:args.rc 1 done 2>&1};
-like ($output, qr/^Completed 1 /ms, 'COMMAND after ID');
+like ($output, qr/^Completed 1 task.$/ms, 'COMMAND after ID');
 
 $output = qx{../src/task rc:args.rc done 2 2>&1};
-unlike ($output, qr/^Completed 2 /ms, 'ID after COMMAND');
+like ($output, qr/^Command prevented from running.$/ms, 'ID after COMMAND');
+unlike ($output, qr/^Completed 1 task.$/ms, 'ID after COMMAND');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data args.rc);

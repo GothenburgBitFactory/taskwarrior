@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@
 #include <Date.h>
 #include <ColUDA.h>
 #include <text.h>
+#include <utf8.h>
 #include <i18n.h>
 #include <stdlib.h>
 
@@ -77,7 +78,7 @@ bool ColumnUDA::validate (std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 //
-void ColumnUDA::measure (Task& task, int& minimum, int& maximum)
+void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
 
@@ -91,7 +92,7 @@ void ColumnUDA::measure (Task& task, int& minimum, int& maximum)
         // Determine the output date format, which uses a hierarchy of definitions.
         //   rc.report.<report>.dateformat
         //   rc.dateformat.report
-        //   rc.dateformat.
+        //   rc.dateformat
         Date date ((time_t) strtol (value.c_str (), NULL, 10));
         std::string format = context.config.get ("report." + _report + ".dateformat");
         if (format == "")
@@ -99,11 +100,11 @@ void ColumnUDA::measure (Task& task, int& minimum, int& maximum)
         if (format == "")
           format = context.config.get ("dateformat");
 
-        minimum = maximum = date.toString (format).length ();
+        minimum = maximum = Date::length (format);
       }
       else if (_type == "duration")
       {
-        minimum = maximum = Duration (value).formatCompact ().length ();
+        minimum = maximum = utf8_width (Duration (value).formatCompact ());
       }
       else if (_type == "string")
       {
@@ -113,7 +114,7 @@ void ColumnUDA::measure (Task& task, int& minimum, int& maximum)
       }
       else if (_type == "numeric")
       {
-        minimum = maximum = value.length ();
+        minimum = maximum = utf8_width (value);
       }
     }
   }

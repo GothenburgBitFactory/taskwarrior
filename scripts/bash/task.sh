@@ -2,7 +2,7 @@
 # bash completion support for taskwarrior
 # taskwarrior - a command line task list manager.
 #
-# Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+# Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -62,10 +62,6 @@ _task_get_config() {
     $taskcommand _config
 }
 
-_task_offer_dependencies() {
-    COMPREPLY=( $(compgen -W "$($taskcommand _ids)" -- ${cur/*:/}) )
-}
-
 _task_offer_priorities() {
     COMPREPLY=( $(compgen -W "L M H" -- ${cur/*:/}) )
 }
@@ -94,17 +90,11 @@ _task()
 
     abbrev_min=$($taskcommand show | grep "abbreviation.minimum" | awk {'print  $2'})
     commands_aliases=$(echo $($taskcommand _commands; $taskcommand _aliases) | tr " " "\n"|sort|tr "\n" " ")
-    opts="$commands_aliases $($taskcommand _ids) $($taskcommand _columns)"
+    opts="$commands_aliases $($taskcommand _columns)"
 
     case "${prev}" in
         :)
             case "${prev2}" in
-                dep|depe|depen|depend|depends)
-                    if [ ${#prev2} -ge $abbrev_min ]; then
-                        _task_offer_dependencies
-                    fi
-                    return 0
-                    ;;
                 pri|prior|priori|priorit|priority)
                     if [ ${#prev2} -ge $abbrev_min ]; then
                         _task_offer_priorities
@@ -117,6 +107,15 @@ _task()
                     fi
                     return 0
                     ;;
+                rc)
+                    # not activated when only "rc:" but is activated if anything after "rc:"
+                   _filedir
+                   return 0
+                    ;;
+                rc.data.location)
+                   _filedir -d
+                   return 0
+                   ;;
             esac
             ;;
         *)
@@ -127,12 +126,6 @@ _task()
                     ;;
                 :)
                     case "${prev}" in
-                        dep|depe|depen|depend|depends)
-                            if [ ${#prev} -ge $abbrev_min ]; then
-                                _task_offer_dependencies
-                            fi
-                            return 0
-                            ;;
                         pri|prior|priori|priorit|priority)
                             if [ ${#prev} -ge $abbrev_min ]; then
                                 _task_offer_priorities
@@ -143,6 +136,17 @@ _task()
                             if [ ${#prev} -ge $abbrev_min ]; then
                                 _task_offer_projects
                             fi
+                            return 0
+                            ;;
+                        rc)
+                            # activated only when "rc:"
+                            cur="" # otherwise ":" is passed.
+                            _filedir
+                            return 0
+                            ;;
+                        rc.data.location)
+                            cur=""
+                            _filedir -d
                             return 0
                             ;;
                     esac

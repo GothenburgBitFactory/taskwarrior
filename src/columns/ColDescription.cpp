@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@
 #include <Date.h>
 #include <ColDescription.h>
 #include <text.h>
+#include <utf8.h>
 #include <util.h>
 #include <i18n.h>
 
@@ -51,7 +52,11 @@ ColumnDescription::ColumnDescription ()
   _styles.push_back ("truncated");
   _styles.push_back ("count");
 
-  std::string t  = Date ().toString (context.config.get ("dateformat"));
+  _dateformat = context.config.get ("dateformat.annotation");
+  if (_dateformat == "")
+    _dateformat = context.config.get ("dateformat");
+
+  std::string t  = Date ().toString (_dateformat);
   std::string d  = STRING_COLUMN_EXAMPLES_DESC;
   std::string a1 = STRING_COLUMN_EXAMPLES_ANNO1;
   std::string a2 = STRING_COLUMN_EXAMPLES_ANNO2;
@@ -73,6 +78,8 @@ ColumnDescription::ColumnDescription ()
   _examples.push_back (d + " [4]");
 
   _hyphenate = context.config.getBoolean ("hyphenate");
+
+  _indent = context.config.getInteger ("indent.annotation");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +95,7 @@ bool ColumnDescription::validate (std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
+void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   std::string description = task.get (_name);
 
@@ -98,68 +105,63 @@ void ColumnDescription::measure (Task& task, int& minimum, int& maximum)
   if (_style == "default" ||
       _style == "combined")
   {
-    int indent = context.config.getInteger ("indent.annotation");
-    std::string format = context.config.get ("dateformat.annotation");
-    if (format == "")
-      format = context.config.get ("dateformat");
+    minimum = longestWord (description);
+    maximum = utf8_width (description);
 
-    int min_desc = longestWord (description);
-    int min_anno = indent + Date::length (format);
-    minimum = std::max (min_desc, min_anno);
-    maximum = description.length ();
-
-    std::map <std::string, std::string> annos;
-    task.getAnnotations (annos);
-    std::map <std::string, std::string>::iterator i;
-    for (i = annos.begin (); i != annos.end (); i++)
+    if (task.annotation_count)
     {
-      int len = min_anno + 1 + i->second.length ();
-      if (len > maximum)
-        maximum = len;
+      unsigned int min_anno = _indent + Date::length (_dateformat);
+      if (min_anno > minimum)
+        minimum = min_anno;
+
+      std::map <std::string, std::string> annos;
+      task.getAnnotations (annos);
+      std::map <std::string, std::string>::iterator i;
+      for (i = annos.begin (); i != annos.end (); i++)
+      {
+        unsigned int len = min_anno + 1 + utf8_width (i->second);
+        if (len > maximum)
+          maximum = len;
+      }
     }
   }
 
   // Just the text
   else if (_style == "desc")
   {
-    maximum = description.length ();
+    maximum = utf8_width (description);
     minimum = longestWord (description);
   }
 
   // The text <date> <anno> ...
   else if (_style == "oneline")
   {
-    std::string format = context.config.get ("dateformat.annotation");
-    if (format == "")
-      format = context.config.get ("dateformat");
+    minimum = longestWord (description);
+    maximum = utf8_width (description);
 
-    int min_desc = longestWord (description);
-    int min_anno = Date::length (format);
-    minimum = std::max (min_desc, min_anno);
-    maximum = description.length ();
-
-    std::map <std::string, std::string> annos;
-    task.getAnnotations (annos);
-    std::map <std::string, std::string>::iterator i;
-    for (i = annos.begin (); i != annos.end (); i++)
-      maximum += i->second.length () + minimum + 1;
+    if (task.annotation_count)
+    {
+      unsigned int min_anno = Date::length (_dateformat);
+      std::map <std::string, std::string> annos;
+      task.getAnnotations (annos);
+      std::map <std::string, std::string>::iterator i;
+      for (i = annos.begin (); i != annos.end (); i++)
+        maximum += min_anno + 1 + utf8_width (i->second);
+    }
   }
 
   // The te...
   else if (_style == "truncated")
   {
     minimum = 4;
-    maximum = description.length ();
+    maximum = utf8_width (description);
   }
 
   // The text [2]
   else if (_style == "count")
   {
-    std::map <std::string, std::string> annos;
-    task.getAnnotations (annos);
-
     // <description> + ' ' + '[' + <count> + ']'
-    maximum = description.length () + 3 + format ((int)annos.size ()).length ();
+    maximum = utf8_width (description) + 1 + 1 + format (task.annotation_count).length () + 1;
     minimum = longestWord (description);
   }
 
@@ -182,21 +184,15 @@ void ColumnDescription::render (
   if (_style == "default" ||
       _style == "combined")
   {
-    int indent = context.config.getInteger ("indent.annotation");
-
     std::map <std::string, std::string> annos;
     task.getAnnotations (annos);
     if (annos.size ())
     {
-      std::string format = context.config.get ("dateformat.annotation");
-      if (format == "")
-        format = context.config.get ("dateformat");
-
       std::map <std::string, std::string>::iterator i;
       for (i = annos.begin (); i != annos.end (); i++)
       {
         Date dt (strtol (i->first.substr (11).c_str (), NULL, 10));
-        description += "\n" + std::string (indent, ' ') + dt.toString (format) + " " + i->second;
+        description += "\n" + std::string (_indent, ' ') + dt.toString (_dateformat) + " " + i->second;
       }
     }
 
@@ -226,15 +222,11 @@ void ColumnDescription::render (
     task.getAnnotations (annos);
     if (annos.size ())
     {
-      std::string format = context.config.get ("dateformat.annotation");
-      if (format == "")
-        format = context.config.get ("dateformat");
-
       std::map <std::string, std::string>::iterator i;
       for (i = annos.begin (); i != annos.end (); i++)
       {
         Date dt (atoi (i->first.substr (11).c_str ()));
-        description += " " + dt.toString (format) + " " + i->second;
+        description += " " + dt.toString (_dateformat) + " " + i->second;
       }
     }
 
@@ -249,7 +241,7 @@ void ColumnDescription::render (
   // This is a des...
   else if (_style == "truncated")
   {
-    int len = description.length ();
+    int len = utf8_width (description);
     if (len > width)
       lines.push_back (color.colorize (description.substr (0, width - 3) + "..."));
     else

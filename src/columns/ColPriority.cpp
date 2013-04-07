@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -81,11 +81,15 @@ void ColumnPriority::setStyle (const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnPriority::measure (Task& task, int& minimum, int& maximum)
+void ColumnPriority::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   std::string priority = task.get (_name);
 
-  minimum = maximum = 1;
+  if (priority == "")
+    minimum = maximum = 0;
+  else
+    minimum = maximum = 1;
+
   if (_style == "long")
   {
          if (priority == "H") minimum = maximum = 4;

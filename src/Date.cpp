@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -56,12 +56,14 @@ static const char* relatives[] =
   "eow",
   "eoww",
   "eocw",
+  "eocm",
   "eom",
   "eoq",
   "eoy",
   "sow",
   "soww",
   "socw",
+  "socm",
   "som",
   "soq",
   "soy",
@@ -228,27 +230,27 @@ const std::string Date::toString (
     int c = localFormat[i];
     switch (c)
     {
-    case 'm': sprintf (buffer, "%d",   this->month ());                        break;
-    case 'M': sprintf (buffer, "%02d", this->month ());                        break;
-    case 'd': sprintf (buffer, "%d",   this->day ());                          break;
-    case 'D': sprintf (buffer, "%02d", this->day ());                          break;
-    case 'y': sprintf (buffer, "%02d", this->year () % 100);                   break;
-    case 'Y': sprintf (buffer, "%d",   this->year ());                         break;
-    case 'a': sprintf (buffer, "%.3s", Date::dayName (dayOfWeek ()).c_str ()); break;
-    case 'A': sprintf (buffer, "%s",   Date::dayName (dayOfWeek ()).c_str ()); break;
-    case 'b': sprintf (buffer, "%.3s", Date::monthName (month ()).c_str ());   break;
-    case 'B': sprintf (buffer, "%.9s", Date::monthName (month ()).c_str ());   break;
-    case 'v': sprintf (buffer, "%d",   Date::weekOfYear (Date::dayOfWeek (context.config.get ("weekstart")))); break;
-    case 'V': sprintf (buffer, "%02d", Date::weekOfYear (Date::dayOfWeek (context.config.get ("weekstart")))); break;
-    case 'h': sprintf (buffer, "%d",   this->hour ());                         break;
-    case 'H': sprintf (buffer, "%02d", this->hour ());                         break;
-    case 'n': sprintf (buffer, "%d",   this->minute ());                       break;
-    case 'N': sprintf (buffer, "%02d", this->minute ());                       break;
-    case 's': sprintf (buffer, "%d",   this->second ());                       break;
-    case 'S': sprintf (buffer, "%02d", this->second ());                       break;
-    case 'j': sprintf (buffer, "%d",   this->dayOfYear ());                    break;
-    case 'J': sprintf (buffer, "%03d", this->dayOfYear ());                    break;
-    default:  sprintf (buffer, "%c",   c);                                     break;
+    case 'm': sprintf (buffer, "%d",    this->month ());                        break;
+    case 'M': sprintf (buffer, "%02d",  this->month ());                        break;
+    case 'd': sprintf (buffer, "%d",    this->day ());                          break;
+    case 'D': sprintf (buffer, "%02d",  this->day ());                          break;
+    case 'y': sprintf (buffer, "%02d",  this->year () % 100);                   break;
+    case 'Y': sprintf (buffer, "%d",    this->year ());                         break;
+    case 'a': sprintf (buffer, "%.3s",  Date::dayName (dayOfWeek ()).c_str ()); break;
+    case 'A': sprintf (buffer, "%.10s", Date::dayName (dayOfWeek ()).c_str ()); break;
+    case 'b': sprintf (buffer, "%.3s",  Date::monthName (month ()).c_str ());   break;
+    case 'B': sprintf (buffer, "%.10s", Date::monthName (month ()).c_str ());   break;
+    case 'v': sprintf (buffer, "%d",    Date::weekOfYear (Date::dayOfWeek (context.config.get ("weekstart")))); break;
+    case 'V': sprintf (buffer, "%02d",  Date::weekOfYear (Date::dayOfWeek (context.config.get ("weekstart")))); break;
+    case 'h': sprintf (buffer, "%d",    this->hour ());                         break;
+    case 'H': sprintf (buffer, "%02d",  this->hour ());                         break;
+    case 'n': sprintf (buffer, "%d",    this->minute ());                       break;
+    case 'N': sprintf (buffer, "%02d",  this->minute ());                       break;
+    case 's': sprintf (buffer, "%d",    this->second ());                       break;
+    case 'S': sprintf (buffer, "%02d",  this->second ());                       break;
+    case 'j': sprintf (buffer, "%d",    this->dayOfYear ());                    break;
+    case 'J': sprintf (buffer, "%03d",  this->dayOfYear ());                    break;
+    default:  sprintf (buffer, "%c",    c);                                     break;
     }
 
     formatted += buffer;
@@ -525,16 +527,23 @@ int Date::length (const std::string& format)
     case 'd':
     case 'D':
     case 'y':
-    case 'A':
-    case 'b':
-    case 'B':
+    case 'v':
     case 'V':
     case 'h':
     case 'H':
+    case 'n':
     case 'N':
-    case 'S': total += 2; break;
-    case 'a': total += 3; break;
-    case 'Y': total += 4; break;
+    case 's':
+    case 'S': total += 2;  break;
+    case 'b':
+    case 'j':
+    case 'J':
+    case 'a': total += 3;  break;
+    case 'Y': total += 4;  break;
+    case 'A':
+    case 'B': total += 10; break;
+
+    // TODO This should be a calculated character width, not necessarily 1.
     default:  total += 1; break;
     }
   }
@@ -878,7 +887,7 @@ bool Date::isRelativeDate (const std::string& input)
       _t = then._t - 86400;
       return true;
     }
-    else if (found == "eom")
+    else if (found == "eom" || found == "eocm")
     {
       Date then (today.month (),
                  daysInMonth (today.month (), today.year ()),
@@ -898,6 +907,14 @@ bool Date::isRelativeDate (const std::string& input)
     else if (found == "eoy")
     {
       Date then (12, 31, today.year ());
+      _t = then._t;
+      return true;
+    }
+    else if (found == "socm")
+    {
+      int m = today.month ();
+      int y = today.year ();
+      Date then (m, 1, y);
       _t = then._t;
       return true;
     }

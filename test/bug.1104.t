@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ use strict;
 use warnings;
 use File::Copy;
 use File::Path;
-use Test::More tests => 28;
+use Test::More tests => 33;
 
 mkdir("1",       0755);
 mkdir("2",       0755);
@@ -135,6 +135,36 @@ unlike ($output, qr/Retaining/, "Must not retain changes");
 $output = qx{../src/task rc:1.rc merge 2>&1};
 ok ($? == 0, 'Exit status check');
 unlike ($output, qr/Retaining/, "Must not retain changes");
+
+# Merges 1
+$output = qx{../src/task rc:2.rc merge 2>&1};
+ok ($? == 0, 'Exit status check');
+unlike ($output, qr/Retaining/, "Must not retain changes");
+
+# now all three instances must be in sync
+$output = qx{diff 1/undo.data dropbox/undo.data};
+ok ($? == 0, 'Resource 1 up-to-date check');
+
+$output = qx{diff 2/undo.data dropbox/undo.data};
+ok ($? == 0, 'Resource 2 up-to-date check');
+
+$output = qx{diff 3/undo.data dropbox/undo.data};
+ok ($? == 0, 'Resource 3 up-to-date check');
+
+## Merges 3
+#$output = qx{../src/task rc:3.rc merge 2>&1};
+#ok ($? == 0, 'Exit status check');
+#unlike ($output, qr/Retaining/, "Must not retain changes");
+#
+## Merges 1
+#$output = qx{../src/task rc:1.rc merge 2>&1};
+#ok ($? == 0, 'Exit status check');
+#unlike ($output, qr/Retaining/, "Must not retain changes");
+#
+## Merges 1
+#$output = qx{../src/task rc:2.rc merge 2>&1};
+#ok ($? == 0, 'Exit status check');
+#unlike ($output, qr/Retaining/, "Must not retain changes");
 
 # Cleanup.
 unlink qw(1.rc 1/pending.data 1/completed.data 1/undo.data 1/backlog.data 2/pending.data 2/completed.data 2/undo.data 2.rc 2/backlog.data dropbox/completed.data dropbox/pending.data dropbox/undo.data 3/pending.data 3/undo.data 3/completed.data 3/backlog.data 3.rc);

@@ -2,7 +2,7 @@
 ###############################################################################
 # taskwarrior - a command line task list manager.
 #
-# Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+# Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -141,7 +141,7 @@ def main():
     """ Return a list of SQL statements. """
 
     # Use the taskwarrior 2.0+ export command to filter and return JSON
-    command = "task export " + " ".join(sys.argv[1:])
+    command = "task rc.verbose=nothing rc.json.array=no export " + " ".join(sys.argv[1:])
 
     # Load each task from json to a python dict
     tasks = map(json.loads, commands.getoutput(command).split(",\n"))

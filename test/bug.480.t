@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 37;
+use Test::More tests => 40;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -78,6 +78,7 @@ unlike ($output, qr/two/,   'Double: no t2');
 like   ($output, qr/three/, 'Double: yes t3');
 
 $output = qx{../src/task rc:bug.rc list -t1 -t2 -t3 2>&1};
+like ($output, qr/^No matches.$/m, 'No task listed');
 unlike ($output, qr/one/,   'Triple: no t1');
 unlike ($output, qr/two/,   'Triple: no t2');
 unlike ($output, qr/three/, 'Triple: no t3');
@@ -98,6 +99,7 @@ unlike ($output, qr/two/,   'Double: no @2');
 like   ($output, qr/three/, 'Double: yes @3');
 
 $output = qx{../src/task rc:bug.rc list -\@1 -\@2 -\@3 2>&1};
+like ($output, qr/^No matches.$/m, 'No task listed');
 unlike ($output, qr/one/,   'Triple: no @1');
 unlike ($output, qr/two/,   'Triple: no @2');
 unlike ($output, qr/three/, 'Triple: no @3');
@@ -118,6 +120,7 @@ unlike ($output, qr/two/,   'Double: no @foo.2');
 like   ($output, qr/three/, 'Double: yes @foo.3');
 
 $output = qx{../src/task rc:bug.rc list -\@foo.1 -\@foo.2 -\@foo.3 2>&1};
+like ($output, qr/^No matches.$/m, 'No task listed');
 unlike ($output, qr/one/,   'Triple: no @foo.1');
 unlike ($output, qr/two/,   'Triple: no @foo.2');
 unlike ($output, qr/three/, 'Triple: no @foo.3');

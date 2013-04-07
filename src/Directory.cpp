@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -111,13 +111,14 @@ bool Directory::remove_directory (const std::string& dir)
 
 #if defined (SOLARIS) || defined (HAIKU)
       struct stat s;
-      stat ((dir + "/" + de->d_name).c_str (), &s);
+      lstat ((dir + "/" + de->d_name).c_str (), &s);
       if (s.st_mode & S_IFDIR)
         remove_directory (dir + "/" + de->d_name);
       else
         unlink ((dir + "/" + de->d_name).c_str ());
 #else
-      if (de->d_type == DT_DIR)
+      if (de->d_type == DT_DIR ||
+          de->d_type == DT_UNKNOWN)
         remove_directory (dir + "/" + de->d_name);
       else
         unlink ((dir + "/" + de->d_name).c_str ());

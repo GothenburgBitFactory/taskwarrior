@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2010 - 2012, Johannes Schlatow.
+// Copyright 2010 - 2013, Johannes Schlatow.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,15 @@
 #include <iostream>
 #include <stdlib.h>
 #include <util.h>
+#include <string.h>
+#include <errno.h>
+#include <text.h>
+#include <i18n.h>
 #include <Transport.h>
 #include <TransportSSH.h>
 #include <TransportRSYNC.h>
 #include <TransportCurl.h>
+#include <TransportShell.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 Transport::Transport (const Uri& uri)
@@ -64,6 +69,10 @@ Transport* Transport::getTransport(const Uri& uri)
   {
     return new TransportCurl(uri);
   }
+  else if ( uri._protocol == "sh+cp")
+  {
+    return new TransportShell(uri);
+  }
 
   return NULL;
 }
@@ -87,7 +96,18 @@ int Transport::execute()
         it->append("\"");
     }
   }
-  return ::execute(_executable, _arguments);
+  int result = ::execute (_executable, _arguments);
+  int err;
+  switch (result)
+  {
+  case 127:
+    throw format (STRING_TRANSPORT_NORUN, _executable);
+  case -1:
+    err = errno;
+    throw format (STRING_TRANSPORT_NOFORK, _executable, ::strerror(err));
+  default:
+    return result;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,4 +126,42 @@ bool Transport::is_filelist(const std::string& path)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Transport::expand_braces(const std::string& path,
+                              const std::string& sourceortarget,
+                              std::vector<std::string>& paths)
+{
+  // Is is_filelist appropriate here?  We only care about {}
+  if (is_filelist(path))
+  {
+    std::string::size_type pos;
+    pos = path.find("{");
 
+    if (pos == std::string::npos)
+      throw std::string (STRING_TRANSPORT_CURL_WILDCD);
+
+    if (!is_directory(sourceortarget))
+      throw format (STRING_TRANSPORT_URI_NODIR, sourceortarget);
+
+    std::string toSplit;
+    std::string suffix;
+    std::string prefix = path.substr (0, pos);
+    std::vector<std::string> splitted;
+    toSplit = path.substr (pos+1);
+    pos = toSplit.find ("}");
+    suffix = toSplit.substr (pos+1);
+    split (splitted, toSplit.substr(0, pos), ',');
+
+    std::vector <std::string>::iterator file;
+    for (file = splitted.begin (); file != splitted.end (); ++file) {
+      std::cout << "    -- " << (prefix + *file + suffix) << "\n";
+      paths.push_back (prefix + *file + suffix);
+    }
+  }
+  else
+  {
+    // Not brace expandable - use the path as is.
+    paths.push_back (path);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////

@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -47,6 +47,7 @@ qx{../src/task rc:bug.rc 2 modify due: 2>&1};
 # Result: Somehow the due date is incremented and wraps around to 12/31/1969,
 # then keeps going back to today.
 my $output = qx{../src/task rc:bug.rc li 2>&1};
+like ($output, qr/^1 task$/ms, 'task foo shown');
 unlike ($output, qr/1969/ms, 'Should not display 12/31/1969');
 
 # Cleanup.

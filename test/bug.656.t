@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -53,7 +53,8 @@ qx{../src/task rc:bug.rc ls 2>&1};
 
 # Result: Check for an extra task the second time task ls is executed
 my $output = qx{../src/task rc:bug.rc ls 2>&1};
-unlike   ($output, qr/^\s3\s*Second recurring task\s*$/ms, 'Extra task detected.');
+like   ($output, qr/^2 tasks$/ms, '2 tasks shown.');
+unlike ($output, qr/^\s3\s*Second recurring task\s*$/ms, 'Extra task detected.');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);

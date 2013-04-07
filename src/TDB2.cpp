@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -216,7 +216,7 @@ void TF2::commit ()
       if (_file.open ())
       {
         if (context.config.getBoolean ("locking"))
-          _file.lock ();
+          _file.waitForLock ();
 
         // Write out all the added tasks.
         std::vector <Task>::iterator task;
@@ -318,7 +318,7 @@ void TF2::load_tasks ()
         _U2I[task.get ("uuid")] = task.id;
       }
     }
- 
+
     if (_auto_dep_scan)
       dependency_scan ();
 
@@ -339,9 +339,10 @@ void TF2::load_lines ()
   if (_file.open ())
   {
     if (context.config.getBoolean ("locking"))
-      _file.lock ();
+      _file.waitForLock ();
 
     _file.read (_lines);
+    _file.close ();
     _loaded_lines = true;
   }
 }
@@ -627,8 +628,9 @@ void readTaskmods (std::vector <std::string> &input,
                    std::vector <std::string>::iterator &start,
                    std::list<Taskmod> &list)
 {
+  static int   resourceID = 1;
   std::string  line;
-  Taskmod      tmod_tmp;
+  Taskmod      tmod_tmp(resourceID++);
 
   DEBUG_STR ("reading taskmods from file: ");
 
@@ -675,7 +677,7 @@ void readTaskmods (std::vector <std::string> &input,
 void TDB2::merge (const std::string& mergeFile)
 {
   ///////////////////////////////////////
-  // Copyright 2010 - 2012, Johannes Schlatow.
+  // Copyright 2010 - 2013, Johannes Schlatow.
   ///////////////////////////////////////
 
   // list of modifications that we want to add to the local database
@@ -726,26 +728,31 @@ void TDB2::merge (const std::string& mergeFile)
   ///////////////////////////////////////
   // find the branch-off point:
 
-  // first lines are not equal => assuming mergeFile starts at a
+  // first mods are not equal => assuming mergeFile starts at a
   // later point in time
-  if (lline.compare (rline) != 0)
-  {
-    // iterate in local file to find rline
-    for ( ; lit != l.end (); ++lit)
-    {
-      lline = *lit;
+  if (lline.compare (rline) == 0) {
+    std::vector<std::string>::const_iterator tmp_lit = lit;
+    std::vector<std::string>::const_iterator tmp_rit = rit;
+    tmp_lit++;
+    tmp_rit++;
 
-      // push the line to the new undo.data
-      undo_lines.push_back (lline + "\n");
-
-      // found first matching lines?
-      if (lline.compare (rline) == 0)
-        break;
+    int lookahead = 1;
+    if (tmp_lit->substr (0, 3) == "old") {
+      lookahead = 2;
     }
-  }
-  else
-  {
-	  undo_lines.push_back (lline + "\n");
+
+    while (lookahead--) {
+      if (tmp_lit->compare(*tmp_rit) != 0) {
+        break;
+      }
+      tmp_lit++;
+      tmp_rit++;
+    }
+    
+    if (lookahead == -1) {
+      // at this point we know that the first lines are the same
+      undo_lines.push_back (lline + "\n");
+    }
   }
 
   // Add some color.
@@ -783,7 +790,7 @@ void TDB2::merge (const std::string& mergeFile)
 
   if (!found)
   {
-    // set iterators to r.end() or l.end() if they are point to the last line
+    // set iterators to r.end() or l.end() if they point to the last line
     if (++rit != r.end())
       --rit;
 
@@ -804,14 +811,14 @@ void TDB2::merge (const std::string& mergeFile)
     std::set<std::string> uuid_new, uuid_left;
 
     // 1. read taskmods out of the remaining lines
-    readTaskmods (l, lit, lmods);
     readTaskmods (r, rit, rmods);
+    readTaskmods (l, lit, lmods);
 
     // 2. move new uuids into mods
     DEBUG_STR_PART ("adding new uuids (left) to skip list...");
 
     // modifications on the left side are already in the database
-    // we just need them to merge conflicts, so we add new the mods for
+    // we just need them to merge conflicts, so we add the mods for
     // new uuids to the skip-list 'uuid_left'
     std::list<Taskmod>::iterator lmod_it;
     for (lmod_it = lmods.begin (); lmod_it != lmods.end (); lmod_it++)
@@ -842,9 +849,27 @@ void TDB2::merge (const std::string& mergeFile)
       std::list<Taskmod>::iterator current = rmod_it++;
       Taskmod tmod = *current;
 
-      // new uuid?
-      if (tmod.isNew ())
+      if (uuid_left.find (tmod.getUuid ()) != uuid_left.end ())
       {
+        // check whether the remote side has added a task with the same UUID
+        //  this happens if it inserted a modification with an older timestamp
+        //  into the undo.data and thereby moved the branch point to an earlier
+        //  point in time. Normally this case will be solved by the merge logic,
+        //  BUT if the UUID is considered new the merge logic will be skipped.
+        //
+        //  This flaw resulted in a couple of duplication issues and bloated 
+        //  undo files (e.g. #1104).
+        //
+        //  This is just a "hack" which discards all the modifications of the
+        //  remote side to UUIDs that are considered new by both sides.
+        //  There may be more issues with the algorithm; probably a redesign
+        //  and proper encapsulation of the merge algorithm is due.
+
+        rmods.erase(current);
+      }
+      else if (tmod.isNew ())
+      {
+        // new uuid?
 /*
         // TODO Don't forget L10N.
         std::cout << "Adding new remote task             "
@@ -1217,8 +1242,8 @@ void TDB2::merge (const std::string& mergeFile)
     // now we merge mods (new modifications from mergefile)
     // with lmods (part of old undo.data)
     lmods.sort(compareTaskmod);
-    mods.merge (lmods);
-    mods.merge (mods_history);
+    mods.merge (lmods, compareTaskmod);
+    mods.merge (mods_history, compareTaskmod);
 
     // generate undo.data format
     std::list<Taskmod>::iterator it;
@@ -1533,26 +1558,37 @@ void TDB2::revert ()
     {
       context.debug ("TDB::undo - task found in completed.data");
 
-      // If task now belongs back in pending.data
-      if (prior.find ("status:\"pending\"")   != std::string::npos ||
-          prior.find ("status:\"waiting\"")   != std::string::npos ||
-          prior.find ("status:\"recurring\"") != std::string::npos)
+      // Either revert if there was a prior state, or remove the task.
+      if (prior != "")
       {
-        c.erase (task);
-        p.push_back (prior);
-        File::write (completed._file._data, c);
-        File::write (pending._file._data, p);
-        File::write (undo._file._data, u);
-        std::cout << STRING_TDB2_REVERTED << "\n";
-        context.debug ("TDB::undo - task belongs in pending.data");
+        *task = prior;
+        if (task->find ("status:\"pending\"")   != std::string::npos ||
+            task->find ("status:\"waiting\"")   != std::string::npos ||
+            task->find ("status:\"recurring\"") != std::string::npos)
+        {
+          c.erase (task);
+          p.push_back (prior);
+          File::write (completed._file._data, c);
+          File::write (pending._file._data, p);
+          File::write (undo._file._data, u);
+          std::cout << STRING_TDB2_REVERTED << "\n";
+          context.debug ("TDB::undo - task belongs in pending.data");
+        }
+        else
+        {
+          File::write (completed._file._data, c);
+          File::write (undo._file._data, u);
+          std::cout << STRING_TDB2_REVERTED << "\n";
+          context.debug ("TDB::undo - task belongs in completed.data");
+        }
       }
       else
       {
-        *task = prior;
+        c.erase (task);
         File::write (completed._file._data, c);
         File::write (undo._file._data, u);
         std::cout << STRING_TDB2_REVERTED << "\n";
-        context.debug ("TDB::undo - task belongs in completed.data");
+        context.debug ("TDB::undo - task removed");
       }
 
       std::cout << STRING_TDB2_UNDO_COMPLETE << "\n";

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -62,6 +62,8 @@ public:
   bool is_blocked;
   bool is_blocking;
 
+  int annotation_count;
+
   // Series of helper functions.
   static status textToStatus (const std::string&);
   static std::string statusToText (status);
@@ -96,6 +98,7 @@ public:
   void getTags (std::vector<std::string>&) const;
   void removeTag (const std::string&);
 
+  bool hasAnnotations () const;
   void getAnnotations (std::map <std::string, std::string>&) const;
   void setAnnotations (const std::map <std::string, std::string>&);
   void addAnnotation (const std::string&);

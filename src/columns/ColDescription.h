@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -42,11 +42,13 @@ public:
   ~ColumnDescription ();
 
   bool validate (std::string&);
-  void measure (Task&, int&, int&);
+  void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
 
 private:
   bool _hyphenate;
+  std::string _dateformat;
+  int _indent;
 };
 
 #endif

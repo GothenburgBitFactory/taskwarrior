@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2010 - 2012, Johannes Schlatow.
+// Copyright 2010 - 2013, Johannes Schlatow.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,12 +35,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 TransportCurl::TransportCurl(const Uri& uri) : Transport(uri)
 {
-	_executable = "curl";
+  _executable = "curl";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TransportCurl::send(const std::string& source)
 {
+  std::vector<std::string> sourcelist;
+  std::vector<std::string>::const_iterator source_iter;
+
   if (_uri._host == "")
     throw std::string (STRING_TRANSPORT_CURL_URI);
 
@@ -50,24 +53,22 @@ void TransportCurl::send(const std::string& source)
     _arguments.push_back(_uri._user);
   }
 
-  if (is_filelist(source))
-  {
-    std::string::size_type pos;
-    pos = source.find("{");
+  if (is_filelist (source)) {
+    expand_braces (source, _uri._data, sourcelist);
+    // Is there more than one source?
+    // Then path has to end with a '/'
+    if (sourcelist.size () > 1 && !_uri.is_directory ())
+      throw format (STRING_TRANSPORT_URI_NODIR, _uri);
 
-    if (pos == std::string::npos)
-      throw std::string (STRING_TRANSPORT_CURL_WILDCD);
-
-    if (!_uri.is_directory())
-      throw format (STRING_TRANSPORT_URI_NODIR, _uri._path);
-
-    _arguments.push_back ("-T");
-    _arguments.push_back ("\"" + escape (source, ' ') + "\"");
+    for (source_iter = sourcelist.begin (); source_iter != sourcelist.end (); ++source_iter) {
+      _arguments.push_back ("-T");
+      _arguments.push_back ("\"" + escape (*source_iter, ' ') + "\"");
+    }
   }
   else
   {
     _arguments.push_back ("-T");
-    _arguments.push_back (escape (source, ' '));
+    _arguments.push_back ("\"" + escape (source, ' ') + "\"");
   }
 
   // cmd line is: curl -T source protocol://host:port/path
@@ -80,14 +81,8 @@ void TransportCurl::send(const std::string& source)
     _arguments.push_back (_uri._protocol + "://" + _uri._host + "/" + _uri._path);
   }
 
-  int result = execute();
-  if (result)
-  {
-    if (result == 127) // command not found
-      throw std::string (STRING_TRANSPORT_CURL_NORUN);
-    else
-      throw std::string (STRING_TRANSPORT_CURL_FAIL);
-  }
+  if (execute ())
+    throw std::string (STRING_TRANSPORT_CURL_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,28 +101,14 @@ void TransportCurl::recv(std::string target)
 
   if (is_filelist(_uri._path))
   {
-    std::string::size_type pos;
-    pos = _uri._path.find("{");
 
-    if (pos == std::string::npos)
-      throw std::string (STRING_TRANSPORT_CURL_WILDCD);
-
-    if (!is_directory(target))
-      throw format (STRING_TRANSPORT_URI_NODIR, target);
-
-    std::string toSplit;
-    std::string suffix;
-    std::string prefix = target;
-    std::vector<std::string> splitted;
-    toSplit = _uri._path.substr (pos+1);
-    pos = toSplit.find ("}");
-    suffix = toSplit.substr (pos+1);
-    split (splitted, toSplit.substr(0, pos), ',');
+    std::vector<std::string> paths;
+    expand_braces (_uri._path, target, paths);
 
     std::vector <std::string>::iterator file;
-    for (file = splitted.begin (); file != splitted.end (); ++file) {
+    for (file = paths.begin (); file != paths.end (); ++file) {
       targetargs.push_back ("-o");
-      targetargs.push_back (prefix + *file + suffix);
+      targetargs.push_back (*file);
     }
   }
   else
@@ -148,14 +129,8 @@ void TransportCurl::recv(std::string target)
 
   _arguments.insert (_arguments.end (), targetargs.begin (), targetargs.end ());
 
-  int result = execute();
-  if (result)
-  {
-    if (result == 127) // command not found
-      throw std::string (STRING_TRANSPORT_CURL_NORUN);
-    else
-      throw std::string (STRING_TRANSPORT_CURL_FAIL);
-  }
+  if (execute ())
+    throw std::string (STRING_TRANSPORT_CURL_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

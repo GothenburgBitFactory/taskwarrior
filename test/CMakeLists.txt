@@ -8,8 +8,8 @@ include_directories (${CMAKE_SOURCE_DIR}
 
 set (test_SRCS autocomplete.t color.t config.t date.t directory.t dom.t
                duration.t file.t i18n.t json.t list.t msg.t nibbler.t path.t
-               rx.t t.t t2.t taskmod.t tdb2.t text.t uri.t util.t view.t
-               json_test)
+               rx.t t.t t2.t taskmod.t tdb2.t text.t uri.t utf8.t util.t view.t
+               width.t json_test)
 
 message ("-- Configuring run_all")
 set (TESTBLOB "*.t")

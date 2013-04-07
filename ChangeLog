@@ -1,14 +1,26 @@
 ------ current release ---------------------------
 
-2.2.0 () -
+2.2.0 (2013-04-07) 05f7948f7e70d7be3642bdc336faace52eaa9dfb
 
 Features
  + Added Feature #685, which provides a 'blocking' report, and new color rule
    (thanks to Michelle Crane).
  + Added Feature #953, which includes the total number of blocked and blocking
    tasks to the 'statistics' command output (thanks to T. Charles Yun).
+ + Added Feature #1039, which adds new date shortcuts, 'socm' and 'eocm',
+   meaning start and end of current month (thanks to Thomas Sullivan,
+   Louis-Claude Canon).
+ + Added Feature #1061, which allows the 'columns' command to use a search
+   string for the column name (thanks to Uli Martens).
  + Added Feature #1069, which gives a clearer error when a UDA
    is added without the uda.<uda-name>.type variable.
+ + Added Feature #1099, which supports the 'color.uda.<uda-name>' color rule
+   (thanks to Florian Hollerweger).
+ + Added Feature #1124, which provides a '_show' command that displays all
+   configuration defaults and settings, for use by third-party software (thanks
+   to Jake Bell).
+ + Added feature #1147, applying patch to display duration of each activity
+   session (thanks to Justin Forest).
  + The 'projects' command now outputs abstract parents and reduces
    repetition by not printing parent names in front of children names.
  + Added framework for testing bash autocompletion.
@@ -17,13 +29,24 @@ Features
  + Removed deprecated 'fg:' and 'bg:' attributes.
  + The 'diagnostics' command now reports libuuid details.
  + New characters for parsing and formating dates ('n', 's' and 'v').
- + Virtual tags.
+ + Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, TODAY, OVERDUE,
+   ACTIVE, SCHEDULED, CHILD, UNTIL, WAITING and ANNOTATED).
  + New 'modified' attribute, which contains the most recent modification date,
    if a modification has occurred.
+ + Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
+ + Added new export script: export-tsv.pl.
+ + Added the configuration variable 'print.empty.columns'.
+ + The 'push' and 'pull' commands now properly distinguish between a missing
+   transport utility and other errors (thanks to Russell Steicke).
+ + Removed support for Lua extensions.
+ + Added tips.fr-FR (thanks to YBSAR).
+ + Added tips.es-ES (thanks to Fidel Mato).
 
 Bugs
- + Fixed bug #1031, which kept expanding aliases after the '--' operator (thanks
-   to Jim B).
+ + Fixed bug #642, so that the default 'data.location=~/.task' preserves the
+   '~', leading to more portable .taskrc files (thanks to alparo).
+ + Fixed bug #947, #1031, which kept expanding aliases after the '--' operator
+   (thanks to Jim B).
  + Fixed bug #1038, which prints blank lines with bulk changes and when the
    verbose attributes does not specify it. Lines do a better separation between
    each changes also.
@@ -32,18 +55,91 @@ Bugs
  + Fixed bug #1043, where aliases were not recognized by bash autocompletion.
  + Fixed bug #1044, where 'task projects' considers newly deleted tasks and
    provides an incorrect summary.
+ + Fixed bug #1047, which caused extra commas in exported JSON when UDA orphans
+   were present (thanks to Thomas Sullivan).
  + Fixed bug #1048, which segfaulted rather than complain about syntax (thanks
    to Bryce Harrington, Štěpán Henek).
+ + Fixed bug #1053, where ' characters were not escaped by export-csv.pl (thanks
+   to John Florian).
  + Fixed bug #1056, where CmdSummary did not print abstract parents.
  + Fixed bug #1059, where CmdEdit was running garbage collection.
  + Fixed bug #1060, where an error was not thrown correctly.
+ + Fixed bug #1063, so that numeric UDA fields are now sortable (thanks to Max
+   Muller).
  + Fixed bug #1065, where CmdShow issued messages in incorrect situations.
  + Partially fixed #1083, which showed 'task 0 ...' when modifying a non-
    pending task (thanks to Aikido Guy).
+ + Fixed bug #1087, which gave incorrect task/line counts under certain
+   conditions.
+ + Fixed bug #1091, allowing filters to use 'urgency.over:4.5'.
+ + Fixed bug #1110, which did not treat 'status:Completed' the same
+   as 'status:completed' (thanks to Aikido Guy).
+ + Fixed bug #1118, which dropped changes after edits were rejected (thanks to
+   Ben Boeckel).
+ + Fixed bug #1123, which caused the undo of a 'log' command to corrupt the data
+   file (thanks to Tim None).
+ + Fixed bug #1128, which caused 'age' columns to be right-justified instead of
+   left-justified (thanks to Steve Rader).
+ + Fixed bug #1136, #1177, which incorrectly line-wrapped tasks with annotations
+   (thanks to Steve Rader, T. Charles Yun).
+ + Fixed bug #1135, #1137, which caused file locks to be non-blocking (thanks
+   to Steve Rader).
+ + Fixed bug #1150, which referenced deprecated features in the tutorial man
+   page (thanks to Benjamin Weber).
+ + Fixed bug #1154, which now allows priorities to be specified in any case.
+ + Fixed bug #1178, which included binary libraries in the released source
+   package (thanks to Jakub Wilk).
+ + Fixed bug #1181, where single-character columns were often rendered using
+   widths larger than 1 (thanks to Max Muller).
+ + Fixed bug #1183, correcting error message typos (thanks to Jakub Wilk).
+ + Fixed bug #1184, correcting man page formatting (thanks to Jakub Wilk).
+ + Fixed bug #1185, correcting man page install location for out-of-tree
+   builds (thanks to Jakub Wilk).
+ + Fixed bug #1189, which caused wide Asian UTF8 characters to be measured as
+   narrow characters (thanks to Roy Zuo).
+ + Fixed bug #1191, which kept file locks active for longer than necessary,
+   and caused the 'execute' command to be considered a 'write' command.
+ + Fixed bug #1192, which failed to expand braces internally, as POSIX /bin/sh
+   does not do {} expansion, thereby causing push/pull errors (thanks to Russell
+   Steicke).
+ + Fixed bug #1194, so that $HOME has precedence over the passwd db when looking
+   for the user's home directory (thanks to Jakub Wilk).
+ + Fixed bug #1199, where 'stat' was used instead of 'lstat' (thanks to Jakub
+   Wilk).
+ + Fixed bug #1200, where directory removal didn't handle d_type==DT_UNKNOWN
+   (thanks to Jakub Wilk).
+ + Fixed bug #1209, spelling mistake in reference page (thanks to Friedrich
+   Heusler).
+ + Fixed bug #1210 so that widths are taken from localized strings instead of
+   hardcoded.
+ + Fixed bug #1218 so that description columns minimum width is calculated
+   correctly.
+ + Improved hyphenation by splitting on commas (even if no whitespace after).
+   Leads to better output of, for example, 'task show', where comma-separated
+   lists are common.
  + No more bash completion of, for example, 'projABC:', or of 'proj:' if
    abbreviation.minimum is greater than 4.
  + Fixed bug where shadow files are not properly created when there is a missing
    .taskrc file (thanks to Pietro Cerutti).
+ + Fixed bug with 'socm' date calculation that failed on some days, by
+   simplifying the implementation.
+ + Fix a bug where 'print.empty.columns=no' resulted in never printing the
+   project column.
+ + Integrated latest UTF8 character width calculations from Markus Kuhn.
+ + Fixed bug where localized UTF8 strings were not properly substr'd (thanks to
+   Fidel Mato).
+ + Fixed a bug where the bash completion script was causing gc() to be run.
+ + Fixed manpages that were not installed when running an out-of-source build
+   (thanks to Vincent Petithory).
+ + Added missing localized confirmation strings (thanks to Rainer Müller).
+ + Fixed bug that added an extra newline after setting the terminal title
+   (thanks to Rainer Müller).
+ + Fixed a bug where the terminal title was tried to be set without a tty
+   (thanks to Rainer Müller).
+ + Fixed hook tests to work on released code (thanks to Jakub Wilk).
+ + Fixed bug where arguments passed to 'task execute' needed double escaping.
+ + Fixed a bug so that the report filter order is preserved, to enable an
+   optimization that was being skipped.
 
 ------ old releases ------------------------------
 

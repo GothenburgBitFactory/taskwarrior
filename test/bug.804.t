@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -33,9 +33,11 @@ use Test::More tests => 6;
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
-  print $fh "data.location=.\n";
-  print $fh "bulk=100\n";
-  print $fh "confirmation=no\n";
+  print $fh "data.location=.\n",
+            "bulk=100\n",
+            "confirmation=no\n",
+            "print.empty.columns=yes\n",
+            "report.ls.labels=ID,Project,Pri,Description\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }

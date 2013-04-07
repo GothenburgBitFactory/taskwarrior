@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -70,49 +70,6 @@ void ColumnScheduled::setStyle (const std::string& value)
 
   if (_style == "countdown" && _label == STRING_COLUMN_LABEL_DUE)
     _label = STRING_COLUMN_LABEL_COUNT;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Set the minimum and maximum widths for the value.
-void ColumnScheduled::measure (Task& task, int& minimum, int& maximum)
-{
-  minimum = maximum = 0;
-
-  if (task.has (_name))
-  {
-    if (_style == "countdown")
-    {
-      Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
-      Date now;
-      minimum = maximum = Duration (now - date).format ().length ();
-    }
-    else
-      ColumnDate::measure (task, minimum, maximum);
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ColumnScheduled::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-  if (task.has (_name))
-  {
-    if (_style == "countdown")
-    {
-      Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
-      Date now;
-
-      lines.push_back (
-        color.colorize (
-          rightJustify (
-            Duration (now - date).format (), width)));
-    }
-    else
-      ColumnDate::render (lines, task, width, color);
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

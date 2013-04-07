@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -173,6 +173,7 @@ int CmdShow::execute (std::string& output)
     " monthsperline"
     " nag"
     " patterns"
+    " print.empty.columns"
     " pull.default.uri"
     " push.default.uri"
     " recurrence.indicator"
@@ -230,6 +231,7 @@ int CmdShow::execute (std::string& output)
       if (i->substr (0, 14) != "color.keyword."        &&
           i->substr (0, 14) != "color.project."        &&
           i->substr (0, 10) != "color.tag."            &&
+          i->substr (0, 10) != "color.uda."            &&
           i->substr (0,  8) != "holiday."              &&
           i->substr (0,  7) != "report."               &&
           i->substr (0,  6) != "alias."                &&
@@ -396,6 +398,36 @@ int CmdShow::execute (std::string& output)
 
   output = out.str ();
   return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+CmdShowRaw::CmdShowRaw ()
+{
+  _keyword     = "_show";
+  _usage       = "task          _show";
+  _description = STRING_CMD_SHOWRAW;
+  _read_only   = true;
+  _displays_id = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdShowRaw::execute (std::string& output)
+{
+  // Get all the settings.
+  std::vector <std::string> all;
+  context.config.all (all);
+
+  // Sort alphabetically by name.
+  std::sort (all.begin (), all.end ());
+
+  // Display them all.
+  std::vector <std::string>::iterator i;
+  std::stringstream out;
+  for (i = all.begin (); i != all.end (); ++i)
+    out << *i << '=' << context.config.get (*i) << "\n";
+
+  output = out.str ();
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

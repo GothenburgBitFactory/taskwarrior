@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@
 #define L10N                                           // Localization complete.
 
 #include <string>
+#include <text.h>
 #include <utf8.h>
 #include <i18n.h>
 
@@ -174,7 +175,7 @@ int utf8_sequence (unsigned int character)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Length of a string in characters.
-int utf8_length (const std::string& str)
+unsigned int utf8_length (const std::string& str)
 {
   int byteLength = str.length ();
   int charLength = byteLength;
@@ -193,7 +194,20 @@ int utf8_length (const std::string& str)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int utf8_text_length (const std::string& str)
+// Width of a string in character cells.
+unsigned int utf8_width (const std::string& str)
+{
+  unsigned int length = 0;
+  std::string::size_type i = 0;
+  unsigned int c;
+  while ((c = utf8_next_char (str, i)))
+    length += mk_wcwidth (c);
+
+  return length;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+unsigned int utf8_text_length (const std::string& str)
 {
   int byteLength = str.length ();
   int charLength = byteLength;
@@ -228,6 +242,58 @@ int utf8_text_length (const std::string& str)
   }
 
   return charLength;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+unsigned int utf8_text_width (const std::string& str)
+{
+  bool in_color = false;
+
+  unsigned int length = 0;
+  std::string::size_type i = 0;
+  unsigned int c;
+  while ((c = utf8_next_char (str, i)))
+  {
+    if (in_color)
+    {
+      if (c == 'm')
+        in_color = false;
+    }  
+    else if (c == 033)
+    {
+      in_color = true;
+    }
+    else
+      length += mk_wcwidth (c);
+  }
+
+  return length;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string utf8_substr (
+  const std::string& input,
+  unsigned int start,
+  unsigned int length /*=0*/)
+{
+  // Find the starting index.
+  std::string::size_type index_start = 0;
+  for (unsigned int i = 0; i < start; i++)
+    utf8_next_char (input, index_start);
+
+  std::string result;
+  if (length)
+  {
+    std::string::size_type index_end = index_start;
+    for (unsigned int i = 0; i < length; i++)
+      utf8_next_char (input, index_end);
+
+    result = input.substr (index_start, index_end - index_start);
+  }
+  else
+    result = input.substr (index_start);
+
+  return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

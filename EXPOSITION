@@ -26,7 +26,7 @@ Command Line Parsing
 
 
 Dispatch
-  Dispatch is simple:  once the command line is parsed, the command is used to
+  Dispatch is simple: once the command line is parsed, the command is used to
   look up a command object, then call its execute method.
 
   Context stores an associative map of command object pointers indexed by a
@@ -152,12 +152,11 @@ Test Suite
   There are currently over 5,000 unit tests, that take a minute or two to run
   in total.
 
-  There is a tinderbox that runs on a variable frequency.  As a release
-  approaches, the frequency is boosted so there are always current results to be
-  found.  Between releases the tinderbox runs daily.  It is intended that this
-  be modified for continuous integration, so it runs once per commit.
+  Taskwarrior uses flod software to automate continuous integration across
+  many platforms. Code changes are automatically detected, propagated, built and
+  tested on a variety of participating platforms. Grid testing results are here:
 
-    http://tasktools.org/tinderbox/task.html
+    http://tasktools.org/tinderbox/taskwarrior.html
 
   When making code changes, it is important that the test suite be run to verify
   that functionality was not broken.
@@ -189,9 +188,9 @@ Patches
     - Conforms to the prevailing coding standards - in other words, it should
       fit right in with the existing code.
 
-  A patch may be rejected for any of the above reasons, and more.  Bad patches
-  may be accepted and modified depending on work load and mood.  It is possible
-  that a patch may be rejected because it conflicts in some way with plans or
-  upcoming changes.
+  A patch may be rejected for not following the above guidelines, and more.
+  Bad patches may be accepted and modified depending on work load and mood.  It
+  is possible that a patch may be rejected because it conflicts in some way with
+  plans or upcoming changes.
 
 ---

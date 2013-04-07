@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
 #include <Context.h>
 #include <ColProject.h>
 #include <text.h>
+#include <utf8.h>
 #include <util.h>
 #include <i18n.h>
 
@@ -67,7 +68,7 @@ bool ColumnProject::validate (std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnProject::measure (Task& task, int& minimum, int& maximum)
+void ColumnProject::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   std::string project = task.get (_name);
 
@@ -87,7 +88,7 @@ void ColumnProject::measure (Task& task, int& minimum, int& maximum)
     throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 
   minimum = longestWord (project);
-  maximum = project.length ();
+  maximum = utf8_width (project);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

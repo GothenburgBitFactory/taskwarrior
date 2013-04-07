@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -41,10 +41,12 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 668: URL should allow users with dot character
 
 my $output = qx{../src/task rc:bug.rc merge user.name\@taskwarrior.org:undo.data 2>&1};
+like ($output, qr/ssh failed/, 'ssh does not connect');
 unlike ($output, qr/not a valid modifier/, 'scp syntax with dots');
 unlike ($output, qr/not in the expected format/, 'scp syntax with dots');
 
 $output = qx{../src/task rc:bug.rc merge ssh://user.name\@taskwarrior.org/undo.data 2>&1};
+like ($output, qr/ssh failed/, 'ssh does not connect');
 unlike ($output, qr/not a valid modifier/, 'standard syntax with dots');
 unlike ($output, qr/not in the expected format/, 'standard syntax with dots');
 

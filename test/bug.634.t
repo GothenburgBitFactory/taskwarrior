@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
@@ -45,7 +45,8 @@ if (open my $fh, '>', 'bug.rc')
 qx{../src/task rc:bug.rc add Test 2>&1};
 
 # Result: Attempt to undo add with confirmation=off
-my $output = qx{echo 'n' |../src/task rc:bug.rc rc.confirmation=off undo 2>&1};
+my $output = qx{echo 'n' | ../src/task rc:bug.rc rc.confirmation=off undo 2>&1};
+like ($output, qr/^Task removed.$/ms, 'Task removed.');
 unlike ($output, qr/Are you sure/ms, 'Undo honours confirmation=off.');
 
 # Cleanup.

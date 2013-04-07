@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -685,7 +685,8 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     if (type != "")
     {
       std::string value = findValue (after, "\n  UDA " + col->first + ":");
-      if (task.get (col->first) != value)
+      if ((task.get (col->first) != value) && (type != "date" ||
+           (task.get (col->first) != Date(value, dateformat).toEpochString ())))
       {
         if (value != "")
         {
@@ -770,6 +771,7 @@ bool CmdEdit::editFile (Task& task)
 
   // Format the contents, T -> text, write to a file.
   std::string before = formatTask (task, dateformat);
+  std::string before_orig = before;
   File::write (file.str (), before);
 
   // Determine correct editor: .taskrc:editor > $VISUAL > $EDITOR > vi
@@ -800,7 +802,7 @@ ARE_THESE_REALLY_HARMFUL:
 
   // Update task based on what can be parsed back out of the file, but only
   // if changes were made.
-  if (before != after)
+  if (before_orig != after)
   {
     std::cout << STRING_EDIT_CHANGES << "\n";
     std::string problem = "";

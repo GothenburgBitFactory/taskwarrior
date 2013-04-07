@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,13 +35,15 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (179);
+  UnitTest t (205);
 
   try
   {
     Date now;
     Date yesterday;
     yesterday -= 86400;
+    Date tomorrow;
+    tomorrow += 86400;
 
     t.ok    (yesterday <= now,       "yesterday <= now");
     t.ok    (yesterday <  now,       "yesterday < now");
@@ -49,6 +51,13 @@ int main (int argc, char** argv)
     t.ok    (yesterday != now,       "yesterday != now");
     t.ok    (now       >= yesterday, "now >= yesterday");
     t.ok    (now       >  yesterday, "now > yesterday");
+
+    t.ok    (tomorrow >= now,        "tomorrow >= now");
+    t.ok    (tomorrow >  now,        "tomorrow > now");
+    t.notok (tomorrow == now,        "!(tomorrow == now)");
+    t.ok    (tomorrow != now,        "tomorrow != now");
+    t.ok    (now      <= tomorrow,   "now <= tomorrow");
+    t.ok    (now      <  tomorrow,   "now < tomorrow");
 
     // Date::Date ("now")
     Date relative_now ("now");
@@ -142,8 +151,6 @@ int main (int argc, char** argv)
     t.is (happyNewYear.month (),     1, "1/1/2008 == January");
     t.is (happyNewYear.day (),       1, "1/1/2008 == 1");
     t.is (happyNewYear.year (),   2008, "1/1/2008 == 2008");
-
-    t.is (now - yesterday, 86400, "today - yesterday == 1");
 
     t.is (happyNewYear.toString (), "1/1/2008", "toString 1/1/2008");
 
@@ -273,12 +280,6 @@ int main (int argc, char** argv)
     Date r1 ("today");
     t.ok (r1.sameDay (now), "today = now");
 
-    Date r2 ("tomorrow");
-    t.ok (r2.sameDay (now + 86400), "tomorrow = now + 1d");
-
-    Date r3 ("yesterday");
-    t.ok (r3.sameDay (now - 86400), "yesterday = now - 1d");
-
     Date r4 ("sunday");
     if (now.dayOfWeek () >= 0)
       t.ok (r4.sameDay (now + (0 - now.dayOfWeek () + 7) * 86400), "next sunday");
@@ -324,26 +325,32 @@ int main (int argc, char** argv)
     Date r11 ("eow");
     t.ok (r11 < now + (8 * 86400), "eow < 7 days away");
 
-    Date r20 ("eocw");
-    t.ok (r20 < now + (8 * 86400), "eocw < 7 days away");
+    Date r12 ("eocw");
+    t.ok (r12 < now + (8 * 86400), "eocw < 7 days away");
 
-    Date r12 ("eom");
-    t.ok (r12.sameMonth (now), "eom in same month as now");
+    Date r13 ("eom");
+    t.ok (r13.sameMonth (now), "eom in same month as now");
 
-    Date r13 ("eoy");
-    t.ok (r13.sameYear (now), "eoy in same year as now");
+    Date r14 ("eocm");
+    t.ok (r14.sameMonth (now), "eocm in same month as now");
 
-    Date r14 ("sow");
-    t.ok (r14 < now + (8 * 86400), "sow < 7 days away");
+    Date r15 ("eoy");
+    t.ok (r15.sameYear (now), "eoy in same year as now");
 
-    Date r21 ("socw");
-    t.ok (r21 < now + (8 * 86400), "sow < 7 days away");
+    Date r16 ("sow");
+    t.ok (r16 < now + (8 * 86400), "sow < 7 days away");
 
-    Date r15 ("som");
-    t.notok (r15.sameMonth (now), "som not in same month as now");
+    Date r23 ("socw");
+    t.ok (r23 < now + (8 * 86400), "sow < 7 days away");
 
-    Date r16 ("soy");
-    t.notok (r16.sameYear (now), "soy not in same year as now");
+    Date r17 ("som");
+    t.notok (r17.sameMonth (now), "som not in same month as now");
+
+    Date r18 ("socm");
+    t.ok (r18.sameMonth (now), "socm in same month as now");
+
+    Date r19 ("soy");
+    t.notok (r19.sameYear (now), "soy not in same year as now");
 
     Date first ("1st");
     t.notok (first.sameMonth (now), "1st not in same month as now");
@@ -372,34 +379,58 @@ int main (int argc, char** argv)
     t.ok (eoq.sameYear (now),  "eoq is in same year as now");
 
     // Date::sameHour
-    Date r17 ("6/7/2010 01:00:00", "m/d/Y H:N:S");
-    Date r18 ("6/7/2010 01:59:59", "m/d/Y H:N:S");
-    t.ok (r17.sameHour (r18), "two dates within the same hour");
+    Date r20 ("6/7/2010 01:00:00", "m/d/Y H:N:S");
+    Date r21 ("6/7/2010 01:59:59", "m/d/Y H:N:S");
+    t.ok (r20.sameHour (r21), "two dates within the same hour");
 
-    Date r19 ("6/7/2010 00:59:59", "m/d/Y H:N:S");
-    t.notok (r17.sameHour (r19), "two dates not within the same hour");
+    Date r22 ("6/7/2010 00:59:59", "m/d/Y H:N:S");
+    t.notok (r20.sameHour (r22), "two dates not within the same hour");
 
     // Date::operator-
-    Date r22 (1234567890);
-    t.is ((r22 - 1).toEpoch (), 1234567889, "1234567890 - 1 = 1234567889");
+    Date r25 (1234567890);
+    t.is ((r25 - 1).toEpoch (), 1234567889, "1234567890 - 1 = 1234567889");
 
     // Date::operator--
-    Date r23 (11, 7, 2010, 23, 59, 59);
-    r23--;
-    t.is (r23.toString ("YMDHNS"), "20101106235959", "decrement across fall DST boundary");
+    Date r26 (11, 7, 2010, 23, 59, 59);
+    r26--;
+    t.is (r26.toString ("YMDHNS"), "20101106235959", "decrement across fall DST boundary");
 
-    Date r24 (3, 14, 2010, 23, 59, 59);
-    r24--;
-    t.is (r24.toString ("YMDHNS"), "20100313235959", "decrement across spring DST boundary");
+    Date r27 (3, 14, 2010, 23, 59, 59);
+    r27--;
+    t.is (r27.toString ("YMDHNS"), "20100313235959", "decrement across spring DST boundary");
 
     // Date::operator++
-    Date r25 (11, 6, 2010, 23, 59, 59);
-    r25++;
-    t.is (r25.toString ("YMDHNS"), "20101107235959", "increment across fall DST boundary");
+    Date r28 (11, 6, 2010, 23, 59, 59);
+    r28++;
+    t.is (r28.toString ("YMDHNS"), "20101107235959", "increment across fall DST boundary");
 
-    Date r26 (3, 13, 2010, 23, 59, 59);
-    r26++;
-    t.is (r26.toString ("YMDHNS"), "20100314235959", "increment across spring DST boundary");
+    Date r29 (3, 13, 2010, 23, 59, 59);
+    r29++;
+    t.is (r29.toString ("YMDHNS"), "20100314235959", "increment across spring DST boundary");
+
+    // int Date::length (const std::string&);
+    t.is (Date::length ("m"), 2,  "length 'm' --> 2");
+    t.is (Date::length ("M"), 2,  "length 'M' --> 2");
+    t.is (Date::length ("d"), 2,  "length 'd' --> 2");
+    t.is (Date::length ("D"), 2,  "length 'D' --> 2");
+    t.is (Date::length ("y"), 2,  "length 'y' --> 2");
+    t.is (Date::length ("Y"), 4,  "length 'Y' --> 4");
+    t.is (Date::length ("a"), 3,  "length 'a' --> 3");
+    t.is (Date::length ("A"), 10, "length 'A' --> 10");
+    t.is (Date::length ("b"), 3,  "length 'b' --> 3");
+    t.is (Date::length ("B"), 10, "length 'B' --> 10");
+    t.is (Date::length ("v"), 2,  "length 'v' --> 2");
+    t.is (Date::length ("V"), 2,  "length 'V' --> 2");
+    t.is (Date::length ("h"), 2,  "length 'h' --> 2");
+    t.is (Date::length ("H"), 2,  "length 'H' --> 2");
+    t.is (Date::length ("n"), 2,  "length 'n' --> 2");
+    t.is (Date::length ("N"), 2,  "length 'N' --> 2");
+    t.is (Date::length ("s"), 2,  "length 's' --> 2");
+    t.is (Date::length ("S"), 2,  "length 'S' --> 2");
+    t.is (Date::length ("j"), 3,  "length 'j' --> 3");
+    t.is (Date::length ("J"), 3,  "length 'J' --> 3");
+
+    t.is (Date::length (" "), 1, "length ' ' --> 1");
   }
 
   catch (const std::string& e)

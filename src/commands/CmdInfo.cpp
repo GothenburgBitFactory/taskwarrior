@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -382,6 +382,7 @@ int CmdInfo::execute (std::string& output)
       std::string current;
       unsigned int i = 0;
       long total_time = 0;
+      long last_timestamp = 0;
       while (i < undo.size ())
       {
         when = undo[i++];
@@ -403,7 +404,7 @@ int CmdInfo::execute (std::string& output)
 
             Task before (previous.substr (4));
             Task after (current.substr (4));
-            journal.set (row, 1, taskInfoDifferences (before, after, dateformat));
+            journal.set (row, 1, taskInfoDifferences (before, after, dateformat, last_timestamp, timestamp.toEpoch()));
 
             // calculate the total active time
             if (before.get ("start") == ""

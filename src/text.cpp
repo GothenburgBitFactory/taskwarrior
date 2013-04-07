@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -56,16 +56,10 @@ void wrapText (
   const int width,
   bool hyphenate)
 {
-  std::string copy = text;
   std::string line;
-
-  int modified_width = width > 0 ? width : 1;
-
-  while (copy.length ())  // Used as Boolean, therefore UTF8 safe.
-  {
-    extractLine (copy, line, modified_width, hyphenate);
+  unsigned int offset = 0;
+  while (extractLine (line, text, width, hyphenate, offset))
     lines.push_back (line);
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -264,6 +258,9 @@ int longestWord (const std::string& input)
       length += mk_wcwidth (character);
   }
 
+  if (length > longest)
+    longest = length;
+
   return longest;
 }
 
@@ -294,102 +291,115 @@ int longestLine (const std::string& input)
   return longest;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 // Walk the input text looking for a break point.  A break point is one of:
 //   - EOS
 //   - \n
 //   - last space before 'length' characters
+//   - last punctuation (, ; . :) before 'length' characters, even if not
+//     followed by a space
 //   - first 'length' characters
-void extractLine (
-  std::string& text,
+
+// text       "one two three\n  four"
+// bytes       0123456789012 3456789
+// characters  1234567890a23 4567890
+//
+// leading_ws
+// ws             ^   ^       ^^
+// punct
+// break                     ^
+bool extractLine (
   std::string& line,
-  int length,
-  bool hyphenate)
+  const std::string& text,
+  int width,
+  bool hyphenate,
+  unsigned int& offset)
 {
-  std::string::size_type bytes      = 0;
-  std::string::size_type previous   = std::string::npos;
-  std::string::size_type last_space = std::string::npos;
+  // Terminate processing.
+  // Note: bytes vs bytes.
+  if (offset >= text.length ())
+    return false;
+
+  std::string::size_type last_last_bytes = offset;
+  std::string::size_type last_bytes = offset;
+  std::string::size_type bytes = offset;
+  unsigned int last_ws = 0;
   int character;
-  int width = 0;
-  while (width < length)
+  int char_width = 0;
+  int line_width = 0;
+  while (1)
   {
-    previous = bytes;
+    last_last_bytes = last_bytes;
+    last_bytes = bytes;
     character = utf8_next_char (text, bytes);
 
-    // Record last seen space.
-    if (character == ' ')
-      last_space = previous;
-
-    // Newline is an early break point.
-    if (character == '\n')
+    if (character == 0 ||
+        character == '\n')
     {
-      line = text.substr (0, bytes - 1);
-      text = text.substr (bytes);
-      return;
+      line = text.substr (offset, last_bytes - offset);
+      offset = bytes;
+      break;
+    }
+    else if (character == ' ')
+      last_ws = last_bytes;
+
+    char_width = mk_wcwidth (character);
+    if (line_width + char_width > width)
+    {
+      int last_last_character = text[last_last_bytes];
+      int last_character = text[last_bytes];
+
+      // [case 1] one| two --> last_last != 32, last == 32, ws == 0
+      if (last_last_character != ' ' &&
+          last_character      == ' ')
+      {
+        line = text.substr (offset, last_bytes - offset);
+        offset = last_bytes + 1;
+        break;
+      }
+
+      // [case 2] one |two --> last_last == 32, last != 32, ws != 0
+      else if (last_last_character == ' ' &&
+               last_character      != ' ' &&
+               last_ws             != 0)
+      {
+        line = text.substr (offset, last_bytes - offset - 1);
+        offset = last_bytes;
+        break;
+      }
+
+      else if (last_last_character != ' ' &&
+               last_character      != ' ')
+      {
+        // [case 3] one t|wo --> last_last != 32, last != 32, ws != 0
+        if (last_ws != 0)
+        {
+          line = text.substr (offset, last_ws - offset);
+          offset = last_ws + 1;
+          break;
+        }
+        // [case 4] on|e two --> last_last != 32, last != 32, ws == 0
+        else
+        {
+          if (hyphenate)
+          {
+            line = text.substr (offset, last_bytes - offset - 1) + "-";
+            offset = last_last_bytes;
+          }
+          else
+          {
+            line = text.substr (offset, last_bytes - offset);
+            offset = last_bytes;
+          }
+        }
+
+        break;
+      }
     }
 
-    // EOS is an early break point.
-    if (character == 0)
-    {
-      line = text;
-      text = "";
-      return;
-    }
-
-    width += mk_wcwidth (character);
+    line_width += char_width;
   }
 
-  // Case where EOS was not quite reached.
-  //  012345
-  // |eleven|\0
-  if (text[bytes] == '\0')
-  {
-    line = text;
-    text = "";
-    return;
-  }
-
-  // Case where a word ends at the right margin.
-  //  012345
-  // |eleven|_
-  if (text[bytes] == ' ')
-  {
-    line = text.substr (0, bytes);
-    text = text.substr (bytes + 1);
-    return;
-  }
-
-  // Case where a word straddles the margin, but there is an earlier space
-  // to break on.
-  //  012345
-  // |one_tw|o
-  if (last_space != std::string::npos)
-  {
-    line = text.substr (0, last_space);
-    text = text.substr (last_space + 1);
-    return;
-  }
-
-  // Case where a word needs to be split, and there is no last_space.
-  // Hyphenation becomes the issue.
-  //  012345
-  // |fiftee|n
-  // |fifte-|en
-  else
-  {
-    if (hyphenate)
-    {
-      line = text.substr (0, previous) + "-";
-      text = text.substr (previous);
-    }
-    else
-    {
-      line = text.substr (0, bytes);
-      text = text.substr (bytes);
-    }
-
-    return;
-  }
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -508,6 +518,16 @@ const std::string str_replace (
   }
 
   return str;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string str_replace (
+  const std::string& str,
+  const std::string& search,
+  const std::string& replacement)
+{
+  std::string modified = str;
+  return str_replace (modified, search, replacement);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -995,6 +1015,20 @@ const std::string format (
 const std::string format (
   const std::string& fmt,
   int arg1,
+  int arg2,
+  int arg3)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", format (arg1));
+  replace_positional (output, "{2}", format (arg2));
+  replace_positional (output, "{3}", format (arg3));
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  int arg1,
   double arg2)
 {
   std::string output = fmt;
@@ -1029,7 +1063,7 @@ std::string leftJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string leftJustify (const std::string& input, const int width)
 {
-  return input + std::string (width - utf8_text_length (input), ' ');
+  return input + std::string (width - utf8_text_width (input), ' ');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1051,7 +1085,7 @@ std::string rightJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string rightJustify (const std::string& input, const int width)
 {
-  return std::string (width - utf8_text_length (input), ' ') + input;
+  return std::string (width - utf8_text_width (input), ' ') + input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

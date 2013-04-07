@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -37,12 +37,12 @@
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
-#include <CmdStatistics.h>
+#include <CmdStats.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-CmdStatistics::CmdStatistics ()
+CmdStats::CmdStats ()
 {
   _keyword     = "stats";
   _usage       = "task <filter> stats";
@@ -52,7 +52,7 @@ CmdStatistics::CmdStatistics ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdStatistics::execute (std::string& output)
+int CmdStats::execute (std::string& output)
 {
   int rc = 0;
   std::stringstream out;

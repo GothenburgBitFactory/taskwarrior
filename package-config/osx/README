@@ -242,7 +242,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
   $ /usr/local/bin/task version
 
   task 2.0.0 built for darwin
-  Copyright (C) 2006 - 2012 P. Beckingham, F. Hernandez.
+  Copyright (C) 2006 - 2013 P. Beckingham, F. Hernandez.
 
   Taskwarrior may be copied only under the terms of the GNU General Public
   License, which may be found in the taskwarrior source kit.
@@ -254,7 +254,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
   $ man task
   ...
   ...
-  task 2.0.0             2012-01-10                task 2.0.0
+  task 2.0.0             2013-01-10                task 2.0.0
 
   The man page should list 2.0.0 as the version number, but the date will be
   different.

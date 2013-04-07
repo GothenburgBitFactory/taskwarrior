@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ require 'rubygems'
 require 'json'
 
 # Use the taskwarrior 2.0+ export command to filter and return JSON
-lines = IO.popen("/usr/local/bin/task export " + ARGV.join(" ")).readlines
+lines = IO.popen("/usr/local/bin/task rc.verbose=nothing rc.json.array=no export " + ARGV.join(" ")).readlines
 
 # Generate output.
 print "<tasks>\n"

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <Context.h>
+#include <Duration.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>
@@ -168,7 +169,7 @@ std::string taskDifferences (const Task& before, const Task& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string taskInfoDifferences (const Task& before, const Task& after, const std::string& dateformat)
+std::string taskInfoDifferences (const Task& before, const Task& after, const std::string& dateformat, long& last_timestamp, const long current_timestamp)
 {
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
@@ -205,6 +206,12 @@ std::string taskInfoDifferences (const Task& before, const Task& after, const st
       out << format (STRING_FEEDBACK_ANN_DEL, before.get (*name))
           << "\n";
     }
+    else if (*name == "start")
+    {
+      out << format (STRING_FEEDBACK_ATT_DEL_DUR, ucFirst (*name),
+                     Duration(current_timestamp - last_timestamp).formatPrecise())
+          << "\n";
+    }
     else
     {
       out << format (STRING_FEEDBACK_ATT_DEL, ucFirst (*name))
@@ -230,10 +237,15 @@ std::string taskInfoDifferences (const Task& before, const Task& after, const st
           << "\n";
     }
     else
+    {
+      if (*name == "start")
+          last_timestamp = current_timestamp;
+
       out << format (STRING_FEEDBACK_ATT_WAS_SET,
                      ucFirst (*name),
                      renderAttribute (*name, after.get (*name), dateformat))
           << "\n";
+    }
   }
 
   for (name = beforeAtts.begin (); name != beforeAtts.end (); ++name)

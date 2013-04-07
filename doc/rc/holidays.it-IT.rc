@@ -1,9 +1,9 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/it-IT/2012.json
 # http://holidata.net/it-IT/2013.json
+# http://holidata.net/it-IT/2014.json
 #
-# Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+# Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,50 +28,26 @@
 ###############################################################################
 
 holiday.it-IT1.name=Capodanno
-holiday.it-IT1.date=20120101
+holiday.it-IT1.date=20130101
 holiday.it-IT2.name=Epifania
-holiday.it-IT2.date=20120106
+holiday.it-IT2.date=20130106
 holiday.it-IT3.name=Carnevale
-holiday.it-IT3.date=20120308
+holiday.it-IT3.date=20130210
 holiday.it-IT4.name=Pasqua
-holiday.it-IT4.date=20120409
+holiday.it-IT4.date=20130401
 holiday.it-IT5.name=Festa della liberazione
-holiday.it-IT5.date=20120425
+holiday.it-IT5.date=20130425
 holiday.it-IT6.name=Festa del lavoro
-holiday.it-IT6.date=20120501
+holiday.it-IT6.date=20130501
 holiday.it-IT7.name=Festa della repubblica
-holiday.it-IT7.date=20120602
+holiday.it-IT7.date=20130602
 holiday.it-IT8.name=Assunzione (ferragosto)
-holiday.it-IT8.date=20120815
+holiday.it-IT8.date=20130815
 holiday.it-IT9.name=Ognissanti
-holiday.it-IT9.date=20121101
+holiday.it-IT9.date=20131101
 holiday.it-IT10.name=Immacolata concezione
-holiday.it-IT10.date=20121208
+holiday.it-IT10.date=20131208
 holiday.it-IT11.name=Natale
-holiday.it-IT11.date=20121225
+holiday.it-IT11.date=20131225
 holiday.it-IT12.name=S.to Stefano
-holiday.it-IT12.date=20121226
-holiday.it-IT13.name=Capodanno
-holiday.it-IT13.date=20130101
-holiday.it-IT14.name=Epifania
-holiday.it-IT14.date=20130106
-holiday.it-IT15.name=Carnevale
-holiday.it-IT15.date=20130210
-holiday.it-IT16.name=Pasqua
-holiday.it-IT16.date=20130401
-holiday.it-IT17.name=Festa della liberazione
-holiday.it-IT17.date=20130425
-holiday.it-IT18.name=Festa del lavoro
-holiday.it-IT18.date=20130501
-holiday.it-IT19.name=Festa della repubblica
-holiday.it-IT19.date=20130602
-holiday.it-IT20.name=Assunzione (ferragosto)
-holiday.it-IT20.date=20130815
-holiday.it-IT21.name=Ognissanti
-holiday.it-IT21.date=20131101
-holiday.it-IT22.name=Immacolata concezione
-holiday.it-IT22.date=20131208
-holiday.it-IT23.name=Natale
-holiday.it-IT23.date=20131225
-holiday.it-IT24.name=S.to Stefano
-holiday.it-IT24.date=20131226
+holiday.it-IT12.date=20131226

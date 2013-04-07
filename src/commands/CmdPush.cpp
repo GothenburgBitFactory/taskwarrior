@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -68,6 +68,7 @@ int CmdPush::execute (std::string& output)
 		Transport* transport;
 		if ((transport = Transport::getTransport (uri)) != NULL )
 		{
+      std::vector<std::string> sourcelist;
 			transport->send (location._data + "/{pending,undo,completed}.data");
 			delete transport;
 		}

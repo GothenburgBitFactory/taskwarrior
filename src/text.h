@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ std::string trim (const std::string& in, const std::string& t = " ");
 std::string unquoteText (const std::string&);
 int longestWord (const std::string&);
 int longestLine (const std::string&);
-void extractLine (std::string&, std::string&, int, bool);
+bool extractLine (std::string&, const std::string&, int, bool, unsigned int&);
 void splitq (std::vector<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const std::string&);
@@ -53,6 +53,7 @@ std::string lowerCase (const std::string&);
 std::string upperCase (const std::string&);
 std::string ucFirst (const std::string&);
 const std::string str_replace (std::string&, const std::string&, const std::string&);
+const std::string str_replace (const std::string&, const std::string&, const std::string&);
 const char* optionalBlankLine ();
 void guess (const std::string&, std::vector<std::string>&, std::string&);
 bool nontrivial (const std::string&);
@@ -82,6 +83,7 @@ const std::string format (const std::string&, const std::string&, int);
 const std::string format (const std::string&, const std::string&, double);
 const std::string format (const std::string&, int, const std::string&);
 const std::string format (const std::string&, int, int);
+const std::string format (const std::string&, int, int, int);
 const std::string format (const std::string&, int, double);
 const std::string format (const std::string&, const std::string&, const std::string&, const std::string&);
 

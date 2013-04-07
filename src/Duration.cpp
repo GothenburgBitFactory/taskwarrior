@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -282,7 +282,7 @@ std::string Duration::formatCompact () const
   else if (_secs >= 3600)        sprintf (formatted, "%s%dh",   (_negative ? "-" : ""), (int) (_secs / 3600));
   else if (_secs >= 60)          sprintf (formatted, "%s%dm",   (_negative ? "-" : ""), (int) (_secs / 60));
   else if (_secs >= 1)           sprintf (formatted, "%s%ds",   (_negative ? "-" : ""), (int) _secs);
-  else                           strcpy (formatted, "-");
+  else                           formatted[0] = '\0';
 
   return std::string (formatted);
 }

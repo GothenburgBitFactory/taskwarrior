@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -79,7 +79,7 @@
 #include <CmdReports.h>
 #include <CmdShow.h>
 #include <CmdStart.h>
-#include <CmdStatistics.h>
+#include <CmdStats.h>
 #include <CmdStop.h>
 #include <CmdSummary.h>
 #include <CmdSync.h>
@@ -152,8 +152,9 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdPush ();               all[c->keyword ()] = c;
   c = new CmdReports ();            all[c->keyword ()] = c;
   c = new CmdShow ();               all[c->keyword ()] = c;
+  c = new CmdShowRaw ();            all[c->keyword ()] = c;
   c = new CmdStart ();              all[c->keyword ()] = c;
-  c = new CmdStatistics ();         all[c->keyword ()] = c;
+  c = new CmdStats ();              all[c->keyword ()] = c;
   c = new CmdStop ();               all[c->keyword ()] = c;
   c = new CmdSummary ();            all[c->keyword ()] = c;
   c = new CmdSync ();               all[c->keyword ()] = c;
@@ -421,7 +422,10 @@ void Command::modify_task_description_replace (Task& task, const A3& arguments)
   modify_task (task, arguments, description);
 
   if (description.length ())
-   task.set ("description", description);
+  {
+    _needs_confirm = true;
+    task.set ("description", description);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

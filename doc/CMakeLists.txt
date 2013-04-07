@@ -7,9 +7,9 @@ foreach (man_FILE ${man_FILES})
     man/${man_FILE})
 endforeach (man_FILE)
 
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/man/   DESTINATION ${TASK_MAN1DIR}
+install (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man/   DESTINATION ${TASK_MAN1DIR}
                                                       FILES_MATCHING PATTERN "*.1")
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/man/   DESTINATION ${TASK_MAN5DIR}
+install (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/man/   DESTINATION ${TASK_MAN5DIR}
                                                       FILES_MATCHING PATTERN "*.5")
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/rc     DESTINATION ${TASK_DOCDIR})
 

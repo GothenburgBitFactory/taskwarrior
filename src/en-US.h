@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -64,27 +64,28 @@
 //   2. Modify all the strings below.
 //        i.e. change "Unknown error." to "Unbekannter Fehler.".
 //
-//   3. Add your new translation to the task.git/src/i18n.h file by changing:
+//   3. Add your new translation to the task.git/src/i18n.h file, if necessary,
+//      by inserting:
 //
-//        #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
-//        #include <en-US.h>
-//        #endif
-//
-//      to:
-//
-//        #if PACKAGE_LANGUAGE == LANGUAGE_EN_US
-//        #include <en-US.h>
 //        #elif PACKAGE_LANGUAGE == LANGUAGE_DE_DE
 //        #include <de-DE.h>
-//        #endif
 //
-//   4. Build your localized Taskwarrior with these commands:
+//   4. Add your new language to task.git/CMakeLists.txt, making sure that
+//      number is unique:
+//
+//        set (LANGUAGE_DE_DE 3)
+//
+//   5. Add your new language to task.git/cmake.h.in:
+//
+//        #define LANGUAGE_DE_DE ${LANGUAGE_DE_DE}                                        
+//
+//   6. Build your localized Taskwarrior with these commands:
 //
 //      cd task.git
-//      cmake -D PACKAGE_LANGUAGE=LANGUAGE_DE_DE .
+//      cmake -D LANGUAGE=3 .
 //      make
 //
-//   5. Submit your translation to support@taskwarrior.org, where it will be
+//   7. Submit your translation to support@taskwarrior.org, where it will be
 //      shared with others.
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +105,7 @@
 
 // A3
 #define STRING_A3_ALTERNATE_RC       "Using alternate .taskrc file {1}"
-#define STRING_A3_ALTERNATE_DATA     "Using alternate date.location {1}"
+#define STRING_A3_ALTERNATE_DATA     "Using alternate data.location {1}"
 #define STRING_A3_OVERRIDE_RC        "Configuration override rc.{1}:{2}"
 #define STRING_A3_OVERRIDE_PROBLEM   "Problem with override: {1}"
 #define STRING_A3_UNKNOWN_ATTMOD     "Error: unrecognized attribute modifier '{1}'."
@@ -199,7 +200,7 @@
 #define STRING_CMD_VERSION_DOCS      "Documentation for taskwarrior can be found using 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' or at http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} built for "
 #define STRING_CMD_VERSION_UNKNOWN   "unknown"
-#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2012 P. Beckingham, F. Hernandez."
+#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2013 P. Beckingham, F. Hernandez."
 #define STRING_CMD_LOGO_USAGE        "Displays the Taskwarrior logo"
 #define STRING_CMD_LOGO_COLOR_REQ    "The logo command requires that color support is enabled."
 #define STRING_CMD_EXEC_USAGE        "Executes external commands and scripts"
@@ -378,6 +379,7 @@
 #define STRING_CMD_COLUMNS_USAGE     "All supported columns and formatting styles"
 #define STRING_CMD_COLUMNS_NOTE      "* Means default format, and therefore optional.  For example, 'due' and 'due.formatted' are equivalent."
 #define STRING_CMD_COLUMNS_USAGE2    "Displays only a list of supported columns"
+#define STRING_CMD_COLUMNS_ARGS      "You can only specify one search string."
 
 #define STRING_CMD_DENO_USAGE        "Deletes an annotation"
 #define STRING_CMD_DENO_WORDS        "An annotation pattern must be provided."
@@ -420,7 +422,6 @@
 #define STRING_CMD_DIAG_COMPILER     "Compiler"
 #define STRING_CMD_DIAG_VERSION      "Version"
 #define STRING_CMD_DIAG_CAPS         "Caps"
-#define STRING_CMD_DIAG_LIBRARIES    "Libraries"
 #define STRING_CMD_DIAG_FEATURES     "Build Features"
 #define STRING_CMD_DIAG_BUILT        "Built"
 #define STRING_CMD_DIAG_COMMIT       "Commit"
@@ -473,7 +474,7 @@
 #define STRING_CMD_COLOR_EXPLANATION "Use this command to see how colors are displayed by your terminal."
 #define STRING_CMD_COLOR_16          "16-color usage (supports underline, bold text, bright background):"
 #define STRING_CMD_COLOR_256         "256-color usage (supports underline):"
-#define STRING_CMD_COLOR_YOURS       "Your sample:"                                                        << "\n"
+#define STRING_CMD_COLOR_YOURS       "Your sample:"
 #define STRING_CMD_COLOR_BASIC       "Basic colors"
 #define STRING_CMD_COLOR_EFFECTS     "Effects"
 #define STRING_CMD_COLOR_CUBE        "Color cube rgb"
@@ -551,6 +552,7 @@
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' is not a valid date in the '{2}' format."
 #define STRING_DATE_BAD_WEEKSTART    "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'."
+#define STRING_DATE_TOO_MUCH         "The date is too far into the future."
 
 #define STRING_DATE_JANUARY_LONG     "january"
 #define STRING_DATE_FEBRUARY_LONG    "february"
@@ -712,6 +714,7 @@
 #define STRING_FEEDBACK_ATT_SET      "{1} will be set to '{2}'."
 #define STRING_FEEDBACK_ATT_MOD      "{1} will be changed from '{2}' to '{3}'."
 #define STRING_FEEDBACK_ATT_DEL      "{1} deleted."
+#define STRING_FEEDBACK_ATT_DEL_DUR  "{1} deleted (duration: {2})."
 #define STRING_FEEDBACK_ATT_WAS_SET  "{1} set to '{2}'."
 #define STRING_FEEDBACK_ATT_WAS_MOD  "{1} changed from '{2}' to '{3}'."
 #define STRING_FEEDBACK_ANN_ADD      "Annotation of '{1}' added."
@@ -721,13 +724,13 @@
 #define STRING_FEEDBACK_WAS_NOP      "No changes made."
 #define STRING_FEEDBACK_TAG_NOCOLOR  "The 'nocolor' special tag will disable color rules for this task."
 #define STRING_FEEDBACK_TAG_NONAG    "The 'nonag' special tag will prevent nagging when this task is modified."
-#define STRING_FEEDBACK_TAG_NOCAL    "The 'nocal' special tag will keep this task off the calendar report."
+#define STRING_FEEDBACK_TAG_NOCAL    "The 'nocal' special tag will keep this task off the 'calendar' report."
 #define STRING_FEEDBACK_TAG_NEXT     "The 'next' special tag will boost the urgency of this task so it appears on the 'next' report."
 #define STRING_FEEDBACK_UNBLOCKED    "Unblocked {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "Task {1} '{2}' expired and was deleted."
 
 // File
-#define STRING_FILE_PERMS            "Task does not have the correct permissions for '{1}'."
+#define STRING_FILE_PERMS            "Taskwarrior does not have the correct permissions for '{1}'."
 
 // helpers
 #define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."
@@ -769,6 +772,7 @@
 #define STRING_CMD_SHOW_LOC_EXIST    "Configuration error: data.location contains a directory name that doesn't exist, or is unreadable."
 #define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
 #define STRING_CMD_SHOW_CONF_VALUE   "Value"
+#define STRING_CMD_SHOWRAW           "Shows all configuration settings in a machine-readable format"
 
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior no longer supports file format 1, originally used between 27 November 2006 and 31 December 2007."
@@ -830,15 +834,18 @@
 #define STRING_TEXT_AMBIGUOUS        "Ambiguous {1} '{2}' - could be either of "
 
 // Transport
+#define STRING_TRANSPORT_NORUN       "Could not run '{1}'.  Is it installed, and available in $PATH?"
+#define STRING_TRANSPORT_NOFORK      "Could not run '{1}': {2}.  Are you out of system resources?"
 #define STRING_TRANSPORT_URI_NODIR   "The uri '{1}' does not appear to be a directory."
 #define STRING_TRANSPORT_CURL_URI    "When using the 'curl' protocol, the uri must contain a hostname."
 #define STRING_TRANSPORT_CURL_WILDCD "When using the 'curl' protocol, wildcards are not supported."
-#define STRING_TRANSPORT_CURL_NORUN  "Could not run curl.  Is it installed, and available in $PATH?"
 #define STRING_TRANSPORT_CURL_FAIL   "Curl failed, see output above."
 #define STRING_TRANSPORT_RSYNC_URI   "When using the 'rsync' protocol, the uri must contain a hostname."
-#define STRING_TRANSPORT_RSYNC_NORUN "Could not run rsync.  Is it installed, and available in $PATH?"
+#define STRING_TRANSPORT_RSYNC_FAIL  "rsync failed, see output above."
 #define STRING_TRANSPORT_SSH_URI     "When using the 'ssh' protocol, the uri must contain a hostname."
-#define STRING_TRANSPORT_SSH_NORUN   "Could not run ssh.  Is it installed, and available in $PATH?"
+#define STRING_TRANSPORT_SSH_FAIL    "ssh failed, see output above."
+#define STRING_TRANSPORT_SHELL_NOPATH "When using the 'sh+cp' protocol to copy multiple files, a path must be specified."
+#define STRING_TRANSPORT_SHELL_FAIL  "shell command failed, see output above."
 
 // Uri
 #define STRING_URI_QUOTES            "Could not parse uri '{1}', wrong usage of single quotes."
@@ -847,6 +854,9 @@
 // utf8
 #define STRING_UTF8_INVALID_CP_REP   "Invalid codepoint representation."
 #define STRING_UTF8_INVALID_CP       "Invalid Unicode codepoint."
+
+// View
+#define STRING_VIEW_TOO_SMALL        "The report has a minimum width of {1} and does not fit in the available width of {2}."
 
 // Usage text.  This is an exception, and contains \n characters and formatting.
 #define STRING_CMD_HELP_TEXT \

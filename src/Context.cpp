@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,6 @@
 #include <sstream>
 #include <algorithm>
 #include <assert.h>
-#include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -536,6 +535,7 @@ void Context::shadow ()
               " rc.detection:off"   +  // No need to determine terminal size
               " rc.color:off"       +  // Color off by default
               " rc.gc:off "         +  // GC off, to reduce headaches
+              " rc.locking:off"     +  // No file locking
               " rc:" + rcfile + " " +  // Use specified rc file
               command               +  // User specified command
               " >"                  +  // Capture
@@ -576,18 +576,8 @@ const std::vector <std::string> Context::getCommands () const
 ////////////////////////////////////////////////////////////////////////////////
 void Context::assumeLocations ()
 {
-  // Note that this pointer is deliberately not free()'d, even though valgrind
-  // complains about it.  It is either not necessary, or forbidden, depending
-  // on OS.
-
-  // Set up default locations.
-  struct passwd* pw = getpwuid (getuid ());
-  if (!pw)
-    throw std::string (STRING_NO_HOME);
-
-  home_dir = pw->pw_dir;
-  rc_file  = File      (home_dir + "/.taskrc");
-  data_dir = Directory (home_dir + "/.task");
+  rc_file  = File      ("~/.taskrc");
+  data_dir = Directory ("~/.task");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -600,14 +590,14 @@ void Context::createDefaultConfig ()
         !confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
       throw std::string (STRING_CONTEXT_NEED_RC);
 
-    config.createDefaultRC (rc_file, data_dir);
+    config.createDefaultRC (rc_file, data_dir._original);
   }
 
   // Create data location, if necessary.
   config.createDefaultData (data_dir);
 
   // Create extension directory, if necessary.
-/* TODO Enable this when the time is right, say for 2.1
+/* TODO Enable this when the time is right, say for 2.4
   if (! extension_dir.exists ())
     extension_dir.create ();
 */
@@ -683,14 +673,14 @@ void Context::clear ()
 // this output?'.
 void Context::updateXtermTitle ()
 {
-  if (config.getBoolean ("xterm.title"))
+  if (config.getBoolean ("xterm.title") && isatty (fileno (stdout)))
   {
     std::string command;
     a3.find_command (command);
 
     std::string title;
     join (title, " ", a3.list ());
-    std::cout << "]0;task " << command << " " << title << "" << std::endl;
+    std::cout << "]0;task " << command << " " << title << "";
   }
 }
 

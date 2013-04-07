@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2010 - 2012, Johannes Schlatow.
+// Copyright 2010 - 2013, Johannes Schlatow.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,9 @@ public:
 
   virtual void send (const std::string&) = 0;
   virtual void recv (std::string) = 0;
+
+  void expand_braces(const std::string& path, const std::string& sourceortarget,
+                     std::vector<std::string>& paths);
 
   static bool is_directory(const std::string&);
   static bool is_filelist(const std::string&);

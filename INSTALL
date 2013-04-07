@@ -12,6 +12,9 @@ from source.
 
 More information on cmake can be obtained at http://cmake.org
 
+It is HIGHLY RECOMMENDED that you build with a library that provides uuid_*
+functions, such as libuuid.
+
 
 Basic Installation
 ------------------
@@ -139,7 +142,7 @@ Darwin, 32bit
 Troubleshooting
 ---------------
 
-If you've recently made changes to dependencies (by reinstalling libuuid, for
+If you've recently made changes to dependencies (by reinstalling them, for
 example) be sure to rerun 'cmake .' before trying to execute 'make' again.
 
 CMake will run and locate all the necessary pieces for the build, and create

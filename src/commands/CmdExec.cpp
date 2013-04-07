@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -40,8 +40,8 @@ CmdExec::CmdExec ()
   _keyword     = "execute";
   _usage       = "task          execute <external command>";
   _description = STRING_CMD_EXEC_USAGE;
-  _read_only   = false;
-  _displays_id = true;
+  _read_only   = true;
+  _displays_id = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ int CmdExec::execute (std::string& output)
       if (command_line.length ())
         command_line += " ";
 
-      command_line += arg->_raw;
+      command_line += "'" + arg->_raw + "'";
     }
   }
 

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -122,14 +122,14 @@ std::string ViewText::render ()
   for (unsigned int col = 0; col < _columns.size (); ++col)
   {
     // Headers factor in to width calculations.
-    int global_min = utf8_length (_columns[col]->label ());
-    int global_ideal = global_min;
+    unsigned int global_min = utf8_width (_columns[col]->label ());
+    unsigned int global_ideal = global_min;
 
     for (unsigned int row = 0; row < _data.size (); ++row)
     {
       // Determine minimum and ideal width for this column.
-      int min;
-      int ideal;
+      unsigned int min;
+      unsigned int ideal;
       _columns[col]->measure (_data[row][col], min, ideal);
 
       if (min   > global_min)   global_min = min;

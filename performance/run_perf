@@ -1,0 +1,31 @@
+#! /bin/sh
+
+echo 'Performance: setup'
+echo '  - This step will take several minutes'
+rm -f ./pending.data ./completed.data ./undo.data perf.rc
+./load
+
+# Run benchmarks.
+# Note that commands are run twice - warm cache testing.
+
+echo 'Performance: benchmarks'
+
+echo '  - task next...'
+../src/task rc.debug:1 rc:perf.rc next >/dev/null 2>&1
+../src/task rc.debug:1 rc:perf.rc next 2>&1 | grep "Perf task"
+
+echo '  - task list...'
+../src/task rc.debug:1 rc:perf.rc list >/dev/null 2>&1
+../src/task rc.debug:1 rc:perf.rc list 2>&1 | grep "Perf task"
+
+echo '  - task all...'
+../src/task rc.debug:1 rc:perf.rc all >/dev/null 2>&1
+../src/task rc.debug:1 rc:perf.rc all 2>&1 | grep "Perf task"
+
+echo '  - task add...'
+../src/task rc.debug:1 rc:perf.rc add >/dev/null 2>&1
+../src/task rc.debug:1 rc:perf.rc add This is a task with an average sized description length project:P priority:H +tag1 +tag2 2>&1 | grep "Perf task"
+
+echo 'End'
+exit 0
+

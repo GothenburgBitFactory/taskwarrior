@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -60,8 +60,8 @@ public:
   virtual void setReport (const std::string& value) { _report = value; }
 
   virtual bool validate (std::string&);
-  virtual void measure (const std::string&, int&, int&);
-  virtual void measure (Task&, int&, int&);
+  virtual void measure (const std::string&, unsigned int&, unsigned int&);
+  virtual void measure (Task&, unsigned int&, unsigned int&);
   virtual void renderHeader (std::vector <std::string>&, int, Color&);
   virtual void render (std::vector <std::string>&, const std::string&, int, Color&);
   virtual void render (std::vector <std::string>&, Task&, int, Color&);
