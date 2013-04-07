@@ -1,6 +1,6 @@
 ------ current release ---------------------------
 
-2.2.0 (2013-04-07)
+2.2.0 (2013-04-07) 05f7948f7e70d7be3642bdc336faace52eaa9dfb
 
 Features
  + Added Feature #685, which provides a 'blocking' report, and new color rule
