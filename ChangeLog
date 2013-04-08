@@ -15,6 +15,7 @@ Features
  + Adds a new 'sync' verbosity token, which will reminds when a backlog builds
    up and needs a sync.
  + Supports IPv4 and IPv6 server addresses.
+ + Began fr-FR localization.
 
 Bugs
  + #1197 Now 'tasksh' recognizes Ctrl-D to exit.

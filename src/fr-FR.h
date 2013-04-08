@@ -101,7 +101,7 @@
 // DO NOT include a copyright in the translation.
 //
 #define STRING_LOCALIZATION_DESC     "English localization"
-#define STRING_LOCALIZATION_AUTHOR   "Translated into English by A. Person."
+#define STRING_LOCALIZATION_AUTHOR   "Translated into French by A. Person."
 
 // A3
 #define STRING_A3_ALTERNATE_RC       "Using alternate .taskrc file {1}"
