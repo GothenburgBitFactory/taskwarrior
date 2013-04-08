@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDCOLOR
 #define INCLUDED_CMDCOLOR
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDDIAGNOSTICS
 #define INCLUDED_CMDDIAGNOSTICS
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

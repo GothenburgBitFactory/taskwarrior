@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COLURGENCY
 #define INCLUDED_COLURGENCY
-#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

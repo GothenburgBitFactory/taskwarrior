@@ -25,8 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define L10N                                           // Localization complete.
-
 #include <sstream>
 #include <stdio.h>
 #include <sys/ioctl.h>

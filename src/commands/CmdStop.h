@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDSTOP
 #define INCLUDED_CMDSTOP
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

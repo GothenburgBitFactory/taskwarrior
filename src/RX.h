@@ -25,10 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef INCLUDED_RX
 #define INCLUDED_RX
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>

@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_UTIL
 #define INCLUDED_UTIL
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>

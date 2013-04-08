@@ -25,8 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define L10N                                           // Localization complete.
-
 #include <sstream>
 #include <vector>
 #include <stdlib.h>

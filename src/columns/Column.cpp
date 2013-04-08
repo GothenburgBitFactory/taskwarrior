@@ -25,8 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define L10N                                           // Localization complete.
-
 #include <Context.h>
 #include <Column.h>
 #include <ColDepends.h>

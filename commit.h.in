@@ -1,5 +1,4 @@
 /* commit.h.in. Creates commit.h during a cmake run */
-#define L10N                                           // Localization complete.
 
 /* git information */
 #define COMMIT "${COMMIT}"

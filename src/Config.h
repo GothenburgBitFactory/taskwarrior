@@ -28,7 +28,6 @@
 
 #ifndef INCLUDED_CONFIG
 #define INCLUDED_CONFIG
-#define L10N                                           // Localization complete.
 
 #include <map>
 #include <vector>

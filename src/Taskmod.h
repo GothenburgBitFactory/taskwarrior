@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_TASKMOD
 #define INCLUDED_TASKMOD
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Task.h>

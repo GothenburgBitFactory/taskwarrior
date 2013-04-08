@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDSHOW
 #define INCLUDED_CMDSHOW
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

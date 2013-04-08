@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_NIBBLER
 #define INCLUDED_NIBBLER
-#define L10N                                           // Localization complete.
 
 #define NIBBLER_FEATURE_DATE
 //#undef  NIBBLER_FEATURE_DATE

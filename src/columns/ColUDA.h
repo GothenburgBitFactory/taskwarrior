@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COLUDA
 #define INCLUDED_COLUDA
-#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

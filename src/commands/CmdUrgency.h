@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDURGENCY
 #define INCLUDED_CMDURGENCY
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COLDUE
 #define INCLUDED_COLDUE
-#define L10N                                           // Localization complete.
 
 #include <ColDate.h>
 

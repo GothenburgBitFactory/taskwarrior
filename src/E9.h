@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_E9
 #define INCLUDED_E9
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <A3.h>

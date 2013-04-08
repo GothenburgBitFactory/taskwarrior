@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COLSTATUS
 #define INCLUDED_COLSTATUS
-#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

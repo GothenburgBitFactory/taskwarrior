@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CONTEXT
 #define INCLUDED_CONTEXT
-#define L10N                                           // Localization complete.
 
 #include <Command.h>
 #include <Column.h>

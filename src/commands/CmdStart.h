@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDSTART
 #define INCLUDED_CMDSTART
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

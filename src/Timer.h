@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_TIMER
 #define INCLUDED_TIMER
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <sys/time.h>

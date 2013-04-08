@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDCOLUMNS
 #define INCLUDED_CMDCOLUMNS
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

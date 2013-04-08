@@ -25,8 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define L10N                                           // Localization complete.
-
 #include <text.h>
 #include <i18n.h>
 #include <TransportSSH.h>

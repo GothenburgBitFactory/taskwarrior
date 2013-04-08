@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COLWAIT
 #define INCLUDED_COLWAIT
-#define L10N                                           // Localization complete.
 
 #include <ColDate.h>
 

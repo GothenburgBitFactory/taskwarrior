@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_TRANSPORTSHELL
 #define INCLUDED_TRANSPORTSHELL
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Transport.h>

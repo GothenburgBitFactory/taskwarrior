@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_UTF8
 #define INCLUDED_UTF8
-#define L10N                                           // Localization complete.
 
 #include <string>
 

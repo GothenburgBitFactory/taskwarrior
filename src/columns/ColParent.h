@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COLPARENT
 #define INCLUDED_COLPARENT
-#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

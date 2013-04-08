@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDUDAS
 #define INCLUDED_CMDUDAS
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

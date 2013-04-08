@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_VIEWTEXT
 #define INCLUDED_VIEWTEXT
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>

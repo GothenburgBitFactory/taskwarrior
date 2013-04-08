@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDSYNC
 #define INCLUDED_CMDSYNC
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

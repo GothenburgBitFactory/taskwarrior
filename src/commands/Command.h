@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COMMAND
 #define INCLUDED_COMMAND
-#define L10N                                           // Localization complete.
 
 #include <map>
 #include <vector>

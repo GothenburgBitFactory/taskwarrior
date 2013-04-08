@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDBURNDOWN
 #define INCLUDED_CMDBURNDOWN
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

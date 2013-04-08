@@ -1,7 +1,5 @@
 /* cmake.h.in. Creates cmake.h during a cmake run */
 
-#define L10N                                           // Localization complete.
-
 /* Package information */
 #define PACKAGE           "${PACKAGE}"
 #define VERSION           "${VERSION}"

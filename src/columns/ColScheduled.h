@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COLSCHED
 #define INCLUDED_COLSCHED
-#define L10N                                           // Localization complete.
 
 #include <ColDate.h>
 

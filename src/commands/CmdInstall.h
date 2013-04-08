@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDINSTALL
 #define INCLUDED_CMDINSTALL
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

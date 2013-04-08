@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDALIASES
 #define INCLUDED_CMDALIASES
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

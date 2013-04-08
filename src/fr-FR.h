@@ -92,7 +92,6 @@
 
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
-#define L10N                                           // Localization complete.
 
 // Note that for English, the following two lines are not displayed.  For all
 // other localizations, these lines will appear in the output of the 'version'

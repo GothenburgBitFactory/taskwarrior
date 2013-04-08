@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_READLINE
 #define INCLUDED_READLINE
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <stdio.h>

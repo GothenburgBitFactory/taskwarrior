@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDCUSTOM
 #define INCLUDED_CMDCUSTOM
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

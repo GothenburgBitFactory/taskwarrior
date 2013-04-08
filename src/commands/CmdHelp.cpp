@@ -25,8 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define L10N                                           // Localization complete.
-
 #include <algorithm>
 #include <CmdHelp.h>
 #include <ViewText.h>

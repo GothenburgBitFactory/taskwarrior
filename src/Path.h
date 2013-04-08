@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_PATH
 #define INCLUDED_PATH
-#define L10N                                           // Localization complete.
 
 #include <iostream>
 #include <vector>

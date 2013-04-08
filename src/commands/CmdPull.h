@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDPULL
 #define INCLUDED_CMDPULL
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

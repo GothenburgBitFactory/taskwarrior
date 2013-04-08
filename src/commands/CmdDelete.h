@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDDELETE
 #define INCLUDED_CMDDELETE
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

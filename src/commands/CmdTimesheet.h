@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDTIMESHEET
 #define INCLUDED_CMDTIMESHEET
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

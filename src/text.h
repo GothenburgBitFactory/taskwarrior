@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_TEXT
 #define INCLUDED_TEXT
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>

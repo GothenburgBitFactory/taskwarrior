@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_MAIN
 #define INCLUDED_MAIN
-#define L10N                                           // Localization complete.
 
 #define FEATURE_COLOR  1                               // Enable color.
 //#define FEATURE_STDIN  1                             // Enable reading stdin.

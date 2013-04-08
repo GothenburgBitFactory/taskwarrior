@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_TDB2
 #define INCLUDED_TDB2
-#define L10N                                           // Localization complete.
 
 #include <map>
 #include <vector>

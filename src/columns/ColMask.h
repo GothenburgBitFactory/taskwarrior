@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COLMASK
 #define INCLUDED_COLMASK
-#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

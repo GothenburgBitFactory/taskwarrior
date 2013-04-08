@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COLSTART
 #define INCLUDED_COLSTART
-#define L10N                                           // Localization complete.
 
 #include <ColDate.h>
 

@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_COLID
 #define INCLUDED_COLID
-#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

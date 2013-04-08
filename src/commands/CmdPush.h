@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDPUSH
 #define INCLUDED_CMDPUSH
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

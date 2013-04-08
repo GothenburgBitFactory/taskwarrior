@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_TASK
 #define INCLUDED_TASK
-#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <map>

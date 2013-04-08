@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_ARG
 #define INCLUDED_ARG
-#define L10N                                           // Localization complete.
 
 #include <string>
 

@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_TRANSPORTCURL
 #define INCLUDED_TRANSPORTCURL
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Transport.h>

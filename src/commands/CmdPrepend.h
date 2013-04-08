@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDPREPEND
 #define INCLUDED_CMDPREPEND
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

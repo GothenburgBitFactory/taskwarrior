@@ -25,8 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define L10N                                           // Localization complete.
-
 #include <CmdInstall.h>
 #include <Context.h>
 #include <i18n.h>

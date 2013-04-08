@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDPROJECTS
 #define INCLUDED_CMDPROJECTS
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

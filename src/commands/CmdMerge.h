@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDMERGE
 #define INCLUDED_CMDMERGE
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

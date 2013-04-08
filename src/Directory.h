@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_DIRECTORY
 #define INCLUDED_DIRECTORY
-#define L10N                                           // Localization complete.
 
 #include <File.h>
 

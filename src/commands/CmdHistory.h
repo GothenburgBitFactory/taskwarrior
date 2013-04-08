@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDHISTORY
 #define INCLUDED_CMDHISTORY
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <Command.h>

@@ -25,10 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #ifndef INCLUDED_JSON
 #define INCLUDED_JSON
-#define L10N                                           // Localization complete.
 
 #include <map>
 #include <vector>

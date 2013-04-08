@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_A3
 #define INCLUDED_A3
-#define L10N                                           // Localization complete.
 
 #include <vector>
 #include <string>

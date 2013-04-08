@@ -27,7 +27,6 @@
 
 #ifndef INCLUDED_CMDCALENDAR
 #define INCLUDED_CMDCALENDAR
-#define L10N                                           // Localization complete.
 
 #include <string>
 #include <vector>
