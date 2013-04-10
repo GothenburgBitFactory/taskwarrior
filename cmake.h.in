@@ -58,6 +58,9 @@
 /* Found timegm */
 #cmakedefine HAVE_TIMEGM
 
+/* Found get_current_dir_name */
+#cmakedefine HAVE_GET_CURRENT_DIR_NAME
+
 /* Found the uuid library */
 #cmakedefine HAVE_UUID
 #cmakedefine HAVE_UUID_UNPARSE_LOWER

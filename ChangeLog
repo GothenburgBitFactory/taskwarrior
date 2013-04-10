@@ -18,6 +18,7 @@ Features
  + Began fr-FR localization.
 
 Bugs
+ + #1196 Now builds on Hurd (thanks to Jakub Wilk).
  + #1197 Now 'tasksh' recognizes Ctrl-D to exit.
  + #1211 The 'dateformat' settings now default to the ISO-8601 standard of
    'Y-M-D' (thanks to Robin Björklin).

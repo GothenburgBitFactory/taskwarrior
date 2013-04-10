@@ -30,6 +30,8 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
+#include <errno.h>
+#include <stdlib.h>
 #include <Directory.h>
 #include <cmake.h>
 
@@ -148,9 +150,18 @@ std::vector <std::string> Directory::listRecursive ()
 ////////////////////////////////////////////////////////////////////////////////
 std::string Directory::cwd ()
 {
+#ifdef HAVE_GET_CURRENT_DIR_NAME
+  char *buf = get_current_dir_name ();
+  if (buf == NULL)
+    throw std::bad_alloc ();
+  std::string result (buf);
+  free (buf);
+  return result;
+#else
   char buf[PATH_MAX];
   getcwd (buf, PATH_MAX - 1);
   return std::string (buf);
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
