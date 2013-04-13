@@ -35,6 +35,8 @@
 #cmakedefine NETBSD
 #cmakedefine HAIKU
 #cmakedefine SOLARIS
+#cmakedefine KFREEBSD
+#cmakedefine GNUHURD
 #cmakedefine UNKNOWN
 
 /* Found the GnuTLS library */

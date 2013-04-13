@@ -87,6 +87,10 @@ int CmdDiagnostics::execute (std::string& output)
          "NetBSD"
 #elif defined (LINUX)
          "Linux"
+#elif defined (KFREEBSD)
+         "GNU/kFreeBSD"
+#elif defined (GNUHURD)
+         "GNU/Hurd"
 #else
          STRING_CMD_DIAG_UNKNOWN
 #endif

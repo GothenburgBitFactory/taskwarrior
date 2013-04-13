@@ -88,6 +88,10 @@ int CmdVersion::execute (std::string& output)
       << "netbsd"
 #elif defined (LINUX)
       << "linux"
+#elif defined (KFREEBSD)
+         "gnu-kfreebsd"
+#elif defined (GNUHURD)
+      << "gnu-hurd"
 #else
       << STRING_CMD_VERSION_UNKNOWN
 #endif

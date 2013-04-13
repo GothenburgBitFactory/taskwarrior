@@ -124,6 +124,10 @@ const std::string DOM::get (const std::string& name)
       return "NetBSD";
 #elif defined (LINUX)
       return "Linux";
+#elif defined (KFREEBSD)
+      return "GNU/kFreeBSD";
+#elif defined (GNUHURD)
+      return "GNU/Hurd";
 #else
       return STRING_DOM_UNKNOWN;
 #endif
