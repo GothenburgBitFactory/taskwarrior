@@ -117,8 +117,14 @@ bool Directory::remove_directory (const std::string& dir)
       else
         unlink ((dir + "/" + de->d_name).c_str ());
 #else
-      if (de->d_type == DT_DIR ||
-          de->d_type == DT_UNKNOWN)
+      if (de->d_type == DT_UNKNOWN)
+      {
+        struct stat s;
+        lstat ((dir + "/" + de->d_name).c_str (), &s);
+        if (s.st_mode & S_IFDIR)
+          de->d_type = DT_DIR;
+      }
+      if (de->d_type == DT_DIR)
         remove_directory (dir + "/" + de->d_name);
       else
         unlink ((dir + "/" + de->d_name).c_str ());
@@ -209,6 +215,13 @@ void Directory::list (
       else
         results.push_back (base + "/" + de->d_name);
 #else
+      if (recursive && de->d_type == DT_UNKNOWN)
+      {
+        struct stat s;
+        lstat ((base + "/" + de->d_name).c_str (), &s);
+        if (s.st_mode & S_IFDIR)
+          de->d_type = DT_DIR;
+      }
       if (recursive && de->d_type == DT_DIR)
         list (base + "/" + de->d_name, results, recursive);
       else

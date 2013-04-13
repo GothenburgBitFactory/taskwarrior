@@ -20,6 +20,8 @@ Features
 Bugs
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).
  + #1197 Now 'tasksh' recognizes Ctrl-D to exit.
+ + #1200 Directory d_type==DT_UNKNOWN is now handled correctly (thanks to Jakub
+   Wilk).
  + #1211 The 'dateformat' settings now default to the ISO-8601 standard of
    'Y-M-D' (thanks to Robin Björklin).
  + #1222 The 'summary' report now obeys the 'color.label' setting (thanks to
