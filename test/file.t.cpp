@@ -25,45 +25,52 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #include <Context.h>
 #include <File.h>
+#include <Directory.h>
 #include <test.h>
 
 Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (13);
+  UnitTest t (15);
 
-  File::write ("/tmp/file.t.txt", "This is a test\n");
-  File f6 ("/tmp/file.t.txt");
-	t.ok (f6.size () == 15, "File::size /tmp/file.t.txt good");
-  t.ok (f6.mode () & S_IRUSR, "File::mode /tmp/file.t.txt good");
-  t.ok (File::remove ("/tmp/file.t.txt"), "File::remove /tmp/file.t.txt good");
+  Directory tmp ("tmp");
+  tmp.create ();
+  t.ok (tmp.exists (), "tmp dir created.");
+
+  File::write ("tmp/file.t.txt", "This is a test\n");
+  File f6 ("tmp/file.t.txt");
+  t.ok (f6.size () == 15, "File::size tmp/file.t.txt good");
+  t.ok (f6.mode () & S_IRUSR, "File::mode tmp/file.t.txt good");
+  t.ok (File::remove ("tmp/file.t.txt"), "File::remove tmp/file.t.txt good");
 
   // operator (std::string) const;
-  t.is ((std::string) f6, "/tmp/file.t.txt", "File::operator (std::string) const");
+  t.is ((std::string) f6, "tmp/file.t.txt", "File::operator (std::string) const");
 
-  t.ok (File::create ("/tmp/file.t.create"), "File::create /tmp/file.t.create good");
-  t.ok (File::remove ("/tmp/file.t.create"), "File::remove /tmp/file.t.create good");
+  t.ok (File::create ("tmp/file.t.create"), "File::create tmp/file.t.create good");
+  t.ok (File::remove ("tmp/file.t.create"), "File::remove tmp/file.t.create good");
 
   // basename (std::string) const;
-  t.is (f6.name (), "file.t.txt", "File::basename /tmp/file.t.txt --> file.t.txt");
+  t.is (f6.name (), "file.t.txt", "File::basename tmp/file.t.txt --> file.t.txt");
 
   // dirname (std::string) const;
-  t.is (f6.parent (), "/tmp", "File::dirname /tmp/file.t.txt --> /tmp");
+  t.is (f6.parent (), "tmp", "File::dirname tmp/file.t.txt --> /tmp");
 
   // bool rename (const std::string&);
-  File f7 ("/tmp/file.t.2.txt");
+  File f7 ("tmp/file.t.2.txt");
   f7.append ("something\n");
   f7.close ();
 
-  t.ok (f7.rename ("/tmp/file.t.3.txt"), "File::rename did not fail");
-  t.is (f7._data, "/tmp/file.t.3.txt",   "File::rename stored new name");
+  t.ok (f7.rename ("tmp/file.t.3.txt"),  "File::rename did not fail");
+  t.is (f7._data, "tmp/file.t.3.txt",    "File::rename stored new name");
   t.ok (f7.exists (),                    "File::rename new file exists");
-  t.ok (f7.remove (),                    "File::remove /tmp/file.t.3.txt good");
+  t.ok (f7.remove (),                    "File::remove tmp/file.t.3.txt good");
   t.notok (f7.exists (),                 "File::remove new file no longer exists");
+
+  tmp.remove ();
+  t.notok (tmp.exists (),                "tmp dir removed.");
 
   return 0;
 }

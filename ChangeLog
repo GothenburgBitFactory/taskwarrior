@@ -26,6 +26,8 @@ Bugs
    'Y-M-D' (thanks to Robin Björklin).
  + #1222 The 'summary' report now obeys the 'color.label' setting (thanks to
    Steve Rader).
+ + #1247 Tests now create a local dir, rather than use the insecure /tmp dir
+   (thanks to Jakub Wilk).
  + Fixed bug so that 'limit:page' now considers footnote messages.
 
 ------ old releases ------------------------------
