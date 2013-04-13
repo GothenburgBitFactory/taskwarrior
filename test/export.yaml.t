@@ -30,6 +30,9 @@ use strict;
 use warnings;
 use Test::More tests => 22;
 
+my $source_dir = $0;
+$source_dir =~ s{[^/]+$}{..};
+
 # Create the rc file.
 if (open my $fh, '>', 'export.rc')
 {
@@ -44,7 +47,7 @@ if (open my $fh, '>', 'export.rc')
 qx{../src/task rc:export.rc add priority:H project:A one 2>&1};
 qx{../src/task rc:export.rc add +tag1 +tag2 two 2>&1};
 
-my $output = qx{../src/task rc:export.rc export | ../scripts/add-ons/export-yaml.pl > ./export.txt 2>&1};
+my $output = qx{../src/task rc:export.rc export | $source_dir/scripts/add-ons/export-yaml.pl > ./export.txt 2>&1};
 my @lines;
 if (open my $fh, '<', './export.txt')
 {

@@ -30,7 +30,10 @@ use strict;
 use warnings;
 use Test::More;
 
-my @files = glob "./json/*.json";
+my $source_dir = $0;
+$source_dir =~ s{[^/]+$}{..};
+
+my @files = glob "$source_dir/test/json/*.json";
 plan tests => scalar @files;
 
 my $output;

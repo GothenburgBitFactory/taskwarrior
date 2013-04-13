@@ -41,10 +41,13 @@ if (open my $fh, '>', 'bug.rc')
   ok (-r 'bug.rc', 'Created bug.rc');
 }
 
+my $source_dir = $0;
+$source_dir =~ s{[^/]+$}{..};
+
 # Copy task.sh and make substitutions & additions needed for testing.
 if (open my $target, '>', 'task.sh')
 {
-  if (open my $source, '<', '../scripts/bash/task.sh')
+  if (open my $source, '<', "$source_dir/scripts/bash/task.sh")
   {
     while (<$source>)
     {

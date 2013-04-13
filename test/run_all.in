@@ -5,7 +5,7 @@ then
   for i in ${TESTBLOB}
   do
     echo '#' $i
-    ./$i > test.log 2>&1
+    $i > test.log 2>&1
     while read LINE
     do
       echo $LINE
@@ -37,7 +37,7 @@ else
       COUNT=`expr $COUNT + 1`
     fi
 
-    ./$i >> all.log 2>&1
+    $i >> all.log 2>&1
   done
 
   if [ $BAR -eq 1 ]; then

@@ -30,6 +30,9 @@ use strict;
 use warnings;
 use Test::More tests => 16;
 
+my $source_dir = $0;
+$source_dir =~ s{[^/]+$}{..};
+
 # Create the rc file.
 if (open my $fh, '>', 'import.rc')
 {
@@ -71,7 +74,7 @@ EOF
 }
 
 # Convert YAML --> task JSON.
-qx{../scripts/add-ons/import-yaml.pl <import.txt >import.json 2>&1};
+qx{$source_dir/scripts/add-ons/import-yaml.pl <import.txt >import.json 2>&1};
 
 # Import the JSON.
 my $output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
@@ -123,7 +126,7 @@ EOF
 }
 
 # Convert YAML --> task JSON.
-qx{../scripts/add-ons/import-yaml.pl <import.txt >import.json 2>&1};
+qx{$source_dir/scripts/add-ons/import-yaml.pl <import.txt >import.json 2>&1};
 
 # Import the JSON.
 $output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};

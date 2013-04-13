@@ -12,17 +12,29 @@ set (test_SRCS autocomplete.t color.t config.t date.t directory.t dom.t
                width.t json_test)
 
 message ("-- Configuring run_all")
-set (TESTBLOB "*.t")
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+
+set (TESTBLOB "./*.t")
 if (CYGWIN)
-set (TESTBLOB "*.t *.t.exe")
+set (TESTBLOB "./*.t ./*.t.exe")
 endif (CYGWIN)
+
+else (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+
+set (TESTBLOB "${CMAKE_SOURCE_DIR}/test/*.t ${CMAKE_BINARY_DIR}/test/*.t")
+if (CYGWIN)
+set (TESTBLOB "${CMAKE_SOURCE_DIR}/test/*.t ${CMAKE_BINARY_DIR}/test/*.t.exe")
+endif (CYGWIN)
+
+endif (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+
 configure_file (
-  ${CMAKE_SOURCE_DIR}/test/run_all.in
-  ${CMAKE_SOURCE_DIR}/test/run_all)
+  run_all.in
+  run_all)
 
 add_custom_target (test ./run_all --verbose
                                   DEPENDS ${test_SRCS} task_executable
-                                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
+                                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
 
 add_custom_target (build_tests DEPENDS ${test_SRCS}
                                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
