@@ -17,6 +17,8 @@ Features
    up and needs a sync.
  + Supports IPv4 and IPv6 server addresses.
  + Began fr-FR localization.
+ + Merged three l10n utility scripts into one tools, scripts/utils/l10n, which
+   will help the translation effort.
 
 Bugs
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).
@@ -29,6 +31,8 @@ Bugs
    Steve Rader).
  + #1247 Tests now create a local dir, rather than use the insecure /tmp dir
    (thanks to Jakub Wilk).
+ + #1249 Build system now recognizes GNU/Hurd and GNU/kFreeBSD (thanks to Jakub
+   Wilk).
  + Fixed bug so that 'limit:page' now considers footnote messages.
 
 ------ old releases ------------------------------
