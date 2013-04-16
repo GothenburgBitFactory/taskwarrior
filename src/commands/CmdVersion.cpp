@@ -89,7 +89,7 @@ int CmdVersion::execute (std::string& output)
 #elif defined (LINUX)
       << "linux"
 #elif defined (KFREEBSD)
-         "gnu-kfreebsd"
+      << "gnu-kfreebsd"
 #elif defined (GNUHURD)
       << "gnu-hurd"
 #else
