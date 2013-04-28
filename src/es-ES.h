@@ -243,6 +243,7 @@
 #define STRING_CMD_STATS_PROJECTS    "Proyectos"
 #define STRING_CMD_STATS_DATA_SIZE   "Tamaño de datos"
 #define STRING_CMD_STATS_UNDO_TXNS   "Transacciones deshacer"
+#define STRING_CMD_STATS_BACKLOG     "Sincroniza transacciones atrasadas"
 #define STRING_CMD_STATS_TAGGED      "Tareas marcadas"
 #define STRING_CMD_STATS_OLDEST      "Tarea más antigua"
 #define STRING_CMD_STATS_NEWEST      "Tarea más reciente"
@@ -255,7 +256,7 @@
 
 #define STRING_CMD_STATS_DESC_LEN    "Longitud media de desc"
 #define STRING_CMD_STATS_CHARS       "{1} caracteres"
-#define STRING_CMD_STATS_LAST_SYNCH  "Última sincronización con el servidor"
+#define STRING_CMD_STATS_LAST_SYNC   "Ültima sincronización del servidor"
 #define STRING_CMD_STATS_BLOCKED     "Tareas bloqueadas"
 #define STRING_CMD_STATS_BLOCKING    "Tareas bloqueantes"
 #define STRING_CMD_REPORTS_USAGE     "Lista todos los informes soportados"
@@ -406,12 +407,26 @@
 #define STRING_CMD_IMPORT_NOT_JSON   "No es un objeto JSON: {1}"
 #define STRING_CMD_IMPORT_NO_DESC    "La anotación carece de descripción: {1}"
 #define STRING_CMD_IMPORT_NO_ENTRY   "La anotación carece de fecha de entrada: {1}"
-#define STRING_CMD_SHELL_USAGE       "Lanza un entorno de comandos interactivo"
 #define STRING_CMD_SHELL_HELP1       "Escriba un comando de task (como 'list'), o pulse 'Enter'."
 #define STRING_CMD_SHELL_HELP2       "No hace falta incluir el propio comando 'task'."
 #define STRING_CMD_SHELL_HELP3       "Escriba 'quit' (o 'bye', 'exit') para terminar la sesión."
-#define STRING_CMD_SYNCH_USAGE       "Sincroniza datos con el Servidor Task"
-#define STRING_CMD_SYNCH_NO_SERVER   "El Servidor Task no está configurado."
+
+#define STRING_CMD_SYNC_USAGE        "Sincroniza datos con el Servidor Task"
+#define STRING_CMD_SYNC_NO_SERVER    "El Servidor Task no está configurado."
+#define STRING_CMD_SYNC_BAD_CRED     "Credenciales del Servidor Task incorrectas."
+#define STRING_CMD_SYNC_ADD          "   añade {1} '{2}'"
+#define STRING_CMD_SYNC_MOD          "modifica {1} '{2}'"
+#define STRING_CMD_SYNC_PROGRESS     "Sincronizando con {1}"
+#define STRING_CMD_SYNC_SUCCESS0     "Sincronización correcta."
+#define STRING_CMD_SYNC_SUCCESS1     "Sincronización correcta. {1} cambios enviados."
+#define STRING_CMD_SYNC_SUCCESS2     "Sincronización correcta. {1} cambios recibidos."
+#define STRING_CMD_SYNC_SUCCESS3     "Sincronización correcta. {1} cambios enviados, {2} cambios recibidos."
+#define STRING_CMD_SYNC_SUCCESS_NOP  "Sincronización correcta. No hay cambios"
+#define STRING_CMD_SYNC_FAIL_ACCOUNT "Sincronización fallida. O bien sus credenciales son incorrectas, o su cuenta de Servidor Task no está habilitada."
+#define STRING_CMD_SYNC_FAIL_ERROR   "Sincronización fallida. El Servidor Task devolvió error: {1} {2}"
+#define STRING_CMD_SYNC_FAIL_CONNECT "Sincronización fallida. No se pudo conectar con el Servidor Task."
+#define STRING_CMD_SYNC_BAD_SERVER   "Sincronización fallida. Ajuste de configuración '{1}' incorrecto"
+
 #define STRING_CMD_DIAG_USAGE        "Detalles de plataforma, construcción y entorno"
 #define STRING_CMD_DIAG_PLATFORM     "Plataforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<desconocido>"
@@ -546,7 +561,6 @@
 #define STRING_CONTEXT_SHADOW_C      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir sus tareas completadas. Por favor, cambie esto."
 #define STRING_CONTEXT_SHADOW_U      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su registro de deshacer. Por favor, cambie esto."
 #define STRING_CONTEXT_SHADOW_B      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su archivo backlog. Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_S      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su archivo synch.key. Por favor, cambie esto."
 #define STRING_CONTEXT_SHADOW_UPDATE "[Archivo shadow '{1}' actualizado.]"
 
 // Date
@@ -996,6 +1010,15 @@
 #define STRING_UTIL_MEBIBYTES        "MiB"
 #define STRING_UTIL_KIBIBYTES        "KiB"
 #define STRING_UTIL_BYTES            "B"
+
+// shell
+#define STRING_SHELL_USAGE \
+  "Uso: tasksh [<fichero-comandos>]   Ejecuta los comandos task contenidos en <fichero-comandos>, si se indica;\n" \
+  "                                   si no, lanza un entorno interactivo de comandos task.\n" \
+  "     tasksh --version              Muestra la versión de task.\n" \
+  "     tasksh --help                 Muestra esta ayuda.\n"
+
+#define STRING_SHELL_NO_FILE         "El fichero de entrada no existe.\n"
 
 #endif
 
