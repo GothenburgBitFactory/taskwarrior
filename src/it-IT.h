@@ -251,7 +251,7 @@
 #define STRING_CMD_STATS_AVG_PEND    "Tempo medio di attesa"
 #define STRING_CMD_STATS_DESC_LEN    "Lunghezza media delle descrizioni"
 #define STRING_CMD_STATS_CHARS       "{1} caratteri"
-#define STRING_CMD_STATS_LAST_SYNCH  "Ultima sincronizzazione"
+#define STRING_CMD_STATS_LAST_SYNC   "Ultima sincronizzazione"
 #define STRING_CMD_STATS_BLOCKED     "Task bloccati"
 #define STRING_CMD_STATS_BLOCKING    "Task bloccanti"
 #define STRING_CMD_REPORTS_USAGE     "Lista dei report supportati"
@@ -398,7 +398,6 @@
 #define STRING_CMD_IMPORT_NOT_JSON   "Non è un oggetto JSON: {1}"
 #define STRING_CMD_IMPORT_NO_DESC    "Annotazione senza descrizione: {1}"
 #define STRING_CMD_IMPORT_NO_ENTRY   "Annotazione senza data di immissione: {1}"
-#define STRING_CMD_SHELL_USAGE       "Esegue una shell interattiva"
 #define STRING_CMD_SHELL_HELP1       "Inserisci un comando (es. 'list'), o premi 'Enter'."
 #define STRING_CMD_SHELL_HELP2       "Non è necessario includere il comando 'task'."
 #define STRING_CMD_SHELL_HELP3       "Inserisci 'quit' (o 'bye', 'exit') per terminare la sessione."
@@ -417,8 +416,6 @@
 #define STRING_CMD_SYNC_FAIL_ERROR   "Sincronizzazione fallita.  Il Task Server ha ritornato l'errore: {1} {2}"
 #define STRING_CMD_SYNC_FAIL_CONNECT "Sincronizzazione fallita.  Impossibile connettersi al Task Server."
 #define STRING_CMD_SYNC_BAD_SERVER   "Sincronizzazione fallita.  Impostazione di configurazione '{1}' malformata"
-#define STRING_CMD_SYNCH_USAGE       "Sincronizza i dati con il Task Server"
-#define STRING_CMD_SYNCH_NO_SERVER   "Il Task Server non è configurato."
 #define STRING_CMD_DIAG_USAGE        "Dettagli su piattaforma, build e ambiente"
 #define STRING_CMD_DIAG_PLATFORM     "Piattaforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<sconoscito>"
@@ -550,7 +547,6 @@
 #define STRING_CONTEXT_SHADOW_C      "Variabile di configurazione 'shadow.file' impostata a " "sovrascrittura dei task completati. Si preda di modificarla."
 #define STRING_CONTEXT_SHADOW_U      "Variabile di configurazione 'shadow.file' impostata a " "sovrascrittura del log di undo. Si prega di modificarla."
 #define STRING_CONTEXT_SHADOW_B      "Variabile di configurazione 'shadow.file' impostata a " "sovrascrittura del file di backlog. Si prega di modificarla."
-#define STRING_CONTEXT_SHADOW_S      "Variabile di configurazione 'shadow.file' impostata a " "sovrascrittura del file synch.key. Si prega di modificarla."
 #define STRING_CONTEXT_SHADOW_UPDATE "[Shadow file '{1}' aggiornato.]"
 
 // Date
