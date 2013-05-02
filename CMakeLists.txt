@@ -132,6 +132,7 @@ set (LANGUAGE_EN_US 1)
 set (LANGUAGE_ES_ES 2)
 set (LANGUAGE_DE_DE 3)
 set (LANGUAGE_FR_FR 4)
+set (LANGUAGE_IT_IT 5)
 
 message ("-- Configuring cmake.h")
 configure_file (

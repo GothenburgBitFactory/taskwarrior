@@ -51,6 +51,8 @@
 #include <fr-FR.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_DE_DE
 #include <de-DE.h>
+#elif PACKAGE_LANGUAGE == LANGUAGE_IT_IT
+#include <it-IT.h>
 #endif
 
 #define CCOLOR_BOLD             500
