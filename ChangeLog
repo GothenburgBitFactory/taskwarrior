@@ -17,6 +17,7 @@ Features
    up and needs a sync.
  + Supports IPv4 and IPv6 server addresses.
  + Began fr-FR localization.
+ + Complete it-IT localization.
  + Merged three l10n utility scripts into one tools, scripts/utils/l10n, which
    will help the translation effort.
 
@@ -29,6 +30,8 @@ Bugs
    'Y-M-D' (thanks to Robin Björklin).
  + #1222 The 'summary' report now obeys the 'color.label' setting (thanks to
    Steve Rader).
+ + #1235 The 'shell' command can now start in non-interactive mode without a
+   .taskrc file (thanks to Haitham Gad).
  + #1247 Tests now create a local dir, rather than use the insecure /tmp dir
    (thanks to Jakub Wilk).
  + #1249 Build system now recognizes GNU/Hurd and GNU/kFreeBSD (thanks to Jakub
