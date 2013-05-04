@@ -1585,36 +1585,28 @@ float Task::urgency_next () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//
+//     Past                  Present                              Future
+//     Overdue               Due                                     Due
+//
+//     -7 -6 -5 -4 -3 -2 -1  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 days
+//
+// <-- 1.0                         linear                            0.2 -->
+//     capped                                                        capped
+//
+//
 float Task::urgency_due () const
 {
   if (has ("due"))
   {
     Date now;
     Date due (get_date ("due"));
-    int days_overdue = (now - due) / 86400;
 
-         if (days_overdue >=  7)  return 1.0;  // 7 days ago
-    else if (days_overdue >=  6)  return 0.96;
-    else if (days_overdue >=  5)  return 0.92;
-    else if (days_overdue >=  4)  return 0.88;
-    else if (days_overdue >=  3)  return 0.84;
-    else if (days_overdue >=  2)  return 0.80;
-    else if (days_overdue >=  1)  return 0.76;
-    else if (days_overdue >=  0)  return 0.72;
-    else if (days_overdue >= -1)  return 0.68;
-    else if (days_overdue >= -2)  return 0.64;
-    else if (days_overdue >= -3)  return 0.60;
-    else if (days_overdue >= -4)  return 0.56;
-    else if (days_overdue >= -5)  return 0.52;
-    else if (days_overdue >= -6)  return 0.48;
-    else if (days_overdue >= -7)  return 0.44;
-    else if (days_overdue >= -8)  return 0.40;
-    else if (days_overdue >= -9)  return 0.36;
-    else if (days_overdue >= -10) return 0.32;
-    else if (days_overdue >= -11) return 0.28;
-    else if (days_overdue >= -12) return 0.24;
-    else if (days_overdue >= -13) return 0.20;
-    else                          return 0.16; // two weeks from now
+    // Map a range of 21 days to the value 0.2 - 1.0
+    float days_overdue = (now - due) / 86400.0;
+         if (days_overdue >= 7.0)   return 1.0;   // < 1 wk ago
+    else if (days_overdue >= -14.0) return ((days_overdue + 14.0) * 0.8 / 21.0) + 0.2;
+    else                            return 0.2;   // > 2 wks
   }
 
   return 0.0;

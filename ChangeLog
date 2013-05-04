@@ -20,6 +20,7 @@ Features
  + Complete it-IT localization.
  + Merged three l10n utility scripts into one tools, scripts/utils/l10n, which
    will help the translation effort.
+ + The 'due' urgency component now uses seconds, not days, in the calculation.
 
 Bugs
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).
