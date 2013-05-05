@@ -39,15 +39,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (396);
+  UnitTest t (402);
 #else
-  UnitTest t (372);
+  UnitTest t (378);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (346);
+  UnitTest t (338);
 #else
-  UnitTest t (322);
+  UnitTest t (314);
 #endif
 #endif
 
@@ -257,6 +257,24 @@ int main (int argc, char** argv)
     t.ok    (n.getDigit (i),          "      '2x' :         getDigit ()     -> true");
     t.is    (i, 2,                    "      '2x' :         getDigit ()     -> 2");
     t.notok (n.getDigit (i),          "       'x' :         getDigit ()     -> false");
+
+    // bool getDigit6 (int&);
+    t.diag ("Nibbler::getDigit6");
+    n = Nibbler ("654321");
+    t.ok    (n.getDigit6 (i),         "    654321 :         getDigit6 ()    -> true");
+    t.is    (i, 654321,               "    654321 :         getDigit6 ()    -> 654321");
+
+    // bool getDigit4 (int&);
+    t.diag ("Nibbler::getDigit4");
+    n = Nibbler ("4321");
+    t.ok    (n.getDigit4 (i),         "      4321 :         getDigit4 ()    -> true");
+    t.is    (i, 4321,                 "      4321 :         getDigit4 ()    -> 4321");
+
+    // bool getDigit2 (int&);
+    t.diag ("Nibbler::getDigit2");
+    n = Nibbler ("21");
+    t.ok    (n.getDigit2 (i),         "        21 :         getDigit2 ()    -> true");
+    t.is    (i, 21,                   "        21 :         getDigit2 ()    -> 21");
 
     // bool getInt (int&);
     t.diag ("Nibbler::getInt");

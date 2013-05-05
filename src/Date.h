@@ -29,8 +29,8 @@
 #define INCLUDED_DATE
 
 #include <stdio.h>
+#include <vector>
 #include <string>
-
 
 class Date;
 

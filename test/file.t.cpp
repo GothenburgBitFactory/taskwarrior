@@ -47,7 +47,7 @@ int main (int argc, char** argv)
   t.ok (File::remove ("tmp/file.t.txt"), "File::remove tmp/file.t.txt good");
 
   // operator (std::string) const;
-  t.is ((std::string) f6, "tmp/file.t.txt", "File::operator (std::string) const");
+  t.is ((std::string) f6, Directory::cwd () + "/tmp/file.t.txt", "File::operator (std::string) const");
 
   t.ok (File::create ("tmp/file.t.create"), "File::create tmp/file.t.create good");
   t.ok (File::remove ("tmp/file.t.create"), "File::remove tmp/file.t.create good");
@@ -56,7 +56,7 @@ int main (int argc, char** argv)
   t.is (f6.name (), "file.t.txt", "File::basename tmp/file.t.txt --> file.t.txt");
 
   // dirname (std::string) const;
-  t.is (f6.parent (), "tmp", "File::dirname tmp/file.t.txt --> /tmp");
+  t.is (f6.parent (), Directory::cwd () + "/tmp", "File::dirname tmp/file.t.txt --> tmp");
 
   // bool rename (const std::string&);
   File f7 ("tmp/file.t.2.txt");
@@ -64,7 +64,7 @@ int main (int argc, char** argv)
   f7.close ();
 
   t.ok (f7.rename ("tmp/file.t.3.txt"),  "File::rename did not fail");
-  t.is (f7._data, "tmp/file.t.3.txt",    "File::rename stored new name");
+  t.is (f7._data, Directory::cwd () + "/tmp/file.t.3.txt",    "File::rename stored new name");
   t.ok (f7.exists (),                    "File::rename new file exists");
   t.ok (f7.remove (),                    "File::remove tmp/file.t.3.txt good");
   t.notok (f7.exists (),                 "File::remove new file no longer exists");

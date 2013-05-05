@@ -46,7 +46,7 @@ public:
   File& operator= (const File&);
 
   virtual bool create ();
-  virtual bool remove ();
+  virtual bool remove () const;
 
   bool open ();
   bool openAndLock ();
@@ -69,6 +69,8 @@ public:
   virtual mode_t mode ();
   virtual size_t size () const;
   virtual time_t mtime () const;
+  virtual time_t ctime () const;
+  virtual time_t btime () const;
 
   static bool create (const std::string&);
   static std::string read (const std::string&);

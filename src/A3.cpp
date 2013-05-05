@@ -1575,6 +1575,7 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
 ////////////////////////////////////////////////////////////////////////////////
 bool A3::is_date (Nibbler& n, std::string& result)
 {
+#ifdef NIBBLER_FEATURE_DATE
   std::string date_format = context.config.get ("dateformat");
   std::string::size_type start = n.save ();
   time_t t;
@@ -1586,6 +1587,7 @@ bool A3::is_date (Nibbler& n, std::string& result)
   }
 
   n.restore ();
+#endif
   return false;
 }
 

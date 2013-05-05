@@ -28,7 +28,6 @@
 #ifndef INCLUDED_PATH
 #define INCLUDED_PATH
 
-#include <iostream>
 #include <vector>
 #include <string>
 
@@ -42,6 +41,7 @@ public:
 
   Path& operator= (const Path&);
   bool operator== (const Path&);
+  Path& operator+= (const std::string&);
   operator std::string () const;
 
   std::string name () const;

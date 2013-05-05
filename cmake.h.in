@@ -61,6 +61,9 @@
 /* Found timegm */
 #cmakedefine HAVE_TIMEGM
 
+/* Found st.st_birthtime struct member */
+#cmakedefine HAVE_ST_BIRTHTIME
+
 /* Found get_current_dir_name */
 #cmakedefine HAVE_GET_CURRENT_DIR_NAME
 

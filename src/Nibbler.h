@@ -28,6 +28,8 @@
 #ifndef INCLUDED_NIBBLER
 #define INCLUDED_NIBBLER
 
+#include <cmake.h>
+
 #define NIBBLER_FEATURE_DATE
 //#undef  NIBBLER_FEATURE_DATE
 
@@ -63,6 +65,9 @@ public:
   bool getN (const int, std::string&);
   bool getQuoted (char, std::string&, bool quote = false);
   bool getDigit (int&);
+  bool getDigit6 (int&);
+  bool getDigit4 (int&);
+  bool getDigit2 (int&);
   bool getInt (int&);
   bool getHex (int&);
   bool getUnsignedInt (int&);
@@ -76,8 +81,8 @@ public:
   bool getUUID (std::string&);
   bool getPartialUUID (std::string&);
   bool getDateISO (time_t&);
-#ifdef NIBBLER_FEATURE_DATE
   bool parseDigits(std::string::size_type&, int&, unsigned int, bool strict = true);
+#ifdef NIBBLER_FEATURE_DATE
   bool getDate (const std::string&, time_t&);
 #endif
   bool getOneOf (const std::vector <std::string>&, std::string&);

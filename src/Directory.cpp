@@ -91,13 +91,13 @@ bool Directory::create ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Directory::remove ()
+bool Directory::remove () const
 {
   return remove_directory (_data);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Directory::remove_directory (const std::string& dir)
+bool Directory::remove_directory (const std::string& dir) const
 {
   DIR* dp = opendir (dir.c_str ());
   if (dp != NULL)
@@ -189,6 +189,12 @@ bool Directory::up ()
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Directory::cd () const
+{
+  return chdir (_data.c_str ()) == 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

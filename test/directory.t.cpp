@@ -51,17 +51,17 @@ int main (int argc, char** argv)
 
   // Directory (const Directory&);
   Directory d3 (d2);
-  t.is (d3._data, "tmp", "Directory (Directory&)");
+  t.is (d3._data, Directory::cwd () + "/tmp", "Directory (Directory&)");
 
   // Directory (const std::string&);
   Directory d4 ("tmp/test_directory");
 
   // Directory& operator= (const Directory&);
   Directory d5 = d4;
-  t.is (d5._data, "tmp/test_directory", "Directory::operator=");
+  t.is (d5._data, Directory::cwd () + "/tmp/test_directory", "Directory::operator=");
 
   // operator (std::string) const;
-  t.is ((std::string) d3, "tmp", "Directory::operator (std::string) const");
+  t.is ((std::string) d3, Directory::cwd () + "/tmp", "Directory::operator (std::string) const");
 
   // virtual bool create ();
   t.ok (d5.create (), "Directory::create tmp/test_directory");
@@ -77,15 +77,15 @@ int main (int argc, char** argv)
   std::vector <std::string> files = d5.list ();
   std::sort (files.begin (), files.end ());
   t.is ((int)files.size (), 2, "Directory::list 1 file");
-  t.is (files[0], "tmp/test_directory/dir", "file[0] is tmp/test_directory/dir");
-  t.is (files[1], "tmp/test_directory/f0", "file[1] is tmp/test_directory/f0");
+  t.is (files[0], Directory::cwd () + "/tmp/test_directory/dir", "file[0] is tmp/test_directory/dir");
+  t.is (files[1], Directory::cwd () + "/tmp/test_directory/f0", "file[1] is tmp/test_directory/f0");
 
   // std::vector <std::string> listRecursive ();
   files = d5.listRecursive ();
   std::sort (files.begin (), files.end ());
   t.is ((int)files.size (), 2, "Directory::list 1 file");
-  t.is (files[0], "tmp/test_directory/dir/f1", "file is tmp/test_directory/dir/f1");
-  t.is (files[1], "tmp/test_directory/f0", "file is tmp/test_directory/f0");
+  t.is (files[0], Directory::cwd () + "/tmp/test_directory/dir/f1", "file is tmp/test_directory/dir/f1");
+  t.is (files[1], Directory::cwd () + "/tmp/test_directory/f0", "file is tmp/test_directory/f0");
 
   // virtual bool remove ();
   t.ok (File::remove (d5._data + "/f0"), "File::remove tmp/test_directory/f0");

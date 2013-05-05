@@ -43,17 +43,18 @@ public:
   Directory& operator= (const Directory&);
 
   virtual bool create ();
-  virtual bool remove ();
+  virtual bool remove () const;
 
   std::vector <std::string> list ();
   std::vector <std::string> listRecursive ();
 
   static std::string cwd ();
   bool up ();
+  bool cd () const;
 
 private:
   void list (const std::string&, std::vector <std::string>&, bool);
-  bool remove_directory (const std::string&);
+  bool remove_directory (const std::string&) const;
 };
 
 #endif

@@ -133,8 +133,10 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
 
   // Parse a formatted date.
   Nibbler n (input);
+#ifdef NIBBLER_FEATURE_DATE
   if (n.getDate (format, _t) && n.depleted ())
     return;
+#endif
 
   // Parse an ISO date.
   if (n.getDateISO (_t) && n.depleted ())

@@ -295,6 +295,69 @@ bool Nibbler::getDigit (int& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getDigit6 (int& result)
+{
+  std::string::size_type i = _cursor;
+  if (i < _length &&
+      _length - i >= 6)
+  {
+    if (isdigit (_input[i + 0]) &&
+        isdigit (_input[i + 1]) &&
+        isdigit (_input[i + 2]) &&
+        isdigit (_input[i + 3]) &&
+        isdigit (_input[i + 4]) &&
+        isdigit (_input[i + 5]))
+    {
+      result = strtoimax (_input.substr (_cursor, 6).c_str (), NULL, 10);
+      _cursor += 6;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getDigit4 (int& result)
+{
+  std::string::size_type i = _cursor;
+  if (i < _length &&
+      _length - i >= 4)
+  {
+    if (isdigit (_input[i + 0]) &&
+        isdigit (_input[i + 1]) &&
+        isdigit (_input[i + 2]) &&
+        isdigit (_input[i + 3]))
+    {
+      result = strtoimax (_input.substr (_cursor, 4).c_str (), NULL, 10);
+      _cursor += 4;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::getDigit2 (int& result)
+{
+  std::string::size_type i = _cursor;
+  if (i < _length &&
+      _length - i >= 2)
+  {
+    if (isdigit (_input[i + 0]) &&
+        isdigit (_input[i + 1]))
+    {
+      result = strtoimax (_input.substr (_cursor, 2).c_str (), NULL, 10);
+      _cursor += 2;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getInt (int& result)
 {
   std::string::size_type i = _cursor;
@@ -716,7 +779,6 @@ bool Nibbler::getDateISO (time_t& t)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#ifdef NIBBLER_FEATURE_DATE
 // Parse the longest integer using the next 'limit' characters of 'result'
 // following position 'i' (when strict is true, the number of digits must be
 // equal to limit).
@@ -758,6 +820,7 @@ bool Nibbler::parseDigits(std::string::size_type& i,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+#ifdef NIBBLER_FEATURE_DATE
 bool Nibbler::getDate (const std::string& format, time_t& t)
 {
   std::string::size_type i = _cursor;

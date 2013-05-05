@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <File.h>
 #include <text.h>
+#include <cmake.h>
 #include <util.h>
 #include <i18n.h>
 
@@ -101,7 +102,7 @@ bool File::create ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool File::remove ()
+bool File::remove () const
 {
   return unlink (_data.c_str ()) == 0 ? true : false;
 }
@@ -331,6 +332,30 @@ time_t File::mtime () const
   struct stat s;
   if (!stat (_data.c_str (), &s))
     return s.st_mtime;
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+time_t File::ctime () const
+{
+  struct stat s;
+  if (!stat (_data.c_str (), &s))
+    return s.st_ctime;
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+time_t File::btime () const
+{
+  struct stat s;
+  if (!stat (_data.c_str (), &s))
+#ifdef HAVE_ST_BIRTHTIME
+    return s.st_birthtime;
+#else
+    return s.st_ctime;
+#endif
 
   return 0;
 }
