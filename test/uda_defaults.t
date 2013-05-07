@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 8;
 
 # Create the rc file.
 if (open my $fh, '>', 'uda.rc')
@@ -50,15 +50,18 @@ if (open my $fh, '>', 'uda.rc')
 }
 
 # Add task with nondefault UDA
-qx{../src/task rc:uda.rc add one smell:strong 2>&1};
+my $output = qx{../src/task rc:uda.rc add one smell:strong 2>&1};
+like ($output, qr/Created task 1/, 'Add 1 - no errors');
 
 # Add task without a UDA value, checking for usage of the default
-qx{../src/task rc:uda.rc add two 2>&1};
+$output = qx{../src/task rc:uda.rc add two 2>&1};
+like ($output, qr/Created task 2/, 'Add 2 - no errors');
 
 # Add a task with a UDA that has no default, ensure it is entered fine
-qx{../src/task rc:uda.rc add three size:10 2>&1};
+$output = qx{../src/task rc:uda.rc add three size:10 2>&1};
+like ($output, qr/Created task 3/, 'Add 3 - no errors');
 
-my $output = qx{../src/task rc:uda.rc uda 2>&1};
+$output = qx{../src/task rc:uda.rc uda 2>&1};
 like ($output, qr/1\s+strong\s+one/,          'UDA nondefault stored');
 like ($output, qr/2\s+weak\s+two/,            'UDA default stored');
 like ($output, qr/3\s+weak\s+10\s+three/,     'UDA without default stored');

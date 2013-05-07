@@ -85,7 +85,7 @@ int CmdUDAs::execute (std::string& output)
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_TYPE));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_LABEL));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_VALUES));
-    view.add (Column::factory ("string", STRING_COLUMN_LABEL_DEFAULT)); 
+    view.add (Column::factory ("string", STRING_COLUMN_LABEL_DEFAULT));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_UDACOUNT));
 
     std::vector <std::string>::iterator uda;

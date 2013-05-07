@@ -1260,14 +1260,15 @@ void Task::validate (bool applyDefault /* = true */)
         context.columns["due"]->validate (defaultDue))
       set ("due", Date (defaultDue).toEpoch ());
   }
-    
-  // If a UDA has a default value in the configuration, 
-  // override with uda.(uda).default, if not specified
+
+  // If a UDA has a default value in the configuration,
+  // override with uda.(uda).default, if not specified.
   if (applyDefault)
-  { // Gather a list of all UDAs with a .default value
+  {
+    // Gather a list of all UDAs with a .default value
     std::vector <std::string> names;
     context.config.all (names);
-    
+
     std::vector <std::string> udas;
     std::vector <std::string>::iterator name;
     for (name = names.begin (); name != names.end (); ++name)
@@ -1280,9 +1281,10 @@ void Task::validate (bool applyDefault /* = true */)
           udas.push_back (name->substr (4, period - 4));
       }
     }
-    
+
     if (udas.size ())
-    { // For each of those, setup the default value on the task now,
+    {
+      // For each of those, setup the default value on the task now,
       // of course only if we don't have one on the command line already
       std::vector <std::string>::iterator uda;
       for (uda = udas.begin (); uda != udas.end (); ++uda)
@@ -1291,12 +1293,11 @@ void Task::validate (bool applyDefault /* = true */)
         std::string defVal  = context.config.get ("uda." + *uda + ".default");
 
         // If the default is empty, and we already have a value, skip it
-        if (defVal != "" && get (*uda) == "")  
-          set(*uda,defVal);
+        if (defVal != "" && get (*uda) == "")
+          set (*uda, defVal);
       }
     }
-  }  
-  
+  }
 
   // 2) To provide suitable warnings about odd states
 
@@ -1457,7 +1458,7 @@ float Task::urgency_c () const
   value += fabsf (urgencyBlockingCoefficient)    > epsilon ? (urgency_blocking ()    * urgencyBlockingCoefficient)    : 0.0;
   value += fabsf (urgencyAgeCoefficient)         > epsilon ? (urgency_age ()         * urgencyAgeCoefficient)         : 0.0;
 
-/* 
+/*
   // Very useful for debugging urgency problems.
   std::cout << "# Urgency for " << get ("uuid") << ":\n"
           << "#     pri " << (urgency_priority ()    * urgencyPriorityCoefficient)    << "\n"

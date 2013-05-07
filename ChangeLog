@@ -11,6 +11,7 @@ Features
  + #1227 A new 'verify_l10n' utility ensures the localizations are in sync (thanks to
    Wim Schuermann).
  + #1250 Support out-of-tree test runs (thanks to Jakub Wilk).
+ + #1256 Supports default values for UDA fields (thanks to Thomas Sullivan).
  + Stores un-synched transactions in <data.location>/backlog.data.
  + Adds a new 'synchronize' command to sync data with a task server.
  + Adds a new 'sync' verbosity token, which will reminds when a backlog builds

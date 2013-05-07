@@ -5,6 +5,7 @@ New Features in taskwarrior 2.3.0
   - New shell with Readline support.
   - The 'dateformat' settings now default to the ISO-8601 standard of 'Y-M-D'.
   - Italian translation.
+  - UDA fields now allow default values.
 
 New commands in taskwarrior 2.3.0
 
