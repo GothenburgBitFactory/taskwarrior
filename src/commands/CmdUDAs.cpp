@@ -77,13 +77,15 @@ int CmdUDAs::execute (std::string& output)
   {
     std::sort (udas.begin (), udas.end ());
 
-    // Render a list of UDA name, type and label.
+    // Render a list of UDA name, type, label, allowed values,
+    // possible default value, and finally the usage count.
     ViewText view;
     view.width (context.getWidth ());
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_UDA));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_TYPE));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_LABEL));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_VALUES));
+    view.add (Column::factory ("string", STRING_COLUMN_LABEL_DEFAULT)); 
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_UDACOUNT));
 
     std::vector <std::string>::iterator uda;
@@ -92,6 +94,7 @@ int CmdUDAs::execute (std::string& output)
       std::string type   = context.config.get ("uda." + *uda + ".type");
       std::string label  = context.config.get ("uda." + *uda + ".label");
       std::string values = context.config.get ("uda." + *uda + ".values");
+      std::string defval = context.config.get ("uda." + *uda + ".default");
       if (label == "")
         label = *uda;
 
@@ -107,7 +110,8 @@ int CmdUDAs::execute (std::string& output)
       view.set (row, 1, type);
       view.set (row, 2, label);
       view.set (row, 3, values);
-      view.set (row, 4, count);
+      view.set (row, 4, defval);
+      view.set (row, 5, count);
     }
 
     out << optionalBlankLine ()

@@ -1260,6 +1260,43 @@ void Task::validate (bool applyDefault /* = true */)
         context.columns["due"]->validate (defaultDue))
       set ("due", Date (defaultDue).toEpoch ());
   }
+    
+  // If a UDA has a default value in the configuration, 
+  // override with uda.(uda).default, if not specified
+  if (applyDefault)
+  { // Gather a list of all UDAs with a .default value
+    std::vector <std::string> names;
+    context.config.all (names);
+    
+    std::vector <std::string> udas;
+    std::vector <std::string>::iterator name;
+    for (name = names.begin (); name != names.end (); ++name)
+    {
+      if (name->substr (0, 4) == "uda." &&
+        name->find (".default") != std::string::npos)
+      {
+        std::string::size_type period = name->find ('.', 4);
+        if (period != std::string::npos)
+          udas.push_back (name->substr (4, period - 4));
+      }
+    }
+    
+    if (udas.size ())
+    { // For each of those, setup the default value on the task now,
+      // of course only if we don't have one on the command line already
+      std::vector <std::string>::iterator uda;
+      for (uda = udas.begin (); uda != udas.end (); ++uda)
+      {
+        std::string type    = context.config.get ("uda." + *uda + ".type");
+        std::string defVal  = context.config.get ("uda." + *uda + ".default");
+
+        // If the default is empty, and we already have a value, skip it
+        if (defVal != "" && get (*uda) == "")  
+          set(*uda,defVal);
+      }
+    }
+  }  
+  
 
   // 2) To provide suitable warnings about odd states
 

@@ -177,6 +177,7 @@
 #define STRING_COLUMN_LABEL_UDA      "Nome"
 #define STRING_COLUMN_LABEL_TYPE     "Tipo"
 #define STRING_COLUMN_LABEL_LABEL    "Etichetta"
+#define STRING_COLUMN_LABEL_DEFAULT  "Predefinito"
 #define STRING_COLUMN_LABEL_VALUES   "Valori consentiti"
 #define STRING_COLUMN_LABEL_UDACOUNT "Conteggio Uso"
 #define STRING_COLUMN_LABEL_ORPHAN   "UDA Orfano"
