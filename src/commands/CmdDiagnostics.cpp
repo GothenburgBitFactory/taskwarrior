@@ -217,6 +217,10 @@ int CmdDiagnostics::execute (std::string& output)
       << context.config.get ("taskd.server")
       << "\n";
 
+  out << "       Cert: "
+      << context.config.get ("taskd.certificate")
+      << "\n";
+
   out << "    Locking: "
       << (context.config.getBoolean ("locking")
            ? STRING_CMD_DIAG_ENABLED

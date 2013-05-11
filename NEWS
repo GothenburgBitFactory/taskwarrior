@@ -15,7 +15,10 @@ New commands in taskwarrior 2.3.0
 
 New configuration options in taskwarrior 2.3.0
 
-  - 
+  - 'taskd.server' specifies host:port of the task server.
+  - 'taskd.credentials' specifies user credentials for the task server.
+  - 'taskd.certificate' specifies the task server certificate.
+  - 'debug.tls' shows TLS log information, for debugging.
 
 Newly deprecated features in taskwarrior 2.3.0
   
