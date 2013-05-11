@@ -499,41 +499,45 @@ characters:
 
 .RS
 .RS
-m  minimal-digit month,   for example 1 or 12
+m  minimal-digit month,    for example 1 or 12
 .br
-d  minimal-digit day,     for example 1 or 30
+d  minimal-digit day,      for example 1 or 30
 .br
-y  two-digit year,        for example 09 or 12
+y  two-digit year,         for example 09 or 12
 .br
-D  two-digit day,         for example 01 or 30
+D  two-digit day,          for example 01 or 30
 .br
-M  two-digit month,       for example 01 or 12
+M  two-digit month,        for example 01 or 12
 .br
-Y  four-digit year,       for example 2009 or 2013
+Y  four-digit year,        for example 2009 or 2013
 .br
-a  short name of weekday, for example Mon or Wed
+a  short name of weekday,  for example Mon or Wed
 .br
-A  long name of weekday,  for example Monday or Wednesday
+A  long name of weekday,   for example Monday or Wednesday
 .br
-b  short name of month,   for example Jan or Aug
+b  short name of month,    for example Jan or Aug
 .br
-B  long name of month,    for example January or August
+B  long name of month,     for example January or August
 .br
-v  minimal-digit week,    for example 3 or 37
+v  minimal-digit week,     for example 3 or 37
 .br
-V  two-digit week,        for example 03 or 37
+V  two-digit week,         for example 03 or 37
 .br
-h  minimal-digit hour,    for example 3 or 21
+h  minimal-digit hour,     for example 3 or 21
 .br
-n  minimal-digit minutes, for example 5 or 42
+n  minimal-digit minutes,  for example 5 or 42
 .br
-s  minimal-digit seconds, for example 7 or 47
+s  minimal-digit seconds,  for example 7 or 47
 .br
-H  two-digit hour,        for example 03 or 21
+H  two-digit hour,         for example 03 or 21
 .br
-N  two-digit minutes,     for example 05 or 42
+N  two-digit minutes,      for example 05 or 42
 .br
-S  two-digit seconds,     for example 07 or 47
+S  two-digit seconds,      for example 07 or 47
+.br
+J  three-digit Julian day, for example 023 or 365
+.br
+j  Julian day,             for example 23 or 365
 .RE
 .RE
 
