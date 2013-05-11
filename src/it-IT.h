@@ -417,6 +417,7 @@
 #define STRING_CMD_SYNC_FAIL_ERROR   "Sincronizzazione fallita.  Il Task Server ha ritornato l'errore: {1} {2}"
 #define STRING_CMD_SYNC_FAIL_CONNECT "Sincronizzazione fallita.  Impossibile connettersi al Task Server."
 #define STRING_CMD_SYNC_BAD_SERVER   "Sincronizzazione fallita.  Impostazione di configurazione '{1}' malformata"
+#define STRING_CMD_SYNC_NO_TLS       "Taskwarrior was built without GnuTLS support.  Sync is not available."
 #define STRING_CMD_DIAG_USAGE        "Dettagli su piattaforma, build e ambiente"
 #define STRING_CMD_DIAG_PLATFORM     "Piattaforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<sconoscito>"

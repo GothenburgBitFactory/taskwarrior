@@ -29,7 +29,11 @@
 #include <sstream>
 #include <inttypes.h>
 #include <Context.h>
-#include <Socket.h>
+#include <cmake.h>
+#include <Socket.h> // TODO Socket is obsolete.
+/*
+#include <TLSClient.h>
+*/
 #include <Color.h>
 #include <text.h>
 #include <i18n.h>
@@ -51,6 +55,7 @@ CmdSync::CmdSync ()
 int CmdSync::execute (std::string& output)
 {
   int status = 0;
+#ifdef HAVE_LIBGNUTLS
   Timer timer_sync;
   timer_sync.start ();
 
@@ -110,8 +115,8 @@ int CmdSync::execute (std::string& output)
     std::string code = response.get ("code");
     if (code == "200")
     {
-      Color colorAdded    (context.config.get ("color.sync.added"));                
-      Color colorChanged  (context.config.get ("color.sync.changed"));              
+      Color colorAdded    (context.config.get ("color.sync.added"));
+      Color colorChanged  (context.config.get ("color.sync.changed"));
 
       int download_count = 0;
       payload = response.getPayload ();
@@ -244,6 +249,10 @@ int CmdSync::execute (std::string& output)
   debug (s.str ());
 */
 
+#else
+  // Without GnuTLS found at compile time, there is no working sync command.
+  throw std::string (STRING_CMD_SYNC_NO_TLS);
+#endif
   return status;
 }
 
@@ -253,6 +262,7 @@ bool CmdSync::send (
   const Msg& request,
   Msg& response)
 {
+#ifdef HAVE_LIBGNUTLS
   std::string::size_type colon = to.rfind (':');
   if (colon == std::string::npos)
     throw format (STRING_CMD_SYNC_BAD_SERVER, to);
@@ -262,6 +272,7 @@ bool CmdSync::send (
 
   try
   {
+    // TODO Socket is obsolete.
     Socket s;
     s.connect (server, port);
     s.write (request.serialize () + "\n");
@@ -269,6 +280,21 @@ bool CmdSync::send (
     std::string incoming;
     s.read (incoming);
     s.close ();
+
+/*
+    // A very basic TLS client, with X.509 authentication.
+    TLSClient client;
+    client.debug ();                        // TODO if (context.config.get ("debug"))
+    client.limit (1024);                    // TODO ???
+    client.init ("pki/client.cert.pem");    // TODO ???
+    client.connect (server, port);
+
+    client.send (request.serialize () + "\n");
+
+    std::string incoming;
+    client.recv (incoming);
+    client.bye ();
+*/
 
     response.parse (incoming);
     return true;
@@ -280,6 +306,7 @@ bool CmdSync::send (
   }
 
   // Indicate message failed.
+#endif
   return false;
 }
 
