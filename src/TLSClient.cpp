@@ -30,12 +30,15 @@
 #ifdef HAVE_LIBGNUTLS
 
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <TLSClient.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <sys/errno.h>
 #include <sys/types.h>
 #include <netdb.h>
+#include <i18n.h>
 
 #define MAX_BUF 1024
 
@@ -102,7 +105,7 @@ void TLSClient::init (const std::string& ca)
     if (ret == GNUTLS_E_INVALID_REQUEST)
       std::cout << "c: ERROR Priority error at: " << err << "\n";
 
-    exit (1);
+    throw std::string (STRING_TLS_INIT_FAIL);
   }
 
   // Apply the x509 credentials to the current session.
@@ -113,8 +116,7 @@ void TLSClient::init (const std::string& ca)
 void TLSClient::connect (const std::string& host, const std::string& port)
 {
   // use IPv4 or IPv6, does not matter.
-  struct addrinfo hints;
-  memset (&hints, 0, sizeof hints);
+  struct addrinfo hints = {0};
   hints.ai_family   = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags    = AI_PASSIVE; // use my IP

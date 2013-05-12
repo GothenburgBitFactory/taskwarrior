@@ -715,6 +715,7 @@
 #define STRING_UDA_COLLISION         "El UDA denominado '{1}' es el mismo que un atributo del núcleo, y no está permitido."
 #define STRING_INVALID_MOD           "El atributo '{1}' no admite un valor '{2}'."
 #define STRING_INVALID_SORT_COL      "La columna '{1}' no es un campo de ordenación válido."
+#define STRING_TLS_INIT_FAIL         "Error initializing TLS."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."
