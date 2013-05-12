@@ -415,6 +415,7 @@
 #define STRING_CMD_SYNC_USAGE        "Sincroniza datos con el Servidor Task"
 #define STRING_CMD_SYNC_NO_SERVER    "El Servidor Task no está configurado."
 #define STRING_CMD_SYNC_BAD_CRED     "Credenciales del Servidor Task incorrectas."
+#define STRING_CMD_SYNC_BAD_CERT     "Task Server certificate missing."
 #define STRING_CMD_SYNC_ADD          "   añade {1} '{2}'"
 #define STRING_CMD_SYNC_MOD          "modifica {1} '{2}'"
 #define STRING_CMD_SYNC_PROGRESS     "Sincronizando con {1}"

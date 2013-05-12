@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,45 +25,92 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
+
+#ifdef HAVE_LIBGNUTLS
+
 #include <iostream>
-#include <stdarg.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <sys/types.h>
+#include <TLSClient.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 #include <sys/errno.h>
+#include <sys/types.h>
 #include <netdb.h>
-#include <unistd.h>
-#include <string.h>
-#include <Socket.h>
+
+#define MAX_BUF 1024
 
 ////////////////////////////////////////////////////////////////////////////////
-Socket::Socket () :
-  _socket (0),
-  _limit (0), // Unlimited
-  _debug (false)
+static void gnutls_log_function (int level, const char* message)
+{
+  std::cout << "c: " << level << " " << message;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+TLSClient::TLSClient ()
+: _ca ("")
+, _socket (0)
+, _debug (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Socket::Socket (int s) :
-  _socket (s),
-  _limit (0), // Unlimited
-  _debug (false)
+TLSClient::~TLSClient ()
 {
+  gnutls_deinit (_session);
+  gnutls_certificate_free_credentials (_credentials);
+  gnutls_global_deinit ();
+
+  if (_socket)
+  {
+    shutdown (_socket, SHUT_RDWR);
+    close (_socket);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Socket::~Socket ()
+void TLSClient::limit (int max)
 {
-  close ();
+  _limit = max;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// For clients.
-void Socket::connect (const std::string& host, const std::string& port)
+// Calling this method results in all subsequent socket traffic being sent to
+// std::cout, labelled with >>> for outgoing, <<< for incoming.
+void TLSClient::debug (int level)
+{
+  _debug = true;
+
+  gnutls_global_set_log_function (gnutls_log_function);
+  gnutls_global_set_log_level (level);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TLSClient::init (const std::string& ca)
+{
+  _ca = ca;
+
+  gnutls_global_init ();
+  gnutls_certificate_allocate_credentials (&_credentials);
+  gnutls_certificate_set_x509_trust_file (_credentials, _ca.c_str (), GNUTLS_X509_FMT_PEM);
+  gnutls_init (&_session, GNUTLS_CLIENT);
+
+  // Use default priorities.
+  const char *err;
+  int ret = gnutls_priority_set_direct (_session, "NORMAL", &err);
+  if (ret < 0)
+  {
+    if (ret == GNUTLS_E_INVALID_REQUEST)
+      std::cout << "c: ERROR Priority error at: " << err << "\n";
+
+    exit (1);
+  }
+
+  // Apply the x509 credentials to the current session.
+  gnutls_credentials_set (_session, GNUTLS_CRD_CERTIFICATE, _credentials);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TLSClient::connect (const std::string& host, const std::string& port)
 {
   // use IPv4 or IPv6, does not matter.
   struct addrinfo hints;
@@ -95,10 +142,7 @@ void Socket::connect (const std::string& host, const std::string& port)
       throw "ERROR: " + std::string (::strerror (errno));
 
     if (::connect (_socket, p->ai_addr, p->ai_addrlen) == -1)
-    {
-      close ();
       continue;
-    }
 
     break;
   }
@@ -107,80 +151,31 @@ void Socket::connect (const std::string& host, const std::string& port)
 
   if (p == NULL)
     throw "ERROR: Could not connect to " + host + " " + port;
-}
 
-////////////////////////////////////////////////////////////////////////////////
-void Socket::close ()
-{
-  if (_socket)
-    ::close (_socket);
-  _socket = 0;
-}
+  gnutls_transport_set_ptr (_session, (gnutls_transport_ptr_t) _socket);
 
-////////////////////////////////////////////////////////////////////////////////
-// For servers.
-void Socket::bind (const std::string& port)
-{
-  // use IPv4 or IPv6, does not matter.
-  struct addrinfo hints;
-  memset (&hints, 0, sizeof hints);
-  hints.ai_family   = AF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_flags    = AI_PASSIVE; // use my IP
+  // Perform the TLS handshake
+  int ret = gnutls_handshake (_session);
 
-  struct addrinfo* res;
-  if (::getaddrinfo (NULL, port.c_str (), &hints, &res) != 0)
-    throw "ERROR: " + std::string (::gai_strerror (errno));
-
-  if ((_socket = ::socket (res->ai_family,
-                           res->ai_socktype,
-                           res->ai_protocol)) == -1)
-    throw "ERROR: Can not bind to port " + port;
-
-  // When a socket is closed, it remains unavailable for a while (netstat -an).
-  // Setting SO_REUSEADDR allows this program to assume control of a closed, but
-  // unavailable socket.
-  int on = 1;
-  if (::setsockopt (_socket,
-                    SOL_SOCKET,
-                    SO_REUSEADDR,
-                    (const void*) &on,
-                    sizeof (on)) == -1)
-    throw "ERROR: " + std::string (::strerror (errno));
-
-  if (::bind (_socket, res->ai_addr, res->ai_addrlen) == -1)
-    throw "ERROR: " + std::string (::strerror (errno));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Socket::listen (int queue /*= 5*/)
-{
-  if (::listen (_socket, queue) < 0)
-    throw "ERROR: " + std::string (::strerror (errno));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int Socket::accept ()
-{
-  struct sockaddr_storage client;
-  socklen_t length = sizeof client;
-  int connection;
-
-  do
+  if (ret < 0)
   {
-    memset (&client, 0, length);
-    connection = ::accept (_socket, (struct sockaddr*) &client, &length);
+    std::cout << "c: ERROR Handshake failed\n";
+    gnutls_perror (ret);
   }
-  while (errno == EINTR);
-
-  if (connection < 0)
-    throw "ERROR: " + std::string (::strerror (errno));
-
-  return connection;
+  else
+  {
+    std::cout << "c: INFO Handshake was completed\n";
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Socket::write (const std::string& data)
+void TLSClient::bye ()
+{
+  gnutls_bye (_session, GNUTLS_SHUT_RDWR);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TLSClient::send (const std::string& data)
 {
   std::string packet = "XXXX" + data;
 
@@ -199,9 +194,10 @@ void Socket::write (const std::string& data)
     int status;
     do
     {
-      status = ::send (_socket, packet.c_str () + total, remaining, 0);
+      status = gnutls_record_send (_session, packet.c_str () + total, remaining);
     }
-    while (errno == EINTR);
+    while (errno == GNUTLS_E_INTERRUPTED ||
+           errno == GNUTLS_E_AGAIN);
 
     if (status == -1)
       break;
@@ -211,25 +207,28 @@ void Socket::write (const std::string& data)
   }
 
   if (_debug)
-    std::cout << ">>> "
+    std::cout << "c: INFO Sending 'XXXX"
               << data.c_str ()
-              << " (" << total << " bytes)"
+              << "' (" << total << " bytes)"
               << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Socket::read (std::string& data)
+void TLSClient::recv (std::string& data)
 {
   data = "";          // No appending of data.
   int received = 0;
 
   // Get the encoded length.
-  unsigned char header[4];
+  unsigned char header[4] = {0};
   do
   {
-    received = ::recv (_socket, header, sizeof (header), 0);
+    received = gnutls_record_recv (_session, header, 4);
   }
-  while (errno == EINTR);
+  while (received > 0 &&
+         (errno == GNUTLS_E_INTERRUPTED ||
+          errno == GNUTLS_E_AGAIN));
+
   int total = received;
 
   // Decode the length.
@@ -237,11 +236,12 @@ void Socket::read (std::string& data)
                            (header[1]<<16) |
                            (header[2]<<8) |
                             header[3];
+  std::cout << "c: INFO expecting " << expected << " bytes.\n";
 
   // TODO This would be a good place to assert 'expected < _limit'.
 
   // Arbitrary buffer size.
-  char buffer[8192];
+  char buffer[MAX_BUF];
 
   // Keep reading until no more data.  Concatenate chunks of data if a) the
   // read was interrupted by a signal, and b) if there is more data than
@@ -250,17 +250,22 @@ void Socket::read (std::string& data)
   {
     do
     {
-      received = ::recv (_socket, buffer, sizeof (buffer) - 1, 0);
+      received = gnutls_record_recv (_session, buffer, MAX_BUF - 1);
     }
-    while (errno == EINTR);
+    while (received > 0 &&
+           (errno == GNUTLS_E_INTERRUPTED ||
+            errno == GNUTLS_E_AGAIN));
 
     // Other end closed the connection.
     if (received == 0)
+    {
+      std::cout << "c: INFO Peer has closed the TLS connection\n";
       break;
+    }
 
     // Something happened.
     if (received < 0)
-      throw "ERROR: " + std::string (::strerror (errno));
+      throw "ERROR: " + std::string (gnutls_strerror (received));
 
     buffer [received] = '\0';
     data += buffer;
@@ -273,35 +278,11 @@ void Socket::read (std::string& data)
   while (received > 0 && total < (int) expected);
 
   if (_debug)
-    std::cout << "<<< "
+    std::cout << "c: INFO Receiving 'XXXX"
               << data.c_str ()
-              << " (" << total << " bytes)"
+              << "' (" << total << " bytes)"
               << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Socket::limit (int max)
-{
-  _limit = max;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Calling this method results in all subsequent socket traffic being sent to
-// std::cout, labelled with >>> for outgoing, <<< for incoming.
-void Socket::debug ()
-{
-  _debug = true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// get sockaddr, IPv4 or IPv6:
-void* Socket::get_in_addr (struct sockaddr* sa)
-{
-  if (sa->sa_family == AF_INET)
-    return &(((struct sockaddr_in*) sa)->sin_addr);
-
-  return &(((struct sockaddr_in6*) sa)->sin6_addr);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
+#endif

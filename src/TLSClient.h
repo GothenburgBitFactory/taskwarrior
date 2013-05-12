@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2013, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,49 +24,39 @@
 // http://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
+#ifndef INCLUDED_TLSCLIENT
+#define INCLUDED_TLSCLIENT
 
-#ifndef INCLUDED_SOCKET
-#define INCLUDED_SOCKET
+#ifdef HAVE_LIBGNUTLS
 
 #include <string>
-#include <sys/select.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
+#include <gnutls/gnutls.h>
 
-class Socket
+class TLSClient
 {
 public:
-  Socket ();
-  Socket (int);
-  ~Socket ();
-
-  // Client
-  void connect (const std::string&, const std::string&);
-
-  // Server
-  void bind (const std::string&);
-  void listen (int queue = 5);
-  int accept ();
-  void read (std::string&);
-  void write (const std::string&);
-
-  void close ();
-
+  TLSClient ();
+  ~TLSClient ();
   void limit (int);
-  void debug ();
+  void debug (int);
+  void init (const std::string&);
+  void connect (const std::string&, const std::string&);
+  void bye ();
+
+  void send (const std::string&);
+  void recv (std::string&);
 
 private:
-  void* get_in_addr (struct sockaddr*);
-
-private:
-  int  _socket;
-  int  _limit;
-  bool _debug;
+  std::string                      _ca;
+  gnutls_certificate_credentials_t _credentials;
+  gnutls_session_t                 _session;
+  int                              _socket;
+  int                              _limit;
+  bool                             _debug;
 };
 
 #endif
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
+

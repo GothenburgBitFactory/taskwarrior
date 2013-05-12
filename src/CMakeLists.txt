@@ -26,6 +26,7 @@ set (task_SRCS A3.cpp A3.h
                Task.cpp Task.h
                Taskmod.cpp Taskmod.h
                Timer.cpp Timer.h
+               TLSClient.cpp TLSClient.h
                Transport.cpp Transport.h
                TransportCurl.cpp TransportCurl.h
                TransportRSYNC.cpp TransportRSYNC.h
@@ -41,7 +42,6 @@ set (task_SRCS A3.cpp A3.h
                legacy.cpp
                recur.cpp
                rules.cpp
-               Socket.cpp Socket.h
                sort.cpp
                text.cpp text.h
                utf8.cpp utf8.h

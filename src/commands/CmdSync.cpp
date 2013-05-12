@@ -25,15 +25,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <sstream>
 #include <inttypes.h>
 #include <Context.h>
-#include <cmake.h>
-#include <Socket.h> // TODO Socket is obsolete.
-/*
 #include <TLSClient.h>
-*/
 #include <Color.h>
 #include <text.h>
 #include <i18n.h>
@@ -77,6 +74,10 @@ int CmdSync::execute (std::string& output)
   if (credentials.size () != 3)
     throw std::string (STRING_CMD_SYNC_BAD_CRED);
 
+  std::string certificate = context.config.get ("taskd.certificate");
+  if (certificate == "")
+    throw std::string (STRING_CMD_SYNC_BAD_CERT);
+
   // Read backlog.data.
   std::string payload = "";
   File backlog (context.config.get ("data.location") + "/backlog.data");
@@ -110,7 +111,7 @@ int CmdSync::execute (std::string& output)
       << "\n";
 
   Msg response;
-  if (send (connection, request, response))
+  if (send (connection, certificate, request, response))
   {
     std::string code = response.get ("code");
     if (code == "200")
@@ -259,6 +260,7 @@ int CmdSync::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 bool CmdSync::send (
   const std::string& to,
+  const std::string& certificate,
   const Msg& request,
   Msg& response)
 {
@@ -270,23 +272,14 @@ bool CmdSync::send (
   std::string server = to.substr (0, colon);
   std::string port = to.substr (colon + 1);
 
+  File cert (certificate);
+
   try
   {
-    // TODO Socket is obsolete.
-    Socket s;
-    s.connect (server, port);
-    s.write (request.serialize () + "\n");
-
-    std::string incoming;
-    s.read (incoming);
-    s.close ();
-
-/*
     // A very basic TLS client, with X.509 authentication.
     TLSClient client;
-    client.debug ();                        // TODO if (context.config.get ("debug"))
-    client.limit (1024);                    // TODO ???
-    client.init ("pki/client.cert.pem");    // TODO ???
+    client.debug (context.config.getInteger ("debug.tls"));
+    client.init (cert);
     client.connect (server, port);
 
     client.send (request.serialize () + "\n");
@@ -294,7 +287,6 @@ bool CmdSync::send (
     std::string incoming;
     client.recv (incoming);
     client.bye ();
-*/
 
     response.parse (incoming);
     return true;

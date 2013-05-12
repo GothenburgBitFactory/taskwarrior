@@ -213,14 +213,6 @@ int CmdDiagnostics::execute (std::string& output)
       << location.mode ()
       << "\n";
 
-  out << "     Server: "
-      << context.config.get ("taskd.server")
-      << "\n";
-
-  out << "       Cert: "
-      << context.config.get ("taskd.certificate")
-      << "\n";
-
   out << "    Locking: "
       << (context.config.getBoolean ("locking")
            ? STRING_CMD_DIAG_ENABLED
@@ -236,7 +228,25 @@ int CmdDiagnostics::execute (std::string& output)
   else if ((peditor = getenv ("EDITOR")) != NULL)
     out << "    $EDITOR: " << peditor << "\n";
 
-  out << "\n";
+  out << "     Server: "
+      << context.config.get ("taskd.server")
+      << "\n";
+
+  out << "       Cert: "
+      << context.config.get ("taskd.certificate")
+      << "\n";
+
+  // Get credentials, but mask out the key.
+  std::string credentials = context.config.get ("taskd.credentials");
+  std::string::size_type last_slash = credentials.rfind ('/');
+  if (last_slash != std::string::npos)
+    credentials = credentials.substr (0, last_slash)
+                + "/"
+                + std::string (credentials.length () - last_slash - 1, '*');
+
+  out << "      Creds: "
+      << credentials
+      << "\n\n";
 
   // External commands.
   out << bold.colorize (STRING_CMD_DIAG_EXTERNAL)
