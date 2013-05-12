@@ -459,6 +459,10 @@ being parsed, but the information is displayed in a developer-friendly, not a
 user-friendly way.
 
 .TP
+.B debug.tls=0
+Controls the GnuTLS log level.  For 'sync' debugging.
+
+.TP
 .B alias.rm=delete
 Taskwarrior supports command aliases.  This alias provides an alternate name
 (rm) for the delete command.  You can use aliases to provide alternate names for
@@ -1352,6 +1356,31 @@ of a task.
 .B uda.estimate.label=Size Estimate
 .br
 .B uda.estimate.values=trivial,small,medium,large,huge
+.RE
+
+.SS SYNC
+
+These configuration settings are used to connect and sync tasks with the task
+server.
+
+.TP
+.B taskd.server=<host>:<port>
+.RS
+Specifies the hostname and port of the task server.  Hostname may be an IPv4 or
+IPv6 address, or domain.  Port is an integer.
+.RE
+
+.TP
+.B taskd.credentials=<organization>/<user>/<key>
+.RS
+User identification for the task server, which includes a private key.
+.RE
+
+.TP
+.B taskd.certificate=<path>
+.RS
+Specifies the path to the client certificate used for encrypted communication
+with the task server.
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
