@@ -30,6 +30,7 @@
 #ifdef HAVE_LIBGNUTLS
 
 #include <iostream>
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
