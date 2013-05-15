@@ -156,7 +156,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   if (p == NULL)
     throw "ERROR: Could not connect to " + host + " " + port;
 
-  gnutls_transport_set_ptr (_session, (gnutls_transport_ptr_t) _socket);
+  gnutls_transport_set_ptr (_session, (gnutls_transport_ptr_t) (long) _socket);
 
   // Perform the TLS handshake
   int ret = gnutls_handshake (_session);
