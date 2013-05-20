@@ -54,6 +54,7 @@ static void gnutls_log_function (int level, const char* message)
 TLSClient::TLSClient ()
 : _ca ("")
 , _socket (0)
+, _limit (0)
 , _debug (false)
 {
 }
@@ -80,10 +81,11 @@ void TLSClient::limit (int max)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Calling this method results in all subsequent socket traffic being sent to
-// std::cout, labelled with >>> for outgoing, <<< for incoming.
+// std::cout, labelled with 'c: ...'.
 void TLSClient::debug (int level)
 {
-  _debug = true;
+  if (level)
+    _debug = true;
 
   gnutls_global_set_log_function (gnutls_log_function);
   gnutls_global_set_log_level (level);
@@ -104,7 +106,7 @@ void TLSClient::init (const std::string& ca)
   int ret = gnutls_priority_set_direct (_session, "NORMAL", &err);
   if (ret < 0)
   {
-    if (ret == GNUTLS_E_INVALID_REQUEST)
+    if (_debug && ret == GNUTLS_E_INVALID_REQUEST)
       std::cout << "c: ERROR Priority error at: " << err << "\n";
 
     throw std::string (STRING_TLS_INIT_FAIL);
@@ -160,15 +162,16 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 
   // Perform the TLS handshake
   int ret = gnutls_handshake (_session);
-
   if (ret < 0)
   {
-    std::cout << "c: ERROR Handshake failed\n";
+    if (_debug)
+      std::cout << "c: ERROR Handshake failed\n";
     gnutls_perror (ret);
   }
   else
   {
-    std::cout << "c: INFO Handshake was completed\n";
+    if (_debug)
+      std::cout << "c: INFO Handshake was completed\n";
   }
 }
 
@@ -240,7 +243,8 @@ void TLSClient::recv (std::string& data)
                            (header[1]<<16) |
                            (header[2]<<8) |
                             header[3];
-  std::cout << "c: INFO expecting " << expected << " bytes.\n";
+  if (_debug)
+    std::cout << "c: INFO expecting " << expected << " bytes.\n";
 
   // TODO This would be a good place to assert 'expected < _limit'.
 
@@ -263,7 +267,8 @@ void TLSClient::recv (std::string& data)
     // Other end closed the connection.
     if (received == 0)
     {
-      std::cout << "c: INFO Peer has closed the TLS connection\n";
+      if (_debug)
+        std::cout << "c: INFO Peer has closed the TLS connection\n";
       break;
     }
 
