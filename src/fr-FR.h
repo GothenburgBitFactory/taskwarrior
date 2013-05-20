@@ -396,8 +396,8 @@
 #define STRING_CMD_IMPORT_NOFILE     "You must specify a file to import."
 #define STRING_CMD_IMPORT_FILE       "Importing '{1}'"
 #define STRING_CMD_IMPORT_NOT_JSON   "Not a JSON object: {1}"
-#define STRING_CMD_IMPORT_NO_DESC    "Annotation is missing a description: {1}"
-#define STRING_CMD_IMPORT_NO_ENTRY   "Annotation is missing an entry date: {1}"
+#define STRING_TASK_NO_DESC          "Annotation is missing a description: {1}"
+#define STRING_TASK_NO_ENTRY         "Annotation is missing an entry date: {1}"
 #define STRING_CMD_SHELL_HELP1       "Enter any task command (such as 'list'), or hit 'Enter'."
 #define STRING_CMD_SHELL_HELP2       "There is no need to include the 'task' command itself."
 #define STRING_CMD_SHELL_HELP3       "Enter 'quit' (or 'bye', 'exit') to end the session."
@@ -779,6 +779,7 @@
 
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior no longer supports file format 1, originally used between 27 November 2006 and 31 December 2007."
+#define STRING_TASK_NO_FF2           "Taskwarrior no longer supports file format 2, originally used between 1 January 2008 and 12 April 2009."
 #define STRING_TASK_PARSE_ANNO_BRACK "Missing annotation brackets."
 #define STRING_TASK_PARSE_ATT_BRACK  "Missing attribute brackets."
 #define STRING_TASK_PARSE_TAG_BRACK  "Missing tag brackets."

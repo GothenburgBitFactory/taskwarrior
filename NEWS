@@ -22,7 +22,7 @@ New configuration options in taskwarrior 2.3.0
 
 Newly deprecated features in taskwarrior 2.3.0
   
-  - 
+  - File format 2 (used in version 0.9.3 - 1.5.0) is no longer supported.
 
 ---
 

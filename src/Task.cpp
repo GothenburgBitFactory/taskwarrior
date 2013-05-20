@@ -25,21 +25,30 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
+#ifdef PRODUCT_TASKWARRIOR
 #include <sstream>
+#endif
 #include <stdlib.h>
+#ifdef PRODUCT_TASKWARRIOR
 #include <assert.h>
 #include <math.h>
 #include <algorithm>
 #include <Context.h>
 #include <Nibbler.h>
+#endif
 #include <Date.h>
 #include <Duration.h>
 #include <Task.h>
 #include <JSON.h>
+#ifdef PRODUCT_TASKWARRIOR
 #include <RX.h>
+#endif
 #include <text.h>
 #include <util.h>
+
 #include <i18n.h>
+#ifdef PRODUCT_TASKWARRIOR
 #include <main.h>
 
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
@@ -96,14 +105,17 @@ void initializeUrgencyCoefficients ()
       coefficients[*var] = context.config.getReal (*var);
   }
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task ()
 : id (0)
+#ifdef PRODUCT_TASKWARRIOR
 , urgency_value (0.0)
 , recalc_urgency (true)
 , is_blocked (false)
 , is_blocking (false)
+#endif
 , annotation_count (0)
 {
 }
@@ -120,13 +132,14 @@ Task& Task::operator= (const Task& other)
   if (this != &other)
   {
     std::map <std::string, std::string>::operator= (other);
-
     id               = other.id;
+#ifdef PRODUCT_TASKWARIROR
     urgency_value    = other.urgency_value;
     recalc_urgency   = other.recalc_urgency;
     is_blocked       = other.is_blocked;
     is_blocking      = other.is_blocking;
     annotation_count = other.annotation_count;
+#endif
   }
 
   return *this;
@@ -152,11 +165,13 @@ bool Task::operator== (const Task& other)
 Task::Task (const std::string& input)
 {
   id = 0;
+#ifdef PRODUCT_TASKWARRIOR
   urgency_value = 0.0;
   recalc_urgency = true;
   is_blocked = false;
   is_blocking = false;
   annotation_count = 0;
+#endif
   parse (input);
 }
 
@@ -189,6 +204,7 @@ std::string Task::statusToText (Task::status s)
   return "pending";
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setEntry ()
 {
@@ -218,6 +234,7 @@ void Task::setStart ()
 
   recalc_urgency = true;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setModified ()
@@ -258,6 +275,7 @@ const std::string Task::get (const std::string& name) const
   return "";
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 const std::string& Task::get_ref (const std::string& name) const
 {
@@ -287,6 +305,7 @@ unsigned long Task::get_ulong (const std::string& name) const
 
   return 0;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 time_t Task::get_date (const std::string& name) const
@@ -303,7 +322,9 @@ void Task::set (const std::string& name, const std::string& value)
 {
   (*this)[name] = value;
 
+#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -311,7 +332,9 @@ void Task::set (const std::string& name, int value)
 {
   (*this)[name] = format (value);
 
+#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -321,7 +344,9 @@ void Task::remove (const std::string& name)
   if ((it = this->find (name)) != this->end ())
     this->erase (it);
 
+#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -335,9 +360,12 @@ void Task::setStatus (Task::status status)
 {
   set ("status", statusToText (status));
 
+#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
+#endif
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::is_due () const
 {
@@ -391,10 +419,13 @@ bool Task::is_overdue () const
 
   return false;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Task::parse, and in the event of an error
-// try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
+// try a JSON parse, otherwise a legacy parse (FF3).
+//
+// Note that FF1 and FF2 are no longer supported.
 //
 // start --> [ --> Att --> ] --> end
 //              ^       |
@@ -410,6 +441,7 @@ void Task::parse (const std::string& input)
 
   try
   {
+    // File format version 4, from 2009-5-16 - now, v1.7.1+
     clear ();
 
     Nibbler n (copy);
@@ -451,88 +483,141 @@ void Task::parse (const std::string& input)
       if (remainder.length ())
         throw std::string (STRING_RECORD_JUNK_AT_EOL);
     }
+    else if (input[0] == '{')
+      parseJSON (input);
     else
       throw std::string (STRING_RECORD_NOT_FF4);
   }
 
   catch (const std::string&)
   {
-    legacyParse (copy);
+    parseLegacy (copy);
   }
 
+#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
+#endif
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::parseJSON (const std::string& line)
+{
+  // Parse the whole thing.
+  json::value* root = json::parse (line);
+  if (root->type () == json::j_object)
+  {
+    json::object* root_obj = (json::object*)root;
+
+    // For each object element...
+    json_object_iter i;
+    for (i  = root_obj->_data.begin ();
+         i != root_obj->_data.end ();
+         ++i)
+    {
+      // If the attribute is a recognized column.
+      Column* col = context.columns[i->first];
+      if (col)
+      {
+        // Any specified id is ignored.
+        if (i->first == "id")
+          ;
+
+        // Urgency, if present, is ignored.
+        else if (i->first == "urgency")
+          ;
+
+        // Dates are converted from ISO to epoch.
+        else if (col->type () == "date")
+        {
+          Date d (unquoteText (i->second->dump ()));
+          set (i->first, d.toEpochString ());
+        }
+
+        // Tags are an array of JSON strings.
+        else if (i->first == "tags")
+        {
+          json::array* tags = (json::array*)i->second;
+          json_array_iter t;
+          for (t  = tags->_data.begin ();
+               t != tags->_data.end ();
+               ++t)
+          {
+            json::string* tag = (json::string*)*t;
+            addTag (tag->_data);
+          }
+        }
+
+        // Other types are simply added.
+        else
+          set (i->first, unquoteText (i->second->dump ()));
+      }
+
+      // UDA orphans and annotations do not have columns.
+      else
+      {
+        // Annotations are an array of JSON objects with 'entry' and
+        // 'description' values and must be converted.
+        if (i->first == "annotations")
+        {
+          std::map <std::string, std::string> annos;
+
+          json::array* atts = (json::array*)i->second;
+          json_array_iter annotations;
+          for (annotations  = atts->_data.begin ();
+               annotations != atts->_data.end ();
+               ++annotations)
+          {
+            json::object* annotation = (json::object*)*annotations;
+            json::string* when = (json::string*)annotation->_data["entry"];
+            json::string* what = (json::string*)annotation->_data["description"];
+
+            if (! when)
+              throw format (STRING_TASK_NO_ENTRY, line);
+
+            if (! what)
+              throw format (STRING_TASK_NO_DESC, line);
+
+            std::string name = "annotation_" + Date (when->_data).toEpochString ();
+
+            annos.insert (std::make_pair (name, what->_data));
+          }
+
+          setAnnotations (annos);
+        }
+
+        // UDA Orphan - must be preserved.
+        else
+        {
+#ifdef PRODUCT_TASKWARRIOR
+          std::stringstream message;
+          message << "Task::parseJSON found orphan '"
+                  << i->first
+                  << "' with value '"
+                  << i->second
+                  << "' --> preserved\n";
+          context.debug (message.str ());
+#endif
+          set (i->first, unquoteText (i->second->dump ()));
+        }
+      }
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Support FF2, FF3.
 // Thankfully FF1 is no longer supported.
-void Task::legacyParse (const std::string& line)
+void Task::parseLegacy (const std::string& line)
 {
   switch (determineVersion (line))
   {
-  // File format version 1, from 2006.11.27 - 2007.12.31
-  case 1:
-    throw std::string (STRING_TASK_NO_FF1);
-    break;
+  // File format version 1, from 2006-11-27 - 2007-12-31, v0.x+ - v0.9.3
+  case 1: throw std::string (STRING_TASK_NO_FF1);
 
-  // File format version 2, from 2008.1.1 - 2009.3.23
-  case 2:
-    {
-      if (line.length () > 46)       // ^.{36} . \[\] \[\] \n
-      {
-        set ("uuid", line.substr (0, 36));
+  // File format version 2, from 2008-1-1 - 2009-3-23, v0.9.3 - v1.5.0
+  case 2: throw std::string (STRING_TASK_NO_FF2);
 
-        Task::status status = line[37] == '+' ? completed
-                            : line[37] == 'X' ? deleted
-                            : line[37] == 'r' ? recurring
-                            :                   pending;
-
-        set ("status", statusToText (status));
-
-        size_t openTagBracket  = line.find ("[");
-        size_t closeTagBracket = line.find ("]", openTagBracket);
-        if (openTagBracket  != std::string::npos &&
-            closeTagBracket != std::string::npos)
-        {
-          size_t openAttrBracket  = line.find ("[", closeTagBracket);
-          size_t closeAttrBracket = line.find ("]", openAttrBracket);
-          if (openAttrBracket  != std::string::npos &&
-              closeAttrBracket != std::string::npos)
-          {
-            std::string tags = line.substr (
-              openTagBracket + 1, closeTagBracket - openTagBracket - 1);
-            std::vector <std::string> tagSet;
-            split (tagSet, tags, ' ');
-            addTags (tagSet);
-
-            std::string attributes = line.substr (
-              openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
-            std::vector <std::string> pairs;
-            split (pairs, attributes, ' ');
-            for (size_t i = 0; i <  pairs.size (); ++i)
-            {
-              std::vector <std::string> pair;
-              split (pair, pairs[i], ':');
-              if (pair.size () == 2)
-                set (pair[0], pair[1]);
-            }
-
-            set ("description", line.substr (closeAttrBracket + 2));
-          }
-          else
-            throw std::string (STRING_TASK_PARSE_ATT_BRACK);
-        }
-        else
-          throw std::string (STRING_TASK_PARSE_TAG_BRACK);
-      }
-      else
-        throw std::string (STRING_TASK_PARSE_TOO_SHORT);
-
-      removeAnnotations ();
-    }
-    break;
-
-  // File format version 3, from 2009.3.23
+  // File format version 3, from 2009-3-23 - 2009-05-16, v1.6.0 - v1.7.1
   case 3:
     {
       if (line.length () > 49)       // ^.{36} . \[\] \[\] \[\] \n
@@ -640,7 +725,9 @@ void Task::legacyParse (const std::string& line)
     break;
   }
 
+#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -669,14 +756,15 @@ std::string Task::composeF4 () const
   return ff4;
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
-std::string Task::composeJSON (bool include_id /*= false*/) const
+std::string Task::composeJSON (bool decorate /*= false*/) const
 {
   std::stringstream out;
   out << "{";
 
   // ID inclusion is optional, not recommended.
-  if (include_id)
+  if (decorate)
     out << "\"id\":" << id << ",";
 
   // First the non-annotations.
@@ -765,10 +853,11 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
   }
 
   // Include urgency.
-  out << ","
-      << "\"urgency\":\""
-      << urgency_c ()
-      <<"\"";
+  if (decorate)
+    out << ","
+        << "\"urgency\":\""
+        << urgency_c ()
+        <<"\"";
 
   out << "}";
   return out.str ();
@@ -778,31 +867,6 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
 bool Task::hasAnnotations () const
 {
   return annotation_count ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Task::getAnnotations (std::map <std::string, std::string>& annotations) const
-{
-  annotations.clear ();
-
-  Task::const_iterator ci;
-  for (ci = this->begin (); ci != this->end (); ++ci)
-    if (ci->first.substr (0, 11) == "annotation_")
-      annotations.insert (*ci);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Task::setAnnotations (const std::map <std::string, std::string>& annotations)
-{
-  // Erase old annotations.
-  removeAnnotations ();
-
-  std::map <std::string, std::string>::const_iterator ci;
-  for (ci = annotations.begin (); ci != annotations.end (); ++ci)
-    this->insert (*ci);
-
-  annotation_count = annotations.size ();
-  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -844,6 +908,31 @@ void Task::removeAnnotations ()
       i++;
   }
 
+  recalc_urgency = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::getAnnotations (std::map <std::string, std::string>& annotations) const
+{
+  annotations.clear ();
+
+  Task::const_iterator ci;
+  for (ci = this->begin (); ci != this->end (); ++ci)
+    if (ci->first.substr (0, 11) == "annotation_")
+      annotations.insert (*ci);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::setAnnotations (const std::map <std::string, std::string>& annotations)
+{
+  // Erase old annotations.
+  removeAnnotations ();
+
+  std::map <std::string, std::string>::const_iterator ci;
+  for (ci = annotations.begin (); ci != annotations.end (); ++ci)
+    this->insert (*ci);
+
+  annotation_count = annotations.size ();
   recalc_urgency = true;
 }
 
@@ -1189,6 +1278,7 @@ void Task::substitute (
     recalc_urgency = true;
   }
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // The purpose of Task::validate is three-fold:
@@ -1224,6 +1314,7 @@ void Task::validate (bool applyDefault /* = true */)
   // Store the derived status.
   setStatus (status);
 
+#ifdef PRODUCT_TASKWARRIOR
   // Provide an entry date unless user already specified one.
   if (!has ("entry"))
     setEntry ();
@@ -1309,6 +1400,7 @@ void Task::validate (bool applyDefault /* = true */)
   validate_before ("scheduled", "start");
   validate_before ("scheduled", "due");
   validate_before ("scheduled", "end");
+#endif
 
   // 3) To generate errors when the inconsistencies are not fixable
 
@@ -1341,6 +1433,8 @@ void Task::validate (bool applyDefault /* = true */)
   }
 }
 
+#ifdef PRODUCT_TASKWARRIOR
+////////////////////////////////////////////////////////////////////////////////
 void Task::validate_before (const std::string& left, const std::string& right)
 {
   if (has (left) &&
@@ -1674,5 +1768,6 @@ float Task::urgency_blocking () const
 
   return 0.0;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////

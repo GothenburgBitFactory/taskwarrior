@@ -24,6 +24,7 @@ Features
  + The 'due' urgency component now uses seconds, not days, in the calculation.
  + The 'debug.tls' configuration variable takes an integer which corresponds to
    the GnuTLS log level.  For debugging.
+ + File format 2 (used in version 0.9.3 - 1.5.0) is no longer supported.
 
 Bugs
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).

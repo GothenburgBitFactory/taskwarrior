@@ -1,5 +1,8 @@
 /* cmake.h.in. Creates cmake.h during a cmake run */
 
+/* Product identification */
+#define PRODUCT_TASKWARRIOR 1
+
 /* Package information */
 #define PACKAGE           "${PACKAGE}"
 #define VERSION           "${VERSION}"

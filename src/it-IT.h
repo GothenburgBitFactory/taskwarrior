@@ -397,8 +397,8 @@
 #define STRING_CMD_IMPORT_NOFILE     "Specificare il file da importare."
 #define STRING_CMD_IMPORT_FILE       "Importazione di '{1}'"
 #define STRING_CMD_IMPORT_NOT_JSON   "Non è un oggetto JSON: {1}"
-#define STRING_CMD_IMPORT_NO_DESC    "Annotazione senza descrizione: {1}"
-#define STRING_CMD_IMPORT_NO_ENTRY   "Annotazione senza data di immissione: {1}"
+#define STRING_TASK_NO_DESC          "Annotazione senza descrizione: {1}"
+#define STRING_TASK_NO_ENTRY         "Annotazione senza data di immissione: {1}"
 #define STRING_CMD_SHELL_HELP1       "Inserisci un comando (es. 'list'), o premi 'Enter'."
 #define STRING_CMD_SHELL_HELP2       "Non è necessario includere il comando 'task'."
 #define STRING_CMD_SHELL_HELP3       "Inserisci 'quit' (o 'bye', 'exit') per terminare la sessione."
@@ -780,6 +780,7 @@
 
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior non supporta più il formato di file 1, usato tra il 27 Novembre 2006 e il 31 Dicembre 2007."
+#define STRING_TASK_NO_FF2           "Taskwarrior no longer supports file format 2, originally used between 1 January 2008 and 12 April 2009."
 #define STRING_TASK_PARSE_ANNO_BRACK "Parentesi di annotazione mancanti."
 #define STRING_TASK_PARSE_ATT_BRACK  "Parentesi di attributo mancanti."
 #define STRING_TASK_PARSE_TAG_BRACK  "Parentesi di tag mancanti."

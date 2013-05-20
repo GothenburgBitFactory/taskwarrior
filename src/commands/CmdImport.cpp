@@ -172,10 +172,10 @@ int CmdImport::execute (std::string& output)
                 json::string* what = (json::string*)annotation->_data["description"];
 
                 if (! when)
-                  throw format (STRING_CMD_IMPORT_NO_ENTRY, *line);
+                  throw format (STRING_TASK_NO_ENTRY, *line);
 
                 if (! what)
-                  throw format (STRING_CMD_IMPORT_NO_DESC, *line);
+                  throw format (STRING_TASK_NO_DESC, *line);
 
                 std::string name = "annotation_" + Date (when->_data).toEpochString ();
 
