@@ -35,12 +35,17 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1);
+  UnitTest t (2);
 
   bool good = true;
-  try {Task t_ff1 ("{}");}
+  try {Task t1 ("{}");}
   catch (const std::string& e){t.diag (e); good = false;}
   t.ok (good, "Task::Task ('{}')");
+
+  good = true;
+  try {Task t2 ("{\"uuid\":\"00000000-0000-0000-000000000001\",\"description\":\"foo\",\"entry\":1234567890}");}
+  catch (const std::string& e){t.diag (e); good = false;}
+  t.ok (good, "Task::Task ('{<minimal>}')");
 
   return 0;
 }
