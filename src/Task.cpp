@@ -133,7 +133,7 @@ Task& Task::operator= (const Task& other)
   {
     std::map <std::string, std::string>::operator= (other);
     id               = other.id;
-#ifdef PRODUCT_TASKWARIROR
+#ifdef PRODUCT_TASKWARRIOR
     urgency_value    = other.urgency_value;
     recalc_urgency   = other.recalc_urgency;
     is_blocked       = other.is_blocked;
