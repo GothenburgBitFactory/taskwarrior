@@ -59,13 +59,11 @@ public:
 
   // Public data.
   int id;
-#ifdef PRODUCT_TASKWARRIOR
   float urgency_value;
   bool recalc_urgency;
 
   bool is_blocked;
   bool is_blocking;
-#endif
 
   int annotation_count;
 
@@ -73,21 +71,17 @@ public:
   static status textToStatus (const std::string&);
   static std::string statusToText (status);
 
-#ifdef PRODUCT_TASKWARRIOR
   void setEntry ();
   void setEnd ();
   void setStart ();
-#endif
   void setModified ();
 
   bool has (const std::string&) const;
   std::vector <std::string> all ();
   const std::string get (const std::string&) const;
-#ifdef PRODUCT_TASKWARRIOR
   const std::string& get_ref (const std::string&) const;
   int get_int (const std::string&) const;
   unsigned long get_ulong (const std::string&) const;
-#endif
   time_t get_date (const std::string&) const;
   void set (const std::string&, const std::string&);
   void set (const std::string&, int);
@@ -102,24 +96,20 @@ public:
   status getStatus () const;
   void setStatus (status);
 
-#ifdef PRODUCT_TASKWARRIOR
   int getTagCount () const;
   bool hasTag (const std::string&) const;
-#endif
   void addTag (const std::string&);
   void addTags (const std::vector <std::string>&);
-#ifdef PRODUCT_TASKWARRIOR
   void getTags (std::vector<std::string>&) const;
   void removeTag (const std::string&);
 
   bool hasAnnotations () const;
   void getAnnotations (std::map <std::string, std::string>&) const;
-#endif
   void setAnnotations (const std::map <std::string, std::string>&);
-#ifdef PRODUCT_TASKWARRIOR
   void addAnnotation (const std::string&);
   void removeAnnotations ();
 
+#ifdef PRODUCT_TASKWARRIOR
   void addDependency (int);
   void addDependency (const std::string&);
   void removeDependency (int);
@@ -144,9 +134,9 @@ private:
   int determineVersion (const std::string&);
   void parseJSON (const std::string&);
   void parseLegacy (const std::string&);
-#ifdef PRODUCT_TASKWARRIOR
   void validate_before (const std::string&, const std::string&);
 
+#ifdef PRODUCT_TASKWARRIOR
   inline float urgency_priority () const;
   inline float urgency_project () const;
   inline float urgency_active () const;

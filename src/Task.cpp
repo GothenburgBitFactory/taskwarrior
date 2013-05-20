@@ -70,9 +70,11 @@ float urgencyNextCoefficient        = 0.0;
 float urgencyDueCoefficient         = 0.0;
 float urgencyBlockingCoefficient    = 0.0;
 float urgencyAgeCoefficient         = 0.0;
+#endif
 
 static const std::string dummy ("");
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // Non-method.
 //
@@ -110,12 +112,10 @@ void initializeUrgencyCoefficients ()
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task ()
 : id (0)
-#ifdef PRODUCT_TASKWARRIOR
 , urgency_value (0.0)
 , recalc_urgency (true)
 , is_blocked (false)
 , is_blocking (false)
-#endif
 , annotation_count (0)
 {
 }
@@ -133,11 +133,11 @@ Task& Task::operator= (const Task& other)
   {
     std::map <std::string, std::string>::operator= (other);
     id               = other.id;
-#ifdef PRODUCT_TASKWARRIOR
     urgency_value    = other.urgency_value;
     recalc_urgency   = other.recalc_urgency;
     is_blocked       = other.is_blocked;
     is_blocking      = other.is_blocking;
+#ifdef PRODUCT_TASKWARRIOR
     annotation_count = other.annotation_count;
 #endif
   }
@@ -165,11 +165,11 @@ bool Task::operator== (const Task& other)
 Task::Task (const std::string& input)
 {
   id = 0;
-#ifdef PRODUCT_TASKWARRIOR
   urgency_value = 0.0;
   recalc_urgency = true;
   is_blocked = false;
   is_blocking = false;
+#ifdef PRODUCT_TASKWARRIOR
   annotation_count = 0;
 #endif
   parse (input);
@@ -204,7 +204,6 @@ std::string Task::statusToText (Task::status s)
   return "pending";
 }
 
-#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setEntry ()
 {
@@ -234,7 +233,6 @@ void Task::setStart ()
 
   recalc_urgency = true;
 }
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setModified ()
@@ -275,7 +273,6 @@ const std::string Task::get (const std::string& name) const
   return "";
 }
 
-#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 const std::string& Task::get_ref (const std::string& name) const
 {
@@ -305,7 +302,6 @@ unsigned long Task::get_ulong (const std::string& name) const
 
   return 0;
 }
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 time_t Task::get_date (const std::string& name) const
@@ -322,9 +318,7 @@ void Task::set (const std::string& name, const std::string& value)
 {
   (*this)[name] = value;
 
-#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -332,9 +326,7 @@ void Task::set (const std::string& name, int value)
 {
   (*this)[name] = format (value);
 
-#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -344,9 +336,7 @@ void Task::remove (const std::string& name)
   if ((it = this->find (name)) != this->end ())
     this->erase (it);
 
-#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -360,9 +350,7 @@ void Task::setStatus (Task::status status)
 {
   set ("status", statusToText (status));
 
-#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
-#endif
 }
 
 #ifdef PRODUCT_TASKWARRIOR
@@ -494,9 +482,7 @@ void Task::parse (const std::string& input)
     parseLegacy (copy);
   }
 
-#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -514,6 +500,7 @@ void Task::parseJSON (const std::string& line)
          i != root_obj->_data.end ();
          ++i)
     {
+#ifdef PRODUCT_TASKWARRIOR
       // If the attribute is a recognized column.
       Column* col = context.columns[i->first];
       if (col)
@@ -551,6 +538,20 @@ void Task::parseJSON (const std::string& line)
         else
           set (i->first, unquoteText (i->second->dump ()));
       }
+#else
+      if (i->first == "tags")
+      {
+        json::array* tags = (json::array*)i->second;
+        json_array_iter t;
+        for (t  = tags->_data.begin ();
+             t != tags->_data.end ();
+             ++t)
+        {
+          json::string* tag = (json::string*)*t;
+          addTag (tag->_data);
+        }
+      }
+#endif
 
       // UDA orphans and annotations do not have columns.
       else
@@ -725,9 +726,7 @@ void Task::parseLegacy (const std::string& line)
     break;
   }
 
-#ifdef PRODUCT_TASKWARRIOR
   recalc_urgency = true;
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -862,6 +861,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
   out << "}";
   return out.str ();
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::hasAnnotations () const
@@ -936,6 +936,7 @@ void Task::setAnnotations (const std::map <std::string, std::string>& annotation
   recalc_urgency = true;
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 void Task::addDependency (int id)
 {
@@ -1032,6 +1033,7 @@ void Task::getDependencies (std::vector <std::string>& all) const
   all.clear ();
   split (all, get ("depends"), ',');
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 int Task::getTagCount () const
@@ -1049,10 +1051,12 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "BLOCKED")   return is_blocked;
   if (tag == "UNBLOCKED") return !is_blocked;
   if (tag == "BLOCKING")  return is_blocking;
+#ifdef PRODUCT_TASKWARRIOR
   if (tag == "DUE")       return is_due ();
   if (tag == "DUETODAY")  return is_duetoday ();
   if (tag == "TODAY")     return is_duetoday ();
   if (tag == "OVERDUE")   return is_overdue ();
+#endif
   if (tag == "ACTIVE")    return has ("start");
   if (tag == "SCHEDULED") return has ("scheduled");
   if (tag == "CHILD")     return has ("parent");
@@ -1135,6 +1139,7 @@ void Task::removeTag (const std::string& tag)
   recalc_urgency = true;
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // A UDA is an attribute that has supporting config entries such as a data type:
 // 'uda.<name>.type'
@@ -1389,6 +1394,7 @@ void Task::validate (bool applyDefault /* = true */)
       }
     }
   }
+#endif
 
   // 2) To provide suitable warnings about odd states
 
@@ -1400,7 +1406,6 @@ void Task::validate (bool applyDefault /* = true */)
   validate_before ("scheduled", "start");
   validate_before ("scheduled", "due");
   validate_before ("scheduled", "end");
-#endif
 
   // 3) To generate errors when the inconsistencies are not fixable
 
@@ -1433,10 +1438,10 @@ void Task::validate (bool applyDefault /* = true */)
   }
 }
 
-#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 void Task::validate_before (const std::string& left, const std::string& right)
 {
+#ifdef PRODUCT_TASKWARRIOR
   if (has (left) &&
       has (right))
   {
@@ -1446,6 +1451,7 @@ void Task::validate_before (const std::string& left, const std::string& right)
     if (date_left > date_right)
       context.footnote (format (STRING_TASK_VALID_BEFORE, left, right));
   }
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1521,6 +1527,7 @@ int Task::determineVersion (const std::string& line)
   return 0;
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // Urgency is defined as a polynomial, the value of which is calculated in this
 // function, according to:
