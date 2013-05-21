@@ -33,7 +33,9 @@
 #ifdef PRODUCT_TASKWARRIOR
 #include <assert.h>
 #include <math.h>
+#endif
 #include <algorithm>
+#ifdef PRODUCT_TASKWARRIOR
 #include <Context.h>
 #include <Nibbler.h>
 #endif
