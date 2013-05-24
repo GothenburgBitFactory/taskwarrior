@@ -219,6 +219,12 @@ int CmdDiagnostics::execute (std::string& output)
            : STRING_CMD_DIAG_DISABLED)
       << "\n";
 
+  out << "         GC: "
+      << (context.config.getBoolean ("gc")
+           ? STRING_CMD_DIAG_ENABLED
+           : STRING_CMD_DIAG_DISABLED)
+      << "\n";
+
   // Determine rc.editor/$EDITOR/$VISUAL.
   char* peditor;
   if (context.config.get ("editor") != "")
