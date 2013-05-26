@@ -25,10 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <Context.h>
 #include <Msg.h>
-#include <cmake.h>
 #include <test.h>
 
 Context context;

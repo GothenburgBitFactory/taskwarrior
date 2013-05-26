@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <fstream>
 #include <glob.h>
 #include <sys/types.h>
@@ -35,7 +36,6 @@
 #include <unistd.h>
 #include <limits.h>
 #include <Path.h>
-#include <cmake.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 std::ostream& operator<< (std::ostream& out, const Path& path)

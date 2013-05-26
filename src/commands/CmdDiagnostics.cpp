@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
@@ -34,7 +35,6 @@
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
-#include <cmake.h>
 #include <commit.h>
 
 #ifdef HAVE_LIBGNUTLS

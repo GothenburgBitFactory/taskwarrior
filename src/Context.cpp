@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -40,7 +41,6 @@
 #include <util.h>
 #include <main.h>
 #include <i18n.h>
-#include <cmake.h>
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif

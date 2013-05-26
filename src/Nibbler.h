@@ -28,8 +28,6 @@
 #ifndef INCLUDED_NIBBLER
 #define INCLUDED_NIBBLER
 
-#include <cmake.h>
-
 #define NIBBLER_FEATURE_DATE
 //#undef  NIBBLER_FEATURE_DATE
 

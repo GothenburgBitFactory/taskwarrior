@@ -38,7 +38,6 @@
 #include <Context.h>
 #include <Date.h>
 #include <Color.h>
-#include <cmake.h>
 
 // recur.cpp
 void handleRecurrence ();

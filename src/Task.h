@@ -28,7 +28,6 @@
 #ifndef INCLUDED_TASK
 #define INCLUDED_TASK
 
-#include <cmake.h>
 #include <vector>
 #include <map>
 #include <string>

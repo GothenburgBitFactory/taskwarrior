@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
@@ -35,7 +36,6 @@
 #include <util.h>
 #include <i18n.h>
 #include <Command.h>
-#include <cmake.h>
 #include <main.h>
 
 #include <CmdAdd.h>

@@ -25,10 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
-#include <cmake.h>
 #include <Readline.h>
 
 #ifdef HAVE_READLINE

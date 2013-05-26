@@ -33,7 +33,6 @@
 #include <map>
 #include <sys/types.h>
 #include <Task.h>
-#include <cmake.h>
 
 #ifdef HAVE_UUID
 #include <uuid/uuid.h>

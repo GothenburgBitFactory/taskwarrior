@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <stdio.h>
 #include <sys/ioctl.h>
@@ -32,7 +33,6 @@
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
-#include <cmake.h>
 
 #ifdef SOLARIS
 #include <sys/termios.h>

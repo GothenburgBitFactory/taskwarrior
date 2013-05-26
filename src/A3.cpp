@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
@@ -39,7 +40,6 @@
 #include <i18n.h>
 #include <main.h>
 #include <A3.h>
-#include <cmake.h>
 
 #ifdef FEATURE_STDIN
 #include <sys/select.h>

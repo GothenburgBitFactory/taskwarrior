@@ -25,9 +25,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <Context.h>
 #include <RX.h>
-#include <cmake.h>
 #include <test.h>
 
 Context context;

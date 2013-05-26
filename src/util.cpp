@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <fstream>
 #include <limits>
@@ -50,7 +51,6 @@
 #include <main.h>
 #include <i18n.h>
 #include <util.h>
-#include <cmake.h>
 
 extern Context context;
 

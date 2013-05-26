@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <cstring>
 #include <stdlib.h>
@@ -37,7 +38,6 @@
 
 #include <i18n.h>
 #include <Context.h>
-#include <cmake.h>
 
 Context context;
 

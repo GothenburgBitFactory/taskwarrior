@@ -25,13 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <Context.h>
 #include <Nibbler.h>
 #include <text.h>
 #include <i18n.h>
 #include <DOM.h>
-#include <cmake.h>
 
 extern Context context;
 

@@ -30,7 +30,6 @@
 
 #include <vector>
 #include <string>
-#include <cmake.h>
 
 // Hook class representing a single hook, which is just a three-way map.
 class Hook

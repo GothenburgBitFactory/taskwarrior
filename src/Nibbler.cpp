@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -37,7 +38,6 @@
 #ifdef NIBBLER_FEATURE_REGEX
 #include <RX.h>
 #endif
-#include <cmake.h>
 #include <util.h>
 
 static const char*        _uuid_pattern    = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";

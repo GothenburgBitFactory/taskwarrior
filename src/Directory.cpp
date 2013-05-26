@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -33,7 +34,6 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <Directory.h>
-#include <cmake.h>
 
 #ifdef SOLARIS
 #include <limits.h>

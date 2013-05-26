@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <fstream>
 #include <sys/types.h>
 #include <sys/file.h>
@@ -32,7 +33,6 @@
 #include <unistd.h>
 #include <File.h>
 #include <text.h>
-#include <cmake.h>
 #include <util.h>
 #include <i18n.h>
 

@@ -25,11 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
-#include <cmake.h>
 #include <commit.h>
 #include <CmdVersion.h>
 #include <text.h>
