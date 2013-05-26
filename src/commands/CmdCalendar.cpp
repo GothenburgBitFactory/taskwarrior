@@ -351,22 +351,19 @@ int CmdCalendar::execute (std::string& output)
     // Table with holiday information
     if (context.config.get ("calendar.holidays") == "full")
     {
-      std::vector <std::string> holidays;
-      context.config.all (holidays);
-
       ViewText holTable;
       holTable.width (context.getWidth ());
       holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_DATE));
       holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_HOL));
 
-      std::vector <std::string>::iterator it;
+      Config::const_iterator it;
       std::map <time_t, std::vector<std::string> > hm; // we need to store multiple holidays per day
-      for (it = holidays.begin (); it != holidays.end (); ++it)
-        if (it->substr (0, 8) == "holiday.")
-          if (it->substr (it->size () - 4) == "name")
+      for (it = context.config.begin (); it != context.config.end (); ++it)
+        if (it->first.substr (0, 8) == "holiday.")
+          if (it->first.substr (it->first.size () - 4) == "name")
           {
-            std::string holName = context.config.get ("holiday." + it->substr (8, it->size () - 13) + ".name");
-            std::string holDate = context.config.get ("holiday." + it->substr (8, it->size () - 13) + ".date");
+            std::string holName = context.config.get ("holiday." + it->first.substr (8, it->first.size () - 13) + ".name");
+            std::string holDate = context.config.get ("holiday." + it->first.substr (8, it->first.size () - 13) + ".date");
             Date hDate (holDate.c_str (), context.config.get ("dateformat.holiday"));
 
             if (date_after < hDate && hDate < date_before)
@@ -526,14 +523,12 @@ std::string CmdCalendar::renderMonths (
         // colorize holidays
         if (context.config.get ("calendar.holidays") != "none")
         {
-          std::vector <std::string> holidays;
-          context.config.all (holidays);
-          std::vector <std::string>::iterator hol;
-          for (hol = holidays.begin (); hol != holidays.end (); ++hol)
-            if (hol->substr (0, 8) == "holiday.")
-              if (hol->substr (hol->size () - 4) == "date")
+          Config::const_iterator hol;
+          for (hol = context.config.begin (); hol != context.config.end (); ++hol)
+            if (hol->first.substr (0, 8) == "holiday.")
+              if (hol->first.substr (hol->first.size () - 4) == "date")
               {
-                std::string value = context.config.get (*hol);
+                std::string value = hol->second;
                 Date holDate (value.c_str (), context.config.get ("dateformat.holiday"));
                 if (holDate.day   () == d           &&
                     holDate.month () == months[mpl] &&

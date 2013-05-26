@@ -53,19 +53,16 @@ int CmdUDAs::execute (std::string& output)
   int rc = 0;
   std::stringstream out;
 
-  std::vector <std::string> names;
-  context.config.all (names);
-
   std::vector <std::string> udas;
-  std::vector <std::string>::iterator name;
-  for (name = names.begin (); name != names.end (); ++name)
+  Config::const_iterator name;
+  for (name = context.config.begin (); name != context.config.end (); ++name)
   {
-    if (name->substr (0, 4) == "uda." &&
-        name->find (".type") != std::string::npos)
+    if (name->first.substr (0, 4) == "uda." &&
+        name->first.find (".type") != std::string::npos)
     {
-      std::string::size_type period = name->find ('.', 4);
+      std::string::size_type period = name->first.find ('.', 4);
       if (period != std::string::npos)
-        udas.push_back (name->substr (4, period - 4));
+        udas.push_back (name->first.substr (4, period - 4));
     }
   }
 
@@ -182,19 +179,16 @@ CmdCompletionUDAs::CmdCompletionUDAs ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionUDAs::execute (std::string& output)
 {
-  std::vector <std::string> names;
-  context.config.all (names);
-
   std::vector <std::string> udas;
-  std::vector <std::string>::iterator name;
-  for (name = names.begin (); name != names.end (); ++name)
+  Config::const_iterator name;
+  for (name = context.config.begin (); name != context.config.end (); ++name)
   {
-    if (name->substr (0, 4) == "uda." &&
-        name->find (".type") != std::string::npos)
+    if (name->first.substr (0, 4) == "uda." &&
+        name->first.find (".type") != std::string::npos)
     {
-      std::string::size_type period = name->find ('.', 4);
+      std::string::size_type period = name->first.find ('.', 4);
       if (period != std::string::npos)
-        udas.push_back (name->substr (4, period - 4));
+        udas.push_back (name->first.substr (4, period - 4));
     }
   }
 

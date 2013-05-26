@@ -1316,19 +1316,16 @@ void Task::validate (bool applyDefault /* = true */)
   if (applyDefault)
   {
     // Gather a list of all UDAs with a .default value
-    std::vector <std::string> names;
-    context.config.all (names);
-
     std::vector <std::string> udas;
-    std::vector <std::string>::iterator name;
-    for (name = names.begin (); name != names.end (); ++name)
+    Config::const_iterator var;
+    for (var = context.config.begin (); var != context.config.end (); ++var)
     {
-      if (name->substr (0, 4) == "uda." &&
-        name->find (".default") != std::string::npos)
+      if (var->first.substr (0, 4) == "uda." &&
+          var->first.find (".default") != std::string::npos)
       {
-        std::string::size_type period = name->find ('.', 4);
+        std::string::size_type period = var->first.find ('.', 4);
         if (period != std::string::npos)
-          udas.push_back (name->substr (4, period - 4));
+          udas.push_back (var->first.substr (4, period - 4));
       }
     }
 

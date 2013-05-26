@@ -168,16 +168,13 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdZshCompletionUuids (); all[c->keyword ()] = c;
 
   // Instantiate a command object for each custom report.
-  std::vector <std::string> variables;
-  context.config.all (variables);
-
   std::vector <std::string> reports;
-  std::vector <std::string>::iterator i;
-  for (i = variables.begin (); i != variables.end (); ++i)
+  Config::const_iterator i;
+  for (i = context.config.begin (); i != context.config.end (); ++i)
   {
-    if (i->substr (0, 7) == "report.")
+    if (i->first.substr (0, 7) == "report.")
     {
-      std::string report = i->substr (7);
+      std::string report = i->first.substr (7);
       std::string::size_type columns = report.find (".columns");
       if (columns != std::string::npos)
         reports.push_back (report.substr (0, columns));

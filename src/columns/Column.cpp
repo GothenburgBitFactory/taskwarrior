@@ -151,17 +151,15 @@ void Column::uda (std::map <std::string, Column*>& all)
 {
   // For each UDA, instantiate and initialize ColumnUDA().
   std::map <std::string, int> udas;
-  std::vector <std::string> names;
-  context.config.all (names);
 
-  std::vector <std::string>::iterator i;
-  for (i = names.begin (); i != names.end (); ++i)
+  Config::const_iterator i;
+  for (i = context.config.begin (); i != context.config.end (); ++i)
   {
-    if (i->substr (0, 4) == "uda.")
+    if (i->first.substr (0, 4) == "uda.")
     {
       std::string::size_type period = 4;
-      if ((period = i->find ('.', period)) != std::string::npos)
-        udas[i->substr (4, period - 4)] = 0;
+      if ((period = i->first.find ('.', period)) != std::string::npos)
+        udas[i->first.substr (4, period - 4)] = 0;
     }
   }
 

@@ -105,25 +105,21 @@ void Hooks::initialize ()
   bool big_red_switch = context.config.getBoolean ("extensions");
   if (big_red_switch)
   {
-    std::vector <std::string> vars;
-    context.config.all (vars);
-
-    std::vector <std::string>::iterator it;
-    for (it = vars.begin (); it != vars.end (); ++it)
+    Config::const_iterator it;
+    for (it = context.config.begin (); it != context.config.end (); ++it)
     {
       std::string type;
       std::string name;
       std::string value;
 
       // "<type>.<name>"
-      Nibbler n (*it);
+      Nibbler n (it->first);
       if (n.getUntil ('.', type) &&
           type == "hook"         &&
           n.skip ('.')           &&
           n.getUntilEOS (name))
       {
-        std::string value = context.config.get (*it);
-        Nibbler n (value);
+        Nibbler n (it->second);
 
         // <path>:<function> [, ...]
         while (!n.depleted ())
@@ -141,7 +137,7 @@ void Hooks::initialize ()
             (void) n.skip (',');
           }
           else
-            ; // Was: throw std::string (format ("Malformed hook definition '{1}'.", *it));
+            ; // Was: throw std::string (format ("Malformed hook definition '{1}'.", it->first));
         }
       }
     }

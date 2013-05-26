@@ -214,38 +214,35 @@ int CmdShow::execute (std::string& output)
   // is redirected to a file, or stdout is not a tty.
   recognized += "_forcecolor ";
 
-  std::vector <std::string> all;
-  context.config.all (all);
-
   std::vector <std::string> unrecognized;
-  std::vector <std::string>::iterator i;
-  for (i = all.begin (); i != all.end (); ++i)
+  Config::const_iterator i;
+  for (i = context.config.begin (); i != context.config.end (); ++i)
   {
     // Disallow partial matches by tacking a leading and trailing space on each
     // variable name.
-    std::string pattern = " " + *i + " ";
+    std::string pattern = " " + i->first + " ";
     if (recognized.find (pattern) == std::string::npos)
     {
       // These are special configuration variables, because their name is
       // dynamic.
-      if (i->substr (0, 14) != "color.keyword."        &&
-          i->substr (0, 14) != "color.project."        &&
-          i->substr (0, 10) != "color.tag."            &&
-          i->substr (0, 10) != "color.uda."            &&
-          i->substr (0,  8) != "holiday."              &&
-          i->substr (0,  7) != "report."               &&
-          i->substr (0,  6) != "alias."                &&
-          i->substr (0,  5) != "hook."                 &&
-          i->substr (0,  5) != "push."                 &&
-          i->substr (0,  5) != "pull."                 &&
-          i->substr (0,  6) != "merge."                &&
-          i->substr (0,  4) != "uda."                  &&
-          i->substr (0,  4) != "default."              &&
-          i->substr (0, 21) != "urgency.user.project." &&
-          i->substr (0, 17) != "urgency.user.tag."     &&
-          i->substr (0, 12) != "urgency.uda.")
+      if (i->first.substr (0, 14) != "color.keyword."        &&
+          i->first.substr (0, 14) != "color.project."        &&
+          i->first.substr (0, 10) != "color.tag."            &&
+          i->first.substr (0, 10) != "color.uda."            &&
+          i->first.substr (0,  8) != "holiday."              &&
+          i->first.substr (0,  7) != "report."               &&
+          i->first.substr (0,  6) != "alias."                &&
+          i->first.substr (0,  5) != "hook."                 &&
+          i->first.substr (0,  5) != "push."                 &&
+          i->first.substr (0,  5) != "pull."                 &&
+          i->first.substr (0,  6) != "merge."                &&
+          i->first.substr (0,  4) != "uda."                  &&
+          i->first.substr (0,  4) != "default."              &&
+          i->first.substr (0, 21) != "urgency.user.project." &&
+          i->first.substr (0, 17) != "urgency.user.tag."     &&
+          i->first.substr (0, 12) != "urgency.uda.")
       {
-        unrecognized.push_back (*i);
+        unrecognized.push_back (i->first);
       }
     }
   }
@@ -255,9 +252,9 @@ int CmdShow::execute (std::string& output)
   Config default_config;
   default_config.setDefaults ();
 
-  for (i = all.begin (); i != all.end (); ++i)
-    if (context.config.get (*i) != default_config.get (*i))
-      default_values.push_back (*i);
+  for (i = context.config.begin (); i != context.config.end (); ++i)
+    if (i->second != default_config.get (i->first))
+      default_values.push_back (i->first);
 
   // Create output view.
   ViewText view;
@@ -281,29 +278,29 @@ int CmdShow::execute (std::string& output)
     section = "";
 
   std::string::size_type loc;
-  for (i = all.begin (); i != all.end (); ++i)
+  for (i = context.config.begin (); i != context.config.end (); ++i)
   {
-    loc = i->find (section, 0);
+    loc = i->first.find (section, 0);
     if (loc != std::string::npos)
     {
       // Look for unrecognized.
       Color color;
-      if (std::find (unrecognized.begin (), unrecognized.end (), *i) != unrecognized.end ())
+      if (std::find (unrecognized.begin (), unrecognized.end (), i->first) != unrecognized.end ())
       {
         issue_error = true;
         color = error;
       }
-      else if (std::find (default_values.begin (), default_values.end (), *i) != default_values.end ())
+      else if (std::find (default_values.begin (), default_values.end (), i->first) != default_values.end ())
       {
         issue_warning = true;
         color = warning;
       }
 
-      std::string value = context.config.get (*i);
+      std::string value = i->second;
       // hide sensible information
-      if ( (i->substr (0, 5) == "push."   ||
-            i->substr (0, 5) == "pull."   ||
-            i->substr (0, 6) == "merge.") && (i->find (".uri") != std::string::npos) ) {
+      if ( (i->first.substr (0, 5) == "push."   ||
+            i->first.substr (0, 5) == "pull."   ||
+            i->first.substr (0, 6) == "merge.") && (i->first.find (".uri") != std::string::npos) ) {
 
         Uri uri (value);
         uri.parse ();
@@ -311,7 +308,7 @@ int CmdShow::execute (std::string& output)
       }
 
       int row = view.addRow ();
-      view.set (row, 0, *i, color);
+      view.set (row, 0, i->first, color);
       view.set (row, 1, value, color);
     }
   }
@@ -336,6 +333,7 @@ int CmdShow::execute (std::string& output)
   {
     out << STRING_CMD_SHOW_UNREC << "\n";
 
+    std::vector <std::string>::iterator i;
     for (i = unrecognized.begin (); i != unrecognized.end (); ++i)
       out << "  " << *i << "\n";
 
@@ -381,7 +379,7 @@ int CmdShow::execute (std::string& output)
   // Verify installation.  This is mentioned in the documentation as the way
   // to ensure everything is properly installed.
 
-  if (all.size () == 0)
+  if (context.config.size () == 0)
   {
     out << STRING_CMD_SHOW_EMPTY << "\n";
     rc = 1;

@@ -51,15 +51,12 @@ int CmdReports::execute (std::string& output)
   std::vector <std::string> reports;
 
   // Add custom reports.
-  std::vector <std::string> vars;
-  context.config.all (vars);
-
-  std::vector <std::string>::iterator i;
-  for (i = vars.begin (); i != vars.end (); ++i)
+  Config::const_iterator i;
+  for (i = context.config.begin (); i != context.config.end (); ++i)
   {
-    if (i->substr (0, 7) == "report.")
+    if (i->first.substr (0, 7) == "report.")
     {
-      std::string report = i->substr (7);
+      std::string report = i->first.substr (7);
       std::string::size_type columns = report.find (".columns");
       if (columns != std::string::npos)
         reports.push_back (report.substr (0, columns));
