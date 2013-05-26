@@ -74,6 +74,7 @@ public:
   void decomposeSortField (const std::string&, std::string&, bool&);
 
 private:
+  void staticInitialization ();
   void assumeLocations ();
   void createDefaultConfig ();
   void loadAliases ();

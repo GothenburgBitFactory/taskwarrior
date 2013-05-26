@@ -34,12 +34,29 @@
 #include <string>
 #include <stdio.h>
 
-#ifdef PRODUCT_TASKWARRIOR
-void initializeUrgencyCoefficients ();
-#endif
-
 class Task : public std::map <std::string, std::string>
 {
+public:
+  static std::string defaultProject;
+  static std::string defaultPriority;
+  static std::string defaultDue;
+  static bool searchCaseSensitive;
+  static bool regex;
+  static std::map <std::string, std::string> attributes;  // name -> type
+  static std::map <std::string, float> coefficients;
+  static float urgencyPriorityCoefficient;
+  static float urgencyProjectCoefficient;
+  static float urgencyActiveCoefficient;
+  static float urgencyScheduledCoefficient;
+  static float urgencyWaitingCoefficient;
+  static float urgencyBlockedCoefficient;
+  static float urgencyAnnotationsCoefficient;
+  static float urgencyTagsCoefficient;
+  static float urgencyNextCoefficient;
+  static float urgencyDueCoefficient;
+  static float urgencyBlockingCoefficient;
+  static float urgencyAgeCoefficient;
+
 public:
   Task ();                       // Default constructor
   Task (const Task&);            // Copy constructor

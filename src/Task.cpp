@@ -59,57 +59,29 @@ extern Context context;
 
 static const float epsilon = 0.000001;
 
-static std::map <std::string, float> coefficients;
-float urgencyPriorityCoefficient    = 0.0;
-float urgencyProjectCoefficient     = 0.0;
-float urgencyActiveCoefficient      = 0.0;
-float urgencyScheduledCoefficient   = 0.0;
-float urgencyWaitingCoefficient     = 0.0;
-float urgencyBlockedCoefficient     = 0.0;
-float urgencyAnnotationsCoefficient = 0.0;
-float urgencyTagsCoefficient        = 0.0;
-float urgencyNextCoefficient        = 0.0;
-float urgencyDueCoefficient         = 0.0;
-float urgencyBlockingCoefficient    = 0.0;
-float urgencyAgeCoefficient         = 0.0;
+std::string Task::defaultProject  = "";
+std::string Task::defaultPriority = "";
+std::string Task::defaultDue      = "";
+bool Task::searchCaseSensitive    = true;
+bool Task::regex                  = false;
+std::map <std::string, std::string> Task::attributes;
+
+std::map <std::string, float> Task::coefficients;
+float Task::urgencyPriorityCoefficient    = 0.0;
+float Task::urgencyProjectCoefficient     = 0.0;
+float Task::urgencyActiveCoefficient      = 0.0;
+float Task::urgencyScheduledCoefficient   = 0.0;
+float Task::urgencyWaitingCoefficient     = 0.0;
+float Task::urgencyBlockedCoefficient     = 0.0;
+float Task::urgencyAnnotationsCoefficient = 0.0;
+float Task::urgencyTagsCoefficient        = 0.0;
+float Task::urgencyNextCoefficient        = 0.0;
+float Task::urgencyDueCoefficient         = 0.0;
+float Task::urgencyBlockingCoefficient    = 0.0;
+float Task::urgencyAgeCoefficient         = 0.0;
 #endif
 
 static const std::string dummy ("");
-
-#ifdef PRODUCT_TASKWARRIOR
-////////////////////////////////////////////////////////////////////////////////
-// Non-method.
-//
-// This is essentialy a cache of float values to save iteration and hash lookup
-// in the whole config at time of Task::urgency_C.
-void initializeUrgencyCoefficients ()
-{
-  urgencyPriorityCoefficient    = context.config.getReal ("urgency.priority.coefficient");
-  urgencyProjectCoefficient     = context.config.getReal ("urgency.project.coefficient");
-  urgencyActiveCoefficient      = context.config.getReal ("urgency.active.coefficient");
-  urgencyScheduledCoefficient   = context.config.getReal ("urgency.scheduled.coefficient");
-  urgencyWaitingCoefficient     = context.config.getReal ("urgency.waiting.coefficient");
-  urgencyBlockedCoefficient     = context.config.getReal ("urgency.blocked.coefficient");
-  urgencyAnnotationsCoefficient = context.config.getReal ("urgency.annotations.coefficient");
-  urgencyTagsCoefficient        = context.config.getReal ("urgency.tags.coefficient");
-  urgencyNextCoefficient        = context.config.getReal ("urgency.next.coefficient");
-  urgencyDueCoefficient         = context.config.getReal ("urgency.due.coefficient");
-  urgencyBlockingCoefficient    = context.config.getReal ("urgency.blocking.coefficient");
-  urgencyAgeCoefficient         = context.config.getReal ("urgency.age.coefficient");
-
-  // Tag- and project-specific coefficients.
-  std::vector <std::string> all;
-  context.config.all (all);
-
-  std::vector <std::string>::iterator var;
-  for (var = all.begin (); var != all.end (); ++var)
-  {
-    if (var->substr (0, 13) == "urgency.user." ||
-        var->substr (0, 12) == "urgency.uda.")
-      coefficients[*var] = context.config.getReal (*var);
-  }
-}
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task ()
@@ -502,10 +474,9 @@ void Task::parseJSON (const std::string& line)
          i != root_obj->_data.end ();
          ++i)
     {
-#ifdef PRODUCT_TASKWARRIOR
       // If the attribute is a recognized column.
-      Column* col = context.columns[i->first];
-      if (col)
+      std::string type = Task::attributes[i->first];
+      if (type != "")
       {
         // Any specified id is ignored.
         if (i->first == "id")
@@ -516,7 +487,7 @@ void Task::parseJSON (const std::string& line)
           ;
 
         // Dates are converted from ISO to epoch.
-        else if (col->type () == "date")
+        else if (type == "date")
         {
           Date d (unquoteText (i->second->dump ()));
           set (i->first, d.toEpochString ());
@@ -540,20 +511,6 @@ void Task::parseJSON (const std::string& line)
         else
           set (i->first, unquoteText (i->second->dump ()));
       }
-#else
-      if (i->first == "tags")
-      {
-        json::array* tags = (json::array*)i->second;
-        json_array_iter t;
-        for (t  = tags->_data.begin ();
-             t != tags->_data.end ();
-             ++t)
-        {
-          json::string* tag = (json::string*)*t;
-          addTag (tag->_data);
-        }
-      }
-#endif
 
       // UDA orphans and annotations do not have columns.
       else
@@ -1175,18 +1132,16 @@ void Task::substitute (
   std::map <std::string, std::string> annotations;
   getAnnotations (annotations);
 
-  bool sensitive = context.config.getBoolean ("search.case.sensitive");
-
   // Count the changes, so we know whether to proceed to annotations, after
   // modifying description.
   int changes = 0;
   bool done = false;
 
   // Regex support is optional.
-  if (context.config.getBoolean ("regex"))
+  if (Task::regex)
   {
     // Create the regex.
-    RX rx (from, sensitive);
+    RX rx (from, Task::searchCaseSensitive);
     std::vector <int> start;
     std::vector <int> end;
 
@@ -1236,7 +1191,7 @@ void Task::substitute (
     std::string::size_type pos = 0;
     int skew = 0;
 
-    while ((pos = ::find (description, from, pos, sensitive)) != std::string::npos && !done)
+    while ((pos = ::find (description, from, pos, Task::searchCaseSensitive)) != std::string::npos && !done)
     {
       description.replace (pos + skew, from.length (), to);
       skew += to.length () - from.length ();
@@ -1260,7 +1215,7 @@ void Task::substitute (
       {
         pos = 0;
         skew = 0;
-        while ((pos = ::find (i->second, from, pos, sensitive)) != std::string::npos && !done)
+        while ((pos = ::find (i->second, from, pos, Task::searchCaseSensitive)) != std::string::npos && !done)
         {
           i->second.replace (pos + skew, from.length (), to);
           skew += to.length () - from.length ();
@@ -1335,28 +1290,25 @@ void Task::validate (bool applyDefault /* = true */)
   // Override with default.project, if not specified.
   if (applyDefault && ! has ("project"))
   {
-    std::string defaultProject = context.config.get ("default.project");
-    if (defaultProject != "" &&
-        context.columns["project"]->validate (defaultProject))
-      set ("project", defaultProject);
+    if (Task::defaultProject != "" &&
+        context.columns["project"]->validate (Task::defaultProject))
+      set ("project", Task::defaultProject);
   }
 
   // Override with default.priority, if not specified.
   if (applyDefault && get ("priority") == "")
   {
-    std::string defaultPriority = context.config.get ("default.priority");
-    if (defaultPriority != "" &&
-        context.columns["priority"]->validate (defaultPriority))
-      set ("priority", defaultPriority);
+    if (Task::defaultPriority != "" &&
+        context.columns["priority"]->validate (Task::defaultPriority))
+      set ("priority", Task::defaultPriority);
   }
 
   // Override with default.due, if not specified.
   if (applyDefault && get ("due") == "")
   {
-    std::string defaultDue = context.config.get ("default.due");
-    if (defaultDue != "" &&
-        context.columns["due"]->validate (defaultDue))
-      set ("due", Date (defaultDue).toEpoch ());
+    if (Task::defaultDue != "" &&
+        context.columns["due"]->validate (Task::defaultDue))
+      set ("due", Date (Task::defaultDue).toEpoch ());
   }
 
   // If a UDA has a default value in the configuration,
@@ -1548,39 +1500,39 @@ int Task::determineVersion (const std::string& line)
 float Task::urgency_c () const
 {
   float value = 0.0;
-  value += fabsf (urgencyPriorityCoefficient)    > epsilon ? (urgency_priority ()    * urgencyPriorityCoefficient)    : 0.0;
-  value += fabsf (urgencyProjectCoefficient)     > epsilon ? (urgency_project ()     * urgencyProjectCoefficient)     : 0.0;
-  value += fabsf (urgencyActiveCoefficient)      > epsilon ? (urgency_active ()      * urgencyActiveCoefficient)      : 0.0;
-  value += fabsf (urgencyScheduledCoefficient)   > epsilon ? (urgency_scheduled ()   * urgencyScheduledCoefficient)   : 0.0;
-  value += fabsf (urgencyWaitingCoefficient)     > epsilon ? (urgency_waiting ()     * urgencyWaitingCoefficient)     : 0.0;
-  value += fabsf (urgencyBlockedCoefficient)     > epsilon ? (urgency_blocked ()     * urgencyBlockedCoefficient)     : 0.0;
-  value += fabsf (urgencyAnnotationsCoefficient) > epsilon ? (urgency_annotations () * urgencyAnnotationsCoefficient) : 0.0;
-  value += fabsf (urgencyTagsCoefficient)        > epsilon ? (urgency_tags ()        * urgencyTagsCoefficient)        : 0.0;
-  value += fabsf (urgencyNextCoefficient)        > epsilon ? (urgency_next ()        * urgencyNextCoefficient)        : 0.0;
-  value += fabsf (urgencyDueCoefficient)         > epsilon ? (urgency_due ()         * urgencyDueCoefficient)         : 0.0;
-  value += fabsf (urgencyBlockingCoefficient)    > epsilon ? (urgency_blocking ()    * urgencyBlockingCoefficient)    : 0.0;
-  value += fabsf (urgencyAgeCoefficient)         > epsilon ? (urgency_age ()         * urgencyAgeCoefficient)         : 0.0;
+  value += fabsf (Task::urgencyPriorityCoefficient)    > epsilon ? (urgency_priority ()    * Task::urgencyPriorityCoefficient)    : 0.0;
+  value += fabsf (Task::urgencyProjectCoefficient)     > epsilon ? (urgency_project ()     * Task::urgencyProjectCoefficient)     : 0.0;
+  value += fabsf (Task::urgencyActiveCoefficient)      > epsilon ? (urgency_active ()      * Task::urgencyActiveCoefficient)      : 0.0;
+  value += fabsf (Task::urgencyScheduledCoefficient)   > epsilon ? (urgency_scheduled ()   * Task::urgencyScheduledCoefficient)   : 0.0;
+  value += fabsf (Task::urgencyWaitingCoefficient)     > epsilon ? (urgency_waiting ()     * Task::urgencyWaitingCoefficient)     : 0.0;
+  value += fabsf (Task::urgencyBlockedCoefficient)     > epsilon ? (urgency_blocked ()     * Task::urgencyBlockedCoefficient)     : 0.0;
+  value += fabsf (Task::urgencyAnnotationsCoefficient) > epsilon ? (urgency_annotations () * Task::urgencyAnnotationsCoefficient) : 0.0;
+  value += fabsf (Task::urgencyTagsCoefficient)        > epsilon ? (urgency_tags ()        * Task::urgencyTagsCoefficient)        : 0.0;
+  value += fabsf (Task::urgencyNextCoefficient)        > epsilon ? (urgency_next ()        * Task::urgencyNextCoefficient)        : 0.0;
+  value += fabsf (Task::urgencyDueCoefficient)         > epsilon ? (urgency_due ()         * Task::urgencyDueCoefficient)         : 0.0;
+  value += fabsf (Task::urgencyBlockingCoefficient)    > epsilon ? (urgency_blocking ()    * Task::urgencyBlockingCoefficient)    : 0.0;
+  value += fabsf (Task::urgencyAgeCoefficient)         > epsilon ? (urgency_age ()         * Task::urgencyAgeCoefficient)         : 0.0;
 
 /*
   // Very useful for debugging urgency problems.
   std::cout << "# Urgency for " << get ("uuid") << ":\n"
-          << "#     pri " << (urgency_priority ()    * urgencyPriorityCoefficient)    << "\n"
-          << "#     pro " << (urgency_project ()     * urgencyProjectCoefficient)     << "\n"
-          << "#     act " << (urgency_active ()      * urgencyActiveCoefficient)      << "\n"
-          << "#     sch " << (urgency_scheduled ()   * urgencyScheduledCoefficient)   << "\n"
-          << "#     wai " << (urgency_waiting ()     * urgencyWaitingCoefficient)     << "\n"
-          << "#     blk " << (urgency_blocked ()     * urgencyBlockedCoefficient)     << "\n"
-          << "#     ann " << (urgency_annotations () * urgencyAnnotationsCoefficient) << "\n"
-          << "#     tag " << (urgency_tags ()        * urgencyTagsCoefficient)        << "\n"
-          << "#     nex " << (urgency_next ()        * urgencyNextCoefficient)        << "\n"
-          << "#     due " << (urgency_due ()         * urgencyDueCoefficient)         << "\n"
-          << "#     bkg " << (urgency_blocking ()    * urgencyBlockingCoefficient)    << "\n"
-          << "#     age " << (urgency_age ()         * urgencyAgeCoefficient)         << "\n";
+          << "#     pri " << (urgency_priority ()    * Task::urgencyPriorityCoefficient)    << "\n"
+          << "#     pro " << (urgency_project ()     * Task::urgencyProjectCoefficient)     << "\n"
+          << "#     act " << (urgency_active ()      * Task::urgencyActiveCoefficient)      << "\n"
+          << "#     sch " << (urgency_scheduled ()   * Task::urgencyScheduledCoefficient)   << "\n"
+          << "#     wai " << (urgency_waiting ()     * Task::urgencyWaitingCoefficient)     << "\n"
+          << "#     blk " << (urgency_blocked ()     * Task::urgencyBlockedCoefficient)     << "\n"
+          << "#     ann " << (urgency_annotations () * Task::urgencyAnnotationsCoefficient) << "\n"
+          << "#     tag " << (urgency_tags ()        * Task::urgencyTagsCoefficient)        << "\n"
+          << "#     nex " << (urgency_next ()        * Task::urgencyNextCoefficient)        << "\n"
+          << "#     due " << (urgency_due ()         * Task::urgencyDueCoefficient)         << "\n"
+          << "#     bkg " << (urgency_blocking ()    * Task::urgencyBlockingCoefficient)    << "\n"
+          << "#     age " << (urgency_age ()         * Task::urgencyAgeCoefficient)         << "\n";
 */
 
   // Tag- and project-specific coefficients.
   std::map <std::string, float>::iterator var;
-  for (var = coefficients.begin (); var != coefficients.end (); ++var)
+  for (var = Task::coefficients.begin (); var != Task::coefficients.end (); ++var)
   {
     if (fabs (var->second) > epsilon)
     {

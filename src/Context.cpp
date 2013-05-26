@@ -138,10 +138,6 @@ int Context::initialize (int argc, const char** argv)
     // Apply rc overrides to Context::config, capturing raw args for later use.
     a3.apply_overrides ();
 
-    // Now that the final RC is in place, initialize the urgency coefficients
-    // to speed the 'next' report.
-    initializeUrgencyCoefficients ();
-
     // Initialize the color rules, if necessary.
     if (color ())
       initializeColorRules ();
@@ -151,6 +147,9 @@ int Context::initialize (int argc, const char** argv)
 
     // Instantiate built-in column objects.
     Column::factory (columns);
+
+    // Static initialization to decouple code.
+    staticInitialization ();
 
     // Categorize all arguments one more time.  THIS IS NECESSARY - it helps the
     // following inject_defaults method determine whether there needs to be a
@@ -569,6 +568,47 @@ const std::vector <std::string> Context::getCommands () const
     output.push_back (i->first);
 
   return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The 'Task' object, among others, is shared between projects.  To make this
+// easier, it has been decoupled from Context.
+void Context::staticInitialization ()
+{
+  Task::defaultProject      = config.get ("default.project");
+  Task::defaultPriority     = config.get ("default.priority");
+  Task::defaultDue          = config.get ("default.due");
+  Task::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
+  Task::regex               = config.getBoolean ("regex");
+
+  std::map <std::string, Column*>::iterator i;
+  for (i = columns.begin (); i != columns.end (); ++i)
+    Task::attributes[i->first] = i->second->type ();
+
+  Task::urgencyPriorityCoefficient    = config.getReal ("urgency.priority.coefficient");
+  Task::urgencyProjectCoefficient     = config.getReal ("urgency.project.coefficient");
+  Task::urgencyActiveCoefficient      = config.getReal ("urgency.active.coefficient");
+  Task::urgencyScheduledCoefficient   = config.getReal ("urgency.scheduled.coefficient");
+  Task::urgencyWaitingCoefficient     = config.getReal ("urgency.waiting.coefficient");
+  Task::urgencyBlockedCoefficient     = config.getReal ("urgency.blocked.coefficient");
+  Task::urgencyAnnotationsCoefficient = config.getReal ("urgency.annotations.coefficient");
+  Task::urgencyTagsCoefficient        = config.getReal ("urgency.tags.coefficient");
+  Task::urgencyNextCoefficient        = config.getReal ("urgency.next.coefficient");
+  Task::urgencyDueCoefficient         = config.getReal ("urgency.due.coefficient");
+  Task::urgencyBlockingCoefficient    = config.getReal ("urgency.blocking.coefficient");
+  Task::urgencyAgeCoefficient         = config.getReal ("urgency.age.coefficient");
+
+  // Tag- and project-specific coefficients.
+  std::vector <std::string> all;
+  config.all (all);
+
+  std::vector <std::string>::iterator var;
+  for (var = all.begin (); var != all.end (); ++var)
+  {
+    if (var->substr (0, 13) == "urgency.user." ||
+        var->substr (0, 12) == "urgency.uda.")
+      Task::coefficients[*var] = config.getReal (*var);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
