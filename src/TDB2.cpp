@@ -1753,9 +1753,9 @@ int TDB2::next_id ()
 const std::vector <Task> TDB2::all_tasks ()
 {
   std::vector <Task> all (pending._tasks.size () +
-               pending._added_tasks.size () +
-               completed._tasks.size () +
-               completed._added_tasks.size ());
+                          pending._added_tasks.size () +
+                          completed._tasks.size () +
+                          completed._added_tasks.size ());
   all = pending.get_tasks ();
 
   std::vector <Task> extra (completed._tasks.size () +

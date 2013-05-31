@@ -58,6 +58,7 @@
 extern Context context;
 
 static const float epsilon = 0.000001;
+#endif
 
 std::string Task::defaultProject  = "";
 std::string Task::defaultPriority = "";
@@ -79,7 +80,6 @@ float Task::urgencyNextCoefficient        = 0.0;
 float Task::urgencyDueCoefficient         = 0.0;
 float Task::urgencyBlockingCoefficient    = 0.0;
 float Task::urgencyAgeCoefficient         = 0.0;
-#endif
 
 static const std::string dummy ("");
 
