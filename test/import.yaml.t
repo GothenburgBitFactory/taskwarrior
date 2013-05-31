@@ -81,10 +81,10 @@ my $output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
 like ($output, qr/Imported 3 tasks\./, '3 tasks imported');
 
 $output = qx{../src/task rc:import.rc list 2>&1};
-# ID Project Pri Due Active Age     Description
-# -- ------- --- --- ------ ------- -----------
-#  1 A                      1.5 yrs zero
-#  2 B                      1.5 yrs one
+# ID Project Age     Description
+# -- ------- ------- -----------
+#  1 A       1.5 yrs zero
+#  2 B       1.5 yrs one
 # 
 # 2 tasks
 
@@ -93,14 +93,14 @@ like   ($output, qr/2.+B.+one/,  't2 present');
 unlike ($output, qr/3.+two/,     't3 missing');
 
 $output = qx{../src/task rc:import.rc completed 2>&1};
-# Complete  Project Pri Age     Description
-# --------- ------- --- ------- -----------
-# 2/13/2009             1.5 yrs two
+# Complete  Age     Description
+# --------- ------- -----------
+# 2/13/2009 1.5 yrs two
 # 
 # 1 task
 
-unlike ($output, qr/1.+A.+zero/,       't1 missing');
-unlike ($output, qr/2.+B.+one/,        't2 missing');
+unlike ($output, qr/1.+A.+zero/,      't1 missing');
+unlike ($output, qr/2.+B.+one/,       't2 missing');
 like   ($output, qr/9\/4\/2011.+two/, 't3 present');
 
 # Make sure that a duplicate task cannot be imported.
@@ -144,7 +144,7 @@ like ($output, qr/2.+B.+one/,  't2 present');
 like ($output, qr/3.+three/,   't3 present');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data  import.rc import.txt import.json);
+unlink qw(pending.data completed.data undo.data backlog.data import.rc import.txt import.json);
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
