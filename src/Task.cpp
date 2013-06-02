@@ -26,12 +26,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#ifdef PRODUCT_TASKWARRIOR
 #include <sstream>
-#endif
 #include <stdlib.h>
-#ifdef PRODUCT_TASKWARRIOR
 #include <assert.h>
+#ifdef PRODUCT_TASKWARRIOR
 #include <math.h>
 #endif
 #include <algorithm>
@@ -80,6 +78,7 @@ float Task::urgencyNextCoefficient        = 0.0;
 float Task::urgencyDueCoefficient         = 0.0;
 float Task::urgencyBlockingCoefficient    = 0.0;
 float Task::urgencyAgeCoefficient         = 0.0;
+float Task::urgencyAgeMax                 = 0.0;
 
 static const std::string dummy ("");
 
@@ -111,9 +110,7 @@ Task& Task::operator= (const Task& other)
     recalc_urgency   = other.recalc_urgency;
     is_blocked       = other.is_blocked;
     is_blocking      = other.is_blocking;
-#ifdef PRODUCT_TASKWARRIOR
     annotation_count = other.annotation_count;
-#endif
   }
 
   return *this;
@@ -143,9 +140,7 @@ Task::Task (const std::string& input)
   recalc_urgency = true;
   is_blocked = false;
   is_blocking = false;
-#ifdef PRODUCT_TASKWARRIOR
   annotation_count = 0;
-#endif
   parse (input);
 }
 
@@ -714,14 +709,14 @@ std::string Task::composeF4 () const
   return ff4;
 }
 
-#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 std::string Task::composeJSON (bool decorate /*= false*/) const
 {
   std::stringstream out;
   out << "{";
 
-  // ID inclusion is optional, not recommended.
+  // ID inclusion is optional, but not a good idea, because it remains correct
+  // only until the next gc.
   if (decorate)
     out << "\"id\":" << id << ",";
 
@@ -733,11 +728,12 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     if (attributes_written)
       out << ",";
 
-    Column* column = context.columns[i->first];
+    std::string type = Task::attributes[i->first];
+    if (type == "")
+      type = "string";
 
     // Date fields are written as ISO 8601.
-    if (column &&
-        column->type () == "date")
+    if (type == "date")
     {
       Date d (i->second);
       out << "\""
@@ -810,17 +806,18 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     out << "]";
   }
 
+#ifdef PRODUCT_TASKWARRIOR
   // Include urgency.
   if (decorate)
     out << ","
         << "\"urgency\":\""
         << urgency_c ()
         <<"\"";
+#endif
 
   out << "}";
   return out.str ();
 }
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::hasAnnotations () const
@@ -1478,7 +1475,6 @@ int Task::determineVersion (const std::string& line)
   return 0;
 }
 
-#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // Urgency is defined as a polynomial, the value of which is calculated in this
 // function, according to:
@@ -1497,6 +1493,7 @@ int Task::determineVersion (const std::string& line)
 float Task::urgency_c () const
 {
   float value = 0.0;
+#ifdef PRODUCT_TASKWARRIOR
   value += fabsf (Task::urgencyPriorityCoefficient)    > epsilon ? (urgency_priority ()    * Task::urgencyPriorityCoefficient)    : 0.0;
   value += fabsf (Task::urgencyProjectCoefficient)     > epsilon ? (urgency_project ()     * Task::urgencyProjectCoefficient)     : 0.0;
   value += fabsf (Task::urgencyActiveCoefficient)      > epsilon ? (urgency_active ()      * Task::urgencyActiveCoefficient)      : 0.0;
@@ -1566,6 +1563,7 @@ float Task::urgency_c () const
       }
     }
   }
+#endif
 
   return value;
 }
@@ -1709,13 +1707,12 @@ float Task::urgency_age () const
 
   Date now;
   Date entry (get_date ("entry"));
-  int   age  = (now - entry) / 86400;  // in days
-  float max  = context.config.getReal ("urgency.age.max");
+  int age = (now - entry) / 86400;  // in days
 
-  if (max == 0 || age > max)
+  if (Task::urgencyAgeMax == 0 || age > Task::urgencyAgeMax)
     return 1.0;
 
-  return (1.0 * age/max);
+  return (1.0 * age / Task::urgencyAgeMax);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1726,6 +1723,5 @@ float Task::urgency_blocking () const
 
   return 0.0;
 }
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////

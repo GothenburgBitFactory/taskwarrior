@@ -597,6 +597,7 @@ void Context::staticInitialization ()
   Task::urgencyDueCoefficient         = config.getReal ("urgency.due.coefficient");
   Task::urgencyBlockingCoefficient    = config.getReal ("urgency.blocking.coefficient");
   Task::urgencyAgeCoefficient         = config.getReal ("urgency.age.coefficient");
+  Task::urgencyAgeMax                 = config.getReal ("urgency.age.max");
 
   // Tag- and project-specific coefficients.
   std::vector <std::string> all;

@@ -55,6 +55,7 @@ public:
   static float urgencyDueCoefficient;
   static float urgencyBlockingCoefficient;
   static float urgencyAgeCoefficient;
+  static float urgencyAgeMax;
 
 public:
   Task ();                       // Default constructor
@@ -66,9 +67,7 @@ public:
 
   void parse (const std::string&);
   std::string composeF4 () const;
-#ifdef PRODUCT_TASKWARRIOR
   std::string composeJSON (bool decorate = false) const;
-#endif
 
   // Status values.
   enum status {pending, completed, deleted, recurring, waiting};
@@ -141,10 +140,8 @@ public:
 
   void validate (bool applyDefault = true);
 
-#ifdef PRODUCT_TASKWARRIOR
   float urgency_c () const;
   float urgency ();
-#endif
 
 private:
   int determineVersion (const std::string&);
@@ -152,7 +149,6 @@ private:
   void parseLegacy (const std::string&);
   void validate_before (const std::string&, const std::string&);
 
-#ifdef PRODUCT_TASKWARRIOR
   inline float urgency_priority () const;
   inline float urgency_project () const;
   inline float urgency_active () const;
@@ -165,7 +161,6 @@ private:
   inline float urgency_due () const;
   inline float urgency_blocking () const;
   inline float urgency_age () const;
-#endif
 };
 
 #endif
