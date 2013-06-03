@@ -223,7 +223,7 @@ void TF2::commit ()
              task != _added_tasks.end ();
              ++task)
         {
-          _file.append (task->composeF4 ());
+          _file.append (task->composeF4 () + "\n");
         }
 
         _added_tasks.clear ();
@@ -255,7 +255,7 @@ void TF2::commit ()
              task != _tasks.end ();
              ++task)
         {
-          _file.append (task->composeF4 ());
+          _file.append (task->composeF4 () + "\n");
         }
 
         // Write out all the added lines.
@@ -565,12 +565,12 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
   //   new <task>
   //   ---
   undo.add_line ("time " + Date ().toEpochString () + "\n");
-  undo.add_line ("new " + task.composeF4 ());
+  undo.add_line ("new " + task.composeF4 () + "\n");
   undo.add_line ("---\n");
 
   // Add task to backlog.
   if (add_to_backlog)
-    backlog.add_task (task);
+    backlog.add_line (task.composeJSON () + "\n");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -597,13 +597,13 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
     // new <task>
     // ---
     undo.add_line ("time " + Date ().toEpochString () + "\n");
-    undo.add_line ("old " + original.composeF4 ());
-    undo.add_line ("new " + task.composeF4 ());
+    undo.add_line ("old " + original.composeF4 () + "\n");
+    undo.add_line ("new " + task.composeF4 () + "\n");
     undo.add_line ("---\n");
 
     // Add modified task to backlog.
     if (add_to_backlog)
-      backlog.add_task (task);
+      backlog.add_line (task.composeJSON () + "\n");
   }
 }
 
@@ -1112,9 +1112,7 @@ void TDB2::merge (const std::string& mergeFile)
                         << "\n";
 */
 
-              // remove the \n from composeF4() string
               std::string newline = tmod.getAfter ().composeF4 ();
-              newline = newline.substr (0, newline.length ()-1);
 
               // does the tasks move to pending data?
               // this taskmod will not arise from
@@ -1154,10 +1152,7 @@ void TDB2::merge (const std::string& mergeFile)
                                    cutOff (tmod.getBefore ().get ("description"), 10))
                         << "\n";
 
-              // remove the \n from composeF4() string
-              // which will replace the current line
               std::string newline = tmod.getAfter ().composeF4 ();
-              newline = newline.substr (0, newline.length ()-1);
 
               // does the tasks move to completed data
               if ( (statusAfter == Task::completed)
@@ -1215,10 +1210,7 @@ void TDB2::merge (const std::string& mergeFile)
                                cutOff (tmod.getAfter ().get ("description"), 10))
                     << "\n";
 
-          // remove the \n from composeF4() string
-          std::string newline = tmod.getAfter ().composeF4 ();
-          newline = newline.substr (0, newline.length ()-1);
-          pending_lines.push_back (newline);
+          pending_lines.push_back (tmod.getAfter ().composeF4 ());
         }
         else
         {

@@ -182,10 +182,10 @@ std::string Taskmod::toString ()
 
   if (_bBeforeSet)
   {
-    stream << STRING_TASKMOD_OLD << _before.composeF4();
+    stream << STRING_TASKMOD_OLD << _before.composeF4() << "\n";
   }
 
-  stream << STRING_TASKMOD_NEW << _after.composeF4();
+  stream << STRING_TASKMOD_NEW << _after.composeF4() << "\n";
   stream << "---\n";
 
   return stream.str ();

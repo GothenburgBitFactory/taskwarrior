@@ -399,49 +399,53 @@ void Task::parse (const std::string& input)
   try
   {
     // File format version 4, from 2009-5-16 - now, v1.7.1+
+    // This is the parse format tried first, because it is most used.
     clear ();
 
-    Nibbler n (copy);
-    std::string line;
-    if (n.skip     ('[')       &&
-        n.getUntil (']', line) &&
-        n.skip     (']')       &&
-        n.depleted ())
+    if (copy[0] == '[')
     {
-      if (line.length () == 0)
-        throw std::string (STRING_RECORD_EMPTY);
-
-      Nibbler nl (line);
-      std::string name;
-      std::string value;
-      while (!nl.depleted ())
+      Nibbler n (copy);
+      std::string line;
+      if (n.skip     ('[')       &&
+          n.getUntil (']', line) &&
+          n.skip     (']')       &&
+          n.depleted ())
       {
-        if (nl.getUntil (':', name) &&
-            nl.skip (':')           &&
-            nl.getQuoted ('"', value))
+        if (line.length () == 0)
+          throw std::string (STRING_RECORD_EMPTY);
+
+        Nibbler nl (line);
+        std::string name;
+        std::string value;
+        while (!nl.depleted ())
         {
-          // Experimental legacy value translation of 'recur:m' --> 'recur:mo'.
-          if (name == "recur" &&
-              digitsOnly (value.substr (0, value.length () - 1)) &&
-              value[value.length () - 1] == 'm')
-            value += 'o';
+          if (nl.getUntil (':', name) &&
+              nl.skip (':')           &&
+              nl.getQuoted ('"', value))
+          {
+            // Experimental legacy value translation of 'recur:m' --> 'recur:mo'.
+            if (name == "recur" &&
+                digitsOnly (value.substr (0, value.length () - 1)) &&
+                value[value.length () - 1] == 'm')
+              value += 'o';
 
-          if (name.substr (0, 11) == "annotation_")
-            ++annotation_count;
+            if (name.substr (0, 11) == "annotation_")
+              ++annotation_count;
 
-          (*this)[name] = decode (json::decode (value));
+            (*this)[name] = decode (json::decode (value));
+          }
+
+          nl.skip (' ');
         }
 
-        nl.skip (' ');
+        std::string remainder;
+        nl.getUntilEOS (remainder);
+        if (remainder.length ())
+          throw std::string (STRING_RECORD_JUNK_AT_EOL);
       }
-
-      std::string remainder;
-      nl.getUntilEOS (remainder);
-      if (remainder.length ())
-        throw std::string (STRING_RECORD_JUNK_AT_EOL);
     }
-    else if (input[0] == '{')
-      parseJSON (input);
+    else if (copy[0] == '{')
+      parseJSON (copy);
     else
       throw std::string (STRING_RECORD_NOT_FF4);
   }
@@ -686,7 +690,7 @@ void Task::parseLegacy (const std::string& line)
 ////////////////////////////////////////////////////////////////////////////////
 // The format is:
 //
-//   [ <name>:<value> ... ] \n
+//   [ <name>:<value> ... ]
 //
 std::string Task::composeF4 () const
 {
@@ -705,7 +709,7 @@ std::string Task::composeF4 () const
     }
   }
 
-  ff4 += "]\n";
+  ff4 += "]";
   return ff4;
 }
 
@@ -727,6 +731,10 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
   {
     if (attributes_written)
       out << ",";
+
+    // Annotations are not written out here.
+    if (i->first.substr (0, 11) == "annotation_")
+      continue;
 
     std::string type = Task::attributes[i->first];
     if (type == "")
