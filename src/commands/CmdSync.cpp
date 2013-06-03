@@ -91,7 +91,7 @@ int CmdSync::execute (std::string& output)
     split (lines, payload, "\n");
     std::vector <std::string>::iterator i;
     for (i = lines.begin (); i != lines.end (); ++i)
-      if ((*i)[0] == '[')
+      if ((*i)[0] == '{')
         ++upload_count;
   }
 
@@ -132,7 +132,7 @@ int CmdSync::execute (std::string& output)
       std::vector <std::string>::iterator line;
       for (line = lines.begin (); line != lines.end (); ++line)
       {
-        if ((*line)[0] == '[')
+        if ((*line)[0] == '{')
         {
           ++download_count;
 
