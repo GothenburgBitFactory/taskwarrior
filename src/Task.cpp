@@ -475,6 +475,7 @@ void Task::parseJSON (const std::string& line)
     {
       // If the attribute is a recognized column.
       std::string type = Task::attributes[i->first];
+
       if (type != "")
       {
         // Any specified id is ignored.
