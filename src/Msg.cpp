@@ -35,7 +35,7 @@ Msg::Msg ()
 {
   // All messages are marked with the version number, so that the messages may
   // be properly evaluated in context.
-  _header["version"] = PACKAGE_STRING;
+  _header["client"] = PACKAGE_STRING;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
