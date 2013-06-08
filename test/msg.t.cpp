@@ -39,16 +39,16 @@ int main (int argc, char** argv)
   UnitTest t (8);
 
   Msg m;
-  t.is (m.serialize (), std::string ("version: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize '' --> '\\n\\n'");
+  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize '' --> '\\n\\n'");
 
   m.set ("name", "value");
-  t.is (m.serialize (), std::string ("name: value\nversion: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize 1 var");
+  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\nname: value\n\n\n", "Msg::serialize 1 var");
 
   m.set ("foo", "bar");
-  t.is (m.serialize (), std::string ("foo: bar\nname: value\nversion: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize 2 vars");
+  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\nfoo: bar\nname: value\n\n\n", "Msg::serialize 2 vars");
 
   m.setPayload ("payload");
-  t.is (m.serialize (), std::string ("foo: bar\nname: value\nversion: ") + PACKAGE_STRING + "\n\npayload\n", "Msg::serialize 2 vars + payload");
+  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\nfoo: bar\nname: value\n\npayload\n", "Msg::serialize 2 vars + payload");
 
   Msg m2;
   t.ok (m2.parse ("foo: bar\nname: value\n\npayload\n"), "Msg::parse ok");
