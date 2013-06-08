@@ -76,7 +76,7 @@ int CmdStats::execute (std::string& output)
   std::vector <std::string> backlogTxns = context.tdb2.backlog.get_lines ();
   int backlogCount = 0;
   for (tx = backlogTxns.begin (); tx != backlogTxns.end (); ++tx)
-    if ((*tx)[0] == '[')
+    if ((*tx)[0] == '{')
       ++backlogCount;
 
   // Get all the tasks.
