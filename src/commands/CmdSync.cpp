@@ -33,6 +33,7 @@
 #include <TLSClient.h>
 #include <Color.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 #include <CmdSync.h>
 
@@ -42,7 +43,7 @@ extern Context context;
 CmdSync::CmdSync ()
 {
   _keyword     = "synchronize";
-  _usage       = "task          synchronize";
+  _usage       = "task          synchronize [initialize]";
   _description = STRING_CMD_SYNC_USAGE;
   _read_only   = false;
   _displays_id = false;
@@ -57,6 +58,22 @@ int CmdSync::execute (std::string& output)
   timer_sync.start ();
 
   std::stringstream out;
+
+  // Loog for the 'init' keyword to indicate one-time pending.data upload.
+  bool first_time_init = false;
+  std::vector <std::string> words = context.a3.extract_words ();
+  std::vector <std::string>::iterator word;
+  for (word = words.begin (); word != words.end (); ++word)
+  {
+    if (closeEnough ("initialize", *word, 4))
+    {
+      if (!context.config.getBoolean ("confirmation") ||
+          confirm (STRING_CMD_SYNC_INIT))
+        first_time_init = true;
+      else
+        throw std::string (STRING_CMD_SYNC_NO_INIT);
+    }
+  }
 
   // If no server is set up, quit.
   std::string connection = context.config.get ("taskd.server");
@@ -78,21 +95,30 @@ int CmdSync::execute (std::string& output)
   if (certificate == "")
     throw std::string (STRING_CMD_SYNC_BAD_CERT);
 
-  // Read backlog.data.
+  // If this is a first-time initialization, send pending.data, not
+  // backlog.data.
   std::string payload = "";
-  File backlog (context.config.get ("data.location") + "/backlog.data");
-  if (backlog.exists ())
-    backlog.read (payload);
-
-  // Count the number of tasks being uploaded.
   int upload_count = 0;
+  if (first_time_init)
   {
-    std::vector <std::string> lines;
-    split (lines, payload, "\n");
+    std::vector <Task> pending = context.tdb2.pending.get_tasks ();
+    std::vector <Task>::iterator i;
+    for (i = pending.begin (); i != pending.end (); ++i)
+    {
+      payload += i->composeJSON () + "\n";
+      ++upload_count;
+    }
+  }
+  else
+  {
+    std::vector <std::string> lines = context.tdb2.backlog.get_lines ();
     std::vector <std::string>::iterator i;
     for (i = lines.begin (); i != lines.end (); ++i)
       if ((*i)[0] == '{')
+      {
+        payload += *i + "\n";
         ++upload_count;
+      }
   }
 
   // Send 'sync' + payload.
@@ -102,8 +128,6 @@ int CmdSync::execute (std::string& output)
   request.set ("org",      credentials[0]);
   request.set ("user",     credentials[1]);
   request.set ("key",      credentials[2]);
-
-  // TODO Add the other necessary header fields.
 
   request.setPayload (payload);
 

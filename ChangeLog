@@ -14,6 +14,8 @@ Features
  + #1256 Supports default values for UDA fields (thanks to Thomas Sullivan).
  + Stores un-synched transactions in <data.location>/backlog.data.
  + Adds a new 'synchronize' command to sync data with a task server.
+ + Adds a new 'initialize' synchronize command argument that uploads all pending
+   tasks for first-time initialization.
  + Adds a new 'sync' verbosity token, which will remind when a backlog builds
    up and needs a sync.
  + Supports IPv4 and IPv6 server addresses.

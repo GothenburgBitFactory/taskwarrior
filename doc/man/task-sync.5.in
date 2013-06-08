@@ -340,7 +340,7 @@ need to retype the URI every time. You can also use this configuration scheme
 to set alias names, e.g. set pull.desktop.uri and run 'task pull desktop'.
 .RE
 
-Note that, when using SSH/scp, hostnames will be expanded due to the ssh 
+Note that, when using SSH/scp, hostnames will be expanded due to the ssh
 configuration file ~/.ssh/config.
 
 .SH EXTERNAL DEPENDENCIES
