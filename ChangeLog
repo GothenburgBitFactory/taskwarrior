@@ -43,6 +43,8 @@ Bugs
    (thanks to Jakub Wilk).
  + #1249 Build system now recognizes GNU/Hurd and GNU/kFreeBSD (thanks to Jakub
    Wilk).
+ + #1263 The 'waiting' report properly lists only pending tasks with a wait date
+   (thanks to Fidel Mato).
  + Fixed bug so that 'limit:page' now considers footnote messages.
 
 ------ old releases ------------------------------

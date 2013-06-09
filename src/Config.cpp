@@ -376,7 +376,7 @@ std::string Config::_defaults =
   "report.waiting.columns=id,project,priority,wait,entry.age,description\n"
   "report.waiting.labels=ID,Proj,Pri,Wait,Age,Description\n"
   "report.waiting.sort=wait+,priority-,project+\n"
-  "report.waiting.filter=+WAITING\n"
+  "report.waiting.filter=status:waiting +WAITING\n"
   "\n"
   "report.all.description=Lists all pending and completed tasks\n"
   "report.all.columns=id,status,project,priority,due,end,start.active,entry.age,description\n"
