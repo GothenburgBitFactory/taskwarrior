@@ -113,11 +113,12 @@ int CmdSync::execute (std::string& output)
     std::vector <std::string> lines = context.tdb2.backlog.get_lines ();
     std::vector <std::string>::iterator i;
     for (i = lines.begin (); i != lines.end (); ++i)
+    {
       if ((*i)[0] == '{')
-      {
-        payload += *i + "\n";
         ++upload_count;
-      }
+
+      payload += *i + "\n";
+    }
   }
 
   // Send 'sync' + payload.
