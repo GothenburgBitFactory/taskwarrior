@@ -42,7 +42,7 @@
 #include <netdb.h>
 #include <i18n.h>
 
-#define MAX_BUF 1024
+#define MAX_BUF 16384
 
 ////////////////////////////////////////////////////////////////////////////////
 static void gnutls_log_function (int level, const char* message)
@@ -196,7 +196,7 @@ void TLSClient::send (const std::string& data)
   int total = 0;
   int remaining = packet.length ();
 
-  while (total < remaining)
+  while (total < packet.length ())
   {
     int status;
     do

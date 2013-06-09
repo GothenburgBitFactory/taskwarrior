@@ -26,7 +26,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream>
 #include <sstream>
 #include <inttypes.h>
 #include <Context.h>
