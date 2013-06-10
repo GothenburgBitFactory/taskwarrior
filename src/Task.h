@@ -32,6 +32,7 @@
 #include <map>
 #include <string>
 #include <stdio.h>
+#include <A3.h>
 
 class Task : public std::map <std::string, std::string>
 {
@@ -142,6 +143,9 @@ public:
 
   float urgency_c () const;
   float urgency ();
+
+  void modify (const A3&, std::string&);
+  bool next_mod_group (const A3&, Arg&, unsigned int&);
 
 private:
   int determineVersion (const std::string&);

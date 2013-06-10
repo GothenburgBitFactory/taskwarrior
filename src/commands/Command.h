@@ -66,8 +66,6 @@ protected:
   void safety ();
   bool permission (const Task&, const std::string&, unsigned int);
 
-  bool next_mod_group (const A3&, Arg&, unsigned int&);
-
 protected:
   std::string _keyword;
   std::string _usage;
