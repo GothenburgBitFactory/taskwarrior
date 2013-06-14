@@ -1804,12 +1804,6 @@ void Task::modify (
             }
           }
 
-          // Priorities are converted to upper case.
-          else if (name == "priority")
-          {
-            (*this).set (name, upperCase (value));
-          }
-
           // Dates are special, maybe.
           else if (column->type () == "date")
           {
@@ -1879,9 +1873,19 @@ void Task::modify (
               throw format (STRING_UDA_NUMERIC, result);
           }
 
-          // By default, just add/remove it.
+          // Try to use modify method, otherwise just continue to the final option.
+          else if (column->can_modify ())
+          {
+            // column->modify () contains the logic for the specific column
+            // and returns the appropriate value for (*this).set ()
+            if (column->validate (value))
+              (*this).set (name, column->modify (value));
+            else
+              throw format (STRING_INVALID_MOD, name, value);
+          }
           else
           {
+            // Final default action
             if (column->validate (value))
               (*this).set (name, value);
             else

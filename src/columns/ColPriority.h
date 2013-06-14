@@ -44,6 +44,8 @@ public:
   void setStyle (const std::string&);
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
+  std::string modify (std::string&);
+  bool can_modify ();
 
 private:
 };

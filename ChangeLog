@@ -27,6 +27,11 @@ Features
  + The 'debug.tls' configuration variable takes an integer which corresponds to
    the GnuTLS log level.  For debugging.
  + File format 2 (used in version 0.9.3 - 1.5.0) is no longer supported.
+ + Migrated column processing code into Task.cpp for future use within each
+   individual column object.  Legacy code left in Task.cpp for column objects
+   that are not yet modified.
+ + ColPriority.cpp - Migration of column modification code out of Task.cpp and
+   into the individual column object.
 
 Bugs
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).
