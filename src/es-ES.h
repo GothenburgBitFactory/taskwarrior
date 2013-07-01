@@ -415,7 +415,7 @@
 #define STRING_CMD_SYNC_USAGE        "Sincroniza datos con el Servidor Task"
 #define STRING_CMD_SYNC_NO_SERVER    "El Servidor Task no está configurado."
 #define STRING_CMD_SYNC_BAD_CRED     "Credenciales del Servidor Task incorrectas."
-#define STRING_CMD_SYNC_BAD_CERT     "Task Server certificate missing."
+#define STRING_CMD_SYNC_BAD_CERT     "Certificado del Servidor Task no encontrado."
 #define STRING_CMD_SYNC_ADD          "   añade {1} '{2}'"
 #define STRING_CMD_SYNC_MOD          "modifica {1} '{2}'"
 #define STRING_CMD_SYNC_PROGRESS     "Sincronizando con {1}"
@@ -428,9 +428,10 @@
 #define STRING_CMD_SYNC_FAIL_ERROR   "Sincronización fallida. El Servidor Task devolvió error: {1} {2}"
 #define STRING_CMD_SYNC_FAIL_CONNECT "Sincronización fallida. No se pudo conectar con el Servidor Task."
 #define STRING_CMD_SYNC_BAD_SERVER   "Sincronización fallida. Ajuste de configuración '{1}' incorrecto"
-#define STRING_CMD_SYNC_NO_TLS       "Taskwarrior was built without GnuTLS support.  Sync is not available."
-#define STRING_CMD_SYNC_INIT         "Please confirm that you wish to upload all your pending tasks to the Task Server?"
+#define STRING_CMD_SYNC_NO_TLS       "Taskwarrior fue construido sin soporte GnuTLS. Sincronización no disponible."
+#define STRING_CMD_SYNC_INIT         "Por favor, confirme que ¿desea subir todas sus tareas pendientes al Servidor Task"
 #define STRING_CMD_SYNC_NO_INIT      "Taskwarrior will not proceed with first-time sync initialization."
+#define STRING_CMD_SYNC_NO_INIT      "Taskwarrior will no procederá a la inicialización de la sincronización por primera vez."
 #define STRING_CMD_DIAG_USAGE        "Detalles de plataforma, construcción y entorno"
 #define STRING_CMD_DIAG_PLATFORM     "Plataforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<desconocido>"
@@ -439,7 +440,7 @@
 #define STRING_CMD_DIAG_CAPS         "Capacidades"
 #define STRING_CMD_DIAG_FEATURES     "Características Constructivas"
 #define STRING_CMD_DIAG_BUILT        "Construido"
-#define STRING_CMD_DIAG_COMMIT       "Commit"
+#define STRING_CMD_DIAG_COMMIT       "Commit"  // sic
 #define STRING_CMD_DIAG_FOUND        "(encontrado)"
 #define STRING_CMD_DIAG_MISSING      "(no encontrado)"
 #define STRING_CMD_DIAG_ENABLED      "Habilitado"
@@ -716,7 +717,7 @@
 #define STRING_UDA_COLLISION         "El UDA denominado '{1}' es el mismo que un atributo del núcleo, y no está permitido."
 #define STRING_INVALID_MOD           "El atributo '{1}' no admite un valor '{2}'."
 #define STRING_INVALID_SORT_COL      "La columna '{1}' no es un campo de ordenación válido."
-#define STRING_TLS_INIT_FAIL         "Error initializing TLS."
+#define STRING_TLS_INIT_FAIL         "Error inicializando TLS."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."
@@ -795,7 +796,7 @@
 
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior ya no admite el formato de archivo 1, usado originalmente entre el 27 de noviembre del 2006 y el 31 de diciembre del 2007."
-#define STRING_TASK_NO_FF2           "Taskwarrior no longer supports file format 2, originally used between 1 January 2008 and 12 April 2009."
+#define STRING_TASK_NO_FF2           "Taskwarrior ya no admite el formato de archivo 2, usado originalmente entre el 1 de enero del 2008 y el 12 de abril del 2009."
 #define STRING_TASK_PARSE_ANNO_BRACK "Faltan corchetes de anotación."
 #define STRING_TASK_PARSE_ATT_BRACK  "Faltan corchetes de atributo."
 #define STRING_TASK_PARSE_TAG_BRACK  "Faltan corchetes de marca."
