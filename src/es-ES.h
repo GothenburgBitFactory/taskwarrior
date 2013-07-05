@@ -429,7 +429,7 @@
 #define STRING_CMD_SYNC_FAIL_CONNECT "Sincronización fallida. No se pudo conectar con el Servidor Task."
 #define STRING_CMD_SYNC_BAD_SERVER   "Sincronización fallida. Ajuste de configuración '{1}' incorrecto"
 #define STRING_CMD_SYNC_NO_TLS       "Taskwarrior fue construido sin soporte GnuTLS. Sincronización no disponible."
-#define STRING_CMD_SYNC_INIT         "Por favor, confirme que ¿desea subir todas sus tareas pendientes al Servidor Task"
+#define STRING_CMD_SYNC_INIT         "Por favor, confirme que desea subir todas sus tareas pendientes al Servidor Task"
 #define STRING_CMD_SYNC_NO_INIT      "Taskwarrior will not proceed with first-time sync initialization."
 #define STRING_CMD_SYNC_NO_INIT      "Taskwarrior will no procederá a la inicialización de la sincronización por primera vez."
 #define STRING_CMD_DIAG_USAGE        "Detalles de plataforma, construcción y entorno"
