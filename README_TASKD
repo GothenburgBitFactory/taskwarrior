@@ -36,14 +36,42 @@ need the following items:
 Set these configuration variables in your Taskwarrior configuration,
 substituting from above:
 
-  task config taskd.server <server:port>
-  task config taskd.credentials <org>/<user>/<key>
-  task config taskd.certificate <cert>
+  $ task config taskd.server <server:port>
+  $ task config taskd.credentials <org>/<user>/<key>
+  $ task config taskd.certificate <cert>
 
 Here is an example:
 
-  task config taskd.server localhost:6544
-  task config taskd.credentials 'Public/John Doe/8ad2e3db-914d-4832-b0e6-72fa04f6e331'
-  task config taskd.certificate ~/.task/client.cert.pem
+  $ task config taskd.server localhost:6544
+  $ task config taskd.credentials 'Public/John Doe/8ad2e3db-914d-4832-b0e6-72fa04f6e331'
+  $ task config taskd.certificate ~/.task/client.cert.pem
 
 
+First-Time Synchronizing
+------------------------
+
+The first sync you do should be a full sync.  Run this:
+
+  $ task sync initialize
+
+This performs a full upload of your pending.data file to the server, creating
+the basis on which all subsequent sync commands are run, and transferring only
+deltas.
+
+Do not run 'task sync initialize' again.
+
+
+General Synchronizing
+---------------------
+
+After the first-time sync, all subsequent sync commands should be like this:
+
+  $ task sync
+
+It is safe to run this command as often as you wish, whether or not there are
+any changes to sync.
+
+You may wish to enable sync feedback with the 'sync' verbose token.  See 'man
+taskrc' for details.
+
+---
