@@ -435,7 +435,7 @@ void feedback_backlog ()
     std::vector <std::string>::iterator line;
     for (line = lines.begin (); line != lines.end (); ++line)
     {
-      if ((*line)[0] == '[')
+      if ((*line)[0] == '{')
       {
         context.footnote ("There are local changes.  Sync required.");
         break;
