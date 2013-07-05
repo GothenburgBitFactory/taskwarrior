@@ -53,9 +53,6 @@ int CmdSync::execute (std::string& output)
 {
   int status = 0;
 #ifdef HAVE_LIBGNUTLS
-  Timer timer_sync;
-  timer_sync.start ();
-
   std::stringstream out;
 
   // Loog for the 'init' keyword to indicate one-time pending.data upload.
@@ -262,17 +259,6 @@ int CmdSync::execute (std::string& output)
 
   out << "\n";
   output = out.str ();
-
-/*
-  timer_sync.stop ();
-  std::stringstream s;
-  s << "Sync "
-    << Date ().toISO ()
-    << " sync:"
-    << timer_sync.total ()
-    << "\n";
-  debug (s.str ());
-*/
 
 #else
   // Without GnuTLS found at compile time, there is no working sync command.
