@@ -145,9 +145,11 @@ int CmdSync::execute (std::string& output)
       std::vector <std::string> lines;
       split (lines, payload, '\n');
 
-      // TODO This is not necessary if only a synch key was received.
-      // Load all tasks.
-      context.tdb2.all_tasks ();
+      // Load all tasks, but only if necessary.  There is always a sync key in
+      // the payload, so if there are two or more lines, then we have merging
+      // to perform, otherwise it's just a backlog.data update.
+      if (lines.size () > 1)
+        context.tdb2.all_tasks ();
 
       std::string synch_key = "";
       std::vector <std::string>::iterator line;
