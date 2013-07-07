@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (8);
+  UnitTest t (12);
 
   Msg m;
   t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize '' --> '\\n\\n'");
@@ -55,6 +55,12 @@ int main (int argc, char** argv)
   t.is (m2.get ("foo"),   "bar",       "Msg::get");
   t.is (m2.get ("name"),  "value",     "Msg::get");
   t.is (m2.getPayload (), "payload\n", "Msg::getPayload");
+
+  Msg m3;
+  t.ok (m3.parse ("foo:bar\nname:   value\n\npayload\n"), "Msg::parse ok");
+  t.is (m3.get ("foo"),   "bar",       "Msg::get");
+  t.is (m3.get ("name"),  "value",     "Msg::get");
+  t.is (m3.getPayload (), "payload\n", "Msg::getPayload");
   return 0;
 }
 

@@ -145,26 +145,25 @@ bool Msg::parse (const std::string& input)
   _header.clear ();
   _payload = "";
 
-  std::vector <std::string> lines;
-  split (lines, input.substr (0, input.size ()), '\n');
+  std::string::size_type separator = input.find ("\n\n");
+  if (separator == std::string::npos)
+    throw std::string ("ERROR: Malformed message");
 
+  // Parse header.
+  std::vector <std::string> lines;
+  split (lines, input.substr (0, separator), '\n');
   std::vector <std::string>::iterator i;
-  bool tripped = false;
   for (i = lines.begin (); i != lines.end (); ++i)
   {
-    if (*i == "")
-      tripped = true;
-    else if (tripped)
-      _payload += *i + "\n";
-    else
-    {
-      std::string::size_type delim = i->find (": ");
-      if (delim != std::string::npos)
-        _header[i->substr (0, delim)] = i->substr (delim + 2);
-      else
+    std::string::size_type delimiter = i->find (':');
+    if (delimiter == std::string::npos)
         throw std::string ("ERROR: Malformed message header '") + *i + "'";
+
+    _header[trim (i->substr (0, delimiter))] = trim (i->substr (delimiter + 1));
     }
-  }
+
+  // Parse payload.
+  _payload = input.substr (separator + 2);
 
   return true;
 }
