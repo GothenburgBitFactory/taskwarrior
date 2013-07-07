@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Create the rc file.
 if (open my $fh, '>', 'roundtrip.rc')
@@ -43,36 +43,41 @@ if (open my $fh, '>', 'roundtrip.rc')
 }
 
 # Add two tasks.
-qx{../src/task rc:roundtrip.rc add priority:H project:A one 2>&1};
+qx{../src/task rc:roundtrip.rc add priority:H project:A one/1 2>&1};
 qx{../src/task rc:roundtrip.rc add +tag1 +tag2 two 2>&1};
 
 # trip 1.
-qx{../src/task rc:roundtrip.rc export > ./roundtrip.txt 2>&1};
+qx{../src/task rc:roundtrip.rc export > ./roundtrip1.json 2>&1};
 unlink 'pending.data', 'completed.data', 'undo.data';
-qx{../src/task rc:roundtrip.rc rc.debug:1 import ./roundtrip.txt 2>&1};
+qx{../src/task rc:roundtrip.rc rc.debug:1 import ./roundtrip1.json 2>&1};
 
 # trip 2.
-qx{../src/task rc:roundtrip.rc export > ./roundtrip.txt 2>&1};
+qx{../src/task rc:roundtrip.rc export > ./roundtrip2.json 2>&1};
 unlink 'pending.data', 'completed.data', 'undo.data';
-qx{../src/task rc:roundtrip.rc import ./roundtrip.txt 2>&1};
+qx{../src/task rc:roundtrip.rc import ./roundtrip2.json 2>&1};
 
 # Exammine.
 
 # ID Project Pri Added    Started Due Recur Countdown Age Deps Tags      Description
 # -- ------- --- -------- ------- --- ----- --------- --- ---- --------- ---------
-#  1 A       H   8/7/2010                               -                one
+#  1 A       H   8/7/2010                               -                one/1
 #  2             8/7/2010                               -      tag1 tag2 two
 my $output = qx{../src/task rc:roundtrip.rc long 2>&1};
-like ($output, qr/1.+A.+H.+\d+\/\d+\/\d+.+(?:-|\d+).+one/,       '2 round trips task 1 identical');
+like ($output, qr/1.+A.+H.+\d+\/\d+\/\d+.+(?:-|\d+).+one\/1/,    '2 round trips task 1 identical');
 like ($output, qr/2.+\d+\/\d+\/\d+.+(?:-|\d+).+tag1\stag2\stwo/, '2 round trips task 2 identical');
 
+# Compare the actual JSON files.
+$output = qx{diff ./roundtrip1.json ./roundtrip2.json 2>&1};
+like ($output, qr/^$/, 'JSON files roundtrip1.json and roundtrip2.json identical');
+
 # Cleanup.
-unlink qw(roundtrip.txt pending.data completed.data undo.data backlog.data roundtrip.rc);
-ok (! -r 'roundtrip.txt'  &&
-    ! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
+unlink qw(roundtrip1.json roundtrip2.json pending.data completed.data undo.data backlog.data roundtrip.rc);
+ok (! -r 'roundtrip1.json' &&
+    ! -r 'roundtrip2.json' &&
+    ! -r 'pending.data'    &&
+    ! -r 'completed.data'  &&
+    ! -r 'undo.data'       &&
+    ! -r 'backlog.data'    &&
     ! -r 'roundtrip.rc', 'Cleanup');
 
 exit 0;

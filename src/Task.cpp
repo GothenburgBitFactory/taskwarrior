@@ -461,6 +461,7 @@ void Task::parse (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Note that all fields undergo encode/decode.
 void Task::parseJSON (const std::string& line)
 {
   // Parse the whole thing.
@@ -477,7 +478,6 @@ void Task::parseJSON (const std::string& line)
     {
       // If the attribute is a recognized column.
       std::string type = Task::attributes[i->first];
-
       if (type != "")
       {
         // Any specified id is ignored.
@@ -508,6 +508,10 @@ void Task::parseJSON (const std::string& line)
             addTag (tag->_data);
           }
         }
+
+        // Strings are decoded.
+        else if (type == "string")
+          set (i->first, json::decode (unquoteText (i->second->dump ())));
 
         // Other types are simply added.
         else
@@ -540,8 +544,7 @@ void Task::parseJSON (const std::string& line)
               throw format (STRING_TASK_NO_DESC, line);
 
             std::string name = "annotation_" + Date (when->_data).toEpochString ();
-
-            annos.insert (std::make_pair (name, what->_data));
+            annos.insert (std::make_pair (name, json::decode (what->_data)));
           }
 
           setAnnotations (annos);
@@ -559,7 +562,7 @@ void Task::parseJSON (const std::string& line)
                   << "' --> preserved\n";
           context.debug (message.str ());
 #endif
-          set (i->first, unquoteText (i->second->dump ()));
+          set (i->first, json::decode (unquoteText (i->second->dump ())));
         }
       }
     }
