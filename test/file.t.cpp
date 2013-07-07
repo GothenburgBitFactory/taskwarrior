@@ -35,7 +35,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (15);
+  UnitTest t (27);
 
   Directory tmp ("tmp");
   tmp.create ();
@@ -69,6 +69,24 @@ int main (int argc, char** argv)
   t.ok (f7.exists (),                    "File::rename new file exists");
   t.ok (f7.remove (),                    "File::remove tmp/file.t.3.txt good");
   t.notok (f7.exists (),                 "File::remove new file no longer exists");
+
+  // Test permissions.
+  File f8 ("tmp/file.t.perm.txt");
+  f8.create (0744);
+  t.ok (f8.exists (),                    "File::create perm file exists");
+  mode_t m = f8.mode ();
+  t.ok    (m & S_IFREG,                  "File::mode tmp/file.t.perm.txt S_IFREG good");
+  t.ok    (m & S_IRUSR,                  "File::mode tmp/file.t.perm.txt r-------- good");
+  t.ok    (m & S_IWUSR,                  "File::mode tmp/file.t.perm.txt -w------- good");
+  t.ok    (m & S_IXUSR,                  "File::mode tmp/file.t.perm.txt --x------ good");
+  t.ok    (m & S_IRGRP,                  "File::mode tmp/file.t.perm.txt ---r----- good");
+  t.notok (m & S_IWGRP,                  "File::mode tmp/file.t.perm.txt ----w---- good");
+  t.notok (m & S_IXGRP,                  "File::mode tmp/file.t.perm.txt -----x--- good");
+  t.ok    (m & S_IROTH,                  "File::mode tmp/file.t.perm.txt ------r-- good");
+  t.notok (m & S_IWOTH,                  "File::mode tmp/file.t.perm.txt -------w- good");
+  t.notok (m & S_IXOTH,                  "File::mode tmp/file.t.perm.txt --------x good");
+  f8.remove ();
+  t.notok (f8.exists (),                 "File::remove perm file no longer exists");
 
   tmp.remove ();
   t.notok (tmp.exists (),                "tmp dir removed.");

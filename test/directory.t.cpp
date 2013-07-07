@@ -35,7 +35,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (37);
+  UnitTest t (49);
 
   Directory tmp ("tmp");
   tmp.create ();
@@ -123,6 +123,24 @@ int main (int argc, char** argv)
   t.ok (d9.up (),                   "parent /one --> true");
   t.is (d9._data, "/",              "parent /one --> /");
   t.notok (d9.up (),                "parent / --> false");
+
+  // Test permissions.
+  Directory d10 ("tmp/dir.perm");
+  d10.create (0750);
+  t.ok (d10.exists (),               "Directory::create perm file exists");
+  mode_t m = d10.mode ();
+  t.ok    (m & S_IFDIR,             "Directory::mode tmp/dir.perm S_IFDIR good");
+  t.ok    (m & S_IRUSR,             "Directory::mode tmp/dir.perm r-------- good");
+  t.ok    (m & S_IWUSR,             "Directory::mode tmp/dir.perm -w------- good");
+  t.ok    (m & S_IXUSR,             "Directory::mode tmp/dir.perm --x------ good");
+  t.ok    (m & S_IRGRP,             "Directory::mode tmp/dir.perm ---r----- good");
+  t.notok (m & S_IWGRP,             "Directory::mode tmp/dir.perm ----w---- good");
+  t.ok    (m & S_IXGRP,             "Directory::mode tmp/dir.perm -----x--- good");
+  t.notok (m & S_IROTH,             "Directory::mode tmp/dir.perm ------r-- good");
+  t.notok (m & S_IWOTH,             "Directory::mode tmp/dir.perm -------w- good");
+  t.notok (m & S_IXOTH,             "Directory::mode tmp/dir.perm --------x good");
+  d10.remove ();
+  t.notok (d10.exists (),           "Directory::remove temp/dir.perm file no longer exists");
 
   tmp.remove ();
   t.notok (tmp.exists (),           "tmp dir removed.");

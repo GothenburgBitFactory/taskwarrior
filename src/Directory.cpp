@@ -85,9 +85,9 @@ Directory& Directory::operator= (const Directory& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Directory::create ()
+bool Directory::create (int mode /* = 0755 */)
 {
-  return mkdir (_data.c_str (), 0755) == 0 ? true : false;
+  return mkdir (_data.c_str (), mode) == 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

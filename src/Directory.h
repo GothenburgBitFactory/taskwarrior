@@ -42,7 +42,7 @@ public:
 
   Directory& operator= (const Directory&);
 
-  virtual bool create ();
+  virtual bool create (int mode = 0755);
   virtual bool remove () const;
 
   std::vector <std::string> list ();
