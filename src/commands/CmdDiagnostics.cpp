@@ -35,7 +35,9 @@
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
+#ifdef HAVE_COMMIT
 #include <commit.h>
+#endif
 
 #ifdef HAVE_LIBGNUTLS
 #include <gnutls/gnutls.h>
@@ -136,7 +138,9 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Build date.
       << "      " << STRING_CMD_DIAG_BUILT << ": " << __DATE__ << " " << __TIME__ << "\n"
+#ifdef HAVE_COMMIT
       << "     " << STRING_CMD_DIAG_COMMIT << ": " << COMMIT << "\n"
+#endif
       << "      CMake: " << CMAKE_VERSION << "\n"
       << "       " << STRING_CMD_DIAG_CAPS << ":"
 #ifdef HAVE_LIBPTHREAD

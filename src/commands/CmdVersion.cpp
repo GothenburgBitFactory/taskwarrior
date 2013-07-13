@@ -30,7 +30,9 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
+#ifdef HAVE_COMMIT
 #include <commit.h>
+#endif
 #include <CmdVersion.h>
 #include <text.h>
 #include <i18n.h>
