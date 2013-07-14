@@ -51,6 +51,7 @@ Bugs
  + #1263 The 'waiting' report properly lists only pending tasks with a wait date
    (thanks to Fidel Mato).
  + #1300 Encode/decode pairing is now properly balanced.
+ + #1305 Commit hash now available in tarball builds (thanks to Ben Boeckel).
  + Fixed bug so that 'limit:page' now considers footnote messages.
 
 ------ old releases ------------------------------
