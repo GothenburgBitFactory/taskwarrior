@@ -209,6 +209,7 @@ int CmdSync::execute (std::string& output)
 
         // Present a clear status message.
         if (upload_count == 0 && download_count == 0)
+          // Note: should not happen - expect code 201 instead.
           context.footnote (STRING_CMD_SYNC_SUCCESS0);
         else if (upload_count == 0 && download_count > 0)
           context.footnote (format (STRING_CMD_SYNC_SUCCESS2, download_count));
@@ -221,6 +222,13 @@ int CmdSync::execute (std::string& output)
     else if (code == "201")
     {
       context.footnote (STRING_CMD_SYNC_SUCCESS_NOP);
+    }
+    else if (code == "301")
+    {
+      std::string new_server = response.get ("info");
+      context.config.set ("taskd.server", new_server);
+      context.error (STRING_CMD_SYNC_RELOCATE0);
+      context.error ("  " + format (STRING_CMD_SYNC_RELOCATE1, new_server));
     }
     else if (code == "430")
     {
@@ -235,7 +243,7 @@ int CmdSync::execute (std::string& output)
       status = 2;
     }
 
-    // Display all errors returned.  This is required by the server protocol.
+    // Display all errors returned.  This is recommended by the server protocol.
     std::string to_be_displayed = response.get ("messages");
     if (to_be_displayed != "")
     {

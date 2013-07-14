@@ -421,6 +421,8 @@
 #define STRING_CMD_SYNC_NO_TLS       "Taskwarrior was built without GnuTLS support.  Sync is not available."
 #define STRING_CMD_SYNC_INIT         "Please confirm that you wish to upload all your pending tasks to the Task Server"
 #define STRING_CMD_SYNC_NO_INIT      "Taskwarrior will not proceed with first-time sync initialization."
+#define STRING_CMD_SYNC_RELOCATE0    "The server account has been relocated.  Please update your configuration using:"
+#define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"
 #define STRING_CMD_DIAG_USAGE        "Dettagli su piattaforma, build e ambiente"
 #define STRING_CMD_DIAG_PLATFORM     "Piattaforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<sconoscito>"
