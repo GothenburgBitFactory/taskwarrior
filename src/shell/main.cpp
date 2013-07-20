@@ -31,12 +31,6 @@
 #include <iostream>
 #include <cstring>
 
-#ifdef CYGWIN
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
-
 #include <text.h>
 #include <i18n.h>
 #include <Color.h>

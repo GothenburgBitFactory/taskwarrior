@@ -30,12 +30,6 @@
 #include <cstring>
 #include <stdlib.h>
 
-#ifdef CYGWIN
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
-
 #include <i18n.h>
 #include <Context.h>
 
