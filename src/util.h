@@ -32,9 +32,8 @@
 #include <vector>
 #include <map>
 #include <sys/types.h>
-#include <Task.h>
-
 #include <uuid/uuid.h>
+#include <Task.h>
 
 // util.cpp
 bool confirm (const std::string&);
