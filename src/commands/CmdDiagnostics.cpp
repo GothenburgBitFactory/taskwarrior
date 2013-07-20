@@ -161,12 +161,6 @@ int CmdDiagnostics::execute (std::string& output)
       << " -random"
 #endif
 
-#ifdef HAVE_UUID
-      << " +uuid"
-#else
-      << " -uuid"
-#endif
-
 #ifdef HAVE_LIBGNUTLS
       << " +tls"
 #else
@@ -175,12 +169,10 @@ int CmdDiagnostics::execute (std::string& output)
       << "\n";
 
   out << "    libuuid: "
-#if defined (HAVE_UUID) and defined (HAVE_UUID_UNPARSE_LOWER)
+#ifdef HAVE_UUID_UNPARSE_LOWER
       << "libuuid + uuid_unparse_lower"
-#elif defined (HAVE_UUID) and !defined (HAVE_UUID_UNPARSE_LOWER)
-      << "libuuid, no uuid_unparse_lower"
 #else
-      << "n/a"
+      << "libuuid, no uuid_unparse_lower"
 #endif
       << "\n";
 

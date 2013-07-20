@@ -32,6 +32,7 @@ Features
    that are not yet modified.
  + ColPriority.cpp - Migration of column modification code out of Task.cpp and
    into the individual column object.
+ + Now requires libuuid (thanks to Martin Natano).
 
 Bugs
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).

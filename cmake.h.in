@@ -70,8 +70,7 @@
 /* Found get_current_dir_name */
 #cmakedefine HAVE_GET_CURRENT_DIR_NAME
 
-/* Found the uuid library */
-#cmakedefine HAVE_UUID
+/* Found uuid_unparse_lower in the uuid library */
 #cmakedefine HAVE_UUID_UNPARSE_LOWER
 
 /* Undefine this to eliminate the execute command */
