@@ -37,7 +37,7 @@
 #include <TLSClient.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <netdb.h>
 #include <i18n.h>
