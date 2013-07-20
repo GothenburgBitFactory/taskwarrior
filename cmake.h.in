@@ -52,12 +52,6 @@
 /* Found the pthread library */
 #cmakedefine HAVE_LIBPTHREAD
 
-/* Found random */
-#cmakedefine HAVE_RANDOM
-
-/* Found srandom */
-#cmakedefine HAVE_SRANDOM
-
 /* Found tm_gmtoff */
 #cmakedefine HAVE_TM_GMTOFF
 

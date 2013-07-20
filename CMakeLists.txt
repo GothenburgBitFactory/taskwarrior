@@ -83,8 +83,6 @@ if (READLINE_FOUND)
   set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${READLINE_LIBRARIES})
 endif (READLINE_FOUND)
 
-check_function_exists (random  HAVE_RANDOM)
-check_function_exists (srandom HAVE_SRANDOM)
 check_function_exists (timegm  HAVE_TIMEGM)
 check_function_exists (get_current_dir_name HAVE_GET_CURRENT_DIR_NAME)
 

@@ -41,22 +41,9 @@
 
 Context context;
 
-#ifdef HAVE_SRANDOM
-#define srand(x) srandom(x)
-#endif
-
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, const char** argv)
 {
-  // Set up randomness.
-#ifdef CYGWIN
-  srand (time (NULL));
-#else
-  struct timeval tv;
-  gettimeofday (&tv, NULL);
-  srand (tv.tv_usec);
-#endif
-
   int status = 0;
 
   if (argc == 2 && !strcmp (argv[1], "--version"))

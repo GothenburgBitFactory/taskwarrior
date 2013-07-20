@@ -149,18 +149,6 @@ int CmdDiagnostics::execute (std::string& output)
       << " -pthreads"
 #endif
 
-#ifdef HAVE_SRANDOM
-      << " +srandom"
-#else
-      << " -srandom"
-#endif
-
-#ifdef HAVE_RANDOM
-      << " +random"
-#else
-      << " -random"
-#endif
-
 #ifdef HAVE_LIBGNUTLS
       << " +tls"
 #else
