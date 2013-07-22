@@ -1,5 +1,5 @@
 The main focus of the 2.4.0 release is a new command line parser that has more
-capabilities, and fewer quirks and bugs.
+capabilities with fewer quirks and bugs.
 
 
 Improvements needed:
@@ -62,7 +62,7 @@ from the parser, yielding a single value.  As an example, the command line:
 
   task add one due:eoy wait:due-2wks
 
-Is parsed as:
+Is to be parsed as:
 
   raw     | add     one    due:eoy    wait:due-2wks
   type    | command string attr       attr

@@ -1,21 +1,17 @@
-The command line needs to obey a grammar.  It is then against this grammar that
-bugs will be identified.
+# The command line needs to obey a grammar.  It is then against this grammar
+# that bugs will be identified.
+# 
+# Conventions:
+#   - Literals are always double-quoted.
+#   - "*", "+" and "?" suffixes have POSIX semantics.
+#   - Low-level primitives are in <brackets>.
+#   - @reports for dynamic lists such as custom report names.
+# 
+# The general form of commands is:
+#   task [ all-commands ]
+#
 
-Conventions:
-  - Literals are double-quoted.
-  - "*", "+" and "?" suffixes have POSIX semantics.
-  - Low-level primitives are in <brackets>.
-  - @reports for dynamic lists such as custom report names.
-
-
-The general form of commands is:
-
-  task [ all-commands ]
-
-
-This breaks down into a supported grammar:
-
-  command         ::= all-commands?
+  grammar         ::= all-commands?
                     ;
 
   all-commands    ::= custom-report
@@ -25,19 +21,17 @@ This breaks down into a supported grammar:
                     ;
 
   custom-report   ::= filter? @report ;
-  read-command    ::= ;
-  write-command   ::= ;
+  read-command    ::= filter? @readcmd ;
+  write-command   ::= filter? @writecmd modifiers ;
   special-command ::= ;
 
   filter          ::= expression ;
 
   expression      ::= ;
 
-Dynamic lists:
+  modifiers       ::= ;
 
-  @report         ::= all custom reports ;
-
-Low-level:
+# Low-level:
 
   dom             ::= context-value
                     | system-value
@@ -55,119 +49,31 @@ Low-level:
                     | "system.os"
                     ;
 
-  rc-value        ::= "rc." name
+  rc-value        ::= /rc\.[a-zA-Z.]+/
                     ;
 
   task-value      ::= <id> "." attribute
                     | <uuid> "." attribute
                     ;
-             
+
   literal         ::= <string>
                     | <numeric>
                     | <date>
                     | <duration>
                     ;
 
-Supported primitives:
-
-  <id>
-  <uuid>
-  <override>
-  <string>
-  <numeric>
-  <date>
-  <duration>
-
-
-
----
-
-Default:
-  task
-
-Custom reports:
-  task <filter> active
-  task <filter> all
-  task <filter> blocked
-  task <filter> blocking
-  task <filter> completed
-  task <filter> list
-  task <filter> long
-  task <filter> ls
-  task <filter> minimal
-  task <filter> newest
-  task <filter> next
-  task <filter> oldest
-  task <filter> overdue
-  task <filter> ready
-  task <filter> recurring
-  task <filter> unblocked
-  task <filter> waiting
-
-Build-in read-only:
-  task <filter> burndown.daily
-  task <filter> burndown.monthly
-  task <filter> burndown.weekly
-  task          calendar [due|<month> <year>|<year>] [y]
-  task          colors [sample | legend]
-  task          columns [substring]
-  task <filter> count
-  task          diagnostics
-  task          execute <external command>
-  task <filter> export
-  task <filter> ghistory.annual
-  task <filter> ghistory.monthly
-  task          help
-  task <filter> history.annual
-  task <filter> history.monthly
-  task <filter> ids
-  task <filter> information
-  task          logo
-  task <filter> projects
-  task          reports
-  task          show [all | substring]
-  task <filter> stats
-  task <filter> tags
-  task          timesheet [weeks]
-  task          udas
-  task <filter> uuids
-  task          version
-  task          _aliases
-  task          _columns
-  task          _commands
-  task          _config
-  task <filter> _ids
-  task <filter> _projects
-  task          _show
-  task <filter> _tags
-  task          _udas
-  task <filter> _urgency
-  task <filter> _uuids
-  task          _version
-  task          _zshcommands
-  task <filter> _zshids
-  task <filter> _zshuuids
-
-Write commands:
-  task          add <mods>
-  task <filter> annotate <mods>
-  task <filter> append <mods>
-  task          config [name [value | '']]
-  task <filter> delete <mods>
-  task <filter> denotate <pattern>
-  task <filter> done <mods>
-  task <filter> duplicate <mods>
-  task <filter> edit
-  task          import <file> [<file> ...]
-  task          log <mods>
-  task          merge <URL>
-  task <filter> modify <mods>
-  task <filter> prepend <mods>
-  task          pull <URL>
-  task          push <URL>
-  task <filter> start <mods>
-  task <filter> stop <mods>
-  task <filter> summary
-  task          synchronize
-  task          undo
+# Supported primitives:
+#
+#  <id>
+#  <uuid>
+#  <override>
+#  <string>
+#  <numeric>
+#  <date>
+#  <duration>
+#  @command      all commands
+#  @report       all custom reports
+#  @attributes   all attributes, UDAs
+#  @readcmd      all read-only commands
+#  @writecmd     all write commands
 
