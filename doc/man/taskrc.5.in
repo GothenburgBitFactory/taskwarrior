@@ -139,7 +139,7 @@ define a set of US holidays, and set up a 16-color theme to use, to color the
 reports and calendar.
 
 .SH ENVIRONMENT VARIABLES
-These environmant variables override defaults and command line arguments.
+These environment variables override defaults and command line arguments.
 
 .TP
 .B TASKDATA=~/.task
@@ -856,7 +856,7 @@ Colors any task where the description or any annotation contains X.
 
 .TP
 .B color.uda.X=on green
-Colors any taks that has the user defined attribute X.
+Colors any task that has the user defined attribute X.
 .RE
 
 .TP
