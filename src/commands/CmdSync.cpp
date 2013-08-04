@@ -151,7 +151,7 @@ int CmdSync::execute (std::string& output)
       if (lines.size () > 1)
         context.tdb2.all_tasks ();
 
-      std::string synch_key = "";
+      std::string sync_key = "";
       std::vector <std::string>::iterator line;
       for (line = lines.begin (); line != lines.end (); ++line)
       {
@@ -187,22 +187,22 @@ int CmdSync::execute (std::string& output)
         }
         else if (*line != "")
         {
-          synch_key = *line;
-          context.debug ("Synch key " + synch_key);
+          sync_key = *line;
+          context.debug ("Sync key " + sync_key);
         }
 
         // Otherwise line is blank, so ignore it.
       }
 
-      // Only update everything if there is a new synch_key.  No synch_key means
+      // Only update everything if there is a new sync_key.  No sync_key means
       // something horrible happened on the other end of the wire.
-      if (synch_key != "")
+      if (sync_key != "")
       {
-        // Truncate backlog.data, save new synch_key.
+        // Truncate backlog.data, save new sync_key.
         context.tdb2.backlog._file.truncate ();
         context.tdb2.backlog.clear_tasks ();
         context.tdb2.backlog.clear_lines ();
-        context.tdb2.backlog.add_line (synch_key + "\n");
+        context.tdb2.backlog.add_line (sync_key + "\n");
 
         // Commit all changes.
         context.tdb2.commit ();
