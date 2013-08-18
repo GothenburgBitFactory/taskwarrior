@@ -38,6 +38,7 @@
 #include <Date.h>
 #include <File.h>
 #include <Timer.h>
+#include <JSON.h>
 #include <Config.h>
 #include <text.h>
 #include <util.h>
@@ -496,7 +497,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
         std::string key   = trim (line.substr (0, equal), " \t"); // no i18n
         std::string value = trim (line.substr (equal+1, line.length () - equal), " \t"); // no i18n
 
-        (*this)[key] = value;
+        (*this)[key] = json::decode (value);
       }
       else
       {
@@ -551,7 +552,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "\n";
 
   // Write out the new file.
-  if (! File::write (rc, contents.str ()))
+  if (! File::write (rc, json::encode (contents.str ())))
     throw format (STRING_CONFIG_BAD_WRITE, rc);
 }
 

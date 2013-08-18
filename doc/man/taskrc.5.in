@@ -80,6 +80,8 @@ The hash mark, or pound sign ("#") is used as a comment character. It can be
 used to annotate the configuration file. All text after the character to the end
 of the line is ignored.
 
+The configuration file supports UTF8 as well as JSON encoding, such as \\uNNNN.
+
 Note that taskwarrior is flexible about the values used to represent Boolean
 items.  You can use "on", "yes", "y", "1" and "true".
 Anything else means "off".

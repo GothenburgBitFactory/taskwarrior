@@ -20,6 +20,7 @@ New configuration options in taskwarrior 2.3.0
   - 'taskd.credentials' specifies user credentials for the task server.
   - 'taskd.certificate' specifies the task server certificate.
   - 'debug.tls' shows TLS log information, for debugging.
+  - The configuration file supports JSON encoding of unicode characters \uNNNN.
 
 Newly deprecated features in taskwarrior 2.3.0
   

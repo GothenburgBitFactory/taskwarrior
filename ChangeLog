@@ -32,6 +32,8 @@ Features
    that are not yet modified.
  + ColPriority.cpp - Migration of column modification code out of Task.cpp and
    into the individual column object.
+ + The configuration file now supports JSON encoding of Unicode characters, by
+   specifying \uNNNN.
  + Now requires libuuid (thanks to Martin Natano).
 
 Bugs
