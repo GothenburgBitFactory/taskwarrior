@@ -1063,6 +1063,7 @@ Specific tag coefficient.
 .B urgency.user.project.<project>.coefficient=...
 .RS
 Specific project coefficient.
+.RE
 .B urgency.uda.<name>.coefficient=...
 .RS
 Presence/absence of UDA data.
