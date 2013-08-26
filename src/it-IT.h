@@ -308,6 +308,7 @@
 #define STRING_CMD_SUMMARY_COMPLETE  "Completi"
 #define STRING_CMD_SUMMARY_NONE      "(nessuno)"
 #define STRING_CMD_COUNT_USAGE       "Conteggia task corrispondenti"
+#define STRING_CMD_GET_USAGE         "DOM Accessor"
 
 #define STRING_CMD_UDAS_NO           "Nessun UDA definito."
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA definito"

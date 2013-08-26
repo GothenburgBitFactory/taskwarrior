@@ -35,6 +35,7 @@ Features
  + The configuration file now supports JSON encoding of Unicode characters, by
    specifying \uNNNN.
  + Now requires libuuid (thanks to Martin Natano).
+ + New '_get' is a DOM accessor helper command.
 
 Bugs
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).

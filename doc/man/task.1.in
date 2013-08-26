@@ -533,6 +533,24 @@ Shows the IDs and descriptions of matching tasks.
 .B task <filter> _zshuuids
 Shows the UUIDs and descriptions of matching tasks.
 
+.TP
+.B task _get <DOM> [<DOM> ...]
+Accesses and displays the DOM reference(s).  Used to extract individual values
+from tasks, or the system.  Supported DOM references are:
+
+  rc.<name>
+  context.program
+  context.args
+  context.width
+  context.height
+  system.version
+  system.os
+  <id>.<attribute>
+  <uuid>.<attribute>
+
+Note that the 'rc.<name>' reference may need to be escaped using '--' to prevent
+the reference from being interpreted as an override.
+
 .SH ATTRIBUTES AND METADATA
 
 .TP

@@ -7,6 +7,7 @@ New Features in taskwarrior 2.3.0
   - Italian translation.
   - UDA fields now allow default values.
   - Now requires libuuid.
+  - New '_get' DOM accessor helper command.
 
 New commands in taskwarrior 2.3.0
 

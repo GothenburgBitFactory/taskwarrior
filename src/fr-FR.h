@@ -307,6 +307,7 @@
 #define STRING_CMD_SUMMARY_COMPLETE  "Complete"
 #define STRING_CMD_SUMMARY_NONE      "(none)"
 #define STRING_CMD_COUNT_USAGE       "Counts matching tasks"
+#define STRING_CMD_GET_USAGE         "DOM Accessor"
 
 #define STRING_CMD_UDAS_NO           "No UDAs defined."
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA defined"

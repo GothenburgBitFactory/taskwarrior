@@ -91,8 +91,8 @@ const std::string DOM::get (const std::string& name)
   {
          if (name == "context.program") return context.a3[0]._raw;
     else if (name == "context.args")    return context.a3.combine ();
-    else if (name == "context.width")   return format (context.terminal_width);
-    else if (name == "context.height")  return format (context.terminal_height);
+    else if (name == "context.width")   return format (context.terminal_width  ? context.terminal_width  : context.getWidth ());
+    else if (name == "context.height")  return format (context.terminal_height ? context.terminal_height : context.getHeight ());
     else                                throw format (STRING_DOM_UNREC, name);
   }
 
@@ -185,7 +185,7 @@ const std::string DOM::get (const std::string& name, const Task& task)
 
   // <attr>
        if (name == "id")                       return format (task.id);
-  else if (name == "urgency")                  return format (task.urgency_c (), 4, 3);
+  else if (name == "urgency")                  return format (task.urgency_c ());
   else if (A3::is_attribute (name, canonical)) return task.get (canonical);
 
   // <id>.<name>
@@ -203,7 +203,7 @@ const std::string DOM::get (const std::string& name, const Task& task)
       n.getUntilEOS (attr);
 
            if (attr == "id")                       return format (ref.id);
-      else if (attr == "urgency")                  return format (ref.urgency_c (), 4, 3);
+      else if (attr == "urgency")                  return format (ref.urgency_c ());
       else if (A3::is_attribute (attr, canonical)) return ref.get (canonical);
     }
   }

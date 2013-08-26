@@ -60,6 +60,7 @@
 #include <CmdExec.h>
 #endif
 #include <CmdExport.h>
+#include <CmdGet.h>
 #include <CmdHelp.h>
 #include <CmdHistory.h>
 #include <CmdIDs.h>
@@ -131,6 +132,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdExec ();               all[c->keyword ()] = c;
 #endif
   c = new CmdExport ();             all[c->keyword ()] = c;
+  c = new CmdGet ();                all[c->keyword ()] = c;
   c = new CmdGHistoryMonthly ();    all[c->keyword ()] = c;
   c = new CmdGHistoryAnnual ();     all[c->keyword ()] = c;
   c = new CmdHelp ();               all[c->keyword ()] = c;
