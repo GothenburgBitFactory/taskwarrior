@@ -43,14 +43,16 @@ int main (int argc, char** argv)
     // Prime the pump.
     context.a3.capture ("task");
 
-    // TODO dom.get rc.name
     DOM dom;
     t.is (dom.get ("system.version"),     VERSION,     "DOM system.version -> VERSION");
     t.ok (dom.get ("system.os") != "<unknown>",        "DOM system.os -> != Unknown");
     t.is (dom.get ("context.program"),    "task",      "DOM context.program -> 'task'");
     t.is (dom.get ("context.args"),       "task",      "DOM context.args -> 'task'");
-    t.is (dom.get ("context.width"),      "0",         "DOM context.width -> '0'");
-    t.is (dom.get ("context.height"),     "0",         "DOM context.height -> '0'");
+    t.ok (dom.get ("context.width") !=    "0",         "DOM context.width -> '0'");
+    t.ok (dom.get ("context.height") !=   "0",         "DOM context.height -> '0'");
+
+    // TODO dom.get rc.name
+//    t.is (dom.get ("rc.verbose"),         "yes",       "DOM rc.verbose -> 'yes'");
 
     // TODO dom.set rc.name
   }
