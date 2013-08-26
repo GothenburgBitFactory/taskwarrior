@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (205);
+  UnitTest t (209);
 
   try
   {
@@ -61,9 +61,11 @@ int main (int argc, char** argv)
     t.ok    (now      <  tomorrow,   "now < tomorrow");
 
     // Date::Date ("now")
+    context.config.set ("weekstart", "monday");
     Date relative_now ("now");
     t.ok (relative_now.sameHour (now),  "Date ().sameHour (Date (now))");
     t.ok (relative_now.sameDay (now),   "Date ().sameDay (Date (now))");
+    t.ok (relative_now.sameWeek (now),  "Date ().sameWeek (Date (now))");
     t.ok (relative_now.sameMonth (now), "Date ().sameMonth (Date (now))");
     t.ok (relative_now.sameYear (now),  "Date ().sameYear (Date (now))");
 
@@ -71,6 +73,7 @@ int main (int argc, char** argv)
     Date left ("7/4/2008");
     Date comp1 ("7/4/2008");
     t.ok (left.sameDay   (comp1), "7/4/2008 is on the same day as 7/4/2008");
+    t.ok (left.sameWeek  (comp1), "7/4/2008 is on the same week as 7/4/2008");
     t.ok (left.sameMonth (comp1), "7/4/2008 is in the same month as 7/4/2008");
     t.ok (left.sameYear  (comp1), "7/4/2008 is in the same year as 7/4/2008");
 
@@ -81,11 +84,13 @@ int main (int argc, char** argv)
 
     Date comp3 ("8/4/2008");
     t.notok (left.sameDay   (comp3), "7/4/2008 is not on the same day as 8/4/2008");
+    t.notok (left.sameWeek  (comp3), "7/4/2008 is not on the same week as 8/4/2008");
     t.notok (left.sameMonth (comp3), "7/4/2008 is not in the same month as 8/4/2008");
     t.ok    (left.sameYear  (comp3), "7/4/2008 is in the same year as 8/4/2008");
 
     Date comp4 ("7/4/2009");
     t.notok (left.sameDay   (comp4), "7/4/2008 is not on the same day as 7/4/2009");
+    t.notok (left.sameWeek  (comp3), "7/4/2008 is not on the same week as 7/4/2009");
     t.notok (left.sameMonth (comp4), "7/4/2008 is not in the same month as 7/4/2009");
     t.notok (left.sameYear  (comp4), "7/4/2008 is not in the same year as 7/4/2009");
 

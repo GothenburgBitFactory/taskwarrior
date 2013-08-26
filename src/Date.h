@@ -76,6 +76,7 @@ public:
   static int length (const std::string&);
 
   int month () const;
+  int week () const;
   int day () const;
   int year () const;
   int weekOfYear (int) const;
@@ -93,6 +94,7 @@ public:
   bool operator>= (const Date&) const;
   bool sameHour   (const Date&) const;
   bool sameDay    (const Date&) const;
+  bool sameWeek   (const Date&) const;
   bool sameMonth  (const Date&) const;
   bool sameYear   (const Date&) const;
 
