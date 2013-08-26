@@ -179,6 +179,8 @@ const std::string DOM::get (const std::string& name)
 const std::string DOM::get (const std::string& name, const Task& task)
 {
   Nibbler n (name);
+  n.save ();
+
   int id;
   std::string uuid;
   std::string canonical;
@@ -189,7 +191,7 @@ const std::string DOM::get (const std::string& name, const Task& task)
   else if (A3::is_attribute (name, canonical)) return task.get (canonical);
 
   // <id>.<name>
-  else if (n.getInt (id))
+  if (n.getInt (id))
   {
     if (n.skip ('.'))
     {
@@ -206,10 +208,12 @@ const std::string DOM::get (const std::string& name, const Task& task)
       else if (attr == "urgency")                  return format (ref.urgency_c ());
       else if (A3::is_attribute (attr, canonical)) return ref.get (canonical);
     }
+
+    n.restore ();
   }
 
   // <uuid>.<name>
-  else if (n.getUUID (uuid))
+  if (n.getUUID (uuid))
   {
     if (n.skip ('.'))
     {
@@ -222,10 +226,12 @@ const std::string DOM::get (const std::string& name, const Task& task)
       std::string attr;
       n.getUntilEOS (attr);
 
-           if (name == "id")                       return format (ref.id);
-      else if (name == "urgency")                  return format (ref.urgency_c (), 4, 3);
+           if (attr == "id")                       return format (ref.id);
+      else if (attr == "urgency")                  return format (ref.urgency_c (), 4, 3);
       else if (A3::is_attribute (attr, canonical)) return ref.get (canonical);
     }
+
+    n.restore ();
   }
 
   // Delegate to the context-free version of DOM::get.
