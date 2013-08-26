@@ -36,6 +36,7 @@ Features
    specifying \uNNNN.
  + Now requires libuuid (thanks to Martin Natano).
  + New '_get' is a DOM accessor helper command.
+ + New virtual tags (WEEK, MONTH, YEAR, PARENT).
 
 Bugs
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).
@@ -89,7 +90,7 @@ Features
  + Removed deprecated 'fg:' and 'bg:' attributes.
  + The 'diagnostics' command now reports libuuid details.
  + New characters for parsing and formating dates ('n', 's' and 'v').
- + Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, TODAY, OVERDUE,
+ + Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, OVERDUE, TODAY,
    ACTIVE, SCHEDULED, CHILD, UNTIL, WAITING and ANNOTATED).
  + New 'modified' attribute, which contains the most recent modification date,
    if a modification has occurred.

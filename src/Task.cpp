@@ -362,6 +362,68 @@ bool Task::is_duetoday () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Task::is_dueweek () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      Date now;
+      Date due (get_date ("due"));
+      if (now.year () == due.year () &&
+          now.week () == due.week ())
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::is_duemonth () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      Date now;
+      Date due (get_date ("due"));
+      if (now.year () == due.year () &&
+          now.month () == due.month ())
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::is_dueyear () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      Date now;
+      Date due (get_date ("due"));
+      if (now.year () == due.year ())
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Task::is_overdue () const
 {
   if (has ("due"))
@@ -1026,6 +1088,9 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "DUETODAY")  return is_duetoday ();
   if (tag == "TODAY")     return is_duetoday ();
   if (tag == "OVERDUE")   return is_overdue ();
+  if (tag == "WEEK")      return is_dueweek ();
+  if (tag == "MONTH")     return is_duemonth ();
+  if (tag == "YEAR")      return is_dueyear ();
 #endif
   if (tag == "ACTIVE")    return has ("start");
   if (tag == "SCHEDULED") return has ("scheduled");
@@ -1033,16 +1098,12 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "UNTIL")     return has ("until");
   if (tag == "WAITING")   return has ("wait");
   if (tag == "ANNOTATED") return hasAnnotations ();
+  if (tag == "PARENT")    return has ("mask");
 
 /*
   TODO YESTERDAY - due yesterday
   TODO TOMORROW  - due tomorrow
-  TODO WEEK      - due this week
-  TODO MONTH     - due this month
-  TODO YEAR      - due this year
   TODO READY     - is ready
-  TODO WAITING   - is waiting
-  TODO PARENT    - is a parent
 */
 
   // Concrete tags.

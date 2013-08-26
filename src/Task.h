@@ -106,6 +106,9 @@ public:
 #ifdef PRODUCT_TASKWARRIOR
   bool is_due () const;
   bool is_duetoday () const;
+  bool is_dueweek () const;
+  bool is_duemonth () const;
+  bool is_dueyear () const;
   bool is_overdue () const;
 #endif
 

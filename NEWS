@@ -8,6 +8,7 @@ New Features in taskwarrior 2.3.0
   - UDA fields now allow default values.
   - Now requires libuuid.
   - New '_get' DOM accessor helper command.
+  - New virtual tags: WEEK, MONTH, YEAR, PARENT.
 
 New commands in taskwarrior 2.3.0
 

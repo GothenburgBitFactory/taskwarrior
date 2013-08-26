@@ -588,9 +588,13 @@ are:
     DUE          Matches if the task is due
     DUETODAY     Matches if the task is due today
     TODAY        Matches if the task is due today
+    WEEK         Matches if the task is due this week
+    MONTH        Matches if the task is due this month
+    YEAR         Matches if the task is due this year
     OVERDUE      Matches if the task is overdue
     ACTIVE       Matches if the task is started
     SCHEDULED    Matches if the task is scheduled
+    PARENT       Matches if the task is a parent
     CHILD        Matches if the task has a parent
     UNTIL        Matches if the task expires
     WAITING      Matches if the task is waiting
