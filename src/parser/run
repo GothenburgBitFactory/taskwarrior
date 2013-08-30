@@ -1,1 +1,2 @@
-./parser $* grammar.bnf 123 mod pro:H 
+#./parser $* grammar.bnf 123 mod pro:H 
+./args 123 mod pro:H 

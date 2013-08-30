@@ -27,12 +27,24 @@
 
 #include <iostream>
 #include <A3t.h>
+#include <text.h>
+#include <util.h>
+
+static const int minimumMatchLength = 3;
 
 ////////////////////////////////////////////////////////////////////////////////
 A3t::A3t (int argc, char** argv)
 {
+  _tree = new Tree ("root");
+  if (! _tree)
+    throw std::string ("Failed to allocate memory for parse tree.");
+
   for (int i = 0; i < argc; ++i)
-    _args.push_back (argv[i]);
+  {
+    Tree* branch = _tree->addBranch (new Tree (format ("arg{1}", i)));
+    branch->attribute ("raw", argv[i]);
+    branch->tag ("original");
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +55,35 @@ A3t::~A3t ()
 ////////////////////////////////////////////////////////////////////////////////
 Tree* A3t::parse ()
 {
-  return NULL;
+  return _tree;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+void A3t::identity (const std::string& name, const std::string& value)
+{
+  _entities.insert (std::pair <std::string, std::string> (name, value));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Search for 'value' in _entities, return category and canonicalized value.
+bool A3t::canonicalize (
+  std::string& canonicalized,
+  const std::string& category,
+  const std::string& value) const
+{
+  // Find the category.
+  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
+  c = _entities.equal_range (category);
+
+  // Extract a list of entities for category.
+  std::vector <std::string> options;
+  std::multimap <std::string, std::string>::const_iterator e;
+  for (e = c.first; e != c.second; ++e)
+    options.push_back (e->second);
+
+  // Match against the options, throw away results.
+  std::vector <std::string> matches;
+  return autoComplete (canonicalized, options, matches, minimumMatchLength) == 1 ? true : false;
+}
+
 ////////////////////////////////////////////////////////////////////////////////

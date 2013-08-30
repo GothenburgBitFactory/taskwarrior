@@ -39,6 +39,12 @@ int main (int argc, char** argv)
   try
   {
     A3t a3t (argc, argv);
+
+    // Populate identity lists.
+    a3t.identity ("report",   "list");
+    a3t.identity ("readcmd",  "info");
+    a3t.identity ("writecmd", "modify");
+
     Tree* tree = a3t.parse ();
     if (tree)
       tree->dump ();

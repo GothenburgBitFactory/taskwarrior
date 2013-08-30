@@ -27,9 +27,9 @@
 #ifndef INCLUDED_A3T
 #define INCLUDED_A3T
 
-#include <vector>
-#include <string>
 #include <Tree.h>
+#include <string>
+#include <map>
 
 class A3t
 {
@@ -37,9 +37,12 @@ public:
   A3t (int, char**);
   ~A3t ();
   Tree* parse ();
+  void identity (const std::string&, const std::string&);
+  bool canonicalize (std::string&, const std::string&, const std::string&) const;
 
 private:
-  std::vector <std::string> _args;
+  Tree* _tree;
+  std::multimap <std::string, std::string> _entities;
 };
 
 #endif
