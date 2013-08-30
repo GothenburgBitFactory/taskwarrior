@@ -1,0 +1,82 @@
+# The command line needs to obey a grammar.  It is against this grammar that
+# bugs will be identified.
+# 
+# Conventions:
+#   - Literals are always double-quoted.
+#   - "*", "+" and "?" suffixes have POSIX semantics.
+#   - Low-level primitives are in <brackets>.
+#   - @name for entity lists such as custom report names.
+# 
+# The general form of commands is:
+#   task [ all-commands ]
+#
+
+  grammar         ::= all-commands?
+                    ;
+
+  all-commands    ::= report-command
+                    | read-command
+#                    | write-command
+                    | special-command
+                    ;
+
+  report-command  ::= filter @report ;
+  read-command    ::= filter @readcmd ;
+#  write-command   ::= filter @writecmd modifiers ;
+  special-command ::= ;
+
+  filter          ::= expression? ;
+
+  expression      ::= term "and" expression
+                    | term "or"  expression
+                    | term
+                    ;
+
+#  modifiers       ::= ;
+
+# Low-level:
+
+#  dom             ::= context-value
+#                    | system-value
+#                    | rc-value
+#                    | task-value
+#                    ;
+
+#  context-value   ::= "context.program"
+#                    | "context.args"
+#                    | "context.width"
+#                    | "context.height"
+#                    ;
+
+#  system-value    ::= "system.version"
+#                    | "system.os"
+#                    ;
+
+#  rc-value        ::= /rc\.[a-zA-Z.]+/
+#                    ;
+
+#  task-value      ::= <id> "." @attribute
+#                    | <uuid> "." @attribute
+#                    ;
+
+#  literal         ::= <string>
+#                    | <numeric>
+#                    | <date>
+#                    | <duration>
+#                    ;
+
+# Supported primitives:
+#
+#  <id>
+#  <uuid>
+#  <override>    "rc." name "=" string
+#  <string>      " ... "
+#  <numeric>
+#  <date>        ISO-8601 date
+#  <duration>    ISO-8601 duration
+#  @command      all commands
+#  @report       all custom reports
+#  @attribute    all attributes, UDAs
+#  @readcmd      all read-only commands
+#  @writecmd     all write commands
+

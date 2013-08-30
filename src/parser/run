@@ -1,0 +1,1 @@
+./parser $* grammar.bnf 123 mod pro:H 
