@@ -42,6 +42,7 @@ public:
 
 private:
   void findBinary ();
+  void findTerminator ();
   void findCommand ();
 
 private:

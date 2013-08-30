@@ -56,6 +56,7 @@ A3t::~A3t ()
 Tree* A3t::parse ()
 {
   findBinary ();
+  findTerminator ();
   findCommand ();
 
   return _tree;
@@ -117,6 +118,22 @@ void A3t::findBinary ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// The parser override operator terminates all subsequent cleverness, leaving
+// all args in the raw state.
+void A3t::findTerminator ()
+{
+  std::string command;
+  for (int i = 0; i < _tree->branches (); ++i)
+  {
+    if (_tree->operator[](i)->attribute ("raw") == "--")
+    {
+      _tree->operator[](i)->tag ("TERMINATOR"); 
+      break;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Walk the top-level tree branches, looking for the first raw value that
 // autoCompletes to a valid command/report.
 void A3t::findCommand ()
@@ -124,6 +141,10 @@ void A3t::findCommand ()
   std::string command;
   for (int i = 0; i < _tree->branches (); ++i)
   {
+    // Parser override operator.
+    if (_tree->operator[](i)->attribute ("raw") == "--")
+      break;
+
     if (canonicalize (command, "report", _tree->operator[](i)->attribute ("raw")))
     {
       _tree->operator[](i)->attribute ("canonical", command);
