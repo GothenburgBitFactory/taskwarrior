@@ -9,5 +9,5 @@
 #echo; ./args rc:x rc.debug:1  a.b\<c \(one or two\) modify 'quoted string' \'not quoted\' due:eom+1wk+1d
 
 echo; ./args 123 mod pro:'P 1' +home /from/to/g
-echo; ./args add -- modify
+echo; ./args add -- modify +tag /from/to/g name:value
 

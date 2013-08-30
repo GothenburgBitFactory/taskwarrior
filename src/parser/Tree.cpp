@@ -66,16 +66,6 @@ Tree& Tree::operator= (const Tree& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Tree* Tree::operator[] (const int branch)
-{
-  if (branch < 0 ||
-      branch > (int) _branches.size () - 1)
-    throw "Tree::operator[] out of range";
-
-  return _branches[branch];
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Tree* Tree::addBranch (Tree* branch)
 {
   if (! branch)
@@ -113,24 +103,6 @@ void Tree::replaceBranch (Tree* from, Tree* to)
       return;
     }
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int Tree::branches ()
-{
-  return _branches.size ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Tree::name (const std::string& name)
-{
-  _name = name;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string Tree::name () const
-{
-  return _name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -173,28 +145,11 @@ void Tree::removeAttribute (const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int Tree::attributes () const
-{
-  return _attributes.size ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string> Tree::allAttributes () const
-{
-  std::vector <std::string> names;
-  std::map <std::string, std::string>::const_iterator it;
-  for (it = _attributes.begin (); it != _attributes.end (); ++it)
-    names.push_back (it->first);
-
-  return names;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Recursively completes a list of Tree* objects, left to right, depth first.
-// The reason for the depth-first enumeration is that a client may wish to
-// traverse the tree and delete nodes.  With a depth-first iteration, this is a
-// safe mechanism, and a node pointer will never be dereferenced after it has
-// been deleted.
+// Recursively builds a list of Tree* objects, left to right, depth first. The
+// reason for the depth-first enumeration is that a client may wish to traverse
+// the tree and delete nodes.  With a depth-first iteration, this is a safe
+// mechanism, and a node pointer will never be dereferenced after it has been
+// deleted.
 void Tree::enumerate (std::vector <Tree*>& all) const
 {
   for (std::vector <Tree*>::const_iterator i = _branches.begin ();
@@ -204,12 +159,6 @@ void Tree::enumerate (std::vector <Tree*>& all) const
     (*i)->enumerate (all);
     all.push_back (*i);
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Tree* Tree::parent () const
-{
-  return _trunk;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -226,18 +175,6 @@ void Tree::tag (const std::string& tag)
 {
   if (! hasTag (tag))
     _tags.push_back (tag);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int Tree::tags () const
-{
-  return _tags.size ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string> Tree::allTags () const
-{
-  return _tags;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +202,7 @@ Tree* Tree::find (const std::string& path)
   // Must start at the trunk.
   Tree* cursor = this;
   std::vector <std::string>::iterator it = elements.begin ();
-  if (cursor->name () != *it)
+  if (cursor->_name != *it)
     return NULL;
 
   // Perhaps the trunk is what is needed?
@@ -278,11 +215,12 @@ Tree* Tree::find (const std::string& path)
     bool found = false;
 
     // If the cursor has a branch that matches *it, proceed.
-    for (int i = 0; i < cursor->branches (); ++i)
+    std::vector <Tree*>::iterator i;
+    for (i = cursor->_branches.begin (); i != cursor->_branches.end (); ++i)
     {
-      if ((*cursor)[i]->name () == *it)
+      if ((*i)->_name == *it)
       {
-        cursor = (*cursor)[i];
+        cursor = *i;
         found = true;
         break;
       }
@@ -302,18 +240,18 @@ void Tree::dumpNode (Tree* t, int depth)
   for (int i = 0; i < depth; ++i)
     std::cout << "  ";
 
-  std::cout << t << " \033[1m" << t->name () << "\033[0m";
+  std::cout << t << " \033[1m" << t->_name << "\033[0m";
 
   // Dump attributes.
   std::string atts;
-  std::vector <std::string> attributes = t->allAttributes ();
-  std::vector <std::string>::iterator it;
-  for (it = attributes.begin (); it != attributes.end (); ++it)
+
+  std::map <std::string, std::string>::iterator a;
+  for (a = t->_attributes.begin (); a != t->_attributes.end (); ++a)
   {
-    if (it != attributes.begin ())
+    if (a != t->_attributes.begin ())
       atts += " ";
 
-    atts += *it + "='\033[33m" + t->attribute (*it) + "\033[0m'";
+    atts += a->first + "='\033[33m" + a->second + "\033[0m'";
   }
 
   if (atts.length ())
@@ -321,9 +259,9 @@ void Tree::dumpNode (Tree* t, int depth)
 
   // Dump tags.
   std::string tags;
-  std::vector <std::string> allTags = t->allTags ();
-  for (it = allTags.begin (); it != allTags.end (); ++it)
-    tags += (tags.length () ? " " : "") + *it;
+  std::vector <std::string>::iterator tag;
+  for (tag = t->_tags.begin (); tag != t->_tags.end (); ++tag)
+    tags += (tags.length () ? " " : "") + *tag;
 
   if (tags.length ())
     std::cout << " \033[32m" << tags << "\033[0m";
@@ -331,8 +269,9 @@ void Tree::dumpNode (Tree* t, int depth)
   std::cout << "\n";
 
   // Recurse for branches.
-  for (int i = 0; i < t->branches (); ++i)
-    dumpNode ((*t)[i], depth + 1);
+  std::vector <Tree*>::iterator b;
+  for (b = t->_branches.begin (); b != t->_branches.end (); ++b)
+    dumpNode (*b, depth + 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

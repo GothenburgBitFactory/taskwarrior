@@ -40,30 +40,21 @@ public:
   ~Tree ();
   Tree (const Tree&);
   Tree& operator= (const Tree&);
-  Tree* operator[] (const int);
 
   Tree* addBranch (Tree*);
   void removeBranch (Tree*);
   void replaceBranch (Tree*, Tree*);
-  int branches ();
 
-  void name (const std::string&);
-  std::string name () const;
   void attribute (const std::string&, const std::string&);
   void attribute (const std::string&, const int);
   void attribute (const std::string&, const double);
   std::string attribute (const std::string&);
   void removeAttribute (const std::string&);
-  int attributes () const;
-  std::vector <std::string> allAttributes () const;
+
+  void enumerate (std::vector <Tree*>& all) const;
 
   bool hasTag (const std::string&) const;
   void tag (const std::string&);
-  int tags () const;
-  std::vector <std::string> allTags () const;
-
-  void enumerate (std::vector <Tree*>& all) const;
-  Tree* parent () const;
 
   int count () const;
 
@@ -74,7 +65,7 @@ public:
 private:
   void dumpNode (Tree*, int);
 
-private:
+public:
   Tree* _trunk;                                    // Parent.
   std::string _name;                               // Name.
   std::vector <Tree*> _branches;                   // Children.

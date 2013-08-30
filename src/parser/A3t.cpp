@@ -104,16 +104,15 @@ bool A3t::canonicalize (
 // autoCompletes to a valid command/report.
 void A3t::findBinary ()
 {
-  if (_tree->branches () >= 1)
+  if (_tree->_branches.size () >= 1)
   {
-    _tree->operator[](0)->tag ("BINARY");
-
-    std::string binary = _tree->operator[](0)->attribute ("raw");
+    _tree->_branches[0]->tag ("BINARY");
+    std::string binary = _tree->_branches[0]->attribute ("raw");
     std::string::size_type slash = binary.rfind ('/');
     if (slash != std::string::npos)
       binary = binary.substr (slash + 1);
 
-    _tree->operator[](0)->attribute ("basename", binary);
+    _tree->_branches[0]->attribute ("basename", "binary");
   }
 }
 
@@ -122,15 +121,15 @@ void A3t::findBinary ()
 // all args in the raw state.
 void A3t::findTerminator ()
 {
-  std::string command;
-  for (int i = 0; i < _tree->branches (); ++i)
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
-    if (_tree->operator[](i)->attribute ("raw") == "--")
+    if ((*i)->attribute ("raw") == "--")
     {
-      _tree->operator[](i)->tag ("TERMINATOR"); 
+      (*i)->tag ("TERMINATOR");
       break;
     }
-  }
+  } 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,38 +138,39 @@ void A3t::findTerminator ()
 void A3t::findCommand ()
 {
   std::string command;
-  for (int i = 0; i < _tree->branches (); ++i)
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
     // Parser override operator.
-    if (_tree->operator[](i)->attribute ("raw") == "--")
+    if ((*i)->attribute ("raw") == "--")
       break;
 
-    if (canonicalize (command, "report", _tree->operator[](i)->attribute ("raw")))
+    if (canonicalize (command, "report", (*i)->attribute ("raw")))
     {
-      _tree->operator[](i)->attribute ("canonical", command);
-      _tree->operator[](i)->tag ("REPORT");
-      _tree->operator[](i)->tag ("CMD");
+      (*i)->attribute ("canonical", command);
+      (*i)->tag ("REPORT");
+      (*i)->tag ("CMD");
     }
 
-    else if (canonicalize (command, "readcmd", _tree->operator[](i)->attribute ("raw")))
+    else if (canonicalize (command, "readcmd", (*i)->attribute ("raw")))
     {
-      _tree->operator[](i)->attribute ("canonical", command);
-      _tree->operator[](i)->tag ("READCMD");
-      _tree->operator[](i)->tag ("CMD");
+      (*i)->attribute ("canonical", command);
+      (*i)->tag ("READCMD");
+      (*i)->tag ("CMD");
     }
 
-    else if (canonicalize (command, "writecmd", _tree->operator[](i)->attribute ("raw")))
+    else if (canonicalize (command, "writecmd", (*i)->attribute ("raw")))
     {
-      _tree->operator[](i)->attribute ("canonical", command);
-      _tree->operator[](i)->tag ("WRITECMD");
-      _tree->operator[](i)->tag ("CMD");
+      (*i)->attribute ("canonical", command);
+      (*i)->tag ("WRITECMD");
+      (*i)->tag ("CMD");
     }
 
-    else if (canonicalize (command, "specialcmd", _tree->operator[](i)->attribute ("raw")))
+    else if (canonicalize (command, "specialcmd", (*i)->attribute ("raw")))
     {
-      _tree->operator[](i)->attribute ("canonical", command);
-      _tree->operator[](i)->tag ("SPECIALCMD");
-      _tree->operator[](i)->tag ("CMD");
+      (*i)->attribute ("canonical", command);
+      (*i)->tag ("SPECIALCMD");
+      (*i)->tag ("CMD");
     }
   }
 }
