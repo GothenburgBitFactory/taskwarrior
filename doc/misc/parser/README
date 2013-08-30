@@ -64,14 +64,31 @@ from the parser, yielding a single value.  As an example, the command line:
 
 Is to be parsed as:
 
-  raw     | add     one    due:eoy    wait:due-2wks
-  type    | command string attr       attr
-  subtype | read
-  attr    |         desc   due        wait
-  value   |                eval 'eoy' eval 'due-2wks'
+  index   | 0    1       2      3          4
+  --------+-----------------------------------------------
+  raw     | task add     one    due:eoy    wait:due-2wks
+  type    |      command string attr       attr
+  subtype |      read
+  attr    |              desc   due        wait
+  value   |                     eval 'eoy' eval 'due-2wks'
 
 The eval needs of this command are:
 
   'eoy'      == date literal
   'due-2wks' == <dom> - <duration>
+
+The parse tree should be:
+
+  +- add COMMAND
+     +- "one" WORD
+     +- attr
+     | +- due ATTRIBUTE
+     | +- expr
+     | |  + "eoy" LITERAL DATE
+     +- attr
+       +- wait ATTRIBUTE
+       +- expr
+          += "due" DOM DATE
+          += "-" OP
+          += "2wks" LITERAL DURATION
 
