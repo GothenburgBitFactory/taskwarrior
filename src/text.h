@@ -63,6 +63,7 @@ bool isWordStart (const std::string&, std::string::size_type);
 bool isWordEnd (const std::string&, std::string::size_type);
 bool isTokenEnd (const std::string&, std::string::size_type);
 bool isPunctuation (char);
+std::string visible (char);
 bool compare (const std::string&, const std::string&, bool sensitive = true);
 bool closeEnough (const std::string&, const std::string&, unsigned int minLength = 0);
 std::string::size_type find (const std::string&, const std::string&, bool sensitive = true);
