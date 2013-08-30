@@ -76,10 +76,14 @@ Tree* Tree::operator[] (const int branch)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Tree::addBranch (Tree* branch)
+Tree* Tree::addBranch (Tree* branch)
 {
+  if (! branch)
+    throw "Failed to allocate memory for parse tree.";
+
   branch->_trunk = this;
   _branches.push_back (branch);
+  return branch;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

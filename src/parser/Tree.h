@@ -42,7 +42,7 @@ public:
   Tree& operator= (const Tree&);
   Tree* operator[] (const int);
 
-  void addBranch (Tree*);
+  Tree* addBranch (Tree*);
   void removeBranch (Tree*);
   void replaceBranch (Tree*, Tree*);
   int branches ();
