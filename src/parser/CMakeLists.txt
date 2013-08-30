@@ -8,14 +8,18 @@ include_directories (${CMAKE_SOURCE_DIR}
 
 set (parser_SRCS LRParser.cpp LRParser.h
                  Parser.cpp   Parser.h
-                 Tree.cpp     Tree.h)
+                 Tree.cpp     Tree.h
+                 A3t.cpp      A3t.h)
 
 add_library (parser STATIC ${parser_SRCS})
 add_executable (parser_executable bnf.cpp)
+add_executable (args_executable   args.cpp)
 
 target_link_libraries (parser_executable columns commands task parser ${TASK_LIBRARIES})
+target_link_libraries (args_executable   columns commands task parser ${TASK_LIBRARIES})
 
 set_property (TARGET parser_executable PROPERTY OUTPUT_NAME "parser")
+set_property (TARGET args_executable   PROPERTY OUTPUT_NAME "args")
 
 #install (TARGETS parser_executable DESTINATION ${TASK_BINDIR})
 
