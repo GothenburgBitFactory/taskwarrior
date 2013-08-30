@@ -191,7 +191,8 @@ void Parser::checkConsistency ()
   // Undefined value - these are definitions that appear in token, but are
   // not in _rules.
   for (unsigned int i = 0; i < notDefined.size (); ++i)
-    throw std::string ("definition '") + notDefined[i] + "' referenced, but not defined.";
+    if (notDefined[i][0] != '@')
+      throw std::string ("definition '") + notDefined[i] + "' referenced, but not defined.";
 
   // Circular definitions - these are names in _rules that also appear as
   // token 0 in any of the alternates for that definition.

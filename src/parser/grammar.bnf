@@ -15,15 +15,15 @@
                     ;
 
   all-commands    ::= report-command
-                    | read-command
-#                    | write-command
-                    | special-command
+#                    | read-command
+                    | write-command
+#                    | special-command
                     ;
 
   report-command  ::= filter @report ;
-  read-command    ::= filter @readcmd ;
-#  write-command   ::= filter @writecmd modifiers ;
-  special-command ::= ;
+#  read-command    ::= filter @readcmd ;
+  write-command   ::= filter @writecmd modifiers ;
+#  special-command ::= ;
 
   filter          ::= expression? ;
 
@@ -32,7 +32,9 @@
                     | term
                     ;
 
-#  modifiers       ::= ;
+  term            ::= ;
+
+  modifiers       ::= ;
 
 # Low-level:
 

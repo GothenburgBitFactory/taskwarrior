@@ -80,6 +80,7 @@ int main (int argc, char** argv)
     else if (grammarFile == "")
     {
       grammarFile = argv[i];
+      std::cout << "INFO: Using grammar file " << grammarFile << "\n";
     }
     else
     {
@@ -104,13 +105,15 @@ int main (int argc, char** argv)
       if (verbose) p.verbose ();
 
       // TODO Initialize entity lists.
-      p.addEntity ("report", "list");
+      p.addEntity ("report",   "list");
+      p.addEntity ("writecmd", "modify");
 
       // Load and verify grammar.
       p.grammar (grammar);
       if (verbose) p.dump ();
 
       // Either returns a parse-tree or throws.
+      std::cout << "INFO: Parsing <" << commandLine << ">\n";
       Tree* t = p.parse (commandLine);
       if (t)
       {
