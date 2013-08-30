@@ -43,7 +43,7 @@ A3t::A3t (int argc, char** argv)
   {
     Tree* branch = _tree->addBranch (new Tree (format ("arg{1}", i)));
     branch->attribute ("raw", argv[i]);
-    branch->tag ("original");
+    branch->tag ("ORIGINAL");
   }
 }
 
@@ -55,6 +55,8 @@ A3t::~A3t ()
 ////////////////////////////////////////////////////////////////////////////////
 Tree* A3t::parse ()
 {
+  findCommand ();
+
   return _tree;
 }
 
@@ -83,7 +85,55 @@ bool A3t::canonicalize (
 
   // Match against the options, throw away results.
   std::vector <std::string> matches;
-  return autoComplete (canonicalized, options, matches, minimumMatchLength) == 1 ? true : false;
+  if (autoComplete (value, options, matches, minimumMatchLength) == 1)
+  {
+//    for (auto& i: matches)
+//      std::cout << "match: " << i << "\n";
+
+    canonicalized = matches[0];
+    return true;
+  }
+
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Walk the top-level tree branches, looking for the first raw value that
+// autoCompletes to a valid command/report.
+void A3t::findCommand ()
+{
+  std::string command;
+  for (int i = 0; i < _tree->branches (); ++i)
+  {
+    if (canonicalize (command, "report",  (*_tree)[i]->attribute ("raw")))
+    {
+      (*_tree)[i]->attribute ("canonical", command);
+      (*_tree)[i]->tag ("REPORT");
+      (*_tree)[i]->tag ("CMD");
+    }
+
+    else if (canonicalize (command, "readcmd",  (*_tree)[i]->attribute ("raw")))
+    {
+      (*_tree)[i]->attribute ("canonical", command);
+      (*_tree)[i]->tag ("READCMD");
+      (*_tree)[i]->tag ("CMD");
+    }
+
+    else if (canonicalize (command, "writecmd",  (*_tree)[i]->attribute ("raw")))
+    {
+      (*_tree)[i]->attribute ("canonical", command);
+      (*_tree)[i]->tag ("WRITECMD");
+      (*_tree)[i]->tag ("CMD");
+    }
+
+    else if (canonicalize (command, "specialcmd",  (*_tree)[i]->attribute ("raw")))
+    {
+      (*_tree)[i]->attribute ("canonical", command);
+      (*_tree)[i]->tag ("SPECIALCMD");
+      (*_tree)[i]->tag ("CMD");
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

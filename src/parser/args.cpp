@@ -41,9 +41,17 @@ int main (int argc, char** argv)
     A3t a3t (argc, argv);
 
     // Populate identity lists.
-    a3t.identity ("report",   "list");
-    a3t.identity ("readcmd",  "info");
-    a3t.identity ("writecmd", "modify");
+    a3t.identity ("report",     "list");
+    a3t.identity ("report",     "next");
+
+    a3t.identity ("readcmd",    "info");
+    a3t.identity ("readcmd",    "projects");
+
+    a3t.identity ("writecmd",   "add");
+    a3t.identity ("writecmd",   "modify");
+
+    a3t.identity ("specialcmd", "calendar");
+    a3t.identity ("specialcmd", "edit");
 
     Tree* tree = a3t.parse ();
     if (tree)

@@ -80,15 +80,15 @@ The eval needs of this command are:
 The parse tree should be:
 
   +- add COMMAND
-     +- "one" WORD
-     +- attr
-     | +- due ATTRIBUTE
-     | +- expr
-     | |  + "eoy" LITERAL DATE
-     +- attr
-       +- wait ATTRIBUTE
-       +- expr
-          += "due" DOM DATE
-          += "-" OP
-          += "2wks" LITERAL DURATION
+  +- "one" WORD
+  +- attr
+  | +- due ATTRIBUTE
+  | +- expr
+  | |  + "eoy" LITERAL DATE
+  +- attr
+    +- wait ATTRIBUTE
+    +- expr
+       += "due" DOM DATE
+       += "-" OP
+       += "2wks" LITERAL DURATION
 

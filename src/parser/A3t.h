@@ -41,6 +41,9 @@ public:
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
 
 private:
+  void findCommand ();
+
+private:
   Tree* _tree;
   std::multimap <std::string, std::string> _entities;
 };
