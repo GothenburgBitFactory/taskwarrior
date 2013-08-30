@@ -41,6 +41,7 @@ public:
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
 
 private:
+  void findBinary ();
   void findCommand ();
 
 private:
