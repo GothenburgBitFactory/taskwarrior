@@ -103,9 +103,14 @@ int main (int argc, char** argv)
       LRParser p;
       if (verbose) p.verbose ();
 
-      p.grammar (grammar);
+      // TODO Initialize entity lists.
+      p.addEntity ("report", "list");
 
+      // Load and verify grammar.
+      p.grammar (grammar);
       if (verbose) p.dump ();
+
+      // Either returns a parse-tree or throws.
       Tree* t = p.parse (commandLine);
       if (t)
       {

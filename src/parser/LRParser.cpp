@@ -63,6 +63,12 @@ Tree* LRParser::parse (const std::string& tokens)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void LRParser::addEntity (const std::string& name, const std::string& value)
+{
+  _entities.insert (std::pair <std::string, std::string> (name, value));
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Wraps calls to matchRule, while properly handling the quantifier.
 bool LRParser::matchRuleQuant (
   const std::string& rule,

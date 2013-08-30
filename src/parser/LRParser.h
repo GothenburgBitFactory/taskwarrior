@@ -28,13 +28,15 @@
 #ifndef INCLUDED_LRPARSER
 #define INCLUDED_LRPARSER
 
-#include "Parser.h"
+#include <map>
+#include <Parser.h>
 
 class LRParser : public Parser
 {
 public:
   LRParser ();
   Tree* parse (const std::string&);
+  void addEntity (const std::string&, const std::string&);
 
 private:
   bool matchRuleQuant (const std::string&, char, unsigned int&, const std::string&, Tree*);
@@ -46,6 +48,9 @@ private:
   bool tokenMatchLiteral (const Token&, unsigned int&, const std::string&, Tree*);
   bool tokenMatchRegex (const Token&, unsigned int&, const std::string&, Tree*);
   bool tokenMatchRule (const std::string&, char, unsigned int, unsigned int, const Token&, unsigned int&, const std::string&, Tree*);
+
+private:
+  std::multimap <std::string, std::string> _entities;
 };
 
 #endif
