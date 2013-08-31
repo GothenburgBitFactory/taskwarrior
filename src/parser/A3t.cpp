@@ -58,6 +58,8 @@ Tree* A3t::parse ()
   findBinary ();
   findTerminator ();
   findCommand ();
+  findFileOverride ();
+  findConfigOverride ();
 
   return _tree;
 }
@@ -112,7 +114,12 @@ void A3t::findBinary ()
     if (slash != std::string::npos)
       binary = binary.substr (slash + 1);
 
-    _tree->_branches[0]->attribute ("basename", "binary");
+    _tree->_branches[0]->attribute ("basename", binary);
+
+    if (binary == "cal" || binary == "calendar")
+      _tree->_branches[0]->tag ("CALENDAR");
+    else
+      _tree->_branches[0]->tag ("TW");
   }
 }
 
@@ -173,6 +180,61 @@ void A3t::findCommand ()
       (*i)->tag ("CMD");
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void A3t::findFileOverride ()
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    std::string arg = (*i)->attribute ("raw");
+    if (arg.find ("rc:") == 0)
+    {
+      (*i)->tag ("RC");
+      Tree* b = (*i)->addBranch (new Tree ("data"));
+      b->attribute ("file", arg.substr (3));
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// rc.<name>[:=]<value>
+void A3t::findConfigOverride ()
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    std::string arg = (*i)->attribute ("raw");
+    if (arg.find ("rc.") == 0)
+    {
+      std::string::size_type sep = arg.find ('=', 3);
+      if (sep == std::string::npos)
+        sep = arg.find (':', 3);
+
+      if (sep != std::string::npos)
+      {
+        (*i)->tag ("CONFIG");
+        Tree* b = (*i)->addBranch (new Tree ("data"));
+        b->attribute ("name", arg.substr (3, sep - 3));
+        b->attribute ("value", arg.substr (sep + 1));
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Validate the parse tree.
+void A3t::validate ()
+{
 }
 
 ////////////////////////////////////////////////////////////////////////////////

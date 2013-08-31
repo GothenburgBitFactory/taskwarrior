@@ -44,6 +44,9 @@ private:
   void findBinary ();
   void findTerminator ();
   void findCommand ();
+  void findFileOverride ();
+  void findConfigOverride ();
+  void validate ();
 
 private:
   Tree* _tree;
