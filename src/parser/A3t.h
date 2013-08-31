@@ -47,6 +47,7 @@ private:
   void findFileOverride ();
   void findConfigOverride ();
   void findPattern ();
+  void findSubstitution ();
   void validate ();
 
 private:

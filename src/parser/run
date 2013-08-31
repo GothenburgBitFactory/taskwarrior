@@ -8,7 +8,7 @@
 #echo; ./args rc:x rc.debug:1 1234 done pri:H
 #echo; ./args rc:x rc.debug:1  a.b\<c \(one or two\) modify 'quoted string' \'not quoted\' due:eom+1wk+1d
 
-echo; ./args rc:~/.taskrc 123 mod pro:'P 1' +home /from/to/g rc.name=value
-echo; ./args rc:~/..taskrc rc.name=value add -- modify +tag /from/to/g name:value
+echo; ./args rc:~/.taskrc 123 mod pro:'P 1' +home /from/to/g /from/to/ rc.name=value
+echo; ./args rc:~/..taskrc rc.name=value add -- modify +tag /from/to/g name:value /long/path/to/file.txt
 echo; ./args /pattern/ nex
 

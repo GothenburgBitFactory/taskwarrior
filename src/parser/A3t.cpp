@@ -28,6 +28,7 @@
 #include <iostream>
 #include <A3t.h>
 #include <Nibbler.h>
+#include <Directory.h>
 #include <text.h>
 #include <util.h>
 
@@ -61,6 +62,7 @@ Tree* A3t::parse ()
   findCommand ();
   findFileOverride ();
   findConfigOverride ();
+  findSubstitution ();
   findPattern ();
 
   validate ();
@@ -200,7 +202,7 @@ void A3t::findFileOverride ()
     if (arg.find ("rc:") == 0)
     {
       (*i)->tag ("RC");
-      Tree* b = (*i)->addBranch (new Tree ("data"));
+      Tree* b = (*i)->addBranch (new Tree ("metadata"));
       b->attribute ("file", arg.substr (3));
     }
   }
@@ -227,7 +229,7 @@ void A3t::findConfigOverride ()
       if (sep != std::string::npos)
       {
         (*i)->tag ("CONFIG");
-        Tree* b = (*i)->addBranch (new Tree ("data"));
+        Tree* b = (*i)->addBranch (new Tree ("metadata"));
         b->attribute ("name", arg.substr (3, sep - 3));
         b->attribute ("value", arg.substr (sep + 1));
       }
@@ -253,8 +255,45 @@ void A3t::findPattern ()
         pattern.length () > 0)
     {
       (*i)->tag ("PATTERN");
-      Tree* b = (*i)->addBranch (new Tree ("data"));
+      Tree* b = (*i)->addBranch (new Tree ("metadata"));
       b->attribute ("pattern", pattern);
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// /from/to/[g]
+void A3t::findSubstitution ()
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    std::string raw = (*i)->attribute ("raw");
+    Nibbler n (raw);
+
+    std::string from;
+    std::string to;
+    bool global = false;
+    if (n.getQuoted ('/', from) &&
+        n.backN ()              &&
+        n.getQuoted ('/', to))
+    {
+      if (n.skip ('g'))
+        global = true;
+
+      if (n.depleted () &&
+          !Directory (raw).exists ())
+      {
+        (*i)->tag ("SUBSTITUTION");
+        Tree* b = (*i)->addBranch (new Tree ("metadata"));
+        b->attribute ("from", from);
+        b->attribute ("to", to);
+        b->attribute ("global", global ? 1 : 0);
+      }
     }
   }
 }
