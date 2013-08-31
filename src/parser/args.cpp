@@ -28,8 +28,6 @@
 #include <iostream>
 #include <Context.h>
 #include <A3t.h>
-//#include <Tree.h>
-//#include <text.h>
 
 Context context;
 
@@ -40,18 +38,35 @@ int main (int argc, char** argv)
   {
     A3t a3t (argc, argv);
 
-    // Populate identity lists.
+    // Reports.
     a3t.identity ("report",     "list");
     a3t.identity ("report",     "next");
 
+    // Read-only commands.
     a3t.identity ("readcmd",    "info");
     a3t.identity ("readcmd",    "projects");
 
+    // Write commands.
     a3t.identity ("writecmd",   "add");
     a3t.identity ("writecmd",   "modify");
 
+    // Special commands.
     a3t.identity ("specialcmd", "calendar");
     a3t.identity ("specialcmd", "edit");
+
+    // Attributes (columns).
+    a3t.identity ("attribute",  "description");
+    a3t.identity ("attribute",  "due");
+    a3t.identity ("attribute",  "priority");
+    a3t.identity ("attribute",  "project");
+    a3t.identity ("attribute",  "uuid");
+    a3t.identity ("attribute",  "duration"); // UDAs are included.
+
+    // Pseudo-attributes.
+    a3t.identity ("pseudo",     "limit");
+
+    // UDAs.
+    a3t.identity ("uda",        "duration");
 
     Tree* tree = a3t.parse ();
     if (tree)

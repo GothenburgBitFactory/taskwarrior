@@ -49,6 +49,7 @@ private:
   void findPattern ();
   void findSubstitution ();
   void findTag ();
+  void findAttribute ();
   void validate ();
 
 private:
