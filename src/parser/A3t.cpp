@@ -64,6 +64,7 @@ Tree* A3t::parse ()
   findConfigOverride ();
   findSubstitution ();
   findPattern ();
+  findTag ();
 
   validate ();
 
@@ -294,6 +295,35 @@ void A3t::findSubstitution ()
         b->attribute ("to", to);
         b->attribute ("global", global ? 1 : 0);
       }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// +tag
+void A3t::findTag ()
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    std::string raw = (*i)->attribute ("raw");
+    Nibbler n (raw);
+
+    std::string tag;
+    std::string sign;
+    if (n.getN (1, sign)             &&
+        (sign == "+" || sign == "-") &&
+        n.getUntilEOS (tag)          &&
+        tag.find (' ') == std::string::npos)
+    {
+      (*i)->tag ("TAG");
+      Tree* b = (*i)->addBranch (new Tree ("metadata"));
+      b->attribute ("sign", sign);
+      b->attribute ("tag", tag);
     }
   }
 }

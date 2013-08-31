@@ -48,6 +48,7 @@ private:
   void findConfigOverride ();
   void findPattern ();
   void findSubstitution ();
+  void findTag ();
   void validate ();
 
 private:
