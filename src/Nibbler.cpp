@@ -1078,6 +1078,18 @@ bool Nibbler::skipRx (const std::string& regex)
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Nibbler::backN (const int quantity /*= 1*/)
+{
+  if (_cursor >= quantity)
+  {
+    _cursor -= quantity;
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Nibbler::getRemainder (std::string& result)
 {
   if (_cursor < _length)

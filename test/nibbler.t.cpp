@@ -39,15 +39,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (396);
+  UnitTest t (402);
 #else
-  UnitTest t (372);
+  UnitTest t (378);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (346);
+  UnitTest t (352);
 #else
-  UnitTest t (322);
+  UnitTest t (328);
 #endif
 #endif
 
@@ -74,6 +74,7 @@ int main (int argc, char** argv)
     t.notok (n.skip ('x'),               "trivial: skip");
     t.notok (n.skipAll ('x'),            "trivial: skipAll");
     t.notok (n.skipAllOneOf ("abc"),     "trivial: skipAllOneOf");
+    t.notok (n.backN (1),                "trivial: backN");
     t.notok (n.getQuoted ('"', s),       "trivial: getQuoted");
     t.notok (n.getDigit (i),             "trivial: getDigit");
     t.notok (n.getInt (i),               "trivial: getInt"); // 10
@@ -201,6 +202,15 @@ int main (int argc, char** argv)
     t.ok    (n.skipRx ("...."),       "    ' two' :         skipRx ('....') -> true");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
 #endif
+
+    // bool backN (const int quantity = 1);
+    t.diag ("Nibbler::backN");
+    n = Nibbler ("/a/b/");
+    t.ok (n.getQuoted ('/', s),       "   '/a/b/' :         getQuoted ('/') -> true");
+    t.is (s, "a",                     "      'b/' :         getQuoted ('/') -> 'a'");
+    t.ok (n.backN (),                 "      'b/' :         backN ()        -> true");
+    t.ok (n.getQuoted ('/', s),       "     '/b/' :         getQuoted ('/') -> true");
+    t.is (s, "b",                     "     '/b/' :         getQuoted ('/') -> 'b'");
 
     // bool getQuoted (char, std::string&);
     t.diag ("Nibbler::getQuoted");
