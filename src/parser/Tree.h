@@ -55,6 +55,7 @@ public:
 
   bool hasTag (const std::string&) const;
   void tag (const std::string&);
+  void unTag (const std::string&);
 
   int count () const;
 

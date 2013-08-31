@@ -178,6 +178,20 @@ void Tree::tag (const std::string& tag)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Tree::unTag (const std::string& tag)
+{
+  std::vector <std::string>::iterator i;
+  for (i = _tags.begin (); i != _tags.end (); ++i)
+  {
+    if (*i == tag)
+    {
+      _tags.erase (i);
+      break;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Tree::count () const
 {
   int total = 1; // this one.
