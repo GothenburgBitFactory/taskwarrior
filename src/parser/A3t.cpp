@@ -46,6 +46,7 @@ A3t::A3t (int argc, char** argv)
     Tree* branch = _tree->addBranch (new Tree (format ("arg{1}", i)));
     branch->attribute ("raw", argv[i]);
     branch->tag ("ORIGINAL");
+    branch->tag ("?");
   }
 }
 
@@ -99,9 +100,6 @@ bool A3t::canonicalize (
   std::vector <std::string> matches;
   if (autoComplete (value, options, matches, minimumMatchLength) == 1)
   {
-//    for (auto& i: matches)
-//      std::cout << "match: " << i << "\n";
-
     canonicalized = matches[0];
     return true;
   }
@@ -116,8 +114,8 @@ void A3t::findBinary ()
 {
   if (_tree->_branches.size () >= 1)
   {
+    _tree->_branches[0]->unTag ("?");
     _tree->_branches[0]->tag ("BINARY");
-    _tree->_branches[0]->tag ("LOCK");
     std::string binary = _tree->_branches[0]->attribute ("raw");
     std::string::size_type slash = binary.rfind ('/');
     if (slash != std::string::npos)
@@ -143,14 +141,14 @@ void A3t::findTerminator ()
   {
     if ((*i)->attribute ("raw") == "--")
     {
+      (*i)->unTag ("?");
       (*i)->tag ("TERMINATOR");
-      (*i)->tag ("LOCK");
       found = true;
     }
     else if (found)
     {
+      (*i)->unTag ("?");
       (*i)->tag ("WORD");
-      (*i)->tag ("LOCK");
     }
   } 
 }
@@ -168,40 +166,40 @@ void A3t::findCommand ()
     if ((*i)->attribute ("raw") == "--")
       break;
 
-    // Skip locked args.
-    if ((*i)->hasTag ("LOCK"))
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
       continue;
 
     if (canonicalize (command, "report", (*i)->attribute ("raw")))
     {
-      (*i)->attribute ("canonical", command);
-      (*i)->tag ("REPORT");
+      (*i)->unTag ("?");
       (*i)->tag ("CMD");
-      (*i)->tag ("LOCK");
+      (*i)->tag ("REPORT");
+      (*i)->attribute ("canonical", command);
     }
 
     else if (canonicalize (command, "readcmd", (*i)->attribute ("raw")))
     {
-      (*i)->attribute ("canonical", command);
-      (*i)->tag ("READCMD");
+      (*i)->unTag ("?");
       (*i)->tag ("CMD");
-      (*i)->tag ("LOCK");
+      (*i)->tag ("READCMD");
+      (*i)->attribute ("canonical", command);
     }
 
     else if (canonicalize (command, "writecmd", (*i)->attribute ("raw")))
     {
-      (*i)->attribute ("canonical", command);
-      (*i)->tag ("WRITECMD");
+      (*i)->unTag ("?");
       (*i)->tag ("CMD");
-      (*i)->tag ("LOCK");
+      (*i)->tag ("WRITECMD");
+      (*i)->attribute ("canonical", command);
     }
 
     else if (canonicalize (command, "specialcmd", (*i)->attribute ("raw")))
     {
-      (*i)->attribute ("canonical", command);
-      (*i)->tag ("SPECIALCMD");
+      (*i)->unTag ("?");
       (*i)->tag ("CMD");
-      (*i)->tag ("LOCK");
+      (*i)->tag ("SPECIALCMD");
+      (*i)->attribute ("canonical", command);
     }
   }
 }
@@ -216,17 +214,16 @@ void A3t::findFileOverride ()
     if ((*i)->attribute ("raw") == "--")
       break;
 
-    // Skip locked args.
-    if ((*i)->hasTag ("LOCK"))
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
       continue;
 
     std::string arg = (*i)->attribute ("raw");
     if (arg.find ("rc:") == 0)
     {
+      (*i)->unTag ("?");
       (*i)->tag ("RC");
-      (*i)->tag ("LOCK");
-      Tree* b = (*i)->addBranch (new Tree ("metadata"));
-      b->attribute ("file", arg.substr (3));
+      (*i)->attribute ("file", arg.substr (3));
     }
   }
 }
@@ -242,8 +239,8 @@ void A3t::findConfigOverride ()
     if ((*i)->attribute ("raw") == "--")
       break;
 
-    // Skip locked args.
-    if ((*i)->hasTag ("LOCK"))
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
       continue;
 
     std::string arg = (*i)->attribute ("raw");
@@ -255,11 +252,10 @@ void A3t::findConfigOverride ()
 
       if (sep != std::string::npos)
       {
+        (*i)->unTag ("?");
         (*i)->tag ("CONFIG");
-        (*i)->tag ("LOCK");
-        Tree* b = (*i)->addBranch (new Tree ("metadata"));
-        b->attribute ("name", arg.substr (3, sep - 3));
-        b->attribute ("value", arg.substr (sep + 1));
+        (*i)->attribute ("name", arg.substr (3, sep - 3));
+        (*i)->attribute ("value", arg.substr (sep + 1));
       }
     }
   }
@@ -276,8 +272,8 @@ void A3t::findPattern ()
     if ((*i)->attribute ("raw") == "--")
       break;
 
-    // Skip locked args.
-    if ((*i)->hasTag ("LOCK"))
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
       continue;
 
     Nibbler n ((*i)->attribute ("raw"));
@@ -286,10 +282,9 @@ void A3t::findPattern ()
         n.depleted () &&
         pattern.length () > 0)
     {
+      (*i)->unTag ("?");
       (*i)->tag ("PATTERN");
-      (*i)->tag ("LOCK");
-      Tree* b = (*i)->addBranch (new Tree ("metadata"));
-      b->attribute ("pattern", pattern);
+      (*i)->attribute ("pattern", pattern);
     }
   }
 }
@@ -305,8 +300,8 @@ void A3t::findSubstitution ()
     if ((*i)->attribute ("raw") == "--")
       break;
 
-    // Skip locked args.
-    if ((*i)->hasTag ("LOCK"))
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
       continue;
 
     std::string raw = (*i)->attribute ("raw");
@@ -325,12 +320,11 @@ void A3t::findSubstitution ()
       if (n.depleted () &&
           !Directory (raw).exists ())
       {
+        (*i)->unTag ("?");
         (*i)->tag ("SUBSTITUTION");
-        (*i)->tag ("LOCK");
-        Tree* b = (*i)->addBranch (new Tree ("metadata"));
-        b->attribute ("from", from);
-        b->attribute ("to", to);
-        b->attribute ("global", global ? 1 : 0);
+        (*i)->attribute ("from", from);
+        (*i)->attribute ("to", to);
+        (*i)->attribute ("global", global ? 1 : 0);
       }
     }
   }
@@ -347,8 +341,8 @@ void A3t::findTag ()
     if ((*i)->attribute ("raw") == "--")
       break;
 
-    // Skip locked args.
-    if ((*i)->hasTag ("LOCK"))
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
       continue;
 
     std::string raw = (*i)->attribute ("raw");
@@ -361,11 +355,10 @@ void A3t::findTag ()
         n.getUntilEOS (tag)          &&
         tag.find (' ') == std::string::npos)
     {
+      (*i)->unTag ("?");
       (*i)->tag ("TAG");
-      (*i)->tag ("LOCK");
-      Tree* b = (*i)->addBranch (new Tree ("metadata"));
-      b->attribute ("sign", sign);
-      b->attribute ("tag", tag);
+      (*i)->attribute ("sign", sign);
+      (*i)->attribute ("tag", tag);
     }
   }
 }
@@ -381,8 +374,8 @@ void A3t::findAttribute ()
     if ((*i)->attribute ("raw") == "--")
       break;
 
-    // Skip locked args.
-    if ((*i)->hasTag ("LOCK"))
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
       continue;
 
     std::string raw = (*i)->attribute ("raw");
@@ -398,15 +391,14 @@ void A3t::findAttribute ()
         std::string value;
         if (n.getUntilEOS (value))
         {
-          Tree* b = (*i)->addBranch (new Tree ("metadata"));
-          b->attribute ("value", value);
 
           std::string canonical;
           if (canonicalize (canonical, "attribute", name))
           {
+            (*i)->unTag ("?");
             (*i)->tag ("ATTRIBUTE");
-            (*i)->tag ("LOCK");
-            b->attribute ("name", canonical);
+            (*i)->attribute ("name", canonical);
+            (*i)->attribute ("value", value);
           }
 
           if (canonicalize (canonical, "uda", name))
@@ -414,9 +406,10 @@ void A3t::findAttribute ()
 
           if (canonicalize (canonical, "pseudo", name))
           {
+            (*i)->unTag ("?");
             (*i)->tag ("PSEUDO");
-            (*i)->tag ("LOCK");
-            b->attribute ("name", canonical);
+            (*i)->attribute ("name", canonical);
+            (*i)->attribute ("value", value);
           }
         }
       }
@@ -431,8 +424,7 @@ void A3t::validate ()
   // Look for any unrecognized original args.
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
-    if ((*i)->hasTag ("ORIGINAL") &&
-        ! (*i)->hasTag ("LOCK"))
+    if ((*i)->hasTag ("?"))
       //throw std::string ("Unrecognized argument '") + (*i)->attribute ("raw") + "'";
       std::cout << "Unrecognized argument '" << (*i)->attribute ("raw") << "'\n";
 
