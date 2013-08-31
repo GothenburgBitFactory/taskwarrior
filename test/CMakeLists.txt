@@ -3,13 +3,14 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
+                     ${CMAKE_SOURCE_DIR}/src/parser
                      ${CMAKE_SOURCE_DIR}/test
                      ${TASK_INCLUDE_DIRS})
 
 set (test_SRCS autocomplete.t color.t config.t date.t directory.t dom.t
                duration.t file.t i18n.t json.t list.t msg.t nibbler.t path.t
-               rx.t t.t t2.t taskmod.t tdb2.t text.t uri.t utf8.t util.t view.t
-               width.t json_test)
+               rx.t t.t t2.t taskmod.t tdb2.t text.t tree.t uri.t utf8.t util.t
+               view.t width.t json_test)
 
 message ("-- Configuring run_all")
 if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
@@ -41,7 +42,7 @@ add_custom_target (build_tests DEPENDS ${test_SRCS}
 
 foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} "${src_FILE}.cpp" test.cpp)
-  target_link_libraries (${src_FILE} task commands task columns ${TASK_LIBRARIES})
+  target_link_libraries (${src_FILE} task commands task columns parser ${TASK_LIBRARIES})
 endforeach (src_FILE)
 
 #SET(CMAKE_BUILD_TYPE gcov)
