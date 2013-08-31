@@ -240,7 +240,8 @@ void Tree::dumpNode (Tree* t, int depth)
   for (int i = 0; i < depth; ++i)
     std::cout << "  ";
 
-  std::cout << t << " \033[1m" << t->_name << "\033[0m";
+//  std::cout << t << " \033[1m" << t->_name << "\033[0m";
+  std::cout << "\033[1m" << t->_name << "\033[0m";
 
   // Dump attributes.
   std::string atts;

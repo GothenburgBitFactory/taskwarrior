@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <A3t.h>
+#include <Nibbler.h>
 #include <text.h>
 #include <util.h>
 
@@ -60,6 +61,9 @@ Tree* A3t::parse ()
   findCommand ();
   findFileOverride ();
   findConfigOverride ();
+  findPattern ();
+
+  validate ();
 
   return _tree;
 }
@@ -232,9 +236,34 @@ void A3t::findConfigOverride ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// /pattern/
+void A3t::findPattern ()
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    Nibbler n ((*i)->attribute ("raw"));
+    std::string pattern;
+    if (n.getQuoted ('/', pattern) &&
+        n.depleted () &&
+        pattern.length () > 0)
+    {
+      (*i)->tag ("PATTERN");
+      Tree* b = (*i)->addBranch (new Tree ("data"));
+      b->attribute ("pattern", pattern);
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Validate the parse tree.
 void A3t::validate ()
 {
+  // TODO Any RC node must have a root/*[+RC]/data[@file] that exists.
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -46,6 +46,7 @@ private:
   void findCommand ();
   void findFileOverride ();
   void findConfigOverride ();
+  void findPattern ();
   void validate ();
 
 private:
@@ -55,4 +56,4 @@ private:
 
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
+

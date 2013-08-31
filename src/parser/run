@@ -10,4 +10,5 @@
 
 echo; ./args rc:~/.taskrc 123 mod pro:'P 1' +home /from/to/g rc.name=value
 echo; ./args rc:~/..taskrc rc.name=value add -- modify +tag /from/to/g name:value
+echo; ./args /pattern/ nex
 
