@@ -390,9 +390,10 @@ void A3t::findAttribute ()
       if (n.skip (':'))
       {
         std::string value;
-        if (n.getUntilEOS (value))
+        if (n.getQuoted   ('"', value)  ||
+            n.getQuoted   ('\'', value) ||
+            n.getUntilEOS (value))
         {
-
           std::string canonical;
           if (canonicalize (canonical, "attribute", name))
           {
