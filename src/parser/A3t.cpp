@@ -50,7 +50,7 @@ A3t::~A3t ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::initialize (int argc, char** argv)
+void A3t::initialize (int argc, const char** argv)
 {
   for (int i = 0; i < argc; ++i)
   {

@@ -81,6 +81,16 @@ int Context::initialize (int argc, const char** argv)
 
   try
   {
+    // BEGIN EXPERIMENTAL CODE
+
+    // Initialize the command line parser.
+    a3t.initialize (argc, argv);
+    Tree* parseTree = a3t.parse ();
+
+    // END EXPERIMENTAL CODE
+
+
+
     // char** argv --> std::vector <std::string> Context::a3.
     a3.capture (argc, argv);
 
@@ -164,6 +174,18 @@ int Context::initialize (int argc, const char** argv)
     // a category.
     a3.categorize ();
     a3.dump ("Context::initialize");
+
+
+
+    // BEGIN EXPERIMENTAL CODE
+
+    // Initialize the command line parser.
+    if (parseTree && config.getBoolean ("debug"))
+      parseTree->dump ();
+
+    // END EXPERIMENTAL CODE
+
+
 
     // TODO Instantiate extension command objects.
     // TODO Instantiate default command object.

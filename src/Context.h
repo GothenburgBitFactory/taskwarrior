@@ -39,6 +39,7 @@
 #include <File.h>
 #include <Directory.h>
 #include <A3.h>
+#include <A3t.h>
 #include <Timer.h>
 
 class Context
@@ -83,6 +84,7 @@ private:
 public:
   std::string                         program;
   A3                                  a3;
+  A3t                                 a3t;
   std::string                         home_dir;
   File                                rc_file;
   Path                                data_dir;
