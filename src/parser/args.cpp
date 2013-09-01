@@ -74,10 +74,15 @@ int main (int argc, char** argv)
     // Attributes (columns).
     a3t.entity ("attribute",  "description");
     a3t.entity ("attribute",  "due");
+    a3t.entity ("attribute",  "duration"); // UDAs are included.
+    a3t.entity ("attribute",  "end");
+    a3t.entity ("attribute",  "entry");
     a3t.entity ("attribute",  "priority");
     a3t.entity ("attribute",  "project");
+    a3t.entity ("attribute",  "scheduled");
+    a3t.entity ("attribute",  "start");
     a3t.entity ("attribute",  "uuid");
-    a3t.entity ("attribute",  "duration"); // UDAs are included.
+    a3t.entity ("attribute",  "wait");
 
     // Pseudo-attributes.
     a3t.entity ("pseudo",     "limit");

@@ -56,6 +56,16 @@ private:
   void findOperator ();
   void validate ();
 
+  // TODO Resolve aliases
+  // TODO Inject defaults
+  // TODO Extract filter
+  // TODO Extract words
+  // TODO Extract modifications
+  // TODO Prepare infix
+  // TODO Expand operators
+  // TODO Expand sequence
+  // TODO Convert to postfix
+
 private:
   Tree* _tree;
   std::multimap <std::string, std::string> _entities;
