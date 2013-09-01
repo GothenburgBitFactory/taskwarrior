@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 2.8)
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
-                     ${CMAKE_SOURCE_DIR}/src/columns
                      ${CMAKE_SOURCE_DIR}/src/commands
+                     ${CMAKE_SOURCE_DIR}/src/columns
                      ${CMAKE_SOURCE_DIR}/src/parser
                      ${TASK_INCLUDE_DIRS})
 
