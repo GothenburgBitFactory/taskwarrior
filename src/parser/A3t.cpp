@@ -71,6 +71,7 @@ Tree* A3t::parse ()
   findAttributeModifier ();
   findUUIDList ();           // Before findIdSequence
   findIdSequence ();
+  findOperator ();
 
   validate ();
 
@@ -606,6 +607,45 @@ void A3t::findUUIDList ()
       {
         Tree* branch = (*i)->addBranch (new Tree ("list"));
         branch->attribute ("value", *u);
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void A3t::findOperator ()
+{
+  // Find the category.
+  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
+  c = _entities.equal_range ("operator");
+
+  // Extract a list of entities for category.
+  std::vector <std::string> options;
+  std::multimap <std::string, std::string>::const_iterator e;
+  for (e = c.first; e != c.second; ++e)
+    options.push_back (e->second);
+
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
+      continue;
+
+    std::string raw = (*i)->attribute ("raw");
+
+    std::vector <std::string>::iterator opt;
+    for (opt = options.begin (); opt != options.end (); ++opt)
+    {
+      if (*opt == raw)
+      {
+        (*i)->unTag ("?");
+        (*i)->tag ("OP");
+        break;
       }
     }
   }

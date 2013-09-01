@@ -53,6 +53,7 @@ private:
   void findAttributeModifier ();
   void findIdSequence ();
   void findUUIDList ();
+  void findOperator ();
   void validate ();
 
 private:

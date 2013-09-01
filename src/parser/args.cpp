@@ -108,6 +108,29 @@ int main (int argc, char** argv)
     a3t.identity ("modifier",   "word");
     a3t.identity ("modifier",   "noword");
 
+    // Operators.
+    a3t.identity ("operator",   "and");
+    a3t.identity ("operator",   "or");
+    a3t.identity ("operator",   "xor");
+    a3t.identity ("operator",   "<=");
+    a3t.identity ("operator",   ">=");
+    a3t.identity ("operator",   "!~");
+    a3t.identity ("operator",   "!=");
+    a3t.identity ("operator",   "=");
+    a3t.identity ("operator",   ">");
+    a3t.identity ("operator",   "~");
+    a3t.identity ("operator",   "!");
+    a3t.identity ("operator",   "_hastag_");
+    a3t.identity ("operator",   "_notag_");
+    a3t.identity ("operator",   "-");
+    a3t.identity ("operator",   "*");
+    a3t.identity ("operator",   "/");
+    a3t.identity ("operator",   "+");
+    a3t.identity ("operator",   "-");
+    a3t.identity ("operator",   "<");
+    a3t.identity ("operator",   "(");
+    a3t.identity ("operator",   ")");
+
     Tree* tree = a3t.parse ();
     if (tree)
       tree->dump ();
