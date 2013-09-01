@@ -53,7 +53,7 @@ add_library (task STATIC ${task_SRCS})
 add_executable (task_executable main.cpp)
 
 # Yes, 'task' is included twice, other linking fails on CentOS.
-target_link_libraries (task_executable task commands columns parser task ${TASK_LIBRARIES})
+target_link_libraries (task_executable task commands columns parser task commands columns ${TASK_LIBRARIES})
 
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 
