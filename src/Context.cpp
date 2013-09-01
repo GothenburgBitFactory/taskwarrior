@@ -85,7 +85,11 @@ int Context::initialize (int argc, const char** argv)
 
     // Initialize the command line parser.
     a3t.initialize (argc, argv);
-    Tree* parseTree = a3t.parse ();
+
+    // TODO Uncommenting this breaks unit tests because of the errors it
+    //      generates.
+    Tree* parseTree = NULL;
+    //Tree* parseTree = a3t.parse ();
 
     // END EXPERIMENTAL CODE
 

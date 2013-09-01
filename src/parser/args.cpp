@@ -71,6 +71,10 @@ int main (int argc, const char** argv)
     // Helper commands.
     a3t.entity ("helper",     "_get");
     a3t.entity ("helper",     "_query");
+    a3t.entity ("helper",     "_ids");
+    a3t.entity ("helper",     "_uuids");
+    a3t.entity ("helper",     "_zshids");
+    a3t.entity ("helper",     "_zshuuids");
 
     // Attributes (columns).
     a3t.entity ("attribute",  "description");
