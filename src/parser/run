@@ -10,5 +10,5 @@
 
 echo; ./args rc:~/.taskrc 123-128,140 142 mod pro:'P 1' +home /from/to/g /from/to/ rc.name=value
 echo; ./args rc:~/..taskrc rc.name=value add -- modify +tag /from/to/g name:value /long/path/to/file.txt
-echo; ./args /pattern/ limit:10 due.before:eom nex
+echo; ./args /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331 limit:10 due.before:eom nex
 

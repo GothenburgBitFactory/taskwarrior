@@ -69,6 +69,7 @@ Tree* A3t::parse ()
   findTag ();
   findAttribute ();
   findAttributeModifier ();
+  findUUIDList ();           // Before findIdSequence
   findIdSequence ();
 
   validate ();
@@ -557,6 +558,54 @@ void A3t::findIdSequence ()
         Tree* branch = (*i)->addBranch (new Tree ("range"));
         branch->attribute ("min", r->first);
         branch->attribute ("max", r->second);
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void A3t::findUUIDList ()
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
+      continue;
+
+    std::string raw = (*i)->attribute ("raw");
+    Nibbler n (raw);
+
+    std::vector <std::string> sequence;
+    std::string uuid;
+    if (n.getUUID (uuid) ||
+        n.getPartialUUID (uuid))
+    {
+      sequence.push_back (uuid);
+
+      while (n.skip (','))
+      {
+        if (!n.getUUID (uuid) &&
+            !n.getPartialUUID (uuid))
+          throw std::string (STRING_A3_UUID_AFTER_COMMA);
+
+        sequence.push_back (uuid);
+      }
+
+      if (!n.depleted ())
+        throw std::string (STRING_A3_PATTERN_GARBAGE);
+
+      (*i)->unTag ("?");
+      (*i)->tag ("UUID");
+      std::vector <std::string>::iterator u;
+      for (u = sequence.begin (); u != sequence.end (); ++u)
+      {
+        Tree* branch = (*i)->addBranch (new Tree ("list"));
+        branch->attribute ("value", *u);
       }
     }
   }
