@@ -34,8 +34,9 @@
 class A3t
 {
 public:
-  A3t (int, char**);
+  A3t ();
   ~A3t ();
+  void initialize (int, char**);
   Tree* parse ();
   void entity (const std::string&, const std::string&);
   bool canonicalize (std::string&, const std::string&, const std::string&) const;

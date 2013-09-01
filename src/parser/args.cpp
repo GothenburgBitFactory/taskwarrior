@@ -39,7 +39,8 @@ int main (int argc, char** argv)
     // Prepare the Context object.
 
 
-    A3t a3t (argc, argv);
+    A3t a3t;
+    a3t.initialize (argc, argv);
 
     // Reports.
     a3t.entity ("report",     "list");
