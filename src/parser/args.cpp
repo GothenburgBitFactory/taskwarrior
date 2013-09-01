@@ -36,6 +36,9 @@ int main (int argc, char** argv)
 {
   try
   {
+    // Prepare the Context object.
+
+
     A3t a3t (argc, argv);
 
     // Reports.
@@ -43,16 +46,30 @@ int main (int argc, char** argv)
     a3t.identity ("report",     "next");
 
     // Read-only commands.
+    a3t.identity ("writecmd",   "export");
     a3t.identity ("readcmd",    "info");
+    a3t.identity ("readcmd",    "list");
+    a3t.identity ("readcmd",    "next");
     a3t.identity ("readcmd",    "projects");
 
     // Write commands.
     a3t.identity ("writecmd",   "add");
+    a3t.identity ("writecmd",   "annotate");
+    a3t.identity ("writecmd",   "delete");
+    a3t.identity ("writecmd",   "denotate");
+    a3t.identity ("writecmd",   "done");
     a3t.identity ("writecmd",   "modify");
+    a3t.identity ("writecmd",   "start");
+    a3t.identity ("writecmd",   "stop");
 
     // Special commands.
     a3t.identity ("specialcmd", "calendar");
     a3t.identity ("specialcmd", "edit");
+    a3t.identity ("writecmd",   "import");
+
+    // Helper commands.
+    a3t.identity ("helper",     "_get");
+    a3t.identity ("helper",     "_query");
 
     // Attributes (columns).
     a3t.identity ("attribute",  "description");
@@ -67,6 +84,29 @@ int main (int argc, char** argv)
 
     // UDAs.
     a3t.identity ("uda",        "duration");
+
+    // Modifiers.
+    a3t.identity ("modifier",   "before");
+    a3t.identity ("modifier",   "under");
+    a3t.identity ("modifier",   "below");
+    a3t.identity ("modifier",   "after");
+    a3t.identity ("modifier",   "over");
+    a3t.identity ("modifier",   "above");
+    a3t.identity ("modifier",   "none");
+    a3t.identity ("modifier",   "any");
+    a3t.identity ("modifier",   "is");
+    a3t.identity ("modifier",   "equals");
+    a3t.identity ("modifier",   "isnt");
+    a3t.identity ("modifier",   "not");
+    a3t.identity ("modifier",   "has");
+    a3t.identity ("modifier",   "contains");
+    a3t.identity ("modifier",   "hasnt");
+    a3t.identity ("modifier",   "startswith");
+    a3t.identity ("modifier",   "left");
+    a3t.identity ("modifier",   "endswith");
+    a3t.identity ("modifier",   "right");
+    a3t.identity ("modifier",   "word");
+    a3t.identity ("modifier",   "noword");
 
     Tree* tree = a3t.parse ();
     if (tree)
