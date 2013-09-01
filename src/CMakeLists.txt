@@ -3,6 +3,7 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
+                     ${CMAKE_SOURCE_DIR}/src/parser
                      ${TASK_INCLUDE_DIRS})
 
 set (task_SRCS A3.cpp A3.h
@@ -52,7 +53,7 @@ add_library (task STATIC ${task_SRCS})
 add_executable (task_executable main.cpp)
 
 # Yes, 'task' is included twice, other linking fails on CentOS.
-target_link_libraries (task_executable task commands columns task ${TASK_LIBRARIES})
+target_link_libraries (task_executable task commands columns parser task ${TASK_LIBRARIES})
 
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 
