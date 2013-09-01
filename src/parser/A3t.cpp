@@ -79,7 +79,7 @@ Tree* A3t::parse ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::identity (const std::string& name, const std::string& value)
+void A3t::entity (const std::string& name, const std::string& value)
 {
   _entities.insert (std::pair <std::string, std::string> (name, value));
 }

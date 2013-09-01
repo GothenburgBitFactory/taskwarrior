@@ -42,94 +42,94 @@ int main (int argc, char** argv)
     A3t a3t (argc, argv);
 
     // Reports.
-    a3t.identity ("report",     "list");
-    a3t.identity ("report",     "next");
+    a3t.entity ("report",     "list");
+    a3t.entity ("report",     "next");
 
     // Read-only commands.
-    a3t.identity ("writecmd",   "export");
-    a3t.identity ("readcmd",    "info");
-    a3t.identity ("readcmd",    "list");
-    a3t.identity ("readcmd",    "next");
-    a3t.identity ("readcmd",    "projects");
+    a3t.entity ("writecmd",   "export");
+    a3t.entity ("readcmd",    "info");
+    a3t.entity ("readcmd",    "list");
+    a3t.entity ("readcmd",    "next");
+    a3t.entity ("readcmd",    "projects");
 
     // Write commands.
-    a3t.identity ("writecmd",   "add");
-    a3t.identity ("writecmd",   "annotate");
-    a3t.identity ("writecmd",   "delete");
-    a3t.identity ("writecmd",   "denotate");
-    a3t.identity ("writecmd",   "done");
-    a3t.identity ("writecmd",   "modify");
-    a3t.identity ("writecmd",   "start");
-    a3t.identity ("writecmd",   "stop");
+    a3t.entity ("writecmd",   "add");
+    a3t.entity ("writecmd",   "annotate");
+    a3t.entity ("writecmd",   "delete");
+    a3t.entity ("writecmd",   "denotate");
+    a3t.entity ("writecmd",   "done");
+    a3t.entity ("writecmd",   "modify");
+    a3t.entity ("writecmd",   "start");
+    a3t.entity ("writecmd",   "stop");
 
     // Special commands.
-    a3t.identity ("specialcmd", "calendar");
-    a3t.identity ("specialcmd", "edit");
-    a3t.identity ("writecmd",   "import");
+    a3t.entity ("specialcmd", "calendar");
+    a3t.entity ("specialcmd", "edit");
+    a3t.entity ("writecmd",   "import");
 
     // Helper commands.
-    a3t.identity ("helper",     "_get");
-    a3t.identity ("helper",     "_query");
+    a3t.entity ("helper",     "_get");
+    a3t.entity ("helper",     "_query");
 
     // Attributes (columns).
-    a3t.identity ("attribute",  "description");
-    a3t.identity ("attribute",  "due");
-    a3t.identity ("attribute",  "priority");
-    a3t.identity ("attribute",  "project");
-    a3t.identity ("attribute",  "uuid");
-    a3t.identity ("attribute",  "duration"); // UDAs are included.
+    a3t.entity ("attribute",  "description");
+    a3t.entity ("attribute",  "due");
+    a3t.entity ("attribute",  "priority");
+    a3t.entity ("attribute",  "project");
+    a3t.entity ("attribute",  "uuid");
+    a3t.entity ("attribute",  "duration"); // UDAs are included.
 
     // Pseudo-attributes.
-    a3t.identity ("pseudo",     "limit");
+    a3t.entity ("pseudo",     "limit");
 
     // UDAs.
-    a3t.identity ("uda",        "duration");
+    a3t.entity ("uda",        "duration");
 
     // Modifiers.
-    a3t.identity ("modifier",   "before");
-    a3t.identity ("modifier",   "under");
-    a3t.identity ("modifier",   "below");
-    a3t.identity ("modifier",   "after");
-    a3t.identity ("modifier",   "over");
-    a3t.identity ("modifier",   "above");
-    a3t.identity ("modifier",   "none");
-    a3t.identity ("modifier",   "any");
-    a3t.identity ("modifier",   "is");
-    a3t.identity ("modifier",   "equals");
-    a3t.identity ("modifier",   "isnt");
-    a3t.identity ("modifier",   "not");
-    a3t.identity ("modifier",   "has");
-    a3t.identity ("modifier",   "contains");
-    a3t.identity ("modifier",   "hasnt");
-    a3t.identity ("modifier",   "startswith");
-    a3t.identity ("modifier",   "left");
-    a3t.identity ("modifier",   "endswith");
-    a3t.identity ("modifier",   "right");
-    a3t.identity ("modifier",   "word");
-    a3t.identity ("modifier",   "noword");
+    a3t.entity ("modifier",   "before");
+    a3t.entity ("modifier",   "under");
+    a3t.entity ("modifier",   "below");
+    a3t.entity ("modifier",   "after");
+    a3t.entity ("modifier",   "over");
+    a3t.entity ("modifier",   "above");
+    a3t.entity ("modifier",   "none");
+    a3t.entity ("modifier",   "any");
+    a3t.entity ("modifier",   "is");
+    a3t.entity ("modifier",   "equals");
+    a3t.entity ("modifier",   "isnt");
+    a3t.entity ("modifier",   "not");
+    a3t.entity ("modifier",   "has");
+    a3t.entity ("modifier",   "contains");
+    a3t.entity ("modifier",   "hasnt");
+    a3t.entity ("modifier",   "startswith");
+    a3t.entity ("modifier",   "left");
+    a3t.entity ("modifier",   "endswith");
+    a3t.entity ("modifier",   "right");
+    a3t.entity ("modifier",   "word");
+    a3t.entity ("modifier",   "noword");
 
     // Operators.
-    a3t.identity ("operator",   "and");
-    a3t.identity ("operator",   "or");
-    a3t.identity ("operator",   "xor");
-    a3t.identity ("operator",   "<=");
-    a3t.identity ("operator",   ">=");
-    a3t.identity ("operator",   "!~");
-    a3t.identity ("operator",   "!=");
-    a3t.identity ("operator",   "=");
-    a3t.identity ("operator",   ">");
-    a3t.identity ("operator",   "~");
-    a3t.identity ("operator",   "!");
-    a3t.identity ("operator",   "_hastag_");
-    a3t.identity ("operator",   "_notag_");
-    a3t.identity ("operator",   "-");
-    a3t.identity ("operator",   "*");
-    a3t.identity ("operator",   "/");
-    a3t.identity ("operator",   "+");
-    a3t.identity ("operator",   "-");
-    a3t.identity ("operator",   "<");
-    a3t.identity ("operator",   "(");
-    a3t.identity ("operator",   ")");
+    a3t.entity ("operator",   "and");
+    a3t.entity ("operator",   "or");
+    a3t.entity ("operator",   "xor");
+    a3t.entity ("operator",   "<=");
+    a3t.entity ("operator",   ">=");
+    a3t.entity ("operator",   "!~");
+    a3t.entity ("operator",   "!=");
+    a3t.entity ("operator",   "=");
+    a3t.entity ("operator",   ">");
+    a3t.entity ("operator",   "~");
+    a3t.entity ("operator",   "!");
+    a3t.entity ("operator",   "_hastag_");
+    a3t.entity ("operator",   "_notag_");
+    a3t.entity ("operator",   "-");
+    a3t.entity ("operator",   "*");
+    a3t.entity ("operator",   "/");
+    a3t.entity ("operator",   "+");
+    a3t.entity ("operator",   "-");
+    a3t.entity ("operator",   "<");
+    a3t.entity ("operator",   "(");
+    a3t.entity ("operator",   ")");
 
     Tree* tree = a3t.parse ();
     if (tree)

@@ -37,7 +37,7 @@ public:
   A3t (int, char**);
   ~A3t ();
   Tree* parse ();
-  void identity (const std::string&, const std::string&);
+  void entity (const std::string&, const std::string&);
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
 
 private:
