@@ -51,6 +51,7 @@ private:
   void findTag ();
   void findAttribute ();
   void findAttributeModifier ();
+  void findIdSequence ();
   void validate ();
 
 private:

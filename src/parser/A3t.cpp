@@ -31,6 +31,7 @@
 #include <Directory.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 
 static const int minimumMatchLength = 3;
 
@@ -68,6 +69,7 @@ Tree* A3t::parse ()
   findTag ();
   findAttribute ();
   findAttributeModifier ();
+  findIdSequence ();
 
   validate ();
 
@@ -476,6 +478,91 @@ void A3t::findAttributeModifier ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// A sequence can be:
+//
+//   a single ID:          1
+//   a list of IDs:        1,3,5
+//   a list of IDs:        1 3 5
+//   a range:              5-10
+//   or a combination:     1,3,5-10 12
+//
+// If a sequence is followed by a non-number, then subsequent numbers are not
+// interpreted as IDs.  For example:
+//
+//    1 2 three 4
+//
+// The sequence is "1 2".
+//
+void A3t::findIdSequence ()
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
+      continue;
+
+    std::string raw = (*i)->attribute ("raw");
+    Nibbler n (raw);
+
+    std::vector <std::pair <int, int> > ranges;
+    int id;
+    if (n.getUnsignedInt (id))
+    {
+      if (n.skip ('-'))
+      {
+        int end;
+        if (!n.getUnsignedInt (end))
+          throw std::string (STRING_A3_ID_AFTER_HYPHEN);
+
+        if (id > end)
+          throw std::string (STRING_A3_RANGE_INVERTED);
+
+        ranges.push_back (std::pair <int, int> (id, end));
+      }
+      else
+        ranges.push_back (std::pair <int, int> (id, id));
+
+      while (n.skip (','))
+      {
+        if (n.getUnsignedInt (id))
+        {
+          if (n.skip ('-'))
+          {
+            int end;
+            if (!n.getUnsignedInt (end))
+              throw std::string (STRING_A3_ID_AFTER_HYPHEN);
+
+            if (id > end)
+              throw std::string (STRING_A3_RANGE_INVERTED);
+
+            ranges.push_back (std::pair <int, int> (id, end));
+          }
+          else
+            ranges.push_back (std::pair <int, int> (id, id));
+        }
+        else
+          throw std::string (STRING_A3_MALFORMED_ID);
+      }
+
+      (*i)->unTag ("?");
+      (*i)->tag ("ID");
+      std::vector <std::pair <int, int> >::iterator r;
+      for (r = ranges.begin (); r != ranges.end (); ++r)
+      {
+        Tree* branch = (*i)->addBranch (new Tree ("range"));
+        branch->attribute ("min", r->first);
+        branch->attribute ("max", r->second);
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Validate the parse tree.
 void A3t::validate ()
 {
@@ -483,6 +570,8 @@ void A3t::validate ()
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
     if ((*i)->hasTag ("?"))
+      // TODO Restore the exception, when functionality is high enough to
+      //      tolerate it.
       //throw std::string ("Unrecognized argument '") + (*i)->attribute ("raw") + "'";
       std::cout << "Unrecognized argument '" << (*i)->attribute ("raw") << "'\n";
 
