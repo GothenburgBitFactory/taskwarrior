@@ -50,6 +50,7 @@ private:
   void findSubstitution ();
   void findTag ();
   void findAttribute ();
+  void findAttributeModifier ();
   void validate ();
 
 private:
@@ -58,5 +59,4 @@ private:
 };
 
 #endif
-
 

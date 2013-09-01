@@ -67,6 +67,7 @@ Tree* A3t::parse ()
   findPattern ();
   findTag ();
   findAttribute ();
+  findAttributeModifier ();
 
   validate ();
 
@@ -410,6 +411,62 @@ void A3t::findAttribute ()
             (*i)->tag ("PSEUDO");
             (*i)->attribute ("name", canonical);
             (*i)->attribute ("value", value);
+          }
+        }
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// <name>.<mod>[:=]['"]<value>['"]
+void A3t::findAttributeModifier ()
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    // Skip known args.
+    if (! (*i)->hasTag ("?"))
+      continue;
+
+    std::string raw = (*i)->attribute ("raw");
+    Nibbler n (raw);
+
+    std::string name;
+    if (n.getUntil (".", name))
+    {
+      std::string canonical;
+      if (canonicalize (canonical, "attribute", name) ||
+          canonicalize (canonical, "uda",       name))
+      {
+        if (n.skip ('.'))
+        {
+          std::string sense = "+";
+          if (n.skip ('~'))
+            sense = "-";
+
+          std::string modifier;
+          n.getUntilOneOf (":=", modifier);
+
+          if (n.skip (':') ||
+              n.skip ('='))
+          {
+            std::string value;
+            if (n.getQuoted   ('"', value)  ||
+                n.getQuoted   ('\'', value) ||
+                n.getUntilEOS (value))
+            {
+              (*i)->unTag ("?");
+              (*i)->tag ("ATTMOD");
+              (*i)->attribute ("name", canonical);
+              (*i)->attribute ("value", value);
+              (*i)->attribute ("modifier", modifier);
+              (*i)->attribute ("sense", sense);
+            }
           }
         }
       }
