@@ -1080,9 +1080,9 @@ bool Nibbler::skipRx (const std::string& regex)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::backN (const int quantity /*= 1*/)
 {
-  if (_cursor >= quantity)
+  if (_cursor >= (unsigned) quantity)
   {
-    _cursor -= quantity;
+    _cursor -= (unsigned) quantity;
     return true;
   }
 
