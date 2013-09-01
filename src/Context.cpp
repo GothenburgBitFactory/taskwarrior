@@ -181,7 +181,7 @@ int Context::initialize (int argc, const char** argv)
 
     // Initialize the command line parser.
     if (parseTree && config.getBoolean ("debug"))
-      parseTree->dump ();
+      debug (parseTree->dump ());
 
     // END EXPERIMENTAL CODE
 

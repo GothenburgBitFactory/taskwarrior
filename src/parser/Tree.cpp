@@ -248,14 +248,13 @@ Tree* Tree::find (const std::string& path)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Tree::dumpNode (Tree* t, int depth)
+void Tree::dumpNode (Tree* t, int depth, std::stringstream& output)
 {
   // Dump node
   for (int i = 0; i < depth; ++i)
-    std::cout << "  ";
+    output << "  ";
 
-//  std::cout << t << " \033[1m" << t->_name << "\033[0m";
-  std::cout << "\033[1m" << t->_name << "\033[0m";
+  output << "\033[1m" << t->_name << "\033[0m";
 
   // Dump attributes.
   std::string atts;
@@ -270,7 +269,7 @@ void Tree::dumpNode (Tree* t, int depth)
   }
 
   if (atts.length ())
-    std::cout << " " << atts;
+    output << " " << atts;
 
   // Dump tags.
   std::string tags;
@@ -279,21 +278,23 @@ void Tree::dumpNode (Tree* t, int depth)
     tags += (tags.length () ? " " : "") + *tag;
 
   if (tags.length ())
-    std::cout << " \033[32m" << tags << "\033[0m";
+    output << " \033[32m" << tags << "\033[0m";
 
-  std::cout << "\n";
+  output << "\n";
 
   // Recurse for branches.
   std::vector <Tree*>::iterator b;
   for (b = t->_branches.begin (); b != t->_branches.end (); ++b)
-    dumpNode (*b, depth + 1);
+    dumpNode (*b, depth + 1, output);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Tree::dump ()
+std::string Tree::dump ()
 {
-  std::cout << "Tree (" << count () << " nodes)\n";
-  dumpNode (this, 1);
+  std::stringstream output;
+  output << "Tree (" << count () << " nodes)\n";
+  dumpNode (this, 1, output);
+  return output.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

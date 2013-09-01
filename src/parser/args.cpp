@@ -32,7 +32,7 @@
 Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int argc, char** argv)
+int main (int argc, const char** argv)
 {
   try
   {
@@ -139,7 +139,7 @@ int main (int argc, char** argv)
 
     Tree* tree = a3t.parse ();
     if (tree)
-      tree->dump ();
+      std::cout << tree->dump ();
   }
 
   catch (const std::string& error)

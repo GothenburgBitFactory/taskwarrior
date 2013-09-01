@@ -30,6 +30,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <sstream>
 
 class Tree;
 
@@ -61,10 +62,10 @@ public:
 
   Tree* find (const std::string&);
 
-  void dump ();
+  std::string dump ();
 
 private:
-  void dumpNode (Tree*, int);
+  void dumpNode (Tree*, int, std::stringstream&);
 
 public:
   Tree* _trunk;                                    // Parent.

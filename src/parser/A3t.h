@@ -65,7 +65,7 @@ private:
   // TODO Prepare infix
   // TODO Expand operators
   // TODO Expand sequence
-  // TODO Convert to postfix
+  // TODO Convert to postfix - not necessary given parse tree?
 
 private:
   Tree* _tree;
