@@ -6,16 +6,13 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src/parser
                      ${TASK_INCLUDE_DIRS})
 
-set (task_SRCS A3.cpp A3.h
-               Arg.cpp Arg.h
-               Color.cpp Color.h
+set (task_SRCS Color.cpp Color.h
                Config.cpp Config.h
                Context.cpp Context.h
                DOM.cpp DOM.h
                Date.cpp Date.h
                Directory.cpp Directory.h
                Duration.cpp Duration.h
-               E9.cpp E9.h
                File.cpp File.h
                Hooks.cpp Hooks.h
                JSON.cpp JSON.h

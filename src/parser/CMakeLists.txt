@@ -9,7 +9,10 @@ include_directories (${CMAKE_SOURCE_DIR}
 set (parser_SRCS LRParser.cpp LRParser.h
                  Parser.cpp   Parser.h
                  Tree.cpp     Tree.h
-                 A3t.cpp      A3t.h)
+                 A3.cpp       A3.h
+                 A3t.cpp      A3t.h
+                 Arg.cpp      Arg.h
+                 E9.cpp       E9.h)
 
 add_library (parser STATIC ${parser_SRCS})
 add_executable (parser_executable bnf.cpp)
