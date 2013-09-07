@@ -8,6 +8,8 @@ Features
  + #934 support for 'reserved.lines' to accomodate multi-line
    shell prompts when used in conjunction with 'limit:page' (thanks to Robert
    Gill).
+ + #1226 A new French translation has begun, and will continue to be a work in
+   progress for a while (thanks to YBSA R).
  + #1227 A new 'verify_l10n' utility ensures the localizations are in sync (thanks to
    Wim Schuermann).
  + #1250 Support out-of-tree test runs (thanks to Jakub Wilk).
