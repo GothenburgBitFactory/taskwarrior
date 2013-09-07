@@ -317,6 +317,7 @@
 #define STRING_CMD_SUMMARY_NONE      "(ninguna)"
 #define STRING_CMD_COUNT_USAGE       "Cuenta tareas que coinciden"
 #define STRING_CMD_GET_USAGE         "DOM Accessor"
+#define STRING_CMD_GET_NO_DOM        "No DOM reference specified."
 
 #define STRING_CMD_UDAS_NO           "Ningún UDA definido."
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA definido"

@@ -37,6 +37,7 @@ Features
  + Now requires libuuid (thanks to Martin Natano).
  + New '_get' is a DOM accessor helper command.
  + New virtual tags (WEEK, MONTH, YEAR, PARENT).
+ + Added the 'remaining' format for all date columns.
 
 Bugs
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).

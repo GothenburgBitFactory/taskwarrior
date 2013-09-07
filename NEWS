@@ -9,6 +9,7 @@ New Features in taskwarrior 2.3.0
   - Now requires libuuid.
   - New '_get' DOM accessor helper command.
   - New virtual tags: WEEK, MONTH, YEAR, PARENT.
+  - New 'remaining' format for date columns.
 
 New commands in taskwarrior 2.3.0
 

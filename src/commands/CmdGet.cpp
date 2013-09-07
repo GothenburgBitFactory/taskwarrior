@@ -51,7 +51,7 @@ int CmdGet::execute (std::string& output)
   // have already been handled.
   std::vector <std::string> words = context.a3.extract_words ();
   if (words.size () == 0)
-    throw std::string ("Need args!");
+    throw std::string (STRING_CMD_GET_NO_DOM);
 
   std::vector <std::string> results;
   std::vector <std::string>::iterator word;
