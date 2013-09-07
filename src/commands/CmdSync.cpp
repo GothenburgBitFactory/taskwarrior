@@ -28,6 +28,7 @@
 #include <cmake.h>
 #include <sstream>
 #include <inttypes.h>
+#include <signal.h>
 #include <Context.h>
 #include <TLSClient.h>
 #include <Color.h>
@@ -130,6 +131,15 @@ int CmdSync::execute (std::string& output)
 
   out << format (STRING_CMD_SYNC_PROGRESS, connection)
       << "\n";
+
+  // Ignore harmful signals.
+  signal (SIGHUP,    SIG_IGN);
+  signal (SIGINT,    SIG_IGN);
+  signal (SIGKILL,   SIG_IGN);
+  signal (SIGPIPE,   SIG_IGN);
+  signal (SIGTERM,   SIG_IGN);
+  signal (SIGUSR1,   SIG_IGN);
+  signal (SIGUSR2,   SIG_IGN);
 
   Msg response;
   if (send (connection, certificate, request, response))
@@ -269,6 +279,15 @@ int CmdSync::execute (std::string& output)
 
   out << "\n";
   output = out.str ();
+
+  // Restore signal handling.
+  signal (SIGHUP,    SIG_DFL);
+  signal (SIGINT,    SIG_DFL);
+  signal (SIGKILL,   SIG_DFL);
+  signal (SIGPIPE,   SIG_DFL);
+  signal (SIGTERM,   SIG_DFL);
+  signal (SIGUSR1,   SIG_DFL);
+  signal (SIGUSR2,   SIG_DFL);
 
 #else
   // Without GnuTLS found at compile time, there is no working sync command.

@@ -32,6 +32,7 @@
 #include <list>
 #include <set>
 #include <stdlib.h>
+#include <signal.h>
 #include <Context.h>
 #include <Color.h>
 #include <Date.h>
@@ -610,6 +611,15 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::commit ()
 {
+  // Ignore harmful signals.
+  signal (SIGHUP,    SIG_IGN);
+  signal (SIGINT,    SIG_IGN);
+  signal (SIGKILL,   SIG_IGN);
+  signal (SIGPIPE,   SIG_IGN);
+  signal (SIGTERM,   SIG_IGN);
+  signal (SIGUSR1,   SIG_IGN);
+  signal (SIGUSR2,   SIG_IGN);
+
   dump ();
   context.timer_commit.start ();
 
@@ -617,6 +627,15 @@ void TDB2::commit ()
   completed.commit ();
   undo.commit ();
   backlog.commit ();
+
+  // Restore signal handling.
+  signal (SIGHUP,    SIG_DFL);
+  signal (SIGINT,    SIG_DFL);
+  signal (SIGKILL,   SIG_DFL);
+  signal (SIGPIPE,   SIG_DFL);
+  signal (SIGTERM,   SIG_DFL);
+  signal (SIGUSR1,   SIG_DFL);
+  signal (SIGUSR2,   SIG_DFL);
 
   context.timer_commit.stop ();
 }
