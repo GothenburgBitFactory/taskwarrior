@@ -27,6 +27,7 @@
 
 #include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Msg.h>
 #include <test.h>
@@ -37,6 +38,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (12);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   Msg m;
   t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize '' --> '\\n\\n'");

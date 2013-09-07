@@ -27,6 +27,7 @@
 
 #include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Duration.h>
 #include <test.h>
@@ -51,6 +52,10 @@ int convertDuration (const std::string& input)
 int main (int argc, char** argv)
 {
   UnitTest t (644);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   Duration d;
 

@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <stdlib.h>
 #include <main.h>
 #include <test.h>
 
@@ -35,6 +36,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest test (30);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   test.is ((int)Task::textToStatus ("pending"),   (int)Task::pending,   "textToStatus pending");
   test.is ((int)Task::textToStatus ("completed"), (int)Task::completed, "textToStatus completed");

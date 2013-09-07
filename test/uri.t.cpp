@@ -28,6 +28,7 @@
 #include <cmake.h>
 #include <iostream>
 #include <sstream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Uri.h>
 #include <test.h>
@@ -38,6 +39,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (54);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   Uri uri1 ("asfd://user@host/folder/");
   uri1.parse ();

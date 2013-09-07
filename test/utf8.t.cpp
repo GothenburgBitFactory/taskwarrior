@@ -27,6 +27,7 @@
 
 #include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <utf8.h>
 #include <test.h>
 
@@ -34,6 +35,10 @@
 int main (int argc, char** argv)
 {
   UnitTest t (17);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   std::string ascii_text      = "This is a test";
   std::string utf8_text       = "más sábado miércoles";

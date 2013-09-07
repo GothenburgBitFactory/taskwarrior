@@ -28,6 +28,7 @@
 #include <cmake.h>
 #include <iostream>
 #include <iomanip>
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <test.h>

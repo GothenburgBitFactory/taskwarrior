@@ -32,6 +32,10 @@ use File::Copy;
 use File::Path;
 use Test::More tests => 16;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 mkdir("1",       0755);
 mkdir("2",       0755);
 mkdir("dropbox", 0755);

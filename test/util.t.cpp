@@ -27,6 +27,7 @@
 
 #include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <main.h>
 #include <util.h>
 #include <test.h>
@@ -37,6 +38,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (40);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   // TODO bool confirm (const std::string&);
   // TODO int confirm3 (const std::string&);

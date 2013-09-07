@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <stdlib.h>
 #include <Context.h>
 #include <Nibbler.h>
 #ifdef NIBBLER_FEATURE_DATE
@@ -51,6 +52,10 @@ int main (int argc, char** argv)
   UnitTest t (314);
 #endif
 #endif
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   try
   {

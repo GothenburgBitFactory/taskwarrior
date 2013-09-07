@@ -31,6 +31,10 @@ use warnings;
 use Test::More tests => 11;
 use File::Copy;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 use constant false => 0;
 use constant true => 1;
 

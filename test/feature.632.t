@@ -31,6 +31,10 @@ use warnings;
 use Test::More tests => 12;
 use File::Path;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 # Create the rc files.
 if (open my $fh, '>', 'rc1')
 {

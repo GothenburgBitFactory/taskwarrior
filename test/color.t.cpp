@@ -27,6 +27,7 @@
 
 #include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Color.h>
 #include <test.h>
@@ -37,6 +38,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (1036);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   // Names matched to values.
   t.is ((int) Color (""),        (int) Color (Color::nocolor), "''        == Color::nocolor");

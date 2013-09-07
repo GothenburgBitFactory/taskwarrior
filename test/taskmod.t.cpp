@@ -28,6 +28,7 @@
 #include <cmake.h>
 #include <iostream>
 #include <sstream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Task.h>
 #include <Taskmod.h>
@@ -40,6 +41,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (16);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   bool good = true;
 

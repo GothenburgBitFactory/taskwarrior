@@ -31,6 +31,10 @@ use warnings;
 use Time::Local;
 use Test::More tests => 17;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 # Create the rc file.
 if (open my $fh, '>', 'before.rc')
 {

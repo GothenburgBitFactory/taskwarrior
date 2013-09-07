@@ -27,6 +27,7 @@
 
 #include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <JSON.h>
 #include <test.h>
 #include <Context.h>
@@ -105,6 +106,10 @@ const char *negative_tests[] =
 int main (int argc, char** argv)
 {
   UnitTest t (NUM_POSITIVE_TESTS + NUM_NEGATIVE_TESTS + 22);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   // Positive tests.
   for (int i = 0; i < NUM_POSITIVE_TESTS; ++i)

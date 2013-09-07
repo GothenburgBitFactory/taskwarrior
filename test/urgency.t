@@ -30,6 +30,10 @@ use strict;
 use warnings;
 use Test::More tests => 32;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 sub in_range
 {
   my ($value, $low, $high, $message) = @_;

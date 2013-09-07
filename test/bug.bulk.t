@@ -30,6 +30,10 @@ use strict;
 use warnings;
 use Test::More tests => 12;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 # Create the rc file.
 if (open my $fh, '>', 'bulk.rc')
 {

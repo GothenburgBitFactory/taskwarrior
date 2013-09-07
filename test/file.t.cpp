@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <stdlib.h>
 #include <Context.h>
 #include <File.h>
 #include <Directory.h>
@@ -36,6 +37,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (27);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   Directory tmp ("tmp");
   tmp.create ();

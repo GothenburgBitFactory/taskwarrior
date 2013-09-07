@@ -31,6 +31,10 @@ use warnings;
 use File::Path;
 use Test::More tests => 15;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 # Create the rc file, using rc.name:value.
 unlink 'foo.rc';
 rmtree 'foo', 0, 0;

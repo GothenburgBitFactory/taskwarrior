@@ -29,9 +29,13 @@
 use strict;
 use warnings;
 use Test::More tests => 5;
+
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 unlink 'pending.data';
 ok (!-r 'pending.data', 'Removed pending.data');
-
 
 # Create the rc file.
 if (open my $fh, '>', 'color.rc')

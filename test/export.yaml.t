@@ -30,6 +30,10 @@ use strict;
 use warnings;
 use Test::More tests => 22;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 my $source_dir = $0;
 $source_dir =~ s{[^/]+$}{..};
 

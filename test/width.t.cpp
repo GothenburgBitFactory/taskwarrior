@@ -27,6 +27,7 @@
 
 #include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <text.h>
 #include <test.h>
 
@@ -34,6 +35,10 @@
 int main (int argc, char** argv)
 {
   UnitTest t (16);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   t.is (mk_wcwidth ('a'),    1, "U+0061 --> 1");
 
