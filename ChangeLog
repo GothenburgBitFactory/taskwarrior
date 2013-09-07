@@ -42,6 +42,8 @@ Features
  + Added the 'remaining' format for all date columns.
 
 Bugs
+ + #1195 Random seed not random enough - removed all random number code (thanks
+   to Jakub Wilk).
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).
  + #1197 Now 'tasksh' recognizes Ctrl-D to exit.
  + #1200 Directory d_type==DT_UNKNOWN is now handled correctly (thanks to Jakub
