@@ -8,9 +8,9 @@ New Features in taskwarrior 2.3.0
   - French translation has begun.
   - UDA fields now allow default values.
   - Now requires libuuid.
-  - New '_get' DOM accessor helper command.
   - New virtual tags: WEEK, MONTH, YEAR, PARENT.
   - New 'remaining' format for date columns.
+  - New '_get' DOM accessor helper command.
 
 New commands in taskwarrior 2.3.0
 

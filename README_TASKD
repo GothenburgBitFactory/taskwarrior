@@ -1,10 +1,9 @@
-Welcome To Taskwarrior 2.3.0 Alpha
-----------------------------------
+Welcome To Taskwarrior 2.3.0 Beta
+---------------------------------
 
-The alpha release of Taskwarrior 2.3.0 is for testing the Task Server.
-Currently Taskwarrior is the only client for the Task Server.  There are several
-unaddressed bugs in this release, so proper precautions with your data are
-required.
+The beta release of Taskwarrior 2.3.0 is for testing the Task Server.  There are
+several unaddressed bugs in this release, so proper precautions with your data
+are required.
 
 
 Building Taskwarrior
