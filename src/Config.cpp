@@ -310,6 +310,7 @@ std::string Config::_defaults =
   "alias.ghistory=ghistory.monthly                # Prefer monthly graphical over annual history reports\n"
   "alias._query=export                            # _query is now export\n"
   "alias.burndown=burndown.weekly                 # Prefer the weekly burndown chart\n"
+  "alias.shell=exec tasksh                        # Alias old shell command to new shell\n"
   "\n"
   "# Reports\n"
   "\n"

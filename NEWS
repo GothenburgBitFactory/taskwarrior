@@ -2,7 +2,7 @@
 New Features in taskwarrior 2.3.0
 
   - New task server sync capabilities.
-  - New shell with Readline support.
+  - New shell (tasksh) with Readline support replaces old 'task shell' command.
   - The 'dateformat' settings now default to the ISO-8601 standard of 'Y-M-D'.
   - Italian translation.
   - UDA fields now allow default values.
