@@ -26,7 +26,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <stdlib.h>
 #include <math.h>
 #include <Context.h>
 #include <ColDate.h>
@@ -50,6 +49,8 @@ ColumnDate::ColumnDate ()
   _styles.push_back ("epoch");
   _styles.push_back ("iso");
   _styles.push_back ("age");
+  _styles.push_back ("remaining");
+  _styles.push_back ("countdown");
 
   Date now;
   now -= 125; // So that "age" is non-zero.
@@ -58,6 +59,8 @@ ColumnDate::ColumnDate ()
   _examples.push_back (now.toEpochString ());
   _examples.push_back (now.toISO ());
   _examples.push_back (Duration (Date () - now).formatCompact ());
+  _examples.push_back ("");
+  _examples.push_back (Duration (Date () - now).format ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +82,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
 
   if (task.has (_name))
   {
-    Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
+    Date date (task.get_date (_name));
 
     if (_style == "default" ||
         _style == "formatted")
@@ -98,7 +101,6 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     }
     else if (_style == "countdown")
     {
-      Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
       Date now;
       minimum = maximum = Duration (now - date).format ().length ();
     }
@@ -119,6 +121,12 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
       Date now;
       minimum = maximum = Duration (now - date).formatCompact ().length ();
     }
+    else if (_style == "remaining")
+    {
+      Date now;
+      if (date > now)
+        minimum = maximum = Duration (date - now).format ().length ();
+    }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
@@ -133,6 +141,8 @@ void ColumnDate::render (
 {
   if (task.has (_name))
   {
+    Date date (task.get_date (_name));
+
     if (_style == "default" ||
         _style == "formatted")
     {
@@ -149,12 +159,10 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           leftJustify (
-            Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
-              .toString (format), width)));
+            date.toString (format), width)));
     }
     else if (_style == "countdown")
     {
-      Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
       Date now;
 
       lines.push_back (
@@ -167,34 +175,41 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           rightJustify (
-            format (Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
-              .toJulian (), 13, 12), width)));
+            format (date.toJulian (), 13, 12), width)));
     }
     else if (_style == "epoch")
     {
       lines.push_back (
         color.colorize (
           rightJustify (
-            Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
-              .toEpochString (), width)));
+            date.toEpochString (), width)));
     }
     else if (_style == "iso")
     {
       lines.push_back (
         color.colorize (
           leftJustify (
-            Date ((time_t) strtol (task.get (_name).c_str (), NULL, 10))
-              .toISO (), width)));
+            date.toISO (), width)));
     }
     else if (_style == "age")
     {
-      Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
       Date now;
 
       lines.push_back (
         color.colorize (
           leftJustify (
             Duration (now - date).formatCompact (), width)));
+    }
+    else if (_style == "remaining")
+    {
+      Date now;
+      if (date > now)
+        lines.push_back (
+          color.colorize (
+            rightJustify (
+              Duration (date - now).format (), width)));
+      else
+        lines.push_back ("");
     }
   }
 }

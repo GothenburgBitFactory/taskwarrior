@@ -1204,11 +1204,8 @@ The description for report X when running the "task help" command.
 
 .TP
 .B report.X.columns
-The columns that will be used when generating the report X. Valid columns are:
-id, uuid, status, project, priority, priority_long, entry, start, end, due,
-countdown, countdown_compact, age, age_compact, active, tags, depends,
-description_only, description, recur, recurrence_indicator, tag_indicator and
-wait.  The IDs are separated by commas.
+This is a comma-separated list of columns and formatting specifiers.  See the
+command 'task columns' for a full list of options and examples.
 
 .TP
 .B report.X.labels
@@ -1222,7 +1219,7 @@ specified by using the column ids post-fixed by a "+" for ascending sort order
 or a "-" for descending sort order. The sort IDs are separated by commas.
 For example:
 
-    report.list.sort=due+,priority-,active-,project+
+    report.list.sort=due+,priority-,start.active-,project+
 
 .TP
 .B report.X.filter
