@@ -14,6 +14,8 @@ Features
    Wim Schuermann).
  + #1250 Support out-of-tree test runs (thanks to Jakub Wilk).
  + #1256 Supports default values for UDA fields (thanks to Thomas Sullivan).
+ + #1339 The configuration file now supports JSON encoding of Unicode
+   characters, by specifying \uNNNN.
  + Stores un-synched transactions in <data.location>/backlog.data.
  + Adds a new 'synchronize' command to sync data with a task server.
  + Adds a new 'initialize' synchronize command argument that uploads all pending
@@ -34,8 +36,6 @@ Features
    that are not yet modified.
  + ColPriority.cpp - Migration of column modification code out of Task.cpp and
    into the individual column object.
- + The configuration file now supports JSON encoding of Unicode characters, by
-   specifying \uNNNN.
  + Now requires libuuid (thanks to Martin Natano).
  + New '_get' is a DOM accessor helper command.
  + New virtual tags (WEEK, MONTH, YEAR, PARENT).
