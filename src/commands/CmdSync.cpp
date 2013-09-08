@@ -98,6 +98,10 @@ int CmdSync::execute (std::string& output)
   int upload_count = 0;
   if (first_time_init)
   {
+    // Delete backlog.data.  Because if we're uploading everything, the list of
+    // deltas is meaningless.
+    context.tdb2.backlog._file.truncate ();
+
     std::vector <Task> pending = context.tdb2.pending.get_tasks ();
     std::vector <Task>::iterator i;
     for (i = pending.begin (); i != pending.end (); ++i)
