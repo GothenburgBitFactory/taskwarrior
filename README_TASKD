@@ -9,7 +9,7 @@ are required.
 Building Taskwarrior
 --------------------
 
-You will need the following depdendencies:
+You will need the following dependencies:
 
   cmake
   make
