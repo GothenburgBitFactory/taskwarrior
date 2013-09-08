@@ -28,12 +28,18 @@
 
 use strict;
 use warnings;
-use Test::More tests => 1;
+use Test::More tests => 2;
+
+qx{touch version.rc};
 
 my $year = (localtime (time))[5] + 1900;
 
-my $output = qx{../src/task version 2>&1};
+my $output = qx{../src/task rc:version.rc version 2>&1};
 like ($output, qr/Copyright \(C\) \d{4} - $year/, 'Copyright is current');
+
+# Cleanup.
+unlink 'version.rc';
+ok (!-r 'version.rc', 'Removed version.rc');
 
 exit 0;
 
