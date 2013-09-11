@@ -300,24 +300,6 @@ int CmdDiagnostics::execute (std::string& output)
   out << bold.colorize (STRING_CMD_DIAG_TESTS)
       << "\n";
   {
-    out << "   UUID gen: ";
-    std::vector <std::string> uuids;
-    std::string id;
-    for (int i = 0; i < 1000; i++)
-    {
-      id = uuid ();
-      if (std::find (uuids.begin (), uuids.end (), id) != uuids.end ())
-      {
-        out << format (STRING_CMD_DIAG_UUID_BAD, i) << "\n";
-        break;
-      }
-      else
-        uuids.push_back (id);
-    }
-
-    if (uuids.size () >= 1000)
-      out << STRING_CMD_DIAG_UUID_GOOD << "\n";
-
     // Determine terminal details.
     const char* term = getenv ("TERM");
     out << "      $TERM: "

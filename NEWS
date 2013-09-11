@@ -32,6 +32,8 @@ Newly deprecated features in taskwarrior 2.3.0
   - The 'push', 'pull' and 'merge' commands will be removed in a subsequent
     release.  The new 'sync' command, in conjunction with the Task Server is the
     new sync mechanism.
+  - The 'diagnostics' command no longer generates 1000 UUIDs as a uniqueness
+    test, because libuuid is now mandatory.
 
 ---
 
