@@ -399,7 +399,6 @@
 #define STRING_CMD_IMPORT_SUMMARY    "Importati {1} task."
 #define STRING_CMD_IMPORT_NOFILE     "Specificare il file da importare."
 #define STRING_CMD_IMPORT_FILE       "Importazione di '{1}'"
-#define STRING_CMD_IMPORT_NOT_JSON   "Non è un oggetto JSON: {1}"
 #define STRING_TASK_NO_DESC          "Annotazione senza descrizione: {1}"
 #define STRING_TASK_NO_ENTRY         "Annotazione senza data di immissione: {1}"
 #define STRING_CMD_SHELL_HELP1       "Inserisci un comando (es. 'list'), o premi 'Enter'."
@@ -562,7 +561,6 @@
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' non è una data valida nel formato '{2}'."
 #define STRING_DATE_BAD_WEEKSTART    "La variabile di configurazione 'weekstart' può solo contenere 'Domenica' o 'Lunedì'."
-#define STRING_DATE_TOO_MUCH         "La data è troppo avanti nel futuro."
 
 #define STRING_DATE_JANUARY_LONG     "gennaio"
 #define STRING_DATE_FEBRUARY_LONG    "febbraio"
@@ -698,7 +696,6 @@
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Errore: "
 #define STRING_UNKNOWN_ERROR         "Errore sconosciuto."
-#define STRING_NO_HOME               "Impossibile leggere la home directory dal file passwd"
 #define STRING_TRIVIAL_INPUT         "Specificare un comando o un task da modificare"
 #define STRING_ASSUME_INFO           "Nessun comando specificato - si assume 'information'."
 #define STRING_INFINITE_LOOP         "Sostituzione terminata poiché più di {1} modifiche sono state fatte - protezione da ciclo infinito"
@@ -761,9 +758,6 @@
 #define STRING_JSON_MISSING_OPEN     "Errore: atteso '{' o '[' alla posizione {1}"
 #define STRING_JSON_EXTRA_CHARACTERS "Errore: caratteri in eccesso alla posizione {1}"
 
-// Legacy
-#define STRING_LEGACY_FEATURE        "Nota: la funzionalità '{1}' è deprecata."
-
 // Record
 #define STRING_RECORD_EMPTY          "Voce vuota in ingresso."
 #define STRING_RECORD_JUNK_AT_EOL    "Carattere non riconosciuto a fine riga."
@@ -775,7 +769,6 @@
 #define STRING_CMD_SHOW_NONE         "Variabile di configurazione non corrispondente."
 #define STRING_CMD_SHOW_UNREC        "Il file .taskrc contiene variabili non riconosciute:"
 #define STRING_CMD_SHOW_DIFFER       "Alcune variabili in .taskrc hanno valore diverso dal default."
-#define STRING_CMD_SHOW_HOOKS        "Il file .taskrc contiene script di aggancio mancanti o non leggibili:"
 #define STRING_CMD_SHOW_EMPTY        "Errore di configurazione: .taskrc è vuoto."
 #define STRING_CMD_SHOW_DIFFER_COLOR "Evidenziate sopra in {1}."
 #define STRING_CMD_SHOW_CONFIG_ERROR "Errore di configurazione: {1} contiene un valore non riconosciuto '{2}'."
