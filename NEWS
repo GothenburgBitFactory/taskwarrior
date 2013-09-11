@@ -11,6 +11,7 @@ New Features in taskwarrior 2.3.0
   - New virtual tags: WEEK, MONTH, YEAR, PARENT.
   - New 'remaining' format for date columns.
   - New '_get' DOM accessor helper command.
+  - New task-sync(5) man page.
 
 New commands in taskwarrior 2.3.0
 

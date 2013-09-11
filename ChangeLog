@@ -42,6 +42,7 @@ Features
  + Added the 'remaining' format for all date columns.
  + Protects against interrupt during critical DB commit and sync operations.
  + The 'push', 'pull' and 'merge' commands now generate a 'deprecated' message.
+ + Rewritten task-sync(5) man page, listing sync options and setup guidelines..
 
 Bugs
  + #1195 Random seed not random enough - removed all random number code (thanks
