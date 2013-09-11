@@ -1,361 +1,129 @@
 .TH task-sync 5 2013-04-07 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
-task-sync \- A tutorial for the task(1) data synchronization capabilities.
+task-sync \- A discussion and tutorial for the various task(1) data
+synchronization capabilities.
 
-.SH DESCRIPTION
-Taskwarrior has built-in support for synchronization, which can be used to keep
-two task databases up to date, regardless of which one is used.  This capability
-can also be used to keep a backup copy of your task database on another machine.
+.SH INTRODUCTION
+Taskwarrior has several sync options, external and internal.  If you wish to
+sync your data, choose one method only; mixing methods is only going to lead to
+problems.  Each of the methods discussed have their own strengths.
 
-Taskwarrior can use various protocols for transferring the data.
+.SH ALTERNATIVES
+There are three alternatives for syncing data, which are:
 
-.SH HOW IT WORKS
-If you were to manually attempt to keep two separate task databases up to date,
-you would need to inspect both databases, and detect changes that occurred in
-each one.  Those changes would need to be migrated to the other database, while
-being careful not to miss a change, and not to confuse an 'add' in one with
-a 'delete' in the other.
-
-The synchronization feature does just this.  It can transfer task databases,
-compare tasks, and apply changes where necessary.
-
-.SH NEW COMMANDS
-Taskwarrior has 'pull', 'push' and 'merge' commands which perform the steps
-necessary to move files around and combine them.  In the common use case, you
-would only need to use the 'merge' command.  These commands take an argument
-that is a URI, which indicates where the remote database resides.
-
-To be clear, the local database always refers to your ~/.task directory (unless
-overridden), and the remote database is always specified by URI.
-
-.SH MERGE
-The merge command will fetch task data via URI and combine it with the local
-task database.  The syntax is:
-
+1) Version control systems, such as git, hg, svn
 .br
-.RS
-task merge [<URI>]
-.RE
-
-The URI is optional if the
-.B merge.default.uri
-configuration variable is set.  The URI may point to a different directory, or
-it may be a different computer.  Here is an example of the merge command:
-
+2) File hosting systems, such as DropBox
 .br
-.RS
-$ task merge ~/work/
-.RE
+3) Using the Task Server and the 'sync' command
 
-This URI (~/work/) is a path name, which means the remote database is on the
-same computer.  Taskwarrior will fetch the data from the URI, and merge it with
-your local data in ~/.task.
 
-When complete, you will be asked whether you would like to push the combined
-data back to the remote location specified by the URI.  This is useful if you
-are keeping two task databases synchronized, but it can be turned off.  See
-CONFIGURATION.
+.SH OPTION 1: VERSION CONTROL SYSTEMS
+There are several good VCS systems (git, hg, svn ...), and they function in a
+similar fashion for our purposes.
 
-Note that a merge operation is not atomically reversible.  You could however
-run the 'task undo' command repeatedly to undo the effects.
+Setup is straightforward.  You place your .task directory under revision
+control.  You then need to perform a regular commit/push/pull to make sure that
+the data is propagated when needed.  You can even do this using shell scripts so
+that every task command is preceded by a 'pull' and followed by a 'push'.
 
-.SH PUSH
-The push command will copy the local task database to the specified URI.  The
-syntax is:
-
+Strengths:
 .br
-.RS
-task push [<URI>]
-.RE
-
-The URI is optional if the
-.B push.default.uri
-configuration variable is set.  This command is useful for making backup copies
-of your task database.
-
-Note that the task files at the location specified by the URI are simply
-overwritten, so don't expect any merging to occur.  Misused, push can be
-dangerous.
-
-.SH PULL
-The pull command will copy a task database from a URI to the local task database
-(~/.task by default).  The syntax is:
-
+  - Good data transport mechanisms
 .br
-.RS
-task pull [<URI>]
-.RE
+  - Secure transport options
 
-The URI is optional if the
-.B pull.default.uri
-configuration variable is set.  This command is useful for restoring a backup
-copy of your task database.
-
-Note that your local task database files will be simply overwritten by the files
-obtained from the location specified by the URI, so don't expect any merging to
-occur.  Misused, pull can be dangerous.
-
-.SH URI TYPES
-The most basic URI is a path name on the local machine.  An example would be:
-
+Weaknesses:
 .br
-.RS
-/home/bob/.task/
-.RE
-
-All the other URIs allow access to remote machines.  The first uses SSH and scp
-(either form can be used):
-
+  - You need proficiency with VCS tools
 .br
-.RS
-ssh://[user@]host[:port]/absolute/path/to/.task/
+  - You will need to manually resolve conflicts frequently
 .br
-[user@]host:/absolute/path/to/.task/
-.RE
+  - You need to provide the mechanism for making sure copies are up to date
 
-In both cases paths are considered to be absolute. You can specify paths relative to the
-users home directory as follows:
 
+.SH OPTION 2: FILE HOSTING SERVICES
+There are many file hosting services, such as DropBox, Amazon S3, Google Drive,
+SkyDrive and more.  This technique involves storing your .task directory in a
+shared directory under the control of the file hosting services.
+
+Syncing happens quickly, although it is possible to run into conflict situations
+when there is no network connectivity, and the tasks are modified in two
+separate locations.  This is because the file hosting service knows only about
+files, and it has no idea how to merge tasks.  Avoid this problem by never
+modifying the same task on two machines, without an intervening sync.
+
+Setup simply involves creating the directory and modifying your data.location
+configuration variable like this:
+
+    $ task config data.location /path/to/shared/directory
+
+Strengths:
 .br
-.RS
-ssh://[user@]host[:port]/.task/
+  - Always secure
 .br
-[user@]host:.task/
-.RE
-
-or even shorter
-
+  - Good client support
 .br
-.RS
-[user@]host:.task/
-.RE
-
-Remark: Since taskwarrior simply calls the scp binary you can specify very much anything
-that scp would accept, e.g. host configurations from ~/.ssh/config or ~username
-expansion:
-
+  - Easy setup
 .br
-.RS
-ssh://configured-host/~[username]/.task/
+  - Transparent use
+
+Weaknesses:
 .br
-configured-host:~[username]/.task/
-.RE
+  - Tasks not properly merged
 
 
-Rsync is another supported protocol that minimizes network traffic, by a clever
-algorithm that doesn't copy files that have not changed:
+.SH OPTION 3: TASK SERVER
+The Task Server was designed for this purpose to be secure, fast and conflict
+free, allowing data interchange between assorted Taskwarrior clients, and
+tolerant of network connectivity problems.
 
+There is a 'sync' command built in to Taskwarrior, and with a server account
+and client configuration, syncing is done on demand.
+
+Setup is a matter of creating an account on a Task Server (see your Task Server
+provider or operate your own - see
+http://taskwarrior.org/projects/taskwarrior/wiki/Server_setup)
+
+Once you have an account, you'll receive a certificate, and a password.  You'll
+need to put the certificate somewhere like this:
+
+    $ cp <name>.cert.pem ~/.task
+
+Then you configure Taskwarrior, using the account details:
+
+    $ task config taskd.certificate ~/.task/<name>.cert.pem
+    $ task config taskd.credentials <organization>/<name>/<password>
+    $ task config taskd.server      <server domain>:<port>
+
+After setup, you run a one-time sync initialization, like this:
+
+    $ task sync initialize
+
+This will make sure your client and the server are properly in sync to begin
+with.  From this point on, you never run the 'initialize' command again, just
+go about your business, and when you want to sync, run this:
+
+    $ task sync
+
+You'll see a summary of how many tasks were uploaded and downloaded.  You can
+safely run the command as often as you like.  When there are no changes to sync,
+nothing happens.  If you do not have connectivity, your task changes accumulate
+so that when you next run 'sync' with proper connectivity, the changes are
+properly handled, in the right order.
+
+Strengths:
 .br
-.RS
-rsync://[user@]host.xz[:port]/path/to/.task/
-.RE
-
-Curl supports several protocols that can transfer data using HTTP, HTTPS and
-FTP:
-
+  - Always secure
 .br
-.RS
-http://host[:port]/path/to/.task/
+  - Minimal bandwidth
 .br
-https://host[:port]/path/to/.task/
-.br
-ftp://[user@]host[:port]/path/to/.task/
-.RE
+  - Tolerates connectivity outage
 
-You can use single quotes to encapsulate user names that contain delimiting
-characters like '@', '/' or ':', e.g.:
-
-.br
-.RS
-ssh://'user@name'@host/
-.RE
-
-Remember to escape the quotes on your shell:
-
-.br
-.RS
-$ task push ftp://\'user@name\':host/
-.RE
-
-.SH CONFLICTS
-When modifications on the local and remote machine conflict, for example if
-both machines change the project name of the same task to different values,
-then Taskwarrior automatically selects the most recent change.  Thus, there
-are no conflicts.
-
-.SH EXAMPLE - Backup on another machine
-One very good use of 'push' is to make backup copies of your task database in
-another location.  Suppose your task database is kept in the usual place, in
-the ~/.task directory, and you wanted to make a backup copy in ~/backup.  You
-would use this command:
-
-.br
-.RS
-$ task push ~/backup/
-.RE
-
-This would copy the files in ~/.task to ~/backup, overwriting the files that
-were already in ~/backup.  To backup your files to another machine, you could
-use:
-
-.br
-.RS
-$ task push user@host:backup
-.RE
-
-This could be improved by setting the
-.B push.default.uri
-configuration variable and then relying on the default, like this:
-
-.br
-.RS
-$ task config push.default.uri user@host:backup
-.RE
-
-and then you need only run the push command:
-
-.br
-.RS
-$ task push
-.RE
-
-and the default push URI will be used.  If you wanted to restore a backup, you
-simply use the pull command instead:
-
-.br
-.RS
-$ task pull user@host:backup
-.RE
-
-This can be simplified by setting the
-.B pull.default.uri
-configuration variable and then relying on the default, like this:
-
-.br
-.RS
-$ task config pull.default.uri user@host:backup
-.RE
-
-Note that pull and push will blindly overwrite the task files without any
-merging.  Be careful.
-
-.SH EXAMPLE - Keeping two task databases synchronized
-The most common synchronization will be to keep two task databases synchronized
-on different machines.  Here is a full example, including setup that illustrates
-this.
-
-Suppose there are two machines, named 'local' and 'remote', for simplicity.
-Taskwarrior is installed on both machines.  The different machines are
-indicated here by the prompt.  Suppose Alice enters two tasks on her local
-machine:
-
-.br
-.RS
-local> task add Deliver the new budget proposal due:tuesday
-.br
-local> task add Set up a meeting with Bob
-.RE
-
-Then later adds a task on the remote machine:
-
-.br
-.RS
-remote> task add Present the budget proposal at the big meeting due:thursday
-.RE
-
-Now on the local machine, Alice merges the two task databases:
-
-.br
-.RS
-local> task merge alice@remote:.task
-.br
-Would you like to push the changes to 'alice@remote:.task'?  Y
-.RE
-
-Taskwarrior has combined the two task databases on local, then pushed the
-changes back to remote.  Now suppose Alice changes the due date for task 1
-on remote:
-
-.br
-.RS
-remote> task 1 due:wednesday
-.RE
-
-Now on the local machine, Alice sets up a default URI and autopush:
-
-.br
-.RS
-local> task config merge.default.uri alice@remote:.task
-.br
-local> task config merge.autopush yes
-.RE
-
-Now Alice can simply run merge to make sure that the new due date is copied to
-the local machine:
-
-.br
-.RS
-local> task merge
-.RE
-
-This time the URI is determined automatically, and after the merge the files are
-pushed back to the remote machine.  In a similar way, the remote machine can
-also be configured to merge from the local machine and push back to it.  Then it
-is just a matter of Alice remembering to merge now and then, from either
-machine, to have her data in two (or even more) places.
-
-.SH CONFIGURATION
-By setting these configuration variables, it is possible to simplify the
-synchronization commands, by relying on the defaults or alias names.
-
-.br
-.B merge.autopush=yes|no|ask
-.RS
-This controls whether the automatic push after a merge is performed, not
-performed, or whether the user is asked every time.  The default value is 'ask'.
-.RE
-
-.br
-.B merge.default.uri=<uri>
-.RS
-Sets a default URI so that just the 'task merge' command be run without the
-need to retype the URI every time. You can also use this configuration scheme
-to set alias names, e.g. set merge.desktop.uri and run 'task merge desktop'.
-.RE
-
-.br
-.B push.default.uri=<uri>
-.RS
-Sets a default URI so that just the 'task push' command be run without the
-need to retype the URI every time. You can also use this configuration scheme
-to set alias names, e.g. set push.desktop.uri and run 'task push desktop'.
-.RE
-
-.br
-.B pull.default.uri=<uri>
-.RS
-Sets a default URI so that just the 'task pull' command be run without the
-need to retype the URI every time. You can also use this configuration scheme
-to set alias names, e.g. set pull.desktop.uri and run 'task pull desktop'.
-.RE
-
-Note that, when using SSH/scp, hostnames will be expanded due to the ssh
-configuration file ~/.ssh/config.
-
-.SH EXTERNAL DEPENDENCIES
-Depending on the URI protocols used, the utilities 'scp', 'rsync' and 'curl'
-must be installed and accessible via the $PATH environment variable.
-
-If you have deleted your ~/.task/undo.data file to save space, you will be
-unable to merge.  The change transactions stored in the undo.data file are
-used for synchronization.
 
 .SH "CREDITS & COPYRIGHTS"
 Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
-
-The sync capabilities were written by J. Schlatow.
-Parts copyright (C) 2010 - 2013 J. Schlatow.
 
 Taskwarrior is distributed under the MIT license. See
 http://www.opensource.org/licenses/mit-license.php for more information.
@@ -367,7 +135,6 @@ http://www.opensource.org/licenses/mit-license.php for more information.
 .BR task-faq(5),
 .BR task-color(5),
 .BR task-tutorial(5),
-.BR ssh_config(5)
 
 For more information regarding task, the following may be referenced:
 

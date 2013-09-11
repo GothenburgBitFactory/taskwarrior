@@ -980,7 +980,7 @@ a change that is to be reverted.
 .br
 .B color.sync.rejected=red
 .RS
-Colors the output of the merge command.
+Colors the output of the sync command.
 .RE
 
 .TP
@@ -1101,31 +1101,6 @@ configuration variable. The format is identical to that of
 shadow.notify=on
 When this value is set to "on", taskwarrior will display a message whenever the
 shadow file is updated by some task command.
-
-.SS PUSH/PULL/MERGE
-
-See the 'man task-synch' page for more details regarding usage.
-
-.TP
-.B merge.autopush=yes|no|ask
-.RS
-Determines post-merge behavior regarding automatic push.
-.RE
-
-.B merge.default.uri
-.RS
-Default merge URI.
-.RE
-
-.B pull.default.uri
-.RS
-Default pull URI.
-.RE
-
-.B push.default.uri
-.RS
-Default push URI.
-.RE
 
 .SS DEFAULTS
 

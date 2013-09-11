@@ -342,40 +342,12 @@ example scripts, such as import-yaml.pl.
 Adds a new task that is already completed, to the task list.
 
 .TP
-.B task merge <URL>
-Merges two task databases by comparing the modifications that are stored in the
-undo.data files. The location of the second undo.data file must be passed on as
-argument. URL may have the following syntaxes:
-
-	ssh://[user@]host.xz[:port]/path/to/.task/
-
-	rsync://[user@]host.xz[:port]/path/to/.task/
-
-	[user@]host.xz:path/to/.task/
-
-	/path/to/local/.task/
-
-You can set aliases for frequently used URLs in the .taskrc. Further
-documentation can be found in the task-sync(5) man page.
-
-.TP
 .B task <filter> modify <mods>
 Modifies the existing task with provided information.
 
 .TP
 .B task <filter> prepend <mods>
 Prepends description text to an existing task.
-
-.TP
-.B task pull <URL>
-Overwrites the task database with those files found at the URL.
-(See 'merge' command for valid URL syntax.)
-
-.TP
-.B task push <URL>
-Pushes the task database to a remote location for distributing the
-changes made by the merge command.
-(See 'merge' command for valid URL syntax.)
 
 .TP
 .B task <filter> start <mods>
@@ -1079,7 +1051,7 @@ The file that contains the completed ("done") tasks.
 
 .TP
 ~/.task/undo.data
-The file that contains information needed by the "undo" and "merge" commands.
+The file that contains information needed by the "undo" command.
 
 .SH "CREDITS & COPYRIGHTS"
 Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
