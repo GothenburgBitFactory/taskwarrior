@@ -117,6 +117,7 @@
 #define STRING_A3_ID_AFTER_HYPHEN    "ID no reconocido tras guión."
 #define STRING_A3_RANGE_INVERTED     "Rango invertido 'alto-bajo' en vez de 'bajo-alto'"
 #define STRING_A3_UUID_AFTER_COMMA   "UUID no reconocido tras coma."
+#define STRING_A3_ZERO_ID            "'{1}' is not a valid ID."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "El color '{1}' no se reconoce."

@@ -1141,6 +1141,9 @@ const A3 A3::sequence (const A3& input) const
   if (ids.size () == 0 && uuids.size () == 0)
     return input;
 
+  if (ids.size () == 1 && ids[0] < 1)
+    throw format (STRING_A3_ZERO_ID, ids[0]);
+
   // Copy everything up to the first id/uuid.
   for (arg = input.begin (); arg != input.end (); ++arg)
   {

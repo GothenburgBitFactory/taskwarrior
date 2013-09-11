@@ -117,6 +117,7 @@
 #define STRING_A3_ID_AFTER_HYPHEN    "ID non riconosciuto dopo il trattino."
 #define STRING_A3_RANGE_INVERTED     "Intervallo invertito 'alto-basso' invece di 'basso-alto'"
 #define STRING_A3_UUID_AFTER_COMMA   "UUID non riconosciuto dopo la virgola."
+#define STRING_A3_ZERO_ID            "'{1}' is not a valid ID."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "Il colore '{1}' non è riconosciuto."

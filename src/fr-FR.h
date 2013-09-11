@@ -116,6 +116,7 @@
 #define STRING_A3_ID_AFTER_HYPHEN    "Unrecognized ID after hyphen."
 #define STRING_A3_RANGE_INVERTED     "Inverted range 'high-low' instead of 'low-high'"
 #define STRING_A3_UUID_AFTER_COMMA   "Unrecognized UUID after comma."
+#define STRING_A3_ZERO_ID            "'{1}' is not a valid ID."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "The color '{1}' is not recognized."

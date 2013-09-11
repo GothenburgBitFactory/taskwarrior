@@ -65,6 +65,8 @@ Bugs
  + #1300 Encode/decode pairing is now properly balanced.
  + #1305 Commit hash now available in tarball builds (thanks to Ben Boeckel).
  + Fixed bug so that 'limit:page' now considers footnote messages.
+ + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
+   (thanks to greenskeleton).
 
 ------ old releases ------------------------------
 
