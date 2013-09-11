@@ -156,7 +156,7 @@ Test Suite
   many platforms. Code changes are automatically detected, propagated, built and
   tested on a variety of participating platforms. Grid testing results are here:
 
-    http://tasktools.org/tinderbox/taskwarrior.html
+    http://tasktools.org/tinderbox/taskwarrior-2.3.0.html
 
   When making code changes, it is important that the test suite be run to verify
   that functionality was not broken.
