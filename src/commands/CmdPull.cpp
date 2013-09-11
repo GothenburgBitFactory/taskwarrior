@@ -50,6 +50,8 @@ CmdPull::CmdPull ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdPull::execute (std::string& output)
 {
+  context.footnote ("The 'pull' command is deprecated, and will be removed in a subsequent release.");
+
   std::vector <std::string> words = context.a3.extract_words ();
   std::string file;
   if (words.size ())

@@ -52,6 +52,8 @@ CmdMerge::CmdMerge ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdMerge::execute (std::string& output)
 {
+  context.footnote ("The 'merge' command is deprecated, and will be removed in a subsequent release.");
+
   // invoke gc and commit before merging in order to update data files
   context.tdb2.gc ();
   context.tdb2.commit ();

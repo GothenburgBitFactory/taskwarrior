@@ -169,13 +169,13 @@ int CmdShow::execute (std::string& output)
     " locale"
     " locking"
     " merge.autopush"
-    " merge.default.uri"
+    " merge.default.uri"                 // Deprecated 2.3.0
     " monthsperline"
     " nag"
     " patterns"
     " print.empty.columns"
-    " pull.default.uri"
-    " push.default.uri"
+    " pull.default.uri"                  // Deprecated 2.3.0
+    " push.default.uri"                  // Deprecated 2.3.0
     " recurrence.indicator"
     " recurrence.limit"
     " regex"
@@ -297,6 +297,7 @@ int CmdShow::execute (std::string& output)
         color = warning;
       }
 
+      // TODO Deprecated.
       std::string value = i->second;
       // hide sensible information
       if ( (i->first.substr (0, 5) == "push."   ||

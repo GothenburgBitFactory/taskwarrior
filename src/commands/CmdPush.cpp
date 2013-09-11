@@ -52,6 +52,8 @@ CmdPush::CmdPush ()
 // Because this is potentially on another machine, no checking can be performed.
 int CmdPush::execute (std::string& output)
 {
+  context.footnote ("The 'push' command is deprecated, and will be removed in a subsequent release.");
+
   std::vector <std::string> words = context.a3.extract_words ();
   std::string file;
   if (words.size ())
