@@ -5,9 +5,6 @@ Calendar trick
 Metadata
 
 Sync
-  push
-  pull
-  merge
   sync (needs 2.3.0 & task server)
 
 Logo?

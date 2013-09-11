@@ -234,9 +234,9 @@ int CmdShow::execute (std::string& output)
           i->first.substr (0,  7) != "report."               &&
           i->first.substr (0,  6) != "alias."                &&
           i->first.substr (0,  5) != "hook."                 &&
-          i->first.substr (0,  5) != "push."                 &&
-          i->first.substr (0,  5) != "pull."                 &&
-          i->first.substr (0,  6) != "merge."                &&
+          i->first.substr (0,  5) != "push."                 && // Deprecated 2.3.0
+          i->first.substr (0,  5) != "pull."                 && // Deprecated 2.3.0
+          i->first.substr (0,  6) != "merge."                && // Deprecated 2.3.0
           i->first.substr (0,  4) != "uda."                  &&
           i->first.substr (0,  4) != "default."              &&
           i->first.substr (0, 21) != "urgency.user.project." &&
@@ -300,10 +300,11 @@ int CmdShow::execute (std::string& output)
       // TODO Deprecated.
       std::string value = i->second;
       // hide sensible information
-      if ( (i->first.substr (0, 5) == "push."   ||
+      if ((i->first.substr (0, 5) == "push."   ||
             i->first.substr (0, 5) == "pull."   ||
-            i->first.substr (0, 6) == "merge.") && (i->first.find (".uri") != std::string::npos) ) {
-
+            i->first.substr (0, 6) == "merge.") &&
+          (i->first.find (".uri") != std::string::npos))
+      {
         Uri uri (value);
         uri.parse ();
         value = uri.ToString ();
