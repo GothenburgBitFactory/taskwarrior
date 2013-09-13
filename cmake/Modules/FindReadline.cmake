@@ -9,36 +9,37 @@
 
 # Apple readline does not support readline hooks
 # So we look for another one by default
-IF (APPLE)
+IF (APPLE OR FREEBSD)
   FIND_PATH (READLINE_INCLUDE_DIR NAMES readline/readline.h PATHS
+    /usr/include/
     /sw/include
     /opt/local/include
     /opt/include
     /usr/local/include
-    /usr/include/
     NO_DEFAULT_PATH
     )
-ENDIF (APPLE)
+ENDIF (APPLE OR FREEBSD)
 FIND_PATH (READLINE_INCLUDE_DIR NAMES readline/readline.h)
 
 
 # Apple readline does not support readline hooks
 # So we look for another one by default
-IF (APPLE)
+IF (APPLE OR FREEBSD)
   FIND_LIBRARY (READLINE_readline_LIBRARY NAMES readline PATHS
+    /usr/lib
     /sw/lib
     /opt/local/lib
     /opt/lib
     /usr/local/lib
-    /usr/lib
     NO_DEFAULT_PATH
     )
-ENDIF (APPLE)
+ENDIF (APPLE OR FREEBSD)
 FIND_LIBRARY (READLINE_readline_LIBRARY NAMES readline)
 
 # Sometimes readline really needs ncurses
-IF (APPLE)
+IF (APPLE OR FREEBSD)
   FIND_LIBRARY (READLINE_ncurses_LIBRARY NAMES ncurses PATHS
+    /usr/lib
     /sw/lib
     /opt/local/lib
     /opt/lib
@@ -46,7 +47,7 @@ IF (APPLE)
     /usr/lib
     NO_DEFAULT_PATH
     )
-ENDIF (APPLE)
+ENDIF (APPLE OR FREEBSD)
 FIND_LIBRARY (READLINE_ncurses_LIBRARY NAMES ncurses)
 
 MARK_AS_ADVANCED (
