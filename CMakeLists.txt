@@ -90,10 +90,10 @@ check_struct_has_member ("struct tm" tm_gmtoff time.h HAVE_TM_GMTOFF)
 check_struct_has_member ("struct stat" st_birthtime "sys/types.h;sys/stat.h" HAVE_ST_BIRTHTIME)
 
 message ("-- Looking for libuuid")
-if (DARWIN)
-  # Apple includes the uuid functions in their libc, rather than libuuid
+if (DARWIN OR FREEBSD)
+  # Apple and FreeBSD include the uuid functions in their libc, rather than libuuid
   check_function_exists (uuid_unparse_lower HAVE_UUID_UNPARSE_LOWER)
-else (DARWIN)
+else (DARWIN OR FREEBSD)
   find_path    (UUID_INCLUDE_DIR   uuid/uuid.h)
   find_library (UUID_LIBRARY NAMES uuid)
   if (UUID_INCLUDE_DIR AND UUID_LIBRARY)
@@ -106,7 +106,7 @@ else (DARWIN)
   else (UUID_INCLUDE_DIR AND UUID_LIBRARY)
     message (FATAL_ERROR "-- libuuid not found.")
   endif (UUID_INCLUDE_DIR AND UUID_LIBRARY)
-endif (DARWIN)
+endif (DARWIN OR FREEBSD)
 
 if (HAVE_UUID_UNPARSE_LOWER)
   message ("-- Found libuuid")

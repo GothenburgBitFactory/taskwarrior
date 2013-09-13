@@ -229,6 +229,28 @@ int autoComplete (
   return matches.size ();
 }
 
+// Handle the generation of UUIDs on FreeBSD in a separate implementation
+// of the uuid () function, since the API is quite different from Linux's.
+// Also, uuid_unparse_lower is not needed on FreeBSD, because the string
+// representation is always lowercase anyway.
+// For the implementation details, refer to
+// http://svnweb.freebsd.org/base/head/sys/kern/kern_uuid.c
+#ifdef __FreeBSD__
+const std::string uuid ()
+{
+    uuid_t id;
+    uint32_t status;
+    char *buffer (0);
+    uuid_create (&id, &status);
+    uuid_to_string (&id, &buffer, &status);
+
+    std::string res (buffer);
+    free (buffer);
+
+    return res;
+}
+#else
+
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef HAVE_UUID_UNPARSE_LOWER
 // Older versions of libuuid don't have uuid_unparse_lower(), only uuid_unparse()
@@ -253,6 +275,7 @@ const std::string uuid ()
 
   return std::string (buffer);
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // On Solaris no flock function exists.

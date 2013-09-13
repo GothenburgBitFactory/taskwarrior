@@ -32,7 +32,11 @@
 #include <vector>
 #include <map>
 #include <sys/types.h>
+#ifdef __FreeBSD__
+#include <uuid.h>
+#else
 #include <uuid/uuid.h>
+#endif
 #include <Task.h>
 
 // util.cpp
