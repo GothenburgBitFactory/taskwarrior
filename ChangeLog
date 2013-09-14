@@ -43,6 +43,8 @@ Features
  + Protects against interrupt during critical DB commit and sync operations.
  + The 'push', 'pull' and 'merge' commands now generate a 'deprecated' message.
  + Rewritten task-sync(5) man page, listing sync options and setup guidelines..
+ + Now properly uses the libc version of uuid_create and uuid_to_string for
+   FreeBSD (thanks to Pietro Cerutti).
 
 Bugs
  + #1195 Random seed not random enough - removed all random number code (thanks

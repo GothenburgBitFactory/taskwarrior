@@ -28,11 +28,12 @@
 #ifndef INCLUDED_UTIL
 #define INCLUDED_UTIL
 
+#include <cmake.h>
 #include <string>
 #include <vector>
 #include <map>
 #include <sys/types.h>
-#ifdef __FreeBSD__
+#ifdef FREEBSD
 #include <uuid.h>
 #else
 #include <uuid/uuid.h>

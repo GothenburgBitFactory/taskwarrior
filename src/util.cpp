@@ -235,19 +235,19 @@ int autoComplete (
 // representation is always lowercase anyway.
 // For the implementation details, refer to
 // http://svnweb.freebsd.org/base/head/sys/kern/kern_uuid.c
-#ifdef __FreeBSD__
+#ifdef FREEBSD
 const std::string uuid ()
 {
-    uuid_t id;
-    uint32_t status;
-    char *buffer (0);
-    uuid_create (&id, &status);
-    uuid_to_string (&id, &buffer, &status);
+  uuid_t id;
+  uint32_t status;
+  char *buffer (0);
+  uuid_create (&id, &status);
+  uuid_to_string (&id, &buffer, &status);
 
-    std::string res (buffer);
-    free (buffer);
+  std::string res (buffer);
+  free (buffer);
 
-    return res;
+  return res;
 }
 #else
 
