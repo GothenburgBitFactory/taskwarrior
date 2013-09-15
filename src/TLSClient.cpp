@@ -127,7 +127,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 
   struct addrinfo* res;
   if (::getaddrinfo (host.c_str (), port.c_str (), &hints, &res) != 0)
-    throw "ERROR: " + std::string (::gai_strerror (errno));
+    throw std::string ("ERROR: ") + ::gai_strerror (errno);
 
   // Try them all, stop on success.
   struct addrinfo* p;
@@ -145,7 +145,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
                       SO_REUSEADDR,
                       (const void*) &on,
                       sizeof (on)) == -1)
-      throw "ERROR: " + std::string (::strerror (errno));
+      throw std::string ("ERROR: ") + ::strerror (errno);
 
     if (::connect (_socket, p->ai_addr, p->ai_addrlen) == -1)
       continue;
@@ -156,23 +156,22 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   free (res);
 
   if (p == NULL)
-    throw "ERROR: Could not connect to " + host + " " + port;
+    throw std::string ("ERROR: Could not connect to ") + host + " " + port;
 
   gnutls_transport_set_ptr (_session, (gnutls_transport_ptr_t) (long) _socket);
 
   // Perform the TLS handshake
-  int ret = gnutls_handshake (_session);
+  int ret;
+  do
+  {
+    ret = gnutls_handshake (_session);
+  }
+  while (ret < 0 && gnutls_error_is_fatal (ret) == 0);
   if (ret < 0)
-  {
-    if (_debug)
-      std::cout << "c: ERROR Handshake failed\n";
-    gnutls_perror (ret);
-  }
-  else
-  {
-    if (_debug)
-      std::cout << "c: INFO Handshake was completed\n";
-  }
+    throw std::string ("ERROR: Handshake failed.  ") + gnutls_strerror (ret);
+
+  if (_debug)
+    std::cout << "c: INFO Handshake was completed\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +273,7 @@ void TLSClient::recv (std::string& data)
 
     // Something happened.
     if (received < 0)
-      throw "ERROR: " + std::string (gnutls_strerror (received));
+      throw std::string ("ERROR: ") + gnutls_strerror (received);
 
     buffer [received] = '\0';
     data += buffer;

@@ -337,7 +337,7 @@ bool CmdSync::send (
 
   catch (std::string& error)
   {
-    context.debug (error);
+    context.error (error);
   }
 
   // Indicate message failed.
