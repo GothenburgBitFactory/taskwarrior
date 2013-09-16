@@ -88,8 +88,8 @@ int CmdSync::execute (std::string& output)
   if (credentials.size () != 3)
     throw std::string (STRING_CMD_SYNC_BAD_CRED);
 
-  std::string certificate = context.config.get ("taskd.certificate");
-  if (certificate == "")
+  File certificate (context.config.get ("taskd.certificate"));
+  if (! certificate.exists ())
     throw std::string (STRING_CMD_SYNC_BAD_CERT);
 
   // If this is a first-time initialization, send pending.data, not
@@ -146,7 +146,7 @@ int CmdSync::execute (std::string& output)
   signal (SIGUSR2,   SIG_IGN);
 
   Msg response;
-  if (send (connection, certificate, request, response))
+  if (send (connection, certificate._data, request, response))
   {
     std::string code = response.get ("code");
     if (code == "200")
