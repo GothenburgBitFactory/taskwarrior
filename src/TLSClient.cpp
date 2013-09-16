@@ -34,12 +34,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <TLSClient.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <netdb.h>
+#include <File.h>
+#include <TLSClient.h>
+#include <text.h>
 #include <i18n.h>
 
 #define MAX_BUF 16384
@@ -95,6 +97,9 @@ void TLSClient::debug (int level)
 void TLSClient::init (const std::string& ca)
 {
   _ca = ca;
+  File ca_file (_ca);
+  if (!ca_file.exists ())
+    throw std::string (STRING_CMD_SYNC_NO_CA);
 
   gnutls_global_init ();
   gnutls_certificate_allocate_credentials (&_credentials);
@@ -127,7 +132,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 
   struct addrinfo* res;
   if (::getaddrinfo (host.c_str (), port.c_str (), &hints, &res) != 0)
-    throw std::string ("ERROR: ") + ::gai_strerror (errno);
+    throw std::string (::gai_strerror (errno));
 
   // Try them all, stop on success.
   struct addrinfo* p;
@@ -145,7 +150,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
                       SO_REUSEADDR,
                       (const void*) &on,
                       sizeof (on)) == -1)
-      throw std::string ("ERROR: ") + ::strerror (errno);
+      throw std::string (::strerror (errno));
 
     if (::connect (_socket, p->ai_addr, p->ai_addrlen) == -1)
       continue;
@@ -156,7 +161,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   free (res);
 
   if (p == NULL)
-    throw std::string ("ERROR: Could not connect to ") + host + " " + port;
+    throw format (STRING_CMD_SYNC_CONNECT, host, port);
 
   gnutls_transport_set_ptr (_session, (gnutls_transport_ptr_t) (long) _socket);
 
@@ -168,7 +173,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   }
   while (ret < 0 && gnutls_error_is_fatal (ret) == 0);
   if (ret < 0)
-    throw std::string ("ERROR: Handshake failed.  ") + gnutls_strerror (ret);
+    throw format (STRING_CMD_SYNC_HANDSHAKE, gnutls_strerror (ret));
 
   if (_debug)
     std::cout << "c: INFO Handshake was completed\n";
@@ -273,7 +278,7 @@ void TLSClient::recv (std::string& data)
 
     // Something happened.
     if (received < 0)
-      throw std::string ("ERROR: ") + gnutls_strerror (received);
+      throw std::string (gnutls_strerror (received));
 
     buffer [received] = '\0';
     data += buffer;
