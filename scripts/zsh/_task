@@ -98,11 +98,13 @@ _regex_words values 'task dates' \
 	'soww:Start of work week' \
 	'socw:Start of calendar week' \
 	'som:Start of month' \
+	'soq:Start of quarter' \
 	'soy:Start of year' \
 	'eow:End of week' \
 	'eoww:End of work week' \
 	'eocw:End of calendar week' \
 	'eom:End of month' \
+	'eoq:End of quarter' \
 	'eoy:End of year' \
 	'mon:Monday' \
 	'tue:Tuesday'\
@@ -110,7 +112,16 @@ _regex_words values 'task dates' \
 	'thu:Thursday' \
 	'fri:Friday' \
 	'sat:Saturday' \
-	'sun:Sunday'
+	'sun:Sunday' \
+  'good*friday:Good Friday' \
+  'easter:Easter' \
+  'eastermonday:Easter Monday' \
+  'ascension:Ascension' \
+  'pentecost:Pentecost' \
+  'midsommar:Midsommar' \
+  'midsommarafton:Midsommarafton' \
+  'later:Later' \
+  'someday:Some Day'
 _task_dates=("$reply[@]")
 
 local -a _task_reldates
@@ -141,7 +152,7 @@ _regex_words values 'task frequencies' \
 	'weekly:Every week' \
 	'biweekly:Every two weeks' \
 	'fortnight:Every two weeks' \
-   'monthly:Every month' \
+  'monthly:Every month' \
 	'quarterly:Every three months' \
 	'semiannual:Every six months' \
 	'annual:Every year' \
