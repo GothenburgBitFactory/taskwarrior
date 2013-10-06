@@ -660,20 +660,10 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   std::vector <std::string>::iterator dep;
   for (dep = dependencies.begin (); dep != dependencies.end (); ++dep)
   {
-    std::vector <int> ids;
-
-    // Crude UUID check
-    if (dep->length () == 36)
-    {
-      int id = context.tdb2.pending.id (*dep);
-      ids.push_back (id);
-    }
+    if (dep->length () >= 7)
+      task.addDependency (*dep);
     else
-      A3::extract_id (*dep, ids);
-
-    std::vector <int>::iterator id;
-    for (id = ids.begin (); id != ids.end(); id++)
-      task.addDependency (*id);
+      task.addDependency ((int) strtol (dep->c_str (), NULL, 10));
   }
 
   // UDAs

@@ -990,11 +990,6 @@ void Task::addDependency (const std::string& uuid)
   if (uuid == get ("uuid"))
     throw std::string (STRING_TASK_DEPEND_ITSELF);
 
-  // Check that uuid is resolvable.
-  int id = context.tdb2.pending.id (uuid);
-  if (id == 0)
-    throw format (STRING_TASK_DEPEND_MISS_CREA, id);
-
   // Store the dependency.
   std::string depends = get ("depends");
   if (depends != "")

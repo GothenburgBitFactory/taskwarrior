@@ -67,6 +67,8 @@ Bugs
    Wilk).
  + #1263 The 'waiting' report properly lists only pending tasks with a wait date
    (thanks to Fidel Mato).
+ + #1268 Edit doesn't accept changes, if task has completed dependency (thanks
+   to Dmitriy Matrosov, Michele Santullo).
  + #1270 The 'undo' command is now properly removing backlog entries.
  + #1273 Query with negative relative date differs greatly from absolute date
    in past (thanks to John West).
