@@ -82,6 +82,7 @@ Bugs
  + #1387 ZSH Auto-Completion dates are not current (thanks to Benjamin Weber).
  + #1388 Updated task(1) man pages with import/export script examples (thanks to
    Benjamin Weber).
+ + #1410 Incomplete Date Synonym List in man task (thanks to Benjamin Weber).
  + Fixed bug so that 'limit:page' now considers footnote messages.
  + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
    (thanks to greenskeleton).

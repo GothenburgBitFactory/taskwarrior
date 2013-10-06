@@ -890,6 +890,22 @@ This sets the wait date to 1/18/2038.
 .TP
 Next occurring weekday
 task ... due:fri
+
+.TP
+Predictable holidays
+task ... due:goodfriday    
+.br
+task ... due:easter    
+.br
+task ... due:eastermonday    
+.br
+task ... due:ascension    
+.br
+task ... due:pentecost    
+.br
+task ... due:midsommar    
+.br
+task ... due:midsommarafton
 .RE
 
 .SS FREQUENCIES
