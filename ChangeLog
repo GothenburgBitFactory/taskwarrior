@@ -71,6 +71,7 @@ Bugs
    Weber).
  + #1300 Encode/decode pairing is now properly balanced.
  + #1305 Commit hash now available in tarball builds (thanks to Ben Boeckel).
+ + #1356 Command reference now mentions /from/to/g.
  + #1387 ZSH Auto-Completion dates are not current (thanks to Benjamin Weber).
  + Fixed bug so that 'limit:page' now considers footnote messages.
  + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
