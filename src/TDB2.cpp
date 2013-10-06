@@ -766,7 +766,7 @@ void TDB2::merge (const std::string& mergeFile)
       tmp_lit++;
       tmp_rit++;
     }
-    
+
     if (lookahead == -1) {
       // at this point we know that the first lines are the same
       undo_lines.push_back (lline + "\n");
@@ -783,7 +783,7 @@ void TDB2::merge (const std::string& mergeFile)
   bool found = false;
   for (std::vector<std::string>::const_iterator tmp_lit = lit, tmp_rit = rit;
        (tmp_lit != l.end ()) && (tmp_rit != r.end ());
-		 ++tmp_lit, ++tmp_rit)
+       ++tmp_lit, ++tmp_rit)
   {
     lline = *tmp_lit;
     rline = *tmp_rit;
@@ -875,7 +875,7 @@ void TDB2::merge (const std::string& mergeFile)
         //  point in time. Normally this case will be solved by the merge logic,
         //  BUT if the UUID is considered new the merge logic will be skipped.
         //
-        //  This flaw resulted in a couple of duplication issues and bloated 
+        //  This flaw resulted in a couple of duplication issues and bloated
         //  undo files (e.g. #1104).
         //
         //  This is just a "hack" which discards all the modifications of the
@@ -989,7 +989,7 @@ void TDB2::merge (const std::string& mergeFile)
 
                 // inserting right mod into history of local database
                 // so that it can be restored later
-                // AND more important: create a history that looks the same 
+                // AND more important: create a history that looks the same
                 // as if we switched the roles 'remote' and 'local'
 
                 // thus we have to find the oldest change on the local branch that is not on remote branch
@@ -1293,7 +1293,7 @@ void TDB2::revert ()
     // Revert: task add
     // [1] 0 --> p
     //   - erase from pending
-    //   - if in backlog, erase, else add deletion
+    //   - if in backlog, erase, else cannot undo
     //
     // Revert: task modify
     // [2] p --> p'
@@ -1320,7 +1320,7 @@ void TDB2::revert ()
     // Revert: task log
     // [6] 0 --> c
     //   - erase from completed
-    //   - if in backlog, erase, else add deletion
+    //   - if in backlog, erase, else cannot undo
 
     // Modify other data files accordingly.
     std::vector <std::string> p = pending.get_lines ();
@@ -1338,15 +1338,6 @@ void TDB2::revert ()
     File::write (pending._file._data, p);
     File::write (completed._file._data, c);
     File::write (backlog._file._data, b);
-
-/*
-    // Perhaps user hand-edited the data files?
-    // Perhaps the task was in completed.data, which was still in file format 3?
-    std::cout << format (STRING_TDB2_MISSING_TASK, uuid.substr (6, 36))
-              << "\n"
-              << STRING_TDB2_UNDO_IMPOSSIBLE
-              << "\n";
-*/
   }
   else
     std::cout << STRING_CMD_CONFIG_NO_CHANGE << "\n";
@@ -1386,7 +1377,7 @@ void TDB2::revert_undo (
   // Extract identifying uuid.
   std::string::size_type uuidAtt = current.find ("uuid:\"");
   if (uuidAtt != std::string::npos)
-    uuid = current.substr (uuidAtt, 43); // 43 = uuid:"..."
+    uuid = current.substr (uuidAtt + 6, 36); // "uuid:"<uuid>" --> <uuid>
   else
     throw std::string (STRING_TDB2_MISSING_UUID);
 }
@@ -1398,11 +1389,13 @@ void TDB2::revert_pending (
   const std::string& current,
   const std::string& prior)
 {
+  std::string uuid_att = "uuid:\"" + uuid + "\"";
+
   // is 'current' in pending?
   std::vector <std::string>::iterator task;
   for (task = p.begin (); task != p.end (); ++task)
   {
-    if (task->find (uuid) != std::string::npos)
+    if (task->find (uuid_att) != std::string::npos)
     {
       context.debug ("TDB::revert - task found in pending.data");
 
@@ -1431,13 +1424,15 @@ void TDB2::revert_completed (
   const std::string& current,
   const std::string& prior)
 {
+  std::string uuid_att = "uuid:\"" + uuid + "\"";
+
   // is 'current' in completed?
   std::vector <std::string>::iterator task;
   for (task = c.begin (); task != c.end (); ++task)
   {
-    if (task->find (uuid) != std::string::npos)
+    if (task->find (uuid_att) != std::string::npos)
     {
-      context.debug ("TDB::revert - task found in completed.data");
+      context.debug ("TDB::revert_completed - task found in completed.data");
 
       // Either revert if there was a prior state, or remove the task.
       if (prior != "")
@@ -1450,12 +1445,12 @@ void TDB2::revert_completed (
           c.erase (task);
           p.push_back (prior);
           std::cout << STRING_TDB2_REVERTED << "\n";
-          context.debug ("TDB::revert - task belongs in pending.data");
+          context.debug ("TDB::revert_completed - task belongs in pending.data");
         }
         else
         {
           std::cout << STRING_TDB2_REVERTED << "\n";
-          context.debug ("TDB::revert - task belongs in completed.data");
+          context.debug ("TDB::revert_completed - task belongs in completed.data");
         }
       }
       else
@@ -1463,7 +1458,7 @@ void TDB2::revert_completed (
         c.erase (task);
 
         std::cout << STRING_TDB2_REVERTED << "\n";
-        context.debug ("TDB::revert - task removed");
+        context.debug ("TDB::revert_completed - task removed");
       }
 
       std::cout << STRING_TDB2_UNDO_COMPLETE << "\n";
@@ -1479,21 +1474,38 @@ void TDB2::revert_backlog (
   const std::string& current,
   const std::string& prior)
 {
-  std::vector <std::string>::iterator task;
-  for (task = b.begin (); task != b.end (); ++task)
+  std::string uuid_att = "\"uuid\":\"" + uuid + "\"";
+
+  bool found = false;
+  std::vector <std::string>::reverse_iterator task;
+  for (task = b.rbegin (); task != b.rend (); ++task)
   {
-    if (task->find (uuid) != std::string::npos)
+    if (task->find (uuid_att) != std::string::npos)
     {
-/*
       context.debug ("TDB::revert_backlog - task found in backlog.data");
+      found = true;
 
-//        // Write prior to backlog.data
-//        Task json_task (prior);
-//        backlog.add_line (json_task.composeJSON () + "\n");
+      // If this is a new task (no prior), then just remove it from the backlog.
+      if (current != "" && prior == "")
+      {
+        // Yes, this is what is needed, when you want to erase using a reverse
+        // iterator.
+        b.erase ((++task).base ());
+      }
 
-*/
+      // If this is a modification of some kind, add the prior to the backlog.
+      else
+      {
+        Task t (prior);
+        b.push_back (t.composeJSON ());
+      }
+
+      break;
     }
   }
+
+  if (!found)
+    throw std::string (STRING_TDB2_UNDO_SYNCED);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
