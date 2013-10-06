@@ -73,6 +73,7 @@ Bugs
  + #1305 Commit hash now available in tarball builds (thanks to Ben Boeckel).
  + #1352 Terminal crashes when using taskwarrior's zsh completion (thanks to
    Ivan Freitas, XTaran).
+ + #1356 Command reference now mentions /from/to/g.
  + #1387 ZSH Auto-Completion dates are not current (thanks to Benjamin Weber).
  + Fixed bug so that 'limit:page' now considers footnote messages.
  + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
