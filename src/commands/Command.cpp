@@ -463,7 +463,7 @@ void Command::modify_task (
   std::string& description)
 {
   // Utilize Task::modify
-  task.modify(arguments, description);
+  task.modify (arguments, description);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

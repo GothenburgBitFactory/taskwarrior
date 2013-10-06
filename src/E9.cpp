@@ -185,7 +185,10 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
           {
             Duration dur (operand._raw);
             Date now;
-            now += (int)(time_t) dur;
+            if (dur.negative ())
+              now -= (int)(time_t) dur;
+            else
+              now += (int)(time_t) dur;
             operand._value  = now.toEpochString ();
           }
           else

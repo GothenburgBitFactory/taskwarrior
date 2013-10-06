@@ -51,7 +51,7 @@ int convertDuration (const std::string& input)
 
 int main (int argc, char** argv)
 {
-  UnitTest t (644);
+  UnitTest t (646);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -728,6 +728,11 @@ int main (int argc, char** argv)
   t.is (convertDuration ("10d"),          10, "valid duration 10d");
 
   t.is (convertDuration ("-"),             0, "valid duration -");
+
+  d = Duration ("-4d");
+  t.is ((time_t)d, 4*86400, "-4d == 4*86400");
+  t.ok (d.negative (),      "-4d == negative");
+
   try
   {
     Duration left, right;

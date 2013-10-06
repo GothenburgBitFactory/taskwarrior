@@ -68,6 +68,8 @@ Bugs
  + #1263 The 'waiting' report properly lists only pending tasks with a wait date
    (thanks to Fidel Mato).
  + #1270 The 'undo' command is now properly removing backlog entries.
+ + #1273 Query with negative relative date differs greatly from absolute date
+   in past (thanks to John West).
  + #1279 Assorted corrections to the task-ref.pdf document (thanks to Benjamin
    Weber).
  + #1286 Cannot use "sow", "som", etc in "entry.after", "end.after" filters
