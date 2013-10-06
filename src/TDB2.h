@@ -127,6 +127,11 @@ public:
 
 private:
   bool verifyUniqueUUID (const std::string&);
+  void show_diff (const std::string&, const std::string&, const std::string&);
+  void revert_undo (std::vector <std::string>&, std::string&, std::string&, std::string&, std::string&);
+  void revert_pending (std::vector <std::string>&, const std::string&, const std::string&, const std::string&);
+  void revert_completed (std::vector <std::string>&, std::vector <std::string>&, const std::string&, const std::string&, const std::string&);
+  void revert_backlog (std::vector <std::string>&, const std::string&, const std::string&, const std::string&);
 
 public:
   TF2 pending;

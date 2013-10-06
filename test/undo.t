@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 20;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -64,6 +64,15 @@ like ($output, qr/No matches/, 'No matches');
 $output = qx{../src/task rc:undo.rc undo 1 2>&1};
 unlike ($output, qr/Unknown error/, 'No unknown error');
 like ($output, qr/The undo command does not allow further task modification/, 'Correct error caught and reported');
+
+# Add a new task and undo it.
+$output = qx{../src/task rc:undo.rc add two 2>&1; ../src/task rc:undo.rc info 1 2>&1};
+unlike ($output, qr/Unknown error/, 'No unknown error');
+like ($output, qr/Status\s+Pending\n/, 'Pending');
+
+$output = qx{../src/task rc:undo.rc undo 2>&1; ../src/task rc:undo.rc info 1 2>&1};
+like ($output, qr/Task removed\.\n/, 'Task removed');
+like ($output, qr/No matches\.\n/, 'No matches');
 
 # Inspect backlog.data
 if (open my $fh, '<', 'backlog.data')

@@ -66,6 +66,7 @@ Bugs
    Wilk).
  + #1263 The 'waiting' report properly lists only pending tasks with a wait date
    (thanks to Fidel Mato).
+ + #1270 The 'undo' command is now properly removing backlog entries.
  + #1279 Assorted corrections to the task-ref.pdf document (thanks to Benjamin
    Weber).
  + #1300 Encode/decode pairing is now properly balanced.
