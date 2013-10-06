@@ -173,7 +173,18 @@ Displays only a count of tasks matching the filter.
 Exports all tasks in the JSON format.  Redirect the output to a file, if you
 wish to save it, or pipe it to another command or script to convert it to
 another format. The standard task release comes with a few example scripts,
-such as export-yaml.pl.
+such as:
+
+  export-csv.pl
+  export-sql.py
+  export-xml.py
+  export-yaml.pl
+  export-html.pl
+  export-tsv.pl
+  export-xml.rb
+  export-ical.pl
+  export-xml.pl
+  export-yad.pl
 
 .TP
 .B task <filter> ghistory.annual
@@ -335,7 +346,10 @@ provided for exceptional circumstances.  Use carefully.
 .TP
 .B task import <file> [<file> ...]
 Imports tasks in the JSON format.  The standard task release comes with a few
-example scripts, such as import-yaml.pl.
+example scripts, such as:
+
+  import-todo.sh.pl
+  import-yaml.pl
 
 .TP
 .B task log <mods>
