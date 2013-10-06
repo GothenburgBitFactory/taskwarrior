@@ -36,6 +36,13 @@ Newly deprecated features in taskwarrior 2.3.0
   - The 'diagnostics' command no longer generates 1000 UUIDs as a uniqueness
     test, because libuuid is now mandatory.
 
+Known Issues
+
+  - There is a zsh bug (fixed, but not necessarily updated in your OS) that can
+    cause the terminal to crash when completion is invoked.  See the issue for
+    full details:
+    http://taskwarrior.org/issues/1352
+
 ---
 
 Taskwarrior has been built and tested on the following configurations:
