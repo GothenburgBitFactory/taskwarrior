@@ -337,7 +337,7 @@ int main (int argc, char** argv)
     t.ok (r11 < now + (8 * 86400), "eow < 7 days away");
 
     Date r12 ("eocw");
-    t.ok (r12 < now + (8 * 86400), "eocw < 7 days away");
+    t.ok (r12 > now - (8 * 86400), "eocw < 7 days in the past");
 
     Date r13 ("eom");
     t.ok (r13.sameMonth (now), "eom in same month as now");
@@ -352,7 +352,7 @@ int main (int argc, char** argv)
     t.ok (r16 < now + (8 * 86400), "sow < 7 days away");
 
     Date r23 ("socw");
-    t.ok (r23 < now + (8 * 86400), "sow < 7 days away");
+    t.ok (r23 > now - (8 * 86400), "sow < 7 days in the past");
 
     Date r17 ("som");
     t.notok (r17.sameMonth (now), "som not in same month as now");
