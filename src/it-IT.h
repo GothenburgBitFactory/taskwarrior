@@ -832,8 +832,6 @@
 #define STRING_TDB2_REVERTED         "Modifiche al task ripristinate."
 #define STRING_TDB2_REMOVED          "Task rimosso."
 #define STRING_TDB2_UNDO_COMPLETE    "Undo completato."
-#define STRING_TDB2_MISSING_TASK     "Task con UUID {1} non trovato nei dati."
-#define STRING_TDB2_UNDO_IMPOSSIBLE  "Nessun undo possibile."
 #define STRING_TDB2_UNDO_SYNCED      "Cannot undo change because the task was already synced.  Modify the task instead."
 
 // text

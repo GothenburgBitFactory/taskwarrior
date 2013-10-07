@@ -846,8 +846,6 @@
 #define STRING_TDB2_REVERTED         "Tarea modificada revertida."
 #define STRING_TDB2_REMOVED          "Tarea eliminada."
 #define STRING_TDB2_UNDO_COMPLETE    "Deshacer completado."
-#define STRING_TDB2_MISSING_TASK     "Tarea con UUID {1} no encontrada en los datos."
-#define STRING_TDB2_UNDO_IMPOSSIBLE  "No es posible deshacer."
 #define STRING_TDB2_UNDO_SYNCED      "Cannot undo change because the task was already synced.  Modify the task instead."
 
 // text
