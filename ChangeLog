@@ -67,7 +67,11 @@ Bugs
    Wilk).
  + #1263 The 'waiting' report properly lists only pending tasks with a wait date
    (thanks to Fidel Mato).
+ + #1268 Edit doesn't accept changes, if task has completed dependency (thanks
+   to Dmitriy Matrosov, Michele Santullo).
  + #1270 The 'undo' command is now properly removing backlog entries.
+ + #1273 Query with negative relative date differs greatly from absolute date
+   in past (thanks to John West).
  + #1279 Assorted corrections to the task-ref.pdf document (thanks to Benjamin
    Weber).
  + #1286 Cannot use "sow", "som", etc in "entry.after", "end.after" filters
@@ -80,6 +84,7 @@ Bugs
  + #1387 ZSH Auto-Completion dates are not current (thanks to Benjamin Weber).
  + #1388 Updated task(1) man pages with import/export script examples (thanks to
    Benjamin Weber).
+ + #1410 Incomplete Date Synonym List in man task (thanks to Benjamin Weber).
  + Fixed bug so that 'limit:page' now considers footnote messages.
  + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
    (thanks to greenskeleton).

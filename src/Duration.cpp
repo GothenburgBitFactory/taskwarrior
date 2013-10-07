@@ -368,6 +368,8 @@ bool Duration::valid (const std::string& input)
   Nibbler n (lower_input);
   n.getNumber (value);
 
+  // Negative values are valid, but do not need to complicate the validation
+  // check.
   if (value < 0.0)
     value = -value;
 
