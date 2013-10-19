@@ -56,14 +56,14 @@ qx{../src/task rc:roundtrip.rc export > ./roundtrip.txt 2>&1};
 unlink 'pending.data', 'completed.data', 'undo.data';
 qx{../src/task rc:roundtrip.rc import ./roundtrip.txt 2>&1};
 
-# Exammine.
+# Examine.
 
 # ID Project Pri Added    Started Due Recur Countdown Age Deps Tags      Description
 # -- ------- --- -------- ------- --- ----- --------- --- ---- --------- ---------
 #  1 A       H   8/7/2010                               -                one
 #  2             8/7/2010                               -      tag1 tag2 two
 my $output = qx{../src/task rc:roundtrip.rc long 2>&1};
-like ($output, qr/1.+A.+H.+\d+\/\d+\/\d+.+(?:-|\d+).+one/,       '2 round trips task 1 identical');
+like ($output, qr/1.+\d+\/\d+\/\d+.+H.+A.+one/,                  '2 round trips task 1 identical');
 like ($output, qr/2.+\d+\/\d+\/\d+.+(?:-|\d+).+tag1\stag2\stwo/, '2 round trips task 2 identical');
 
 # Cleanup.

@@ -35,7 +35,10 @@ if (open my $fh, '>', 'uuid.rc')
 {
   print $fh "data.location=.\n",
             "dateformat=m/d/Y\n",
-            "confirmation=off\n";
+            "confirmation=off\n",
+            "report.unittest.columns=id,entry,start,description\n",
+            "report.unittest.filter=status:pending\n",
+            "report.unittest.sort=id\n";
   close $fh;
   ok (-r 'uuid.rc', 'Created uuid.rc');
 }
@@ -94,7 +97,7 @@ $output = qx{../src/task rc:uuid.rc completed 2>&1};
 unlike ($output, qr/UUNNDDOO/, 'task does not list UUNNDDOO after modification');
 
 qx{../src/task rc:uuid.rc d71d3566-7a6b-4c32-8f0b-6de75bb9397b modify start:1293796800 2>&1};
-$output = qx{../src/task rc:uuid.rc long 2>&1};
+$output = qx{../src/task rc:uuid.rc unittest 2>&1};
 like ($output, qr/12\/31\/2010/, 'modified start date of task ssttaarrtt');
 
 qx{../src/task rc:uuid.rc 727baa6c-65b8-485e-a810-e133e3cd83dc modify end:1293796800 2>&1};
@@ -103,7 +106,7 @@ like ($output, qr/12\/31\/2010/, 'modified end date of task eenndd');
 
 qx{../src/task rc:uuid.rc aa4abef1-1dc5-4a43-b6a0-7872df3094bb modify entry:1293710400 2>&1};
 qx{../src/task rc:uuid.rc aa4abef1-1dc5-4a43-b6a0-7872df3094bb modify start:1293883200 2>&1};
-$output = qx{../src/task rc:uuid.rc long 2>&1};
+$output = qx{../src/task rc:uuid.rc unittest 2>&1};
 like ($output, qr/12\/30\/2010/, 'modified entry date of task three');
 like ($output, qr/1\/1\/2011/, 'added start date of task three with modify');
 
