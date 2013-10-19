@@ -47,14 +47,14 @@ qx{../src/task rc:bug.rc 1 annotate Annotation one 2>&1};
 qx{../src/task rc:bug.rc 1 annotate Annotation two 2>&1};
 qx{../src/task rc:bug.rc 1 annotate Annotation three 2>&1};
 
-my $output = qx{../src/task rc:bug.rc list 2>&1};
+my $output = qx{../src/task rc:bug.rc long 2>&1};
 like ($output, qr/This is a test/,   'original description');
 like ($output, qr/Annotation one/,   'original annotation one');
 like ($output, qr/Annotation two/,   'original annotation two');
 like ($output, qr/Annotation three/, 'original annotation three');
 
 qx{../src/task rc:bug.rc 1 modify /i/I/g 2>&1};
-$output = qx{../src/task rc:bug.rc list 2>&1};
+$output = qx{../src/task rc:bug.rc long 2>&1};
 like ($output, qr/ThIs Is a test/,   'new description');
 like ($output, qr/AnnotatIon one/,   'new annotation one');
 like ($output, qr/AnnotatIon two/,   'new annotation two');

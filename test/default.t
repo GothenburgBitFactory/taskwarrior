@@ -76,7 +76,7 @@ like ($output, qr/ L /,                 'priority specified');
 like ($output, qr/\//,                  'default due added');
 
 $output = qx{../src/task rc:default.rc 2>&1};
-like ($output, qr/1 PROJECT L .+ priority specified/, 'default command worked');
+like ($output, qr/1 .+ L PROJECT .+ priority specified/, 'default command worked');
 
 qx{../src/task rc:default.rc add project:HOME priority:M due:tomorrow all specified 2>&1};
 qx{echo 'y' | ../src/task rc:default.rc config default.command 'list priority:M' 2>&1};

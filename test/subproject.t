@@ -45,19 +45,19 @@ my $setup = "../src/task rc:sp.rc add project:abc abc 2>&1;"
 qx{$setup};
 
 my $output = qx{../src/task rc:sp.rc list project:b 2>&1};
-like ($output, qr/\bb\s*$/m, 'abc,ab,a,b | b -> b');
+like ($output, qr/\bb\s/m, 'abc,ab,a,b | b -> b');
 
 $output = qx{../src/task rc:sp.rc list project:a 2>&1};
-like ($output, qr/\babc\s*$/m, 'abc,ab,a,b | a -> abc');
-like ($output, qr/\bab\s*$/m,  'abc,ab,a,b | a -> ab');
-like ($output, qr/\ba\s*$/m,   'abc,ab,a,b | a -> a');
+like ($output, qr/\babc\s/m, 'abc,ab,a,b | a -> abc');
+like ($output, qr/\bab\s/m,  'abc,ab,a,b | a -> ab');
+like ($output, qr/\ba\s/m,   'abc,ab,a,b | a -> a');
 
 $output = qx{../src/task rc:sp.rc list project:ab 2>&1};
-like ($output, qr/\babc\s*$/m, 'abc,ab,a,b | a -> abc');
-like ($output, qr/\bab\s*$/m,  'abc,ab,a,b | a -> ab');
+like ($output, qr/\babc\s/m, 'abc,ab,a,b | a -> abc');
+like ($output, qr/\bab\s/m,  'abc,ab,a,b | a -> ab');
 
 $output = qx{../src/task rc:sp.rc list project:abc 2>&1};
-like ($output, qr/\babc\s*$/m, 'abc,ab,a,b | a -> abc');
+like ($output, qr/\babc\s/m, 'abc,ab,a,b | a -> abc');
 
 $output = qx{../src/task rc:sp.rc list project:abcd 2>&1 >/dev/null};
 like ($output, qr/No matches./, 'abc,ab,a,b | abcd -> nul');

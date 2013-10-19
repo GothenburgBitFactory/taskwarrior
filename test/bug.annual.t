@@ -58,16 +58,16 @@ if (open my $fh, '>', 'annual.rc')
 
 qx{../src/task rc:annual.rc add foo due:1/1/2000 recur:annual until:1/1/2009 2>&1};
 my $output = qx{../src/task rc:annual.rc list 2>&1};
-like ($output, qr/2\s+1\/1\/2000\s+(?:\d+\ssecs?\s+)?foo/,  'synthetic 2 no creep');
-like ($output, qr/3\s+1\/1\/2001\s+(?:\d+\ssecs?\s+)?foo/,  'synthetic 3 no creep');
-like ($output, qr/4\s+1\/1\/2002\s+(?:\d+\ssecs?\s+)?foo/,  'synthetic 4 no creep');
-like ($output, qr/5\s+1\/1\/2003\s+(?:\d+\ssecs?\s+)?foo/,  'synthetic 5 no creep');
-like ($output, qr/6\s+1\/1\/2004\s+(?:\d+\ssecs?\s+)?foo/,  'synthetic 6 no creep');
-like ($output, qr/7\s+1\/1\/2005\s+(?:\d+\ssecs?\s+)?foo/,  'synthetic 7 no creep');
-like ($output, qr/8\s+1\/1\/2006\s+(?:\d+\ssecs?\s+)?foo/,  'synthetic 8 no creep');
-like ($output, qr/9\s+1\/1\/2007\s+(?:\d+\ssecs?\s+)?foo/,  'synthetic 9 no creep');
-like ($output, qr/10\s+1\/1\/2008\s+(?:\d+\ssecs?\s+)?foo/, 'synthetic 10 no creep');
-like ($output, qr/11\s+1\/1\/2009\s+(?:\d+\ssecs?\s+)?foo/, 'synthetic 11 no creep');
+like ($output, qr/2\s+R\s+1\/1\/2000\s+.+foo/,  'synthetic 2 no creep');
+like ($output, qr/3\s+R\s+1\/1\/2001\s+.+foo/,  'synthetic 3 no creep');
+like ($output, qr/4\s+R\s+1\/1\/2002\s+.+foo/,  'synthetic 4 no creep');
+like ($output, qr/5\s+R\s+1\/1\/2003\s+.+foo/,  'synthetic 5 no creep');
+like ($output, qr/6\s+R\s+1\/1\/2004\s+.+foo/,  'synthetic 6 no creep');
+like ($output, qr/7\s+R\s+1\/1\/2005\s+.+foo/,  'synthetic 7 no creep');
+like ($output, qr/8\s+R\s+1\/1\/2006\s+.+foo/,  'synthetic 8 no creep');
+like ($output, qr/9\s+R\s+1\/1\/2007\s+.+foo/,  'synthetic 9 no creep');
+like ($output, qr/10\s+R\s+1\/1\/2008\s+.+foo/, 'synthetic 10 no creep');
+like ($output, qr/11\s+R\s+1\/1\/2009\s+.+foo/, 'synthetic 11 no creep');
 
 $output = qx{../src/task rc:annual.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
