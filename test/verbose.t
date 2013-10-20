@@ -34,8 +34,7 @@ use Test::More tests => 8;
 if (open my $fh, '>', 'verbose.rc')
 {
   print $fh "data.location=.\n",
-            "echo.command=off\n";
-  print $fh "print.empty.columns=yes\n";
+            "print.empty.columns=yes\n";
   close $fh;
   ok (-r 'verbose.rc', 'Created verbose.rc');
 }

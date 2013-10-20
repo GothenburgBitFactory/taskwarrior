@@ -67,8 +67,7 @@ int CmdLog::execute (std::string& output)
     context.footnote (onProjectChange (task));
   context.tdb2.commit ();
 
-  if (context.verbose ("affected") ||
-      context.config.getBoolean ("echo.command")) // Deprecated 2.0
+  if (context.verbose ("affected"))
     output = std::string (STRING_CMD_LOG_LOGGED) + "\n";
 
   return rc;

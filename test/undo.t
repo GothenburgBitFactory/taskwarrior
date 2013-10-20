@@ -34,7 +34,6 @@ use Test::More tests => 11;
 if (open my $fh, '>', 'undo.rc')
 {
   print $fh "data.location=.\n",
-            "echo.command=no\n",
             "confirmation=no\n";
   close $fh;
   ok (-r 'undo.rc', 'Created undo.rc');

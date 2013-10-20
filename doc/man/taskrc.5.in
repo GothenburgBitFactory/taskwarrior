@@ -285,12 +285,6 @@ command.  The default value is "yes".  Consider leaving this setting as "yes",
 for safety.
 
 .TP
-.B echo.command=yes
-May be "yes" or "no", and causes the display of the ID and description of any
-task when you run the start, stop, do, undo or delete commands. The default
-value is "yes".  Deprecated - use verbosity tokens 'header' and  'affected'.
-
-.TP
 .B indent.annotation=2
 Controls the number of spaces to indent annotations when shown beneath the
 description field.  The default value is "2".

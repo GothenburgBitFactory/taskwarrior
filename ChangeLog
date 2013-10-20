@@ -1,3 +1,11 @@
+2.4.0 () -
+
+Features
+ + Removed deprecated 'echo.command' setting, in favor of the 'header' and
+   'affected' verbosity tokens.
+
+Bugs
+
 ------ current release ---------------------------
 
 2.3.0 () -

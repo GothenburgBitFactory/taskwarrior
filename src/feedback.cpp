@@ -314,11 +314,8 @@ std::string renderAttribute (const std::string& name, const std::string& value, 
 //    <string>
 void feedback_affected (const std::string& effect)
 {
-  if (context.verbose ("affected") ||
-      context.config.getBoolean ("echo.command")) // Deprecated 2.0
-  {
+  if (context.verbose ("affected"))
     std::cout << effect << "\n";
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -329,12 +326,9 @@ void feedback_affected (const std::string& effect)
 //    {1}    Quantity
 void feedback_affected (const std::string& effect, int quantity)
 {
-  if (context.verbose ("affected") ||
-      context.config.getBoolean ("echo.command")) // Deprecated 2.0
-  {
+  if (context.verbose ("affected"))
     std::cout << format (effect, quantity)
               << "\n";
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -346,8 +340,7 @@ void feedback_affected (const std::string& effect, int quantity)
 //    {2}    Description
 void feedback_affected (const std::string& effect, const Task& task)
 {
-  if (context.verbose ("affected") ||
-      context.config.getBoolean ("echo.command")) // Deprecated 2.0
+  if (context.verbose ("affected"))
   {
     if (task.id)
       std::cout << format (effect, task.id, task.get ("description"))
@@ -392,8 +385,7 @@ void feedback_special_tags (const Task& task, const std::string& tag)
 //    Unblocked <id> '<description>'
 void feedback_unblocked (const Task& task)
 {
-  if (context.verbose ("affected") ||
-      context.config.getBoolean ("echo.command")) // Deprecated 2.0
+  if (context.verbose ("affected"))
   {
     // Get a list of tasks that depended on this task.
     std::vector <Task> blocked;
