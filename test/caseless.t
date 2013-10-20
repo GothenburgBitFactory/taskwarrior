@@ -33,7 +33,12 @@ use Test::More tests => 18;
 # Create the rc file.
 if (open my $fh, '>', 'caseless.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "report.ls.columns=id,project,priority,description\n",
+            "report.ls.labels=ID,Proj,Pri,Description\n",
+            "report.ls.sort=priority-,project+\n",
+            "report.ls.filter=status:pending\n";
+
   close $fh;
   ok (-r 'caseless.rc', 'Created caseless.rc');
 }

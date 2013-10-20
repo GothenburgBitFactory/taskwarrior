@@ -37,7 +37,9 @@ if (open my $fh, '>', 'bug.rc')
             "bulk=100\n",
             "confirmation=no\n",
             "print.empty.columns=yes\n",
-            "report.ls.labels=ID,Project,Pri,Description\n";
+            "report.unittest.labels=ID,Project,Pri,Description\n",
+            "report.unittest.columns=id,project,priority,description\n",
+            "report.unittest.filter=status:pending\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }
@@ -49,12 +51,12 @@ qx{../src/task rc:bug.rc add One 2>&1};
 qx{../src/task rc:bug.rc 1 annotate abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz 2>&1};
 
 # List with rc.hyphenate=on.
-my $output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:on ls 2>&1};
+my $output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:on unittest 2>&1};
 like ($output, qr/vwx-\n/ms, 'hyphenated 1');
 like ($output, qr/tuv-\n/ms, 'hyphenated 2');
 
 # List with rc.hyphenate=off.
-$output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:off ls 2>&1};
+$output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:off unittest 2>&1};
 like ($output, qr/vwxy\n/ms, 'not hyphenated 1');
 like ($output, qr/uvwx\n/ms, 'not hyphenated 2');
 

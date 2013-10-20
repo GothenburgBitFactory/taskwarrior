@@ -50,7 +50,7 @@ qx{../src/task rc:special.rc add should have no red +nocolor priority:H 2>&1};
 qx{../src/task rc:special.rc add should be red +nonag 2>&1};
 
 my $output = qx{../src/task rc:special.rc ls 2>&1};
-like ($output, qr/\s1\s+H\s+should have no red/,      'no red in first task due to +nocolor');
+like ($output, qr/\s1\s+nocolor\s+should have no red/,      'no red in first task due to +nocolor');
 like ($output, qr/\033\[31mshould be red\s+\033\[0m/, 'red in second task');
 
 # Prove that +nonag suppresses nagging when a low priority task is completed

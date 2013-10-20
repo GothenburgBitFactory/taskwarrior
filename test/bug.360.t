@@ -64,7 +64,7 @@ like ($output, qr/^You cannot remove the due date from a recurring task.$/ms, 'C
 qx{../src/task rc:bug.rc add nonrecurring due:today 2>&1};
 $output = qx{../src/task rc:bug.rc ls 2>&1};
 like ($output, qr/^2 task.$/ms, '2 tasks shown');
-my ($id) = $output =~ /(\d+)\s+nonrecurring/;
+my ($id) = $output =~ /(\d+)\s.+\snonrecurring/;
 $output = qx{../src/task rc:bug.rc $id modify due: 2>&1};
 like ($output, qr/^Modified 1 task.$/ms, 'no task modified');
 unlike ($output, qr/^You cannot remove the due date from a recurring task.$/ms, 'Can remove due date from a non-recurring task');

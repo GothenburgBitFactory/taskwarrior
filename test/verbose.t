@@ -49,7 +49,7 @@ unlike ($output, qr/Created task \d/, '\'new-id\' verbosity good');
 
 # Verbosity: 'label'
 $output = qx{../src/task rc:verbose.rc ls rc.verbose:label 2>&1};
-like ($output, qr/ID.+Proj.+Pri.+Description/, '\'label\' verbosity good');
+like ($output, qr/ID.+A.+D.+Project.+Tags.+R.+Wait.+S.+Due.+Until.+Description/, '\'label\' verbosity good');
 
 # Verbosity: 'affected'
 $output = qx{../src/task rc:verbose.rc ls rc.verbose:affected 2>&1};

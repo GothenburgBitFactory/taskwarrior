@@ -34,7 +34,7 @@ use Test::More tests => 4;
 if (open my $fh, '>', '455.rc')
 {
   print $fh "data.location=.\n";
-  print $fh "print.empty.columns=yes\n";
+  print $fh "print.empty.columns=no\n";
 
   close $fh;
   ok (-r '455.rc', 'Created 455.rc');
@@ -48,9 +48,9 @@ qx{../src/task rc:455.rc add def pro:Foo! 2>&1};
 
 my $output = qx{../src/task rc:455.rc ls 2>&1};
 
-# ' ' + 'Pri' + ' ' == 5
-like ($output, qr/\S\s{5}abc/ms, 'bug 455 - correct spacing in utf8 task');
-like ($output, qr/\S\s{5}def/ms, 'bug 455 - correct spacing in non utf8 task');
+# Project + ' ' == 4
+like ($output, qr/\S\s{4}abc/ms, 'bug 455 - correct spacing in utf8 task');
+like ($output, qr/\S\s{4}def/ms, 'bug 455 - correct spacing in non utf8 task');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data 455.rc);

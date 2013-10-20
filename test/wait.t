@@ -34,6 +34,10 @@ use Test::More tests => 13;
 if (open my $fh, '>', 'wait.rc')
 {
   print $fh "data.location=.\n",
+            "report.ls.columns=id,project,priority,description\n",
+            "report.ls.labels=ID,Proj,Pri,Description\n",
+            "report.ls.sort=priority-,project+\n",
+            "report.ls.filter=status:pending\n",
             "confirmation=off\n";
 
   close $fh;
