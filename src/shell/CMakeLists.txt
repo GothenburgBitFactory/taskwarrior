@@ -12,7 +12,7 @@ add_library (tasksh STATIC ${tasksh_SRCS})
 add_executable (tasksh_executable main.cpp)
 
 # Yes, 'task' is included twice, other linking fails on CentOS.
-target_link_libraries (tasksh_executable commands columns task tasksh ${TASK_LIBRARIES})
+target_link_libraries (tasksh_executable task commands columns tasksh task ${TASK_LIBRARIES})
 
 set_property (TARGET tasksh_executable PROPERTY OUTPUT_NAME "tasksh")
 
