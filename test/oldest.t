@@ -75,7 +75,7 @@ qx{../src/task rc:oldest.rc add ten 2>&1};
 sleep 1;
 qx{../src/task rc:oldest.rc add eleven 2>&1};
 
-$output = qx{../src/task rc:oldest.rc oldest 2>&1};
+$output = qx{../src/task rc:oldest.rc oldest limit:10 2>&1};
 like   ($output, qr/one/,    'oldest: one');   # 10
 like   ($output, qr/two/,    'oldest: two');
 like   ($output, qr/three/,  'oldest: three');
