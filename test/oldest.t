@@ -101,7 +101,7 @@ unlike ($output, qr/nine/,   'no: nine');
 unlike ($output, qr/ten/,    'no: ten');    # 30
 unlike ($output, qr/eleven/, 'no: eleven');
 
-$output = qx{../src/task rc:oldest.rc newest 2>&1};
+$output = qx{../src/task rc:oldest.rc newest limit:10 2>&1};
 unlike ($output, qr/one/,    'no: one');
 like   ($output, qr/two/,    'newest: two');
 like   ($output, qr/three/,  'newest: three');
