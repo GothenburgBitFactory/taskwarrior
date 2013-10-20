@@ -148,8 +148,7 @@ std::string legacyCheckForDeprecatedVariables ()
         it->first.substr (it->first.length () - 12) == ".annotations")
       deprecated.push_back (it->first);
 
-    if (it->first == "edit.verbose"      ||
-        it->first == "next"              ||
+    if (it->first == "next"              ||
         it->first == "annotations"       ||
         it->first == "export.ical.class")
       deprecated.push_back (it->first);

@@ -160,8 +160,7 @@ std::string CmdEdit::formatDuration (
 std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 {
   std::stringstream before;
-  bool verbose = context.verbose ("edit") ||
-                 context.config.getBoolean ("edit.verbose"); // Deprecated 2.0
+  bool verbose = context.verbose ("edit");
 
   if (verbose)
     before << "# " << STRING_EDIT_HEADER_1 << "\n"

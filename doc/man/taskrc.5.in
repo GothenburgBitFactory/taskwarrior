@@ -223,13 +223,6 @@ found, it is used.  Otherwise it will look for the $VISUAL or $EDITOR
 environment variables, before it defaults to using "vi".
 
 .TP
-.B edit.verbose=on
-When set to on (the default), helpful explanatory comments are added to the
-edited file when using the "task edit ..." command.  Setting this to off means
-that you would see a smaller, more compact representation of the task, with no
-help text.  Deprecated - use verbosity token 'edit'.
-
-.TP
 .B reserved.lines=1
 This is the number of lines reserved at the bottom of the screen for the shell
 prompt.  This is only referenced when 'limit:page' is used.
