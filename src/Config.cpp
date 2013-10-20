@@ -402,7 +402,7 @@ std::string Config::_defaults =
   "report.blocked.sort=due+,priority-,start-,project+\n"
   "report.blocked.filter=status:pending +BLOCKED\n"
   "\n"
-  "report.unblocked.description=Lists all unblocked tasks\n"
+  "report.unblocked.description=Lists all unblocked\n"
   "report.unblocked.columns=id,depends,project,priority,due,start.active,entry.age,description\n"
   "report.unblocked.labels=ID,Deps,Proj,Pri,Due,Active,Age,Description\n"
   "report.unblocked.sort=due+,priority-,start-,project+\n"
