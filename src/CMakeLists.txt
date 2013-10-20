@@ -3,23 +3,29 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
-                     ${CMAKE_SOURCE_DIR}/src/parser
                      ${TASK_INCLUDE_DIRS})
 
-set (task_SRCS Color.cpp Color.h
+set (task_SRCS A3.cpp A3.h
+               A3t.cpp A3t.h
+               Arg.cpp Arg.h
+               Color.cpp Color.h
                Config.cpp Config.h
                Context.cpp Context.h
                DOM.cpp DOM.h
                Date.cpp Date.h
                Directory.cpp Directory.h
                Duration.cpp Duration.h
+               E9.cpp E9.h
                File.cpp File.h
                Hooks.cpp Hooks.h
                JSON.cpp JSON.h
+               LRParser.cpp LRParser.h
                Msg.cpp Msg.h
                Nibbler.cpp Nibbler.h
+               Parser.cpp Parser.h
                Path.cpp Path.h
                RX.cpp RX.h
+               Socket.cpp Socket.h
                TDB2.cpp TDB2.h
                Task.cpp Task.h
                Taskmod.cpp Taskmod.h
@@ -29,6 +35,7 @@ set (task_SRCS Color.cpp Color.h
                TransportRSYNC.cpp TransportRSYNC.h
                TransportSSH.cpp TransportSSH.h
                TransportShell.cpp TransportShell.h
+               Tree.cpp Tree.h
                Uri.cpp Uri.h
                ViewTask.cpp ViewTask.h
                ViewText.cpp ViewText.h
@@ -39,7 +46,6 @@ set (task_SRCS Color.cpp Color.h
                legacy.cpp
                recur.cpp
                rules.cpp
-               Socket.cpp Socket.h
                sort.cpp
                text.cpp text.h
                utf8.cpp utf8.h
@@ -50,7 +56,7 @@ add_library (task STATIC ${task_SRCS})
 add_executable (task_executable main.cpp)
 
 # Yes, 'task' is included twice, other linking fails on CentOS.
-target_link_libraries (task_executable task commands columns parser task commands columns ${TASK_LIBRARIES})
+target_link_libraries (task_executable commands columns task ${TASK_LIBRARIES})
 
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 

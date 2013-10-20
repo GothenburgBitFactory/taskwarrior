@@ -141,7 +141,6 @@ configure_file (
 add_subdirectory (src)
 add_subdirectory (src/commands)
 add_subdirectory (src/columns)
-add_subdirectory (src/parser)
 add_subdirectory (src/shell)
 add_subdirectory (doc)
 add_subdirectory (i18n)

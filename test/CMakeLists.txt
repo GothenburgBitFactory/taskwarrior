@@ -3,7 +3,6 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
-                     ${CMAKE_SOURCE_DIR}/src/parser
                      ${CMAKE_SOURCE_DIR}/test
                      ${TASK_INCLUDE_DIRS})
 
@@ -42,7 +41,7 @@ add_custom_target (build_tests DEPENDS ${test_SRCS}
 
 foreach (src_FILE ${test_SRCS})
   add_executable (${src_FILE} "${src_FILE}.cpp" test.cpp)
-  target_link_libraries (${src_FILE} task commands task columns parser ${TASK_LIBRARIES})
+  target_link_libraries (${src_FILE} task commands task columns ${TASK_LIBRARIES})
 endforeach (src_FILE)
 
 #SET(CMAKE_BUILD_TYPE gcov)

@@ -3,7 +3,6 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
                      ${CMAKE_SOURCE_DIR}/src/columns
-                     ${CMAKE_SOURCE_DIR}/src/parser
                      ${CMAKE_SOURCE_DIR}/src/shell
                      ${TASK_INCLUDE_DIRS})
 
@@ -13,7 +12,7 @@ add_library (tasksh STATIC ${tasksh_SRCS})
 add_executable (tasksh_executable main.cpp)
 
 # Yes, 'task' is included twice, other linking fails on CentOS.
-target_link_libraries (tasksh_executable task commands columns parser tasksh task ${TASK_LIBRARIES})
+target_link_libraries (tasksh_executable commands columns task tasksh ${TASK_LIBRARIES})
 
 set_property (TARGET tasksh_executable PROPERTY OUTPUT_NAME "tasksh")
 
