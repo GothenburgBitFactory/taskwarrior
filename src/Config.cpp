@@ -408,11 +408,11 @@ std::string Config::_defaults =
   "report.unblocked.sort=due+,priority-,start-,project+\n"
   "report.unblocked.filter=status:pending -BLOCKED\n"
   "\n"
-  "report.blocking.description=Lists all blocking tasks\n"
-  "report.blocking.columns=id,depends,project,priority,due,start.active,entry.age,description\n"
-  "report.blocking.labels=ID,Deps,Proj,Pri,Due,Active,Age,Description\n"
-  "report.blocking.sort=due+,priority-,start-,project+\n"
-  "report.blocking.filter=status:pending +BLOCKING\n"
+  "report.blocking.description=Blocking (and blocked) tasks\n"
+  "report.blocking.labels=ID,UUID,A,Parent,Deps,Project,Tags,R,W,Sch,Due,Until,Description,Urg\n"
+  "report.blocking.columns=id,uuid.short,start.active,parent.short,depends,project,tags,recur,wait.indicator,scheduled.age,due.age,until.age,description.count,urgency\n"
+  "report.blocking.filter=+BLOCKING\n"
+  "report.blocking.sort=urgency-,due+,entry+\n"
   "\n";
 
 ////////////////////////////////////////////////////////////////////////////////
