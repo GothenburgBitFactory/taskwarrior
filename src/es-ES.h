@@ -117,7 +117,7 @@
 #define STRING_A3_ID_AFTER_HYPHEN    "ID no reconocido tras guión."
 #define STRING_A3_RANGE_INVERTED     "Rango invertido 'alto-bajo' en vez de 'bajo-alto'"
 #define STRING_A3_UUID_AFTER_COMMA   "UUID no reconocido tras coma."
-#define STRING_A3_ZERO_ID            "'{1}' is not a valid ID."
+#define STRING_A3_ZERO_ID            "'{1}' no es un ID válido."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "El color '{1}' no se reconoce."
@@ -317,8 +317,8 @@
 #define STRING_CMD_SUMMARY_COMPLETE  "Completas"
 #define STRING_CMD_SUMMARY_NONE      "(ninguna)"
 #define STRING_CMD_COUNT_USAGE       "Cuenta tareas que coinciden"
-#define STRING_CMD_GET_USAGE         "DOM Accessor"
-#define STRING_CMD_GET_NO_DOM        "No DOM reference specified."
+#define STRING_CMD_GET_USAGE         "Método de acceso al DOM"
+#define STRING_CMD_GET_NO_DOM        "Referencia a DOM no especificada."
 
 #define STRING_CMD_UDAS_NO           "Ningún UDA definido."
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA definido"
@@ -433,11 +433,11 @@
 #define STRING_CMD_SYNC_NO_TLS       "Taskwarrior fue construido sin soporte GnuTLS. Sincronización no disponible."
 #define STRING_CMD_SYNC_INIT         "Por favor, confirme que desea subir todas sus tareas pendientes al Servidor Task"
 #define STRING_CMD_SYNC_NO_INIT      "Taskwarrior will no procederá a la inicialización de la sincronización por primera vez."
-#define STRING_CMD_SYNC_RELOCATE0    "The server account has been relocated.  Please update your configuration using:"
+#define STRING_CMD_SYNC_RELOCATE0    "La cuenta del servidor ha sido reubicada. Por favor, actualice su configuración utilizando:"
 #define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"
-#define STRING_CMD_SYNC_NO_CA        "CA certificate not found."
-#define STRING_CMD_SYNC_CONNECT      "Could not connect to {1} {2}"
-#define STRING_CMD_SYNC_HANDSHAKE    "Handshake failed.  {1}"
+#define STRING_CMD_SYNC_NO_CA        "Certificado CA no encontrado."
+#define STRING_CMD_SYNC_CONNECT      "No se pudo conectar a {1} {2}"
+#define STRING_CMD_SYNC_HANDSHAKE    "Handshake fallido.  {1}"
 #define STRING_CMD_DIAG_USAGE        "Detalles de plataforma, construcción y entorno"
 #define STRING_CMD_DIAG_PLATFORM     "Plataforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<desconocido>"
@@ -846,7 +846,7 @@
 #define STRING_TDB2_REVERTED         "Tarea modificada revertida."
 #define STRING_TDB2_REMOVED          "Tarea eliminada."
 #define STRING_TDB2_UNDO_COMPLETE    "Deshacer completado."
-#define STRING_TDB2_UNDO_SYNCED      "Cannot undo change because the task was already synced.  Modify the task instead."
+#define STRING_TDB2_UNDO_SYNCED      "No se puede deshacer el cambio porque la tarea ya ha sido sincronizada. Como alternativa, modifique la tarea."
 
 // text
                                      // Se añade al final una lista de comandos separados por comas.
