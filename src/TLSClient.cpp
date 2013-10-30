@@ -242,7 +242,11 @@ void TLSClient::connect (const std::string& host, const std::string& port)
     throw format (STRING_CMD_SYNC_HANDSHAKE, gnutls_strerror (ret));
 
   if (_debug)
-    std::cout << "c: INFO Handshake was completed\n";
+  {
+    char* desc = gnutls_session_get_desc (_session);
+    std::cout << "c: INFO Handshake was completed: " << desc << "\n";
+    gnutls_free (desc);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
