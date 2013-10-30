@@ -39,7 +39,7 @@ public:
   int execute (std::string&);
 
 private:
-  bool send (const std::string&, const std::string&, const Msg&, Msg&);
+  bool send (const std::string&, const std::string&, const std::string&, bool, const Msg&, Msg&);
 };
 
 #endif

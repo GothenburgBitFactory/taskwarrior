@@ -88,9 +88,20 @@ int CmdSync::execute (std::string& output)
   if (credentials.size () != 3)
     throw std::string (STRING_CMD_SYNC_BAD_CRED);
 
+  bool trust = context.config.getBoolean ("taskd.trust");
+/*
+  File ca (context.config.get ("taskd.ca"));
+  if (ca._data != "" && ! ca.exists ())
+    throw std::string (STRING_CMD_SYNC_BAD_CA);
+*/
+
   File certificate (context.config.get ("taskd.certificate"));
   if (! certificate.exists ())
     throw std::string (STRING_CMD_SYNC_BAD_CERT);
+
+  File key (context.config.get ("taskd.key"));
+  if (! key.exists ())
+    throw std::string (STRING_CMD_SYNC_BAD_KEY);
 
   // If this is a first-time initialization, send pending.data, not
   // backlog.data.
@@ -146,7 +157,7 @@ int CmdSync::execute (std::string& output)
   signal (SIGUSR2,   SIG_IGN);
 
   Msg response;
-  if (send (connection, certificate._data, request, response))
+  if (send (connection, certificate._data, key._data, trust, request, response))
   {
     std::string code = response.get ("code");
     if (code == "200")
@@ -304,6 +315,8 @@ int CmdSync::execute (std::string& output)
 bool CmdSync::send (
   const std::string& to,
   const std::string& certificate,
+  const std::string& key,
+  bool trust,
   const Msg& request,
   Msg& response)
 {
@@ -315,14 +328,13 @@ bool CmdSync::send (
   std::string server = to.substr (0, colon);
   std::string port = to.substr (colon + 1);
 
-  File cert (certificate);
-
   try
   {
     // A very basic TLS client, with X.509 authentication.
     TLSClient client;
     client.debug (context.config.getInteger ("debug.tls"));
-    client.init (cert);
+    client.trust (trust);
+    client.init (certificate, key);
     client.connect (server, port);
 
     client.send (request.serialize () + "\n");

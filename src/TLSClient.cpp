@@ -55,6 +55,39 @@ static void gnutls_log_function (int level, const char* message)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+static int verify_certificate_callback (gnutls_session_t session)
+{
+  if (trust_override)
+    return 0;
+
+  // Get the hostname from the session.
+  const char* hostname = (const char*) gnutls_session_get_ptr (session);
+
+  // This verification function uses the trusted CAs in the credentials
+  // structure. So you must have installed one or more CA certificates.
+  unsigned int status;
+  int ret = gnutls_certificate_verify_peers3 (session, hostname, &status);
+  if (ret < 0)
+    return GNUTLS_E_CERTIFICATE_ERROR;
+
+  gnutls_certificate_type_t type = gnutls_certificate_type_get (session);
+  gnutls_datum_t out;
+  ret = gnutls_certificate_verification_status_print (status, type, &out, 0);
+  if (ret < 0)
+    return GNUTLS_E_CERTIFICATE_ERROR;
+
+  std::cout << "c: INFO " << out.data << "\n";
+
+  gnutls_free (out.data);
+
+  if (status != 0)
+    return GNUTLS_E_CERTIFICATE_ERROR;
+
+  // Continue handshake.
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 TLSClient::TLSClient ()
 : _ca ("")
 , _socket (0)
@@ -109,16 +142,26 @@ void TLSClient::trust (bool value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TLSClient::init (const std::string& ca)
+void TLSClient::init (
+  const std::string& cert,
+  const std::string& key)
 {
-  _ca = ca;
-  File ca_file (_ca);
-  if (!ca_file.exists ())
-    throw std::string (STRING_CMD_SYNC_NO_CA);
+  _cert = cert;
+  _key  = key;
 
   gnutls_global_init ();
   gnutls_certificate_allocate_credentials (&_credentials);
-  gnutls_certificate_set_x509_trust_file (_credentials, _ca.c_str (), GNUTLS_X509_FMT_PEM);
+
+  if (_cert != "" &&
+      gnutls_certificate_set_x509_trust_file (_credentials, _cert.c_str (), GNUTLS_X509_FMT_PEM) < 0)
+    throw std::string ("Missing CA file.");
+
+  if (_cert != "" &&
+      _key != "" &&
+      gnutls_certificate_set_x509_key_file (_credentials, _cert.c_str (), _key.c_str (), GNUTLS_X509_FMT_PEM) < 0)
+    throw std::string ("Missing CERT file.");
+
+  gnutls_certificate_set_verify_function (_credentials, verify_certificate_callback);
   gnutls_init (&_session, GNUTLS_CLIENT);
 
   // Use default priorities.

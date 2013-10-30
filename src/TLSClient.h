@@ -40,7 +40,7 @@ public:
   void limit (int);
   void debug (int);
   void trust (bool);
-  void init (const std::string&);
+  void init (const std::string&, const std::string&);
   void connect (const std::string&, const std::string&);
   void bye ();
 
@@ -49,6 +49,8 @@ public:
 
 private:
   std::string                      _ca;
+  std::string                      _cert;
+  std::string                      _key;
   gnutls_certificate_credentials_t _credentials;
   gnutls_session_t                 _session;
   int                              _socket;
