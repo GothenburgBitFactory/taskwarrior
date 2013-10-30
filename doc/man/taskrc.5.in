@@ -1354,8 +1354,30 @@ User identification for the task server, which includes a private key.
 .TP
 .B taskd.certificate=<path>
 .RS
-Specifies the path to the client certificate used for encrypted communication
-with the task server.
+Specifies the path to the client certificate used for identification with the
+task server.
+.RE
+
+.TP
+.B taskd.key=<path>
+.RS
+Specifies the path to the client key used for encrypted communication with the
+task server.
+.RE
+
+.TP
+.B taskd.ca=<path>
+.RS
+Specifies the path to the CA certificate in the event that your task server is
+using a self-signed certificate.  Optional.
+.RE
+
+.TP
+.B taskd.trust=yes|no
+.RS
+If you do not specify a CA certificate when your task server is usㄟng a self-
+signed certificate, you can override the certificate validation by setting this
+value to 'yes'.  Default is not to trust a server certificate.
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
