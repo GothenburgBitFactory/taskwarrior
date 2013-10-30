@@ -407,6 +407,7 @@
 #define STRING_CMD_SYNC_NO_SERVER    "Task Server is not configured."
 #define STRING_CMD_SYNC_BAD_CRED     "Task Server credentials malformed."
 #define STRING_CMD_SYNC_BAD_CERT     "Task Server certificate missing."
+#define STRING_CMD_SYNC_BAD_KEY      "Task Server key missing."
 #define STRING_CMD_SYNC_ADD          "   add {1} '{2}'"
 #define STRING_CMD_SYNC_MOD          "modify {1} '{2}'"
 #define STRING_CMD_SYNC_PROGRESS     "Syncing with {1}"
