@@ -330,7 +330,6 @@ bool CmdSync::send (
 
   try
   {
-    // A very basic TLS client, with X.509 authentication.
     TLSClient client;
     client.debug (context.config.getInteger ("debug.tls"));
     client.trust (trust);
