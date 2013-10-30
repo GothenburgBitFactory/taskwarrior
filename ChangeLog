@@ -17,6 +17,7 @@ Features
  + #1297 The task₋sync(5) man pages is rewritten with examples.
  + #1339 The configuration file now supports JSON encoding of Unicode
    characters, by specifying \uNNNN.
+ + #1385 Need a way to configure the trust of self-signed certificates.
  + Stores un-synched transactions in <data.location>/backlog.data.
  + Adds a new 'synchronize' command to sync data with a task server.
  + Adds a new 'initialize' synchronize command argument that uploads all pending
@@ -85,6 +86,9 @@ Bugs
  + #1388 Updated task(1) man pages with import/export script examples (thanks to
    Benjamin Weber).
  + #1410 Incomplete Date Synonym List in man task (thanks to Benjamin Weber).
+ + #1414 Client does not verify SSL certificates (thanks to Scott Kroll).
+ + #1415 Client should not require a SSL certificate if the server has a trusted
+   certificate (thanks to Scott Kroll).
  + Fixed bug so that 'limit:page' now considers footnote messages.
  + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
    (thanks to greenskeleton).
