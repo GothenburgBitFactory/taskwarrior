@@ -25,6 +25,7 @@ New configuration options in taskwarrior 2.3.0
   - 'taskd.credentials' specifies user credentials for the task server.
   - 'taskd.certificate' specifies the task server certificate for authentication.
   - 'taskd.key' specifies the task server key for encryption.
+  - 'taskd.ca' specifies the task server CA.
   - 'taskd.trust' overrides certificate checking.
   - 'debug.tls' shows TLS log information, for debugging.
   - The configuration file supports JSON encoding of unicode characters \uNNNN.
