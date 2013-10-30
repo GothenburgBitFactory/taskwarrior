@@ -46,6 +46,8 @@
 
 #define MAX_BUF 16384
 
+static bool trust_override = false;
+
 ////////////////////////////////////////////////////////////////////////////////
 static void gnutls_log_function (int level, const char* message)
 {
@@ -91,6 +93,19 @@ void TLSClient::debug (int level)
 
   gnutls_global_set_log_function (gnutls_log_function);
   gnutls_global_set_log_level (level);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TLSClient::trust (bool value)
+{
+  trust_override = value;
+  if (_debug)
+  {
+    if (trust_override)
+      std::cout << "c: INFO Server certificate trusted automatically.\n";
+    else
+      std::cout << "c: INFO Server certificate trust verified.\n";
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
