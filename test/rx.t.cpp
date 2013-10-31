@@ -93,7 +93,7 @@ int main (int argc, char** argv)
   ut.ok (r9.match (start, end, text),        "e there are matches");
   ut.is (start.size (), (size_t) 6,          "e == 6 matches");
 
-#if defined(DARWIN) || defined(CYGWIN) || defined(FREEBSD)
+#if defined(DARWIN) || defined(CYGWIN) || defined(FREEBSD) || defined(OPENBSD)
   text = "this is the end.";
   ut.pass (text + " =~ /\\bthe/");
   ut.pass (text + " =~ /the\\b/");
