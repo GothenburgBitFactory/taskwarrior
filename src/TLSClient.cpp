@@ -45,6 +45,8 @@
 
 #define MAX_BUF 16384
 
+static int verify_certificate_callback (gnutls_session_t);
+
 static bool trust_override = false;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,11 +66,16 @@ static int verify_certificate_callback (gnutls_session_t session)
 
   // This verification function uses the trusted CAs in the credentials
   // structure. So you must have installed one or more CA certificates.
-  unsigned int status;
-  int ret = gnutls_certificate_verify_peers3 (session, hostname, &status);
+  unsigned int status = 0;
+#if GNUTLS_VERSION_NUMBER >= 0x030104
+  int ret = gnutls_certificate_verify_peers3 (session, NULL, &status);
+#else
+  int ret = gnutls_certificate_verify_peers2 (session, &status);
+#endif
   if (ret < 0)
     return GNUTLS_E_CERTIFICATE_ERROR;
 
+#if GNUTLS_VERSION_NUMBER >= 0x030105
   gnutls_certificate_type_t type = gnutls_certificate_type_get (session);
   gnutls_datum_t out;
   ret = gnutls_certificate_verification_status_print (status, type, &out, 0);
@@ -78,6 +85,7 @@ static int verify_certificate_callback (gnutls_session_t session)
   std::cout << "c: INFO " << out.data << "\n";
 
   gnutls_free (out.data);
+#endif
 
   if (status != 0)
     return GNUTLS_E_CERTIFICATE_ERROR;
@@ -162,7 +170,9 @@ void TLSClient::init (
       gnutls_certificate_set_x509_key_file (_credentials, _cert.c_str (), _key.c_str (), GNUTLS_X509_FMT_PEM) < 0)
     throw std::string ("Missing CERT file.");
 
+#if GNUTLS_VERSION_NUMBER >= 0x02090a
   gnutls_certificate_set_verify_function (_credentials, verify_certificate_callback);
+#endif
   gnutls_init (&_session, GNUTLS_CLIENT);
 
   // Use default priorities.
@@ -244,9 +254,13 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 
   if (_debug)
   {
+#if GNUTLS_VERSION_NUMBER >= 0x03010a
     char* desc = gnutls_session_get_desc (_session);
     std::cout << "c: INFO Handshake was completed: " << desc << "\n";
     gnutls_free (desc);
+#else
+    std::cout << "c: INFO Handshake was completed.\n";
+#endif
   }
 }
 
