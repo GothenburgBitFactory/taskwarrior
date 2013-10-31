@@ -36,7 +36,11 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#ifdef OPENBSD
+#include <errno.h>
+#else
 #include <sys/errno.h>
+#endif
 #include <sys/types.h>
 #include <netdb.h>
 #include <TLSClient.h>
