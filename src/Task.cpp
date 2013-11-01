@@ -797,12 +797,12 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
   Task::const_iterator i;
   for (i = this->begin (); i != this->end (); ++i)
   {
-    if (attributes_written)
-      out << ",";
-
     // Annotations are not written out here.
     if (i->first.substr (0, 11) == "annotation_")
       continue;
+
+    if (attributes_written)
+      out << ",";
 
     std::string type = Task::attributes[i->first];
     if (type == "")

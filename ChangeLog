@@ -82,6 +82,7 @@ Bugs
  + #1352 Terminal crashes when using taskwarrior's zsh completion (thanks to
    Ivan Freitas, XTaran).
  + #1356 Command reference now mentions /from/to/g.
+ + #1381 Invalid JSON exported by Task 2.3.0-beta1 (thanks to Kosta H).
  + #1387 ZSH Auto-Completion dates are not current (thanks to Benjamin Weber).
  + #1388 Updated task(1) man pages with import/export script examples (thanks to
    Benjamin Weber).
