@@ -52,7 +52,7 @@ Taskwarrior has been built and tested on the following configurations:
 
   * OS X 10.9 Mavericks, 10.8 Mountain Lion
   * Fedora 19 Schrodinger's Cat and 18 Spherical Cow
-  * Ubuntu 10.04 Lucid Lynx and 13.04 Raring Ringtail
+  * Ubuntu 10.04 Lucid Lynx, 13.04 Raring Ringtail and 13.10 Saucy Salamander
   * Debian 7.0 Wheezy (stable) and 6.0 Squeeze (oldstable) plus Sid (testing)
   * Slackware 13.37
   * Arch Linux
