@@ -1374,7 +1374,6 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
   std::string canonical;
   std::string modifier;
   std::string value;
-//  time_t date;
 
   // If there is a valid attribute name.
   if (n.getName (name) &&
@@ -1398,22 +1397,11 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
           // Consider removing this for a stricter parse.
           if (n.getQuoted   ('"', value)  ||
               n.getQuoted   ('\'', value) ||
-// TODO Need more things recognized before it falls through to getUntilEOS.
-//              n.getDate     (context.config.get ("dateformat"), date)  ||
-//              need Duration too.
               n.getUntilWS  (value)       ||
               n.getName     (value)       ||
               n.getUntilEOS (value)       ||  // Redundant?
               n.depleted ())
           {
-/*
-     TODO Eliminate anything that looks like a URL.
-            // Exclude certain URLs, that look like attrs.
-            if (value.find ('@') <= n.cursor () ||
-                value.find ('/') <= n.cursor ())
-              return false;
-*/
-
             arg._raw      = canonical + '.' + modifier + ':' + value;
             Column* col   = context.columns[canonical];
             arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
