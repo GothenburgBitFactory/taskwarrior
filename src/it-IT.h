@@ -429,6 +429,7 @@
 #define STRING_CMD_SYNC_NO_CA        "CA certificate not found."
 #define STRING_CMD_SYNC_CONNECT      "Could not connect to {1} {2}"
 #define STRING_CMD_SYNC_HANDSHAKE    "Handshake failed.  {1}"
+#define STRING_CMD_SYNC_NOMERGE      "Task push/pull/merge is configured, deprecated, and does not work with 'sync'."
 #define STRING_CMD_DIAG_USAGE        "Dettagli su piattaforma, build e ambiente"
 #define STRING_CMD_DIAG_PLATFORM     "Piattaforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<sconoscito>"

@@ -168,7 +168,7 @@ int CmdShow::execute (std::string& output)
     " list.all.tags"
     " locale"
     " locking"
-    " merge.autopush"
+    " merge.autopush"                    // Deprecated 2.3.0
     " merge.default.uri"                 // Deprecated 2.3.0
     " monthsperline"
     " nag"
@@ -300,19 +300,7 @@ int CmdShow::execute (std::string& output)
         color = warning;
       }
 
-      // TODO Deprecated.
       std::string value = i->second;
-      // hide sensible information
-      if ((i->first.substr (0, 5) == "push."   ||
-            i->first.substr (0, 5) == "pull."   ||
-            i->first.substr (0, 6) == "merge.") &&
-          (i->first.find (".uri") != std::string::npos))
-      {
-        Uri uri (value);
-        uri.parse ();
-        value = uri.ToString ();
-      }
-
       int row = view.addRow ();
       view.set (row, 0, i->first, color);
       view.set (row, 1, value, color);

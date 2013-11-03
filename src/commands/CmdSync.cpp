@@ -78,6 +78,13 @@ int CmdSync::execute (std::string& output)
       connection.rfind (':') == std::string::npos)
     throw std::string (STRING_CMD_SYNC_NO_SERVER);
 
+  // If push/pull/merge is configured, quit.
+  if (context.config.get ("merge.autopush")    != "" ||
+      context.config.get ("merge.default.uri") != "" ||
+      context.config.get ("push.default.uri")  != "" ||
+      context.config.get ("pull.default.uri")  != "")
+    throw std::string (STRING_CMD_SYNC_NOMERGE);
+
   // Obtain credentials.
   std::string credentials_string = context.config.get ("taskd.credentials");
   if (credentials_string == "")
