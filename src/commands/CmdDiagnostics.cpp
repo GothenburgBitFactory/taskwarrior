@@ -222,8 +222,20 @@ int CmdDiagnostics::execute (std::string& output)
       << context.config.get ("taskd.server")
       << "\n";
 
+  if (context.config.get ("taskd.ca") != "")
+    out << "         CA: "
+        << context.config.get ("taskd.ca")
+        << "\n";
+
+  if (context.config.get ("taskd.trust") != "")
+    out << "      Trust: override\n";
+
   out << "       Cert: "
       << context.config.get ("taskd.certificate")
+      << "\n";
+
+  out << "        Key: "
+      << context.config.get ("taskd.key")
       << "\n";
 
   // Get credentials, but mask out the key.
@@ -239,6 +251,7 @@ int CmdDiagnostics::execute (std::string& output)
       << "\n\n";
 
   // External commands.
+  // Deprecated in 2.3.0 with push, pull, merge.
   out << bold.colorize (STRING_CMD_DIAG_EXTERNAL)
       << "\n";
   {
