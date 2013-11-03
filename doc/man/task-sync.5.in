@@ -94,8 +94,22 @@ need to put the certificate somewhere like this:
 Then you configure Taskwarrior, using the account details:
 
     $ task config taskd.certificate ~/.task/<name>.cert.pem
+    $ task config taskd.key         ~/.task/<name>.key.pem
     $ task config taskd.credentials <organization>/<name>/<password>
     $ task config taskd.server      <server domain>:<port>
+
+If you are using a private server, you are likely also using a self-signed
+certificate, which means you will need one of the following additional entries:
+
+    $ task config taskd.ca          ~/.task/ca.cert.pem
+
+The CA (Certificate Authority) will be used to verify the server certificate.
+Alternatively, you can override the cert verification process using:
+
+    $ task config taskd.trust       yes
+
+This is an insecure option that should be used with caution, because it directs
+Taskwarrior to trust any certificate.
 
 After setup, you run a one-time sync initialization, like this:
 
