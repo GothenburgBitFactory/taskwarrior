@@ -344,11 +344,8 @@ bool CmdSync::send (
     TLSClient client;
     client.debug (context.config.getInteger ("debug.tls"));
 
-    // TODO Either use 'ca' or 'trust', but not both.
-    if (trust && ca == "")
-      client.trust (trust);
-
-    client.init (certificate, key);
+    client.trust (trust);
+    client.init (ca, certificate, key);
     client.connect (server, port);
     client.send (request.serialize () + "\n");
 
