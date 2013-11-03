@@ -20,13 +20,14 @@ There are three alternatives for syncing data, which are:
 
 
 .SH OPTION 1: VERSION CONTROL SYSTEMS
-There are several good VCS systems (git, hg, svn ...), and they function in a
-similar fashion for our purposes.
+There are several good, distributed VCS systems (git, hg, ...) and centralized
+VCS systems (svn ...), and they function in a similar fashion for our purposes.
 
 Setup is straightforward.  You place your .task directory under revision
-control.  You then need to perform a regular commit/push/pull to make sure that
-the data is propagated when needed.  You can even do this using shell scripts so
-that every task command is preceded by a 'pull' and followed by a 'push'.
+control.  You then need to perform a regular commit/push/pull/update to make
+sure that the data is propagated when needed.  You can even do this using shell
+scripts so that every task command is preceded by a 'pull' and followed by a
+'push'.
 
 Strengths:
 .br
@@ -71,7 +72,7 @@ Strengths:
 
 Weaknesses:
 .br
-  - Tasks not properly merged
+  - Tasks are not properly merged
 
 
 .SH OPTION 3: TASK SERVER
@@ -86,10 +87,11 @@ Setup is a matter of creating an account on a Task Server (see your Task Server
 provider or operate your own - see
 http://taskwarrior.org/projects/taskwarrior/wiki/Server_setup)
 
-Once you have an account, you'll receive a certificate, and a password.  You'll
-need to put the certificate somewhere like this:
+Once you have an account, you'll receive a certificate, key and a password.
+You'll need to put the certificate and key somewhere like this:
 
     $ cp <name>.cert.pem ~/.task
+    $ cp <name>.key.pem ~/.task
 
 Then you configure Taskwarrior, using the account details:
 
@@ -135,6 +137,9 @@ Strengths:
 .br
   - Tolerates connectivity outage
 
+Weaknesses:
+.br
+  - You need to manage your own server, or gain access to a hosted server.
 
 .SH "CREDITS & COPYRIGHTS"
 Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
