@@ -48,6 +48,8 @@ Features
  + Rewritten task-sync(5) man page, listing sync options and setup guidelines..
  + Now properly uses the libc version of uuid_create and uuid_to_string for
    FreeBSD (thanks to Pietro Cerutti).
+ + Performance improvements:
+   + Optimizes indexing into pending.data for direct task access.
 
 Bugs
  + #1195 Random seed not random enough - removed all random number code (thanks

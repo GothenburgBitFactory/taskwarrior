@@ -112,12 +112,15 @@ bool TF2::get (int id, Task& task)
   if (! _loaded_tasks)
     load_tasks ();
 
-  std::vector <Task>::iterator i;
-  for (i = _tasks.begin (); i != _tasks.end (); ++i)
+  // This is an optimization.  Since the 'id' is based on the line number of
+  // pending.data file, the task in question cannot appear earlier than line
+  // (id - 1) in the file.  It can, however, appear significantly later because
+  // it is not known how recent a GC operation was run.
+  for (int i = id - 1; i < _tasks.size (); ++i)
   {
-    if (i->id == id)
+    if (_tasks[i].id == id)
     {
-      task = *i;
+      task = _tasks[i];
       return true;
     }
   }
