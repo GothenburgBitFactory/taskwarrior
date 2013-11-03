@@ -96,11 +96,14 @@ int CmdSync::execute (std::string& output)
     throw std::string (STRING_CMD_SYNC_BAD_CRED);
 
   bool trust = context.config.getBoolean ("taskd.trust");
-/*
+
+  // CA must exist, if provided.
   File ca (context.config.get ("taskd.ca"));
   if (ca._data != "" && ! ca.exists ())
     throw std::string (STRING_CMD_SYNC_BAD_CA);
-*/
+
+  if (trust && ca._data != "")
+    throw std::string (STRING_CMD_SYNC_TRUST_CA);
 
   File certificate (context.config.get ("taskd.certificate"));
   if (! certificate.exists ())
@@ -164,7 +167,7 @@ int CmdSync::execute (std::string& output)
   signal (SIGUSR2,   SIG_IGN);
 
   Msg response;
-  if (send (connection, certificate._data, key._data, trust, request, response))
+  if (send (connection, ca._data, certificate._data, key._data, trust, request, response))
   {
     std::string code = response.get ("code");
     if (code == "200")
@@ -321,6 +324,7 @@ int CmdSync::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 bool CmdSync::send (
   const std::string& to,
+  const std::string& ca,
   const std::string& certificate,
   const std::string& key,
   bool trust,
@@ -339,10 +343,13 @@ bool CmdSync::send (
   {
     TLSClient client;
     client.debug (context.config.getInteger ("debug.tls"));
-    client.trust (trust);
+
+    // TODO Either use 'ca' or 'trust', but not both.
+    if (trust && ca == "")
+      client.trust (trust);
+
     client.init (certificate, key);
     client.connect (server, port);
-
     client.send (request.serialize () + "\n");
 
     std::string incoming;
