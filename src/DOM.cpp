@@ -73,6 +73,7 @@ const std::vector <std::string> DOM::get_references () const
 //
 //   system.version
 //   system.os
+//
 const std::string DOM::get (const std::string& name)
 {
   int len = name.length ();
@@ -86,7 +87,7 @@ const std::string DOM::get (const std::string& name)
   }
 
   // context.*
-  else if (len > 8 &&
+  if (len > 8 &&
            name.substr (0, 8) == "context.")
   {
          if (name == "context.program") return context.a3[0]._raw;
@@ -99,7 +100,7 @@ const std::string DOM::get (const std::string& name)
   // TODO stats.<name>
 
   // system. --> Implement locally.
-  else if (len > 7 &&
+  if (len > 7 &&
            name.substr (0, 7) == "system.")
   {
     // Taskwarrior version number.
@@ -143,38 +144,9 @@ const std::string DOM::get (const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 // DOM Supported References:
 //
-//   TODO <id>.{entry,start,end,scheduled,due,until,wait}
-//   TODO <id>.description
-//   TODO <id>.project
-//   TODO <id>.priority
-//   TODO <id>.parent
-//   TODO <id>.status
-//   TODO <id>.tags
-//   TODO <id>.urgency
-//   TODO <id>.recur
-//   TODO <id>.depends
-//
-//   TODO <uuid>.{entry,start,end,scheduled,due,until,wait}
-//   TODO <uuid>.description
-//   TODO <uuid>.project
-//   TODO <uuid>.priority
-//   TODO <uuid>.parent
-//   TODO <uuid>.status
-//   TODO <uuid>.tags
-//   TODO <uuid>.urgency
-//   TODO <uuid>.recur
-//   TODO <uuid>.depends
-//
-//   {entry,start,end,scheduled,due,until,wait}
-//   description
-//   project
-//   priority
-//   parent
-//   status
-//   tags
-//   urgency
-//   recur
-//   depends
+//   <attribute>
+//   <id>.<attribute>
+//   <uuid>.<attribute>
 //
 const std::string DOM::get (const std::string& name, const Task& task)
 {
