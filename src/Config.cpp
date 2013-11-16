@@ -297,7 +297,7 @@ std::string Config::_defaults =
   "shell.prompt=task>                             # Prompt used by the shell command\n"
   "\n"
   "# WARNING: Please read the documentation (man task-sync) before setting up\n"
-  "#          Taskwarrior for Task Server synchronization.\n"
+  "#          Taskwarrior for Taskserver synchronization.\n"
   "#taskd.certificate <certificat file>\n"
   "#taskd.credentials <organization>/<name>/<password>\n"
   "#taskd.server      <server>:<port>\n"

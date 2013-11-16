@@ -179,7 +179,7 @@ an alias in the .bashrc file along the lines of
 
 .TP
 .B Q: I don't want to use dropbox. Is there another way to synchronize my tasks?
-Yes.  Get a Task Server account, and sync tasks between all your machines and
+Yes.  Get a Taskserver account, and sync tasks between all your machines and
 devices.  See task-sync(5).
 
 .TP

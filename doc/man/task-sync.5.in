@@ -16,7 +16,7 @@ There are three alternatives for syncing data, which are:
 .br
 2) File hosting systems, such as DropBox
 .br
-3) Using the Task Server and the 'sync' command
+3) Using the Taskserver and the 'sync' command
 
 
 .SH OPTION 1: VERSION CONTROL SYSTEMS
@@ -75,15 +75,15 @@ Weaknesses:
   - Tasks are not properly merged
 
 
-.SH OPTION 3: TASK SERVER
-The Task Server was designed for this purpose to be secure, fast and conflict
+.SH OPTION 3: TASKSERVER
+The Taskserver was designed for this purpose to be secure, fast and conflict
 free, allowing data interchange between assorted Taskwarrior clients, and
 tolerant of network connectivity problems.
 
 There is a 'sync' command built in to Taskwarrior, and with a server account
 and client configuration, syncing is done on demand.
 
-Setup is a matter of creating an account on a Task Server (see your Task Server
+Setup is a matter of creating an account on a Taskserver (see your Taskserver
 provider or operate your own - see
 http://taskwarrior.org/projects/taskwarrior/wiki/Server_setup)
 

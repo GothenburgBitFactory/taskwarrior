@@ -20,7 +20,7 @@ Features
  + #1423 sync vs. push, pull, merge collision avoidance.
  + #1385 Need a way to configure the trust of self-signed certificates.
  + Stores un-synched transactions in <data.location>/backlog.data.
- + Adds a new 'synchronize' command to sync data with a task server.
+ + Adds a new 'synchronize' command to sync data with a Taskserver.
  + Adds a new 'initialize' synchronize command argument that uploads all pending
    tasks for first-time initialization.
  + Adds a new 'sync' verbosity token, which will remind when a backlog builds

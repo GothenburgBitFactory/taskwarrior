@@ -5,7 +5,7 @@ Calendar trick
 Metadata
 
 Sync
-  sync (needs 2.3.0 & task server)
+  sync (needs 2.3.0 & Taskserver)
 
 Logo?
 

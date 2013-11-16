@@ -1341,41 +1341,41 @@ server.
 .TP
 .B taskd.server=<host>:<port>
 .RS
-Specifies the hostname and port of the task server.  Hostname may be an IPv4 or
+Specifies the hostname and port of the Taskserver.  Hostname may be an IPv4 or
 IPv6 address, or domain.  Port is an integer.
 .RE
 
 .TP
 .B taskd.credentials=<organization>/<user>/<key>
 .RS
-User identification for the task server, which includes a private key.
+User identification for the Taskserver, which includes a private key.
 .RE
 
 .TP
 .B taskd.certificate=<path>
 .RS
 Specifies the path to the client certificate used for identification with the
-task server.
+Taskserver.
 .RE
 
 .TP
 .B taskd.key=<path>
 .RS
 Specifies the path to the client key used for encrypted communication with the
-task server.
+Taskserver.
 .RE
 
 .TP
 .B taskd.ca=<path>
 .RS
-Specifies the path to the CA certificate in the event that your task server is
+Specifies the path to the CA certificate in the event that your Taskserver is
 using a self-signed certificate.  Optional.
 .RE
 
 .TP
 .B taskd.trust=yes|no
 .RS
-If you do not specify a CA certificate when your task server is using a self-
+If you do not specify a CA certificate when your Taskserver is using a self-
 signed certificate, you can override the certificate validation by setting this
 value to 'yes'.  Default is not to trust a server certificate.
 .RE
