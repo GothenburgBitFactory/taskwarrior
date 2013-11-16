@@ -238,6 +238,10 @@ int CmdDiagnostics::execute (std::string& output)
       << context.config.get ("taskd.key")
       << "\n";
 
+  out << "    Ciphers: "
+      << context.config.get ("taskd.ciphers")
+      << "\n";
+
   // Get credentials, but mask out the key.
   std::string credentials = context.config.get ("taskd.credentials");
   std::string::size_type last_slash = credentials.rfind ('/');

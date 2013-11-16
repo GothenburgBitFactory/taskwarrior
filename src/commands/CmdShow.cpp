@@ -191,6 +191,7 @@ int CmdShow::execute (std::string& output)
     " taskd.server"
     " taskd.ca"
     " taskd.certificate"
+    " taskd.ciphers"
     " taskd.credentials"
     " taskd.key"
     " taskd.trust"

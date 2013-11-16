@@ -345,6 +345,7 @@ bool CmdSync::send (
     client.debug (context.config.getInteger ("debug.tls"));
 
     client.trust (trust);
+    client.ciphers (context.config.get ("taskd.ciphers"));
     client.init (ca, certificate, key);
     client.connect (server, port);
     client.send (request.serialize () + "\n");

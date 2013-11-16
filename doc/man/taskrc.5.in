@@ -1375,9 +1375,17 @@ using a self-signed certificate.  Optional.
 .TP
 .B taskd.trust=yes|no
 .RS
-If you do not specify a CA certificate when your task server is usㄟng a self-
+If you do not specify a CA certificate when your task server is using a self-
 signed certificate, you can override the certificate validation by setting this
 value to 'yes'.  Default is not to trust a server certificate.
+.RE
+
+.TP
+.B taskd.ciphers=NORMAL
+Override of the cipher selection.  The set of ciphers used by TLS may be
+controlled by both server and client.  There must be some overlap between
+client and server supported ciphers, or communication cannot occur.
+Default is "NORMAL".  See GnuTLS documentation for full details.
 .RE
 
 .SH "CREDITS & COPYRIGHTS"

@@ -301,6 +301,7 @@ std::string Config::_defaults =
   "#taskd.certificate <certificat file>\n"
   "#taskd.credentials <organization>/<name>/<password>\n"
   "#taskd.server      <server>:<port>\n"
+  "taskd.ciphers=NORMAL\n"
 	"\n"
   "# Aliases - alternate names for commands\n"
   "alias.rm=delete                                # Alias for the delete command\n"

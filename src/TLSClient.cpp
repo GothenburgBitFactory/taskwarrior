@@ -155,6 +155,12 @@ void TLSClient::trust (bool value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void TLSClient::ciphers (const std::string& cipher_list)
+{
+  _ciphers = cipher_list;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void TLSClient::init (
   const std::string& ca,
   const std::string& cert,
@@ -181,9 +187,12 @@ void TLSClient::init (
 #endif
   gnutls_init (&_session, GNUTLS_CLIENT);
 
-  // Use default priorities.
+  // Use default priorities unless overridden.
+  if (_ciphers == "")
+    _ciphers = "NORMAL";
+
   const char *err;
-  int ret = gnutls_priority_set_direct (_session, "NORMAL", &err);
+  int ret = gnutls_priority_set_direct (_session, _ciphers.c_str (), &err);
   if (ret < 0)
   {
     if (_debug && ret == GNUTLS_E_INVALID_REQUEST)
