@@ -164,5 +164,5 @@ set (CPACK_SOURCE_IGNORE_FILES  "CMakeCache" "CMakeFiles" "CPackConfig" "CPackSo
                                 "_CPack_Packages" "cmake_install" "install_manifest" "Makefile$"
                                 "test" "package-config" "misc/*" "src/task$" "src/libtask.a"
                                 "src/columns/libcolumns.a" "src/commands/libcommands.a"
-                                "src/shell/tasksh$" "auto.h$" "/\\.gitignore""/\\.git/" "swp$")
+                                "src/shell/tasksh$" "auto.h$" "/\\.gitignore" "/\\.git/" "swp$")
 include (CPack)

@@ -96,6 +96,7 @@ Bugs
  + Fixed bug so that 'limit:page' now considers footnote messages.
  + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
    (thanks to greenskeleton).
+ + Fixed rc.nag documentation (thanks to Jeroen Budts).
 
 ------ old releases ------------------------------
 

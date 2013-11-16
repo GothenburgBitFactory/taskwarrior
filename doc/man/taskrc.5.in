@@ -91,7 +91,7 @@ You can edit your .taskrc file by hand if you wish, or you can use the 'config'
 command.  To permanently set a value in your .taskrc file, use this command:
 
 .RS
-$ task config nag "You have higher priority tasks!"
+$ task config nag "You have more urgent tasks."
 .RE
 
 To delete an entry, use this command:
@@ -319,11 +319,11 @@ variable is "no".
 This is useful for preventing large-scale unintended changes.
 
 .TP
-.B nag=You have higher priority tasks.
+.B nag=You have more urgent tasks.
 This may be a string of text, or blank. It is used as a prompt when a task is
 started or completed that is not considered high priority.  Default value is:
-You have higher priority tasks.  It is a gentle reminder that you are
-contradicting your own priority settings.
+You have more urgent tasks.  It is a gentle reminder that you are contradicting
+your own priority settings.
 
 .TP
 .B complete.all.projects=yes
