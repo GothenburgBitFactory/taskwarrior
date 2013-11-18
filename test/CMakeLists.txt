@@ -31,8 +31,8 @@ endif (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 configure_file (run_all.in run_all)
 
 add_custom_target (test ./run_all --verbose
-                                  DEPENDS ${test_SRCS} task_executable
-                                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
+                        DEPENDS ${test_SRCS} task_executable
+                        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
 
 add_custom_target (build_tests DEPENDS ${test_SRCS}
                                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
