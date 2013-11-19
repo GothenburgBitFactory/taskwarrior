@@ -552,7 +552,7 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "\n";
 
   // Write out the new file.
-  if (! File::write (rc, json::encode (contents.str ())))
+  if (! File::write (rc, contents.str ()))
     throw format (STRING_CONFIG_BAD_WRITE, rc);
 }
 
