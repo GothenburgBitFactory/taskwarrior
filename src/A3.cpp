@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <cmake.h>
 #include <sstream>
 #include <algorithm>
@@ -72,38 +73,37 @@ static struct
   std::string op;
   int         precedence;
   char        type;
-  int         symbol;
   char        associativity;
 } operators[] =
 {
-  // Operator   Precedence  Type  Symbol  Associativity
-  {  "and",      5,         'b',  0,      'l' },    // Conjunction
-  {  "xor",      4,         'b',  0,      'l' },    // Disjunction
+  // Operator   Precedence  Type  Associativity
+  {  "and",      5,         'b',  'l' },    // Conjunction
+  {  "xor",      4,         'b',  'l' },    // Disjunction
 
-  {  "or",       3,         'b',  0,      'l' },    // Disjunction
-  {  "<=",      10,         'b',  1,      'l' },    // Less than or equal
-  {  ">=",      10,         'b',  1,      'l' },    // Greater than or equal
-  {  "!~",       9,         'b',  1,      'l' },    // Regex non-match
-  {  "!=",       9,         'b',  1,      'l' },    // Inequal
+  {  "or",       3,         'b',  'l' },    // Disjunction
+  {  "<=",      10,         'b',  'l' },    // Less than or equal
+  {  ">=",      10,         'b',  'l' },    // Greater than or equal
+  {  "!~",       9,         'b',  'l' },    // Regex non-match
+  {  "!=",       9,         'b',  'l' },    // Inequal
 
-  {  "=",        9,         'b',  1,      'l' },    // Equal
-//  {  "^",       16,         'b',  1,      'r' },    // Exponent
-  {  ">",       10,         'b',  1,      'l' },    // Greater than
-  {  "~",        9,         'b',  1,      'l' },    // Regex match
-  {  "!",       15,         'u',  1,      'r' },    // Not
+  {  "=",        9,         'b',  'l' },    // Equal
+//  {  "^",       16,         'b',  'r' },    // Exponent
+  {  ">",       10,         'b',  'l' },    // Greater than
+  {  "~",        9,         'b',  'l' },    // Regex match
+  {  "!",       15,         'u',  'r' },    // Not
 
-  {  "_hastag_", 9,         'b',  0,      'l'},     // +tag  [Pseudo-op]
-  {  "_notag_",  9,         'b',  0,      'l'},     // -tag  [Pseudo-op]
+  {  "_hastag_", 9,         'b',  'l'},     // +tag  [Pseudo-op]
+  {  "_notag_",  9,         'b',  'l'},     // -tag  [Pseudo-op]
 
-  {  "-",       15,         'u',  1,      'r' },    // Unary minus
-  {  "*",       13,         'b',  1,      'l' },    // Multiplication
-  {  "/",       13,         'b',  1,      'l' },    // Division
-//  {  "%",       13,         'b',  1,      'l' },    // Modulus
-  {  "+",       12,         'b',  1,      'l' },    // Addition
-  {  "-",       12,         'b',  1,      'l' },    // Subtraction
-  {  "<",       10,         'b',  1,      'l' },    // Less than
-  {  "(",        0,         'b',  1,      'l' },    // Precedence start
-  {  ")",        0,         'b',  1,      'l' },    // Precedence end
+  {  "-",       15,         'u',  'r' },    // Unary minus
+  {  "*",       13,         'b',  'l' },    // Multiplication
+  {  "/",       13,         'b',  'l' },    // Division
+//  {  "%",       13,         'b',  'l' },    // Modulus
+  {  "+",       12,         'b',  'l' },    // Addition
+  {  "-",       12,         'b',  'l' },    // Subtraction
+  {  "<",       10,         'b',  'l' },    // Less than
+  {  "(",        0,         'b',  'l' },    // Precedence start
+  {  ")",        0,         'b',  'l' },    // Precedence end
 };
 
 #define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
@@ -1106,7 +1106,10 @@ const A3 A3::expand (const A3& input) const
 
     // Default  -->  preserve
     else
+{
+std::cout << "# default: " << arg->_raw << "\n";
       expanded.push_back (*arg);
+}
 
     previous = arg;
   }
