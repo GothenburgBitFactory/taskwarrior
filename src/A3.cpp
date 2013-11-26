@@ -25,7 +25,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove
 #include <cmake.h>
 #include <sstream>
 #include <algorithm>
@@ -1106,10 +1105,7 @@ const A3 A3::expand (const A3& input) const
 
     // Default  -->  preserve
     else
-{
-std::cout << "# default: " << arg->_raw << "\n";
       expanded.push_back (*arg);
-}
 
     previous = arg;
   }
