@@ -526,6 +526,7 @@
 #define STRING_CMD_CAL_LABEL_HOL     "Holiday"
 #define STRING_CMD_CAL_SUN_MON       "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'."
 #define STRING_CMD_EDIT_USAGE        "Launches an editor to modify a task directly"
+#define STRING_CMD_CALC_USAGE        "Calculator"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Configuration file nested to more than 10 levels deep - this has to be a mistake."

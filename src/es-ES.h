@@ -526,6 +526,7 @@
 #define STRING_CMD_CAL_LABEL_HOL     "Festivo"
 #define STRING_CMD_CAL_SUN_MON       "La variable de configuración 'weekstart' solamente puede contener 'domingo' o 'lunes'."
 #define STRING_CMD_EDIT_USAGE        "Lanza un editor para modificar una tarea directamente"
+#define STRING_CMD_CALC_USAGE        "Calculator"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Archivo de configuración anidado hasta más de 10 niveles de profundidad - esto tiene que ser un error."
