@@ -1,21 +1,17 @@
 
-New Features in taskwarrior 2.3.0
-
-  - New task server sync capabilities.
-  - New shell with Readline support.
-  - The 'dateformat' settings now default to the ISO-8601 standard of 'Y-M-D'.
-
-New commands in taskwarrior 2.3.0
-
-  - New 'sync' command to synchronize data with a Task Server.
-  - New 'tasksh' command which replaces the old 'task shell' with an improved
-    standalone shell, featuring Readline support.
-
-New configuration options in taskwarrior 2.3.0
+New Features in taskwarrior 2.4.0
 
   - 
 
-Newly deprecated features in taskwarrior 2.3.0
+New commands in taskwarrior 2.4.0
+
+  - 
+
+New configuration options in taskwarrior 2.4.0
+
+  - 
+
+Newly deprecated features in taskwarrior 2.4.0
   
   - 
 
@@ -23,7 +19,7 @@ Newly deprecated features in taskwarrior 2.3.0
 
 Taskwarrior has been built and tested on the following configurations:
 
-  * OS X 10.8 Mountain Lion and 10.7 Lion
+  * OS X 10.9 Mavericks
   * Fedora 18 Spherical Cow and 17 Beefy Miracle
   * Ubuntu 12.10 Quantal Quetzal and 12.04 Precise Pangolin
   * Debian 6.0 Squeeze (stable)i and 5.0 Lenny (oldstable) plus Sid (testing)
