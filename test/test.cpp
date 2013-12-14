@@ -25,10 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <cmake.h>
 #include <iostream>
 #include <iomanip>
-#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <test.h>
@@ -405,7 +403,7 @@ void UnitTest::pass (const std::string& text)
   ++_passed;
   std::cout << "ok "
             << _counter
-            << " "
+            << " - "
             << text
             << "\n";
 }
@@ -417,7 +415,7 @@ void UnitTest::fail (const std::string& text)
   ++_failed;
   std::cout << "not ok "
             << _counter
-            << " "
+            << " - "
             << text
             << "\n";
 }
@@ -429,7 +427,7 @@ void UnitTest::skip (const std::string& text)
   ++_skipped;
   std::cout << "skip "
             << _counter
-            << " "
+            << " - "
             << text
             << "\n";
 }
