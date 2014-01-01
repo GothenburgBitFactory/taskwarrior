@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -698,7 +698,7 @@ void readTaskmods (std::vector <std::string> &input,
 void TDB2::merge (const std::string& mergeFile)
 {
   ///////////////////////////////////////
-  // Copyright 2010 - 2013, Johannes Schlatow.
+  // Copyright 2010 - 2014, Johannes Schlatow.
   ///////////////////////////////////////
 
   // list of modifications that we want to add to the local database

@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -190,7 +190,7 @@ if (open my $fh, '>:utf8', $file)
         "# ${url_current}\n",
         "# ${url_next}\n",
         "#\n",
-        "# Copyright 2006-2013, Paul Beckingham, Federico Hernandez.\n",
+        "# Copyright 2006-2014, Paul Beckingham, Federico Hernandez.\n",
         "#\n",
         "# Permission is hereby granted, free of charge, to any person obtaining a copy\n",
         "# of this software and associated documentation files (the \"Software\"), to deal\n",
