@@ -196,12 +196,13 @@ bool File::waitForLock ()
 void File::read (std::string& contents)
 {
   contents = "";
+  contents.reserve (size ());
 
   std::ifstream in (_data.c_str ());
   if (in.good ())
   {
     std::string line;
-    line.reserve (1024);
+    line.reserve (512 * 1024);
     while (getline (in, line))
       contents += line + "\n";
 
@@ -219,7 +220,7 @@ void File::read (std::vector <std::string>& contents)
   if (in.good ())
   {
     std::string line;
-    line.reserve (1024);
+    line.reserve (512 * 1024);
     while (getline (in, line))
       contents.push_back (line);
 

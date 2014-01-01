@@ -10,8 +10,8 @@ Features
    Gill).
  + #1226 A new French translation has begun, and will continue to be a work in
    progress for a while (thanks to YBSA R).
- + #1227 A new 'verify_l10n' utility ensures the localizations are in sync (thanks to
-   Wim Schuermann).
+ + #1227 A new 'verify_l10n' utility ensures the localizations are in sync
+   (thanks to Wim Schuermann).
  + #1250 Support out-of-tree test runs (thanks to Jakub Wilk).
  + #1256 Supports default values for UDA fields (thanks to Thomas Sullivan).
  + #1297 The task₋sync(5) man pages is rewritten with examples.
@@ -50,6 +50,7 @@ Features
    FreeBSD (thanks to Pietro Cerutti).
  + Performance improvements:
    + Optimizes indexing into pending.data for direct task access.
+   + Improved I/O performance with better defaults for buffer sizes.
 
 Bugs
  + #1195 Random seed not random enough - removed all random number code (thanks
