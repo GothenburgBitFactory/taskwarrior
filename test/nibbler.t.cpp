@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +24,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
+#include <stdlib.h>
 #include <Context.h>
 #include <Nibbler.h>
 #ifdef NIBBLER_FEATURE_DATE
@@ -39,15 +40,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (402);
+  UnitTest t (408);
 #else
-  UnitTest t (378);
+  UnitTest t (384);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (352);
+  UnitTest t (344);
 #else
-  UnitTest t (328);
+  UnitTest t (320);
 #endif
 #endif
 
