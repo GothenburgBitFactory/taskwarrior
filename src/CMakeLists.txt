@@ -13,6 +13,7 @@ set (task_SRCS A3.cpp A3.h
                Context.cpp Context.h
                DOM.cpp DOM.h
                Date.cpp Date.h
+               Dates.cpp Dates.h
                Directory.cpp Directory.h
                Duration.cpp Duration.h
                E9.cpp E9.h
