@@ -40,6 +40,7 @@ set (task_SRCS A3.cpp A3.h
                TransportShell.cpp TransportShell.h
                Tree.cpp Tree.h
                Uri.cpp Uri.h
+               Variant.cpp Variant.h
                ViewTask.cpp ViewTask.h
                ViewText.cpp ViewText.h
                dependency.cpp
