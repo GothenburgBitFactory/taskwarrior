@@ -207,7 +207,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after, const st
     else if (*name == "start")
     {
       out << format (STRING_FEEDBACK_ATT_DEL_DUR, ucFirst (*name),
-                     Duration(current_timestamp - last_timestamp).formatPrecise())
+                     OldDuration(current_timestamp - last_timestamp).formatPrecise())
           << "\n";
     }
     else

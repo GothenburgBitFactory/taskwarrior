@@ -179,9 +179,9 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
           if (Date::valid (operand._raw, _dateformat))
             operand._value = Date (operand._raw, _dateformat).toEpochString ();
 
-          else if (Duration::valid (operand._raw))
+          else if (OldDuration::valid (operand._raw))
           {
-            Duration dur (operand._raw);
+            OldDuration dur (operand._raw);
             Date now;
             now += (int)(time_t) dur;
             operand._value  = now.toEpochString ();
@@ -196,7 +196,7 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
       {
         operand._category = Arg::cat_literal;
         operand._value    = (operand._raw != "")
-                            ? (std::string)Duration (operand._raw)
+                            ? (std::string)OldDuration (operand._raw)
                             : "";
       }
       else
@@ -343,8 +343,8 @@ void E9::operator_lt (Arg& result, Arg& left, Arg& right)
       result._value = "false";
     else
     {
-      Duration left_duration  (left._value);
-      Duration right_duration (right._value);
+      OldDuration left_duration  (left._value);
+      OldDuration right_duration (right._value);
 
       result._value = (left_duration < right_duration)
                     ? "true"
@@ -408,8 +408,8 @@ void E9::operator_lte (Arg& result, Arg& left, Arg& right)
       result._value = "false";
     else
     {
-      Duration left_duration  (left._value);
-      Duration right_duration (right._value);
+      OldDuration left_duration  (left._value);
+      OldDuration right_duration (right._value);
 
       result._value = (left_duration <= right_duration)
                     ? "true"
@@ -473,8 +473,8 @@ void E9::operator_gte (Arg& result, Arg& left, Arg& right)
       result._value = "false";
     else
     {
-      Duration left_duration  (left._value);
-      Duration right_duration (right._value);
+      OldDuration left_duration  (left._value);
+      OldDuration right_duration (right._value);
 
       result._value = (left_duration >= right_duration)
                     ? "true"
@@ -537,8 +537,8 @@ void E9::operator_gt (Arg& result, Arg& left, Arg& right)
       result._value = "false";
     else
     {
-      Duration left_duration  (left._value);
-      Duration right_duration (right._value);
+      OldDuration left_duration  (left._value);
+      OldDuration right_duration (right._value);
 
       result._value = result._value = (left_duration > right_duration)
                                     ? "true"
@@ -807,7 +807,7 @@ const Arg E9::coerce (const Arg& input, const Arg::type type)
   }
 
   // TODO Date
-  // TODO Duration
+  // TODO OldDuration
   else
   {
     result = input;

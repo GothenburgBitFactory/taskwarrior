@@ -1397,7 +1397,7 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
               n.getQuoted   ('\'', value) ||
 // TODO Need more things recognized before it falls through to getUntilEOS.
 //              n.getDate     (context.config.get ("dateformat"), date)  ||
-//              need Duration too.
+//              need OldDuration too.
               n.getUntilWS  (value)       ||
               n.getName     (value)       ||
               n.getUntilEOS (value)       ||  // Redundant?
@@ -1599,7 +1599,7 @@ bool A3::is_duration (Nibbler& n, std::string& result)
 
   double d;
   std::string unit;
-  std::vector <std::string> units = Duration::get_units ();
+  std::vector <std::string> units = OldDuration::get_units ();
 
   if (n.getUnsignedNumber (d) &&
       n.getOneOf (units, unit))

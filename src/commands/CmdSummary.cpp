@@ -159,7 +159,7 @@ int CmdSummary::execute (std::string& output)
 
       view.set (row, 1, countPending[i->first]);
       if (counter[i->first])
-        view.set (row, 2, Duration ((int) (sumEntry[i->first] / (double)counter[i->first])).format ());
+        view.set (row, 2, OldDuration ((int) (sumEntry[i->first] / (double)counter[i->first])).format ());
 
       int c = countCompleted[i->first];
       int p = countPending[i->first];

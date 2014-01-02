@@ -25,30 +25,30 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DURATION
-#define INCLUDED_DURATION
+#ifndef INCLUDED_OLD_DURATION
+#define INCLUDED_OLD_DURATION
 
 #include <vector>
 #include <string>
 #include <time.h>
 
-class Duration
+class OldDuration
 {
 public:
-  Duration ();                           // Default constructor
-  Duration (const Duration&);            // Copy constructor
-  Duration (time_t);                     // Constructor
-  Duration (const std::string&);         // Parse
-  bool operator< (const Duration&);
-  bool operator<= (const Duration&);
-  bool operator> (const Duration&);
-  bool operator>= (const Duration&);
-  Duration& operator= (const Duration&);
-  Duration operator- (const Duration&);
-  Duration operator+ (const Duration&);
-  Duration& operator-= (const Duration&);
-  Duration& operator+= (const Duration&);
-  ~Duration ();                          // Destructor
+  OldDuration ();                           // Default constructor
+  OldDuration (const OldDuration&);         // Copy constructor
+  OldDuration (time_t);                     // Constructor
+  OldDuration (const std::string&);         // Parse
+  bool operator< (const OldDuration&);
+  bool operator<= (const OldDuration&);
+  bool operator> (const OldDuration&);
+  bool operator>= (const OldDuration&);
+  OldDuration& operator= (const OldDuration&);
+  OldDuration operator- (const OldDuration&);
+  OldDuration operator+ (const OldDuration&);
+  OldDuration& operator-= (const OldDuration&);
+  OldDuration& operator+= (const OldDuration&);
+  ~OldDuration ();                          // Destructor
 
   operator time_t () const;
   operator std::string () const;

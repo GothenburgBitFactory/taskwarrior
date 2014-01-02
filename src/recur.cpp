@@ -337,7 +337,7 @@ Date getNextRecurrence (Date& current, std::string& period)
   // If the period is an 'easy' one, add it to current, and we're done.
   // If it throws an error, the duration was not recognized.
   int secs = 0;
-  Duration du (period);
+  OldDuration du (period);
   secs = du;
 
   return current + secs;

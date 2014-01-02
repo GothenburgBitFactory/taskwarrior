@@ -1287,7 +1287,7 @@ void Task::validate (bool applyDefault /* = true */)
   // Recur durations must be valid.
   if (has ("recur"))
   {
-    Duration d;
+    OldDuration d;
     if (! d.valid (get ("recur")))
       throw std::string (format (STRING_TASK_VALID_RECUR, get ("recur")));
   }

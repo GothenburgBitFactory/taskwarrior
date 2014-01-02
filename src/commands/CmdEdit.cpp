@@ -149,7 +149,7 @@ std::string CmdEdit::formatDuration (
   std::string value = task.get (attribute);
   if (value.length ())
   {
-    Duration dur (value);
+    OldDuration dur (value);
     value = dur.formatSeconds ();
   }
 
@@ -534,7 +534,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   {
     if (value != "")
     {
-      Duration d;
+      OldDuration d;
       if (d.valid (value))
       {
         context.footnote (STRING_EDIT_RECUR_MOD);
@@ -710,7 +710,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
           }
           else if (type == "duration")
           {
-            Duration d (value);
+            OldDuration d (value);
             task.set (col->first, (time_t) d);
           }
         }

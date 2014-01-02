@@ -45,7 +45,7 @@ ColumnDue::ColumnDue ()
 
   Date now;
   now += 125;
-  _examples.push_back (Duration (now - Date ()).formatCompact ());
+  _examples.push_back (OldDuration (now - Date ()).formatCompact ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

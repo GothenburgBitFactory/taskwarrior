@@ -98,21 +98,21 @@ static const char* durations[] =
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration::Duration ()
+OldDuration::OldDuration ()
 : _secs (0)
 , _negative (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration::Duration (const Duration& other)
+OldDuration::OldDuration (const OldDuration& other)
 {
   _secs     = other._secs;
   _negative = other._negative;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration::Duration (time_t input)
+OldDuration::OldDuration (time_t input)
 {
   if (input < 0)
   {
@@ -127,7 +127,7 @@ Duration::Duration (time_t input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration::Duration (const std::string& input)
+OldDuration::OldDuration (const std::string& input)
 : _secs (0)
 , _negative (false)
 {
@@ -146,13 +146,13 @@ Duration::Duration (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration::operator time_t () const
+OldDuration::operator time_t () const
 {
   return _secs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration::operator std::string () const
+OldDuration::operator std::string () const
 {
   std::stringstream s;
   s << (_negative ? - (long) _secs : (long) _secs);
@@ -160,7 +160,7 @@ Duration::operator std::string () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration& Duration::operator= (const Duration& other)
+OldDuration& OldDuration::operator= (const OldDuration& other)
 {
   if (this != &other)
   {
@@ -172,14 +172,14 @@ Duration& Duration::operator= (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration Duration::operator- (const Duration& other)
+OldDuration OldDuration::operator- (const OldDuration& other)
 {
   int left  =       _secs * (      _negative ? -1 : 1);
   int right = other._secs * (other._negative ? -1 : 1);
 
   left -= right;
 
-  Duration result;
+  OldDuration result;
   result._secs = abs (left);
   result._negative = left < 0;
 
@@ -187,14 +187,14 @@ Duration Duration::operator- (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration Duration::operator+ (const Duration& other)
+OldDuration OldDuration::operator+ (const OldDuration& other)
 {
   int left  =       _secs * (      _negative ? -1 : 1);
   int right = other._secs * (other._negative ? -1 : 1);
 
   left += right;
 
-  Duration result;
+  OldDuration result;
   result._secs = abs (left);
   result._negative = left < 0;
 
@@ -202,7 +202,7 @@ Duration Duration::operator+ (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration& Duration::operator-= (const Duration& other)
+OldDuration& OldDuration::operator-= (const OldDuration& other)
 {
   int left  =       _secs * (      _negative ? -1 : 1);
   int right = other._secs * (other._negative ? -1 : 1);
@@ -216,7 +216,7 @@ Duration& Duration::operator-= (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration& Duration::operator+= (const Duration& other)
+OldDuration& OldDuration::operator+= (const OldDuration& other)
 {
   int left  =       _secs * (      _negative ? -1 : 1);
   int right = other._secs * (other._negative ? -1 : 1);
@@ -230,7 +230,7 @@ Duration& Duration::operator+= (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Duration::format () const
+std::string OldDuration::format () const
 {
   char formatted[24];
   float days = (float) _secs / 86400.0;
@@ -268,7 +268,7 @@ std::string Duration::format () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Duration::formatCompact () const
+std::string OldDuration::formatCompact () const
 {
   char formatted[24];
   float days = (float) _secs / 86400.0;
@@ -286,7 +286,7 @@ std::string Duration::formatCompact () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Duration::formatPrecise () const
+std::string OldDuration::formatPrecise () const
 {
   char formatted[24];
 
@@ -303,7 +303,7 @@ std::string Duration::formatPrecise () const
 
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Duration::formatSeconds () const
+std::string OldDuration::formatSeconds () const
 {
   char formatted[24];
   sprintf (formatted, "%s%llusec", (_negative ? "-" : ""), (unsigned long long)_secs);
@@ -311,7 +311,7 @@ std::string Duration::formatSeconds () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Duration::operator< (const Duration& other)
+bool OldDuration::operator< (const OldDuration& other)
 {
   long left  = (long) (      _negative ?       -_secs :       _secs);
   long right = (long) (other._negative ? -other._secs : other._secs);
@@ -320,7 +320,7 @@ bool Duration::operator< (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Duration::operator<= (const Duration& other)
+bool OldDuration::operator<= (const OldDuration& other)
 {
   long left  = (long) (      _negative ?       -_secs :       _secs);
   long right = (long) (other._negative ? -other._secs : other._secs);
@@ -329,7 +329,7 @@ bool Duration::operator<= (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Duration::operator> (const Duration& other)
+bool OldDuration::operator> (const OldDuration& other)
 {
   long left  = (long) (      _negative ?       -_secs :       _secs);
   long right = (long) (other._negative ? -other._secs : other._secs);
@@ -338,7 +338,7 @@ bool Duration::operator> (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Duration::operator>= (const Duration& other)
+bool OldDuration::operator>= (const OldDuration& other)
 {
   long left  = (long) (      _negative ?       -_secs :       _secs);
   long right = (long) (other._negative ? -other._secs : other._secs);
@@ -347,18 +347,18 @@ bool Duration::operator>= (const Duration& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Duration::~Duration ()
+OldDuration::~OldDuration ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Duration::negative () const
+bool OldDuration::negative () const
 {
   return _negative;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Duration::valid (const std::string& input)
+bool OldDuration::valid (const std::string& input)
 {
   std::string lower_input = lowerCase (input);
 
@@ -396,7 +396,7 @@ bool Duration::valid (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Duration::parse (const std::string& input)
+void OldDuration::parse (const std::string& input)
 {
   std::string lower_input = lowerCase (input);
 
@@ -508,7 +508,7 @@ void Duration::parse (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> Duration::get_units ()
+const std::vector <std::string> OldDuration::get_units ()
 {
   std::vector <std::string> units;
   for (unsigned int i = 0; i < NUM_DURATIONS; ++i)

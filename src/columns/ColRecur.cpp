@@ -81,7 +81,7 @@ void ColumnRecur::measure (Task& task, unsigned int& minimum, unsigned int& maxi
   if (_style == "default" ||
       _style == "duration")
   {
-    minimum = maximum = Duration (task.get ("recur")).formatCompact ().length ();
+    minimum = maximum = OldDuration (task.get ("recur")).formatCompact ().length ();
   }
   else if (_style == "indicator")
   {
@@ -105,7 +105,7 @@ void ColumnRecur::render (
     lines.push_back (
       color.colorize (
         rightJustify (
-          Duration (task.get ("recur")).formatCompact (),
+          OldDuration (task.get ("recur")).formatCompact (),
           width)));
   }
   else if (_style == "indicator")

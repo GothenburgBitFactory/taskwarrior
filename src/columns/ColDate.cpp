@@ -56,7 +56,7 @@ ColumnDate::ColumnDate ()
   _examples.push_back (format (now.toJulian (), 13, 12));
   _examples.push_back (now.toEpochString ());
   _examples.push_back (now.toISO ());
-  _examples.push_back (Duration (Date () - now).formatCompact ());
+  _examples.push_back (OldDuration (Date () - now).formatCompact ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     {
       Date date ((time_t) strtol (task.get (_name).c_str (), NULL, 10));
       Date now;
-      minimum = maximum = Duration (now - date).format ().length ();
+      minimum = maximum = OldDuration (now - date).format ().length ();
     }
     else if (_style == "julian")
     {
@@ -116,7 +116,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     else if (_style == "age")
     {
       Date now;
-      minimum = maximum = Duration (now - date).formatCompact ().length ();
+      minimum = maximum = OldDuration (now - date).formatCompact ().length ();
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -159,7 +159,7 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           rightJustify (
-            Duration (now - date).format (), width)));
+            OldDuration (now - date).format (), width)));
     }
     else if (_style == "julian")
     {
@@ -193,7 +193,7 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           leftJustify (
-            Duration (now - date).formatCompact (), width)));
+            OldDuration (now - date).formatCompact (), width)));
     }
   }
 }

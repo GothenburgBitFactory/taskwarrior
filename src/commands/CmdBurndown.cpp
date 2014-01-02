@@ -933,7 +933,7 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
     int remaining_days = (int) (current_pending / (fix_rate - find_rate));
 
     Date now;
-    Duration delta (remaining_days * 86400);
+    OldDuration delta (remaining_days * 86400);
     now += delta;
 
     completion = now.toString (context.config.get ("dateformat"))

@@ -293,7 +293,7 @@ int CmdInfo::execute (std::string& output)
     if (created.length ())
     {
       Date dt (strtol (created.c_str (), NULL, 10));
-      age = Duration (now - dt).format ();
+      age = OldDuration (now - dt).format ();
     }
 
     view.set (row, 1, entry + " (" + age + ")");
@@ -311,7 +311,7 @@ int CmdInfo::execute (std::string& output)
 
       Date mod (task->get_date ("modified"));
 
-      std::string age = Duration (now - mod).format ();
+      std::string age = OldDuration (now - mod).format ();
       view.set (row, 1, Date (task->get_date ("modified")).toString (dateformat) +
                               " (" + age + ")");
     }
@@ -337,7 +337,7 @@ int CmdInfo::execute (std::string& output)
             if (type == "date")
               value = Date (value).toString (dateformat);
             else if (type == "duration")
-              value = Duration (value).formatCompact ();
+              value = OldDuration (value).formatCompact ();
 
             view.set (row, 1, value);
           }
@@ -433,7 +433,7 @@ int CmdInfo::execute (std::string& output)
       {
         row = journal.addRow ();
         journal.set (row, 0, STRING_CMD_INFO_TOTAL_ACTIVE);
-        journal.set (row, 1, Duration (total_time).formatPrecise (),
+        journal.set (row, 1, OldDuration (total_time).formatPrecise (),
                      (context.color () ? Color ("bold") : Color ()));
       }
     }

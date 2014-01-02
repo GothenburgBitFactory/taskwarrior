@@ -552,7 +552,7 @@ void Command::modify_task (
             long l = (long) strtod (result.c_str (), NULL);
             if (labs (l) < 5 * 365 * 86400)
             {
-              Duration dur (value);
+              OldDuration dur (value);
               Date now;
               now += l;
               task.set (name, now.toEpochString ());
@@ -564,7 +564,7 @@ void Command::modify_task (
             }
           }
 
-          // Durations too.
+          // OldDurations too.
           else if (name == "recur" ||
                    column->type () == "duration")
           {
@@ -577,7 +577,7 @@ void Command::modify_task (
             std::string result = e.evalExpression (task);
             context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
 
-            Duration d (value);
+            OldDuration d (value);
 
             // Deliberately storing the 'raw' value, which is necessary for
             // durations like 'weekday'..
