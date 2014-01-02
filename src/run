@@ -1,5 +1,3 @@
-# Expression tests:
-#./parser $* grammar.bnf 123 mod pro:H 
 
 # 2.0.0 command line tests:
 #echo; ./args rc:x rc.debug:1 rc.hyphenate:off list pro:foo "(du<123.due or due.aft:som)" and entry '>'8/31/2011 +2w+1d /pattern/
