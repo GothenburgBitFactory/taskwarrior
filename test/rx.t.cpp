@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +24,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
+#include <stdlib.h>
 #include <Context.h>
 #include <RX.h>
-#include <cmake.h>
 #include <test.h>
 
 Context context;
@@ -88,7 +88,7 @@ int main (int argc, char** argv)
   ut.ok (r9.match (start, end, text),        "e there are matches");
   ut.is (start.size (), (size_t) 6,          "e == 6 matches");
 
-#if defined(DARWIN) || defined(CYGWIN) || defined(FREEBSD)
+#if defined(DARWIN) || defined(CYGWIN) || defined(FREEBSD) || defined(OPENBSD)
   text = "this is the end.";
   ut.pass (text + " =~ /\\bthe/");
   ut.pass (text + " =~ /the\\b/");
