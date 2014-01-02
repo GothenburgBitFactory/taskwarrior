@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2013 - 2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +39,7 @@ unsigned int utf8_width (const std::string& str);
 unsigned int utf8_text_width (const std::string&);
 const std::string utf8_substr (const std::string&, unsigned int, unsigned int length = 0);
 
+int mk_wcwidth (wchar_t);
 
 #endif
 ////////////////////////////////////////////////////////////////////////////////
