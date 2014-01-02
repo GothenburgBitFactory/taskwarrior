@@ -18,6 +18,7 @@ set (task_SRCS A3.cpp A3.h
                E9.cpp E9.h
                File.cpp File.h
                Hooks.cpp Hooks.h
+               ISO8601.cpp ISO8601.h
                JSON.cpp JSON.h
                LRParser.cpp LRParser.h
                Msg.cpp Msg.h
