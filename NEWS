@@ -34,9 +34,9 @@ New configuration options in taskwarrior 2.3.0
 Newly deprecated features in taskwarrior 2.3.0
   
   - File format 2 (used in version 0.9.3 - 1.5.0) is no longer supported.
-  - The 'push', 'pull' and 'merge' commands will be removed in a subsequent
-    release.  The new 'sync' command, in conjunction with the Taskserver is the
-    new sync mechanism.
+  - The 'push', 'pull' and 'merge' commands will be removed in version 2.4.0
+    The new 'sync' command, in conjunction with the Taskserver is the new sync
+    mechanism.
   - The 'diagnostics' command no longer generates 1000 UUIDs as a uniqueness
     test, because libuuid is now mandatory.
 
