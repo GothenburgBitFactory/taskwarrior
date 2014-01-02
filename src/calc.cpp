@@ -70,9 +70,7 @@ int main (int argc, char** argv)
       if (!strcmp (argv[i], "-h") || ! strcmp (argv[i], "--help"))
       {
         std::cout << "\n"
-                  << "Usage: " << argv[0] << " [options] "
-                  << (infix ? "'<infix expression>'" : "'<postfix expression>'")
-                   << "\n"
+                  << "Usage: " << argv[0] << " [options] '<expression>'\n"
                   << "\n"
                   << "Options:\n"
                   << "  -h|--help         Display this usage\n"
