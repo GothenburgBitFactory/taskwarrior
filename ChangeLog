@@ -5,6 +5,8 @@ Features
    'affected' verbosity tokens.
  + Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
    token..
+ + Includes utility 'calc' for quick command line calculations using the new
+   expression evaluator.
 
 Bugs
 
