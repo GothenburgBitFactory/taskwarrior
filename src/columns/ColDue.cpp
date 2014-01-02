@@ -29,7 +29,7 @@
 #include <Context.h>
 #include <ColDue.h>
 #include <Date.h>
-#include <Duration.h>
+#include <OldDuration.h>
 #include <text.h>
 #include <i18n.h>
 

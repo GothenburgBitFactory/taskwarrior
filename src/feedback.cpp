@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <Context.h>
-#include <Duration.h>
+#include <OldDuration.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>

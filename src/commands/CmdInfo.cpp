@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <Date.h>
-#include <Duration.h>
+#include <OldDuration.h>
 #include <ViewText.h>
 #include <main.h>
 #include <text.h>

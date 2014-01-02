@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
-#include <Duration.h>
+#include <OldDuration.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>

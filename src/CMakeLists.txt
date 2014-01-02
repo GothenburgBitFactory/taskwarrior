@@ -14,7 +14,7 @@ set (task_SRCS A3.cpp A3.h
                DOM.cpp DOM.h
                Date.cpp Date.h
                Directory.cpp Directory.h
-               Duration.cpp Duration.h
+               OldDuration.cpp OldDuration.h
                E9.cpp E9.h
                File.cpp File.h
                Hooks.cpp Hooks.h

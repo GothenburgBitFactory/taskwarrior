@@ -29,7 +29,7 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <ViewText.h>
-#include <Duration.h>
+#include <OldDuration.h>
 #include <Context.h>
 #include <main.h>
 #include <text.h>

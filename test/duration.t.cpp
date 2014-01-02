@@ -27,7 +27,7 @@
 
 #include <iostream>
 #include <Context.h>
-#include <Duration.h>
+#include <OldDuration.h>
 #include <test.h>
 
 Context context;

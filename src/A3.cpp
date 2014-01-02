@@ -32,7 +32,7 @@
 #include <Context.h>
 #include <Directory.h>
 #include <Date.h>
-#include <Duration.h>
+#include <OldDuration.h>
 #include <ViewText.h>
 #include <text.h>
 #include <util.h>

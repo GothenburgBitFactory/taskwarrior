@@ -35,7 +35,7 @@
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
-#include <Duration.h>
+#include <OldDuration.h>
 
 static const char* durations[] =
 {

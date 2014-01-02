@@ -26,7 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <Context.h>
-#include <Duration.h>
+#include <OldDuration.h>
 #include <ColRecur.h>
 #include <text.h>
 #include <i18n.h>

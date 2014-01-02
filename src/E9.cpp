@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <Date.h>
-#include <Duration.h>
+#include <OldDuration.h>
 #include <i18n.h>
 #include <text.h>
 #include <E9.h>

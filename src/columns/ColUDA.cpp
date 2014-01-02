@@ -26,7 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <Context.h>
-#include <Duration.h>
+#include <OldDuration.h>
 #include <Date.h>
 #include <ColUDA.h>
 #include <text.h>
