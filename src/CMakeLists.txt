@@ -23,11 +23,9 @@ set (task_SRCS A3.cpp A3.h
                ISO8601.cpp ISO8601.h
                JSON.cpp JSON.h
                Lexer.cpp Lexer.h
-               LRParser.cpp LRParser.h
                Msg.cpp Msg.h
                Nibbler.cpp Nibbler.h
                OldDuration.cpp OldDuration.h
-               Parser.cpp Parser.h
                Path.cpp Path.h
                RX.cpp RX.h
                Socket.cpp Socket.h
@@ -61,13 +59,11 @@ set (task_SRCS A3.cpp A3.h
 add_library (task STATIC ${task_SRCS})
 add_executable (task_executable   main.cpp)
 add_executable (calc_executable   calc.cpp)
-add_executable (parser_executable bnf.cpp)
 add_executable (args_executable   args.cpp)
 
 # Yes, 'task' is included twice, otherwise linking fails on assorted OSes.
 target_link_libraries (task_executable task commands columns task ${TASK_LIBRARIES})
 target_link_libraries (calc_executable task commands columns task ${TASK_LIBRARIES})
-target_link_libraries (parser_executable task commands columns task ${TASK_LIBRARIES})
 target_link_libraries (args_executable   task commands columns task ${TASK_LIBRARIES})
 
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
@@ -75,7 +71,6 @@ set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 install (TARGETS task_executable DESTINATION ${TASK_BINDIR})
 
 set_property (TARGET calc_executable PROPERTY OUTPUT_NAME "calc")
-set_property (TARGET parser_executable PROPERTY OUTPUT_NAME "parser")
 set_property (TARGET args_executable   PROPERTY OUTPUT_NAME "args")
 
 #SET(CMAKE_BUILD_TYPE gcov)
