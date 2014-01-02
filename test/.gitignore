@@ -9,6 +9,7 @@ date.t
 directory.t
 dom.t
 duration.t
+eval.t
 file.t
 i18n.t
 iso8601d.t

@@ -15,7 +15,7 @@ set (test_SRCS autocomplete.t color.t config.t date.t directory.t dom.t
                variant_inequal.t variant_lt.t variant_lte.t variant_match.t
                variant_math.t variant_modulo.t variant_multiply.t
                variant_nomatch.t variant_not.t variant_or.t variant_subtract.t
-               variant_xor.t)
+               variant_xor.t eval.t)
 
 
 message ("-- Configuring run_all")
