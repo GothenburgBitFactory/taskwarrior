@@ -47,6 +47,8 @@ int CmdCalc::execute (std::string& output)
 {
   int rc = 0;
 
+  // TODO Configurable infix/postfix
+  // TODO Configurable date/number precedence
 
   return rc;
 }

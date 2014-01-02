@@ -3,3 +3,4 @@ Makefile.in
 *_test
 args
 parser
+calc
