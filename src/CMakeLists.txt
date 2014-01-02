@@ -14,15 +14,17 @@ set (task_SRCS A3.cpp A3.h
                DOM.cpp DOM.h
                Date.cpp Date.h
                Directory.cpp Directory.h
-               OldDuration.cpp OldDuration.h
+               Duration.cpp Duration.h
                E9.cpp E9.h
                File.cpp File.h
                Hooks.cpp Hooks.h
                ISO8601.cpp ISO8601.h
                JSON.cpp JSON.h
+               Lexer.cpp Lexer.h
                LRParser.cpp LRParser.h
                Msg.cpp Msg.h
                Nibbler.cpp Nibbler.h
+               OldDuration.cpp OldDuration.h
                Parser.cpp Parser.h
                Path.cpp Path.h
                RX.cpp RX.h
