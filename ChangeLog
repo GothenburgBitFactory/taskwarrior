@@ -17,8 +17,9 @@ Features
  + #1297 The task₋sync(5) man pages is rewritten with examples.
  + #1339 The configuration file now supports JSON encoding of Unicode
    characters, by specifying \uNNNN.
- + #1423 sync vs. push, pull, merge collision avoidance.
  + #1385 Need a way to configure the trust of self-signed certificates.
+ + #1423 sync vs. push, pull, merge collision avoidance.
+ + #1473 Make TASK_RCDIR customizable (thanks to Jakub Wilk).
  + Stores un-synched transactions in <data.location>/backlog.data.
  + Adds a new 'synchronize' command to sync data with a Taskserver.
  + Adds a new 'initialize' synchronize command argument that uploads all pending
