@@ -32,12 +32,13 @@
 
 Context context;
 
+
 #define EPSILON 0.001
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (29);
+  UnitTest t (55);
 
   Variant v0 (true);
   Variant v1 (42);
@@ -89,9 +90,16 @@ int main (int argc, char** argv)
   try {Variant v13 = v1 - v3; t.fail ("42 - foo --> error");}
   catch (...)                {t.pass ("42 - foo --> error");}
 
-  // TODO integer - date     -> date
+  // integer - date     -> date
+  Variant v1a (1300000000);
+  Variant v14 = v1a - v4;
+  t.is (v14.type (), Variant::type_date,    "1300000000 - 1234567890 --> date");
+  t.is (v14.get_date (), 65432110,          "1300000000 - 1234567890 --> 65432110");
 
-  // TODO integer - duration -> duration
+  // integer - duration -> duration
+  Variant v15 = v1a - v5;
+  t.is (v15.type (), Variant::type_duration, "1300000000 - 1200 --> duration");
+  t.is (v15.get_duration (), 1299998800,     "1300000000 - 1200 --> 1299998800");
 
   // real - boolean  -> real
   Variant v20 = v2 - v0;
@@ -112,9 +120,16 @@ int main (int argc, char** argv)
   try {Variant v23 = v1 - v3; t.fail ("3.14 - foo --> error");}
   catch (...)                {t.pass ("3.14 - foo --> error");}
 
-  // TODO real - date     -> date
+  // real - date     -> real
+  Variant v2a (1300000000.0);
+  Variant v24 = v2a - v4;
+  t.is (v24.type (), Variant::type_real,    "1300000000.0 - 1234567890 --> real");
+  t.is (v24.get_real (), 65432110.0,        "1300000000.0 - 1234567890 --> 65432110");
 
-  // TODO real - duration -> duration
+  // real - duration -> real
+  Variant v25 = v2a - v5;
+  t.is (v25.type (), Variant::type_real,    "1300000000.0 - 1200 --> real");
+  t.is (v25.get_real (), 1299998800.0,      "1300000000.0 - 1200 --> 1299998800");
 
   // string - boolean  -> ERROR
   try {Variant v30 = v3 - v0; t.fail ("foo - foo --> error");}
@@ -140,26 +155,49 @@ int main (int argc, char** argv)
   try {Variant v35 = v3 - v5; t.fail ("foo - 1200 --> error");}
   catch (...)                {t.pass ("foo - 1200 --> error");}
 
-  // TODO date - boolean  -> date
+  // date - boolean  -> date
+  Variant v40 = v4 - v0;
+  t.is (v40.type (), Variant::type_date,     "1234567890 - true --> date");
+  t.is (v40.get_date (), 1234567889,         "1234567890 - true --> 1234567889");
 
-  // TODO date - integer  -> date
+  // date - integer  -> date
+  Variant v41 = v4 - v1;
+  t.is (v41.type (), Variant::type_date,     "1234567890 - 42 --> date");
+  t.is (v41.get_date (), 1234567848,         "1234567890 - 42 --> 1234567848");
 
-  // TODO date - real     -> date
+  // date - real     -> date
+  Variant v42 = v4 - v2;
+  t.is (v42.type (), Variant::type_date,     "1234567890 - 3.14 --> date");
+  t.is (v42.get_date (), 1234567887,         "1234567890 - 3.14 --> 1234567887");
 
   // date - string   -> string
   try {Variant v43 = v4 - v3; t.fail ("1234567890 - foo --> error");}
   catch (...)                {t.pass ("1234567890 - foo --> error");}
 
-  // TODO date - date     -> duration
+  // date - date     -> duration
+  Variant v44 = v4 - v4;
+  t.is (v44.type (), Variant::type_duration, "1234567890 - 1234567890 --> duration");
+  t.is (v44.get_duration (), 0,              "1234567890 - 1234567890 --> 0");
 
-  // TODO date - duration -> date
+  // date - duration -> date
+  Variant v45 = v4 - v5;
+  t.is (v45.type (), Variant::type_date,   "1234567890 - 1200 --> date");
+  t.is (v45.get_date (), 1234566690,       "1234567890 - 1200 --> 1234566690");
 
+  // duration - boolean  -> duration
+  Variant v50 = v5 - v0;
+  t.is (v50.type (), Variant::type_duration, "1200 - true --> duration");
+  t.is (v50.get_duration (), 1199,           "1200 - true --> 1199");
 
-  // TODO duration - boolean  -> duration
+  // duration - integer  -> duration
+  Variant v51 = v5 - v1;
+  t.is (v51.type (), Variant::type_duration, "1200 - 42 --> duration");
+  t.is (v51.get_duration (), 1158,           "1200 - 42 --> 1158");
 
-  // TODO duration - integer  -> duration
-
-  // TODO duration - real     -> duration
+  // duration - real     -> duration
+  Variant v52 = v5 - v2;
+  t.is (v52.type (), Variant::type_duration, "1200 - 3.14 --> duration");
+  t.is (v52.get_duration (), 1197,           "1200 - 3.14 --> 1197");
 
   // duration - string   -> ERROR
   try {Variant v53 = v5 - v3; t.fail ("1200 - foo --> error");}
@@ -169,7 +207,10 @@ int main (int argc, char** argv)
   try {Variant v54 = v5 - v4; t.fail ("1200 - 1234567890 --> error");}
   catch (...)                {t.pass ("1200 - 1234567890 --> error");}
 
-  // TODO duration - duration -> duration
+  // duration - duration -> duration
+  Variant v55 = v5 - v5;
+  t.is (v55.type (), Variant::type_duration, "1200 - 1200 --> duration");
+  t.is (v55.get_duration (), 0,              "1200 - 1200 --> 0");
 
   return 0;
 }
