@@ -131,9 +131,9 @@ ones containing just the relevant configuration data like colors, etc.
 There are two excellent uses of includes in your .taskrc, shown here:
 
 .RS
-include /usr/local/share/doc/task/rc/holidays.en-US.rc
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 .br
-include /usr/local/share/doc/task/rc/dark-16.theme
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-16.theme
 .RE
 
 This includes two standard files that are distributed with taskwarrior, which
@@ -724,7 +724,7 @@ be included like this:
 .RS
 .RS
 .br
-include /usr/local/share/doc/task/rc/holidays.en-US.rc
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 .RE
 .RE
 

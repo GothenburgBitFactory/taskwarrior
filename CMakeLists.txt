@@ -37,6 +37,7 @@ SET (TASK_MAN1DIR share/man/man1 CACHE STRING "Installation directory for man pa
 SET (TASK_MAN5DIR share/man/man5 CACHE STRING "Installation directory for man pages, section 5")
 endif (FREEBSD)
 SET (TASK_DOCDIR  share/doc/task CACHE STRING "Installation directory for doc files")
+SET (TASK_RCDIR "${TASK_DOCDIR}/rc" CACHE STRING "Installation directory for configuration files")
 SET (TASK_BINDIR  bin            CACHE STRING "Installation directory for the binary")
 
 message ("-- Looking for SHA1 references")

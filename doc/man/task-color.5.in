@@ -265,7 +265,7 @@ your .taskrc file (note that your installation may use a slightly different path
 from the example):
 
 .RS
-include /usr/local/share/doc/task/rc/dark-256.theme
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-256.theme
 .RE
 
 You can use any of the standard taskwarrior themes:

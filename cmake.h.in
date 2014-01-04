@@ -13,7 +13,7 @@
 #define PACKAGE_STRING    "${PACKAGE_STRING}"
 
 /* Installation details */
-#define TASK_RCDIR "${CMAKE_INSTALL_PREFIX}/${TASK_DOCDIR}/rc"
+#define TASK_RCDIR "${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}"
 
 /* Localization */
 #define PACKAGE_LANGUAGE  ${PACKAGE_LANGUAGE}
