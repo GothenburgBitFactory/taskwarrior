@@ -5,7 +5,7 @@
 Features
  + #328 Replaced the 'shell' command with a standalone 'tasksh' binary, which
    includes GNU readline support (thanks to Haitham Gad).
- + #934 support for 'reserved.lines' to accomodate multi-line
+ + #934 support for 'reserved.lines' to accommodate multi-line
    shell prompts when used in conjunction with 'limit:page' (thanks to Robert
    Gill).
  + #1226 A new French translation has begun, and will continue to be a work in
