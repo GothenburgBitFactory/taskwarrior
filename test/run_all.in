@@ -8,7 +8,7 @@ then
     $i > test.log 2>&1
     while read LINE
     do
-      echo $LINE
+      echo "$LINE"
     done < test.log
     rm test.log
   done
