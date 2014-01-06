@@ -6,6 +6,7 @@ autocomplete.t
 color.t
 config.t
 date.t
+dates.t
 directory.t
 dom.t
 duration.t
