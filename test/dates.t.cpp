@@ -55,7 +55,7 @@ void testInit (UnitTest& t, const std::string& value, Variant& var)
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (75);
+  UnitTest t (87);
 
   Variant sunday;    testInit (t, "sunday",    sunday);
   Variant monday;    testInit (t, "monday",    monday);
@@ -130,7 +130,9 @@ int main (int argc, char** argv)
   Variant soy;          testInit (t, "soy", soy);
   Variant eoy;          testInit (t, "eoy", eoy);
   Variant socm;         testInit (t, "socm", socm);
+  Variant eocm;         testInit (t, "eocm", eocm);
   Variant som;          testInit (t, "som", som);
+  Variant eom;          testInit (t, "eom", eom);
   Variant later;        testInit (t, "later", later);
   Variant someday;      testInit (t, "someday", someday);
   Variant easter;       testInit (t, "easter", easter);
@@ -141,6 +143,17 @@ int main (int argc, char** argv)
   Variant pi;           testInit (t, "pi", pi);
   Variant var_true;     testInit (t, "true", var_true);
   Variant var_false;    testInit (t, "false", var_false);
+
+  t.ok (now >= today,          "now >= today");
+  t.ok (sod == today,          "sod == today");
+  t.ok (sod < eod,             "sod < eod");
+  t.ok (yesterday < today,     "yesterday < today");
+  t.ok (today < tomorrow,      "today < tomorrow");
+  t.ok (socm < eocm,           "socm < eocm");
+  t.ok (now < later,           "now < later");
+  t.ok (now < someday,         "now < someday");
+  t.ok (goodfriday < easter,   "goodfriday < easter");
+  t.ok (easter < eastermonday, "easter < eastermonday");
 
   return 0;
 }

@@ -50,6 +50,11 @@ static const char* months_short[] =
   "jul", "aug", "sep", "oct", "nov", "dec",
 };
 
+static int month_days[12] =
+{
+  31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 static bool isMonth (const std::string& name, int& i)
 {
@@ -68,6 +73,29 @@ static bool isDay (const std::string& name, int& i)
       return true;
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static bool leapYear (int year)
+{
+  bool ly = false;
+
+  // (year % 4 == 0) && (year % 100 !=0)  OR
+  // (year % 400 == 0)
+  // are leapyears
+
+  if (((!(year % 4)) && (year % 100)) || (!(year % 400))) ly = true;
+
+  return ly;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static int daysInMonth (int year, int month)
+{
+  if (month == 2 && leapYear (year))
+    return 29;
+
+  return month_days[month - 1];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +185,30 @@ bool namedDates (const std::string& name, Variant& value)
     value = Variant (mktime (t), Variant::type_date);
   }
 
+  else if (name == "som")
+  {
+    struct tm* t = localtime (&now);
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
+
+    t->tm_mon++;
+    if (t->tm_mon == 12)
+    {
+      t->tm_year++;
+      t->tm_mon = 0;
+    }
+
+    t->tm_mday = 1;
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
+  else if (name == "eom" || name == "eocm")
+  {
+    struct tm* t = localtime (&now);
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_mday = daysInMonth (t->tm_year + 1900, t->tm_mon + 1);
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
   else if (name == "later" || name == "someday")
   {
     struct tm* t = localtime (&now);
@@ -206,7 +258,7 @@ bool namedDates (const std::string& name, Variant& value)
 
   // TODO
 /*
-  {s,e}o{w,m,q,ww,cw,cm}
+  {s,e}o{w,q,ww,cw}
 
   midsommar
   midsommarafton
