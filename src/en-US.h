@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -116,6 +116,7 @@
 #define STRING_A3_ID_AFTER_HYPHEN    "Unrecognized ID after hyphen."
 #define STRING_A3_RANGE_INVERTED     "Inverted range 'high-low' instead of 'low-high'"
 #define STRING_A3_UUID_AFTER_COMMA   "Unrecognized UUID after comma."
+#define STRING_A3_ZERO_ID            "'{1}' is not a valid ID."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "The color '{1}' is not recognized."
@@ -176,6 +177,7 @@
 #define STRING_COLUMN_LABEL_UDA      "Name"
 #define STRING_COLUMN_LABEL_TYPE     "Type"
 #define STRING_COLUMN_LABEL_LABEL    "Label"
+#define STRING_COLUMN_LABEL_DEFAULT  "Default"
 #define STRING_COLUMN_LABEL_VALUES   "Allowed Values"
 #define STRING_COLUMN_LABEL_UDACOUNT "Usage Count"
 #define STRING_COLUMN_LABEL_ORPHAN   "Orphan UDA"
@@ -306,6 +308,8 @@
 #define STRING_CMD_SUMMARY_COMPLETE  "Complete"
 #define STRING_CMD_SUMMARY_NONE      "(none)"
 #define STRING_CMD_COUNT_USAGE       "Counts matching tasks"
+#define STRING_CMD_GET_USAGE         "DOM Accessor"
+#define STRING_CMD_GET_NO_DOM        "No DOM reference specified."
 
 #define STRING_CMD_UDAS_NO           "No UDAs defined."
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA defined"
@@ -394,15 +398,16 @@
 #define STRING_CMD_IMPORT_SUMMARY    "Imported {1} tasks."
 #define STRING_CMD_IMPORT_NOFILE     "You must specify a file to import."
 #define STRING_CMD_IMPORT_FILE       "Importing '{1}'"
-#define STRING_CMD_IMPORT_NOT_JSON   "Not a JSON object: {1}"
-#define STRING_CMD_IMPORT_NO_DESC    "Annotation is missing a description: {1}"
-#define STRING_CMD_IMPORT_NO_ENTRY   "Annotation is missing an entry date: {1}"
+#define STRING_TASK_NO_DESC          "Annotation is missing a description: {1}"
+#define STRING_TASK_NO_ENTRY         "Annotation is missing an entry date: {1}"
 #define STRING_CMD_SHELL_HELP1       "Enter any task command (such as 'list'), or hit 'Enter'."
 #define STRING_CMD_SHELL_HELP2       "There is no need to include the 'task' command itself."
 #define STRING_CMD_SHELL_HELP3       "Enter 'quit' (or 'bye', 'exit') to end the session."
-#define STRING_CMD_SYNC_USAGE        "Synchronizes data with the Task Server"
-#define STRING_CMD_SYNC_NO_SERVER    "Task Server is not configured."
-#define STRING_CMD_SYNC_BAD_CRED     "Task Server credentials malformed."
+#define STRING_CMD_SYNC_USAGE        "Synchronizes data with the Taskserver"
+#define STRING_CMD_SYNC_NO_SERVER    "Taskserver is not configured."
+#define STRING_CMD_SYNC_BAD_CRED     "Taskserver credentials malformed."
+#define STRING_CMD_SYNC_BAD_CERT     "Taskserver certificate missing."
+#define STRING_CMD_SYNC_BAD_KEY      "Taskserver key missing."
 #define STRING_CMD_SYNC_ADD          "   add {1} '{2}'"
 #define STRING_CMD_SYNC_MOD          "modify {1} '{2}'"
 #define STRING_CMD_SYNC_PROGRESS     "Syncing with {1}"
@@ -411,10 +416,20 @@
 #define STRING_CMD_SYNC_SUCCESS2     "Sync successful.  {1} changes downloaded."
 #define STRING_CMD_SYNC_SUCCESS3     "Sync successful.  {1} changes uploaded, {2} changes downloaded."
 #define STRING_CMD_SYNC_SUCCESS_NOP  "Sync successful.  No changes."
-#define STRING_CMD_SYNC_FAIL_ACCOUNT "Sync failed.  Either your credentials are incorrect, or your Task Server account is not enabled."
-#define STRING_CMD_SYNC_FAIL_ERROR   "Sync failed.  The Task Server returned error: {1} {2}"
-#define STRING_CMD_SYNC_FAIL_CONNECT "Sync failed.  Could not connect to the Task Server."
+#define STRING_CMD_SYNC_FAIL_ACCOUNT "Sync failed.  Either your credentials are incorrect, or your Taskserver account is not enabled."
+#define STRING_CMD_SYNC_FAIL_ERROR   "Sync failed.  The Taskserver returned error: {1} {2}"
+#define STRING_CMD_SYNC_FAIL_CONNECT "Sync failed.  Could not connect to the Taskserver."
 #define STRING_CMD_SYNC_BAD_SERVER   "Sync failed.  Malformed configuration setting '{1}'"
+#define STRING_CMD_SYNC_NO_TLS       "Taskwarrior was built without GnuTLS support.  Sync is not available."
+#define STRING_CMD_SYNC_INIT         "Please confirm that you wish to upload all your pending tasks to the Taskserver"
+#define STRING_CMD_SYNC_NO_INIT      "Taskwarrior will not proceed with first-time sync initialization."
+#define STRING_CMD_SYNC_RELOCATE0    "The server account has been relocated.  Please update your configuration using:"
+#define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"
+#define STRING_CMD_SYNC_BAD_CA       "CA certificate not found."
+#define STRING_CMD_SYNC_CONNECT      "Could not connect to {1} {2}"
+#define STRING_CMD_SYNC_HANDSHAKE    "Handshake failed.  {1}"
+#define STRING_CMD_SYNC_NOMERGE      "Task push/pull/merge is configured, deprecated, and does not work with 'sync'."
+#define STRING_CMD_SYNC_TRUST_CA     "You should either provide a CA certificate or override verification, but not both."
 #define STRING_CMD_DIAG_USAGE        "Platform, build and environment details"
 #define STRING_CMD_DIAG_PLATFORM     "Platform"
 #define STRING_CMD_DIAG_UNKNOWN      "<unknown>"
@@ -431,8 +446,6 @@
 #define STRING_CMD_DIAG_CONFIG       "Configuration"
 #define STRING_CMD_DIAG_EXTERNAL     "External Utilities"
 #define STRING_CMD_DIAG_TESTS        "Tests"
-#define STRING_CMD_DIAG_UUID_GOOD    "1000 unique UUIDs generated."
-#define STRING_CMD_DIAG_UUID_BAD     "Failed - duplicate UUID at iteration {1}"
 #define STRING_CMD_DIAG_UUID_SCAN    "Scanned {1} tasks for duplicate UUIDs:"
 #define STRING_CMD_DIAG_UUID_DUP     "Found duplicate {1}"
 #define STRING_CMD_DIAG_UUID_NO_DUP  "No duplicates found"
@@ -552,7 +565,6 @@
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' is not a valid date in the '{2}' format."
 #define STRING_DATE_BAD_WEEKSTART    "The 'weekstart' configuration variable may only contain 'Sunday' or 'Monday'."
-#define STRING_DATE_TOO_MUCH         "The date is too far into the future."
 
 #define STRING_DATE_JANUARY_LONG     "january"
 #define STRING_DATE_FEBRUARY_LONG    "february"
@@ -688,7 +700,6 @@
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Error: "
 #define STRING_UNKNOWN_ERROR         "Unknown error."
-#define STRING_NO_HOME               "Could not read home directory from the passwd file."
 #define STRING_TRIVIAL_INPUT         "You must specify a command or a task to modify."
 #define STRING_ASSUME_INFO           "No command specified - assuming 'information'."
 #define STRING_INFINITE_LOOP         "Terminated substitution because more than {1} changes were made - infinite loop protection."
@@ -698,6 +709,7 @@
 #define STRING_UDA_COLLISION         "The UDA named '{1}' is the same as a core attribute, and is not permitted."
 #define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
 #define STRING_INVALID_SORT_COL      "The '{1}' column is not a valid sort field."
+#define STRING_TLS_INIT_FAIL         "Error initializing TLS."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "No tasks."
@@ -750,9 +762,6 @@
 #define STRING_JSON_MISSING_OPEN     "Error: expected '{' or '[' at position {1}"
 #define STRING_JSON_EXTRA_CHARACTERS "Error: extra characters found at position {1}"
 
-// Legacy
-#define STRING_LEGACY_FEATURE        "Note: the '{1}' feature is deprecated."
-
 // Record
 #define STRING_RECORD_EMPTY          "Empty record in input."
 #define STRING_RECORD_JUNK_AT_EOL    "Unrecognized characters at end of line."
@@ -764,7 +773,6 @@
 #define STRING_CMD_SHOW_NONE         "No matching configuration variables."
 #define STRING_CMD_SHOW_UNREC        "Your .taskrc file contains these unrecognized variables:"
 #define STRING_CMD_SHOW_DIFFER       "Some of your .taskrc variables differ from the default values."
-#define STRING_CMD_SHOW_HOOKS        "Your .taskrc file contains these missing or unreadable hook scripts:"
 #define STRING_CMD_SHOW_EMPTY        "Configuration error: .taskrc contains no entries."
 #define STRING_CMD_SHOW_DIFFER_COLOR "These are highlighted in {1} above."
 #define STRING_CMD_SHOW_CONFIG_ERROR "Configuration error: {1} contains an unrecognized value '{2}'."
@@ -776,6 +784,7 @@
 
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior no longer supports file format 1, originally used between 27 November 2006 and 31 December 2007."
+#define STRING_TASK_NO_FF2           "Taskwarrior no longer supports file format 2, originally used between 1 January 2008 and 12 April 2009."
 #define STRING_TASK_PARSE_ANNO_BRACK "Missing annotation brackets."
 #define STRING_TASK_PARSE_ATT_BRACK  "Missing attribute brackets."
 #define STRING_TASK_PARSE_TAG_BRACK  "Missing tag brackets."
@@ -826,8 +835,7 @@
 #define STRING_TDB2_REVERTED         "Modified task reverted."
 #define STRING_TDB2_REMOVED          "Task removed."
 #define STRING_TDB2_UNDO_COMPLETE    "Undo complete."
-#define STRING_TDB2_MISSING_TASK     "Task with UUID {1} not found in data."
-#define STRING_TDB2_UNDO_IMPOSSIBLE  "No undo possible."
+#define STRING_TDB2_UNDO_SYNCED      "Cannot undo change because the task was already synced.  Modify the task instead."
 
 // text
                                      // A comma-separated list of commands is appended.

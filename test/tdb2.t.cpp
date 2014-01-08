@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <unistd.h>
-
 #include <main.h>
 #include <test.h>
 
@@ -37,6 +38,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (12);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   try
   {
@@ -57,7 +62,7 @@ int main (int argc, char** argv)
     std::vector <Task> pending          = context.tdb2.pending.get_tasks ();
     std::vector <Task> completed        = context.tdb2.completed.get_tasks ();
     std::vector <std::string> undo      = context.tdb2.undo.get_lines ();
-    std::vector <Task> backlog          = context.tdb2.backlog.get_tasks ();
+    std::vector <std::string> backlog   = context.tdb2.backlog.get_lines ();
 
     t.is ((int) pending.size (),   0, "TDB2 Read empty pending");
     t.is ((int) completed.size (), 0, "TDB2 Read empty completed");
@@ -71,7 +76,7 @@ int main (int argc, char** argv)
     pending   = context.tdb2.pending.get_tasks ();
     completed = context.tdb2.completed.get_tasks ();
     undo      = context.tdb2.undo.get_lines ();
-    backlog   = context.tdb2.backlog.get_tasks ();
+    backlog   = context.tdb2.backlog.get_lines ();
 
     t.is ((int) pending.size (),   1, "TDB2 after add, 1 pending task");
     t.is ((int) completed.size (), 0, "TDB2 after add, 0 completed tasks");
@@ -84,7 +89,7 @@ int main (int argc, char** argv)
     pending   = context.tdb2.pending.get_tasks ();
     completed = context.tdb2.completed.get_tasks ();
     undo      = context.tdb2.undo.get_lines ();
-    backlog   = context.tdb2.backlog.get_tasks ();
+    backlog   = context.tdb2.backlog.get_lines ();
 
     t.is ((int) pending.size (),   1, "TDB2 after add, 1 pending task");
     t.is ((int) completed.size (), 0, "TDB2 after add, 0 completed tasks");

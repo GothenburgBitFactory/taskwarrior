@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <Context.h>
 #include <ColPriority.h>
 #include <text.h>
@@ -118,3 +119,16 @@ void ColumnPriority::render (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string ColumnPriority::modify (std::string& value)
+{
+  return upperCase (value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnPriority::can_modify ()
+{
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+

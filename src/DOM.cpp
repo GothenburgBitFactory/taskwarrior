@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <Context.h>
 #include <Nibbler.h>
 #include <text.h>
 #include <i18n.h>
 #include <DOM.h>
-#include <cmake.h>
 
 extern Context context;
 
@@ -73,6 +73,7 @@ const std::vector <std::string> DOM::get_references () const
 //
 //   system.version
 //   system.os
+//
 const std::string DOM::get (const std::string& name)
 {
   int len = name.length ();
@@ -86,20 +87,20 @@ const std::string DOM::get (const std::string& name)
   }
 
   // context.*
-  else if (len > 8 &&
+  if (len > 8 &&
            name.substr (0, 8) == "context.")
   {
          if (name == "context.program") return context.a3[0]._raw;
     else if (name == "context.args")    return context.a3.combine ();
-    else if (name == "context.width")   return format (context.terminal_width);
-    else if (name == "context.height")  return format (context.terminal_height);
+    else if (name == "context.width")   return format (context.terminal_width  ? context.terminal_width  : context.getWidth ());
+    else if (name == "context.height")  return format (context.terminal_height ? context.terminal_height : context.getHeight ());
     else                                throw format (STRING_DOM_UNREC, name);
   }
 
   // TODO stats.<name>
 
   // system. --> Implement locally.
-  else if (len > 7 &&
+  if (len > 7 &&
            name.substr (0, 7) == "system.")
   {
     // Taskwarrior version number.
@@ -143,53 +144,26 @@ const std::string DOM::get (const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 // DOM Supported References:
 //
-//   TODO <id>.{entry,start,end,scheduled,due,until,wait}
-//   TODO <id>.description
-//   TODO <id>.project
-//   TODO <id>.priority
-//   TODO <id>.parent
-//   TODO <id>.status
-//   TODO <id>.tags
-//   TODO <id>.urgency
-//   TODO <id>.recur
-//   TODO <id>.depends
-//
-//   TODO <uuid>.{entry,start,end,scheduled,due,until,wait}
-//   TODO <uuid>.description
-//   TODO <uuid>.project
-//   TODO <uuid>.priority
-//   TODO <uuid>.parent
-//   TODO <uuid>.status
-//   TODO <uuid>.tags
-//   TODO <uuid>.urgency
-//   TODO <uuid>.recur
-//   TODO <uuid>.depends
-//
-//   {entry,start,end,scheduled,due,until,wait}
-//   description
-//   project
-//   priority
-//   parent
-//   status
-//   tags
-//   urgency
-//   recur
-//   depends
+//   <attribute>
+//   <id>.<attribute>
+//   <uuid>.<attribute>
 //
 const std::string DOM::get (const std::string& name, const Task& task)
 {
   Nibbler n (name);
+  n.save ();
+
   int id;
   std::string uuid;
   std::string canonical;
 
   // <attr>
        if (name == "id")                       return format (task.id);
-  else if (name == "urgency")                  return format (task.urgency_c (), 4, 3);
+  else if (name == "urgency")                  return format (task.urgency_c ());
   else if (A3::is_attribute (name, canonical)) return task.get (canonical);
 
   // <id>.<name>
-  else if (n.getInt (id))
+  if (n.getInt (id))
   {
     if (n.skip ('.'))
     {
@@ -203,13 +177,15 @@ const std::string DOM::get (const std::string& name, const Task& task)
       n.getUntilEOS (attr);
 
            if (attr == "id")                       return format (ref.id);
-      else if (attr == "urgency")                  return format (ref.urgency_c (), 4, 3);
+      else if (attr == "urgency")                  return format (ref.urgency_c ());
       else if (A3::is_attribute (attr, canonical)) return ref.get (canonical);
     }
+
+    n.restore ();
   }
 
   // <uuid>.<name>
-  else if (n.getUUID (uuid))
+  if (n.getUUID (uuid))
   {
     if (n.skip ('.'))
     {
@@ -222,10 +198,12 @@ const std::string DOM::get (const std::string& name, const Task& task)
       std::string attr;
       n.getUntilEOS (attr);
 
-           if (name == "id")                       return format (ref.id);
-      else if (name == "urgency")                  return format (ref.urgency_c (), 4, 3);
+           if (attr == "id")                       return format (ref.id);
+      else if (attr == "urgency")                  return format (ref.urgency_c (), 4, 3);
       else if (A3::is_attribute (attr, canonical)) return ref.get (canonical);
     }
+
+    n.restore ();
   }
 
   // Delegate to the context-free version of DOM::get.

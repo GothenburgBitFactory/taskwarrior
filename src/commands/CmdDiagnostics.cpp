@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
@@ -34,8 +35,9 @@
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
-#include <cmake.h>
+#ifdef HAVE_COMMIT
 #include <commit.h>
+#endif
 
 #ifdef HAVE_LIBGNUTLS
 #include <gnutls/gnutls.h>
@@ -136,31 +138,15 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Build date.
       << "      " << STRING_CMD_DIAG_BUILT << ": " << __DATE__ << " " << __TIME__ << "\n"
+#ifdef HAVE_COMMIT
       << "     " << STRING_CMD_DIAG_COMMIT << ": " << COMMIT << "\n"
+#endif
       << "      CMake: " << CMAKE_VERSION << "\n"
       << "       " << STRING_CMD_DIAG_CAPS << ":"
 #ifdef HAVE_LIBPTHREAD
       << " +pthreads"
 #else
       << " -pthreads"
-#endif
-
-#ifdef HAVE_SRANDOM
-      << " +srandom"
-#else
-      << " -srandom"
-#endif
-
-#ifdef HAVE_RANDOM
-      << " +random"
-#else
-      << " -random"
-#endif
-
-#ifdef HAVE_UUID
-      << " +uuid"
-#else
-      << " -uuid"
 #endif
 
 #ifdef HAVE_LIBGNUTLS
@@ -171,12 +157,10 @@ int CmdDiagnostics::execute (std::string& output)
       << "\n";
 
   out << "    libuuid: "
-#if defined (HAVE_UUID) and defined (HAVE_UUID_UNPARSE_LOWER)
+#ifdef HAVE_UUID_UNPARSE_LOWER
       << "libuuid + uuid_unparse_lower"
-#elif defined (HAVE_UUID) and !defined (HAVE_UUID_UNPARSE_LOWER)
-      << "libuuid, no uuid_unparse_lower"
 #else
-      << "n/a"
+      << "libuuid, no uuid_unparse_lower"
 #endif
       << "\n";
 
@@ -213,12 +197,14 @@ int CmdDiagnostics::execute (std::string& output)
       << location.mode ()
       << "\n";
 
-  out << "     Server: "
-      << context.config.get ("taskd.server")
-      << "\n";
-
   out << "    Locking: "
       << (context.config.getBoolean ("locking")
+           ? STRING_CMD_DIAG_ENABLED
+           : STRING_CMD_DIAG_DISABLED)
+      << "\n";
+
+  out << "         GC: "
+      << (context.config.getBoolean ("gc")
            ? STRING_CMD_DIAG_ENABLED
            : STRING_CMD_DIAG_DISABLED)
       << "\n";
@@ -232,9 +218,50 @@ int CmdDiagnostics::execute (std::string& output)
   else if ((peditor = getenv ("EDITOR")) != NULL)
     out << "    $EDITOR: " << peditor << "\n";
 
-  out << "\n";
+  out << "     Server: "
+      << context.config.get ("taskd.server")
+      << "\n";
+
+  if (context.config.get ("taskd.ca") != "")
+    out << "         CA: "
+        << context.config.get ("taskd.ca")
+        << (File (context.config.get ("taskd.ca")).readable ()
+             ? " (readable)" : " (not readable)")
+        << "\n";
+
+  if (context.config.get ("taskd.trust") != "")
+    out << "      Trust: override\n";
+
+  out << "       Cert: "
+      << context.config.get ("taskd.certificate")
+      << (File (context.config.get ("taskd.certificate")).readable ()
+           ? " (readable)" : " (not readable)")
+      << "\n";
+
+  out << "        Key: "
+      << context.config.get ("taskd.key")
+      << (File (context.config.get ("taskd.key")).readable ()
+           ? " (readable)" : " (not readable)")
+      << "\n";
+
+  out << "    Ciphers: "
+      << context.config.get ("taskd.ciphers")
+      << "\n";
+
+  // Get credentials, but mask out the key.
+  std::string credentials = context.config.get ("taskd.credentials");
+  std::string::size_type last_slash = credentials.rfind ('/');
+  if (last_slash != std::string::npos)
+    credentials = credentials.substr (0, last_slash)
+                + "/"
+                + std::string (credentials.length () - last_slash - 1, '*');
+
+  out << "      Creds: "
+      << credentials
+      << "\n\n";
 
   // External commands.
+  // Deprecated in 2.3.0 with push, pull, merge.
   out << bold.colorize (STRING_CMD_DIAG_EXTERNAL)
       << "\n";
   {
@@ -296,24 +323,6 @@ int CmdDiagnostics::execute (std::string& output)
   out << bold.colorize (STRING_CMD_DIAG_TESTS)
       << "\n";
   {
-    out << "   UUID gen: ";
-    std::vector <std::string> uuids;
-    std::string id;
-    for (int i = 0; i < 1000; i++)
-    {
-      id = uuid ();
-      if (std::find (uuids.begin (), uuids.end (), id) != uuids.end ())
-      {
-        out << format (STRING_CMD_DIAG_UUID_BAD, i) << "\n";
-        break;
-      }
-      else
-        uuids.push_back (id);
-    }
-
-    if (uuids.size () >= 1000)
-      out << STRING_CMD_DIAG_UUID_GOOD << "\n";
-
     // Determine terminal details.
     const char* term = getenv ("TERM");
     out << "      $TERM: "

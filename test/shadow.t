@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,10 @@ use strict;
 use warnings;
 use Test::More tests => 18;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 # Create the rc file.
 if (open my $fh, '>', 'shadow.rc')
 {
@@ -43,16 +47,16 @@ if (open my $fh, '>', 'shadow.rc')
 }
 
 my $output = qx{../src/task rc:shadow.rc add one 2>&1 >/dev/null};
-like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file updated on add');
+like ($output, qr/\[Shadow file '.+\/shadow\.txt' updated\.\]/, 'shadow file updated on add');
 
 $output = qx{../src/task rc:shadow.rc list 2>&1 >/dev/null};
-unlike ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file not updated on list');
+unlike ($output, qr/\[Shadow file '.+\/shadow\.txt' updated\.\]/, 'shadow file not updated on list');
 
 $output = qx{../src/task rc:shadow.rc 1 delete 2>&1 >/dev/null};
-like ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file updated on delete');
+like ($output, qr/\[Shadow file '.+\/shadow\.txt' updated\.\]/, 'shadow file updated on delete');
 
 $output = qx{../src/task rc:shadow.rc list 2>&1 >/dev/null};
-unlike ($output, qr/\[Shadow file '\.\/shadow\.txt' updated\.\]/, 'shadow file not updated on list');
+unlike ($output, qr/\[Shadow file '.+\/shadow\.txt' updated\.\]/, 'shadow file not updated on list');
 
 # Inspect the shadow file.
 my $file = slurp ('./shadow.txt');

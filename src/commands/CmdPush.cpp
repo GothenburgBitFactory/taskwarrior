@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <fstream>
 #include <sstream>
 #include <Context.h>
@@ -51,6 +52,8 @@ CmdPush::CmdPush ()
 // Because this is potentially on another machine, no checking can be performed.
 int CmdPush::execute (std::string& output)
 {
+  context.footnote ("The 'push' command is deprecated, and will be removed in a subsequent release.");
+
   std::vector <std::string> words = context.a3.extract_words ();
   std::string file;
   if (words.size ())

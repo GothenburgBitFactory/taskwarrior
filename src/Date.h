@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,8 @@
 #define INCLUDED_DATE
 
 #include <stdio.h>
+#include <vector>
 #include <string>
-
 
 class Date;
 
@@ -76,6 +76,7 @@ public:
   static int length (const std::string&);
 
   int month () const;
+  int week () const;
   int day () const;
   int year () const;
   int weekOfYear (int) const;
@@ -93,6 +94,7 @@ public:
   bool operator>= (const Date&) const;
   bool sameHour   (const Date&) const;
   bool sameDay    (const Date&) const;
+  bool sameWeek   (const Date&) const;
   bool sameMonth  (const Date&) const;
   bool sameYear   (const Date&) const;
 

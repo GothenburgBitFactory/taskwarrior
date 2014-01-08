@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,77 +25,64 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <stdlib.h>
 #include <assert.h>
+#ifdef PRODUCT_TASKWARRIOR
 #include <math.h>
+#endif
 #include <algorithm>
+#ifdef PRODUCT_TASKWARRIOR
 #include <Context.h>
 #include <Nibbler.h>
+#endif
 #include <Date.h>
 #include <OldDuration.h>
 #include <Task.h>
 #include <JSON.h>
+#ifdef PRODUCT_TASKWARRIOR
 #include <RX.h>
+#endif
 #include <text.h>
 #include <util.h>
+
 #include <i18n.h>
+#ifdef PRODUCT_TASKWARRIOR
 #include <main.h>
+
+#include <E9.h>
 
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
 extern Context context;
 
 static const float epsilon = 0.000001;
+#endif
 
-static std::map <std::string, float> coefficients;
-float urgencyPriorityCoefficient    = 0.0;
-float urgencyProjectCoefficient     = 0.0;
-float urgencyActiveCoefficient      = 0.0;
-float urgencyScheduledCoefficient   = 0.0;
-float urgencyWaitingCoefficient     = 0.0;
-float urgencyBlockedCoefficient     = 0.0;
-float urgencyAnnotationsCoefficient = 0.0;
-float urgencyTagsCoefficient        = 0.0;
-float urgencyNextCoefficient        = 0.0;
-float urgencyDueCoefficient         = 0.0;
-float urgencyBlockingCoefficient    = 0.0;
-float urgencyAgeCoefficient         = 0.0;
+std::string Task::defaultProject  = "";
+std::string Task::defaultPriority = "";
+std::string Task::defaultDue      = "";
+bool Task::searchCaseSensitive    = true;
+bool Task::regex                  = false;
+std::map <std::string, std::string> Task::attributes;
+
+std::map <std::string, float> Task::coefficients;
+float Task::urgencyPriorityCoefficient    = 0.0;
+float Task::urgencyProjectCoefficient     = 0.0;
+float Task::urgencyActiveCoefficient      = 0.0;
+float Task::urgencyScheduledCoefficient   = 0.0;
+float Task::urgencyWaitingCoefficient     = 0.0;
+float Task::urgencyBlockedCoefficient     = 0.0;
+float Task::urgencyAnnotationsCoefficient = 0.0;
+float Task::urgencyTagsCoefficient        = 0.0;
+float Task::urgencyNextCoefficient        = 0.0;
+float Task::urgencyDueCoefficient         = 0.0;
+float Task::urgencyBlockingCoefficient    = 0.0;
+float Task::urgencyAgeCoefficient         = 0.0;
+float Task::urgencyAgeMax                 = 0.0;
 
 static const std::string dummy ("");
-
-////////////////////////////////////////////////////////////////////////////////
-// Non-method.
-//
-// This is essentialy a cache of float values to save iteration and hash lookup
-// in the whole config at time of Task::urgency_C.
-void initializeUrgencyCoefficients ()
-{
-  urgencyPriorityCoefficient    = context.config.getReal ("urgency.priority.coefficient");
-  urgencyProjectCoefficient     = context.config.getReal ("urgency.project.coefficient");
-  urgencyActiveCoefficient      = context.config.getReal ("urgency.active.coefficient");
-  urgencyScheduledCoefficient   = context.config.getReal ("urgency.scheduled.coefficient");
-  urgencyWaitingCoefficient     = context.config.getReal ("urgency.waiting.coefficient");
-  urgencyBlockedCoefficient     = context.config.getReal ("urgency.blocked.coefficient");
-  urgencyAnnotationsCoefficient = context.config.getReal ("urgency.annotations.coefficient");
-  urgencyTagsCoefficient        = context.config.getReal ("urgency.tags.coefficient");
-  urgencyNextCoefficient        = context.config.getReal ("urgency.next.coefficient");
-  urgencyDueCoefficient         = context.config.getReal ("urgency.due.coefficient");
-  urgencyBlockingCoefficient    = context.config.getReal ("urgency.blocking.coefficient");
-  urgencyAgeCoefficient         = context.config.getReal ("urgency.age.coefficient");
-
-  // Tag- and project-specific coefficients.
-  std::vector <std::string> all;
-  context.config.all (all);
-
-  std::vector <std::string>::iterator var;
-  for (var = all.begin (); var != all.end (); ++var)
-  {
-    if (var->substr (0, 13) == "urgency.user." ||
-        var->substr (0, 12) == "urgency.uda.")
-      coefficients[*var] = context.config.getReal (*var);
-  }
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task ()
@@ -120,7 +107,6 @@ Task& Task::operator= (const Task& other)
   if (this != &other)
   {
     std::map <std::string, std::string>::operator= (other);
-
     id               = other.id;
     urgency_value    = other.urgency_value;
     recalc_urgency   = other.recalc_urgency;
@@ -338,6 +324,7 @@ void Task::setStatus (Task::status status)
   recalc_urgency = true;
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::is_due () const
 {
@@ -375,6 +362,68 @@ bool Task::is_duetoday () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Task::is_dueweek () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      Date now;
+      Date due (get_date ("due"));
+      if (now.year () == due.year () &&
+          now.week () == due.week ())
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::is_duemonth () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      Date now;
+      Date due (get_date ("due"));
+      if (now.year () == due.year () &&
+          now.month () == due.month ())
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::is_dueyear () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      Date now;
+      Date due (get_date ("due"));
+      if (now.year () == due.year ())
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Task::is_overdue () const
 {
   if (has ("due"))
@@ -391,10 +440,13 @@ bool Task::is_overdue () const
 
   return false;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Task::parse, and in the event of an error
-// try a legacy parse (F3, FF2).  Note that FF1 is no longer supported.
+// try a JSON parse, otherwise a legacy parse (FF3).
+//
+// Note that FF1 and FF2 are no longer supported.
 //
 // start --> [ --> Att --> ] --> end
 //              ^       |
@@ -410,129 +462,189 @@ void Task::parse (const std::string& input)
 
   try
   {
+    // File format version 4, from 2009-5-16 - now, v1.7.1+
+    // This is the parse format tried first, because it is most used.
     clear ();
 
-    Nibbler n (copy);
-    std::string line;
-    if (n.skip     ('[')       &&
-        n.getUntil (']', line) &&
-        n.skip     (']')       &&
-        n.depleted ())
+    if (copy[0] == '[')
     {
-      if (line.length () == 0)
-        throw std::string (STRING_RECORD_EMPTY);
-
-      Nibbler nl (line);
-      std::string name;
-      std::string value;
-      while (!nl.depleted ())
+      Nibbler n (copy);
+      std::string line;
+      if (n.skip     ('[')       &&
+          n.getUntil (']', line) &&
+          n.skip     (']')       &&
+          n.depleted ())
       {
-        if (nl.getUntil (':', name) &&
-            nl.skip (':')           &&
-            nl.getQuoted ('"', value))
+        if (line.length () == 0)
+          throw std::string (STRING_RECORD_EMPTY);
+
+        Nibbler nl (line);
+        std::string name;
+        std::string value;
+        while (!nl.depleted ())
         {
-          // Experimental legacy value translation of 'recur:m' --> 'recur:mo'.
-          if (name == "recur" &&
-              digitsOnly (value.substr (0, value.length () - 1)) &&
-              value[value.length () - 1] == 'm')
-            value += 'o';
+          if (nl.getUntil (':', name) &&
+              nl.skip (':')           &&
+              nl.getQuoted ('"', value))
+          {
+            // Experimental legacy value translation of 'recur:m' --> 'recur:mo'.
+            if (name == "recur" &&
+                digitsOnly (value.substr (0, value.length () - 1)) &&
+                value[value.length () - 1] == 'm')
+              value += 'o';
 
-          if (name.substr (0, 11) == "annotation_")
-            ++annotation_count;
+            if (name.substr (0, 11) == "annotation_")
+              ++annotation_count;
 
-          (*this)[name] = decode (json::decode (value));
+            (*this)[name] = decode (json::decode (value));
+          }
+
+          nl.skip (' ');
         }
 
-        nl.skip (' ');
+        std::string remainder;
+        nl.getUntilEOS (remainder);
+        if (remainder.length ())
+          throw std::string (STRING_RECORD_JUNK_AT_EOL);
       }
-
-      std::string remainder;
-      nl.getUntilEOS (remainder);
-      if (remainder.length ())
-        throw std::string (STRING_RECORD_JUNK_AT_EOL);
     }
+    else if (copy[0] == '{')
+      parseJSON (copy);
     else
       throw std::string (STRING_RECORD_NOT_FF4);
   }
 
   catch (const std::string&)
   {
-    legacyParse (copy);
+    parseLegacy (copy);
   }
 
   recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Note that all fields undergo encode/decode.
+void Task::parseJSON (const std::string& line)
+{
+  // Parse the whole thing.
+  json::value* root = json::parse (line);
+  if (root->type () == json::j_object)
+  {
+    json::object* root_obj = (json::object*)root;
+
+    // For each object element...
+    json_object_iter i;
+    for (i  = root_obj->_data.begin ();
+         i != root_obj->_data.end ();
+         ++i)
+    {
+      // If the attribute is a recognized column.
+      std::string type = Task::attributes[i->first];
+      if (type != "")
+      {
+        // Any specified id is ignored.
+        if (i->first == "id")
+          ;
+
+        // Urgency, if present, is ignored.
+        else if (i->first == "urgency")
+          ;
+
+        // Dates are converted from ISO to epoch.
+        else if (type == "date")
+        {
+          Date d (unquoteText (i->second->dump ()));
+          set (i->first, d.toEpochString ());
+        }
+
+        // Tags are an array of JSON strings.
+        else if (i->first == "tags")
+        {
+          json::array* tags = (json::array*)i->second;
+          json_array_iter t;
+          for (t  = tags->_data.begin ();
+               t != tags->_data.end ();
+               ++t)
+          {
+            json::string* tag = (json::string*)*t;
+            addTag (tag->_data);
+          }
+        }
+
+        // Strings are decoded.
+        else if (type == "string")
+          set (i->first, json::decode (unquoteText (i->second->dump ())));
+
+        // Other types are simply added.
+        else
+          set (i->first, unquoteText (i->second->dump ()));
+      }
+
+      // UDA orphans and annotations do not have columns.
+      else
+      {
+        // Annotations are an array of JSON objects with 'entry' and
+        // 'description' values and must be converted.
+        if (i->first == "annotations")
+        {
+          std::map <std::string, std::string> annos;
+
+          json::array* atts = (json::array*)i->second;
+          json_array_iter annotations;
+          for (annotations  = atts->_data.begin ();
+               annotations != atts->_data.end ();
+               ++annotations)
+          {
+            json::object* annotation = (json::object*)*annotations;
+            json::string* when = (json::string*)annotation->_data["entry"];
+            json::string* what = (json::string*)annotation->_data["description"];
+
+            if (! when)
+              throw format (STRING_TASK_NO_ENTRY, line);
+
+            if (! what)
+              throw format (STRING_TASK_NO_DESC, line);
+
+            std::string name = "annotation_" + Date (when->_data).toEpochString ();
+            annos.insert (std::make_pair (name, json::decode (what->_data)));
+          }
+
+          setAnnotations (annos);
+        }
+
+        // UDA Orphan - must be preserved.
+        else
+        {
+#ifdef PRODUCT_TASKWARRIOR
+          std::stringstream message;
+          message << "Task::parseJSON found orphan '"
+                  << i->first
+                  << "' with value '"
+                  << i->second
+                  << "' --> preserved\n";
+          context.debug (message.str ());
+#endif
+          set (i->first, json::decode (unquoteText (i->second->dump ())));
+        }
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Support FF2, FF3.
 // Thankfully FF1 is no longer supported.
-void Task::legacyParse (const std::string& line)
+void Task::parseLegacy (const std::string& line)
 {
   switch (determineVersion (line))
   {
-  // File format version 1, from 2006.11.27 - 2007.12.31
-  case 1:
-    throw std::string (STRING_TASK_NO_FF1);
-    break;
+  // File format version 1, from 2006-11-27 - 2007-12-31, v0.x+ - v0.9.3
+  case 1: throw std::string (STRING_TASK_NO_FF1);
 
-  // File format version 2, from 2008.1.1 - 2009.3.23
-  case 2:
-    {
-      if (line.length () > 46)       // ^.{36} . \[\] \[\] \n
-      {
-        set ("uuid", line.substr (0, 36));
+  // File format version 2, from 2008-1-1 - 2009-3-23, v0.9.3 - v1.5.0
+  case 2: throw std::string (STRING_TASK_NO_FF2);
 
-        Task::status status = line[37] == '+' ? completed
-                            : line[37] == 'X' ? deleted
-                            : line[37] == 'r' ? recurring
-                            :                   pending;
-
-        set ("status", statusToText (status));
-
-        size_t openTagBracket  = line.find ("[");
-        size_t closeTagBracket = line.find ("]", openTagBracket);
-        if (openTagBracket  != std::string::npos &&
-            closeTagBracket != std::string::npos)
-        {
-          size_t openAttrBracket  = line.find ("[", closeTagBracket);
-          size_t closeAttrBracket = line.find ("]", openAttrBracket);
-          if (openAttrBracket  != std::string::npos &&
-              closeAttrBracket != std::string::npos)
-          {
-            std::string tags = line.substr (
-              openTagBracket + 1, closeTagBracket - openTagBracket - 1);
-            std::vector <std::string> tagSet;
-            split (tagSet, tags, ' ');
-            addTags (tagSet);
-
-            std::string attributes = line.substr (
-              openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
-            std::vector <std::string> pairs;
-            split (pairs, attributes, ' ');
-            for (size_t i = 0; i <  pairs.size (); ++i)
-            {
-              std::vector <std::string> pair;
-              split (pair, pairs[i], ':');
-              if (pair.size () == 2)
-                set (pair[0], pair[1]);
-            }
-
-            set ("description", line.substr (closeAttrBracket + 2));
-          }
-          else
-            throw std::string (STRING_TASK_PARSE_ATT_BRACK);
-        }
-        else
-          throw std::string (STRING_TASK_PARSE_TAG_BRACK);
-      }
-      else
-        throw std::string (STRING_TASK_PARSE_TOO_SHORT);
-
-      removeAnnotations ();
-    }
-    break;
-
-  // File format version 3, from 2009.3.23
+  // File format version 3, from 2009-3-23 - 2009-05-16, v1.6.0 - v1.7.1
   case 3:
     {
       if (line.length () > 49)       // ^.{36} . \[\] \[\] \[\] \n
@@ -646,7 +758,7 @@ void Task::legacyParse (const std::string& line)
 ////////////////////////////////////////////////////////////////////////////////
 // The format is:
 //
-//   [ <name>:<value> ... ] \n
+//   [ <name>:<value> ... ]
 //
 std::string Task::composeF4 () const
 {
@@ -665,18 +777,19 @@ std::string Task::composeF4 () const
     }
   }
 
-  ff4 += "]\n";
+  ff4 += "]";
   return ff4;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Task::composeJSON (bool include_id /*= false*/) const
+std::string Task::composeJSON (bool decorate /*= false*/) const
 {
   std::stringstream out;
   out << "{";
 
-  // ID inclusion is optional, not recommended.
-  if (include_id)
+  // ID inclusion is optional, but not a good idea, because it remains correct
+  // only until the next gc.
+  if (decorate)
     out << "\"id\":" << id << ",";
 
   // First the non-annotations.
@@ -684,14 +797,19 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
   Task::const_iterator i;
   for (i = this->begin (); i != this->end (); ++i)
   {
+    // Annotations are not written out here.
+    if (i->first.substr (0, 11) == "annotation_")
+      continue;
+
     if (attributes_written)
       out << ",";
 
-    Column* column = context.columns[i->first];
+    std::string type = Task::attributes[i->first];
+    if (type == "")
+      type = "string";
 
     // Date fields are written as ISO 8601.
-    if (column &&
-        column->type () == "date")
+    if (type == "date")
     {
       Date d (i->second);
       out << "\""
@@ -764,11 +882,14 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
     out << "]";
   }
 
+#ifdef PRODUCT_TASKWARRIOR
   // Include urgency.
-  out << ","
-      << "\"urgency\":\""
-      << urgency_c ()
-      <<"\"";
+  if (decorate)
+    out << ","
+        << "\"urgency\":\""
+        << urgency_c ()
+        <<"\"";
+#endif
 
   out << "}";
   return out.str ();
@@ -778,31 +899,6 @@ std::string Task::composeJSON (bool include_id /*= false*/) const
 bool Task::hasAnnotations () const
 {
   return annotation_count ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Task::getAnnotations (std::map <std::string, std::string>& annotations) const
-{
-  annotations.clear ();
-
-  Task::const_iterator ci;
-  for (ci = this->begin (); ci != this->end (); ++ci)
-    if (ci->first.substr (0, 11) == "annotation_")
-      annotations.insert (*ci);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Task::setAnnotations (const std::map <std::string, std::string>& annotations)
-{
-  // Erase old annotations.
-  removeAnnotations ();
-
-  std::map <std::string, std::string>::const_iterator ci;
-  for (ci = annotations.begin (); ci != annotations.end (); ++ci)
-    this->insert (*ci);
-
-  annotation_count = annotations.size ();
-  recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -848,6 +944,32 @@ void Task::removeAnnotations ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Task::getAnnotations (std::map <std::string, std::string>& annotations) const
+{
+  annotations.clear ();
+
+  Task::const_iterator ci;
+  for (ci = this->begin (); ci != this->end (); ++ci)
+    if (ci->first.substr (0, 11) == "annotation_")
+      annotations.insert (*ci);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::setAnnotations (const std::map <std::string, std::string>& annotations)
+{
+  // Erase old annotations.
+  removeAnnotations ();
+
+  std::map <std::string, std::string>::const_iterator ci;
+  for (ci = annotations.begin (); ci != annotations.end (); ++ci)
+    this->insert (*ci);
+
+  annotation_count = annotations.size ();
+  recalc_urgency = true;
+}
+
+#ifdef PRODUCT_TASKWARRIOR
+////////////////////////////////////////////////////////////////////////////////
 void Task::addDependency (int id)
 {
   // Check that id is resolvable.
@@ -867,11 +989,6 @@ void Task::addDependency (const std::string& uuid)
 {
   if (uuid == get ("uuid"))
     throw std::string (STRING_TASK_DEPEND_ITSELF);
-
-  // Check that uuid is resolvable.
-  int id = context.tdb2.pending.id (uuid);
-  if (id == 0)
-    throw format (STRING_TASK_DEPEND_MISS_CREA, id);
 
   // Store the dependency.
   std::string depends = get ("depends");
@@ -943,6 +1060,7 @@ void Task::getDependencies (std::vector <std::string>& all) const
   all.clear ();
   split (all, get ("depends"), ',');
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 int Task::getTagCount () const
@@ -960,26 +1078,27 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "BLOCKED")   return is_blocked;
   if (tag == "UNBLOCKED") return !is_blocked;
   if (tag == "BLOCKING")  return is_blocking;
+#ifdef PRODUCT_TASKWARRIOR
   if (tag == "DUE")       return is_due ();
   if (tag == "DUETODAY")  return is_duetoday ();
   if (tag == "TODAY")     return is_duetoday ();
   if (tag == "OVERDUE")   return is_overdue ();
+  if (tag == "WEEK")      return is_dueweek ();
+  if (tag == "MONTH")     return is_duemonth ();
+  if (tag == "YEAR")      return is_dueyear ();
+#endif
   if (tag == "ACTIVE")    return has ("start");
   if (tag == "SCHEDULED") return has ("scheduled");
   if (tag == "CHILD")     return has ("parent");
   if (tag == "UNTIL")     return has ("until");
   if (tag == "WAITING")   return has ("wait");
   if (tag == "ANNOTATED") return hasAnnotations ();
+  if (tag == "PARENT")    return has ("mask");
 
 /*
   TODO YESTERDAY - due yesterday
   TODO TOMORROW  - due tomorrow
-  TODO WEEK      - due this week
-  TODO MONTH     - due this month
-  TODO YEAR      - due this year
   TODO READY     - is ready
-  TODO WAITING   - is waiting
-  TODO PARENT    - is a parent
 */
 
   // Concrete tags.
@@ -1046,6 +1165,7 @@ void Task::removeTag (const std::string& tag)
   recalc_urgency = true;
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // A UDA is an attribute that has supporting config entries such as a data type:
 // 'uda.<name>.type'
@@ -1079,18 +1199,16 @@ void Task::substitute (
   std::map <std::string, std::string> annotations;
   getAnnotations (annotations);
 
-  bool sensitive = context.config.getBoolean ("search.case.sensitive");
-
   // Count the changes, so we know whether to proceed to annotations, after
   // modifying description.
   int changes = 0;
   bool done = false;
 
   // Regex support is optional.
-  if (context.config.getBoolean ("regex"))
+  if (Task::regex)
   {
     // Create the regex.
-    RX rx (from, sensitive);
+    RX rx (from, Task::searchCaseSensitive);
     std::vector <int> start;
     std::vector <int> end;
 
@@ -1140,7 +1258,7 @@ void Task::substitute (
     std::string::size_type pos = 0;
     int skew = 0;
 
-    while ((pos = ::find (description, from, pos, sensitive)) != std::string::npos && !done)
+    while ((pos = ::find (description, from, pos, Task::searchCaseSensitive)) != std::string::npos && !done)
     {
       description.replace (pos + skew, from.length (), to);
       skew += to.length () - from.length ();
@@ -1164,7 +1282,7 @@ void Task::substitute (
       {
         pos = 0;
         skew = 0;
-        while ((pos = ::find (i->second, from, pos, sensitive)) != std::string::npos && !done)
+        while ((pos = ::find (i->second, from, pos, Task::searchCaseSensitive)) != std::string::npos && !done)
         {
           i->second.replace (pos + skew, from.length (), to);
           skew += to.length () - from.length ();
@@ -1189,6 +1307,7 @@ void Task::substitute (
     recalc_urgency = true;
   }
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // The purpose of Task::validate is three-fold:
@@ -1224,6 +1343,7 @@ void Task::validate (bool applyDefault /* = true */)
   // Store the derived status.
   setStatus (status);
 
+#ifdef PRODUCT_TASKWARRIOR
   // Provide an entry date unless user already specified one.
   if (!has ("entry"))
     setEntry ();
@@ -1237,29 +1357,62 @@ void Task::validate (bool applyDefault /* = true */)
   // Override with default.project, if not specified.
   if (applyDefault && ! has ("project"))
   {
-    std::string defaultProject = context.config.get ("default.project");
-    if (defaultProject != "" &&
-        context.columns["project"]->validate (defaultProject))
-      set ("project", defaultProject);
+    if (Task::defaultProject != "" &&
+        context.columns["project"]->validate (Task::defaultProject))
+      set ("project", Task::defaultProject);
   }
 
   // Override with default.priority, if not specified.
   if (applyDefault && get ("priority") == "")
   {
-    std::string defaultPriority = context.config.get ("default.priority");
-    if (defaultPriority != "" &&
-        context.columns["priority"]->validate (defaultPriority))
-      set ("priority", defaultPriority);
+    if (Task::defaultPriority != "" &&
+        context.columns["priority"]->validate (Task::defaultPriority))
+      set ("priority", Task::defaultPriority);
   }
 
   // Override with default.due, if not specified.
   if (applyDefault && get ("due") == "")
   {
-    std::string defaultDue = context.config.get ("default.due");
-    if (defaultDue != "" &&
-        context.columns["due"]->validate (defaultDue))
-      set ("due", Date (defaultDue).toEpoch ());
+    if (Task::defaultDue != "" &&
+        context.columns["due"]->validate (Task::defaultDue))
+      set ("due", Date (Task::defaultDue).toEpoch ());
   }
+
+  // If a UDA has a default value in the configuration,
+  // override with uda.(uda).default, if not specified.
+  if (applyDefault)
+  {
+    // Gather a list of all UDAs with a .default value
+    std::vector <std::string> udas;
+    Config::const_iterator var;
+    for (var = context.config.begin (); var != context.config.end (); ++var)
+    {
+      if (var->first.substr (0, 4) == "uda." &&
+          var->first.find (".default") != std::string::npos)
+      {
+        std::string::size_type period = var->first.find ('.', 4);
+        if (period != std::string::npos)
+          udas.push_back (var->first.substr (4, period - 4));
+      }
+    }
+
+    if (udas.size ())
+    {
+      // For each of those, setup the default value on the task now,
+      // of course only if we don't have one on the command line already
+      std::vector <std::string>::iterator uda;
+      for (uda = udas.begin (); uda != udas.end (); ++uda)
+      {
+        std::string type    = context.config.get ("uda." + *uda + ".type");
+        std::string defVal  = context.config.get ("uda." + *uda + ".default");
+
+        // If the default is empty, and we already have a value, skip it
+        if (defVal != "" && get (*uda) == "")
+          set (*uda, defVal);
+      }
+    }
+  }
+#endif
 
   // 2) To provide suitable warnings about odd states
 
@@ -1303,8 +1456,10 @@ void Task::validate (bool applyDefault /* = true */)
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 void Task::validate_before (const std::string& left, const std::string& right)
 {
+#ifdef PRODUCT_TASKWARRIOR
   if (has (left) &&
       has (right))
   {
@@ -1314,6 +1469,7 @@ void Task::validate_before (const std::string& left, const std::string& right)
     if (date_left > date_right)
       context.footnote (format (STRING_TASK_VALID_BEFORE, left, right));
   }
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1407,39 +1563,40 @@ int Task::determineVersion (const std::string& line)
 float Task::urgency_c () const
 {
   float value = 0.0;
-  value += fabsf (urgencyPriorityCoefficient)    > epsilon ? (urgency_priority ()    * urgencyPriorityCoefficient)    : 0.0;
-  value += fabsf (urgencyProjectCoefficient)     > epsilon ? (urgency_project ()     * urgencyProjectCoefficient)     : 0.0;
-  value += fabsf (urgencyActiveCoefficient)      > epsilon ? (urgency_active ()      * urgencyActiveCoefficient)      : 0.0;
-  value += fabsf (urgencyScheduledCoefficient)   > epsilon ? (urgency_scheduled ()   * urgencyScheduledCoefficient)   : 0.0;
-  value += fabsf (urgencyWaitingCoefficient)     > epsilon ? (urgency_waiting ()     * urgencyWaitingCoefficient)     : 0.0;
-  value += fabsf (urgencyBlockedCoefficient)     > epsilon ? (urgency_blocked ()     * urgencyBlockedCoefficient)     : 0.0;
-  value += fabsf (urgencyAnnotationsCoefficient) > epsilon ? (urgency_annotations () * urgencyAnnotationsCoefficient) : 0.0;
-  value += fabsf (urgencyTagsCoefficient)        > epsilon ? (urgency_tags ()        * urgencyTagsCoefficient)        : 0.0;
-  value += fabsf (urgencyNextCoefficient)        > epsilon ? (urgency_next ()        * urgencyNextCoefficient)        : 0.0;
-  value += fabsf (urgencyDueCoefficient)         > epsilon ? (urgency_due ()         * urgencyDueCoefficient)         : 0.0;
-  value += fabsf (urgencyBlockingCoefficient)    > epsilon ? (urgency_blocking ()    * urgencyBlockingCoefficient)    : 0.0;
-  value += fabsf (urgencyAgeCoefficient)         > epsilon ? (urgency_age ()         * urgencyAgeCoefficient)         : 0.0;
+#ifdef PRODUCT_TASKWARRIOR
+  value += fabsf (Task::urgencyPriorityCoefficient)    > epsilon ? (urgency_priority ()    * Task::urgencyPriorityCoefficient)    : 0.0;
+  value += fabsf (Task::urgencyProjectCoefficient)     > epsilon ? (urgency_project ()     * Task::urgencyProjectCoefficient)     : 0.0;
+  value += fabsf (Task::urgencyActiveCoefficient)      > epsilon ? (urgency_active ()      * Task::urgencyActiveCoefficient)      : 0.0;
+  value += fabsf (Task::urgencyScheduledCoefficient)   > epsilon ? (urgency_scheduled ()   * Task::urgencyScheduledCoefficient)   : 0.0;
+  value += fabsf (Task::urgencyWaitingCoefficient)     > epsilon ? (urgency_waiting ()     * Task::urgencyWaitingCoefficient)     : 0.0;
+  value += fabsf (Task::urgencyBlockedCoefficient)     > epsilon ? (urgency_blocked ()     * Task::urgencyBlockedCoefficient)     : 0.0;
+  value += fabsf (Task::urgencyAnnotationsCoefficient) > epsilon ? (urgency_annotations () * Task::urgencyAnnotationsCoefficient) : 0.0;
+  value += fabsf (Task::urgencyTagsCoefficient)        > epsilon ? (urgency_tags ()        * Task::urgencyTagsCoefficient)        : 0.0;
+  value += fabsf (Task::urgencyNextCoefficient)        > epsilon ? (urgency_next ()        * Task::urgencyNextCoefficient)        : 0.0;
+  value += fabsf (Task::urgencyDueCoefficient)         > epsilon ? (urgency_due ()         * Task::urgencyDueCoefficient)         : 0.0;
+  value += fabsf (Task::urgencyBlockingCoefficient)    > epsilon ? (urgency_blocking ()    * Task::urgencyBlockingCoefficient)    : 0.0;
+  value += fabsf (Task::urgencyAgeCoefficient)         > epsilon ? (urgency_age ()         * Task::urgencyAgeCoefficient)         : 0.0;
 
-/* 
+/*
   // Very useful for debugging urgency problems.
   std::cout << "# Urgency for " << get ("uuid") << ":\n"
-          << "#     pri " << (urgency_priority ()    * urgencyPriorityCoefficient)    << "\n"
-          << "#     pro " << (urgency_project ()     * urgencyProjectCoefficient)     << "\n"
-          << "#     act " << (urgency_active ()      * urgencyActiveCoefficient)      << "\n"
-          << "#     sch " << (urgency_scheduled ()   * urgencyScheduledCoefficient)   << "\n"
-          << "#     wai " << (urgency_waiting ()     * urgencyWaitingCoefficient)     << "\n"
-          << "#     blk " << (urgency_blocked ()     * urgencyBlockedCoefficient)     << "\n"
-          << "#     ann " << (urgency_annotations () * urgencyAnnotationsCoefficient) << "\n"
-          << "#     tag " << (urgency_tags ()        * urgencyTagsCoefficient)        << "\n"
-          << "#     nex " << (urgency_next ()        * urgencyNextCoefficient)        << "\n"
-          << "#     due " << (urgency_due ()         * urgencyDueCoefficient)         << "\n"
-          << "#     bkg " << (urgency_blocking ()    * urgencyBlockingCoefficient)    << "\n"
-          << "#     age " << (urgency_age ()         * urgencyAgeCoefficient)         << "\n";
+          << "#     pri " << (urgency_priority ()    * Task::urgencyPriorityCoefficient)    << "\n"
+          << "#     pro " << (urgency_project ()     * Task::urgencyProjectCoefficient)     << "\n"
+          << "#     act " << (urgency_active ()      * Task::urgencyActiveCoefficient)      << "\n"
+          << "#     sch " << (urgency_scheduled ()   * Task::urgencyScheduledCoefficient)   << "\n"
+          << "#     wai " << (urgency_waiting ()     * Task::urgencyWaitingCoefficient)     << "\n"
+          << "#     blk " << (urgency_blocked ()     * Task::urgencyBlockedCoefficient)     << "\n"
+          << "#     ann " << (urgency_annotations () * Task::urgencyAnnotationsCoefficient) << "\n"
+          << "#     tag " << (urgency_tags ()        * Task::urgencyTagsCoefficient)        << "\n"
+          << "#     nex " << (urgency_next ()        * Task::urgencyNextCoefficient)        << "\n"
+          << "#     due " << (urgency_due ()         * Task::urgencyDueCoefficient)         << "\n"
+          << "#     bkg " << (urgency_blocking ()    * Task::urgencyBlockingCoefficient)    << "\n"
+          << "#     age " << (urgency_age ()         * Task::urgencyAgeCoefficient)         << "\n";
 */
 
   // Tag- and project-specific coefficients.
   std::map <std::string, float>::iterator var;
-  for (var = coefficients.begin (); var != coefficients.end (); ++var)
+  for (var = Task::coefficients.begin (); var != Task::coefficients.end (); ++var)
   {
     if (fabs (var->second) > epsilon)
     {
@@ -1476,6 +1633,7 @@ float Task::urgency_c () const
       }
     }
   }
+#endif
 
   return value;
 }
@@ -1585,36 +1743,28 @@ float Task::urgency_next () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//
+//     Past                  Present                              Future
+//     Overdue               Due                                     Due
+//
+//     -7 -6 -5 -4 -3 -2 -1  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 days
+//
+// <-- 1.0                         linear                            0.2 -->
+//     capped                                                        capped
+//
+//
 float Task::urgency_due () const
 {
   if (has ("due"))
   {
     Date now;
     Date due (get_date ("due"));
-    int days_overdue = (now - due) / 86400;
 
-         if (days_overdue >=  7)  return 1.0;  // 7 days ago
-    else if (days_overdue >=  6)  return 0.96;
-    else if (days_overdue >=  5)  return 0.92;
-    else if (days_overdue >=  4)  return 0.88;
-    else if (days_overdue >=  3)  return 0.84;
-    else if (days_overdue >=  2)  return 0.80;
-    else if (days_overdue >=  1)  return 0.76;
-    else if (days_overdue >=  0)  return 0.72;
-    else if (days_overdue >= -1)  return 0.68;
-    else if (days_overdue >= -2)  return 0.64;
-    else if (days_overdue >= -3)  return 0.60;
-    else if (days_overdue >= -4)  return 0.56;
-    else if (days_overdue >= -5)  return 0.52;
-    else if (days_overdue >= -6)  return 0.48;
-    else if (days_overdue >= -7)  return 0.44;
-    else if (days_overdue >= -8)  return 0.40;
-    else if (days_overdue >= -9)  return 0.36;
-    else if (days_overdue >= -10) return 0.32;
-    else if (days_overdue >= -11) return 0.28;
-    else if (days_overdue >= -12) return 0.24;
-    else if (days_overdue >= -13) return 0.20;
-    else                          return 0.16; // two weeks from now
+    // Map a range of 21 days to the value 0.2 - 1.0
+    float days_overdue = (now - due) / 86400.0;
+         if (days_overdue >= 7.0)   return 1.0;   // < 1 wk ago
+    else if (days_overdue >= -14.0) return ((days_overdue + 14.0) * 0.8 / 21.0) + 0.2;
+    else                            return 0.2;   // > 2 wks
   }
 
   return 0.0;
@@ -1627,13 +1777,12 @@ float Task::urgency_age () const
 
   Date now;
   Date entry (get_date ("entry"));
-  int   age  = (now - entry) / 86400;  // in days
-  float max  = context.config.getReal ("urgency.age.max");
+  int age = (now - entry) / 86400;  // in days
 
-  if (max == 0 || age > max)
+  if (Task::urgencyAgeMax == 0 || age > Task::urgencyAgeMax)
     return 1.0;
 
-  return (1.0 * age/max);
+  return (1.0 * age / Task::urgencyAgeMax);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1643,6 +1792,235 @@ float Task::urgency_blocking () const
     return 1.0;
 
   return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::modify (
+  const A3& arguments,
+  std::string& description)
+{
+  // Coalesce arguments together into sets to be processed as a batch.
+  unsigned int pos = 0;
+  Arg arg;
+  while ((*this).next_mod_group (arguments, arg, pos))
+  {
+    // Attributes are essentially name:value pairs, and correspond directly
+    // to stored attributes.
+    if (arg._category == Arg::cat_attr)
+    {
+      std::string name;
+      std::string value;
+      A3::extract_attr (arg._raw, name, value);
+      if (A3::is_attribute (name, name))  // Canonicalize
+      {
+        //std::cout << "# Task::modify_task name='" << name << "' value='" << value << "'\n";
+
+        // Get the column info.
+        Column* column = context.columns[name];
+
+        if (value == "")
+        {
+          (*this).remove (name);
+        }
+        else
+        {
+          // Dependencies are used as IDs.
+          if (name == "depends")
+          {
+            // Parse IDs
+            std::vector <std::string> deps;
+            split (deps, value, ',');
+
+            // Apply or remove dendencies in turn.
+            std::vector <std::string>::iterator i;
+            for (i = deps.begin (); i != deps.end (); i++)
+            {
+              bool removal = false;
+              std::string& dep = *i;
+
+              if (dep[0] == '-')
+              {
+                removal = true;
+                dep = i->substr(1, std::string::npos);
+              }
+
+              std::vector <int> ids;
+              // Crude UUID check
+              if (dep.length () == 36)
+              {
+                int id = context.tdb2.pending.id (dep);
+                ids.push_back (id);
+              }
+              else
+                A3::extract_id (dep, ids);
+
+              std::vector <int>::iterator id;
+              for (id = ids.begin (); id != ids.end(); id++)
+                if (removal)
+                  (*this).removeDependency (*id);
+                else
+                  (*this).addDependency (*id);
+            }
+          }
+
+          // Dates are special, maybe.
+          else if (column->type () == "date")
+          {
+            // All values must be eval'd first.
+            A3 value_tokens;
+            value_tokens.capture (value);
+            value_tokens = value_tokens.postfix (value_tokens.tokenize (value_tokens));
+
+            E9 e (value_tokens);
+            std::string result = e.evalExpression ((*this));
+            context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
+
+            // If the date value is less than 5 years, it is a duration, not a
+            // date, therefore add 'now'.
+            long l = (long) strtod (result.c_str (), NULL);
+            if (labs (l) < 5 * 365 * 86400)
+            {
+              Duration dur (value);
+              Date now;
+              now += l;
+              (*this).set (name, now.toEpochString ());
+            }
+            else
+            {
+              Date d (result, context.config.get ("dateformat"));
+              (*this).set (name, d.toEpochString ());
+            }
+          }
+
+          // Durations too.
+          else if (name == "recur" ||
+                   column->type () == "duration")
+          {
+            // All values must be eval'd first, in this case, just to catch errors.
+            A3 value_tokens;
+            value_tokens.capture (value);
+            value_tokens = value_tokens.postfix (value_tokens.tokenize (value_tokens));
+
+            E9 e (value_tokens);
+            std::string result = e.evalExpression ((*this));
+            context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
+
+            Duration d (value);
+
+            // Deliberately storing the 'raw' value, which is necessary for
+            // durations like 'weekday'..
+            (*this).set (name, name == "recur" ? value : result);
+          }
+
+          // Need handling for numeric types, used by UDAs.
+          else if (column->type () == "numeric")
+          {
+            A3 value_tokens;
+            value_tokens.capture (value);
+            value_tokens = value_tokens.postfix (value_tokens.tokenize (value_tokens));
+
+            E9 e (value_tokens);
+            std::string result = e.evalExpression ((*this));
+            context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
+
+            Nibbler n (result);
+            double d;
+            if (n.getNumber (d) &&
+                n.depleted ())
+              (*this).set (name, result);
+            else
+              throw format (STRING_UDA_NUMERIC, result);
+          }
+
+          // Try to use modify method, otherwise just continue to the final option.
+          else if (column->can_modify ())
+          {
+            // column->modify () contains the logic for the specific column
+            // and returns the appropriate value for (*this).set ()
+            if (column->validate (value))
+              (*this).set (name, column->modify (value));
+            else
+              throw format (STRING_INVALID_MOD, name, value);
+          }
+          else
+          {
+            // Final default action
+            if (column->validate (value))
+              (*this).set (name, value);
+            else
+              throw format (STRING_INVALID_MOD, name, value);
+          }
+
+          // Warn about deprecated/obsolete attribute usage.
+          legacyAttributeCheck (name);
+        }
+      }
+      else
+        throw format (STRING_CMD_ADD_BAD_ATTRIBUTE, name);
+    }
+
+    // Tags need special handling because they are essentially a vector stored
+    // in a single string, therefore Task::{add,remove}Tag must be called as
+    // appropriate.
+    else if (arg._category == Arg::cat_tag)
+    {
+      char type;
+      std::string value;
+      A3::extract_tag (arg._raw, type, value);
+
+      if (type == '+')
+      {
+        (*this).addTag (value);
+        feedback_special_tags ((*this), value);
+      }
+      else
+        (*this).removeTag (value);
+    }
+
+    // Substitutions.
+    else if (arg._category == Arg::cat_subst)
+    {
+      std::string from;
+      std::string to;
+      bool global;
+      A3::extract_subst (arg._raw, from, to, global);
+      (*this).substitute (from, to, global);
+    }
+
+    // Anything else is essentially downgraded to 'word' and considered part of
+    // the description.
+    else
+    {
+      if (description.length ())
+        description += " ";
+
+      description += arg._raw;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Special processing for modifications.
+bool Task::next_mod_group (const A3& input, Arg& arg, unsigned int& pos)
+{
+  if (pos < input.size ())
+  {
+    arg = input[pos++];
+
+    if (arg._raw == "depends")
+    {
+      while (pos < input.size () &&
+             (input[pos]._category == Arg::cat_op ||
+              input[pos]._type == Arg::type_number))
+      {
+        arg._raw += input[pos++]._raw;
+      }
+    }
+
+    return true;
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

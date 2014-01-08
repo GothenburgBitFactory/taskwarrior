@@ -17,20 +17,57 @@ Bugs
 Features
  + #328 Replaced the 'shell' command with a standalone 'tasksh' binary, which
    includes GNU readline support (thanks to Haitham Gad).
- + #934 support for 'reserved.lines' to accomodate multi-line
+ + #934 support for 'reserved.lines' to accommodate multi-line
    shell prompts when used in conjunction with 'limit:page' (thanks to Robert
    Gill).
- + #1227 A new 'verify_l10n' utility ensures the localizations are in sync (thanks to
-   Wim Schuermann).
+ + #1226 A new French translation has begun, and will continue to be a work in
+   progress for a while (thanks to YBSA R).
+ + #1227 A new 'verify_l10n' utility ensures the localizations are in sync
+   (thanks to Wim Schuermann).
  + #1250 Support out-of-tree test runs (thanks to Jakub Wilk).
+ + #1256 Supports default values for UDA fields (thanks to Thomas Sullivan).
+ + #1297 The task₋sync(5) man pages is rewritten with examples.
+ + #1339 The configuration file now supports JSON encoding of Unicode
+   characters, by specifying \uNNNN.
+ + #1385 Need a way to configure the trust of self-signed certificates.
+ + #1423 sync vs. push, pull, merge collision avoidance.
+ + #1473 Make TASK_RCDIR customizable (thanks to Jakub Wilk).
  + Stores un-synched transactions in <data.location>/backlog.data.
- + Adds a new 'synchronize' command to sync data with a task server.
- + Adds a new 'sync' verbosity token, which will reminds when a backlog builds
+ + Adds a new 'synchronize' command to sync data with a Taskserver.
+ + Adds a new 'initialize' synchronize command argument that uploads all pending
+   tasks for first-time initialization.
+ + Adds a new 'sync' verbosity token, which will remind when a backlog builds
    up and needs a sync.
  + Supports IPv4 and IPv6 server addresses.
  + Began fr-FR localization.
+ + Complete it-IT localization.
+ + Merged three l10n utility scripts into one tools, scripts/utils/l10n, which
+   will help the translation effort.
+ + The 'due' urgency component now uses seconds, not days, in the calculation.
+ + The 'debug.tls' configuration variable takes an integer which corresponds to
+   the GnuTLS log level.  For debugging.
+ + File format 2 (used in version 0.9.3 - 1.5.0) is no longer supported.
+ + Migrated column processing code into Task.cpp for future use within each
+   individual column object.  Legacy code left in Task.cpp for column objects
+   that are not yet modified.
+ + ColPriority.cpp - Migration of column modification code out of Task.cpp and
+   into the individual column object.
+ + Now requires libuuid (thanks to Martin Natano).
+ + New '_get' is a DOM accessor helper command.
+ + New virtual tags (WEEK, MONTH, YEAR, PARENT).
+ + Added the 'remaining' format for all date columns.
+ + Protects against interrupt during critical DB commit and sync operations.
+ + The 'push', 'pull' and 'merge' commands now generate a 'deprecated' message.
+ + Rewritten task-sync(5) man page, listing sync options and setup guidelines..
+ + Now properly uses the libc version of uuid_create and uuid_to_string for
+   FreeBSD (thanks to Pietro Cerutti).
+ + Performance improvements:
+   + Optimizes indexing into pending.data for direct task access.
+   + Improved I/O performance with better defaults for buffer sizes.
 
 Bugs
+ + #1195 Random seed not random enough - removed all random number code (thanks
+   to Jakub Wilk).
  + #1196 Now builds on Hurd (thanks to Jakub Wilk).
  + #1197 Now 'tasksh' recognizes Ctrl-D to exit.
  + #1200 Directory d_type==DT_UNKNOWN is now handled correctly (thanks to Jakub
@@ -39,9 +76,41 @@ Bugs
    'Y-M-D' (thanks to Robin Björklin).
  + #1222 The 'summary' report now obeys the 'color.label' setting (thanks to
    Steve Rader).
+ + #1235 The 'shell' command can now start in non-interactive mode without a
+   .taskrc file (thanks to Haitham Gad).
  + #1247 Tests now create a local dir, rather than use the insecure /tmp dir
    (thanks to Jakub Wilk).
+ + #1248 Merge tests no longer connect to takwarrior.org (thank to Jakub Wilk).
+ + #1249 Build system now recognizes GNU/Hurd and GNU/kFreeBSD (thanks to Jakub
+   Wilk).
+ + #1263 The 'waiting' report properly lists only pending tasks with a wait date
+   (thanks to Fidel Mato).
+ + #1268 Edit doesn't accept changes, if task has completed dependency (thanks
+   to Dmitriy Matrosov, Michele Santullo).
+ + #1270 The 'undo' command is now properly removing backlog entries.
+ + #1273 Query with negative relative date differs greatly from absolute date
+   in past (thanks to John West).
+ + #1279 Assorted corrections to the task-ref.pdf document (thanks to Benjamin
+   Weber).
+ + #1286 Cannot use "sow", "som", etc in "entry.after", "end.after" filters
+   (thanks to Jake Bell).
+ + #1300 Encode/decode pairing is now properly balanced.
+ + #1305 Commit hash now available in tarball builds (thanks to Ben Boeckel).
+ + #1352 Terminal crashes when using taskwarrior's zsh completion (thanks to
+   Ivan Freitas, XTaran).
+ + #1356 Command reference now mentions /from/to/g.
+ + #1381 Invalid JSON exported by Task 2.3.0-beta1 (thanks to Kosta H).
+ + #1387 ZSH Auto-Completion dates are not current (thanks to Benjamin Weber).
+ + #1388 Updated task(1) man pages with import/export script examples (thanks to
+   Benjamin Weber).
+ + #1410 Incomplete Date Synonym List in man task (thanks to Benjamin Weber).
+ + #1414 Client does not verify SSL certificates (thanks to Scott Kroll).
+ + #1415 Client should not require a SSL certificate if the server has a trusted
+   certificate (thanks to Scott Kroll).
  + Fixed bug so that 'limit:page' now considers footnote messages.
+ + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
+   (thanks to greenskeleton).
+ + Fixed rc.nag documentation (thanks to Jeroen Budts).
 
 ------ old releases ------------------------------
 
@@ -74,7 +143,7 @@ Features
  + Removed deprecated 'fg:' and 'bg:' attributes.
  + The 'diagnostics' command now reports libuuid details.
  + New characters for parsing and formating dates ('n', 's' and 'v').
- + Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, TODAY, OVERDUE,
+ + Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, OVERDUE, TODAY,
    ACTIVE, SCHEDULED, CHILD, UNTIL, WAITING and ANNOTATED).
  + New 'modified' attribute, which contains the most recent modification date,
    if a modification has occurred.

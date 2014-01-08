@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,10 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Msg.h>
-#include <cmake.h>
 #include <test.h>
 
 Context context;
@@ -36,25 +37,35 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (8);
+  UnitTest t (12);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   Msg m;
-  t.is (m.serialize (), std::string ("version: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize '' --> '\\n\\n'");
+  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize '' --> '\\n\\n'");
 
   m.set ("name", "value");
-  t.is (m.serialize (), std::string ("name: value\nversion: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize 1 var");
+  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\nname: value\n\n\n", "Msg::serialize 1 var");
 
   m.set ("foo", "bar");
-  t.is (m.serialize (), std::string ("foo: bar\nname: value\nversion: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize 2 vars");
+  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\nfoo: bar\nname: value\n\n\n", "Msg::serialize 2 vars");
 
   m.setPayload ("payload");
-  t.is (m.serialize (), std::string ("foo: bar\nname: value\nversion: ") + PACKAGE_STRING + "\n\npayload\n", "Msg::serialize 2 vars + payload");
+  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\nfoo: bar\nname: value\n\npayload\n", "Msg::serialize 2 vars + payload");
 
   Msg m2;
   t.ok (m2.parse ("foo: bar\nname: value\n\npayload\n"), "Msg::parse ok");
   t.is (m2.get ("foo"),   "bar",       "Msg::get");
   t.is (m2.get ("name"),  "value",     "Msg::get");
   t.is (m2.getPayload (), "payload\n", "Msg::getPayload");
+
+  Msg m3;
+  t.ok (m3.parse ("foo:bar\nname:   value\n\npayload\n"), "Msg::parse ok");
+  t.is (m3.get ("foo"),   "bar",       "Msg::get");
+  t.is (m3.get ("name"),  "value",     "Msg::get");
+  t.is (m3.getPayload (), "payload\n", "Msg::getPayload");
   return 0;
 }
 

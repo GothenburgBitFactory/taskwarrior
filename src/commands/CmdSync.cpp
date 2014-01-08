@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2012, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +25,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
+#include <cmake.h>
 #include <sstream>
 #include <inttypes.h>
+#include <signal.h>
 #include <Context.h>
-#include <Socket.h>
+#include <TLSClient.h>
 #include <Color.h>
 #include <text.h>
+#include <util.h>
 #include <i18n.h>
 #include <CmdSync.h>
 
@@ -41,7 +43,7 @@ extern Context context;
 CmdSync::CmdSync ()
 {
   _keyword     = "synchronize";
-  _usage       = "task          synchronize";
+  _usage       = "task          synchronize [initialize]";
   _description = STRING_CMD_SYNC_USAGE;
   _read_only   = false;
   _displays_id = false;
@@ -51,16 +53,37 @@ CmdSync::CmdSync ()
 int CmdSync::execute (std::string& output)
 {
   int status = 0;
-  Timer timer_sync;
-  timer_sync.start ();
-
+#ifdef HAVE_LIBGNUTLS
   std::stringstream out;
+
+  // Loog for the 'init' keyword to indicate one-time pending.data upload.
+  bool first_time_init = false;
+  std::vector <std::string> words = context.a3.extract_words ();
+  std::vector <std::string>::iterator word;
+  for (word = words.begin (); word != words.end (); ++word)
+  {
+    if (closeEnough ("initialize", *word, 4))
+    {
+      if (!context.config.getBoolean ("confirmation") ||
+          confirm (STRING_CMD_SYNC_INIT))
+        first_time_init = true;
+      else
+        throw std::string (STRING_CMD_SYNC_NO_INIT);
+    }
+  }
 
   // If no server is set up, quit.
   std::string connection = context.config.get ("taskd.server");
   if (connection == "" ||
       connection.rfind (':') == std::string::npos)
     throw std::string (STRING_CMD_SYNC_NO_SERVER);
+
+  // If push/pull/merge is configured, quit.
+  if (context.config.get ("merge.autopush")    != "" ||
+      context.config.get ("merge.default.uri") != "" ||
+      context.config.get ("push.default.uri")  != "" ||
+      context.config.get ("pull.default.uri")  != "")
+    throw std::string (STRING_CMD_SYNC_NOMERGE);
 
   // Obtain credentials.
   std::string credentials_string = context.config.get ("taskd.credentials");
@@ -72,21 +95,53 @@ int CmdSync::execute (std::string& output)
   if (credentials.size () != 3)
     throw std::string (STRING_CMD_SYNC_BAD_CRED);
 
-  // Read backlog.data.
-  std::string payload = "";
-  File backlog (context.config.get ("data.location") + "/backlog.data");
-  if (backlog.exists ())
-    backlog.read (payload);
+  bool trust = context.config.getBoolean ("taskd.trust");
 
-  // Count the number of tasks being uploaded.
+  // CA must exist, if provided.
+  File ca (context.config.get ("taskd.ca"));
+  if (ca._data != "" && ! ca.exists ())
+    throw std::string (STRING_CMD_SYNC_BAD_CA);
+
+  if (trust && ca._data != "")
+    throw std::string (STRING_CMD_SYNC_TRUST_CA);
+
+  File certificate (context.config.get ("taskd.certificate"));
+  if (! certificate.exists ())
+    throw std::string (STRING_CMD_SYNC_BAD_CERT);
+
+  File key (context.config.get ("taskd.key"));
+  if (! key.exists ())
+    throw std::string (STRING_CMD_SYNC_BAD_KEY);
+
+  // If this is a first-time initialization, send pending.data, not
+  // backlog.data.
+  std::string payload = "";
   int upload_count = 0;
+  if (first_time_init)
   {
-    std::vector <std::string> lines;
-    split (lines, payload, "\n");
+    // Delete backlog.data.  Because if we're uploading everything, the list of
+    // deltas is meaningless.
+    context.tdb2.backlog._file.truncate ();
+
+    std::vector <Task> pending = context.tdb2.pending.get_tasks ();
+    std::vector <Task>::iterator i;
+    for (i = pending.begin (); i != pending.end (); ++i)
+    {
+      payload += i->composeJSON () + "\n";
+      ++upload_count;
+    }
+  }
+  else
+  {
+    std::vector <std::string> lines = context.tdb2.backlog.get_lines ();
     std::vector <std::string>::iterator i;
     for (i = lines.begin (); i != lines.end (); ++i)
-      if ((*i)[0] == '[')
+    {
+      if ((*i)[0] == '{')
         ++upload_count;
+
+      payload += *i + "\n";
+    }
   }
 
   // Send 'sync' + payload.
@@ -97,15 +152,22 @@ int CmdSync::execute (std::string& output)
   request.set ("user",     credentials[1]);
   request.set ("key",      credentials[2]);
 
-  // TODO Add the other necessary header fields.
-
   request.setPayload (payload);
 
   out << format (STRING_CMD_SYNC_PROGRESS, connection)
       << "\n";
 
+  // Ignore harmful signals.
+  signal (SIGHUP,    SIG_IGN);
+  signal (SIGINT,    SIG_IGN);
+  signal (SIGKILL,   SIG_IGN);
+  signal (SIGPIPE,   SIG_IGN);
+  signal (SIGTERM,   SIG_IGN);
+  signal (SIGUSR1,   SIG_IGN);
+  signal (SIGUSR2,   SIG_IGN);
+
   Msg response;
-  if (send (connection, request, response))
+  if (send (connection, ca._data, certificate._data, key._data, trust, request, response))
   {
     std::string code = response.get ("code");
     if (code == "200")
@@ -118,15 +180,17 @@ int CmdSync::execute (std::string& output)
       std::vector <std::string> lines;
       split (lines, payload, '\n');
 
-      // TODO This is not necessary if only a synch key was received.
-      // Load all tasks.
-      context.tdb2.all_tasks ();
+      // Load all tasks, but only if necessary.  There is always a sync key in
+      // the payload, so if there are two or more lines, then we have merging
+      // to perform, otherwise it's just a backlog.data update.
+      if (lines.size () > 1)
+        context.tdb2.all_tasks ();
 
-      std::string synch_key = "";
+      std::string sync_key = "";
       std::vector <std::string>::iterator line;
       for (line = lines.begin (); line != lines.end (); ++line)
       {
-        if ((*line)[0] == '[')
+        if ((*line)[0] == '{')
         {
           ++download_count;
 
@@ -158,28 +222,29 @@ int CmdSync::execute (std::string& output)
         }
         else if (*line != "")
         {
-          synch_key = *line;
-          context.debug ("Synch key " + synch_key);
+          sync_key = *line;
+          context.debug ("Sync key " + sync_key);
         }
 
         // Otherwise line is blank, so ignore it.
       }
 
-      // Only update everything if there is a new synch_key.  No synch_key means
+      // Only update everything if there is a new sync_key.  No sync_key means
       // something horrible happened on the other end of the wire.
-      if (synch_key != "")
+      if (sync_key != "")
       {
-        // Truncate backlog.data, save new synch_key.
+        // Truncate backlog.data, save new sync_key.
         context.tdb2.backlog._file.truncate ();
         context.tdb2.backlog.clear_tasks ();
         context.tdb2.backlog.clear_lines ();
-        context.tdb2.backlog.add_line (synch_key + "\n");
+        context.tdb2.backlog.add_line (sync_key + "\n");
 
         // Commit all changes.
         context.tdb2.commit ();
 
         // Present a clear status message.
         if (upload_count == 0 && download_count == 0)
+          // Note: should not happen - expect code 201 instead.
           context.footnote (STRING_CMD_SYNC_SUCCESS0);
         else if (upload_count == 0 && download_count > 0)
           context.footnote (format (STRING_CMD_SYNC_SUCCESS2, download_count));
@@ -192,6 +257,13 @@ int CmdSync::execute (std::string& output)
     else if (code == "201")
     {
       context.footnote (STRING_CMD_SYNC_SUCCESS_NOP);
+    }
+    else if (code == "301")
+    {
+      std::string new_server = response.get ("info");
+      context.config.set ("taskd.server", new_server);
+      context.error (STRING_CMD_SYNC_RELOCATE0);
+      context.error ("  " + format (STRING_CMD_SYNC_RELOCATE1, new_server));
     }
     else if (code == "430")
     {
@@ -206,7 +278,7 @@ int CmdSync::execute (std::string& output)
       status = 2;
     }
 
-    // Display all errors returned.  This is required by the server protocol.
+    // Display all errors returned.  This is recommended by the server protocol.
     std::string to_be_displayed = response.get ("messages");
     if (to_be_displayed != "")
     {
@@ -233,26 +305,33 @@ int CmdSync::execute (std::string& output)
   out << "\n";
   output = out.str ();
 
-/*
-  timer_sync.stop ();
-  std::stringstream s;
-  s << "Sync "
-    << Date ().toISO ()
-    << " sync:"
-    << timer_sync.total ()
-    << "\n";
-  debug (s.str ());
-*/
+  // Restore signal handling.
+  signal (SIGHUP,    SIG_DFL);
+  signal (SIGINT,    SIG_DFL);
+  signal (SIGKILL,   SIG_DFL);
+  signal (SIGPIPE,   SIG_DFL);
+  signal (SIGTERM,   SIG_DFL);
+  signal (SIGUSR1,   SIG_DFL);
+  signal (SIGUSR2,   SIG_DFL);
 
+#else
+  // Without GnuTLS found at compile time, there is no working sync command.
+  throw std::string (STRING_CMD_SYNC_NO_TLS);
+#endif
   return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CmdSync::send (
   const std::string& to,
+  const std::string& ca,
+  const std::string& certificate,
+  const std::string& key,
+  bool trust,
   const Msg& request,
   Msg& response)
 {
+#ifdef HAVE_LIBGNUTLS
   std::string::size_type colon = to.rfind (':');
   if (colon == std::string::npos)
     throw format (STRING_CMD_SYNC_BAD_SERVER, to);
@@ -262,13 +341,18 @@ bool CmdSync::send (
 
   try
   {
-    Socket s;
-    s.connect (server, port);
-    s.write (request.serialize () + "\n");
+    TLSClient client;
+    client.debug (context.config.getInteger ("debug.tls"));
+
+    client.trust (trust);
+    client.ciphers (context.config.get ("taskd.ciphers"));
+    client.init (ca, certificate, key);
+    client.connect (server, port);
+    client.send (request.serialize () + "\n");
 
     std::string incoming;
-    s.read (incoming);
-    s.close ();
+    client.recv (incoming);
+    client.bye ();
 
     response.parse (incoming);
     return true;
@@ -276,10 +360,11 @@ bool CmdSync::send (
 
   catch (std::string& error)
   {
-    context.debug (error);
+    context.error (error);
   }
 
   // Indicate message failed.
+#endif
   return false;
 }
 

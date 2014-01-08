@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <fstream>
 #include <limits>
@@ -50,7 +51,6 @@
 #include <main.h>
 #include <i18n.h>
 #include <util.h>
-#include <cmake.h>
 
 extern Context context;
 
@@ -229,9 +229,29 @@ int autoComplete (
   return matches.size ();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-#ifdef HAVE_UUID
+// Handle the generation of UUIDs on FreeBSD in a separate implementation
+// of the uuid () function, since the API is quite different from Linux's.
+// Also, uuid_unparse_lower is not needed on FreeBSD, because the string
+// representation is always lowercase anyway.
+// For the implementation details, refer to
+// http://svnweb.freebsd.org/base/head/sys/kern/kern_uuid.c
+#ifdef FREEBSD
+const std::string uuid ()
+{
+  uuid_t id;
+  uint32_t status;
+  char *buffer (0);
+  uuid_create (&id, &status);
+  uuid_to_string (&id, &buffer, &status);
 
+  std::string res (buffer);
+  free (buffer);
+
+  return res;
+}
+#else
+
+////////////////////////////////////////////////////////////////////////////////
 #ifndef HAVE_UUID_UNPARSE_LOWER
 // Older versions of libuuid don't have uuid_unparse_lower(), only uuid_unparse()
 void uuid_unparse_lower (uuid_t uu, char *out)
@@ -252,32 +272,6 @@ const std::string uuid ()
 
   // Bug found by Steven de Brouwer.
   buffer[36] = '\0';
-
-  return std::string (buffer);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-#else
-
-#ifdef HAVE_RANDOM
-#define rand() random()
-#endif
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string uuid ()
-{
-  uint32_t time_low = ((rand () << 16) & 0xffff0000) | (rand () & 0xffff);
-  uint16_t time_mid = rand () & 0xffff;
-  uint16_t time_high_and_version = (rand () & 0x0fff) | 0x4000;
-  uint16_t clock_seq = (rand () & 0x3fff) | 0x8000;
-  uint8_t node [6];
-  for (size_t i = 0; i < 6; i++)
-    node[i] = rand() & 0xff;
-
-  char buffer[37];
-  sprintf(buffer, "%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-    time_low, time_mid, time_high_and_version, clock_seq >> 8, clock_seq & 0xff,
-    node[0], node[1], node[2], node[3], node[4], node[5]);
 
   return std::string (buffer);
 }

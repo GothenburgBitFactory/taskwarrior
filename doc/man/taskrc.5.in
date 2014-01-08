@@ -80,6 +80,8 @@ The hash mark, or pound sign ("#") is used as a comment character. It can be
 used to annotate the configuration file. All text after the character to the end
 of the line is ignored.
 
+The configuration file supports UTF8 as well as JSON encoding, such as \\uNNNN.
+
 Note that taskwarrior is flexible about the values used to represent Boolean
 items.  You can use "on", "yes", "y", "1" and "true".
 Anything else means "off".
@@ -89,7 +91,7 @@ You can edit your .taskrc file by hand if you wish, or you can use the 'config'
 command.  To permanently set a value in your .taskrc file, use this command:
 
 .RS
-$ task config nag "You have higher priority tasks!"
+$ task config nag "You have more urgent tasks."
 .RE
 
 To delete an entry, use this command:
@@ -129,9 +131,9 @@ ones containing just the relevant configuration data like colors, etc.
 There are two excellent uses of includes in your .taskrc, shown here:
 
 .RS
-include /usr/local/share/doc/task/rc/holidays.en-US.rc
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 .br
-include /usr/local/share/doc/task/rc/dark-16.theme
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-16.theme
 .RE
 
 This includes two standard files that are distributed with taskwarrior, which
@@ -139,7 +141,7 @@ define a set of US holidays, and set up a 16-color theme to use, to color the
 reports and calendar.
 
 .SH ENVIRONMENT VARIABLES
-These environmant variables override defaults and command line arguments.
+These environment variables override defaults and command line arguments.
 
 .TP
 .B TASKDATA=~/.task
@@ -304,11 +306,11 @@ variable is "no".
 This is useful for preventing large-scale unintended changes.
 
 .TP
-.B nag=You have higher priority tasks.
+.B nag=You have more urgent tasks.
 This may be a string of text, or blank. It is used as a prompt when a task is
 started or completed that is not considered high priority.  Default value is:
-You have higher priority tasks.  It is a gentle reminder that you are
-contradicting your own priority settings.
+You have more urgent tasks.  It is a gentle reminder that you are contradicting
+your own priority settings.
 
 .TP
 .B complete.all.projects=yes
@@ -446,6 +448,10 @@ being parsed, but the information is displayed in a developer-friendly, not a
 user-friendly way.
 
 .TP
+.B debug.tls=0
+Controls the GnuTLS log level.  For 'sync' debugging.
+
+.TP
 .B alias.rm=delete
 Taskwarrior supports command aliases.  This alias provides an alternate name
 (rm) for the delete command.  You can use aliases to provide alternate names for
@@ -486,41 +492,45 @@ characters:
 
 .RS
 .RS
-m  minimal-digit month,   for example 1 or 12
+m  minimal-digit month,    for example 1 or 12
 .br
-d  minimal-digit day,     for example 1 or 30
+d  minimal-digit day,      for example 1 or 30
 .br
-y  two-digit year,        for example 09 or 12
+y  two-digit year,         for example 09 or 12
 .br
-D  two-digit day,         for example 01 or 30
+D  two-digit day,          for example 01 or 30
 .br
-M  two-digit month,       for example 01 or 12
+M  two-digit month,        for example 01 or 12
 .br
-Y  four-digit year,       for example 2009 or 2013
+Y  four-digit year,        for example 2009 or 2014
 .br
-a  short name of weekday, for example Mon or Wed
+a  short name of weekday,  for example Mon or Wed
 .br
-A  long name of weekday,  for example Monday or Wednesday
+A  long name of weekday,   for example Monday or Wednesday
 .br
-b  short name of month,   for example Jan or Aug
+b  short name of month,    for example Jan or Aug
 .br
-B  long name of month,    for example January or August
+B  long name of month,     for example January or August
 .br
-v  minimal-digit week,    for example 3 or 37
+v  minimal-digit week,     for example 3 or 37
 .br
-V  two-digit week,        for example 03 or 37
+V  two-digit week,         for example 03 or 37
 .br
-h  minimal-digit hour,    for example 3 or 21
+h  minimal-digit hour,     for example 3 or 21
 .br
-n  minimal-digit minutes, for example 5 or 42
+n  minimal-digit minutes,  for example 5 or 42
 .br
-s  minimal-digit seconds, for example 7 or 47
+s  minimal-digit seconds,  for example 7 or 47
 .br
-H  two-digit hour,        for example 03 or 21
+H  two-digit hour,         for example 03 or 21
 .br
-N  two-digit minutes,     for example 05 or 42
+N  two-digit minutes,      for example 05 or 42
 .br
-S  two-digit seconds,     for example 07 or 47
+S  two-digit seconds,      for example 07 or 47
+.br
+J  three-digit Julian day, for example 023 or 365
+.br
+j  Julian day,             for example 23 or 365
 .RE
 .RE
 
@@ -701,7 +711,7 @@ be included like this:
 .RS
 .RS
 .br
-include /usr/local/share/doc/task/rc/holidays.en-US.rc
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 .RE
 .RE
 
@@ -835,7 +845,7 @@ Colors any task where the description or any annotation contains X.
 
 .TP
 .B color.uda.X=on green
-Colors any taks that has the user defined attribute X.
+Colors any task that has the user defined attribute X.
 .RE
 
 .TP
@@ -957,7 +967,7 @@ a change that is to be reverted.
 .br
 .B color.sync.rejected=red
 .RS
-Colors the output of the merge command.
+Colors the output of the sync command.
 .RE
 
 .TP
@@ -1040,6 +1050,7 @@ Specific tag coefficient.
 .B urgency.user.project.<project>.coefficient=...
 .RS
 Specific project coefficient.
+.RE
 .B urgency.uda.<name>.coefficient=...
 .RS
 Presence/absence of UDA data.
@@ -1078,31 +1089,6 @@ shadow.notify=on
 When this value is set to "on", taskwarrior will display a message whenever the
 shadow file is updated by some task command.
 
-.SS PUSH/PULL/MERGE
-
-See the 'man task-synch' page for more details regarding usage.
-
-.TP
-.B merge.autopush=yes|no|ask
-.RS
-Determines post-merge behavior regarding automatic push.
-.RE
-
-.B merge.default.uri
-.RS
-Default merge URI.
-.RE
-
-.B pull.default.uri
-.RS
-Default pull URI.
-.RE
-
-.B push.default.uri
-.RS
-Default push URI.
-.RE
-
 .SS DEFAULTS
 
 .TP
@@ -1125,6 +1111,13 @@ default.due=...
 Provides a default due date for the
 .I task add
 command, if you don't specify one.  The default is blank.
+
+.TP
+.B
+uda.<name>.default=...
+Provides default values for UDA fields when using the
+.I task add
+command, if you don't specify values.  The default is blank.
 
 .TP
 .B
@@ -1173,11 +1166,8 @@ The description for report X when running the "task help" command.
 
 .TP
 .B report.X.columns
-The columns that will be used when generating the report X. Valid columns are:
-id, uuid, status, project, priority, priority_long, entry, start, end, due,
-countdown, countdown_compact, age, age_compact, active, tags, depends,
-description_only, description, recur, recurrence_indicator, tag_indicator and
-wait.  The IDs are separated by commas.
+This is a comma-separated list of columns and formatting specifiers.  See the
+command 'task columns' for a full list of options and examples.
 
 .TP
 .B report.X.labels
@@ -1191,7 +1181,7 @@ specified by using the column ids post-fixed by a "+" for ascending sort order
 or a "-" for descending sort order. The sort IDs are separated by commas.
 For example:
 
-    report.list.sort=due+,priority-,active-,project+
+    report.list.sort=due+,priority-,start.active-,project+
 
 .TP
 .B report.X.filter
@@ -1330,8 +1320,63 @@ of a task.
 .B uda.estimate.values=trivial,small,medium,large,huge
 .RE
 
+.SS SYNC
+
+These configuration settings are used to connect and sync tasks with the task
+server.
+
+.TP
+.B taskd.server=<host>:<port>
+.RS
+Specifies the hostname and port of the Taskserver.  Hostname may be an IPv4 or
+IPv6 address, or domain.  Port is an integer.
+.RE
+
+.TP
+.B taskd.credentials=<organization>/<user>/<key>
+.RS
+User identification for the Taskserver, which includes a private key.
+.RE
+
+.TP
+.B taskd.certificate=<path>
+.RS
+Specifies the path to the client certificate used for identification with the
+Taskserver.
+.RE
+
+.TP
+.B taskd.key=<path>
+.RS
+Specifies the path to the client key used for encrypted communication with the
+Taskserver.
+.RE
+
+.TP
+.B taskd.ca=<path>
+.RS
+Specifies the path to the CA certificate in the event that your Taskserver is
+using a self-signed certificate.  Optional.
+.RE
+
+.TP
+.B taskd.trust=yes|no
+.RS
+If you do not specify a CA certificate when your Taskserver is using a self-
+signed certificate, you can override the certificate validation by setting this
+value to 'yes'.  Default is not to trust a server certificate.
+.RE
+
+.TP
+.B taskd.ciphers=NORMAL
+Override of the cipher selection.  The set of ciphers used by TLS may be
+controlled by both server and client.  There must be some overlap between
+client and server supported ciphers, or communication cannot occur.
+Default is "NORMAL".  See GnuTLS documentation for full details.
+.RE
+
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2014 P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez.
 

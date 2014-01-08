@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iomanip>
 #include <sstream>
 #include <time.h>
@@ -133,8 +134,10 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
 
   // Parse a formatted date.
   Nibbler n (input);
+#ifdef NIBBLER_FEATURE_DATE
   if (n.getDate (format, _t) && n.depleted ())
     return;
+#endif
 
   // Parse an ISO date.
   if (n.getDateISO (_t) && n.depleted ())
@@ -583,6 +586,12 @@ int Date::month () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int Date::week () const
+{
+  return Date::weekOfYear (Date::dayOfWeek (context.config.get ("weekstart")));
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Date::day () const
 {
   struct tm* t = localtime (&_t);
@@ -671,6 +680,16 @@ bool Date::sameDay (const Date& rhs) const
   if (this->year ()  == rhs.year ()  &&
       this->month () == rhs.month () &&
       this->day ()   == rhs.day ())
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Date::sameWeek (const Date& rhs) const
+{
+  if (this->year ()  == rhs.year () &&
+      this->week () == rhs.week ())
     return true;
 
   return false;
@@ -834,8 +853,7 @@ bool Date::isRelativeDate (const std::string& input)
         found == "eoww" ||
         found == "eocw" ||
         found == "sow"  ||
-        found == "soww" ||
-        found == "socw")
+        found == "soww")
     {
       if (found == "eow" || found == "eoww")
         dow = 5;
@@ -845,9 +863,6 @@ bool Date::isRelativeDate (const std::string& input)
 
       if (found == "sow" || found == "soww")
         dow = 1;
-
-      if (found == "socw")
-        dow = Date::dayOfWeek (context.config.get ("weekstart"));
 
       if (today.dayOfWeek () >= dow)
         today += (dow - today.dayOfWeek () + 7) * 86400;
@@ -861,6 +876,28 @@ bool Date::isRelativeDate (const std::string& input)
       _t = then._t;
       return true;
     }
+
+    else if (found == "socw")
+    {
+      //       day S M T W T F S
+      //       dow 0 1 2 3 4 5 6
+      // -----------------------
+      // weekstart   ^
+      // today1    ^
+      // today2            ^
+      //
+      // delta1 = 6 <-- (0 - 1 + 7) % 7
+      // delta2 = 3 <-- (4 - 1 + 7) % 7
+
+      dow = Date::dayOfWeek (context.config.get ("weekstart"));
+      int delta = (today.dayOfWeek () - dow + 7) % 7;
+      today -= delta * 86400;
+
+      Date then (today.month (), today.day (), today.year ());
+      _t = then._t;
+      return true;
+    }
+
     else if (found == "today")
     {
       Date then (today.month (),

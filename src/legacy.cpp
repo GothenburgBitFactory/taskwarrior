@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <Context.h>
 #include <text.h>
@@ -146,6 +147,12 @@ std::string legacyCheckForDeprecatedVariables ()
     if (it->first.length () > 19 &&
         it->first.substr (0, 7) == "report." &&
         it->first.substr (it->first.length () - 12) == ".annotations")
+      deprecated.push_back (it->first);
+
+    // {push,pull,merge}.uri  Deprecated in 2.3.0
+    if ((it->first.substr (0, 5) == "push."   ||
+         it->first.substr (0, 5) == "pull."   ||
+         it->first.substr (0, 6) == "merge.") && (it->first.find (".uri") != std::string::npos))
       deprecated.push_back (it->first);
 
     if (it->first == "next"              ||

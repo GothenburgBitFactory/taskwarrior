@@ -36,6 +36,10 @@ int main (int argc, char** argv)
 {
   UnitTest ut (23);
 
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
+
   std::string text = "This is a test.";
 
   RX r1 ("i. ", true);

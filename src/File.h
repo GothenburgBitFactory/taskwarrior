@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -45,8 +45,8 @@ public:
 
   File& operator= (const File&);
 
-  virtual bool create ();
-  virtual bool remove ();
+  virtual bool create (int mode = 0640);
+  virtual bool remove () const;
 
   bool open ();
   bool openAndLock ();
@@ -69,8 +69,10 @@ public:
   virtual mode_t mode ();
   virtual size_t size () const;
   virtual time_t mtime () const;
+  virtual time_t ctime () const;
+  virtual time_t btime () const;
 
-  static bool create (const std::string&);
+  static bool create (const std::string&, int mode = 0640);
   static std::string read (const std::string&);
   static bool read (const std::string&, std::string&);
   static bool read (const std::string&, std::vector <std::string>&);

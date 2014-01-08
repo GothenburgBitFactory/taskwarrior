@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
+#include <stdlib.h>
 #include <main.h>
 #include <test.h>
 
@@ -33,7 +35,11 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest test (37);
+  UnitTest test (30);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   test.is ((int)Task::textToStatus ("pending"),   (int)Task::pending,   "textToStatus pending");
   test.is ((int)Task::textToStatus ("completed"), (int)Task::completed, "textToStatus completed");
@@ -57,7 +63,7 @@ int main (int argc, char** argv)
   after = t3.composeF4 ();
   test.is (before, after, "Task::composeF4 -> parse round trip 4 iterations");
 
-  // Legacy Format 1
+  // Legacy Format 1 (no longer supported)
   //   [tags] [attributes] description\n
   //   X [tags] [attributes] description\n
   std::string sample = "[tag1 tag2] [att1:value1 att2:value2] Description";
@@ -69,27 +75,16 @@ int main (int argc, char** argv)
   try { Task ff1 (sample); } catch (...) { good = false; }
   test.notok (good, "Support for ff1 removed");
 
-  // Legacy Format 2
+  // Legacy Format 2 (no longer supported)
   //   uuid status [tags] [attributes] description\n
   sample = "00000000-0000-0000-0000-000000000000 "
            "- "
            "[tag1 tag2] "
            "[att1:value1 att2:value2] "
            "Description";
-  Task ff2 (sample);
-  std::string value = ff2.get ("uuid");
-  test.is (value, "00000000-0000-0000-0000-000000000000", "ff2 uuid");
-  value = ff2.get ("status");
-  test.is (value, "pending", "ff2 status");
-  test.ok (ff2.hasTag ("tag1"), "ff2 tag1");
-  test.ok (ff2.hasTag ("tag2"), "ff2 tag2");
-  test.is (ff2.getTagCount (), 2, "ff2 # tags");
-  value = ff2.get ("att1");
-  test.is (value, "value1", "ff2 att1");
-  value = ff2.get ("att2");
-  test.is (value, "value2", "ff2 att2");
-  value = ff2.get ("description");
-  test.is (value, "Description", "ff2 description");
+  good = true;
+  try { Task ff2 (sample); } catch (...) { good = false; }
+  test.notok (good, "Support for ff2 removed");
 
   // Legacy Format 3
   //   uuid status [tags] [attributes] [annotations] description\n
@@ -99,13 +94,13 @@ int main (int argc, char** argv)
            "[att1:value1 att2:value2] "
            "[123:ann1 456:ann2] Description";
   Task ff3 (sample);
-  value = ff2.get ("uuid");
+  std::string value = ff3.get ("uuid");
   test.is (value, "00000000-0000-0000-0000-000000000000", "ff3 uuid");
-  value = ff2.get ("status");
+  value = ff3.get ("status");
   test.is (value, "pending", "ff3 status");
-  test.ok (ff2.hasTag ("tag1"), "ff3 tag1");
-  test.ok (ff2.hasTag ("tag2"), "ff3 tag2");
-  test.is (ff2.getTagCount (), 2, "ff3 # tags");
+  test.ok (ff3.hasTag ("tag1"), "ff3 tag1");
+  test.ok (ff3.hasTag ("tag2"), "ff3 tag2");
+  test.is (ff3.getTagCount (), 2, "ff3 # tags");
   value = ff3.get ("att1");
   test.is (value, "value1", "ff3 att1");
   value = ff3.get ("att2");
@@ -117,20 +112,20 @@ int main (int argc, char** argv)
   //   [name:"value" ...]\n
   sample = "["
            "uuid:\"00000000-0000-0000-0000-000000000000\" "
-           "status:\"P\" "
-           "tags:\"tag1&commaltag2\" "
+           "status:\"pending\" "
+           "tags:\"tag1,tag2\" "
            "att1:\"value1\" "
            "att2:\"value2\" "
            "description:\"Description\""
            "]";
   Task ff4 (sample);
-  value = ff2.get ("uuid");
+  value = ff4.get ("uuid");
   test.is (value, "00000000-0000-0000-0000-000000000000", "ff4 uuid");
-  value = ff2.get ("status");
+  value = ff4.get ("status");
   test.is (value, "pending", "ff4 status");
-  test.ok (ff2.hasTag ("tag1"), "ff4 tag1");
-  test.ok (ff2.hasTag ("tag2"), "ff4 tag2");
-  test.is (ff2.getTagCount (), 2, "ff4 # tags");
+  test.ok (ff4.hasTag ("tag1"), "ff4 tag1");
+  test.ok (ff4.hasTag ("tag2"), "ff4 tag2");
+  test.is (ff4.getTagCount (), 2, "ff4 # tags");
   value = ff4.get ("att1");
   test.is (value, "value1", "ff4 att1");
   value = ff4.get ("att2");

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <ViewText.h>
 #include <Context.h>
@@ -69,27 +70,24 @@ int CmdColor::execute (std::string& output)
     {
       out << "\n" << STRING_CMD_COLOR_HERE << "\n";
 
-      std::vector <std::string> all;
-      context.config.all (all);
-
       ViewText view;
       view.width (context.getWidth ());
       view.add (Column::factory ("string", STRING_CMD_COLOR_COLOR));
       view.add (Column::factory ("string", STRING_CMD_COLOR_DEFINITION));
 
-      std::vector <std::string>::iterator item;
-      for (item = all.begin (); item != all.end (); ++item)
+      Config::const_iterator item;
+      for (item = context.config.begin (); item != context.config.end (); ++item)
       {
         // Skip items with 'color' in their name, that are not referring to
         // actual colors.
-        if (*item != "_forcecolor" &&
-            *item != "color"       &&
-            item->find ("color") == 0)
+        if (item->first != "_forcecolor" &&
+            item->first != "color"       &&
+            item->first.find ("color") == 0)
         {
-          Color color (context.config.get (*item));
+          Color color (context.config.get (item->first));
           int row = view.addRow ();
-          view.set (row, 0, *item, color);
-          view.set (row, 1, context.config.get (*item), color);
+          view.set (row, 0, item->first, color);
+          view.set (row, 1, item->second, color);
         }
       }
 

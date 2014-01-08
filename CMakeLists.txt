@@ -34,6 +34,17 @@ else (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set (UNKNOWN true)
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+if (FREEBSD)
+SET (TASK_MAN1DIR man/man1 CACHE STRING "Installation directory for man pages, section 1")
+SET (TASK_MAN5DIR man/man5 CACHE STRING "Installation directory for man pages, section 5")
+else (FREEBSD)
+SET (TASK_MAN1DIR share/man/man1 CACHE STRING "Installation directory for man pages, section 1")
+SET (TASK_MAN5DIR share/man/man5 CACHE STRING "Installation directory for man pages, section 5")
+endif (FREEBSD)
+SET (TASK_DOCDIR  share/doc/task CACHE STRING "Installation directory for doc files")
+SET (TASK_RCDIR "${TASK_DOCDIR}/rc" CACHE STRING "Installation directory for configuration files")
+SET (TASK_BINDIR  bin            CACHE STRING "Installation directory for the binary")
+
 message ("-- Looking for SHA1 references")
 if (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
   set (HAVE_COMMIT true)
@@ -83,8 +94,6 @@ if (READLINE_FOUND)
   set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${READLINE_LIBRARIES})
 endif (READLINE_FOUND)
 
-check_function_exists (random  HAVE_RANDOM)
-check_function_exists (srandom HAVE_SRANDOM)
 check_function_exists (timegm  HAVE_TIMEGM)
 check_function_exists (get_current_dir_name HAVE_GET_CURRENT_DIR_NAME)
 
@@ -92,31 +101,29 @@ check_struct_has_member ("struct tm" tm_gmtoff time.h HAVE_TM_GMTOFF)
 check_struct_has_member ("struct stat" st_birthtime "sys/types.h;sys/stat.h" HAVE_ST_BIRTHTIME)
 
 message ("-- Looking for libuuid")
-if (DARWIN)
-  # Apple includes the uuid functions in their libc, rather than libuuid
-  set (HAVE_UUID true)
+if (DARWIN OR FREEBSD)
+  # Apple and FreeBSD include the uuid functions in their libc, rather than libuuid
   check_function_exists (uuid_unparse_lower HAVE_UUID_UNPARSE_LOWER)
-else (DARWIN)
+else (DARWIN OR FREEBSD)
   find_path    (UUID_INCLUDE_DIR   uuid/uuid.h)
   find_library (UUID_LIBRARY NAMES uuid)
   if (UUID_INCLUDE_DIR AND UUID_LIBRARY)
-    set (HAVE_UUID true)
     set (TASK_INCLUDE_DIRS ${TASK_INCLUDE_DIRS} ${UUID_INCLUDE_DIR})
     set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${UUID_LIBRARY})
     # Look for uuid_unparse_lower
     set (CMAKE_REQUIRED_INCLUDES  ${CMAKE_REQUIRED_INCLUDES}  ${UUID_INCLUDE_DIR})
     set (CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${UUID_LIBRARY})
     check_function_exists (uuid_unparse_lower HAVE_UUID_UNPARSE_LOWER)
+  else (UUID_INCLUDE_DIR AND UUID_LIBRARY)
+    message (FATAL_ERROR "-- libuuid not found.")
   endif (UUID_INCLUDE_DIR AND UUID_LIBRARY)
-endif (DARWIN)
+endif (DARWIN OR FREEBSD)
 
-if (HAVE_UUID AND HAVE_UUID_UNPARSE_LOWER)
+if (HAVE_UUID_UNPARSE_LOWER)
   message ("-- Found libuuid")
-elseif (HAVE_UUID AND NOT HAVE_UUID_UNPARSE_LOWER)
+else (HAVE_UUID_UNPARSE_LOWER)
   message ("-- Found libuuid, using internal uuid_unparse_lower")
-else (HAVE_UUID AND HAVE_UUID_UNPARSE_LOWER)
-  message ("-- libuuid not found, using internal uuid")
-endif (HAVE_UUID AND HAVE_UUID_UNPARSE_LOWER)
+endif (HAVE_UUID_UNPARSE_LOWER)
 
 # Set the package language.
 if (LANGUAGE)
@@ -129,6 +136,7 @@ set (LANGUAGE_EN_US 1)
 set (LANGUAGE_ES_ES 2)
 set (LANGUAGE_DE_DE 3)
 set (LANGUAGE_FR_FR 4)
+set (LANGUAGE_IT_IT 5)
 
 message ("-- Configuring cmake.h")
 configure_file (
@@ -162,5 +170,5 @@ set (CPACK_SOURCE_IGNORE_FILES  "CMakeCache" "CMakeFiles" "CPackConfig" "CPackSo
                                 "_CPack_Packages" "cmake_install" "install_manifest" "Makefile$"
                                 "test" "package-config" "misc/*" "src/task$" "src/libtask.a"
                                 "src/columns/libcolumns.a" "src/commands/libcommands.a"
-                                "src/shell/tasksh$" "auto.h$" "/\\.gitignore""/\\.git/" "swp$")
+                                "src/shell/tasksh$" "auto.h$" "/\\.gitignore" "/\\.git/" "swp$")
 include (CPack)

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -33,7 +34,6 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <Directory.h>
-#include <cmake.h>
 
 #ifdef SOLARIS
 #include <limits.h>
@@ -85,19 +85,19 @@ Directory& Directory::operator= (const Directory& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Directory::create ()
+bool Directory::create (int mode /* = 0755 */)
 {
-  return mkdir (_data.c_str (), 0755) == 0 ? true : false;
+  return mkdir (_data.c_str (), mode) == 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Directory::remove ()
+bool Directory::remove () const
 {
   return remove_directory (_data);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Directory::remove_directory (const std::string& dir)
+bool Directory::remove_directory (const std::string& dir) const
 {
   DIR* dp = opendir (dir.c_str ());
   if (dp != NULL)
@@ -189,6 +189,12 @@ bool Directory::up ()
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Directory::cd () const
+{
+  return chdir (_data.c_str ()) == 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

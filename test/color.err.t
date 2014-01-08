@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,10 @@ use strict;
 use warnings;
 use Test::More tests => 6;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 # Create the rc file.
 if (open my $fh, '>', 'color.rc')
 {
@@ -46,8 +50,8 @@ if (open my $fh, '>', 'color.rc')
 # Test the errors colors
 my $output = qx{../src/task rc:color.rc rc.debug:on add due:__ 2>&1 >/dev/null};
 like ($output, qr/^\033\[33mThe\ duration\ '__'\ was\ not\ recognized\ as\ valid,\ with\ correct\ units\ like\ '3days'\.\033\[0m$/xms, 'color.error');
-like ($output, qr/^\033\[32mTimer\ Config::load\ \(color.rc\) .* \033\[0m$/xms, 'color.debug');
-like ($output, qr/^\033\[34mUsing\ alternate\ .taskrc\ file\ color.rc\033\[0m$/xms, 'color.header');
+like ($output, qr/^\033\[32mTimer\ Config::load\ \(.+color.rc\) .* \033\[0m$/xms, 'color.debug');
+like ($output, qr/^\033\[34mUsing\ alternate\ .taskrc\ file\ /xms, 'color.header');
 like ($output, qr/^\033\[31mConfiguration\ override\ rc.debug:on\033\[0m$/xms, 'color.footnote');
 
 # Cleanup.

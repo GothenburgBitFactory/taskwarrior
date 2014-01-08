@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2010 - 2013, Johannes Schlatow.
+// Copyright 2010 - 2014, Johannes Schlatow.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <sstream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Uri.h>
 #include <test.h>
@@ -37,6 +39,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (54);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   Uri uri1 ("asfd://user@host/folder/");
   uri1.parse ();

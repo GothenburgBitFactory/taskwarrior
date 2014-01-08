@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,16 +28,17 @@
 #ifndef INCLUDED_UTIL
 #define INCLUDED_UTIL
 
+#include <cmake.h>
 #include <string>
 #include <vector>
 #include <map>
 #include <sys/types.h>
-#include <Task.h>
-#include <cmake.h>
-
-#ifdef HAVE_UUID
+#ifdef FREEBSD
+#include <uuid.h>
+#else
 #include <uuid/uuid.h>
 #endif
+#include <Task.h>
 
 // util.cpp
 bool confirm (const std::string&);
@@ -47,7 +48,7 @@ void delay (float);
 std::string formatBytes (size_t);
 int autoComplete (const std::string&, const std::vector<std::string>&, std::vector<std::string>&, int minimum = 1);
 
-#if defined(HAVE_UUID) && !defined(HAVE_UUID_UNPARSE_LOWER)
+#ifndef HAVE_UUID_UNPARSE_LOWER
 void uuid_unparse_lower (uuid_t uu, char *out);
 #endif
 const std::string uuid ();

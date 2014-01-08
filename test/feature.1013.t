@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,10 @@ use strict;
 use warnings;
 use Test::More tests => 10;
 
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
 # Create the rc file.
 if (open my $fh, '>', 'outerr.rc')
 {
@@ -49,9 +53,9 @@ like ($stderr, qr/^The duration '__' was not recognized as valid, with correct u
 
 # Check that headers are sent to standard error
 $stdout = qx{../src/task rc:outerr.rc list 2> /dev/null};
-unlike ($stdout, qr/^Using alternate .taskrc file outerr.rc$/ms, 'Headers are not sent to stdout');
+unlike ($stdout, qr/^Using alternate .taskrc file .+outerr.rc$/ms, 'Headers are not sent to stdout');
 $stderr = qx{../src/task rc:outerr.rc list 2>&1 >/dev/null};
-like ($stderr, qr/^Using alternate .taskrc file outerr.rc$/ms, 'Headers are sent to stderr');
+like ($stderr, qr/^Using alternate .taskrc file .+outerr.rc$/ms, 'Headers are sent to stderr');
 
 # Check that footnotes are sent to standard error
 $stdout = qx{../src/task rc:outerr.rc rc.debug:on list 2> /dev/null};
@@ -61,9 +65,9 @@ like ($stderr, qr/^Configuration override rc.debug:on$/ms, 'Footnotes are sent t
 
 # Check that debugs are sent to standard error
 $stdout = qx{../src/task rc:outerr.rc rc.debug:on list 2> /dev/null};
-unlike ($stdout, qr/^Timer Config::load \(outerr.rc\) /ms, 'Debugs are not sent to stdout');
+unlike ($stdout, qr/^Timer Config::load \(.+outerr.rc\) /ms, 'Debugs are not sent to stdout');
 $stderr = qx{../src/task rc:outerr.rc rc.debug:on list 2>&1 >/dev/null};
-like ($stderr, qr/^Timer Config::load \(outerr.rc\) /ms, 'Debugs are sent to stderr');
+like ($stderr, qr/^Timer Config::load \(.+outerr.rc\) /ms, 'Debugs are sent to stderr');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data outerr.rc);

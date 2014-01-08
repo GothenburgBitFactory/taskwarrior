@@ -72,9 +72,9 @@ reason to back up your task data files!
 .TP
 .B Q: Can I have two separate versions of taskwarrior installed?  How?
 Yes, and here is one simple way to do that.  Install the older version of
-taskwarrior, and then rename the 'task' binary to something like 't194' to
+taskwarrior, and then rename the 'task' binary to something like 't230' to
 reflect the version number.  Then install the newer version, which will be
-named 'task'.  Now you have 't194' and 'task' both installed, both using the
+named 'task'.  Now you have 't230' and 'task' both installed, both using the
 same configuration and data.
 
 Note that the older version will not be aware of any new configuration settings
@@ -85,6 +85,9 @@ configuration.
 Note also that the man pages will overwrite, which is why it is suggested that
 the older version be installed first, so that you benefit from improved
 documentation.
+
+Is this a good idea?  Not really.  You should be using the latest software
+whenever possible, enjoying the benefits of enhancements and bug fixes.
 
 .TP
 .B Q: How do I build a Darwin 32bit version of task
@@ -160,11 +163,6 @@ Note that this is a good way to learn about new configuration settings,
 particularly if your .taskrc file was created by an older version.
 
 .TP
-.B Q: Do I need to back up my taskwarrior data?
-Yes you do, like all your other files.  You should back up all the files in your
-~/.task directory, and your ~/.taskrc file too.
-
-.TP
 .B Q: Can I share my tasks between different machines?
 Yes, you can.  Most people have success with a DropBox - a free and secure file
 synching tool.  Simply configure taskwarrior to store it's data in a dropbox
@@ -174,40 +172,25 @@ folder, by modifying the:
 
 configuration variable.  Check out DropBox at http://www.dropbox.com.
 
-You might also want to share the same .taskrc file. You can do this by putting an alias in the .bashrc file along the lines of
+You might also want to share the same .taskrc file. You can do this by putting
+an alias in the .bashrc file along the lines of
 
-alias task="task rc:/home/username/Dropbox/mysharedtaskrc"
-
-An alternative to Dropbox is to use the push/pull/merge features built into Taskwarrior. See 'man task-sync' for details.
-
+    alias task="task rc:/home/username/Dropbox/mysharedtaskrc"
 
 .TP
 .B Q: I don't want to use dropbox. Is there another way to synchronize my tasks?
-Of course. Especially if you want to modify tasks offline on both machines and
-synchronize them later on. For this purpose there is a 'merge' command which is
-is able to insert the modifications you made to one of your task databases into
-a second database.
-
-Here is a basic example of the procedure:
-
-    task merge ssh://user@myremotehost/.task/
-    task push ssh://user@myremotehost/.task/
-
-The first command fetches the undo.data file from the remote system, reads the
-changes made and updates the local database. When this merge command completes,
-you should copy all the local .data files to the remote system either by using
-the push command explicitly or by activating the merge.autopush feature in the 
-~/.taskrc file. This way you ensure that both systems are fully synchronized.
+Yes.  Get a Taskserver account, and sync tasks between all your machines and
+devices.  See task-sync(5).
 
 .TP
 .B Q: The undo.data file gets very large - do I need it?
-You need it if you want the undo capability, or the merge capability mentioned
-above.  But if it gets large, you can certainly truncate it to save space, just
-be careful to delete lines from the top of the file, up to and including a
-separator '---'.  The simplest way is to simply delete the undo.data file.  Note
-that it does not slow down taskwarrior in performance-sensitive areas, because
-it is typically not read until you want to undo, or report total active time in
-the 'info' command.  Taskwarrior generally only appends to the file.
+You need it if you want the undo capability.  But if it gets large, you can
+certainly truncate it to save space, just be careful to delete lines from the
+top of the file, up to and including a separator '---'.  The simplest way is to
+simply delete the undo.data file.  Note that it does not slow down taskwarrior
+in performance-sensitive areas, because it is typically not read until you want
+to undo, or report total active time in the 'info' command.  Taskwarrior
+generally only appends to the file.
 
 It is not recommended that you delete the undo.data file, as it limits
 functionality.
@@ -262,7 +245,8 @@ Taskwarrior does this to always show you the smallest numbers it can.  The idea
 is that if your tasks are numbered 1 - 33, for example, those are easy to type
 in.  If instead task kept a rolling sequence number, after a while your tasks
 might be numbered 481 - 513, which makes it more likely to enter one
-incorrectly, because there are more digits.
+incorrectly, because there are more digits, and humans have difficulty with
+longer numbers.
 
 When you run a report (such as "list"), the numbers are assigned before display.
 For example, you can do this:
@@ -355,7 +339,7 @@ There are lots of ways.  Here are some:
  - Fix bugs
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2014 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
 http://www.opensource.org/licenses/mit-license.php for more information.

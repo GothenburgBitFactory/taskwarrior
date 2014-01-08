@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
+#include <iostream>
 #include <stdlib.h>
 #include <Context.h>
 #include <Date.h>
@@ -183,7 +185,10 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
           {
             OldDuration dur (operand._raw);
             Date now;
-            now += (int)(time_t) dur;
+            if (dur.negative ())
+              now -= (int)(time_t) dur;
+            else
+              now += (int)(time_t) dur;
             operand._value  = now.toEpochString ();
           }
           else

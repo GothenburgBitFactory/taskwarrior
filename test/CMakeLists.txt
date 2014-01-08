@@ -8,7 +8,7 @@ include_directories (${CMAKE_SOURCE_DIR}
 
 set (test_SRCS autocomplete.t color.t config.t date.t directory.t dom.t
                old_duration.t file.t i18n.t json.t list.t msg.t nibbler.t path.t
-               rx.t t.t t2.t taskmod.t tdb2.t text.t tree.t uri.t utf8.t util.t
+               rx.t t.t t2.t t3.t taskmod.t tdb2.t text.t tree.t uri.t utf8.t util.t
                view.t width.t json_test iso8601d.t iso8601p.t duration.t lexer.t
                variant_add.t variant_and.t variant_cast.t variant_divide.t
                variant_equal.t variant_exp.t variant_gt.t variant_gte.t
@@ -37,8 +37,8 @@ endif (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 configure_file (run_all.in run_all)
 
 add_custom_target (test ./run_all --verbose
-                                  DEPENDS ${test_SRCS} task_executable
-                                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
+                        DEPENDS ${test_SRCS} task_executable
+                        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
 
 add_custom_target (build_tests DEPENDS ${test_SRCS}
                                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test)

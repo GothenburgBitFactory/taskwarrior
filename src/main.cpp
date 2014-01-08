@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,38 +25,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <cstring>
-#include <stdlib.h>
-
-#ifdef CYGWIN
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
-
 #include <i18n.h>
 #include <Context.h>
-#include <cmake.h>
 
 Context context;
-
-#ifdef HAVE_SRANDOM
-#define srand(x) srandom(x)
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, const char** argv)
 {
-  // Set up randomness.
-#ifdef CYGWIN
-  srand (time (NULL));
-#else
-  struct timeval tv;
-  gettimeofday (&tv, NULL);
-  srand (tv.tv_usec);
-#endif
-
   int status = 0;
 
   if (argc == 2 && !strcmp (argv[1], "--version"))

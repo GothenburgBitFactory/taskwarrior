@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +51,8 @@
 #include <fr-FR.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_DE_DE
 #include <de-DE.h>
+#elif PACKAGE_LANGUAGE == LANGUAGE_IT_IT
+#include <it-IT.h>
 #endif
 
 #define CCOLOR_BOLD             500

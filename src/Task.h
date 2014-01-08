@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,32 @@
 #include <map>
 #include <string>
 #include <stdio.h>
-
-
-void initializeUrgencyCoefficients ();
+#include <A3.h>
 
 class Task : public std::map <std::string, std::string>
 {
+public:
+  static std::string defaultProject;
+  static std::string defaultPriority;
+  static std::string defaultDue;
+  static bool searchCaseSensitive;
+  static bool regex;
+  static std::map <std::string, std::string> attributes;  // name -> type
+  static std::map <std::string, float> coefficients;
+  static float urgencyPriorityCoefficient;
+  static float urgencyProjectCoefficient;
+  static float urgencyActiveCoefficient;
+  static float urgencyScheduledCoefficient;
+  static float urgencyWaitingCoefficient;
+  static float urgencyBlockedCoefficient;
+  static float urgencyAnnotationsCoefficient;
+  static float urgencyTagsCoefficient;
+  static float urgencyNextCoefficient;
+  static float urgencyDueCoefficient;
+  static float urgencyBlockingCoefficient;
+  static float urgencyAgeCoefficient;
+  static float urgencyAgeMax;
+
 public:
   Task ();                       // Default constructor
   Task (const Task&);            // Copy constructor
@@ -48,7 +68,7 @@ public:
 
   void parse (const std::string&);
   std::string composeF4 () const;
-  std::string composeJSON (bool include_id = false) const;
+  std::string composeJSON (bool decorate = false) const;
 
   // Status values.
   enum status {pending, completed, deleted, recurring, waiting};
@@ -83,9 +103,14 @@ public:
   void set (const std::string&, int);
   void remove (const std::string&);
 
+#ifdef PRODUCT_TASKWARRIOR
   bool is_due () const;
   bool is_duetoday () const;
+  bool is_dueweek () const;
+  bool is_duemonth () const;
+  bool is_dueyear () const;
   bool is_overdue () const;
+#endif
 
   status getStatus () const;
   void setStatus (status);
@@ -103,6 +128,7 @@ public:
   void addAnnotation (const std::string&);
   void removeAnnotations ();
 
+#ifdef PRODUCT_TASKWARRIOR
   void addDependency (int);
   void addDependency (const std::string&);
   void removeDependency (int);
@@ -114,15 +140,20 @@ public:
   void getUDAOrphans (std::vector <std::string>&) const;
 
   void substitute (const std::string&, const std::string&, bool);
+#endif
 
   void validate (bool applyDefault = true);
 
   float urgency_c () const;
   float urgency ();
 
+  void modify (const A3&, std::string&);
+  bool next_mod_group (const A3&, Arg&, unsigned int&);
+
 private:
   int determineVersion (const std::string&);
-  void legacyParse (const std::string&);
+  void parseJSON (const std::string&);
+  void parseLegacy (const std::string&);
   void validate_before (const std::string&, const std::string&);
 
   inline float urgency_priority () const;

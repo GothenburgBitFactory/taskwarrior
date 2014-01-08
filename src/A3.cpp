@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
@@ -39,7 +40,6 @@
 #include <i18n.h>
 #include <main.h>
 #include <A3.h>
-#include <cmake.h>
 
 #ifdef FEATURE_STDIN
 #include <sys/select.h>
@@ -72,38 +72,37 @@ static struct
   std::string op;
   int         precedence;
   char        type;
-  int         symbol;
   char        associativity;
 } operators[] =
 {
-  // Operator   Precedence  Type  Symbol  Associativity
-  {  "and",      5,         'b',  0,      'l' },    // Conjunction
-  {  "xor",      4,         'b',  0,      'l' },    // Disjunction
+  // Operator   Precedence  Type  Associativity
+  {  "and",      5,         'b',  'l' },    // Conjunction
+  {  "xor",      4,         'b',  'l' },    // Disjunction
 
-  {  "or",       3,         'b',  0,      'l' },    // Disjunction
-  {  "<=",      10,         'b',  1,      'l' },    // Less than or equal
-  {  ">=",      10,         'b',  1,      'l' },    // Greater than or equal
-  {  "!~",       9,         'b',  1,      'l' },    // Regex non-match
-  {  "!=",       9,         'b',  1,      'l' },    // Inequal
+  {  "or",       3,         'b',  'l' },    // Disjunction
+  {  "<=",      10,         'b',  'l' },    // Less than or equal
+  {  ">=",      10,         'b',  'l' },    // Greater than or equal
+  {  "!~",       9,         'b',  'l' },    // Regex non-match
+  {  "!=",       9,         'b',  'l' },    // Inequal
 
-  {  "=",        9,         'b',  1,      'l' },    // Equal
-//  {  "^",       16,         'b',  1,      'r' },    // Exponent
-  {  ">",       10,         'b',  1,      'l' },    // Greater than
-  {  "~",        9,         'b',  1,      'l' },    // Regex match
-  {  "!",       15,         'u',  1,      'r' },    // Not
+  {  "=",        9,         'b',  'l' },    // Equal
+//  {  "^",       16,         'b',  'r' },    // Exponent
+  {  ">",       10,         'b',  'l' },    // Greater than
+  {  "~",        9,         'b',  'l' },    // Regex match
+  {  "!",       15,         'u',  'r' },    // Not
 
-  {  "_hastag_", 9,         'b',  0,      'l'},     // +tag  [Pseudo-op]
-  {  "_notag_",  9,         'b',  0,      'l'},     // -tag  [Pseudo-op]
+  {  "_hastag_", 9,         'b',  'l'},     // +tag  [Pseudo-op]
+  {  "_notag_",  9,         'b',  'l'},     // -tag  [Pseudo-op]
 
-  {  "-",       15,         'u',  1,      'r' },    // Unary minus
-  {  "*",       13,         'b',  1,      'l' },    // Multiplication
-  {  "/",       13,         'b',  1,      'l' },    // Division
-//  {  "%",       13,         'b',  1,      'l' },    // Modulus
-  {  "+",       12,         'b',  1,      'l' },    // Addition
-  {  "-",       12,         'b',  1,      'l' },    // Subtraction
-  {  "<",       10,         'b',  1,      'l' },    // Less than
-  {  "(",        0,         'b',  1,      'l' },    // Precedence start
-  {  ")",        0,         'b',  1,      'l' },    // Precedence end
+  {  "-",       15,         'u',  'r' },    // Unary minus
+  {  "*",       13,         'b',  'l' },    // Multiplication
+  {  "/",       13,         'b',  'l' },    // Division
+//  {  "%",       13,         'b',  'l' },    // Modulus
+  {  "+",       12,         'b',  'l' },    // Addition
+  {  "-",       12,         'b',  'l' },    // Subtraction
+  {  "<",       10,         'b',  'l' },    // Less than
+  {  "(",        0,         'b',  'l' },    // Precedence start
+  {  ")",        0,         'b',  'l' },    // Precedence end
 };
 
 #define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
@@ -1141,6 +1140,9 @@ const A3 A3::sequence (const A3& input) const
   if (ids.size () == 0 && uuids.size () == 0)
     return input;
 
+  if (ids.size () == 1 && ids[0] < 1)
+    throw format (STRING_A3_ZERO_ID, ids[0]);
+
   // Copy everything up to the first id/uuid.
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
@@ -1371,7 +1373,6 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
   std::string canonical;
   std::string modifier;
   std::string value;
-//  time_t date;
 
   // If there is a valid attribute name.
   if (n.getName (name) &&
@@ -1403,14 +1404,6 @@ bool A3::is_attmod (Nibbler& n, Arg& arg)
               n.getUntilEOS (value)       ||  // Redundant?
               n.depleted ())
           {
-/*
-     TODO Eliminate anything that looks like a URL.
-            // Exclude certain URLs, that look like attrs.
-            if (value.find ('@') <= n.cursor () ||
-                value.find ('/') <= n.cursor ())
-              return false;
-*/
-
             arg._raw      = canonical + '.' + modifier + ':' + value;
             Column* col   = context.columns[canonical];
             arg._type     = col ? Arg::type_id (col->type ()) : Arg::type_pseudo;
@@ -1575,6 +1568,7 @@ bool A3::is_dom (Nibbler& n, Arg& arg)
 ////////////////////////////////////////////////////////////////////////////////
 bool A3::is_date (Nibbler& n, std::string& result)
 {
+#ifdef NIBBLER_FEATURE_DATE
   std::string date_format = context.config.get ("dateformat");
   std::string::size_type start = n.save ();
   time_t t;
@@ -1586,6 +1580,7 @@ bool A3::is_date (Nibbler& n, std::string& result)
   }
 
   n.restore ();
+#endif
   return false;
 }
 

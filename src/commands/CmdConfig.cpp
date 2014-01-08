@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
+#include <JSON.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
@@ -102,9 +104,9 @@ int CmdConfig::execute (std::string& output)
             if (confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
             {
               if (comment != std::string::npos)
-                *line = name + "=" + value + " " + line->substr (comment);
+                *line = name + "=" + json::encode (value) + " " + line->substr (comment);
               else
-                *line = name + "=" + value;
+                *line = name + "=" + json::encode (value);
 
               change = true;
             }
@@ -115,7 +117,7 @@ int CmdConfig::execute (std::string& output)
         if (!found &&
             confirm (format (STRING_CMD_CONFIG_CONFIRM2, name, value)))
         {
-          contents.push_back (name + "=" + value);
+          contents.push_back (name + "=" + json::encode (value));
           change = true;
         }
       }

@@ -2,7 +2,7 @@
 
 echo 'Performance: setup'
 echo '  - This step will take several minutes'
-rm -f ./pending.data ./completed.data ./undo.data perf.rc
+rm -f ./pending.data ./completed.data ./undo.data ./backlog.data perf.rc
 ./load
 
 # Run benchmarks.
@@ -25,6 +25,14 @@ echo '  - task all...'
 echo '  - task add...'
 ../src/task rc.debug:1 rc:perf.rc add >/dev/null 2>&1
 ../src/task rc.debug:1 rc:perf.rc add This is a task with an average sized description length project:P priority:H +tag1 +tag2 2>&1 | grep "Perf task"
+
+echo '  - task export...'
+../src/task rc.debug:1 rc:perf.rc export >/dev/null 2>&1
+../src/task rc.debug:1 rc:perf.rc export 2>&1 >export.json | grep "Perf task"
+
+echo '  - task import...'
+rm -f ./pending.data ./completed.data ./undo.data ./backlog.data
+../src/task rc.debug:1 rc:perf.rc import export.json 2>&1 | grep "Perf task"
 
 echo 'End'
 exit 0

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -109,6 +110,43 @@ void Timer::subtract (unsigned long value)
     _total = 0;
   else
     _total -= value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+HighResTimer::HighResTimer ()
+{
+  _start.tv_sec = 0;
+  _start.tv_usec = 0;
+
+  _stop.tv_sec = 0;
+  _stop.tv_usec = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+HighResTimer::~HighResTimer ()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void HighResTimer::start ()
+{
+  gettimeofday (&_start, NULL);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void HighResTimer::stop ()
+{
+  gettimeofday (&_stop, NULL);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+double HighResTimer::total () const
+{
+  if (_stop.tv_sec > 0 || _stop.tv_usec > 0)
+    return (_stop.tv_sec  - _start.tv_sec) +
+           (_stop.tv_usec - _start.tv_usec) / 1000000.0;
+
+  return 0.0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

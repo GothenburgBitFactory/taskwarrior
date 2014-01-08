@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,10 @@ use warnings;
 use File::Copy;
 use File::Path;
 use Test::More tests => 13;
+
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
 
 mkdir("1",       0755);
 mkdir("2",       0755);

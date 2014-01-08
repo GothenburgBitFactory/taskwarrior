@@ -1,7 +1,7 @@
 
 New Features in taskwarrior 2.4.0
 
-  - 
+  -
 
 New commands in taskwarrior 2.4.0
 
@@ -9,13 +9,14 @@ New commands in taskwarrior 2.4.0
 
 New configuration options in taskwarrior 2.4.0
 
-  - 
 
 Newly deprecated features in taskwarrior 2.4.0
 
   - 
 
----
+Known Issues
+
+  -
 
 Taskwarrior has been built and tested on the following configurations:
 

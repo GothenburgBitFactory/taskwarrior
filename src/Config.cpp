@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -37,10 +38,10 @@
 #include <Date.h>
 #include <File.h>
 #include <Timer.h>
+#include <JSON.h>
 #include <Config.h>
 #include <text.h>
 #include <util.h>
-#include <cmake.h>
 #include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -290,17 +291,17 @@ std::string Config::_defaults =
   "list.all.tags=no                               # Include old tag names in 'tags' command\n"
   "print.empty.columns=no                         # Print columns which have no data for any task\n"
   "debug=no                                       # Display diagnostics\n"
+  "debug.tls=0                                    # GnuTLS log level\n"
   "extensions=off                                 # Extension system master switch\n"
   "fontunderline=yes                              # Uses underlines rather than -------\n"
   "shell.prompt=task>                             # Prompt used by the shell command\n"
   "\n"
-	"# Merge options\n"
-  "#\n"
-  "# WARNING: Please read the documentation (man task-sync) before proceeding with these\n"
-  "#          synchronization features.  If improperly used, data can be lost!\n"
-	"merge.autopush=ask                             # Push database to remote origin after merge: yes, no, ask\n"
-	"#merge.default.uri=user@host.xz:.task/         # URI for merge\n"
-	"#pull.default.uri=rsync://host.xz/task-backup/ # URI for pull\n"
+  "# WARNING: Please read the documentation (man task-sync) before setting up\n"
+  "#          Taskwarrior for Taskserver synchronization.\n"
+  "#taskd.certificate <certificat file>\n"
+  "#taskd.credentials <organization>/<name>/<password>\n"
+  "#taskd.server      <server>:<port>\n"
+  "taskd.ciphers=NORMAL\n"
 	"\n"
   "# Aliases - alternate names for commands\n"
   "alias.rm=delete                                # Alias for the delete command\n"
@@ -308,6 +309,7 @@ std::string Config::_defaults =
   "alias.ghistory=ghistory.monthly                # Prefer monthly graphical over annual history reports\n"
   "alias._query=export                            # _query is now export\n"
   "alias.burndown=burndown.weekly                 # Prefer the weekly burndown chart\n"
+  "alias.shell=exec tasksh                        # Alias old shell command to new shell\n"
   "\n"
   "# Reports\n"
   "\n"
@@ -377,7 +379,6 @@ std::string Config::_defaults =
   "report.waiting.filter=+WAITING\n"
   "report.waiting.sort=due+,wait+,entry+\n"
   "\n"
-  // Updated.
   "report.all.description=Pending, waiting and completed tasks by age\n"
   "report.all.labels=ID,St,UUID,A,Age,Done,D,P,Project,Tags,R,Wait,Sch,Due,Until,Description\n"
   "report.all.columns=id,status.short,uuid.short,start.active,entry.age,end.age,depends.indicator,priority,project.parent,tags.count,recur.indicator,wait.age,scheduled.age,due,until.age,description\n"
@@ -496,7 +497,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
         std::string key   = trim (line.substr (0, equal), " \t"); // no i18n
         std::string value = trim (line.substr (equal+1, line.length () - equal), " \t"); // no i18n
 
-        (*this)[key] = value;
+        (*this)[key] = json::decode (value);
       }
       else
       {

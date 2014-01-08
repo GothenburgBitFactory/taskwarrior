@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <algorithm>
 #include <sstream>
@@ -38,7 +39,6 @@
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
-#include <cmake.h>
 
 extern Context context;
 
@@ -427,7 +427,7 @@ void feedback_backlog ()
     std::vector <std::string>::iterator line;
     for (line = lines.begin (); line != lines.end (); ++line)
     {
-      if ((*line)[0] == '[')
+      if ((*line)[0] == '{')
       {
         context.footnote ("There are local changes.  Sync required.");
         break;

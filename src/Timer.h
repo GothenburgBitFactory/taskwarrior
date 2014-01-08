@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@
 #include <string>
 #include <sys/time.h>
 
+// Timer is a scope-activated timer that dumps to std::cout at end of scope.
 class Timer
 {
 public:
@@ -51,6 +52,25 @@ private:
   struct timeval _start;
   unsigned long  _total;
 };
+
+// HighResTimer is a stop watch with microsecond resolution.
+class HighResTimer
+{
+public:
+  HighResTimer ();
+  ~HighResTimer ();
+  HighResTimer (const HighResTimer&);
+  HighResTimer& operator= (const HighResTimer&);
+
+  void start ();
+  void stop ();
+  double total () const;
+
+private:
+  struct timeval _start;
+  struct timeval _stop;
+};
+
 
 #endif
 

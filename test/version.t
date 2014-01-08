@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,35 +28,18 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 2;
 
-# Create the rc file.
-if (open my $fh, '>', 'bug.rc')
-{
-  print $fh "data.location=.\n";
-  close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
-}
+qx{touch version.rc};
 
-# Bug 668: URL should allow users with dot character
+my $year = (localtime (time))[5] + 1900;
 
-my $output = qx{../src/task rc:bug.rc merge user.name\@taskwarrior.org:undo.data 2>&1};
-like ($output, qr/ssh failed/, 'ssh does not connect');
-unlike ($output, qr/not a valid modifier/, 'scp syntax with dots');
-unlike ($output, qr/not in the expected format/, 'scp syntax with dots');
-
-$output = qx{../src/task rc:bug.rc merge ssh://user.name\@taskwarrior.org/undo.data 2>&1};
-like ($output, qr/ssh failed/, 'ssh does not connect');
-unlike ($output, qr/not a valid modifier/, 'standard syntax with dots');
-unlike ($output, qr/not in the expected format/, 'standard syntax with dots');
+my $output = qx{../src/task rc:version.rc version 2>&1};
+like ($output, qr/Copyright \(C\) \d{4} - $year/, 'Copyright is current');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
+unlink 'version.rc';
+ok (!-r 'version.rc', 'Removed version.rc');
 
 exit 0;
 

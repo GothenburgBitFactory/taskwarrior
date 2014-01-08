@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,16 +25,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <cstring>
-
-#ifdef CYGWIN
-#include <time.h>
-#else
-#include <sys/time.h>
-#endif
 
 #include <text.h>
 #include <i18n.h>
@@ -44,22 +39,9 @@
 
 Context context;
 
-#ifdef HAVE_SRANDOM
-#define srand(x) srandom(x)
-#endif
-
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, const char** argv)
 {
-  // Set up randomness.
-#ifdef CYGWIN
-  srand (time (NULL));
-#else
-  struct timeval tv;
-  gettimeofday (&tv, NULL);
-  srand (tv.tv_usec);
-#endif
-
   bool read_from_file = false;
 
   if (argc > 2)
@@ -94,27 +76,34 @@ int main (int argc, const char** argv)
     }
   }
 
-  // if a file is given, read from it
+  // If a file is given, read from it
   std::ifstream fin;
   if (read_from_file)
   {
     fin.open (argv[1]);
   }
 
-  // commands may be redirected too
+  // Commands may be redirected too
   std::istream &in = read_from_file ? fin : std::cin;
 
-  // Begining initilaization
-  context.initialize (0, NULL);
+  if (Readline::interactiveMode (in))
+  {
+    // Begining initilaization
+    if (context.initialize (0, NULL))
+    {
+      return -1;
+    }
 
-  // Display some kind of welcome message.
-  Color bold (Color::nocolor, Color::nocolor, false, true, false);
+    // Display some kind of welcome message.
+    Color bold (Color::nocolor, Color::nocolor, false, true, false);
 
-  std::cout << (context.color () ? bold.colorize (PACKAGE_STRING) : PACKAGE_STRING)
-            << " shell\n\n"
-            << STRING_CMD_SHELL_HELP1 << '\n'
-            << STRING_CMD_SHELL_HELP2 << '\n'
-            << STRING_CMD_SHELL_HELP3 << "\n\n";
+    std::cout << (context.color () ? bold.colorize (PACKAGE_STRING)
+                                   : PACKAGE_STRING)
+              << " shell\n\n"
+              << STRING_CMD_SHELL_HELP1 << '\n'
+              << STRING_CMD_SHELL_HELP2 << '\n'
+              << STRING_CMD_SHELL_HELP3 << "\n\n";
+  }
 
   // Make a copy because context.clear will delete them.
   std::string permanent_overrides;

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <fstream>
 #include <glob.h>
 #include <sys/types.h>
@@ -33,8 +34,8 @@
 #include <pwd.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <limits.h>
 #include <Path.h>
-#include <cmake.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 std::ostream& operator<< (std::ostream& out, const Path& path)
@@ -86,6 +87,13 @@ Path& Path::operator= (const Path& other)
 bool Path::operator== (const Path& other)
 {
   return _data == other._data;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Path& Path::operator+= (const std::string& dir)
+{
+  _data += "/" + dir;
+  return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +161,7 @@ bool Path::is_directory () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::is_absolute () const
 {
-  if (_data.length () && _data.substr (0, 1) == "/")
+  if (_data.length () && _data[0] == '/')
     return true;
 
   return false;
@@ -197,6 +205,8 @@ bool Path::rename (const std::string& new_name)
 // ~      --> /home/user
 // ~foo/x --> /home/foo/s
 // ~/x    --> /home/foo/x
+// ./x    --> $PWD/x
+// x      --> $PWD/x
 std::string Path::expand (const std::string& in)
 {
   std::string copy = in;
@@ -232,6 +242,23 @@ std::string Path::expand (const std::string& in)
       if (pw)
         copy.replace (tilde, slash - tilde, pw->pw_dir);
     }
+  }
+
+  // Relative paths
+  else if (in.length () > 2 &&
+           in.substr (0, 2) == "./")
+  {
+    char buf[PATH_MAX];
+    getcwd (buf, PATH_MAX - 1);
+    copy = std::string (buf) + "/" + in.substr (2);
+  }
+  else if (in.length () > 1 &&
+           in[0] != '.' &&
+           in[0] != '/')
+  {
+    char buf[PATH_MAX];
+    getcwd (buf, PATH_MAX - 1);
+    copy = std::string (buf) + "/" + in;
   }
 
   return copy;

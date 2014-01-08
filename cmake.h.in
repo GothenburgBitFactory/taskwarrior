@@ -1,5 +1,8 @@
 /* cmake.h.in. Creates cmake.h during a cmake run */
 
+/* Product identification */
+#define PRODUCT_TASKWARRIOR 1
+
 /* Package information */
 #define PACKAGE           "${PACKAGE}"
 #define VERSION           "${VERSION}"
@@ -10,7 +13,7 @@
 #define PACKAGE_STRING    "${PACKAGE_STRING}"
 
 /* Installation details */
-#define TASK_RCDIR "${CMAKE_INSTALL_PREFIX}/${TASK_DOCDIR}/rc"
+#define TASK_RCDIR "${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}"
 
 /* Localization */
 #define PACKAGE_LANGUAGE  ${PACKAGE_LANGUAGE}
@@ -18,6 +21,7 @@
 #define LANGUAGE_ES_ES ${LANGUAGE_ES_ES}
 #define LANGUAGE_FR_FR ${LANGUAGE_FR_FR}
 #define LANGUAGE_DE_DE ${LANGUAGE_DE_DE}
+#define LANGUAGE_IT_IT ${LANGUAGE_IT_IT}
 
 /* git information */
 #cmakedefine HAVE_COMMIT
@@ -48,23 +52,19 @@
 /* Found the pthread library */
 #cmakedefine HAVE_LIBPTHREAD
 
-/* Found random */
-#cmakedefine HAVE_RANDOM
-
-/* Found srandom */
-#cmakedefine HAVE_SRANDOM
-
 /* Found tm_gmtoff */
 #cmakedefine HAVE_TM_GMTOFF
 
 /* Found timegm */
 #cmakedefine HAVE_TIMEGM
 
+/* Found st.st_birthtime struct member */
+#cmakedefine HAVE_ST_BIRTHTIME
+
 /* Found get_current_dir_name */
 #cmakedefine HAVE_GET_CURRENT_DIR_NAME
 
-/* Found the uuid library */
-#cmakedefine HAVE_UUID
+/* Found uuid_unparse_lower in the uuid library */
 #cmakedefine HAVE_UUID_UNPARSE_LOWER
 
 /* Undefine this to eliminate the execute command */

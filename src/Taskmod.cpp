@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <sstream>
 #include <iostream>
 #include <i18n.h>
@@ -181,10 +182,10 @@ std::string Taskmod::toString ()
 
   if (_bBeforeSet)
   {
-    stream << STRING_TASKMOD_OLD << _before.composeF4();
+    stream << STRING_TASKMOD_OLD << _before.composeF4() << "\n";
   }
 
-  stream << STRING_TASKMOD_NEW << _after.composeF4();
+  stream << STRING_TASKMOD_NEW << _after.composeF4() << "\n";
   stream << "---\n";
 
   return stream.str ();

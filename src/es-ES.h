@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -117,6 +117,7 @@
 #define STRING_A3_ID_AFTER_HYPHEN    "ID no reconocido tras guión."
 #define STRING_A3_RANGE_INVERTED     "Rango invertido 'alto-bajo' en vez de 'bajo-alto'"
 #define STRING_A3_UUID_AFTER_COMMA   "UUID no reconocido tras coma."
+#define STRING_A3_ZERO_ID            "'{1}' no es un ID válido."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "El color '{1}' no se reconoce."
@@ -178,6 +179,7 @@
 #define STRING_COLUMN_LABEL_UDA      "Nombre"
 #define STRING_COLUMN_LABEL_TYPE     "Tipo"
 #define STRING_COLUMN_LABEL_LABEL    "Etiqueta"
+#define STRING_COLUMN_LABEL_DEFAULT  "Defecto"
 #define STRING_COLUMN_LABEL_VALUES   "Valores permitidos"
 #define STRING_COLUMN_LABEL_UDACOUNT "Recuento de uso"
 #define STRING_COLUMN_LABEL_ORPHAN   "UDA huérfano"
@@ -243,6 +245,7 @@
 #define STRING_CMD_STATS_PROJECTS    "Proyectos"
 #define STRING_CMD_STATS_DATA_SIZE   "Tamaño de datos"
 #define STRING_CMD_STATS_UNDO_TXNS   "Transacciones deshacer"
+#define STRING_CMD_STATS_BACKLOG     "Sincroniza transacciones atrasadas"
 #define STRING_CMD_STATS_TAGGED      "Tareas marcadas"
 #define STRING_CMD_STATS_OLDEST      "Tarea más antigua"
 #define STRING_CMD_STATS_NEWEST      "Tarea más reciente"
@@ -255,7 +258,7 @@
 
 #define STRING_CMD_STATS_DESC_LEN    "Longitud media de desc"
 #define STRING_CMD_STATS_CHARS       "{1} caracteres"
-#define STRING_CMD_STATS_LAST_SYNCH  "Última sincronización con el servidor"
+#define STRING_CMD_STATS_LAST_SYNC   "Ültima sincronización del servidor"
 #define STRING_CMD_STATS_BLOCKED     "Tareas bloqueadas"
 #define STRING_CMD_STATS_BLOCKING    "Tareas bloqueantes"
 #define STRING_CMD_REPORTS_USAGE     "Lista todos los informes soportados"
@@ -314,6 +317,8 @@
 #define STRING_CMD_SUMMARY_COMPLETE  "Completas"
 #define STRING_CMD_SUMMARY_NONE      "(ninguna)"
 #define STRING_CMD_COUNT_USAGE       "Cuenta tareas que coinciden"
+#define STRING_CMD_GET_USAGE         "Método de acceso al DOM"
+#define STRING_CMD_GET_NO_DOM        "Referencia a DOM no especificada."
 
 #define STRING_CMD_UDAS_NO           "Ningún UDA definido."
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA definido"
@@ -403,15 +408,39 @@
 #define STRING_CMD_IMPORT_SUMMARY    "Importadas {1} tareas."
 #define STRING_CMD_IMPORT_NOFILE     "Debe especificar un archivo a importar."
 #define STRING_CMD_IMPORT_FILE       "Importando '{1}'"
-#define STRING_CMD_IMPORT_NOT_JSON   "No es un objeto JSON: {1}"
-#define STRING_CMD_IMPORT_NO_DESC    "La anotación carece de descripción: {1}"
-#define STRING_CMD_IMPORT_NO_ENTRY   "La anotación carece de fecha de entrada: {1}"
-#define STRING_CMD_SHELL_USAGE       "Lanza un entorno de comandos interactivo"
+#define STRING_TASK_NO_DESC          "La anotación carece de descripción: {1}"
+#define STRING_TASK_NO_ENTRY         "La anotación carece de fecha de entrada: {1}"
 #define STRING_CMD_SHELL_HELP1       "Escriba un comando de task (como 'list'), o pulse 'Enter'."
 #define STRING_CMD_SHELL_HELP2       "No hace falta incluir el propio comando 'task'."
 #define STRING_CMD_SHELL_HELP3       "Escriba 'quit' (o 'bye', 'exit') para terminar la sesión."
-#define STRING_CMD_SYNCH_USAGE       "Sincroniza datos con el Servidor Task"
-#define STRING_CMD_SYNCH_NO_SERVER   "El Servidor Task no está configurado."
+
+#define STRING_CMD_SYNC_USAGE        "Sincroniza datos con el Servidor Task"
+#define STRING_CMD_SYNC_NO_SERVER    "El Servidor Task no está configurado."
+#define STRING_CMD_SYNC_BAD_CRED     "Credenciales del Servidor Task incorrectas."
+#define STRING_CMD_SYNC_BAD_CERT     "Certificado del Servidor Task no encontrado."
+#define STRING_CMD_SYNC_BAD_KEY      "Clave del Servidor Task no encontrada."
+#define STRING_CMD_SYNC_ADD          "   añade {1} '{2}'"
+#define STRING_CMD_SYNC_MOD          "modifica {1} '{2}'"
+#define STRING_CMD_SYNC_PROGRESS     "Sincronizando con {1}"
+#define STRING_CMD_SYNC_SUCCESS0     "Sincronización correcta."
+#define STRING_CMD_SYNC_SUCCESS1     "Sincronización correcta. {1} cambios enviados."
+#define STRING_CMD_SYNC_SUCCESS2     "Sincronización correcta. {1} cambios recibidos."
+#define STRING_CMD_SYNC_SUCCESS3     "Sincronización correcta. {1} cambios enviados, {2} cambios recibidos."
+#define STRING_CMD_SYNC_SUCCESS_NOP  "Sincronización correcta. No hay cambios"
+#define STRING_CMD_SYNC_FAIL_ACCOUNT "Sincronización fallida. O bien sus credenciales son incorrectas, o su cuenta de Servidor Task no está habilitada."
+#define STRING_CMD_SYNC_FAIL_ERROR   "Sincronización fallida. El Servidor Task devolvió error: {1} {2}"
+#define STRING_CMD_SYNC_FAIL_CONNECT "Sincronización fallida. No se pudo conectar con el Servidor Task."
+#define STRING_CMD_SYNC_BAD_SERVER   "Sincronización fallida. Ajuste de configuración '{1}' incorrecto"
+#define STRING_CMD_SYNC_NO_TLS       "Taskwarrior fue construido sin soporte GnuTLS. Sincronización no disponible."
+#define STRING_CMD_SYNC_INIT         "Por favor, confirme que desea subir todas sus tareas pendientes al Servidor Task"
+#define STRING_CMD_SYNC_NO_INIT      "Taskwarrior no procederá a la inicialización de la sincronización por primera vez."
+#define STRING_CMD_SYNC_RELOCATE0    "La cuenta del servidor ha sido reubicada. Por favor, actualice su configuración utilizando:"
+#define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"
+#define STRING_CMD_SYNC_BAD_CA       "Certificado CA no encontrado."
+#define STRING_CMD_SYNC_CONNECT      "No se pudo conectar a {1} {2}"
+#define STRING_CMD_SYNC_HANDSHAKE    "Handshake fallido.  {1}"
+#define STRING_CMD_SYNC_NOMERGE      "Task push/pull/merge está configurado, en desuso, y no trabaja con 'sync'."
+#define STRING_CMD_SYNC_TRUST_CA     "Debe proveer un certificado CA o la verificación de sobrescritura, pero no ambos."
 #define STRING_CMD_DIAG_USAGE        "Detalles de plataforma, construcción y entorno"
 #define STRING_CMD_DIAG_PLATFORM     "Plataforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<desconocido>"
@@ -420,7 +449,7 @@
 #define STRING_CMD_DIAG_CAPS         "Capacidades"
 #define STRING_CMD_DIAG_FEATURES     "Características Constructivas"
 #define STRING_CMD_DIAG_BUILT        "Construido"
-#define STRING_CMD_DIAG_COMMIT       "Commit"
+#define STRING_CMD_DIAG_COMMIT       "Commit"  // sic
 #define STRING_CMD_DIAG_FOUND        "(encontrado)"
 #define STRING_CMD_DIAG_MISSING      "(no encontrado)"
 #define STRING_CMD_DIAG_ENABLED      "Habilitado"
@@ -428,8 +457,6 @@
 #define STRING_CMD_DIAG_CONFIG       "Configuración"
 #define STRING_CMD_DIAG_EXTERNAL     "Utilidades externas"
 #define STRING_CMD_DIAG_TESTS        "Comprobaciones"
-#define STRING_CMD_DIAG_UUID_GOOD    "1000 UUIDs únicos generados."
-#define STRING_CMD_DIAG_UUID_BAD     "Fallo - UUID duplicado en la iteración {1}"
 #define STRING_CMD_DIAG_UUID_SCAN    "Exploradas {1} tareas buscando UUIDs duplicados:"
 #define STRING_CMD_DIAG_UUID_DUP     "Encontrado duplicado {1}"
 #define STRING_CMD_DIAG_UUID_NO_DUP  "No se encontraron duplicados"
@@ -547,13 +574,11 @@
 #define STRING_CONTEXT_SHADOW_C      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir sus tareas completadas. Por favor, cambie esto."
 #define STRING_CONTEXT_SHADOW_U      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su registro de deshacer. Por favor, cambie esto."
 #define STRING_CONTEXT_SHADOW_B      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su archivo backlog. Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_S      "La variable de configuración 'shadow.file' está ajustada a " "sobreescribrir su archivo synch.key. Por favor, cambie esto."
 #define STRING_CONTEXT_SHADOW_UPDATE "[Archivo shadow '{1}' actualizado.]"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' no es una fecha válida según el formato '{2}'."
 #define STRING_DATE_BAD_WEEKSTART    "La variable de configuración 'weekstart' solamente puede contener 'Sunday' (domingo) o 'Monday' (lunes)."
-#define STRING_DATE_TOO_MUCH         "La fecha está demasiado alejada en el futuro."
 
 #define STRING_DATE_JANUARY_LONG     "enero"
 #define STRING_DATE_FEBRUARY_LONG    "febrero"
@@ -689,7 +714,6 @@
 // TODO Move each of these to appropriate section.
 #define STRING_ERROR_PREFIX          "Error: "
 #define STRING_UNKNOWN_ERROR         "Error desconocido."
-#define STRING_NO_HOME               "No se pudo leer el directorio personal en el archivo passwd."
 #define STRING_TRIVIAL_INPUT         "Debe especificar un comando o una tarea a modificar."
 #define STRING_ASSUME_INFO           "No especificó un comando - asumido 'information'."
 #define STRING_INFINITE_LOOP         "Sustitución terminada debido a que se hicieron más de {1} cambios - protección contra ciclo eterno."
@@ -699,6 +723,7 @@
 #define STRING_UDA_COLLISION         "El UDA denominado '{1}' es el mismo que un atributo del núcleo, y no está permitido."
 #define STRING_INVALID_MOD           "El atributo '{1}' no admite un valor '{2}'."
 #define STRING_INVALID_SORT_COL      "La columna '{1}' no es un campo de ordenación válido."
+#define STRING_TLS_INIT_FAIL         "Error inicializando TLS."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."
@@ -751,9 +776,6 @@
 #define STRING_JSON_MISSING_OPEN     "Error: se esperaba '{' or '[' en posición {1}"
 #define STRING_JSON_EXTRA_CHARACTERS "Error: encontrados caracteres extra en posición {1}"
 
-// Legacy
-#define STRING_LEGACY_FEATURE        "Note: la función '{1}' está en desuso."
-
 // Record
 #define STRING_RECORD_EMPTY          "Registro vacío en la entrada."
 #define STRING_RECORD_JUNK_AT_EOL    "Caracteres no reconocidos al final de línea."
@@ -765,7 +787,6 @@
 #define STRING_CMD_SHOW_NONE         "No hay variables de configuración que coincidan."
 #define STRING_CMD_SHOW_UNREC        "Su archivo .taskrc contiene estas variables no reconocidas:"
 #define STRING_CMD_SHOW_DIFFER       "Algunas de sus variables .taskrc difieren de los valores por defecto."
-#define STRING_CMD_SHOW_HOOKS        "Su archivo .taskrc contiene estos hook scripts que faltan o no se pueden leer:"
 #define STRING_CMD_SHOW_EMPTY        "Error de configuración: .taskrc no contiene ninguna entrada."
 #define STRING_CMD_SHOW_DIFFER_COLOR "Las cambiadas aparecen resaltadas en {1} más arriba."
 #define STRING_CMD_SHOW_CONFIG_ERROR "Error de configuración: {1} contiene un valor '{2}' no reconocido."
@@ -777,6 +798,7 @@
 
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior ya no admite el formato de archivo 1, usado originalmente entre el 27 de noviembre del 2006 y el 31 de diciembre del 2007."
+#define STRING_TASK_NO_FF2           "Taskwarrior ya no admite el formato de archivo 2, usado originalmente entre el 1 de enero del 2008 y el 12 de abril del 2009."
 #define STRING_TASK_PARSE_ANNO_BRACK "Faltan corchetes de anotación."
 #define STRING_TASK_PARSE_ATT_BRACK  "Faltan corchetes de atributo."
 #define STRING_TASK_PARSE_TAG_BRACK  "Faltan corchetes de marca."
@@ -828,8 +850,7 @@
 #define STRING_TDB2_REVERTED         "Tarea modificada revertida."
 #define STRING_TDB2_REMOVED          "Tarea eliminada."
 #define STRING_TDB2_UNDO_COMPLETE    "Deshacer completado."
-#define STRING_TDB2_MISSING_TASK     "Tarea con UUID {1} no encontrada en los datos."
-#define STRING_TDB2_UNDO_IMPOSSIBLE  "No es posible deshacer."
+#define STRING_TDB2_UNDO_SYNCED      "No se puede deshacer el cambio porque la tarea ya ha sido sincronizada. Como alternativa, modifique la tarea."
 
 // text
                                      // Se añade al final una lista de comandos separados por comas.
@@ -997,6 +1018,15 @@
 #define STRING_UTIL_MEBIBYTES        "MiB"
 #define STRING_UTIL_KIBIBYTES        "KiB"
 #define STRING_UTIL_BYTES            "B"
+
+// shell
+#define STRING_SHELL_USAGE \
+  "Uso: tasksh [<fichero-comandos>]   Ejecuta los comandos task contenidos en <fichero-comandos>, si se indica;\n" \
+  "                                   si no, lanza un entorno interactivo de comandos task.\n" \
+  "     tasksh --version              Muestra la versión de task.\n" \
+  "     tasksh --help                 Muestra esta ayuda.\n"
+
+#define STRING_SHELL_NO_FILE         "El fichero de entrada no existe.\n"
 
 #endif
 

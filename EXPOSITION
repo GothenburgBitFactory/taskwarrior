@@ -90,7 +90,7 @@ Files
   'merge' command.
 
   The backlog.data file contains an accumulated set of changes that have not
-  been transmitted to the task server.  It grows unbounded between 'synch'
+  been transmitted to the Taskserver.  It grows unbounded between 'synch'
   commands.
 
 
@@ -156,7 +156,7 @@ Test Suite
   many platforms. Code changes are automatically detected, propagated, built and
   tested on a variety of participating platforms. Grid testing results are here:
 
-    http://tasktools.org/tinderbox/taskwarrior.html
+    http://tasktools.org/tinderbox/taskwarrior-2.3.0.html
 
   When making code changes, it is important that the test suite be run to verify
   that functionality was not broken.

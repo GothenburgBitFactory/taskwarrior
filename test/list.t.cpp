@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <Context.h>
 #include <main.h>
 #include <test.h>
@@ -36,6 +38,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (24);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   // 1,2,3  <=>  2,3,4
   std::vector <std::string> string_one;

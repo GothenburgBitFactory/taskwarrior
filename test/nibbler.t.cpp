@@ -43,6 +43,7 @@ int main (int argc, char** argv)
   UnitTest t (408);
 #else
   UnitTest t (384);
+  UnitTest t (378);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
@@ -51,6 +52,10 @@ int main (int argc, char** argv)
   UnitTest t (320);
 #endif
 #endif
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   try
   {

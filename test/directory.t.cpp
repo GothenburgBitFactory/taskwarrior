@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <algorithm>
+#include <stdlib.h>
 #include <Context.h>
 #include <Directory.h>
 #include <test.h>
@@ -34,7 +36,11 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (37);
+  UnitTest t (49);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   Directory tmp ("tmp");
   tmp.create ();
@@ -51,17 +57,17 @@ int main (int argc, char** argv)
 
   // Directory (const Directory&);
   Directory d3 (d2);
-  t.is (d3._data, "tmp", "Directory (Directory&)");
+  t.is (d3._data, Directory::cwd () + "/tmp", "Directory (Directory&)");
 
   // Directory (const std::string&);
   Directory d4 ("tmp/test_directory");
 
   // Directory& operator= (const Directory&);
   Directory d5 = d4;
-  t.is (d5._data, "tmp/test_directory", "Directory::operator=");
+  t.is (d5._data, Directory::cwd () + "/tmp/test_directory", "Directory::operator=");
 
   // operator (std::string) const;
-  t.is ((std::string) d3, "tmp", "Directory::operator (std::string) const");
+  t.is ((std::string) d3, Directory::cwd () + "/tmp", "Directory::operator (std::string) const");
 
   // virtual bool create ();
   t.ok (d5.create (), "Directory::create tmp/test_directory");
@@ -77,15 +83,15 @@ int main (int argc, char** argv)
   std::vector <std::string> files = d5.list ();
   std::sort (files.begin (), files.end ());
   t.is ((int)files.size (), 2, "Directory::list 1 file");
-  t.is (files[0], "tmp/test_directory/dir", "file[0] is tmp/test_directory/dir");
-  t.is (files[1], "tmp/test_directory/f0", "file[1] is tmp/test_directory/f0");
+  t.is (files[0], Directory::cwd () + "/tmp/test_directory/dir", "file[0] is tmp/test_directory/dir");
+  t.is (files[1], Directory::cwd () + "/tmp/test_directory/f0", "file[1] is tmp/test_directory/f0");
 
   // std::vector <std::string> listRecursive ();
   files = d5.listRecursive ();
   std::sort (files.begin (), files.end ());
   t.is ((int)files.size (), 2, "Directory::list 1 file");
-  t.is (files[0], "tmp/test_directory/dir/f1", "file is tmp/test_directory/dir/f1");
-  t.is (files[1], "tmp/test_directory/f0", "file is tmp/test_directory/f0");
+  t.is (files[0], Directory::cwd () + "/tmp/test_directory/dir/f1", "file is tmp/test_directory/dir/f1");
+  t.is (files[1], Directory::cwd () + "/tmp/test_directory/f0", "file is tmp/test_directory/f0");
 
   // virtual bool remove ();
   t.ok (File::remove (d5._data + "/f0"), "File::remove tmp/test_directory/f0");
@@ -122,6 +128,25 @@ int main (int argc, char** argv)
   t.ok (d9.up (),                   "parent /one --> true");
   t.is (d9._data, "/",              "parent /one --> /");
   t.notok (d9.up (),                "parent / --> false");
+
+  // Test permissions.
+  umask(0022);
+  Directory d10 ("tmp/dir.perm");
+  d10.create (0750);
+  t.ok (d10.exists (),               "Directory::create perm file exists");
+  mode_t m = d10.mode ();
+  t.ok    (m & S_IFDIR,             "Directory::mode tmp/dir.perm S_IFDIR good");
+  t.ok    (m & S_IRUSR,             "Directory::mode tmp/dir.perm r-------- good");
+  t.ok    (m & S_IWUSR,             "Directory::mode tmp/dir.perm -w------- good");
+  t.ok    (m & S_IXUSR,             "Directory::mode tmp/dir.perm --x------ good");
+  t.ok    (m & S_IRGRP,             "Directory::mode tmp/dir.perm ---r----- good");
+  t.notok (m & S_IWGRP,             "Directory::mode tmp/dir.perm ----w---- good");
+  t.ok    (m & S_IXGRP,             "Directory::mode tmp/dir.perm -----x--- good");
+  t.notok (m & S_IROTH,             "Directory::mode tmp/dir.perm ------r-- good");
+  t.notok (m & S_IWOTH,             "Directory::mode tmp/dir.perm -------w- good");
+  t.notok (m & S_IXOTH,             "Directory::mode tmp/dir.perm --------x good");
+  d10.remove ();
+  t.notok (d10.exists (),           "Directory::remove temp/dir.perm file no longer exists");
 
   tmp.remove ();
   t.notok (tmp.exists (),           "tmp dir removed.");

@@ -125,6 +125,7 @@ Unit Tests Needed
   code and run the test suite:
      git clone git://tasktools.org:task.git
      cd task.git
+     git checkout 2.3.0
      cmake .
      make
      make test
@@ -187,7 +188,10 @@ Current Codebase Condition
   '2.3.0' branch:
     - Current development branch with sync features, and new tasksh.
 
+  '2.4.0' branch:
+    - Command line parser rewrite.
+
 ---
 
 2012-05-12 Added general statement about how to contribute.
-2013-03-31 Updated branch info.
+2013-09-09 Updated branch info.

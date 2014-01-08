@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <Context.h>
 #include <Column.h>
 #include <ColDepends.h>
@@ -151,17 +152,15 @@ void Column::uda (std::map <std::string, Column*>& all)
 {
   // For each UDA, instantiate and initialize ColumnUDA().
   std::map <std::string, int> udas;
-  std::vector <std::string> names;
-  context.config.all (names);
 
-  std::vector <std::string>::iterator i;
-  for (i = names.begin (); i != names.end (); ++i)
+  Config::const_iterator i;
+  for (i = context.config.begin (); i != context.config.end (); ++i)
   {
-    if (i->substr (0, 4) == "uda.")
+    if (i->first.substr (0, 4) == "uda.")
     {
       std::string::size_type period = 4;
-      if ((period = i->find ('.', period)) != std::string::npos)
-        udas[i->substr (4, period - 4)] = 0;
+      if ((period = i->first.find ('.', period)) != std::string::npos)
+        udas[i->first.substr (4, period - 4)] = 0;
     }
   }
 
@@ -321,6 +320,20 @@ void Column::render (std::vector <std::string>&, const std::string&, int, Color&
 void Column::render (std::vector <std::string>&, Task&, int, Color&)
 {
   throw std::string ("Virtual method Column::render not overridden.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// No L10N.
+bool Column::can_modify ()
+{
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// No L10N.
+std::string Column::modify (std::string& value)
+{
+  throw std::string ("Virtual method Column::modify not overridden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

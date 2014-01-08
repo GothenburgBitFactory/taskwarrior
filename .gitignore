@@ -18,3 +18,5 @@ install_manifest.txt
 _CPack_Packages
 CPackConfig.cmake
 CPackSourceConfig.cmake
+patches
+*.exe

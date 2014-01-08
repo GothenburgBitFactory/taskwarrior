@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <Context.h>
 #include <Task.h>
 #include <test.h>
@@ -36,6 +38,10 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (18);
+
+  // Ensure environment has no influence.
+  unsetenv ("TASKDATA");
+  unsetenv ("TASKRC");
 
   // (blank)
   bool good = true;
@@ -76,7 +82,7 @@ int main (int argc, char** argv)
   // Task::set
   task.clear ();
   task.set ("name", "value");
-  t.is (task.composeF4 (), "[name:\"value\"]\n", "Task::set");
+  t.is (task.composeF4 (), "[name:\"value\"]", "Task::set");
 
   // Task::has
   t.ok    (task.has ("name"), "Task::has");
@@ -84,18 +90,18 @@ int main (int argc, char** argv)
 
   // Task::get_int
   task.set ("one", 1);
-  t.is (task.composeF4 (), "[name:\"value\" one:\"1\"]\n", "Task::set");
+  t.is (task.composeF4 (), "[name:\"value\" one:\"1\"]", "Task::set");
   t.is (task.get_int ("one"), 1, "Task::get_int");
 
   // Task::get_ulong
   task.set ("two", "4294967295");
-  t.is (task.composeF4 (), "[name:\"value\" one:\"1\" two:\"4294967295\"]\n", "Task::set");
+  t.is (task.composeF4 (), "[name:\"value\" one:\"1\" two:\"4294967295\"]", "Task::set");
   t.is ((size_t)task.get_ulong ("two"), (size_t)4294967295UL, "Task::get_ulong");
 
   // Task::remove
   task.remove ("one");
   task.remove ("two");
-  t.is (task.composeF4 (), "[name:\"value\"]\n", "Task::remove");
+  t.is (task.composeF4 (), "[name:\"value\"]", "Task::remove");
 
   // Task::all
   t.is (task.size (), (size_t)1, "Task::all size");

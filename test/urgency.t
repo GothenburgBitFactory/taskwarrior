@@ -2,7 +2,7 @@
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
-## Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+## Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,26 @@
 
 use strict;
 use warnings;
-use Test::More tests => 49;
+use Test::More tests => 32;
+
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
+sub in_range
+{
+  my ($value, $low, $high, $message) = @_;
+
+  if ($value >= $low && $value <= $high)
+  {
+    pass ($message);
+  }
+  else
+  {
+    diag ("Expected '$value' to be in the range $low --> $high");
+    fail ($message);
+  }
+}
 
 # Create the rc file.
 if (open my $fh, '>', 'urgency.rc')
@@ -162,12 +181,6 @@ $output = qx{../src/task rc:urgency.rc 1 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, 'blocking = 10');
 
 # due
-#
-#  days overdue, capped at 7     ->  0.8 - 1.0
-#  due today                     ->  0.7
-#  days until due, capped at 14  ->  0.4 - 0.6
-#  has due date                  ->  0.3
-#  no due date                   ->  0.0
 
 qx{../src/task rc:urgency.rc add 9a due:-10d 2>&1};               # task 18
 qx{../src/task rc:urgency.rc add 9b due:-7d 2>&1};                # task 19
@@ -202,93 +215,104 @@ like ($output, qr/urgency 10$/ms, 'due:-10d = 10');
 $output = qx{../src/task rc:urgency.rc 19 _urgency 2>&1};
 like ($output, qr/urgency 10$/ms, 'due:-7d = 10');
 
-# due: 9.6 (due:-6d)
+# due: ~9.6 (due:-6d)
 $output = qx{../src/task rc:urgency.rc 20 _urgency 2>&1};
-like ($output, qr/urgency 9.6/ms, 'due:-6d = 9.6');
+my ($value) = $output =~ /urgency\s([0-9.]+)/;
+in_range ($value, 9, 10, 'due:-6d = 9 - 10');
 
-# due: 9.2 (due:-5d)
+=pod
+
+# due: 8.64 (due:-5d)
 $output = qx{../src/task rc:urgency.rc 21 _urgency 2>&1};
-like ($output, qr/urgency 9.2/ms, 'due:-5d = 9.2');
+like ($output, qr/urgency 8.64/ms, 'due:-5d = 8.64');
 
-# due: 8.8 (due:-4d)
+# due: 8.18 (due:-4d)
 $output = qx{../src/task rc:urgency.rc 22 _urgency 2>&1};
-like ($output, qr/urgency 8.8/ms, 'due:-4d = 8.8');
+like ($output, qr/urgency 8.18/ms, 'due:-4d = 8.18');
 
-# due: 8.4 (due:-3d)
+# due: 7.73 (due:-3d)
 $output = qx{../src/task rc:urgency.rc 23 _urgency 2>&1};
-like ($output, qr/urgency 8.4/ms, 'due:-3d = 8.4');
+like ($output, qr/urgency 7.73/ms, 'due:-3d = 7.73');
 
-# due: 8 (due:-2d)
+# due: 7.27 (due:-2d)
 $output = qx{../src/task rc:urgency.rc 24 _urgency 2>&1};
-like ($output, qr/urgency 8/ms, 'due:-2d = 8');
+like ($output, qr/urgency 7.27/ms, 'due:-2d = 7.27');
 
-# due: 7.6 (due:-1d)
+# due: 6.82 (due:-1d)
 $output = qx{../src/task rc:urgency.rc 25 _urgency 2>&1};
-like ($output, qr/urgency 7.6/ms, 'due:-1d = 7.6');
+like ($output, qr/urgency 6.82/ms, 'due:-1d = 6.82');
 
-# due: 7.2 (due:now)
+=cut
+
+# due: ~7.53 (due:now)
 $output = qx{../src/task rc:urgency.rc 26 _urgency 2>&1};
-like ($output, qr/urgency 7.2$/ms, 'due:now = 7.2');
+($value) = $output =~ /urgency\s([0-9.]+)/;
+in_range ($value, 7, 8, 'due:now = 7 - 8');
 
-# due: 6.8 (due:1d)
+=pod
+
+# due: 5.89 (due:1d)
 $output = qx{../src/task rc:urgency.rc 27 _urgency 2>&1};
-like ($output, qr/urgency 6.8/ms, 'due:1d = 6.8');
+like ($output, qr/urgency 5.89/ms, 'due:1d = 5.89');
 
-# due: 6.4 (due:2d)
+# due: 5.44(due:2d)
 $output = qx{../src/task rc:urgency.rc 28 _urgency 2>&1};
-like ($output, qr/urgency 6.4/ms, 'due:2d = 6.4');
+like ($output, qr/urgency 5.44/ms, 'due:2d = 5.44');
 
-# due: 6 (due:3d)
+# due: 4.98 (due:3d)
 $output = qx{../src/task rc:urgency.rc 29 _urgency 2>&1};
-like ($output, qr/urgency 6/ms, 'due:3d = 6');
+like ($output, qr/urgency 4.98/ms, 'due:3d = 4.98');
 
-# due: 5.6 (due:4d)
+# due: 4.53 (due:4d)
 $output = qx{../src/task rc:urgency.rc 30 _urgency 2>&1};
-like ($output, qr/urgency 5.6/ms, 'due:4d = 5.6');
+like ($output, qr/urgency 4.53/ms, 'due:4d = 4.53');
 
-# due: 5.2 (due:5d)
+# due: 4.07 (due:5d)
 $output = qx{../src/task rc:urgency.rc 31 _urgency 2>&1};
-like ($output, qr/urgency 5.2/ms, 'due:5d = 5.2');
+like ($output, qr/urgency 4.07/ms, 'due:5d = 4.07');
 
-# due: 4.8 (due:6d)
+# due: 3.62 (due:6d)
 $output = qx{../src/task rc:urgency.rc 32 _urgency 2>&1};
-like ($output, qr/urgency 4.8/ms, 'due:6d = 4.8');
+like ($output, qr/urgency 3.62/ms, 'due:6d = 3.62');
 
-# due: 4.4 (due:7d)
+# due: 3.16 (due:7d)
 $output = qx{../src/task rc:urgency.rc 33 _urgency 2>&1};
-like ($output, qr/urgency 4.4/ms, 'due:7d = 4.4');
+like ($output, qr/urgency 3.16/ms, 'due:7d = 3.16');
 
-# due: 4 (due:8d)
+# due: 2.71 (due:8d)
 $output = qx{../src/task rc:urgency.rc 34 _urgency 2>&1};
-like ($output, qr/urgency 4/ms, 'due:8d = 4');
+like ($output, qr/urgency 2.71/ms, 'due:8d = 2.71');
 
-# due: 3.6 (due:9d)
+# due: 2.25 (due:9d)
 $output = qx{../src/task rc:urgency.rc 35 _urgency 2>&1};
-like ($output, qr/urgency 3.6/ms, 'due:9d = 3.6');
+like ($output, qr/urgency 2.25/ms, 'due:9d = 2.25');
 
-# due: 3.2 (due:10d)
+# due: 1.8 (due:10d)
 $output = qx{../src/task rc:urgency.rc 36 _urgency 2>&1};
-like ($output, qr/urgency 3.2/ms, 'due:10d = 3.2');
+like ($output, qr/urgency 1.8/ms, 'due:10d = 1.8');
 
-# due: 2.8 (due:11d)
+# due: 1.34 (due:11d)
 $output = qx{../src/task rc:urgency.rc 37 _urgency 2>&1};
-like ($output, qr/urgency 2.8/ms, 'due:11d = 2.8');
+like ($output, qr/urgency 1.34/ms, 'due:11d = 1.34');
 
-# due: 2.4 (due:12d)
+# due: 0.89 (due:12d)
 $output = qx{../src/task rc:urgency.rc 38 _urgency 2>&1};
-like ($output, qr/urgency 2.4/ms, 'due:12d = 2.4');
+like ($output, qr/urgency 0.89/ms, 'due:12d = 0.89');
 
-# due: 2 (due:13d)
+=cut
+
+# due: >2 (due:13d)
 $output = qx{../src/task rc:urgency.rc 39 _urgency 2>&1};
-like ($output, qr/urgency 2/ms, 'due:13d = 2');
+($value) = $output =~ /urgency\s([0-9.]+)/;
+in_range ($value, 2, 3, 'due:13d = 2 - 3');
 
-# due: 1.6 (due:14d)
+# due: 2 (due:14d)
 $output = qx{../src/task rc:urgency.rc 40 _urgency 2>&1};
-like ($output, qr/urgency 1.6/ms, 'due:14d = 1.6');
+like ($output, qr/urgency 2/ms, 'due:14d = 2');
 
-# due: 1.6 (due:20d)
+# due: 2 (due:20d)
 $output = qx{../src/task rc:urgency.rc 41 _urgency 2>&1};
-like ($output, qr/urgency 1.6$/ms, 'due:20d = 1.6');
+like ($output, qr/urgency 2$/ms, 'due:20d = 2');
 
 # user.project: 10 (pro:PROJECT) + 10 (project)
 qx{../src/task rc:urgency.rc add 10a project:PROJECT 2>&1};        # task 42
@@ -313,7 +337,7 @@ like ($output, qr/urgency 5$/ms, 'scheduled past = 5');
 # urgency values between 0 and 1
 qx {../src/task rc:urgency.rc add 13 pri:H 2>&1};
 $output = qx{../src/task rc:urgency.rc rc.urgency.priority.coefficient:0.01234 46 info 2>&1};
-like ($output, qr/Urgency     0.01$/ms, 'near-zero urgency is truncated');
+like ($output, qr/Urgency     0\.01$/ms, 'near-zero urgency is truncated');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data urgency.rc);

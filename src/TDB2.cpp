@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
 #include <list>
 #include <set>
 #include <stdlib.h>
+#include <signal.h>
 #include <Context.h>
 #include <Color.h>
 #include <Date.h>
@@ -110,12 +112,15 @@ bool TF2::get (int id, Task& task)
   if (! _loaded_tasks)
     load_tasks ();
 
-  std::vector <Task>::iterator i;
-  for (i = _tasks.begin (); i != _tasks.end (); ++i)
+  // This is an optimization.  Since the 'id' is based on the line number of
+  // pending.data file, the task in question cannot appear earlier than line
+  // (id - 1) in the file.  It can, however, appear significantly later because
+  // it is not known how recent a GC operation was run.
+  for (int i = id - 1; i < _tasks.size (); ++i)
   {
-    if (i->id == id)
+    if (_tasks[i].id == id)
     {
-      task = *i;
+      task = _tasks[i];
       return true;
     }
   }
@@ -222,7 +227,7 @@ void TF2::commit ()
              task != _added_tasks.end ();
              ++task)
         {
-          _file.append (task->composeF4 ());
+          _file.append (task->composeF4 () + "\n");
         }
 
         _added_tasks.clear ();
@@ -254,7 +259,7 @@ void TF2::commit ()
              task != _tasks.end ();
              ++task)
         {
-          _file.append (task->composeF4 ());
+          _file.append (task->composeF4 () + "\n");
         }
 
         // Write out all the added lines.
@@ -564,12 +569,12 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
   //   new <task>
   //   ---
   undo.add_line ("time " + Date ().toEpochString () + "\n");
-  undo.add_line ("new " + task.composeF4 ());
+  undo.add_line ("new " + task.composeF4 () + "\n");
   undo.add_line ("---\n");
 
   // Add task to backlog.
   if (add_to_backlog)
-    backlog.add_task (task);
+    backlog.add_line (task.composeJSON () + "\n");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -596,19 +601,28 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
     // new <task>
     // ---
     undo.add_line ("time " + Date ().toEpochString () + "\n");
-    undo.add_line ("old " + original.composeF4 ());
-    undo.add_line ("new " + task.composeF4 ());
+    undo.add_line ("old " + original.composeF4 () + "\n");
+    undo.add_line ("new " + task.composeF4 () + "\n");
     undo.add_line ("---\n");
 
     // Add modified task to backlog.
     if (add_to_backlog)
-      backlog.add_task (task);
+      backlog.add_line (task.composeJSON () + "\n");
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::commit ()
 {
+  // Ignore harmful signals.
+  signal (SIGHUP,    SIG_IGN);
+  signal (SIGINT,    SIG_IGN);
+  signal (SIGKILL,   SIG_IGN);
+  signal (SIGPIPE,   SIG_IGN);
+  signal (SIGTERM,   SIG_IGN);
+  signal (SIGUSR1,   SIG_IGN);
+  signal (SIGUSR2,   SIG_IGN);
+
   dump ();
   context.timer_commit.start ();
 
@@ -616,6 +630,15 @@ void TDB2::commit ()
   completed.commit ();
   undo.commit ();
   backlog.commit ();
+
+  // Restore signal handling.
+  signal (SIGHUP,    SIG_DFL);
+  signal (SIGINT,    SIG_DFL);
+  signal (SIGKILL,   SIG_DFL);
+  signal (SIGPIPE,   SIG_DFL);
+  signal (SIGTERM,   SIG_DFL);
+  signal (SIGUSR1,   SIG_DFL);
+  signal (SIGUSR2,   SIG_DFL);
 
   context.timer_commit.stop ();
 }
@@ -675,7 +698,7 @@ void readTaskmods (std::vector <std::string> &input,
 void TDB2::merge (const std::string& mergeFile)
 {
   ///////////////////////////////////////
-  // Copyright 2010 - 2013, Johannes Schlatow.
+  // Copyright 2010 - 2014, Johannes Schlatow.
   ///////////////////////////////////////
 
   // list of modifications that we want to add to the local database
@@ -746,7 +769,7 @@ void TDB2::merge (const std::string& mergeFile)
       tmp_lit++;
       tmp_rit++;
     }
-    
+
     if (lookahead == -1) {
       // at this point we know that the first lines are the same
       undo_lines.push_back (lline + "\n");
@@ -763,7 +786,7 @@ void TDB2::merge (const std::string& mergeFile)
   bool found = false;
   for (std::vector<std::string>::const_iterator tmp_lit = lit, tmp_rit = rit;
        (tmp_lit != l.end ()) && (tmp_rit != r.end ());
-		 ++tmp_lit, ++tmp_rit)
+       ++tmp_lit, ++tmp_rit)
   {
     lline = *tmp_lit;
     rline = *tmp_rit;
@@ -855,7 +878,7 @@ void TDB2::merge (const std::string& mergeFile)
         //  point in time. Normally this case will be solved by the merge logic,
         //  BUT if the UUID is considered new the merge logic will be skipped.
         //
-        //  This flaw resulted in a couple of duplication issues and bloated 
+        //  This flaw resulted in a couple of duplication issues and bloated
         //  undo files (e.g. #1104).
         //
         //  This is just a "hack" which discards all the modifications of the
@@ -969,7 +992,7 @@ void TDB2::merge (const std::string& mergeFile)
 
                 // inserting right mod into history of local database
                 // so that it can be restored later
-                // AND more important: create a history that looks the same 
+                // AND more important: create a history that looks the same
                 // as if we switched the roles 'remote' and 'local'
 
                 // thus we have to find the oldest change on the local branch that is not on remote branch
@@ -1111,9 +1134,7 @@ void TDB2::merge (const std::string& mergeFile)
                         << "\n";
 */
 
-              // remove the \n from composeF4() string
               std::string newline = tmod.getAfter ().composeF4 ();
-              newline = newline.substr (0, newline.length ()-1);
 
               // does the tasks move to pending data?
               // this taskmod will not arise from
@@ -1153,10 +1174,7 @@ void TDB2::merge (const std::string& mergeFile)
                                    cutOff (tmod.getBefore ().get ("description"), 10))
                         << "\n";
 
-              // remove the \n from composeF4() string
-              // which will replace the current line
               std::string newline = tmod.getAfter ().composeF4 ();
-              newline = newline.substr (0, newline.length ()-1);
 
               // does the tasks move to completed data
               if ( (statusAfter == Task::completed)
@@ -1214,10 +1232,7 @@ void TDB2::merge (const std::string& mergeFile)
                                cutOff (tmod.getAfter ().get ("description"), 10))
                     << "\n";
 
-          // remove the \n from composeF4() string
-          std::string newline = tmod.getAfter ().composeF4 ();
-          newline = newline.substr (0, newline.length ()-1);
-          pending_lines.push_back (newline);
+          pending_lines.push_back (tmod.getAfter ().composeF4 ());
         }
         else
         {
@@ -1262,18 +1277,92 @@ void TDB2::merge (const std::string& mergeFile)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::revert ()
 {
+  // Extract the details of the last txn, and roll it back.
   std::vector <std::string> u = undo.get_lines ();
+  std::string uuid;
+  std::string when;
+  std::string current;
+  std::string prior;
+  revert_undo (u, uuid, when, current, prior);
+
+  // Display diff and confirm.
+  show_diff (current, prior, when);
+  if (! context.config.getBoolean ("confirmation") ||
+      confirm (STRING_TDB2_UNDO_CONFIRM))
+  {
+    // There are six kinds of change possible.  Determine which one, and act
+    // accordingly.
+    //
+    // Revert: task add
+    // [1] 0 --> p
+    //   - erase from pending
+    //   - if in backlog, erase, else cannot undo
+    //
+    // Revert: task modify
+    // [2] p --> p'
+    //   - write prior over current in pending
+    //   - add prior to backlog
+    //
+    // Revert: task done/delete
+    // [3] p --> c
+    //   - add prior to pending
+    //   - erase from completed
+    //   - add prior to backlog
+    //
+    // Revert: task modify
+    // [4] c --> p
+    //   - add prior to completed
+    //   - erase from pending
+    //   - add prior to backlog
+    //
+    // Revert: task modify
+    // [5] c --> c'
+    //   - write prior over current in completed
+    //   - add prior to backlog
+    //
+    // Revert: task log
+    // [6] 0 --> c
+    //   - erase from completed
+    //   - if in backlog, erase, else cannot undo
+
+    // Modify other data files accordingly.
+    std::vector <std::string> p = pending.get_lines ();
+    revert_pending (p, uuid, current, prior);
+
+    std::vector <std::string> c = completed.get_lines ();
+    revert_completed (p, c, uuid, current, prior);
+
+    std::vector <std::string> b = backlog.get_lines ();
+    revert_backlog (b, uuid, current, prior);
+
+    // Commit.  If processing makes it this far with no exceptions, then we're
+    // done.
+    File::write (undo._file._data, u);
+    File::write (pending._file._data, p);
+    File::write (completed._file._data, c);
+    File::write (backlog._file._data, b);
+  }
+  else
+    std::cout << STRING_CMD_CONFIG_NO_CHANGE << "\n";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::revert_undo (
+  std::vector <std::string>& u,
+  std::string& uuid,
+  std::string& when,
+  std::string& current,
+  std::string& prior)
+{
   if (u.size () < 3)
     throw std::string (STRING_TDB2_NO_UNDO);
 
   // pop last tx
   u.pop_back (); // separator.
 
-  std::string current = u.back ().substr (4);
+  current = u.back ().substr (4);
   u.pop_back ();
 
-  std::string prior;
-  std::string when;
   if (u.back ().substr (0, 5) == "time ")
   {
     when = u.back ().substr (5);
@@ -1288,6 +1377,146 @@ void TDB2::revert ()
     u.pop_back ();
   }
 
+  // Extract identifying uuid.
+  std::string::size_type uuidAtt = current.find ("uuid:\"");
+  if (uuidAtt != std::string::npos)
+    uuid = current.substr (uuidAtt + 6, 36); // "uuid:"<uuid>" --> <uuid>
+  else
+    throw std::string (STRING_TDB2_MISSING_UUID);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::revert_pending (
+  std::vector <std::string>& p,
+  const std::string& uuid,
+  const std::string& current,
+  const std::string& prior)
+{
+  std::string uuid_att = "uuid:\"" + uuid + "\"";
+
+  // is 'current' in pending?
+  std::vector <std::string>::iterator task;
+  for (task = p.begin (); task != p.end (); ++task)
+  {
+    if (task->find (uuid_att) != std::string::npos)
+    {
+      context.debug ("TDB::revert - task found in pending.data");
+
+      // Either revert if there was a prior state, or remove the task.
+      if (prior != "")
+      {
+        *task = prior;
+        std::cout << STRING_TDB2_REVERTED << "\n";
+      }
+      else
+      {
+        p.erase (task);
+        std::cout << STRING_TDB2_REMOVED << "\n";
+      }
+
+      break;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::revert_completed (
+  std::vector <std::string>& p,
+  std::vector <std::string>& c,
+  const std::string& uuid,
+  const std::string& current,
+  const std::string& prior)
+{
+  std::string uuid_att = "uuid:\"" + uuid + "\"";
+
+  // is 'current' in completed?
+  std::vector <std::string>::iterator task;
+  for (task = c.begin (); task != c.end (); ++task)
+  {
+    if (task->find (uuid_att) != std::string::npos)
+    {
+      context.debug ("TDB::revert_completed - task found in completed.data");
+
+      // Either revert if there was a prior state, or remove the task.
+      if (prior != "")
+      {
+        *task = prior;
+        if (task->find ("status:\"pending\"")   != std::string::npos ||
+            task->find ("status:\"waiting\"")   != std::string::npos ||
+            task->find ("status:\"recurring\"") != std::string::npos)
+        {
+          c.erase (task);
+          p.push_back (prior);
+          std::cout << STRING_TDB2_REVERTED << "\n";
+          context.debug ("TDB::revert_completed - task belongs in pending.data");
+        }
+        else
+        {
+          std::cout << STRING_TDB2_REVERTED << "\n";
+          context.debug ("TDB::revert_completed - task belongs in completed.data");
+        }
+      }
+      else
+      {
+        c.erase (task);
+
+        std::cout << STRING_TDB2_REVERTED << "\n";
+        context.debug ("TDB::revert_completed - task removed");
+      }
+
+      std::cout << STRING_TDB2_UNDO_COMPLETE << "\n";
+      break;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::revert_backlog (
+  std::vector <std::string>& b,
+  const std::string& uuid,
+  const std::string& current,
+  const std::string& prior)
+{
+  std::string uuid_att = "\"uuid\":\"" + uuid + "\"";
+
+  bool found = false;
+  std::vector <std::string>::reverse_iterator task;
+  for (task = b.rbegin (); task != b.rend (); ++task)
+  {
+    if (task->find (uuid_att) != std::string::npos)
+    {
+      context.debug ("TDB::revert_backlog - task found in backlog.data");
+      found = true;
+
+      // If this is a new task (no prior), then just remove it from the backlog.
+      if (current != "" && prior == "")
+      {
+        // Yes, this is what is needed, when you want to erase using a reverse
+        // iterator.
+        b.erase ((++task).base ());
+      }
+
+      // If this is a modification of some kind, add the prior to the backlog.
+      else
+      {
+        Task t (prior);
+        b.push_back (t.composeJSON ());
+      }
+
+      break;
+    }
+  }
+
+  if (!found)
+    throw std::string (STRING_TDB2_UNDO_SYNCED);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::show_diff (
+  const std::string& current,
+  const std::string& prior,
+  const std::string& when)
+{
   Date lastChange (strtol (when.c_str (), NULL, 10));
 
   // Set the colors.
@@ -1500,106 +1729,6 @@ void TDB2::revert ()
               << "\n";
   }
 
-  // Output displayed, now confirm.
-  if (context.config.getBoolean ("confirmation") &&
-      !confirm (STRING_TDB2_UNDO_CONFIRM))
-  {
-    std::cout << STRING_CMD_CONFIG_NO_CHANGE << "\n";
-    return;
-  }
-
-  // Extract identifying uuid.
-  std::string uuid;
-  std::string::size_type uuidAtt = current.find ("uuid:\"");
-  if (uuidAtt != std::string::npos)
-    uuid = current.substr (uuidAtt, 43); // 43 = uuid:"..."
-  else
-    throw std::string (STRING_TDB2_MISSING_UUID);
-
-  // load pending.data
-  std::vector <std::string> p = pending.get_lines ();
-
-  // is 'current' in pending?
-  std::vector <std::string>::iterator task;
-  for (task = p.begin (); task != p.end (); ++task)
-  {
-    if (task->find (uuid) != std::string::npos)
-    {
-      context.debug ("TDB::undo - task found in pending.data");
-
-      // Either revert if there was a prior state, or remove the task.
-      if (prior != "")
-      {
-        *task = prior;
-        std::cout << STRING_TDB2_REVERTED << "\n";
-      }
-      else
-      {
-        p.erase (task);
-        std::cout << STRING_TDB2_REMOVED << "\n";
-      }
-
-      // Rewrite files.
-      File::write (pending._file._data, p);
-      File::write (undo._file._data, u);
-      return;
-    }
-  }
-
-  // load completed.data
-  std::vector <std::string> c = completed.get_lines ();
-
-  // is 'current' in completed?
-  for (task = c.begin (); task != c.end (); ++task)
-  {
-    if (task->find (uuid) != std::string::npos)
-    {
-      context.debug ("TDB::undo - task found in completed.data");
-
-      // Either revert if there was a prior state, or remove the task.
-      if (prior != "")
-      {
-        *task = prior;
-        if (task->find ("status:\"pending\"")   != std::string::npos ||
-            task->find ("status:\"waiting\"")   != std::string::npos ||
-            task->find ("status:\"recurring\"") != std::string::npos)
-        {
-          c.erase (task);
-          p.push_back (prior);
-          File::write (completed._file._data, c);
-          File::write (pending._file._data, p);
-          File::write (undo._file._data, u);
-          std::cout << STRING_TDB2_REVERTED << "\n";
-          context.debug ("TDB::undo - task belongs in pending.data");
-        }
-        else
-        {
-          File::write (completed._file._data, c);
-          File::write (undo._file._data, u);
-          std::cout << STRING_TDB2_REVERTED << "\n";
-          context.debug ("TDB::undo - task belongs in completed.data");
-        }
-      }
-      else
-      {
-        c.erase (task);
-        File::write (completed._file._data, c);
-        File::write (undo._file._data, u);
-        std::cout << STRING_TDB2_REVERTED << "\n";
-        context.debug ("TDB::undo - task removed");
-      }
-
-      std::cout << STRING_TDB2_UNDO_COMPLETE << "\n";
-      return;
-    }
-  }
-
-  // Perhaps user hand-edited the data files?
-  // Perhaps the task was in completed.data, which was still in file format 3?
-  std::cout << format (STRING_TDB2_MISSING_TASK, uuid.substr (6, 36))
-            << "\n"
-            << STRING_TDB2_UNDO_IMPOSSIBLE
-            << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1752,9 +1881,9 @@ int TDB2::next_id ()
 const std::vector <Task> TDB2::all_tasks ()
 {
   std::vector <Task> all (pending._tasks.size () +
-               pending._added_tasks.size () +
-               completed._tasks.size () +
-               completed._added_tasks.size ());
+                          pending._added_tasks.size () +
+                          completed._tasks.size () +
+                          completed._added_tasks.size ());
   all = pending.get_tasks ();
 
   std::vector <Task> extra (completed._tasks.size () +

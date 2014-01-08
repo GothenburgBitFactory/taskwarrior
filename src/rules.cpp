@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <stdlib.h>
 #include <Context.h>
 #include <Date.h>
@@ -47,17 +48,15 @@ void initializeColorRules ()
   // Load all the configuration values, filter to only the ones that begin with
   // "color.", then store name/value in gsColor, and name in rules.
   std::vector <std::string> rules;
-  std::vector <std::string> variables;
-  context.config.all (variables);
-  std::vector <std::string>::iterator v;
-  for (v = variables.begin (); v != variables.end (); ++v)
+  Config::const_iterator v;
+  for (v = context.config.begin (); v != context.config.end (); ++v)
   {
-    if (v->substr (0, 6) == "color.")
+    if (v->first.substr (0, 6) == "color.")
     {
-      Color c (context.config.get (*v));
-      gsColor[*v] = c;
+      Color c (v->second);
+      gsColor[v->first] = c;
 
-      rules.push_back (*v);
+      rules.push_back (v->first);
     }
   }
 

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <fstream>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/file.h>
 #include <pwd.h>
 #include <unistd.h>
@@ -89,10 +91,11 @@ File& File::operator= (const File& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool File::create ()
+bool File::create (int mode /* = 0640 */)
 {
   if (open ())
   {
+    fchmod (_h, mode);
     close ();
     return true;
   }
@@ -101,7 +104,7 @@ bool File::create ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool File::remove ()
+bool File::remove () const
 {
   return unlink (_data.c_str ()) == 0 ? true : false;
 }
@@ -193,12 +196,13 @@ bool File::waitForLock ()
 void File::read (std::string& contents)
 {
   contents = "";
+  contents.reserve (size ());
 
   std::ifstream in (_data.c_str ());
   if (in.good ())
   {
     std::string line;
-    line.reserve (1024);
+    line.reserve (512 * 1024);
     while (getline (in, line))
       contents += line + "\n";
 
@@ -216,7 +220,7 @@ void File::read (std::vector <std::string>& contents)
   if (in.good ())
   {
     std::string line;
-    line.reserve (1024);
+    line.reserve (512 * 1024);
     while (getline (in, line))
       contents.push_back (line);
 
@@ -336,12 +340,38 @@ time_t File::mtime () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool File::create (const std::string& name)
+time_t File::ctime () const
 {
-  std::ofstream out (expand (name).c_str ());
+  struct stat s;
+  if (!stat (_data.c_str (), &s))
+    return s.st_ctime;
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+time_t File::btime () const
+{
+  struct stat s;
+  if (!stat (_data.c_str (), &s))
+#ifdef HAVE_ST_BIRTHTIME
+    return s.st_birthtime;
+#else
+    return s.st_ctime;
+#endif
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool File::create (const std::string& name, int mode /* = 0640 */)
+{
+  std::string full_name = expand (name);
+  std::ofstream out (full_name.c_str ());
   if (out.good ())
   {
     out.close ();
+    chmod (full_name.c_str (), mode);
     return true;
   }
 
