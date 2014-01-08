@@ -125,7 +125,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     {
       Date now;
       if (date > now)
-        minimum = maximum = Duration (date - now).format ().length ();
+        minimum = maximum = OldDuration (date - now).format ().length ();
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -207,7 +207,7 @@ void ColumnDate::render (
         lines.push_back (
           color.colorize (
             rightJustify (
-              Duration (date - now).format (), width)));
+              OldDuration (date - now).format (), width)));
       else
         lines.push_back ("");
     }

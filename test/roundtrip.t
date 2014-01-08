@@ -61,14 +61,15 @@ unlink 'pending.data', 'completed.data', 'undo.data';
 qx{../src/task rc:roundtrip.rc import ./roundtrip2.json 2>&1};
 
 # Examine.
+#
+# ID Created    P Project Tags      Description
+# -- ---------- - ------- --------- -----------
+#  1 1/7/2014   H A                 one/1
+#  2 1/7/2014             tag1 tag2 two
 
-# ID Project Pri Added    Started Due Recur Countdown Age Deps Tags      Description
-# -- ------- --- -------- ------- --- ----- --------- --- ---- --------- ---------
-#  1 A       H   8/7/2010                               -                one/1
-#  2             8/7/2010                               -      tag1 tag2 two
 my $output = qx{../src/task rc:roundtrip.rc long 2>&1};
-like ($output, qr/1.+A.+H.+\d+\/\d+\/\d+.+(?:-|\d+).+one\/1/,    '2 round trips task 1 identical');
-like ($output, qr/2.+\d+\/\d+\/\d+.+(?:-|\d+).+tag1\stag2\stwo/, '2 round trips task 2 identical');
+like ($output, qr/1\s+\d+\/\d+\/\d+\s+H\s+A\s+one\/1/,    '2 round trips task 1 identical');
+like ($output, qr/2\s+\d+\/\d+\/\d+\s+tag1\s+tag2\s+two/, '2 round trips task 2 identical');
 
 # Compare the actual JSON files.
 $output = qx{diff ./roundtrip1.json ./roundtrip2.json 2>&1};

@@ -28,7 +28,6 @@ set (task_SRCS A3.cpp A3.h
                OldDuration.cpp OldDuration.h
                Path.cpp Path.h
                RX.cpp RX.h
-               Socket.cpp Socket.h
                TDB2.cpp TDB2.h
                Task.cpp Task.h
                Taskmod.cpp Taskmod.h

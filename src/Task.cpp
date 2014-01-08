@@ -1880,7 +1880,7 @@ void Task::modify (
             long l = (long) strtod (result.c_str (), NULL);
             if (labs (l) < 5 * 365 * 86400)
             {
-              Duration dur (value);
+              OldDuration dur (value);
               Date now;
               now += l;
               (*this).set (name, now.toEpochString ());
@@ -1892,7 +1892,7 @@ void Task::modify (
             }
           }
 
-          // Durations too.
+          // OldDurations too.
           else if (name == "recur" ||
                    column->type () == "duration")
           {
@@ -1905,7 +1905,7 @@ void Task::modify (
             std::string result = e.evalExpression ((*this));
             context.debug (std::string ("Eval '") + value + "' --> '" + result + "'");
 
-            Duration d (value);
+            OldDuration d (value);
 
             // Deliberately storing the 'raw' value, which is necessary for
             // durations like 'weekday'..
