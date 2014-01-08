@@ -99,6 +99,7 @@ Bugs
  + #1477 Pre-compiled static library (*.a) in source tarball (thanks to Jakub
    Wilk);
  + #1478 pri_sort.t failure (thanks to Jakub Wilk).
+ + #1479 bug_annual.t failure (thanks to Jakub Wilk).
  + Fixed bug so that 'limit:page' now considers footnote messages.
  + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
    (thanks to greenskeleton).
