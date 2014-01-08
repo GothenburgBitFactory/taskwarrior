@@ -107,6 +107,9 @@ Bugs
  + #1414 Client does not verify SSL certificates (thanks to Scott Kroll).
  + #1415 Client should not require a SSL certificate if the server has a trusted
    certificate (thanks to Scott Kroll).
+ + #1476 Unicode indicators increase column width (thanks to Paul Kishimoto).
+ + #1477 Pre-compiled static library (*.a) in source tarball (thanks to Jakub
+   Wilk);
  + Fixed bug so that 'limit:page' now considers footnote messages.
  + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
    (thanks to greenskeleton).

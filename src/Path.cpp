@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <limits.h>
+#include <Directory.h>
 #include <Path.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,17 +249,13 @@ std::string Path::expand (const std::string& in)
   else if (in.length () > 2 &&
            in.substr (0, 2) == "./")
   {
-    char buf[PATH_MAX];
-    getcwd (buf, PATH_MAX - 1);
-    copy = std::string (buf) + "/" + in.substr (2);
+    copy = Directory::cwd () + "/" + in.substr (2);
   }
   else if (in.length () > 1 &&
            in[0] != '.' &&
            in[0] != '/')
   {
-    char buf[PATH_MAX];
-    getcwd (buf, PATH_MAX - 1);
-    copy = std::string (buf) + "/" + in;
+    copy = Directory::cwd () + "/" + in;
   }
 
   return copy;

@@ -30,6 +30,7 @@
 #include <OldDuration.h>
 #include <ColRecur.h>
 #include <text.h>
+#include <utf8.h>
 #include <i18n.h>
 
 extern Context context;
@@ -87,7 +88,7 @@ void ColumnRecur::measure (Task& task, unsigned int& minimum, unsigned int& maxi
   else if (_style == "indicator")
   {
     if (task.has (_name))
-      minimum = maximum = context.config.get ("recurrence.indicator").length ();
+      minimum = maximum = utf8_width (context.config.get ("recurrence.indicator"));
   }
   else
     throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
