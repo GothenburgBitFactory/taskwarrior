@@ -26,11 +26,27 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <Context.h>
+#include <Eval.h>
+#include <Dates.h>
 #include <main.h>
 #include <i18n.h>
 #include <CmdCalc.h>
 
 extern Context context;
+
+////////////////////////////////////////////////////////////////////////////////
+static bool domSource (const std::string& name, Variant& value)
+{
+  Task t;
+  std::string resolved = context.dom.get (name, t);
+  if (resolved != name)
+  {
+    value = Variant (resolved);
+    return true;
+  }
+
+  return false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdCalc::CmdCalc ()
@@ -45,12 +61,35 @@ CmdCalc::CmdCalc ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCalc::execute (std::string& output)
 {
-  int rc = 0;
+  // Configurable infix/postfix
+  bool infix = true;
+  if (context.config.get ("expressions") == "infix")
+    infix = true;
+  else if (context.config.get ("expressions") == "postfix")
+    infix = false;
 
-  // TODO Configurable infix/postfix
-  // TODO Configurable date/number precedence
+  // Create an evaluator with DOM access.
+  Eval e;
+  e.addSource (namedDates);
+  e.addSource (domSource);
+  e.ambiguity (false);  // TODO Could/should be configurable.
 
-  return rc;
+  // Compile all the args into one expression.
+  std::string expression;
+  std::vector <std::string> words = context.a3.extract_words ();
+  std::vector <std::string>::iterator word;
+  for (word = words.begin (); word != words.end (); ++word)
+    expression += *word + " ";
+
+  // Evaluate according to preference.
+  Variant result;
+  if (infix)
+    e.evaluateInfixExpression (expression, result);
+  else
+    e.evaluatePostfixExpression (expression, result);
+
+  output = (std::string) result + "\n";
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

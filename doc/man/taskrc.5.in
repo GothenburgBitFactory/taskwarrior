@@ -362,9 +362,9 @@ Enables or disables pattern support on the command line, such as /foo/.
 Defaults to on.
 
 .TP
-.B expressions=on
-Enables or disables algebraic expression support on the command line, such as
-"due<eom and (pri=H or pri=M)".  Defaults to on.
+.B expressions=infix|postfix
+Sets a preference for infix expressions (1 + 2) or postfix expressions (1 2 +).
+Defaults to infix.
 
 .TP
 .B dom=on

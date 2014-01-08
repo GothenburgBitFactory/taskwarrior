@@ -126,6 +126,7 @@ int main (int argc, const char** argv)
     a3t.entity ("operator",   ">=");
     a3t.entity ("operator",   "!~");
     a3t.entity ("operator",   "!=");
+    a3t.entity ("operator",   "==");
     a3t.entity ("operator",   "=");
     a3t.entity ("operator",   ">");
     a3t.entity ("operator",   "~");
@@ -140,6 +141,9 @@ int main (int argc, const char** argv)
     a3t.entity ("operator",   "<");
     a3t.entity ("operator",   "(");
     a3t.entity ("operator",   ")");
+    a3t.entity ("operator",   "%");
+    a3t.entity ("operator",   "^");
+    a3t.entity ("operator",   "!");
 
     Tree* tree = a3t.parse ();
     if (tree)
