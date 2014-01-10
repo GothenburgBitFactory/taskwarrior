@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
 #include <Context.h>
 #include <ColDepends.h>
 #include <text.h>
+#include <utf8.h>
 #include <i18n.h>
 #include <main.h>
 
@@ -83,7 +84,7 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
   std::vector <Task> blocking;
   dependencyGetBlocking (task, blocking);
 
-       if (_style == "indicator") minimum = maximum = context.config.get ("dependency.indicator").length ();
+       if (_style == "indicator") minimum = maximum = utf8_width (context.config.get ("dependency.indicator"));
   else if (_style == "count")     minimum = maximum = 2 + format ((int) blocking.size ()).length ();
   else if (_style == "default" ||
            _style == "list")

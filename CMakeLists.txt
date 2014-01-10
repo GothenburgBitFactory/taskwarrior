@@ -13,6 +13,8 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set (LINUX true)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set (DARWIN true)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "kFreeBSD")
+  set (KFREEBSD true)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   set (FREEBSD true)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "OpenBSD")
@@ -21,9 +23,7 @@ elseif (${CMAKE_SYSTEM_NAME} MATCHES "NetBSD")
   set (NETBSD true)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "SunOS")
   set (SOLARIS true)
-elseif (${CMAKE_SYSTEM_NAME} MATCHES "GNU/kFreeBSD")
-  set (KFREEBSD true)
-elseif (${CMAKE_SYSTEM_NAME} MATCHES "GNU/Hurd")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "GNU")
   set (GNUHURD true)
 else (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set (UNKNOWN true)
@@ -37,6 +37,7 @@ SET (TASK_MAN1DIR share/man/man1 CACHE STRING "Installation directory for man pa
 SET (TASK_MAN5DIR share/man/man5 CACHE STRING "Installation directory for man pages, section 5")
 endif (FREEBSD)
 SET (TASK_DOCDIR  share/doc/task CACHE STRING "Installation directory for doc files")
+SET (TASK_RCDIR "${TASK_DOCDIR}/rc" CACHE STRING "Installation directory for configuration files")
 SET (TASK_BINDIR  bin            CACHE STRING "Installation directory for the binary")
 
 message ("-- Looking for SHA1 references")
@@ -164,5 +165,6 @@ set (CPACK_SOURCE_IGNORE_FILES  "CMakeCache" "CMakeFiles" "CPackConfig" "CPackSo
                                 "_CPack_Packages" "cmake_install" "install_manifest" "Makefile$"
                                 "test" "package-config" "misc/*" "src/task$" "src/libtask.a"
                                 "src/columns/libcolumns.a" "src/commands/libcommands.a"
-                                "src/shell/tasksh$" "auto.h$" "/\\.gitignore" "/\\.git/" "swp$")
+                                "src/shell/tasksh$" "src/shell/libtasksh.a" "auto.h$"
+                                "/\\.gitignore" "/\\.git/" "swp$")
 include (CPack)

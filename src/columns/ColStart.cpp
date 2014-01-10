@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2013, Paul Beckingham, Federico Hernandez.
+// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@
 #include <Context.h>
 #include <ColStart.h>
 #include <text.h>
+#include <utf8.h>
 #include <i18n.h>
 
 extern Context context;
@@ -77,7 +78,7 @@ void ColumnStart::measure (Task& task, unsigned int& minimum, unsigned int& maxi
     if (_style == "active")
     {
       if (! task.has ("end"))
-        minimum = maximum = context.config.get ("active.indicator").length ();
+        minimum = maximum = utf8_width (context.config.get ("active.indicator"));
     }
     else
       ColumnDate::measure (task, minimum, maximum);

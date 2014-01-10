@@ -1286,19 +1286,19 @@ theme into the configuration file, you can see some striking effects.  For a
 blue theme, add this line to your .taskrc file:
 
 .RS
-include /usr/local/share/doc/task/rc/dark-blue-256.theme
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-blue-256.theme
 .RE
 
 For a red theme:
 
 .RS
-include /usr/local/share/doc/task/rc/dark-red-256.theme
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-red-256.theme
 .RE
 
 For a general dark theme:
 
 .RS
-include /usr/local/share/doc/task/rc/dark-256.theme
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-256.theme
 .RE
 
 Here are two color rules that specify a dark blue background for all tasks that
@@ -1497,7 +1497,7 @@ used most.  You can create your own, or use one of the samples to show holidays
 on the calendar.  Try adding this line to your ~/.taskrc file:
 
 .RS
-include /usr/local/share/doc/task/rc/holidays.en-US.rc
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 .RE
 
 Then:
@@ -3081,7 +3081,7 @@ $ task help
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2014 P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez, and has been modified and supplemented by Paul Beckingham.
 

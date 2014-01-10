@@ -131,9 +131,9 @@ ones containing just the relevant configuration data like colors, etc.
 There are two excellent uses of includes in your .taskrc, shown here:
 
 .RS
-include /usr/local/share/doc/task/rc/holidays.en-US.rc
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 .br
-include /usr/local/share/doc/task/rc/dark-16.theme
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-16.theme
 .RE
 
 This includes two standard files that are distributed with taskwarrior, which
@@ -515,7 +515,7 @@ D  two-digit day,          for example 01 or 30
 .br
 M  two-digit month,        for example 01 or 12
 .br
-Y  four-digit year,        for example 2009 or 2013
+Y  four-digit year,        for example 2009 or 2014
 .br
 a  short name of weekday,  for example Mon or Wed
 .br
@@ -724,7 +724,7 @@ be included like this:
 .RS
 .RS
 .br
-include /usr/local/share/doc/task/rc/holidays.en-US.rc
+include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 .RE
 .RE
 
@@ -1389,7 +1389,7 @@ Default is "NORMAL".  See GnuTLS documentation for full details.
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2013 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2014 P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez.
 

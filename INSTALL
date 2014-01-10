@@ -67,6 +67,7 @@ lists them and their defaults plus the CMAKE_INSTALL_PREFIX:
   CMAKE_INSTALL_PREFIX  /usr/local
   TASK_BINDIR           bin
   TASK_DOCDIR           share/doc/task
+  TASK_RCDIR            share/doc/task/rc
   TASK_MAN1DIR          share/man/man1
   TASK_MAN5DIR          share/man/man5
 
@@ -75,6 +76,7 @@ get absolute installation directories:
 
   CMAKE_INSTALL_PREFIX/TASK_BINDIR   /usr/local/bin
   CMAKE_INSTALL_PREFIX/TASK_DOCDIR   /usr/local/share/doc/task
+  CMAKE_INSTALL_PREFIX/TASK_RCDIR    /usr/local/share/doc/task/rc
   CMAKE_INSTALL_PREFIX/TASK_MAN1DIR  /usr/local/share/man/man1
   CMAKE_INSTALL_PREFIX/TASK_MAN5DIR  /usr/local/share/man/man5
 
