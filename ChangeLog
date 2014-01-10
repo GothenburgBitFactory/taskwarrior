@@ -97,6 +97,7 @@ Bugs
  + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
    (thanks to greenskeleton).
  + Fixed rc.nag documentation (thanks to Jeroen Budts).
+ + Fixed bug where task edit incorrectly claimed duration UDA was modified.
 
 ------ old releases ------------------------------
 
