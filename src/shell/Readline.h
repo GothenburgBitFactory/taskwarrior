@@ -30,7 +30,7 @@
 
 #include <string>
 #include <stdio.h>
-#ifdef HAVE_WORDEXP_H
+#ifdef HAVE_WORDEXP
 #include <wordexp.h>
 #endif
 
