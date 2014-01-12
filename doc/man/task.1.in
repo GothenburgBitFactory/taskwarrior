@@ -214,7 +214,7 @@ Applies the filter then extracts only the task IDs and presents them as
 a range, for example: 1-4,12.  This is useful as input to a task command,
 to achieve this:
 
-	task $(task project:Home ids) modify priority:H
+  task $(task project:Home ids) modify priority:H
 
 This example first gets the IDs for the project:Home filter, then sets
 the priority to H for each of those tasks.  This can also be achieved directly:
@@ -230,7 +230,7 @@ then extracts only the task UUIDs and presents them as
 a comma-separated list.  This is useful as input to a task command, to achieve
 this:
 
-	task $(task project:Home status:completed uuids) modify status:pending
+  task $(task project:Home status:completed uuids) modify status:pending
 
 This example first gets the UUIDs for the project:Home and status:completed
 filters, then makes each of those tasks pending again.
@@ -893,17 +893,17 @@ task ... due:fri
 
 .TP
 Predictable holidays
-task ... due:goodfriday    
+task ... due:goodfriday
 .br
-task ... due:easter    
+task ... due:easter
 .br
-task ... due:eastermonday    
+task ... due:eastermonday
 .br
-task ... due:ascension    
+task ... due:ascension
 .br
-task ... due:pentecost    
+task ... due:pentecost
 .br
-task ... due:midsommar    
+task ... due:midsommar
 .br
 task ... due:midsommarafton
 .RE
