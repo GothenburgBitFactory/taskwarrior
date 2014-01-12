@@ -2,7 +2,6 @@
 New Features in taskwarrior 2.3.0
 
   - New Taskserver sync capabilities.
-  - New shell (tasksh) with Readline support replaces old 'task shell' command.
   - The 'dateformat' settings now default to the ISO-8601 standard of 'Y-M-D'.
   - Italian translation.
   - French translation has begun.
@@ -16,8 +15,6 @@ New Features in taskwarrior 2.3.0
 New commands in taskwarrior 2.3.0
 
   - New 'sync' command to synchronize data with a Taskserver.
-  - New 'tasksh' command which replaces the old 'task shell' with an improved
-    standalone shell, featuring Readline support.
 
 New configuration options in taskwarrior 2.3.0
 
@@ -32,7 +29,7 @@ New configuration options in taskwarrior 2.3.0
   - The configuration file supports JSON encoding of unicode characters \uNNNN.
 
 Newly deprecated features in taskwarrior 2.3.0
-  
+
   - File format 2 (used in version 0.9.3 - 1.5.0) is no longer supported.
   - The 'push', 'pull' and 'merge' commands will be removed in version 2.4.0
     The new 'sync' command, in conjunction with the Taskserver is the new sync
@@ -46,6 +43,8 @@ Known Issues
     cause the terminal to crash when completion is invoked.  See the issue for
     full details:
     http://taskwarrior.org/issues/1352
+  - The 'tasksh' replacement for the 'shell' command is of insufficient quality,
+    and will be released later.
 
 ---
 

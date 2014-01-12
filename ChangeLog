@@ -3,8 +3,6 @@
 2.3.0 () -
 
 Features
- + #328 Replaced the 'shell' command with a standalone 'tasksh' binary, which
-   includes GNU readline support (thanks to Haitham Gad).
  + #934 support for 'reserved.lines' to accommodate multi-line
    shell prompts when used in conjunction with 'limit:page' (thanks to Robert
    Gill).
