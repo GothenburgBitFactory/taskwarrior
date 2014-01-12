@@ -77,33 +77,49 @@ bool Readline::interactiveMode (const std::istream& in)
 ////////////////////////////////////////////////////////////////////////////////
 Wordexp::Wordexp (const std::string &str)
 {
-  std::string tmpStr(str);
-  escapeSpecialChars(tmpStr);
-  wordexp (tmpStr.c_str (), &_p, 0);
+  _input = str;
+  escapeSpecialChars(_input);
+#ifdef HAVE_WORDEXP_H
+  wordexp (_input.c_str (), &_p, 0);
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Wordexp::~Wordexp ()
 {
+#ifdef HAVE_WORDEXP_H
   wordfree (&_p);
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Wordexp::argc ()
 {
+#ifdef HAVE_WORDEXP_H
   return _p.we_wordc;
+#else
+  return 1;
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 char** Wordexp::argv ()
 {
+#ifdef HAVE_WORDEXP_H
   return _p.we_wordv;
+#else
+  return (char**)_input.c_str ();
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 char* Wordexp::argv (int i)
 {
+#ifdef HAVE_WORDEXP_H
   return _p.we_wordv[i];
+#else
+  return (char*)_input.c_str ();
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

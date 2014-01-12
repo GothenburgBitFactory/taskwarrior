@@ -30,7 +30,9 @@
 
 #include <string>
 #include <stdio.h>
+#ifdef HAVE_WORDEXP_H
 #include <wordexp.h>
+#endif
 
 // Static class that offers a C++ API to readline C functions.
 class Readline
@@ -61,7 +63,11 @@ public:
   void escapeSpecialChars(std::string& str);
 
 private:
+#ifdef HAVE_WORDEXP_H
   wordexp_t _p;
+#else
+  std::string _input;
+#endif
 };
 
 #endif
