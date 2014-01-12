@@ -77,10 +77,13 @@ bool Readline::interactiveMode (const std::istream& in)
 ////////////////////////////////////////////////////////////////////////////////
 Wordexp::Wordexp (const std::string &str)
 {
+#ifdef HAVE_WORDEXP_H
+  std::string strCopy (str);
+  escapeSpecialChars(strCopy);
+  wordexp (strCopy.c_str (), &_p, 0);
+#else
   _input = str;
   escapeSpecialChars(_input);
-#ifdef HAVE_WORDEXP_H
-  wordexp (_input.c_str (), &_p, 0);
 #endif
 }
 
