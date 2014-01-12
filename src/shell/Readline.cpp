@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -72,68 +72,6 @@ std::string Readline::gets (const std::string& prompt)
 bool Readline::interactiveMode (const std::istream& in)
 {
   return (&in == &std::cin && isatty (0) == 1);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Wordexp::Wordexp (const std::string &str)
-{
-#ifdef HAVE_WORDEXP_H
-  std::string strCopy (str);
-  escapeSpecialChars(strCopy);
-  wordexp (strCopy.c_str (), &_p, 0);
-#else
-  _input = str;
-  escapeSpecialChars(_input);
-#endif
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Wordexp::~Wordexp ()
-{
-#ifdef HAVE_WORDEXP_H
-  wordfree (&_p);
-#endif
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int Wordexp::argc ()
-{
-#ifdef HAVE_WORDEXP_H
-  return _p.we_wordc;
-#else
-  return 1;
-#endif
-}
-
-////////////////////////////////////////////////////////////////////////////////
-char** Wordexp::argv ()
-{
-#ifdef HAVE_WORDEXP_H
-  return _p.we_wordv;
-#else
-  return (char**)_input.c_str ();
-#endif
-}
-
-////////////////////////////////////////////////////////////////////////////////
-char* Wordexp::argv (int i)
-{
-#ifdef HAVE_WORDEXP_H
-  return _p.we_wordv[i];
-#else
-  return (char*)_input.c_str ();
-#endif
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Wordexp::escapeSpecialChars(std::string& str)
-{
-  size_t i = 0;
-  while ((i = str.find_first_of ("$*?!|&;<>(){}~#@", i)) != std::string::npos)
-  {
-    str.insert(i, 1, '\\');
-    i += 2;
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

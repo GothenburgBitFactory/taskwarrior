@@ -67,8 +67,8 @@
 /* Found uuid_unparse_lower in the uuid library */
 #cmakedefine HAVE_UUID_UNPARSE_LOWER
 
-/* Found wordexp.h in the libreadline library */
-#cmakedefine HAVE_WORDEXP_H
+/* Found wordexp.h */
+#cmakedefine HAVE_WORDEXP
 
 /* Undefine this to eliminate the execute command */
 #define HAVE_EXECUTE 1

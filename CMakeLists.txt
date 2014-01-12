@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 2.8)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 
-include (CheckIncludeFiles)
 include (CheckFunctionExists)
 include (CheckStructHasMember)
 
@@ -90,10 +89,9 @@ if (READLINE_FOUND)
   set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${READLINE_LIBRARIES})
 endif (READLINE_FOUND)
 
-check_include_files (wordexp.h HAVE_WORDEXP_H)
-
 check_function_exists (timegm  HAVE_TIMEGM)
 check_function_exists (get_current_dir_name HAVE_GET_CURRENT_DIR_NAME)
+check_function_exists (wordexp HAVE_WORDEXP)
 
 check_struct_has_member ("struct tm" tm_gmtoff time.h HAVE_TM_GMTOFF)
 check_struct_has_member ("struct stat" st_birthtime "sys/types.h;sys/stat.h" HAVE_ST_BIRTHTIME)

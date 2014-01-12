@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -47,27 +47,6 @@ private:
   ~Readline (); // Don't implement.
   Readline (const Readline&); // Don't implement.
   Readline& operator= (const Readline&); // Don't implement.
-};
-
-// RAII for wordexp_t
-class Wordexp
-{
-public:
-  Wordexp (const std::string& str);
-  ~Wordexp ();
-
-  int argc ();
-  char** argv ();
-  char* argv (int i);
-
-  void escapeSpecialChars(std::string& str);
-
-private:
-#ifdef HAVE_WORDEXP_H
-  wordexp_t _p;
-#else
-  std::string _input;
-#endif
 };
 
 #endif
