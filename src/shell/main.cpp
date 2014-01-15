@@ -183,6 +183,19 @@ int main (int argc, const char** argv)
         }
       }
 
+      // External calls.
+      if (strcmp (w[1], "xc") == 0 && p.we_wordc > 2)
+      {
+        std::string combined = "";
+        for (int i = 2; i < p.we_wordc - 1 ; ++i)
+        {
+          combined += std::string (w[i]) + " ";
+        }
+        combined += w[p.we_wordc - 1];          // last goes without a blank
+        system (combined.c_str ());             // not checked
+        continue;
+      }
+
       int status = context.initialize (p.we_wordc, (const char**)p.we_wordv);
       wordfree(&p);
 #else
