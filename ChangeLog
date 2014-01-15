@@ -1,6 +1,6 @@
 ------ current release ---------------------------
 
-2.3.0 () -
+2.3.0 (2014-01-15)
 
 Features
  + #328 Replaced the 'shell' command with a standalone 'tasksh' binary, which

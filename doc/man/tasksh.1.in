@@ -1,4 +1,4 @@
-.TH tasksh 1 2013-03-09 "${PACKAGE_STRING}" "User Manuals"
+.TH tasksh 1 2014-01-15 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 tasksh \- Interactive taskwarrior shell
