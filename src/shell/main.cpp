@@ -30,6 +30,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include <string.h>
 
 #include <text.h>
 #include <i18n.h>
@@ -38,6 +39,8 @@
 #include <Readline.h>
 
 Context context;
+
+#define MAX_ARGUMENTS 256
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, const char** argv)
@@ -154,19 +157,72 @@ int main (int argc, const char** argv)
 
     try
     {
-      Wordexp w ("task " + trim (input + permanent_overrides));
+#ifdef HAVE_WORDEXP
+      std::string command = "task " + trim (input + permanent_overrides);
 
-      for (int i = 0; i < w.argc (); ++i)
+      // Escape special chars.
+      size_t i = 0;
+      while ((i = command.find_first_of ("$*?!|&;<>(){}~#@", i)) != std::string::npos)
+      {
+        command.insert(i, 1, '\\');
+        i += 2;
+      }
+
+      // Perform expansion.
+      wordexp_t p;
+      wordexp (command.c_str (), &p, 0);
+      char** w = p.we_wordv;
+
+      for (int i = 0; i < p.we_wordc; ++i)
       {
         if (std::find (quit_commands.begin (), quit_commands.end (),
-                       lowerCase (w.argv (i))) != quit_commands.end ())
+                       lowerCase (w[i])) != quit_commands.end ())
         {
           context.clearMessages ();
           return 0;
         }
       }
 
-      int status = context.initialize (w.argc (), (const char**)w.argv ());
+      // External calls.
+      if (strcmp (w[1], "xc") == 0 && p.we_wordc > 2)
+      {
+        std::string combined = "";
+        for (int i = 2; i < p.we_wordc - 1 ; ++i)
+        {
+          combined += std::string (w[i]) + " ";
+        }
+        combined += w[p.we_wordc - 1];          // last goes without a blank
+        system (combined.c_str ());             // not checked
+        continue;
+      }
+
+      int status = context.initialize (p.we_wordc, (const char**)p.we_wordv);
+      wordfree(&p);
+#else
+      std::string command = "task " + trim (input + permanent_overrides);
+      int arg_count = 0;
+      char* arg_vector[MAX_ARGUMENTS];
+
+      char* arg = strtok ((char*)command.c_str (), " ");
+      while (arg && arg_count < MAX_ARGUMENTS)
+      {
+        arg_vector[arg_count++] = arg;
+        arg = strtok (0, " ");
+      }
+
+      for (int i = 1; i < arg_count; ++i)
+      {
+        if (std::find (quit_commands.begin (), quit_commands.end (),
+                       lowerCase (arg_vector[i])) != quit_commands.end ())
+        {
+          context.clearMessages ();
+          return 0;
+        }
+      }
+
+      int status = context.initialize (arg_count, (const char**) arg_vector);
+#endif
+
       if (status == 0)
         context.run ();
     }

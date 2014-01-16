@@ -37,7 +37,8 @@ delete $ENV{'TASKRC'};
 # Create the rc file.
 if (open my $fh, '>', 'pri.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "verbose=off\n";
   close $fh;
   ok (-r 'pri.rc', 'Created pri.rc');
 }

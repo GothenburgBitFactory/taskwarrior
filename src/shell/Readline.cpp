@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -72,49 +72,6 @@ std::string Readline::gets (const std::string& prompt)
 bool Readline::interactiveMode (const std::istream& in)
 {
   return (&in == &std::cin && isatty (0) == 1);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Wordexp::Wordexp (const std::string &str)
-{
-  std::string tmpStr(str);
-  escapeSpecialChars(tmpStr);
-  wordexp (tmpStr.c_str (), &_p, 0);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Wordexp::~Wordexp ()
-{
-  wordfree (&_p);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int Wordexp::argc ()
-{
-  return _p.we_wordc;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-char** Wordexp::argv ()
-{
-  return _p.we_wordv;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-char* Wordexp::argv (int i)
-{
-  return _p.we_wordv[i];
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Wordexp::escapeSpecialChars(std::string& str)
-{
-  size_t i = 0;
-  while ((i = str.find_first_of ("$*?!|&;<>(){}~#@", i)) != std::string::npos)
-  {
-    str.insert(i, 1, '\\');
-    i += 2;
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

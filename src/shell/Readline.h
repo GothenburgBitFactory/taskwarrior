@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,9 @@
 
 #include <string>
 #include <stdio.h>
+#ifdef HAVE_WORDEXP
 #include <wordexp.h>
+#endif
 
 // Static class that offers a C++ API to readline C functions.
 class Readline
@@ -45,23 +47,6 @@ private:
   ~Readline (); // Don't implement.
   Readline (const Readline&); // Don't implement.
   Readline& operator= (const Readline&); // Don't implement.
-};
-
-// RAII for wordexp_t
-class Wordexp
-{
-public:
-  Wordexp (const std::string& str);
-  ~Wordexp ();
-
-  int argc ();
-  char** argv ();
-  char* argv (int i);
-
-  void escapeSpecialChars(std::string& str);
-
-private:
-  wordexp_t _p;
 };
 
 #endif

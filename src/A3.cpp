@@ -155,7 +155,6 @@ void A3::capture (int argc, const char** argv)
 // Append an Arg with a blank category.
 void A3::capture (const std::string& arg)
 {
-  std::vector <std::string> parts;
   this->push_back (Arg (arg));
 }
 

@@ -9,11 +9,6 @@ set (HAVE_CMAKE true)
 project (task)
 set (PROJECT_VERSION "2.4.0")
 
-SET (TASK_MAN1DIR share/man/man1 CACHE STRING "Installation directory for man pages, section 1")
-SET (TASK_MAN5DIR share/man/man5 CACHE STRING "Installation directory for man pages, section 5")
-SET (TASK_DOCDIR  share/doc/task CACHE STRING "Installation directory for doc files")
-SET (TASK_BINDIR  bin            CACHE STRING "Installation directory for the binary")
-
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set (LINUX true)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -96,6 +91,7 @@ endif (READLINE_FOUND)
 
 check_function_exists (timegm  HAVE_TIMEGM)
 check_function_exists (get_current_dir_name HAVE_GET_CURRENT_DIR_NAME)
+check_function_exists (wordexp HAVE_WORDEXP)
 
 check_struct_has_member ("struct tm" tm_gmtoff time.h HAVE_TM_GMTOFF)
 check_struct_has_member ("struct stat" st_birthtime "sys/types.h;sys/stat.h" HAVE_ST_BIRTHTIME)

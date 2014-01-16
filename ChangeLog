@@ -12,7 +12,7 @@ Bugs
 
 ------ current release ---------------------------
 
-2.3.0 () -
+2.3.0 (2014-01-15) c4eb46507031b7dee839dcb932bb2a22b2f0d3a2
 
 Features
  + #328 Replaced the 'shell' command with a standalone 'tasksh' binary, which
@@ -110,10 +110,13 @@ Bugs
  + #1476 Unicode indicators increase column width (thanks to Paul Kishimoto).
  + #1477 Pre-compiled static library (*.a) in source tarball (thanks to Jakub
    Wilk);
+ + #1478 pri_sort.t failure (thanks to Jakub Wilk).
+ + #1479 bug_annual.t failure (thanks to Jakub Wilk).
  + Fixed bug so that 'limit:page' now considers footnote messages.
  + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
    (thanks to greenskeleton).
  + Fixed rc.nag documentation (thanks to Jeroen Budts).
+ + Fixed bug where task edit incorrectly claimed duration UDA was modified.
 
 ------ old releases ------------------------------
 
