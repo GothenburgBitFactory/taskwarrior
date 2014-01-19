@@ -38,6 +38,7 @@ int main (int argc, const char** argv)
 {
   int status = 0;
 
+  // Lightweight version checking that doesn't require initialization or any I/O.
   if (argc == 2 && !strcmp (argv[1], "--version"))
   {
     std::cout << VERSION << "\n";
