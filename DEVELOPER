@@ -13,9 +13,10 @@ General Statement
     suggestions, testing and discussions have taken place there.  It is also the
     quickest way to get help, or confirm a bug.
 
-  - Review documentation: there are man pages, wiki articles, tutorials and so
-    on, and these may contain errors, or they may not convey ideas in the best
-    way.  Perhaps you can help improve it.
+  - Review documentation: there are man pages, online articles, tutorials and
+    so on, and these may contain errors, or they may not convey ideas in the
+    best way.  Perhaps you can help improve it.  Contact us - documentation is
+    a separate effort from the codebase, and includes all web sites.
 
   - Take a look at the bug database, and help triage the bug list.  This is a
     review process that involves confirming bugs, providing additional data,
@@ -24,12 +25,12 @@ General Statement
   - Fix a bug.  For this you'll need C++ and Git skills, but this is one of
     the largest ways you can contribute.  We welcome all bug fixes, provided
     the work is done well and doesn't create other problems or introduce new
-    dependencies.
+    dependencies.  We recommend talking to us before embarking on this quest.
 
   - Add unit tests.  Unit tests are possibly the most useful contributions of
     all, because they not only improve the quality of the code, but prevent
-    future regressions.  Plus, broken tests are a great motivator for us to fix
-    the causal bug.
+    future regressions, therefore maintaining quality of subsequent releases.
+    Plus, broken tests are a great motivator for us to fix the causal bug.
 
   - Add a feature.  Well, let's be very clear about this: adding a feature is
     not usually well-received, and if you add a feature and send a patch, it
@@ -53,6 +54,9 @@ General Statement
   - Encouragement.  Tell us what works for you, and what doesn't.  It's all
     good.
 
+  - Request a feature.  This not only tells us that you think something is
+    missing from the software, but gives us insights into how you use it.
+
   Following are specific areas that could use some attention.
 
 Deprecated Code
@@ -60,6 +64,9 @@ Deprecated Code
   fixing or documenting.  Don't waste your time.
 
   - Shadow file support in core.  It will migrate to become an external script.
+
+  - Priorities in core.  This will be migrated to become a UDA as soon as we
+    have the right support in place for custom sorting.
 
 New Code Needs
   This is code that needs to be written, usually down at the C++ function/method
@@ -95,12 +102,19 @@ New Code Needs
     by anyone who wishes to participate.
 
 Documentation Needed
-  Various forms of documentation that are needed, or are in need of review or
-  update.
+  Documentation takes many forms, and we are trying to combine all documentation
+  into one repository, to facilitate sharing and centralize review.  This
+  includeѕ:
 
-  - Wiki/How-To: Date Handling
-  - Wiki/How-To: Aliases, particularly new enhanced aliases
-  - Wiki/Features: All sections
+  - Man pages
+  - Reference PDF
+  - Wiki replacement
+  - Tutorials
+  - Cookbook
+
+  This is all in the new git://tasktools.git/docs.git repository, where all the
+  documents are sourced as markdown.  We welcome everyone with writing skills to
+  help us improve this critical resource.
 
 Unit Tests Needed
   There are always more unit tests needed.  More specifically, better unit tests
@@ -125,7 +139,7 @@ Unit Tests Needed
   code and run the test suite:
      git clone git://tasktools.org:task.git
      cd task.git
-     git checkout 2.3.0
+     git checkout 2.4.0
      cmake .
      make
      make test
@@ -161,7 +175,8 @@ Unit Tests Needed
   - Need unit tests for each bug in the issue list, if suitable.
   - We have bugs in the unit tests that only manifest on days such as December
     31st.  Clearly there is some bad date math going on, most likely in the
-    tests themselves, rather than in Taskwarrior.
+    tests themselves, rather than in Taskwarrior, although with broken tests,
+    who knows?
 
   * Note that running the unit tests requires the Perl JSON module to be
     installed.
@@ -180,18 +195,19 @@ Work in Progress
 Current Codebase Condition
 
   'master' branch:
-    - 2.2.0 Current release, locked.
-
-  '2.2.0' branch:
-    - Current release.  Locked.
+    - 2.3.0 Current release, locked.
 
   '2.3.0' branch:
-    - Current development branch with sync features, and new tasksh.
+    - Current release.  Locked.
+
+  '2.3.1' branch:
+    - For emergency releases.  Hopefully we won't need this.
 
   '2.4.0' branch:
-    - Command line parser rewrite.
+    - Current development branch with new command line parser, expressions
 
 ---
 
 2012-05-12 Added general statement about how to contribute.
 2013-09-09 Updated branch info.
+2014-01-19 Updated for 2.4.0.
