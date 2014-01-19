@@ -184,7 +184,7 @@ int main (int argc, const char** argv)
       }
 
       // External calls.
-      if (strcmp (w[1], "xc") == 0 && p.we_wordc > 2)
+      if (strcmp (w[1], "!") == 0 && p.we_wordc > 2)
       {
         std::string combined = "";
         for (int i = 2; i < p.we_wordc - 1 ; ++i)
