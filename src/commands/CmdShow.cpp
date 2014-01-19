@@ -36,7 +36,6 @@
 #include <Directory.h>
 #include <ViewText.h>
 #include <CmdShow.h>
-#include <Uri.h>
 
 extern Context context;
 
@@ -166,14 +165,10 @@ int CmdShow::execute (std::string& output)
     " list.all.tags"
     " locale"
     " locking"
-    " merge.autopush"                    // Deprecated 2.3.0
-    " merge.default.uri"                 // Deprecated 2.3.0
     " monthsperline"
     " nag"
     " patterns"
     " print.empty.columns"
-    " pull.default.uri"                  // Deprecated 2.3.0
-    " push.default.uri"                  // Deprecated 2.3.0
     " recurrence.indicator"
     " recurrence.limit"
     " regex"
@@ -236,9 +231,6 @@ int CmdShow::execute (std::string& output)
           i->first.substr (0,  7) != "report."               &&
           i->first.substr (0,  6) != "alias."                &&
           i->first.substr (0,  5) != "hook."                 &&
-          i->first.substr (0,  5) != "push."                 && // Deprecated 2.3.0
-          i->first.substr (0,  5) != "pull."                 && // Deprecated 2.3.0
-          i->first.substr (0,  6) != "merge."                && // Deprecated 2.3.0
           i->first.substr (0,  4) != "uda."                  &&
           i->first.substr (0,  4) != "default."              &&
           i->first.substr (0, 21) != "urgency.user.project." &&

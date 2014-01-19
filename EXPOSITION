@@ -86,12 +86,10 @@ Files
   The completed.data file accumulates data over time, and grows unbounded.
 
   The undo.data file accumulates changes over time, and grows unbounded.  It
-  provides all the necessary metadata to support the 'undo' command and the
-  'merge' command.
+  provides all the necessary metadata to support the 'undo' command.
 
   The backlog.data file contains an accumulated set of changes that have not
-  been transmitted to the Taskserver.  It grows unbounded between 'synch'
-  commands.
+  been transmitted to Taskserver.  It grows unbounded between 'sync' commands.
 
 
 Filter

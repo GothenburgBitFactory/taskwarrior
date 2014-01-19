@@ -7,6 +7,7 @@ Features
    token..
  + Includes utility 'calc' for quick command line calculations using the new
    expression evaluator.
+ + Removed deprecated 'push', 'pull' and 'merge' commands.
 
 Bugs
  + Removed debugging code.

@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +28,6 @@
 #include <iostream>
 #include <sstream>
 #include <Context.h>
-#include <Transport.h>
 #include <JSON.h>
 #include <text.h>
 #include <util.h>
@@ -55,7 +53,7 @@ int CmdImport::execute (std::string& output)
   int rc = 0;
   int count = 0;
 
-	// Use the description as a file name.
+  // Use the description as a file name.
   std::vector <std::string> words = context.a3.extract_words ();
   if (! words.size ())
     throw std::string (STRING_CMD_IMPORT_NOFILE);
@@ -65,21 +63,6 @@ int CmdImport::execute (std::string& output)
   {
     std::string file = *word;
     std::cout << format (STRING_CMD_IMPORT_FILE, file) << "\n";
-
-    std::string tmpfile = "";
-    Uri uri (file);
-    uri.parse ();
-
-    Transport* transport;
-    if ((transport = Transport::getTransport (uri)) != NULL)
-    {
-      std::string location (context.config.get ("data.location"));
-      tmpfile = location + "/import.data";
-      transport->recv (tmpfile);
-      delete transport;
-
-      file = tmpfile;
-    }
 
     // Load the file.
     std::vector <std::string> lines;

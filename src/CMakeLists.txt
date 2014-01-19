@@ -30,16 +30,9 @@ set (task_SRCS A3.cpp A3.h
                RX.cpp RX.h
                TDB2.cpp TDB2.h
                Task.cpp Task.h
-               Taskmod.cpp Taskmod.h
                Timer.cpp Timer.h
                TLSClient.cpp TLSClient.h
-               Transport.cpp Transport.h
-               TransportCurl.cpp TransportCurl.h
-               TransportRSYNC.cpp TransportRSYNC.h
-               TransportSSH.cpp TransportSSH.h
-               TransportShell.cpp TransportShell.h
                Tree.cpp Tree.h
-               Uri.cpp Uri.h
                Variant.cpp Variant.h
                ViewTask.cpp ViewTask.h
                ViewText.cpp ViewText.h

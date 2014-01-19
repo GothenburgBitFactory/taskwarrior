@@ -1,8 +1,6 @@
 ################################################################################
-# bash completion support for taskwarrior
-# taskwarrior - a command line task list manager.
 #
-# Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -166,36 +164,18 @@ _task()
                     COMPREPLY=( $(compgen -W "${config}" -- ${cur}) )
                     return 0
                     ;;
-						 *)
- 						  case "${prev}" in
-							  merge)
-								 local servers=$(_task_get_config | grep merge | grep uri | sed 's/^merge\.\(.*\)\.uri/\1/')
-								 COMPREPLY=( $(compgen -W "${servers}" -- ${cur}) )
-								 _known_hosts_real -a "$cur"
-						       return 0
-						       ;;
-							  push)
-								 local servers=$(_task_get_config | grep push | grep uri | sed 's/^push\.\(.*\)\.uri/\1/')
-								 COMPREPLY=( $(compgen -W "${servers}" -- ${cur}) )
-								 _known_hosts_real -a "$cur"
-						       return 0
-						       ;;
-							  pull)
-								 local servers=$(_task_get_config | grep pull | grep uri | sed 's/^pull\.\(.*\)\.uri/\1/')
-								 COMPREPLY=( $(compgen -W "${servers}" -- ${cur}) )
-								 _known_hosts_real -a "$cur"
-						       return 0
-						       ;;
-							  import)
-								 COMPREPLY=( $(compgen -o "default" -- ${cur}) )
-								 return 0
-								 ;;
-						  esac
-						  ;;
+        *)
+            case "${prev}" in
+                import)
+                    COMPREPLY=( $(compgen -o "default" -- ${cur}) )
+                    return 0
+                    ;;
             esac
             ;;
+        esac
+        ;;
     esac
-      
+
     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
     return 0
 }

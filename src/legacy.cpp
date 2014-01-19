@@ -149,12 +149,6 @@ std::string legacyCheckForDeprecatedVariables ()
         it->first.substr (it->first.length () - 12) == ".annotations")
       deprecated.push_back (it->first);
 
-    // {push,pull,merge}.uri  Deprecated in 2.3.0
-    if ((it->first.substr (0, 5) == "push."   ||
-         it->first.substr (0, 5) == "pull."   ||
-         it->first.substr (0, 6) == "merge.") && (it->first.find (".uri") != std::string::npos))
-      deprecated.push_back (it->first);
-
     if (it->first == "next"              ||
         it->first == "annotations"       ||
         it->first == "export.ical.class")

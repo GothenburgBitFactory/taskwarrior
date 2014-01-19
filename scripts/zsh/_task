@@ -1,7 +1,4 @@
 #compdef task
-# zsh completion for taskwarrior
-#
-# taskwarrior - a command line task list manager.
 #
 # Copyright 2010 - 2014 Johannes Schlatow
 # Copyright 2009 P.C. Shyamshankar
@@ -213,27 +210,6 @@ _task_filter() {
 
 	# TODO complete conjunctions only if the previous word is a filter expression, i.e. attribute, ID, any non-command
 	_describe -t default 'task conjunctions' _task_conjunctions
-}
-
-# merge completion
-(( $+functions[_task_merge] )) ||
-_task_merge() {
-	# TODO match URIs in .taskrc
-	_files
-}
-
-# push completion
-(( $+functions[_task_push] )) ||
-_task_push() {
-	# TODO match URIs in .taskrc
-	_files
-}
-
-# pull completion
-(( $+functions[_task_pull] )) ||
-_task_pull() {
-	# TODO match URIs in .taskrc
-	_files
 }
 
 # execute completion

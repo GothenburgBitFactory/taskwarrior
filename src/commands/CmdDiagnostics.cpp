@@ -260,66 +260,7 @@ int CmdDiagnostics::execute (std::string& output)
       << credentials
       << "\n\n";
 
-  // External commands.
-  // Deprecated in 2.3.0 with push, pull, merge.
-  out << bold.colorize (STRING_CMD_DIAG_EXTERNAL)
-      << "\n";
-  {
-    std::vector <std::string> matches;
-    char buffer [1024] = {0};
-    FILE* fp;
-    if ((fp = popen ("/usr/bin/env scp 2>&1", "r")))
-    {
-      char* p = fgets (buffer, 1023, fp);
-      pclose (fp);
-
-      RX r ("usage", false);
-      if (p)
-        out << "        scp: "
-            << (r.match (buffer)
-                 ? STRING_CMD_DIAG_FOUND
-                 : STRING_CMD_DIAG_MISSING)
-            << "\n";
-    }
-
-    if ((fp = popen ("/usr/bin/env rsync --version 2>&1", "r")))
-    {
-      char* p = fgets (buffer, 1023, fp);
-      pclose (fp);
-
-      // rsync  version 2.6.9  protocol version 29
-      if (p)
-      {
-        RX r ("version ([0-9]+\\.[0-9]+\\.[0-9]+)", false);
-        matches.clear ();
-        r.match (matches, buffer);
-        out << "      rsync: "
-            << (matches.size () ? matches[0] : STRING_CMD_DIAG_MISSING)
-            << "\n";
-      }
-    }
-
-    if ((fp = popen ("/usr/bin/env curl --version 2>&1", "r")))
-    {
-      char* p = fgets (buffer, 1023, fp);
-      pclose (fp);
-
-      // curl 7.19.7 (universal-apple-darwin10.0) libcurl/7.19.7 OpenSSL/0.9.8l zlib/1.2.3
-      if (p)
-      {
-        RX r ("curl ([0-9]+\\.[0-9]+\\.[0-9]+)", false);
-        matches.clear ();
-        r.match (matches, buffer);
-        out << "       curl: "
-            << (matches.size () ? matches[0] :  STRING_CMD_DIAG_MISSING)
-            << "\n";
-      }
-    }
-
-    out << "\n";
-  }
-
-  // Generate 1000 UUIDs and verify they are all unique.
+  // Verify UUIDs are all unique.
   out << bold.colorize (STRING_CMD_DIAG_TESTS)
       << "\n";
   {

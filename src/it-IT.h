@@ -429,7 +429,6 @@
 #define STRING_CMD_SYNC_BAD_CA       "CA certificate not found."
 #define STRING_CMD_SYNC_CONNECT      "Could not connect to {1} {2}"
 #define STRING_CMD_SYNC_HANDSHAKE    "Handshake failed.  {1}"
-#define STRING_CMD_SYNC_NOMERGE      "Task push/pull/merge is configured, deprecated, and does not work with 'sync'."
 #define STRING_CMD_SYNC_TRUST_CA     "You should either provide a CA certificate or override verification, but not both."
 #define STRING_CMD_DIAG_USAGE        "Dettagli su piattaforma, build e ambiente"
 #define STRING_CMD_DIAG_PLATFORM     "Piattaforma"
@@ -445,23 +444,11 @@
 #define STRING_CMD_DIAG_ENABLED      "Abilitato"
 #define STRING_CMD_DIAG_DISABLED     "Disabilitato"
 #define STRING_CMD_DIAG_CONFIG       "Configurazione"
-#define STRING_CMD_DIAG_EXTERNAL     "Utility esterne"
 #define STRING_CMD_DIAG_TESTS        "Test"
 #define STRING_CMD_DIAG_UUID_SCAN    "Valutati {1} task per duplicazione UUID:"
 #define STRING_CMD_DIAG_UUID_DUP     "Trovato duplicato {1}"
 #define STRING_CMD_DIAG_UUID_NO_DUP  "Nessun duplicato trovato"
 #define STRING_CMD_DIAG_NONE         "-nessuno-"
-#define STRING_CMD_PUSH_USAGE        "Carica i file locali all'URL"
-#define STRING_CMD_PUSH_SAME         "Impossibile caricare i file se sorgente e destinazione coincidono."
-#define STRING_CMD_PUSH_NONLOCAL     "L'uri '{1}' non è una directory locale."
-#define STRING_CMD_PUSH_TRANSFERRED  "Task locali trasferiti su {1}"
-#define STRING_CMD_PUSH_NO_URI       "Nessun uri è stato specificato per il caricamento. Specificare o l'uri di una directory .task remota, oppure creare la voce 'push.default.uri' nel file .taskrc."
-#define STRING_CMD_PULL_USAGE        "Scaricati file dall'URL"
-#define STRING_CMD_PULL_SAME         "Impossibile scaricare i file se sorgente e destinazione coincidono."
-#define STRING_CMD_PULL_TRANSFERRED  "Task locali trasferiti da {1}"
-#define STRING_CMD_PULL_NO_URI       "Nessun uri è stato specificato per lo scaricamento. Specificare o l'uri di una directory .task remota, oppure creare la voce 'pull.default.uri' nel file .taskrc."
-#define STRING_CMD_PULL_MISSING      "Almeno uno dei file di database in '{1}' non è presente."
-#define STRING_CMD_PULL_NOT_DIR      "L'uri '{1}' non è una directory. Dimenticato il carattere '/'?"
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera la lista di tutti i comandi, per autocompletamento"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera la lista di tutti i comandi, per autocompletamento in zsh"
 #define STRING_CMD_ALIASES_USAGE     "Genera la lista di tutti gli alias, per autocompletamento"
@@ -513,10 +500,6 @@
 #define STRING_CMD_TIMESHEET_USAGE   "Sommario settimanale dei task completati e avviati"
 #define STRING_CMD_TIMESHEET_STARTED "Avviati ({1} task)"
 #define STRING_CMD_TIMESHEET_DONE    "Completati ({1} task)"
-#define STRING_CMD_MERGE_USAGE       "Unisce i file remoti con i file locali"
-#define STRING_CMD_MERGE_COMPLETE    "Unione completata."
-#define STRING_CMD_MERGE_CONFIRM     "Caricare le modifiche effettuate in seguito all'unione su '{1}'?"
-#define STRING_CMD_MERGE_NO_URI      "Nessun uri è stato specificato per l'unione. Specificare o l'uri di una directory .task remota, oppure creare la voce 'merge.default.uri' nel file .taskrc."
 #define STRING_CMD_BURN_USAGE_M      "Mostra un grafico del lavoro da svolgere, per mese"
 #define STRING_CMD_BURN_USAGE_W      "Mostra un grafico del lavoro da svolgere, per settimana"
 #define STRING_CMD_BURN_USAGE_D      "Mostra un grafico del lavoro da svolgere, per giorno"
@@ -540,6 +523,7 @@
 #define STRING_CMD_CAL_LABEL_HOL     "Festività"
 #define STRING_CMD_CAL_SUN_MON       "La variabile di configurazione 'weekstart' può solo contenere i valori 'Domenica' or 'Lunedì'."
 #define STRING_CMD_EDIT_USAGE        "Esegue un editor per la modifica diretta di un task"
+#define STRING_CMD_CALC_USAGE        "Calculator"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "File di configurazione annidato più di 10 livelli - deve trattarsi di un errore."
@@ -804,24 +788,10 @@
 #define STRING_TASK_SAFETY_VALVE     "Questo comando non ha filtro, e modificherà tutti i task. Sicuro?"
 #define STRING_TASK_SAFETY_FAIL      "Prevenuta l'esecuzione del comando."
 
-// Taskmod
-#define STRING_TASKMOD_BAD_INIT      "Taskmod::getUuid(): oggetto Task non inizializzato."
-#define STRING_TASKMOD_TIME          "tempo "
-#define STRING_TASKMOD_OLD           "vecchio "
-#define STRING_TASKMOD_NEW           "nuovo "
-
 // TDB2
 #define STRING_TDB2_PARSE_ERROR      " in {1} alla linea {2}"
 #define STRING_TDB2_UUID_NOT_UNIQUE  "Impossibile aggiungere il task in quanto l'uuid '{1}' non è unico."
-#define STRING_TDB2_UNDO_TIMESTAMP   "Problema di lettura del timestamp dal file undo.data."
-#define STRING_TDB2_UNREADABLE       "Impossibile leggere '{1}'."
-#define STRING_TDB2_UNWRITABLE       "Impossibile scrivere '{1}'."
-#define STRING_TDB2_NO_CHANGES       "Nessuna modifica da unire."
-#define STRING_TDB2_REMOTE_CHANGE    "Trovata modifica remota a        {1}  \"{2}\""
-#define STRING_TDB2_LOCAL_CHANGE     "Mantenute le modifiche locali a    {1}  \"{2}\""
 #define STRING_TDB2_MISSING          "Mancante                       {1}  \"{2}\""
-#define STRING_TDB2_MERGING          "Unione di nuovi task remoti       {1}  \"{2}\""
-#define STRING_TDB2_UP_TO_DATE       "Il database è aggiornato, unione non necessaria."
 #define STRING_TDB2_NO_UNDO          "Nessuna transazione memorizzata da ripristinare."
 #define STRING_TDB2_LAST_MOD         "L'ultima modifica è stat effettuata {1}"
 #define STRING_TDB2_UNDO_PRIOR       "Valori precedenti"
@@ -840,24 +810,6 @@
 // text
                                      // A comma-separated list of commands is appended.
 #define STRING_TEXT_AMBIGUOUS        "Ambiguo {1} '{2}' - può essere uno di "
-
-// Transport
-#define STRING_TRANSPORT_NORUN       "Impossibile eseguire '{1}'. E` installato e disponibile in $PATH?"
-#define STRING_TRANSPORT_NOFORK      "Impossibile eseguire '{1}': {2}. Risorse di sistema esaurite?"
-#define STRING_TRANSPORT_URI_NODIR   "L'uri '{1}' non appare essere una directory."
-#define STRING_TRANSPORT_CURL_URI    "Usando il protocollo 'curl', l'uri deve contenere il nome di un host."
-#define STRING_TRANSPORT_CURL_WILDCD "Usando il protocollo 'curl', i caratteri jolly non sono supportati."
-#define STRING_TRANSPORT_CURL_FAIL   "Curl ha fallito, vedi l'output precedente."
-#define STRING_TRANSPORT_RSYNC_URI   "Usando il protocollo 'rsync', l'uri deve contenere un nome di host."
-#define STRING_TRANSPORT_RSYNC_FAIL  "rsync ha fallito, vedi l'output precedente."
-#define STRING_TRANSPORT_SSH_URI     "Usando il protocollo 'ssh', l'uri deve contenere un nome di host."
-#define STRING_TRANSPORT_SSH_FAIL    "ssh ha fallito, vedi l'output precedente."
-#define STRING_TRANSPORT_SHELL_NOPATH "Usando il protocollo 'sh+cp' per la copia di più file, un percorso deve essere specificato."
-#define STRING_TRANSPORT_SHELL_FAIL  "Comando di shell ha fallito, vedi l'output precedente."
-
-// Uri
-#define STRING_URI_QUOTES            "Impossibile parsare l'uri '{1}', uso errato del singolo apice."
-#define STRING_URI_BAD_FORMAT        "L'uri '{1}' non è nel formato atteso."
 
 // utf8
 #define STRING_UTF8_INVALID_CP_REP   "Rappresentazione non valida del codepoint."

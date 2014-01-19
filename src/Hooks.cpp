@@ -87,7 +87,6 @@ Hooks::Hooks ()
   _validProgramEvents.push_back ("on-file-read");   // Unimplemented
   _validProgramEvents.push_back ("on-file-write");  // Unimplemented
   _validProgramEvents.push_back ("on-synch");       // Unimplemented
-  _validProgramEvents.push_back ("on-merge");       // Unimplemented
   _validProgramEvents.push_back ("on-gc");          // Unimplemented
 }
 

@@ -439,7 +439,6 @@
 #define STRING_CMD_SYNC_BAD_CA       "Certificado CA no encontrado."
 #define STRING_CMD_SYNC_CONNECT      "No se pudo conectar a {1} {2}"
 #define STRING_CMD_SYNC_HANDSHAKE    "Handshake fallido.  {1}"
-#define STRING_CMD_SYNC_NOMERGE      "Task push/pull/merge está configurado, en desuso, y no trabaja con 'sync'."
 #define STRING_CMD_SYNC_TRUST_CA     "Debe proveer un certificado CA o la verificación de sobrescritura, pero no ambos."
 #define STRING_CMD_DIAG_USAGE        "Detalles de plataforma, construcción y entorno"
 #define STRING_CMD_DIAG_PLATFORM     "Plataforma"
@@ -455,23 +454,11 @@
 #define STRING_CMD_DIAG_ENABLED      "Habilitado"
 #define STRING_CMD_DIAG_DISABLED     "deshabilitado"
 #define STRING_CMD_DIAG_CONFIG       "Configuración"
-#define STRING_CMD_DIAG_EXTERNAL     "Utilidades externas"
 #define STRING_CMD_DIAG_TESTS        "Comprobaciones"
 #define STRING_CMD_DIAG_UUID_SCAN    "Exploradas {1} tareas buscando UUIDs duplicados:"
 #define STRING_CMD_DIAG_UUID_DUP     "Encontrado duplicado {1}"
 #define STRING_CMD_DIAG_UUID_NO_DUP  "No se encontraron duplicados"
 #define STRING_CMD_DIAG_NONE         "-ninguno-"
-#define STRING_CMD_PUSH_USAGE        "Envía los archivos locales al URL"
-#define STRING_CMD_PUSH_SAME         "No se puede enviar archivos cuando origen y destino son los mismos."
-#define STRING_CMD_PUSH_NONLOCAL     "El uri '{1}' no es un directorio local."
-#define STRING_CMD_PUSH_TRANSFERRED  "Tareas locales transferidas a {1}"
-#define STRING_CMD_PUSH_NO_URI       "No se especificó un uri pera el envío. Especifique el uri de un directorio .task remoto, o cree una entrada 'push.default.uri' en su archivo .taskrc ."
-#define STRING_CMD_PULL_USAGE        "Trae archivos remotos desde el URL"
-#define STRING_CMD_PULL_SAME         "No se puede traer archivos cuando origen y destino son los mismos."
-#define STRING_CMD_PULL_TRANSFERRED  "Tareas locales transferidas desde {1}"
-#define STRING_CMD_PULL_NO_URI       "No se especificó un uri desde el que traer. Especifique el uri de un directorio .task remoto, o cree una entrada 'pull.default.uri' en su archivo .taskrc ."
-#define STRING_CMD_PULL_MISSING      "Al menos uno de los archivos de base de datos en '{1}' no está presente."
-#define STRING_CMD_PULL_NOT_DIR      "El uri '{1}' no es un directorio. ¿Olvidó un '/' final?"
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera una lista de todos los comandos, con fines de auto-completado"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera una lista de todos los comandos, con fines de auto-completado zsh"
 #define STRING_CMD_ALIASES_USAGE     "Genera una lista de todos los alias, con fines de auto-completado"
@@ -526,10 +513,6 @@
 #define STRING_CMD_TIMESHEET_USAGE   "Resumen semanal de tareas completadas y comenzadas"
 #define STRING_CMD_TIMESHEET_STARTED "Comenzadas ({1} tareas)"
 #define STRING_CMD_TIMESHEET_DONE    "Completadas ({1} tareas)"
-#define STRING_CMD_MERGE_USAGE       "Combina los archivos remotos con los locales"
-#define STRING_CMD_MERGE_COMPLETE    "Combinación completa."
-#define STRING_CMD_MERGE_CONFIRM     "¿Quiere propagar los cambios combinados a '{1}'?"
-#define STRING_CMD_MERGE_NO_URI      "No se especificó un uri para el combinado. Especifique el uri de un directorio .task remoto, o cree una entrada 'merge.default.uri' en su archivo .taskrc ."
 #define STRING_CMD_BURN_USAGE_M      "Muestra un diagrama burndown, por meses"
 #define STRING_CMD_BURN_USAGE_W      "Muestra un diagrama burndown, por semanas"
 #define STRING_CMD_BURN_USAGE_D      "Muestra un diagrama burndown, por días"
@@ -818,25 +801,11 @@
 #define STRING_TASK_SAFETY_VALVE     "Este comando no tiene filtro, y modificará todas las tareas. ¿Está seguro?"
 #define STRING_TASK_SAFETY_FAIL      "Se impidió la ejecución del comando."
 
-// Taskmod
-#define STRING_TASKMOD_BAD_INIT      "Taskmod::getUuid(): objeto Task no inicializado."
-#define STRING_TASKMOD_TIME          "tiempo "
-#define STRING_TASKMOD_OLD           "antiguo "
-#define STRING_TASKMOD_NEW           "nuevo "
-
 // TDB2
 #define STRING_TDB2_PARSE_ERROR      " en {1} en la línea {2}"
 #define STRING_TDB2_UUID_NOT_UNIQUE  "No se puede añadir la tarea porque el uuid '{1}' no es único."
 
-#define STRING_TDB2_UNDO_TIMESTAMP   "Hubo un problema al leer la marca de tiempo del archivo undo.data ."
-#define STRING_TDB2_UNREADABLE       "No se puede leer '{1}'."
-#define STRING_TDB2_UNWRITABLE       "No se puede escribir '{1}'."
-#define STRING_TDB2_NO_CHANGES       "No hay cambios para combinar."
-#define STRING_TDB2_REMOTE_CHANGE    "Encontrado cambio remoto en   {1}  \"{2}\""
-#define STRING_TDB2_LOCAL_CHANGE     "Reteniendo cambios locales a  {1}  \"{2}\""
 #define STRING_TDB2_MISSING          "Falta                         {1}  \"{2}\""
-#define STRING_TDB2_MERGING          "Combinando tarea remota nueva {1}  \"{2}\""
-#define STRING_TDB2_UP_TO_DATE       "La base de datos está actualizada, no se requiere combinación."
 #define STRING_TDB2_NO_UNDO          "No hay transacciones registradas para deshacer."
 #define STRING_TDB2_LAST_MOD         "La última modificación fue hecha {1}"
 #define STRING_TDB2_UNDO_PRIOR       "Valores Previos"
@@ -856,25 +825,6 @@
                                      // Se añade al final una lista de comandos separados por comas.
                                      // A comma-separated list of commands is appended.
 #define STRING_TEXT_AMBIGUOUS        "Ambiguo {1} '{2}' - puede ser "
-
-// Transport
-#define STRING_TRANSPORT_NORUN       "No se pudo lanzar '{1}'. ¿Está instalado y disponible en $PATH?"
-#define STRING_TRANSPORT_NOFORK      "No se pudo ejecutar '{1}': {2}. ¿Puede ser que su sistema esté sin recursos?"
-
-#define STRING_TRANSPORT_URI_NODIR   "El uri '{1}' no parece ser un directorio."
-#define STRING_TRANSPORT_CURL_URI    "Cuando se usa el protocolo 'curl' el uri debe contener un nombre de máquina."
-#define STRING_TRANSPORT_CURL_WILDCD "Cuando se usa el protocolo 'curl' no están soportados los comodines."
-#define STRING_TRANSPORT_CURL_FAIL   "Curl falló, consulte los mensajes precedentes."
-#define STRING_TRANSPORT_RSYNC_URI   "Cuando se usa el protocolo 'rsync' el uri debe contener un nombre de máquina."
-#define STRING_TRANSPORT_RSYNC_FAIL  "Rsync falló, consulte los mensajes precedentes."
-#define STRING_TRANSPORT_SSH_URI     "Cuando se usa el protocolo 'ssh' el uri debe contener un nombre de máquina."
-#define STRING_TRANSPORT_SSH_FAIL    "Ssh falló, consulte los mensajes precedentes."
-#define STRING_TRANSPORT_SHELL_NOPATH "Cuando se utiliza el protocolo 'sh + cp' para copiar varios archivos se debe especificar un path."
-#define STRING_TRANSPORT_SHELL_FAIL  "Fallo de comando del entorno, consulte la salida anterior."
-
-// Uri
-#define STRING_URI_QUOTES            "No se pudo interpretar el uri '{1}', uso erróneo de comillas simples."
-#define STRING_URI_BAD_FORMAT        "El uri '{1}' no está en el formato esperado."
 
 // utf8
 #define STRING_UTF8_INVALID_CP_REP   "Representación de codepoint no válida."
