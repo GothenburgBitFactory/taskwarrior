@@ -26,8 +26,8 @@ VCS systems (svn ...), and they function in a similar fashion for our purposes.
 Setup is straightforward.  You place your .task directory under revision
 control.  You then need to perform a regular commit/push/pull/update to make
 sure that the data is propagated when needed.  You can even do this using shell
-scripts so that every task command is preceded by a 'pull' and followed by a
-'push'.
+scripts so that every task command is preceded by a 'pull' and followed by
+a 'push'.
 
 Strengths:
 .br

@@ -10,6 +10,7 @@ Features
  + Removed deprecated 'push', 'pull' and 'merge' commands.
 
 Bugs
+ + #1486 Truncated sentence in task-sync(5) manpage (thank to Jakub Wilk).
  + Removed debugging code.
 
 ------ current release ---------------------------
