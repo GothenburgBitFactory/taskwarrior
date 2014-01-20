@@ -162,7 +162,7 @@ int main (int argc, const char** argv)
 
       // Escape special chars.
       size_t i = 0;
-      while ((i = command.find_first_of ("$*?!|&;<>(){}~#@", i)) != std::string::npos)
+      while ((i = command.find_first_of ("$*?!|&;<>(){}~#@\\", i)) != std::string::npos)
       {
         command.insert(i, 1, '\\');
         i += 2;
