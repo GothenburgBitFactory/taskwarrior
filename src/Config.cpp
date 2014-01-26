@@ -307,7 +307,7 @@ std::string Config::_defaults =
   "alias.rm=delete                                # Alias for the delete command\n"
   "alias.history=history.monthly                  # Prefer monthly over annual history reports\n"
   "alias.ghistory=ghistory.monthly                # Prefer monthly graphical over annual history reports\n"
-  "alias._query=export                            # _query is now export\n"
+  "alias._query=export                            # _query is now export\n" // DEPRECATED in 2.4.0
   "alias.burndown=burndown.weekly                 # Prefer the weekly burndown chart\n"
   "alias.shell=exec tasksh                        # Alias old shell command to new shell\n"
   "\n"

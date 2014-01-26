@@ -153,6 +153,10 @@ std::string legacyCheckForDeprecatedVariables ()
         it->first == "annotations"       ||
         it->first == "export.ical.class")
       deprecated.push_back (it->first);
+
+    // Deprecated іn 2.4.0.
+    if (it->first == "alias._query")
+      deprecated.push_back (it->first);
   }
 
   std::stringstream out;
