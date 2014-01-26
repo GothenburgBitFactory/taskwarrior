@@ -19,6 +19,7 @@ Newly deprecated features in taskwarrior 2.4.0
 Removed features in 2.4.0
 
   - Version 1.x column names no longer supported.
+  - Version 1.x sort columns no longer supported.
 
 Known Issues
 

@@ -59,31 +59,18 @@ void legacyColumnMap (std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 void legacySortColumnMap (std::string& name)
 {
-  // One-time initialization, on demand.
-  static std::map <std::string, std::string> legacyMap;
-  if (! legacyMap.size ())
-  {
-    legacyMap["priority_long"]        = "priority";             // Deprecated
-    legacyMap["entry_time"]           = "entry";                // Deprecated
-    legacyMap["start_time"]           = "start";                // Deprecated
-    legacyMap["end_time"]             = "end";                  // Deprecated
-    legacyMap["countdown"]            = "due";                  // Deprecated
-    legacyMap["countdown_compact"]    = "due";                  // Deprecated
-    legacyMap["age"]                  = "entry";                // Deprecated
-    legacyMap["age_compact"]          = "entry";                // Deprecated
-    legacyMap["active"]               = "start";                // Deprecated
-    legacyMap["recurrence_indicator"] = "recur";                // Deprecated
-    legacyMap["tag_indicator"]        = "tags";                 // Deprecated
-    legacyMap["description_only"]     = "description";          // Deprecated
-  }
-
-  // If a legacy column was used, complain about it, but modify it anyway.
-  std::map <std::string, std::string>::iterator found = legacyMap.find (name);
-  if (found != legacyMap.end ())
-  {
-    context.footnote (format (STRING_CMD_CUSTOM_OLD_SORT, name, found->second));
-    name = found->second;
-  }
+  // 2014-01-26: priority_long        --> priority             Mapping removed
+  // 2014-01-26: entry_time           --> entry                Mapping removed
+  // 2014-01-26: start_time           --> start                Mapping removed
+  // 2014-01-26: end_time             --> end                  Mapping removed
+  // 2014-01-26: countdown            --> due                  Mapping removed
+  // 2014-01-26: countdown_compact    --> due                  Mapping removed
+  // 2014-01-26: age                  --> entry                Mapping removed
+  // 2014-01-26: age_compact          --> entry                Mapping removed
+  // 2014-01-26: active               --> start                Mapping removed
+  // 2014-01-26: recurrence_indicator --> recur                Mapping removed
+  // 2014-01-26: tag_indicator        --> tags                 Mapping removed
+  // 2014-01-26: description_only     --> description          Mapping removed
 }
 
 ////////////////////////////////////////////////////////////////////////////////

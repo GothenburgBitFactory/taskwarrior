@@ -12,6 +12,8 @@ Features
    expression evaluator.
  + Deprecated '_query' alias.
  + Removed deprecated 'push', 'pull' and 'merge' commands.
+ + Removed version 1.x column name support.
+ + Removed version 1.x sort column support.
 
 Bugs
  + #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
