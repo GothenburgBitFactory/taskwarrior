@@ -7,7 +7,7 @@ include (CheckStructHasMember)
 set (HAVE_CMAKE true)
 
 project (task)
-set (PROJECT_VERSION "2.4.0")
+set (PROJECT_VERSION "2.4.0.dev")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set (LINUX true)
