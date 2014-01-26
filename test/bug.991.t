@@ -28,7 +28,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -51,7 +51,6 @@ qx{../src/task rc:bug.rc add foo 2>&1};
 my $output = qx{../src/task rc:bug.rc show 2>&1};
 like ($output, qr/^Config Variable\s+Value$/m, 'Variables shown');
 unlike ($output, qr/Configuration error/ms, 'No configuration error');
-unlike ($output, qr/deprecated/ms, 'No deprecated variable');
 unlike ($output, qr/unrecognized/ms, 'No unrecognized variable');
 
 ## Cleanup.
