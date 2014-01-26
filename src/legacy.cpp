@@ -76,32 +76,9 @@ void legacySortColumnMap (std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 std::string legacyCheckForDeprecatedColor ()
 {
-  std::vector <std::string> deprecated;
-  std::map <std::string, std::string>::const_iterator it;
-  for (it = context.config.begin (); it != context.config.end (); ++it)
-  {
-    if (it->first.find ("color.") != std::string::npos)
-    {
-      std::string value = context.config.get (it->first);
-      if (value.find ("_") != std::string::npos)
-        deprecated.push_back (it->first);
-    }
-  }
+  // 2014-01-26: Color defs containing '_' removed.
 
-  std::stringstream out;
-  if (deprecated.size ())
-  {
-    out << STRING_CONFIG_DEPRECATED_US
-        << "\n";
-
-    std::vector <std::string>::iterator it2;
-    for (it2 = deprecated.begin (); it2 != deprecated.end (); ++it2)
-      out << "  " << *it2 << "=" << context.config.get (*it2) << "\n";
-
-    out << "\n";
-  }
-
-  return out.str ();
+  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
