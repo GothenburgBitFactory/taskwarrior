@@ -295,6 +295,14 @@ int CmdShow::execute (std::string& output)
       int row = view.addRow ();
       view.set (row, 0, i->first, color);
       view.set (row, 1, value, color);
+
+      if (default_config[i->first] != value &&
+          default_config[i->first] != "")
+      {
+        row = view.addRow ();
+        view.set (row, 0, std::string ("  ") + STRING_CMD_SHOW_CONF_DEFAULT, color);
+        view.set (row, 1, default_config[i->first], color);
+      }
     }
   }
 

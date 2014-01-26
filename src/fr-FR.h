@@ -763,6 +763,7 @@
 #define STRING_CMD_SHOW_LOC_EXIST    "Configuration error: data.location contains a directory name that doesn't exist, or is unreadable."
 #define STRING_CMD_SHOW_CONF_VAR     "Config Variable"
 #define STRING_CMD_SHOW_CONF_VALUE   "Value"
+#define STRING_CMD_SHOW_CONF_DEFAULT "Default value"
 #define STRING_CMD_SHOWRAW           "Shows all configuration settings in a machine-readable format"
 
 // Task

@@ -764,6 +764,7 @@
 #define STRING_CMD_SHOW_LOC_EXIST    "Errore di configurazione: data.location contiene una directory che non esiste o non è leggibile."
 #define STRING_CMD_SHOW_CONF_VAR     "Variabile di configurazione"
 #define STRING_CMD_SHOW_CONF_VALUE   "Valore"
+#define STRING_CMD_SHOW_CONF_DEFAULT "Default value"
 #define STRING_CMD_SHOWRAW           "Mostra le impostazioni di configurazione in formato processabile"
 
 // Task
