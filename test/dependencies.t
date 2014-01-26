@@ -66,13 +66,13 @@ like ($output, qr/No tasks specified\./, 'dependencies - add dependency to nonex
 
 # [5,6] t 1 dep:2; t info 1 => blocked by 2
 $output = qx{../src/task rc:dep.rc 1 modify dep:2 2>&1; ../src/task rc:dep.rc info 1 2>&1};
-like ($output, qr/This task blocked by\s+2 Two\nUUID/, 'dependencies - trivial blocked');
-unlike ($output, qr/This task is blocking\n/,          'dependencies - trivial blocked');
+like ($output, qr/This task blocked by\s+2 Two\n/, 'dependencies - trivial blocked');
+unlike ($output, qr/This task is blocking\n/,      'dependencies - trivial blocked');
 
 # [7,8] t info 2 => blocking 1
 $output = qx{../src/task rc:dep.rc info 2 2>&1};
-unlike ($output, qr/This task blocked by/,              'dependencies - trivial blocking');
-like ($output, qr/This task is blocking\s+1 One\nUUID/, 'dependencies - trivial blocking');
+unlike ($output, qr/This task blocked by/,          'dependencies - trivial blocking');
+like ($output, qr/This task is blocking\s+1 One\n/, 'dependencies - trivial blocking');
 
 # [9] t 1 dep:2 (again)
 $output = qx{../src/task rc:dep.rc 1 modify dep:2 2>&1 >/dev/null};
@@ -135,7 +135,7 @@ like ($output, qr/Modified \d+ task/, 'dependencies - task depending on recurrin
 
 # [22] t 1 dep:2,3,4; t 1 dep:-2,-4,5; t info 1 => blocked by 3,5
 $output = qx{../src/task rc:dep.rc 1 modify dep:2,3,4 2>&1; ../src/task rc:dep.rc 1 modify dep:-2,-4,5 2>&1; ../src/task rc:dep.rc info 1 2>&1};
-like ($output, qr/This task blocked by\s+3 Three\n\s+5 Five\nUUID/, 'dependencies - multiple dependencies modified');
+like ($output, qr/This task blocked by\s+3 Three\n\s+5 Five\n/, 'dependencies - multiple dependencies modified');
 
 # [23,24]
 $output = qx{../src/task rc:dep.rc 3,5 do 2>&1; ../src/task rc:dep.rc info 1 2>&1};

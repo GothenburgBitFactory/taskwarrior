@@ -195,22 +195,6 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 1, task->get ("recur"));
     }
 
-    // until
-    if (task->has ("until"))
-    {
-      row = view.addRow ();
-      view.set (row, 0, STRING_CMD_INFO_UNTIL);
-      view.set (row, 1, Date (task->get_date ("until")).toString (dateformat));
-    }
-
-    // mask
-    if (task->getStatus () == Task::recurring)
-    {
-      row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_MASK);
-      view.set (row, 1, task->get ("mask"));
-    }
-
     if (task->has ("parent"))
     {
       // parent
@@ -218,19 +202,35 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 0, STRING_COLUMN_LABEL_PARENT);
       view.set (row, 1, task->get ("parent"));
 
-      // imask
+      // mask
+      row = view.addRow ();
+      view.set (row, 0, STRING_COLUMN_LABEL_MASK);
+      view.set (row, 1, task->get ("mask"));
+    }
+
+    // imask
+    if (task->has ("imask"))
+    {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_MASK_IDX);
       view.set (row, 1, task->get ("imask"));
     }
 
-    // due (colored)
-    if (task->has ("due"))
+    // entry
+    row = view.addRow ();
+    view.set (row, 0, STRING_COLUMN_LABEL_ENTERED);
+    Date dt (task->get_date ("entry"));
+    std::string entry = dt.toString (dateformat);
+
+    std::string age;
+    std::string created = task->get ("entry");
+    if (created.length ())
     {
-      row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_DUE);
-      view.set (row, 1, Date (task->get_date ("due")).toString (dateformat));
+      Date dt (strtol (created.c_str (), NULL, 10));
+      age = OldDuration (now - dt).format ();
     }
+
+    view.set (row, 1, entry + " (" + age + ")");
 
     // wait
     if (task->has ("wait"))
@@ -256,12 +256,41 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 1, Date (task->get_date ("start")).toString (dateformat));
     }
 
+    // due (colored)
+    if (task->has ("due"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, STRING_COLUMN_LABEL_DUE);
+      view.set (row, 1, Date (task->get_date ("due")).toString (dateformat));
+    }
+
     // end
     if (task->has ("end"))
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_END);
       view.set (row, 1, Date (task->get_date ("end")).toString (dateformat));
+    }
+
+    // until
+    if (task->has ("until"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, STRING_CMD_INFO_UNTIL);
+      view.set (row, 1, Date (task->get_date ("until")).toString (dateformat));
+    }
+
+    // modified
+    if (task->has ("modified"))
+    {
+      row = view.addRow ();
+      view.set (row, 0, STRING_CMD_INFO_MODIFIED);
+
+      Date mod (task->get_date ("modified"));
+
+      std::string age = OldDuration (now - mod).format ();
+      view.set (row, 1, Date (task->get_date ("modified")).toString (dateformat) +
+                              " (" + age + ")");
     }
 
     // tags ...
@@ -283,39 +312,10 @@ int CmdInfo::execute (std::string& output)
     std::string uuid = task->get ("uuid");
     view.set (row, 1, uuid);
 
-    // entry
-    row = view.addRow ();
-    view.set (row, 0, STRING_COLUMN_LABEL_ENTERED);
-    Date dt (task->get_date ("entry"));
-    std::string entry = dt.toString (dateformat);
-
-    std::string age;
-    std::string created = task->get ("entry");
-    if (created.length ())
-    {
-      Date dt (strtol (created.c_str (), NULL, 10));
-      age = OldDuration (now - dt).format ();
-    }
-
-    view.set (row, 1, entry + " (" + age + ")");
-
     // Task::urgency
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_URGENCY);
     view.set (row, 1, trimLeft (format (task->urgency (), 4, 4)));
-
-    // modified
-    if (task->has ("modified"))
-    {
-      row = view.addRow ();
-      view.set (row, 0, STRING_CMD_INFO_MODIFIED);
-
-      Date mod (task->get_date ("modified"));
-
-      std::string age = OldDuration (now - mod).format ();
-      view.set (row, 1, Date (task->get_date ("modified")).toString (dateformat) +
-                              " (" + age + ")");
-    }
 
     // Show any UDAs
     std::vector <std::string> all = task->all ();
