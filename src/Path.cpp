@@ -38,6 +38,15 @@
 #include <Directory.h>
 #include <Path.h>
 
+/* fixes build with musl libc */
+#ifndef GLOB_TILDE
+#define GLOB_TILDE 0
+#endif
+
+#ifndef GLOB_BRACE
+#define GLOB_BRACE 0
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 std::ostream& operator<< (std::ostream& out, const Path& path)
 {
