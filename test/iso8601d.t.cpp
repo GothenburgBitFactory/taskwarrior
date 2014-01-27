@@ -94,19 +94,19 @@ int main (int argc, char** argv)
   local_now->tm_hour = 0;
   local_now->tm_min  = 0;
   local_now->tm_sec  = 0;
-  time_t local = timelocal (local_now);
+  time_t local = mktime (local_now);
   std::cout << "# local midnight today " << local << "\n";
 
   local_now->tm_year = 2013 - 1900;
   local_now->tm_mon  = 12 - 1;
   local_now->tm_mday = 6;
-  time_t local6 = timelocal (local_now);
+  time_t local6 = mktime (local_now);
   std::cout << "# local midnight 2013-12-06 " << local6 << "\n";
 
   local_now->tm_year = 2013 - 1900;
   local_now->tm_mon  = 12 - 1;
   local_now->tm_mday = 1;
-  time_t local1 = timelocal (local_now);
+  time_t local1 = mktime (local_now);
   std::cout << "# local midnight 2013-12-01 " << local1 << "\n";
 
   struct tm* utc_now = gmtime (&now);
