@@ -1,6 +1,7 @@
 2.4.0 () -
 
 Features
+ + #1255 l10n translation utility improvements (thanks to Renato Alves).
  + #1492 task show to display default values when appropriate (thanks to Renato
          Alves).
  + #1501 info report streamlining - partially implemented.

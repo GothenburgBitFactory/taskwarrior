@@ -1,4 +1,4 @@
-#! /usr/bin/env python -tt
+#! /usr/bin/env python2
 ################################################################################
 ## taskwarrior - a command line task list manager.
 ##
@@ -35,12 +35,32 @@ import argparse
 import re
 import fnmatch
 
-def find_localizations(source):
+REFERENCE = 'en-US.h'
+
+def find_localizations(source, single=''):
   '''Finds all [a-z][a-z]-[A-Z][A-Z].h files in the source tree.'''
   found = []
   for path, dirs, files in os.walk(source, topdown=True, onerror=None, followlinks=False):
-    found.extend(map(lambda x: os.path.join(path, x),
-                 fnmatch.filter(files, '[a-z][a-z]-[A-Z][A-Z].h')))
+    matches = map(lambda x: os.path.join(path, x),
+                  fnmatch.filter(files, '[a-z][a-z][a-z]-[A-Z][A-Z][A-Z].h'))
+    matches.extend(map(lambda x: os.path.join(path, x),
+                       fnmatch.filter(files, '[a-z][a-z]-[A-Z][A-Z].h')))
+
+    if single:
+      # Accept both cases - if user specified es-ES.h or only es-ES
+      if not single.endswith('.h'):
+        single = '%s.h' % single
+
+      for match in matches:
+        if match.endswith(single) or match.endswith(REFERENCE):
+          found.append(match)
+    else:
+      found.extend(matches)
+
+  # Make sure REFERENCE is the first column.
+  # NOTE Empty string is always sorted first than any string
+  found.sort(key=lambda x: "" if x.endswith(REFERENCE) else x)
+
   return found
 
 def read_file(translations, file):
@@ -102,9 +122,11 @@ def main(args):
 
   # Print header line.
   files = map(lambda x: os.path.basename(x), args.files)
+
   if not args.quiet:
-    print('%-*s %s' % (longest_string, 'String ID', ' '.join(files)))
-    print('-' * longest_string, ' '.join(['-------'] * len(files)))
+    print('%-*s' % (longest_string, 'String ID'), end='')
+    print(*map(lambda x: '%10s' % x, files), sep='')
+    print('-' * longest_string, ' '.join(['---------'] * len(files)))
 
   for string in sorted(strings):
     # assess status of 'string':
@@ -116,11 +138,11 @@ def main(args):
       message = '        '
       if is_present(translations, file, string):
         if is_translated(translations, file, string):
-          message = ' [30;42mOk     [0m'
+          message = ' [30;42mOk       [0m'
         else:
-          message = ' [30;43mTODO   [0m'
+          message = ' [30;43mTODO     [0m'
       else:
-        message = ' [37;41mMissing[0m'
+        message = ' [37;41mMissing  [0m'
         line_errors = 1
 
       line += message
@@ -142,10 +164,10 @@ def main(args):
       errors = 1
 
   if not args.quiet:
-    print('-' * longest_string, ' '.join(['-------'] * len(files)))
+    print('-' * longest_string, ' '.join(['---------'] * len(files)))
     print('%-*s' % (longest_string, 'Total'), end='')
     for file in args.files:
-      print('%8d' % len(translations[file]), end='')
+      print('%10d' % len(translations[file]), end='')
     print()
 
   sys.exit(errors)
@@ -155,6 +177,7 @@ if __name__ == "__main__":
 
   parser = argparse.ArgumentParser(description=usage)
   parser.add_argument('--source', action='store', required=True, help='The source code tree.')
+  parser.add_argument('--single', action='store', help='Show only given localization next to reference.')
   parser.add_argument('--all', action='store_true', help='Show all string IDs.')
   parser.add_argument('--search', action='store_true', help='Search source for use.')
   parser.add_argument('--quiet', action='store_true', help='Produces no output.')
@@ -163,7 +186,10 @@ if __name__ == "__main__":
   if args.source:
     args.files = find_localizations(args.source)
 
-  base = filter(lambda x: x.endswith('en-US.h'), args.files)[0]
+    if args.single:
+      args.files = find_localizations(args.source, args.single)
+
+  base = filter(lambda x: x.endswith(REFERENCE), args.files)[0]
 
   try:
     main(args)
