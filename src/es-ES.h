@@ -504,8 +504,6 @@
 #define STRING_CMD_CONFIG_NO_NAME    "Especifique el nombre de una variable de configuración a modificar."
 #define STRING_CMD_HCONFIG_USAGE     "Lista todas las variables de configuración soportadas, a fines de completado"
 #define STRING_CMD_CUSTOM_MISMATCH   "Hay diferente número de columnas y etiquetas para el informe '{1}'."
-#define STRING_CMD_CUSTOM_OLD_SORT   "Empleado campo de ordenación en desuso '{1}'. Por favor modifique esto a '{2}'."
-#define STRING_CMD_CUSTOM_OLD_FIELD  "Empleado campo de informe en desuso '{1}'. Por favor modifique esto a '{2}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} mostrada(s)"
 #define STRING_CMD_CUSTOM_COUNT      "1 tarea"
 #define STRING_CMD_CUSTOM_COUNTN     "{1} tareas"
@@ -544,7 +542,6 @@
 #define STRING_CONFIG_INCLUDE_PATH   "Solo se pueden incluir archivos con paths absolutos, no '{1}'"
 #define STRING_CONFIG_BAD_ENTRY      "Formato incorrecto en entrada '{1}' en archivo de configuración."
 #define STRING_CONFIG_BAD_WRITE      "No se pudo escribir a '{1}'."
-#define STRING_CONFIG_DEPRECATED_US  "Su archivo .taskrc contiene ajustes de color que emplean subrayados, en desuso. Por favor, consulte:"
 #define STRING_CONFIG_DEPRECATED_COL "Su archivo .taskrc contiene informes con columnas en desuso. Por favor, consulte entry_time, start_time o end_time en:"
 #define STRING_CONFIG_DEPRECATED_VAR "Su archivo .taskrc contiene variables que están en desuso:"
 

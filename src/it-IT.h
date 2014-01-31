@@ -491,8 +491,6 @@
 #define STRING_CMD_CONFIG_NO_NAME    "Specificare il nome di una variabile di configurazione da modificare."
 #define STRING_CMD_HCONFIG_USAGE     "Elenca le variabili di configurazione supportate, per autocompletamento"
 #define STRING_CMD_CUSTOM_MISMATCH   "Differente numero di colonne ed etichette per il report '{1}'."
-#define STRING_CMD_CUSTOM_OLD_SORT   "Campo di ordinamento '{1}' deprecato.  Prego modificarlo in '{2}'."
-#define STRING_CMD_CUSTOM_OLD_FIELD  "Campo di report '{1}' deprecato. Prego modificarlo in '{2}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} mostrato"
 #define STRING_CMD_CUSTOM_COUNT      "1 task"
 #define STRING_CMD_CUSTOM_COUNTN     "{1} task"
@@ -531,7 +529,6 @@
 #define STRING_CONFIG_INCLUDE_PATH   "E` possibile includere solo file con percorso assoluto, non '{1}'"
 #define STRING_CONFIG_BAD_ENTRY      "Voce malformata '{1}' nel file di configurazione."
 #define STRING_CONFIG_BAD_WRITE      "Impossibile scrivere su'{1}'."
-#define STRING_CONFIG_DEPRECATED_US  "Il file .taskrc contiene impostazioni di colore che usano sottolineature deprecate. Verificare:"
 #define STRING_CONFIG_DEPRECATED_COL "Il file .taskrc contiene report con nomi di colonna deprecati. Verificare entry_time, start_time o end_time in:"
 #define STRING_CONFIG_DEPRECATED_VAR "Il file .taskrc contiene variabili deprecate:"
 
