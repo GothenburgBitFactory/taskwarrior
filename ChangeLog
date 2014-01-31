@@ -18,6 +18,8 @@ Features
  + Old-style color names including underscores are no longer supported.
 
 Bugs
+ + #1503 build failure with musl libc due to undefined GLOB_BRACE and GLOB_TILDE
+         (thanks to Natanael Copa)
  + #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
  + #1486 Truncated sentence in task-sync(5) manpage (thanks to Jakub Wilk).
  + #1487 `tasksh` segmentation fault (thanks to Hector Arciga).

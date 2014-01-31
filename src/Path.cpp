@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// taskwarrior - a command line task list manager.
 //
-// Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+// Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +37,7 @@
 #include <Directory.h>
 #include <Path.h>
 
-/* fixes build with musl libc */
+// Fixes build with musl libc.
 #ifndef GLOB_TILDE
 #define GLOB_TILDE 0
 #endif
