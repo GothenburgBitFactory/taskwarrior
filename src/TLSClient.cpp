@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////
-// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 //
@@ -103,6 +102,7 @@ TLSClient::TLSClient ()
 : _ca ("")
 , _cert ("")
 , _key ("")
+, _session(0)
 , _socket (0)
 , _limit (0)
 , _debug (false)

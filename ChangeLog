@@ -18,6 +18,8 @@ Features
  + Old-style color names including underscores are no longer supported.
 
 Bugs
+ + #1511 sync init crashes if client certification file is empty or invalid
+         (thanks to Marton Suranyi).
  + #1503 build failure with musl libc due to undefined GLOB_BRACE and GLOB_TILDE
          (thanks to Natanael Copa)
  + #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
