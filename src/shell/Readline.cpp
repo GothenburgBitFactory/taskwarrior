@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////
-// taskwarrior - a command line task list manager.
 //
 // Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 //
