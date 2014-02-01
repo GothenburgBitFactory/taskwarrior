@@ -99,6 +99,7 @@ int CmdShow::execute (std::string& output)
     " color.deleted"
     " color.due"
     " color.due.today"
+    " color.warning"
     " color.error"
     " color.footnote"
     " color.header"
@@ -257,8 +258,8 @@ int CmdShow::execute (std::string& output)
   view.add (Column::factory ("string", STRING_CMD_SHOW_CONF_VAR));
   view.add (Column::factory ("string", STRING_CMD_SHOW_CONF_VALUE));
 
-  Color error ("bold white on red");
-  Color warning ("black on yellow");
+  Color error (context.config.get ("color.error"));
+  Color warning (context.config.get ("color.warning"));
 
   bool issue_error = false;
   bool issue_warning = false;
