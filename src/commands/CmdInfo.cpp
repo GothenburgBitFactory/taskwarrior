@@ -194,14 +194,17 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 1, task->get ("recur"));
     }
 
+    // parent
     if (task->has ("parent"))
     {
-      // parent
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_PARENT);
       view.set (row, 1, task->get ("parent"));
+    }
 
-      // mask
+    // mask
+    if (task->has ("mask"))
+    {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_MASK);
       view.set (row, 1, task->get ("mask"));
