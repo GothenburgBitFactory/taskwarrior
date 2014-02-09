@@ -126,7 +126,7 @@
 #define STRING_COLUMN_BAD_FORMAT     "Formato de columna no reconocido '{1}.{2}'"
 #define STRING_COLUMN_LABEL_TASKS    "Tareas"
 #define STRING_COLUMN_LABEL_DEP      "Depende"
-#define STRING_COLUMN_LABEL_DEP_S    "Dep"
+#define STRING_COLUMN_LABEL_DEP_S    "Dep"  // |es-ES|==|en-US|
 #define STRING_COLUMN_LABEL_DESC     "Descripción"
 #define STRING_COLUMN_LABEL_DUE      "Vencimiento"
 #define STRING_COLUMN_LABEL_END      "Fin"
@@ -136,18 +136,18 @@
 #define STRING_COLUMN_LABEL_MOD      "Modificada"
 #define STRING_COLUMN_LABEL_ADDED    "Añadida"
 #define STRING_COLUMN_LABEL_AGE      "Edad"
-#define STRING_COLUMN_LABEL_ID       "ID"
-#define STRING_COLUMN_LABEL_PRI      "Pri"
+#define STRING_COLUMN_LABEL_ID       "ID"  // |es-ES|==|en-US|
+#define STRING_COLUMN_LABEL_PRI      "Pri"  // |es-ES|==|en-US|
 #define STRING_COLUMN_LABEL_PRIORITY "Prioridad"
 #define STRING_COLUMN_LABEL_PROJECT  "Proyecto"
 #define STRING_COLUMN_LABEL_UNTIL    "Hasta"
 #define STRING_COLUMN_LABEL_WAIT     "Espera"
 #define STRING_COLUMN_LABEL_WAITING  "Esperando hasta"
-#define STRING_COLUMN_LABEL_RECUR    "Recur"
+#define STRING_COLUMN_LABEL_RECUR    "Recur"  // |es-ES|==|en-US|
 #define STRING_COLUMN_LABEL_RECUR_L  "Recurrencia"
 #define STRING_COLUMN_LABEL_START    "Comienzo"
 #define STRING_COLUMN_LABEL_STARTED  "Comenzada"
-#define STRING_COLUMN_LABEL_ACTIVE   "A"
+#define STRING_COLUMN_LABEL_ACTIVE   "A"  // |es-ES|==|en-US|
 #define STRING_COLUMN_LABEL_STATUS   "Estatus"
 #define STRING_COLUMN_LABEL_STAT     "Est"
 #define STRING_COLUMN_LABEL_STAT_PE  "Pendientes"
@@ -156,14 +156,14 @@
 #define STRING_COLUMN_LABEL_STAT_WA  "Esperando"
 // Mejor Periódica, pero STRING_COLUMN_LABEL_STAT_P es Pendiente
 #define STRING_COLUMN_LABEL_STAT_RE  "Recurrentes"
-#define STRING_COLUMN_LABEL_STAT_P   "P"
-#define STRING_COLUMN_LABEL_STAT_C   "C"
+#define STRING_COLUMN_LABEL_STAT_P   "P"  // |es-ES|==|en-US|
+#define STRING_COLUMN_LABEL_STAT_C   "C"  // |es-ES|==|en-US|
 #define STRING_COLUMN_LABEL_STAT_D   "S"
 #define STRING_COLUMN_LABEL_STAT_W   "E"
-#define STRING_COLUMN_LABEL_STAT_R   "R"
+#define STRING_COLUMN_LABEL_STAT_R   "R"  // |es-ES|==|en-US|
 #define STRING_COLUMN_LABEL_TAGS     "Marcas"
 #define STRING_COLUMN_LABEL_TAG      "Marca"
-#define STRING_COLUMN_LABEL_UUID     "UUID"
+#define STRING_COLUMN_LABEL_UUID     "UUID"  // |es-ES|==|en-US|
 #define STRING_COLUMN_LABEL_URGENCY  "Urgencia"
 #define STRING_COLUMN_LABEL_NAME     "Nombre"
 #define STRING_COLUMN_LABEL_VALUE    "Valor"
@@ -203,7 +203,7 @@
 #define STRING_CMD_VERSION_DOCS      "La documentación de taskwarrior se puede consultar usando 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync' y 'man task-faq' o en http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} construido para "
 #define STRING_CMD_VERSION_UNKNOWN   "desconocido"
-#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2014 P. Beckingham, F. Hernandez."
+#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2014 P. Beckingham, F. Hernandez."  // |es-ES|==|en-US|
 #define STRING_CMD_LOGO_USAGE        "Muestra el logo de Taskwarrior"
 #define STRING_CMD_LOGO_COLOR_REQ    "El comando logo requiere que el soporte de color esté habilitado."
 #define STRING_CMD_EXEC_USAGE        "Ejecuta comandos y scripts externos"
@@ -238,7 +238,7 @@
 #define STRING_CMD_STATS_USAGE       "Muestra estadísticas de la base de datos de tareas"
 #define STRING_CMD_STATS_CATEGORY    "Categoría"
 #define STRING_CMD_STATS_DATA        "Datos"
-#define STRING_CMD_STATS_TOTAL       "Total"
+#define STRING_CMD_STATS_TOTAL       "Total"  // |es-ES|==|en-US|
 #define STRING_CMD_STATS_ANNOTATIONS "Anotaciones"
 #define STRING_CMD_STATS_UNIQUE_TAGS "Marcas únicas"
 #define STRING_CMD_STATS_PROJECTS    "Proyectos"
@@ -300,10 +300,10 @@
 #define STRING_CMD_PROJECTS_USAGE    "Muestra todos los nombres de proyecto en uso"
 #define STRING_CMD_PROJECTS_USAGE_2  "Muestra una lista de todos los nombres (solamente) de proyecto en uso"
 #define STRING_CMD_PROJECTS_NO       "No hay proyectos."
-#define STRING_CMD_PROJECTS_PRI_N    "Pri:None"
-#define STRING_CMD_PROJECTS_PRI_H    "Pri:H"
-#define STRING_CMD_PROJECTS_PRI_M    "Pri:M"
-#define STRING_CMD_PROJECTS_PRI_L    "Pri:L"
+#define STRING_CMD_PROJECTS_PRI_N    "Pri:None"  // |es-ES|==|en-US|
+#define STRING_CMD_PROJECTS_PRI_H    "Pri:H"  // |es-ES|==|en-US|
+#define STRING_CMD_PROJECTS_PRI_M    "Pri:M"  // |es-ES|==|en-US|
+#define STRING_CMD_PROJECTS_PRI_L    "Pri:L"  // |es-ES|==|en-US|
 #define STRING_CMD_PROJECTS_NONE     "(ninguno)"
 #define STRING_CMD_PROJECTS_SUMMARY  "{1} proyecto"
 #define STRING_CMD_PROJECTS_SUMMARY2 "{1} proyectos"
@@ -434,7 +434,7 @@
 #define STRING_CMD_SYNC_INIT         "Por favor, confirme que desea subir todas sus tareas pendientes al Servidor Task"
 #define STRING_CMD_SYNC_NO_INIT      "Taskwarrior no procederá a la inicialización de la sincronización por primera vez."
 #define STRING_CMD_SYNC_RELOCATE0    "La cuenta del servidor ha sido reubicada. Por favor, actualice su configuración utilizando:"
-#define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"
+#define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"   // |es-ES|==|en-US|
 #define STRING_CMD_SYNC_BAD_CA       "Certificado CA no encontrado."
 #define STRING_CMD_SYNC_CONNECT      "No se pudo conectar a {1} {2}"
 #define STRING_CMD_SYNC_HANDSHAKE    "Handshake fallido.  {1}"
@@ -447,7 +447,7 @@
 #define STRING_CMD_DIAG_CAPS         "Capacidades"
 #define STRING_CMD_DIAG_FEATURES     "Características Constructivas"
 #define STRING_CMD_DIAG_BUILT        "Construido"
-#define STRING_CMD_DIAG_COMMIT       "Commit"  // sic
+#define STRING_CMD_DIAG_COMMIT       "Commit"  // |es-ES|==|en-US|
 #define STRING_CMD_DIAG_FOUND        "(encontrado)"
 #define STRING_CMD_DIAG_MISSING      "(no encontrado)"
 #define STRING_CMD_DIAG_ENABLED      "Habilitado"
@@ -480,7 +480,7 @@
 
 #define STRING_CMD_COLOR_USAGE       "Todos los colores, una muestra, o una leyenda"
 #define STRING_CMD_COLOR_HERE        "Aquí están los colores en uso actualmente:"
-#define STRING_CMD_COLOR_COLOR       "Color"
+#define STRING_CMD_COLOR_COLOR       "Color"  // |es-ES|==|en-US|
 #define STRING_CMD_COLOR_DEFINITION  "Definición"
 #define STRING_CMD_COLOR_EXPLANATION "Use este comando para ver como los colores son mostrados por su terminal."
 #define STRING_CMD_COLOR_16          "Uso de 16-colores (soporta subrayado, negrita, fondo brillante):"
@@ -513,7 +513,7 @@
 #define STRING_CMD_BURN_USAGE_M      "Muestra un diagrama burndown, por meses"
 #define STRING_CMD_BURN_USAGE_W      "Muestra un diagrama burndown, por semanas"
 #define STRING_CMD_BURN_USAGE_D      "Muestra un diagrama burndown, por días"
-#define STRING_CMD_BURN_TITLE        "Burndown"      // Sic
+#define STRING_CMD_BURN_TITLE        "Burndown"  // |es-ES|==|en-US|
 #define STRING_CMD_BURN_TOO_SMALL    "Ventana de terminal demasiado pequeña para dibujar una gráfica."
 #define STRING_CMD_BURN_DAILY        "Diario"
 #define STRING_CMD_BURN_WEEKLY       "Semanal"
@@ -533,7 +533,7 @@
 #define STRING_CMD_CAL_LABEL_HOL     "Festivo"
 #define STRING_CMD_CAL_SUN_MON       "La variable de configuración 'weekstart' solamente puede contener 'domingo' o 'lunes'."
 #define STRING_CMD_EDIT_USAGE        "Lanza un editor para modificar una tarea directamente"
-#define STRING_CMD_CALC_USAGE        "Calculator"
+#define STRING_CMD_CALC_USAGE        "Calculadora"
 
 // Config
 #define STRING_CONFIG_OVERNEST       "Archivo de configuración anidado hasta más de 10 niveles de profundidad - esto tiene que ser un error."
@@ -573,16 +573,16 @@
 #define STRING_DATE_DECEMBER_LONG    "diciembre"
 
 #define STRING_DATE_JANUARY_SHORT    "ene"
-#define STRING_DATE_FEBRUARY_SHORT   "feb"
-#define STRING_DATE_MARCH_SHORT      "mar"
+#define STRING_DATE_FEBRUARY_SHORT   "feb"  // |es-ES|==|en-US|
+#define STRING_DATE_MARCH_SHORT      "mar"  // |es-ES|==|en-US|
 #define STRING_DATE_APRIL_SHORT      "abr"
-#define STRING_DATE_MAY_SHORT        "may"
-#define STRING_DATE_JUNE_SHORT       "jun"
-#define STRING_DATE_JULY_SHORT       "jul"
+#define STRING_DATE_MAY_SHORT        "may"  // |es-ES|==|en-US|
+#define STRING_DATE_JUNE_SHORT       "jun"  // |es-ES|==|en-US|
+#define STRING_DATE_JULY_SHORT       "jul"  // |es-ES|==|en-US|
 #define STRING_DATE_AUGUST_SHORT     "ago"
-#define STRING_DATE_SEPTEMBER_SHORT  "sep"
-#define STRING_DATE_OCTOBER_SHORT    "oct"
-#define STRING_DATE_NOVEMBER_SHORT   "nov"
+#define STRING_DATE_SEPTEMBER_SHORT  "sep"  // |es-ES|==|en-US|
+#define STRING_DATE_OCTOBER_SHORT    "oct"  // |es-ES|==|en-US|
+#define STRING_DATE_NOVEMBER_SHORT   "nov"  // |es-ES|==|en-US|
 #define STRING_DATE_DECEMBER_SHORT   "dic"
 
 #define STRING_DATE_SUNDAY_LONG      "domingo"
@@ -687,11 +687,11 @@
 
 // Maintain the same spacing.
 #define STRING_EDIT_TABLE_HEADER_1   "Nombre             Detalles modificables"
-#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"
+#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"  // |es-ES|==|en-US|
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_ERROR_PREFIX          "Error: "
+#define STRING_ERROR_PREFIX          "Error: "  // |es-ES|==|en-US|
 #define STRING_UNKNOWN_ERROR         "Error desconocido."
 #define STRING_TRIVIAL_INPUT         "Debe especificar un comando o una tarea a modificar."
 #define STRING_ASSUME_INFO           "No especificó un comando - asumido 'information'."
@@ -773,7 +773,7 @@
 #define STRING_CMD_SHOW_LOC_EXIST    "Error de configuración: data.location contiene un nombre de directorio que no existe o no se puede leer."
 #define STRING_CMD_SHOW_CONF_VAR     "Variable Config"
 #define STRING_CMD_SHOW_CONF_VALUE   "Valor"
-#define STRING_CMD_SHOW_CONF_DEFAULT "Default value"
+#define STRING_CMD_SHOW_CONF_DEFAULT "Valor por defecto"
 #define STRING_CMD_SHOWRAW           "Muestra todas las variables de configuración en un formato legible por la máquina"
 
 // Task
@@ -954,17 +954,17 @@
 */
 
 // util
-#define STRING_UTIL_CONFIRM_YN       " (yes/no) "
-#define STRING_UTIL_CONFIRM_YES      "yes"
-#define STRING_UTIL_CONFIRM_YES_U    "Yes"
-#define STRING_UTIL_CONFIRM_NO       "no"
-#define STRING_UTIL_CONFIRM_ALL      "all"
-#define STRING_UTIL_CONFIRM_ALL_U    "All"
-#define STRING_UTIL_CONFIRM_QUIT     "quit"
-#define STRING_UTIL_GIBIBYTES        "GiB"
-#define STRING_UTIL_MEBIBYTES        "MiB"
-#define STRING_UTIL_KIBIBYTES        "KiB"
-#define STRING_UTIL_BYTES            "B"
+#define STRING_UTIL_CONFIRM_YN       " (yes/no) "  // |es-ES|==|en-US|
+#define STRING_UTIL_CONFIRM_YES      "yes"  // |es-ES|==|en-US|
+#define STRING_UTIL_CONFIRM_YES_U    "Yes"  // |es-ES|==|en-US|
+#define STRING_UTIL_CONFIRM_NO       "no"  // |es-ES|==|en-US|
+#define STRING_UTIL_CONFIRM_ALL      "all"  // |es-ES|==|en-US|
+#define STRING_UTIL_CONFIRM_ALL_U    "All"  // |es-ES|==|en-US|
+#define STRING_UTIL_CONFIRM_QUIT     "quit"  // |es-ES|==|en-US|
+#define STRING_UTIL_GIBIBYTES        "GiB"  // |es-ES|==|en-US|
+#define STRING_UTIL_MEBIBYTES        "MiB"  // |es-ES|==|en-US|
+#define STRING_UTIL_KIBIBYTES        "KiB"  // |es-ES|==|en-US|
+#define STRING_UTIL_BYTES            "B"  // |es-ES|==|en-US|
 
 // shell
 #define STRING_SHELL_USAGE \
