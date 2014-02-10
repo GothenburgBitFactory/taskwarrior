@@ -7,6 +7,7 @@ Features
  + #1501 info report streamlining - partially implemented.
  + #TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
            Weber)
+ + #TW-1255 New testing framework (thanks to Renato Alves).
  + Removed deprecated 'echo.command' setting, in favor of the 'header' and
    'affected' verbosity tokens.
  + Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity

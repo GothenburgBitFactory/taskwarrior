@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
 import sys
@@ -43,6 +43,14 @@ class TestVersion(unittest.TestCase):
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year - 1,)
         self.assertRegexpMatches(out.decode("utf8"), expected)
 
+    def testFailOther(self):
+        """Nothing to do with Copyright"""
+        self.assertEqual("I like to code", "I like\nto code\n")
+
+    @unittest.skipIf(1 != 0, "This machine has sane logic")
+    def testSkipped(self):
+        """Test all logic of the world"""
+
     def tearDown(self):
         """Executed after each test in the class"""
 
@@ -53,7 +61,7 @@ class TestVersion(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    from taprunner import TAPTestRunner
+    from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4
