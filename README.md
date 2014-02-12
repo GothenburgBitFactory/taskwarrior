@@ -1,16 +1,12 @@
-                         *** Disclaimer ***
-                       *** during ongoing ***
-                        *** development ***
+# Disclaimer during ongoing development
 
 The development branch is a work in progress and may not pass all quality tests,
 therefore it may harm your data.  While we welcome bug reports from the
 development branch, we do not guarantee proper or timely fixes.
 
-      Broken functionality may arise from ongoing development work.
-
-                        Make proper backups.
-
-       Be aware that using the development branch involves risks.
+- Broken functionality may arise from ongoing development work.
+- Make proper backups.
+- Be aware that using the development branch involves risks.
 
 ---
 
