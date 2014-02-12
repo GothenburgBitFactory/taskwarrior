@@ -1059,8 +1059,6 @@ Presence/absence of UDA data.
 The coefficients reflect the relative importance of the various terms in the
 urgency calculation.  These are default values, and may be modified to suit your
 preferences, but it is important that you carefully consider any modifications.
-See the original RFC-31 for complete details at:
-http://tasktools.org/gitweb/gitweb.cgi?p=rfc.git;a=blob_plain;f=rfc31-urgency.txt;hb=HEAD
 
 .SS SHADOW FILE
 
@@ -1399,7 +1397,7 @@ The official site at
 
 .TP
 The official code repository at
-<git://tasktools.org/task.git/>
+<https://git.tasktools.org/scm/tm/task.git>
 
 .TP
 You can contact the project by emailing

@@ -137,7 +137,7 @@ Unit Tests Needed
 
   The tests are mainly written in Perl, and all use TAP.  Here is how to get the
   code and run the test suite:
-     git clone git://tasktools.org:task.git
+     git clone https://git.tasktools.org/scm/tm/task.git
      cd task.git
      git checkout 2.4.0
      cmake .
@@ -159,7 +159,7 @@ Unit Tests Needed
   If you make a habit of running the test suite, consider downloading the
   vramsteg utility to show a colorful progress bar, from:
 
-    git://tasktools.org/vramsteg.git
+    https://git.tasktools.org/scm/ut/vramsteg.git
 
   Tests needed:
 
