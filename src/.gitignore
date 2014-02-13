@@ -1,5 +1,5 @@
 *.o
 Makefile.in
-*_test
+tw-*
 args
 calc
