@@ -52,6 +52,8 @@
 #include <de-DE.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_IT_IT
 #include <it-IT.h>
+#elif PACKAGE_LANGUAGE == LANGUAGE_POR_PRT
+#include <por-PRT.h>
 #endif
 
 #define CCOLOR_BOLD             500

@@ -22,6 +22,7 @@
 #define LANGUAGE_FR_FR ${LANGUAGE_FR_FR}
 #define LANGUAGE_DE_DE ${LANGUAGE_DE_DE}
 #define LANGUAGE_IT_IT ${LANGUAGE_IT_IT}
+#define LANGUAGE_POR_PRT ${LANGUAGE_POR_PRT}
 
 /* git information */
 #cmakedefine HAVE_COMMIT

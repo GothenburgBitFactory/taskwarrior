@@ -1,0 +1,57 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/pt-PT/2014.json
+# http://holidata.net/pt-PT/2015.json
+#
+# Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.pt-PT1.name=Ano Novo
+holiday.pt-PT1.date=20140101
+holiday.pt-PT2.name=Carnaval
+holiday.pt-PT2.date=20140304
+holiday.pt-PT3.name=Sexta-feira Santa
+holiday.pt-PT3.date=20140418
+holiday.pt-PT4.name=Páscoa
+holiday.pt-PT4.date=20140420
+holiday.pt-PT5.name=Dia da Liberdade
+holiday.pt-PT5.date=20140425
+holiday.pt-PT6.name=Dia do Trabalhador
+holiday.pt-PT6.date=20140501
+holiday.pt-PT7.name=Corpo de Deus
+holiday.pt-PT7.date=20140619
+holiday.pt-PT8.name=Dia de Portugal
+holiday.pt-PT8.date=20140610
+holiday.pt-PT9.name=Assunção de Nossa Senhora
+holiday.pt-PT9.date=20140815
+holiday.pt-PT10.name=Implantação da República
+holiday.pt-PT10.date=20141005
+holiday.pt-PT11.name=Todos os Santos
+holiday.pt-PT11.date=20141101
+holiday.pt-PT12.name=Restauração da Independência
+holiday.pt-PT12.date=20141201
+holiday.pt-PT13.name=Imaculada Conceição
+holiday.pt-PT13.date=20141208
+holiday.pt-PT14.name=Natal
+holiday.pt-PT14.date=20141225

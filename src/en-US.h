@@ -193,6 +193,7 @@
 #define STRING_COLUMN_EXAMPLES_ANNO4 "If you're not getting your hair cut"
 
 // commands/Cmd*
+// USAGE strings are visible in 'task help'
 #define STRING_CMD_CONFLICT          "Custom report '{1}' conflicts with built-in task command."
 #define STRING_CMD_VERSION_USAGE     "Shows the taskwarrior version number"
 #define STRING_CMD_VERSION_USAGE2    "Shows only the taskwarrior version number"

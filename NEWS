@@ -3,6 +3,7 @@ New Features in taskwarrior 2.4.0
 
   - The 'show' command displays default configuration values, when appropriate.
   - Removed deprecated commands 'push', 'pull' and 'merge'.
+  - Portuguese (por-PRT) localization.
 
 New commands in taskwarrior 2.4.0
 
