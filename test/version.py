@@ -3,7 +3,7 @@
 
 import sys
 import os
-# Ensure python finds the local taprunner module
+# Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import unittest
