@@ -9,6 +9,7 @@ Features
  + TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
            Weber)
  + TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
+ + TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
  + TW-1255 New testing framework (thanks to Renato Alves).
  + TW-1258 Portuguese Localization (thanks to Renato Alves).
  + TW-1260 New virtual tags YESTERDAY, TOMORROW.
