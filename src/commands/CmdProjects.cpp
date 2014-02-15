@@ -77,10 +77,6 @@ int CmdProjects::execute (std::string& output)
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
   std::map <std::string, int> unique;
-  std::map <std::string, int> high;
-  std::map <std::string, int> medium;
-  std::map <std::string, int> low;
-  std::map <std::string, int> none;
   bool no_project = false;
   std::string project;
   std::string priority;
@@ -94,16 +90,10 @@ int CmdProjects::execute (std::string& output)
     }
 
     project = task->get ("project");
-    priority = task->get ("priority");
-
     unique[project] += 1;
+
     if (project == "")
       no_project = true;
-
-         if (priority == "H") high[project]   += 1;
-    else if (priority == "M") medium[project] += 1;
-    else if (priority == "L") low[project]    += 1;
-    else                      none[project]   += 1;
   }
 
   if (unique.size ())
@@ -113,10 +103,6 @@ int CmdProjects::execute (std::string& output)
     view.width (context.getWidth ());
     view.add (Column::factory ("string",       STRING_COLUMN_LABEL_PROJECT));
     view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_TASKS));
-    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_N));
-    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_L));
-    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_M));
-    view.add (Column::factory ("string.right", STRING_CMD_PROJECTS_PRI_H));
 
     std::vector <std::string> processed;
     std::map <std::string, int>::iterator project;
@@ -139,10 +125,6 @@ int CmdProjects::execute (std::string& output)
                           ? STRING_CMD_PROJECTS_NONE
                           : indentProject (project->first, "  ", '.')));
       view.set (row, 1, project->second);
-      view.set (row, 2, none[project->first]);
-      view.set (row, 3, low[project->first]);
-      view.set (row, 4, medium[project->first]);
-      view.set (row, 5, high[project->first]);
       processed.push_back (project->first);
     }
 
