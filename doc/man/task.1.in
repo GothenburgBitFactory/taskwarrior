@@ -571,9 +571,11 @@ are:
     BLOCKED      Matches if the task is blocked
     UNBLOCKED    Matches if the task is not blocked
     BLOCKING     Matches if the task is blocking
+    YESTERDAY    Matches if the task was due sometime yesterday
     DUE          Matches if the task is due
     DUETODAY     Matches if the task is due today
     TODAY        Matches if the task is due today
+    TOMORROW     Matches if the task is due sometime tomorrow
     WEEK         Matches if the task is due this week
     MONTH        Matches if the task is due this month
     YEAR         Matches if the task is due this year

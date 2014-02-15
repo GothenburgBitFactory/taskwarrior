@@ -343,6 +343,24 @@ bool Task::is_due () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Task::is_dueyesterday () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      if (Date ("yesterday").sameDay (get_date ("due")))
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Task::is_duetoday () const
 {
   if (has ("due"))
@@ -353,6 +371,24 @@ bool Task::is_duetoday () const
         status != Task::deleted)
     {
       if (getDueState (get ("due")) == 2)
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::is_duetomorrow () const
+{
+  if (has ("due"))
+  {
+    Task::status status = getStatus ();
+
+    if (status != Task::completed &&
+        status != Task::deleted)
+    {
+      if (Date ("tomorrow").sameDay (get_date ("due")))
         return true;
     }
   }
@@ -1081,6 +1117,8 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "DUE")       return is_due ();
   if (tag == "DUETODAY")  return is_duetoday ();
   if (tag == "TODAY")     return is_duetoday ();
+  if (tag == "YESTERDAY") return is_dueyesterday ();
+  if (tag == "TOMORROW")  return is_duetomorrow ();
   if (tag == "OVERDUE")   return is_overdue ();
   if (tag == "WEEK")      return is_dueweek ();
   if (tag == "MONTH")     return is_duemonth ();
@@ -1093,12 +1131,6 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "WAITING")   return has ("wait");
   if (tag == "ANNOTATED") return hasAnnotations ();
   if (tag == "PARENT")    return has ("mask");
-
-/*
-  TODO YESTERDAY - due yesterday
-  TODO TOMORROW  - due tomorrow
-  TODO READY     - is ready
-*/
 
   // Concrete tags.
   std::vector <std::string> tags;
