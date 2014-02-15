@@ -1,4 +1,5 @@
-#! /usr/bin/env perl
+#! /usr/bin/env python2.7
+# -*- coding: utf-8 -*-
 ################################################################################
 ##
 ## Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
@@ -25,20 +26,42 @@
 ##
 ################################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 2;
+import sys
+import os
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-qx{touch version.rc};
+import unittest
+from subprocess import Popen, PIPE, STDOUT
+from datetime import datetime
 
-my $year = (localtime (time))[5] + 1900;
 
-my $output = qx{../src/task rc:version.rc version 2>&1};
-like ($output, qr/Copyright \(C\) \d{4} - $year/, 'Copyright is current');
+class TestVersion(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        # Empty rc file
+        open("version.rc", 'w').close()
 
-# Cleanup.
-unlink 'version.rc';
-ok (!-r 'version.rc', 'Removed version.rc');
+    def testVersion(self):
+        """Copyright is current"""
+        command = ["../src/task", "rc:version.rc", "version"]
 
-exit 0;
+        # Merge STDOUT and STDERR
+        p = Popen(command, stdout=PIPE, stderr=STDOUT)
+        out, err = p.communicate()
 
+        expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
+        self.assertRegexpMatches(out.decode("utf8"), expected)
+
+    @classmethod
+    def tearDownClass(cls):
+        """Executed once after all tests in the class"""
+        os.remove("version.rc")
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
