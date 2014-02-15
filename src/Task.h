@@ -103,6 +103,7 @@ public:
   void remove (const std::string&);
 
 #ifdef PRODUCT_TASKWARRIOR
+  bool is_ready () const;
   bool is_due () const;
   bool is_dueyesterday () const;
   bool is_duetoday () const;

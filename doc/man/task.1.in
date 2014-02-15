@@ -582,6 +582,7 @@ are:
     OVERDUE      Matches if the task is overdue
     ACTIVE       Matches if the task is started
     SCHEDULED    Matches if the task is scheduled
+    READY        Matches if the task is actionable
     PARENT       Matches if the task is a parent
     CHILD        Matches if the task has a parent
     UNTIL        Matches if the task expires

@@ -325,6 +325,17 @@ void Task::setStatus (Task::status status)
 
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
+// Ready means pending, not blocked and either not scheduled or scheduled before
+// now.
+bool Task::is_ready () const
+{
+  return getStatus () == Task::pending &&
+         !is_blocked                   &&
+         (! has ("scheduled")          ||
+          Date ("now").operator> (get_date ("scheduled")));
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Task::is_due () const
 {
   if (has ("due"))
@@ -1114,6 +1125,7 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "UNBLOCKED") return !is_blocked;
   if (tag == "BLOCKING")  return is_blocking;
 #ifdef PRODUCT_TASKWARRIOR
+  if (tag == "READY")     return is_ready ();
   if (tag == "DUE")       return is_due ();
   if (tag == "DUETODAY")  return is_duetoday ();
   if (tag == "TODAY")     return is_duetoday ();
