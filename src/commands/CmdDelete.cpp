@@ -72,9 +72,7 @@ int CmdDelete::execute (std::string& output)
   {
     Task before (*task);
 
-    if (task->getStatus () == Task::pending   ||
-        task->getStatus () == Task::completed ||
-        task->getStatus () == Task::waiting)
+    if (task->getStatus () != Task::deleted)
     {
       // Delete the specified task.
       std::string question;
@@ -133,6 +131,30 @@ int CmdDelete::execute (std::string& output)
               parent.setEnd ();
 
             context.tdb2.modify (parent);
+          }
+        }
+
+        // Task potentially has child tasks - optionally delete them.
+        else
+        {
+          std::vector <Task> children = context.tdb2.children (*task);
+          if (children.size () &&
+              confirm (STRING_CMD_DELETE_CONFIRM_R))
+          {
+            std::vector <Task>::iterator child;
+            for (child = children.begin (); child != children.end (); ++child)
+            {
+              modify_task_description_replace (*child, modifications);
+              child->setStatus (Task::deleted);
+              if (! child->has ("end"))
+                child->setEnd ();
+
+              updateRecurrenceMask (*child);
+              context.tdb2.modify (*child);
+              feedback_affected (STRING_CMD_DELETE_TASK_R, *child);
+              feedback_unblocked (*child);
+              ++count;
+            }
           }
         }
       }
