@@ -5,11 +5,11 @@ Features
  + #1492 task show to display default values when appropriate (thanks to Renato
          Alves).
  + #1501 info report streamlining - partially implemented.
- + #TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
+ + TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
            Weber)
- + #TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
- + #TW-1255 New testing framework (thanks to Renato Alves).
- + #TW-1258 Portuguese Localization (thanks to Renato Alves).
+ + TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
+ + TW-1255 New testing framework (thanks to Renato Alves).
+ + TW-1258 Portuguese Localization (thanks to Renato Alves).
  + Removed deprecated 'echo.command' setting, in favor of the 'header' and
    'affected' verbosity tokens.
  + Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
