@@ -31,37 +31,35 @@ import os
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-import unittest
+from basetest import BaseTestCase
+
 from subprocess import Popen, PIPE, STDOUT
 from datetime import datetime
 
 
-class TestVersion(unittest.TestCase):
+class TestVersion(BaseTestCase):
     @classmethod
-    def setUpClass(cls):
-        """Executed once before any test in the class"""
+    def prepare(cls):
         # Empty rc file
         open("version.rc", 'w').close()
 
     def testVersion(self):
         """Copyright is current"""
-        command = ["../src/task", "rc:version.rc", "version"]
+        args = ["rc:version.rc", "version"]
 
-        # Merge STDOUT and STDERR
-        p = Popen(command, stdout=PIPE, stderr=STDOUT)
-        out, err = p.communicate()
+        code, out, err = self.callTaskSuccess(args)
 
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
         self.assertRegexpMatches(out.decode("utf8"), expected)
 
     @classmethod
-    def tearDownClass(cls):
-        """Executed once after all tests in the class"""
+    def finish(cls):
         os.remove("version.rc")
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
+    import unittest
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4
