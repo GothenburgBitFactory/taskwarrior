@@ -1,4 +1,5 @@
-#! /usr/bin/env perl
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
 ################################################################################
 ##
 ## Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
@@ -25,63 +26,128 @@
 ##
 ################################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 10;
+import sys
+import os
+import re
+from glob import glob
+# Ensure python finds the local simpletap and basetest modules
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import BaseTestCase
+from datetime import datetime
 
-# Create the rc file.
-if (open my $fh, '>', 'bug.rc')
-{
-  print $fh "data.location=.\n",
-            "confirmation=no\n";
-  close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
-}
 
-# Setup: Add a recurring task, generate an instance, then add a project.
-qx{../src/task rc:bug.rc add foo due:tomorrow recur:daily 2>&1};
-qx{../src/task rc:bug.rc ls 2>&1};
+class BaseTestBug360(BaseTestCase):
+    @classmethod
+    def prepare(cls):
+        with open("bug.rc", 'w') as fh:
+            fh.write("data.location=.\n"
+                     "confirmation=no\n")
 
-# Result: trying to add the project generates an error about removing
-# recurrence from a task.
-my $output = qx{echo 'y' | ../src/task rc:bug.rc 1 modify project:bar 2>&1};
-like ($output, qr/^Modified 2 tasks.$/ms, '2 tasks modified');
-unlike ($output, qr/^You cannot remove the recurrence from a recurring task.$/ms, 'No recurrence removal error');
+    def setUp(self):
+        """Executed before each test in the class"""
+        args = ["rc:bug.rc", "add", "foo", "due:tomorrow", "recur:daily"]
+        self.callTaskSuccess(args)
+        # TODO: Add explanation why this line is necessary
+        args = ["rc:bug.rc", "ls"]
+        self.callTaskSuccess(args)
 
-# Now try to generate the error above via regular means - ie, is it actually
-# doing what it should?
-# TODO Removing recur: from a recurring task should also remove imask and parent.
-$output = qx{../src/task rc:bug.rc 2 modify recur: 2>&1 >/dev/null};
-like ($output, qr/^You cannot remove the recurrence from a recurring task.$/ms, 'Recurrence removal error');
+    def tearDown(self):
+        """Needed after each test or setUp will cause duplicated data at start
+        of the next test.
+        """
+        for file in glob("*.data"):
+            os.remove(file)
 
-# Prevent removal of the due date from a recurring task.
-# TODO Removing due: from a recurring task should also remove recur, imask and parent
-$output = qx{../src/task rc:bug.rc 2 modify due: 2>&1 >/dev/null};
-like ($output, qr/^You cannot remove the due date from a recurring task.$/ms, 'Cannot remove due date from a recurring task');
+    @classmethod
+    def cleanup(cls):
+        os.remove("bug.rc")
 
-# Allow removal of the due date from a non-recurring task.
-qx{../src/task rc:bug.rc add nonrecurring due:today 2>&1};
-$output = qx{../src/task rc:bug.rc ls 2>&1};
-like ($output, qr/^2 task.$/ms, '2 tasks shown');
-my ($id) = $output =~ /(\d+)\s.+\snonrecurring/;
-$output = qx{../src/task rc:bug.rc $id modify due: 2>&1};
-like ($output, qr/^Modified 1 task.$/ms, 'no task modified');
-unlike ($output, qr/^You cannot remove the due date from a recurring task.$/ms, 'Can remove due date from a non-recurring task');
 
-$output = qx{../src/task rc:bug.rc diag 2>&1};
-like ($output, qr/^\s+No duplicates found$/m, 'No duplicate UUIDs detected');
+class TestBug360RemovalError(BaseTestBug360):
+    def test_modify_recursive_project(self):
+        """Modifying a recursive task by adding project: also modifies parent
+        """
+        commands = "y\n"
+        args = ["rc:bug.rc", "1", "modify", "project:bar"]
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
+        code, out, err = self.callTaskSuccess(args, commands)
 
-exit 0;
+        expected = "Modified 2 tasks."
+        self.assertIn(expected, out)
+        expected = "You cannot remove the recurrence from a recurring task."
+        self.assertNotIn(expected, out)
 
+    def test_cannot_remove_recurrence(self):
+        """Cannot remove recurrence from recurring task
+        """
+        # TODO Removing recur: from a recurring task should also remove imask
+        # and parent.
+        args = ["rc:bug.rc", "2", "modify", "recur:"]
+
+        code, out, err = self.callTaskError(args)
+        # Expected non zero exit-code
+        self.assertEqual(code, 2)
+
+        expected = "You cannot remove the recurrence from a recurring task."
+        self.assertIn(expected, out)
+
+    def test_cannot_remove_due_date(self):
+        """Cannot remove due date from recurring task
+        """
+        # TODO Removing due: from a recurring task should also remove recur,
+        # imask and parent
+        args = ["rc:bug.rc", "2", "modify", "due:"]
+
+        code, out, err = self.callTaskError(args)
+        # Expected non zero exit-code
+        self.assertEqual(code, 2)
+
+        expected = "You cannot remove the due date from a recurring task."
+        self.assertIn(expected, out)
+
+
+class TestBug360AllowedChanges(BaseTestBug360):
+    def setUp(self):
+        """Executed before each test in the class"""
+        # Also do setUp from BaseTestBug360
+        super(TestBug360AllowedChanges, self).setUp()
+
+        self.callTaskSuccess(["rc:bug.rc", "add", "nonrecurring", "due:today"])
+
+    def test_allow_modify_due_in_nonrecurring(self):
+        """Allow modifying due date in non recurring task
+        """
+        # Retrieve the id of the non recurring task
+        args = ["rc:bug.rc", "ls"]
+        code, out, err = self.callTaskSuccess(args)
+
+        expected = "2 tasks"
+        self.assertIn(expected, out)
+
+        # NOTE: raw python string r"" avoids having to escape backslashes
+        id = re.search(r"(\d+)\s.+\snonrecurring", out).group(1)
+
+        args = ["rc:bug.rc", id, "modify", "due:"]
+        code, out, err = self.callTaskSuccess(args)
+
+        expected = "Modified 1 task."
+        self.assertIn(expected, out)
+        expected = "You cannot remove the due date from a recurring task."
+        self.assertNotIn(expected, out)
+
+        # TODO: I'm not really sure what this is supposed to test for and if it
+        # should be here at all. On another note turning it into an independent
+        # test requires too much duplication of code
+        args = ["rc:bug.rc", "diag"]
+        code, out, err = self.callTaskSuccess(args)
+        expected = "No duplicates found"
+        self.assertIn(expected, out)
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    import unittest
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
