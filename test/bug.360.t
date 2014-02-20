@@ -34,7 +34,6 @@ from glob import glob
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import BaseTestCase
-from datetime import datetime
 
 
 class BaseTestBug360(BaseTestCase):
