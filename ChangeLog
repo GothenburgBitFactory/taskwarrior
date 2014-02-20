@@ -25,6 +25,7 @@ Features
  + Removed version 1.x sort column support.
  + Old-style color names including underscores are no longer supported.
  + Removed priority counts from the 'projects' report.
+ + New themes: dark-default-16.theme, dark-gray-blue-256.theme
 
 Bugs
  + #1511 sync init crashes if client certification file is empty or invalid

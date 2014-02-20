@@ -548,6 +548,8 @@ void Config::createDefaultRC (const std::string& rc, const std::string& data)
            << "#include " << TASK_RCDIR << "/dark-violets-256.theme\n"
            << "#include " << TASK_RCDIR << "/dark-yellow-green.theme\n"
            << "#include " << TASK_RCDIR << "/dark-gray-256.theme\n"
+           << "#include " << TASK_RCDIR << "/dark-default-16.theme\n"
+           << "#include " << TASK_RCDIR << "/dark-gray-blue-256.theme\n"
            << "\n";
 
   // Write out the new file.
