@@ -7,12 +7,14 @@ Features
  + #1501 info report streamlining - partially implemented.
  + TW-197 New virtual tag READY.
  + TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
-           Weber)
+          Weber)
  + TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
  + TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
  + TW-1255 New testing framework (thanks to Renato Alves).
  + TW-1258 Portuguese Localization (thanks to Renato Alves).
  + TW-1260 New virtual tags YESTERDAY, TOMORROW.
+ + TW-1261 Migrate test bug.360.t to new unit testing framework (thanks to
+           Renato Alves).
  + Removed deprecated 'echo.command' setting, in favor of the 'header' and
    'affected' verbosity tokens.
  + Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
