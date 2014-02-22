@@ -1,1639 +1,1637 @@
 2.4.0 () -
 
 Features
- + #1255 l10n translation utility improvements (thanks to Renato Alves).
- + #1492 task show to display default values when appropriate (thanks to Renato
-         Alves).
- + #1501 info report streamlining - partially implemented.
- + TW-197 New virtual tag READY.
- + TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
-          Weber)
- + TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
- + TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
- + TW-1255 New testing framework (thanks to Renato Alves).
- + TW-1258 Portuguese Localization (thanks to Renato Alves).
- + TW-1260 New virtual tags YESTERDAY, TOMORROW.
- + TW-1261 Migrate test bug.360.t to new unit testing framework (thanks to
-           Renato Alves).
- + TW-1274 Map 'modification' attribute to 'modified' (thanks to jck).
- + Removed deprecated 'echo.command' setting, in favor of the 'header' and
-   'affected' verbosity tokens.
- + Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
-   token..
- + Includes utility 'calc' for quick command line calculations using the new
-   expression evaluator.
- + Deprecated '_query' alias.
- + Removed deprecated 'push', 'pull' and 'merge' commands.
- + Removed version 1.x column name support.
- + Removed version 1.x sort column support.
- + Old-style color names including underscores are no longer supported.
- + Removed priority counts from the 'projects' report.
- + New themes: dark-default-16.theme, dark-gray-blue-256.theme
+- #1255 l10n translation utility improvements (thanks to Renato Alves).
+- #1492 task show to display default values when appropriate (thanks to Renato
+        Alves).
+- #1501 info report streamlining - partially implemented.
+- TW-197 New virtual tag READY.
+- TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
+         Weber)
+- TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
+- TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
+- TW-1255 New testing framework (thanks to Renato Alves).
+- TW-1258 Portuguese Localization (thanks to Renato Alves).
+- TW-1260 New virtual tags YESTERDAY, TOMORROW.
+- TW-1261 Migrate test bug.360.t to new unit testing framework (thanks to
+          Renato Alves).
+- TW-1274 Map 'modification' attribute to 'modified' (thanks to jck).
+- Removed deprecated 'echo.command' setting, in favor of the 'header' and
+  'affected' verbosity tokens.
+- Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
+  token..
+- Includes utility 'calc' for quick command line calculations using the new
+  expression evaluator.
+- Deprecated '_query' alias.
+- Removed deprecated 'push', 'pull' and 'merge' commands.
+- Removed version 1.x column name support.
+- Removed version 1.x sort column support.
+- Old-style color names including underscores are no longer supported.
+- Removed priority counts from the 'projects' report.
+- New themes: dark-default-16.theme, dark-gray-blue-256.theme
 
 Bugs
- + #1511 sync init crashes if client certification file is empty or invalid
-         (thanks to Marton Suranyi).
- + #1508 Show command highlight configuration (thanks to Nicolas Appriou).
- + #1503 build failure with musl libc due to undefined GLOB_BRACE and GLOB_TILDE
-         (thanks to Natanael Copa)
- + #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
- + #1486 Truncated sentence in task-sync(5) manpage (thanks to Jakub Wilk).
- + #1487 `tasksh` segmentation fault (thanks to Hector Arciga).
- + Removed debugging code.
+- #1511 sync init crashes if client certification file is empty or invalid
+        (thanks to Marton Suranyi).
+- #1508 Show command highlight configuration (thanks to Nicolas Appriou).
+- #1503 build failure with musl libc due to undefined GLOB_BRACE and GLOB_TILDE
+        (thanks to Natanael Copa)
+- #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
+- #1486 Truncated sentence in task-sync(5) manpage (thanks to Jakub Wilk).
+- #1487 `tasksh` segmentation fault (thanks to Hector Arciga).
+- Removed debugging code.
 
 ------ current release ---------------------------
 
 2.3.0 (2014-01-15) c4eb46507031b7dee839dcb932bb2a22b2f0d3a2
 
 Features
- + #328 Replaced the 'shell' command with a standalone 'tasksh' binary, which
-   includes GNU readline support (thanks to Haitham Gad).
- + #934 support for 'reserved.lines' to accommodate multi-line
-   shell prompts when used in conjunction with 'limit:page' (thanks to Robert
-   Gill).
- + #1226 A new French translation has begun, and will continue to be a work in
-   progress for a while (thanks to YBSA R).
- + #1227 A new 'verify_l10n' utility ensures the localizations are in sync
-   (thanks to Wim Schuermann).
- + #1250 Support out-of-tree test runs (thanks to Jakub Wilk).
- + #1256 Supports default values for UDA fields (thanks to Thomas Sullivan).
- + #1297 The task₋sync(5) man pages is rewritten with examples.
- + #1339 The configuration file now supports JSON encoding of Unicode
-   characters, by specifying \uNNNN.
- + #1385 Need a way to configure the trust of self-signed certificates.
- + #1423 sync vs. push, pull, merge collision avoidance.
- + #1473 Make TASK_RCDIR customizable (thanks to Jakub Wilk).
- + Stores un-synched transactions in <data.location>/backlog.data.
- + Adds a new 'synchronize' command to sync data with a Taskserver.
- + Adds a new 'initialize' synchronize command argument that uploads all pending
-   tasks for first-time initialization.
- + Adds a new 'sync' verbosity token, which will remind when a backlog builds
-   up and needs a sync.
- + Supports IPv4 and IPv6 server addresses.
- + Began fr-FR localization.
- + Complete it-IT localization.
- + Merged three l10n utility scripts into one tools, scripts/utils/l10n, which
-   will help the translation effort.
- + The 'due' urgency component now uses seconds, not days, in the calculation.
- + The 'debug.tls' configuration variable takes an integer which corresponds to
-   the GnuTLS log level.  For debugging.
- + File format 2 (used in version 0.9.3 - 1.5.0) is no longer supported.
- + Migrated column processing code into Task.cpp for future use within each
-   individual column object.  Legacy code left in Task.cpp for column objects
-   that are not yet modified.
- + ColPriority.cpp - Migration of column modification code out of Task.cpp and
-   into the individual column object.
- + Now requires libuuid (thanks to Martin Natano).
- + New '_get' is a DOM accessor helper command.
- + New virtual tags (WEEK, MONTH, YEAR, PARENT).
- + Added the 'remaining' format for all date columns.
- + Protects against interrupt during critical DB commit and sync operations.
- + The 'push', 'pull' and 'merge' commands now generate a 'deprecated' message.
- + Rewritten task-sync(5) man page, listing sync options and setup guidelines..
- + Now properly uses the libc version of uuid_create and uuid_to_string for
-   FreeBSD (thanks to Pietro Cerutti).
- + Performance improvements:
-   + Optimizes indexing into pending.data for direct task access.
-   + Improved I/O performance with better defaults for buffer sizes.
+- #328 Replaced the 'shell' command with a standalone 'tasksh' binary, which
+  includes GNU readline support (thanks to Haitham Gad).
+- #934 support for 'reserved.lines' to accommodate multi-line
+  shell prompts when used in conjunction with 'limit:page' (thanks to Robert
+  Gill).
+- #1226 A new French translation has begun, and will continue to be a work in
+  progress for a while (thanks to YBSA R).
+- #1227 A new 'verify_l10n' utility ensures the localizations are in sync
+  (thanks to Wim Schuermann).
+- #1250 Support out-of-tree test runs (thanks to Jakub Wilk).
+- #1256 Supports default values for UDA fields (thanks to Thomas Sullivan).
+- #1297 The task₋sync(5) man pages is rewritten with examples.
+- #1339 The configuration file now supports JSON encoding of Unicode
+  characters, by specifying \uNNNN.
+- #1385 Need a way to configure the trust of self-signed certificates.
+- #1423 sync vs. push, pull, merge collision avoidance.
+- #1473 Make TASK_RCDIR customizable (thanks to Jakub Wilk).
+- Stores un-synched transactions in <data.location>/backlog.data.
+- Adds a new 'synchronize' command to sync data with a Taskserver.
+- Adds a new 'initialize' synchronize command argument that uploads all pending
+  tasks for first-time initialization.
+- Adds a new 'sync' verbosity token, which will remind when a backlog builds
+  up and needs a sync.
+- Supports IPv4 and IPv6 server addresses.
+- Began fr-FR localization.
+- Complete it-IT localization.
+- Merged three l10n utility scripts into one tools, scripts/utils/l10n, which
+  will help the translation effort.
+- The 'due' urgency component now uses seconds, not days, in the calculation.
+- The 'debug.tls' configuration variable takes an integer which corresponds to
+  the GnuTLS log level.  For debugging.
+- File format 2 (used in version 0.9.3 - 1.5.0) is no longer supported.
+- Migrated column processing code into Task.cpp for future use within each
+  individual column object.  Legacy code left in Task.cpp for column objects
+  that are not yet modified.
+- ColPriority.cpp - Migration of column modification code out of Task.cpp and
+  into the individual column object.
+- Now requires libuuid (thanks to Martin Natano).
+- New '_get' is a DOM accessor helper command.
+- New virtual tags (WEEK, MONTH, YEAR, PARENT).
+- Added the 'remaining' format for all date columns.
+- Protects against interrupt during critical DB commit and sync operations.
+- The 'push', 'pull' and 'merge' commands now generate a 'deprecated' message.
+- Rewritten task-sync(5) man page, listing sync options and setup guidelines..
+- Now properly uses the libc version of uuid_create and uuid_to_string for
+  FreeBSD (thanks to Pietro Cerutti).
+- Performance improvements:
+  + Optimizes indexing into pending.data for direct task access.
+  + Improved I/O performance with better defaults for buffer sizes.
 
 Bugs
- + #1195 Random seed not random enough - removed all random number code (thanks
-   to Jakub Wilk).
- + #1196 Now builds on Hurd (thanks to Jakub Wilk).
- + #1197 Now 'tasksh' recognizes Ctrl-D to exit.
- + #1200 Directory d_type==DT_UNKNOWN is now handled correctly (thanks to Jakub
-   Wilk).
- + #1211 The 'dateformat' settings now default to the ISO-8601 standard of
-   'Y-M-D' (thanks to Robin Björklin).
- + #1222 The 'summary' report now obeys the 'color.label' setting (thanks to
-   Steve Rader).
- + #1235 The 'shell' command can now start in non-interactive mode without a
-   .taskrc file (thanks to Haitham Gad).
- + #1247 Tests now create a local dir, rather than use the insecure /tmp dir
-   (thanks to Jakub Wilk).
- + #1248 Merge tests no longer connect to takwarrior.org (thank to Jakub Wilk).
- + #1249 Build system now recognizes GNU/Hurd and GNU/kFreeBSD (thanks to Jakub
-   Wilk).
- + #1263 The 'waiting' report properly lists only pending tasks with a wait date
-   (thanks to Fidel Mato).
- + #1268 Edit doesn't accept changes, if task has completed dependency (thanks
-   to Dmitriy Matrosov, Michele Santullo).
- + #1270 The 'undo' command is now properly removing backlog entries.
- + #1273 Query with negative relative date differs greatly from absolute date
-   in past (thanks to John West).
- + #1279 Assorted corrections to the task-ref.pdf document (thanks to Benjamin
-   Weber).
- + #1286 Cannot use "sow", "som", etc in "entry.after", "end.after" filters
-   (thanks to Jake Bell).
- + #1300 Encode/decode pairing is now properly balanced.
- + #1305 Commit hash now available in tarball builds (thanks to Ben Boeckel).
- + #1352 Terminal crashes when using taskwarrior's zsh completion (thanks to
-   Ivan Freitas, XTaran).
- + #1356 Command reference now mentions /from/to/g.
- + #1381 Invalid JSON exported by Task 2.3.0-beta1 (thanks to Kosta H).
- + #1387 ZSH Auto-Completion dates are not current (thanks to Benjamin Weber).
- + #1388 Updated task(1) man pages with import/export script examples (thanks to
-   Benjamin Weber).
- + #1410 Incomplete Date Synonym List in man task (thanks to Benjamin Weber).
- + #1414 Client does not verify SSL certificates (thanks to Scott Kroll).
- + #1415 Client should not require a SSL certificate if the server has a trusted
-   certificate (thanks to Scott Kroll).
- + #1476 Unicode indicators increase column width (thanks to Paul Kishimoto).
- + #1477 Pre-compiled static library (*.a) in source tarball (thanks to Jakub
-   Wilk);
- + #1478 pri_sort.t failure (thanks to Jakub Wilk).
- + #1479 bug_annual.t failure (thanks to Jakub Wilk).
- + Fixed bug so that 'limit:page' now considers footnote messages.
- + Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
-   (thanks to greenskeleton).
- + Fixed rc.nag documentation (thanks to Jeroen Budts).
- + Fixed bug where task edit incorrectly claimed duration UDA was modified.
+- #1195 Random seed not random enough - removed all random number code (thanks
+  to Jakub Wilk).
+- #1196 Now builds on Hurd (thanks to Jakub Wilk).
+- #1197 Now 'tasksh' recognizes Ctrl-D to exit.
+- #1200 Directory d_type==DT_UNKNOWN is now handled correctly (thanks to Jakub
+  Wilk).
+- #1211 The 'dateformat' settings now default to the ISO-8601 standard of
+  'Y-M-D' (thanks to Robin Björklin).
+- #1222 The 'summary' report now obeys the 'color.label' setting (thanks to
+  Steve Rader).
+- #1235 The 'shell' command can now start in non-interactive mode without a
+  .taskrc file (thanks to Haitham Gad).
+- #1247 Tests now create a local dir, rather than use the insecure /tmp dir
+  (thanks to Jakub Wilk).
+- #1248 Merge tests no longer connect to takwarrior.org (thank to Jakub Wilk).
+- #1249 Build system now recognizes GNU/Hurd and GNU/kFreeBSD (thanks to Jakub
+  Wilk).
+- #1263 The 'waiting' report properly lists only pending tasks with a wait date
+  (thanks to Fidel Mato).
+- #1268 Edit doesn't accept changes, if task has completed dependency (thanks
+  to Dmitriy Matrosov, Michele Santullo).
+- #1270 The 'undo' command is now properly removing backlog entries.
+- #1273 Query with negative relative date differs greatly from absolute date
+  in past (thanks to John West).
+- #1279 Assorted corrections to the task-ref.pdf document (thanks to Benjamin
+  Weber).
+- #1286 Cannot use "sow", "som", etc in "entry.after", "end.after" filters
+  (thanks to Jake Bell).
+- #1300 Encode/decode pairing is now properly balanced.
+- #1305 Commit hash now available in tarball builds (thanks to Ben Boeckel).
+- #1352 Terminal crashes when using taskwarrior's zsh completion (thanks to
+  Ivan Freitas, XTaran).
+- #1356 Command reference now mentions /from/to/g.
+- #1381 Invalid JSON exported by Task 2.3.0-beta1 (thanks to Kosta H).
+- #1387 ZSH Auto-Completion dates are not current (thanks to Benjamin Weber).
+- #1388 Updated task(1) man pages with import/export script examples (thanks to
+  Benjamin Weber).
+- #1410 Incomplete Date Synonym List in man task (thanks to Benjamin Weber).
+- #1414 Client does not verify SSL certificates (thanks to Scott Kroll).
+- #1415 Client should not require a SSL certificate if the server has a trusted
+  certificate (thanks to Scott Kroll).
+- #1476 Unicode indicators increase column width (thanks to Paul Kishimoto).
+- #1477 Pre-compiled static library (*.a) in source tarball (thanks to Jakub
+  Wilk);
+- #1478 pri_sort.t failure (thanks to Jakub Wilk).
+- #1479 bug_annual.t failure (thanks to Jakub Wilk).
+- Fixed bug so that 'limit:page' now considers footnote messages.
+- Fixed bug where specifying an ID of 0 yielded all completed/deleted tasks
+  (thanks to greenskeleton).
+- Fixed rc.nag documentation (thanks to Jeroen Budts).
+- Fixed bug where task edit incorrectly claimed duration UDA was modified.
 
 ------ old releases ------------------------------
 
 2.2.0 (2013-04-07) 05f7948f7e70d7be3642bdc336faace52eaa9dfb
 
 Features
- + Added Feature #685, which provides a 'blocking' report, and new color rule
-   (thanks to Michelle Crane).
- + Added Feature #953, which includes the total number of blocked and blocking
-   tasks to the 'statistics' command output (thanks to T. Charles Yun).
- + Added Feature #1039, which adds new date shortcuts, 'socm' and 'eocm',
-   meaning start and end of current month (thanks to Thomas Sullivan,
-   Louis-Claude Canon).
- + Added Feature #1061, which allows the 'columns' command to use a search
-   string for the column name (thanks to Uli Martens).
- + Added Feature #1069, which gives a clearer error when a UDA
-   is added without the uda.<uda-name>.type variable.
- + Added Feature #1099, which supports the 'color.uda.<uda-name>' color rule
-   (thanks to Florian Hollerweger).
- + Added Feature #1124, which provides a '_show' command that displays all
-   configuration defaults and settings, for use by third-party software (thanks
-   to Jake Bell).
- + Added feature #1147, applying patch to display duration of each activity
-   session (thanks to Justin Forest).
- + The 'projects' command now outputs abstract parents and reduces
-   repetition by not printing parent names in front of children names.
- + Added framework for testing bash autocompletion.
- + New helper command '_aliases' for autocompletion purposes.
- + Stop consider new tasks after quitting a bulk change.
- + Removed deprecated 'fg:' and 'bg:' attributes.
- + The 'diagnostics' command now reports libuuid details.
- + New characters for parsing and formating dates ('n', 's' and 'v').
- + Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, OVERDUE, TODAY,
-   ACTIVE, SCHEDULED, CHILD, UNTIL, WAITING and ANNOTATED).
- + New 'modified' attribute, which contains the most recent modification date,
-   if a modification has occurred.
- + Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
- + Added new export script: export-tsv.pl.
- + Added the configuration variable 'print.empty.columns'.
- + The 'push' and 'pull' commands now properly distinguish between a missing
-   transport utility and other errors (thanks to Russell Steicke).
- + Removed support for Lua extensions.
- + Added tips.fr-FR (thanks to YBSAR).
- + Added tips.es-ES (thanks to Fidel Mato).
+- Added Feature #685, which provides a 'blocking' report, and new color rule
+  (thanks to Michelle Crane).
+- Added Feature #953, which includes the total number of blocked and blocking
+  tasks to the 'statistics' command output (thanks to T. Charles Yun).
+- Added Feature #1039, which adds new date shortcuts, 'socm' and 'eocm',
+  meaning start and end of current month (thanks to Thomas Sullivan,
+  Louis-Claude Canon).
+- Added Feature #1061, which allows the 'columns' command to use a search
+  string for the column name (thanks to Uli Martens).
+- Added Feature #1069, which gives a clearer error when a UDA
+  is added without the uda.<uda-name>.type variable.
+- Added Feature #1099, which supports the 'color.uda.<uda-name>' color rule
+  (thanks to Florian Hollerweger).
+- Added Feature #1124, which provides a '_show' command that displays all
+  configuration defaults and settings, for use by third-party software (thanks
+  to Jake Bell).
+- Added feature #1147, applying patch to display duration of each activity
+  session (thanks to Justin Forest).
+- The 'projects' command now outputs abstract parents and reduces
+  repetition by not printing parent names in front of children names.
+- Added framework for testing bash autocompletion.
+- New helper command '_aliases' for autocompletion purposes.
+- Stop consider new tasks after quitting a bulk change.
+- Removed deprecated 'fg:' and 'bg:' attributes.
+- The 'diagnostics' command now reports libuuid details.
+- New characters for parsing and formating dates ('n', 's' and 'v').
+- Virtual tags (BLOCKED, UNBLOCKED, BLOCKING, DUE, DUETODAY, OVERDUE, TODAY,
+  ACTIVE, SCHEDULED, CHILD, UNTIL, WAITING and ANNOTATED).
+- New 'modified' attribute, which contains the most recent modification date,
+  if a modification has occurred.
+- Fixed the mechanism used for selecting translations (thanks to Fidel Mato).
+- Added new export script: export-tsv.pl.
+- Added the configuration variable 'print.empty.columns'.
+- The 'push' and 'pull' commands now properly distinguish between a missing
+  transport utility and other errors (thanks to Russell Steicke).
+- Removed support for Lua extensions.
+- Added tips.fr-FR (thanks to YBSAR).
+- Added tips.es-ES (thanks to Fidel Mato).
 
 Bugs
- + Fixed bug #642, so that the default 'data.location=~/.task' preserves the
-   '~', leading to more portable .taskrc files (thanks to alparo).
- + Fixed bug #947, #1031, which kept expanding aliases after the '--' operator
-   (thanks to Jim B).
- + Fixed bug #1038, which prints blank lines with bulk changes and when the
-   verbose attributes does not specify it. Lines do a better separation between
-   each changes also.
- + Fixed bug #1042, where the 'diagnostics' command failed to detect missing
-   external utilities on Solaris and NetBSD.
- + Fixed bug #1043, where aliases were not recognized by bash autocompletion.
- + Fixed bug #1044, where 'task projects' considers newly deleted tasks and
-   provides an incorrect summary.
- + Fixed bug #1047, which caused extra commas in exported JSON when UDA orphans
-   were present (thanks to Thomas Sullivan).
- + Fixed bug #1048, which segfaulted rather than complain about syntax (thanks
-   to Bryce Harrington, Štěpán Henek).
- + Fixed bug #1053, where ' characters were not escaped by export-csv.pl (thanks
-   to John Florian).
- + Fixed bug #1056, where CmdSummary did not print abstract parents.
- + Fixed bug #1059, where CmdEdit was running garbage collection.
- + Fixed bug #1060, where an error was not thrown correctly.
- + Fixed bug #1063, so that numeric UDA fields are now sortable (thanks to Max
-   Muller).
- + Fixed bug #1065, where CmdShow issued messages in incorrect situations.
- + Partially fixed #1083, which showed 'task 0 ...' when modifying a non-
-   pending task (thanks to Aikido Guy).
- + Fixed bug #1087, which gave incorrect task/line counts under certain
-   conditions.
- + Fixed bug #1091, allowing filters to use 'urgency.over:4.5'.
- + Fixed bug #1110, which did not treat 'status:Completed' the same
-   as 'status:completed' (thanks to Aikido Guy).
- + Fixed bug #1118, which dropped changes after edits were rejected (thanks to
-   Ben Boeckel).
- + Fixed bug #1123, which caused the undo of a 'log' command to corrupt the data
-   file (thanks to Tim None).
- + Fixed bug #1128, which caused 'age' columns to be right-justified instead of
-   left-justified (thanks to Steve Rader).
- + Fixed bug #1136, #1177, which incorrectly line-wrapped tasks with annotations
-   (thanks to Steve Rader, T. Charles Yun).
- + Fixed bug #1135, #1137, which caused file locks to be non-blocking (thanks
-   to Steve Rader).
- + Fixed bug #1150, which referenced deprecated features in the tutorial man
-   page (thanks to Benjamin Weber).
- + Fixed bug #1154, which now allows priorities to be specified in any case.
- + Fixed bug #1178, which included binary libraries in the released source
-   package (thanks to Jakub Wilk).
- + Fixed bug #1181, where single-character columns were often rendered using
-   widths larger than 1 (thanks to Max Muller).
- + Fixed bug #1183, correcting error message typos (thanks to Jakub Wilk).
- + Fixed bug #1184, correcting man page formatting (thanks to Jakub Wilk).
- + Fixed bug #1185, correcting man page install location for out-of-tree
-   builds (thanks to Jakub Wilk).
- + Fixed bug #1189, which caused wide Asian UTF8 characters to be measured as
-   narrow characters (thanks to Roy Zuo).
- + Fixed bug #1191, which kept file locks active for longer than necessary,
-   and caused the 'execute' command to be considered a 'write' command.
- + Fixed bug #1192, which failed to expand braces internally, as POSIX /bin/sh
-   does not do {} expansion, thereby causing push/pull errors (thanks to Russell
-   Steicke).
- + Fixed bug #1194, so that $HOME has precedence over the passwd db when looking
-   for the user's home directory (thanks to Jakub Wilk).
- + Fixed bug #1199, where 'stat' was used instead of 'lstat' (thanks to Jakub
-   Wilk).
- + Fixed bug #1200, where directory removal didn't handle d_type==DT_UNKNOWN
-   (thanks to Jakub Wilk).
- + Fixed bug #1209, spelling mistake in reference page (thanks to Friedrich
-   Heusler).
- + Fixed bug #1210 so that widths are taken from localized strings instead of
-   hardcoded.
- + Fixed bug #1218 so that description columns minimum width is calculated
-   correctly.
- + Improved hyphenation by splitting on commas (even if no whitespace after).
-   Leads to better output of, for example, 'task show', where comma-separated
-   lists are common.
- + No more bash completion of, for example, 'projABC:', or of 'proj:' if
-   abbreviation.minimum is greater than 4.
- + Fixed bug where shadow files are not properly created when there is a missing
-   .taskrc file (thanks to Pietro Cerutti).
- + Fixed bug with 'socm' date calculation that failed on some days, by
-   simplifying the implementation.
- + Fix a bug where 'print.empty.columns=no' resulted in never printing the
-   project column.
- + Integrated latest UTF8 character width calculations from Markus Kuhn.
- + Fixed bug where localized UTF8 strings were not properly substr'd (thanks to
-   Fidel Mato).
- + Fixed a bug where the bash completion script was causing gc() to be run.
- + Fixed manpages that were not installed when running an out-of-source build
-   (thanks to Vincent Petithory).
- + Added missing localized confirmation strings (thanks to Rainer Müller).
- + Fixed bug that added an extra newline after setting the terminal title
-   (thanks to Rainer Müller).
- + Fixed a bug where the terminal title was tried to be set without a tty
-   (thanks to Rainer Müller).
- + Fixed hook tests to work on released code (thanks to Jakub Wilk).
- + Fixed bug where arguments passed to 'task execute' needed double escaping.
- + Fixed a bug so that the report filter order is preserved, to enable an
-   optimization that was being skipped.
+- Fixed bug #642, so that the default 'data.location=~/.task' preserves the
+  '~', leading to more portable .taskrc files (thanks to alparo).
+- Fixed bug #947, #1031, which kept expanding aliases after the '--' operator
+  (thanks to Jim B).
+- Fixed bug #1038, which prints blank lines with bulk changes and when the
+  verbose attributes does not specify it. Lines do a better separation between
+  each changes also.
+- Fixed bug #1042, where the 'diagnostics' command failed to detect missing
+  external utilities on Solaris and NetBSD.
+- Fixed bug #1043, where aliases were not recognized by bash autocompletion.
+- Fixed bug #1044, where 'task projects' considers newly deleted tasks and
+  provides an incorrect summary.
+- Fixed bug #1047, which caused extra commas in exported JSON when UDA orphans
+  were present (thanks to Thomas Sullivan).
+- Fixed bug #1048, which segfaulted rather than complain about syntax (thanks
+  to Bryce Harrington, Štěpán Henek).
+- Fixed bug #1053, where ' characters were not escaped by export-csv.pl (thanks
+  to John Florian).
+- Fixed bug #1056, where CmdSummary did not print abstract parents.
+- Fixed bug #1059, where CmdEdit was running garbage collection.
+- Fixed bug #1060, where an error was not thrown correctly.
+- Fixed bug #1063, so that numeric UDA fields are now sortable (thanks to Max
+  Muller).
+- Fixed bug #1065, where CmdShow issued messages in incorrect situations.
+- Partially fixed #1083, which showed 'task 0 ...' when modifying a non-
+  pending task (thanks to Aikido Guy).
+- Fixed bug #1087, which gave incorrect task/line counts under certain
+  conditions.
+- Fixed bug #1091, allowing filters to use 'urgency.over:4.5'.
+- Fixed bug #1110, which did not treat 'status:Completed' the same
+  as 'status:completed' (thanks to Aikido Guy).
+- Fixed bug #1118, which dropped changes after edits were rejected (thanks to
+  Ben Boeckel).
+- Fixed bug #1123, which caused the undo of a 'log' command to corrupt the data
+  file (thanks to Tim None).
+- Fixed bug #1128, which caused 'age' columns to be right-justified instead of
+  left-justified (thanks to Steve Rader).
+- Fixed bug #1136, #1177, which incorrectly line-wrapped tasks with annotations
+  (thanks to Steve Rader, T. Charles Yun).
+- Fixed bug #1135, #1137, which caused file locks to be non-blocking (thanks
+  to Steve Rader).
+- Fixed bug #1150, which referenced deprecated features in the tutorial man
+  page (thanks to Benjamin Weber).
+- Fixed bug #1154, which now allows priorities to be specified in any case.
+- Fixed bug #1178, which included binary libraries in the released source
+  package (thanks to Jakub Wilk).
+- Fixed bug #1181, where single-character columns were often rendered using
+  widths larger than 1 (thanks to Max Muller).
+- Fixed bug #1183, correcting error message typos (thanks to Jakub Wilk).
+- Fixed bug #1184, correcting man page formatting (thanks to Jakub Wilk).
+- Fixed bug #1185, correcting man page install location for out-of-tree
+  builds (thanks to Jakub Wilk).
+- Fixed bug #1189, which caused wide Asian UTF8 characters to be measured as
+  narrow characters (thanks to Roy Zuo).
+- Fixed bug #1191, which kept file locks active for longer than necessary,
+  and caused the 'execute' command to be considered a 'write' command.
+- Fixed bug #1192, which failed to expand braces internally, as POSIX /bin/sh
+  does not do {} expansion, thereby causing push/pull errors (thanks to Russell
+  Steicke).
+- Fixed bug #1194, so that $HOME has precedence over the passwd db when looking
+  for the user's home directory (thanks to Jakub Wilk).
+- Fixed bug #1199, where 'stat' was used instead of 'lstat' (thanks to Jakub
+  Wilk).
+- Fixed bug #1200, where directory removal didn't handle d_type==DT_UNKNOWN
+  (thanks to Jakub Wilk).
+- Fixed bug #1209, spelling mistake in reference page (thanks to Friedrich
+  Heusler).
+- Fixed bug #1210 so that widths are taken from localized strings instead of
+  hardcoded.
+- Fixed bug #1218 so that description columns minimum width is calculated
+  correctly.
+- Improved hyphenation by splitting on commas (even if no whitespace after).
+  Leads to better output of, for example, 'task show', where comma-separated
+  lists are common.
+- No more bash completion of, for example, 'projABC:', or of 'proj:' if
+  abbreviation.minimum is greater than 4.
+- Fixed bug where shadow files are not properly created when there is a missing
+  .taskrc file (thanks to Pietro Cerutti).
+- Fixed bug with 'socm' date calculation that failed on some days, by
+  simplifying the implementation.
+- Fix a bug where 'print.empty.columns=no' resulted in never printing the
+  project column.
+- Integrated latest UTF8 character width calculations from Markus Kuhn.
+- Fixed bug where localized UTF8 strings were not properly substr'd (thanks to
+  Fidel Mato).
+- Fixed a bug where the bash completion script was causing gc() to be run.
+- Fixed manpages that were not installed when running an out-of-source build
+  (thanks to Vincent Petithory).
+- Added missing localized confirmation strings (thanks to Rainer Müller).
+- Fixed bug that added an extra newline after setting the terminal title
+  (thanks to Rainer Müller).
+- Fixed a bug where the terminal title was tried to be set without a tty
+  (thanks to Rainer Müller).
+- Fixed hook tests to work on released code (thanks to Jakub Wilk).
+- Fixed bug where arguments passed to 'task execute' needed double escaping.
+- Fixed a bug so that the report filter order is preserved, to enable an
+  optimization that was being skipped.
 
 2.1.2 (2012-09-18) 1e3176ed70d2b50faf03838d0df279b2a4ae93b2
 
 Bugs
- + Bug fix release regarding #1104, which causes duplicate UUIDs during
-   the merge command.
- + Fixed bug where shadow files are not properly created when there is a missing
-   .taskrc file (thanks to Pietro Cerutti).
+- Bug fix release regarding #1104, which causes duplicate UUIDs during
+  the merge command.
+- Fixed bug where shadow files are not properly created when there is a missing
+  .taskrc file (thanks to Pietro Cerutti).
 
 2.1.1 (2012-07-24) 46c5f8b826838ce96d9df7fcd3039de3c43483dd
 
 Bugs
- + Fixed bug that caused misplaced commas in JSON export (thanks to greenskeleton).
- + Fixed bug #1036, which prevents 'until' attributes to be modified for
-   non-recurring tasks (thanks to Stéphane Pezennec).
+- Fixed bug that caused misplaced commas in JSON export (thanks to greenskeleton).
+- Fixed bug #1036, which prevents 'until' attributes to be modified for
+  non-recurring tasks (thanks to Stéphane Pezennec).
 
 2.1.0 (2012-07-23) a413331c9450b48065f94639e7ab0455eaa74293
 
 Features
- + Feature #164, #325, #339, #435, #553, #554, #975, User Defined Attributes.
- + Feature #457, #922, tasks may now be given an 'until' date, after which they
-   expire and are deleted.
- + Feature #516, which allows the duplication of completed tasks (thanks to
-   Peter De Poorter, Ethan Schoonover).
- + Feature #921, which implements a 'udas' command that describes defined UDAs,
-   and a '_udas' for completion purposes.  Also detects UDA orphans.
- + Applied patch for feature #1005, which prevents the update-holidays.pl script
-   from creating duplicate holidays (thanks to Jörg Plate).
- + Added the new 'indented' format for the 'project' attribute.
- + The 'projects' report now uses 'project.indented' format.
- + The 'summary' report now uses 'project.indented' format.
- + Applied patch to allow ID ranges and UUIDs when editing dependencies (thanks
-   to Louis-Claude Canon).
- + Supports 'scheduled' date for tasks, which represent the earliest opportunity
-   to work on a task.
- + Performance improvements:
-   + Added parse-free convenience functions
-   + Filter optimization: with no 'OR' or 'XOR' operators, no UUIDS but with IDs
-     the completed.data file is not referenced.
-   + Reduced excessive number of sort columns on certain reports
-   + Speed boost for 'next' report.
- + Similar helper subcommands for 'uuids' as for there is for 'ids' (_uuids and
-   _zshuuids).
- + Possible to specify the date format when editing with 'dateformat.edit'.
- + Possible to specify the date format when showing information about a task
-   with 'dateformat.info'.
- + Bash script improvement (column names are now completed).
- + Feature #1013, output error, header, footnote and debug messages on standard error.
- + Feature #1026, command line overrides are now applied before and after the
-   creation of the default rc file and data directory, which allows for
-   programmatic initialization without keystroke synthesis (thanks to Nicholas
-   Rabenau).
- + Feature #1033 allows UDAs to contribute to urgency (thanks to Max Muller).
- + Color error messages with a specific configuration variable 'color.error'.
+- Feature #164, #325, #339, #435, #553, #554, #975, User Defined Attributes.
+- Feature #457, #922, tasks may now be given an 'until' date, after which they
+  expire and are deleted.
+- Feature #516, which allows the duplication of completed tasks (thanks to
+  Peter De Poorter, Ethan Schoonover).
+- Feature #921, which implements a 'udas' command that describes defined UDAs,
+  and a '_udas' for completion purposes.  Also detects UDA orphans.
+- Applied patch for feature #1005, which prevents the update-holidays.pl script
+  from creating duplicate holidays (thanks to Jörg Plate).
+- Added the new 'indented' format for the 'project' attribute.
+- The 'projects' report now uses 'project.indented' format.
+- The 'summary' report now uses 'project.indented' format.
+- Applied patch to allow ID ranges and UUIDs when editing dependencies (thanks
+  to Louis-Claude Canon).
+- Supports 'scheduled' date for tasks, which represent the earliest opportunity
+  to work on a task.
+- Performance improvements:
+  + Added parse-free convenience functions
+  + Filter optimization: with no 'OR' or 'XOR' operators, no UUIDS but with IDs
+    the completed.data file is not referenced.
+  + Reduced excessive number of sort columns on certain reports
+  + Speed boost for 'next' report.
+- Similar helper subcommands for 'uuids' as for there is for 'ids' (_uuids and
+  _zshuuids).
+- Possible to specify the date format when editing with 'dateformat.edit'.
+- Possible to specify the date format when showing information about a task
+  with 'dateformat.info'.
+- Bash script improvement (column names are now completed).
+- Feature #1013, output error, header, footnote and debug messages on standard error.
+- Feature #1026, command line overrides are now applied before and after the
+  creation of the default rc file and data directory, which allows for
+  programmatic initialization without keystroke synthesis (thanks to Nicholas
+  Rabenau).
+- Feature #1033 allows UDAs to contribute to urgency (thanks to Max Muller).
+- Color error messages with a specific configuration variable 'color.error'.
 
 Bugs
- + Fixed bug #734, which allows a sequence of IDs to work when modifying the
-   attribute "depends" (thanks to Andreas Kalex).
- + Applied patch for bug #919, so the holidays listed on the 'calendar' report
-   are sorted (thanks to Jörg Plate).
- + Fixed bug #954, which caused bulk deletions when using a UUID filter term and
-   the delete command (thanks to Bryce Harrington).
- + Fixed bug #959, which forces use of dateformat for annotations when using the
-   'edit' command (thanks to Louis-Claude Canon).
- + Fixed bug #964, where the 'projects' command showed the wrong priority labels
-   (thanks to Ali Mousavi).
- + Fixed bug #967, which did not properly determine character widths for UTF8
-   characters (thanks to Victor Roetman, Jörg Plate, Markus Kuhn).
- + Fixed bug #968, improving online documentation or dependencies (thanks to
-   Marek Vitek).
- + Fixed bug #972, #1018, which caused a recurrence of "7" to be interpreted as
-   "7secs", instead of generating an error (thanks to Vlad Zhivotnev, Stanley G).
- + Fixed bug #973, including 'urgency' in the 'export' output (thanks to Andy
-   Spiegl).
- + Fixed bug #986, so that the 'info' report uses the correct date format, also
-   applied patch to correct documentation and add unit tests (thanks to
-   Louis-Claude Canon).
- + Applied patch for bug #987, so that total active time does not continue to
-   accumulate after an active task is completed (thanks to Louis-Claude Canon).
- + Fixed bug #988, updating the documentation so that 'undo.data' usage is more
-   clearly stated (thanks to Louis-Claude Canon).
- + Applied patch for bug #991, which removes an obsolete consistency check
-   (thanks to Louis-Claude Canon).
- + Fixed bug #995, which mis-parsed UUIDs in filters as other elements (thanks
-   to Bryce Harrington).
- + Fixed bug #996, so that verbosity code and documentation are in agreement,
-   and that the 'verbose=off' works as intended (thanks to Peter De Poorter,
-   Louis-Claude Canon).
- + Fixed bug #997, so that output is correctly controlled by the 'affected'
-   verbosity token.
- + Fixed grammar in feedback string (thanks to Uli Martens).
- + Addressed valgrind complaints (thanks to Bryce Harrington).
- + Removed default configuration value for the obsolete 'annotations' setting.
- + Corrected rounding errors on burndown chart bar size calculations (thanks to
-   Uli Martens).
- + Fixed bug where '6 months' was interpreted as 180 days, but when rendered
-   was shown as '5 months' (thanks to Aikido Guy).
- + Fixed bug where ISO dates were parsed and the TZ was modified, which should
-   have no bearing on a Zulu time.
- + Fixed man page typos.
- + Fixed incorrect Lua API return value (thanks to Oleksii Tsai).
- + Fixed bug #956, which prevents 'ids', 'uuids' and helper commands to be used
-   directly by external script when a variable is override.
- + Fixed bug #960, which caused tab-completion to fail after any non-ASCII alpha
-   characters were used in a description (thanks to Hyde Stevenson).
- + Fixed bug #962 that rename the bash completion script in prevision of future
-   2.0 bash release.
- + Fixed bug #990, which prevents color precedence to be applied correctly for
-   tagged tasks.
- + Fixed bug #1001, which caused a segv (thanks to Bryce Harrington).
- + Fixed bug #872, #945, #1006, #1024, which caused words like the German 'im'
-   and 'des' in a description to be expanded into 'imask' and 'description'
-   (thanks to Michelle Crane, Louis-Claude Canon, Stephen Hay and Martin U).
- + Fixed bug #1008, which failed to remove tasks with the special tag '+nocal'
-   from the calendar report output with 'calendar.details=full' set (thanks to
-   Bryan Kam).
- + Fixed bug #1012, which failed to install add-on scripts with execute
-   permission.
- + Fixed bug #1016, which caused segfaults when importing JSON with annotations
-   that lack description or entry date (thanks to Nicholas Rabenau).
- + Fixed bug #1017, which exported invalid JSON when there were no tasks (thanks
-   to Nicholas Rabenau).
- + Fixed bug #1022, where dependencies were note released when a blocking task
-   was completed (thanks to Arkady Grudzinsky).
- + Fixed bug #1023, which applied default.project and default.priority during
-   modification (thanks to Christoph Lange).
- + Fixed bug #1028, so that UDA durations are stored in seconds, not in raw form
-   (thank to Uli Martens).
- + Fixed bug #1030, which defines a portable implementation of timegm and removes
-   the use of tm_gmtoff for non GNU/BSD platforms.
- + Fixed bug #1032, which prevented negative urgency coefficients from working
-   for projects and tags.
+- Fixed bug #734, which allows a sequence of IDs to work when modifying the
+  attribute "depends" (thanks to Andreas Kalex).
+- Applied patch for bug #919, so the holidays listed on the 'calendar' report
+  are sorted (thanks to Jörg Plate).
+- Fixed bug #954, which caused bulk deletions when using a UUID filter term and
+  the delete command (thanks to Bryce Harrington).
+- Fixed bug #959, which forces use of dateformat for annotations when using the
+  'edit' command (thanks to Louis-Claude Canon).
+- Fixed bug #964, where the 'projects' command showed the wrong priority labels
+  (thanks to Ali Mousavi).
+- Fixed bug #967, which did not properly determine character widths for UTF8
+  characters (thanks to Victor Roetman, Jörg Plate, Markus Kuhn).
+- Fixed bug #968, improving online documentation or dependencies (thanks to
+  Marek Vitek).
+- Fixed bug #972, #1018, which caused a recurrence of "7" to be interpreted as
+  "7secs", instead of generating an error (thanks to Vlad Zhivotnev, Stanley G).
+- Fixed bug #973, including 'urgency' in the 'export' output (thanks to Andy
+  Spiegl).
+- Fixed bug #986, so that the 'info' report uses the correct date format, also
+  applied patch to correct documentation and add unit tests (thanks to
+  Louis-Claude Canon).
+- Applied patch for bug #987, so that total active time does not continue to
+  accumulate after an active task is completed (thanks to Louis-Claude Canon).
+- Fixed bug #988, updating the documentation so that 'undo.data' usage is more
+  clearly stated (thanks to Louis-Claude Canon).
+- Applied patch for bug #991, which removes an obsolete consistency check
+  (thanks to Louis-Claude Canon).
+- Fixed bug #995, which mis-parsed UUIDs in filters as other elements (thanks
+  to Bryce Harrington).
+- Fixed bug #996, so that verbosity code and documentation are in agreement,
+  and that the 'verbose=off' works as intended (thanks to Peter De Poorter,
+  Louis-Claude Canon).
+- Fixed bug #997, so that output is correctly controlled by the 'affected'
+  verbosity token.
+- Fixed grammar in feedback string (thanks to Uli Martens).
+- Addressed valgrind complaints (thanks to Bryce Harrington).
+- Removed default configuration value for the obsolete 'annotations' setting.
+- Corrected rounding errors on burndown chart bar size calculations (thanks to
+  Uli Martens).
+- Fixed bug where '6 months' was interpreted as 180 days, but when rendered
+  was shown as '5 months' (thanks to Aikido Guy).
+- Fixed bug where ISO dates were parsed and the TZ was modified, which should
+  have no bearing on a Zulu time.
+- Fixed man page typos.
+- Fixed incorrect Lua API return value (thanks to Oleksii Tsai).
+- Fixed bug #956, which prevents 'ids', 'uuids' and helper commands to be used
+  directly by external script when a variable is override.
+- Fixed bug #960, which caused tab-completion to fail after any non-ASCII alpha
+  characters were used in a description (thanks to Hyde Stevenson).
+- Fixed bug #962 that rename the bash completion script in prevision of future
+  2.0 bash release.
+- Fixed bug #990, which prevents color precedence to be applied correctly for
+  tagged tasks.
+- Fixed bug #1001, which caused a segv (thanks to Bryce Harrington).
+- Fixed bug #872, #945, #1006, #1024, which caused words like the German 'im'
+  and 'des' in a description to be expanded into 'imask' and 'description'
+  (thanks to Michelle Crane, Louis-Claude Canon, Stephen Hay and Martin U).
+- Fixed bug #1008, which failed to remove tasks with the special tag '+nocal'
+  from the calendar report output with 'calendar.details=full' set (thanks to
+  Bryan Kam).
+- Fixed bug #1012, which failed to install add-on scripts with execute
+  permission.
+- Fixed bug #1016, which caused segfaults when importing JSON with annotations
+  that lack description or entry date (thanks to Nicholas Rabenau).
+- Fixed bug #1017, which exported invalid JSON when there were no tasks (thanks
+  to Nicholas Rabenau).
+- Fixed bug #1022, where dependencies were note released when a blocking task
+  was completed (thanks to Arkady Grudzinsky).
+- Fixed bug #1023, which applied default.project and default.priority during
+  modification (thanks to Christoph Lange).
+- Fixed bug #1028, so that UDA durations are stored in seconds, not in raw form
+  (thank to Uli Martens).
+- Fixed bug #1030, which defines a portable implementation of timegm and removes
+  the use of tm_gmtoff for non GNU/BSD platforms.
+- Fixed bug #1032, which prevented negative urgency coefficients from working
+  for projects and tags.
 
 2.0.0 (2012-03-17) 03799eba9f230e48c4fa6d6ebddabe91bef7998f
 
 # Untracked Features, biggest first.
- + autoconf eliminated.
- + New 'ids' command that returns a filtered set of task ID numbers, instead
-   of the actual tasks.  Similarly there is a 'uuids' commands.
- + Corrected sorting to use std::stable_sort instead of std::sort, which is not
-   guaranteed stable (thanks to Stefan Hacker).
- + Enhanced diagnostics command.
- + Performance enhancements.
- + The old 'curses' configuration variable is now replaced by 'detection', and
-   has the same meaning - whether or not to auto-detect terminal size.
- + Added Czech Republic holiday files (thanks to Tomas Cech).
- + Added Japanese holiday files (thanks to Takanobu Watanabe).
- + All holiday files have been renamed to include a locale, rather than just a
-   country code.  For example: holidays.en-US.rc.
- + Now ships with an add-on script, update-holidays.pl, which contacts
-   http://holidata.net, and brings the installed holiday files up to date.
- + Extension system now controlled by the 'extensions' configuration variable.
- + HTML export in the form of an external scripts export-html.pl.
- + Two additional solarized theme files, solarized-dark-256.theme and
-   solarized-light-256.theme (thanks to Stefan Keel).
- + New 'dependency.indicator' configuration variable for the depends.indicator
-   report field.
- + New 'indent.annotation' for the 'description.default' field format.
- + New 'color.label' for colorizing the report column labels.
- + The 'blanklines' configuration variable now replaced by the 'verbose' token
-   'blanklines'.
- + The 'verbose' configuration variable now accepts a specific list of items to
-   be verbose about.  See taskrc(5).
- + New 'execute' command that runs external programs.
- + The default export format is now JSON.
- + The configuration variable 'json.array' determines whether 'query' command
-   output is enclosed by '[...]'.
- + The duration 'm' is now interpreted as 'months', not 'minutes'.
- + Urgency now has an 'age' component.
- + Improved text wrapping of UTF8 text.
- + When duplicating a parent recurring task, a new recurring parent task is
-   created.  When a child recurring task is duplicated, a plain task is created.
- + The 'diagnostics' command now checks for duplicate UUID values in the data.
+- autoconf eliminated.
+- New 'ids' command that returns a filtered set of task ID numbers, instead
+  of the actual tasks.  Similarly there is a 'uuids' commands.
+- Corrected sorting to use std::stable_sort instead of std::sort, which is not
+  guaranteed stable (thanks to Stefan Hacker).
+- Enhanced diagnostics command.
+- Performance enhancements.
+- The old 'curses' configuration variable is now replaced by 'detection', and
+  has the same meaning - whether or not to auto-detect terminal size.
+- Added Czech Republic holiday files (thanks to Tomas Cech).
+- Added Japanese holiday files (thanks to Takanobu Watanabe).
+- All holiday files have been renamed to include a locale, rather than just a
+  country code.  For example: holidays.en-US.rc.
+- Now ships with an add-on script, update-holidays.pl, which contacts
+  http://holidata.net, and brings the installed holiday files up to date.
+- Extension system now controlled by the 'extensions' configuration variable.
+- HTML export in the form of an external scripts export-html.pl.
+- Two additional solarized theme files, solarized-dark-256.theme and
+  solarized-light-256.theme (thanks to Stefan Keel).
+- New 'dependency.indicator' configuration variable for the depends.indicator
+  report field.
+- New 'indent.annotation' for the 'description.default' field format.
+- New 'color.label' for colorizing the report column labels.
+- The 'blanklines' configuration variable now replaced by the 'verbose' token
+  'blanklines'.
+- The 'verbose' configuration variable now accepts a specific list of items to
+  be verbose about.  See taskrc(5).
+- New 'execute' command that runs external programs.
+- The default export format is now JSON.
+- The configuration variable 'json.array' determines whether 'query' command
+  output is enclosed by '[...]'.
+- The duration 'm' is now interpreted as 'months', not 'minutes'.
+- Urgency now has an 'age' component.
+- Improved text wrapping of UTF8 text.
+- When duplicating a parent recurring task, a new recurring parent task is
+  created.  When a child recurring task is duplicated, a plain task is created.
+- The 'diagnostics' command now checks for duplicate UUID values in the data.
 
 # Tracked Features, sorted by ID.
- + Added feature #52, which provides improved text-wrapping support for UTF-8
-   descriptions.
- + Added feature #278, which provides a more consistent command line grammar.
- + Added feature #318, which shows a full edit history in the 'info' report,
-   when enabled by 'journal.info=on'
- + Added feature #330, which supports the 'inverse' color attribute.
- + Added feature #340, which implements new color rules 'color.completed' and
-   'color.deleted'.
- + Added feature #422, #566 and #639, which allow task modifications during
-   'done', 'delete', 'start', 'stop' and 'duplicate' commands (thanks to Max
-   Muller).
- + Added feature #474, which means the 'info' command accepts filters.
- + Added feature #479, which enables filtering for the 'calendar' command.
- + Added feature #496, which allows rc.default.command to be supplemented with
-   a filter, so that 'task project:Home' applies the project filter to the
-   default command.
- + Added feature #507, which provides an alternative mechanism for inverting
-   attribute modifiers, in the form of new algebraic filters (thanks to Michelle
-   Crane).
- + Added feature #514, which allows duplication of tasks based on a generalized
-   filter, rather than just IDs (thanks to Peter De Poorter).
- + Added feature #523 & #659, adding 'status' as a reportable field (thanks to
-   Peter De Poorter and Bryce Harrington).
- + Added feature #545, #610, #611, #646, which support complex aliases.
- + Added feature #559, that causes Taskwarrior to exit if the ~/.task (or
-   rc.data.location override) does not exist, controlled by the
-   rc.exit.on.missing.db configuration variable (thanks to Sander Marechal).
- + Added feature #571, which provides descriptive feedback when a special tag
-   is applied.
- + Added feature #607, which allows modification of a task during annotation
-   (thanks to Peter De Poorter).
- + Added feature #609, which allows suppression of output labels and verbose
-   text.
- + Added feature #612, so that the 'info' command displays the sum of all
-   active (start/stop) times for a task, if the 'journal.info' configuration
-   variable is set (thanks to Andy Kriger).
- + Added feature #632, which allows environment variables TASKRC and TASKDATA
-   to override .taskrc and .task directory locations (thanks to Steve Rader).
- + Added feature #657 & #658, using the 'ids' command, tasks matching a filter
-   can now be modified as a group (thanks to Bryce Harrington, Eric Fluger).
- + Added feature #679, which makes color rules match project names in a left-
-   most fashion, like filters (thanks to ch077179).
- + Added feature #682, which allows the configuration variable 'defaultheight'
-   to override the assumed height of 24 lines when 'detection' is not enabled
-   (thanks to Steve Rader).
- + Added feature #700, which adds tab-completion of built-in tags.
- + Added feature #710, which adds an attribute modifier prefix to return the
-   complement of a filtered set (thanks to Dan White).
- + Added feature #714, including Belarus holidays (thanks to Alexei Romanoff).
- + Added feature #725, which provides feedback when tasks become unblocked.
- + Added feature #733, including Czech holidays (thanks to Tomas Cech).
- + Added feature #740, that allows for indented annotations, controlled by the
-   'indent.annotation' configuration variable (thanks to Steve Rader, Tomas
-   Cech).
- + Added feature #755, adding a new command 'reports' that lists reports and
-   their descriptions.
- + Added feature #779, which uses more relevant and consistent terms on the
-   'burndown' charts.
- + Added feature #800, adding a new command 'columns' that lists all the columns
-   available for custom reports, and includes their formatting options (thanks
-   to T. Charles Yun).
- + Added feature #806, which provides the ability to compare dates using the
-   relational operator '>=' (thanks to Miguel de Val Borro).
- + Added feature #811, which makes the 'execute' command optional, and
-   controlled by '#define HAVE_EXECUTE 1' in cmake.h.  This allows a build
-   that does not have the potential security hole, in the event that taskwarrior
-   is run at elevated privilege, or run in the context of a web server.
- + Added feature #813, new "eoq" and "soq" dates for the end and start of
-   quarter.  (thanks to Dave French and Paulo Almeida for the patch).
- + Added feature #827, which allows augmentation of default.command with extra
-   arguments, when default.command itself contains mulitple arguments (thanks to
-   Aikido Guy).
- + Added feature #891, which allows for leftmost partial matches of UUID values.
+- Added feature #52, which provides improved text-wrapping support for UTF-8
+  descriptions.
+- Added feature #278, which provides a more consistent command line grammar.
+- Added feature #318, which shows a full edit history in the 'info' report,
+  when enabled by 'journal.info=on'
+- Added feature #330, which supports the 'inverse' color attribute.
+- Added feature #340, which implements new color rules 'color.completed' and
+  'color.deleted'.
+- Added feature #422, #566 and #639, which allow task modifications during
+  'done', 'delete', 'start', 'stop' and 'duplicate' commands (thanks to Max
+  Muller).
+- Added feature #474, which means the 'info' command accepts filters.
+- Added feature #479, which enables filtering for the 'calendar' command.
+- Added feature #496, which allows rc.default.command to be supplemented with
+  a filter, so that 'task project:Home' applies the project filter to the
+  default command.
+- Added feature #507, which provides an alternative mechanism for inverting
+  attribute modifiers, in the form of new algebraic filters (thanks to Michelle
+  Crane).
+- Added feature #514, which allows duplication of tasks based on a generalized
+  filter, rather than just IDs (thanks to Peter De Poorter).
+- Added feature #523 & #659, adding 'status' as a reportable field (thanks to
+  Peter De Poorter and Bryce Harrington).
+- Added feature #545, #610, #611, #646, which support complex aliases.
+- Added feature #559, that causes Taskwarrior to exit if the ~/.task (or
+  rc.data.location override) does not exist, controlled by the
+  rc.exit.on.missing.db configuration variable (thanks to Sander Marechal).
+- Added feature #571, which provides descriptive feedback when a special tag
+  is applied.
+- Added feature #607, which allows modification of a task during annotation
+  (thanks to Peter De Poorter).
+- Added feature #609, which allows suppression of output labels and verbose
+  text.
+- Added feature #612, so that the 'info' command displays the sum of all
+  active (start/stop) times for a task, if the 'journal.info' configuration
+  variable is set (thanks to Andy Kriger).
+- Added feature #632, which allows environment variables TASKRC and TASKDATA
+  to override .taskrc and .task directory locations (thanks to Steve Rader).
+- Added feature #657 & #658, using the 'ids' command, tasks matching a filter
+  can now be modified as a group (thanks to Bryce Harrington, Eric Fluger).
+- Added feature #679, which makes color rules match project names in a left-
+  most fashion, like filters (thanks to ch077179).
+- Added feature #682, which allows the configuration variable 'defaultheight'
+  to override the assumed height of 24 lines when 'detection' is not enabled
+  (thanks to Steve Rader).
+- Added feature #700, which adds tab-completion of built-in tags.
+- Added feature #710, which adds an attribute modifier prefix to return the
+  complement of a filtered set (thanks to Dan White).
+- Added feature #714, including Belarus holidays (thanks to Alexei Romanoff).
+- Added feature #725, which provides feedback when tasks become unblocked.
+- Added feature #733, including Czech holidays (thanks to Tomas Cech).
+- Added feature #740, that allows for indented annotations, controlled by the
+  'indent.annotation' configuration variable (thanks to Steve Rader, Tomas
+  Cech).
+- Added feature #755, adding a new command 'reports' that lists reports and
+  their descriptions.
+- Added feature #779, which uses more relevant and consistent terms on the
+  'burndown' charts.
+- Added feature #800, adding a new command 'columns' that lists all the columns
+  available for custom reports, and includes their formatting options (thanks
+  to T. Charles Yun).
+- Added feature #806, which provides the ability to compare dates using the
+  relational operator '>=' (thanks to Miguel de Val Borro).
+- Added feature #811, which makes the 'execute' command optional, and
+  controlled by '#define HAVE_EXECUTE 1' in cmake.h.  This allows a build
+  that does not have the potential security hole, in the event that taskwarrior
+  is run at elevated privilege, or run in the context of a web server.
+- Added feature #813, new "eoq" and "soq" dates for the end and start of
+  quarter.  (thanks to Dave French and Paulo Almeida for the patch).
+- Added feature #827, which allows augmentation of default.command with extra
+  arguments, when default.command itself contains mulitple arguments (thanks to
+  Aikido Guy).
+- Added feature #891, which allows for leftmost partial matches of UUID values.
 
 # Tracked Bugs, sorted by ID.
- + Fixed bug #208, which addresses various problems with recurring tasks, and
-   change propagation.
- + Fixed bug #403, which disambiguates certain commands involving numbers.
- + Fixed bug #447, #942, which only allowed dates to be edited if they changed
-   day (thanks to Michelle Crane and Owen Clarke).
- + Fixed bug #458, removing the ambiguous 'm' as a duration, leaving 'mi[nutes]'
-   and 'mo[nths]' requiring at least two characters for a match.
- + Fixed bug #475, which allowed a blank annotation command to be entered
-   (thanks to Andreas Kalex).
- + Fixed bug #511, which caused display problem on Cygwin when colored output
-   used the full width of the terminal.  The 'avoidlastcolumn' configuration
-   variable forces taskwarrior to never use the last column.
- + Fixed bugs #533 and #536, which prevented having correct paths for themes
-   in .taskrc (thanks to Juergen Daubert)
- + Fixed bug #552, where 'rc.verbose=off' suppressed warnings (thanks to Peter
-   De Poorter).
- + Fixed bug #594, which broke the 'all' report with a combination of bad regex
-   handling and a formatting bug (thanks to Steve Rader).
- + Fixed bug #605, which gave misleading project completion percentages under
-   certain circumstances (thanks to Steve Rader).
- + Fixed bug #636, which causes the burndown reports to not honor the
-   _forcecolor=off setting (thanks to Steve Rader, Uli Martens).
- + Fixed bug #645 & #660, which prevented logically combining report filters
-   (thanks to Bryce Harrington).
- + Fixed bug #683, in which the 'config' command sometimes edited comments
-   instead of the proper line in .taskrc (thanks to Erlan Sergaziev).
- + Fixed bug #691, which was a mis-reporting of file lock state even when file
-   locking was turned off (thanks to Tom Duffy).
- + Fixed bug #694, which allows attributes to be modified while annotating a
-   task (thanks to Aikido Guy).
- + Fixed bug #696, where the command line parser was confused by a single '-'
-   or '+' character.
- + Fixed bug #699, truncated ssh://... during autopush after merge.
- + Fixed bug #703, where global substitutions didn't make all expected
-   annotation changes.
- + Fixed bug #704, which improved wording of journal messages.
- + Fixed bug #706, where deletions were recorded in the journal twice.
- + Fixed bug #707, which had inverted logic with the urgency calculation for
-   blocked tasks.
- + Fixed bug #708, which corrected bad math in project % complete calculations
-   (thanks to Michelle Crane).
- + Fixed bug #713, which fixes typos in the holidays-UK.rc file (thanks to
-   Alexei Romanoff).
- + Fixed bug #720, so that when the 'info' report renders total active time,
-   it uses a lossless format (thanks to Bernhard B).
- + Fixed bug #722, #801, so that all recurring task change propagations are
-   confirmed (thanks to Arkady Grudzinsky).
- + Fixed bug #723, which displayed a misleading message when the output was
-   truncated to a page.
- + Fixed bug #732, which fixes misleading messages and documentation for
-   merge/push/pull URIs (thanks to Tomas Cech).
- + Fixed bug #737, which allows wait dates after due dates, but provides a
-   warning (thanks to Arkady Grudzinsky).
- + Fixed bug #741, which miscounted columns widths when a table header used
-   unicode characters (thanks to Tomas Cech).
- + Fixed bug #744, which omitted new ID feedback for all but the first
-   duplicated task (thanks to Uli Martens).
- + Fixed bug #745, which allows projects names with spaces, provided the values
-   are quoted (thanks to Duane Waddle).
- + Applied patch for Bug #746, which added missing documentation for the 'entry'
-   report column (thanks to Duane Waddle).
- + Fixed bug #761, in which the 'prepend' and 'append' commands failed to
-   generate an error when no text was provided (thanks to Aikido Guy).
- + Fixed bug #762, #763, so that modifications to tasks are considered 'write'
-   commands, and therefore update shadow files (thanks to Aikido Guy).
- + Applied patch for Bug #770, which fixed a broken build (thanks to Christopher
-   J. Pilkington).
- + Applied patch for Bug #771, which looks for libuuid if uuid_unparse_lower is
-   not located (thanks to Christopher J. Pilkington).
- + Fixed bug #777, which prevented _query command output from passing JSON
-   validation due to missing [] around the task list.
- + Fixed bug #781, which prevented tasks with dependencies from showing on the
-   'next' report (thanks to Wim Schuermann).
- + Fixed bug #783, which fixes completed and deleted tasks still showing as
-   active (thanks to Adam Wolk).
- + Fixed bug #785, which fixes a broken build on Solaris (thanks to Owen
-   Clarke).
- + Fixed bug #788, which reported regex and readline versions, even though they
-   are not used.
- + Applied patches for bugs #792, #793, #794 and #795, so that cmake now
-   recognizes and builds on Solaris (thanks to Owen Clarke).
- + Applied patch for bug #797 which corrects a build problem with 'srandom'
-   (thanks to Owen Clarke).
- + Applied patches for bug #798 which allows out-of-source builds (thanks to
-   Ben Boeckel).
- + Applied documentation patch for #799, fixing a broken link in the man page
-   (thanks to Bryce Harrington).
- + Applied patch for #803, allowing rc.confirmation to bypass confirmation of
-   the deletion of a recurring task (thanks to Matt Kraai).
- + Addressed bug #804 by allowing rc.hyphenate to control whether hyphens are
-   inserted when long lines are broken.  This may help prevent xterm from
-   mis-parsing URLs in task annotations, when wrapped (thanks to Yann Davin).
- + Fixed bug #807, which caused a lack of Lua to prevent tests from building
-   (thanks to Owen Clarke).
- + Fixed bug #808, which generated compiler warnings on Solarix (thanks to
-   Owen Clarke).
- + Fixed bug #817, which caused a build problem with a Core2 Duo processor on a
-   Mac OSX 10.6 machine.  Notes updated in INSTALL file (thanks to John
-   Hammond).
- + Fixed bug #818, which caused partial tag matching (thanks to Joe Holloway).
- + Fixed bug #822, #845, which generated incorrect IDs (thanks to Matt Kraai and
-   Michelle Crane).
- + Fixed bug #823, so that recurring task change propagations are now always
-   confirmed (thanks to Miguel de Val Borro).
- + Fixed bug #824, which caused probles when completing recurring tasks (thanks
-   to Matt Kraai).
- + Fixed bug #831, which prevented some date fields from being properly parsed.
- + Fixed bug #835, which prevented hierarchical projects from being recognized.
- + Fixed bug #836, which preserves numeric arguments as-is (thanks to Matt Kraai
-   for the patch).
- + Fixed bug #837, which caused incorrect urgency calculations for tasks that
-   have completed dependencies, and problems when editing those tasks (thanks
-   to Matt Kraai).
- + Fixed bug #839, which caused problems when recurrence frequencies of '1m'
-   were used.  This is an obsolete form, and should now be '1mo' (thanks to
-   Gour D).
- + Fixed bug #846, which prevented the default.command configuration from
-   handling multiple arguments (thanks to Uli Martens).
- + Fixed bug #850, which failed when newline characters were in a modified task
-   description.  They are now stripped (thanks to Aikido Guy).
- + Fixed bug #851, which failed to recognize durations like '1day' when
-   filtering date attributes (thanks to Philipp Woelfel).
- + Fixed bug #856, which prevented filters on missing project from working
-   (thanks to Michelle Crane).
- + Fixed bug #859, which used only one color for the 'ghistory.*' report
-   legends (thanks to Uli Martens).
- + Fixed bug #860, which prevented lower-case priority values from being
-   accepted (thanks to Michelle Crane).
- + Fixed bug #862, which suppressed feedback from the 'denotate' command.
- + Fixed bug #863, which suppressed report labels with rc.verbose=off (thanks to
-   Michelle Crane).
- + Fixed bugs #865 and #886, which caused silent failure of unrecognized dates
-   (thanks to Michelle Crane).
- + Fixed bug #879, which mis-parsed escaped characters in the data file (thanks
-   to Michelle Crane).
- + Fixed bug #880, which listed the wrong file paths for themes (thanks to Peter
-   Lewis).
- + Fixed bug #892, which caused a segfault due to misuse of
-   std::map::operator[] (thanks to Dmitriy Samborskiy).
- + Fixed bug #897, which adds the UUID field to the 'completed' report
-   (thanks to Eli Lev).
- + Fixed bug #899, which displayed incorrect project completion numbers (thanks
-   to Paul-Gheorghe Barbu).
- + Fixed bug #901, which was preventing multiple IDs and UUIDs from being used
-   as a filter (thanks to Bryce Harrington).
- + Fixed bug #906, which caused problems with inverted project matching (thanks
-   to Uli Martens).
- + Fixed bug #910, which caused unexpected behavior when duplicating a recurring
-   task (thanks to Jennifer Cormier).
- + Fixed bug #917, which mis-encoded quotes (thanks to Uli Martens).
- + Fixed bug #929, which corrected argument handling for aliases (thanks to Uli
-   Martens).
- + Fixed bug #932, which fixed change propagation for recurring tasks (thanks to
-   Jennifer Cormier).
- + Fixed bug #936, which caused tests to fail on Solaris (thanks to Owen Clarke).
- + Fixed bug #937, which failed 'stat' calls on Solaris (thanks to Owen Clarke).
- + Fixed bug #938, which corrected compiler warnings on Solaris (thanks to Owen
-   Clarke).
- + Fixed bug #944, which caused a test to fail when it was run on an NFS share.
- + Fixed bug #946, which caused 'edit' command problems when
-   'dateformat.annotation' did not contain any date elements (thanks to Tuomas
-   Toivola).
- + Fixed bug #950, which warned about dependency chain problems during
-   annotation, which makes no sense (thanks to Uli Martens).
- + Fixed bug #951, which caused tag filtering to fail (thanks to Max Muller).
- + Fixed bug #952, which generated cmake warnings on Cygwin.
+- Fixed bug #208, which addresses various problems with recurring tasks, and
+  change propagation.
+- Fixed bug #403, which disambiguates certain commands involving numbers.
+- Fixed bug #447, #942, which only allowed dates to be edited if they changed
+  day (thanks to Michelle Crane and Owen Clarke).
+- Fixed bug #458, removing the ambiguous 'm' as a duration, leaving 'mi[nutes]'
+  and 'mo[nths]' requiring at least two characters for a match.
+- Fixed bug #475, which allowed a blank annotation command to be entered
+  (thanks to Andreas Kalex).
+- Fixed bug #511, which caused display problem on Cygwin when colored output
+  used the full width of the terminal.  The 'avoidlastcolumn' configuration
+  variable forces taskwarrior to never use the last column.
+- Fixed bugs #533 and #536, which prevented having correct paths for themes
+  in .taskrc (thanks to Juergen Daubert)
+- Fixed bug #552, where 'rc.verbose=off' suppressed warnings (thanks to Peter
+  De Poorter).
+- Fixed bug #594, which broke the 'all' report with a combination of bad regex
+  handling and a formatting bug (thanks to Steve Rader).
+- Fixed bug #605, which gave misleading project completion percentages under
+  certain circumstances (thanks to Steve Rader).
+- Fixed bug #636, which causes the burndown reports to not honor the
+  _forcecolor=off setting (thanks to Steve Rader, Uli Martens).
+- Fixed bug #645 & #660, which prevented logically combining report filters
+  (thanks to Bryce Harrington).
+- Fixed bug #683, in which the 'config' command sometimes edited comments
+  instead of the proper line in .taskrc (thanks to Erlan Sergaziev).
+- Fixed bug #691, which was a mis-reporting of file lock state even when file
+  locking was turned off (thanks to Tom Duffy).
+- Fixed bug #694, which allows attributes to be modified while annotating a
+  task (thanks to Aikido Guy).
+- Fixed bug #696, where the command line parser was confused by a single '-'
+  or '+' character.
+- Fixed bug #699, truncated ssh://... during autopush after merge.
+- Fixed bug #703, where global substitutions didn't make all expected
+  annotation changes.
+- Fixed bug #704, which improved wording of journal messages.
+- Fixed bug #706, where deletions were recorded in the journal twice.
+- Fixed bug #707, which had inverted logic with the urgency calculation for
+  blocked tasks.
+- Fixed bug #708, which corrected bad math in project % complete calculations
+  (thanks to Michelle Crane).
+- Fixed bug #713, which fixes typos in the holidays-UK.rc file (thanks to
+  Alexei Romanoff).
+- Fixed bug #720, so that when the 'info' report renders total active time,
+  it uses a lossless format (thanks to Bernhard B).
+- Fixed bug #722, #801, so that all recurring task change propagations are
+  confirmed (thanks to Arkady Grudzinsky).
+- Fixed bug #723, which displayed a misleading message when the output was
+  truncated to a page.
+- Fixed bug #732, which fixes misleading messages and documentation for
+  merge/push/pull URIs (thanks to Tomas Cech).
+- Fixed bug #737, which allows wait dates after due dates, but provides a
+  warning (thanks to Arkady Grudzinsky).
+- Fixed bug #741, which miscounted columns widths when a table header used
+  unicode characters (thanks to Tomas Cech).
+- Fixed bug #744, which omitted new ID feedback for all but the first
+  duplicated task (thanks to Uli Martens).
+- Fixed bug #745, which allows projects names with spaces, provided the values
+  are quoted (thanks to Duane Waddle).
+- Applied patch for Bug #746, which added missing documentation for the 'entry'
+  report column (thanks to Duane Waddle).
+- Fixed bug #761, in which the 'prepend' and 'append' commands failed to
+  generate an error when no text was provided (thanks to Aikido Guy).
+- Fixed bug #762, #763, so that modifications to tasks are considered 'write'
+  commands, and therefore update shadow files (thanks to Aikido Guy).
+- Applied patch for Bug #770, which fixed a broken build (thanks to Christopher
+  J. Pilkington).
+- Applied patch for Bug #771, which looks for libuuid if uuid_unparse_lower is
+  not located (thanks to Christopher J. Pilkington).
+- Fixed bug #777, which prevented _query command output from passing JSON
+  validation due to missing [] around the task list.
+- Fixed bug #781, which prevented tasks with dependencies from showing on the
+  'next' report (thanks to Wim Schuermann).
+- Fixed bug #783, which fixes completed and deleted tasks still showing as
+  active (thanks to Adam Wolk).
+- Fixed bug #785, which fixes a broken build on Solaris (thanks to Owen
+  Clarke).
+- Fixed bug #788, which reported regex and readline versions, even though they
+  are not used.
+- Applied patches for bugs #792, #793, #794 and #795, so that cmake now
+  recognizes and builds on Solaris (thanks to Owen Clarke).
+- Applied patch for bug #797 which corrects a build problem with 'srandom'
+  (thanks to Owen Clarke).
+- Applied patches for bug #798 which allows out-of-source builds (thanks to
+  Ben Boeckel).
+- Applied documentation patch for #799, fixing a broken link in the man page
+  (thanks to Bryce Harrington).
+- Applied patch for #803, allowing rc.confirmation to bypass confirmation of
+  the deletion of a recurring task (thanks to Matt Kraai).
+- Addressed bug #804 by allowing rc.hyphenate to control whether hyphens are
+  inserted when long lines are broken.  This may help prevent xterm from
+  mis-parsing URLs in task annotations, when wrapped (thanks to Yann Davin).
+- Fixed bug #807, which caused a lack of Lua to prevent tests from building
+  (thanks to Owen Clarke).
+- Fixed bug #808, which generated compiler warnings on Solarix (thanks to
+  Owen Clarke).
+- Fixed bug #817, which caused a build problem with a Core2 Duo processor on a
+  Mac OSX 10.6 machine.  Notes updated in INSTALL file (thanks to John
+  Hammond).
+- Fixed bug #818, which caused partial tag matching (thanks to Joe Holloway).
+- Fixed bug #822, #845, which generated incorrect IDs (thanks to Matt Kraai and
+  Michelle Crane).
+- Fixed bug #823, so that recurring task change propagations are now always
+  confirmed (thanks to Miguel de Val Borro).
+- Fixed bug #824, which caused probles when completing recurring tasks (thanks
+  to Matt Kraai).
+- Fixed bug #831, which prevented some date fields from being properly parsed.
+- Fixed bug #835, which prevented hierarchical projects from being recognized.
+- Fixed bug #836, which preserves numeric arguments as-is (thanks to Matt Kraai
+  for the patch).
+- Fixed bug #837, which caused incorrect urgency calculations for tasks that
+  have completed dependencies, and problems when editing those tasks (thanks
+  to Matt Kraai).
+- Fixed bug #839, which caused problems when recurrence frequencies of '1m'
+  were used.  This is an obsolete form, and should now be '1mo' (thanks to
+  Gour D).
+- Fixed bug #846, which prevented the default.command configuration from
+  handling multiple arguments (thanks to Uli Martens).
+- Fixed bug #850, which failed when newline characters were in a modified task
+  description.  They are now stripped (thanks to Aikido Guy).
+- Fixed bug #851, which failed to recognize durations like '1day' when
+  filtering date attributes (thanks to Philipp Woelfel).
+- Fixed bug #856, which prevented filters on missing project from working
+  (thanks to Michelle Crane).
+- Fixed bug #859, which used only one color for the 'ghistory.*' report
+  legends (thanks to Uli Martens).
+- Fixed bug #860, which prevented lower-case priority values from being
+  accepted (thanks to Michelle Crane).
+- Fixed bug #862, which suppressed feedback from the 'denotate' command.
+- Fixed bug #863, which suppressed report labels with rc.verbose=off (thanks to
+  Michelle Crane).
+- Fixed bugs #865 and #886, which caused silent failure of unrecognized dates
+  (thanks to Michelle Crane).
+- Fixed bug #879, which mis-parsed escaped characters in the data file (thanks
+  to Michelle Crane).
+- Fixed bug #880, which listed the wrong file paths for themes (thanks to Peter
+  Lewis).
+- Fixed bug #892, which caused a segfault due to misuse of
+  std::map::operator[] (thanks to Dmitriy Samborskiy).
+- Fixed bug #897, which adds the UUID field to the 'completed' report
+  (thanks to Eli Lev).
+- Fixed bug #899, which displayed incorrect project completion numbers (thanks
+  to Paul-Gheorghe Barbu).
+- Fixed bug #901, which was preventing multiple IDs and UUIDs from being used
+  as a filter (thanks to Bryce Harrington).
+- Fixed bug #906, which caused problems with inverted project matching (thanks
+  to Uli Martens).
+- Fixed bug #910, which caused unexpected behavior when duplicating a recurring
+  task (thanks to Jennifer Cormier).
+- Fixed bug #917, which mis-encoded quotes (thanks to Uli Martens).
+- Fixed bug #929, which corrected argument handling for aliases (thanks to Uli
+  Martens).
+- Fixed bug #932, which fixed change propagation for recurring tasks (thanks to
+  Jennifer Cormier).
+- Fixed bug #936, which caused tests to fail on Solaris (thanks to Owen Clarke).
+- Fixed bug #937, which failed 'stat' calls on Solaris (thanks to Owen Clarke).
+- Fixed bug #938, which corrected compiler warnings on Solaris (thanks to Owen
+  Clarke).
+- Fixed bug #944, which caused a test to fail when it was run on an NFS share.
+- Fixed bug #946, which caused 'edit' command problems when
+  'dateformat.annotation' did not contain any date elements (thanks to Tuomas
+  Toivola).
+- Fixed bug #950, which warned about dependency chain problems during
+  annotation, which makes no sense (thanks to Uli Martens).
+- Fixed bug #951, which caused tag filtering to fail (thanks to Max Muller).
+- Fixed bug #952, which generated cmake warnings on Cygwin.
 
 # Untracked Bugs, biggest first.
- + Fixed bug that required the '%YAML' prologue in a YAML import.
- + Fixed bug that showed the 'due' date, under the heading 'until' date, in the
-   info report (thanks to Michael McCann).
- + Fixed burndown chart y-axis height calculation (thanks to Ben Boeckel).
- + Fixed missing recurrence values in zsh completion script (thanks to Ben
-   Boeckel).
- + Fixed problem with DOM-checking the 'limit' pseudo-attribute (thanks to
-   Barton Meeks).
- + Fixed problem with duplicate 'project changed' messages (thanks to Owen
-   Clarke).
- + Fixed problem with non-UTC defaults for "TZ" (thanks to Owen Clarke).
- + Removed use of Lua API call that is deprecated in 5.1 and removed from 5.2
-   (thanks to Michal Vyskocil).
- + Fixed problem where update-holidays.pl did not properly handle UTF8 JSON
-   data.
- + Fixed problem where update-holidays.pl did not use the YYYYMMDD date foramt.
- + Fixed problem where urgency was not properly calculated for waiting tasks.
- + Fixed problem where 'project' was not supported as a verbosity token (thanks
-   to Adam Gibbins).
+- Fixed bug that required the '%YAML' prologue in a YAML import.
+- Fixed bug that showed the 'due' date, under the heading 'until' date, in the
+  info report (thanks to Michael McCann).
+- Fixed burndown chart y-axis height calculation (thanks to Ben Boeckel).
+- Fixed missing recurrence values in zsh completion script (thanks to Ben
+  Boeckel).
+- Fixed problem with DOM-checking the 'limit' pseudo-attribute (thanks to
+  Barton Meeks).
+- Fixed problem with duplicate 'project changed' messages (thanks to Owen
+  Clarke).
+- Fixed problem with non-UTC defaults for "TZ" (thanks to Owen Clarke).
+- Removed use of Lua API call that is deprecated in 5.1 and removed from 5.2
+  (thanks to Michal Vyskocil).
+- Fixed problem where update-holidays.pl did not properly handle UTF8 JSON
+  data.
+- Fixed problem where update-holidays.pl did not use the YYYYMMDD date foramt.
+- Fixed problem where urgency was not properly calculated for waiting tasks.
+- Fixed problem where 'project' was not supported as a verbosity token (thanks
+  to Adam Gibbins).
 
 1.9.4 (03/03/2011) b9bae255f4fa03970eced3ac0876935271d1d7a1
- + Added burndown charts - 'burndown.daily', 'burndown.weekly',
-   'burndown.monthly', that use 'color.burndown.pending', 'color.burndown.started'
-   and 'color.burndown.done' colors.
- + Added highlighting for the 'show' command that indicates which values differ
-   from the defaults.
- + Added change log display to the 'info' command, controlled by the
-   'journal.info' configuration setting.
- + Added 'description+' to all reports with duplicate sort keys, to stabilize
-   the sequence.
- + Added ability to temporarily suspend GC (rc.gc:0) for a given command, which
-   helps scriptwriters implement shadow files externally (thanks to Sander
-   Marechal).
- + Added alias 'export.json' that maps to the new _query helper command.
- + Added new dark-gray-256 color theme.
- + Added feature #30, which eliminates the dependency on ncurses (thanks to
-   Johan Friis).
- + Added feature #41, XML export in the form of add-on script export-xml.pl,
-   export-xml.py and export-xml.rb.
- + Added feature #157, which implements the _query command, a helper command for
-   script writers, which accepts a filter like any other report, but returns
-   only full JSON.
- + Added feature #158, regular expression support for filters and substitutions.
- + Added feature #247, providing infinite width reports when redirecting output
-   to a file, by setting defaultwidth to 0.
- + Added feature #309, which sets the xterm title when reports are run,
-   according to the configuration variable 'xterm.title', which defaults to off.
- + Added feature #546, which is a 'count' command that counts tasks, and is
-   intended to help scripts that manipulate task output.
- + Added feature #567, which makes it possible to apply an offset to the first
-   month to be displayed in the calendar report (thanks to Michelle Crane).
- + Added feature #574, default due dates (thanks to Erlan Sergaziev).
- + Added feature #575, including Danish holidays (thanks to Irfan Siddiqui).
- + Added feature #608, and now completing a task, with journal.time turned on
-   will stop the task first (thanks to Andy Kriger).
- + Added feature #629, a new holiday configuration file for New Zealand
-   (thanks to Stephen Haywood).
- + Added feature #638, a wait:later possibility (thanks to Clément Bœsch).
- + Added feature #46, proper sortable age column.
- + Added new holiday configuration file for Italy (thanks to Nicola Busanello).
- + Added new holiday configuration file for Austria (thanks to Andreas Poisel).
- + Eliminated dependency on ncurses.
- + The dependency columns are now right-justified (thanks to Eric Fluger).
- + When a date fails to parse, the expected format is displayed, as a reminder
-   (thanks to Eric Fluger).
- + Fixed bug that caused the 'done' command to always exit with a non-zero
-   status (thanks to Steve Rader).
- + Fixed bug that caused entry, end, start and wait dates to not use report-
-   specific date format overrides (thanks to Eric Fluger).
- + Fixed bug #485, which caused filters of 'recur' to fail for partial matches
-   (thanks to T. Charles Yun).
- + Fixed bug #515, which displayed an incorrect message after duplicating a
-   non-existent task (thanks to Peter De Poorter).
- + Fixed bug #529, where the 'depends' attribute was not mentioned in the
-   task man page (thanks to Dirk Deimeke).
- + Fixed bug #530, where unrecognized periods on recurring tasks were not
-   being properly handled (thanks to T. Charles Yun).
- + Fixed bug #535 which omitted the holidays-NO.rc file from the packages
-   (thanks to Jostein Berntsen).
- + Fixed bug #537, where the man page task-sync(5) mis-specified some URIs.
- + Fixed bug #538, where some color legend items were not readable.
- + Fixed bug #539, where the man page task-color(5) contained a line that
-   began with a ' and was not displayed.
- + Fixed bug #540, where user names containing @s could not be parsed.
- + Fixed bug #541, which prevented sorting by 'age' column in some situations.
- + Fixed bug #542, which sorted the countdown columns incorrectly (thanks to
-   Michelle Crane).
- + Fixed bug #555, which caused a segfault when logging a task with a project
-   (thanks to Itay Perl).
- + Fixed bug #564, which allowed the deletion of parent recurring tasks (thanks
-   to Peter De Poorter).
- + Fixed bug #570, which used unsupported brace expansion with dash (default
-   /bin/sh in Ubuntu).
- + Fixed bug #579, which displayed incorrect counts when using the 'limit:N'
-   filter (thanks to Thomas Sattler).
- + Fixed bug #580, where reusing the merge uri for autopush failed when the
-   uri was taken from taskrc.
- + Applied patch to fix bug #581, in which backslashes in annotations and
-   descriptions caused problems (thanks to Itay Perl).
- + Fixed bug #587, where the man page needed clarification on quoting some
-   arguments to prevent them from being broken up by the shell (thanks to
-   Steve Rader).
- + Fixed bug #589, where the man page did not adequately describe searching
-   or usage of attribute modifiers (thanks to Steve Rader).
- + Applied patch to fix bug #590, which makes the yes/no/all/quit confirmation
-   prompts consistent (thanks to Steve Rader).
- + Fixed bug #595, where taskwarrior ignored changes to the wait date during
-   the edit command, consequently not changing task status (thanks to Eric
-   Fluger).
- + Fixed bug #597, which caused a missing project to be counted as a project
-   in the projects command (thanks to Steve Rader).
- + Fixed bug #603, which caused no feedback when task IDs were not specified
-   (thanks to Steve Rader).
- + Applied patch to fix bug #613, so that the summary report and the projects
-   command now consistently show a missing project as "(none)" (thanks to
-   Steve Rader).
- + Applied patch to fix bug #618, so that the configuration setting
-   'edit.verbose' can be set to 'no' and eliminate the help text when using
-   the 'task edit' command (thanks to Steve Rader).
- + Enhanced unit tests in response to bug #624 (thanks to Steve Rader).
- + Fixed bug #628, where dateformats containing spaces were not properly
-   parsed (thanks to Steve Rader).
- + Fixed bug #634, so that 'undo' obeys the 'confirmation' setting (thanks to
-   Steve Rader).
- + Fixed bug #641, where certain reports broke when 'dateformat' differed from
-   'dateformat.report'.
- + Fixed bug #651, which broke the edit command when a task description
-   contained certain tokens (like 'Due:').
- + Fixed bug #653, which caused undo information to be recorded when no changes
-   were made by the 'edit' command.
- + Fixed bug #654, which broke the info command when a task had no journal
-   entries.
- + Fixed bug #656, which caused multiple recurring child tasks to be created
-   (thanks to Bryce Harrington).
- + Fixed bug #671, removing the claim in the 'edit' command claims that
-   description text can wrap over multiple lines, because it cannot.
-
------- old releases ------------------------------
+- Added burndown charts - 'burndown.daily', 'burndown.weekly',
+  'burndown.monthly', that use 'color.burndown.pending', 'color.burndown.started'
+  and 'color.burndown.done' colors.
+- Added highlighting for the 'show' command that indicates which values differ
+  from the defaults.
+- Added change log display to the 'info' command, controlled by the
+  'journal.info' configuration setting.
+- Added 'description+' to all reports with duplicate sort keys, to stabilize
+  the sequence.
+- Added ability to temporarily suspend GC (rc.gc:0) for a given command, which
+  helps scriptwriters implement shadow files externally (thanks to Sander
+  Marechal).
+- Added alias 'export.json' that maps to the new _query helper command.
+- Added new dark-gray-256 color theme.
+- Added feature #30, which eliminates the dependency on ncurses (thanks to
+  Johan Friis).
+- Added feature #41, XML export in the form of add-on script export-xml.pl,
+  export-xml.py and export-xml.rb.
+- Added feature #157, which implements the _query command, a helper command for
+  script writers, which accepts a filter like any other report, but returns
+  only full JSON.
+- Added feature #158, regular expression support for filters and substitutions.
+- Added feature #247, providing infinite width reports when redirecting output
+  to a file, by setting defaultwidth to 0.
+- Added feature #309, which sets the xterm title when reports are run,
+  according to the configuration variable 'xterm.title', which defaults to off.
+- Added feature #546, which is a 'count' command that counts tasks, and is
+  intended to help scripts that manipulate task output.
+- Added feature #567, which makes it possible to apply an offset to the first
+  month to be displayed in the calendar report (thanks to Michelle Crane).
+- Added feature #574, default due dates (thanks to Erlan Sergaziev).
+- Added feature #575, including Danish holidays (thanks to Irfan Siddiqui).
+- Added feature #608, and now completing a task, with journal.time turned on
+  will stop the task first (thanks to Andy Kriger).
+- Added feature #629, a new holiday configuration file for New Zealand
+  (thanks to Stephen Haywood).
+- Added feature #638, a wait:later possibility (thanks to Clément Bœsch).
+- Added feature #46, proper sortable age column.
+- Added new holiday configuration file for Italy (thanks to Nicola Busanello).
+- Added new holiday configuration file for Austria (thanks to Andreas Poisel).
+- Eliminated dependency on ncurses.
+- The dependency columns are now right-justified (thanks to Eric Fluger).
+- When a date fails to parse, the expected format is displayed, as a reminder
+  (thanks to Eric Fluger).
+- Fixed bug that caused the 'done' command to always exit with a non-zero
+  status (thanks to Steve Rader).
+- Fixed bug that caused entry, end, start and wait dates to not use report-
+  specific date format overrides (thanks to Eric Fluger).
+- Fixed bug #485, which caused filters of 'recur' to fail for partial matches
+  (thanks to T. Charles Yun).
+- Fixed bug #515, which displayed an incorrect message after duplicating a
+  non-existent task (thanks to Peter De Poorter).
+- Fixed bug #529, where the 'depends' attribute was not mentioned in the
+  task man page (thanks to Dirk Deimeke).
+- Fixed bug #530, where unrecognized periods on recurring tasks were not
+  being properly handled (thanks to T. Charles Yun).
+- Fixed bug #535 which omitted the holidays-NO.rc file from the packages
+  (thanks to Jostein Berntsen).
+- Fixed bug #537, where the man page task-sync(5) mis-specified some URIs.
+- Fixed bug #538, where some color legend items were not readable.
+- Fixed bug #539, where the man page task-color(5) contained a line that
+  began with a ' and was not displayed.
+- Fixed bug #540, where user names containing @s could not be parsed.
+- Fixed bug #541, which prevented sorting by 'age' column in some situations.
+- Fixed bug #542, which sorted the countdown columns incorrectly (thanks to
+  Michelle Crane).
+- Fixed bug #555, which caused a segfault when logging a task with a project
+  (thanks to Itay Perl).
+- Fixed bug #564, which allowed the deletion of parent recurring tasks (thanks
+  to Peter De Poorter).
+- Fixed bug #570, which used unsupported brace expansion with dash (default
+  /bin/sh in Ubuntu).
+- Fixed bug #579, which displayed incorrect counts when using the 'limit:N'
+  filter (thanks to Thomas Sattler).
+- Fixed bug #580, where reusing the merge uri for autopush failed when the
+  uri was taken from taskrc.
+- Applied patch to fix bug #581, in which backslashes in annotations and
+  descriptions caused problems (thanks to Itay Perl).
+- Fixed bug #587, where the man page needed clarification on quoting some
+  arguments to prevent them from being broken up by the shell (thanks to
+  Steve Rader).
+- Fixed bug #589, where the man page did not adequately describe searching
+  or usage of attribute modifiers (thanks to Steve Rader).
+- Applied patch to fix bug #590, which makes the yes/no/all/quit confirmation
+  prompts consistent (thanks to Steve Rader).
+- Fixed bug #595, where taskwarrior ignored changes to the wait date during
+  the edit command, consequently not changing task status (thanks to Eric
+  Fluger).
+- Fixed bug #597, which caused a missing project to be counted as a project
+  in the projects command (thanks to Steve Rader).
+- Fixed bug #603, which caused no feedback when task IDs were not specified
+  (thanks to Steve Rader).
+- Applied patch to fix bug #613, so that the summary report and the projects
+  command now consistently show a missing project as "(none)" (thanks to
+  Steve Rader).
+- Applied patch to fix bug #618, so that the configuration setting
+  'edit.verbose' can be set to 'no' and eliminate the help text when using
+  the 'task edit' command (thanks to Steve Rader).
+- Enhanced unit tests in response to bug #624 (thanks to Steve Rader).
+- Fixed bug #628, where dateformats containing spaces were not properly
+  parsed (thanks to Steve Rader).
+- Fixed bug #634, so that 'undo' obeys the 'confirmation' setting (thanks to
+  Steve Rader).
+- Fixed bug #641, where certain reports broke when 'dateformat' differed from
+  'dateformat.report'.
+- Fixed bug #651, which broke the edit command when a task description
+  contained certain tokens (like 'Due:').
+- Fixed bug #653, which caused undo information to be recorded when no changes
+  were made by the 'edit' command.
+- Fixed bug #654, which broke the info command when a task had no journal
+  entries.
+- Fixed bug #656, which caused multiple recurring child tasks to be created
+  (thanks to Bryce Harrington).
+- Fixed bug #671, removing the claim in the 'edit' command claims that
+  description text can wrap over multiple lines, because it cannot.
 
 1.9.3 (11/08/2010) bf36b47593a33e6347425d47a36477b627310e65
- + Added feature #43, now task supports relative dates like '3wks',
-   '1 month', '4d' for 'due', 'wait' and 'until' dates.  Essentially
-   durations are now allowed where dates are expected, and are treated
-   as relative to the current date/time.
- + Added feature #189, that records the start and stop times as an
-   annotation for a task.
- + Added features #244, #272, #273, #274, #275 and #279, which support
-   import and export of YAML 1.1.  YAML is now the default export format
-   for task.
- + Added feature #391, now the 'task color legend' command will show
-   samples of all the defined colors and color rules from your .taskrc
-   and theme.
- + Added feature #410, and now task supports dependencies between tasks
-   with the syntax 'task 1 depends:2' to add a dependency, or 'task 1
-   depends:-2' to remove a dependency.
- + Added feature #421, and now task can sync data files from two sources
-   via the 'merge' command.
- + Added feature #423, now custom report filters allow rc overrides.
- + Added feature #428, preparing the new structure for the NEWS file.
- + Added feature #429, which improves the 'all' report to exclude deleted.
-   tasks, provide a new sort order and include the 'end' column.
- + Added feature #431, which improves feedback after running the 'log'
-   command.
- + Added feature #446, task supports now 'sow', 'som' and 'soy' as dates
-   for 'due', 'wait' and 'until' (thanks to T. Charles Yun).
-   Added as well synonyms soww/eoww plus new socw/eocw for calendar weeks.
- + Fixed bug #467, where recurring tasks were not honoring wait values.
- + Added feature #471, which makes greater use of projects by reporting
-   changes to the completion percentage when it changes.
- + Added feature #478, which uses the colorization rules in the 'info'
-   report.
- + Added feature #481, allowing for user control of the color rule order
-   of precedence via the 'rule.precedence.color' configuration variable.
- + Added feature #499, giving an extra line in the message output when
-   doing bulk done changes (thanks to T. Charles Yun).
- + New 'depends' column for custom reports.
- + New 'blocked' report for showing blocked tasks.
- + New 'unblocked' report for showing tasks that are not blocked.
- + Improved man pages (thanks to Andy Lester).
- + Default .taskrc files are now largely empty, and rely almost completed
-   on default values.
- + Special tags 'nocal', 'nocolor' and 'nonag' are implemented.
- + The 'tags' command highlights special tags.
- + The 'stats' and 'info' reports not obey color.alternate.
- + New fish shell tab completion script (thanks to Mick Koch).
- + Color rules now obey the rc.search.case.sensitive configuration option.
- + The color.keyword.XXX color rule now applies to annotations too.
- + Importing the same YAML twice now generates an error.
- + Two new color themes (thanks to Kathryn Andersen).
- + More localized holiday files for US, CA, SE, DE, FR, UK, ES, NL and NO
-   (thanks to T. Charles Yun, Jostein Berntsen).
- + Added new 'diagnostics' command to help with bug submission, testing.
- + Fixed bug #427, preventing the task edit command to parse annotation
-   dates with spaces.
- + Fixed bug #433, making task command output more consistent.
- + Fixed bug #434, allowing users to complete tasks with status 'waiting'
- + Fixed bug #438, correcting the sorting of the entry_time, start_time
-   and end_time columns (thanks to Michelle Crane).
- + Fixed bug #439, which ignored dateformat.annotation for sparse annotations.
- + Fixed bug #440, which prevented simultaneous append/prepend and substitution.
- + Fixed bug #441, which misparsed '/a/a:/' as an attribute, rather than a
-   substitution (thanks to Michelle Crane).
- + Fixed bug #444, which made task shell unusable after canceling out of an
-   undo command.
- + Fixed bug #445, which caused task to not notice that the command 'h' is
-   ambiguous.
- + Fixed bug #449, so the wait: attribute can be applied to a task at any
-   time, not just on add.
- + Fixed bug #452, which defines a higher resolution division between due
-   and overdue.
- + Fixed bug #459, which showed a confusing message when 'limit:page' was
-   used, with few tasks.
- + Fixed bug #461, in which the filter 'due:today' failed, but 'due.is:today'
-   worked.
- + Fixed bug #466, which gave the wrong error message when a custom report
-   was missing a direction indicator for the sort order.
- + Fixed bug #470, which caused task to not support the color 'none'.
- + Fixed bug #476, so that task now issues a warning when a wait date falls
-   after a due date (thanks to T. Charles Yun).
- + Fixed bug #480, which didn't properly support @ characters in tags.  This
-   also now supports $ and #.
- + Fixed bug #489, which caused the filter 'tags.none:' to fail.
- + Fixed bug #493, which made waiting, recurring tasks invisible (thanks to
-   Alexander Schremmer).
- + Fixed bug #494, causing imported text files to ultimately lack uuids
-   (thanks to Elizabeth Maxson).
- + Fixed problem with command line configuration overrides that had no
-   values. 
- + Fixed problem with the 'undo' command not observing the rc.color or the
-   rc._forcecolor settings.
- + Fixed problem with extra blank line in the ghistory reports.
- + Fixed a precision problem with average age on the summary report.
- + Clarified the documentation regarding the project name (taskwarrior) and
-   the program name (task).
+- Added feature #43, now task supports relative dates like '3wks',
+  '1 month', '4d' for 'due', 'wait' and 'until' dates.  Essentially
+  durations are now allowed where dates are expected, and are treated
+  as relative to the current date/time.
+- Added feature #189, that records the start and stop times as an
+  annotation for a task.
+- Added features #244, #272, #273, #274, #275 and #279, which support
+  import and export of YAML 1.1.  YAML is now the default export format
+  for task.
+- Added feature #391, now the 'task color legend' command will show
+  samples of all the defined colors and color rules from your .taskrc
+  and theme.
+- Added feature #410, and now task supports dependencies between tasks
+  with the syntax 'task 1 depends:2' to add a dependency, or 'task 1
+  depends:-2' to remove a dependency.
+- Added feature #421, and now task can sync data files from two sources
+  via the 'merge' command.
+- Added feature #423, now custom report filters allow rc overrides.
+- Added feature #428, preparing the new structure for the NEWS file.
+- Added feature #429, which improves the 'all' report to exclude deleted.
+  tasks, provide a new sort order and include the 'end' column.
+- Added feature #431, which improves feedback after running the 'log'
+  command.
+- Added feature #446, task supports now 'sow', 'som' and 'soy' as dates
+  for 'due', 'wait' and 'until' (thanks to T. Charles Yun).
+  Added as well synonyms soww/eoww plus new socw/eocw for calendar weeks.
+- Fixed bug #467, where recurring tasks were not honoring wait values.
+- Added feature #471, which makes greater use of projects by reporting
+  changes to the completion percentage when it changes.
+- Added feature #478, which uses the colorization rules in the 'info'
+  report.
+- Added feature #481, allowing for user control of the color rule order
+  of precedence via the 'rule.precedence.color' configuration variable.
+- Added feature #499, giving an extra line in the message output when
+  doing bulk done changes (thanks to T. Charles Yun).
+- New 'depends' column for custom reports.
+- New 'blocked' report for showing blocked tasks.
+- New 'unblocked' report for showing tasks that are not blocked.
+- Improved man pages (thanks to Andy Lester).
+- Default .taskrc files are now largely empty, and rely almost completed
+  on default values.
+- Special tags 'nocal', 'nocolor' and 'nonag' are implemented.
+- The 'tags' command highlights special tags.
+- The 'stats' and 'info' reports not obey color.alternate.
+- New fish shell tab completion script (thanks to Mick Koch).
+- Color rules now obey the rc.search.case.sensitive configuration option.
+- The color.keyword.XXX color rule now applies to annotations too.
+- Importing the same YAML twice now generates an error.
+- Two new color themes (thanks to Kathryn Andersen).
+- More localized holiday files for US, CA, SE, DE, FR, UK, ES, NL and NO
+  (thanks to T. Charles Yun, Jostein Berntsen).
+- Added new 'diagnostics' command to help with bug submission, testing.
+- Fixed bug #427, preventing the task edit command to parse annotation
+  dates with spaces.
+- Fixed bug #433, making task command output more consistent.
+- Fixed bug #434, allowing users to complete tasks with status 'waiting'
+- Fixed bug #438, correcting the sorting of the entry_time, start_time
+  and end_time columns (thanks to Michelle Crane).
+- Fixed bug #439, which ignored dateformat.annotation for sparse annotations.
+- Fixed bug #440, which prevented simultaneous append/prepend and substitution.
+- Fixed bug #441, which misparsed '/a/a:/' as an attribute, rather than a
+  substitution (thanks to Michelle Crane).
+- Fixed bug #444, which made task shell unusable after canceling out of an
+  undo command.
+- Fixed bug #445, which caused task to not notice that the command 'h' is
+  ambiguous.
+- Fixed bug #449, so the wait: attribute can be applied to a task at any
+  time, not just on add.
+- Fixed bug #452, which defines a higher resolution division between due
+  and overdue.
+- Fixed bug #459, which showed a confusing message when 'limit:page' was
+  used, with few tasks.
+- Fixed bug #461, in which the filter 'due:today' failed, but 'due.is:today'
+  worked.
+- Fixed bug #466, which gave the wrong error message when a custom report
+  was missing a direction indicator for the sort order.
+- Fixed bug #470, which caused task to not support the color 'none'.
+- Fixed bug #476, so that task now issues a warning when a wait date falls
+  after a due date (thanks to T. Charles Yun).
+- Fixed bug #480, which didn't properly support @ characters in tags.  This
+  also now supports $ and #.
+- Fixed bug #489, which caused the filter 'tags.none:' to fail.
+- Fixed bug #493, which made waiting, recurring tasks invisible (thanks to
+  Alexander Schremmer).
+- Fixed bug #494, causing imported text files to ultimately lack uuids
+  (thanks to Elizabeth Maxson).
+- Fixed problem with command line configuration overrides that had no
+  values. 
+- Fixed problem with the 'undo' command not observing the rc.color or the
+  rc._forcecolor settings.
+- Fixed problem with extra blank line in the ghistory reports.
+- Fixed a precision problem with average age on the summary report.
+- Clarified the documentation regarding the project name (taskwarrior) and
+  the program name (task).
 
 1.9.2 (7/10/2010) a13989f18eb34b3363f433c965084b6491425b9f
- + Added feature #320, so the command "task 123" is interpreted as an implicit
-   "task info 123" command (thanks to John Florian).
- + Added feature #326, allowing tasks to be added in the completed state, by
-   using the 'log' command in place of 'add' (thanks to Cory Donnelly).
- + Added features #36 and #37, providing annual versions of the 'history' and
-   'ghistory' command as 'history.annual' and 'ghistory.annual'.
- + Added feature #363 supporting iCalendar/vcalendar (RFC-2445, RFC-5545,
-   RFC-5546) export via the 'export.ical' command.
- + Added feature #390, an extra dateformat for annotations (thanks to Cory
-   Donnelly).
- + Added feature #407, a new 'task show' command to display the current
-   configuration settings or just the ones matching a search string.
-   'task config' is now only used to set new configuration values.
- + Added feature #298, supporting a configurable number of future recurring
-   tasks that are generated. 
- + Added feature #412, which allows the 'projects' and 'tags' commands to be
-   list all used projects/tags, not just the ones used in current pending tasks.
-   Controlled by the 'list.all.projects' and 'list.all.tags' configuration
-   variables (thanks to Dirk Deimeke).
- + Added feature #415, which supports displaying just a single page of tasks,
-   by specifying either 'limit:page' to a command, or 'report.xxx.limit:page'
-   in a report specification (thanks to T. Charles Yun).
- + Improvements to the man pages (thanks to T. Charles Yun).
- + Modified the 'next' report to only display one page, by default.
- + Added feature #408, making it possible to delete annotations with the new
-   denotate command and the provided description (thanks to Dirk Deimeke).
- + Added support for more varied durations when specifying recurring tasks,
-   such as '3 mths' or '24 hrs'.
- + The ghistory graph bars can now be colored with 'color.history.add',
-   'color.history.done' and 'color.history.delete' configuration variables.
- + Added feature #156, so that task supports both a 'side' and 'diff' style
-   of undo.
- + Distribution now includes 7 theme files, for 16- and 256-color terminals.
- + Task now defaults to using the equivalent to the dark-16.theme.
- + Fixed bug #406 so that task now includes command aliases in the _commands
-   helper command used by shell completion scripts.
- + Fixed bug #211 - it was unclear which commands modify a task description.
- + Fixed bug #411, clarifying that the 'projects' command only lists projects
-   for which there are pending tasks (thanks to Dirk Deimeke).
- + Fixed bug #414, that caused filtering on the presence or absence of tags
-   containing Unicode characters to fail (thanks to Michal Josífko).
- + Fixed bug #416, which caused sorting on a date to fail if the year was not
-   included in the dateformat (thanks to Michelle Crane).
- + Fixed bug #417, which caused sorting on countdown and age fields to be
-   wrong (thanks to Michell Crane).
- + Fixed bug #418, which caused the attribute modifier 'due.before' to fail
-   if the year was not included in the dateformat (thanks to Michelle Crane).
- + Fixed bug #132, which failed to set a sort order so that active tasks sort
-   higher than inactive tasks, all things being equal.
- + Fixed bug #405, which incorrectly compared dates on tasks created by
-   versions earlier than 1.9.1 to those created by 1.9.1 or later (thanks to
-   Ivo Jimenez).
- + Fixed bug #420, missing 'ID' from help text (thanks to Ed Neville).
- + Fixed bug that prevented 'task list priority.above:L' from working.
- + Fixed bug that miscalculated terminal width for the ghistory.annual
-   report.
- + Fixed wording (support issue #383) when modifying a recurring task (thanks
-   to T. Charles Yun).
+- Added feature #320, so the command "task 123" is interpreted as an implicit
+  "task info 123" command (thanks to John Florian).
+- Added feature #326, allowing tasks to be added in the completed state, by
+  using the 'log' command in place of 'add' (thanks to Cory Donnelly).
+- Added features #36 and #37, providing annual versions of the 'history' and
+  'ghistory' command as 'history.annual' and 'ghistory.annual'.
+- Added feature #363 supporting iCalendar/vcalendar (RFC-2445, RFC-5545,
+  RFC-5546) export via the 'export.ical' command.
+- Added feature #390, an extra dateformat for annotations (thanks to Cory
+  Donnelly).
+- Added feature #407, a new 'task show' command to display the current
+  configuration settings or just the ones matching a search string.
+  'task config' is now only used to set new configuration values.
+- Added feature #298, supporting a configurable number of future recurring
+  tasks that are generated. 
+- Added feature #412, which allows the 'projects' and 'tags' commands to be
+  list all used projects/tags, not just the ones used in current pending tasks.
+  Controlled by the 'list.all.projects' and 'list.all.tags' configuration
+  variables (thanks to Dirk Deimeke).
+- Added feature #415, which supports displaying just a single page of tasks,
+  by specifying either 'limit:page' to a command, or 'report.xxx.limit:page'
+  in a report specification (thanks to T. Charles Yun).
+- Improvements to the man pages (thanks to T. Charles Yun).
+- Modified the 'next' report to only display one page, by default.
+- Added feature #408, making it possible to delete annotations with the new
+  denotate command and the provided description (thanks to Dirk Deimeke).
+- Added support for more varied durations when specifying recurring tasks,
+  such as '3 mths' or '24 hrs'.
+- The ghistory graph bars can now be colored with 'color.history.add',
+  'color.history.done' and 'color.history.delete' configuration variables.
+- Added feature #156, so that task supports both a 'side' and 'diff' style
+  of undo.
+- Distribution now includes 7 theme files, for 16- and 256-color terminals.
+- Task now defaults to using the equivalent to the dark-16.theme.
+- Fixed bug #406 so that task now includes command aliases in the _commands
+  helper command used by shell completion scripts.
+- Fixed bug #211 - it was unclear which commands modify a task description.
+- Fixed bug #411, clarifying that the 'projects' command only lists projects
+  for which there are pending tasks (thanks to Dirk Deimeke).
+- Fixed bug #414, that caused filtering on the presence or absence of tags
+  containing Unicode characters to fail (thanks to Michal Josífko).
+- Fixed bug #416, which caused sorting on a date to fail if the year was not
+  included in the dateformat (thanks to Michelle Crane).
+- Fixed bug #417, which caused sorting on countdown and age fields to be
+  wrong (thanks to Michell Crane).
+- Fixed bug #418, which caused the attribute modifier 'due.before' to fail
+  if the year was not included in the dateformat (thanks to Michelle Crane).
+- Fixed bug #132, which failed to set a sort order so that active tasks sort
+  higher than inactive tasks, all things being equal.
+- Fixed bug #405, which incorrectly compared dates on tasks created by
+  versions earlier than 1.9.1 to those created by 1.9.1 or later (thanks to
+  Ivo Jimenez).
+- Fixed bug #420, missing 'ID' from help text (thanks to Ed Neville).
+- Fixed bug that prevented 'task list priority.above:L' from working.
+- Fixed bug that miscalculated terminal width for the ghistory.annual
+  report.
+- Fixed wording (support issue #383) when modifying a recurring task (thanks
+  to T. Charles Yun).
 
 1.9.1 (5/22/2010) 60a99725b858be134ad538cb7c1a32c98de70e67
- + Summary report bar colors can now be specified with color.summary.bar
-   and color.summary.background configuration variables.
- + The 'edit' command now conveniently fills in the current date for new
-   annotations.
- + Deleting a task no longer clobbers any recorded end date (thanks to
-   Seneca Cunningham).
- + The following holidays are now computed automatically and can be used
-   in the definitions for the calendar holidays:
-   Good Friday (goodfriday), Easter (easter), Easter monday
-   (eastermonday), Ascension (ascension), Pentecost (pentecost)
-   The date is configured with the given keyword.
- + The configure script is more portable (thanks to Emil Sköldberg).
- + Updated task-faq.5 man page.
- + Fixed bug #382 in which the annotate command didn't return an error
-   message when called without an ID.
- + Fixed bug #402 which failed compilation on Arch Linux (thanks to
-   Johannes Schlatow).
- + Fixed bug #401 that ignored the search.case.sensitive configuration
-   setting when filtering on project names (thanks to John Florian).
- + Fixed bug #395 that prevented the upgrade of a pending task to a
-   recurring task (thanks to T. Charles Yun).
+- Summary report bar colors can now be specified with color.summary.bar
+  and color.summary.background configuration variables.
+- The 'edit' command now conveniently fills in the current date for new
+  annotations.
+- Deleting a task no longer clobbers any recorded end date (thanks to
+  Seneca Cunningham).
+- The following holidays are now computed automatically and can be used
+  in the definitions for the calendar holidays:
+  Good Friday (goodfriday), Easter (easter), Easter monday
+  (eastermonday), Ascension (ascension), Pentecost (pentecost)
+  The date is configured with the given keyword.
+- The configure script is more portable (thanks to Emil Sköldberg).
+- Updated task-faq.5 man page.
+- Fixed bug #382 in which the annotate command didn't return an error
+  message when called without an ID.
+- Fixed bug #402 which failed compilation on Arch Linux (thanks to
+  Johannes Schlatow).
+- Fixed bug #401 that ignored the search.case.sensitive configuration
+  setting when filtering on project names (thanks to John Florian).
+- Fixed bug #395 that prevented the upgrade of a pending task to a
+  recurring task (thanks to T. Charles Yun).
 
 1.9.0 (2/22/2010) dd758f8b33de110a633e2ff3ebdac73232b8ff44
- + Added feature #283 that makes it possible to control the verbosity
-   of the output of annotations.
- + Added feature #254 (#295) which gives task a second date format to be
-   used in the reports with more conversion sequences like weekday name
-   or weeknumber. The date format is set with variable "dateformat.report".
- + Added feature #292 that permits alternate line coloration in reports
-   (thanks to Richard Querin).
- + Added feature #307 that provides vim with syntax highlighting for .taskrc.
- + Added feature #336 which gives task a 'prepend' command for symmetry
-   with the 'append' command.
- + Added feature #341 that makes explicit references to the task and taskrc
-   man pages, both in the auto-generated .taskrc file and the version command
-   output (thanks to Cory Donnelly).
- + The 'delete' command is now aliased to 'rm' (thanks to Ivo Jimenez).
- + Added new attribute modifiers 'word' and 'noword' which find the existence
-   of whole words, or prove the non-existence of whole words.  If a task has
-   the description "Pay the bill", then "description.word:the" will match, but
-   "description.word:th" will not.  For partial word matches, there is still
-   "description.contains:th".
- + Added new 'config' command to display the configuration settings of task.
-   As a consequence 'version' now only shows the version number and legal
-   information.
- + The 'config' command now complains about use of deprecated color names in
-   your .taskrc file.
- + Added feature #296, that allows the 'config' command to modify your .taskrc
-   settings directly, with the command 'task config <name> <value>', or
-   'task config <name>' to remove the setting.
- + Task now supports nested .taskrc files using the "include /path" directive.
- + The 'entry', 'start' and 'end' columns now have equivalents that include the
-   time, and are called 'entry_time', 'start_time', and 'end_time', for use in
-   custom reports.
- + 2 new columns have been added to the reports: countdown and
-   countdown_compact.  They show the days left until a task is due or how many
-   days a task has been overdue.
- + The new 'priority_long' field can be shown in custom reports, and will
-   display 'High' rather than the abbreviated 'H'.
- + Task now supports .taskrc command line overrides using rc.name:value and
-   the new rc.name=value to accommodate a frequent mistake.
- + The color rules for projects (color.project.foo) now matches on partial
-   project names, the same way as filters.
- + The color command now takes a color as an argument, and displays that color
-   with sample text.
- + Added 2 new configuration variables to display the details of tasks with due
-   dates when doing a 'task cal' for the corresponding months:
-   'calendar.details' and 'calendar.details.report'
- + Added 5 new color configuration variables to colorize today, days with due
-   tasks, days with overdue tasks, weekend days and week numbers in the
-   calendar:
-   'calendar.color.today', 'color.calendar.due', 'calendar.calendar.overdue',
-   'color.calendar.weekend'and 'color.calendar.weeknumber'.
- + Added support for holidays in the calendar by using calendar.holidays
-   and the corresponding holiday.X.name and holiday.X.date variables.
-   The default dateformat being YMD (20101224) set by dateformat.holiday.
- + The coloring of due tasks in reports can now be enabled for all tasks, and
-   not only the imminent ones, by setting the configuration variable due=0.
- + Tasks due on the current day ("today") can now have their own color setting
-   color.due.today and color.calendar.due.today.
- + Added a new 'task-faq' man page for common questions and answers.
- + Added a new 'task-color' man page detailing how to set up and use color in
-   task.
- + Added feature #176, which allows for configurable case-sensitivity for
-   keyword searches and substitutions (thanks to John Florian).
- + Task can now use an alternate tag indicator by setting the tag.indicator
-   configuration variable to something other than the default of +.
- + Task can now use an alternate active indicator by setting the
-   active.indicator configuration variable to something other than the default
-   of *.
- + Task can now use an alternate recurrence indicator by setting the
-   recurrence.indicator configuration variable to something other than the
-   default of R.
- + Added a new file, README.build, which provides assistance troubleshooting
-   build-related problems on different operating systems and environments.
- + Fixed bug #316 which caused the timesheet report to display an oddly sorted
-   list.
- + Fixed bug #317 which colored tasks in the 'completed' report according to
-   due dates, which are no longer relevant to a completed task (thanks to
-   Cory Donnelly).
- + Fixed bug #347 which used only a lowercase "all" to confirm multiple changes
-   instead of an uppercase "All" like the "Yes" answer.
- + Fixed bug that was causing the 'completed' report to sort incorrectly.
- + Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
-   was run, and there are no tasks with due dates.
- + Fixed bug #360 which prevented certain modifications to recurring tasks
-   (thanks to John Florian).
- + Fixed bug #299 which prevented excluding multiple projects from a report,
-   by using "task list project.isnt:foo project.isnt:bar" (thanks to John
-   Florian).
- + Fixed bug #368 which caused recurring tasks 'until' dates to be rendered as
-   epoch numbers instead of dates (thanks to Cory Donnelly).
- + Fixed bug #369 which prevented the config command from setting quoted or
-   unquoted multi-word values (thanks to Richard Querin).
- + Fixed bug #370 which prevented the removal of a due date from a task,
-   mis-identifying the task as recurring just because it had a due date
-   (thanks to John Florian).
- + Fixed bug #371 which caused task to mis-apply certain color rules, like
-   color.alternate, which was (a) not applied first, and (b) not blended
-   with the other color rules (thanks to Richard Querin).
- + Fixed bug #372 which incorrectly mapped 16-color backgrounds into the
-   256-color space.
+- Added feature #283 that makes it possible to control the verbosity
+  of the output of annotations.
+- Added feature #254 (#295) which gives task a second date format to be
+  used in the reports with more conversion sequences like weekday name
+  or weeknumber. The date format is set with variable "dateformat.report".
+- Added feature #292 that permits alternate line coloration in reports
+  (thanks to Richard Querin).
+- Added feature #307 that provides vim with syntax highlighting for .taskrc.
+- Added feature #336 which gives task a 'prepend' command for symmetry
+  with the 'append' command.
+- Added feature #341 that makes explicit references to the task and taskrc
+  man pages, both in the auto-generated .taskrc file and the version command
+  output (thanks to Cory Donnelly).
+- The 'delete' command is now aliased to 'rm' (thanks to Ivo Jimenez).
+- Added new attribute modifiers 'word' and 'noword' which find the existence
+  of whole words, or prove the non-existence of whole words.  If a task has
+  the description "Pay the bill", then "description.word:the" will match, but
+  "description.word:th" will not.  For partial word matches, there is still
+  "description.contains:th".
+- Added new 'config' command to display the configuration settings of task.
+  As a consequence 'version' now only shows the version number and legal
+  information.
+- The 'config' command now complains about use of deprecated color names in
+  your .taskrc file.
+- Added feature #296, that allows the 'config' command to modify your .taskrc
+  settings directly, with the command 'task config <name> <value>', or
+  'task config <name>' to remove the setting.
+- Task now supports nested .taskrc files using the "include /path" directive.
+- The 'entry', 'start' and 'end' columns now have equivalents that include the
+  time, and are called 'entry_time', 'start_time', and 'end_time', for use in
+  custom reports.
+- 2 new columns have been added to the reports: countdown and
+  countdown_compact.  They show the days left until a task is due or how many
+  days a task has been overdue.
+- The new 'priority_long' field can be shown in custom reports, and will
+  display 'High' rather than the abbreviated 'H'.
+- Task now supports .taskrc command line overrides using rc.name:value and
+  the new rc.name=value to accommodate a frequent mistake.
+- The color rules for projects (color.project.foo) now matches on partial
+  project names, the same way as filters.
+- The color command now takes a color as an argument, and displays that color
+  with sample text.
+- Added 2 new configuration variables to display the details of tasks with due
+  dates when doing a 'task cal' for the corresponding months:
+  'calendar.details' and 'calendar.details.report'
+- Added 5 new color configuration variables to colorize today, days with due
+  tasks, days with overdue tasks, weekend days and week numbers in the
+  calendar:
+  'calendar.color.today', 'color.calendar.due', 'calendar.calendar.overdue',
+  'color.calendar.weekend'and 'color.calendar.weeknumber'.
+- Added support for holidays in the calendar by using calendar.holidays
+  and the corresponding holiday.X.name and holiday.X.date variables.
+  The default dateformat being YMD (20101224) set by dateformat.holiday.
+- The coloring of due tasks in reports can now be enabled for all tasks, and
+  not only the imminent ones, by setting the configuration variable due=0.
+- Tasks due on the current day ("today") can now have their own color setting
+  color.due.today and color.calendar.due.today.
+- Added a new 'task-faq' man page for common questions and answers.
+- Added a new 'task-color' man page detailing how to set up and use color in
+  task.
+- Added feature #176, which allows for configurable case-sensitivity for
+  keyword searches and substitutions (thanks to John Florian).
+- Task can now use an alternate tag indicator by setting the tag.indicator
+  configuration variable to something other than the default of +.
+- Task can now use an alternate active indicator by setting the
+  active.indicator configuration variable to something other than the default
+  of *.
+- Task can now use an alternate recurrence indicator by setting the
+  recurrence.indicator configuration variable to something other than the
+  default of R.
+- Added a new file, README.build, which provides assistance troubleshooting
+  build-related problems on different operating systems and environments.
+- Fixed bug #316 which caused the timesheet report to display an oddly sorted
+  list.
+- Fixed bug #317 which colored tasks in the 'completed' report according to
+  due dates, which are no longer relevant to a completed task (thanks to
+  Cory Donnelly).
+- Fixed bug #347 which used only a lowercase "all" to confirm multiple changes
+  instead of an uppercase "All" like the "Yes" answer.
+- Fixed bug that was causing the 'completed' report to sort incorrectly.
+- Fixed bug that showed a calendar for the year 2037 when 'task calendar due'
+  was run, and there are no tasks with due dates.
+- Fixed bug #360 which prevented certain modifications to recurring tasks
+  (thanks to John Florian).
+- Fixed bug #299 which prevented excluding multiple projects from a report,
+  by using "task list project.isnt:foo project.isnt:bar" (thanks to John
+  Florian).
+- Fixed bug #368 which caused recurring tasks 'until' dates to be rendered as
+  epoch numbers instead of dates (thanks to Cory Donnelly).
+- Fixed bug #369 which prevented the config command from setting quoted or
+  unquoted multi-word values (thanks to Richard Querin).
+- Fixed bug #370 which prevented the removal of a due date from a task,
+  mis-identifying the task as recurring just because it had a due date
+  (thanks to John Florian).
+- Fixed bug #371 which caused task to mis-apply certain color rules, like
+  color.alternate, which was (a) not applied first, and (b) not blended
+  with the other color rules (thanks to Richard Querin).
+- Fixed bug #372 which incorrectly mapped 16-color backgrounds into the
+  256-color space.
 
 1.8.5 (12/05/2009) a6c7236ff34e5eee3ef1693b97cb1367e6e3c607
- + Added feature to allow the user to quit when asked to confirm multiple
-   changes.  Now task asks "Proceed with change? (Yes/no/all/quit)".
- + Added feature #341 that makes explicit references to the task and taskrc
-   man pages, both in the auto-generated .taskrc file and the version command
-   output (thanks to Cory Donnelly).
- + Added feature - #310 that simplified and make clearer an error message
-   that complained about things that were beyond user control (thanks to
-   John Florian).
- + Fixed bug that was causing the 'completed' report to sort incorrectly.
- + Fixed bug #321 where all shell input was converted to lower case (thanks
-   to Juergen Daubert).
- + Fixed bug #327 that allowed the removal of a due date from a recurring
-   task.
- + Fixed bug #317 which colored tasks in the 'completed' report according
-   to due dates, which are no longer relevant to a completed task (thanks
-   to Cory Donnelly).
- + Fixed bug that was causing the 'completed' report to sort incorrectly.
- + Fixed bug #322 which failed to propagate rc overrides to shell commands.
- + Fixed redundant messages when exiting shell mode.
- + Fixed bug #333 which failed to display the ID of a duplicated task (thanks
-   to Cory Donnelly).
- + Fixed bug #332 where task complained that the 'recur_ind' custom report
-   column was invalid.  It was misnamed in the documentation, which should
-   have read 'recurrence_indicator'.  Also, the 'tag_indicator' column was
-   not mentioned anywhere (thanks to T. Charles Yun).
- + Fixed bug #319 that caused task to not properly detect the removal of a
-   tag when obtaining confirmation from the user fora bulk modification
-   (thanks to Cory Donnelly).
+- Added feature to allow the user to quit when asked to confirm multiple
+  changes.  Now task asks "Proceed with change? (Yes/no/all/quit)".
+- Added feature #341 that makes explicit references to the task and taskrc
+  man pages, both in the auto-generated .taskrc file and the version command
+  output (thanks to Cory Donnelly).
+- Added feature - #310 that simplified and make clearer an error message
+  that complained about things that were beyond user control (thanks to
+  John Florian).
+- Fixed bug that was causing the 'completed' report to sort incorrectly.
+- Fixed bug #321 where all shell input was converted to lower case (thanks
+  to Juergen Daubert).
+- Fixed bug #327 that allowed the removal of a due date from a recurring
+  task.
+- Fixed bug #317 which colored tasks in the 'completed' report according
+  to due dates, which are no longer relevant to a completed task (thanks
+  to Cory Donnelly).
+- Fixed bug that was causing the 'completed' report to sort incorrectly.
+- Fixed bug #322 which failed to propagate rc overrides to shell commands.
+- Fixed redundant messages when exiting shell mode.
+- Fixed bug #333 which failed to display the ID of a duplicated task (thanks
+  to Cory Donnelly).
+- Fixed bug #332 where task complained that the 'recur_ind' custom report
+  column was invalid.  It was misnamed in the documentation, which should
+  have read 'recurrence_indicator'.  Also, the 'tag_indicator' column was
+  not mentioned anywhere (thanks to T. Charles Yun).
+- Fixed bug #319 that caused task to not properly detect the removal of a
+  tag when obtaining confirmation from the user fora bulk modification
+  (thanks to Cory Donnelly).
 
 1.8.4 (11/17/2009) 12c4983936d27317df100f05da8244139dd06a3f
- + Fixed bug that caused wait: dates to not be properly rendered in a
-   readable and preferred format with the "edit" command.
- + Fixed bug that caused a hang on cygwin, when a task with multiple
-   annotations was edited (thanks to Joe Pulliam).
- + Fixed bug #314 where the edit command fails when data.location includes
-   directories containing spaces (thanks to Cory Donnelly).
- + Added a warning (issue #312) when modifying recurring tasks, that all
-   instances of that task may be modified.  When task confirms a bulk edit
-   the recurrence is again indicated (thanks to Cory Donnelly).
+- Fixed bug that caused wait: dates to not be properly rendered in a
+  readable and preferred format with the "edit" command.
+- Fixed bug that caused a hang on cygwin, when a task with multiple
+  annotations was edited (thanks to Joe Pulliam).
+- Fixed bug #314 where the edit command fails when data.location includes
+  directories containing spaces (thanks to Cory Donnelly).
+- Added a warning (issue #312) when modifying recurring tasks, that all
+  instances of that task may be modified.  When task confirms a bulk edit
+  the recurrence is again indicated (thanks to Cory Donnelly).
 
 1.8.3 (10/21/2009) bcdcbeeea0d92f21c3565aebfaf6332b959f4025
- + Added support for Haiku R1/alpha1
+- Added support for Haiku R1/alpha1
 
 1.8.2 (9/7/2009) f243f0ed443ecd7dde779de8a6525222591024db
- + Added feature #282 that returns useful exit codes to the shell.  Now a
-   script can detect whether no tasks were returned by a report (thanks to
-   Pietro Cerutti).
- + Fixed bug #287 that causes color control codes to be written to shadow
-   files (thanks to Richard Querin).
- + Fixed bug #289 which imported task from todo.sh without valid uuids
-   (thanks to Ben Jackson).
- + Fixed bug #291 which generated a false warning about an unrecognized
-   variable when enabling default.projects in .taskrc (thanks to Thomas@BIC).
- + Fixed bug #288 which failed to propagate rc file overrides on the command
-   line to the default command (thanks to Zach Frazier).
+- Added feature #282 that returns useful exit codes to the shell.  Now a
+  script can detect whether no tasks were returned by a report (thanks to
+  Pietro Cerutti).
+- Fixed bug #287 that causes color control codes to be written to shadow
+  files (thanks to Richard Querin).
+- Fixed bug #289 which imported task from todo.sh without valid uuids
+  (thanks to Ben Jackson).
+- Fixed bug #291 which generated a false warning about an unrecognized
+  variable when enabling default.projects in .taskrc (thanks to Thomas@BIC).
+- Fixed bug #288 which failed to propagate rc file overrides on the command
+  line to the default command (thanks to Zach Frazier).
 
 1.8.1 (8/20/2009) 35792e7874d2bb664abb1a0a67960b7fe7e0fccf
- + Fixed bug #231 that broke the build on OpenBSD 32-bit due to a time_t
-   and int collision (thanks to Pietro Cerutti).
- + Fixed bug #241 that prevented bash's tab-completion of projects in Fedora 
-   11 and likely anything using bash-4 (thanks to John Florian).
- + Fixed bug #242 that sometimes causes the ID echoed after a task is added
-   to be incorrect (thanks to John Florian).
- + Fixed bug #245 that quoted date fields on export, that were subsequently
-   improperly parsed on import (thanks to John Florian).
- + Fixed bug #248 where single and double quotes are both stored as
-   ampersand-quot-semi (thanks to John Florian).
- + Fixed bug #249 that caused annotations with the same date to be lost after
-   a "task edit" command (thanks to Federico Hernandez).
- + Fixed bug #250 whereby rc.dateformat was not observed when parsing the
-   creation date of an annotation (thanks to Federico Hernandez).
- + Fixed bug #251 whereby the presence of annotations cause the .hasnt attribute
-   modifier to not work (thanks to John Florian).
- + Fixed bug #252 that prevented use of attribute modifiers on dates to effect
-   a range, such as "task ls due.after:eom due.before:eoy" (thanks to John
-   Florian).
- + Fixed bug #256 that allowed a recurring task with no due date.
- + Fixed bug #257 where an extant ~/.taskrc file prevented the override and
-   automatic creation of an alternate rc file (thanks to Zach Frazier).
- + Fixed bug #259 that cause a build failure on Snow Leopard 10a432.
- + Fixed bug #260 whereby the start, stop and delete commands did not complain
-   when filter arguments were specified, even though they were ignored
-   (thanks to T. Charles Yun).
- + Fixed bug that allowed a recurring task to be added without a due date.
- + Fixed bug that displays the wrong .taskrc file name on override (thanks to
-   Federico Hernandez).
- + Fixed bug that failed to suppress color control code in the header and
-   footnote when redirecting output to a file (thanks to John Florian).
+- Fixed bug #231 that broke the build on OpenBSD 32-bit due to a time_t
+  and int collision (thanks to Pietro Cerutti).
+- Fixed bug #241 that prevented bash's tab-completion of projects in Fedora 
+  11 and likely anything using bash-4 (thanks to John Florian).
+- Fixed bug #242 that sometimes causes the ID echoed after a task is added
+  to be incorrect (thanks to John Florian).
+- Fixed bug #245 that quoted date fields on export, that were subsequently
+  improperly parsed on import (thanks to John Florian).
+- Fixed bug #248 where single and double quotes are both stored as
+  ampersand-quot-semi (thanks to John Florian).
+- Fixed bug #249 that caused annotations with the same date to be lost after
+  a "task edit" command (thanks to Federico Hernandez).
+- Fixed bug #250 whereby rc.dateformat was not observed when parsing the
+  creation date of an annotation (thanks to Federico Hernandez).
+- Fixed bug #251 whereby the presence of annotations cause the .hasnt attribute
+  modifier to not work (thanks to John Florian).
+- Fixed bug #252 that prevented use of attribute modifiers on dates to effect
+  a range, such as "task ls due.after:eom due.before:eoy" (thanks to John
+  Florian).
+- Fixed bug #256 that allowed a recurring task with no due date.
+- Fixed bug #257 where an extant ~/.taskrc file prevented the override and
+  automatic creation of an alternate rc file (thanks to Zach Frazier).
+- Fixed bug #259 that cause a build failure on Snow Leopard 10a432.
+- Fixed bug #260 whereby the start, stop and delete commands did not complain
+  when filter arguments were specified, even though they were ignored
+  (thanks to T. Charles Yun).
+- Fixed bug that allowed a recurring task to be added without a due date.
+- Fixed bug that displays the wrong .taskrc file name on override (thanks to
+  Federico Hernandez).
+- Fixed bug that failed to suppress color control code in the header and
+  footnote when redirecting output to a file (thanks to John Florian).
 
 1.8.0 (7/21/2009) 14977ef317bd004dae2f2c313e806af9f2a2140c
- + Added zsh tab completion script (thanks to P.C. Shyamshankar).
- + Fixed bug that cause the _forcecolor configuration variable to be
-   considered obsolete (thank to Bruce Dillahunty).
- + Fixed documentation errors (thanks to Thomas@BIC).
- + The 'weekstart' configuration variable now controls the 'calendar'
-   report (thanks to Federico Hernandez).
- + The 'displayweeknumber' configuration variable now controls the display
-   of week number in the 'calendar' report (thanks to Federico Hernandez).
- + Supports '--' argument to indicate that all subsequence arguments are
-   part of the description, despite what they otherwise might mean.
- + Removed support for the obsolete task file format 1 (never released).
- + Fixed bug that allowed blank annotations to be added (thanks to Bruce
-   Dillahunty).
- + Supports negative tag filters, so that (task list +foo -bar) now filters
-   tasks that have the "foo" tag, but do not have the "bar" tag (thanks to
-   Chris Pride).
- + Custom reports now support a more compact form of the "age" column,
-   called "age_compact" (thanks to T. Charles Yun).
- + Supports 'rc.name:value' for a command line override to .taskrc data
-   (thanks to Federico Hernandez).
- + Removed obsolete DEVELOPERS file.  The online support forums at
-   http://taskwarrior.org will provide better information.
- + Fixed bug that kept some deleted tasks showing up on the calendar report
-   (thanks to Federico Hernandez).
- + Now asks the user to confirm large changes if configuration variable
-   'confirmation' is set to 'yes'.  A large change is one that completely
-   replaces a task description, or operates on a large number of tasks,
-   which defaults to 4 but is configurable via the 'bulk' configuration
-   variable  (thanks to John Florian).
- + Now echoes back the new task ID on 'add' (thanks to Bruce Dillahunty).
- + The new "shell" command provides an interactive shell for task.  All
-   commands are supported (thanks to Bruce Dillahunty, Federico Hernandez,
-   and John Florian).
- + New "recurring" report to list all recurring tasks.
- + New, more flexible, more consistent, grep-able file format.
- + If task is renamed to "cal", or there is a symlink to task called "cal",
-   then task can act as a replacement for the Unix "cal" command.
- + Supports arguments to the cal command like "month year", "year", etc.
- + The "tags" report now shows the tag usage count.
- + The "projects" report now shows totals by project and priority.
- + Now supports attribute modifiers that allow much finer control over report
-   filtering, for example "task list due.before:friday", or "task list
-   pri.not:H" and many more.
- + Now supports new "age_compact" and "wait" custom report columns.
- + Now supports colorization of the header and footnote messages that are
-   printed before and after report output, with the 'color.header' and
-   'color.footnote' configuration variables.
- + Now supports the 'limit' attribute, to control the number of tasks that
-   are shown, for example: "task list limit:10".
- + Now supports a debug mode that can be used to generate helpful information
-   when reporting a problem.  Just run the command with "task rc.debug:on ..."
-   and diagnostics will be generated that will help pinpoint a problem.
- + The new "undo" command replaces the old "undo" and "undelete" command
-   with a complete undo stack that can rollback all changes.
- + While waiting for a file lock, task states the reason for the delay.
- + Now supports a 'waiting' state that causes tasks to not appear until
-   a certain date, for example "task <ID> wait:<date>".  The task
-   will then not show up on any report (except 'all') until that date.
- + The "active", "completed", "overdue" and "next" reports are now custom
-   reports, and therefore modifiable.
- + Now supports a 'waiting' custom report to list all waiting tasks.
- + Now supports a 'recurring' custom report to list all recurring tasks.
- + Now supports an 'all' report to list all tasks, including deleted
- + Supports command aliases - create an alias for any command by creating
-   a .taskrc entry like "alias.new_name=old_name".
-   and completed tasks.
- + Now over 1,600 unit tests, helping to maintain code quality.
+- Added zsh tab completion script (thanks to P.C. Shyamshankar).
+- Fixed bug that cause the _forcecolor configuration variable to be
+  considered obsolete (thank to Bruce Dillahunty).
+- Fixed documentation errors (thanks to Thomas@BIC).
+- The 'weekstart' configuration variable now controls the 'calendar'
+  report (thanks to Federico Hernandez).
+- The 'displayweeknumber' configuration variable now controls the display
+  of week number in the 'calendar' report (thanks to Federico Hernandez).
+- Supports '--' argument to indicate that all subsequence arguments are
+  part of the description, despite what they otherwise might mean.
+- Removed support for the obsolete task file format 1 (never released).
+- Fixed bug that allowed blank annotations to be added (thanks to Bruce
+  Dillahunty).
+- Supports negative tag filters, so that (task list +foo -bar) now filters
+  tasks that have the "foo" tag, but do not have the "bar" tag (thanks to
+  Chris Pride).
+- Custom reports now support a more compact form of the "age" column,
+  called "age_compact" (thanks to T. Charles Yun).
+- Supports 'rc.name:value' for a command line override to .taskrc data
+  (thanks to Federico Hernandez).
+- Removed obsolete DEVELOPERS file.  The online support forums at
+  http://taskwarrior.org will provide better information.
+- Fixed bug that kept some deleted tasks showing up on the calendar report
+  (thanks to Federico Hernandez).
+- Now asks the user to confirm large changes if configuration variable
+  'confirmation' is set to 'yes'.  A large change is one that completely
+  replaces a task description, or operates on a large number of tasks,
+  which defaults to 4 but is configurable via the 'bulk' configuration
+  variable  (thanks to John Florian).
+- Now echoes back the new task ID on 'add' (thanks to Bruce Dillahunty).
+- The new "shell" command provides an interactive shell for task.  All
+  commands are supported (thanks to Bruce Dillahunty, Federico Hernandez,
+  and John Florian).
+- New "recurring" report to list all recurring tasks.
+- New, more flexible, more consistent, grep-able file format.
+- If task is renamed to "cal", or there is a symlink to task called "cal",
+  then task can act as a replacement for the Unix "cal" command.
+- Supports arguments to the cal command like "month year", "year", etc.
+- The "tags" report now shows the tag usage count.
+- The "projects" report now shows totals by project and priority.
+- Now supports attribute modifiers that allow much finer control over report
+  filtering, for example "task list due.before:friday", or "task list
+  pri.not:H" and many more.
+- Now supports new "age_compact" and "wait" custom report columns.
+- Now supports colorization of the header and footnote messages that are
+  printed before and after report output, with the 'color.header' and
+  'color.footnote' configuration variables.
+- Now supports the 'limit' attribute, to control the number of tasks that
+  are shown, for example: "task list limit:10".
+- Now supports a debug mode that can be used to generate helpful information
+  when reporting a problem.  Just run the command with "task rc.debug:on ..."
+  and diagnostics will be generated that will help pinpoint a problem.
+- The new "undo" command replaces the old "undo" and "undelete" command
+  with a complete undo stack that can rollback all changes.
+- While waiting for a file lock, task states the reason for the delay.
+- Now supports a 'waiting' state that causes tasks to not appear until
+  a certain date, for example "task <ID> wait:<date>".  The task
+  will then not show up on any report (except 'all') until that date.
+- The "active", "completed", "overdue" and "next" reports are now custom
+  reports, and therefore modifiable.
+- Now supports a 'waiting' custom report to list all waiting tasks.
+- Now supports a 'recurring' custom report to list all recurring tasks.
+- Now supports an 'all' report to list all tasks, including deleted
+- Supports command aliases - create an alias for any command by creating
+  a .taskrc entry like "alias.new_name=old_name".
+  and completed tasks.
+- Now over 1,600 unit tests, helping to maintain code quality.
 
 1.7.1 (6/8/2009) 1422a15cbc470cff590bf06daad20d01fe1b05ef
- + Fixed build failure on OpenBSD (thanks to Mike Adonay).
- + Took the opportunity of a patch release to update the various email
-   addresses and URLs in the various documents.
+- Fixed build failure on OpenBSD (thanks to Mike Adonay).
+- Took the opportunity of a patch release to update the various email
+  addresses and URLs in the various documents.
 
 1.7.0 (5/14/2009) f6b8b39d8b4a85c30a457e9e78b582b74531bfe4
- + Improved the errors when parsing a corrupt or unrecognized pending.data
-   or completed.data file (thanks to T. Charles Yun).
- + Added details to the "info" report about recurring tasks (thanks to T.
-   Charles Yun).
- + Now writes a sample "defaultwidth" configuration variable to the default
-   .taskrc file (thanks to T. Charles Yun).
- + Task allows commands that require an ID to now be given a sequence, which
-   is a set of IDs.  This allows commands like "task delete 1 2 5-10,12".
- + Fixed bug in the ghistory report, which caused it to only show a new
-   month if a task was added during that month.
- + New command "duplicate" which allow existing task(s) to be duplicated,
-   and also have modifications applied (thanks to David J Patrick).
- + The "append", and "done" commands now allow modifications to be applied
-   to the task(s) (thanks to David J Patrick).
- + Improved word wrapping in various output.
- + Fixed bug that added an extra line between header and graph in the
-   ghistory report.
- + Added simple 'taskprogram' mailing list subscribe form to the web site.
- + For custom reports that define a "limit" to the number of rows of output
-   such as "oldest" and "newest", task allows an override value.  For
-   example "task oldest 5" will display the 5 oldest tasks.
- + Modified the "stats" report so that it has the same aesthetics as the
-   other reports.
- + New "timesheet" command displays tasks completed and started, per week,
-   and can display multiple weeks.
- + New tab completion script, task_completion.sh, for bash users, is installed
-   to /usr/local/share/task (thanks to Federico Hernandez).
- + Applied patch to allow task to build on Arch Linux (thanks to Johan Friis).
- + Applied patch to fix a UUID bug on Solaris 8 (thanks to Steven de Brouwer).
- + The task and taskrc man pages are here.  Try "man task", "man taskrc"
-   (thanks to Federico Hernandez and P.C. Shyamshankar).
- + Fixed bug that causes task to create a default .task directory, even if
-   data.location specified otherwise (thanks to Federico Hernandez).
- + New "edit" command that fires up a text editor (uses 'editor' configuration
-   variable, $VISUAL or $EDITOR environment variable) and allows direct
-   editing of all editable task details.
+- Improved the errors when parsing a corrupt or unrecognized pending.data
+  or completed.data file (thanks to T. Charles Yun).
+- Added details to the "info" report about recurring tasks (thanks to T.
+  Charles Yun).
+- Now writes a sample "defaultwidth" configuration variable to the default
+  .taskrc file (thanks to T. Charles Yun).
+- Task allows commands that require an ID to now be given a sequence, which
+  is a set of IDs.  This allows commands like "task delete 1 2 5-10,12".
+- Fixed bug in the ghistory report, which caused it to only show a new
+  month if a task was added during that month.
+- New command "duplicate" which allow existing task(s) to be duplicated,
+  and also have modifications applied (thanks to David J Patrick).
+- The "append", and "done" commands now allow modifications to be applied
+  to the task(s) (thanks to David J Patrick).
+- Improved word wrapping in various output.
+- Fixed bug that added an extra line between header and graph in the
+  ghistory report.
+- Added simple 'taskprogram' mailing list subscribe form to the web site.
+- For custom reports that define a "limit" to the number of rows of output
+  such as "oldest" and "newest", task allows an override value.  For
+  example "task oldest 5" will display the 5 oldest tasks.
+- Modified the "stats" report so that it has the same aesthetics as the
+  other reports.
+- New "timesheet" command displays tasks completed and started, per week,
+  and can display multiple weeks.
+- New tab completion script, task_completion.sh, for bash users, is installed
+  to /usr/local/share/task (thanks to Federico Hernandez).
+- Applied patch to allow task to build on Arch Linux (thanks to Johan Friis).
+- Applied patch to fix a UUID bug on Solaris 8 (thanks to Steven de Brouwer).
+- The task and taskrc man pages are here.  Try "man task", "man taskrc"
+  (thanks to Federico Hernandez and P.C. Shyamshankar).
+- Fixed bug that causes task to create a default .task directory, even if
+  data.location specified otherwise (thanks to Federico Hernandez).
+- New "edit" command that fires up a text editor (uses 'editor' configuration
+  variable, $VISUAL or $EDITOR environment variable) and allows direct
+  editing of all editable task details.
 
 1.6.1 (4/24/2009) 1b6faf57c998617024d0348a87b941a5d2ab2249
-  + Fixed bug that caused new, first-time .taskrc files to be written without
-    including the custom report labels (thanks to P.C. Shyamshankar).
+- Fixed bug that caused new, first-time .taskrc files to be written without
+  including the custom report labels (thanks to P.C. Shyamshankar).
 
 1.6.0 (4/12/2009) 06062a96eb57d10dcd7fbe1edf968bb638a0b3a9
-  + Added support for new "append" command that adds more description text to
-    an existing task.
-  + Added support for the "weekdays" recurrence, which means a task can recur
-    five times a week, and not on weekends (thanks to Chris Pride).
-  + UTF8 text is now supported in task project names, tags and descriptions.
-  + Fixed bug that caused the y/n confirmation on task deletion to ignore the
-    Enter key and fail to re-prompt (thanks to Bruce Dillahunty).
-  + When the "echo.command" configuration variable is set to "yes", it causes
-    commands that modify tasks to display which task was affected (thanks to
-    Bruce Dillahunty).
-  + A task can now be annotated with the command "task <id> annotate ...", and
-    a timestamped annotation will appear in reports.
-  + A 'description_only' column is now available for use in custom reports,
-    and it excludes annotations.
-  + A task can now be upgraded to a recurring task by adding a recurrence
-    frequency, a due date, and an optional until date.
-  + When a recurring task is modified, all other instances of the recurring
-    task are also modified.
-  + Custom reports now support user-specified column labels (thanks to T.
-    Charles Yun).
-  + Task can now import tasks from a variety of data formats, including task
-    export files from versions 1.4.3 and earlier, versions 1.5.0 and later,
-    todo.sh 2.x, CSV, plain text and task command line.  See online docs for
-    full details.
-  + Export was including 'id' in the column header even though it was not
-    included in the data.
-  + The task file format has changed slightly.  Please back up your task
-    data files before upgrading to 1.6.0.
-  + Added new column 'recurrence_indicator' that displays an 'R' if the task
-    is a recurring task.  This column can be added to any custom report.
-  + Added new column 'tag_indicator' that displays a '+' if the task
-    has any tags.  This column can be added to any custom report.
-  + Fixed bug where sometimes a task description was concatenated oddly if
-    there was a colon somewhere in the description.
-  + Fixed bug that caused recurring annual tasks to exhibit a creeping due
-    date, because of an assumption of 365 days per year, which failed to
-    consider leap years (thanks to T. Charles Yun).
-  + Annotations can now be modified with the substitution commands /from/to/.
-  + Substitutions can now be made global with /from/to/g and all occurrences
-    of "from" will be replaced with "to".
+- Added support for new "append" command that adds more description text to
+  an existing task.
+- Added support for the "weekdays" recurrence, which means a task can recur
+  five times a week, and not on weekends (thanks to Chris Pride).
+- UTF8 text is now supported in task project names, tags and descriptions.
+- Fixed bug that caused the y/n confirmation on task deletion to ignore the
+  Enter key and fail to re-prompt (thanks to Bruce Dillahunty).
+- When the "echo.command" configuration variable is set to "yes", it causes
+  commands that modify tasks to display which task was affected (thanks to
+  Bruce Dillahunty).
+- A task can now be annotated with the command "task <id> annotate ...", and
+  a timestamped annotation will appear in reports.
+- A 'description_only' column is now available for use in custom reports,
+  and it excludes annotations.
+- A task can now be upgraded to a recurring task by adding a recurrence
+  frequency, a due date, and an optional until date.
+- When a recurring task is modified, all other instances of the recurring
+  task are also modified.
+- Custom reports now support user-specified column labels (thanks to T.
+  Charles Yun).
+- Task can now import tasks from a variety of data formats, including task
+  export files from versions 1.4.3 and earlier, versions 1.5.0 and later,
+  todo.sh 2.x, CSV, plain text and task command line.  See online docs for
+  full details.
+- Export was including 'id' in the column header even though it was not
+  included in the data.
+- The task file format has changed slightly.  Please back up your task
+  data files before upgrading to 1.6.0.
+- Added new column 'recurrence_indicator' that displays an 'R' if the task
+  is a recurring task.  This column can be added to any custom report.
+- Added new column 'tag_indicator' that displays a '+' if the task
+  has any tags.  This column can be added to any custom report.
+- Fixed bug where sometimes a task description was concatenated oddly if
+  there was a colon somewhere in the description.
+- Fixed bug that caused recurring annual tasks to exhibit a creeping due
+  date, because of an assumption of 365 days per year, which failed to
+  consider leap years (thanks to T. Charles Yun).
+- Annotations can now be modified with the substitution commands /from/to/.
+- Substitutions can now be made global with /from/to/g and all occurrences
+  of "from" will be replaced with "to".
 
 1.5.0 (3/15/2009) 87be68e2e83d7bb628be1e5679b16a49a26d3549
-  + Removed deprecated TUTORIAL file.
-  + Removed "showage" configuration variable.
-  + "task stop" can now remove the start time from a started task.
-  + "task ghistory" now displays a differently aligned graph, allowing
-    easier comparison by month of tasks added versus completed and deleted.
-  + "task version" command now reports unrecognized configuration variables,
-    which may be spelling mistakes or deprecated variables.
-  + "configure --enable-debug" now supported to suppress compiler optimization
-    to allow debugging.
-  + Allow lower case priorities, and automatically upper case them.
-  + Added support for "due" configuration variable which defines the number
-    of days in the future when a task is considered due.
-  + Added support for custom reports, comprised of a set of column names and
-    sort order, with optional filtering in the configuration file.  This
-    means user-defined reports can be written, and the reports currently
-    in the configuration file can be renamed.  Several of task's built in
-    reports have been converted to user-defined reports.
-  + New online documentation for custom reports.
-  + New algorithm for determining when the "nag" message is displayed.
-  + Fixed bug where task hangs with a certain combination of recurring tasks
-    and shadow files.
-  + Fixed bug with the task sort algorithm, which led to an unstable sequence
-    when there were only a handful of tasks.
-  + Performance enhanced by eliminating unnecessary sorting.
-  + Task now has a large (and growing) test suite and bug regression tests
-    to help ensure higher quality releases.
-  + Fixed bug that caused performance hit during table rendering.
-  + Fixed bug that concatenated a modified description without spaces.
-  + Added new column 'recur' that displays the recurrence period of any
-    recurring tasks.  This column can be added to any custom report.
-  + Added support for "color.recurring" configuration variable which
-    specifies the color of recurring tasks.
-  + Added support for "locking" configuration variable that controls whether
-    file locking is used.
-  + Task export feature now includes recurrence information, removes nested
-    quotes, and limits output to pending tasks.
-  + Task no longer includes deleted tasks in the summary report (thanks to
-    Benjamin Tegarden).
-  + Fixed bug that prevented the summary report from properly reporting
-    recently completed tasks.
+- Removed deprecated TUTORIAL file.
+- Removed "showage" configuration variable.
+- "task stop" can now remove the start time from a started task.
+- "task ghistory" now displays a differently aligned graph, allowing
+  easier comparison by month of tasks added versus completed and deleted.
+- "task version" command now reports unrecognized configuration variables,
+  which may be spelling mistakes or deprecated variables.
+- "configure --enable-debug" now supported to suppress compiler optimization
+  to allow debugging.
+- Allow lower case priorities, and automatically upper case them.
+- Added support for "due" configuration variable which defines the number
+  of days in the future when a task is considered due.
+- Added support for custom reports, comprised of a set of column names and
+  sort order, with optional filtering in the configuration file.  This
+  means user-defined reports can be written, and the reports currently
+  in the configuration file can be renamed.  Several of task's built in
+  reports have been converted to user-defined reports.
+- New online documentation for custom reports.
+- New algorithm for determining when the "nag" message is displayed.
+- Fixed bug where task hangs with a certain combination of recurring tasks
+  and shadow files.
+- Fixed bug with the task sort algorithm, which led to an unstable sequence
+  when there were only a handful of tasks.
+- Performance enhanced by eliminating unnecessary sorting.
+- Task now has a large (and growing) test suite and bug regression tests
+  to help ensure higher quality releases.
+- Fixed bug that caused performance hit during table rendering.
+- Fixed bug that concatenated a modified description without spaces.
+- Added new column 'recur' that displays the recurrence period of any
+  recurring tasks.  This column can be added to any custom report.
+- Added support for "color.recurring" configuration variable which
+  specifies the color of recurring tasks.
+- Added support for "locking" configuration variable that controls whether
+  file locking is used.
+- Task export feature now includes recurrence information, removes nested
+  quotes, and limits output to pending tasks.
+- Task no longer includes deleted tasks in the summary report (thanks to
+  Benjamin Tegarden).
+- Fixed bug that prevented the summary report from properly reporting
+  recently completed tasks.
 
 1.4.3 (11/1/2008) 8639e9260646c8c9224e0fc47e5d2443b46eecfc
-  + Fixed misleading task count at bottom on "info" report.
-  + Added support for a shadow file that contains a plain text task report,
-    with the "shadow.file" and "shadow.command" configuration variables.
-    The shadow file is automatically updated whenever the task database
-    changes.  Useful for integrating with "Samurize".
-  + Task now displays a message whenever a shadow file is updated, if the
-    "shadow.notify" configuration variable is set "on".
-  + Bug: adding a task with a \n, \r or \f in it now fails properly.
-  + Removed "usage" command, and support for "command.logging" configuration
-    variable.
-  + Added documentation for Shadow files.
-  + Added documentation for task filters.
+- Fixed misleading task count at bottom on "info" report.
+- Added support for a shadow file that contains a plain text task report,
+  with the "shadow.file" and "shadow.command" configuration variables.
+  The shadow file is automatically updated whenever the task database
+  changes.  Useful for integrating with "Samurize".
+- Task now displays a message whenever a shadow file is updated, if the
+  "shadow.notify" configuration variable is set "on".
+- Bug: adding a task with a \n, \r or \f in it now fails properly.
+- Removed "usage" command, and support for "command.logging" configuration
+  variable.
+- Added documentation for Shadow files.
+- Added documentation for task filters.
 
 1.4.2 (9/18/2008) e7304e86ce9bb80978c7055fd2a9e999619a6fb8
-  + "task undo" can now retract a "task done" command, provided no reports
-    have been run (and therefore TDB::gc run).
-  + Task now correctly sorts on entire strings, instead of just the first
-    character (thanks to Andy Lester).
-  + Task now uses dashes (-----) to column underlines when color is disabled
-    (thanks to Vincent Fleuranceau).
-  + Task now allows mixed case attribute names (pri:, PRI:, Pri: ...) and
-    commands (add, ADD, Add ...) (thanks to Vincent Fleuranceau).
-  + Task now supports a default project and priority for new tasks, via
-    the new "default.project" and "default.priority" configuration variables
-    (thanks to Vincent Fleuranceau).
-  + Task supports improved word-wrapping to the terminal width.
-  + Task now supports "default.command" configuration variable (for example
-    it could contain "list due:tomorrow") that is the command that is run
-    whenever task is invoked with no arguments.
-  + Task supports modifying the existing description of a task, with the
-    following syntax: task <id> "new description ...".
-  + Bug: Now properly supports relative dates in filters (task list due:eom,
-    task list due:tomorrow, task list due:23rd ...).
-  + Bug: Source now properly includes <string.h> in order to build clean
-    using gcc 4.3 (thanks to H. İbrahim Güngör).
+- "task undo" can now retract a "task done" command, provided no reports
+  have been run (and therefore TDB::gc run).
+- Task now correctly sorts on entire strings, instead of just the first
+  character (thanks to Andy Lester).
+- Task now uses dashes (-----) to column underlines when color is disabled
+  (thanks to Vincent Fleuranceau).
+- Task now allows mixed case attribute names (pri:, PRI:, Pri: ...) and
+  commands (add, ADD, Add ...) (thanks to Vincent Fleuranceau).
+- Task now supports a default project and priority for new tasks, via
+  the new "default.project" and "default.priority" configuration variables
+  (thanks to Vincent Fleuranceau).
+- Task supports improved word-wrapping to the terminal width.
+- Task now supports "default.command" configuration variable (for example
+  it could contain "list due:tomorrow") that is the command that is run
+  whenever task is invoked with no arguments.
+- Task supports modifying the existing description of a task, with the
+  following syntax: task <id> "new description ...".
+- Bug: Now properly supports relative dates in filters (task list due:eom,
+  task list due:tomorrow, task list due:23rd ...).
+- Bug: Source now properly includes <string.h> in order to build clean
+  using gcc 4.3 (thanks to H. İbrahim Güngör).
 
 1.4.1 (7/18/2008) e080c3168c6064628ab85b21bd859d9875a3a9a7
-  + Bug: Descriptions can not be altered with "task 123 New description".
-  + Tweak: For "task calendar" month names are now centered over the month.
-  + Removed TUTORIAL file contents in favor of online version.
-  + Provided Mac .pkg binary.
+- Bug: Descriptions can not be altered with "task 123 New description".
+- Tweak: For "task calendar" month names are now centered over the month.
+- Removed TUTORIAL file contents in favor of online version.
+- Provided Mac .pkg binary.
 
 1.4.0 (7/10/2008) 60b7d15a1d22e064acf0974c5d7eabbb57dd8071
-  + New recurring tasks feature.
-  + "task undelete" can now undelete erroneously deleted tasks, provided no
-    reports have been run (and therefore TDB::gc run).
-  + Added averages to the "task history" report.
-  + Added ability to override ~/.taskrc with rc:<file>.
-  + Added bar chart history report "task ghistory".
-  + Added task filtering on all reports.
-  + Automatically shuts off color, curses when output is not a tty.
-  + Supports relative due: dates (tomorrow, wednesday, 23rd, eom ...).
-  + Supports the ~ character in .taskrc data.location.
-  + Allows colons on the description, provided what is to the left of the colon
-    is not a standard attribute name.
-  + Bug: Fixed where Esc[0m sequences were being emitted for no good reason.
-  + Bug: Fixed underlined table headers when color is turned off.
-  + Bug: Adding a blank priority resulted in an assigned garbage value.
-  + Bug: Fixed parsing of date "07/08/2008" when using dateformat "m/d/Y".
+- New recurring tasks feature.
+- "task undelete" can now undelete erroneously deleted tasks, provided no
+  reports have been run (and therefore TDB::gc run).
+- Added averages to the "task history" report.
+- Added ability to override ~/.taskrc with rc:<file>.
+- Added bar chart history report "task ghistory".
+- Added task filtering on all reports.
+- Automatically shuts off color, curses when output is not a tty.
+- Supports relative due: dates (tomorrow, wednesday, 23rd, eom ...).
+- Supports the ~ character in .taskrc data.location.
+- Allows colons on the description, provided what is to the left of the colon
+  is not a standard attribute name.
+- Bug: Fixed where Esc[0m sequences were being emitted for no good reason.
+- Bug: Fixed underlined table headers when color is turned off.
+- Bug: Adding a blank priority resulted in an assigned garbage value.
+- Bug: Fixed parsing of date "07/08/2008" when using dateformat "m/d/Y".
 
 1.3.1 (6/21/2008) 3a6de7d9402f2609a773a73b16eff97b14a32869
-  + New configuration variable, "defaultwidth" that determines the width
-    of tables when ncurses support is not available.
-  + Bug: "showage" configuration variable should apply to all reports, not
-    just the ones based on "list".
-  + Bug: Fixed segmentation faults on Ubuntu when the "dateformat"
-    configuration variables was missing.  This was a code bug, and should
-    have affected more platforms.
-  + Bug: Task now will recreate a missing ~/.taskrc file, OR a missing
-    ~/.task directory.
+- New configuration variable, "defaultwidth" that determines the width
+  of tables when ncurses support is not available.
+- Bug: "showage" configuration variable should apply to all reports, not
+  just the ones based on "list".
+- Bug: Fixed segmentation faults on Ubuntu when the "dateformat"
+  configuration variables was missing.  This was a code bug, and should
+  have affected more platforms.
+- Bug: Task now will recreate a missing ~/.taskrc file, OR a missing
+  ~/.task directory.
 
 1.3.0 (6/18/2008) 6673e408a223af98c38779c20b08524042c0edfa
-  + "task calendar" now displays multiple months per line, adjustable by the
-    "monthsperline" configuration variable.  Feature added by Damian Glenny.
-  + "task export" can now filter tasks like the reports.
-  + Factored out code to filter tasks.
-  + Displays shorter message when a command is entered incorrectly, and the
-    full usage for "task help".
-  + "task oldest" shows the oldest tasks.
-  + "task newest" shows the newest tasks.
-  + Bug: Segmentation fault when no "dateformat" configuration variable
-    specified.
-  + Bug: Fixed bug whereby if you have more than one task with a due date, 7
-    days gets added to the entry date of task 2..n.
-  + Bug: Fixed bug whereby "1 wks" was being improperly pluralized.
+- "task calendar" now displays multiple months per line, adjustable by the
+  "monthsperline" configuration variable.  Feature added by Damian Glenny.
+- "task export" can now filter tasks like the reports.
+- Factored out code to filter tasks.
+- Displays shorter message when a command is entered incorrectly, and the
+  full usage for "task help".
+- "task oldest" shows the oldest tasks.
+- "task newest" shows the newest tasks.
+- Bug: Segmentation fault when no "dateformat" configuration variable
+  specified.
+- Bug: Fixed bug whereby if you have more than one task with a due date, 7
+  days gets added to the entry date of task 2..n.
+- Bug: Fixed bug whereby "1 wks" was being improperly pluralized.
 
 1.2.0 (6/13/2008) c393d47cdfe7e197a31e94f4bb764474fa05ad8d
-  + Bug: "dateformat" configuration variable used to display dates, but
-    not parse them.
-  + "task list x" now performs a caseless comparison between "x" and the
-    description.
-  + Task sub projects supported.
-  + "showage" confguration determines whether "Age" column appears on the
-    "list" and "next" reports.
-  + Improved TUTORIAL.
+- Bug: "dateformat" configuration variable used to display dates, but
+  not parse them.
+- "task list x" now performs a caseless comparison between "x" and the
+  description.
+- Task sub projects supported.
+- "showage" confguration determines whether "Age" column appears on the
+  "list" and "next" reports.
+- Improved TUTORIAL.
 
 1.1.0 (6/7/2008) 73286e86628725b346db2a25fbcd4bd68efb9b3a
-  + "blanklines" configuration to stop displaying unnecessary white
-     space and thus work better on small-screen devices.
-  + "dateformat" configuration now determines how dates are formatted.
-  + Better formatting of "task tags" output.
-  + http://www.beckingham.net/task.html home page set up.
-  + Added tags to the "task long" report.
+- "blanklines" configuration to stop displaying unnecessary white
+   space and thus work better on small-screen devices.
+- "dateformat" configuration now determines how dates are formatted.
+- Better formatting of "task tags" output.
+- http://www.beckingham.net/task.html home page set up.
+- Added tags to the "task long" report.
 
 1.0.1 (6/4/2008) d216d401217027d93581808fc8944ab7d6b85fb0
-  + Bug: UUID generator not properly terminating string.
-  + Bug: srandom/srand not called prior to UUID generation.
+- Bug: UUID generator not properly terminating string.
+- Bug: srandom/srand not called prior to UUID generation.
 
 1.0.0 (6/3/2008) f3de5c07118c597091a05c7d7fe8bdeae95474c1
-  + New movie made, uploaded.
-  + Bug: assertion fails on mobile for t v.
-  + Bug: configure.ac does not properly determine ncurses availability.
-  + Bug: Cannot seem to use the percent character in a task description.
-  + Bug: New installation "task stats" reports newest task 12/31/1969.
-  + Bug: New installation task projects displays header but no data - should
-         short-circuit.
-  + Bug: incorrect color specification in sample .taskrc file.
-  + Bug: when run without arguments, task dumps core on Solaris 10.
-  + "task calendar" now reports all months with due pending tasks.
-  + Added rules for colorization by tag, project and keyword.
-  + Added legend to "task calendar".
+- New movie made, uploaded.
+- Bug: assertion fails on mobile for t v.
+- Bug: configure.ac does not properly determine ncurses availability.
+- Bug: Cannot seem to use the percent character in a task description.
+- Bug: New installation "task stats" reports newest task 12/31/1969.
+- Bug: New installation task projects displays header but no data - should
+       short-circuit.
+- Bug: incorrect color specification in sample .taskrc file.
+- Bug: when run without arguments, task dumps core on Solaris 10.
+- "task calendar" now reports all months with due pending tasks.
+- Added rules for colorization by tag, project and keyword.
+- Added legend to "task calendar".
 
 0.9.9 (5/27/2008) 2ecf50032226c91b406f247417a063dc17c8e324
-  + Autoconf/automake behaving properly.
-  + Clean build on OS X 10.5.
-  + Clean build on Ubuntu 8.0.
-  + Clean build on Fedora Core 8.
-  + Clean build on Fedora Core 9.
+- Autoconf/automake behaving properly.
+- Clean build on OS X 10.5.
+- Clean build on Ubuntu 8.0.
+- Clean build on Fedora Core 8.
+- Clean build on Fedora Core 9.
 
 0.9.8 (5/25/2008) 18fd59a1edb20e5c68d086a97fae5fa9f6bb348a
-  + Added "task color" command.
-  + Removed unnecessary files.
-  + Completed documentation.
+- Added "task color" command.
+- Removed unnecessary files.
+- Completed documentation.
 
 0.9.7 (5/24/2008) 25dc4150947a3e612c8118838d04b3bbe68441f7
-  + Migrated old compiler flags into Makefile.am.
-  + Added ncurses endwin function check to configure.ac.
-  + Set up structure for AUTHORS file.
-  + Set up NEWS file, with pleas for feedback.
-  + Added welcome message to README.
-  + Completed a chunk of the TUTORIAL.
-  + Added error handling for "task export" when a file name is not specified.
-  + Task offers to create a sample ~/.taskrc file if one is not found.
-  + Task offers to create a ~/.task directory if one is not found.
-  + Removed unnecessary SAMPLE_taskrc, and assorted references.
-  + Cleaned up ChangeLog.
-  + Minor mods to standard docs.
-  + Bumped version to 0.9.7.
-  + Changed some autoconf details.
-  + Corrected comment in T.cpp.
-  + Made unit tests compile and run again.
-  + Removed tests from distibution.
+- Migrated old compiler flags into Makefile.am.
+- Added ncurses endwin function check to configure.ac.
+- Set up structure for AUTHORS file.
+- Set up NEWS file, with pleas for feedback.
+- Added welcome message to README.
+- Completed a chunk of the TUTORIAL.
+- Added error handling for "task export" when a file name is not specified.
+- Task offers to create a sample ~/.taskrc file if one is not found.
+- Task offers to create a ~/.task directory if one is not found.
+- Removed unnecessary SAMPLE_taskrc, and assorted references.
+- Cleaned up ChangeLog.
+- Minor mods to standard docs.
+- Bumped version to 0.9.7.
+- Changed some autoconf details.
+- Corrected comment in T.cpp.
+- Made unit tests compile and run again.
+- Removed tests from distibution.
 
 0.9.6 (5/13/2008)
-  + Corrected wrong include file in Table.cpp.
-  + Replaced color management code.
-  + Improved color rules code.
+- Corrected wrong include file in Table.cpp.
+- Replaced color management code.
+- Improved color rules code.
 
 0.9.5 (5/12/2008)
-  + Replaced Table storage with Grid.
-  + Added Grid.cpp to configure.ac.
-  + Added Makefile to src/.gitignore.
-  + Makefile should not be part of the repository.
-  + Added Grid.cpp.
-  + Added Grid::Cell::operator==.
-  + ChangeLog file begun.
-  + Bumped version to 0.9.5 for next release.
+- Replaced Table storage with Grid.
+- Added Grid.cpp to configure.ac.
+- Added Makefile to src/.gitignore.
+- Makefile should not be part of the repository.
+- Added Grid.cpp.
+- Added Grid::Cell::operator==.
+- ChangeLog file begun.
+- Bumped version to 0.9.5 for next release.
 
 0.9.4 (4/26/2008)
-  + Integrated new Grid object into build - not yet integrated into Table.
-  + More .gitignore tweaks.
-  + Added .gitignore.
-  + Added more missing files.
-  + Added all source code.
-  + Generic OSS files added.
-  + Initial commit on Github.
+- Integrated new Grid object into build - not yet integrated into Table.
+- More .gitignore tweaks.
+- Added .gitignore.
+- Added more missing files.
+- Added all source code.
+- Generic OSS files added.
+- Initial commit on Github.
 
 0.9.3 (4/6/2008)
-  + Added "task completed" command.
-  + Properly recognizes ncurses.
+- Added "task completed" command.
+- Properly recognizes ncurses.
 
 0.9.2 (4/3/2008)
-  + Recognizes whether ncurses, flock is available.
-  + "task" duplicated to "task_rel" for preparation of a fork.
+- Recognizes whether ncurses, flock is available.
+- "task" duplicated to "task_rel" for preparation of a fork.
 
 0.9.1 (4/1/2008)
-  + Blank attributes read are no longer written out.
-  + Completed "task export" command.
-  + Added configuration values to "task version" command.
-  + Consolidated header files, removed unnecessary ones.
+- Blank attributes read are no longer written out.
+- Completed "task export" command.
+- Added configuration values to "task version" command.
+- Consolidated header files, removed unnecessary ones.
 
 0.9.0 (3/23/2008)
-  + flat source directory.
-  + autoconf complete.
-  + "task next".
-  + "task stats".
-  + "task export".
-  + Rules-based colorization.
+- flat source directory.
+- autoconf complete.
+- "task next".
+- "task stats".
+- "task export".
+- Rules-based colorization.
 
 0.8.1 (1/28/2008) - 0.8.16 (3/13/2008)
-  + autoconf conversion
+- autoconf conversion
 
 0.8.0 Polish (1/25/2008)
-  + Code cleanup, reorganization.
-  + "task overdue".
-  + Add "age" column to list and long.
-  + Use 'conf' for build, version tracking.
-  + Add "/from/to/" description editing.
+- Code cleanup, reorganization.
+- "task overdue".
+- Add "age" column to list and long.
+- Use 'conf' for build, version tracking.
+- Add "/from/to/" description editing.
 
 0.7.0 Multi-user, File handling, atomicity (1/8/2008)
-  + Clean, publishable API reimplementation.
-  + File locking.
-  + retain deleted tasks.
-  + "task info ID" report showing all metadata.
-  + File format v2, including UUID.
+- Clean, publishable API reimplementation.
+- File locking.
+- retain deleted tasks.
+- "task info ID" report showing all metadata.
+- File format v2, including UUID.
 
 [Development hiatus while planning for T, TDB API, new features and the future
 of the project.  Seeded to two testers for feedback, suggestions.  Development
@@ -1641,40 +1639,40 @@ deliberately stopped to allow extended use of task, allowing command logging and
 regular usage to determine which features were needed or unnecessary.]
 
 0.6.0 Reports (12/27/2006)
-  + "task history".
-  + "task summary".
-  + "task calendar".
-  + due support.
-  + Table sorting.
+- "task history".
+- "task summary".
+- "task calendar".
+- due support.
+- Table sorting.
 
 0.5.0 Multi-user support (12/10/2006)
-  + Command logging.
-  + "task usage" report.
+- Command logging.
+- "task usage" report.
 
 0.4.0 Destructive / modification commands (12/3/2006)
-  + "task delete" complete.
-  + "task id ..." complete.
-  + "task list ..." synonym for "task find ...".
+- "task delete" complete.
+- "task id ..." complete.
+- "task list ..." synonym for "task find ...".
 
 0.3.0 Work in progress support (12/3/2006)
-  + "task start" complete.
-  + "task done" complete.
-  + completed.data support.
+- "task start" complete.
+- "task done" complete.
+- completed.data support.
 
 0.2.0 Neutral commands (12/2/2006)
-  + "task find" complete.
-  + "task projects" complete.
-  + "task tags" complete.
+- "task find" complete.
+- "task projects" complete.
+- "task tags" complete.
 
 0.1.0 Constructive commands (12/1/2006)
-  + "task add" complete.
-  + completed.data support.
-  + ~/.taskrc support.
+- "task add" complete.
+- completed.data support.
+- ~/.taskrc support.
 
 0.0.1 Basic infrastructure (11/29/2006)
-  + Command line parsing.
-  + API layer.
-  + Usage.
+- Command line parsing.
+- API layer.
+- Usage.
 
 ------ start -----------------------------------
 
