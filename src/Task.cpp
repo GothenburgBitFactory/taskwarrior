@@ -539,6 +539,10 @@ void Task::parse (const std::string& input)
                 value[value.length () - 1] == 'm')
               value += 'o';
 
+            // TW-1274, Standardization.
+            if (name == "modification")
+              name = "modified";
+
             if (name.substr (0, 11) == "annotation_")
               ++annotation_count;
 
@@ -596,6 +600,13 @@ void Task::parseJSON (const std::string& line)
         else if (i->first == "urgency")
           ;
 
+        // TW-1274 Standardization.
+        else if (i->first == "modification")
+        {
+          Date d (unquoteText (i->second->dump ()));
+          set ("modified", d.toEpochString ());
+        }
+
         // Dates are converted from ISO to epoch.
         else if (type == "date")
         {
@@ -604,7 +615,7 @@ void Task::parseJSON (const std::string& line)
         }
 
         // Tags are an array of JSON strings.
-        else if (i->first == "tags")
+        else if (i->first == "tags" && i->second->type() == json::j_array)
         {
           json::array* tags = (json::array*)i->second;
           json_array_iter t;
@@ -615,6 +626,13 @@ void Task::parseJSON (const std::string& line)
             json::string* tag = (json::string*)*t;
             addTag (tag->_data);
           }
+        }
+        // This is a temporary measure to allow Mirakel sync, and will be removed
+        // in a future release.
+        else if (i->first == "tags" && i->second->type() == json::j_string)
+        {
+          json::string* tag = (json::string*)i->second;
+          addTag (tag->_data);
         }
 
         // Strings are decoded.
@@ -818,7 +836,10 @@ std::string Task::composeF4 () const
     {
       ff4 += (first ? "" : " ")
            + it->first
-           + ":\"" + encode (json::encode (it->second)) + "\"";
+           + ":\""
+           + encode (json::encode (it->second))
+           + "\"";
+
       first = false;
     }
   }
@@ -858,11 +879,16 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     if (type == "date")
     {
       Date d (i->second);
-      out << "\""
-          << i->first
-          << "\":\""
-          << d.toISO ()
-          << "\"";
+      if (i->first == "modification")
+        out << "\"modified\":\""
+            << d.toISO ()
+            << "\"";
+      else
+        out << "\""
+            << i->first
+            << "\":\""
+            << d.toISO ()
+            << "\"";
 
       ++attributes_written;
     }

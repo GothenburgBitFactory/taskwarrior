@@ -289,10 +289,8 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 0, STRING_CMD_INFO_MODIFIED);
 
       Date mod (task->get_date ("modified"));
-
       std::string age = OldDuration (now - mod).format ();
-      view.set (row, 1, Date (task->get_date ("modified")).toString (dateformat) +
-                              " (" + age + ")");
+      view.set (row, 1, mod.toString (dateformat) + " (" + age + ")");
     }
 
     // tags ...
