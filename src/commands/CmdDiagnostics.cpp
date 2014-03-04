@@ -165,7 +165,11 @@ int CmdDiagnostics::execute (std::string& output)
 
   out << "  libgnutls: "
 #ifdef HAVE_LIBGNUTLS
+#ifdef GNUTLS_VERSION
       << GNUTLS_VERSION
+#elif LIBGNUTLS_VERSION
+      << LIBGNUTLS_VERSION
+#endif
 #else
       << "n/a"
 #endif
