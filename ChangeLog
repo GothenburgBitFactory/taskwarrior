@@ -33,6 +33,7 @@ Features
 Bugs
 - TD-42 Cannot compile taskd - GNUTLS_VERSION undefined in diag.cpp (thanks
         to Michele Vetturi).
+- TW-1282 incorrect URLs in man task-sync (thanks to Jeremiah Marks).
 - #1511 sync init crashes if client certification file is empty or invalid
         (thanks to Marton Suranyi).
 - #1508 Show command highlight configuration (thanks to Nicolas Appriou).

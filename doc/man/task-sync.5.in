@@ -85,7 +85,7 @@ and client configuration, syncing is done on demand.
 
 Setup is a matter of creating an account on a Taskserver (see your Taskserver
 provider or operate your own - see
-http://taskwarrior.org/projects/taskwarrior/wiki/Server_setup)
+http://taskwarrior.org/docs/server_setup.html)
 
 Once you have an account, you'll receive a certificate, key and a password.
 You'll need to put the certificate and key somewhere like this:
