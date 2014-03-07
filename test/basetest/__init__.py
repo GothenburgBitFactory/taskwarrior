@@ -137,7 +137,7 @@ class BaseTestCase(unittest.TestCase):
         out = self.callTask(args, input, merge_streams)
 
         self.assertEqual(out[0], 0, "Task finished with non-zero ({0}) exit "
-            "code".format(out[0]))
+            "code\nOUTPUT: {1}".format(out[0], out[1]))
         return out
 
     def callTaskError(self, args, input=None, merge_streams=True):
