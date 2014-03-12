@@ -233,6 +233,9 @@ void TF2::commit ()
     {
       if (_file.open ())
       {
+        if (context.config.getBoolean ("locking"))
+          _file.waitForLock ();
+
         // Truncate the file and rewrite.
         _file.truncate ();
 
