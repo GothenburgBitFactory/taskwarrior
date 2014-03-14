@@ -633,7 +633,7 @@ void ISO8601d::resolve ()
   else if (! offset)
   {
 #ifdef HAVE_TM_GMTOFF
-    offset = local_now->tm_gmtoff;
+    offset = local_now->tm_gmtoff - (local_now->tm_isdst == 1 ? 3600 : 0);
 #else
     // TODO Umm...
 #endif
