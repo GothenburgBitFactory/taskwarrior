@@ -146,10 +146,6 @@ void E9::eval (const Task& task, std::vector <Arg>& value_stack)
         else if (arg->_raw == "=")        operator_equal    (result, left, right, case_sensitive);
         else if (arg->_raw == "~")        operator_match    (result, left, right, case_sensitive, task);
         else if (arg->_raw == "!~")       operator_nomatch  (result, left, right, case_sensitive, task);
-        else if (arg->_raw == "*")        operator_multiply (result, left, right);
-        else if (arg->_raw == "/")        operator_divide   (result, left, right);
-        else if (arg->_raw == "+")        operator_add      (result, left, right);
-        else if (arg->_raw == "-")        operator_subtract (result, left, right);
         else if (arg->_raw == "_hastag_") operator_hastag   (result,       right, false, task);
         else if (arg->_raw == "_notag_")  operator_hastag   (result,       right, true,  task);
         else
@@ -252,8 +248,6 @@ void E9::operator_not (Arg& result, Arg& right)
     result._value = "false";
   else
     result._value = "true";
-
-//  std::cout << "# <operator_not> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,8 +255,6 @@ void E9::operator_negate (Arg& result, Arg& right)
 {
   result = coerce (right, Arg::type_number);
   result._value = format (- strtod (result._value.c_str (), NULL));
-
-//  std::cout << "# <operator_negate> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -276,8 +268,6 @@ void E9::operator_and (Arg& result, Arg& left, Arg& right)
   {
     result._value = "true";
   }
-
-//  std::cout << "# " << left << " <operator_and> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -291,8 +281,6 @@ void E9::operator_or (Arg& result, Arg& left, Arg& right)
   {
     result._value = "true";
   }
-
-//  std::cout << "# " << left << " <operator_or> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -309,8 +297,6 @@ void E9::operator_xor (Arg& result, Arg& left, Arg& right)
   {
     result._value = "true";
   }
-
-//  std::cout << "# " << left << " <operator_xor> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -373,8 +359,6 @@ void E9::operator_lt (Arg& result, Arg& left, Arg& right)
   }
 
   result._type = Arg::type_bool;
-
-//  std::cout << "# " << left << " <operator_lt> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -438,8 +422,6 @@ void E9::operator_lte (Arg& result, Arg& left, Arg& right)
   }
 
   result._type = Arg::type_bool;
-
-//  std::cout << "# " << left << " <operator_lte> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -503,8 +485,6 @@ void E9::operator_gte (Arg& result, Arg& left, Arg& right)
   }
 
   result._type = Arg::type_bool;
-
-//  std::cout << "# " << left << " <operator_gte> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -567,8 +547,6 @@ void E9::operator_gt (Arg& result, Arg& left, Arg& right)
   }
 
   result._type = Arg::type_bool;
-
-//  std::cout << "# " << left << " <operator_gt> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -582,8 +560,6 @@ void E9::operator_inequal (
   result._value = result._value == "false"
                                 ? "true"
                                 : "false";
-
-//  std::cout << "# " << left << " <operator_inequal> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -656,8 +632,6 @@ void E9::operator_equal (
                 ? "true"
                 : "false";
   }
-
-//  std::cout << "# " << left << " <operator_equal> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -696,8 +670,6 @@ void E9::operator_match (
   }
   else
     result._value = "false";
-
-//  std::cout << "# " << left << " <operator_match> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -735,32 +707,6 @@ void E9::operator_nomatch (
       }
     }
   }
-
-//  std::cout << "# " << left << " <operator_nomatch> " << right << " --> " << result << "\n";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void E9::operator_multiply (Arg& result, Arg& left, Arg& right)
-{
-//  std::cout << "# " << left << " <operator_multiply> " << right << " --> " << result << "\n";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void E9::operator_divide (Arg& result, Arg& left, Arg& right)
-{
-//  std::cout << "# " << left << " <operator_divide> " << right << " --> " << result << "\n";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void E9::operator_add (Arg& result, Arg& left, Arg& right)
-{
-//  std::cout << "# " << left << " <operator_add> " << right << " --> " << result << "\n";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void E9::operator_subtract (Arg& result, Arg& left, Arg& right)
-{
-//  std::cout << "# " << left << " <operator_subtract> " << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -776,8 +722,6 @@ void E9::operator_hastag (
     result._value = invert ? "false" : "true";
   else
     result._value = invert ? "true" : "false";
-
-//  std::cout << "# tags" << (invert ? " <operator_notag> " : " <operator_hastag> ") << right << " --> " << result << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

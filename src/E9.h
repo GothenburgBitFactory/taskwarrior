@@ -61,10 +61,6 @@ private:
   void operator_equal    (Arg&, Arg&, Arg&, bool);
   void operator_match    (Arg&, Arg&, Arg&, bool, const Task&);
   void operator_nomatch  (Arg&, Arg&, Arg&, bool, const Task&);
-  void operator_multiply (Arg&, Arg&, Arg&);
-  void operator_divide   (Arg&, Arg&, Arg&);
-  void operator_add      (Arg&, Arg&, Arg&);
-  void operator_subtract (Arg&, Arg&, Arg&);
   void operator_hastag   (Arg&, Arg&, bool, const Task&);
 
   const Arg coerce (const Arg&, const Arg::type);
