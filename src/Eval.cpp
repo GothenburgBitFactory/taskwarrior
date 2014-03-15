@@ -59,7 +59,7 @@ static struct
   {  "_hastag_", 9,         'b',  'l'},     // +tag  [Pseudo-op]
   {  "_notag_",  9,         'b',  'l'},     // -tag  [Pseudo-op]
 
-//  {  "-",       15,         'u',  'r' },    // Unary minus
+  {  "-",       15,         'u',  'r' },    // Unary minus
   {  "*",       13,         'b',  'l' },    // Multiplication
   {  "/",       13,         'b',  'l' },    // Division
   {  "%",       13,         'b',  'l' },    // Modulus
