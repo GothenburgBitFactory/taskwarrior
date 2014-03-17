@@ -64,9 +64,6 @@ static int verify_certificate_callback (gnutls_session_t session)
   if (trust_override)
     return 0;
 
-  // Get the hostname from the session.
-  const char* hostname = (const char*) gnutls_session_get_ptr (session);
-
   // This verification function uses the trusted CAs in the credentials
   // structure. So you must have installed one or more CA certificates.
   unsigned int status = 0;
@@ -84,8 +81,6 @@ static int verify_certificate_callback (gnutls_session_t session)
   ret = gnutls_certificate_verification_status_print (status, type, &out, 0);
   if (ret < 0)
     return GNUTLS_E_CERTIFICATE_ERROR;
-
-  //std::cout << "c: INFO " << out.data << "\n";
 
   gnutls_free (out.data);
 #endif
@@ -258,7 +253,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 #if GNUTLS_VERSION_NUMBER >= 0x030109
   gnutls_transport_set_int (_session, _socket);
 #else
-  gnutls_transport_set_ptr (_session, (gnutls_transport_ptr_t) (long) _socket);
+  gnutls_transport_set_ptr (_session, (gnutls_transport_ptr_t) _socket);
 #endif
 
   // Perform the TLS handshake
@@ -278,7 +273,11 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   // manually after the gnutls handshake.
   ret = verify_certificate_callback(_session);
   if (ret < 0)
+  {
+    if (_debug)
+      std::cout << "c: ERROR Certificate verification failed.\n";
     throw std::string (STRING_TLS_INIT_FAIL);
+  }
 #endif
 
   if (_debug)
