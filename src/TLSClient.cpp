@@ -183,6 +183,10 @@ void TLSClient::init (
     throw std::string ("Missing CERT file.");
 
 #if GNUTLS_VERSION_NUMBER >= 0x02090a
+  // The automatic verification for the server certificate with
+  // gnutls_certificate_set_verify_function only works with gnutls
+  // >=2.9.10. So with older versions we should call the verify function
+  // manually after the gnutls handshake.
   gnutls_certificate_set_verify_function (_credentials, verify_certificate_callback);
 #endif
   gnutls_init (&_session, GNUTLS_CLIENT);
@@ -266,6 +270,16 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   while (ret < 0 && gnutls_error_is_fatal (ret) == 0);
   if (ret < 0)
     throw format (STRING_CMD_SYNC_HANDSHAKE, gnutls_strerror (ret));
+
+#if GNUTLS_VERSION_NUMBER < 0x02090a
+  // The automatic verification for the server certificate with
+  // gnutls_certificate_set_verify_function does only work with gnutls
+  // >=2.9.10. So with older versions we should call the verify function
+  // manually after the gnutls handshake.
+  ret = verify_certificate_callback(_session);
+  if (ret < 0)
+    throw std::string (STRING_TLS_INIT_FAIL);
+#endif
 
   if (_debug)
   {
