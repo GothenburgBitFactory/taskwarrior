@@ -45,6 +45,7 @@
 #include <TLSClient.h>
 #include <text.h>
 #include <i18n.h>
+#include <gnutls/x509.h>
 
 #define MAX_BUF 16384
 
@@ -68,11 +69,13 @@ TLSClient::TLSClient ()
 : _ca ("")
 , _cert ("")
 , _key ("")
+, _host ("")
+, _port ("")
 , _session(0)
 , _socket (0)
 , _limit (0)
 , _debug (false)
-, _trust(false)
+, _trust(strict)
 {
 }
 
@@ -109,13 +112,15 @@ void TLSClient::debug (int level)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TLSClient::trust (bool value)
+void TLSClient::trust (const enum trust_level value)
 {
   _trust = value;
   if (_debug)
   {
-    if (_trust)
+    if (_trust == allow_all)
       std::cout << "c: INFO Server certificate trusted automatically.\n";
+    else if (_trust == ignore_hostname)
+      std::cout << "c: INFO Server certificate trust verified but hostname ignored.\n";
     else
       std::cout << "c: INFO Server certificate trust verified.\n";
   }
@@ -179,6 +184,9 @@ void TLSClient::init (
 ////////////////////////////////////////////////////////////////////////////////
 void TLSClient::connect (const std::string& host, const std::string& port)
 {
+  _host = host;
+  _port = port;
+
   // Store the TLSClient instance, so that the verification callback can access
   // it during the handshake below and call the verifcation method.
   gnutls_session_set_ptr (_session, (void*) this);
@@ -273,19 +281,55 @@ void TLSClient::bye ()
 ////////////////////////////////////////////////////////////////////////////////
 int TLSClient::verify_certificate () const
 {
-  if (_trust)
+  if (_trust == TLSClient::allow_all)
     return 0;
 
   // This verification function uses the trusted CAs in the credentials
   // structure. So you must have installed one or more CA certificates.
   unsigned int status = 0;
+
+  const char* hostname = _host.c_str();
 #if GNUTLS_VERSION_NUMBER >= 0x030104
-  int ret = gnutls_certificate_verify_peers3 (_session, NULL, &status);
-#else
-  int ret = gnutls_certificate_verify_peers2 (_session, &status);
-#endif
+  if (_trust == TLSClient::ignore_hostname)
+    hostname = NULL;
+
+  int ret = gnutls_certificate_verify_peers3 (_session, hostname, &status);
   if (ret < 0)
     return GNUTLS_E_CERTIFICATE_ERROR;
+#else
+  int ret = gnutls_certificate_verify_peers2 (_session, &status);
+  if (ret < 0)
+    return GNUTLS_E_CERTIFICATE_ERROR;
+
+  if ((status == 0) && (_trust != TLSClient::ignore_hostname))
+  {
+    if (gnutls_certificate_type_get (_session) == GNUTLS_CRT_X509)
+    {
+      const gnutls_datum* cert_list;
+      unsigned int cert_list_size;
+      gnutls_x509_crt cert;
+
+      cert_list = gnutls_certificate_get_peers (_session, &cert_list_size);
+      if (cert_list_size == 0)
+	return GNUTLS_E_CERTIFICATE_ERROR;
+
+      ret = gnutls_x509_crt_init (&cert);
+      if (ret < 0)
+        return GNUTLS_E_CERTIFICATE_ERROR;
+
+      ret = gnutls_x509_crt_import (cert, &cert_list[0], GNUTLS_X509_FMT_DER);
+      if (ret < 0)
+        gnutls_x509_crt_deinit(cert);
+        status = GNUTLS_E_CERTIFICATE_ERROR;
+
+      if (gnutls_x509_crt_check_hostname (cert, hostname) == 0)
+        gnutls_x509_crt_deinit(cert);
+        return GNUTLS_E_CERTIFICATE_ERROR;
+    }
+    else
+      return GNUTLS_E_CERTIFICATE_ERROR;
+  }
+#endif
 
 #if GNUTLS_VERSION_NUMBER >= 0x030105
   gnutls_certificate_type_t type = gnutls_certificate_type_get (_session);
