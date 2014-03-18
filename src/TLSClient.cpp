@@ -50,8 +50,6 @@
 
 static int verify_certificate_callback (gnutls_session_t);
 
-static bool trust_override = false;
-
 ////////////////////////////////////////////////////////////////////////////////
 static void gnutls_log_function (int level, const char* message)
 {
@@ -61,35 +59,8 @@ static void gnutls_log_function (int level, const char* message)
 ////////////////////////////////////////////////////////////////////////////////
 static int verify_certificate_callback (gnutls_session_t session)
 {
-  if (trust_override)
-    return 0;
-
-  // This verification function uses the trusted CAs in the credentials
-  // structure. So you must have installed one or more CA certificates.
-  unsigned int status = 0;
-#if GNUTLS_VERSION_NUMBER >= 0x030104
-  int ret = gnutls_certificate_verify_peers3 (session, NULL, &status);
-#else
-  int ret = gnutls_certificate_verify_peers2 (session, &status);
-#endif
-  if (ret < 0)
-    return GNUTLS_E_CERTIFICATE_ERROR;
-
-#if GNUTLS_VERSION_NUMBER >= 0x030105
-  gnutls_certificate_type_t type = gnutls_certificate_type_get (session);
-  gnutls_datum_t out;
-  ret = gnutls_certificate_verification_status_print (status, type, &out, 0);
-  if (ret < 0)
-    return GNUTLS_E_CERTIFICATE_ERROR;
-
-  gnutls_free (out.data);
-#endif
-
-  if (status != 0)
-    return GNUTLS_E_CERTIFICATE_ERROR;
-
-  // Continue handshake.
-  return 0;
+  const TLSClient* client = (TLSClient*) gnutls_session_get_ptr (session);
+  return client->verify_certificate();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -101,6 +72,7 @@ TLSClient::TLSClient ()
 , _socket (0)
 , _limit (0)
 , _debug (false)
+, _trust(false)
 {
 }
 
@@ -139,10 +111,10 @@ void TLSClient::debug (int level)
 ////////////////////////////////////////////////////////////////////////////////
 void TLSClient::trust (bool value)
 {
-  trust_override = value;
+  _trust = value;
   if (_debug)
   {
-    if (trust_override)
+    if (_trust)
       std::cout << "c: INFO Server certificate trusted automatically.\n";
     else
       std::cout << "c: INFO Server certificate trust verified.\n";
@@ -207,9 +179,9 @@ void TLSClient::init (
 ////////////////////////////////////////////////////////////////////////////////
 void TLSClient::connect (const std::string& host, const std::string& port)
 {
-  // Store the host name, so the verification callback can access it during the
-  // handshake below.
-  gnutls_session_set_ptr (_session, (void*) host.c_str ());
+  // Store the TLSClient instance, so that the verification callback can access
+  // it during the handshake below and call the verifcation method.
+  gnutls_session_set_ptr (_session, (void*) this);
 
   // use IPv4 or IPv6, does not matter.
   struct addrinfo hints = {0};
@@ -271,7 +243,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   // gnutls_certificate_set_verify_function does only work with gnutls
   // >=2.9.10. So with older versions we should call the verify function
   // manually after the gnutls handshake.
-  ret = verify_certificate_callback(_session);
+  ret = verify_certificate();
   if (ret < 0)
   {
     if (_debug)
@@ -296,6 +268,40 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 void TLSClient::bye ()
 {
   gnutls_bye (_session, GNUTLS_SHUT_RDWR);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int TLSClient::verify_certificate () const
+{
+  if (_trust)
+    return 0;
+
+  // This verification function uses the trusted CAs in the credentials
+  // structure. So you must have installed one or more CA certificates.
+  unsigned int status = 0;
+#if GNUTLS_VERSION_NUMBER >= 0x030104
+  int ret = gnutls_certificate_verify_peers3 (_session, NULL, &status);
+#else
+  int ret = gnutls_certificate_verify_peers2 (_session, &status);
+#endif
+  if (ret < 0)
+    return GNUTLS_E_CERTIFICATE_ERROR;
+
+#if GNUTLS_VERSION_NUMBER >= 0x030105
+  gnutls_certificate_type_t type = gnutls_certificate_type_get (_session);
+  gnutls_datum_t out;
+  ret = gnutls_certificate_verification_status_print (status, type, &out, 0);
+  if (ret < 0)
+    return GNUTLS_E_CERTIFICATE_ERROR;
+
+  gnutls_free (out.data);
+#endif
+
+  if (status != 0)
+    return GNUTLS_E_CERTIFICATE_ERROR;
+
+  // Continue handshake.
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

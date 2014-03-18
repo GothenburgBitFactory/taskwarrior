@@ -43,6 +43,7 @@ public:
   void init (const std::string&, const std::string&, const std::string&);
   void connect (const std::string&, const std::string&);
   void bye ();
+  int verify_certificate() const;
 
   void send (const std::string&);
   void recv (std::string&);
@@ -57,6 +58,7 @@ private:
   int                              _socket;
   int                              _limit;
   bool                             _debug;
+  bool                             _trust;
 };
 
 #endif
