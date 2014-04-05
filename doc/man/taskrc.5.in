@@ -1358,11 +1358,13 @@ using a self-signed certificate.  Optional.
 .RE
 
 .TP
-.B taskd.trust=yes|no
+.B taskd.trust=strict|ignore hostname|allow all
 .RS
-If you do not specify a CA certificate when your Taskserver is using a self-
-signed certificate, you can override the certificate validation by setting this
-value to 'yes'.  Default is not to trust a server certificate.
+This settings allows you to override the trust level when server certificates
+are validated. With "allow all", the server certificate is trusted
+automatically. With "ignore hostname", the server certificate is verified but
+the hostname is ignored. With "strict", the server certificate is verified.
+Default is "strict", which requires full validation.
 .RE
 
 .TP
