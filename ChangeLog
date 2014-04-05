@@ -41,12 +41,13 @@ Bugs
         (thanks to Marton Suranyi).
 - #1508 Show command highlight configuration (thanks to Nicolas Appriou).
 - #1503 build failure with musl libc due to undefined GLOB_BRACE and GLOB_TILDE
-        (thanks to Natanael Copa)
+        (thanks to Natanael Copa).
 - #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
 - #1486 Truncated sentence in task-sync(5) manpage (thanks to Jakub Wilk).
 - #1487 `tasksh` segmentation fault (thanks to Hector Arciga).
 - Added certificate verification to GnuTLS versions < 2.9.10 (thanks to Alexander
-  Sulfrian)
+  Sulfrian).
+- Added certificate hostname verification (thanks to Alexander Sulfrian).
 - Removed debugging code.
 
 ------ current release ---------------------------

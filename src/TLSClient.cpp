@@ -311,7 +311,7 @@ int TLSClient::verify_certificate () const
 
       cert_list = gnutls_certificate_get_peers (_session, &cert_list_size);
       if (cert_list_size == 0)
-	return GNUTLS_E_CERTIFICATE_ERROR;
+        return GNUTLS_E_CERTIFICATE_ERROR;
 
       ret = gnutls_x509_crt_init (&cert);
       if (ret < 0)
