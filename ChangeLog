@@ -37,6 +37,8 @@ Bugs
 - TW-1282 incorrect URLs in man task-sync (thanks to Jeremiah Marks).
 - TW-1288 Added missing locking for task modifications (thanks to Kosta H,
           Ralph Bean, Adam Coddington).
+- TW-1296 make test/run_all exit with non-zero code if a test fail (thanks to
+          Jakub Wilk).
 - #1511 sync init crashes if client certification file is empty or invalid
         (thanks to Marton Suranyi).
 - #1508 Show command highlight configuration (thanks to Nicolas Appriou).

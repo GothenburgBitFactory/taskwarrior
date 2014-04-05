@@ -28,6 +28,7 @@
 #include <iomanip>
 #include <string.h>
 #include <math.h>
+#include <stdlib.h>
 #include <test.h>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,6 +85,7 @@ UnitTest::~UnitTest ()
             << " skipped. "
             << std::setprecision (3) << percentPassed
             << "% passed.\n";
+  exit (_failed > 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
