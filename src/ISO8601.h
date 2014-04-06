@@ -59,6 +59,7 @@ private:
   int dayOfWeek (int, int, int);
   bool validate ();
   void resolve ();
+  void dump ();
 
 public:
   bool _ambiguity;

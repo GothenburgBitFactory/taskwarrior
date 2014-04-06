@@ -34,6 +34,8 @@ Bugs
 - TD-42 Cannot compile taskd - GNUTLS_VERSION undefined in diag.cpp (thanks
         to Michele Vetturi).
 - TD-45 Fix preprocessor define (thanks to Jochen Sprickerhof).
+- TW-1254 Calc command can segfault on negative numbers (thanks to Renato
+          Alves).
 - TW-1282 incorrect URLs in man task-sync (thanks to Jeremiah Marks).
 - TW-1288 Added missing locking for task modifications (thanks to Kosta H,
           Ralph Bean, Adam Coddington).
