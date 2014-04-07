@@ -106,14 +106,16 @@ void Eval::evaluateInfixExpression (const std::string& e, Variant& v) const
   std::string token;
   Lexer::Type type;
   while (l.token (token, type))
-  {
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
-    if (_debug)
-      std::cout << "# token infix '" << token << "' " << Lexer::type_name (type) << "\n";
-  }
 
   // Parse for syntax checking and operator replacement.
   infixParse (tokens);
+  if (_debug)
+  {
+    std::vector <std::pair <std::string, Lexer::Type> >::iterator i;
+    for (i = tokens.begin (); i != tokens.end (); ++i)
+      std::cout << "# token infix '" << i->first << "' " << Lexer::type_name (i->second) << "\n";
+  }
 
   // Convert infix --> postfix.
   infixToPostfix (tokens);
