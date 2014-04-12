@@ -78,15 +78,8 @@ static bool isDay (const std::string& name, int& i)
 ////////////////////////////////////////////////////////////////////////////////
 static bool leapYear (int year)
 {
-  bool ly = false;
-
-  // (year % 4 == 0) && (year % 100 !=0)  OR
-  // (year % 400 == 0)
-  // are leapyears
-
-  if (((!(year % 4)) && (year % 100)) || (!(year % 400))) ly = true;
-
-  return ly;
+  return ((!(year % 4)) && (year % 100)) ||
+         (!(year % 400));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,6 +92,39 @@ static int daysInMonth (int year, int month)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// now            = current date/time.
+// today          = previous midnight.
+// sod            = previous midnight.
+// yesterday      = 2nd previous midnight.
+// tomorrow       = next midnight.
+// eod            = next midnight.
+// <day>          = midnight at start of next <day>.
+// <month>        = midnight on the 1st of <month>.
+// soy            = midnight on January 1st, <year>.
+// eoy            = midnight on December 31st, <year>.
+// socm           = midnight on the 1st of current month.
+// som            = midnight on the 1st of next month.
+// eom            = midnight on the 1st of the next month.
+// eocm           = midnight on the 1st of the next month.
+// sow            =
+// eow            =
+// eocw           =
+// socw           =
+// soww           =
+// eoww           =
+// soq            =
+// eoq            =
+// later          = midnight, Jan 18th, 2038.
+// someday        = midnight, Jan 18th, 2038.
+// easter         =
+// eastermonday   =
+// ascension      =
+// pentecost      =
+// goodfriday     =
+// midsommar      =
+// midsommarafton =
+// Nth            =
+
 bool namedDates (const std::string& name, Variant& value)
 {
   time_t now = time (NULL);
@@ -209,6 +235,69 @@ bool namedDates (const std::string& name, Variant& value)
     value = Variant (mktime (t), Variant::type_date);
   }
 
+  else if (name == "sow")
+  {
+/*
+    Date sow (_t);
+    sow -= (dayOfWeek () * 86400);
+    return Date (sow.month (), sow.day (), sow.year (), 0, 0, 0);
+*/
+  }
+
+  else if (name == "eow" || name == "eocw")
+  {
+/*
+    if (found == "eow" || found == "eoww")
+      dow = 5;
+*/
+  }
+
+  else if (name == "socw")
+  {
+/*
+    Date sow (_t);
+    sow -= (dayOfWeek () * 86400);
+    return Date (sow.month (), sow.day (), sow.year (), 0, 0, 0);
+*/
+  }
+
+  else if (name == "soww")
+  {
+/*
+    Date sow (_t);
+    sow -= (dayOfWeek () * 86400);
+    return Date (sow.month (), sow.day (), sow.year (), 0, 0, 0);
+*/
+  }
+
+  else if (name == "eoww")
+  {
+/*
+    if (found == "eow" || found == "eoww")
+      dow = 5;
+*/
+  }
+
+  else if (name == "soq" || name == "eoq")
+  {
+    struct tm* t = localtime (&now);
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
+
+    t->tm_mon += 3 - (t->tm_mon % 3);
+    if (t->tm_mon > 11)
+    {
+      t->tm_mon -= 12;
+      ++t->tm_year;
+    }
+
+    // TODO eoq: should be 24:00:00
+    // t->tm_mday = daysInMonth (t->tm_year + 1900, t->tm_mon + 1);
+
+    t->tm_mday = 1;
+
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
   else if (name == "later" || name == "someday")
   {
     struct tm* t = localtime (&now);
@@ -256,19 +345,97 @@ bool namedDates (const std::string& name, Variant& value)
     value = Variant (mktime (t), Variant::type_date);
   }
 
-  // TODO
+  else if (name == "midsommar")
+  {
 /*
-  {s,e}o{w,q,ww,cw}
-
-  midsommar
-  midsommarafton
-  23rd
+    for (int midsommar = 20; midsommar <= 26; midsommar++)
+    {
+      Date then (6, midsommar, today.year ());
+      if (6 == then.dayOfWeek ())
+      {
+        _t = then._t;
+        return true;
+      }
+    }
 */
+  }
 
-  // Constants.
-  else if (name == "pi")    { value = Variant (3.14159165); }
-  else if (name == "true")  { value = Variant (true);       }
-  else if (name == "false") { value = Variant (false);      }
+  else if (name == "midsommarafton")
+  {
+/*
+    for (int midsommar = 19; midsommar <= 25; midsommar++)
+    {
+      Date then (6, midsommar, today.year ());
+      if (5 == then.dayOfWeek ())
+      {
+        _t = then._t;
+        return true;
+      }
+    }
+*/
+  }
+
+  // 1st
+  // 2nd
+  // 3rd
+  else if (name == "????")
+  {
+/*
+    int number;
+    std::string ordinal;
+
+    if (isdigit (in[1]))
+    {
+      number = atoi (in.substr (0, 2).c_str ());
+      ordinal = lowerCase (in.substr (2));
+    }
+    else
+    {
+      number = atoi (in.substr (0, 2).c_str ());
+      ordinal = lowerCase (in.substr (1));
+    }
+
+    // Sanity check.
+    if (number <= 31)
+    {
+      if (ordinal == "st" ||
+          ordinal == "nd" ||
+          ordinal == "rd" ||
+          ordinal == "th")
+      {
+        int m = today.month ();
+        int d = today.day ();
+        int y = today.year ();
+
+        // If it is this month.
+        if (d < number &&
+            number <= Date::daysInMonth (m, y))
+        {
+          Date then (m, number, y);
+          _t = then._t;
+          return true;
+        }
+
+        do
+        {
+          m++;
+
+          if (m > 12)
+          {
+            m = 1;
+            y++;
+          }
+        }
+        while (number > Date::daysInMonth (m, y));
+
+        Date then (m, number, y);
+        _t = then._t;
+        return true;
+      }
+    }
+*/
+  }
+
   else
     return false;
 
