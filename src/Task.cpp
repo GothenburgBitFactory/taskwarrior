@@ -1169,6 +1169,9 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "WAITING")   return has ("wait");
   if (tag == "ANNOTATED") return hasAnnotations ();
   if (tag == "PARENT")    return has ("mask");
+  if (tag == "PENDING")   return get ("status") == "pending";
+  if (tag == "COMPLETED") return get ("status") == "completed";
+  if (tag == "DELETED")   return get ("status") == "deleted";
 
   // Concrete tags.
   std::vector <std::string> tags;
