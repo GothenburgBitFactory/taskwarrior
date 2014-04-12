@@ -1302,28 +1302,35 @@ Variant::operator std::string () const
     {
       time_t t = _duration;
 
-      int seconds = t % 60; t /= 60;
-      int minutes = t % 60; t /= 60;
-      int hours   = t % 24; t /= 24;
-      int days    = t % 30; t /= 30;
-      int months  = t % 12; t /= 12;
-      int years   = t;
-
-      std::stringstream s;
-      s << 'P';
-      if (years)  s << years  << 'Y';
-      if (months) s << months << 'M';
-      if (days)   s << days   << 'D';
-
-      if (hours || minutes || seconds)
+      if (t)
       {
-        s << 'T';
-        if (hours)   s << hours   << 'H';
-        if (minutes) s << minutes << 'M';
-        if (seconds) s << seconds << 'S';
-      }
+        int seconds = t % 60; t /= 60;
+        int minutes = t % 60; t /= 60;
+        int hours   = t % 24; t /= 24;
+        int days    = t % 30; t /= 30;
+        int months  = t % 12; t /= 12;
+        int years   = t;
 
-      return s.str ();
+        std::stringstream s;
+        s << 'P';
+        if (years)  s << years  << 'Y';
+        if (months) s << months << 'M';
+        if (days)   s << days   << 'D';
+
+        if (hours || minutes || seconds)
+        {
+          s << 'T';
+          if (hours)   s << hours   << 'H';
+          if (minutes) s << minutes << 'M';
+          if (seconds) s << seconds << 'S';
+        }
+
+        return s.str ();
+      }
+      else
+      {
+        return "P0S";
+      }
     }
 
   case type_unknown:
