@@ -16,6 +16,7 @@ Features
 - TW-1261 Migrate test bug.360.t to new unit testing framework (thanks to
           Renato Alves).
 - TW-1274 Map 'modification' attribute to 'modified' (thanks to jck).
+- TW-1302 CmdShow.cpp:244: bad length in substr ? (thanks to David Binderman).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
