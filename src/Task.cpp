@@ -323,6 +323,40 @@ void Task::setStatus (Task::status status)
   recalc_urgency = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Determines status of a date attribute.
+Task::dateState Task::getDateState (const std::string& name) const
+{
+  std::string value = get (name);
+  if (value.length ())
+  {
+    Date reference (value);
+    Date now;
+    Date today ("today");
+
+    if (reference < today)
+      return dateBeforeToday;
+
+    if (reference.sameDay (now))
+    {
+      if (reference < now)
+        return dateEarlierToday;
+      else
+        return dateLaterToday;
+    }
+
+    int imminentperiod = context.config.getInteger ("due");
+    if (imminentperiod == 0)
+      return dateAfterToday;
+
+    Date imminentDay = today + imminentperiod * 86400;
+    if (reference < imminentDay)
+      return dateAfterToday;
+  }
+
+  return dateNotDue;
+}
+
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // Ready means pending, not blocked and either not scheduled or scheduled before
@@ -345,7 +379,9 @@ bool Task::is_due () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      if (getDueState (get ("due")) == 1)
+      Task::dateState state = getDateState ("due");
+      if (state == dateAfterToday ||
+          state == dateLaterToday)
         return true;
     }
   }
@@ -381,7 +417,9 @@ bool Task::is_duetoday () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      if (getDueState (get ("due")) == 2)
+      Task::dateState state = getDateState ("due");
+      if (state == dateEarlierToday ||
+          state == dateLaterToday)
         return true;
     }
   }
@@ -479,7 +517,9 @@ bool Task::is_overdue () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      if (getDueState (get ("due")) == 3)
+      Task::dateState state = getDateState ("due");
+      if (state == dateEarlierToday ||
+          state == dateBeforeToday)
         return true;
     }
   }
