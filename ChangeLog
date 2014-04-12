@@ -35,6 +35,7 @@
           Wilk).
 - TW-1296 make test/run_all exit with non-zero code if a test fail (thanks to
           Jakub Wilk).
+- TW-1300 _get could use return codes (thanks to Scott Kostyshak).
 - TW-1301 Virtual tag +PENDING (thanks to Profpatsch).
 - TW-1302 CmdShow.cpp:244: bad length in substr ? (thanks to David Binderman).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and

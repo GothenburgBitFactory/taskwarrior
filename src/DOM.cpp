@@ -157,9 +157,9 @@ const std::string DOM::get (const std::string& name, const Task& task)
   std::string canonical;
 
   // <attr>
-       if (name == "id")                       return format (task.id);
-  else if (name == "urgency")                  return format (task.urgency_c ());
-  else if (A3::is_attribute (name, canonical)) return task.get (canonical);
+       if (task.size () && name == "id")                       return format (task.id);
+  else if (task.size () && name == "urgency")                  return format (task.urgency_c ());
+  else if (task.size () && A3::is_attribute (name, canonical)) return task.get (canonical);
 
   // <id>.<name>
   if (n.getInt (id))

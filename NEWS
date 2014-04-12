@@ -6,6 +6,7 @@ New Features in taskwarrior 2.4.0
   - Portuguese (por-PRT) localization.
   - Better handling for deletion of recurring tasks.
   - New virtual tags: YESTERDAY, TOMORROW, READY, PENDING, COMPLETED, DELETED.
+  - The '_get' command properly uses exit codes.
 
 New commands in taskwarrior 2.4.0
 
