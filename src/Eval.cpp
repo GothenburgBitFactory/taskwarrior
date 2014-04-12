@@ -28,6 +28,7 @@
 #include <time.h>
 #include <Eval.h>
 
+////////////////////////////////////////////////////////////////////////////////
 // Supported operators, borrowed from C++, particularly the precedence.
 // Note: table is sorted by length of operator string, so searches match
 //       longest first.
@@ -79,10 +80,24 @@ static struct
 #define NUM_OPERATORS (sizeof (operators) / sizeof (operators[0]))
 
 ////////////////////////////////////////////////////////////////////////////////
+// Built-in support for some named constants.
+static bool namedConstants (const std::string& name, Variant& value)
+{
+       if (name == "true")  value = Variant (true);
+  else if (name == "false") value = Variant (false);
+  else if (name == "pi")    value = Variant (3.14159165);
+  else
+    return false;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Eval::Eval ()
 : _ambiguity (true)
 , _debug (false)
 {
+  addSource (namedConstants);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -233,6 +248,8 @@ void Eval::evaluatePostfixStack (
 
       values.push_back (left);
     }
+
+    // Literals and identifiers.
     else
     {
       Variant v (token->first);
@@ -253,6 +270,7 @@ void Eval::evaluatePostfixStack (
 
       case Lexer::typeIdentifier:
         {
+          bool found = false;
           std::vector <bool (*)(const std::string&, Variant&)>::const_iterator source;
           for (source = _sources.begin (); source != _sources.end (); ++source)
           {
@@ -260,12 +278,13 @@ void Eval::evaluatePostfixStack (
             {
               if (_debug)
                 std::cout << "# [" << values.size () << "] eval source '" << token->first << "' --> '" << (std::string) v << "'\n";
+              found = true;
               break;
             }
           }
 
           // An identifier that fails lookup is a string.
-          if (source == _sources.end ())
+          if (!found)
           {
             v.cast (Variant::type_string);
             if (_debug)
