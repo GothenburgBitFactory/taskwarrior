@@ -1,10 +1,23 @@
 2.4.0 () -
 
-Features
+- TD-42 Cannot compile taskd - GNUTLS_VERSION undefined in diag.cpp (thanks
+        to Michele Vetturi).
+- TD-45 Fix preprocessor define (thanks to Jochen Sprickerhof).
+- TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
+- TW-1254 Calc command can segfault on negative numbers (thanks to Renato
+          Alves).
 - #1255 l10n translation utility improvements (thanks to Renato Alves).
+- #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
+- #1486 Truncated sentence in task-sync(5) manpage (thanks to Jakub Wilk).
+- #1487 `tasksh` segmentation fault (thanks to Hector Arciga).
 - #1492 task show to display default values when appropriate (thanks to Renato
         Alves).
 - #1501 info report streamlining - partially implemented.
+- #1503 build failure with musl libc due to undefined GLOB_BRACE and GLOB_TILDE
+        (thanks to Natanael Copa).
+- #1508 Show command highlight configuration (thanks to Nicolas Appriou).
+- #1511 sync init crashes if client certification file is empty or invalid
+        (thanks to Marton Suranyi).
 - TW-197 New virtual tag READY.
 - TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
          Weber)
@@ -15,7 +28,15 @@ Features
 - TW-1261 Migrate test bug.360.t to new unit testing framework (thanks to
           Renato Alves).
 - TW-1274 Map 'modification' attribute to 'modified' (thanks to jck).
+- TW-1282 incorrect URLs in man task-sync (thanks to Jeremiah Marks).
+- TW-1288 Added missing locking for task modifications (thanks to Kosta H,
+          Ralph Bean, Adam Coddington).
+- TW-1295 test/time.t fails on the last day of the month (thanks to Jakub
+          Wilk).
+- TW-1296 make test/run_all exit with non-zero code if a test fail (thanks to
+          Jakub Wilk).
 - TW-1301 Virtual tag +PENDING (thanks to Profpatsch).
+- TW-1302 CmdShow.cpp:244: bad length in substr ? (thanks to David Binderman).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
@@ -29,30 +50,6 @@ Features
 - Old-style color names including underscores are no longer supported.
 - Removed priority counts from the 'projects' report.
 - New themes: dark-default-16.theme, dark-gray-blue-256.theme
-
-Bugs
-- TD-42 Cannot compile taskd - GNUTLS_VERSION undefined in diag.cpp (thanks
-        to Michele Vetturi).
-- TD-45 Fix preprocessor define (thanks to Jochen Sprickerhof).
-- TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
-- TW-1254 Calc command can segfault on negative numbers (thanks to Renato
-          Alves).
-- TW-1282 incorrect URLs in man task-sync (thanks to Jeremiah Marks).
-- TW-1288 Added missing locking for task modifications (thanks to Kosta H,
-          Ralph Bean, Adam Coddington).
-- TW-1295 test/time.t fails on the last day of the month (thanks to Jakub
-          Wilk).
-- TW-1296 make test/run_all exit with non-zero code if a test fail (thanks to
-          Jakub Wilk).
-- TW-1302 CmdShow.cpp:244: bad length in substr ? (thanks to David Binderman).
-- #1511 sync init crashes if client certification file is empty or invalid
-        (thanks to Marton Suranyi).
-- #1508 Show command highlight configuration (thanks to Nicolas Appriou).
-- #1503 build failure with musl libc due to undefined GLOB_BRACE and GLOB_TILDE
-        (thanks to Natanael Copa).
-- #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
-- #1486 Truncated sentence in task-sync(5) manpage (thanks to Jakub Wilk).
-- #1487 `tasksh` segmentation fault (thanks to Hector Arciga).
 - Added certificate verification to GnuTLS versions < 2.9.10 (thanks to Alexander
   Sulfrian).
 - Added certificate hostname verification (thanks to Alexander Sulfrian).
