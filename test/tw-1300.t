@@ -59,28 +59,12 @@ class TestBug1300(BaseTestBug1300):
     def test_dom_exit_status_good(self):
         """If the DOM recognizes a reference, it should return '0'
         """
-        args = ["rc:bug.rc", "_get", "context.program"]
-
-        self.run_command(args, 0)
+        self.callTaskSuccess(["rc:bug.rc", "_get", "context.program"])
 
     def test_dom_exit_status_bad(self):
         """If the DOM does not recognize a reference, it should return '1'
         """
-        args = ["rc:bug.rc", "_get", "XYZ"]
-
-        self.run_command(args, 1)
-
-    def run_command(self, args, expected_status):
-        code, out, err = self.callTask(args)
-
-        # We shouldn't get a segmentation fault
-        # (negative exit code == 128 - real_exit_code)
-        expected = -signal.SIGSEGV
-        self.assertNotEqual(expected, code, "Task segfaulted")
-
-        # Instead we expect a clean exit
-        self.assertEqual(expected_status, code,
-                         "Exit code was not ({0}), but ({0})".format(expected_status, code))
+        self.callTaskError(["rc:bug.rc", "_get", "XYZ"])
 
 
 if __name__ == "__main__":
