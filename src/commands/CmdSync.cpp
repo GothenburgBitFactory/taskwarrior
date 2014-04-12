@@ -149,8 +149,9 @@ int CmdSync::execute (std::string& output)
 
   request.setPayload (payload);
 
-  out << format (STRING_CMD_SYNC_PROGRESS, connection)
-      << "\n";
+  if (context.verbose ("sync"))
+    out << format (STRING_CMD_SYNC_PROGRESS, connection)
+        << "\n";
 
   // Ignore harmful signals.
   signal (SIGHUP,    SIG_IGN);
@@ -196,22 +197,24 @@ int CmdSync::execute (std::string& output)
           Task dummy;
           if (context.tdb2.get (uuid, dummy))
           {
-            out << "  "
-                << colorChanged.colorize (
-                     format (STRING_CMD_SYNC_MOD,
-                             uuid,
-                             from_server.get ("description")))
-                << "\n";
+            if (context.verbose ("sync"))
+              out << "  "
+                  << colorChanged.colorize (
+                       format (STRING_CMD_SYNC_MOD,
+                               uuid,
+                               from_server.get ("description")))
+                  << "\n";
             context.tdb2.modify (from_server, false);
           }
           else
           {
-            out << "  "
-                << colorAdded.colorize (
-                     format (STRING_CMD_SYNC_ADD,
-                             uuid,
-                             from_server.get ("description")))
-                << "\n";
+            if (context.verbose ("sync"))
+              out << "  "
+                  << colorAdded.colorize (
+                       format (STRING_CMD_SYNC_ADD,
+                               uuid,
+                               from_server.get ("description")))
+                  << "\n";
             context.tdb2.add (from_server, false);
           }
         }
@@ -297,7 +300,8 @@ int CmdSync::execute (std::string& output)
     status = 1;
   }
 
-  out << "\n";
+  if (context.verbose ("sync"))
+    out << "\n";
   output = out.str ();
 
   // Restore signal handling.

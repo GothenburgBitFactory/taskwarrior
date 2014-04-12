@@ -253,7 +253,7 @@ control specific occasions when output is generated.  This list may contain:
     edit       Used the verbose template for the 'edit' command
     special    Feedback when applying special tags
     project    Feedback about project status changes
-    sync       Feedback about the need for sync
+    sync       Feedback about sync
 
 Note that the "on" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
