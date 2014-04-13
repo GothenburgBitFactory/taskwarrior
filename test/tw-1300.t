@@ -43,15 +43,11 @@ class BaseTestBug1300(BaseTestCase):
             fh.write("data.location=.\n"
                      "confirmation=no\n")
 
-    def tearDown(self):
-        """Needed after each test or setUp will cause duplicated data at start
-        of the next test.
-        """
+    @classmethod
+    def finish(cls):
         for file in glob("*.data"):
             os.remove(file)
 
-    @classmethod
-    def finish(cls):
         os.remove("bug.rc")
 
 

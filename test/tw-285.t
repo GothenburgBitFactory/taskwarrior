@@ -44,9 +44,6 @@ class BaseTest285(BaseTestCase):
                      "verbose=nothing\n"
                      "confirmation=no\n")
 
-    def setUp(self):
-        """Executed before each test in the class"""
-
         #              OVERDUE YESTERDAY DUE TODAY TOMORROW WEEK MONTH YEAR
         # due:-1week      Y       -       -    -       -      ?    ?     ?
         # due:-1day       Y       Y       -    -       -      ?    ?     ?
@@ -56,26 +53,20 @@ class BaseTest285(BaseTestCase):
         # due:1month      -       -       -    -       -      -    -     ?
         # due:1year       -       -       -    -       -      -    -     -
 
-        self.callTaskSuccess(['rc:bug.rc', 'add', 'due_last_week',     'due:-1week'])
-        self.callTaskSuccess(['rc:bug.rc', 'add', 'due_yesterday',     'due:-1day'])
-        self.callTaskSuccess(['rc:bug.rc', 'add', 'due_earlier_today', 'due:today'])
-        self.callTaskSuccess(['rc:bug.rc', 'add', 'due_later_today',   'due:tomorrow'])
-        self.callTaskSuccess(['rc:bug.rc', 'add', 'due_three_days',    'due:3days'])
-        self.callTaskSuccess(['rc:bug.rc', 'add', 'due_next_month',    'due:1month'])
-        self.callTaskSuccess(['rc:bug.rc', 'add', 'due_next_year',     'due:1year'])
-
-    def tearDown(self):
-        """Needed after each test or setUp will cause duplicated data at start
-        of the next test.
-        """
-        for file in glob("*.data"):
-            os.remove(file)
+        cls.callTaskSuccess(['rc:bug.rc', 'add', 'due_last_week',     'due:-1week'])
+        cls.callTaskSuccess(['rc:bug.rc', 'add', 'due_yesterday',     'due:-1day'])
+        cls.callTaskSuccess(['rc:bug.rc', 'add', 'due_earlier_today', 'due:today'])
+        cls.callTaskSuccess(['rc:bug.rc', 'add', 'due_later_today',   'due:tomorrow'])
+        cls.callTaskSuccess(['rc:bug.rc', 'add', 'due_three_days',    'due:3days'])
+        cls.callTaskSuccess(['rc:bug.rc', 'add', 'due_next_month',    'due:1month'])
+        cls.callTaskSuccess(['rc:bug.rc', 'add', 'due_next_year',     'due:1year'])
 
     @classmethod
     def finish(cls):
-        os.remove("bug.rc")
         for file in glob("*.data"):
             os.remove(file)
+
+        os.remove("bug.rc")
 
 
 class Test285(BaseTest285):
