@@ -936,7 +936,12 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
     OldDuration delta (remaining_days * 86400);
     now += delta;
 
-    _completion = now.toString (context.config.get ("dateformat"))
+    // Prefer dateformat.report over dateformat.
+    std::string format = context.config.get ("dateformat.report");
+    if (format == "")
+      format = context.config.get ("dateformat");
+
+    _completion = now.toString (format)
                + " ("
                + delta.format ()
                + ")";

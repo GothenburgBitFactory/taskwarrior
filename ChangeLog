@@ -22,6 +22,7 @@
 - TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
 - TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
 - TW-285 DUETODAY doesn't give any output (thanks to Jostein Berntsen).
+- TW-306 Wrong date format in burndown view (thanks to Michele Santullo).
 - TW-1254 Calc command can segfault on negative numbers (thanks to Renato
           Alves).
 - TW-1255 New testing framework (thanks to Renato Alves).
