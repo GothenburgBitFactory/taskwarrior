@@ -13,6 +13,10 @@ General Statement
     suggestions, testing and discussions have taken place there.  It is also the
     quickest way to get help, or confirm a bug.
 
+  - Join https://answers.tasktools.org and help us by asking, answering and
+    voting on questions and answers, directly helping those who ask, and
+    indirectly helping those who search.
+
   - Review documentation: there are man pages, online articles, tutorials and
     so on, and these may contain errors, or they may not convey ideas in the
     best way.  Perhaps you can help improve it.  Contact us - documentation is
@@ -68,6 +72,8 @@ Deprecated Code
   - Priorities in core.  This will be migrated to become a UDA as soon as we
     have the right support in place for custom sorting.
 
+  - Attribute modifiers.
+
 New Code Needs
   This is code that needs to be written, usually down at the C++ function/method
   level.
@@ -95,7 +101,7 @@ New Code Needs
     outside the core code, we want to make it be that way.
   - Take a look at:
 
-      http://taskwarrior.org/versions/show/42
+      https://bug.tasktools.org/browse/EX
 
     This 'extension' release is a collection of all the requested features that
     lie outside of the core product, and will be implemented as external scripts
@@ -112,9 +118,9 @@ Documentation Needed
   - Tutorials
   - Cookbook
 
-  This is all in the new git://tasktools.git/docs.git repository, where all the
-  documents are sourced as markdown.  We welcome everyone with writing skills to
-  help us improve this critical resource.
+  This is all in the new https://git.tasktools.org/projects/ST/repos/tw.org
+  repository, where all the documents are sourced as markdown.  We welcome
+  everyone with writing skills to help us improve this critical resource.
 
 Unit Tests Needed
   There are always more unit tests needed.  More specifically, better unit tests
@@ -211,3 +217,4 @@ Current Codebase Condition
 2012-05-12 Added general statement about how to contribute.
 2013-09-09 Updated branch info.
 2014-01-19 Updated for 2.4.0.
+2014-04-13 Added answers.tasktools.org, corrected URLs.
