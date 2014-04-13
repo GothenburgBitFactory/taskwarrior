@@ -24,6 +24,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove.
 #include <cmake.h>
 #include <sstream>
 #include <stdlib.h>
@@ -380,7 +381,8 @@ bool Task::is_due () const
         status != Task::deleted)
     {
       Task::dateState state = getDateState ("due");
-      if (state == dateAfterToday ||
+      if (state == dateAfterToday   ||
+          state == dateEarlierToday ||
           state == dateLaterToday)
         return true;
     }
@@ -1184,6 +1186,16 @@ int Task::getTagCount () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//
+//              OVERDUE YESTERDAY DUE TODAY TOMORROW WEEK MONTH YEAR
+// due:-1week      Y       -       -    -       -      ?    ?     ?
+// due:-1day       Y       Y       -    -       -      ?    ?     ?
+// due:today       Y       -       Y    Y       -      ?    ?     ?
+// due:tomorrow    -       -       Y    -       Y      ?    ?     ?
+// due:3days       -       -       Y    -       -      ?    ?     ?
+// due:1month      -       -       -    -       -      -    -     ?
+// due:1year       -       -       -    -       -      -    -     -
+//
 bool Task::hasTag (const std::string& tag) const
 {
   // Synthetic tags - dynamically generated, but do not occupy storage space.
