@@ -72,6 +72,9 @@ public:
   // Status values.
   enum status {pending, completed, deleted, recurring, waiting};
 
+  // Date state values.
+  enum dateState {dateNotDue, dateAfterToday, dateLaterToday, dateEarlierToday, dateBeforeToday};
+
   // Public data.
   int id;
   float urgency_value;
@@ -116,6 +119,8 @@ public:
 
   status getStatus () const;
   void setStatus (status);
+
+  dateState getDateState (const std::string&) const;
 
   int getTagCount () const;
   bool hasTag (const std::string&) const;

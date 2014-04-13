@@ -1,5 +1,6 @@
 #! /bin/sh
 
+rc=0
 if [ x"$1" = x"--verbose" ];
 then
   for i in ${TESTBLOB}
@@ -9,9 +10,10 @@ then
     while read LINE
     do
       echo "$LINE"
-    done < test.log
+    done < test.log || rc=1
     rm test.log
   done
+  exit $rc
 else
   date > all.log
 
@@ -37,7 +39,7 @@ else
       COUNT=`expr $COUNT + 1`
     fi
 
-    $i >> all.log 2>&1
+    $i >> all.log 2>&1 || rc=1
   done
 
   if [ $BAR -eq 1 ]; then
@@ -53,4 +55,5 @@ else
   printf "Fail:    %5d\n" `grep -c '^not' all.log`
   printf "Skipped: %5d\n" `grep -c '^skip' all.log`
   printf "Runtime: %5d seconds\n" $RUNTIME
+  exit $rc
 fi

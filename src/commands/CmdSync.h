@@ -30,6 +30,7 @@
 #include <string>
 #include <Command.h>
 #include <Msg.h>
+#include <TLSClient.h>
 
 class CmdSync : public Command
 {
@@ -38,7 +39,7 @@ public:
   int execute (std::string&);
 
 private:
-  bool send (const std::string&, const std::string&, const std::string&, const std::string&, bool, const Msg&, Msg&);
+  bool send (const std::string&, const std::string&, const std::string&, const std::string&, const enum TLSClient::trust_level, const Msg&, Msg&);
 };
 
 #endif

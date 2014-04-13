@@ -537,6 +537,9 @@ from tasks, or the system.  Supported DOM references are:
 Note that the 'rc.<name>' reference may need to be escaped using '--' to prevent
 the reference from being interpreted as an override.
 
+Note that if the DOM reference is not valid, or the reference evaluates to a
+missing value, the command exits with 1.
+
 .SH ATTRIBUTES AND METADATA
 
 .TP
@@ -588,6 +591,9 @@ are:
     UNTIL        Matches if the task expires
     WAITING      Matches if the task is waiting
     ANNOTATED    Matches if the task has annotations
+    PENDING      Matches if the task has pending status
+    COMPLETED    Matches if the task has completed status
+    DELETED      Matches if the task has deleted status
 
 You can use +BLOCKED to filter blocked tasks, or -BLOCKED for unblocked tasks.
 Similarly, -BLOCKED is equivalent to +UNBLOCKED.

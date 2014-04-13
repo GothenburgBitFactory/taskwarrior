@@ -561,23 +561,24 @@ std::string CmdCalendar::renderMonths (
                   duedmy.month () == months[mpl] &&
                   duedmy.year  () == years[mpl])
               {
-                switch (getDueState (due))
+                switch (task->getDateState ("due"))
                 {
-                  case 1: // imminent
-                    cellColor.blend (color_due);
-                    break;
+                case Task::dateNotDue:
+                  break;
 
-                  case 2: // today
-                    cellColor.blend (color_duetoday);
-                    break;
+                case Task::dateAfterToday:
+                  cellColor.blend (color_due);
+                  break;
 
-                  case 3: // overdue
-                    cellColor.blend (color_overdue);
-                    break;
+                case Task::dateEarlierToday:
+                case Task::dateLaterToday:
+                  cellColor.blend (color_duetoday);
+                  cellColor.blend (color_duetoday);
+                  break;
 
-                  case 0: // not due at all
-                  default:
-                    break;
+                case Task::dateBeforeToday:
+                  cellColor.blend (color_overdue);
+                  break;
                 }
               }
             }

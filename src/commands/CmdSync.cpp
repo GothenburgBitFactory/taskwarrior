@@ -29,7 +29,6 @@
 #include <inttypes.h>
 #include <signal.h>
 #include <Context.h>
-#include <TLSClient.h>
 #include <Color.h>
 #include <text.h>
 #include <util.h>
@@ -87,14 +86,18 @@ int CmdSync::execute (std::string& output)
   if (credentials.size () != 3)
     throw std::string (STRING_CMD_SYNC_BAD_CRED);
 
-  bool trust = context.config.getBoolean ("taskd.trust");
+  enum TLSClient::trust_level trust = TLSClient::strict;
+  if (context.config.get ("taskd.trust") == "allow all")
+    trust = TLSClient::allow_all;
+  else if (context.config.get ("taskd.trust") == "ignore hostname")
+    trust = TLSClient::ignore_hostname;
 
   // CA must exist, if provided.
   File ca (context.config.get ("taskd.ca"));
   if (ca._data != "" && ! ca.exists ())
     throw std::string (STRING_CMD_SYNC_BAD_CA);
 
-  if (trust && ca._data != "")
+  if (trust == TLSClient::allow_all && ca._data != "")
     throw std::string (STRING_CMD_SYNC_TRUST_CA);
 
   File certificate (context.config.get ("taskd.certificate"));
@@ -146,8 +149,9 @@ int CmdSync::execute (std::string& output)
 
   request.setPayload (payload);
 
-  out << format (STRING_CMD_SYNC_PROGRESS, connection)
-      << "\n";
+  if (context.verbose ("sync"))
+    out << format (STRING_CMD_SYNC_PROGRESS, connection)
+        << "\n";
 
   // Ignore harmful signals.
   signal (SIGHUP,    SIG_IGN);
@@ -193,22 +197,24 @@ int CmdSync::execute (std::string& output)
           Task dummy;
           if (context.tdb2.get (uuid, dummy))
           {
-            out << "  "
-                << colorChanged.colorize (
-                     format (STRING_CMD_SYNC_MOD,
-                             uuid,
-                             from_server.get ("description")))
-                << "\n";
+            if (context.verbose ("sync"))
+              out << "  "
+                  << colorChanged.colorize (
+                       format (STRING_CMD_SYNC_MOD,
+                               uuid,
+                               from_server.get ("description")))
+                  << "\n";
             context.tdb2.modify (from_server, false);
           }
           else
           {
-            out << "  "
-                << colorAdded.colorize (
-                     format (STRING_CMD_SYNC_ADD,
-                             uuid,
-                             from_server.get ("description")))
-                << "\n";
+            if (context.verbose ("sync"))
+              out << "  "
+                  << colorAdded.colorize (
+                       format (STRING_CMD_SYNC_ADD,
+                               uuid,
+                               from_server.get ("description")))
+                  << "\n";
             context.tdb2.add (from_server, false);
           }
         }
@@ -294,7 +300,8 @@ int CmdSync::execute (std::string& output)
     status = 1;
   }
 
-  out << "\n";
+  if (context.verbose ("sync"))
+    out << "\n";
   output = out.str ();
 
   // Restore signal handling.
@@ -319,7 +326,7 @@ bool CmdSync::send (
   const std::string& ca,
   const std::string& certificate,
   const std::string& key,
-  bool trust,
+  const enum TLSClient::trust_level trust,
   const Msg& request,
   Msg& response)
 {

@@ -25,7 +25,11 @@ Your contributions are especially welcome.  Whether it comes in the form of
 code patches, ideas, discussion, bug reports, encouragement or criticism, your
 input is needed.
 
-Please send your support questions and code patches to:
+For support options, take a look at:
+
+    http://taskwarrior.org/support
+
+Please send your code patches to:
 
     support@taskwarrior.org
 

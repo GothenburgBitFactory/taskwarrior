@@ -5,7 +5,8 @@ New Features in taskwarrior 2.4.0
   - Removed deprecated commands 'push', 'pull' and 'merge'.
   - Portuguese (por-PRT) localization.
   - Better handling for deletion of recurring tasks.
-  - New virtual tags: YESTERDAY, TOMORROW, READY.
+  - New virtual tags: YESTERDAY, TOMORROW, READY, PENDING, COMPLETED, DELETED.
+  - The '_get' command properly uses exit codes.
 
 New commands in taskwarrior 2.4.0
 
@@ -13,6 +14,8 @@ New commands in taskwarrior 2.4.0
 
 New configuration options in taskwarrior 2.4.0
 
+  - The 'taskd.trust' setting is now a tri-state, supporting values 'strict',
+    'ignore hostname' and 'allow all', for server certificate validation.
   - New themes: dark-default-16.theme, dark-gray-blue-256.theme
 
 Newly deprecated features in taskwarrior 2.4.0

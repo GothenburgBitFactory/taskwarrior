@@ -383,71 +383,6 @@ void updateRecurrenceMask (Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Determines whether a task is overdue.  Returns
-//   0 = not due at all
-//   1 = imminent
-//   2 = today
-//   3 = overdue
-int getDueState (const std::string& due)
-{
-  if (due.length ())
-  {
-    Date dt (::atoi (due.c_str ()));
-
-    // rightNow is the current date + time.
-    static Date rightNow;
-    Date thisDay (rightNow.month (), rightNow.day (), rightNow.year ());
-
-    if (dt < rightNow)
-      return 3;
-
-    if (rightNow.sameDay (dt))
-      return 2;
-
-    int imminentperiod = context.config.getInteger ("due");
-
-    if (imminentperiod == 0)
-      return 1;
-
-    Date imminentDay = thisDay + imminentperiod * 86400;
-    if (dt < imminentDay)
-      return 1;
-  }
-
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Determines whether a task is overdue.  Returns
-//   0 = not due at all
-//   1 = imminent
-//   2 = today
-//   3 = overdue
-int getDueState (const Date& due)
-{
-  // rightNow is the current date + time.
-  static Date rightNow;
-  Date thisDay (rightNow.month (), rightNow.day (), rightNow.year ());
-
-  if (due < rightNow)
-    return 3;
-
-  if (rightNow.sameDay (due))
-    return 2;
-
-  int imminentperiod = context.config.getInteger ("due");
-
-  if (imminentperiod == 0)
-    return 1;
-
-  Date imminentDay = thisDay + imminentperiod * 86400;
-  if (due < imminentDay)
-    return 1;
-
-  return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Returns a Boolean indicator as to whether a nag message was generated, so
 // that commands can control the number of nag messages displayed (ie one is
 // enough).
@@ -477,7 +412,7 @@ bool nag (Task& task)
     {
       if (t->id == task.id)
       {
-        if (getDueState (t->get ("due")) == 3)
+        if (t->getDateState ("due") == Task::dateBeforeToday)
           isOverdue = true;
 
         std::string priority = t->get ("priority");
@@ -486,7 +421,7 @@ bool nag (Task& task)
       }
       else if (t->getStatus () == Task::pending)
       {
-        if (getDueState (t->get ("due")) == 3)
+        if (t->getDateState ("due") == Task::dateBeforeToday)
           overdue++;
 
         std::string priority = t->get ("priority");

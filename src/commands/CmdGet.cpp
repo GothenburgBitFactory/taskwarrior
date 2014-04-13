@@ -52,17 +52,23 @@ int CmdGet::execute (std::string& output)
   if (words.size () == 0)
     throw std::string (STRING_CMD_GET_NO_DOM);
 
+  bool found = false;
   std::vector <std::string> results;
   std::vector <std::string>::iterator word;
   for (word = words.begin (); word != words.end (); ++word)
   {
     Task t;
-    results.push_back (context.dom.get (*word, t));
+    std::string result = context.dom.get (*word, t);
+    results.push_back (result);
+
+    if (result != "" &&
+        result != *word)
+      found = true;
   }
 
   join (output, " ", results);
   output += "\n";
-  return 0;
+  return found ? 0 : 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

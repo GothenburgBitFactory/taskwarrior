@@ -232,8 +232,12 @@ int CmdDiagnostics::execute (std::string& output)
              ? " (readable)" : " (not readable)")
         << "\n";
 
-  if (context.config.get ("taskd.trust") != "")
-    out << "      Trust: override\n";
+  if (context.config.get ("taskd.trust") == "allow all")
+    out << "      Trust: allow all\n";
+  else if (context.config.get ("taskd.trust") == "ignore hostname")
+    out << "      Trust: ignore hostanme\n";
+  else
+    out << "      Trust: strict\n";
 
   out << "       Cert: "
       << context.config.get ("taskd.certificate")

@@ -24,6 +24,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove.
 #include <cmake.h>
 #include <sstream>
 #include <stdlib.h>
@@ -323,6 +324,40 @@ void Task::setStatus (Task::status status)
   recalc_urgency = true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Determines status of a date attribute.
+Task::dateState Task::getDateState (const std::string& name) const
+{
+  std::string value = get (name);
+  if (value.length ())
+  {
+    Date reference (value);
+    Date now;
+    Date today ("today");
+
+    if (reference < today)
+      return dateBeforeToday;
+
+    if (reference.sameDay (now))
+    {
+      if (reference < now)
+        return dateEarlierToday;
+      else
+        return dateLaterToday;
+    }
+
+    int imminentperiod = context.config.getInteger ("due");
+    if (imminentperiod == 0)
+      return dateAfterToday;
+
+    Date imminentDay = today + imminentperiod * 86400;
+    if (reference < imminentDay)
+      return dateAfterToday;
+  }
+
+  return dateNotDue;
+}
+
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // Ready means pending, not blocked and either not scheduled or scheduled before
@@ -345,7 +380,10 @@ bool Task::is_due () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      if (getDueState (get ("due")) == 1)
+      Task::dateState state = getDateState ("due");
+      if (state == dateAfterToday   ||
+          state == dateEarlierToday ||
+          state == dateLaterToday)
         return true;
     }
   }
@@ -381,7 +419,9 @@ bool Task::is_duetoday () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      if (getDueState (get ("due")) == 2)
+      Task::dateState state = getDateState ("due");
+      if (state == dateEarlierToday ||
+          state == dateLaterToday)
         return true;
     }
   }
@@ -479,7 +519,9 @@ bool Task::is_overdue () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      if (getDueState (get ("due")) == 3)
+      Task::dateState state = getDateState ("due");
+      if (state == dateEarlierToday ||
+          state == dateBeforeToday)
         return true;
     }
   }
@@ -1144,6 +1186,16 @@ int Task::getTagCount () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//
+//              OVERDUE YESTERDAY DUE TODAY TOMORROW WEEK MONTH YEAR
+// due:-1week      Y       -       -    -       -      ?    ?     ?
+// due:-1day       Y       Y       -    -       -      ?    ?     ?
+// due:today       Y       -       Y    Y       -      ?    ?     ?
+// due:tomorrow    -       -       Y    -       Y      ?    ?     ?
+// due:3days       -       -       Y    -       -      ?    ?     ?
+// due:1month      -       -       -    -       -      -    -     ?
+// due:1year       -       -       -    -       -      -    -     -
+//
 bool Task::hasTag (const std::string& tag) const
 {
   // Synthetic tags - dynamically generated, but do not occupy storage space.
@@ -1169,6 +1221,9 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "WAITING")   return has ("wait");
   if (tag == "ANNOTATED") return hasAnnotations ();
   if (tag == "PARENT")    return has ("mask");
+  if (tag == "PENDING")   return get ("status") == "pending";
+  if (tag == "COMPLETED") return get ("status") == "completed";
+  if (tag == "DELETED")   return get ("status") == "deleted";
 
   // Concrete tags.
   std::vector <std::string> tags;

@@ -35,16 +35,18 @@ Context context;
 // A few hard-coded symbols.
 bool get (const std::string& name, Variant& value)
 {
-       if (name == "pi") {value = Variant (3.14159165); return true;}
-  else if (name == "x")  {value = Variant (true);       return true;}
+  if (name == "x")
+    value = Variant (true);
+  else
+    return false;
 
-  return false;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (43);
+  UnitTest t (46);
 
   // Test the source independently.
   Variant v;
@@ -53,10 +55,6 @@ int main (int argc, char** argv)
   t.ok (get ("x", v),                      "true <-- get(x)");
   t.is (v.type (), Variant::type_boolean,  "get(x) --> boolean");
   t.is (v.get_bool (), true,               "get(x) --> true");
-
-  t.ok (get ("pi", v),                     "true <-- get(pi)");
-  t.is (v.type (), Variant::type_real,     "get(pi) --> real");
-  t.is (v.get_real (), 3.141592, 0.00001,  "get(pi) --> 3.14159265");
 
   Eval e;
   e.addSource (get);
@@ -137,6 +135,20 @@ int main (int argc, char** argv)
   e.evaluateInfixExpression ("2*3+1", result);
   t.is (result.type (), Variant::type_integer, "infix '2*3+1' --> integer");
   t.is (result.get_integer (), 7,              "infix '2*3+1' --> 7");
+
+  // TW-1254 - Unary minus support.
+  e.evaluateInfixExpression ("2--3", result);
+  t.is (result.type (), Variant::type_integer, "infix '2--3' --> integer");
+  t.is (result.get_integer (), 5,              "infix '2--3' --> 5");
+
+  //e.debug ();
+  e.evaluateInfixExpression ("!false", result);
+  t.is (result.type (), Variant::type_boolean, "infix '!false' --> boolean");
+  t.is (result.get_bool (), true,              "infix '!false' --> true");
+
+  e.evaluateInfixExpression ("!true", result);
+  t.is (result.type (), Variant::type_boolean, "infix '!true' --> boolean");
+  t.is (result.get_bool (), false,             "infix '!true' --> false");
 
   return 0;
 }

@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+//#include <iostream> // TODO Remove
 #include <ISO8601.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -603,6 +604,8 @@ bool ISO8601d::validate ()
 // long tm_gmtoff;   offset from UTC in seconds
 void ISO8601d::resolve ()
 {
+  //std::cout << "# start ------------------------\n";
+
   // Don't touch the original values.
   int year    = _year;
   int month   = _month;
@@ -613,55 +616,69 @@ void ISO8601d::resolve ()
   int seconds = _seconds;
   int offset  = _offset;
   bool utc    = _utc;
+  //std::cout << "# input\n"
+  //          << "#   year="    << year    << "\n"
+  //          << "#   month="   << month   << "\n"
+  //          << "#   week="    << week    << "\n"
+  //          << "#   weekday=" << weekday << "\n"
+  //          << "#   julian="  << julian  << "\n"
+  //          << "#   day="     << day     << "\n"
+  //          << "#   seconds=" << seconds << "\n"
+  //          << "#   offset="  << offset  << "\n"
+  //          << "#   utc="     << utc     << "\n";
 
-  struct tm t = {0};
-
-  // Requests that mktime determine summer time effect.
-  t.tm_isdst = -1;
-
-  // Determine local time.
+  // Get current time.
   time_t now = time (NULL);
-  struct tm* local_now = localtime (&now);
-  struct tm* utc_now   = gmtime (&now);
+  //std::cout << "# now=" << now << "\n";
 
-  // What is a complete TZ?
-  //   utc
-  //   offset
-  //   local (get default)
-  if (utc)
-    offset = 0;
-  else if (! offset)
+  // A UTC offset needs to be accommodated.  Once the offset is subtracted,
+  // only local and UTC times remain.
+  if (offset)
   {
-#ifdef HAVE_TM_GMTOFF
-    offset = local_now->tm_gmtoff;
-#else
-    // TODO Umm...
-#endif
+    seconds -= offset;
+    now -= offset;
+    utc = true;
   }
 
-  // Subtract the offset, to project local to UTC.
-  seconds -= offset;
+  // Get 'now' in the relevant location.
+  struct tm* t_now = utc ? gmtime (&now) : localtime (&now);
+  //std::cout << "# t_now\n"
+  //          << "#   tm_year="  << t_now->tm_year  << "\n"
+  //          << "#   tm_mon="   << t_now->tm_mon   << "\n"
+  //          << "#   tm_mday="  << t_now->tm_mday  << "\n"
+  //          << "#   tm_hour="  << t_now->tm_hour  << "\n"
+  //          << "#   tm_min="   << t_now->tm_min   << "\n"
+  //          << "#   tm_sec="   << t_now->tm_sec   << "\n"
+  //          << "#   tm_isdst=" << t_now->tm_isdst << "\n";
 
-  // If the time is specified without a date, if it is earlier than 'now', then
-  // it refers to tomorrow.
-  int seconds_utc_now = utc_now->tm_hour * 3600 +
-                        utc_now->tm_min  * 60 +
-                        utc_now->tm_sec;
+  int seconds_now = (t_now->tm_hour * 3600) +
+                    (t_now->tm_min  *   60) +
+                     t_now->tm_sec;
+  //std::cout << "# seconds_now=" << seconds_now << "\n";
+
+  // Project forward one day if the specified seconds are earlier in the day
+  // than the current seconds.
   if (year    == 0 &&
       month   == 0 &&
       day     == 0 &&
       week    == 0 &&
       weekday == 0 &&
-      seconds < seconds_utc_now)
+      seconds < seconds_now)
   {
+    //std::cout << "# earlier today, therefore seconds += 86400\n"
+    //          << "#   seconds=" << seconds << "\n";
     seconds += 86400;
   }
 
-  // Conversion of week + weekday to julian.
+  // Convert week + weekday --> julian.
   if (week)
   {
     julian = (week * 7) + weekday - dayOfWeek (year, 1, 4) - 3;
+    //std::cout << "# week=" << week << " weekday=" << weekday << " specified\n"
+    //          << "#   julian=" << julian << "\n";
   }
+
+  // Provide default values for year, month, day.
   else
   {
     // Default values for year, month, day:
@@ -673,9 +690,9 @@ void ISO8601d::resolve ()
     //
     if (year == 0)
     {
-      year  = local_now->tm_year + 1900;
-      month = local_now->tm_mon + 1;
-      day   = local_now->tm_mday;
+      year  = t_now->tm_year + 1900;
+      month = t_now->tm_mon + 1;
+      day   = t_now->tm_mday;
     }
     else
     {
@@ -688,41 +705,73 @@ void ISO8601d::resolve ()
         day = 1;
     }
   }
+  //std::cout << "# Applied default y m d\n"
+  //          << "#   year="  << year  << "\n"
+  //          << "#   month=" << month << "\n"
+  //          << "#   day="   << day   << "\n";
 
   if (julian)
   {
     month = 1;
     day = julian;
+    //std::cout << "# julian=" << julian << " specified\n"
+    //          << "#   month=" << month << "\n"
+    //          << "#   day="   << day   << "\n";
   }
 
+  struct tm t = {0};
+  t.tm_isdst = -1;  // Requests that mktime/gmtime determine summer time effect.
   t.tm_year = year - 1900;
   t.tm_mon = month - 1;
   t.tm_mday = day;
 
-  // What is a complete time spec?
-  //   seconds
-  if (seconds)
+  if (seconds > 86400)
   {
-    if (seconds > 86400)
-    {
-      int days = seconds / 86400;
-      t.tm_mday += days;
-      seconds -= days * 86400;
-    }
+    //std::cout << "# seconds=" << seconds << " is more than a day\n";
+    int days = seconds / 86400;
+    t.tm_mday += days;
+    seconds %= 86400;
+    //std::cout << "#   t.tm_mday=" << t.tm_mday << "\n"
+    //          << "#   seconds="   << seconds << "\n";
+  }
 
     t.tm_hour = seconds / 3600;
     t.tm_min = (seconds % 3600) / 60;
     t.tm_sec = seconds % 60;
-  }
-  else
-  {
-    // User-provided default.
-    t.tm_hour = _default_seconds / 3600;
-    t.tm_min  = (_default_seconds % 3600) / 60;
-    t.tm_sec  = _default_seconds % 60;
-  }
 
-  _value = timegm (&t);
+  //std::cout << "# Final t\n"
+  //          << "#   tm_year="  << t.tm_year  << "\n"
+  //          << "#   tm_mon="   << t.tm_mon   << "\n"
+  //          << "#   tm_mday="  << t.tm_mday  << "\n"
+  //          << "#   tm_hour="  << t.tm_hour  << "\n"
+  //          << "#   tm_min="   << t.tm_min   << "\n"
+  //          << "#   tm_sec="   << t.tm_sec   << "\n"
+  //          << "#   tm_isdst=" << t.tm_isdst << "\n";
+
+  _value = utc ? timegm (&t) : timelocal (&t);
+  //std::cout << "# _value " << _value << "\n";
+
+  //std::cout << "# end --------------------------\n";
+  //dump ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ISO8601d::dump ()
+{
+/*
+  std::cout << "#   Y=" << _year
+            << " M=" << _month
+            << " W=" << _week
+            << " WD=" << _weekday
+            << " J=" << _julian
+            << " d=" << _day
+            << " s=" << _seconds
+            << " o=" << _offset
+            << " Z=" << _utc
+            << " ambi=" << _ambiguity
+            << " --> " << _value
+            << "\n";
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
