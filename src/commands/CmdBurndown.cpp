@@ -41,7 +41,7 @@
 extern Context context;
 
 // Helper macro.
-#define LOC(y,x) (((y) * (width + 1)) + (x))
+#define LOC(y,x) (((y) * (_width + 1)) + (x))
 
 ////////////////////////////////////////////////////////////////////////////////
 class Bar
@@ -53,26 +53,26 @@ public:
   ~Bar ();
 
 public:
-  int offset;                    // from left of chart
-  std::string major_label;       // x-axis label, major (year/-/month)
-  std::string minor_label;       // x-axis label, minor (month/week/day)
-  int pending;                   // Number of pending tasks in period
-  int started;                   // Number of started tasks in period
-  int done;                      // Number of done tasks in period
-  int added;                     // Number added in period
-  int removed;                   // Number removed in period
+  int _offset;                   // from left of chart
+  std::string _major_label;      // x-axis label, major (year/-/month)
+  std::string _minor_label;      // x-axis label, minor (month/week/day)
+  int _pending;                  // Number of pending tasks in period
+  int _started;                  // Number of started tasks in period
+  int _done;                     // Number of done tasks in period
+  int _added;                    // Number added in period
+  int _removed;                  // Number removed in period
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 Bar::Bar ()
-: offset (0)
-, major_label ("")
-, minor_label ("")
-, pending (0)
-, started (0)
-, done (0)
-, added (0)
-, removed (0)
+: _offset (0)
+, _major_label ("")
+, _minor_label ("")
+, _pending (0)
+, _started (0)
+, _done (0)
+, _added (0)
+, _removed (0)
 {
 }
 
@@ -87,14 +87,14 @@ Bar& Bar::operator= (const Bar& other)
 {
   if (this != &other)
   {
-    offset      = other.offset;
-    major_label = other.major_label;
-    minor_label = other.minor_label;
-    pending     = other.pending;
-    started     = other.started;
-    done        = other.done;
-    added       = other.added;
-    removed     = other.removed;
+    _offset      = other._offset;
+    _major_label = other._major_label;
+    _minor_label = other._minor_label;
+    _pending     = other._pending;
+    _started     = other._started;
+    _done        = other._done;
+    _added       = other._added;
+    _removed     = other._removed;
   }
 
   return *this;
@@ -159,25 +159,25 @@ private:
   void calculateRates (std::vector <time_t>&);
 
 public:
-  int width;                     // Terminal width
-  int height;                    // Terminal height
-  int graph_width;               // Width of plot area
-  int graph_height;              // Height of plot area
-  int max_value;                 // Largest combined bar value
-  int max_label;                 // Longest y-axis label
-  std::vector <int> labels;      // Y-axis labels
-  int estimated_bars;            // Estimated bar count
-  int actual_bars;               // Calculated bar count
-  std::map <time_t, Bar> bars;   // Epoch-indexed set of bars
-  Date earliest;                 // Date of earliest estimated bar
-  int carryover_done;            // Number of 'done' tasks prior to chart range
-  char period;                   // D, W, M
-  std::string title;             // Additional description
-  std::string grid;              // String representing grid of characters
+  int _width;                     // Terminal width
+  int _height;                    // Terminal height
+  int _graph_width;               // Width of plot area
+  int _graph_height;              // Height of plot area
+  int _max_value;                 // Largest combined bar value
+  int _max_label;                 // Longest y-axis label
+  std::vector <int> _labels;      // Y-axis labels
+  int _estimated_bars;            // Estimated bar count
+  int _actual_bars;               // Calculated bar count
+  std::map <time_t, Bar> _bars;   // Epoch-indexed set of bars
+  Date _earliest;                 // Date of earliest estimated bar
+  int _carryover_done;            // Number of 'done' tasks prior to chart range
+  char _period;                   // D, W, M
+  std::string _title;             // Additional description
+  std::string _grid;              // String representing grid of characters
 
-  float find_rate;               // Calculated find rate
-  float fix_rate;                // Calculated fix rate
-  std::string completion;        // Estimated completion date
+  float _find_rate;               // Calculated find rate
+  float _fix_rate;                // Calculated fix rate
+  std::string _completion;        // Estimated completion date
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -185,27 +185,27 @@ Chart::Chart (char type)
 {
   // How much space is there to render in?  This chart will occupy the
   // maximum space, and the width drives various other parameters.
-  width = context.getWidth ();
-  height = context.getHeight () - 1;  // Allow for new line with prompt.
-  max_value = 0;
-  max_label = 1;
-  graph_height = height - 7;
-  graph_width = width - max_label - 14;
+  _width = context.getWidth ();
+  _height = context.getHeight () - 1;  // Allow for new line with prompt.
+  _max_value = 0;
+  _max_label = 1;
+  _graph_height = _height - 7;
+  _graph_width = _width - _max_label - 14;
 
   // Estimate how many 'bars' can be dsplayed.  This will help subset a
   // potentially enormous data set.
-  estimated_bars = (width - 1 - 14) / 3;
+  _estimated_bars = (_width - 1 - 14) / 3;
 
-  actual_bars = 0;
-  period = type;
-  carryover_done = 0;
+  _actual_bars = 0;
+  _period = type;
+  _carryover_done = 0;
 
   // Rates are calculated last.
-  find_rate = 0.0;
-  fix_rate = 0.0;
+  _find_rate = 0.0;
+  _fix_rate = 0.0;
 
   // Set the title.
-  title = "(";
+  _title = "(";
   std::vector <Arg>::const_iterator arg;
   for (arg = context.a3.begin (); arg != context.a3.end (); ++arg)
   {
@@ -217,13 +217,13 @@ Chart::Chart (char type)
       ;
     else
     {
-      if (title.length () > 1)
-        title += " ";
+      if (_title.length () > 1)
+        _title += " ";
 
-      title += arg->_raw;
+      _title += arg->_raw;
     }
   }
-  title += ")";
+  _title += ")";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -247,8 +247,8 @@ void Chart::scan (std::vector <Task>& tasks)
     Date from = quantize (Date (task->get_date ("entry")));
     epoch = from.toEpoch ();
 
-    if (bars.find (epoch) != bars.end ())
-      ++bars[epoch].added;
+    if (_bars.find (epoch) != _bars.end ())
+      ++_bars[epoch]._added;
 
     // e-->   e--s-->
     // ppp>   pppsss>
@@ -262,14 +262,14 @@ void Chart::scan (std::vector <Task>& tasks)
         while (from < start)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].pending;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
           from = increment (from);
         }
 
         while (from < now)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].started;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._started;
           from = increment (from);
         }
       }
@@ -278,7 +278,7 @@ void Chart::scan (std::vector <Task>& tasks)
         while (from < now)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].pending;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
           from = increment (from);
         }
       }
@@ -292,14 +292,14 @@ void Chart::scan (std::vector <Task>& tasks)
       Date end = quantize (Date (task->get_date ("end")));
       epoch = end.toEpoch ();
 
-      if (bars.find (epoch) != bars.end ())
-        ++bars[epoch].removed;
+      if (_bars.find (epoch) != _bars.end ())
+        ++_bars[epoch]._removed;
 
       // Maintain a running total of 'done' tasks that are off the left of the
       // chart.
-      if (end < earliest)
+      if (end < _earliest)
       {
-        ++carryover_done;
+        ++_carryover_done;
         continue;
       }
 
@@ -309,21 +309,21 @@ void Chart::scan (std::vector <Task>& tasks)
         while (from < start)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].pending;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
           from = increment (from);
         }
 
         while (from < end)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].started;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._started;
           from = increment (from);
         }
 
         while (from < now)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].done;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._done;
           from = increment (from);
         }
       }
@@ -333,14 +333,14 @@ void Chart::scan (std::vector <Task>& tasks)
         while (from < end)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].pending;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
           from = increment (from);
         }
 
         while (from < now)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].done;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._done;
           from = increment (from);
         }
       }
@@ -353,10 +353,10 @@ void Chart::scan (std::vector <Task>& tasks)
       // Skip old deleted tasks.
       Date end = quantize (Date (task->get_date ("end")));
       epoch = end.toEpoch ();
-      if (bars.find (epoch) != bars.end ())
-        ++bars[epoch].removed;
+      if (_bars.find (epoch) != _bars.end ())
+        ++_bars[epoch]._removed;
 
-      if (end < earliest)
+      if (end < _earliest)
         continue;
 
       if (task->has ("start"))
@@ -365,14 +365,14 @@ void Chart::scan (std::vector <Task>& tasks)
         while (from < start)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].pending;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
           from = increment (from);
         }
 
         while (from < end)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].started;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._started;
           from = increment (from);
         }
       }
@@ -382,7 +382,7 @@ void Chart::scan (std::vector <Task>& tasks)
         while (from < end)
         {
           epoch = from.toEpoch ();
-          if (bars.find (epoch) != bars.end ()) ++bars[epoch].pending;
+          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
           from = increment (from);
         }
       }
@@ -414,23 +414,23 @@ void Chart::scan (std::vector <Task>& tasks)
 //   +---------------------------------------------------------------------+
 std::string Chart::render ()
 {
-  if (graph_height < 5 ||     // a 4-line graph is essentially unreadable.
-      graph_width < 2)        // A single-bar graph is useless.
+  if (_graph_height < 5 ||     // a 4-line graph is essentially unreadable.
+      _graph_width < 2)        // A single-bar graph is useless.
   {
     return std::string (STRING_CMD_BURN_TOO_SMALL) + "\n";
   }
 
-  if (max_value == 0)
+  if (_max_value == 0)
     context.footnote (STRING_FEEDBACK_NO_MATCH);
 
   // Create a grid, folded into a string.
-  grid = "";
-  for (int i = 0; i < height; ++i)
-    grid += std::string (width, ' ') + "\n";
+  _grid = "";
+  for (int i = 0; i < _height; ++i)
+    _grid += std::string (_width, ' ') + "\n";
 
   // Title.
   std::string full_title;
-  switch (period)
+  switch (_period)
   {
   case 'D': full_title = STRING_CMD_BURN_DAILY;   break;
   case 'W': full_title = STRING_CMD_BURN_WEEKLY;  break;
@@ -439,118 +439,118 @@ std::string Chart::render ()
 
   full_title += std::string (" ") + STRING_CMD_BURN_TITLE;
 
-  if (title.length ())
+  if (_title.length ())
   {
-    if (full_title.length () + 1 + title.length () < (unsigned) width)
+    if (full_title.length () + 1 + _title.length () < (unsigned) _width)
     {
-      full_title += " " + title;
-      grid.replace (LOC (0, (width - full_title.length ()) / 2), full_title.length (), full_title);
+      full_title += " " + _title;
+      _grid.replace (LOC (0, (_width - full_title.length ()) / 2), full_title.length (), full_title);
     }
     else
     {
-      grid.replace (LOC (0, (width - full_title.length ()) / 2), full_title.length (), full_title);
-      grid.replace (LOC (1, (width - title.length ()) / 2), title.length (), title);
+      _grid.replace (LOC (0, (_width - full_title.length ()) / 2), full_title.length (), full_title);
+      _grid.replace (LOC (1, (_width - _title.length ()) / 2), _title.length (), _title);
     }
   }
   else
   {
-    grid.replace (LOC (0, (width - full_title.length ()) / 2), full_title.length (), full_title);
+    _grid.replace (LOC (0, (_width - full_title.length ()) / 2), full_title.length (), full_title);
   }
 
   // Legend.
-  grid.replace (LOC (graph_height / 2 - 1, width - 10), 10, "DD " + leftJustify (STRING_CMD_BURN_DONE,    7));
-  grid.replace (LOC (graph_height / 2,     width - 10), 10, "SS " + leftJustify (STRING_CMD_BURN_STARTED, 7));
-  grid.replace (LOC (graph_height / 2 + 1, width - 10), 10, "PP " + leftJustify (STRING_CMD_BURN_PENDING, 7));
+  _grid.replace (LOC (_graph_height / 2 - 1, _width - 10), 10, "DD " + leftJustify (STRING_CMD_BURN_DONE,    7));
+  _grid.replace (LOC (_graph_height / 2,     _width - 10), 10, "SS " + leftJustify (STRING_CMD_BURN_STARTED, 7));
+  _grid.replace (LOC (_graph_height / 2 + 1, _width - 10), 10, "PP " + leftJustify (STRING_CMD_BURN_PENDING, 7));
 
   // Determine y-axis labelling.
-  std::vector <int> labels;
-  yLabels (labels);
-  max_label = (int) log10 ((double) labels[2]) + 1;
+  std::vector <int> _labels;
+  yLabels (_labels);
+  _max_label = (int) log10 ((double) _labels[2]) + 1;
 
   // Draw y-axis.
-  for (int i = 0; i < graph_height; ++i)
-     grid.replace (LOC (i + 1, max_label + 1), 1, "|");
+  for (int i = 0; i < _graph_height; ++i)
+     _grid.replace (LOC (i + 1, _max_label + 1), 1, "|");
 
   // Draw y-axis labels.
   char label [12];
-  sprintf (label, "%*d", max_label, labels[2]);
-  grid.replace (LOC (1,                      max_label - strlen (label)), strlen (label), label);
-  sprintf (label, "%*d", max_label, labels[1]);
-  grid.replace (LOC (1 + (graph_height / 2), max_label - strlen (label)), strlen (label), label);
-  grid.replace (LOC (graph_height + 1,       max_label - 1),              1,              "0");
+  sprintf (label, "%*d", _max_label, _labels[2]);
+  _grid.replace (LOC (1,                       _max_label - strlen (label)), strlen (label), label);
+  sprintf (label, "%*d", _max_label, _labels[1]);
+  _grid.replace (LOC (1 + (_graph_height / 2), _max_label - strlen (label)), strlen (label), label);
+  _grid.replace (LOC (_graph_height + 1,       _max_label - 1),              1,              "0");
 
   // Draw x-axis.
-  grid.replace (LOC (height - 6, max_label + 1), 1, "+");
-  grid.replace (LOC (height - 6, max_label + 2), graph_width, std::string (graph_width, '-'));
+  _grid.replace (LOC (_height - 6, _max_label + 1), 1, "+");
+  _grid.replace (LOC (_height - 6, _max_label + 2), _graph_width, std::string (_graph_width, '-'));
 
   // Draw x-axis labels.
   std::vector <time_t> bars_in_sequence;
   std::map <time_t, Bar>::iterator it;
-  for (it = bars.begin (); it != bars.end (); ++it)
+  for (it = _bars.begin (); it != _bars.end (); ++it)
     bars_in_sequence.push_back (it->first);
 
   std::sort (bars_in_sequence.begin (), bars_in_sequence.end ());
   std::vector <time_t>::iterator seq;
-  std::string major_label;
+  std::string _major_label;
   for (seq = bars_in_sequence.begin (); seq != bars_in_sequence.end (); ++seq)
   {
-    Bar bar = bars[*seq];
+    Bar bar = _bars[*seq];
 
     // If it fits within the allowed space.
-    if (bar.offset < actual_bars)
+    if (bar._offset < _actual_bars)
     {
-      grid.replace (LOC (height - 5, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), bar.minor_label.length (), bar.minor_label);
+      _grid.replace (LOC (_height - 5, _max_label + 3 + ((_actual_bars - bar._offset - 1) * 3)), bar._minor_label.length (), bar._minor_label);
 
-      if (major_label != bar.major_label)
-        grid.replace (LOC (height - 4, max_label + 2 + ((actual_bars - bar.offset - 1) * 3)), bar.major_label.length (), " " + bar.major_label);
+      if (_major_label != bar._major_label)
+        _grid.replace (LOC (_height - 4, _max_label + 2 + ((_actual_bars - bar._offset - 1) * 3)), bar._major_label.length (), " " + bar._major_label);
 
-      major_label = bar.major_label;
+      _major_label = bar._major_label;
     }
   }
 
   // Draw bars.
   for (seq = bars_in_sequence.begin (); seq != bars_in_sequence.end (); ++seq)
   {
-    Bar bar = bars[*seq];
+    Bar bar = _bars[*seq];
 
     // If it fits within the allowed space.
-    if (bar.offset < actual_bars)
+    if (bar._offset < _actual_bars)
     {
-      int pending = ( bar.pending                                            * graph_height) / labels[2];
-      int started = ((bar.pending + bar.started)                             * graph_height) / labels[2];
-      int done    = ((bar.pending + bar.started + bar.done + carryover_done) * graph_height) / labels[2];
+      int pending = ( bar._pending                                            * _graph_height) / _labels[2];
+      int started = ((bar._pending + bar._started)                             * _graph_height) / _labels[2];
+      int done    = ((bar._pending + bar._started + bar._done + _carryover_done) * _graph_height) / _labels[2];
 
       for (int b = 0; b < pending; ++b)
-        grid.replace (LOC (graph_height - b, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "PP");
+        _grid.replace (LOC (_graph_height - b, _max_label + 3 + ((_actual_bars - bar._offset - 1) * 3)), 2, "PP");
 
       for (int b = pending; b < started; ++b)
-        grid.replace (LOC (graph_height - b, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "SS");
+        _grid.replace (LOC (_graph_height - b, _max_label + 3 + ((_actual_bars - bar._offset - 1) * 3)), 2, "SS");
 
       for (int b = started; b < done; ++b)
-        grid.replace (LOC (graph_height - b, max_label + 3 + ((actual_bars - bar.offset - 1) * 3)), 2, "DD");
+        _grid.replace (LOC (_graph_height - b, _max_label + 3 + ((_actual_bars - bar._offset - 1) * 3)), 2, "DD");
     }
   }
 
   // Draw rates.
   calculateRates (bars_in_sequence);
   char rate[12];
-  if (find_rate != 0.0)
-    sprintf (rate, "%.1f/d", find_rate);
+  if (_find_rate != 0.0)
+    sprintf (rate, "%.1f/d", _find_rate);
   else
     strcpy (rate, "-");
 
-  grid.replace (LOC (height - 2, max_label + 3), 18 + strlen (rate), std::string ("Add rate:         ") + rate);
+  _grid.replace (LOC (_height - 2, _max_label + 3), 18 + strlen (rate), std::string ("Add rate:         ") + rate);
 
-  if (fix_rate != 0.0)
-    sprintf (rate, "%.1f/d", fix_rate);
+  if (_fix_rate != 0.0)
+    sprintf (rate, "%.1f/d", _fix_rate);
   else
     strcpy (rate, "-");
 
-  grid.replace (LOC (height - 1, max_label + 3), 18 + strlen (rate), std::string ("Done/Delete rate: ") + rate);
+  _grid.replace (LOC (_height - 1, _max_label + 3), 18 + strlen (rate), std::string ("Done/Delete rate: ") + rate);
 
   // Draw completion date.
-  if (completion.length ())
-    grid.replace (LOC (height - 2, max_label + 32), 22 + completion.length (), "Estimated completion: " + completion);
+  if (_completion.length ())
+    _grid.replace (LOC (_height - 2, _max_label + 32), 22 + _completion.length (), "Estimated completion: " + _completion);
 
   optimizeGrid ();
 
@@ -563,53 +563,53 @@ std::string Chart::render ()
 
     // Replace DD, SS, PP with colored strings.
     std::string::size_type i;
-    while ((i = grid.find ("PP")) != std::string::npos)
-      grid.replace (i, 2, color_pending.colorize ("  "));
+    while ((i = _grid.find ("PP")) != std::string::npos)
+      _grid.replace (i, 2, color_pending.colorize ("  "));
 
-    while ((i = grid.find ("SS")) != std::string::npos)
-      grid.replace (i, 2, color_started.colorize ("  "));
+    while ((i = _grid.find ("SS")) != std::string::npos)
+      _grid.replace (i, 2, color_started.colorize ("  "));
 
-    while ((i = grid.find ("DD")) != std::string::npos)
-      grid.replace (i, 2, color_done.colorize ("  "));
+    while ((i = _grid.find ("DD")) != std::string::npos)
+      _grid.replace (i, 2, color_done.colorize ("  "));
   }
   else
   {
     // Replace DD, SS, PP with ./+/X strings.
     std::string::size_type i;
-    while ((i = grid.find ("PP")) != std::string::npos)
-      grid.replace (i, 2, " X");
+    while ((i = _grid.find ("PP")) != std::string::npos)
+      _grid.replace (i, 2, " X");
 
-    while ((i = grid.find ("SS")) != std::string::npos)
-      grid.replace (i, 2, " +");
+    while ((i = _grid.find ("SS")) != std::string::npos)
+      _grid.replace (i, 2, " +");
 
-    while ((i = grid.find ("DD")) != std::string::npos)
-      grid.replace (i, 2, " .");
+    while ((i = _grid.find ("DD")) != std::string::npos)
+      _grid.replace (i, 2, " .");
   }
 
-  return grid;
+  return _grid;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// grid =~ /\s+$//g
+// _grid =~ /\s+$//g
 void Chart::optimizeGrid ()
 {
   std::string::size_type ws;
-  while ((ws = grid.find (" \n")) != std::string::npos)
+  while ((ws = _grid.find (" \n")) != std::string::npos)
   {
     std::string::size_type non_ws = ws;
-    while (grid[non_ws] == ' ')
+    while (_grid[non_ws] == ' ')
       --non_ws;
 
-    grid.replace (non_ws + 1, ws - non_ws + 1, "\n");
+    _grid.replace (non_ws + 1, ws - non_ws + 1, "\n");
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date Chart::quantize (const Date& input)
 {
-  if (period == 'D') return input.startOfDay ();
-  if (period == 'W') return input.startOfWeek ();
-  if (period == 'M') return input.startOfMonth ();
+  if (_period == 'D') return input.startOfDay ();
+  if (_period == 'W') return input.startOfWeek ();
+  if (_period == 'M') return input.startOfMonth ();
 
   return input;
 }
@@ -624,7 +624,7 @@ Date Chart::increment (const Date& input)
 
   int days;
 
-  switch (period)
+  switch (_period)
   {
   case 'D':
     if (++d > Date::daysInMonth (m, y))
@@ -675,7 +675,7 @@ Date Chart::decrement (const Date& input)
   int m = input.month ();
   int y = input.year ();
 
-  switch (period)
+  switch (_period)
   {
   case 'D':
     if (--d == 0)
@@ -718,14 +718,14 @@ Date Chart::decrement (const Date& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Do 'bars[epoch] = Bar' for every bar that may appear on a chart.
+// Do '_bars[epoch] = Bar' for every bar that may appear on a chart.
 void Chart::generateBars ()
 {
   Bar bar;
 
   // Determine the last bar date.
   Date cursor;
-  switch (period)
+  switch (_period)
   {
   case 'D': cursor = Date ().startOfDay ();   break;
   case 'W': cursor = Date ().startOfWeek ();  break;
@@ -734,43 +734,43 @@ void Chart::generateBars ()
 
   // Iterate and determine all the other bar dates.
   char str[12];
-  for (int i = 0; i < estimated_bars; ++i)
+  for (int i = 0; i < _estimated_bars; ++i)
   {
     // Create the major and minor labels.
-    switch (period)
+    switch (_period)
     {
     case 'D': // month/day
       {
         std::string month = Date::monthName (cursor.month ());
-        bar.major_label = month.substr (0, 3);
+        bar._major_label = month.substr (0, 3);
 
         sprintf (str, "%02d", cursor.day ());
-        bar.minor_label = str;
+        bar._minor_label = str;
       }
       break;
 
     case 'W': // year/week
       sprintf (str, "%d", cursor.year ());
-      bar.major_label = str;
+      bar._major_label = str;
 
       sprintf (str, "%02d", cursor.weekOfYear (0));
-      bar.minor_label = str;
+      bar._minor_label = str;
       break;
 
     case 'M': // year/month
       sprintf (str, "%d", cursor.year ());
-      bar.major_label = str;
+      bar._major_label = str;
 
       sprintf (str, "%02d", cursor.month ());
-      bar.minor_label = str;
+      bar._minor_label = str;
       break;
     }
 
-    bar.offset = i;
-    bars[cursor.toEpoch ()] = bar;
+    bar._offset = i;
+    _bars[cursor.toEpoch ()] = bar;
 
     // Record the earliest date, for use as a cutoff when scanning data.
-    earliest = cursor;
+    _earliest = cursor;
 
     // Move to the previous period.
     cursor = decrement (cursor);
@@ -780,39 +780,39 @@ void Chart::generateBars ()
 ////////////////////////////////////////////////////////////////////////////////
 void Chart::maxima ()
 {
-  max_value = 0;
-  max_label = 1;
+  _max_value = 0;
+  _max_label = 1;
 
   std::map <time_t, Bar>::iterator it;
-  for (it = bars.begin (); it != bars.end (); it++)
+  for (it = _bars.begin (); it != _bars.end (); it++)
   {
-    // Determine max_label.
-    int total = it->second.pending +
-                it->second.started +
-                it->second.done    +
-                carryover_done;
+    // Determine _max_label.
+    int total = it->second._pending +
+                it->second._started +
+                it->second._done    +
+                _carryover_done;
 
-    // Determine max_value.
-    if (total > max_value)
-      max_value = total;
+    // Determine _max_value.
+    if (total > _max_value)
+      _max_value = total;
 
     int length = (int) log10 ((double) total) + 1;
-    if (length > max_label)
-      max_label = length;
+    if (length > _max_label)
+      _max_label = length;
   }
 
   // How many bars can be shown?
-  actual_bars = (width - max_label - 14) / 3;
-  graph_width = width - max_label - 14;
+  _actual_bars = (_width - _max_label - 14) / 3;
+  _graph_width = _width - _max_label - 14;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Given the vertical chart area size (graph_height), the largest value
-// (max_value), populate a vector of labels for the y axis.
+// (_max_value), populate a vector of labels for the y axis.
 void Chart::yLabels (std::vector <int>& labels)
 {
   // Calculate may Y using a nice algorithm that rounds the data.
-  int high = burndown_size (max_value);
+  int high = burndown_size (_max_value);
   int half = high / 2;
 
   labels.push_back (0);
@@ -825,7 +825,7 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
 {
   // If there are no current pending tasks, then it is meaningless to find
   // rates or estimated completion date.
-  if (bars[sequence.back ()].pending == 0)
+  if (_bars[sequence.back ()]._pending == 0)
     return;
 
   // Calculate how many items we have.
@@ -844,7 +844,7 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
   // How many days do these sums represent?
   int half_days = 1;
   int quarter_days = 1;
-  switch (period)
+  switch (_period)
   {
   case 'D':
     half_days = half;
@@ -869,14 +869,14 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
 
   for (unsigned int i = half; i < sequence.size (); ++i)
   {
-    total_added_50 += bars[sequence[i]].added;
-    total_removed_50 += bars[sequence[i]].removed;
+    total_added_50 += _bars[sequence[i]]._added;
+    total_removed_50 += _bars[sequence[i]]._removed;
   }
 
   for (unsigned int i = half + quarter; i < sequence.size (); ++i)
   {
-    total_added_75 += bars[sequence[i]].added;
-    total_removed_75 += bars[sequence[i]].removed;
+    total_added_75 += _bars[sequence[i]]._added;
+    total_removed_75 += _bars[sequence[i]]._removed;
   }
 
   float find_rate_50 = 1.0 * total_added_50 / half_days;
@@ -887,8 +887,8 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
   // Make configurable.
   float bias = (float) context.config.getReal ("burndown.bias");
 
-  find_rate = (find_rate_50 * (1.0 - bias) + find_rate_75 * bias);
-  fix_rate  = (fix_rate_50  * (1.0 - bias) + fix_rate_75 * bias);
+  _find_rate = (find_rate_50 * (1.0 - bias) + find_rate_75 * bias);
+  _fix_rate  = (fix_rate_50  * (1.0 - bias) + fix_rate_75 * bias);
 
   // Q: Why is this equation written out as a debug message?
   // A: People are going to want to know how the rates and the completion date
@@ -908,7 +908,7 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
         << " days) * "
         << bias
         << ") = "
-        << find_rate
+        << _find_rate
         << "\nChart::calculateRates fix rate: "
         << "("
         << total_removed_50
@@ -923,20 +923,20 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
         << " days) * "
         << bias
         << ") = "
-        << fix_rate;
+        << _fix_rate;
   context.debug (rates.str ());
 
   // Estimate completion
-  if (fix_rate > find_rate)
+  if (_fix_rate > _find_rate)
   {
-    int current_pending = bars[sequence.back ()].pending;
-    int remaining_days = (int) (current_pending / (fix_rate - find_rate));
+    int current_pending = _bars[sequence.back ()]._pending;
+    int remaining_days = (int) (current_pending / (_fix_rate - _find_rate));
 
     Date now;
     OldDuration delta (remaining_days * 86400);
     now += delta;
 
-    completion = now.toString (context.config.get ("dateformat"))
+    _completion = now.toString (context.config.get ("dateformat"))
                + " ("
                + delta.format ()
                + ")";
@@ -945,18 +945,18 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
     est << "Chart::calculateRates Completion: "
          << current_pending
          << " tasks / ("
-         << fix_rate
+         << _fix_rate
          << " - "
-         << find_rate
+         << _find_rate
          << ") = "
          << remaining_days
          << " days = "
-         << completion;
+         << _completion;
     context.debug (est.str ());
   }
   else
   {
-    completion = STRING_CMD_BURN_NO_CONVERGE;
+    _completion = STRING_CMD_BURN_NO_CONVERGE;
   }
 }
 
