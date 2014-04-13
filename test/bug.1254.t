@@ -51,7 +51,7 @@ class BaseTestBug1254(BaseTestCase):
             os.remove(file)
 
     @classmethod
-    def cleanup(cls):
+    def finish(cls):
         os.remove("bug.rc")
 
 
