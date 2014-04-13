@@ -163,7 +163,6 @@ int CmdShow::execute (std::string& output)
     " json.array"
     " list.all.projects"
     " list.all.tags"
-    " locale"
     " locking"
     " monthsperline"
     " nag"

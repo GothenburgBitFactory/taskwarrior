@@ -28,6 +28,7 @@ Removed features in 2.4.0
   - Version 1.x sort columns no longer supported.
   - Old-style color names including underscores are no longer supported.
   - Removed priority counts from the 'projects' commands.
+  - Removed the unused 'locale' configuration variable.
 
 Known Issues
 
