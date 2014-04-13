@@ -48,7 +48,6 @@
 Context::Context ()
 : rc_file ()
 , data_dir ()
-, extension_dir ()
 , config ()
 , tdb2 ()
 , dom ()
@@ -80,7 +79,11 @@ int Context::initialize (int argc, const char** argv)
 
   try
   {
+    ////////////////////////////////////////////////////////////////////////////
     // BEGIN EXPERIMENTAL CODE
+    //
+    // This experimental section will grow, and the original code below will
+    // shrink, and that is how the command line parser will be replaced.
 
     // Initialize the command line parser.
     a3t.initialize (argc, argv);
@@ -91,6 +94,7 @@ int Context::initialize (int argc, const char** argv)
     //Tree* parseTree = a3t.parse ();
 
     // END EXPERIMENTAL CODE
+    ////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -136,10 +140,6 @@ int Context::initialize (int argc, const char** argv)
       header (format (STRING_CONTEXT_DATA_OVERRIDE, data_dir._data));
     }
 
-/* TODO Enable this when the time is right, say for 2.1
-    extension_dir = data_dir._data + "/extensions";
-*/
-
     // Create missing config file and data directory, if necessary.
     a3.apply_overrides ();
     createDefaultConfig ();
@@ -179,6 +179,7 @@ int Context::initialize (int argc, const char** argv)
 
 
 
+    ////////////////////////////////////////////////////////////////////////////
     // BEGIN EXPERIMENTAL CODE
 
     // Initialize the command line parser.
@@ -186,6 +187,7 @@ int Context::initialize (int argc, const char** argv)
       debug (parseTree->dump ());
 
     // END EXPERIMENTAL CODE
+    ////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -659,12 +661,6 @@ void Context::createDefaultConfig ()
 
   // Create data location, if necessary.
   config.createDefaultData (data_dir);
-
-  // Create extension directory, if necessary.
-/* TODO Enable this when the time is right, say for 2.4
-  if (! extension_dir.exists ())
-    extension_dir.create ();
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

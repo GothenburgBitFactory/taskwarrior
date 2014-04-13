@@ -88,7 +88,6 @@ public:
   std::string                         home_dir;
   File                                rc_file;
   Path                                data_dir;
-  Directory                           extension_dir;
   Config                              config;
 
   TDB2                                tdb2;
