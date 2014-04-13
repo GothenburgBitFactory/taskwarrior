@@ -72,8 +72,10 @@ class BaseTest285(BaseTestCase):
             os.remove(file)
 
     @classmethod
-    def cleanup(cls):
+    def finish(cls):
         os.remove("bug.rc")
+        for file in glob("*.data"):
+            os.remove(file)
 
 
 class Test285(BaseTest285):
