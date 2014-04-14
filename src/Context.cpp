@@ -44,6 +44,25 @@
 #include <commit.h>
 #endif
 
+// Supported modifiers, synonyms on the same line.
+static const char* modifierNames[] =
+{
+  "before",     "under",    "below",
+  "after",      "over",     "above",
+  "none",
+  "any",
+  "is",         "equals",
+  "isnt",       "not",
+  "has",        "contains",
+  "hasnt",
+  "startswith", "left",
+  "endswith",   "right",
+  "word",
+  "noword"
+};
+
+#define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
+
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
 : rc_file ()
@@ -79,39 +98,20 @@ int Context::initialize (int argc, const char** argv)
 
   try
   {
+    // Assume default .taskrc and .task locations.
+    assumeLocations ();
+
     ////////////////////////////////////////////////////////////////////////////
     // BEGIN EXPERIMENTAL CODE
     //
     // This experimental section will grow, and the original code below will
-    // shrink, and that is how the command line parser will be replaced.
+    // shrink, and this is how the command line parser will be replaced.
 
     // Initialize the command line parser.
-    a3t.initialize (argc, argv);
-
-    // TODO Uncommenting this breaks unit tests because of the errors it
-    //      generates.
-    Tree* parseTree = NULL;
-    //Tree* parseTree = a3t.parse ();
-
-    // END EXPERIMENTAL CODE
-    ////////////////////////////////////////////////////////////////////////////
-
-
-
-    // char** argv --> std::vector <std::string> Context::a3.
-    a3.capture (argc, argv);
-
-    // echo one two -- three | task zero --> task zero one two
-    // 'three' is left in the input buffer.
-    a3.append_stdin ();
-
-    // Assume default .taskrc and .task locations.
-    assumeLocations ();
-
-    // Process 'rc:<file>' command line override, and remove the argument from the
-    // Context::a3.
-    a3.categorize ();
-    a3.rc_override (home_dir, rc_file);
+    a3t.initialize (argc, argv);                 // task arg0 arg1 ...
+    a3t.append_stdin ();                         // echo stdin0 | task ...
+    a3t.findFileOverride ();                     // rc:<file>
+    a3t.get_overrides (home_dir, rc_file);       // <-- <file>
 
     // TASKRC environment variable overrides the command line.
     char* override = getenv ("TASKRC");
@@ -128,9 +128,8 @@ int Context::initialize (int argc, const char** argv)
     // The data location, Context::data_dir, is determined from the assumed
     // location (~/.task), or set by data.location in the config file, or
     // overridden by rc.data.location on the command line.
-    std::string location;
-    a3.get_data_location (location);
-    data_dir = Directory (location);
+    a3t.findConfigOverride ();                   // rc.<name>[:=]<value>
+    a3t.get_data_location (data_dir);            // <-- rc.data.location=<location>
 
     override = getenv ("TASKDATA");
     if (override)
@@ -139,6 +138,40 @@ int Context::initialize (int argc, const char** argv)
       config.set ("data.location", data_dir._data);
       header (format (STRING_CONTEXT_DATA_OVERRIDE, data_dir._data));
     }
+
+    // TODO Entities: Reports.
+    // TODO Entities: Read-only commands.
+    // TODO Entities: Write commands.
+    // TODO Entities: Special commands.
+    // TODO Entities: Helper commands.
+    // TODO Entities: Attributes (columns).
+
+    // Entities: Pseudo-attributes.
+    a3t.entity ("pseudo", "limit");
+
+    // TODO Entities: UDAs.
+
+    // Entities: Modifiers.
+    for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
+      a3t.entity ("modifier", modifierNames[i]);
+
+    // TODO Entities: Operators.
+
+    // END EXPERIMENTAL CODE
+    ////////////////////////////////////////////////////////////////////////////
+
+
+
+    // char** argv --> std::vector <std::string> Context::a3.
+    a3.capture (argc, argv);
+
+    // echo one two -- three | task zero --> task zero one two
+    // 'three' is left in the input buffer.
+    a3.append_stdin ();
+
+    // Process 'rc:<file>' command line override, and remove the argument from the
+    // Context::a3.
+    a3.categorize ();
 
     // Create missing config file and data directory, if necessary.
     a3.apply_overrides ();
@@ -182,13 +215,17 @@ int Context::initialize (int argc, const char** argv)
     ////////////////////////////////////////////////////////////////////////////
     // BEGIN EXPERIMENTAL CODE
 
+    // TODO Uncommenting this breaks unit tests because of the errors it
+    //      generates.
+    Tree* parseTree = NULL;
+    //Tree* parseTree = a3t.parse ();
+
     // Initialize the command line parser.
     if (parseTree && config.getBoolean ("debug"))
       debug (parseTree->dump ());
 
     // END EXPERIMENTAL CODE
     ////////////////////////////////////////////////////////////////////////////
-
 
 
     // TODO Instantiate extension command objects.
