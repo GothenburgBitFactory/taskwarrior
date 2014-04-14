@@ -25,6 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#ifdef FEATURE_STDIN
+#include <iostream>
+#endif
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
