@@ -158,16 +158,26 @@ int Context::initialize (int argc, const char** argv)
 
     // Instantiate built-in command objects.
     Command::factory (commands);
+    std::map <std::string, Command*>::iterator cmd;
+    for (cmd = commands.begin (); cmd != commands.end (); ++cmd)
+    {
+      if (cmd->first[0] == '_')
+        a3t.entity ("helper", cmd->first);
+      else
+        a3t.entity ("command", cmd->first);
+
+      // TODO Entities: Reports.
+      // TODO Entities: Read-only commands.
+      // TODO Entities: Write commands.
+      // TODO Entities: Special commands.
+      // TODO Entities: Helper commands.
+    }
 
     // Instantiate built-in column objects.
     Column::factory (columns);
-
-    // TODO Entities: Reports.
-    // TODO Entities: Read-only commands.
-    // TODO Entities: Write commands.
-    // TODO Entities: Special commands.
-    // TODO Entities: Helper commands.
-    // TODO Entities: Attributes (columns).
+    std::map <std::string, Column*>::iterator col;
+    for (col = columns.begin (); col != columns.end (); ++col)
+      a3t.entity ("attribute", col->first);
 
     // Entities: Pseudo-attributes.
     a3t.entity ("pseudo", "limit");
