@@ -387,6 +387,24 @@ void A3t::get_data_location (Path& data)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Takes all CONFIG name/value pairs and overrides configuration.
+// leaving only the plain args.
+void A3t::apply_overrides ()
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    if ((*i)->hasTag ("CONFIG"))
+    {
+      std::string name  = (*i)->attribute ("name");
+      std::string value = (*i)->attribute ("value");
+      context.config.set (name, value);
+      context.footnote (format (STRING_A3_OVERRIDE_RC, name, value));
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // /pattern/
 void A3t::findPattern ()
 {

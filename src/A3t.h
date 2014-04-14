@@ -47,6 +47,7 @@ public:
   void findConfigOverride ();
   void get_overrides (std::string&, File&);
   void get_data_location (Path&);
+  void apply_overrides ();
 
 private:
   void findBinary ();
