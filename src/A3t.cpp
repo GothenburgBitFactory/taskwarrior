@@ -128,14 +128,20 @@ void A3t::findBinary ()
     std::string binary = _tree->_branches[0]->attribute ("raw");
     std::string::size_type slash = binary.rfind ('/');
     if (slash != std::string::npos)
+    {
       binary = binary.substr (slash + 1);
+    }
 
     _tree->_branches[0]->attribute ("basename", binary);
 
     if (binary == "cal" || binary == "calendar")
+    {
       _tree->_branches[0]->tag ("CALENDAR");
+    }
     else if (binary == "task" || binary == "tw" || binary == "t")
+    {
       _tree->_branches[0]->tag ("TW");
+    }
   }
 }
 
@@ -158,8 +164,9 @@ void A3t::findTerminator ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("WORD");
+      (*i)->tag ("TERMINATED");
     }
-  } 
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
