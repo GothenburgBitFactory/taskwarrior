@@ -101,15 +101,19 @@ int Context::initialize (int argc, const char** argv)
     // Assume default .taskrc and .task locations.
     assumeLocations ();
 
-    ////////////////////////////////////////////////////////////////////////////
-    // BEGIN EXPERIMENTAL CODE
-    //
-    // This experimental section will grow, and the original code below will
-    // shrink, and this is how the command line parser will be replaced.
-
     // Initialize the command line parser.
+    a3.capture (argc, argv);
     a3t.initialize (argc, argv);                 // task arg0 arg1 ...
+
+    // echo one two -- three | task zero --> task zero one two
+    // 'three' is left in the input buffer.
+    a3.append_stdin ();
     a3t.append_stdin ();                         // echo stdin0 | task ...
+
+    // Process 'rc:<file>' command line override, and remove the argument from the
+    // Context::a3.
+    a3.categorize ();
+
     a3t.findFileOverride ();                     // rc:<file>
     a3t.get_overrides (home_dir, rc_file);       // <-- <file>
 
@@ -139,6 +143,29 @@ int Context::initialize (int argc, const char** argv)
       header (format (STRING_CONTEXT_DATA_OVERRIDE, data_dir._data));
     }
 
+    // Create missing config file and data directory, if necessary.
+    a3.apply_overrides ();
+    a3t.apply_overrides ();
+    createDefaultConfig ();
+
+    // Handle Aliases.
+    loadAliases ();
+
+    a3.resolve_aliases ();
+
+    // Apply rc overrides to Context::config, capturing raw args for later use.
+    a3.apply_overrides ();
+
+    // Initialize the color rules, if necessary.
+    if (color ())
+      initializeColorRules ();
+
+    // Instantiate built-in command objects.
+    Command::factory (commands);
+
+    // Instantiate built-in column objects.
+    Column::factory (columns);
+
     // TODO Entities: Reports.
     // TODO Entities: Read-only commands.
     // TODO Entities: Write commands.
@@ -157,43 +184,6 @@ int Context::initialize (int argc, const char** argv)
 
     // TODO Entities: Operators.
 
-    // END EXPERIMENTAL CODE
-    ////////////////////////////////////////////////////////////////////////////
-
-
-
-    // char** argv --> std::vector <std::string> Context::a3.
-    a3.capture (argc, argv);
-
-    // echo one two -- three | task zero --> task zero one two
-    // 'three' is left in the input buffer.
-    a3.append_stdin ();
-
-    // Process 'rc:<file>' command line override, and remove the argument from the
-    // Context::a3.
-    a3.categorize ();
-
-    // Create missing config file and data directory, if necessary.
-    a3.apply_overrides ();
-    createDefaultConfig ();
-
-    // Handle Aliases.
-    loadAliases ();
-    a3.resolve_aliases ();
-
-    // Apply rc overrides to Context::config, capturing raw args for later use.
-    a3.apply_overrides ();
-
-    // Initialize the color rules, if necessary.
-    if (color ())
-      initializeColorRules ();
-
-    // Instantiate built-in command objects.
-    Command::factory (commands);
-
-    // Instantiate built-in column objects.
-    Column::factory (columns);
-
     // Static initialization to decouple code.
     staticInitialization ();
 
@@ -210,11 +200,6 @@ int Context::initialize (int argc, const char** argv)
     a3.categorize ();
     a3.dump ("Context::initialize");
 
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // BEGIN EXPERIMENTAL CODE
-
     // TODO Uncommenting this breaks unit tests because of the errors it
     //      generates.
     Tree* parseTree = NULL;
@@ -223,18 +208,6 @@ int Context::initialize (int argc, const char** argv)
     // Initialize the command line parser.
     if (parseTree && config.getBoolean ("debug"))
       debug (parseTree->dump ());
-
-    // END EXPERIMENTAL CODE
-    ////////////////////////////////////////////////////////////////////////////
-
-
-    // TODO Instantiate extension command objects.
-    // TODO Instantiate default command object.
-
-    // TODO Instantiate extension column objects.
-
-    // TODO Instantiate extension UDA objects.
-    // TODO Instantiate extension format objects.
 
     // Initialize the database.
     tdb2.set_location (data_dir);
