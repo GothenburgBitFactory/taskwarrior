@@ -163,8 +163,10 @@ int Context::initialize (int argc, const char** argv)
     {
       if (cmd->first[0] == '_')
         a3t.entity ("helper", cmd->first);
+      else if (cmd->second->read_only ())
+        a3t.entity ("readcmd", cmd->first);
       else
-        a3t.entity ("command", cmd->first);
+        a3t.entity ("writecmd", cmd->first);
 
       // TODO Entities: Reports.
       // TODO Entities: Read-only commands.
