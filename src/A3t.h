@@ -27,6 +27,8 @@
 #define INCLUDED_A3T
 
 #include <Tree.h>
+#include <Path.h>
+#include <File.h>
 #include <string>
 #include <map>
 
@@ -36,16 +38,20 @@ public:
   A3t ();
   ~A3t ();
   void initialize (int, const char**);
+  void append_stdin ();
   Tree* parse ();
   void entity (const std::string&, const std::string&);
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
+
+  void findFileOverride ();
+  void findConfigOverride ();
+  void get_overrides (std::string&, File&);
+  void get_data_location (Path&);
 
 private:
   void findBinary ();
   void findTerminator ();
   void findCommand ();
-  void findFileOverride ();
-  void findConfigOverride ();
   void findPattern ();
   void findSubstitution ();
   void findTag ();
@@ -67,7 +73,7 @@ private:
   // TODO Convert to postfix - not necessary given parse tree?
 
 private:
-  Tree* _tree;
+  Tree*                                    _tree;
   std::multimap <std::string, std::string> _entities;
 };
 

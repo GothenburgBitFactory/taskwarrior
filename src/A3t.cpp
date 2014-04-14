@@ -24,13 +24,24 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
+#include <unistd.h>
+#include <Context.h>
 #include <A3t.h>
 #include <Nibbler.h>
 #include <Directory.h>
+#include <main.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
+
+#ifdef FEATURE_STDIN
+#include <sys/select.h>
+#endif
+
+extern Context context;
 
 static const int minimumMatchLength = 3;
 
@@ -49,8 +60,10 @@ A3t::~A3t ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// char** argv --> std::vector <std::string> _args
 void A3t::initialize (int argc, const char** argv)
 {
+  // Create top-level nodes.
   for (int i = 0; i < argc; ++i)
   {
     Tree* branch = _tree->addBranch (new Tree (format ("arg{1}", i)));
@@ -61,13 +74,57 @@ void A3t::initialize (int argc, const char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Add an arg for every word from std::cin.
+//
+// echo one two -- three | task zero --> task zero one two
+// 'three' is left in the input buffer.
+void A3t::append_stdin ()
+{
+#ifdef FEATURE_STDIN
+  // Use 'select' to determine whether there is any std::cin content buffered
+  // before trying to read it, to prevent blocking.
+  struct timeval tv;
+  tv.tv_sec = 0;
+  tv.tv_usec = 1000;
+
+  fd_set fds;
+  FD_ZERO (&fds);
+  FD_SET (STDIN_FILENO, &fds);
+
+  int result = select (STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
+  if (result && result != -1)
+  {
+    if (FD_ISSET (0, &fds))
+    {
+      int i = 0;
+      std::string arg;
+      while (std::cin >> arg)
+      {
+        // It the terminator token is found, stop reading.
+        if (arg == "--")
+          break;
+
+        Tree* branch = _tree->addBranch (new Tree (format ("stdin{1}", i++)));
+        branch->attribute ("raw", arg);
+        branch->tag ("ORIGINAL");
+        branch->tag ("STDIN");
+        branch->tag ("?");
+      }
+    }
+  }
+#endif
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Tree* A3t::parse ()
 {
   findBinary ();
   findTerminator ();
   findCommand ();
+/*
   findFileOverride ();
   findConfigOverride ();
+*/
   findSubstitution ();
   findPattern ();
   findTag ();
@@ -221,6 +278,7 @@ void A3t::findCommand ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Process 'rc:<file>' command line override.
 void A3t::findFileOverride ()
 {
   std::vector <Tree*>::iterator i;
@@ -274,6 +332,57 @@ void A3t::findConfigOverride ()
         (*i)->attribute ("value", arg.substr (sep + 1));
       }
     }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Look for RC and return file as a File.
+void A3t::get_overrides (
+  std::string& home,
+  File& rc)
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    if ((*i)->hasTag ("RC"))
+    {
+      rc = File ((*i)->attribute ("file"));
+      home = rc;
+
+      std::string::size_type last_slash = rc._data.rfind ("/");
+      if (last_slash != std::string::npos)
+        home = rc._data.substr (0, last_slash);
+      else
+        home = ".";
+
+      context.header (format (STRING_A3_ALTERNATE_RC, rc._data));
+
+      // Keep looping, because if there are multiple rc:file arguments, we
+      // want the last one to dominate.
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Look for CONFIG data.location and return value as a Path.
+void A3t::get_data_location (Path& data)
+{
+  std::string location = context.config.get ("data.location");
+  if (location != "")
+    data = location;
+
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    if ((*i)->hasTag ("CONFIG") &&
+        (*i)->attribute ("name") == "data.location")
+    {
+      data = Directory ((*i)->attribute ("value"));
+      context.header (format (STRING_A3_ALTERNATE_DATA, (std::string) data));
+    }
+
+    // Keep looping, because if there are multiple overrides, we want the last
+    // one to dominate.
   }
 }
 
