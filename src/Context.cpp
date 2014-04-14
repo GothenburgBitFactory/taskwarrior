@@ -150,11 +150,7 @@ int Context::initialize (int argc, const char** argv)
 
     // Handle Aliases.
     loadAliases ();
-
     a3.resolve_aliases ();
-
-    // Apply rc overrides to Context::config, capturing raw args for later use.
-    a3.apply_overrides ();
 
     // Initialize the color rules, if necessary.
     if (color ())
