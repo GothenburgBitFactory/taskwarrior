@@ -51,8 +51,6 @@ public:
   static const std::vector <std::string> operator_list ();
 
   void append_stdin ();
-  void rc_override (std::string&, File&);
-  void get_data_location (std::string&);
   void resolve_aliases ();
   void apply_overrides ();
   void inject_defaults ();

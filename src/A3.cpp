@@ -314,60 +314,6 @@ void A3::append_stdin ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3::rc_override (
-  std::string& home,
-  File& rc)
-{
-  // Is there an override for rc:<file>?
-  std::vector <Arg>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    if (arg->_category == Arg::cat_rc)
-    {
-      rc = File (arg->_raw.substr (3));
-      home = rc;
-
-      std::string::size_type last_slash = rc._data.rfind ("/");
-      if (last_slash != std::string::npos)
-        home = rc._data.substr (0, last_slash);
-      else
-        home = ".";
-
-      context.header (format (STRING_A3_ALTERNATE_RC, rc._data));
-
-      // Keep looping, because if there are multiple rc:file arguments, we
-      // want the last one to dominate.
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void A3::get_data_location (std::string& data)
-{
-  std::string location = context.config.get ("data.location");
-  if (location != "")
-    data = location;
-
-  // Are there any overrides for data.location?
-  std::vector <Arg>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    if (arg->_category == Arg::cat_override)
-    {
-      if (arg->_raw.substr (0, 16) == "rc.data.location" &&
-          (arg->_raw[16] == ':' || arg->_raw[16] == '='))
-      {
-        data = arg->_raw.substr (17);
-        context.header (format (STRING_A3_ALTERNATE_DATA, data));
-      }
-    }
-
-    // Keep looping, because if there are multiple overrides, we want the last
-    // one to dominate.
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // An alias must be a distinct word on the command line.
 // Aliases may not recurse.
 void A3::resolve_aliases ()
