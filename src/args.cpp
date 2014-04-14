@@ -46,7 +46,7 @@ int main (int argc, const char** argv)
     a3t.entity ("report",     "next");
 
     // Read-only commands.
-    a3t.entity ("writecmd",   "export");
+    a3t.entity ("readcmd",    "export");
     a3t.entity ("readcmd",    "info");
     a3t.entity ("readcmd",    "list");
     a3t.entity ("readcmd",    "next");

@@ -121,10 +121,6 @@ Tree* A3t::parse ()
   findBinary ();
   findTerminator ();
   findCommand ();
-/*
-  findFileOverride ();
-  findConfigOverride ();
-*/
   findSubstitution ();
   findPattern ();
   findTag ();

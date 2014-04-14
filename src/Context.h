@@ -95,7 +95,6 @@ public:
   Hooks                               hooks;
   DOM                                 dom;
 
-  // Color
   bool                                determine_color_use;
   bool                                use_color;
 
@@ -105,9 +104,6 @@ public:
   std::vector <std::string>           footnotes;
   std::vector <std::string>           errors;
   std::vector <std::string>           debugMessages;
-/*
-  bool                                inShadow;
-*/
 
   std::map <std::string, Command*>    commands;
   std::map <std::string, Column*>     columns;
