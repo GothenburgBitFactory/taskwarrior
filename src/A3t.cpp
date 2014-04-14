@@ -239,6 +239,7 @@ void A3t::findCommand ()
     if (! (*i)->hasTag ("?"))
       continue;
 
+/*
     if (canonicalize (command, "report", (*i)->attribute ("raw")))
     {
       (*i)->unTag ("?");
@@ -246,6 +247,7 @@ void A3t::findCommand ()
       (*i)->tag ("REPORT");
       (*i)->attribute ("canonical", command);
     }
+*/
 
     else if (canonicalize (command, "readcmd", (*i)->attribute ("raw")))
     {
@@ -263,6 +265,15 @@ void A3t::findCommand ()
       (*i)->attribute ("canonical", command);
     }
 
+    else if (canonicalize (command, "helper", (*i)->attribute ("raw")))
+    {
+      (*i)->unTag ("?");
+      (*i)->tag ("CMD");
+      (*i)->tag ("HELPER");
+      (*i)->attribute ("canonical", command);
+    }
+
+/*
     else if (canonicalize (command, "specialcmd", (*i)->attribute ("raw")))
     {
       (*i)->unTag ("?");
@@ -270,6 +281,7 @@ void A3t::findCommand ()
       (*i)->tag ("SPECIALCMD");
       (*i)->attribute ("canonical", command);
     }
+*/
   }
 }
 
