@@ -50,7 +50,7 @@ public:
   std::string label () const                  { return _label;      }
   std::string type () const                   { return _type;       }
   bool modifiable () const                    { return _modifiable; }
-  bool is_uda () const                        { return false;       }
+  bool is_uda () const                        { return _uda;        }
   std::vector <std::string> styles () const   { return _styles;     }
   std::vector <std::string> examples () const { return _examples;   }
 
@@ -74,6 +74,7 @@ protected:
   std::string _label;
   std::string _report;
   bool _modifiable;
+  bool _uda;
   std::vector <std::string> _styles;
   std::vector <std::string> _examples;
 };

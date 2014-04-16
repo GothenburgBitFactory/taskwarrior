@@ -209,6 +209,7 @@ Column::Column ()
 , _label ("")
 , _report ("")
 , _modifiable (true)
+, _uda (false)
 {
 }
 
@@ -221,6 +222,7 @@ Column::Column (const Column& other)
   _label      = other._label;
   _label      = other._report;
   _modifiable = other._modifiable;
+  _uda        = other._uda;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -234,6 +236,7 @@ Column& Column::operator= (const Column& other)
     _label       = other._label;
     _report      = other._report;
     _modifiable  = other._modifiable;
+    _uda         = other._uda;
   }
 
   return *this;
@@ -242,12 +245,13 @@ Column& Column::operator= (const Column& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool Column::operator== (const Column& other) const
 {
-  return _name       == other._name   &&
-         _type       == other._type   &&
-         _style      == other._style  &&
-         _label      == other._label  &&
-         _report     == other._report &&
-         _modifiable == other._modifiable;
+  return _name       == other._name       &&
+         _type       == other._type       &&
+         _style      == other._style      &&
+         _label      == other._label      &&
+         _report     == other._report     &&
+         _modifiable == other._modifiable &&
+         _uda        == other._uda;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
