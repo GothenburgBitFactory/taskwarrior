@@ -444,41 +444,51 @@ void A3t::inject_defaults ()
       std::string defaultCommand = context.config.get ("default.command");
       if (defaultCommand != "")
       {
-/*
+        std::cout << "# defaultCommand\n";
         context.debug ("No command or sequence found - assuming default.command.");
         capture_first (defaultCommand);
-        context.header ("[" + combine () + "]");
-*/
+
+        std::string combined;
+        std::vector <Tree*>::iterator i;
+        for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+        {
+          if (combined.length ())
+            combined += ' ';
+
+          combined += (*i)->attribute ("raw");
+        }
+
+        context.header ("[" + combined + "]");
       }
-/*
       else
+      {
+        std::cout << "# ! defaultCommand\n";
         throw std::string (STRING_TRIVIAL_INPUT);
-*/
+      }
     }
     else
     {
       std::cout << "# found_sequence\n";
-
+/*
       // Modify command.
       if (found_other)
       {
         std::cout << "# found_other\n";
-/*
         context.debug ("Sequence and filter, but no command found - assuming 'modify' command.");
         capture_first ("modify");
-*/
       }
 
       // Information command.
       else
       {
+*/
         std::cout << "# ! found_other\n";
-/*
         context.debug ("Sequence but no command found - assuming 'information' command.");
         context.header (STRING_ASSUME_INFO);
         capture_first ("information");
-*/
+/*
       }
+*/
     }
   }
 }
@@ -550,6 +560,24 @@ void A3t::resolve_aliases ()
   if (safety_valve <= 0)
     context.debug (format ("Nested alias limit of {1} reached.", safetyValveDefault));
 */
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void A3t::capture_first (const std::string& arg)
+{
+  std::cout << "# capture_first (" << arg << ")\n";
+
+  // Insert the arg as the new first branch.
+  Tree* t = new Tree ("argIns");
+  t->attribute ("raw", arg);
+  t->tag ("?");
+  t->_trunk = _tree;
+
+  std::vector <Tree*>::iterator i = _tree->_branches.begin ();
+  i++;  // Walk past the binary.
+
+  _tree->_branches.insert (i, t);
+  findCommand ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

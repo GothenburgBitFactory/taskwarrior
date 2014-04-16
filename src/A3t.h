@@ -54,6 +54,7 @@ public:
   void apply_overrides ();
   void inject_defaults ();
   void resolve_aliases ();
+  void capture_first (const std::string&);
 
 private:
   void findBinary ();
