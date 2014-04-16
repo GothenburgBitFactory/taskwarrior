@@ -47,6 +47,8 @@ public:
   void ambiguity (bool);
   void debug ();
 
+  static void getOperators (std::vector <std::string>&);
+
 private:
   void evaluatePostfixStack (const std::vector <std::pair <std::string, Lexer::Type> >&, Variant&) const;
   void infixToPostfix (std::vector <std::pair <std::string, Lexer::Type> >&) const;

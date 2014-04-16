@@ -50,17 +50,17 @@ static struct
   {  "_hastag_", 14,         'b',  'l'},     // +tag  [Pseudo-op]
   {  "_notag_",  14,         'b',  'l'},     // -tag  [Pseudo-op]
 
-  {  "*",       13,         'b',  'l' },    // Multiplication
-  {  "/",       13,         'b',  'l' },    // Division
-  {  "%",       13,         'b',  'l' },    // Modulus
+  {  "*",        13,         'b',  'l' },    // Multiplication
+  {  "/",        13,         'b',  'l' },    // Division
+  {  "%",        13,         'b',  'l' },    // Modulus
 
-  {  "+",       12,         'b',  'l' },    // Addition
-  {  "-",       12,         'b',  'l' },    // Subtraction
+  {  "+",        12,         'b',  'l' },    // Addition
+  {  "-",        12,         'b',  'l' },    // Subtraction
 
   {  "<=",       10,         'b',  'l' },    // Less than or equal
   {  ">=",       10,         'b',  'l' },    // Greater than or equal
   {  ">",        10,         'b',  'l' },    // Greater than
-  {  "<",       10,         'b',  'l' },    // Less than
+  {  "<",        10,         'b',  'l' },    // Less than
 
   {  "=",         9,         'b',  'l' },    // Equal
   {  "==",        9,         'b',  'l' },    // Equal
@@ -73,8 +73,8 @@ static struct
   {  "or",        4,         'b',  'l' },    // Disjunction
   {  "xor",       3,         'b',  'l' },    // Disjunction
 
-  {  "(",        0,         'b',  'l' },    // Precedence start
-  {  ")",        0,         'b',  'l' },    // Precedence end
+  {  "(",         0,         'b',  'l' },    // Precedence start
+  {  ")",         0,         'b',  'l' },    // Precedence end
 };
 
 #define NUM_OPERATORS (sizeof (operators) / sizeof (operators[0]))
@@ -169,6 +169,15 @@ void Eval::ambiguity (bool value)
 void Eval::debug ()
 {
   _debug = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Static.
+void Eval::getOperators (std::vector <std::string>& all)
+{
+  all.clear ();
+  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
+    all.push_back (operators[i].op);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
