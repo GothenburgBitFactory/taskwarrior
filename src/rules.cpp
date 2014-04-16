@@ -41,40 +41,48 @@ static Date now;
 ////////////////////////////////////////////////////////////////////////////////
 void initializeColorRules ()
 {
-  gsColor.clear ();
-  gsPrecedence.clear ();
-
-  // Load all the configuration values, filter to only the ones that begin with
-  // "color.", then store name/value in gsColor, and name in rules.
-  std::vector <std::string> rules;
-  Config::const_iterator v;
-  for (v = context.config.begin (); v != context.config.end (); ++v)
+  try
   {
-    if (v->first.substr (0, 6) == "color.")
-    {
-      Color c (v->second);
-      gsColor[v->first] = c;
+    gsColor.clear ();
+    gsPrecedence.clear ();
 
-      rules.push_back (v->first);
+    // Load all the configuration values, filter to only the ones that begin with
+    // "color.", then store name/value in gsColor, and name in rules.
+    std::vector <std::string> rules;
+    Config::const_iterator v;
+    for (v = context.config.begin (); v != context.config.end (); ++v)
+    {
+      if (v->first.substr (0, 6) == "color.")
+      {
+        Color c (v->second);
+        gsColor[v->first] = c;
+
+        rules.push_back (v->first);
+      }
+    }
+
+    // Load the rule.precedence.color list, split it, then autocomplete against
+    // the 'rules' vector loaded above.
+    std::vector <std::string> results;
+    std::vector <std::string> precedence;
+    split (precedence, context.config.get ("rule.precedence.color"), ',');
+
+    std::vector <std::string>::iterator p;
+    for (p = precedence.begin (); p != precedence.end (); ++p)
+    {
+      // Add the leading "color." string.
+      std::string rule = "color." + *p;
+      autoComplete (rule, rules, results, 3); // Hard-coded 3.
+
+      std::vector <std::string>::iterator r;
+      for (r = results.begin (); r != results.end (); ++r)
+        gsPrecedence.push_back (*r);
     }
   }
 
-  // Load the rule.precedence.color list, split it, then autocomplete against
-  // the 'rules' vector loaded above.
-  std::vector <std::string> results;
-  std::vector <std::string> precedence;
-  split (precedence, context.config.get ("rule.precedence.color"), ',');
-
-  std::vector <std::string>::iterator p;
-  for (p = precedence.begin (); p != precedence.end (); ++p)
+  catch (const std::string& e)
   {
-    // Add the leading "color." string.
-    std::string rule = "color." + *p;
-    autoComplete (rule, rules, results, 3); // Hard-coded 3.
-
-    std::vector <std::string>::iterator r;
-    for (r = results.begin (); r != results.end (); ++r)
-      gsPrecedence.push_back (*r);
+    context.error (e);
   }
 }
 
