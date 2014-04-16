@@ -410,69 +410,77 @@ void A3t::apply_overrides ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO
 void A3t::inject_defaults ()
 {
-/*
-  // Scan the arguments and detect what is present.
   bool found_command  = false;
   bool found_sequence = false;
   bool found_other    = false;
 
-  std::vector <Arg>::iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
-    if (arg->_category == Arg::cat_command)
+    if ((*i)->hasTag ("CMD"))
       found_command = true;
 
-    // TODO no "id" or "uuid" categories exist at this time.
-    //     This kills the auto-info feature.
-    // else if (arg->_category == Arg::cat_id ||
-    //          arg->_category == Arg::cat_uuid)
-    //   found_sequence = true;
+    else if ((*i)->hasTag ("ID") || (*i)->hasTag ("UUID"))
+      found_sequence = true;
 
-    else if (arg->_category != Arg::cat_program  &&
-             arg->_category != Arg::cat_override &&
-             arg->_category != Arg::cat_rc)
+    else if (! (*i)->hasTag ("RC") &&
+             ! (*i)->hasTag ("CONFIG"))
       found_other = true;
   }
 
   // If no command was specified, then a command will be inserted.
-  if (!found_command)
+  if (! found_command)
   {
+    std::cout << "# ! found_command\n";
+
     // Default command.
-    if (!found_sequence)
+    if (! found_sequence)
     {
+      std::cout << "# ! found_sequence\n";
+
       // Apply overrides, if any.
       std::string defaultCommand = context.config.get ("default.command");
       if (defaultCommand != "")
       {
+/*
         context.debug ("No command or sequence found - assuming default.command.");
         capture_first (defaultCommand);
         context.header ("[" + combine () + "]");
+*/
       }
+/*
       else
         throw std::string (STRING_TRIVIAL_INPUT);
+*/
     }
     else
     {
+      std::cout << "# found_sequence\n";
+
       // Modify command.
       if (found_other)
       {
+        std::cout << "# found_other\n";
+/*
         context.debug ("Sequence and filter, but no command found - assuming 'modify' command.");
         capture_first ("modify");
+*/
       }
 
       // Information command.
       else
       {
+        std::cout << "# ! found_other\n";
+/*
         context.debug ("Sequence but no command found - assuming 'information' command.");
         context.header (STRING_ASSUME_INFO);
         capture_first ("information");
+*/
       }
     }
   }
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
