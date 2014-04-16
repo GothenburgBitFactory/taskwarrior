@@ -144,6 +144,9 @@ int main (int argc, const char** argv)
     a3t.entity ("operator",   "^");
     a3t.entity ("operator",   "!");
 
+    a3t.findFileOverride ();
+    a3t.findConfigOverride ();
+
     Tree* tree = a3t.parse ();
     if (tree)
       std::cout << tree->dump ();
