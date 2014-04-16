@@ -387,7 +387,7 @@ std::string Config::_defaults =
   "report.next.description=The top 7 most urgent actionable tasks\n"
   "report.next.labels=ID,Active,Age,Deps,P,Project,Tag,Recur,S,Due,Until,Description,Urg\n"
   "report.next.columns=id,start.age,entry.age,depends,priority,project,tags,recur,scheduled.countdown,due.age,until.age,description,urgency\n"
-  "report.next.filter=+READY and -DUE limit:7\n"
+  "report.next.filter=status:pending limit:page\n"
   "report.next.sort=start-,urgency-,due+,entry+\n"
   "\n"
   "report.ready.description=The most urgent actionable tasks\n"

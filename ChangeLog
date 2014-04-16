@@ -33,6 +33,8 @@
 - TW-1261 Migrate test bug.360.t to new unit testing framework (thanks to
           Renato Alves).
 - TW-1274 Map 'modification' attribute to 'modified' (thanks to jck).
+- TW-1278 Next report filters tasks with due date set until due date arrives
+          (thanks to Renato Alves).
 - TW-1282 incorrect URLs in man task-sync (thanks to Jeremiah Marks).
 - TW-1288 Added missing locking for task modifications (thanks to Kosta H,
           Ralph Bean, Adam Coddington).
