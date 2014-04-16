@@ -152,6 +152,7 @@ int Context::initialize (int argc, const char** argv)
     // Handle Aliases.
     loadAliases ();
     a3.resolve_aliases ();
+    a3t.resolve_aliases ();
 
     // Initialize the color rules, if necessary.
     if (color ())
@@ -204,6 +205,7 @@ int Context::initialize (int argc, const char** argv)
 
     // Handle default command and assumed 'info' command.
     a3.inject_defaults ();
+    a3t.inject_defaults ();
 
     // The re-categorization allows all injected arguments to be properly given
     // a category.

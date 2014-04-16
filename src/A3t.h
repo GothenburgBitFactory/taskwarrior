@@ -48,6 +48,8 @@ public:
   void get_overrides (std::string&, File&);
   void get_data_location (Path&);
   void apply_overrides ();
+  void inject_defaults ();
+  void resolve_aliases ();
 
 private:
   void findBinary ();

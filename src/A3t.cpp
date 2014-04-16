@@ -413,6 +413,141 @@ void A3t::apply_overrides ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO
+void A3t::inject_defaults ()
+{
+/*
+  // Scan the arguments and detect what is present.
+  bool found_command  = false;
+  bool found_sequence = false;
+  bool found_other    = false;
+
+  std::vector <Arg>::iterator arg;
+  for (arg = this->begin (); arg != this->end (); ++arg)
+  {
+    if (arg->_category == Arg::cat_command)
+      found_command = true;
+
+    // TODO no "id" or "uuid" categories exist at this time.
+    //     This kills the auto-info feature.
+    // else if (arg->_category == Arg::cat_id ||
+    //          arg->_category == Arg::cat_uuid)
+    //   found_sequence = true;
+
+    else if (arg->_category != Arg::cat_program  &&
+             arg->_category != Arg::cat_override &&
+             arg->_category != Arg::cat_rc)
+      found_other = true;
+  }
+
+  // If no command was specified, then a command will be inserted.
+  if (!found_command)
+  {
+    // Default command.
+    if (!found_sequence)
+    {
+      // Apply overrides, if any.
+      std::string defaultCommand = context.config.get ("default.command");
+      if (defaultCommand != "")
+      {
+        context.debug ("No command or sequence found - assuming default.command.");
+        capture_first (defaultCommand);
+        context.header ("[" + combine () + "]");
+      }
+      else
+        throw std::string (STRING_TRIVIAL_INPUT);
+    }
+    else
+    {
+      // Modify command.
+      if (found_other)
+      {
+        context.debug ("Sequence and filter, but no command found - assuming 'modify' command.");
+        capture_first ("modify");
+      }
+
+      // Information command.
+      else
+      {
+        context.debug ("Sequence but no command found - assuming 'information' command.");
+        context.header (STRING_ASSUME_INFO);
+        capture_first ("information");
+      }
+    }
+  }
+*/
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// An alias must be a distinct word on the command line.
+// Aliases may not recurse.
+void A3t::resolve_aliases ()
+{
+/*
+  std::vector <std::string> expanded;
+  bool something;
+  int safety_valve = safetyValveDefault;
+
+  do
+  {
+    something = false;
+    std::vector <Arg>::iterator arg;
+    for (arg = this->begin (); arg != this->end (); ++arg)
+    {
+      // The -- operator stops alias expansion.
+      if (arg->_raw == "--")
+        break;
+
+      std::map <std::string, std::string>::iterator match =
+        context.aliases.find (arg->_raw);
+
+      if (match != context.aliases.end ())
+      {
+        context.debug (std::string ("A3::resolve_aliases '")
+                       + arg->_raw
+                       + "' --> '"
+                       + context.aliases[arg->_raw]
+                       + "'");
+
+        std::vector <std::string> words;
+        splitq (words, context.aliases[arg->_raw], ' ');
+
+        std::vector <std::string>::iterator word;
+        for (word = words.begin (); word != words.end (); ++word)
+          expanded.push_back (*word);
+
+        something = true;
+      }
+      else
+        expanded.push_back (arg->_raw);
+    }
+
+    // Copy any residual tokens.
+    for (; arg != this->end (); ++arg)
+      expanded.push_back (arg->_raw);
+
+    // Only overwrite if something happened.
+    if (something)
+    {
+      this->clear ();
+      std::vector <std::string>::iterator e;
+      for (e = expanded.begin (); e != expanded.end (); ++e)
+        this->push_back (Arg (*e));
+
+      expanded.clear ();
+
+      // The push_back destroyed categorization, redo that now.
+      categorize ();
+    }
+  }
+  while (something && --safety_valve > 0);
+
+  if (safety_valve <= 0)
+    context.debug (format ("Nested alias limit of {1} reached.", safetyValveDefault));
+*/
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // /pattern/
 void A3t::findPattern ()
 {
