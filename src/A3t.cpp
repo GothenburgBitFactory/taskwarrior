@@ -629,8 +629,13 @@ void A3t::findAttributeModifier ()
               (*i)->attribute ("modifier", modifier);
               (*i)->attribute ("sense", sense);
 
-              if (context.columns[canonical]->modifiable ())
+              std::map <std::string, Column*>::const_iterator col;
+              col = context.columns.find (canonical);
+              if (col != context.columns.end () &&
+                  col->second->modifiable ())
+              {
                 (*i)->tag ("MODIFIABLE");
+              }
             }
           }
         }
