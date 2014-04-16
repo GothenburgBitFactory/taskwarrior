@@ -372,10 +372,12 @@ void combine (std::vector <int>& dest, const std::vector <int>& source)
   // unique list, with no duplicates.
   std::map <int, int> both;
   std::vector <int>::iterator i1;
-  for (i1 = dest.begin (); i1 != dest.end (); ++i1) both[*i1] = 0;
+  for (i1 = dest.begin (); i1 != dest.end (); ++i1)
+    both[*i1] = 0;
 
   std::vector <int>::const_iterator i2;
-  for (i2 = source.begin (); i2 != source.end (); ++i2) both[*i2] = 0;
+  for (i2 = source.begin (); i2 != source.end (); ++i2)
+    both[*i2] = 0;
 
   // Now make a sequence out of the keys of the map.
   dest.clear ();
