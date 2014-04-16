@@ -36,6 +36,7 @@
 #include <Context.h>
 #include <Directory.h>
 #include <File.h>
+#include <Eval.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -169,11 +170,7 @@ int Context::initialize (int argc, const char** argv)
         a3t.entity ("writecmd", cmd->first);
 
       // TODO Entities: Reports.
-      // TODO Entities: Read-only commands.
-      // TODO Entities: Write commands.
       // TODO Entities: Special commands.
-      // TODO Entities: Helper commands.
-
       // TODO Need: bool Command::report() - maybe not.
     }
 
@@ -190,7 +187,12 @@ int Context::initialize (int argc, const char** argv)
     for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
       a3t.entity ("modifier", modifierNames[i]);
 
-    // TODO Entities: Operators.
+    // Entities: Operators.
+    std::vector <std::string> operators;
+    Eval::getOperators (operators);
+    std::vector <std::string>::iterator op;
+    for (op = operators.begin (); op != operators.end (); ++op)
+      a3t.entity ("operator", *op);
 
     // Static initialization to decouple code.
     staticInitialization ();
