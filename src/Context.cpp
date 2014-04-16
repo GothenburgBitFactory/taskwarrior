@@ -173,6 +173,8 @@ int Context::initialize (int argc, const char** argv)
       // TODO Entities: Write commands.
       // TODO Entities: Special commands.
       // TODO Entities: Helper commands.
+
+      // TODO Need: bool Command::report() - maybe not.
     }
 
     // Instantiate built-in column objects.
@@ -183,8 +185,6 @@ int Context::initialize (int argc, const char** argv)
 
     // Entities: Pseudo-attributes.
     a3t.entity ("pseudo", "limit");
-
-    // TODO Entities: UDAs.
 
     // Entities: Modifiers.
     for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)

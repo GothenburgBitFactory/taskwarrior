@@ -551,12 +551,18 @@ void A3t::findAttribute ()
             (*i)->tag ("ATTRIBUTE");
             (*i)->attribute ("name", canonical);
             (*i)->attribute ("value", value);
+
+            if (context.columns[canonical]->modifiable ())
+              (*i)->tag ("MODIFIABLE");
           }
 
-          if (canonicalize (canonical, "uda", name))
+          else if (canonicalize (canonical, "uda", name))
+          {
             (*i)->tag ("UDA");
+            (*i)->tag ("MODIFIABLE");
+          }
 
-          if (canonicalize (canonical, "pseudo", name))
+          else if (canonicalize (canonical, "pseudo", name))
           {
             (*i)->unTag ("?");
             (*i)->tag ("PSEUDO");
@@ -617,6 +623,9 @@ void A3t::findAttributeModifier ()
               (*i)->attribute ("value", value);
               (*i)->attribute ("modifier", modifier);
               (*i)->attribute ("sense", sense);
+
+              if (context.columns[canonical]->modifiable ())
+                (*i)->tag ("MODIFIABLE");
             }
           }
         }
