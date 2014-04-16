@@ -120,14 +120,11 @@ Tree* A3t::parse ()
 {
   findBinary ();
   findTerminator ();
-  findCommand ();
   findSubstitution ();
   findPattern ();
   findTag ();
   findAttribute ();
   findAttributeModifier ();
-  findUUIDList ();           // Before findIdSequence
-  findIdSequence ();
   findOperator ();
 
   validate ();

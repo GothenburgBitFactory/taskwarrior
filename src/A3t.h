@@ -45,6 +45,10 @@ public:
 
   void findFileOverride ();
   void findConfigOverride ();
+  void findCommand ();
+  void findIdSequence ();
+  void findUUIDList ();
+
   void get_overrides (std::string&, File&);
   void get_data_location (Path&);
   void apply_overrides ();
@@ -54,14 +58,11 @@ public:
 private:
   void findBinary ();
   void findTerminator ();
-  void findCommand ();
   void findPattern ();
   void findSubstitution ();
   void findTag ();
   void findAttribute ();
   void findAttributeModifier ();
-  void findIdSequence ();
-  void findUUIDList ();
   void findOperator ();
   void validate ();
 

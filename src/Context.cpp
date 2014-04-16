@@ -195,6 +195,12 @@ int Context::initialize (int argc, const char** argv)
     for (op = operators.begin (); op != operators.end (); ++op)
       a3t.entity ("operator", *op);
 
+    // Now the entities are loaded, parsing may resume.
+    a3t.findCommand ();                          // <cmd>
+    a3t.findUUIDList ();                         // <uuid> Before findIdSequence
+    a3t.findIdSequence ();                       // <id>
+    a3t.inject_defaults ();                      // rc.default.command
+
     // Static initialization to decouple code.
     staticInitialization ();
 
@@ -205,7 +211,6 @@ int Context::initialize (int argc, const char** argv)
 
     // Handle default command and assumed 'info' command.
     a3.inject_defaults ();
-    a3t.inject_defaults ();
 
     // The re-categorization allows all injected arguments to be properly given
     // a category.
