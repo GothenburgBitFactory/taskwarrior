@@ -48,6 +48,7 @@
 - TW-1301 Virtual tag +PENDING (thanks to Profpatsch).
 - TW-1302 CmdShow.cpp:244: bad length in substr ? (thanks to David Binderman).
 - TW-1304 Minor build and install fix for NetBSD (thanks to atomicules).
+- TW-1307 burndown is aliased to burndown.weekly (thanks to darkfeline).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity

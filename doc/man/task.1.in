@@ -129,12 +129,12 @@ Shows all tasks matching the filter, that block other tasks.
 
 .TP
 .B task <filter> burndown.daily
-Shows a graphical burndown chart, by day.  Note that 'burndown' is an alias to
-the 'burndown.daily' report.
+Shows a graphical burndown chart, by day.
 
 .TP
 .B task <filter> burndown.weekly
-Shows a graphical burndown chart, by week.
+Shows a graphical burndown chart, by week.  Note that 'burndown' is an alias to
+the 'burndown.weekly' report.
 
 .TP
 .B task <filter> burndown.monthly
