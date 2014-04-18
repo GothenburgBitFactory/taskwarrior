@@ -152,7 +152,7 @@ int Context::initialize (int argc, const char** argv)
     // Handle Aliases.
     loadAliases ();
     a3.resolve_aliases ();
-    a3t.resolve_aliases ();
+    a3t.findAliases ();
 
     // Initialize the color rules, if necessary.
     if (color ())

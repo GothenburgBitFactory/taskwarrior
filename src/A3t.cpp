@@ -45,6 +45,9 @@ extern Context context;
 
 static const int minimumMatchLength = 3;
 
+// Alias expansion limit.  Any more indicates some kind of error.
+const int safetyValveDefault = 10;
+
 ////////////////////////////////////////////////////////////////////////////////
 A3t::A3t ()
 {
@@ -495,71 +498,49 @@ void A3t::inject_defaults ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // An alias must be a distinct word on the command line.
-// Aliases may not recurse.
-void A3t::resolve_aliases ()
+void A3t::findAliases ()
 {
-/*
-  std::vector <std::string> expanded;
   bool something;
   int safety_valve = safetyValveDefault;
 
   do
   {
     something = false;
-    std::vector <Arg>::iterator arg;
-    for (arg = this->begin (); arg != this->end (); ++arg)
+
+    std::string command;
+    std::vector <Tree*>::iterator i;
+    for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
     {
-      // The -- operator stops alias expansion.
-      if (arg->_raw == "--")
+      // Parser override operator.
+      if ((*i)->attribute ("raw") == "--")
         break;
 
-      std::map <std::string, std::string>::iterator match =
-        context.aliases.find (arg->_raw);
+      // Skip known args.
+      if (! (*i)->hasTag ("?"))
+        continue;
 
+      std::string raw = (*i)->attribute ("raw");
+      std::map <std::string, std::string>::iterator match = context.aliases.find (raw);
       if (match != context.aliases.end ())
       {
-        context.debug (std::string ("A3::resolve_aliases '")
-                       + arg->_raw
-                       + "' --> '"
-                       + context.aliases[arg->_raw]
-                       + "'");
+        something = true;
 
         std::vector <std::string> words;
-        splitq (words, context.aliases[arg->_raw], ' ');
+        splitq (words, context.aliases[raw], ' ');
 
         std::vector <std::string>::iterator word;
         for (word = words.begin (); word != words.end (); ++word)
-          expanded.push_back (*word);
-
-        something = true;
+        {
+          // TODO Insert branch (words) in place of (*i).
+          std::cout << "# alias word '" << *word << "'\n";
+        }
       }
-      else
-        expanded.push_back (arg->_raw);
-    }
-
-    // Copy any residual tokens.
-    for (; arg != this->end (); ++arg)
-      expanded.push_back (arg->_raw);
-
-    // Only overwrite if something happened.
-    if (something)
-    {
-      this->clear ();
-      std::vector <std::string>::iterator e;
-      for (e = expanded.begin (); e != expanded.end (); ++e)
-        this->push_back (Arg (*e));
-
-      expanded.clear ();
-
-      // The push_back destroyed categorization, redo that now.
-      categorize ();
     }
   }
   while (something && --safety_valve > 0);
 
   if (safety_valve <= 0)
     context.debug (format ("Nested alias limit of {1} reached.", safetyValveDefault));
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

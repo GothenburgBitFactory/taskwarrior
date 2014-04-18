@@ -48,12 +48,12 @@ public:
   void findCommand ();
   void findIdSequence ();
   void findUUIDList ();
+  void findAliases ();
 
   void get_overrides (std::string&, File&);
   void get_data_location (Path&);
   void apply_overrides ();
   void inject_defaults ();
-  void resolve_aliases ();
   void capture_first (const std::string&);
 
 private:
