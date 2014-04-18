@@ -35,11 +35,12 @@ int main (int argc, const char** argv)
 {
   try
   {
-    // Prepare the Context object.
-
-
     A3t a3t;
     a3t.initialize (argc, argv);
+    a3t.append_stdin ();
+    a3t.findFileOverride ();
+    a3t.findConfigOverride ();
+    a3t.findAliases ();
 
     // Reports.
     a3t.entity ("report",     "list");
@@ -144,8 +145,10 @@ int main (int argc, const char** argv)
     a3t.entity ("operator",   "^");
     a3t.entity ("operator",   "!");
 
-    a3t.findFileOverride ();
-    a3t.findConfigOverride ();
+    a3t.findCommand ();
+    a3t.findUUIDList ();
+    a3t.findIdSequence ();
+    a3t.inject_defaults ();
 
     Tree* tree = a3t.parse ();
     if (tree)
