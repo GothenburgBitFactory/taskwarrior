@@ -39,6 +39,7 @@ public:
   ~A3t ();
   void initialize (int, const char**);
   void append_stdin ();
+  Tree* tree ();
   Tree* parse ();
   void entity (const std::string&, const std::string&);
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
