@@ -40,7 +40,9 @@ int main (int argc, const char** argv)
     a3t.append_stdin ();
     a3t.findFileOverride ();
     a3t.findConfigOverride ();
-    a3t.findAliases ();
+
+    Alias alias;
+    alias.resolve (a3t.tree ());
 
     // Reports.
     a3t.entity ("report",     "list");

@@ -503,53 +503,6 @@ void A3t::inject_defaults ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// An alias must be a distinct word on the command line.
-void A3t::findAliases ()
-{
-  bool something;
-  int safety_valve = safetyValveDefault;
-
-  do
-  {
-    something = false;
-
-    std::string command;
-    std::vector <Tree*>::iterator i;
-    for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
-    {
-      // Parser override operator.
-      if ((*i)->attribute ("raw") == "--")
-        break;
-
-      // Skip known args.
-      if (! (*i)->hasTag ("?"))
-        continue;
-
-      std::string raw = (*i)->attribute ("raw");
-      std::map <std::string, std::string>::iterator match = context.aliases.find (raw);
-      if (match != context.aliases.end ())
-      {
-        something = true;
-
-        std::vector <std::string> words;
-        splitq (words, context.aliases[raw], ' ');
-
-        std::vector <std::string>::iterator word;
-        for (word = words.begin (); word != words.end (); ++word)
-        {
-          // TODO Insert branch (words) in place of (*i).
-          std::cout << "# alias word '" << *word << "'\n";
-        }
-      }
-    }
-  }
-  while (something && --safety_valve > 0);
-
-  if (safety_valve <= 0)
-    context.debug (format ("Nested alias limit of {1} reached.", safetyValveDefault));
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void A3t::capture_first (const std::string& arg)
 {
   std::cout << "# capture_first (" << arg << ")\n";

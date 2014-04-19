@@ -152,7 +152,6 @@ int Context::initialize (int argc, const char** argv)
     // Handle Aliases.
     loadAliases ();
     a3.resolve_aliases ();
-    a3t.findAliases ();
     aliases2.load ();
     aliases2.resolve (a3t.tree ());
 

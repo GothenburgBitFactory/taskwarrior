@@ -49,7 +49,6 @@ public:
   void findCommand ();
   void findIdSequence ();
   void findUUIDList ();
-  void findAliases ();
 
   void get_overrides (std::string&, File&);
   void get_data_location (Path&);
