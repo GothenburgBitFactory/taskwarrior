@@ -690,6 +690,7 @@
 #define STRING_INVALID_MOD           "The '{1}' attribute does not allow a value of '{2}'."
 #define STRING_INVALID_SORT_COL      "The '{1}' column is not a valid sort field."
 #define STRING_TLS_INIT_FAIL         "Error initializing TLS."
+#define STRING_ERROR_MEMORY          "Problem obtaining memory."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "No tasks."

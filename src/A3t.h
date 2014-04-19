@@ -54,7 +54,7 @@ public:
   void get_data_location (Path&);
   void apply_overrides ();
   void inject_defaults ();
-  void capture_first (const std::string&);
+  Tree* capture_first (const std::string&);
 
 private:
   void findBinary ();

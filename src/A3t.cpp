@@ -503,12 +503,13 @@ void A3t::inject_defaults ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::capture_first (const std::string& arg)
+Tree* A3t::capture_first (const std::string& arg)
 {
-  //std::cout << "# capture_first (" << arg << ")\n";
-
   // Insert the arg as the new first branch.
   Tree* t = new Tree ("argIns");
+  if (!t)
+    throw std::string (STRING_ERROR_MEMORY);
+
   t->attribute ("raw", arg);
   t->tag ("?");
   t->_trunk = _tree;
@@ -518,6 +519,8 @@ void A3t::capture_first (const std::string& arg)
 
   _tree->_branches.insert (i, t);
   findCommand ();
+
+  return t;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
