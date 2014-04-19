@@ -97,7 +97,7 @@ int CmdVersion::execute (std::string& output)
       << STRING_CMD_VERSION_UNKNOWN
 #endif
 
-#if PACKAGE_LANGUAGE != LANGUAGE_EN_US
+#if PACKAGE_LANGUAGE != LANGUAGE_ENG_USA
       << " "
       << STRING_LOCALIZATION_DESC
 #endif
@@ -111,7 +111,7 @@ int CmdVersion::execute (std::string& output)
       << link.render ()
       << "\n";
 
-#if PACKAGE_LANGUAGE != LANGUAGE_EN_US
+#if PACKAGE_LANGUAGE != LANGUAGE_ENG_USA
   out << STRING_LOCALIZATION_AUTHOR
       << "\n"
       << "\n";

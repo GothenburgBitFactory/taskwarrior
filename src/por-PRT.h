@@ -55,10 +55,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Translators:
-//   1. Copy this file (en-US.h) to a new file with the target locale as the
+//   1. Copy this file (eng-USA.h) to a new file with the target locale as the
 //      file name.  Using German as an example, do this:
 //
-//        cp en-US.h de-DE.h
+//        cp eng-USA.h de-DE.h
 //
 //   2. Modify all the strings below.
 //        i.e. change "Unknown error." to "Unbekannter Fehler.".
@@ -66,17 +66,17 @@
 //   3. Add your new translation to the task.git/src/i18n.h file, if necessary,
 //      by inserting:
 //
-//        #elif PACKAGE_LANGUAGE == LANGUAGE_DE_DE
+//        #elif PACKAGE_LANGUAGE == LANGUAGE_DEU_DEU
 //        #include <de-DE.h>
 //
 //   4. Add your new language to task.git/CMakeLists.txt, making sure that
 //      number is unique:
 //
-//        set (LANGUAGE_DE_DE 4)
+//        set (LANGUAGE_DEU_DEU 3)
 //
 //   5. Add your new language to task.git/cmake.h.in:
 //
-//        #define LANGUAGE_DE_DE ${LANGUAGE_DE_DE}
+//        #define LANGUAGE_DEU_DEU ${LANGUAGE_DEU_DEU}
 //
 //   6. Build your localized Taskwarrior with these commands:
 //
@@ -125,7 +125,7 @@
 #define STRING_COLUMN_BAD_FORMAT     "Formato de coluna '{1}.{2}' não reconhecido"
 #define STRING_COLUMN_LABEL_TASKS    "Tarefas"
 #define STRING_COLUMN_LABEL_DEP      "Depende"
-#define STRING_COLUMN_LABEL_DEP_S    "Dep"  // |por-PRT|==|en-US|
+#define STRING_COLUMN_LABEL_DEP_S    "Dep"  // |por-PRT|==|eng-USA|
 #define STRING_COLUMN_LABEL_DESC     "Descrição"
 #define STRING_COLUMN_LABEL_DUE      "Vence"
 #define STRING_COLUMN_LABEL_END      "Fim"
@@ -135,8 +135,8 @@
 #define STRING_COLUMN_LABEL_MOD      "Modificada"
 #define STRING_COLUMN_LABEL_ADDED    "Adicionada"
 #define STRING_COLUMN_LABEL_AGE      "Idade"
-#define STRING_COLUMN_LABEL_ID       "ID"  // |por-PRT|==|en-US|
-#define STRING_COLUMN_LABEL_PRI      "Pri"  // |por-PRT|==|en-US|
+#define STRING_COLUMN_LABEL_ID       "ID"  // |por-PRT|==|eng-USA|
+#define STRING_COLUMN_LABEL_PRI      "Pri"  // |por-PRT|==|eng-USA|
 #define STRING_COLUMN_LABEL_PRIORITY "Prioridade"
 #define STRING_COLUMN_LABEL_PROJECT  "Projeto"
 #define STRING_COLUMN_LABEL_UNTIL    "Até"
@@ -146,7 +146,7 @@
 #define STRING_COLUMN_LABEL_RECUR_L  "Periodicidade"
 #define STRING_COLUMN_LABEL_START    "Início"
 #define STRING_COLUMN_LABEL_STARTED  "Iniciada"
-#define STRING_COLUMN_LABEL_ACTIVE   "A"  // |por-PRT|==|en-US|
+#define STRING_COLUMN_LABEL_ACTIVE   "A"  // |por-PRT|==|eng-USA|
 #define STRING_COLUMN_LABEL_STATUS   "Estado"
 #define STRING_COLUMN_LABEL_STAT     "Es"
 #define STRING_COLUMN_LABEL_STAT_PE  "Pendentes"
@@ -155,14 +155,14 @@
 #define STRING_COLUMN_LABEL_STAT_WA  "Adiadas"
 // Seria preferivel "Periódicas" mas faz conflito na primeira letra com "Pendentes"
 #define STRING_COLUMN_LABEL_STAT_RE  "Recorrentes"
-#define STRING_COLUMN_LABEL_STAT_P   "P"  // |por-PRT|==|en-US|
-#define STRING_COLUMN_LABEL_STAT_C   "C"  // |por-PRT|==|en-US|
+#define STRING_COLUMN_LABEL_STAT_P   "P"  // |por-PRT|==|eng-USA|
+#define STRING_COLUMN_LABEL_STAT_C   "C"  // |por-PRT|==|eng-USA|
 #define STRING_COLUMN_LABEL_STAT_D   "E"
 #define STRING_COLUMN_LABEL_STAT_W   "A"
-#define STRING_COLUMN_LABEL_STAT_R   "R"  // |por-PRT|==|en-US|
+#define STRING_COLUMN_LABEL_STAT_R   "R"  // |por-PRT|==|eng-USA|
 #define STRING_COLUMN_LABEL_TAGS     "Marcas"
 #define STRING_COLUMN_LABEL_TAG      "Marca"
-#define STRING_COLUMN_LABEL_UUID     "UUID"  // |por-PRT|==|en-US|
+#define STRING_COLUMN_LABEL_UUID     "UUID"  // |por-PRT|==|eng-USA|
 #define STRING_COLUMN_LABEL_URGENCY  "Urgência"
 #define STRING_COLUMN_LABEL_NAME     "Nome"
 #define STRING_COLUMN_LABEL_VALUE    "Valor"
@@ -201,7 +201,7 @@
 #define STRING_CMD_VERSION_DOCS      "A documentação do taskwarrior pode ser encontrada usando os comandos 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' ou em http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} construido para "
 #define STRING_CMD_VERSION_UNKNOWN   "desconhecido"
-#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2014 P. Beckingham, F. Hernandez."  // |por-PRT|==|en-US|
+#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2014 P. Beckingham, F. Hernandez."  // |por-PRT|==|eng-USA|
 #define STRING_CMD_LOGO_USAGE        "Exibe o logotipo do Taskwarrior"
 #define STRING_CMD_LOGO_COLOR_REQ    "O comando logo requer que o suporte de cor seja ativado."
 #define STRING_CMD_EXEC_USAGE        "Executa comandos e scripts externos"
@@ -235,7 +235,7 @@
 #define STRING_CMD_STATS_USAGE       "Exibe estatísticas da base de dados de tarefas"
 #define STRING_CMD_STATS_CATEGORY    "Categoria"
 #define STRING_CMD_STATS_DATA        "Dados"
-#define STRING_CMD_STATS_TOTAL       "Total"  // |por-PRT|==|en-US|
+#define STRING_CMD_STATS_TOTAL       "Total"  // |por-PRT|==|eng-USA|
 #define STRING_CMD_STATS_ANNOTATIONS "Anotações"
 #define STRING_CMD_STATS_UNIQUE_TAGS "Marcas Únicas"
 #define STRING_CMD_STATS_PROJECTS    "Projetos"
@@ -294,7 +294,7 @@
 #define STRING_CMD_PROJECTS_NO       "Sem projetos."
 #define STRING_CMD_PROJECTS_PRI_N    "Pri:Nenhuma"
 #define STRING_CMD_PROJECTS_PRI_H    "Pri:A"
-#define STRING_CMD_PROJECTS_PRI_M    "Pri:M"  // |por-PRT|==|en-US|
+#define STRING_CMD_PROJECTS_PRI_M    "Pri:M"  // |por-PRT|==|eng-USA|
 #define STRING_CMD_PROJECTS_PRI_L    "Pri:B"
 #define STRING_CMD_PROJECTS_NONE     "(nenhum)"
 #define STRING_CMD_PROJECTS_SUMMARY  "{1} projeto"
@@ -424,7 +424,7 @@
 #define STRING_CMD_SYNC_INIT         "Por favor confirme que deseja enviar todas as tarefas pendentes para o Taskserver"
 #define STRING_CMD_SYNC_NO_INIT      "O Taskwarrior não irá executar a sincronização completa de primeira vez."
 #define STRING_CMD_SYNC_RELOCATE0    "A sua conta no servidor foi relocalizada. Por favor ajuste a configuração usando:"
-#define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"  // |por-PRT|==|en-US|
+#define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"  // |por-PRT|==|eng-USA|
 #define STRING_CMD_SYNC_BAD_CA       "Certificado CA não encontrado."
 #define STRING_CMD_SYNC_CONNECT      "Não foi possível connectar a {1} {2}"
 #define STRING_CMD_SYNC_HANDSHAKE    "'Handshake' falhou. {1}"
@@ -437,7 +437,7 @@
 #define STRING_CMD_DIAG_CAPS         "Capacidades"
 #define STRING_CMD_DIAG_FEATURES     "Características da versão"
 #define STRING_CMD_DIAG_BUILT        "Criado"
-#define STRING_CMD_DIAG_COMMIT       "Commit"  // |por-PRT|==|en-US|
+#define STRING_CMD_DIAG_COMMIT       "Commit"  // |por-PRT|==|eng-USA|
 #define STRING_CMD_DIAG_FOUND        "(presente)"
 #define STRING_CMD_DIAG_MISSING      "(em falta)"
 #define STRING_CMD_DIAG_ENABLED      "Ativado"
@@ -500,7 +500,7 @@
 #define STRING_CMD_BURN_USAGE_M      "Mostra um gráfico de burndown, por mês"
 #define STRING_CMD_BURN_USAGE_W      "Mostra um gráfico de burndown, por semana"
 #define STRING_CMD_BURN_USAGE_D      "Mostra um gráfico de burndown, por dia"
-#define STRING_CMD_BURN_TITLE        "Burndown"  // |por-PRT|==|en-US|
+#define STRING_CMD_BURN_TITLE        "Burndown"  // |por-PRT|==|eng-USA|
 #define STRING_CMD_BURN_TOO_SMALL    "Janela do terminal demasiado pequena para desenhar o gráfico."
 #define STRING_CMD_BURN_DAILY        "Diário"
 #define STRING_CMD_BURN_WEEKLY       "Semanal"
@@ -559,17 +559,17 @@
 #define STRING_DATE_NOVEMBER_LONG    "novembro"
 #define STRING_DATE_DECEMBER_LONG    "dezembro"
 
-#define STRING_DATE_JANUARY_SHORT    "jan"  // |por-PRT|==|en-US|
+#define STRING_DATE_JANUARY_SHORT    "jan"  // |por-PRT|==|eng-USA|
 #define STRING_DATE_FEBRUARY_SHORT   "fev"
-#define STRING_DATE_MARCH_SHORT      "mar"  // |por-PRT|==|en-US|
+#define STRING_DATE_MARCH_SHORT      "mar"  // |por-PRT|==|eng-USA|
 #define STRING_DATE_APRIL_SHORT      "abr"
 #define STRING_DATE_MAY_SHORT        "mai"
-#define STRING_DATE_JUNE_SHORT       "jun"  // |por-PRT|==|en-US|
-#define STRING_DATE_JULY_SHORT       "jul"  // |por-PRT|==|en-US|
+#define STRING_DATE_JUNE_SHORT       "jun"  // |por-PRT|==|eng-USA|
+#define STRING_DATE_JULY_SHORT       "jul"  // |por-PRT|==|eng-USA|
 #define STRING_DATE_AUGUST_SHORT     "ago"
 #define STRING_DATE_SEPTEMBER_SHORT  "set"
 #define STRING_DATE_OCTOBER_SHORT    "out"
-#define STRING_DATE_NOVEMBER_SHORT   "nov"  // |por-PRT|==|en-US|
+#define STRING_DATE_NOVEMBER_SHORT   "nov"  // |por-PRT|==|eng-USA|
 #define STRING_DATE_DECEMBER_SHORT   "dez"
 
 #define STRING_DATE_SUNDAY_LONG      "domingo"
@@ -674,7 +674,7 @@
 
 // Maintain the same spacing.
 #define STRING_EDIT_TABLE_HEADER_1   "Nome               Detalhes editáveis"
-#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"  // |por-PRT|==|en-US|
+#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"  // |por-PRT|==|eng-USA|
 
 // Errors
 // TODO Move each of these to appropriate section.
@@ -931,10 +931,10 @@
 #define STRING_UTIL_CONFIRM_ALL      "todas"
 #define STRING_UTIL_CONFIRM_ALL_U    "Todas"
 #define STRING_UTIL_CONFIRM_QUIT     "Sair"
-#define STRING_UTIL_GIBIBYTES        "GiB"  // |por-PRT|==|en-US|
-#define STRING_UTIL_MEBIBYTES        "MiB"  // |por-PRT|==|en-US|
-#define STRING_UTIL_KIBIBYTES        "KiB"  // |por-PRT|==|en-US|
-#define STRING_UTIL_BYTES            "B"  // |por-PRT|==|en-US|
+#define STRING_UTIL_GIBIBYTES        "GiB"  // |por-PRT|==|eng-USA|
+#define STRING_UTIL_MEBIBYTES        "MiB"  // |por-PRT|==|eng-USA|
+#define STRING_UTIL_KIBIBYTES        "KiB"  // |por-PRT|==|eng-USA|
+#define STRING_UTIL_BYTES            "B"  // |por-PRT|==|eng-USA|
 
 // shell
 #define STRING_SHELL_USAGE \

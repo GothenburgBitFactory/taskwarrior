@@ -34,7 +34,7 @@ import argparse
 import re
 import fnmatch
 
-REFERENCE = 'en-US.h'
+REFERENCE = 'eng-USA.h'
 
 def find_localizations(source, single=''):
   '''Finds all [a-z][a-z]-[A-Z][A-Z].h files in the source tree.'''
@@ -42,8 +42,6 @@ def find_localizations(source, single=''):
   for path, dirs, files in os.walk(source, topdown=True, onerror=None, followlinks=False):
     matches = map(lambda x: os.path.join(path, x),
                   fnmatch.filter(files, '[a-z][a-z][a-z]-[A-Z][A-Z][A-Z].h'))
-    matches.extend(map(lambda x: os.path.join(path, x),
-                       fnmatch.filter(files, '[a-z][a-z]-[A-Z][A-Z].h')))
 
     if single:
       # Accept both cases - if user specified es-ES.h or only es-ES

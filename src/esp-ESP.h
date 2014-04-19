@@ -55,10 +55,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Translators:
-//   1. Copy this file (en-US.h) to a new file with the target locale as the
+//   1. Copy this file (eng-USA.h) to a new file with the target locale as the
 //      file name.  Using German as an example, do this:
 //
-//        cp en-US.h de-DE.h
+//        cp eng-USA.h de-DE.h
 //
 //   2. Modify all the strings below.
 //        i.e. change "Unknown error." to "Unbekannter Fehler.".
@@ -66,17 +66,17 @@
 //   3. Add your new translation to the task.git/src/i18n.h file, if necessary,
 //      by inserting:
 //
-//        #elif PACKAGE_LANGUAGE == LANGUAGE_DE_DE
+//        #elif PACKAGE_LANGUAGE == LANGUAGE_DEU_DEU
 //        #include <de-DE.h>
 //
 //   4. Add your new language to task.git/CMakeLists.txt, making sure that
 //      number is unique:
 //
-//        set (LANGUAGE_DE_DE 4)
+//        set (LANGUAGE_DEU_DEU 3)
 //
 //   5. Add your new language to task.git/cmake.h.in:
 //
-//        #define LANGUAGE_DE_DE ${LANGUAGE_DE_DE}                                        
+//        #define LANGUAGE_DEU_DEU ${LANGUAGE_DEU_DEU}                                        
 //
 //   6. Build your localized Taskwarrior with these commands:
 //
@@ -126,7 +126,7 @@
 #define STRING_COLUMN_BAD_FORMAT     "Formato de columna no reconocido '{1}.{2}'"
 #define STRING_COLUMN_LABEL_TASKS    "Tareas"
 #define STRING_COLUMN_LABEL_DEP      "Depende"
-#define STRING_COLUMN_LABEL_DEP_S    "Dep"  // |es-ES|==|en-US|
+#define STRING_COLUMN_LABEL_DEP_S    "Dep"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_DESC     "Descripción"
 #define STRING_COLUMN_LABEL_DUE      "Vencimiento"
 #define STRING_COLUMN_LABEL_END      "Fin"
@@ -136,18 +136,18 @@
 #define STRING_COLUMN_LABEL_MOD      "Modificada"
 #define STRING_COLUMN_LABEL_ADDED    "Añadida"
 #define STRING_COLUMN_LABEL_AGE      "Edad"
-#define STRING_COLUMN_LABEL_ID       "ID"  // |es-ES|==|en-US|
-#define STRING_COLUMN_LABEL_PRI      "Pri"  // |es-ES|==|en-US|
+#define STRING_COLUMN_LABEL_ID       "ID"  // |esp-ESP|==|eng-USA|
+#define STRING_COLUMN_LABEL_PRI      "Pri"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_PRIORITY "Prioridad"
 #define STRING_COLUMN_LABEL_PROJECT  "Proyecto"
 #define STRING_COLUMN_LABEL_UNTIL    "Hasta"
 #define STRING_COLUMN_LABEL_WAIT     "Espera"
 #define STRING_COLUMN_LABEL_WAITING  "Esperando hasta"
-#define STRING_COLUMN_LABEL_RECUR    "Recur"  // |es-ES|==|en-US|
+#define STRING_COLUMN_LABEL_RECUR    "Recur"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_RECUR_L  "Recurrencia"
 #define STRING_COLUMN_LABEL_START    "Comienzo"
 #define STRING_COLUMN_LABEL_STARTED  "Comenzada"
-#define STRING_COLUMN_LABEL_ACTIVE   "A"  // |es-ES|==|en-US|
+#define STRING_COLUMN_LABEL_ACTIVE   "A"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_STATUS   "Estatus"
 #define STRING_COLUMN_LABEL_STAT     "Est"
 #define STRING_COLUMN_LABEL_STAT_PE  "Pendientes"
@@ -156,14 +156,14 @@
 #define STRING_COLUMN_LABEL_STAT_WA  "Esperando"
 // Mejor Periódica, pero STRING_COLUMN_LABEL_STAT_P es Pendiente
 #define STRING_COLUMN_LABEL_STAT_RE  "Recurrentes"
-#define STRING_COLUMN_LABEL_STAT_P   "P"  // |es-ES|==|en-US|
-#define STRING_COLUMN_LABEL_STAT_C   "C"  // |es-ES|==|en-US|
+#define STRING_COLUMN_LABEL_STAT_P   "P"  // |esp-ESP|==|eng-USA|
+#define STRING_COLUMN_LABEL_STAT_C   "C"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_STAT_D   "S"
 #define STRING_COLUMN_LABEL_STAT_W   "E"
-#define STRING_COLUMN_LABEL_STAT_R   "R"  // |es-ES|==|en-US|
+#define STRING_COLUMN_LABEL_STAT_R   "R"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_TAGS     "Marcas"
 #define STRING_COLUMN_LABEL_TAG      "Marca"
-#define STRING_COLUMN_LABEL_UUID     "UUID"  // |es-ES|==|en-US|
+#define STRING_COLUMN_LABEL_UUID     "UUID"  // |esp-ESP|==|eng-USA|
 #define STRING_COLUMN_LABEL_URGENCY  "Urgencia"
 #define STRING_COLUMN_LABEL_NAME     "Nombre"
 #define STRING_COLUMN_LABEL_VALUE    "Valor"
@@ -203,7 +203,7 @@
 #define STRING_CMD_VERSION_DOCS      "La documentación de taskwarrior se puede consultar usando 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync' y 'man task-faq' o en http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} construido para "
 #define STRING_CMD_VERSION_UNKNOWN   "desconocido"
-#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2014 P. Beckingham, F. Hernandez."  // |es-ES|==|en-US|
+#define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2014 P. Beckingham, F. Hernandez."  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_LOGO_USAGE        "Muestra el logo de Taskwarrior"
 #define STRING_CMD_LOGO_COLOR_REQ    "El comando logo requiere que el soporte de color esté habilitado."
 #define STRING_CMD_EXEC_USAGE        "Ejecuta comandos y scripts externos"
@@ -238,7 +238,7 @@
 #define STRING_CMD_STATS_USAGE       "Muestra estadísticas de la base de datos de tareas"
 #define STRING_CMD_STATS_CATEGORY    "Categoría"
 #define STRING_CMD_STATS_DATA        "Datos"
-#define STRING_CMD_STATS_TOTAL       "Total"  // |es-ES|==|en-US|
+#define STRING_CMD_STATS_TOTAL       "Total"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_STATS_ANNOTATIONS "Anotaciones"
 #define STRING_CMD_STATS_UNIQUE_TAGS "Marcas únicas"
 #define STRING_CMD_STATS_PROJECTS    "Proyectos"
@@ -300,10 +300,10 @@
 #define STRING_CMD_PROJECTS_USAGE    "Muestra todos los nombres de proyecto en uso"
 #define STRING_CMD_PROJECTS_USAGE_2  "Muestra una lista de todos los nombres (solamente) de proyecto en uso"
 #define STRING_CMD_PROJECTS_NO       "No hay proyectos."
-#define STRING_CMD_PROJECTS_PRI_N    "Pri:None"  // |es-ES|==|en-US|
-#define STRING_CMD_PROJECTS_PRI_H    "Pri:H"  // |es-ES|==|en-US|
-#define STRING_CMD_PROJECTS_PRI_M    "Pri:M"  // |es-ES|==|en-US|
-#define STRING_CMD_PROJECTS_PRI_L    "Pri:L"  // |es-ES|==|en-US|
+#define STRING_CMD_PROJECTS_PRI_N    "Pri:None"  // |esp-ESP|==|eng-USA|
+#define STRING_CMD_PROJECTS_PRI_H    "Pri:H"  // |esp-ESP|==|eng-USA|
+#define STRING_CMD_PROJECTS_PRI_M    "Pri:M"  // |esp-ESP|==|eng-USA|
+#define STRING_CMD_PROJECTS_PRI_L    "Pri:L"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_PROJECTS_NONE     "(ninguno)"
 #define STRING_CMD_PROJECTS_SUMMARY  "{1} proyecto"
 #define STRING_CMD_PROJECTS_SUMMARY2 "{1} proyectos"
@@ -434,7 +434,7 @@
 #define STRING_CMD_SYNC_INIT         "Por favor, confirme que desea subir todas sus tareas pendientes al Servidor Task"
 #define STRING_CMD_SYNC_NO_INIT      "Taskwarrior no procederá a la inicialización de la sincronización por primera vez."
 #define STRING_CMD_SYNC_RELOCATE0    "La cuenta del servidor ha sido reubicada. Por favor, actualice su configuración utilizando:"
-#define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"   // |es-ES|==|en-US|
+#define STRING_CMD_SYNC_RELOCATE1    "task config taskd.server {1}"   // |esp-ESP|==|eng-USA|
 #define STRING_CMD_SYNC_BAD_CA       "Certificado CA no encontrado."
 #define STRING_CMD_SYNC_CONNECT      "No se pudo conectar a {1} {2}"
 #define STRING_CMD_SYNC_HANDSHAKE    "Handshake fallido.  {1}"
@@ -447,7 +447,7 @@
 #define STRING_CMD_DIAG_CAPS         "Capacidades"
 #define STRING_CMD_DIAG_FEATURES     "Características Constructivas"
 #define STRING_CMD_DIAG_BUILT        "Construido"
-#define STRING_CMD_DIAG_COMMIT       "Commit"  // |es-ES|==|en-US|
+#define STRING_CMD_DIAG_COMMIT       "Commit"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_DIAG_FOUND        "(encontrado)"
 #define STRING_CMD_DIAG_MISSING      "(no encontrado)"
 #define STRING_CMD_DIAG_ENABLED      "Habilitado"
@@ -480,7 +480,7 @@
 
 #define STRING_CMD_COLOR_USAGE       "Todos los colores, una muestra, o una leyenda"
 #define STRING_CMD_COLOR_HERE        "Aquí están los colores en uso actualmente:"
-#define STRING_CMD_COLOR_COLOR       "Color"  // |es-ES|==|en-US|
+#define STRING_CMD_COLOR_COLOR       "Color"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_COLOR_DEFINITION  "Definición"
 #define STRING_CMD_COLOR_EXPLANATION "Use este comando para ver como los colores son mostrados por su terminal."
 #define STRING_CMD_COLOR_16          "Uso de 16-colores (soporta subrayado, negrita, fondo brillante):"
@@ -513,7 +513,7 @@
 #define STRING_CMD_BURN_USAGE_M      "Muestra un diagrama burndown, por meses"
 #define STRING_CMD_BURN_USAGE_W      "Muestra un diagrama burndown, por semanas"
 #define STRING_CMD_BURN_USAGE_D      "Muestra un diagrama burndown, por días"
-#define STRING_CMD_BURN_TITLE        "Burndown"  // |es-ES|==|en-US|
+#define STRING_CMD_BURN_TITLE        "Burndown"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_BURN_TOO_SMALL    "Ventana de terminal demasiado pequeña para dibujar una gráfica."
 #define STRING_CMD_BURN_DAILY        "Diario"
 #define STRING_CMD_BURN_WEEKLY       "Semanal"
@@ -573,16 +573,16 @@
 #define STRING_DATE_DECEMBER_LONG    "diciembre"
 
 #define STRING_DATE_JANUARY_SHORT    "ene"
-#define STRING_DATE_FEBRUARY_SHORT   "feb"  // |es-ES|==|en-US|
-#define STRING_DATE_MARCH_SHORT      "mar"  // |es-ES|==|en-US|
+#define STRING_DATE_FEBRUARY_SHORT   "feb"  // |esp-ESP|==|eng-USA|
+#define STRING_DATE_MARCH_SHORT      "mar"  // |esp-ESP|==|eng-USA|
 #define STRING_DATE_APRIL_SHORT      "abr"
-#define STRING_DATE_MAY_SHORT        "may"  // |es-ES|==|en-US|
-#define STRING_DATE_JUNE_SHORT       "jun"  // |es-ES|==|en-US|
-#define STRING_DATE_JULY_SHORT       "jul"  // |es-ES|==|en-US|
+#define STRING_DATE_MAY_SHORT        "may"  // |esp-ESP|==|eng-USA|
+#define STRING_DATE_JUNE_SHORT       "jun"  // |esp-ESP|==|eng-USA|
+#define STRING_DATE_JULY_SHORT       "jul"  // |esp-ESP|==|eng-USA|
 #define STRING_DATE_AUGUST_SHORT     "ago"
-#define STRING_DATE_SEPTEMBER_SHORT  "sep"  // |es-ES|==|en-US|
-#define STRING_DATE_OCTOBER_SHORT    "oct"  // |es-ES|==|en-US|
-#define STRING_DATE_NOVEMBER_SHORT   "nov"  // |es-ES|==|en-US|
+#define STRING_DATE_SEPTEMBER_SHORT  "sep"  // |esp-ESP|==|eng-USA|
+#define STRING_DATE_OCTOBER_SHORT    "oct"  // |esp-ESP|==|eng-USA|
+#define STRING_DATE_NOVEMBER_SHORT   "nov"  // |esp-ESP|==|eng-USA|
 #define STRING_DATE_DECEMBER_SHORT   "dic"
 
 #define STRING_DATE_SUNDAY_LONG      "domingo"
@@ -687,11 +687,11 @@
 
 // Maintain the same spacing.
 #define STRING_EDIT_TABLE_HEADER_1   "Nombre             Detalles modificables"
-#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"  // |es-ES|==|en-US|
+#define STRING_EDIT_TABLE_HEADER_2   "-----------------  ----------------------------------------------------"  // |esp-ESP|==|eng-USA|
 
 // Errors
 // TODO Move each of these to appropriate section.
-#define STRING_ERROR_PREFIX          "Error: "  // |es-ES|==|en-US|
+#define STRING_ERROR_PREFIX          "Error: "  // |esp-ESP|==|eng-USA|
 #define STRING_UNKNOWN_ERROR         "Error desconocido."
 #define STRING_TRIVIAL_INPUT         "Debe especificar un comando o una tarea a modificar."
 #define STRING_ASSUME_INFO           "No especificó un comando - asumido 'information'."
@@ -954,17 +954,17 @@
 */
 
 // util
-#define STRING_UTIL_CONFIRM_YN       " (yes/no) "  // |es-ES|==|en-US|
-#define STRING_UTIL_CONFIRM_YES      "yes"  // |es-ES|==|en-US|
-#define STRING_UTIL_CONFIRM_YES_U    "Yes"  // |es-ES|==|en-US|
-#define STRING_UTIL_CONFIRM_NO       "no"  // |es-ES|==|en-US|
-#define STRING_UTIL_CONFIRM_ALL      "all"  // |es-ES|==|en-US|
-#define STRING_UTIL_CONFIRM_ALL_U    "All"  // |es-ES|==|en-US|
-#define STRING_UTIL_CONFIRM_QUIT     "quit"  // |es-ES|==|en-US|
-#define STRING_UTIL_GIBIBYTES        "GiB"  // |es-ES|==|en-US|
-#define STRING_UTIL_MEBIBYTES        "MiB"  // |es-ES|==|en-US|
-#define STRING_UTIL_KIBIBYTES        "KiB"  // |es-ES|==|en-US|
-#define STRING_UTIL_BYTES            "B"  // |es-ES|==|en-US|
+#define STRING_UTIL_CONFIRM_YN       " (yes/no) "  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_YES      "yes"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_YES_U    "Yes"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_NO       "no"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_ALL      "all"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_ALL_U    "All"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_QUIT     "quit"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_GIBIBYTES        "GiB"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_MEBIBYTES        "MiB"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_KIBIBYTES        "KiB"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_BYTES            "B"  // |esp-ESP|==|eng-USA|
 
 // shell
 #define STRING_SHELL_USAGE \

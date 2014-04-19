@@ -55,10 +55,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Translators:
-//   1. Copy this file (en-US.h) to a new file with the target locale as the
+//   1. Copy this file (eng-USA.h) to a new file with the target locale as the
 //      file name.  Using German as an example, do this:
 //
-//        cp en-US.h de-DE.h
+//        cp eng-USA.h de-DE.h
 //
 //   2. Modify all the strings below.
 //        i.e. change "Unknown error." to "Unbekannter Fehler.".
@@ -66,17 +66,17 @@
 //   3. Add your new translation to the task.git/src/i18n.h file, if necessary,
 //      by inserting:
 //
-//        #elif PACKAGE_LANGUAGE == LANGUAGE_DE_DE
+//        #elif PACKAGE_LANGUAGE == LANGUAGE_DEU_DEU
 //        #include <de-DE.h>
 //
 //   4. Add your new language to task.git/CMakeLists.txt, making sure that
 //      number is unique:
 //
-//        set (LANGUAGE_DE_DE 4)
+//        set (LANGUAGE_DEU_DEU 3)
 //
 //   5. Add your new language to task.git/cmake.h.in:
 //
-//        #define LANGUAGE_DE_DE ${LANGUAGE_DE_DE}                                        
+//        #define LANGUAGE_DEU_DEU ${LANGUAGE_DEU_DEU}
 //
 //   6. Build your localized Taskwarrior with these commands:
 //

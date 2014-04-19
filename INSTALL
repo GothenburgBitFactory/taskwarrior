@@ -90,8 +90,11 @@ To make use of a translation, specify a language number, as found in cmake.h:
 
 Currently the defined languages are:
 
-  en-US    1
-  es-ES    2
+  eng_USA 1
+  esp_ESP 2
+  fra_FRA 4
+  ita_ITA 5
+  por_PRT 6
 
 
 Uninstallation
