@@ -153,6 +153,8 @@ int Context::initialize (int argc, const char** argv)
     loadAliases ();
     a3.resolve_aliases ();
     a3t.findAliases ();
+    aliases2.load ();
+    aliases2.resolve (a3t.tree ());
 
     // Initialize the color rules, if necessary.
     if (color ())
@@ -219,8 +221,8 @@ int Context::initialize (int argc, const char** argv)
 
     // TODO Uncommenting this breaks unit tests because of the errors it
     //      generates.
-    Tree* parseTree = NULL;
-    //Tree* parseTree = a3t.parse ();
+    //Tree* parseTree = NULL;
+    Tree* parseTree = a3t.parse ();
 
     // Initialize the command line parser.
     if (parseTree && config.getBoolean ("debug"))

@@ -34,6 +34,7 @@
 #include <TDB2.h>
 #include <Hooks.h>
 #include <DOM.h>
+#include <Alias.h>
 #include <Path.h>
 #include <File.h>
 #include <Directory.h>
@@ -92,6 +93,7 @@ public:
 
   TDB2                                tdb2;
   std::map <std::string, std::string> aliases;
+  Alias                               aliases2;
   Hooks                               hooks;
   DOM                                 dom;
 

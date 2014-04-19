@@ -7,6 +7,7 @@ include_directories (${CMAKE_SOURCE_DIR}
 
 set (task_SRCS A3.cpp A3.h
                A3t.cpp A3t.h
+               Alias.cpp Alias.h
                Arg.cpp Arg.h
                Color.cpp Color.h
                Config.cpp Config.h
