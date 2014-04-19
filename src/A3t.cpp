@@ -442,18 +442,18 @@ void A3t::inject_defaults ()
   // If no command was specified, then a command will be inserted.
   if (! found_command)
   {
-    std::cout << "# ! found_command\n";
+    //std::cout << "# ! found_command\n";
 
     // Default command.
     if (! found_sequence)
     {
-      std::cout << "# ! found_sequence\n";
+      //std::cout << "# ! found_sequence\n";
 
       // Apply overrides, if any.
       std::string defaultCommand = context.config.get ("default.command");
       if (defaultCommand != "")
       {
-        std::cout << "# defaultCommand\n";
+        //std::cout << "# defaultCommand\n";
         context.debug ("No command or sequence found - assuming default.command.");
         capture_first (defaultCommand);
 
@@ -471,13 +471,13 @@ void A3t::inject_defaults ()
       }
       else
       {
-        std::cout << "# ! defaultCommand\n";
+        //std::cout << "# ! defaultCommand\n";
         throw std::string (STRING_TRIVIAL_INPUT);
       }
     }
     else
     {
-      std::cout << "# found_sequence\n";
+      //std::cout << "# found_sequence\n";
 /*
       // Modify command.
       if (found_other)
@@ -491,7 +491,7 @@ void A3t::inject_defaults ()
       else
       {
 */
-        std::cout << "# ! found_other\n";
+        //std::cout << "# ! found_other\n";
         context.debug ("Sequence but no command found - assuming 'information' command.");
         context.header (STRING_ASSUME_INFO);
         capture_first ("information");
@@ -505,7 +505,7 @@ void A3t::inject_defaults ()
 ////////////////////////////////////////////////////////////////////////////////
 void A3t::capture_first (const std::string& arg)
 {
-  std::cout << "# capture_first (" << arg << ")\n";
+  //std::cout << "# capture_first (" << arg << ")\n";
 
   // Insert the arg as the new first branch.
   Tree* t = new Tree ("argIns");
