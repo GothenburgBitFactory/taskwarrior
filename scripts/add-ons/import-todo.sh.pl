@@ -140,18 +140,23 @@ sub epoch
 ################################################################################
 
 __DATA__
-(A) @phone thank Mom for the meatballs
-(B) +GarageSale @phone schedule Goodwill pickup
-+GarageSale @home post signs around the neighborhood
-@shopping Eskimo pies
-(A) Call Mom
+(A) Thank Mom for the meatballs @phone
+(B) Schedule Goodwill pickup +GarageSale @phone
+Post signs around the neighborhood +GarageSale
+@GroceryStore Eskimo pies
+(A) Thank Mom for the meatballs @phone
+(B) Schedule Goodwill pickup +GarageSale @phone
+(B) Schedule Goodwill pickup +GarageSale @phone
+Post signs around the neighborhood +GarageSale
 Really gotta call Mom (A) @phone @someday
-(b)->get back to the boss
+(b) Get back to the boss
+(B)->Submit TPS report
 2011-03-02 Document +TodoTxt task format
 (A) 2011-03-02 Call Mom
 (A) Call Mom 2011-03-02
 (A) Call Mom +Family +PeaceLoveAndHappiness @iphone @phone
-X 2011-03-03 Call Mom
+x 2011-03-03 Call Mom
 xylophone lesson
+X 2012-01-01 Make resolutions
+(A) x Find ticket prices
 x 2011-03-02 2011-03-01 Review Tim's pull request +TodoTxtTouch @github
-
