@@ -292,6 +292,13 @@ void Command::filter (const std::vector <Task>& input, std::vector <Task>& outpu
   A3 filt = context.a3.extract_filter ();
   filt.dump ("extract_filter");
 
+  if (context.config.getBoolean ("debug"))
+  {
+    Tree* t = context.a3t.tree ();
+    if (t)
+      context.debug (t->dump ());
+  }
+
   if (filt.size ())
   {
     E9 e (filt);
@@ -314,6 +321,13 @@ void Command::filter (std::vector <Task>& output)
   context.timer_filter.start ();
   A3 filt = context.a3.extract_filter ();
   filt.dump ("extract_filter");
+
+  if (context.config.getBoolean ("debug"))
+  {
+    Tree* t = context.a3t.tree ();
+    if (t)
+      context.debug (t->dump ());
+  }
 
   if (filt.size ())
   {
