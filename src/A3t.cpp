@@ -135,6 +135,7 @@ Tree* A3t::parse ()
   findAttributeModifier ();
   findOperator ();
   findFilter ();
+  findModifications ();
 
   validate ();
 
@@ -946,6 +947,26 @@ void A3t::findFilter ()
         ! (*i)->hasTag ("RC") &&
         ! (*i)->hasTag ("CONFIG"))
       (*i)->tag ("FILTER");
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void A3t::findModifications ()
+{
+  bool after_writecmd = false;
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    if ((*i)->hasTag ("WRITECMD"))
+      after_writecmd = true;
+
+    if (after_writecmd &&
+        ! (*i)->hasTag ("CMD") &&
+        ! (*i)->hasTag ("TERMINATOR") &&
+        ! (*i)->hasTag ("BINARY") &&
+        ! (*i)->hasTag ("RC") &&
+        ! (*i)->hasTag ("CONFIG"))
+      (*i)->tag ("MODIFICATION");
   }
 }
 
