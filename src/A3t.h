@@ -64,6 +64,7 @@ private:
   void findAttribute ();
   void findAttributeModifier ();
   void findOperator ();
+  void findFilter ();
   void validate ();
 
   // TODO Resolve aliases

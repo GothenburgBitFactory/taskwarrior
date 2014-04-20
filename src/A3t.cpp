@@ -134,6 +134,7 @@ Tree* A3t::parse ()
   findAttribute ();
   findAttributeModifier ();
   findOperator ();
+  findFilter ();
 
   validate ();
 
@@ -909,6 +910,42 @@ void A3t::findOperator ()
         break;
       }
     }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Anything before CMD, but not BINARY, RC or CONFIG --> FILTER
+// Anything after READCMD, but not BINARY, RC or CONFIG --> FILTER
+void A3t::findFilter ()
+{
+  bool before_cmd = true;
+  bool after_readcmd = false;
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    if ((*i)->hasTag ("CMD"))
+      before_cmd = false;
+
+    if ((*i)->hasTag ("READCMD"))
+      after_readcmd = true;
+
+    if (before_cmd &&
+        ! (*i)->hasTag ("CMD") &&
+        ! (*i)->hasTag ("BINARY") &&
+        ! (*i)->hasTag ("RC") &&
+        ! (*i)->hasTag ("CONFIG"))
+      (*i)->tag ("FILTER");
+
+    if (after_readcmd &&
+        ! (*i)->hasTag ("CMD") &&
+        ! (*i)->hasTag ("BINARY") &&
+        ! (*i)->hasTag ("RC") &&
+        ! (*i)->hasTag ("CONFIG"))
+      (*i)->tag ("FILTER");
   }
 }
 
