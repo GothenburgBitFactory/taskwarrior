@@ -44,8 +44,8 @@ public:
   void entity (const std::string&, const std::string&);
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
 
-  void findFileOverride ();
-  void findConfigOverride ();
+  void findBinary ();
+  void findOverrides ();
   void findCommand ();
   void findIdSequence ();
   void findUUIDList ();
@@ -57,7 +57,6 @@ public:
   Tree* capture_first (const std::string&);
 
 private:
-  void findBinary ();
   void findTerminator ();
   void findPattern ();
   void findSubstitution ();

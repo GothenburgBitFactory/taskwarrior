@@ -114,8 +114,7 @@ int Context::initialize (int argc, const char** argv)
     // Process 'rc:<file>' command line override, and remove the argument from the
     // Context::a3.
     a3.categorize ();
-
-    a3t.findFileOverride ();                     // rc:<file>
+    a3t.findOverrides ();                        // rc:<file>  rc.<name>:<value>
     a3t.get_overrides (home_dir, rc_file);       // <-- <file>
 
     // TASKRC environment variable overrides the command line.
@@ -133,7 +132,6 @@ int Context::initialize (int argc, const char** argv)
     // The data location, Context::data_dir, is determined from the assumed
     // location (~/.task), or set by data.location in the config file, or
     // overridden by rc.data.location on the command line.
-    a3t.findConfigOverride ();                   // rc.<name>[:=]<value>
     a3t.get_data_location (data_dir);            // <-- rc.data.location=<location>
 
     override = getenv ("TASKDATA");
@@ -197,6 +195,7 @@ int Context::initialize (int argc, const char** argv)
       a3t.entity ("operator", *op);
 
     // Now the entities are loaded, parsing may resume.
+    a3t.findBinary ();                           // <task|tw|t|cal|calendar>
     a3t.findCommand ();                          // <cmd>
     a3t.findUUIDList ();                         // <uuid> Before findIdSequence
     a3t.findIdSequence ();                       // <id>
@@ -220,8 +219,8 @@ int Context::initialize (int argc, const char** argv)
 
     // TODO Uncommenting this breaks unit tests because of the errors it
     //      generates.
-    //Tree* parseTree = NULL;
-    Tree* parseTree = a3t.parse ();
+    Tree* parseTree = NULL;
+    //Tree* parseTree = a3t.parse ();
 
     // Initialize the command line parser.
     if (parseTree && config.getBoolean ("debug"))

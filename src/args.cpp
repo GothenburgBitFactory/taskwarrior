@@ -38,8 +38,7 @@ int main (int argc, const char** argv)
     A3t a3t;
     a3t.initialize (argc, argv);
     a3t.append_stdin ();
-    a3t.findFileOverride ();
-    a3t.findConfigOverride ();
+    a3t.findOverrides ();
 
     Alias alias;
     alias.resolve (a3t.tree ());
@@ -147,6 +146,7 @@ int main (int argc, const char** argv)
     a3t.entity ("operator",   "^");
     a3t.entity ("operator",   "!");
 
+    a3t.findBinary ();
     a3t.findCommand ();
     a3t.findUUIDList ();
     a3t.findIdSequence ();

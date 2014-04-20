@@ -127,7 +127,6 @@ Tree* A3t::tree ()
 ////////////////////////////////////////////////////////////////////////////////
 Tree* A3t::parse ()
 {
-  findBinary ();
   findTerminator ();
   findSubstitution ();
   findPattern ();
@@ -176,8 +175,7 @@ bool A3t::canonicalize (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Walk the top-level tree branches, looking for the first raw value that
-// autoCompletes to a valid command/report.
+// Locate and tag the binary.
 void A3t::findBinary ()
 {
   if (_tree->_branches.size () >= 1)
@@ -292,8 +290,9 @@ void A3t::findCommand ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Process 'rc:<file>' command line override.
-void A3t::findFileOverride ()
+// rc:<file>
+// rc.<name>[:=]<value>
+void A3t::findOverrides ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -313,26 +312,7 @@ void A3t::findFileOverride ()
       (*i)->tag ("RC");
       (*i)->attribute ("file", arg.substr (3));
     }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// rc.<name>[:=]<value>
-void A3t::findConfigOverride ()
-{
-  std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
-  {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
-
-    // Skip known args.
-    if (! (*i)->hasTag ("?"))
-      continue;
-
-    std::string arg = (*i)->attribute ("raw");
-    if (arg.find ("rc.") == 0)
+    else if (arg.find ("rc.") == 0)
     {
       std::string::size_type sep = arg.find ('=', 3);
       if (sep == std::string::npos)
