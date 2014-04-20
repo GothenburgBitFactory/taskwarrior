@@ -401,14 +401,21 @@ void A3t::apply_overrides ()
 ////////////////////////////////////////////////////////////////////////////////
 void A3t::inject_defaults ()
 {
+  //std::cout << "#####################\n";
+  //std::cout << _tree->dump ();
+
+  // Scan the top-level branches for evidence of ID, UUID, overrides and other
+  // arguments.
   bool found_command  = false;
   bool found_sequence = false;
   bool found_other    = false;
-
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
-    if ((*i)->hasTag ("CMD"))
+    if ((*i)->hasTag ("BINARY"))
+      ;
+
+    else if ((*i)->hasTag ("CMD"))
       found_command = true;
 
     else if ((*i)->hasTag ("ID") || (*i)->hasTag ("UUID"))
@@ -433,9 +440,10 @@ void A3t::inject_defaults ()
       std::string defaultCommand = context.config.get ("default.command");
       if (defaultCommand != "")
       {
-        //std::cout << "# defaultCommand\n";
+        //std::cout << "# default_command\n";
         context.debug ("No command or sequence found - assuming default.command.");
-        capture_first (defaultCommand);
+        Tree* t = capture_first (defaultCommand);
+        t->tag ("DEFAULT");
 
         std::string combined;
         std::vector <Tree*>::iterator i;
@@ -451,35 +459,32 @@ void A3t::inject_defaults ()
       }
       else
       {
-        //std::cout << "# ! defaultCommand\n";
         throw std::string (STRING_TRIVIAL_INPUT);
       }
     }
     else
     {
       //std::cout << "# found_sequence\n";
-/*
-      // Modify command.
-      if (found_other)
-      {
-        std::cout << "# found_other\n";
-        context.debug ("Sequence and filter, but no command found - assuming 'modify' command.");
-        capture_first ("modify");
-      }
+
+      // TODO There is a problem, in that this block is not run.
 
       // Information command.
-      else
+      if (! found_other)
       {
-*/
         //std::cout << "# ! found_other\n";
+
         context.debug ("Sequence but no command found - assuming 'information' command.");
         context.header (STRING_ASSUME_INFO);
-        capture_first ("information");
-/*
+        Tree* t = capture_first ("information");
+        t->tag ("ASSUMED");
       }
-*/
     }
   }
+  //else
+  //  std::cout << "# found_command\n";
+
+  //std::cout << _tree->dump ();
+  //std::cout << "#####################\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
