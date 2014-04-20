@@ -939,14 +939,20 @@ void A3t::findFilter ()
         ! (*i)->hasTag ("BINARY") &&
         ! (*i)->hasTag ("RC") &&
         ! (*i)->hasTag ("CONFIG"))
+    {
+      (*i)->unTag ("?");
       (*i)->tag ("FILTER");
+    }
 
     if (after_readcmd &&
         ! (*i)->hasTag ("CMD") &&
         ! (*i)->hasTag ("BINARY") &&
         ! (*i)->hasTag ("RC") &&
         ! (*i)->hasTag ("CONFIG"))
+    {
+      (*i)->unTag ("?");
       (*i)->tag ("FILTER");
+    }
   }
 }
 
@@ -966,7 +972,10 @@ void A3t::findModifications ()
         ! (*i)->hasTag ("BINARY") &&
         ! (*i)->hasTag ("RC") &&
         ! (*i)->hasTag ("CONFIG"))
+    {
+      (*i)->unTag ("?");
       (*i)->tag ("MODIFICATION");
+    }
   }
 }
 
