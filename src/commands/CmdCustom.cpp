@@ -86,7 +86,13 @@ int CmdCustom::execute (std::string& output)
   splitq (filterArgs, reportFilter, ' ');
   std::vector <std::string>::reverse_iterator arg;
   for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
+  {
     context.a3.capture_first (*arg);
+
+    Tree* t = context.a3t.capture_first (*arg);
+    t->tag ("CUSTOM");
+    t->tag ("FILTER");
+  }
 
   context.a3.categorize ();
   context.a3.dump ("A3::categorize");
@@ -127,7 +133,6 @@ int CmdCustom::execute (std::string& output)
   }
 
   // How many lines taken up by table header?
-  // TODO Consider rc.verbose
   int table_header = 0;
   if (context.verbose ("label"))
   {
