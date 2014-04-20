@@ -978,12 +978,12 @@ void A3t::validate ()
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
     if ((*i)->hasTag ("?"))
-      // TODO Restore the exception, when functionality is high enough to
-      //      tolerate it.
       //throw std::string ("Unrecognized argument '") + (*i)->attribute ("raw") + "'";
-      std::cout << "Unrecognized argument '" << (*i)->attribute ("raw") << "'\n";
+      //std::cout << "Unrecognized argument '" << (*i)->attribute ("raw") << "'\n";
+      context.debug ("Unrecognized argument '" + (*i)->attribute ("raw") + "'");
 
-  // TODO Any RC node must have a root/*[+RC]/data[@file] that exists.
+  // TODO Any RC node must have a root/+RC @file that exists.
+  // TODO There must be a root/+CMD.
 }
 
 ////////////////////////////////////////////////////////////////////////////////

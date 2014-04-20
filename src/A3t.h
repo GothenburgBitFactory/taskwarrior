@@ -68,15 +68,12 @@ private:
   void findModifications ();
   void validate ();
 
-  // TODO Resolve aliases
-  // TODO Inject defaults
   // TODO Extract filter
   // TODO Extract words
   // TODO Extract modifications
   // TODO Prepare infix
   // TODO Expand operators
   // TODO Expand sequence
-  // TODO Convert to postfix - not necessary given parse tree?
 
 private:
   Tree*                                    _tree;
