@@ -274,11 +274,22 @@ void Tree::dumpNode (Tree* t, int depth, std::stringstream& output)
   std::string tags;
   std::vector <std::string>::iterator tag;
   for (tag = t->_tags.begin (); tag != t->_tags.end (); ++tag)
-    tags += (tags.length () ? " " : "") + *tag;
+  {
+    if (tags.length ())
+      tags += ' ';
+
+         if (*tag == "BINARY")       tags += "\033[1;37;44m"           + *tag + "\033[0m";
+    else if (*tag == "CMD")          tags += "\033[1;37;46m"           + *tag + "\033[0m";
+    else if (*tag == "FILTER")       tags += "\033[1;37;42m"           + *tag + "\033[0m";
+    else if (*tag == "MODIFICATION") tags += "\033[1;37;43m"           + *tag + "\033[0m";
+    else if (*tag == "RC")           tags += "\033[1;37;41m"           + *tag + "\033[0m";
+    else if (*tag == "CONFIG")       tags += "\033[1;37;101m"          + *tag + "\033[0m";
+    else if (*tag == "?")            tags += "\033[38;5;255;48;5;232m" + *tag + "\033[0m";
+    else                             tags += "\033[32m"                + *tag + "\033[0m";
+  }
 
   if (tags.length ())
-    output << " \033[32m" << tags << "\033[0m";
-
+    output << ' ' << tags;
   output << "\n";
 
   // Recurse for branches.
