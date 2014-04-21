@@ -511,6 +511,80 @@ Tree* A3t::captureFirst (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string A3t::getFilterExpression () const
+{
+  // Locate and extract the filter elements.
+  std::string filter = "";
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // TODO Insert implicit "and", "(" and ")" operators.
+
+    if ((*i)->hasTag ("FILTER"))
+    {
+      if ((*i)->hasTag ("ID"))
+      {
+        // TODO Construct sequence clause clause.
+        if (filter != "")
+          filter += ' ';
+
+        filter += "<id>";
+      }
+      else if ((*i)->hasTag ("UUID"))
+      {
+        // TODO Construct sequence clause clause.
+        if (filter != "")
+          filter += ' ';
+
+        filter += "<uuid>";
+      }
+      else if ((*i)->hasTag ("ATTMOD"))
+      {
+        // TODO name.mod:value --> name <op> value
+        if (filter != "")
+          filter += ' ';
+
+        filter += "<attmod>";
+      }
+      else if ((*i)->hasTag ("ATTRIBUTE"))
+      {
+        // TODO name:value --> name == value
+        if (filter != "")
+          filter += ' ';
+
+        filter += "<attribute>";
+      }
+      else if ((*i)->hasTag ("TAG"))
+      {
+        // TODO +tag --> _hastag_ tag
+        // TODO -tag --> _notag_ tag
+        if (filter != "")
+          filter += ' ';
+
+        filter += "<tag>";
+      }
+      else if ((*i)->hasTag ("PATTERN"))
+      {
+        // TODO /pattern/ --> description ~ pattern
+        if (filter != "")
+          filter += ' ';
+
+        filter += "<pattern>";
+      }
+      else
+      {
+        if (filter != "")
+          filter += ' ';
+
+        filter += (*i)->attribute ("raw");
+      }
+    }
+  }
+
+  return filter;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // /pattern/
 void A3t::findPattern ()
 {

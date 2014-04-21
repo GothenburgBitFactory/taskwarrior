@@ -56,6 +56,11 @@ public:
   void injectDefaults ();
   Tree* captureFirst (const std::string&);
 
+  const std::string getFilterExpression () const;
+
+  // TODO Extract words
+  // TODO Extract modifications
+
 private:
   void findTerminator ();
   void findPattern ();
@@ -67,13 +72,6 @@ private:
   void findFilter ();
   void findModifications ();
   void validate ();
-
-  // TODO Extract filter
-  // TODO Extract words
-  // TODO Extract modifications
-  // TODO Prepare infix
-  // TODO Expand operators
-  // TODO Expand sequence
 
 private:
   Tree*                                    _tree;
