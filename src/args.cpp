@@ -44,8 +44,35 @@ int main (int argc, const char** argv)
     alias.resolve (a3t.tree ());
 
     // Reports.
+    a3t.entity ("report",     "active");
+    a3t.entity ("report",     "all");
+    a3t.entity ("report",     "blocked");
+    a3t.entity ("report",     "blocking");
+    a3t.entity ("report",     "burndown.daily");
+    a3t.entity ("report",     "burndown.monthly");
+    a3t.entity ("report",     "burndown.weekly");
+    a3t.entity ("report",     "completed");
+    a3t.entity ("report",     "ghistory.annual");
+    a3t.entity ("report",     "ghistory.monthly");
+    a3t.entity ("report",     "history.annual");
+    a3t.entity ("report",     "history.monthly");
+    a3t.entity ("report",     "information");
     a3t.entity ("report",     "list");
+    a3t.entity ("report",     "long");
+    a3t.entity ("report",     "ls");
+    a3t.entity ("report",     "minimal");
+    a3t.entity ("report",     "newest");
     a3t.entity ("report",     "next");
+    a3t.entity ("report",     "oldest");
+    a3t.entity ("report",     "overdue");
+    a3t.entity ("report",     "projects");
+    a3t.entity ("report",     "ready");
+    a3t.entity ("report",     "recurring");
+    a3t.entity ("report",     "summary");
+    a3t.entity ("report",     "tags");
+    a3t.entity ("report",     "unblocked");
+    a3t.entity ("report",     "waiting");
+
 
     // Read-only commands.
     a3t.entity ("readcmd",    "export");
@@ -70,23 +97,43 @@ int main (int argc, const char** argv)
     a3t.entity ("writecmd",   "import");
 
     // Helper commands.
+    a3t.entity ("helper",     "_aliases");
+    a3t.entity ("helper",     "_columns");
+    a3t.entity ("helper",     "_commands");
+    a3t.entity ("helper",     "_config");
     a3t.entity ("helper",     "_get");
-    a3t.entity ("helper",     "_query");
     a3t.entity ("helper",     "_ids");
+    a3t.entity ("helper",     "_projects");
+    a3t.entity ("helper",     "_show");
+    a3t.entity ("helper",     "_tags");
+    a3t.entity ("helper",     "_udas");
+    a3t.entity ("helper",     "_urgency");
     a3t.entity ("helper",     "_uuids");
+    a3t.entity ("helper",     "_version");
+    a3t.entity ("helper",     "_zshcommands");
     a3t.entity ("helper",     "_zshids");
     a3t.entity ("helper",     "_zshuuids");
 
     // Attributes (columns).
+    a3t.entity ("attribute",  "depends");
     a3t.entity ("attribute",  "description");
     a3t.entity ("attribute",  "due");
-    a3t.entity ("attribute",  "duration"); // UDAs are included.
     a3t.entity ("attribute",  "end");
     a3t.entity ("attribute",  "entry");
+    a3t.entity ("attribute",  "id");
+    a3t.entity ("attribute",  "imask");
+    a3t.entity ("attribute",  "mask");
+    a3t.entity ("attribute",  "modified");
+    a3t.entity ("attribute",  "parent");
     a3t.entity ("attribute",  "priority");
     a3t.entity ("attribute",  "project");
+    a3t.entity ("attribute",  "recur");
     a3t.entity ("attribute",  "scheduled");
     a3t.entity ("attribute",  "start");
+    a3t.entity ("attribute",  "status");
+    a3t.entity ("attribute",  "tags");
+    a3t.entity ("attribute",  "until");
+    a3t.entity ("attribute",  "urgency");
     a3t.entity ("attribute",  "uuid");
     a3t.entity ("attribute",  "wait");
 
@@ -94,6 +141,7 @@ int main (int argc, const char** argv)
     a3t.entity ("pseudo",     "limit");
 
     // UDAs.
+    a3t.entity ("attribute",  "duration");
     a3t.entity ("uda",        "duration");
 
     // Modifiers.
@@ -120,31 +168,31 @@ int main (int argc, const char** argv)
     a3t.entity ("modifier",   "noword");
 
     // Operators.
+    a3t.entity ("operator",   "^");
+    a3t.entity ("operator",   "!");
+    a3t.entity ("operator",   "_neg_");
+    a3t.entity ("operator",   "_pos_");
+    a3t.entity ("operator",   "_hastag_");
+    a3t.entity ("operator",   "_notag_");
+    a3t.entity ("operator",   "*");
+    a3t.entity ("operator",   "/");
+    a3t.entity ("operator",   "%");
+    a3t.entity ("operator",   "+");
+    a3t.entity ("operator",   "-");
+    a3t.entity ("operator",   "<=");
+    a3t.entity ("operator",   ">=");
+    a3t.entity ("operator",   ">");
+    a3t.entity ("operator",   "<");
+    a3t.entity ("operator",   "=");
+    a3t.entity ("operator",   "==");
+    a3t.entity ("operator",   "!=");
+    a3t.entity ("operator",   "~");
+    a3t.entity ("operator",   "!~");
     a3t.entity ("operator",   "and");
     a3t.entity ("operator",   "or");
     a3t.entity ("operator",   "xor");
-    a3t.entity ("operator",   "<=");
-    a3t.entity ("operator",   ">=");
-    a3t.entity ("operator",   "!~");
-    a3t.entity ("operator",   "!=");
-    a3t.entity ("operator",   "==");
-    a3t.entity ("operator",   "=");
-    a3t.entity ("operator",   ">");
-    a3t.entity ("operator",   "~");
-    a3t.entity ("operator",   "!");
-    a3t.entity ("operator",   "_hastag_");
-    a3t.entity ("operator",   "_notag_");
-    a3t.entity ("operator",   "-");
-    a3t.entity ("operator",   "*");
-    a3t.entity ("operator",   "/");
-    a3t.entity ("operator",   "+");
-    a3t.entity ("operator",   "-");
-    a3t.entity ("operator",   "<");
     a3t.entity ("operator",   "(");
     a3t.entity ("operator",   ")");
-    a3t.entity ("operator",   "%");
-    a3t.entity ("operator",   "^");
-    a3t.entity ("operator",   "!");
 
     a3t.findBinary ();
     a3t.findCommand ();
