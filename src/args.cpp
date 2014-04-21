@@ -155,6 +155,11 @@ int main (int argc, const char** argv)
     Tree* tree = a3t.parse ();
     if (tree)
       std::cout << tree->dump ();
+
+    std::cout << "\n"
+              << "  Filter: "
+              << a3t.getFilterExpression ()
+              << "\n";
   }
 
   catch (const std::string& error)
