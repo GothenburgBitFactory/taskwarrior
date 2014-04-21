@@ -81,7 +81,7 @@ void A3t::initialize (int argc, const char** argv)
 //
 // echo one two -- three | task zero --> task zero one two
 // 'three' is left in the input buffer.
-void A3t::append_stdin ()
+void A3t::appendStdin ()
 {
 #ifdef FEATURE_STDIN
   // Use 'select' to determine whether there is any std::cin content buffered
@@ -333,7 +333,7 @@ void A3t::findOverrides ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Look for RC and return file as a File.
-void A3t::get_overrides (
+void A3t::getOverrides (
   std::string& home,
   File& rc)
 {
@@ -361,7 +361,7 @@ void A3t::get_overrides (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Look for CONFIG data.location and return value as a Path.
-void A3t::get_data_location (Path& data)
+void A3t::getDataLocation (Path& data)
 {
   std::string location = context.config.get ("data.location");
   if (location != "")
@@ -385,7 +385,7 @@ void A3t::get_data_location (Path& data)
 ////////////////////////////////////////////////////////////////////////////////
 // Takes all CONFIG name/value pairs and overrides configuration.
 // leaving only the plain args.
-void A3t::apply_overrides ()
+void A3t::applyOverrides ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -401,7 +401,7 @@ void A3t::apply_overrides ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::inject_defaults ()
+void A3t::injectDefaults ()
 {
   //std::cout << "#####################\n";
   //std::cout << _tree->dump ();
@@ -444,7 +444,7 @@ void A3t::inject_defaults ()
       {
         //std::cout << "# default_command\n";
         context.debug ("No command or sequence found - assuming default.command.");
-        Tree* t = capture_first (defaultCommand);
+        Tree* t = captureFirst (defaultCommand);
         t->tag ("DEFAULT");
 
         std::string combined;
@@ -477,7 +477,7 @@ void A3t::inject_defaults ()
 
         context.debug ("Sequence but no command found - assuming 'information' command.");
         context.header (STRING_ASSUME_INFO);
-        Tree* t = capture_first ("information");
+        Tree* t = captureFirst ("information");
         t->tag ("ASSUMED");
       }
     }
@@ -490,7 +490,7 @@ void A3t::inject_defaults ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Tree* A3t::capture_first (const std::string& arg)
+Tree* A3t::captureFirst (const std::string& arg)
 {
   // Insert the arg as the new first branch.
   Tree* t = new Tree ("argIns");

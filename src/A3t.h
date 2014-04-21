@@ -38,7 +38,7 @@ public:
   A3t ();
   ~A3t ();
   void initialize (int, const char**);
-  void append_stdin ();
+  void appendStdin ();
   Tree* tree ();
   Tree* parse ();
   void entity (const std::string&, const std::string&);
@@ -50,11 +50,11 @@ public:
   void findIdSequence ();
   void findUUIDList ();
 
-  void get_overrides (std::string&, File&);
-  void get_data_location (Path&);
-  void apply_overrides ();
-  void inject_defaults ();
-  Tree* capture_first (const std::string&);
+  void getOverrides (std::string&, File&);
+  void getDataLocation (Path&);
+  void applyOverrides ();
+  void injectDefaults ();
+  Tree* captureFirst (const std::string&);
 
 private:
   void findTerminator ();

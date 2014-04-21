@@ -89,7 +89,7 @@ int CmdCustom::execute (std::string& output)
   {
     context.a3.capture_first (*arg);
 
-    Tree* t = context.a3t.capture_first (*arg);
+    Tree* t = context.a3t.captureFirst (*arg);
     t->tag ("CUSTOM");
     t->tag ("FILTER");
   }

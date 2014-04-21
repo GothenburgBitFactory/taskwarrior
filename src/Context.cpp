@@ -109,13 +109,13 @@ int Context::initialize (int argc, const char** argv)
     // echo one two -- three | task zero --> task zero one two
     // 'three' is left in the input buffer.
     a3.append_stdin ();
-    a3t.append_stdin ();                         // echo stdin0 | task ...
+    a3t.appendStdin ();                          // echo stdin0 | task ...
 
     // Process 'rc:<file>' command line override, and remove the argument from the
     // Context::a3.
     a3.categorize ();
     a3t.findOverrides ();                        // rc:<file>  rc.<name>:<value>
-    a3t.get_overrides (home_dir, rc_file);       // <-- <file>
+    a3t.getOverrides (home_dir, rc_file);        // <-- <file>
 
     // TASKRC environment variable overrides the command line.
     char* override = getenv ("TASKRC");
@@ -132,7 +132,7 @@ int Context::initialize (int argc, const char** argv)
     // The data location, Context::data_dir, is determined from the assumed
     // location (~/.task), or set by data.location in the config file, or
     // overridden by rc.data.location on the command line.
-    a3t.get_data_location (data_dir);            // <-- rc.data.location=<location>
+    a3t.getDataLocation (data_dir);              // <-- rc.data.location=<location>
 
     override = getenv ("TASKDATA");
     if (override)
@@ -144,7 +144,7 @@ int Context::initialize (int argc, const char** argv)
 
     // Create missing config file and data directory, if necessary.
     a3.apply_overrides ();
-    a3t.apply_overrides ();
+    a3t.applyOverrides ();
     createDefaultConfig ();
 
     // Handle Aliases.
@@ -199,7 +199,7 @@ int Context::initialize (int argc, const char** argv)
     a3t.findCommand ();                          // <cmd>
     a3t.findUUIDList ();                         // <uuid> Before findIdSequence
     a3t.findIdSequence ();                       // <id>
-    a3t.inject_defaults ();                      // rc.default.command
+    a3t.injectDefaults ();                      // rc.default.command
 
     // Static initialization to decouple code.
     staticInitialization ();

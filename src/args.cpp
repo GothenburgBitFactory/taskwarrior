@@ -37,7 +37,7 @@ int main (int argc, const char** argv)
   {
     A3t a3t;
     a3t.initialize (argc, argv);
-    a3t.append_stdin ();
+    a3t.appendStdin ();
     a3t.findOverrides ();
 
     Alias alias;
@@ -150,7 +150,7 @@ int main (int argc, const char** argv)
     a3t.findCommand ();
     a3t.findUUIDList ();
     a3t.findIdSequence ();
-    a3t.inject_defaults ();
+    a3t.injectDefaults ();
 
     Tree* tree = a3t.parse ();
     if (tree)
