@@ -331,7 +331,11 @@ int CmdCalendar::execute (std::string& output)
     // Table with due date information
     if (context.config.get ("calendar.details") == "full")
     {
+      // Assert that 'report' is a valid report.
       std::string report = context.config.get ("calendar.details.report");
+      if (context.commands.find (report) == context.commands.end ())
+        throw std::string (STRING_ERROR_DETAILS);
+
       std::string report_filter = context.config.get ("report." + report + ".filter");
 
       context.a3.clear ();

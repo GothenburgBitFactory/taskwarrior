@@ -704,6 +704,7 @@
 #define STRING_INVALID_SORT_COL      "La columna '{1}' no es un campo de ordenación válido."
 #define STRING_TLS_INIT_FAIL         "Error inicializando TLS."
 #define STRING_ERROR_MEMORY          "Problem obtaining memory."
+#define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."
