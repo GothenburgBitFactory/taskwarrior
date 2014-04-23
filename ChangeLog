@@ -66,6 +66,7 @@
   Sulfrian).
 - Added certificate hostname verification (thanks to Alexander Sulfrian).
 - Removed debugging code.
+- Added details in debug mode, for unrecognized data (thanks to Kosta H).
 
 ------ current release ---------------------------
 
