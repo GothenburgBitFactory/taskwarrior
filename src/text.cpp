@@ -34,6 +34,7 @@
 #include <strings.h>
 #include <ctype.h>
 #include <Context.h>
+#include <Lexer.h>
 #include <math.h>
 #include <util.h>
 #include <text.h>
@@ -62,6 +63,21 @@ void wrapText (
 
 ////////////////////////////////////////////////////////////////////////////////
 // UTF-8
+//
+// Splits on unicode whitespace, removeѕ quotes.
+void splitq (std::vector <std::string>& results, const std::string& input)
+{
+  results.clear ();
+
+  std::string token;
+  Lexer::Type type;
+  Lexer lex (input);
+  while (lex.token (token, type))
+    results.push_back (token);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete this call.
 void splitq (
   std::vector<std::string>& results,
   const std::string& input,
