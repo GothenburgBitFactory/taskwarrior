@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <Context.h>
+#include <Lexer.h>
 #include <Directory.h>
 #include <Date.h>
 #include <OldDuration.h>
@@ -161,14 +162,14 @@ void A3::capture (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Prepend a Arg with a blank category.
+// Prepend an Arg with a blank category.
 void A3::capture_first (const std::string& arg)
 {
   // Break the new argument into parts that comprise a series.
   std::vector <Arg> series;
 
   std::vector <std::string> separated;
-  splitq (separated, arg, ' ');
+  Lexer::split (separated, arg);
   std::vector <std::string>::iterator sep;
   for (sep = separated.begin (); sep != separated.end (); ++sep)
     series.push_back (Arg (*sep));
@@ -344,7 +345,7 @@ void A3::resolve_aliases ()
                        + "'");
 
         std::vector <std::string> words;
-        splitq (words, context.aliases[arg->_raw], ' ');
+        Lexer::split (words, context.aliases[arg->_raw]);
 
         std::vector <std::string>::iterator word;
         for (word = words.begin (); word != words.end (); ++word)
