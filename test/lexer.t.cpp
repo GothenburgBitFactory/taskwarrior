@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (170);
+  UnitTest t (176);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -298,6 +298,17 @@ int main (int argc, char** argv)
   t.is (tokens[19].second,                    Lexer::typeOperator,    "tokens[19] == typeOperator");
   t.is (tokens[20].first,                     ")",                    "tokens[20] == ')'");
   t.is (tokens[20].second,                    Lexer::typeOperator,    "tokens[20] == typeOperator"); // 170
+
+  // void splitq (std::vector<std::string>&, const std::string&);
+  std::string unsplit = " ( A or B ) ";
+  std::vector <std::string> items;
+  Lexer::split (items, unsplit);
+  t.is (items.size (), (size_t) 5, "split ' ( A or B ) '");
+  t.is (items[0], "(",             "split ' ( A or B ) ' -> [0] '('");
+  t.is (items[1], "A",             "split ' ( A or B ) ' -> [1] 'A'");
+  t.is (items[2], "or",            "split ' ( A or B ) ' -> [2] 'or'");
+  t.is (items[3], "B",             "split ' ( A or B ) ' -> [3] 'B'");
+  t.is (items[4], ")",             "split ' ( A or B ) ' -> [4] ')'");
 
   return 0;
 }

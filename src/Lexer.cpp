@@ -394,6 +394,293 @@ bool Lexer::token (std::string& token, Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Just like Lexer::token, but no operators, dates or durations.
+bool Lexer::word (std::string& token, Type& type)
+{
+  // Start with nothing.
+  token = "";
+
+  // Different types of matching quote:  ', ".
+  int quote = 0;
+
+  type = typeNone;
+  while (_n0)
+  {
+    switch (type)
+    {
+    case typeNone:
+      if (is_ws (_n0))
+        shift ();
+      else if (_n0 == '"' || _n0 == '\'')
+      {
+        type = typeString;
+        quote = _n0;
+        shift ();
+      }
+      else if (_n0 == '0' &&
+               _n1 == 'x' &&
+               is_hex_digit (_n2))
+      {
+        type = typeHex;
+        token += utf8_character (_n0);
+        shift ();
+        token += utf8_character (_n0);
+        shift ();
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else if (is_dec_digit (_n0))
+      {
+        // Speculatively try a date and duration parse.  Longest wins.
+        std::string::size_type iso_i = 0;
+        std::string iso_token;
+        ISO8601d iso;
+        iso.ambiguity (_ambiguity);
+        if (iso.parse (_input.substr (_i < 4 ? 0 : _i - 4), iso_i))
+          iso_token = _input.substr ((_i < 4 ? 0 : _i - 4), iso_i);
+
+        std::string::size_type dur_i = 0;
+        std::string dur_token;
+        Duration dur;
+        if (dur.parse (_input.substr (_i < 4 ? 0 : _i - 4), dur_i))
+          dur_token = _input.substr ((_i < 4 ? 0 : _i - 4), dur_i);
+
+        if (iso_token.length () > dur_token.length ())
+        {
+          while (iso_i--) shift ();
+          token = iso_token;
+          type = typeDate;
+          return true;
+        }
+        else if (dur_token.length () > iso_token.length ())
+        {
+          while (dur_i--) shift ();
+          token = dur_token;
+          type = typeDuration;
+          return true;
+        }
+
+        type = typeNumber;
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else if (_n0 == '.' && is_dec_digit (_n1))
+      {
+        type = typeDecimal;
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else if (_n0 == '\\')
+      {
+        type = typeIdentifierEscape;
+        shift ();
+      }
+      else if (is_ident_start (_n0))
+      {
+        type = typeIdentifier;
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else
+        throw std::string ("Unexpected error 1");
+      break;
+
+    case typeString:
+      if (_n0 == quote)
+      {
+        shift ();
+        quote = 0;
+        return true;
+      }
+      else if (_n0 == '\\')
+      {
+        type = typeEscape;
+        shift ();
+      }
+      else
+      {
+        token += utf8_character (_n0);
+        shift ();
+      }
+      break;
+
+    case typeIdentifier:
+      if (is_ident (_n0))
+      {
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else
+      {
+        return true;
+      }
+      break;
+
+    case typeIdentifierEscape:
+      if (_n0 == 'u')
+      {
+        type = typeEscapeUnicode;
+        shift ();
+      }
+      break;
+
+    case typeEscape:
+      if (_n0 == 'x')
+      {
+        type = typeEscapeHex;
+        shift ();
+      }
+      else if (_n0 == 'u')
+      {
+        type = typeEscapeUnicode;
+        shift ();
+      }
+      else
+      {
+        token += decode_escape (_n0);
+        type = quote ? typeString : typeIdentifier;
+        shift ();
+      }
+      break;
+
+    case typeEscapeHex:
+      if (is_hex_digit (_n0) && is_hex_digit (_n1))
+      {
+        token += utf8_character (hex_to_int (_n0, _n1));
+        type = quote ? typeString : typeIdentifier;
+        shift ();
+        shift ();
+      }
+      else
+      {
+        type = quote ? typeString : typeIdentifier;
+        shift ();
+        quote = 0;
+        return true;
+      }
+      break;
+
+    case typeEscapeUnicode:
+      if (is_hex_digit (_n0) &&
+          is_hex_digit (_n1) &&
+          is_hex_digit (_n2) &&
+          is_hex_digit (_n3))
+      {
+        token += utf8_character (hex_to_int (_n0, _n1, _n2, _n3));
+        shift ();
+        shift ();
+        shift ();
+        shift ();
+        type = quote ? typeString : typeIdentifier;
+      }
+      else if (_n0 == quote)
+      {
+        type = typeString;
+        shift ();
+        quote = 0;
+        return true;
+      }
+
+    case typeNumber:
+      if (is_dec_digit (_n0))
+      {
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else if (_n0 == '.')
+      {
+        type = typeDecimal;
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else if (_n0 == 'e' || _n0 == 'E')
+      {
+        type = typeExponentIndicator;
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else
+      {
+        return true;
+      }
+      break;
+
+    case typeDecimal:
+      if (is_dec_digit (_n0))
+      {
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else if (_n0 == 'e' || _n0 == 'E')
+      {
+        type = typeExponentIndicator;
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else
+      {
+        return true;
+      }
+      break;
+
+    case typeExponentIndicator:
+      if (_n0 == '+' || _n0 == '-')
+      {
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else if (is_dec_digit (_n0))
+      {
+        type = typeExponent;
+        token += utf8_character (_n0);
+        shift ();
+      }
+      break;
+
+    case typeExponent:
+      if (is_dec_digit (_n0))
+      {
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else if (_n0 == '.')
+      {
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else
+      {
+        type = typeDecimal;
+        return true;
+      }
+      break;
+
+    case typeHex:
+      if (is_hex_digit (_n0))
+      {
+        token += utf8_character (_n0);
+        shift ();
+      }
+      else
+      {
+        return true;
+      }
+      break;
+
+    default:
+      throw std::string ("Unexpected error 2");
+      break;
+    }
+
+    // Fence post.
+    if (!_n0 && token != "")
+      return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Lexer::ambiguity (bool value)
 {
   _ambiguity = value;
@@ -455,6 +742,19 @@ bool Lexer::is_ws (int c)
           c == 0x202F ||   // narrow no-break space Common  Separator, space
           c == 0x205F ||   // medium mathematical space Common  Separator, space
           c == 0x3000);    // ideographic space Common  Separator, space
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Split 'input' into 'words' on Lexer::is_ws boundaries, observing quotes.
+void Lexer::split (std::vector <std::string>& words, const std::string& input)
+{
+  words.clear ();
+
+  std::string word;
+  Lexer::Type type;
+  Lexer lex (input);
+  while (lex.word (word, type))
+    words.push_back (word);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -593,8 +893,6 @@ void Lexer::shift ()
   _n1 = _n2;
   _n2 = _n3;
   _n3 = utf8_next_char (_input, _i);
-
-  //std::cout << "# shift [" << (char) _n0 << (char) _n1 << (char) _n2 << (char) _n3 << "]\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

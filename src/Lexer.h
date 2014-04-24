@@ -58,10 +58,12 @@ public:
   Lexer& operator= (const Lexer&); // Not implemented.
   bool operator== (const Lexer&);  // Not implemented.
   bool token (std::string&, Type&);
+  bool word (std::string&, Type&);
   void ambiguity (bool);
 
   static const std::string type_name (const Type&);
   static bool is_ws (int);
+  static void split (std::vector <std::string>&, const std::string&);
 
 private:
   bool is_punct (int) const;
