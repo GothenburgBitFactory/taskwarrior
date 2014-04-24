@@ -249,6 +249,7 @@ int longestLine (const std::string& input)
   return longest;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 // Walk the input text looking for a break point.  A break point is one of:
 //   - EOS
 //   - \n
@@ -256,7 +257,7 @@ int longestLine (const std::string& input)
 //   - last punctuation (, ; . :) before 'length' characters, even if not
 //     followed by a space
 //   - first 'length' characters
-
+//
 // text       "one two three\n  four"
 // bytes       0123456789012 3456789
 // characters  1234567890a23 4567890

@@ -168,10 +168,6 @@ int Context::initialize (int argc, const char** argv)
         a3t.entity ("readcmd", cmd->first);
       else
         a3t.entity ("writecmd", cmd->first);
-
-      // TODO Entities: Reports.
-      // TODO Entities: Special commands.
-      // TODO Need: bool Command::report() - maybe not.
     }
 
     // Instantiate built-in column objects.

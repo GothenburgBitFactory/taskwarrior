@@ -89,8 +89,21 @@ const std::string DOM::get (const std::string& name)
   if (len > 8 &&
            name.substr (0, 8) == "context.")
   {
-         if (name == "context.program") return context.a3[0]._raw;
-    else if (name == "context.args")    return context.a3.combine ();
+         if (name == "context.program") return context.a3t.tree ()->_branches[0]->attribute ("raw");
+    else if (name == "context.args")
+    {
+      std::string combined;
+      std::vector <Tree*>::iterator i;
+      for (i = context.a3t.tree ()->_branches.begin (); i != context.a3t.tree ()->_branches.end (); ++i)
+      {
+        if (combined != "")
+          combined += " ";
+
+        combined += (*i)->attribute ("raw");
+      }
+
+      return combined;
+    }
     else if (name == "context.width")   return format (context.terminal_width  ? context.terminal_width  : context.getWidth ());
     else if (name == "context.height")  return format (context.terminal_height ? context.terminal_height : context.getHeight ());
     else                                throw format (STRING_DOM_UNREC, name);
