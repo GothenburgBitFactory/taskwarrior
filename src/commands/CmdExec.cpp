@@ -24,10 +24,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <cmake.h>
 #include <stdlib.h>
 #include <Context.h>
 #include <i18n.h>
+#include <text.h>
 #include <CmdExec.h>
 
 extern Context context;
@@ -46,21 +48,7 @@ CmdExec::CmdExec ()
 int CmdExec::execute (std::string& output)
 {
   std::string command_line;
-  std::vector <Arg>::iterator arg;
-  for (arg = context.a3.begin (); arg != context.a3.end (); ++arg)
-  {
-    if (arg != context.a3.begin () &&
-        arg->_raw != "execute" &&
-        arg->_category != Arg::cat_rc &&
-        arg->_category != Arg::cat_override)
-    {
-      if (command_line.length ())
-        command_line += " ";
-
-      command_line += "'" + arg->_raw + "'";
-    }
-  }
-
+  join (command_line, " ", context.a3t.getWords ());
   return system (command_line.c_str ());
 }
 
