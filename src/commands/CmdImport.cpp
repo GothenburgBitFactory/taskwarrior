@@ -54,7 +54,7 @@ int CmdImport::execute (std::string& output)
   int count = 0;
 
   // Use the description as a file name.
-  std::vector <std::string> words = context.a3.extract_words ();
+  std::vector <std::string> words = context.a3t.getWords ();
   if (! words.size ())
     throw std::string (STRING_CMD_IMPORT_NOFILE);
 
