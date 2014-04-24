@@ -57,8 +57,7 @@ public:
   Tree* captureFirst (const std::string&);
 
   const std::string getFilterExpression () const;
-
-  // TODO Extract words
+  const std::vector <std::string> getWords () const;
   // TODO Extract modifications
 
 private:

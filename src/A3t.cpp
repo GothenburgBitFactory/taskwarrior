@@ -585,6 +585,24 @@ const std::string A3t::getFilterExpression () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> A3t::getWords () const
+{
+  std::vector <std::string> words;
+  std::vector <Tree*>::const_iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    if (! (*i)->hasTag ("BINARY") &&
+        ! (*i)->hasTag ("RC")     &&
+        ! (*i)->hasTag ("CONFIG") &&
+        ! (*i)->hasTag ("CMD")    &&
+        ! (*i)->hasTag ("TERMINATOR"))
+      words.push_back ((*i)->attribute ("raw"));
+  }
+
+  return words;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // /pattern/
 void A3t::findPattern ()
 {
