@@ -37,7 +37,7 @@ delete $ENV{'TASKRC'};
 # Create the rc file, using rc.name:value.
 unlink 'foo.rc';
 rmtree 'foo', 0, 0;
-qx{echo 'y'|../src/task rc:foo.rc rc.data.location:foo 2>&1};
+qx{echo 'y'|../src/task rc:foo.rc rc.data.location:foo _version 2>&1};
 
 ok (-r 'foo.rc', 'Created default rc file');
 ok (-d 'foo', 'Created default data directory');
@@ -49,7 +49,7 @@ unlink 'foo.rc';
 ok (!-r 'foo.rc', 'Removed foo.rc');
 
 # Do it all again, with rc.name=value.
-qx{echo 'y'|../src/task rc:foo.rc rc.data.location:foo 2>&1};
+qx{echo 'y'|../src/task rc:foo.rc rc.data.location:foo _version 2>&1};
 
 ok (-r 'foo.rc', 'Created default rc file');
 ok (-d 'foo', 'Created default data directory');
