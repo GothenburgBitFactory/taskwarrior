@@ -233,8 +233,15 @@ void A3t::findTerminator ()
 // autoCompletes to a valid command/report.
 void A3t::findCommand ()
 {
+  // There can be only one.
+  // Scan for an existing CMD tag, to short-circuit scanning for another.
   std::string command;
   std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+    if ((*i)->hasTag ("CMD"))
+      return;
+
+  // No CMD tag found, now look for a command.
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
     // Parser override operator.
@@ -252,6 +259,7 @@ void A3t::findCommand ()
       (*i)->tag ("CMD");
       (*i)->tag ("REPORT");
       (*i)->attribute ("canonical", command);
+      break;
     }
 */
 
@@ -261,6 +269,7 @@ void A3t::findCommand ()
       (*i)->tag ("CMD");
       (*i)->tag ("READCMD");
       (*i)->attribute ("canonical", command);
+      break;
     }
 
     else if (canonicalize (command, "writecmd", (*i)->attribute ("raw")))
@@ -269,6 +278,7 @@ void A3t::findCommand ()
       (*i)->tag ("CMD");
       (*i)->tag ("WRITECMD");
       (*i)->attribute ("canonical", command);
+      break;
     }
 
     else if (canonicalize (command, "helper", (*i)->attribute ("raw")))
@@ -277,6 +287,7 @@ void A3t::findCommand ()
       (*i)->tag ("CMD");
       (*i)->tag ("HELPER");
       (*i)->attribute ("canonical", command);
+      break;
     }
 
 /*
@@ -286,6 +297,7 @@ void A3t::findCommand ()
       (*i)->tag ("CMD");
       (*i)->tag ("SPECIALCMD");
       (*i)->attribute ("canonical", command);
+      break;
     }
 */
   }
