@@ -48,7 +48,7 @@ int CmdGet::execute (std::string& output)
 {
   // Obtain the arguments from the description.  That way, things like '--'
   // have already been handled.
-  std::vector <std::string> words = context.a3.extract_words ();
+  std::vector <std::string> words = context.a3t.getWords ();
   if (words.size () == 0)
     throw std::string (STRING_CMD_GET_NO_DOM);
 
