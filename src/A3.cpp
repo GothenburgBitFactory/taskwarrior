@@ -610,27 +610,6 @@ const A3 A3::extract_modifications () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> A3::extract_words () const
-{
-  std::vector <std::string> words;
-  std::vector <Arg>::const_iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    if (arg->_category == Arg::cat_program  ||
-        arg->_category == Arg::cat_rc       ||
-        arg->_category == Arg::cat_override ||
-        arg->_category == Arg::cat_command  ||
-        arg->_category == Arg::cat_terminator)
-      ;
-
-    else
-      words.push_back (arg->_raw);
-  }
-
-  return words;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 const A3 A3::tokenize (const A3& input) const
 {
   // Join all the arguments together.
