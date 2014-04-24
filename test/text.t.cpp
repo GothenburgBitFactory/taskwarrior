@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (264);
+  UnitTest t (257);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -171,17 +171,6 @@ int main (int argc, char** argv)
   t.is (items[0], "one",           "split 'one\\ntwo\\nthree' -> [0] 'one'");
   t.is (items[1], "two",           "split 'one\\ntwo\\nthree' -> [1] 'two'");
   t.is (items[2], "three",         "split 'one\\ntwo\\nthree' -> [2] 'three'");
-
-  // void splitq (std::vector<std::string>&, const std::string&, const char);
-  unsplit = "one 'two' '' 'three four' \"five six seven\" eight'nine ten'";
-  splitq (items, unsplit, ' ');
-  t.is (items.size () , (size_t) 6,  "splitq 'one \\'two\\' \\'\\' \\'three four\\' \"five six seven\" eight'nine ten'");
-  t.is (items[0], "one",             "splitq 'one \\'two\\' \\'\\' \\'three four\\' \"five six seven\" eight'nine ten' -> [0] 'one'");
-  t.is (items[1], "two",             "splitq 'one \\'two\\' \\'\\' \\'three four\\' \"five six seven\" eight'nine ten' -> [1] 'two'");
-  t.is (items[2], "",                "splitq 'one \\'two\\' \\'\\' \\'three four\\' \"five six seven\" eight'nine ten' -> [2] ''");
-  t.is (items[3], "three four",      "splitq 'one \\'two\\' \\'\\' \\'three four\\' \"five six seven\" eight'nine ten' -> [3] 'three four'");
-  t.is (items[4], "five six seven",  "splitq 'one \\'two\\' \\'\\' \\'three four\\' \"five six seven\" eight'nine ten' -> [4] 'five six seven'");
-  t.is (items[5], "eight'nine ten'", "splitq 'one \\'two\\' \\'\\' \\'three four\\' \"five six seven\" eight'nine ten' -> [4] 'eight\\'nine ten\\''");
 
   // void join (std::string& result, const std::string& separator, const std::vector<std::string>& items)
   std::vector <std::string> unjoined;

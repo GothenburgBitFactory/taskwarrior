@@ -62,47 +62,6 @@ void wrapText (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// UTF-8
-void splitq (
-  std::vector<std::string>& results,
-  const std::string& input,
-  const char delimiter)
-{
-  results.clear ();
-
-  std::string::size_type start = 0;
-  std::string::size_type i = 0;
-  std::string word;
-  bool in_quote = false;
-  char quote;
-
-  while (utf8_next_char (input, i))
-  {
-    if (in_quote)
-    {
-      if (input[i] == quote)
-        in_quote = false;
-    }
-    else
-    {
-      if (input[i] == delimiter)
-      {
-        results.push_back (unquoteText (input.substr (start, i - start)));
-        start = i + 1;
-      }
-      else if (input[i] == '\'' ||
-               input[i] == '"')
-      {
-        quote = input[i];
-        in_quote = true;
-      }
-    }
-  }
-
-  results.push_back (unquoteText (input.substr (start)));
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void split (
   std::vector<std::string>& results,
   const std::string& input,
