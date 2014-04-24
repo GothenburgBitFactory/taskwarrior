@@ -30,6 +30,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <Context.h>
+#include <Lexer.h>
 #include <ViewTask.h>
 #include <i18n.h>
 #include <text.h>
@@ -83,7 +84,7 @@ int CmdCustom::execute (std::string& output)
 
   // Prepend the argument list with those from the report filter.
   std::vector <std::string> filterArgs;
-  splitq (filterArgs, reportFilter, ' ');
+  Lexer::split (filterArgs, reportFilter);
   std::vector <std::string>::reverse_iterator arg;
   for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
   {

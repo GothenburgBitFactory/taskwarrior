@@ -29,6 +29,7 @@
 #include <vector>
 #include <Alias.h>
 #include <Context.h>
+#include <Lexer.h>
 #include <Tree.h>
 #include <text.h>
 
@@ -91,7 +92,7 @@ void Alias::resolve (Tree* tree)
         something = true;
 
         std::vector <std::string> words;
-        splitq (words, context.aliases[raw], ' ');
+        Lexer::split (words, context.aliases[raw]);
 
         std::vector <std::string>::iterator word;
         for (word = words.begin (); word != words.end (); ++word)
