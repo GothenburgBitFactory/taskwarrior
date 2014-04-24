@@ -529,8 +529,10 @@ void guess (
 ////////////////////////////////////////////////////////////////////////////////
 bool nontrivial (const std::string& input)
 {
-  for (size_t i = 0; i < input.length (); ++i)
-    if (!isspace (input[i]))
+  std::string::size_type i = 0;
+  int character;
+  while ((character = utf8_next_char (input, i)))
+    if (! Lexer::is_ws (character))
       return true;
 
   return false;
@@ -549,8 +551,10 @@ bool digitsOnly (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 bool noSpaces (const std::string& input)
 {
-  for (size_t i = 0; i < input.length (); ++i)
-    if (isspace (input[i]))
+  std::string::size_type i = 0;
+  int character;
+  while ((character = utf8_next_char (input, i)))
+    if (Lexer::is_ws (character))
       return false;
 
   return true;
@@ -575,13 +579,13 @@ bool isWordStart (const std::string& input, std::string::size_type pos)
     return false;
 
   // If pos is the first non space/punct character of the string.
-  if (pos == 0 && !isspace (input[pos]) && !isPunctuation (input[pos]))
+  if (pos == 0 && ! Lexer::is_ws (input[pos]) && !isPunctuation (input[pos]))
     return true;
 
   // If pos is not the first alphanumeric character, but there is a preceding
   // space/punct character.
-  if (pos > 0 && !isspace (input[pos]) && !isPunctuation (input[pos])
-              && (isspace (input[pos - 1]) || isPunctuation (input[pos - 1])))
+  if (pos > 0 && ! Lexer::is_ws (input[pos]) && !isPunctuation (input[pos])
+              && ( Lexer::is_ws (input[pos - 1]) || isPunctuation (input[pos - 1])))
     return true;
 
   return false;
@@ -597,13 +601,13 @@ bool isWordEnd (const std::string& input, std::string::size_type pos)
     return false;
 
   // If pos is the last alphanumeric character of the string.
-  if (pos == input.length () - 1 && !isspace (input[pos]) && !isPunctuation (input[pos]))
+  if (pos == input.length () - 1 && ! Lexer::is_ws (input[pos]) && !isPunctuation (input[pos]))
     return true;
 
   // If pos is not the last alphanumeric character, but there is a following
   // non-alphanumeric character.
-  if (pos < input.length () - 1 && !isspace (input[pos]) && !isPunctuation (input[pos])
-                                && (isspace (input[pos + 1]) || isPunctuation (input[pos + 1])))
+  if (pos < input.length () - 1 && ! Lexer::is_ws (input[pos]) && !isPunctuation (input[pos])
+                                && ( Lexer::is_ws (input[pos + 1]) || isPunctuation (input[pos + 1])))
     return true;
 
   return false;
