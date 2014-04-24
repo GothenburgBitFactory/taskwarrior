@@ -213,12 +213,8 @@ int Context::initialize (int argc, const char** argv)
     a3.categorize ();
     a3.dump ("Context::initialize");
 
-    // TODO Uncommenting this breaks unit tests because of the errors it
-    //      generates.
-    Tree* parseTree = NULL;
-    //Tree* parseTree = a3t.parse ();
-
-    // Initialize the command line parser.
+    // Parse the command line.
+    Tree* parseTree = a3t.parse ();
     if (parseTree && config.getBoolean ("debug"))
       debug (parseTree->dump ());
 
