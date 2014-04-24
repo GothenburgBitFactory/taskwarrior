@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (176);
+  UnitTest t (181);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -309,6 +309,15 @@ int main (int argc, char** argv)
   t.is (items[2], "or",            "split ' ( A or B ) ' -> [2] 'or'");
   t.is (items[3], "B",             "split ' ( A or B ) ' -> [3] 'B'");
   t.is (items[4], ")",             "split ' ( A or B ) ' -> [4] ')'");
+
+  // Test simple mode with contrived tokens that ordinarily split.
+  unsplit = "  +-* a+b 12.3e4 'c d'";
+  Lexer::split (items, unsplit);
+  t.is (items.size (), (size_t) 4, "split '  +-* a+b 12.3e4 'c d''");
+  t.is (items[0], "+-*",           "split '  +-* a+b 12.3e4 'c d'' -> [0] '+-*'");
+  t.is (items[1], "a+b",           "split '  +-* a+b 12.3e4 'c d'' -> [1] 'a+b'");
+  t.is (items[2], "12.3e4",        "split '  +-* a+b 12.3e4 'c d'' -> [2] '12.3e4'");
+  t.is (items[3], "c d",           "split '  +-* a+b 12.3e4 'c d'' -> [3] 'c d'");
 
   return 0;
 }
