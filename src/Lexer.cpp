@@ -293,6 +293,7 @@ bool Lexer::token (std::string& token, Type& type)
         quote = 0;
         return true;
       }
+      break;
 
     case typeNumber:
       if (is_dec_digit (_n0))
@@ -417,72 +418,12 @@ bool Lexer::word (std::string& token, Type& type)
         quote = _n0;
         shift ();
       }
-      else if (_n0 == '0' &&
-               _n1 == 'x' &&
-               is_hex_digit (_n2))
-      {
-        type = typeHex;
-        token += utf8_character (_n0);
-        shift ();
-        token += utf8_character (_n0);
-        shift ();
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else if (is_dec_digit (_n0))
-      {
-        // Speculatively try a date and duration parse.  Longest wins.
-        std::string::size_type iso_i = 0;
-        std::string iso_token;
-        ISO8601d iso;
-        iso.ambiguity (_ambiguity);
-        if (iso.parse (_input.substr (_i < 4 ? 0 : _i - 4), iso_i))
-          iso_token = _input.substr ((_i < 4 ? 0 : _i - 4), iso_i);
-
-        std::string::size_type dur_i = 0;
-        std::string dur_token;
-        Duration dur;
-        if (dur.parse (_input.substr (_i < 4 ? 0 : _i - 4), dur_i))
-          dur_token = _input.substr ((_i < 4 ? 0 : _i - 4), dur_i);
-
-        if (iso_token.length () > dur_token.length ())
-        {
-          while (iso_i--) shift ();
-          token = iso_token;
-          type = typeDate;
-          return true;
-        }
-        else if (dur_token.length () > iso_token.length ())
-        {
-          while (dur_i--) shift ();
-          token = dur_token;
-          type = typeDuration;
-          return true;
-        }
-
-        type = typeNumber;
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else if (_n0 == '.' && is_dec_digit (_n1))
-      {
-        type = typeDecimal;
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else if (_n0 == '\\')
-      {
-        type = typeIdentifierEscape;
-        shift ();
-      }
-      else if (is_ident_start (_n0))
-      {
-        type = typeIdentifier;
-        token += utf8_character (_n0);
-        shift ();
-      }
       else
-        throw std::string ("Unexpected error 1");
+      {
+        type = typeString;
+        token += utf8_character (_n0);
+        shift ();
+      }
       break;
 
     case typeString:
@@ -497,29 +438,14 @@ bool Lexer::word (std::string& token, Type& type)
         type = typeEscape;
         shift ();
       }
-      else
+      else if (! quote && is_ws (_n0))
       {
-        token += utf8_character (_n0);
         shift ();
-      }
-      break;
-
-    case typeIdentifier:
-      if (is_ident (_n0))
-      {
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else
-      {
         return true;
       }
-      break;
-
-    case typeIdentifierEscape:
-      if (_n0 == 'u')
+      else
       {
-        type = typeEscapeUnicode;
+        token += utf8_character (_n0);
         shift ();
       }
       break;
@@ -538,7 +464,7 @@ bool Lexer::word (std::string& token, Type& type)
       else
       {
         token += decode_escape (_n0);
-        type = quote ? typeString : typeIdentifier;
+        type = typeString;
         shift ();
       }
       break;
@@ -547,13 +473,13 @@ bool Lexer::word (std::string& token, Type& type)
       if (is_hex_digit (_n0) && is_hex_digit (_n1))
       {
         token += utf8_character (hex_to_int (_n0, _n1));
-        type = quote ? typeString : typeIdentifier;
+        type = typeString;
         shift ();
         shift ();
       }
       else
       {
-        type = quote ? typeString : typeIdentifier;
+        type = typeString;
         shift ();
         quote = 0;
         return true;
@@ -571,98 +497,13 @@ bool Lexer::word (std::string& token, Type& type)
         shift ();
         shift ();
         shift ();
-        type = quote ? typeString : typeIdentifier;
+        type = typeString;
       }
       else if (_n0 == quote)
       {
         type = typeString;
         shift ();
         quote = 0;
-        return true;
-      }
-
-    case typeNumber:
-      if (is_dec_digit (_n0))
-      {
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else if (_n0 == '.')
-      {
-        type = typeDecimal;
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else if (_n0 == 'e' || _n0 == 'E')
-      {
-        type = typeExponentIndicator;
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else
-      {
-        return true;
-      }
-      break;
-
-    case typeDecimal:
-      if (is_dec_digit (_n0))
-      {
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else if (_n0 == 'e' || _n0 == 'E')
-      {
-        type = typeExponentIndicator;
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else
-      {
-        return true;
-      }
-      break;
-
-    case typeExponentIndicator:
-      if (_n0 == '+' || _n0 == '-')
-      {
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else if (is_dec_digit (_n0))
-      {
-        type = typeExponent;
-        token += utf8_character (_n0);
-        shift ();
-      }
-      break;
-
-    case typeExponent:
-      if (is_dec_digit (_n0))
-      {
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else if (_n0 == '.')
-      {
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else
-      {
-        type = typeDecimal;
-        return true;
-      }
-      break;
-
-    case typeHex:
-      if (is_hex_digit (_n0))
-      {
-        token += utf8_character (_n0);
-        shift ();
-      }
-      else
-      {
         return true;
       }
       break;
