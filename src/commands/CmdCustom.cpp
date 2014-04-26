@@ -95,6 +95,8 @@ int CmdCustom::execute (std::string& output)
     t->tag ("FILTER");
   }
 
+  context.a3t.parse ();
+
   context.a3.categorize ();
   context.a3.dump ("A3::categorize");
 
