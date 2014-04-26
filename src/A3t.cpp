@@ -525,8 +525,13 @@ const std::string A3t::getFilterExpression () const
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
     // TODO Insert implicit "and", "(" and ")" operators.
+  }
 
-    if ((*i)->hasTag ("FILTER"))
+  // TODO Construct an efficient ID/UUID clause.
+
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
       if ((*i)->hasTag ("ID"))
       {
@@ -740,7 +745,21 @@ void A3t::findAttribute ()
             n.getUntilEOS (value))
         {
           std::string canonical;
-          if (canonicalize (canonical, "attribute", name))
+          if (canonicalize (canonical, "uda", name))
+          {
+            (*i)->tag ("UDA");
+            (*i)->tag ("MODIFIABLE");
+          }
+
+          else if (canonicalize (canonical, "pseudo", name))
+          {
+            (*i)->unTag ("?");
+            (*i)->tag ("PSEUDO");
+            (*i)->attribute ("name", canonical);
+            (*i)->attribute ("value", value);
+          }
+
+          else if (canonicalize (canonical, "attribute", name))
           {
             (*i)->unTag ("?");
             (*i)->tag ("ATTRIBUTE");
@@ -754,20 +773,6 @@ void A3t::findAttribute ()
             {
               (*i)->tag ("MODIFIABLE");
             }
-          }
-
-          else if (canonicalize (canonical, "uda", name))
-          {
-            (*i)->tag ("UDA");
-            (*i)->tag ("MODIFIABLE");
-          }
-
-          else if (canonicalize (canonical, "pseudo", name))
-          {
-            (*i)->unTag ("?");
-            (*i)->tag ("PSEUDO");
-            (*i)->attribute ("name", canonical);
-            (*i)->attribute ("value", value);
           }
         }
       }
