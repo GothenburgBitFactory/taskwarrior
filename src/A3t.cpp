@@ -564,12 +564,13 @@ const std::string A3t::getFilterExpression ()
       }
       else if ((*i)->hasTag ("TAG"))
       {
-        // TODO +tag --> _hastag_ tag
-        // TODO -tag --> _notag_ tag
         if (filter != "")
           filter += ' ';
 
-        filter += "<tag>";
+        if ((*i)->attribute ("sign") == "+")
+          filter += "tags _hastag_ " + (*i)->attribute ("tag");
+        else
+          filter += "tags _notag_ " + (*i)->attribute ("tag");
       }
       else if ((*i)->hasTag ("PATTERN"))
       {
