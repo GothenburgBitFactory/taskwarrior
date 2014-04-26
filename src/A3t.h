@@ -57,7 +57,7 @@ public:
   void injectDefaults ();
   Tree* captureFirst (const std::string&);
 
-  const std::string getFilterExpression () const;
+  const std::string getFilterExpression ();
   const std::vector <std::string> getWords () const;
   // TODO Extract modifications
 
@@ -71,6 +71,7 @@ private:
   void findOperator ();
   void findFilter ();
   void findModifications ();
+  void patchInfix ();
   void validate ();
 
 private:
