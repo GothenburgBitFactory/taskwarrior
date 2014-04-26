@@ -575,11 +575,10 @@ const std::string A3t::getFilterExpression () const
       }
       else if ((*i)->hasTag ("PATTERN"))
       {
-        // TODO /pattern/ --> description ~ pattern
         if (filter != "")
           filter += ' ';
 
-        filter += "<pattern>";
+        filter += "description ~ " + (*i)->attribute ("pattern");
       }
       else
       {
