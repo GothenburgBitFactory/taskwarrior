@@ -44,9 +44,11 @@ CmdUndo::CmdUndo ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdUndo::execute (std::string& output)
 {
-  // Detect attemps to modify the task.
-  if (context.a3.extract_modifications ().size () > 0)
-    throw std::string (STRING_CMD_UNDO_MODS);
+  // Detect attempts to modify the task.
+  std::vector <Tree*>::iterator i;
+  for (i = context.a3t.tree ()->_branches.begin (); i != context.a3t.tree ()->_branches.end (); ++i)
+    if ((*i)->hasTag ("MODIFICATION"))
+      throw std::string (STRING_CMD_UNDO_MODS);
 
   context.tdb2.revert ();
   context.tdb2.commit ();
