@@ -425,9 +425,6 @@ void A3t::applyOverrides ()
 ////////////////////////////////////////////////////////////////////////////////
 void A3t::injectDefaults ()
 {
-  //std::cout << "#####################\n";
-  //std::cout << _tree->dump ();
-
   // Scan the top-level branches for evidence of ID, UUID, overrides and other
   // arguments.
   bool found_command  = false;
@@ -453,18 +450,13 @@ void A3t::injectDefaults ()
   // If no command was specified, then a command will be inserted.
   if (! found_command)
   {
-    //std::cout << "# ! found_command\n";
-
     // Default command.
     if (! found_sequence)
     {
-      //std::cout << "# ! found_sequence\n";
-
       // Apply overrides, if any.
       std::string defaultCommand = context.config.get ("default.command");
       if (defaultCommand != "")
       {
-        //std::cout << "# default_command\n";
         context.debug ("No command or sequence found - assuming default.command.");
         Tree* t = captureFirst (defaultCommand);
         t->tag ("DEFAULT");
@@ -488,15 +480,11 @@ void A3t::injectDefaults ()
     }
     else
     {
-      //std::cout << "# found_sequence\n";
-
       // TODO There is a problem, in that this block is not run.
 
       // Information command.
       if (! found_other)
       {
-        //std::cout << "# ! found_other\n";
-
         context.debug ("Sequence but no command found - assuming 'information' command.");
         context.header (STRING_ASSUME_INFO);
         Tree* t = captureFirst ("information");
@@ -504,11 +492,6 @@ void A3t::injectDefaults ()
       }
     }
   }
-  //else
-  //  std::cout << "# found_command\n";
-
-  //std::cout << _tree->dump ();
-  //std::cout << "#####################\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
