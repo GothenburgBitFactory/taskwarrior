@@ -554,11 +554,10 @@ const std::string A3t::getFilterExpression () const
       }
       else if ((*i)->hasTag ("ATTRIBUTE"))
       {
-        // TODO name:value --> name == value
         if (filter != "")
           filter += ' ';
 
-        filter += "<attribute>";
+        filter += (*i)->attribute ("name") + " = " + (*i)->attribute ("value");
       }
       else if ((*i)->hasTag ("TAG"))
       {
