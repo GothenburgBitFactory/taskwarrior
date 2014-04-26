@@ -38,6 +38,7 @@ public:
   A3t ();
   ~A3t ();
   void initialize (int, const char**);
+  void clear ();
   void appendStdin ();
   Tree* tree ();
   Tree* parse ();

@@ -77,6 +77,16 @@ void A3t::initialize (int argc, const char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void A3t::clear ()
+{
+  delete _tree;
+
+  _tree = new Tree ("root");
+  if (! _tree)
+    throw std::string ("Failed to allocate memory for parse tree.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Add an arg for every word from std::cin.
 //
 // echo one two -- three | task zero --> task zero one two
@@ -514,11 +524,12 @@ Tree* A3t::captureFirst (const std::string& arg)
   t->_trunk = _tree;
 
   std::vector <Tree*>::iterator i = _tree->_branches.begin ();
-  i++;  // Walk past the binary.
+  if (i != _tree->_branches.end ())
+    i++;  // Walk past the binary.
 
   _tree->_branches.insert (i, t);
-  findCommand ();
 
+  findCommand ();
   return t;
 }
 
