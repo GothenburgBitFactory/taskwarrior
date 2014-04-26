@@ -554,6 +554,127 @@ const std::string A3t::getFilterExpression ()
           filter += ' ';
 
         filter += "<attmod>";
+/*
+        std::string name;
+        std::string mod;
+        std::string value;
+        std::string sense;
+        extract_attmod (arg->_raw, name, mod, value, sense);
+
+        // name.before:value  -->  name < value
+        if (mod == "before" || mod == "under" || mod == "below")
+        {
+          expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("<",                     Arg::cat_op));
+          expanded.push_back (Arg (value, implied,          Arg::cat_literal));
+        }
+
+        // name.after:value  -->  name > value
+        else if (mod == "after" || mod == "over" || mod == "above")
+        {
+          expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg (">",                     Arg::cat_op));
+          expanded.push_back (Arg (value, implied,          Arg::cat_literal));
+        }
+
+        // name.none:  -->  name == ""
+        else if (mod == "none")
+        {
+          expanded.push_back (Arg (name, Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("=",                    Arg::cat_op));
+          expanded.push_back (Arg ("",   implied,          Arg::cat_none));
+        }
+
+        // name.any:  -->  name != ""
+        else if (mod == "any")
+        {
+          expanded.push_back (Arg (name, Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("!=",                   Arg::cat_op));
+          expanded.push_back (Arg ("",   implied,          Arg::cat_none));
+        }
+
+        // name.is:value  -->  name = value
+        else if (mod == "is" || mod == "equals")
+        {
+          expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("=",                     Arg::cat_op));
+          expanded.push_back (Arg (value, implied,          Arg::cat_none));
+        }
+
+        // name.isnt:value  -->  name != value
+        else if (mod == "isnt" || mod == "not")
+        {
+          expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("!=",                    Arg::cat_op));
+          expanded.push_back (Arg (value, implied,          Arg::cat_none));
+        }
+
+        // name.has:value  -->  name ~ value
+        else if (mod == "has" || mod == "contains")
+        {
+          expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("~",                     Arg::cat_op));
+          expanded.push_back (Arg (value, Arg::type_string, Arg::cat_rx));
+        }
+
+        // name.hasnt:value  -->  name !~ value
+        else if (mod == "hasnt")
+        {
+          expanded.push_back (Arg (name,  Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("!~",                    Arg::cat_op));
+          expanded.push_back (Arg (value, Arg::type_string, Arg::cat_rx));
+        }
+
+        // name.startswith:value  -->  name ~ ^value
+        else if (mod == "startswith" || mod == "left")
+        {
+          expanded.push_back (Arg (name,        Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("~",                           Arg::cat_op));
+          expanded.push_back (Arg ("^" + value, Arg::type_string, Arg::cat_rx));
+        }
+
+        // name.endswith:value  -->  name ~ value$
+        else if (mod == "endswith" || mod == "right")
+        {
+          expanded.push_back (Arg (name,        Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("~",                           Arg::cat_op));
+          expanded.push_back (Arg (value + "$", Arg::type_string, Arg::cat_rx));
+        }
+
+        // name.word:value  -->  name ~ \bvalue\b
+        else if (mod == "word")
+        {
+          expanded.push_back (Arg (name,                  Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("~",                                     Arg::cat_op));
+#ifdef DARWIN
+          expanded.push_back (Arg (value,                 Arg::type_string, Arg::cat_literal));
+#else
+#ifdef SOLARIS
+          expanded.push_back (Arg ("\\<" + value + "\\>", Arg::type_string, Arg::cat_rx));
+#else
+          expanded.push_back (Arg ("\\b" + value + "\\b", Arg::type_string, Arg::cat_rx));
+#endif
+#endif
+        }
+
+        // name.noword:value  -->  name !~ \bvalue\n
+        else if (mod == "noword")
+        {
+          expanded.push_back (Arg (name,                  Arg::type_string, Arg::cat_dom));
+          expanded.push_back (Arg ("!~",                                    Arg::cat_op));
+#ifdef DARWIN
+          expanded.push_back (Arg (value,                 Arg::type_string, Arg::cat_literal));
+#else
+#ifdef SOLARIS
+          expanded.push_back (Arg ("\\<" + value + "\\>", Arg::type_string, Arg::cat_rx));
+#else
+          expanded.push_back (Arg ("\\b" + value + "\\b", Arg::type_string, Arg::cat_rx));
+#endif
+#endif
+        }
+        else
+          throw format (STRING_A3_UNKNOWN_ATTMOD, mod);
+*/
       }
       else if ((*i)->hasTag ("ATTRIBUTE"))
       {
