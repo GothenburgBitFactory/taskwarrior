@@ -109,16 +109,16 @@ int main (int argc, const char** argv)
 
   // Make a copy because context.clear will delete them.
   std::string permanent_overrides;
-  std::vector <Arg>::iterator i;
-  for (i = context.a3.begin (); i != context.a3.end (); ++i)
+  std::vector <Tree*>::iterator i;
+  for (i = context.a3t.tree ()->_branches.begin (); i != context.a3t.tree ()->_branches.end (); ++i)
   {
-    if (i->_category == Arg::cat_rc ||
-        i->_category == Arg::cat_override)
+    if ((*i)->hasTag ("RC") ||
+        (*i)->hasTag ("CONFIG"))
     {
-      if (i != context.a3.begin ())
+      if (i != context.a3t.tree ()->_branches.begin ())
         permanent_overrides += " ";
 
-      permanent_overrides += i->_raw;
+      permanent_overrides += (*i)->attribute ("raw");
     }
   }
 
