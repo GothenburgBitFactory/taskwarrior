@@ -206,21 +206,19 @@ Chart::Chart (char type)
 
   // Set the title.
   _title = "(";
-  std::vector <Arg>::const_iterator arg;
-  for (arg = context.a3.begin (); arg != context.a3.end (); ++arg)
+  std::vector <Tree*>::iterator i;
+  for (i = context.a3t.tree ()->_branches.begin (); i != context.a3t.tree ()->_branches.end (); ++i)
   {
-    if (arg->_category == Arg::cat_program  ||
-        arg->_category == Arg::cat_rc       ||
-        arg->_category == Arg::cat_override ||
-        arg->_category == Arg::cat_command  ||
-        arg->_category == Arg::cat_terminator)
-      ;
-    else
+    if (! (*i)->hasTag ("BINARY")     &&
+        ! (*i)->hasTag ("RC")         &&
+        ! (*i)->hasTag ("CONFIG")     &&
+        ! (*i)->hasTag ("CMD")        &&
+        ! (*i)->hasTag ("TERMINATOR"))
     {
       if (_title.length () > 1)
         _title += " ";
 
-      _title += arg->_raw;
+      _title += (*i)->attribute ("raw");
     }
   }
   _title += ")";
