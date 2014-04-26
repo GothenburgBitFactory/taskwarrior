@@ -297,6 +297,9 @@ void Command::filter (const std::vector <Task>& input, std::vector <Task>& outpu
       context.debug (t->dump ());
   }
 
+  std::string filterExpr = context.a3t.getFilterExpression ();
+  context.debug ("\033[1;37;42mFILTER\033[0m " + filterExpr);
+
   if (filt.size ())
   {
     E9 e (filt);
@@ -326,6 +329,9 @@ void Command::filter (std::vector <Task>& output)
     if (t)
       context.debug (t->dump ());
   }
+
+  std::string filterExpr = context.a3t.getFilterExpression ();
+  context.debug ("\033[1;37;42mFILTER\033[0m " + filterExpr);
 
   if (filt.size ())
   {
