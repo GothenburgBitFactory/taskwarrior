@@ -519,18 +519,31 @@ Tree* A3t::captureFirst (const std::string& arg)
 ////////////////////////////////////////////////////////////////////////////////
 const std::string A3t::getFilterExpression ()
 {
-  // Insert implicit "and", "(" and ")" operators.
-  patchInfix ();
-
   // TODO Construct an efficient ID/UUID clause.
 
   // Locate and extract the filter elements.
   std::string filter = "";
+  std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
+      // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need
+      // an "AND" operator inserted between them.
+      //
+      //   ) <non-op>         -->  ) and <non-op>
+      //   <non-op> (         -->  <non-op> <and> (
+      //   ) (                -->  ) and (
+      //   <non-op> <non-op>  -->  <non-op> and <non-op>
+      //
+      if (i != prev &&
+          (((*prev)->hasTag ("FILTER") && ! (*prev)->hasTag ("OP")) || (*prev)->attribute ("raw") == ")") &&
+          (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
+      {
+        filter += " AND";
+      }
+
       if ((*i)->hasTag ("ID"))
       {
         // TODO Construct sequence clause clause.
@@ -707,6 +720,8 @@ const std::string A3t::getFilterExpression ()
 
         filter += (*i)->attribute ("raw");
       }
+
+      prev = i;
     }
   }
 
@@ -1198,45 +1213,6 @@ void A3t::findModifications ()
       (*i)->tag ("MODIFICATION");
     }
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Insert 'and' operators between adjacent non-operators.
-//
-//   ) <non-op>         -->  ) and <non-op>
-//   <non-op> (         -->  <non-op> <and> (
-//   ) (                -->  ) and (
-//   <non-op> <non-op>  -->  <non-op> and <non-op>
-//
-void A3t::patchInfix ()
-{
-/*
-  if (input.size () == 1)
-    return input;
-
-  Arg previous ("?", Arg::cat_op);
-
-  A3 modified;
-  modified._limit = input._limit;
-
-  std::vector <Arg>::const_iterator arg;
-  for (arg = input.begin (); arg != input.end (); ++arg)
-  {
-    // Old-style filters need 'and' conjunctions.
-    if ((previous._category != Arg::cat_op || previous._raw == ")") &&
-        (arg->_category     != Arg::cat_op || arg->_raw     == "("))
-    {
-      modified.push_back (Arg ("and", Arg::cat_op));
-    }
-
-    // Now insert the adjacent non-operator.
-    modified.push_back (*arg);
-    previous = *arg;
-  }
-
-  modified.dump ("A3::infix");
-  return modified;
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

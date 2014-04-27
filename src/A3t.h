@@ -71,7 +71,6 @@ private:
   void findOperator ();
   void findFilter ();
   void findModifications ();
-  void patchInfix ();
   void validate ();
 
 private:
