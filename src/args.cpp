@@ -204,7 +204,7 @@ int main (int argc, const char** argv)
       std::cout << tree->dump ();
 
     std::cout << "\n"
-              << "  Filter: "
+              << "  \033[1;37;42mFILTER\033[0m "
               << a3t.getFilterExpression ()
               << "\n";
   }
