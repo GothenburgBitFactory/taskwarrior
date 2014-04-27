@@ -36,6 +36,23 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
+// Const iterator that can be derefenced into a Task by domSource.
+static std::vector <Task>::const_iterator contextTask;
+
+////////////////////////////////////////////////////////////////////////////////
+static bool domSource (const std::string& identifier, Variant& value)
+{
+  std::string stringValue = context.dom.get (identifier, *contextTask);
+  if (stringValue != identifier)
+  {
+    value = Variant (stringValue);
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Filter::Filter ()
 : _startCount (0)
 , _endCount (0)
@@ -72,7 +89,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
     Eval eval;
     eval.addSource (namedDates);
-    // TODO Need DOM source.
+    eval.addSource (domSource);
     eval.compileExpression (filterExpr);
 
     std::vector <Task>::const_iterator task;
@@ -81,6 +98,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
       bool oldFilter = e.evalFilter (*task);
       if (oldFilter)
         output.push_back (*task);
+
+      contextTask = task;
 
       Variant var;
       eval.evaluateCompiledExpression (var);
@@ -122,7 +141,7 @@ void Filter::subset (std::vector <Task>& output)
 
     Eval eval;
     eval.addSource (namedDates);
-    // TODO Need DOM source.
+    eval.addSource (domSource);
     eval.compileExpression (filterExpr);
 
     output.clear ();
@@ -133,6 +152,8 @@ void Filter::subset (std::vector <Task>& output)
       bool oldFilter = e.evalFilter (*task);
       if (oldFilter)
         output.push_back (*task);
+
+      contextTask = task;
 
       Variant var;
       eval.evaluateCompiledExpression (var);
@@ -152,6 +173,8 @@ void Filter::subset (std::vector <Task>& output)
         bool oldFilter = e.evalFilter (*task);
         if (oldFilter)
           output.push_back (*task);
+
+        contextTask = task;
 
         Variant var;
         eval.evaluateCompiledExpression (var);
