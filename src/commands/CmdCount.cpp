@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <Context.h>
+#include <Filter.h>
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
@@ -49,7 +50,8 @@ int CmdCount::execute (std::string& output)
   // Apply filter.
   handleRecurrence ();
   std::vector <Task> filtered;
-  filter (filtered);
+  Filter filter;
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   // Find number of matching tasks.  Skip recurring parent tasks.

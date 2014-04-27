@@ -530,7 +530,7 @@ const std::string A3t::getFilterExpression ()
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
       // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need
-      // an "AND" operator inserted between them.
+      // an "and" operator inserted between them.
       //
       //   ) <non-op>         -->  ) and <non-op>
       //   <non-op> (         -->  <non-op> <and> (
@@ -541,7 +541,7 @@ const std::string A3t::getFilterExpression ()
           (((*prev)->hasTag ("FILTER") && ! (*prev)->hasTag ("OP")) || (*prev)->attribute ("raw") == ")") &&
           (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
       {
-        filter += " AND";
+        filter += " and";
       }
 
       if ((*i)->hasTag ("ID"))

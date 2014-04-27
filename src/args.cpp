@@ -73,7 +73,6 @@ int main (int argc, const char** argv)
     a3t.entity ("report",     "unblocked");
     a3t.entity ("report",     "waiting");
 
-
     // Read-only commands.
     a3t.entity ("readcmd",    "export");
     a3t.entity ("readcmd",    "info");
