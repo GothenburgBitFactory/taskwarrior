@@ -20,6 +20,7 @@ set (task_SRCS A3.cpp A3.h
                E9.cpp E9.h
                Eval.cpp Eval.h
                File.cpp File.h
+               Filter.cpp Filter.h
                Hooks.cpp Hooks.h
                ISO8601.cpp ISO8601.h
                JSON.cpp JSON.h
