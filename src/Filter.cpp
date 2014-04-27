@@ -92,6 +92,9 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     eval.addSource (domSource);
     eval.compileExpression (filterExpr);
 
+    if (context.config.getBoolean ("debug"))
+      eval.debug ();
+
     std::vector <Task>::const_iterator task;
     for (task = input.begin (); task != input.end (); ++task)
     {
@@ -143,6 +146,9 @@ void Filter::subset (std::vector <Task>& output)
     eval.addSource (namedDates);
     eval.addSource (domSource);
     eval.compileExpression (filterExpr);
+
+    if (context.config.getBoolean ("debug"))
+      eval.debug ();
 
     output.clear ();
     std::vector <Task>::const_iterator task;

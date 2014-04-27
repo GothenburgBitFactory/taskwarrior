@@ -43,6 +43,7 @@
 
 extern Context context;
 
+// TODO Tie this to rc.abbreviation.minimum.
 static const int minimumMatchLength = 3;
 
 // Alias expansion limit.  Any more indicates some kind of error.
@@ -159,7 +160,7 @@ void A3t::entity (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Search for 'value' in _entities, return category and canonicalized value.
+// Search for 'value' in _entities category, return canonicalized value.
 bool A3t::canonicalize (
   std::string& canonicalized,
   const std::string& category,

@@ -49,8 +49,8 @@ int CmdCount::execute (std::string& output)
 {
   // Apply filter.
   handleRecurrence ();
-  std::vector <Task> filtered;
   Filter filter;
+  std::vector <Task> filtered;
   filter.subset (filtered);
   context.tdb2.commit ();
 
