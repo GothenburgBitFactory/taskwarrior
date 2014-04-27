@@ -160,6 +160,41 @@ void Eval::evaluatePostfixExpression (const std::string& e, Variant& v) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Eval::compileExpression (const std::string& e)
+{
+  // Reduce e to a vector of tokens.
+  Lexer l (e);
+  l.ambiguity (_ambiguity);
+  std::string token;
+  Lexer::Type type;
+  while (l.token (token, type))
+  {
+    _compiled.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    if (_debug)
+      std::cout << "# token postfix '" << token << "' " << Lexer::type_name (type) << "\n";
+  }
+
+  // Parse for syntax checking and operator replacement.
+  infixParse (_compiled);
+  if (_debug)
+  {
+    std::vector <std::pair <std::string, Lexer::Type> >::iterator i;
+    for (i = _compiled.begin (); i != _compiled.end (); ++i)
+      std::cout << "# token infix '" << i->first << "' " << Lexer::type_name (i->second) << "\n";
+  }
+
+  // Convert infix --> postfix.
+  infixToPostfix (_compiled);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Eval::evaluateCompiledExpression (Variant& v)
+{
+  // Call the postfix evaluator.
+  evaluatePostfixStack (_compiled, v);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Eval::ambiguity (bool value)
 {
   _ambiguity = value;
