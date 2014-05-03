@@ -62,8 +62,8 @@ static struct
   {  ">",        10,         'b',  'l' },    // Greater than
   {  "<",        10,         'b',  'l' },    // Less than
 
-  {  "=",         9,         'b',  'l' },    // Equal
-  {  "==",        9,         'b',  'l' },    // Equal
+  {  "=",         9,         'b',  'l' },    // Equal (partial)
+  {  "==",        9,         'b',  'l' },    // Equal (exact)
   {  "!=",        9,         'b',  'l' },    // Inequal
 
   {  "~",         8,         'b',  'l' },    // Regex match
