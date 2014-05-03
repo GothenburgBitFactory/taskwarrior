@@ -45,10 +45,12 @@ static bool domSource (const std::string& identifier, Variant& value)
   std::string stringValue = context.dom.get (identifier, *contextTask);
   if (stringValue != identifier)
   {
+//    std::cout << "# domSource " << identifier << " -> " << stringValue << "\n";
     value = Variant (stringValue);
     return true;
   }
 
+//  std::cout << "# domSource " << identifier << " -> ?\n";
   return false;
 }
 
@@ -168,7 +170,7 @@ void Filter::subset (std::vector <Task>& output)
         std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
     }
 
-    if (! shortcut ())
+    if (! pendingOnly ())
     {
       context.timer_filter.stop ();
       const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
@@ -213,17 +215,17 @@ void Filter::subset (std::vector <Task>& output)
 ////////////////////////////////////////////////////////////////////////////////
 // If the filter contains the restriction "status:pending", as the first filter
 // term, then completed.data does not need to be loaded.
-bool Filter::shortcut ()
+bool Filter::pendingOnly ()
 {
-/*
-  // Postfix: <status> <"pending"> <=>
-  //                 0           1   2
-  if (filter.size ()                  >= 3                 &&
-      filter[0]._raw                  == "status"          &&
-      filter[1]._raw.find ("pending") != std::string::npos &&
-      filter[2]._raw                  == "=")
+  Tree* tree = context.a3t.tree ();
+
+  // If the filter starts with "status:pending", the completed.data does not
+  // need to be accessed..
+  if (tree->_branches.size () > 0 &&
+      tree->_branches[0]->attribute ("name")  == "status" &&
+      tree->_branches[0]->attribute ("value") == "pending")
   {
-    context.debug ("Command::filter skipping completed.data (status:pending only)");
+    context.debug ("Filter::pendingOnly - skipping completed.data (status:pending first)");
     return true;
   }
 
@@ -232,17 +234,17 @@ bool Filter::shortcut ()
   int countUUID = 0;
   int countOr   = 0;
   int countXor  = 0;
-  std::vector <Arg>::const_iterator i;
-  for (i = filter.begin (); i != filter.end (); ++i)
-  {
-    if (i->_category == Arg::cat_op)
-    {
-      if (i->_raw == "or")  ++countOr;
-      if (i->_raw == "xor") ++countXor;
 
+  std::vector <Tree*>::iterator i;
+  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
+  {
+    if ((*i)->hasTag ("OP"))
+    {
+      if ((*i)->attribute ("canonical") == "or")  ++countOr;
+      if ((*i)->attribute ("canonical") == "xor") ++countXor;
     }
-    else if (i->_category == Arg::cat_id)   ++countId;
-    else if (i->_category == Arg::cat_uuid) ++countUUID;
+    else if ((*i)->hasTag ("ID"))   ++countId;
+    else if ((*i)->hasTag ("UUID")) ++countUUID;
   }
 
   if (countOr   == 0 &&
@@ -250,10 +252,9 @@ bool Filter::shortcut ()
       countUUID == 0 &&
       countId    > 0)
   {
-    context.debug ("Command::filter skipping completed.data (IDs, no OR, no XOR, no UUID)");
+    context.debug ("Filter::pendingOnly - skipping completed.data (IDs, no OR, no XOR, no UUID)");
     return true;
   }
-*/
 
   return false;
 }

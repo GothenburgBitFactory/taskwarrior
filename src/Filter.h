@@ -38,7 +38,7 @@ public:
 
   void subset (const std::vector <Task>&, std::vector <Task>&);
   void subset (std::vector <Task>&);
-  bool shortcut ();
+  bool pendingOnly ();
   void safety ();
 
 private:
