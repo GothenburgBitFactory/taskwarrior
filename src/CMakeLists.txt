@@ -66,7 +66,7 @@ set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 install (TARGETS task_executable DESTINATION ${TASK_BINDIR})
 
 set_property (TARGET calc_executable PROPERTY OUTPUT_NAME "calc")
-set_property (TARGET args_executable   PROPERTY OUTPUT_NAME "args")
+set_property (TARGET args_executable PROPERTY OUTPUT_NAME "args")
 
 #SET(CMAKE_BUILD_TYPE gcov)
 #SET(CMAKE_CXX_FLAGS_GCOV "--coverage")
