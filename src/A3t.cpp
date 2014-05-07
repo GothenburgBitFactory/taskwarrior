@@ -148,6 +148,8 @@ Tree* A3t::parse ()
   findFilter ();
   findModifications ();
 
+  findPlainArgs ();
+
   validate ();
 
   return _tree;
@@ -1180,6 +1182,23 @@ void A3t::findModifications ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("MODIFICATION");
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// This is a called after parsing. The intention is to find plain arguments that
+// are not otherwise recognized, and potentially promote them to patterns.
+void A3t::findPlainArgs ()
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    if ((*i)->hasTag ("FILTER")   &&
+        (*i)->hasTag ("ORIGINAL") &&  // TODO Wrong, can come in through alias/filter
+        (*i)->countTags () == 2)
+    {
+      std::cout << "# plain arg '" << (*i)->attribute ("raw") << "'\n";
     }
   }
 }
