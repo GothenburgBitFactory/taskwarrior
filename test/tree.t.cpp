@@ -33,10 +33,11 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest ut (8);
+  UnitTest ut (10);
 
   // Construct tree as shown above.
   Tree t ("root");
+  ut.is (t.countTags (), 0, "countTags == 0");
 
   Tree* b = t.addBranch (new Tree ("c1"));
   b->attribute ("name", "c1");
@@ -59,6 +60,7 @@ int main (int argc, char** argv)
 
   t._branches[2]->_branches[0]->tag ("one");
   t._branches[2]->_branches[0]->tag ("two");
+  ut.is    (t._branches[2]->_branches[0]->countTags (), 2, "countTags == 2");
   ut.ok    (t._branches[2]->_branches[0]->hasTag ("one"),   "hasTag +");
   ut.notok (t._branches[2]->_branches[0]->hasTag ("three"), "hasTag -");
 
