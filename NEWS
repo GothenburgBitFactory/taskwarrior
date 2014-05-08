@@ -7,6 +7,7 @@ New Features in taskwarrior 2.4.0
   - Better handling for deletion of recurring tasks.
   - New virtual tags: YESTERDAY, TOMORROW, READY, PENDING, COMPLETED, DELETED.
   - The '_get' command properly uses exit codes.
+  - Regular expressions are now enabled by default.
 
 New commands in taskwarrior 2.4.0
 

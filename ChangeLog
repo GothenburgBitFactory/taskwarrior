@@ -70,6 +70,7 @@
 - Removed debugging code.
 - Added details in debug mode, for unrecognized data (thanks to Kosta H).
 - Removed unused 'patterns' configuration variable.
+- Regular expressions are now enabled by default.
 
 ------ current release ---------------------------
 
