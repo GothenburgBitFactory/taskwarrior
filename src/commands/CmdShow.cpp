@@ -166,7 +166,6 @@ int CmdShow::execute (std::string& output)
     " locking"
     " monthsperline"
     " nag"
-    " patterns"
     " print.empty.columns"
     " recurrence.indicator"
     " recurrence.limit"

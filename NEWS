@@ -29,6 +29,7 @@ Removed features in 2.4.0
   - Old-style color names including underscores are no longer supported.
   - Removed priority counts from the 'projects' commands.
   - Removed the unused 'locale' configuration variable.
+  - Removed the unused 'patterns' confguration variable.
 
 Known Issues
 

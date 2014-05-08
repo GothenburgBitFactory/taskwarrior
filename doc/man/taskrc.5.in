@@ -357,11 +357,6 @@ among users that are not comfortable with regular expressions.
 Sets the xterm window title when reports are run.  Defaults to off.
 
 .TP
-.B patterns=on
-Enables or disables pattern support on the command line, such as /foo/.
-Defaults to on.
-
-.TP
 .B expressions=infix|postfix
 Sets a preference for infix expressions (1 + 2) or postfix expressions (1 2 +).
 Defaults to infix.
