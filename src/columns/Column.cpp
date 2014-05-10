@@ -183,12 +183,13 @@ Column* Column::uda (const std::string& name)
   std::string key = "uda." + name + ".type";
   c->_type = context.config.get (key);
   if (c->_type == "")
-    throw format (STRING_UDA_TYPE_MISSING, name);
+    context.error (format  (STRING_UDA_TYPE_MISSING, name));
+
   if (c->_type != "string"   &&
       c->_type != "date"     &&
       c->_type != "duration" &&
       c->_type != "numeric")
-    throw std::string (STRING_UDA_TYPE);
+    context.error (STRING_UDA_TYPE);
 
   key = "uda." + name + ".label";
   if (context.config.get (key) != "")
