@@ -51,6 +51,8 @@
 - TW-1307 burndown is aliased to burndown.weekly (thanks to darkfeline).
 - TW-1309 memory error, if misconfigured calendar.details.report (thanks to
           Onion).
+- TW-1318 creating a UDA in the wrong sequence will cripple taskwarrior (thanks
+          to Onion).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
