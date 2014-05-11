@@ -126,8 +126,8 @@ std::string ViewText::render ()
     for (unsigned int row = 0; row < _data.size (); ++row)
     {
       // Determine minimum and ideal width for this column.
-      unsigned int min;
-      unsigned int ideal;
+      unsigned int min = 0;
+      unsigned int ideal = 0;
       _columns[col]->measure (_data[row][col], min, ideal);
 
       if (min   > global_min)   global_min = min;

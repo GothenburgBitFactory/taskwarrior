@@ -136,8 +136,8 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
         break;
 
       // Determine minimum and ideal width for this column.
-      unsigned int min;
-      unsigned int ideal;
+      unsigned int min = 0;
+      unsigned int ideal = 0;
       (*i)->measure (data[sequence[s]], min, ideal);
 
       if (min   > global_min)   global_min   = min;
