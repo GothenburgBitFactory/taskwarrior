@@ -87,7 +87,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
   if (filterExpr.length ())
   {
-    E9 e (filt);
+    E9 e9 (filt);
 
     Eval eval;
     eval.addSource (namedDates);
@@ -102,7 +102,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     std::vector <Task>::const_iterator task;
     for (task = input.begin (); task != input.end (); ++task)
     {
-      bool oldFilter = e.evalFilter (*task);
+      // TODO Obsolete.
+      bool oldFilter = e9.evalFilter (*task);
       if (oldFilter)
         output.push_back (*task);
 
@@ -111,6 +112,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
       Variant var;
       eval.evaluateCompiledExpression (var);
 
+      // TODO Obsolete filter comparison.
       if (oldFilter != var.get_bool ())
         std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
     }
@@ -161,6 +163,7 @@ void Filter::subset (std::vector <Task>& output)
 
     for (task = pending.begin (); task != pending.end (); ++task)
     {
+      // TODO Obsolete.
       bool oldFilter = e.evalFilter (*task);
       if (oldFilter)
         output.push_back (*task);
@@ -170,6 +173,7 @@ void Filter::subset (std::vector <Task>& output)
       Variant var;
       eval.evaluateCompiledExpression (var);
 
+      // TODO Obsolete filter comparison.
       if (oldFilter != var.get_bool ())
         std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
     }
@@ -182,6 +186,7 @@ void Filter::subset (std::vector <Task>& output)
 
       for (task = completed.begin (); task != completed.end (); ++task)
       {
+        // TODO Obsolete.
         bool oldFilter = e.evalFilter (*task);
         if (oldFilter)
           output.push_back (*task);
@@ -191,6 +196,7 @@ void Filter::subset (std::vector <Task>& output)
         Variant var;
         eval.evaluateCompiledExpression (var);
 
+        // TODO Obsolete filter comparison.
         if (oldFilter != var.get_bool ())
           std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
       }
