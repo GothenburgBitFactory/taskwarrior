@@ -345,7 +345,8 @@ int CmdCalendar::execute (std::string& output)
       report_filter += " due.after:" + after + " due.before:" + before + " -nocal";
       context.config.set ("report." + report + ".filter", report_filter);
 
-      // Display all due task in the report colorized not only the imminet ones
+      // Display all due tasks in the report colorized not only the imminent
+      // ones.
       context.config.set ("due", 0);
 
       std::string output;
