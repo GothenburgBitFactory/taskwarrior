@@ -40,13 +40,14 @@ if (open my $fh, '>', 'bug.rc')
   print $fh "confirmation=no\n";
   print $fh "defaultwidth=50\n";
   print $fh "detection=off\n";
+  print $fh "verbose=nothing\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Split on comma instead of hyphenating
 
-my $output = qx{../src/task rc:bug.rc show report.next.columns | tail -n +4 2>&1};
+my $output = qx{../src/task rc:bug.rc show report.next.columns 2>&1};
 unlike ($output, qr/-/, 'split on comma for comma-separated lists');
 
 # Cleanup.
