@@ -54,6 +54,8 @@
           Onion).
 - TW-1318 creating a UDA in the wrong sequence will cripple taskwarrior (thanks
           to Onion).
+- TW-1320 Provide output of malformed row if invalid Taskwarrior file format
+          (thanks to Kost Harlan).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
