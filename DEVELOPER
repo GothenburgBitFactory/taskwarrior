@@ -1,3 +1,19 @@
+How to Build
+
+  Obtain and build code:
+    $ git clone https://git.tasktools.org/scm/tm/task.git task.git
+    $ cd task.git
+    $ git checkout 2.4.0                 # Dev branch
+    $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release.  Default: neither.
+    $ make VERBOSE=1                     # Shows details
+
+  Running Test Suite:
+    $ cd tests
+    $ make VERBOSE=1                     # Shows details
+    $ ./run_all                          # Runs all tests silently > all.log
+                                         # Install vramsteg for blinkenlights
+    $ ./problems                         # Find errors in all.log
+
 General Statement
   This file is intended to convey the current efforts, priorities and needs of
   the codebase.  It is for anyone looking for a way to start contributing.
@@ -190,6 +206,7 @@ Unit Tests Needed
   Note that all new unit tests should follow the test/template.t standard.
 
 Work in Progress
+
   Things that are currently in flux, which is another way of saying leave it
   alone while it is being worked on.
 
@@ -203,11 +220,8 @@ Current Codebase Condition
   'master' branch:
     - 2.3.0 Current release, locked.
 
-  '2.3.0' branch:
-    - Current release.  Locked.
-
   '2.3.1' branch:
-    - For emergency releases.  Hopefully we won't need this.
+    - Bug fix branch.  To be released soon.
 
   '2.4.0' branch:
     - Current development branch with new command line parser, expressions
@@ -218,3 +232,4 @@ Current Codebase Condition
 2013-09-09 Updated branch info.
 2014-01-19 Updated for 2.4.0.
 2014-04-13 Added answers.tasktools.org, corrected URLs.
+2014-05-11 Added build info.
