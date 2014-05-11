@@ -67,7 +67,7 @@ if ($day <= 9)
   $day = " ".$day;
 }
 
-# task cal   and   task cal y
+# task calendar   and   task calendar y
 my $output = qx{../src/task rc:cal.rc rc._forcecolor:on calendar 2>&1};
 if ($wday == 6 || $wday == 0)
 {
@@ -98,7 +98,7 @@ if ($month eq "Jan")
 }
 unlike ($output, qr/$month\S*?\s+?$nextyear/,     'Current month and year ahead are not displayed');
 
-# task cal due   and   task cal due y
+# task calendar due   and   task calendar due y
 qx{../src/task rc:cal.rc add due:20190515 one 2>&1};
 qx{../src/task rc:cal.rc add due:20200123 two 2>&1};
 $output = qx{../src/task rc:cal.rc rc._forcecolor:on calendar due 2>&1};
@@ -120,7 +120,7 @@ like   ($output, qr/37;100m19/,      'Saturday April 19, 2008 is color-coded');
 like   ($output, qr/37;100m20/,      'Sunday April 20, 2008 is color-coded');
 like   ($output, qr/30;47m  1/,      'Weeknumbers are color-coded');
 
-# task cal 2016
+# task calendar 2016
 $output = qx{../src/task rc:cal.rc rc.weekstart:Monday calendar 2016 2>&1};
 unlike ($output, qr/2015/,           'Year 2015 is not displayed');
 unlike ($output, qr/2017/,           'Year 2017 is not displayed');
@@ -136,7 +136,7 @@ like   ($output, qr/53 +25/,         'Last week in 2016 starts with Sun Dec 25 (
 $output = qx{../src/task rc:cal.rc rc.weekstart:Monday rc.displayweeknumber:off calendar 2016 2>&1};
 unlike ($output, qr/53/,             'Weeknumbers are not displayed');
 
-# task cal 4 2010
+# task calendar 4 2010
 $output = qx{../src/task rc:cal.rc rc.monthsperline:1 calendar 4 2010 2>&1};
 unlike ($output, qr/March 2010/,     'March 2010 is not displayed');
 like   ($output, qr/April 2010/,     'April 2010 is displayed');
