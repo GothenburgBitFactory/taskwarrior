@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -233,7 +234,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
 #if GNUTLS_VERSION_NUMBER >= 0x030109
   gnutls_transport_set_int (_session, _socket);
 #else
-  gnutls_transport_set_ptr (_session, (gnutls_transport_ptr_t) _socket);
+  gnutls_transport_set_ptr (_session, (gnutls_transport_ptr_t) (intptr_t) _socket);
 #endif
 
   // Perform the TLS handshake
