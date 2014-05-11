@@ -52,9 +52,9 @@ set (task_SRCS A3.cpp A3.h
                wcwidth6.cpp)
 
 add_library (task STATIC ${task_SRCS})
-add_executable (task_executable   main.cpp)
-add_executable (calc_executable   calc.cpp)
-add_executable (args_executable   args.cpp)
+add_executable (task_executable main.cpp)
+add_executable (calc_executable calc.cpp)
+add_executable (args_executable args.cpp)
 
 # Yes, 'task' is included twice, otherwise linking fails on assorted OSes.
 target_link_libraries (task_executable task commands columns task ${TASK_LIBRARIES})
