@@ -120,7 +120,7 @@ int main (int argc, char** argv)
         exit (1);
       }
       else if (!strcmp (argv[i], "-d") || !strcmp (argv[i], "--debug"))
-        e.debug ();
+        e.debug (true);
       else if (!strcmp (argv[i], "-i") || !strcmp (argv[i], "--infix"))
         infix = true;
       else if (!strcmp (argv[i], "-p") || !strcmp (argv[i], "--postfix"))

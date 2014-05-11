@@ -92,10 +92,12 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     Eval eval;
     eval.addSource (namedDates);
     eval.addSource (domSource);
-    eval.compileExpression (filterExpr);
 
-    if (context.config.getBoolean ("debug"))
-      eval.debug ();
+    // Debug output from Eval during compilation is useful.  During evaluation
+    // it is mostly noise.
+    eval.debug (context.config.getBoolean ("debug"));
+    eval.compileExpression (filterExpr);
+    eval.debug (false);
 
     std::vector <Task>::const_iterator task;
     for (task = input.begin (); task != input.end (); ++task)
@@ -147,10 +149,12 @@ void Filter::subset (std::vector <Task>& output)
     Eval eval;
     eval.addSource (namedDates);
     eval.addSource (domSource);
-    eval.compileExpression (filterExpr);
 
-    if (context.config.getBoolean ("debug"))
-      eval.debug ();
+    // Debug output from Eval during compilation is useful.  During evaluation
+    // it is mostly noise.
+    eval.debug (context.config.getBoolean ("debug"));
+    eval.compileExpression (filterExpr);
+    eval.debug (false);
 
     output.clear ();
     std::vector <Task>::const_iterator task;

@@ -47,7 +47,7 @@ public:
   void compileExpression (const std::string&);
   void evaluateCompiledExpression (Variant&);
   void ambiguity (bool);
-  void debug ();
+  void debug (bool);
 
   static void getOperators (std::vector <std::string>&);
 
