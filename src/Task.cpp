@@ -858,7 +858,7 @@ void Task::parseLegacy (const std::string& line)
     message << "Invalid fileformat at line '"
             << line
             << "'";
-    context.debug (message.str());
+    context.debug (message.str ());
     throw std::string (STRING_TASK_PARSE_UNREC_FF);
     break;
   }
