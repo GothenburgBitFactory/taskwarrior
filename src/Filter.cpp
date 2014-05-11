@@ -113,8 +113,9 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
       eval.evaluateCompiledExpression (var);
 
       // TODO Obsolete filter comparison.
-      if (oldFilter != var.get_bool ())
-        std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
+      if (context.config.getBoolean ("debug"))
+        if (oldFilter != var.get_bool ())
+          std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
     }
   }
   else
@@ -174,8 +175,9 @@ void Filter::subset (std::vector <Task>& output)
       eval.evaluateCompiledExpression (var);
 
       // TODO Obsolete filter comparison.
-      if (oldFilter != var.get_bool ())
-        std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
+      if (context.config.getBoolean ("debug"))
+        if (oldFilter != var.get_bool ())
+          std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
     }
 
     if (! pendingOnly ())
