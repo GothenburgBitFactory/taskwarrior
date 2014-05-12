@@ -43,8 +43,8 @@ echo ./args rc:~/..taskrc rc.name=value add -- modify +tag /from/to/g name:value
  ./args rc:~/..taskrc rc.name=value add -- modify +tag /from/to/g name:value /long/path/to/file.txt
 
 echo
-echo ./args /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331 limit:10 due.before:eom nex
- ./args /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331 limit:10 due.before:eom nex
+echo ./args /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331,3b6218f9-726a-44fc-aa63-889ff52be442 limit:10 due.before:eom nex
+ ./args /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331,3b6218f9-726a-44fc-aa63-889ff52be442 limit:10 due.before:eom nex
 
 echo
 echo ./args add Buy milk due:\'eow - 2d\' scheduled:due-1d
