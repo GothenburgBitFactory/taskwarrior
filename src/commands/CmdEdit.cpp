@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <OldDuration.h>
 #include <Context.h>
+#include <Filter.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
@@ -57,21 +58,20 @@ CmdEdit::CmdEdit ()
 // wrench.  To be used sparingly.
 int CmdEdit::execute (std::string& output)
 {
-  int rc = 0;
-
   // Filter the tasks.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
 
-  // Find number of matching tasks.  Skip recurring parent tasks.
+  // Find number of matching tasks.
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
     if (editFile (*task))
       context.tdb2.modify (*task);
 
   context.tdb2.commit ();
-  return rc;
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
