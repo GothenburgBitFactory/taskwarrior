@@ -285,6 +285,7 @@ bool Command::displays_id () const
 // Filter a specific list of tasks.
 void Command::filter (const std::vector <Task>& input, std::vector <Task>& output)
 {
+  context.debug ("OBSOLETE Command::filter");
   context.timer_filter.start ();
 
   A3 filt = context.a3.extract_filter ();
@@ -319,6 +320,7 @@ void Command::filter (const std::vector <Task>& input, std::vector <Task>& outpu
 // Filter all tasks.
 void Command::filter (std::vector <Task>& output)
 {
+  context.debug ("OBSOLETE Command::filter");
   context.timer_filter.start ();
   A3 filt = context.a3.extract_filter ();
   filt.dump ("extract_filter");
@@ -383,6 +385,7 @@ void Command::filter (std::vector <Task>& output)
 // term, then completed.data does not need to be loaded.
 bool Command::filter_shortcut (const A3& filter)
 {
+  context.debug ("OBSOLETE Command::filter_shortcut");
   // Postfix: <status> <"pending"> <=>
   //                 0           1   2
   if (filter.size ()                  >= 3                 &&
@@ -483,6 +486,7 @@ void Command::modify_task (
 // Disaster avoidance mechanism.
 void Command::safety ()
 {
+  context.debug ("OBSOLETE Command::safety");
   if (! _read_only)
   {
     A3 write_filter = context.a3.extract_filter ();
