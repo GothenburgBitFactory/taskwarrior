@@ -522,12 +522,49 @@ Tree* A3t::captureFirst (const std::string& arg)
 ////////////////////////////////////////////////////////////////////////////////
 const std::string A3t::getFilterExpression ()
 {
-  // TODO Construct an efficient ID/UUID clause.
+  // Construct an efficient ID/UUID clause.
+  std::string sequence = "";
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
+    {
+      if ((*i)->hasTag ("ID"))
+      {
+       // Construct ID sequence clause.
+        std::vector <Tree*>::iterator range;
+        for (range = (*i)->_branches.begin (); range != (*i)->_branches.end (); ++range)
+        {
+          if (sequence != "")
+            sequence += " or ";
+
+          std::string lower = (*range)->attribute ("min");
+          std::string upper = (*range)->attribute ("max");
+
+          if (lower == upper)
+            sequence += "id == " + lower;
+          else
+            sequence += "( id >= " + lower + " and id <= " + upper + ")";
+        }
+      }
+      else if ((*i)->hasTag ("UUID"))
+      {
+        // UUIDs are compared using a partial match.
+        std::vector <Tree*>::iterator range;
+        for (range = (*i)->_branches.begin (); range != (*i)->_branches.end (); ++range)
+        {
+          if (sequence != "")
+            sequence += " or ";
+
+          sequence += "uuid = " + (*range)->attribute ("value");
+        }
+      }
+    }
+  }
 
   // Locate and extract the filter elements.
   std::string filter = "";
   std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
-  std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
@@ -547,22 +584,12 @@ const std::string A3t::getFilterExpression ()
         filter += " and";
       }
 
-      if ((*i)->hasTag ("ID"))
+      else if ((*i)->hasTag ("ID") ||
+               (*i)->hasTag ("UUID"))
       {
-        // TODO Construct sequence clause clause.
-        if (filter != "")
-          filter += ' ';
-
-        filter += "<id>";
+        // Skipped, as they are already processed.
       }
-      else if ((*i)->hasTag ("UUID"))
-      {
-        // TODO Construct sequence clause clause.
-        if (filter != "")
-          filter += ' ';
 
-        filter += "<uuid>";
-      }
       else if ((*i)->hasTag ("ATTMOD"))
       {
         // name.mod:value --> name <op> value
@@ -695,6 +722,9 @@ const std::string A3t::getFilterExpression ()
       prev = i;
     }
   }
+
+  if (sequence != "")
+    return "( " + sequence + " ) " + filter;
 
   return filter;
 }
