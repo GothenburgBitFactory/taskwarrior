@@ -276,7 +276,7 @@ void Eval::evaluatePostfixStack (
       else if (token->first == ">")   left = left > right;
       else if (token->first == ">=")  left = left >= right;
       else if (token->first == "==")  left = left.operator== (right);
-      else if (token->first == "=")   left = left.operator== (right);
+      else if (token->first == "=")   left = left.operator== (right);  // TODO Replace with partials for project, UUID.
       else if (token->first == "!=")  left = left.operator!= (right);
       else if (token->first == "+")   left += right;
       else if (token->first == "-")   left -= right;
