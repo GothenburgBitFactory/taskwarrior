@@ -223,6 +223,7 @@ int Context::initialize (int argc, const char** argv)
 
     // First opportunity to run a hook script.
     hooks.initialize ();
+    hooks.onLaunch ();
   }
 
   catch (const std::string& message)

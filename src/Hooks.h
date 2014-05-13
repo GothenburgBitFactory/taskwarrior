@@ -37,6 +37,8 @@ public:
 
   void initialize ();
 
+  void onLaunch ();
+
 private:
 };
 
