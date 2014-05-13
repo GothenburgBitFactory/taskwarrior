@@ -18,6 +18,9 @@
 - TW-5 color.due.today does not work (thanks to Max Muller).
 - TW-115 allow "0day" durations for UDAs.
 - TW-197 New virtual tag READY.
+- TW-253 Unrecognized taskwarrior file format. in
+         /Users/user/Dropbox/.task/completed.data at line 1 (thank to Kosta
+         Harlan).
 - TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
          Weber)
 - TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
@@ -37,7 +40,7 @@
 - TW-1278 Next report filters tasks with due date set until due date arrives
           (thanks to Renato Alves).
 - TW-1282 incorrect URLs in man task-sync (thanks to Jeremiah Marks).
-- TW-1288 Added missing locking for task modifications (thanks to Kosta H,
+- TW-1288 Added missing locking for task modifications (thanks to Kosta Harlan,
           Ralph Bean, Adam Coddington).
 - TW-1295 test/time.t fails on the last day of the month (thanks to Jakub
           Wilk).
@@ -74,7 +77,7 @@
   Sulfrian).
 - Added certificate hostname verification (thanks to Alexander Sulfrian).
 - Removed debugging code.
-- Added details in debug mode, for unrecognized data (thanks to Kosta H).
+- Added details in debug mode, for unrecognized data (thanks to Kosta Harlan).
 - Removed unused 'patterns' configuration variable.
 - Regular expressions are now enabled by default.
 
