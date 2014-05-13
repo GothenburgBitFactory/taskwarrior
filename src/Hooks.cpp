@@ -56,6 +56,13 @@ void Hooks::initialize ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Occurs when:       On launch, after data structures are initiliazed, before
+//                    data is loaded.
+// Data fed to stdin: None
+// Exit code:         0: Success, proceed
+//                    !0: Failure, terminate
+// Output handled:    0:  context.footnote ()
+//                    !0: context.error ()
 void Hooks::onLaunch ()
 {
   context.timer_hooks.start ();
@@ -67,6 +74,13 @@ void Hooks::onLaunch ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Occurs when:       On exit, after processing is complete, before output is
+//                    displayed.
+// Data fed to stdin: None
+// Exit code:         0: Success
+//                    !0: Failure
+// Output handled:    0:  context.footnote ()
+//                    !0: context.error ()
 void Hooks::onExit ()
 {
   context.timer_hooks.start ();
