@@ -5,7 +5,8 @@ New Features in taskwarrior 2.4.0
   - Removed deprecated commands 'push', 'pull' and 'merge'.
   - Portuguese (por-PRT) localization.
   - Better handling for deletion of recurring tasks.
-  - New virtual tags: YESTERDAY, TOMORROW, READY, PENDING, COMPLETED, DELETED.
+  - New virtual tags: YESTERDAY, TOMORROW, READY, PENDING, COMPLETED, DELETED,
+    TAGGED.
   - The '_get' command properly uses exit codes.
   - Regular expressions are now enabled by default.
 
