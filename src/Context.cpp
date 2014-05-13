@@ -316,13 +316,15 @@ int Context::run ()
       << " commit:" << timer_commit.total ()
       << " sort:"   << timer_sort.total ()
       << " render:" << timer_render.total ()
+      << " hooks:"  << timer_hooks.total ()
       << " total:"  << (timer_init.total ()   +
                         timer_load.total ()   +
                         timer_gc.total ()     +
                         timer_filter.total () +
                         timer_commit.total () +
                         timer_sort.total ()   +
-                        timer_render.total ())
+                        timer_render.total () +
+                        timer_hooks.total ())
       << "\n";
     debug (s.str ());
   }
