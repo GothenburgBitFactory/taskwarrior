@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <algorithm>
 #include <Context.h>
 #include <Hooks.h>
 
@@ -45,8 +46,13 @@ void Hooks::initialize ()
 {
   // Scan <rc.data.location>/hooks
   Directory d (context.config.get ("data.location"));
-  if (d.cd ("hooks"))
+  d += "hooks";
+  if (d.is_directory () &&
+      d.readable ())
+  {
     _scripts = d.list ();
+    std::sort (_scripts.begin (), _scripts.end ());
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -70,5 +76,4 @@ void Hooks::onExit ()
   context.timer_hooks.stop ();
 }
 
-// TODO Time the hook runs.
 ////////////////////////////////////////////////////////////////////////////////
