@@ -566,6 +566,9 @@ void Config::createDefaultData (const std::string& data)
       throw std::string ("Error: rc.data.location does not exist - exiting according to rc.exit.on.missing.db setting.");
 
     d.create ();
+
+    d += "hooks";
+    d.create ();
   }
 }
 
