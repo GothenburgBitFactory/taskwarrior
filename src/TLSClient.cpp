@@ -148,12 +148,12 @@ void TLSClient::init (
 
   if (_ca != "" &&
       gnutls_certificate_set_x509_trust_file (_credentials, _ca.c_str (), GNUTLS_X509_FMT_PEM) < 0)
-    throw std::string ("Missing CA file.");
+    throw std::string ("Bad CA file.");
 
   if (_cert != "" &&
       _key != "" &&
       gnutls_certificate_set_x509_key_file (_credentials, _cert.c_str (), _key.c_str (), GNUTLS_X509_FMT_PEM) < 0)
-    throw std::string ("Missing CERT file.");
+    throw std::string ("Bad CERT file.");
 
 #if GNUTLS_VERSION_NUMBER >= 0x02090a
   // The automatic verification for the server certificate with
