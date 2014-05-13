@@ -43,7 +43,10 @@ Hooks::~Hooks ()
 ////////////////////////////////////////////////////////////////////////////////
 void Hooks::initialize ()
 {
-  // TODO Scan <rc.data.location>/hooks
+  // Scan <rc.data.location>/hooks
+  Directory d (context.config.get ("data.location"));
+  if (d.cd ("hooks"))
+    _scripts = d.list ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

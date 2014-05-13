@@ -27,6 +27,9 @@
 #ifndef INCLUDED_HOOKS
 #define INCLUDED_HOOKS
 
+#include <vector>
+#include <string>
+
 class Hooks
 {
 public:
@@ -41,6 +44,7 @@ public:
   void onExit ();
 
 private:
+  std::vector <std::string> _scripts;
 };
 
 #endif
