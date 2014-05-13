@@ -49,6 +49,22 @@ void Hooks::initialize ()
 ////////////////////////////////////////////////////////////////////////////////
 void Hooks::onLaunch ()
 {
+  context.timer_hooks.start ();
+
+  // TODO Call all launch hook scripts.
+  // TODO Non-zero exit status terminates launch.
+
+  context.timer_hooks.stop ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Hooks::onExit ()
+{
+  context.timer_hooks.start ();
+
+  // TODO Call all exit hook scripts.
+
+  context.timer_hooks.stop ();
 }
 
 // TODO Time the hook runs.

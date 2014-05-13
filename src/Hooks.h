@@ -38,6 +38,7 @@ public:
   void initialize ();
 
   void onLaunch ();
+  void onExit ();
 
 private:
 };
