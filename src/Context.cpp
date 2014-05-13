@@ -296,6 +296,7 @@ int Context::run ()
   try
   {
     rc = dispatch (output);
+    hooks.onExit ();
 
     std::stringstream s;
     s << "Perf "
@@ -385,9 +386,7 @@ int Context::run ()
       std::cerr << colorizeError (*e) << "\n";
     else
       std::cerr << *e << "\n";
-/*
-  hooks.trigger ("on-exit");
-*/
+
   return rc;
 }
 
