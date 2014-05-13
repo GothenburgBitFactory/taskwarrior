@@ -221,12 +221,8 @@ int Context::initialize (int argc, const char** argv)
     // Initialize the database.
     tdb2.set_location (data_dir);
 
-/*
-    // Hook system init, plus post-start event occurring at the first possible
-    // moment after hook initialization.
+    // First opportunity to run a hook script.
     hooks.initialize ();
-    hooks.trigger ("on-launch");
-*/
   }
 
   catch (const std::string& message)

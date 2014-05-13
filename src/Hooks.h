@@ -35,6 +35,8 @@ public:
   Hooks (const Hooks&);             // Deliberately unimplemented
   Hooks& operator= (const Hooks&);  // Deliberately unimplemented
 
+  void initialize ();
+
 private:
 };
 
