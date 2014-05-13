@@ -27,25 +27,6 @@
 #ifndef INCLUDED_HOOKS
 #define INCLUDED_HOOKS
 
-#include <vector>
-#include <string>
-
-// Hook class representing a single hook, which is just a three-way map.
-class Hook
-{
-public:
-  Hook ();
-  Hook (const std::string&, const std::string&, const std::string&);
-  Hook (const Hook&);
-  Hook& operator= (const Hook&);
-
-public:
-  std::string _event;
-  std::string _file;
-  std::string _function;
-};
-
-// Hooks class for managing the loading and calling of hook functions.
 class Hooks
 {
 public:
@@ -54,20 +35,7 @@ public:
   Hooks (const Hooks&);             // Deliberately unimplemented
   Hooks& operator= (const Hooks&);  // Deliberately unimplemented
 
-  void initialize ();
-
-  bool trigger (const std::string&);                                   // Program
-  bool trigger (const std::string&, Task&);                            // Task
-
 private:
-  bool validProgramEvent (const std::string&);
-  bool validTaskEvent (const std::string&);
-
-private:
-  std::vector <Hook> _all;           // All current hooks.
-
-  std::vector <std::string> _validProgramEvents;
-  std::vector <std::string> _validTaskEvents;
 };
 
 #endif
