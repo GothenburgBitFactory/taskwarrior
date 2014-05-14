@@ -42,6 +42,7 @@ public:
 
   void onLaunch ();
   void onExit ();
+  void onModify (const Task&, const Task&);
 
 private:
   std::vector <std::string> _scripts;

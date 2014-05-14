@@ -67,8 +67,25 @@ void Hooks::onLaunch ()
 {
   context.timer_hooks.start ();
 
-  // TODO Call all launch hook scripts.
-  // TODO Non-zero exit status terminates launch.
+  std::vector <std::string>::iterator i;
+  for (i = _scripts.begin (); i != _scripts.end (); ++i)
+  {
+    if (i->substr (0, 9) == "on-launch")
+    {
+      File script (*i);
+      if (script.executable ())
+      {
+        // TODO Call all launch hook scripts.
+
+        // TODO On zero status:
+        //      - all stdout --> context.footnote
+
+        // TODO On non-zero status:
+        //      - all stdout --> context.error
+        //      - throw std::string ("Hook termination");
+      }
+    }
+  }
 
   context.timer_hooks.stop ();
 }
@@ -85,7 +102,60 @@ void Hooks::onExit ()
 {
   context.timer_hooks.start ();
 
-  // TODO Call all exit hook scripts.
+  std::vector <std::string>::iterator i;
+  for (i = _scripts.begin (); i != _scripts.end (); ++i)
+  {
+    if (i->substr (0, 7) == "on-exit")
+    {
+      File script (*i);
+      if (script.executable ())
+      {
+        // TODO Call all exit hook scripts.
+
+        // TODO On zero status:
+        //      - all stdout --> context.footnote
+
+        // TODO On non-zero status:
+        //      - all stdout --> context.error
+      }
+    }
+  }
+
+  context.timer_hooks.stop ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Occurs when:       A task is modified, before it is committed.
+// Data fed to stdin: before JSON
+//                    after JSON
+// Exit code:         0: Success
+//                    !0: Failure
+// Output handled:    0:  modified after JSON
+//                        context.footnote ()
+//                    !0: context.error ()
+void Hooks::onModify (const Task& before, const Task& after)
+{
+  context.timer_hooks.start ();
+
+  std::vector <std::string>::iterator i;
+  for (i = _scripts.begin (); i != _scripts.end (); ++i)
+  {
+    if (i->substr (0, 7) == "on-modify")
+    {
+      File script (*i);
+      if (script.executable ())
+      {
+        // TODO Call all modify hook scripts.
+
+        // TODO On zero status:
+        //      - first line is modified JSON
+        //      - remaining lines --> context.footnote
+
+        // TODO On non-zero status:
+        //      - all stdout --> context.error
+      }
+    }
+  }
 
   context.timer_hooks.stop ();
 }
