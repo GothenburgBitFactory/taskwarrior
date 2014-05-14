@@ -266,6 +266,8 @@ int Hooks::execute (
   const std::string& input,
   std::string& output)
 {
+  context.debug ("Hooks::execute " + command);
+
   FILE* fp = popen (command.c_str (), "r+");
   if (fp)
   {
