@@ -158,19 +158,31 @@ void Hooks::onAdd (Task& after)
   std::vector <std::string>::iterator i;
   for (i = _scripts.begin (); i != _scripts.end (); ++i)
   {
-    if (i->substr (0, 6) == "on-add")
+    if (i->find ("/on-add") != std::string::npos)
     {
       File script (*i);
       if (script.executable ())
       {
-        // TODO Call all modify hook scripts.
+        std::string input = after.composeJSON ();
+        std::string output;
+        int status = execute (*i, input, output);
 
-        // TODO On zero status:
-        //      - first line is modified JSON
-        //      - remaining lines --> context.footnote
+        std::vector <std::string> lines;
+        split (lines, output, '\n');
+        std::vector <std::string>::iterator line;
 
-        // TODO On non-zero status:
-        //      - all stdout --> context.error
+        if (status == 0)
+        {
+          for (line = lines.begin (); line != lines.end (); ++line)
+            context.header (*line);
+        }
+        else
+        {
+          for (line = lines.begin (); line != lines.end (); ++line)
+            context.error (*line);
+
+          throw 0;  // This is how hooks silently terminate processing.
+        }
       }
     }
   }
