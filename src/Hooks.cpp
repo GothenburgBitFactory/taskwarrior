@@ -24,10 +24,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <cmake.h>
 #include <algorithm>
+#include <stdio.h>
 #include <Context.h>
 #include <Hooks.h>
+#include <text.h>
 
 extern Context context;
 
@@ -61,7 +64,7 @@ void Hooks::initialize ()
 // Data fed to stdin: None
 // Exit code:         0: Success, proceed
 //                    !0: Failure, terminate
-// Output handled:    0:  context.footnote ()
+// Output handled:    0:  context.header ()
 //                    !0: context.error ()
 void Hooks::onLaunch ()
 {
@@ -193,6 +196,40 @@ void Hooks::onModify (const Task& before, Task& after)
   }
 
   context.timer_hooks.stop ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Hooks::execute (
+  const std::string& command,
+  const std::string& input,
+  std::string& output)
+{
+  FILE* fp = popen (command.c_str (), "r+");
+  if (fp)
+  {
+    // Write input to fp.
+    if (input != "")
+    {
+      fputs (input.c_str (), fp);
+      fflush (fp);
+    }
+
+    // Read output from fp.
+    output = "";
+    char* line = NULL;
+    size_t len = 0;
+    while (getline (&line, &len, fp) != -1)
+    {
+      output += line;
+      free (line);
+      line = NULL;
+    }
+
+    fflush (fp);
+    return pclose (fp);
+  }
+
+  return -1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

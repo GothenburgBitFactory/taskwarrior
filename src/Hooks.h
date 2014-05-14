@@ -46,6 +46,9 @@ public:
   void onModify (const Task&, Task&);
 
 private:
+  int execute (const std::string&, const std::string&, std::string&);
+
+private:
   std::vector <std::string> _scripts;
 };
 
