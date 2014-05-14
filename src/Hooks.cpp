@@ -119,18 +119,23 @@ void Hooks::onExit ()
   std::vector <std::string>::iterator i;
   for (i = _scripts.begin (); i != _scripts.end (); ++i)
   {
-    if (i->substr (0, 7) == "on-exit")
+    if (i->find ("/on-exit") != std::string::npos)
     {
       File script (*i);
       if (script.executable ())
       {
-        // TODO Call all exit hook scripts.
+        std::string output;
+        int status = execute (*i, "", output);
 
-        // TODO On zero status:
-        //      - all stdout --> context.footnote
+        std::vector <std::string> lines;
+        split (lines, output, '\n');
+        std::vector <std::string>::iterator line;
 
-        // TODO On non-zero status:
-        //      - all stdout --> context.error
+        for (line = lines.begin (); line != lines.end (); ++line)
+          if (status == 0)
+            context.footnote (*line);
+          else
+            context.error (*line);
       }
     }
   }
