@@ -42,7 +42,8 @@ public:
 
   void onLaunch ();
   void onExit ();
-  void onModify (const Task&, const Task&);
+  void onAdd (Task&);
+  void onModify (const Task&, Task&);
 
 private:
   std::vector <std::string> _scripts;

@@ -125,6 +125,41 @@ void Hooks::onExit ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Occurs when:       A task is created, before it is committed.
+// Data fed to stdin: task JSON
+// Exit code:         0: Success
+//                    !0: Failure
+// Output handled:    0:  modified JSON
+//                        context.footnote ()
+//                    !0: context.error ()
+void Hooks::onAdd (Task& after)
+{
+  context.timer_hooks.start ();
+
+  std::vector <std::string>::iterator i;
+  for (i = _scripts.begin (); i != _scripts.end (); ++i)
+  {
+    if (i->substr (0, 6) == "on-add")
+    {
+      File script (*i);
+      if (script.executable ())
+      {
+        // TODO Call all modify hook scripts.
+
+        // TODO On zero status:
+        //      - first line is modified JSON
+        //      - remaining lines --> context.footnote
+
+        // TODO On non-zero status:
+        //      - all stdout --> context.error
+      }
+    }
+  }
+
+  context.timer_hooks.stop ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Occurs when:       A task is modified, before it is committed.
 // Data fed to stdin: before JSON
 //                    after JSON
@@ -133,14 +168,14 @@ void Hooks::onExit ()
 // Output handled:    0:  modified after JSON
 //                        context.footnote ()
 //                    !0: context.error ()
-void Hooks::onModify (const Task& before, const Task& after)
+void Hooks::onModify (const Task& before, Task& after)
 {
   context.timer_hooks.start ();
 
   std::vector <std::string>::iterator i;
   for (i = _scripts.begin (); i != _scripts.end (); ++i)
   {
-    if (i->substr (0, 7) == "on-modify")
+    if (i->substr (0, 9) == "on-modify")
     {
       File script (*i);
       if (script.executable ())
