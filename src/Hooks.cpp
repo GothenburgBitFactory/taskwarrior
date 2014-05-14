@@ -243,6 +243,24 @@ void Hooks::onModify (const Task& before, Task& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string> Hooks::scripts (const std::string& event)
+{
+  std::vector <std::string> matching;
+  std::vector <std::string>::iterator i;
+  for (i = _scripts.begin (); i != _scripts.end (); ++i)
+  {
+    if (i->find ("/" + event) != std::string::npos)
+    {
+      File script (*i);
+      if (script.executable ())
+        matching.push_back (*i);
+    }
+  }
+
+  return matching;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Hooks::execute (
   const std::string& command,
   const std::string& input,
