@@ -73,19 +73,30 @@ void Hooks::onLaunch ()
   std::vector <std::string>::iterator i;
   for (i = _scripts.begin (); i != _scripts.end (); ++i)
   {
-    if (i->substr (0, 9) == "on-launch")
+    if (i->find ("/on-launch") != std::string::npos)
     {
       File script (*i);
       if (script.executable ())
       {
-        // TODO Call all launch hook scripts.
+        std::string output;
+        int status = execute (*i, "", output);
 
-        // TODO On zero status:
-        //      - all stdout --> context.footnote
+        std::vector <std::string> lines;
+        split (lines, output, '\n');
+        std::vector <std::string>::iterator line;
 
-        // TODO On non-zero status:
-        //      - all stdout --> context.error
-        //      - throw std::string ("Hook termination");
+        if (status == 0)
+        {
+          for (line = lines.begin (); line != lines.end (); ++line)
+            context.header (*line);
+        }
+        else
+        {
+          for (line = lines.begin (); line != lines.end (); ++line)
+            context.error (*line);
+
+          throw 0;  // This is how hooks silently terminate processing.
+        }
       }
     }
   }
