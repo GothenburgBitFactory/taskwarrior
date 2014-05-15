@@ -164,35 +164,45 @@ void Hooks::onAdd (Task& after)
 {
   context.timer_hooks.start ();
 
+  std::vector <std::string> matchingScripts = scripts ("on-add");
   std::vector <std::string>::iterator i;
-  for (i = _scripts.begin (); i != _scripts.end (); ++i)
+  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
   {
-    if (i->find ("/on-add") != std::string::npos)
+    std::string input = after.composeJSON () + "\n";
+    std::string output;
+    int status = execute (*i, input, output);
+
+    std::vector <std::string> lines;
+    split (lines, output, '\n');
+    std::vector <std::string>::iterator line;
+
+    if (status == 0)
     {
-      File script (*i);
-      if (script.executable ())
+      bool first = true;
+      for (line = lines.begin (); line != lines.end (); ++line)
       {
-        std::string input = after.composeJSON ();
-        std::string output;
-        int status = execute (*i, input, output);
-
-        std::vector <std::string> lines;
-        split (lines, output, '\n');
-        std::vector <std::string>::iterator line;
-
-        if (status == 0)
+        if (line->length () && (*line)[0] == '{')
         {
-          for (line = lines.begin (); line != lines.end (); ++line)
-            context.footnote (*line);
+          Task newTask (*line);
+
+          if (first)
+          {
+            after = newTask;
+            first = false;
+          }
+          else
+            context.tdb2.add (newTask);
         }
         else
-        {
-          for (line = lines.begin (); line != lines.end (); ++line)
-            context.error (*line);
-
-          throw 0;  // This is how hooks silently terminate processing.
-        }
+          context.footnote (*line);
       }
+    }
+    else
+    {
+      for (line = lines.begin (); line != lines.end (); ++line)
+        context.error (*line);
+
+      throw 0;  // This is how hooks silently terminate processing.
     }
   }
 
