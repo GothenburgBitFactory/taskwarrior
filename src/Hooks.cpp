@@ -266,8 +266,7 @@ int Hooks::execute (
   const std::string& input,
   std::string& output)
 {
-  context.debug ("Hooks::execute " + command);
-
+  int status = -1;
   FILE* fp = popen (command.c_str (), "r+");
   if (fp)
   {
@@ -290,10 +289,11 @@ int Hooks::execute (
     }
 
     fflush (fp);
-    return pclose (fp);
+    status = pclose (fp);
+    context.debug (format ("Hooks::execute {1} (status {2})", command, status));
   }
 
-  return -1;
+  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
