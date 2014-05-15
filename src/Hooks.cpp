@@ -300,7 +300,8 @@ int Hooks::execute (
   if (fp)
   {
     // Write input to fp.
-    if (input != "")
+    if (input != "" &&
+        input != "\n")
     {
       fputs (input.c_str (), fp);
       fflush (fp);
