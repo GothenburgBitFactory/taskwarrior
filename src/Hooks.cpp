@@ -118,27 +118,34 @@ void Hooks::onExit ()
 {
   context.timer_hooks.start ();
 
+  std::vector <std::string> matchingScripts = scripts ("on-exit");
   std::vector <std::string>::iterator i;
-  for (i = _scripts.begin (); i != _scripts.end (); ++i)
+  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
   {
-    if (i->find ("/on-exit") != std::string::npos)
+    std::string output;
+    int status = execute (*i, "", output);
+
+    std::vector <std::string> lines;
+    split (lines, output, '\n');
+    std::vector <std::string>::iterator line;
+
+    if (status == 0)
     {
-      File script (*i);
-      if (script.executable ())
+      for (line = lines.begin (); line != lines.end (); ++line)
       {
-        std::string output;
-        int status = execute (*i, "", output);
-
-        std::vector <std::string> lines;
-        split (lines, output, '\n');
-        std::vector <std::string>::iterator line;
-
-        for (line = lines.begin (); line != lines.end (); ++line)
-          if (status == 0)
-            context.footnote (*line);
-          else
-            context.error (*line);
+        if (line->length () && (*line)[0] == '{')
+        {
+          Task newTask (*line);
+          context.tdb2.add (newTask);
+        }
+        else
+          context.footnote (*line);
       }
+    }
+    else
+    {
+      for (line = lines.begin (); line != lines.end (); ++line)
+        context.error (*line);
     }
   }
 
