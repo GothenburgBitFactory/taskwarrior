@@ -70,34 +70,36 @@ void Hooks::onLaunch ()
 {
   context.timer_hooks.start ();
 
+  std::vector <std::string> matchingScripts = scripts ("on-launch");
   std::vector <std::string>::iterator i;
-  for (i = _scripts.begin (); i != _scripts.end (); ++i)
+  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
   {
-    if (i->find ("/on-launch") != std::string::npos)
+    std::string output;
+    int status = execute (*i, "", output);
+
+    std::vector <std::string> lines;
+    split (lines, output, '\n');
+    std::vector <std::string>::iterator line;
+
+    if (status == 0)
     {
-      File script (*i);
-      if (script.executable ())
+      for (line = lines.begin (); line != lines.end (); ++line)
       {
-        std::string output;
-        int status = execute (*i, "", output);
-
-        std::vector <std::string> lines;
-        split (lines, output, '\n');
-        std::vector <std::string>::iterator line;
-
-        if (status == 0)
+        if (line->length () && (*line)[0] == '{')
         {
-          for (line = lines.begin (); line != lines.end (); ++line)
-            context.header (*line);
+          Task newTask (*line);
+          context.tdb2.add (newTask);
         }
         else
-        {
-          for (line = lines.begin (); line != lines.end (); ++line)
-            context.error (*line);
-
-          throw 0;  // This is how hooks silently terminate processing.
-        }
+          context.header (*line);
       }
+    }
+    else
+    {
+      for (line = lines.begin (); line != lines.end (); ++line)
+        context.error (*line);
+
+      throw 0;  // This is how hooks silently terminate processing.
     }
   }
 
