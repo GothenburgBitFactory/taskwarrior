@@ -30,22 +30,6 @@
 #include <vector>
 #include <string>
 
-// Hook class representing a single hook, which is just a three-way map.
-class Hook
-{
-public:
-  Hook ();
-  Hook (const std::string&, const std::string&, const std::string&);
-  Hook (const Hook&);
-  Hook& operator= (const Hook&);
-
-public:
-  std::string _event;
-  std::string _file;
-  std::string _function;
-};
-
-// Hooks class for managing the loading and calling of hook functions.
 class Hooks
 {
 public:
@@ -56,18 +40,17 @@ public:
 
   void initialize ();
 
-  bool trigger (const std::string&);                                   // Program
-  bool trigger (const std::string&, Task&);                            // Task
+  void onLaunch ();
+  void onExit ();
+  void onAdd (Task&);
+  void onModify (const Task&, Task&);
 
 private:
-  bool validProgramEvent (const std::string&);
-  bool validTaskEvent (const std::string&);
+  std::vector <std::string> scripts (const std::string&);
+  int execute (const std::string&, const std::string&, std::string&);
 
 private:
-  std::vector <Hook> _all;           // All current hooks.
-
-  std::vector <std::string> _validProgramEvents;
-  std::vector <std::string> _validTaskEvents;
+  std::vector <std::string> _scripts;
 };
 
 #endif

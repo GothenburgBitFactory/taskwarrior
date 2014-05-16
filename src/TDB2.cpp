@@ -134,10 +134,13 @@ bool TF2::get (const std::string& uuid, Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::add_task (const Task& task)
 {
-  _tasks.push_back (task);           // For subsequent queries
-  _added_tasks.push_back (task);     // For commit/synch
+  Task hookTask (task);
+  context.hooks.onAdd (hookTask);
 
-/* TODO handle 'add' and 'log'.
+  _tasks.push_back (hookTask);           // For subsequent queries
+  _added_tasks.push_back (hookTask);     // For commit/synch
+
+/* TODO handle 'add' and 'log'?
   int id = context.tdb2.next_id ();
   _I2U[id] = task.get ("uuid");
   _U2I[task.get ("uuid")] = id;
@@ -156,9 +159,13 @@ bool TF2::modify_task (const Task& task)
   {
     if (i->get ("uuid") == uuid)
     {
-      *i = task;
-      _modified_tasks.push_back (task);
+      Task hookTask (task);
+      context.hooks.onModify (*i, hookTask);
+
+      *i = hookTask;
+      _modified_tasks.push_back (hookTask);
       _dirty = true;
+
       return true;
     }
   }

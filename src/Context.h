@@ -120,6 +120,7 @@ public:
   Timer                               timer_commit;
   Timer                               timer_sort;
   Timer                               timer_render;
+  Timer                               timer_hooks;
 };
 
 #endif

@@ -24,69 +24,19 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream> // TODO Remove
 #include <cmake.h>
-#include <iostream>
 #include <algorithm>
+#include <stdio.h>
 #include <Context.h>
 #include <Hooks.h>
-#include <Timer.h>
 #include <text.h>
-#include <i18n.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-Hook::Hook ()
-: _event ("")
-, _file ("")
-, _function ("")
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Hook::Hook (const std::string& e, const std::string& f, const std::string& fn)
-: _event (e)
-, _file (f)
-, _function (fn)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Hook::Hook (const Hook& other)
-{
-  _event = other._event;
-  _file = other._file;
-  _function = other._function;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Hook& Hook::operator= (const Hook& other)
-{
-  if (this != &other)
-  {
-    _event = other._event;
-    _file = other._file;
-    _function = other._function;
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Hooks::Hooks ()
 {
-  // New 2.x hooks.
-  _validTaskEvents.push_back ("on-task-add");       // Unimplemented
-  _validTaskEvents.push_back ("on-task-modify");    // Unimplemented
-  _validTaskEvents.push_back ("on-task-complete");  // Unimplemented
-  _validTaskEvents.push_back ("on-task-delete");    // Unimplemented
-
-  _validProgramEvents.push_back ("on-launch");
-  _validProgramEvents.push_back ("on-exit");
-  _validProgramEvents.push_back ("on-file-read");   // Unimplemented
-  _validProgramEvents.push_back ("on-file-write");  // Unimplemented
-  _validProgramEvents.push_back ("on-synch");       // Unimplemented
-  _validProgramEvents.push_back ("on-gc");          // Unimplemented
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -95,86 +45,285 @@ Hooks::~Hooks ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Enumerate all hooks, and tell API about the script files it must load in
-// order to call them.  Note that API will perform a deferred read, which means
-// that if it isn't called, a script will not be loaded.
 void Hooks::initialize ()
 {
-  // Allow a master switch to turn the whole thing off.
-  bool big_red_switch = context.config.getBoolean ("extensions");
-  if (big_red_switch)
+  // Scan <rc.data.location>/hooks
+  Directory d (context.config.get ("data.location"));
+  d += "hooks";
+  if (d.is_directory () &&
+      d.readable ())
   {
-    Config::const_iterator it;
-    for (it = context.config.begin (); it != context.config.end (); ++it)
+    _scripts = d.list ();
+    std::sort (_scripts.begin (), _scripts.end ());
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Occurs when:       On launch, after data structures are initiliazed, before
+//                    data is loaded.
+// Data fed to stdin: None
+// Exit code:         0: Success, proceed
+//                    !0: Failure, terminate
+// Output handled:    0:  context.header ()
+//                    !0: context.error ()
+void Hooks::onLaunch ()
+{
+  context.timer_hooks.start ();
+
+  std::vector <std::string> matchingScripts = scripts ("on-launch");
+  std::vector <std::string>::iterator i;
+  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
+  {
+    std::string output;
+    int status = execute (*i, "", output);
+
+    std::vector <std::string> lines;
+    split (lines, output, '\n');
+    std::vector <std::string>::iterator line;
+
+    if (status == 0)
     {
-      std::string type;
-      std::string name;
-      std::string value;
-
-      // "<type>.<name>"
-      Nibbler n (it->first);
-      if (n.getUntil ('.', type) &&
-          type == "hook"         &&
-          n.skip ('.')           &&
-          n.getUntilEOS (name))
+      for (line = lines.begin (); line != lines.end (); ++line)
       {
-        Nibbler n (it->second);
-
-        // <path>:<function> [, ...]
-        while (!n.depleted ())
+        if (line->length () && (*line)[0] == '{')
         {
-          std::string file;
-          std::string function;
-          if (n.getUntil (':', file) &&
-              n.skip (':')           &&
-              n.getUntil (',', function))
-          {
-            context.debug (std::string ("Event '") + name + "' hooked by " + file + ", function " + function);
-            Hook h (name, Path::expand (file), function);
-            _all.push_back (h);
-
-            (void) n.skip (',');
-          }
-          else
-            ; // Was: throw std::string (format ("Malformed hook definition '{1}'.", it->first));
+          Task newTask (*line);
+          context.tdb2.add (newTask);
         }
+        else
+          context.header (*line);
       }
     }
+    else
+    {
+      for (line = lines.begin (); line != lines.end (); ++line)
+        context.error (*line);
+
+      throw 0;  // This is how hooks silently terminate processing.
+    }
   }
-  else
-    context.debug ("Hooks::initialize --> off");
+
+  context.timer_hooks.stop ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Program hooks.
-bool Hooks::trigger (const std::string& event)
+// Occurs when:       On exit, after processing is complete, before output is
+//                    displayed.
+// Data fed to stdin: None
+// Exit code:         0: Success
+//                    !0: Failure
+// Output handled:    0:  context.footnote ()
+//                    !0: context.error ()
+void Hooks::onExit ()
 {
-  return false;
+  context.timer_hooks.start ();
+
+  std::vector <std::string> matchingScripts = scripts ("on-exit");
+  std::vector <std::string>::iterator i;
+  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
+  {
+    std::string output;
+    int status = execute (*i, "", output);
+
+    std::vector <std::string> lines;
+    split (lines, output, '\n');
+    std::vector <std::string>::iterator line;
+
+    if (status == 0)
+    {
+      for (line = lines.begin (); line != lines.end (); ++line)
+      {
+        if (line->length () && (*line)[0] == '{')
+        {
+          Task newTask (*line);
+          context.tdb2.add (newTask);
+        }
+        else
+          context.footnote (*line);
+      }
+    }
+    else
+    {
+      for (line = lines.begin (); line != lines.end (); ++line)
+        context.error (*line);
+    }
+  }
+
+  context.timer_hooks.stop ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Task hooks.
-bool Hooks::trigger (const std::string& event, Task& task)
+// Occurs when:       A task is created, before it is committed.
+// Data fed to stdin: task JSON
+// Exit code:         0: Success
+//                    !0: Failure
+// Output handled:    0:  modified JSON
+//                        context.footnote ()
+//                    !0: context.error ()
+void Hooks::onAdd (Task& after)
 {
-  return false;
+  context.timer_hooks.start ();
+
+  std::vector <std::string> matchingScripts = scripts ("on-add");
+  std::vector <std::string>::iterator i;
+  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
+  {
+    std::string input = after.composeJSON () + "\n";
+    std::string output;
+    int status = execute (*i, input, output);
+
+    std::vector <std::string> lines;
+    split (lines, output, '\n');
+    std::vector <std::string>::iterator line;
+
+    if (status == 0)
+    {
+      bool first = true;
+      for (line = lines.begin (); line != lines.end (); ++line)
+      {
+        if (line->length () && (*line)[0] == '{')
+        {
+          Task newTask (*line);
+
+          if (first)
+          {
+            after = newTask;
+            first = false;
+          }
+          else
+            context.tdb2.add (newTask);
+        }
+        else
+          context.footnote (*line);
+      }
+    }
+    else
+    {
+      for (line = lines.begin (); line != lines.end (); ++line)
+        context.error (*line);
+
+      throw 0;  // This is how hooks silently terminate processing.
+    }
+  }
+
+  context.timer_hooks.stop ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Hooks::validProgramEvent (const std::string& event)
+// Occurs when:       A task is modified, before it is committed.
+// Data fed to stdin: before JSON
+//                    after JSON
+// Exit code:         0: Success
+//                    !0: Failure
+// Output handled:    0:  modified after JSON
+//                        context.footnote ()
+//                    !0: context.error ()
+void Hooks::onModify (const Task& before, Task& after)
 {
-  if (std::find (_validProgramEvents.begin (), _validProgramEvents.end (), event) != _validProgramEvents.end ())
-    return true;
+  context.timer_hooks.start ();
 
-  return false;
+  std::vector <std::string> matchingScripts = scripts ("on-modify");
+  std::vector <std::string>::iterator i;
+  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
+  {
+    std::string afterJSON = after.composeJSON ();
+    std::string input = before.composeJSON ()
+                      + "\n"
+                      + afterJSON
+                      + "\n";
+    std::string output;
+    int status = execute (*i, input, output);
+
+    std::vector <std::string> lines;
+    split (lines, output, '\n');
+    std::vector <std::string>::iterator line;
+
+    if (status == 0)
+    {
+      bool first = true;
+      for (line = lines.begin (); line != lines.end (); ++line)
+      {
+        if (line->length () && (*line)[0] == '{')
+        {
+          Task newTask (*line);
+
+          if (first)
+          {
+            after = newTask;
+            first = false;
+          }
+          else
+            context.tdb2.add (newTask);
+        }
+        else
+          context.footnote (*line);
+      }
+    }
+    else
+    {
+      for (line = lines.begin (); line != lines.end (); ++line)
+        context.error (*line);
+
+      throw 0;  // This is how hooks silently terminate processing.
+    }
+  }
+
+  context.timer_hooks.stop ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Hooks::validTaskEvent (const std::string& event)
+std::vector <std::string> Hooks::scripts (const std::string& event)
 {
-  if (std::find (_validTaskEvents.begin (), _validTaskEvents.end (), event) != _validTaskEvents.end ())
-    return true;
+  std::vector <std::string> matching;
+  std::vector <std::string>::iterator i;
+  for (i = _scripts.begin (); i != _scripts.end (); ++i)
+  {
+    if (i->find ("/" + event) != std::string::npos)
+    {
+      File script (*i);
+      if (script.executable ())
+        matching.push_back (*i);
+    }
+  }
 
-  return false;
+  return matching;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Hooks::execute (
+  const std::string& command,
+  const std::string& input,
+  std::string& output)
+{
+  int status = -1;
+  FILE* fp = popen (command.c_str (), "r+");
+  if (fp)
+  {
+    // Write input to fp.
+    if (input != "" &&
+        input != "\n")
+    {
+      fputs (input.c_str (), fp);
+      fflush (fp);
+    }
+
+    // Read output from fp.
+    output = "";
+    char* line = NULL;
+    size_t len = 0;
+    while (getline (&line, &len, fp) != -1)
+    {
+      output += line;
+      free (line);
+      line = NULL;
+    }
+
+    fflush (fp);
+    status = pclose (fp);
+    context.debug (format ("Hooks::execute {1} (status {2})", command, status));
+  }
+
+  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

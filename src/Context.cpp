@@ -221,16 +221,21 @@ int Context::initialize (int argc, const char** argv)
     // Initialize the database.
     tdb2.set_location (data_dir);
 
-    // Hook system init, plus post-start event occurring at the first possible
-    // moment after hook initialization.
+    // First opportunity to run a hook script.
     hooks.initialize ();
-    hooks.trigger ("on-launch");
+    hooks.onLaunch ();
   }
 
   catch (const std::string& message)
   {
     error (message);
     rc = 2;
+  }
+
+  catch (int)
+  {
+    // Hooks can terminate processing by throwing integers.
+    rc = 4;
   }
 
   catch (...)
@@ -297,6 +302,7 @@ int Context::run ()
   try
   {
     rc = dispatch (output);
+    hooks.onExit ();
 
     std::stringstream s;
     s << "Perf "
@@ -317,13 +323,15 @@ int Context::run ()
       << " commit:" << timer_commit.total ()
       << " sort:"   << timer_sort.total ()
       << " render:" << timer_render.total ()
+      << " hooks:"  << timer_hooks.total ()
       << " total:"  << (timer_init.total ()   +
                         timer_load.total ()   +
                         timer_gc.total ()     +
                         timer_filter.total () +
                         timer_commit.total () +
                         timer_sort.total ()   +
-                        timer_render.total ())
+                        timer_render.total () +
+                        timer_hooks.total ())
       << "\n";
     debug (s.str ());
   }
@@ -385,7 +393,6 @@ int Context::run ()
     else
       std::cerr << *e << "\n";
 
-  hooks.trigger ("on-exit");
   return rc;
 }
 
