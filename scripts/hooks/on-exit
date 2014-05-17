@@ -8,7 +8,6 @@
 # Processing goes here
 
 # Output:
-# - all emitted JSON lines must be fully-formed tasks
 # - all emitted non-JSON lines are considered feedback messages
 echo on-exit
 
