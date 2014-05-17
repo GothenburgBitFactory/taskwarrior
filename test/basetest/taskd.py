@@ -43,6 +43,8 @@ class TaskdServer(object):
         # Will hold the taskd subprocess if it's running
         self.proc = None
         self.datadir = tempfile.mkdtemp()
+        self.tasklog = os.path.join(self.datadir, "taskd.log")
+        self.taskpid = os.path.join(self.datadir, "taskd.pid")
 
         # Make sure no TASKDDATA is defined
         try:
@@ -70,8 +72,8 @@ class TaskdServer(object):
         run_cmd_wait(cmd)
 
         self.config("server", "{0}:{1}".format(self.address, self.port))
-        self.config("log", os.path.join(self.datadir, "taskd.log"))
-        self.config("pid.file", os.path.join(self.datadir, "taskd.pid"))
+        self.config("log", self.tasklog)
+        self.config("pid.file", self.taskpid)
         self.config("root", self.datadir)
         self.config("client.allow", "^task [2-9]")
 
