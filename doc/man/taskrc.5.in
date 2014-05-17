@@ -1057,6 +1057,8 @@ preferences, but it is important that you carefully consider any modifications.
 
 .SS SHADOW FILE
 
+Note, this feature is deprecated in 2.4.0.
+
 .TP
 .B
 shadow.file=$HOME/.task/shadow.txt

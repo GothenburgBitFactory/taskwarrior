@@ -112,9 +112,6 @@ New Code Needs
     data file, as found by 'task diag'.  This should check to see if there is
     a suitable UUID generator installed.  This should also be careful to
     properly handle recurring tasks.
-  - Need an external implementation equivalent to, or better than the 'shadow
-    file' feature.  Simply because shadow file capability *can* be implemented
-    outside the core code, we want to make it be that way.
   - Take a look at:
 
       https://bug.tasktools.org/browse/EX
@@ -122,21 +119,6 @@ New Code Needs
     This 'extension' release is a collection of all the requested features that
     lie outside of the core product, and will be implemented as external scripts
     by anyone who wishes to participate.
-
-Documentation Needed
-  Documentation takes many forms, and we are trying to combine all documentation
-  into one repository, to facilitate sharing and centralize review.  This
-  includeѕ:
-
-  - Man pages
-  - Reference PDF
-  - Wiki replacement
-  - Tutorials
-  - Cookbook
-
-  This is all in the new https://git.tasktools.org/projects/ST/repos/tw.org
-  repository, where all the documents are sourced as markdown.  We welcome
-  everyone with writing skills to help us improve this critical resource.
 
 Unit Tests Needed
   There are always more unit tests needed.  More specifically, better unit tests
@@ -157,8 +139,9 @@ Unit Tests Needed
      these kind of tests be extensive and thorough, because the software depends
      on this code the most.
 
-  The tests are mainly written in Perl, and all use TAP.  Here is how to get the
-  code and run the test suite:
+  The tests are mainly written in Perl, and all use TAP.  We want them all to be
+  eventually replaced by Python. Here is how to get the code and run the test
+  suite:
      git clone https://git.tasktools.org/scm/tm/task.git
      cd task.git
      git checkout 2.4.0
@@ -190,8 +173,6 @@ Unit Tests Needed
     delete, done, and list commands.  We need unit tests that prove that basic
     functionality is working, and the file containing them should be called
     basic.t.
-  - None of the current unit tests remove the 'extensions' directory, and they
-    all should.
   - Test propagation of modifications to recurring tasks.
   - Test regex support.
   - Need unit tests for each bug in the issue list, if suitable.
