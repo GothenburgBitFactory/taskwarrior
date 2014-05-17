@@ -272,6 +272,12 @@ void Hooks::onModify (const Task& before, Task& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string> Hooks::list ()
+{
+  return _scripts;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::vector <std::string> Hooks::scripts (const std::string& event)
 {
   std::vector <std::string> matching;

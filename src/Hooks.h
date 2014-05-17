@@ -45,6 +45,8 @@ public:
   void onAdd (Task&);
   void onModify (const Task&, Task&);
 
+  std::vector <std::string> list ();
+
 private:
   std::vector <std::string> scripts (const std::string&);
   int execute (const std::string&, const std::string&, std::string&);
