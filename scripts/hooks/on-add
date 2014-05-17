@@ -1,23 +1,22 @@
 #!/bin/bash
 
+# The on-add event is triggered separately for each task added
+
 # Input:
-# - New task JSON.
+# - A line of JSON for the task added
 read new_task
 
-# Processing goes here.
+# Processing goes here
 
 # Output:
-# - Any line of JSON emitted is added as a new task.
-# - Any non-JSON emitted is displayed as a message.
+# - all emitted JSON lines must be fully-formed tasks
+# - all emitted non-JSON lines are considered feedback messages
 echo on-add
 
 # Exit:
-# - 0 Means accept $new_task if JSON is not emitted.
-# - 0 Means accept all JSON as new tasks. If UUID matches $new_task, use this
-#     JSON instead of $new_task. If UUID does not match $new_task, then these
-#     are additional tasks.
-# - 0 Means all non-JSON becomes footnote entries.
-# - 1 Means all non-JSON becomes error entries.
-# - 1 Means reject $new_task.
+#   0 Means: - all emitted JSON lines are added/modifiied
+#            - all emitted non-JSON lines become footnote entries
+#   1 Means: - all emitted JSON lines are ignored
+#            - all emitted non-JSON lines become error entries
 exit 0
 
