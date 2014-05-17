@@ -267,6 +267,12 @@ int CmdDiagnostics::execute (std::string& output)
       << credentials
       << "\n\n";
 
+  // Disaply hook status.
+  out << bold.colorize (STRING_CMD_DIAG_HOOKS)
+      << "\n";
+
+  out << "\n\n";
+
   // Verify UUIDs are all unique.
   out << bold.colorize (STRING_CMD_DIAG_TESTS)
       << "\n";

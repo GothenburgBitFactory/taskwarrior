@@ -447,6 +447,7 @@
 #define STRING_CMD_DIAG_UUID_DUP     "Found duplicate {1}"
 #define STRING_CMD_DIAG_UUID_NO_DUP  "No duplicates found"
 #define STRING_CMD_DIAG_NONE         "-none-"
+#define STRING_CMD_DIAG_HOOKS        "Hooks"
 #define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 #define STRING_CMD_ALIASES_USAGE     "Generates a list of all aliases, for autocompletion purposes"
