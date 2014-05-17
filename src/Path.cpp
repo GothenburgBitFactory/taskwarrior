@@ -180,7 +180,7 @@ bool Path::is_absolute () const
 bool Path::is_link () const
 {
   struct stat s = {0};
-  if (! stat (_data.c_str (), &s) &&
+  if (! lstat (_data.c_str (), &s) &&
       s.st_mode & S_IFLNK)
     return true;
 
