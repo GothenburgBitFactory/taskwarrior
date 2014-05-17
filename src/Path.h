@@ -49,6 +49,7 @@ public:
   bool exists () const;
   bool is_directory () const;
   bool is_absolute () const;
+  bool is_link () const;
   bool readable () const;
   bool writable () const;
   bool executable () const;
