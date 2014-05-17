@@ -271,7 +271,24 @@ int CmdDiagnostics::execute (std::string& output)
   out << bold.colorize (STRING_CMD_DIAG_HOOKS)
       << "\n";
 
-  out << "\n\n";
+  std::vector <std::string> hooks = context.hooks.list ();
+  if (hooks.size ())
+  {
+    std::vector <std::string>::iterator h;
+    for (h = hooks.begin (); h != hooks.end (); ++h)
+    {
+      Path p (*h);
+      out << "             "
+          << *h
+          << (p.executable () ? " (executable)" : " (not executable)")
+          << (p.is_link () ? " (symlink)" : "")
+          << "\n";
+    }
+  }
+  else
+    out << "             (none)\n";
+
+  out << "\n";
 
   // Verify UUIDs are all unique.
   out << bold.colorize (STRING_CMD_DIAG_TESTS)
