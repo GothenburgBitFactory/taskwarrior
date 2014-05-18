@@ -110,7 +110,7 @@ class BaseTestCase(unittest.TestCase):
         command = ["./task"]
         command.extend(args)
 
-        p = Popen(command, stdin=stdin, stdout=PIPE, stderr=STDOUT)
+        p = Popen(command, stdin=stdin, stdout=PIPE, stderr=stderr)
         out, err = p.communicate(input)
         # In python3 we will be able use the following instead of the previous
         # line to avoid locking if task is unexpectedly waiting for input
@@ -119,7 +119,6 @@ class BaseTestCase(unittest.TestCase):
         #except TimeoutExpired:
         #    p.kill()
         #    out, err = proc.communicate()
-
 
         return p.returncode, out, err
 
