@@ -59,13 +59,21 @@ void Hooks::initialize ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Occurs when:       On launch, after data structures are initiliazed, before
-//                    data is loaded.
-// Data fed to stdin: None
-// Exit code:         0: Success, proceed
-//                    !0: Failure, terminate
-// Output handled:    0:  context.header ()
-//                    !0: context.error ()
+// The on-launch event is triggered once, after initialization, before an
+// processing occurs
+//
+// No input
+//
+// Output:
+// - all emitted JSON lines must be fully-formed tasks
+// - all emitted non-JSON lines are considered feedback messages
+//
+// Exit:
+//   0 Means: - all emitted JSON lines are added/modifiied
+//            - all emitted non-JSON lines become footnote entries
+//   1 Means: - all emitted JSON lines are ignored
+//            - all emitted non-JSON lines become error entries
+//
 void Hooks::onLaunch ()
 {
   context.timer_hooks.start ();
@@ -107,13 +115,15 @@ void Hooks::onLaunch ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Occurs when:       On exit, after processing is complete, before output is
-//                    displayed.
-// Data fed to stdin: None
-// Exit code:         0: Success
-//                    !0: Failure
-// Output handled:    0:  context.footnote ()
-//                    !0: context.error ()
+// Input:
+// - A read-only line of JSON for each task added/modified
+//
+// Output:
+// - all emitted non-JSON lines are considered feedback messages
+//
+// Exit:
+//   0 Means: - all emitted non-JSON lines become footnote entries
+//   1 Means: - all emitted non-JSON lines become error entries
 void Hooks::onExit ()
 {
   context.timer_hooks.start ();
@@ -153,13 +163,21 @@ void Hooks::onExit ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Occurs when:       A task is created, before it is committed.
-// Data fed to stdin: task JSON
-// Exit code:         0: Success
-//                    !0: Failure
-// Output handled:    0:  modified JSON
-//                        context.footnote ()
-//                    !0: context.error ()
+// The on-add event is triggered separately for each task added
+//
+// Input:
+// - A line of JSON for the task added
+//
+// Output:
+// - all emitted JSON lines must be fully-formed tasks
+// - all emitted non-JSON lines are considered feedback messages
+//
+// Exit:
+//   0 Means: - all emitted JSON lines are added/modifiied
+//            - all emitted non-JSON lines become footnote entries
+//   1 Means: - all emitted JSON lines are ignored
+//            - all emitted non-JSON lines become error entries
+//
 void Hooks::onAdd (Task& after)
 {
   context.timer_hooks.start ();
@@ -210,14 +228,21 @@ void Hooks::onAdd (Task& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Occurs when:       A task is modified, before it is committed.
-// Data fed to stdin: before JSON
-//                    after JSON
-// Exit code:         0: Success
-//                    !0: Failure
-// Output handled:    0:  modified after JSON
-//                        context.footnote ()
-//                    !0: context.error ()
+// The on-modify event is triggered separately for each task added or modified
+//
+// Input:
+// - A line of JSON for the original task
+// - A line of JSON for the modified task
+//
+// Output:
+// - all emitted JSON lines must be fully-formed tasks
+// - all emitted non-JSON lines are considered feedback messages
+//
+// Exit:
+//   0 Means: - all emitted JSON lines are added/modifiied
+//            - all emitted non-JSON lines become footnote entries
+//   1 Means: - all emitted JSON lines are ignored
+//            - all emitted non-JSON lines become error entries
 void Hooks::onModify (const Task& before, Task& after)
 {
   context.timer_hooks.start ();
