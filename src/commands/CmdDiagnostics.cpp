@@ -29,6 +29,7 @@
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
+#include <time.h>
 #include <RX.h>
 #include <Context.h>
 #include <i18n.h>
@@ -126,10 +127,11 @@ int CmdDiagnostics::execute (std::string& output)
 #ifdef _LP64
       << " +LP64"
 #endif
-      << " +c" << sizeof (char)
-      << " +i" << sizeof (int)
-      << " +l" << sizeof (long)
-      << " +vp" << sizeof (void*)
+      << " +c"      << 8 * sizeof (char)
+      << " +i"      << 8 * sizeof (int)
+      << " +l"      << 8 * sizeof (long)
+      << " +vp"     << 8 * sizeof (void*)
+      << " +time_t" << 8 * sizeof (time_t)
       << "\n\n";
 
   out << bold.colorize (STRING_CMD_DIAG_FEATURES)
