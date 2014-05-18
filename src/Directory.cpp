@@ -111,7 +111,7 @@ bool Directory::remove_directory (const std::string& dir) const
 #if defined (SOLARIS) || defined (HAIKU)
       struct stat s;
       lstat ((dir + "/" + de->d_name).c_str (), &s);
-      if (s.st_mode & S_IFDIR)
+      if (S_ISDIR (s.st_mode))
         remove_directory (dir + "/" + de->d_name);
       else
         unlink ((dir + "/" + de->d_name).c_str ());
@@ -120,7 +120,7 @@ bool Directory::remove_directory (const std::string& dir) const
       {
         struct stat s;
         lstat ((dir + "/" + de->d_name).c_str (), &s);
-        if (s.st_mode & S_IFDIR)
+        if (S_ISDIR (s.st_mode))
           de->d_type = DT_DIR;
       }
       if (de->d_type == DT_DIR)
@@ -215,7 +215,7 @@ void Directory::list (
 #if defined (SOLARIS) || defined (HAIKU)
       struct stat s;
       stat ((base + "/" + de->d_name).c_str (), &s);
-      if (recursive && s.st_mode & S_IFDIR)
+      if (recursive && S_ISDIR (s.st_mode))
         list (base + "/" + de->d_name, results, recursive);
       else
         results.push_back (base + "/" + de->d_name);
@@ -224,7 +224,7 @@ void Directory::list (
       {
         struct stat s;
         lstat ((base + "/" + de->d_name).c_str (), &s);
-        if (s.st_mode & S_IFDIR)
+        if (S_ISDIR (s.st_mode))
           de->d_type = DT_DIR;
       }
       if (recursive && de->d_type == DT_DIR)

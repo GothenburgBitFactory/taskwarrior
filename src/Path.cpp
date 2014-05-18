@@ -161,7 +161,7 @@ bool Path::is_directory () const
 {
   struct stat s = {0};
   if (! stat (_data.c_str (), &s) &&
-      s.st_mode & S_IFDIR)
+      S_ISDIR (s.st_mode))
     return true;
 
   return false;
@@ -181,7 +181,7 @@ bool Path::is_link () const
 {
   struct stat s = {0};
   if (! lstat (_data.c_str (), &s) &&
-      s.st_mode & S_IFLNK)
+      S_ISLNK (s.st_mode))
     return true;
 
   return false;
