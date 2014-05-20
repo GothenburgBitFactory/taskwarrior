@@ -529,38 +529,35 @@ const std::string A3t::getFilterExpression ()
   {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
-      if ((*i)->hasTag ("ID"))
+      if ((*i)->hasTag ("EXPANDED"))
       {
-       // Construct ID sequence clause.
-        std::vector <Tree*>::iterator range;
-        for (range = (*i)->_branches.begin (); range != (*i)->_branches.end (); ++range)
+        std::vector <Tree*>::iterator b;
+        for (b = (*i)->_branches.begin (); b != (*i)->_branches.end (); ++b)
         {
           if (sequence != "")
-            sequence += " or ";
+            sequence += " ";
 
-          std::string lower = (*range)->attribute ("min");
-          std::string upper = (*range)->attribute ("max");
-
-          if (lower == upper)
-            sequence += "id == " + lower;
-          else
-            sequence += "( id >= " + lower + " and id <= " + upper + ")";
+          sequence += (*b)->attribute ("value");
         }
       }
-      else if ((*i)->hasTag ("UUID"))
+      else
       {
-        // UUIDs are compared using a partial match.
-        std::vector <Tree*>::iterator range;
-        for (range = (*i)->_branches.begin (); range != (*i)->_branches.end (); ++range)
-        {
-          if (sequence != "")
-            sequence += " or ";
-
-          sequence += "uuid = " + (*range)->attribute ("value");
-        }
+        sequence += (*i)->attribute ("raw");
       }
     }
   }
+
+  return sequence;
+
+
+
+
+
+
+
+
+
+
 
   // Locate and extract the filter elements.
   std::string filter = "";
@@ -587,105 +584,10 @@ const std::string A3t::getFilterExpression ()
       else if ((*i)->hasTag ("ID") ||
                (*i)->hasTag ("UUID"))
       {
-        // Skipped, as they are already processed.
       }
 
       else if ((*i)->hasTag ("ATTMOD"))
       {
-        // name.mod:value --> name <op> value
-        if (filter != "")
-          filter += ' ';
-
-        std::string name  = (*i)->attribute ("name");
-        std::string mod   = (*i)->attribute ("modifier");
-        std::string value = (*i)->attribute ("value");
-        std::string sense = (*i)->attribute ("sense");  // TODO Not used. Why?
-
-        // name.before:value  -->  name < value
-        if (mod == "before" || mod == "under" || mod == "below")
-        {
-          filter += name + " < " + value;
-        }
-
-        // name.after:value  -->  name > value
-        else if (mod == "after" || mod == "over" || mod == "above")
-        {
-          filter += name + " > " + value;
-        }
-
-        // name.none:  -->  name == ""
-        else if (mod == "none")
-        {
-          filter += name + " == ''";
-        }
-
-        // name.any:  -->  name != ""
-        else if (mod == "any")
-        {
-          filter += name + " != ''";
-        }
-
-        // name.is:value  -->  name = value
-        else if (mod == "is" || mod == "equals")
-        {
-          filter += name + " == " + value;
-        }
-
-        // name.isnt:value  -->  name != value
-        else if (mod == "isnt" || mod == "not")
-        {
-          filter += name + " != " + value;
-        }
-
-        // name.has:value  -->  name ~ value
-        else if (mod == "has" || mod == "contains")
-        {
-          filter += name + " ~ " + value;
-        }
-
-        // name.hasnt:value  -->  name !~ value
-        else if (mod == "hasnt")
-        {
-          filter += name + " !~ " + value;
-        }
-
-        // name.startswith:value  -->  name ~ ^value
-        else if (mod == "startswith" || mod == "left")
-        {
-          filter += name + " ~ '^" + value + "'";
-        }
-
-        // name.endswith:value  -->  name ~ value$
-        else if (mod == "endswith" || mod == "right")
-        {
-          filter += name + " ~ '" + value + "$'";
-        }
-
-        // name.word:value  -->  name ~ \bvalue\b
-        else if (mod == "word")
-        {
-#if defined (DARWIN)
-          filter += name + " ~ " + value;
-#elif defined (SOLARIS)
-          filter += name + " ~ '\\<" + value + "\\>'";
-#else
-          filter += name + " ~ '\\b" + value + "\\b'";
-#endif
-        }
-
-        // name.noword:value  -->  name !~ \bvalue\n
-        else if (mod == "noword")
-        {
-#if defined (DARWIN)
-          filter += name + " !~ " + value;
-#elif defined (SOLARIS)
-          filter += name + " !~ '\\<" + value + "\\>'";
-#else
-          filter += name + " !~ '\\b" + value + "\\b'";
-#endif
-        }
-        else
-          throw format (STRING_A3_UNKNOWN_ATTMOD, mod);
       }
       else if ((*i)->hasTag ("ATTRIBUTE"))
       {
@@ -696,20 +598,9 @@ const std::string A3t::getFilterExpression ()
       }
       else if ((*i)->hasTag ("TAG"))
       {
-        if (filter != "")
-          filter += ' ';
-
-        if ((*i)->attribute ("sign") == "+")
-          filter += "tags _hastag_ " + (*i)->attribute ("tag");
-        else
-          filter += "tags _notag_ " + (*i)->attribute ("tag");
       }
       else if ((*i)->hasTag ("PATTERN"))
       {
-        if (filter != "")
-          filter += ' ';
-
-        filter += "description ~ " + (*i)->attribute ("pattern");
       }
       else
       {
@@ -1451,7 +1342,7 @@ void A3t::findModifications ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// This is a called after parsing. The intention is to find plain arguments that
+// This is called after parsing. The intention is to find plain arguments that
 // are not otherwise recognized, and potentially promote them to patterns.
 void A3t::findPlainArgs ()
 {
