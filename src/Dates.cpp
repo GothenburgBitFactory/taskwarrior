@@ -338,6 +338,7 @@ bool namedDates (const std::string& name, Variant& value)
     t->tm_mday  = day;
     t->tm_mon   = month - 1;
     t->tm_year  = Y - 1900;
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
 
          if (name == "goodfriday")   t->tm_mday -= 2;
     else if (name == "eastermonday") t->tm_mday += 1;
