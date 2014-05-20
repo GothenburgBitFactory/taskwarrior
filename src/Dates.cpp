@@ -24,8 +24,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <time.h>
+#include <text.h>
 #include <Dates.h>
 
 static const char* days[] =
@@ -375,24 +377,26 @@ bool namedDates (const std::string& name, Variant& value)
 */
   }
 
+  // Support "21st" to indicate the next date that is the 21st day.
   // 1st
   // 2nd
   // 3rd
-  else if (name == "????")
+  else if (name.length () >= 3 &&
+           name.length () <= 4 &&
+           isdigit (name[0]))
   {
-/*
     int number;
     std::string ordinal;
 
-    if (isdigit (in[1]))
+    if (isdigit (name[1]))
     {
-      number = atoi (in.substr (0, 2).c_str ());
-      ordinal = lowerCase (in.substr (2));
+      number = atoi (name.substr (0, 2).c_str ());
+      ordinal = lowerCase (name.substr (2));
     }
     else
     {
-      number = atoi (in.substr (0, 2).c_str ());
-      ordinal = lowerCase (in.substr (1));
+      number = atoi (name.substr (0, 2).c_str ());
+      ordinal = lowerCase (name.substr (1));
     }
 
     // Sanity check.
@@ -403,16 +407,20 @@ bool namedDates (const std::string& name, Variant& value)
           ordinal == "rd" ||
           ordinal == "th")
       {
-        int m = today.month ();
-        int d = today.day ();
-        int y = today.year ();
+        struct tm* t = localtime (&now);
+        int y = t->tm_year + 1900;
+        int m = t->tm_mon + 1;
+        int d = t->tm_mday;
 
         // If it is this month.
         if (d < number &&
-            number <= Date::daysInMonth (m, y))
+            number <= daysInMonth (m, y))
         {
-          Date then (m, number, y);
-          _t = then._t;
+          t->tm_hour = t->tm_min = t->tm_sec = 0;
+          t->tm_mon  = m - 1;
+          t->tm_mday = number;
+          t->tm_year = y - 1900;
+          value = Variant (mktime (t), Variant::type_date);
           return true;
         }
 
@@ -426,14 +434,16 @@ bool namedDates (const std::string& name, Variant& value)
             y++;
           }
         }
-        while (number > Date::daysInMonth (m, y));
+        while (number > daysInMonth (m, y));
 
-        Date then (m, number, y);
-        _t = then._t;
+        t->tm_hour = t->tm_min = t->tm_sec = 0;
+        t->tm_mon  = m - 1;
+        t->tm_mday = number;
+        t->tm_year = y - 1900;
+        value = Variant (mktime (t), Variant::type_date);
         return true;
       }
     }
-*/
   }
 
   else
