@@ -1074,13 +1074,73 @@ void A3t::findIdSequence ()
 
       (*i)->unTag ("?");
       (*i)->tag ("ID");
+      (*i)->tag ("EXPANDED");
+
+      Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
+      branch->attribute ("value", "(");
+      branch->tag ("OP");
+
       std::vector <std::pair <int, int> >::iterator r;
       for (r = ranges.begin (); r != ranges.end (); ++r)
       {
-        Tree* branch = (*i)->addBranch (new Tree ("range"));
-        branch->attribute ("min", r->first);
-        branch->attribute ("max", r->second);
+        if (r != ranges.begin ())
+        {
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", "or");
+          branch->tag ("OP");
+        }
+
+        if (r->first == r->second)
+        {
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", "id");
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", "==");
+          branch->tag ("OP");
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", r->first);
+        }
+        else
+        {
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", "(");
+          branch->tag ("OP");
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", "id");
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", ">=");
+          branch->tag ("OP");
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", r->first);
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", "and");
+          branch->tag ("OP");
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", "id");
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", "<=");
+          branch->tag ("OP");
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", r->second);
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", ")");
+          branch->tag ("OP");
+        }
       }
+
+      branch = (*i)->addBranch (new Tree ("argSeq"));
+      branch->attribute ("value", ")");
+      branch->tag ("OP");
     }
   }
 }
