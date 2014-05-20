@@ -14,8 +14,8 @@ set (test_SRCS autocomplete.t color.t config.t date.t directory.t dom.t
                variant_equal.t variant_exp.t variant_gt.t variant_gte.t
                variant_inequal.t variant_lt.t variant_lte.t variant_match.t
                variant_math.t variant_modulo.t variant_multiply.t
-               variant_nomatch.t variant_not.t variant_or.t variant_subtract.t
-               variant_xor.t eval.t dates.t)
+               variant_nomatch.t variant_not.t variant_or.t variant_partial.t
+               variant_subtract.t variant_xor.t eval.t dates.t)
 
 message ("-- Configuring run_all")
 if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
