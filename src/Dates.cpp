@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <iostream>
+#include <stdlib.h>
 #include <time.h>
 #include <text.h>
 #include <Dates.h>
@@ -391,12 +392,12 @@ bool namedDates (const std::string& name, Variant& value)
 
     if (isdigit (name[1]))
     {
-      number = atoi (name.substr (0, 2).c_str ());
+      number = strtol (name.substr (0, 2).c_str (), NULL, 10);
       ordinal = lowerCase (name.substr (2));
     }
     else
     {
-      number = atoi (name.substr (0, 2).c_str ());
+      number = strtol (name.substr (0, 2).c_str (), NULL, 10);
       ordinal = lowerCase (name.substr (1));
     }
 
