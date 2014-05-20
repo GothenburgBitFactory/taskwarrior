@@ -207,6 +207,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
          << "  Until:             " << formatDate (task, "until", dateformat)           << "\n"
          << "  Recur:             " << task.get ("recur")                               << "\n"
          << "  Wait until:        " << formatDate (task, "wait", dateformat)            << "\n"
+         << "# Modified:          " << formatDate (task, "modified", dateformat)        << "\n"
          << "  Parent:            " << task.get ("parent")                              << "\n";
 
   if (verbose)
