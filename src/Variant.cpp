@@ -693,6 +693,105 @@ bool Variant::operator_nomatch (const Variant& other) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Partial match is mostly a clone of operator==, but with some overrides:
+//
+//   date <partial> date     --> same day check
+//   string <partial> string --> leftmost
+//
+bool Variant::operator_partial (const Variant& other) const
+{
+  Variant left (*this);
+  Variant right (other);
+
+  switch (left._type)
+  {
+  case type_unknown:
+    throw std::string ("Cannot equate unknown type");
+    break;
+
+  case type_boolean:
+    switch (right._type)
+    {
+    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_boolean:                             return left._bool == right._bool;
+    case type_integer:  left.cast (type_integer);  return left._integer == right._integer;
+    case type_real:     left.cast (type_real);     return left._real == right._real;
+    case type_string:   left.cast (type_string);   return left._string == right._string;
+    case type_date:     left.cast (type_date);     return left._date == right._date;
+    case type_duration: left.cast (type_duration); return left._duration == right._duration;
+    }
+    break;
+
+  case type_integer:
+    switch (right._type)
+    {
+    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_boolean:  right.cast (type_integer); return left._integer == right._integer;
+    case type_integer:                             return left._integer == right._integer;
+    case type_real:     left.cast (type_real);     return left._real == right._real;
+    case type_string:   left.cast (type_string);   return left._string == right._string;
+    case type_date:     left.cast (type_date);     return left._date == right._date;
+    case type_duration: left.cast (type_duration); return left._duration == right._duration;
+    }
+    break;
+
+  case type_real:
+    switch (right._type)
+    {
+    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_boolean:  right.cast (type_real);    return left._real == right._real;
+    case type_integer:  right.cast (type_real);    return left._real == right._real;
+    case type_real:                                return left._real == right._real;
+    case type_string:   left.cast (type_string);   return left._string == right._string;
+    case type_date:     left.cast (type_date);     return left._date == right._date;
+    case type_duration: left.cast (type_duration); return left._duration == right._duration;
+    }
+    break;
+
+  case type_string:
+    switch (right._type)
+    {
+    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_boolean:  right.cast (type_string);  return left._string == right._string;
+    case type_integer:  right.cast (type_string);  return left._string == right._string;
+    case type_real:     right.cast (type_string);  return left._string == right._string;
+    case type_string:                              return left._string == right._string;
+    case type_date:     left.cast (type_date);     return left._date == right._date;
+    case type_duration: left.cast (type_duration); return left._duration == right._duration;
+    }
+    break;
+
+  case type_date:
+    switch (right._type)
+    {
+    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_boolean:  right.cast (type_date);    return left._date == right._date;
+    case type_integer:  right.cast (type_date);    return left._date == right._date;
+    case type_real:     right.cast (type_date);    return left._date == right._date;
+    case type_string:   right.cast (type_date);    return left._date == right._date;
+    case type_date:                                return left._date == right._date;
+    case type_duration:                            return left._date == right._duration;
+    }
+    break;
+
+  case type_duration:
+    switch (right._type)
+    {
+    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_boolean:  right.cast (type_duration); return left._duration == right._duration;
+    case type_integer:  right.cast (type_duration); return left._duration == right._duration;
+    case type_real:     right.cast (type_duration); return left._duration == right._duration;
+    case type_string:   right.cast (type_duration); return left._duration == right._duration;
+    case type_date:                                 return left._duration == right._date;
+    case type_duration:                             return left._duration == right._duration;
+    }
+    break;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Variant::operator! () const
 {
   Variant left (*this);

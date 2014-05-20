@@ -59,6 +59,7 @@ public:
   bool operator!= (const Variant&) const;
   bool operator_match (const Variant&) const;
   bool operator_nomatch (const Variant&) const;
+  bool operator_partial (const Variant&) const;
   bool operator! () const;
 
   Variant& operator^= (const Variant&);
