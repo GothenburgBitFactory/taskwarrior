@@ -693,7 +693,7 @@ bool Eval::parsePrimitive (
   int &i) const
 {
   if (_debug)
-    std::cout << "#                     parseVariant\n";
+    std::cout << "#                     parsePrimitive\n";
 
   if (i < infix.size ())
   {
@@ -718,7 +718,26 @@ bool Eval::parsePrimitive (
     }
     else
     {
-      if (infix[i].second != Lexer::typeOperator)
+      bool found = false;
+      std::vector <bool (*)(const std::string&, Variant&)>::const_iterator source;
+      for (source = _sources.begin (); source != _sources.end (); ++source)
+      {
+        Variant v;
+        if ((*source) (infix[i].first, v))
+        {
+          if (_debug)
+            std::cout << "#                     " << infix[i].first << "' --> '" << (std::string) v << "'\n";
+          found = true;
+          break;
+        }
+      }
+
+      if (found)
+      {
+        ++i;
+        return true;
+      }
+      else if (infix[i].second != Lexer::typeOperator)
       {
         if (_debug)
           std::cout << "#                     " << infix[i].first << "\n";
