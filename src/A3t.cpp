@@ -1123,12 +1123,36 @@ void A3t::findUUIDList ()
 
       (*i)->unTag ("?");
       (*i)->tag ("UUID");
+      (*i)->tag ("EXPANDED");
+
+      Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
+      branch->attribute ("value", "(");
+      branch->tag ("OP");
+
       std::vector <std::string>::iterator u;
       for (u = sequence.begin (); u != sequence.end (); ++u)
       {
-        Tree* branch = (*i)->addBranch (new Tree ("list"));
+        if (u != sequence.begin ())
+        {
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("value", "or");
+          branch->tag ("OP");
+        }
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("value", "uuid");
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("value", "=");
+        branch->tag ("OP");
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
         branch->attribute ("value", *u);
       }
+
+      branch = (*i)->addBranch (new Tree ("argSeq"));
+      branch->attribute ("value", ")");
+      branch->tag ("OP");
     }
   }
 }
