@@ -748,7 +748,7 @@ const std::vector <std::string> A3t::getWords () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// /pattern/
+// /pattern/ --> description ~ pattern
 void A3t::findPattern ()
 {
   std::vector <Tree*>::iterator i;
@@ -770,7 +770,17 @@ void A3t::findPattern ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("PATTERN");
-      (*i)->attribute ("pattern", pattern);
+      (*i)->tag ("EXPANDED");
+
+      Tree* branch = (*i)->addBranch (new Tree ("argPat"));
+      branch->attribute ("value", "description");
+
+      branch = (*i)->addBranch (new Tree ("argPat"));
+      branch->attribute ("value", "~");
+      branch->tag ("OP");
+
+      branch = (*i)->addBranch (new Tree ("argPat"));
+      branch->attribute ("value", pattern);
     }
   }
 }
