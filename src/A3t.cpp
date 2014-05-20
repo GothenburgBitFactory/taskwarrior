@@ -853,8 +853,19 @@ void A3t::findTag ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("TAG");
+      (*i)->tag ("EXPANDED");
       (*i)->attribute ("sign", sign);
       (*i)->attribute ("tag", tag);
+
+      Tree* branch = (*i)->addBranch (new Tree ("argTag"));
+      branch->attribute ("value", "tags");
+
+      branch = (*i)->addBranch (new Tree ("argTag"));
+      branch->attribute ("value", (sign == "+" ? "_hastag_" : "_notag_"));
+      branch->tag ("OP");
+
+      branch = (*i)->addBranch (new Tree ("argTag"));
+      branch->attribute ("value", tag);
     }
   }
 }
