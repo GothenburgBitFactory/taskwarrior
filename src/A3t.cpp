@@ -543,6 +543,9 @@ const std::string A3t::getFilterExpression ()
       }
       else
       {
+        if (sequence != "")
+          sequence += " ";
+
         sequence += (*i)->attribute ("raw");
       }
     }
@@ -595,10 +598,6 @@ const std::string A3t::getFilterExpression ()
       }
       else if ((*i)->hasTag ("ATTRIBUTE"))
       {
-        if (filter != "")
-          filter += ' ';
-
-        filter += (*i)->attribute ("name") + " = " + (*i)->attribute ("value");
       }
       else if ((*i)->hasTag ("TAG"))
       {
@@ -822,6 +821,16 @@ void A3t::findAttribute ()
             {
               (*i)->tag ("MODIFIABLE");
             }
+
+            Tree* branch = (*i)->addBranch (new Tree ("argAtt"));
+            branch->attribute ("value", canonical);
+
+            branch = (*i)->addBranch (new Tree ("argAtt"));
+            branch->attribute ("value", "==");
+            branch->tag ("OP");
+
+            branch = (*i)->addBranch (new Tree ("argAtt"));
+            branch->attribute ("value", value);
           }
         }
       }
