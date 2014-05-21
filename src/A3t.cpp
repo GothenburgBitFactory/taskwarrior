@@ -1367,6 +1367,14 @@ void A3t::findPlainArgs ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Two consecutive FILTER, non-OP arguments that are not "(" or ")" need an
+// "and" operator inserted between them.
+//
+//   ) <non-op>         -->  ) and <non-op>
+//   <non-op> (         -->  <non-op> <and> (
+//   ) (                -->  ) and (
+//   <non-op> <non-op>  -->  <non-op> and <non-op>
+//
 void A3t::findMissingOperators ()
 {
   std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
@@ -1375,27 +1383,47 @@ void A3t::findMissingOperators ()
   {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
-      // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need
-      // an "and" operator inserted between them.
-      //
-      //   ) <non-op>         -->  ) and <non-op>
-      //   <non-op> (         -->  <non-op> <and> (
-      //   ) (                -->  ) and (
-      //   <non-op> <non-op>  -->  <non-op> and <non-op>
-      //
-      if (i != prev &&
-          (((*prev)->hasTag ("FILTER") && ! (*prev)->hasTag ("OP")) || (*prev)->attribute ("raw") == ")") &&
-          (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
+      if ((*i)->_branches.size ())
       {
-        std::cout << "# missingOperator '"
-                  << (*prev)->attribute ("raw")
-                  << " "
-                  << (*i)->attribute ("raw")
-                  << "' --> '"
-                  << (*prev)->attribute ("raw")
-                  << " and "
-                  << (*i)->attribute ("raw")
-                  << "'\n";
+        std::vector <Tree*>::iterator sub;
+        for (sub = (*i)->_branches.begin (); sub != (*i)->_branches.end (); ++sub)
+        {
+          if (sub != prev &&
+              (((*prev)->hasTag ("FILTER") && ! (*prev)->hasTag ("OP")) || (*prev)->attribute ("raw") == ")") &&
+              (! (*sub)->hasTag ("OP") || (*sub)->attribute ("raw") == "("))
+          {
+            std::cout << "# missingOperator '"
+                      << (*prev)->attribute ("raw")
+                      << " "
+                      << (*sub)->attribute ("raw")
+                      << "' --> '"
+                      << (*prev)->attribute ("raw")
+                      << " and "
+                      << (*sub)->attribute ("raw")
+                      << "'\n";
+          }
+
+          prev = sub;
+        }
+      }
+      else
+      {
+        if (i != prev &&
+            (((*prev)->hasTag ("FILTER") && ! (*prev)->hasTag ("OP")) || (*prev)->attribute ("raw") == ")") &&
+            (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
+        {
+          std::cout << "# missingOperator '"
+                    << (*prev)->attribute ("raw")
+                    << " "
+                    << (*i)->attribute ("raw")
+                    << "' --> '"
+                    << (*prev)->attribute ("raw")
+                    << " and "
+                    << (*i)->attribute ("raw")
+                    << "'\n";
+        }
+
+        prev = i;
       }
     }
   }
