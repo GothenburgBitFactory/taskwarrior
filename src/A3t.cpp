@@ -530,7 +530,7 @@ const std::string A3t::getFilterExpression ()
   {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
-      if ((*i)->hasTag ("EXPANDED"))
+      if ((*i)->_branches.size ())
       {
         std::vector <Tree*>::iterator b;
         for (b = (*i)->_branches.begin (); b != (*i)->_branches.end (); ++b)
@@ -665,7 +665,6 @@ void A3t::findPattern ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("PATTERN");
-      (*i)->tag ("EXPANDED");
 
       Tree* branch = (*i)->addBranch (new Tree ("argPat"));
       branch->attribute ("value", "description");
@@ -748,7 +747,6 @@ void A3t::findTag ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("TAG");
-      (*i)->tag ("EXPANDED");
       (*i)->attribute ("sign", sign);
       (*i)->attribute ("tag", tag);
 
@@ -875,7 +873,6 @@ void A3t::findAttributeModifier ()
             {
               (*i)->unTag ("?");
               (*i)->tag ("ATTMOD");
-              (*i)->tag ("EXPANDED");
               (*i)->attribute ("name", canonical);
               (*i)->attribute ("value", value);
               (*i)->attribute ("modifier", modifier);
@@ -1098,7 +1095,6 @@ void A3t::findIdSequence ()
 
       (*i)->unTag ("?");
       (*i)->tag ("ID");
-      (*i)->tag ("EXPANDED");
 
       Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
       branch->attribute ("value", "(");
@@ -1207,7 +1203,6 @@ void A3t::findUUIDList ()
 
       (*i)->unTag ("?");
       (*i)->tag ("UUID");
-      (*i)->tag ("EXPANDED");
 
       Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
       branch->attribute ("value", "(");
