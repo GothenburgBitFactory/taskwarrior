@@ -81,6 +81,8 @@
 - Added details in debug mode, for unrecognized data (thanks to Kosta Harlan).
 - Removed unused 'patterns' configuration variable.
 - Regular expressions are now enabled by default.
+- New verbosity token 'filter' shows the complete filter used by the last
+  command.
 
 ------ current release ---------------------------
 

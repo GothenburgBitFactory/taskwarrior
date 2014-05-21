@@ -554,18 +554,12 @@ const std::string A3t::getFilterExpression ()
   if (sequence != "")
     sequence = "( " + sequence + " )";
 
+  if (context.verbose ("filter"))
+    context.footnote ("Filter: " + sequence);
+
   return sequence;
 
-
-
-
-
-
-
-
-
-
-
+/*
   // Locate and extract the filter elements.
   std::string filter = "";
   std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
@@ -573,26 +567,16 @@ const std::string A3t::getFilterExpression ()
   {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
-      // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need
-      // an "and" operator inserted between them.
-      //
-      //   ) <non-op>         -->  ) and <non-op>
-      //   <non-op> (         -->  <non-op> <and> (
-      //   ) (                -->  ) and (
-      //   <non-op> <non-op>  -->  <non-op> and <non-op>
-      //
       if (i != prev &&
           (((*prev)->hasTag ("FILTER") && ! (*prev)->hasTag ("OP")) || (*prev)->attribute ("raw") == ")") &&
           (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
       {
         filter += " and";
       }
-
       else if ((*i)->hasTag ("ID") ||
                (*i)->hasTag ("UUID"))
       {
       }
-
       else if ((*i)->hasTag ("ATTMOD"))
       {
       }
@@ -616,11 +600,7 @@ const std::string A3t::getFilterExpression ()
       prev = i;
     }
   }
-
-  if (sequence != "")
-    return "( " + sequence + " ) " + filter;
-
-  return filter;
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -254,6 +254,7 @@ control specific occasions when output is generated.  This list may contain:
     special    Feedback when applying special tags
     project    Feedback about project status changes
     sync       Feedback about sync
+    filter     Shows the filter used in the command
 
 Note that the "on" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.

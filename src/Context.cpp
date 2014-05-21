@@ -515,7 +515,8 @@ bool Context::verbose (const std::string& token)
         verbosity[0]      != "edit"     &&  //
         verbosity[0]      != "special"  &&  //
         verbosity[0]      != "project"  &&  //
-        verbosity[0]      != "sync")        //
+        verbosity[0]      != "sync"     &&  //
+        verbosity[0]      != "filter")      //
     {
       verbosity.clear ();
 
