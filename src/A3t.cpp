@@ -149,6 +149,7 @@ Tree* A3t::parse ()
   findModifications ();
 
   findPlainArgs ();
+  findMissingOperators ();
 
   validate ();
 
@@ -1357,6 +1358,41 @@ void A3t::findPlainArgs ()
         (*i)->countTags () == 2)
     {
       std::cout << "# plain arg '" << (*i)->attribute ("raw") << "'\n";
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void A3t::findMissingOperators ()
+{
+  std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
+    {
+      // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need
+      // an "and" operator inserted between them.
+      //
+      //   ) <non-op>         -->  ) and <non-op>
+      //   <non-op> (         -->  <non-op> <and> (
+      //   ) (                -->  ) and (
+      //   <non-op> <non-op>  -->  <non-op> and <non-op>
+      //
+      if (i != prev &&
+          (((*prev)->hasTag ("FILTER") && ! (*prev)->hasTag ("OP")) || (*prev)->attribute ("raw") == ")") &&
+          (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
+      {
+        std::cout << "# missingOperator '"
+                  << (*prev)->attribute ("raw")
+                  << " "
+                  << (*i)->attribute ("raw")
+                  << "' --> '"
+                  << (*prev)->attribute ("raw")
+                  << " and "
+                  << (*i)->attribute ("raw")
+                  << "'\n";
+      }
     }
   }
 }

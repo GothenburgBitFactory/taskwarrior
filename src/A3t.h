@@ -72,6 +72,7 @@ private:
   void findFilter ();
   void findModifications ();
   void findPlainArgs ();
+  void findMissingOperators ();
   void validate ();
 
 private:
