@@ -547,6 +547,9 @@ const std::string A3t::getFilterExpression ()
     }
   }
 
+  if (sequence != "")
+    sequence = "( " + sequence + " )";
+
   return sequence;
 
 
