@@ -1385,16 +1385,6 @@ bool A3t::insertAnd ()
               (! (*prev)->hasTag ("OP") || (*prev)->attribute ("raw") == ")") &&
               (! (*sub)->hasTag ("OP") || (*sub)->attribute ("raw") == "("))
           {
-            std::cout << "# missingOperator '"
-                      << (*prev)->attribute ("raw")
-                      << " "
-                      << (*sub)->attribute ("raw")
-                      << "' --> '"
-                      << (*prev)->attribute ("raw")
-                      << " and "
-                      << (*sub)->attribute ("raw")
-                      << "'\n";
-
             Tree* branch = new Tree ("argOp");
             branch->attribute ("raw", "and");
             branch->tag ("OP");
@@ -1413,16 +1403,6 @@ bool A3t::insertAnd ()
             (! (*prev)->hasTag ("OP") || (*prev)->attribute ("raw") == ")") &&
             (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
         {
-          std::cout << "# missingOperator '"
-                    << (*prev)->attribute ("raw")
-                    << " "
-                    << (*i)->attribute ("raw")
-                    << "' --> '"
-                    << (*prev)->attribute ("raw")
-                    << " and "
-                    << (*i)->attribute ("raw")
-                    << "'\n";
-
           Tree* branch = new Tree ("argOp");
           branch->attribute ("raw", "and");
           branch->tag ("OP");
