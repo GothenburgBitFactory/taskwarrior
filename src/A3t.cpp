@@ -558,49 +558,6 @@ const std::string A3t::getFilterExpression ()
     context.footnote ("Filter: " + sequence);
 
   return sequence;
-
-/*
-  // Locate and extract the filter elements.
-  std::string filter = "";
-  std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
-  {
-    if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
-    {
-      if (i != prev &&
-          (((*prev)->hasTag ("FILTER") && ! (*prev)->hasTag ("OP")) || (*prev)->attribute ("raw") == ")") &&
-          (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
-      {
-        filter += " and";
-      }
-      else if ((*i)->hasTag ("ID") ||
-               (*i)->hasTag ("UUID"))
-      {
-      }
-      else if ((*i)->hasTag ("ATTMOD"))
-      {
-      }
-      else if ((*i)->hasTag ("ATTRIBUTE"))
-      {
-      }
-      else if ((*i)->hasTag ("TAG"))
-      {
-      }
-      else if ((*i)->hasTag ("PATTERN"))
-      {
-      }
-      else
-      {
-        if (filter != "")
-          filter += ' ';
-
-        filter += (*i)->attribute ("raw");
-      }
-
-      prev = i;
-    }
-  }
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1347,6 +1304,15 @@ void A3t::findPlainArgs ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void A3t::findMissingOperators ()
+{
+/*
+  while (insertMissingOperators ())
+    ;
+*/
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need an
 // "and" operator inserted between them.
 //
@@ -1355,7 +1321,7 @@ void A3t::findPlainArgs ()
 //   ) (                -->  ) and (
 //   <non-op> <non-op>  -->  <non-op> and <non-op>
 //
-void A3t::findMissingOperators ()
+bool A3t::insertMissingOperators ()
 {
   std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
   std::vector <Tree*>::iterator i;
@@ -1369,7 +1335,8 @@ void A3t::findMissingOperators ()
         for (sub = (*i)->_branches.begin (); sub != (*i)->_branches.end (); ++sub)
         {
           if (sub != prev &&
-              (((*prev)->hasTag ("FILTER") && ! (*prev)->hasTag ("OP")) || (*prev)->attribute ("raw") == ")") &&
+              prev != _tree->_branches.begin () &&
+              (! (*prev)->hasTag ("OP") || (*prev)->attribute ("raw") == ")") &&
               (! (*sub)->hasTag ("OP") || (*sub)->attribute ("raw") == "("))
           {
             std::cout << "# missingOperator '"
@@ -1381,6 +1348,12 @@ void A3t::findMissingOperators ()
                       << " and "
                       << (*sub)->attribute ("raw")
                       << "'\n";
+
+            Tree* branch = new Tree ("argOp");
+            branch->attribute ("raw", "and");
+            branch->tag ("OP");
+            (*i)->_branches.insert (sub, branch);
+            return true;
           }
 
           prev = sub;
@@ -1389,7 +1362,8 @@ void A3t::findMissingOperators ()
       else
       {
         if (i != prev &&
-            (((*prev)->hasTag ("FILTER") && ! (*prev)->hasTag ("OP")) || (*prev)->attribute ("raw") == ")") &&
+            prev != _tree->_branches.begin () &&
+            (! (*prev)->hasTag ("OP") || (*prev)->attribute ("raw") == ")") &&
             (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
         {
           std::cout << "# missingOperator '"
@@ -1401,12 +1375,20 @@ void A3t::findMissingOperators ()
                     << " and "
                     << (*i)->attribute ("raw")
                     << "'\n";
+
+          Tree* branch = new Tree ("argOp");
+          branch->attribute ("raw", "and");
+          branch->tag ("OP");
+          _tree->_branches.insert (i, branch);
+          return true;
         }
 
         prev = i;
       }
     }
   }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -73,6 +73,7 @@ private:
   void findModifications ();
   void findPlainArgs ();
   void findMissingOperators ();
+  bool insertMissingOperators ();
   void validate ();
 
 private:
