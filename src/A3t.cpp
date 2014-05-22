@@ -577,7 +577,8 @@ const std::vector <std::string> A3t::getWords () const
         ! (*i)->hasTag ("RC")     &&
         ! (*i)->hasTag ("CONFIG") &&
         ! (*i)->hasTag ("CMD")    &&
-        ! (*i)->hasTag ("TERMINATOR"))
+        ! (*i)->hasTag ("TERMINATOR") &&
+        (*i)->hasTag ("ORIGINAL"))
       words.push_back ((*i)->attribute ("raw"));
   }
 
