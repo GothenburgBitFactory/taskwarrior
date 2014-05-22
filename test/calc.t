@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 20;
 
 # '15min' is seen as '15', 'min', not '15min' duration.
 my $output = qx{../src/calc --debug --noambiguous '12 * 3600 + 34 * 60 + 56'};
@@ -36,7 +36,6 @@ like ($output, qr/token infix '3600' Number/, 'Number 3600');
 like ($output, qr/token infix '34' Number/,   'Number 60');
 like ($output, qr/token infix '60' Number/,   'Number 60');
 like ($output, qr/token infix '56' Number/,   'Number 56');
-like ($output, qr/no errors/ms,               'No syntax errors');
 like ($output, qr/^45296$/ms,                 'Result 45296');
 unlike ($output, qr/Error/,                   'No errors');
 
@@ -54,7 +53,6 @@ like ($output, qr/token infix '2' Number/ms,       'Number 2');
 like ($output, qr/token infix '-' Operator/ms,     'Operator -');
 like ($output, qr/token infix '_neg_' Operator/ms, 'operator _neg_');
 like ($output, qr/token infix '3' Number/ms,       'Number 3');
-like ($output, qr/no errors/ms,                    'No syntax errors');
 like ($output, qr/^5$/ms,                          'Result 5');
 unlike ($output, qr/Error/,                        'No errors');
 
