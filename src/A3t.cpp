@@ -1306,10 +1306,49 @@ void A3t::findPlainArgs ()
 ////////////////////////////////////////////////////////////////////////////////
 void A3t::findMissingOperators ()
 {
-/*
-  while (insertMissingOperators ())
+  while (insertOr ())
     ;
-*/
+
+  while (insertAnd ())
+    ;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Two consecutive ID/UUID arguments get an 'or' inserted between them.
+bool A3t::insertOr ()
+{
+  std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
+    // Skip known args.
+    if ((*i)->hasTag ("?"))
+      continue;
+
+    if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
+    {
+      if (prev != _tree->_branches.begin () &&
+          ((*prev)->hasTag ("ID") || (*prev)->hasTag ("UUID")) &&
+          ((*i)->hasTag ("ID") || (*i)->hasTag ("UUID")))
+      {
+        Tree* branch = new Tree ("argOp");
+        branch->attribute ("raw", "or");
+        branch->tag ("OP");
+        branch->tag ("FILTER");
+
+        _tree->_branches.insert (i, branch);
+        return true;
+      }
+    }
+
+    prev = i;
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1321,7 +1360,7 @@ void A3t::findMissingOperators ()
 //   ) (                -->  ) and (
 //   <non-op> <non-op>  -->  <non-op> and <non-op>
 //
-bool A3t::insertMissingOperators ()
+bool A3t::insertAnd ()
 {
   std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
   std::vector <Tree*>::iterator i;
@@ -1352,6 +1391,7 @@ bool A3t::insertMissingOperators ()
             Tree* branch = new Tree ("argOp");
             branch->attribute ("raw", "and");
             branch->tag ("OP");
+            branch->tag ("FILTER");
             (*i)->_branches.insert (sub, branch);
             return true;
           }
@@ -1379,6 +1419,7 @@ bool A3t::insertMissingOperators ()
           Tree* branch = new Tree ("argOp");
           branch->attribute ("raw", "and");
           branch->tag ("OP");
+          branch->tag ("FILTER");
           _tree->_branches.insert (i, branch);
           return true;
         }

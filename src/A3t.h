@@ -73,7 +73,8 @@ private:
   void findModifications ();
   void findPlainArgs ();
   void findMissingOperators ();
-  bool insertMissingOperators ();
+  bool insertOr ();
+  bool insertAnd ();
   void validate ();
 
 private:
