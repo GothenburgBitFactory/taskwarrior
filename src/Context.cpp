@@ -533,7 +533,8 @@ bool Context::verbose (const std::string& token)
     return true;
 
   // rc.verbose=nothing overrides all.
-  if (verbosity[0] == "nothing")
+  if (verbosity.size () == 1 &&
+      verbosity[0] == "nothing")
     return false;
 
   // Specific token match.
