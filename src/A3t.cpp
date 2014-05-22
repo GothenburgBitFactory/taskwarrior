@@ -538,7 +538,10 @@ const std::string A3t::getFilterExpression ()
           if (sequence != "")
             sequence += " ";
 
-          sequence += (*b)->attribute ("raw");
+          if ((*b)->hasTag ("STRING"))
+            sequence += "'" + (*b)->attribute ("raw") + "'";
+          else
+            sequence += (*b)->attribute ("raw");
         }
       }
       else
@@ -546,7 +549,10 @@ const std::string A3t::getFilterExpression ()
         if (sequence != "")
           sequence += " ";
 
-        sequence += (*i)->attribute ("raw");
+        if ((*i)->hasTag ("STRING"))
+          sequence += "'" + (*i)->attribute ("raw") + "'";
+        else
+          sequence += (*i)->attribute ("raw");
       }
     }
   }
@@ -611,6 +617,7 @@ void A3t::findPattern ()
 
       branch = (*i)->addBranch (new Tree ("argPat"));
       branch->attribute ("raw", pattern);
+      branch->tag ("STRING");
     }
   }
 }
@@ -1172,7 +1179,7 @@ void A3t::findUUIDList ()
         branch->tag ("OP");
 
         branch = (*i)->addBranch (new Tree ("argSeq"));
-        branch->attribute ("raw", *u);
+        branch->attribute ("raw", "'" + *u + "'");
       }
 
       branch = (*i)->addBranch (new Tree ("argSeq"));
