@@ -504,7 +504,7 @@ bool Context::verbose (const std::string& token)
 
     // Regular feedback means almost everything.
     if (!verbosity_legacy               &&
-        verbosity.size () == 1          &&
+        verbosity.size ()               &&
         verbosity[0]      != "nothing"  &&
         verbosity[0]      != "blank"    &&  // This list must be complete.
         verbosity[0]      != "header"   &&  //
