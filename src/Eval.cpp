@@ -416,7 +416,8 @@ bool Eval::parseLogical (
   if (i < infix.size () &&
       parseRegex (infix, i))
   {
-    while ((infix[i].first == "and"  ||
+    while (i < infix.size () &&
+           (infix[i].first == "and"  ||
             infix[i].first == "or"   ||
             infix[i].first == "xor") &&
            infix[i].second == Lexer::typeOperator)
@@ -447,7 +448,8 @@ bool Eval::parseRegex (
   if (i < infix.size () &&
       parseEquality (infix, i))
   {
-    while ((infix[i].first == "~" ||
+    while (i < infix.size () &&
+           (infix[i].first == "~" ||
             infix[i].first == "!~") &&
            infix[i].second == Lexer::typeOperator)
     {
@@ -477,7 +479,8 @@ bool Eval::parseEquality (
   if (i < infix.size () &&
       parseComparative (infix, i))
   {
-    while ((infix[i].first == "==" ||
+    while (i < infix.size () &&
+           (infix[i].first == "==" ||
             infix[i].first == "="  ||
             infix[i].first == "!=") &&
            infix[i].second == Lexer::typeOperator)
@@ -508,7 +511,8 @@ bool Eval::parseComparative (
   if (i < infix.size () &&
       parseArithmetic (infix, i))
   {
-    while ((infix[i].first == "<=" ||
+    while (i < infix.size () &&
+           (infix[i].first == "<=" ||
             infix[i].first == "<"  ||
             infix[i].first == ">=" ||
             infix[i].first == ">") &&
@@ -540,7 +544,8 @@ bool Eval::parseArithmetic (
   if (i < infix.size () &&
       parseGeometric (infix, i))
   {
-    while ((infix[i].first == "+" ||
+    while (i < infix.size () &&
+           (infix[i].first == "+" ||
             infix[i].first == "-") &&
            infix[i].second == Lexer::typeOperator)
     {
@@ -570,7 +575,8 @@ bool Eval::parseGeometric (
   if (i < infix.size () &&
       parseTag (infix, i))
   {
-    while ((infix[i].first == "*" ||
+    while (i < infix.size () &&
+           (infix[i].first == "*" ||
             infix[i].first == "/" ||
             infix[i].first == "%") &&
            infix[i].second == Lexer::typeOperator)
@@ -601,7 +607,8 @@ bool Eval::parseTag (
   if (i < infix.size () &&
       parseUnary (infix, i))
   {
-    while ((infix[i].first == "_hastag_" ||
+    while (i < infix.size () &&
+           (infix[i].first == "_hastag_" ||
             infix[i].first == "_notag_") &&
            infix[i].second == Lexer::typeOperator)
     {
@@ -669,7 +676,8 @@ bool Eval::parseExponent (
   if (i < infix.size () &&
       parsePrimitive (infix, i))
   {
-    while (infix[i].first == "^" &&
+    while (i < infix.size () &&
+           infix[i].first == "^" &&
            infix[i].second == Lexer::typeOperator)
     {
       if (_debug)
