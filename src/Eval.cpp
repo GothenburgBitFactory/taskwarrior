@@ -711,7 +711,8 @@ bool Eval::parsePrimitive (
         std::cout << "#                     " << infix[i].first << "\n";
 
       ++i;
-      if (parseLogical (infix, i))
+      if (i < infix.size () &&
+          parseLogical (infix, i))
       {
         if (i < infix.size () &&
             infix[i].first == ")")
@@ -734,7 +735,7 @@ bool Eval::parsePrimitive (
         if ((*source) (infix[i].first, v))
         {
           if (_debug)
-            std::cout << "#                     " << infix[i].first << "' --> '" << (std::string) v << "'\n";
+            std::cout << "#                     '" << infix[i].first << "' --> '" << (std::string) v << "'\n";
           found = true;
           break;
         }
