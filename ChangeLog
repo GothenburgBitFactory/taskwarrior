@@ -5,6 +5,8 @@
 - TD-45 Fix preprocessor define (thanks to Jochen Sprickerhof).
 - TD-55 TLSServer/Client need to include <errno.h> on Solaris (thanks to Tatjana
         Heuser).
+- TD-56 File.cpp needs to include <string.h> on Solaris (thanks to Tatjana
+        Heuѕer).
 - #1255 l10n translation utility improvements (thanks to Renato Alves).
 - #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
 - #1486 Truncated sentence in task-sync(5) manpage (thanks to Jakub Wilk).

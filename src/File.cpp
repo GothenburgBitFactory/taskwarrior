@@ -28,7 +28,12 @@
 #include <fstream>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifdef SOLARIS
+#include <fcntl.h> // for flock() replacement
+#include <string.h> // for memset()
+#else
 #include <sys/file.h>
+#endif
 #include <pwd.h>
 #include <unistd.h>
 #include <File.h>
