@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 echo 'Performance: setup'
 echo '  - This step will take several minutes'
