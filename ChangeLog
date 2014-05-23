@@ -3,6 +3,8 @@
 - TD-42 Cannot compile taskd - GNUTLS_VERSION undefined in diag.cpp (thanks
         to Michele Vetturi).
 - TD-45 Fix preprocessor define (thanks to Jochen Sprickerhof).
+- TD-55 TLSServer/Client need to include <errno.h> on Solaris (thanks to Tatjana
+        Heuser).
 - #1255 l10n translation utility improvements (thanks to Renato Alves).
 - #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
 - #1486 Truncated sentence in task-sync(5) manpage (thanks to Jakub Wilk).

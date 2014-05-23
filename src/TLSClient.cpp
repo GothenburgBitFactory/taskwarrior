@@ -36,7 +36,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#ifdef OPENBSD
+#if (defined OPENBSD || defined SOLARIS)
 #include <errno.h>
 #else
 #include <sys/errno.h>
