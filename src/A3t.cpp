@@ -1152,40 +1152,40 @@ void A3t::findUUIDList ()
         sequence.push_back (uuid);
       }
 
-      if (!n.depleted ())
-        throw std::string (STRING_A3_PATTERN_GARBAGE);
-
-      (*i)->unTag ("?");
-      (*i)->tag ("UUID");
-
-      Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
-      branch->attribute ("raw", "(");
-      branch->tag ("OP");
-
-      std::vector <std::string>::iterator u;
-      for (u = sequence.begin (); u != sequence.end (); ++u)
+      if (n.depleted ())
       {
-        if (u != sequence.begin ())
+        (*i)->unTag ("?");
+        (*i)->tag ("UUID");
+
+        Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", "(");
+        branch->tag ("OP");
+
+        std::vector <std::string>::iterator u;
+        for (u = sequence.begin (); u != sequence.end (); ++u)
         {
+          if (u != sequence.begin ())
+          {
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "or");
+            branch->tag ("OP");
+          }
+
           branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "or");
+          branch->attribute ("raw", "uuid");
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("raw", "=");
           branch->tag ("OP");
+
+          branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("raw", "'" + *u + "'");
         }
 
         branch = (*i)->addBranch (new Tree ("argSeq"));
-        branch->attribute ("raw", "uuid");
-
-        branch = (*i)->addBranch (new Tree ("argSeq"));
-        branch->attribute ("raw", "=");
+        branch->attribute ("raw", ")");
         branch->tag ("OP");
-
-        branch = (*i)->addBranch (new Tree ("argSeq"));
-        branch->attribute ("raw", "'" + *u + "'");
       }
-
-      branch = (*i)->addBranch (new Tree ("argSeq"));
-      branch->attribute ("raw", ")");
-      branch->tag ("OP");
     }
   }
 }
