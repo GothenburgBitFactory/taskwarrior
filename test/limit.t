@@ -36,7 +36,8 @@ delete $ENV{'TASKRC'};
 # Create the rc file.
 if (open my $fh, '>', 'limit.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "verbose=affected\n";
   close $fh;
   ok (-r 'limit.rc', 'Created limit.rc');
 }
@@ -94,7 +95,7 @@ like ($output, qr/^30 tasks, 3 shown$/ms, 'limited to 3');
 #  ------------
 #   = 17 lines
 $output = qx{../src/task rc:limit.rc ls limit:page 2>&1};
-like ($output, qr/^30 tasks, truncated to 17 lines$/ms, 'limited to page');
+like ($output, qr/^30 tasks, truncated to 22 lines$/ms, 'limited to page');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data limit.rc);
