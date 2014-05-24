@@ -29,6 +29,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
+#include <Filter.h>
 #include <ViewText.h>
 #include <OldDuration.h>
 #include <text.h>
@@ -57,12 +58,11 @@ int CmdSummary::execute (std::string& output)
 {
   int rc = 0;
 
-  // Scan the pending tasks.
-  handleRecurrence ();
-
   // Apply filter.
+  handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   // Generate unique list of project names from all pending tasks.
