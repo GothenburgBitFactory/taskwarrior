@@ -28,6 +28,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
+#include <Filter.h>
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
@@ -49,8 +50,9 @@ CmdUrgency::CmdUrgency ()
 int CmdUrgency::execute (std::string& output)
 {
   // Apply filter.
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
 
   if (filtered.size () == 0)
   {
