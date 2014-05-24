@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <Context.h>
+#include <Filter.h>
 #include <main.h>
 #include <i18n.h>
 #include <CmdExport.h>
@@ -48,8 +49,9 @@ int CmdExport::execute (std::string& output)
   int rc = 0;
 
   // Apply filter.
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
 
   // Note: "limit:" feature not supported.
   // TODO Why not?
