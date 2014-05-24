@@ -36,7 +36,8 @@ delete $ENV{'TASKRC'};
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "verbose=affected\n";
   close $fh;
   ok (-r 'bug.rc', 'Created bug.rc');
 }
@@ -55,7 +56,7 @@ unlike ($output, qr/description/ms, 'Attribute not completed in description');
 
 # Check that the completion works when needed
 $output = qx{../src/task rc:bug.rc des:des 2>&1};
-like ($output, qr/^1 task.$/ms, 'Task found using its description');
+like ($output, qr/^1 task$/ms, 'Task found using its description');
 
 qx{../src/task rc:bug.rc add entrée interdite 2>&1};
 $output = qx{../src/task rc:bug.rc list interdite 2>&1};
