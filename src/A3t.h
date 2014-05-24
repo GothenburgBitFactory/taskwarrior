@@ -61,6 +61,8 @@ public:
   const std::vector <std::string> getWords () const;
   // TODO Extract modifications
 
+  std::string getLimit () const;
+
 private:
   void findTerminator ();
   void findPattern ();

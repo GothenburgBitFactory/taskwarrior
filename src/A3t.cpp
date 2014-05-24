@@ -589,6 +589,26 @@ const std::vector <std::string> A3t::getWords () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string A3t::getLimit () const
+{
+  std::vector <Tree*>::const_iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "TERMINATED")
+      break;
+
+    if ((*i)->hasTag ("PSEUDO") &&
+        (*i)->attribute ("name") == "limit")
+    {
+      return (*i)->attribute ("raw");
+    }
+  }
+
+  return "0";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // /pattern/ --> description ~ pattern
 void A3t::findPattern ()
 {
