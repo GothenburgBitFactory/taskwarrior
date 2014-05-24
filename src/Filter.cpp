@@ -111,6 +111,11 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
       Variant var;
       eval.evaluateCompiledExpression (var);
+      // TODO Switch to this:
+/*
+      if (var.get_bool ())
+        output.push_back (*task);
+*/
 
       // TODO Obsolete filter comparison.
       if (context.config.getBoolean ("debug"))
