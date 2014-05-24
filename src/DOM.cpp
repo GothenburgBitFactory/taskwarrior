@@ -162,13 +162,6 @@ const std::string DOM::get (const std::string& name)
 //
 const std::string DOM::get (const std::string& name, const Task& task)
 {
-  Nibbler n (name);
-  n.save ();
-
-  int id;
-  std::string uuid;
-  std::string canonical;
-
   // <attr>
   if (task.size () && name == "id")
     return format (task.id);
@@ -176,10 +169,14 @@ const std::string DOM::get (const std::string& name, const Task& task)
   if (task.size () && name == "urgency")
     return format (task.urgency_c ());
 
+  std::string canonical;
   if (task.size () && context.a3t.canonicalize (canonical, "attribute", name))
     return task.get (canonical);
 
   // <id>.<name>
+  Nibbler n (name);
+  n.save ();
+  int id;
   if (n.getInt (id))
   {
     if (n.skip ('.'))
@@ -202,6 +199,7 @@ const std::string DOM::get (const std::string& name, const Task& task)
   }
 
   // <uuid>.<name>
+  std::string uuid;
   if (n.getUUID (uuid))
   {
     if (n.skip ('.'))
