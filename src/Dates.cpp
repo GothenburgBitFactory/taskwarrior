@@ -351,32 +351,32 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "midsommar")
   {
-/*
-    for (int midsommar = 20; midsommar <= 26; midsommar++)
-    {
-      Date then (6, midsommar, today.year ());
-      if (6 == then.dayOfWeek ())
-      {
-        _t = then._t;
-        return true;
-      }
-    }
-*/
+    struct tm* t = localtime (&now);
+    t->tm_mon = 5;                          // June.
+    t->tm_mday = 20;                        // Saturday after 20th.
+    t->tm_hour = t->tm_min = t->tm_sec = 0; // Midnight.
+
+    time_t then = mktime (t);
+    struct tm* mid = localtime (&then);
+    int offset = 6 - mid->tm_wday;          // How many days after 20th.
+
+    mid->tm_mday += offset;
+    value = Variant (mktime (mid), Variant::type_date);
   }
 
   else if (name == "midsommarafton")
   {
-/*
-    for (int midsommar = 19; midsommar <= 25; midsommar++)
-    {
-      Date then (6, midsommar, today.year ());
-      if (5 == then.dayOfWeek ())
-      {
-        _t = then._t;
-        return true;
-      }
-    }
-*/
+    struct tm* t = localtime (&now);
+    t->tm_mon = 5;                          // June.
+    t->tm_mday = 19;                        // Friday after 19th.
+    t->tm_hour = t->tm_min = t->tm_sec = 0; // Midnight.
+
+    time_t then = mktime (t);
+    struct tm* mid = localtime (&then);
+    int offset = 5 - mid->tm_wday;          // How many days after 19th.
+
+    mid->tm_mday += offset;
+    value = Variant (mktime (mid), Variant::type_date);
   }
 
   // Support "21st" to indicate the next date that is the 21st day.
