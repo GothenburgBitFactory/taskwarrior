@@ -30,6 +30,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <Context.h>
+#include <Filter.h>
 #include <Lexer.h>
 #include <ViewTask.h>
 #include <i18n.h>
@@ -88,6 +89,7 @@ int CmdCustom::execute (std::string& output)
   std::vector <std::string>::reverse_iterator arg;
   for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
   {
+    // TODO Obsolete, but for now prevents 'operator mismatch' errors.
     context.a3.capture_first (*arg);
 
     Tree* t = context.a3t.captureFirst (*arg);
@@ -95,15 +97,16 @@ int CmdCustom::execute (std::string& output)
     t->tag ("FILTER");
   }
 
+  // TODO Obsolete, but for now prevents 'operator mismatch' errors..
   context.a3t.parse ();
-
   context.a3.categorize ();
-  context.a3.dump ("A3::categorize");
 
-  // Load the data.
+  // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
+  context.tdb2.commit ();
 
   // Sort the tasks.
   std::vector <int> sequence;
@@ -193,7 +196,6 @@ int CmdCustom::execute (std::string& output)
   }
 
   feedback_backlog ();
-  context.tdb2.commit ();
   output = out.str ();
   return rc;
 }
@@ -237,7 +239,7 @@ void CmdCustom::getLimits (const std::string& report, int& rows, int& lines)
 
   // If the custom report has a defined limit, then allow a numeric override.
   // This is an integer specified as a filter (limit:10).
-  std::string limit = context.a3.find_limit ();
+  std::string limit = context.a3t.getLimit ();
   if (limit != "")
   {
     if (limit == "page")
