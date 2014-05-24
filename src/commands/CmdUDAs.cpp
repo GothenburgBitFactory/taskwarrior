@@ -28,6 +28,7 @@
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
+#include <Filter.h>
 #include <ViewText.h>
 #include <main.h>
 #include <text.h>
@@ -66,9 +67,10 @@ int CmdUDAs::execute (std::string& output)
     }
   }
 
-  // Load/filter all data.
+  // Apply filter.
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
 
   if (udas.size ())
   {
