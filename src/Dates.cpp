@@ -124,13 +124,24 @@ static int daysInMonth (int year, int month)
 // ascension      =
 // pentecost      =
 // goodfriday     =
-// midsommar      =
-// midsommarafton =
+// midsommar      = midnight, 1st Saturday after 20th June
+// midsommarafton = midnight, 1st Friday after 19th June
 // Nth            =
 
 bool namedDates (const std::string& name, Variant& value)
 {
   time_t now = time (NULL);
+  struct tm* t = localtime (&now);
+/*
+  std::cout << "# now t\n"
+            << "#   tm_year="  << t->tm_year  << "\n"
+            << "#   tm_mon="   << t->tm_mon   << "\n"
+            << "#   tm_mday="  << t->tm_mday  << "\n"
+            << "#   tm_hour="  << t->tm_hour  << "\n"
+            << "#   tm_min="   << t->tm_min   << "\n"
+            << "#   tm_sec="   << t->tm_sec   << "\n"
+            << "#   tm_isdst=" << t->tm_isdst << "\n";
+*/
   int i;
 
   // TODO Extract helper functions from this code.
@@ -143,21 +154,18 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "today" || name == "sod")
   {
-    struct tm* t = localtime (&now);
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     value = Variant (mktime (t), Variant::type_date);
   }
 
   else if (name == "yesterday")
   {
-    struct tm* t = localtime (&now);
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     value = Variant (mktime (t) - 86400, Variant::type_date);
   }
 
   else if (name == "tomorrow" || name == "eod")
   {
-    struct tm* t = localtime (&now);
     t->tm_mday++;
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     value = Variant (mktime (t), Variant::type_date);
@@ -165,8 +173,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (isDay (name, i))
   {
-    struct tm* t = localtime (&now);
-
     if (t->tm_wday >= i)
       t->tm_mday += i - t->tm_wday + 7;
     else
@@ -178,7 +184,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (isMonth (name, i))
   {
-    struct tm* t = localtime (&now);
     if (t->tm_mon >= i)
       t->tm_year++;
 
@@ -190,7 +195,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "soy")
   {
-    struct tm* t = localtime (&now);
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mon = 0;
     t->tm_mday = 1;
@@ -199,7 +203,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "eoy")
   {
-    struct tm* t = localtime (&now);
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mon = 11;
     t->tm_mday = 31;
@@ -208,7 +211,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "socm")
   {
-    struct tm* t = localtime (&now);
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mday = 1;
     value = Variant (mktime (t), Variant::type_date);
@@ -216,7 +218,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "som")
   {
-    struct tm* t = localtime (&now);
     t->tm_hour = t->tm_min = t->tm_sec = 0;
 
     t->tm_mon++;
@@ -232,7 +233,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "eom" || name == "eocm")
   {
-    struct tm* t = localtime (&now);
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mday = daysInMonth (t->tm_year + 1900, t->tm_mon + 1);
     value = Variant (mktime (t), Variant::type_date);
@@ -283,7 +283,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "soq" || name == "eoq")
   {
-    struct tm* t = localtime (&now);
     t->tm_hour = t->tm_min = t->tm_sec = 0;
 
     t->tm_mon += 3 - (t->tm_mon % 3);
@@ -303,7 +302,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "later" || name == "someday")
   {
-    struct tm* t = localtime (&now);
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_year = 138;
     t->tm_mon = 0;
@@ -317,8 +315,6 @@ bool namedDates (const std::string& name, Variant& value)
            name == "pentecost"    ||
            name == "goodfriday")
   {
-    struct tm* t = localtime (&now);
-
     int Y = t->tm_year + 1900;
     int a = Y % 19;
     int b = Y / 100;
@@ -351,7 +347,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "midsommar")
   {
-    struct tm* t = localtime (&now);
     t->tm_mon = 5;                          // June.
     t->tm_mday = 20;                        // Saturday after 20th.
     t->tm_hour = t->tm_min = t->tm_sec = 0; // Midnight.
@@ -366,7 +361,6 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "midsommarafton")
   {
-    struct tm* t = localtime (&now);
     t->tm_mon = 5;                          // June.
     t->tm_mday = 19;                        // Friday after 19th.
     t->tm_hour = t->tm_min = t->tm_sec = 0; // Midnight.
@@ -409,7 +403,6 @@ bool namedDates (const std::string& name, Variant& value)
           ordinal == "rd" ||
           ordinal == "th")
       {
-        struct tm* t = localtime (&now);
         int y = t->tm_year + 1900;
         int m = t->tm_mon + 1;
         int d = t->tm_mday;
