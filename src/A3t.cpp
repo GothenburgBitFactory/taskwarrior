@@ -43,8 +43,8 @@
 
 extern Context context;
 
-// TODO Tie this to rc.abbreviation.minimum.
-static const int minimumMatchLength = 3;
+// Overridden by rc.abbreviation.minimum.
+static int minimumMatchLength = 3;
 
 // Alias expansion limit.  Any more indicates some kind of error.
 const int safetyValveDefault = 10;
@@ -67,6 +67,9 @@ A3t::~A3t ()
 // char** argv --> std::vector <std::string> _args
 void A3t::initialize (int argc, const char** argv)
 {
+  // Set up constants.
+  minimumMatchLength = strtol (context.config.get ("abbreviation.minimum").c_str (), NULL, 10);
+
   // Create top-level nodes.
   for (int i = 0; i < argc; ++i)
   {
