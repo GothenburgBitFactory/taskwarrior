@@ -37,20 +37,19 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Const iterator that can be derefenced into a Task by domSource.
-static std::vector <Task>::const_iterator contextTask;
+static Task dummy;
+static Task& contextTask = dummy;
 
 ////////////////////////////////////////////////////////////////////////////////
 static bool domSource (const std::string& identifier, Variant& value)
 {
-  std::string stringValue = context.dom.get (identifier, *contextTask);
+  std::string stringValue = context.dom.get (identifier, contextTask);
   if (stringValue != identifier)
   {
-//    std::cout << "# domSource " << identifier << " -> " << stringValue << "\n";
     value = Variant (stringValue);
     return true;
   }
 
-//  std::cout << "# domSource " << identifier << " -> ?\n";
   return false;
 }
 
@@ -107,7 +106,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
       if (oldFilter)
         output.push_back (*task);
 
-      contextTask = task;
+      // Set up context for any DOM references.
+      contextTask = *task;
 
       Variant var;
       eval.evaluateCompiledExpression (var);
@@ -169,7 +169,8 @@ void Filter::subset (std::vector <Task>& output)
       if (oldFilter)
         output.push_back (*task);
 
-      contextTask = task;
+      // Set up context for any DOM references.
+      contextTask = *task;
 
       Variant var;
       eval.evaluateCompiledExpression (var);
@@ -193,7 +194,8 @@ void Filter::subset (std::vector <Task>& output)
         if (oldFilter)
           output.push_back (*task);
 
-        contextTask = task;
+        // Set up context for any DOM references.
+        contextTask = *task;
 
         Variant var;
         eval.evaluateCompiledExpression (var);
