@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <sstream>
 #include <Context.h>
+#include <Filter.h>
 #include <ViewText.h>
 #include <main.h>
 #include <text.h>
@@ -55,10 +56,11 @@ int CmdHistoryMonthly::execute (std::string& output)
   std::map <time_t, int> completedGroup;  // Completions by month
   std::map <time_t, int> deletedGroup;    // Deletions by month
 
-  // Scan the pending tasks.
+  // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
@@ -209,10 +211,11 @@ int CmdHistoryAnnual::execute (std::string& output)
   std::map <time_t, int> completedGroup;  // Completions by month
   std::map <time_t, int> deletedGroup;    // Deletions by month
 
-  // Scan the pending tasks.
+  // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
@@ -360,10 +363,11 @@ int CmdGHistoryMonthly::execute (std::string& output)
   std::map <time_t, int> completedGroup;  // Completions by month
   std::map <time_t, int> deletedGroup;    // Deletions by month
 
-  // Scan the pending tasks.
+  // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
@@ -553,10 +557,11 @@ int CmdGHistoryAnnual::execute (std::string& output)
   std::map <time_t, int> completedGroup;  // Completions by month
   std::map <time_t, int> deletedGroup;    // Deletions by month
 
-  // Scan the pending tasks.
+  // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
