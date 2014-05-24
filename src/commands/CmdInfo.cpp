@@ -28,6 +28,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
+#include <Filter.h>
 #include <Date.h>
 #include <OldDuration.h>
 #include <ViewText.h>
@@ -59,8 +60,9 @@ int CmdInfo::execute (std::string& output)
   int rc = 0;
 
   // Apply filter.
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
 
   if (! filtered.size ())
   {
