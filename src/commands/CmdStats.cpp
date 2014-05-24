@@ -31,6 +31,7 @@
 #include <ViewText.h>
 #include <OldDuration.h>
 #include <Context.h>
+#include <Filter.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>
@@ -79,9 +80,10 @@ int CmdStats::execute (std::string& output)
       ++backlogCount;
 
   // Get all the tasks.
+  Filter filter;
   std::vector <Task> all = context.tdb2.all_tasks ();
   std::vector <Task> filtered;
-  filter (all, filtered);
+  filter.subset (all, filtered);
 
   Date now;
   time_t earliest   = time (NULL);
