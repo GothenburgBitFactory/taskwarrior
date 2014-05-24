@@ -30,6 +30,7 @@
 #include <string.h>
 #include <math.h>
 #include <Context.h>
+#include <Filter.h>
 #include <Date.h>
 #include <OldDuration.h>
 #include <main.h>
@@ -980,8 +981,9 @@ int CmdBurndownMonthly::execute (std::string& output)
 
   // Scan the pending tasks, applying any filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   // Create a chart, scan the tasks, then render.
@@ -1008,8 +1010,9 @@ int CmdBurndownWeekly::execute (std::string& output)
 
   // Scan the pending tasks, applying any filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   // Create a chart, scan the tasks, then render.
@@ -1036,8 +1039,9 @@ int CmdBurndownDaily::execute (std::string& output)
 
   // Scan the pending tasks, applying any filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   // Create a chart, scan the tasks, then render.
