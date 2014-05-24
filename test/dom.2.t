@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 6;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -53,6 +53,13 @@ like ($output, qr/Due\s+20110901/, 'Found due date duplicated via dom');
 qx{../src/task rc:dom.rc add three due:20110901 wait:due 2>&1};
 $output = qx{../src/task rc:dom.rc 3 info 2>&1};
 like ($output, qr/Waiting until\s+20110901/, 'Found wait date duplicated from due date');
+
+# ID <--> UUID <--> ID round trip via DOM.
+$output = qx{../src/task rc:dom.rc _get 1.uuid 2>&1};
+like ($output, qr/^.{36}$/, 'DOM id --> uuid');
+my $uuid = chomp $output;
+$output = qx{../src/task rc:dom.rc _get ${uuid}.id 2>&1};
+like ($output, qr/^1$/, 'DOM uuid --> id');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data dom.rc);
