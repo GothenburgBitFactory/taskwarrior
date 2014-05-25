@@ -521,52 +521,6 @@ const std::vector <std::string> A3::operator_list ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const A3 A3::extract_modifications () const
-{
-  A3 mods;
-
-  bool before_command = true;
-  std::vector <Arg>::const_iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    if (arg->_category == Arg::cat_command)
-      before_command = false;
-
-    else if (! before_command)
-    {
-      // rc and override categories are not included.
-      if (arg->_category == Arg::cat_rc ||
-          arg->_category == Arg::cat_override)
-      {
-        ;
-      }
-
-      // Any arguments identified as "id" or "uuid" are downgraded to "word".
-      // This is because any true "id" or "uuid" values have already been
-      // removed in the filter.  What remains are numeric arguments in command
-      // lines that do not otherwise include an id, such as:
-      //
-      //     task add Read the article on page 2
-      else if (arg->_category == Arg::cat_id   ||
-               arg->_category == Arg::cat_uuid)
-      {
-        Arg downgrade (*arg);
-        downgrade._type     = Arg::type_string;
-        downgrade._category = Arg::cat_literal;
-        mods.push_back (downgrade);
-      }
-
-      // Everything else is included.
-      else
-        mods.push_back (*arg);
-    }
-  }
-
-  mods = tokenize (mods);
-  return mods;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 const A3 A3::tokenize (const A3& input) const
 {
   // Join all the arguments together.

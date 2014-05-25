@@ -58,8 +58,6 @@ public:
   const std::vector <std::string> list () const;
   bool find_command (std::string&) const;
 
-  const A3 extract_modifications () const;
-
   const A3 tokenize (const A3&) const;
   const A3 postfix (const A3&) const;
 
