@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <sstream>
 #include <Context.h>
+#include <Filter.h>
 #include <ViewText.h>
 #include <text.h>
 #include <util.h>
@@ -64,11 +65,11 @@ int CmdProjects::execute (std::string& output)
       tasks.push_back (*task);
   }
 
-  context.tdb2.commit ();
-
-  // Apply filter.
+  // Apply the filter.
+  Filter filter;
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter.subset (tasks, filtered);
+  context.tdb2.commit ();
 
   int quantity = filtered.size ();
 
@@ -179,11 +180,11 @@ int CmdCompletionProjects::execute (std::string& output)
       tasks.push_back (*task);
   }
 
-  context.tdb2.commit ();
-
-  // Apply filter.
+  // Apply the filter.
+  Filter filter;
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter.subset (tasks, filtered);
+  context.tdb2.commit ();
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
