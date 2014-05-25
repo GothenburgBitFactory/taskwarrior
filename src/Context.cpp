@@ -103,16 +103,19 @@ int Context::initialize (int argc, const char** argv)
     assumeLocations ();
 
     // Initialize the command line parser.
+    // TODO Obsolete.
     a3.capture (argc, argv);
     parser.initialize (argc, argv);                 // task arg0 arg1 ...
 
     // echo one two -- three | task zero --> task zero one two
     // 'three' is left in the input buffer.
+    // TODO Obsolete.
     a3.append_stdin ();
     parser.appendStdin ();                          // echo stdin0 | task ...
 
     // Process 'rc:<file>' command line override, and remove the argument from the
     // Context::a3.
+    // TODO Obsolete.
     a3.categorize ();
     parser.findOverrides ();                        // rc:<file>  rc.<name>:<value>
     parser.getOverrides (home_dir, rc_file);        // <-- <file>
@@ -143,12 +146,14 @@ int Context::initialize (int argc, const char** argv)
     }
 
     // Create missing config file and data directory, if necessary.
+    // TODO Obsolete.
     a3.apply_overrides ();
     parser.applyOverrides ();
     createDefaultConfig ();
 
     // Handle Aliases.
     loadAliases ();
+    // TODO Obsolete.
     a3.resolve_aliases ();
     aliases2.load ();
     aliases2.resolve (parser.tree ());
@@ -200,18 +205,20 @@ int Context::initialize (int argc, const char** argv)
     // Static initialization to decouple code.
     staticInitialization ();
 
+    // TODO Obsolete.
     // Categorize all arguments one more time.  THIS IS NECESSARY - it helps the
     // following inject_defaults method determine whether there needs to be a
     // default command assumed.
     a3.categorize ();
 
+    // TODO Obsolete.
     // Handle default command and assumed 'info' command.
     a3.inject_defaults ();
 
+    // TODO Obsolete.
     // The re-categorization allows all injected arguments to be properly given
     // a category.
     a3.categorize ();
-    a3.dump ("Context::initialize");
 
     // Parse the command line.
     Tree* parseTree = parser.parse ();
@@ -403,6 +410,7 @@ int Context::dispatch (std::string &out)
 {
   // Autocomplete args against keywords.
   std::string command;
+  // TODO Obsolete.
   if (a3.find_command (command))
   {
     updateXtermTitle ();
@@ -731,6 +739,7 @@ void Context::decomposeSortField (
 void Context::clear ()
 {
   tdb2.clear ();
+  // TODO Obsolete.
   a3.clear ();
 
   // Eliminate the command objects.
@@ -758,9 +767,11 @@ void Context::updateXtermTitle ()
   if (config.getBoolean ("xterm.title") && isatty (fileno (stdout)))
   {
     std::string command;
+    // TODO Obsolete.
     a3.find_command (command);
 
     std::string title;
+    // TODO Obsolete.
     join (title, " ", a3.list ());
     std::cout << "]0;task " << command << " " << title << "";
   }
@@ -771,6 +782,7 @@ void Context::updateXtermTitle ()
 void Context::updateVerbosity ()
 {
   std::string command;
+  // TODO Obsolete.
   a3.find_command (command);
 
   if (command[0] == '_')
