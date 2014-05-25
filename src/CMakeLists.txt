@@ -16,7 +16,6 @@ set (task_SRCS A3.cpp A3.h
                Dates.cpp Dates.h
                Directory.cpp Directory.h
                Duration.cpp Duration.h
-               E9.cpp E9.h
                Eval.cpp Eval.h
                File.cpp File.h
                Filter.cpp Filter.h

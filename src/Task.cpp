@@ -51,8 +51,6 @@
 #ifdef PRODUCT_TASKWARRIOR
 #include <main.h>
 
-// TODO Obsolete
-#include <E9.h>
 #include <Eval.h>
 #include <Variant.h>
 #include <Filter.h>
