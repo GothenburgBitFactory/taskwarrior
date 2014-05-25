@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <iostream>
 #include <Context.h>
+#include <Filter.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -53,8 +54,9 @@ int CmdDenotate::execute (std::string& output)
   bool sensitive = context.config.getBoolean ("search.case.sensitive");
 
   // Apply filter.
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   if (filtered.size () == 0)
   {
     context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
