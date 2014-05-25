@@ -407,9 +407,8 @@ int Context::run ()
 int Context::dispatch (std::string &out)
 {
   // Autocomplete args against keywords.
-  std::string command;
-  // TODO Obsolete.
-  if (a3.find_command (command))
+  std::string command = parser.getCommand ();
+  if (command != "")
   {
     updateXtermTitle ();
 
@@ -764,11 +763,9 @@ void Context::updateXtermTitle ()
 {
   if (config.getBoolean ("xterm.title") && isatty (fileno (stdout)))
   {
-    std::string command;
-    // TODO Obsolete.
-    a3.find_command (command);
-
+    std::string command = parser.getCommand ();
     std::string title;
+
     // TODO Obsolete.
     join (title, " ", a3.list ());
     std::cout << "]0;task " << command << " " << title << "";
@@ -779,11 +776,9 @@ void Context::updateXtermTitle ()
 // This function allows a clean output if the command is a helper subcommand.
 void Context::updateVerbosity ()
 {
-  std::string command;
-  // TODO Obsolete.
-  a3.find_command (command);
-
-  if (command[0] == '_')
+  std::string command = parser.getCommand ();
+  if (command != "" &&
+      command[0] == '_')
   {
     verbosity.clear ();
     verbosity.push_back ("nothing");
