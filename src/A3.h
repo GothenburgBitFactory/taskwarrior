@@ -62,7 +62,6 @@ public:
   const A3 extract_modifications () const;
 
   const A3 tokenize (const A3&) const;
-  const A3 sequence (const A3&) const;
   const A3 postfix (const A3&) const;
 
   static bool is_attr (Nibbler&, Arg&);
