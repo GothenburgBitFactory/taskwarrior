@@ -25,8 +25,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <map>
 #include <time.h>
 #include <Context.h>
+#include <Color.h>
 #include <Eval.h>
 
 extern Context context;
@@ -858,6 +860,28 @@ bool Eval::identifyOperator (
 std::string Eval::dump (
   std::vector <std::pair <std::string, Lexer::Type> >& tokens) const
 {
+  // Set up a color mapping.
+  std::map <Lexer::Type, Color> color_map;
+  color_map[Lexer::typeNone]     = Color ("color15 on gray4");
+  color_map[Lexer::typeOperator] = Color ("green on gray4");
+/*
+  Lexer::typeOperator
+  Lexer::typeNone
+  Lexer::typeString
+  Lexer::typeIdentifier
+  Lexer::typeIdentifierEscape
+  Lexer::typeEscape
+  Lexer::typeEscapeHex
+  Lexer::typeEscapeUnicode
+  Lexer::typeNumber
+  Lexer::typeDecimal
+  Lexer::typeExponentIndicator
+  Lexer::typeExponent
+  Lexer::typeHex
+  Lexer::typeDate
+  Lexer::typeDuration
+*/
+
   std::string output;
   std::vector <std::pair <std::string, Lexer::Type> >::const_iterator i;
   for (i = tokens.begin (); i != tokens.end (); ++i)
@@ -865,29 +889,13 @@ std::string Eval::dump (
     if (i != tokens.begin ())
       output += ' ';
 
-    switch (i->second)
-    {
-    case Lexer::typeOperator:
-      output += i->first;
-      break;
+    Color c;
+    if (color_map[i->second].nontrivial ())
+      c = color_map[i->second];
+    else
+      c = color_map[Lexer::typeNone];
 
-    case Lexer::typeNone:
-    case Lexer::typeString:
-    case Lexer::typeIdentifier:
-    case Lexer::typeIdentifierEscape:
-    case Lexer::typeEscape:
-    case Lexer::typeEscapeHex:
-    case Lexer::typeEscapeUnicode:
-    case Lexer::typeNumber:
-    case Lexer::typeDecimal:
-    case Lexer::typeExponentIndicator:
-    case Lexer::typeExponent:
-    case Lexer::typeHex:
-    case Lexer::typeDate:
-    case Lexer::typeDuration:
-      output += i->first;
-      break;
-    }
+    output += c.colorize (i->first);
   }
 
   return output;
