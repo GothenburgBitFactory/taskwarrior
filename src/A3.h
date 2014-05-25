@@ -84,8 +84,6 @@ public:
   static bool extract_id (const std::string&, std::vector <int>&);
   static bool extract_uuid (const std::string&, std::vector <std::string>&);
 
-  static bool which_operator (const std::string&, char&, int&, char&);
-
   void dump (const std::string&) const;
 };
 

@@ -31,7 +31,6 @@
 #include <map>
 #include <string>
 #include <stdio.h>
-#include <A3.h>
 
 class Task : public std::map <std::string, std::string>
 {

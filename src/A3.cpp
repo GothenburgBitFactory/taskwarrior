@@ -1485,27 +1485,6 @@ bool A3::extract_uuid (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool A3::which_operator (
-  const std::string& input,
-  char& type,
-  int& precedence,
-  char& associativity)
-{
-  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
-  {
-    if (operators[i].op == input)
-    {
-      type          = operators[i].type;
-      precedence    = operators[i].precedence;
-      associativity = operators[i].associativity;
-      return true;
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void A3::dump (const std::string& label) const
 {
   if (context.config.getBoolean ("debug"))
