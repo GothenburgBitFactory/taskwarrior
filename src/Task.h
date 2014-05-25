@@ -154,11 +154,6 @@ public:
   float urgency_c () const;
   float urgency ();
 
-  // TODO Obsolete.
-  void modify (const A3&, std::string&);
-  // TODO Obsolete.
-  bool next_mod_group (const A3&, Arg&, unsigned int&);
-
   enum modType {modReplace, modPrepend, modAppend, modAnnotate};
   void modify (modType);
 

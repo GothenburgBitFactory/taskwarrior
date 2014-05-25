@@ -59,7 +59,6 @@ public:
   bool find_command (std::string&) const;
 
   const A3 tokenize (const A3&) const;
-  const A3 postfix (const A3&) const;
 
   static bool is_attr (Nibbler&, Arg&);
   static bool is_attmod (Nibbler&, Arg&);

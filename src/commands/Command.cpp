@@ -279,66 +279,6 @@ bool Command::displays_id () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete.
-// Apply the modifications in arguments to the task.
-void Command::modify_task_description_replace (Task& task, const A3& arguments)
-{
-  std::string description;
-  modify_task (task, arguments, description);
-
-  if (description.length ())
-  {
-    _needs_confirm = true;
-    task.set ("description", description);
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete.
-void Command::modify_task_description_prepend (Task& task, const A3& arguments)
-{
-  std::string description;
-  modify_task (task, arguments, description);
-
-  if (description.length ())
-    task.set ("description", description + " " + task.get ("description"));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete.
-void Command::modify_task_description_append (Task& task, const A3& arguments)
-{
-  std::string description;
-  modify_task (task, arguments, description);
-
-  if (description.length ())
-    task.set ("description", task.get ("description") + " " + description);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete.
-void Command::modify_task_annotate (Task& task, const A3& arguments)
-{
-  std::string description;
-  modify_task (task, arguments, description);
-
-  if (description.length ())
-    task.addAnnotation (description);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO Obsolete.
-// Worker function that does all the updates, but never overwrites description.
-void Command::modify_task (
-  Task& task,
-  const A3& arguments,
-  std::string& description)
-{
-  // Utilize Task::modify
-  task.modify (arguments, description);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Returns true or false indicating whether to proceed with a write command, on
 // a per-task basis, after (potentially) asking for permission.
 //

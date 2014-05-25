@@ -52,12 +52,6 @@ public:
   virtual int execute (std::string&) = 0;
 
 protected:
-  void modify_task_description_replace (Task&, const A3&);
-  void modify_task_description_prepend (Task&, const A3&);
-  void modify_task_description_append (Task&, const A3&);
-  void modify_task_annotate (Task&, const A3&);
-  void modify_task (Task&, const A3&, std::string&);
-
   bool permission (const Task&, const std::string&, unsigned int);
 
 protected:
