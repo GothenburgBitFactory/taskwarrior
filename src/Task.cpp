@@ -36,6 +36,7 @@
 #ifdef PRODUCT_TASKWARRIOR
 #include <Context.h>
 #include <Nibbler.h>
+#include <Tree.h>
 #endif
 #include <Date.h>
 #include <OldDuration.h>
@@ -51,7 +52,10 @@
 #ifdef PRODUCT_TASKWARRIOR
 #include <main.h>
 
+// TODO Obsolete
 #include <E9.h>
+#include <Eval.h>
+#include <Variant.h>
 
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
@@ -1925,6 +1929,7 @@ float Task::urgency_blocking () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete
 void Task::modify (
   const A3& arguments,
   std::string& description)
@@ -1943,8 +1948,6 @@ void Task::modify (
       A3::extract_attr (arg._raw, name, value);
       if (A3::is_attribute (name, name))  // Canonicalize
       {
-        //std::cout << "# Task::modify_task name='" << name << "' value='" << value << "'\n";
-
         // Get the column info.
         Column* column = context.columns[name];
 
@@ -2130,6 +2133,7 @@ void Task::modify (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete.
 // Special processing for modifications.
 bool Task::next_mod_group (const A3& input, Arg& arg, unsigned int& pos)
 {
@@ -2151,6 +2155,191 @@ bool Task::next_mod_group (const A3& input, Arg& arg, unsigned int& pos)
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::modify (modType type)
+{
+  std::string text = "";
+  Tree* tree = context.parser.tree ();
+  std::vector <Tree*>::iterator i;
+  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
+  {
+    if ((*i)->hasTag ("MODIFICATION"))
+    {
+      if ((*i)->hasTag ("ATTRIBUTE"))
+      {
+        // 'name' is canonicalized.
+        // 'value' needs eval.
+        std::string name  = (*i)->attribute ("name");
+        std::string value = (*i)->attribute ("raw");
+        if (value == "")
+        {
+          // Remove attribute if the value is blank.
+          (*this).remove (name);
+        }
+        else
+        {
+          // Get the column info.
+          Column* column = context.columns[name];
+
+          // Dependencies are specified as IDs.
+          if (name == "depends")
+          {
+            // Parse IDs
+            std::vector <std::string> deps;
+            split (deps, value, ',');
+
+            // Apply or remove dendencies in turn.
+            std::vector <std::string>::iterator i;
+            for (i = deps.begin (); i != deps.end (); i++)
+            {
+              bool removal = false;
+              std::string& dep = *i;
+
+              if (dep[0] == '-')
+              {
+                removal = true;
+                dep = i->substr(1, std::string::npos);
+              }
+
+              // Crude UUID check
+              // TODO Support partial UUIDs.
+              // TODO Do not assume that <36 characaters implies integer.
+              std::vector <int> ids;
+              if (dep.length () == 36)
+                ids.push_back (context.tdb2.pending.id (dep));
+              else
+                ids.push_back (strtol ((*i).c_str (), NULL, 10));
+
+              std::vector <int>::iterator id;
+              for (id = ids.begin (); id != ids.end(); id++)
+                if (removal)
+                  removeDependency (*id);
+                else
+                  addDependency (*id);
+            }
+          }
+
+          // Dates are special, maybe.
+          else if (column->type () == "date")
+          {
+            Eval e;
+            // TODO add sources.
+
+            Variant v;
+            e.evaluateInfixExpression (value, v);
+
+            // TODO if v is duration and < 5y, add to now.
+            // TODO else store as date.
+
+            v.cast (Variant::type_string);
+            set (name, v);
+          }
+          // Special case: type duration.
+          // Durations too.
+          else if (name == "recur" ||
+                   column->type () == "duration")
+          {
+            // TODO Store the raw value, for 'recur', else result.
+
+            Eval e;
+            // TODO add sources.
+
+            Variant v;
+            e.evaluateInfixExpression (value, v);
+            v.cast (Variant::type_duration);
+            v.cast (Variant::type_string);
+            set (name, v);
+          }
+
+          // Need handling for numeric types, used by UDAs.
+          else if (column->type () == "numeric")
+          {
+            Eval e;
+            // TODO add sources.
+
+            Variant v;
+            e.evaluateInfixExpression (value, v);
+            v.cast (Variant::type_real);
+            v.cast (Variant::type_string);
+            set (name, v);
+          }
+
+          // Try to use modify method, otherwise just continue to the final option.
+          else if (column->can_modify ())
+          {
+            // column->modify () contains the logic for the specific column
+            // and returns the appropriate value for (*this).set ()
+            if (column->validate (value))
+              (*this).set (name, column->modify (value));
+            else
+              throw format (STRING_INVALID_MOD, name, value);
+          }
+          else
+          {
+            // Final default action
+            if (column->validate (value))
+              (*this).set (name, value);
+            else
+              throw format (STRING_INVALID_MOD, name, value);
+          }
+
+          // Warn about deprecated/obsolete attribute usage.
+          legacyAttributeCheck (name);
+        }
+      }
+
+      // arg7 from='from' global='1' raw='/from/to/g' to='to' ORIGINAL SUBSTITUTION MODIFICATION
+      else if ((*i)->hasTag ("SUBSTITUTION"))
+      {
+        substitute ((*i)->attribute ("from"),
+                    (*i)->attribute ("to"),
+                    ((*i)->attribute ("global") == "1"));
+      }
+
+      // Tags need special handling because they are essentially a vector stored
+      // in a single string, therefore Task::{add,remove}Tag must be called as
+      // appropriate.
+      else if ((*i)->hasTag ("TAG"))
+      {
+        if ((*i)->attribute ("sign") == "+")
+        {
+          std::string tag = (*i)->attribute ("tag");
+          addTag (tag);
+          feedback_special_tags ((*this), tag);
+        }
+        else
+          removeTag ((*i)->attribute ("tag"));
+      }
+
+      // WORD and TERMINATED args are accumulated.
+      else if ((*i)->hasTag ("WORD") ||
+               (*i)->hasTag ("TERMINATED"))
+      {
+        if (text != "")
+          text += ' ';
+        text += (*i)->attribute ("raw");
+      }
+
+      // Unknown args are accumulated as though they were WORDs.
+      else
+      {
+        if (text != "")
+          text += ' ';
+        text += (*i)->attribute ("raw");
+      }
+    }
+  }
+
+  // Task::modType determines what happens to the WORD arguments.
+  switch (type)
+  {
+  case modReplace:  set ("description", text);                             break;
+  case modPrepend:  set ("description", text + " " + get ("description")); break;
+  case modAppend:   set ("description", get ("description") + " " + text); break;
+  case modAnnotate: addAnnotation (text);                                  break;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
