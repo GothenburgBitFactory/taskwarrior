@@ -27,8 +27,12 @@
 #ifndef INCLUDED_FILTER
 #define INCLUDED_FILTER
 
+#include <string>
 #include <vector>
 #include <Task.h>
+#include <Variant.h>
+
+bool domSource (const std::string&, Variant&);
 
 class Filter
 {

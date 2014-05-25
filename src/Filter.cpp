@@ -40,10 +40,10 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 // Const iterator that can be derefenced into a Task by domSource.
 static Task dummy;
-static Task& contextTask = dummy;
+Task& contextTask = dummy;
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool domSource (const std::string& identifier, Variant& value)
+bool domSource (const std::string& identifier, Variant& value)
 {
   std::string stringValue = context.dom.get (identifier, contextTask);
   if (stringValue != identifier)
