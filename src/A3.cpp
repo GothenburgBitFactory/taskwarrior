@@ -535,33 +535,6 @@ const std::vector <std::string> A3::operator_list ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const A3 A3::extract_filter () const
-{
-  A3 filter;
-  bool before_command = true;
-  std::vector <Arg>::const_iterator arg;
-  for (arg = this->begin (); arg != this->end (); ++arg)
-  {
-    if (arg->_category == Arg::cat_command)
-      before_command = false;
-
-    if (arg->_category == Arg::cat_program  ||
-        arg->_category == Arg::cat_rc       ||
-        arg->_category == Arg::cat_override ||
-        arg->_category == Arg::cat_command  ||
-        arg->_category == Arg::cat_terminator)
-      ;
-
-    else if (before_command || _read_only_command)
-      filter.push_back (*arg);
-  }
-
-  filter = postfix (infix (sequence (expand (tokenize (filter)))));
-  context.a3._limit = filter._limit;
-  return filter;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 const A3 A3::extract_modifications () const
 {
   A3 mods;

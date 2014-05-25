@@ -60,7 +60,6 @@ public:
   bool find_command (std::string&) const;
   const std::string find_limit () const;
 
-  const A3 extract_filter () const;
   const A3 extract_modifications () const;
 
   const A3 tokenize (const A3&) const;
