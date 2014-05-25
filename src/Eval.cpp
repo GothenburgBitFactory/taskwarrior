@@ -171,7 +171,7 @@ void Eval::compileExpression (const std::string& e)
   {
     _compiled.push_back (std::pair <std::string, Lexer::Type> (token, type));
     if (_debug)
-      std::cout << "# token postfix '" << token << "' " << Lexer::type_name (type) << "\n";
+      std::cout << "# token '" << token << "' " << Lexer::type_name (type) << "\n";
   }
 
   // Parse for syntax checking and operator replacement.
@@ -382,17 +382,13 @@ void Eval::evaluatePostfixStack (
 void Eval::infixParse (
   std::vector <std::pair <std::string, Lexer::Type> >& infix) const
 {
-  if (_debug)
-    std::cout << "# infixParse\n";
-
   try
   {
     int i = 0;
-    if (parseLogical (infix, i))
-      if (_debug)
-        std::cout << "# no errors.\n";
+    parseLogical (infix, i);
   }
 
+  // TODO Remove handlers?
   catch (const std::string& error)
   {
     std::cerr << error << "\n";
@@ -410,9 +406,6 @@ bool Eval::parseLogical (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
 {
-  if (_debug)
-    std::cout << "#   parseLogical\n";
-
   if (i < infix.size () &&
       parseRegex (infix, i))
   {
@@ -423,7 +416,7 @@ bool Eval::parseLogical (
            infix[i].second == Lexer::typeOperator)
     {
       if (_debug)
-        std::cout << "#   " << infix[i].first << "\n";
+        std::cout << "# parseLogical " << infix[i].first << "\n";
 
       ++i;
       if (! parseRegex (infix, i))
@@ -442,9 +435,6 @@ bool Eval::parseRegex (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
 {
-  if (_debug)
-    std::cout << "#     parseRegex\n";
-
   if (i < infix.size () &&
       parseEquality (infix, i))
   {
@@ -454,7 +444,7 @@ bool Eval::parseRegex (
            infix[i].second == Lexer::typeOperator)
     {
       if (_debug)
-        std::cout << "#     " << infix[i].first << "\n";
+        std::cout << "# parseRegex " << infix[i].first << "\n";
 
       ++i;
       if (! parseEquality (infix, i))
@@ -473,9 +463,6 @@ bool Eval::parseEquality (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
 {
-  if (_debug)
-    std::cout << "#       parseEquality\n";
-
   if (i < infix.size () &&
       parseComparative (infix, i))
   {
@@ -486,7 +473,7 @@ bool Eval::parseEquality (
            infix[i].second == Lexer::typeOperator)
     {
       if (_debug)
-        std::cout << "#       " << infix[i].first << "\n";
+        std::cout << "# parseEquality " << infix[i].first << "\n";
 
       ++i;
       if (! parseComparative (infix, i))
@@ -505,9 +492,6 @@ bool Eval::parseComparative (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
 {
-  if (_debug)
-    std::cout << "#         parseComparative\n";
-
   if (i < infix.size () &&
       parseArithmetic (infix, i))
   {
@@ -519,7 +503,7 @@ bool Eval::parseComparative (
            infix[i].second == Lexer::typeOperator)
     {
       if (_debug)
-        std::cout << "#         " << infix[i].first << "\n";
+        std::cout << "# parseComparative " << infix[i].first << "\n";
 
       ++i;
       if (! parseArithmetic (infix, i))
@@ -538,9 +522,6 @@ bool Eval::parseArithmetic (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
 {
-  if (_debug)
-    std::cout << "#           parseArithmetic\n";
-
   if (i < infix.size () &&
       parseGeometric (infix, i))
   {
@@ -550,7 +531,7 @@ bool Eval::parseArithmetic (
            infix[i].second == Lexer::typeOperator)
     {
       if (_debug)
-        std::cout << "#           " << infix[i].first << "\n";
+        std::cout << "# parseArithmetic " << infix[i].first << "\n";
 
       ++i;
       if (! parseGeometric (infix, i))
@@ -569,9 +550,6 @@ bool Eval::parseGeometric (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
 {
-  if (_debug)
-    std::cout << "#             parseGeometric\n";
-
   if (i < infix.size () &&
       parseTag (infix, i))
   {
@@ -582,7 +560,7 @@ bool Eval::parseGeometric (
            infix[i].second == Lexer::typeOperator)
     {
       if (_debug)
-        std::cout << "#             " << infix[i].first << "\n";
+        std::cout << "# parseGeometric " << infix[i].first << "\n";
 
       ++i;
       if (! parseTag (infix, i))
@@ -601,9 +579,6 @@ bool Eval::parseTag (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
 {
-  if (_debug)
-    std::cout << "#               parseTag\n";
-
   if (i < infix.size () &&
       parseUnary (infix, i))
   {
@@ -613,7 +588,7 @@ bool Eval::parseTag (
            infix[i].second == Lexer::typeOperator)
     {
       if (_debug)
-        std::cout << "#               " << infix[i].first << "\n";
+        std::cout << "# parseTag " << infix[i].first << "\n";
 
       ++i;
       if (! parseUnary (infix, i))
@@ -632,15 +607,12 @@ bool Eval::parseUnary (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
 {
-  if (_debug)
-    std::cout << "#                 parseUnary\n";
-
   if (i < infix.size ())
   {
     if (infix[i].first == "-")
     {
       if (_debug)
-        std::cout << "#                 '-' --> '_neg_'\n";
+        std::cout << "# parseUnary '-' --> '_neg_'\n";
 
       infix[i].first = "_neg_";
       ++i;
@@ -648,7 +620,7 @@ bool Eval::parseUnary (
     else if (infix[i].first == "+")
     {
       if (_debug)
-        std::cout << "#                 '+' --> '_pos_'\n";
+        std::cout << "# parseUnary '+' --> '_pos_'\n";
 
       infix[i].first = "_pos_";
       ++i;
@@ -656,7 +628,7 @@ bool Eval::parseUnary (
     else if (infix[i].first == "!")
     {
       if (_debug)
-        std::cout << "#                 " << infix[i].first << "\n";
+        std::cout << "# parseUnary " << infix[i].first << "\n";
       ++i;
     }
   }
@@ -670,9 +642,6 @@ bool Eval::parseExponent (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
 {
-  if (_debug)
-    std::cout << "#                   parseExponent\n";
-
   if (i < infix.size () &&
       parsePrimitive (infix, i))
   {
@@ -681,7 +650,7 @@ bool Eval::parseExponent (
            infix[i].second == Lexer::typeOperator)
     {
       if (_debug)
-        std::cout << "#                   " << infix[i].first << "\n";
+        std::cout << "# parseExponent " << infix[i].first << "\n";
 
       ++i;
       if (! parsePrimitive (infix, i))
@@ -700,15 +669,12 @@ bool Eval::parsePrimitive (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
 {
-  if (_debug)
-    std::cout << "#                     parsePrimitive\n";
-
   if (i < infix.size ())
   {
     if (infix[i].first == "(")
     {
       if (_debug)
-        std::cout << "#                     " << infix[i].first << "\n";
+        std::cout << "# parsePrimitive " << infix[i].first << "\n";
 
       ++i;
       if (i < infix.size () &&
@@ -718,7 +684,7 @@ bool Eval::parsePrimitive (
             infix[i].first == ")")
         {
           if (_debug)
-            std::cout << "#                     " << infix[i].first << "\n";
+            std::cout << "# parsePrimitive " << infix[i].first << "\n";
 
           ++i;
           return true;
@@ -735,7 +701,7 @@ bool Eval::parsePrimitive (
         if ((*source) (infix[i].first, v))
         {
           if (_debug)
-            std::cout << "#                     '" << infix[i].first << "' --> '" << (std::string) v << "'\n";
+            std::cout << "# parsePrimitive '" << infix[i].first << "' --> '" << (std::string) v << "'\n";
           found = true;
           break;
         }
@@ -749,7 +715,7 @@ bool Eval::parsePrimitive (
       else if (infix[i].second != Lexer::typeOperator)
       {
         if (_debug)
-          std::cout << "#                     " << infix[i].first << "\n";
+          std::cout << "# parsePrimitive " << infix[i].first << "\n";
 
         ++i;
         return true;
