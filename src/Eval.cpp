@@ -382,22 +382,8 @@ void Eval::evaluatePostfixStack (
 void Eval::infixParse (
   std::vector <std::pair <std::string, Lexer::Type> >& infix) const
 {
-  try
-  {
-    int i = 0;
-    parseLogical (infix, i);
-  }
-
-  // TODO Remove handlers?
-  catch (const std::string& error)
-  {
-    std::cerr << error << "\n";
-  }
-
-  catch (...)
-  {
-    std::cerr << "Unknown error.\n";
-  }
+  int i = 0;
+  parseLogical (infix, i);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
