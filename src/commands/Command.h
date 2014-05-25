@@ -52,17 +52,12 @@ public:
   virtual int execute (std::string&) = 0;
 
 protected:
-  void filter (const std::vector <Task>&, std::vector <Task>&);
-  void filter (std::vector <Task>&);
-  bool filter_shortcut (const A3&);
-
   void modify_task_description_replace (Task&, const A3&);
   void modify_task_description_prepend (Task&, const A3&);
   void modify_task_description_append (Task&, const A3&);
   void modify_task_annotate (Task&, const A3&);
   void modify_task (Task&, const A3&, std::string&);
 
-  void safety ();
   bool permission (const Task&, const std::string&, unsigned int);
 
 protected:
