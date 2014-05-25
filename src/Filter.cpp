@@ -72,7 +72,6 @@ Filter::~Filter ()
 void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
 {
   context.timer_filter.start ();
-
   _startCount = (int) input.size ();
 
   if (context.config.getBoolean ("debug"))
@@ -83,8 +82,6 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   }
 
   std::string filterExpr = context.parser.getFilterExpression ();
-  context.debug ("\033[1;37;42mFILTER\033[0m " + filterExpr);
-
   if (filterExpr.length ())
   {
     Eval eval;
@@ -132,8 +129,6 @@ void Filter::subset (std::vector <Task>& output)
 
   bool shortcut = false;
   std::string filterExpr = context.parser.getFilterExpression ();
-  context.debug ("\033[1;37;42mFILTER\033[0m " + filterExpr);
-
   if (filterExpr.length ())
   {
     context.timer_filter.stop ();

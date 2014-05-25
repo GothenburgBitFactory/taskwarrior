@@ -157,7 +157,7 @@ void Eval::evaluatePostfixExpression (const std::string& e, Variant& v) const
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
 
   if (_debug)
-    context.debug ("Filter postfix tokens " + dump (tokens));
+    context.debug ("Postfix tokens       " + dump (tokens));
 
   // Call the postfix evaluator.
   evaluatePostfixStack (tokens, v);
@@ -176,7 +176,7 @@ void Eval::compileExpression (const std::string& e)
 
   // Parse for syntax checking and operator replacement.
   if (_debug)
-    context.debug ("Filter infix tokens " + dump (_compiled));
+    context.debug ("Filter infix tokens  " + dump (_compiled));
   infixParse (_compiled);
   if (_debug)
     context.debug ("Filter parsed tokens " + dump (_compiled));
@@ -184,7 +184,7 @@ void Eval::compileExpression (const std::string& e)
   // Convert infix --> postfix.
   infixToPostfix (_compiled);
   if (_debug)
-    context.debug ("Postfix tokens " + dump (_compiled));
+    context.debug ("Postfix tokens       " + dump (_compiled));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -805,8 +805,7 @@ std::string Eval::dump (
 {
   // Set up a color mapping.
   std::map <Lexer::Type, Color> color_map;
-  color_map[Lexer::typeNone]     = Color ("color15 on gray4");
-  color_map[Lexer::typeOperator] = Color ("green on gray4");
+  color_map[Lexer::typeNone]     = Color ("white on green");
 /*
   Lexer::typeOperator
   Lexer::typeNone
@@ -841,7 +840,7 @@ std::string Eval::dump (
     output += c.colorize (i->first);
   }
 
-  return output;
+  return output + "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

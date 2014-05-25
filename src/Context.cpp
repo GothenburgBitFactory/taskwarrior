@@ -221,9 +221,7 @@ int Context::initialize (int argc, const char** argv)
     a3.categorize ();
 
     // Parse the command line.
-    Tree* parseTree = parser.parse ();
-    if (parseTree && config.getBoolean ("debug"))
-      debug (parseTree->dump ());
+    parser.parse ();
 
     // Initialize the database.
     tdb2.set_location (data_dir);
