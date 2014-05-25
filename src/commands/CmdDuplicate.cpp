@@ -62,9 +62,6 @@ int CmdDuplicate::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the new task.
-  A3 modifications = context.a3.extract_modifications ();
-
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
@@ -102,7 +99,7 @@ int CmdDuplicate::execute (std::string& output)
     dup.setStatus (Task::pending); // Does not inherit status.
                                    // Must occur after Task::recurring check.
 
-    modify_task_annotate (dup, modifications);
+    dup.modify (Task::modAnnotate);
 
     if (permission (dup,
                     format (STRING_CMD_DUPLICATE_CONFIRM,
