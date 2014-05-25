@@ -28,9 +28,6 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
-#include <Date.h>
-#include <OldDuration.h>
-#include <E9.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
