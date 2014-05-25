@@ -50,9 +50,8 @@ int CmdLog::execute (std::string& output)
   int rc = 0;
 
   // Apply the command line modifications to the new task.
-  A3 modifications = context.a3.extract_modifications ();
   Task task;
-  modify_task_description_replace (task, modifications);
+  task.modify (Task::modReplace);
   task.setStatus (Task::completed);
 
   // Recurring tasks get a special status.
