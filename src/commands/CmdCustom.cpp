@@ -89,17 +89,13 @@ int CmdCustom::execute (std::string& output)
   std::vector <std::string>::reverse_iterator arg;
   for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
   {
-    // TODO Obsolete, but for now prevents 'operator mismatch' errors.
-    context.a3.capture_first (*arg);
-
     Tree* t = context.parser.captureFirst (*arg);
     t->tag ("CUSTOM");
     t->tag ("FILTER");
   }
 
-  // TODO Obsolete, but for now prevents 'operator mismatch' errors..
+  // Reparse after tree change.
   context.parser.parse ();
-  context.a3.categorize ();
 
   // Apply filter.
   handleRecurrence ();
