@@ -59,9 +59,9 @@ public:
 
   const std::string getFilterExpression ();
   const std::vector <std::string> getWords () const;
-  // TODO Extract modifications
 
   std::string getLimit () const;
+  std::string getCommand () const;
 
 private:
   void findTerminator ();

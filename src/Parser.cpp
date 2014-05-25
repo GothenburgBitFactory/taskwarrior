@@ -609,6 +609,23 @@ std::string Parser::getLimit () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string Parser::getCommand () const
+{
+  std::vector <Tree*>::const_iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    // Parser override operator.
+    if ((*i)->attribute ("canonical") == "TERMINATED")
+      break;
+
+    if ((*i)->hasTag ("CMD"))
+      return (*i)->attribute ("raw");
+  }
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // /pattern/ --> description ~ pattern
 void Parser::findPattern ()
 {
