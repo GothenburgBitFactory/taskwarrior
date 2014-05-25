@@ -26,7 +26,10 @@
 
 #include <iostream>
 #include <time.h>
+#include <Context.h>
 #include <Eval.h>
+
+extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Supported operators, borrowed from C++, particularly the precedence.
@@ -124,16 +127,16 @@ void Eval::evaluateInfixExpression (const std::string& e, Variant& v) const
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
 
   // Parse for syntax checking and operator replacement.
+  if (_debug)
+    context.debug ("Infix tokens " + dump (tokens));
   infixParse (tokens);
   if (_debug)
-  {
-    std::vector <std::pair <std::string, Lexer::Type> >::iterator i;
-    for (i = tokens.begin (); i != tokens.end (); ++i)
-      std::cout << "# token infix '" << i->first << "' " << Lexer::type_name (i->second) << "\n";
-  }
+    context.debug ("Parsed tokens " + dump (tokens));
 
   // Convert infix --> postfix.
   infixToPostfix (tokens);
+  if (_debug)
+    context.debug ("Postfix tokens " + dump (tokens));
 
   // Call the postfix evaluator.
   evaluatePostfixStack (tokens, v);
@@ -149,11 +152,10 @@ void Eval::evaluatePostfixExpression (const std::string& e, Variant& v) const
   std::string token;
   Lexer::Type type;
   while (l.token (token, type))
-  {
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
-    if (_debug)
-      std::cout << "# token postfix '" << token << "' " << Lexer::type_name (type) << "\n";
-  }
+
+  if (_debug)
+    context.debug ("Filter postfix tokens " + dump (tokens));
 
   // Call the postfix evaluator.
   evaluatePostfixStack (tokens, v);
@@ -168,23 +170,19 @@ void Eval::compileExpression (const std::string& e)
   std::string token;
   Lexer::Type type;
   while (l.token (token, type))
-  {
     _compiled.push_back (std::pair <std::string, Lexer::Type> (token, type));
-    if (_debug)
-      std::cout << "# token '" << token << "' " << Lexer::type_name (type) << "\n";
-  }
 
   // Parse for syntax checking and operator replacement.
+  if (_debug)
+    context.debug ("Filter infix tokens " + dump (_compiled));
   infixParse (_compiled);
   if (_debug)
-  {
-    std::vector <std::pair <std::string, Lexer::Type> >::iterator i;
-    for (i = _compiled.begin (); i != _compiled.end (); ++i)
-      std::cout << "# token infix '" << i->first << "' " << Lexer::type_name (i->second) << "\n";
-  }
+    context.debug ("Filter parsed tokens " + dump (_compiled));
 
   // Convert infix --> postfix.
   infixToPostfix (_compiled);
+  if (_debug)
+    context.debug ("Postfix tokens " + dump (_compiled));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -854,6 +852,45 @@ bool Eval::identifyOperator (
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Eval::dump (
+  std::vector <std::pair <std::string, Lexer::Type> >& tokens) const
+{
+  std::string output;
+  std::vector <std::pair <std::string, Lexer::Type> >::const_iterator i;
+  for (i = tokens.begin (); i != tokens.end (); ++i)
+  {
+    if (i != tokens.begin ())
+      output += ' ';
+
+    switch (i->second)
+    {
+    case Lexer::typeOperator:
+      output += i->first;
+      break;
+
+    case Lexer::typeNone:
+    case Lexer::typeString:
+    case Lexer::typeIdentifier:
+    case Lexer::typeIdentifierEscape:
+    case Lexer::typeEscape:
+    case Lexer::typeEscapeHex:
+    case Lexer::typeEscapeUnicode:
+    case Lexer::typeNumber:
+    case Lexer::typeDecimal:
+    case Lexer::typeExponentIndicator:
+    case Lexer::typeExponent:
+    case Lexer::typeHex:
+    case Lexer::typeDate:
+    case Lexer::typeDuration:
+      output += i->first;
+      break;
+    }
+  }
+
+  return output;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

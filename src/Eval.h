@@ -67,6 +67,8 @@ private:
   bool parsePrimitive (std::vector <std::pair <std::string, Lexer::Type> >&, int &) const;
   bool identifyOperator (const std::string&, char&, int&, char&) const;
 
+  std::string dump (std::vector <std::pair <std::string, Lexer::Type> >&) const;
+
 private:
   std::vector <bool (*)(const std::string&, Variant&)> _sources;
   bool _ambiguity;
