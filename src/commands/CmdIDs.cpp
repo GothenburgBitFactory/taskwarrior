@@ -28,6 +28,7 @@
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
+#include <Filter.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>
@@ -53,8 +54,9 @@ int CmdIDs::execute (std::string& output)
 {
   // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   // Find number of matching tasks.
@@ -66,7 +68,7 @@ int CmdIDs::execute (std::string& output)
 
   std::sort (ids.begin (), ids.end ());
   output = compressIds (ids) + "\n";
-  
+
   context.headers.clear ();
   return 0;
 }
@@ -86,8 +88,9 @@ int CmdCompletionIds::execute (std::string& output)
 {
   // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   std::vector <int> ids;
@@ -120,8 +123,9 @@ int CmdZshCompletionIds::execute (std::string& output)
 {
   // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   std::stringstream out;
@@ -155,8 +159,9 @@ int CmdUUIDs::execute (std::string& output)
 {
   // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   std::vector <std::string> uuids;
@@ -187,8 +192,9 @@ int CmdCompletionUuids::execute (std::string& output)
 {
   // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   std::vector <std::string> uuids;
@@ -219,8 +225,9 @@ int CmdZshCompletionUuids::execute (std::string& output)
 {
   // Apply filter.
   handleRecurrence ();
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   context.tdb2.commit ();
 
   std::stringstream out;
