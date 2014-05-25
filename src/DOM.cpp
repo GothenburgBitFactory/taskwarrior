@@ -89,12 +89,12 @@ const std::string DOM::get (const std::string& name)
   if (len > 8 &&
            name.substr (0, 8) == "context.")
   {
-         if (name == "context.program") return context.a3t.tree ()->_branches[0]->attribute ("raw");
+         if (name == "context.program") return context.parser.tree ()->_branches[0]->attribute ("raw");
     else if (name == "context.args")
     {
       std::string combined;
       std::vector <Tree*>::iterator i;
-      for (i = context.a3t.tree ()->_branches.begin (); i != context.a3t.tree ()->_branches.end (); ++i)
+      for (i = context.parser.tree ()->_branches.begin (); i != context.parser.tree ()->_branches.end (); ++i)
       {
         if (combined != "")
           combined += " ";
@@ -170,7 +170,7 @@ const std::string DOM::get (const std::string& name, const Task& task)
     return format (task.urgency_c ());
 
   std::string canonical;
-  if (task.size () && context.a3t.canonicalize (canonical, "attribute", name))
+  if (task.size () && context.parser.canonicalize (canonical, "attribute", name))
     return task.get (canonical);
 
   // <id>.<name>

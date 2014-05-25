@@ -74,12 +74,12 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
   if (context.config.getBoolean ("debug"))
   {
-    Tree* t = context.a3t.tree ();
+    Tree* t = context.parser.tree ();
     if (t)
       context.debug (t->dump ());
   }
 
-  std::string filterExpr = context.a3t.getFilterExpression ();
+  std::string filterExpr = context.parser.getFilterExpression ();
   context.debug ("\033[1;37;42mFILTER\033[0m " + filterExpr);
 
   if (filterExpr.length ())
@@ -120,12 +120,12 @@ void Filter::subset (std::vector <Task>& output)
 
   if (context.config.getBoolean ("debug"))
   {
-    Tree* t = context.a3t.tree ();
+    Tree* t = context.parser.tree ();
     if (t)
       context.debug (t->dump ());
   }
 
-  std::string filterExpr = context.a3t.getFilterExpression ();
+  std::string filterExpr = context.parser.getFilterExpression ();
   context.debug ("\033[1;37;42mFILTER\033[0m " + filterExpr);
 
   if (filterExpr.length ())
@@ -201,7 +201,7 @@ void Filter::subset (std::vector <Task>& output)
 // term, then completed.data does not need to be loaded.
 bool Filter::pendingOnly ()
 {
-  Tree* tree = context.a3t.tree ();
+  Tree* tree = context.parser.tree ();
 
   // If the filter starts with "status:pending", the completed.data does not
   // need to be accessed..
@@ -248,13 +248,13 @@ bool Filter::pendingOnly ()
 // all tasks to be modified. This is usually not intended.
 void Filter::safety ()
 {
-  Tree* tree = context.a3t.tree ();
+  Tree* tree = context.parser.tree ();
   std::vector <Tree*>::iterator i;
   for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
   {
     if ((*i)->hasTag ("WRITECMD"))
     {
-      if (context.a3t.getFilterExpression () == "")
+      if (context.parser.getFilterExpression () == "")
       {
         // If user is willing to be asked, this can be avoided.
         if (context.config.getBoolean ("confirmation") &&

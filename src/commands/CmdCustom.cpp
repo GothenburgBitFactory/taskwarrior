@@ -92,13 +92,13 @@ int CmdCustom::execute (std::string& output)
     // TODO Obsolete, but for now prevents 'operator mismatch' errors.
     context.a3.capture_first (*arg);
 
-    Tree* t = context.a3t.captureFirst (*arg);
+    Tree* t = context.parser.captureFirst (*arg);
     t->tag ("CUSTOM");
     t->tag ("FILTER");
   }
 
   // TODO Obsolete, but for now prevents 'operator mismatch' errors..
-  context.a3t.parse ();
+  context.parser.parse ();
   context.a3.categorize ();
 
   // Apply filter.
@@ -239,7 +239,7 @@ void CmdCustom::getLimits (const std::string& report, int& rows, int& lines)
 
   // If the custom report has a defined limit, then allow a numeric override.
   // This is an integer specified as a filter (limit:10).
-  std::string limit = context.a3t.getLimit ();
+  std::string limit = context.parser.getLimit ();
   if (limit != "")
   {
     if (limit == "page")

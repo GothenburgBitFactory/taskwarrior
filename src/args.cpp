@@ -26,7 +26,7 @@
 
 #include <iostream>
 #include <Context.h>
-#include <A3t.h>
+#include <Parser.h>
 
 Context context;
 
@@ -35,177 +35,177 @@ int main (int argc, const char** argv)
 {
   try
   {
-    A3t a3t;
-    a3t.initialize (argc, argv);
-    a3t.appendStdin ();
-    a3t.findOverrides ();
+    Parser parser;
+    parser.initialize (argc, argv);
+    parser.appendStdin ();
+    parser.findOverrides ();
 
     Alias alias;
-    alias.resolve (a3t.tree ());
+    alias.resolve (parser.tree ());
 
     // Reports.
-    a3t.entity ("report",     "active");
-    a3t.entity ("report",     "all");
-    a3t.entity ("report",     "blocked");
-    a3t.entity ("report",     "blocking");
-    a3t.entity ("report",     "burndown.daily");
-    a3t.entity ("report",     "burndown.monthly");
-    a3t.entity ("report",     "burndown.weekly");
-    a3t.entity ("report",     "completed");
-    a3t.entity ("report",     "ghistory.annual");
-    a3t.entity ("report",     "ghistory.monthly");
-    a3t.entity ("report",     "history.annual");
-    a3t.entity ("report",     "history.monthly");
-    a3t.entity ("report",     "information");
-    a3t.entity ("report",     "list");
-    a3t.entity ("report",     "long");
-    a3t.entity ("report",     "ls");
-    a3t.entity ("report",     "minimal");
-    a3t.entity ("report",     "newest");
-    a3t.entity ("report",     "next");
-    a3t.entity ("report",     "oldest");
-    a3t.entity ("report",     "overdue");
-    a3t.entity ("report",     "projects");
-    a3t.entity ("report",     "ready");
-    a3t.entity ("report",     "recurring");
-    a3t.entity ("report",     "summary");
-    a3t.entity ("report",     "tags");
-    a3t.entity ("report",     "unblocked");
-    a3t.entity ("report",     "waiting");
+    parser.entity ("report",     "active");
+    parser.entity ("report",     "all");
+    parser.entity ("report",     "blocked");
+    parser.entity ("report",     "blocking");
+    parser.entity ("report",     "burndown.daily");
+    parser.entity ("report",     "burndown.monthly");
+    parser.entity ("report",     "burndown.weekly");
+    parser.entity ("report",     "completed");
+    parser.entity ("report",     "ghistory.annual");
+    parser.entity ("report",     "ghistory.monthly");
+    parser.entity ("report",     "history.annual");
+    parser.entity ("report",     "history.monthly");
+    parser.entity ("report",     "information");
+    parser.entity ("report",     "list");
+    parser.entity ("report",     "long");
+    parser.entity ("report",     "ls");
+    parser.entity ("report",     "minimal");
+    parser.entity ("report",     "newest");
+    parser.entity ("report",     "next");
+    parser.entity ("report",     "oldest");
+    parser.entity ("report",     "overdue");
+    parser.entity ("report",     "projects");
+    parser.entity ("report",     "ready");
+    parser.entity ("report",     "recurring");
+    parser.entity ("report",     "summary");
+    parser.entity ("report",     "tags");
+    parser.entity ("report",     "unblocked");
+    parser.entity ("report",     "waiting");
 
     // Read-only commands.
-    a3t.entity ("readcmd",    "export");
-    a3t.entity ("readcmd",    "info");
-    a3t.entity ("readcmd",    "list");
-    a3t.entity ("readcmd",    "next");
-    a3t.entity ("readcmd",    "projects");
+    parser.entity ("readcmd",    "export");
+    parser.entity ("readcmd",    "info");
+    parser.entity ("readcmd",    "list");
+    parser.entity ("readcmd",    "next");
+    parser.entity ("readcmd",    "projects");
 
     // Write commands.
-    a3t.entity ("writecmd",   "add");
-    a3t.entity ("writecmd",   "annotate");
-    a3t.entity ("writecmd",   "delete");
-    a3t.entity ("writecmd",   "denotate");
-    a3t.entity ("writecmd",   "done");
-    a3t.entity ("writecmd",   "modify");
-    a3t.entity ("writecmd",   "start");
-    a3t.entity ("writecmd",   "stop");
+    parser.entity ("writecmd",   "add");
+    parser.entity ("writecmd",   "annotate");
+    parser.entity ("writecmd",   "delete");
+    parser.entity ("writecmd",   "denotate");
+    parser.entity ("writecmd",   "done");
+    parser.entity ("writecmd",   "modify");
+    parser.entity ("writecmd",   "start");
+    parser.entity ("writecmd",   "stop");
 
     // Special commands.
-    a3t.entity ("specialcmd", "calendar");
-    a3t.entity ("specialcmd", "edit");
-    a3t.entity ("writecmd",   "import");
+    parser.entity ("specialcmd", "calendar");
+    parser.entity ("specialcmd", "edit");
+    parser.entity ("writecmd",   "import");
 
     // Helper commands.
-    a3t.entity ("helper",     "_aliases");
-    a3t.entity ("helper",     "_columns");
-    a3t.entity ("helper",     "_commands");
-    a3t.entity ("helper",     "_config");
-    a3t.entity ("helper",     "_get");
-    a3t.entity ("helper",     "_ids");
-    a3t.entity ("helper",     "_projects");
-    a3t.entity ("helper",     "_show");
-    a3t.entity ("helper",     "_tags");
-    a3t.entity ("helper",     "_udas");
-    a3t.entity ("helper",     "_urgency");
-    a3t.entity ("helper",     "_uuids");
-    a3t.entity ("helper",     "_version");
-    a3t.entity ("helper",     "_zshcommands");
-    a3t.entity ("helper",     "_zshids");
-    a3t.entity ("helper",     "_zshuuids");
+    parser.entity ("helper",     "_aliases");
+    parser.entity ("helper",     "_columns");
+    parser.entity ("helper",     "_commands");
+    parser.entity ("helper",     "_config");
+    parser.entity ("helper",     "_get");
+    parser.entity ("helper",     "_ids");
+    parser.entity ("helper",     "_projects");
+    parser.entity ("helper",     "_show");
+    parser.entity ("helper",     "_tags");
+    parser.entity ("helper",     "_udas");
+    parser.entity ("helper",     "_urgency");
+    parser.entity ("helper",     "_uuids");
+    parser.entity ("helper",     "_version");
+    parser.entity ("helper",     "_zshcommands");
+    parser.entity ("helper",     "_zshids");
+    parser.entity ("helper",     "_zshuuids");
 
     // Attributes (columns).
-    a3t.entity ("attribute",  "depends");
-    a3t.entity ("attribute",  "description");
-    a3t.entity ("attribute",  "due");
-    a3t.entity ("attribute",  "end");
-    a3t.entity ("attribute",  "entry");
-    a3t.entity ("attribute",  "id");
-    a3t.entity ("attribute",  "imask");
-    a3t.entity ("attribute",  "mask");
-    a3t.entity ("attribute",  "modified");
-    a3t.entity ("attribute",  "parent");
-    a3t.entity ("attribute",  "priority");
-    a3t.entity ("attribute",  "project");
-    a3t.entity ("attribute",  "recur");
-    a3t.entity ("attribute",  "scheduled");
-    a3t.entity ("attribute",  "start");
-    a3t.entity ("attribute",  "status");
-    a3t.entity ("attribute",  "tags");
-    a3t.entity ("attribute",  "until");
-    a3t.entity ("attribute",  "urgency");
-    a3t.entity ("attribute",  "uuid");
-    a3t.entity ("attribute",  "wait");
+    parser.entity ("attribute",  "depends");
+    parser.entity ("attribute",  "description");
+    parser.entity ("attribute",  "due");
+    parser.entity ("attribute",  "end");
+    parser.entity ("attribute",  "entry");
+    parser.entity ("attribute",  "id");
+    parser.entity ("attribute",  "imask");
+    parser.entity ("attribute",  "mask");
+    parser.entity ("attribute",  "modified");
+    parser.entity ("attribute",  "parent");
+    parser.entity ("attribute",  "priority");
+    parser.entity ("attribute",  "project");
+    parser.entity ("attribute",  "recur");
+    parser.entity ("attribute",  "scheduled");
+    parser.entity ("attribute",  "start");
+    parser.entity ("attribute",  "status");
+    parser.entity ("attribute",  "tags");
+    parser.entity ("attribute",  "until");
+    parser.entity ("attribute",  "urgency");
+    parser.entity ("attribute",  "uuid");
+    parser.entity ("attribute",  "wait");
 
     // Pseudo-attributes.
-    a3t.entity ("pseudo",     "limit");
+    parser.entity ("pseudo",     "limit");
 
     // UDAs.
-    a3t.entity ("attribute",  "duration");
-    a3t.entity ("uda",        "duration");
+    parser.entity ("attribute",  "duration");
+    parser.entity ("uda",        "duration");
 
     // Modifiers.
-    a3t.entity ("modifier",   "before");
-    a3t.entity ("modifier",   "under");
-    a3t.entity ("modifier",   "below");
-    a3t.entity ("modifier",   "after");
-    a3t.entity ("modifier",   "over");
-    a3t.entity ("modifier",   "above");
-    a3t.entity ("modifier",   "none");
-    a3t.entity ("modifier",   "any");
-    a3t.entity ("modifier",   "is");
-    a3t.entity ("modifier",   "equals");
-    a3t.entity ("modifier",   "isnt");
-    a3t.entity ("modifier",   "not");
-    a3t.entity ("modifier",   "has");
-    a3t.entity ("modifier",   "contains");
-    a3t.entity ("modifier",   "hasnt");
-    a3t.entity ("modifier",   "startswith");
-    a3t.entity ("modifier",   "left");
-    a3t.entity ("modifier",   "endswith");
-    a3t.entity ("modifier",   "right");
-    a3t.entity ("modifier",   "word");
-    a3t.entity ("modifier",   "noword");
+    parser.entity ("modifier",   "before");
+    parser.entity ("modifier",   "under");
+    parser.entity ("modifier",   "below");
+    parser.entity ("modifier",   "after");
+    parser.entity ("modifier",   "over");
+    parser.entity ("modifier",   "above");
+    parser.entity ("modifier",   "none");
+    parser.entity ("modifier",   "any");
+    parser.entity ("modifier",   "is");
+    parser.entity ("modifier",   "equals");
+    parser.entity ("modifier",   "isnt");
+    parser.entity ("modifier",   "not");
+    parser.entity ("modifier",   "has");
+    parser.entity ("modifier",   "contains");
+    parser.entity ("modifier",   "hasnt");
+    parser.entity ("modifier",   "startswith");
+    parser.entity ("modifier",   "left");
+    parser.entity ("modifier",   "endswith");
+    parser.entity ("modifier",   "right");
+    parser.entity ("modifier",   "word");
+    parser.entity ("modifier",   "noword");
 
     // Operators.
-    a3t.entity ("operator",   "^");
-    a3t.entity ("operator",   "!");
-    a3t.entity ("operator",   "_neg_");
-    a3t.entity ("operator",   "_pos_");
-    a3t.entity ("operator",   "_hastag_");
-    a3t.entity ("operator",   "_notag_");
-    a3t.entity ("operator",   "*");
-    a3t.entity ("operator",   "/");
-    a3t.entity ("operator",   "%");
-    a3t.entity ("operator",   "+");
-    a3t.entity ("operator",   "-");
-    a3t.entity ("operator",   "<=");
-    a3t.entity ("operator",   ">=");
-    a3t.entity ("operator",   ">");
-    a3t.entity ("operator",   "<");
-    a3t.entity ("operator",   "=");
-    a3t.entity ("operator",   "==");
-    a3t.entity ("operator",   "!=");
-    a3t.entity ("operator",   "~");
-    a3t.entity ("operator",   "!~");
-    a3t.entity ("operator",   "and");
-    a3t.entity ("operator",   "or");
-    a3t.entity ("operator",   "xor");
-    a3t.entity ("operator",   "(");
-    a3t.entity ("operator",   ")");
+    parser.entity ("operator",   "^");
+    parser.entity ("operator",   "!");
+    parser.entity ("operator",   "_neg_");
+    parser.entity ("operator",   "_pos_");
+    parser.entity ("operator",   "_hastag_");
+    parser.entity ("operator",   "_notag_");
+    parser.entity ("operator",   "*");
+    parser.entity ("operator",   "/");
+    parser.entity ("operator",   "%");
+    parser.entity ("operator",   "+");
+    parser.entity ("operator",   "-");
+    parser.entity ("operator",   "<=");
+    parser.entity ("operator",   ">=");
+    parser.entity ("operator",   ">");
+    parser.entity ("operator",   "<");
+    parser.entity ("operator",   "=");
+    parser.entity ("operator",   "==");
+    parser.entity ("operator",   "!=");
+    parser.entity ("operator",   "~");
+    parser.entity ("operator",   "!~");
+    parser.entity ("operator",   "and");
+    parser.entity ("operator",   "or");
+    parser.entity ("operator",   "xor");
+    parser.entity ("operator",   "(");
+    parser.entity ("operator",   ")");
 
-    a3t.findBinary ();
-    a3t.findCommand ();
-    a3t.findUUIDList ();
-    a3t.findIdSequence ();
-    a3t.injectDefaults ();
+    parser.findBinary ();
+    parser.findCommand ();
+    parser.findUUIDList ();
+    parser.findIdSequence ();
+    parser.injectDefaults ();
 
-    Tree* tree = a3t.parse ();
+    Tree* tree = parser.parse ();
     if (tree)
       std::cout << tree->dump ();
 
     std::cout << "\n"
               << "  \033[1;37;42mFILTER\033[0m "
-              << a3t.getFilterExpression ()
+              << parser.getFilterExpression ()
               << "\n";
   }
 

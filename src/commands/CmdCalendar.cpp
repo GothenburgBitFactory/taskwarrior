@@ -103,7 +103,7 @@ int CmdCalendar::execute (std::string& output)
   int argYear = 0;
   bool argWholeYear = false;
 
-  std::vector <std::string> words = context.a3t.getWords ();
+  std::vector <std::string> words = context.parser.getWords ();
 
   std::vector <std::string>::iterator arg;
   for (arg = words.begin (); arg != words.end (); ++arg)
@@ -338,9 +338,9 @@ int CmdCalendar::execute (std::string& output)
 
       std::string report_filter = context.config.get ("report." + report + ".filter");
 
-      context.a3t.clear ();
-      context.a3t.captureFirst ("task");
-      context.a3t.parse ();
+      context.parser.clear ();
+      context.parser.captureFirst ("task");
+      context.parser.parse ();
 
       report_filter += " due.after:" + after + " due.before:" + before + " -nocal";
       context.config.set ("report." + report + ".filter", report_filter);

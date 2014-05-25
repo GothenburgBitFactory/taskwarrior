@@ -41,7 +41,6 @@ public:
   A3& operator= (const A3&);
   ~A3 ();
 
-
   void capture (int, const char**);
   void capture (const std::string&);
   void capture_first (const std::string&);

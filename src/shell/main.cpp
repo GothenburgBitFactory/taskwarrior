@@ -110,12 +110,12 @@ int main (int argc, const char** argv)
   // Make a copy because context.clear will delete them.
   std::string permanent_overrides;
   std::vector <Tree*>::iterator i;
-  for (i = context.a3t.tree ()->_branches.begin (); i != context.a3t.tree ()->_branches.end (); ++i)
+  for (i = context.parser.tree ()->_branches.begin (); i != context.parser.tree ()->_branches.end (); ++i)
   {
     if ((*i)->hasTag ("RC") ||
         (*i)->hasTag ("CONFIG"))
     {
-      if (i != context.a3t.tree ()->_branches.begin ())
+      if (i != context.parser.tree ()->_branches.begin ())
         permanent_overrides += " ";
 
       permanent_overrides += (*i)->attribute ("raw");

@@ -208,7 +208,7 @@ Chart::Chart (char type)
   // Set the title.
   _title = "(";
   std::vector <Tree*>::iterator i;
-  for (i = context.a3t.tree ()->_branches.begin (); i != context.a3t.tree ()->_branches.end (); ++i)
+  for (i = context.parser.tree ()->_branches.begin (); i != context.parser.tree ()->_branches.end (); ++i)
   {
     if (! (*i)->hasTag ("BINARY")     &&
         ! (*i)->hasTag ("RC")         &&

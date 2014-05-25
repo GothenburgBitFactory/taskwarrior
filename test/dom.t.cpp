@@ -46,7 +46,7 @@ int main (int argc, char** argv)
   {
     // Prime the pump.
     const char* fake_argv[] = {"task"};
-    context.a3t.initialize (1, fake_argv);
+    context.parser.initialize (1, fake_argv);
 
     DOM dom;
     t.is (dom.get ("system.version"),     VERSION,     "DOM system.version -> VERSION");

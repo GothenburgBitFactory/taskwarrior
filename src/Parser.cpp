@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <Context.h>
-#include <A3t.h>
+#include <Parser.h>
 #include <Nibbler.h>
 #include <Directory.h>
 #include <main.h>
@@ -50,7 +50,7 @@ static int minimumMatchLength = 3;
 const int safetyValveDefault = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
-A3t::A3t ()
+Parser::Parser ()
 {
   _tree = new Tree ("root");
   if (! _tree)
@@ -58,14 +58,14 @@ A3t::A3t ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A3t::~A3t ()
+Parser::~Parser ()
 {
   delete _tree;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // char** argv --> std::vector <std::string> _args
-void A3t::initialize (int argc, const char** argv)
+void Parser::initialize (int argc, const char** argv)
 {
   // Set up constants.
   minimumMatchLength = strtol (context.config.get ("abbreviation.minimum").c_str (), NULL, 10);
@@ -81,7 +81,7 @@ void A3t::initialize (int argc, const char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::clear ()
+void Parser::clear ()
 {
   delete _tree;
 
@@ -95,7 +95,7 @@ void A3t::clear ()
 //
 // echo one two -- three | task zero --> task zero one two
 // 'three' is left in the input buffer.
-void A3t::appendStdin ()
+void Parser::appendStdin ()
 {
 #ifdef FEATURE_STDIN
   // Use 'select' to determine whether there is any std::cin content buffered
@@ -133,13 +133,13 @@ void A3t::appendStdin ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Tree* A3t::tree ()
+Tree* Parser::tree ()
 {
   return _tree;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Tree* A3t::parse ()
+Tree* Parser::parse ()
 {
   findTerminator ();
   findSubstitution ();
@@ -160,14 +160,14 @@ Tree* A3t::parse ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::entity (const std::string& name, const std::string& value)
+void Parser::entity (const std::string& name, const std::string& value)
 {
   _entities.insert (std::pair <std::string, std::string> (name, value));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Search for 'value' in _entities category, return canonicalized value.
-bool A3t::canonicalize (
+bool Parser::canonicalize (
   std::string& canonicalized,
   const std::string& category,
   const std::string& value) const
@@ -195,7 +195,7 @@ bool A3t::canonicalize (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Locate and tag the binary.
-void A3t::findBinary ()
+void Parser::findBinary ()
 {
   if (_tree->_branches.size () >= 1)
   {
@@ -224,7 +224,7 @@ void A3t::findBinary ()
 ////////////////////////////////////////////////////////////////////////////////
 // The parser override operator terminates all subsequent cleverness, leaving
 // all args in the raw state.
-void A3t::findTerminator ()
+void Parser::findTerminator ()
 {
   bool found = false;
   std::vector <Tree*>::iterator i;
@@ -248,7 +248,7 @@ void A3t::findTerminator ()
 ////////////////////////////////////////////////////////////////////////////////
 // Walk the top-level tree branches, looking for the first raw value that
 // autoCompletes to a valid command/report.
-void A3t::findCommand ()
+void Parser::findCommand ()
 {
   // There can be only one.
   // Scan for an existing CMD tag, to short-circuit scanning for another.
@@ -323,7 +323,7 @@ void A3t::findCommand ()
 ////////////////////////////////////////////////////////////////////////////////
 // rc:<file>
 // rc.<name>[:=]<value>
-void A3t::findOverrides ()
+void Parser::findOverrides ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -362,7 +362,7 @@ void A3t::findOverrides ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Look for RC and return file as a File.
-void A3t::getOverrides (
+void Parser::getOverrides (
   std::string& home,
   File& rc)
 {
@@ -390,7 +390,7 @@ void A3t::getOverrides (
 
 ////////////////////////////////////////////////////////////////////////////////
 // Look for CONFIG data.location and return value as a Path.
-void A3t::getDataLocation (Path& data)
+void Parser::getDataLocation (Path& data)
 {
   std::string location = context.config.get ("data.location");
   if (location != "")
@@ -414,7 +414,7 @@ void A3t::getDataLocation (Path& data)
 ////////////////////////////////////////////////////////////////////////////////
 // Takes all CONFIG name/value pairs and overrides configuration.
 // leaving only the plain args.
-void A3t::applyOverrides ()
+void Parser::applyOverrides ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -430,7 +430,7 @@ void A3t::applyOverrides ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::injectDefaults ()
+void Parser::injectDefaults ()
 {
   // Scan the top-level branches for evidence of ID, UUID, overrides and other
   // arguments.
@@ -502,7 +502,7 @@ void A3t::injectDefaults ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Tree* A3t::captureFirst (const std::string& arg)
+Tree* Parser::captureFirst (const std::string& arg)
 {
   // Insert the arg as the new first branch.
   Tree* t = new Tree ("argIns");
@@ -524,7 +524,7 @@ Tree* A3t::captureFirst (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string A3t::getFilterExpression ()
+const std::string Parser::getFilterExpression ()
 {
   // Construct an efficient ID/UUID clause.
   std::string sequence = "";
@@ -570,7 +570,7 @@ const std::string A3t::getFilterExpression ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> A3t::getWords () const
+const std::vector <std::string> Parser::getWords () const
 {
   std::vector <std::string> words;
   std::vector <Tree*>::const_iterator i;
@@ -589,7 +589,7 @@ const std::vector <std::string> A3t::getWords () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string A3t::getLimit () const
+std::string Parser::getLimit () const
 {
   std::vector <Tree*>::const_iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -610,7 +610,7 @@ std::string A3t::getLimit () const
 
 ////////////////////////////////////////////////////////////////////////////////
 // /pattern/ --> description ~ pattern
-void A3t::findPattern ()
+void Parser::findPattern ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -648,7 +648,7 @@ void A3t::findPattern ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // /from/to/[g]
-void A3t::findSubstitution ()
+void Parser::findSubstitution ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -689,7 +689,7 @@ void A3t::findSubstitution ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // +tag
-void A3t::findTag ()
+void Parser::findTag ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -732,7 +732,7 @@ void A3t::findTag ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>:['"][<value>]['"]
-void A3t::findAttribute ()
+void Parser::findAttribute ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -808,7 +808,7 @@ void A3t::findAttribute ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>.<mod>[:=]['"]<value>['"]
-void A3t::findAttributeModifier ()
+void Parser::findAttributeModifier ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -1014,7 +1014,7 @@ void A3t::findAttributeModifier ()
 //
 // The sequence is "1 2".
 //
-void A3t::findIdSequence ()
+void Parser::findIdSequence ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -1143,7 +1143,7 @@ void A3t::findIdSequence ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::findUUIDList ()
+void Parser::findUUIDList ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -1214,7 +1214,7 @@ void A3t::findUUIDList ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::findOperator ()
+void Parser::findOperator ()
 {
   // Find the category.
   std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
@@ -1255,7 +1255,7 @@ void A3t::findOperator ()
 ////////////////////////////////////////////////////////////////////////////////
 // Anything before CMD, but not BINARY, RC or CONFIG --> FILTER
 // Anything after READCMD, but not BINARY, RC or CONFIG --> FILTER
-void A3t::findFilter ()
+void Parser::findFilter ()
 {
   bool before_cmd = true;
   bool after_readcmd = false;
@@ -1295,7 +1295,7 @@ void A3t::findFilter ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::findModifications ()
+void Parser::findModifications ()
 {
   bool after_writecmd = false;
   std::vector <Tree*>::iterator i;
@@ -1320,7 +1320,7 @@ void A3t::findModifications ()
 ////////////////////////////////////////////////////////////////////////////////
 // This is called after parsing. The intention is to find plain arguments that
 // are not otherwise recognized, and potentially promote them to patterns.
-void A3t::findPlainArgs ()
+void Parser::findPlainArgs ()
 {
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
@@ -1335,7 +1335,7 @@ void A3t::findPlainArgs ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A3t::findMissingOperators ()
+void Parser::findMissingOperators ()
 {
   while (insertOr ())
     ;
@@ -1346,7 +1346,7 @@ void A3t::findMissingOperators ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Two consecutive ID/UUID arguments get an 'or' inserted between them.
-bool A3t::insertOr ()
+bool Parser::insertOr ()
 {
   std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
   std::vector <Tree*>::iterator i;
@@ -1391,7 +1391,7 @@ bool A3t::insertOr ()
 //   ) (                -->  ) and (
 //   <non-op> <non-op>  -->  <non-op> and <non-op>
 //
-bool A3t::insertAnd ()
+bool Parser::insertAnd ()
 {
   std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
   std::vector <Tree*>::iterator i;
@@ -1445,7 +1445,7 @@ bool A3t::insertAnd ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Validate the parse tree.
-void A3t::validate ()
+void Parser::validate ()
 {
   // Look for any unrecognized original args.
   std::vector <Tree*>::iterator i;

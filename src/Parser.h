@@ -23,8 +23,8 @@
 // http://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_A3T
-#define INCLUDED_A3T
+#ifndef INCLUDED_PARSER
+#define INCLUDED_PARSER
 
 #include <Tree.h>
 #include <Path.h>
@@ -32,11 +32,11 @@
 #include <string>
 #include <map>
 
-class A3t
+class Parser
 {
 public:
-  A3t ();
-  ~A3t ();
+  Parser ();
+  ~Parser ();
   void initialize (int, const char**);
   void clear ();
   void appendStdin ();

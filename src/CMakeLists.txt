@@ -6,7 +6,6 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${TASK_INCLUDE_DIRS})
 
 set (task_SRCS A3.cpp A3.h
-               A3t.cpp A3t.h
                Alias.cpp Alias.h
                Arg.cpp Arg.h
                Color.cpp Color.h
@@ -28,6 +27,7 @@ set (task_SRCS A3.cpp A3.h
                Msg.cpp Msg.h
                Nibbler.cpp Nibbler.h
                OldDuration.cpp OldDuration.h
+               Parser.cpp Parser.h
                Path.cpp Path.h
                RX.cpp RX.h
                TDB2.cpp TDB2.h

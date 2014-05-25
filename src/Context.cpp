@@ -104,18 +104,18 @@ int Context::initialize (int argc, const char** argv)
 
     // Initialize the command line parser.
     a3.capture (argc, argv);
-    a3t.initialize (argc, argv);                 // task arg0 arg1 ...
+    parser.initialize (argc, argv);                 // task arg0 arg1 ...
 
     // echo one two -- three | task zero --> task zero one two
     // 'three' is left in the input buffer.
     a3.append_stdin ();
-    a3t.appendStdin ();                          // echo stdin0 | task ...
+    parser.appendStdin ();                          // echo stdin0 | task ...
 
     // Process 'rc:<file>' command line override, and remove the argument from the
     // Context::a3.
     a3.categorize ();
-    a3t.findOverrides ();                        // rc:<file>  rc.<name>:<value>
-    a3t.getOverrides (home_dir, rc_file);        // <-- <file>
+    parser.findOverrides ();                        // rc:<file>  rc.<name>:<value>
+    parser.getOverrides (home_dir, rc_file);        // <-- <file>
 
     // TASKRC environment variable overrides the command line.
     char* override = getenv ("TASKRC");
@@ -132,7 +132,7 @@ int Context::initialize (int argc, const char** argv)
     // The data location, Context::data_dir, is determined from the assumed
     // location (~/.task), or set by data.location in the config file, or
     // overridden by rc.data.location on the command line.
-    a3t.getDataLocation (data_dir);              // <-- rc.data.location=<location>
+    parser.getDataLocation (data_dir);              // <-- rc.data.location=<location>
 
     override = getenv ("TASKDATA");
     if (override)
@@ -144,14 +144,14 @@ int Context::initialize (int argc, const char** argv)
 
     // Create missing config file and data directory, if necessary.
     a3.apply_overrides ();
-    a3t.applyOverrides ();
+    parser.applyOverrides ();
     createDefaultConfig ();
 
     // Handle Aliases.
     loadAliases ();
     a3.resolve_aliases ();
     aliases2.load ();
-    aliases2.resolve (a3t.tree ());
+    aliases2.resolve (parser.tree ());
 
     // Initialize the color rules, if necessary.
     if (color ())
@@ -163,39 +163,39 @@ int Context::initialize (int argc, const char** argv)
     for (cmd = commands.begin (); cmd != commands.end (); ++cmd)
     {
       if (cmd->first[0] == '_')
-        a3t.entity ("helper", cmd->first);
+        parser.entity ("helper", cmd->first);
       else if (cmd->second->read_only ())
-        a3t.entity ("readcmd", cmd->first);
+        parser.entity ("readcmd", cmd->first);
       else
-        a3t.entity ("writecmd", cmd->first);
+        parser.entity ("writecmd", cmd->first);
     }
 
     // Instantiate built-in column objects.
     Column::factory (columns);
     std::map <std::string, Column*>::iterator col;
     for (col = columns.begin (); col != columns.end (); ++col)
-      a3t.entity ("attribute", col->first);
+      parser.entity ("attribute", col->first);
 
     // Entities: Pseudo-attributes.
-    a3t.entity ("pseudo", "limit");
+    parser.entity ("pseudo", "limit");
 
     // Entities: Modifiers.
     for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
-      a3t.entity ("modifier", modifierNames[i]);
+      parser.entity ("modifier", modifierNames[i]);
 
     // Entities: Operators.
     std::vector <std::string> operators;
     Eval::getOperators (operators);
     std::vector <std::string>::iterator op;
     for (op = operators.begin (); op != operators.end (); ++op)
-      a3t.entity ("operator", *op);
+      parser.entity ("operator", *op);
 
     // Now the entities are loaded, parsing may resume.
-    a3t.findBinary ();                           // <task|tw|t|cal|calendar>
-    a3t.findCommand ();                          // <cmd>
-    a3t.findUUIDList ();                         // <uuid> Before findIdSequence
-    a3t.findIdSequence ();                       // <id>
-    a3t.injectDefaults ();                      // rc.default.command
+    parser.findBinary ();                           // <task|tw|t|cal|calendar>
+    parser.findCommand ();                          // <cmd>
+    parser.findUUIDList ();                         // <uuid> Before findIdSequence
+    parser.findIdSequence ();                       // <id>
+    parser.injectDefaults ();                      // rc.default.command
 
     // Static initialization to decouple code.
     staticInitialization ();
@@ -214,7 +214,7 @@ int Context::initialize (int argc, const char** argv)
     a3.dump ("Context::initialize");
 
     // Parse the command line.
-    Tree* parseTree = a3t.parse ();
+    Tree* parseTree = parser.parse ();
     if (parseTree && config.getBoolean ("debug"))
       debug (parseTree->dump ());
 
