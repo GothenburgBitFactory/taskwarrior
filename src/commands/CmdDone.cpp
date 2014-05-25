@@ -62,9 +62,6 @@ int CmdDone::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the new task.
-  A3 modifications = context.a3.extract_modifications ();
-
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
@@ -82,7 +79,7 @@ int CmdDone::execute (std::string& output)
                                      task->id,
                                      task->get ("description"));
 
-      modify_task_annotate (*task, modifications);
+      task->modify (Task::modAnnotate);
       task->setStatus (Task::completed);
       if (! task->has ("end"))
         task->setEnd ();
