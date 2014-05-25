@@ -63,9 +63,6 @@ int CmdDelete::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the new task.
-  A3 modifications = context.a3.extract_modifications ();
-
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
@@ -87,7 +84,7 @@ int CmdDelete::execute (std::string& output)
                            task->get ("uuid"),
                            task->get ("description"));
 
-      modify_task_annotate (*task, modifications);
+      task->modify (Task::modAnnotate);
       task->setStatus (Task::deleted);
       if (! task->has ("end"))
         task->setEnd ();
@@ -113,7 +110,7 @@ int CmdDelete::execute (std::string& output)
             std::vector <Task>::iterator sibling;
             for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
             {
-              modify_task_annotate (*sibling, modifications);
+              sibling->modify (Task::modAnnotate);
               sibling->setStatus (Task::deleted);
               if (! sibling->has ("end"))
                 sibling->setEnd ();
@@ -146,7 +143,7 @@ int CmdDelete::execute (std::string& output)
             std::vector <Task>::iterator child;
             for (child = children.begin (); child != children.end (); ++child)
             {
-              modify_task_description_replace (*child, modifications);
+              child->modify (Task::modAnnotate);
               child->setStatus (Task::deleted);
               if (! child->has ("end"))
                 child->setEnd ();
