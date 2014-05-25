@@ -32,6 +32,7 @@
 #include <Dates.h>
 #include <Filter.h>
 #include <i18n.h>
+#include <text.h>
 #include <util.h>
 
 extern Context context;
@@ -72,6 +73,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 {
   context.timer_filter.start ();
 
+  _startCount = (int) input.size ();
+
   if (context.config.getBoolean ("debug"))
   {
     Tree* t = context.parser.tree ();
@@ -109,6 +112,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   else
     output = input;
 
+  _endCount = (int) output.size ();
+  context.debug (format ("Filtered {1} tasks --> {2} tasks", _startCount, _endCount));
   context.timer_filter.stop ();
 }
 
@@ -133,6 +138,7 @@ void Filter::subset (std::vector <Task>& output)
     context.timer_filter.stop ();
     const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
     context.timer_filter.start ();
+    _startCount = (int) pending.size ();
 
     Eval eval;
     eval.addSource (namedDates);
@@ -163,6 +169,7 @@ void Filter::subset (std::vector <Task>& output)
       context.timer_filter.stop ();
       const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
       context.timer_filter.start ();
+      _startCount += (int) completed.size ();
 
       for (task = completed.begin (); task != completed.end (); ++task)
       {
@@ -193,6 +200,8 @@ void Filter::subset (std::vector <Task>& output)
       output.push_back (*task);
   }
 
+  _endCount = (int) output.size ();
+  context.debug (format ("Filtered {1} tasks --> {2} tasks", _startCount, _endCount));
   context.timer_filter.stop ();
 }
 
