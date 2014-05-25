@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <iostream>
 #include <Context.h>
+#include <Filter.h>
 #include <util.h>
 #include <text.h>
 #include <i18n.h>
@@ -52,8 +53,9 @@ int CmdDone::execute (std::string& output)
   int count = 0;
 
   // Apply filter.
+  Filter filter;
   std::vector <Task> filtered;
-  filter (filtered);
+  filter.subset (filtered);
   if (filtered.size () == 0)
   {
     context.footnote (STRING_FEEDBACK_NO_TASKS_SP);
