@@ -32,6 +32,8 @@
 #include <Variant.h>
 #include <Dates.h>
 #include <Filter.h>
+#include <i18n.h>
+#include <util.h>
 
 extern Context context;
 
@@ -289,25 +291,31 @@ bool Filter::pendingOnly ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Disaster avoidance mechanism.
+// Disaster avoidance mechanism. If a WRITECMD has no filter, then it can cause
+// all tasks to be modified. This is usually not intended.
 void Filter::safety ()
 {
-/*
-  if (! _read_only)
+  Tree* tree = context.a3t.tree ();
+  std::vector <Tree*>::iterator i;
+  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
   {
-    A3 write_filter = context.a3.extract_filter ();
-    if (!write_filter.size ())  // Potential disaster.
+    if ((*i)->hasTag ("WRITECMD"))
     {
-      // If user is willing to be asked, this can be avoided.
-      if (context.config.getBoolean ("confirmation") &&
-          confirm (STRING_TASK_SAFETY_VALVE))
-        return;
+      if (context.a3t.getFilterExpression () == "")
+      {
+        // If user is willing to be asked, this can be avoided.
+        if (context.config.getBoolean ("confirmation") &&
+            confirm (STRING_TASK_SAFETY_VALVE))
+          return;
 
-      // No.
-      throw std::string (STRING_TASK_SAFETY_FAIL);
+        // Sounds the alarm.
+        throw std::string (STRING_TASK_SAFETY_FAIL);
+      }
+
+      // Nothing to see here. Move along.
+      return;
     }
   }
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
