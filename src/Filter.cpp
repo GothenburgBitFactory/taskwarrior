@@ -28,7 +28,6 @@
 #include <cmake.h>
 #include <Context.h>
 #include <Eval.h>
-#include <E9.h>
 #include <Variant.h>
 #include <Dates.h>
 #include <Filter.h>
@@ -73,9 +72,6 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 {
   context.timer_filter.start ();
 
-  A3 filt = context.a3.extract_filter ();
-  filt.dump ("extract_filter");
-
   if (context.config.getBoolean ("debug"))
   {
     Tree* t = context.a3t.tree ();
@@ -88,8 +84,6 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
   if (filterExpr.length ())
   {
-    E9 e9 (filt);
-
     Eval eval;
     eval.addSource (namedDates);
     eval.addSource (domSource);
@@ -103,26 +97,13 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     std::vector <Task>::const_iterator task;
     for (task = input.begin (); task != input.end (); ++task)
     {
-      // TODO Obsolete.
-      bool oldFilter = e9.evalFilter (*task);
-      if (oldFilter)
-        output.push_back (*task);
-
       // Set up context for any DOM references.
       contextTask = *task;
 
       Variant var;
       eval.evaluateCompiledExpression (var);
-      // TODO Switch to this:
-/*
       if (var.get_bool ())
         output.push_back (*task);
-*/
-
-      // TODO Obsolete filter comparison.
-      if (context.config.getBoolean ("debug"))
-        if (oldFilter != var.get_bool ())
-          std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
     }
   }
   else
@@ -136,8 +117,6 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 void Filter::subset (std::vector <Task>& output)
 {
   context.timer_filter.start ();
-  A3 filt = context.a3.extract_filter ();
-  filt.dump ("extract_filter");
 
   if (context.config.getBoolean ("debug"))
   {
@@ -154,7 +133,6 @@ void Filter::subset (std::vector <Task>& output)
     context.timer_filter.stop ();
     const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
     context.timer_filter.start ();
-    E9 e (filt);
 
     Eval eval;
     eval.addSource (namedDates);
@@ -171,26 +149,13 @@ void Filter::subset (std::vector <Task>& output)
 
     for (task = pending.begin (); task != pending.end (); ++task)
     {
-      // TODO Obsolete.
-      bool oldFilter = e.evalFilter (*task);
-      if (oldFilter)
-        output.push_back (*task);
-
       // Set up context for any DOM references.
       contextTask = *task;
 
       Variant var;
       eval.evaluateCompiledExpression (var);
-      // TODO Switch to this:
-/*
       if (var.get_bool ())
         output.push_back (*task);
-*/
-
-      // TODO Obsolete filter comparison.
-      if (context.config.getBoolean ("debug"))
-        if (oldFilter != var.get_bool ())
-          std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
     }
 
     if (! pendingOnly ())
@@ -201,25 +166,13 @@ void Filter::subset (std::vector <Task>& output)
 
       for (task = completed.begin (); task != completed.end (); ++task)
       {
-        // TODO Obsolete.
-        bool oldFilter = e.evalFilter (*task);
-        if (oldFilter)
-          output.push_back (*task);
-
         // Set up context for any DOM references.
         contextTask = *task;
 
         Variant var;
         eval.evaluateCompiledExpression (var);
-        // TODO Switch to this:
-/*
         if (var.get_bool ())
           output.push_back (*task);
-*/
-
-        // TODO Obsolete filter comparison.
-        if (oldFilter != var.get_bool ())
-          std::cout << "# filter mismatch ID " << task->id << " UUID " << task->get ("uuid") << "\n";
       }
     }
   }

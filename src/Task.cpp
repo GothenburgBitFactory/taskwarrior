@@ -2022,7 +2022,7 @@ void Task::modify (
             }
           }
 
-          // OldDurations too.
+          // Durations too.
           else if (name == "recur" ||
                    column->type () == "duration")
           {
