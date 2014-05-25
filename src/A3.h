@@ -58,7 +58,6 @@ public:
   const std::string combine () const;
   const std::vector <std::string> list () const;
   bool find_command (std::string&) const;
-  const std::string find_limit () const;
 
   const A3 extract_modifications () const;
 
@@ -98,7 +97,6 @@ public:
 
 private:
   bool _read_only_command;
-  std::string _limit;
 };
 
 #endif

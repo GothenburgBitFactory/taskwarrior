@@ -119,7 +119,6 @@ const int safetyValveDefault = 10;
 ////////////////////////////////////////////////////////////////////////////////
 A3::A3 ()
 : _read_only_command (true)
-, _limit ("")
 {
 }
 
@@ -128,7 +127,6 @@ A3::A3 (const A3& other)
 {
   std::vector <Arg>::operator= (other);
   _read_only_command = other._read_only_command;
-  _limit             = other._limit;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +134,6 @@ A3& A3::operator= (const A3& other)
 {
   std::vector <Arg>::operator= (other);
   _read_only_command = other._read_only_command;
-  _limit             = other._limit;
 
   return *this;
 }
@@ -519,12 +516,6 @@ bool A3::find_command (std::string& command) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string A3::find_limit () const
-{
-  return _limit;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 const std::vector <std::string> A3::operator_list ()
 {
   std::vector <std::string> all;
@@ -538,7 +529,6 @@ const std::vector <std::string> A3::operator_list ()
 const A3 A3::extract_modifications () const
 {
   A3 mods;
-  mods._limit = _limit;
 
   bool before_command = true;
   std::vector <Arg>::const_iterator arg;
@@ -578,7 +568,6 @@ const A3 A3::extract_modifications () const
   }
 
   mods = tokenize (mods);
-  context.a3._limit = mods._limit;
   return mods;
 }
 
@@ -691,18 +680,9 @@ const A3 A3::tokenize (const A3& input) const
 
       else if (is_attr (n, new_arg))
       {
-        // The "limit:xxx" attribute is not stored, but the value is retained.
-        if (new_arg._raw.length () > 6 &&
-            new_arg._raw.substr (0, 6) == "limit:")
-        {
-          output._limit = new_arg._raw.substr (6);
-        }
-        else
-        {
-          output.push_back (new_arg);
-          if (found_sequence)
-            found_something_after_sequence = true;
-        }
+        output.push_back (new_arg);
+        if (found_sequence)
+          found_something_after_sequence = true;
       }
 
       else if (is_attmod (n, new_arg))
@@ -798,10 +778,7 @@ const A3 A3::infix (const A3& input) const
     return input;
 
   Arg previous ("?", Arg::cat_op);
-
   A3 modified;
-  modified._limit = input._limit;
-
   std::vector <Arg>::const_iterator arg;
   for (arg = input.begin (); arg != input.end (); ++arg)
   {
@@ -825,7 +802,6 @@ const A3 A3::infix (const A3& input) const
 const A3 A3::expand (const A3& input) const
 {
   A3 expanded;
-  expanded._limit = input._limit;
 
   std::vector <Arg>::const_iterator arg;
   std::vector <Arg>::const_iterator previous = input.begin ();
@@ -1021,7 +997,6 @@ const A3 A3::expand (const A3& input) const
 const A3 A3::sequence (const A3& input) const
 {
   A3 sequenced;
-  sequenced._limit = input._limit;
 
   // Extract all the components of a sequence.
   std::vector <int> ids;
@@ -1141,8 +1116,6 @@ const A3 A3::postfix (const A3& input) const
     return input;
 
   A3 converted;
-  converted._limit = input._limit;
-
   A3 op_stack;
   char type;
   int precedence;
