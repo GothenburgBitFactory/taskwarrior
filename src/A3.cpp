@@ -760,40 +760,6 @@ const A3 A3::tokenize (const A3& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Insert 'and' operators between adjacent non-operators.
-//
-//   ) <non-op>         -->  ) and <non-op>
-//   <non-op> (         -->  <non-op> <and> (
-//   ) (                -->  ) and (
-//   <non-op> <non-op>  -->  <non-op> and <non-op>
-//
-const A3 A3::infix (const A3& input) const
-{
-  if (input.size () == 1)
-    return input;
-
-  Arg previous ("?", Arg::cat_op);
-  A3 modified;
-  std::vector <Arg>::const_iterator arg;
-  for (arg = input.begin (); arg != input.end (); ++arg)
-  {
-    // Old-style filters need 'and' conjunctions.
-    if ((previous._category != Arg::cat_op || previous._raw == ")") &&
-        (arg->_category     != Arg::cat_op || arg->_raw     == "("))
-    {
-      modified.push_back (Arg ("and", Arg::cat_op));
-    }
-
-    // Now insert the adjacent non-operator.
-    modified.push_back (*arg);
-    previous = *arg;
-  }
-
-  modified.dump ("A3::infix");
-  return modified;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 const A3 A3::expand (const A3& input) const
 {
   A3 expanded;
