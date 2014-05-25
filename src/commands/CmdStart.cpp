@@ -62,9 +62,6 @@ int CmdStart::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the new task.
-  A3 modifications = context.a3.extract_modifications ();
-
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
@@ -80,8 +77,7 @@ int CmdStart::execute (std::string& output)
       std::string question = format (STRING_CMD_START_CONFIRM,
                                      task->id,
                                      task->get ("description"));
-
-      modify_task_annotate (*task, modifications);
+      task->modify (Task::modAnnotate);
       task->setStart ();
 
       if (context.config.getBoolean ("journal.time"))
