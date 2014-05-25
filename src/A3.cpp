@@ -118,7 +118,6 @@ const int safetyValveDefault = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
 A3::A3 ()
-: _read_only_command (true)
 {
 }
 
@@ -126,15 +125,12 @@ A3::A3 ()
 A3::A3 (const A3& other)
 {
   std::vector <Arg>::operator= (other);
-  _read_only_command = other._read_only_command;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 A3& A3::operator= (const A3& other)
 {
   std::vector <Arg>::operator= (other);
-  _read_only_command = other._read_only_command;
-
   return *this;
 }
 
@@ -237,7 +233,6 @@ void A3::categorize ()
       {
         found_command = true;
         arg->_category = Arg::cat_command;
-        _read_only_command = context.commands[arg->_raw]->read_only ();
       }
 
       // rc:<file>

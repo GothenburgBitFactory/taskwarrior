@@ -94,9 +94,6 @@ public:
   static bool which_operator (const std::string&, char&, int&, char&);
 
   void dump (const std::string&) const;
-
-private:
-  bool _read_only_command;
 };
 
 #endif
