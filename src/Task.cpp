@@ -24,7 +24,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-//#include <iostream>
 #include <cmake.h>
 #include <sstream>
 #include <stdlib.h>
@@ -56,10 +55,13 @@
 #include <E9.h>
 #include <Eval.h>
 #include <Variant.h>
+#include <Filter.h>
+#include <Dates.h>
 
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
 extern Context context;
+extern Task& contextTask;
 
 static const float epsilon = 0.000001;
 #endif
@@ -2225,7 +2227,9 @@ void Task::modify (modType type)
           else if (column->type () == "date")
           {
             Eval e;
-            // TODO add sources.
+            e.addSource (domSource);
+            e.addSource (namedDates);
+            contextTask = *this;
 
             Variant v;
             e.evaluateInfixExpression (value, v);
@@ -2244,7 +2248,9 @@ void Task::modify (modType type)
             // TODO Store the raw value, for 'recur', else result.
 
             Eval e;
-            // TODO add sources.
+            e.addSource (domSource);
+            e.addSource (namedDates);
+            contextTask = *this;
 
             Variant v;
             e.evaluateInfixExpression (value, v);
@@ -2257,7 +2263,9 @@ void Task::modify (modType type)
           else if (column->type () == "numeric")
           {
             Eval e;
-            // TODO add sources.
+            e.addSource (domSource);
+            e.addSource (namedDates);
+            contextTask = *this;
 
             Variant v;
             e.evaluateInfixExpression (value, v);
