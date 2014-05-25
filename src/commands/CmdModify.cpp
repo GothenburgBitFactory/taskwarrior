@@ -62,10 +62,7 @@ int CmdModify::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the new task.
-  A3 modifications = context.a3.extract_modifications ();
-  if (!modifications.size ())
-    throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
+  // TODO Complain when no modifications are specified.
 
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
@@ -74,7 +71,8 @@ int CmdModify::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     Task before (*task);
-    modify_task_description_replace (*task, modifications);
+    task->modify (Task::modReplace);
+
     if (taskDiff (before, *task))
     {
       // Perform some logical consistency checks.
@@ -127,7 +125,7 @@ int CmdModify::execute (std::string& output)
             for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
             {
               Task alternate (*sibling);
-              modify_task_description_replace (*sibling, modifications);
+              sibling->modify (Task::modReplace);
               updateRecurrenceMask (*sibling);
               dependencyChainOnModify (alternate, *sibling);
               ++count;
@@ -151,7 +149,7 @@ int CmdModify::execute (std::string& output)
             for (child = children.begin (); child != children.end (); ++child)
             {
               Task alternate (*child);
-              modify_task_description_replace (*child, modifications);
+              child->modify (Task::modReplace);
               updateRecurrenceMask (*child);
               context.tdb2.modify (*child);
               dependencyChainOnModify (alternate, *child);
