@@ -62,10 +62,7 @@ int CmdAppend::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the new task.
-  A3 modifications = context.a3.extract_modifications ();
-  if (!modifications.size ())
-    throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
+  // TODO Complain when no modifications are specified.
 
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
@@ -80,7 +77,7 @@ int CmdAppend::execute (std::string& output)
                                    task->id,
                                    task->get ("description"));
 
-    modify_task_description_append (*task, modifications);
+    task->modify (Task::modAppend);
 
     if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
     {
@@ -100,7 +97,7 @@ int CmdAppend::execute (std::string& output)
           std::vector <Task>::iterator sibling;
           for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
           {
-            modify_task_description_append (*sibling, modifications);
+            sibling->modify (Task::modAppend);
             context.tdb2.modify (*sibling);
             ++count;
             feedback_affected (STRING_CMD_APPEND_TASK_R, *sibling);
@@ -109,7 +106,7 @@ int CmdAppend::execute (std::string& output)
           // Append to the parent
           Task parent;
           context.tdb2.get (task->get ("parent"), parent);
-          modify_task_description_append (parent, modifications);
+          parent.modify (Task::modAppend);
           context.tdb2.modify (parent);
         }
       }
