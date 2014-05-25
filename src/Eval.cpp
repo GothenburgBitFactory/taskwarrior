@@ -401,9 +401,6 @@ bool Eval::parseLogical (
             infix[i].first == "xor") &&
            infix[i].second == Lexer::typeOperator)
     {
-      if (_debug)
-        std::cout << "# parseLogical " << infix[i].first << "\n";
-
       ++i;
       if (! parseRegex (infix, i))
         return false;
@@ -429,9 +426,6 @@ bool Eval::parseRegex (
             infix[i].first == "!~") &&
            infix[i].second == Lexer::typeOperator)
     {
-      if (_debug)
-        std::cout << "# parseRegex " << infix[i].first << "\n";
-
       ++i;
       if (! parseEquality (infix, i))
         return false;
@@ -458,9 +452,6 @@ bool Eval::parseEquality (
             infix[i].first == "!=") &&
            infix[i].second == Lexer::typeOperator)
     {
-      if (_debug)
-        std::cout << "# parseEquality " << infix[i].first << "\n";
-
       ++i;
       if (! parseComparative (infix, i))
         return false;
@@ -488,9 +479,6 @@ bool Eval::parseComparative (
             infix[i].first == ">") &&
            infix[i].second == Lexer::typeOperator)
     {
-      if (_debug)
-        std::cout << "# parseComparative " << infix[i].first << "\n";
-
       ++i;
       if (! parseArithmetic (infix, i))
         return false;
@@ -516,9 +504,6 @@ bool Eval::parseArithmetic (
             infix[i].first == "-") &&
            infix[i].second == Lexer::typeOperator)
     {
-      if (_debug)
-        std::cout << "# parseArithmetic " << infix[i].first << "\n";
-
       ++i;
       if (! parseGeometric (infix, i))
         return false;
@@ -545,9 +530,6 @@ bool Eval::parseGeometric (
             infix[i].first == "%") &&
            infix[i].second == Lexer::typeOperator)
     {
-      if (_debug)
-        std::cout << "# parseGeometric " << infix[i].first << "\n";
-
       ++i;
       if (! parseTag (infix, i))
         return false;
@@ -573,9 +555,6 @@ bool Eval::parseTag (
             infix[i].first == "_notag_") &&
            infix[i].second == Lexer::typeOperator)
     {
-      if (_debug)
-        std::cout << "# parseTag " << infix[i].first << "\n";
-
       ++i;
       if (! parseUnary (infix, i))
         return false;
@@ -597,24 +576,16 @@ bool Eval::parseUnary (
   {
     if (infix[i].first == "-")
     {
-      if (_debug)
-        std::cout << "# parseUnary '-' --> '_neg_'\n";
-
       infix[i].first = "_neg_";
       ++i;
     }
     else if (infix[i].first == "+")
     {
-      if (_debug)
-        std::cout << "# parseUnary '+' --> '_pos_'\n";
-
       infix[i].first = "_pos_";
       ++i;
     }
     else if (infix[i].first == "!")
     {
-      if (_debug)
-        std::cout << "# parseUnary " << infix[i].first << "\n";
       ++i;
     }
   }
@@ -635,9 +606,6 @@ bool Eval::parseExponent (
            infix[i].first == "^" &&
            infix[i].second == Lexer::typeOperator)
     {
-      if (_debug)
-        std::cout << "# parseExponent " << infix[i].first << "\n";
-
       ++i;
       if (! parsePrimitive (infix, i))
         return false;
@@ -659,9 +627,6 @@ bool Eval::parsePrimitive (
   {
     if (infix[i].first == "(")
     {
-      if (_debug)
-        std::cout << "# parsePrimitive " << infix[i].first << "\n";
-
       ++i;
       if (i < infix.size () &&
           parseLogical (infix, i))
@@ -669,9 +634,6 @@ bool Eval::parsePrimitive (
         if (i < infix.size () &&
             infix[i].first == ")")
         {
-          if (_debug)
-            std::cout << "# parsePrimitive " << infix[i].first << "\n";
-
           ++i;
           return true;
         }
@@ -686,8 +648,6 @@ bool Eval::parsePrimitive (
         Variant v;
         if ((*source) (infix[i].first, v))
         {
-          if (_debug)
-            std::cout << "# parsePrimitive '" << infix[i].first << "' --> '" << (std::string) v << "'\n";
           found = true;
           break;
         }
@@ -700,9 +660,6 @@ bool Eval::parsePrimitive (
       }
       else if (infix[i].second != Lexer::typeOperator)
       {
-        if (_debug)
-          std::cout << "# parsePrimitive " << infix[i].first << "\n";
-
         ++i;
         return true;
       }
