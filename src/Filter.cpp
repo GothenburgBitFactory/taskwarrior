@@ -113,7 +113,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     output = input;
 
   _endCount = (int) output.size ();
-  context.debug (format ("Filtered {1} tasks --> {2} tasks", _startCount, _endCount));
+  context.debug (format ("Filtered {1} tasks --> {2} tasks [list subset]", _startCount, _endCount));
   context.timer_filter.stop ();
 }
 
@@ -130,6 +130,7 @@ void Filter::subset (std::vector <Task>& output)
       context.debug (t->dump ());
   }
 
+  bool shortcut = false;
   std::string filterExpr = context.parser.getFilterExpression ();
   context.debug ("\033[1;37;42mFILTER\033[0m " + filterExpr);
 
@@ -164,7 +165,8 @@ void Filter::subset (std::vector <Task>& output)
         output.push_back (*task);
     }
 
-    if (! pendingOnly ())
+    shortcut = pendingOnly ();
+    if (! shortcut)
     {
       context.timer_filter.stop ();
       const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
@@ -201,7 +203,7 @@ void Filter::subset (std::vector <Task>& output)
   }
 
   _endCount = (int) output.size ();
-  context.debug (format ("Filtered {1} tasks --> {2} tasks", _startCount, _endCount));
+  context.debug (format ("Filtered {1} tasks --> {2} tasks [{3}]", _startCount, _endCount, (shortcut ? "pending only" : "all tasks")));
   context.timer_filter.stop ();
 }
 
