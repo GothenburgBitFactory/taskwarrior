@@ -64,14 +64,16 @@ int CmdDenotate::execute (std::string& output)
   }
 
   // Apply the command line modifications to the completed task.
-  A3 words = context.a3.extract_modifications ();
+  std::vector <std::string> words = context.parser.getWords ();
   if (!words.size ())
     throw std::string (STRING_CMD_DENO_WORDS);
 
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  std::string pattern = words.combine ();
+  //std::string pattern = words.combine ();
+  std::string pattern;
+  join (pattern, " ", words);
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
