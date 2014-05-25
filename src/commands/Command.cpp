@@ -279,6 +279,7 @@ bool Command::displays_id () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete.
 // Apply the modifications in arguments to the task.
 void Command::modify_task_description_replace (Task& task, const A3& arguments)
 {
@@ -293,6 +294,7 @@ void Command::modify_task_description_replace (Task& task, const A3& arguments)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete.
 void Command::modify_task_description_prepend (Task& task, const A3& arguments)
 {
   std::string description;
@@ -303,6 +305,7 @@ void Command::modify_task_description_prepend (Task& task, const A3& arguments)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete.
 void Command::modify_task_description_append (Task& task, const A3& arguments)
 {
   std::string description;
@@ -313,6 +316,7 @@ void Command::modify_task_description_append (Task& task, const A3& arguments)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete.
 void Command::modify_task_annotate (Task& task, const A3& arguments)
 {
   std::string description;
@@ -323,6 +327,7 @@ void Command::modify_task_annotate (Task& task, const A3& arguments)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Obsolete.
 // Worker function that does all the updates, but never overwrites description.
 void Command::modify_task (
   Task& task,
