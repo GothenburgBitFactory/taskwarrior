@@ -29,6 +29,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <Context.h>
+#include <Filter.h>
 #include <ViewText.h>
 #include <CmdTags.h>
 #include <text.h>
@@ -66,8 +67,9 @@ int CmdTags::execute (std::string& output)
   int quantity = tasks.size ();
 
   // Apply filter.
+  Filter filter;
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter.subset (filtered);
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
@@ -162,8 +164,9 @@ int CmdCompletionTags::execute (std::string& output)
   }
 
   // Apply filter.
+  Filter filter;
   std::vector <Task> filtered;
-  filter (tasks, filtered);
+  filter.subset (filtered);
 
   // Scan all the tasks for their tags, building a map using tag
   // names as keys.
