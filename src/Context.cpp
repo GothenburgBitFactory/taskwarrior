@@ -765,9 +765,16 @@ void Context::updateXtermTitle ()
   {
     std::string command = parser.getCommand ();
     std::string title;
+    Tree* tree = parser.tree ();
+    std::vector <Tree*>::iterator i;
+    for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
+    {
+      if (i != tree->_branches.begin ())
+        title += ' ';
 
-    // TODO Obsolete.
-    join (title, " ", a3.list ());
+      title += (*i)->attribute ("raw");
+    }
+
     std::cout << "]0;task " << command << " " << title << "";
   }
 }
