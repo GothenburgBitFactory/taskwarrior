@@ -1938,6 +1938,12 @@ void Task::modify (modType type)
 {
   std::string text = "";
   Tree* tree = context.parser.tree ();
+  if (tree)
+    context.debug (tree->dump ());
+
+  context.debug ("Task::modify");
+  std::string label = "  [1;37;43mMODIFICATION[0m ";
+
   std::vector <Tree*>::iterator i;
   for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
   {
@@ -1945,14 +1951,15 @@ void Task::modify (modType type)
     {
       if ((*i)->hasTag ("ATTRIBUTE"))
       {
-        // 'name' is canonicalized.
-        // 'value' needs eval.
+        // 'name' is canonical.
+        // 'value' requires eval.
         std::string name  = (*i)->attribute ("name");
         std::string value = (*i)->attribute ("raw");
         if (value == "")
         {
           // Remove attribute if the value is blank.
           (*this).remove (name);
+          context.debug (label + name + " <-- ''");
         }
         else
         {
@@ -2007,6 +2014,7 @@ void Task::modify (modType type)
 
             Variant v;
             e.evaluateInfixExpression (value, v);
+            context.debug (label + name + " <-- " + format ("{1}", v.get_date ()) + " <-- " + (std::string) v + " <-- " + value);
 
             // TODO If v is duration and < 5y, add to now, else store as date.
             // TODO Not sure if the above still holds true.
@@ -2026,6 +2034,8 @@ void Task::modify (modType type)
 
             Variant v;
             e.evaluateInfixExpression (value, v);
+            context.debug (label + name + " <-- " + v.get_string () + " <-- " + value);
+
             v.cast (Variant::type_duration);
             v.cast (Variant::type_string);
             set (name, v);
@@ -2041,6 +2051,8 @@ void Task::modify (modType type)
 
             Variant v;
             e.evaluateInfixExpression (value, v);
+            context.debug (label + name + " <-- " + v.get_string () + " <-- " + value);
+
             v.cast (Variant::type_real);
             v.cast (Variant::type_string);
             set (name, v);
@@ -2052,7 +2064,11 @@ void Task::modify (modType type)
             // column->modify () contains the logic for the specific column
             // and returns the appropriate value for (*this).set ()
             if (column->validate (value))
-              (*this).set (name, column->modify (value));
+            {
+              std::string col_value = column->modify (value);
+              context.debug (label + name + " <-- " + col_value + " <-- " + value);
+              (*this).set (name, col_value);
+            }
             else
               throw format (STRING_INVALID_MOD, name, value);
           }
@@ -2060,7 +2076,10 @@ void Task::modify (modType type)
           {
             // Final default action
             if (column->validate (value))
+            {
+              context.debug (label + name + " <-- " + value);
               (*this).set (name, value);
+            }
             else
               throw format (STRING_INVALID_MOD, name, value);
           }
@@ -2073,6 +2092,7 @@ void Task::modify (modType type)
       // arg7 from='from' global='1' raw='/from/to/g' to='to' ORIGINAL SUBSTITUTION MODIFICATION
       else if ((*i)->hasTag ("SUBSTITUTION"))
       {
+        context.debug (label + "substitute " + (*i)->attribute ("raw"));
         substitute ((*i)->attribute ("from"),
                     (*i)->attribute ("to"),
                     ((*i)->attribute ("global") == "1"));
@@ -2083,6 +2103,7 @@ void Task::modify (modType type)
       // appropriate.
       else if ((*i)->hasTag ("TAG"))
       {
+        context.debug (label + "tags " + (*i)->attribute ("raw"));
         if ((*i)->attribute ("sign") == "+")
         {
           std::string tag = (*i)->attribute ("tag");
@@ -2118,10 +2139,25 @@ void Task::modify (modType type)
   {
     switch (type)
     {
-    case modReplace:  set ("description", text);                             break;
-    case modPrepend:  set ("description", text + " " + get ("description")); break;
-    case modAppend:   set ("description", get ("description") + " " + text); break;
-    case modAnnotate: addAnnotation (text);                                  break;
+    case modReplace:
+      context.debug (label + "description <-- '" + text + "'");
+      set ("description", text);
+      break;
+
+    case modPrepend:
+      context.debug (label + "description <-- '" + text + "' + description");
+      set ("description", text + " " + get ("description"));
+      break;
+
+    case modAppend:
+      context.debug (label + "description <-- description + '" + text + "'");
+      set ("description", get ("description") + " " + text);
+      break;
+
+    case modAnnotate:
+      context.debug (label + "new annotation <-- '" + text + "'");
+      addAnnotation (text);
+      break;
     }
   }
 }
