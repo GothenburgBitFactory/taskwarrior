@@ -595,7 +595,7 @@ std::string Parser::getLimit () const
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
     // Parser override operator.
-    if ((*i)->attribute ("raw") == "TERMINATED")
+    if ((*i)->attribute ("raw") == "--")
       break;
 
     if ((*i)->hasTag ("PSEUDO") &&
@@ -615,11 +615,11 @@ std::string Parser::getCommand () const
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
     // Parser override operator.
-    if ((*i)->attribute ("canonical") == "TERMINATED")
+    if ((*i)->attribute ("raw") == "--")
       break;
 
     if ((*i)->hasTag ("CMD"))
-      return (*i)->attribute ("raw");
+      return (*i)->attribute ("canonical");
   }
 
   return "";

@@ -385,7 +385,6 @@ int Context::dispatch (std::string &out)
   if (command != "")
   {
     updateXtermTitle ();
-
     updateVerbosity ();
 
     Command* c = commands[command];
