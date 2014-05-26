@@ -38,7 +38,6 @@
 #include <Path.h>
 #include <File.h>
 #include <Directory.h>
-#include <A3.h>
 #include <Parser.h>
 #include <Timer.h>
 
@@ -84,7 +83,6 @@ private:
 
 public:
   std::string                         program;
-  A3                                  a3;
   Parser                              parser;
   std::string                         home_dir;
   File                                rc_file;

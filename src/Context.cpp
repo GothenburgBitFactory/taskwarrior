@@ -103,20 +103,13 @@ int Context::initialize (int argc, const char** argv)
     assumeLocations ();
 
     // Initialize the command line parser.
-    // TODO Obsolete.
-    a3.capture (argc, argv);
     parser.initialize (argc, argv);                 // task arg0 arg1 ...
 
     // echo one two -- three | task zero --> task zero one two
     // 'three' is left in the input buffer.
-    // TODO Obsolete.
-    a3.append_stdin ();
     parser.appendStdin ();                          // echo stdin0 | task ...
 
-    // Process 'rc:<file>' command line override, and remove the argument from the
-    // Context::a3.
-    // TODO Obsolete.
-    a3.categorize ();
+    // Process 'rc:<file>' command line override.
     parser.findOverrides ();                        // rc:<file>  rc.<name>:<value>
     parser.getOverrides (home_dir, rc_file);        // <-- <file>
 
@@ -146,15 +139,11 @@ int Context::initialize (int argc, const char** argv)
     }
 
     // Create missing config file and data directory, if necessary.
-    // TODO Obsolete.
-    a3.apply_overrides ();
     parser.applyOverrides ();
     createDefaultConfig ();
 
     // Handle Aliases.
     loadAliases ();
-    // TODO Obsolete.
-    a3.resolve_aliases ();
     aliases2.load ();
     aliases2.resolve (parser.tree ());
 
@@ -204,21 +193,6 @@ int Context::initialize (int argc, const char** argv)
 
     // Static initialization to decouple code.
     staticInitialization ();
-
-    // TODO Obsolete.
-    // Categorize all arguments one more time.  THIS IS NECESSARY - it helps the
-    // following inject_defaults method determine whether there needs to be a
-    // default command assumed.
-    a3.categorize ();
-
-    // TODO Obsolete.
-    // Handle default command and assumed 'info' command.
-    a3.inject_defaults ();
-
-    // TODO Obsolete.
-    // The re-categorization allows all injected arguments to be properly given
-    // a category.
-    a3.categorize ();
 
     // Parse the command line.
     parser.parse ();
@@ -736,8 +710,8 @@ void Context::decomposeSortField (
 void Context::clear ()
 {
   tdb2.clear ();
-  // TODO Obsolete.
-  a3.clear ();
+
+  // TODO parser.clear (); ?
 
   // Eliminate the command objects.
   std::map <std::string, Command*>::iterator com;
