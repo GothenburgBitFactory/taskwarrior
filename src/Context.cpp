@@ -156,6 +156,8 @@ int Context::initialize (int argc, const char** argv)
     std::map <std::string, Command*>::iterator cmd;
     for (cmd = commands.begin (); cmd != commands.end (); ++cmd)
     {
+      parser.entity ("cmd", cmd->first);
+
       if (cmd->first[0] == '_')
         parser.entity ("helper", cmd->first);
       else if (cmd->second->read_only ())

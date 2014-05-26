@@ -43,6 +43,7 @@ public:
   Tree* tree ();
   Tree* parse ();
   void entity (const std::string&, const std::string&);
+  bool exactMatch (const std::string&, const std::string&) const;
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
 
   void findBinary ();

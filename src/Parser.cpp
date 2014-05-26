@@ -166,6 +166,29 @@ void Parser::entity (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Search for exact 'value' in _entities category.
+bool Parser::exactMatch (
+  const std::string& category,
+  const std::string& value) const
+{
+  // Find the category.
+  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
+  c = _entities.equal_range (category);
+
+  // Extract a list of entities for category.
+  std::vector <std::string> options;
+  std::multimap <std::string, std::string>::const_iterator e;
+  for (e = c.first; e != c.second; ++e)
+  {
+    // Shortcut: if an exact match is found, success.
+    if (value == e->second)
+      return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Search for 'value' in _entities category, return canonicalized value.
 bool Parser::canonicalize (
   std::string& canonicalized,
@@ -278,31 +301,20 @@ void Parser::findCommand ()
     if (! (*i)->hasTag ("?"))
       continue;
 
-    if (canonicalize (command, "writecmd", (*i)->attribute ("raw")))
+    if (canonicalize (command, "cmd", (*i)->attribute ("raw")))
     {
       (*i)->unTag ("?");
       (*i)->tag ("CMD");
-      (*i)->tag ("WRITECMD");
       (*i)->attribute ("canonical", command);
-      break;
-    }
 
-    else if (canonicalize (command, "readcmd", (*i)->attribute ("raw")))
-    {
-      (*i)->unTag ("?");
-      (*i)->tag ("CMD");
-      (*i)->tag ("READCMD");
-      (*i)->attribute ("canonical", command);
-      break;
-    }
+      if (exactMatch ("writecmd", (*i)->attribute ("raw")))
+        (*i)->tag ("WRITECMD");
+      else if (exactMatch ("writecmd", (*i)->attribute ("raw")))
+        (*i)->tag ("READCMD");
+      else if (exactMatch ("writecmd", (*i)->attribute ("raw")))
+        (*i)->tag ("HELPER");
 
-    else if (canonicalize (command, "helper", (*i)->attribute ("raw")))
-    {
-      (*i)->unTag ("?");
-      (*i)->tag ("CMD");
-      (*i)->tag ("HELPER");
-      (*i)->attribute ("canonical", command);
-      break;
+      return;
     }
   }
 }
