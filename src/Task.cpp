@@ -1929,6 +1929,11 @@ float Task::urgency_blocking () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Arguably does not belong here. This method reads the parse tree and calls
+// Task methods. It could be a standalone function with no loss in access, as
+// well as reducing the object depdendencies of Task.
+//
+// It came from the Command base object, but doesn't really belong there either.
 void Task::modify (modType type)
 {
   std::string text = "";
@@ -2006,8 +2011,7 @@ void Task::modify (modType type)
             // TODO if v is duration and < 5y, add to now.
             // TODO else store as date.
 
-            v.cast (Variant::type_string);
-            set (name, v);
+            set (name, v.get_date ());
           }
           // Special case: type duration.
           // Durations too.
