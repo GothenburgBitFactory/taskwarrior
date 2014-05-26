@@ -6,7 +6,6 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${TASK_INCLUDE_DIRS})
 
 set (task_SRCS Alias.cpp Alias.h
-               Arg.cpp Arg.h
                Color.cpp Color.h
                Config.cpp Config.h
                Context.cpp Context.h
