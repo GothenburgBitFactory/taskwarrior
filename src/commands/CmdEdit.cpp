@@ -33,6 +33,7 @@
 #include <OldDuration.h>
 #include <Context.h>
 #include <Filter.h>
+#include <Nibbler.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>

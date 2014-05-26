@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <Context.h>
+#include <Nibbler.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>

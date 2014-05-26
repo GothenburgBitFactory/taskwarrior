@@ -28,6 +28,7 @@
 #include <sstream>
 #include <Context.h>
 #include <Nibbler.h>
+#include <A3.h>
 #include <text.h>
 #include <i18n.h>
 #include <DOM.h>
