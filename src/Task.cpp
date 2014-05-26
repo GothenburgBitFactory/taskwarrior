@@ -2008,9 +2008,8 @@ void Task::modify (modType type)
             Variant v;
             e.evaluateInfixExpression (value, v);
 
-            // TODO if v is duration and < 5y, add to now.
-            // TODO else store as date.
-
+            // TODO If v is duration and < 5y, add to now, else store as date.
+            // TODO Not sure if the above still holds true.
             set (name, v.get_date ());
           }
           // Special case: type duration.
@@ -2113,13 +2112,17 @@ void Task::modify (modType type)
     }
   }
 
-  // Task::modType determines what happens to the WORD arguments.
-  switch (type)
+  // Task::modType determines what happens to the WORD arguments, if there are
+  //  any.
+  if (text != "")
   {
-  case modReplace:  set ("description", text);                             break;
-  case modPrepend:  set ("description", text + " " + get ("description")); break;
-  case modAppend:   set ("description", get ("description") + " " + text); break;
-  case modAnnotate: addAnnotation (text);                                  break;
+    switch (type)
+    {
+    case modReplace:  set ("description", text);                             break;
+    case modPrepend:  set ("description", text + " " + get ("description")); break;
+    case modAppend:   set ("description", get ("description") + " " + text); break;
+    case modAnnotate: addAnnotation (text);                                  break;
+    }
   }
 }
 
