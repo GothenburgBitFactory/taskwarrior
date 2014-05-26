@@ -2103,15 +2103,18 @@ void Task::modify (modType type)
       // appropriate.
       else if ((*i)->hasTag ("TAG"))
       {
-        context.debug (label + "tags " + (*i)->attribute ("raw"));
+        std::string tag = (*i)->attribute ("tag");
         if ((*i)->attribute ("sign") == "+")
         {
-          std::string tag = (*i)->attribute ("tag");
+          context.debug (label + "tags <-- add '" + tag + "'");
           addTag (tag);
           feedback_special_tags ((*this), tag);
         }
         else
-          removeTag ((*i)->attribute ("tag"));
+        {
+          context.debug (label + "tags <-- remove '" + tag + "'");
+          removeTag (tag);
+        }
       }
 
       // WORD and TERMINATED args are accumulated.
