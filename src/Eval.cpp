@@ -130,15 +130,15 @@ void Eval::evaluateInfixExpression (const std::string& e, Variant& v) const
 
   // Parse for syntax checking and operator replacement.
   if (_debug)
-    context.debug ("Infix tokens " + dump (tokens));
+    context.debug ("[1;37;42mFILTER[0m Infix        " + dump (tokens));
   infixParse (tokens);
   if (_debug)
-    context.debug ("Parsed tokens " + dump (tokens));
+    context.debug ("[1;37;42mFILTER[0m Infix parsed " + dump (tokens));
 
   // Convert infix --> postfix.
   infixToPostfix (tokens);
   if (_debug)
-    context.debug ("Postfix tokens " + dump (tokens));
+    context.debug ("[1;37;42mFILTER[0m Postfix      " + dump (tokens));
 
   // Call the postfix evaluator.
   evaluatePostfixStack (tokens, v);
@@ -157,7 +157,7 @@ void Eval::evaluatePostfixExpression (const std::string& e, Variant& v) const
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
 
   if (_debug)
-    context.debug ("Postfix tokens       " + dump (tokens));
+    context.debug ("[1;37;42mFILTER[0m Postfix      " + dump (tokens));
 
   // Call the postfix evaluator.
   evaluatePostfixStack (tokens, v);
@@ -176,15 +176,15 @@ void Eval::compileExpression (const std::string& e)
 
   // Parse for syntax checking and operator replacement.
   if (_debug)
-    context.debug ("Filter infix tokens  " + dump (_compiled));
+    context.debug ("[1;37;42mFILTER[0m Infix        " + dump (_compiled));
   infixParse (_compiled);
   if (_debug)
-    context.debug ("Filter parsed tokens " + dump (_compiled));
+    context.debug ("[1;37;42mFILTER[0m Infix parsed " + dump (_compiled));
 
   // Convert infix --> postfix.
   infixToPostfix (_compiled);
   if (_debug)
-    context.debug ("Postfix tokens       " + dump (_compiled));
+    context.debug ("[1;37;42mFILTER[0m Postfix      " + dump (_compiled));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -840,7 +840,7 @@ std::string Eval::dump (
     output += c.colorize (i->first);
   }
 
-  return output + "\n";
+  return output;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
