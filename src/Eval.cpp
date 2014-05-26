@@ -805,24 +805,15 @@ std::string Eval::dump (
 {
   // Set up a color mapping.
   std::map <Lexer::Type, Color> color_map;
-  color_map[Lexer::typeNone]     = Color ("white on green");
-/*
-  Lexer::typeOperator
-  Lexer::typeNone
-  Lexer::typeString
-  Lexer::typeIdentifier
-  Lexer::typeIdentifierEscape
-  Lexer::typeEscape
-  Lexer::typeEscapeHex
-  Lexer::typeEscapeUnicode
-  Lexer::typeNumber
-  Lexer::typeDecimal
-  Lexer::typeExponentIndicator
-  Lexer::typeExponent
-  Lexer::typeHex
-  Lexer::typeDate
-  Lexer::typeDuration
-*/
+  color_map[Lexer::typeNone]       = Color ("rgb000 on gray6");
+  color_map[Lexer::typeOperator]   = Color ("gray14 on gray6");
+  color_map[Lexer::typeNumber]     = Color ("rgb530 on gray6");
+  color_map[Lexer::typeHex]        = Color ("rgb303 on gray6");
+  color_map[Lexer::typeDecimal]    = Color ("rgb530 on gray6");
+  color_map[Lexer::typeString]     = Color ("rgb550 on gray6");
+  color_map[Lexer::typeIdentifier] = Color ("rgb035 on gray6");
+  color_map[Lexer::typeDate]       = Color ("rgb150 on gray6");
+  color_map[Lexer::typeDuration]   = Color ("rgb531 on gray6");
 
   std::string output;
   std::vector <std::pair <std::string, Lexer::Type> >::const_iterator i;
