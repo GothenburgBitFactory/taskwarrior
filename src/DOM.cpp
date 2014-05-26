@@ -28,7 +28,6 @@
 #include <sstream>
 #include <Context.h>
 #include <Nibbler.h>
-#include <A3.h>
 #include <text.h>
 #include <i18n.h>
 #include <DOM.h>
@@ -193,7 +192,8 @@ const std::string DOM::get (const std::string& name, const Task& task)
 
            if (attr == "id")                       return format (ref.id);
       else if (attr == "urgency")                  return format (ref.urgency_c ());
-      else if (A3::is_attribute (attr, canonical)) return ref.get (canonical);
+      else if (context.parser.canonicalize (canonical, "attribute", attr))
+                                                   return ref.get (canonical);
     }
 
     n.restore ();
@@ -216,7 +216,8 @@ const std::string DOM::get (const std::string& name, const Task& task)
 
            if (attr == "id")                       return format (ref.id);
       else if (attr == "urgency")                  return format (ref.urgency_c (), 4, 3);
-      else if (A3::is_attribute (attr, canonical)) return ref.get (canonical);
+      else if (context.parser.canonicalize (canonical, "attribute", attr))
+                                                   return ref.get (canonical);
     }
 
     n.restore ();
