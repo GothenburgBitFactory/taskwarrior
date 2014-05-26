@@ -180,7 +180,16 @@ bool Parser::canonicalize (
   std::vector <std::string> options;
   std::multimap <std::string, std::string>::const_iterator e;
   for (e = c.first; e != c.second; ++e)
+  {
+    // Shortcut: if an exact match is found, success.
+    if (value == e->second)
+    {
+      canonicalized = value;
+      return true;
+    }
+
     options.push_back (e->second);
+  }
 
   // Match against the options, throw away results.
   std::vector <std::string> matches;
@@ -269,31 +278,20 @@ void Parser::findCommand ()
     if (! (*i)->hasTag ("?"))
       continue;
 
-/*
-    if (canonicalize (command, "report", (*i)->attribute ("raw")))
+    if (canonicalize (command, "writecmd", (*i)->attribute ("raw")))
     {
       (*i)->unTag ("?");
       (*i)->tag ("CMD");
-      (*i)->tag ("REPORT");
+      (*i)->tag ("WRITECMD");
       (*i)->attribute ("canonical", command);
       break;
     }
-*/
 
     else if (canonicalize (command, "readcmd", (*i)->attribute ("raw")))
     {
       (*i)->unTag ("?");
       (*i)->tag ("CMD");
       (*i)->tag ("READCMD");
-      (*i)->attribute ("canonical", command);
-      break;
-    }
-
-    else if (canonicalize (command, "writecmd", (*i)->attribute ("raw")))
-    {
-      (*i)->unTag ("?");
-      (*i)->tag ("CMD");
-      (*i)->tag ("WRITECMD");
       (*i)->attribute ("canonical", command);
       break;
     }
@@ -306,17 +304,6 @@ void Parser::findCommand ()
       (*i)->attribute ("canonical", command);
       break;
     }
-
-/*
-    else if (canonicalize (command, "specialcmd", (*i)->attribute ("raw")))
-    {
-      (*i)->unTag ("?");
-      (*i)->tag ("CMD");
-      (*i)->tag ("SPECIALCMD");
-      (*i)->attribute ("canonical", command);
-      break;
-    }
-*/
   }
 }
 
@@ -1468,8 +1455,6 @@ void Parser::validate ()
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
     if ((*i)->hasTag ("?"))
-      //throw std::string ("Unrecognized argument '") + (*i)->attribute ("raw") + "'";
-      //std::cout << "Unrecognized argument '" << (*i)->attribute ("raw") << "'\n";
       context.debug ("Unrecognized argument '" + (*i)->attribute ("raw") + "'");
 
   // TODO Any RC node must have a root/+RC @file that exists.
