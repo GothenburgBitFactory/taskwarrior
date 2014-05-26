@@ -1944,6 +1944,7 @@ void Task::modify (modType type)
   context.debug ("Task::modify");
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
+  int modCount = 0;
   std::vector <Tree*>::iterator i;
   for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
   {
@@ -1960,6 +1961,7 @@ void Task::modify (modType type)
           // Remove attribute if the value is blank.
           (*this).remove (name);
           context.debug (label + name + " <-- ''");
+          ++modCount;
         }
         else
         {
@@ -2002,6 +2004,8 @@ void Task::modify (modType type)
                 else
                   addDependency (*id);
             }
+
+            ++modCount;
           }
 
           // Dates are special, maybe.
@@ -2019,6 +2023,7 @@ void Task::modify (modType type)
             // TODO If v is duration and < 5y, add to now, else store as date.
             // TODO Not sure if the above still holds true.
             set (name, v.get_date ());
+            ++modCount;
           }
           // Special case: type duration.
           // Durations too.
@@ -2039,6 +2044,7 @@ void Task::modify (modType type)
             v.cast (Variant::type_duration);
             v.cast (Variant::type_string);
             set (name, v);
+            ++modCount;
           }
 
           // Need handling for numeric types, used by UDAs.
@@ -2056,6 +2062,7 @@ void Task::modify (modType type)
             v.cast (Variant::type_real);
             v.cast (Variant::type_string);
             set (name, v);
+            ++modCount;
           }
 
           // Try to use modify method, otherwise just continue to the final option.
@@ -2068,6 +2075,7 @@ void Task::modify (modType type)
               std::string col_value = column->modify (value);
               context.debug (label + name + " <-- " + col_value + " <-- " + value);
               (*this).set (name, col_value);
+              ++modCount;
             }
             else
               throw format (STRING_INVALID_MOD, name, value);
@@ -2079,6 +2087,7 @@ void Task::modify (modType type)
             {
               context.debug (label + name + " <-- " + value);
               (*this).set (name, value);
+              ++modCount;
             }
             else
               throw format (STRING_INVALID_MOD, name, value);
@@ -2096,6 +2105,7 @@ void Task::modify (modType type)
         substitute ((*i)->attribute ("from"),
                     (*i)->attribute ("to"),
                     ((*i)->attribute ("global") == "1"));
+        ++modCount;
       }
 
       // Tags need special handling because they are essentially a vector stored
@@ -2115,6 +2125,8 @@ void Task::modify (modType type)
           context.debug (label + "tags <-- remove '" + tag + "'");
           removeTag (tag);
         }
+
+        ++modCount;
       }
 
       // WORD and TERMINATED args are accumulated.
@@ -2162,6 +2174,10 @@ void Task::modify (modType type)
       addAnnotation (text);
       break;
     }
+  }
+  else if (modCount == 0)
+  {
+    throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
   }
 }
 
