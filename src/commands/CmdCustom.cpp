@@ -88,11 +88,7 @@ int CmdCustom::execute (std::string& output)
   Lexer::split (filterArgs, reportFilter);
   std::vector <std::string>::reverse_iterator arg;
   for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
-  {
-    Tree* t = context.parser.captureFirst (*arg);
-    t->tag ("CUSTOM");
-    t->tag ("FILTER");
-  }
+    context.parser.captureFirst (*arg);
 
   // Reparse after tree change.
   context.parser.parse ();
