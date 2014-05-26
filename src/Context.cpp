@@ -451,8 +451,6 @@ bool Context::color ()
 
     // No need to go through this again.
     determine_color_use = false;
-
-    debug ("Context::color --> " + std::string (use_color ? "on" : "off"));
   }
 
   // Cached result.
