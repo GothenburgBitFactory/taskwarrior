@@ -33,6 +33,7 @@
 #include <ISO8601.h>
 #include <Duration.h>
 #include <RX.h>
+#include <text.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant ()
@@ -789,6 +790,32 @@ bool Variant::operator_partial (const Variant& other) const
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Variant::operator_hastag (const Variant& other) const
+{
+  Variant left (*this);   // tags
+  Variant right (other);  // tag
+
+  left.cast (type_string);
+  right.cast (type_string);
+
+  std::vector <std::string> individual;
+  split (individual, left._string, ',');
+
+  std::vector <std::string>::iterator i;
+  for (i = individual.begin (); i != individual.end (); ++i)
+    if (*i == right._string)
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Variant::operator_notag (const Variant& other) const
+{
+  return ! operator_hastag (other);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
