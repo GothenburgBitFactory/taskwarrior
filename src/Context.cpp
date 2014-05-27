@@ -160,7 +160,8 @@ int Context::initialize (int argc, const char** argv)
 
       if (cmd->first[0] == '_')
         parser.entity ("helper", cmd->first);
-      else if (cmd->second->read_only ())
+
+      if (cmd->second->read_only ())
         parser.entity ("readcmd", cmd->first);
       else
         parser.entity ("writecmd", cmd->first);

@@ -111,22 +111,22 @@ int main (int argc, const char** argv)
     parser.entity ("cmd", "undo");             parser.entity ("writecmd", "undo");
 
     // Helper commands.
-    parser.entity ("cmd", "_aliases");         parser.entity ("helper", "_aliases");
-    parser.entity ("cmd", "_columns");         parser.entity ("helper", "_columns");
-    parser.entity ("cmd", "_commands");        parser.entity ("helper", "_commands");
-    parser.entity ("cmd", "_config");          parser.entity ("helper", "_config");
-    parser.entity ("cmd", "_get");             parser.entity ("helper", "_get");
-    parser.entity ("cmd", "_ids");             parser.entity ("helper", "_ids");
-    parser.entity ("cmd", "_projects");        parser.entity ("helper", "_projects");
-    parser.entity ("cmd", "_show");            parser.entity ("helper", "_show");
-    parser.entity ("cmd", "_tags");            parser.entity ("helper", "_tags");
-    parser.entity ("cmd", "_udas");            parser.entity ("helper", "_udas");
-    parser.entity ("cmd", "_urgency");         parser.entity ("helper", "_urgency");
-    parser.entity ("cmd", "_uuids");           parser.entity ("helper", "_uuids");
-    parser.entity ("cmd", "_version");         parser.entity ("helper", "_version");
-    parser.entity ("cmd", "_zshcommands");     parser.entity ("helper", "_zshcommands");
-    parser.entity ("cmd", "_zshids");          parser.entity ("helper", "_zshids");
-    parser.entity ("cmd", "_zshuuids");        parser.entity ("helper", "_zshuuids");
+    parser.entity ("cmd", "_aliases");         parser.entity ("readcmd", "_aliases");     parser.entity ("helper", "_aliases");
+    parser.entity ("cmd", "_columns");         parser.entity ("readcmd", "_columns");     parser.entity ("helper", "_columns");
+    parser.entity ("cmd", "_commands");        parser.entity ("readcmd", "_commands");    parser.entity ("helper", "_commands");
+    parser.entity ("cmd", "_config");          parser.entity ("readcmd", "_config");      parser.entity ("helper", "_config");
+    parser.entity ("cmd", "_get");             parser.entity ("readcmd", "_get");         parser.entity ("helper", "_get");
+    parser.entity ("cmd", "_ids");             parser.entity ("readcmd", "_ids");         parser.entity ("helper", "_ids");
+    parser.entity ("cmd", "_projects");        parser.entity ("readcmd", "_projects");    parser.entity ("helper", "_projects");
+    parser.entity ("cmd", "_show");            parser.entity ("readcmd", "_show");        parser.entity ("helper", "_show");
+    parser.entity ("cmd", "_tags");            parser.entity ("readcmd", "_tags");        parser.entity ("helper", "_tags");
+    parser.entity ("cmd", "_udas");            parser.entity ("readcmd", "_udas");        parser.entity ("helper", "_udas");
+    parser.entity ("cmd", "_urgency");         parser.entity ("readcmd", "_urgency");     parser.entity ("helper", "_urgency");
+    parser.entity ("cmd", "_uuids");           parser.entity ("readcmd", "_uuids");       parser.entity ("helper", "_uuids");
+    parser.entity ("cmd", "_version");         parser.entity ("readcmd", "_version");     parser.entity ("helper", "_version");
+    parser.entity ("cmd", "_zshcommands");     parser.entity ("readcmd", "_zshcommands"); parser.entity ("helper", "_zshcommands");
+    parser.entity ("cmd", "_zshids");          parser.entity ("readcmd", "_zshids");      parser.entity ("helper", "_zshids");
+    parser.entity ("cmd", "_zshuuids");        parser.entity ("readcmd", "_zshuuids");    parser.entity ("helper", "_zshuuids");
 
     // Attributes (columns).
     parser.entity ("attribute",  "depends");
