@@ -43,9 +43,9 @@ if (open my $fh, '>', 'exit.rc')
 }
 
 qx{../src/task rc:exit.rc add foo 2>&1};
-my $exit_good = system ('../src/task rc:exit.rc ls foo >/dev/null 2>&1');
+my $exit_good = system ('../src/task rc:exit.rc ls /foo/ >/dev/null 2>&1');
 is ($exit_good, 0, 'task returns 0 on success');
-my $exit_bad  = system ('../src/task rc:exit.rc ls bar >/dev/null 2>&1');
+my $exit_bad  = system ('../src/task rc:exit.rc ls /bar/ >/dev/null 2>&1');
 isnt ($exit_bad, 0, 'task returns non-zero on failure');
 
 # Cleanup.
