@@ -263,7 +263,8 @@ void Parser::findTerminator ()
   std::vector <Tree*>::iterator i;
   for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
-    if ((*i)->attribute ("raw") == "--")
+    if (!found &&
+        (*i)->attribute ("raw") == "--")
     {
       (*i)->unTag ("?");
       (*i)->tag ("TERMINATOR");

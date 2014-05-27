@@ -45,7 +45,7 @@ if (open my $fh, '>', 'bug.rc')
 
 # Bug #495 - double hyphen mishandled for annotations.
 qx{../src/task rc:bug.rc add foo 2>&1};
-qx{../src/task rc:bug.rc 1 annotate "This -- is -- a -- test" 2>&1};
+qx{../src/task rc:bug.rc 1 annotate This -- is -- a -- test 2>&1};
 my $output = qx{../src/task rc:bug.rc long 2>&1};
 like ($output, qr/This is -- a -- test/, 'Double hyphens preserved, except the first ones.');
 
