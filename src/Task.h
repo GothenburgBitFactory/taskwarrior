@@ -154,7 +154,7 @@ public:
   float urgency ();
 
   enum modType {modReplace, modPrepend, modAppend, modAnnotate};
-  void modify (modType, bool mods_required = false);
+  void modify (modType, bool text_required = false);
 
 private:
   int determineVersion (const std::string&);
