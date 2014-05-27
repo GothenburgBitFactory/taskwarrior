@@ -2025,6 +2025,7 @@ void Task::modify (modType type)
             set (name, v.get_date ());
             ++modCount;
           }
+
           // Special case: type duration.
           // Durations too.
           else if (name == "recur" ||
@@ -2068,6 +2069,8 @@ void Task::modify (modType type)
           // Try to use modify method, otherwise just continue to the final option.
           else if (column->can_modify ())
           {
+            // TODO May require Eval expansion.
+
             // column->modify () contains the logic for the specific column
             // and returns the appropriate value for (*this).set ()
             if (column->validate (value))
@@ -2082,6 +2085,8 @@ void Task::modify (modType type)
           }
           else
           {
+            // TODO May require Eval expansion.
+
             // Final default action
             if (column->validate (value))
             {
