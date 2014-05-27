@@ -77,7 +77,7 @@ int CmdAppend::execute (std::string& output)
                                    task->id,
                                    task->get ("description"));
 
-    task->modify (Task::modAppend);
+    task->modify (Task::modAppend, true);
 
     if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
     {
@@ -97,7 +97,7 @@ int CmdAppend::execute (std::string& output)
           std::vector <Task>::iterator sibling;
           for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
           {
-            sibling->modify (Task::modAppend);
+            sibling->modify (Task::modAppend, true);
             context.tdb2.modify (*sibling);
             ++count;
             feedback_affected (STRING_CMD_APPEND_TASK_R, *sibling);
@@ -106,7 +106,7 @@ int CmdAppend::execute (std::string& output)
           // Append to the parent
           Task parent;
           context.tdb2.get (task->get ("parent"), parent);
-          parent.modify (Task::modAppend);
+          parent.modify (Task::modAppend, true);
           context.tdb2.modify (parent);
         }
       }

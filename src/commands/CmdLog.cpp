@@ -51,7 +51,7 @@ int CmdLog::execute (std::string& output)
 
   // Apply the command line modifications to the new task.
   Task task;
-  task.modify (Task::modReplace);
+  task.modify (Task::modReplace, true);
   task.setStatus (Task::completed);
 
   // Recurring tasks get a special status.

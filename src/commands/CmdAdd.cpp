@@ -51,7 +51,7 @@ int CmdAdd::execute (std::string& output)
 
   // Apply the command line modifications to the new task.
   Task task;
-  task.modify (Task::modReplace);
+  task.modify (Task::modReplace, true);
   context.tdb2.add (task);
 
   if (context.verbose ("new-id"))
