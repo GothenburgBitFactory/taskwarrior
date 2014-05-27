@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include <Context.h>
 #include <Parser.h>
+#include <Lexer.h>
 #include <Nibbler.h>
 #include <Directory.h>
 #include <main.h>
@@ -461,8 +462,18 @@ void Parser::injectDefaults ()
       if (defaultCommand != "")
       {
         context.debug ("No command or sequence found - assuming default.command.");
-        Tree* t = captureFirst (defaultCommand);
-        t->tag ("DEFAULT");
+
+        // Split the defaultCommand into args, and add them in reverse order,
+        // because captureFirst inserts args immediately after the command, and
+        // so has the effect of reversing the list.
+        std::vector <std::string> args;
+        Lexer::split (args, defaultCommand);
+        std::vector <std::string>::reverse_iterator r;
+        for (r = args.rbegin (); r != args.rend (); ++r)
+        {
+          Tree* t = captureFirst (*r);
+          t->tag ("DEFAULT");
+        }
 
         std::string combined;
         std::vector <Tree*>::iterator i;
