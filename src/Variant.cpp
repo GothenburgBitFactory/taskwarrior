@@ -764,7 +764,13 @@ bool Variant::operator_partial (const Variant& other) const
         // Why the "if" instead of "min"? This is an attempt to eliminate one
         // std::string::substr call.
         int left_length  = left._string.length ();
+        if (left_length == 0)
+          return false;
+
         int right_length = right._string.length ();
+        if (right_length == 0)
+          return false;
+
         if (left_length < right_length)
           return left._string == right._string.substr (0, left_length);
         else
