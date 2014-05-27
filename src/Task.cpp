@@ -1934,7 +1934,7 @@ float Task::urgency_blocking () const
 // well as reducing the object depdendencies of Task.
 //
 // It came from the Command base object, but doesn't really belong there either.
-void Task::modify (modType type)
+void Task::modify (modType type, bool mods_required /* = false */)
 {
   std::string text = "";
   Tree* tree = context.parser.tree ();
@@ -2186,7 +2186,7 @@ void Task::modify (modType type)
       break;
     }
   }
-  else if (modCount == 0)
+  else if (modCount == 0 && mods_required)
   {
     throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
   }
