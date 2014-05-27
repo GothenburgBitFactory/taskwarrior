@@ -86,7 +86,7 @@ like   ($output, qr/five/,  'd5');
 like   ($output, qr/six/,   'd6');
 unlike ($output, qr/seven/, 'd7');
 
-$output = qx{../src/task rc:filter.rc list foo 2>&1};
+$output = qx{../src/task rc:filter.rc list /foo/ 2>&1};
 like   ($output, qr/one/,   'e1');
 unlike ($output, qr/two/,   'e2');
 unlike ($output, qr/three/, 'e3');
@@ -95,7 +95,7 @@ unlike ($output, qr/five/,  'e5');
 like   ($output, qr/six/,   'e6');
 like   ($output, qr/seven/, 'e7');
 
-$output = qx{../src/task rc:filter.rc list foo bar 2>&1};
+$output = qx{../src/task rc:filter.rc list /foo/ /bar/ 2>&1};
 unlike ($output, qr/one/,   'f1');
 unlike ($output, qr/two/,   'f2');
 unlike ($output, qr/three/, 'f3');
@@ -158,7 +158,7 @@ unlike ($output, qr/five/,  'l5');
 unlike ($output, qr/six/,   'l6');
 unlike ($output, qr/seven/, 'l7');
 
-$output = qx{../src/task rc:filter.rc list project:A foo 2>&1};
+$output = qx{../src/task rc:filter.rc list project:A /foo/ 2>&1};
 like   ($output, qr/one/,   'm1');
 unlike ($output, qr/two/,   'm2');
 unlike ($output, qr/three/, 'm3');
@@ -176,7 +176,7 @@ unlike ($output, qr/five/,  'n5');
 unlike ($output, qr/six/,   'n6');
 unlike ($output, qr/seven/, 'n7');
 
-$output = qx{../src/task rc:filter.rc list project:A priority:H foo 2>&1};
+$output = qx{../src/task rc:filter.rc list project:A priority:H /foo/ 2>&1};
 like   ($output, qr/one/,   'o1');
 unlike ($output, qr/two/,   'o2');
 unlike ($output, qr/three/, 'o3');
@@ -194,7 +194,7 @@ unlike ($output, qr/five/,  'p5');
 unlike ($output, qr/six/,   'p6');
 unlike ($output, qr/seven/, 'p7');
 
-$output = qx{../src/task rc:filter.rc list project:A priority:H foo +tag 2>&1};
+$output = qx{../src/task rc:filter.rc list project:A priority:H /foo/ +tag 2>&1};
 like   ($output, qr/one/,   'q1');
 unlike ($output, qr/two/,   'q2');
 unlike ($output, qr/three/, 'q3');
@@ -203,7 +203,7 @@ unlike ($output, qr/five/,  'q5');
 unlike ($output, qr/six/,   'q6');
 unlike ($output, qr/seven/, 'q7');
 
-$output = qx{../src/task rc:filter.rc list project:A priority:H foo +tag baz 2>&1};
+$output = qx{../src/task rc:filter.rc list project:A priority:H /foo/ +tag /baz/ 2>&1};
 unlike ($output, qr/one/,   'r1');
 unlike ($output, qr/two/,   'r2');
 unlike ($output, qr/three/, 'r3');
