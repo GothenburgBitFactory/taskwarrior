@@ -2020,8 +2020,14 @@ void Task::modify (modType type)
             e.evaluateInfixExpression (value, v);
             context.debug (label + name + " <-- " + format ("{1}", v.get_date ()) + " <-- " + (std::string) v + " <-- " + value);
 
-            // TODO If v is duration and < 5y, add to now, else store as date.
-            // TODO Not sure if the above still holds true.
+            // If v is duration, add 'now' to it, else store as date.
+            if (v.type () == Variant::type_duration)
+            {
+              Variant now;
+              if (namedDates ("now", now))
+                v += now;
+            }
+
             set (name, v.get_date ());
             ++modCount;
           }
