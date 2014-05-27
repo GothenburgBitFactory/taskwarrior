@@ -49,7 +49,7 @@ if (open my $fh, '>', 'uda.rc')
 }
 
 # Add tasks with and without the UDA.
-qx{../src/task rc:uda.rc add with extra:\\"one two\\" 2>&1};
+qx{../src/task rc:uda.rc add with extra:"one two" 2>&1};
 qx{../src/task rc:uda.rc add without 2>&1};
 my $output = qx{../src/task rc:uda.rc uda 2>&1};
 like ($output, qr/1\s+one two\s+with/, 'UDA string stored');
