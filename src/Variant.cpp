@@ -718,6 +718,7 @@ bool Variant::operator_partial (const Variant& other) const
     case type_integer:  left.cast (type_integer);  return left._integer == right._integer;
     case type_real:     left.cast (type_real);     return left._real == right._real;
     case type_string:   left.cast (type_string);   return left._string == right._string;
+    // TODO Implement same-day comparison.
     case type_date:     left.cast (type_date);     return left._date == right._date;
     case type_duration: left.cast (type_duration); return left._duration == right._duration;
     }
@@ -731,6 +732,7 @@ bool Variant::operator_partial (const Variant& other) const
     case type_integer:                             return left._integer == right._integer;
     case type_real:     left.cast (type_real);     return left._real == right._real;
     case type_string:   left.cast (type_string);   return left._string == right._string;
+    // TODO Implement same-day comparison.
     case type_date:     left.cast (type_date);     return left._date == right._date;
     case type_duration: left.cast (type_duration); return left._duration == right._duration;
     }
@@ -744,6 +746,7 @@ bool Variant::operator_partial (const Variant& other) const
     case type_integer:  right.cast (type_real);    return left._real == right._real;
     case type_real:                                return left._real == right._real;
     case type_string:   left.cast (type_string);   return left._string == right._string;
+    // TODO Implement same-day comparison.
     case type_date:     left.cast (type_date);     return left._date == right._date;
     case type_duration: left.cast (type_duration); return left._duration == right._duration;
     }
@@ -756,7 +759,18 @@ bool Variant::operator_partial (const Variant& other) const
     case type_boolean:  right.cast (type_string);  return left._string == right._string;
     case type_integer:  right.cast (type_string);  return left._string == right._string;
     case type_real:     right.cast (type_string);  return left._string == right._string;
-    case type_string:                              return left._string == right._string;
+    case type_string:
+      {
+        // Why the "if" instead of "min"? This is an attempt to eliminate one
+        // std::string::substr call.
+        int left_length  = left._string.length ();
+        int right_length = right._string.length ();
+        if (left_length < right_length)
+          return left._string == right._string.substr (0, left_length);
+        else
+          return left._string.substr (0, right_length)  == right._string;
+      }
+    // TODO Implement same-day comparison.
     case type_date:     left.cast (type_date);     return left._date == right._date;
     case type_duration: left.cast (type_duration); return left._duration == right._duration;
     }
@@ -766,11 +780,17 @@ bool Variant::operator_partial (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:  throw std::string ("Cannot equate unknown type");
+    // TODO Implement same-day comparison.
     case type_boolean:  right.cast (type_date);    return left._date == right._date;
+    // TODO Implement same-day comparison.
     case type_integer:  right.cast (type_date);    return left._date == right._date;
+    // TODO Implement same-day comparison.
     case type_real:     right.cast (type_date);    return left._date == right._date;
+    // TODO Implement same-day comparison.
     case type_string:   right.cast (type_date);    return left._date == right._date;
+    // TODO Implement same-day comparison.
     case type_date:                                return left._date == right._date;
+    // TODO Implement same-day comparison.
     case type_duration:                            return left._date == right._duration;
     }
     break;
@@ -783,7 +803,9 @@ bool Variant::operator_partial (const Variant& other) const
     case type_integer:  right.cast (type_duration); return left._duration == right._duration;
     case type_real:     right.cast (type_duration); return left._duration == right._duration;
     case type_string:   right.cast (type_duration); return left._duration == right._duration;
+    // TODO Implement same-day comparison.
     case type_date:                                 return left._duration == right._date;
+    // TODO Implement same-day comparison.
     case type_duration:                             return left._duration == right._duration;
     }
     break;

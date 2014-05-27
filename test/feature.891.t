@@ -61,11 +61,11 @@ EOF
 my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
 my ($uuid) = $output =~ /UUID\s+(\S{36})/ms;
 
-$output = qx{../src/task rc:bug.rc $uuid list rc.debug:1 2>&1};
+$output = qx{../src/task rc:bug.rc $uuid list 2>&1};
 like ($output, qr/one/, "Found with $uuid");
 
 my ($short) = $uuid =~ /^(.{35})/;
-$output = qx{../src/task rc:bug.rc $short list rc.debug:1 2>&1};
+$output = qx{../src/task rc:bug.rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{34})/;
