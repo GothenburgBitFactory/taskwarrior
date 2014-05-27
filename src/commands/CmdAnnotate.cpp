@@ -77,7 +77,7 @@ int CmdAnnotate::execute (std::string& output)
                                    task->id,
                                    task->get ("description"));
 
-    task->modify (Task::modAnnotate);
+    task->modify (Task::modAnnotate, true);
 
     if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
     {
@@ -97,7 +97,7 @@ int CmdAnnotate::execute (std::string& output)
           std::vector <Task>::iterator sibling;
           for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
           {
-            sibling->modify (Task::modAnnotate);
+            sibling->modify (Task::modAnnotate, true);
             context.tdb2.modify (*sibling);
             ++count;
             feedback_affected (STRING_CMD_ANNO_TASK_R, *sibling);
@@ -106,7 +106,7 @@ int CmdAnnotate::execute (std::string& output)
           // Annotate the parent
           Task parent;
           context.tdb2.get (task->get ("parent"), parent);
-          parent.modify (Task::modAnnotate);
+          parent.modify (Task::modAnnotate, true);
           context.tdb2.modify (parent);
         }
       }
