@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 14;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -49,11 +49,9 @@ like ($output, qr/Status\s+Pending\n/, 'Pending');
 
 $output = qx{../src/task rc:delete.rc 1 delete 2>&1; ../src/task rc:delete.rc info 1 2>&1};
 like ($output, qr/Status\s+Deleted\n/, 'Deleted');
-ok (-r 'completed.data', 'completed.data created');
 
 $output = qx{../src/task rc:delete.rc undo 2>&1; ../src/task rc:delete.rc info 1 2>&1};
 like ($output, qr/Status\s+Pending\n/, 'Pending');
-ok (-r 'completed.data', 'completed.data created');
 
 $output = qx{../src/task rc:delete.rc 1 delete 2>&1; ../src/task rc:delete.rc list 2>&1 >/dev/null};
 like ($output, qr/No matches./, 'No matches');
