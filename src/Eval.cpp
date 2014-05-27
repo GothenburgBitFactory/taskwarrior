@@ -267,26 +267,28 @@ void Eval::evaluatePostfixStack (
       values.pop_back ();
 
       // Ordering these by anticipation frequency of use is a good idea.
-           if (token->first == "and") left = left && right;
-      else if (token->first == "or")  left = left || right;
-      else if (token->first == "&&")  left = left && right;
-      else if (token->first == "||")  left = left || right;
-      else if (token->first == "<")   left = left < right;
-      else if (token->first == "<=")  left = left <= right;
-      else if (token->first == ">")   left = left > right;
-      else if (token->first == ">=")  left = left >= right;
-      else if (token->first == "==")  left = left.operator== (right);
-      else if (token->first == "=")   left = left.operator_partial (right);
-      else if (token->first == "!=")  left = left.operator!= (right);
-      else if (token->first == "+")   left += right;
-      else if (token->first == "-")   left -= right;
-      else if (token->first == "*")   left *= right;
-      else if (token->first == "/")   left /= right;
-      else if (token->first == "^")   left ^= right;
-      else if (token->first == "%")   left %= right;
-      else if (token->first == "xor") left = left.operator_xor (right);
-      else if (token->first == "~")   left = left.operator_match (right);
-      else if (token->first == "!~")  left = left.operator_nomatch (right);
+           if (token->first == "and")      left = left && right;
+      else if (token->first == "or")       left = left || right;
+      else if (token->first == "&&")       left = left && right;
+      else if (token->first == "||")       left = left || right;
+      else if (token->first == "<")        left = left < right;
+      else if (token->first == "<=")       left = left <= right;
+      else if (token->first == ">")        left = left > right;
+      else if (token->first == ">=")       left = left >= right;
+      else if (token->first == "==")       left = left.operator== (right);
+      else if (token->first == "=")        left = left.operator_partial (right);
+      else if (token->first == "!=")       left = left.operator!= (right);
+      else if (token->first == "+")        left += right;
+      else if (token->first == "-")        left -= right;
+      else if (token->first == "*")        left *= right;
+      else if (token->first == "/")        left /= right;
+      else if (token->first == "^")        left ^= right;
+      else if (token->first == "%")        left %= right;
+      else if (token->first == "xor")      left = left.operator_xor (right);
+      else if (token->first == "~")        left = left.operator_match (right);
+      else if (token->first == "!~")       left = left.operator_nomatch (right);
+      else if (token->first == "_hastag_") left = left.operator_hastag (right);
+      else if (token->first == "_notag_")  left = left.operator_notag (right);
       else
         std::cout << "# Unrecognized operator '" << token->first << "'\n";
 
