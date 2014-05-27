@@ -821,7 +821,8 @@ void Parser::findAttribute ()
             branch->tag ("OP");
 
             // All 'project' attributes are partial matches.
-            if (canonical == "project")
+            if (canonical == "project" ||
+                canonical == "uuid")
               branch->attribute ("raw", "=");
             else
               branch->attribute ("raw", "==");
