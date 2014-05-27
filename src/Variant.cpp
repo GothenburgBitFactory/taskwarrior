@@ -761,8 +761,6 @@ bool Variant::operator_partial (const Variant& other) const
     case type_real:     right.cast (type_string);  return left._string == right._string;
     case type_string:
       {
-        // Why the "if" instead of "min"? This is an attempt to eliminate one
-        // std::string::substr call.
         int left_length  = left._string.length ();
         if (left_length == 0)
           return false;
@@ -772,9 +770,9 @@ bool Variant::operator_partial (const Variant& other) const
           return false;
 
         if (left_length < right_length)
-          return left._string == right._string.substr (0, left_length);
-        else
-          return left._string.substr (0, right_length)  == right._string;
+          return false;
+
+        return left._string.substr (0, right_length) == right._string;
       }
     // TODO Implement same-day comparison.
     case type_date:     left.cast (type_date);     return left._date == right._date;

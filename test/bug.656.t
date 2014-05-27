@@ -50,9 +50,7 @@ qx{../src/task rc:bug.rc add Second recurring task due:tomorrow rec:daily 2>&1};
 
 # Bug describes that each time task is executed, another child task of the
 # Second recurring task is created.
-
 qx{../src/task rc:bug.rc ls 2>&1};
-
 
 # Result: Check for an extra task the second time task ls is executed
 my $output = qx{../src/task rc:bug.rc ls 2>&1};
