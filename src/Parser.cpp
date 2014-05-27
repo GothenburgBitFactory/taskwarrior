@@ -810,8 +810,13 @@ void Parser::findAttribute ()
             branch->attribute ("raw", canonical);
 
             branch = (*i)->addBranch (new Tree ("argAtt"));
-            branch->attribute ("raw", "==");
             branch->tag ("OP");
+
+            // All 'project' attributes are partial matches.
+            if (canonical == "project")
+              branch->attribute ("raw", "=");
+            else
+              branch->attribute ("raw", "==");
 
             branch = (*i)->addBranch (new Tree ("argAtt"));
             branch->attribute ("raw", value);
