@@ -225,6 +225,15 @@ bool Lexer::token (std::string& token, Type& type)
       }
       else
       {
+        // typeIdentifier is a catch-all type. Anything word-like becomes an
+        // identifier. At this point in the processing, an identifier is found,
+        // and can be matched against a list of potential upgrades.
+        if (token == "_hastag_" ||
+            token == "_notag_"  ||
+            token == "_neg_"    ||
+            token == "_pos_")
+          type = typeOperator;
+
         return true;
       }
       break;

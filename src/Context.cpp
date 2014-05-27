@@ -172,7 +172,7 @@ int Context::initialize (int argc, const char** argv)
     for (col = columns.begin (); col != columns.end (); ++col)
       parser.entity ("attribute", col->first);
 
-    // Entities: Pseudo-attributes.
+    // Entities: Pseudo-attributes.  Hard-coded.
     parser.entity ("pseudo", "limit");
 
     // Entities: Modifiers.
@@ -191,7 +191,7 @@ int Context::initialize (int argc, const char** argv)
     parser.findCommand ();                          // <cmd>
     parser.findUUIDList ();                         // <uuid> Before findIdSequence
     parser.findIdSequence ();                       // <id>
-    parser.injectDefaults ();                      // rc.default.command
+    parser.injectDefaults ();                       // rc.default.command
 
     // Static initialization to decouple code.
     staticInitialization ();
