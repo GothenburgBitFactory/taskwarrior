@@ -1353,14 +1353,17 @@ void Parser::findModifications ()
 // are not otherwise recognized, and potentially promote them to patterns.
 void Parser::findPlainArgs ()
 {
-  std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  if (context.config.getBoolean ("debug"))
   {
-    if ((*i)->hasTag ("FILTER")   &&
-        (*i)->hasTag ("ORIGINAL") &&  // TODO Wrong, can come in through alias/filter
-        (*i)->countTags () == 2)
+    std::vector <Tree*>::iterator i;
+    for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
     {
-      std::cout << "# plain arg '" << (*i)->attribute ("raw") << "'\n";
+      if ((*i)->hasTag ("FILTER")   &&
+          (*i)->hasTag ("ORIGINAL") &&  // TODO Wrong, can come in through alias/filter
+          (*i)->countTags () <= 2)
+      {
+        std::cout << "# plain arg '" << (*i)->attribute ("raw") << "'\n";
+      }
     }
   }
 }
