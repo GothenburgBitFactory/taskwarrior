@@ -307,12 +307,9 @@ void Parser::findCommand ()
       (*i)->tag ("CMD");
       (*i)->attribute ("canonical", command);
 
-      if (exactMatch ("writecmd", (*i)->attribute ("raw")))
-        (*i)->tag ("WRITECMD");
-      else if (exactMatch ("writecmd", (*i)->attribute ("raw")))
-        (*i)->tag ("READCMD");
-      else if (exactMatch ("writecmd", (*i)->attribute ("raw")))
-        (*i)->tag ("HELPER");
+           if (exactMatch ("writecmd", command)) (*i)->tag ("WRITECMD");
+      else if (exactMatch ("readcmd",  command)) (*i)->tag ("READCMD");
+      else if (exactMatch ("helper",   command)) (*i)->tag ("HELPER");
 
       return;
     }
