@@ -103,6 +103,7 @@ int Context::initialize (int argc, const char** argv)
     assumeLocations ();
 
     // Initialize the command line parser.
+    program = argv[0];
     parser.initialize (argc, argv);                 // task arg0 arg1 ...
 
     // echo one two -- three | task zero --> task zero one two
