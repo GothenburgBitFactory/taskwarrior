@@ -69,7 +69,7 @@ int CmdTags::execute (std::string& output)
   // Apply filter.
   Filter filter;
   std::vector <Task> filtered;
-  filter.subset (filtered);
+  filter.subset (tasks, filtered);
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
