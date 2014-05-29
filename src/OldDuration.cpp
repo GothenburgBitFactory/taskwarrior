@@ -301,7 +301,6 @@ std::string OldDuration::formatPrecise () const
   return std::string (formatted);
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 std::string OldDuration::formatSeconds () const
 {

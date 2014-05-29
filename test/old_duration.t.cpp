@@ -530,7 +530,7 @@ int main (int argc, char** argv)
 
   d = OldDuration ("86400");   t.is (d.formatCompact (), "1d",   "string '86400' -> 1d");
 
-	t.ok (d.valid ("daily"),      "valid duration daily");
+  t.ok (d.valid ("daily"),      "valid duration daily");
   t.ok (d.valid ("day"),        "valid duration day");
   t.ok (d.valid ("weekly"),     "valid duration weekly");
   t.ok (d.valid ("weekdays"),   "valid duration weekdays");

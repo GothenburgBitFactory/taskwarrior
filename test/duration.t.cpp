@@ -51,7 +51,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (835);
+  UnitTest t (921);
 
   Duration dur;
   std::string::size_type start = 0;
@@ -388,6 +388,102 @@ int main (int argc, char** argv)
   testParse (t, "2 sennight",    10,    28 * day);
   testParse (t, "10sennight",    10,   140 * day);
   testParse (t, "1.5sennight",   11,    21 * day);
+
+  Duration d;
+
+  // std::string format ();
+  d = Duration (0);               t.is (d.format (), "-",       "0 -> -");
+  d = Duration (1);               t.is (d.format (), "1 sec",   "1 -> 1 sec");
+  d = Duration (2);               t.is (d.format (), "2 secs",  "2 -> 2 secs");
+  d = Duration (59);              t.is (d.format (), "59 secs", "59 -> 59 secs");
+  d = Duration (60);              t.is (d.format (), "1 min",   "60 -> 1 min");
+  d = Duration (119);             t.is (d.format (), "1 min",   "119 -> 1 min");
+  d = Duration (120);             t.is (d.format (), "2 mins",  "120 -> 2 mins");
+  d = Duration (121);             t.is (d.format (), "2 mins",  "121 -> 2 mins");
+  d = Duration (3599);            t.is (d.format (), "59 mins", "3599 -> 59 mins");
+  d = Duration (3600);            t.is (d.format (), "1 hr",    "3600 -> 1 hr");
+  d = Duration (3601);            t.is (d.format (), "1 hr",    "3601 -> 1 hr");
+  d = Duration (86399);           t.is (d.format (), "23 hrs",  "86399 -> 23 hrs");
+  d = Duration (86400);           t.is (d.format (), "1 day",   "86400 -> 1 day");
+  d = Duration (86401);           t.is (d.format (), "1 day",   "86401 -> 1 day");
+  d = Duration (14 * 86400 - 1);  t.is (d.format (), "1 wk",    "14 days - 1 sec -> 1 wk");
+  d = Duration (14 * 86400);      t.is (d.format (), "2 wks",   "14 days -> 2 wks");
+  d = Duration (14 * 86400 + 1);  t.is (d.format (), "2 wks",   "14 days + 1 sec -> 2 wks");
+  d = Duration (85 * 86400 - 1);  t.is (d.format (), "2 mths",  "85 days - 1 sec -> 2 mths");
+  d = Duration (85 * 86400);      t.is (d.format (), "2 mths",  "85 days -> 2 mths");
+  d = Duration (85 * 86400 + 1);  t.is (d.format (), "2 mths",  "85 days + 1 sec -> 2 mths");
+  d = Duration (365 * 86400 - 1); t.is (d.format (), "12 mths", "365 days - 1 sec -> 12 mths");
+  d = Duration (365 * 86400);     t.is (d.format (), "1.0 yrs", "365 days -> 1.0 yrs");
+  d = Duration (365 * 86400 + 1); t.is (d.format (), "1.0 yrs", "365 days + 1 sec -> 1.0 yrs");
+
+  // std::string formatCompact ();
+  d = Duration (0);               t.is (d.formatCompact (), "",     "0 ->");
+  d = Duration (1),               t.is (d.formatCompact (), "1s",   "1 -> 1s");
+  d = Duration (2),               t.is (d.formatCompact (), "2s",   "2 -> 2s");
+  d = Duration (59),              t.is (d.formatCompact (), "59s",  "59 -> 59s");
+  d = Duration (60),              t.is (d.formatCompact (), "1m",   "60 -> 1m");
+  d = Duration (119),             t.is (d.formatCompact (), "1m",   "119 -> 1m");
+  d = Duration (120),             t.is (d.formatCompact (), "2m",   "120 -> 2m");
+  d = Duration (121),             t.is (d.formatCompact (), "2m",   "121 -> 2m");
+  d = Duration (3599),            t.is (d.formatCompact (), "59m",  "3599 -> 59m");
+  d = Duration (3600),            t.is (d.formatCompact (), "1h",   "3600 -> 1h");
+  d = Duration (3601),            t.is (d.formatCompact (), "1h",   "3601 -> 1h");
+  d = Duration (86399),           t.is (d.formatCompact (), "23h",  "86399 -> 23h");
+  d = Duration (86400),           t.is (d.formatCompact (), "1d",   "86400 -> 1d");
+  d = Duration (86401),           t.is (d.formatCompact (), "1d",   "86401 -> 1d");
+  d = Duration (14 * 86400 - 1),  t.is (d.formatCompact (), "1wk",  "14 days - 1 sec -> 1wk");
+  d = Duration (14 * 86400),      t.is (d.formatCompact (), "2wk",  "14 days -> 2wk");
+  d = Duration (14 * 86400 + 1),  t.is (d.formatCompact (), "2wk",  "14 days + 1 sec -> 2wk");
+  d = Duration (85 * 86400 - 1),  t.is (d.formatCompact (), "2mo",  "85 days - 1 sec -> 2mo");
+  d = Duration (85 * 86400),      t.is (d.formatCompact (), "2mo",  "85 days -> 2mo");
+  d = Duration (85 * 86400 + 1),  t.is (d.formatCompact (), "2mo",  "85 days + 1 sec -> 2mo");
+  d = Duration (365 * 86400 - 1), t.is (d.formatCompact (), "12mo", "365 days - 1 sec -> 12mo");
+  d = Duration (365 * 86400),     t.is (d.formatCompact (), "1.0y", "365 days -> 1.0y");
+  d = Duration (365 * 86400 + 1), t.is (d.formatCompact (), "1.0y", "365 days + 1 sec -> 1.0y");
+
+  // std::string formatPrecise ();
+  d = Duration (0);               t.is (d.formatPrecise (), "0:00:00",       "0 -> 0:00:00");
+  d = Duration (1);               t.is (d.formatPrecise (), "0:00:01",       "1 -> 0:00:01");
+  d = Duration (2);               t.is (d.formatPrecise (), "0:00:02",       "2 -> 0:00:02");
+  d = Duration (59);              t.is (d.formatPrecise (), "0:00:59",       "59 -> 0:00:59");
+  d = Duration (60);              t.is (d.formatPrecise (), "0:01:00",       "60 -> 0:01;00");
+  d = Duration (119);             t.is (d.formatPrecise (), "0:01:59",       "119 -> 0:01:59");
+  d = Duration (120);             t.is (d.formatPrecise (), "0:02:00",       "120 -> 0:02:00");
+  d = Duration (121);             t.is (d.formatPrecise (), "0:02:01",       "121 -> 0:02:01");
+  d = Duration (3599);            t.is (d.formatPrecise (), "0:59:59",       "3599 -> 0:59:59");
+  d = Duration (3600);            t.is (d.formatPrecise (), "1:00:00",       "3600 -> 1:00:00");
+  d = Duration (3601);            t.is (d.formatPrecise (), "1:00:01",       "3601 -> 1:00:01");
+  d = Duration (86399);           t.is (d.formatPrecise (), "23:59:59",      "86399 -> 23:59:59");
+  d = Duration (86400);           t.is (d.formatPrecise (), "1d 0:00:00",    "86400 -> 1d 0:00:00");
+  d = Duration (86401);           t.is (d.formatPrecise (), "1d 0:00:01",    "86401 -> 1d 0:00:01");
+  d = Duration (14 * 86400 - 1);  t.is (d.formatPrecise (), "13d 23:59:59",  "(14 x 86400) - 1 sec -> 13d 23:59:59");
+  d = Duration (14 * 86400);      t.is (d.formatPrecise (), "14d 0:00:00",   "(14 x 86400) -> 14d 0:00:00");
+  d = Duration (14 * 86400 + 1);  t.is (d.formatPrecise (), "14d 0:00:01",   "(14 x 86400) + 1 -> 14d 0:00:01");
+  d = Duration (365 * 86400 - 1); t.is (d.formatPrecise (), "364d 23:59:59", "365 days - 1 sec -> 364d 23:59:59");
+  d = Duration (365 * 86400);     t.is (d.formatPrecise (), "365d 0:00:00",  "365 days -> 365d 0:00:00");
+  d = Duration (365 * 86400 + 1); t.is (d.formatPrecise (), "365d 0:00:01",  "365 days + 1 sec -> 365d 0:00:01");
+
+  // std::string formatISO ();
+  d = Duration (0);               t.is (d.formatISO (), "P0S",             "0 -> P0S");
+  d = Duration (1);               t.is (d.formatISO (), "PT1S",            "1 -> PT1S");
+  d = Duration (2);               t.is (d.formatISO (), "PT2S",            "2 -> PT2S");
+  d = Duration (59);              t.is (d.formatISO (), "PT59S",           "59 -> PT59S");
+  d = Duration (60);              t.is (d.formatISO (), "PT1M",            "60 -> PT1TM");
+  d = Duration (119);             t.is (d.formatISO (), "PT1M59S",         "119 -> PT1M59S");
+  d = Duration (120);             t.is (d.formatISO (), "PT2M",            "120 -> PT2M");
+  d = Duration (121);             t.is (d.formatISO (), "PT2M1S",          "121 -> PT2M1S");
+  d = Duration (3599);            t.is (d.formatISO (), "PT59M59S",        "3599 -> PT59M59S");
+  d = Duration (3600);            t.is (d.formatISO (), "PT1H",            "3600 -> PT1H");
+  d = Duration (3601);            t.is (d.formatISO (), "PT1H1S",          "3601 -> PT1H1S");
+  d = Duration (86399);           t.is (d.formatISO (), "PT23H59M59S",     "86399 -> PT23H59M59S");
+  d = Duration (86400);           t.is (d.formatISO (), "P1D",             "86400 -> P1D");
+  d = Duration (86401);           t.is (d.formatISO (), "P1DT1S",          "86401 -> P1DT1S");
+  d = Duration (14 * 86400 - 1);  t.is (d.formatISO (), "P13DT23H59M59S",  "(14 x 86400) - 1 sec -> P13DT23H59M59S");
+  d = Duration (14 * 86400);      t.is (d.formatISO (), "P14D",            "(14 x 86400) -> P14D");
+  d = Duration (14 * 86400 + 1);  t.is (d.formatISO (), "P14DT1S",         "(14 x 86400) + 1 -> P14DT1S");
+  d = Duration (365 * 86400 - 1); t.is (d.formatISO (), "P1Y4DT23H59M59S", "365 days - 1 sec -> P1Y4DT23H59M59S");
+  d = Duration (365 * 86400);     t.is (d.formatISO (), "P1Y5D",           "365 days -> P1Y5D");
+  d = Duration (365 * 86400 + 1); t.is (d.formatISO (), "P1Y5DT1S",        "365 days + 1 sec -> P1Y5DT1S");
 
   Duration left, right;
 

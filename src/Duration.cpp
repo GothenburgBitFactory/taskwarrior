@@ -25,7 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <sstream>
 #include <string>
+#include <stdio.h>
 #include <stdlib.h>
 #include <Nibbler.h>
 #include <Lexer.h>
@@ -110,6 +112,12 @@ Duration::Duration ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Duration::Duration (time_t input)
+: _secs (input)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Duration::Duration (const std::string& input)
 : _secs (0)
 {
@@ -157,6 +165,129 @@ Duration& Duration::operator= (const Duration& other)
 Duration::operator time_t () const
 {
   return _secs;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Duration::operator std::string () const
+{
+  std::stringstream s;
+  s << _secs;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Duration::format () const
+{
+  char formatted[24];
+  float days = (float) _secs / 86400.0;
+
+  if (_secs >= 86400 * 365)
+    sprintf (formatted, "%.1f yrs", (days / 365));
+  else if (_secs > 86400 * 84)
+    sprintf (formatted, "%1d mth%s",
+                        (int) (float) (days / 30),
+                        ((int) (float) (days / 30) == 1 ? "" : "s"));
+  else if (_secs > 86400 * 13)
+    sprintf (formatted, "%d wk%s",
+                        (int) (float) (days / 7.0),
+                        ((int) (float) (days / 7.0) == 1 ? "" : "s"));
+  else if (_secs >= 86400)
+    sprintf (formatted, "%d day%s",
+                        (int) days,
+                        ((int) days == 1 ? "" : "s"));
+  else if (_secs >= 3600)
+    sprintf (formatted, "%d hr%s",
+                        (int) (float) (_secs / 3600),
+                        ((int) (float) (_secs / 3600) == 1 ? "" : "s"));
+  else if (_secs >= 60)
+    sprintf (formatted, "%d min%s",
+                        (int) (float) (_secs / 60),
+                        ((int) (float) (_secs / 60) == 1 ? "" : "s"));
+  else if (_secs >= 1)
+    sprintf (formatted, "%d sec%s",
+                        (int) _secs,
+                        ((int) _secs == 1 ? "" : "s"));
+  else
+    strcpy (formatted, "-"); // no i18n
+
+  return std::string (formatted);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Duration::formatCompact () const
+{
+  char formatted[24];
+  float days = (float) _secs / 86400.0;
+
+       if (_secs >= 86400 * 365) sprintf (formatted, "%.1fy", (days / 365.0));
+  else if (_secs >= 86400 * 84)  sprintf (formatted, "%1dmo", (int) (days / 30));
+  else if (_secs >= 86400 * 13)  sprintf (formatted, "%dwk",  (int) (float) (days / 7.0));
+  else if (_secs >= 86400)       sprintf (formatted, "%dd",   (int) days);
+  else if (_secs >= 3600)        sprintf (formatted, "%dh",   (int) (_secs / 3600));
+  else if (_secs >= 60)          sprintf (formatted, "%dm",   (int) (_secs / 60));
+  else if (_secs >= 1)           sprintf (formatted, "%ds",   (int) _secs);
+  else                           formatted[0] = '\0';
+
+  return std::string (formatted);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Duration::formatPrecise () const
+{
+  char formatted[24];
+
+  int days    = _secs / 86400;
+  int hours   = (_secs % 86400) / 3600;
+  int minutes = (_secs % 3600) / 60;
+  int seconds = _secs % 60;
+
+  if (days > 0) sprintf (formatted, "%dd %d:%02d:%02d", days, hours, minutes, seconds);
+  else          sprintf (formatted, "%d:%02d:%02d",     hours, minutes, seconds);
+
+  return std::string (formatted);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Duration::formatSeconds () const
+{
+  char formatted[24];
+  sprintf (formatted, "%llusec", (unsigned long long)_secs);
+  return std::string (formatted);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Duration::formatISO () const
+{
+  if (_secs)
+  {
+    time_t t = _secs;
+    int seconds = t % 60; t /= 60;
+    int minutes = t % 60; t /= 60;
+    int hours   = t % 24; t /= 24;
+    int days    = t % 30; t /= 30;
+    int months  = t % 12; t /= 12;
+    int years   = t;
+
+    std::stringstream s;
+    s << 'P';
+    if (years)  s << years  << 'Y';
+    if (months) s << months << 'M';
+    if (days)   s << days   << 'D';
+
+    if (hours || minutes || seconds)
+    {
+      s << 'T';
+      if (hours)   s << hours   << 'H';
+      if (minutes) s << minutes << 'M';
+      if (seconds) s << seconds << 'S';
+    }
+
+    return s.str ();
+  }
+  else
+  {
+    return "P0S";
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
