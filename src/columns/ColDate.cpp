@@ -29,7 +29,7 @@
 #include <Context.h>
 #include <ColDate.h>
 #include <Date.h>
-#include <OldDuration.h>
+#include <Duration.h>
 #include <text.h>
 #include <i18n.h>
 
@@ -57,9 +57,9 @@ ColumnDate::ColumnDate ()
   _examples.push_back (format (now.toJulian (), 13, 12));
   _examples.push_back (now.toEpochString ());
   _examples.push_back (now.toISO ());
-  _examples.push_back (OldDuration (Date () - now).formatCompact ());
+  _examples.push_back (Duration (Date () - now).formatCompact ());
   _examples.push_back ("");
-  _examples.push_back (OldDuration (Date () - now).format ());
+  _examples.push_back (Duration (Date () - now).format ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     else if (_style == "countdown")
     {
       Date now;
-      minimum = maximum = OldDuration (now - date).format ().length ();
+      minimum = maximum = Duration (now - date).format ().length ();
     }
     else if (_style == "julian")
     {
@@ -118,13 +118,13 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     else if (_style == "age")
     {
       Date now;
-      minimum = maximum = OldDuration (now - date).formatCompact ().length ();
+      minimum = maximum = Duration (now - date).formatCompact ().length ();
     }
     else if (_style == "remaining")
     {
       Date now;
       if (date > now)
-        minimum = maximum = OldDuration (date - now).format ().length ();
+        minimum = maximum = Duration (date - now).format ().length ();
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -167,7 +167,7 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           rightJustify (
-            OldDuration (now - date).format (), width)));
+            Duration (now - date).format (), width)));
     }
     else if (_style == "julian")
     {
@@ -197,7 +197,7 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           leftJustify (
-            OldDuration (now - date).formatCompact (), width)));
+            Duration (now - date).formatCompact (), width)));
     }
     else if (_style == "remaining")
     {
@@ -206,7 +206,7 @@ void ColumnDate::render (
         lines.push_back (
           color.colorize (
             rightJustify (
-              OldDuration (date - now).format (), width)));
+              Duration (date - now).format (), width)));
       else
         lines.push_back ("");
     }
