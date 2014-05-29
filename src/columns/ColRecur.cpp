@@ -26,7 +26,7 @@
 
 #include <cmake.h>
 #include <Context.h>
-#include <OldDuration.h>
+#include <Duration.h>
 #include <ColRecur.h>
 #include <text.h>
 #include <utf8.h>
@@ -82,7 +82,7 @@ void ColumnRecur::measure (Task& task, unsigned int& minimum, unsigned int& maxi
   if (_style == "default" ||
       _style == "duration")
   {
-    minimum = maximum = OldDuration (task.get ("recur")).formatCompact ().length ();
+    minimum = maximum = Duration (task.get ("recur")).formatCompact ().length ();
   }
   else if (_style == "indicator")
   {
@@ -106,7 +106,7 @@ void ColumnRecur::render (
     lines.push_back (
       color.colorize (
         rightJustify (
-          OldDuration (task.get ("recur")).formatCompact (),
+          Duration (task.get ("recur")).formatCompact (),
           width)));
   }
   else if (_style == "indicator")
