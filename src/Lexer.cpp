@@ -118,6 +118,8 @@ bool Lexer::token (std::string& token, Type& type)
           return true;
         }
 
+        // TODO Try an rc.dateformat parse here.
+
         type = typeNumber;
         token += utf8_character (_n0);
         shift ();

@@ -25,10 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream>
-#include <Context.h>
-#include <Duration.h>
-#include <stdlib.h>
 #include <test.h>
 #include <Duration.h>
 #include <Context.h>
