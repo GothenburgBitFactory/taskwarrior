@@ -32,7 +32,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <Date.h>
-#include <OldDuration.h>
+#include <Duration.h>
 #include <main.h>
 #include <i18n.h>
 #include <text.h>
@@ -932,7 +932,7 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
     int remaining_days = (int) (current_pending / (_fix_rate - _find_rate));
 
     Date now;
-    OldDuration delta (remaining_days * 86400);
+    Duration delta (remaining_days * 86400);
     now += delta;
 
     // Prefer dateformat.report over dateformat.
