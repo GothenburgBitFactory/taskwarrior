@@ -125,7 +125,11 @@ Date::Date (const int m,  const int d,  const int y,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
+Date::Date (
+  const std::string& input,
+  const std::string& format /* = "m/d/Y" */,
+  const bool iso            /* = true */,
+  const bool epoch          /* = true */)
 {
   // Before parsing according to "format", perhaps this is a relative date?
   if (isRelativeDate (input))
@@ -139,11 +143,11 @@ Date::Date (const std::string& input, const std::string& format /* = "m/d/Y" */)
 #endif
 
   // Parse an ISO date.
-  if (n.getDateISO (_t) && n.depleted ())
+  if (iso && n.getDateISO (_t) && n.depleted ())
     return;
 
   // Perhaps it is an epoch date, in string form?
-  if (isEpoch (input))
+  if (epoch && isEpoch (input))
     return;
 
   throw ::format (STRING_DATE_INVALID_FORMAT, input, format);
