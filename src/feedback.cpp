@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <Context.h>
-#include <OldDuration.h>
+#include <Duration.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>
@@ -206,7 +206,7 @@ std::string taskInfoDifferences (const Task& before, const Task& after, const st
     else if (*name == "start")
     {
       out << format (STRING_FEEDBACK_ATT_DEL_DUR, ucFirst (*name),
-                     OldDuration(current_timestamp - last_timestamp).formatPrecise())
+                     Duration (current_timestamp - last_timestamp).formatPrecise ())
           << "\n";
     }
     else
