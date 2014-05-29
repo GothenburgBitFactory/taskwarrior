@@ -262,7 +262,7 @@ const std::string Date::toString (
 ////////////////////////////////////////////////////////////////////////////////
 Date Date::startOfDay () const
 {
-  return Date (month (), day (), year (), 0, 0, 0);
+  return Date (month (), day (), year ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -270,19 +270,19 @@ Date Date::startOfWeek () const
 {
   Date sow (_t);
   sow -= (dayOfWeek () * 86400);
-  return Date (sow.month (), sow.day (), sow.year (), 0, 0, 0);
+  return Date (sow.month (), sow.day (), sow.year ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date Date::startOfMonth () const
 {
-  return Date (month (), 1, year (), 0, 0, 0);
+  return Date (month (), 1, year ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Date Date::startOfYear () const
 {
-  return Date (1, 1, year (), 0, 0, 0);
+  return Date (1, 1, year ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
