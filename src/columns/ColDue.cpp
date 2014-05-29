@@ -29,7 +29,7 @@
 #include <Context.h>
 #include <ColDue.h>
 #include <Date.h>
-#include <OldDuration.h>
+#include <Duration.h>
 #include <text.h>
 #include <i18n.h>
 
@@ -43,7 +43,7 @@ ColumnDue::ColumnDue ()
 
   Date now;
   now += 125;
-  _examples.push_back (OldDuration (now - Date ()).formatCompact ());
+  _examples.push_back (Duration (now - Date ()).formatCompact ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
