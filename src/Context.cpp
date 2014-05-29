@@ -641,6 +641,7 @@ void Context::staticInitialization ()
       Task::coefficients[*var] = config.getReal (*var);
   }
 
+  Lexer::dateFormat   = config.get ("dateformat");
   Variant::dateFormat = config.get ("dateformat");
 }
 

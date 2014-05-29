@@ -33,6 +33,8 @@
 class Lexer
 {
 public:
+  static std::string dateFormat;
+
   enum Type
   {
     typeNone = 0,

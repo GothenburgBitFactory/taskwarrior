@@ -26,8 +26,11 @@
 
 #include <utf8.h>
 #include <ISO8601.h>
+#include <Date.h>
 #include <Duration.h>
 #include <Lexer.h>
+
+std::string Lexer::dateFormat = "";
 
 ////////////////////////////////////////////////////////////////////////////////
 Lexer::Lexer (const std::string& input)
@@ -53,10 +56,10 @@ Lexer::~Lexer ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Walk the input string, looking for transitions.
-bool Lexer::token (std::string& token, Type& type)
+bool Lexer::token (std::string& result, Type& type)
 {
   // Start with nothing.
-  token = "";
+  result = "";
 
   // Different types of matching quote:  ', ".
   int quote = 0;
@@ -80,80 +83,98 @@ bool Lexer::token (std::string& token, Type& type)
                is_hex_digit (_n2))
       {
         type = typeHex;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else if (is_dec_digit (_n0))
       {
         // Speculatively try a date and duration parse.  Longest wins.
         std::string::size_type iso_i = 0;
-        std::string iso_token;
+        std::string iso_result;
         ISO8601d iso;
         iso.ambiguity (_ambiguity);
         if (iso.parse (_input.substr (_i < 4 ? 0 : _i - 4), iso_i))
-          iso_token = _input.substr ((_i < 4 ? 0 : _i - 4), iso_i);
+          iso_result = _input.substr ((_i < 4 ? 0 : _i - 4), iso_i);
 
         std::string::size_type dur_i = 0;
-        std::string dur_token;
+        std::string dur_result;
         Duration dur;
         if (dur.parse (_input.substr (_i < 4 ? 0 : _i - 4), dur_i))
-          dur_token = _input.substr ((_i < 4 ? 0 : _i - 4), dur_i);
+          dur_result = _input.substr ((_i < 4 ? 0 : _i - 4), dur_i);
 
-        if (iso_token.length () > dur_token.length ())
+        if (iso_result.length () > dur_result.length ())
         {
           while (iso_i--) shift ();
-          token = iso_token;
+          result = iso_result;
           type = typeDate;
           return true;
         }
-        else if (dur_token.length () > iso_token.length ())
+        else if (dur_result.length () > iso_result.length ())
         {
           while (dur_i--) shift ();
-          token = dur_token;
+          result = dur_result;
           type = typeDuration;
           return true;
         }
 
-        // TODO Try an rc.dateformat parse here.
+        // Try a legacy rc.dateformat parse here.
+        try
+        {
+          std::string::size_type start = _i < 4 ? 0 : _i - 4;
+          std::string::size_type space = _input.find (' ', _i);
+          if (space == std::string::npos)
+            space = _input.length ();
+
+          std::string legacy = _input.substr (start, space - start);
+          Date legacyDate (legacy, Lexer::dateFormat, false, false);
+
+          space -= start;
+          while (space--) shift ();
+          result = legacy;
+          type = typeDate;
+          return true;
+        }
+
+        catch (...) { /* Never mind. */ }
 
         type = typeNumber;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else if (_n0 == '.' && is_dec_digit (_n1))
       {
         type = typeDecimal;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else if (is_triple_op (_n0, _n1, _n2))
       {
         type = typeOperator;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
         return true;
       }
       else if (is_double_op (_n0, _n1))
       {
         type = typeOperator;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
         return true;
       }
       else if (is_single_op (_n0))
       {
         type = typeOperator;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
         return true;
       }
@@ -166,34 +187,34 @@ bool Lexer::token (std::string& token, Type& type)
       {
         // Speculatively try a date and duration parse.  Longest wins.
         std::string::size_type iso_i = 0;
-        std::string iso_token;
+        std::string iso_result;
         ISO8601p iso;
         if (iso.parse (_input.substr (_i < 4 ? 0 : _i - 4), iso_i))
-          iso_token = _input.substr ((_i < 4 ? 0 : _i - 4), iso_i);
+          iso_result = _input.substr ((_i < 4 ? 0 : _i - 4), iso_i);
 
         std::string::size_type dur_i = 0;
-        std::string dur_token;
+        std::string dur_result;
         Duration dur;
         if (dur.parse (_input.substr (_i < 4 ? 0 : _i - 4), dur_i))
-          dur_token = _input.substr ((_i < 4 ? 0 : _i - 4), dur_i);
+          dur_result = _input.substr ((_i < 4 ? 0 : _i - 4), dur_i);
 
-        if (iso_token.length () > dur_token.length ())
+        if (iso_result.length () > dur_result.length ())
         {
           while (iso_i--) shift ();
-          token = iso_token;
+          result = iso_result;
           type = typeDuration;
           return true;
         }
-        else if (dur_token.length () > iso_token.length ())
+        else if (dur_result.length () > iso_result.length ())
         {
           while (dur_i--) shift ();
-          token = dur_token;
+          result = dur_result;
           type = typeDuration;
           return true;
         }
 
         type = typeIdentifier;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else
@@ -214,7 +235,7 @@ bool Lexer::token (std::string& token, Type& type)
       }
       else
       {
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       break;
@@ -222,7 +243,7 @@ bool Lexer::token (std::string& token, Type& type)
     case typeIdentifier:
       if (is_ident (_n0))
       {
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else
@@ -230,10 +251,10 @@ bool Lexer::token (std::string& token, Type& type)
         // typeIdentifier is a catch-all type. Anything word-like becomes an
         // identifier. At this point in the processing, an identifier is found,
         // and can be matched against a list of potential upgrades.
-        if (token == "_hastag_" ||
-            token == "_notag_"  ||
-            token == "_neg_"    ||
-            token == "_pos_")
+        if (result == "_hastag_" ||
+            result == "_notag_"  ||
+            result == "_neg_"    ||
+            result == "_pos_")
           type = typeOperator;
 
         return true;
@@ -261,7 +282,7 @@ bool Lexer::token (std::string& token, Type& type)
       }
       else
       {
-        token += decode_escape (_n0);
+        result += decode_escape (_n0);
         type = quote ? typeString : typeIdentifier;
         shift ();
       }
@@ -270,7 +291,7 @@ bool Lexer::token (std::string& token, Type& type)
     case typeEscapeHex:
       if (is_hex_digit (_n0) && is_hex_digit (_n1))
       {
-        token += utf8_character (hex_to_int (_n0, _n1));
+        result += utf8_character (hex_to_int (_n0, _n1));
         type = quote ? typeString : typeIdentifier;
         shift ();
         shift ();
@@ -290,7 +311,7 @@ bool Lexer::token (std::string& token, Type& type)
           is_hex_digit (_n2) &&
           is_hex_digit (_n3))
       {
-        token += utf8_character (hex_to_int (_n0, _n1, _n2, _n3));
+        result += utf8_character (hex_to_int (_n0, _n1, _n2, _n3));
         shift ();
         shift ();
         shift ();
@@ -309,19 +330,19 @@ bool Lexer::token (std::string& token, Type& type)
     case typeNumber:
       if (is_dec_digit (_n0))
       {
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else if (_n0 == '.')
       {
         type = typeDecimal;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else if (_n0 == 'e' || _n0 == 'E')
       {
         type = typeExponentIndicator;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else
@@ -333,13 +354,13 @@ bool Lexer::token (std::string& token, Type& type)
     case typeDecimal:
       if (is_dec_digit (_n0))
       {
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else if (_n0 == 'e' || _n0 == 'E')
       {
         type = typeExponentIndicator;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else
@@ -351,13 +372,13 @@ bool Lexer::token (std::string& token, Type& type)
     case typeExponentIndicator:
       if (_n0 == '+' || _n0 == '-')
       {
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else if (is_dec_digit (_n0))
       {
         type = typeExponent;
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       break;
@@ -365,12 +386,12 @@ bool Lexer::token (std::string& token, Type& type)
     case typeExponent:
       if (is_dec_digit (_n0))
       {
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else if (_n0 == '.')
       {
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else
@@ -383,7 +404,7 @@ bool Lexer::token (std::string& token, Type& type)
     case typeHex:
       if (is_hex_digit (_n0))
       {
-        token += utf8_character (_n0);
+        result += utf8_character (_n0);
         shift ();
       }
       else
@@ -398,7 +419,7 @@ bool Lexer::token (std::string& token, Type& type)
     }
 
     // Fence post.
-    if (!_n0 && token != "")
+    if (!_n0 && result != "")
       return true;
   }
 
