@@ -30,7 +30,7 @@
 #include <string>
 #include <stdlib.h>
 #include <Context.h>
-#include <OldDuration.h>
+#include <Duration.h>
 #include <Task.h>
 #include <text.h>
 #include <i18n.h>
@@ -218,8 +218,8 @@ static bool sort_compare (int left, int right)
       if (left_string == right_string)
         continue;
 
-      OldDuration left_duration (left_string);
-      OldDuration right_duration (right_string);
+      Duration left_duration (left_string);
+      Duration right_duration (right_string);
       return ascending ? (left_duration < right_duration)
                        : (left_duration > right_duration);
     }
@@ -269,8 +269,8 @@ static bool sort_compare (int left, int right)
         if (left_string == right_string)
           continue;
 
-        OldDuration left_duration (left_string);
-        OldDuration right_duration (right_string);
+        Duration left_duration (left_string);
+        Duration right_duration (right_string);
         return ascending ? (left_duration < right_duration)
                          : (left_duration > right_duration);
       }
