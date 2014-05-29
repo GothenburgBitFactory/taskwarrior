@@ -20,7 +20,6 @@ lexer.t
 list.t
 msg.t
 nibbler.t
-old_duration.t
 path.t
 rx.t
 t.t

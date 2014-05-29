@@ -23,7 +23,6 @@ set (task_SRCS Alias.cpp Alias.h
                Lexer.cpp Lexer.h
                Msg.cpp Msg.h
                Nibbler.cpp Nibbler.h
-               OldDuration.cpp OldDuration.h
                Parser.cpp Parser.h
                Path.cpp Path.h
                RX.cpp RX.h
