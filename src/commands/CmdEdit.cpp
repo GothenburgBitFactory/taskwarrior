@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <algorithm>
 #include <unistd.h>
-#include <OldDuration.h>
+#include <Duration.h>
 #include <Context.h>
 #include <Filter.h>
 #include <Nibbler.h>
@@ -150,7 +150,7 @@ std::string CmdEdit::formatDuration (
   std::string value = task.get (attribute);
   if (value.length ())
   {
-    OldDuration dur (value);
+    Duration dur (value);
     value = dur.formatSeconds ();
   }
 
@@ -536,8 +536,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   {
     if (value != "")
     {
-      OldDuration d;
-      if (d.valid (value))
+      Duration d;
+      std::string::size_type idx = 0;
+      if (d.parse (value, idx))
       {
         context.footnote (STRING_EDIT_RECUR_MOD);
         if (task.get ("due") != "")
@@ -677,7 +678,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       if ((task.get (col->first) != value) && (type != "date" ||
            (task.get (col->first) != Date (value, dateformat).toEpochString ())) &&
            (type != "duration" ||
-           (task.get (col->first) != (std::string) OldDuration (value) )))
+           (task.get (col->first) != (std::string) Duration (value) )))
       {
         if (value != "")
         {
@@ -704,7 +705,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
           }
           else if (type == "duration")
           {
-            OldDuration d (value);
+            Duration d (value);
             task.set (col->first, (time_t) d);
           }
         }

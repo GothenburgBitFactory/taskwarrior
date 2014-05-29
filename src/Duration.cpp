@@ -321,7 +321,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
         if (durations[i].unit == unit)
         {
           seconds = durations[i].seconds;
-        _secs = static_cast <int> (quantity * static_cast <double> (seconds));
+          _secs = static_cast <int> (quantity * static_cast <double> (seconds));
           return true;
         }
       }
