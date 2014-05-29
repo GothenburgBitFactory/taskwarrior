@@ -29,6 +29,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <Nibbler.h>
 #include <Lexer.h>
 #include <Duration.h>
