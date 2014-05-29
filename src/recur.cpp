@@ -39,7 +39,7 @@
 
 #include <Context.h>
 #include <Date.h>
-#include <OldDuration.h>
+#include <Duration.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -336,9 +336,10 @@ Date getNextRecurrence (Date& current, std::string& period)
 
   // If the period is an 'easy' one, add it to current, and we're done.
   // If it throws an error, the duration was not recognized.
-  int secs = 0;
-  OldDuration du (period);
-  secs = du;
+  std::string::size_type idx = 0;
+  Duration du;
+  du.parse (period, idx);
+  int secs = du;
 
   return current + secs;
 }
