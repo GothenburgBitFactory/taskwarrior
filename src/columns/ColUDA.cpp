@@ -26,7 +26,7 @@
 
 #include <cmake.h>
 #include <Context.h>
-#include <OldDuration.h>
+#include <Duration.h>
 #include <Date.h>
 #include <ColUDA.h>
 #include <text.h>
@@ -103,7 +103,7 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
       }
       else if (_type == "duration")
       {
-        minimum = maximum = utf8_width (OldDuration (value).formatCompact ());
+        minimum = maximum = utf8_width (Duration (value).formatCompact ());
       }
       else if (_type == "string")
       {
@@ -156,7 +156,7 @@ void ColumnUDA::render (
         lines.push_back (
           color.colorize (
             rightJustify (
-              OldDuration (value).formatCompact (),
+              Duration (value).formatCompact (),
               width)));
       }
       else if (_type == "string")
