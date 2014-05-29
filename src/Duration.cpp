@@ -25,10 +25,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <string>
 #include <stdlib.h>
 #include <Nibbler.h>
 #include <Lexer.h>
 #include <Duration.h>
+#include <text.h>
 
 #define DAY    86400
 #define HOUR    3600
@@ -108,8 +110,47 @@ Duration::Duration ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Duration::Duration (const std::string& input)
+: _secs (0)
+{
+  if (digitsOnly (input))
+  {
+    time_t value = (time_t) strtol (input.c_str (), NULL, 10);
+    if (value == 0 || value > 60)
+    {
+      _secs = value;
+      return;
+    }
+  }
+
+  std::string::size_type idx = 0;
+  parse (input, idx);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Duration::~Duration ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Duration::operator< (const Duration& other)
+{
+  return _secs < other._secs;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Duration::operator> (const Duration& other)
+{
+  return _secs > other._secs;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Duration& Duration::operator= (const Duration& other)
+{
+  if (this != &other)
+    _secs = other._secs;
+
+  return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

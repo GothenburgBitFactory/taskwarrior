@@ -34,9 +34,12 @@ class Duration
 {
 public:
   Duration ();                           // Default constructor
+  Duration (const std::string&);         // Parse
   ~Duration ();                          // Destructor
   Duration (const Duration&);            // Unimplemented
-  Duration& operator= (const Duration&); // Unimplemented
+  bool operator< (const Duration&);
+  bool operator> (const Duration&);
+  Duration& operator= (const Duration&);
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&);
   void clear ();

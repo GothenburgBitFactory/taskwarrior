@@ -51,7 +51,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (812);
+  UnitTest t (835);
 
   Duration dur;
   std::string::size_type start = 0;
@@ -388,6 +388,39 @@ int main (int argc, char** argv)
   testParse (t, "2 sennight",    10,    28 * day);
   testParse (t, "10sennight",    10,   140 * day);
   testParse (t, "1.5sennight",   11,    21 * day);
+
+  Duration left, right;
+
+  // operator<
+  left = Duration ("1sec");   right = Duration ("2secs");  t.ok (left < right, "duration 1sec < 2secs");
+  left = Duration ("-2secs"); right = Duration ("-1sec");  t.ok (left < right, "duration -2secs < -1sec");
+  left = Duration ("1sec");   right = Duration ("1min");   t.ok (left < right, "duration 1sec < 1min");
+  left = Duration ("1min");   right = Duration ("1hr");    t.ok (left < right, "duration 1min < 1hr");
+  left = Duration ("1hr");    right = Duration ("1d");     t.ok (left < right, "duration 1hr < 1d");
+  left = Duration ("1d");     right = Duration ("1w");     t.ok (left < right, "duration 1d < 1w");
+  left = Duration ("1w");     right = Duration ("1mo");    t.ok (left < right, "duration 1w < 1mo");
+  left = Duration ("1mo");    right = Duration ("1q");     t.ok (left < right, "duration 1mo < 1q");
+  left = Duration ("1q");     right = Duration ("1y");     t.ok (left < right, "duration 1q < 1y");
+
+  left = Duration ("-3s");    right = Duration ("-6s");    t.ok (right < left, "duration -6s < -3s");
+
+  // operator>
+  left = Duration ("2secs");  right = Duration ("1sec");   t.ok (left > right, "2sec > 1secs");
+  left = Duration ("-1sec");  right = Duration ("-2secs"); t.ok (left > right, "-1secs > -2sec");
+  left = Duration ("1min");   right = Duration ("1sec");   t.ok (left > right, "1min > 1sec");
+  left = Duration ("1hr");    right = Duration ("1min");   t.ok (left > right, "1hr > 1min");
+  left = Duration ("1d");     right = Duration ("1hr");    t.ok (left > right, "1d > 1hr");
+  left = Duration ("1w");     right = Duration ("1d");     t.ok (left > right, "1w > 1d");
+  left = Duration ("1mo");    right = Duration ("1w");     t.ok (left > right, "1mo > 1w");
+  left = Duration ("1q");     right = Duration ("1mo");    t.ok (left > right, "1q > 1mo");
+  left = Duration ("1y");     right = Duration ("1q");     t.ok (left > right, "1y > 1q");
+
+  left = Duration ("-3s");    right = Duration ("-6s");    t.ok (left > right, "duration -3s > -6s");
+
+  // operator<=
+  left = Duration ("1sec");   right = Duration ("2secs");  t.ok (left <= right, "duration 1sec <= 2secs");
+  left = Duration ("2secs");  right = Duration ("2secs");  t.ok (left <= right, "duration 1sec <= 2secs");
+  left = Duration ("2secs");  right = Duration ("1secs");  t.notok (left <= right, "duration NOT 1sec <= 2secs");
 
   // TODO Formatting.
 
