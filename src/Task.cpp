@@ -38,7 +38,7 @@
 #include <Tree.h>
 #endif
 #include <Date.h>
-#include <OldDuration.h>
+#include <Duration.h>
 #include <Task.h>
 #include <JSON.h>
 #ifdef PRODUCT_TASKWARRIOR
@@ -1574,8 +1574,9 @@ void Task::validate (bool applyDefault /* = true */)
   // Recur durations must be valid.
   if (has ("recur"))
   {
-    OldDuration d;
-    if (! d.valid (get ("recur")))
+    Duration d;
+    std::string::size_type i = 0;
+    if (! d.parse (get ("recur"), i))
       throw std::string (format (STRING_TASK_VALID_RECUR, get ("recur")));
   }
 
