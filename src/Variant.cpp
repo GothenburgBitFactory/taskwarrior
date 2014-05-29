@@ -31,9 +31,12 @@
 #include <stdlib.h>
 #include <Variant.h>
 #include <ISO8601.h>
+#include <Date.h>
 #include <Duration.h>
 #include <RX.h>
 #include <text.h>
+
+std::string Variant::dateFormat = "";
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant ()
@@ -1589,6 +1592,12 @@ void Variant::cast (const enum type new_type)
             pos == _string.length ())
         {
           _date = (time_t) iso;
+        }
+        // Support legacy date formats.
+        else if (dateFormat != "")
+        {
+          Date d (_string, dateFormat);
+          _date = d.toEpoch ();
         }
       }
       break;

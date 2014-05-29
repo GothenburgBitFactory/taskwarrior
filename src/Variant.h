@@ -33,6 +33,8 @@
 class Variant
 {
 public:
+  static std::string dateFormat;
+
   enum type {type_unknown, type_boolean, type_integer, type_real, type_string,
              type_date, type_duration};
 

@@ -9,12 +9,13 @@ New Features in taskwarrior 2.4.0
     TAGGED.
   - The '_get' command properly uses exit codes.
   - Regular expressions are now enabled by default.
-  - The 'filter' verbosity token shows the complete filter used for hte last
+  - The 'filter' verbosity token shows the complete filter used for the last
     command.
 
 New commands in taskwarrior 2.4.0
 
-  - New 'calc' utility for quick command line calculations.
+  - New 'calc' command (and standalone utility) for quick command line
+    calculations.
 
 New configuration options in taskwarrior 2.4.0
 

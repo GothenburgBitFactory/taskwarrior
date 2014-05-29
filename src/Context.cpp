@@ -37,6 +37,7 @@
 #include <Directory.h>
 #include <File.h>
 #include <Eval.h>
+#include <Variant.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -639,6 +640,8 @@ void Context::staticInitialization ()
         var->substr (0, 12) == "urgency.uda.")
       Task::coefficients[*var] = config.getReal (*var);
   }
+
+  Variant::dateFormat = config.get ("dateformat");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
