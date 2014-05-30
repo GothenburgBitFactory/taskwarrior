@@ -24,7 +24,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <iostream> // TODO Remove
+// If <iostream> is included, put it after <stdio.h>, because it includes
+// <stdio.h>, and therefore would ignore the _WITH_GETLINE.
 #include <cmake.h>
 #include <algorithm>
 #ifdef FREEBSD
