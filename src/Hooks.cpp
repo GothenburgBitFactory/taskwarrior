@@ -27,6 +27,9 @@
 #include <iostream> // TODO Remove
 #include <cmake.h>
 #include <algorithm>
+#ifdef FREEBSD
+#define _WITH_GETLINE
+#endif
 #include <stdio.h>
 #include <Context.h>
 #include <Hooks.h>
