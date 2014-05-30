@@ -208,44 +208,41 @@ bool Filter::pendingOnly ()
 {
   Tree* tree = context.parser.tree ();
 
-  // If the filter starts with "status:pending", the completed.data does not
-  // need to be accessed..
-  if (tree->_branches.size () > 0 &&
-      tree->_branches[0]->attribute ("name")  == "status" &&
-      tree->_branches[0]->attribute ("value") == "pending")
-  {
-    context.debug ("Filter::pendingOnly - skipping completed.data (status:pending first)");
-    return true;
-  }
-
-  // Shortcut: If the filter contains no 'or' or 'xor' operators, IDs and no UUIDs.
-  int countId   = 0;
-  int countUUID = 0;
-  int countOr   = 0;
-  int countXor  = 0;
-
+  // To skip loading completed.data, there should be:
+  // - 'status:pending'
+  // - no 'or' operators
+  // - no 'xor' operators
+  int countStatus  = 0;
+  int countPending = 0;
+  int countId      = 0;
+  int countOr      = 0;
+  int countXor     = 0;
   std::vector <Tree*>::iterator i;
   for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
   {
-    if ((*i)->hasTag ("OP"))
+    if ((*i)->hasTag ("FILTER"))
     {
-      if ((*i)->attribute ("canonical") == "or")  ++countOr;
-      if ((*i)->attribute ("canonical") == "xor") ++countXor;
+      if ((*i)->hasTag ("ID"))                                                ++countId;
+      if ((*i)->hasTag ("OP") && (*i)->attribute ("raw") == "or")             ++countOr;
+      if ((*i)->hasTag ("OP") && (*i)->attribute ("raw") == "xor")            ++countXor;
+      if ((*i)->hasTag ("ATTRIBUTE") && (*i)->attribute ("name") == "status") ++countStatus;
+      if ((*i)->hasTag ("ATTRIBUTE") && (*i)->attribute ("raw") == "pending") ++countPending;
     }
-    else if ((*i)->hasTag ("ID"))   ++countId;
-    else if ((*i)->hasTag ("UUID")) ++countUUID;
   }
 
-  if (countOr   == 0 &&
-      countXor  == 0 &&
-      countUUID == 0 &&
-      countId    > 0)
-  {
-    context.debug ("Filter::pendingOnly - skipping completed.data (IDs, no OR, no XOR, no UUID)");
-    return true;
-  }
+  // Use of 'or' or 'xor' means the potential for alternation.
+  if (countOr || countXor)
+    return false;
 
-  return false;
+  // If the filter does not contain id or status terms, read both files.
+  if (countId == 0 && countStatus == 0)
+    return false;
+
+  // Only one 'status == pending' is allowed.
+  if (countStatus == 1 && countPending != 1)
+    return false;
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
