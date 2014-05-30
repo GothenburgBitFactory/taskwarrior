@@ -2019,14 +2019,18 @@ void Task::modify (modType type, bool text_required /* = false */)
 
             Variant v;
             e.evaluateInfixExpression (value, v);
-            context.debug (label + name + " <-- " + format ("{1}", v.get_date ()) + " <-- " + (std::string) v + " <-- " + value);
 
             // If v is duration, add 'now' to it, else store as date.
             if (v.type () == Variant::type_duration)
             {
+              context.debug (label + name + " <-- " + format ("{1}", v.get_duration ()) + " <-- " + (std::string) v + " <-- " + value);
               Variant now;
               if (namedDates ("now", now))
                 v += now;
+            }
+            else
+            {
+              context.debug (label + name + " <-- " + format ("{1}", v.get_date ()) + " <-- " + (std::string) v + " <-- " + value);
             }
 
             set (name, v.get_date ());
