@@ -67,27 +67,27 @@ if (open my $fh, '>', 'countdown.rc')
 
 # Create a variety of pending tasks with increasingly higher due dates
 # to ensure proper sort order.
-qx{../src/task rc:countdown.rc add one       due:-1.2y 2>&1};
-qx{../src/task rc:countdown.rc add two       due:-9mo 2>&1};
-qx{../src/task rc:countdown.rc add three     due:-2mo 2>&1};
-qx{../src/task rc:countdown.rc add four      due:-3wk 2>&1};
-qx{../src/task rc:countdown.rc add five      due:-7d 2>&1};
-qx{../src/task rc:countdown.rc add six       due:-2d 2>&1};
-qx{../src/task rc:countdown.rc add seven     due:-1d 2>&1};
-qx{../src/task rc:countdown.rc add eight     due:-12h 2>&1};
-qx{../src/task rc:countdown.rc add nine      due:-6h 2>&1};
-qx{../src/task rc:countdown.rc add ten       due:-1h 2>&1};
-qx{../src/task rc:countdown.rc add eleven    due:-30s 2>&1};
-qx{../src/task rc:countdown.rc add twelve    due:1h 2>&1};
-qx{../src/task rc:countdown.rc add thirteen  due:6h 2>&1};
-qx{../src/task rc:countdown.rc add fourteen  due:12h 2>&1};
-qx{../src/task rc:countdown.rc add fifteen   due:1d 2>&1};
-qx{../src/task rc:countdown.rc add sixteen   due:2d 2>&1};
-qx{../src/task rc:countdown.rc add seventeen due:7d 2>&1};
-qx{../src/task rc:countdown.rc add eighteen  due:3wk 2>&1};
-qx{../src/task rc:countdown.rc add nineteen  due:2mo 2>&1};
-qx{../src/task rc:countdown.rc add twenty    due:9mo 2>&1};
-qx{../src/task rc:countdown.rc add twentyone due:1.2y 2>&1};
+qx{../src/task rc:countdown.rc add one       due:-1.2years 2>&1};
+qx{../src/task rc:countdown.rc add two       due:-9months 2>&1};
+qx{../src/task rc:countdown.rc add three     due:-2months 2>&1};
+qx{../src/task rc:countdown.rc add four      due:-3weeks 2>&1};
+qx{../src/task rc:countdown.rc add five      due:-7days 2>&1};
+qx{../src/task rc:countdown.rc add six       due:-2days 2>&1};
+qx{../src/task rc:countdown.rc add seven     due:-1day 2>&1};
+qx{../src/task rc:countdown.rc add eight     due:-12hours 2>&1};
+qx{../src/task rc:countdown.rc add nine      due:-6hours 2>&1};
+qx{../src/task rc:countdown.rc add ten       due:-1hour 2>&1};
+qx{../src/task rc:countdown.rc add eleven    due:-30seconds 2>&1};
+qx{../src/task rc:countdown.rc add twelve    due:1hour 2>&1};
+qx{../src/task rc:countdown.rc add thirteen  due:6hours 2>&1};
+qx{../src/task rc:countdown.rc add fourteen  due:12hours 2>&1};
+qx{../src/task rc:countdown.rc add fifteen   due:1days 2>&1};
+qx{../src/task rc:countdown.rc add sixteen   due:2days 2>&1};
+qx{../src/task rc:countdown.rc add seventeen due:7days 2>&1};
+qx{../src/task rc:countdown.rc add eighteen  due:3weeks 2>&1};
+qx{../src/task rc:countdown.rc add nineteen  due:2months 2>&1};
+qx{../src/task rc:countdown.rc add twenty    due:9months 2>&1};
+qx{../src/task rc:countdown.rc add twentyone due:1.2years 2>&1};
 
 my $output = qx{../src/task rc:countdown.rc up 2>&1};
 like ($output, qr/\bone\b.+\btwo\b/ms,          'up: one < two');
