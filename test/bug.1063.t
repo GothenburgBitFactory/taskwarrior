@@ -69,12 +69,11 @@ $output = qx{../src/task rc:$rc bar rc.report.bar.sort=foo+ 2>&1};
 like ($output, qr/1.+2.+3.+4/ms, "$ut: Default ascending sort correct");
 
 ## Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data synch.key), $rc;
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 ok (! -r 'pending.data'   &&
     ! -r 'completed.data' &&
     ! -r 'undo.data'      &&
     ! -r 'backlog.data'   &&
-    ! -r 'synch.key'      &&
     ! -r $rc, "$ut: Cleanup");
 
 exit 0;

@@ -33,9 +33,12 @@
 - TW-271 Parser still looks for task id even when -- is used (thanks to Jim B).
 - TW-277 Complex filters can skip infix term expansion.
 - TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
+- TW-279 ".monthly" unexpectedly appended to task annotation (thanks to Florian
+         Hollerweger).
 - TW-285 DUETODAY doesn't give any output (thanks to Jostein Berntsen).
 - TW-306 Wrong date format in burndown view (thanks to Michele Santullo).
 - TW-752 task ID no longer defaults to info (thanks to Christopher Roberts).
+- TW-1243 Automatically insert ( ) around user-supplied filter, if any.
 - TW-1254 Calc command can segfault on negative numbers (thanks to Renato
           Alves).
 - TW-1255 New testing framework (thanks to Renato Alves).
