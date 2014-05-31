@@ -1353,31 +1353,28 @@ void Parser::findModifications ()
 // are not otherwise recognized, and potentially promote them to patterns.
 void Parser::findPlainArgs ()
 {
-  if (context.config.getBoolean ("debug"))
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
   {
-    std::vector <Tree*>::iterator i;
-    for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+    if ((*i)->hasTag ("FILTER")   &&
+        (*i)->hasTag ("ORIGINAL") &&  // TODO Wrong, can come in through alias/filter
+        (*i)->countTags () <= 2)
     {
-      if ((*i)->hasTag ("FILTER")   &&
-          (*i)->hasTag ("ORIGINAL") &&  // TODO Wrong, can come in through alias/filter
-          (*i)->countTags () <= 2)
-      {
-        // This tag also prevents further expanѕion.
-        (*i)->tag ("PATTERN");
+      // This tag also prevents further expanѕion.
+      (*i)->tag ("PATTERN");
 
-        std::string pattern = (*i)->attribute ("raw");
+      std::string pattern = (*i)->attribute ("raw");
 
-        Tree* branch = (*i)->addBranch (new Tree ("argPat"));
-        branch->attribute ("raw", "description");
+      Tree* branch = (*i)->addBranch (new Tree ("argPat"));
+      branch->attribute ("raw", "description");
 
-        branch = (*i)->addBranch (new Tree ("argPat"));
-        branch->attribute ("raw", "~");
-        branch->tag ("OP");
+      branch = (*i)->addBranch (new Tree ("argPat"));
+      branch->attribute ("raw", "~");
+      branch->tag ("OP");
 
-        branch = (*i)->addBranch (new Tree ("argPat"));
-        branch->attribute ("raw", pattern);
-        branch->tag ("STRING");
-      }
+      branch = (*i)->addBranch (new Tree ("argPat"));
+      branch->attribute ("raw", pattern);
+      branch->tag ("STRING");
     }
   }
 }
