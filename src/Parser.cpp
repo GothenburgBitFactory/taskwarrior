@@ -532,6 +532,22 @@ Tree* Parser::captureFirst (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Tree* Parser::captureLast (const std::string& arg)
+{
+  // Insert the arg as the new first branch.
+  Tree* t = new Tree ("argIns");
+  if (!t)
+    throw std::string (STRING_ERROR_MEMORY);
+
+  t->attribute ("raw", arg);
+  t->tag ("?");
+  t->_trunk = _tree;
+
+  _tree->_branches.push_back (t);
+  return t;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const std::string Parser::getFilterExpression ()
 {
   // Construct an efficient ID/UUID clause.

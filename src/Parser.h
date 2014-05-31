@@ -57,6 +57,7 @@ public:
   void applyOverrides ();
   void injectDefaults ();
   Tree* captureFirst (const std::string&);
+  Tree* captureLast (const std::string&);
 
   const std::string getFilterExpression ();
   const std::vector <std::string> getWords () const;
