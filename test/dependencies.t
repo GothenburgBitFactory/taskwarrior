@@ -137,7 +137,7 @@ $output = qx{../src/task rc:dep.rc 1 modify dep:2,3,4 2>&1; ../src/task rc:dep.r
 like ($output, qr/This task blocked by\s+3 Three\n\s+5 Five\n/, 'dependencies - multiple dependencies modified');
 
 # [23,24]
-$output = qx{../src/task rc:dep.rc 3,5 do 2>&1; ../src/task rc:dep.rc info 1 2>&1};
+$output = qx{../src/task rc:dep.rc 3,5 done 2>&1; ../src/task rc:dep.rc info 1 2>&1};
 unlike ($output, qr/This task blocked by/, 'dependencies - task info reflects completed dependencies');
 unlike ($output, qr/This task is blocking/, 'dependencies - task info reflects completed dependencies');
 
@@ -155,14 +155,14 @@ qx{../src/task rc:dep.rc add Three 2>&1};
 qx{../src/task rc:dep.rc add Four 2>&1};
 
 qx{../src/task rc:dep.rc 1 modify dep:3,4 2>&1};
-qx{../src/task rc:dep.rc 2 do 2>&1};
+qx{../src/task rc:dep.rc 2 done 2>&1};
 
 # [27]
 $output = qx{../src/task rc:dep.rc depreport 2>&1};
 like ($output, qr/\s1\s+2 3\s+One\s+/, 'dependencies - depends report column reflects changed IDs');
 
 # [28]
-qx{../src/task rc:dep.rc 3 do 2>&1};
+qx{../src/task rc:dep.rc 3 done 2>&1};
 $output = qx{../src/task rc:dep.rc depreport 2>&1};
 like ($output, qr/\s1\s+2\s+One\s+/, 'dependencies - depends report column reflects completed dependencies');
 
@@ -178,12 +178,12 @@ qx{../src/task rc:dep.rc add Four 2>&1};
 qx{../src/task rc:dep.rc 2 modify dep:1 2>&1; ../src/task rc:dep.rc 3 modify dep:2 2>&1; ../src/task rc:dep.rc 4 modify dep:3 2>&1};
 
 # [30,31]
-$output = qx{echo 'y' | ../src/task rc:dep.rc 2 do 2>&1};
+$output = qx{echo 'y' | ../src/task rc:dep.rc 2 done 2>&1};
 like ($output, qr/fixed/, 'dependencies - user prompted to fix broken chain after completing a blocked task');
 like ($output, qr/is blocked by/, 'dependencies - user nagged for completing a blocked task');
 
 # [32]
-$output = qx{echo 'y' | ../src/task rc:dep.rc 1 do 2>&1};
+$output = qx{echo 'y' | ../src/task rc:dep.rc 1 done 2>&1};
 unlike ($output, qr/fixed/, 'dependencies - user not prompted to fix broken chain when the head of the chain is marked as complete');
 
 # [33]
@@ -206,7 +206,7 @@ qx{../src/task rc:dep.rc 4 modify dep:3 2>&1};
 qx{../src/task rc:dep.rc 5 modify dep:4 2>&1};
 
 # [35]
-qx{echo 'y' | ../src/task rc:dep.rc 2 do 2>&1};
+qx{echo 'y' | ../src/task rc:dep.rc 2 done 2>&1};
 $output = qx{../src/task rc:dep.rc depreport 2>&1};
 like ($output, qr/\s1\s+One\s*\n\s2\s+1\s+Three\s*\n\s3\s+2\s+Four\s*\n\s4\s+3\s+Five/, 'dependencies - fixed chain after completing a blocked task');
 
