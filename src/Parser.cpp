@@ -528,6 +528,7 @@ Tree* Parser::captureFirst (const std::string& arg)
 
   _tree->_branches.insert (i, t);
 
+  findBinary ();
   findCommand ();
   return t;
 }
