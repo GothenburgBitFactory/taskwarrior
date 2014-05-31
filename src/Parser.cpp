@@ -1362,7 +1362,21 @@ void Parser::findPlainArgs ()
           (*i)->hasTag ("ORIGINAL") &&  // TODO Wrong, can come in through alias/filter
           (*i)->countTags () <= 2)
       {
-        std::cout << "# plain arg '" << (*i)->attribute ("raw") << "'\n";
+        // This tag also prevents further expanѕion.
+        (*i)->tag ("PATTERN");
+
+        std::string pattern = (*i)->attribute ("raw");
+
+        Tree* branch = (*i)->addBranch (new Tree ("argPat"));
+        branch->attribute ("raw", "description");
+
+        branch = (*i)->addBranch (new Tree ("argPat"));
+        branch->attribute ("raw", "~");
+        branch->tag ("OP");
+
+        branch = (*i)->addBranch (new Tree ("argPat"));
+        branch->attribute ("raw", pattern);
+        branch->tag ("STRING");
       }
     }
   }
