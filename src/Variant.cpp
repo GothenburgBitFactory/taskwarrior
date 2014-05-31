@@ -280,7 +280,18 @@ bool Variant::operator< (const Variant& other) const
     case type_boolean:  right.cast (type_string);  return left._string   < right._string;
     case type_integer:  right.cast (type_string);  return left._string   < right._string;
     case type_real:     right.cast (type_string);  return left._string   < right._string;
-    case type_string:                              return left._string   < right._string;
+    case type_string:
+      if (left.source () == "priority" || right.source () == "priority")
+      {
+             if (left._string != "H" && right._string == "H") return true;
+        else if (left._string == "L" && right._string == "M") return true;
+        else if (left._string == ""  && right._string != "")  return true;
+        else                                                  return false;
+      }
+      else
+      {
+        return left._string < right._string;
+      }
     case type_date:     left.cast (type_date);     return left._date     < right._date;
     case type_duration: left.cast (type_duration); return left._duration < right._duration;
     }
@@ -374,7 +385,19 @@ bool Variant::operator<= (const Variant& other) const
     case type_boolean:  right.cast (type_string);  return left._string   <= right._string;
     case type_integer:  right.cast (type_string);  return left._string   <= right._string;
     case type_real:     right.cast (type_string);  return left._string   <= right._string;
-    case type_string:                              return left._string   <= right._string;
+    case type_string:
+      if (left.source () == "priority" || right.source () == "priority")
+      {
+             if (left._string        == right._string       ) return true;
+        else if (                       right._string == "H") return true;
+        else if (left._string == "L" && right._string == "M") return true;
+        else if (left._string == ""                         ) return true;
+        else                                                  return false;
+      }
+      else
+      {
+        return left._string <= right._string;
+      }
     case type_date:     left.cast (type_date);     return left._date     <= right._date;
     case type_duration: left.cast (type_duration); return left._duration <= right._duration;
     }
@@ -468,7 +491,18 @@ bool Variant::operator> (const Variant& other) const
     case type_boolean:  right.cast (type_string);  return left._string   > right._string;
     case type_integer:  right.cast (type_string);  return left._string   > right._string;
     case type_real:     right.cast (type_string);  return left._string   > right._string;
-    case type_string:                              return left._string   > right._string;
+    case type_string:
+      if (left.source () == "priority" || right.source () == "priority")
+      {
+             if (left._string == "H" && right._string != "H") return true;
+        else if (left._string == "M" && right._string == "L") return true;
+        else if (left._string != ""  && right._string == "")  return true;
+        else                                                  return false;
+      }
+      else
+      {
+        return left._string> right._string;
+      }
     case type_date:     left.cast (type_date);     return left._date     > right._date;
     case type_duration: left.cast (type_duration); return left._duration > right._duration;
     }
@@ -562,7 +596,19 @@ bool Variant::operator>= (const Variant& other) const
     case type_boolean:  right.cast (type_string);  return left._string   >= right._string;
     case type_integer:  right.cast (type_string);  return left._string   >= right._string;
     case type_real:     right.cast (type_string);  return left._string   >= right._string;
-    case type_string:                              return left._string   >= right._string;
+    case type_string:
+      if (left.source () == "priority" || right.source () == "priority")
+      {
+             if (left._string        == right._string       ) return true;
+        else if (left._string == "H"                        ) return true;
+        else if (left._string == "M" && right._string == "L") return true;
+        else if (                       right._string == "" ) return true;
+        else                                                  return false;
+      }
+      else
+      {
+        return left._string >= right._string;
+      }
     case type_date:     left.cast (type_date);     return left._date     >= right._date;
     case type_duration: left.cast (type_duration); return left._duration >= right._duration;
     }
