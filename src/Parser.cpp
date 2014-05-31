@@ -1377,21 +1377,33 @@ void Parser::findPlainArgs ()
         (*i)->hasTag ("ORIGINAL") &&  // TODO Wrong, can come in through alias/filter
         (*i)->countTags () <= 2)
     {
-      // This tag also prevents further expanѕion.
-      (*i)->tag ("PATTERN");
+      // A word can be upgraded to a pattern only if it does not itself contain
+      // multiple tokens.
+      std::string raw = (*i)->attribute ("raw");
+      std::vector <std::string> lexed;
+      Lexer::token_split (lexed, raw);
 
-      std::string pattern = (*i)->attribute ("raw");
+      if (lexed.size () == 1)
+      {
+        // This tag also prevents further expanѕion.
+        (*i)->tag ("PATTERN");
 
-      Tree* branch = (*i)->addBranch (new Tree ("argPat"));
-      branch->attribute ("raw", "description");
+        Tree* branch = (*i)->addBranch (new Tree ("argPat"));
+        branch->attribute ("raw", "description");
 
-      branch = (*i)->addBranch (new Tree ("argPat"));
-      branch->attribute ("raw", "~");
-      branch->tag ("OP");
+        branch = (*i)->addBranch (new Tree ("argPat"));
+        branch->attribute ("raw", "~");
+        branch->tag ("OP");
 
-      branch = (*i)->addBranch (new Tree ("argPat"));
-      branch->attribute ("raw", pattern);
-      branch->tag ("STRING");
+        branch = (*i)->addBranch (new Tree ("argPat"));
+        branch->attribute ("raw", raw);
+        branch->tag ("STRING");
+      }
+      else
+      {
+        std::cout << "# ::findPlainArgs '" << raw << "' is compounded\n";
+        // TODO Add the lexed elements as separate tokens.
+      }
     }
   }
 }
