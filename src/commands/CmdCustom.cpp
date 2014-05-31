@@ -63,6 +63,8 @@ int CmdCustom::execute (std::string& output)
   std::string reportLabels  = context.config.get ("report." + _keyword + ".labels");
   std::string reportSort    = context.config.get ("report." + _keyword + ".sort");
   std::string reportFilter  = context.config.get ("report." + _keyword + ".filter");
+  if (reportFilter != "")
+    reportFilter = "( " + reportFilter + " )";
 
   std::vector <std::string> columns;
   split (columns, reportColumns, ',');
@@ -85,7 +87,7 @@ int CmdCustom::execute (std::string& output)
 
   // Prepend the argument list with those from the report filter.
   std::vector <std::string> filterArgs;
-  Lexer::split (filterArgs, reportFilter);
+  Lexer::token_split (filterArgs, reportFilter);
   std::vector <std::string>::reverse_iterator arg;
   for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
     context.parser.captureFirst (*arg);
