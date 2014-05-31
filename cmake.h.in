@@ -12,6 +12,8 @@
 #define PACKAGE_VERSION   "${PACKAGE_VERSION}"
 #define PACKAGE_STRING    "${PACKAGE_STRING}"
 
+#define CMAKE_BUILD_TYPE  "${CMAKE_BUILD_TYPE}"
+
 /* Installation details */
 #define TASK_RCDIR "${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}"
 

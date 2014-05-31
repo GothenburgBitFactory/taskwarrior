@@ -175,6 +175,14 @@ int CmdDiagnostics::execute (std::string& output)
 #else
       << "n/a"
 #endif
+      << "\n";
+
+  out << " Build type: "
+#ifdef CMAKE_BUILD_TYPE
+      << CMAKE_BUILD_TYPE
+#else
+      << "-"
+#endif
       << "\n\n";
 
   // Config: .taskrc found, readable, writable

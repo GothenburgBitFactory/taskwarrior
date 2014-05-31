@@ -96,6 +96,7 @@
 - Regular expressions are now enabled by default.
 - New verbosity token 'filter' shows the complete filter used by the last
   command.
+- Display debug/release build type in the diagnostics command.
 
 ------ current release ---------------------------
 
