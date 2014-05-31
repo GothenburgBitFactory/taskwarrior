@@ -26,12 +26,12 @@ General Statement
     features.  Join us in the forums.
 
   - Join us in the #taskwarrior IRC channel on freenode.net.  Some great ideas,
-    suggestions, testing and discussions have taken place there.  It is also the
-    quickest way to get help, or confirm a bug.
+    suggestions, testing and discussions have taken place there.  It is also
+    the quickest way to get help, or confirm a bug.
 
   - Join https://answers.tasktools.org and help us by asking, answering and
     voting on questions and answers, directly helping those who ask, and
-    indirectly helping those who search.
+    indirectly helping those who search for existing answers.
 
   - Review documentation: there are man pages, online articles, tutorials and
     so on, and these may contain errors, or they may not convey ideas in the
@@ -76,6 +76,7 @@ General Statement
 
   - Request a feature.  This not only tells us that you think something is
     missing from the software, but gives us insights into how you use it.
+    Plus, you might get your feature implemented.
 
   Following are specific areas that could use some attention.
 
@@ -140,12 +141,13 @@ Unit Tests Needed
      on this code the most.
 
   The tests are mainly written in Perl, and all use TAP.  We want them all to be
-  eventually replaced by Python. Here is how to get the code and run the test
-  suite:
+  eventually replaced by Python, so we are now only accepting new tests that use
+  the Python-based approach you can see in some of the existing tests. Here is
+  how to get the code and run the test suite:
      git clone https://git.tasktools.org/scm/tm/task.git
      cd task.git
      git checkout 2.4.0
-     cmake .
+     cmake -DCMAKE_BUILD_TYPE=debug .
      make
      make test
 
@@ -168,6 +170,9 @@ Unit Tests Needed
 
   Tests needed:
 
+  - Take a look at the bug database (https://bug.tasktools.org) and notice that
+    many issues, open and closed, have the "needsTest" label. These are things
+    that we would like to see in the test suite, as regression tests.
   - The basic.t unit tests are a misnomer, and should be either removed or
     renamed.  We have long talked of 'basic functionality' that includes add,
     delete, done, and list commands.  We need unit tests that prove that basic
@@ -209,8 +214,7 @@ Current Codebase Condition
 
 ---
 
-2012-05-12 Added general statement about how to contribute.
-2013-09-09 Updated branch info.
 2014-01-19 Updated for 2.4.0.
 2014-04-13 Added answers.tasktools.org, corrected URLs.
 2014-05-11 Added build info.
+2014-05-31 Updated unit tests section.
