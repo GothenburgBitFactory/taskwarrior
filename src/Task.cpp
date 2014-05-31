@@ -55,6 +55,7 @@
 #include <Variant.h>
 #include <Filter.h>
 #include <Dates.h>
+#include <ISO8601.h>
 
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
@@ -1574,10 +1575,17 @@ void Task::validate (bool applyDefault /* = true */)
   // Recur durations must be valid.
   if (has ("recur"))
   {
-    Duration d;
+    std::string value = get ("recur");
+
+    ISO8601p p;
     std::string::size_type i = 0;
-    if (! d.parse (get ("recur"), i))
-      throw std::string (format (STRING_TASK_VALID_RECUR, get ("recur")));
+    if (! p.parse (value, i))
+    {
+      i = 0;
+      Duration d;
+      if (! d.parse (value, i))
+        throw std::string (format (STRING_TASK_VALID_RECUR, value));
+    }
   }
 
   // Priorities must be valid.

@@ -40,6 +40,7 @@
 #include <Context.h>
 #include <Date.h>
 #include <Duration.h>
+#include <ISO8601.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -336,10 +337,24 @@ Date getNextRecurrence (Date& current, std::string& period)
 
   // If the period is an 'easy' one, add it to current, and we're done.
   // If it throws an error, the duration was not recognized.
+  int secs = 0;
   std::string::size_type idx = 0;
   Duration du;
-  du.parse (period, idx);
-  int secs = du;
+  if (du.parse (period, idx))
+  {
+   secs = du;
+  }
+  else
+  {
+    idx = 0;
+    ISO8601p p;
+    if (p.parse (period, idx))
+    {
+      secs = p;
+    }
+    else
+      throw std::string (format (STRING_TASK_VALID_RECUR, period));
+  }
 
   return current + secs;
 }
