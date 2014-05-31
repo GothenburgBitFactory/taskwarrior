@@ -803,7 +803,8 @@ void Parser::findAttribute ()
         std::string value;
         if (n.getQuoted   ('"', value)  ||
             n.getQuoted   ('\'', value) ||
-            n.getUntilEOS (value))
+            n.getUntilEOS (value)       ||
+            n.depleted ())
         {
           std::string canonical;
           if (canonicalize (canonical, "uda", name))
@@ -849,7 +850,10 @@ void Parser::findAttribute ()
               branch->attribute ("raw", "==");
 
             branch = (*i)->addBranch (new Tree ("argAtt"));
-            branch->attribute ("raw", value);
+            if (value != "")
+              branch->attribute ("raw", value);
+            else
+              branch->attribute ("raw", "'" + value + "'");
           }
         }
       }
