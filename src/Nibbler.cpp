@@ -1036,7 +1036,7 @@ bool Nibbler::getName (std::string& result)
     {
       ++i;
       while (i < _length &&
-             ! ispunct (_input[i]) &&
+             (_input[i] == '_' || ! ispunct (_input[i])) &&
              ! Lexer::is_ws (_input[i]))
       {
         ++i;
@@ -1255,7 +1255,7 @@ bool Nibbler::depleted ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Override of ispunct, that considers #, $ and @ not to be punctuation.
+// Override of ispunct, that considers #, $, _ and @ not to be punctuation.
 //
 // ispunct:      ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
 // Punctuation:  ! "     % & ' ( ) * + , - . / : ; < = > ?   [ \ ] ^ _ ` { | } ~
@@ -1263,7 +1263,7 @@ bool Nibbler::depleted ()
 //
 bool Nibbler::isPunctuation (char c)
 {
-  if (c == '@' || c == '#' || c == '$')
+  if (c == '@' || c == '#' || c == '$' || c == '_')
     return false;
 
   return ispunct (c);

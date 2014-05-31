@@ -21,6 +21,7 @@
 - #1511 sync init crashes if client certification file is empty or invalid
         (thanks to Marton Suranyi).
 - TW-5 color.due.today does not work (thanks to Max Muller).
+- TW-28 Inserts spaces before punctuation characters (thanks to Matt Kraai).
 - TW-115 allow "0day" durations for UDAs.
 - TW-197 New virtual tag READY.
 - TW-253 Unrecognized taskwarrior file format. in
@@ -29,9 +30,12 @@
 - TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
          Weber)
 - TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
+- TW-271 Parser still looks for task id even when -- is used (thanks to Jim B).
+- TW-277 Complex filters can skip infix term expansion.
 - TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
 - TW-285 DUETODAY doesn't give any output (thanks to Jostein Berntsen).
 - TW-306 Wrong date format in burndown view (thanks to Michele Santullo).
+- TW-752 task ID no longer defaults to info (thanks to Christopher Roberts).
 - TW-1254 Calc command can segfault on negative numbers (thanks to Renato
           Alves).
 - TW-1255 New testing framework (thanks to Renato Alves).
@@ -42,6 +46,7 @@
           Renato Alves).
 - TW-1263 Command Reference Redesign.
 - TW-1264 Project | Tags assigned ratio of tasks (thanks to Benjamin Weber).
+- TW-1265 cannot add UDA with underscore (thanks to Jakub Wilk).
 - TW-1274 Map 'modification' attribute to 'modified' (thanks to jck).
 - TW-1278 Next report filters tasks with due date set until due date arrives
           (thanks to Renato Alves).
