@@ -46,11 +46,11 @@ if (open my $fh, '>', 'seq.rc')
 # Test sequences in done/undo
 qx{../src/task rc:seq.rc add one mississippi 2>&1};
 qx{../src/task rc:seq.rc add two mississippi 2>&1};
-qx{../src/task rc:seq.rc 1,2 do 2>&1};
+qx{../src/task rc:seq.rc 1,2 done 2>&1};
 my $output = qx{../src/task rc:seq.rc info 1 2>&1};
-like ($output, qr/Status\s+Completed/, 'sequence do 1');
+like ($output, qr/Status\s+Completed/, 'sequence done 1');
 $output = qx{../src/task rc:seq.rc info 2 2>&1};
-like ($output, qr/Status\s+Completed/, 'sequence do 2');
+like ($output, qr/Status\s+Completed/, 'sequence done 2');
 qx{../src/task rc:seq.rc undo 2>&1};
 qx{../src/task rc:seq.rc undo 2>&1};
 $output = qx{../src/task rc:seq.rc info 1 2>&1};

@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -43,7 +43,6 @@ if (open my $fh, '>', $rc)
   print $fh "data.location=.\n",
             "confirmation=off\n";
   close $fh;
-  ok (-r $rc, "$ut: Created $rc");
 }
 
 # Note: all commands checked for $? == 0
@@ -56,12 +55,6 @@ ok ($? == 0, "$ut: add sample");
 my $output = qx{../src/task rc:$rc ls 2>&1};
 like ($output, qr/sample/ms, "$ut: sample task found");
 
-## Cleanup.
+# Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r $rc, "$ut: Cleanup");
-
 exit 0;
