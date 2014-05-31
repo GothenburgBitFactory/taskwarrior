@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 rc=0
 if [ x"$1" = x"--verbose" ];
@@ -10,7 +10,10 @@ then
     while read LINE
     do
       echo "$LINE"
-    done < test.log || rc=1
+    done < test.log
+    if [ $? -ne 0 ]; then
+      rc=1
+    fi
     rm test.log
   done
   exit $rc
@@ -39,7 +42,10 @@ else
       COUNT=`expr $COUNT + 1`
     fi
 
-    $i >> all.log 2>&1 || rc=1
+    $i >> all.log 2>&1
+    if [ $? -ne 0 ]; then
+      rc=1
+    fi
   done
 
   if [ $BAR -eq 1 ]; then
