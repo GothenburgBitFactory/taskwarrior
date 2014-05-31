@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 156;
+use Test::More tests => 163;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -240,14 +240,14 @@ unlike ($output, qr/five/,  'u5');
 like   ($output, qr/six/,   'u6');
 like   ($output, qr/seven/, 'u7');
 
-#$output = qx{../src/task rc:filter.rc rc.regex:on list /f../ /b../ 2>&1};
-#unlike ($output, qr/one/,   'v1');
-#unlike ($output, qr/two/,   'v2');
-#unlike ($output, qr/three/, 'v3');
-#unlike ($output, qr/four/,  'v4');
-#unlike ($output, qr/five/,  'v5');
-#unlike ($output, qr/six/,   'v6');
-#like   ($output, qr/seven/, 'v7');
+$output = qx{../src/task rc:filter.rc rc.regex:on list /f../ /b../ 2>&1};
+unlike ($output, qr/one/,   'v1');
+unlike ($output, qr/two/,   'v2');
+unlike ($output, qr/three/, 'v3');
+unlike ($output, qr/four/,  'v4');
+unlike ($output, qr/five/,  'v5');
+unlike ($output, qr/six/,   'v6');
+like   ($output, qr/seven/, 'v7');
 
 $output = qx{../src/task rc:filter.rc rc.regex:on list /^s/ 2>&1};
 unlike ($output, qr/one/,   'w1');
