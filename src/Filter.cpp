@@ -48,6 +48,7 @@ bool domSource (const std::string& identifier, Variant& value)
   if (stringValue != identifier)
   {
     value = Variant (stringValue);
+    value.source (identifier);
     return true;
   }
 
