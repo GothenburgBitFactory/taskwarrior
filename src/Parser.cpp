@@ -313,6 +313,7 @@ void Parser::findCommand ()
       else if (exactMatch ("readcmd",  command)) (*i)->tag ("READCMD");
       else if (exactMatch ("helper",   command)) (*i)->tag ("HELPER");
 
+      // Stop at the first command found.
       return;
     }
   }
@@ -468,7 +469,7 @@ void Parser::injectDefaults ()
         // because captureFirst inserts args immediately after the command, and
         // so has the effect of reversing the list.
         std::vector <std::string> args;
-        Lexer::word_split (args, defaultCommand);
+        Lexer::token_split (args, defaultCommand);
         std::vector <std::string>::reverse_iterator r;
         for (r = args.rbegin (); r != args.rend (); ++r)
         {
