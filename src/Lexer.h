@@ -66,6 +66,7 @@ public:
   static const std::string type_name (const Type&);
   static bool is_ws (int);
   static void word_split (std::vector <std::string>&, const std::string&);
+  static void token_split (std::vector <std::string>&, const std::string&);
 
 private:
   bool is_punct (int) const;

@@ -631,6 +631,19 @@ void Lexer::word_split (std::vector <std::string>& words, const std::string& inp
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Split 'input' into 'tokens'.
+void Lexer::token_split (std::vector <std::string>& words, const std::string& input)
+{
+  words.clear ();
+
+  std::string word;
+  Lexer::Type type;
+  Lexer lex (input);
+  while (lex.token (word, type))
+    words.push_back (word);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Lexer::is_punct (int c) const
 {
   if (c == ',' ||

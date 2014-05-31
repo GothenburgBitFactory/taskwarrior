@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (181);
+  UnitTest t (185);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -318,6 +318,23 @@ int main (int argc, char** argv)
   t.is (items[1], "a+b",           "word_split '  +-* a+b 12.3e4 'c d'' -> [1] 'a+b'");
   t.is (items[2], "12.3e4",        "word_split '  +-* a+b 12.3e4 'c d'' -> [2] '12.3e4'");
   t.is (items[3], "c d",           "word_split '  +-* a+b 12.3e4 'c d'' -> [3] 'c d'");
+
+  // Test common expression element.
+  unsplit = "name=value";
+  Lexer::token_split (items, unsplit);
+  t.is (items.size (), (size_t) 3, "split 'name=value'");
+  if (items.size () == 3)
+  {
+    t.is (items[0], "name",          "token_split 'name=value' -> [0] 'name'");
+    t.is (items[1], "=",             "token_split 'name=value' -> [1] '='");
+    t.is (items[2], "value",         "token_split 'name=value' -> [2] 'value'");
+  }
+  else
+  {
+    t.fail ("token_split 'name=value' -> [0] 'name'");
+    t.fail ("token_split 'name=value' -> [1] '='");
+    t.fail ("token_split 'name=value' -> [2] 'value'");
+  }
 
   return 0;
 }
