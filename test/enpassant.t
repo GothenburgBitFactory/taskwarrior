@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,13 +38,12 @@ if (open my $fh, '>', 'enp.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'enp.rc', 'Created enp.rc');
 }
 
 # Test the en passant feature.
 qx{../src/task rc:enp.rc add foo 2>&1};
 qx{../src/task rc:enp.rc add foo bar 2>&1};
-qx{../src/task rc:enp.rc 1,2 do /foo/FOO/ pri:H +tag 2>&1};
+qx{../src/task rc:enp.rc 1,2 done /foo/FOO/ pri:H +tag 2>&1};
 my $output = qx{../src/task rc:enp.rc info 1 2>&1};
 like ($output, qr/Status\s+Completed/,    'en passant 1 status change');
 like ($output, qr/Description\s+FOO/,     'en passant 1 description change');
@@ -58,11 +57,5 @@ like ($output, qr/Tags\s+tag/,            'en passant 2 description change');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data enp.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'enp.rc', 'Cleanup');
-
 exit 0;
 
