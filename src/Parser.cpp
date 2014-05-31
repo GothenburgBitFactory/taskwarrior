@@ -69,7 +69,9 @@ Parser::~Parser ()
 void Parser::initialize (int argc, const char** argv)
 {
   // Set up constants.
-  minimumMatchLength = strtol (context.config.get ("abbreviation.minimum").c_str (), NULL, 10);
+  int override = context.config.getInteger ("abbreviation.minimum");
+  if (override)
+    minimumMatchLength = override;
 
   // Create top-level nodes.
   for (int i = 0; i < argc; ++i)
