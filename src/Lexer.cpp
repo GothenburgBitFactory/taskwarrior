@@ -619,7 +619,7 @@ bool Lexer::is_ws (int c)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Split 'input' into 'words' on Lexer::is_ws boundaries, observing quotes.
-void Lexer::split (std::vector <std::string>& words, const std::string& input)
+void Lexer::word_split (std::vector <std::string>& words, const std::string& input)
 {
   words.clear ();
 
