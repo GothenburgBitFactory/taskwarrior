@@ -889,6 +889,13 @@ bool Variant::operator_partial (const Variant& other) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Inverse of operator_partial.
+bool Variant::operator_nopartial (const Variant& other) const
+{
+  return ! operator_partial (other);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Variant::operator_hastag (const Variant& other) const
 {
   Variant left (*this);   // tags
