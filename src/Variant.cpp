@@ -47,6 +47,7 @@ Variant::Variant ()
 , _string ("")
 , _date (0)
 , _duration (0)
+, _source ("")
 {
 }
 
@@ -59,6 +60,7 @@ Variant::Variant (const Variant& other)
 , _string ("")
 , _date (0)
 , _duration (0)
+, _source ("")
 {
   *this = other;
 }
@@ -72,6 +74,7 @@ Variant::Variant (const bool value)
 , _string ("")
 , _date (0)
 , _duration (0)
+, _source ("")
 {
 }
 
@@ -84,6 +87,7 @@ Variant::Variant (const int value)
 , _string ("")
 , _date (0)
 , _duration (0)
+, _source ("")
 {
 }
 
@@ -96,6 +100,7 @@ Variant::Variant (const double value)
 , _string ("")
 , _date (0)
 , _duration (0)
+, _source ("")
 {
 }
 
@@ -108,6 +113,7 @@ Variant::Variant (const std::string& value)
 , _string (value)
 , _date (0)
 , _duration (0)
+, _source ("")
 {
 }
 
@@ -120,6 +126,7 @@ Variant::Variant (const char* value)
 , _string (std::string (value))
 , _date (0)
 , _duration (0)
+, _source ("")
 {
 }
 
@@ -132,6 +139,7 @@ Variant::Variant (const time_t value, const enum type new_type /*=type_date*/)
 , _string ("")
 , _date (0)
 , _duration (0)
+, _source ("")
 {
   switch (new_type)
   {
@@ -148,6 +156,18 @@ Variant::~Variant ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Variant::source (const std::string& input)
+{
+  _source = input;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Variant::source () const
+{
+  return _source;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Variant& Variant::operator= (const Variant& other)
 {
   if (this != &other)
@@ -159,6 +179,7 @@ Variant& Variant::operator= (const Variant& other)
     _string   = other._string;
     _date     = other._date;
     _duration = other._duration;
+    _source   = other._source;
   }
 
   return *this;

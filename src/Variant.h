@@ -48,6 +48,9 @@ public:
   Variant (const time_t, const enum type new_type = type_date);
   ~Variant ();
 
+  void source (const std::string&);
+  std::string source () const;
+
   Variant& operator= (const Variant&);
 
   bool operator&& (const Variant&) const;
@@ -105,6 +108,8 @@ private:
   std::string _string;
   time_t      _date;
   time_t      _duration;
+
+  std::string _source;
 };
 
 #endif
