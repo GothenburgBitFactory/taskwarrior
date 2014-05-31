@@ -87,7 +87,7 @@ int CmdCustom::execute (std::string& output)
 
   // Prepend the argument list with those from the report filter.
   std::vector <std::string> filterArgs;
-  Lexer::token_split (filterArgs, reportFilter);
+  Lexer::word_split (filterArgs, reportFilter);
   std::vector <std::string>::reverse_iterator arg;
   for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
     context.parser.captureFirst (*arg);
