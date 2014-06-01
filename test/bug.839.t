@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'bug.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 if (open my $fh, '>', 'pending.data')
@@ -54,11 +53,5 @@ unlike ($output, qr/The recurrence value '1m' is not valid\./, 'recu:1m => no er
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
 

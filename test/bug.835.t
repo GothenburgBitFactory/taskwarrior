@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'bug.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 qx{../src/task rc:bug.rc add pro:main.subproject Test 2>&1};
@@ -51,11 +50,5 @@ unlike ($output, qr/Mismatched parentheses in expression/, "No 'mismatch' error 
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
 

@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -44,7 +44,6 @@ if (open my $fh, '>', 'bug.rc')
             "report.unittest.columns=id,project,priority,description\n",
             "report.unittest.filter=status:pending\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug 804: URL link and break line
@@ -65,11 +64,5 @@ like ($output, qr/uvwx\n/ms, 'not hyphenated 2');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
 
