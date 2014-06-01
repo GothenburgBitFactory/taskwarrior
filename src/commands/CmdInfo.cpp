@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <sstream>
 #include <stdlib.h>
+#include <math.h>
 #include <Context.h>
 #include <Filter.h>
 #include <Date.h>
@@ -38,6 +39,9 @@
 #include <CmdInfo.h>
 
 extern Context context;
+
+static const float epsilon = 0.000001;
+
 ////////////////////////////////////////////////////////////////////////////////
 CmdInfo::CmdInfo ()
 {
@@ -317,7 +321,62 @@ int CmdInfo::execute (std::string& output)
     // Task::urgency
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_URGENCY);
-    view.set (row, 1, trimLeft (format (task->urgency (), 4, 4)));
+
+    std::string urgency =
+      trimLeft (format (task->urgency (), 4, 4)) + "\n" +
+      urgencyTerm ("project",     task->urgency_project (),     Task::urgencyProjectCoefficient)     +
+      urgencyTerm ("priority",    task->urgency_priority (),    Task::urgencyPriorityCoefficient)    +
+      urgencyTerm ("active",      task->urgency_active (),      Task::urgencyActiveCoefficient)      +
+      urgencyTerm ("scheduled",   task->urgency_scheduled (),   Task::urgencyScheduledCoefficient)   +
+      urgencyTerm ("waiting",     task->urgency_waiting (),     Task::urgencyWaitingCoefficient)     +
+      urgencyTerm ("blocked",     task->urgency_blocked (),     Task::urgencyBlockedCoefficient)     +
+      urgencyTerm ("blocking",    task->urgency_blocking (),    Task::urgencyBlockingCoefficient)    +
+      urgencyTerm ("annotations", task->urgency_annotations (), Task::urgencyAnnotationsCoefficient) +
+      urgencyTerm ("tags",        task->urgency_tags (),        Task::urgencyTagsCoefficient)        +
+      urgencyTerm ("next",        task->urgency_next (),        Task::urgencyNextCoefficient)        +
+      urgencyTerm ("due",         task->urgency_due (),         Task::urgencyDueCoefficient)         +
+      urgencyTerm ("age",         task->urgency_age (),         Task::urgencyAgeCoefficient);
+
+    // Tag, Project- and UDA-specific coefficients.
+    std::map <std::string, float>::iterator var;
+    for (var = Task::coefficients.begin (); var != Task::coefficients.end (); ++var)
+    {
+      if (var->first.substr (0, 13) == "urgency.user.")
+      {
+        // urgency.user.project.<project>.coefficient
+        std::string::size_type end = std::string::npos;
+        if (var->first.substr (13, 8) == "project." &&
+            (end = var->first.find (".coefficient")) != std::string::npos)
+        {
+          std::string project = var->first.substr (21, end - 21);
+          if (task->get ("project").find (project) == 0)
+            urgency += urgencyTerm ("PROJECT " + project, 1.0, var->second);
+        }
+
+        // urgency.user.tag.<tag>.coefficient
+        if (var->first.substr (13, 4) == "tag." &&
+            (end = var->first.find (".coefficient")) != std::string::npos)
+        {
+          std::string name = var->first.substr (17, end - 17);
+          if (task->hasTag (name))
+            urgency += urgencyTerm ("TAG " + name, 1.0, var->second);
+        }
+      }
+
+      // urgency.uda.<name>.coefficient
+      else if (var->first.substr (0, 12) == "urgency.uda.")
+      {
+        std::string::size_type end = var->first.find (".coefficient");
+        if (end != std::string::npos)
+        {
+          std::string name = var->first.substr (12, end - 12);
+          if (task->has (name))
+            urgency += urgencyTerm ("UDA " + name, 1.0, var->second);
+        }
+      }
+    }
+
+    view.set (row, 1, urgency);
 
     // Show any UDAs
     std::vector <std::string> all = task->all ();
@@ -452,6 +511,27 @@ int CmdInfo::execute (std::string& output)
 
   output = out.str ();
   return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string CmdInfo::urgencyTerm (
+  const std::string& label,
+  float measure,
+  float coefficient) const
+{
+  float value = measure * coefficient;
+  if (fabsf (value) > epsilon)
+    return std::string (
+             rightJustify (label, 20) +
+             " " +
+             leftJustify (format (measure, 5, 3), 6) +
+             " * " +
+             leftJustify (format (coefficient, 4, 2), 4) +
+             " = " +
+             leftJustify (format (value, 5, 3), 5) +
+             "\n");
+
+  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

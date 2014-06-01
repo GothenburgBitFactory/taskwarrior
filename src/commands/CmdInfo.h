@@ -35,6 +35,9 @@ class CmdInfo : public Command
 public:
   CmdInfo ();
   int execute (std::string&);
+
+private:
+  std::string urgencyTerm (const std::string&, float, float) const;
 };
 
 #endif

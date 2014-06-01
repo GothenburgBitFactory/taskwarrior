@@ -11,6 +11,7 @@ New Features in taskwarrior 2.4.0
   - Regular expressions are now enabled by default.
   - The 'filter' verbosity token shows the complete filter used for the last
     command.
+  - The 'info' report now breaks down urgency values.
 
 New commands in taskwarrior 2.4.0
 

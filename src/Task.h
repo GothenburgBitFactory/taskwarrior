@@ -163,18 +163,19 @@ private:
   void parseLegacy (const std::string&);
   void validate_before (const std::string&, const std::string&);
 
-  inline float urgency_priority () const;
-  inline float urgency_project () const;
-  inline float urgency_active () const;
-  inline float urgency_scheduled () const;
-  inline float urgency_waiting () const;
-  inline float urgency_blocked () const;
-  inline float urgency_annotations () const;
-  inline float urgency_tags () const;
-  inline float urgency_next () const;
-  inline float urgency_due () const;
-  inline float urgency_blocking () const;
-  inline float urgency_age () const;
+public:
+  float urgency_priority () const;
+  float urgency_project () const;
+  float urgency_active () const;
+  float urgency_scheduled () const;
+  float urgency_waiting () const;
+  float urgency_blocked () const;
+  float urgency_annotations () const;
+  float urgency_tags () const;
+  float urgency_next () const;
+  float urgency_due () const;
+  float urgency_blocking () const;
+  float urgency_age () const;
 };
 
 #endif
