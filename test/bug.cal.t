@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 29;
+use Test::More tests => 27;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -37,9 +37,7 @@ delete $ENV{'TASKRC'};
 if (open my $fh, '>', 'cal.rc')
 {
   print $fh "data.location=.";
-
   close $fh;
-  ok (-r 'cal.rc', 'Created cal.rc');
 }
 
 # Bug: The 'cal' command can fail when provided with challenging arguments.
@@ -108,10 +106,4 @@ unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data cal.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'cal.rc', 'Cleanup');
-
 exit 0;

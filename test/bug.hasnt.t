@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 14;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'hasnt.rc')
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
-  ok (-r 'hasnt.rc', 'Created hasnt.rc');
 }
 
 # 1
@@ -71,7 +70,7 @@ qx{../src/task rc:hasnt.rc add one 2>&1};
 qx{../src/task rc:hasnt.rc 7 annotate two 2>&1};
 qx{../src/task rc:hasnt.rc 7 annotate three 2>&1};
 
-my $output = qx{../src/task rc:hasnt.rc ls description.has:foo 2>&1};
+my $output = qx{../src/task rc:hasnt.rc long description.has:foo 2>&1};
 like   ($output, qr/\n 1/, '1 has foo -> yes');
 like   ($output, qr/\n 2/, '2 has foo -> yes');
 like   ($output, qr/\n 3/, '3 has foo -> yes');
@@ -80,7 +79,7 @@ like   ($output, qr/\n 5/, '5 has foo -> yes');
 like   ($output, qr/\n 6/, '6 has foo -> yes');
 unlike ($output, qr/\n 7/, '7 has foo -> no');
 
-$output = qx{../src/task rc:hasnt.rc ls description.hasnt:foo 2>&1};
+$output = qx{../src/task rc:hasnt.rc long description.hasnt:foo 2>&1};
 unlike ($output, qr/\n 1/, '1 hasnt foo -> no');
 unlike ($output, qr/\n 2/, '2 hasnt foo -> no');  # 10
 unlike ($output, qr/\n 3/, '3 hasnt foo -> no');
@@ -91,11 +90,5 @@ like   ($output, qr/\n 7/, '7 hasnt foo -> yes');  # 15
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data hasnt.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'hasnt.rc', 'Cleanup');
-
 exit 0;
 

@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', 'range.rc')
             "confirmation=no\n",
             "dateformat=m/d/Y\n";
   close $fh;
-  ok (-r 'range.rc', 'Created range.rc');
 }
 
 # Add three tasks, and attempt to list the middle one within a range.
@@ -54,11 +53,5 @@ unlike ($output, qr/three/, 'Missing after range');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data range.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'range.rc', 'Cleanup');
-
 exit 0;
 

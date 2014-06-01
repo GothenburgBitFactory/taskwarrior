@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 10;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', 'bulk.rc')
             "confirmation=yes\n",
             "bulk=3\n";
   close $fh;
-  ok (-r 'bulk.rc', 'Created bulk.rc');
 }
 
 # Add some tasks with project, prioriy and due date, some with only due date.
@@ -74,11 +73,5 @@ like ($output, qr/Priority\s+M/, 'priority applied to 6');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bulk.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bulk.rc', 'Cleanup');
-
 exit 0;
 

@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 1;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'recur.rc')
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
-  ok (-r 'recur.rc', 'Created recur.rc');
 }
 
 # Add a recurring task with no due date, look for expected error.
@@ -49,11 +48,5 @@ unlike ($output, qr/Description\s+foo/, 'task not created - missing due date');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data recur.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'recur.rc', 'Cleanup');
-
 exit 0;
 

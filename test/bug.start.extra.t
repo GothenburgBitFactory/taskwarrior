@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'extra.rc')
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
-  ok (-r 'extra.rc', 'Created extra.rc');
 }
 
 qx{../src/task rc:extra.rc add foo 2>&1};
@@ -53,11 +52,5 @@ like ($output, qr/bar/,    'Correct annotation');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data extra.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'extra.rc', 'Cleanup');
-
 exit 0;
 

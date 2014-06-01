@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 1;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', 'hang.rc')
             "shadow.file=shadow.txt\n",
             "shadow.command=list\n";
   close $fh;
-  ok (-r 'hang.rc', 'Created hang.rc');
 }
 
 =pod
@@ -74,12 +73,5 @@ if ($@ eq "alarm\n")
 
 # Cleanup.
 unlink qw(shadow.txt pending.data completed.data undo.data backlog.data hang.rc);
-ok (! -r 'shadow.txt'     &&
-    ! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'hang.rc', 'Cleanup');
-
 exit 0;
 

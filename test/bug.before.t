@@ -28,7 +28,7 @@
 use strict;
 use warnings;
 use Time::Local;
-use Test::More tests => 17;
+use Test::More tests => 14;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,7 +42,6 @@ if (open my $fh, '>', 'before.rc')
             "dateformat=m/d/Y\n",
             "dateformat.info=m/d/Y\n";
   close $fh;
-  ok (-r 'before.rc', 'Created before.rc');
 }
 
 # Create some example data directly.
@@ -56,7 +55,6 @@ if (open my $fh, '>', 'pending.data')
 EOF
 
   close $fh;
-  ok (-r 'pending.data', 'Created pending.data');
 }
 
 # Verify data is readable and just as expected.
@@ -87,11 +85,5 @@ unlike ($output, qr/bar/, 'no bar after 5/1/2009');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data before.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'before.rc', 'Cleanup');
-
 exit 0;
 

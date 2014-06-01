@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'bug_sort.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'bug_sort.rc', 'Created bug_sort.rc');
 }
 
 my $setup = "../src/task rc:bug_sort.rc add one 2>&1;"
@@ -55,11 +54,5 @@ like ($output, qr/three.*one.*two/msi, 'list did not hang after pri:H on 1');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug_sort.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug_sort.rc', 'Cleanup');
-
 exit 0;
 

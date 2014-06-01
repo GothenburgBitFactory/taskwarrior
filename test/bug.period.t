@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 41;
+use Test::More tests => 39;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'period.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'period.rc', 'Created period.rc');
 }
 
 =pod
@@ -161,11 +160,5 @@ like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data period.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'period.rc', 'Cleanup');
-
 exit 0;
 

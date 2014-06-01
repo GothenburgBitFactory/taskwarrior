@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 11;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -43,7 +43,6 @@ if (open my $fh, '>', 'annual.rc')
             "report.annual.filter=status:pending\n",
             "report.annual.sort=due+\n";
   close $fh;
-  ok (-r 'annual.rc', 'Created annual.rc');
 }
 
 # If a task is added with a due date ten years ago, with an annual recurrence,
@@ -81,11 +80,5 @@ like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data annual.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'annual.rc', 'Cleanup');
-
 exit 0;
 
