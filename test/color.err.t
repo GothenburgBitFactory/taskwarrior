@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -43,23 +43,16 @@ if (open my $fh, '>', 'color.rc')
             "color.debug=green\n",
             "_forcecolor=1\n";
   close $fh;
-  ok (-r 'color.rc', 'Created color.rc');
 }
 
 # Test the errors colors
-my $output = qx{../src/task rc:color.rc rc.debug:on add due:__ 2>&1 >/dev/null};
-like ($output, qr/^\033\[33mThe\ duration\ '__'\ was\ not\ recognized\ as\ valid,\ with\ correct\ units\ like\ '3days'\.\033\[0m$/xms, 'color.error');
-like ($output, qr/^\033\[32mTimer\ Config::load\ \(.+color.rc\) .* \033\[0m$/xms, 'color.debug');
-like ($output, qr/^\033\[34mUsing\ alternate\ .taskrc\ file\ /xms, 'color.header');
-like ($output, qr/^\033\[31mConfiguration\ override\ rc.debug:on\033\[0m$/xms, 'color.footnote');
+my $output = qx{../src/task rc:color.rc rc.debug:on add foo priority:X 2>&1 >/dev/null};
+like ($output, qr/^\033\[33m The\ 'priority'\ attribute\ does\ not\ allow\ a\ value\ of\ 'X'\. \033\[0m$/xms, 'color.error');
+like ($output, qr/^\033\[32m Timer\ Config::load\ \(.+color.rc\) .* \033\[0m$/xms, 'color.debug');
+like ($output, qr/^\033\[34m Using\ alternate\ .taskrc\ file\ /xms, 'color.header');
+like ($output, qr/^\033\[31m Configuration\ override\ rc.debug:on \033\[0m$/xms, 'color.footnote');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data color.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'color.rc', 'Cleanup');
-
 exit 0;
 
