@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 18;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'undo.rc')
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
-  ok (-r 'undo.rc', 'Created undo.rc');
 }
 
 # Test the add/done/undo commands.
@@ -55,7 +54,7 @@ $output = qx{../src/task rc:undo.rc undo 2>&1; ../src/task rc:undo.rc info 1 2>&
 ok (-r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
-$output = qx{../src/task rc:undo.rc 1 do 2>&1; ../src/task rc:undo.rc list 2>&1 >/dev/null};
+$output = qx{../src/task rc:undo.rc 1 done 2>&1; ../src/task rc:undo.rc list 2>&1 >/dev/null};
 like ($output, qr/No matches/, 'No matches');
 
 # Bug 1060: Test that if undo is given an argument it catches and reports the correct error.
@@ -96,10 +95,4 @@ else
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data undo.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'undo.rc', 'Cleanup');
-
 exit 0;
