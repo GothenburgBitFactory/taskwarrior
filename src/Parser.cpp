@@ -144,13 +144,21 @@ Tree* Parser::tree ()
 ////////////////////////////////////////////////////////////////////////////////
 Tree* Parser::parse ()
 {
+  findBinary ();
   findTerminator ();
+
+  findOverrides ();
+  applyOverrides ();
+
   findSubstitution ();
   findPattern ();
   findTag ();
   findAttribute ();
   findAttributeModifier ();
   findOperator ();
+  findCommand ();
+  findUUIDList ();
+  findIdSequence ();
   findFilter ();
   findModifications ();
 

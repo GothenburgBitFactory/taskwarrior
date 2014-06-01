@@ -381,8 +381,7 @@ int Context::run ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Locate and dispatch to the command whose keyword matches via autoComplete
-// with the earliest argument.
+// Dispatch to the command found by the parser.
 int Context::dispatch (std::string &out)
 {
   // Autocomplete args against keywords.
