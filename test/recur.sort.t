@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,7 +42,6 @@ if (open my $fh, '>', 'recur.rc')
             "report.desc.columns=id,recur,description\n",
             "report.desc.sort=recur-\n";
   close $fh;
-  ok (-r 'recur.rc', 'Created recur.rc');
 }
 
 # Create a few recurring tasks, and test the sort order of the recur column.
@@ -61,11 +60,5 @@ like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data recur.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'recur.rc', 'Cleanup');
-
 exit 0;
 

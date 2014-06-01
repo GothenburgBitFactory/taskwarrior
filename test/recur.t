@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 9;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', 'recur.rc')
             "confirmation=off\n",
             "recurrence.limit=1\n";
   close $fh;
-  ok (-r 'recur.rc', 'Created recur.rc');
 }
 
 # Create a recurring and non-recurring task.
@@ -98,11 +97,5 @@ like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data recur.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'recur.rc', 'Cleanup');
-
 exit 0;
 

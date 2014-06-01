@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'recur.rc')
   print $fh "data.location=.\n",
             "defaultwidth=100\n";
   close $fh;
-  ok (-r 'recur.rc', 'Created recur.rc');
 }
 
 # Add a recurring task, then see how many future pending tasks are
@@ -58,11 +57,5 @@ like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data recur.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'recur.rc', 'Cleanup');
-
 exit 0;
 
