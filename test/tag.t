@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 6;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'tag.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'tag.rc', 'Created tag.rc');
 }
 
 # Add task with tags.
@@ -67,11 +66,5 @@ unlike ($output, qr/^Tags/m, '-missing NOP');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data tag.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'tag.rc', 'Cleanup');
-
 exit 0;
 

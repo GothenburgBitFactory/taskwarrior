@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'utf8.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'utf8.rc', 'Created utf8.rc');
 }
 
 # Add a task with UTF8 in the description.
@@ -74,11 +73,5 @@ like ($output, qr/utf8 in tag/, 'utf8 in tag works');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data utf8.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'utf8.rc', 'Cleanup');
-
 exit 0;
 

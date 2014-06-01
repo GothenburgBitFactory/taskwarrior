@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 11;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -44,7 +44,6 @@ if (open my $fh, '>', 'wait.rc')
             "confirmation=off\n";
 
   close $fh;
-  ok (-r 'wait.rc', 'Created wait.rc');
 }
 
 # Add a waiting task, check it is not there, wait, then check it is.
@@ -86,10 +85,4 @@ like ($output, qr/Warning: You have specified that the 'wait' date is after the 
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data wait.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'wait.rc', 'Cleanup');
-
 exit 0;

@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'sp.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'sp.rc', 'Created sp.rc');
 }
 
 my $setup = "../src/task rc:sp.rc add project:abc abc 2>&1;"
@@ -67,11 +66,5 @@ like ($output, qr/No matches\./, 'abc,ab,a,b | abcd -> nul');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data sp.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'sp.rc', 'Cleanup');
-
 exit 0;
 

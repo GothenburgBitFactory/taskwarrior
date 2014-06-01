@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 32;
+use Test::More tests => 30;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -67,7 +67,6 @@ if (open my $fh, '>', 'urgency.rc')
             "confirmation=off\n";
 
   close $fh;
-  ok (-r 'urgency.rc', 'Created urgency.rc');
 }
 
 # Add a task, and verify that the individual urgency terms are being correctly
@@ -340,10 +339,4 @@ like ($output, qr/Urgency     0\.01$/ms, 'near-zero urgency is truncated');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data urgency.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'urgency.rc', 'Cleanup');
-
 exit 0;
