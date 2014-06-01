@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 26;
+use Test::More tests => 23;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -44,7 +44,6 @@ if (open my $fh, '>', 'import.rc')
             "dateformat=YYYY-M-D\n",
             "verbose=off\n";
   close $fh;
-  ok (-r 'import.rc', 'Created import.rc');
 }
 
 # Create import file.
@@ -66,7 +65,6 @@ if (open my $fh, '>', 'import.txt')
             "x 2011-03-02 2011-03-01 Review Tim's pull request +TodoTxtTouch \@github\n";  # -
 
   close $fh;
-  ok (-r 'import.txt', 'Created sample import data');
 }
 
 # Convert todo.sh --> task JSON.
@@ -127,13 +125,5 @@ like ($output, qr/^Description.+xylophone lesson/ms, '12 <desc>');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data import.rc import.txt import.json);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'import.rc'      &&
-    ! -r 'import.txt'     &&
-    ! -r 'import.json', 'Cleanup');
-
 exit 0;
 

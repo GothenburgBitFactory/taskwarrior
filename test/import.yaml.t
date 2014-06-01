@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 13;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,7 +42,6 @@ if (open my $fh, '>', 'import.rc')
   print $fh "data.location=.\n",
             "dateformat=m/d/Y\n";
   close $fh;
-  ok (-r 'import.rc', 'Created import.rc');
 }
 
 # Create import file.
@@ -73,7 +72,6 @@ if (open my $fh, '>', 'import.txt')
 EOF
 
   close $fh;
-  ok (-r 'import.txt', 'Created sample import data');
 }
 
 # Convert YAML --> task JSON.
@@ -88,7 +86,7 @@ $output = qx{../src/task rc:import.rc list 2>&1};
 # -- ------- ------- -----------
 #  1 A       1.5 yrs zero
 #  2 B       1.5 yrs one
-# 
+#
 # 2 tasks
 
 like   ($output, qr/1.+A.+zero/, 't1 present');
@@ -99,7 +97,7 @@ $output = qx{../src/task rc:import.rc completed 2>&1};
 # Complete  Age     Description
 # --------- ------- -----------
 # 2/13/2009 1.5 yrs two
-# 
+#
 # 1 task
 
 unlike ($output, qr/1.+A.+zero/,      't1 missing');
@@ -148,12 +146,5 @@ like ($output, qr/3.+three/,   't3 present');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data import.rc import.txt import.json);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'import.rc'      &&
-    ! -r 'import.txt'     &&
-    ! -r 'import.json', 'Cleanup');
 exit 0;
 

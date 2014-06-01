@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 9;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'import.rc')
   print $fh "data.location=.\n",
             "dateformat=m/d/Y\n";
   close $fh;
-  ok (-r 'import.rc', 'Created import.rc');
 }
 
 # Create import file.
@@ -50,9 +49,7 @@ if (open my $fh, '>', 'import.txt')
 {"uuid":"11111111-1111-1111-1111-111111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},
 {"uuid":"22222222-2222-2222-2222-222222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690"}
 EOF
-
   close $fh;
-  ok (-r 'import.txt', 'Created sample import data');
 }
 
 my $output = qx{../src/task rc:import.rc import import.txt 2>&1 >/dev/null};
@@ -64,7 +61,7 @@ $output = qx{../src/task rc:import.rc list 2>&1};
 # -- ------- --- --- ------ ------- -----------
 #  1 A                      1.5 yrs zero
 #  2 B                      1.5 yrs one
-# 
+#
 # 2 tasks
 
 like   ($output, qr/1.+A.+zero/, 't1 present');
@@ -75,7 +72,7 @@ $output = qx{../src/task rc:import.rc completed 2>&1};
 # Complete  Project Pri Age     Description
 # --------- ------- --- ------- -----------
 # 2/13/2009             1.5 yrs two
-# 
+#
 # 1 task
 
 unlike ($output, qr/1.+A.+zero/,       't1 missing');
@@ -92,9 +89,7 @@ if (open my $fh, '>', 'import2.txt')
   print $fh <<EOF;
 {"uuid":"44444444-4444-4444-4444-444444444444","description":"three","status":"pending","entry":"1234567889"}
 EOF
-
   close $fh;
-  ok (-r 'import2.txt', 'Created second sample import data');
 }
 
 $output = qx{../src/task rc:import.rc import import2.txt 2>&1 >/dev/null};
@@ -103,13 +98,5 @@ like ($output, qr/Imported 1 tasks\./, 'no errors');
 
 # Cleanup.
 unlink qw(import.txt import2.txt pending.data completed.data undo.data backlog.data  import.rc);
-ok (! -r 'import.txt'     &&
-    ! -r 'import2.txt'    &&
-    ! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'import.rc', 'Cleanup');
-
 exit 0;
 
