@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 12;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'bug.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug 956 - 'task ids' prints the header, which prevents using the command in
@@ -72,12 +71,6 @@ $output = qx{TASKRC=bug.rc ../src/task _ids 2>/dev/null};
 like ($output, qr/^[0-9a-f-]*$/m, 'UUID shown');
 unlike ($output, qr/TASKRC/ms, 'The header does not appear with "_ids" (2>/dev/null)');
 
-### Cleanup.
+# Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;

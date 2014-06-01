@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'bug.rc')
   print $fh "data.location=.\n",
             "confirmation=on\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug 955: When deleting the child of a recurring task, taskwarrior does not ask
@@ -58,11 +57,5 @@ like ($output, qr/^No matches/ms, 'No tasks remaining');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
 
