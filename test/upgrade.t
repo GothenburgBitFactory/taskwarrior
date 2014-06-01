@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'upgrade.rc')
   print $fh "data.location=.\n",
             "confirmation=off\n";
   close $fh;
-  ok (-r 'upgrade.rc', 'Created upgrade.rc');
 }
 
 # Add a plain task, then upgrade to recurring, test for correctness.
@@ -51,19 +50,13 @@ qx{../src/task rc:upgrade.rc 1 modify due:tomorrow recur:weekly 2>&1};
 qx{../src/task rc:upgrade.rc list 2>&1};
 $output = qx{../src/task rc:upgrade.rc 1 info 2>&1};
 like ($output, qr/Status\s+Recurring/,  'Upgraded parent: good status');
-like ($output, qr/Recurrence\s+weekly/, 'Upgraded parent: good recurrence');
+like ($output, qr/Recurrence\s+P7D/, 'Upgraded parent: good recurrence');
 
 $output = qx{../src/task rc:upgrade.rc 2 info 2>&1};
 like ($output, qr/Status\s+Pending/,    'Upgraded child: good status');
-like ($output, qr/Recurrence\s+weekly/, 'Upgraded child: good recurrence');
+like ($output, qr/Recurrence\s+P7D/, 'Upgraded child: good recurrence');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data upgrade.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'upgrade.rc', 'Cleanup');
-
 exit 0;
 
