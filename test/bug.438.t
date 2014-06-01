@@ -100,6 +100,6 @@ ok ($? == 0,                                   "$ut: end foo");
 like ($output, qr/three newer.+three older/ms, "$ut: sort:end- -> newer older");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data $rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 

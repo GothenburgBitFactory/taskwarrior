@@ -132,6 +132,6 @@ like   ($output, qr/ ten/,    "$ut: newest limit:3: ten");
 like   ($output, qr/ eleven/, "$ut: newest limit:3: eleven");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data $rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
