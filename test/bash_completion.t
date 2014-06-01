@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 16;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -41,7 +41,6 @@ if (open my $fh, '>', 'bug.rc')
   print $fh "abbreviation.minimum=5\n";
 
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 my $source_dir = $0;
@@ -108,37 +107,6 @@ $output = qx{bash ./task.sh task proj : to 2>&1};
 ok ($? == 0, 'Exit status check');
 unlike ($output, qr/todd/, '\'proj:\' does not expand if abbreviation.minimum is 5');
 
-# The following tests were removed because we no longer expand task IDs after
-# depends. This expansion was stopped because it was using the _ids command
-# which runs _ids and can lead to confusing behavior for the user. See:
-# https://groups.google.com/forum/#!topic/taskwarrior-dev/KwHnb9MOOqA
-
-## "priority:" should be expanded correctly and dependent on abbreviation.minimum
-#$output = qx{bash ./task.sh task priorABC : 2>&1};
-#ok ($? == 0, 'Exit status check');
-#unlike ($output, qr/H/, '\'priorABC:\' does not expand');
-#
-#$output = qx{bash ./task.sh task prior : 2>&1};
-#ok ($? == 0, 'Exit status check');
-#like ($output, qr/H/, '\'prior:\' does expand');
-#
-#$output = qx{bash ./task.sh task prio : 2>&1};
-#ok ($? == 0, 'Exit status check');
-#unlike ($output, qr/H/, '\'prio:\' does not expand if abbreviation.minimum is 5');
-#
-## "depends:" should be expanded correctly and dependent on abbreviation.minimum
-#$output = qx{bash ./task.sh task depenABC : 2>&1};
-#ok ($? == 0, 'Exit status check');
-#unlike ($output, qr/1/, '\'depenABC:\' does not expand');
-#
-#$output = qx{bash ./task.sh task depen : 2>&1};
-#ok ($? == 0, 'Exit status check');
-#like ($output, qr/1/, '\'depen:\' does expand');
-#
-#$output = qx{bash ./task.sh task depe : 2>&1};
-#ok ($? == 0, 'Exit status check');
-#unlike ($output, qr/1/, '\'depe:\' does not expand if abbreviation.minimum is 5');
-
 # there should be no gc coming from bash completion
 qx{../src/task rc:bug.rc add this task should be number 2 and stay number 2 2>&1};
 ok ($? == 0, 'Exit status check');
@@ -152,11 +120,4 @@ like ($output, qr/shouldreplacetext/, 'no gc was run');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc task.sh);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc'         &&
-    ! -r 'task.sh', 'Cleanup');
-
 exit 0;

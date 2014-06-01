@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 1;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'backslash.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'backslash.rc', 'Created backslash.rc');
 }
 
 # Add a description with a backslash.
@@ -48,12 +47,6 @@ like ($output, qr/\\/, 'Backslash preserved, no parsing issues');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data backslash.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'backslash.rc', 'Cleanup');
-
 exit 0;
 
 ################################################################################

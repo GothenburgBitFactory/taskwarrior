@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'append.rc')
   print $fh "data.location=.\n",
             "confirmation=off\n";
   close $fh;
-  ok (-r 'append.rc', 'Created append.rc');
 }
 
 # Add a task, then append more description.
@@ -56,11 +55,5 @@ unlike ($output, qr/^Appended 1 task.$/, 'blank append failed');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data append.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'append.rc', 'Cleanup');
-
 exit 0;
 

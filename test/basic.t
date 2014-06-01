@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'basic.rc')
   print $fh "data.location=.\n",
             "default.command=\n";
   close $fh;
-  ok (-r 'basic.rc', 'Created basic.rc');
 }
 
 # Get the version number from configure.ac
@@ -61,8 +60,6 @@ like ($output, qr/[a-f0-9]{7}/, '_version - task version number');
 
 # Cleanup.
 unlink 'basic.rc';
-ok (!-r 'basic.rc', 'Removed basic.rc');
-
 exit 0;
 
 ################################################################################

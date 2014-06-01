@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 25;
+use Test::More tests => 23;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -46,7 +46,6 @@ if (open my $fh, '>', 'annotate.rc')
             "color=off\n",
             "dateformat=m/d/Y\n";
   close $fh;
-  ok (-r 'annotate.rc', 'Created annotate.rc');
 }
 
 # Add four tasks, annotate one three times, one twice, one just once and one none.
@@ -63,7 +62,7 @@ qx{../src/task rc:annotate.rc 3 annotate baz1 2>&1};
 
 my $output = qx{../src/task rc:annotate.rc rrr 2>&1};
 
-# ID Description                    
+# ID Description
 # -- -------------------------------
 #  1 one
 #    3/24/2009 foo1
@@ -75,7 +74,7 @@ my $output = qx{../src/task rc:annotate.rc rrr 2>&1};
 #  3 three
 #    3/24/2009 baz1
 #  4 four
-# 
+#
 # 4 tasks
 
 like ($output, qr/1 one/,   'task 1'); # 2
@@ -99,7 +98,7 @@ if (open my $fh, '>', 'annotate2.rc')
             "report.rrr.description=rrr\n",
             "report.rrr.columns=id,description\n",
             "report.rrr.sort=id+\n",
-	    "dateformat.annotation=yMD HNS\n";
+            "dateformat.annotation=yMD HNS\n";
   close $fh;
   ok (-r 'annotate2.rc', 'Created annotate2.rc');
 }
@@ -119,12 +118,5 @@ like ($output, qr/4 tasks/, 'count');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data annotate.rc annotate2.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'annotate.rc'    &&
-    ! -r 'annotate2.rc', 'Cleanup');
-
 exit 0;
 

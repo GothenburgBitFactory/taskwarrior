@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', 'alias.rc')
             "alias.foo=_projects\n",
             "alias.bar=foo\n";
   close $fh;
-  ok (-r 'alias.rc', 'Created alias.rc');
 }
 
 # Add a task with certain project, then access that task via aliases.
@@ -57,11 +56,5 @@ like ($output, qr/ALIAS/, 'task bar -> foo -> _projects -> ALIAS');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data alias.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'alias.rc', 'Cleanup');
-
 exit 0;
 
