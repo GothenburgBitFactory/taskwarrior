@@ -29,7 +29,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 84;
+use Test::More tests => 82;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -49,7 +49,6 @@ if (open my $fh, '>', 'cal.rc')
             "confirmation=off\n",
             "bulk=10\n";
   close $fh;
-  ok (-r 'cal.rc', 'Created cal.rc');
 }
 
 my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
@@ -263,10 +262,4 @@ like   ($output, qr/30;103m25/,    'Holiday åäö is color-coded');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data details.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'details.rc', 'Cleanup');
-
 exit 0;

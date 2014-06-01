@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 16;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -43,7 +43,6 @@ if (open my $fh, '>', 'caseless.rc')
             "report.ls.filter=status:pending\n";
 
   close $fh;
-  ok (-r 'caseless.rc', 'Created caseless.rc');
 }
 
 # Attempt case-sensitive and case-insensitive substitutions and filters.
@@ -128,11 +127,5 @@ like ($output, qr/four five six/, 'one two three\nfour five six -> ls descriptio
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data caseless.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'caseless.rc', 'Cleanup');
-
 exit 0;
 
