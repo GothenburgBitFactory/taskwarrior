@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', 'color.rc')
             "color.pri.H=red\n",
             "fontunderline=no\n";
   close $fh;
-  ok (-r 'color.rc', 'Created color.rc');
 }
 
 # Test the add command.
@@ -53,11 +52,5 @@ unlike ($output, qr/\033\[0m/,  'color.disable - no color reset');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data color.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'color.rc', 'Cleanup');
-
 exit 0;
 

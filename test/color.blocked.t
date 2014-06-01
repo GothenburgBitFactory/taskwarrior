@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -41,7 +41,6 @@ if (open my $fh, '>', 'color.rc')
             "color.alternate=\n",
             "_forcecolor=1\n";
   close $fh;
-  ok (-r 'color.rc', 'Created color.rc');
 }
 
 # Test the add command.
@@ -55,11 +54,5 @@ like ($output, qr/ \033\[31m        .* red     .* \033\[0m /x, 'color.blocked');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data color.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'color.rc', 'Cleanup');
-
 exit 0;
 
