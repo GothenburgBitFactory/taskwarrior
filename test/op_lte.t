@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 12;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'op.rc')
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
-  ok (-r 'op.rc', 'Created op.rc');
 }
 
 # Setup: Add a task
@@ -69,11 +68,5 @@ like   ($output, qr/four/,  'ls urgency <= 2.0 --> four');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data op.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'op.rc', 'Cleanup');
-
 exit 0;
 
