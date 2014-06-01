@@ -814,6 +814,9 @@ void Parser::findAttribute ()
             n.getUntilEOS (value)       ||
             n.depleted ())
         {
+          if (value == "")
+            value = "''";
+
           std::string canonical;
           if (canonicalize (canonical, "uda", name))
           {
@@ -858,10 +861,7 @@ void Parser::findAttribute ()
               branch->attribute ("raw", "==");
 
             branch = (*i)->addBranch (new Tree ("argAtt"));
-            if (value != "")
-              branch->attribute ("raw", value);
-            else
-              branch->attribute ("raw", "'" + value + "'");
+            branch->attribute ("raw", value);
           }
         }
       }
@@ -909,8 +909,12 @@ void Parser::findAttributeModifier ()
             std::string value;
             if (n.getQuoted   ('"', value)  ||
                 n.getQuoted   ('\'', value) ||
-                n.getUntilEOS (value))
+                n.getUntilEOS (value)       ||
+                n.depleted ())
             {
+              if (value == "")
+                value = "''";
+
               (*i)->unTag ("?");
               (*i)->tag ("ATTMOD");
               (*i)->attribute ("name", canonical);
