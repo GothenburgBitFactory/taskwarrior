@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 6;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'feature.rc')
   print $fh "data.location=.\n",
             "confirmation=off\n";
   close $fh;
-  ok (-r 'feature.rc', 'Created feature.rc');
 }
 
 # Feature 725: Feedback when tasks become unblocked.
@@ -68,11 +67,5 @@ like ($output, qr/Unblocked/, 'Deleting dependency triggers message');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data feature.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'feature.rc', 'Cleanup');
-
 exit 0;
 

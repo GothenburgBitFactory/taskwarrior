@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -36,10 +36,9 @@ delete $ENV{'TASKRC'};
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
-  print $fh "data.location=.\n";
-  print $fh "report.test.columns=id,project\n";
+  print $fh "data.location=.\n",
+            "report.test.columns=id,project\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Feature: variable to control printing of empty columns
@@ -60,10 +59,4 @@ like ($output, qr/Project/, 'non-empty \'project\' column is printed if rc.print
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;

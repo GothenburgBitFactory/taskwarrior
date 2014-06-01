@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'exit.rc')
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
-  ok (-r 'exit.rc', 'Created exit.rc');
 }
 
 qx{../src/task rc:exit.rc add foo 2>&1};
@@ -50,11 +49,5 @@ isnt ($exit_bad, 0, 'task returns non-zero on failure');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data  exit.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'exit.rc', 'Cleanup');
-
 exit 0;
 

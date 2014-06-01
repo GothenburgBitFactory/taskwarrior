@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 10;
 use File::Path;
 
 # Ensure environment has no influence.
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'rc1')
 {
   print $fh "data.location=./data1\n";
   close $fh;
-  ok (-r 'rc1', 'Created rc1');
 }
 
 if (open my $fh, '>', 'rc2')
@@ -87,10 +86,5 @@ rmtree ('./data1', 0 , 1);
 rmtree ('./data2', 0 , 1);
 
 unlink qw(rc1 rc2);
-ok (! -d './data1' &&
-    ! -d './data2' &&
-    ! -r 'rc1'     &&
-    ! -r 'rc2', 'Cleanup');
-
 exit 0
 

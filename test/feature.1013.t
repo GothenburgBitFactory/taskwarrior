@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'outerr.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'outerr.rc', 'Created outerr.rc');
 }
 
 # Feature 1013: output error, header, footnote and debug messages on standard
@@ -70,11 +69,5 @@ like ($stderr, qr/^Timer Config::load \(.+outerr.rc\) /ms, 'Debugs are sent to s
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data outerr.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'outerr.rc', 'Cleanup');
-
 exit 0;
 
