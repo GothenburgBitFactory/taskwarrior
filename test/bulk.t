@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 44;
+use Test::More tests => 42;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'bulk.rc')
   print $fh "data.location=.\n",
             "bulk=3\n";
   close $fh;
-  ok (-r 'bulk.rc', 'Created bulk.rc');
 }
 
 # Exercise bulk and non-bulk confirmations for 'delete' and 'modify'.
@@ -144,11 +143,5 @@ unlike ($output, qr/delete task 17/,         'No question asked for subsequent t
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bulk.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bulk.rc', 'Cleanup');
-
 exit 0;
 
