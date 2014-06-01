@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'limit.rc')
   print $fh "data.location=.\n",
             "verbose=affected\n";
   close $fh;
-  ok (-r 'limit.rc', 'Created limit.rc');
 }
 
 # Add a large number of tasks (> 25).
@@ -99,11 +98,5 @@ like ($output, qr/^30 tasks, truncated to 22 lines$/ms, 'limited to page');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data limit.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'limit.rc', 'Cleanup');
-
 exit 0;
 

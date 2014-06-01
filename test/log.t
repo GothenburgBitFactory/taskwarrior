@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 1;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'log.rc')
   print $fh "data.location=.\n",
             "confirmation=off\n";
   close $fh;
-  ok (-r 'log.rc', 'Created log.rc');
 }
 
 # Test the log command.
@@ -49,11 +48,5 @@ like ($output, qr/This is a test/, 'log description');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data  log.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'log.rc', 'Cleanup');
-
 exit 0;
 
