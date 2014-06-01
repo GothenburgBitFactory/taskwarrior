@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,7 +42,6 @@ if (open my $fh, '>', 'custom.rc')
             "report.foo.labels=ID,R\n",
             "report.foo.sort=id+\n";
   close $fh;
-  ok (-r 'custom.rc', 'Created custom.rc');
 }
 
 # Add a recurring and non-recurring task, look for the indicator.
@@ -59,11 +58,5 @@ unlike ($output, qr/2\s+RE/, 'No custom recurrence indicator t2');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data custom.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'custom.rc', 'Cleanup');
-
 exit 0;
 

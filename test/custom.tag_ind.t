@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,7 +42,6 @@ if (open my $fh, '>', 'custom.rc')
             "report.foo.labels=ID,T\n",
             "report.foo.sort=id+\n";
   close $fh;
-  ok (-r 'custom.rc', 'Created custom.rc');
 }
 
 # Generate the usage screen, and locate the custom report on it.
@@ -59,11 +58,5 @@ unlike ($output, qr/2\s+TAG/, 'No custom tag indicator t2');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data custom.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'custom.rc', 'Cleanup');
-
 exit 0;
 

@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,7 +42,6 @@ if (open my $fh, '>', 'pri.rc')
             "report.foo.labels=ID,Pri\n",
             "report.foo.sort=id+\n";
   close $fh;
-  ok (-r 'pri.rc', 'Created pri.rc');
 }
 
 # Generate the usage screen, and locate the custom report on it.
@@ -58,11 +57,5 @@ like ($output,   qr/3\s+Low/,    'priority.long Low');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data pri.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'pri.rc', 'Cleanup');
-
 exit 0;
 
