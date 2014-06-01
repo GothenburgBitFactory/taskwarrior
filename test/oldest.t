@@ -27,109 +27,111 @@
 
 use strict;
 use warnings;
-use Test::More tests => 52;
+use Test::More tests => 48;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'oldest.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
-# Add 11 tasks.  Oldest should show 1-10, newest should show 2-11.
-qx{../src/task rc:oldest.rc add one 2>&1};
-diag ("3 second delay");
-sleep 1;
-qx{../src/task rc:oldest.rc add two 2>&1};
-sleep 1;
-qx{../src/task rc:oldest.rc add three 2>&1};
-sleep 1;
-my $output = qx{../src/task rc:oldest.rc oldest 2>&1};
-like ($output, qr/ one/,               'oldest: one');
-like ($output, qr/ two/,               'oldest: two');
-like ($output, qr/ three/,             'oldest: three');
-like ($output, qr/one.*two.*three/ms, 'oldest: sort');
+# Create 11 tasks, progressively 1 second newer.
+if (open my $fh, '>', 'pending.data')
+{
+  my $entry = time () - 3600;  # An hour ago.
 
-$output = qx{../src/task rc:oldest.rc newest 2>&1};
-like ($output, qr/ three/,             'newest: three');
-like ($output, qr/ two/,               'newest: two');
-like ($output, qr/ one/,               'newest: one');
-like ($output, qr/three.*two.*one/ms, 'newest: sort');
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000001" status:"pending" description:"one" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000002" status:"pending" description:"two" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000003" status:"pending" description:"three" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000004" status:"pending" description:"four" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000005" status:"pending" description:"five" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000006" status:"pending" description:"six" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000007" status:"pending" description:"seven" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000008" status:"pending" description:"eight" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000009" status:"pending" description:"nine" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000010" status:"pending" description:"ten" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000011" status:"pending" description:"eleven" entry:"$entry"]\n};
+  $entry++;
 
-qx{../src/task rc:oldest.rc add four 2>&1};
-diag ("7 second delay");
-sleep 1;
-qx{../src/task rc:oldest.rc add five 2>&1};
-sleep 1;
-qx{../src/task rc:oldest.rc add six 2>&1};
-sleep 1;
-qx{../src/task rc:oldest.rc add seven 2>&1};
-sleep 1;
-qx{../src/task rc:oldest.rc add eight 2>&1};
-sleep 1;
-qx{../src/task rc:oldest.rc add nine 2>&1};
-sleep 1;
-qx{../src/task rc:oldest.rc add ten 2>&1};
-sleep 1;
-qx{../src/task rc:oldest.rc add eleven 2>&1};
+  close $fh;
+}
 
-$output = qx{../src/task rc:oldest.rc oldest limit:10 2>&1};
-like   ($output, qr/ one/,    'oldest: one');   # 10
-like   ($output, qr/ two/,    'oldest: two');
-like   ($output, qr/ three/,  'oldest: three');
-like   ($output, qr/ four/,   'oldest: four');
-like   ($output, qr/ five/,   'oldest: five');
-like   ($output, qr/ six/,    'oldest: six');
-like   ($output, qr/ seven/,  'oldest: seven');
-like   ($output, qr/ eight/,  'oldest: eight');
-like   ($output, qr/ nine/,   'oldest: nine');
-like   ($output, qr/ ten/,    'oldest: ten');
-unlike ($output, qr/ eleven/, 'no: eleven');   # 20
+my $output = qx{../src/task rc:$rc oldest limit:10 2>&1};
+ok ($? == 0,                  "$ut: oldest limit:10");
+like   ($output, qr/ one/,    "$ut: oldest limit:10: one");
+like   ($output, qr/ two/,    "$ut: oldest limit:10: two");
+like   ($output, qr/ three/,  "$ut: oldest limit:10: three");
+like   ($output, qr/ four/,   "$ut: oldest limit:10: four");
+like   ($output, qr/ five/,   "$ut: oldest limit:10: five");
+like   ($output, qr/ six/,    "$ut: oldest limit:10: six");
+like   ($output, qr/ seven/,  "$ut: oldest limit:10: seven");
+like   ($output, qr/ eight/,  "$ut: oldest limit:10: eight");
+like   ($output, qr/ nine/,   "$ut: oldest limit:10: nine");
+like   ($output, qr/ ten/,    "$ut: oldest limit:10: ten");
+unlike ($output, qr/ eleven/, "$ut: oldest limit:10: ! eleven");
 
-$output = qx{../src/task rc:oldest.rc oldest limit:3 2>&1};
-like   ($output, qr/ one/,    'oldest: one');
-like   ($output, qr/ two/,    'oldest: two');
-like   ($output, qr/ three/,  'oldest: three');
-unlike ($output, qr/ four/,   'no: four');
-unlike ($output, qr/ five/,   'no: five');
-unlike ($output, qr/ six/,    'no: six');
-unlike ($output, qr/ seven/,  'no: seven');
-unlike ($output, qr/ eight/,  'no: eight');
-unlike ($output, qr/ nine/,   'no: nine');
-unlike ($output, qr/ ten/,    'no: ten');    # 30
-unlike ($output, qr/ eleven/, 'no: eleven');
+$output = qx{../src/task rc:$rc oldest limit:3 2>&1};
+ok ($? == 0,                  "$ut: oldest limit:3");
+like   ($output, qr/ one/,    "$ut: oldest limit:3: one");
+like   ($output, qr/ two/,    "$ut: oldest limit:3: two");
+like   ($output, qr/ three/,  "$ut: oldest limit:3: three");
+unlike ($output, qr/ four/,   "$ut: oldest limit:3: ! four");
+unlike ($output, qr/ five/,   "$ut: oldest limit:3: ! five");
+unlike ($output, qr/ six/,    "$ut: oldest limit:3: ! six");
+unlike ($output, qr/ seven/,  "$ut: oldest limit:3: ! seven");
+unlike ($output, qr/ eight/,  "$ut: oldest limit:3: ! eight");
+unlike ($output, qr/ nine/,   "$ut: oldest limit:3: ! nine");
+unlike ($output, qr/ ten/,    "$ut: oldest limit:3: ! ten");
+unlike ($output, qr/ eleven/, "$ut: oldest limit:3: ! eleven");
 
-$output = qx{../src/task rc:oldest.rc newest limit:10 2>&1};
-unlike ($output, qr/ one/,    'no: one');
-like   ($output, qr/ two/,    'newest: two');
-like   ($output, qr/ three/,  'newest: three');
-like   ($output, qr/ four/,   'newest: four');
-like   ($output, qr/ five/,   'newest: five');
-like   ($output, qr/ six/,    'newest: six');
-like   ($output, qr/ seven/,  'newest: seven');
-like   ($output, qr/ eight/,  'newest: eight');
-like   ($output, qr/ nine/,   'newest: nine');   # 40
-like   ($output, qr/ ten/,    'newest: ten');
-like   ($output, qr/ eleven/, 'newest: eleven');
+$output = qx{../src/task rc:$rc newest limit:10 2>&1};
+ok ($? == 0,                  "$ut: newest limit:10");
+unlike ($output, qr/ one/,    "$ut: newest limit:10: ! one");
+like   ($output, qr/ two/,    "$ut: newest limit:10: two");
+like   ($output, qr/ three/,  "$ut: newest limit:10: three");
+like   ($output, qr/ four/,   "$ut: newest limit:10: four");
+like   ($output, qr/ five/,   "$ut: newest limit:10: five");
+like   ($output, qr/ six/,    "$ut: newest limit:10: six");
+like   ($output, qr/ seven/,  "$ut: newest limit:10: seven");
+like   ($output, qr/ eight/,  "$ut: newest limit:10: eight");
+like   ($output, qr/ nine/,   "$ut: newest limit:10: nine");
+like   ($output, qr/ ten/,    "$ut: newest limit:10: ten");
+like   ($output, qr/ eleven/, "$ut: newest limit:10: eleven");
 
-$output = qx{../src/task rc:oldest.rc newest limit:3 2>&1};
-unlike ($output, qr/ one/,    'no: one');
-unlike ($output, qr/ two/,    'no: two');
-unlike ($output, qr/ three/,  'no: three');
-unlike ($output, qr/ four/,   'no: four');
-unlike ($output, qr/ five/,   'no: five');
-unlike ($output, qr/ six/,    'no: six');
-unlike ($output, qr/ seven/,  'no: seven');
-unlike ($output, qr/ eight/,  'no: eight');    # 50
-like   ($output, qr/ nine/,   'newest: nine');
-like   ($output, qr/ ten/,    'newest: ten');
-like   ($output, qr/ eleven/, 'newest: eleven');
+$output = qx{../src/task rc:$rc newest limit:3 2>&1};
+ok ($? == 0,                  "$ut: newest limit:3");
+unlike ($output, qr/ one/,    "$ut: newest limit:3: ! one");
+unlike ($output, qr/ two/,    "$ut: newest limit:3: ! two");
+unlike ($output, qr/ three/,  "$ut: newest limit:3: ! three");
+unlike ($output, qr/ four/,   "$ut: newest limit:3: ! four");
+unlike ($output, qr/ five/,   "$ut: newest limit:3: ! five");
+unlike ($output, qr/ six/,    "$ut: newest limit:3: ! six");
+unlike ($output, qr/ seven/,  "$ut: newest limit:3: ! seven");
+unlike ($output, qr/ eight/,  "$ut: newest limit:3: ! eight");
+like   ($output, qr/ nine/,   "$ut: newest limit:3: nine");
+like   ($output, qr/ ten/,    "$ut: newest limit:3: ten");
+like   ($output, qr/ eleven/, "$ut: newest limit:3: eleven");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data oldest.rc);
+unlink qw(pending.data completed.data undo.data backlog.data $rc);
 exit 0;
 

@@ -82,5 +82,5 @@ ok ($? == 0, "$ut: 2 info");
 like ($output, qr/invisible/ms, "$ut: task 2 visible");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data wait.rc);
+unlink qw(pending.data completed.data undo.data backlog.data $rc);
 exit 0;
