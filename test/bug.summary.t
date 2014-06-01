@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'summary.rc')
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
-  ok (-r 'summary.rc', 'Created summary.rc');
 }
 
 # Add three tasks.  Do 1, delete 1, leave 1 pending.  Summary should depict a
@@ -47,7 +46,7 @@ if (open my $fh, '>', 'summary.rc')
 qx{../src/task rc:summary.rc add project:A one 2>&1};
 qx{../src/task rc:summary.rc add project:A two 2>&1};
 qx{../src/task rc:summary.rc add project:A three 2>&1};
-qx{../src/task rc:summary.rc 1 do 2>&1};
+qx{../src/task rc:summary.rc 1 done 2>&1};
 qx{../src/task rc:summary.rc 2 delete 2>&1};
 my $output = qx{../src/task rc:summary.rc summary 2>&1};
 like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, 'summary correctly shows 50% before report');
@@ -58,11 +57,5 @@ like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, 'summary correctly shows 50% a
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data summary.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'summary.rc', 'Cleanup');
-
 exit 0;
 
