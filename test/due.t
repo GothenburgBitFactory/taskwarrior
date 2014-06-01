@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -44,7 +44,6 @@ if (open my $fh, '>', 'due.rc')
             "_forcecolor=on\n",
             "dateformat=m/d/Y\n";
   close $fh;
-  ok (-r 'due.rc', 'Created due.rc');
 }
 
 # Add a task that is almost due, and one that is just due.
@@ -69,11 +68,5 @@ like ($output, qr/three/, 'due.is:today works as a filter');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data due.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'due.rc', 'Cleanup');
-
 exit 0;
 

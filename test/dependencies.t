@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 49;
+use Test::More tests => 47;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -43,9 +43,6 @@ if (open my $fh, '>', 'dep.rc')
   print $fh "report.depreport.filter=status:pending\n";
   print $fh "report.depreport.sort=depends+\n";
   close $fh;
-
-  # [1]
-  ok (-r 'dep.rc', 'Created dep.rc');
 }
 
 qx{../src/task rc:dep.rc add One 2>&1};
@@ -261,11 +258,5 @@ unlike ($output, qr/test5/ms, 'Dependency not appearing for task5');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data dep.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'dep.rc', 'Cleanup');
-
 exit 0;
 

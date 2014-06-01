@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 12;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'dup.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'dup.rc', 'Created dup.rc');
 }
 
 # Add a recurring task.  Duplicate both parent and child.
@@ -76,11 +75,5 @@ like ($output, qr/Parent/,                     'Found duplicated child task - wi
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data dup.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'dup.rc', 'Cleanup');
-
 exit 0;
 

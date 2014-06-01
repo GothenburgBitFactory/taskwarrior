@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -46,7 +46,6 @@ if (open my $fh, '>', 'datesort.rc')
             "report.small_list.dateformat=MD\n";
 
   close $fh;
-  ok (-r 'datesort.rc', 'Created datesort.rc');
 }
 
 qx{../src/task rc:datesort.rc add two   due:20100201 2>&1};
@@ -61,11 +60,5 @@ like ($output, qr/three.+two.+one/ms, 'Sorting by due- with format MD works');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data datesort.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'datesort.rc', 'Cleanup');
-
 exit 0;
 

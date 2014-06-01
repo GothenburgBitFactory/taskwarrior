@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 21;
+use Test::More tests => 19;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -43,7 +43,6 @@ if (open my $fh, '>', 'default.rc')
             "default.due=eom\n",
             "dateformat=m/d/Y\n";
   close $fh;
-  ok (-r 'default.rc', 'Created default.rc');
 }
 
 # Set up a default command, project and priority.
@@ -89,11 +88,5 @@ unlike ($output, qr/ L /, 'priority:L excluded from default command');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data default.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'default.rc', 'Cleanup');
-
 exit 0;
 

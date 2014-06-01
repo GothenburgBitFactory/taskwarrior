@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', 'dom.rc')
             "dateformat=YMD\n",
             "dateformat.info=YMD\n";
   close $fh;
-  ok (-r 'dom.rc', 'Created dom.rc');
 }
 
 # DOM reference to other task.
@@ -63,11 +62,5 @@ like ($output, qr/^1$/, 'DOM uuid --> id');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data dom.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'dom.rc', 'Cleanup');
-
 exit 0;
 

@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 12;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'delete.rc')
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
-  ok (-r 'delete.rc', 'Created delete.rc');
 }
 
 # Add a task, delete it, undelete it.
@@ -82,11 +81,5 @@ like ($output, qr/Deleted/, 'task added, completed, then deleted');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data delete.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'delete.rc', 'Cleanup');
-
 exit 0;
 

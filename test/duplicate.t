@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 10;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'dup.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'dup.rc', 'Created dup.rc');
 }
 
 # Test the duplicate command.
@@ -65,11 +64,5 @@ like ($output, qr/Created\s+task\s+4/,         'duplicate output of new task id'
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data dup.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'dup.rc', 'Cleanup');
-
 exit 0;
 
