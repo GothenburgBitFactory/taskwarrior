@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 6;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'recur.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'recur.rc', 'Created recur.rc');
 }
 
 # Create a few recurring tasks, and test the sort order of the recur column.
@@ -51,10 +50,10 @@ like ($output, qr/^\s+3/ms, 'Found 3');
 like ($output, qr/^\s+4/ms, 'Found 4');
 like ($output, qr/^\s+5/ms, 'Found 5');
 
-qx{../src/task rc:recur.rc 2 do 2>&1};
-qx{../src/task rc:recur.rc 3 do 2>&1};
-qx{../src/task rc:recur.rc 4 do 2>&1};
-qx{../src/task rc:recur.rc 5 do 2>&1};
+qx{../src/task rc:recur.rc 2 done 2>&1};
+qx{../src/task rc:recur.rc 3 done 2>&1};
+qx{../src/task rc:recur.rc 4 done 2>&1};
+qx{../src/task rc:recur.rc 5 done 2>&1};
 $output = qx{../src/task rc:recur.rc list 2>&1 >/dev/null};
 like ($output, qr/and was deleted/, 'Parent task deleted');
 
@@ -63,11 +62,5 @@ like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data recur.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'recur.rc', 'Cleanup');
-
 exit 0;
 
