@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 21;
+use Test::More tests => 19;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'abbrev.rc')
   print $fh "data.location=.\n",
             "abbreviation.minimum=1\n";
   close $fh;
-  ok (-r 'abbrev.rc', 'Created abbrev.rc');
 }
 
 # Test the priority attribute abbrevations.
@@ -87,18 +86,12 @@ $output = qx{../src/task rc:abbrev.rc ver 2>&1};
 like ($output, qr/MIT\s+license/, 'version');
 
 $output = qx{../src/task rc:abbrev.rc ve 2>&1};
-like ($output, qr/MIT\s+license/, 'version');
+unlike ($output, qr/MIT\s+license/, 'version');
 
 $output = qx{../src/task rc:abbrev.rc v 2>&1};
-like ($output, qr/MIT\s+license/, 'version');
+unlike ($output, qr/MIT\s+license/, 'version');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data abbrev.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'abbrev.rc', 'Cleanup');
-
 exit 0;
 
