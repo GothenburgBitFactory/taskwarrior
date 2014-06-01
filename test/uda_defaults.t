@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 6;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -49,7 +49,6 @@ if (open my $fh, '>', 'uda.rc')
             "report.uda.sort=id\n",
             "report.uda.labels=ID,Smell,Size,Description\n";
   close $fh;
-  ok (-r 'uda.rc', 'Created uda.rc');
 }
 
 # Add task with nondefault UDA
@@ -69,14 +68,7 @@ like ($output, qr/1\s+strong\s+one/,          'UDA nondefault stored');
 like ($output, qr/2\s+weak\s+two/,            'UDA default stored');
 like ($output, qr/3\s+weak\s+10\s+three/,     'UDA without default stored');
 
-
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data uda.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'uda.rc', 'Cleanup');
-
 exit 0;
 

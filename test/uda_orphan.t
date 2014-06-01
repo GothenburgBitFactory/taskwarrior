@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 6;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -41,7 +41,6 @@ if (open my $fh, '>', 'uda.rc')
             "uda.extra.type=string\n",
             "uda.extra.label=Extra\n";
   close $fh;
-  ok (-r 'uda.rc', 'Created uda.rc');
 }
 
 # Add a task with a defined UDA.
@@ -55,7 +54,6 @@ if (open my $fh, '>', 'uda.rc')
   print $fh "data.location=.\n",
             "confirmation=off\n";
   close $fh;
-  ok (-r 'uda.rc', 'Created uda.rc again');
 }
 
 # Observe the UDA properly reported by the 'info' command.
@@ -79,7 +77,6 @@ if (open my $fh, '>', 'import.txt')
 EOF
 
   close $fh;
-  ok (-r 'import.txt', 'Created sample import data');
 }
 
 $output = qx{../src/task rc:uda.rc import import.txt 2>&1 >/dev/null};
@@ -89,12 +86,5 @@ like ($output, qr/extra\s+bar/, 'UDA orphan imported and visible');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data uda.rc import.txt);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'uda.rc'         &&
-    ! -r 'import.txt', 'Cleanup');
-
 exit 0;
 

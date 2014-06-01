@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,7 +42,6 @@ if (open my $fh, '>', 'uda.rc')
             "uda.smell.label=Smell\n",
             "uda.smell.values=weak,strong\n";
   close $fh;
-  ok (-r 'uda.rc', 'Created uda.rc');
 }
 
 # Add tasks with valid and invalid UDA values.
@@ -57,11 +56,5 @@ unlike ($output, qr/Created task 3/, 'UDA smell:toxic disallowed');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data uda.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'uda.rc', 'Cleanup');
-
 exit 0;
 

@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -51,7 +51,6 @@ if (open my $fh, '>', 'uda.rc')
             "report.bad.labels=ID,Extra2\n",
             "report.bad.sort=ID\n";
   close $fh;
-  ok (-r 'uda.rc', 'Created uda.rc');
 }
 
 # Add a task with a defined UDA.
@@ -67,12 +66,5 @@ like ($output, qr/Unrecognized column name/, 'UDA Orphan causes error');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data uda.rc import.txt);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'uda.rc'         &&
-    ! -r 'import.txt', 'Cleanup');
-
 exit 0;
 

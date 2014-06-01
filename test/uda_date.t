@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -46,7 +46,6 @@ if (open my $fh, '>', 'uda.rc')
             "report.uda.labels=ID,Extra,Description\n",
             "dateformat=m/d/Y\n";
   close $fh;
-  ok (-r 'uda.rc', 'Created uda.rc');
 }
 
 # Add tasks with and without the UDA.
@@ -62,11 +61,5 @@ unlike ($output, qr/Created task \d+/, 'UDA date bad data not accepted');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data uda.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'uda.rc', 'Cleanup');
-
 exit 0;
 
