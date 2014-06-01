@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,11 +42,10 @@ if (open my $fh, '>', 'color.rc')
             "_forcecolor=1\n",
             "dateformat=m/d/Y\n";
   close $fh;
-  ok (-r 'color.rc', 'Created color.rc');
 }
 
 # Test the add command.
-qx{../src/task rc:color.rc add due:12/31/2037 nothing 2>&1};
+qx{../src/task rc:color.rc add due:someday nothing 2>&1};
 qx{../src/task rc:color.rc add due:5minutes red 2>&1};
 my $output = qx{../src/task rc:color.rc list 2>&1};
 
@@ -55,11 +54,5 @@ like ($output, qr/\033\[31mred\s+\033\[0m/x, 'color.due.today');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data color.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'color.rc', 'Cleanup');
-
 exit 0;
 
