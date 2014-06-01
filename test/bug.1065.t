@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 12;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -41,7 +41,6 @@ if (open my $fh, '>', 'bug.rc')
   print $fh "imnotrecognized=kai\n";
 
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug 1065 - CmdShow should not display the differ message if no non-default in matched elements.
@@ -72,10 +71,4 @@ unlike ($output, qr/unrecognized variables/, 'Message is not shown when no non-d
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;

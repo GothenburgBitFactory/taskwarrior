@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,27 +39,20 @@ if (open my $fh, '>', 'bug.rc')
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Setup: Add a recurring task then remove the due date.
 qx{../src/task rc:bug.rc add foo recur:yearly due:eoy 2>&1};
-qx{../src/task rc:bug.rc li 2>&1};
+qx{../src/task rc:bug.rc list 2>&1};
 qx{../src/task rc:bug.rc 2 modify due: 2>&1};
 
 # Result: Somehow the due date is incremented and wraps around to 12/31/1969,
 # then keeps going back to today.
-my $output = qx{../src/task rc:bug.rc li 2>&1};
+my $output = qx{../src/task rc:bug.rc list 2>&1};
 like ($output, qr/^1 task$/ms, 'task foo shown');
 unlike ($output, qr/1969/ms, 'Should not display 12/31/1969');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
 

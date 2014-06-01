@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 6;
 use File::Basename;
 
 # Ensure environment has no influence.
@@ -49,7 +49,6 @@ if (open my $fh, '>', $rc)
             "report.bar.labels=Foo,Desc\n",
             "report.bar.sort=foo-\n";
   close $fh;
-  ok (-r $rc, "$ut: Created $rc");
 }
 
 # Bug 1063 - Numeric UDA fields are not sortable.
@@ -70,10 +69,4 @@ like ($output, qr/1.+2.+3.+4/ms, "$ut: Default ascending sort correct");
 
 ## Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r $rc, "$ut: Cleanup");
-
 exit 0;

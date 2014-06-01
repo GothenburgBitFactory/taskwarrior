@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', 'bug.rc')
   print $fh "alias.samplealias=long\n";
 
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug - aliases should be listed by '_aliases' and not by '_commands' or '_zshcommands'
@@ -57,10 +56,4 @@ unlike ($output, qr/samplealias/, 'aliases are not listed in _zshcommands');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;

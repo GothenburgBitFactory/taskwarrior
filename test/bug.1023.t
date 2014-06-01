@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 9;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'bug.rc')
   print $fh "data.location=.\n",
             "default.project=home\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug 1023: rc.default.project gets applied during modify, and should not.
@@ -69,11 +68,5 @@ unlike ($output, qr/Project\s*home/, "default project not re-applied on attribut
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
 

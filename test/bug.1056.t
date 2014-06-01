@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 7;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -41,7 +41,6 @@ if (open my $fh, '>', 'bug.1056')
             "color=off\n",
             "verbose=nothing\n";
   close $fh;
-  ok (-r 'bug.1056', 'Created pro.rc');
 }
 
 # Bug 1056: Project indentation in CmdSummary.
@@ -65,11 +64,5 @@ like ($lines[6], qr/^myProject\.\s+\d/,    "'myProject.'        not indented, wi
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.1056);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.1056', 'Cleanup');
-
 exit 0;
 
