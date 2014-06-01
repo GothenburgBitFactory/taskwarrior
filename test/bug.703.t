@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'bug.rc')
   print $fh "data.location=.\n";
   print $fh "confirmation=no\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug 703: /from/t/g fails to make all changes to annotations
@@ -65,11 +64,5 @@ like ($output, qr/AnnotatIon three/, 'new annotation three');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
 

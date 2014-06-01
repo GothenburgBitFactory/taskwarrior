@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 1;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,13 +40,12 @@ if (open my $fh, '>', 'bug.rc')
             "confirmation=no\n",
             "dateformat=a b D Y\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug 628: task wait: with non-standard dateformat bug
 
 # Setup: Add a task
-qx{../src/task rc:bug.rc add wait:\\"Wed Jan 01 2020\\" A buggy task 2>&1};
+qx{../src/task rc:bug.rc add wait:"Wed Jan 01 2030" A buggy task 2>&1};
 
 # Result: Immediately delete the created task
 my $output = qx{../src/task rc:bug.rc waiting 2>&1};
@@ -54,11 +53,5 @@ like   ($output, qr/Jan 01 2020/ms, 'a b D Y dateformat correctly parsed.');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
 
