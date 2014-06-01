@@ -27,14 +27,18 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 12;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "dateformat=SNHDMY\n",
@@ -47,43 +51,55 @@ if (open my $fh, '>', 'bug.rc')
 # Bug #438: Reports sorting by end, start, and entry are ordered incorrectly, if
 #           time is included.
 
-# Ensure the two tasks have a 1 second delta in entry.
-qx{../src/task rc:bug.rc add older 2>&1};
-diag ("1 second delay");
-sleep 1;
-qx{../src/task rc:bug.rc add newer 2>&1};
+if (open my $fh, '>', 'pending.data')
+{
+  my $entry = time () - 3600;  # An hour ago.
 
-my $output = qx{../src/task rc:bug.rc rc.report.foo.sort:entry+ foo 2>&1};
-like ($output, qr/older.+newer/ms, 'sort:entry+ -> older newer');
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000001" status:"pending" description:"one older" entry:"$entry"]\n};
+  $entry++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000002" status:"pending" description:"one newer" entry:"$entry"]\n};
 
-$output = qx{../src/task rc:bug.rc rc.report.foo.sort:entry- foo 2>&1};
-like ($output, qr/newer.+older/ms, 'sort:entry- -> newer older');
+  my $start = $entry + 10;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000003" status:"pending" description:"two older" entry:"$entry" start:"$start"]\n};
+  $start++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000004" status:"pending" description:"two newer" entry:"$entry" start:"$start"]\n};
 
-# Ensure the two tasks have a 1 second delta in start.
-qx{../src/task rc:bug.rc 1 start 2>&1};
-diag ("1 second delay");
-sleep 1;
-qx{../src/task rc:bug.rc 2 start 2>&1};
+  my $end = $start + 10;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000005" status:"completed" description:"three older" entry:"$entry" end:"$end"]\n};
+  $end++;
+  print $fh qq{[uuid:"00000000-0000-0000-0000-000000000006" status:"completed" description:"three newer" entry:"$entry" end:"$end"]\n};
 
-$output = qx{../src/task rc:bug.rc rc.report.foo.sort:start+ foo 2>&1};
-like ($output, qr/older.+newer/ms, 'sort:start+ -> older newer');
+  close $fh;
+}
 
-$output = qx{../src/task rc:bug.rc rc.report.foo.sort:start- foo 2>&1};
-like ($output, qr/newer.+older/ms, 'sort:start- -> newer older');
+# Sorting by entry +/-
+my $output = qx{../src/task rc:$rc rc.report.foo.sort:entry+ foo 2>&1};
+ok ($? == 0,                                   "$ut: entry foo");
+like ($output, qr/one older.+one newer/ms,     "$ut: sort:entry+ -> older newer");
 
-# Ensure the two tasks have a 1 second delta in end.
-qx{../src/task rc:bug.rc 1 done 2>&1};
-diag ("1 second delay");
-sleep 1;
-qx{../src/task rc:bug.rc 2 done 2>&1};
+$output = qx{../src/task rc:$rc rc.report.foo.sort:entry- foo 2>&1};
+ok ($? == 0,                                   "$ut: entry foo");
+like ($output, qr/one newer.+one older/ms,     "$ut: sort:entry- -> newer older");
 
-$output = qx{../src/task rc:bug.rc rc.report.foo.sort:end+ foo 2>&1};
-like ($output, qr/older.+newer/ms, 'sort:end+ -> older newer');
+# Sorting by start +/-
+$output = qx{../src/task rc:$rc rc.report.foo.sort:start+ foo 2>&1};
+ok ($? == 0,                                   "$ut: start foo");
+like ($output, qr/two older.+two newer/ms,     "$ut: sort:start+ -> older newer");
 
-$output = qx{../src/task rc:bug.rc rc.report.foo.sort:end- foo 2>&1};
-like ($output, qr/newer.+older/ms, 'sort:end- -> newer older');
+$output = qx{../src/task rc:$rc rc.report.foo.sort:start- foo 2>&1};
+ok ($? == 0,                                   "$ut: start foo");
+like ($output, qr/two newer.+two older/ms,     "$ut: sort:start- -> newer older");
+
+# Sorting by end +/-
+$output = qx{../src/task rc:$rc rc.report.foo.sort:end+ foo 2>&1};
+ok ($? == 0,                                   "$ut: end foo");
+like ($output, qr/three older.+three newer/ms, "$ut: sort:end+ -> older newer");
+
+$output = qx{../src/task rc:$rc rc.report.foo.sort:end- foo 2>&1};
+ok ($? == 0,                                   "$ut: end foo");
+like ($output, qr/three newer.+three older/ms, "$ut: sort:end- -> newer older");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data $rc);
 exit 0;
 
