@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 1;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', '425.rc')
             "confirmation=off\n";
 
   close $fh;
-  ok (-r '425.rc', 'Created 425.rc');
 }
 
 # Bug #425: Parser preventing editing of an existing task depending on description
@@ -56,10 +55,4 @@ like ($output, qr/1\s+Bar in Bar/m, 'parser - interpret \'in\' in description');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data 425.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r '425.rc', 'Cleanup');
-
 exit 0;

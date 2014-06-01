@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 1;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', '441.rc')
             "confirmation=off\n";
 
   close $fh;
-  ok (-r '441.rc', 'Created 441.rc');
 }
 
 # Bug #441: A colon messes up text replacement with ///
@@ -51,10 +50,4 @@ like ($output, qr/one two: three/ms, 'Substitution with colon worked');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data 441.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r '441.rc', 'Cleanup');
-
 exit 0;

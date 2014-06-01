@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', '455.rc')
   print $fh "print.empty.columns=no\n";
 
   close $fh;
-  ok (-r '455.rc', 'Created 455.rc');
 }
 
 # Bug #455 - Text alignment in reports is broken when text contains wide utf8
@@ -57,10 +56,4 @@ like ($output, qr/\S\s{4}def/ms, 'bug 455 - correct spacing in non utf8 task');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data 455.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r '455.rc', 'Cleanup');
-
 exit 0;

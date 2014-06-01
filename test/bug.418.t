@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 18;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -45,7 +45,6 @@ if (open my $fh, '>', 'bug.rc')
             "report.foo.filter=status:pending\n",
             "report.foo.dateformat=MD\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug #418: due.before:eow not working
@@ -84,11 +83,5 @@ unlike ($output, qr/nine/ms,  'task 9 not listed');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
 

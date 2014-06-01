@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 4;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', '440.rc')
             "confirmation=off\n";
 
   close $fh;
-  ok (-r '440.rc', 'Created 440.rc');
 }
 
 # Bug #440: Parser recognizes an attempt to simultaneously subst and append, but doesn't do it
@@ -64,10 +63,4 @@ like ($output2, qr/\w+ Appendtext/, 'simultaneous append and subst - append');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data 440.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r '440.rc', 'Cleanup');
-
 exit 0;

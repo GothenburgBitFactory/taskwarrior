@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -37,9 +37,7 @@ delete $ENV{'TASKRC'};
 if (open my $fh, '>', 'bug.rc')
 {
   print $fh "data.location=.\n";
-
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug #489 - tags.none: is not filtering tagless tasks
@@ -51,10 +49,4 @@ like   ($output, qr/without/, 'tags.none: finds tagless');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
