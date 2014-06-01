@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 24;
+use Test::More tests => 22;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'confirm.rc')
   print $fh "data.location=.\n",
             "confirmation=yes\n";
   close $fh;
-  ok (-r 'confirm.rc', 'Created confirm.rc');
 }
 
 # Create the response file.
@@ -100,12 +99,5 @@ like ($output, qr/(Permanently delete task 7 'foo'\? \(yes\/no\)) \1 \1/, 'confi
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data confirm.rc response.txt);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'confirm.rc'     &&
-    ! -r 'response.txt', 'Cleanup');
-
 exit 0;
 

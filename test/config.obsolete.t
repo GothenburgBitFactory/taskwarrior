@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'obsolete.rc')
   print $fh "data.location=.\n",
             "foo=1\n";
   close $fh;
-  ok (-r 'obsolete.rc', 'Created obsolete.rc');
 }
 
 # Test the add command.
@@ -51,11 +50,5 @@ like ($output, qr/  foo\n/, 'unsupported configuration variable');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data obsolete.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'obsolete.rc', 'Cleanup');
-
 exit 0;
 

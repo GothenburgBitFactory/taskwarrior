@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 82;
+use Test::More tests => 80;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -62,7 +62,6 @@ if (open my $fh, '>', 'countdown.rc')
   print $fh "report.downc.sort=due-\n";
 
   close $fh;
-  ok (-r 'countdown.rc', 'Created countdown.rc');
 }
 
 # Create a variety of pending tasks with increasingly higher due dates
@@ -179,10 +178,4 @@ like ($output, qr/\btwo\b.+\bone\b/ms,          'downc: two < one');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data countdown.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'countdown.rc', 'Cleanup');
-
 exit 0;
