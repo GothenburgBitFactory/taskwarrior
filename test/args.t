@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'args.rc')
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
-  ok (-r 'args.rc', 'Created args.rc');
 }
 
 # Test the -- argument.
@@ -65,11 +64,5 @@ like ($output, qr/Description\s+project:p\spri:H\s\+tag\sfoo\n/ms, 'task 1 modif
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data args.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'args.rc', 'Cleanup');
-
 exit 0;
 
