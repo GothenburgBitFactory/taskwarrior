@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -41,7 +41,6 @@ if (open my $fh, '>', 'shell.rc')
             "defaultwidth=0\n",
             "default.command=ls\n";
   close $fh;
-  ok (-r 'shell.rc', 'Created shell.rc');
 }
 
 # Test the prompt.
@@ -58,11 +57,5 @@ ok (!-r 'shell.rc', 'Removed shell.rc');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data shell.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'shell.rc', 'Cleanup');
-
 exit 0;
 

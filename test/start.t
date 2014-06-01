@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 17;
+use Test::More tests => 15;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'start.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'start.rc', 'Created start.rc');
 }
 
 # Test the add/start/stop commands.
@@ -106,13 +105,5 @@ like ($output, qr/Nu.+stannar.+vi/ms, 'one stopped and annotated with custom des
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data start.rc start2.rc start3.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'start.rc'       &&
-    ! -r 'start2.rc'      &&
-    ! -r 'start3.rc', 'Cleanup');
-
 exit 0;
 

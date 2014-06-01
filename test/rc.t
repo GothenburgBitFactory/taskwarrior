@@ -28,7 +28,7 @@
 use strict;
 use warnings;
 use File::Path;
-use Test::More tests => 15;
+use Test::More tests => 13;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -87,10 +87,6 @@ $output = qx{../src/task rc:foo.rc show 2>&1};
 like ($output, qr/^must_be_unique\s+one two three/ms, 'config allows multi-word unquoted values');
 
 rmtree 'foo', 0, 0;
-ok (!-r 'foo', 'Removed foo');
-
 unlink 'foo.rc';
-ok (!-r 'foo.rc', 'Removed foo.rc');
-
 exit 0;
 

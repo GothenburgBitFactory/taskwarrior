@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 16;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,7 +42,6 @@ if (open my $fh, '>', 'shadow.rc')
             "shadow.command=rc:shadow.rc stats\n",
             "shadow.notify=on\n";
   close $fh;
-  ok (-r 'shadow.rc', 'Created shadow.rc');
 }
 
 my $output = qx{../src/task rc:shadow.rc add one 2>&1 >/dev/null};
@@ -74,13 +73,6 @@ like ($file, qr/Projects\s+0\n/,                       'Projects 0');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data shadow.txt shadow.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'shadow.txt'     &&
-    ! -r 'shadow.rc', 'Cleanup');
-
 exit 0;
 
 ################################################################################

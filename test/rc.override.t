@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'rc.rc')
   print $fh "data.location=.\n",
             "foo=bar\n";
   close $fh;
-  ok (-r 'rc.rc', 'Created rc.rc');
 }
 
 my $output = qx{../src/task rc:rc.rc show 2>&1};
@@ -48,8 +47,7 @@ like ($output, qr/^.*foo.+bar.*$/m, 'unmodified');
 $output = qx{../src/task rc:rc.rc rc.foo:baz show 2>&1};
 like ($output, qr/^.*foo.*baz.*$/m, 'overridden');
 
+# Cleanup.
 unlink 'rc.rc';
-ok (!-r 'rc.rc', 'Removed rc.rc');
-
 exit 0;
 

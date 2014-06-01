@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -45,7 +45,6 @@ if (open my $fh, '>', 'special.rc')
             "nag=NAG\n",
             "_forcecolor=1\n";
   close $fh;
-  ok (-r 'special.rc', 'Created special.rc');
 }
 
 # Prove that +nocolor suppresses all color for a task.
@@ -63,11 +62,5 @@ unlike ($output, qr/NAG/, '+nonag suppressed nagging for task 2');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data special.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'special.rc', 'Cleanup');
-
 exit 0;
 

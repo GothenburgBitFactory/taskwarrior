@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,7 +42,6 @@ if (open my $fh, '>', 'roundtrip.rc')
             "defaultwidth=100\n",
             "dateformat=m/d/Y\n";
   close $fh;
-  ok (-r 'roundtrip.rc', 'Created roundtrip.rc');
 }
 
 # Add two tasks.
@@ -76,13 +75,5 @@ like ($output, qr/^$/, 'JSON files roundtrip1.json and roundtrip2.json identical
 
 # Cleanup.
 unlink qw(roundtrip1.json roundtrip2.json pending.data completed.data undo.data backlog.data roundtrip.rc);
-ok (! -r 'roundtrip1.json' &&
-    ! -r 'roundtrip2.json' &&
-    ! -r 'pending.data'    &&
-    ! -r 'completed.data'  &&
-    ! -r 'undo.data'       &&
-    ! -r 'backlog.data'    &&
-    ! -r 'roundtrip.rc', 'Cleanup');
-
 exit 0;
 

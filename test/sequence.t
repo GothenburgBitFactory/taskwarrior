@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 26;
+use Test::More tests => 24;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -40,7 +40,6 @@ if (open my $fh, '>', 'seq.rc')
             "confirmation=off\n",
             "dateformat.annotation=m/d/Y\n";
   close $fh;
-  ok (-r 'seq.rc', 'Created seq.rc');
 }
 
 # Test sequences in done/undo
@@ -123,11 +122,5 @@ like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence 2 annotate');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data seq.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'seq.rc', 'Cleanup');
-
 exit 0;
 

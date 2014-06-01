@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 100;
+use Test::More tests => 98;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'sorting.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'sorting.rc', 'Created sorting.rc');
 }
 
 # Test assorted sort orders.
@@ -181,11 +180,5 @@ for my $sort (sort keys %tests)
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data sorting.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'sorting.rc', 'Cleanup');
-
 exit 0;
 
