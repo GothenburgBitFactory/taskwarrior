@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'iso.rc')
   print $fh "data.location=.\n",
             "dateformat.info=m/d/Y\n";
   close $fh;
-  ok (-r 'iso.rc', 'Created iso.rc');
 }
 
 # Test use of ISO date format, despite rc.dateformat.
@@ -48,17 +47,11 @@ my $output = qx{../src/task rc:iso.rc 1 info 2>&1};
 like ($output, qr/Due\s+9\/1\/2011/, 'ISO format recognized.');
 
 # Test use of epoch date format, despite rc.dateformat.
-qx{../src/task rc:iso.rc add one due:1234524690 2>&1};
+qx{../src/task rc:iso.rc add two due:1234524690 2>&1};
 $output = qx{../src/task rc:iso.rc 2 info 2>&1};
 like ($output, qr/Due\s+2\/13\/2009/, 'Epoch format recognized.');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data iso.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'iso.rc', 'Cleanup');
-
 exit 0;
 

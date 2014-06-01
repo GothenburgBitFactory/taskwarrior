@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 27;
+use Test::More tests => 25;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -45,7 +45,6 @@ if (open my $fh, '>', 'denotate.rc')
             "report.rrr.sort=id+\n",
             "dateformat=m/d/Y\n";
   close $fh;
-  ok (-r 'denotate.rc', 'Created denotate.rc');
 }
 
 # Add four tasks, annotate one three times, one twice, one just once and one none.
@@ -105,10 +104,4 @@ unlike ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'Del
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data denotate.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'denotate.rc', 'Cleanup');
-
 exit 0;

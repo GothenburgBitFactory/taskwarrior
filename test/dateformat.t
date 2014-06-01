@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 6;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -41,7 +41,6 @@ if (open my $fh, '>', 'date1.rc')
             "dateformat.info=YMD\n",
             "dateformat.report=YMD\n";
   close $fh;
-  ok (-r 'date1.rc', 'Created date1.rc');
 }
 
 if (open my $fh, '>', 'date2.rc')
@@ -51,7 +50,6 @@ if (open my $fh, '>', 'date2.rc')
             "dateformat.info=m/d/y\n",
             "dateformat.report=m/d/y\n";
   close $fh;
-  ok (-r 'date2.rc', 'Created date2.rc');
 }
 
 if (open my $fh, '>', 'date3.rc')
@@ -63,7 +61,6 @@ if (open my $fh, '>', 'date3.rc')
             "dateformat.info=A D B Y (wV)\n",
             "dateformat.report=A D B Y (wV)\n";
   close $fh;
-  ok (-r 'date3.rc', 'Created date3.rc');
 }
 
 qx{../src/task rc:date1.rc add foo due:20091231 2>&1};
@@ -88,13 +85,5 @@ like ($output, qr/08 Apr 2010 - Thu/, 'date format D b Y - a parsed');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data date1.rc date2.rc date3.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'date1.rc'       &&
-    ! -r 'date2.rc'       &&
-    ! -r 'date3.rc', 'Cleanup');
-
 exit 0;
 

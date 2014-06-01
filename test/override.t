@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 1;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -43,7 +43,6 @@ if (open my $fh, '>', 'or.rc')
             "report.zzz.sort=due+\n",
             "report.zzz.filter=status:pending rc.annotations:full\n";
   close $fh;
-  ok (-r 'or.rc', 'Created or.rc');
 }
 
 # The zzz report is defined with an override in the filter that contradicts
@@ -55,11 +54,5 @@ like ($output, qr/ONE.+TWO/ms, 'filter override > rc setting');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data or.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'or.rc', 'Cleanup');
-
 exit 0;
 

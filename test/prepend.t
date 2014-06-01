@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'prepend.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'prepend.rc', 'Created prepend.rc');
 }
 
 # Add a task, then prepend more decsription.
@@ -53,11 +52,5 @@ unlike ($output, qr/Prepended 0 tasks/, 'blank prepend failed');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data prepend.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'prepend.rc', 'Cleanup');
-
 exit 0;
 

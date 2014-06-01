@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 54;
+use Test::More tests => 52;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'oldest.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'oldest.rc', 'Created oldest.rc');
 }
 
 # Add 11 tasks.  Oldest should show 1-10, newest should show 2-11.
@@ -132,11 +131,5 @@ like   ($output, qr/ eleven/, 'newest: eleven');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data oldest.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'oldest.rc', 'Cleanup');
-
 exit 0;
 
