@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -71,7 +71,6 @@ if (open my $fh, '>', 'pending.data')
 [uuid:"99999999-9999-9999-9999-999999999999 " status:"completed" description:"C2" entry:"$fourteen" end:"$fourteen"]
 EOF
   close $fh;
-  ok (-r 'pending.data', 'Created pending.data');
 }
 
 my $output = qx{../src/task rc:time.rc timesheet 2>&1};

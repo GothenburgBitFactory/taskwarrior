@@ -36,25 +36,36 @@ delete $ENV{'TASKRC'};
 # Create the rc file.
 if (open my $fh, '>', 'recur.rc')
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "bulk=10\n",
+            "dateformat=Y-M-DTH:N:S\n";
   close $fh;
 }
 
 # Create a few recurring tasks, and test the sort order of the recur column.
-qx{../src/task rc:recur.rc add foo due:now recur:2sec until:5sec 2>&1};
-diag ("Sleeping for 6 seconds");
-sleep 6;
+
+if (open my $fh, '>', 'pending.data')
+{
+  my $until = time () - 2;
+  my $entry = $until - 5;
+
+  print $fh <<EOF;
+[uuid:"00000000-0000-0000-0000-000000000000" status:"recurring" description:"foo" entry:"$entry" due:"$entry" recur:"PT2S" until:"$until"]
+EOF
+  close $fh;
+}
+
 my $output = qx{../src/task rc:recur.rc list 2>&1};
 like ($output, qr/^\s+2/ms, 'Found 2');
 like ($output, qr/^\s+3/ms, 'Found 3');
 like ($output, qr/^\s+4/ms, 'Found 4');
 like ($output, qr/^\s+5/ms, 'Found 5');
 
-qx{../src/task rc:recur.rc 2 done 2>&1};
-qx{../src/task rc:recur.rc 3 done 2>&1};
-qx{../src/task rc:recur.rc 4 done 2>&1};
-qx{../src/task rc:recur.rc 5 done 2>&1};
-$output = qx{../src/task rc:recur.rc list 2>&1 >/dev/null};
+# There may be more than 4, but we don't care, because they must all now be
+# removed.
+qx{../src/task rc:recur.rc status:pending and /foo/ done 2>&1};
+
+$output = qx{../src/task rc:recur.rc list 2>&1};
 like ($output, qr/and was deleted/, 'Parent task deleted');
 
 $output = qx{../src/task rc:recur.rc diag 2>&1};
