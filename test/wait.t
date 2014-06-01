@@ -27,14 +27,18 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 7;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'wait.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "report.ls.columns=id,project,priority,description\n",
@@ -42,46 +46,40 @@ if (open my $fh, '>', 'wait.rc')
             "report.ls.sort=priority-,project+\n",
             "report.ls.filter=status:pending\n",
             "confirmation=off\n";
-
   close $fh;
 }
 
-# Add a waiting task, check it is not there, wait, then check it is.
-qx{../src/task rc:wait.rc add yeswait wait:2s 2>&1};
-qx{../src/task rc:wait.rc add nowait 2>&1};
+# [1] add waited task that already expired
+# [2] add waited task that is still waited
+if (open my $fh, '>', 'pending.data')
+{
+  my $wait = time () - 3600;     # Became visible an hour ago
+  my $entry = $wait - 86400;     # Created a day ago
+  my $tomorrow = $wait + 86400;  # Still waiting
 
-my $output = qx{../src/task rc:wait.rc ls 2>&1};
-like ($output, qr/nowait/ms, 'non-waiting task visible');
-unlike ($output, qr/yeswait/ms, 'waiting task invisible');
+  print $fh <<eof;
+[uuid:"00000000-0000-0000-0000-000000000000" status:"waiting" description:"visible" entry:"$entry" wait:"$wait"]
+[uuid:"00000000-0000-0000-0000-000000000001" status:"waiting" description:"invisible" entry:"$entry" wait:"$tomorrow"]
+eof
+  close $fh;
+}
 
-diag ("3 second delay");
-sleep 3;
+# verify [1] visible already
+# verify [2] inviѕible
+my $output = qx{../src/task rc:$rc ls 2>&1};
+ok ($? == 0, "$ut: list tasks");
+like ($output, qr/visible/ms, "$ut: task 1 visible");
+unlike ($output, qr/invisible/ms, "$ut: task 2 invisible");
 
-$output = qx{../src/task rc:wait.rc ls 2>&1};
-like ($output, qr/nowait/ms, 'non-waiting task still visible');
-like ($output, qr/yeswait/ms, 'waiting task now visible');
+# verify [1] has status:pending
+$output = qx{../src/task rc:$rc 1 info 2>&1};
+ok ($? == 0, "$ut: 1 info");
+like ($output, qr/Status\s+Pending/ms, "$ut: task 1 pending");
 
-qx{../src/task rc:wait.rc 1 modify wait:2s 2>&1};
-$output = qx{../src/task rc:wait.rc ls 2>&1};
-like ($output, qr/nowait/ms, 'non-waiting task visible');
-unlike ($output, qr/yeswait/ms, 'waiting task invisible');
-
-diag ("3 second delay");
-sleep 3;
-
-$output = qx{../src/task rc:wait.rc ls 2>&1};
-like ($output, qr/nowait/ms, 'non-waiting task still visible');
-like ($output, qr/yeswait/ms, 'waiting task now visible');
-
-qx{../src/task rc:wait.rc add wait:tomorrow tomorrow 2>&1};
-$output = qx{../src/task rc:wait.rc ls 2>&1};
-unlike ($output, qr/tomorrow/ms, 'waiting task invisible');
-
-$output = qx{../src/task rc:wait.rc all status:waiting wait:tomorrow 2>&1};
-like ($output, qr/tomorrow/ms, 'waiting task visible when specifically queried');
-
-$output = qx{../src/task rc:wait.rc add Complain due:today wait:tomorrow 2>&1 >/dev/null};
-like ($output, qr/Warning: You have specified that the 'wait' date is after the 'due' date\./, 'warning on wait after due');
+# verify [2] visible via info
+$output = qx{../src/task rc:$rc 2 info 2>&1};
+ok ($? == 0, "$ut: 2 info");
+like ($output, qr/invisible/ms, "$ut: task 2 visible");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data wait.rc);
