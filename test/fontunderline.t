@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'font.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'font.rc', 'Created font.rc');
 }
 
 # Test the fontunderline config variable.  The following truth table defines
@@ -77,11 +76,5 @@ unlike ($output, qr/--------/, '1,1,1 -> underline');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data font.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'font.rc', 'Cleanup');
-
 exit 0;
 

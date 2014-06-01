@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 8;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'ids.rc')
   print $fh "data.location=.\n",
             "confirmation=off\n";
   close $fh;
-  ok (-r 'ids.rc', 'Created ids.rc');
 }
 
 # Test the count command.
@@ -76,11 +75,5 @@ like ($output, qr/^[0-9a-f-]+:[a-z]+\n[0-9a-f-]+:[a-z]+\n[0-9a-f-]+:[a-z]+\n[0-9
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data ids.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'ids.rc', 'Cleanup');
-
 exit 0;
 

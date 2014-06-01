@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 163;
+use Test::More tests => 161;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,7 +38,6 @@ if (open my $fh, '>', 'filter.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'filter.rc', 'Created filter.rc');
 }
 
 # Test the filters.
@@ -278,11 +277,5 @@ unlike ($output, qr/seven/, 'y7');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data filter.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'filter.rc', 'Cleanup');
-
 exit 0;
 

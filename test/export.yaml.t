@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 20;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -42,7 +42,6 @@ if (open my $fh, '>', 'export.rc')
   print $fh "data.location=.\n",
             "verbose=no\n";
   close $fh;
-  ok (-r 'export.rc', 'Created export.rc');
 }
 
 # Add two tasks, export, examine result.
@@ -81,12 +80,5 @@ like ($lines[19], qr/^\.\.\.$/,                  'export YAML line 20');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data export.rc export.txt);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'export.rc'      &&
-    ! -r 'export.txt', 'Cleanup');
-
 exit 0;
 
