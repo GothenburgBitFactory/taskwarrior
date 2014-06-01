@@ -1577,13 +1577,13 @@ void Task::validate (bool applyDefault /* = true */)
   {
     std::string value = get ("recur");
 
-    ISO8601p p;
+    Duration d;
     std::string::size_type i = 0;
-    if (! p.parse (value, i))
+    if (! d.parse (value, i))
     {
       i = 0;
-      Duration d;
-      if (! d.parse (value, i))
+      ISO8601p p;
+      if (! p.parse (value, i))
         throw std::string (format (STRING_TASK_VALID_RECUR, value));
     }
   }

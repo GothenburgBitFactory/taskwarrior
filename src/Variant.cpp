@@ -1678,21 +1678,21 @@ void Variant::cast (const enum type new_type)
     case type_duration:
       {
         _duration = 0;
-        ISO8601p iso;
+        Duration dur;
         std::string::size_type pos = 0;
-        if (iso.parse (_string, pos) &&
+        if (dur.parse (_string, pos) &&
             pos == _string.length ())
         {
-          _duration = (time_t) iso;
+          _duration = (time_t) dur;
         }
         else
         {
-          Duration dur;
+          ISO8601p iso;
           pos = 0;
-          if (dur.parse (_string, pos) &&
+          if (iso.parse (_string, pos) &&
               pos == _string.length ())
           {
-              _duration = (time_t) dur;
+            _duration = (time_t) iso;
           }
         }
       }

@@ -130,7 +130,7 @@ bool Lexer::token (std::string& result, Type& type)
             space = _input.length ();
 
           std::string legacy = _input.substr (start, space - start);
-          Date legacyDate (legacy, Lexer::dateFormat, false, false);
+          Date legacyDate (legacy, Lexer::dateFormat, true, false);
 
           space -= start;
           while (space--) shift ();
