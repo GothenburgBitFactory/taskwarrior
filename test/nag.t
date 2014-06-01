@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 6;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -39,7 +39,6 @@ if (open my $fh, '>', 'nag.rc')
   print $fh "data.location=.\n",
             "nag=NAG\n";
   close $fh;
-  ok (-r 'nag.rc', 'Created nag.rc');
 }
 
 my $setup = "../src/task rc:nag.rc add due:yesterday one 2>&1;"
@@ -50,21 +49,15 @@ my $setup = "../src/task rc:nag.rc add due:yesterday one 2>&1;"
           . "../src/task rc:nag.rc add six 2>&1;";
 qx{$setup};
 
-like   (qx{../src/task rc:nag.rc 6 do 2>&1 >/dev/null}, qr/NAG/, 'do pri: -> nag');
-like   (qx{../src/task rc:nag.rc 5 do 2>&1 >/dev/null}, qr/NAG/, 'do pri:L -> nag');
-like   (qx{../src/task rc:nag.rc 4 do 2>&1 >/dev/null}, qr/NAG/, 'do pri:M-> nag');
-like   (qx{../src/task rc:nag.rc 3 do 2>&1 >/dev/null}, qr/NAG/, 'do pri:H-> nag');
-like   (qx{../src/task rc:nag.rc 2 do 2>&1 >/dev/null}, qr/NAG/, 'do due:tomorrow -> nag');
-my $output = qx{../src/task rc:nag.rc 1 do 2>&1 >/dev/null};
-unlike ($output, qr/NAG/, 'do due:yesterday -> no nag');
+like   (qx{../src/task rc:nag.rc 6 done 2>&1 >/dev/null}, qr/NAG/, 'done pri: -> nag');
+like   (qx{../src/task rc:nag.rc 5 done 2>&1 >/dev/null}, qr/NAG/, 'done pri:L -> nag');
+like   (qx{../src/task rc:nag.rc 4 done 2>&1 >/dev/null}, qr/NAG/, 'done pri:M-> nag');
+like   (qx{../src/task rc:nag.rc 3 done 2>&1 >/dev/null}, qr/NAG/, 'done pri:H-> nag');
+like   (qx{../src/task rc:nag.rc 2 done 2>&1 >/dev/null}, qr/NAG/, 'done due:tomorrow -> nag');
+my $output = qx{../src/task rc:nag.rc 1 done 2>&1 >/dev/null};
+unlike ($output, qr/NAG/, 'done due:yesterday -> no nag');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data nag.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'nag.rc', 'Cleanup');
-
 exit 0;
 
