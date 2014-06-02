@@ -75,6 +75,7 @@
 - TW-1320 Provide output of malformed row if invalid Taskwarrior file format
           (thanks to Kosta Harlan).
 - TW-1321 Unit test view.t fails oddly on Ubuntu 13.10 (thanks to John West).
+- TW-1331 date more than 5 years away is faulty (thanks to Onion).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
