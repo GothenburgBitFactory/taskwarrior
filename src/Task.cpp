@@ -2088,14 +2088,22 @@ void Task::modify (modType type, bool text_required /* = false */)
           // Try to use modify method, otherwise just continue to the final option.
           else if (column->can_modify ())
           {
-            // TODO May require Eval expansion.
+            Eval e;
+            e.addSource (domSource);
+            e.addSource (namedDates);
+            contextTask = *this;
+
+            Variant v;
+            e.evaluateInfixExpression (value, v);
+            v.cast (Variant::type_string);
+            std::string value2 = v.get_string ();
 
             // column->modify () contains the logic for the specific column
             // and returns the appropriate value for (*this).set ()
-            if (column->validate (value))
+            if (column->validate (value2))
             {
               std::string col_value = column->modify (value);
-              context.debug (label + name + " <-- " + col_value + " <-- " + value);
+              context.debug (label + name + " <-- " + col_value + " <-- " + value2 + " <-- " + value);
               (*this).set (name, col_value);
               ++modCount;
             }
@@ -2104,12 +2112,20 @@ void Task::modify (modType type, bool text_required /* = false */)
           }
           else
           {
-            // TODO May require Eval expansion.
+            Eval e;
+            e.addSource (domSource);
+            e.addSource (namedDates);
+            contextTask = *this;
+
+            Variant v;
+            e.evaluateInfixExpression (value, v);
+            v.cast (Variant::type_string);
+            std::string value2 = v.get_string ();
 
             // Final default action
-            if (column->validate (value))
+            if (column->validate (value2))
             {
-              context.debug (label + name + " <-- " + value);
+              context.debug (label + name + " <-- " + value2 + " <-- " + value);
               (*this).set (name, value);
               ++modCount;
             }
