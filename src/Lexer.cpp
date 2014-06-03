@@ -363,6 +363,12 @@ bool Lexer::token (std::string& result, Type& type)
         result += utf8_character (_n0);
         shift ();
       }
+      else if (is_ident_start (_n0))
+      {
+        type = typeIdentifier;
+        result += utf8_character (_n0);
+        shift ();
+      }
       else
       {
         return true;
@@ -381,15 +387,16 @@ bool Lexer::token (std::string& result, Type& type)
         result += utf8_character (_n0);
         shift ();
       }
-      break;
-
-    case typeExponent:
-      if (is_dec_digit (_n0))
+      else if (is_ident_start (_n0))
       {
+        type = typeIdentifier;
         result += utf8_character (_n0);
         shift ();
       }
-      else if (_n0 == '.')
+      break;
+
+    case typeExponent:
+      if (is_dec_digit (_n0) || _n0 == '.')
       {
         result += utf8_character (_n0);
         shift ();
@@ -427,7 +434,7 @@ bool Lexer::token (std::string& result, Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Just like Lexer::token, but no operators, dates or durations.
+// Just like Lexer::token, but no operators, numbers, dates or durations.
 bool Lexer::word (std::string& token, Type& type)
 {
   // Start with nothing.
@@ -668,7 +675,8 @@ bool Lexer::is_ident_start (int c) const
 {
   return c           &&       // Include null character check.
          ! is_ws (c) &&
-         ! is_dec_digit (c);
+         ! is_dec_digit (c) &&
+         ! is_single_op (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
