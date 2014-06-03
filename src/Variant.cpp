@@ -766,8 +766,9 @@ bool Variant::operator!= (const Variant& other) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Variant::operator_match (const Variant& other) const
+bool Variant::operator_match (const Variant& other, const Task& task) const
 {
+  // Simple matching case first.
   Variant left (*this);
   Variant right (other);
 
@@ -775,13 +776,29 @@ bool Variant::operator_match (const Variant& other) const
   right.cast (type_string);
 
   RX r (right._string, searchCaseSensitive);
-  return r.match (left._string);
+  if (r.match (left._string))
+    return true;
+
+  // If the above did not match, and the left source is "description", then
+  // in the annotations.
+  if (left.source () == "description")
+  {
+    std::map <std::string, std::string> annotations;
+    task.getAnnotations (annotations);
+
+    std::map <std::string, std::string>::iterator a;
+    for (a = annotations.begin (); a != annotations.end (); ++a)
+      if (r.match (a->second))
+        return true;
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Variant::operator_nomatch (const Variant& other) const
+bool Variant::operator_nomatch (const Variant& other, const Task& task) const
 {
-  return ! operator_match (other);
+  return ! operator_match (other, task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

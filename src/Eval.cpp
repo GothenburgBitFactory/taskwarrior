@@ -287,8 +287,8 @@ void Eval::evaluatePostfixStack (
       else if (token->first == "^")        left ^= right;
       else if (token->first == "%")        left %= right;
       else if (token->first == "xor")      left = left.operator_xor (right);
-      else if (token->first == "~")        left = left.operator_match (right);
-      else if (token->first == "!~")       left = left.operator_nomatch (right);
+      else if (token->first == "~")        left = left.operator_match (right, contextTask);
+      else if (token->first == "!~")       left = left.operator_nomatch (right, contextTask);
       else if (token->first == "_hastag_") left = left.operator_hastag (right, contextTask);
       else if (token->first == "_notag_")  left = left.operator_notag (right, contextTask);
       else

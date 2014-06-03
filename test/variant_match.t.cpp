@@ -29,8 +29,10 @@
 #include <test.h>
 #include <Variant.h>
 #include <Context.h>
+#include <Task.h>
 
 Context context;
+Task task;
 
 #define EPSILON 0.001
 
@@ -52,244 +54,244 @@ int main (int argc, char** argv)
   Variant v5 (1200, Variant::type_duration);
 
   // Interesting cases.
-  Variant vs00 = vs0.operator_match (v0);
+  Variant vs00 = vs0.operator_match (v0, task);
   t.is (vs00.type (), Variant::type_boolean, "untrue ~ true --> boolean");
   t.is (vs00.get_bool (), true,              "untrue ~ true --> true");
 
-  Variant vs01 = vs0.operator_match (v1);
+  Variant vs01 = vs0.operator_match (v1, task);
   t.is (vs01.type (), Variant::type_boolean, "untrue ~ 42 --> boolean");
   t.is (vs01.get_bool (), false,             "untrue ~ 42 --> false");
 
-  Variant vs02 = vs0.operator_match (v2);
+  Variant vs02 = vs0.operator_match (v2, task);
   t.is (vs02.type (), Variant::type_boolean, "untrue ~ 3.14 --> boolean");
   t.is (vs02.get_bool (), false,             "untrue ~ 3.14 --> false");
 
-  Variant vs03 = vs0.operator_match (v3);
+  Variant vs03 = vs0.operator_match (v3, task);
   t.is (vs03.type (), Variant::type_boolean, "untrue ~ 'foo' --> boolean");
   t.is (vs03.get_bool (), false,             "untrue ~ 'foo' --> false");
 
-  Variant vs04 = vs0.operator_match (v4);
+  Variant vs04 = vs0.operator_match (v4, task);
   t.is (vs04.type (), Variant::type_boolean, "untrue ~ 1234567890 --> boolean");
   t.is (vs04.get_bool (), false,             "untrue ~ 1234567890 --> false");
 
-  Variant vs05 = vs0.operator_match (v5);
+  Variant vs05 = vs0.operator_match (v5, task);
   t.is (vs05.type (), Variant::type_boolean, "untrue ~ 1200 --> boolean");
   t.is (vs05.get_bool (), false,             "untrue ~ 1200 --> false");
 
-  Variant vs10 = vs1.operator_match (v0);
+  Variant vs10 = vs1.operator_match (v0, task);
   t.is (vs10.type (), Variant::type_boolean, "8421 ~ true --> boolean");
   t.is (vs10.get_bool (), false,             "8421 ~ true --> false");
 
-  Variant vs11 = vs1.operator_match (v1);
+  Variant vs11 = vs1.operator_match (v1, task);
   t.is (vs11.type (), Variant::type_boolean, "8421 ~ 42 --> boolean");
   t.is (vs11.get_bool (), true,              "8421 ~ 42 --> true");
 
-  Variant vs12 = vs1.operator_match (v2);
+  Variant vs12 = vs1.operator_match (v2, task);
   t.is (vs12.type (), Variant::type_boolean, "8421 ~ 3.14 --> boolean");
   t.is (vs12.get_bool (), false,             "8421 ~ 3.14 --> false");
 
-  Variant vs13 = vs1.operator_match (v3);
+  Variant vs13 = vs1.operator_match (v3, task);
   t.is (vs13.type (), Variant::type_boolean, "8421 ~ 'foo' --> boolean");
   t.is (vs13.get_bool (), false,             "8421 ~ 'foo' --> false");
 
-  Variant vs14 = vs1.operator_match (v4);
+  Variant vs14 = vs1.operator_match (v4, task);
   t.is (vs14.type (), Variant::type_boolean, "8421 ~ 1234567890 --> boolean");
   t.is (vs14.get_bool (), false,             "8421 ~ 1234567890 --> false");
 
-  Variant vs15 = vs1.operator_match (v5);
+  Variant vs15 = vs1.operator_match (v5, task);
   t.is (vs15.type (), Variant::type_boolean, "8421 ~ 1200 --> boolean");
   t.is (vs15.get_bool (), false,             "8421 ~ 1200 --> false");
 
-  Variant vs20 = vs2.operator_match (v0);
+  Variant vs20 = vs2.operator_match (v0, task);
   t.is (vs20.type (), Variant::type_boolean, "3.14159 ~ true --> boolean");
   t.is (vs20.get_bool (), false,             "3.14159 ~ true --> false");
 
-  Variant vs21 = vs2.operator_match (v1);
+  Variant vs21 = vs2.operator_match (v1, task);
   t.is (vs21.type (), Variant::type_boolean, "3.14159 ~ 42 --> boolean");
   t.is (vs21.get_bool (), false,             "3.14159 ~ 42 --> false");
 
-  Variant vs22 = vs2.operator_match (v2);
+  Variant vs22 = vs2.operator_match (v2, task);
   t.is (vs22.type (), Variant::type_boolean, "3.14159 ~ 3.14 --> boolean");
   t.is (vs22.get_bool (), true,              "3.14159 ~ 3.14 --> true");
 
-  Variant vs23 = vs2.operator_match (v3);
+  Variant vs23 = vs2.operator_match (v3, task);
   t.is (vs23.type (), Variant::type_boolean, "3.14159 ~ 'foo' --> boolean");
   t.is (vs23.get_bool (), false,             "3.14159 ~ 'foo' --> false");
 
-  Variant vs24 = vs2.operator_match (v4);
+  Variant vs24 = vs2.operator_match (v4, task);
   t.is (vs24.type (), Variant::type_boolean, "3.14159 ~ 1234567890 --> boolean");
   t.is (vs24.get_bool (), false,             "3.14159 ~ 1234567890 --> false");
 
-  Variant vs25 = vs2.operator_match (v5);
+  Variant vs25 = vs2.operator_match (v5, task);
   t.is (vs25.type (), Variant::type_boolean, "3.14159 ~ 1200 --> boolean");
   t.is (vs25.get_bool (), false,             "3.14159 ~ 1200 --> false");
 
-  Variant vs30 = vs3.operator_match (v0);
+  Variant vs30 = vs3.operator_match (v0, task);
   t.is (vs30.type (), Variant::type_boolean, "foolish ~ true --> boolean");
   t.is (vs30.get_bool (), false,             "foolish ~ true --> false");
 
-  Variant vs31 = vs3.operator_match (v1);
+  Variant vs31 = vs3.operator_match (v1, task);
   t.is (vs31.type (), Variant::type_boolean, "foolish ~ 42 --> boolean");
   t.is (vs31.get_bool (), false,             "foolish ~ 42 --> false");
 
-  Variant vs32 = vs3.operator_match (v2);
+  Variant vs32 = vs3.operator_match (v2, task);
   t.is (vs32.type (), Variant::type_boolean, "foolish ~ 3.14 --> boolean");
   t.is (vs32.get_bool (), false,             "foolish ~ 3.14 --> false");
 
-  Variant vs33 = vs3.operator_match (v3);
+  Variant vs33 = vs3.operator_match (v3, task);
   t.is (vs33.type (), Variant::type_boolean, "foolish ~ 'foo' --> boolean");
   t.is (vs33.get_bool (), true,              "foolish ~ 'foo' --> true");
 
-  Variant vs34 = vs3.operator_match (v4);
+  Variant vs34 = vs3.operator_match (v4, task);
   t.is (vs34.type (), Variant::type_boolean, "foolish ~ 1234567890 --> boolean");
   t.is (vs34.get_bool (), false,             "foolish ~ 1234567890 --> false");
 
-  Variant vs35 = vs3.operator_match (v5);
+  Variant vs35 = vs3.operator_match (v5, task);
   t.is (vs35.type (), Variant::type_boolean, "foolish ~ 1200 --> boolean");
   t.is (vs35.get_bool (), false,             "foolish ~ 1200 --> false");
 
   // Exhaustive comparisons.
-  Variant v00 = v0.operator_match (v0);
+  Variant v00 = v0.operator_match (v0, task);
   t.is (v00.type (), Variant::type_boolean, "true ~ true --> boolean");
   t.is (v00.get_bool (), true,              "true ~ true --> true");
 
-  Variant v01 = v0.operator_match (v1);
+  Variant v01 = v0.operator_match (v1, task);
   t.is (v01.type (), Variant::type_boolean, "true ~ 42 --> boolean");
   t.is (v01.get_bool (), false,             "true ~ 42 --> false");
 
-  Variant v02 = v0.operator_match (v2);
+  Variant v02 = v0.operator_match (v2, task);
   t.is (v02.type (), Variant::type_boolean, "true ~ 3.14 --> boolean");
   t.is (v02.get_bool (), false,             "true ~ 3.14 --> false");
 
-  Variant v03 = v0.operator_match (v3);
+  Variant v03 = v0.operator_match (v3, task);
   t.is (v03.type (), Variant::type_boolean, "true ~ 'foo' --> boolean");
   t.is (v03.get_bool (), false,             "true ~ 'foo' --> false");
 
-  Variant v04 = v0.operator_match (v4);
+  Variant v04 = v0.operator_match (v4, task);
   t.is (v04.type (), Variant::type_boolean, "true ~ 1234567890 --> boolean");
   t.is (v04.get_bool (), false,             "true ~ 1234567890 --> false");
 
-  Variant v05 = v0.operator_match (v5);
+  Variant v05 = v0.operator_match (v5, task);
   t.is (v05.type (), Variant::type_boolean, "true ~ 1200 --> boolean");
   t.is (v05.get_bool (), false,             "true ~ 1200 --> false");
 
-  Variant v10 = v1.operator_match (v0);
+  Variant v10 = v1.operator_match (v0, task);
   t.is (v10.type (), Variant::type_boolean, "42 ~ true --> boolean");
   t.is (v10.get_bool (), false,             "42 ~ true --> false");
 
-  Variant v11 = v1.operator_match (v1);
+  Variant v11 = v1.operator_match (v1, task);
   t.is (v11.type (), Variant::type_boolean, "42 ~ 42 --> boolean");
   t.is (v11.get_bool (), true,              "42 ~ 42 --> true");
 
-  Variant v12 = v1.operator_match (v2);
+  Variant v12 = v1.operator_match (v2, task);
   t.is (v12.type (), Variant::type_boolean, "42 ~ 3.14 --> boolean");
   t.is (v12.get_bool (), false,             "42 ~ 3.14 --> false");
 
-  Variant v13 = v1.operator_match (v3);
+  Variant v13 = v1.operator_match (v3, task);
   t.is (v13.type (), Variant::type_boolean, "42 ~ 'foo' --> boolean");
   t.is (v13.get_bool (), false,             "42 ~ 'foo' --> false");
 
-  Variant v14 = v1.operator_match (v4);
+  Variant v14 = v1.operator_match (v4, task);
   t.is (v04.type (), Variant::type_boolean, "42 ~ 1234567890 --> boolean");
   t.is (v04.get_bool (), false,             "42 ~ 1234567890 --> false");
 
-  Variant v15 = v1.operator_match (v5);
+  Variant v15 = v1.operator_match (v5, task);
   t.is (v15.type (), Variant::type_boolean, "42 ~ 1200 --> boolean");
   t.is (v15.get_bool (), false,             "42 ~ 1200 --> false");
 
-  Variant v20 = v2.operator_match (v0);
+  Variant v20 = v2.operator_match (v0, task);
   t.is (v20.type (), Variant::type_boolean, "3.14 ~ true --> boolean");
   t.is (v20.get_bool (), false,             "3.14 ~ true --> false");
 
-  Variant v21 = v2.operator_match (v1);
+  Variant v21 = v2.operator_match (v1, task);
   t.is (v21.type (), Variant::type_boolean, "3.14 ~ 42 --> boolean");
   t.is (v21.get_bool (), false,             "3.14 ~ 42 --> false");
 
-  Variant v22 = v2.operator_match (v2);
+  Variant v22 = v2.operator_match (v2, task);
   t.is (v22.type (), Variant::type_boolean, "3.14 ~ 3.14 --> boolean");
   t.is (v22.get_bool (), true,              "3.14 ~ 3.14 --> true");
 
-  Variant v23 = v2.operator_match (v3);
+  Variant v23 = v2.operator_match (v3, task);
   t.is (v23.type (), Variant::type_boolean, "3.14 ~ 'foo' --> boolean");
   t.is (v23.get_bool (), false,             "3.14 ~ 'foo' --> false");
 
-  Variant v24 = v2.operator_match (v4);
+  Variant v24 = v2.operator_match (v4, task);
   t.is (v24.type (), Variant::type_boolean, "3.14 ~ 1234567890 --> boolean");
   t.is (v24.get_bool (), false,             "3.14 ~ 1234567890 --> false");
 
-  Variant v25 = v2.operator_match (v5);
+  Variant v25 = v2.operator_match (v5, task);
   t.is (v25.type (), Variant::type_boolean, "3.14 ~ 1200 --> boolean");
   t.is (v25.get_bool (), false,             "3.14 ~ 1200 --> false");
 
-  Variant v30 = v3.operator_match (v0);
+  Variant v30 = v3.operator_match (v0, task);
   t.is (v30.type (), Variant::type_boolean, "'foo' ~ true --> boolean");
   t.is (v30.get_bool (), false,             "'foo' ~ true --> false");
 
-  Variant v31 = v3.operator_match (v1);
+  Variant v31 = v3.operator_match (v1, task);
   t.is (v31.type (), Variant::type_boolean, "'foo' ~ 42 --> boolean");
   t.is (v31.get_bool (), false,             "'foo' ~ 42 --> false");
 
-  Variant v32 = v3.operator_match (v2);
+  Variant v32 = v3.operator_match (v2, task);
   t.is (v32.type (), Variant::type_boolean, "'foo' ~ 3.14 --> boolean");
   t.is (v32.get_bool (), false,             "'foo' ~ 3.14 --> false");
 
-  Variant v33 = v3.operator_match (v3);
+  Variant v33 = v3.operator_match (v3, task);
   t.is (v33.type (), Variant::type_boolean, "'foo' ~ 'foo' --> boolean");
   t.is (v33.get_bool (), true,              "'foo' ~ 'foo' --> true");
 
-  Variant v34 = v3.operator_match (v4);
+  Variant v34 = v3.operator_match (v4, task);
   t.is (v34.type (), Variant::type_boolean, "'foo' ~ 1234567890 --> boolean");
   t.is (v34.get_bool (), false,             "'foo' ~ 1234567890 --> false");
 
-  Variant v35 = v3.operator_match (v5);
+  Variant v35 = v3.operator_match (v5, task);
   t.is (v35.type (), Variant::type_boolean, "'foo' ~ 1200 --> boolean");
   t.is (v35.get_bool (), false,             "'foo' ~ 1200 --> false");
 
-  Variant v40 = v4.operator_match (v0);
+  Variant v40 = v4.operator_match (v0, task);
   t.is (v40.type (), Variant::type_boolean, "1234567890 ~ true --> boolean");
   t.is (v40.get_bool (), false,             "1234567890 ~ true --> false");
 
-  Variant v41 = v4.operator_match (v1);
+  Variant v41 = v4.operator_match (v1, task);
   t.is (v41.type (), Variant::type_boolean, "1234567890 ~ 42 --> boolean");
   t.is (v41.get_bool (), false,             "1234567890 ~ 42 --> false");
 
-  Variant v42 = v4.operator_match (v2);
+  Variant v42 = v4.operator_match (v2, task);
   t.is (v42.type (), Variant::type_boolean, "1234567890 ~ 3.14 --> boolean");
   t.is (v42.get_bool (), false,             "1234567890 ~ 3.14 --> false");
 
-  Variant v43 = v4.operator_match (v3);
+  Variant v43 = v4.operator_match (v3, task);
   t.is (v43.type (), Variant::type_boolean, "1234567890 ~ 'foo' --> boolean");
   t.is (v43.get_bool (), false,             "1234567890 ~ 'foo' --> false");
 
-  Variant v44 = v4.operator_match (v4);
+  Variant v44 = v4.operator_match (v4, task);
   t.is (v44.type (), Variant::type_boolean, "1234567890 ~ 1234567890 --> boolean");
   t.is (v44.get_bool (), true,              "1234567890 ~ 1234567890 --> true");
 
-  Variant v45 = v4.operator_match (v5);
+  Variant v45 = v4.operator_match (v5, task);
   t.is (v45.type (), Variant::type_boolean, "1234567890 ~ 1200 --> boolean");
   t.is (v45.get_bool (), false,             "1234567890 ~ 1200 --> false");
 
-  Variant v50 = v5.operator_match (v0);
+  Variant v50 = v5.operator_match (v0, task);
   t.is (v50.type (), Variant::type_boolean, "1200 ~ true --> boolean");
   t.is (v50.get_bool (), false,             "1200 ~ true --> false");
 
-  Variant v51 = v5.operator_match (v1);
+  Variant v51 = v5.operator_match (v1, task);
   t.is (v51.type (), Variant::type_boolean, "1200 ~ 42 --> boolean");
   t.is (v51.get_bool (), false,             "1200 ~ 42 --> false");
 
-  Variant v52 = v5.operator_match (v2);
+  Variant v52 = v5.operator_match (v2, task);
   t.is (v52.type (), Variant::type_boolean, "1200 ~ 3.14 --> boolean");
   t.is (v52.get_bool (), false,             "1200 ~ 3.14 --> false");
 
-  Variant v53 = v5.operator_match (v3);
+  Variant v53 = v5.operator_match (v3, task);
   t.is (v53.type (), Variant::type_boolean, "1200 ~ 'foo' --> boolean");
   t.is (v53.get_bool (), false,             "1200 ~ 'foo' --> false");
 
-  Variant v54 = v5.operator_match (v4);
+  Variant v54 = v5.operator_match (v4, task);
   t.is (v04.type (), Variant::type_boolean, "1200 ~ 1234567890 --> boolean");
   t.is (v04.get_bool (), false,             "1200 ~ 1234567890 --> false");
 
-  Variant v55 = v5.operator_match (v5);
+  Variant v55 = v5.operator_match (v5, task);
   t.is (v55.type (), Variant::type_boolean, "1200 ~ 1200 --> boolean");
   t.is (v55.get_bool (), true,              "1200 ~ 1200 --> true");
 
