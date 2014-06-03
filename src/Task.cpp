@@ -2126,7 +2126,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             if (column->validate (value2))
             {
               context.debug (label + name + " <-- " + value2 + " <-- " + value);
-              (*this).set (name, value);
+              (*this).set (name, value2);
               ++modCount;
             }
             else
