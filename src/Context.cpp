@@ -696,8 +696,7 @@ void Context::decomposeSortField (
 void Context::clear ()
 {
   tdb2.clear ();
-
-  // TODO parser.clear (); ?
+  parser.clear ();
 
   // Eliminate the command objects.
   std::map <std::string, Command*>::iterator com;
@@ -712,7 +711,6 @@ void Context::clear ()
     delete col->second;
 
   columns.clear ();
-
   clearMessages ();
 }
 
