@@ -145,9 +145,8 @@ int Context::initialize (int argc, const char** argv)
     createDefaultConfig ();
 
     // Handle Aliases.
-    loadAliases ();
-    aliases2.load ();
-    aliases2.resolve (parser.tree ());
+    alias.load ();
+    alias.resolve (parser.tree ());
 
     // Initialize the color rules, if necessary.
     if (color ())
@@ -667,20 +666,6 @@ void Context::createDefaultConfig ()
 
   // Create data location, if necessary.
   config.createDefaultData (data_dir);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Context::loadAliases ()
-{
-  aliases.clear ();
-
-  std::vector <std::string> vars;
-  config.all (vars);
-
-  std::vector <std::string>::iterator var;
-  for (var = vars.begin (); var != vars.end (); ++var)
-    if (var->substr (0, 6) == "alias.")
-      aliases[var->substr (6)] = config.get (*var);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

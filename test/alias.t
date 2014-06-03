@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -38,21 +38,29 @@ if (open my $fh, '>', 'alias.rc')
 {
   print $fh "data.location=.\n",
             "alias.foo=_projects\n",
-            "alias.bar=foo\n";
+            "alias.bar=foo\n",
+            "alias.baz=bar\n",
+            "alias.qux=baz\n";
   close $fh;
 }
 
-# Add a task with certain project, then access that task via aliases.
+# Add a task with a certain project, then access that task via aliases.
 qx{../src/task rc:alias.rc add project:ALIAS foo 2>&1};
 
 my $output = qx{../src/task rc:alias.rc _projects 2>&1};
 like ($output, qr/ALIAS/, 'task _projects -> ALIAS');
 
-$output = qx{../src/task rc:alias.rc foo 2>&1};
+$output = qx{../src/task rc:alias.rc qux 2>&1};
 like ($output, qr/ALIAS/, 'task foo -> _projects -> ALIAS');
 
 $output = qx{../src/task rc:alias.rc bar 2>&1};
 like ($output, qr/ALIAS/, 'task bar -> foo -> _projects -> ALIAS');
+
+$output = qx{../src/task rc:alias.rc baz 2>&1};
+like ($output, qr/ALIAS/, 'task baz -> bar -> foo -> _projects -> ALIAS');
+
+$output = qx{../src/task rc:alias.rc qux 2>&1};
+like ($output, qr/ALIAS/, 'task qux -> baz -> bar -> foo -> _projects -> ALIAS');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data alias.rc);

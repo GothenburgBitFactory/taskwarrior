@@ -52,7 +52,7 @@ int CmdCompletionAliases::execute (std::string& output)
   std::vector <std::string> aliases;
 
   std::map <std::string, std::string>::iterator it;
-  for (it = context.aliases.begin (); it != context.aliases.end (); ++it)
+  for (it = context.alias._aliases.begin (); it != context.alias._aliases.end (); ++it)
     aliases.push_back (it->first);
 
   // Sort alphabetically.

@@ -35,7 +35,7 @@
 
 extern Context context;
 
-// Alias expansion limit.  Any more indicates some kind of error.
+// Alias expansion limit. Any more indicates some kind of error.
 const int safetyValveDefault = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,6 +64,9 @@ void Alias::load ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // An alias must be a distinct word on the command line.
+//
+// TODO This is straight word substitution.  What this really needs is node
+//      insertion, for more advanced aliases.
 void Alias::resolve (Tree* tree)
 {
   bool something;
@@ -85,20 +88,27 @@ void Alias::resolve (Tree* tree)
       if (! (*i)->hasTag ("?"))
         continue;
 
-      std::string raw = (*i)->attribute ("raw");
-      std::map <std::string, std::string>::iterator match = context.aliases.find (raw);
-      if (match != context.aliases.end ())
+      std::map <std::string, std::string>::iterator a;
+      if ((*i)->_branches.size ())
       {
-        something = true;
-
-        std::vector <std::string> words;
-        Lexer::word_split (words, context.aliases[raw]);
-
-        std::vector <std::string>::iterator word;
-        for (word = words.begin (); word != words.end (); ++word)
+        std::vector <Tree*>::iterator b;
+        for (b = (*i)->_branches.begin (); b != (*i)->_branches.end (); ++b)
         {
-          // TODO Insert branch (words) in place of (*i).
-          std::cout << "# alias word '" << *word << "'\n";
+          a = _aliases.find ((*b)->attribute ("raw"));
+          if (a != _aliases.end ())
+          {
+            (*b)->attribute ("raw", a->second);
+            something = true;
+          }
+        }
+      }
+      else
+      {
+        a = _aliases.find ((*i)->attribute ("raw"));
+        if (a != _aliases.end ())
+        {
+          (*i)->attribute ("raw", a->second);
+          something = true;
         }
       }
     }

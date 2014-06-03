@@ -97,8 +97,8 @@ int CmdHelp::execute (std::string& output)
   view.set (row, 1, " ");
 
   std::map <std::string, std::string>::iterator alias;
-  for (alias =  context.aliases.begin ();
-       alias != context.aliases.end ();
+  for (alias =  context.alias._aliases.begin ();
+       alias != context.alias._aliases.end ();
        ++alias)
   {
     row = view.addRow ();

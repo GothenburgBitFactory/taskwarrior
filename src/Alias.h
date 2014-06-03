@@ -39,7 +39,7 @@ public:
   void load ();
   void resolve (Tree*);
 
-private:
+public:
   std::map <std::string, std::string> _aliases;
 };
 

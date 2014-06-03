@@ -77,7 +77,6 @@ private:
   void staticInitialization ();
   void assumeLocations ();
   void createDefaultConfig ();
-  void loadAliases ();
   void updateXtermTitle ();
   void updateVerbosity ();
 
@@ -90,8 +89,7 @@ public:
   Config                              config;
 
   TDB2                                tdb2;
-  std::map <std::string, std::string> aliases;
-  Alias                               aliases2;
+  Alias                               alias;
   Hooks                               hooks;
   DOM                                 dom;
 
