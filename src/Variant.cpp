@@ -917,29 +917,17 @@ bool Variant::operator_nopartial (const Variant& other) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Variant::operator_hastag (const Variant& other) const
+bool Variant::operator_hastag (const Variant& other, const Task& task) const
 {
-  Variant left (*this);   // tags
-  Variant right (other);  // tag
-
-  left.cast (type_string);
+  Variant right (other);
   right.cast (type_string);
-
-  std::vector <std::string> individual;
-  split (individual, left._string, ',');
-
-  std::vector <std::string>::iterator i;
-  for (i = individual.begin (); i != individual.end (); ++i)
-    if (*i == right._string)
-      return true;
-
-  return false;
+  return task.hasTag (right._string);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Variant::operator_notag (const Variant& other) const
+bool Variant::operator_notag (const Variant& other, const Task& task) const
 {
-  return ! operator_hastag (other);
+  return ! operator_hastag (other, task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

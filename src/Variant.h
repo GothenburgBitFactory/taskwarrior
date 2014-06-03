@@ -29,6 +29,7 @@
 
 #include <string>
 #include <time.h>
+#include <Task.h>
 
 class Variant
 {
@@ -67,8 +68,8 @@ public:
   bool operator_nomatch (const Variant&) const;
   bool operator_partial (const Variant&) const;
   bool operator_nopartial (const Variant&) const;
-  bool operator_hastag (const Variant&) const;
-  bool operator_notag (const Variant&) const;
+  bool operator_hastag (const Variant&, const Task&) const;
+  bool operator_notag (const Variant&, const Task&) const;
   bool operator! () const;
 
   Variant& operator^= (const Variant&);

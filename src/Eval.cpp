@@ -28,10 +28,12 @@
 #include <map>
 #include <time.h>
 #include <Context.h>
+#include <Task.h>
 #include <Color.h>
 #include <Eval.h>
 
 extern Context context;
+extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Supported operators, borrowed from C++, particularly the precedence.
@@ -287,8 +289,8 @@ void Eval::evaluatePostfixStack (
       else if (token->first == "xor")      left = left.operator_xor (right);
       else if (token->first == "~")        left = left.operator_match (right);
       else if (token->first == "!~")       left = left.operator_nomatch (right);
-      else if (token->first == "_hastag_") left = left.operator_hastag (right);
-      else if (token->first == "_notag_")  left = left.operator_notag (right);
+      else if (token->first == "_hastag_") left = left.operator_hastag (right, contextTask);
+      else if (token->first == "_notag_")  left = left.operator_notag (right, contextTask);
       else
         std::cout << "# Unrecognized operator '" << token->first << "'\n";
 
