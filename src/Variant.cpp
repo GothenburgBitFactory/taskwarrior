@@ -37,6 +37,7 @@
 #include <text.h>
 
 std::string Variant::dateFormat = "";
+bool Variant::searchCaseSensitive = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant ()
@@ -753,7 +754,7 @@ bool Variant::operator_match (const Variant& other) const
   left.cast (type_string);
   right.cast (type_string);
 
-  RX r (right._string, true);
+  RX r (right._string, searchCaseSensitive);
   return r.match (left._string);
 }
 
