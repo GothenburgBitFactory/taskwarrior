@@ -195,14 +195,10 @@ int Context::initialize (int argc, const char** argv)
     parser.findIdSequence ();                       // <id>
     parser.injectDefaults ();                       // rc.default.command
 
-    // Static initialization to decouple code.
-    staticInitialization ();
+    staticInitialization ();                        // Decouple code from Context.
+    parser.parse ();                                // Parse all elements.
 
-    // Parse the command line.
-    parser.parse ();
-
-    // Initialize the database.
-    tdb2.set_location (data_dir);
+    tdb2.set_location (data_dir);                   // Prepare the task database.
 
     // First opportunity to run a hook script.
     hooks.initialize ();

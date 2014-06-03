@@ -2038,6 +2038,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             }
             else
             {
+              v.cast (Variant::type_date);
               context.debug (label + name + " <-- " + format ("{1}", v.get_date ()) + " <-- " + (std::string) v + " <-- " + value);
             }
 
