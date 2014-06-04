@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -59,6 +59,10 @@ like ($output, qr/^.{36}$/, 'DOM id --> uuid');
 my $uuid = chomp $output;
 $output = qx{../src/task rc:dom.rc _get ${uuid}.id 2>&1};
 like ($output, qr/^1$/, 'DOM uuid --> id');
+
+# Failed DOM lookup returns blank.
+$output = qx{../src/task rc:dom.rc _get 4.description 2>&1};
+like ($output, qr/^$/, "DOM 4.description --> ''");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data dom.rc);
