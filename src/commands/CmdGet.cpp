@@ -58,12 +58,12 @@ int CmdGet::execute (std::string& output)
   for (word = words.begin (); word != words.end (); ++word)
   {
     Task t;
-    std::string result = context.dom.get (*word, t);
-    results.push_back (result);
-
-    if (result != "" &&
-        result != *word)
+    std::string result;
+    if (context.dom.get (*word, t, result))
+    {
+      results.push_back (result);
       found = true;
+    }
   }
 
   join (output, " ", results);

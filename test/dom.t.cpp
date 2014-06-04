@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (6);
+  UnitTest t (17);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -47,19 +47,40 @@ int main (int argc, char** argv)
     // Prime the pump.
     const char* fake_argv[] = {"task"};
     context.parser.initialize (1, fake_argv);
+    context.program = "task";
+    context.config.set ("name", "value");
 
     DOM dom;
-    t.is (dom.get ("system.version"),     VERSION,     "DOM system.version -> VERSION");
-    t.ok (dom.get ("system.os") != "<unknown>",        "DOM system.os -> != Unknown");
-    t.is (dom.get ("context.program"),    "task",      "DOM context.program -> 'task'");
-    t.is (dom.get ("context.args"),       "task",      "DOM context.args -> 'task'");
-    t.ok (dom.get ("context.width") !=    "0",         "DOM context.width -> '0'");
-    t.ok (dom.get ("context.height") !=   "0",         "DOM context.height -> '0'");
+    std::string result;
+    t.ok (dom.get ("system.version", result),  "DOM system.version -> true");
+    t.is (result, VERSION,                     "DOM system.version -> VERSION");
 
-    // TODO dom.get rc.name
-//    t.is (dom.get ("rc.verbose"),         "yes",       "DOM rc.verbose -> 'yes'");
+    t.ok (dom.get ("system.os", result),       "DOM system.os -> true");
+    t.ok (result != "<unknown>",               "DOM system.os -> != Unknown");
 
-    // TODO dom.set rc.name
+    t.ok (dom.get ("context.program", result), "DOM context.program -> true");
+    t.is (result, "task",                      "DOM context.program -> 'task'");
+
+    t.ok (dom.get ("context.args", result),    "DOM context.args -> true");
+    t.is (result, "task",                      "DOM context.args -> 'task'");
+
+    t.ok (dom.get ("context.width", result),   "DOM context.width -> true");
+    t.ok (result != "0",                       "DOM context.width -> '0'");
+
+    t.ok (dom.get ("context.height", result),  "DOM context.height -> true");
+    t.ok (result != "0",                       "DOM context.height -> '0'");
+
+    // dom.get rc.name
+    t.ok (dom.get ("rc.name", result),         "DOM rc.name -> true");
+    t.is (result, "value",                     "DOM rc.name -> value");
+
+    // dom.get rc.missing
+    t.notok (dom.get ("rc.missing", result),   "DOM rc.missing -> false");
+
+    // dom.set rc.name
+    dom.set ("rc.new", "value");
+    t.ok (dom.get ("rc.new", result),          "DOM rc.new -> true");
+    t.is (result, "value",                     "DOM rc.new -> value");
   }
 
   catch (const std::string& error)

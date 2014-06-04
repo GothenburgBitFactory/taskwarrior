@@ -44,10 +44,10 @@ Task& contextTask = dummy;
 ////////////////////////////////////////////////////////////////////////////////
 bool domSource (const std::string& identifier, Variant& value)
 {
-  std::string stringValue = context.dom.get (identifier, contextTask);
-  if (stringValue != identifier)
+  std::string result;
+  if (context.dom.get (identifier, contextTask, result))
   {
-    value = Variant (stringValue);
+    value = Variant (result);
     value.source (identifier);
     return true;
   }

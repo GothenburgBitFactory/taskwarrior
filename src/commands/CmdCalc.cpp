@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <Context.h>
+#include <Filter.h>
 #include <Eval.h>
 #include <Dates.h>
 #include <main.h>
@@ -32,20 +33,6 @@
 #include <CmdCalc.h>
 
 extern Context context;
-
-////////////////////////////////////////////////////////////////////////////////
-static bool domSource (const std::string& name, Variant& value)
-{
-  Task t;
-  std::string resolved = context.dom.get (name, t);
-  if (resolved != name)
-  {
-    value = Variant (resolved);
-    return true;
-  }
-
-  return false;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdCalc::CmdCalc ()

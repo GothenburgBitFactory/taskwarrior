@@ -73,7 +73,7 @@ const std::vector <std::string> DOM::get_references () const
 //   system.version
 //   system.os
 //
-const std::string DOM::get (const std::string& name)
+bool DOM::get (const std::string& name, std::string& value)
 {
   int len = name.length ();
   Nibbler n (name);
@@ -82,31 +82,56 @@ const std::string DOM::get (const std::string& name)
   if (len > 3 &&
       name.substr (0, 3) == "rc.")
   {
-    return context.config.get (name.substr (3));
+    std::string key = name.substr (3);
+    std::map <std::string, std::string>::iterator c = context.config.find (key);
+    if (c != context.config.end ())
+    {
+      value = c->second;
+      return true;
+    }
+
+    return false;
   }
 
   // context.*
   if (len > 8 &&
            name.substr (0, 8) == "context.")
   {
-         if (name == "context.program") return context.parser.tree ()->_branches[0]->attribute ("raw");
+    if (name == "context.program")
+    {
+      value = context.program;
+      return true;
+    }
     else if (name == "context.args")
     {
-      std::string combined;
+      value = "";
       std::vector <Tree*>::iterator i;
       for (i = context.parser.tree ()->_branches.begin (); i != context.parser.tree ()->_branches.end (); ++i)
       {
-        if (combined != "")
-          combined += " ";
+        if (value != "")
+          value += " ";
 
-        combined += (*i)->attribute ("raw");
+        value += (*i)->attribute ("raw");
       }
 
-      return combined;
+      return true;
     }
-    else if (name == "context.width")   return format (context.terminal_width  ? context.terminal_width  : context.getWidth ());
-    else if (name == "context.height")  return format (context.terminal_height ? context.terminal_height : context.getHeight ());
-    else                                throw format (STRING_DOM_UNREC, name);
+    else if (name == "context.width")
+    {
+      value = format (context.terminal_width
+                        ? context.terminal_width
+                        : context.getWidth ());
+      return true;
+    }
+    else if (name == "context.height")
+    {
+      value = format (context.terminal_height
+                        ? context.terminal_height
+                        : context.getHeight ());
+      return true;
+    }
+    else
+      throw format (STRING_DOM_UNREC, name);
   }
 
   // TODO stats.<name>
@@ -117,40 +142,45 @@ const std::string DOM::get (const std::string& name)
   {
     // Taskwarrior version number.
     if (name == "system.version")
-      return VERSION;
+    {
+      value = VERSION;
+      return true;
+    }
 
     // OS type.
     else if (name == "system.os")
+    {
 #if defined (DARWIN)
-      return "Darwin";
+      value = "Darwin";
 #elif defined (SOLARIS)
-      return "Solaris";
+      value = "Solaris";
 #elif defined (CYGWIN)
-      return "Cygwin";
+      value = "Cygwin";
 #elif defined (HAIKU)
-      return "Haiku";
+      value = "Haiku";
 #elif defined (OPENBSD)
-      return "OpenBSD";
+      value = "OpenBSD";
 #elif defined (FREEBSD)
-      return "FreeBSD";
+      value = "FreeBSD";
 #elif defined (NETBSD)
-      return "NetBSD";
+      value = "NetBSD";
 #elif defined (LINUX)
-      return "Linux";
+      value = "Linux";
 #elif defined (KFREEBSD)
-      return "GNU/kFreeBSD";
+      value = "GNU/kFreeBSD";
 #elif defined (GNUHURD)
-      return "GNU/Hurd";
+      value = "GNU/Hurd";
 #else
-      return STRING_DOM_UNKNOWN;
+      value = STRING_DOM_UNKNOWN;
 #endif
-
+      return true;
+    }
     else
       throw format (STRING_DOM_UNREC, name);
   }
 
-  // Pass-through.
-  return name;
+  // Empty string if nothing is found.
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -160,18 +190,27 @@ const std::string DOM::get (const std::string& name)
 //   <id>.<attribute>
 //   <uuid>.<attribute>
 //
-const std::string DOM::get (const std::string& name, const Task& task)
+bool DOM::get (const std::string& name, const Task& task, std::string& value)
 {
   // <attr>
   if (task.size () && name == "id")
-    return format (task.id);
+  {
+    value = format (task.id);
+    return true;
+  }
 
   if (task.size () && name == "urgency")
-    return format (task.urgency_c ());
+  {
+    value = format (task.urgency_c ());
+    return true;
+  }
 
   std::string canonical;
   if (task.size () && context.parser.canonicalize (canonical, "attribute", name))
-    return task.get (canonical);
+  {
+    value = task.get (canonical);
+    return true;
+  }
 
   // <id>.<name>
   Nibbler n (name);
@@ -190,10 +229,21 @@ const std::string DOM::get (const std::string& name, const Task& task)
       std::string attr;
       n.getUntilEOS (attr);
 
-           if (attr == "id")                       return format (ref.id);
-      else if (attr == "urgency")                  return format (ref.urgency_c ());
+      if (attr == "id")
+      {
+        value = format (ref.id);
+        return true;
+      }
+      else if (attr == "urgency")
+      {
+        value = format (ref.urgency_c ());
+        return true;
+      }
       else if (context.parser.canonicalize (canonical, "attribute", attr))
-                                                   return ref.get (canonical);
+      {
+        value = ref.get (canonical);
+        return true;
+      }
     }
 
     n.restore ();
@@ -214,17 +264,28 @@ const std::string DOM::get (const std::string& name, const Task& task)
       std::string attr;
       n.getUntilEOS (attr);
 
-           if (attr == "id")                       return format (ref.id);
-      else if (attr == "urgency")                  return format (ref.urgency_c (), 4, 3);
+      if (attr == "id")
+      {
+        value = format (ref.id);
+        return true;
+      }
+      else if (attr == "urgency")
+      {
+        value = format (ref.urgency_c (), 4, 3);
+        return true;
+      }
       else if (context.parser.canonicalize (canonical, "attribute", attr))
-                                                   return ref.get (canonical);
+      {
+        value = ref.get (canonical);
+        return true;
+      }
     }
 
     n.restore ();
   }
 
   // Delegate to the context-free version of DOM::get.
-  return this->get (name);
+  return this->get (name, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
