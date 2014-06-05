@@ -190,6 +190,25 @@ bool DOM::get (const std::string& name, std::string& value)
 //   <id>.<attribute>
 //   <uuid>.<attribute>
 //
+// For certain attributes:
+//   <date>.year
+//   <date>.month
+//   <date>.day
+//   <date>.hour
+//   <date>.minute
+//   <date>.second
+//
+//   <tag>.<literal>                  Includes virtual tags
+//
+//   <annotation>.<N>.entry
+//   <annotation>.<N>.entry.year
+//   <annotation>.<N>.entry.month
+//   <annotation>.<N>.entry.day
+//   <annotation>.<N>.entry.hour
+//   <annotation>.<N>.entry.minute
+//   <annotation>.<N>.entry.second
+//   <annotation>.<N>.description
+//
 bool DOM::get (const std::string& name, const Task& task, std::string& value)
 {
   // <attr>
@@ -205,83 +224,109 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
     return true;
   }
 
-  std::string canonical;
-  if (task.size () && context.parser.canonicalize (canonical, "attribute", name))
-  {
-    value = task.get (canonical);
-    return true;
-  }
+  // split name on '.'
+  std::vector <std::string> elements;
+  split (elements, name, '.');
 
-  // <id>.<name>
-  Nibbler n (name);
-  n.save ();
-  int id;
-  if (n.getInt (id))
+  if (elements.size () == 1)
   {
-    if (n.skip ('.'))
+    std::string canonical;
+    if (task.size () && context.parser.canonicalize (canonical, "attribute", name))
     {
-      Task ref;
-      if (id == task.id)
-        ref = task;
+      value = task.get (canonical);
+      return true;
+    }
+  }
+  else if (elements.size () > 1)
+  {
+    Task ref;
+
+    Nibbler n (elements[0]);
+    n.save ();
+    int id;
+    std::string uuid;
+    bool proceed = false;
+
+    if (n.getInt (id))
+    {
+      if (n.skip ('.'))
+      {
+        if (id == task.id)
+          ref = task;
+        else
+          context.tdb2.get (id, ref);
+
+        proceed = true;
+      }
       else
-        context.tdb2.get (id, ref);
+        n.restore ();
+    }
+    else if (n.getUUID (uuid))
+    {
+      if (n.skip ('.'))
+      {
+        if (uuid == task.get ("uuid"))
+          ref = task;
+        else
+          context.tdb2.get (uuid, ref);
 
-      std::string attr;
-      n.getUntilEOS (attr);
+        proceed = true;
+      }
+    }
 
-      if (attr == "id")
+    if (proceed)
+    {
+      if (elements[1] == "id")
       {
         value = format (ref.id);
         return true;
       }
-      else if (attr == "urgency")
+      else if (elements[1] == "urgency")
       {
         value = format (ref.urgency_c ());
         return true;
       }
-      else if (context.parser.canonicalize (canonical, "attribute", attr))
+
+      std::string canonical;
+      if (context.parser.canonicalize (canonical, "attribute", elements[1]))
       {
-        value = ref.get (canonical);
-        return true;
+        if (elements.size () == 2)
+        {
+          value = ref.get (canonical);
+          return true;
+        }
+        else if (elements.size () == 3)
+        {
+          // <date>.year
+          // <date>.month
+          // <date>.day
+          // <date>.hour
+          // <date>.minute
+          // <date>.second
+
+          // <tag>.<literal>
+          if (elements[1] == "tag")
+          {
+            value = ref.hasTag (elements[2]) ? elements[2] : "";
+            return true;
+          }
+        }
+        else if (elements.size () == 3)
+        {
+          // <annotation>.<N>.entry
+          // <annotation>.<N>.description
+        }
+        else if (elements.size () == 4)
+        {
+          // <annotation>.<N>.entry.year
+          // <annotation>.<N>.entry.month
+          // <annotation>.<N>.entry.day
+          // <annotation>.<N>.entry.hour
+          // <annotation>.<N>.entry.minute
+          // <annotation>.<N>.entry.second
+        }
       }
     }
-
-    n.restore ();
-  }
-
-  // <uuid>.<name>
-  std::string uuid;
-  if (n.getUUID (uuid))
-  {
-    if (n.skip ('.'))
-    {
-      Task ref;
-      if (uuid == task.get ("uuid"))
-        ref = task;
-      else
-        context.tdb2.get (uuid, ref);
-
-      std::string attr;
-      n.getUntilEOS (attr);
-
-      if (attr == "id")
-      {
-        value = format (ref.id);
-        return true;
-      }
-      else if (attr == "urgency")
-      {
-        value = format (ref.urgency_c (), 4, 3);
-        return true;
-      }
-      else if (context.parser.canonicalize (canonical, "attribute", attr))
-      {
-        value = ref.get (canonical);
-        return true;
-      }
-    }
-
-    n.restore ();
   }
 
   // Delegate to the context-free version of DOM::get.

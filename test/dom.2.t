@@ -27,44 +27,71 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 12;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'dom.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "dateformat=YMD\n",
-            "dateformat.info=YMD\n";
+            "dateformat.info=YMD\n",
+            "confirmation=off\n";
   close $fh;
 }
 
 # DOM reference to other task.
-qx{../src/task rc:dom.rc add one due:20110901 2>&1};
-qx{../src/task rc:dom.rc add two due:1.due 2>&1};
-my $output = qx{../src/task rc:dom.rc 2 info 2>&1};
-like ($output, qr/Due\s+20110901/, 'Found due date duplicated via dom');
+qx{../src/task rc:$rc add one due:20110901 2>&1};
+qx{../src/task rc:$rc add two due:1.due 2>&1};
+my $output = qx{../src/task rc:$rc 2 info 2>&1};
+like ($output, qr/Due\s+20110901/, "$ut: Found due date duplicated via dom");
 
 # DOM reference to the current task.
-qx{../src/task rc:dom.rc add three due:20110901 wait:due 2>&1};
-$output = qx{../src/task rc:dom.rc 3 info 2>&1};
-like ($output, qr/Waiting until\s+20110901/, 'Found wait date duplicated from due date');
+qx{../src/task rc:$rc add three due:20110901 wait:due +tag1 +tag2 2>&1};
+$output = qx{../src/task rc:$rc 3 info 2>&1};
+like ($output, qr/Waiting until\s+20110901/, "$ut: Found wait date duplicated from due date");
 
 # ID <--> UUID <--> ID round trip via DOM.
-$output = qx{../src/task rc:dom.rc _get 1.uuid 2>&1};
-like ($output, qr/^.{36}$/, 'DOM id --> uuid');
+$output = qx{../src/task rc:$rc _get 1.uuid 2>&1};
+like ($output, qr/^.{36}$/, "$ut: DOM id --> uuid");
 my $uuid = chomp $output;
-$output = qx{../src/task rc:dom.rc _get ${uuid}.id 2>&1};
-like ($output, qr/^1$/, 'DOM uuid --> id');
+$output = qx{../src/task rc:$rc _get ${uuid}.id 2>&1};
+like ($output, qr/^1$/, "$ut: DOM uuid --> id");
 
 # Failed DOM lookup returns blank.
-$output = qx{../src/task rc:dom.rc _get 4.description 2>&1};
+$output = qx{../src/task rc:$rc _get 4.description 2>&1};
 like ($output, qr/^$/, "DOM 4.description --> ''");
 
+# Test extended DOM support (2.4.0)
+$output = qx{../src/task rc:$rc _get 3.tags 2>&1};
+like ($output, qr/^tag1,tag2$/, "$ut: <id>.<tags>");
+
+$output = qx{../src/task rc:$rc _get 3.tag.tag1 2>&1};
+like ($output, qr/^tag1,tag2$/, "$ut: <id>.tag.tag1");
+
+$output = qx{../src/task rc:$rc _get 3.tag.OVERDUE 2>&1};
+like ($output, qr/^OVERDUE$/, "$ut: <id>.tag.<tag>");
+
+$output = qx{../src/task rc:$rc _get 3.due.year 2>&1};
+like ($output, qr/^\d{4}$/, "$ut: <id>.due.year");
+
+qx{../src/task rc:$rc 3 annotate note 2>&1};
+ok ($? == 0, "$ut: add annotation");
+
+$output = qx{../src/task rc:$rc _get 3.annotation.1.entry 2>&1};
+like ($output, qr/^\d+$/, "$ut: <id>.annotation.1.entry");
+
+$output = qx{../src/task rc:$rc _get 3.annotation.1.description 2>&1};
+like ($output, qr/^note$/, "$ut: <id>.annotation.1.description");
+
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data dom.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
