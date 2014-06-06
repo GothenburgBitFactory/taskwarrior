@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 20;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -73,11 +73,35 @@ like ($output, qr/^$/, "DOM 4.description --> ''");
 $output = qx{../src/task rc:$rc _get 3.tags 2>&1};
 like ($output, qr/^tag1,tag2$/, "$ut: <id>.<tags>");
 
-$output = qx{../src/task rc:$rc _get 3.tag.tag1 2>&1};
-like ($output, qr/^tag1,tag2$/, "$ut: <id>.tag.tag1");
+$output = qx{../src/task rc:$rc _get 3.tags.tag1 2>&1};
+like ($output, qr/^tag1$/, "$ut: <id>.tags.tag1");
 
-$output = qx{../src/task rc:$rc _get 3.tag.OVERDUE 2>&1};
-like ($output, qr/^OVERDUE$/, "$ut: <id>.tag.<tag>");
+$output = qx{../src/task rc:$rc _get 3.tags.OVERDUE 2>&1};
+like ($output, qr/^OVERDUE$/, "$ut: <id>.tags.<tag>");
+
+$output = qx{../src/task rc:$rc _get 3.due.year 2>&1};
+like ($output, qr/^\d{4}$/, "$ut: <id>.due.year");
+
+$output = qx{../src/task rc:$rc _get 3.due.month 2>&1};
+like ($output, qr/^\d{1,2}$/, "$ut: <id>.due.month");
+
+$output = qx{../src/task rc:$rc _get 3.due.day 2>&1};
+like ($output, qr/^\d{1,2}$/, "$ut: <id>.due.day");
+
+$output = qx{../src/task rc:$rc _get 3.due.week 2>&1};
+like ($output, qr/^\d{1,2}$/, "$ut: <id>.due.week");
+
+$output = qx{../src/task rc:$rc _get 3.due.weekday 2>&1};
+like ($output, qr/^\d{1}$/, "$ut: <id>.due.weekday");
+
+$output = qx{../src/task rc:$rc _get 3.due.hour 2>&1};
+like ($output, qr/^\d{1,2}$/, "$ut: <id>.due.hour");
+
+$output = qx{../src/task rc:$rc _get 3.due.minute 2>&1};
+like ($output, qr/^\d{1,2}$/, "$ut: <id>.due.minute");
+
+$output = qx{../src/task rc:$rc _get 3.due.second 2>&1};
+like ($output, qr/^\d{1,2}$/, "$ut: <id>.due.second");
 
 $output = qx{../src/task rc:$rc _get 3.due.year 2>&1};
 like ($output, qr/^\d{4}$/, "$ut: <id>.due.year");
@@ -85,11 +109,11 @@ like ($output, qr/^\d{4}$/, "$ut: <id>.due.year");
 qx{../src/task rc:$rc 3 annotate note 2>&1};
 ok ($? == 0, "$ut: add annotation");
 
-$output = qx{../src/task rc:$rc _get 3.annotation.1.entry 2>&1};
-like ($output, qr/^\d+$/, "$ut: <id>.annotation.1.entry");
+$output = qx{../src/task rc:$rc _get 3.annotations.1.entry 2>&1};
+like ($output, qr/^\d+$/, "$ut: <id>.annotations.1.entry");
 
-$output = qx{../src/task rc:$rc _get 3.annotation.1.description 2>&1};
-like ($output, qr/^note$/, "$ut: <id>.annotation.1.description");
+$output = qx{../src/task rc:$rc _get 3.annotations.1.description 2>&1};
+like ($output, qr/^note$/, "$ut: <id>.annotations.1.description");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;

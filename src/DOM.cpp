@@ -26,8 +26,11 @@
 
 #include <cmake.h>
 #include <sstream>
+#include <map>
+#include <stdlib.h>
 #include <Context.h>
 #include <Nibbler.h>
+#include <Date.h>
 #include <text.h>
 #include <i18n.h>
 #include <DOM.h>
@@ -194,20 +197,26 @@ bool DOM::get (const std::string& name, std::string& value)
 //   <date>.year
 //   <date>.month
 //   <date>.day
+//   <date>.week
+//   <date>.weekday
+//   <date>.julian
 //   <date>.hour
 //   <date>.minute
 //   <date>.second
 //
-//   <tag>.<literal>                  Includes virtual tags
+//   tags.<literal>                  Includes virtual tags
 //
-//   <annotation>.<N>.entry
-//   <annotation>.<N>.entry.year
-//   <annotation>.<N>.entry.month
-//   <annotation>.<N>.entry.day
-//   <annotation>.<N>.entry.hour
-//   <annotation>.<N>.entry.minute
-//   <annotation>.<N>.entry.second
-//   <annotation>.<N>.description
+//   annotations.<N>.entry
+//   annotations.<N>.entry.year
+//   annotations.<N>.entry.month
+//   annotations.<N>.entry.day
+//   annotations.<N>.entry.week
+//   annotations.<N>.entry.weekday
+//   annotations.<N>.entry.julian
+//   annotations.<N>.entry.hour
+//   annotations.<N>.entry.minute
+//   annotations.<N>.entry.second
+//   annotations.<N>.description
 //
 bool DOM::get (const std::string& name, const Task& task, std::string& value)
 {
@@ -247,23 +256,19 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
     std::string uuid;
     bool proceed = false;
 
-    if (n.getInt (id))
+    if (n.getInt (id) && n.depleted ())
     {
-      if (n.skip ('.'))
-      {
-        if (id == task.id)
-          ref = task;
-        else
-          context.tdb2.get (id, ref);
-
-        proceed = true;
-      }
+      if (id == task.id)
+        ref = task;
       else
-        n.restore ();
+        context.tdb2.get (id, ref);
+
+      proceed = true;
     }
-    else if (n.getUUID (uuid))
+    else
     {
-      if (n.skip ('.'))
+      n.restore ();
+      if (n.getUUID (uuid) && n.depleted ())
       {
         if (uuid == task.get ("uuid"))
           ref = task;
@@ -297,33 +302,104 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
         }
         else if (elements.size () == 3)
         {
-          // <date>.year
-          // <date>.month
-          // <date>.day
-          // <date>.hour
-          // <date>.minute
-          // <date>.second
-
-          // <tag>.<literal>
-          if (elements[1] == "tag")
+          // tags.<tag>
+          if (canonical == "tags")
           {
             value = ref.hasTag (elements[2]) ? elements[2] : "";
             return true;
           }
+
+          Column* column = context.columns[canonical];
+          if (column && column->type () == "date")
+          {
+            // <date>.year
+            // <date>.month
+            // <date>.day
+            // <date>.week
+            // <date>.weekday
+            // <date>.julian
+            // <date>.hour
+            // <date>.minute
+            // <date>.second
+            Date date (ref.get_date (canonical));
+                 if (elements[2] == "year")    { value = format (date.year ());      return true; }
+            else if (elements[2] == "month")   { value = format (date.month ());     return true; }
+            else if (elements[2] == "day")     { value = format (date.day ());       return true; }
+            else if (elements[2] == "week")    { value = format (date.week ());      return true; }
+            else if (elements[2] == "weekday") { value = format (date.dayOfWeek ()); return true; }
+            else if (elements[2] == "julian")  { value = format (date.dayOfYear ()); return true; }
+            else if (elements[2] == "hour")    { value = format (date.hour ());      return true; }
+            else if (elements[2] == "minute")  { value = format (date.minute ());    return true; }
+            else if (elements[2] == "second")  { value = format (date.second ());    return true; }
+          }
         }
-        else if (elements.size () == 3)
+      }
+      else if (elements[1] == "annotations")
+      {
+        if (elements.size () == 4)
         {
-          // <annotation>.<N>.entry
-          // <annotation>.<N>.description
+          std::map <std::string, std::string> annos;
+          ref.getAnnotations (annos);
+
+          int a = strtol (elements[2].c_str (), NULL, 10);
+          int count = 0;
+
+          // Count off the 'a'th annotation.
+          std::map <std::string, std::string>::iterator i;
+          for (i = annos.begin (); i != annos.end (); ++i)
+          {
+            if (++count == a)
+            {
+              if (elements[3] == "entry")
+              {
+                // annotation_1234567890
+                // 0          ^11
+                value = i->first.substr (11);
+                return true;
+              }
+              else if (elements[3] == "description")
+              {
+                value = i->second;
+                return true;
+              }
+            }
+          }
         }
-        else if (elements.size () == 4)
+        else if (elements.size () == 5)
         {
-          // <annotation>.<N>.entry.year
-          // <annotation>.<N>.entry.month
-          // <annotation>.<N>.entry.day
-          // <annotation>.<N>.entry.hour
-          // <annotation>.<N>.entry.minute
-          // <annotation>.<N>.entry.second
+          std::map <std::string, std::string> annos;
+          ref.getAnnotations (annos);
+
+          int a = strtol (elements[2].c_str (), NULL, 10);
+          int count = 0;
+
+          // Count off the 'a'th annotation.
+          std::map <std::string, std::string>::iterator i;
+          for (i = annos.begin (); i != annos.end (); ++i)
+          {
+            if (++count == a)
+            {
+              // <annotations>.<N>.entry.year
+              // <annotations>.<N>.entry.month
+              // <annotations>.<N>.entry.day
+              // <annotations>.<N>.entry.week
+              // <annotations>.<N>.entry.weekday
+              // <annotations>.<N>.entry.julian
+              // <annotations>.<N>.entry.hour
+              // <annotations>.<N>.entry.minute
+              // <annotations>.<N>.entry.second
+              Date date (i->first.substr (11));
+                   if (elements[4] == "year")    { value = format (date.year ());      return true; }
+              else if (elements[4] == "month")   { value = format (date.month ());     return true; }
+              else if (elements[4] == "day")     { value = format (date.day ());       return true; }
+              else if (elements[4] == "week")    { value = format (date.week ());      return true; }
+              else if (elements[4] == "weekday") { value = format (date.dayOfWeek ()); return true; }
+              else if (elements[4] == "julian")  { value = format (date.dayOfYear ()); return true; }
+              else if (elements[4] == "hour")    { value = format (date.hour ());      return true; }
+              else if (elements[4] == "minute")  { value = format (date.minute ());    return true; }
+              else if (elements[4] == "second")  { value = format (date.second ());    return true; }
+            }
+          }
         }
       }
     }
