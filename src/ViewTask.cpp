@@ -173,10 +173,11 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
   // Calculate final column widths.
   int overage = _width - sum_minimal - all_extra;
-  context.debug (format ("ViewTask::render min={1} ideal={2} overage={3}", 
+  context.debug (format ("ViewTask::render min={1} ideal={2} overage={3} width={4}", 
                          sum_minimal + all_extra,
                          sum_ideal + all_extra,
-                         overage));
+                         overage,
+                         _width));
 
   std::vector <int> widths;
 
