@@ -151,7 +151,6 @@ http://www.opensource.org/licenses/mit-license.php for more information.
 .BR task(1),
 .BR tasksh(1),
 .BR taskrc(5),
-.BR task-faq(5),
 .BR task-color(5),
 .BR task-tutorial(5),
 

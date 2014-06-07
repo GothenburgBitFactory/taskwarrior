@@ -99,6 +99,7 @@
 - New verbosity token 'filter' shows the complete filter used by the last
   command.
 - Display debug/release build type in the diagnostics command.
+- Removed obsolete task-faq.5 man page.
 
 ------ current release ---------------------------
 

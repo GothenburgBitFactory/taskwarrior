@@ -200,7 +200,7 @@
 #define STRING_CMD_VERSION_USAGE2    "Muestra el número de versión (solamente) de taskwarrior"
 #define STRING_CMD_VERSION_MIT       "Taskwarrior solamente se puede copiar bajo los términos de la licencia MIT, que se pueden encontrar en el conjunto de código fuente de taskwarrior."
 
-#define STRING_CMD_VERSION_DOCS      "La documentación de taskwarrior se puede consultar usando 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync' y 'man task-faq' o en http://taskwarrior.org"
+#define STRING_CMD_VERSION_DOCS      "La documentación de taskwarrior se puede consultar usando 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', y 'man task-sync' o en http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} construido para "
 #define STRING_CMD_VERSION_UNKNOWN   "desconocido"
 #define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2014 P. Beckingham, F. Hernandez."  // |esp-ESP|==|eng-USA|
@@ -851,7 +851,7 @@
   "  task add -- project:Home needs scheduling\n" */
  #define STRING_CMD_HELP_TEXT \
   "La documentación de Taskwarrior se puede consultar usando 'man task', 'man taskrc'" \
-  "man task-tutorial', 'man task-color', 'man task-faq', 'man task-synch o en " \
+  "man task-tutorial', 'man task-color', 'man task-synch o en " \
   "http://taskwarrior.org\n" \
   "\n" \
   "La forma general para los comandos es:\n" \

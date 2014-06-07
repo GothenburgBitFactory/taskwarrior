@@ -198,7 +198,7 @@
 #define STRING_CMD_VERSION_USAGE     "Exibe o número de versão do taskwarrior"
 #define STRING_CMD_VERSION_USAGE2    "Exibe apenas o número de versão do taskwarrior"
 #define STRING_CMD_VERSION_MIT       "O Taskwarrior pode ser copiado apenas ao abrigo dos termos da licença MIT, que pode ser encontrada junto do código fonte."
-#define STRING_CMD_VERSION_DOCS      "A documentação do taskwarrior pode ser encontrada usando os comandos 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq' ou em http://taskwarrior.org"
+#define STRING_CMD_VERSION_DOCS      "A documentação do taskwarrior pode ser encontrada usando os comandos 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync' ou em http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} construido para "
 #define STRING_CMD_VERSION_UNKNOWN   "desconhecido"
 #define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2014 P. Beckingham, F. Hernandez."  // |por-PRT|==|eng-USA|
@@ -821,7 +821,7 @@
 // Usage text.  This is an exception, and contains \n characters and formatting.
 #define STRING_CMD_HELP_TEXT \
   "A documentação do Taskwarrior pode ser encontrada usando 'man task', 'man taskrc', 'man " \
-  "task-tutorial', 'man task-color', 'man task-faq', 'man task-synch' ou em " \
+  "task-tutorial', 'man task-color', 'man task-synch' ou em " \
   "http://taskwarrior.org\n" \
   "\n" \
   "A forma geral dos comandos é:\n" \

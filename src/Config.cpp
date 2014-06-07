@@ -49,8 +49,8 @@
 // 2) It is parsed and used as default values for all Config.get calls.
 std::string Config::_defaults =
   "# Taskwarrior program configuration file.\n"
-  "# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-faq',\n"
-  "# 'man task-tutorial', 'man task-color', 'man task-sync' or 'man taskrc'\n"
+  "# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-tutorial',\n"
+  "# 'man task-color', 'man task-sync' or 'man taskrc'\n"
   "\n"
   "# Here is an example of entries that use the default, override and blank values\n"
   "#   variable=foo   -- By specifying a value, this overrides the default\n"
