@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <iostream>
 #include <Context.h>
+#include <Tree.h>
 #include <Filter.h>
 #include <text.h>
 #include <util.h>
@@ -63,17 +64,25 @@ int CmdDenotate::execute (std::string& output)
     return 1;
   }
 
-  // Apply the command line modifications to the completed task.
-  std::vector <std::string> words = context.parser.getWords ();
-  if (!words.size ())
-    throw std::string (STRING_CMD_DENO_WORDS);
+  // Extract all the ORIGINAL MODIFICATION args as simple text patter.
+  std::string pattern = "";
+  std::vector <Tree*>::iterator arg;
+  for (arg = context.parser.tree ()->_branches.begin ();
+       arg != context.parser.tree ()->_branches.end ();
+       ++arg)
+  {
+    if ((*arg)->hasTag ("ORIGINAL") &&
+        (*arg)->hasTag ("MODIFICATION"))
+    {
+      if (pattern != "")
+        pattern += ' ';
+
+      pattern += (*arg)->attribute ("raw");
+    }
+  }
 
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
-
-  //std::string pattern = words.combine ();
-  std::string pattern;
-  join (pattern, " ", words);
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
