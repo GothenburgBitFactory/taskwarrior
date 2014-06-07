@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 30;
+use Test::More tests => 32;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -76,6 +76,7 @@ qx{../src/task rc:$rc add deleted 2>&1; ../src/task rc:$rc 2 delete 2>&1};
 qx{../src/task rc:$rc add minimal 2>&1};
 qx{../src/task rc:$rc add maximal +tag pro:PRO pri:H due:yesterday 2>&1};
 qx{../src/task rc:$rc 4 start 2>&1};
+qx{../src/task rc:$rc 4 annotate note 2>&1};
 qx{../src/task rc:$rc add blocked depends:1 2>&1};
 qx{../src/task rc:$rc add due_eom due:eom 2>&1};
 qx{../src/task rc:$rc add due_eow due:eow 2>&1};
@@ -142,6 +143,11 @@ $output = qx{../src/task rc:$rc +ACTIVE list};
 like ($output, qr/maximal/, "$ut: +ACTIVE");
 $output = qx{../src/task rc:$rc -ACTIVE list};
 unlike ($output, qr/maximal/, "$ut: -ACTIVE");
+
+$output = qx{../src/task rc:$rc +ANNOTATED list};
+like ($output, qr/maximal/, "$ut: +ANNOTATED");
+$output = qx{../src/task rc:$rc -ANNOTATED list};
+unlike ($output, qr/maximal/, "$ut: -ANNOTATED");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
