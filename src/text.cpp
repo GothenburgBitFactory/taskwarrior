@@ -1028,6 +1028,22 @@ const std::string format (
 const std::string format (
   const std::string& fmt,
   int arg1,
+  int arg2,
+  int arg3,
+  int arg4)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", format (arg1));
+  replace_positional (output, "{2}", format (arg2));
+  replace_positional (output, "{3}", format (arg3));
+  replace_positional (output, "{4}", format (arg4));
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  int arg1,
   double arg2)
 {
   std::string output = fmt;
