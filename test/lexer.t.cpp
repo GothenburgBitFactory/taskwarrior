@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (185);
+  UnitTest t (190);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -298,6 +298,22 @@ int main (int argc, char** argv)
   t.is (tokens[19].second,                    Lexer::typeOperator,    "tokens[19] == typeOperator");
   t.is (tokens[20].first,                     ")",                    "tokens[20] == ')'");
   t.is (tokens[20].second,                    Lexer::typeOperator,    "tokens[20] == typeOperator"); // 170
+
+  // Test ordinal dates.
+  Lexer l8 ("9th 10th");
+  l8.ambiguity (false);
+  tokens.clear ();
+  while (l8.token (token, type))
+  {
+    std::cout << "# «" << token << "» " << type  << " " << Lexer::type_name (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+  }
+
+  t.is ((int)tokens.size (),                  2,                      "2 tokens");
+  t.is (tokens[0].first,                      "9th",                  "tokens[0] == '9th'");
+  t.is (tokens[0].second,                     Lexer::typeIdentifier,  "tokens[0] == typeIdentifier");
+  t.is (tokens[1].first,                      "10th",                 "tokens[1] == '10th'");
+  t.is (tokens[1].second,                     Lexer::typeIdentifier,  "tokens[1] == typeIdentifier");
 
   // void word_split (std::vector<std::string>&, const std::string&);
   std::string unsplit = " ( A or B ) ";
