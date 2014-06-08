@@ -2023,6 +2023,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             Eval e;
             e.addSource (domSource);
             e.addSource (namedDates);
+            e.ambiguity (false);
             contextTask = *this;
 
             Variant v;
@@ -2056,6 +2057,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             Eval e;
             e.addSource (domSource);
             e.addSource (namedDates);
+            e.ambiguity (false);
             contextTask = *this;
 
             Variant v;
@@ -2074,6 +2076,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             Eval e;
             e.addSource (domSource);
             e.addSource (namedDates);
+            e.ambiguity (false);
             contextTask = *this;
 
             Variant v;
@@ -2092,6 +2095,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             Eval e;
             e.addSource (domSource);
             e.addSource (namedDates);
+            e.ambiguity (false);
             contextTask = *this;
 
             Variant v;
@@ -2116,6 +2120,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             Eval e;
             e.addSource (domSource);
             e.addSource (namedDates);
+            e.ambiguity (false);
             contextTask = *this;
 
             Variant v;
