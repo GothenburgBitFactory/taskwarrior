@@ -25,6 +25,8 @@
 - TW-72 extend info report with urgency column
 - TW-115 allow "0day" durations for UDAs.
 - TW-197 New virtual tag READY.
+- TW-218 Reveal terms of urgency calculation for a given task (thanks to Max
+         Muller).
 - TW-253 Unrecognized taskwarrior file format. in
          /Users/user/Dropbox/.task/completed.data at line 1 (thank to Kosta
          Harlan).
