@@ -938,14 +938,5 @@
 #define STRING_UTIL_KIBIBYTES        "KiB"  // |por-PRT|==|eng-USA|
 #define STRING_UTIL_BYTES            "B"  // |por-PRT|==|eng-USA|
 
-// shell
-#define STRING_SHELL_USAGE \
-  "Uso: tasksh [<ficheiro-comandos>]  Executa os comandos 'task' contidos no <ficheiro-comandos>\n" \
-  "                                   se fornecido ou alternativamente inicia a shell interativa.\n" \
-  "     tasksh --version              Mostra a versão do taskwarrior.\n" \
-  "     tasksh --help                 Mostra esta ajuda.\n"
-
-#define STRING_SHELL_NO_FILE         "O ficheiro de input não existe.\n"
-
 #endif
 

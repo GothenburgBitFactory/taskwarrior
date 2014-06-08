@@ -149,7 +149,6 @@ http://www.opensource.org/licenses/mit-license.php for more information.
 
 .SH SEE ALSO
 .BR task(1),
-.BR tasksh(1),
 .BR taskrc(5),
 .BR task-color(5),
 

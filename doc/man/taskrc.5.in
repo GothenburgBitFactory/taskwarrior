@@ -1383,7 +1383,6 @@ http://www.opensource.org/licenses/mit-license.php for more information.
 
 .SH SEE ALSO
 .BR task(1),
-.BR tasksh(1),
 .BR task-color(5),
 .BR task-sync(5)
 

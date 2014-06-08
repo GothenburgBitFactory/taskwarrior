@@ -1,13 +1,10 @@
 cmake.h
-auto.h
 commit.h
 Makefile
 src/task
 src/libtask.a
 src/commands/libcommands.a
 src/columns/libcolumns.a
-src/shell/libtasksh.a
-src/shell/tasksh
 *~
 .*.swp
 package-config/osx/binary/task

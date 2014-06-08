@@ -968,14 +968,5 @@
 #define STRING_UTIL_KIBIBYTES        "KiB"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_BYTES            "B"  // |esp-ESP|==|eng-USA|
 
-// shell
-#define STRING_SHELL_USAGE \
-  "Uso: tasksh [<fichero-comandos>]   Ejecuta los comandos task contenidos en <fichero-comandos>, si se indica;\n" \
-  "                                   si no, lanza un entorno interactivo de comandos task.\n" \
-  "     tasksh --version              Muestra la versión de task.\n" \
-  "     tasksh --help                 Muestra esta ayuda.\n"
-
-#define STRING_SHELL_NO_FILE         "El fichero de entrada no existe.\n"
-
 #endif
 

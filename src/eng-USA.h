@@ -938,14 +938,5 @@
 #define STRING_UTIL_KIBIBYTES        "KiB"
 #define STRING_UTIL_BYTES            "B"
 
-// shell
-#define STRING_SHELL_USAGE \
-  "Usage: tasksh [<commands-file>]    Execute task commands inside <commands-file> if given,\n" \
-  "                                   or otherwise, start interactive task shell.\n" \
-  "       tasksh --version            Print task version.\n" \
-  "       tasksh --help               Print this help.\n"
-
-#define STRING_SHELL_NO_FILE         "Input file does not exist.\n"
-
 #endif
 
