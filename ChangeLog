@@ -30,6 +30,8 @@
 - TW-221 Migrate task-faq man page to the Wiki.
 - TW-242 extra Space when annotating a path/filename, taskopen can not open the
          file (thanks to Andreas Kalex).
+- TW-250 Opening parenthesis in description gets padded in task 2.0.0 bet 2
+         (thanks to Michelle Crane).
 - TW-251 extra spaces added after ( and / (thanks to Andy Spiegl).
 - TW-253 Unrecognized taskwarrior file format. in
          /Users/user/Dropbox/.task/completed.data at line 1 (thanks to Kosta
