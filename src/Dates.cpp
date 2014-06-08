@@ -25,11 +25,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream>
 #include <stdlib.h>
 #include <time.h>
 #include <text.h>
 #include <Dates.h>
+
+int week_start = 1;    // Monday morning.
+int week_end = 6;      // Friday evening.
 
 static const char* days[] =
 {
@@ -95,56 +97,91 @@ static int daysInMonth (int year, int month)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// now            = current date/time.
-// today          = previous midnight.
-// sod            = previous midnight.
-// yesterday      = 2nd previous midnight.
-// tomorrow       = next midnight.
-// eod            = next midnight.
-// <day>          = midnight at start of next <day>.
-// <month>        = midnight on the 1st of <month>.
-// soy            = midnight on January 1st, <year>.
-// eoy            = midnight on December 31st, <year>.
-// socm           = midnight on the 1st of current month.
-// som            = midnight on the 1st of next month.
-// eom            = midnight on the 1st of the next month.
-// eocm           = midnight on the 1st of the next month.
-// sow            =
-// eow            =
-// eocw           =
-// socw           =
-// soww           =
-// eoww           =
-// soq            =
-// eoq            =
+static void easter (struct tm* t)
+{
+  int Y = t->tm_year + 1900;
+  int a = Y % 19;
+  int b = Y / 100;
+  int c = Y % 100;
+  int d = b / 4;
+  int e = b % 4;
+  int f = (b + 8) / 25;
+  int g = (b - f + 1) / 3;
+  int h = (19 * a + b - d - g + 15) % 30;
+  int i = c / 4;
+  int k = c % 4;
+  int L = (32 + 2 * e + 2 * i - h - k) % 7;
+  int m = (a + 11 * h + 22 * L) / 451;
+  int month = (h + L - 7 * m + 114) / 31;
+  int day = ((h + L - 7 * m + 114) % 31) + 1;
+
+  t->tm_isdst = -1;   // Requests that mktime determine summer time effect.
+  t->tm_mday  = day;
+  t->tm_mon   = month - 1;
+  t->tm_year  = Y - 1900;
+  t->tm_isdst = -1;
+  t->tm_hour = t->tm_min = t->tm_sec = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void midsommar (struct tm* t)
+{
+  t->tm_mon = 5;                          // June.
+  t->tm_mday = 20;                        // Saturday after 20th.
+  t->tm_hour = t->tm_min = t->tm_sec = 0; // Midnight.
+  t->tm_isdst = -1;                       // Probably DST, but check.
+
+  time_t then = mktime (t);               // Obtain the weekday of June 20th.
+  struct tm* mid = localtime (&then);
+  t->tm_mday += 6 - mid->tm_wday;         // How many days after 20th.
+}
+
+////////////////////////////////////////////////////////////////////////////////
+static void midsommarafton (struct tm* t)
+{
+  t->tm_mon = 5;                          // June.
+  t->tm_mday = 19;                        // Saturday after 20th.
+  t->tm_hour = t->tm_min = t->tm_sec = 0; // Midnight.
+  t->tm_isdst = -1;                       // Probably DST, but check.
+
+  time_t then = mktime (t);               // Obtain the weekday of June 19th.
+  struct tm* mid = localtime (&then);
+  t->tm_mday += 5 - mid->tm_wday;         // How many days after 19th.
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// <day>
+// <month>
+// - Nth
+// - socy, eocy
+// - socq, eocq
+// socm, eocm
+// som, eom
+// soq, eoq
+// soy, eoy
+// socw, eocw
+// sow, eow
+// soww, eoww
+// sod, eod
+// yesterday
+// today
+// now
+// tomorrow
 // later          = midnight, Jan 18th, 2038.
 // someday        = midnight, Jan 18th, 2038.
-// easter         =
-// eastermonday   =
-// ascension      =
-// pentecost      =
-// goodfriday     =
-// midsommar      = midnight, 1st Saturday after 20th June
-// midsommarafton = midnight, 1st Friday after 19th June
-// Nth            =
-
+// - easter
+// - eastermonday
+// - ascension
+// - pentecost
+// - goodfriday
+// - midsommar      = midnight, 1st Saturday after 20th June
+// - midsommarafton = midnight, 1st Friday after 19th June
+//
 bool namedDates (const std::string& name, Variant& value)
 {
   time_t now = time (NULL);
   struct tm* t = localtime (&now);
-/*
-  std::cout << "# now t\n"
-            << "#   tm_year="  << t->tm_year  << "\n"
-            << "#   tm_mon="   << t->tm_mon   << "\n"
-            << "#   tm_mday="  << t->tm_mday  << "\n"
-            << "#   tm_hour="  << t->tm_hour  << "\n"
-            << "#   tm_min="   << t->tm_min   << "\n"
-            << "#   tm_sec="   << t->tm_sec   << "\n"
-            << "#   tm_isdst=" << t->tm_isdst << "\n";
-*/
   int i;
-
-  // TODO Extract helper functions from this code.
 
   // Dynamics.
   if (name == "now")
@@ -155,20 +192,23 @@ bool namedDates (const std::string& name, Variant& value)
   else if (name == "today" || name == "sod")
   {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
-  }
-
-  else if (name == "yesterday")
-  {
-    t->tm_hour = t->tm_min = t->tm_sec = 0;
-    value = Variant (mktime (t) - 86400, Variant::type_date);
   }
 
   else if (name == "tomorrow" || name == "eod")
   {
     t->tm_mday++;
     t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
+  }
+
+  else if (name == "yesterday")
+  {
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_isdst = -1;
+    value = Variant (mktime (t) - 86400, Variant::type_date);
   }
 
   else if (isDay (name, i))
@@ -179,6 +219,7 @@ bool namedDates (const std::string& name, Variant& value)
       t->tm_mday += i - t->tm_wday;
 
     t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
 
@@ -190,6 +231,17 @@ bool namedDates (const std::string& name, Variant& value)
     t->tm_mon = i;
     t->tm_mday = 1;
     t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_isdst = -1;
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
+  else if (name == "later" || name == "someday")
+  {
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_year = 138;
+    t->tm_mon = 0;
+    t->tm_mday = 18;
+    t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
 
@@ -198,6 +250,8 @@ bool namedDates (const std::string& name, Variant& value)
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mon = 0;
     t->tm_mday = 1;
+    t->tm_year++;
+    t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
 
@@ -206,6 +260,22 @@ bool namedDates (const std::string& name, Variant& value)
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mon = 11;
     t->tm_mday = 31;
+    t->tm_isdst = -1;
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
+  else if (name == "soq" || name == "eoq")
+  {
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_mon += 3 - (t->tm_mon % 3);
+    if (t->tm_mon > 11)
+    {
+      t->tm_mon -= 12;
+      ++t->tm_year;
+    }
+
+    t->tm_mday = 1;
+    t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
 
@@ -213,6 +283,7 @@ bool namedDates (const std::string& name, Variant& value)
   {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mday = 1;
+    t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
 
@@ -228,6 +299,7 @@ bool namedDates (const std::string& name, Variant& value)
     }
 
     t->tm_mday = 1;
+    t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
 
@@ -235,142 +307,46 @@ bool namedDates (const std::string& name, Variant& value)
   {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mday = daysInMonth (t->tm_year + 1900, t->tm_mon + 1);
+    t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
-  }
-
-  else if (name == "sow")
-  {
-/*
-    Date sow (_t);
-    sow -= (dayOfWeek () * 86400);
-    return Date (sow.month (), sow.day (), sow.year (), 0, 0, 0);
-*/
-  }
-
-  else if (name == "eow" || name == "eocw")
-  {
-/*
-    if (found == "eow" || found == "eoww")
-      dow = 5;
-*/
   }
 
   else if (name == "socw")
   {
-/*
-    Date sow (_t);
-    sow -= (dayOfWeek () * 86400);
-    return Date (sow.month (), sow.day (), sow.year (), 0, 0, 0);
-*/
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
+    int extra = t->tm_wday * 86400;
+    t->tm_isdst = -1;
+    value = Variant (mktime (t) - extra, Variant::type_date);
+  }
+
+  else if (name == "sow" || name == "eow" || name == "eocw")
+  {
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
+    int extra = (7 - t->tm_wday) * 86400;
+    t->tm_isdst = -1;
+    value = Variant (mktime (t) + extra, Variant::type_date);
   }
 
   else if (name == "soww")
   {
-/*
-    Date sow (_t);
-    sow -= (dayOfWeek () * 86400);
-    return Date (sow.month (), sow.day (), sow.year (), 0, 0, 0);
-*/
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
+    int extra = (t->tm_wday - 1) * 86400;
+    if (extra > 0)
+      extra += 7 * 86400;
+
+    t->tm_isdst = -1;
+    value = Variant (mktime (t) - extra, Variant::type_date);
   }
 
   else if (name == "eoww")
   {
-/*
-    if (found == "eow" || found == "eoww")
-      dow = 5;
-*/
-  }
-
-  else if (name == "soq" || name == "eoq")
-  {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
+    int extra = (5 - t->tm_wday) * 86400;
+    if (extra < 0)
+      extra += 7 * 86400;
 
-    t->tm_mon += 3 - (t->tm_mon % 3);
-    if (t->tm_mon > 11)
-    {
-      t->tm_mon -= 12;
-      ++t->tm_year;
-    }
-
-    // TODO eoq: should be 24:00:00
-    // t->tm_mday = daysInMonth (t->tm_year + 1900, t->tm_mon + 1);
-
-    t->tm_mday = 1;
-
-    value = Variant (mktime (t), Variant::type_date);
-  }
-
-  else if (name == "later" || name == "someday")
-  {
-    t->tm_hour = t->tm_min = t->tm_sec = 0;
-    t->tm_year = 138;
-    t->tm_mon = 0;
-    t->tm_mday = 18;
-    value = Variant (mktime (t), Variant::type_date);
-  }
-
-  else if (name == "easter"       ||
-           name == "eastermonday" ||
-           name == "ascension"    ||
-           name == "pentecost"    ||
-           name == "goodfriday")
-  {
-    int Y = t->tm_year + 1900;
-    int a = Y % 19;
-    int b = Y / 100;
-    int c = Y % 100;
-    int d = b / 4;
-    int e = b % 4;
-    int f = (b + 8) / 25;
-    int g = (b - f + 1) / 3;
-    int h = (19 * a + b - d - g + 15) % 30;
-    int i = c / 4;
-    int k = c % 4;
-    int L = (32 + 2 * e + 2 * i - h - k) % 7;
-    int m = (a + 11 * h + 22 * L) / 451;
-    int month = (h + L - 7 * m + 114) / 31;
-    int day = ((h + L - 7 * m + 114) % 31) + 1;
-
-    t->tm_isdst = -1;   // Requests that mktime determine summer time effect.
-    t->tm_mday  = day;
-    t->tm_mon   = month - 1;
-    t->tm_year  = Y - 1900;
-    t->tm_hour = t->tm_min = t->tm_sec = 0;
-
-         if (name == "goodfriday")   t->tm_mday -= 2;
-    else if (name == "eastermonday") t->tm_mday += 1;
-    else if (name == "ascension")    t->tm_mday += 39;
-    else if (name == "pentecost")    t->tm_mday += 49;
-
-    value = Variant (mktime (t), Variant::type_date);
-  }
-
-  else if (name == "midsommar")
-  {
-    t->tm_mon = 5;                          // June.
-    t->tm_mday = 20;                        // Saturday after 20th.
-    t->tm_hour = t->tm_min = t->tm_sec = 0; // Midnight.
-
-    time_t then = mktime (t);
-    struct tm* mid = localtime (&then);
-    int offset = 6 - mid->tm_wday;          // How many days after 20th.
-
-    mid->tm_mday += offset;
-    value = Variant (mktime (mid), Variant::type_date);
-  }
-
-  else if (name == "midsommarafton")
-  {
-    t->tm_mon = 5;                          // June.
-    t->tm_mday = 19;                        // Friday after 19th.
-    t->tm_hour = t->tm_min = t->tm_sec = 0; // Midnight.
-
-    time_t then = mktime (t);
-    struct tm* mid = localtime (&then);
-    int offset = 5 - mid->tm_wday;          // How many days after 19th.
-
-    mid->tm_mday += offset;
-    value = Variant (mktime (mid), Variant::type_date);
+    t->tm_isdst = -1;
+    value = Variant (mktime (t) + extra, Variant::type_date);
   }
 
   // Support "21st" to indicate the next date that is the 21st day.
@@ -391,17 +367,23 @@ bool namedDates (const std::string& name, Variant& value)
     }
     else
     {
-      number = strtol (name.substr (0, 2).c_str (), NULL, 10);
+      number = strtol (name.substr (0, 1).c_str (), NULL, 10);
       ordinal = lowerCase (name.substr (1));
     }
 
     // Sanity check.
     if (number <= 31)
     {
-      if (ordinal == "st" ||
-          ordinal == "nd" ||
-          ordinal == "rd" ||
-          ordinal == "th")
+      int remainder1 = number % 10;
+      int remainder2 = number % 100;
+      if ((remainder2 != 11 && remainder1 == 1 && ordinal == "st") ||
+          (remainder2 != 12 && remainder1 == 2 && ordinal == "nd") ||
+          (remainder2 != 13 && remainder1 == 3 && ordinal == "rd") ||
+          ((remainder2 == 11 ||
+            remainder2 == 12 ||
+            remainder2 == 13 ||
+            remainder1 == 0 ||
+            remainder1 > 3) && ordinal == "th"))
       {
         int y = t->tm_year + 1900;
         int m = t->tm_mon + 1;
@@ -409,36 +391,96 @@ bool namedDates (const std::string& name, Variant& value)
 
         // If it is this month.
         if (d < number &&
-            number <= daysInMonth (m, y))
+            number <= daysInMonth (y, m))
         {
           t->tm_hour = t->tm_min = t->tm_sec = 0;
           t->tm_mon  = m - 1;
           t->tm_mday = number;
           t->tm_year = y - 1900;
+          t->tm_isdst = -1;
           value = Variant (mktime (t), Variant::type_date);
-          return true;
         }
-
-        do
+        else
         {
-          m++;
-
-          if (m > 12)
+          if (++m > 12)
           {
             m = 1;
             y++;
           }
-        }
-        while (number > daysInMonth (m, y));
 
-        t->tm_hour = t->tm_min = t->tm_sec = 0;
-        t->tm_mon  = m - 1;
-        t->tm_mday = number;
-        t->tm_year = y - 1900;
-        value = Variant (mktime (t), Variant::type_date);
-        return true;
+          t->tm_hour = t->tm_min = t->tm_sec = 0;
+          t->tm_mon  = m - 1;
+          t->tm_mday = number;
+          t->tm_year = y - 1900;
+          t->tm_isdst = -1;
+          value = Variant (mktime (t), Variant::type_date);
+        }
       }
+      else
+        throw std::string ("Error: number and ordinal don't match.");
     }
+    else
+      throw std::string ("Error: no month has more than 31 days.");
+  }
+
+  else if (name == "easter"       ||
+           name == "eastermonday" ||
+           name == "ascension"    ||
+           name == "pentecost"    ||
+           name == "goodfriday")
+  {
+    Variant valueNow = Variant (mktime (t), Variant::type_date);
+    easter (t);
+    value = Variant (mktime (t), Variant::type_date);
+
+    // If the result is earlier this year, then recalc for next year.
+    if (value < valueNow)
+    {
+      t = localtime (&now);
+      t->tm_year++;
+      easter (t);
+    }
+
+         if (name == "goodfriday")   t->tm_mday -= 2;
+    else if (name == "eastermonday") t->tm_mday += 1;
+    else if (name == "ascension")    t->tm_mday += 39;
+    else if (name == "pentecost")    t->tm_mday += 49;
+
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
+  else if (name == "midsommar")
+  {
+    Variant valueNow = Variant (mktime (t), Variant::type_date);
+    midsommar (t);
+    value = Variant (mktime (t), Variant::type_date);
+
+    // If the result is earlier this year, then recalc for next year.
+    if (value < valueNow)
+    {
+      t = localtime (&now);
+      t->tm_year++;
+      midsommar (t);
+    }
+
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
+  else if (name == "midsommarafton")
+  {
+    Variant valueNow = Variant (mktime (t), Variant::type_date);
+    midsommarafton (t);
+    value = Variant (mktime (t), Variant::type_date);
+
+    // If the result is earlier this year, then recalc for next year.
+    if (value < valueNow)
+    {
+      t = localtime (&now);
+      t->tm_year++;
+      midsommarafton (t);
+    }
+
+    value = Variant (mktime (t), Variant::type_date);
   }
 
   else
