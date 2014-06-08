@@ -124,19 +124,22 @@ bool Lexer::token (std::string& result, Type& type)
         // Try a legacy rc.dateformat parse here.
         try
         {
-          std::string::size_type start = _i < 4 ? 0 : _i - 4;
-          std::string::size_type space = _input.find (' ', _i);
-          if (space == std::string::npos)
-            space = _input.length ();
+          if (Lexer::dateFormat != "")
+          {
+            std::string::size_type start = _i < 4 ? 0 : _i - 4;
+            std::string::size_type space = _input.find (' ', _i);
+            if (space == std::string::npos)
+              space = _input.length ();
 
-          std::string legacy = _input.substr (start, space - start);
-          Date legacyDate (legacy, Lexer::dateFormat, true, false);
+            std::string legacy = _input.substr (start, space - start);
+            Date legacyDate (legacy, Lexer::dateFormat, true, false);
 
-          space -= start;
-          while (space--) shift ();
-          result = legacy;
-          type = typeDate;
-          return true;
+            space -= start;
+            while (space--) shift ();
+            result = legacy;
+            type = typeDate;
+            return true;
+          }
         }
 
         catch (...) { /* Never mind. */ }
@@ -342,6 +345,12 @@ bool Lexer::token (std::string& result, Type& type)
       else if (_n0 == 'e' || _n0 == 'E')
       {
         type = typeExponentIndicator;
+        result += utf8_character (_n0);
+        shift ();
+      }
+      else if (is_ident_start (_n0))
+      {
+        type = typeIdentifier;
         result += utf8_character (_n0);
         shift ();
       }
