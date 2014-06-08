@@ -28,8 +28,10 @@
 - TW-218 Reveal terms of urgency calculation for a given task (thanks to Max
          Muller).
 - TW-221 Migrate task-faq man page to the Wiki.
+- TW-242 extra Space when annotating a path/filename, taskopen can not open the
+         file (thanks to Andreas Kalex).
 - TW-253 Unrecognized taskwarrior file format. in
-         /Users/user/Dropbox/.task/completed.data at line 1 (thank to Kosta
+         /Users/user/Dropbox/.task/completed.data at line 1 (thanks to Kosta
          Harlan).
 - TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
          Weber)
