@@ -248,7 +248,7 @@ Note: This is being written from the OSX 10.6 perspective, and may therefore
   License, which may be found in the taskwarrior source kit.
 
   Documentation for taskwarrior can be found using 'man task', 'man taskrc',
-  'man task-tutorial', 'man task-color' or at http://taskwarrior.org
+  'man task-sync', 'man task-color' or at http://taskwarrior.org
 
   $ man task
   ...

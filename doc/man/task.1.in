@@ -1053,13 +1053,7 @@ the 'data.location' configuration setting of the task data directory.
 
 .SH MORE EXAMPLES
 
-For examples please see the task tutorial man page at
-
-.RS
-man task-tutorial
-.RE
-
-or the online documentation starting at
+For examples please see the online documentation starting at
 
 .RS
 <http://taskwarrior.org/projects/taskwarrior/wiki>
@@ -1102,7 +1096,6 @@ http://www.opensource.org/licenses/mit-license.php for more information.
 .SH SEE ALSO
 .BR tasksh(1),
 .BR taskrc(5),
-.BR task-tutorial(5),
 .BR task-color(5),
 .BR task-sync(5)
 
