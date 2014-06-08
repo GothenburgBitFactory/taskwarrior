@@ -92,6 +92,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     // it is mostly noise.
     eval.debug (context.config.getBoolean ("debug"));
     eval.compileExpression (filterExpr);
+    eval.ambiguity (false);
     eval.debug (false);
 
     std::vector <Task>::const_iterator task;
@@ -144,6 +145,7 @@ void Filter::subset (std::vector <Task>& output)
     // it is mostly noise.
     eval.debug (context.config.getBoolean ("debug"));
     eval.compileExpression (filterExpr);
+    eval.ambiguity (false);
     eval.debug (false);
 
     output.clear ();
