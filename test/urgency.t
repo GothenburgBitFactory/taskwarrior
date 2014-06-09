@@ -218,8 +218,6 @@ $output = qx{../src/task rc:urgency.rc 20 _urgency 2>&1};
 my ($value) = $output =~ /urgency\s([0-9.]+)/;
 in_range ($value, 9, 10, 'due:-6d = 9 - 10');
 
-=pod
-
 # due: 8.64 (due:-5d)
 $output = qx{../src/task rc:urgency.rc 21 _urgency 2>&1};
 like ($output, qr/urgency 8.64/ms, 'due:-5d = 8.64');
@@ -240,14 +238,10 @@ like ($output, qr/urgency 7.27/ms, 'due:-2d = 7.27');
 $output = qx{../src/task rc:urgency.rc 25 _urgency 2>&1};
 like ($output, qr/urgency 6.82/ms, 'due:-1d = 6.82');
 
-=cut
-
 # due: ~7.53 (due:now)
 $output = qx{../src/task rc:urgency.rc 26 _urgency 2>&1};
 ($value) = $output =~ /urgency\s([0-9.]+)/;
 in_range ($value, 7, 8, 'due:now = 7 - 8');
-
-=pod
 
 # due: 5.89 (due:1d)
 $output = qx{../src/task rc:urgency.rc 27 _urgency 2>&1};
@@ -296,8 +290,6 @@ like ($output, qr/urgency 1.34/ms, 'due:11d = 1.34');
 # due: 0.89 (due:12d)
 $output = qx{../src/task rc:urgency.rc 38 _urgency 2>&1};
 like ($output, qr/urgency 0.89/ms, 'due:12d = 0.89');
-
-=cut
 
 # due: >2 (due:13d)
 $output = qx{../src/task rc:urgency.rc 39 _urgency 2>&1};
