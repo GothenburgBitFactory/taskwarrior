@@ -357,7 +357,7 @@ void Eval::evaluatePostfixStack (
 
       values.push_back (v);
       if (_debug)
-        std::cout << "# [" << values.size () << "] eval push '" << token->first << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval push '" << (std::string) v << "' " << Lexer::type_name (token->second) << "\n";
     }
   }
 
