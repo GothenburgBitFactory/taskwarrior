@@ -93,18 +93,20 @@ bool Lexer::token (std::string& result, Type& type)
       else if (is_dec_digit (_n0))
       {
         // Speculatively try a date and duration parse.  Longest wins.
+        int offset = (_i < 4 ? 0 : _i - 4);
+
         std::string::size_type iso_i = 0;
         std::string iso_result;
         ISO8601d iso;
         iso.ambiguity (_ambiguity);
-        if (iso.parse (_input.substr (_i < 4 ? 0 : _i - 4), iso_i))
-          iso_result = _input.substr ((_i < 4 ? 0 : _i - 4), iso_i);
+        if (iso.parse (_input.substr (offset), iso_i))
+          iso_result = _input.substr (offset, iso_i);
 
         std::string::size_type dur_i = 0;
         std::string dur_result;
         Duration dur;
-        if (dur.parse (_input.substr (_i < 4 ? 0 : _i - 4), dur_i))
-          dur_result = _input.substr ((_i < 4 ? 0 : _i - 4), dur_i);
+        if (dur.parse (_input.substr (offset), dur_i))
+          dur_result = _input.substr (offset, dur_i);
 
         if (iso_result.length () > dur_result.length ())
         {
@@ -188,18 +190,19 @@ bool Lexer::token (std::string& result, Type& type)
       }
       else if (is_ident_start (_n0))
       {
-        // Speculatively try a date and duration parse.  Longest wins.
+        int offset = (_i < 4 ? 0 : _i - 4);
+
         std::string::size_type iso_i = 0;
         std::string iso_result;
         ISO8601p iso;
-        if (iso.parse (_input.substr (_i < 4 ? 0 : _i - 4), iso_i))
-          iso_result = _input.substr ((_i < 4 ? 0 : _i - 4), iso_i);
+        if (iso.parse (_input.substr (offset), iso_i))
+          iso_result = _input.substr (offset, iso_i);
 
         std::string::size_type dur_i = 0;
         std::string dur_result;
         Duration dur;
-        if (dur.parse (_input.substr (_i < 4 ? 0 : _i - 4), dur_i))
-          dur_result = _input.substr ((_i < 4 ? 0 : _i - 4), dur_i);
+        if (dur.parse (_input.substr (offset), dur_i))
+          dur_result = _input.substr (offset, dur_i);
 
         if (iso_result.length () > dur_result.length ())
         {
