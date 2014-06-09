@@ -60,47 +60,31 @@ static struct
   {"fortnight",   14 * DAY},
   {"hours",        1 * HOUR},
   {"hour",         1 * HOUR},
-  {"hrs",          1 * HOUR},           // Deprecate
-  {"hr",           1 * HOUR},           // Deprecate
   {"h",            1 * HOUR},
   {"minutes",      1 * MINUTE},
   {"minute",       1 * MINUTE},
-  {"mins",         1 * MINUTE},         // Deprecate
   {"min",          1 * MINUTE},
   {"monthly",     30 * DAY},
   {"months",      30 * DAY},
   {"month",       30 * DAY},
-  {"mnths",       30 * DAY},            // Deprecate
-  {"mths",        30 * DAY},            // Deprecate
-  {"mth",         30 * DAY},            // Deprecate
-  {"mos",         30 * DAY},            // Deprecate
   {"mo",          30 * DAY},
   {"quarterly",   91 * DAY},
   {"quarters",    91 * DAY},
   {"quarter",     91 * DAY},
-  {"qrtrs",       91 * DAY},            // Deprecate
-  {"qtrs",        91 * DAY},            // Deprecate
-  {"qtr",         91 * DAY},            // Deprecate
   {"q",           91 * DAY},
   {"semiannual", 183 * DAY},
   {"sennight",    14 * DAY},
   {"seconds",      1 * SECOND},
   {"second",       1 * SECOND},
-  {"secs",         1 * SECOND},         // Deprecate
-  {"sec",          1 * SECOND},         // Deprecate
   {"s",            1 * SECOND},
   {"weekdays",         DAY},
   {"weekly",       7 * DAY},
   {"weeks",        7 * DAY},
   {"week",         7 * DAY},
-  {"wks",          7 * DAY},            // Deprecate
-  {"wk",           7 * DAY},            // Deprecate
   {"w",            7 * DAY},
   {"yearly",     365 * DAY},
   {"years",      365 * DAY},
   {"year",       365 * DAY},
-  {"yrs",        365 * DAY},            // Deprecate
-  {"yr",         365 * DAY},            // Deprecate
   {"y",          365 * DAY},
 };
 
@@ -183,13 +167,15 @@ std::string Duration::format () const
   float days = (float) _secs / 86400.0;
 
   if (_secs >= 86400 * 365)
-    sprintf (formatted, "%.1f yrs", (days / 365));
+    sprintf (formatted, "%.1f year%s",
+                        (days / 365),
+                        ((int) (float) (days / 365) == 1 ? "" : "s"));
   else if (_secs > 86400 * 84)
-    sprintf (formatted, "%1d mth%s",
+    sprintf (formatted, "%1d month%s",
                         (int) (float) (days / 30),
                         ((int) (float) (days / 30) == 1 ? "" : "s"));
   else if (_secs > 86400 * 13)
-    sprintf (formatted, "%d wk%s",
+    sprintf (formatted, "%d week%s",
                         (int) (float) (days / 7.0),
                         ((int) (float) (days / 7.0) == 1 ? "" : "s"));
   else if (_secs >= 86400)
@@ -197,15 +183,15 @@ std::string Duration::format () const
                         (int) days,
                         ((int) days == 1 ? "" : "s"));
   else if (_secs >= 3600)
-    sprintf (formatted, "%d hr%s",
+    sprintf (formatted, "%d hour%s",
                         (int) (float) (_secs / 3600),
                         ((int) (float) (_secs / 3600) == 1 ? "" : "s"));
   else if (_secs >= 60)
-    sprintf (formatted, "%d min%s",
+    sprintf (formatted, "%d minute%s",
                         (int) (float) (_secs / 60),
                         ((int) (float) (_secs / 60) == 1 ? "" : "s"));
   else if (_secs >= 1)
-    sprintf (formatted, "%d sec%s",
+    sprintf (formatted, "%d second%s",
                         (int) _secs,
                         ((int) _secs == 1 ? "" : "s"));
   else
@@ -222,10 +208,10 @@ std::string Duration::formatCompact () const
 
        if (_secs >= 86400 * 365) sprintf (formatted, "%.1fy", (days / 365.0));
   else if (_secs >= 86400 * 84)  sprintf (formatted, "%1dmo", (int) (days / 30));
-  else if (_secs >= 86400 * 13)  sprintf (formatted, "%dwk",  (int) (float) (days / 7.0));
+  else if (_secs >= 86400 * 13)  sprintf (formatted, "%dw",  (int) (float) (days / 7.0));
   else if (_secs >= 86400)       sprintf (formatted, "%dd",   (int) days);
   else if (_secs >= 3600)        sprintf (formatted, "%dh",   (int) (_secs / 3600));
-  else if (_secs >= 60)          sprintf (formatted, "%dm",   (int) (_secs / 60));
+  else if (_secs >= 60)          sprintf (formatted, "%dmin",   (int) (_secs / 60));
   else if (_secs >= 1)           sprintf (formatted, "%ds",   (int) _secs);
   else                           formatted[0] = '\0';
 
@@ -252,7 +238,7 @@ std::string Duration::formatPrecise () const
 std::string Duration::formatSeconds () const
 {
   char formatted[24];
-  sprintf (formatted, "%llusec", (unsigned long long)_secs);
+  sprintf (formatted, "%llus", (unsigned long long)_secs);
   return std::string (formatted);
 }
 

@@ -51,7 +51,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (921);
+  UnitTest t (681);
 
   Duration dur;
   std::string::size_type start = 0;
@@ -77,18 +77,6 @@ int main (int argc, char** argv)
   testParse (t, "10second",       8,    10 * second);
   testParse (t, "1.5second",      9,     1 * second);
 
-  testParse (t, "secs",           4,     1 * second);
-  testParse (t, "0secs",          5,     0 * second);
-  testParse (t, "2 secs",         6,     2 * second);
-  testParse (t, "10secs",         6,    10 * second);
-  testParse (t, "1.5secs",        7,     1 * second);
-
-  testParse (t, "sec",            3,     1 * second);
-  testParse (t, "0sec",           4,     0 * second);
-  testParse (t, "2 sec",          5,     2 * second);
-  testParse (t, "10sec",          5,    10 * second);
-  testParse (t, "1.5sec",         6,     1 * second);
-
   testParse (t, "s",              1,     1 * second);
   testParse (t, "0s",             2,     0 * second);
   testParse (t, "2 s",            3,     2 * second);
@@ -107,12 +95,6 @@ int main (int argc, char** argv)
   testParse (t, "10minute",       8,    10 * minute);
   testParse (t, "1.5minute",      9,    90 * second);
 
-  testParse (t, "mins",           4,     1 * minute);
-  testParse (t, "0mins",          5,     0 * minute);
-  testParse (t, "2 mins",         6,     2 * minute);
-  testParse (t, "10mins",         6,    10 * minute);
-  testParse (t, "1.5mins",        7,    90 * second);
-
   testParse (t, "min",            3,     1 * minute);
   testParse (t, "0min",           4,     0 * minute);
   testParse (t, "2 min",          5,     2 * minute);
@@ -130,18 +112,6 @@ int main (int argc, char** argv)
   testParse (t, "2 hour",         6,     2 * hour);
   testParse (t, "10hour",         6,    10 * hour);
   testParse (t, "1.5hour",        7,    90 * minute);
-
-  testParse (t, "hrs",            3,     1 * hour);
-  testParse (t, "0hrs",           4,     0 * hour);
-  testParse (t, "2 hrs",          5,     2 * hour);
-  testParse (t, "10hrs",          5,    10 * hour);
-  testParse (t, "1.5hrs",         6,    90 * minute);
-
-  testParse (t, "hr",             2,     1 * hour);
-  testParse (t, "0hr",            3,     0 * hour);
-  testParse (t, "2 hr",           4,     2 * hour);
-  testParse (t, "10hr",           4,    10 * hour);
-  testParse (t, "1.5hr",          5,    90 * minute);
 
   testParse (t, "h",              1,     1 * hour);
   testParse (t, "0h",             2,     0 * hour);
@@ -197,18 +167,6 @@ int main (int argc, char** argv)
   testParse (t, "10week",         6,    70 * day);
   testParse (t, "1.5week",        7,   252 * hour);
 
-  testParse (t, "wks",            3,     7 * day);
-  testParse (t, "0wks",           4,     0 * day);
-  testParse (t, "2 wks",          5,    14 * day);
-  testParse (t, "10wks",          5,    70 * day);
-  testParse (t, "1.5wks",         6,   252 * hour);
-
-  testParse (t, "wk",             2,     7 * day);
-  testParse (t, "0wk",            3,     0 * day);
-  testParse (t, "2 wk",           4,    14 * day);
-  testParse (t, "10wk",           4,    70 * day);
-  testParse (t, "1.5wk",          5,   252 * hour);
-
   testParse (t, "w",              1,     7 * day);
   testParse (t, "0w",             2,     0 * day);
   testParse (t, "2 w",            3,    14 * day);
@@ -232,30 +190,6 @@ int main (int argc, char** argv)
   testParse (t, "2 month",        7,    60 * day);
   testParse (t, "10month",        7,   300 * day);
   testParse (t, "1.5month",       8,    45 * day);
-
-  testParse (t, "mnths",          5,    30 * day);
-  testParse (t, "0mnths",         6,     0 * day);
-  testParse (t, "2 mnths",        7,    60 * day);
-  testParse (t, "10mnths",        7,   300 * day);
-  testParse (t, "1.5mnths",       8,    45 * day);
-
-  testParse (t, "mths",           4,    30 * day);
-  testParse (t, "0mths",          5,     0 * day);
-  testParse (t, "2 mths",         6,    60 * day);
-  testParse (t, "10mths",         6,   300 * day);
-  testParse (t, "1.5mths",        7,    45 * day);
-
-  testParse (t, "mth",            3,    30 * day);
-  testParse (t, "0mth",           4,     0 * day);
-  testParse (t, "2 mth",          5,    60 * day);
-  testParse (t, "10mth",          5,   300 * day);
-  testParse (t, "1.5mth",         6,    45 * day);
-
-  testParse (t, "mos",            3,    30 * day);
-  testParse (t, "0mos",           4,     0 * day);
-  testParse (t, "2 mos",          5,    60 * day);
-  testParse (t, "10mos",          5,   300 * day);
-  testParse (t, "1.5mos",         6,    45 * day);
 
   testParse (t, "mo",             2,    30 * day);
   testParse (t, "0mo",            3,     0 * day);
@@ -281,24 +215,6 @@ int main (int argc, char** argv)
   testParse (t, "10quarter",      9,   910 * day);
   testParse (t, "1.5quarter",    10,  3276 * hour);
 
-  testParse (t, "qrtrs",          5,    91 * day);
-  testParse (t, "0qrtrs",         6,     0 * day);
-  testParse (t, "2 qrtrs",        7,   182 * day);
-  testParse (t, "10qrtrs",        7,   910 * day);
-  testParse (t, "1.5qrtrs",       8,  3276 * hour);
-
-  testParse (t, "qtrs",           4,    91 * day);
-  testParse (t, "0qtrs",          5,     0 * day);
-  testParse (t, "2 qtrs",         6,   182 * day);
-  testParse (t, "10qtrs",         6,   910 * day);
-  testParse (t, "1.5qtrs",        7,  3276 * hour);
-
-  testParse (t, "qtr",            3,    91 * day);
-  testParse (t, "0qtr",           4,     0 * day);
-  testParse (t, "2 qtr",          5,   182 * day);
-  testParse (t, "10qtr",          5,   910 * day);
-  testParse (t, "1.5qtr",         6,  3276 * hour);
-
   testParse (t, "q",              1,    91 * day);
   testParse (t, "0q",             2,     0 * day);
   testParse (t, "2 q",            3,   182 * day);
@@ -322,18 +238,6 @@ int main (int argc, char** argv)
   testParse (t, "2 year",         6,   730 * day);
   testParse (t, "10year",         6,  3650 * day);
   testParse (t, "1.5year",        7, 13140 * hour);
-
-  testParse (t, "yrs",            3,   365 * day);
-  testParse (t, "0yrs",           4,     0 * day);
-  testParse (t, "2 yrs",          5,   730 * day);
-  testParse (t, "10yrs",          5,  3650 * day);
-  testParse (t, "1.5yrs",         6, 13140 * hour);
-
-  testParse (t, "yr",             2,   365 * day);
-  testParse (t, "0yr",            3,     0 * day);
-  testParse (t, "2 yr",           4,   730 * day);
-  testParse (t, "10yr",           4,  3650 * day);
-  testParse (t, "1.5yr",          5, 13140 * hour);
 
   testParse (t, "y",              1,   365 * day);
   testParse (t, "0y",             2,     0 * day);
@@ -392,54 +296,54 @@ int main (int argc, char** argv)
   Duration d;
 
   // std::string format ();
-  d = Duration (0);               t.is (d.format (), "-",       "0 -> -");
-  d = Duration (1);               t.is (d.format (), "1 sec",   "1 -> 1 sec");
-  d = Duration (2);               t.is (d.format (), "2 secs",  "2 -> 2 secs");
-  d = Duration (59);              t.is (d.format (), "59 secs", "59 -> 59 secs");
-  d = Duration (60);              t.is (d.format (), "1 min",   "60 -> 1 min");
-  d = Duration (119);             t.is (d.format (), "1 min",   "119 -> 1 min");
-  d = Duration (120);             t.is (d.format (), "2 mins",  "120 -> 2 mins");
-  d = Duration (121);             t.is (d.format (), "2 mins",  "121 -> 2 mins");
-  d = Duration (3599);            t.is (d.format (), "59 mins", "3599 -> 59 mins");
-  d = Duration (3600);            t.is (d.format (), "1 hr",    "3600 -> 1 hr");
-  d = Duration (3601);            t.is (d.format (), "1 hr",    "3601 -> 1 hr");
-  d = Duration (86399);           t.is (d.format (), "23 hrs",  "86399 -> 23 hrs");
-  d = Duration (86400);           t.is (d.format (), "1 day",   "86400 -> 1 day");
-  d = Duration (86401);           t.is (d.format (), "1 day",   "86401 -> 1 day");
-  d = Duration (14 * 86400 - 1);  t.is (d.format (), "1 wk",    "14 days - 1 sec -> 1 wk");
-  d = Duration (14 * 86400);      t.is (d.format (), "2 wks",   "14 days -> 2 wks");
-  d = Duration (14 * 86400 + 1);  t.is (d.format (), "2 wks",   "14 days + 1 sec -> 2 wks");
-  d = Duration (85 * 86400 - 1);  t.is (d.format (), "2 mths",  "85 days - 1 sec -> 2 mths");
-  d = Duration (85 * 86400);      t.is (d.format (), "2 mths",  "85 days -> 2 mths");
-  d = Duration (85 * 86400 + 1);  t.is (d.format (), "2 mths",  "85 days + 1 sec -> 2 mths");
-  d = Duration (365 * 86400 - 1); t.is (d.format (), "12 mths", "365 days - 1 sec -> 12 mths");
-  d = Duration (365 * 86400);     t.is (d.format (), "1.0 yrs", "365 days -> 1.0 yrs");
-  d = Duration (365 * 86400 + 1); t.is (d.format (), "1.0 yrs", "365 days + 1 sec -> 1.0 yrs");
+  d = Duration (0);               t.is (d.format (), "-",          "0 -> -");
+  d = Duration (1);               t.is (d.format (), "1 second",   "1 -> 1 second");
+  d = Duration (2);               t.is (d.format (), "2 seconds",  "2 -> 2 seconds");
+  d = Duration (59);              t.is (d.format (), "59 seconds", "59 -> 59 seconds");
+  d = Duration (60);              t.is (d.format (), "1 minute",   "60 -> 1 minute");
+  d = Duration (119);             t.is (d.format (), "1 minute",   "119 -> 1 minute");
+  d = Duration (120);             t.is (d.format (), "2 minutes",  "120 -> 2 minutes");
+  d = Duration (121);             t.is (d.format (), "2 minutes",  "121 -> 2 minutes");
+  d = Duration (3599);            t.is (d.format (), "59 minutes", "3599 -> 59 minutes");
+  d = Duration (3600);            t.is (d.format (), "1 hour",     "3600 -> 1 hour");
+  d = Duration (3601);            t.is (d.format (), "1 hour",     "3601 -> 1 hour");
+  d = Duration (86399);           t.is (d.format (), "23 hours",   "86399 -> 23 hours");
+  d = Duration (86400);           t.is (d.format (), "1 day",      "86400 -> 1 day");
+  d = Duration (86401);           t.is (d.format (), "1 day",      "86401 -> 1 day");
+  d = Duration (14 * 86400 - 1);  t.is (d.format (), "1 week",     "14 days - 1 s -> 1 week");
+  d = Duration (14 * 86400);      t.is (d.format (), "2 weeks",    "14 days -> 2 weeks");
+  d = Duration (14 * 86400 + 1);  t.is (d.format (), "2 weeks",    "14 days + 1 s -> 2 weeks");
+  d = Duration (85 * 86400 - 1);  t.is (d.format (), "2 months",   "85 days - 1 s -> 2 months");
+  d = Duration (85 * 86400);      t.is (d.format (), "2 months",   "85 days -> 2 months");
+  d = Duration (85 * 86400 + 1);  t.is (d.format (), "2 months",   "85 days + 1 s -> 2 months");
+  d = Duration (365 * 86400 - 1); t.is (d.format (), "12 months",  "365 days - 1 s -> 12 months");
+  d = Duration (365 * 86400);     t.is (d.format (), "1.0 year",   "365 days -> 1.0 year");
+  d = Duration (365 * 86400 + 1); t.is (d.format (), "1.0 year",   "365 days + 1 s -> 1.0 year");
 
   // std::string formatCompact ();
-  d = Duration (0);               t.is (d.formatCompact (), "",     "0 ->");
-  d = Duration (1),               t.is (d.formatCompact (), "1s",   "1 -> 1s");
-  d = Duration (2),               t.is (d.formatCompact (), "2s",   "2 -> 2s");
-  d = Duration (59),              t.is (d.formatCompact (), "59s",  "59 -> 59s");
-  d = Duration (60),              t.is (d.formatCompact (), "1m",   "60 -> 1m");
-  d = Duration (119),             t.is (d.formatCompact (), "1m",   "119 -> 1m");
-  d = Duration (120),             t.is (d.formatCompact (), "2m",   "120 -> 2m");
-  d = Duration (121),             t.is (d.formatCompact (), "2m",   "121 -> 2m");
-  d = Duration (3599),            t.is (d.formatCompact (), "59m",  "3599 -> 59m");
-  d = Duration (3600),            t.is (d.formatCompact (), "1h",   "3600 -> 1h");
-  d = Duration (3601),            t.is (d.formatCompact (), "1h",   "3601 -> 1h");
-  d = Duration (86399),           t.is (d.formatCompact (), "23h",  "86399 -> 23h");
-  d = Duration (86400),           t.is (d.formatCompact (), "1d",   "86400 -> 1d");
-  d = Duration (86401),           t.is (d.formatCompact (), "1d",   "86401 -> 1d");
-  d = Duration (14 * 86400 - 1),  t.is (d.formatCompact (), "1wk",  "14 days - 1 sec -> 1wk");
-  d = Duration (14 * 86400),      t.is (d.formatCompact (), "2wk",  "14 days -> 2wk");
-  d = Duration (14 * 86400 + 1),  t.is (d.formatCompact (), "2wk",  "14 days + 1 sec -> 2wk");
-  d = Duration (85 * 86400 - 1),  t.is (d.formatCompact (), "2mo",  "85 days - 1 sec -> 2mo");
-  d = Duration (85 * 86400),      t.is (d.formatCompact (), "2mo",  "85 days -> 2mo");
-  d = Duration (85 * 86400 + 1),  t.is (d.formatCompact (), "2mo",  "85 days + 1 sec -> 2mo");
-  d = Duration (365 * 86400 - 1), t.is (d.formatCompact (), "12mo", "365 days - 1 sec -> 12mo");
-  d = Duration (365 * 86400),     t.is (d.formatCompact (), "1.0y", "365 days -> 1.0y");
-  d = Duration (365 * 86400 + 1), t.is (d.formatCompact (), "1.0y", "365 days + 1 sec -> 1.0y");
+  d = Duration (0);               t.is (d.formatCompact (), "",      "0 ->");
+  d = Duration (1),               t.is (d.formatCompact (), "1s",    "1 -> 1s");
+  d = Duration (2),               t.is (d.formatCompact (), "2s",    "2 -> 2s");
+  d = Duration (59),              t.is (d.formatCompact (), "59s",   "59 -> 59s");
+  d = Duration (60),              t.is (d.formatCompact (), "1min",  "60 -> 1min");
+  d = Duration (119),             t.is (d.formatCompact (), "1min",  "119 -> 1min");
+  d = Duration (120),             t.is (d.formatCompact (), "2min",  "120 -> 2min");
+  d = Duration (121),             t.is (d.formatCompact (), "2min",  "121 -> 2min");
+  d = Duration (3599),            t.is (d.formatCompact (), "59min", "3599 -> 59min");
+  d = Duration (3600),            t.is (d.formatCompact (), "1h",    "3600 -> 1h");
+  d = Duration (3601),            t.is (d.formatCompact (), "1h",    "3601 -> 1h");
+  d = Duration (86399),           t.is (d.formatCompact (), "23h",   "86399 -> 23h");
+  d = Duration (86400),           t.is (d.formatCompact (), "1d",    "86400 -> 1d");
+  d = Duration (86401),           t.is (d.formatCompact (), "1d",    "86401 -> 1d");
+  d = Duration (14 * 86400 - 1),  t.is (d.formatCompact (), "1w",    "14 days - 1 s -> 1w");
+  d = Duration (14 * 86400),      t.is (d.formatCompact (), "2w",    "14 days -> 2w");
+  d = Duration (14 * 86400 + 1),  t.is (d.formatCompact (), "2w",    "14 days + 1 s -> 2w");
+  d = Duration (85 * 86400 - 1),  t.is (d.formatCompact (), "2mo",   "85 days - 1 s -> 2mo");
+  d = Duration (85 * 86400),      t.is (d.formatCompact (), "2mo",   "85 days -> 2mo");
+  d = Duration (85 * 86400 + 1),  t.is (d.formatCompact (), "2mo",   "85 days + 1 s -> 2mo");
+  d = Duration (365 * 86400 - 1), t.is (d.formatCompact (), "12mo",  "365 days - 1 s -> 12mo");
+  d = Duration (365 * 86400),     t.is (d.formatCompact (), "1.0y",  "365 days -> 1.0y");
+  d = Duration (365 * 86400 + 1), t.is (d.formatCompact (), "1.0y",  "365 days + 1 s -> 1.0y");
 
   // std::string formatPrecise ();
   d = Duration (0);               t.is (d.formatPrecise (), "0:00:00",       "0 -> 0:00:00");
@@ -456,12 +360,12 @@ int main (int argc, char** argv)
   d = Duration (86399);           t.is (d.formatPrecise (), "23:59:59",      "86399 -> 23:59:59");
   d = Duration (86400);           t.is (d.formatPrecise (), "1d 0:00:00",    "86400 -> 1d 0:00:00");
   d = Duration (86401);           t.is (d.formatPrecise (), "1d 0:00:01",    "86401 -> 1d 0:00:01");
-  d = Duration (14 * 86400 - 1);  t.is (d.formatPrecise (), "13d 23:59:59",  "(14 x 86400) - 1 sec -> 13d 23:59:59");
+  d = Duration (14 * 86400 - 1);  t.is (d.formatPrecise (), "13d 23:59:59",  "(14 x 86400) - 1 s -> 13d 23:59:59");
   d = Duration (14 * 86400);      t.is (d.formatPrecise (), "14d 0:00:00",   "(14 x 86400) -> 14d 0:00:00");
   d = Duration (14 * 86400 + 1);  t.is (d.formatPrecise (), "14d 0:00:01",   "(14 x 86400) + 1 -> 14d 0:00:01");
-  d = Duration (365 * 86400 - 1); t.is (d.formatPrecise (), "364d 23:59:59", "365 days - 1 sec -> 364d 23:59:59");
+  d = Duration (365 * 86400 - 1); t.is (d.formatPrecise (), "364d 23:59:59", "365 days - 1 s -> 364d 23:59:59");
   d = Duration (365 * 86400);     t.is (d.formatPrecise (), "365d 0:00:00",  "365 days -> 365d 0:00:00");
-  d = Duration (365 * 86400 + 1); t.is (d.formatPrecise (), "365d 0:00:01",  "365 days + 1 sec -> 365d 0:00:01");
+  d = Duration (365 * 86400 + 1); t.is (d.formatPrecise (), "365d 0:00:01",  "365 days + 1 s -> 365d 0:00:01");
 
   // std::string formatISO ();
   d = Duration (0);               t.is (d.formatISO (), "P0S",             "0 -> P0S");
@@ -478,45 +382,43 @@ int main (int argc, char** argv)
   d = Duration (86399);           t.is (d.formatISO (), "PT23H59M59S",     "86399 -> PT23H59M59S");
   d = Duration (86400);           t.is (d.formatISO (), "P1D",             "86400 -> P1D");
   d = Duration (86401);           t.is (d.formatISO (), "P1DT1S",          "86401 -> P1DT1S");
-  d = Duration (14 * 86400 - 1);  t.is (d.formatISO (), "P13DT23H59M59S",  "(14 x 86400) - 1 sec -> P13DT23H59M59S");
+  d = Duration (14 * 86400 - 1);  t.is (d.formatISO (), "P13DT23H59M59S",  "(14 x 86400) - 1 s -> P13DT23H59M59S");
   d = Duration (14 * 86400);      t.is (d.formatISO (), "P14D",            "(14 x 86400) -> P14D");
   d = Duration (14 * 86400 + 1);  t.is (d.formatISO (), "P14DT1S",         "(14 x 86400) + 1 -> P14DT1S");
-  d = Duration (365 * 86400 - 1); t.is (d.formatISO (), "P1Y4DT23H59M59S", "365 days - 1 sec -> P1Y4DT23H59M59S");
+  d = Duration (365 * 86400 - 1); t.is (d.formatISO (), "P1Y4DT23H59M59S", "365 days - 1 s -> P1Y4DT23H59M59S");
   d = Duration (365 * 86400);     t.is (d.formatISO (), "P1Y5D",           "365 days -> P1Y5D");
-  d = Duration (365 * 86400 + 1); t.is (d.formatISO (), "P1Y5DT1S",        "365 days + 1 sec -> P1Y5DT1S");
+  d = Duration (365 * 86400 + 1); t.is (d.formatISO (), "P1Y5DT1S",        "365 days + 1 s -> P1Y5DT1S");
 
   Duration left, right;
 
   // operator<
-  left = Duration ("1sec");   right = Duration ("2secs");  t.ok (left < right, "duration 1sec < 2secs");
-  left = Duration ("-2secs"); right = Duration ("-1sec");  t.ok (left < right, "duration -2secs < -1sec");
-  left = Duration ("1sec");   right = Duration ("1min");   t.ok (left < right, "duration 1sec < 1min");
-  left = Duration ("1min");   right = Duration ("1hr");    t.ok (left < right, "duration 1min < 1hr");
-  left = Duration ("1hr");    right = Duration ("1d");     t.ok (left < right, "duration 1hr < 1d");
+  left = Duration ("1s");     right = Duration ("2s");     t.ok (left < right, "duration 1s < 2s");
+  left = Duration ("-2s");    right = Duration ("-1s");    t.ok (left < right, "duration -2s < -1s");
+  left = Duration ("1s");     right = Duration ("1min");   t.ok (left < right, "duration 1s < 1min");
+  left = Duration ("1min");   right = Duration ("1h");     t.ok (left < right, "duration 1min < 1h");
+  left = Duration ("1h");     right = Duration ("1d");     t.ok (left < right, "duration 1h < 1d");
   left = Duration ("1d");     right = Duration ("1w");     t.ok (left < right, "duration 1d < 1w");
   left = Duration ("1w");     right = Duration ("1mo");    t.ok (left < right, "duration 1w < 1mo");
   left = Duration ("1mo");    right = Duration ("1q");     t.ok (left < right, "duration 1mo < 1q");
   left = Duration ("1q");     right = Duration ("1y");     t.ok (left < right, "duration 1q < 1y");
-
   left = Duration ("-3s");    right = Duration ("-6s");    t.ok (right < left, "duration -6s < -3s");
 
   // operator>
-  left = Duration ("2secs");  right = Duration ("1sec");   t.ok (left > right, "2sec > 1secs");
-  left = Duration ("-1sec");  right = Duration ("-2secs"); t.ok (left > right, "-1secs > -2sec");
-  left = Duration ("1min");   right = Duration ("1sec");   t.ok (left > right, "1min > 1sec");
-  left = Duration ("1hr");    right = Duration ("1min");   t.ok (left > right, "1hr > 1min");
-  left = Duration ("1d");     right = Duration ("1hr");    t.ok (left > right, "1d > 1hr");
+  left = Duration ("2s");     right = Duration ("1s");     t.ok (left > right, "2s > 1s");
+  left = Duration ("-1s");    right = Duration ("-2s");    t.ok (left > right, "-1s > -2s");
+  left = Duration ("1min");   right = Duration ("1s");     t.ok (left > right, "1min > 1s");
+  left = Duration ("1h");     right = Duration ("1min");   t.ok (left > right, "1h > 1min");
+  left = Duration ("1d");     right = Duration ("1h");     t.ok (left > right, "1d > 1h");
   left = Duration ("1w");     right = Duration ("1d");     t.ok (left > right, "1w > 1d");
   left = Duration ("1mo");    right = Duration ("1w");     t.ok (left > right, "1mo > 1w");
   left = Duration ("1q");     right = Duration ("1mo");    t.ok (left > right, "1q > 1mo");
   left = Duration ("1y");     right = Duration ("1q");     t.ok (left > right, "1y > 1q");
-
   left = Duration ("-3s");    right = Duration ("-6s");    t.ok (left > right, "duration -3s > -6s");
 
   // operator<=
-  left = Duration ("1sec");   right = Duration ("2secs");  t.ok (left <= right, "duration 1sec <= 2secs");
-  left = Duration ("2secs");  right = Duration ("2secs");  t.ok (left <= right, "duration 1sec <= 2secs");
-  left = Duration ("2secs");  right = Duration ("1secs");  t.notok (left <= right, "duration NOT 1sec <= 2secs");
+  left = Duration ("1s");     right = Duration ("2s");     t.ok (left <= right, "duration 1s <= 2s");
+  left = Duration ("2s");     right = Duration ("2s");     t.ok (left <= right, "duration 1s <= 2s");
+  left = Duration ("2s");     right = Duration ("1s");     t.notok (left <= right, "duration NOT 1s <= 2s");
 
   // TODO Formatting.
 
