@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (190);
+  UnitTest t (194);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -205,7 +205,7 @@ int main (int argc, char** argv)
   t.is (tokens[9].second,                     Lexer::typeDate,        "tokens[9] == typeDate");
 
   // Test for durations
-  Lexer l5 ("second 1minute 2hour 3 days 4w 5mos 6 years");
+  Lexer l5 ("second 1minute 2hour 3 days 4w 5mo 6 years");
   tokens.clear ();
   while (l5.token (token, type))
   {
@@ -224,13 +224,13 @@ int main (int argc, char** argv)
   t.is (tokens[3].second,                     Lexer::typeDuration,    "tokens[3] == typeDuration");
   t.is (tokens[4].first,                      "4w",                   "tokens[4] == '4w'");
   t.is (tokens[4].second,                     Lexer::typeDuration,    "tokens[4] == typeDuration");
-  t.is (tokens[5].first,                      "5mos",                 "tokens[5] == '5mos'");
+  t.is (tokens[5].first,                      "5mo",                  "tokens[5] == '5mo'");
   t.is (tokens[5].second,                     Lexer::typeDuration,    "tokens[5] == typeDuration");
   t.is (tokens[6].first,                      "6 years",              "tokens[6] == '6 years'");
   t.is (tokens[6].second,                     Lexer::typeDuration,    "tokens[6] == typeDuration"); // 120
 
   // All the Eval operators.
-  Lexer l6 ("P1Y PT1H P1Y1M1DT1H1M1S");
+  Lexer l6 ("P1Y PT1H P1Y1M1DT1H1M1S 1s 1second");
   tokens.clear ();
   while (l6.token (token, type))
   {
@@ -238,13 +238,17 @@ int main (int argc, char** argv)
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),                  3,                      "3 ISO periods");
+  t.is ((int)tokens.size (),                  5,                      "5 ISO periods");
   t.is (tokens[0].first,                      "P1Y",                  "tokens[0] == 'P1Y'");
   t.is (tokens[0].second,                     Lexer::typeDuration,    "tokens[0] == typeDuration");
   t.is (tokens[1].first,                      "PT1H",                 "tokens[1] == 'PT1H'");
   t.is (tokens[1].second,                     Lexer::typeDuration,    "tokens[1] == typeDuration");
-  t.is (tokens[2].first,                      "P1Y1M1DT1H1M1S",       "tokens[1] == 'P1Y1M1DT1H1M1S'");
-  t.is (tokens[2].second,                     Lexer::typeDuration,    "tokens[1] == typeDuration");
+  t.is (tokens[2].first,                      "P1Y1M1DT1H1M1S",       "tokens[2] == 'P1Y1M1DT1H1M1S'");
+  t.is (tokens[2].second,                     Lexer::typeDuration,    "tokens[2] == typeDuration");
+  t.is (tokens[3].first,                      "1s",                   "tokens[3] == '1s'");
+  t.is (tokens[3].second,                     Lexer::typeDuration,    "tokens[3] == typeDuration");
+  t.is (tokens[4].first,                      "1second",              "tokens[4] == '1second'");
+  t.is (tokens[4].second,                     Lexer::typeDuration,    "tokens[4] == typeDuration");
 
   // All the Eval operators.
   Lexer l7 ("and xor or <= >= !~ != == = ^ > ~ ! * / % + - < ( )");
