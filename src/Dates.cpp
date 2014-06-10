@@ -353,9 +353,26 @@ bool namedDates (const std::string& name, Variant& value)
   // 1st
   // 2nd
   // 3rd
-  else if (name.length () >= 3 &&
-           name.length () <= 4 &&
-           isdigit (name[0]))
+  // 4th
+  else if ((
+            name.length () == 3 &&
+            isdigit (name[0])   &&
+            ((name[1] == 's' && name[2] == 't') ||
+             (name[1] == 'n' && name[2] == 'd') ||
+             (name[1] == 'r' && name[2] == 'd') ||
+             (name[1] == 't' && name[2] == 'h'))
+           )
+           ||
+           (
+            name.length () == 4 &&
+            isdigit (name[0])   &&
+            isdigit (name[1])   &&
+            ((name[2] == 's' && name[3] == 't') ||
+             (name[2] == 'n' && name[3] == 'd') ||
+             (name[2] == 'r' && name[3] == 'd') ||
+             (name[2] == 't' && name[3] == 'h'))
+           )
+          )
   {
     int number;
     std::string ordinal;
