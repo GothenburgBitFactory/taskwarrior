@@ -218,78 +218,78 @@ $output = qx{../src/task rc:urgency.rc 20 _urgency 2>&1};
 my ($value) = $output =~ /urgency\s([0-9.]+)/;
 in_range ($value, 9, 10, 'due:-6d = 9 - 10');
 
-# due: 8.64 (due:-5d)
+# due: 9.24 (due:-5d)
 $output = qx{../src/task rc:urgency.rc 21 _urgency 2>&1};
-like ($output, qr/urgency 8.64/ms, 'due:-5d = 8.64');
+like ($output, qr/urgency 9.24/ms, 'due:-5d = 9.24');
 
-# due: 8.18 (due:-4d)
+# due: 8.86 (due:-4d)
 $output = qx{../src/task rc:urgency.rc 22 _urgency 2>&1};
-like ($output, qr/urgency 8.18/ms, 'due:-4d = 8.18');
+like ($output, qr/urgency 8.86/ms, 'due:-4d = 8.86');
 
-# due: 7.73 (due:-3d)
+# due: 8.48 (due:-3d)
 $output = qx{../src/task rc:urgency.rc 23 _urgency 2>&1};
-like ($output, qr/urgency 7.73/ms, 'due:-3d = 7.73');
+like ($output, qr/urgency 8.48/ms, 'due:-3d = 8.48');
 
-# due: 7.27 (due:-2d)
+# due: 8.1 (due:-2d)
 $output = qx{../src/task rc:urgency.rc 24 _urgency 2>&1};
-like ($output, qr/urgency 7.27/ms, 'due:-2d = 7.27');
+like ($output, qr/urgency 8.1/ms, 'due:-2d = 8.1');
 
-# due: 6.82 (due:-1d)
+# due: 7.71 (due:-1d)
 $output = qx{../src/task rc:urgency.rc 25 _urgency 2>&1};
-like ($output, qr/urgency 6.82/ms, 'due:-1d = 6.82');
+like ($output, qr/urgency 7.71/ms, 'due:-1d = 7.71');
 
 # due: ~7.53 (due:now)
 $output = qx{../src/task rc:urgency.rc 26 _urgency 2>&1};
 ($value) = $output =~ /urgency\s([0-9.]+)/;
 in_range ($value, 7, 8, 'due:now = 7 - 8');
 
-# due: 5.89 (due:1d)
+# due: 6.94 (due:1d)
 $output = qx{../src/task rc:urgency.rc 27 _urgency 2>&1};
-like ($output, qr/urgency 5.89/ms, 'due:1d = 5.89');
+like ($output, qr/urgency 6.94/ms, 'due:1d = 6.94');
 
-# due: 5.44(due:2d)
+# due: 6.56 (due:2d)
 $output = qx{../src/task rc:urgency.rc 28 _urgency 2>&1};
-like ($output, qr/urgency 5.44/ms, 'due:2d = 5.44');
+like ($output, qr/urgency 6.56/ms, 'due:2d = 6.56');
 
-# due: 4.98 (due:3d)
+# due: 6.17 (due:3d)
 $output = qx{../src/task rc:urgency.rc 29 _urgency 2>&1};
-like ($output, qr/urgency 4.98/ms, 'due:3d = 4.98');
+like ($output, qr/urgency 6.17/ms, 'due:3d = 6.17');
 
-# due: 4.53 (due:4d)
+# due: 5.79 (due:4d)
 $output = qx{../src/task rc:urgency.rc 30 _urgency 2>&1};
-like ($output, qr/urgency 4.53/ms, 'due:4d = 4.53');
+like ($output, qr/urgency 5.79/ms, 'due:4d = 5.79');
 
-# due: 4.07 (due:5d)
+# due: 5.41 (due:5d)
 $output = qx{../src/task rc:urgency.rc 31 _urgency 2>&1};
-like ($output, qr/urgency 4.07/ms, 'due:5d = 4.07');
+like ($output, qr/urgency 5.41/ms, 'due:5d = 5.41');
 
-# due: 3.62 (due:6d)
+# due: 5.03 (due:6d)
 $output = qx{../src/task rc:urgency.rc 32 _urgency 2>&1};
-like ($output, qr/urgency 3.62/ms, 'due:6d = 3.62');
+like ($output, qr/urgency 5.03/ms, 'due:6d = 5.03');
 
-# due: 3.16 (due:7d)
+# due: 4.65 (due:7d)
 $output = qx{../src/task rc:urgency.rc 33 _urgency 2>&1};
-like ($output, qr/urgency 3.16/ms, 'due:7d = 3.16');
+like ($output, qr/urgency 4.65/ms, 'due:7d = 4.65');
 
-# due: 2.71 (due:8d)
+# due: 4.27 (due:8d)
 $output = qx{../src/task rc:urgency.rc 34 _urgency 2>&1};
-like ($output, qr/urgency 2.71/ms, 'due:8d = 2.71');
+like ($output, qr/urgency 4.27/ms, 'due:8d = 4.27');
 
-# due: 2.25 (due:9d)
+# due: 3.89 (due:9d)
 $output = qx{../src/task rc:urgency.rc 35 _urgency 2>&1};
-like ($output, qr/urgency 2.25/ms, 'due:9d = 2.25');
+like ($output, qr/urgency 3.89/ms, 'due:9d = 3.89');
 
-# due: 1.8 (due:10d)
+# due: 3.51 (due:10d)
 $output = qx{../src/task rc:urgency.rc 36 _urgency 2>&1};
-like ($output, qr/urgency 1.8/ms, 'due:10d = 1.8');
+like ($output, qr/urgency 3.51/ms, 'due:10d = 3.51');
 
-# due: 1.34 (due:11d)
+# due: 3.13 (due:11d)
 $output = qx{../src/task rc:urgency.rc 37 _urgency 2>&1};
-like ($output, qr/urgency 1.34/ms, 'due:11d = 1.34');
+like ($output, qr/urgency 3.13/ms, 'due:11d = 3.13');
 
-# due: 0.89 (due:12d)
+# due: 2.75 (due:12d)
 $output = qx{../src/task rc:urgency.rc 38 _urgency 2>&1};
-like ($output, qr/urgency 0.89/ms, 'due:12d = 0.89');
+like ($output, qr/urgency 2.75/ms, 'due:12d = 2.75');
 
 # due: >2 (due:13d)
 $output = qx{../src/task rc:urgency.rc 39 _urgency 2>&1};
