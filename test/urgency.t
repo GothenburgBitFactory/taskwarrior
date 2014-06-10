@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 30;
+use Test::More tests => 47;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
