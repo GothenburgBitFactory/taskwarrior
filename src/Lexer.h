@@ -87,6 +87,7 @@ private:
 private:
   const std::string _input;
   std::string::size_type _i;
+  std::string::size_type _shift_counter;
   int _n0;
   int _n1;
   int _n2;

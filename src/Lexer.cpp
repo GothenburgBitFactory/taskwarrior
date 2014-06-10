@@ -36,6 +36,7 @@ std::string Lexer::dateFormat = "";
 Lexer::Lexer (const std::string& input)
 : _input (input)
 , _i (0)
+, _shift_counter (0)
 , _n0 (32)
 , _n1 (32)
 , _n2 (32)
@@ -47,6 +48,10 @@ Lexer::Lexer (const std::string& input)
   shift ();
   shift ();
   shift ();
+
+  // Reset because the four shifts above do not represent advancement into the
+  // _input. All subsequents shiftѕ do though.
+  _shift_counter = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -93,20 +98,18 @@ bool Lexer::token (std::string& result, Type& type)
       else if (is_dec_digit (_n0))
       {
         // Speculatively try a date and duration parse.  Longest wins.
-        int offset = (_i < 4 ? 0 : _i - 4);
-
         std::string::size_type iso_i = 0;
         std::string iso_result;
         ISO8601d iso;
         iso.ambiguity (_ambiguity);
-        if (iso.parse (_input.substr (offset), iso_i))
-          iso_result = _input.substr (offset, iso_i);
+        if (iso.parse (_input.substr (_shift_counter), iso_i))
+          iso_result = _input.substr (_shift_counter, iso_i);
 
         std::string::size_type dur_i = 0;
         std::string dur_result;
         Duration dur;
-        if (dur.parse (_input.substr (offset), dur_i))
-          dur_result = _input.substr (offset, dur_i);
+        if (dur.parse (_input.substr (_shift_counter), dur_i))
+          dur_result = _input.substr (_shift_counter, dur_i);
 
         if (iso_result.length () > dur_result.length ())
         {
@@ -128,15 +131,14 @@ bool Lexer::token (std::string& result, Type& type)
         {
           if (Lexer::dateFormat != "")
           {
-            std::string::size_type start = _i < 4 ? 0 : _i - 4;
             std::string::size_type space = _input.find (' ', _i);
             if (space == std::string::npos)
               space = _input.length ();
 
-            std::string legacy = _input.substr (start, space - start);
+            std::string legacy = _input.substr (_shift_counter, space - _shift_counter);
             Date legacyDate (legacy, Lexer::dateFormat, true, false);
 
-            space -= start;
+            space -= _shift_counter;
             while (space--) shift ();
             result = legacy;
             type = typeDate;
@@ -190,19 +192,17 @@ bool Lexer::token (std::string& result, Type& type)
       }
       else if (is_ident_start (_n0))
       {
-        int offset = (_i < 4 ? 0 : _i - 4);
-
         std::string::size_type iso_i = 0;
         std::string iso_result;
         ISO8601p iso;
-        if (iso.parse (_input.substr (offset), iso_i))
-          iso_result = _input.substr (offset, iso_i);
+        if (iso.parse (_input.substr (_shift_counter), iso_i))
+          iso_result = _input.substr (_shift_counter, iso_i);
 
         std::string::size_type dur_i = 0;
         std::string dur_result;
         Duration dur;
-        if (dur.parse (_input.substr (offset), dur_i))
-          dur_result = _input.substr (offset, dur_i);
+        if (dur.parse (_input.substr (_shift_counter), dur_i))
+          dur_result = _input.substr (_shift_counter, dur_i);
 
         if (iso_result.length () > dur_result.length ())
         {
@@ -799,6 +799,7 @@ void Lexer::shift ()
   _n1 = _n2;
   _n2 = _n3;
   _n3 = utf8_next_char (_input, _i);
+  ++_shift_counter;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
