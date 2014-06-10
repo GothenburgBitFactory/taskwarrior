@@ -1720,23 +1720,6 @@ float Task::urgency_c () const
   value += fabsf (Task::urgencyBlockingCoefficient)    > epsilon ? (urgency_blocking ()    * Task::urgencyBlockingCoefficient)    : 0.0;
   value += fabsf (Task::urgencyAgeCoefficient)         > epsilon ? (urgency_age ()         * Task::urgencyAgeCoefficient)         : 0.0;
 
-/*
-  // Very useful for debugging urgency problems.
-  std::cout << "# Urgency for " << get ("uuid") << ":\n"
-          << "#     pri " << (urgency_priority ()    * Task::urgencyPriorityCoefficient)    << "\n"
-          << "#     pro " << (urgency_project ()     * Task::urgencyProjectCoefficient)     << "\n"
-          << "#     act " << (urgency_active ()      * Task::urgencyActiveCoefficient)      << "\n"
-          << "#     sch " << (urgency_scheduled ()   * Task::urgencyScheduledCoefficient)   << "\n"
-          << "#     wai " << (urgency_waiting ()     * Task::urgencyWaitingCoefficient)     << "\n"
-          << "#     blk " << (urgency_blocked ()     * Task::urgencyBlockedCoefficient)     << "\n"
-          << "#     ann " << (urgency_annotations () * Task::urgencyAnnotationsCoefficient) << "\n"
-          << "#     tag " << (urgency_tags ()        * Task::urgencyTagsCoefficient)        << "\n"
-          << "#     nex " << (urgency_next ()        * Task::urgencyNextCoefficient)        << "\n"
-          << "#     due " << (urgency_due ()         * Task::urgencyDueCoefficient)         << "\n"
-          << "#     bkg " << (urgency_blocking ()    * Task::urgencyBlockingCoefficient)    << "\n"
-          << "#     age " << (urgency_age ()         * Task::urgencyAgeCoefficient)         << "\n";
-*/
-
   // Tag- and project-specific coefficients.
   std::map <std::string, float>::iterator var;
   for (var = Task::coefficients.begin (); var != Task::coefficients.end (); ++var)
