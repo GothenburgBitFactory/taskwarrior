@@ -28,16 +28,21 @@
 use strict;
 use warnings;
 use Time::Local;
-use Test::More tests => 35;
+use Test::More tests => 34;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=off\n";
   close $fh;
 }
 
@@ -54,148 +59,147 @@ if (open my $fh, '>', 'pending.data')
 EOF
 
   close $fh;
-  ok (-r 'pending.data', 'Created pending.data');
 }
 
-my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
+my $output = qx{../src/task rc:$rc 1 info 2>&1};
 my ($uuid) = $output =~ /UUID\s+(\S{36})/ms;
 
-$output = qx{../src/task rc:bug.rc $uuid list 2>&1};
+$output = qx{../src/task rc:$rc $uuid list 2>&1};
 like ($output, qr/one/, "Found with $uuid");
 
 my ($short) = $uuid =~ /^(.{35})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{34})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{33})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{32})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{31})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{30})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{29})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{28})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{27})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{26})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{25})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{24})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{23})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{22})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{21})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{20})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{19})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{18})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{17})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{16})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{15})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{14})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{13})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{12})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{11})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{10})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{9})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{8})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{7})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{6})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{5})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{4})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 ($short) = $uuid =~ /^(.{3})/;
-$output = qx{../src/task rc:bug.rc $short list 2>&1};
+$output = qx{../src/task rc:$rc $short list 2>&1};
 unlike ($output, qr/one/, "Not found with $short");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data  bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
