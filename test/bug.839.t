@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 2;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -44,7 +44,6 @@ if (open my $fh, '>', 'pending.data')
 {
   print $fh "[description:\"One\" entry:\"1200871621\" due:\"1200871621\" recur:\"1m\" status:\"recurring\" uuid:\"ebeeab00-ccf8-464b-8b58-f7f2d606edfb\"]\n";
   close $fh;
-  ok (-r 'pending.data', 'Created pending.data');
 }
 
 my $output = qx{../src/task rc:bug.rc list 2>&1};
