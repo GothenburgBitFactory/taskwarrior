@@ -27,16 +27,21 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'time.rc')
+if (open my $fh, '>', $rc)
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=off\n";
   close $fh;
 }
 
@@ -61,14 +66,13 @@ if (open my $fh, '>', 'pending.data')
 [status:"completed" description:"CNN2" entry:"$now" end:"$now"]
 EOF
   close $fh;
-  ok (-r 'pending.data', 'Created pending.data');
 }
 
-my $output = qx{../src/task rc:time.rc history.annual 2>&1};
+my $output = qx{../src/task rc:$rc history.annual 2>&1};
 like ($output, qr/7\s+1\s+0\s+6/, 'history.annual - last year');
 like ($output, qr/2\s+3\s+3\s+-4/, 'history.annual - this year');
 like ($output, qr/4\s+2\s+1\s+1/, 'history.annual - average');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data time.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
