@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 23;
+use Test::More tests => 22;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -100,7 +100,6 @@ if (open my $fh, '>', 'annotate2.rc')
             "report.rrr.sort=id+\n",
             "dateformat.annotation=yMD HNS\n";
   close $fh;
-  ok (-r 'annotate2.rc', 'Created annotate2.rc');
 }
 
 $output = qx{../src/task rc:annotate2.rc rrr 2>&1};
