@@ -27,28 +27,30 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 1;
+
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
 
 # Create the rc file.
-if (open my $fh, '>', 'minus.rc')
+if (open my $fh, '>', $rc)
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=off\n";
   close $fh;
-  ok (-r 'minus.rc', 'Created minus.rc');
 }
 
 # Bug 982: Missing words when adding a description with NUMBER-SOMETHING
 
-qx{../src/task rc:minus.rc add 1-test 1+tag 2>&1};
-my $output = qx{../src/task rc:minus.rc 1 info 2>&1};
+qx{../src/task rc:$rc add 1-test 1+tag 2>&1};
+my $output = qx{../src/task rc:$rc 1 info 2>&1};
 like ($output, qr/^Description 1-test 1\+tag$/ms, 'Description contains plus and minus signs');
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data minus.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'minus.rc', 'Cleanup');
-
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
