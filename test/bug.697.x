@@ -27,14 +27,13 @@
 
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 3;
 
 # Create the rc file.
 if (open my $fh, '>', 'bug.rc')
 {
   print $fh "data.location=.\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug 697: Making a blocking task recur breaks dependency.
@@ -70,11 +69,5 @@ like ($output, qr/is blocked by\s+2/, 'verified 1 --> 2');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-ok (! -r 'pending.data'   &&
-    ! -r 'completed.data' &&
-    ! -r 'undo.data'      &&
-    ! -r 'backlog.data'   &&
-    ! -r 'bug.rc', 'Cleanup');
-
 exit 0;
 
