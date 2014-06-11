@@ -2036,7 +2036,7 @@ void Task::modify (modType type, bool text_required /* = false */)
                    column->type () == "duration")
           {
             // TODO Store the raw value, for 'recur', else result.
-
+/*
             Eval e;
             e.addSource (domSource);
             e.addSource (namedDates);
@@ -2050,6 +2050,8 @@ void Task::modify (modType type, bool text_required /* = false */)
             v.cast (Variant::type_duration);
             v.cast (Variant::type_string);
             set (name, v);
+*/
+            set (name, value);
             ++modCount;
           }
 
