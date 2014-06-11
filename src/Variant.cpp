@@ -1574,9 +1574,9 @@ Variant::operator std::string () const
         if (hours || minutes || seconds)
         {
           s << 'T';
-          if (hours)   s << hours   << 'h';
-          if (minutes) s << minutes << 'm';
-          if (seconds) s << seconds << 's';
+          if (hours)   s << hours   << 'H';
+          if (minutes) s << minutes << 'M';
+          if (seconds) s << seconds << 'S';
         }
 
         return s.str ();
