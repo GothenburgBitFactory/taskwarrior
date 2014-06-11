@@ -29,7 +29,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 82;
+use Test::More tests => 81;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -188,7 +188,6 @@ if (open my $fh, '>', 'details.rc')
             "holiday.åäö.name=åäö\n",
             "holiday.åäö.date=20150125\n";
   close $fh;
-  ok (-r 'details.rc', 'Created details.rc');
 }
 
 # task calendar details
