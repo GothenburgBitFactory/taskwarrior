@@ -27,39 +27,35 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 4;
+
+# Ensure environment has no influence.
+delete $ENV{'TASKDATA'};
+delete $ENV{'TASKRC'};
+
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
 
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
-  print $fh "data.location=.\n";
-
+  print $fh "data.location=.\n",
+            "verbose=nothing\n";
   close $fh;
-  ok (-r 'bug.rc', 'Created bug.rc');
 }
 
 # Bug #485 - 'task list recur:month' doesn't list monthly tasks
-qx{../src/task rc:bug.rc add one due:tomorrow recur:monthly};
-qx{../src/task rc:bug.rc add two due:tomorrow recur:month};
-my $output = qx{../src/task rc:bug.rc list recur:monthly};
+qx{../src/task rc:$rc add one due:tomorrow recur:monthly};
+qx{../src/task rc:$rc add two due:tomorrow recur:month};
+my $output = qx{../src/task rc:$rc list recur:monthly};
 like ($output, qr/one/, 'monthly -> monthly');
 like ($output, qr/two/, 'month   -> monthly');
 
-$output = qx{../src/task rc:bug.rc list recur:month};
+$output = qx{../src/task rc:$rc list recur:month};
 like ($output, qr/one/, 'monthly -> month');
 like ($output, qr/two/, 'month   -> month');
 
 # Cleanup.
-unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data');
-
-unlink 'completed.data';
-ok (!-r 'completed.data', 'Removed completed.data');
-
-unlink 'undo.data';
-ok (!-r 'undo.data', 'Removed undo.data');
-
-unlink 'bug.rc';
-ok (!-r 'bug.rc', 'Removed bug.rc');
-
+unlink qw(pending.data completed.data undo.data), $rc;
 exit 0;
