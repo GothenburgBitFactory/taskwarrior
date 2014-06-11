@@ -1556,28 +1556,27 @@ Variant::operator std::string () const
   case type_duration:
     {
       time_t t = _duration;
-
       if (t)
       {
-        int seconds = t % 60; t /= 60;
-        int minutes = t % 60; t /= 60;
-        int hours   = t % 24; t /= 24;
-        int days    = t % 30; t /= 30;
-        int months  = t % 12; t /= 12;
-        int years   = t;
-
         std::stringstream s;
         s << 'P';
-        if (years)  s << years  << 'Y';
-        if (months) s << months << 'M';
-        if (days)   s << days   << 'D';
+
+        int years = t / (365 * 86400);  t -= years * 365 * 86400;
+        int days  = t / 86400;          t -= days        * 86400;
+
+        if (years) s << years << 'Y';
+        if (days)  s << days  << 'D';
+
+        int hours   = t / 3600;           t -= hours   * 3600;
+        int minutes = t /   60;           t -= minutes *   60;
+        int seconds = t;
 
         if (hours || minutes || seconds)
         {
           s << 'T';
-          if (hours)   s << hours   << 'H';
-          if (minutes) s << minutes << 'M';
-          if (seconds) s << seconds << 'S';
+          if (hours)   s << hours   << 'h';
+          if (minutes) s << minutes << 'm';
+          if (seconds) s << seconds << 's';
         }
 
         return s.str ();
