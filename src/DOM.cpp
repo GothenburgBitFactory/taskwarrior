@@ -29,6 +29,7 @@
 #include <map>
 #include <stdlib.h>
 #include <Variant.h>
+#include <Duration.h>
 #include <Context.h>
 #include <Nibbler.h>
 #include <Date.h>
@@ -299,7 +300,14 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
       {
         if (elements.size () == 2)
         {
-          value = Variant (ref.get (canonical));
+          Column* column = context.columns[canonical];
+          if (column && column->type () == "date")
+            value = Variant (ref.get_date (canonical), Variant::type_date);
+          else if (column && column->type () == "duration")
+            value = Variant ((time_t) Duration (ref.get (canonical)), Variant::type_duration);
+          else
+            value = Variant (ref.get (canonical));
+
           return true;
         }
         else if (elements.size () == 3)
