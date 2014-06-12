@@ -28,6 +28,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
+#include <DOM.h>
 #include <main.h>
 #include <test.h>
 
@@ -51,36 +52,36 @@ int main (int argc, char** argv)
     context.config.set ("name", "value");
 
     DOM dom;
-    std::string result;
+    Variant result;
     t.ok (dom.get ("system.version", result),  "DOM system.version -> true");
-    t.is (result, VERSION,                     "DOM system.version -> VERSION");
+    t.is ((std::string) result, VERSION,       "DOM system.version -> VERSION");
 
     t.ok (dom.get ("system.os", result),       "DOM system.os -> true");
-    t.ok (result != "<unknown>",               "DOM system.os -> != Unknown");
+    t.ok ((std::string) result != "<unknown>", "DOM system.os -> != Unknown");
 
     t.ok (dom.get ("context.program", result), "DOM context.program -> true");
-    t.is (result, "task",                      "DOM context.program -> 'task'");
+    t.is ((std::string) result, "task",        "DOM context.program -> 'task'");
 
     t.ok (dom.get ("context.args", result),    "DOM context.args -> true");
-    t.is (result, "task",                      "DOM context.args -> 'task'");
+    t.is ((std::string) result, "task",        "DOM context.args -> 'task'");
 
     t.ok (dom.get ("context.width", result),   "DOM context.width -> true");
-    t.ok (result != "0",                       "DOM context.width -> '0'");
+    t.ok (result.get_integer () != 0,          "DOM context.width -> '0'");
 
     t.ok (dom.get ("context.height", result),  "DOM context.height -> true");
-    t.ok (result != "0",                       "DOM context.height -> '0'");
+    t.ok (result.get_integer () != 0,          "DOM context.height -> '0'");
 
     // dom.get rc.name
     t.ok (dom.get ("rc.name", result),         "DOM rc.name -> true");
-    t.is (result, "value",                     "DOM rc.name -> value");
+    t.is ((std::string) result, "value",       "DOM rc.name -> value");
 
     // dom.get rc.missing
     t.notok (dom.get ("rc.missing", result),   "DOM rc.missing -> false");
 
     // dom.set rc.name
-    dom.set ("rc.new", "value");
+    dom.set ("rc.new", Variant ("value"));
     t.ok (dom.get ("rc.new", result),          "DOM rc.new -> true");
-    t.is (result, "value",                     "DOM rc.new -> value");
+    t.is ((std::string) result, "value",       "DOM rc.new -> value");
   }
 
   catch (const std::string& error)

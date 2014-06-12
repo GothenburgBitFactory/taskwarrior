@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Variant.h>
 #include <Context.h>
 #include <main.h>
 #include <text.h>
@@ -58,10 +59,10 @@ int CmdGet::execute (std::string& output)
   for (word = words.begin (); word != words.end (); ++word)
   {
     Task t;
-    std::string result;
+    Variant result;
     if (context.dom.get (*word, t, result))
     {
-      results.push_back (result);
+      results.push_back ((std::string) result);
       found = true;
     }
   }

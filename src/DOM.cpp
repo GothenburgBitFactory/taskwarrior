@@ -28,6 +28,7 @@
 #include <sstream>
 #include <map>
 #include <stdlib.h>
+#include <Variant.h>
 #include <Context.h>
 #include <Nibbler.h>
 #include <Date.h>
@@ -76,7 +77,7 @@ const std::vector <std::string> DOM::get_references () const
 //   system.version
 //   system.os
 //
-bool DOM::get (const std::string& name, std::string& value)
+bool DOM::get (const std::string& name, Variant& value)
 {
   int len = name.length ();
   Nibbler n (name);
@@ -89,7 +90,7 @@ bool DOM::get (const std::string& name, std::string& value)
     std::map <std::string, std::string>::iterator c = context.config.find (key);
     if (c != context.config.end ())
     {
-      value = c->second;
+      value = Variant (c->second);
       return true;
     }
 
@@ -102,35 +103,36 @@ bool DOM::get (const std::string& name, std::string& value)
   {
     if (name == "context.program")
     {
-      value = context.program;
+      value = Variant (context.program);
       return true;
     }
     else if (name == "context.args")
     {
-      value = "";
+      std::string commandLine = "";
       std::vector <Tree*>::iterator i;
       for (i = context.parser.tree ()->_branches.begin (); i != context.parser.tree ()->_branches.end (); ++i)
       {
-        if (value != "")
-          value += " ";
+        if (commandLine != "")
+          commandLine += " ";
 
-        value += (*i)->attribute ("raw");
+        commandLine += (*i)->attribute ("raw");
       }
 
+      value = Variant (commandLine);
       return true;
     }
     else if (name == "context.width")
     {
-      value = format (context.terminal_width
-                        ? context.terminal_width
-                        : context.getWidth ());
+      value = Variant (context.terminal_width
+                         ? context.terminal_width
+                         : context.getWidth ());
       return true;
     }
     else if (name == "context.height")
     {
-      value = format (context.terminal_height
-                        ? context.terminal_height
-                        : context.getHeight ());
+      value = Variant (context.terminal_height
+                         ? context.terminal_height
+                         : context.getHeight ());
       return true;
     }
     else
@@ -146,7 +148,7 @@ bool DOM::get (const std::string& name, std::string& value)
     // Taskwarrior version number.
     if (name == "system.version")
     {
-      value = VERSION;
+      value = Variant (VERSION);
       return true;
     }
 
@@ -154,27 +156,27 @@ bool DOM::get (const std::string& name, std::string& value)
     else if (name == "system.os")
     {
 #if defined (DARWIN)
-      value = "Darwin";
+      value = Variant ("Darwin");
 #elif defined (SOLARIS)
-      value = "Solaris";
+      value = Variant ("Solaris");
 #elif defined (CYGWIN)
-      value = "Cygwin";
+      value = Variant ("Cygwin");
 #elif defined (HAIKU)
-      value = "Haiku";
+      value = Variant ("Haiku");
 #elif defined (OPENBSD)
-      value = "OpenBSD";
+      value = Variant ("OpenBSD");
 #elif defined (FREEBSD)
-      value = "FreeBSD";
+      value = Variant ("FreeBSD");
 #elif defined (NETBSD)
-      value = "NetBSD";
+      value = Variant ("NetBSD");
 #elif defined (LINUX)
-      value = "Linux";
+      value = Variant ("Linux");
 #elif defined (KFREEBSD)
-      value = "GNU/kFreeBSD";
+      value = Variant ("GNU/kFreeBSD");
 #elif defined (GNUHURD)
-      value = "GNU/Hurd";
+      value = Variant ("GNU/Hurd");
 #else
-      value = STRING_DOM_UNKNOWN;
+      value = Variant (STRING_DOM_UNKNOWN);
 #endif
       return true;
     }
@@ -218,18 +220,18 @@ bool DOM::get (const std::string& name, std::string& value)
 //   annotations.<N>.entry.second
 //   annotations.<N>.description
 //
-bool DOM::get (const std::string& name, const Task& task, std::string& value)
+bool DOM::get (const std::string& name, const Task& task, Variant& value)
 {
   // <attr>
   if (task.size () && name == "id")
   {
-    value = format (task.id);
+    value = Variant (task.id);
     return true;
   }
 
   if (task.size () && name == "urgency")
   {
-    value = format (task.urgency_c ());
+    value = Variant (task.urgency_c ());
     return true;
   }
 
@@ -242,7 +244,7 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
     std::string canonical;
     if (task.size () && context.parser.canonicalize (canonical, "attribute", name))
     {
-      value = task.get (canonical);
+      value = Variant (task.get (canonical));
       return true;
     }
   }
@@ -283,12 +285,12 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
     {
       if (elements[1] == "id")
       {
-        value = format (ref.id);
+        value = Variant (ref.id);
         return true;
       }
       else if (elements[1] == "urgency")
       {
-        value = format (ref.urgency_c ());
+        value = Variant (ref.urgency_c ());
         return true;
       }
 
@@ -297,7 +299,7 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
       {
         if (elements.size () == 2)
         {
-          value = ref.get (canonical);
+          value = Variant (ref.get (canonical));
           return true;
         }
         else if (elements.size () == 3)
@@ -305,7 +307,7 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
           // tags.<tag>
           if (canonical == "tags")
           {
-            value = ref.hasTag (elements[2]) ? elements[2] : "";
+            value = Variant (ref.hasTag (elements[2]) ? elements[2] : "");
             return true;
           }
 
@@ -322,15 +324,15 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
             // <date>.minute
             // <date>.second
             Date date (ref.get_date (canonical));
-                 if (elements[2] == "year")    { value = format (date.year ());      return true; }
-            else if (elements[2] == "month")   { value = format (date.month ());     return true; }
-            else if (elements[2] == "day")     { value = format (date.day ());       return true; }
-            else if (elements[2] == "week")    { value = format (date.week ());      return true; }
-            else if (elements[2] == "weekday") { value = format (date.dayOfWeek ()); return true; }
-            else if (elements[2] == "julian")  { value = format (date.dayOfYear ()); return true; }
-            else if (elements[2] == "hour")    { value = format (date.hour ());      return true; }
-            else if (elements[2] == "minute")  { value = format (date.minute ());    return true; }
-            else if (elements[2] == "second")  { value = format (date.second ());    return true; }
+                 if (elements[2] == "year")    { value = Variant (date.year ());      return true; }
+            else if (elements[2] == "month")   { value = Variant (date.month ());     return true; }
+            else if (elements[2] == "day")     { value = Variant (date.day ());       return true; }
+            else if (elements[2] == "week")    { value = Variant (date.week ());      return true; }
+            else if (elements[2] == "weekday") { value = Variant (date.dayOfWeek ()); return true; }
+            else if (elements[2] == "julian")  { value = Variant (date.dayOfYear ()); return true; }
+            else if (elements[2] == "hour")    { value = Variant (date.hour ());      return true; }
+            else if (elements[2] == "minute")  { value = Variant (date.minute ());    return true; }
+            else if (elements[2] == "second")  { value = Variant (date.second ());    return true; }
           }
         }
       }
@@ -354,12 +356,12 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
               {
                 // annotation_1234567890
                 // 0          ^11
-                value = i->first.substr (11);
+                value = Variant ((time_t) strtol (i->first.substr (11).c_str (), NULL, 10), Variant::type_date);
                 return true;
               }
               else if (elements[3] == "description")
               {
-                value = i->second;
+                value = Variant (i->second);
                 return true;
               }
             }
@@ -389,15 +391,15 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
               // <annotations>.<N>.entry.minute
               // <annotations>.<N>.entry.second
               Date date (i->first.substr (11));
-                   if (elements[4] == "year")    { value = format (date.year ());      return true; }
-              else if (elements[4] == "month")   { value = format (date.month ());     return true; }
-              else if (elements[4] == "day")     { value = format (date.day ());       return true; }
-              else if (elements[4] == "week")    { value = format (date.week ());      return true; }
-              else if (elements[4] == "weekday") { value = format (date.dayOfWeek ()); return true; }
-              else if (elements[4] == "julian")  { value = format (date.dayOfYear ()); return true; }
-              else if (elements[4] == "hour")    { value = format (date.hour ());      return true; }
-              else if (elements[4] == "minute")  { value = format (date.minute ());    return true; }
-              else if (elements[4] == "second")  { value = format (date.second ());    return true; }
+                   if (elements[4] == "year")    { value = Variant (date.year ());      return true; }
+              else if (elements[4] == "month")   { value = Variant (date.month ());     return true; }
+              else if (elements[4] == "day")     { value = Variant (date.day ());       return true; }
+              else if (elements[4] == "week")    { value = Variant (date.week ());      return true; }
+              else if (elements[4] == "weekday") { value = Variant (date.dayOfWeek ()); return true; }
+              else if (elements[4] == "julian")  { value = Variant (date.dayOfYear ()); return true; }
+              else if (elements[4] == "hour")    { value = Variant (date.hour ());      return true; }
+              else if (elements[4] == "minute")  { value = Variant (date.minute ());    return true; }
+              else if (elements[4] == "second")  { value = Variant (date.second ());    return true; }
             }
           }
         }
@@ -410,7 +412,7 @@ bool DOM::get (const std::string& name, const Task& task, std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void DOM::set (const std::string& name, const std::string& value)
+void DOM::set (const std::string& name, const Variant& value)
 {
   int len = name.length ();
 
@@ -418,7 +420,7 @@ void DOM::set (const std::string& name, const std::string& value)
   if (len > 3 &&
       name.substr (0, 3) == "rc.")
   {
-    context.config.set (name.substr (3), value);
+    context.config.set (name.substr (3), (std::string) value);
   }
 
   // Unrecognized --> error.

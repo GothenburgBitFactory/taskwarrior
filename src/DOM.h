@@ -28,6 +28,7 @@
 #define INCLUDED_DOM
 
 #include <string>
+#include <Variant.h>
 #include <Task.h>
 #include <time.h>
 
@@ -38,9 +39,9 @@ public:
   ~DOM ();
 
   const std::vector <std::string> get_references () const;
-  bool get (const std::string&, std::string&);
-  bool get (const std::string&, const Task&, std::string&);
-  void set (const std::string&, const std::string&);
+  bool get (const std::string&, Variant&);
+  bool get (const std::string&, const Task&, Variant&);
+  void set (const std::string&, const Variant&);
 
 private:
 };
