@@ -33,27 +33,30 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
-# Create the rc file.
-if (open my $fh, '>', '455.rc')
-{
-  print $fh "data.location=.\n";
-  print $fh "print.empty.columns=no\n";
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
 
+# Create the rc file.
+if (open my $fh, '>', $rc)
+{
+  print $fh "data.location=.\n",
+            "print.empty.columns=no\n";
   close $fh;
 }
 
 # Bug #455 - Text alignment in reports is broken when text contains wide utf8
 #            characters
 
-qx{../src/task rc:455.rc add abc pro:Bar\x{263A} 2>&1};
-qx{../src/task rc:455.rc add def pro:Foo! 2>&1};
+qx{../src/task rc:$rc add abc pro:Bar\x{263A} 2>&1};
+qx{../src/task rc:$rc add def pro:Foo! 2>&1};
 
-my $output = qx{../src/task rc:455.rc ls 2>&1};
+my $output = qx{../src/task rc:$rc ls 2>&1};
 
 # Project + ' ' == 4
-like ($output, qr/\S\s{4}abc/ms, 'bug 455 - correct spacing in utf8 task');
-like ($output, qr/\S\s{4}def/ms, 'bug 455 - correct spacing in non utf8 task');
+like ($output, qr/\S\s{4}abc/ms, "$ut: correct spacing in utf8 task");
+like ($output, qr/\S\s{4}def/ms, "$ut: correct spacing in non utf8 task");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data 455.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
