@@ -851,6 +851,7 @@ void Parser::findAttribute ()
           else if (canonicalize (canonical, "pseudo", name))
           {
             (*i)->unTag ("?");
+            (*i)->removeAllBranches ();
             (*i)->tag ("PSEUDO");
             (*i)->attribute ("name", canonical);
             (*i)->attribute ("raw", value);
@@ -859,6 +860,7 @@ void Parser::findAttribute ()
           else if (canonicalize (canonical, "attribute", name))
           {
             (*i)->unTag ("?");
+            (*i)->removeAllBranches ();
             (*i)->tag ("ATTRIBUTE");
             (*i)->attribute ("name", canonical);
             (*i)->attribute ("raw", value);
