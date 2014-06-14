@@ -43,6 +43,7 @@ public:
 
   Tree* addBranch (Tree*);
   void removeBranch (Tree*);
+  void removeAllBranches ();
   void replaceBranch (Tree*, Tree*);
 
   void attribute (const std::string&, const std::string&);

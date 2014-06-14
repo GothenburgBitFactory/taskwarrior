@@ -92,6 +92,19 @@ void Tree::removeBranch (Tree* branch)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Tree::removeAllBranches ()
+{
+  for (std::vector <Tree*>::iterator i = _branches.begin ();
+       i != _branches.end ();
+       ++i)
+  {
+    delete *i;
+  }
+
+  _branches.clear ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Tree::replaceBranch (Tree* from, Tree* to)
 {
   for (unsigned int i = 0; i < _branches.size (); ++i)
