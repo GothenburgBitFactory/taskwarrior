@@ -1273,6 +1273,7 @@ void Parser::findUUIDList ()
       if (n.depleted ())
       {
         (*i)->unTag ("?");
+        (*i)->removeAllBranches ();
         (*i)->tag ("UUID");
 
         Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
