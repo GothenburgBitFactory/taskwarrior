@@ -85,6 +85,7 @@ void Tree::removeBranch (Tree* branch)
     if (*i == branch)
     {
       _branches.erase (i);
+      delete branch;
       return;
     }
   }
