@@ -85,6 +85,15 @@ int CmdCustom::execute (std::string& output)
   split (sortOrder, reportSort, ',');
   validateSortColumns (sortOrder);
 
+/*
+  TODO Wow, this addition causes memory errors.
+
+  // Surround the command-line filter with parentheses, to protect it from
+  // the 'and' placed between the report filter and the command line filter.
+  context.parser.captureFirst ("(");
+  context.parser.captureLast (")");
+*/
+
   // Prepend the argument list with those from the report filter.
   std::vector <std::string> filterArgs;
   Lexer::word_split (filterArgs, reportFilter);
