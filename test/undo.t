@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 19;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -44,10 +44,11 @@ if (open my $fh, '>', 'undo.rc')
 # Test the add/done/undo commands.
 my $output = qx{../src/task rc:undo.rc add one 2>&1; ../src/task rc:undo.rc info 1 2>&1};
 ok (-r 'pending.data', 'pending.data created');
+ok (! -r 'completed.data', 'completed.data not created');
 like ($output, qr/Status\s+Pending\n/, 'Pending');
 
 $output = qx{../src/task rc:undo.rc 1 done 2>&1; ../src/task rc:undo.rc info 1 2>&1};
-ok (-r 'completed.data', 'completed.data created');
+ok (! -r 'completed.data', 'completed.data created');
 like ($output, qr/Status\s+Completed\n/, 'Completed');
 
 $output = qx{../src/task rc:undo.rc undo 2>&1; ../src/task rc:undo.rc info 1 2>&1};
