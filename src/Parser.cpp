@@ -258,6 +258,7 @@ void Parser::findBinary ()
   if (_tree->_branches.size () >= 1)
   {
     _tree->_branches[0]->unTag ("?");
+    _tree->_branches[0]->removeAllBranches ();
     _tree->_branches[0]->tag ("BINARY");
     std::string binary = _tree->_branches[0]->attribute ("raw");
     std::string::size_type slash = binary.rfind ('/');
