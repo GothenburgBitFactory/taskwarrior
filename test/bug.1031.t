@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "alias.from=to\n";
@@ -42,20 +46,20 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 1031: -- does not bypass aliasing
-qx{../src/task rc:bug.rc add from 2>&1};
-qx{../src/task rc:bug.rc add from -- to 2>&1};
-qx{../src/task rc:bug.rc add to -- from 2>&1};
+qx{../src/task rc:$rc add from 2>&1};
+qx{../src/task rc:$rc add from -- to 2>&1};
+qx{../src/task rc:$rc add to -- from 2>&1};
 
-my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
-like ($output, qr/Description\s+to$/ms, "'from' --> 'to'");
+my $output = qx{../src/task rc:$rc 1 info 2>&1};
+like ($output, qr/Description\s+to$/ms, "$ut: 'from' --> 'to'");
 
-$output = qx{../src/task rc:bug.rc 2 info 2>&1};
-like ($output, qr/Description\s+to to$/ms, "'from -- to' --> 'to to'");
+$output = qx{../src/task rc:$rc 2 info 2>&1};
+like ($output, qr/Description\s+to to$/ms, "$ut: 'from -- to' --> 'to to'");
 
-$output = qx{../src/task rc:bug.rc 3 info 2>&1};
-like ($output, qr/Description\s+to from$/ms, "'to -- from' --> 'to from'");
+$output = qx{../src/task rc:$rc 3 info 2>&1};
+like ($output, qr/Description\s+to from$/ms, "$ut: 'to -- from' --> 'to from'");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
