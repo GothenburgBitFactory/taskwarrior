@@ -76,10 +76,26 @@ void Parser::initialize (int argc, const char** argv)
   // Create top-level nodes.
   for (int i = 0; i < argc; ++i)
   {
+    std::string raw = argv[i];
     Tree* branch = _tree->addBranch (new Tree (format ("arg{1}", i)));
-    branch->attribute ("raw", argv[i]);
+    branch->attribute ("raw", raw);
     branch->tag ("ORIGINAL");
     branch->tag ("?");
+
+    std::vector <std::pair <std::string, Lexer::Type> > lexemes;
+    Lexer::token_split (lexemes, raw);
+
+    std::vector <std::pair <std::string, Lexer::Type> >::iterator lex;
+    for (lex = lexemes.begin (); lex != lexemes.end (); ++lex)
+    {
+      Tree* sub = branch->addBranch (new Tree ("argSub"));
+      sub->attribute ("raw", lex->first);
+
+      if (lex->second == Lexer::typeOperator)
+        sub->tag ("OP");
+
+      // TODO More types needed.
+    }
   }
 }
 
@@ -166,7 +182,6 @@ Tree* Parser::parse ()
   findMissingOperators ();
 
   validate ();
-
   return _tree;
 }
 
