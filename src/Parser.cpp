@@ -942,6 +942,7 @@ void Parser::findAttributeModifier ()
                 value = "''";
 
               (*i)->unTag ("?");
+              (*i)->removeAllBranches ();
               (*i)->tag ("ATTMOD");
               (*i)->attribute ("name", canonical);
               (*i)->attribute ("raw", value);
