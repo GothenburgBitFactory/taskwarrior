@@ -1165,6 +1165,7 @@ void Parser::findIdSequence ()
       }
 
       (*i)->unTag ("?");
+      (*i)->removeAllBranches ();
       (*i)->tag ("ID");
 
       Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
