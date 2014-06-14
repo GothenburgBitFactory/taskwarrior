@@ -789,6 +789,7 @@ void Parser::findTag ()
         tag.find (' ') == std::string::npos)
     {
       (*i)->unTag ("?");
+      (*i)->removeAllBranches ();
       (*i)->tag ("TAG");
       (*i)->attribute ("sign", sign);
       (*i)->attribute ("tag", tag);
