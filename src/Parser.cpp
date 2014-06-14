@@ -753,6 +753,7 @@ void Parser::findSubstitution ()
           !Directory (raw).exists ())
       {
         (*i)->unTag ("?");
+        (*i)->removeAllBranches ();
         (*i)->tag ("SUBSTITUTION");
         (*i)->attribute ("from", from);
         (*i)->attribute ("to", to);
