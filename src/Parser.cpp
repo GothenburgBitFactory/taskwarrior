@@ -704,6 +704,7 @@ void Parser::findPattern ()
         pattern.length () > 0)
     {
       (*i)->unTag ("?");
+      (*i)->removeAllBranches ();
       (*i)->tag ("PATTERN");
 
       Tree* branch = (*i)->addBranch (new Tree ("argPat"));
