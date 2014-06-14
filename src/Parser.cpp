@@ -293,12 +293,14 @@ void Parser::findTerminator ()
         (*i)->attribute ("raw") == "--")
     {
       (*i)->unTag ("?");
+      (*i)->removeAllBranches ();
       (*i)->tag ("TERMINATOR");
       found = true;
     }
     else if (found)
     {
       (*i)->unTag ("?");
+      (*i)->removeAllBranches ();
       (*i)->tag ("WORD");
       (*i)->tag ("TERMINATED");
     }
