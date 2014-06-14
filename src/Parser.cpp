@@ -1341,6 +1341,7 @@ void Parser::findOperator ()
       if (*opt == raw)
       {
         (*i)->unTag ("?");
+        (*i)->removeAllBranches ();
         (*i)->tag ("OP");
         break;
       }
