@@ -334,6 +334,7 @@ void Parser::findCommand ()
     if (canonicalize (command, "cmd", (*i)->attribute ("raw")))
     {
       (*i)->unTag ("?");
+      (*i)->removeAllBranches ();
       (*i)->tag ("CMD");
       (*i)->attribute ("canonical", command);
 
