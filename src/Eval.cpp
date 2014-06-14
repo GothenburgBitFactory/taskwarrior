@@ -71,7 +71,8 @@ static struct
 
   {  "=",         9,         'b',  'l' },    // Equal (partial)
   {  "==",        9,         'b',  'l' },    // Equal (exact)
-  {  "!=",        9,         'b',  'l' },    // Inequal
+  {  "!=",        9,         'b',  'l' },    // Inequal (partial)
+  {  "!==",       9,         'b',  'l' },    // Inequal (exact)
 
   {  "~",         8,         'b',  'l' },    // Regex match
   {  "!~",        8,         'b',  'l' },    // Regex non-match
@@ -278,8 +279,9 @@ void Eval::evaluatePostfixStack (
       else if (token->first == ">")        left = left > right;
       else if (token->first == ">=")       left = left >= right;
       else if (token->first == "==")       left = left.operator== (right);
+      else if (token->first == "!==")      left = left.operator!= (right);
       else if (token->first == "=")        left = left.operator_partial (right);
-      else if (token->first == "!=")       left = left.operator!= (right);
+      else if (token->first == "!=")       left = left.operator_nopartial (right);
       else if (token->first == "+")        left += right;
       else if (token->first == "-")        left -= right;
       else if (token->first == "*")        left *= right;
