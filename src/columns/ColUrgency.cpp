@@ -36,7 +36,7 @@ extern Context context;
 ColumnUrgency::ColumnUrgency ()
 {
   _name  = "urgency";
-  _type  = "number";
+  _type  = "numeric";
   _style = "real";
   _label = STRING_COLUMN_LABEL_URGENCY;
 
