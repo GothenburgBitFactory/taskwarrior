@@ -2031,26 +2031,10 @@ void Task::modify (modType type, bool text_required /* = false */)
           }
 
           // Special case: type duration.
-          // Durations too.
           else if (name == "recur" ||
                    column->type () == "duration")
           {
-            // TODO Store the raw value, for 'recur', else result.
-/*
-            Eval e;
-            e.addSource (domSource);
-            e.addSource (namedDates);
-            e.ambiguity (false);
-            contextTask = *this;
-
-            Variant v;
-            e.evaluateInfixExpression (value, v);
-            context.debug (label + name + " <-- " + v.get_string () + " <-- " + value);
-
-            v.cast (Variant::type_duration);
-            v.cast (Variant::type_string);
-            set (name, v);
-*/
+            // Store the raw value, for 'recur', else result.
             set (name, value);
             ++modCount;
           }
