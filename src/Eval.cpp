@@ -363,10 +363,10 @@ void Eval::evaluatePostfixStack (
     }
   }
 
-  // Should only be one value left on the stack.
+  // If there is more than one variant left on the stack, then the original
+  // expression was not valid.
   if (values.size () != 1)
-    if (_debug)
-      std::cout << "# Error: Unexpected stack size: " << values.size () << "\n";
+    throw std::string ("The expression could not be evaluated.");
 
   result = values[0];
 }
