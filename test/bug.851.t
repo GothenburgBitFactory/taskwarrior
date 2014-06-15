@@ -33,29 +33,33 @@ use Test::More tests => 6;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Bug 851: Filtering by due dates with ordinal and d/wks/etc. doesn't work
-qx{../src/task rc:bug.rc add yesterday due:-2days 2>&1};
-qx{../src/task rc:bug.rc add tomorrow due:2days 2>&1};
-my $output = qx{../src/task rc:bug.rc ls 2>&1};
-like ($output, qr/yesterday/, "yesterday - task added");
-like ($output, qr/tomorrow/, "tomorrow - task added");
+qx{../src/task rc:$rc add yesterday due:-2days 2>&1};
+qx{../src/task rc:$rc add tomorrow due:2days 2>&1};
+my $output = qx{../src/task rc:$rc ls 2>&1};
+like ($output, qr/yesterday/, "$ut: yesterday - task added");
+like ($output, qr/tomorrow/, "$ut: tomorrow - task added");
 
-$output = qx{../src/task rc:bug.rc list due.before:1d 2>&1};
-like ($output, qr/yesterday/, "yesterday - found before:1d");
-unlike ($output, qr/tomorrow/, "tomorrow - not found before:1d");
+$output = qx{../src/task rc:$rc list due.before:now+1d 2>&1};
+like ($output, qr/yesterday/, "$ut: yesterday - found before:1d");
+unlike ($output, qr/tomorrow/, "$ut: tomorrow - not found before:1d");
 
-$output = qx{../src/task rc:bug.rc list due.after:1d 2>&1};
-unlike ($output, qr/yesterday/, "yesterday - not found after:1d");
-like ($output, qr/tomorrow/, "tomorrow - found after:1d");
+$output = qx{../src/task rc:$rc list due.after:now+1d 2>&1};
+unlike ($output, qr/yesterday/, "$ut: yesterday - not found after:1d");
+like ($output, qr/tomorrow/, "$ut: tomorrow - found after:1d");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
