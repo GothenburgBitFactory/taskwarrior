@@ -2054,59 +2054,55 @@ void Task::modify (modType type, bool text_required /* = false */)
 
             v.cast (Variant::type_real);
             v.cast (Variant::type_string);
+
             set (name, v);
             ++modCount;
           }
 
-          // Try to use modify method, otherwise just continue to the final option.
-          else if (column->can_modify ())
+          // String type columns may eval, or may not make sense to eval, and
+          // the best way to determine this is to try.
+          else if (column->type () == "string")
           {
-            Eval e;
-            e.addSource (domSource);
-            e.addSource (namedDates);
-            e.ambiguity (false);
-            contextTask = *this;
-
-            Variant v;
-            e.evaluateInfixExpression (value, v);
-            v.cast (Variant::type_string);
-            std::string value2 = v.get_string ();
-
-            // column->modify () contains the logic for the specific column
-            // and returns the appropriate value for (*this).set ()
-            if (column->validate (value2))
+            std::string evaluated = value;
+            try
             {
-              std::string col_value = column->modify (value);
-              context.debug (label + name + " <-- " + col_value + " <-- " + value2 + " <-- " + value);
-              (*this).set (name, col_value);
-              ++modCount;
-            }
-            else
-              throw format (STRING_INVALID_MOD, name, value);
-          }
-          else
-          {
-            Eval e;
-            e.addSource (domSource);
-            e.addSource (namedDates);
-            e.ambiguity (false);
-            contextTask = *this;
+              Eval e;
+              e.addSource (domSource);
+              e.addSource (namedDates);
+              e.ambiguity (false);
+              contextTask = *this;
 
-            Variant v;
-            e.evaluateInfixExpression (value, v);
-            v.cast (Variant::type_string);
-            std::string value2 = v.get_string ();
+              Variant v;
+              e.evaluateInfixExpression (value, v);
+              v.cast (Variant::type_string);
+              evaluated = v.get_string ();
+            }
+
+            catch (...) { /* NOP */ }
 
             // Final default action
-            if (column->validate (value2))
+            if (column->validate (evaluated))
             {
-              context.debug (label + name + " <-- " + value2 + " <-- " + value);
-              (*this).set (name, value2);
+              if (column->can_modify ())
+              {
+                std::string col_value = column->modify (evaluated);
+                context.debug (label + name + " <-- " + col_value + " <-- " + evaluated + " <-- " + value);
+                (*this).set (name, col_value);
+              }
+              else
+              {
+                context.debug (label + name + " <-- " + evaluated + " <-- " + value);
+                (*this).set (name, evaluated);
+              }
+
               ++modCount;
             }
             else
               throw format (STRING_INVALID_MOD, name, value);
           }
+
+          else
+            throw format ("Unrecognized column type '{1}' for column '{2}'", column->type (), name);
 
           // Warn about deprecated/obsolete attribute usage.
           legacyAttributeCheck (name);
