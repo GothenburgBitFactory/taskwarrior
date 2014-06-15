@@ -296,7 +296,8 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "eom" || name == "eocm")
   {
-    t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_min = t->tm_sec = 0;
+    t->tm_hour = 24;
     t->tm_mday = daysInMonth (t->tm_year + 1900, t->tm_mon + 1);
     t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
