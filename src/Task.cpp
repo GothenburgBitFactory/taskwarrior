@@ -2052,6 +2052,11 @@ void Task::modify (modType type, bool text_required /* = false */)
             e.evaluateInfixExpression (value, v);
             context.debug (label + name + " <-- " + v.get_string () + " <-- " + value);
 
+            // If the result is not readily convertible to a numeric value,
+            // then this is an error.
+            if (v.type () == Variant::type_string)
+              throw format (STRING_UDA_NUMERIC, v.get_string ());
+
             v.cast (Variant::type_real);
             v.cast (Variant::type_string);
 
