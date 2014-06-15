@@ -33,32 +33,36 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'uda.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n",
             "uda.extra.type=numeric\n",
             "uda.extra.label=Extra\n",
-            "report.uda.description=UDA Test\n",
-            "report.uda.columns=id,extra,description\n",
-            "report.uda.sort=extra,description\n",
-            "report.uda.labels=ID,Extra,Description\n";
+            "report.uuu.description=UDA Test\n",
+            "report.uuu.columns=id,extra,description\n",
+            "report.uuu.sort=extra,description\n",
+            "report.uuu.labels=ID,Extra,Description\n";
   close $fh;
 }
 
 # Add tasks with and without the UDA.
-qx{../src/task rc:uda.rc add with extra:123 2>&1};
-qx{../src/task rc:uda.rc add without 2>&1};
-my $output = qx{../src/task rc:uda.rc uda 2>&1};
-like ($output, qr/1\s+\d+\s+with/, 'UDA numeric stored');
-like ($output, qr/2\s+without/,    'UDA numeric blank');
+qx{../src/task rc:$rc add with extra:123 2>&1};
+qx{../src/task rc:$rc add without 2>&1};
+my $output = qx{../src/task rc:$rc uuu 2>&1};
+like ($output, qr/1\s+\d+\s+with/, "$ut: UDA numeric stored");
+like ($output, qr/2\s+without/,    "$ut: UDA numeric blank");
 
 # Add bad data.
-$output = qx{../src/task rc:uda.rc add bad extra:unrecognized_numeric 2>&1};
-unlike ($output, qr/Created task \d+/, 'UDA numeric bad data not accepted');
+$output = qx{../src/task rc:$rc add bad extra:unrecognized_numeric 2>&1};
+unlike ($output, qr/Created task \d+/, "$ut: UDA numeric bad data not accepted");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data uda.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
