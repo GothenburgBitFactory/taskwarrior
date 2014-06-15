@@ -245,21 +245,12 @@ bool namedDates (const std::string& name, Variant& value)
     value = Variant (mktime (t), Variant::type_date);
   }
 
-  else if (name == "soy")
+  else if (name == "soy" || name == "eoy")
   {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mon = 0;
     t->tm_mday = 1;
     t->tm_year++;
-    t->tm_isdst = -1;
-    value = Variant (mktime (t), Variant::type_date);
-  }
-
-  else if (name == "eoy")
-  {
-    t->tm_hour = t->tm_min = t->tm_sec = 0;
-    t->tm_mon = 11;
-    t->tm_mday = 31;
     t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
