@@ -1448,11 +1448,6 @@ void Parser::findPlainArgs ()
         branch->attribute ("raw", raw);
         branch->tag ("STRING");
       }
-      else
-      {
-        std::cout << "# ::findPlainArgs '" << raw << "' is compounded\n";
-        // TODO Add the lexed elements as separate tokens.
-      }
     }
   }
 }
