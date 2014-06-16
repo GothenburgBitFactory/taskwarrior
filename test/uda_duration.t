@@ -33,8 +33,12 @@ use Test::More tests => 4;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'uda.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n",
@@ -48,21 +52,21 @@ if (open my $fh, '>', 'uda.rc')
 }
 
 # Add tasks with and without the UDA.
-qx{../src/task rc:uda.rc add with extra:1day 2>&1};
-qx{../src/task rc:uda.rc add without 2>&1};
-my $output = qx{../src/task rc:uda.rc uda 2>&1};
-like ($output, qr/1\s+1d\s+with/,  'UDA duration stored');
-like ($output, qr/2\s+without/, 'UDA duration blank');
+qx{../src/task rc:$rc add with extra:1day 2>&1};
+qx{../src/task rc:$rc add without 2>&1};
+my $output = qx{../src/task rc:$rc uda 2>&1};
+like ($output, qr/1\s+1d\s+with/, "$ut: UDA duration stored");
+like ($output, qr/2\s+without/,   "$ut: UDA duration blank");
 
-# Ensure 'extra' is stored as seconds.
-$output = qx{../src/task rc:uda.rc 1 export 2>&1};
-like ($output, qr/"extra":"86400"/, 'UDA duration stored in seconds');
+# Ensure 'extra' is stored in original form.
+$output = qx{../src/task rc:$rc 1 export 2>&1};
+like ($output, qr/"extra":"1day"/, "$ut: UDA duration stored as is");
 
 # Add bad data.
-$output = qx{../src/task rc:uda.rc add bad extra:unrecognized_duration 2>&1};
-unlike ($output, qr/Created task \d+/, 'UDA duration bad data not accepted');
+$output = qx{../src/task rc:$rc add bad extra:unrecognized_duration 2>&1};
+unlike ($output, qr/Created task \d+/, "$ut: UDA duration bad data not accepted");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data uda.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
