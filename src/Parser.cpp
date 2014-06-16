@@ -1410,6 +1410,7 @@ void Parser::findModifications ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("MODIFICATION");
+      (*i)->removeAllBranches ();
     }
   }
 }
