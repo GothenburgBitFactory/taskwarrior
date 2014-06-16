@@ -694,10 +694,15 @@ bool Variant::operator>= (const Variant& other) const
   case type_string:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
-    case type_boolean:  right.cast (type_string);  return left._string   >= right._string;
-    case type_integer:  right.cast (type_string);  return left._string   >= right._string;
-    case type_real:     right.cast (type_string);  return left._string   >= right._string;
+    case type_unknown:
+      throw std::string ("Cannot compare unknown type");
+
+    case type_boolean:
+    case type_integer:
+    case type_real:
+      right.cast (type_string);
+      return left._string >= right._string;
+
     case type_string:
       if (left.source () == "priority" || right.source () == "priority")
       {
@@ -709,36 +714,65 @@ bool Variant::operator>= (const Variant& other) const
       }
       else
       {
+        if (left.trivial () || right.trivial ())
+          return false;
+
         return left._string >= right._string;
       }
-    case type_date:     left.cast (type_date);     return left._date     >= right._date;
-    case type_duration: left.cast (type_duration); return left._duration >= right._duration;
+
+    case type_date:
+      if (left.trivial () || right.trivial ())
+        return false;
+
+      left.cast (type_date);
+      return left._date >= right._date;
+
+    case type_duration:
+      if (left.trivial () || right.trivial ())
+        return false;
+
+      left.cast (type_duration);
+      return left._duration >= right._duration;
     }
     break;
 
   case type_date:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
-    case type_boolean:  right.cast (type_date);    return left._date >= right._date;
-    case type_integer:  right.cast (type_date);    return left._date >= right._date;
-    case type_real:     right.cast (type_date);    return left._date >= right._date;
-    case type_string:   right.cast (type_date);    return left._date >= right._date;
-    case type_date:                                return left._date >= right._date;
-    case type_duration:                            return left._date >= right._duration;
+    case type_unknown:
+      throw std::string ("Cannot compare unknown type");
+
+    case type_boolean:
+    case type_integer:
+    case type_real:
+    case type_string:
+    case type_date:
+    case type_duration:
+      if (left.trivial () || right.trivial ())
+        return false;
+
+      right.cast (type_date);
+      return left._date >= right._date;
     }
     break;
 
   case type_duration:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
-    case type_boolean:  right.cast (type_duration); return left._duration >= right._duration;
-    case type_integer:  right.cast (type_duration); return left._duration >= right._duration;
-    case type_real:     right.cast (type_duration); return left._duration >= right._duration;
-    case type_string:   right.cast (type_duration); return left._duration >= right._duration;
-    case type_date:                                 return left._duration >= right._date;
-    case type_duration:                             return left._duration >= right._duration;
+    case type_unknown:
+      throw std::string ("Cannot compare unknown type");
+
+    case type_boolean:
+    case type_integer:
+    case type_real:
+    case type_string:
+    case type_date:
+    case type_duration:
+      if (left.trivial () || right.trivial ())
+        return false;
+
+      right.cast (type_duration);
+      return left._duration >= right._duration;
     }
     break;
   }
