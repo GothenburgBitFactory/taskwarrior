@@ -1525,21 +1525,31 @@ Variant& Variant::operator/= (const Variant& other)
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot divide unknown type");
-    case type_boolean:  throw std::string ("Cannot divide integer by Boolean");
+    case type_unknown:
+      throw std::string ("Cannot divide unknown type");
+
+    case type_boolean:
+      throw std::string ("Cannot divide integer by Boolean");
+
     case type_integer:
       if (right._integer == 0)
         throw std::string ("Divide by zero");
       _integer /= right._integer;
       break;
+
     case type_real:
       if (right._real == 0.0)
         throw std::string ("Divide by zero");
       cast (type_real);
       _real /= right._real;
       break;
-    case type_string:   throw std::string ("Cannot divide integer by string");
-    case type_date:     throw std::string ("Cannot divide integer by date values");
+
+    case type_string:
+      throw std::string ("Cannot divide integer by string");
+
+    case type_date:
+      throw std::string ("Cannot divide integer by date values");
+
     case type_duration:
       if (right._duration == 0)
         throw std::string ("Divide by zero");
@@ -1552,20 +1562,30 @@ Variant& Variant::operator/= (const Variant& other)
   case type_real:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot divide unknown type");
-    case type_boolean:  throw std::string ("Cannot divide real by Boolean");
+    case type_unknown:
+      throw std::string ("Cannot divide unknown type");
+
+    case type_boolean:
+      throw std::string ("Cannot divide real by Boolean");
+
     case type_integer:
       if (right._integer == 0)
         throw std::string ("Divide by zero");
       _real /= static_cast<double>(right._integer);
       break;
+
     case type_real:
       if (right._real == 0)
         throw std::string ("Divide by zero");
       _real /= right._real;
       break;
-    case type_string:   throw std::string ("Cannot divide real numbers by strings");
-    case type_date:     throw std::string ("Cannot divide real numbers by dates");
+
+    case type_string:
+      throw std::string ("Cannot divide real numbers by strings");
+
+    case type_date:
+      throw std::string ("Cannot divide real numbers by dates");
+
     case type_duration:
       if (right._duration == 0)
         throw std::string ("Divide by zero");
@@ -1585,21 +1605,32 @@ Variant& Variant::operator/= (const Variant& other)
   case type_duration:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot divide unknown type");
-    case type_boolean:  throw std::string ("Cannot divide duration by Boolean");
+    case type_unknown:
+      throw std::string ("Cannot divide unknown type");
+
+    case type_boolean:
+      throw std::string ("Cannot divide duration by Boolean");
+
     case type_integer:
       if (right._integer == 0)
         throw std::string ("Divide by zero");
       _duration /= right._integer;
       break;
+
     case type_real:
       if (right._real == 0)
         throw std::string ("Divide by zero");
       _duration = (time_t) (unsigned) (int) (static_cast<double>(_duration) / right._real);
       break;
-    case type_string:   throw std::string ("Cannot divide durations by strings");
-    case type_date:     throw std::string ("Cannot divide durations by dates");
-    case type_duration: throw std::string ("Cannot divide durations by durations");
+
+    case type_string:
+      throw std::string ("Cannot divide durations by strings");
+
+    case type_date:
+      throw std::string ("Cannot divide durations by dates");
+
+    case type_duration:
+      throw std::string ("Cannot divide durations by durations");
     }
     break;
   }
