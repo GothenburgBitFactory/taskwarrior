@@ -47,9 +47,6 @@ extern Context context;
 // Overridden by rc.abbreviation.minimum.
 static int minimumMatchLength = 3;
 
-// Alias expansion limit.  Any more indicates some kind of error.
-const int safetyValveDefault = 10;
-
 ////////////////////////////////////////////////////////////////////////////////
 Parser::Parser ()
 {
