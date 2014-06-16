@@ -1217,13 +1217,20 @@ Variant& Variant::operator-= (const Variant& other)
   case type_real:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot subtract unknown type");
-    case type_boolean:  right.cast (type_real); _real -= right._real;     break;
-    case type_integer:  right.cast (type_real); _real -= right._real;     break;
-    case type_real:                             _real -= right._real;     break;
-    case type_string:   throw std::string ("Cannot subtract strings");
-    case type_date:     right.cast (type_real); _real -= right._real;     break;
-    case type_duration: right.cast (type_real); _real -= right._real;     break;
+    case type_unknown:
+      throw std::string ("Cannot subtract unknown type");
+
+    case type_string:
+      throw std::string ("Cannot subtract strings");
+
+    case type_boolean:
+    case type_integer:
+    case type_real:
+    case type_date:
+    case type_duration:
+      right.cast (type_real);
+      _real -= right._real;
+      break;
     }
     break;
 
