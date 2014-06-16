@@ -189,14 +189,31 @@ bool namedDates (const std::string& name, Variant& value)
     value = Variant (now, Variant::type_date);
   }
 
-  else if (name == "today" || name == "sod")
+  else if (name == "today")
   {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
 
-  else if (name == "tomorrow" || name == "eod")
+  else if (name == "sod")
+  {
+    t->tm_mday++;
+    t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_isdst = -1;
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
+  else if (name == "eod")
+  {
+    t->tm_mday++;
+    t->tm_hour = t->tm_min = 0;
+    t->tm_sec = -1;
+    t->tm_isdst = -1;
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
+  else if (name == "tomorrow")
   {
     t->tm_mday++;
     t->tm_hour = t->tm_min = t->tm_sec = 0;
@@ -245,7 +262,18 @@ bool namedDates (const std::string& name, Variant& value)
     value = Variant (mktime (t), Variant::type_date);
   }
 
-  else if (name == "soy" || name == "eoy")
+  else if (name == "eoy")
+  {
+    t->tm_hour = t->tm_min = 0;
+    t->tm_sec = -1;
+    t->tm_mon = 0;
+    t->tm_mday = 1;
+    t->tm_year++;
+    t->tm_isdst = -1;
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
+  else if (name == "soy")
   {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mon = 0;
@@ -255,7 +283,23 @@ bool namedDates (const std::string& name, Variant& value)
     value = Variant (mktime (t), Variant::type_date);
   }
 
-  else if (name == "soq" || name == "eoq")
+  else if (name == "eoq")
+  {
+    t->tm_hour = t->tm_min = 0;
+    t->tm_sec = -1;
+    t->tm_mon += 3 - (t->tm_mon % 3);
+    if (t->tm_mon > 11)
+    {
+      t->tm_mon -= 12;
+      ++t->tm_year;
+    }
+
+    t->tm_mday = 1;
+    t->tm_isdst = -1;
+    value = Variant (mktime (t), Variant::type_date);
+  }
+
+  else if (name == "soq")
   {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_mon += 3 - (t->tm_mon % 3);
@@ -296,8 +340,9 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "eom" || name == "eocm")
   {
-    t->tm_min = t->tm_sec = 0;
     t->tm_hour = 24;
+    t->tm_min = 0;
+    t->tm_sec = -1;
     t->tm_mday = daysInMonth (t->tm_year + 1900, t->tm_mon + 1);
     t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
@@ -311,7 +356,16 @@ bool namedDates (const std::string& name, Variant& value)
     value = Variant (mktime (t) - extra, Variant::type_date);
   }
 
-  else if (name == "sow" || name == "eow" || name == "eocw")
+  else if (name == "eow" || name == "eocw")
+  {
+    t->tm_hour = t->tm_min = 0;
+    t->tm_sec = -1;
+    int extra = (7 - t->tm_wday) * 86400;
+    t->tm_isdst = -1;
+    value = Variant (mktime (t) + extra, Variant::type_date);
+  }
+
+  else if (name == "sow")
   {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     int extra = (7 - t->tm_wday) * 86400;
@@ -332,7 +386,9 @@ bool namedDates (const std::string& name, Variant& value)
 
   else if (name == "eoww")
   {
-    t->tm_hour = t->tm_min = t->tm_sec = 0;
+    t->tm_hour = 24;
+    t->tm_min = 0;
+    t->tm_sec = -1;
     int extra = (5 - t->tm_wday) * 86400;
     if (extra < 0)
       extra += 7 * 86400;
