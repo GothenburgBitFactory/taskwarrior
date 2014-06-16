@@ -95,6 +95,7 @@ public:
 
   void cast (const enum type);
   int type ();
+  bool trivial () const;
 
   bool        get_bool () const;
   int         get_integer () const;
