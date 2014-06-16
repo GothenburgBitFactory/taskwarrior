@@ -1434,12 +1434,22 @@ Variant& Variant::operator*= (const Variant& other)
   case type_real:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot multiply unknown type");
-    case type_boolean:  right.cast (type_real); _real *= right._real; break;
-    case type_integer:  right.cast (type_real); _real *= right._real; break;
-    case type_real:                             _real *= right._real; break;
-    case type_string:   throw std::string ("Cannot multiply real numbers by strings");
-    case type_date:     throw std::string ("Cannot multiply real numbers by dates");
+    case type_unknown:
+      throw std::string ("Cannot multiply unknown type");
+
+    case type_boolean:
+    case type_integer:
+    case type_real:
+      right.cast (type_real);
+      _real *= right._real;
+      break;
+
+    case type_string:
+      throw std::string ("Cannot multiply real numbers by strings");
+
+    case type_date:
+      throw std::string ("Cannot multiply real numbers by dates");
+
     case type_duration:
       _type = type_duration;
       _duration = (time_t) (unsigned) (int) (_real * static_cast<double>(right._duration));
