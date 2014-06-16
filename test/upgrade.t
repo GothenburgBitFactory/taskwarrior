@@ -44,17 +44,17 @@ if (open my $fh, '>', 'upgrade.rc')
 # Add a plain task, then upgrade to recurring, test for correctness.
 qx{../src/task rc:upgrade.rc add one 2>&1};
 my $output = qx{../src/task rc:upgrade.rc 1 info 2>&1};
-like ($output, qr/Status\s+Pending/,    'Plain task entered');
+like ($output, qr/Status\s+Pending/,   'Plain task entered');
 
 qx{../src/task rc:upgrade.rc 1 modify due:tomorrow recur:weekly 2>&1};
 qx{../src/task rc:upgrade.rc list 2>&1};
 $output = qx{../src/task rc:upgrade.rc 1 info 2>&1};
-like ($output, qr/Status\s+Recurring/,  'Upgraded parent: good status');
-like ($output, qr/Recurrence\s+P7D/, 'Upgraded parent: good recurrence');
+like ($output, qr/Status\s+Recurring/, 'Upgraded parent: good status');
+like ($output, qr/Recurrence\s+weekly/,   'Upgraded parent: good recurrence');
 
 $output = qx{../src/task rc:upgrade.rc 2 info 2>&1};
-like ($output, qr/Status\s+Pending/,    'Upgraded child: good status');
-like ($output, qr/Recurrence\s+P7D/, 'Upgraded child: good recurrence');
+like ($output, qr/Status\s+Pending/,   'Upgraded child: good status');
+like ($output, qr/Recurrence\s+weekly/,   'Upgraded child: good recurrence');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data upgrade.rc);
