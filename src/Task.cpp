@@ -2034,25 +2034,22 @@ void Task::modify (modType type, bool text_required /* = false */)
           {
             // The duration is stored in raw form, but it must still be valid,
             // and therefore is parsed first.
-            try
+            Eval e;
+            e.addSource (domSource);
+            e.addSource (namedDates);
+            e.ambiguity (false);
+            contextTask = *this;
+
+            Variant v;
+            e.evaluateInfixExpression (value, v);
+            if (v.type () == Variant::type_duration)
             {
-              Eval e;
-              e.addSource (domSource);
-              e.addSource (namedDates);
-              e.ambiguity (false);
-              contextTask = *this;
-
-              Variant v;
-              e.evaluateInfixExpression (value, v);
-              if (v.type () == Variant::type_duration)
-              {
-                // Store the raw value, for 'recur'.
-                set (name, value);
-                ++modCount;
-              }
+              // Store the raw value, for 'recur'.
+              set (name, value);
+              ++modCount;
             }
-
-            catch (...) { /* NOP */ }
+            else
+              throw format ("The duration value '{1}' is not supported.", value);
           }
 
           // Need handling for numeric types, used by UDAs.
