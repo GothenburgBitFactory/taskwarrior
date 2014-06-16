@@ -2032,9 +2032,27 @@ void Task::modify (modType type, bool text_required /* = false */)
           else if (name == "recur" ||
                    column->type () == "duration")
           {
-            // Store the raw value, for 'recur', else result.
-            set (name, value);
-            ++modCount;
+            // The duration is stored in raw form, but it must still be valid,
+            // and therefore is parsed first.
+            try
+            {
+              Eval e;
+              e.addSource (domSource);
+              e.addSource (namedDates);
+              e.ambiguity (false);
+              contextTask = *this;
+
+              Variant v;
+              e.evaluateInfixExpression (value, v);
+              if (v.type () == Variant::type_duration)
+              {
+                // Store the raw value, for 'recur'.
+                set (name, value);
+                ++modCount;
+              }
+            }
+
+            catch (...) { /* NOP */ }
           }
 
           // Need handling for numeric types, used by UDAs.
