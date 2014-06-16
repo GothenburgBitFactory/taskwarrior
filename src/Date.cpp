@@ -553,8 +553,8 @@ int Date::length (const std::string& format)
     case 'A':
     case 'B': total += 10; break;
 
-    // TODO This should be a calculated character width, not necessarily 1.
-    default:  total += 1; break;
+    // Calculate the width, don't assume a single character width.
+    default:  total += mk_wcwidth (*i); break;
     }
   }
 
