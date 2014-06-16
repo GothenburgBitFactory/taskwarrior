@@ -462,10 +462,9 @@ bool Task::is_dueweek () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      Date now;
       Date due (get_date ("due"));
-      if (now.year () == due.year () &&
-          now.week () == due.week ())
+      if (due >= Date ("socw") &&
+          due <= Date ("eocw"))
         return true;
     }
   }
@@ -483,10 +482,9 @@ bool Task::is_duemonth () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      Date now;
       Date due (get_date ("due"));
-      if (now.year () == due.year () &&
-          now.month () == due.month ())
+      if (due >= Date ("socm") &&
+          due <= Date ("eocm"))
         return true;
     }
   }
