@@ -1316,15 +1316,26 @@ Variant& Variant::operator+= (const Variant& other)
   case type_real:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot add unknown type");
-    case type_boolean:  right.cast (type_real); _real += right._real;     break;
-    case type_integer:  right.cast (type_real); _real += right._real;     break;
-    case type_real:                             _real += right._real;     break;
-    case type_string:   cast (type_string);     _string += right._string; break;
+    case type_unknown:
+      throw std::string ("Cannot add unknown type");
+
+    case type_boolean:
+    case type_integer:
+    case type_real:
+      right.cast (type_real);
+      _real += right._real;
+      break;
+
+    case type_string:
+      cast (type_string);
+      _string += right._string;
+      break;
+
     case type_date:
       _type = type_date;
       _date = (unsigned) (int) _real + right._date;
       break;
+
     case type_duration:
       _type = type_duration;
       _duration = (unsigned) (int) _real + right._duration;
