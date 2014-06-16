@@ -80,9 +80,6 @@ qx{../src/task rc:$rc 4 annotate note 2>&1};
 qx{../src/task rc:$rc add blocked depends:1 2>&1};
 qx{../src/task rc:$rc add due_eom due:eom 2>&1};
 qx{../src/task rc:$rc add due_eow due:eow 2>&1};
-diag ('---');
-diag (qx{../src/task rc:$rc all 2>&1});
-diag ('---');
 
 $output = qx{../src/task rc:$rc +COMPLETED all};
 like ($output, qr/completed/, "$ut: +COMPLETED");
