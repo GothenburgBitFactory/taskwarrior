@@ -1664,43 +1664,65 @@ Variant& Variant::operator%= (const Variant& other)
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot modulo unknown type");
-    case type_boolean:  throw std::string ("Cannot modulo integer by Boolean");
+    case type_unknown:
+      throw std::string ("Cannot modulo unknown type");
+
+    case type_boolean:
+      throw std::string ("Cannot modulo integer by Boolean");
+
     case type_integer:
       if (right._integer == 0)
         throw std::string ("Modulo zero");
       _integer %= right._integer;
       break;
+
     case type_real:
       if (right._real == 0.0)
         throw std::string ("Modulo zero");
       cast (type_real);
       _real = fmod (_real, right._real);
       break;
-    case type_string:   throw std::string ("Cannot modulo integer by string");
-    case type_date:     throw std::string ("Cannot modulo integer by date values");
-    case type_duration: throw std::string ("Cannot modulo integer by duration values");
+
+    case type_string:
+      throw std::string ("Cannot modulo integer by string");
+
+    case type_date:
+      throw std::string ("Cannot modulo integer by date values");
+
+    case type_duration:
+      throw std::string ("Cannot modulo integer by duration values");
     }
     break;
 
   case type_real:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot modulo unknown type");
-    case type_boolean:  throw std::string ("Cannot modulo real by Boolean");
+    case type_unknown:
+      throw std::string ("Cannot modulo unknown type");
+
+    case type_boolean:
+      throw std::string ("Cannot modulo real by Boolean");
+
     case type_integer:
       if (right._integer == 0)
         throw std::string ("Modulo zero");
       _real = fmod (_real, static_cast<double>(right._integer));
       break;
+
     case type_real:
       if (right._real == 0)
         throw std::string ("Modulo zero");
       _real = fmod (_real, right._real);
       break;
-    case type_string:   throw std::string ("Cannot modulo real numbers by strings");
-    case type_date:     throw std::string ("Cannot modulo real numbers by dates");
-    case type_duration: throw std::string ("Cannot modulo real by duration values");
+
+    case type_string:
+      throw std::string ("Cannot modulo real numbers by strings");
+
+    case type_date:
+      throw std::string ("Cannot modulo real numbers by dates");
+
+    case type_duration:
+      throw std::string ("Cannot modulo real by duration values");
     }
     break;
 
