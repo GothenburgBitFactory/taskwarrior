@@ -43,7 +43,7 @@ if (open my $fh, '>', 'utf8.rc')
 # Add a task with UTF8 in the description.
 qx{../src/task rc:utf8.rc add Çirçös 2>&1};
 qx{../src/task rc:utf8.rc add Hello world ☺ 2>&1};
-qx{../src/task rc:utf8.rc add ¥£€\$¢₡₢₣₤₥₦₧₨₩₪₫₭₮₯ 2>&1};
+qx{../src/task rc:utf8.rc add ¥£€¢₡₢₣₤₥₦₧₨₩₪₫₭₮₯  2>&1};
 qx{../src/task rc:utf8.rc add Pchnąć w tę łódź jeża lub ośm skrzyń fig 2>&1};
 qx{../src/task rc:utf8.rc add ๏ เป็นมนุษย์สุดประเสริฐเลิศคุณค่า 2>&1};
 qx{../src/task rc:utf8.rc add イロハニホヘト チリヌルヲ ワカヨタレソ ツネナラムイ ロハニホヘト チリヌルヲ ワカヨタレソ ツネナラム 2>&1};
