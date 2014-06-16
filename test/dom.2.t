@@ -110,7 +110,7 @@ qx{../src/task rc:$rc 3 annotate note 2>&1};
 ok ($? == 0, "$ut: add annotation");
 
 $output = qx{../src/task rc:$rc _get 3.annotations.1.entry 2>&1};
-like ($output, qr/^\d+$/, "$ut: <id>.annotations.1.entry");
+like ($output, qr/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/, "$ut: <id>.annotations.1.entry");
 
 $output = qx{../src/task rc:$rc _get 3.annotations.1.description 2>&1};
 like ($output, qr/^note$/, "$ut: <id>.annotations.1.description");
