@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (209);
+  UnitTest t (208);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -365,9 +365,6 @@ int main (int argc, char** argv)
     Date first ("1st");
     t.notok (first.sameMonth (now), "1st not in same month as now");
     t.is (first.day (),   1, "1st day is 1");
-
-    Date FIRST ("1ST");
-    t.ok (FIRST == first, "1st == 1ST");
 
     Date later ("later");
     t.is (later.month (),   1, "later -> m = 1");
