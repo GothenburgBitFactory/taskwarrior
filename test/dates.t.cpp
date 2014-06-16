@@ -145,8 +145,8 @@ int main (int argc, char** argv)
   Variant var_false;    testInit (t, "false", var_false);
 
   t.ok (now >= today,          "now >= today");
-  t.ok (sod == today,          "sod == today");
-  t.ok (sod < eod,             "sod < eod");
+  t.ok (sod == tomorrow,       "sod == tomorrow");
+  t.ok (sod > eod,             "sod > eod");
   t.ok (yesterday < today,     "yesterday < today");
   t.ok (today < tomorrow,      "today < tomorrow");
   t.ok (socm < eocm,           "socm < eocm");
