@@ -296,11 +296,25 @@ bool Variant::operator< (const Variant& other) const
       }
       else
       {
+        if (left.trivial () || right.trivial ())
+          return false;
+
         return left._string < right._string;
       }
 
-    case type_date:     left.cast (type_date);     return left._date     < right._date;
-    case type_duration: left.cast (type_duration); return left._duration < right._duration;
+    case type_date:
+      if (left.trivial () || right.trivial ())
+        return false;
+
+      left.cast (type_date);
+      return left._date < right._date;
+
+    case type_duration:
+      if (left.trivial () || right.trivial ())
+        return false;
+
+      left.cast (type_duration);
+      return left._duration < right._duration;
     }
     break;
 
@@ -316,10 +330,10 @@ bool Variant::operator< (const Variant& other) const
     case type_string:
     case type_date:
     case type_duration:
-      right.cast (type_date);
-      if (left._date == 0 || right._date == 0)
+      if (left.trivial () || right.trivial ())
         return false;
 
+      right.cast (type_date);
       return left._date < right._date;
     }
     break;
@@ -336,10 +350,10 @@ bool Variant::operator< (const Variant& other) const
     case type_string:
     case type_date:
     case type_duration:
-      right.cast (type_duration);
-      if (left._duration == 0 || right._duration == 0)
+      if (left.trivial () || right.trivial ())
         return false;
 
+      right.cast (type_duration);
       return left._duration < right._duration;
     }
     break;
