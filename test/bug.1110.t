@@ -33,23 +33,28 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
-  print $fh "data.location=.\n";
+  print $fh "data.location=.\n",
+            "confirmation=off\n";
   close $fh;
 }
 
 # Bug 1110: reports print "Completed" but "Completed" != "completed"
-qx{../src/task rc:bug.rc add ToBeCompleted 2>&1};
-qx{../src/task rc:bug.rc 1 done 2>&1};
+qx{../src/task rc:$rc add ToBeCompleted 2>&1};
+qx{../src/task rc:$rc 1 done 2>&1};
 
-my $output = qx{../src/task all status:Completed rc:bug.rc 2>&1};
-like ($output, qr/ToBeCompleted/, 'status:Completed returns completed tasks');
+my $output = qx{../src/task all status:Completed rc:$rc 2>&1};
+like ($output, qr/ToBeCompleted/, "$ut: status:Completed returns completed tasks");
 
-$output = qx{../src/task all status:completed rc:bug.rc 2>&1};
-like ($output, qr/ToBeCompleted/, 'status:completed returns completed tasks');
+$output = qx{../src/task all status:completed rc:$rc 2>&1};
+like ($output, qr/ToBeCompleted/, "$ut: status:completed returns completed tasks");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
