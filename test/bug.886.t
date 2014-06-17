@@ -33,21 +33,25 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Bug 886: tw doesn't warn the user if, e.g., a weekday cannot be resolved properly
-my $output = qx{../src/task rc:bug.rc add one due:sund 2>&1};
-like ($output, qr/Created task 1\./, 'sund --> valid date');
+my $output = qx{../src/task rc:$rc add one due:sun 2>&1};
+like ($output, qr/Created task 1\./, "$ut: sun --> valid date");
 
-$output = qx{../src/task rc:bug.rc add two due:donkey 2>&1 >/dev/null};
-like ($output, qr/was not recognized/, 'donkey --> invalid date');
+$output = qx{../src/task rc:$rc add two due:donkey 2>&1};
+like ($output, qr/is not a valid date/, "$ut: donkey --> is not a valid date");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
