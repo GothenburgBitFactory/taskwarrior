@@ -840,10 +840,13 @@ bool Variant::operator== (const Variant& other) const
     case type_boolean:
     case type_integer:
     case type_real:
-      right.cast (type_string);
-      return left._string == right._string;
-
     case type_string:
+      right.cast (type_string);
+
+      // Status is always compared caseless.
+      if (left.source () == "status")
+        return compare (left._string, right._string, false);
+
       return left._string == right._string;
 
     case type_date:
