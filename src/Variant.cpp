@@ -1022,26 +1022,28 @@ bool Variant::operator_partial (const Variant& other) const
     case type_integer:
     case type_real:
     case type_string:
-      if (left.trivial () || right.trivial ())
-        return false;
+      {
+        right.cast (type_string);
+        int left_len  = left._string.length ();
+        int right_len = right._string.length ();
 
-      right.cast (type_string);
-      if (left._string.length () < right._string.length ())
-        return false;
+        if ((left_len == 0 && right_len != 0) ||
+            (left_len != 0 && right_len == 0))
+          return false;
 
-      return left._string.substr (0, right._string.length ()) == right._string;
+        // Dodgy.
+        if (left._string.length () < right._string.length ())
+          return false;
+
+        return left._string.substr (0, right._string.length ()) == right._string;
+      }
 
     // TODO Implement same-day comparison.
     case type_date:
-      if (left.trivial () || right.trivial ())
-        return false;
-
       left.cast (type_date);
       return left._date == right._date;
 
     case type_duration:
-      if (left.trivial () || right.trivial ())
-        return false;
 
       left.cast (type_duration);
       return left._duration == right._duration;
@@ -1061,9 +1063,6 @@ bool Variant::operator_partial (const Variant& other) const
     case type_string:
     case type_date:
     case type_duration:
-      if (left.trivial () || right.trivial ())
-        return false;
-
       right.cast (type_date);
       return left._date == right._date;
     }
@@ -1082,9 +1081,6 @@ bool Variant::operator_partial (const Variant& other) const
     case type_string:
     case type_date:
     case type_duration:
-      if (left.trivial () || right.trivial ())
-        return false;
-
       right.cast (type_duration);
       return left._duration == right._duration;
     }
