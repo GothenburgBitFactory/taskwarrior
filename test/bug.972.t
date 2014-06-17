@@ -33,20 +33,24 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
-            "recurrence.limit=1\n";
+            "confirmation=off\n";
   close $fh;
 }
 
 # Bug 972: A recurrence period of "7" is interpreted as "7s", not "7d" as
 # intended.
-my $output = qx{../src/task rc:bug.rc add foo due:now recur:2 2>&1};
-like ($output, qr/ not recognized as valid, /, 'recur:2 is not valid');
+my $output = qx{../src/task rc:$rc add foo due:now recur:2 2>&1};
+like ($output, qr/The duration value '2' is not supported./, "$ut: recur:2 is not valid");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
