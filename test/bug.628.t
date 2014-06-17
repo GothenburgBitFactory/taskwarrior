@@ -33,11 +33,15 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
-            "confirmation=no\n",
+            "confirmation=off\n",
             "dateformat=a b D Y\n";
   close $fh;
 }
@@ -45,13 +49,13 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 628: task wait: with non-standard dateformat bug
 
 # Setup: Add a task
-qx{../src/task rc:bug.rc add wait:"Wed Jan 01 2030" A buggy task 2>&1};
+qx{../src/task rc:$rc add wait:"Wed Jan 01 2030" A buggy task 2>&1};
 
 # Result: Immediately delete the created task
-my $output = qx{../src/task rc:bug.rc waiting 2>&1};
-like   ($output, qr/Jan 01 2020/ms, 'a b D Y dateformat correctly parsed.');
+my $output = qx{../src/task rc:$rc waiting 2>&1};
+like ($output, qr/Jan 01 2020/ms, "$ut: a b D Y dateformat correctly parsed.");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
