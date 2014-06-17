@@ -33,8 +33,12 @@ use Test::More tests => 6;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
@@ -43,22 +47,22 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 856: "task list project.none:" does not work.
 # Note: Not using "assigned" and "unassigned" because one is a subset of the
 # other.
-qx{../src/task rc:bug.rc add assigned project:X 2>&1};
-qx{../src/task rc:bug.rc add floating 2>&1};
+qx{../src/task rc:$rc add assigned project:X 2>&1};
+qx{../src/task rc:$rc add floating 2>&1};
 
-my $output = qx{../src/task rc:bug.rc ls project: 2>&1};
-like   ($output, qr/floating/, 'project:  matches floating');
-unlike ($output, qr/assigned/, 'project:  does not match assigned');
+my $output = qx{../src/task rc:$rc ls project: 2>&1};
+like   ($output, qr/floating/, "$ut: project:  matches floating");
+unlike ($output, qr/assigned/, "$ut: project:  does not match assigned");
 
-$output = qx{../src/task rc:bug.rc ls project:'' 2>&1};
-like   ($output, qr/floating/, 'project:\'\'  matches floating');
-unlike ($output, qr/assigned/, 'project:\'\'  does not match assigned');
+$output = qx{../src/task rc:$rc ls project:'' 2>&1};
+like   ($output, qr/floating/, "$ut: project:\'\'  matches floating");
+unlike ($output, qr/assigned/, "$ut: project:\'\'  does not match assigned");
 
-$output = qx{../src/task rc:bug.rc ls project.none: 2>&1};
-like   ($output, qr/floating/, 'project.none:  matches floating');
-unlike ($output, qr/assigned/, 'project.none:  does not match assigned');
+$output = qx{../src/task rc:$rc ls project.none: 2>&1};
+like   ($output, qr/floating/, "$ut: project.none:  matches floating");
+unlike ($output, qr/assigned/, "$ut: project.none:  does not match assigned");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
