@@ -65,6 +65,7 @@ public:
 
   static const std::string type_name (const Type&);
   static bool is_ws (int);
+  static bool boundary (int, int);
   static void word_split (std::vector <std::string>&, const std::string&);
   static void token_split (std::vector <std::string>&, const std::string&);
   static void token_split (std::vector <std::pair <std::string, Lexer::Type> >&, const std::string&);
@@ -93,6 +94,9 @@ private:
   int _n1;
   int _n2;
   int _n3;
+  bool _boundary01;
+  bool _boundary12;
+  bool _boundary23;
   bool _ambiguity;
 };
 

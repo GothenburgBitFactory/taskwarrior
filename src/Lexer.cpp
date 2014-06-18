@@ -24,6 +24,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <ctype.h>
 #include <utf8.h>
 #include <ISO8601.h>
 #include <Date.h>
@@ -41,6 +42,9 @@ Lexer::Lexer (const std::string& input)
 , _n1 (32)
 , _n2 (32)
 , _n3 (32)
+, _boundary01 (false)
+, _boundary12 (false)
+, _boundary23 (false)
 , _ambiguity (true)
 {
   // Read 4 chars in preparation.  Even if there are < 4.  Take a deep breath.
@@ -637,6 +641,20 @@ bool Lexer::is_ws (int c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Lexer::boundary (int left, int right)
+{
+  // XOR
+  if (!isdigit (left) != !isdigit (right)) return true;
+  if (!isalpha (left) != !isalpha (right)) return true;
+  if (!isspace (left) != !isspace (right)) return true;
+
+  // OR
+  if (ispunct (left)  || ispunct (right))  return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Split 'input' into 'words' on Lexer::is_ws boundaries, observing quotes.
 void Lexer::word_split (std::vector <std::string>& words, const std::string& input)
 {
@@ -814,6 +832,11 @@ void Lexer::shift ()
   _n2 = _n3;
   _n3 = utf8_next_char (_input, _i);
   ++_shift_counter;
+
+  // Detect type boundaries between characters.
+  _boundary01 = boundary (_n0, _n1);
+  _boundary12 = boundary (_n1, _n2);
+  _boundary23 = boundary (_n2, _n3);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
