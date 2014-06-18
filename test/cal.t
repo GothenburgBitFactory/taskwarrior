@@ -186,7 +186,8 @@ if (open my $fh, '>', 'details.rc')
             "holiday.BBBBBB.name=BBBBBB\n",
             "holiday.BBBBBB.date=20150115\n",
             "holiday.åäö.name=åäö\n",
-            "holiday.åäö.date=20150125\n";
+            "holiday.åäö.date=20150125\n",
+            "verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync\n";
   close $fh;
 }
 
