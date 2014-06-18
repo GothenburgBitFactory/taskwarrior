@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (196);
+  UnitTest t (203);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -70,6 +70,15 @@ int main (int argc, char** argv)
   t.ok (Lexer::is_ws (0x202F), "U+202F is_ws");
   t.ok (Lexer::is_ws (0x205F), "U+205F is_ws");
   t.ok (Lexer::is_ws (0x3000), "U+3000 is_ws");
+
+  // static bool Lexer::boundary(int, int);
+  t.ok    (Lexer::boundary (' ', 'a'), "' ' --> 'a' = boundary");
+  t.ok    (Lexer::boundary ('a', ' '), "'a' --> ' ' = boundary");
+  t.ok    (Lexer::boundary (' ', '+'), "' ' --> '+' = boundary");
+  t.ok    (Lexer::boundary (' ', ','), "' ' --> ',' = boundary");
+  t.notok (Lexer::boundary ('3', '4'), "'3' --> '4' = boundary");
+  t.ok    (Lexer::boundary ('(', '('), "'(' --> '(' = boundary");
+  t.notok (Lexer::boundary ('r', 'd'), "'r' --> 'd' = boundary");
 
   // Should result in no tokens.
   Lexer l0 ("");
