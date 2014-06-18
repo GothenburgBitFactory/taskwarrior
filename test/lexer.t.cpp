@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (194);
+  UnitTest t (196);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -342,7 +342,7 @@ int main (int argc, char** argv)
   // Test common expression element.
   unsplit = "name=value";
   Lexer::token_split (items, unsplit);
-  t.is (items.size (), (size_t) 3, "split 'name=value'");
+  t.is (items.size (), (size_t) 3, "token_split 'name=value'");
   if (items.size () == 3)
   {
     t.is (items[0], "name",          "token_split 'name=value' -> [0] 'name'");
@@ -355,6 +355,12 @@ int main (int argc, char** argv)
     t.fail ("token_split 'name=value' -> [1] '='");
     t.fail ("token_split 'name=value' -> [2] 'value'");
   }
+
+  // Test unterminated tokens.
+  unsplit = " ordinary ";
+  Lexer::token_split (items, unsplit);
+  t.is (items.size (), (size_t) 1, "token_split 'ordinary' --> 1 token");
+  t.is (items[0], "ordinary",      "token_split 'ordinary' --> 'ordinary'");
 
   return 0;
 }
