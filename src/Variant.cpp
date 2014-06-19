@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <iostream> // TODO Remove.
 #include <sstream>
 #include <stdio.h>
 #include <math.h>
@@ -54,16 +55,15 @@ Variant::Variant ()
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant (const Variant& other)
-: _type (type_unknown)
-, _bool (false)
-, _integer (0)
-, _real (0.0)
-, _string ("")
-, _date (0)
-, _duration (0)
-, _source ("")
+: _type (other._type)
+, _bool (other._bool)
+, _integer (other._integer)
+, _real (other._real)
+, _string (other._string)
+, _date (other._date)
+, _duration (other._duration)
+, _source (other._source)
 {
-  *this = other;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
