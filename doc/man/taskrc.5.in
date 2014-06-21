@@ -967,7 +967,9 @@ Colors the output of the sync command.
 .RE
 
 .TP
-.B rule.precedence.color=due.today,active,blocking,blocked,overdue,due,scheduled,keyword.,project.,tag.,uda.,recurring,pri.,tagged,completed,deleted
+.B rule.precedence.color=due.today,active,blocking,blocked,overdue,due,
+.B                       scheduled,keyword.,project.,tag.,uda.,recurring,
+.B                       pri.,tagged,completed,deleted
 .RS
 This setting specifies the precedence of the color rules, from highest to
 lowest.  Note that the prefix 'color.' is omitted (for brevity), and that any
