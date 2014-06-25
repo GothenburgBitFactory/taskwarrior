@@ -245,8 +245,20 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
     std::string canonical;
     if (task.size () && context.parser.canonicalize (canonical, "attribute", name))
     {
-      value = Variant (task.get (canonical));
-      return true;
+      Column* column = context.columns[canonical];
+      if (column)
+      {
+        if (column->type () == "date")
+          value = Variant (task.get_date (canonical), Variant::type_date);
+        else if (column->type () == "duration")
+          value = Variant ((time_t) Duration (task.get (canonical)), Variant::type_duration);
+        else if (column->type () == "numeric")
+          value = Variant (task.get_float (canonical));
+        else
+          value = Variant (task.get (canonical));
+
+        return true;
+      }
     }
   }
   else if (elements.size () > 1)
@@ -301,14 +313,19 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
         if (elements.size () == 2)
         {
           Column* column = context.columns[canonical];
-          if (column && column->type () == "date")
-            value = Variant (ref.get_date (canonical), Variant::type_date);
-          else if (column && column->type () == "duration")
-            value = Variant ((time_t) Duration (ref.get (canonical)), Variant::type_duration);
-          else
-            value = Variant (ref.get (canonical));
+          if (column)
+          {
+            if (column->type () == "date")
+              value = Variant (ref.get_date (canonical), Variant::type_date);
+            else if (column->type () == "duration")
+              value = Variant ((time_t) Duration (ref.get (canonical)), Variant::type_duration);
+            else if (column->type () == "numeric")
+              value = Variant (ref.get_float (canonical));
+            else
+              value = Variant (ref.get (canonical));
 
-          return true;
+            return true;
+          }
         }
         else if (elements.size () == 3)
         {
