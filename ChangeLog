@@ -24,6 +24,7 @@
 - TW-28 Inserts spaces before punctuation characters (thanks to Matt Kraai).
 - TW-72 extend info report with urgency column
 - TW-115 allow "0day" durations for UDAs.
+- TW-186 Increase for numerical UDAs (thanks to Steffen Uhlig).
 - TW-197 New virtual tag READY.
 - TW-218 Reveal terms of urgency calculation for a given task (thanks to Max
          Muller).
