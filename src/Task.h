@@ -100,6 +100,7 @@ public:
   const std::string& get_ref (const std::string&) const;
   int get_int (const std::string&) const;
   unsigned long get_ulong (const std::string&) const;
+  float get_float (const std::string&) const;
   time_t get_date (const std::string&) const;
   void set (const std::string&, const std::string&);
   void set (const std::string&, int);

@@ -280,6 +280,16 @@ unsigned long Task::get_ulong (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+float Task::get_float (const std::string& name) const
+{
+  Task::const_iterator i = this->find (name);
+  if (i != this->end ())
+    return strtof (i->second.c_str (), NULL);
+
+  return 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 time_t Task::get_date (const std::string& name) const
 {
   Task::const_iterator i = this->find (name);
