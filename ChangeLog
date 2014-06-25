@@ -86,6 +86,8 @@
 - TW-1307 burndown is aliased to burndown.weekly (thanks to darkfeline).
 - TW-1309 memory error, if misconfigured calendar.details.report (thanks to
           Onion).
+- TW-1316 Some filter expressions require space before closing paren (thanks to
+          Will Dietz).
 - TW-1318 creating a UDA in the wrong sequence will cripple taskwarrior (thanks
           to Onion).
 - TW-1320 Provide output of malformed row if invalid Taskwarrior file format
