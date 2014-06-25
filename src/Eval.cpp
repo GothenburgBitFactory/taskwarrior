@@ -175,7 +175,11 @@ void Eval::compileExpression (const std::string& e)
   std::string token;
   Lexer::Type type;
   while (l.token (token, type))
+  {
+    if (_debug)
+      std::cout << "# evaluateInfixExpression token '" << token << "' " << Lexer::type_name (type) << "\n";
     _compiled.push_back (std::pair <std::string, Lexer::Type> (token, type));
+  }
 
   // Parse for syntax checking and operator replacement.
   if (_debug)
@@ -242,6 +246,12 @@ void Eval::evaluatePostfixStack (
     {
       Variant right = values.back ();
       values.pop_back ();
+      if (_debug)
+      {
+        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
+        std::cout << "# [" << values.size () << "] eval result push '" << (bool) !right << "' " << Lexer::type_name (token->second) << "\n";
+      }
       values.push_back (! right);
     }
     else if (token->second == Lexer::typeOperator &&
@@ -249,25 +259,39 @@ void Eval::evaluatePostfixStack (
     {
       Variant right = values.back ();
       values.pop_back ();
+      if (_debug)
+      {
+        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
+        std::cout << "# [" << values.size () << "] eval result push '" << (bool) !right << "' " << Lexer::type_name (token->second) << "\n";
+      }
       values.push_back (Variant (0) - right);
     }
     else if (token->second == Lexer::typeOperator &&
              token->first == "_pos_")
     {
       // NOP?
+      if (_debug)
+      {
+        std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
+      }
     }
 
     // Binary operators.
     else if (token->second == Lexer::typeOperator)
     {
-      if (_debug)
-        std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
-
       Variant right = values.back ();
       values.pop_back ();
 
       Variant left = values.back ();
       values.pop_back ();
+
+      if (_debug)
+      {
+        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) left << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
+      }
 
       // Ordering these by anticipation frequency of use is a good idea.
            if (token->first == "and")      left = left && right;
@@ -296,6 +320,8 @@ void Eval::evaluatePostfixStack (
       else
         std::cout << "# Unrecognized operator '" << token->first << "'\n";
 
+      if (_debug)
+        std::cout << "# [" << values.size () << "] eval result push '" << (std::string) left << "' " << Lexer::type_name (token->second) << "\n";
       values.push_back (left);
     }
 
@@ -315,7 +341,8 @@ void Eval::evaluatePostfixStack (
         break;
 
       case Lexer::typeOperator:
-        std::cout << "# Error: operator unexpected.\n";
+        if (_debug)
+          std::cout << "# Error: operator unexpected.\n";
         break;
 
       case Lexer::typeIdentifier:
@@ -357,9 +384,9 @@ void Eval::evaluatePostfixStack (
         break;
       }
 
-      values.push_back (v);
       if (_debug)
         std::cout << "# [" << values.size () << "] eval push '" << (std::string) v << "' " << Lexer::type_name (token->second) << "\n";
+      values.push_back (v);
     }
   }
 
