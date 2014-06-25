@@ -285,7 +285,6 @@ std::string Config::_defaults =
   "default.command=next                           # When no arguments are specified\n"
   "\n"
   "_forcecolor=no                                 # Forces color to be on, even for non TTY output\n"
-  "complete.all.projects=no                       # Include old project names in '_projects' command\n"
   "complete.all.tags=no                           # Include old tag names in '_ags' command\n"
   "list.all.projects=no                           # Include old project names in 'projects' command\n"
   "list.all.tags=no                               # Include old tag names in 'tags' command\n"

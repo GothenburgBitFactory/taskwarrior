@@ -314,12 +314,6 @@ You have more urgent tasks.  It is a gentle reminder that you are contradicting
 your own priority settings.
 
 .TP
-.B complete.all.projects=yes
-May be yes or no, and determines whether the tab completion scripts consider all
-the project names you have used, or just the ones used in active tasks.  The
-default value is "no".
-
-.TP
 .B list.all.projects=yes
 May be yes or no, and determines whether the 'projects' command lists all the project
 names you have used, or just the ones used in active tasks.  The default value is

@@ -122,7 +122,6 @@ int CmdShow::execute (std::string& output)
     " color.undo.after"
     " color.undo.before"
     " column.padding"
-    " complete.all.projects"
     " complete.all.tags"
     " confirmation"
     " data.location"

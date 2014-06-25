@@ -42,6 +42,7 @@ Removed features in 2.4.0
   - Removed the obsolete 'tasksh.1' man page.
   - Removed the 'tasksh' program from the Taskwarrior distribution. It is now
     a separate project.
+  - Removed the 'complete.all.projects' setting that was not used.
 
 Known Issues
 

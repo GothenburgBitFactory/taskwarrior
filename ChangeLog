@@ -45,6 +45,8 @@
 - TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
          Weber)
 - TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
+- TW-266 Allow project auto-completion to search completed tasks (thanks to
+         Kosta Harlan).
 - TW-271 Parser still looks for task id even when -- is used (thanks to Jim B).
 - TW-277 Complex filters can skip infix term expansion.
 - TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
