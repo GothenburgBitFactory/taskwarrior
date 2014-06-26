@@ -1439,22 +1439,26 @@ void Parser::findPlainArgs ()
       std::string raw = (*i)->attribute ("raw");
       std::vector <std::string> lexed;
       Lexer::token_split (lexed, raw);
-
       if (lexed.size () == 1)
       {
-        // This tag also prevents further expanѕion.
-        (*i)->tag ("PATTERN");
+        // Furthermore, the word must not canonicalize to an attribute name.
+        std::string canonical;
+        if (! canonicalize (canonical, "attribute", raw))
+        {
+          // This tag also prevents further expanѕion.
+          (*i)->tag ("PATTERN");
 
-        Tree* branch = (*i)->addBranch (new Tree ("argPat"));
-        branch->attribute ("raw", "description");
+          Tree* branch = (*i)->addBranch (new Tree ("argPat"));
+          branch->attribute ("raw", "description");
 
-        branch = (*i)->addBranch (new Tree ("argPat"));
-        branch->attribute ("raw", "~");
-        branch->tag ("OP");
+          branch = (*i)->addBranch (new Tree ("argPat"));
+          branch->attribute ("raw", "~");
+          branch->tag ("OP");
 
-        branch = (*i)->addBranch (new Tree ("argPat"));
-        branch->attribute ("raw", raw);
-        branch->tag ("STRING");
+          branch = (*i)->addBranch (new Tree ("argPat"));
+          branch->attribute ("raw", raw);
+          branch->tag ("STRING");
+        }
       }
     }
   }
