@@ -1098,13 +1098,6 @@ void Parser::findAttributeModifier ()
 //   a range:              5-10
 //   or a combination:     1,3,5-10 12
 //
-// If a sequence is followed by a non-number, then subsequent numbers are not
-// interpreted as IDs.  For example:
-//
-//    1 2 three 4
-//
-// The sequence is "1 2".
-//
 void Parser::findIdSequence ()
 {
   std::vector <Tree*>::iterator i;
@@ -1118,119 +1111,136 @@ void Parser::findIdSequence ()
     if (! (*i)->hasTag ("?"))
       continue;
 
-    std::string raw = (*i)->attribute ("raw");
-    Nibbler n (raw);
-
+    // Container for min/max ID ranges.
     std::vector <std::pair <int, int> > ranges;
-    int id;
-    if (n.getUnsignedInt (id))
+
+    // Split the ID list into elements.
+    std::string raw = (*i)->attribute ("raw");
+    std::vector <std::string> elements;
+    split (elements, raw, ',');
+
+    bool not_an_id = false;
+    std::vector <std::string>::iterator e;
+    for (e = elements.begin (); e != elements.end (); ++e)
     {
-      if (n.skip ('-'))
+      // Split the ID range into min/max.
+      std::vector <std::string> terms;
+      split (terms, *e, '-');
+
+      if (terms.size () == 1)
       {
-        int end;
-        if (!n.getUnsignedInt (end))
-          throw std::string (STRING_A3_ID_AFTER_HYPHEN);
+        Nibbler n (terms[0]);
+        int id;
+        if (n.getUnsignedInt (id) &&
+            n.depleted ())
+        {
+          ranges.push_back (std::pair <int, int> (id, id));
+        }
+        else
+        {
+          not_an_id = true;
+          break;
+        }
+      }
+      else if (terms.size () == 2)
+      {
+        Nibbler n_min (terms[0]);
+        Nibbler n_max (terms[1]);
+        int id_min;
+        int id_max;
+        if (n_min.getUnsignedInt (id_min) &&
+            n_min.depleted ()             &&
+            n_max.getUnsignedInt (id_max) &&
+            n_max.depleted ())
+        {
+          if (id_min > id_max)
+            throw std::string (STRING_A3_RANGE_INVERTED);
 
-        if (id > end)
-          throw std::string (STRING_A3_RANGE_INVERTED);
-
-        ranges.push_back (std::pair <int, int> (id, end));
+          ranges.push_back (std::pair <int, int> (id_min, id_max));
+        }
+        else
+        {
+          not_an_id = true;
+          break;
+        }
       }
       else
-        ranges.push_back (std::pair <int, int> (id, id));
-
-      while (n.skip (','))
-      {
-        if (n.getUnsignedInt (id))
-        {
-          if (n.skip ('-'))
-          {
-            int end;
-            if (!n.getUnsignedInt (end))
-              throw std::string (STRING_A3_ID_AFTER_HYPHEN);
-
-            if (id > end)
-              throw std::string (STRING_A3_RANGE_INVERTED);
-
-            ranges.push_back (std::pair <int, int> (id, end));
-          }
-          else
-            ranges.push_back (std::pair <int, int> (id, id));
-        }
-        else
-          throw std::string (STRING_A3_MALFORMED_ID);
-      }
-
-      (*i)->unTag ("?");
-      (*i)->removeAllBranches ();
-      (*i)->tag ("ID");
-
-      Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
-      branch->attribute ("raw", "(");
-      branch->tag ("OP");
-
-      std::vector <std::pair <int, int> >::iterator r;
-      for (r = ranges.begin (); r != ranges.end (); ++r)
-      {
-        if (r != ranges.begin ())
-        {
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "or");
-          branch->tag ("OP");
-        }
-
-        if (r->first == r->second)
-        {
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "id");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "==");
-          branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", r->first);
-        }
-        else
-        {
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "(");
-          branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "id");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", ">=");
-          branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", r->first);
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "and");
-          branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "id");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "<=");
-          branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", r->second);
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", ")");
-          branch->tag ("OP");
-        }
-      }
-
-      branch = (*i)->addBranch (new Tree ("argSeq"));
-      branch->attribute ("raw", ")");
-      branch->tag ("OP");
+        throw std::string (STRING_A3_MALFORMED_ID);
     }
+
+    if (not_an_id)
+      continue;
+
+    // Now convert the ranges into an infix expression.
+    (*i)->unTag ("?");
+    (*i)->removeAllBranches ();
+    (*i)->tag ("ID");
+
+    Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
+    branch->attribute ("raw", "(");
+    branch->tag ("OP");
+
+    std::vector <std::pair <int, int> >::iterator r;
+    for (r = ranges.begin (); r != ranges.end (); ++r)
+    {
+      if (r != ranges.begin ())
+      {
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", "or");
+        branch->tag ("OP");
+      }
+
+      if (r->first == r->second)
+      {
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", "id");
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", "==");
+        branch->tag ("OP");
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", r->first);
+      }
+      else
+      {
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", "(");
+        branch->tag ("OP");
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", "id");
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", ">=");
+        branch->tag ("OP");
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", r->first);
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", "and");
+        branch->tag ("OP");
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", "id");
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", "<=");
+        branch->tag ("OP");
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", r->second);
+
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", ")");
+        branch->tag ("OP");
+      }
+    }
+
+    branch = (*i)->addBranch (new Tree ("argSeq"));
+    branch->attribute ("raw", ")");
+    branch->tag ("OP");
   }
 }
 
