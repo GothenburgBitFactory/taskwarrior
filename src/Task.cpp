@@ -2013,7 +2013,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             // If v is duration, add 'now' to it, else store as date.
             if (v.type () == Variant::type_duration)
             {
-              context.debug (label + name + " <-- " + format ("{1}", v.get_duration ()) + " <-- " + (std::string) v + " <-- " + value);
+              context.debug (label + name + " <-- '" + format ("{1}", v.get_duration ()) + "' <-- '" + (std::string) v + "' <-- '" + value + "'");
               Variant now;
               if (namedDates ("now", now))
                 v += now;
@@ -2021,7 +2021,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             else
             {
               v.cast (Variant::type_date);
-              context.debug (label + name + " <-- " + format ("{1}", v.get_date ()) + " <-- " + (std::string) v + " <-- " + value);
+              context.debug (label + name + " <-- '" + format ("{1}", v.get_date ()) + "' <-- '" + (std::string) v + "' <-- '" + value + "'");
             }
 
             set (name, v.get_date ());
@@ -2063,7 +2063,7 @@ void Task::modify (modType type, bool text_required /* = false */)
 
             Variant v;
             e.evaluateInfixExpression (value, v);
-            context.debug (label + name + " <-- " + v.get_string () + " <-- " + value);
+            context.debug (label + name + " <-- '" + v.get_string () + "' <-- '" + value + "'");
 
             // If the result is not readily convertible to a numeric value,
             // then this is an error.
@@ -2104,12 +2104,12 @@ void Task::modify (modType type, bool text_required /* = false */)
               if (column->can_modify ())
               {
                 std::string col_value = column->modify (evaluated);
-                context.debug (label + name + " <-- " + col_value + " <-- " + evaluated + " <-- " + value);
+                context.debug (label + name + " <-- '" + col_value + "' <-- '" + evaluated + "' <-- '" + value + "'");
                 (*this).set (name, col_value);
               }
               else
               {
-                context.debug (label + name + " <-- " + evaluated + " <-- " + value);
+                context.debug (label + name + " <-- '" + evaluated + "' <-- '" + value + "'");
                 (*this).set (name, evaluated);
               }
 
