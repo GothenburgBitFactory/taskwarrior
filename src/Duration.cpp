@@ -44,48 +44,49 @@ static struct
 {
   std::string unit;
   int seconds;
+  bool standalone;
 } durations[] =
 {
   // These are sorted by first character, then length, so that Nibbler::getOneOf
   // returns a maximal match.
-  {"annual",     365 * DAY},
-  {"biannual",   730 * DAY},
-  {"bimonthly",   61 * DAY},
-  {"biweekly",    14 * DAY},
-  {"biyearly",   730 * DAY},
-  {"daily",        1 * DAY},
-  {"days",         1 * DAY},
-  {"day",          1 * DAY},
-  {"d",            1 * DAY},
-  {"fortnight",   14 * DAY},
-  {"hours",        1 * HOUR},
-  {"hour",         1 * HOUR},
-  {"h",            1 * HOUR},
-  {"minutes",      1 * MINUTE},
-  {"minute",       1 * MINUTE},
-  {"min",          1 * MINUTE},
-  {"monthly",     30 * DAY},
-  {"months",      30 * DAY},
-  {"month",       30 * DAY},
-  {"mo",          30 * DAY},
-  {"quarterly",   91 * DAY},
-  {"quarters",    91 * DAY},
-  {"quarter",     91 * DAY},
-  {"q",           91 * DAY},
-  {"semiannual", 183 * DAY},
-  {"sennight",    14 * DAY},
-  {"seconds",      1 * SECOND},
-  {"second",       1 * SECOND},
-  {"s",            1 * SECOND},
-  {"weekdays",         DAY},
-  {"weekly",       7 * DAY},
-  {"weeks",        7 * DAY},
-  {"week",         7 * DAY},
-  {"w",            7 * DAY},
-  {"yearly",     365 * DAY},
-  {"years",      365 * DAY},
-  {"year",       365 * DAY},
-  {"y",          365 * DAY},
+  {"annual",     365 * DAY,    true},
+  {"biannual",   730 * DAY,    true},
+  {"bimonthly",   61 * DAY,    true},
+  {"biweekly",    14 * DAY,    true},
+  {"biyearly",   730 * DAY,    true},
+  {"daily",        1 * DAY,    true},
+  {"days",         1 * DAY,    false},
+  {"day",          1 * DAY,    false},
+  {"d",            1 * DAY,    false},
+  {"fortnight",   14 * DAY,    true},
+  {"hours",        1 * HOUR,   false},
+  {"hour",         1 * HOUR,   false},
+  {"h",            1 * HOUR,   false},
+  {"minutes",      1 * MINUTE, false},
+  {"minute",       1 * MINUTE, false},
+  {"min",          1 * MINUTE, false},
+  {"monthly",     30 * DAY,    true},
+  {"months",      30 * DAY,    false},
+  {"month",       30 * DAY,    false},
+  {"mo",          30 * DAY,    false},
+  {"quarterly",   91 * DAY,    true},
+  {"quarters",    91 * DAY,    false},
+  {"quarter",     91 * DAY,    false},
+  {"q",           91 * DAY,    false},
+  {"semiannual", 183 * DAY,    true},
+  {"sennight",    14 * DAY,    false},
+  {"seconds",      1 * SECOND, false},
+  {"second",       1 * SECOND, false},
+  {"s",            1 * SECOND, false},
+  {"weekdays",     1 * DAY,    true},
+  {"weekly",       7 * DAY,    true},
+  {"weeks",        7 * DAY,    false},
+  {"week",         7 * DAY,    false},
+  {"w",            7 * DAY,    false},
+  {"yearly",     365 * DAY,    true},
+  {"years",      365 * DAY,    false},
+  {"year",       365 * DAY,    false},
+  {"y",          365 * DAY,    false},
 };
 
 #define NUM_DURATIONS (sizeof (durations) / sizeof (durations[0]))
@@ -295,6 +296,10 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
     if (n.depleted () ||
         Lexer::is_ws (n.next ()))
     {
+      // TODO Determine which unit matched, and therefore whether the unit can
+      //      exist as a standalone unit (with assumed quantity of 1), or
+      //      whether the quantity is required.
+
       start = original_start + n.cursor ();
       double quantity = (number == "")
                           ? 1.0
