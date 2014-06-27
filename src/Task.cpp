@@ -1956,7 +1956,9 @@ void Task::modify (modType type, bool text_required /* = false */)
         // 'value' requires eval.
         std::string name  = (*i)->attribute ("name");
         std::string value = (*i)->attribute ("raw");
-        if (value == "")
+        if (value == ""     ||
+            value == "''"   ||
+            value == "\"\"")
         {
           // Remove attribute if the value is blank.
           (*this).remove (name);
