@@ -79,6 +79,10 @@ void Parser::initialize (int argc, const char** argv)
     branch->tag ("ORIGINAL");
     branch->tag ("?");
 
+    // If the argument contains a space, it was quoted.  Remember that.
+    if (! noSpaces (raw))
+      branch->tag ("QUOTED");
+
     std::vector <std::pair <std::string, Lexer::Type> > lexemes;
     Lexer::token_split (lexemes, raw);
 
