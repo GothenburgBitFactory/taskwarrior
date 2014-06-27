@@ -49,13 +49,13 @@ if (open my $fh, '>', $rc)
 #            characters
 
 qx{../src/task rc:$rc add abc pro:Bar\x{263A} 2>&1};
-qx{../src/task rc:$rc add def pro:Foo! 2>&1};
+qx{../src/task rc:$rc add def pro:Foo 2>&1};
 
 my $output = qx{../src/task rc:$rc ls 2>&1};
 
 # Project + ' ' == 4
 like ($output, qr/\S\s{4}abc/ms, "$ut: correct spacing in utf8 task");
-like ($output, qr/\S\s{4}def/ms, "$ut: correct spacing in non utf8 task");
+like ($output, qr/\S\s{5}def/ms, "$ut: correct spacing in non utf8 task");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
