@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 47;
+use Test::More tests => 41;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -94,7 +94,6 @@ like   ($output, qr/Modified 1 task\./,                             'dependencie
 
 # [16]
 unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
 
 qx{../src/task rc:dep.rc add One 2>&1};
 qx{../src/task rc:dep.rc add Two 2>&1};
@@ -111,7 +110,6 @@ unlike ($output, qr/Modified 1 task\./,                             'dependencie
 
 # [19]
 unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
 
 qx{../src/task rc:dep.rc add One 2>&1};
 qx{../src/task rc:dep.rc add Two 2>&1};
@@ -144,7 +142,6 @@ like ($output, qr/\s1\s+One\s+/, 'dependencies - depends report column reflects 
 
 # [26]
 unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
 
 qx{../src/task rc:dep.rc add One 2>&1};
 qx{../src/task rc:dep.rc add Two 2>&1};
@@ -165,7 +162,6 @@ like ($output, qr/\s1\s+2\s+One\s+/, 'dependencies - depends report column refle
 
 # [29]
 unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
 
 qx{../src/task rc:dep.rc add One 2>&1};
 qx{../src/task rc:dep.rc add Two 2>&1};
@@ -189,7 +185,6 @@ unlike ($output, qr/fixed/, 'dependencies - user not prompted to fix broken chai
 
 # [34]
 unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
 
 qx{../src/task rc:dep.rc add One 2>&1};
 qx{../src/task rc:dep.rc add Two 2>&1};
@@ -219,7 +214,6 @@ like ($output, qr/\s1\s+One\s*\n\s2\s+Four\s*\n\s3\s+2\s+Five/, 'dependencies - 
 
 # [38]
 unlink 'pending.data';
-ok (!-r 'pending.data', 'Removed pending.data for a fresh start');
 
 # Bug when adding a range of dependencies - 'task 3 mod dep:1-2' interprets the
 # range 1-2 as the id 1
@@ -229,11 +223,11 @@ qx{../src/task rc:dep.rc add test2 2>&1};
 qx{../src/task rc:dep.rc add test3 2>&1};
 qx{../src/task rc:dep.rc add test4 2>&1};
 qx{../src/task rc:dep.rc add test5 2>&1};
-$output = qx{../src/task rc:dep.rc 5 info 2>&1};
-my ($uuid) = $output =~ /UUID\s+(\S+)/;
+my $uuid = qx{../src/task rc:dep.rc _get 5.uuid};
+chomp $uuid;
 
-# [39-43] test a comma-separated list of IDs, UUIDs, and ID ranges for creation
-qx{../src/task rc:dep.rc add test6 dep:1-3,4,$uuid 2>&1};
+# [38-42] test a comma-separated list of IDs, UUIDs, and ID ranges for creation
+qx{../src/task rc:dep.rc add test6 dep:1,2,3,4,$uuid 2>&1};
 $output = qx{../src/task rc:dep.rc 6 info 2>&1};
 like ($output, qr/test1/ms, 'Dependency appearing for task1');
 like ($output, qr/test2/ms, 'Dependency appearing for task2');
@@ -241,8 +235,8 @@ like ($output, qr/test3/ms, 'Dependency appearing for task3');
 like ($output, qr/test4/ms, 'Dependency appearing for task4');
 like ($output, qr/test5/ms, 'Dependency appearing for task5');
 
-# [44-48] test a comma-separated list of IDs, UUIDs, and ID ranges for deletion
-qx{../src/task rc:dep.rc 6 mod dep:-1-3,-4,-$uuid 2>&1};
+# [43-47] test a comma-separated list of IDs, UUIDs, and ID ranges for deletion
+qx{../src/task rc:dep.rc 6 mod dep:-1,-2,-3,-4,-$uuid 2>&1};
 $output = qx{../src/task rc:dep.rc 6 info 2>&1};
 unlike ($output, qr/test1/ms, 'Dependency not appearing for task1');
 unlike ($output, qr/test2/ms, 'Dependency not appearing for task2');

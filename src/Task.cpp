@@ -1979,30 +1979,20 @@ void Task::modify (modType type, bool text_required /* = false */)
             std::vector <std::string>::iterator i;
             for (i = deps.begin (); i != deps.end (); i++)
             {
-              bool removal = false;
-              std::string& dep = *i;
-
-              if (dep[0] == '-')
+              if ((*i)[0] == '-')
               {
-                removal = true;
-                dep = i->substr(1, std::string::npos);
-              }
-
-              // Crude UUID check
-              // TODO Support partial UUIDs.
-              // TODO Do not assume that <36 characaters implies integer.
-              std::vector <int> ids;
-              if (dep.length () == 36)
-                ids.push_back (context.tdb2.pending.id (dep));
-              else
-                ids.push_back (strtol ((*i).c_str (), NULL, 10));
-
-              std::vector <int>::iterator id;
-              for (id = ids.begin (); id != ids.end(); id++)
-                if (removal)
-                  removeDependency (*id);
+                if ((*i).length () == 37)
+                  removeDependency (context.tdb2.pending.id ((*i).substr (1)));
                 else
-                  addDependency (*id);
+                  removeDependency (strtol ((*i).substr (1).c_str (), NULL, 10));
+              }
+              else
+              {
+                if ((*i).length () == 36)
+                  addDependency (context.tdb2.pending.id ((*i)));
+                else
+                  addDependency (strtol ((*i).c_str (), NULL, 10));
+              }
             }
 
             ++modCount;
