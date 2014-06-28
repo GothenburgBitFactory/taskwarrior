@@ -248,9 +248,9 @@ void Eval::evaluatePostfixStack (
       values.pop_back ();
       if (_debug)
       {
-        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "'\n";
         std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
-        std::cout << "# [" << values.size () << "] eval result push '" << (bool) !right << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval result push '" << (bool) !right << "'\n";
       }
       values.push_back (! right);
     }
@@ -261,9 +261,9 @@ void Eval::evaluatePostfixStack (
       values.pop_back ();
       if (_debug)
       {
-        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "'\n";
         std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
-        std::cout << "# [" << values.size () << "] eval result push '" << (bool) !right << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval result push '" << (bool) !right << "'\n";
       }
       values.push_back (Variant (0) - right);
     }
@@ -288,8 +288,8 @@ void Eval::evaluatePostfixStack (
 
       if (_debug)
       {
-        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "' " << Lexer::type_name (token->second) << "\n";
-        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) left << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "'\n";
+        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) left  << "'\n";
         std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
       }
 
@@ -321,7 +321,7 @@ void Eval::evaluatePostfixStack (
         std::cout << "# Unrecognized operator '" << token->first << "'\n";
 
       if (_debug)
-        std::cout << "# [" << values.size () << "] eval result push '" << (std::string) left << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval result push '" << (std::string) left << "'\n";
       values.push_back (left);
     }
 
@@ -385,7 +385,7 @@ void Eval::evaluatePostfixStack (
       }
 
       if (_debug)
-        std::cout << "# [" << values.size () << "] eval push '" << (std::string) v << "' " << Lexer::type_name (token->second) << "\n";
+        std::cout << "# [" << values.size () << "] eval push '" << (std::string) v << "'\n";
       values.push_back (v);
     }
   }
