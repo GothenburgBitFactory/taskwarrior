@@ -248,7 +248,7 @@ void Eval::evaluatePostfixStack (
       values.pop_back ();
       if (_debug)
       {
-        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "'\n";
+        std::cout << "# [" << values.size () + 1 << "] eval pop '" << (std::string) right << "'\n";
         std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
         std::cout << "# [" << values.size () << "] eval result push '" << (bool) !right << "'\n";
       }
@@ -261,7 +261,7 @@ void Eval::evaluatePostfixStack (
       values.pop_back ();
       if (_debug)
       {
-        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "'\n";
+        std::cout << "# [" << values.size () + 1 << "] eval pop '" << (std::string) right << "'\n";
         std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
         std::cout << "# [" << values.size () << "] eval result push '" << (bool) !right << "'\n";
       }
@@ -288,8 +288,8 @@ void Eval::evaluatePostfixStack (
 
       if (_debug)
       {
-        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) right << "'\n";
-        std::cout << "# [" << values.size () << "] eval pop '" << (std::string) left  << "'\n";
+        std::cout << "# [" << values.size () + 2 << "] eval pop '" << (std::string) right << "'\n";
+        std::cout << "# [" << values.size () + 1 << "] eval pop '" << (std::string) left  << "'\n";
         std::cout << "# [" << values.size () << "] eval operator '" << token->first << "'\n";
       }
 
