@@ -40,7 +40,11 @@ public:
            Date (time_t);
            Date (const int, const int, const int);
            Date (const int, const int, const int, const int, const int, const int);
-           Date (const std::string&, const std::string& format = "m/d/Y", const bool iso = true, const bool epoch = true, const bool require_depletion = true);
+           Date (const std::string&,
+                 const std::string& format = "m/d/Y",
+                 const bool iso = true,
+                 const bool epoch = true,
+                 const bool require_depletion = true);
            Date (const Date&);
   virtual ~Date ();
 
