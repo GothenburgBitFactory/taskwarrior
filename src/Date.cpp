@@ -129,9 +129,10 @@ Date::Date (const int m,  const int d,  const int y,
 ////////////////////////////////////////////////////////////////////////////////
 Date::Date (
   const std::string& input,
-  const std::string& format /* = "m/d/Y" */,
-  const bool iso            /* = true */,
-  const bool epoch          /* = true */)
+  const std::string& format    /* = "m/d/Y" */,
+  const bool iso               /* = true */,
+  const bool epoch             /* = true */,
+  const bool require_depletion /* = true */)
 {
   // Check first to see if this is supported as a named date.
   Variant v;
@@ -145,13 +146,13 @@ Date::Date (
   Nibbler n (input);
   n.save ();
 #ifdef NIBBLER_FEATURE_DATE
-  if (n.getDate (format, _t) && n.depleted ())
+  if (n.getDate (format, _t) && (!require_depletion || n.depleted ()))
     return;
 #endif
 
   // Parse an ISO date.
   n.restore ();
-  if (iso && n.getDateISO (_t) && n.depleted ())
+  if (iso && n.getDateISO (_t) && (!require_depletion || n.depleted ()))
     return;
 
   // Perhaps it is an epoch date, in string form?
