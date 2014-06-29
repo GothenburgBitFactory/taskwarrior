@@ -666,7 +666,7 @@ bool Lexer::is_date (std::string& result)
         legacy_i = _input.length ();
 
       std::string legacy_result = _input.substr (_shift_counter, legacy_i - _shift_counter);
-      Date legacyDate (legacy_result, Lexer::dateFormat, true, false);
+      Date legacyDate (legacy_result, Lexer::dateFormat, false, false);
 
       legacy_i -= _shift_counter;
       while (legacy_i--) shift ();
