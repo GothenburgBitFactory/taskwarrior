@@ -31,29 +31,29 @@ use Test::More tests => 19;
 
 # '15min' is seen as '15', 'min', not '15min' duration.
 my $output = qx{../src/calc --debug --noambiguous '12 * 3600 + 34 * 60 + 56'};
-like ($output, qr/eval push '12' Number/,   'Number 12');
-like ($output, qr/eval push '3600' Number/, 'Number 3600');
-like ($output, qr/eval push '34' Number/,   'Number 60');
-like ($output, qr/eval push '60' Number/,   'Number 60');
-like ($output, qr/eval push '56' Number/,   'Number 56');
-like ($output, qr/^45296$/ms,               'Result 45296');
-unlike ($output, qr/Error/,                 'No errors');
+like ($output, qr/eval push '12'/,      'Number 12');
+like ($output, qr/eval push '3600'/,    'Number 3600');
+like ($output, qr/eval push '34'/,      'Number 60');
+like ($output, qr/eval push '60'/,      'Number 60');
+like ($output, qr/eval push '56'/,      'Number 56');
+like ($output, qr/^45296$/ms,           'Result 45296');
+unlike ($output, qr/Error/,             'No errors');
 
 $output = qx{../src/calc --debug --noambiguous --postfix '12 3600 * 34 60 * 56 + +'};
-like ($output, qr/eval push '12' Number/,   'Number 12');
-like ($output, qr/eval push '3600' Number/, 'Number 3600');
-like ($output, qr/eval push '34' Number/,   'Number 60');
-like ($output, qr/eval push '60' Number/,   'Number 60');
-like ($output, qr/eval push '56' Number/,   'Number 56');
-like ($output, qr/^45296$/ms,               'Result 45296');
-unlike ($output, qr/Error/,                 'No errors');
+like ($output, qr/eval push '12'/,      'Number 12');
+like ($output, qr/eval push '3600'/,    'Number 3600');
+like ($output, qr/eval push '34'/,      'Number 60');
+like ($output, qr/eval push '60'/,      'Number 60');
+like ($output, qr/eval push '56'/,      'Number 56');
+like ($output, qr/^45296$/ms,           'Result 45296');
+unlike ($output, qr/Error/,             'No errors');
 
 $output = qx{../src/calc --debug --noambiguous '2--3'};
-like ($output, qr/eval push '2' Number/ms,  'Number 2');
-like ($output, qr/eval operator '-'/ms,     'Operator -');
-like ($output, qr/eval push '3' Number/ms,  'Number 3');
-like ($output, qr/^5$/ms,                   'Result 5');
-unlike ($output, qr/Error/,                 'No errors');
+like ($output, qr/eval push '2'/ms,     'Number 2');
+like ($output, qr/eval operator '-'/ms, 'Operator -');
+like ($output, qr/eval push '3'/ms,     'Number 3');
+like ($output, qr/^5$/ms,               'Result 5');
+unlike ($output, qr/Error/,             'No errors');
 
 exit 0;
 
