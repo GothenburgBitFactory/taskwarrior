@@ -143,16 +143,19 @@ Date::Date (
 
   // Parse a formatted date.
   Nibbler n (input);
+  n.save ();
 #ifdef NIBBLER_FEATURE_DATE
   if (n.getDate (format, _t) && n.depleted ())
     return;
 #endif
 
   // Parse an ISO date.
+  n.restore ();
   if (iso && n.getDateISO (_t) && n.depleted ())
     return;
 
   // Perhaps it is an epoch date, in string form?
+  n.restore ();
   if (epoch && isEpoch (input))
     return;
 
