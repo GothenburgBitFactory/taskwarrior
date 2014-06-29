@@ -71,6 +71,8 @@ public:
   static void token_split (std::vector <std::pair <std::string, Lexer::Type> >&, const std::string&);
 
 private:
+  bool is_date (std::string&);
+  bool is_duration (std::string&);
   bool is_punct (int) const;
   bool is_num (int) const;
   bool is_ident_start (int) const;
