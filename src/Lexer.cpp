@@ -660,17 +660,10 @@ bool Lexer::is_date (std::string& result)
   {
     try
     {
-      // TODO Why stop at the space?  This seems wrong.
-      std::string::size_type legacy_i = _input.find (' ', _i);
-      if (legacy_i == std::string::npos)
-        legacy_i = _input.length ();
-
-      std::string legacy_result = _input.substr (_shift_counter, legacy_i - _shift_counter);
-      Date legacyDate (legacy_result, Lexer::dateFormat, false, false, false);
-
-      legacy_i -= _shift_counter;
+      std::string::size_type legacy_i = 0;
+      Date legacyDate (_input.substr (_shift_counter), legacy_i, Lexer::dateFormat, false, false);
+      result = _input.substr (_shift_counter, legacy_i);
       while (legacy_i--) shift ();
-      result = legacy_result;
       return true;
     }
 

@@ -43,8 +43,12 @@ public:
            Date (const std::string&,
                  const std::string& format = "m/d/Y",
                  const bool iso = true,
-                 const bool epoch = true,
-                 const bool require_depletion = true);
+                 const bool epoch = true);
+           Date (const std::string&,
+                 std::string::size_type&,
+                 const std::string& format = "m/d/Y",
+                 const bool iso = true,
+                 const bool epoch = true);
            Date (const Date&);
   virtual ~Date ();
 

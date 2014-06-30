@@ -131,8 +131,7 @@ Date::Date (
   const std::string& input,
   const std::string& format    /* = "m/d/Y" */,
   const bool iso               /* = true */,
-  const bool epoch             /* = true */,
-  const bool require_depletion /* = true */)
+  const bool epoch             /* = true */)
 {
   // Check first to see if this is supported as a named date.
   Variant v;
@@ -146,19 +145,66 @@ Date::Date (
   Nibbler n (input);
   n.save ();
 #ifdef NIBBLER_FEATURE_DATE
-  if (n.getDate (format, _t) && (!require_depletion || n.depleted ()))
+  if (n.getDate (format, _t) && n.depleted ())
     return;
 #endif
 
   // Parse an ISO date.
   n.restore ();
-  if (iso && n.getDateISO (_t) && (!require_depletion || n.depleted ()))
+  if (iso && n.getDateISO (_t) && n.depleted ())
     return;
 
   // Perhaps it is an epoch date, in string form?
   n.restore ();
   if (epoch && isEpoch (input))
     return;
+
+  throw ::format (STRING_DATE_INVALID_FORMAT, input, format);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Date::Date (
+  const std::string& input,
+  std::string::size_type& i,
+  const std::string& format    /* = "m/d/Y" */,
+  const bool iso               /* = true */,
+  const bool epoch             /* = true */)
+{
+  // Check first to see if this is supported as a named date.
+  Variant v;
+  if (namedDates (input, v))
+  {
+    i = v.source ().length ();
+    _t = v.get_date ();
+    return;
+  }
+
+  // Parse a formatted date.
+  Nibbler n (input);
+  n.save ();
+#ifdef NIBBLER_FEATURE_DATE
+  if (n.getDate (format, _t))
+  {
+    i = n.cursor ();
+    return;
+  }
+#endif
+
+  // Parse an ISO date.
+  n.restore ();
+  if (iso && n.getDateISO (_t))
+  {
+    i = n.cursor ();
+    return;
+  }
+
+  // Perhaps it is an epoch date, in string form?
+  n.restore ();
+  if (epoch && isEpoch (input))
+  {
+    i = 10;
+    return;
+  }
 
   throw ::format (STRING_DATE_INVALID_FORMAT, input, format);
 }
