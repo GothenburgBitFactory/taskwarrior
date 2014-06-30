@@ -551,6 +551,7 @@ bool namedDates (const std::string& name, Variant& value)
   else
     return false;
 
+  value.source (name);
   return true;
 }
 
