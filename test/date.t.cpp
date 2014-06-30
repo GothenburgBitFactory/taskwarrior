@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (210);
+  UnitTest t (211);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -440,11 +440,13 @@ int main (int argc, char** argv)
     t.is (Date::length (" "), 1, "length ' ' --> 1");
 
     // Depletion requirement.
-    Date r30 ("Mon Jun 30 2014", "a b D Y", false, false, true);
+    Date r30 ("Mon Jun 30 2014", "a b D Y", false, false);
     t.is (r30.toString ("YMDHNS"), "20140630000000", "Depletion required on complex format with spaces");
 
-    Date r31 ("Mon Jun 30 2014 xxx", "a b D Y", false, false, false);
+    std::string::size_type i = 0;
+    Date r31 ("Mon Jun 30 2014 xxx", i, "a b D Y", false, false);
     t.is (r31.toString ("YMDHNS"), "20140630000000", "Depletion not required on complex format with spaces");
+    t.is ((int)i, 15,                                "Depletion not required on complex format with spaces, 15 chars");
   }
 
   catch (const std::string& e)
