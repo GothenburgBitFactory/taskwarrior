@@ -53,7 +53,7 @@ qx{../src/task rc:$rc add wait:"Wed Jan 01 2030" A buggy task 2>&1};
 
 # Result: Immediately delete the created task
 my $output = qx{../src/task rc:$rc waiting 2>&1};
-like ($output, qr/Jan 01 2020/ms, "$ut: a b D Y dateformat correctly parsed.");
+like ($output, qr/Jan 01 2030/ms, "$ut: a b D Y dateformat correctly parsed.");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
