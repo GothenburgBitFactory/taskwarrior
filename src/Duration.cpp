@@ -290,30 +290,50 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
 
   std::string number;
   std::string unit;
-  if ((n.getNumber (number) && n.skipWS () && n.getOneOf (units, unit)) ||
-                                              n.getOneOf (units, unit))
+
+  if (n.getOneOf (units, unit))
   {
     if (n.depleted () ||
         Lexer::is_ws (n.next ()))
     {
-      // TODO Determine which unit matched, and therefore whether the unit can
-      //      exist as a standalone unit (with assumed quantity of 1), or
-      //      whether the quantity is required.
-
       start = original_start + n.cursor ();
-      double quantity = (number == "")
-                          ? 1.0
-                          : strtod (number.c_str (), NULL);
 
       // Linear lookup - should be logarithmic.
       double seconds = 1;
       for (int i = 0; i < NUM_DURATIONS; i++)
       {
-        if (durations[i].unit == unit)
+        if (durations[i].unit == unit &&
+            durations[i].standalone == true)
         {
-          seconds = durations[i].seconds;
-          _secs = static_cast <int> (quantity * static_cast <double> (seconds));
+          _secs = static_cast <int> (durations[i].seconds);
           return true;
+        }
+      }
+    }
+  }
+
+  else if (n.getNumber (number))
+  {
+    n.skipWS ();
+    if (n.getOneOf (units, unit))
+    {
+      if (n.depleted () ||
+          Lexer::is_ws (n.next ()))
+      {
+        start = original_start + n.cursor ();
+        double quantity = strtod (number.c_str (), NULL);
+
+        // Linear lookup - should be logarithmic.
+        double seconds = 1;
+        for (int i = 0; i < NUM_DURATIONS; i++)
+        {
+          if (durations[i].unit == unit &&
+              durations[i].standalone == false)
+          {
+            seconds = durations[i].seconds;
+            _secs = static_cast <int> (quantity * static_cast <double> (seconds));
+            return true;
+          }
         }
       }
     }
