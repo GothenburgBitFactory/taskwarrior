@@ -98,6 +98,7 @@
 - TW-1324 Numeric UDAs are compared as strings (thanks to Ben Boeckel).
 - TW-1331 date more than 5 years away is faulty (thanks to Onion).
 - TW-1345 taskrc.5 manpage errors.
+- TW-1361 Strange results with complex filter (thanks to Jim B).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
