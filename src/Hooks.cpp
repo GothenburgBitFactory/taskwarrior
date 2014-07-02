@@ -24,14 +24,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// If <iostream> is included, put it after <stdio.h>, because it includes
-// <stdio.h>, and therefore would ignore the _WITH_GETLINE.
 #include <cmake.h>
 #include <algorithm>
+// If <iostream> is included, put it after <stdio.h>, because it includes
+// <stdio.h>, and therefore would ignore the _WITH_GETLINE.
 #ifdef FREEBSD
 #define _WITH_GETLINE
 #endif
 #include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 #include <Context.h>
 #include <Hooks.h>
 #include <text.h>
@@ -330,34 +333,59 @@ int Hooks::execute (
   const std::string& input,
   std::string& output)
 {
-  int status = -1;
-  FILE* fp = popen (command.c_str (), "r+");
-  if (fp)
+  // TODO Improve error hnadling.
+  // TODO Check errors.
+
+  int pin[2], pout[2];
+  pipe (pin);
+  pipe (pout);
+
+  pid_t pid = fork();
+  if (!pid)
   {
-    // Write input to fp.
-    if (input != "" &&
-        input != "\n")
-    {
-      fputs (input.c_str (), fp);
-      fflush (fp);
-    }
-
-    // Read output from fp.
-    output = "";
-    char* line = NULL;
-    size_t len = 0;
-    while (getline (&line, &len, fp) != -1)
-    {
-      output += line;
-      free (line);
-      line = NULL;
-    }
-
-    fflush (fp);
-    status = pclose (fp);
-    context.debug (format ("Hooks::execute {1} (status {2})", command, status));
+    // This is only reached in the child
+    dup2 (pin[0], STDIN_FILENO);
+    dup2 (pout[1], STDOUT_FILENO);
+    if (!execl (command.c_str (), command.c_str (), (char*) NULL))
+      exit (1);
   }
 
+  // This is only reached in the parent
+  close (pin[0]);
+  close (pout[1]);
+
+  // Write input to fp.
+  FILE* pinf = fdopen (pin[1], "w");
+  if (input != "" &&
+      input != "\n")
+  {
+    fputs (input.c_str (), pinf);
+  }
+
+  fclose (pinf);
+  close (pin[1]);
+
+  // Read output from fp.
+  output = "";
+  char* line = NULL;
+  size_t len = 0;
+  FILE* poutf = fdopen(pout[0], "r");
+  while (getline (&line, &len, poutf) != -1)
+  {
+    output += line;
+  }
+
+  if (line)
+    free (line);
+  fclose (poutf);
+  close (pout[0]);
+
+  int status = -1;
+  wait (&status);
+  if (WIFEXITED (status))
+    status = WEXITSTATUS (status);
+
+  context.debug (format ("Hooks::execute {1} (status {2})", command, status));
   return status;
 }
 
