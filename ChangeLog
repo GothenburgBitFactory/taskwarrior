@@ -102,6 +102,8 @@
           (thanks to Charles Ulrich).
 - TW-1345 taskrc.5 manpage errors.
 - TW-1361 Strange results with complex filter (thanks to Jim B).
+- TW-1366 In diagnostics it's called 'Cert', and in config it's called
+          'certificate' (thanks to Jack).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity

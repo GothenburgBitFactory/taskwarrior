@@ -249,7 +249,7 @@ int CmdDiagnostics::execute (std::string& output)
   else
     out << "      Trust: strict\n";
 
-  out << "       Cert: "
+  out << "Certificate: "
       << context.config.get ("taskd.certificate")
       << (File (context.config.get ("taskd.certificate")).readable ()
            ? " (readable)" : " (not readable)")
