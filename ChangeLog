@@ -32,6 +32,7 @@
 - TW-218 Reveal terms of urgency calculation for a given task (thanks to Max
          Muller).
 - TW-221 Migrate task-faq man page to the Wiki.
+- TW-230 Filter tasks on partial UUIDs (thanks to Paul Kishimoto).
 - TW-242 extra Space when annotating a path/filename, taskopen can not open the
          file (thanks to Andreas Kalex).
 - TW-244 task add "Description (Information)" results in
@@ -98,6 +99,7 @@
           (thanks to Kosta Harlan).
 - TW-1321 Unit test view.t fails oddly on Ubuntu 13.10 (thanks to John West).
 - TW-1324 Numeric UDAs are compared as strings (thanks to Ben Boeckel).
+- TW-1329 Short UUIDs (thanks to Benjamin Weber).
 - TW-1331 date more than 5 years away is faulty (thanks to Onion).
 - TW-1336 Project attribute does not allow whitespace (thanks to Benjamin Weber).
 - TW-1341 confirmation config setting should apply to config command as well

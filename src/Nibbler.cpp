@@ -40,7 +40,7 @@
 #include <Lexer.h>
 
 static const char*        _uuid_pattern    = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-static const unsigned int _uuid_min_length = 14;
+static const unsigned int _uuid_min_length = 8;
 
 ////////////////////////////////////////////////////////////////////////////////
 Nibbler::Nibbler ()

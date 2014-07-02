@@ -157,27 +157,27 @@ like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{13})/;
 $output = qx{../src/task rc:$rc $short list 2>&1};
-unlike ($output, qr/one/, "Not found with $short");
+like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{12})/;
 $output = qx{../src/task rc:$rc $short list 2>&1};
-unlike ($output, qr/one/, "Not found with $short");
+like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{11})/;
 $output = qx{../src/task rc:$rc $short list 2>&1};
-unlike ($output, qr/one/, "Not found with $short");
+like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{10})/;
 $output = qx{../src/task rc:$rc $short list 2>&1};
-unlike ($output, qr/one/, "Not found with $short");
+like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{9})/;
 $output = qx{../src/task rc:$rc $short list 2>&1};
-unlike ($output, qr/one/, "Not found with $short");
+like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{8})/;
 $output = qx{../src/task rc:$rc $short list 2>&1};
-unlike ($output, qr/one/, "Not found with $short");
+like ($output, qr/one/, "Found with $short");
 
 ($short) = $uuid =~ /^(.{7})/;
 $output = qx{../src/task rc:$rc $short list 2>&1};
