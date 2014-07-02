@@ -49,6 +49,7 @@
 - TW-266 Allow project auto-completion to search completed tasks (thanks to
          Kosta Harlan).
 - TW-271 Parser still looks for task id even when -- is used (thanks to Jim B).
+- TW-276 Path is wrongly added when using annotate (thanks to Jostein Berntsen).
 - TW-277 Complex filters can skip infix term expansion.
 - TW-278 Cygwin throws warnings building mk_wcwidth() in wcwidth6.c.
 - TW-279 ".monthly" unexpectedly appended to task annotation (thanks to Florian
