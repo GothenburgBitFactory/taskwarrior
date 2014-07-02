@@ -428,7 +428,7 @@ void feedback_backlog ()
     {
       if ((*line)[0] == '{')
       {
-        context.footnote ("There are local changes.  Sync required.");
+        context.footnote (STRING_FEEDBACK_BACKLOG);
         break;
       }
     }

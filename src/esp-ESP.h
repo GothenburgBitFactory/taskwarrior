@@ -736,6 +736,7 @@
 #define STRING_FEEDBACK_TAG_NEXT     "La etiqueta especial 'next' aumentará la urgencia de esta tarea para que aparezca en el informe 'next'."
 #define STRING_FEEDBACK_UNBLOCKED    "Desbloqueada {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "La tarea {1} '{2}' caducó y fue eliminada."
+#define STRING_FEEDBACK_BACKLOG      "There are local changes.  Sync required."
 
 // File
 #define STRING_FILE_PERMS            "Taskwarrior no tiene los permisos adecuados para '{1}'."
