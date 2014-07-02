@@ -61,6 +61,8 @@ int CmdConfig::execute (std::string& output)
   //   task config name          # remove name
   if (words.size ())
   {
+    bool confirmation = context.config.getBoolean ("confirmation");
+
     std::string name = words[0];
     std::string value = "";
 
@@ -100,7 +102,8 @@ int CmdConfig::execute (std::string& output)
                comment > pos))
           {
             found = true;
-            if (confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
+            if (!confirmation ||
+                confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
             {
               if (comment != std::string::npos)
                 *line = name + "=" + json::encode (value) + " " + line->substr (comment);
@@ -114,7 +117,8 @@ int CmdConfig::execute (std::string& output)
 
         // Not found, so append instead.
         if (!found &&
-            confirm (format (STRING_CMD_CONFIG_CONFIRM2, name, value)))
+            (!confirmation ||
+             confirm (format (STRING_CMD_CONFIG_CONFIRM2, name, value))))
         {
           contents.push_back (name + "=" + json::encode (value));
           change = true;
@@ -139,7 +143,8 @@ int CmdConfig::execute (std::string& output)
             found = true;
 
             // Remove name
-            if (confirm (format (STRING_CMD_CONFIG_CONFIRM3, name)))
+            if (!confirmation ||
+                confirm (format (STRING_CMD_CONFIG_CONFIRM3, name)))
             {
               *line = "";
               change = true;
