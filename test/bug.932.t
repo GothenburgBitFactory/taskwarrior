@@ -53,15 +53,15 @@ like ($output, qr/4.+R/ms, 'Found child 2');
 
 qx{echo 'y' | ../src/task rc:bug.rc 2 mod project:P 2>&1};
 $output = qx{../src/task rc:bug.rc list 2>&1};
-like ($output, qr/2\s+P.+R/ms, 'Found modified child 0');
-like ($output, qr/3\s+P.+R/ms, 'Found modified child 1 (propagated from 0)');
-like ($output, qr/4\s+P.+R/ms, 'Found modified child 2 (propagated from 0)');
+like ($output, qr/2.+P.+R/ms, 'Found modified child 0');
+like ($output, qr/3.+P.+R/ms, 'Found modified child 1 (propagated from 0)');
+like ($output, qr/4.+P.+R/ms, 'Found modified child 2 (propagated from 0)');
 
 qx{echo 'y' | ../src/task rc:bug.rc 1 mod priority:H 2>&1};
 $output = qx{../src/task rc:bug.rc list 2>&1};
-like ($output, qr/2\s+H.+P.+R/ms, 'Found modified child 0 (propagated from parent');
-like ($output, qr/3\s+H.+P.+R/ms, 'Found modified child 1 (propagated from parent)');
-like ($output, qr/4\s+H.+P.+R/ms, 'Found modified child 2 (propagated from parent)');
+like ($output, qr/2.+H.+P.+R/ms, 'Found modified child 0 (propagated from parent');
+like ($output, qr/3.+H.+P.+R/ms, 'Found modified child 1 (propagated from parent)');
+like ($output, qr/4.+H.+P.+R/ms, 'Found modified child 2 (propagated from parent)');
 
 $output = qx{../src/task rc:bug.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
