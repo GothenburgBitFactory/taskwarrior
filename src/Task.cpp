@@ -1490,37 +1490,34 @@ void Task::validate (bool applyDefault /* = true */)
       (! has ("end") || get ("end") == ""))
     setEnd ();
 
-  // Override with default.project, if not specified.
-  if (applyDefault               &&
-      Task::defaultProject != "" &&
-      (! has ("project") || get ("project") == ""))
-  {
-    if (context.columns["project"]->validate (Task::defaultProject))
-      set ("project", Task::defaultProject);
-  }
-
-  // Override with default.priority, if not specified.
-  if (applyDefault                &&
-      Task::defaultPriority != "" &&
-      (! has ("priority") || get ("priority") == ""))
-  {
-    if (context.columns["priority"]->validate (Task::defaultPriority))
-      set ("priority", Task::defaultPriority);
-  }
-
-  // Override with default.due, if not specified.
-  if (applyDefault &&
-      Task::defaultDue != "" &&
-      (! has ("due") || get ("due") == ""))
-  {
-    if (context.columns["due"]->validate (Task::defaultDue))
-      set ("due", Date (Task::defaultDue).toEpoch ());
-  }
-
-  // If a UDA has a default value in the configuration,
-  // override with uda.(uda).default, if not specified.
   if (applyDefault)
   {
+    // Override with default.project, if not specified.
+    if (Task::defaultProject != "" &&
+        ! has ("project"))
+    {
+      if (context.columns["project"]->validate (Task::defaultProject))
+        set ("project", Task::defaultProject);
+    }
+
+    // Override with default.priority, if not specified.
+    if (Task::defaultPriority != "" &&
+        ! has ("priority"))
+    {
+      if (context.columns["priority"]->validate (Task::defaultPriority))
+        set ("priority", Task::defaultPriority);
+    }
+
+    // Override with default.due, if not specified.
+    if (Task::defaultDue != "" &&
+        ! has ("due"))
+    {
+      if (context.columns["due"]->validate (Task::defaultDue))
+        set ("due", Date (Task::defaultDue).toEpoch ());
+    }
+
+    // If a UDA has a default value in the configuration,
+    // override with uda.(uda).default, if not specified.
     // Gather a list of all UDAs with a .default value
     std::vector <std::string> udas;
     Config::const_iterator var;
@@ -1956,8 +1953,9 @@ void Task::modify (modType type, bool text_required /* = false */)
             value == "''"   ||
             value == "\"\"")
         {
-          // Remove attribute if the value is blank.
-          (*this).remove (name);
+          // ::composeF4 will skip if the value is blank, but the presence of
+          // the attribute will prevent ::validate from applying defaults.
+          set (name, "");
           context.debug (label + name + " <-- ''");
           ++modCount;
         }

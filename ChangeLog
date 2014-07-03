@@ -71,6 +71,8 @@
 - TW-1263 Command Reference Redesign.
 - TW-1264 Project | Tags assigned ratio of tasks (thanks to Benjamin Weber).
 - TW-1265 cannot add UDA with underscore (thanks to Jakub Wilk).
+- TW-1267 If default.project is defined it's not possible to add a task without
+          a project (thanks to Renato Alves).
 - TW-1273 Words in task descriptions and annotations are cut-off after a hyphen
           (thanks to Elias Probst).
 - TW-1274 Map 'modification' attribute to 'modified' (thanks to jck).
