@@ -144,10 +144,6 @@ int Context::initialize (int argc, const char** argv)
     parser.applyOverrides ();
     createDefaultConfig ();
 
-    // Handle Aliases.
-    alias.load ();
-    alias.resolve (parser.tree ());
-
     // Initialize the color rules, if necessary.
     if (color ())
       initializeColorRules ();

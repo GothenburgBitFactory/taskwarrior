@@ -34,7 +34,6 @@
 #include <TDB2.h>
 #include <Hooks.h>
 #include <DOM.h>
-#include <Alias.h>
 #include <Path.h>
 #include <File.h>
 #include <Directory.h>
@@ -89,7 +88,6 @@ public:
   Config                              config;
 
   TDB2                                tdb2;
-  Alias                               alias;
   Hooks                               hooks;
   DOM                                 dom;
 
