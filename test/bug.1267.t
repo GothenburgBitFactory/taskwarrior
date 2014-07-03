@@ -68,7 +68,7 @@ class TestBug1267(BaseTestBug1267):
         args = ["rc:bug.rc", "ls"]
         code, out, err = self.callTaskSuccess(args, merge_streams=False)
 
-        self.assertIn(project, out)
+        self.assertNotIn(project, out)
 
     def test_add_task_no_project_with_default_rcfile(self):
         """Add a task without a project writing to rc file
