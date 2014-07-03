@@ -30,12 +30,12 @@ use warnings;
 use Test::More tests => 5;
 
 # '15min' is seen as '15', 'min', not '15min' duration.
-my $output = qx{../src/calc --debug 15min};
+my $output = qx{../src/calc --debug --noambiguous 15min};
 unlike ($output, qr/token infix '15' Date/,           'Misinterpretation: 15min -> 15');
 unlike ($output, qr/token infix 'min' Identifier/,    'Misinterpretation: 15min -> m');
 unlike ($output, qr/Error: Unexpected stack size: 2/, 'Unexpected stack size');
-like ($output, qr/\[1\] eval push 'PT15M' Duration/,  '15min -> PT15M Duration');
-like ($output, qr/PT15M/,                             '15min -> PT15m Duration');
+like ($output, qr/\[0\] eval push 'PT15M'/,           '15min -> push PT15M');
+like ($output, qr/^PT15M$/ms,                         '15min -> PT15M');
 
 exit 0;
 
