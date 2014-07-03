@@ -79,14 +79,14 @@ Confirmed:
 my $output = qx{../src/task rc:period.rc add daily due:tomorrow recur:daily 2>&1};
 unlike ($output, qr/was not recognized/, 'recur:daily');
 
-$output = qx{../src/task rc:period.rc add day due:tomorrow recur:day 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:day');
+$output = qx{../src/task rc:period.rc add 1day due:tomorrow recur:1day 2>&1};
+unlike ($output, qr/was not recognized/, 'recur:1day');
 
 $output = qx{../src/task rc:period.rc add weekly due:tomorrow recur:weekly 2>&1};
 unlike ($output, qr/was not recognized/, 'recur:weekly');
 
-$output = qx{../src/task rc:period.rc add sennight due:tomorrow recur:sennight 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:sennight');
+$output = qx{../src/task rc:period.rc add 1sennight due:tomorrow recur:1sennight 2>&1};
+unlike ($output, qr/was not recognized/, 'recur:1sennight');
 
 $output = qx{../src/task rc:period.rc add biweekly due:tomorrow recur:biweekly 2>&1};
 unlike ($output, qr/was not recognized/, 'recur:biweekly');
@@ -136,9 +136,9 @@ unlike ($output, qr/was not recognized/, 'recur:2y');
 # Verify that the recurring task instances get created.  One of each.
 $output = qx{../src/task rc:period.rc list 2>&1};
 like ($output, qr/\bdaily\b/,      'verify daily');
-like ($output, qr/\bday\b/,        'verify day');
+like ($output, qr/\b1day\b/,       'verify 1day');
 like ($output, qr/\bweekly\b/,     'verify weekly');
-like ($output, qr/\bsennight\b/,   'verify sennight');
+like ($output, qr/\b1sennight\b/,  'verify 1sennight');
 like ($output, qr/\bbiweekly\b/,   'verify biweekly');
 like ($output, qr/\bfortnight\b/,  'verify fortnight');
 like ($output, qr/\bmonthly\b/,    'verify monthly');
