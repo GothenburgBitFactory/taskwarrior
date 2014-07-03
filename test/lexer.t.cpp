@@ -214,7 +214,7 @@ int main (int argc, char** argv)
   t.is (tokens[9].second,                     Lexer::typeDate,        "tokens[9] == typeDate");
 
   // Test for durations
-  Lexer l5 ("second 1minute 2hour 3 days 4w 5mo 6 years");
+  Lexer l5 ("1second 1minute 2hour 3 days 4w 5mo 6 years");
   tokens.clear ();
   while (l5.token (token, type))
   {
@@ -223,7 +223,7 @@ int main (int argc, char** argv)
   }
 
   t.is ((int)tokens.size (),                  7,                      "7 tokens");
-  t.is (tokens[0].first,                      "second",               "tokens[0] == 'second'");
+  t.is (tokens[0].first,                      "1second",              "tokens[0] == '1second'");
   t.is (tokens[0].second,                     Lexer::typeDuration,    "tokens[0] == typeDuration");
   t.is (tokens[1].first,                      "1minute",              "tokens[1] == '1minute'");
   t.is (tokens[1].second,                     Lexer::typeDuration,    "tokens[1] == typeDuration"); // 110
