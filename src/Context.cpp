@@ -187,6 +187,7 @@ int Context::initialize (int argc, const char** argv)
 
     // Now the entities are loaded, parsing may resume.
     parser.findBinary ();                           // <task|tw|t|cal|calendar>
+    parser.resolveAliases ();
     parser.findCommand ();                          // <cmd>
     parser.findUUIDList ();                         // <uuid> Before findIdSequence
     parser.findIdSequence ();                       // <id>
@@ -750,6 +751,9 @@ void Context::updateVerbosity ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::loadAliases ()
 {
+  std::map <std::string, std::string>::iterator i;
+  for (i = config.begin (); i != config.end (); ++i)
+    parser.alias (i->first, i->second);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
