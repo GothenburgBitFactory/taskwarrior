@@ -68,6 +68,7 @@ public:
 
 private:
   void findTerminator ();
+  void resolveAliases ();
   void findPattern ();
   void findSubstitution ();
   void findTag ();

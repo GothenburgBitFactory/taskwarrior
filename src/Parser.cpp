@@ -163,9 +163,11 @@ Tree* Parser::parse ()
 {
   findBinary ();
   findTerminator ();
+  resolveAliases ();
 
   findOverrides ();
   applyOverrides ();
+
 
   findSubstitution ();
   findPattern ();
@@ -313,6 +315,11 @@ void Parser::findTerminator ()
       (*i)->tag ("TERMINATED");
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Parser::resolveAliases ()
+{
 }
 
 ////////////////////////////////////////////////////////////////////////////////
