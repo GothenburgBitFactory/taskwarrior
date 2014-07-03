@@ -184,6 +184,7 @@ void legacyValueMap (const std::string& name, std::string& value)
     mapping["mths"]  = "months";
     mapping["mth"]   = "months";
     mapping["mos"]   = "months";
+    mapping["m"]     = "months";
     mapping["qrtrs"] = "quarters";
     mapping["qtrs"]  = "quarters";
     mapping["qtr"]   = "quarters";
