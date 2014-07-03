@@ -159,5 +159,13 @@ class BaseTestCase(unittest.TestCase):
         assert out[0] != 0, "Task finished with zero exit (0) code"
         return out
 
+    @classmethod
+    def diag(cls, out):
+        """Diagnostics are just lines preceded with #.
+        """
+        print '# --- diag start ---'
+        for line in out.split("\n"):
+            print '#', line
+        print '# --- diag end ---'
 
 # vim: ai sts=4 et sw=4
