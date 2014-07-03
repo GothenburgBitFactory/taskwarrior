@@ -47,14 +47,14 @@ if (open my $fh, '>', $rc)
 
 # Bug #485 - 'task list recur:month' doesn't list monthly tasks
 qx{../src/task rc:$rc add one due:tomorrow recur:monthly};
-qx{../src/task rc:$rc add two due:tomorrow recur:month};
+qx{../src/task rc:$rc add two due:tomorrow recur:1month};
 my $output = qx{../src/task rc:$rc list recur:monthly};
 like ($output, qr/one/, 'monthly -> monthly');
-like ($output, qr/two/, 'month   -> monthly');
+like ($output, qr/two/, '1month  -> monthly');
 
-$output = qx{../src/task rc:$rc list recur:month};
-like ($output, qr/one/, 'monthly -> month');
-like ($output, qr/two/, 'month   -> month');
+$output = qx{../src/task rc:$rc list recur:1month};
+like ($output, qr/one/, 'monthly -> monthly');
+like ($output, qr/two/, '1month  -> monthly');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data), $rc;
