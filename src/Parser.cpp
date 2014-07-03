@@ -188,6 +188,12 @@ Tree* Parser::parse ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Parser::alias (const std::string& name, const std::string& value)
+{
+  _aliases.insert (std::pair <std::string, std::string> (name, value));
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Parser::entity (const std::string& name, const std::string& value)
 {
   _entities.insert (std::pair <std::string, std::string> (name, value));

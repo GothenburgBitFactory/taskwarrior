@@ -42,6 +42,7 @@ public:
   void appendStdin ();
   Tree* tree ();
   Tree* parse ();
+  void alias (const std::string&, const std::string&);
   void entity (const std::string&, const std::string&);
   bool exactMatch (const std::string&, const std::string&) const;
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
@@ -85,6 +86,7 @@ private:
 private:
   Tree*                                    _tree;
   std::multimap <std::string, std::string> _entities;
+  std::map <std::string, std::string>      _aliases;
 };
 
 #endif
