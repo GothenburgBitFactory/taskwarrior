@@ -126,6 +126,7 @@ int Context::initialize (int argc, const char** argv)
     // Dump any existing values and load rc file.
     config.clear ();
     config.load  (rc_file);
+    loadAliases ();
 
     // The data location, Context::data_dir, is determined from the assumed
     // location (~/.task), or set by data.location in the config file, or
@@ -744,6 +745,11 @@ void Context::updateVerbosity ()
     verbosity.clear ();
     verbosity.push_back ("nothing");
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::loadAliases ()
+{
 }
 
 ////////////////////////////////////////////////////////////////////////////////

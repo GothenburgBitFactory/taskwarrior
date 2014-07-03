@@ -78,6 +78,7 @@ private:
   void createDefaultConfig ();
   void updateXtermTitle ();
   void updateVerbosity ();
+  void loadAliases ();
 
 public:
   std::string                         program;
