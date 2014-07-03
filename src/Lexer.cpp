@@ -135,7 +135,7 @@ bool Lexer::token (std::string& result, Type& type)
         shift ();
         return true;
       }
-      else if (is_double_op (_n0, _n1))
+      else if (is_double_op (_n0, _n1, _n2))
       {
         type = typeOperator;
         result += utf8_character (_n0);
@@ -591,9 +591,9 @@ bool Lexer::is_ws (int c)
 bool Lexer::boundary (int left, int right)
 {
   // XOR
-  if (!isdigit (left) != !isdigit (right)) return true;
-  if (!isalpha (left) != !isalpha (right)) return true;
-  if (!isspace (left) != !isspace (right)) return true;
+  if (isalpha (left) != isalpha (right)) return true;
+  if (isdigit (left) != isdigit (right)) return true;
+  if (isspace (left) != isspace (right)) return true;
 
   // OR
   if (ispunct (left)  || ispunct (right))  return true;
@@ -745,15 +745,15 @@ bool Lexer::is_triple_op (int c0, int c1, int c2) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Lexer::is_double_op (int c0, int c1) const
+bool Lexer::is_double_op (int c0, int c1, int c2) const
 {
-  return (c0 == '=' && c1 == '=') ||
-         (c0 == '!' && c1 == '=') ||
-         (c0 == '<' && c1 == '=') ||
-         (c0 == '>' && c1 == '=') ||
-         (c0 == 'o' && c1 == 'r') ||
-         (c0 == '|' && c1 == '|') ||
-         (c0 == '&' && c1 == '&') ||
+  return (c0 == '=' && c1 == '=')                ||
+         (c0 == '!' && c1 == '=')                ||
+         (c0 == '<' && c1 == '=')                ||
+         (c0 == '>' && c1 == '=')                ||
+         (c0 == 'o' && c1 == 'r' && _boundary12) ||
+         (c0 == '|' && c1 == '|')                ||
+         (c0 == '&' && c1 == '&')                ||
          (c0 == '!' && c1 == '~');
 }
 

@@ -78,7 +78,7 @@ private:
   bool is_ident_start (int) const;
   bool is_ident (int) const;
   bool is_triple_op (int, int, int) const;
-  bool is_double_op (int, int) const;
+  bool is_double_op (int, int, int) const;
   bool is_single_op (int) const;
   bool is_dec_digit (int) const;
   bool is_hex_digit (int) const;
