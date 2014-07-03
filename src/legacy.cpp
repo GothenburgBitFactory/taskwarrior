@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <cstddef>
 #include <sstream>
 #include <Context.h>
 #include <text.h>
@@ -158,6 +159,58 @@ std::string legacyCheckForDeprecatedColumns ()
   }
 
   return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void legacyAttributeMap (std::string& name)
+{
+  // TW-1274
+  if (name == "modification")
+    name = "modified";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void legacyValueMap (const std::string& name, std::string& value)
+{
+  // One-time initialization value mapping.
+  static std::map <std::string, std::string> mapping;
+  if (mapping.size () == 0)
+  {
+    mapping["hrs"]   = "hours";
+    mapping["hrs"]   = "hours";
+    mapping["hr"]    = "hours";
+    mapping["mins"]  = "minutes";
+    mapping["mnths"] = "months";
+    mapping["mths"]  = "months";
+    mapping["mth"]   = "months";
+    mapping["mos"]   = "months";
+    mapping["qrtrs"] = "quarters";
+    mapping["qtrs"]  = "quarters";
+    mapping["qtr"]   = "quarters";
+    mapping["secs"]  = "seconds";
+    mapping["sec"]   = "seconds";
+    mapping["s"]     = "seconds";
+    mapping["wks"]   = "weeks";
+    mapping["wk"]    = "weeks";
+    mapping["yrs"]   = "years";
+    mapping["yr"]    = "years";
+  }
+
+  if (name == "recur")
+  {
+    std::size_t letter = value.find_first_not_of ("0123456789.");
+    if (letter == std::string::npos)
+      letter = 0;
+
+    std::map <std::string, std::string>::iterator i = mapping.find (value.substr (letter));
+    if (i != mapping.end ())
+    {
+      if (letter)
+        value = value.substr (0, letter) + i->second;
+      else
+        value = i->second;
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

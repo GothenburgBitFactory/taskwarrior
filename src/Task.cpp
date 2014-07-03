@@ -555,6 +555,7 @@ bool Task::is_overdue () const
 //
 void Task::parse (const std::string& input)
 {
+  // TODO Is this simply a 'chomp'?
   std::string copy;
   if (input[input.length () - 1] == '\n')
     copy = input.substr (0, input.length () - 1);
@@ -588,15 +589,8 @@ void Task::parse (const std::string& input)
               nl.skip (':')           &&
               nl.getQuoted ('"', value))
           {
-            // Experimental legacy value translation of 'recur:m' --> 'recur:mo'.
-            if (name == "recur" &&
-                digitsOnly (value.substr (0, value.length () - 1)) &&
-                value[value.length () - 1] == 'm')
-              value += 'o';
-
-            // TW-1274, Standardization.
-            if (name == "modification")
-              name = "modified";
+            legacyAttributeMap (name);
+            legacyValueMap (name, value);
 
             if (name.substr (0, 11) == "annotation_")
               ++annotation_count;
