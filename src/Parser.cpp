@@ -178,6 +178,7 @@ Tree* Parser::parse ()
   findIdSequence ();
   findFilter ();
   findModifications ();
+  findStrayModifications ();
 
   findPlainArgs ();
   findMissingOperators ();
@@ -1422,6 +1423,26 @@ void Parser::findModifications ()
       (*i)->unTag ("?");
       (*i)->tag ("MODIFICATION");
       (*i)->removeAllBranches ();
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Parser::findStrayModifications ()
+{
+  std::string command = getCommand ();
+  if (command == "add" ||
+      command == "log")
+  {
+    std::vector <Tree*>::iterator i;
+    for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+    {
+      if ((*i)->hasTag ("FILTER"))
+      {
+        (*i)->unTag ("FILTER");
+        (*i)->tag ("MODIFICATION");
+        (*i)->removeAllBranches ();
+      }
     }
   }
 }

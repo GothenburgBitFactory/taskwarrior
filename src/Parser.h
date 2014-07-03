@@ -75,6 +75,7 @@ private:
   void findOperator ();
   void findFilter ();
   void findModifications ();
+  void findStrayModifications ();
   void findPlainArgs ();
   void findMissingOperators ();
   bool insertOr ();
