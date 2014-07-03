@@ -1458,14 +1458,14 @@ void Task::validate (bool applyDefault /* = true */)
 
   // 1) Provide missing attributes where possible
   // Provide a UUID if necessary.
-  if (! has ("uuid"))
+  if (! has ("uuid") || get ("uuid") == "")
     set ("uuid", uuid ());
 
   // Recurring tasks get a special status.
   if (status == Task::pending &&
       has ("due")             &&
       has ("recur")           &&
-      ! has ("parent"))
+      (! has ("parent") || get ("parent") == ""))
     status = Task::recurring;
 
   // Tasks with a wait: date get a special status.
@@ -1474,7 +1474,7 @@ void Task::validate (bool applyDefault /* = true */)
     status = Task::waiting;
 
   // By default, tasks are pending.
-  else if (! has ("status"))
+  else if (! has ("status") || get ("status") == "")
     status = Task::pending;
 
   // Store the derived status.
@@ -1482,36 +1482,38 @@ void Task::validate (bool applyDefault /* = true */)
 
 #ifdef PRODUCT_TASKWARRIOR
   // Provide an entry date unless user already specified one.
-  if (!has ("entry"))
+  if (!has ("entry") || get ("entry") == "")
     setEntry ();
 
   // Completed tasks need an end date, so inherit the entry date.
-  if (! has ("end") &&
-      (getStatus () == Task::completed ||
-       getStatus () == Task::deleted))
+  if ((status == Task::completed || status == Task::deleted) &&
+      (! has ("end") || get ("end") == ""))
     setEnd ();
 
   // Override with default.project, if not specified.
-  if (applyDefault && ! has ("project"))
+  if (applyDefault               &&
+      Task::defaultProject != "" &&
+      (! has ("project") || get ("project") == ""))
   {
-    if (Task::defaultProject != "" &&
-        context.columns["project"]->validate (Task::defaultProject))
+    if (context.columns["project"]->validate (Task::defaultProject))
       set ("project", Task::defaultProject);
   }
 
   // Override with default.priority, if not specified.
-  if (applyDefault && get ("priority") == "")
+  if (applyDefault                &&
+      Task::defaultPriority != "" &&
+      (! has ("priority") || get ("priority") == ""))
   {
-    if (Task::defaultPriority != "" &&
-        context.columns["priority"]->validate (Task::defaultPriority))
+    if (context.columns["priority"]->validate (Task::defaultPriority))
       set ("priority", Task::defaultPriority);
   }
 
   // Override with default.due, if not specified.
-  if (applyDefault && get ("due") == "")
+  if (applyDefault &&
+      Task::defaultDue != "" &&
+      (! has ("due") || get ("due") == ""))
   {
-    if (Task::defaultDue != "" &&
-        context.columns["due"]->validate (Task::defaultDue))
+    if (context.columns["due"]->validate (Task::defaultDue))
       set ("due", Date (Task::defaultDue).toEpoch ());
   }
 
