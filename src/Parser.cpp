@@ -83,16 +83,16 @@ void Parser::initialize (int argc, const char** argv)
     if (! noSpaces (raw))
       branch->tag ("QUOTED");
 
-    std::vector <std::pair <std::string, Lexer::Type> > lexemes;
-    Lexer::token_split (lexemes, raw);
-
-    std::vector <std::pair <std::string, Lexer::Type> >::iterator lex;
-    for (lex = lexemes.begin (); lex != lexemes.end (); ++lex)
+    std::string lexeme;
+    Lexer::Type type;
+    Lexer lex (raw);
+    lex.ambiguity (false);
+    while (lex.token (lexeme, type))
     {
       Tree* sub = branch->addBranch (new Tree ("argSub"));
-      sub->attribute ("raw", lex->first);
+      sub->attribute ("raw", lexeme);
 
-      if (lex->second == Lexer::typeOperator)
+      if (type == Lexer::typeOperator)
         sub->tag ("OP");
 
       // TODO More types needed.
