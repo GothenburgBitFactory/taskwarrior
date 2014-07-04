@@ -602,11 +602,12 @@
 // Duration
 #define STRING_DURATION_UNRECOGNIZED "The duration '{1}' was not recognized as valid, with correct units like '3days'."
 
-// E9
-#define STRING_E9_UNSUPPORTED        "Unsupported operator '{1}'."
-#define STRING_E9_NO_OPERANDS        "There are no operands for the '{1}' operator."
-#define STRING_E9_INSUFFICIENT_OP    "There are not enough operands for the '{1}' operator."
-#define STRING_E9_MORE_OP            "Found extra operands."
+// Eval
+#define STRING_EVAL_NO_EXPRESSION    "No expression to evaluate."
+#define STRING_EVAL_UNSUPPORTED      "Unsupported operator '{1}'."
+#define STRING_EVAL_OP_EXPECTED      "Operator expected."
+#define STRING_EVAL_NO_EVAL          "The expression could not be evaluated."
+#define STRING_PAREN_MISMATCH        "Mismatched parentheses in expression"
 
 // edit
 #define STRING_EDIT_NO_CHANGES       "No edits were detected."

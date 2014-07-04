@@ -24,6 +24,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <iostream>
 #include <map>
 #include <time.h>
@@ -31,6 +32,8 @@
 #include <Task.h>
 #include <Color.h>
 #include <Eval.h>
+#include <text.h>
+#include <i18n.h>
 
 extern Context context;
 extern Task& contextTask;
@@ -228,11 +231,7 @@ void Eval::evaluatePostfixStack (
   Variant& result) const
 {
   if (tokens.size () == 0)
-  {
-    std::cout << "No expression to evaluate.\n";
-    result = Variant ("");
-    return;
-  }
+    throw std::string (STRING_EVAL_NO_EXPRESSION);
 
   // This is stack used by the postfix evaluator.
   std::vector <Variant> values;
@@ -318,7 +317,7 @@ void Eval::evaluatePostfixStack (
       else if (token->first == "_hastag_") left = left.operator_hastag (right, contextTask);
       else if (token->first == "_notag_")  left = left.operator_notag (right, contextTask);
       else
-        std::cout << "Unrecognized operator '" << token->first << "'\n";
+        throw format (STRING_EVAL_UNSUPPORTED, token->first);
 
       if (_debug)
         std::cout << "[" << values.size () << "] eval result push '" << (std::string) left << "'\n";
@@ -341,8 +340,7 @@ void Eval::evaluatePostfixStack (
         break;
 
       case Lexer::typeOperator:
-        if (_debug)
-          std::cout << "Error: operator unexpected.\n";
+        throw std::string (STRING_EVAL_OP_EXPECTED);
         break;
 
       case Lexer::typeIdentifier:
@@ -393,7 +391,7 @@ void Eval::evaluatePostfixStack (
   // If there is more than one variant left on the stack, then the original
   // expression was not valid.
   if (values.size () != 1)
-    throw std::string ("The expression could not be evaluated.");
+    throw std::string (STRING_EVAL_NO_EVAL);
 
   result = values[0];
 }
@@ -802,7 +800,7 @@ void Eval::infixToPostfix (
   {
     if (op_stack.back ().first == "(" ||
         op_stack.back ().first == ")")
-      throw std::string ("Mismatched parentheses in expression");
+      throw std::string (STRING_PAREN_MISMATCH);
 
     postfix.push_back (op_stack.back ());
     op_stack.pop_back ();
