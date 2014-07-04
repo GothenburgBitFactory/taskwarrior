@@ -142,6 +142,7 @@
 - Removed obsolete task-faq.5 and task-tutorial.5 man pages.
 - French localization (thanks to leowzukw).
 - Removed deprecated 'report.X.limit' feature.
+- Improved bash completion when TASKRC is exported.
 
 ------ current release ---------------------------
 

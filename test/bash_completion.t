@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 18;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -55,9 +55,9 @@ if (open my $target, '>', 'task.sh')
     {
       my $temp=$_;
       chomp($_);
-      if ($_ eq qw{taskcommand='task'})
+      if ($_ eq "taskcommand='task rc.verbose:nothing'")
       {
-        print $target "taskcommand='../src/task rc:bug.rc'";
+        print $target "taskcommand='../src/task rc.verbose:nothing rc:bug.rc'";
       }
       else
       {
@@ -106,6 +106,10 @@ like ($output, qr/todd/, '\'proje:\' does expand');
 $output = qx{bash ./task.sh task proj : to 2>&1};
 ok ($? == 0, 'Exit status check');
 unlike ($output, qr/todd/, '\'proj:\' does not expand if abbreviation.minimum is 5');
+
+$output = qx{TASKRC=bug.rc bash ./task.sh task ad to 2>&1};
+ok ($? == 0, 'Exit status check');
+unlike ($output, qr/override/, 'taskrc override does not display');
 
 # there should be no gc coming from bash completion
 qx{../src/task rc:bug.rc add this task should be number 2 and stay number 2 2>&1};
