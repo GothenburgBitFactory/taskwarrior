@@ -3,26 +3,26 @@ Startup
   Context::initialize and Context::run methods.
 
   Context is a large object that holds all task information, both in terms of
-  the task data, and intermediate run-time data.  Having one global Context
-  object means we don't have 50 global variables.  Context is therefore just a
+  the task data, and intermediate run-time data. Having one global Context
+  object means we don't have 50 global variables. Context is therefore just a
   big global bucket of data.
 
-  Context::initialize sets up all the data and processes the command line.  The
+  Context::initialize sets up all the data and processes the command line. The
   initialization process is a big chicken-and-egg problem, because the command
   line depends on configuration (aliases) and the command line can force a
-  reload of configuration (rc:foo).  This is solved by look-ahead: the command
+  reload of configuration (rc:foo). This is solved by look-ahead: the command
   line is scanned for 'rc:xxx' and 'rc.data.location:xxx' arguments, then later
   for overrides.
 
-  The Context::run method handles all the debug output and exceptions.  Its
+  The Context::run method handles all the debug output and exceptions. Its
   main purpose is to set up exception handling and call Context::dispatch.
 
 
 Command Line Parsing
-  Command line parsing is difficult because of all the ambiguity.  The solution
-  is to make several passes over the command line.  For example, the task
-  command determines whether subsequent arguments are interpreted as part of a
-  filter or set of modifications.
+  Command line parsing is difficult because of all the ambiguity. The solution
+  is to make multiple passes over the command line. For example, the command
+  determines whether subsequent arguments are interpreted as part of a filter or
+  set of modifications.
 
 
 Dispatch
@@ -30,40 +30,40 @@ Dispatch
   look up a command object, then call its execute method.
 
   Context stores an associative map of command object pointers indexed by a
-  string.  This means the 'done' string is an index to the CmdDone object that
+  string. This means the 'done' string is an index to the CmdDone object that
   implements the functionality.
 
 
 Command Objects
-  Every task command is implemented by a command object.  The command object
+  Every task command is implemented by a command object. The command object
   provides metadata, usage and one-line help in addition to the ::execute method
   that implements the command.
 
 
 Column Objects
   There is a 1:1 correspondence between attributes stored in the data files and
-  the columns that may be reported.  These are represented by column objects,
+  the columns that may be reported. These are represented by column objects,
   which are responsible for validating input, measuring space needed according
   to various formats, and for rendering data for reports.
 
 
 TDB2
-  The TDB2 object is a layered, transactioned I/O manager.  Its purpose is to
-  isolate code from file I/O, locking, synching, and parsing details.  It is
+  The TDB2 object is a layered, transactioned I/O manager. Its purpose is to
+  isolate code from file I/O, locking, synching, and parsing details. It is
   also responsible for minimizing reads, writes and parsing of data files.
 
-  All input is assumed to be UTF8.  All stored data is UTF8.
+  All input is assumed to be UTF8. All stored data is UTF8.
 
 
 GC
   Garbage Collection is the process that moves tasks between the pending.data
-  and completed.data files.  It is also responsible for waking tasks out of the
+  and completed.data files. It is also responsible for waking tasks out of the
   wait state.
 
   Every command that displays task IDs will cause a GC to be run first, which
-  minimizes the number of changes necessary to the task IDs.  This means that
+  minimizes the number of changes necessary to the task IDs. This means that
   when a report shows task IDs, those IDs will remain valid while subsequent
-  write commands are issued.  The next report run may show different IDs.
+  write commands are issued. The next report run may show different IDs.
 
   Minimizing the size of pending.data is important for performance, because it
   is the file that is accessed most.
@@ -71,7 +71,7 @@ GC
 
 Files
   The data files used are all kept in the rc.data.location directory, which
-  defaults to ~/.task.  The files are:
+  defaults to ~/.task. The files are:
 
     pending.data
     completed.data
@@ -85,30 +85,29 @@ Files
 
   The completed.data file accumulates data over time, and grows unbounded.
 
-  The undo.data file accumulates changes over time, and grows unbounded.  It
+  The undo.data file accumulates changes over time, and grows unbounded. It
   provides all the necessary metadata to support the 'undo' command.
 
   The backlog.data file contains an accumulated set of changes that have not
-  been transmitted to Taskserver.  It grows unbounded between 'sync' commands.
+  been transmitted to Taskserver. It grows unbounded between 'sync' commands.
 
 
 Filter
   A filter is simply a set of command line arguments, but is only a subset of
-  the complete command line.  These arguments (Arg objects) are grouped into
-  a set by the A3 (Args) object according to whether the command found is a
-  read or write command.
+  the complete command line. These arguments are extracted from the parse tree
+  according to whether the command found is a read or write command.
 
-  There is a Command::filter method for applying a filter to a set of tasks,
-  yielding a result set.  It does this by creating an expression from the
-  filter using the E9 object, then evaluating the expression for each task,
-  such that the result set contains only tasks for which the expression
-  evaluates to Boolean true.
+  There is a Filter::subset method for applying a filter to a set of tasks,
+  yielding a result set. It does this by creating an expression from the
+  parse tree using the Eval object, then evaluating the expression for each task,
+  such that the result set contains only tasks for which the expression evaluates
+  to Boolean true.
 
 
 Sorting
-  Sorting is performed on a set of tasks.  More specifically, the list that is
+  Sorting is performed on a set of tasks. More specifically, the list that is
   sorted is a set of numeric indexes to tasks that are stored in a separate
-  list.  This minimizes the amount of data copying involved to just integers
+  list. This minimizes the amount of data copying involved to just integers
   rather than Task objects, but at the expense of one level of indirection.
   Memory fragmentation is a bigger problem than the performance of vector
   indexing.
@@ -118,16 +117,16 @@ Sorting
 
 
 Render
-  There are two rendering objects, ViewTask and ViewText.  These both have the
-  same tabular grid rendering capabilities.  ViewText maintains a 2D vector of
+  There are two rendering objects, ViewTask and ViewText. These both have the
+  same tabular grid rendering capabilities. ViewText maintains a 2D vector of
   strings to contain the data to be rendered, so it is used for things like the
-  help command output.  ViewTask does not copy data, but assumes all data is
+  help command output. ViewTask does not copy data, but assumes all data is
   stored externally in a vector of Tasks, which minimizes data copying.
 
   ViewTask contains projection data in the form of a set of Column objects that
-  represent the X axis.  The Y axis is represented by a vector of tasks.
+  represent the X axis. The Y axis is represented by a vector of tasks.
 
-  The rendering process is complex.  It involves dynamically setting column
+  The rendering process is complex. It involves dynamically setting column
   widths based on (1) available terminal width, (2) the columns to be included
   in the output, (3) ability to wrap text for certain columns and (4) the size
   of the data to be rendered, which involves added complexity when UTF8 is used.
@@ -138,23 +137,24 @@ Render
 
 Test Suite
   A strong and diverse test suite is critical to the successful release of any
-  software.  With the complex command set and its myriad permutations, a test
+  software. With the complex command set and its myriad permutations, a test
   suite is the only way to ensure quality levels, and guarantee that big changes
   are sound.
 
   It is intended that the test suite continues growing, mostly adding more
-  regression tests (bug.*.t) and more feature tests (feature.*.t).  The test are
-  mostly written in Perl, and utilize the Test::More module to generate TAP
-  output.  Some tests are written in C++ and also generate TAP.
+  regression and feature tests. The test are mostly written in Perl, and utilize
+  the Test::More module to generate TAP output. This is changing though, and the
+  suite is slowly migrating to Python. Some tests are written in C++ and all
+  tets generate TAP output.
 
-  There are currently over 5,000 unit tests, that take a minute or two to run
+  There are currently about 9,000 unit tests, that take a minute or two to run
   in total.
 
-  Taskwarrior uses flod software to automate continuous integration across
-  many platforms. Code changes are automatically detected, propagated, built and
+  Taskwarrior uses flod software to automate continuous integration across many
+  platforms. Code changes are automatically detected, propagated, built and
   tested on a variety of participating platforms. Grid testing results are here:
 
-    http://tasktools.org/tinderbox/taskwarrior-2.4.0.html
+    http://central.tasktools.org/task-2.4.0.html
 
   When making code changes, it is important that the test suite be run to verify
   that functionality was not broken.
@@ -168,26 +168,26 @@ Debugging
       http://tasktools.org/performance).
     - Data load times.
     - Terminal size, color capabilities.
-    - Command line parsing steps, shown in colorful diagrams.
+    - Colorful, confusing, command line parse tree.
     - TDB2 layer and I/O information.
 
 
 Patches
-  Patches are encouraged and welcomed.  Either attach them to the appropriate
-  Redmine issue, or send them to support@taskwarrior.org.  A good patch:
+  Patches are encouraged and welcomed. Either attach them to the appropriate
+  Redmine issue, or send them to support@taskwarrior.org. A good patch:
 
     - Maintains the MIT license, and does not contain code lifted from other
       sources.
     - Precisely addresses one issue only.
     - Doesn't break unit tests.
     - Doesn't introduce dependencies.
-    - Is accompanied by unit tests, where appropriate.
+    - Is accompanied by unit tests, where appropriate, written in Python.
     - Is accompanied by documentation changes, where appropriate.
     - Conforms to the prevailing coding standards - in other words, it should
       fit right in with the existing code.
 
   A patch may be rejected for not following the above guidelines, and more.
-  Bad patches may be accepted and modified depending on work load and mood.  It
+  Bad patches may be accepted and modified depending on work load and mood. It
   is possible that a patch may be rejected because it conflicts in some way with
   plans or upcoming changes.
 

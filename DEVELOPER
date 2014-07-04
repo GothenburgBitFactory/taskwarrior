@@ -4,7 +4,7 @@ How to Build
     $ git clone https://git.tasktools.org/scm/tm/task.git task.git
     $ cd task.git
     $ git checkout 2.4.0                 # Dev branch
-    $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release.  Default: neither.
+    $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release. Default: neither.
     $ make VERBOSE=1                     # Shows details
 
   Running Test Suite:
@@ -14,67 +14,72 @@ How to Build
                                          # Install vramsteg for blinkenlights
     $ ./problems                         # Find errors in all.log
 
+  Note that any development should be performed using a git clone, and the
+  current development branch. The source tarballs do not reflect HEAD, and do
+  not contain the test suite.
+
 General Statement
   This file is intended to convey the current efforts, priorities and needs of
-  the codebase.  It is for anyone looking for a way to start contributing.
+  the codebase. It is for anyone looking for a way to start contributing.
   While this is biased towards developers, anyone can contribute, and everyone
-  is encouraged to do so.  Here are many ways to contribute that may not be
+  is encouraged to do so. Here are many ways to contribute that may not be
   immediately obvious to you:
 
-  - Use Taskwarrior, become familiar with it, and make suggestions.  There are
+  - Use Taskwarrior, become familiar with it, and make suggestions. There are
     always ongoing discussions about new features and changes to existing
-    features.  Join us in the forums.
+    features.
 
-  - Join us in the #taskwarrior IRC channel on freenode.net.  Some great ideas,
-    suggestions, testing and discussions have taken place there.  It is also
+  - Join us in the #taskwarrior IRC channel on freenode.net. Some great ideas,
+    suggestions, testing and discussions have taken place there. It is also
     the quickest way to get help, or confirm a bug.
 
   - Join https://answers.tasktools.org and help us by asking, answering and
     voting on questions and answers, directly helping those who ask, and
-    indirectly helping those who search for existing answers.
+    helping future users who search for existing answers.
 
   - Review documentation: there are man pages, online articles, tutorials and
     so on, and these may contain errors, or they may not convey ideas in the
-    best way.  Perhaps you can help improve it.  Contact us - documentation is
+    best way. Perhaps you can help improve it. Contact us - documentation is
     a separate effort from the codebase, and includes all web sites.
 
-  - Take a look at the bug database, and help triage the bug list.  This is a
+  - Take a look at the bug database, and help triage the bug list. This is a
     review process that involves confirming bugs, providing additional data,
-    information or analysis.  Bug triage is very useful and much needed.
+    information or analysis. Bug triage is very useful and much needed.
 
-  - Fix a bug.  For this you'll need C++ and Git skills, but this is one of
-    the largest ways you can contribute.  We welcome all bug fixes, provided
+  - Fix a bug. For this you'll need C++ and Git skills, but this is one of
+    the largest ways you can contribute. We welcome all bug fixes, provided
     the work is done well and doesn't create other problems or introduce new
-    dependencies.  We recommend talking to us before embarking on this quest.
+    dependencies. We recommend talking to us before starting.
 
-  - Add unit tests.  Unit tests are possibly the most useful contributions of
+  - Add unit tests. Unit tests are possibly the most useful contributions of
     all, because they not only improve the quality of the code, but prevent
     future regressions, therefore maintaining quality of subsequent releases.
     Plus, broken tests are a great motivator for us to fix the causal bug.
+    You'll need Python skills, as we are migrating from Perl to Python for our
+    test suite.
 
-  - Add a feature.  Well, let's be very clear about this: adding a feature is
+  - Add a feature. Well, let's be very clear about this: adding a feature is
     not usually well-received, and if you add a feature and send a patch, it
-    will most likely be rejected.  The reason for this is that there are many
-    efforts under way, in various code branches.  There is a very good chance
+    will most likely be rejected. The reason for this is that there are many
+    efforts under way, in various code branches. There is a very good chance
     that the feature you add is either already in progress, or being done in a
-    way that is more fitting when considering other work in progress.  So if
-    you want to add a feature, please don't.  Start by talking to us, and find
-    out what is currently under way or planned.  You might find that we've
-    already rejected such a feature for some very good reasons.  So please
+    way that is more fitting when considering other work in progress. So if
+    you want to add a feature, please don't. Start by talking to us, and find
+    out what is currently under way or planned. You might find that we've
+    already rejected such a feature for some very good reasons. So please
     check first, so we don't duplicate effort or waste anyone's time.
 
   - Donate some server time to the testing effort, by participating in the
-    continuous integration of all changes, with our Flod software.  See this
-    page for an example:  http://tasktools.org/tinderbox
-    Ask us about running a Flod satellite, we're always looking for exotic
-    platforms to test on.
+    continuous integration of all changes, with our Flod software. See this
+    page for an example:  http://central.tasktools.org. Ask us about running a
+    Flod satellite, we're always looking for exotic platforms to test on.
 
-  - Spread the word.  Help others become more effective at managing tasks.
+  - Spread the word. Help others become more effective at managing tasks.
 
-  - Encouragement.  Tell us what works for you, and what doesn't.  It's all
-    good.
+  - Encouragement. Tell us what works for you, and what doesn't. Tell us about
+    your methodology for managing tasks. It's all good.
 
-  - Request a feature.  This not only tells us that you think something is
+  - Request a feature. This not only tells us that you think something is
     missing from the software, but gives us insights into how you use it.
     Plus, you might get your feature implemented.
 
@@ -82,11 +87,11 @@ General Statement
 
 Deprecated Code
   This is code that is going to be phased out soon, and therefore is not worth
-  fixing or documenting.  Don't waste your time.
+  fixing or documenting. Don't waste your time.
 
-  - Shadow file support in core.  It will migrate to become an external script.
+  - Shadow file support in core. It will migrate to become an external script.
 
-  - Priorities in core.  This will be migrated to become a UDA as soon as we
+  - Priorities in core. This will be migrated to become a UDA as soon as we
     have the right support in place for custom sorting.
 
   - Attribute modifiers.
@@ -95,14 +100,14 @@ New Code Needs
   This is code that needs to be written, usually down at the C++ function/method
   level.
 
-  - Need export_viz.yy script.  Any language.  This would have value as an
+  - Need export_viz.yy script. Any language. This would have value as an
     example, or template script serving as a starting-point for anyone who
     needed this format.
-  - Need new export_xxx.yy scripts - the more the better.  Any language.
+  - Need new export_xxx.yy scripts - the more the better. Any language.
   - The JSON.{h,cpp} code is fast and efficient up to a point, but has a non-
-    linear performance curve, implying a slowdown due to fragmentation.  Find
+    linear performance curve, implying a slowdown due to fragmentation. Find
     it, fix it.
-  - Need a function that can optimize color codes.  For example, if a string
+  - Need a function that can optimize color codes. For example, if a string
     contains this:
       <red>one two </red><red>three four</red>
     It can be shortened to:
@@ -110,8 +115,8 @@ New Code Needs
     This is only possible if there is nothing between </red> and <red> and the
     colors match.
   - Need an external script that can locate and correct duplicate UUIDs in the
-    data file, as found by 'task diag'.  This should check to see if there is
-    a suitable UUID generator installed.  This should also be careful to
+    data file, as found by 'task diag'. This should check to see if there is
+    a suitable UUID generator installed. This should also be careful to
     properly handle recurring tasks.
   - Take a look at:
 
@@ -122,25 +127,25 @@ New Code Needs
     by anyone who wishes to participate.
 
 Unit Tests Needed
-  There are always more unit tests needed.  More specifically, better unit tests
-  are always needed.  The convention is that there are four types of unit test:
+  There are always more unit tests needed. More specifically, better unit tests
+  are always needed. The convention is that there are four types of unit test:
 
   1. High level tests that exercise large features, or combinations of commands.
      For example, dependencies.t runs through a long list of commands that test
      dependencies, but do so by using 'add', 'modify', 'done' and 'delete'.
-  2. Regression tests that ensure certain bugs are fixed and stay fixed.  These
+  2. Regression tests that ensure certain bugs are fixed and stay fixed. These
      tests are named bug.NNN.t where NNN refers to the Redmine issue number.
      While it is not worth creating tests for small fixes like typos, it is for
      changes to the logic.
-  3. Small feature tests.  When small features are added, we would like small,
+  3. Small feature tests. When small features are added, we would like small,
      low-level feature tests named feature.NNN.t, where NNN is the Redmine
      issue number.
-  4. Code tests.  These are tests written in C++ that exercise C++ objects, or
-     function calls.  These are the lowest level tests.  It is important that
+  4. Code tests. These are tests written in C++ that exercise C++ objects, or
+     function calls. These are the lowest level tests. It is important that
      these kind of tests be extensive and thorough, because the software depends
      on this code the most.
 
-  The tests are mainly written in Perl, and all use TAP.  We want them all to be
+  The tests are mainly written in Perl, and all use TAP. We want them all to be
   eventually replaced by Python, so we are now only accepting new tests that use
   the Python-based approach you can see in some of the existing tests. Here is
   how to get the code and run the test suite:
@@ -174,17 +179,14 @@ Unit Tests Needed
     many issues, open and closed, have the "needsTest" label. These are things
     that we would like to see in the test suite, as regression tests.
   - The basic.t unit tests are a misnomer, and should be either removed or
-    renamed.  We have long talked of 'basic functionality' that includes add,
-    delete, done, and list commands.  We need unit tests that prove that basic
+    renamed. We have long talked of 'basic functionality' that includes add,
+    delete, done, and list commands. We need unit tests that prove that basic
     functionality is working, and the file containing them should be called
     basic.t.
   - Test propagation of modifications to recurring tasks.
   - Test regex support.
-  - Need unit tests for each bug in the issue list, if suitable.
-  - We have bugs in the unit tests that only manifest on days such as December
-    31st.  Clearly there is some bad date math going on, most likely in the
-    tests themselves, rather than in Taskwarrior, although with broken tests,
-    who knows?
+  - Need unit tests for each bug in the issue list that is marked with the
+    'needsTest' label.
 
   * Note that running the unit tests requires the Perl JSON module to be
     installed.
@@ -196,8 +198,6 @@ Work in Progress
   Things that are currently in flux, which is another way of saying leave it
   alone while it is being worked on.
 
-  - Command line parser (A3).
-  - Expression evaluation (E9).
   - All columns/Col*::validate methods.
   - New columns/Col*::modify methods.
 
@@ -207,14 +207,11 @@ Current Codebase Condition
     - 2.3.0 Current release, locked.
 
   '2.3.1' branch:
-    - Bug fix branch.  To be released soon.
+    - Bug fix branch. To be released soon.
 
   '2.4.0' branch:
     - Current development branch with new command line parser, expressions
 
 ---
 
-2014-01-19 Updated for 2.4.0.
-2014-04-13 Added answers.tasktools.org, corrected URLs.
-2014-05-11 Added build info.
-2014-05-31 Updated unit tests section.
+2014-07-04 Updated for 2.4.0
