@@ -113,8 +113,7 @@ int CmdDuplicate::execute (std::string& output)
 
       if (context.verbose ("new-id"))
         std::cout << format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
-
-      if (context.verbose ("new-uuid"))
+      else if (context.verbose ("new-uuid"))
         std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.get ("uuid")) + "\n";
 
       if (context.verbose ("project"))
