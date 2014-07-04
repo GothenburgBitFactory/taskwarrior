@@ -48,6 +48,7 @@ public:
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
 
   void findBinary ();
+  void resolveAliases ();
   void findOverrides ();
   void findCommand ();
   void findIdSequence ();
@@ -68,7 +69,6 @@ public:
 
 private:
   void findTerminator ();
-  void resolveAliases ();
   void findPattern ();
   void findSubstitution ();
   void findTag ();

@@ -40,9 +40,6 @@ int main (int argc, const char** argv)
     parser.appendStdin ();
     parser.findOverrides ();
 
-    Alias alias;
-    alias.resolve (parser.tree ());
-
     // Read-only commands.
     parser.entity ("cmd", "active");           parser.entity ("readcmd", "active");
     parser.entity ("cmd", "all");              parser.entity ("readcmd", "all");

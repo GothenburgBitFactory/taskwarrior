@@ -25,9 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <sstream>
-#include <algorithm>
-#include <stdlib.h>
 #include <Context.h>
 #include <Command.h>
 #include <CmdAliases.h>
@@ -48,22 +45,11 @@ CmdCompletionAliases::CmdCompletionAliases ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionAliases::execute (std::string& output)
 {
-  // Get a list of all aliases.
-  std::vector <std::string> aliases;
+  std::map <std::string, std::string>::iterator alias;
+  for (alias = context.config.begin (); alias != context.config.end (); ++alias)
+    if (alias->first.substr (0, 6) == "alias.")
+      output += alias->first.substr (6) + "\n";
 
-  std::map <std::string, std::string>::iterator it;
-  for (it = context.alias._aliases.begin (); it != context.alias._aliases.end (); ++it)
-    aliases.push_back (it->first);
-
-  // Sort alphabetically.
-  std::sort (aliases.begin (), aliases.end ());
-
-  std::stringstream out;
-  std::vector <std::string>::iterator a;
-  for (a = aliases.begin (); a != aliases.end (); ++a)
-    out << *a << "\n";
-
-  output = out.str ();
   return 0;
 }
 

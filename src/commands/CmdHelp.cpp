@@ -97,13 +97,14 @@ int CmdHelp::execute (std::string& output)
   view.set (row, 1, " ");
 
   std::map <std::string, std::string>::iterator alias;
-  for (alias =  context.alias._aliases.begin ();
-       alias != context.alias._aliases.end ();
-       ++alias)
+  for (alias = context.config.begin (); alias != context.config.end (); ++alias)
   {
-    row = view.addRow ();
-    view.set (row, 1, alias->first);
-    view.set (row, 2, format (STRING_CMD_HELP_ALIASED, alias->second));
+    if (alias->first.substr (0, 6) == "alias.")
+    {
+      row = view.addRow ();
+      view.set (row, 1, alias->first.substr (6));
+      view.set (row, 2, format (STRING_CMD_HELP_ALIASED, alias->second));
+    }
   }
 
   output = "\n"
