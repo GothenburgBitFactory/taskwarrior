@@ -58,6 +58,7 @@
 - TW-279 ".monthly" unexpectedly appended to task annotation (thanks to Florian
          Hollerweger).
 - TW-285 DUETODAY doesn't give any output (thanks to Jostein Berntsen).
+- TW-294 Display UUID of task created by add (thanks to John West).
 - TW-306 Wrong date format in burndown view (thanks to Michele Santullo).
 - TW-752 task ID no longer defaults to info (thanks to Christopher Roberts).
 - TW-1243 Automatically insert ( ) around user-supplied filter, if any.

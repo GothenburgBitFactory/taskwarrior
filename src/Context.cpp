@@ -484,6 +484,7 @@ bool Context::verbose (const std::string& token)
         verbosity[0]      != "footnote" &&  //
         verbosity[0]      != "label"    &&  //
         verbosity[0]      != "new-id"   &&  //
+        verbosity[0]      != "new-uuid" &&  //
         verbosity[0]      != "affected" &&  //
         verbosity[0]      != "edit"     &&  //
         verbosity[0]      != "special"  &&  //

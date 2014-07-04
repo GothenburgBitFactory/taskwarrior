@@ -79,7 +79,7 @@ std::string Config::_defaults =
   "#verbose=no                                    # Provide regular feedback\n"
   "#verbose=nothing                               # Provide no feedback\n"
   "#                                              # Comma-separated list.  May contain any subset of:\n"
-  "#verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter\n"
+  "#verbose=blank,header,footnote,label,new-id,new-uuid,affected,edit,special,project,sync,filter\n"
   "confirmation=yes                               # Confirmation on delete, big changes\n"
   "indent.annotation=2                            # Indent spaces for annotations\n"
   "indent.report=0                                # Indent spaces for whole report\n"
