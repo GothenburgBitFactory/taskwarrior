@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
 #include <Context.h>
@@ -46,6 +45,9 @@ extern Context context;
 
 // Overridden by rc.abbreviation.minimum.
 static int minimumMatchLength = 3;
+
+// Alias expansion limit. Any more indicates some kind of error.
+static int safetyValveDefault = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
 Parser::Parser ()
@@ -331,6 +333,50 @@ void Parser::findTerminator ()
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::resolveAliases ()
 {
+  bool something;
+  int safety_valve = safetyValveDefault;
+
+  do
+  {
+    something = false;
+    std::vector <Tree*>::iterator i;
+    for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+    {
+      // Parser override operator.
+      if ((*i)->attribute ("raw") == "--")
+        break;
+
+      std::map <std::string, std::string>::iterator a;
+      if ((*i)->_branches.size ())
+      {
+        std::vector <Tree*>::iterator b;
+        for (b = (*i)->_branches.begin (); b != (*i)->_branches.end (); ++b)
+        {
+          a = _aliases.find ((*b)->attribute ("raw"));
+          if (a != _aliases.end ())
+          {
+            (*b)->attribute ("raw", a->second);
+            (*b)->tag ("ALIAS");
+            something = true;
+          }
+        }
+      }
+      else
+      {
+        a = _aliases.find ((*i)->attribute ("raw"));
+        if (a != _aliases.end ())
+        {
+          (*i)->attribute ("raw", a->second);
+          (*i)->tag ("ALIAS");
+          something = true;
+        }
+      }
+    }
+  }
+  while (something && --safety_valve > 0);
+
+  if (safety_valve <= 0)
+    context.debug (format ("Nested alias limit of {1} reached.", safetyValveDefault));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
