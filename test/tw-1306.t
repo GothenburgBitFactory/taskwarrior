@@ -28,7 +28,6 @@
 
 import sys
 import os
-from glob import glob
 # Ensure python finds the local simpletap and basetest modules
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,13 +39,6 @@ class BaseTestBug1306(BaseTestCase):
         with open("1306.rc", 'w') as fh:
             fh.write("data.location=.\n"
                      "confirmation=no\n")
-
-    @classmethod
-    def finish(cls):
-        for file in glob("*.data"):
-            os.remove(file)
-
-        os.remove("1306.rc")
 
 class TestBug1306(BaseTestBug1306):
     def test_overdue(self):
