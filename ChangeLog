@@ -22,6 +22,8 @@
         (thanks to Marton Suranyi).
 - TW-5 color.due.today does not work (thanks to Max Muller).
 - TW-28 Inserts spaces before punctuation characters (thanks to Matt Kraai).
+- TW-43 Better error handling than: "Found extra operands." (thanks to Benjamin
+        Weber).
 - TW-44 Space handling in dateformat (thanks to Louis-Claude Canon).
 - TW-72 extend info report with urgency column
 - TW-115 allow "0day" durations for UDAs.
