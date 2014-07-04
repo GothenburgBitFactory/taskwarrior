@@ -34,9 +34,9 @@ class TestCase(unittest.TestCase):
 
     def testFailOther(self):
         """Nothing to do with Copyright"""
-        self.assertEqual("I like to code", "I like\nto code\n")
+#        self.assertEqual("I like to code", "I like\nto code\n")
 
-    @unittest.skipIf(1 != 0, "This machine has sane logic")
+#    @unittest.skipIf(1 != 0, "This machine has sane logic")
     def testSkipped(self):
         """Test all logic of the world"""
 
