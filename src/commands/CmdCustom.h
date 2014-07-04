@@ -39,7 +39,6 @@ public:
 private:
   void validateReportColumns (std::vector <std::string>&);
   void validateSortColumns (std::vector <std::string>&);
-  void getLimits (const std::string&, int&, int&);
 };
 
 #endif

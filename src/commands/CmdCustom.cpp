@@ -154,7 +154,7 @@ int CmdCustom::execute (std::string& output)
   // Report output can be limited by rows or lines.
   int maxrows = 0;
   int maxlines = 0;
-  getLimits (_keyword, maxrows, maxlines);
+  context.getLimits (maxrows, maxlines);
 
   // Adjust for fluff in the output.
   if (maxlines)
@@ -217,48 +217,6 @@ void CmdCustom::validateSortColumns (std::vector <std::string>& columns)
   std::vector <std::string>::iterator i;
   for (i = columns.begin (); i != columns.end (); ++i)
     legacySortColumnMap (*i);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// A value of zero mean unlimited.
-// A value of 'page' means however many screen lines there are.
-// A value of a positive integer is a row/task limit.
-void CmdCustom::getLimits (const std::string& report, int& rows, int& lines)
-{
-  rows = 0;
-  lines = 0;
-
-  int screenheight = 0;
-
-  // If a report has a stated limit, use it.
-  if (report != "")
-  {
-    std::string name = "report." + report + ".limit";
-    if (context.config.get (name) == "page")
-      lines = screenheight = context.getHeight ();
-    else
-      rows = context.config.getInteger (name);
-  }
-
-  // If the custom report has a defined limit, then allow a numeric override.
-  // This is an integer specified as a filter (limit:10).
-  std::string limit = context.parser.getLimit ();
-  if (limit != "")
-  {
-    if (limit == "page")
-    {
-      if (screenheight == 0)
-        screenheight = context.getHeight ();
-
-      rows = 0;
-      lines = screenheight;
-    }
-    else
-    {
-      rows = (int) strtol (limit.c_str (), NULL, 10);
-      lines = 0;
-    }
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
