@@ -28,7 +28,6 @@
 
 import sys
 import os
-# Ensure python finds the local simpletap and basetest modules
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import BaseTestCase
@@ -41,7 +40,7 @@ class BaseTestBug1306(BaseTestCase):
                      "confirmation=no\n")
 
 class TestBug1306(BaseTestBug1306):
-    def test_overdue(self):
+    def test_mod_before_add(self):
         """FILTER before 'add' command upgraded to MODIFICATION"""
         self.callTaskSuccess(["rc:1306.rc", "project:PROJ", "add", "foo"])
         code, out, err = self.callTaskSuccess(["rc:1306.rc", "1", "info"])

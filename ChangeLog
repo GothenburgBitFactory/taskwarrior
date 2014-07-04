@@ -111,6 +111,7 @@
 - TW-1341 confirmation config setting should apply to config command as well
           (thanks to Charles Ulrich).
 - TW-1345 taskrc.5 manpage errors.
+- TW-1360 color.until directive missing.
 - TW-1361 Strange results with complex filter (thanks to Jim B).
 - TW-1366 In diagnostics it's called 'Cert', and in config it's called
           'certificate' (thanks to Jack).

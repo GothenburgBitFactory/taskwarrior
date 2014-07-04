@@ -14,6 +14,7 @@ New Features in taskwarrior 2.4.0
     command.
   - The 'new-uuid' verbosity token shows the UUID of newly created tasks.
   - The 'info' report now breaks down urgency values.
+  - New 'color.until' color rule.
 
 New commands in taskwarrior 2.4.0
 

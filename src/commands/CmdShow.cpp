@@ -121,6 +121,7 @@ int CmdShow::execute (std::string& output)
     " color.tagged"
     " color.undo.after"
     " color.undo.before"
+    " color.until"
     " column.padding"
     " complete.all.tags"
     " confirmation"

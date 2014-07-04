@@ -152,6 +152,13 @@ static void colorizeScheduled (Task& task, const Color& base, Color& c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+static void colorizeUntil (Task& task, const Color& base, Color& c)
+{
+  if (task.has ("until"))
+    c.blend (base);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 static void colorizeTag (Task& task, const std::string& rule, const Color& base, Color& c)
 {
   if (task.hasTag (rule.substr (10)))
@@ -312,6 +319,7 @@ void autoColorize (Task& task, Color& c)
       else if (*r == "color.pri.none")                colorizePriorityNone (task, base, c);
       else if (*r == "color.active")                  colorizeActive       (task, base, c);
       else if (*r == "color.scheduled")               colorizeScheduled    (task, base, c);
+      else if (*r == "color.until")                   colorizeUntil        (task, base, c);
       else if (*r == "color.project.none")            colorizeProjectNone  (task, base, c);
       else if (*r == "color.tag.none")                colorizeTagNone      (task, base, c);
       else if (*r == "color.due")                     colorizeDue          (task, base, c);

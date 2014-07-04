@@ -760,6 +760,9 @@ Task is started, therefore active.
 .B color.scheduled
 Task is scheduled, therefore ready for work.
 .br
+.B color.until
+Task has an expiration date.
+.br
 .B color.blocking
 Task is blocking another in a dependency.
 .br
