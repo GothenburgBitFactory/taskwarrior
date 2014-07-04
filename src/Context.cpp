@@ -753,7 +753,8 @@ void Context::loadAliases ()
 {
   std::map <std::string, std::string>::iterator i;
   for (i = config.begin (); i != config.end (); ++i)
-    parser.alias (i->first, i->second);
+    if (i->first.substr (0, 6) == "alias.")
+      parser.alias (i->first.substr (6), i->second);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
