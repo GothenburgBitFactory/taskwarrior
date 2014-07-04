@@ -1200,11 +1200,6 @@ report. See the
 variable for details on the possible values.  Deprecated.
 
 .TP
-.B report.X.limit
-An optional value to a report limiting the number of displayed tasks in the
-generated report.  Deprecated.
-
-.TP
 Taskwarrior comes with a number of predefined reports, which are:
 
 .TP

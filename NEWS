@@ -46,6 +46,8 @@ Removed features in 2.4.0
   - Removed the 'tasksh' program from the Taskwarrior distribution. It is now
     a separate project.
   - Removed the 'complete.all.projects' setting that was not used.
+  - Removed support for 'report.X.limit', which can now be set in the report
+    filter 'limit:N'.
 
 Known Issues
 

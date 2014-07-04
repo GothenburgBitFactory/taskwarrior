@@ -88,12 +88,6 @@ std::string legacyCheckForDeprecatedVariables ()
   std::map <std::string, std::string>::const_iterator it;
   for (it = context.config.begin (); it != context.config.end (); ++it)
   {
-    // report.*.limit
-    if (it->first.length () > 13 &&
-        it->first.substr (0, 7) == "report." &&
-        it->first.substr (it->first.length () - 6) == ".limit")
-      deprecated.push_back (it->first);
-
     // report.*.annotations
     if (it->first.length () > 19 &&
         it->first.substr (0, 7) == "report." &&

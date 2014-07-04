@@ -140,6 +140,7 @@
 - Display debug/release build type in the diagnostics command.
 - Removed obsolete task-faq.5 and task-tutorial.5 man pages.
 - French localization (thanks to leowzukw).
+- Removed deprecated 'report.X.limit' feature.
 
 ------ current release ---------------------------
 
