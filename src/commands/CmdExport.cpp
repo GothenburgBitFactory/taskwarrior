@@ -53,8 +53,11 @@ int CmdExport::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
-  // Note: "limit:" feature not supported.
-  // TODO Why not?
+  // Obey 'limit:N'.
+  int rows = 0;
+  int lines = 0;
+  context.getLimits (rows, lines);
+  int limit = (rows > lines ? rows : lines);
 
   // Is output contained within a JSON array?
   bool json_array = context.config.getBoolean ("json.array");
@@ -63,6 +66,7 @@ int CmdExport::execute (std::string& output)
   if (json_array)
     output += "[\n";
 
+  int counter = 0;
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
@@ -70,6 +74,9 @@ int CmdExport::execute (std::string& output)
       output += ",\n";
 
     output += task->composeJSON (true);
+
+    if (limit && ++counter >= limit)
+      break;
   }
 
   if (filtered.size ())
