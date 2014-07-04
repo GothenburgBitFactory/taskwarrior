@@ -101,20 +101,23 @@
 #define STRING_LOCALIZATION_DESC     "Tradução em Português"
 #define STRING_LOCALIZATION_AUTHOR   "Traduzido para Português por Renato Alves."
 
+// Parser
+#define STRING_PARSER_ALIAS_NEST     "Nested alias limit of {1} reached."
+#define STRING_PARSER_OVERRIDE_RC    "Alteração de configuração rc.{1}:{2}"
+#define STRING_PARSER_UNKNOWN_ATTMOD "Erro: modificador de atributo não reconhecido '{1}'."
+#define STRING_PARSER_RANGE_INVERTED "Intervalo invertido 'alta-baixa' em vez de 'baixa-alta'"
+#define STRING_PARSER_MALFORMED_ID   "ID malformado."
+#define STRING_PARSER_UUID_AFTER_COMMA "UUID não reconhecido após a vírgula."
+#define STRING_PARSER_ALTERNATE_RC   "Usando o ficheiro .taskrc alternativo {1}"
+#define STRING_PARSER_ALTERNATE_DATA "Usando data.location alternativa {1}"
+
 // A3
-#define STRING_A3_ALTERNATE_RC       "Usando o ficheiro .taskrc alternativo {1}"
-#define STRING_A3_ALTERNATE_DATA     "Usando data.location alternativa {1}"
-#define STRING_A3_OVERRIDE_RC        "Alteração de configuração rc.{1}:{2}"
 #define STRING_A3_OVERRIDE_PROBLEM   "Problema com a alteração: {1}"
-#define STRING_A3_UNKNOWN_ATTMOD     "Erro: modificador de atributo não reconhecido '{1}'."
 #define STRING_A3_MISMATCHED_PARENS  "Erro de não correspondência de parentesis na expressão"
 #define STRING_A3_PATTERN_GARBAGE    "Caracter(es) não reconhecidos no fim da expressão."
 #define STRING_A3_MALFORMED_PATTERN  "Expressão malformada."
-#define STRING_A3_MALFORMED_ID       "ID malformado."
 #define STRING_A3_MALFORMED_UUID     "UUID malformado."
 #define STRING_A3_ID_AFTER_HYPHEN    "ID não reconhecido após o hífen."
-#define STRING_A3_RANGE_INVERTED     "Intervalo invertido 'alta-baixa' em vez de 'baixa-alta'"
-#define STRING_A3_UUID_AFTER_COMMA   "UUID não reconhecido após a vírgula."
 #define STRING_A3_ZERO_ID            "'{1}' não é um ID válido."
 
 // Color

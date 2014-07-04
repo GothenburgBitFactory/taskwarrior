@@ -101,21 +101,24 @@
 #define STRING_LOCALIZATION_DESC     "- localización española"
 #define STRING_LOCALIZATION_AUTHOR   "Traducido al español por Fidel Mato."
 
+// Parser
+#define STRING_PARSER_ALIAS_NEST     "Nested alias limit of {1} reached."
+#define STRING_PARSER_OVERRIDE_RC    "Sobrescritura de configuración rc.{1}:{2}"
+#define STRING_PARSER_UNKNOWN_ATTMOD "Error: modificador de atributo no reconocido '{1}'."
+#define STRING_PARSER_RANGE_INVERTED "Rango invertido 'alto-bajo' en vez de 'bajo-alto'"
+#define STRING_PARSER_MALFORMED_ID   "ID incorrecto."
+#define STRING_PARSER_UUID_AFTER_COMMA "UUID no reconocido tras coma."
+#define STRING_PARSER_ALTERNATE_RC   "Usando el archivo .taskrc alternativo {1}"
+#define STRING_PARSER_ALTERNATE_DATA "Usando data.location alternativa {1}"
+
 // A3
-#define STRING_A3_ALTERNATE_RC       "Usando el archivo .taskrc alternativo {1}"
-#define STRING_A3_ALTERNATE_DATA     "Usando data.location alternativa {1}"
 // Sobrescritura: de R.A.E. sobrescribir
-#define STRING_A3_OVERRIDE_RC        "Sobrescritura de configuración rc.{1}:{2}"
 #define STRING_A3_OVERRIDE_PROBLEM   "Problema con sobrescritura: {1}"
-#define STRING_A3_UNKNOWN_ATTMOD     "Error: modificador de atributo no reconocido '{1}'."
 #define STRING_A3_MISMATCHED_PARENS  "Paréntesis desemparejados en expresión"
 #define STRING_A3_PATTERN_GARBAGE    "Carácter(es) no reconocido(s) al final del patrón."
 #define STRING_A3_MALFORMED_PATTERN  "Patrón incorrecto."
-#define STRING_A3_MALFORMED_ID       "ID incorrecto."
 #define STRING_A3_MALFORMED_UUID     "UUID incorrecto."
 #define STRING_A3_ID_AFTER_HYPHEN    "ID no reconocido tras guión."
-#define STRING_A3_RANGE_INVERTED     "Rango invertido 'alto-bajo' en vez de 'bajo-alto'"
-#define STRING_A3_UUID_AFTER_COMMA   "UUID no reconocido tras coma."
 #define STRING_A3_ZERO_ID            "'{1}' no es un ID válido."
 
 // Color

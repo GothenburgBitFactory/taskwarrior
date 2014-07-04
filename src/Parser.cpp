@@ -53,8 +53,6 @@ static int safetyValveDefault = 10;
 Parser::Parser ()
 {
   _tree = new Tree ("root");
-  if (! _tree)
-    throw std::string ("Failed to allocate memory for parse tree.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -117,10 +115,7 @@ void Parser::initialize (int argc, const char** argv)
 void Parser::clear ()
 {
   delete _tree;
-
   _tree = new Tree ("root");
-  if (! _tree)
-    throw std::string ("Failed to allocate memory for parse tree.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -376,7 +371,7 @@ void Parser::resolveAliases ()
   while (something && --safety_valve > 0);
 
   if (safety_valve <= 0)
-    context.debug (format ("Nested alias limit of {1} reached.", safetyValveDefault));
+    context.debug (format (STRING_PARSER_ALIAS_NEST, safetyValveDefault));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -482,7 +477,7 @@ void Parser::getOverrides (
       else
         home = ".";
 
-      context.header (format (STRING_A3_ALTERNATE_RC, rc._data));
+      context.header (format (STRING_PARSER_ALTERNATE_RC, rc._data));
 
       // Keep looping, because if there are multiple rc:file arguments, we
       // want the last one to dominate.
@@ -505,7 +500,7 @@ void Parser::getDataLocation (Path& data)
         (*i)->attribute ("name") == "data.location")
     {
       data = Directory ((*i)->attribute ("value"));
-      context.header (format (STRING_A3_ALTERNATE_DATA, (std::string) data));
+      context.header (format (STRING_PARSER_ALTERNATE_DATA, (std::string) data));
     }
 
     // Keep looping, because if there are multiple overrides, we want the last
@@ -526,7 +521,7 @@ void Parser::applyOverrides ()
       std::string name  = (*i)->attribute ("name");
       std::string value = (*i)->attribute ("value");
       context.config.set (name, value);
-      context.footnote (format (STRING_A3_OVERRIDE_RC, name, value));
+      context.footnote (format (STRING_PARSER_OVERRIDE_RC, name, value));
     }
   }
 }
@@ -1147,7 +1142,7 @@ void Parser::findAttributeModifier ()
 #endif
               }
               else
-                throw format (STRING_A3_UNKNOWN_ATTMOD, modifier);
+                throw format (STRING_PARSER_UNKNOWN_ATTMOD, modifier);
 
               std::map <std::string, Column*>::const_iterator col;
               col = context.columns.find (canonical);
@@ -1229,7 +1224,7 @@ void Parser::findIdSequence ()
             n_max.depleted ())
         {
           if (id_min > id_max)
-            throw std::string (STRING_A3_RANGE_INVERTED);
+            throw std::string (STRING_PARSER_RANGE_INVERTED);
 
           ranges.push_back (std::pair <int, int> (id_min, id_max));
         }
@@ -1240,7 +1235,7 @@ void Parser::findIdSequence ()
         }
       }
       else
-        throw std::string (STRING_A3_MALFORMED_ID);
+        throw std::string (STRING_PARSER_MALFORMED_ID);
     }
 
     if (not_an_id)
@@ -1347,7 +1342,7 @@ void Parser::findUUIDList ()
       {
         if (!n.getUUID (uuid) &&
             !n.getPartialUUID (uuid))
-          throw std::string (STRING_A3_UUID_AFTER_COMMA);
+          throw std::string (STRING_PARSER_UUID_AFTER_COMMA);
 
         sequence.push_back (uuid);
       }

@@ -101,20 +101,23 @@
 #define STRING_LOCALIZATION_DESC     "Traduction française"
 #define STRING_LOCALIZATION_AUTHOR   "Traduit en Français par Leowzukw."
 
+// Parser
+#define STRING_PARSER_ALIAS_NEST     "Nested alias limit of {1} reached."
+#define STRING_PARSER_OVERRIDE_RC    "Configuration écrasée : rc.{1}:{2}"
+#define STRING_PARSER_UNKNOWN_ATTMOD "Erreur : attribut de modification non reconnu '{1}'."
+#define STRING_PARSER_RANGE_INVERTED "Inverted range 'high-low' instead of 'low-high'"
+#define STRING_PARSER_MALFORMED_ID   "ID mal formé."
+#define STRING_PARSER_UUID_AFTER_COMMA "UUID non reconnu après la virgule."
+#define STRING_PARSER_ALTERNATE_RC   "Utilise un fichier .taskrc alternatif : {1}"
+#define STRING_PARSER_ALTERNATE_DATA "Utilise une data.location alternative : {1}"
+
 // A3
-#define STRING_A3_ALTERNATE_RC       "Utilise un fichier .taskrc alternatif : {1}"
-#define STRING_A3_ALTERNATE_DATA     "Utilise une data.location alternative : {1}"
-#define STRING_A3_OVERRIDE_RC        "Configuration écrasée : rc.{1}:{2}"
 #define STRING_A3_OVERRIDE_PROBLEM   "Problème avec l'écrasement de {1}"
-#define STRING_A3_UNKNOWN_ATTMOD     "Erreur : attribut de modification non reconnu '{1}'."
 #define STRING_A3_MISMATCHED_PARENS  "Parenthèses incohérentes dans l'expression"
 #define STRING_A3_PATTERN_GARBAGE    "Caractère(s) non reconnu(s) à la fin du motif."
 #define STRING_A3_MALFORMED_PATTERN  "Motif mal formé."
-#define STRING_A3_MALFORMED_ID       "ID mal formé."
 #define STRING_A3_MALFORMED_UUID     "UUID mal formé."
 #define STRING_A3_ID_AFTER_HYPHEN    "ID non reconnu après \"-\""
-#define STRING_A3_RANGE_INVERTED     "Inverted range 'high-low' instead of 'low-high'"
-#define STRING_A3_UUID_AFTER_COMMA   "UUID non reconnu après la virgule."
 #define STRING_A3_ZERO_ID            "'{1}' n'est pas un ID valide."
 
 // Color
