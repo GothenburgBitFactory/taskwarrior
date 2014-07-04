@@ -1,60 +1,56 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
 
-use strict;
-use warnings;
-use Test::More tests => 2;
+import sys
+import os
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+import unittest
+from subprocess import Popen, PIPE, STDOUT
+from datetime import datetime
 
-use File::Basename;
-my $ut = basename ($0);
-my $rc = $ut . '.rc';
 
-# Create the rc file.
-if (open my $fh, '>', $rc)
-{
-  print $fh "data.location=.\n",
-            "confirmation=off\n";
-  close $fh;
-}
+class TestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        # Empty rc file
+        open("version.rc", 'w').close()
 
-# Note: all commands checked for $? == 0
-# Note: all commands redirect 2>&1
+    def setUp(self):
+        """Executed before each test in the class"""
 
-# Bug <id> - <description>
-qx{../src/task rc:$rc add sample 2>&1};
-ok ($? == 0, "$ut: add sample");
+    def testVersion(self):
+        """Copyright is current"""
+        command = ["../src/task", "rc:version.rc", "version"]
 
-my $output = qx{../src/task rc:$rc ls 2>&1};
-like ($output, qr/sample/ms, "$ut: sample task found");
+        # Merge STDOUT and STDERR
+        p = Popen(command, stdout=PIPE, stderr=STDOUT)
+        out, err = p.communicate()
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data), $rc;
-exit 0;
+        expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
+        self.assertRegexpMatches(out.decode("utf8"), expected)
+
+    def testFailOther(self):
+        """Nothing to do with Copyright"""
+        self.assertEqual("I like to code", "I like\nto code\n")
+
+    @unittest.skipIf(1 != 0, "This machine has sane logic")
+    def testSkipped(self):
+        """Test all logic of the world"""
+
+    def tearDown(self):
+        """Executed after each test in the class"""
+
+    @classmethod
+    def tearDownClass(cls):
+        """Executed once after all tests in the class"""
+        os.remove("version.rc")
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
