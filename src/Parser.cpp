@@ -83,19 +83,30 @@ void Parser::initialize (int argc, const char** argv)
     if (! noSpaces (raw))
       branch->tag ("QUOTED");
 
+    // Lex each argument.  If there are multiple lexemes, create sub branches,
+    // otherwise no change.
     std::string lexeme;
     Lexer::Type type;
     Lexer lex (raw);
     lex.ambiguity (false);
+
+    std::vector <std::pair <std::string, Lexer::Type> > lexemes;
     while (lex.token (lexeme, type))
+      lexemes.push_back (std::pair <std::string, Lexer::Type> (lexeme, type));
+
+    if (lexemes.size () > 1)
     {
-      Tree* sub = branch->addBranch (new Tree ("argSub"));
-      sub->attribute ("raw", lexeme);
+      std::vector <std::pair <std::string, Lexer::Type> >::iterator l;
+      for (l = lexemes.begin (); l != lexemes.end (); ++l)
+      {
+        Tree* sub = branch->addBranch (new Tree ("argSub"));
+        sub->attribute ("raw", l->first);
 
-      if (type == Lexer::typeOperator)
-        sub->tag ("OP");
+        if (l->second == Lexer::typeOperator)
+          sub->tag ("OP");
 
-      // TODO More types needed.
+        // TODO More types needed.
+      }
     }
   }
 }
