@@ -59,6 +59,7 @@ public:
 
   const std::vector <std::string> getColumns () const;
   const std::vector <std::string> getCommands () const;
+  void getLimits (int&, int&);
 
   bool color ();                       // TTY or <other>?
   bool verbose (const std::string&);   // Verbosity control

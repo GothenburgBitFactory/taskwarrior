@@ -594,6 +594,32 @@ const std::vector <std::string> Context::getCommands () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// A value of zero mean unlimited.
+// A value of 'page' means however many screen lines there are.
+// A value of a positive integer is a row/task limit.
+void Context::getLimits (int& rows, int& lines)
+{
+  rows = 0;
+  lines = 0;
+
+  // This is an integer specified as a filter (limit:10).
+  std::string limit = parser.getLimit ();
+  if (limit != "")
+  {
+    if (limit == "page")
+    {
+      rows = 0;
+      lines = getHeight ();
+    }
+    else
+    {
+      rows = (int) strtol (limit.c_str (), NULL, 10);
+      lines = 0;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // The 'Task' object, among others, is shared between projects.  To make this
 // easier, it has been decoupled from Context.
 void Context::staticInitialization ()
