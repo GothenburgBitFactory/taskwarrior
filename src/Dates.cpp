@@ -29,6 +29,7 @@
 #include <time.h>
 #include <text.h>
 #include <Dates.h>
+#include <Date.h>
 #include <i18n.h>
 
 static const char* days[] =
@@ -41,36 +42,20 @@ static const char* days_short[] =
   "sun", "mon", "tue", "wed", "thu", "fri", "sat",
 };
 
-static const char* months[] =
-{
-  "january", "february", "march", "april", "may", "june",
-  "july", "august", "september", "october", "november", "december",
-};
-
-static const char* months_short[] =
-{
-  "jan", "feb", "mar", "apr", "may", "jun",
-  "jul", "aug", "sep", "oct", "nov", "dec",
-};
-
-static int month_days[12] =
-{
-  31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-};
-
 ////////////////////////////////////////////////////////////////////////////////
 static bool isMonth (const std::string& name, int& i)
 {
-  for (i = 0; i < 12; i++)
-    if (name == months[i] || name == months_short[i])
-      return true;
-
-  return false;
+  i = Date::monthOfYear (name) - 1;
+  return i != -2 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static bool isDay (const std::string& name, int& i)
 {
+/*
+  i = Date::dayOfWeek (name) - 1;
+  return i != -2 ? true : false;
+*/
   for (i = 0; i < 7; i++)
     if (name == days[i] || name == days_short[i])
       return true;
@@ -79,20 +64,13 @@ static bool isDay (const std::string& name, int& i)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+/**/
 static bool leapYear (int year)
 {
   return ((!(year % 4)) && (year % 100)) ||
          (!(year % 400));
 }
-
-////////////////////////////////////////////////////////////////////////////////
-static int daysInMonth (int year, int month)
-{
-  if (month == 2 && leapYear (year))
-    return 29;
-
-  return month_days[month - 1];
-}
+/**/
 
 ////////////////////////////////////////////////////////////////////////////////
 static void easter (struct tm* t)
@@ -341,7 +319,7 @@ bool namedDates (const std::string& name, Variant& value)
     t->tm_hour = 24;
     t->tm_min = 0;
     t->tm_sec = -1;
-    t->tm_mday = daysInMonth (t->tm_year + 1900, t->tm_mon + 1);
+    t->tm_mday = Date::daysInMonth (t->tm_mon + 1, t->tm_year + 1900);
     t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
@@ -454,7 +432,7 @@ bool namedDates (const std::string& name, Variant& value)
 
         // If it is this month.
         if (d < number &&
-            number <= daysInMonth (y, m))
+            number <= Date::daysInMonth (m, y))
         {
           t->tm_hour = t->tm_min = t->tm_sec = 0;
           t->tm_mon  = m - 1;
