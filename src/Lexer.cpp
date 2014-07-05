@@ -24,12 +24,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+#include <cmake.h>
 #include <ctype.h>
 #include <utf8.h>
 #include <ISO8601.h>
 #include <Date.h>
 #include <Duration.h>
 #include <Lexer.h>
+#include <i18n.h>
 
 std::string Lexer::dateFormat = "";
 
@@ -175,7 +177,7 @@ bool Lexer::token (std::string& result, Type& type)
         shift ();
       }
       else
-        throw std::string ("Unexpected error 1");
+        throw std::string (STRING_LEX_IMMEDIATE_UNK);
       break;
 
     case typeString:
@@ -384,7 +386,7 @@ bool Lexer::token (std::string& result, Type& type)
       break;
 
     default:
-      throw std::string ("Unexpected error 2");
+      throw std::string (STRING_LEX_TYPE_UNK);
       break;
     }
 
@@ -511,7 +513,7 @@ bool Lexer::word (std::string& token, Type& type)
       break;
 
     default:
-      throw std::string ("Unexpected error 2");
+      throw std::string (STRING_LEX_TYPE_UNK);
       break;
     }
 
@@ -530,6 +532,7 @@ void Lexer::ambiguity (bool value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// No L10N - these are for internal purposes.
 const std::string Lexer::type_name (const Type& type)
 {
   switch (type)
