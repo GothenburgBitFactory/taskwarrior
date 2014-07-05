@@ -29,9 +29,7 @@
 #include <time.h>
 #include <text.h>
 #include <Dates.h>
-
-int week_start = 1;    // Monday morning.
-int week_end = 6;      // Friday evening.
+#include <i18n.h>
 
 static const char* days[] =
 {
