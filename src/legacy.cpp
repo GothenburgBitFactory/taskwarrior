@@ -88,6 +88,8 @@ std::string legacyCheckForDeprecatedVariables ()
   std::map <std::string, std::string>::const_iterator it;
   for (it = context.config.begin (); it != context.config.end (); ++it)
   {
+    // 2014-07-04: report.*.limit removed.
+
     // report.*.annotations
     if (it->first.length () > 19 &&
         it->first.substr (0, 7) == "report." &&
@@ -166,7 +168,7 @@ void legacyAttributeMap (std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 void legacyValueMap (const std::string& name, std::string& value)
 {
-  // One-time initialization value mapping.
+  // 2014-07-03: One-time initialization value mapping.
   static std::map <std::string, std::string> mapping;
   if (mapping.size () == 0)
   {

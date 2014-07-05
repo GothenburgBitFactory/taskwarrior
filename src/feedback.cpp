@@ -166,7 +166,12 @@ std::string taskDifferences (const Task& before, const Task& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string taskInfoDifferences (const Task& before, const Task& after, const std::string& dateformat, long& last_timestamp, const long current_timestamp)
+std::string taskInfoDifferences (
+  const Task& before,
+  const Task& after,
+  const std::string& dateformat,
+  long& last_timestamp,
+  const long current_timestamp)
 {
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
