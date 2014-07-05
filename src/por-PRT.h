@@ -135,7 +135,6 @@
 #define STRING_VARIANT_MUL_UNKNOWN   "Cannot multiply unknown type"
 #define STRING_VARIANT_MUL_BOOL      "Cannot multiply Boolean values"
 #define STRING_VARIANT_MUL_DATE      "Cannot multiply date values"
-#define STRING_VARIANT_MUL_DURATION  "Cannot multiply duration values"
 #define STRING_VARIANT_MUL_REAL_STR  "Cannot multiply real numbers by strings"
 #define STRING_VARIANT_MUL_STR_REAL  "Cannot multiply strings by real numbers"
 #define STRING_VARIANT_MUL_STR_STR   "Cannot multiply strings by strings"
@@ -181,15 +180,6 @@
 // at the character level.
 #define STRING_LEX_IMMEDIATE_UNK     "Lexer start failure, unknown characters found immediately."
 #define STRING_LEX_TYPE_UNK          "Lexer cannot process and unknown token type."
-
-// A3
-#define STRING_A3_OVERRIDE_PROBLEM   "Problema com a alteração: {1}"
-#define STRING_A3_MISMATCHED_PARENS  "Erro de não correspondência de parentesis na expressão"
-#define STRING_A3_PATTERN_GARBAGE    "Caracter(es) não reconhecidos no fim da expressão."
-#define STRING_A3_MALFORMED_PATTERN  "Expressão malformada."
-#define STRING_A3_MALFORMED_UUID     "UUID malformado."
-#define STRING_A3_ID_AFTER_HYPHEN    "ID não reconhecido após o hífen."
-#define STRING_A3_ZERO_ID            "'{1}' não é um ID válido."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "A cor '{1}' não é reconhecida."
@@ -283,7 +273,6 @@
 #define STRING_CMD_URGENCY_RESULT    "Tarefa {1} urgência {2}"
 #define STRING_CMD_ADD_USAGE         "Adiciona uma nova tarefa"
 #define STRING_CMD_ADD_FEEDBACK      "Criada a tarefa {1}."
-#define STRING_CMD_ADD_BAD_ATTRIBUTE "Atributo desconhecido '{1}'."
 #define STRING_CMD_LOG_USAGE         "Adiciona uma nova tarefa que já está concluída"
 #define STRING_CMD_LOG_NO_RECUR      "Não pode usar o comando 'log' para tarefas recorrentes."
 #define STRING_CMD_LOG_NO_WAITING    "Não pode usar o comando 'log' para tarefas adiadas."
@@ -366,10 +355,6 @@
 #define STRING_CMD_PROJECTS_USAGE    "Exibe todos os nomes de projeto em uso"
 #define STRING_CMD_PROJECTS_USAGE_2  "Exibe apenas uma lista de todos os nomes de projeto em uso"
 #define STRING_CMD_PROJECTS_NO       "Sem projetos."
-#define STRING_CMD_PROJECTS_PRI_N    "Pri:Nenhuma"
-#define STRING_CMD_PROJECTS_PRI_H    "Pri:A"
-#define STRING_CMD_PROJECTS_PRI_M    "Pri:M"  // |por-PRT|==|eng-USA|
-#define STRING_CMD_PROJECTS_PRI_L    "Pri:B"
 #define STRING_CMD_PROJECTS_NONE     "(nenhum)"
 #define STRING_CMD_PROJECTS_SUMMARY  "{1} projeto"
 #define STRING_CMD_PROJECTS_SUMMARY2 "{1} projetos"
@@ -459,7 +444,6 @@
 #define STRING_CMD_COLUMNS_ARGS      "Pode apenas especificar uma frase para procura."
 
 #define STRING_CMD_DENO_USAGE        "Elimina uma anotação"
-#define STRING_CMD_DENO_WORDS        "É necessário fornecer uma expressão para anotação."
 #define STRING_CMD_DENO_NONE         "A tarefa especificada não tem anotações que possam ser eliminadas."
 #define STRING_CMD_DENO_CONFIRM      "Remover anotação da tarefa {1} '{2}'?"
 #define STRING_CMD_DENO_FOUND        "Foi encontrada e removida a anotação '{1}'."
@@ -474,9 +458,6 @@
 #define STRING_CMD_IMPORT_FILE       "A importar '{1}'"
 #define STRING_TASK_NO_DESC          "Descrição da anotação em falta: {1}"
 #define STRING_TASK_NO_ENTRY         "Data de entrada da anotação em falta: {1}"
-#define STRING_CMD_SHELL_HELP1       "Insira um comando (ex. 'list'), ou pressione 'Enter'."
-#define STRING_CMD_SHELL_HELP2       "Não é necessário incluir o comando 'task'."
-#define STRING_CMD_SHELL_HELP3       "Insira 'quit' (ou 'bye', 'exit') para terminar a sessão."
 #define STRING_CMD_SYNC_USAGE        "Sincroniza dados com o Taskserver"
 #define STRING_CMD_SYNC_NO_SERVER    "Taskserver não está configurado."
 #define STRING_CMD_SYNC_BAD_CRED     "Credenciais para o Taskserver incorretas."
@@ -673,9 +654,6 @@
 #define STRING_DOM_UNREC             "DOM: Não foi possível obter nome não reconhecido '{1}'."
 #define STRING_DOM_CANNOT_SET        "DOM: Não foi possível definir '{1}'."
 
-// Duration
-#define STRING_DURATION_UNRECOGNIZED "A duração '{1}' não foi reconhecida como válid, com unidades corretas como '3days'."  // Can we translate '3days' to '3dias' ?
-
 // Eval
 #define STRING_EVAL_NO_EXPRESSION    "No expression to evaluate."
 #define STRING_EVAL_UNSUPPORTED      "Operador não suportado '{1}'."
@@ -807,10 +785,6 @@
 #define STRING_HELPER_PROJECT_CHANGE "O projeto '{1}' foi alterado."
 #define STRING_HELPER_PROJECT_COMPL  "Projeto '{1}' está {2}% concluído"
 #define STRING_HELPER_PROJECT_REM    "(Restam {1} de {2} tarefas)."
-
-// interactive
-#define STRING_INTERACTIVE_WIDTH     "Context::getWidth: determina largura de {1} carateres"
-#define STRING_INTERACTIVE_HEIGHT    "Context::getHeight: determina altura de {1} carateres"
 
 // JSON
 #define STRING_JSON_MISSING_VALUE    "Erro: valor em falta após ',' na posição {1}"

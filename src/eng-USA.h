@@ -135,7 +135,6 @@
 #define STRING_VARIANT_MUL_UNKNOWN   "Cannot multiply unknown type"
 #define STRING_VARIANT_MUL_BOOL      "Cannot multiply Boolean values"
 #define STRING_VARIANT_MUL_DATE      "Cannot multiply date values"
-#define STRING_VARIANT_MUL_DURATION  "Cannot multiply duration values"
 #define STRING_VARIANT_MUL_REAL_STR  "Cannot multiply real numbers by strings"
 #define STRING_VARIANT_MUL_STR_REAL  "Cannot multiply strings by real numbers"
 #define STRING_VARIANT_MUL_STR_STR   "Cannot multiply strings by strings"
@@ -181,15 +180,6 @@
 // at the character level.
 #define STRING_LEX_IMMEDIATE_UNK     "Lexer start failure, unknown characters found immediately."
 #define STRING_LEX_TYPE_UNK          "Lexer cannot process and unknown token type."
-
-// A3
-#define STRING_A3_OVERRIDE_PROBLEM   "Problem with override: {1}"
-#define STRING_A3_MISMATCHED_PARENS  "Mismatched parentheses in expression"
-#define STRING_A3_PATTERN_GARBAGE    "Unrecognized character(s) at end of pattern."
-#define STRING_A3_MALFORMED_PATTERN  "Malformed pattern."
-#define STRING_A3_MALFORMED_UUID     "Malformed UUID."
-#define STRING_A3_ID_AFTER_HYPHEN    "Unrecognized ID after hyphen."
-#define STRING_A3_ZERO_ID            "'{1}' is not a valid ID."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "The color '{1}' is not recognized."
@@ -283,7 +273,6 @@
 #define STRING_CMD_URGENCY_RESULT    "task {1} urgency {2}"
 #define STRING_CMD_ADD_USAGE         "Adds a new task"
 #define STRING_CMD_ADD_FEEDBACK      "Created task {1}."
-#define STRING_CMD_ADD_BAD_ATTRIBUTE "Unrecognized attribute '{1}'."
 #define STRING_CMD_LOG_USAGE         "Adds a new task that is already completed"
 #define STRING_CMD_LOG_NO_RECUR      "You cannot log recurring tasks."
 #define STRING_CMD_LOG_NO_WAITING    "You cannot log waiting tasks."
@@ -366,10 +355,6 @@
 #define STRING_CMD_PROJECTS_USAGE    "Shows all project names used"
 #define STRING_CMD_PROJECTS_USAGE_2  "Shows only a list of all project names used"
 #define STRING_CMD_PROJECTS_NO       "No projects."
-#define STRING_CMD_PROJECTS_PRI_N    "Pri:None"
-#define STRING_CMD_PROJECTS_PRI_H    "Pri:H"
-#define STRING_CMD_PROJECTS_PRI_M    "Pri:M"
-#define STRING_CMD_PROJECTS_PRI_L    "Pri:L"
 #define STRING_CMD_PROJECTS_NONE     "(none)"
 #define STRING_CMD_PROJECTS_SUMMARY  "{1} project"
 #define STRING_CMD_PROJECTS_SUMMARY2 "{1} projects"
@@ -459,7 +444,6 @@
 #define STRING_CMD_COLUMNS_ARGS      "You can only specify one search string."
 
 #define STRING_CMD_DENO_USAGE        "Deletes an annotation"
-#define STRING_CMD_DENO_WORDS        "An annotation pattern must be provided."
 #define STRING_CMD_DENO_NONE         "The specified task has no annotations that can be deleted."
 #define STRING_CMD_DENO_CONFIRM      "Denotate task {1} '{2}'?"
 #define STRING_CMD_DENO_FOUND        "Found annotation '{1}' and deleted it."
@@ -474,9 +458,6 @@
 #define STRING_CMD_IMPORT_FILE       "Importing '{1}'"
 #define STRING_TASK_NO_DESC          "Annotation is missing a description: {1}"
 #define STRING_TASK_NO_ENTRY         "Annotation is missing an entry date: {1}"
-#define STRING_CMD_SHELL_HELP1       "Enter any task command (such as 'list'), or hit 'Enter'."
-#define STRING_CMD_SHELL_HELP2       "There is no need to include the 'task' command itself."
-#define STRING_CMD_SHELL_HELP3       "Enter 'quit' (or 'bye', 'exit') to end the session."
 #define STRING_CMD_SYNC_USAGE        "Synchronizes data with the Taskserver"
 #define STRING_CMD_SYNC_NO_SERVER    "Taskserver is not configured."
 #define STRING_CMD_SYNC_BAD_CRED     "Taskserver credentials malformed."
@@ -673,9 +654,6 @@
 #define STRING_DOM_UNREC             "DOM: Cannot get unrecognized name '{1}'."
 #define STRING_DOM_CANNOT_SET        "DOM: Cannot set '{1}'."
 
-// Duration
-#define STRING_DURATION_UNRECOGNIZED "The duration '{1}' was not recognized as valid, with correct units like '3days'."
-
 // Eval
 #define STRING_EVAL_NO_EXPRESSION    "No expression to evaluate."
 #define STRING_EVAL_UNSUPPORTED      "Unsupported operator '{1}'."
@@ -807,10 +785,6 @@
 #define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."
 #define STRING_HELPER_PROJECT_COMPL  "Project '{1}' is {2}% complete"
 #define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
-
-// interactive
-#define STRING_INTERACTIVE_WIDTH     "Context::getWidth: determined width of {1} characters"
-#define STRING_INTERACTIVE_HEIGHT    "Context::getHeight: determined height of {1} characters"
 
 // JSON
 #define STRING_JSON_MISSING_VALUE    "Error: missing value after ',' at position {1}"
