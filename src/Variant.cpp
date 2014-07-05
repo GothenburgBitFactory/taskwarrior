@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream> // TODO Remove.
 #include <sstream>
 #include <stdio.h>
 #include <math.h>
@@ -36,6 +35,7 @@
 #include <Duration.h>
 #include <RX.h>
 #include <text.h>
+#include <i18n.h>
 
 std::string Variant::dateFormat = "";
 bool Variant::searchCaseSensitive = true;
@@ -147,7 +147,7 @@ Variant::Variant (const time_t value, const enum type new_type /*=type_date*/)
   case type_date:     _date = value;     break;
   case type_duration: _duration = value; break;
   default:
-    throw std::string ("Cannot instantiate this type with a time_t value.");
+    throw std::string (STRING_VARIANT_TIME_T);
   }
 }
 
@@ -232,13 +232,13 @@ bool Variant::operator< (const Variant& other) const
   switch (left._type)
   {
   case type_unknown:
-    throw std::string ("Cannot compare unknown type");
+    throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     break;
 
   case type_boolean:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:                             return !left._bool && right._bool;
     case type_integer:  left.cast (type_integer);  return left._integer  < right._integer;
     case type_real:     left.cast (type_real);     return left._real     < right._real;
@@ -251,7 +251,7 @@ bool Variant::operator< (const Variant& other) const
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:  right.cast (type_integer); return left._integer  < right._integer;
     case type_integer:                             return left._integer  < right._integer;
     case type_real:     left.cast (type_real);     return left._real     < right._real;
@@ -264,7 +264,7 @@ bool Variant::operator< (const Variant& other) const
   case type_real:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:  right.cast (type_real);    return left._real     < right._real;
     case type_integer:  right.cast (type_real);    return left._real     < right._real;
     case type_real:                                return left._real     < right._real;
@@ -278,7 +278,7 @@ bool Variant::operator< (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -322,7 +322,7 @@ bool Variant::operator< (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -342,7 +342,7 @@ bool Variant::operator< (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -371,13 +371,13 @@ bool Variant::operator<= (const Variant& other) const
   switch (left._type)
   {
   case type_unknown:
-    throw std::string ("Cannot compare unknown type");
+    throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     break;
 
   case type_boolean:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:                             return !left._bool || right._bool;
     case type_integer:  left.cast (type_integer);  return left._integer  <= right._integer;
     case type_real:     left.cast (type_real);     return left._real     <= right._real;
@@ -390,7 +390,7 @@ bool Variant::operator<= (const Variant& other) const
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:  right.cast (type_integer); return left._integer  <= right._integer;
     case type_integer:                             return left._integer  <= right._integer;
     case type_real:     left.cast (type_real);     return left._real     <= right._real;
@@ -403,7 +403,7 @@ bool Variant::operator<= (const Variant& other) const
   case type_real:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:  right.cast (type_real);    return left._real     <= right._real;
     case type_integer:  right.cast (type_real);    return left._real     <= right._real;
     case type_real:                                return left._real     <= right._real;
@@ -417,7 +417,7 @@ bool Variant::operator<= (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -462,7 +462,7 @@ bool Variant::operator<= (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -482,7 +482,7 @@ bool Variant::operator<= (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -511,13 +511,13 @@ bool Variant::operator> (const Variant& other) const
   switch (left._type)
   {
   case type_unknown:
-    throw std::string ("Cannot compare unknown type");
+    throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     break;
 
   case type_boolean:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:                             return !left._bool && right._bool;
     case type_integer:  left.cast (type_integer);  return left._integer  > right._integer;
     case type_real:     left.cast (type_real);     return left._real     > right._real;
@@ -530,7 +530,7 @@ bool Variant::operator> (const Variant& other) const
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:  right.cast (type_integer); return left._integer  > right._integer;
     case type_integer:                             return left._integer  > right._integer;
     case type_real:     left.cast (type_real);     return left._real     > right._real;
@@ -543,7 +543,7 @@ bool Variant::operator> (const Variant& other) const
   case type_real:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:  right.cast (type_real);    return left._real     > right._real;
     case type_integer:  right.cast (type_real);    return left._real     > right._real;
     case type_real:                                return left._real     > right._real;
@@ -557,7 +557,7 @@ bool Variant::operator> (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -600,7 +600,7 @@ bool Variant::operator> (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -620,7 +620,7 @@ bool Variant::operator> (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -649,13 +649,13 @@ bool Variant::operator>= (const Variant& other) const
   switch (left._type)
   {
   case type_unknown:
-    throw std::string ("Cannot compare unknown type");
+    throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     break;
 
   case type_boolean:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:                             return left._bool || !right._bool;
     case type_integer:  left.cast (type_integer);  return left._integer  >= right._integer;
     case type_real:     left.cast (type_real);     return left._real     >= right._real;
@@ -668,7 +668,7 @@ bool Variant::operator>= (const Variant& other) const
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:  right.cast (type_integer); return left._integer  >= right._integer;
     case type_integer:                             return left._integer  >= right._integer;
     case type_real:     left.cast (type_real);     return left._real     >= right._real;
@@ -681,7 +681,7 @@ bool Variant::operator>= (const Variant& other) const
   case type_real:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot compare unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_CMP_UNKNOWN);
     case type_boolean:  right.cast (type_real);    return left._real     >= right._real;
     case type_integer:  right.cast (type_real);    return left._real     >= right._real;
     case type_real:                                return left._real     >= right._real;
@@ -695,7 +695,7 @@ bool Variant::operator>= (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -740,7 +740,7 @@ bool Variant::operator>= (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -760,7 +760,7 @@ bool Variant::operator>= (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot compare unknown type");
+      throw std::string (STRING_VARIANT_CMP_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -789,13 +789,13 @@ bool Variant::operator== (const Variant& other) const
   switch (left._type)
   {
   case type_unknown:
-    throw std::string ("Cannot equate unknown type");
+    throw std::string (STRING_VARIANT_EQ_UNKNOWN);
     break;
 
   case type_boolean:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_EQ_UNKNOWN);
     case type_boolean:                             return left._bool == right._bool;
     case type_integer:  left.cast (type_integer);  return left._integer == right._integer;
     case type_real:     left.cast (type_real);     return left._real == right._real;
@@ -808,7 +808,7 @@ bool Variant::operator== (const Variant& other) const
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_EQ_UNKNOWN);
     case type_boolean:  right.cast (type_integer); return left._integer == right._integer;
     case type_integer:                             return left._integer == right._integer;
     case type_real:     left.cast (type_real);     return left._real == right._real;
@@ -821,7 +821,7 @@ bool Variant::operator== (const Variant& other) const
   case type_real:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_EQ_UNKNOWN);
     case type_boolean:  right.cast (type_real);    return left._real == right._real;
     case type_integer:  right.cast (type_real);    return left._real == right._real;
     case type_real:                                return left._real == right._real;
@@ -835,7 +835,7 @@ bool Variant::operator== (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot equate unknown type");
+      throw std::string (STRING_VARIANT_EQ_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -863,7 +863,7 @@ bool Variant::operator== (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot equate unknown type");
+      throw std::string (STRING_VARIANT_EQ_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -880,7 +880,7 @@ bool Variant::operator== (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot equate unknown type");
+      throw std::string (STRING_VARIANT_EQ_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -953,13 +953,13 @@ bool Variant::operator_partial (const Variant& other) const
   switch (left._type)
   {
   case type_unknown:
-    throw std::string ("Cannot equate unknown type");
+    throw std::string (STRING_VARIANT_EQ_UNKNOWN);
     break;
 
   case type_boolean:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_EQ_UNKNOWN);
     case type_boolean:                             return left._bool == right._bool;
     case type_integer:  left.cast (type_integer);  return left._integer == right._integer;
     case type_real:     left.cast (type_real);     return left._real == right._real;
@@ -975,7 +975,7 @@ bool Variant::operator_partial (const Variant& other) const
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot equate unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_EQ_UNKNOWN);
     case type_boolean:  right.cast (type_integer); return left._integer == right._integer;
     case type_integer:                             return left._integer == right._integer;
     case type_real:     left.cast (type_real);     return left._real == right._real;
@@ -992,7 +992,7 @@ bool Variant::operator_partial (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot equate unknown type");
+      throw std::string (STRING_VARIANT_EQ_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -1019,7 +1019,7 @@ bool Variant::operator_partial (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot equate unknown type");
+      throw std::string (STRING_VARIANT_EQ_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -1057,7 +1057,7 @@ bool Variant::operator_partial (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot equate unknown type");
+      throw std::string (STRING_VARIANT_EQ_UNKNOWN);
 
     // TODO Implement same-day comparison.
     case type_boolean:
@@ -1075,7 +1075,7 @@ bool Variant::operator_partial (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot equate unknown type");
+      throw std::string (STRING_VARIANT_EQ_UNKNOWN);
 
     // TODO Implement same-day comparison.
     case type_boolean:
@@ -1128,49 +1128,49 @@ Variant& Variant::operator^= (const Variant& other)
   switch (_type)
   {
   case type_unknown:
-    throw std::string ("Cannot exponentiate unknown type");
+    throw std::string (STRING_VARIANT_EXP_UNKNOWN);
     break;
 
   case type_boolean:
-    throw std::string ("Cannot exponentiate Boolean values");
+    throw std::string (STRING_VARIANT_EXP_BOOL);
     break;
 
   case type_integer:
     switch (other._type)
     {
-    case type_unknown:  throw std::string ("Cannot exponentiate unknown type");
-    case type_boolean:  throw std::string ("Cannot exponentiate Booleans");
+    case type_unknown:  throw std::string (STRING_VARIANT_EXP_UNKNOWN);
+    case type_boolean:  throw std::string (STRING_VARIANT_EXP_BOOL);
     case type_integer:  _integer = (int) pow (static_cast<double>(_integer), static_cast<double>(other._integer)); break;
-    case type_real:     throw std::string ("Cannot exponentiate to a non-integer power");
-    case type_string:   throw std::string ("Cannot exponentiate strings");
-    case type_date:     throw std::string ("Cannot exponentiate dates");
-    case type_duration: throw std::string ("Cannot exponentiate durations");
+    case type_real:     throw std::string (STRING_VARIANT_EXP_NON_INT);
+    case type_string:   throw std::string (STRING_VARIANT_EXP_STRING);
+    case type_date:     throw std::string (STRING_VARIANT_EXP_DATE);
+    case type_duration: throw std::string (STRING_VARIANT_EXP_DURATION);
     }
     break;
 
   case type_real:
     switch (other._type)
     {
-    case type_unknown:  throw std::string ("Cannot exponentiate unknown type");
-    case type_boolean:  throw std::string ("Cannot exponentiate Booleans");
+    case type_unknown:  throw std::string (STRING_VARIANT_EXP_UNKNOWN);
+    case type_boolean:  throw std::string (STRING_VARIANT_EXP_BOOL);
     case type_integer:  _real = pow (_real, static_cast<double>(other._integer)); break;
-    case type_real:     throw std::string ("Cannot exponentiate to a non-integer power");
-    case type_string:   throw std::string ("Cannot exponentiate strings");
-    case type_date:     throw std::string ("Cannot exponentiate dates");
-    case type_duration: throw std::string ("Cannot exponentiate durations");
+    case type_real:     throw std::string (STRING_VARIANT_EXP_NON_INT);
+    case type_string:   throw std::string (STRING_VARIANT_EXP_STRING);
+    case type_date:     throw std::string (STRING_VARIANT_EXP_DATE);
+    case type_duration: throw std::string (STRING_VARIANT_EXP_DURATION);
     }
     break;
 
   case type_string:
-    throw std::string ("Cannot perform exponentiation on string values");
+    throw std::string (STRING_VARIANT_EXP_STRING);
     break;
 
   case type_date:
-    throw std::string ("Cannot perform exponentiation on date values");
+    throw std::string (STRING_VARIANT_EXP_DATE);
     break;
 
   case type_duration:
-    throw std::string ("Cannot perform exponentiation on duration values");
+    throw std::string (STRING_VARIANT_EXP_DURATION);
     break;
   }
 
@@ -1193,21 +1193,21 @@ Variant& Variant::operator-= (const Variant& other)
   switch (_type)
   {
   case type_unknown:
-    throw std::string ("Cannot subtract unknown type");
+    throw std::string (STRING_VARIANT_SUB_UNKNOWN);
     break;
 
   case type_boolean:
-    throw std::string ("Cannot subtract from a Boolean value");
+    throw std::string (STRING_VARIANT_SUB_BOOL);
     break;
 
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot subtract unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_SUB_UNKNOWN);
     case type_boolean:  right.cast (type_integer); _integer  -= right._integer;   break;
     case type_integer:                             _integer  -= right._integer;   break;
     case type_real:     cast (type_real);          _real     -= right._real;      break;
-    case type_string:   throw std::string ("Cannot subtract strings");
+    case type_string:   throw std::string (STRING_VARIANT_SUB_STRING);
     case type_date:     cast (type_date);          _date     -= right._date;      break;
     case type_duration: cast (type_duration);      _duration -= right._duration;  break;
     }
@@ -1217,10 +1217,10 @@ Variant& Variant::operator-= (const Variant& other)
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot subtract unknown type");
+      throw std::string (STRING_VARIANT_SUB_UNKNOWN);
 
     case type_string:
-      throw std::string ("Cannot subtract strings");
+      throw std::string (STRING_VARIANT_SUB_STRING);
 
     case type_boolean:
     case type_integer:
@@ -1234,17 +1234,17 @@ Variant& Variant::operator-= (const Variant& other)
     break;
 
   case type_string:
-    throw std::string ("Cannot subtract strings");
+    throw std::string (STRING_VARIANT_SUB_STRING);
     break;
 
   case type_date:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot subtract unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_SUB_UNKNOWN);
     case type_boolean:  right.cast (type_integer); _date -= right._integer;    break;
     case type_integer:                             _date -= right._integer;    break;
     case type_real:                                _date -= (int) right._real; break;
-    case type_string:   throw std::string ("Cannot subtract strings");
+    case type_string:   throw std::string (STRING_VARIANT_SUB_STRING);
     case type_date:     cast (type_duration);      _duration -= right._date;   break;
     case type_duration:                            _date -= right._duration;   break;
     }
@@ -1253,12 +1253,12 @@ Variant& Variant::operator-= (const Variant& other)
   case type_duration:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot subtract unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_SUB_UNKNOWN);
     case type_boolean:  right.cast (type_integer); _duration -= right._integer;    break;
     case type_integer:                             _duration -= right._integer;    break;
     case type_real:                                _duration -= (int) right._real; break;
-    case type_string:   throw std::string ("Cannot subtract strings");
-    case type_date:     throw std::string ("Cannot subtract a date");
+    case type_string:   throw std::string (STRING_VARIANT_SUB_STRING);
+    case type_date:     throw std::string (STRING_VARIANT_SUB_DATE);
     case type_duration:                            _duration -= right._duration;   break;
     }
     break;
@@ -1283,14 +1283,14 @@ Variant& Variant::operator+= (const Variant& other)
   switch (_type)
   {
   case type_unknown:
-    throw std::string ("Cannot add unknown type");
+    throw std::string (STRING_VARIANT_ADD_UNKNOWN);
     break;
 
   case type_boolean:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot add unknown type");
-    case type_boolean:  throw std::string ("Cannot add two Boolean values");
+    case type_unknown:  throw std::string (STRING_VARIANT_ADD_UNKNOWN);
+    case type_boolean:  throw std::string (STRING_VARIANT_ADD_BOOL);
     case type_integer:  cast (type_integer);  _integer  += right._integer;  break;
     case type_real:     cast (type_real);     _real     += right._real;     break;
     case type_string:   cast (type_string);   _string   += right._string;   break;
@@ -1302,7 +1302,7 @@ Variant& Variant::operator+= (const Variant& other)
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot add unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_ADD_UNKNOWN);
     case type_boolean:  right.cast (type_integer); _integer  += right._integer;   break;
     case type_integer:                             _integer  += right._integer;   break;
     case type_real:     cast (type_real);          _real     += right._real;      break;
@@ -1316,7 +1316,7 @@ Variant& Variant::operator+= (const Variant& other)
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot add unknown type");
+      throw std::string (STRING_VARIANT_ADD_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -1349,12 +1349,12 @@ Variant& Variant::operator+= (const Variant& other)
   case type_date:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot add unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_ADD_UNKNOWN);
     case type_boolean:  right.cast (type_date); _date += right._date;       break;
     case type_integer:                          _date += right._integer;    break;
     case type_real:                             _date += (int) right._real; break;
     case type_string:   cast (type_string);     _string += right._string;   break;
-    case type_date:     throw std::string ("Cannot add two date values");
+    case type_date:     throw std::string (STRING_VARIANT_ADD_DATE);
     case type_duration:                         _date += right._duration;   break;
     }
     break;
@@ -1362,7 +1362,7 @@ Variant& Variant::operator+= (const Variant& other)
   case type_duration:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot add unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_ADD_UNKNOWN);
     case type_boolean:  right.cast (type_duration); _duration += right._duration;   break;
     case type_integer:                              _duration += right._integer;    break;
     case type_real:                                 _duration += (int) right._real; break;
@@ -1392,18 +1392,18 @@ Variant& Variant::operator*= (const Variant& other)
   switch (_type)
   {
   case type_unknown:
-    throw std::string ("Cannot multiply unknown type");
+    throw std::string (STRING_VARIANT_MUL_UNKNOWN);
     break;
 
   case type_boolean:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot multiply unknown type");
-    case type_boolean:  throw std::string ("Cannot multiply Boolean values");
+    case type_unknown:  throw std::string (STRING_VARIANT_MUL_UNKNOWN);
+    case type_boolean:  throw std::string (STRING_VARIANT_MUL_BOOL);
     case type_integer:  cast (type_integer);       _integer  *= right._integer;      break;
     case type_real:     cast (type_real);          _real     *= right._real;         break;
     case type_string:   _string = (_bool ? right._string : ""); _type = type_string; break;
-    case type_date:     throw std::string ("Cannot multiply date values");
+    case type_date:     throw std::string (STRING_VARIANT_MUL_DATE);
     case type_duration: cast (type_duration);      _duration *= right._duration;     break;
     }
     break;
@@ -1411,7 +1411,7 @@ Variant& Variant::operator*= (const Variant& other)
   case type_integer:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot multiply unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_MUL_UNKNOWN);
     case type_boolean:  right.cast (type_integer); _integer  *= right._integer;   break;
     case type_integer:                             _integer  *= right._integer;   break;
     case type_real:     cast (type_real);          _real     *= right._real;      break;
@@ -1425,7 +1425,7 @@ Variant& Variant::operator*= (const Variant& other)
           _string += right._string;
       }
       break;
-    case type_date:     throw std::string ("Cannot multiply date values");
+    case type_date:     throw std::string (STRING_VARIANT_MUL_DATE);
     case type_duration: cast (type_duration);      _duration *= right._duration;  break;
     }
     break;
@@ -1434,7 +1434,7 @@ Variant& Variant::operator*= (const Variant& other)
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot multiply unknown type");
+      throw std::string (STRING_VARIANT_MUL_UNKNOWN);
 
     case type_boolean:
     case type_integer:
@@ -1444,10 +1444,10 @@ Variant& Variant::operator*= (const Variant& other)
       break;
 
     case type_string:
-      throw std::string ("Cannot multiply real numbers by strings");
+      throw std::string (STRING_VARIANT_MUL_REAL_STR);
 
     case type_date:
-      throw std::string ("Cannot multiply real numbers by dates");
+      throw std::string (STRING_VARIANT_MUL_DATE);
 
     case type_duration:
       _type = type_duration;
@@ -1458,7 +1458,7 @@ Variant& Variant::operator*= (const Variant& other)
   case type_string:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot multiply unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_MUL_UNKNOWN);
     case type_boolean:  if (! right._bool) _string = ""; break;
     case type_integer:
       {
@@ -1469,28 +1469,28 @@ Variant& Variant::operator*= (const Variant& other)
           _string += fragment;
       }
       break;
-    case type_real:     throw std::string ("Cannot multiply strings by real nubmers");
-    case type_string:   throw std::string ("Cannot multiply strings by strings");
-    case type_date:     throw std::string ("Cannot multiply strings by dates");
-    case type_duration: throw std::string ("Cannot multiply strings by durations");
+    case type_real:     throw std::string (STRING_VARIANT_MUL_STR_REAL);
+    case type_string:   throw std::string (STRING_VARIANT_MUL_STR_STR);
+    case type_date:     throw std::string (STRING_VARIANT_MUL_STR_DATE);
+    case type_duration: throw std::string (STRING_VARIANT_MUL_STR_DUR);
     }
     break;
 
   case type_date:
-    throw std::string ("Cannot multiply date values");
+    throw std::string (STRING_VARIANT_MUL_DATE);
 
   case type_duration:
     switch (right._type)
     {
-    case type_unknown:  throw std::string ("Cannot multiply unknown type");
+    case type_unknown:  throw std::string (STRING_VARIANT_MUL_UNKNOWN);
     case type_boolean:  right.cast (type_duration); _duration *= right._duration;   break;
     case type_integer:                              _duration *= right._integer;    break;
     case type_real:
       _duration = (time_t) (unsigned) (int) (static_cast<double>(_duration) * right._real);
       break;
-    case type_string:   throw std::string ("Cannot multiply durations by strings");
-    case type_date:     throw std::string ("Cannot multuply durations by dates");
-    case type_duration: throw std::string ("Cannot multiply durations by durations");
+    case type_string:   throw std::string (STRING_VARIANT_MUL_DUR_STR);
+    case type_date:     throw std::string (STRING_VARIANT_MUL_DUR_DATE);
+    case type_duration: throw std::string (STRING_VARIANT_MUL_DUR_DUR);
     }
     break;
   }
@@ -1514,44 +1514,44 @@ Variant& Variant::operator/= (const Variant& other)
   switch (_type)
   {
   case type_unknown:
-    throw std::string ("Cannot divide unknown type");
+    throw std::string (STRING_VARIANT_DIV_UNKNOWN);
     break;
 
   case type_boolean:
-    throw std::string ("Cannot divide Boolean");
+    throw std::string (STRING_VARIANT_DIV_BOOL);
     break;
 
   case type_integer:
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot divide unknown type");
+      throw std::string (STRING_VARIANT_DIV_UNKNOWN);
 
     case type_boolean:
-      throw std::string ("Cannot divide integer by Boolean");
+      throw std::string (STRING_VARIANT_DIV_INT_BOOL);
 
     case type_integer:
       if (right._integer == 0)
-        throw std::string ("Divide by zero");
+        throw std::string (STRING_VARIANT_DIV_ZERO);
       _integer /= right._integer;
       break;
 
     case type_real:
       if (right._real == 0.0)
-        throw std::string ("Divide by zero");
+        throw std::string (STRING_VARIANT_DIV_ZERO);
       cast (type_real);
       _real /= right._real;
       break;
 
     case type_string:
-      throw std::string ("Cannot divide integer by string");
+      throw std::string (STRING_VARIANT_DIV_INT_STR);
 
     case type_date:
-      throw std::string ("Cannot divide integer by date values");
+      throw std::string (STRING_VARIANT_DIV_INT_DATE);
 
     case type_duration:
       if (right._duration == 0)
-        throw std::string ("Divide by zero");
+        throw std::string (STRING_VARIANT_DIV_ZERO);
       _type = type_duration;
       _duration = (time_t) (unsigned) (int) (_integer / right._duration);
       break;
@@ -1562,32 +1562,32 @@ Variant& Variant::operator/= (const Variant& other)
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot divide unknown type");
+      throw std::string (STRING_VARIANT_DIV_UNKNOWN);
 
     case type_boolean:
-      throw std::string ("Cannot divide real by Boolean");
+      throw std::string (STRING_VARIANT_DIV_REAL_BOOL);
 
     case type_integer:
       if (right._integer == 0)
-        throw std::string ("Divide by zero");
+        throw std::string (STRING_VARIANT_DIV_ZERO);
       _real /= static_cast<double>(right._integer);
       break;
 
     case type_real:
       if (right._real == 0)
-        throw std::string ("Divide by zero");
+        throw std::string (STRING_VARIANT_DIV_ZERO);
       _real /= right._real;
       break;
 
     case type_string:
-      throw std::string ("Cannot divide real numbers by strings");
+      throw std::string (STRING_VARIANT_DIV_REAL_STR);
 
     case type_date:
-      throw std::string ("Cannot divide real numbers by dates");
+      throw std::string (STRING_VARIANT_DIV_REAL_DATE);
 
     case type_duration:
       if (right._duration == 0)
-        throw std::string ("Divide by zero");
+        throw std::string (STRING_VARIANT_DIV_ZERO);
       _type = type_duration;
       _duration = (time_t) (unsigned) (int) (_real / right._duration);
       break;
@@ -1595,41 +1595,41 @@ Variant& Variant::operator/= (const Variant& other)
     break;
 
   case type_string:
-    throw std::string ("Cannot divide string values");
+    throw std::string (STRING_VARIANT_DIV_REAL_STR);
     break;
 
   case type_date:
-    throw std::string ("Cannot divide date values");
+    throw std::string (STRING_VARIANT_DIV_REAL_DATE);
 
   case type_duration:
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot divide unknown type");
+      throw std::string (STRING_VARIANT_DIV_UNKNOWN);
 
     case type_boolean:
-      throw std::string ("Cannot divide duration by Boolean");
+      throw std::string (STRING_VARIANT_DIV_DUR_BOOL);
 
     case type_integer:
       if (right._integer == 0)
-        throw std::string ("Divide by zero");
+        throw std::string (STRING_VARIANT_DIV_ZERO);
       _duration /= right._integer;
       break;
 
     case type_real:
       if (right._real == 0)
-        throw std::string ("Divide by zero");
+        throw std::string (STRING_VARIANT_DIV_ZERO);
       _duration = (time_t) (unsigned) (int) (static_cast<double>(_duration) / right._real);
       break;
 
     case type_string:
-      throw std::string ("Cannot divide durations by strings");
+      throw std::string (STRING_VARIANT_DIV_DUR_STR);
 
     case type_date:
-      throw std::string ("Cannot divide durations by dates");
+      throw std::string (STRING_VARIANT_DIV_DUR_DATE);
 
     case type_duration:
-      throw std::string ("Cannot divide durations by durations");
+      throw std::string (STRING_VARIANT_DIV_DUR_DUR);
     }
     break;
   }
@@ -1653,43 +1653,43 @@ Variant& Variant::operator%= (const Variant& other)
   switch (_type)
   {
   case type_unknown:
-    throw std::string ("Cannot modulo unknown type");
+    throw std::string (STRING_VARIANT_MOD_UNKNOWN);
     break;
 
   case type_boolean:
-    throw std::string ("Cannot modulo Boolean");
+    throw std::string (STRING_VARIANT_MOD_BOOL);
     break;
 
   case type_integer:
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot modulo unknown type");
+      throw std::string (STRING_VARIANT_MOD_UNKNOWN);
 
     case type_boolean:
-      throw std::string ("Cannot modulo integer by Boolean");
+      throw std::string (STRING_VARIANT_MOD_INT_BOOL);
 
     case type_integer:
       if (right._integer == 0)
-        throw std::string ("Modulo zero");
+        throw std::string (STRING_VARIANT_MOD_ZERO);
       _integer %= right._integer;
       break;
 
     case type_real:
       if (right._real == 0.0)
-        throw std::string ("Modulo zero");
+        throw std::string (STRING_VARIANT_MOD_ZERO);
       cast (type_real);
       _real = fmod (_real, right._real);
       break;
 
     case type_string:
-      throw std::string ("Cannot modulo integer by string");
+      throw std::string (STRING_VARIANT_MOD_INT_STR);
 
     case type_date:
-      throw std::string ("Cannot modulo integer by date values");
+      throw std::string (STRING_VARIANT_MOD_INT_DATE);
 
     case type_duration:
-      throw std::string ("Cannot modulo integer by duration values");
+      throw std::string (STRING_VARIANT_MOD_INT_DUR);
     }
     break;
 
@@ -1697,42 +1697,42 @@ Variant& Variant::operator%= (const Variant& other)
     switch (right._type)
     {
     case type_unknown:
-      throw std::string ("Cannot modulo unknown type");
+      throw std::string (STRING_VARIANT_MOD_UNKNOWN);
 
     case type_boolean:
-      throw std::string ("Cannot modulo real by Boolean");
+      throw std::string (STRING_VARIANT_MOD_REAL_BOOL);
 
     case type_integer:
       if (right._integer == 0)
-        throw std::string ("Modulo zero");
+        throw std::string (STRING_VARIANT_MOD_ZERO);
       _real = fmod (_real, static_cast<double>(right._integer));
       break;
 
     case type_real:
       if (right._real == 0)
-        throw std::string ("Modulo zero");
+        throw std::string (STRING_VARIANT_MOD_ZERO);
       _real = fmod (_real, right._real);
       break;
 
     case type_string:
-      throw std::string ("Cannot modulo real numbers by strings");
+      throw std::string (STRING_VARIANT_MOD_REAL_STR);
 
     case type_date:
-      throw std::string ("Cannot modulo real numbers by dates");
+      throw std::string (STRING_VARIANT_MOD_REAL_DATE);
 
     case type_duration:
-      throw std::string ("Cannot modulo real by duration values");
+      throw std::string (STRING_VARIANT_MOD_REAL_DUR);
     }
     break;
 
   case type_string:
-    throw std::string ("Cannot modulo string values");
+    throw std::string (STRING_VARIANT_MOD_STR);
 
   case type_date:
-    throw std::string ("Cannot modulo date values");
+    throw std::string (STRING_VARIANT_MOD_DATE);
 
   case type_duration:
-    throw std::string ("Cannot modulo duration values");
+    throw std::string (STRING_VARIANT_MOD_DUR);
   }
 
   return *this;
@@ -1836,7 +1836,7 @@ Variant::operator std::string () const
     }
 
   case type_unknown:
-    throw std::string ("Cannot render an unknown type.");
+    throw std::string (STRING_VARIANT_RENDER_UNK);
   }
 }
 
@@ -1845,7 +1845,7 @@ void Variant::sqrt ()
 {
   cast (type_real);
   if (_real < 0.0)
-    throw std::string ("Cannot take the square root of a negative number.");
+    throw std::string (STRING_VARIANT_SQRT_NEG);
   _real = ::sqrt (_real);
 }
 
@@ -1857,7 +1857,7 @@ void Variant::cast (const enum type new_type)
     return;
 
   if (_type == type_unknown || new_type == type_unknown)
-    throw std::string ("Cannot coerce data either to or from an unknown type");
+    throw std::string (STRING_VARIANT_COERCE_UNK);
 
   // From type_boolean
   switch (_type)
