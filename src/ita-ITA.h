@@ -182,6 +182,12 @@
 #define STRING_LEX_IMMEDIATE_UNK     "Lexer start failure, unknown characters found immediately."
 #define STRING_LEX_TYPE_UNK          "Lexer cannot process and unknown token type."
 
+// Dates
+//
+// These are errors generated when parsing date values.
+#define STRING_DATES_MONTH_31        "Error: no month has more than 31 days."
+#define STRING_DATES_ORD_MISMATCH    "Error: number and ordinal don't match (ie '1st', not '1nd')."
+
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "Il colore '{1}' non è riconosciuto."
 

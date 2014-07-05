@@ -480,10 +480,10 @@ bool namedDates (const std::string& name, Variant& value)
         }
       }
       else
-        throw std::string ("Error: number and ordinal don't match.");
+        throw std::string (STRING_DATES_ORD_MISMATCH);
     }
     else
-      throw std::string ("Error: no month has more than 31 days.");
+      throw std::string (STRING_DATES_MONTH_31);
   }
 
   else if (name == "easter"       ||
