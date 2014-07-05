@@ -73,7 +73,7 @@ def is_present(translations, file, string):
 
 def used_in_source(source, string):
   '''Determines if the string is used in the source.'''
-  command = "git grep %s %s | grep -v [a-z][a-z]-[A-Z][A-Z].h >/dev/null 2>&1" % (string, source)
+  command = "git grep %s %s | grep -v [a-z][a-z][a-z]-[A-Z][A-Z][A-Z].h >/dev/null 2>&1" % (string, source)
   return True if os.system(command) == 0 else False
 
 def is_translated(translations, file, string):
