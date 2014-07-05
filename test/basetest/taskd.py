@@ -116,7 +116,7 @@ class Taskd(object):
 
         return True
 
-    def start(self):
+    def start(self, minutes=5):
         """Start the taskd server if it's not running.
         If it's already running OSError will be raised
         """
@@ -127,8 +127,7 @@ class Taskd(object):
             raise OSError("Taskd server is still running or crashed")
 
         # Wait for server to listen by checking connectivity in the port
-        # Wait up to 5 minutes checking once second
-        minutes = 5
+        # Default is to wait up to 5 minutes checking once each second
         for i in range(minutes * 60):
             if not self.status():
                 sleep(1)
@@ -191,6 +190,6 @@ class Taskd(object):
 
     def __destroyed(self, *args, **kwargs):
         raise AttributeError("Taskd instance has been destroyed. "
-            "Create a new instance if you need a new server.")
+                             "Create a new instance if you need a new server.")
 
 # vim: ai sts=4 et sw=4
