@@ -41,46 +41,6 @@
 #include <i18n.h>
 #include <Context.h>
 
-static const char* relatives[] =
-{
-  STRING_DATE_SUNDAY_LONG,
-  STRING_DATE_MONDAY_LONG,
-  STRING_DATE_TUESDAY_LONG,
-  STRING_DATE_WEDNESDAY_LONG,
-  STRING_DATE_THURSDAY_LONG,
-  STRING_DATE_FRIDAY_LONG,
-  STRING_DATE_SATURDAY_LONG,
-  "today",
-  "tomorrow",
-  "yesterday",
-  "eow",
-  "eoww",
-  "eocw",
-  "eocm",
-  "eom",
-  "eoq",
-  "eoy",
-  "sow",
-  "soww",
-  "socw",
-  "socm",
-  "som",
-  "soq",
-  "soy",
-  "goodfriday",
-  "easter",
-  "eastermonday",
-  "ascension",
-  "pentecost",
-  "midsommar",
-  "midsommarafton",
-  "now",
-  "later",
-  "someday",
-};
-
-#define NUM_RELATIVES   (sizeof (relatives)   / sizeof (relatives[0]))
-
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
