@@ -387,13 +387,12 @@ bool Date::leapYear (int year)
 ////////////////////////////////////////////////////////////////////////////////
 int Date::daysInMonth (int month, int year)
 {
-  static int days[2][12] =
-  {
-    {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
-    {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
-  };
+  static int days[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-  return days[Date::leapYear (year) ? 1 : 0][month - 1];
+  if (month == 2 && Date::leapYear (year))
+    return 29;
+
+  return days[month - 1];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
