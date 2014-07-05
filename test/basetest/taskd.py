@@ -18,7 +18,7 @@ _curdir = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_CERT_PATH = os.path.abspath(os.path.join(_curdir, "..", "test_certs"))
 
 
-class TaskdServer(object):
+class Taskd(object):
     """Manage a taskd instance
 
     A temporary folder is used as data store of taskd.
@@ -182,5 +182,15 @@ class TaskdServer(object):
                 raise
 
         release_port(self.port)
+
+        # Prevent future reuse of this instance
+        self.start = self.__destroyed
+        self.config = self.__destroyed
+        self.stop = self.__destroyed
+        self.destroy = self.__destroyed
+
+    def __destroyed(self, *args, **kwargs):
+        raise AttributeError("Taskd instance has been destroyed. "
+            "Create a new instance if you need a new server.")
 
 # vim: ai sts=4 et sw=4
