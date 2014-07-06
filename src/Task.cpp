@@ -1800,28 +1800,27 @@ float Task::urgency_inherit () const
   if (!is_blocking)
     return 0.0;
 
-  std::vector <Task> blocked;
-  std::vector <Task>::const_iterator it;
-  float v = 0.0;
-
   // Calling dependencyGetBlocked is rather expensive.
   // It is called recursively for each dependency in the chain here.
-  // Paul is going to kill me. :)
+  std::vector <Task> blocked;
   dependencyGetBlocked (*this, blocked);
+
+  float v = 0.0;
+  std::vector <Task>::const_iterator it;
   for (it = blocked.begin (); it != blocked.end (); ++it)
   {
     // urgency_blocked, _blocking, _project and _tags left out.
-    v += it->urgency_active();
-    v += it->urgency_age();
-    v += it->urgency_annotations();
-    v += it->urgency_due();
-    v += it->urgency_next();
-    v += it->urgency_priority();
-    v += it->urgency_scheduled();
-    v += it->urgency_waiting();
+    v += it->urgency_active ();
+    v += it->urgency_age ();
+    v += it->urgency_annotations ();
+    v += it->urgency_due ();
+    v += it->urgency_next ();
+    v += it->urgency_priority ();
+    v += it->urgency_scheduled ();
+    v += it->urgency_waiting ();
 
     // Inherit from all parent tasks in the dependency chain recursively.
-    v += it->urgency_inherit();
+    v += it->urgency_inherit ();
   }
 
   return v;

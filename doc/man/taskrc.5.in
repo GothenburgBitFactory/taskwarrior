@@ -999,6 +999,10 @@ Urgency coefficient for blocking tasks
 .RS
 Urgency coefficient for blocked tasks
 .RE
+.B urgency.inherit.coefficient=0.0
+.RS
+Urgency inherited from dependency chain
+.RE
 .B urgency.due.coefficient=12.0
 .RS
 Urgency coefficient for due dates

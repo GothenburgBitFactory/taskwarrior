@@ -66,6 +66,8 @@
 - TW-288 `task edit` mangles descriptions with embedded newlines (thanks to
          Kevin Ballard).
 - TW-294 Display UUID of task created by add (thanks to John West).
+- TW-296 urgency of blocked task should affect urgency of blocking task (thanks
+         to Sitaram Chamarty).
 - TW-306 Wrong date format in burndown view (thanks to Michele Santullo).
 - TW-752 task ID no longer defaults to info (thanks to Christopher Roberts).
 - TW-1243 Automatically insert ( ) around user-supplied filter, if any.
