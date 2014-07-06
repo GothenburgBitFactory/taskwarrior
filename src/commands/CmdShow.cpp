@@ -192,6 +192,7 @@ int CmdShow::execute (std::string& output)
     " urgency.annotations.coefficient"
     " urgency.blocked.coefficient"
     " urgency.blocking.coefficient"
+    " urgency.inherit.coefficient"
     " urgency.due.coefficient"
     " urgency.next.coefficient"
     " urgency.priority.coefficient"

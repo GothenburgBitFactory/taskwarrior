@@ -146,6 +146,7 @@ std::string Config::_defaults =
   "urgency.tags.coefficient=1.0                   # Urgency coefficient for tags\n"
   "urgency.project.coefficient=1.0                # Urgency coefficient for projects\n"
   "urgency.blocked.coefficient=-5.0               # Urgency coefficient for blocked tasks\n"
+  "urgency.inherit.coefficient=0.0                # Urgency coefficient for blocked tasks inheriting from blocking tasks\n"
   "urgency.waiting.coefficient=-3.0               # Urgency coefficient for waiting status\n"
   "urgency.age.max=365                            # Maximum age in days\n"
   "\n"
