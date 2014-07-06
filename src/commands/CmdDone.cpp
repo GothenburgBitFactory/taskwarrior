@@ -85,9 +85,12 @@ int CmdDone::execute (std::string& output)
         task->setEnd ();
 
       // Stop the task, if started.
-      if (task->has ("start") &&
-          context.config.getBoolean ("journal.time"))
-        task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
+      if (task->has ("start"))
+      {
+        task->remove ("start");
+        if (context.config.getBoolean ("journal.time"))
+          task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
+      }
 
       if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
       {

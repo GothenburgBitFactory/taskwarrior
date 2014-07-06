@@ -44,6 +44,8 @@
 - TW-250 Opening parenthesis in description gets padded in task 2.0.0 bet 2
          (thanks to Michelle Crane).
 - TW-251 extra spaces added after ( and / (thanks to Andy Spiegl).
+- TW-252 task done - Doesn't stop task before marking complete (thanks to
+         Renato Alves).
 - TW-253 Unrecognized taskwarrior file format. in
          /Users/user/Dropbox/.task/completed.data at line 1 (thanks to Kosta
          Harlan).
