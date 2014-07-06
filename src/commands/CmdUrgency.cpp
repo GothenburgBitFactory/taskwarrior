@@ -73,9 +73,9 @@ int CmdUrgency::execute (std::string& output)
     }
     else
     {
-      std::string uuid = task->get ("uuid");
       out << format (STRING_CMD_URGENCY_RESULT,
-                     uuid, task->urgency ())
+                     task->get ("uuid"),
+                     task->urgency ())
           << "\n";
     }
   }
