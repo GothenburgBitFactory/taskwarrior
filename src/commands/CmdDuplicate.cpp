@@ -82,7 +82,6 @@ int CmdDuplicate::execute (std::string& output)
       dup.remove ("recur");
       dup.remove ("until");
       dup.remove ("imask");
-
       std::cout << format (STRING_CMD_DUPLICATE_NON_REC, task->id)
           << "\n";
     }
@@ -91,7 +90,6 @@ int CmdDuplicate::execute (std::string& output)
     else if (dup.getStatus () == Task::recurring)
     {
       dup.remove ("mask");
-
       std::cout << format (STRING_CMD_DUPLICATE_REC, task->id)
           << "\n";
     }
