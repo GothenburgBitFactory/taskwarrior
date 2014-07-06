@@ -39,6 +39,7 @@ public:
 
 private:
   std::string findValue (const std::string&, const std::string&);
+  std::string findMultilineValue (const std::string&, const std::string&, const std::string&);
   std::vector <std::string> findValues (const std::string&, const std::string&);
   std::string formatDate (Task&, const std::string&, const std::string&);
   std::string formatDuration (Task&, const std::string&);
