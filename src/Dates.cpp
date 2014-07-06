@@ -32,16 +32,6 @@
 #include <Date.h>
 #include <i18n.h>
 
-static const char* days[] =
-{
-  "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
-};
-
-static const char* days_short[] =
-{
-  "sun", "mon", "tue", "wed", "thu", "fri", "sat",
-};
-
 ////////////////////////////////////////////////////////////////////////////////
 static bool isMonth (const std::string& name, int& i)
 {
@@ -52,15 +42,8 @@ static bool isMonth (const std::string& name, int& i)
 ////////////////////////////////////////////////////////////////////////////////
 static bool isDay (const std::string& name, int& i)
 {
-/*
-  i = Date::dayOfWeek (name) - 1;
-  return i != -2 ? true : false;
-*/
-  for (i = 0; i < 7; i++)
-    if (name == days[i] || name == days_short[i])
-      return true;
-
-  return false;
+  i = Date::dayOfWeek (name);
+  return i != -1 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
