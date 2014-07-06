@@ -112,6 +112,8 @@
 - TW-1324 Numeric UDAs are compared as strings (thanks to Ben Boeckel).
 - TW-1329 Short UUIDs (thanks to Benjamin Weber).
 - TW-1331 date more than 5 years away is faulty (thanks to Onion).
+- TW-1334 task mod description:"word1 word2" fails to handle space (thanks to
+          Benjamin Weber).
 - TW-1336 Project attribute does not allow whitespace (thanks to Benjamin Weber).
 - TW-1341 confirmation config setting should apply to config command as well
           (thanks to Charles Ulrich).
