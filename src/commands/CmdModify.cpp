@@ -117,10 +117,9 @@ int CmdModify::execute (std::string& output)
         // Task potentially has siblings - modify them.
         if (task->has ("parent"))
         {
-          std::vector <Task> siblings = context.tdb2.siblings (*task);
-          if (siblings.size () &&
-              confirm (STRING_CMD_MODIFY_RECUR))
+          if (confirm (STRING_CMD_MODIFY_RECUR))
           {
+            std::vector <Task> siblings = context.tdb2.siblings (*task);
             std::vector <Task>::iterator sibling;
             for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
             {
@@ -135,6 +134,12 @@ int CmdModify::execute (std::string& output)
               if (context.verbose ("project"))
                 projectChanges[sibling->get ("project")] = onProjectChange (alternate, *sibling);
             }
+
+            // Modify the parent
+            Task parent;
+            context.tdb2.get (task->get ("parent"), parent);
+            parent.modify (Task::modReplace);
+            context.tdb2.modify (parent);
           }
         }
 

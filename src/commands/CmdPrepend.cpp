@@ -90,10 +90,9 @@ int CmdPrepend::execute (std::string& output)
       // Prepend to siblings.
       if (task->has ("parent"))
       {
-        std::vector <Task> siblings = context.tdb2.siblings (*task);
-        if (siblings.size () &&
-            confirm (STRING_CMD_PREPEND_CONFIRM_R))
+        if (confirm (STRING_CMD_PREPEND_CONFIRM_R))
         {
+          std::vector <Task> siblings = context.tdb2.siblings (*task);
           std::vector <Task>::iterator sibling;
           for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
           {
