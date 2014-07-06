@@ -320,9 +320,10 @@ void Task::remove (const std::string& name)
 {
   Task::iterator it;
   if ((it = this->find (name)) != this->end ())
+  {
     this->erase (it);
-
-  recalc_urgency = true;
+    recalc_urgency = true;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
