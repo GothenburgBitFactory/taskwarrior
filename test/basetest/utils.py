@@ -1,19 +1,49 @@
 # -*- coding: utf-8 -*-
+import os
 import socket
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, STDOUT
+from .exceptions import CommandError
 
 USED_PORTS = set()
 
 
-def run_cmd_wait(cmd):
+def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
+                 merge_streams=False, env=os.environ):
     "Run a subprocess and wait for it to finish"
-    p = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    out, err = p.communicate()
+
+    if input is None:
+        stdin = None
+    else:
+        stdin = PIPE
+
+    if merge_streams:
+        stderr = STDOUT
+    else:
+        stderr = PIPE
+
+    p = Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr, env=env)
+    out, err = p.communicate(input)
+
+    # In python3 we will be able use the following instead of the previous
+    # line to avoid locking if task is unexpectedly waiting for input
+    # try:
+    #     out, err = p.communicate(input, timeout=15)
+    # except TimeoutExpired:
+    #     p.kill()
+    #     out, err = proc.communicate()
 
     if p.returncode != 0:
-        raise IOError("Failed to run '{0}', exit code was '{1}', stdout"
-                      " '{2}' and stderr '{3}'".format(cmd, p.returncode,
-                                                       out, err))
+        raise CommandError(cmd, p.returncode, out, err)
+
+    return p.returncode, out, err
+
+
+def run_cmd_wait_nofail(*args, **kwargs):
+    "Same as run_cmd_wait but silence the exception if it happens"
+    try:
+        return run_cmd_wait(*args, **kwargs)
+    except CommandError as e:
+        return e.code, e.out, e.err
 
 
 def port_used(addr="localhost", port=None):
@@ -29,7 +59,7 @@ def port_used(addr="localhost", port=None):
 
 
 def find_unused_port(addr="localhost", start=53589, track=True):
-    """Find an unused port starting at `port`
+    """Find an unused port starting at `start` port
 
     If track=False the returned port will not be marked as in-use and the code
     will rely entirely on the ability to connect to addr:port as detection
