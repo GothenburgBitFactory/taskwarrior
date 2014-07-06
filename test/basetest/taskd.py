@@ -4,9 +4,11 @@ import os
 import tempfile
 import shutil
 import signal
+import atexit
 from time import sleep
 from subprocess import Popen
 from .utils import find_unused_port, release_port, port_used, run_cmd_wait
+from .exceptions import CommandError
 
 try:
     from subprocess import DEVNULL
@@ -18,7 +20,7 @@ _curdir = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_CERT_PATH = os.path.abspath(os.path.join(_curdir, "..", "test_certs"))
 
 
-class TaskdServer(object):
+class Taskd(object):
     """Manage a taskd instance
 
     A temporary folder is used as data store of taskd.
@@ -40,17 +42,21 @@ class TaskdServer(object):
         :arg address: Address to bind to
         """
         self.taskd = taskd
+        self.usercount = 0
+
         # Will hold the taskd subprocess if it's running
         self.proc = None
         self.datadir = tempfile.mkdtemp()
         self.tasklog = os.path.join(self.datadir, "taskd.log")
         self.taskpid = os.path.join(self.datadir, "taskd.pid")
 
-        # Make sure no TASKDDATA is defined
-        try:
-            del os.environ["TASKDDATA"]
-        except KeyError:
-            pass
+        # Ensure any instance is properly destroyed at session end
+        atexit.register(lambda: self.destroy())
+
+        # Copy all env variables to avoid clashing subprocess environments
+        self.env = os.environ.copy()
+        # Make sure TASKDDATA points to the temporary folder
+        self.env["TASKDATA"] = self.datadir
 
         if certpath is None:
             certpath = DEFAULT_CERT_PATH
@@ -69,7 +75,7 @@ class TaskdServer(object):
 
         # Initialize taskd
         cmd = (self.taskd, "init", "--data", self.datadir)
-        run_cmd_wait(cmd)
+        run_cmd_wait(cmd, env=self.env)
 
         self.config("server", "{0}:{1}".format(self.address, self.port))
         self.config("log", self.tasklog)
@@ -85,12 +91,71 @@ class TaskdServer(object):
         self.config("server.crl", self.server_crl)
         self.config("ca.cert", self.ca_cert)
 
+        self.default_user = self.create_user()
+
+    def __repr__(self):
+        txt = super(Taskd, self).__repr__()
+        return "{0} running from {1}>".format(txt[:-1], self.datadir)
+
+    def create_user(self, user=None, group=None, org=None):
+        """Create a user/group in the server and return the user
+        credentials to use in a taskw client.
+        """
+        if user is None:
+            # Create a unique user ID
+            uid = self.usercount
+            user = "test_user_{0}".format(uid)
+
+            # Increment the user_id
+            self.usercount += 1
+
+        if group is None:
+            group = "default_group"
+
+        if org is None:
+            org = "default_org"
+
+        self._add_entity("org", org, ignore_exists=True)
+        self._add_entity("group", org, group, ignore_exists=True)
+        userkey = self._add_entity("user", org, user)
+
+        return user, group, org, userkey
+
+    def _add_entity(self, keyword, org, value=None, ignore_exists=False):
+        """Add an organization, group or user to the current server
+
+        If a user creation is requested, the user unique ID is returned
+        """
+        cmd = (self.taskd, "add", "--data", self.datadir, keyword, org)
+
+        if value is not None:
+            cmd += (value,)
+
+        try:
+            code, out, err = run_cmd_wait(cmd, env=self.env)
+        except CommandError as e:
+            match = False
+            for line in e.out.splitlines():
+                if line.endswith("already exists.") and ignore_exists:
+                    match = True
+                    break
+
+            # If the error was not "Already exists" report it
+            if not match:
+                raise
+
+        if keyword == "user":
+            expected = "New user key: "
+            for line in out.splitlines():
+                if line.startswith(expected):
+                    return line.replace(expected, '')
+
     def config(self, var, value):
         """Run setup `var` as `value` in taskd config
         """
         cmd = (self.taskd, "config", "--force", "--data", self.datadir, var,
                value)
-        run_cmd_wait(cmd)
+        run_cmd_wait(cmd, env=self.env)
 
         # If server is running send a SIGHUP to force config reload
         if self.proc is not None:
@@ -116,19 +181,18 @@ class TaskdServer(object):
 
         return True
 
-    def start(self):
+    def start(self, minutes=5):
         """Start the taskd server if it's not running.
         If it's already running OSError will be raised
         """
         if self.proc is None:
             cmd = (self.taskd, "server", "--data", self.datadir)
-            self.proc = Popen(cmd, stdout=DEVNULL, stdin=DEVNULL)
+            self.proc = Popen(cmd, stdout=DEVNULL, stdin=DEVNULL, env=self.env)
         else:
             raise OSError("Taskd server is still running or crashed")
 
         # Wait for server to listen by checking connectivity in the port
-        # Wait up to 5 minutes checking once second
-        minutes = 5
+        # Default is to wait up to 5 minutes checking once each second
         for i in range(minutes * 60):
             if not self.status():
                 sleep(1)
@@ -182,5 +246,18 @@ class TaskdServer(object):
                 raise
 
         release_port(self.port)
+
+        # Prevent future reuse of this instance
+        self.start = self.__destroyed
+        self.config = self.__destroyed
+        self.stop = self.__destroyed
+
+        # self.destroy will get called when the python session closes.
+        # If self.destroy was already called, turn the action into a noop
+        self.destroy = lambda: None
+
+    def __destroyed(self, *args, **kwargs):
+        raise AttributeError("Taskd instance has been destroyed. "
+                             "Create a new instance if you need a new server.")
 
 # vim: ai sts=4 et sw=4
