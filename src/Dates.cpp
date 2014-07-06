@@ -64,15 +64,6 @@ static bool isDay (const std::string& name, int& i)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/**/
-static bool leapYear (int year)
-{
-  return ((!(year % 4)) && (year % 100)) ||
-         (!(year % 400));
-}
-/**/
-
-////////////////////////////////////////////////////////////////////////////////
 static void easter (struct tm* t)
 {
   int Y = t->tm_year + 1900;
