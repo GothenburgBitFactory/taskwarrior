@@ -742,8 +742,8 @@ bool Lexer::is_ident (int c) const
 ////////////////////////////////////////////////////////////////////////////////
 bool Lexer::is_triple_op (int c0, int c1, int c2) const
 {
-  return (c0 == 'a' && c1 == 'n' && c2 == 'd') ||
-         (c0 == 'x' && c1 == 'o' && c2 == 'r') ||
+  return (c0 == 'a' && c1 == 'n' && c2 == 'd' && _boundary23) ||
+         (c0 == 'x' && c1 == 'o' && c2 == 'r' && _boundary23) ||
          (c0 == '!' && c1 == '=' && c2 == '=');
 }
 

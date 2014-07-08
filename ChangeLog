@@ -157,6 +157,8 @@
 - French localization (thanks to leowzukw).
 - Removed deprecated 'report.X.limit' feature.
 - Improved bash completion when TASKRC is exported.
+- Segfault when 'project:android' is split into 'and' and 'roid' (thanks to
+  Richard Boß).
 
 ------ current release ---------------------------
 
