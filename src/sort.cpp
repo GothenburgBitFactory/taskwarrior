@@ -71,6 +71,7 @@ static bool sort_compare (int left, int right)
 {
   std::string field;
   bool ascending;
+  bool breakIndicator;
   Column* column;
   int left_number;
   int right_number;
@@ -82,7 +83,7 @@ static bool sort_compare (int left, int right)
   std::vector <std::string>::iterator k;
   for (k = global_keys.begin (); k != global_keys.end (); ++k)
   {
-    context.decomposeSortField (*k, field, ascending);
+    context.decomposeSortField (*k, field, ascending, breakIndicator);
 
     // Urgency.
     if (field == "urgency")

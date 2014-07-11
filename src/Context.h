@@ -71,7 +71,7 @@ public:
   void clearMessages ();
   void clear ();
 
-  void decomposeSortField (const std::string&, std::string&, bool&);
+  void decomposeSortField (const std::string&, std::string&, bool&, bool&);
 
 private:
   void staticInitialization ();

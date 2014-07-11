@@ -694,19 +694,28 @@ void Context::createDefaultConfig ()
 void Context::decomposeSortField (
   const std::string& field,
   std::string& key,
-  bool& ascending)
+  bool& ascending,
+  bool& breakIndicator)
 {
   int length = field.length ();
 
-  if (field[length - 1] == '+')
+  int decoration = 1;
+  breakIndicator = false;
+  if (field[length - decoration] == '/')
+  {
+    breakIndicator = true;
+    ++decoration;
+  }
+
+  if (field[length - decoration] == '+')
   {
     ascending = true;
-    key = field.substr (0, length - 1);
+    key = field.substr (0, length - decoration);
   }
-  else if (field[length - 1] == '-')
+  else if (field[length - decoration] == '-')
   {
     ascending = false;
-    key = field.substr (0, length - 1);
+    key = field.substr (0, length - decoration);
   }
   else
   {
