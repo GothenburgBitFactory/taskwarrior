@@ -132,6 +132,19 @@ int CmdCustom::execute (std::string& output)
   view.colorOdd (alternate);
   view.intraColorOdd (alternate);
 
+  // Add the break columns, if any.
+  std::vector <std::string>::iterator so;
+  for (so = sortOrder.begin (); so != sortOrder.end (); ++so)
+  {
+    std::string name;
+    bool ascending;
+    bool breakIndicator;
+    context.decomposeSortField (*so, name, ascending, breakIndicator);
+
+    if (breakIndicator)
+      view.addBreak (name);
+  }
+
   // Add the columns and labels.
   for (unsigned int i = 0; i < columns.size (); ++i)
   {

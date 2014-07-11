@@ -1183,6 +1183,15 @@ For example:
 
     report.list.sort=due+,priority-,start.active-,project+
 
+Additionally, after the "+" or "-", there can be a solidus "/" which indicates
+that there are breaks after the column values change. For example:
+
+    report.minimal.sort=project+/,description+
+
+This sort order now specifies that there is a listing break between each
+project. A listing break is simply a blank line, which provides a visual
+grouping.
+
 .TP
 .B report.X.filter
 This adds a filter to the report X so that only tasks matching the filter
