@@ -86,9 +86,9 @@ syn match taskrcGoodKey '^\s*\Vcolor.sync.rejected='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolor.tagged='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolor.undo.after='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolor.undo.before='he=e-1
+syn match taskrcGoodKey '^\s*\Vcolor.until='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolor.\(tag\|project\|keyword\|uda\).\S\{-}='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolumn.padding='he=e-1
-syn match taskrcGoodKey '^\s*\Vcomplete.all.projects='he=e-1
 syn match taskrcGoodKey '^\s*\Vcomplete.all.tags='he=e-1
 syn match taskrcGoodKey '^\s*\Vconfirmation='he=e-1
 syn match taskrcGoodKey '^\s*\Vdata.location='he=e-1
@@ -131,7 +131,6 @@ syn match taskrcGoodKey '^\s*\Vlist.all.tags='he=e-1
 syn match taskrcGoodKey '^\s*\Vlocale='he=e-1
 syn match taskrcGoodKey '^\s*\Vlocking='he=e-1
 syn match taskrcGoodKey '^\s*\Vnag='he=e-1
-syn match taskrcGoodKey '^\s*\Vpatterns='he=e-1
 syn match taskrcGoodKey '^\s*\Vprint.empty.columns='he=e-1
 syn match taskrcGoodKey '^\s*\Vrecurrence.indicator='he=e-1
 syn match taskrcGoodKey '^\s*\Vrecurrence.limit='he=e-1
@@ -153,6 +152,7 @@ syn match taskrcGoodKey '^\s*\Vurgency.annotations.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.blocked.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.blocking.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.due.coefficient='he=e-1
+syn match taskrcGoodKey '^\s*\Vurgency.inherit.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.next.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.priority.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.project.coefficient='he=e-1
