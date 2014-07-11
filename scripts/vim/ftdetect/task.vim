@@ -12,6 +12,7 @@
 
 " Taskwarrior data files
 au BufRead,BufNewFile {pending,completed,undo}.data	set filetype=taskdata
+au BufRead,BufNewFile backlog.data	set filetype=javascript
 
 " Taskwarrior configuration file
 au BufRead,BufNewFile .taskrc				set filetype=taskrc
