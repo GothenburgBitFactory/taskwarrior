@@ -22,18 +22,16 @@ syn match taskeditHeading	"^\s*#\s*-\+\s\+-\+\s*$" contained
 syn match taskeditReadOnly	"^\s*#\s*\(UU\)\?ID:.*$" contained
 syn match taskeditReadOnly	"^\s*#\s*Status:.*$" contained
 syn match taskeditReadOnly	"^\s*#\s*i\?Mask:.*$" contained
-syn match taskeditKey		"^ *.\{-}:" nextgroup=taskeditString
-syn match taskeditComment	"^\s*#.*$"
-			\	contains=taskeditReadOnly,taskeditHeading
-syn match taskeditString	".*$" contained contains=@Spell
-
+syn region taskeditKeyValue	matchgroup=taskeditKey start="^  \S.\{-}:" skip="^\s*#" end="^  \S.\{-}:"me=s-1,he=s-1,re=s-1 contains=taskeditKey,taskeditValue,taskeditComment
+syn match taskeditValue	".*$" contained contains=@Spell
+syn match taskeditComment	"^\s*#.*$" contains=taskeditReadOnly,taskeditHeading
 
 " The default methods for highlighting.  Can be overridden later.
 hi def link taskeditComment	Comment
 hi def link taskeditHeading	Function
-hi def link taskeditKey		Statement
+hi def link taskeditKey	Statement
 hi def link taskeditReadOnly	Special
-hi def link taskeditString	String
+hi def link taskeditValue	String
 
 let b:current_syntax = "taskedit"
 
