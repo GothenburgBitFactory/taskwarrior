@@ -307,6 +307,25 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
         max_lines = cells[c].size ();
     }
 
+    // Listing breaks are simply blank lines inserted when a column value
+    // changes.
+    if (s > 0 &&
+        _breaks.size () > 0)
+    {
+      std::vector <std::string>::iterator b;
+      for (b = _breaks.begin (); b != _breaks.end (); ++b)
+      {
+        if (data[sequence[s - 1]].get (*b) != data[sequence[s]].get (*b))
+        {
+          out += "\n";
+          ++_lines;
+
+          // Only want one \n, regardless of how many values change.
+          break;
+        }
+      }
+    }
+
     for (unsigned int i = 0; i < max_lines; ++i)
     {
       out += left_margin + (odd ? extra_odd : extra_even);
