@@ -1,66 +1,50 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
-################################################################################
-##
-## Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+###############################################################################
+#
+# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
 import sys
 import os
 import re
-from glob import glob
+import unittest
 # Ensure python finds the local simpletap and basetest modules
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import BaseTestCase
+from basetest import Task
 
 
-class BaseTestBug360(BaseTestCase):
-    @classmethod
-    def prepare(cls):
-        with open("bug.rc", 'w') as fh:
-            fh.write("data.location=.\n"
-                     "confirmation=no\n")
-
+class BaseTestBug360(unittest.TestCase):
     def setUp(self):
         """Executed before each test in the class"""
-        args = ["rc:bug.rc", "add", "foo", "due:tomorrow", "recur:daily"]
-        self.callTaskSuccess(args)
+        self.t = Task()
+        args = ("add", "foo", "due:tomorrow", "recur:daily")
+        self.t(args)
         # TODO: Add explanation why this line is necessary
-        args = ["rc:bug.rc", "ls"]
-        self.callTaskSuccess(args)
-
-    def tearDown(self):
-        """Needed after each test or setUp will cause duplicated data at start
-        of the next test.
-        """
-        for file in glob("*.data"):
-            os.remove(file)
-
-    @classmethod
-    def finish(cls):
-        os.remove("bug.rc")
+        args = ("ls",)
+        self.t(args)
 
 
 class TestBug360RemovalError(BaseTestBug360):
@@ -68,9 +52,9 @@ class TestBug360RemovalError(BaseTestBug360):
         """Modifying a recursive task by adding project: also modifies parent
         """
         commands = "y\n"
-        args = ["rc:bug.rc", "1", "modify", "project:bar"]
+        args = ("1", "modify", "project:bar")
 
-        code, out, err = self.callTaskSuccess(args, commands)
+        code, out, err = self.t(args, commands)
 
         expected = "Modified 2 tasks."
         self.assertIn(expected, out)
@@ -82,9 +66,9 @@ class TestBug360RemovalError(BaseTestBug360):
         """
         # TODO Removing recur: from a recurring task should also remove imask
         # and parent.
-        args = ["rc:bug.rc", "2", "modify", "recur:"]
+        args = ("2", "modify", "recur:")
 
-        code, out, err = self.callTaskError(args)
+        code, out, err = self.t.runError(args)
         # Expected non zero exit-code
         self.assertEqual(code, 2)
 
@@ -96,9 +80,9 @@ class TestBug360RemovalError(BaseTestBug360):
         """
         # TODO Removing due: from a recurring task should also remove recur,
         # imask and parent
-        args = ["rc:bug.rc", "2", "modify", "due:"]
+        args = ("2", "modify", "due:")
 
-        code, out, err = self.callTaskError(args)
+        code, out, err = self.t.runError(args)
         # Expected non zero exit-code
         self.assertEqual(code, 2)
 
@@ -112,14 +96,14 @@ class TestBug360AllowedChanges(BaseTestBug360):
         # Also do setUp from BaseTestBug360
         super(TestBug360AllowedChanges, self).setUp()
 
-        self.callTaskSuccess(["rc:bug.rc", "add", "nonrecurring", "due:today"])
+        self.t(("add", "nonrecurring", "due:today"))
 
     def test_allow_modify_due_in_nonrecurring(self):
         """Allow modifying due date in non recurring task
         """
         # Retrieve the id of the non recurring task
-        args = ["rc:bug.rc", "ls"]
-        code, out, err = self.callTaskSuccess(args)
+        args = ("ls",)
+        code, out, err = self.t(args)
 
         expected = "2 tasks"
         self.assertIn(expected, out)
@@ -127,26 +111,23 @@ class TestBug360AllowedChanges(BaseTestBug360):
         # NOTE: raw python string r"" avoids having to escape backslashes
         id = re.search(r"(\d+)\s.+\snonrecurring", out).group(1)
 
-        args = ["rc:bug.rc", id, "modify", "due:"]
-        code, out, err = self.callTaskSuccess(args)
+        args = (id, "modify", "due:")
+        code, out, err = self.t(args)
 
         expected = "Modified 1 task."
         self.assertIn(expected, out)
         expected = "You cannot remove the due date from a recurring task."
         self.assertNotIn(expected, out)
 
-        # TODO: I'm not really sure what this is supposed to test for and if it
-        # should be here at all. On another note turning it into an independent
-        # test requires too much duplication of code
-        args = ["rc:bug.rc", "diag"]
-        code, out, err = self.callTaskSuccess(args)
+        # Make sure no duplicate tasks were created
+        args = ("diag",)
+        code, out, err = self.t(args)
         expected = "No duplicates found"
         self.assertIn(expected, out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
-    import unittest
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4

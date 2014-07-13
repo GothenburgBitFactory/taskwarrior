@@ -48,7 +48,7 @@ class Task(object):
         # Cannot call self.config until confirmation is disabled
         with open(self.taskrc, 'w') as rc:
             rc.write("data.location={0}\n"
-                     "confirmation=no".format(self.datadir))
+                     "confirmation=no\n".format(self.datadir))
 
         # Setup configuration to talk to taskd automatically
         if self.taskd is not None:
@@ -57,6 +57,10 @@ class Task(object):
     def __repr__(self):
         txt = super(Task, self).__repr__()
         return "{0} running from {1}>".format(txt[:-1], self.datadir)
+
+    def __call__(self, *args, **kwargs):
+        "aka t = Task() ; t() which is now an alias to t.runSuccess()"
+        return self.runSuccess(*args, **kwargs)
 
     def bind_taskd_server(self, taskd):
         """Configure the present task client to talk to given taskd server
