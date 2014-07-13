@@ -59,7 +59,7 @@ class Task(object):
         return "{0} running from {1}>".format(txt[:-1], self.datadir)
 
     def __call__(self, *args, **kwargs):
-        "Alias to runSuccess"
+        "aka t = Task() ; t() which is now an alias to t.runSuccess()"
         return self.runSuccess(*args, **kwargs)
 
     def bind_taskd_server(self, taskd):
