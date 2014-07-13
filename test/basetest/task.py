@@ -58,6 +58,10 @@ class Task(object):
         txt = super(Task, self).__repr__()
         return "{0} running from {1}>".format(txt[:-1], self.datadir)
 
+    def __call__(self, *args, **kwargs):
+        "Alias to runSuccess"
+        return self.runSuccess(*args, **kwargs)
+
     def bind_taskd_server(self, taskd):
         """Configure the present task client to talk to given taskd server
 
