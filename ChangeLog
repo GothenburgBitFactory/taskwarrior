@@ -161,6 +161,7 @@
 - Improved bash completion when TASKRC is exported.
 - Segfault when 'project:android' is split into 'and' and 'roid' (thanks to
   Richard Boß).
+- Fixed typo in 'newest' and 'oldest' report definitions (thanks to Richard Boß).
 
 ------ current release ---------------------------
 
