@@ -48,7 +48,7 @@ class Task(object):
         # Cannot call self.config until confirmation is disabled
         with open(self.taskrc, 'w') as rc:
             rc.write("data.location={0}\n"
-                     "confirmation=no".format(self.datadir))
+                     "confirmation=no\n".format(self.datadir))
 
         # Setup configuration to talk to taskd automatically
         if self.taskd is not None:
