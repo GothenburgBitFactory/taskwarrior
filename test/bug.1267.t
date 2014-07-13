@@ -1,72 +1,55 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
-################################################################################
-##
-## Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+###############################################################################
+#
+# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
 import sys
 import os
-import re
-from glob import glob
+import unittest
 # Ensure python finds the local simpletap and basetest modules
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import BaseTestCase
+from basetest import Task
 
 
-class BaseTestBug1267(BaseTestCase):
-    @classmethod
-    def prepare(cls):
-        with open("bug.rc", 'w') as fh:
-            fh.write("data.location=.\n"
-                     "confirmation=no\n")
+class TestBug1267(unittest.TestCase):
+    def setUp(self):
+        self.t = Task()
 
-    def tearDown(self):
-        """Needed after each test or setUp will cause duplicated data at start
-        of the next test.
-        """
-        for file in glob("*.data"):
-            os.remove(file)
-
-    @classmethod
-    def cleanup(cls):
-        os.remove("bug.rc")
-
-
-class TestBug1267(BaseTestBug1267):
     def test_add_task_no_project_with_default(self):
         """Add a task without a project using direct rc change
         """
         project = "MakePudding"
 
-        args = ["rc:bug.rc", "rc.default.project={0}".format(project), "add",
+        args = ["rc.default.project={0}".format(project), "add",
                 "proj:", "Add cream"]
-        self.callTaskSuccess(args)
+        self.t(args)
 
-        args = ["rc:bug.rc", "ls"]
-        code, out, err = self.callTaskSuccess(args, merge_streams=False)
+        args = ("ls",)
+        code, out, err = self.t(args, merge_streams=False)
 
         self.assertNotIn(project, out)
 
@@ -75,21 +58,19 @@ class TestBug1267(BaseTestBug1267):
         """
         project = "MakePudding"
 
-        with open("bug.rc", 'a') as fh:
-            fh.write("default.project={0}\n".format(project))
+        self.t.config("default.project", project)
 
-        args = ["rc:bug.rc", "add", "proj:", "Add cream"]
-        self.callTaskSuccess(args)
+        args = ("add", "proj:", "Add cream")
+        self.t(args)
 
-        args = ["rc:bug.rc", "ls"]
-        code, out, err = self.callTaskSuccess(args, merge_streams=False)
+        args = ("ls",)
+        code, out, err = self.t(args, merge_streams=False)
 
         self.assertNotIn(project, out)
 
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
-    import unittest
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4
