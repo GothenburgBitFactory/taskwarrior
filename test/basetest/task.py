@@ -123,8 +123,14 @@ class Task(object):
         command = [self.taskw]
         command.extend(args)
 
-        return run_cmd_wait(command, input,
-                            merge_streams=merge_streams, env=self.env)
+        output = run_cmd_wait_nofail(command, input,
+                                     merge_streams=merge_streams, env=self.env)
+
+        if output[0] != 0:
+            output = self.diag(merge_streams_with=output)
+            raise CommandError(command, *output)
+
+        return output
 
     def runError(self, args=(), input=None, merge_streams=True):
         """Same as runSuccess but Invoke task with the given arguments
@@ -148,6 +154,7 @@ class Task(object):
 
         # output[0] is the exit code
         if output[0] == 0:
+            output = self.diag(merge_streams_with=output)
             raise CommandError(command, *output)
 
         return output
@@ -176,12 +183,49 @@ class Task(object):
         raise AttributeError("Task instance has been destroyed. "
                              "Create a new instance if you need a new client.")
 
-    def diag(self, out):
-        """Diagnostics are just lines preceded with #.
+    def diag(self, merge_streams_with=None):
+        """Run task diagnostics.
+
+        This function may fail in which case the exception text is returned as
+        stderr or appended to stderr if merge_streams_with is set.
+
+        If set, merge_streams_with should have the format:
+        (exitcode, out, err)
+        which should be the output of any previous process that failed.
         """
-        print '# --- diag start ---'
-        for line in out.split("\n"):
-            print '#', line
-        print '# --- diag end ---'
+        try:
+            output = self.runSuccess(("diag",))
+        except CommandError as e:
+            # If task diag failed add the error to stderr
+            output = (e.code, None, str(e))
+
+        if merge_streams_with is None:
+            return output
+        else:
+            # Merge any given stdout and stderr with that of "task diag"
+            code, out, err = merge_streams_with
+            dcode, dout, derr = output
+
+            # Merge stdout
+            newout = "\n##### Debugging information (task diag): #####\n{0}"
+            if dout is None:
+                newout = newout.format("Not available, check STDERR")
+            else:
+                newout = newout.format(dout)
+
+            if out is not None:
+                newout = out + newout
+
+            # And merge stderr
+            newerr = "\n##### Debugging information (task diag): #####\n{0}"
+            if derr is None:
+                newerr = newerr.format("Not available, check STDOUT")
+            else:
+                newerr = newerr.format(derr)
+
+            if err is not None:
+                newerr = err + derr
+
+            return code, newout, newerr
 
 # vim: ai sts=4 et sw=4
