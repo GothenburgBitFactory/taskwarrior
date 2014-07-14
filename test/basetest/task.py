@@ -127,7 +127,6 @@ class Task(object):
                                      merge_streams=merge_streams, env=self.env)
 
         if output[0] != 0:
-            output = self.diag(merge_streams_with=output)
             raise CommandError(command, *output)
 
         return output
@@ -154,7 +153,6 @@ class Task(object):
 
         # output[0] is the exit code
         if output[0] == 0:
-            output = self.diag(merge_streams_with=output)
             raise CommandError(command, *output)
 
         return output
