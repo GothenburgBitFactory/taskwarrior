@@ -50,6 +50,7 @@ class TestBugNumber(TestCase):
         """Executed once after all tests in the class"""
 
 
+@unittest.skipIf(Taskd.not_available(), "Taskd binary not available")
 class ServerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
