@@ -106,7 +106,6 @@
 #define STRING_PARSER_OVERRIDE_RC    "Sobrescritura de configuración rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Error: modificador de atributo no reconocido '{1}'."
 #define STRING_PARSER_RANGE_INVERTED "Rango invertido 'alto-bajo' en vez de 'bajo-alto'"
-#define STRING_PARSER_MALFORMED_ID   "ID incorrecto."
 #define STRING_PARSER_UUID_AFTER_COMMA "UUID no reconocido tras coma."
 #define STRING_PARSER_ALTERNATE_RC   "Usando el archivo .taskrc alternativo {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Usando data.location alternativa {1}"

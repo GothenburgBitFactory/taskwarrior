@@ -1199,6 +1199,12 @@ void Parser::findIdSequence ()
 
       if (terms.size () == 1)
       {
+        if (! digitsOnly (terms[0]))
+        {
+          not_an_id = true;
+          break;
+        }
+
         Nibbler n (terms[0]);
         int id;
         if (n.getUnsignedInt (id) &&
@@ -1214,6 +1220,13 @@ void Parser::findIdSequence ()
       }
       else if (terms.size () == 2)
       {
+        if (! digitsOnly (terms[0]) ||
+            ! digitsOnly (terms[1]))
+        {
+          not_an_id = true;
+          break;
+        }
+
         Nibbler n_min (terms[0]);
         Nibbler n_max (terms[1]);
         int id_min;
@@ -1234,8 +1247,6 @@ void Parser::findIdSequence ()
           break;
         }
       }
-      else
-        throw std::string (STRING_PARSER_MALFORMED_ID);
     }
 
     if (not_an_id)
