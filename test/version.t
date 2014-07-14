@@ -33,10 +33,10 @@ from datetime import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task
+from basetest import Task, TestCase
 
 
-class TestVersion(unittest.TestCase):
+class TestVersion(TestCase):
     def setUp(self):
         self.t = Task()
 

@@ -8,10 +8,10 @@ from datetime import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task, Taskd
+from basetest import Task, Taskd, TestCase
 
 
-class TestCase(unittest.TestCase):
+class TestBugNumber(TestCase):
     @classmethod
     def setUpClass(cls):
         """Executed once before any test in the class"""
