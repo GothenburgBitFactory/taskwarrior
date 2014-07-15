@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
+import signal
 
 
 class CommandError(Exception):
     def __init__(self, cmd, code, out, err, msg=None):
         if msg is None:
-            self.msg = ("Command '{0}' finished with unexpected exit code "
-                        "'{1}':\nStdout: '{2}'\nStderr: '{3}'")
+            if code == signal.SIGABRT:
+                self.msg = ("Command '{0}' was aborted, likely due to not "
+                            "finishing in due time. The exit code was "
+                            "'{1}':\nStdout: '{2}'\nStderr: '{3}'")
+            else:
+                self.msg = ("Command '{0}' finished with unexpected exit code "
+                            "'{1}':\nStdout: '{2}'\nStderr: '{3}'")
         else:
             self.msg = msg
 
