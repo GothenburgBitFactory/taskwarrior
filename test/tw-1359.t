@@ -40,9 +40,10 @@ class TestBug1359(TestCase):
 
     def test_add_hyphenated(self):
         """"one-two-three" in description triggers Malformed ID error"""
-        self.t(("add", "one-two-three.ca"))
-        code, out, err = self.t(("1", "info"))
+        code, out, err = self.t(("add", "one-two-three.ca"))
         self.assertEqual(code, 0)
+
+        code, out, err = self.t(("1", "info"))
         self.assertIn("one-two-three.ca", out)
 
 if __name__ == "__main__":
