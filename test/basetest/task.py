@@ -152,7 +152,7 @@ class Task(object):
                                      merge_streams=merge_streams, env=self.env)
 
         # output[0] is the exit code
-        if output[0] == 0:
+        if output[0] == 0 or output[0] is None:
             raise CommandError(command, *output)
 
         return output
