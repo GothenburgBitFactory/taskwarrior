@@ -29,39 +29,44 @@
 import sys
 import os
 import unittest
-from datetime import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
-from basetest.utils import run_cmd_wait
 
 
-class TestVersion(TestCase):
+class TestDiagColor(TestCase):
     def setUp(self):
         self.t = Task()
 
-    def test_version(self):
-        """Copyright is current"""
-        args = ("version",)
+    def test_diag_color_builtin(self):
+        """Task diag detects terminal as color compatible with test-builtin"""
+        code, out, err = self.t.diag()
 
-        code, out, err = self.t(args)
+        expected = "\x1b[1m"
+        self.assertNotIn(expected, out)
 
-        expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
-        self.assertRegexpMatches(out.decode("utf8"), expected)
+    def test_diag_color(self):
+        """Task diag detects terminal as color compatible"""
+        code, out, err = self.t(("diag",))
 
-    def test_task_git_version(self):
-        """Task binary matches the current git commit"""
+        expected = "\x1b[1m"
+        self.assertNotIn(expected, out)
 
-        git_cmd = ("git", "rev-parse", "--short", "--verify", "HEAD")
-        _, hash, _ = run_cmd_wait(git_cmd)
+    def test_diag_nocolor(self):
+        """Task diag respects rc:color=off and disables color"""
+        code, out, err = self.t(("rc.color:off", "diag"))
 
-        expected = "Commit: {0}".format(hash)
+        expected = "\x1b[1m"
+        self.assertNotIn(expected, out)
 
-        args = ("diag",)
+    def test_diag_force_color(self):
+        """Task diag respects rc:_forcecolor=on and forces color"""
+        code, out, err = self.t(("rc._forcecolor:on", "diag"))
 
-        code, out, err = self.t(args)
+        expected = "\x1b[1m"
         self.assertIn(expected, out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

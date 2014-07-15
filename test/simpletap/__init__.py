@@ -72,7 +72,7 @@ class TAPTestResult(unittest.result.TestResult):
             padding = " " * (len(status) + 3)
             for line in msg.splitlines():
                 # Force displaying new-line characters as literal new lines
-                line = line.replace("\\n", "\n")
+                line = line.replace("\\n", "\n# ")
                 self.stream.writeln("#{0}{1}".format(padding, line))
         else:
             self.stream.writeln("ok {0} - {1}".format(self.testsRun, desc))
