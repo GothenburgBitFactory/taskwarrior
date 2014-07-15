@@ -31,10 +31,10 @@ import os
 import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task
+from basetest import Task, TestCase
 
 
-class TestBug1306(unittest.TestCase):
+class TestBug1306(TestCase):
     def setUp(self):
         self.t = Task()
 

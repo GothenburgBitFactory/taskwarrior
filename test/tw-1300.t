@@ -32,10 +32,10 @@ import unittest
 # Ensure python finds the local simpletap and basetest modules
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task
+from basetest import Task, TestCase
 
 
-class TestBug1300(unittest.TestCase):
+class TestBug1300(TestCase):
     @classmethod
     def setUp(cls):
         cls.t = Task()

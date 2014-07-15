@@ -7,7 +7,8 @@ import signal
 import atexit
 from time import sleep
 from subprocess import Popen
-from .utils import find_unused_port, release_port, port_used, run_cmd_wait
+from .utils import (find_unused_port, release_port, port_used, run_cmd_wait,
+                    which)
 from .exceptions import CommandError
 
 try:
@@ -33,7 +34,10 @@ class Taskd(object):
     A server can be stopped and started multiple times, but should not be
     started or stopped after being destroyed.
     """
-    def __init__(self, taskd="taskd", certpath=None, address="127.0.0.1"):
+    DEFAULT_TASKD = "taskd"
+
+    def __init__(self, taskd=DEFAULT_TASKD, certpath=None,
+                 address="127.0.0.1"):
         """Initialize a Task server that runs in the background and stores data
         in a temporary folder
 
@@ -259,5 +263,13 @@ class Taskd(object):
     def __destroyed(self, *args, **kwargs):
         raise AttributeError("Taskd instance has been destroyed. "
                              "Create a new instance if you need a new server.")
+
+    @classmethod
+    def not_available(cls):
+        """Check if the taskd binary is available in the path"""
+        if which(cls.DEFAULT_TASKD):
+            return False
+        else:
+            return True
 
 # vim: ai sts=4 et sw=4

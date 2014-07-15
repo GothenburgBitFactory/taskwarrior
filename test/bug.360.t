@@ -33,10 +33,10 @@ import unittest
 # Ensure python finds the local simpletap and basetest modules
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task
+from basetest import Task, TestCase
 
 
-class BaseTestBug360(unittest.TestCase):
+class BaseTestBug360(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()

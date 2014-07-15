@@ -8,10 +8,10 @@ from datetime import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task, Taskd
+from basetest import Task, Taskd, TestCase
 
 
-class TestCase(unittest.TestCase):
+class TestBugNumber(TestCase):
     @classmethod
     def setUpClass(cls):
         """Executed once before any test in the class"""
@@ -34,6 +34,9 @@ class TestCase(unittest.TestCase):
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
         self.assertRegexpMatches(out.decode("utf8"), expected)
 
+        # TAP diagnostics on the bas
+        self.diag("Yay TAP diagnostics")
+
     def test_fail_other(self):
         """Nothing to do with Copyright"""
         self.assertEqual("I like to code", "I like\nto code\n")
@@ -50,7 +53,8 @@ class TestCase(unittest.TestCase):
         """Executed once after all tests in the class"""
 
 
-class ServerTestCase(unittest.TestCase):
+@unittest.skipIf(Taskd.not_available(), "Taskd binary not available")
+class ServerTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.taskd = Taskd()
