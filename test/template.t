@@ -34,6 +34,9 @@ class TestBugNumber(TestCase):
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
         self.assertRegexpMatches(out.decode("utf8"), expected)
 
+        # TAP diagnostics on the bas
+        self.diag("Yay TAP diagnostics")
+
     def test_fail_other(self):
         """Nothing to do with Copyright"""
         self.assertEqual("I like to code", "I like\nto code\n")

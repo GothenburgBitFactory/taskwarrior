@@ -8,7 +8,7 @@ class TestCase(unittest.TestCase):
     def diag(self, out):
         sys.stdout.write("# --- diag start ---\n")
         for line in out.split("\n"):
-            sys.stdout.write("#" + line + "\n")
+            sys.stdout.write("# " + line + "\n")
         sys.stdout.write("# ---  diag end  ---\n")
 
 
