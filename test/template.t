@@ -54,7 +54,7 @@ class TestBugNumber(TestCase):
 
 
 @unittest.skipIf(Taskd.not_available(), "Taskd binary not available")
-class ServerTestCase(unittest.TestCase):
+class ServerTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.taskd = Taskd()
