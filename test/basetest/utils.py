@@ -62,12 +62,16 @@ def _get_output(proc, input):
         proc.send_signal(signal.SIGABRT)
         exit = wait_process(proc)
 
+    # NOTE Increase this value if tests fail with None being received as
+    # stdout/stderr instead of the expected content
+    timeout = 0.1  # seconds
+
     try:
-        out = outq.get_nowait()
+        out = outq.get(timeout=timeout)
     except Empty:
         out = None
     try:
-        err = errq.get_nowait()
+        err = errq.get(timeout=timeout)
     except Empty:
         err = None
 
