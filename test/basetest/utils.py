@@ -1,11 +1,77 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
 import os
 import sys
 import socket
+import signal
 from subprocess import Popen, PIPE, STDOUT
+from threading import Thread
+from Queue import Queue, Empty
+from time import sleep
 from .exceptions import CommandError
 
 USED_PORTS = set()
+ON_POSIX = 'posix' in sys.builtin_module_names
+
+
+def wait_process(proc, timeout=1):
+    """Wait for process to finish
+    """
+    sleeptime = .1
+    # Max number of attempts until giving up
+    tries = int(timeout / sleeptime)
+
+    # Wait for up to a second for the process to finish and avoid zombies
+    for i in range(tries):
+        exit = proc.poll()
+
+        if exit is not None:
+            break
+
+        sleep(sleeptime)
+
+    return exit
+
+
+def _get_output(proc, input):
+    """Collect output from the subprocess without blocking the main process if
+    subprocess hangs.
+    """
+    def queue_output(proc, input, outq, errq):
+        """Read/Write output/input of given process.
+        This function is meant to be executed in a thread as it may block
+        """
+        # Send input and wait for finish
+        out, err = proc.communicate(input)
+        # Give the output back to the caller
+        outq.put(out)
+        errq.put(err)
+
+    outq = Queue()
+    errq = Queue()
+
+    t = Thread(target=queue_output, args=(proc, input, outq, errq))
+    t.daemon = True
+    t.start()
+
+    # A task process shouldn't take longer than 1 second to finish
+    exit = wait_process(proc)
+
+    # If it does take longer than 1 second, abort it
+    if exit is None:
+        proc.send_signal(signal.SIGABRT)
+        exit = wait_process(proc)
+
+    try:
+        out = outq.get_nowait()
+    except Empty:
+        out = None
+    try:
+        err = errq.get_nowait()
+    except Empty:
+        err = None
+
+    return out, err
 
 
 def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
@@ -22,16 +88,9 @@ def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
     else:
         stderr = PIPE
 
-    p = Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr, env=env)
-    out, err = p.communicate(input)
-
-    # In python3 we will be able use the following instead of the previous
-    # line to avoid locking if task is unexpectedly waiting for input
-    # try:
-    #     out, err = p.communicate(input, timeout=15)
-    # except TimeoutExpired:
-    #     p.kill()
-    #     out, err = proc.communicate()
+    p = Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr, bufsize=1,
+              close_fds=ON_POSIX, env=env)
+    out, err = _get_output(p, input)
 
     if p.returncode != 0:
         raise CommandError(cmd, p.returncode, out, err)
