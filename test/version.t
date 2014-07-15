@@ -34,6 +34,7 @@ from datetime import datetime
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
+from basetest.utils import run_cmd_wait
 
 
 class TestVersion(TestCase):
@@ -49,6 +50,18 @@ class TestVersion(TestCase):
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
         self.assertRegexpMatches(out.decode("utf8"), expected)
 
+    def test_task_git_version(self):
+        """Task binary matches the current git commit"""
+
+        git_cmd = ("git", "rev-parse", "--short", "--verify", "HEAD")
+        _, hash, _ = run_cmd_wait(git_cmd)
+
+        expected = "Commit: {0}".format(hash)
+
+        args = ("diag",)
+
+        code, out, err = self.t(args)
+        self.assertIn(expected, out)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
