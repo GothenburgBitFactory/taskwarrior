@@ -20,12 +20,12 @@ class Task(object):
 
     A taskw client should not be used after being destroyed.
     """
-    def __init__(self, taskw="task", taskd=None):
+    def __init__(self, taskd=None, taskw="task"):
         """Initialize a Task warrior (client) that can interact with a taskd
         server. The task client runs in a temporary folder.
 
-        :arg taskw: Task binary to use as client (defaults: task in PATH)
         :arg taskd: Taskd instance for client-server configuration
+        :arg taskw: Task binary to use as client (defaults: task in PATH)
         """
         self.taskw = taskw
         self.taskd = taskd
