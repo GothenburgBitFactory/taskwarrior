@@ -8,7 +8,7 @@ from datetime import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task, Taskd, TestCase
+from basetest import Task, TestCase, Taskd, ServerTestCase
 
 
 class TestBugNumber(TestCase):
@@ -53,8 +53,7 @@ class TestBugNumber(TestCase):
         """Executed once after all tests in the class"""
 
 
-@unittest.skipIf(Taskd.not_available(), "Taskd binary not available")
-class ServerTestCase(TestCase):
+class ServerTestBugNumber(ServerTestCase):
     @classmethod
     def setUpClass(cls):
         cls.taskd = Taskd()

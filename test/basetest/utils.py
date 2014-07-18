@@ -13,6 +13,10 @@ from .exceptions import CommandError
 USED_PORTS = set()
 ON_POSIX = 'posix' in sys.builtin_module_names
 
+# Environment flags to control skipping of task and taskd tests
+TASKW_SKIP = os.environ.get("TASKW_SKIP", False)
+TASKD_SKIP = os.environ.get("TASKD_SKIP", False)
+
 
 def wait_process(proc, timeout=1):
     """Wait for process to finish
