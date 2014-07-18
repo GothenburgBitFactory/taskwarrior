@@ -50,7 +50,7 @@ class Taskd(object):
 
         # Will hold the taskd subprocess if it's running
         self.proc = None
-        self.datadir = tempfile.mkdtemp()
+        self.datadir = tempfile.mkdtemp(prefix="taskd_")
         self.tasklog = os.path.join(self.datadir, "taskd.log")
         self.taskpid = os.path.join(self.datadir, "taskd.pid")
 

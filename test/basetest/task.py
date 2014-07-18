@@ -31,7 +31,7 @@ class Task(object):
 
         # Configuration of the isolated environment
         self._original_pwd = os.getcwd()
-        self.datadir = tempfile.mkdtemp()
+        self.datadir = tempfile.mkdtemp(prefix="task_")
         self.taskrc = os.path.join(self.datadir, "test.rc")
 
         # Ensure any instance is properly destroyed at session end
