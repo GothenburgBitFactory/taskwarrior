@@ -181,8 +181,10 @@ def memoize(obj):
 
 try:
     from shutil import which
+    which = memoize(which)
 except ImportError:
     # NOTE: This is shutil.which backported from python-3.3.3
+    @memoize
     def which(cmd, mode=os.F_OK | os.X_OK, path=None):
         """Given a command, mode, and a PATH string, return the path which
         conforms to the given mode on the PATH, or None if there is no such
