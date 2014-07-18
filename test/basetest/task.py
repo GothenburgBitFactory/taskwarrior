@@ -29,6 +29,9 @@ class Task(object):
         self.taskw = taskw
         self.taskd = taskd
 
+        # Used to specify what command to launch (and to inject faketime)
+        self._command = [self.taskw]
+
         # Configuration of the isolated environment
         self._original_pwd = os.getcwd()
         self.datadir = tempfile.mkdtemp(prefix="task_")
@@ -125,7 +128,8 @@ class Task(object):
 
         Returns (exit_code, stdout, stderr)
         """
-        command = [self.taskw]
+        # Create a copy of the command
+        command = self._command[:]
         command.extend(args)
 
         output = run_cmd_wait_nofail(command, input,
@@ -150,7 +154,8 @@ class Task(object):
 
         Returns (exit_code, stdout, stderr)
         """
-        command = [self.taskw]
+        # Create a copy of the command
+        command = self._command[:]
         command.extend(args)
 
         output = run_cmd_wait_nofail(command, input,
@@ -230,5 +235,20 @@ class Task(object):
                 newerr = err + derr
 
             return code, newout, newerr
+
+    def faketime(self, faketime=None):
+        """Set a faketime using libfaketime that will affect the following
+        command calls.
+
+        If faketime is None, faketime settings will be disabled.
+        """
+        cmd = "faketime"
+
+        if self._command[0] == cmd:
+            self._command = self._command[3:]
+
+        if faketime is not None:
+            # Use advanced time format
+            self._command = [cmd, "-f", faketime] + self._command
 
 # vim: ai sts=4 et sw=4
