@@ -8,7 +8,7 @@ from datetime import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task, Taskd, TestCase
+from basetest import Task, TestCase, Taskd, ServerTestCase
 
 
 class TestBugNumber(TestCase):
@@ -37,6 +37,23 @@ class TestBugNumber(TestCase):
         # TAP diagnostics on the bas
         self.diag("Yay TAP diagnostics")
 
+    def test_faketime(self):
+        """Running tests using libfaketime"""
+        self.t.faketime("-2y")
+
+        command = ("add", "Testing")
+        self.t(command)
+
+        # Remove FAKETIME settings
+        self.t.faketime()
+
+        command = ("list",)
+        code, out, err = self.t(command)
+
+        # Task should be 2 years old
+        expected = "2.0y"
+        self.assertIn(expected, out)
+
     def test_fail_other(self):
         """Nothing to do with Copyright"""
         self.assertEqual("I like to code", "I like\nto code\n")
@@ -53,8 +70,7 @@ class TestBugNumber(TestCase):
         """Executed once after all tests in the class"""
 
 
-@unittest.skipIf(Taskd.not_available(), "Taskd binary not available")
-class ServerTestCase(TestCase):
+class ServerTestBugNumber(ServerTestCase):
     @classmethod
     def setUpClass(cls):
         cls.taskd = Taskd()

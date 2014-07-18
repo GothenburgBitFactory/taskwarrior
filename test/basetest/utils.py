@@ -4,6 +4,7 @@ import os
 import sys
 import socket
 import signal
+import functools
 from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
 from Queue import Queue, Empty
@@ -12,6 +13,10 @@ from .exceptions import CommandError
 
 USED_PORTS = set()
 ON_POSIX = 'posix' in sys.builtin_module_names
+
+# Environment flags to control skipping of task and taskd tests
+TASKW_SKIP = os.environ.get("TASKW_SKIP", False)
+TASKD_SKIP = os.environ.get("TASKD_SKIP", False)
 
 
 def wait_process(proc, timeout=1):
@@ -160,10 +165,26 @@ def release_port(port):
         pass
 
 
+def memoize(obj):
+    """Keep an in-memory cache of function results given it's inputs
+    """
+    cache = obj.cache = {}
+
+    @functools.wraps(obj)
+    def memoizer(*args, **kwargs):
+        key = str(args) + str(kwargs)
+        if key not in cache:
+            cache[key] = obj(*args, **kwargs)
+        return cache[key]
+    return memoizer
+
+
 try:
     from shutil import which
+    which = memoize(which)
 except ImportError:
     # NOTE: This is shutil.which backported from python-3.3.3
+    @memoize
     def which(cmd, mode=os.F_OK | os.X_OK, path=None):
         """Given a command, mode, and a PATH string, return the path which
         conforms to the given mode on the PATH, or None if there is no such

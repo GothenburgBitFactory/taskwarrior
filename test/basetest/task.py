@@ -4,7 +4,8 @@ import os
 import tempfile
 import shutil
 import atexit
-from .utils import run_cmd_wait, run_cmd_wait_nofail
+import unittest
+from .utils import run_cmd_wait, run_cmd_wait_nofail, which
 from .exceptions import CommandError
 
 
@@ -29,21 +30,18 @@ class Task(object):
         self.taskw = taskw
         self.taskd = taskd
 
+        # Used to specify what command to launch (and to inject faketime)
+        self._command = [self.taskw]
+
         # Configuration of the isolated environment
         self._original_pwd = os.getcwd()
-        self.datadir = tempfile.mkdtemp()
+        self.datadir = tempfile.mkdtemp(prefix="task_")
         self.taskrc = os.path.join(self.datadir, "test.rc")
 
         # Ensure any instance is properly destroyed at session end
         atexit.register(lambda: self.destroy())
 
-        # Copy all env variables to avoid clashing subprocess environments
-        self.env = os.environ.copy()
-
-        # Make sure no TASKDDATA is isolated
-        self.env["TASKDATA"] = self.datadir
-        # As well as TASKRC
-        self.env["TASKRC"] = self.taskrc
+        self.reset_env()
 
         # Cannot call self.config until confirmation is disabled
         with open(self.taskrc, 'w') as rc:
@@ -57,6 +55,17 @@ class Task(object):
     def __repr__(self):
         txt = super(Task, self).__repr__()
         return "{0} running from {1}>".format(txt[:-1], self.datadir)
+
+    def reset_env(self):
+        """Set a new environment derived from the one used to launch the test
+        """
+        # Copy all env variables to avoid clashing subprocess environments
+        self.env = os.environ.copy()
+
+        # Make sure no TASKDDATA is isolated
+        self.env["TASKDATA"] = self.datadir
+        # As well as TASKRC
+        self.env["TASKRC"] = self.taskrc
 
     def __call__(self, *args, **kwargs):
         "aka t = Task() ; t() which is now an alias to t.runSuccess()"
@@ -120,7 +129,8 @@ class Task(object):
 
         Returns (exit_code, stdout, stderr)
         """
-        command = [self.taskw]
+        # Create a copy of the command
+        command = self._command[:]
         command.extend(args)
 
         output = run_cmd_wait_nofail(command, input,
@@ -145,7 +155,8 @@ class Task(object):
 
         Returns (exit_code, stdout, stderr)
         """
-        command = [self.taskw]
+        # Create a copy of the command
+        command = self._command[:]
         command.extend(args)
 
         output = run_cmd_wait_nofail(command, input,
@@ -225,5 +236,22 @@ class Task(object):
                 newerr = err + derr
 
             return code, newout, newerr
+
+    def faketime(self, faketime=None):
+        """Set a faketime using libfaketime that will affect the following
+        command calls.
+
+        If faketime is None, faketime settings will be disabled.
+        """
+        cmd = which("faketime")
+        if cmd is None:
+            raise unittest.SkipTest("libfaketime/faketime is not installed")
+
+        if self._command[0] == cmd:
+            self._command = self._command[3:]
+
+        if faketime is not None:
+            # Use advanced time format
+            self._command = [cmd, "-f", faketime] + self._command
 
 # vim: ai sts=4 et sw=4
