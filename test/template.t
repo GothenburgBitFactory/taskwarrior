@@ -37,6 +37,23 @@ class TestBugNumber(TestCase):
         # TAP diagnostics on the bas
         self.diag("Yay TAP diagnostics")
 
+    def test_faketime(self):
+        """Running tests using libfaketime"""
+        self.t.faketime("-2y")
+
+        command = ("add", "Testing")
+        self.t(command)
+
+        # Remove FAKETIME settings
+        self.t.faketime()
+
+        command = ("list",)
+        code, out, err = self.t(command)
+
+        # Task should be 2 years old
+        expected = "2.0y"
+        self.assertIn(expected, out)
+
     def test_fail_other(self):
         """Nothing to do with Copyright"""
         self.assertEqual("I like to code", "I like\nto code\n")
