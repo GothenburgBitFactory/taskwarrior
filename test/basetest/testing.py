@@ -8,10 +8,10 @@ from .taskd import Taskd
 
 class BaseTestCase(unittest.TestCase):
     def diag(self, out):
-        sys.stdout.write("# --- diag start ---\n")
+        sys.stderr.write("# --- diag start ---\n")
         for line in out.split("\n"):
-            sys.stdout.write("# " + line + "\n")
-        sys.stdout.write("# ---  diag end  ---\n")
+            sys.stderr.write("# " + line + "\n")
+        sys.stderr.write("# ---  diag end  ---\n")
 
 
 @unittest.skipIf(TASKW_SKIP, "TASKW_SKIP set, skipping task tests.")
