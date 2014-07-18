@@ -165,6 +165,20 @@ def release_port(port):
         pass
 
 
+def memoize(obj):
+    """Keep an in-memory cache of function results given it's inputs
+    """
+    cache = obj.cache = {}
+
+    @functools.wraps(obj)
+    def memoizer(*args, **kwargs):
+        key = str(args) + str(kwargs)
+        if key not in cache:
+            cache[key] = obj(*args, **kwargs)
+        return cache[key]
+    return memoizer
+
+
 try:
     from shutil import which
 except ImportError:
