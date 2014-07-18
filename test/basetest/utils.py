@@ -4,6 +4,7 @@ import os
 import sys
 import socket
 import signal
+import functools
 from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
 from Queue import Queue, Empty

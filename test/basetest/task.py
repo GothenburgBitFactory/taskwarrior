@@ -4,7 +4,8 @@ import os
 import tempfile
 import shutil
 import atexit
-from .utils import run_cmd_wait, run_cmd_wait_nofail
+import unittest
+from .utils import run_cmd_wait, run_cmd_wait_nofail, which
 from .exceptions import CommandError
 
 
@@ -242,7 +243,9 @@ class Task(object):
 
         If faketime is None, faketime settings will be disabled.
         """
-        cmd = "faketime"
+        cmd = which("faketime")
+        if cmd is None:
+            raise unittest.SkipTest("libfaketime/faketime is not installed")
 
         if self._command[0] == cmd:
             self._command = self._command[3:]
