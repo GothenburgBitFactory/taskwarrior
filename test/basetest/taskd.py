@@ -57,10 +57,7 @@ class Taskd(object):
         # Ensure any instance is properly destroyed at session end
         atexit.register(lambda: self.destroy())
 
-        # Copy all env variables to avoid clashing subprocess environments
-        self.env = os.environ.copy()
-        # Make sure TASKDDATA points to the temporary folder
-        self.env["TASKDATA"] = self.datadir
+        self.reset_env()
 
         if certpath is None:
             certpath = DEFAULT_CERT_PATH
@@ -100,6 +97,15 @@ class Taskd(object):
     def __repr__(self):
         txt = super(Taskd, self).__repr__()
         return "{0} running from {1}>".format(txt[:-1], self.datadir)
+
+    def reset_env(self):
+        """Set a new environment derived from the one used to launch the test
+        """
+        # Copy all env variables to avoid clashing subprocess environments
+        self.env = os.environ.copy()
+
+        # Make sure TASKDDATA points to the temporary folder
+        self.env["TASKDATA"] = self.datadir
 
     def create_user(self, user=None, group=None, org=None):
         """Create a user/group in the server and return the user

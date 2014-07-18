@@ -37,13 +37,7 @@ class Task(object):
         # Ensure any instance is properly destroyed at session end
         atexit.register(lambda: self.destroy())
 
-        # Copy all env variables to avoid clashing subprocess environments
-        self.env = os.environ.copy()
-
-        # Make sure no TASKDDATA is isolated
-        self.env["TASKDATA"] = self.datadir
-        # As well as TASKRC
-        self.env["TASKRC"] = self.taskrc
+        self.reset_env()
 
         # Cannot call self.config until confirmation is disabled
         with open(self.taskrc, 'w') as rc:
@@ -57,6 +51,17 @@ class Task(object):
     def __repr__(self):
         txt = super(Task, self).__repr__()
         return "{0} running from {1}>".format(txt[:-1], self.datadir)
+
+    def reset_env(self):
+        """Set a new environment derived from the one used to launch the test
+        """
+        # Copy all env variables to avoid clashing subprocess environments
+        self.env = os.environ.copy()
+
+        # Make sure no TASKDDATA is isolated
+        self.env["TASKDATA"] = self.datadir
+        # As well as TASKRC
+        self.env["TASKRC"] = self.taskrc
 
     def __call__(self, *args, **kwargs):
         "aka t = Task() ; t() which is now an alias to t.runSuccess()"
