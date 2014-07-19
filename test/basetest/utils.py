@@ -9,6 +9,10 @@ from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
 from Queue import Queue, Empty
 from time import sleep
+try:
+    import simplejson as json
+except ImportError:
+    import json
 from .exceptions import CommandError
 
 USED_PORTS = set()
@@ -246,5 +250,24 @@ except ImportError:
                     if _access_check(name, mode):
                         return name
         return None
+
+def parse_datafile(file):
+    """Parse .data files on the client and server treating files as JSON
+    """
+    data = []
+    with open(file) as fh:
+        for line in fh:
+            line = line.rstrip("\n")
+
+            # Turn [] strings into {} to be treated properly as JSON hashes
+            if line.startswith('[') and line.endswith(']'):
+                line = '{' + line[1:-1] + '}'
+
+            if line.startswith("{"):
+                data.append(json.loads(line))
+            else:
+                data.append(line)
+    return data
+
 
 # vim: ai sts=4 et sw=4
