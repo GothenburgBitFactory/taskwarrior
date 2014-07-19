@@ -105,8 +105,15 @@ class Task(object):
         else:
             user, group, org, userkey = taskd_user
 
-        self.credentials = "/".join((org, user, userkey))
-        self.config("taskd.credentials", self.credentials)
+        credentials = "/".join((org, user, userkey))
+        self.config("taskd.credentials", credentials)
+
+        self.credentials = {
+            "user": user,
+            "group": group,
+            "org": org,
+            "userkey": userkey,
+        }
 
     def config(self, var, value):
         """Run setup `var` as `value` in taskd config
