@@ -283,6 +283,7 @@ class Taskd(object):
         task client. tx.data will be parsed to string and JSON.
         """
         file = os.path.join(self.datadir,
+                            "orgs",
                             client.credentials["org"],
                             "users",
                             client.credentials["userkey"],
