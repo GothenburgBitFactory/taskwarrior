@@ -8,7 +8,7 @@ import atexit
 from time import sleep
 from subprocess import Popen
 from .utils import (find_unused_port, release_port, port_used, run_cmd_wait,
-                    which)
+                    which, parse_datafile)
 from .exceptions import CommandError
 
 try:
@@ -277,5 +277,18 @@ class Taskd(object):
             return False
         else:
             return True
+
+    def client_data(self, client):
+        """Return a python list with the content of tx.data matching the given
+        task client. tx.data will be parsed to string and JSON.
+        """
+        file = os.path.join(self.datadir,
+                            "orgs",
+                            client.credentials["org"],
+                            "users",
+                            client.credentials["userkey"],
+                            "tx.data")
+
+        return parse_datafile(file)
 
 # vim: ai sts=4 et sw=4
