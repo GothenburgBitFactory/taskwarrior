@@ -30,6 +30,7 @@
 import sys
 import unittest
 import warnings
+import traceback
 
 
 class TAPTestResult(unittest.result.TestResult):
@@ -106,21 +107,34 @@ class TAPTestResult(unittest.result.TestResult):
         try:
             exception, msg, _ = err
         except (TypeError, ValueError):
-            exception = ""
+            exception_name = ""
             msg = err
+            trace_msg = None
         else:
-            exception = exception.__name__
+            exception_name = exception.__name__
             msg = str(msg)
+
+            # Extract line where error happened for easier debugging
+            _, _, tb = sys.exc_info()
+            trace = traceback.extract_tb(tb)
+            for t in trace:
+                # t = (filename, line_number, function_name, raw_line)
+                if t[2].startswith("test"):
+                    trace_msg = "on file {0} line {1} in {2}: '{3}'".format(*t)
+                    break
 
         if status:
             if status == "SKIP":
-                self.stream.writeln("skip {0} - {1}".format(self.testsRun,
-                                                            desc))
+                self.stream.writeln("skip {0} - {1}".format(
+                    self.testsRun, desc))
             else:
-                self.stream.writeln("not ok {0} - {1}".format(self.testsRun,
-                                                              desc))
-            self.stream.writeln("# {0}: {1}".format(status, exception))
+                self.stream.writeln("not ok {0} - {1}".format(
+                    self.testsRun, desc))
+            self.stream.writeln("# {0}: {1} {2}:".format(
+                status, exception_name, trace_msg))
+
             padding = " " * (len(status) + 3)
+
             for line in msg.splitlines():
                 # Force displaying new-line characters as literal new lines
                 line = line.replace("\\n", "\n# ")
