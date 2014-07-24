@@ -66,6 +66,9 @@ class TAPTestResult(unittest.result.TestResult):
     def _do_stream(data, stream):
         """Helper function for _mergeStdout"""
         for line in data.splitlines(True):
+            # newlines should be taken literally and be comments in TAP
+            line = line.replace("\\n", "\n# ")
+
             # Add a comment sign before each line
             if line.startswith("#"):
                 stream.write(line)
