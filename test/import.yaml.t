@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 16;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -52,14 +52,27 @@ if (open my $fh, '>', 'import.txt')
 ---
   task:
     uuid: 00000000-0000-0000-0000-000000000000
+    annotations:
+      annotation:
+        entry: 20100706T025311Z
+        description: anno ONE
     description: zero
     project: A
+    tags: a,b,y
     status: pending
     entry: 20110901T120000Z
   task:
     uuid: 11111111-1111-1111-1111-111111111111
+    annotations:
+      annotation:
+        entry: 20110706T025311Z
+        description: anno TWO
+      annotation:
+        entry: 20120706T025311Z
+        description: anno THREE
     description: one
     project: B
+    tags: x,y,z
     status: pending
     entry: 20110902T120000Z
   task:
@@ -94,15 +107,30 @@ like   ($output, qr/2.+B.+one/,  't2 present');
 unlike ($output, qr/3.+two/,     't3 missing');
 
 $output = qx{../src/task rc:import.rc completed 2>&1};
-# Complete  Age     Description
-# --------- ------- -----------
-# 2/13/2009 1.5 yrs two
+# Complete   Age  Description UUID
+# ---------- ---- ----------- ------------------------------------
+# 9/4/2011   2.9y two         22222222-2222-2222-2222-222222222222
 #
 # 1 task
 
-unlike ($output, qr/1.+A.+zero/,      't1 missing');
-unlike ($output, qr/2.+B.+one/,       't2 missing');
+unlike ($output, qr/A.+zero/,      't1 missing');
+unlike ($output, qr/B.+one/,       't2 missing');
 like   ($output, qr/9\/4\/2011.+two/, 't3 present');
+
+# check tags and annotations
+$output = qx{../src/task rc:import.rc +y 2>&1};
+# ID Proj Age  Urg  Description
+# -- ---- ---- ---- -----------------------
+#  2 B    2.9y  4.9 one
+#                     7/6/2011 anno TWO
+#                     7/6/2012 anno THREE
+#  1 A    2.9y  4.8 zero
+#                     7/6/2010 anno ONE
+# 
+# 2 tasks
+like ($output, qr/1.+A.+zero.*\n.+ONE/,           't1 selected by tag, has annotation');
+like ($output, qr/2.+B.+one.*\n.+TWO.*\n.+THREE/, 't2 selected by tag, has two annotations');
+like ($output, qr/\n2 tasks\n/,                   'tag selected two tasks');
 
 # Make sure that a duplicate task cannot be imported.
 $output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
