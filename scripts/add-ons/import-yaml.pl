@@ -62,13 +62,22 @@ while (my $yaml = <>)
     $json .= ",\"entry\":\"${entry}\""           if $entry ne '';
     $json .= ",\"end\":\"${end}\""               if $end ne '';
     $json .= ",\"due\":\"${due}\""               if $due ne '';
-    $json .= ",\"tags\":\"${tags}\""             if $tags ne '';
-    $json .= ",\"description\":\"${description}\"}";
-
-    for my $key (sort keys %annotations)
+    if ($tags ne '')
     {
-      $json .= ",\"${key}\":\"" . $annotations{$key} . "\""
+      $tags =~ s/,/","/g;
+      $json .= ",\"tags\":[\"${tags}\"]";
     }
+    if (%annotations)
+    {
+      $json .= ",\"annotations\":[";
+      my $pre = "";
+      for my $key (sort keys %annotations) {
+        $json .= "${pre}{\"entry\":\"${key}\",\"description\":\"${annotations{$key}}\"}";
+        $pre = ",";
+      }
+      $json .= "]";
+    }
+    $json .= ",\"description\":\"${description}\"}";
 
     push @tasks, $json;
 
@@ -89,7 +98,7 @@ while (my $yaml = <>)
         $anno_desc = $1;
         $mid_anno = 0;
 
-        $annotations{'annotation_' . epoch ($anno_entry)} = $anno_desc;
+        $annotations{$anno_entry} = $anno_desc;
       }
     }
     else
@@ -110,16 +119,6 @@ while (my $yaml = <>)
 
 print "[\n", join (",\n", @tasks), "\n]\n";
 exit 0;
-
-################################################################################
-sub epoch
-{
-  my ($input) = @_;
-
-  my ($Y, $M, $D, $h, $m, $s) = $input =~ /(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z/;
-
-  return timegm ($s, $m, $h, $D, $M-1, $Y-1900);
-}
 
 ################################################################################
 
