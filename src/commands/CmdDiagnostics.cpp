@@ -64,7 +64,9 @@ CmdDiagnostics::CmdDiagnostics ()
 // kind of questions we always have to ask whenever something is wrong.
 int CmdDiagnostics::execute (std::string& output)
 {
-  Color bold ("bold");
+  Color bold;
+  if (context.color ())
+    bold = Color ("bold");
 
   std::stringstream out;
   out << "\n"
