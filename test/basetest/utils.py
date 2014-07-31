@@ -18,9 +18,29 @@ from .exceptions import CommandError
 USED_PORTS = set()
 ON_POSIX = 'posix' in sys.builtin_module_names
 
+# Directory relative to basetest module location
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Location of binary files (usually the src/ folder)
+BIN_PREFIX = os.path.abspath(
+    os.path.join(CURRENT_DIR, "..", "..", "src")
+)
+
 # Environment flags to control skipping of task and taskd tests
 TASKW_SKIP = os.environ.get("TASKW_SKIP", False)
 TASKD_SKIP = os.environ.get("TASKD_SKIP", False)
+# Environment flags to control use of PATH or in-tree binaries
+USE_PATH = os.environ.get("USE_PATH", False)
+
+
+def binary_location(cmd):
+    """If USE_PATH is set rely on PATH to look for task/taskd binaries.
+    Otherwise ../src/ is used by default.
+    """
+    if USE_PATH:
+        return cmd
+    else:
+        return os.path.join(BIN_PREFIX, cmd)
 
 
 def wait_process(proc, timeout=1):

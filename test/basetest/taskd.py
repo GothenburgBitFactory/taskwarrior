@@ -8,7 +8,7 @@ import atexit
 from time import sleep
 from subprocess import Popen
 from .utils import (find_unused_port, release_port, port_used, run_cmd_wait,
-                    which, parse_datafile)
+                    which, parse_datafile, CURRENT_DIR, binary_location)
 from .exceptions import CommandError
 
 try:
@@ -16,9 +16,10 @@ try:
 except ImportError:
     DEVNULL = open(os.devnull, 'w')
 
-# Location relative to current script location
-_curdir = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_CERT_PATH = os.path.abspath(os.path.join(_curdir, "..", "test_certs"))
+# Directory relative to basetest module location
+DEFAULT_CERT_PATH = os.path.abspath(
+    os.path.join(CURRENT_DIR, "..", "test_certs")
+)
 
 
 class Taskd(object):
@@ -34,7 +35,7 @@ class Taskd(object):
     A server can be stopped and started multiple times, but should not be
     started or stopped after being destroyed.
     """
-    DEFAULT_TASKD = "taskd"
+    DEFAULT_TASKD = binary_location("taskd")
 
     def __init__(self, taskd=DEFAULT_TASKD, certpath=None,
                  address="127.0.0.1"):

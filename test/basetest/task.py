@@ -5,7 +5,7 @@ import tempfile
 import shutil
 import atexit
 import unittest
-from .utils import run_cmd_wait, run_cmd_wait_nofail, which
+from .utils import run_cmd_wait, run_cmd_wait_nofail, which, binary_location
 from .exceptions import CommandError
 
 
@@ -20,7 +20,9 @@ class Task(object):
 
     A taskw client should not be used after being destroyed.
     """
-    def __init__(self, taskd=None, taskw="task"):
+    DEFAULT_TASK = binary_location("task")
+
+    def __init__(self, taskd=None, taskw=DEFAULT_TASK):
         """Initialize a Task warrior (client) that can interact with a taskd
         server. The task client runs in a temporary folder.
 
