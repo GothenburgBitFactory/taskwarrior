@@ -140,11 +140,18 @@ void TF2::add_task (const Task& task)
   _tasks.push_back (hookTask);           // For subsequent queries
   _added_tasks.push_back (hookTask);     // For commit/synch
 
-/* TODO handle 'add' and 'log'?
-  int id = context.tdb2.next_id ();
+  int id = task.id;
+  Task::status status = task.getStatus ();
+  if (id == 0 &&
+      (status == Task::pending   ||
+       status == Task::recurring ||
+       status == Task::waiting))
+  {
+    id = context.tdb2.next_id ();
+  }
+
   _I2U[id] = task.get ("uuid");
   _U2I[task.get ("uuid")] = id;
-*/
 
   _dirty = true;
 }
