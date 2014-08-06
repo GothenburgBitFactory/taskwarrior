@@ -22,7 +22,8 @@ class TestCase(BaseTestCase):
 
 
 @unittest.skipIf(TASKD_SKIP, "TASKD_SKIP set, skipping taskd tests.")
-@unittest.skipIf(Taskd.not_available(), "Taskd binary not available")
+@unittest.skipIf(Taskd.not_available(), "Taskd binary not available at '{0}'"
+                                        .format(Taskd.DEFAULT_TASKD))
 class ServerTestCase(BaseTestCase):
     """Automatically skips tests if TASKD_SKIP is present in the environment
     """
