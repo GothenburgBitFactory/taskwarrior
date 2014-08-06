@@ -33,36 +33,40 @@ use Test::More tests => 10;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'dup.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Test the duplicate command.
-qx{../src/task rc:dup.rc add foo 2>&1};
-qx{../src/task rc:dup.rc 1 duplicate 2>&1};
-my $output = qx{../src/task rc:dup.rc info 2 2>&1};
-like ($output, qr/ID\s+2/,            'duplicate new id');
-like ($output, qr/Status\s+Pending/,  'duplicate same status');
-like ($output, qr/Description\s+foo/, 'duplicate same description');
+qx{../src/task rc:$rc add foo 2>&1};
+qx{../src/task rc:$rc 1 duplicate 2>&1};
+my $output = qx{../src/task rc:$rc info 2 2>&1};
+like ($output, qr/ID\s+2/,            "$ut: duplicate new id");
+like ($output, qr/Status\s+Pending/,  "$ut: duplicate same status");
+like ($output, qr/Description\s+foo/, "$ut: duplicate same description");
 
 # Test the en passant modification while duplicating.
-qx{../src/task rc:dup.rc 1 duplicate priority:H /foo/FOO/ +tag 2>&1};
-$output = qx{../src/task rc:dup.rc info 3 2>&1};
-like ($output, qr/ID\s+3/,            'duplicate new id');
-like ($output, qr/Status\s+Pending/,  'duplicate same status');
-like ($output, qr/Description\s+FOO/, 'duplicate modified description');
-like ($output, qr/Priority\s+H/,      'duplicate added priority');
-like ($output, qr/Tags\s+tag/,        'duplicate added tag');
+qx{../src/task rc:$rc 1 duplicate priority:H /foo/FOO/ +tag 2>&1};
+$output = qx{../src/task rc:$rc info 3 2>&1};
+like ($output, qr/ID\s+3/,            "$ut: duplicate new id");
+like ($output, qr/Status\s+Pending/,  "$ut: duplicate same status");
+like ($output, qr/Description\s+FOO/, "$ut: duplicate modified description");
+like ($output, qr/Priority\s+H/,      "$ut: duplicate added priority");
+like ($output, qr/Tags\s+tag/,        "$ut: duplicate added tag");
 
 # Test the output of the duplicate command - returning id of duplicated task
-$output = qx{../src/task rc:dup.rc 1 duplicate 2>&1};
-like ($output, qr/Duplicated\stask\s1\s'foo'/, 'duplicate output task id and description');
-like ($output, qr/Created\s+task\s+4/,         'duplicate output of new task id');
+$output = qx{../src/task rc:$rc 1 duplicate 2>&1};
+like ($output, qr/Duplicated\stask\s1\s'foo'/, "$ut: duplicate output task id and description");
+like ($output, qr/Created\s+task\s+4/,         "$ut: duplicate output of new task id");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data dup.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
