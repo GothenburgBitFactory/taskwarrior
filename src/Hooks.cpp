@@ -375,8 +375,8 @@ int Hooks::execute (
     output += line;
   }
 
-  if (line)
-    free (line);
+  free (line);
+  line = NULL;
   fclose (poutf);
   close (pout[0]);
 
