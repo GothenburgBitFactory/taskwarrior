@@ -134,9 +134,12 @@ void Hooks::onLaunch ()
 // Exit:
 //   0 Means: - all emitted non-JSON lines become footnote entries
 //   1 Means: - all emitted non-JSON lines become error entries
-void Hooks::onExit ()
+bool Hooks::onExit ()
 {
   context.timer_hooks.start ();
+
+  // Status indicates whether hooks resulted in new/modified tasks.
+  bool status = false;
 
   std::vector <std::string> matchingScripts = scripts ("on-exit");
   std::vector <std::string>::iterator i;
@@ -157,6 +160,7 @@ void Hooks::onExit ()
         {
           Task newTask (*line);
           context.tdb2.add (newTask);
+          status = true;
         }
         else
           context.footnote (*line);
@@ -173,6 +177,7 @@ void Hooks::onExit ()
   }
 
   context.timer_hooks.stop ();
+  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
