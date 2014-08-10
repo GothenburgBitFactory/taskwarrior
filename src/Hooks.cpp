@@ -112,7 +112,10 @@ void Hooks::onLaunch ()
     else
     {
       for (line = lines.begin (); line != lines.end (); ++line)
-        context.error (*line);
+        if (line->length () && (*line)[0] == '{')
+          ; // Ignored
+        else
+          context.error (*line);
 
       throw 0;  // This is how hooks silently terminate processing.
     }
@@ -162,7 +165,10 @@ void Hooks::onExit ()
     else
     {
       for (line = lines.begin (); line != lines.end (); ++line)
-        context.error (*line);
+        if (line->length () && (*line)[0] == '{')
+          ; // Ignored
+        else
+          context.error (*line);
     }
   }
 
@@ -225,7 +231,12 @@ void Hooks::onAdd (Task& after)
     else
     {
       for (line = lines.begin (); line != lines.end (); ++line)
-        context.error (*line);
+      {
+        if (line->length () && (*line)[0] == '{')
+          ; // Ignored
+        else
+          context.error (*line);
+      }
 
       throw 0;  // This is how hooks silently terminate processing.
     }
@@ -294,7 +305,10 @@ void Hooks::onModify (const Task& before, Task& after)
     else
     {
       for (line = lines.begin (); line != lines.end (); ++line)
-        context.error (*line);
+        if (line->length () && (*line)[0] == '{')
+          ; // Ignored
+        else
+          context.error (*line);
 
       throw 0;  // This is how hooks silently terminate processing.
     }
