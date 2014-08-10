@@ -279,7 +279,8 @@ int Context::run ()
   try
   {
     rc = dispatch (output);
-    hooks.onExit ();
+    if (hooks.onExit ())
+      tdb2.commit ();
 
     std::stringstream s;
     s << "Perf "
