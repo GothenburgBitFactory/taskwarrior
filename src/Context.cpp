@@ -476,6 +476,9 @@ bool Context::verbose (const std::string& token)
     split (verbosity, config.get ("verbose"), ',');
 
     // Regular feedback means almost everything.
+    // This odd test is to see if a Boolean-false value is a real one, which
+    // means it is not 1/true/T/yes/on, but also should not be one of the
+    // valid tokens either.
     if (!verbosity_legacy               &&
         verbosity.size ()               &&
         verbosity[0]      != "nothing"  &&
