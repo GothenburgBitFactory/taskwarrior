@@ -874,6 +874,7 @@
 #define STRING_TDB2_REMOVED          "Tarea eliminada."
 #define STRING_TDB2_UNDO_COMPLETE    "Deshacer completado."
 #define STRING_TDB2_UNDO_SYNCED      "No se puede deshacer el cambio porque la tarea ya ha sido sincronizada. Como alternativa, modifique la tarea."
+#define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
 
 // text
                                      // Se añade al final una lista de comandos separados por comas.

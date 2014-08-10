@@ -860,6 +860,7 @@
 #define STRING_TDB2_REMOVED          "Tâche retirée."
 #define STRING_TDB2_UNDO_COMPLETE    "Annulation terminée."
 #define STRING_TDB2_UNDO_SYNCED      "Impossible d'annuler les changements car la tâche a déjà été synchronysée. Modifiez plutôt la tâche."
+#define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
 
 // text
                                      // A comma-separated list of commands is appended.

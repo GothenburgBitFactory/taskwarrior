@@ -861,6 +861,7 @@
 #define STRING_TDB2_REMOVED          "Task removed."
 #define STRING_TDB2_UNDO_COMPLETE    "Undo complete."
 #define STRING_TDB2_UNDO_SYNCED      "Cannot undo change because the task was already synced.  Modify the task instead."
+#define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
 
 // text
                                      // A comma-separated list of commands is appended.

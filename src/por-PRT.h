@@ -861,6 +861,7 @@
 #define STRING_TDB2_REMOVED          "Tarefa removida."
 #define STRING_TDB2_UNDO_COMPLETE    "Reversão concluída."
 #define STRING_TDB2_UNDO_SYNCED      "Não é possível reverter a alteração porque a tarefa já foi syncronizada. Em vez disso modifique a tarefa."
+#define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
 
 // text
                                      // A comma-separated list of commands is appended.
