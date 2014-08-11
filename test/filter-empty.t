@@ -8,9 +8,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
 
-REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
 class TestEmptyFilter(TestCase):
     def setUp(self):
         self.t = Task()
