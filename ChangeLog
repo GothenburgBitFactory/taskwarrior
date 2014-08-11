@@ -166,6 +166,9 @@
   Richard Boß).
 - Fixed typo in 'newest' and 'oldest' report definitions (thanks to Richard Boß).
 - The 'diagnostics' command obeys color settings.
+- Support 'allow.empty.filter', defaulting to 'yes', but if 'no' disallows the
+  combination of a write command and an empty filter.  Ordinarily this is just a
+  warning that requires confirmation (thanks to Lee Lieske).
 
 ------ current release ---------------------------
 

@@ -69,6 +69,7 @@ int CmdShow::execute (std::string& output)
   std::string recognized =
     " abbreviation.minimum"
     " active.indicator"
+    " allow.empty.filter"
     " avoidlastcolumn"
     " bulk"
     " burndown.bias"

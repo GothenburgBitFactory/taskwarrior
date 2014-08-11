@@ -842,6 +842,7 @@
 #define STRING_TASK_VALID_PRIORITY   "Valores de prioridade podem ser 'A', 'M' ou 'B', não '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "Este comando não possui um filtro e irá modificar todas as tarefas. Tem a certeza?"
 #define STRING_TASK_SAFETY_FAIL      "Execução do comando abortada."
+#define STRING_TASK_SAFETY_ALLOW     "You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken."
 
 // TDB2
 #define STRING_TDB2_PARSE_ERROR      " em {1} na linha {2}"

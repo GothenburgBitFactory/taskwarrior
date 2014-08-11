@@ -259,6 +259,9 @@ void Filter::safety ()
     {
       if (context.parser.getFilterExpression () == "")
       {
+        if (! context.config.getBoolean ("allow.empty.filter"))
+          throw std::string (STRING_TASK_SAFETY_ALLOW);
+
         // If user is willing to be asked, this can be avoided.
         if (context.config.getBoolean ("confirmation") &&
             confirm (STRING_TASK_SAFETY_VALVE))
