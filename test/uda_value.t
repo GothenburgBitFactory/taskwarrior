@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'uda.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n",
@@ -45,16 +49,16 @@ if (open my $fh, '>', 'uda.rc')
 }
 
 # Add tasks with valid and invalid UDA values.
-my $output = qx{../src/task rc:uda.rc add one smell:weak 2>&1};
-like ($output, qr/Created task 1/, 'UDA smell:weak allowed');
+my $output = qx{../src/task rc:$rc add one smell:weak 2>&1};
+like ($output, qr/Created task 1/, "$ut: UDA smell:weak allowed");
 
-$output = qx{../src/task rc:uda.rc add two smell:strong 2>&1};
-like ($output, qr/Created task 2/, 'UDA smell:strong allowed');
+$output = qx{../src/task rc:$rc add two smell:strong 2>&1};
+like ($output, qr/Created task 2/, "$ut: UDA smell:strong allowed");
 
-$output = qx{../src/task rc:uda.rc add three smell:toxic 2>&1};
-unlike ($output, qr/Created task 3/, 'UDA smell:toxic disallowed');
+$output = qx{../src/task rc:$rc add three smell:toxic 2>&1};
+unlike ($output, qr/Created task 3/, "$ut: UDA smell:toxic disallowed");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data uda.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
