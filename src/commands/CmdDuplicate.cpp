@@ -70,6 +70,7 @@ int CmdDuplicate::execute (std::string& output)
   {
     // Duplicate the specified task.
     Task dup (*task);
+    dup.id = 0;                    // Reset, and TDB2::add will set.
     dup.set ("uuid", uuid ());     // Needs a new UUID.
     dup.remove ("start");          // Does not inherit start date.
     dup.remove ("end");            // Does not inherit end date.
