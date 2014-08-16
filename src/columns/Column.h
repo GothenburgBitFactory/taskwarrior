@@ -46,6 +46,7 @@ public:
   bool operator== (const Column&) const;     // TODO Is this necessary?
   virtual ~Column ();
 
+  std::string name () const                   { return _name;       }
   std::string style () const                  { return _style;      }
   std::string label () const                  { return _label;      }
   std::string type () const                   { return _type;       }
