@@ -1543,7 +1543,7 @@ void Task::validate (bool applyDefault /* = true */)
       {
         std::string defVal= context.config.get ("uda." + *uda + ".default");
 
-        // If the default is empty, and we already have a value, skip it
+        // If the default is empty, or we already have a value, skip it
         if (defVal != "" && get (*uda) == "")
           set (*uda, defVal);
       }
