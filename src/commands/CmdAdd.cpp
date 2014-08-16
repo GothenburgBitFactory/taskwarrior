@@ -55,7 +55,7 @@ int CmdAdd::execute (std::string& output)
   context.tdb2.add (task);
 
   if (context.verbose ("new-id"))
-    output += format (STRING_CMD_ADD_FEEDBACK, context.tdb2.next_id ()) + "\n";
+    output += format (STRING_CMD_ADD_FEEDBACK, task.id) + "\n";
   else if (context.verbose ("new-uuid"))
     output += format (STRING_CMD_ADD_FEEDBACK, task.get ("uuid")) + "\n";
 

@@ -135,26 +135,23 @@ bool TF2::get (const std::string& uuid, Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TF2::add_task (const Task& task)
+void TF2::add_task (Task& task)
 {
-  Task hookTask (task);
-  context.hooks.onAdd (hookTask);
+  context.hooks.onAdd (task);
+  _tasks.push_back (task);           // For subsequent queries
+  _added_tasks.push_back (task);     // For commit/synch
 
-  _tasks.push_back (hookTask);           // For subsequent queries
-  _added_tasks.push_back (hookTask);     // For commit/synch
-
-  int id = task.id;
   Task::status status = task.getStatus ();
-  if (id == 0 &&
+  if (task.id == 0 &&
       (status == Task::pending   ||
        status == Task::recurring ||
        status == Task::waiting))
   {
-    id = context.tdb2.next_id ();
+    task.id = context.tdb2.next_id ();
   }
 
-  _I2U[id] = task.get ("uuid");
-  _U2I[task.get ("uuid")] = id;
+  _I2U[task.id] = task.get ("uuid");
+  _U2I[task.get ("uuid")] = task.id;
 
   _dirty = true;
 }

@@ -50,7 +50,7 @@ public:
   bool get (int, Task&);
   bool get (const std::string&, Task&);
 
-  void add_task (const Task&);
+  void add_task (Task&);
   bool modify_task (const Task&);
   void add_line (const std::string&);
   void clear_tasks ();
