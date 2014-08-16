@@ -39,21 +39,20 @@
 static struct
 {
   Color::color_id id;
-  int string_id;
   std::string english_name;
   int index;                    // offset red=3 (therefore fg=33, bg=43)
 } allColors[] =
 {
-  // Color.h enum    i18n.h          English     Index
-  { Color::nocolor,  0,              "none",     0},
-  { Color::black,    CCOLOR_BLACK,   "black",    1}, // fg 29+0  bg 39+0
-  { Color::red,      CCOLOR_RED,     "red",      2},
-  { Color::green,    CCOLOR_GREEN,   "green",    3},
-  { Color::yellow,   CCOLOR_YELLOW,  "yellow",   4},
-  { Color::blue,     CCOLOR_BLUE,    "blue",     5},
-  { Color::magenta,  CCOLOR_MAGENTA, "magenta",  6},
-  { Color::cyan,     CCOLOR_CYAN,    "cyan",     7},
-  { Color::white,    CCOLOR_WHITE,   "white",    8},
+  // Color.h enum    English     Index
+  { Color::nocolor,  "none",     0},
+  { Color::black,    "black",    1}, // fg 29+0  bg 39+0
+  { Color::red,      "red",      2},
+  { Color::green,    "green",    3},
+  { Color::yellow,   "yellow",   4},
+  { Color::blue,     "blue",     5},
+  { Color::magenta,  "magenta",  6},
+  { Color::cyan,     "cyan",     7},
+  { Color::white,    "white",    8},
 
 };
 

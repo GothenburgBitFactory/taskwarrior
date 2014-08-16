@@ -56,21 +56,5 @@
 #include <por-PRT.h>
 #endif
 
-#define CCOLOR_BOLD             500
-#define CCOLOR_UNDERLINE        501
-#define CCOLOR_ON               502
-#define CCOLOR_BRIGHT           503
-#define CCOLOR_BLACK            504
-#define CCOLOR_RED              505
-#define CCOLOR_GREEN            506
-#define CCOLOR_YELLOW           507
-#define CCOLOR_BLUE             508
-#define CCOLOR_MAGENTA          509
-#define CCOLOR_CYAN             510
-#define CCOLOR_WHITE            511
-
-#define CCOLOR_OFF              520
-#define CCOLOR_UNKNOWN          521
-
 #endif
 
