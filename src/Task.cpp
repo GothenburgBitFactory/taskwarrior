@@ -1541,8 +1541,7 @@ void Task::validate (bool applyDefault /* = true */)
       std::vector <std::string>::iterator uda;
       for (uda = udas.begin (); uda != udas.end (); ++uda)
       {
-        std::string type    = context.config.get ("uda." + *uda + ".type");
-        std::string defVal  = context.config.get ("uda." + *uda + ".default");
+        std::string defVal= context.config.get ("uda." + *uda + ".default");
 
         // If the default is empty, and we already have a value, skip it
         if (defVal != "" && get (*uda) == "")
