@@ -76,7 +76,7 @@ ViewTask::~ViewTask ()
 //   +--+--+-------+--+-------+--+-------+--+
 //   |ma|ex|cell   |in|cell   |in|cell   |ex|
 //   +--+--+-------+--+-------+--+-------+--+
-// 
+//
 //   margin        - indentation for the whole table
 //   extrapadding  - left and right padding for the whole table
 //   intrapadding  - padding between columns

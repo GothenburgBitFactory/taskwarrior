@@ -81,10 +81,17 @@ void ColumnParent::render (
   //                             34f00694  short
   if (_style == "default" ||
       _style == "long")
+  {
     lines.push_back (color.colorize (leftJustify (task.get (_name), width)));
+  }
 
   else if (_style == "short")
-    lines.push_back (color.colorize (leftJustify (task.get (_name).substr (28), width)));
+  {
+    if (task.has (_name))
+      lines.push_back (color.colorize (leftJustify (task.get (_name).substr (28), width)));
+    else
+      lines.push_back (color.colorize (leftJustify ("", width)));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

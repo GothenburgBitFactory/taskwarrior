@@ -133,6 +133,7 @@
 - TW-1366 In diagnostics it's called 'Cert', and in config it's called
           'certificate' (thanks to Jack).
 - TW-1373 taskrc.vim VIM syntax file updated (thanks to lolilolicon).
+- TW-1381 blocking report exits with "Unknown error" and exit code 3.
 - TW-1383 Segmentation fault running import-yaml.pl with included example
           (thanks to Markus Beppler).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
