@@ -1707,7 +1707,7 @@ bool Parser::insertOr ()
   {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
-      if (prev != _tree->_branches.begin () &&
+      if (prev != nodes.begin () &&
           ((*prev)->hasTag ("ID") || (*prev)->hasTag ("UUID")) &&
           ((*i)->hasTag ("ID") || (*i)->hasTag ("UUID")))
       {
@@ -1752,7 +1752,7 @@ bool Parser::insertAnd ()
         for (sub = (*i)->_branches.begin (); sub != (*i)->_branches.end (); ++sub)
         {
           if (sub != prev &&
-              prev != _tree->_branches.begin () &&
+              prev != nodes.begin () &&
               (! (*prev)->hasTag ("OP") || (*prev)->attribute ("raw") == ")") &&
               (! (*sub)->hasTag ("OP") || (*sub)->attribute ("raw") == "("))
           {
@@ -1770,7 +1770,7 @@ bool Parser::insertAnd ()
       else
       {
         if (i != prev &&
-            prev != _tree->_branches.begin () &&
+            prev != nodes.begin () &&
             (! (*prev)->hasTag ("OP") || (*prev)->attribute ("raw") == ")") &&
             (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
         {
