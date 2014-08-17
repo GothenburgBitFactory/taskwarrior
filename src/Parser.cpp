@@ -178,7 +178,7 @@ Tree* Parser::parse ()
   findOverrides ();
   applyOverrides ();
 
-  findSubstitution ();
+  scan (&Parser::findSubstitution);
   scan (&Parser::findPattern);
   findTag ();
   scan (&Parser::findAttribute);
@@ -816,42 +816,33 @@ void Parser::findPattern (Tree* t)
 
 ////////////////////////////////////////////////////////////////////////////////
 // /from/to/[g]
-void Parser::findSubstitution ()
+void Parser::findSubstitution (Tree* t)
 {
-  std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  context.debug ("findSubstitution");
+  context.debug (t->dump ());
+
+  std::string raw = t->attribute ("raw");
+  Nibbler n (raw);
+
+  std::string from;
+  std::string to;
+  bool global = false;
+  if (n.getQuoted ('/', from) &&
+      n.backN ()              &&
+      n.getQuoted ('/', to))
   {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
+    if (n.skip ('g'))
+      global = true;
 
-    // Skip known args.
-    if (! (*i)->hasTag ("?"))
-      continue;
-
-    std::string raw = (*i)->attribute ("raw");
-    Nibbler n (raw);
-
-    std::string from;
-    std::string to;
-    bool global = false;
-    if (n.getQuoted ('/', from) &&
-        n.backN ()              &&
-        n.getQuoted ('/', to))
+    if (n.depleted () &&
+        !Directory (raw).exists ())
     {
-      if (n.skip ('g'))
-        global = true;
-
-      if (n.depleted () &&
-          !Directory (raw).exists ())
-      {
-        (*i)->unTag ("?");
-        (*i)->removeAllBranches ();
-        (*i)->tag ("SUBSTITUTION");
-        (*i)->attribute ("from", from);
-        (*i)->attribute ("to", to);
-        (*i)->attribute ("global", global ? 1 : 0);
-      }
+      t->unTag ("?");
+      t->removeAllBranches ();
+      t->tag ("SUBSTITUTION");
+      t->attribute ("from", from);
+      t->attribute ("to", to);
+      t->attribute ("global", global ? 1 : 0);
     }
   }
 }
