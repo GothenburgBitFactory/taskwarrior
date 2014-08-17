@@ -1570,7 +1570,7 @@ void Parser::findModifications ()
   bool after_writecmd = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes, true);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
