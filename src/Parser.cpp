@@ -505,17 +505,13 @@ void Parser::findCommand ()
 // rc.<name>[:=]<value>
 void Parser::findOverrides ()
 {
+  context.debug ("Parse::findOverrides");
+
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
-
-    // Skip known args.
-    if (! (*i)->hasTag ("?"))
-      continue;
-
     std::string arg = (*i)->attribute ("raw");
     if (arg.find ("rc:") == 0)
     {
@@ -540,6 +536,8 @@ void Parser::findOverrides ()
       }
     }
   }
+
+  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
