@@ -69,6 +69,7 @@ public:
 
 private:
   void findTerminator ();
+  void scan (void (Parser::*callback)(Tree*));
   void findPattern ();
   void findSubstitution ();
   void findTag ();

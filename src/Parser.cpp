@@ -270,6 +270,45 @@ bool Parser::canonicalize (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Experimental method to iterate over nodes, and callback, which is essentially
+// a co-routine implementation.
+void Parser::scan (void (Parser::*callback) (Tree*))
+{
+  std::vector <Tree*>::iterator i;
+  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  {
+    if ((*i)->_branches.size ())
+    {
+      std::vector <Tree*>::iterator b;
+      for (b = (*i)->_branches.begin (); b != (*i)->_branches.end (); ++b)
+      {
+        // Parser override operator.
+        if ((*b)->attribute ("raw") == "--")
+          break;
+
+        // Skip known args.
+        if (! (*b)->hasTag ("?"))
+          continue;
+
+        (this->*callback) (*b);
+      }
+    }
+    else
+    {
+      // Parser override operator.
+      if ((*i)->attribute ("raw") == "--")
+        break;
+
+      // Skip known args.
+      if (! (*i)->hasTag ("?"))
+        continue;
+
+      (this->*callback) (*i);
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Locate and tag the binary.
 void Parser::findBinary ()
 {
