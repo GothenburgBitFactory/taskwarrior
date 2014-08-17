@@ -74,7 +74,7 @@ private:
   void findTerminator ();
   void findPattern ();
   void findSubstitution ();
-  void findTag (Tree*);
+  void findTag ();
   void findAttribute (Tree*);
   void findAttributeModifier (Tree*);
   void findOperator (Tree*);
