@@ -578,6 +578,10 @@ void Parser::applyOverrides ()
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
     if ((*i)->hasTag ("CONFIG"))
     {
       std::string name  = (*i)->attribute ("name");
