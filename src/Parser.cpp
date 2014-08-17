@@ -190,8 +190,8 @@ Tree* Parser::parse ()
   findIdSequence ();
   findFilter ();
   findModifications ();
-  // GOOD ^^^
   findStrayModifications ();
+  // GOOD ^^^
 
   findPlainArgs ();
   findMissingOperators ();
@@ -1579,21 +1579,30 @@ void Parser::findModifications ()
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findStrayModifications ()
 {
+  context.debug ("Parser::findModifications");
+  bool action = false;
+
   std::string command = getCommand ();
   if (command == "add" ||
       command == "log")
   {
+    std::vector <Tree*> nodes;
+    collect (nodes, false);
     std::vector <Tree*>::iterator i;
-    for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+    for (i = nodes.begin (); i != nodes.end (); ++i)
     {
       if ((*i)->hasTag ("FILTER"))
       {
         (*i)->unTag ("FILTER");
         (*i)->tag ("MODIFICATION");
         (*i)->removeAllBranches ();
+        action = true;
       }
     }
   }
+
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
