@@ -80,6 +80,15 @@ void Parser::initialize (int argc, const char** argv)
     branch->tag ("ORIGINAL");
     branch->tag ("?");
 
+    // Do not lex argv[0].
+    if (i == 0)
+      continue;
+
+    // Do no lex RC overrides.
+    if (raw.substr (0, 3) == "rc." ||
+        raw.substr (0, 3) == "rc:")
+      continue;
+
     // If the argument contains a space, it was quoted.  Record that fact.
     if (! noSpaces (raw))
       branch->tag ("QUOTED");
