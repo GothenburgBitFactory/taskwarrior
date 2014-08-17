@@ -173,13 +173,13 @@ Tree* Parser::parse ()
 {
   findBinary ();
   findTerminator ();
-  // GOOD ^^^
   resolveAliases ();
 
   findOverrides ();
   applyOverrides ();
 
-  scan (&Parser::findSubstitution);
+  findSubstitution ();
+  // GOOD ^^^
   scan (&Parser::findPattern);
   scan (&Parser::findTag);
   scan (&Parser::findAttribute);
@@ -860,35 +860,45 @@ void Parser::findPattern (Tree* t)
 
 ////////////////////////////////////////////////////////////////////////////////
 // /from/to/[g]
-void Parser::findSubstitution (Tree* t)
+void Parser::findSubstitution ()
 {
-  context.debug ("findSubstitution");
-  context.debug (t->dump ());
+  context.debug ("Parse::findSubstitution");
+  bool action = false;
 
-  std::string raw = t->attribute ("raw");
-  Nibbler n (raw);
-
-  std::string from;
-  std::string to;
-  bool global = false;
-  if (n.getQuoted ('/', from) &&
-      n.backN ()              &&
-      n.getQuoted ('/', to))
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
+  std::vector <Tree*>::iterator i;
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
-    if (n.skip ('g'))
-      global = true;
+    std::string raw = (*i)->attribute ("raw");
+    Nibbler n (raw);
 
-    if (n.depleted () &&
-        !Directory (raw).exists ())
+    std::string from;
+    std::string to;
+    bool global = false;
+    if (n.getQuoted ('/', from) &&
+        n.backN ()              &&
+        n.getQuoted ('/', to))
     {
-      t->unTag ("?");
-      t->removeAllBranches ();
-      t->tag ("SUBSTITUTION");
-      t->attribute ("from", from);
-      t->attribute ("to", to);
-      t->attribute ("global", global ? 1 : 0);
+      if (n.skip ('g'))
+        global = true;
+
+      if (n.depleted () &&
+          !Directory (raw).exists ())
+      {
+        (*i)->unTag ("?");
+        (*i)->removeAllBranches ();
+        (*i)->tag ("SUBSTITUTION");
+        (*i)->attribute ("from", from);
+        (*i)->attribute ("to", to);
+        (*i)->attribute ("global", global ? 1 : 0);
+        action = true;
+      }
     }
   }
+
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
