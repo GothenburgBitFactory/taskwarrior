@@ -70,7 +70,6 @@ public:
   std::string getCommand () const;
 
 private:
-  void scan (void (Parser::*callback)(Tree*), Tree* tree = NULL);
   void findTerminator ();
   void findPattern ();
   void findSubstitution ();

@@ -308,37 +308,6 @@ void Parser::collect (std::vector <Tree*>& nodes, bool all, Tree* tree /* = NULL
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Recursively scan all nodes, depth first, skipping terminated nodes, and known
-// nodes, and cal the callback function for each node.
-void Parser::scan (void (Parser::*callback) (Tree*), Tree* tree /* = NULL */)
-{
-  if (tree == NULL)
-    tree = _tree;
-
-  std::vector <Tree*>::iterator i;
-  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
-  {
-    if ((*i)->_branches.size ())
-    {
-      scan (callback, *i);
-    }
-    else
-    {
-      // Parser override operator.
-      if ((*i)->hasTag ("TERMINATOR") ||
-          (*i)->hasTag ("TERMINATED"))
-        break;
-
-      // Skip known args.
-      if (! (*i)->hasTag ("?"))
-        continue;
-
-      (this->*callback) (*i);
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Locate and tag the binary. It is assumed that the binary is the first
 // argument, which is valid.
 void Parser::findBinary ()
