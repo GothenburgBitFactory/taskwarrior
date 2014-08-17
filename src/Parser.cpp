@@ -84,9 +84,25 @@ void Parser::initialize (int argc, const char** argv)
     if (i == 0)
       continue;
 
-    // Do no lex RC overrides.
-    if (raw.substr (0, 3) == "rc." ||
-        raw.substr (0, 3) == "rc:")
+    // TODO This seems silly - it's essentially performing a low-quality parse.
+
+    // Do not lex RC overrides.
+    if (raw.length () > 3 &&
+        (raw.substr (0, 3) == "rc." ||
+         raw.substr (0, 3) == "rc:"))
+      continue;
+
+    // Do not lex patterns or single substitutions.
+    if (raw.length () > 2 &&
+        raw[0] == '/' &&
+        raw[raw.length () - 1] == '/')
+      continue;
+
+    // Do not lex substitutions.
+    if (raw.length () > 2 &&
+        raw[0] == '/' &&
+        raw[raw.length () - 2] == '/' &&
+        raw[raw.length () - 1] == 'g')
       continue;
 
     // If the argument contains a space, it was quoted.  Record that fact.
