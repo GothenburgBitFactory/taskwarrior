@@ -179,7 +179,7 @@ Tree* Parser::parse ()
   applyOverrides ();
 
   findSubstitution ();
-  findPattern ();
+  scan (&Parser::findPattern);
   findTag ();
   scan (&Parser::findAttribute);
   scan (&Parser::findAttributeModifier);
@@ -786,40 +786,31 @@ std::string Parser::getCommand () const
 
 ////////////////////////////////////////////////////////////////////////////////
 // /pattern/ --> description ~ pattern
-void Parser::findPattern ()
+void Parser::findPattern (Tree* t)
 {
-  std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  context.debug ("findPattern");
+  context.debug (t->dump ());
+
+  Nibbler n (t->attribute ("raw"));
+  std::string pattern;
+  if (n.getQuoted ('/', pattern) &&
+      n.depleted () &&
+      pattern.length () > 0)
   {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
+    t->unTag ("?");
+    t->removeAllBranches ();
+    t->tag ("PATTERN");
 
-    // Skip known args.
-    if (! (*i)->hasTag ("?"))
-      continue;
+    Tree* branch = t->addBranch (new Tree ("argPat"));
+    branch->attribute ("raw", "description");
 
-    Nibbler n ((*i)->attribute ("raw"));
-    std::string pattern;
-    if (n.getQuoted ('/', pattern) &&
-        n.depleted () &&
-        pattern.length () > 0)
-    {
-      (*i)->unTag ("?");
-      (*i)->removeAllBranches ();
-      (*i)->tag ("PATTERN");
+    branch = t->addBranch (new Tree ("argPat"));
+    branch->attribute ("raw", "~");
+    branch->tag ("OP");
 
-      Tree* branch = (*i)->addBranch (new Tree ("argPat"));
-      branch->attribute ("raw", "description");
-
-      branch = (*i)->addBranch (new Tree ("argPat"));
-      branch->attribute ("raw", "~");
-      branch->tag ("OP");
-
-      branch = (*i)->addBranch (new Tree ("argPat"));
-      branch->attribute ("raw", pattern);
-      branch->tag ("STRING");
-    }
+    branch = t->addBranch (new Tree ("argPat"));
+    branch->attribute ("raw", pattern);
+    branch->tag ("STRING");
   }
 }
 

@@ -70,7 +70,7 @@ public:
 private:
   void scan (void (Parser::*callback)(Tree*), Tree* tree = NULL);
   void findTerminator (Tree*);
-  void findPattern ();
+  void findPattern (Tree*);
   void findSubstitution ();
   void findTag ();
   void findAttribute (Tree*);
