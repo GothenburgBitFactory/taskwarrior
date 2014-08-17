@@ -183,7 +183,7 @@ Tree* Parser::parse ()
   scan (&Parser::findTag);
   scan (&Parser::findAttribute);
   scan (&Parser::findAttributeModifier);
-  findOperator ();
+  scan (&Parser::findOperator);
   findCommand ();
   findUUIDList ();
   findIdSequence ();
@@ -1388,8 +1388,11 @@ void Parser::findUUIDList ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Parser::findOperator ()
+void Parser::findOperator (Tree* t)
 {
+  context.debug ("findOperator");
+  context.debug (t->dump ());
+
   // Find the category.
   std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
   c = _entities.equal_range ("operator");
@@ -1400,29 +1403,17 @@ void Parser::findOperator ()
   for (e = c.first; e != c.second; ++e)
     options.push_back (e->second);
 
-  std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  std::string raw = t->attribute ("raw");
+
+  std::vector <std::string>::iterator opt;
+  for (opt = options.begin (); opt != options.end (); ++opt)
   {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
-
-    // Skip known args.
-    if (! (*i)->hasTag ("?"))
-      continue;
-
-    std::string raw = (*i)->attribute ("raw");
-
-    std::vector <std::string>::iterator opt;
-    for (opt = options.begin (); opt != options.end (); ++opt)
+    if (*opt == raw)
     {
-      if (*opt == raw)
-      {
-        (*i)->unTag ("?");
-        (*i)->removeAllBranches ();
-        (*i)->tag ("OP");
-        break;
-      }
+      t->unTag ("?");
+      t->removeAllBranches ();
+      t->tag ("OP");
+      break;
     }
   }
 }
