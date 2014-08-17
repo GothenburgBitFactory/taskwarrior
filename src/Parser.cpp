@@ -191,9 +191,9 @@ Tree* Parser::parse ()
   findFilter ();
   findModifications ();
   findStrayModifications ();
-  // GOOD ^^^
 
   findPlainArgs ();
+  // GOOD ^^^
   findMissingOperators ();
 
   validate ();
@@ -1579,7 +1579,7 @@ void Parser::findModifications ()
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findStrayModifications ()
 {
-  context.debug ("Parser::findModifications");
+  context.debug ("Parser::findStrayModifications");
   bool action = false;
 
   std::string command = getCommand ();
@@ -1610,8 +1610,13 @@ void Parser::findStrayModifications ()
 // are not otherwise recognized, and potentially promote them to patterns.
 void Parser::findPlainArgs ()
 {
+  context.debug ("Parser::findPlainArgs");
+  bool action = false;
+
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     if ((*i)->hasTag ("FILTER")   &&
         (*i)->hasTag ("ORIGINAL") &&  // TODO Wrong, can come in through alias/filter
@@ -1641,20 +1646,29 @@ void Parser::findPlainArgs ()
           branch = (*i)->addBranch (new Tree ("argPat"));
           branch->attribute ("raw", raw);
           branch->tag ("STRING");
+          action = true;
         }
       }
     }
   }
+
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findMissingOperators ()
 {
+  bool action = false;
+
   while (insertOr ())
-    ;
+    action = true;
 
   while (insertAnd ())
-    ;
+    action = true;
+
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
