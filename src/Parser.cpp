@@ -193,7 +193,6 @@ Tree* Parser::parse ()
   findStrayModifications ();
 
   findPlainArgs ();
-  // GOOD ^^^
   findMissingOperators ();
 
   validate ();
@@ -276,7 +275,7 @@ bool Parser::canonicalize (
 // Recursively scan all nodes, depth first, and create a linear list of node
 // pointers, for simple iteration. This eliminates the need for recursion in
 // each ::find* method.
-void Parser::collect (std::vector <Tree*>& nodes, bool all, Tree* tree /* = NULL */)
+void Parser::collect (std::vector <Tree*>& nodes, bool all, Tree* tree /* = NULL */) const
 {
   if (tree == NULL)
     tree = _tree;
@@ -505,8 +504,10 @@ void Parser::getOverrides (
   std::string& home,
   File& rc)
 {
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     if ((*i)->hasTag ("RC"))
     {
@@ -535,8 +536,10 @@ void Parser::getDataLocation (Path& data)
   if (location != "")
     data = location;
 
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     if ((*i)->hasTag ("CONFIG") &&
         (*i)->attribute ("name") == "data.location")
@@ -580,8 +583,11 @@ void Parser::injectDefaults ()
   bool found_command  = false;
   bool found_sequence = false;
   bool found_other    = false;
+
+  std::vector <Tree*> nodes;
+  collect (nodes, true);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     if ((*i)->hasTag ("BINARY"))
       ;
@@ -625,8 +631,10 @@ void Parser::injectDefaults ()
         }
 
         std::string combined;
+        std::vector <Tree*> nodes;
+        collect (nodes, false);
         std::vector <Tree*>::iterator i;
-        for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+        for (i = nodes.begin (); i != nodes.end (); ++i)
         {
           if (combined.length ())
             combined += ' ';
@@ -701,8 +709,10 @@ const std::string Parser::getFilterExpression ()
 {
   // Construct an efficient ID/UUID clause.
   std::string sequence = "";
+  std::vector <Tree*> nodes;
+  collect (nodes, true);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
@@ -746,8 +756,10 @@ const std::string Parser::getFilterExpression ()
 const std::vector <std::string> Parser::getWords () const
 {
   std::vector <std::string> words;
-  std::vector <Tree*>::const_iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  std::vector <Tree*> nodes;
+  collect (nodes, true);
+  std::vector <Tree*>::iterator i;
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     if (! (*i)->hasTag ("BINARY") &&
         ! (*i)->hasTag ("RC")     &&
@@ -764,8 +776,10 @@ const std::vector <std::string> Parser::getWords () const
 ////////////////////////////////////////////////////////////////////////////////
 std::string Parser::getLimit () const
 {
-  std::vector <Tree*>::const_iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
+  std::vector <Tree*>::iterator i;
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     // Parser override operator.
     if ((*i)->attribute ("raw") == "--")
@@ -784,16 +798,12 @@ std::string Parser::getLimit () const
 ////////////////////////////////////////////////////////////////////////////////
 std::string Parser::getCommand () const
 {
-  std::vector <Tree*>::const_iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
-  {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
-
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
+  std::vector <Tree*>::iterator i;
+  for (i = nodes.begin (); i != nodes.end (); ++i)
     if ((*i)->hasTag ("CMD"))
       return (*i)->attribute ("canonical");
-  }
 
   return "";
 }
