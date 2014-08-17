@@ -338,9 +338,12 @@ void Parser::scan (void (Parser::*callback) (Tree*), Tree* tree /* = NULL */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Locate and tag the binary.
+// Locate and tag the binary. It is assumed that the binary is the first
+// argument, which is valid.
 void Parser::findBinary ()
 {
+  context.debug ("Parser::findBinary");
+
   if (_tree->_branches.size () >= 1)
   {
     _tree->_branches[0]->unTag ("?");
@@ -364,6 +367,8 @@ void Parser::findBinary ()
       _tree->_branches[0]->tag ("TW");
     }
   }
+
+  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
