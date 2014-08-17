@@ -288,7 +288,8 @@ void Parser::scan (void (Parser::*callback) (Tree*), Tree* tree /* = NULL */)
     else
     {
       // Parser override operator.
-      if ((*i)->hasTag ("TERMINATOR"))
+      if ((*i)->hasTag ("TERMINATOR") ||
+          (*i)->hasTag ("TERMINATED"))
         break;
 
       // Skip known args.
