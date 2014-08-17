@@ -79,7 +79,7 @@ void Parser::initialize (int argc, const char** argv)
     branch->tag ("ORIGINAL");
     branch->tag ("?");
 
-    // If the argument contains a space, it was quoted.  Remember that.
+    // If the argument contains a space, it was quoted.  Record that fact.
     if (! noSpaces (raw))
       branch->tag ("QUOTED");
 
