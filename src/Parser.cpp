@@ -518,6 +518,10 @@ void Parser::getOverrides (
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
+    // Parser override operator.
+    if ((*i)->attribute ("raw") == "--")
+      break;
+
     if ((*i)->hasTag ("RC"))
     {
       rc = File ((*i)->attribute ("file"));
