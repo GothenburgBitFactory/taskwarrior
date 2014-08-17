@@ -33,8 +33,12 @@ use Test::More tests => 7;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'add.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -42,22 +46,23 @@ if (open my $fh, '>', 'add.rc')
 }
 
 # Test the add command.
-qx{../src/task rc:add.rc add This is a test 2>&1};
-my $output = qx{../src/task rc:add.rc info 1 2>&1};
-like ($output, qr/ID\s+1\n/, 'add ID');
-like ($output, qr/Description\s+This is a test\n/, 'add ID');
-like ($output, qr/Status\s+Pending\n/, 'add Pending');
-like ($output, qr/UUID\s+[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\n/, 'add UUID');
+qx{../src/task rc:$rc add This is a test 2>&1};
+my $output = qx{../src/task rc:$rc info 1 2>&1};
+like ($output, qr/ID\s+1\n/,                       "$ut: add ID");
+like ($output, qr/Description\s+This is a test\n/, "$ut: add ID");
+like ($output, qr/Status\s+Pending\n/,             "$ut: add Pending");
+like ($output, qr/UUID\s+[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\n/,
+                                                   "$ut: add UUID");
 
 # Test the /// modifier.
-qx{../src/task rc:add.rc 1 modify /test/TEST/ 2>&1};
-qx{../src/task rc:add.rc 1 modify "/is //" 2>&1};
-$output = qx{../src/task rc:add.rc info 1 2>&1};
-like ($output, qr/ID\s+1\n/, 'add ID');
-like ($output, qr/Status\s+Pending\n/, 'add Pending');
-like ($output, qr/Description\s+This a TEST\n/, 'add Description');
+qx{../src/task rc:$rc 1 modify /test/TEST/ 2>&1};
+qx{../src/task rc:$rc 1 modify "/is //" 2>&1};
+$output = qx{../src/task rc:$rc info 1 2>&1};
+like ($output, qr/ID\s+1\n/,                       "$ut: add ID");
+like ($output, qr/Status\s+Pending\n/,             "$ut: add Pending");
+like ($output, qr/Description\s+This a TEST\n/,    "$ut: add Description");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data add.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
