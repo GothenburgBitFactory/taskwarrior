@@ -105,7 +105,7 @@ void Parser::initialize (int argc, const char** argv)
         if (l->second == Lexer::typeOperator)
           sub->tag ("OP");
 
-        // TODO More types needed.
+        // TODO More types needed.  Perhaps.
       }
     }
   }
