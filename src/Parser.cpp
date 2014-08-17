@@ -185,8 +185,8 @@ Tree* Parser::parse ()
   findAttribute ();
   findAttributeModifier ();
   findOperator ();
-  // GOOD ^^^
   findCommand ();
+  // GOOD ^^^
   findUUIDList ();
   findIdSequence ();
   findFilter ();
@@ -425,7 +425,7 @@ void Parser::resolveAliases ()
 // autoCompletes to a valid command/report.
 void Parser::findCommand ()
 {
-  context.debug ("Parse::findOverrides");
+  context.debug ("Parse::findCommand");
   std::vector <Tree*> nodes;
   collect (nodes, false);
 
@@ -1384,17 +1384,14 @@ void Parser::findIdSequence ()
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findUUIDList ()
 {
+  context.debug ("Parser::findUUIDList");
+  bool action = false;
+
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
-
-    // Skip known args.
-    if (! (*i)->hasTag ("?"))
-      continue;
-
     std::string raw = (*i)->attribute ("raw");
     Nibbler n (raw);
 
@@ -1448,9 +1445,13 @@ void Parser::findUUIDList ()
         branch = (*i)->addBranch (new Tree ("argSeq"));
         branch->attribute ("raw", ")");
         branch->tag ("OP");
+        action = true;
       }
     }
   }
+
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
