@@ -1606,7 +1606,7 @@ void Parser::findStrayModifications ()
       command == "log")
   {
     std::vector <Tree*> nodes;
-    collect (nodes, false);
+    collect (nodes, true);
     std::vector <Tree*>::iterator i;
     for (i = nodes.begin (); i != nodes.end (); ++i)
     {
