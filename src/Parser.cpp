@@ -179,8 +179,8 @@ Tree* Parser::parse ()
   applyOverrides ();
 
   findSubstitution ();
+  findPattern ();
   // GOOD ^^^
-  scan (&Parser::findPattern);
   scan (&Parser::findTag);
   scan (&Parser::findAttribute);
   scan (&Parser::findAttributeModifier);
@@ -830,39 +830,49 @@ std::string Parser::getCommand () const
 
 ////////////////////////////////////////////////////////////////////////////////
 // /pattern/ --> description ~ pattern
-void Parser::findPattern (Tree* t)
+void Parser::findPattern ()
 {
-  context.debug ("findPattern");
-  context.debug (t->dump ());
+  context.debug ("Parser::findPattern");
+  bool action = false;
 
-  Nibbler n (t->attribute ("raw"));
-  std::string pattern;
-  if (n.getQuoted ('/', pattern) &&
-      n.depleted () &&
-      pattern.length () > 0)
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
+  std::vector <Tree*>::iterator i;
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
-    t->unTag ("?");
-    t->removeAllBranches ();
-    t->tag ("PATTERN");
+    Nibbler n ((*i)->attribute ("raw"));
+    std::string pattern;
+    if (n.getQuoted ('/', pattern) &&
+        n.depleted () &&
+        pattern.length () > 0)
+    {
+      (*i)->unTag ("?");
+      (*i)->removeAllBranches ();
+      (*i)->tag ("PATTERN");
 
-    Tree* branch = t->addBranch (new Tree ("argPat"));
-    branch->attribute ("raw", "description");
+      Tree* branch = (*i)->addBranch (new Tree ("argPat"));
+      branch->attribute ("raw", "description");
 
-    branch = t->addBranch (new Tree ("argPat"));
-    branch->attribute ("raw", "~");
-    branch->tag ("OP");
+      branch = (*i)->addBranch (new Tree ("argPat"));
+      branch->attribute ("raw", "~");
+      branch->tag ("OP");
 
-    branch = t->addBranch (new Tree ("argPat"));
-    branch->attribute ("raw", pattern);
-    branch->tag ("STRING");
+      branch = (*i)->addBranch (new Tree ("argPat"));
+      branch->attribute ("raw", pattern);
+      branch->tag ("STRING");
+      action = true;
+    }
   }
+
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // /from/to/[g]
 void Parser::findSubstitution ()
 {
-  context.debug ("Parse::findSubstitution");
+  context.debug ("Parser::findSubstitution");
   bool action = false;
 
   std::vector <Tree*> nodes;
