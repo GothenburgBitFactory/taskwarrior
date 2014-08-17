@@ -466,25 +466,21 @@ void Parser::resolveAliases ()
 // autoCompletes to a valid command/report.
 void Parser::findCommand ()
 {
+  context.debug ("Parse::findOverrides");
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
+
   // There can be only one.
   // Scan for an existing CMD tag, to short-circuit scanning for another.
-  std::string command;
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
     if ((*i)->hasTag ("CMD"))
       return;
 
   // No CMD tag found, now look for a command.
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  std::string command;
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
-
-    // Skip known args.
-    if (! (*i)->hasTag ("?"))
-      continue;
-
     if (canonicalize (command, "cmd", (*i)->attribute ("raw")))
     {
       (*i)->unTag ("?");
@@ -500,6 +496,8 @@ void Parser::findCommand ()
       return;
     }
   }
+
+  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
