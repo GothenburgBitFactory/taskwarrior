@@ -180,7 +180,7 @@ Tree* Parser::parse ()
 
   scan (&Parser::findSubstitution);
   scan (&Parser::findPattern);
-  findTag ();
+  scan (&Parser::findTag);
   scan (&Parser::findAttribute);
   scan (&Parser::findAttributeModifier);
   findOperator ();
@@ -849,45 +849,36 @@ void Parser::findSubstitution (Tree* t)
 
 ////////////////////////////////////////////////////////////////////////////////
 // +tag
-void Parser::findTag ()
+void Parser::findTag (Tree* t)
 {
-  std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  context.debug ("findTag");
+  context.debug (t->dump ());
+
+  std::string raw = t->attribute ("raw");
+  Nibbler n (raw);
+
+  std::string tag;
+  std::string sign;
+  if (n.getN (1, sign)             &&
+      (sign == "+" || sign == "-") &&
+      n.getUntilEOS (tag)          &&
+      tag.find (' ') == std::string::npos)
   {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
+    t->unTag ("?");
+    t->removeAllBranches ();
+    t->tag ("TAG");
+    t->attribute ("sign", sign);
+    t->attribute ("tag", tag);
 
-    // Skip known args.
-    if (! (*i)->hasTag ("?"))
-      continue;
+    Tree* branch = t->addBranch (new Tree ("argTag"));
+    branch->attribute ("raw", "tags");
 
-    std::string raw = (*i)->attribute ("raw");
-    Nibbler n (raw);
+    branch = t->addBranch (new Tree ("argTag"));
+    branch->attribute ("raw", (sign == "+" ? "_hastag_" : "_notag_"));
+    branch->tag ("OP");
 
-    std::string tag;
-    std::string sign;
-    if (n.getN (1, sign)             &&
-        (sign == "+" || sign == "-") &&
-        n.getUntilEOS (tag)          &&
-        tag.find (' ') == std::string::npos)
-    {
-      (*i)->unTag ("?");
-      (*i)->removeAllBranches ();
-      (*i)->tag ("TAG");
-      (*i)->attribute ("sign", sign);
-      (*i)->attribute ("tag", tag);
-
-      Tree* branch = (*i)->addBranch (new Tree ("argTag"));
-      branch->attribute ("raw", "tags");
-
-      branch = (*i)->addBranch (new Tree ("argTag"));
-      branch->attribute ("raw", (sign == "+" ? "_hastag_" : "_notag_"));
-      branch->tag ("OP");
-
-      branch = (*i)->addBranch (new Tree ("argTag"));
-      branch->attribute ("raw", tag);
-    }
+    branch = t->addBranch (new Tree ("argTag"));
+    branch->attribute ("raw", tag);
   }
 }
 
