@@ -68,8 +68,8 @@ public:
   std::string getCommand () const;
 
 private:
-  void findTerminator ();
   void scan (void (Parser::*callback)(Tree*), Tree* tree = NULL);
+  void findTerminator (Tree*);
   void findPattern ();
   void findSubstitution ();
   void findTag ();
