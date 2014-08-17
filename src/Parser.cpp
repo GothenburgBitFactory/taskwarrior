@@ -189,8 +189,8 @@ Tree* Parser::parse ()
   findUUIDList ();
   findIdSequence ();
   findFilter ();
-  // GOOD ^^^
   findModifications ();
+  // GOOD ^^^
   findStrayModifications ();
 
   findPlainArgs ();
@@ -1545,9 +1545,15 @@ void Parser::findFilter ()
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findModifications ()
 {
+  context.debug ("Parser::findModifications");
+  bool action = false;
+
   bool after_writecmd = false;
+
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     if ((*i)->hasTag ("WRITECMD"))
       after_writecmd = true;
@@ -1562,8 +1568,12 @@ void Parser::findModifications ()
       (*i)->unTag ("?");
       (*i)->tag ("MODIFICATION");
       (*i)->removeAllBranches ();
+      action = true;
     }
   }
+
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
