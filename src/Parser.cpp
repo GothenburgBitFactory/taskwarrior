@@ -188,8 +188,8 @@ Tree* Parser::parse ()
   findCommand ();
   findUUIDList ();
   findIdSequence ();
-  // GOOD ^^^
   findFilter ();
+  // GOOD ^^^
   findModifications ();
   findStrayModifications ();
 
@@ -1226,7 +1226,7 @@ void Parser::findAttributeModifier ()
 //
 void Parser::findIdSequence ()
 {
-  context.debug ("Parser::findAttributeModifier");
+  context.debug ("Parser::findIdSequence");
   bool action = false;
 
   std::vector <Tree*> nodes;
@@ -1494,10 +1494,16 @@ void Parser::findOperator ()
 // Anything after READCMD, but not BINARY, RC or CONFIG --> FILTER
 void Parser::findFilter ()
 {
+  context.debug ("Parser::findFilter");
+  bool action = false;
+
   bool before_cmd = true;
   bool after_readcmd = false;
+
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     // Parser override operator.
     if ((*i)->attribute ("raw") == "--")
@@ -1517,6 +1523,7 @@ void Parser::findFilter ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("FILTER");
+      action = true;
     }
 
     if (after_readcmd &&
@@ -1527,8 +1534,12 @@ void Parser::findFilter ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("FILTER");
+      action = true;
     }
   }
+
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
