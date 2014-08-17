@@ -271,6 +271,41 @@ bool Parser::canonicalize (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Recursively scan all nodes, depth first, and create a linear list of node
+// pointers, for simple iteration. This eliminates the need for recursion in
+// each ::find* method.
+void Parser::collect (std::vector <Tree*>& nodes, bool all, Tree* tree /* = NULL */)
+{
+  if (tree == NULL)
+    tree = _tree;
+
+  std::vector <Tree*>::iterator i;
+  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
+  {
+    if ((*i)->_branches.size ())
+    {
+      collect (nodes, all, *i);
+    }
+    else
+    {
+      if (! all)
+      {
+        // Parser override operator.
+        if ((*i)->hasTag ("TERMINATOR") ||
+            (*i)->hasTag ("TERMINATED"))
+          break;
+
+        // Skip known args.
+        if (! (*i)->hasTag ("?"))
+          continue;
+      }
+
+      nodes.push_back (*i);
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Recursively scan all nodes, depth first, skipping terminated nodes, and known
 // nodes, and cal the callback function for each node.
 void Parser::scan (void (Parser::*callback) (Tree*), Tree* tree /* = NULL */)
