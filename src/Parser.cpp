@@ -585,8 +585,12 @@ void Parser::getDataLocation (Path& data)
 // leaving only the plain args.
 void Parser::applyOverrides ()
 {
+  context.debug ("Parse::applyOverrides");
+
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     if ((*i)->hasTag ("CONFIG"))
     {
