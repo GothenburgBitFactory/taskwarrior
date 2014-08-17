@@ -357,6 +357,7 @@ void Parser::findTerminator (Tree* t)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO This is not recusive, and needs to be.
 void Parser::resolveAliases ()
 {
   bool something;
