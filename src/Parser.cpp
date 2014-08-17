@@ -186,9 +186,9 @@ Tree* Parser::parse ()
   findAttributeModifier ();
   findOperator ();
   findCommand ();
-  // GOOD ^^^
   findUUIDList ();
   findIdSequence ();
+  // GOOD ^^^
   findFilter ();
   findModifications ();
   findStrayModifications ();
@@ -1226,17 +1226,14 @@ void Parser::findAttributeModifier ()
 //
 void Parser::findIdSequence ()
 {
+  context.debug ("Parser::findAttributeModifier");
+  bool action = false;
+
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
-
-    // Skip known args.
-    if (! (*i)->hasTag ("?"))
-      continue;
-
     // Container for min/max ID ranges.
     std::vector <std::pair <int, int> > ranges;
 
@@ -1378,7 +1375,11 @@ void Parser::findIdSequence ()
     branch = (*i)->addBranch (new Tree ("argSeq"));
     branch->attribute ("raw", ")");
     branch->tag ("OP");
+    action = true;
   }
+
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
