@@ -1659,6 +1659,7 @@ void Parser::findPlainArgs ()
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findMissingOperators ()
 {
+  context.debug ("Parser::findMissingOperators");
   bool action = false;
 
   while (insertOr ())
@@ -1675,18 +1676,12 @@ void Parser::findMissingOperators ()
 // Two consecutive ID/UUID arguments get an 'or' inserted between them.
 bool Parser::insertOr ()
 {
-  std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
+  std::vector <Tree*>::iterator prev = nodes.begin ();
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
-    // Parser override operator.
-    if ((*i)->attribute ("raw") == "--")
-      break;
-
-    // Skip known args.
-    if ((*i)->hasTag ("?"))
-      continue;
-
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
       if (prev != _tree->_branches.begin () &&
@@ -1720,9 +1715,11 @@ bool Parser::insertOr ()
 //
 bool Parser::insertAnd ()
 {
-  std::vector <Tree*>::iterator prev = _tree->_branches.begin ();
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
+  std::vector <Tree*>::iterator prev = nodes.begin ();
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
     {
@@ -1775,8 +1772,10 @@ bool Parser::insertAnd ()
 void Parser::validate ()
 {
   // Look for any unrecognized original args.
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
   std::vector <Tree*>::iterator i;
-  for (i = _tree->_branches.begin (); i != _tree->_branches.end (); ++i)
+  for (i = nodes.begin (); i != nodes.end (); ++i)
     if ((*i)->hasTag ("?"))
       context.debug ("Unrecognized argument '" + (*i)->attribute ("raw") + "'");
 
