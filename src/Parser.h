@@ -77,7 +77,7 @@ private:
   void findTag ();
   void findAttribute ();
   void findAttributeModifier ();
-  void findOperator (Tree*);
+  void findOperator ();
   void findFilter ();
   void findModifications ();
   void findStrayModifications ();

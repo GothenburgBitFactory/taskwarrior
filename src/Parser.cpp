@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <algorithm>
 #include <stdlib.h>
 #include <unistd.h>
 #include <Context.h>
@@ -183,8 +184,8 @@ Tree* Parser::parse ()
   findTag ();
   findAttribute ();
   findAttributeModifier ();
+  findOperator ();
   // GOOD ^^^
-  scan (&Parser::findOperator);
   findCommand ();
   findUUIDList ();
   findIdSequence ();
@@ -1484,10 +1485,10 @@ void Parser::findUUIDList ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Parser::findOperator (Tree* t)
+void Parser::findOperator ()
 {
-  context.debug ("findOperator");
-  context.debug (t->dump ());
+  context.debug ("Parser::findOperator");
+  bool action = false;
 
   // Find the category.
   std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
@@ -1499,19 +1500,22 @@ void Parser::findOperator (Tree* t)
   for (e = c.first; e != c.second; ++e)
     options.push_back (e->second);
 
-  std::string raw = t->attribute ("raw");
-
-  std::vector <std::string>::iterator opt;
-  for (opt = options.begin (); opt != options.end (); ++opt)
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
+  std::vector <Tree*>::iterator i;
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
-    if (*opt == raw)
+    if (std::find (options.begin (), options.end (), (*i)->attribute ("raw")) != options.end ())
     {
-      t->unTag ("?");
-      t->removeAllBranches ();
-      t->tag ("OP");
-      break;
+      (*i)->unTag ("?");
+      (*i)->removeAllBranches ();
+      (*i)->tag ("OP");
+      action = true;
     }
   }
+
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
