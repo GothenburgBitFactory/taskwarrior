@@ -1656,19 +1656,22 @@ void Parser::findPlainArgs ()
         std::string canonical;
         if (! canonicalize (canonical, "attribute", raw))
         {
-          // This tag also prevents further expanѕion.
+          (*i)->unTag ("FILTER");
           (*i)->tag ("PATTERN");
 
           Tree* branch = (*i)->addBranch (new Tree ("argPat"));
           branch->attribute ("raw", "description");
+          branch->tag ("FILTER");
 
           branch = (*i)->addBranch (new Tree ("argPat"));
           branch->attribute ("raw", "~");
           branch->tag ("OP");
+          branch->tag ("FILTER");
 
           branch = (*i)->addBranch (new Tree ("argPat"));
           branch->attribute ("raw", raw);
           branch->tag ("STRING");
+          branch->tag ("FILTER");
           action = true;
         }
       }
