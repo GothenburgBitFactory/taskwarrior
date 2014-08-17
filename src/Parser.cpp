@@ -172,7 +172,8 @@ Tree* Parser::tree ()
 Tree* Parser::parse ()
 {
   findBinary ();
-  scan (&Parser::findTerminator);
+  findTerminator ();
+  // GOOD ^^^
   resolveAliases ();
 
   findOverrides ();
@@ -368,27 +369,41 @@ void Parser::findBinary ()
 ////////////////////////////////////////////////////////////////////////////////
 // The parser override operator terminates all subsequent cleverness, leaving
 // all args in the raw state.
-void Parser::findTerminator (Tree* t)
+void Parser::findTerminator ()
 {
-  // Mark the terminator.
-  static bool found = false;
-  if (! found &&
-      t->attribute ("raw") == "--")
+  context.debug ("Parser::findTerminator");
+  bool found = false;
+  bool action = false;
+
+  std::vector <Tree*> nodes;
+  collect (nodes, false);
+  std::vector <Tree*>::iterator i;
+  for (i = nodes.begin (); i != nodes.end (); ++i)
   {
-    t->unTag ("?");
-    t->removeAllBranches ();
-    t->tag ("TERMINATOR");
-    found = true;
+    // Mark the terminator.
+    if (! found &&
+        (*i)->attribute ("raw") == "--")
+    {
+      (*i)->unTag ("?");
+      (*i)->removeAllBranches ();
+      (*i)->tag ("TERMINATOR");
+      found = true;
+      action = true;
+    }
+
+    // Mark subsequent nodes.
+    else if (found)
+    {
+      (*i)->unTag ("?");
+      (*i)->removeAllBranches ();
+      (*i)->tag ("WORD");
+      (*i)->tag ("TERMINATED");
+      action = true;
+    }
   }
 
-  // Mark subsequent nodes.
-  else if (found)
-  {
-    t->unTag ("?");
-    t->removeAllBranches ();
-    t->tag ("WORD");
-    t->tag ("TERMINATED");
-  }
+  if (action)
+    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
