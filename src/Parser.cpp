@@ -1720,24 +1720,43 @@ bool Parser::insertOr ()
 {
   std::vector <Tree*> nodes;
   collect (nodes, true);
-  std::vector <Tree*>::iterator prev = nodes.begin ();
+
+  // Subset the nodes to only the FILTER, non-PSEUDO nodes.
+  std::vector <Tree*> filterNodes;
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
-  {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
-    {
-      if (prev != nodes.begin () &&
-          ((*prev)->hasTag ("ID") || (*prev)->hasTag ("UUID")) &&
-          ((*i)->hasTag ("ID") || (*i)->hasTag ("UUID")))
-      {
-        Tree* branch = new Tree ("argOp");
-        branch->attribute ("raw", "or");
-        branch->tag ("OP");
-        branch->tag ("FILTER");
+      filterNodes.push_back (*i);
 
-        _tree->_branches.insert (i, branch);
-        return true;
+  std::vector <Tree*>::iterator prev = filterNodes.begin ();
+  for (i = filterNodes.begin (); i != filterNodes.end (); ++i)
+  {
+//    std::cout << "# prev = " << (*prev)->attribute ("raw") << " ... i = " << (*i)->attribute ("raw") << "\n";
+    if (i != prev &&
+        ((*prev)->hasTag ("ID") || (*prev)->hasTag ("UUID")) &&
+        ((*i)->hasTag ("ID") || (*i)->hasTag ("UUID")))
+    {
+//      std::cout << "#   needs OR\n";
+
+      Tree* branch = new Tree ("argOp");
+      branch->attribute ("raw", "or");
+      branch->tag ("OP");
+      branch->tag ("FILTER");
+      branch->_trunk = (*i)->_trunk;
+
+      std::vector <Tree*>::iterator b;
+      for (b = (*i)->_trunk->_branches.begin ();
+           b != (*i)->_trunk->_branches.end ();
+           ++b)
+      {
+        if (*b == *i)
+        {
+          (*i)->_trunk->_branches.insert (b, branch);
+          break;
+        }
       }
+
+      return true;
     }
 
     prev = i;
