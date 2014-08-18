@@ -1759,51 +1759,43 @@ bool Parser::insertAnd ()
 {
   std::vector <Tree*> nodes;
   collect (nodes, true);
-  std::vector <Tree*>::iterator prev = nodes.begin ();
+
+  // Subset the nodes to only the FILTER, non-PSEUDO nodes.
+  std::vector <Tree*> filterNodes;
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
-  {
     if ((*i)->hasTag ("FILTER") && ! (*i)->hasTag ("PSEUDO"))
+      filterNodes.push_back (*i);
+
+  std::vector <Tree*>::iterator prev = filterNodes.begin ();
+  for (i = filterNodes.begin (); i != filterNodes.end (); ++i)
+  {
+    if (i != prev &&
+        (! (*prev)->hasTag ("OP") || (*prev)->attribute ("raw") == ")") &&
+        (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
     {
-      if ((*i)->_branches.size ())
-      {
-        std::vector <Tree*>::iterator sub;
-        for (sub = (*i)->_branches.begin (); sub != (*i)->_branches.end (); ++sub)
-        {
-          if (sub != prev &&
-              prev != nodes.begin () &&
-              (! (*prev)->hasTag ("OP") || (*prev)->attribute ("raw") == ")") &&
-              (! (*sub)->hasTag ("OP") || (*sub)->attribute ("raw") == "("))
-          {
-            Tree* branch = new Tree ("argOp");
-            branch->attribute ("raw", "and");
-            branch->tag ("OP");
-            branch->tag ("FILTER");
-            (*i)->_branches.insert (sub, branch);
-            return true;
-          }
+      Tree* branch = new Tree ("argOp");
+      branch->attribute ("raw", "and");
+      branch->tag ("OP");
+      branch->tag ("FILTER");
+      branch->_trunk = (*i)->_trunk;
 
-          prev = sub;
+      std::vector <Tree*>::iterator b;
+      for (b = (*i)->_trunk->_branches.begin ();
+           b != (*i)->_trunk->_branches.end ();
+           ++b)
+      {
+        if (*b == *i)
+        {
+          (*i)->_trunk->_branches.insert (b, branch);
+          break;
         }
       }
-      else
-      {
-        if (i != prev &&
-            prev != nodes.begin () &&
-            (! (*prev)->hasTag ("OP") || (*prev)->attribute ("raw") == ")") &&
-            (! (*i)->hasTag ("OP") || (*i)->attribute ("raw") == "("))
-        {
-          Tree* branch = new Tree ("argOp");
-          branch->attribute ("raw", "and");
-          branch->tag ("OP");
-          branch->tag ("FILTER");
-          _tree->_branches.insert (i, branch);
-          return true;
-        }
 
-        prev = i;
-      }
+      return true;
     }
+
+    prev = i;
   }
 
   return false;
