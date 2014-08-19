@@ -1637,7 +1637,7 @@ void Parser::findStrayModifications ()
     std::vector <Tree*>::iterator i;
     for (i = nodes.begin (); i != nodes.end (); ++i)
     {
-      if ((*i)->hasTag ("FILTER"))
+      if ((*i)->hasTag ("ATTRIBUTE"))
       {
         (*i)->unTag ("FILTER");
         (*i)->tag ("MODIFICATION");
