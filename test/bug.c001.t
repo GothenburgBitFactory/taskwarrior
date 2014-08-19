@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -47,13 +51,13 @@ if (open my $fh, '>', 'bug.rc')
 # First noticed in 1.9.4 commit 2d50d1c
 
 # Setup: Add a recurring task
-qx{../src/task rc:bug.rc add First recurring task due:tomorrow rec:daily 2>&1};
+qx{../src/task rc:$rc add First recurring task due:tomorrow rec:daily 2>&1};
 
 # Result: Ensure the second recurring task has an ID of 2
-my $output = qx{../src/task rc:bug.rc add Second recurring task due:tomorrow rec:daily 2>&1};
-like   ($output, qr/Created task 2\./ms, 'Recurring task assigned correct ID.');
+my $output = qx{../src/task rc:$rc add Second recurring task due:tomorrow rec:daily 2>&1};
+like ($output, qr/Created task 2\./ms, "$ut: Recurring task assigned correct ID.");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
