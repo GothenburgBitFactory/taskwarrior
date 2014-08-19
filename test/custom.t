@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'custom.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "report.foo.description=DESC\n",
@@ -45,16 +49,16 @@ if (open my $fh, '>', 'custom.rc')
 }
 
 # Generate the help screen, and locate the custom report on it.
-my $output = qx{../src/task rc:custom.rc help 2>&1};
-like ($output, qr/task <filter> foo\s+DESC\n/m, 'report.foo');
+my $output = qx{../src/task rc:$rc help 2>&1};
+like ($output, qr/task <filter> foo\s+DESC\n/m, "$ut: report.foo");
 
-qx{../src/task rc:custom.rc add project:A one 2>&1};
-qx{../src/task rc:custom.rc add two 2>&1};
-$output = qx{../src/task rc:custom.rc foo 2>&1};
-like ($output, qr/one/, 'custom filter included');
-unlike ($output, qr/two/, 'custom filter excluded');
+qx{../src/task rc:$rc add project:A one 2>&1};
+qx{../src/task rc:$rc add two 2>&1};
+$output = qx{../src/task rc:$rc foo 2>&1};
+like ($output, qr/one/, "$ut: custom filter included");
+unlike ($output, qr/two/, "$ut: custom filter excluded");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data custom.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
