@@ -339,41 +339,6 @@ void Parser::collect (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Recursively scan all nodes, depth first, and create a linear list of node
-// pointers, for simple iteration. This eliminates the need for recursion in
-// each ::find* method.
-void Parser::collect (std::vector <Tree*>& nodes, bool all, Tree* tree /* = NULL */) const
-{
-  if (tree == NULL)
-    tree = _tree;
-
-  std::vector <Tree*>::iterator i;
-  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
-  {
-    if ((*i)->_branches.size ())
-    {
-      collect (nodes, all, *i);
-    }
-    else
-    {
-      if (! all)
-      {
-        // Parser override operator.
-        if ((*i)->hasTag ("TERMINATOR") ||
-            (*i)->hasTag ("TERMINATED"))
-          break;
-
-        // Skip known args.
-        if (! (*i)->hasTag ("?"))
-          continue;
-      }
-
-      nodes.push_back (*i);
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Locate and tag the binary. It is assumed that the binary is the first
 // argument, which is valid.
 void Parser::findBinary ()
@@ -417,7 +382,7 @@ void Parser::findTerminator ()
   bool action = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -460,7 +425,7 @@ void Parser::resolveAliases ()
     something = false;
 
     std::vector <Tree*> nodes;
-    collect (nodes, false);
+    collect (nodes);
     std::vector <Tree*>::iterator i;
     for (i = nodes.begin (); i != nodes.end (); ++i)
     {
@@ -493,7 +458,7 @@ void Parser::findCommand ()
 {
   context.debug ("Parse::findCommand");
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
 
   // There can be only one.
   // Scan for an existing CMD tag, to short-circuit scanning for another.
@@ -533,7 +498,7 @@ void Parser::findOverrides ()
   context.debug ("Parse::findOverrides");
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -572,7 +537,7 @@ void Parser::getOverrides (
   File& rc)
 {
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -608,7 +573,7 @@ void Parser::getDataLocation (Path& data)
     data = location;
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -632,7 +597,7 @@ void Parser::applyOverrides ()
   context.debug ("Parse::applyOverrides");
 
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -660,7 +625,7 @@ void Parser::injectDefaults ()
   bool found_other    = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -707,7 +672,7 @@ void Parser::injectDefaults ()
 
         std::string combined;
         std::vector <Tree*> nodes;
-        collect (nodes, false);
+        collect (nodes);
         std::vector <Tree*>::iterator i;
         for (i = nodes.begin (); i != nodes.end (); ++i)
         {
@@ -785,7 +750,7 @@ const std::string Parser::getFilterExpression ()
   // Construct an efficient ID/UUID clause.
   std::string sequence = "";
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -832,7 +797,7 @@ const std::vector <std::string> Parser::getWords () const
 {
   std::vector <std::string> words;
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -852,7 +817,7 @@ const std::vector <std::string> Parser::getWords () const
 std::string Parser::getLimit () const
 {
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -870,7 +835,7 @@ std::string Parser::getLimit () const
 std::string Parser::getCommand () const
 {
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
     if ((*i)->hasTag ("CMD"))
@@ -887,7 +852,7 @@ void Parser::findPattern ()
   bool action = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -927,7 +892,7 @@ void Parser::findSubstitution ()
   bool action = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -970,7 +935,7 @@ void Parser::findTag ()
   bool action = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -1015,7 +980,7 @@ void Parser::findAttribute ()
   bool action = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -1106,7 +1071,7 @@ void Parser::findAttributeModifier ()
   bool action = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -1311,7 +1276,7 @@ void Parser::findIdSequence ()
   bool action = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -1470,7 +1435,7 @@ void Parser::findUUIDList ()
   bool action = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -1553,7 +1518,7 @@ void Parser::findOperator ()
     options.push_back (e->second);
 
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -1582,7 +1547,7 @@ void Parser::findFilter ()
   bool after_readcmd = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -1632,7 +1597,7 @@ void Parser::findModifications ()
   bool after_writecmd = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectAll);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -1668,7 +1633,7 @@ void Parser::findStrayModifications ()
       command == "log")
   {
     std::vector <Tree*> nodes;
-    collect (nodes, true);
+    collect (nodes, collectAll);
     std::vector <Tree*>::iterator i;
     for (i = nodes.begin (); i != nodes.end (); ++i)
     {
@@ -1695,7 +1660,7 @@ void Parser::findPlainArgs ()
   bool action = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
@@ -1761,7 +1726,7 @@ void Parser::findMissingOperators ()
 bool Parser::insertOr ()
 {
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
 
   // Subset the nodes to only the FILTER, non-PSEUDO nodes.
   std::vector <Tree*> filterNodes;
@@ -1819,7 +1784,7 @@ bool Parser::insertOr ()
 bool Parser::insertAnd ()
 {
   std::vector <Tree*> nodes;
-  collect (nodes, true);
+  collect (nodes, collectTerminated);
 
   // Subset the nodes to only the FILTER, non-PSEUDO nodes.
   std::vector <Tree*> filterNodes;
@@ -1868,7 +1833,7 @@ void Parser::validate ()
 {
   // Look for any unrecognized original args.
   std::vector <Tree*> nodes;
-  collect (nodes, false);
+  collect (nodes);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
     if ((*i)->hasTag ("?"))
