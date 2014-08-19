@@ -47,6 +47,8 @@ public:
   bool exactMatch (const std::string&, const std::string&) const;
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
 
+  enum collectType {collectLeaf, collectAll, collectUnterminated};
+  void collect (std::vector <Tree*>&, collectType = collectLeaf, Tree* tree = NULL) const;
   void collect (std::vector <Tree*>&, bool, Tree* tree = NULL) const;
 
   void findBinary ();

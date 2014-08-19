@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <iostream> // TODO Remove.
 #include <algorithm>
 #include <stdlib.h>
 #include <unistd.h>
@@ -294,6 +295,47 @@ bool Parser::canonicalize (
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Recursively scan all nodes, depth first, and create a linear list of node
+// pointers, for simple iteration. This eliminates the need for recursion in
+// each ::find* method.
+void Parser::collect (
+  std::vector <Tree*>& nodes,
+  collectType type /* = collectType::collectLeaf */,
+  Tree* tree /* = NULL */) const
+{
+  if (tree == NULL)
+    tree = _tree;
+
+  std::vector <Tree*>::iterator i;
+  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
+  {
+    if ((*i)->_branches.size ())
+    {
+      if (type == collectAll)
+        nodes.push_back (*i);
+
+      collect (nodes, type, *i);
+    }
+    else
+    {
+      if (type == collectLeaf)
+      {
+        // Parser override operator.
+        if ((*i)->hasTag ("TERMINATOR") ||
+            (*i)->hasTag ("TERMINATED"))
+          break;
+
+        // Skip known args.
+        if (! (*i)->hasTag ("?"))
+          continue;
+      }
+
+      nodes.push_back (*i);
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
