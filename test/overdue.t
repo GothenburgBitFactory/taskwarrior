@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'due.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "due=4\n";
@@ -43,15 +47,15 @@ if (open my $fh, '>', 'due.rc')
 
 # Add an overdue task, a due task, and a regular task.  The "overdue" report
 # should list only the one task.
-qx{../src/task rc:due.rc add due:yesterday one 2>&1};
-qx{../src/task rc:due.rc add due:tomorrow two 2>&1};
-qx{../src/task rc:due.rc add due:30d three 2>&1};
-my $output = qx{../src/task rc:due.rc overdue 2>&1};
-like   ($output, qr/one/,   'overdue: task 1 shows up');
-unlike ($output, qr/two/,   'overdue: task 2 does not show up');
-unlike ($output, qr/three/, 'overdue: task 3 does not show up');
+qx{../src/task rc:$rc add due:yesterday one 2>&1};
+qx{../src/task rc:$rc add due:tomorrow two 2>&1};
+qx{../src/task rc:$rc add due:30d three 2>&1};
+my $output = qx{../src/task rc:$rc overdue 2>&1};
+like   ($output, qr/one/,   "$ut: overdue: task 1 shows up");
+unlike ($output, qr/two/,   "$ut: overdue: task 2 does not show up");
+unlike ($output, qr/three/, "$ut: overdue: task 3 does not show up");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data due.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
