@@ -441,7 +441,6 @@ int CmdInfo::execute (std::string& output)
       std::string previous;
       std::string current;
       unsigned int i = 0;
-      long total_time = 0;
       long last_timestamp = 0;
       while (i < undo.size ())
       {
@@ -465,38 +464,8 @@ int CmdInfo::execute (std::string& output)
             Task before (previous.substr (4));
             Task after (current.substr (4));
             journal.set (row, 1, taskInfoDifferences (before, after, dateformat, last_timestamp, timestamp.toEpoch()));
-
-            // calculate the total active time
-            if (before.get ("start") == ""
-              && after.get ("start") != "")
-            {
-              // task started
-              total_time -= timestamp.toEpoch ();
-            }
-            else if (((before.get ("start") != "" &&
-                       after.get ("start") == "") ||
-                      (before.get ("status") != "completed" &&
-                       after.get ("status") == "completed")) &&
-                     total_time < 0)
-            {
-              // task stopped or done
-              total_time += timestamp.toEpoch ();
-            }
           }
         }
-      }
-
-      // add now() if task is still active
-      if (total_time < 0)
-        total_time += Date ().toEpoch ();
-
-      // print total active time
-      if (total_time > 0)
-      {
-        row = journal.addRow ();
-        journal.set (row, 0, STRING_CMD_INFO_TOTAL_ACTIVE);
-        journal.set (row, 1, Duration (total_time).formatPrecise (),
-                     (context.color () ? Color ("bold") : Color ()));
       }
     }
 
