@@ -273,7 +273,8 @@ void Tree::dumpNode (Tree* t, int depth, std::stringstream& output)
   for (int i = 0; i < depth; ++i)
     output << "  ";
 
-  output << "\033[1m" << t->_name << "\033[0m";
+  output << std::hex << t << " "
+         << "\033[1m" << t->_name << "\033[0m";
 
   // Dump attributes.
   std::string atts;
