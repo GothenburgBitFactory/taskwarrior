@@ -797,7 +797,7 @@ const std::vector <std::string> Parser::getWords () const
 {
   std::vector <std::string> words;
   std::vector <Tree*> nodes;
-  collect (nodes, collectTerminated);
+  collect (nodes, collectAll);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
