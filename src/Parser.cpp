@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream> // TODO Remove.
 #include <algorithm>
 #include <stdlib.h>
 #include <unistd.h>
@@ -964,90 +963,97 @@ void Parser::findTag ()
 void Parser::findAttribute ()
 {
   context.debug ("Parser::findAttribute");
-  bool action = false;
+  bool action = true;
 
-  std::vector <Tree*> nodes;
-  collect (nodes);
-  std::vector <Tree*>::iterator i;
-  for (i = nodes.begin (); i != nodes.end (); ++i)
+  do
   {
-    std::string raw = (*i)->attribute ("raw");
-    Nibbler n (raw);
+    action = false;
 
-    // Look for a valid attribute name.
-    std::string name;
-    if (n.getName (name) &&
-        name.length ())
+    std::vector <Tree*> nodes;
+    collect (nodes);
+    std::vector <Tree*>::iterator i;
+    for (i = nodes.begin (); i != nodes.end (); ++i)
     {
-      if (n.skip (':'))
+      std::string raw = (*i)->attribute ("raw");
+      Nibbler n (raw);
+
+      // Look for a valid attribute name.
+      std::string name;
+      if (n.getName (name) &&
+          name.length ())
       {
-        std::string value;
-        if (n.getQuoted   ('"', value)  ||
-            n.getQuoted   ('\'', value) ||
-            n.getUntilEOS (value)       ||
-            n.depleted ())
+        if (n.skip (':'))
         {
-          if (value == "")
-            value = "''";
-
-          std::string canonical;
-          if (canonicalize (canonical, "uda", name))
+          std::string value;
+          if (n.getQuoted   ('"', value)  ||
+              n.getQuoted   ('\'', value) ||
+              n.getUntilEOS (value)       ||
+              n.depleted ())
           {
-            (*i)->tag ("UDA");
-            (*i)->tag ("MODIFIABLE");
-            action = true;
-          }
+            if (value == "")
+              value = "''";
 
-          else if (canonicalize (canonical, "pseudo", name))
-          {
-            (*i)->unTag ("?");
-            (*i)->removeAllBranches ();
-            (*i)->tag ("PSEUDO");
-            (*i)->attribute ("name", canonical);
-            (*i)->attribute ("raw", value);
-            action = true;
-          }
-
-          else if (canonicalize (canonical, "attribute", name))
-          {
-            (*i)->unTag ("?");
-            (*i)->removeAllBranches ();
-            (*i)->tag ("ATTRIBUTE");
-            (*i)->attribute ("name", canonical);
-            (*i)->attribute ("raw", value);
-
-            std::map <std::string, Column*>::const_iterator col;
-            col = context.columns.find (canonical);
-            if (col != context.columns.end () &&
-                col->second->modifiable ())
+            std::string canonical;
+            if (canonicalize (canonical, "uda", name))
             {
+              (*i)->tag ("UDA");
               (*i)->tag ("MODIFIABLE");
+              action = true;
             }
 
-            Tree* branch = (*i)->addBranch (new Tree ("argAtt"));
-            branch->attribute ("raw", canonical);
+            else if (canonicalize (canonical, "pseudo", name))
+            {
+              (*i)->unTag ("?");
+              (*i)->removeAllBranches ();
+              (*i)->tag ("PSEUDO");
+              (*i)->attribute ("name", canonical);
+              (*i)->attribute ("raw", value);
+              action = true;
+              break;
+            }
 
-            branch = (*i)->addBranch (new Tree ("argAtt"));
-            branch->tag ("OP");
+            else if (canonicalize (canonical, "attribute", name))
+            {
+              (*i)->unTag ("?");
+              (*i)->removeAllBranches ();
+              (*i)->tag ("ATTRIBUTE");
+              (*i)->attribute ("name", canonical);
+              (*i)->attribute ("raw", value);
 
-            // All 'project' attributes are partial matches.
-            if (canonical == "project" ||
-                canonical == "uuid")
-              branch->attribute ("raw", "=");
-            else
-              branch->attribute ("raw", "==");
+              std::map <std::string, Column*>::const_iterator col;
+              col = context.columns.find (canonical);
+              if (col != context.columns.end () &&
+                  col->second->modifiable ())
+              {
+                (*i)->tag ("MODIFIABLE");
+              }
 
-            branch = (*i)->addBranch (new Tree ("argAtt"));
-            branch->attribute ("raw", value);
-            action = true;
+              Tree* branch = (*i)->addBranch (new Tree ("argAtt"));
+              branch->attribute ("raw", canonical);
+
+              branch = (*i)->addBranch (new Tree ("argAtt"));
+              branch->tag ("OP");
+
+              // All 'project' attributes are partial matches.
+              if (canonical == "project" ||
+                  canonical == "uuid")
+                branch->attribute ("raw", "=");
+              else
+                branch->attribute ("raw", "==");
+
+              branch = (*i)->addBranch (new Tree ("argAtt"));
+              branch->attribute ("raw", value);
+              action = true;
+              break;
+            }
           }
         }
       }
     }
   }
+  while (action);
 
-  if (action)
-    context.debug (_tree->dump ());
+  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
