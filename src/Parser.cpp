@@ -334,8 +334,6 @@ void Parser::collect (
 // argument, which is valid.
 void Parser::findBinary ()
 {
-  context.debug ("Parser::findBinary");
-
   if (_tree->_branches.size () >= 1)
   {
     _tree->_branches[0]->unTag ("?");
@@ -358,8 +356,6 @@ void Parser::findBinary ()
       _tree->_branches[0]->tag ("TW");
     }
   }
-
-  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
