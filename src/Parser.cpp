@@ -498,7 +498,6 @@ void Parser::findOverrides ()
     if (arg.find ("rc:") == 0)
     {
       (*i)->unTag ("?");
-      (*i)->removeAllBranches ();
       (*i)->tag ("RC");
       (*i)->attribute ("file", arg.substr (3));
     }
@@ -511,7 +510,6 @@ void Parser::findOverrides ()
       if (sep != std::string::npos)
       {
         (*i)->unTag ("?");
-        (*i)->removeAllBranches ();
         (*i)->tag ("CONFIG");
         (*i)->attribute ("name", arg.substr (3, sep - 3));
         (*i)->attribute ("value", arg.substr (sep + 1));
@@ -529,7 +527,7 @@ void Parser::getOverrides (
   File& rc)
 {
   std::vector <Tree*> nodes;
-  collect (nodes, collectLeaf);
+  collect (nodes, collectAll);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
