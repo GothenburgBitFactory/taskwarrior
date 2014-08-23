@@ -369,7 +369,7 @@ void Parser::findTerminator ()
 {
   context.debug ("Parser::findTerminator");
   bool found = false;
-  bool action = false;
+  std::vector <Tree*> prune;
 
   std::vector <Tree*> nodes;
   collect (nodes, collectTerminated);
@@ -381,24 +381,26 @@ void Parser::findTerminator ()
         (*i)->attribute ("raw") == "--")
     {
       (*i)->unTag ("?");
-      (*i)->removeAllBranches ();
       (*i)->tag ("TERMINATOR");
+      prune.push_back (*i);
       found = true;
-      action = true;
     }
 
     // Mark subsequent nodes.
     else if (found)
     {
       (*i)->unTag ("?");
-      (*i)->removeAllBranches ();
       (*i)->tag ("WORD");
       (*i)->tag ("TERMINATED");
-      action = true;
+      prune.push_back (*i);
     }
   }
 
-  if (action)
+  // Prune branches outside the loop.
+  for (i = prune.begin (); i != prune.end (); ++i)
+    (*i)->removeAllBranches ();
+
+  if (prune.size ())
     context.debug (_tree->dump ());
 }
 
