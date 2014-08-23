@@ -580,10 +580,10 @@ void Parser::getDataLocation (Path& data)
 // leaving only the plain args.
 void Parser::applyOverrides ()
 {
-  context.debug ("Parse::applyOverrides");
+  context.debug ("Parser::applyOverrides");
 
   std::vector <Tree*> nodes;
-  collect (nodes, collectLeaf);
+  collect (nodes, collectAll);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
