@@ -309,32 +309,23 @@ void Parser::collect (
   if (tree == NULL)
     tree = _tree;
 
+  if (type == collectAll || tree->_branches.size () == 0)
+    nodes.push_back (tree);
+
   std::vector <Tree*>::iterator i;
   for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
   {
-    if ((*i)->_branches.size ())
+    if (type == collectLeaf)
     {
-      if (type == collectAll)
-        nodes.push_back (*i);
+      if ((*i)->hasTag ("TERMINATOR") ||
+          (*i)->hasTag ("TERMINATED"))
+        break;
 
-      collect (nodes, type, *i);
+      if (! (*i)->hasTag ("?"))
+        continue;
     }
-    else
-    {
-      if (type == collectLeaf)
-      {
-        // Parser override operator.
-        if ((*i)->hasTag ("TERMINATOR") ||
-            (*i)->hasTag ("TERMINATED"))
-          break;
 
-        // Skip known args.
-        if (! (*i)->hasTag ("?"))
-          continue;
-      }
-
-      nodes.push_back (*i);
-    }
+    collect (nodes, type, *i);
   }
 }
 
@@ -1593,7 +1584,6 @@ void Parser::findModifications ()
 {
   context.debug ("Parser::findModifications");
   bool action = false;
-
   bool after_writecmd = false;
 
   std::vector <Tree*> nodes;
@@ -1602,9 +1592,10 @@ void Parser::findModifications ()
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
     if ((*i)->hasTag ("WRITECMD"))
+    {
       after_writecmd = true;
-
-    if (after_writecmd &&
+    }
+    else if (after_writecmd &&
         ! (*i)->hasTag ("CMD") &&
         ! (*i)->hasTag ("TERMINATOR") &&
         ! (*i)->hasTag ("BINARY") &&
