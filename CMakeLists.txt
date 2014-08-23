@@ -140,6 +140,7 @@ set (LANGUAGE_DEU_DEU 3)
 set (LANGUAGE_FRA_FRA 4)
 set (LANGUAGE_ITA_ITA 5)
 set (LANGUAGE_POR_PRT 6)
+set (LANGUAGE_EPO_EPO 7)
 
 message ("-- Configuring cmake.h")
 configure_file (
