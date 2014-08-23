@@ -792,7 +792,7 @@ const std::vector <std::string> Parser::getWords () const
 std::string Parser::getLimit () const
 {
   std::vector <Tree*> nodes;
-  collect (nodes);
+  collect (nodes, collectAll);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
