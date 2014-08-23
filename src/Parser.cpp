@@ -1493,7 +1493,6 @@ void Parser::findUUIDList ()
 void Parser::findOperator ()
 {
   context.debug ("Parser::findOperator");
-  bool action = false;
 
   // Find the category.
   std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
@@ -1505,6 +1504,7 @@ void Parser::findOperator ()
   for (e = c.first; e != c.second; ++e)
     options.push_back (e->second);
 
+  std::vector <Tree*> prune;
   std::vector <Tree*> nodes;
   collect (nodes);
   std::vector <Tree*>::iterator i;
@@ -1513,13 +1513,16 @@ void Parser::findOperator ()
     if (std::find (options.begin (), options.end (), (*i)->attribute ("raw")) != options.end ())
     {
       (*i)->unTag ("?");
-      (*i)->removeAllBranches ();
       (*i)->tag ("OP");
-      action = true;
+      prune.push_back (*i);
     }
   }
 
-  if (action)
+  // Prune branches outside the loop.
+  for (i = prune.begin (); i != prune.end (); ++i)
+    (*i)->removeAllBranches ();
+
+  if (prune.size ())
     context.debug (_tree->dump ());
 }
 
