@@ -540,8 +540,8 @@ void Parser::getOverrides (
 
       context.header (format (STRING_PARSER_ALTERNATE_RC, rc._data));
 
-      // Keep looping, because if there are multiple rc:file arguments, we
-      // want the last one to dominate.
+      // Keep looping, because if there are multiple rc:file arguments, the last
+      // one should dominate.
     }
   }
 }
