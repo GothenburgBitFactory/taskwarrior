@@ -831,8 +831,8 @@ std::string Parser::getCommand () const
 void Parser::findPattern ()
 {
   context.debug ("Parser::findPattern");
-  bool action = false;
 
+  std::vector <Tree*> prune;
   std::vector <Tree*> nodes;
   collect (nodes);
   std::vector <Tree*>::iterator i;
@@ -845,8 +845,8 @@ void Parser::findPattern ()
         pattern.length () > 0)
     {
       (*i)->unTag ("?");
-      (*i)->removeAllBranches ();
       (*i)->tag ("PATTERN");
+      prune.push_back (*i);
 
       Tree* branch = (*i)->addBranch (new Tree ("argPat"));
       branch->attribute ("raw", "description");
@@ -858,11 +858,14 @@ void Parser::findPattern ()
       branch = (*i)->addBranch (new Tree ("argPat"));
       branch->attribute ("raw", pattern);
       branch->tag ("STRING");
-      action = true;
     }
   }
 
-  if (action)
+  // Prune branches outside the loop.
+  for (i = prune.begin (); i != prune.end (); ++i)
+    (*i)->removeAllBranches ();
+
+  if (prune.size ())
     context.debug (_tree->dump ());
 }
 
