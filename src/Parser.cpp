@@ -874,8 +874,8 @@ void Parser::findPattern ()
 void Parser::findSubstitution ()
 {
   context.debug ("Parser::findSubstitution");
-  bool action = false;
 
+  std::vector <Tree*> prune;
   std::vector <Tree*> nodes;
   collect (nodes);
   std::vector <Tree*>::iterator i;
@@ -898,17 +898,20 @@ void Parser::findSubstitution ()
           !Directory (raw).exists ())
       {
         (*i)->unTag ("?");
-        (*i)->removeAllBranches ();
         (*i)->tag ("SUBSTITUTION");
         (*i)->attribute ("from", from);
         (*i)->attribute ("to", to);
         (*i)->attribute ("global", global ? 1 : 0);
-        action = true;
+        prune.push_back (*i);
       }
     }
   }
 
-  if (action)
+  // Prune branches outside the loop.
+  for (i = prune.begin (); i != prune.end (); ++i)
+    (*i)->removeAllBranches ();
+
+  if (prune.size ())
     context.debug (_tree->dump ());
 }
 
