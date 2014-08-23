@@ -1616,7 +1616,6 @@ void Parser::findModifications ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("MODIFICATION");
-//      (*i)->removeAllBranches ();
       prune.push_back (*i);
     }
   }
@@ -1633,12 +1632,12 @@ void Parser::findModifications ()
 void Parser::findStrayModifications ()
 {
   context.debug ("Parser::findStrayModifications");
-  bool action = false;
 
   std::string command = getCommand ();
   if (command == "add" ||
       command == "log")
   {
+    std::vector <Tree*> prune;
     std::vector <Tree*> nodes;
     collect (nodes, collectAll);
     std::vector <Tree*>::iterator i;
@@ -1648,14 +1647,17 @@ void Parser::findStrayModifications ()
       {
         (*i)->unTag ("FILTER");
         (*i)->tag ("MODIFICATION");
-        (*i)->removeAllBranches ();
-        action = true;
+        prune.push_back (*i);
       }
     }
-  }
 
-  if (action)
-    context.debug (_tree->dump ());
+    // Prune branches outside the loop.
+    for (i = prune.begin (); i != prune.end (); ++i)
+      (*i)->removeAllBranches ();
+
+    if (prune.size ())
+      context.debug (_tree->dump ());
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
