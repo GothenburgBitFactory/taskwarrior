@@ -32,7 +32,7 @@ New configuration options in taskwarrior 2.4.0
   - New themes: dark-default-16.theme, dark-gray-blue-256.theme
   - The 'allow.empty.filter' setting can be set to 'no' to disallow the
     potentially dangerous combination of write commands and empty filters.
-  - New truncated+count column style for the description field which as the 
+  - New truncated_count column style for the description field which as the
     name says is a combination of the existing truncated and count styles.
 
 Newly deprecated features in taskwarrior 2.4.0
