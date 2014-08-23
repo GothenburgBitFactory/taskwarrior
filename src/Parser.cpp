@@ -480,8 +480,6 @@ void Parser::findCommand ()
 // rc.<name>[:=]<value>
 void Parser::findOverrides ()
 {
-  context.debug ("Parse::findOverrides");
-
   std::vector <Tree*> nodes;
   collect (nodes);
   std::vector <Tree*>::iterator i;
@@ -509,8 +507,6 @@ void Parser::findOverrides ()
       }
     }
   }
-
-  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -573,8 +569,6 @@ void Parser::getDataLocation (Path& data)
 // leaving only the plain args.
 void Parser::applyOverrides ()
 {
-  context.debug ("Parser::applyOverrides");
-
   std::vector <Tree*> nodes;
   collect (nodes, collectAll);
   std::vector <Tree*>::iterator i;
