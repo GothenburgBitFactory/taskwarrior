@@ -1583,9 +1583,9 @@ void Parser::findFilter ()
 void Parser::findModifications ()
 {
   context.debug ("Parser::findModifications");
-  bool action = false;
   bool after_writecmd = false;
 
+  std::vector <Tree*> prune;
   std::vector <Tree*> nodes;
   collect (nodes, collectAll);
   std::vector <Tree*>::iterator i;
@@ -1604,12 +1604,16 @@ void Parser::findModifications ()
     {
       (*i)->unTag ("?");
       (*i)->tag ("MODIFICATION");
-      (*i)->removeAllBranches ();
-      action = true;
+//      (*i)->removeAllBranches ();
+      prune.push_back (*i);
     }
   }
 
-  if (action)
+  // Prune branches outside the loop.
+  for (i = prune.begin (); i != prune.end (); ++i)
+    (*i)->removeAllBranches ();
+
+  if (prune.size ())
     context.debug (_tree->dump ());
 }
 
