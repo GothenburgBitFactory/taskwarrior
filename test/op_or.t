@@ -33,8 +33,12 @@ use Test::More tests => 16;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'op.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -42,37 +46,37 @@ if (open my $fh, '>', 'op.rc')
 }
 
 # Setup: Add a task
-qx{../src/task rc:op.rc add one   project:A priority:H 2>&1};
-qx{../src/task rc:op.rc add two   project:A            2>&1};
-qx{../src/task rc:op.rc add three           priority:H 2>&1};
-qx{../src/task rc:op.rc add four                       2>&1};
+qx{../src/task rc:$rc add one   project:A priority:H 2>&1};
+qx{../src/task rc:$rc add two   project:A            2>&1};
+qx{../src/task rc:$rc add three           priority:H 2>&1};
+qx{../src/task rc:$rc add four                       2>&1};
 
 # Test the 'or' operator.
-my $output = qx{../src/task rc:op.rc ls project:A or priority:H 2>&1};
-like   ($output, qr/one/,   'ls project:A or priority:H --> one');
-like   ($output, qr/two/,   'ls project:A or priority:H --> two');
-like   ($output, qr/three/, 'ls project:A or priority:H --> three');
-unlike ($output, qr/four/,  'ls project:A or priority:H --> !four');
+my $output = qx{../src/task rc:$rc ls project:A or priority:H 2>&1};
+like   ($output, qr/one/,   "$ut: ls project:A or priority:H --> one");
+like   ($output, qr/two/,   "$ut: ls project:A or priority:H --> two");
+like   ($output, qr/three/, "$ut: ls project:A or priority:H --> three");
+unlike ($output, qr/four/,  "$ut: ls project:A or priority:H --> !four");
 
-$output = qx{../src/task rc:op.rc ls project:A or priority=H 2>&1};
-like   ($output, qr/one/,   'ls project:A or priority=H --> one');
-like   ($output, qr/two/,   'ls project:A or priority=H --> two');
-like   ($output, qr/three/, 'ls project:A or priority=H --> three');
-unlike ($output, qr/four/,  'ls project:A or priority=H --> !four');
+$output = qx{../src/task rc:$rc ls project:A or priority=H 2>&1};
+like   ($output, qr/one/,   "$ut: ls project:A or priority=H --> one");
+like   ($output, qr/two/,   "$ut: ls project:A or priority=H --> two");
+like   ($output, qr/three/, "$ut: ls project:A or priority=H --> three");
+unlike ($output, qr/four/,  "$ut: ls project:A or priority=H --> !four");
 
-$output = qx{../src/task rc:op.rc ls project=A or priority:H 2>&1};
-like   ($output, qr/one/,   'ls project=A or priority:H --> one');
-like   ($output, qr/two/,   'ls project=A or priority:H --> two');
-like   ($output, qr/three/, 'ls project=A or priority:H --> three');
-unlike ($output, qr/four/,  'ls project=A or priority:H --> !four');
+$output = qx{../src/task rc:$rc ls project=A or priority:H 2>&1};
+like   ($output, qr/one/,   "$ut: ls project=A or priority:H --> one");
+like   ($output, qr/two/,   "$ut: ls project=A or priority:H --> two");
+like   ($output, qr/three/, "$ut: ls project=A or priority:H --> three");
+unlike ($output, qr/four/,  "$ut: ls project=A or priority:H --> !four");
 
-$output = qx{../src/task rc:op.rc ls project=A or priority=H 2>&1};
-like   ($output, qr/one/,   'ls project=A or priority=H --> one');
-like   ($output, qr/two/,   'ls project=A or priority=H --> two');
-like   ($output, qr/three/, 'ls project=A or priority=H --> three');
-unlike ($output, qr/four/,  'ls project=A or priority=H --> !four');
+$output = qx{../src/task rc:$rc ls project=A or priority=H 2>&1};
+like   ($output, qr/one/,   "$ut: ls project=A or priority=H --> one");
+like   ($output, qr/two/,   "$ut: ls project=A or priority=H --> two");
+like   ($output, qr/three/, "$ut: ls project=A or priority=H --> three");
+unlike ($output, qr/four/,  "$ut: ls project=A or priority=H --> !four");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data op.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
