@@ -444,9 +444,8 @@ void Parser::resolveAliases ()
 // autoCompletes to a valid command/report.
 void Parser::findCommand ()
 {
-  context.debug ("Parse::findCommand");
   std::vector <Tree*> nodes;
-  collect (nodes);
+  collect (nodes, collectAll);
 
   // There can be only one.
   // Scan for an existing CMD tag, to short-circuit scanning for another.
@@ -474,8 +473,6 @@ void Parser::findCommand ()
       return;
     }
   }
-
-  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
