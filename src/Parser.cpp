@@ -1061,187 +1061,194 @@ void Parser::findAttribute ()
 void Parser::findAttributeModifier ()
 {
   context.debug ("Parser::findAttributeModifier");
-  bool action = false;
+  bool action = true;
 
-  std::vector <Tree*> nodes;
-  collect (nodes);
-  std::vector <Tree*>::iterator i;
-  for (i = nodes.begin (); i != nodes.end (); ++i)
+  do
   {
-    std::string raw = (*i)->attribute ("raw");
-    Nibbler n (raw);
+    action = false;
 
-    std::string name;
-    if (n.getUntil (".", name))
+    std::vector <Tree*> nodes;
+    collect (nodes);
+    std::vector <Tree*>::iterator i;
+    for (i = nodes.begin (); i != nodes.end (); ++i)
     {
-      std::string canonical;
-      if (canonicalize (canonical, "attribute", name) ||
-          canonicalize (canonical, "uda",       name))
+      std::string raw = (*i)->attribute ("raw");
+      Nibbler n (raw);
+
+      std::string name;
+      if (n.getUntil (".", name))
       {
-        if (n.skip ('.'))
+        std::string canonical;
+        if (canonicalize (canonical, "attribute", name) ||
+            canonicalize (canonical, "uda",       name))
         {
-          std::string sense = "+";
-          if (n.skip ('~'))
-            sense = "-";
-
-          std::string modifier;
-          n.getUntilOneOf (":=", modifier);
-
-          if (n.skip (':') ||
-              n.skip ('='))
+          if (n.skip ('.'))
           {
-            std::string value;
-            if (n.getQuoted   ('"', value)  ||
-                n.getQuoted   ('\'', value) ||
-                n.getUntilEOS (value)       ||
-                n.depleted ())
+            std::string sense = "+";
+            if (n.skip ('~'))
+              sense = "-";
+
+            std::string modifier;
+            n.getUntilOneOf (":=", modifier);
+
+            if (n.skip (':') ||
+                n.skip ('='))
             {
-              if (value == "")
-                value = "''";
-
-              (*i)->unTag ("?");
-              (*i)->removeAllBranches ();
-              (*i)->tag ("ATTMOD");
-              (*i)->attribute ("name", canonical);
-              (*i)->attribute ("raw", value);
-              (*i)->attribute ("modifier", modifier);
-              (*i)->attribute ("sense", sense);
-              action = true;
-
-              Tree* branch = (*i)->addBranch (new Tree ("argAttmod"));
-              branch->attribute ("raw", canonical);
-
-              if (modifier == "before" || modifier == "under" || modifier == "below")
+              std::string value;
+              if (n.getQuoted   ('"', value)  ||
+                  n.getQuoted   ('\'', value) ||
+                  n.getUntilEOS (value)       ||
+                  n.depleted ())
               {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "<");
-                branch->tag ("OP");
+                if (value == "")
+                  value = "''";
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", value);
-              }
-              else if (modifier == "after" || modifier == "over" || modifier == "above")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", ">");
-                branch->tag ("OP");
+                (*i)->unTag ("?");
+                (*i)->removeAllBranches ();
+                (*i)->tag ("ATTMOD");
+                (*i)->attribute ("name", canonical);
+                (*i)->attribute ("raw", value);
+                (*i)->attribute ("modifier", modifier);
+                (*i)->attribute ("sense", sense);
+                action = true;
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", value);
-              }
-              else if (modifier == "none")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "==");
-                branch->tag ("OP");
+                Tree* branch = (*i)->addBranch (new Tree ("argAttmod"));
+                branch->attribute ("raw", canonical);
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "''");
-              }
-              else if (modifier == "any")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "!=");
-                branch->tag ("OP");
+                if (modifier == "before" || modifier == "under" || modifier == "below")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "<");
+                  branch->tag ("OP");
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "''");
-              }
-              else if (modifier == "is" || modifier == "equals")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "==");
-                branch->tag ("OP");
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", value);
+                }
+                else if (modifier == "after" || modifier == "over" || modifier == "above")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", ">");
+                  branch->tag ("OP");
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", value);
-              }
-              else if (modifier == "isnt" || modifier == "not")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "!=");
-                branch->tag ("OP");
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", value);
+                }
+                else if (modifier == "none")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "==");
+                  branch->tag ("OP");
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", value);
-              }
-              else if (modifier == "has" || modifier == "contains")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "~");
-                branch->tag ("OP");
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "''");
+                }
+                else if (modifier == "any")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "!=");
+                  branch->tag ("OP");
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", value);
-              }
-              else if (modifier == "hasnt")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "!~");
-                branch->tag ("OP");
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "''");
+                }
+                else if (modifier == "is" || modifier == "equals")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "==");
+                  branch->tag ("OP");
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", value);
-              }
-              else if (modifier == "startswith" || modifier == "left")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "~");
-                branch->tag ("OP");
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", value);
+                }
+                else if (modifier == "isnt" || modifier == "not")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "!=");
+                  branch->tag ("OP");
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "'^" + value + "'");
-              }
-              else if (modifier == "endswith" || modifier == "right")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "~");
-                branch->tag ("OP");
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", value);
+                }
+                else if (modifier == "has" || modifier == "contains")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "~");
+                  branch->tag ("OP");
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "'" + value + "$'");
-              }
-              else if (modifier == "word")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "~");
-                branch->tag ("OP");
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", value);
+                }
+                else if (modifier == "hasnt")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "!~");
+                  branch->tag ("OP");
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", value);
+                }
+                else if (modifier == "startswith" || modifier == "left")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "~");
+                  branch->tag ("OP");
+
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "'^" + value + "'");
+                }
+                else if (modifier == "endswith" || modifier == "right")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "~");
+                  branch->tag ("OP");
+
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "'" + value + "$'");
+                }
+                else if (modifier == "word")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "~");
+                  branch->tag ("OP");
+
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
 
 #if defined (DARWIN)
-                branch->attribute ("raw", value);
+                  branch->attribute ("raw", value);
 #elif defined (SOLARIS)
-                branch->attribute ("raw", "'\\<" + value + "\\>'");
+                  branch->attribute ("raw", "'\\<" + value + "\\>'");
 #else
-                branch->attribute ("raw", "'\\b" + value + "\\b'");
+                  branch->attribute ("raw", "'\\b" + value + "\\b'");
 #endif
-              }
-              else if (modifier == "noword")
-              {
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
-                branch->attribute ("raw", "!~");
-                branch->tag ("OP");
+                }
+                else if (modifier == "noword")
+                {
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch->attribute ("raw", "!~");
+                  branch->tag ("OP");
 
-                branch = (*i)->addBranch (new Tree ("argAttmod"));
+                  branch = (*i)->addBranch (new Tree ("argAttmod"));
 
 #if defined (DARWIN)
-                branch->attribute ("raw", value);
+                  branch->attribute ("raw", value);
 #elif defined (SOLARIS)
-                branch->attribute ("raw", "'\\<" + value + "\\>'");
+                  branch->attribute ("raw", "'\\<" + value + "\\>'");
 #else
-                branch->attribute ("raw", "'\\b" + value + "\\b'");
+                  branch->attribute ("raw", "'\\b" + value + "\\b'");
 #endif
-              }
-              else
-                throw format (STRING_PARSER_UNKNOWN_ATTMOD, modifier);
+                }
+                else
+                  throw format (STRING_PARSER_UNKNOWN_ATTMOD, modifier);
 
-              std::map <std::string, Column*>::const_iterator col;
-              col = context.columns.find (canonical);
-              if (col != context.columns.end () &&
-                  col->second->modifiable ())
-              {
-                (*i)->tag ("MODIFIABLE");
+                std::map <std::string, Column*>::const_iterator col;
+                col = context.columns.find (canonical);
+                if (col != context.columns.end () &&
+                    col->second->modifiable ())
+                {
+                  (*i)->tag ("MODIFIABLE");
+                }
+
+                break;
               }
             }
           }
@@ -1249,9 +1256,9 @@ void Parser::findAttributeModifier ()
       }
     }
   }
+  while (action);
 
-  if (action)
-    context.debug (_tree->dump ());
+  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
