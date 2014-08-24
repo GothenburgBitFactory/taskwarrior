@@ -33,8 +33,12 @@ use Test::More tests => 4;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', '440.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -46,21 +50,21 @@ if (open my $fh, '>', '440.rc')
 
 # Create a task and attempt simultaneous subst and appends, both permutations
 
-qx{../src/task rc:440.rc add Foo 2>&1};
-qx{../src/task rc:440.rc add Foo 2>&1};
+qx{../src/task rc:$rc add Foo 2>&1};
+qx{../src/task rc:$rc add Foo 2>&1};
 
-qx{../src/task rc:440.rc 1 append /Foo/Bar/ Appendtext 2>&1};
-qx{../src/task rc:440.rc 2 append Appendtext /Foo/Bar/ 2>&1};
+qx{../src/task rc:$rc 1 append /Foo/Bar/ Appendtext 2>&1};
+qx{../src/task rc:$rc 2 append Appendtext /Foo/Bar/ 2>&1};
 
-my $output1 = qx{../src/task rc:440.rc 1 ls 2>&1};
-my $output2 = qx{../src/task rc:440.rc 2 ls 2>&1};
+my $output1 = qx{../src/task rc:$rc 1 ls 2>&1};
+my $output2 = qx{../src/task rc:$rc 2 ls 2>&1};
 
-unlike ($output1, qr/Foo/, 'simultaneous subst and append - subst');
-like ($output1, qr/\w+ Appendtext/, 'simultaneous subst and append - append');
+unlike ($output1, qr/Foo/,            "$ut: simultaneous subst and append - subst");
+like   ($output1, qr/\w+ Appendtext/, "$ut: simultaneous subst and append - append");
 
-unlike ($output2, qr/Foo/, 'simultaneous append and subst - subst');
-like ($output2, qr/\w+ Appendtext/, 'simultaneous append and subst - append');
+unlike ($output2, qr/Foo/,            "$ut: simultaneous append and subst - subst");
+like   ($output2, qr/\w+ Appendtext/, "$ut: simultaneous append and subst - append");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data 440.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
