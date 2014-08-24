@@ -355,7 +355,6 @@ void Parser::findBinary ()
 // all args in the raw state.
 void Parser::findTerminator ()
 {
-  context.debug ("Parser::findTerminator");
   bool found = false;
   std::vector <Tree*> prune;
 
@@ -387,9 +386,6 @@ void Parser::findTerminator ()
   // Prune branches outside the loop.
   for (i = prune.begin (); i != prune.end (); ++i)
     (*i)->removeAllBranches ();
-
-  if (prune.size ())
-    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
