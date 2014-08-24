@@ -435,14 +435,15 @@ void Parser::findCommand ()
   std::vector <Tree*> nodes;
   collect (nodes, collectAll);
 
-  // There can be only one.
   // Scan for an existing CMD tag, to short-circuit scanning for another.
+  // There can be only one.
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
     if ((*i)->hasTag ("CMD"))
       return;
 
-  // No CMD tag found, now look for a command.
+  // If no CMD tag was found, rescan all nodes and canonicalize args, looking
+  // for the first match.
   std::string command;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
