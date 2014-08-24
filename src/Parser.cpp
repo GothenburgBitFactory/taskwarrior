@@ -809,7 +809,7 @@ void Parser::findPattern ()
 
   std::vector <Tree*> prune;
   std::vector <Tree*> nodes;
-  collect (nodes);
+  collect (nodes, collectAll);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
