@@ -33,21 +33,25 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'exit.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
 }
 
-qx{../src/task rc:exit.rc add foo 2>&1};
-my $exit_good = system ('../src/task rc:exit.rc ls /foo/ >/dev/null 2>&1') >> 8;
-is ($exit_good, 0, 'task returns 0 on success');
-my $exit_bad  = system ('../src/task rc:exit.rc ls /bar/ >/dev/null 2>&1') >> 8;
-isnt ($exit_bad, 0, 'task returns non-zero on failure');
+qx{../src/task rc:$rc add foo 2>&1};
+my $exit_good = system ("../src/task rc:$rc ls /foo/ >/dev/null 2>&1") >> 8;
+is ($exit_good, 0, "$ut: task returns 0 on success");
+my $exit_bad  = system ("../src/task rc:$rc ls /bar/ >/dev/null 2>&1") >> 8;
+isnt ($exit_bad, 0, "$ut: task returns non-zero on failure");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data  exit.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
