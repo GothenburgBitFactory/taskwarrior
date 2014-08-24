@@ -33,8 +33,12 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -42,17 +46,17 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Setup: Add a recurring task then remove the due date.
-qx{../src/task rc:bug.rc add foo recur:yearly due:eoy 2>&1};
-qx{../src/task rc:bug.rc list 2>&1};
-qx{../src/task rc:bug.rc 2 modify due: 2>&1};
+qx{../src/task rc:$rc add foo recur:yearly due:eoy 2>&1};
+qx{../src/task rc:$rc list 2>&1};
+qx{../src/task rc:$rc 2 modify due: 2>&1};
 
 # Result: Somehow the due date is incremented and wraps around to 12/31/1969,
 # then keeps going back to today.
-my $output = qx{../src/task rc:bug.rc list 2>&1};
-like ($output, qr/^1 task$/ms, 'task foo shown');
-unlike ($output, qr/1969/ms, 'Should not display 12/31/1969');
+my $output = qx{../src/task rc:$rc list 2>&1};
+like   ($output, qr/^1 task$/ms, "$ut: task foo shown");
+unlike ($output, qr/1969/ms,     "$ut: Should not display 12/31/1969");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
