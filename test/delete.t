@@ -33,8 +33,12 @@ use Test::More tests => 12;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'delete.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -42,44 +46,44 @@ if (open my $fh, '>', 'delete.rc')
 }
 
 # Add a task, delete it, undelete it.
-my $output = qx{../src/task rc:delete.rc add one 2>&1; ../src/task rc:delete.rc info 1 2>&1};
-ok (-r 'pending.data', 'pending.data created');
-like ($output, qr/Status\s+Pending\n/, 'Pending');
+my $output = qx{../src/task rc:$rc add one 2>&1; ../src/task rc:$rc info 1 2>&1};
+ok (-r 'pending.data',                 "$ut: pending.data created");
+like ($output, qr/Status\s+Pending\n/, "$ut: Pending");
 
-$output = qx{../src/task rc:delete.rc 1 delete 2>&1; ../src/task rc:delete.rc info 1 2>&1};
-like ($output, qr/Status\s+Deleted\n/, 'Deleted');
+$output = qx{../src/task rc:$rc 1 delete 2>&1; ../src/task rc:$rc info 1 2>&1};
+like ($output, qr/Status\s+Deleted\n/, "$ut: Deleted");
 
-$output = qx{../src/task rc:delete.rc undo 2>&1; ../src/task rc:delete.rc info 1 2>&1};
-like ($output, qr/Status\s+Pending\n/, 'Pending');
+$output = qx{../src/task rc:$rc undo 2>&1; ../src/task rc:$rc info 1 2>&1};
+like ($output, qr/Status\s+Pending\n/, "$ut: Pending");
 
-$output = qx{../src/task rc:delete.rc 1 delete 2>&1; ../src/task rc:delete.rc list 2>&1 >/dev/null};
-like ($output, qr/No matches./, 'No matches');
-ok (-r 'completed.data', 'completed.data created');
+$output = qx{../src/task rc:$rc 1 delete 2>&1; ../src/task rc:$rc list 2>&1 >/dev/null};
+like ($output, qr/No matches./,        "$ut: No matches");
+ok (-r 'completed.data',               "$ut: completed.data created");
 
-$output = qx{../src/task rc:delete.rc info 1 2>&1 >/dev/null};
-like ($output, qr/No matches\./, 'No matches');  # 10
+$output = qx{../src/task rc:$rc info 1 2>&1 >/dev/null};
+like ($output, qr/No matches\./,       "$ut: No matches");  # 10
 
 # Add a task, delete it, and modify on the fly.
-qx{../src/task rc:delete.rc add one two 2>&1};
-$output = qx{../src/task rc:delete.rc list 2>&1};
-like ($output, qr/one two/, 'Second task added');
+qx{../src/task rc:$rc add one two 2>&1};
+$output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/one two/,            "$ut: Second task added");
 
-qx{../src/task rc:delete.rc 1 delete foo pri:H 2>&1};
-$output = qx{../src/task rc:delete.rc 1 info 2>&1};
-like ($output, qr/foo/, 'Deletion annotation successful');
-like ($output, qr/H/,   'Deletion modification successful');
+qx{../src/task rc:$rc 1 delete foo pri:H 2>&1};
+$output = qx{../src/task rc:$rc 1 info 2>&1};
+like ($output, qr/foo/,                "$ut: Deletion annotation successful");
+like ($output, qr/H/,                  "$ut: Deletion modification successful");
 
 # Add a task, complete it, then delete it.
-qx{../src/task rc:delete.rc add three 2>&1};
-$output = qx{../src/task rc:delete.rc 2 info 2>&1};
-like ($output, qr/three/, 'added and verified new task');
+qx{../src/task rc:$rc add three 2>&1};
+$output = qx{../src/task rc:$rc 2 info 2>&1};
+like ($output, qr/three/,              "$ut: added and verified new task");
 my ($uuid) = $output =~ /UUID\s+(\S+)/;
-qx{../src/task rc:delete.rc 2 done 2>&1};
-qx{../src/task rc:delete.rc $uuid delete 2>&1};
-$output = qx{../src/task rc:delete.rc $uuid info 2>&1};
-like ($output, qr/Deleted/, 'task added, completed, then deleted');
+qx{../src/task rc:$rc 2 done 2>&1};
+qx{../src/task rc:$rc $uuid delete 2>&1};
+$output = qx{../src/task rc:$rc $uuid info 2>&1};
+like ($output, qr/Deleted/,            "$ut: task added, completed, then deleted");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data delete.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
