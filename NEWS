@@ -39,6 +39,8 @@ Newly deprecated features in taskwarrior 2.4.0
 
   - The alias '_query' is deprecated.
   - The 'shadow file' feature is deprecated.
+  - The 'total active time' information is removed from the 'info' report.
+    This was being misinterpreted as support for time tracking.
 
 Removed features in 2.4.0
 
