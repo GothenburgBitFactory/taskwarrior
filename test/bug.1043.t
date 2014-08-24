@@ -33,8 +33,12 @@ use Test::More tests => 5;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   print $fh "alias.samplealias=long\n";
@@ -43,17 +47,17 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug - aliases should be listed by '_aliases' and not by '_commands' or '_zshcommands'
-my $output = qx{../src/task rc:bug.rc _aliases 2>&1};
-like ($output, qr/samplealias/, 'aliases are listed in _aliases');
+my $output = qx{../src/task rc:$rc _aliases 2>&1};
+like ($output, qr/samplealias/,    "$ut: aliases are listed in _aliases");
 
-$output = qx{../src/task rc:bug.rc _commands 2>&1};
-like ($output, qr/^information$/m, 'info is listed in _commands');
-unlike ($output, qr/samplealias/, 'aliases are not listed in _commands');
+$output = qx{../src/task rc:$rc _commands 2>&1};
+like ($output, qr/^information$/m, "$ut: info is listed in _commands");
+unlike ($output, qr/samplealias/,  "$ut: aliases are not listed in _commands");
 
-$output = qx{../src/task rc:bug.rc _zshcommands 2>&1};
-like ($output, qr/^information:/m, 'info is listed in _zshcommands');
-unlike ($output, qr/samplealias/, 'aliases are not listed in _zshcommands');
+$output = qx{../src/task rc:$rc _zshcommands 2>&1};
+like ($output, qr/^information:/m, "$ut: info is listed in _zshcommands");
+unlike ($output, qr/samplealias/,  "$ut: aliases are not listed in _zshcommands");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
