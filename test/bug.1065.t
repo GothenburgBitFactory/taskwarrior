@@ -33,8 +33,12 @@ use Test::More tests => 12;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   print $fh "alias.xyzzyx=status:waiting\n";
@@ -44,31 +48,31 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 1065 - CmdShow should not display the differ message if no non-default in matched elements.
-my $output = qx{../src/task rc:bug.rc show alias 2>&1};
-ok ($? == 0, 'Exit status check');
-like ($output, qr/Some of your .taskrc variables differ from the default values./, 'Message is shown when non-default matches in pattern');
+my $output = qx{../src/task rc:$rc show alias 2>&1};
+ok ($? == 0, "$ut: Exit status check");
+like ($output, qr/Some of your .taskrc variables differ from the default values./, "$ut: Message is shown when non-default matches in pattern");
 
-$output = qx{../src/task rc:bug.rc show 2>&1};
-ok ($? == 0, 'Exit status check');
-like ($output, qr/Some of your .taskrc variables differ from the default values./, 'Message is shown when non-default matches in all');
+$output = qx{../src/task rc:$rc show 2>&1};
+ok ($? == 0, "$ut: Exit status check");
+like ($output, qr/Some of your .taskrc variables differ from the default values./, "$ut: Message is shown when non-default matches in all");
 
-$output = qx{../src/task rc:bug.rc show report.overdue 2>&1};
-ok ($? == 0, 'Exit status check');
-unlike ($output, qr/Some of your .taskrc variables differ/, 'Message is not shown when no non-default matches in pattern');
+$output = qx{../src/task rc:$rc show report.overdue 2>&1};
+ok ($? == 0, "$ut: Exit status check");
+unlike ($output, qr/Some of your .taskrc variables differ/, "$ut: Message is not shown when no non-default matches in pattern");
 
 # Bug 1065 - CmdShow should not display the unrecognized message if no non-default in matched elements.
-$output = qx{../src/task rc:bug.rc show notrecog 2>&1};
-ok ($? == 0, 'Exit status check');
-like ($output, qr/Your .taskrc file contains these unrecognized variables:/, 'Message is shown when unrecognized matches in pattern');
+$output = qx{../src/task rc:$rc show notrecog 2>&1};
+ok ($? == 0, "$ut: Exit status check");
+like ($output, qr/Your .taskrc file contains these unrecognized variables:/, "$ut: Message is shown when unrecognized matches in pattern");
 
-$output = qx{../src/task rc:bug.rc show 2>&1};
-ok ($? == 0, 'Exit status check');
-like ($output, qr/Your .taskrc file contains these unrecognized variables:/, 'Message is shown when unrecognized matches in all');
+$output = qx{../src/task rc:$rc show 2>&1};
+ok ($? == 0, "$ut: Exit status check");
+like ($output, qr/Your .taskrc file contains these unrecognized variables:/, "$ut: Message is shown when unrecognized matches in all");
 
-$output = qx{../src/task rc:bug.rc show report.overdue 2>&1};
-ok ($? == 0, 'Exit status check');
-unlike ($output, qr/unrecognized variables/, 'Message is not shown when no non-default matches in pattern');
+$output = qx{../src/task rc:$rc show report.overdue 2>&1};
+ok ($? == 0, "$ut: Exit status check");
+unlike ($output, qr/unrecognized variables/, "$ut: Message is not shown when no non-default matches in pattern");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
