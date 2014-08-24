@@ -499,7 +499,7 @@ void Parser::findOverrides ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Look for RC and return file as a File.
+// Look for RC and initialize a File object.
 void Parser::getOverrides (
   std::string& home,
   File& rc)
@@ -529,7 +529,7 @@ void Parser::getOverrides (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Look for CONFIG data.location and return value as a Path.
+// Look for CONFIG data.location and initialize a Path object.
 void Parser::getDataLocation (Path& data)
 {
   std::string location = context.config.get ("data.location");
@@ -548,14 +548,13 @@ void Parser::getDataLocation (Path& data)
       context.header (format (STRING_PARSER_ALTERNATE_DATA, (std::string) data));
     }
 
-    // Keep looping, because if there are multiple overrides, we want the last
-    // one to dominate.
+    // Keep looping, because if there are multiple overrides, the last one
+    // should dominate.
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Takes all CONFIG name/value pairs and overrides configuration.
-// leaving only the plain args.
+// Takes all CONFIG name/value pairs and override the configuration.
 void Parser::applyOverrides ()
 {
   std::vector <Tree*> nodes;
