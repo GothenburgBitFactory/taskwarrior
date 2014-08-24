@@ -951,19 +951,23 @@ void Parser::findTag ()
 // <name>:['"][<value>]['"]
 void Parser::findAttribute ()
 {
-//  context.debug ("Parser::findAttribute");
   bool action = true;
 
   do
   {
     action = false;
-
     std::vector <Tree*> nodes;
-    collect (nodes);
+    collect (nodes, collectAll);
     std::vector <Tree*>::iterator i;
     for (i = nodes.begin (); i != nodes.end (); ++i)
     {
       std::string raw = (*i)->attribute ("raw");
+      if ((*i)->hasTag ("--"))
+        break;
+
+      if (! (*i)->hasTag ("?"))
+        continue;
+
       Nibbler n (raw);
 
       // Look for a valid attribute name.
@@ -985,6 +989,7 @@ void Parser::findAttribute ()
             std::string canonical;
             if (canonicalize (canonical, "uda", name))
             {
+              (*i)->unTag ("?");
               (*i)->tag ("UDA");
               (*i)->tag ("MODIFIABLE");
               action = true;
@@ -1041,8 +1046,6 @@ void Parser::findAttribute ()
     }
   }
   while (action);
-
-//  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
