@@ -805,43 +805,43 @@ std::string Parser::getCommand () const
 // /pattern/ --> description ~ pattern
 void Parser::findPattern ()
 {
-//  context.debug ("Parser::findPattern");
-
-  std::vector <Tree*> prune;
-  std::vector <Tree*> nodes;
-  collect (nodes, collectAll);
-  std::vector <Tree*>::iterator i;
-  for (i = nodes.begin (); i != nodes.end (); ++i)
+  bool action = true;
+  do
   {
-    Nibbler n ((*i)->attribute ("raw"));
-    std::string pattern;
-    if (n.getQuoted ('/', pattern) &&
-        n.depleted () &&
-        pattern.length () > 0)
+    action = false;
+
+    std::vector <Tree*> prune;
+    std::vector <Tree*> nodes;
+    collect (nodes);
+    std::vector <Tree*>::iterator i;
+    for (i = nodes.begin (); i != nodes.end (); ++i)
     {
-      (*i)->unTag ("?");
-      (*i)->tag ("PATTERN");
-      prune.push_back (*i);
+      Nibbler n ((*i)->attribute ("raw"));
+      std::string pattern;
+      if (n.getQuoted ('/', pattern) &&
+          n.depleted () &&
+          pattern.length () > 0)
+      {
+        (*i)->unTag ("?");
+        (*i)->tag ("PATTERN");
+        (*i)->removeAllBranches ();
 
-      Tree* branch = (*i)->addBranch (new Tree ("argPat"));
-      branch->attribute ("raw", "description");
+        Tree* branch = (*i)->addBranch (new Tree ("argPat"));
+        branch->attribute ("raw", "description");
 
-      branch = (*i)->addBranch (new Tree ("argPat"));
-      branch->attribute ("raw", "~");
-      branch->tag ("OP");
+        branch = (*i)->addBranch (new Tree ("argPat"));
+        branch->attribute ("raw", "~");
+        branch->tag ("OP");
 
-      branch = (*i)->addBranch (new Tree ("argPat"));
-      branch->attribute ("raw", pattern);
-      branch->tag ("STRING");
+        branch = (*i)->addBranch (new Tree ("argPat"));
+        branch->attribute ("raw", pattern);
+        branch->tag ("STRING");
+        action = true;
+        break;
+      }
     }
   }
-
-  // Prune branches outside the loop.
-  for (i = prune.begin (); i != prune.end (); ++i)
-    (*i)->removeAllBranches ();
-
-//  if (prune.size ())
-//    context.debug (_tree->dump ());
+  while (action);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
