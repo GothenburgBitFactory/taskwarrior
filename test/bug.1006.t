@@ -33,8 +33,12 @@ use Test::More tests => 4;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "verbose=affected\n";
@@ -47,20 +51,20 @@ if (open my $fh, '>', 'bug.rc')
 # are tokenized.
 
 # Check that the completion is inactive in task descriptions
-qx{../src/task rc:bug.rc add des 2>&1};
-qx{../src/task rc:bug.rc 1 annotate des 2>&1};
-my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
-like ($output, qr/^Description\s+des$/ms, 'Attribute not completed in description');
-unlike ($output, qr/description/ms, 'Attribute not completed in description');
+qx{../src/task rc:$rc add des 2>&1};
+qx{../src/task rc:$rc 1 annotate des 2>&1};
+my $output = qx{../src/task rc:$rc 1 info 2>&1};
+like ($output, qr/^Description\s+des$/ms, "$ut: Attribute not completed in description");
+unlike ($output, qr/description/ms,       "$ut: Attribute not completed in description");
 
 # Check that the completion works when needed
-$output = qx{../src/task rc:bug.rc des:des 2>&1};
-like ($output, qr/^1 task$/ms, 'Task found using its description');
+$output = qx{../src/task rc:$rc des:des 2>&1};
+like ($output, qr/^1 task$/ms,            "$ut: Task found using its description");
 
-qx{../src/task rc:bug.rc add entrée interdite 2>&1};
-$output = qx{../src/task rc:bug.rc list interdite 2>&1};
-like ($output, qr/entrée interdite/, "'entrée' left intact");
+qx{../src/task rc:$rc add entrée interdite 2>&1};
+$output = qx{../src/task rc:$rc list interdite 2>&1};
+like ($output, qr/entrée interdite/,      "$ut: 'entrée' left intact");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
