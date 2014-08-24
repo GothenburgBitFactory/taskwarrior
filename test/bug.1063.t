@@ -28,12 +28,12 @@
 use strict;
 use warnings;
 use Test::More tests => 6;
-use File::Basename;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
 my $ut = basename ($0);
 my $rc = $ut . '.rc';
 
