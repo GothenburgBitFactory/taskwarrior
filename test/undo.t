@@ -48,15 +48,15 @@ if (open my $fh, '>', $rc)
 # Test the add/done/undo commands.
 my $output = qx{../src/task rc:$rc add one 2>&1; ../src/task rc:$rc info 1 2>&1};
 ok (-r 'pending.data', "$ut: pending.data created");
-ok (! -r 'completed.data', "$ut: completed.data not created");
+ok (-r 'completed.data', "$ut: completed.data created");
 like ($output, qr/Status\s+Pending\n/, "$ut: Pending");
 
 $output = qx{../src/task rc:$rc 1 done 2>&1; ../src/task rc:$rc info 1 2>&1};
-ok (! -r 'completed.data', "$ut: completed.data created");
+ok (-r 'completed.data', "$ut: completed.data exists");
 like ($output, qr/Status\s+Completed\n/, "$ut: Completed");
 
 $output = qx{../src/task rc:$rc undo 2>&1; ../src/task rc:$rc info 1 2>&1};
-ok (-r 'completed.data', "$ut: completed.data created");
+ok (-r 'completed.data', "$ut: completed.data exists");
 like ($output, qr/Status\s+Pending\n/, "$ut: Pending");
 
 $output = qx{../src/task rc:$rc 1 done 2>&1; ../src/task rc:$rc list 2>&1 >/dev/null};
@@ -82,7 +82,7 @@ if (open my $fh, '<', 'backlog.data')
   my @lines = <$fh>;
   close $fh;
 
-  diag ($_) for @lines;
+  #diag ($_) for @lines;
   is (scalar (@lines), 4, "$ut: 4 lines of backlog");
   ok (index ($lines[0], '"status":"pending"')   != -1, "$ut: [0] pending");
   ok (index ($lines[1], '"status":"completed"') != -1, "$ut: [1] completed");
