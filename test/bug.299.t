@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -42,18 +46,18 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Setup: Add three unique tasks with different project names.
-qx{../src/task rc:bug.rc add project:one foo 2>&1};
-qx{../src/task rc:bug.rc add project:two bar 2>&1};
-qx{../src/task rc:bug.rc add project:three baz 2>&1};
+qx{../src/task rc:$rc add project:one foo 2>&1};
+qx{../src/task rc:$rc add project:two bar 2>&1};
+qx{../src/task rc:$rc add project:three baz 2>&1};
 
 # Result: Run list but exclude two of the three projects names using
 # project.hasnt:<name>
-my $output = qx{../src/task rc:bug.rc list project.isnt:one project.isnt:two 2>&1};
-unlike ($output, qr/one.*foo/ms, 'project.isnt:one project.isnt:two - no foo');
-unlike ($output, qr/two.*bar/ms, 'project.isnt:one project.isnt:two - no bar');
-like   ($output, qr/three.*baz/ms, 'project.isnt:one project.isnt:two - yes baz');
+my $output = qx{../src/task rc:$rc list project.isnt:one project.isnt:two 2>&1};
+unlike ($output, qr/one.*foo/ms,   "$ut: project.isnt:one project.isnt:two - no foo");
+unlike ($output, qr/two.*bar/ms,   "$ut: project.isnt:one project.isnt:two - no bar");
+like   ($output, qr/three.*baz/ms, "$ut: project.isnt:one project.isnt:two - yes baz");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
