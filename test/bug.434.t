@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -44,11 +48,11 @@ if (open my $fh, '>', 'bug.rc')
 # Bug #434: Task shouldn't prevent users from marking as done tasks with status:waiting
 
 # Add a task that is waiting
-qx{../src/task rc:bug.rc add One wait:tomorrow 2>&1};
-my $output = qx{../src/task rc:bug.rc 1 done 2>&1};
-like ($output, qr/Completed 1 task\./, 'Waiting task marked completed');
+qx{../src/task rc:$rc add One wait:tomorrow 2>&1};
+my $output = qx{../src/task rc:$rc 1 done 2>&1};
+like ($output, qr/Completed 1 task\./, "$ut: Waiting task marked completed");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
