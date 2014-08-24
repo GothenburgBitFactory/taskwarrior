@@ -273,7 +273,9 @@ void Tree::dumpNode (Tree* t, int depth, std::stringstream& output)
   for (int i = 0; i < depth; ++i)
     output << "  ";
 
-  output << std::hex << t << " "
+  output
+         // Useful for debugging tree node new/delete errors.
+         // << std::hex << t << " "
          << "\033[1m" << t->_name << "\033[0m";
 
   // Dump attributes.
