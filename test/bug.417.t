@@ -33,8 +33,12 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "defaultwidth=100\n";
@@ -42,17 +46,17 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug #417: Sorting by countdown_compact not working
-qx{../src/task rc:bug.rc add due:yesterday before 2>&1};
-qx{../src/task rc:bug.rc add due:today     now 2>&1};
-qx{../src/task rc:bug.rc add due:tomorrow  after 2>&1};
+qx{../src/task rc:$rc add due:yesterday before 2>&1};
+qx{../src/task rc:$rc add due:today     now 2>&1};
+qx{../src/task rc:$rc add due:tomorrow  after 2>&1};
 
-my $output = qx{../src/task rc:bug.rc rc.report.long.sort:due+ long 2>&1};
-like ($output, qr/before.+now.+after/ms, 'rc.report.long.sort:due+ works');
+my $output = qx{../src/task rc:$rc rc.report.long.sort:due+ long 2>&1};
+like ($output, qr/before.+now.+after/ms, "$ut: rc.report.long.sort:due+ works");
 
-$output = qx{../src/task rc:bug.rc rc.report.long.sort:due- long 2>&1};
-like ($output, qr/after.+now.+before/ms, 'rc.report.long.sort:due- works');
+$output = qx{../src/task rc:$rc rc.report.long.sort:due- long 2>&1};
+like ($output, qr/after.+now.+before/ms, "$ut: rc.report.long.sort:due- works");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
