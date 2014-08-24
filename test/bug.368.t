@@ -33,8 +33,12 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "dateformat.info=m/d/Y\n",
@@ -43,14 +47,14 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Setup: Add a recurring task, generate an instance, then add a project.
-qx{../src/task rc:bug.rc add foo due:today recur:daily until:eom 2>&1};
-my $output = qx{../src/task rc:bug.rc info 1 2>&1};
+qx{../src/task rc:$rc add foo due:today recur:daily until:eom 2>&1};
+my $output = qx{../src/task rc:$rc info 1 2>&1};
 
 # Result: Make sure the 'until' date is rendered as a date, not an epoch.
-unlike ($output, qr/Until\s+\d{10}/,          'until is not shown as an epoch');
-  like ($output, qr/Until\s+\d+\/\d+\/\d{4}/, 'until is shown as a date');
+unlike ($output, qr/Until\s+\d{10}/,          "$ut: until is not shown as an epoch");
+  like ($output, qr/Until\s+\d+\/\d+\/\d{4}/, "$ut: until is shown as a date");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
