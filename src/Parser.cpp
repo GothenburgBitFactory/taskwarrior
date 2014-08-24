@@ -367,7 +367,7 @@ void Parser::findTerminator ()
   std::vector <Tree*> prune;
 
   std::vector <Tree*> nodes;
-  collect (nodes, collectTerminated);
+  collect (nodes, collectAll);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
