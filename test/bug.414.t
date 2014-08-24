@@ -33,8 +33,12 @@ use Test::More tests => 5;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
@@ -43,23 +47,23 @@ if (open my $fh, '>', 'bug.rc')
 # Bug #414: Tags filtering not working with unicode characters
 
 # Add a task with a UTF-8 tag.
-qx{../src/task rc:bug.rc add one +osobní 2>&1};
-my $output = qx{../src/task rc:bug.rc ls +osobní 2>&1};
-like ($output, qr/one/, 'found UTF8 tag osobní');
+qx{../src/task rc:$rc add one +osobní 2>&1};
+my $output = qx{../src/task rc:$rc ls +osobní 2>&1};
+like ($output, qr/one/,   "$ut: found UTF8 tag osobní");
 
-$output = qx{../src/task rc:bug.rc ls -osobní 2>&1};
-like ($output, qr/^No matches.$/m, 'not found UTF8 tag osobní');
+$output = qx{../src/task rc:$rc ls -osobní 2>&1};
+like ($output, qr/^No matches.$/m, "$ut: not found UTF8 tag osobní");
 
 # And a different one
-qx{../src/task rc:bug.rc add two +föo 2>&1};
-$output = qx{../src/task rc:bug.rc ls +föo 2>&1};
-like ($output, qr/two/, 'found UTF8 tag föo');
+qx{../src/task rc:$rc add two +föo 2>&1};
+$output = qx{../src/task rc:$rc ls +föo 2>&1};
+like ($output, qr/two/,   "$ut: found UTF8 tag föo");
 
-$output = qx{../src/task rc:bug.rc ls -föo 2>&1};
-like ($output, qr/one/, 'found UTF8 tag osobní');
-unlike ($output, qr/two/, 'not found UTF8 tag föo');
+$output = qx{../src/task rc:$rc ls -föo 2>&1};
+like   ($output, qr/one/, "$ut: found UTF8 tag osobní");
+unlike ($output, qr/two/, "$ut: not found UTF8 tag föo");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
