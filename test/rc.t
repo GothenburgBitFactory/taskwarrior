@@ -34,59 +34,63 @@ use Test::More tests => 13;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file, using rc.name:value.
-unlink 'foo.rc';
+unlink $rc;
 rmtree 'foo', 0, 0;
-qx{echo 'y'|../src/task rc:foo.rc rc.data.location:foo _version 2>&1};
+qx{echo 'y'|../src/task rc:$rc rc.data.location:foo _version 2>&1};
 
-ok (-r 'foo.rc', 'Created default rc file');
-ok (-d 'foo', 'Created default data directory');
+ok (-r $rc, "$ut: Created default rc file");
+ok (-d 'foo', "$ut: Created default data directory");
 
 rmtree 'foo', 0, 0;
-ok (!-r 'foo', 'Removed foo');
+ok (!-r 'foo', "$ut: Removed foo");
 
-unlink 'foo.rc';
-ok (!-r 'foo.rc', 'Removed foo.rc');
+unlink $rc;
+ok (!-r $rc, "$ut: Removed $rc");
 
 # Do it all again, with rc.name=value.
-qx{echo 'y'|../src/task rc:foo.rc rc.data.location:foo _version 2>&1};
+qx{echo 'y'|../src/task rc:$rc rc.data.location:foo _version 2>&1};
 
-ok (-r 'foo.rc', 'Created default rc file');
-ok (-d 'foo', 'Created default data directory');
+ok (-r $rc, "$ut: Created default rc file");
+ok (-d 'foo', "$ut: Created default data directory");
 
 # Add a setting.
-qx{echo 'y'|../src/task rc:foo.rc config must_be_unique old 2>&1};
-my $output = qx{../src/task rc:foo.rc show 2>&1};
-like ($output, qr/^must_be_unique\s+old/ms, 'config setting a new value');
+qx{echo 'y'|../src/task rc:$rc config must_be_unique old 2>&1};
+my $output = qx{../src/task rc:$rc show 2>&1};
+like ($output, qr/^must_be_unique\s+old/ms, "$ut: config setting a new value");
 
-qx{echo 'y'|../src/task rc:foo.rc config must_be_unique new 2>&1};
-$output = qx{../src/task rc:foo.rc show 2>&1};
-like ($output, qr/^must_be_unique\s+new/ms, 'config overwriting an existing value');
+qx{echo 'y'|../src/task rc:$rc config must_be_unique new 2>&1};
+$output = qx{../src/task rc:$rc show 2>&1};
+like ($output, qr/^must_be_unique\s+new/ms, "$ut: config overwriting an existing value");
 
-qx{echo 'y'|../src/task rc:foo.rc config must_be_unique '' 2>&1};
-$output = qx{../src/task rc:foo.rc show 2>&1};
-like ($output, qr/^must_be_unique/ms, 'config setting a blank value');
+qx{echo 'y'|../src/task rc:$rc config must_be_unique '' 2>&1};
+$output = qx{../src/task rc:$rc show 2>&1};
+like ($output, qr/^must_be_unique/ms, "$ut: config setting a blank value");
 
-qx{echo 'y'|../src/task rc:foo.rc config must_be_unique 2>&1};
-$output = qx{../src/task rc:foo.rc show 2>&1};
-unlike ($output, qr/^must_be_unique/ms, 'config removing a value');
+qx{echo 'y'|../src/task rc:$rc config must_be_unique 2>&1};
+$output = qx{../src/task rc:$rc show 2>&1};
+unlike ($output, qr/^must_be_unique/ms, "$ut: config removing a value");
 
 # 'report.:b' is designed to get past the config command checks for recognized
 # names.
-qx{echo 'y'|../src/task rc:foo.rc config -- report.:b +c 2>&1};
-$output = qx{../src/task rc:foo.rc show 2>&1};
-like ($output, qr/^report\.:b\s+\+c/ms, 'the -- operator is working');
+qx{echo 'y'|../src/task rc:$rc config -- report.:b +c 2>&1};
+$output = qx{../src/task rc:$rc show 2>&1};
+like ($output, qr/^report\.:b\s+\+c/ms, "$ut: the -- operator is working");
 
 # Make sure the value is accepted if it has multiple words.
-qx{echo 'y'|../src/task rc:foo.rc config must_be_unique 'one two three' 2>&1};
-$output = qx{../src/task rc:foo.rc show 2>&1};
-like ($output, qr/^must_be_unique\s+one two three/ms, 'config allows multi-word quoted values');
+qx{echo 'y'|../src/task rc:$rc config must_be_unique 'one two three' 2>&1};
+$output = qx{../src/task rc:$rc show 2>&1};
+like ($output, qr/^must_be_unique\s+one two three/ms, "$ut: config allows multi-word quoted values");
 
-qx{echo 'y'|../src/task rc:foo.rc config must_be_unique one two three 2>&1};
-$output = qx{../src/task rc:foo.rc show 2>&1};
-like ($output, qr/^must_be_unique\s+one two three/ms, 'config allows multi-word unquoted values');
+qx{echo 'y'|../src/task rc:$rc config must_be_unique one two three 2>&1};
+$output = qx{../src/task rc:$rc show 2>&1};
+like ($output, qr/^must_be_unique\s+one two three/ms, "$ut: config allows multi-word unquoted values");
 
 rmtree 'foo', 0, 0;
-unlink 'foo.rc';
+unlink $rc;
 exit 0;
 
