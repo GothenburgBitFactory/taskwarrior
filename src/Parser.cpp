@@ -391,7 +391,7 @@ void Parser::findTerminator ()
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::resolveAliases ()
 {
-  context.debug ("Parse::resolveAliases");
+//  context.debug ("Parse::resolveAliases");
 
   bool something;
   int safety_valve = safetyValveDefault;
@@ -423,8 +423,8 @@ void Parser::resolveAliases ()
   if (safety_valve <= 0)
     context.debug (format (STRING_PARSER_ALIAS_NEST, safetyValveDefault));
 
-  if (something)
-    context.debug (_tree->dump ());
+//  if (something)
+//    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -805,7 +805,7 @@ std::string Parser::getCommand () const
 // /pattern/ --> description ~ pattern
 void Parser::findPattern ()
 {
-  context.debug ("Parser::findPattern");
+//  context.debug ("Parser::findPattern");
 
   std::vector <Tree*> prune;
   std::vector <Tree*> nodes;
@@ -840,15 +840,15 @@ void Parser::findPattern ()
   for (i = prune.begin (); i != prune.end (); ++i)
     (*i)->removeAllBranches ();
 
-  if (prune.size ())
-    context.debug (_tree->dump ());
+//  if (prune.size ())
+//    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // /from/to/[g]
 void Parser::findSubstitution ()
 {
-  context.debug ("Parser::findSubstitution");
+//  context.debug ("Parser::findSubstitution");
 
   std::vector <Tree*> prune;
   std::vector <Tree*> nodes;
@@ -886,15 +886,15 @@ void Parser::findSubstitution ()
   for (i = prune.begin (); i != prune.end (); ++i)
     (*i)->removeAllBranches ();
 
-  if (prune.size ())
-    context.debug (_tree->dump ());
+//  if (prune.size ())
+//    context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // +tag
 void Parser::findTag ()
 {
-  context.debug ("Parser::findTag");
+//  context.debug ("Parser::findTag");
   bool action = true;
 
   do
@@ -944,14 +944,14 @@ void Parser::findTag ()
   }
   while (action);
 
-  context.debug (_tree->dump ());
+//  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>:['"][<value>]['"]
 void Parser::findAttribute ()
 {
-  context.debug ("Parser::findAttribute");
+//  context.debug ("Parser::findAttribute");
   bool action = true;
 
   do
@@ -1042,14 +1042,14 @@ void Parser::findAttribute ()
   }
   while (action);
 
-  context.debug (_tree->dump ());
+//  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>.<mod>[:=]['"]<value>['"]
 void Parser::findAttributeModifier ()
 {
-  context.debug ("Parser::findAttributeModifier");
+//  context.debug ("Parser::findAttributeModifier");
   bool action = true;
 
   do
@@ -1247,7 +1247,7 @@ void Parser::findAttributeModifier ()
   }
   while (action);
 
-  context.debug (_tree->dump ());
+//  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1261,7 +1261,7 @@ void Parser::findAttributeModifier ()
 //
 void Parser::findIdSequence ()
 {
-  context.debug ("Parser::findIdSequence");
+//  context.debug ("Parser::findIdSequence");
   bool action = true;
 
   do
@@ -1427,13 +1427,13 @@ void Parser::findIdSequence ()
   }
   while (action);
 
-  context.debug (_tree->dump ());
+//   context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findUUIDList ()
 {
-  context.debug ("Parser::findUUIDList");
+//   context.debug ("Parser::findUUIDList");
   bool action = true;
 
   do
@@ -1512,13 +1512,13 @@ void Parser::findUUIDList ()
   }
   while (action);
 
-  context.debug (_tree->dump ());
+//   context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findOperator ()
 {
-  context.debug ("Parser::findOperator");
+//   context.debug ("Parser::findOperator");
 
   // Find the category.
   std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
@@ -1548,8 +1548,8 @@ void Parser::findOperator ()
   for (i = prune.begin (); i != prune.end (); ++i)
     (*i)->removeAllBranches ();
 
-  if (prune.size ())
-    context.debug (_tree->dump ());
+//   if (prune.size ())
+//     context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1557,7 +1557,7 @@ void Parser::findOperator ()
 // Anything after READCMD, but not BINARY, RC or CONFIG --> FILTER
 void Parser::findFilter ()
 {
-  context.debug ("Parser::findFilter");
+//   context.debug ("Parser::findFilter");
   bool action = false;
 
   bool before_cmd = true;
@@ -1601,14 +1601,14 @@ void Parser::findFilter ()
     }
   }
 
-  if (action)
-    context.debug (_tree->dump ());
+//   if (action)
+//     context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findModifications ()
 {
-  context.debug ("Parser::findModifications");
+//   context.debug ("Parser::findModifications");
   bool after_writecmd = false;
 
   std::vector <Tree*> prune;
@@ -1638,14 +1638,14 @@ void Parser::findModifications ()
   for (i = prune.begin (); i != prune.end (); ++i)
     (*i)->removeAllBranches ();
 
-  if (prune.size ())
-    context.debug (_tree->dump ());
+//   if (prune.size ())
+//     context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findStrayModifications ()
 {
-  context.debug ("Parser::findStrayModifications");
+//   context.debug ("Parser::findStrayModifications");
 
   std::string command = getCommand ();
   if (command == "add" ||
@@ -1669,8 +1669,8 @@ void Parser::findStrayModifications ()
     for (i = prune.begin (); i != prune.end (); ++i)
       (*i)->removeAllBranches ();
 
-    if (prune.size ())
-      context.debug (_tree->dump ());
+//     if (prune.size ())
+//       context.debug (_tree->dump ());
   }
 }
 
@@ -1679,7 +1679,7 @@ void Parser::findStrayModifications ()
 // are not otherwise recognized, and potentially promote them to patterns.
 void Parser::findPlainArgs ()
 {
-  context.debug ("Parser::findPlainArgs");
+//   context.debug ("Parser::findPlainArgs");
   bool action = false;
 
   std::vector <Tree*> nodes;
@@ -1724,14 +1724,14 @@ void Parser::findPlainArgs ()
     }
   }
 
-  if (action)
-    context.debug (_tree->dump ());
+//   if (action)
+//     context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Parser::findMissingOperators ()
 {
-  context.debug ("Parser::findMissingOperators");
+//   context.debug ("Parser::findMissingOperators");
   bool action = false;
 
   while (insertOr ())
@@ -1740,8 +1740,8 @@ void Parser::findMissingOperators ()
   while (insertAnd ())
     action = true;
 
-  if (action)
-    context.debug (_tree->dump ());
+//   if (action)
+//     context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
