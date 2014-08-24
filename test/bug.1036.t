@@ -33,8 +33,12 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "dateformat=m/d/Y\n";
@@ -45,15 +49,15 @@ if (open my $fh, '>', 'bug.rc')
 # tasks.
 
 # Check that until attribute may be modified
-qx{../src/task rc:bug.rc add test 2>&1};
-my $output = qx{../src/task rc:bug.rc 1 mod until:1/1/2020 2>&1};
-like ($output, qr/^Modifying task 1 'test'.$/ms, '"until" attribute added');
+qx{../src/task rc:$rc add test 2>&1};
+my $output = qx{../src/task rc:$rc 1 mod until:1/1/2020 2>&1};
+like ($output, qr/^Modifying task 1 'test'.$/ms, "$ut: 'until' attribute added");
 
-qx{../src/task rc:bug.rc add test until:1/1/2020 2>&1};
-$output = qx{../src/task rc:bug.rc 1 mod /test/Test/ 2>&1};
-like ($output, qr/^Modifying task 1 'Test'.$/ms, 'Task with "until" attribute modified');
+qx{../src/task rc:$rc add test until:1/1/2020 2>&1};
+$output = qx{../src/task rc:$rc 1 mod /test/Test/ 2>&1};
+like ($output, qr/^Modifying task 1 'Test'.$/ms, "$ut: Task with 'until' attribute modified");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data $rc);
 exit 0;
 
