@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', '425.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -47,12 +51,12 @@ if (open my $fh, '>', '425.rc')
 # Create a task and attempt to revise the description to include the word 'in'
 # (this breaks in 1.9.3 and earlier)
 
-qx{../src/task rc:425.rc add Foo 2>&1};
-qx{../src/task rc:425.rc 1 modify Bar in Bar 2>&1};
+qx{../src/task rc:$rc add Foo 2>&1};
+qx{../src/task rc:$rc 1 modify Bar in Bar 2>&1};
 
-my $output = qx{../src/task rc:425.rc 1 ls 2>&1};
-like ($output, qr/1\s+Bar in Bar/m, 'parser - interpret \'in\' in description');
+my $output = qx{../src/task rc:$rc 1 ls 2>&1};
+like ($output, qr/1\s+Bar in Bar/m, "$ut: parser - interpret \'in\' in description");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data 425.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
