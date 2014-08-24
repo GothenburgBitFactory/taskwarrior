@@ -33,8 +33,12 @@ use Test::More tests => 9;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "default.project=home\n";
@@ -42,31 +46,31 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 1023: rc.default.project gets applied during modify, and should not.
-qx{../src/task rc:bug.rc add foo project:garden 2>&1};
-qx{../src/task rc:bug.rc add bar 2>&1};
-qx{../src/task rc:bug.rc add baz rc.default.project= 2>&1};
+qx{../src/task rc:$rc add foo project:garden 2>&1};
+qx{../src/task rc:$rc add bar 2>&1};
+qx{../src/task rc:$rc add baz rc.default.project= 2>&1};
 
-my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
-like ($output, qr/Project\s*garden/, "default project not applied when otherwise specified.");
+my $output = qx{../src/task rc:$rc 1 info 2>&1};
+like ($output, qr/Project\s*garden/,     "$ut: default project not applied when otherwise specified.");
 
-$output = qx{../src/task rc:bug.rc 2 info 2>&1};
-like ($output, qr/Project\s*home/, "default project applied when blank.");
+$output = qx{../src/task rc:$rc 2 info 2>&1};
+like ($output, qr/Project\s*home/,       "$ut: default project applied when blank.");
 
-$output = qx{../src/task rc:bug.rc 3 info 2>&1};
-like ($output, qr/^Description\s+baz$/m, "task baz shown.");
-unlike ($output, qr/Project\s*home/, "no project applied when default project is blank.");
+$output = qx{../src/task rc:$rc 3 info 2>&1};
+like ($output, qr/^Description\s+baz$/m, "$ut: task baz shown.");
+unlike ($output, qr/Project\s*home/,     "$ut: no project applied when default project is blank.");
 
-$output = qx{../src/task rc:bug.rc 3 modify +tag 2>&1};
-like ($output, qr/^Modified 1 task.$/m, "task modified.");
-unlike ($output, qr/Project\s*home/, "default project not applied on modification.");
+$output = qx{../src/task rc:$rc 3 modify +tag 2>&1};
+like ($output, qr/^Modified 1 task.$/m,  "$ut: task modified.");
+unlike ($output, qr/Project\s*home/,     "$ut: default project not applied on modification.");
 
-qx{../src/task rc:bug.rc 1 modify project: 2>&1};
-$output = qx{../src/task rc:bug.rc 1 info 2>&1};
-like ($output, qr/^Description\s+foo$/m, "task foo shown.");
-unlike ($output, qr/Project\s*garden/, "default project not re-applied on attribute removal.");
-unlike ($output, qr/Project\s*home/, "default project not re-applied on attribute removal.");
+qx{../src/task rc:$rc 1 modify project: 2>&1};
+$output = qx{../src/task rc:$rc 1 info 2>&1};
+like ($output, qr/^Description\s+foo$/m, "$ut: task foo shown.");
+unlike ($output, qr/Project\s*garden/,   "$ut: default project not re-applied on attribute removal.");
+unlike ($output, qr/Project\s*home/,     "$ut: default project not re-applied on attribute removal.");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
