@@ -329,8 +329,7 @@ void Parser::collect (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Locate and tag the binary. It is assumed that the binary is the first
-// argument, which is valid.
+// Locate and tag the binary. Simply look at the top-level, first branch.
 void Parser::findBinary ()
 {
   if (_tree->_branches.size () >= 1)
@@ -340,20 +339,14 @@ void Parser::findBinary ()
     std::string binary = _tree->_branches[0]->attribute ("raw");
     std::string::size_type slash = binary.rfind ('/');
     if (slash != std::string::npos)
-    {
       binary = binary.substr (slash + 1);
-    }
 
     _tree->_branches[0]->attribute ("basename", binary);
 
     if (binary == "cal" || binary == "calendar")
-    {
       _tree->_branches[0]->tag ("CALENDAR");
-    }
     else if (binary == "task" || binary == "tw" || binary == "t")
-    {
       _tree->_branches[0]->tag ("TW");
-    }
   }
 }
 
