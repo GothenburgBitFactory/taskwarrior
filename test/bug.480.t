@@ -33,8 +33,12 @@ use Test::More tests => 38;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "defaultwidth=0\n",
@@ -44,89 +48,89 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug #480 - putting a '@' character in tags breaks filters.
-qx{../src/task rc:bug.rc add one +ordinary 2>&1};
-qx{../src/task rc:bug.rc add two +\@strange 2>&1};
+qx{../src/task rc:$rc add one +ordinary 2>&1};
+qx{../src/task rc:$rc add two +\@strange 2>&1};
 
-my $output = qx{../src/task rc:bug.rc long +ordinary 2>&1};
-like ($output,   qr/one/, '+ordinary explicitly included'); # 2
-unlike ($output, qr/two/, '@strange implicitly excluded');
+my $output = qx{../src/task rc:$rc long +ordinary 2>&1};
+like ($output,   qr/one/, "$ut: +ordinary explicitly included");
+unlike ($output, qr/two/, "$ut: \@strange implicitly excluded");
 
-$output = qx{../src/task rc:bug.rc long -ordinary 2>&1};
-unlike ($output, qr/one/, '-ordinary explicitly excluded');
-like ($output,   qr/two/, '@strange implicitly included'); # 5
+$output = qx{../src/task rc:$rc long -ordinary 2>&1};
+unlike ($output, qr/one/, "$ut: -ordinary explicitly excluded");
+like ($output,   qr/two/, "$ut: \@strange implicitly included");
 
-$output = qx{../src/task rc:bug.rc long +\@strange 2>&1};
-unlike ($output, qr/one/, '-ordinary implicitly excluded');
-like ($output,   qr/two/, '@strange explicitly included'); # 7
+$output = qx{../src/task rc:$rc long +\@strange 2>&1};
+unlike ($output, qr/one/, "$ut: -ordinary implicitly excluded");
+like ($output,   qr/two/, "$ut: \@strange explicitly included");
 
-$output = qx{../src/task rc:bug.rc long -\@strange 2>&1};
-like ($output,   qr/one/, '+ordinary implicitly included'); # 8
-unlike ($output, qr/two/, '@strange explicitly excluded');
+$output = qx{../src/task rc:$rc long -\@strange 2>&1};
+like ($output,   qr/one/, "$ut: +ordinary implicitly included");
+unlike ($output, qr/two/, "$ut: \@strange explicitly excluded");
 
 # Bug #XXX - '-t1 -t2' doesn't seem to work, when @ characters are involved.
 unlink 'pending.data';
-qx{../src/task rc:bug.rc add one   +t1 2>&1};
-qx{../src/task rc:bug.rc add two   +t2 2>&1};
-qx{../src/task rc:bug.rc add three +t3 2>&1};
+qx{../src/task rc:$rc add one   +t1 2>&1};
+qx{../src/task rc:$rc add two   +t2 2>&1};
+qx{../src/task rc:$rc add three +t3 2>&1};
 
-$output = qx{../src/task rc:bug.rc list -t1 2>&1};
-unlike ($output, qr/one/,   'Single: no t1');
-like   ($output, qr/two/,   'Single: yes t2');
-like   ($output, qr/three/, 'Single: yes t3');
+$output = qx{../src/task rc:$rc list -t1 2>&1};
+unlike ($output, qr/one/,   "$ut: Single: no t1");
+like   ($output, qr/two/,   "$ut: Single: yes t2");
+like   ($output, qr/three/, "$ut: Single: yes t3");
 
-$output = qx{../src/task rc:bug.rc list -t1 -t2 2>&1};
-unlike ($output, qr/one/,   'Double: no t1');
-unlike ($output, qr/two/,   'Double: no t2');
-like   ($output, qr/three/, 'Double: yes t3');
+$output = qx{../src/task rc:$rc list -t1 -t2 2>&1};
+unlike ($output, qr/one/,   "$ut: Double: no t1");
+unlike ($output, qr/two/,   "$ut: Double: no t2");
+like   ($output, qr/three/, "$ut: Double: yes t3");
 
-$output = qx{../src/task rc:bug.rc list -t1 -t2 -t3 2>&1};
-like ($output, qr/^No matches.$/m, 'No task listed');
-unlike ($output, qr/one/,   'Triple: no t1');
-unlike ($output, qr/two/,   'Triple: no t2');
-unlike ($output, qr/three/, 'Triple: no t3');
+$output = qx{../src/task rc:$rc list -t1 -t2 -t3 2>&1};
+like ($output, qr/^No matches.$/m, "$ut: No task listed");
+unlike ($output, qr/one/,   "$ut: Triple: no t1");
+unlike ($output, qr/two/,   "$ut: Triple: no t2");
+unlike ($output, qr/three/, "$ut: Triple: no t3");
 
 # Once again, with @ characters.
-qx{../src/task rc:bug.rc 1 modify +\@1 2>&1};
-qx{../src/task rc:bug.rc 2 modify +\@2 2>&1};
-qx{../src/task rc:bug.rc 3 modify +\@3 2>&1};
+qx{../src/task rc:$rc 1 modify +\@1 2>&1};
+qx{../src/task rc:$rc 2 modify +\@2 2>&1};
+qx{../src/task rc:$rc 3 modify +\@3 2>&1};
 
-$output = qx{../src/task rc:bug.rc list -\@1 2>&1};
-unlike ($output, qr/one/,   'Single: no @1');    # 19
-like   ($output, qr/two/,   'Single: yes @2');
-like   ($output, qr/three/, 'Single: yes @3');
+$output = qx{../src/task rc:$rc list -\@1 2>&1};
+unlike ($output, qr/one/,   "$ut: Single: no \@1");
+like   ($output, qr/two/,   "$ut: Single: yes \@2");
+like   ($output, qr/three/, "$ut: Single: yes \@3");
 
-$output = qx{../src/task rc:bug.rc list -\@1 -\@2 2>&1};
-unlike ($output, qr/one/,   'Double: no @1');
-unlike ($output, qr/two/,   'Double: no @2');
-like   ($output, qr/three/, 'Double: yes @3');
+$output = qx{../src/task rc:$rc list -\@1 -\@2 2>&1};
+unlike ($output, qr/one/,   "$ut: Double: no \@1");
+unlike ($output, qr/two/,   "$ut: Double: no \@2");
+like   ($output, qr/three/, "$ut: Double: yes \@3");
 
-$output = qx{../src/task rc:bug.rc list -\@1 -\@2 -\@3 2>&1};
-like ($output, qr/^No matches.$/m, 'No task listed');
-unlike ($output, qr/one/,   'Triple: no @1');
-unlike ($output, qr/two/,   'Triple: no @2');
-unlike ($output, qr/three/, 'Triple: no @3');
+$output = qx{../src/task rc:$rc list -\@1 -\@2 -\@3 2>&1};
+like ($output, qr/^No matches.$/m, "$ut: No task listed");
+unlike ($output, qr/one/,   "$ut: Triple: no \@1");
+unlike ($output, qr/two/,   "$ut: Triple: no \@2");
+unlike ($output, qr/three/, "$ut: Triple: no \@3");
 
 # Once again, with @ characters and punctuation.
-qx{../src/task rc:bug.rc 1 modify +\@foo.1 2>&1};
-qx{../src/task rc:bug.rc 2 modify +\@foo.2 2>&1};
-qx{../src/task rc:bug.rc 3 modify +\@foo.3 2>&1};
+qx{../src/task rc:$rc 1 modify +\@foo.1 2>&1};
+qx{../src/task rc:$rc 2 modify +\@foo.2 2>&1};
+qx{../src/task rc:$rc 3 modify +\@foo.3 2>&1};
 
-$output = qx{../src/task rc:bug.rc list -\@foo.1 2>&1};
-unlike ($output, qr/one/,   'Single: no @foo.1');
-like   ($output, qr/two/,   'Single: yes @foo.2');
-like   ($output, qr/three/, 'Single: yes @foo.3');
+$output = qx{../src/task rc:$rc list -\@foo.1 2>&1};
+unlike ($output, qr/one/,   "$ut: Single: no \@foo.1");
+like   ($output, qr/two/,   "$ut: Single: yes \@foo.2");
+like   ($output, qr/three/, "$ut: Single: yes \@foo.3");
 
-$output = qx{../src/task rc:bug.rc list -\@foo.1 -\@foo.2 2>&1};
-unlike ($output, qr/one/,   'Double: no @foo.1');
-unlike ($output, qr/two/,   'Double: no @foo.2');
-like   ($output, qr/three/, 'Double: yes @foo.3');
+$output = qx{../src/task rc:$rc list -\@foo.1 -\@foo.2 2>&1};
+unlike ($output, qr/one/,   "$ut: Double: no \@foo.1");
+unlike ($output, qr/two/,   "$ut: Double: no \@foo.2");
+like   ($output, qr/three/, "$ut: Double: yes \@foo.3");
 
-$output = qx{../src/task rc:bug.rc list -\@foo.1 -\@foo.2 -\@foo.3 2>&1};
-like ($output, qr/^No matches.$/m, 'No task listed');
-unlike ($output, qr/one/,   'Triple: no @foo.1');
-unlike ($output, qr/two/,   'Triple: no @foo.2');
-unlike ($output, qr/three/, 'Triple: no @foo.3');
+$output = qx{../src/task rc:$rc list -\@foo.1 -\@foo.2 -\@foo.3 2>&1};
+like ($output, qr/^No matches.$/m, "$ut: No task listed");
+unlike ($output, qr/one/,   "$ut: Triple: no \@foo.1");
+unlike ($output, qr/two/,   "$ut: Triple: no \@foo.2");
+unlike ($output, qr/three/, "$ut: Triple: no \@foo.3");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
