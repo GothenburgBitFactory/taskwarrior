@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', '441.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -43,11 +47,11 @@ if (open my $fh, '>', '441.rc')
 }
 
 # Bug #441: A colon messes up text replacement with ///
-qx{../src/task rc:441.rc add one two three 2>&1};
-qx{../src/task rc:441.rc 1 modify /two/two:/ 2>&1};
-my $output = qx{../src/task rc:441.rc ls 2>&1};
-like ($output, qr/one two: three/ms, 'Substitution with colon worked');
+qx{../src/task rc:$rc add one two three 2>&1};
+qx{../src/task rc:$rc 1 modify /two/two:/ 2>&1};
+my $output = qx{../src/task rc:$rc ls 2>&1};
+like ($output, qr/one two: three/ms, "$ut: Substitution with colon worked");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data 441.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
