@@ -33,8 +33,12 @@ use Test::More tests => 8;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   print $fh "confirmation=no\n";
@@ -44,25 +48,25 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 703: /from/t/g fails to make all changes to annotations
 
 # Setup: Add a few tasks
-qx{../src/task rc:bug.rc add This is a test 2>&1};
-qx{../src/task rc:bug.rc 1 annotate Annotation one 2>&1};
-qx{../src/task rc:bug.rc 1 annotate Annotation two 2>&1};
-qx{../src/task rc:bug.rc 1 annotate Annotation three 2>&1};
+qx{../src/task rc:$rc add This is a test 2>&1};
+qx{../src/task rc:$rc 1 annotate Annotation one 2>&1};
+qx{../src/task rc:$rc 1 annotate Annotation two 2>&1};
+qx{../src/task rc:$rc 1 annotate Annotation three 2>&1};
 
-my $output = qx{../src/task rc:bug.rc long 2>&1};
-like ($output, qr/This is a test/,   'original description');
-like ($output, qr/Annotation one/,   'original annotation one');
-like ($output, qr/Annotation two/,   'original annotation two');
-like ($output, qr/Annotation three/, 'original annotation three');
+my $output = qx{../src/task rc:$rc long 2>&1};
+like ($output, qr/This is a test/,   "$ut: original description");
+like ($output, qr/Annotation one/,   "$ut: original annotation one");
+like ($output, qr/Annotation two/,   "$ut: original annotation two");
+like ($output, qr/Annotation three/, "$ut: original annotation three");
 
-qx{../src/task rc:bug.rc 1 modify /i/I/g 2>&1};
-$output = qx{../src/task rc:bug.rc long 2>&1};
-like ($output, qr/ThIs Is a test/,   'new description');
-like ($output, qr/AnnotatIon one/,   'new annotation one');
-like ($output, qr/AnnotatIon two/,   'new annotation two');
-like ($output, qr/AnnotatIon three/, 'new annotation three');
+qx{../src/task rc:$rc 1 modify /i/I/g 2>&1};
+$output = qx{../src/task rc:$rc long 2>&1};
+like ($output, qr/ThIs Is a test/,   "$ut: new description");
+like ($output, qr/AnnotatIon one/,   "$ut: new annotation one");
+like ($output, qr/AnnotatIon two/,   "$ut: new annotation two");
+like ($output, qr/AnnotatIon three/, "$ut: new annotation three");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
