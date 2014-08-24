@@ -1432,73 +1432,85 @@ void Parser::findIdSequence ()
 void Parser::findUUIDList ()
 {
   context.debug ("Parser::findUUIDList");
-  bool action = false;
+  bool action = true;
 
-  std::vector <Tree*> nodes;
-  collect (nodes);
-  std::vector <Tree*>::iterator i;
-  for (i = nodes.begin (); i != nodes.end (); ++i)
+  do
   {
-    std::string raw = (*i)->attribute ("raw");
-    Nibbler n (raw);
+    action = false;
 
-    std::vector <std::string> sequence;
-    std::string uuid;
-    if (n.getUUID (uuid) ||
-        n.getPartialUUID (uuid))
+    std::vector <Tree*> nodes;
+    collect (nodes, collectAll);
+    std::vector <Tree*>::iterator i;
+    for (i = nodes.begin (); i != nodes.end (); ++i)
     {
-      sequence.push_back (uuid);
+      std::string raw = (*i)->attribute ("raw");
 
-      while (n.skip (','))
+      if (raw == "--")
+        break;
+
+      if (! (*i)->hasTag ("?"))
+        continue;
+
+      Nibbler n (raw);
+      std::vector <std::string> uuidList;
+      std::string uuid;
+      if (n.getUUID (uuid) ||
+          n.getPartialUUID (uuid))
       {
-        if (!n.getUUID (uuid) &&
-            !n.getPartialUUID (uuid))
-          throw std::string (STRING_PARSER_UUID_AFTER_COMMA);
+        uuidList.push_back (uuid);
 
-        sequence.push_back (uuid);
-      }
-
-      if (n.depleted ())
-      {
-        (*i)->unTag ("?");
-        (*i)->removeAllBranches ();
-        (*i)->tag ("UUID");
-
-        Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
-        branch->attribute ("raw", "(");
-        branch->tag ("OP");
-
-        std::vector <std::string>::iterator u;
-        for (u = sequence.begin (); u != sequence.end (); ++u)
+        while (n.skip (','))
         {
-          if (u != sequence.begin ())
+          if (!n.getUUID (uuid) &&
+              !n.getPartialUUID (uuid))
+            throw std::string (STRING_PARSER_UUID_AFTER_COMMA);
+
+          uuidList.push_back (uuid);
+        }
+
+        if (n.depleted ())
+        {
+          (*i)->unTag ("?");
+          (*i)->removeAllBranches ();
+          (*i)->tag ("UUID");
+
+          Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
+          branch->attribute ("raw", "(");
+          branch->tag ("OP");
+
+          std::vector <std::string>::iterator u;
+          for (u = uuidList.begin (); u != uuidList.end (); ++u)
           {
+            if (u != uuidList.begin ())
+            {
+              branch = (*i)->addBranch (new Tree ("argSeq"));
+              branch->attribute ("raw", "or");
+              branch->tag ("OP");
+            }
+
             branch = (*i)->addBranch (new Tree ("argSeq"));
-            branch->attribute ("raw", "or");
+            branch->attribute ("raw", "uuid");
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "=");
             branch->tag ("OP");
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "'" + *u + "'");
           }
 
           branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "uuid");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "=");
+          branch->attribute ("raw", ")");
           branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "'" + *u + "'");
+          action = true;
+          break;
         }
-
-        branch = (*i)->addBranch (new Tree ("argSeq"));
-        branch->attribute ("raw", ")");
-        branch->tag ("OP");
-        action = true;
       }
     }
   }
+  while (action);
 
-  if (action)
-    context.debug (_tree->dump ());
+  context.debug (_tree->dump ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
