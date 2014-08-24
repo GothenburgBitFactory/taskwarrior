@@ -33,8 +33,12 @@ use Test::More tests => 7;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.1056')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n",
@@ -44,25 +48,25 @@ if (open my $fh, '>', 'bug.1056')
 }
 
 # Bug 1056: Project indentation in CmdSummary.
-qx{../src/task rc:bug.1056 add testing project:existingParent 2>&1 >/dev/null};
-qx{../src/task rc:bug.1056 add testing project:existingParent.child 2>&1 >/dev/null};
-qx{../src/task rc:bug.1056 add testing project:abstractParent.kid 2>&1 >/dev/null};
-qx{../src/task rc:bug.1056 add testing project:.myProject 2>&1 >/dev/null};
-qx{../src/task rc:bug.1056 add testing project:myProject. 2>&1 >/dev/null};
-qx{../src/task rc:bug.1056 add testing project:.myProject. 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:existingParent 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:existingParent.child 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:abstractParent.kid 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:.myProject 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:myProject. 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:.myProject. 2>&1 >/dev/null};
 
-my $output = qx{../src/task rc:bug.1056 summary 2>&1};
+my $output = qx{../src/task rc:$rc summary 2>&1};
 my @lines = split ('\n',$output);
 
-like ($lines[0], qr/^\.myProject\s/,       "'.myProject'        not indented");
-like ($lines[1], qr/^\.myProject\.\s/,     "'.myProject.'       not indented");
-like ($lines[2], qr/^abstractParent\s*$/,  "'abstractParent'    not indented, no data");
-like ($lines[3], qr/^\s\skid\s+\d/,        "'  kid'             indented, without parent, with data");
-like ($lines[4], qr/^existingParent\s+\d/, "'existingParent'    not indented, with data");
-like ($lines[5], qr/^\s\schild\s+\d/,      "'  child'           indented, without parent, with data");
-like ($lines[6], qr/^myProject\.\s+\d/,    "'myProject.'        not indented, with data");
+like ($lines[0], qr/^\.myProject\s/,       "$ut: '.myProject'        not indented");
+like ($lines[1], qr/^\.myProject\.\s/,     "$ut: '.myProject.'       not indented");
+like ($lines[2], qr/^abstractParent\s*$/,  "$ut: 'abstractParent'    not indented, no data");
+like ($lines[3], qr/^\s\skid\s+\d/,        "$ut: '  kid'             indented, without parent, with data");
+like ($lines[4], qr/^existingParent\s+\d/, "$ut: 'existingParent'    not indented, with data");
+like ($lines[5], qr/^\s\schild\s+\d/,      "$ut: '  child'           indented, without parent, with data");
+like ($lines[6], qr/^myProject\.\s+\d/,    "$ut: 'myProject.'        not indented, with data");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.1056);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
