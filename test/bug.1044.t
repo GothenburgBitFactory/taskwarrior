@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -45,14 +49,14 @@ if (open my $fh, '>', 'bug.rc')
 # incorrect summary
 
 # Check that until attribute may be modified
-qx{../src/task rc:bug.rc add project:A 1 2>&1};
-qx{../src/task rc:bug.rc add project:B 2 2>&1};
-qx{../src/task rc:bug.rc add project:B 3 2>&1};
-qx{../src/task rc:bug.rc 3 delete 2>&1};
-my $output = qx{../src/task rc:bug.rc project:B projects 2>&1};
-like ($output, qr/^1 project \(1 task\)$/ms, 'Summary filtered new deleted task 3 and project A');
+qx{../src/task rc:$rc add project:A 1 2>&1};
+qx{../src/task rc:$rc add project:B 2 2>&1};
+qx{../src/task rc:$rc add project:B 3 2>&1};
+qx{../src/task rc:$rc 3 delete 2>&1};
+my $output = qx{../src/task rc:$rc project:B projects 2>&1};
+like ($output, qr/^1 project \(1 task\)$/ms, "$ut: Summary filtered new deleted task 3 and project A");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
