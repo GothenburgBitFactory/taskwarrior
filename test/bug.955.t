@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=on\n";
@@ -43,19 +47,19 @@ if (open my $fh, '>', 'bug.rc')
 
 # Bug 955: When deleting the child of a recurring task, taskwarrior does not ask
 #          whether it should delete the parent.
-qx{../src/task rc:bug.rc add foo due:now recur:1day 2>&1};
-my $output = qx{../src/task rc:bug.rc ls 2>&1};
-like ($output, qr/^2 tasks/ms, '2 child tasks created');
+qx{../src/task rc:$rc add foo due:now recur:1day 2>&1};
+my $output = qx{../src/task rc:$rc ls 2>&1};
+like ($output, qr/^2 tasks/ms, "$ut: 2 child tasks created");
 
-qx{printf 'y\nn\n' | ../src/task rc:bug.rc 2 delete 2>&1};
-$output = qx{../src/task rc:bug.rc ls 2>&1};
-like ($output, qr/^1 task/ms, '1 child task remaining');
+qx{printf 'y\nn\n' | ../src/task rc:$rc 2 delete 2>&1};
+$output = qx{../src/task rc:$rc ls 2>&1};
+like ($output, qr/^1 task/ms, "$ut: 1 child task remaining");
 
-qx{printf 'y\ny\n' | ../src/task rc:bug.rc 2 delete 2>&1};
-$output = qx{../src/task rc:bug.rc ls 2>&1};
-like ($output, qr/^No matches/ms, 'No tasks remaining');
+qx{printf 'y\ny\n' | ../src/task rc:$rc 2 delete 2>&1};
+$output = qx{../src/task rc:$rc ls 2>&1};
+like ($output, qr/^No matches/ms, "$ut: No tasks remaining");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
