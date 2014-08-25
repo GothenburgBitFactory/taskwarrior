@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
@@ -43,16 +47,16 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 694: Potential bug for "due" and "annotate"
 
 # Setup: Add a tasks, annotate with long word.
-qx{../src/task rc:bug.rc add One 2>&1};
-qx{../src/task rc:bug.rc 1 annotate foo due:today 2>&1};
+qx{../src/task rc:$rc add One 2>&1};
+qx{../src/task rc:$rc 1 annotate foo due:today 2>&1};
 
 # List with rc.hyphenate=on.
-my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
-like ($output, qr/One/, 'found One');
-like ($output, qr/foo/, 'found foo');
-like ($output, qr/Due/, 'found Due');
+my $output = qx{../src/task rc:$rc 1 info 2>&1};
+like ($output, qr/One/, "$ut: found One");
+like ($output, qr/foo/, "$ut: found foo");
+like ($output, qr/Due/, "$ut: found Due");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
