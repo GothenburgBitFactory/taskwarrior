@@ -33,26 +33,30 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Attempt a blank annotation.
-qx{../src/task rc:bug.rc add foo 2>&1};
-my $output = qx{../src/task rc:bug.rc 1 annotate 2>&1 >/dev/null};
-like ($output, qr/Additional text must be provided/, 'failed on blank annotation');
+qx{../src/task rc:$rc add foo 2>&1};
+my $output = qx{../src/task rc:$rc 1 annotate 2>&1 >/dev/null};
+like ($output, qr/Additional text must be provided/, "$ut: failed on blank annotation");
 
 # Attempt an annotation without ID
-$output = qx{echo "n" | ../src/task rc:bug.rc annotate bar 2>&1 >/dev/null};
-like ($output, qr/Command prevented from running/, 'Filter-less write command inhibited');
+$output = qx{echo "n" | ../src/task rc:$rc annotate bar 2>&1 >/dev/null};
+like ($output, qr/Command prevented from running/, "$ut: Filter-less write command inhibited");
 
-$output = qx{echo "y" | ../src/task rc:bug.rc annotate bar 2>&1 >/dev/null};
-unlike ($output, qr/Command prevented from running/, 'Filter-less write command permitted');
+$output = qx{echo "y" | ../src/task rc:$rc annotate bar 2>&1 >/dev/null};
+unlike ($output, qr/Command prevented from running/, "$ut: Filter-less write command permitted");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
