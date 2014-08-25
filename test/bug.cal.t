@@ -33,8 +33,12 @@ use Test::More tests => 27;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'cal.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.";
   close $fh;
@@ -43,67 +47,67 @@ if (open my $fh, '>', 'cal.rc')
 # Bug: The 'cal' command can fail when provided with challenging arguments.
 
 # Should not fail (because they are correct):
-my $output = qx{../src/task rc:cal.rc cal 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal');
+my $output = qx{../src/task rc:$rc cal 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal");
 
 # y due 2010 donkey 8
-$output = qx{../src/task rc:cal.rc cal y 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y');
-$output = qx{../src/task rc:cal.rc cal 8 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal 8');
-$output = qx{../src/task rc:cal.rc cal due 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal due');
-$output = qx{../src/task rc:cal.rc cal 2010 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal 2010');
-$output = qx{../src/task rc:cal.rc cal donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal donkey');
+$output = qx{../src/task rc:$rc cal y 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y");
+$output = qx{../src/task rc:$rc cal 8 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal 8");
+$output = qx{../src/task rc:$rc cal due 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal due");
+$output = qx{../src/task rc:$rc cal 2010 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal 2010");
+$output = qx{../src/task rc:$rc cal donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal donkey");
 
 # y due 2010 donkey 8
-$output = qx{../src/task rc:cal.rc cal y due 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y due');
-$output = qx{../src/task rc:cal.rc cal y 8 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y 8');
-$output = qx{../src/task rc:cal.rc cal y 2010 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y 2010');
-$output = qx{../src/task rc:cal.rc cal y donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y donkey');
-$output = qx{../src/task rc:cal.rc cal 8 due 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal 8 due');
-$output = qx{../src/task rc:cal.rc cal 8 2010 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal 8 2010');
-$output = qx{../src/task rc:cal.rc cal 8 donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal 8 donkey');
-$output = qx{../src/task rc:cal.rc cal due 2010 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal due 2010');
-$output = qx{../src/task rc:cal.rc cal due donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal due donkey');
-$output = qx{../src/task rc:cal.rc cal 2010 donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal 2010 donkey');
+$output = qx{../src/task rc:$rc cal y due 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y due");
+$output = qx{../src/task rc:$rc cal y 8 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y 8");
+$output = qx{../src/task rc:$rc cal y 2010 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y 2010");
+$output = qx{../src/task rc:$rc cal y donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y donkey");
+$output = qx{../src/task rc:$rc cal 8 due 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal 8 due");
+$output = qx{../src/task rc:$rc cal 8 2010 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal 8 2010");
+$output = qx{../src/task rc:$rc cal 8 donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal 8 donkey");
+$output = qx{../src/task rc:$rc cal due 2010 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal due 2010");
+$output = qx{../src/task rc:$rc cal due donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal due donkey");
+$output = qx{../src/task rc:$rc cal 2010 donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal 2010 donkey");
 
 # y 8 due 2010 donkey
-$output = qx{../src/task rc:cal.rc cal y 8 due 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y 8 due');
-$output = qx{../src/task rc:cal.rc cal y 8 2010 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y 8 2010');
-$output = qx{../src/task rc:cal.rc cal y 8 donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y 8 donkey');
-$output = qx{../src/task rc:cal.rc cal y due 2010 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y due 2010');
-$output = qx{../src/task rc:cal.rc cal y due donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y due donkey');
-$output = qx{../src/task rc:cal.rc cal y 2010 donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal y 2010 donkey');
-$output = qx{../src/task rc:cal.rc cal 8 due 2010 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal 8 due 2010');
-$output = qx{../src/task rc:cal.rc cal 8 due donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal 8 due donkey');
-$output = qx{../src/task rc:cal.rc cal 8 2010 donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal 8 2010 donkey');
-$output = qx{../src/task rc:cal.rc cal due 2010 8 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal due 2010 8');
-$output = qx{../src/task rc:cal.rc cal due 2010 donkey 2>&1};
-unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, 'cal due 2010 donkey');
+$output = qx{../src/task rc:$rc cal y 8 due 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y 8 due");
+$output = qx{../src/task rc:$rc cal y 8 2010 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y 8 2010");
+$output = qx{../src/task rc:$rc cal y 8 donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y 8 donkey");
+$output = qx{../src/task rc:$rc cal y due 2010 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y due 2010");
+$output = qx{../src/task rc:$rc cal y due donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y due donkey");
+$output = qx{../src/task rc:$rc cal y 2010 donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal y 2010 donkey");
+$output = qx{../src/task rc:$rc cal 8 due 2010 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal 8 due 2010");
+$output = qx{../src/task rc:$rc cal 8 due donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal 8 due donkey");
+$output = qx{../src/task rc:$rc cal 8 2010 donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal 8 2010 donkey");
+$output = qx{../src/task rc:$rc cal due 2010 8 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal due 2010 8");
+$output = qx{../src/task rc:$rc cal due 2010 donkey 2>&1};
+unlike ($output, qr/(?:Assertion failed|Could note recognize|not a valid)/, "$ut: cal due 2010 donkey");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data cal.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
