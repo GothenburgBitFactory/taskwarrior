@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -43,11 +47,11 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug #495 - double hyphen mishandled for annotations.
-qx{../src/task rc:bug.rc add foo 2>&1};
-qx{../src/task rc:bug.rc 1 annotate This -- is -- a -- test 2>&1};
-my $output = qx{../src/task rc:bug.rc long 2>&1};
-like ($output, qr/This is -- a -- test/, 'Double hyphens preserved, except the first ones.');
+qx{../src/task rc:$rc add foo 2>&1};
+qx{../src/task rc:$rc 1 annotate This -- is -- a -- test 2>&1};
+my $output = qx{../src/task rc:$rc long 2>&1};
+like ($output, qr/This is -- a -- test/, "$ut: Double hyphens preserved, except the first ones.");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
