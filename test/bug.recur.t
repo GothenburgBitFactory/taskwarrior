@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'recur.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -42,11 +46,11 @@ if (open my $fh, '>', 'recur.rc')
 }
 
 # Add a recurring task with no due date, look for expected error.
-qx{../src/task rc:recur.rc add foo recur:daily 2>&1};
-my $output = qx{../src/task rc:recur.rc info 1 2>&1};
-unlike ($output, qr/Description\s+foo/, 'task not created - missing due date');
+qx{../src/task rc:$rc add foo recur:daily 2>&1};
+my $output = qx{../src/task rc:$rc info 1 2>&1};
+unlike ($output, qr/Description\s+foo/, "$ut: task not created - missing due date");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data recur.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
