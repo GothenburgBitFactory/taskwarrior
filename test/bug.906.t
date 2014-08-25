@@ -33,8 +33,12 @@ use Test::More tests => 15;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -42,35 +46,35 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 906: escaping runs amok
-qx{../src/task rc:bug.rc add zero 2>&1};
-qx{../src/task rc:bug.rc add one  pro:a.b 2>&1};
-qx{../src/task rc:bug.rc add two  pro:a 2>&1};
-my $output = qx{../src/task rc:bug.rc list 2>&1};
-like   ($output, qr/zero/, 'list - zero included');
-like   ($output, qr/one/,  'list - one included');
-like   ($output, qr/two/,  'list - two included');
+qx{../src/task rc:$rc add zero 2>&1};
+qx{../src/task rc:$rc add one  pro:a.b 2>&1};
+qx{../src/task rc:$rc add two  pro:a 2>&1};
+my $output = qx{../src/task rc:$rc list 2>&1};
+like   ($output, qr/zero/, "$ut: list - zero included");
+like   ($output, qr/one/,  "$ut: list - one included");
+like   ($output, qr/two/,  "$ut: list - two included");
 
-$output = qx{../src/task rc:bug.rc list pro:a 2>&1};
-unlike ($output, qr/zero/, 'list - zero excluded');
-like   ($output, qr/one/,  'list - one included');
-like   ($output, qr/two/,  'list - two included');
+$output = qx{../src/task rc:$rc list pro:a 2>&1};
+unlike ($output, qr/zero/, "$ut: list - zero excluded");
+like   ($output, qr/one/,  "$ut: list - one included");
+like   ($output, qr/two/,  "$ut: list - two included");
 
-$output = qx{../src/task rc:bug.rc list pro:a.b 2>&1};
-unlike ($output, qr/zero/, 'list - zero included');
-like   ($output, qr/one/,  'list - one excluded');
-unlike ($output, qr/two/,  'list - two included');
+$output = qx{../src/task rc:$rc list pro:a.b 2>&1};
+unlike ($output, qr/zero/, "$ut: list - zero included");
+like   ($output, qr/one/,  "$ut: list - one excluded");
+unlike ($output, qr/two/,  "$ut: list - two included");
 
-$output = qx{../src/task rc:bug.rc list pro.not:a 2>&1};
-like   ($output, qr/zero/, 'list - zero included');
-unlike ($output, qr/one/,  'list - one excluded');
-unlike ($output, qr/two/,  'list - two excluded');
+$output = qx{../src/task rc:$rc list pro.not:a 2>&1};
+like   ($output, qr/zero/, "$ut: list - zero included");
+unlike ($output, qr/one/,  "$ut: list - one excluded");
+unlike ($output, qr/two/,  "$ut: list - two excluded");
 
-$output = qx{../src/task rc:bug.rc list pro.not:a.b 2>&1};
-like   ($output, qr/zero/, 'list - zero included');
-unlike ($output, qr/one/,  'list - one excluded');
-like   ($output, qr/two/,  'list - two included');
+$output = qx{../src/task rc:$rc list pro.not:a.b 2>&1};
+like   ($output, qr/zero/, "$ut: list - zero included");
+unlike ($output, qr/one/,  "$ut: list - one excluded");
+like   ($output, qr/two/,  "$ut: list - two included");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
