@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
@@ -43,18 +47,18 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 674: ID numbers change between reports when marking tasks as done
 
 # Setup: Add a few tasks
-qx{../src/task rc:bug.rc add One 2>&1};
-qx{../src/task rc:bug.rc add Two 2>&1};
-qx{../src/task rc:bug.rc add Three 2>&1};
+qx{../src/task rc:$rc add One 2>&1};
+qx{../src/task rc:$rc add Two 2>&1};
+qx{../src/task rc:$rc add Three 2>&1};
 
 # Complete task 1 and then attempt to complete task 2
-qx{../src/task rc:bug.rc 1 done 2>&1};
+qx{../src/task rc:$rc 1 done 2>&1};
 
 # Result: Immediately delete the created task
-my $output = qx{../src/task rc:bug.rc 2 done 2>&1};
-like ($output, qr/Two/ms, 'IDs correctly remain unchanged after done');
+my $output = qx{../src/task rc:$rc 2 done 2>&1};
+like ($output, qr/Two/ms, "$ut: IDs correctly remain unchanged after done");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
