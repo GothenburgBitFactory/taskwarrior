@@ -33,8 +33,12 @@ use Test::More tests => 8;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
@@ -42,33 +46,33 @@ if (open my $fh, '>', 'bug.rc')
 
 # Bug #818: Filtering by tag counter-intuitively uses partial match
 
-qx{../src/task rc:bug.rc add +hannah +anna Buy some bananas 2>&1};
-my $output = qx{../src/task rc:bug.rc list +hannah 2>&1};
-like ($output, qr/bananas/, 'Containing tag query');
+qx{../src/task rc:$rc add +hannah +anna Buy some bananas 2>&1};
+my $output = qx{../src/task rc:$rc list +hannah 2>&1};
+like ($output, qr/bananas/, "$ut: Containing tag query");
 
-$output = qx{../src/task rc:bug.rc list +anna 2>&1};
-like ($output, qr/bananas/, 'Contained tag query');
+$output = qx{../src/task rc:$rc list +anna 2>&1};
+like ($output, qr/bananas/, "$ut: Contained tag query");
 
-qx{../src/task rc:bug.rc add +anna +hannah Buy tickets to Santana 2>&1};
-$output = qx{../src/task rc:bug.rc list +anna 2>&1};
-like ($output, qr/Santana/, 'Contained tag query');
+qx{../src/task rc:$rc add +anna +hannah Buy tickets to Santana 2>&1};
+$output = qx{../src/task rc:$rc list +anna 2>&1};
+like ($output, qr/Santana/, "$ut: Contained tag query");
 
-$output = qx{../src/task rc:bug.rc list +hannah 2>&1};
-like ($output, qr/Santana/, 'Containing tag query');
+$output = qx{../src/task rc:$rc list +hannah 2>&1};
+like ($output, qr/Santana/, "$ut: Containing tag query");
 
 # Buy some bananas        +hannah +anna
 # Buy tickets to Santana  +anna +hannah
 # AAA                     +hannah
 # BBB                     +anna
-qx{../src/task rc:bug.rc add +hannah AAA 2>&1};
-qx{../src/task rc:bug.rc add +anna BBB 2>&1};
-$output = qx{../src/task rc:bug.rc long +anna 2>&1};
-like   ($output, qr/bananas/, '+anna --> bananas');
-like   ($output, qr/Santana/, '+anna --> Santana');
-unlike ($output, qr/AAA/,     '+anna !-> AAA');
-like   ($output, qr/BBB/,     '+anna --> BBB');
+qx{../src/task rc:$rc add +hannah AAA 2>&1};
+qx{../src/task rc:$rc add +anna BBB 2>&1};
+$output = qx{../src/task rc:$rc long +anna 2>&1};
+like   ($output, qr/bananas/, "$ut: +anna --> bananas");
+like   ($output, qr/Santana/, "$ut: +anna --> Santana");
+unlike ($output, qr/AAA/,     "$ut: +anna !-> AAA");
+like   ($output, qr/BBB/,     "$ut: +anna --> BBB");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
