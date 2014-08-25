@@ -33,19 +33,23 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Bug 869: lower case priorities aren't accepted.
-qx{../src/task rc:bug.rc add foo pri:h 2>&1};
-my $output = qx{../src/task rc:bug.rc 1 info 2>&1};
-like ($output, qr/Priority\s+H/, "pri:h --> pri:H");
+qx{../src/task rc:$rc add foo pri:h 2>&1};
+my $output = qx{../src/task rc:$rc 1 info 2>&1};
+like ($output, qr/Priority\s+H/, "$ut: pri:h --> pri:H");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
