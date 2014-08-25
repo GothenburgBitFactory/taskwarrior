@@ -34,8 +34,12 @@ use Test::More tests => 14;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'before.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n",
@@ -58,32 +62,32 @@ EOF
 }
 
 # Verify data is readable and just as expected.
-my $output = qx{../src/task rc:before.rc 1 info 2>&1};
-like ($output, qr/Start\s+12\/22\/2008/, 'task 1 start date as expected');
+my $output = qx{../src/task rc:$rc 1 info 2>&1};
+like ($output, qr/Start\s+12\/22\/2008/, "$ut: task 1 start date as expected");
 
-$output = qx{../src/task rc:before.rc 2 info 2>&1};
-like ($output, qr/Start\s+4\/17\/2009/, 'task 2 start date as expected');
+$output = qx{../src/task rc:$rc 2 info 2>&1};
+like ($output, qr/Start\s+4\/17\/2009/, "$ut: task 2 start date as expected");
 
-$output = qx{../src/task rc:before.rc ls start.before:12/1/2008 2>&1};
-unlike ($output, qr/foo/, 'no foo before 12/1/2008');
-unlike ($output, qr/bar/, 'no bar before 12/1/2008');
-$output = qx{../src/task rc:before.rc ls start.before:1/1/2009 2>&1};
-like ($output, qr/foo/, 'foo before 1/1/2009');
-unlike ($output, qr/bar/, 'no bar before 1/1/2009');
-$output = qx{../src/task rc:before.rc ls start.before:5/1/2009 2>&1};
-like ($output, qr/foo/, 'foo before 5/1/2009');
-like ($output, qr/bar/, 'bar before 5/1/2009');
-$output = qx{../src/task rc:before.rc ls start.after:12/1/2008 2>&1};
-like ($output, qr/foo/, 'foo after 12/1/2008');
-like ($output, qr/bar/, 'bar after 12/1/2008');
-$output = qx{../src/task rc:before.rc ls start.after:1/1/2009 2>&1};
-unlike ($output, qr/foo/, 'no foo after 1/1/2009');
-like ($output, qr/bar/, 'bar after 1/1/2009');
-$output = qx{../src/task rc:before.rc ls start.after:5/1/2009 2>&1};
-unlike ($output, qr/foo/, 'no foo after 5/1/2009');
-unlike ($output, qr/bar/, 'no bar after 5/1/2009');
+$output = qx{../src/task rc:$rc ls start.before:12/1/2008 2>&1};
+unlike ($output, qr/foo/, "$ut: no foo before 12/1/2008");
+unlike ($output, qr/bar/, "$ut: no bar before 12/1/2008");
+$output = qx{../src/task rc:$rc ls start.before:1/1/2009 2>&1};
+like ($output, qr/foo/, "$ut: foo before 1/1/2009");
+unlike ($output, qr/bar/, "$ut: no bar before 1/1/2009");
+$output = qx{../src/task rc:$rc ls start.before:5/1/2009 2>&1};
+like ($output, qr/foo/, "$ut: foo before 5/1/2009");
+like ($output, qr/bar/, "$ut: bar before 5/1/2009");
+$output = qx{../src/task rc:$rc ls start.after:12/1/2008 2>&1};
+like ($output, qr/foo/, "$ut: foo after 12/1/2008");
+like ($output, qr/bar/, "$ut: bar after 12/1/2008");
+$output = qx{../src/task rc:$rc ls start.after:1/1/2009 2>&1};
+unlike ($output, qr/foo/, "$ut: no foo after 1/1/2009");
+like ($output, qr/bar/, "$ut: bar after 1/1/2009");
+$output = qx{../src/task rc:$rc ls start.after:5/1/2009 2>&1};
+unlike ($output, qr/foo/, "$ut: no foo after 5/1/2009");
+unlike ($output, qr/bar/, "$ut: no bar after 5/1/2009");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data before.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
