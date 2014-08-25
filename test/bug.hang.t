@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'hang.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "shadow.file=shadow.txt\n",
@@ -58,20 +62,20 @@ eval
 {
   $SIG{'ALRM'} = sub {die "alarm\n"};
   alarm 10;
-  my $output = qx{../src/task rc:hang.rc list 2>&1;
-                  ../src/task rc:hang.rc add due:today recur:1d infinite loop 2>&1;
-                  ../src/task rc:hang.rc info 1 2>&1};
+  my $output = qx{../src/task rc:$rc list 2>&1;
+                  ../src/task rc:$rc add due:today recur:1d infinite loop 2>&1;
+                  ../src/task rc:$rc info 1 2>&1};
   alarm 0;
 
-  like ($output, qr/^Description\s+infinite loop\n/m, 'no hang');
+  like ($output, qr/^Description\s+infinite loop\n/m, "$ut: no hang");
 };
 
 if ($@ eq "alarm\n")
 {
-  fail ('task hang on add or recurring task, with shadow file, for 10s');
+  fail ("$ut: task hang on add or recurring task, with shadow file, for 10s");
 }
 
 # Cleanup.
-unlink qw(shadow.txt pending.data completed.data undo.data backlog.data hang.rc);
+unlink qw(shadow.txt pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
