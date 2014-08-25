@@ -33,8 +33,12 @@ use Test::More tests => 4;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -42,18 +46,18 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Bug 917: escaping runs amok
-qx{../src/task rc:bug.rc add one \\'two\\' three 2>&1};
-qx{../src/task rc:bug.rc add four \\"five\\" six 2>&1};
-my $output = qx{../src/task rc:bug.rc list 2>&1};
-like ($output, qr/one 'two' three/, 'Single quote preserved');
-like ($output, qr/four "five" six/, 'Double quote preserved');
+qx{../src/task rc:$rc add one \\'two\\' three 2>&1};
+qx{../src/task rc:$rc add four \\"five\\" six 2>&1};
+my $output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/one 'two' three/, "$ut: Single quote preserved");
+like ($output, qr/four "five" six/, "$ut: Double quote preserved");
 
-qx{../src/task rc:bug.rc 1,2 mod +tag 2>&1};
-$output = qx{../src/task rc:bug.rc list 2>&1};
-like ($output, qr/one 'two' three/, 'Single quote preserved after modification');
-like ($output, qr/four "five" six/, 'Double quote preserved after modification');
+qx{../src/task rc:$rc 1,2 mod +tag 2>&1};
+$output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/one 'two' three/, "$ut: Single quote preserved after modification");
+like ($output, qr/four "five" six/, "$ut: Double quote preserved after modification");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
