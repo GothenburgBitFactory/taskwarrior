@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
@@ -42,23 +46,23 @@ if (open my $fh, '>', 'bug.rc')
 
 # Bug 837: When a task is completed, tasks that depended upon it don't have
 #          correct urgency and depend on 0 when edited
-qx{../src/task rc:bug.rc add one 2>&1};
-qx{../src/task rc:bug.rc add two dep:1 2>&1};
-qx{../src/task rc:bug.rc long 2>&1};
+qx{../src/task rc:$rc add one 2>&1};
+qx{../src/task rc:$rc add two dep:1 2>&1};
+qx{../src/task rc:$rc long 2>&1};
 
-my $output = qx{../src/task rc:bug.rc 1 _urgency 2>&1};
-like ($output, qr/ 8\n/, 'blocking urgency == 8');
+my $output = qx{../src/task rc:$rc 1 _urgency 2>&1};
+like ($output, qr/ 8\n/, "$ut: blocking urgency == 8");
 
-$output = qx{../src/task rc:bug.rc 2 _urgency 2>&1};
-like ($output, qr/ -5\n/, 'blocked urgency == -5');
+$output = qx{../src/task rc:$rc 2 _urgency 2>&1};
+like ($output, qr/ -5\n/, "$ut: blocked urgency == -5");
 
-qx{../src/task rc:bug.rc 1 done 2>&1};
-qx{../src/task rc:bug.rc list 2>&1};
+qx{../src/task rc:$rc 1 done 2>&1};
+qx{../src/task rc:$rc list 2>&1};
 
-$output = qx{../src/task rc:bug.rc 1 _urgency 2>&1};
-like ($output, qr/ 0\n/, 'unblocked urgency == 0');
+$output = qx{../src/task rc:$rc 1 _urgency 2>&1};
+like ($output, qr/ 0\n/, "$ut: unblocked urgency == 0");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
