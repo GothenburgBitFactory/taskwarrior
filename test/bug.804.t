@@ -33,8 +33,12 @@ use Test::More tests => 4;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "bulk=100\n",
@@ -49,20 +53,20 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 804: URL link and break line
 
 # Setup: Add a tasks, annotate with long word.
-qx{../src/task rc:bug.rc add One 2>&1};
-qx{../src/task rc:bug.rc 1 annotate abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz 2>&1};
+qx{../src/task rc:$rc add One 2>&1};
+qx{../src/task rc:$rc 1 annotate abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz 2>&1};
 
 # List with rc.hyphenate=on.
-my $output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:on unittest 2>&1};
-like ($output, qr/vwx-\n/ms, 'hyphenated 1');
-like ($output, qr/tuv-\n/ms, 'hyphenated 2');
+my $output = qx{../src/task rc:$rc rc.defaultwidth:40 rc.hyphenate:on unittest 2>&1};
+like ($output, qr/vwx-\n/ms, "$ut: hyphenated 1");
+like ($output, qr/tuv-\n/ms, "$ut: hyphenated 2");
 
 # List with rc.hyphenate=off.
-$output = qx{../src/task rc:bug.rc rc.defaultwidth:40 rc.hyphenate:off unittest 2>&1};
-like ($output, qr/vwxy\n/ms, 'not hyphenated 1');
-like ($output, qr/uvwx\n/ms, 'not hyphenated 2');
+$output = qx{../src/task rc:$rc rc.defaultwidth:40 rc.hyphenate:off unittest 2>&1};
+like ($output, qr/vwxy\n/ms, "$ut: not hyphenated 1");
+like ($output, qr/uvwx\n/ms, "$ut: not hyphenated 2");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
