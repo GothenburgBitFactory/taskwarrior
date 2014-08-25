@@ -33,26 +33,30 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Bug 819: When I run "task add foo\'s bar." the description of the new task is "foo 's bar .".
-qx{../src/task rc:bug.rc add foo\\'s bar. 2>&1};
-qx{../src/task rc:bug.rc add foo \\(bar\\) 2>&1};
-qx{../src/task rc:bug.rc add \\'baz \\(qux\\)\\' 2>&1};
-my $output = qx{../src/task rc:bug.rc ls 2>&1};
-like ($output, qr/foo's bar\./, "foo's bar. --> preserved");
+qx{../src/task rc:$rc add foo\\'s bar. 2>&1};
+qx{../src/task rc:$rc add foo \\(bar\\) 2>&1};
+qx{../src/task rc:$rc add \\'baz \\(qux\\)\\' 2>&1};
+my $output = qx{../src/task rc:$rc ls 2>&1};
+like ($output, qr/foo's bar\./, "$ut: foo's bar. --> preserved");
 
 #like ($output, qr/foo \(bar\)/, "foo \(bar\) -- preserved");
-pass ("foo \(bar\) -- preserved -- TEST SKIPPED --");
+pass ("$ut: foo \(bar\) -- preserved -- TEST SKIPPED --");
 
-like ($output, qr/baz \(qux\)/, "baz \(qux\) -- preserved");
+like ($output, qr/baz \(qux\)/, "$ut: baz \(qux\) -- preserved");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
