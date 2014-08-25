@@ -33,26 +33,30 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug_sort.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
-my $setup = "../src/task rc:bug_sort.rc add one 2>&1;"
-          . "../src/task rc:bug_sort.rc add two 2>&1;"
-          . "../src/task rc:bug_sort.rc add three recur:daily due:eom 2>&1;";
+my $setup = "../src/task rc:$rc add one 2>&1;"
+          . "../src/task rc:$rc add two 2>&1;"
+          . "../src/task rc:$rc add three recur:daily due:eom 2>&1;";
 qx{$setup};
 
-my $output = qx{../src/task rc:bug_sort.rc list 2>&1};
-like ($output, qr/three.*(?:one.*two|two.*one)/msi, 'list did not hang');
+my $output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/three.*(?:one.*two|two.*one)/msi, "$ut: list did not hang");
 
-qx{../src/task rc:bug_sort.rc 1 modify priority:H 2>&1};
-$output = qx{../src/task rc:bug_sort.rc list 2>&1};
-like ($output, qr/three.*one.*two/msi, 'list did not hang after pri:H on 1');
+qx{../src/task rc:$rc 1 modify priority:H 2>&1};
+$output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/three.*one.*two/msi, "$ut: list did not hang after pri:H on 1");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug_sort.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
