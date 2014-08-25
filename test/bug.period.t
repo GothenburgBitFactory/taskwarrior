@@ -33,8 +33,12 @@ use Test::More tests => 39;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'period.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
@@ -76,89 +80,89 @@ Confirmed:
                      *y
 =cut
 
-my $output = qx{../src/task rc:period.rc add daily due:tomorrow recur:daily 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:daily');
+my $output = qx{../src/task rc:$rc add daily due:tomorrow recur:daily 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:daily");
 
-$output = qx{../src/task rc:period.rc add 1day due:tomorrow recur:1day 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:1day');
+$output = qx{../src/task rc:$rc add 1day due:tomorrow recur:1day 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:1day");
 
-$output = qx{../src/task rc:period.rc add weekly due:tomorrow recur:weekly 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:weekly');
+$output = qx{../src/task rc:$rc add weekly due:tomorrow recur:weekly 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:weekly");
 
-$output = qx{../src/task rc:period.rc add 1sennight due:tomorrow recur:1sennight 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:1sennight');
+$output = qx{../src/task rc:$rc add 1sennight due:tomorrow recur:1sennight 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:1sennight");
 
-$output = qx{../src/task rc:period.rc add biweekly due:tomorrow recur:biweekly 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:biweekly');
+$output = qx{../src/task rc:$rc add biweekly due:tomorrow recur:biweekly 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:biweekly");
 
-$output = qx{../src/task rc:period.rc add fortnight due:tomorrow recur:fortnight 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:fortnight');
+$output = qx{../src/task rc:$rc add fortnight due:tomorrow recur:fortnight 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:fortnight");
 
-$output = qx{../src/task rc:period.rc add monthly due:tomorrow recur:monthly 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:monthly');
+$output = qx{../src/task rc:$rc add monthly due:tomorrow recur:monthly 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:monthly");
 
-$output = qx{../src/task rc:period.rc add quarterly due:tomorrow recur:quarterly 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:quarterly');
+$output = qx{../src/task rc:$rc add quarterly due:tomorrow recur:quarterly 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:quarterly");
 
-$output = qx{../src/task rc:period.rc add semiannual due:tomorrow recur:semiannual 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:semiannual');
+$output = qx{../src/task rc:$rc add semiannual due:tomorrow recur:semiannual 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:semiannual");
 
-$output = qx{../src/task rc:period.rc add bimonthly due:tomorrow recur:bimonthly 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:bimonthly');
+$output = qx{../src/task rc:$rc add bimonthly due:tomorrow recur:bimonthly 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:bimonthly");
 
-$output = qx{../src/task rc:period.rc add biannual due:tomorrow recur:biannual 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:biannual');
+$output = qx{../src/task rc:$rc add biannual due:tomorrow recur:biannual 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:biannual");
 
-$output = qx{../src/task rc:period.rc add biyearly due:tomorrow recur:biyearly 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:biyearly');
+$output = qx{../src/task rc:$rc add biyearly due:tomorrow recur:biyearly 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:biyearly");
 
-$output = qx{../src/task rc:period.rc add annual due:tomorrow recur:annual 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:annual');
+$output = qx{../src/task rc:$rc add annual due:tomorrow recur:annual 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:annual");
 
-$output = qx{../src/task rc:period.rc add yearly due:tomorrow recur:yearly 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:yearly');
+$output = qx{../src/task rc:$rc add yearly due:tomorrow recur:yearly 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:yearly");
 
-$output = qx{../src/task rc:period.rc add 2d due:tomorrow recur:2d 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:2d');
+$output = qx{../src/task rc:$rc add 2d due:tomorrow recur:2d 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:2d");
 
-$output = qx{../src/task rc:period.rc add 2w due:tomorrow recur:2w 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:2w');
+$output = qx{../src/task rc:$rc add 2w due:tomorrow recur:2w 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:2w");
 
-$output = qx{../src/task rc:period.rc add 2m due:tomorrow recur:2mo 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:2m');
+$output = qx{../src/task rc:$rc add 2m due:tomorrow recur:2mo 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:2m");
 
-$output = qx{../src/task rc:period.rc add 2q due:tomorrow recur:2q 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:2q');
+$output = qx{../src/task rc:$rc add 2q due:tomorrow recur:2q 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:2q");
 
-$output = qx{../src/task rc:period.rc add 2y due:tomorrow recur:2y 2>&1};
-unlike ($output, qr/was not recognized/, 'recur:2y');
+$output = qx{../src/task rc:$rc add 2y due:tomorrow recur:2y 2>&1};
+unlike ($output, qr/was not recognized/, "$ut: recur:2y");
 
 # Verify that the recurring task instances get created.  One of each.
-$output = qx{../src/task rc:period.rc list 2>&1};
-like ($output, qr/\bdaily\b/,      'verify daily');
-like ($output, qr/\b1day\b/,       'verify 1day');
-like ($output, qr/\bweekly\b/,     'verify weekly');
-like ($output, qr/\b1sennight\b/,  'verify 1sennight');
-like ($output, qr/\bbiweekly\b/,   'verify biweekly');
-like ($output, qr/\bfortnight\b/,  'verify fortnight');
-like ($output, qr/\bmonthly\b/,    'verify monthly');
-like ($output, qr/\bquarterly\b/,  'verify quarterly');
-like ($output, qr/\bsemiannual\b/, 'verify semiannual');
-like ($output, qr/\bbimonthly\b/,  'verify bimonthly');
-like ($output, qr/\bbiannual\b/,   'verify biannual');
-like ($output, qr/\bbiyearly\b/,   'verify biyearly');
-like ($output, qr/\bannual\b/,     'verify annual');
-like ($output, qr/\byearly\b/,     'verify yearly');
-like ($output, qr/\b2d\b/,         'verify 2d');
-like ($output, qr/\b2w\b/,         'verify 2w');
-like ($output, qr/\b2m\b/,         'verify 2m');
-like ($output, qr/\b2q\b/,         'verify 2q');
-like ($output, qr/\b2y\b/,         'verify 2y');
+$output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/\bdaily\b/,      "$ut: verify daily");
+like ($output, qr/\b1day\b/,       "$ut: verify 1day");
+like ($output, qr/\bweekly\b/,     "$ut: verify weekly");
+like ($output, qr/\b1sennight\b/,  "$ut: verify 1sennight");
+like ($output, qr/\bbiweekly\b/,   "$ut: verify biweekly");
+like ($output, qr/\bfortnight\b/,  "$ut: verify fortnight");
+like ($output, qr/\bmonthly\b/,    "$ut: verify monthly");
+like ($output, qr/\bquarterly\b/,  "$ut: verify quarterly");
+like ($output, qr/\bsemiannual\b/, "$ut: verify semiannual");
+like ($output, qr/\bbimonthly\b/,  "$ut: verify bimonthly");
+like ($output, qr/\bbiannual\b/,   "$ut: verify biannual");
+like ($output, qr/\bbiyearly\b/,   "$ut: verify biyearly");
+like ($output, qr/\bannual\b/,     "$ut: verify annual");
+like ($output, qr/\byearly\b/,     "$ut: verify yearly");
+like ($output, qr/\b2d\b/,         "$ut: verify 2d");
+like ($output, qr/\b2w\b/,         "$ut: verify 2w");
+like ($output, qr/\b2m\b/,         "$ut: verify 2m");
+like ($output, qr/\b2q\b/,         "$ut: verify 2q");
+like ($output, qr/\b2y\b/,         "$ut: verify 2y");
 
-$output = qx{../src/task rc:period.rc diag 2>&1};
-like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
+$output = qx{../src/task rc:$rc diag 2>&1};
+like ($output, qr/No duplicates found/, "$ut: No duplicate UUIDs detected");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data period.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
