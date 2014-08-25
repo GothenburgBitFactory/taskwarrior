@@ -33,24 +33,28 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Bug 884: Extra space in path name.
-qx{../src/task rc:bug.rc add /one/two/three/ 2>&1};
-qx{../src/task rc:bug.rc add \\'/four/five/six/\\' 2>&1};
-my $output = qx{../src/task rc:bug.rc ls 2>&1};
+qx{../src/task rc:$rc add /one/two/three/ 2>&1};
+qx{../src/task rc:$rc add \\'/four/five/six/\\' 2>&1};
+my $output = qx{../src/task rc:$rc ls 2>&1};
 
 #like ($output, qr/\/one\/two\/three\//, "/one/two/three/ --> preserved");
-pass ("/one/two/three/ --> preserved -- TEST SKIPPED --");
+pass ("/$ut: one/two/three/ --> preserved -- TEST SKIPPED --");
 
-like ($output, qr/\/four\/five\/six\//, "/four/five/six/ --> preserved");
+like ($output, qr/\/four\/five\/six\//, "$ut: /four/five/six/ --> preserved");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
