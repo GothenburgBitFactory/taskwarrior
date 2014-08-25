@@ -33,8 +33,12 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -44,14 +48,14 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 634: confirmation=off not honored by undo
 
 # Setup: Add a task
-qx{../src/task rc:bug.rc add Test 2>&1};
+qx{../src/task rc:$rc add Test 2>&1};
 
 # Result: Attempt to undo add with confirmation=off
-my $output = qx{echo 'n' | ../src/task rc:bug.rc rc.confirmation=off undo 2>&1};
-like ($output, qr/^Task removed.$/ms, 'Task removed.');
-unlike ($output, qr/Are you sure/ms, 'Undo honours confirmation=off.');
+my $output = qx{echo 'n' | ../src/task rc:$rc rc.confirmation=off undo 2>&1};
+like   ($output, qr/^Task removed.$/ms, "$ut: Task removed.");
+unlike ($output, qr/Are you sure/ms,    "$ut: Undo honors confirmation=off.");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
