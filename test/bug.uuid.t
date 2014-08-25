@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'uuid.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -43,50 +47,50 @@ if (open my $fh, '>', 'uuid.rc')
 
 # Add a task, dup it, add a recurring task, list.  Then make sure they all have
 # unique UUID values.
-qx{../src/task rc:uuid.rc add simple 2>&1};
-qx{../src/task rc:uuid.rc 1 duplicate 2>&1};
-qx{../src/task rc:uuid.rc add periodic recur:daily due:yesterday 2>&1};
-qx{../src/task rc:uuid.rc ls 2>&1};
+qx{../src/task rc:$rc add simple 2>&1};
+qx{../src/task rc:$rc 1 duplicate 2>&1};
+qx{../src/task rc:$rc add periodic recur:daily due:yesterday 2>&1};
+qx{../src/task rc:$rc ls 2>&1};
 
 my @all_uuids;
 my %unique_uuids;
-my $output = qx{../src/task rc:uuid.rc 1 info 2>&1};
+my $output = qx{../src/task rc:$rc 1 info 2>&1};
 my ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../src/task rc:uuid.rc 2 info 2>&1};
+$output = qx{../src/task rc:$rc 2 info 2>&1};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../src/task rc:uuid.rc 3 info 2>&1};
+$output = qx{../src/task rc:$rc 3 info 2>&1};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../src/task rc:uuid.rc 4 info 2>&1};
+$output = qx{../src/task rc:$rc 4 info 2>&1};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../src/task rc:uuid.rc 5 info 2>&1};
+$output = qx{../src/task rc:$rc 5 info 2>&1};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-$output = qx{../src/task rc:uuid.rc 6 info 2>&1};
+$output = qx{../src/task rc:$rc 6 info 2>&1};
 ($uuid) = $output =~ /UUID\s+(\S+)/;
 push @all_uuids, $uuid;
 $unique_uuids{$uuid} = undef;
 
-is (scalar (@all_uuids), 6, '6 tasks created');
-is (scalar (keys %unique_uuids), 6, '6 unique UUIDs');
+is (scalar (@all_uuids),         6, "$ut: 6 tasks created");
+is (scalar (keys %unique_uuids), 6, "$ut: 6 unique UUIDs");
 
-$output = qx{../src/task rc:uuid.rc diag 2>&1};
-like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
+$output = qx{../src/task rc:$rc diag 2>&1};
+like ($output, qr/No duplicates found/, "$ut: No duplicate UUIDs detected");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data uuid.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
