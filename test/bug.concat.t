@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -49,13 +53,13 @@ if (open my $fh, '>', 'bug.rc')
 #
 #   Thisisanewdescription
 
-qx{../src/task rc:bug.rc add This is the original text 2>&1};
-my $output = qx{../src/task rc:bug.rc info 1 2>&1};
-like ($output, qr/Description\s+This is the original text/, 'original correct');
+qx{../src/task rc:$rc add This is the original text 2>&1};
+my $output = qx{../src/task rc:$rc info 1 2>&1};
+like ($output, qr/Description\s+This is the original text/, "$ut: original correct");
 
-qx{../src/task rc:bug.rc 1 modify This is the modified text 2>&1};
-$output = qx{../src/task rc:bug.rc info 1 2>&1};
-like ($output, qr/Description\s+This is the modified text\n/, 'modified correct');
+qx{../src/task rc:$rc 1 modify This is the modified text 2>&1};
+$output = qx{../src/task rc:$rc info 1 2>&1};
+like ($output, qr/Description\s+This is the modified text\n/, "$ut: modified correct");
 
 # When a task is added like this:
 #
@@ -65,11 +69,11 @@ like ($output, qr/Description\s+This is the modified text\n/, 'modified correct'
 #
 #   aaabbb:ccc ddd
 
-qx{../src/task rc:bug.rc add aaa bbb:ccc ddd 2>&1};
-$output = qx{../src/task rc:bug.rc info 2 2>&1};
-like ($output, qr/Description\s+aaa bbb:ccc ddd\n/, 'properly concatenated');
+qx{../src/task rc:$rc add aaa bbb:ccc ddd 2>&1};
+$output = qx{../src/task rc:$rc info 2 2>&1};
+like ($output, qr/Description\s+aaa bbb:ccc ddd\n/, "$ut: properly concatenated");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
