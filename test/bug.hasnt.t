@@ -33,8 +33,12 @@ use Test::More tests => 14;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'hasnt.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -42,53 +46,53 @@ if (open my $fh, '>', 'hasnt.rc')
 }
 
 # 1
-qx{../src/task rc:hasnt.rc add foo 2>&1};
+qx{../src/task rc:$rc add foo 2>&1};
 
 # 2
-qx{../src/task rc:hasnt.rc add foo 2>&1};
-qx{../src/task rc:hasnt.rc 2 annotate bar 2>&1};
+qx{../src/task rc:$rc add foo 2>&1};
+qx{../src/task rc:$rc 2 annotate bar 2>&1};
 
 # 3
-qx{../src/task rc:hasnt.rc add foo 2>&1};
-qx{../src/task rc:hasnt.rc 3 annotate bar 2>&1};
-qx{../src/task rc:hasnt.rc 3 annotate baz 2>&1};
+qx{../src/task rc:$rc add foo 2>&1};
+qx{../src/task rc:$rc 3 annotate bar 2>&1};
+qx{../src/task rc:$rc 3 annotate baz 2>&1};
 
 # 4
-qx{../src/task rc:hasnt.rc add bar 2>&1};
+qx{../src/task rc:$rc add bar 2>&1};
 
 # 5
-qx{../src/task rc:hasnt.rc add bar 2>&1};
-qx{../src/task rc:hasnt.rc 5 annotate foo 2>&1};
+qx{../src/task rc:$rc add bar 2>&1};
+qx{../src/task rc:$rc 5 annotate foo 2>&1};
 
 # 6
-qx{../src/task rc:hasnt.rc add bar 2>&1};
-qx{../src/task rc:hasnt.rc 6 annotate foo 2>&1};
-qx{../src/task rc:hasnt.rc 6 annotate baz 2>&1};
+qx{../src/task rc:$rc add bar 2>&1};
+qx{../src/task rc:$rc 6 annotate foo 2>&1};
+qx{../src/task rc:$rc 6 annotate baz 2>&1};
 
 #7
-qx{../src/task rc:hasnt.rc add one 2>&1};
-qx{../src/task rc:hasnt.rc 7 annotate two 2>&1};
-qx{../src/task rc:hasnt.rc 7 annotate three 2>&1};
+qx{../src/task rc:$rc add one 2>&1};
+qx{../src/task rc:$rc 7 annotate two 2>&1};
+qx{../src/task rc:$rc 7 annotate three 2>&1};
 
-my $output = qx{../src/task rc:hasnt.rc long description.has:foo 2>&1};
-like   ($output, qr/\n 1/, '1 has foo -> yes');
-like   ($output, qr/\n 2/, '2 has foo -> yes');
-like   ($output, qr/\n 3/, '3 has foo -> yes');
-unlike ($output, qr/\n 4/, '4 has foo -> no');  # 5
-like   ($output, qr/\n 5/, '5 has foo -> yes');
-like   ($output, qr/\n 6/, '6 has foo -> yes');
-unlike ($output, qr/\n 7/, '7 has foo -> no');
+my $output = qx{../src/task rc:$rc long description.has:foo 2>&1};
+like   ($output, qr/\n 1/, "$ut: 1 has foo -> yes");
+like   ($output, qr/\n 2/, "$ut: 2 has foo -> yes");
+like   ($output, qr/\n 3/, "$ut: 3 has foo -> yes");
+unlike ($output, qr/\n 4/, "$ut: 4 has foo -> no");
+like   ($output, qr/\n 5/, "$ut: 5 has foo -> yes");
+like   ($output, qr/\n 6/, "$ut: 6 has foo -> yes");
+unlike ($output, qr/\n 7/, "$ut: 7 has foo -> no");
 
-$output = qx{../src/task rc:hasnt.rc long description.hasnt:foo 2>&1};
-unlike ($output, qr/\n 1/, '1 hasnt foo -> no');
-unlike ($output, qr/\n 2/, '2 hasnt foo -> no');  # 10
-unlike ($output, qr/\n 3/, '3 hasnt foo -> no');
-like   ($output, qr/\n 4/, '4 hasnt foo -> yes');
-unlike ($output, qr/\n 5/, '5 hasnt foo -> no');
-unlike ($output, qr/\n 6/, '6 hasnt foo -> no');
-like   ($output, qr/\n 7/, '7 hasnt foo -> yes');  # 15
+$output = qx{../src/task rc:$rc long description.hasnt:foo 2>&1};
+unlike ($output, qr/\n 1/, "$ut: 1 hasnt foo -> no");
+unlike ($output, qr/\n 2/, "$ut: 2 hasnt foo -> no");
+unlike ($output, qr/\n 3/, "$ut: 3 hasnt foo -> no");
+like   ($output, qr/\n 4/, "$ut: 4 hasnt foo -> yes");
+unlike ($output, qr/\n 5/, "$ut: 5 hasnt foo -> no");
+unlike ($output, qr/\n 6/, "$ut: 6 hasnt foo -> no");
+like   ($output, qr/\n 7/, "$ut: 7 hasnt foo -> yes");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data hasnt.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
