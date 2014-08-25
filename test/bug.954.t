@@ -33,8 +33,12 @@ use Test::More tests => 4;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -46,17 +50,17 @@ if (open my $fh, '>', 'bug.rc')
 # - deleting task with UUID 874e146d-07a2-2d2c-7808-a76e74b1a332
 # - searching for tasks "foo" and "bar"
 
-qx{../src/task rc:bug.rc add foo 2>&1};
-qx{../src/task rc:bug.rc add bar 2>&1};
-my $output = qx{../src/task rc:bug.rc list 2>&1};
-like ($output, qr/foo/ms, 'Task foo added');
-like ($output, qr/bar/ms, 'Task bar added');
-qx{../src/task rc:bug.rc rc.confirmation=off rc.verbose=nothing rc.bulk=1000 874e146d-07a2-2d2c-7808-a76e74b1a332 delete 2>&1};
+qx{../src/task rc:$rc add foo 2>&1};
+qx{../src/task rc:$rc add bar 2>&1};
+my $output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/foo/ms, "$ut: Task foo added");
+like ($output, qr/bar/ms, "$ut: Task bar added");
+qx{../src/task rc:$rc rc.confirmation=off rc.verbose=nothing rc.bulk=1000 874e146d-07a2-2d2c-7808-a76e74b1a332 delete 2>&1};
 
-$output = qx{../src/task rc:bug.rc list 2>&1};
-like ($output, qr/foo/ms, 'Task foo not deleted');
-like ($output, qr/bar/ms, 'Task bar not deleted');
+$output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/foo/ms, "$ut: Task foo not deleted");
+like ($output, qr/bar/ms, "$ut: Task bar not deleted");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
