@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "verbose=nothing\n";
@@ -46,19 +50,19 @@ if (open my $fh, '>', 'bug.rc')
 
 # Create one task (with a creation date) and one journal entry (with a
 # timestamp and a date inside the entry)
-qx{../src/task rc:bug.rc add test 2>&1};
-qx{../src/task rc:bug.rc test start 2>&1};
+qx{../src/task rc:$rc add test 2>&1};
+qx{../src/task rc:$rc test start 2>&1};
 
 # Test that dateformat.info has precedence over dateformat and that no other
 # format is applied
-my $output = qx{../src/task rc:bug.rc test info rc.dateformat:m/d/Y rc.dateformat.info:__ 2>&1};
-like ($output, qr/__/ms, 'Date formatted according to dateformat.info');
-unlike ($output, qr/[0-9]*\/[0-9]*\/20[0-9]*/ms, 'No date is incorrectly formatted');
+my $output = qx{../src/task rc:$rc test info rc.dateformat:m/d/Y rc.dateformat.info:__ 2>&1};
+like   ($output, qr/__/ms,                       "$ut: Date formatted according to dateformat.info");
+unlike ($output, qr/[0-9]*\/[0-9]*\/20[0-9]*/ms, "$ut: No date is incorrectly formatted");
 
 # Similar for dateformat
-$output = qx{../src/task rc:bug.rc test info rc.dateformat:__ rc.dateformat.info: 2>&1};
-like ($output, qr/__/ms, 'Date formatted according to dateformat');
+$output = qx{../src/task rc:$rc test info rc.dateformat:__ rc.dateformat.info: 2>&1};
+like   ($output, qr/__/ms,                       "$ut: Date formatted according to dateformat");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
