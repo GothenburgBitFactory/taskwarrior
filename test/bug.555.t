@@ -33,18 +33,22 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Bug #555 - log with a project segfaults.
-my $output = qx{../src/task rc:bug.rc log description project:p 2>&1};
-like ($output, qr/^Logged task.$/m, 'task logged');
-unlike ($output, qr/Segmentation fault/, 'no segfault from log with project');
+my $output = qx{../src/task rc:$rc log description project:p 2>&1};
+like   ($output, qr/^Logged task.$/m,    "$ut: task logged");
+unlike ($output, qr/Segmentation fault/, "$ut: no segfault from log with project");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
