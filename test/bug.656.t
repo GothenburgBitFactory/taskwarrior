@@ -33,8 +33,12 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -44,19 +48,19 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 656: Recurring task continually spawns new tasks
 
 # Setup: Add a pair of recurring tasks
-qx{../src/task rc:bug.rc add First recurring task due:tomorrow rec:daily 2>&1};
-qx{../src/task rc:bug.rc add Second recurring task due:tomorrow rec:daily 2>&1};
+qx{../src/task rc:$rc add First recurring task due:tomorrow rec:daily 2>&1};
+qx{../src/task rc:$rc add Second recurring task due:tomorrow rec:daily 2>&1};
 
 # Bug describes that each time task is executed, another child task of the
 # Second recurring task is created.
-qx{../src/task rc:bug.rc ls 2>&1};
+qx{../src/task rc:$rc ls 2>&1};
 
 # Result: Check for an extra task the second time task ls is executed
-my $output = qx{../src/task rc:bug.rc ls 2>&1};
-like   ($output, qr/^2 tasks$/ms, '2 tasks shown.');
-unlike ($output, qr/^\s3\s*Second recurring task\s*$/ms, 'Extra task detected.');
+my $output = qx{../src/task rc:$rc ls 2>&1};
+like   ($output, qr/^2 tasks$/ms,                        "$ut: 2 tasks shown.");
+unlike ($output, qr/^\s3\s*Second recurring task\s*$/ms, "$ut: Extra task detected.");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
