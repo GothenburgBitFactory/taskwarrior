@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'color.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "color.pri.L=green\n",
@@ -46,11 +50,11 @@ if (open my $fh, '>', 'color.rc')
 # Bug that colored any task with both priority:L and a tag as though
 # rc.color.tagged had a higher precedence than rc.color.pri.L, which it is not.
 
-qx{../src/task rc:color.rc add test +test pri:L 2>&1};
-my $output = qx{../src/task rc:color.rc list 2>&1};
-like ($output, qr/ \033\[32m        .* test .* \033\[0m /x, 'Colored with the priority color, which has precedence over the tagged color');
+qx{../src/task rc:$rc add test +test pri:L 2>&1};
+my $output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/ \033\[32m        .* test .* \033\[0m /x, "$ut: Colored with the priority color, which has precedence over the tagged color");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data color.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
