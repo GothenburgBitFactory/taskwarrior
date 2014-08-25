@@ -33,8 +33,12 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'summary.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -43,19 +47,19 @@ if (open my $fh, '>', 'summary.rc')
 
 # Add three tasks.  Do 1, delete 1, leave 1 pending.  Summary should depict a
 # 50% completion.
-qx{../src/task rc:summary.rc add project:A one 2>&1};
-qx{../src/task rc:summary.rc add project:A two 2>&1};
-qx{../src/task rc:summary.rc add project:A three 2>&1};
-qx{../src/task rc:summary.rc 1 done 2>&1};
-qx{../src/task rc:summary.rc 2 delete 2>&1};
-my $output = qx{../src/task rc:summary.rc summary 2>&1};
-like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, 'summary correctly shows 50% before report');
+qx{../src/task rc:$rc add project:A one 2>&1};
+qx{../src/task rc:$rc add project:A two 2>&1};
+qx{../src/task rc:$rc add project:A three 2>&1};
+qx{../src/task rc:$rc 1 done 2>&1};
+qx{../src/task rc:$rc 2 delete 2>&1};
+my $output = qx{../src/task rc:$rc summary 2>&1};
+like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, "$ut: summary correctly shows 50% before report");
 
-qx{../src/task rc:summary.rc list 2>&1};
-$output = qx{../src/task rc:summary.rc summary 2>&1};
-like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, 'summary correctly shows 50% after report');
+qx{../src/task rc:$rc list 2>&1};
+$output = qx{../src/task rc:$rc summary 2>&1};
+like ($output, qr/A\s+1\s+(?:-|\d\ssecs?)\s+50%/, "$ut: summary correctly shows 50% after report");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data summary.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
