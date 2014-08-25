@@ -33,30 +33,34 @@ use Test::More tests => 6;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Bug 879: Backslash at end of description/annotation causes problems.
-qx{../src/task rc:bug.rc add one\\\\ 2>&1};
-my $output = qx{../src/task rc:bug.rc long 2>&1};
-like ($output, qr/one\\/, 'Backslash preserved in description');
+qx{../src/task rc:$rc add one\\\\ 2>&1};
+my $output = qx{../src/task rc:$rc long 2>&1};
+like ($output, qr/one\\/, "$ut: Backslash preserved in description");
 
-qx{../src/task rc:bug.rc 1 annotate foo\\\\ 2>&1};
-$output = qx{../src/task rc:bug.rc long 2>&1};
-like ($output, qr/one\\/, 'Backslash preserved in description');
-like ($output, qr/foo\\/, 'Backslash preserved in annotation 1');
+qx{../src/task rc:$rc 1 annotate foo\\\\ 2>&1};
+$output = qx{../src/task rc:$rc long 2>&1};
+like ($output, qr/one\\/, "$ut: Backslash preserved in description");
+like ($output, qr/foo\\/, "$ut: Backslash preserved in annotation 1");
 
-qx{../src/task rc:bug.rc 1 annotate bar\\\\ 2>&1};
-$output = qx{../src/task rc:bug.rc long 2>&1};
-like ($output, qr/one\\/, 'Backslash preserved in description');
-like ($output, qr/foo\\/, 'Backslash preserved in annotation 1');
-like ($output, qr/bar\\/, 'Backslash preserved in annotation 2');
+qx{../src/task rc:$rc 1 annotate bar\\\\ 2>&1};
+$output = qx{../src/task rc:$rc long 2>&1};
+like ($output, qr/one\\/, "$ut: Backslash preserved in description");
+like ($output, qr/foo\\/, "$ut: Backslash preserved in annotation 1");
+like ($output, qr/bar\\/, "$ut: Backslash preserved in annotation 2");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
