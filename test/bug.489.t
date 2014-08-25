@@ -33,20 +33,24 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Bug #489 - tags.none: is not filtering tagless tasks
-qx{../src/task rc:bug.rc add with +tag 2>&1};
-qx{../src/task rc:bug.rc add without 2>&1};
-my $output = qx{../src/task rc:bug.rc list tags.none: 2>&1};
-unlike ($output, qr/with /,   'tags.none: skips tagged');
-like   ($output, qr/without/, 'tags.none: finds tagless');
+qx{../src/task rc:$rc add with +tag 2>&1};
+qx{../src/task rc:$rc add without 2>&1};
+my $output = qx{../src/task rc:$rc list tags.none: 2>&1};
+unlike ($output, qr/with /,   "$ut: tags.none: skips tagged");
+like   ($output, qr/without/, "$ut: tags.none: finds tagless");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
