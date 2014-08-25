@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -44,16 +48,16 @@ if (open my $fh, '>', 'bug.rc')
 # Bug 635: /OLD/NEW/g is broken?
 
 # Setup: Add a task with two identical spelling mistakes
-qx{../src/task rc:bug.rc add Pay teh rent on teh 31st 2>&1};
+qx{../src/task rc:$rc add Pay teh rent on teh 31st 2>&1};
 
 # Process: Global replace incorrect text
-qx{../src/task rc:bug.rc 1 modify /teh/the/g 2>&1};
+qx{../src/task rc:$rc 1 modify /teh/the/g 2>&1};
 
 # Result: Verify corrected output
-my $output = qx{../src/task rc:bug.rc ls 1 2>&1};
-like ($output, qr/Pay the rent on the 31st/ms, 'Global replace performed correctly.');
+my $output = qx{../src/task rc:$rc ls 1 2>&1};
+like ($output, qr/Pay the rent on the 31st/ms, "$ut: Global replace performed correctly.");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
