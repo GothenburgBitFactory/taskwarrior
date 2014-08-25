@@ -33,24 +33,28 @@ use Test::More tests => 4;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'extra.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
   close $fh;
 }
 
-qx{../src/task rc:extra.rc add foo 2>&1};
-qx{../src/task rc:extra.rc 1 start pri:L 2>&1};
-qx{../src/task rc:extra.rc 1 stop pro:bar 2>&1};
-my $output = qx{../src/task rc:extra.rc list 2>&1};
-like ($output, qr/foo/,    'Task shown');
-like ($output, qr/1 task/, 'Correct count');
-like ($output, qr/L/,      'Correct priority');
-like ($output, qr/bar/,    'Correct annotation');
+qx{../src/task rc:$rc add foo 2>&1};
+qx{../src/task rc:$rc 1 start pri:L 2>&1};
+qx{../src/task rc:$rc 1 stop pro:bar 2>&1};
+my $output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/foo/,    "$ut: Task shown");
+like ($output, qr/1 task/, "$ut: Correct count");
+like ($output, qr/L/,      "$ut: Correct priority");
+like ($output, qr/bar/,    "$ut: Correct annotation");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data extra.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
