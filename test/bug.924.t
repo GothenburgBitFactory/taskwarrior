@@ -33,23 +33,27 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Bug 924: '1.0' --> '1.0000'
-qx{../src/task rc:bug.rc add release 1.0 2>&1};
-qx{../src/task rc:bug.rc add 'release 2.0' 2>&1};
-qx{../src/task rc:bug.rc add "release 3.0" 2>&1};
-my $output = qx{../src/task rc:bug.rc list 2>&1};
-like ($output, qr/\s1.0\s/ms, 'Plain text floating point preserved');
-like ($output, qr/\s2.0\s/ms, 'Single quote floating point preserved');
-like ($output, qr/\s3.0\s/ms, 'Double quote floating point preserved');
+qx{../src/task rc:$rc add release 1.0 2>&1};
+qx{../src/task rc:$rc add 'release 2.0' 2>&1};
+qx{../src/task rc:$rc add "release 3.0" 2>&1};
+my $output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/\s1.0\s/ms, "$ut: Plain text floating point preserved");
+like ($output, qr/\s2.0\s/ms, "$ut: Single quote floating point preserved");
+like ($output, qr/\s3.0\s/ms, "$ut: Double quote floating point preserved");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
