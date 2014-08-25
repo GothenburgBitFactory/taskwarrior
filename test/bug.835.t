@@ -33,22 +33,26 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
-qx{../src/task rc:bug.rc add pro:main.subproject Test 2>&1};
-my $output = qx{../src/task rc:bug.rc ls 2>&1};
+qx{../src/task rc:$rc add pro:main.subproject Test 2>&1};
+my $output = qx{../src/task rc:$rc ls 2>&1};
 like ($output, qr/main\.subproject/, "hierarchical project ok");
 
-qx{../src/task rc:bug.rc \\(pro:main.subproject\\) ls 2>&1};
-like ($output, qr/main\.subproject/, "Parens tolerated");
-unlike ($output, qr/Mismatched parentheses in expression/, "No 'mismatch' error generated");
+qx{../src/task rc:$rc \\(pro:main.subproject\\) ls 2>&1};
+like   ($output, qr/main\.subproject/,                     "$ut: Parens tolerated");
+unlike ($output, qr/Mismatched parentheses in expression/, "$ut: No 'mismatch' error generated");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
