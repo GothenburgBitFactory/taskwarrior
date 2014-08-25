@@ -33,8 +33,12 @@ use Test::More tests => 2;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -45,14 +49,14 @@ if (open my $fh, '>', 'bug.rc')
 # marked completed
 
 # Setup: Add a recurring task
-qx{../src/task rc:bug.rc add Test due:3d rec:1w 2>&1};
+qx{../src/task rc:$rc add Test due:3d rec:1w 2>&1};
 
 # Result: Immediately delete the created task
-my $output = qx{../src/task rc:bug.rc 1 done 2>&1};
-like   ($output, qr/is neither pending nor waiting/, 'Parent task not completable');
-unlike ($output, qr/Completed 1/ms, 'New recurring task cannot be immediately completed.');
+my $output = qx{../src/task rc:$rc 1 done 2>&1};
+like   ($output, qr/is neither pending nor waiting/, "$ut: Parent task not completable");
+unlike ($output, qr/Completed 1/ms,                  "$ut: New recurring task cannot be immediately completed.");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
