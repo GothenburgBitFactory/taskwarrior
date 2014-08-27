@@ -105,15 +105,9 @@ int Context::initialize (int argc, const char** argv)
 
     // Initialize the command line parser.
     program = (argc ? argv[0] : "task");
-    parser.initialize (argc, argv);                 // task arg0 arg1 ...
 
-    // echo one two -- three | task zero --> task zero one two
-    // 'three' is left in the input buffer.
-    parser.appendStdin ();                          // echo stdin0 | task ...
-
-    // Process 'rc:<file>' command line override.
-    parser.findOverrides ();                        // rc:<file>  rc.<name>:<value>
-    parser.getOverrides (home_dir, rc_file);        // <-- <file>
+    // Scan command line for 'rc:<file>' only.
+    Parser::getOverrides (argc, argv, rc_file._data);
 
     // TASKRC environment variable overrides the command line.
     char* override = getenv ("TASKRC");
@@ -125,8 +119,23 @@ int Context::initialize (int argc, const char** argv)
 
     // Dump any existing values and load rc file.
     config.clear ();
-    config.load  (rc_file);
+    config.load (rc_file);
     loadAliases ();
+
+    // These are needed in Parser::initialize.
+    Lexer::dateFormat            = config.get ("dateformat");
+    Variant::dateFormat          = config.get ("dateformat");
+    Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
+
+    parser.initialize (argc, argv);                 // task arg0 arg1 ...
+
+    // echo one two -- three | task zero --> task zero one two
+    // 'three' is left in the input buffer.
+    parser.appendStdin ();                          // echo stdin0 | task ...
+
+    // Process 'rc:<file>' command line override.
+    parser.findOverrides ();                        // rc:<file>  rc.<name>:<value>
+    parser.getOverrides (home_dir, rc_file);        // <-- <file>
 
     // The data location, Context::data_dir, is determined from the assumed
     // location (~/.task), or set by data.location in the config file, or
