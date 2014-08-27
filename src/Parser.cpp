@@ -63,6 +63,26 @@ Parser::~Parser ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Static method.
+void Parser::getOverrides (
+  int argc,
+  const char** argv,
+  std::string& rc_file)
+{
+  for (int i = 0; i < argc; ++i)
+  {
+    std::string raw = argv[i];
+    if (raw.length () > 3 &&
+        raw.substr (0, 3) == "rc:")
+    {
+      rc_file = raw.substr (3);
+    }
+
+    // Keep looping, so we capture the last one.
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // char** argv --> std::vector <std::string> _args
 void Parser::initialize (int argc, const char** argv)
 {

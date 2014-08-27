@@ -37,6 +37,9 @@ class Parser
 public:
   Parser ();
   ~Parser ();
+
+  static void getOverrides (int, const char**, std::string&);
+
   void initialize (int, const char**);
   void clear ();
   void appendStdin ();
