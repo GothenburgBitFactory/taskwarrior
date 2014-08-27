@@ -969,7 +969,7 @@ void Parser::findAttribute ()
     for (i = nodes.begin (); i != nodes.end (); ++i)
     {
       std::string raw = (*i)->attribute ("raw");
-      if ((*i)->hasTag ("--"))
+      if (raw == "--")
         break;
 
       if (! (*i)->hasTag ("?"))
@@ -1066,11 +1066,17 @@ void Parser::findAttributeModifier ()
     action = false;
 
     std::vector <Tree*> nodes;
-    collect (nodes);
+    collect (nodes, collectAll);
     std::vector <Tree*>::iterator i;
     for (i = nodes.begin (); i != nodes.end (); ++i)
     {
       std::string raw = (*i)->attribute ("raw");
+      if (raw == "--")
+        break;
+
+      if (! (*i)->hasTag ("?"))
+        continue;
+
       Nibbler n (raw);
 
       std::string name;
@@ -1280,7 +1286,6 @@ void Parser::findIdSequence ()
     for (i = nodes.begin (); i != nodes.end (); ++i)
     {
       std::string raw = (*i)->attribute ("raw");
-
       if (raw == "--")
         break;
 
@@ -1449,7 +1454,6 @@ void Parser::findUUIDList ()
     for (i = nodes.begin (); i != nodes.end (); ++i)
     {
       std::string raw = (*i)->attribute ("raw");
-
       if (raw == "--")
         break;
 
