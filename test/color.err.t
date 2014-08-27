@@ -51,10 +51,10 @@ if (open my $fh, '>', $rc)
 
 # Test the errors colors
 my $output = qx{../src/task rc:$rc rc.debug:on add foo priority:X 2>&1 >/dev/null};
-like ($output, qr/^\033\[33m The\ 'priority'\ attribute\ does\ not\ allow\ a\ value\ of\ 'X'\. \033\[0m$/xms, "$ut: color.error");
-like ($output, qr/^\033\[32m Timer\ Config::load\ \(.+$rc\) .* \033\[0m$/xms,                                 "$ut: color.debug");
-like ($output, qr/^\033\[34m Using\ alternate\ .taskrc\ file\ /xms,                                           "$ut: color.header");
-like ($output, qr/^\033\[31m Configuration\ override\ rc.debug:on \033\[0m$/xms,                              "$ut: color.footnote");
+like ($output, qr/^\033\[33mThe 'priority' attribute does not allow a value of 'X'\./ms, "$ut: color.error");
+like ($output, qr/^\033\[32mTimer Config::load \(.*?$rc\)/ms,                            "$ut: color.debug");
+like ($output, qr/^\033\[34mUsing alternate \.taskrc file/ms,                            "$ut: color.header");
+like ($output, qr/^\033\[31mConfiguration override rc\.debug:on/ms,                      "$ut: color.footnote");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
