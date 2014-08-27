@@ -5,7 +5,7 @@ New Features in taskwarrior 2.4.0
   - Removed deprecated commands 'push', 'pull' and 'merge'.
   - Portuguese (por-PRT) localization.
   - French (fra-FRA) localization.
-  - Esperanto (epo-EPO) localization.
+  - Esperanto (epo-RUS) localization.
   - Better handling for deletion of recurring tasks.
   - New virtual tags: YESTERDAY, TOMORROW, READY, PENDING, COMPLETED, DELETED,
     TAGGED.

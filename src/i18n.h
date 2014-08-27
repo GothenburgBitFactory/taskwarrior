@@ -54,8 +54,8 @@
 #include <ita-ITA.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_POR_PRT
 #include <por-PRT.h>
-#elif PACKAGE_LANGUAGE == LANGUAGE_EPO_EPO
-#include <epo-EPO.h>
+#elif PACKAGE_LANGUAGE == LANGUAGE_EPO_RUS
+#include <epo-RUS.h>
 #endif
 
 #endif
