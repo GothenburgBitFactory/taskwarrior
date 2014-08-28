@@ -43,19 +43,19 @@
 // Translators:
 //   Add more, as appropriate.
 #if PACKAGE_LANGUAGE == LANGUAGE_ENG_USA
-#include <eng-USA.h>
+#include <l10n/eng-USA.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_ESP_ESP
-#include <esp-ESP.h>
+#include <l10n/esp-ESP.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_FRA_FRA
-#include <fra-FRA.h>
+#include <l10n/fra-FRA.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_DEU_DEU
-#include <deu-DEU.h>
+#include <l10n/deu-DEU.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_ITA_ITA
-#include <ita-ITA.h>
+#include <l10n/ita-ITA.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_POR_PRT
-#include <por-PRT.h>
+#include <l10n/por-PRT.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_EPO_RUS
-#include <epo-RUS.h>
+#include <l10n/epo-RUS.h>
 #endif
 
 #endif
