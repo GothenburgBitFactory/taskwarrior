@@ -33,8 +33,12 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'bug.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   print $fh "confirmation=no\n";
@@ -46,10 +50,10 @@ if (open my $fh, '>', 'bug.rc')
 
 # Split on comma instead of hyphenating
 
-my $output = qx{../src/task rc:bug.rc show report.next.columns 2>&1};
-unlike ($output, qr/-/, 'split on comma for comma-separated lists');
+my $output = qx{../src/task rc:$rc show report.next.columns 2>&1};
+unlike ($output, qr/-/, "$ut: split on comma for comma-separated lists");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
