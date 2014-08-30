@@ -86,10 +86,10 @@ $output = qx{../src/task rc:abbrev.rc ver 2>&1};
 like ($output, qr/MIT\s+license/, 'version');
 
 $output = qx{../src/task rc:abbrev.rc ve 2>&1};
-unlike ($output, qr/MIT\s+license/, 'version');
+like ($output, qr/MIT\s+license/, 'version');
 
 $output = qx{../src/task rc:abbrev.rc v 2>&1};
-unlike ($output, qr/MIT\s+license/, 'version');
+like ($output, qr/MIT\s+license/, 'version');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data abbrev.rc);
