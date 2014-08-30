@@ -33,8 +33,12 @@ use Test::More tests => 19;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'abbrev.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "abbreviation.minimum=1\n";
@@ -42,56 +46,56 @@ if (open my $fh, '>', 'abbrev.rc')
 }
 
 # Test the priority attribute abbrevations.
-qx{../src/task rc:abbrev.rc add priority:H with 2>&1};
-qx{../src/task rc:abbrev.rc add without 2>&1};
+qx{../src/task rc:$rc add priority:H with 2>&1};
+qx{../src/task rc:$rc add without 2>&1};
 
-my $output = qx{../src/task rc:abbrev.rc list priority:H 2>&1};
-like   ($output, qr/\bwith\b/,    'priority:H with');
-unlike ($output, qr/\bwithout\b/, 'priority:H without');
+my $output = qx{../src/task rc:$rc list priority:H 2>&1};
+like   ($output, qr/\bwith\b/,    "$ut: priority:H with");
+unlike ($output, qr/\bwithout\b/, "$ut: priority:H without");
 
-$output = qx{../src/task rc:abbrev.rc list priorit:H 2>&1};
-like   ($output, qr/\bwith\b/,    'priorit:H with');
-unlike ($output, qr/\bwithout\b/, 'priorit:H without');
+$output = qx{../src/task rc:$rc list priorit:H 2>&1};
+like   ($output, qr/\bwith\b/,    "$ut: priorit:H with");
+unlike ($output, qr/\bwithout\b/, "$ut: priorit:H without");
 
-$output = qx{../src/task rc:abbrev.rc list priori:H 2>&1};
-like   ($output, qr/\bwith\b/,    'priori:H with');
-unlike ($output, qr/\bwithout\b/, 'priori:H without');
+$output = qx{../src/task rc:$rc list priori:H 2>&1};
+like   ($output, qr/\bwith\b/,    "$ut: priori:H with");
+unlike ($output, qr/\bwithout\b/, "$ut: priori:H without");
 
-$output = qx{../src/task rc:abbrev.rc list prior:H 2>&1};
-like   ($output, qr/\bwith\b/,    'prior:H with');
-unlike ($output, qr/\bwithout\b/, 'prior:H without');
+$output = qx{../src/task rc:$rc list prior:H 2>&1};
+like   ($output, qr/\bwith\b/,    "$ut: prior:H with");
+unlike ($output, qr/\bwithout\b/, "$ut: prior:H without");
 
-$output = qx{../src/task rc:abbrev.rc list prio:H 2>&1};
-like   ($output, qr/\bwith\b/,    'prio:H with');
-unlike ($output, qr/\bwithout\b/, 'prio:H without');
+$output = qx{../src/task rc:$rc list prio:H 2>&1};
+like   ($output, qr/\bwith\b/,    "$ut: prio:H with");
+unlike ($output, qr/\bwithout\b/, "$ut: prio:H without");
 
-$output = qx{../src/task rc:abbrev.rc list pri:H 2>&1};
-like   ($output, qr/\bwith\b/,    'pri:H with');
-unlike ($output, qr/\bwithout\b/, 'pri:H without');
+$output = qx{../src/task rc:$rc list pri:H 2>&1};
+like   ($output, qr/\bwith\b/,    "$ut: pri:H with");
+unlike ($output, qr/\bwithout\b/, "$ut: pri:H without");
 
 # Test the version command abbreviations.
-$output = qx{../src/task rc:abbrev.rc version 2>&1};
-like ($output, qr/MIT\s+license/, 'version');
+$output = qx{../src/task rc:$rc version 2>&1};
+like ($output, qr/MIT\s+license/, "$ut: version");
 
-$output = qx{../src/task rc:abbrev.rc versio 2>&1};
-like ($output, qr/MIT\s+license/, 'version');
+$output = qx{../src/task rc:$rc versio 2>&1};
+like ($output, qr/MIT\s+license/, "$ut: version");
 
-$output = qx{../src/task rc:abbrev.rc versi 2>&1};
-like ($output, qr/MIT\s+license/, 'version');
+$output = qx{../src/task rc:$rc versi 2>&1};
+like ($output, qr/MIT\s+license/, "$ut: version");
 
-$output = qx{../src/task rc:abbrev.rc vers 2>&1};
-like ($output, qr/MIT\s+license/, 'version');
+$output = qx{../src/task rc:$rc vers 2>&1};
+like ($output, qr/MIT\s+license/, "$ut: version");
 
-$output = qx{../src/task rc:abbrev.rc ver 2>&1};
-like ($output, qr/MIT\s+license/, 'version');
+$output = qx{../src/task rc:$rc ver 2>&1};
+like ($output, qr/MIT\s+license/, "$ut: version");
 
-$output = qx{../src/task rc:abbrev.rc ve 2>&1};
-like ($output, qr/MIT\s+license/, 'version');
+$output = qx{../src/task rc:$rc ve 2>&1};
+like ($output, qr/MIT\s+license/, "$ut: version");
 
-$output = qx{../src/task rc:abbrev.rc v 2>&1};
-like ($output, qr/MIT\s+license/, 'version');
+$output = qx{../src/task rc:$rc v 2>&1};
+like ($output, qr/MIT\s+license/, "$ut: version");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data abbrev.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
