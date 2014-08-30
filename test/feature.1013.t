@@ -33,8 +33,12 @@ use Test::More tests => 8;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'outerr.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
@@ -44,30 +48,30 @@ if (open my $fh, '>', 'outerr.rc')
 # error
 
 # Check that errors are sent to standard error
-my $stdout = qx{../src/task rc:outerr.rc add 2> /dev/null};
-unlike ($stdout, qr/^Additional text must be provided\.$/ms, 'Errors are not sent to stdout');
-my $stderr = qx{../src/task rc:outerr.rc add 2>&1 >/dev/null};
-like ($stderr, qr/^Additional text must be provided\.$/ms, 'Errors are sent to stderr');
+my $stdout = qx{../src/task rc:$rc add 2> /dev/null};
+unlike ($stdout, qr/^Additional text must be provided\.$/ms, "$ut: Errors are not sent to stdout");
+my $stderr = qx{../src/task rc:$rc add 2>&1 >/dev/null};
+like ($stderr, qr/^Additional text must be provided\.$/ms, "$ut: Errors are sent to stderr");
 
 # Check that headers are sent to standard error
-$stdout = qx{../src/task rc:outerr.rc list 2> /dev/null};
-unlike ($stdout, qr/^Using alternate .taskrc file .+outerr.rc$/ms, 'Headers are not sent to stdout');
-$stderr = qx{../src/task rc:outerr.rc list 2>&1 >/dev/null};
-like ($stderr, qr/^Using alternate .taskrc file .+outerr.rc$/ms, 'Headers are sent to stderr');
+$stdout = qx{../src/task rc:$rc list 2> /dev/null};
+unlike ($stdout, qr/^Using alternate .taskrc file .+$rc$/ms, "$ut: Headers are not sent to stdout");
+$stderr = qx{../src/task rc:$rc list 2>&1 >/dev/null};
+like ($stderr, qr/^Using alternate .taskrc file .+$rc$/ms, "$ut: Headers are sent to stderr");
 
 # Check that footnotes are sent to standard error
-$stdout = qx{../src/task rc:outerr.rc rc.debug:on list 2> /dev/null};
-unlike ($stdout, qr/^Configuration override rc.debug:on$/ms, 'Footnotes are not sent to stdout');
-$stderr = qx{../src/task rc:outerr.rc rc.debug:on list 2>&1 >/dev/null};
-like ($stderr, qr/^Configuration override rc.debug:on$/ms, 'Footnotes are sent to stderr');
+$stdout = qx{../src/task rc:$rc rc.debug:on list 2> /dev/null};
+unlike ($stdout, qr/^Configuration override rc.debug:on$/ms, "$ut: Footnotes are not sent to stdout");
+$stderr = qx{../src/task rc:$rc rc.debug:on list 2>&1 >/dev/null};
+like ($stderr, qr/^Configuration override rc.debug:on$/ms, "$ut: Footnotes are sent to stderr");
 
 # Check that debugs are sent to standard error
-$stdout = qx{../src/task rc:outerr.rc rc.debug:on list 2> /dev/null};
-unlike ($stdout, qr/^Timer Config::load \(.+outerr.rc\) /ms, 'Debugs are not sent to stdout');
-$stderr = qx{../src/task rc:outerr.rc rc.debug:on list 2>&1 >/dev/null};
-like ($stderr, qr/^Timer Config::load \(.+outerr.rc\) /ms, 'Debugs are sent to stderr');
+$stdout = qx{../src/task rc:$rc rc.debug:on list 2> /dev/null};
+unlike ($stdout, qr/^Timer Config::load \(.+$rc\) /ms, "$ut: Debugs are not sent to stdout");
+$stderr = qx{../src/task rc:$rc rc.debug:on list 2>&1 >/dev/null};
+like ($stderr, qr/^Timer Config::load \(.+$rc\) /ms, "$ut: Debugs are sent to stderr");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data outerr.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
