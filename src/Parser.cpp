@@ -94,7 +94,7 @@ void Parser::initialize (int argc, const char** argv)
   // Create top-level nodes.
   for (int i = 0; i < argc; ++i)
   {
-    std::string raw = argv[i];
+    std::string raw = trim (argv[i]);
     Tree* branch = _tree->addBranch (new Tree (format ("arg{1}", i)));
     branch->attribute ("raw", raw);
     branch->tag ("ORIGINAL");

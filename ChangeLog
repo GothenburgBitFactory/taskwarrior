@@ -57,6 +57,8 @@
 - TW-257 limit: not working properly (thanks to Aikido Guy).
 - TW-259 Hyphenated words are split when added (thanks to Ben Boeckel).
 - TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
+- TW-262 Attribute modifiers not working within parentheses (thanks to Johannes
+         Schlatow).
 - TW-266 Allow project auto-completion to search completed tasks (thanks to
          Kosta Harlan).
 - TW-271 Parser still looks for task id even when -- is used (thanks to Jim B).
@@ -1071,7 +1073,7 @@ Bugs
 - Fixed bug #494, causing imported text files to ultimately lack uuids
   (thanks to Elizabeth Maxson).
 - Fixed problem with command line configuration overrides that had no
-  values. 
+  values.
 - Fixed problem with the 'undo' command not observing the rc.color or the
   rc._forcecolor settings.
 - Fixed problem with extra blank line in the ghistory reports.
@@ -1094,7 +1096,7 @@ Bugs
   configuration settings or just the ones matching a search string.
   'task config' is now only used to set new configuration values.
 - Added feature #298, supporting a configurable number of future recurring
-  tasks that are generated. 
+  tasks that are generated.
 - Added feature #412, which allows the 'projects' and 'tags' commands to be
   list all used projects/tags, not just the ones used in current pending tasks.
   Controlled by the 'list.all.projects' and 'list.all.tags' configuration
@@ -1323,7 +1325,7 @@ Bugs
 1.8.1 (8/20/2009) 35792e7874d2bb664abb1a0a67960b7fe7e0fccf
 - Fixed bug #231 that broke the build on OpenBSD 32-bit due to a time_t
   and int collision (thanks to Pietro Cerutti).
-- Fixed bug #241 that prevented bash's tab-completion of projects in Fedora 
+- Fixed bug #241 that prevented bash's tab-completion of projects in Fedora
   11 and likely anything using bash-4 (thanks to John Florian).
 - Fixed bug #242 that sometimes causes the ID echoed after a task is added
   to be incorrect (thanks to John Florian).
