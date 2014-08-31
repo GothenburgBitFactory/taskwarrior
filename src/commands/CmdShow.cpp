@@ -342,7 +342,6 @@ int CmdShow::execute (std::string& output)
 
   // TODO Check for referenced but missing theme files.
   // TODO Check for referenced but missing string files.
-  // TODO Check for referenced but missing tips files.
 
   // Check for bad values in rc.calendar.details.
   std::string calendardetails = context.config.get ("calendar.details");
