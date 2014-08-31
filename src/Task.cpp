@@ -303,7 +303,7 @@ time_t Task::get_date (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 void Task::set (const std::string& name, const std::string& value)
 {
-  (*this)[name] = value;
+  (*this)[name] = json::decode (value);
 
   recalc_urgency = true;
 }
