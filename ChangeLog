@@ -61,6 +61,7 @@
          Schlatow).
 - TW-266 Allow project auto-completion to search completed tasks (thanks to
          Kosta Harlan).
+- TW-268 escaped backslashes do not work with "modify" (thanks to Steve Rader).
 - TW-271 Parser still looks for task id even when -- is used (thanks to Jim B).
 - TW-276 Path is wrongly added when using annotate (thanks to Jostein Berntsen).
 - TW-277 Complex filters can skip infix term expansion.
