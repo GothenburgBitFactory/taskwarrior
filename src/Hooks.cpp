@@ -38,6 +38,7 @@
 #include <Context.h>
 #include <Hooks.h>
 #include <text.h>
+#include <util.h>
 
 extern Context context;
 
@@ -90,7 +91,8 @@ void Hooks::onLaunch ()
   for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
   {
     std::string output;
-    int status = execute (*i, "", output);
+    std::vector <std::string> args;
+    int status = execute (*i, args, "", output);
 
     std::vector <std::string> lines;
     split (lines, output, '\n');
@@ -146,7 +148,8 @@ bool Hooks::onExit ()
   for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
   {
     std::string output;
-    int status = execute (*i, "", output);
+    std::vector <std::string> args;
+    int status = execute (*i, args, "", output);
 
     std::vector <std::string> lines;
     split (lines, output, '\n');
@@ -206,7 +209,8 @@ void Hooks::onAdd (Task& after)
   {
     std::string input = after.composeJSON () + "\n";
     std::string output;
-    int status = execute (*i, input, output);
+    std::vector <std::string> args;
+    int status = execute (*i, args, input, output);
 
     std::vector <std::string> lines;
     split (lines, output, '\n');
@@ -280,7 +284,8 @@ void Hooks::onModify (const Task& before, Task& after)
                       + afterJSON
                       + "\n";
     std::string output;
-    int status = execute (*i, input, output);
+    std::vector <std::string> args;
+    int status = execute (*i, args, input, output);
 
     std::vector <std::string> lines;
     split (lines, output, '\n');
@@ -344,68 +349,6 @@ std::vector <std::string> Hooks::scripts (const std::string& event)
   }
 
   return matching;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-int Hooks::execute (
-  const std::string& command,
-  const std::string& input,
-  std::string& output)
-{
-  // TODO Improve error handling.
-  // TODO Check errors.
-
-  int pin[2], pout[2];
-  pipe (pin);
-  pipe (pout);
-
-  pid_t pid = fork();
-  if (!pid)
-  {
-    // This is only reached in the child
-    dup2 (pin[0], STDIN_FILENO);
-    dup2 (pout[1], STDOUT_FILENO);
-    if (! execl (command.c_str (), command.c_str (), (char*) NULL))
-      exit (1);
-  }
-
-  // This is only reached in the parent
-  close (pin[0]);
-  close (pout[1]);
-
-  // Write input to fp.
-  FILE* pinf = fdopen (pin[1], "w");
-  if (input != "" &&
-      input != "\n")
-  {
-    fputs (input.c_str (), pinf);
-  }
-
-  fclose (pinf);
-  close (pin[1]);
-
-  // Read output from fp.
-  output = "";
-  char* line = NULL;
-  size_t len = 0;
-  FILE* poutf = fdopen(pout[0], "r");
-  while (getline (&line, &len, poutf) != -1)
-  {
-    output += line;
-  }
-
-  free (line);
-  line = NULL;
-  fclose (poutf);
-  close (pout[0]);
-
-  int status = -1;
-  wait (&status);
-  if (WIFEXITED (status))
-    status = WEXITSTATUS (status);
-
-  context.debug (format ("Hooks::execute {1} (status {2})", command, status));
-  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
