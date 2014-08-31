@@ -336,21 +336,19 @@ int CmdCalendar::execute (std::string& output)
       if (context.commands.find (report) == context.commands.end ())
         throw std::string (STRING_ERROR_DETAILS);
 
-      std::string report_filter = context.config.get ("report." + report + ".filter");
+      std::string executable = context.parser.tree ()->_branches[0]->attribute ("raw");
 
-      context.parser.clear ();
-      context.parser.captureFirst ("task");
-      context.parser.parse ();
-
-      report_filter += " due.after:" + after + " due.before:" + before + " -nocal";
-      context.config.set ("report." + report + ".filter", report_filter);
-
-      // Display all due tasks in the report colorized not only the imminent
-      // ones.
-      context.config.set ("due", 0);
+      std::vector <std::string> args;
+      args.push_back ("rc:" + context.rc_file._data);
+      args.push_back ("rc.due:0");
+      args.push_back ("rc.verbose:label,affected,blank");
+      args.push_back ("due.after:" + after);
+      args.push_back ("due.before:" + before);
+      args.push_back ("-nocal");
+      args.push_back (report);
 
       std::string output;
-      context.commands[report]->execute (output);
+      ::execute (executable, args, "", output);
       out << output;
     }
 
