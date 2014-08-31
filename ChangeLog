@@ -148,6 +148,8 @@
 - TW-1381 blocking report exits with "Unknown error" and exit code 3.
 - TW-1383 Segmentation fault running import-yaml.pl with included example
           (thanks to Markus Beppler).
+- TW-1403 fish shell: no option "modify" after task selection (thanks to Roman
+          Infliansksas).
 - TW-1405 Add command _zshattributes (thanks to Roman Inflianskas).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.

@@ -1,9 +1,12 @@
-# tab completions for the Fish shell <http://fishshell.org>
+# Taskwarrior completions for the Fish shell <http://fishshell.org>
 #
 # taskwarrior - a command line task list manager.
 #
-# Copy this script to ~/.config/fish/completions/task.fish, open a new shell,
-# and enjoy.
+# Completions should work out of box. If it isn't, fill the bug report on your
+# operation system bug tracker.
+#
+# As a workaround you can copy this script to
+# ~/.config/fish/completions/task.fish, and open a new shell.
 #
 # Objects completed:
 #  * Commands
@@ -12,7 +15,7 @@
 #  * Tags
 #  * Attribute names and modifiers
 #
-#  Copyright 2009 - 2014 Mick Koch <kchmck@gmail.com>
+# Copyright 2014 Roman Inflianskas <infroma@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,31 +37,109 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 
+
+# convinience functions
+
+function __fish.task.log
+  for line in $argv
+    echo $line >&2
+  end
+end
+
+function __fish.task.partial
+  set wrapped $argv[1]
+  set what $argv[2]
+  set -q argv[3]; and set argv $argv[3..-1]
+  set f __fish.task.$wrapped.$what
+  functions -q $f; and eval $f $argv
+end
+
+
+# command line state detection
+
 function __fish.task.bare
     test (count (commandline -c -o)) -eq 1
 end
 
-function __fish.task.complete
-    complete -c task -u $argv
+function __fish.task.current.command
+  # find command in commandline by list intersection
+  begin; commandline -pco; and __fish.task.list._command all | cut -d ':' -f 1; end | sort | uniq -d | xargs
 end
 
-function __fish.task.head
-    task _ids
-    task _commands
+function __fish.task.before_command
+  test -z (__fish.task.current.command)
 end
 
-function __fish.task.attrs
-    echo project
-    echo priority
-    echo due
-    echo recur
-    echo until
-    echo limit
-    echo wait
-    echo rc
+
+# checking need to complete
+
+function __fish.task.need_to_complete.attr_name
+  __fish.task.need_to_complete.filter; or contains (__fish.task.current.command) (__fish.task.list.command_mods)
 end
 
-function __fish.task.mods
+function __fish.task.need_to_complete.attr_value
+  __fish.task.need_to_complete.filter
+end
+
+function __fish.task.need_to_complete.command
+  switch $argv
+    case all
+      __fish.task.bare
+    case filter
+      __fish.task.before_command
+  end
+end
+
+function __fish.task.need_to_complete.filter
+  __fish.task.before_command
+end
+
+function __fish.task.need_to_complete.id
+  __fish.task.need_to_complete.filter
+end
+
+function __fish.task.need_to_complete
+  __fish.task.partial need_to_complete $argv
+end
+
+
+# list printers
+
+function __fish.task.list.attr_name
+  task _columns | sed 's/$/:/g'
+  echo rc
+end
+
+function __fish.task.list._command
+  task _zshcommands $argv
+end
+
+function __fish.task.list.command
+  # ignore special commands
+  __fish.task.list._command $argv | grep -Ev '^_'
+end
+
+function __fish.task.list.command_mods
+  # BUG: fill issue to have _zshcommand mods
+  for command in 'add' 'annotate' 'append' 'delete' 'done' 'duplicate' 'log' 'modify' 'prepend' 'start' 'stop'
+    echo $command
+  end
+end
+
+function __fish.task.list.depends
+  task _ids
+end
+
+function __fish.task.list.description
+  task _zshids | cut -d ':' -f 2
+end
+
+function __fish.task.list.id
+  task _zshids
+end
+
+function __fish.task.list.mod
+  # BUG: remove in 2.4.0
     echo before
     echo after
     echo over
@@ -74,66 +155,82 @@ function __fish.task.mods
     echo noword
 end
 
-function __fish.task.combos
-    echo $argv[1]:$argv[2]
-
-    for mod in (__fish.task.mods)
-        echo $argv[1].$mod:$argv[2]
-    end
+function __fish.task.list.priority
+  echo H
+  echo M
+  echo L
 end
 
-function __fish.task.combos.simple
-    __fish.task.combos $argv ""
+function __fish.task.list.project
+    task _projects
 end
 
-function __fish.task.projects
-    __fish.task.combos.simple project
-
-    for project in (task _projects)
-        __fish.task.combos project $project
-    end
-end
-
-function __fish.task.priorities
-    __fish.task.combos.simple priority
-
-    for priority in H M L
-        __fish.task.combos priority $priority
-    end
-end
-
-function __fish.task.rc
+function __fish.task.list.rc
     echo rc:
-
     for value in (task _config)
         echo rc.$value:
     end
 end
 
-function __fish.task.tags
+function __fish.task.list.status
+  echo pending
+  echo completed
+  echo deleted
+  echo waiting
+end
+
+function __fish.task.list.tag
     for tag in (task _tags)
         echo +$tag
         echo -$tag
     end
 end
 
-function __fish.task.match
-    __fish.task.attrs | grep \^(echo $argv | sed -E "s/(\w+).+/\1/")
+function __fish.task.list.task
+  task _zshids | sed -E 's/^(.*):(.*)$/"\2":\1/g'
 end
 
-function __fish.task.attr
-    for attr in (__fish.task.match $argv)
-        switch $attr
-            case project
-                __fish.task.projects
-            case priority
-                __fish.task.priorities
-            case rc
-                __fish.task.rc
-            case "*"
-                __fish.task.combos.simple $attr
-        end
+function __fish.task.list
+  __fish.task.partial list $argv
+end
+
+
+# working with attributes
+
+function __fish.task.combos_simple
+  set attr_name $argv[1]
+  set -q argv[2]; and set attr_values $argv[2..-1]
+  if [ (count $attr_values) -gt 0 ]
+    for attr_value in $attr_values
+      echo "$attr_name:$attr_value"
     end
+  else
+    echo $attr_name:
+  end
+end
+
+function __fish.task.combos_with_mods
+  # BUG: remove in 2.4.0
+  __fish.task.combos_simple $argv
+    for mod in (__fish.task.list.mod)
+        __fish.task.combos_simple $argv[1].$mod $argv[2..-1]
+    end
+end
+
+function __fish.task.list.attr_value
+  set attr $argv[1]
+  switch $attr
+    case 'depends' 'limit' 'priority' 'rc' 'status'
+      __fish.task.combos_simple $attr (__fish.task.list $attr)
+    # case 'description' 'due' 'entry' 'end' 'start' 'project' 'recur' 'until' 'wait'
+    case '*'
+      # BUG: remove in 2.4.0
+      if echo (commandline -ct) | grep -q '\.'
+        __fish.task.combos_with_mods $attr (__fish.task.list $attr)
+      else
+        __fish.task.combos_simple $attr (__fish.task.list $attr)
+      end
+  end
 end
 
 function __fish.task.body
@@ -141,12 +238,47 @@ function __fish.task.body
 
     if test -n $token
         __fish.task.attr $token
-    else
-        __fish.task.attrs
     end
 
-    __fish.task.tags
+    __fish.task.list.tag
 end
 
-__fish.task.complete -f -n __fish.task.bare -a "(__fish.task.head)"
-__fish.task.complete -f -n "not __fish.task.bare" -a "(__fish.task.body)"
+
+# actual completion
+
+function __fish.task.complete
+    complete -c task -A -f $argv
+end
+
+function __fish.task.complete.with_description_2
+    # argv: list_command check_function
+  for arg_description in (eval $argv[1])
+    set arg         (echo $arg_description | cut -d ':' -f 1)
+    set description (echo $arg_description | cut -d ':' -f 2)
+    __fish.task.complete -n $argv[2] -a $arg -d $description
+  end
+end
+
+function __fish.task.complete.with_description
+  __fish.task.complete.with_description_2 "__fish.task.list $argv" "__fish.task.need_to_complete $argv"
+end
+
+function __fish.task.list.current_attr_value
+  set token (commandline -ct | cut -d ':' -f 1 | cut -d '.' -f 1 | sed 's/[^a-z_.]//g; s/^\.$//g')
+  if test -n $token
+    set attr_names (__fish.task.list.attr_name | grep '^'$token | cut -d ':' -f 1)
+    for attr_name in $attr_names
+      if test -n $attr_name
+        __fish.task.list.attr_value $attr_name
+      end
+    end
+  end
+    __fish.task.list.tag
+end
+
+__fish.task.complete.with_description command all
+__fish.task.complete.with_description command filter
+__fish.task.complete.with_description id
+__fish.task.complete.with_description attr_name
+__fish.task.complete -n '__fish.task.need_to_complete.attr_name' -a '(__fish.task.list.current_attr_value)'
+

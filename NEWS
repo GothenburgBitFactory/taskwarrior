@@ -19,6 +19,7 @@ New Features in taskwarrior 2.4.0
   - Using a non-zero 'urgency.inherit.coefficient' value means a task inherits
     the urgency values of the dependency chain.
   - Listing breaks now supported.  See 'man taskrc'.
+  - New fish shell completion script.
 
 New commands in taskwarrior 2.4.0
 
