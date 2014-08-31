@@ -352,7 +352,7 @@ int Hooks::execute (
   const std::string& input,
   std::string& output)
 {
-  // TODO Improve error hnadling.
+  // TODO Improve error handling.
   // TODO Check errors.
 
   int pin[2], pout[2];
@@ -365,7 +365,7 @@ int Hooks::execute (
     // This is only reached in the child
     dup2 (pin[0], STDIN_FILENO);
     dup2 (pout[1], STDOUT_FILENO);
-    if (!execl (command.c_str (), command.c_str (), (char*) NULL))
+    if (! execl (command.c_str (), command.c_str (), (char*) NULL))
       exit (1);
   }
 
