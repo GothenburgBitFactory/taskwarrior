@@ -1047,7 +1047,7 @@ void Task::addAnnotation (const std::string& description)
   }
   while (has (key));
 
-  (*this)[key] = description;
+  (*this)[key] = json::decode (description);
   ++annotation_count;
   recalc_urgency = true;
 }
