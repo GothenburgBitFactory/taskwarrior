@@ -53,6 +53,7 @@ void uuid_unparse_lower (uuid_t uu, char *out);
 const std::string uuid ();
 
 int execute (const std::string&, const std::vector <std::string>&);
+int execute (const std::string&, const std::vector <std::string>&, const std::string&, std::string&);
 
 #ifdef SOLARIS
   #define LOCK_SH 1

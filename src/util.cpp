@@ -444,6 +444,72 @@ int execute (const std::string& executable, const std::vector<std::string>& argu
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Run a binary with args, capturing output.
+int execute (
+  const std::string& executable,
+  const std::vector <std::string>& args,
+  const std::string& input,
+  std::string& output)
+{
+  int pin[2], pout[2];
+  pipe (pin);
+  pipe (pout);
+
+  pid_t pid = fork();
+  if (!pid)
+  {
+    // This is only reached in the child
+    dup2 (pin[0], STDIN_FILENO);
+    dup2 (pout[1], STDOUT_FILENO);
+
+    char** argv = new char*[args.size () + 1];
+    for (unsigned int i = 0; i < args.size (); ++i)
+      argv[i] = (char*) args[i].c_str ();
+
+    argv[args.size ()] = NULL;
+
+    int ret = execvp (executable.c_str (), argv);
+    delete[] argv;
+    exit (ret);
+  }
+
+  // This is only reached in the parent
+  close (pin[0]);
+  close (pout[1]);
+
+  // Write input to fp.
+  FILE* pinf = fdopen (pin[1], "w");
+  if (input != "" &&
+      input != "\n")
+  {
+    fputs (input.c_str (), pinf);
+  }
+
+  fclose (pinf);
+  close (pin[1]);
+
+  // Read output from fp.
+  output = "";
+  char* line = NULL;
+  size_t len = 0;
+  FILE* poutf = fdopen(pout[0], "r");
+  while (getline (&line, &len, poutf) != -1)
+    output += line;
+
+  free (line);
+  line = NULL;
+  fclose (poutf);
+  close (pout[0]);
+
+  int status = -1;
+  wait (&status);
+  if (WIFEXITED (status))
+    status = WEXITSTATUS (status);
+
+  return status;
+}
+
 // Collides with std::numeric_limits methods
 #undef max
 
