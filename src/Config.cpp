@@ -374,7 +374,7 @@ std::string Config::_defaults =
   "report.recurring.description=Recurring Tasks\n"
   "report.recurring.labels=ID,Active,Age,D,P,Project,Tags,Recur,Sch,Due,Until,Description,Urg\n"
   "report.recurring.columns=id,start.age,entry.age,depends.indicator,priority,project,tags,recur,scheduled.countdown,due,until.age,description,urgency\n"
-  "report.recurring.filter= ( status:pending or status:waiting ) and +CHILD:\n"
+  "report.recurring.filter=(status:pending or status:waiting) and (+PARENT or +CHILD)\n"
   "report.recurring.sort=due+,urgency-,entry+\n"
   "\n"
   "report.waiting.description=Waiting (hidden) tasks\n"
