@@ -33,20 +33,24 @@ use Test::More tests => 1;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'backslash.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n";
   close $fh;
 }
 
 # Add a description with a backslash.
-qx{../src/task rc:backslash.rc add \\\\ 2>&1};
-my $output = qx{../src/task rc:backslash.rc ls 2>&1};
-like ($output, qr/\\/, 'Backslash preserved, no parsing issues');
+qx{../src/task rc:$rc add \\\\ 2>&1};
+my $output = qx{../src/task rc:$rc ls 2>&1};
+like ($output, qr/\\/, "$ut: Backslash preserved, no parsing issues");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data backslash.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
 ################################################################################
