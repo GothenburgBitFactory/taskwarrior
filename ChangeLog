@@ -47,6 +47,8 @@
          file (thanks to Andreas Kalex).
 - TW-244 task add "Description (Information)" results in
          "Description ( Information)".
+- TW-248 Substitute text doesn't work with forward slash (thanks to Jostein
+         Berntsen).
 - TW-249 Report filters don't allow parantheses (thanks to Philipp Woelfel).
 - TW-250 Opening parenthesis in description gets padded in task 2.0.0 bet 2
          (thanks to Michelle Crane).
