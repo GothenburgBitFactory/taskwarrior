@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 3;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -53,12 +53,6 @@ qx{../src/task rc:$rc 1 annotate foo\\\\ 2>&1};
 $output = qx{../src/task rc:$rc long 2>&1};
 like ($output, qr/one\\/, "$ut: Backslash preserved in description");
 like ($output, qr/foo\\/, "$ut: Backslash preserved in annotation 1");
-
-qx{../src/task rc:$rc 1 annotate bar\\\\ 2>&1};
-$output = qx{../src/task rc:$rc long 2>&1};
-like ($output, qr/one\\/, "$ut: Backslash preserved in description");
-like ($output, qr/foo\\/, "$ut: Backslash preserved in annotation 1");
-like ($output, qr/bar\\/, "$ut: Backslash preserved in annotation 2");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
