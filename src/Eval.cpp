@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream>
 #include <map>
 #include <time.h>
 #include <Context.h>
@@ -180,7 +179,7 @@ void Eval::compileExpression (const std::string& e)
   while (l.token (token, type))
   {
     if (_debug)
-      std::cout << "evaluateInfixExpression token '" << token << "' " << Lexer::type_name (type) << "\n";
+      context.debug ("evaluateInfixExpression token '" + token + "' " + Lexer::type_name (type));
     _compiled.push_back (std::pair <std::string, Lexer::Type> (token, type));
   }
 
@@ -247,9 +246,9 @@ void Eval::evaluatePostfixStack (
       values.pop_back ();
       if (_debug)
       {
-        std::cout << "[" << values.size () + 1 << "] eval pop '" << (std::string) right << "'\n";
-        std::cout << "[" << values.size () << "] eval operator '" << token->first << "'\n";
-        std::cout << "[" << values.size () << "] eval result push '" << (bool) !right << "'\n";
+        context.debug (format ("[{1}] eval pop '{2}'",      values.size () + 1, (std::string) right));
+        context.debug (format ("[{1}] eval operator '{2}'", values.size (),     token->first));
+        context.debug (format ("[{1}] eval result push '{2}'", values.size (),  (bool) !right));
       }
       values.push_back (! right);
     }
@@ -260,9 +259,9 @@ void Eval::evaluatePostfixStack (
       values.pop_back ();
       if (_debug)
       {
-        std::cout << "[" << values.size () + 1 << "] eval pop '" << (std::string) right << "'\n";
-        std::cout << "[" << values.size () << "] eval operator '" << token->first << "'\n";
-        std::cout << "[" << values.size () << "] eval result push '" << (bool) !right << "'\n";
+        context.debug (format ("[{1}] eval pop '{2}'",      values.size () + 1, (std::string) right));
+        context.debug (format ("[{1}] eval operator '{2}'", values.size (),     token->first));
+        context.debug (format ("[{1}] eval result push '{2}'", values.size (),  (bool) !right));
       }
       values.push_back (Variant (0) - right);
     }
@@ -272,7 +271,7 @@ void Eval::evaluatePostfixStack (
       // NOP?
       if (_debug)
       {
-        std::cout << "[" << values.size () << "] eval operator '" << token->first << "'\n";
+        context.debug (format ("[{1}] eval operator '{2}'", values.size (),     token->first));
       }
     }
 
@@ -287,9 +286,9 @@ void Eval::evaluatePostfixStack (
 
       if (_debug)
       {
-        std::cout << "[" << values.size () + 2 << "] eval pop '" << (std::string) right << "'\n";
-        std::cout << "[" << values.size () + 1 << "] eval pop '" << (std::string) left  << "'\n";
-        std::cout << "[" << values.size () << "] eval operator '" << token->first << "'\n";
+        context.debug (format ("[{1}] eval pop '{2}'",      values.size () + 2, (std::string) right));
+        context.debug (format ("[{1}] eval pop '{2}'",      values.size () + 1, (std::string) left));
+        context.debug (format ("[{1}] eval operator '{2}'", values.size (),     token->first));
       }
 
       // Ordering these by anticipation frequency of use is a good idea.
@@ -320,7 +319,7 @@ void Eval::evaluatePostfixStack (
         throw format (STRING_EVAL_UNSUPPORTED, token->first);
 
       if (_debug)
-        std::cout << "[" << values.size () << "] eval result push '" << (std::string) left << "'\n";
+        context.debug (format ("[{1}] eval result push '{2}'", values.size (), (std::string) left));
       values.push_back (left);
     }
 
@@ -352,7 +351,7 @@ void Eval::evaluatePostfixStack (
             if ((*source) (token->first, v))
             {
               if (_debug)
-                std::cout << "[" << values.size () << "] eval source '" << token->first << "' --> '" << (std::string) v << "'\n";
+                context.debug (format ("[{1}] eval source '{2}' --> '{3}'", values.size (), token->first, (std::string) v));
               found = true;
               break;
             }
@@ -363,7 +362,7 @@ void Eval::evaluatePostfixStack (
           {
             v.cast (Variant::type_string);
             if (_debug)
-              std::cout << "[" << values.size () << "] eval source failed '" << token->first << "'\n";
+              context.debug (format ("[{1}] eval source failed '{2}'", values.size (), token->first));
           }
         }
         break;
@@ -383,7 +382,7 @@ void Eval::evaluatePostfixStack (
       }
 
       if (_debug)
-        std::cout << "[" << values.size () << "] eval push '" << (std::string) v << "'\n";
+        context.debug (format ("[{1}] eval push '{2}'", values.size (), (std::string) v));
       values.push_back (v);
     }
   }
