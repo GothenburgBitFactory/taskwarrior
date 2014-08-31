@@ -21,6 +21,7 @@
 - #1511 sync init crashes if client certification file is empty or invalid
         (thanks to Marton Suranyi).
 - TW-5 color.due.today does not work (thanks to Max Muller).
+- TW-21 do not match a UDA if not followed by colon (thanks to Scott Kostyshak).
 - TW-28 Inserts spaces before punctuation characters (thanks to Matt Kraai).
 - TW-43 Better error handling than: "Found extra operands." (thanks to Benjamin
         Weber).
