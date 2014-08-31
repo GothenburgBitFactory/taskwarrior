@@ -33,8 +33,12 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'roundtrip.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "verbose=off\n",
@@ -45,18 +49,18 @@ if (open my $fh, '>', 'roundtrip.rc')
 }
 
 # Add two tasks.
-qx{../src/task rc:roundtrip.rc add priority:H project:A one/1 2>&1};
-qx{../src/task rc:roundtrip.rc add +tag1 +tag2 two 2>&1};
+qx{../src/task rc:$rc add priority:H project:A one/1 2>&1};
+qx{../src/task rc:$rc add +tag1 +tag2 two 2>&1};
 
 # trip 1.
-qx{../src/task rc:roundtrip.rc export > ./roundtrip1.json 2>&1};
+qx{../src/task rc:$rc export > ./roundtrip1.json 2>&1};
 unlink 'pending.data', 'completed.data', 'undo.data';
-qx{../src/task rc:roundtrip.rc rc.debug:1 import ./roundtrip1.json 2>&1};
+qx{../src/task rc:$rc rc.debug:1 import ./roundtrip1.json 2>&1};
 
 # trip 2.
-qx{../src/task rc:roundtrip.rc export > ./roundtrip2.json 2>&1};
+qx{../src/task rc:$rc export > ./roundtrip2.json 2>&1};
 unlink 'pending.data', 'completed.data', 'undo.data';
-qx{../src/task rc:roundtrip.rc import ./roundtrip2.json 2>&1};
+qx{../src/task rc:$rc import ./roundtrip2.json 2>&1};
 
 # Examine.
 #
@@ -65,15 +69,15 @@ qx{../src/task rc:roundtrip.rc import ./roundtrip2.json 2>&1};
 #  1 1/7/2014   H A                 one/1
 #  2 1/7/2014             tag1 tag2 two
 
-my $output = qx{../src/task rc:roundtrip.rc long 2>&1};
-like ($output, qr/1\s+\d+\/\d+\/\d+\s+H\s+A\s+one\/1/,    '2 round trips task 1 identical');
-like ($output, qr/2\s+\d+\/\d+\/\d+\s+tag1\s+tag2\s+two/, '2 round trips task 2 identical');
+my $output = qx{../src/task rc:$rc long 2>&1};
+like ($output, qr/1\s+\d+\/\d+\/\d+\s+H\s+A\s+one\/1/,    "$ut: 2 round trips task 1 identical");
+like ($output, qr/2\s+\d+\/\d+\/\d+\s+tag1\s+tag2\s+two/, "$ut: 2 round trips task 2 identical");
 
 # Compare the actual JSON files.
 $output = qx{diff ./roundtrip1.json ./roundtrip2.json 2>&1};
-like ($output, qr/^$/, 'JSON files roundtrip1.json and roundtrip2.json identical');
+like ($output, qr/^$/, "$ut: JSON files roundtrip1.json and roundtrip2.json identical");
 
 # Cleanup.
-unlink qw(roundtrip1.json roundtrip2.json pending.data completed.data undo.data backlog.data roundtrip.rc);
+unlink qw(roundtrip1.json roundtrip2.json pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
