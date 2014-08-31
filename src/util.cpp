@@ -394,62 +394,6 @@ void combine (std::vector <int>& dest, const std::vector <int>& source)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Run an external executable with execvp. This means stdio goes to
-// the child process, so that it can receive user input (e.g. passwords).
-//
-int execute (const std::string& executable, const std::vector<std::string>& arguments)
-{
-  if (executable == "")
-    return -1;
-
-  // create command line before forking because the parent process also needs this for
-  // calling context.debug ()
-  char shell [] = "sh";
-  char opt []   = "-c";
-
-  std::string cmdline = executable;
-
-  std::vector <std::string>::const_iterator it;
-  for (it = arguments.begin (); it != arguments.end (); ++it)
-    cmdline += " " + (std::string) *it;
-
-  context.debug ("Executing: " + std::string (shell) + " " + std::string (opt) + " " + cmdline);
-
-  pid_t child_pid = fork ();
-
-  if (child_pid == 0)
-  {
-    // this is done by the child process
-    char** argv = new char*[4];
-    argv[0] = shell;                    // sh
-    argv[1] = opt;                      // -c
-    argv[2] = (char*) cmdline.c_str (); // e.g. scp undo.data user@host:.task/
-    argv[3] = NULL;                     // required by execv
-
-    int ret = execvp (shell, argv);
-    delete[] argv;
-
-    exit (ret);
-  }
-  else if (child_pid == -1)
-  {
-    return -1;
-  }
-  else
-  {
-    // this is done by the parent process
-    int child_status;
-
-    pid_t pid = waitpid (child_pid, &child_status, 0);
-
-    if (pid == -1)
-      return -1;
-    else
-      return WEXITSTATUS (child_status);
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Run a binary with args, capturing output.
 int execute (
   const std::string& executable,
