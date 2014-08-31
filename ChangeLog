@@ -25,7 +25,8 @@
 - TW-43 Better error handling than: "Found extra operands." (thanks to Benjamin
         Weber).
 - TW-44 Space handling in dateformat (thanks to Louis-Claude Canon).
-- TW-72 extend info report with urgency column
+- TW-72 extend info report with urgency column.
+- TW-99 info report streamlining.
 - TW-101 New description column format: Truncated WITH annotation count (thanks
          to atomicules).
 - TW-115 allow "0day" durations for UDAs.
