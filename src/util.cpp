@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream>
 #include <fstream>
 #include <limits>
 #include <sstream>
@@ -45,6 +44,7 @@
 #define _WITH_GETLINE
 #endif
 #include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #include <string.h>
 #include <pwd.h>
