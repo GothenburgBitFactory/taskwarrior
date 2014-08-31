@@ -45,11 +45,11 @@ if (open my $fh, '>', $rc)
 }
 
 # Bug 879: Backslash at end of description/annotation causes problems.
-qx{../src/task rc:$rc add one\\\\ 2>&1};
+qx{../src/task rc:$rc add one\\\\\\\\ 2>&1};
 my $output = qx{../src/task rc:$rc long 2>&1};
 like ($output, qr/one\\/, "$ut: Backslash preserved in description");
 
-qx{../src/task rc:$rc 1 annotate foo\\\\ 2>&1};
+qx{../src/task rc:$rc 1 annotate foo\\\\\\\\ 2>&1};
 $output = qx{../src/task rc:$rc long 2>&1};
 like ($output, qr/one\\/, "$ut: Backslash preserved in description");
 like ($output, qr/foo\\/, "$ut: Backslash preserved in annotation 1");
