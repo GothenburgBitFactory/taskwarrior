@@ -42,7 +42,7 @@ class TestBug268(TestCase):
         """escaped backslashes do not work with 'modify'"""
 
         self.t(("add", "a", "b", "or", "c"))
-        self.t(("1", "modify", "/a\\ b/a\\/b/"))
+        self.t(("1", "modify", "/a b/a\/b/"))
 
         code, out, err = self.t(("1", "info"))
         self.assertIn("a/b or c", out)
