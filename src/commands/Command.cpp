@@ -38,6 +38,7 @@
 #include <CmdAliases.h>
 #include <CmdAnnotate.h>
 #include <CmdAppend.h>
+#include <CmdAttributes.h>
 #include <CmdBurndown.h>
 #include <CmdCalc.h>
 #include <CmdCalendar.h>
@@ -155,6 +156,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdUrgency ();            all[c->keyword ()] = c;
   c = new CmdUUIDs ();              all[c->keyword ()] = c;
   c = new CmdVersion ();            all[c->keyword ()] = c;
+  c = new CmdZshAttributes ();      all[c->keyword ()] = c;
   c = new CmdZshCommands ();        all[c->keyword ()] = c;
   c = new CmdZshCompletionIds ();   all[c->keyword ()] = c;
   c = new CmdZshCompletionUuids (); all[c->keyword ()] = c;

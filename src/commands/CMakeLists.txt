@@ -10,6 +10,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdAliases.cpp     CmdAliases.h
                    CmdAnnotate.cpp    CmdAnnotate.h
                    CmdAppend.cpp      CmdAppend.h
+                   CmdAttributes.cpp  CmdAttributes.h
                    CmdBurndown.cpp    CmdBurndown.h
                    CmdCalc.cpp        CmdCalc.h
                    CmdCalendar.cpp    CmdCalendar.h

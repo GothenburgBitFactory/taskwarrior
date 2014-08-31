@@ -511,6 +511,7 @@
 #define STRING_CMD_DIAG_HOOKS        "Hokoj"
 #define STRING_CMD_HCOMMANDS_USAGE   "Produktas liston de ĉia komando, por motivo memkompletada"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Produktas liston de ĉia komando, por motivo de memkompletado en zsh"
+#define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_CMD_ALIASES_USAGE     "Produktas liston de ĉia alinomo, por motivo memkompletada"
 #define STRING_CMD_INSTALL_USAGE     "Instalas kromprogramojn kaj eksternajn skribojn"
 

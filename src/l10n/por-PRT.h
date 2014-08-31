@@ -511,6 +511,7 @@
 #define STRING_CMD_DIAG_HOOKS        "Hooks"
 #define STRING_CMD_HCOMMANDS_USAGE   "Gera uma lista com todos os comandos, para fins de terminação automática"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Gera uma lista com todos os comandos, para terminação automática em zsh"
+#define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_CMD_ALIASES_USAGE     "Gera uma lista com todos os 'alias', para fins de terminação automática"
 #define STRING_CMD_INSTALL_USAGE     "Instala extensões e scripts externos"
 

@@ -511,6 +511,7 @@
 #define STRING_CMD_DIAG_HOOKS        "Hooks"
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera la lista di tutti i comandi, per autocompletamento"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera la lista di tutti i comandi, per autocompletamento in zsh"
+#define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_CMD_ALIASES_USAGE     "Genera la lista di tutti gli alias, per autocompletamento"
 #define STRING_CMD_INSTALL_USAGE     "Installa estensioni e script esterni"
 
