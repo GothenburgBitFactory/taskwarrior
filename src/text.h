@@ -80,6 +80,7 @@ const std::string format (const std::string&, const std::string&, int);
 const std::string format (const std::string&, const std::string&, double);
 const std::string format (const std::string&, int, int, const std::string&);
 const std::string format (const std::string&, int, const std::string&);
+const std::string format (const std::string&, int, const std::string&, const std::string&);
 const std::string format (const std::string&, int, int);
 const std::string format (const std::string&, int, int, int);
 const std::string format (const std::string&, int, int, int, int);
