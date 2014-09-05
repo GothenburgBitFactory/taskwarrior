@@ -791,6 +791,7 @@
 #define STRING_HELPER_PROJECT_CHANGE "Il progetto '{1}' è stato modificat."
 #define STRING_HELPER_PROJECT_COMPL  "Il progetto '{1}' è {2}% completo"
 #define STRING_HELPER_PROJECT_REM    "({1} di {2} task rimanenti)."
+#define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
 
 // JSON
 #define STRING_JSON_MISSING_VALUE    "Errore: mancato valore dopo ',' alla posizione {1}"

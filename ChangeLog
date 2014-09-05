@@ -151,6 +151,8 @@
 - TW-1403 fish shell: no option "modify" after task selection (thanks to Roman
           Infliansksas).
 - TW-1405 Add command _zshattributes (thanks to Roman Inflianskas).
+- TW-1409 Allow "1 of N tasks remaining" to be correctly localized (thanks to
+          Jeremy John Reeder).
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
