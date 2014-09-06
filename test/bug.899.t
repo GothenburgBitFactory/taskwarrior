@@ -47,7 +47,7 @@ if (open my $fh, '>', $rc)
 
 # Bug 899: task log does not behave correctly when logging into a project
 my $output = qx{../src/task rc:$rc add one pro:A 2>&1 >/dev/null};
-like ($output, qr/ 0% complete \(1 of 1 /, "$ut: 1 of 1 tasks remaining - 0%");
+like ($output, qr/ 0% complete \(1 task /, "$ut: 1 task remaining - 0%");
 
 $output = qx{../src/task rc:$rc add two pro:A 2>&1 >/dev/null};
 like ($output, qr/ 0% complete \(2 of 2 /, "$ut: 2 of 2 tasks remaining - 0%");
