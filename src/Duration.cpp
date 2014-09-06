@@ -209,10 +209,10 @@ std::string Duration::formatCompact () const
 
        if (_secs >= 86400 * 365) sprintf (formatted, "%.1fy", (days / 365.0));
   else if (_secs >= 86400 * 84)  sprintf (formatted, "%1dmo", (int) (days / 30));
-  else if (_secs >= 86400 * 13)  sprintf (formatted, "%dw",  (int) (float) (days / 7.0));
+  else if (_secs >= 86400 * 13)  sprintf (formatted, "%dw",   (int) (float) (days / 7.0));
   else if (_secs >= 86400)       sprintf (formatted, "%dd",   (int) days);
   else if (_secs >= 3600)        sprintf (formatted, "%dh",   (int) (_secs / 3600));
-  else if (_secs >= 60)          sprintf (formatted, "%dmin",   (int) (_secs / 60));
+  else if (_secs >= 60)          sprintf (formatted, "%dmin", (int) (_secs / 60));
   else if (_secs >= 1)           sprintf (formatted, "%ds",   (int) _secs);
   else                           formatted[0] = '\0';
 
