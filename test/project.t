@@ -33,8 +33,12 @@ use Test::More tests => 16;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'pro.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -42,42 +46,42 @@ if (open my $fh, '>', 'pro.rc')
 }
 
 # Test the project status numbers.
-my $output = qx{../src/task rc:pro.rc add one pro:foo 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(1 of 1 tasks remaining\)\./, 'add one');
+my $output = qx{../src/task rc:$rc add one pro:foo 2>&1 >/dev/null};
+like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(1 task remaining\)\./, "$ut: add one");
 
-$output = qx{../src/task rc:pro.rc add two pro:'foo' 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(2 of 2 tasks remaining\)\./, 'add two');
+$output = qx{../src/task rc:$rc add two pro:'foo' 2>&1 >/dev/null};
+like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(2 of 2 tasks remaining\)\./, "$ut: add two");
 
-$output = qx{../src/task rc:pro.rc add three pro:'foo' 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(3 of 3 tasks remaining\)\./, 'add three');
+$output = qx{../src/task rc:$rc add three pro:'foo' 2>&1 >/dev/null};
+like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(3 of 3 tasks remaining\)\./, "$ut: add three");
 
-$output = qx{../src/task rc:pro.rc add four pro:'foo' 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(4 of 4 tasks remaining\)\./, 'add four');
+$output = qx{../src/task rc:$rc add four pro:'foo' 2>&1 >/dev/null};
+like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(4 of 4 tasks remaining\)\./, "$ut: add four");
 
-$output = qx{../src/task rc:pro.rc 1 done 2>&1 >/dev/null};
-like ($output, qr/Project 'foo' is 25% complete \(3 of 4 tasks remaining\)\./, 'done one');
+$output = qx{../src/task rc:$rc 1 done 2>&1 >/dev/null};
+like ($output, qr/Project 'foo' is 25% complete \(3 of 4 tasks remaining\)\./, "$ut: done one");
 
-$output = qx{../src/task rc:pro.rc 2 delete 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 33% complete \(2 of 3 tasks remaining\)\./, 'delete two');
+$output = qx{../src/task rc:$rc 2 delete 2>&1 >/dev/null};
+like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 33% complete \(2 of 3 tasks remaining\)\./, "$ut: delete two");
 
-$output = qx{../src/task rc:pro.rc 3 modify pro:bar 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 50% complete \(1 of 2 tasks remaining\)\./, 'change project');
-like ($output, qr/The project 'bar' has changed\.  Project 'bar' is 0% complete \(1 of 1 tasks remaining\)\./, 'change project');
+$output = qx{../src/task rc:$rc 3 modify pro:bar 2>&1 >/dev/null};
+like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 50% complete \(1 task remaining\)\./, "$ut: change project");
+like ($output, qr/The project 'bar' has changed\.  Project 'bar' is 0% complete \(1 task remaining\)\./, "$ut: change project");
 
 # Test projects with spaces in them.
-$output = qx{../src/task rc:pro.rc 3 modify pro:"foo bar" 2>&1 >/dev/null};
-like ($output, qr/The project 'foo bar' has changed\./, 'project with spaces');
+$output = qx{../src/task rc:$rc 3 modify pro:"foo bar" 2>&1 >/dev/null};
+like ($output, qr/The project 'foo bar' has changed\./, "$ut: project with spaces");
 
 # Bug 1056: Project indentation.
 # see also the tests of helper functions for CmdProjects in util.t.cpp
-qx{../src/task rc:pro.rc add testing project:existingParent 2>&1 >/dev/null};
-qx{../src/task rc:pro.rc add testing project:existingParent.child 2>&1 >/dev/null};
-qx{../src/task rc:pro.rc add testing project:abstractParent.kid 2>&1 >/dev/null};
-qx{../src/task rc:pro.rc add testing project:.myProject 2>&1 >/dev/null};
-qx{../src/task rc:pro.rc add testing project:myProject. 2>&1 >/dev/null};
-qx{../src/task rc:pro.rc add testing project:.myProject. 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:existingParent 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:existingParent.child 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:abstractParent.kid 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:.myProject 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:myProject. 2>&1 >/dev/null};
+qx{../src/task rc:$rc add testing project:.myProject. 2>&1 >/dev/null};
 
-$output = qx{../src/task rc:pro.rc projects 2>&1};
+$output = qx{../src/task rc:$rc projects 2>&1};
 my @lines = split ('\n',$output);
 
 # It's easier to make a pattern for the end than the beginning because priority
@@ -91,7 +95,7 @@ else
 {
   $project_name_column = "error";
 }
-like ($project_name_column, qr/^\.myProject\s*$/, '\'.myProject\' not indented');
+like ($project_name_column, qr/^\.myProject\s*$/, "$ut: '.myProject' not indented");
 
 if ($lines[5] =~ s/\d+$//)
 {
@@ -101,7 +105,7 @@ else
 {
   $project_name_column = "error";
 }
-like ($project_name_column, qr/^\.myProject\.\s*$/, '\'.myProject.\' not indented');
+like ($project_name_column, qr/^\.myProject\.\s*$/, "$ut: '.myProject.' not indented");
 
 if ($lines[6] =~ s/\d+$//)
 {
@@ -111,7 +115,7 @@ else
 {
   $project_name_column = $lines[6];
 }
-like ($project_name_column, qr/^abstractParent\s*$/, 'abstract parent not indented and no priority columns');
+like ($project_name_column, qr/^abstractParent\s*$/, "$ut: abstract parent not indented and no priority columns");
 
 if ($lines[7] =~ s/\d+$//)
 {
@@ -121,7 +125,7 @@ else
 {
   $project_name_column = "error";
 }
-like ($project_name_column, qr/^  kid\s*$/, 'child indented and without parent name');
+like ($project_name_column, qr/^  kid\s*$/, "$ut: child indented and without parent name");
 
 if ($lines[8] =~ s/\d+$//)
 {
@@ -131,7 +135,7 @@ else
 {
   $project_name_column = "error";
 }
-like ($project_name_column, qr/^existingParent\s*$/, 'existing parent not indented and has priority columns');
+like ($project_name_column, qr/^existingParent\s*$/, "$ut: existing parent not indented and has priority columns");
 
 if ($lines[9] =~ s/\d+$//)
 {
@@ -141,7 +145,7 @@ else
 {
   $project_name_column = "error";
 }
-like ($project_name_column, qr/^  child\s*$/, 'child of existing parent indented and without parent name');
+like ($project_name_column, qr/^  child\s*$/, "$ut: child of existing parent indented and without parent name");
 
 if ($lines[12] =~ s/\d+$//)
 {
@@ -151,9 +155,9 @@ else
 {
   $project_name_column = "error";
 }
-like ($project_name_column, qr/^myProject\.\s*$/, '\'myProject.\' not indented');
+like ($project_name_column, qr/^myProject\.\s*$/, "$ut: 'myProject.' not indented");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data pro.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
