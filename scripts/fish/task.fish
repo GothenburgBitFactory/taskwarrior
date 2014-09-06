@@ -63,12 +63,12 @@ end
 # command line state detection
 
 function __fish.task.bare
-    test (count (commandline -c -o)) -eq 1
+  test (count (commandline -c -o)) -eq 1
 end
 
 function __fish.task.current.command
   # find command in commandline by list intersection
-  begin; commandline -pco; and __fish.task.list._command all | cut -d '  ' -f 1; end | sort | uniq -d | xargs
+  begin; commandline -pco; and __fish.task.list._command all | cut -d '	' -f 1; end | sort | uniq -d | xargs
 end
 
 function __fish.task.before_command
@@ -93,6 +93,10 @@ function __fish.task.need_to_complete.command
     case filter
       __fish.task.before_command
   end
+end
+
+function __fish.task.need_to_complete.config
+  contains (__fish.task.current.command) 'config' 'show'
 end
 
 function __fish.task.need_to_complete.filter
@@ -127,7 +131,7 @@ end
 function __fish.task.list.attr_value
   set token (commandline -ct | cut -d ':' -f 1 | cut -d '.' -f 1 | __fish.task.token_clean)
   if test -n $token
-    set attr_names (__fish.task.list.attr_name | sed 's/:\t/\t/g' | grep '^'$token | cut -d '  ' -f 1)
+    set attr_names (__fish.task.list.attr_name | sed 's/:\t/\t/g' | grep '^'$token | cut -d '	' -f 1)
     for attr_name in $attr_names
       if test -n $attr_name
         __fish.task.list.attr_value_by_name $attr_name
@@ -170,12 +174,16 @@ function __fish.task.list.command_mods
   end
 end
 
+function __fish.task.list.config
+  task _config
+end
+
 function __fish.task.list.depends
   __fish.task.list.id with_description
 end
 
 function __fish.task.list.description
-  __fish.task.zsh ids $argv | cut -d '  ' -f 2-
+  __fish.task.zsh ids $argv | cut -d '	' -f 2-
 end
 
 function __fish.task.list.id
@@ -201,13 +209,13 @@ function __fish.task.list.priority
 end
 
 function __fish.task.list.project
-    task _projects
+  task _projects
 end
 
 function __fish.task.list.rc
-    for value in (task _config)
-        echo rc.$value:
-    end
+  for value in (task _config)
+    echo rc.$value:
+  end
 end
 
 function __fish.task.list.status
@@ -218,10 +226,10 @@ function __fish.task.list.status
 end
 
 function __fish.task.list.tag
-    for tag in (task _tags)
-        echo +$tag
-        echo -$tag
-    end
+  for tag in (task _tags)
+    echo +$tag
+    echo -$tag
+  end
 end
 
 function __fish.task.list.task
@@ -261,9 +269,9 @@ end
 # BUG: remove in 2.4.0
 function __fish.task.combos_with_mods
   __fish.task.combos_simple $argv
-    for mod in (__fish.task.list.mod)
-        __fish.task.combos_simple $argv[1].$mod $argv[2..-1]
-    end
+  for mod in (__fish.task.list.mod)
+    __fish.task.combos_simple $argv[1].$mod $argv[2..-1]
+  end
 end
 
 
@@ -280,5 +288,6 @@ __fish.task.complete command all
 __fish.task.complete command filter
 __fish.task.complete attr_value
 __fish.task.complete attr_name
+__fish.task.complete config
 __fish.task.complete task
 __fish.task.complete id with_description
