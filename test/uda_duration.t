@@ -55,8 +55,8 @@ if (open my $fh, '>', $rc)
 qx{../src/task rc:$rc add with extra:1day 2>&1};
 qx{../src/task rc:$rc add without 2>&1};
 my $output = qx{../src/task rc:$rc uda 2>&1};
-like ($output, qr/1\s+1d\s+with/, "$ut: UDA duration stored");
-like ($output, qr/2\s+without/,   "$ut: UDA duration blank");
+like ($output, qr/1\s+P1D\s+with/, "$ut: UDA duration stored");
+like ($output, qr/2\s+without/,    "$ut: UDA duration blank");
 
 # Ensure 'extra' is stored in original form.
 $output = qx{../src/task rc:$rc 1 export 2>&1};

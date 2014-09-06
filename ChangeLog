@@ -43,6 +43,7 @@
          Muller).
 - TW-221 Migrate task-faq man page to the Wiki.
 - TW-230 Filter tasks on partial UUIDs (thanks to Paul Kishimoto).
+- TW-241 new column format; recur.short.
 - TW-242 extra Space when annotating a path/filename, taskopen can not open the
          file (thanks to Andreas Kalex).
 - TW-244 task add "Description (Information)" results in

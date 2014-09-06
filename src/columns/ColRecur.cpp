@@ -82,7 +82,7 @@ void ColumnRecur::measure (Task& task, unsigned int& minimum, unsigned int& maxi
   if (_style == "default" ||
       _style == "duration")
   {
-    minimum = maximum = Duration (task.get ("recur")).formatCompact ().length ();
+    minimum = maximum = Duration (task.get ("recur")).formatISO ().length ();
   }
   else if (_style == "indicator")
   {
@@ -100,21 +100,23 @@ void ColumnRecur::render (
   int width,
   Color& color)
 {
-  if (_style == "default" ||
-      _style == "duration")
+  if (task.has (_name))
   {
-    lines.push_back (
-      color.colorize (
-        rightJustify (
-          Duration (task.get ("recur")).formatCompact (),
-          width)));
-  }
-  else if (_style == "indicator")
-  {
-    if (task.has (_name))
+    if (_style == "default" ||
+        _style == "duration")
+    {
+      lines.push_back (
+        color.colorize (
+          rightJustify (
+            Duration (task.get ("recur")).formatISO (),
+            width)));
+    }
+    else if (_style == "indicator")
+    {
       lines.push_back (
         color.colorize (
           rightJustify (context.config.get ("recurrence.indicator"), width)));
+    }
   }
 }
 

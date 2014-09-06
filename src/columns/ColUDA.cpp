@@ -103,7 +103,7 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
       }
       else if (_type == "duration")
       {
-        minimum = maximum = utf8_width (Duration (value).formatCompact ());
+        minimum = maximum = utf8_width (Duration (value).formatISO ());
       }
       else if (_type == "string")
       {
@@ -156,7 +156,7 @@ void ColumnUDA::render (
         lines.push_back (
           color.colorize (
             rightJustify (
-              Duration (value).formatCompact (),
+              Duration (value).formatISO (),
               width)));
       }
       else if (_type == "string")
