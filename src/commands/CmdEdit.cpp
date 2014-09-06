@@ -204,7 +204,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
          << "# " << STRING_EDIT_TABLE_HEADER_2 << "\n"
          << "# ID:                " << task.id                                          << "\n"
          << "# UUID:              " << task.get ("uuid")                                << "\n"
-         << "# Status:            " << ucFirst (Task::statusToText (task.getStatus ())) << "\n"
+         << "# Status:            " << ucFirst (Task::statusToText (task.getStatus ())) << "\n"  // L10N safe ucFirst.
          << "# Mask:              " << task.get ("mask")                                << "\n"
          << "# iMask:             " << task.get ("imask")                               << "\n"
          << "  Project:           " << task.get ("project")                             << "\n"
