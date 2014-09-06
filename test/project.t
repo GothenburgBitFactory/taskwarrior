@@ -65,7 +65,7 @@ $output = qx{../src/task rc:$rc 2 delete 2>&1 >/dev/null};
 like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 33% complete \(2 of 3 tasks remaining\)\./, "$ut: delete two");
 
 $output = qx{../src/task rc:$rc 3 modify pro:bar 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 50% complete \(1 task remaining\)\./, "$ut: change project");
+like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 50% complete \(1 of 2 tasks remaining\)\./, "$ut: change project");
 like ($output, qr/The project 'bar' has changed\.  Project 'bar' is 0% complete \(1 task remaining\)\./, "$ut: change project");
 
 # Test projects with spaces in them.
