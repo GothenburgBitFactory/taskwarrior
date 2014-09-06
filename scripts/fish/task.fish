@@ -49,9 +49,14 @@ end
 function __fish.task.partial
   set wrapped $argv[1]
   set what $argv[2]
-  set -q argv[3]; and set argv $argv[3..-1]
+  set -q argv[3]; and set f_argv $argv[3..-1]
   set f __fish.task.$wrapped.$what
-  functions -q $f; and eval $f $argv
+  functions -q $f; and eval $f $f_argv
+end
+
+function __fish.task.zsh
+  set -q argv[2]; and set task_argv $argv[2..-1]
+  task _zsh$argv[1] $task_argv | sed 's/:/\t/'
 end
 
 
@@ -63,7 +68,7 @@ end
 
 function __fish.task.current.command
   # find command in commandline by list intersection
-  begin; commandline -pco; and __fish.task.list._command all | cut -d ':' -f 1; end | sort | uniq -d | xargs
+  begin; commandline -pco; and __fish.task.list._command all | cut -d '  ' -f 1; end | sort | uniq -d | xargs
 end
 
 function __fish.task.before_command
@@ -78,7 +83,7 @@ function __fish.task.need_to_complete.attr_name
 end
 
 function __fish.task.need_to_complete.attr_value
-  __fish.task.need_to_complete.filter
+  __fish.task.need_to_complete.attr_name
 end
 
 function __fish.task.need_to_complete.command
@@ -98,6 +103,10 @@ function __fish.task.need_to_complete.id
   __fish.task.need_to_complete.filter
 end
 
+function __fish.task.need_to_complete.task
+  __fish.task.need_to_complete.filter
+end
+
 function __fish.task.need_to_complete
   __fish.task.partial need_to_complete $argv
 end
@@ -105,13 +114,49 @@ end
 
 # list printers
 
+function __fish.task.token_clean
+  sed 's/[^a-z_.]//g; s/^\.$//g'
+end
+
 function __fish.task.list.attr_name
-  task _columns | sed 's/$/:/g'
+  task _columns | sed 's/$/:\tattribute/g'
+  # BUG: doesn't support file completion
   echo rc
 end
 
+function __fish.task.list.attr_value
+  set token (commandline -ct | cut -d ':' -f 1 | cut -d '.' -f 1 | __fish.task.token_clean)
+  if test -n $token
+    set attr_names (__fish.task.list.attr_name | sed 's/:\t/\t/g' | grep '^'$token | cut -d '  ' -f 1)
+    for attr_name in $attr_names
+      if test -n $attr_name
+        __fish.task.list.attr_value_by_name $attr_name
+      end
+    end
+  end
+    __fish.task.list.tag
+end
+
+function __fish.task.list.attr_value_by_name
+  set attr $argv[1]
+  switch $attr
+    case 'rc'
+      __fish.task.list.rc
+    case 'depends' 'limit' 'priority' 'status'
+      __fish.task.combos_simple $attr (__fish.task.list $attr)
+    # case 'description' 'due' 'entry' 'end' 'start' 'project' 'recur' 'until' 'wait'
+    case '*'
+      # BUG: remove in 2.4.0
+      if echo (commandline -ct) | grep -q '\.'
+        __fish.task.combos_with_mods $attr (__fish.task.list $attr)
+      else
+        __fish.task.combos_simple $attr (__fish.task.list $attr)
+      end
+  end
+end
+
 function __fish.task.list._command
-  task _zshcommands $argv
+  __fish.task.zsh commands $argv
 end
 
 function __fish.task.list.command
@@ -120,45 +165,39 @@ function __fish.task.list.command
 end
 
 function __fish.task.list.command_mods
-  # BUG: fill issue to have _zshcommand mods
   for command in 'add' 'annotate' 'append' 'delete' 'done' 'duplicate' 'log' 'modify' 'prepend' 'start' 'stop'
     echo $command
   end
 end
 
 function __fish.task.list.depends
-  task _ids
+  __fish.task.list.id with_description
 end
 
 function __fish.task.list.description
-  task _zshids | cut -d ':' -f 2
+  __fish.task.zsh ids $argv | cut -d '  ' -f 2-
 end
 
 function __fish.task.list.id
-  task _zshids
+  set show_type $argv[1]
+  if test -z $show_type
+    task _ids
+  else if [  $show_type = 'with_description' ]
+    __fish.task.zsh ids
+  end
 end
 
+# BUG: remove in 2.4.0
 function __fish.task.list.mod
-  # BUG: remove in 2.4.0
-    echo before
-    echo after
-    echo over
-    echo under
-    echo none
-    echo is
-    echo isnt
-    echo has
-    echo hasnt
-    echo startswith
-    echo endswith
-    echo word
-    echo noword
+  for mod in 'before' 'after' 'over' 'under' 'none' 'is' 'isnt' 'has' 'hasnt' 'startswith' 'endswith' 'word' 'noword'
+    echo $mod
+  end
 end
 
 function __fish.task.list.priority
-  echo H
-  echo M
-  echo L
+  for priority in 'H' 'M' 'L'
+    echo $priority
+  end
 end
 
 function __fish.task.list.project
@@ -166,7 +205,6 @@ function __fish.task.list.project
 end
 
 function __fish.task.list.rc
-    echo rc:
     for value in (task _config)
         echo rc.$value:
     end
@@ -187,11 +225,22 @@ function __fish.task.list.tag
 end
 
 function __fish.task.list.task
-  task _zshids | sed -E 's/^(.*):(.*)$/"\2":\1/g'
+  __fish.task.zsh ids | sed -E 's/^(.*)\t(.*)$/\2\ttask [id = \1]/g'
 end
 
 function __fish.task.list
   __fish.task.partial list $argv
+end
+
+function __fish.task.results_var_name
+  echo $argv | sed 's/^/__fish.task.list /g; s/$/ results/g; s/[ .]/_/g;'
+end
+
+function __fish.task.list_results
+  set var_name (__fish.task.results_var_name $name)
+  for line in $$var_name
+    echo $line
+  end
 end
 
 
@@ -205,80 +254,31 @@ function __fish.task.combos_simple
       echo "$attr_name:$attr_value"
     end
   else
-    echo $attr_name:
+    echo "$attr_name:"
   end
 end
 
+# BUG: remove in 2.4.0
 function __fish.task.combos_with_mods
-  # BUG: remove in 2.4.0
   __fish.task.combos_simple $argv
     for mod in (__fish.task.list.mod)
         __fish.task.combos_simple $argv[1].$mod $argv[2..-1]
     end
 end
 
-function __fish.task.list.attr_value
-  set attr $argv[1]
-  switch $attr
-    case 'depends' 'limit' 'priority' 'rc' 'status'
-      __fish.task.combos_simple $attr (__fish.task.list $attr)
-    # case 'description' 'due' 'entry' 'end' 'start' 'project' 'recur' 'until' 'wait'
-    case '*'
-      # BUG: remove in 2.4.0
-      if echo (commandline -ct) | grep -q '\.'
-        __fish.task.combos_with_mods $attr (__fish.task.list $attr)
-      else
-        __fish.task.combos_simple $attr (__fish.task.list $attr)
-      end
-  end
-end
-
-function __fish.task.body
-    set token (commandline -ct)
-
-    if test -n $token
-        __fish.task.attr $token
-    end
-
-    __fish.task.list.tag
-end
-
 
 # actual completion
 
 function __fish.task.complete
-    complete -c task -A -f $argv
+  set what $argv
+  set list_command "__fish.task.list $what"
+  set check_function "__fish.task.need_to_complete $what"
+  complete -c task -u -f -n $check_function -a "(eval $list_command)"
 end
 
-function __fish.task.complete.with_description_2
-    # argv: list_command check_function
-  for arg_description in (eval $argv[1])
-    set arg         (echo $arg_description | cut -d ':' -f 1)
-    set description (echo $arg_description | cut -d ':' -f 2)
-    __fish.task.complete -n $argv[2] -a $arg -d $description
-  end
-end
-
-function __fish.task.complete.with_description
-  __fish.task.complete.with_description_2 "__fish.task.list $argv" "__fish.task.need_to_complete $argv"
-end
-
-function __fish.task.list.current_attr_value
-  set token (commandline -ct | cut -d ':' -f 1 | cut -d '.' -f 1 | sed 's/[^a-z_.]//g; s/^\.$//g')
-  if test -n $token
-    set attr_names (__fish.task.list.attr_name | grep '^'$token | cut -d ':' -f 1)
-    for attr_name in $attr_names
-      if test -n $attr_name
-        __fish.task.list.attr_value $attr_name
-      end
-    end
-  end
-    __fish.task.list.tag
-end
-
-__fish.task.complete.with_description command all
-__fish.task.complete.with_description command filter
-__fish.task.complete.with_description id
-__fish.task.complete.with_description attr_name
-__fish.task.complete -n '__fish.task.need_to_complete.attr_name' -a '(__fish.task.list.current_attr_value)'
-
+__fish.task.complete command all
+__fish.task.complete command filter
+__fish.task.complete attr_value
+__fish.task.complete attr_name
+__fish.task.complete task
+__fish.task.complete id with_description
