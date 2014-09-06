@@ -1298,142 +1298,144 @@ void Parser::findIdSequence ()
       // Split the ID list into elements.
       std::vector <std::string> elements;
       split (elements, raw, ',');
-
-      bool not_an_id = false;
-      std::vector <std::string>::iterator e;
-      for (e = elements.begin (); e != elements.end (); ++e)
+      if (elements.size ())
       {
-        // Split the ID range into min/max.
-        std::vector <std::string> terms;
-        split (terms, *e, '-');
-
-        if (terms.size () == 1)
+        bool not_an_id = false;
+        std::vector <std::string>::iterator e;
+        for (e = elements.begin (); e != elements.end (); ++e)
         {
-          if (! digitsOnly (terms[0]))
+          // Split the ID range into min/max.
+          std::vector <std::string> terms;
+          split (terms, *e, '-');
+
+          if (terms.size () == 1)
           {
-            not_an_id = true;
-            break;
+            if (! digitsOnly (terms[0]))
+            {
+              not_an_id = true;
+              break;
+            }
+
+            Nibbler n (terms[0]);
+            int id;
+            if (n.getUnsignedInt (id) &&
+                n.depleted ())
+            {
+              ranges.push_back (std::pair <int, int> (id, id));
+            }
+            else
+            {
+              not_an_id = true;
+              break;
+            }
+          }
+          else if (terms.size () == 2)
+          {
+            if (! digitsOnly (terms[0]) ||
+                ! digitsOnly (terms[1]))
+            {
+              not_an_id = true;
+              break;
+            }
+
+            Nibbler n_min (terms[0]);
+            Nibbler n_max (terms[1]);
+            int id_min;
+            int id_max;
+            if (n_min.getUnsignedInt (id_min) &&
+                n_min.depleted ()             &&
+                n_max.getUnsignedInt (id_max) &&
+                n_max.depleted ())
+            {
+              if (id_min > id_max)
+                throw std::string (STRING_PARSER_RANGE_INVERTED);
+
+              ranges.push_back (std::pair <int, int> (id_min, id_max));
+            }
+            else
+            {
+              not_an_id = true;
+              break;
+            }
+          }
+        }
+
+        if (not_an_id)
+          continue;
+
+        // Now convert the ranges into an infix expression.
+        (*i)->unTag ("?");
+        (*i)->removeAllBranches ();
+        (*i)->tag ("ID");
+
+        Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", "(");
+        branch->tag ("OP");
+
+        std::vector <std::pair <int, int> >::iterator r;
+        for (r = ranges.begin (); r != ranges.end (); ++r)
+        {
+          if (r != ranges.begin ())
+          {
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "or");
+            branch->tag ("OP");
           }
 
-          Nibbler n (terms[0]);
-          int id;
-          if (n.getUnsignedInt (id) &&
-              n.depleted ())
+          if (r->first == r->second)
           {
-            ranges.push_back (std::pair <int, int> (id, id));
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "id");
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "==");
+            branch->tag ("OP");
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", r->first);
           }
           else
           {
-            not_an_id = true;
-            break;
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "(");
+            branch->tag ("OP");
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "id");
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", ">=");
+            branch->tag ("OP");
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", r->first);
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "and");
+            branch->tag ("OP");
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "id");
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", "<=");
+            branch->tag ("OP");
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", r->second);
+
+            branch = (*i)->addBranch (new Tree ("argSeq"));
+            branch->attribute ("raw", ")");
+            branch->tag ("OP");
           }
         }
-        else if (terms.size () == 2)
-        {
-          if (! digitsOnly (terms[0]) ||
-              ! digitsOnly (terms[1]))
-          {
-            not_an_id = true;
-            break;
-          }
 
-          Nibbler n_min (terms[0]);
-          Nibbler n_max (terms[1]);
-          int id_min;
-          int id_max;
-          if (n_min.getUnsignedInt (id_min) &&
-              n_min.depleted ()             &&
-              n_max.getUnsignedInt (id_max) &&
-              n_max.depleted ())
-          {
-            if (id_min > id_max)
-              throw std::string (STRING_PARSER_RANGE_INVERTED);
-
-            ranges.push_back (std::pair <int, int> (id_min, id_max));
-          }
-          else
-          {
-            not_an_id = true;
-            break;
-          }
-        }
+        branch = (*i)->addBranch (new Tree ("argSeq"));
+        branch->attribute ("raw", ")");
+        branch->tag ("OP");
+        action = true;
+        break;
       }
-
-      if (not_an_id)
-        continue;
-
-      // Now convert the ranges into an infix expression.
-      (*i)->unTag ("?");
-      (*i)->removeAllBranches ();
-      (*i)->tag ("ID");
-
-      Tree* branch = (*i)->addBranch (new Tree ("argSeq"));
-      branch->attribute ("raw", "(");
-      branch->tag ("OP");
-
-      std::vector <std::pair <int, int> >::iterator r;
-      for (r = ranges.begin (); r != ranges.end (); ++r)
-      {
-        if (r != ranges.begin ())
-        {
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "or");
-          branch->tag ("OP");
-        }
-
-        if (r->first == r->second)
-        {
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "id");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "==");
-          branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", r->first);
-        }
-        else
-        {
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "(");
-          branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "id");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", ">=");
-          branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", r->first);
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "and");
-          branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "id");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", "<=");
-          branch->tag ("OP");
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", r->second);
-
-          branch = (*i)->addBranch (new Tree ("argSeq"));
-          branch->attribute ("raw", ")");
-          branch->tag ("OP");
-        }
-      }
-
-      branch = (*i)->addBranch (new Tree ("argSeq"));
-      branch->attribute ("raw", ")");
-      branch->tag ("OP");
-      action = true;
-      break;
     }
   }
   while (action);
@@ -1580,7 +1582,8 @@ void Parser::findFilter ()
         ! (*i)->hasTag ("CMD") &&
         ! (*i)->hasTag ("BINARY") &&
         ! (*i)->hasTag ("RC") &&
-        ! (*i)->hasTag ("CONFIG"))
+        ! (*i)->hasTag ("CONFIG") &&
+        (*i)->attribute ("raw") != "")
     {
       (*i)->unTag ("?");
       (*i)->tag ("FILTER");
@@ -1591,7 +1594,8 @@ void Parser::findFilter ()
         ! (*i)->hasTag ("CMD") &&
         ! (*i)->hasTag ("BINARY") &&
         ! (*i)->hasTag ("RC") &&
-        ! (*i)->hasTag ("CONFIG"))
+        ! (*i)->hasTag ("CONFIG") &&
+        (*i)->attribute ("raw") != "")
     {
       (*i)->unTag ("?");
       (*i)->tag ("FILTER");
