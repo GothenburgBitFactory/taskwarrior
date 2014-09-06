@@ -425,8 +425,6 @@ int Context::dispatch (std::string &out)
 
   assert (commands["help"]);
   return commands["help"]->execute (out);
-
-  return 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
