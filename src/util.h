@@ -61,7 +61,6 @@ int execute (const std::string&, const std::vector <std::string>&, const std::st
   int flock (int, int);
 #endif
 
-std::string compressIds (const std::vector <int>&);
 void combine (std::vector <int>&, const std::vector <int>&);
 
 unsigned burndown_size (unsigned ntasks);
