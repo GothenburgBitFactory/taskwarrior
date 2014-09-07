@@ -144,10 +144,12 @@ void Parser::initialize (int argc, const char** argv)
         Tree* sub = branch->addBranch (new Tree ("argSub"));
         sub->attribute ("raw", l->first);
 
-        if (l->second == Lexer::typeOperator)
-          sub->tag ("OP");
-        else
-          sub->tag ("?");
+        switch (l->second)
+        {
+        case Lexer::typeOperator:  sub->tag ("OP");  break;
+        case Lexer::typeTag:       sub->tag ("TAG"); break;
+        default:                   sub->tag ("?");   break;
+        }
 
         // TODO More types needed.  Perhaps.
       }
