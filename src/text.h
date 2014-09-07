@@ -50,7 +50,6 @@ std::string ucFirst (const std::string&);
 const std::string str_replace (std::string&, const std::string&, const std::string&);
 const std::string str_replace (const std::string&, const std::string&, const std::string&);
 const char* optionalBlankLine ();
-void guess (const std::string&, std::vector<std::string>&, std::string&);
 bool nontrivial (const std::string&);
 bool digitsOnly (const std::string&);
 bool noSpaces (const std::string&);
