@@ -95,8 +95,14 @@ int CmdCustom::execute (std::string& output)
 */
 
   // Prepend the argument list with those from the report filter.
+  std::string lexeme;
+  Lexer::Type type;
+  Lexer lex (reportFilter);
+  lex.ambiguity (false);
   std::vector <std::string> filterArgs;
-  Lexer::word_split (filterArgs, reportFilter);
+  while (lex.token (lexeme, type))
+    filterArgs.push_back (lexeme);
+
   std::vector <std::string>::reverse_iterator arg;
   for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
     context.parser.captureFirst (*arg);
