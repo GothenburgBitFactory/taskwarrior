@@ -571,28 +571,6 @@ bool noVerticalSpace (const std::string& input)
 
 ////////////////////////////////////////////////////////////////////////////////
 //          Input: hello, world
-// Result for pos: y......y....
-bool isWordStart (const std::string& input, std::string::size_type pos)
-{
-  // Short circuit: no input means no word start.
-  if (input.length () == 0)
-    return false;
-
-  // If pos is the first non space/punct character of the string.
-  if (pos == 0 && ! Lexer::is_ws (input[pos]) && !isPunctuation (input[pos]))
-    return true;
-
-  // If pos is not the first alphanumeric character, but there is a preceding
-  // space/punct character.
-  if (pos > 0 && ! Lexer::is_ws (input[pos]) && !isPunctuation (input[pos])
-              && ( Lexer::is_ws (input[pos - 1]) || isPunctuation (input[pos - 1])))
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//          Input: hello, world
 // Result for pos: ....y......y
 bool isWordEnd (const std::string& input, std::string::size_type pos)
 {

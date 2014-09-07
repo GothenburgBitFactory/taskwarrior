@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (257);
+  UnitTest t (242);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -327,23 +327,6 @@ int main (int argc, char** argv)
   text = "Hello, world.";
   //      0123456789012
   //      s   e  s   e
-
-  // bool isWordStart (const std::string&, std::string::size_type);
-  t.notok (isWordStart ("", 0),                   "isWordStart (\"\", 0) -> false");
-  t.ok    (isWordStart ("foo", 0),                "isWordStart (\"foo\", 0) -> true");
-  t.ok    (isWordStart (text, 0),                 "isWordStart (\"Hello, world.\", 0) -> true");
-  t.notok (isWordStart (text, 1),                 "isWordStart (\"Hello, world.\", 1) -> false");
-  t.notok (isWordStart (text, 2),                 "isWordStart (\"Hello, world.\", 2) -> false");
-  t.notok (isWordStart (text, 3),                 "isWordStart (\"Hello, world.\", 3) -> false");
-  t.notok (isWordStart (text, 4),                 "isWordStart (\"Hello, world.\", 4) -> false");
-  t.notok (isWordStart (text, 5),                 "isWordStart (\"Hello, world.\", 5) -> false");
-  t.notok (isWordStart (text, 6),                 "isWordStart (\"Hello, world.\", 6) -> false");
-  t.ok    (isWordStart (text, 7),                 "isWordStart (\"Hello, world.\", 7) -> true");
-  t.notok (isWordStart (text, 8),                 "isWordStart (\"Hello, world.\", 8) -> false");
-  t.notok (isWordStart (text, 9),                 "isWordStart (\"Hello, world.\", 9) -> false");
-  t.notok (isWordStart (text, 10),                "isWordStart (\"Hello, world.\", 10) -> false");
-  t.notok (isWordStart (text, 11),                "isWordStart (\"Hello, world.\", 11) -> false");
-  t.notok (isWordStart (text, 12),                "isWordStart (\"Hello, world.\", 12) -> false");
 
   // bool isWordEnd (const std::string&, std::string::size_type);
   t.notok (isWordEnd ("", 0),                     "isWordEnd (\"\", 0) -> false");
