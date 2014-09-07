@@ -56,7 +56,6 @@ bool nontrivial (const std::string&);
 bool digitsOnly (const std::string&);
 bool noSpaces (const std::string&);
 bool noVerticalSpace (const std::string&);
-bool isWordEnd (const std::string&, std::string::size_type);
 bool isPunctuation (char);
 std::string visible (char);
 bool compare (const std::string&, const std::string&, bool sensitive = true);

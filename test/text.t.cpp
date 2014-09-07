@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (242);
+  UnitTest t (227);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -323,27 +323,6 @@ int main (int argc, char** argv)
   t.notok (noVerticalSpace ("a\nb"),              "noVerticalSpace 'a\\nb' -> false");
   t.notok (noVerticalSpace ("a\rb"),              "noVerticalSpace 'a\\rb' -> false");
   t.notok (noVerticalSpace ("a\fb"),              "noVerticalSpace 'a\\fb' -> false");
-
-  text = "Hello, world.";
-  //      0123456789012
-  //      s   e  s   e
-
-  // bool isWordEnd (const std::string&, std::string::size_type);
-  t.notok (isWordEnd ("", 0),                     "isWordEnd (\"\", 0) -> false");
-  t.ok    (isWordEnd ("foo", 2),                  "isWordEnd (\"foo\", 2) -> true");
-  t.notok (isWordEnd (text, 0),                   "isWordEnd (\"Hello, world.\", 0) -> false");
-  t.notok (isWordEnd (text, 1),                   "isWordEnd (\"Hello, world.\", 1) -> false");
-  t.notok (isWordEnd (text, 2),                   "isWordEnd (\"Hello, world.\", 2) -> false");
-  t.notok (isWordEnd (text, 3),                   "isWordEnd (\"Hello, world.\", 3) -> false");
-  t.ok    (isWordEnd (text, 4),                   "isWordEnd (\"Hello, world.\", 4) -> true");
-  t.notok (isWordEnd (text, 5),                   "isWordEnd (\"Hello, world.\", 5) -> false");
-  t.notok (isWordEnd (text, 6),                   "isWordEnd (\"Hello, world.\", 6) -> false");
-  t.notok (isWordEnd (text, 7),                   "isWordEnd (\"Hello, world.\", 7) -> false");
-  t.notok (isWordEnd (text, 8),                   "isWordEnd (\"Hello, world.\", 8) -> false");
-  t.notok (isWordEnd (text, 9),                   "isWordEnd (\"Hello, world.\", 9) -> false");
-  t.notok (isWordEnd (text, 10),                  "isWordEnd (\"Hello, world.\", 10) -> false");
-  t.ok    (isWordEnd (text, 11),                  "isWordEnd (\"Hello, world.\", 11) -> true");
-  t.notok (isWordEnd (text, 12),                  "isWordEnd (\"Hello, world.\", 12) -> false");
 
   // bool compare (const std::string&, const std::string&, bool caseless = false);
   // Make sure degenerate cases are handled.
