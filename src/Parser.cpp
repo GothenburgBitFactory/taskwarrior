@@ -596,7 +596,7 @@ void Parser::injectDefaults ()
 
         std::string combined;
         std::vector <Tree*> nodes;
-        collect (nodes);
+        collect (nodes, collectTerminated);
         std::vector <Tree*>::iterator i;
         for (i = nodes.begin (); i != nodes.end (); ++i)
         {
