@@ -614,25 +614,6 @@ bool isWordEnd (const std::string& input, std::string::size_type pos)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//          Input: hello, world
-// Result for pos: ....y......y
-//
-//          Input: (one) two
-// Result for pos: y..yy...y
-bool isTokenEnd (const std::string& input, std::string::size_type pos)
-{
-  // Delegate.
-  if (isWordEnd (input, pos))
-    return true;
-
-  // Punctuation divides tokens.
-  if (pos < input.length () && isPunctuation (input[pos]))
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Override of ispunct, that considers #, $ and @ not to be punctuation.
 //
 // ispunct:      ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
