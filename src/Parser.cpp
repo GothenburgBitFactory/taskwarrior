@@ -38,10 +38,6 @@
 #include <util.h>
 #include <i18n.h>
 
-#ifdef FEATURE_STDIN
-#include <sys/select.h>
-#endif
-
 extern Context context;
 
 // Overridden by rc.abbreviation.minimum.
@@ -164,48 +160,6 @@ void Parser::clear ()
 {
   delete _tree;
   _tree = new Tree ("root");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Add an arg for every word from std::cin.
-//
-// echo one two -- three | task zero --> task zero one two
-// 'three' is left in the input buffer.
-void Parser::appendStdin ()
-{
-#ifdef FEATURE_STDIN
-  // Use 'select' to determine whether there is any std::cin content buffered
-  // before trying to read it, to prevent blocking.
-  struct timeval tv;
-  tv.tv_sec = 0;
-  tv.tv_usec = 1000;
-
-  fd_set fds;
-  FD_ZERO (&fds);
-  FD_SET (STDIN_FILENO, &fds);
-
-  int result = select (STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
-  if (result && result != -1)
-  {
-    if (FD_ISSET (0, &fds))
-    {
-      int i = 0;
-      std::string arg;
-      while (std::cin >> arg)
-      {
-        // It the terminator token is found, stop reading.
-        if (arg == "--")
-          break;
-
-        Tree* branch = _tree->addBranch (new Tree (format ("stdin{1}", i++)));
-        branch->attribute ("raw", arg);
-        branch->tag ("ORIGINAL");
-        branch->tag ("STDIN");
-        branch->tag ("?");
-      }
-    }
-  }
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

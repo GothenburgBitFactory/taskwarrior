@@ -42,7 +42,6 @@ public:
 
   void initialize (int, const char**);
   void clear ();
-  void appendStdin ();
   Tree* tree ();
   Tree* parse ();
   void alias (const std::string&, const std::string&);

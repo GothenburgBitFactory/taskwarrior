@@ -28,7 +28,6 @@
 #define INCLUDED_MAIN
 
 #define FEATURE_COLOR  1                               // Enable color.
-//#define FEATURE_STDIN  1                             // Enable reading stdin.
 
 #include <string>
 #include <vector>
