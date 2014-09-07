@@ -129,10 +129,6 @@ int Context::initialize (int argc, const char** argv)
 
     parser.initialize (argc, argv);                 // task arg0 arg1 ...
 
-    // echo one two -- three | task zero --> task zero one two
-    // 'three' is left in the input buffer.
-    parser.appendStdin ();                          // echo stdin0 | task ...
-
     // Process 'rc:<file>' command line override.
     parser.findOverrides ();                        // rc:<file>  rc.<name>:<value>
     parser.getOverrides (home_dir, rc_file);        // <-- <file>

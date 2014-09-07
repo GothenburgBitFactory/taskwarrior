@@ -37,7 +37,6 @@ int main (int argc, const char** argv)
   {
     Parser parser;
     parser.initialize (argc, argv);
-    parser.appendStdin ();
     parser.findOverrides ();
 
     // Read-only commands.
