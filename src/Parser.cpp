@@ -548,27 +548,23 @@ void Parser::injectDefaults ()
 {
   // Scan the top-level branches for evidence of ID, UUID, overrides and other
   // arguments.
-  bool found_command  = false;
-  bool found_sequence = false;
-  bool found_other    = false;
+  bool found_command    = false;
+  bool found_sequence   = false;
+  bool found_terminator = false;
 
   std::vector <Tree*> nodes;
-  collect (nodes, collectTerminated);
+  collect (nodes, collectAll);
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
   {
-    if ((*i)->hasTag ("BINARY"))
-      ;
+    if ((*i)->attribute ("raw") == "--")
+      found_terminator = true;
 
-    else if ((*i)->hasTag ("CMD"))
+    if (! found_terminator && (*i)->hasTag ("CMD"))
       found_command = true;
 
-    else if ((*i)->hasTag ("ID") || (*i)->hasTag ("UUID"))
+    else if (! found_terminator && ((*i)->hasTag ("ID") || (*i)->hasTag ("UUID")))
       found_sequence = true;
-
-    else if (! (*i)->hasTag ("RC") &&
-             ! (*i)->hasTag ("CONFIG"))
-      found_other = true;
   }
 
   // If no command was specified, then a command will be inserted.
@@ -619,16 +615,10 @@ void Parser::injectDefaults ()
     }
     else
     {
-      // TODO There is a problem, in that this block is not run.
-
-      // Information command.
-      if (! found_other)
-      {
-        context.debug ("Sequence but no command found - assuming 'information' command.");
-        context.header (STRING_ASSUME_INFO);
-        Tree* t = captureFirst ("information");
-        t->tag ("ASSUMED");
-      }
+      context.debug ("Sequence but no command found - assuming 'information' command.");
+      context.header (STRING_ASSUME_INFO);
+      Tree* t = captureFirst ("information");
+      t->tag ("ASSUMED");
     }
   }
 }
