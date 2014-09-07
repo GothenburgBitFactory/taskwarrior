@@ -43,7 +43,6 @@ int main (int argc, char** argv)
   unsetenv ("TASKRC");
 
   // TODO bool confirm (const std::string&);
-  // TODO int confirm3 (const std::string&);
   // TODO int confirm4 (const std::string&);
   // TODO void delay (float);
 

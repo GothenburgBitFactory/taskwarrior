@@ -97,44 +97,6 @@ bool confirm (const std::string& question)
 // 0 = no
 // 1 = yes
 // 2 = all
-int confirm3 (const std::string& question)
-{
-  std::vector <std::string> options;
-  options.push_back (STRING_UTIL_CONFIRM_YES_U);
-  options.push_back (STRING_UTIL_CONFIRM_YES);
-  options.push_back (STRING_UTIL_CONFIRM_NO);
-  options.push_back (STRING_UTIL_CONFIRM_ALL_U);
-  options.push_back (STRING_UTIL_CONFIRM_ALL);
-
-  std::string answer;
-  std::vector <std::string> matches;
-
-  do
-  {
-    std::cout << question
-              << " ("
-              << options[1] << "/"
-              << options[2] << "/"
-              << options[4]
-              << ") ";
-
-    std::getline (std::cin, answer);
-    answer = trim (answer);
-    autoComplete (answer, options, matches, 1); // Hard-coded 1.
-  }
-  while (matches.size () != 1);
-
-       if (matches[0] == STRING_UTIL_CONFIRM_YES_U) return 1;
-  else if (matches[0] == STRING_UTIL_CONFIRM_YES)   return 1;
-  else if (matches[0] == STRING_UTIL_CONFIRM_ALL_U) return 2;
-  else if (matches[0] == STRING_UTIL_CONFIRM_ALL)   return 2;
-  else                                              return 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// 0 = no
-// 1 = yes
-// 2 = all
 // 3 = quit
 int confirm4 (const std::string& question)
 {

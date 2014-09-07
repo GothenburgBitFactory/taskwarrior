@@ -41,7 +41,6 @@
 
 // util.cpp
 bool confirm (const std::string&);
-int confirm3 (const std::string&);
 int confirm4 (const std::string&);
 void delay (float);
 std::string formatBytes (size_t);
