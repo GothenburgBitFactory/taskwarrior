@@ -405,8 +405,8 @@ int execute (
   pipe (pin);
   pipe (pout);
 
-  pid_t pid = fork();
-  if (!pid)
+  pid_t pid = fork ();
+  if (pid == 0)
   {
     // This is only reached in the child
     dup2 (pin[0], STDIN_FILENO);
@@ -417,10 +417,7 @@ int execute (
       argv[i] = (char*) args[i].c_str ();
 
     argv[args.size ()] = NULL;
-
-    int ret = execvp (executable.c_str (), argv);
-    delete[] argv;
-    exit (ret);
+    exit (execvp (executable.c_str (), argv));
   }
 
   // This is only reached in the parent
