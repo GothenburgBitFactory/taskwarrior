@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (29);
+  UnitTest t (23);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -88,23 +88,6 @@ int main (int argc, char** argv)
   t.notok (taskDiff (right, rightAgain),                                            "No changes detected");
   output = taskDifferences (right, rightAgain);
   t.ok (output.find ("No changes will be made")               != std::string::npos, "No changes detected");
-
-  // see also indirect tests of indentProject and extractParents in `project.t'.
-  // std::vector<std::string> indentTree (const std::vector<std::string>&, const std::string whitespace="  ", char delimiter='.');
-  std::vector <std::string> flat;
-  flat.push_back ("one");
-  flat.push_back ("one.two");
-  flat.push_back ("one.two.three");
-  flat.push_back ("one.four");
-  flat.push_back ("two");
-
-  std::vector <std::string> structured = indentTree (flat, "  ", '.');
-  t.is (structured.size (), (size_t) 5, "indentTree yields 5 strings");
-  t.is (structured[0], "one",               "indentTree 'one'           -> 'one'");
-  t.is (structured[1], "  two",         "indentTree 'one.two'       -> '  two'");
-  t.is (structured[2], "    three", "indentTree 'one.two.three' -> '  three'");
-  t.is (structured[3], "  four",        "indentTree 'one.four'      -> '  four'");
-  t.is (structured[4], "two",               "indentTree 'two'           -> 'two'");
 
   // std::vector<std::string> indentProject (const std::string&, const std::string whitespace="  ", char delimiter='.');
   t.is (indentProject (""),              "",                  "indentProject '' -> ''");

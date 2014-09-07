@@ -61,11 +61,6 @@ int execute (const std::string&, const std::vector <std::string>&, const std::st
   int flock (int, int);
 #endif
 
-const std::vector<std::string> indentTree (
-  const std::vector<std::string>&,
-  const std::string& whitespace = "  ",
-  char delimiter = '.');
-
 const std::string indentProject (
   const std::string&,
   const std::string& whitespace = "  ",

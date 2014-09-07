@@ -347,20 +347,6 @@ int execute (
 //  - delimiter is the character used to split up projects into subprojects.
 //    - defaults to the period, '.'
 //
-const std::vector<std::string> indentTree (
-  const std::vector<std::string>& values,
-  const std::string& whitespace /* = "  " */,
-  char delimiter/* = '.' */)
-{
-  std::vector <std::string> modified;
-  std::vector <std::string>::const_iterator i;
-  for (i = values.begin (); i != values.end (); ++i)
-    modified.push_back (indentProject (*i, whitespace, delimiter));
-
-  return modified;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 const std::string indentProject (
   const std::string& project,
   const std::string& whitespace /* = "  " */,
