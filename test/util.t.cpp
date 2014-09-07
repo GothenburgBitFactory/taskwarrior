@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (40);
+  UnitTest t (29);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -88,33 +88,6 @@ int main (int argc, char** argv)
   t.notok (taskDiff (right, rightAgain),                                            "No changes detected");
   output = taskDifferences (right, rightAgain);
   t.ok (output.find ("No changes will be made")               != std::string::npos, "No changes detected");
-
-  // void combine (std::vector <int>&, const std::vector <int>&);
-  std::vector <int> vleft;
-  vleft.push_back (1);
-  vleft.push_back (2);
-  vleft.push_back (3);
-
-  std::vector <int> vright;
-  vright.push_back (4);
-
-  combine (vleft, vright);
-  t.is (vleft.size (), (size_t)4, "1,2,3 + 4 -> [4]");
-  t.is (vleft[0], 1,      "1,2,3 + 4 -> 1,2,3,4");
-  t.is (vleft[1], 2,      "1,2,3 + 4 -> 1,2,3,4");
-  t.is (vleft[2], 3,      "1,2,3 + 4 -> 1,2,3,4");
-  t.is (vleft[3], 4,      "1,2,3 + 4 -> 1,2,3,4");
-
-  vright.push_back (3);
-  vright.push_back (5);
-  combine (vleft, vright);
-
-  t.is (vleft.size (), (size_t)5, "1,2,3,4 + 3,4,5 -> [5]");
-  t.is (vleft[0], 1,      "1,2,3,4 + 3,4,5 -> 1,2,3,4,5");
-  t.is (vleft[1], 2,      "1,2,3,4 + 3,4,5 -> 1,2,3,4,5");
-  t.is (vleft[2], 3,      "1,2,3,4 + 3,4,5 -> 1,2,3,4,5");
-  t.is (vleft[3], 4,      "1,2,3,4 + 3,4,5 -> 1,2,3,4,5");
-  t.is (vleft[4], 5,      "1,2,3,4 + 3,4,5 -> 1,2,3,4,5");
 
   // see also indirect tests of indentProject and extractParents in `project.t'.
   // std::vector<std::string> indentTree (const std::vector<std::string>&, const std::string whitespace="  ", char delimiter='.');
