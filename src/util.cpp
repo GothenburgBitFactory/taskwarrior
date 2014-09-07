@@ -326,27 +326,6 @@ int execute (
 #undef max
 
 ////////////////////////////////////////////////////////////////////////////////
-// Escapes any unescaped character of type c within the given string
-// e.g. ' ' -> '\ '
-const std::string escape (const std::string& value, char c)
-{
-  std::string modified = value;
-  char tmp[2] = {c, '\0'};
-  std::string search  = tmp;
-  std::string replace = "\\" + search;
-
-  std::string::size_type pos = modified.find (search);
-  while (pos != std::string::npos) {
-    if ( modified[pos-1] != '\\' )
-      modified.replace (pos, 1, replace);
-
-    pos = modified.find (search, pos+1);
-  }
-
-  return modified;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Accept a list of projects, and return an indented list
 // that reflects the hierarchy.
 //

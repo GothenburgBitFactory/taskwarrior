@@ -61,8 +61,6 @@ int execute (const std::string&, const std::vector <std::string>&, const std::st
   int flock (int, int);
 #endif
 
-const std::string escape (const std::string&, char);
-
 const std::vector<std::string> indentTree (
   const std::vector<std::string>&,
   const std::string& whitespace = "  ",
