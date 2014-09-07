@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (203);
+  UnitTest t (212);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -327,6 +327,26 @@ int main (int argc, char** argv)
   t.is (tokens[0].second,                     Lexer::typeIdentifier,  "tokens[0] == typeIdentifier");
   t.is (tokens[1].first,                      "10th",                 "tokens[1] == '10th'");
   t.is (tokens[1].second,                     Lexer::typeIdentifier,  "tokens[1] == typeIdentifier");
+
+  // Test tag recognition.
+  Lexer l9 ("+with -WITHOUT + 2");
+  l9.ambiguity (false);
+  tokens.clear ();
+  while (l9.token (token, type))
+  {
+    std::cout << "# «" << token << "» " << type  << " " << Lexer::type_name (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+  }
+
+  t.is ((int)tokens.size (),                  4,                      "4 tokens");
+  t.is (tokens[0].first,                      "+with",                "tokens[0] == '+with'");
+  t.is (tokens[0].second,                     Lexer::typeTag,         "tokens[0] == typeTag");
+  t.is (tokens[1].first,                      "-WITHOUT",             "tokens[1] == '-WITHOUT'");
+  t.is (tokens[1].second,                     Lexer::typeTag,         "tokens[1] == typeTag");
+  t.is (tokens[2].first,                      "+",                    "tokens[2] == '+'");
+  t.is (tokens[2].second,                     Lexer::typeOperator,    "tokens[2] == typeOperator");
+  t.is (tokens[3].first,                      "2",                    "tokens[3] == '2'");
+  t.is (tokens[3].second,                     Lexer::typeNumber,      "tokens[3] == typeNumber");
 
   // void word_split (std::vector<std::string>&, const std::string&);
   std::string unsplit = " ( A or B ) ";

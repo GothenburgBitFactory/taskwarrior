@@ -126,6 +126,12 @@ bool Lexer::token (std::string& result, Type& type)
         result += utf8_character (_n0);
         shift ();
       }
+      else if ((_n0 == '+' || _n0 == '-') && is_ident_start (_n1))
+      {
+        type = typeTag;
+        result += utf8_character (_n0);
+        shift ();
+      }
       else if (is_triple_op (_n0, _n1, _n2))
       {
         type = typeOperator;
@@ -196,6 +202,18 @@ bool Lexer::token (std::string& result, Type& type)
       {
         result += utf8_character (_n0);
         shift ();
+      }
+      break;
+
+    case typeTag:
+      if (is_ident_start (_n0))
+      {
+        result += utf8_character (_n0);
+        shift ();
+      }
+      else
+      {
+        return true;
       }
       break;
 
@@ -552,6 +570,7 @@ const std::string Lexer::type_name (const Type& type)
   case Lexer::typeEscapeUnicode:     return "EscapeUnicode";
   case Lexer::typeDate:              return "Date";
   case Lexer::typeDuration:          return "Duration";
+  case Lexer::typeTag:               return "Tag";
   }
 }
 

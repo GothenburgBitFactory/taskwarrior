@@ -52,6 +52,7 @@ public:
     typeOperator,
     typeDate,
     typeDuration,
+    typeTag,
   };
 
   Lexer (const std::string&);
