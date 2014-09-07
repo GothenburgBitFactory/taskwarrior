@@ -1469,6 +1469,10 @@ void Parser::findUUIDList ()
       if (! (*i)->hasTag ("?"))
         continue;
 
+      // Easy disqualifiers.
+      if (raw.find_first_not_of ("0123456789abcdefABCDEF-") != std::string::npos)
+        break;
+
       Nibbler n (raw);
       std::vector <std::string> uuidList;
       std::string uuid;
