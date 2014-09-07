@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (221);
+  UnitTest t (216);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -124,9 +124,6 @@ int main (int argc, char** argv)
   t.is (items[0], "",              "split '-' '-' -> [0] ''");
   t.is (items[1], "",              "split '-' '-' -> [1] ''");
 
-  split_minimal (items, unsplit, '-');
-  t.is (items.size (), (size_t) 0, "split '-' '-' ->");
-
   unsplit = "-a-bc-def";
   split (items, unsplit, '-');
   t.is (items.size (), (size_t) 4, "split '-a-bc-def' '-' -> '' 'a' 'bc' 'def'");
@@ -134,12 +131,6 @@ int main (int argc, char** argv)
   t.is (items[1], "a",             "split '-a-bc-def' '-' -> [1] 'a'");
   t.is (items[2], "bc",            "split '-a-bc-def' '-' -> [2] 'bc'");
   t.is (items[3], "def",           "split '-a-bc-def' '-' -> [3] 'def'");
-
-  split_minimal (items, unsplit, '-');
-  t.is (items.size (), (size_t) 3, "split '-a-bc-def' '-' -> 'a' 'bc' 'def'");
-  t.is (items[0], "a",             "split '-a-bc-def' '-' -> [1] 'a'");
-  t.is (items[1], "bc",            "split '-a-bc-def' '-' -> [2] 'bc'");
-  t.is (items[2], "def",           "split '-a-bc-def' '-' -> [3] 'def'");
 
   // void split (std::vector<std::string>& results, const std::string& input, const std::string& delimiter)
   unsplit = "";

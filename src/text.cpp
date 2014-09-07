@@ -81,26 +81,6 @@ void split (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void split_minimal (
-  std::vector<std::string>& results,
-  const std::string& input,
-  const char delimiter)
-{
-  results.clear ();
-  std::string::size_type start = 0;
-  std::string::size_type i;
-  while ((i = input.find (delimiter, start)) != std::string::npos)
-  {
-    if (i != start)
-      results.push_back (input.substr (start, i - start));
-    start = i + 1;
-  }
-
-  if (start < input.length ())
-    results.push_back (input.substr (start));
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void split (
   std::vector<std::string>& results,
   const std::string& input,

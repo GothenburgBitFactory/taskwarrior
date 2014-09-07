@@ -41,7 +41,6 @@ int longestLine (const std::string&);
 bool extractLine (std::string&, const std::string&, int, bool, unsigned int&);
 void split (std::vector<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const std::string&);
-void split_minimal (std::vector<std::string>&, const std::string&, const char);
 void join (std::string&, const std::string&, const std::vector<std::string>&);
 void join (std::string&, const std::string&, const std::vector<int>&);
 std::string commify (const std::string&);
