@@ -136,16 +136,6 @@ int confirm4 (const std::string& question)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void delay (float f)
-{
-  struct timeval t;
-  t.tv_sec = (int) f;
-  t.tv_usec = int ((f - (int)f) * 1000000);
-
-  select (0, NULL, NULL, NULL, &t);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Convert a quantity in seconds to a more readable format.
 std::string formatBytes (size_t bytes)
 {

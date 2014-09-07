@@ -44,7 +44,6 @@ int main (int argc, char** argv)
 
   // TODO bool confirm (const std::string&);
   // TODO int confirm4 (const std::string&);
-  // TODO void delay (float);
 
   // std::string formatBytes (size_t);
   t.is (formatBytes (0), "0 B", "0 -> 0 B");
