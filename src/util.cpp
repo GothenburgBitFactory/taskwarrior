@@ -326,53 +326,6 @@ int execute (
 #undef max
 
 ////////////////////////////////////////////////////////////////////////////////
-// Encode values prior to serialization.
-//   [  -> &open;
-//   ]  -> &close;
-const std::string encode (const std::string& value)
-{
-  std::string modified = value;
-
-  str_replace (modified, "[",  "&open;");
-  str_replace (modified, "]",  "&close;");
-
-  return modified;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Decode values after parse.
-//   "  <- &dquot;
-//   '  <- &squot; or &quot;
-//   ,  <- &comma;
-//   [  <- &open;
-//   ]  <- &close;
-//   :  <- &colon;
-const std::string decode (const std::string& value)
-{
-  if (value.find ('&') != std::string::npos)
-  {
-    std::string modified = value;
-
-    // Supported encodings.
-    str_replace (modified, "&open;",  "[");
-    str_replace (modified, "&close;", "]");
-
-    // Support for deprecated encodings.  These cannot be removed or old files
-    // will not be parsable.  Not just old files - completed.data can contain
-    // tasks formatted/encoded using these.
-    str_replace (modified, "&dquot;", "\"");
-    str_replace (modified, "&quot;",  "'");
-    str_replace (modified, "&squot;", "'");  // Deprecated 2.0
-    str_replace (modified, "&comma;", ",");  // Deprecated 2.0
-    str_replace (modified, "&colon;", ":");  // Deprecated 2.0
-
-    return modified;
-  }
-
-  return value;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Escapes any unescaped character of type c within the given string
 // e.g. ' ' -> '\ '
 const std::string escape (const std::string& value, char c)

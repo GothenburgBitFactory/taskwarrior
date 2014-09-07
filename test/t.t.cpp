@@ -150,6 +150,9 @@ TODO Task::getDependencies
 
 TODO Task::urgency
 
+TODO Task::encode
+TODO Task::decode
+
 */
 
   // Task::operator==

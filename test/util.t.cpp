@@ -112,9 +112,6 @@ int main (int argc, char** argv)
   t.is (indentProject ("one.two"),       "  two",         "indentProject 'one.two' -> '  two'");
   t.is (indentProject ("one.two.three"), "    three", "indentProject 'one.two.three' -> '    three'");
 
-  // TODO const std::string encode (const std::string& value);
-  // TODO const std::string decode (const std::string& value);
-
   return 0;
 }
 
