@@ -525,28 +525,6 @@ bool isPunctuation (char c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string visible (char input)
-{
-  // Sanitize 'message'.
-  char stringized[2] = {0};
-  stringized[0] = input;
-
-  std::string sanitized = stringized;
-  switch (input)
-  {
-  case ' ':  sanitized = "\\s"; break;
-  case '\r': sanitized = "\\r"; break;
-  case '\n': sanitized = "\\n"; break;
-  case '\f': sanitized = "\\f"; break;
-  case '\t': sanitized = "\\t"; break;
-  case '\v': sanitized = "\\v"; break;
-  default:   sanitized = input; break;
-  }
-
-  return sanitized;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool compare (
   const std::string& left,
   const std::string& right,

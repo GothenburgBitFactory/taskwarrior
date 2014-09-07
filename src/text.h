@@ -54,7 +54,6 @@ bool nontrivial (const std::string&);
 bool digitsOnly (const std::string&);
 bool noSpaces (const std::string&);
 bool isPunctuation (char);
-std::string visible (char);
 bool compare (const std::string&, const std::string&, bool sensitive = true);
 bool closeEnough (const std::string&, const std::string&, unsigned int minLength = 0);
 std::string::size_type find (const std::string&, const std::string&, bool sensitive = true);
