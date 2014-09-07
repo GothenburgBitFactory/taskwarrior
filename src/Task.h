@@ -164,6 +164,8 @@ private:
   void parseJSON (const std::string&);
   void parseLegacy (const std::string&);
   void validate_before (const std::string&, const std::string&);
+  const std::string encode (const std::string&) const;
+  const std::string decode (const std::string&) const;
 
 public:
   float urgency_priority () const;
