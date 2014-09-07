@@ -53,6 +53,16 @@ public:
     typeDate,
     typeDuration,
     typeTag,
+/*
+    Recognizing more types means that Lexer::*_split and Lexer::token approach
+    the ideal form, whereby the command line becomes just one string that is
+    lexed into tokens. Those tokens are then simply dissected by type..
+
+    typeUUID,
+    typePattern,
+    typeSubstitution,
+    typeNameValue,
+*/
   };
 
   Lexer (const std::string&);
