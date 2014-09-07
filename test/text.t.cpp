@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (227);
+  UnitTest t (221);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -315,14 +315,6 @@ int main (int argc, char** argv)
   t.ok    (noSpaces ("abc"),                      "noSpaces 'abc' -> true");
   t.notok (noSpaces (" "),                        "noSpaces ' ' -> false");
   t.notok (noSpaces ("ab cd"),                    "noSpaces 'ab cd' -> false");
-
-  // bool noVerticalSpace (const std::string&);
-  t.ok    (noVerticalSpace (""),                  "noVerticalSpace '' -> true");
-  t.ok    (noVerticalSpace ("a"),                 "noVerticalSpace 'a' -> true");
-  t.ok    (noVerticalSpace ("abc"),               "noVerticalSpace 'abc' -> true");
-  t.notok (noVerticalSpace ("a\nb"),              "noVerticalSpace 'a\\nb' -> false");
-  t.notok (noVerticalSpace ("a\rb"),              "noVerticalSpace 'a\\rb' -> false");
-  t.notok (noVerticalSpace ("a\fb"),              "noVerticalSpace 'a\\fb' -> false");
 
   // bool compare (const std::string&, const std::string&, bool caseless = false);
   // Make sure degenerate cases are handled.

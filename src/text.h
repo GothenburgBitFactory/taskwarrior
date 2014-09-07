@@ -55,7 +55,6 @@ void guess (const std::string&, std::vector<std::string>&, std::string&);
 bool nontrivial (const std::string&);
 bool digitsOnly (const std::string&);
 bool noSpaces (const std::string&);
-bool noVerticalSpace (const std::string&);
 bool isPunctuation (char);
 std::string visible (char);
 bool compare (const std::string&, const std::string&, bool sensitive = true);

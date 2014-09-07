@@ -561,15 +561,6 @@ bool noSpaces (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool noVerticalSpace (const std::string& input)
-{
-  if (input.find_first_of ("\n\r\f") != std::string::npos)
-    return false;
-
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Override of ispunct, that considers #, $ and @ not to be punctuation.
 //
 // ispunct:      ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
