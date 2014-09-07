@@ -671,22 +671,6 @@ int strippedLength (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Truncates a long line, and include a two-character ellipsis.
-std::string cutOff (const std::string& str, std::string::size_type len)
-{
-  if (str.length () > len)
-  {
-    return (str.substr (0, len - 2) + "..");
-  }
-  else
-  {
-    std::string res = str;
-    res.resize (len, ' ');
-    return res;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 const std::string format (char value)
 {
   std::stringstream s;
