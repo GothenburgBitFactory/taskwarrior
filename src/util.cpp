@@ -33,7 +33,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
-#include <limits>
 #include <sstream>
 #include <vector>
 #include <algorithm>
@@ -44,7 +43,6 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <pwd.h>
@@ -57,12 +55,6 @@
 #include <util.h>
 
 extern Context context;
-
-////////////////////////////////////////////////////////////////////////////////
-static inline unsigned round_up_to (unsigned n, unsigned target)
-{
-  return n + target - (n % target);
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Uses std::getline, because std::cin eats leading whitespace, and that means
@@ -355,44 +347,6 @@ int execute (
 
 // Collides with std::numeric_limits methods
 #undef max
-
-////////////////////////////////////////////////////////////////////////////////
-unsigned burndown_size (unsigned ntasks)
-{
-  // Nearest 2
-  if (ntasks < 20)
-    return round_up_to (ntasks, 2);
-
-  // Nearest 10
-  if (ntasks < 50)
-    return round_up_to (ntasks, 10);
-
-  // Nearest 20
-  if (ntasks < 100)
-    return round_up_to (ntasks, 20);
-
-  // Choose the number from here rounded up to the nearest 10% of the next
-  // highest power of 10 or half of power of 10.
-  const unsigned count = (unsigned) log10 (std::numeric_limits<unsigned>::max ());
-  unsigned half = 500;
-  unsigned full = 1000;
-
-  // We start at two because we handle 5, 10, 50, and 100 above.
-  for (unsigned i = 2; i < count; ++i)
-  {
-    if (ntasks < half)
-      return round_up_to (ntasks, half / 10);
-
-    if (ntasks < full)
-      return round_up_to (ntasks, full / 10);
-
-    half *= 10;
-    full *= 10;
-  }
-
-  // Round up to max of unsigned.
-  return std::numeric_limits<unsigned>::max ();
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Encode values prior to serialization.

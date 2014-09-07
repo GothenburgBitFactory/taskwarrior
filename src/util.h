@@ -63,8 +63,6 @@ int execute (const std::string&, const std::vector <std::string>&, const std::st
 
 void combine (std::vector <int>&, const std::vector <int>&);
 
-unsigned burndown_size (unsigned ntasks);
-
 const std::string encode (const std::string&);
 const std::string decode (const std::string&);
 
