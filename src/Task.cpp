@@ -184,9 +184,9 @@ std::string Task::statusToText (Task::status s)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setEntry ()
 {
-  char entryTime[16];
-  sprintf (entryTime, "%u", (unsigned int) time (NULL));
-  set ("entry", entryTime);
+  char now[16];
+  sprintf (now, "%u", (unsigned int) time (NULL));
+  set ("entry", now);
 
   recalc_urgency = true;
 }
@@ -194,9 +194,9 @@ void Task::setEntry ()
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setEnd ()
 {
-  char endTime[16];
-  sprintf (endTime, "%u", (unsigned int) time (NULL));
-  set ("end", endTime);
+  char now[16];
+  sprintf (now, "%u", (unsigned int) time (NULL));
+  set ("end", now);
 
   recalc_urgency = true;
 }
@@ -204,9 +204,9 @@ void Task::setEnd ()
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setStart ()
 {
-  char startTime[16];
-  sprintf (startTime, "%u", (unsigned int) time (NULL));
-  set ("start", startTime);
+  char now[16];
+  sprintf (now, "%u", (unsigned int) time (NULL));
+  set ("start", now);
 
   recalc_urgency = true;
 }
@@ -1491,6 +1491,10 @@ void Task::validate (bool applyDefault /* = true */)
   if ((status == Task::completed || status == Task::deleted) &&
       (! has ("end") || get ("end") == ""))
     setEnd ();
+
+  // Provide an entry date unless user already specified one.
+  if (!has ("modified") || get ("modified") == "")
+    setModified ();
 
   if (applyDefault)
   {

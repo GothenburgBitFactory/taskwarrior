@@ -327,7 +327,7 @@ like ($output, qr/urgency 5$/ms, 'scheduled past = 5');
 # urgency values between 0 and 1
 qx {../src/task rc:urgency.rc add 13 pri:H 2>&1};
 $output = qx{../src/task rc:urgency.rc rc.urgency.priority.coefficient:0.01234 46 info 2>&1};
-like ($output, qr/Urgency     0\.01$/ms, 'near-zero urgency is truncated');
+like ($output, qr/Urgency\s+0\.01$/ms, 'near-zero urgency is truncated');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data urgency.rc);
