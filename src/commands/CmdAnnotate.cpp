@@ -125,7 +125,6 @@ int CmdAnnotate::execute (std::string& output)
     if (i->first != "")
       context.footnote (i->second);
 
-  context.tdb2.commit ();
   feedback_affected (count == 1 ? STRING_CMD_ANNO_1 : STRING_CMD_ANNO_N, count);
   return rc;
 }
