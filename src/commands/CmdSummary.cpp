@@ -63,7 +63,6 @@ int CmdSummary::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   // Generate unique list of project names from all pending tasks.
   std::map <std::string, bool> allProjects;
