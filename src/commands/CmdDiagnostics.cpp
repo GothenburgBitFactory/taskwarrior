@@ -293,6 +293,9 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Disaply hook status.
   out << bold.colorize (STRING_CMD_DIAG_HOOKS)
+      << "\n"
+      << "    Scripts: "
+      << (context.config.getBoolean ("hooks") ? "Enabled" : "Disabled")
       << "\n";
 
   std::vector <std::string> hooks = context.hooks.list ();
