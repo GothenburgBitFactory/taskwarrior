@@ -225,43 +225,44 @@ int Context::initialize (int argc, const char** argv)
     rc = 3;
   }
 
-  // Dump all debug messages, controlled by rc.debug.
-  if (rc && config.getBoolean ("debug"))
-  {
-    std::vector <std::string>::iterator d;
-    for (d = debugMessages.begin (); d != debugMessages.end (); ++d)
-      if (color ())
-        std::cerr << colorizeDebug (*d) << "\n";
-      else
-        std::cerr << *d << "\n";
-  }
-
-  // Dump all headers, controlled by 'header' verbosity token.
-  if (rc && verbose ("header"))
-  {
-    std::vector <std::string>::iterator h;
-    for (h = headers.begin (); h != headers.end (); ++h)
-      if (color ())
-        std::cerr << colorizeHeader (*h) << "\n";
-      else
-        std::cerr << *h << "\n";
-  }
-
-  // Dump all footnotes, controlled by 'footnote' verbosity token.
-  if (rc && verbose ("footnote"))
-  {
-    std::vector <std::string>::iterator f;
-    for (f = footnotes.begin (); f != footnotes.end (); ++f)
-      if (color ())
-        std::cerr << colorizeFootnote (*f) << "\n";
-      else
-        std::cerr << *f << "\n";
-  }
-
-  // Dump all errors, non-maskable.
-  // Colorized as footnotes.
+  // On initialization failure...
   if (rc)
   {
+    // Dump all debug messages, controlled by rc.debug.
+    if (config.getBoolean ("debug"))
+    {
+      std::vector <std::string>::iterator d;
+      for (d = debugMessages.begin (); d != debugMessages.end (); ++d)
+        if (color ())
+          std::cerr << colorizeDebug (*d) << "\n";
+        else
+          std::cerr << *d << "\n";
+    }
+
+    // Dump all headers, controlled by 'header' verbosity token.
+    if (verbose ("header"))
+    {
+      std::vector <std::string>::iterator h;
+      for (h = headers.begin (); h != headers.end (); ++h)
+        if (color ())
+          std::cerr << colorizeHeader (*h) << "\n";
+        else
+          std::cerr << *h << "\n";
+    }
+
+    // Dump all footnotes, controlled by 'footnote' verbosity token.
+    if (verbose ("footnote"))
+    {
+      std::vector <std::string>::iterator f;
+      for (f = footnotes.begin (); f != footnotes.end (); ++f)
+        if (color ())
+          std::cerr << colorizeFootnote (*f) << "\n";
+        else
+          std::cerr << *f << "\n";
+    }
+
+    // Dump all errors, non-maskable.
+    // Colorized as footnotes.
     std::vector <std::string>::iterator e;
     for (e = errors.begin (); e != errors.end (); ++e)
       if (color ())
