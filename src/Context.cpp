@@ -392,15 +392,12 @@ int Context::dispatch (std::string &out)
     updateVerbosity ();
 
     Command* c = commands[command];
+    assert (c);
 
     // GC is invoked prior to running any command that displays task IDs, if
     // possible.
-    bool auto_commit = false;
     if (c->displays_id () && !tdb2.read_only ())
-    {
       tdb2.gc ();
-      auto_commit = true;
-    }
 
     // Only read-only commands can be run when TDB2 is read-only.
     // TODO Implement TDB2::read_only
@@ -410,8 +407,6 @@ int Context::dispatch (std::string &out)
 */
 
     int rc = c->execute (out);
-    if (auto_commit)
-      tdb2.commit ();
 
     // Write commands cause an update of the shadow file, if configured.
     if (! c->read_only ())
