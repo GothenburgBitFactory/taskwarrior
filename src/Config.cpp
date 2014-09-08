@@ -64,6 +64,7 @@ std::string Config::_defaults =
   "locking=on                                     # Use file-level locking\n"
   "gc=on                                          # Garbage-collect data files - DO NOT CHANGE unless you are sure\n"
   "exit.on.missing.db=no                          # Whether to exit if ~/.task is not found\n"
+  "hooks=on                                       # Master control switch for hooks\n"
   "\n"
   "# Terminal\n"
   "detection=on                                   # Detects terminal width\n"

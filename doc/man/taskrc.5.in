@@ -183,6 +183,11 @@ override (task rc.gc=off ...), and not permanently used in the .taskrc file,
 as this significantly affects performance in the long term.
 
 .TP
+.B hooks=on
+This master control switch enables hook script processing. The default value
+is 'on', but certain extensions and environments may need to disable hooks.
+
+.TP
 .B exit.on.missing.db=no
 When set to 'yes' causes the program to exit if the database (~/.task or
 rc.data.location or TASKDATA override) is missing.  Default value is 'no'.

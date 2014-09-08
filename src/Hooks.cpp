@@ -55,14 +55,17 @@ Hooks::~Hooks ()
 ////////////////////////////////////////////////////////////////////////////////
 void Hooks::initialize ()
 {
-  // Scan <rc.data.location>/hooks
-  Directory d (context.config.get ("data.location"));
-  d += "hooks";
-  if (d.is_directory () &&
-      d.readable ())
+  if (context.config.getBoolean ("hooks"))
   {
-    _scripts = d.list ();
-    std::sort (_scripts.begin (), _scripts.end ());
+    // Scan <rc.data.location>/hooks
+    Directory d (context.config.get ("data.location"));
+    d += "hooks";
+    if (d.is_directory () &&
+        d.readable ())
+    {
+      _scripts = d.list ();
+      std::sort (_scripts.begin (), _scripts.end ());
+    }
   }
 }
 

@@ -154,6 +154,7 @@ int CmdShow::execute (std::string& output)
     " extensions"
     " fontunderline"
     " gc"
+    " hooks"
     " hyphenate"
     " indent.annotation"
     " indent.report"

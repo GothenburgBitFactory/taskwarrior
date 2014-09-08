@@ -196,6 +196,8 @@
 - Removed unused tips files (thanks to dev-zero).
 - Removed shadow file feature, replacing it with an example hook scripts that
   performs the same function.
+- Added rc.hooks, a master control setting for hooks processing, which defaults
+  to 'on'.
 
 ------ current release ---------------------------
 
