@@ -94,8 +94,6 @@ int CmdImport::execute (std::string& output)
     }
   }
 
-  context.tdb2.commit ();
-
   context.footnote (format (STRING_CMD_IMPORT_SUMMARY, count));
   return rc;
 }
