@@ -1031,7 +1031,6 @@ int CmdBurndownMonthly::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('M');
@@ -1060,7 +1059,6 @@ int CmdBurndownWeekly::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('W');
@@ -1089,7 +1087,6 @@ int CmdBurndownDaily::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('D');
