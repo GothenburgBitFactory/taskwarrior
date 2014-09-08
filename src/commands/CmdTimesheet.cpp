@@ -55,7 +55,6 @@ int CmdTimesheet::execute (std::string& output)
   // Scan the pending tasks.
   handleRecurrence ();
   std::vector <Task> all = context.tdb2.all_tasks ();
-  context.tdb2.commit ();
 
   // What day of the week does the user consider the first?
   int weekStart = Date::dayOfWeek (context.config.get ("weekstart"));
