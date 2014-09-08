@@ -24,10 +24,14 @@ Command Line Parsing
   determines whether subsequent arguments are interpreted as part of a filter or
   set of modifications.
 
+  The Parser object is fed command line arguments, then through a succession of
+  calls builds and annotates a parse tree.  To help with this, the Lexer is
+  used to break up strings into tokens.
+
 
 Dispatch
   Dispatch is simple: once the command line is parsed, the command is used to
-  look up a command object, then call its execute method.
+  look up a command object, then a call is made to the Command::execute method.
 
   Context stores an associative map of command object pointers indexed by a
   string. This means the 'done' string is an index to the CmdDone object that
@@ -37,20 +41,22 @@ Dispatch
 Command Objects
   Every task command is implemented by a command object. The command object
   provides metadata, usage and one-line help in addition to the ::execute method
-  that implements the command.
+  that implements the command. The Command base class implements common
+  functionality.
 
 
 Column Objects
   There is a 1:1 correspondence between attributes stored in the data files and
   the columns that may be reported. These are represented by column objects,
   which are responsible for validating input, measuring space needed according
-  to various formats, and for rendering data for reports.
+  to various formats, and for rendering data for reports. There is a
+  ColDescription object that inherits from a Column base class.
 
 
 TDB2
   The TDB2 object is a layered, transactioned I/O manager. Its purpose is to
-  isolate code from file I/O, locking, synching, and parsing details. It is
-  also responsible for minimizing reads, writes and parsing of data files.
+  isolate code from file I/O, locking and parsing details. It is also
+  responsible for minimizing reads, writes and parsing of data files.
 
   All input is assumed to be UTF8. All stored data is UTF8.
 
@@ -104,6 +110,12 @@ Filter
   to Boolean true.
 
 
+Eval & Variant
+  The Eval class evaluates expressions, provided in string form, using the
+  Variant class to represent data elements. Variant implements all operators
+  for all Variant types.
+
+
 Sorting
   Sorting is performed on a set of tasks. More specifically, the list that is
   sorted is a set of numeric indexes to tasks that are stored in a separate
@@ -147,14 +159,14 @@ Test Suite
   suite is slowly migrating to Python. Some tests are written in C++ and all
   tets generate TAP output.
 
-  There are currently about 9,000 unit tests, that take a minute or two to run
+  There are currently about 8,000 unit tests, that take a minute or two to run
   in total.
 
   Taskwarrior uses flod software to automate continuous integration across many
   platforms. Code changes are automatically detected, propagated, built and
   tested on a variety of participating platforms. Grid testing results are here:
 
-    http://central.tasktools.org/task-2.4.0.html
+    http://central.tasktools.org/
 
   When making code changes, it is important that the test suite be run to verify
   that functionality was not broken.
@@ -174,7 +186,7 @@ Debugging
 
 Patches
   Patches are encouraged and welcomed. Either attach them to the appropriate
-  Redmine issue, or send them to support@taskwarrior.org. A good patch:
+  Jira issue, or send them to support@taskwarrior.org. A good patch:
 
     - Maintains the MIT license, and does not contain code lifted from other
       sources.

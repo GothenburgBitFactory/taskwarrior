@@ -1,9 +1,9 @@
-How to Build
+How to Build Taskwarrior
 
   Obtain and build code:
     $ git clone https://git.tasktools.org/scm/tm/task.git task.git
     $ cd task.git
-    $ git checkout 2.4.0                 # Dev branch
+    $ git checkout 2.4.0                 # Latest dev branch
     $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release. Default: neither.
     $ make VERBOSE=1                     # Shows details
 
@@ -11,12 +11,15 @@ How to Build
     $ cd tests
     $ make VERBOSE=1                     # Shows details
     $ ./run_all                          # Runs all tests silently > all.log
-                                         # Install vramsteg for blinkenlights
-    $ ./problems                         # Find errors in all.log
+                                         # Install 'vramsteg' for blinkenlights
+    $ ./problems                         # Enumerate test failures in all.log
 
   Note that any development should be performed using a git clone, and the
   current development branch. The source tarballs do not reflect HEAD, and do
   not contain the test suite.
+
+  If you send us a patch, make sure that patch is made against git HEAD. We
+  cannot apply patches made against the tarball source.
 
 General Statement
   This file is intended to convey the current efforts, priorities and needs of
@@ -29,7 +32,7 @@ General Statement
     always ongoing discussions about new features and changes to existing
     features.
 
-  - Join us in the #taskwarrior IRC channel on freenode.net. Some great ideas,
+  - Join us in the #taskwarrior IRC channel on freenode.net. Many great ideas,
     suggestions, testing and discussions have taken place there. It is also
     the quickest way to get help, or confirm a bug.
 
@@ -40,21 +43,27 @@ General Statement
   - Review documentation: there are man pages, online articles, tutorials and
     so on, and these may contain errors, or they may not convey ideas in the
     best way. Perhaps you can help improve it. Contact us - documentation is
-    a separate effort from the codebase, and includes all web sites.
+    a separate effort from the codebase, and includes all web sites, and all
+    are available using git.
 
   - Take a look at the bug database, and help triage the bug list. This is a
     review process that involves confirming bugs, providing additional data,
-    information or analysis. Bug triage is very useful and much needed.
+    information or analysis. Bug triage is very useful and much needed. You
+    could check to see that an old bug is still relevant - sometimes they are
+    not.
+
+  - Review the source code, and point out inefficiencies, problems, unreadable
+    functions, bugs and assumptions.
 
   - Fix a bug. For this you'll need C++ and Git skills, but this is one of
     the largest ways you can contribute. We welcome all bug fixes, provided
     the work is done well and doesn't create other problems or introduce new
-    dependencies. We recommend talking to us before starting.
+    dependencies. We recommend talking to us before starting. Seriously.
 
   - Add unit tests. Unit tests are possibly the most useful contributions of
     all, because they not only improve the quality of the code, but prevent
     future regressions, therefore maintaining quality of subsequent releases.
-    Plus, broken tests are a great motivator for us to fix the causal bug.
+    Plus, broken tests are a great motivator for us to fix the causal defect.
     You'll need Python skills, as we are migrating from Perl to Python for our
     test suite.
 
@@ -83,7 +92,7 @@ General Statement
     missing from the software, but gives us insights into how you use it.
     Plus, you might get your feature implemented.
 
-  Following are specific areas that could use some attention.
+  Next are some specific areas that need attention.
 
 Deprecated Code
   This is code that is going to be phased out soon, and therefore is not worth
@@ -94,26 +103,20 @@ Deprecated Code
   - Priorities in core. This will be migrated to become a UDA as soon as we
     have the right support in place for custom sorting.
 
+  - Nag feature.
+
   - Attribute modifiers.
 
 New Code Needs
-  This is code that needs to be written, usually down at the C++ function/method
-  level.
+  This is code that needs to be written.
 
-  - Need export_viz.yy script. Any language. This would have value as an
-    example, or template script serving as a starting-point for anyone who
-    needed this format.
-  - Need new export_xxx.yy scripts - the more the better. Any language.
+  - Need export_viz.* script. Any language. This would have value as an example
+    or template script serving as a starting-point for anyone who needed this
+    format.
+  - Need new export_xxx.* scripts - the more the better. Any language.
   - The JSON.{h,cpp} code is fast and efficient up to a point, but has a non-
-    linear performance curve, implying a slowdown due to fragmentation. Find
-    it, fix it.
-  - Need a function that can optimize color codes. For example, if a string
-    contains this:
-      <red>one two </red><red>three four</red>
-    It can be shortened to:
-      <red>one two three four</red>
-    This is only possible if there is nothing between </red> and <red> and the
-    colors match.
+    linear performance curve, implying a slowdown due to fragmentation, but who
+    know? Find it, fix it.
   - Need an external script that can locate and correct duplicate UUIDs in the
     data file, as found by 'task diag'. This should check to see if there is
     a suitable UUID generator installed. This should also be careful to
@@ -147,31 +150,7 @@ Unit Tests Needed
 
   The tests are mainly written in Perl, and all use TAP. We want them all to be
   eventually replaced by Python, so we are now only accepting new tests that use
-  the Python-based approach you can see in some of the existing tests. Here is
-  how to get the code and run the test suite:
-     git clone https://git.tasktools.org/scm/tm/task.git
-     cd task.git
-     git checkout 2.4.0
-     cmake -DCMAKE_BUILD_TYPE=debug .
-     make
-     make test
-
-  Alternately, you go to the test directory and run the following:
-
-     cd task.git/test
-     make
-     make test
-
-  Either way, a TAP file 'all.log' is written that contains all test results.
-  Once this file is created, you can see the failing tests using this script:
-
-    cd task.git/test
-    ./problems
-
-  If you make a habit of running the test suite, consider downloading the
-  vramsteg utility to show a colorful progress bar, from:
-
-    https://git.tasktools.org/scm/ut/vramsteg.git
+  the Python-based approach you can see in some of the existing tests.
 
   Tests needed:
 
@@ -188,8 +167,8 @@ Unit Tests Needed
   - Need unit tests for each bug in the issue list that is marked with the
     'needsTest' label.
 
-  * Note that running the unit tests requires the Perl JSON module to be
-    installed.
+  Note that running the unit tests currently requires the Perl JSON module to
+  be installed.
 
   Note that all new unit tests should follow the test/template.t standard.
 
@@ -207,10 +186,11 @@ Current Codebase Condition
     - 2.3.0 Current release, locked.
 
   '2.3.1' branch:
-    - Bug fix branch. To be released soon.
+    - Bug fix branch. Probably will not be released.
 
   '2.4.0' branch:
-    - Current development branch with new command line parser, expressions
+    - Current development branch with new command line parser, expressions,
+      and heading for beta soon.
 
 ---
 
