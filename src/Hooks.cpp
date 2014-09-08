@@ -104,6 +104,7 @@ void Hooks::onLaunch ()
       {
         if (line->length () && (*line)[0] == '{')
         {
+          // Only 'add' is possible.
           Task newTask (*line);
           context.tdb2.add (newTask);
         }
@@ -210,6 +211,7 @@ void Hooks::onAdd (Task& after)
         {
           Task newTask (*line);
 
+          // TODO Not sure if this first/!first thing is good.
           if (first)
           {
             after = newTask;
@@ -281,6 +283,7 @@ void Hooks::onModify (const Task& before, Task& after)
         {
           Task newTask (*line);
 
+          // TODO Not sure if this first/!first thing is good.
           if (first)
           {
             after = newTask;
