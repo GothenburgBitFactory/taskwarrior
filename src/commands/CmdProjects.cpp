@@ -69,7 +69,6 @@ int CmdProjects::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (tasks, filtered);
-  context.tdb2.commit ();
 
   int quantity = filtered.size ();
 
@@ -184,7 +183,6 @@ int CmdCompletionProjects::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (tasks, filtered);
-  context.tdb2.commit ();
 
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
