@@ -47,8 +47,6 @@ CmdAdd::CmdAdd ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdAdd::execute (std::string& output)
 {
-  int rc = 0;
-
   // Apply the command line modifications to the new task.
   Task task;
   task.modify (Task::modReplace, true);
@@ -62,8 +60,7 @@ int CmdAdd::execute (std::string& output)
   if (context.verbose ("project"))
     context.footnote (onProjectChange (task));
 
-  context.tdb2.commit ();
-  return rc;
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
