@@ -1067,35 +1067,6 @@ The coefficients reflect the relative importance of the various terms in the
 urgency calculation.  These are default values, and may be modified to suit your
 preferences, but it is important that you carefully consider any modifications.
 
-.SS SHADOW FILE
-
-Note, this feature is deprecated in 2.4.0.
-
-.TP
-.B
-shadow.file=$HOME/.task/shadow.txt
-If specified, designates a file path that will be automatically written to by
-taskwarrior, whenever the task database changes.  In other words, it is
-automatically kept up to date.  The shadow.command configuration variable is
-used to determine which report is written to the shadow file.  There is no color
-used in the shadow file. This feature can be useful in maintaining a current
-file for use by programs like GeekTool, Conky or Samurize.
-
-.TP
-.B
-shadow.command=list
-This is the command that is run to maintain the shadow file, determined by the
-.I shadow.file
-configuration variable. The format is identical to that of
-.I default.command
-\&. Please see the corresponding documentation for that command.
-
-.TP
-.B
-shadow.notify=on
-When this value is set to "on", taskwarrior will display a message whenever the
-shadow file is updated by some task command.
-
 .SS DEFAULTS
 
 .TP

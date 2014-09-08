@@ -194,6 +194,8 @@
 - The 'total active time' information is removed from the 'info' report.  This
   was being misinterpreted as support for time tracking.
 - Removed unused tips files (thanks to dev-zero).
+- Removed shadow file feature, replacing it with an example hook scripts that
+  performs the same function.
 
 ------ current release ---------------------------
 

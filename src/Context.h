@@ -52,7 +52,6 @@ public:
   int initialize (int, const char**);  // all startup
   int run ();
   int dispatch (std::string&);         // command handler dispatch
-  void shadow ();                      // shadow file update
 
   int getWidth ();                     // determine terminal width
   int getHeight ();                    // determine terminal height

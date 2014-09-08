@@ -406,13 +406,7 @@ int Context::dispatch (std::string &out)
       throw std::string ("");
 */
 
-    int rc = c->execute (out);
-
-    // Write commands cause an update of the shadow file, if configured.
-    if (! c->read_only ())
-      shadow ();
-
-    return rc;
+    return c->execute (out);
   }
 
   assert (commands["help"]);
@@ -519,59 +513,6 @@ bool Context::verbose (const std::string& token)
     return true;
 
   return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// This needs to be taken out and shot, as soon as hooks will allow.
-void Context::shadow ()
-{
-  std::string file_name = config.get ("shadow.file");
-  std::string command   = config.get ("shadow.command");
-  std::string rcfile    = rc_file;
-
-  // A missing shadow file command uses the default command instead.
-  if (command == "")
-    command = config.get ("default.command");
-
-  if (file_name != "" &&
-      command != "")
-  {
-    File shadow_file (file_name);
-
-    // Check for dangerous shadow file settings.
-    std::string location = config.get ("data.location");
-    if (shadow_file._data == location + "/pending.data")
-      throw std::string (STRING_CONTEXT_SHADOW_P);
-
-    if (shadow_file._data == location + "/completed.data")
-      throw std::string (STRING_CONTEXT_SHADOW_C);
-
-    if (shadow_file._data == location + "/undo.data")
-      throw std::string (STRING_CONTEXT_SHADOW_U);
-
-    if (shadow_file._data == location + "/backlog.data")
-      throw std::string (STRING_CONTEXT_SHADOW_B);
-
-    // Compose the command.  Put the rc overrides up front, so that they may
-    // be overridden by rc.shadow.command.
-    command = program               +
-              " rc.detection:off"   +  // No need to determine terminal size
-              " rc.color:off"       +  // Color off by default
-              " rc.gc:off "         +  // GC off, to reduce headaches
-              " rc.locking:off"     +  // No file locking
-              " rc:" + rcfile + " " +  // Use specified rc file
-              command               +  // User specified command
-              " >"                  +  // Capture
-              shadow_file._data;       // User specified file
-
-    debug ("Running shadow command: " + command);
-    system (command.c_str ());
-
-    // Optionally display a notification that the shadow file was updated.
-    // TODO Convert to a verbosity token.
-    if (config.getBoolean ("shadow.notify"))
-      footnote (format (STRING_CONTEXT_SHADOW_UPDATE, shadow_file._data));
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
