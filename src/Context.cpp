@@ -205,7 +205,6 @@ int Context::initialize (int argc, const char** argv)
 
     // First opportunity to run a hook script.
     hooks.initialize ();
-    hooks.onLaunch ();
   }
 
   catch (const std::string& message)
@@ -283,8 +282,10 @@ int Context::run ()
 
   try
   {
+    hooks.onLaunch ();
     rc = dispatch (output);
-    hooks.onExit ();
+    tdb2.commit ();           // Harmless if called when nothing changed.
+    hooks.onExit ();          // No chance to update data.
 
     std::stringstream s;
     s << "Perf "
