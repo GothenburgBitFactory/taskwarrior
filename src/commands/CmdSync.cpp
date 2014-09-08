@@ -237,9 +237,6 @@ int CmdSync::execute (std::string& output)
         context.tdb2.backlog.clear_lines ();
         context.tdb2.backlog.add_line (sync_key + "\n");
 
-        // Commit all changes.
-        context.tdb2.commit ();
-
         // Present a clear status message.
         if (upload_count == 0 && download_count == 0)
           // Note: should not happen - expect code 201 instead.
