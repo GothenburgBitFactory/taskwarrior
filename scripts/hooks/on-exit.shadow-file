@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# This hook script replaces the shadow file feature, found in Taskwarrior
+# prior to version 2.4.0.
+#
+# This script assumes that the legacy shadow file settings are still used.
+# Although those settings are now not recognized by Taskwarrior, іt is
+# harmless to store configuration settings for extensions in .taskrc.
+
+# The command to run, to generate the shadow file.
+SHADOW_COMMAND=$(task _get rc.shadow.command)
+
+# The file to overwrite.
+SHADOW_FILE=$(task _get rc.shadow.file)
+
+# Overwrite the shadow file by running the command.
+task $SHADOW_COMMAND > $SHADOW_FILE 2>/dev/null
+
+echo Shadow file $SHADOW_FILE updated.
+exit 0
+
