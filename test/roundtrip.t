@@ -70,8 +70,8 @@ qx{../src/task rc:$rc import ./roundtrip2.json 2>&1};
 #  2 1/7/2014             tag1 tag2 two
 
 my $output = qx{../src/task rc:$rc long 2>&1};
-like ($output, qr/1\s+\d+\/\d+\/\d+\s+H\s+A\s+one\/1/,    "$ut: 2 round trips task 1 identical");
-like ($output, qr/2\s+\d+\/\d+\/\d+\s+tag1\s+tag2\s+two/, "$ut: 2 round trips task 2 identical");
+like ($output, qr/1\s+\d+\/\d+\/\d+.+\sH\s+A\s+one\/1/,    "$ut: 2 round trips task 1 identical");
+like ($output, qr/2\s+\d+\/\d+\/\d+.+\stag1\s+tag2\s+two/, "$ut: 2 round trips task 2 identical");
 
 # Compare the actual JSON files.
 $output = qx{diff ./roundtrip1.json ./roundtrip2.json 2>&1};
