@@ -61,7 +61,6 @@ int CmdHistoryMonthly::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -216,7 +215,6 @@ int CmdHistoryAnnual::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -368,7 +366,6 @@ int CmdGHistoryMonthly::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
@@ -562,7 +559,6 @@ int CmdGHistoryAnnual::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
