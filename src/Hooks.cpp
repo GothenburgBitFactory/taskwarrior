@@ -77,10 +77,10 @@ void Hooks::initialize ()
 // - all emitted non-JSON lines are considered feedback messages
 //
 // Exit:
-//   0 Means: - all emitted JSON lines are added/modifiied
-//            - all emitted non-JSON lines become footnote entries
-//   1 Means: - all emitted JSON lines are ignored
-//            - all emitted non-JSON lines become error entries
+//   0 Means:     - all emitted JSON lines are added/modified
+//                - all emitted non-JSON lines become footnote entries
+//   non-0 Means: - all emitted JSON lines are ignored
+//                - all emitted non-JSON lines become error entries
 //
 void Hooks::onLaunch ()
 {
@@ -114,9 +114,7 @@ void Hooks::onLaunch ()
     else
     {
       for (line = lines.begin (); line != lines.end (); ++line)
-        if (line->length () && (*line)[0] == '{')
-          ; // Ignored
-        else
+        if (line->length () && (*line)[0] != '{')
           context.error (*line);
 
       throw 0;  // This is how hooks silently terminate processing.
@@ -132,10 +130,12 @@ void Hooks::onLaunch ()
 //
 // Output:
 // - all emitted non-JSON lines are considered feedback messages
+// - The onExit event occurs too late to allow any changes, so the input is not
+//   to be modified
 //
 // Exit:
-//   0 Means: - all emitted non-JSON lines become footnote entries
-//   1 Means: - all emitted non-JSON lines become error entries
+//   0 Means:     - all emitted non-JSON lines become footnote entries
+//   non-0 Means: - all emitted non-JSON lines become error entries
 bool Hooks::onExit ()
 {
   context.timer_hooks.start ();
@@ -147,35 +147,24 @@ bool Hooks::onExit ()
   std::vector <std::string>::iterator i;
   for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
   {
+    std::string input;
     std::string output;
     std::vector <std::string> args;
-    int status = execute (*i, args, "", output);
+    int status = execute (*i, args, input, output);
 
     std::vector <std::string> lines;
     split (lines, output, '\n');
     std::vector <std::string>::iterator line;
 
-    if (status == 0)
+    for (line = lines.begin (); line != lines.end (); ++line)
     {
-      for (line = lines.begin (); line != lines.end (); ++line)
+      if (line->length () && (*line)[0] != '{')
       {
-        if (line->length () && (*line)[0] == '{')
-        {
-          Task newTask (*line);
-          context.tdb2.add (newTask);
-          status = true;
-        }
-        else
+        if (status == 0)
           context.footnote (*line);
-      }
-    }
-    else
-    {
-      for (line = lines.begin (); line != lines.end (); ++line)
-        if (line->length () && (*line)[0] == '{')
-          ; // Ignored
         else
           context.error (*line);
+      }
     }
   }
 
@@ -194,10 +183,10 @@ bool Hooks::onExit ()
 // - all emitted non-JSON lines are considered feedback messages
 //
 // Exit:
-//   0 Means: - all emitted JSON lines are added/modifiied
-//            - all emitted non-JSON lines become footnote entries
-//   1 Means: - all emitted JSON lines are ignored
-//            - all emitted non-JSON lines become error entries
+//   0 Means:     - all emitted JSON lines are added/modified
+//                - all emitted non-JSON lines become footnote entries
+//   non-0 Means: - all emitted JSON lines are ignored
+//                - all emitted non-JSON lines become error entries
 //
 void Hooks::onAdd (Task& after)
 {
@@ -240,12 +229,8 @@ void Hooks::onAdd (Task& after)
     else
     {
       for (line = lines.begin (); line != lines.end (); ++line)
-      {
-        if (line->length () && (*line)[0] == '{')
-          ; // Ignored
-        else
+        if (line->length () && (*line)[0] != '{')
           context.error (*line);
-      }
 
       throw 0;  // This is how hooks silently terminate processing.
     }
@@ -266,10 +251,10 @@ void Hooks::onAdd (Task& after)
 // - all emitted non-JSON lines are considered feedback messages
 //
 // Exit:
-//   0 Means: - all emitted JSON lines are added/modifiied
-//            - all emitted non-JSON lines become footnote entries
-//   1 Means: - all emitted JSON lines are ignored
-//            - all emitted non-JSON lines become error entries
+//   0 Means:     - all emitted JSON lines are added/modified
+//                - all emitted non-JSON lines become footnote entries
+//   non-0 Means: - all emitted JSON lines are ignored
+//                - all emitted non-JSON lines become error entries
 void Hooks::onModify (const Task& before, Task& after)
 {
   context.timer_hooks.start ();
@@ -315,9 +300,7 @@ void Hooks::onModify (const Task& before, Task& after)
     else
     {
       for (line = lines.begin (); line != lines.end (); ++line)
-        if (line->length () && (*line)[0] == '{')
-          ; // Ignored
-        else
+        if (line->length () && (*line)[0] != '{')
           context.error (*line);
 
       throw 0;  // This is how hooks silently terminate processing.
