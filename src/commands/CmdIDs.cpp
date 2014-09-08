@@ -56,7 +56,6 @@ int CmdIDs::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   // Find number of matching tasks.
   std::vector <int> ids;
@@ -145,7 +144,6 @@ int CmdCompletionIds::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   std::vector <int> ids;
   std::vector <Task>::iterator task;
@@ -180,7 +178,6 @@ int CmdZshCompletionIds::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   std::stringstream out;
   std::vector <Task>::iterator task;
@@ -216,7 +213,6 @@ int CmdUUIDs::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   std::vector <std::string> uuids;
   std::vector <Task>::iterator task;
@@ -249,7 +245,6 @@ int CmdCompletionUuids::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   std::vector <std::string> uuids;
   std::vector <Task>::iterator task;
@@ -282,7 +277,6 @@ int CmdZshCompletionUuids::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   std::stringstream out;
   std::vector <Task>::iterator task;
