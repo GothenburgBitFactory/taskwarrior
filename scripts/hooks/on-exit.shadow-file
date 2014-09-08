@@ -7,14 +7,29 @@
 # Although those settings are now not recognized by Taskwarrior, іt is
 # harmless to store configuration settings for extensions in .taskrc.
 
-# The command to run, to generate the shadow file.
+# The command to run, to generate the shadow file. If this is not available,
+# then the default.command is used.
 SHADOW_COMMAND=$(task _get rc.shadow.command)
+if [[ -z "$SHADOW_COMMAND" ]]
+then
+  SHADOW_COMMAND=$(task _get rc.default.command)
+fi
 
 # The file to overwrite.
 SHADOW_FILE=$(task _get rc.shadow.file)
 
-# Overwrite the shadow file by running the command.
-task $SHADOW_COMMAND > $SHADOW_FILE 2>/dev/null
+# Run the command, inserting a series of override settings:
+#   rc.detection=off       Disables terminal size detection
+#   rc.gc=off              Disables GC, thus not changing IDs unexpectedly
+#   rc.color=off           Disable color in the shadow file
+#   rc.locking=off         Disable file locking, to prevent race condition
+#   rc.hooks=off           Disable hooks, to prevent race condition
+task $SHADOW_COMMAND rc.detection=off rc.gc=off rc.color=off rc.locking=off rc.hooks=off > $SHADOW_FILE 2>/dev/null
+if [[ $? != 0 ]]
+then
+  echo Could not create $SHADOW_FILE
+  exit 1
+fi
 
 echo Shadow file $SHADOW_FILE updated.
 exit 0
