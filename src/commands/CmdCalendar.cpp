@@ -66,7 +66,6 @@ int CmdCalendar::execute (std::string& output)
 
   // Load the pending tasks.
   handleRecurrence ();
-  context.tdb2.commit ();
   std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
 
   Date today;
