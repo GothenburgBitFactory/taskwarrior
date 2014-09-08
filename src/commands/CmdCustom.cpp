@@ -115,7 +115,6 @@ int CmdCustom::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (filtered);
-  context.tdb2.commit ();
 
   // Sort the tasks.
   std::vector <int> sequence;
