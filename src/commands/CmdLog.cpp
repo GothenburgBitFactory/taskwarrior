@@ -64,7 +64,6 @@ int CmdLog::execute (std::string& output)
   context.tdb2.add (task);
   if (context.verbose ("project"))
     context.footnote (onProjectChange (task));
-  context.tdb2.commit ();
 
   if (context.verbose ("affected"))
     output = std::string (STRING_CMD_LOG_LOGGED) + "\n";
