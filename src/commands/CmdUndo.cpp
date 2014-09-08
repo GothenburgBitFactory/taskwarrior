@@ -51,7 +51,6 @@ int CmdUndo::execute (std::string& output)
       throw std::string (STRING_CMD_UNDO_MODS);
 
   context.tdb2.revert ();
-  context.tdb2.commit ();
   return 0;
 }
 
