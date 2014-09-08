@@ -13,9 +13,9 @@
 echo on-launch
 
 # Exit:
-#   0 Means: - all emitted JSON lines are added/modified
-#            - all emitted non-JSON lines become footnote entries
-#   1 Means: - all emitted JSON lines are ignored
-#            - all emitted non-JSON lines become error entries
+#   0 Means:     - all emitted JSON lines are added/modified
+#                - all emitted non-JSON lines become footnote entries
+#   non-0 Means: - all emitted JSON lines are ignored
+#                - all emitted non-JSON lines become error entries
 exit 0
 

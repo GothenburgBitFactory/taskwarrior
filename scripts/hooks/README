@@ -1,0 +1,26 @@
+Example Hook Scripts
+
+Hooks are supported in Taskwarrior 2.4.0 and later. Hooks require no
+configuration, and simply need to exist, in the expected location, with the
+expected name, with execute permission. If these conditions are met, the hook
+scripts will be run.
+
+Expected Location
+  The hooks scripts all reside in one location, which is in a 'hooks'
+  subdirectory, in your ~/.task (or rc.data.location override) directory.
+
+Expected Name
+  A hook scripts must be named according to which event triggers the script. A
+  script named 'on-add' will be triggered by a task add event. Multiple hook
+  scripts can coexist, and will all be run, in collating sequence. If there are
+  two scripts, named 'on-add-check-for-missing-priority' and 'on-add.x', they
+  are both executed, in the order shown here.
+
+Expected Permissions
+  A hook script must have execute permission for the user running taskwarrior,
+  otherwise it is skipped.
+
+Interface
+  Each hook script has a unique interface. This is documented in the example
+  scripts here.
+

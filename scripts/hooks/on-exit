@@ -12,7 +12,7 @@
 echo on-exit
 
 # Exit:
-#   0 Means: - all emitted non-JSON lines become footnote entries
-#   1 Means: - all emitted non-JSON lines become error entries
+#   0 Means:     - all emitted non-JSON lines become footnote entries
+#   non-0 Means: - all emitted non-JSON lines become error entries
 exit 0
 
