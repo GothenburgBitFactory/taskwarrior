@@ -9,6 +9,8 @@
 
 # Output:
 # - all emitted non-JSON lines are considered feedback messages
+# - The onExit event occurs too late to allow any changes, so the input is not
+#   to be modified
 echo on-exit
 
 # Exit:
