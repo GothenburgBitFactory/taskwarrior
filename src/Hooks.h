@@ -41,7 +41,7 @@ public:
   void initialize ();
 
   void onLaunch ();
-  bool onExit ();
+  void onExit ();
   void onAdd (Task&);
   void onModify (const Task&, Task&);
 

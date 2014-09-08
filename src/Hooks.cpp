@@ -136,12 +136,9 @@ void Hooks::onLaunch ()
 // Exit:
 //   0 Means:     - all emitted non-JSON lines become footnote entries
 //   non-0 Means: - all emitted non-JSON lines become error entries
-bool Hooks::onExit ()
+void Hooks::onExit ()
 {
   context.timer_hooks.start ();
-
-  // Status indicates whether hooks resulted in new/modified tasks.
-  bool status = false;
 
   std::vector <std::string> matchingScripts = scripts ("on-exit");
   std::vector <std::string>::iterator i;
@@ -169,7 +166,6 @@ bool Hooks::onExit ()
   }
 
   context.timer_hooks.stop ();
-  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
