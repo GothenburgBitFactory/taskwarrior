@@ -180,7 +180,6 @@ int CmdDelete::execute (std::string& output)
     if (i->first != "")
       context.footnote (i->second);
 
-  context.tdb2.commit ();
   feedback_affected (count == 1 ? STRING_CMD_DELETE_1 : STRING_CMD_DELETE_N, count);
   return rc;
 }
