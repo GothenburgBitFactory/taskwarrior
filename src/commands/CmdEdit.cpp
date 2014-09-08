@@ -71,7 +71,6 @@ int CmdEdit::execute (std::string& output)
     if (editFile (*task))
       context.tdb2.modify (*task);
 
-  context.tdb2.commit ();
   return 0;
 }
 
