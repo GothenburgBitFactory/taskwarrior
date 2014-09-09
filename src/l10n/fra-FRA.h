@@ -295,7 +295,6 @@
 #define STRING_CMD_INFO_BLOCKING     "Cette tâche bloque"
 #define STRING_CMD_INFO_UNTIL        "Jusqu'au"
 #define STRING_CMD_INFO_MODIFICATION "Modification"
-#define STRING_CMD_INFO_TOTAL_ACTIVE "Temps total d'activité"
 #define STRING_CMD_INFO_MODIFIED     "Dernier modifié"
 #define STRING_CMD_UNDO_USAGE        "Annule les changements les plus récents sur une tâche"
 #define STRING_CMD_UNDO_MODS         "The undo command does not allow further task modification."

@@ -296,7 +296,6 @@
 #define STRING_CMD_INFO_BLOCKING     "Tiu tasko blokas"
 #define STRING_CMD_INFO_UNTIL        "Ĝis"
 #define STRING_CMD_INFO_MODIFICATION "Modifado"
-#define STRING_CMD_INFO_TOTAL_ACTIVE "Totala aktivtempo"
 #define STRING_CMD_INFO_MODIFIED     "Modifado lasta"
 #define STRING_CMD_UNDO_USAGE        "Malfaras la plej malfrua modifado al tasko"
 #define STRING_CMD_UNDO_MODS         "La komando 'undo' ne permesos, ke oni pli modifus la taskojn."

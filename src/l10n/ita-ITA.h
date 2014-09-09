@@ -296,7 +296,6 @@
 #define STRING_CMD_INFO_BLOCKING     "Questo task sta bloccando"
 #define STRING_CMD_INFO_UNTIL        "Fino a"
 #define STRING_CMD_INFO_MODIFICATION "Modifica"
-#define STRING_CMD_INFO_TOTAL_ACTIVE "Tempo totale di attività"
 #define STRING_CMD_INFO_MODIFIED     "Ultima modifica"
 #define STRING_CMD_UNDO_USAGE        "Ritorna alla più recente modifica di un task"
 #define STRING_CMD_UNDO_MODS         "Il comando undo non ammette ulteriori modifiche al task."

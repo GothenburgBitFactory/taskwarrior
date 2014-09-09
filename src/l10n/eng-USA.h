@@ -296,7 +296,6 @@
 #define STRING_CMD_INFO_BLOCKING     "This task is blocking"
 #define STRING_CMD_INFO_UNTIL        "Until"
 #define STRING_CMD_INFO_MODIFICATION "Modification"
-#define STRING_CMD_INFO_TOTAL_ACTIVE "Total active time"
 #define STRING_CMD_INFO_MODIFIED     "Last modified"
 #define STRING_CMD_UNDO_USAGE        "Reverts the most recent change to a task"
 #define STRING_CMD_UNDO_MODS         "The undo command does not allow further task modification."

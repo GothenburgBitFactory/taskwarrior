@@ -298,7 +298,6 @@
 #define STRING_CMD_INFO_BLOCKING     "Esta tarea bloquea"
 #define STRING_CMD_INFO_UNTIL        "Hasta"
 #define STRING_CMD_INFO_MODIFICATION "Modificación"
-#define STRING_CMD_INFO_TOTAL_ACTIVE "Tiempo total activa"
 #define STRING_CMD_INFO_MODIFIED     "Modificada por última vez"
 #define STRING_CMD_UNDO_USAGE        "Revierte el cambio más reciente a una tarea"
 #define STRING_CMD_UNDO_MODS         "El comando undo no permite más modificación a la tarea."
