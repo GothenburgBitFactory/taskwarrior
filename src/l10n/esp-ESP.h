@@ -610,11 +610,6 @@
 #define STRING_CONTEXT_NEED_RC       "No se puede continuar sin archivo de configuración (rc)."
 #define STRING_CONTEXT_RC_OVERRIDE   "TASKRC sobreescrito: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA sobreescrito: {1}"
-#define STRING_CONTEXT_SHADOW_P      "La variable de configuración 'shadow.file' está ajustada a sobreescribrir sus tareas pendientes. Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_C      "La variable de configuración 'shadow.file' está ajustada a sobreescribrir sus tareas completadas. Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_U      "La variable de configuración 'shadow.file' está ajustada a sobreescribrir su registro de deshacer. Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_B      "La variable de configuración 'shadow.file' está ajustada a sobreescribrir su archivo backlog. Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_UPDATE "[Archivo shadow '{1}' actualizado.]"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' no es una fecha válida según el formato '{2}'."

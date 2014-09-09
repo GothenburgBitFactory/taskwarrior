@@ -598,11 +598,6 @@
 #define STRING_CONTEXT_NEED_RC       "Ne povos procedi sen rc-dosieron."
 #define STRING_CONTEXT_RC_OVERRIDE   "TASKRC-superrego: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA-superrego: {1}"
-#define STRING_CONTEXT_SHADOW_P      "Agorda variablo 'shadow.file' havas valoron " "superskribi viajn pendantajn taskojn.  Bonvolu ŝanĝi ĝin."
-#define STRING_CONTEXT_SHADOW_C      "Agorda variablo 'shadow.file' havas valoron " "superskribi viajn finitajn taskojn.  Bonvolu ŝanĝi ĝin."
-#define STRING_CONTEXT_SHADOW_U      "Agorda variablo 'shadow.file' havas valoron " "superskribi vian malfarregistron.  Bonvolu ŝanĝi ĝin."
-#define STRING_CONTEXT_SHADOW_B      "Agorda variablo 'shadow.file' havas valoron " "superskribi vian dosieron 'backlog.data'.  Bonvolu ŝanĝi ĝin."
-#define STRING_CONTEXT_SHADOW_UPDATE "[Ĝisigis ombran dosieron '{1}'.]"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' ne estas valida dato laŭ stilo '{2}'."

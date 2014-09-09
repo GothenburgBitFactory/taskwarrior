@@ -598,11 +598,6 @@
 #define STRING_CONTEXT_NEED_RC       "Impossibile procedere senza rc file."
 #define STRING_CONTEXT_RC_OVERRIDE   "Modifica TASKRC: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "Modifica TASKDATA: {1}"
-#define STRING_CONTEXT_SHADOW_P      "Variabile di configurazione 'shadow.file' impostata a sovrascrittura dei task pendenti. Si prega di modificarla."
-#define STRING_CONTEXT_SHADOW_C      "Variabile di configurazione 'shadow.file' impostata a sovrascrittura dei task completati. Si preda di modificarla."
-#define STRING_CONTEXT_SHADOW_U      "Variabile di configurazione 'shadow.file' impostata a sovrascrittura del log di undo. Si prega di modificarla."
-#define STRING_CONTEXT_SHADOW_B      "Variabile di configurazione 'shadow.file' impostata a sovrascrittura del file di backlog. Si prega di modificarla."
-#define STRING_CONTEXT_SHADOW_UPDATE "[Shadow file '{1}' aggiornato.]"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' non è una data valida nel formato '{2}'."
