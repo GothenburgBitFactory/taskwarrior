@@ -178,7 +178,7 @@
 // These are errors generated at the lowest level of input analysis,
 // at the character level.
 #define STRING_LEX_IMMEDIATE_UNK     "Lexer start failure, unknown characters found immediately."
-#define STRING_LEX_TYPE_UNK          "Lexer cannot process and unknown token type."
+#define STRING_LEX_TYPE_UNK          "Lexer cannot process an unknown token type."
 
 // Dates
 //
