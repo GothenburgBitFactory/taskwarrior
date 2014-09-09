@@ -866,10 +866,6 @@
 #define STRING_TDB2_UNDO_SYNCED      "Não é possível reverter a alteração porque a tarefa já foi syncronizada. Em vez disso modifique a tarefa."
 #define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
 
-// text
-                                     // A comma-separated list of commands is appended.
-#define STRING_TEXT_AMBIGUOUS        "Ambíguo {1} '{2}' - pode ser qualquer um de "
-
 // utf8
 #define STRING_UTF8_INVALID_CP_REP   "Representação de 'codepoint' inválida."
 #define STRING_UTF8_INVALID_CP       "'Codepoint' Unicode inválido."

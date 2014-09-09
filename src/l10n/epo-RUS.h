@@ -866,10 +866,6 @@
 #define STRING_TDB2_UNDO_SYNCED      "Ne povos malfari ŝanĝon ĉar la tasko estis jam sinkronigita.  Modifu anstataŭe la taskon."
 #define STRING_TDB2_DIRTY_EXIT       "Eliranta kun neskribitajn ŝanĝojn al {1}"
 
-// text
-                                     // A comma-separated list of commands is appended.
-#define STRING_TEXT_AMBIGUOUS        "Dusignifa {1} '{2}' - povas esti ajna de "
-
 // utf8
 #define STRING_UTF8_INVALID_CP_REP   "Nevalida kodpunkta nombro."
 #define STRING_UTF8_INVALID_CP       "Nevalida unikoda kodpunkto."
