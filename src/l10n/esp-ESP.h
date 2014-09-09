@@ -298,7 +298,6 @@
 #define STRING_CMD_INFO_BLOCKING     "Esta tarea bloquea"
 #define STRING_CMD_INFO_UNTIL        "Hasta"
 #define STRING_CMD_INFO_MODIFICATION "Modificación"
-#define STRING_CMD_INFO_TOTAL_ACTIVE "Tiempo total activa"
 #define STRING_CMD_INFO_MODIFIED     "Modificada por última vez"
 #define STRING_CMD_UNDO_USAGE        "Revierte el cambio más reciente a una tarea"
 #define STRING_CMD_UNDO_MODS         "El comando undo no permite más modificación a la tarea."
@@ -610,11 +609,6 @@
 #define STRING_CONTEXT_NEED_RC       "No se puede continuar sin archivo de configuración (rc)."
 #define STRING_CONTEXT_RC_OVERRIDE   "TASKRC sobreescrito: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA sobreescrito: {1}"
-#define STRING_CONTEXT_SHADOW_P      "La variable de configuración 'shadow.file' está ajustada a sobreescribrir sus tareas pendientes. Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_C      "La variable de configuración 'shadow.file' está ajustada a sobreescribrir sus tareas completadas. Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_U      "La variable de configuración 'shadow.file' está ajustada a sobreescribrir su registro de deshacer. Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_B      "La variable de configuración 'shadow.file' está ajustada a sobreescribrir su archivo backlog. Por favor, cambie esto."
-#define STRING_CONTEXT_SHADOW_UPDATE "[Archivo shadow '{1}' actualizado.]"
 
 // Date
 #define STRING_DATE_INVALID_FORMAT   "'{1}' no es una fecha válida según el formato '{2}'."
@@ -878,11 +872,6 @@
 #define STRING_TDB2_UNDO_COMPLETE    "Deshacer completado."
 #define STRING_TDB2_UNDO_SYNCED      "No se puede deshacer el cambio porque la tarea ya ha sido sincronizada. Como alternativa, modifique la tarea."
 #define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
-
-// text
-                                     // Se añade al final una lista de comandos separados por comas.
-                                     // A comma-separated list of commands is appended.
-#define STRING_TEXT_AMBIGUOUS        "Ambiguo {1} '{2}' - puede ser "
 
 // utf8
 #define STRING_UTF8_INVALID_CP_REP   "Representación de codepoint no válida."
