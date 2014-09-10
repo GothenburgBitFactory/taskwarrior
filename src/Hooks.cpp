@@ -44,6 +44,7 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 Hooks::Hooks ()
+: _enabled (true)
 {
 }
 
@@ -55,39 +56,47 @@ Hooks::~Hooks ()
 ////////////////////////////////////////////////////////////////////////////////
 void Hooks::initialize ()
 {
-  if (context.config.getBoolean ("hooks"))
+  // Scan <rc.data.location>/hooks
+  Directory d (context.config.get ("data.location"));
+  d += "hooks";
+  if (d.is_directory () &&
+      d.readable ())
   {
-    // Scan <rc.data.location>/hooks
-    Directory d (context.config.get ("data.location"));
-    d += "hooks";
-    if (d.is_directory () &&
-        d.readable ())
-    {
-      _scripts = d.list ();
-      std::sort (_scripts.begin (), _scripts.end ());
-    }
+    _scripts = d.list ();
+    std::sort (_scripts.begin (), _scripts.end ());
   }
+
+  _enabled = context.config.getBoolean ("hooks");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// The on-launch event is triggered once, after initialization, before an
-// processing occurs
+bool Hooks::enable (bool value)
+{
+  bool old_value = _enabled;
+  _enabled = value;
+  return old_value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The on-launch event is triggered once, after initialization, before any
+// processing occurs, i.e first
 //
-// No input
+// Input:
+// - none
 //
 // Output:
-// - all emitted JSON lines must be fully-formed tasks
-// - all emitted non-JSON lines are considered feedback messages
-//
-// Exit:
-//   0 Means:     - all emitted JSON lines are added/modified
-//                - all emitted non-JSON lines become footnote entries
-//   non-0 Means: - all emitted JSON lines are ignored
-//                - all emitted non-JSON lines become error entries
+// - all emitted JSON lines are added/modified as tasks, if the exit code is
+//   zero, otherwise ignored.
+// - minimal new task:  {"description":"Buy milk"}
+// - to modify a task include complete JSON
+// - all emitted non-JSON lines are considered feedback messages if the exit
+//   code is zero, otherwise they are considered errors.
 //
 void Hooks::onLaunch ()
 {
   context.timer_hooks.start ();
+  if (! _enabled)
+    return;
 
   std::vector <std::string> matchingScripts = scripts ("on-launch");
   std::vector <std::string>::iterator i;
@@ -129,20 +138,22 @@ void Hooks::onLaunch ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// The on-exit event is triggered once, after all processing is complete, i.e.
+// last
+//
 // Input:
-// - A read-only line of JSON for each task added/modified
+// - read-only line of JSON for each task added/modified
 //
 // Output:
-// - all emitted non-JSON lines are considered feedback messages
-// - The onExit event occurs too late to allow any changes, so the input is not
-//   to be modified
+// - any emitted JSON is ignored
+// - all emitted non-JSON lines are considered feedback messages if the exit
+//   code is zero, otherwise they are considered errors.
 //
-// Exit:
-//   0 Means:     - all emitted non-JSON lines become footnote entries
-//   non-0 Means: - all emitted non-JSON lines become error entries
 void Hooks::onExit ()
 {
   context.timer_hooks.start ();
+  if (! _enabled)
+    return;
 
   std::vector <std::string> matchingScripts = scripts ("on-exit");
   std::vector <std::string>::iterator i;
@@ -176,21 +187,21 @@ void Hooks::onExit ()
 // The on-add event is triggered separately for each task added
 //
 // Input:
-// - A line of JSON for the task added
+// - line of JSON for the task added
 //
 // Output:
-// - all emitted JSON lines must be fully-formed tasks
-// - all emitted non-JSON lines are considered feedback messages
-//
-// Exit:
-//   0 Means:     - all emitted JSON lines are added/modified
-//                - all emitted non-JSON lines become footnote entries
-//   non-0 Means: - all emitted JSON lines are ignored
-//                - all emitted non-JSON lines become error entries
+// - all emitted JSON lines are added/modified as tasks, if the exit code is
+//   zero, otherwise ignored.
+// - minimal new task:  {"description":"Buy milk"}
+// - to modify a task include complete JSON
+// - all emitted non-JSON lines are considered feedback messages if the exit
+//   code is zero, otherwise they are considered errors.
 //
 void Hooks::onAdd (Task& after)
 {
   context.timer_hooks.start ();
+  if (! _enabled)
+    return;
 
   std::vector <std::string> matchingScripts = scripts ("on-add");
   std::vector <std::string>::iterator i;
@@ -244,21 +255,22 @@ void Hooks::onAdd (Task& after)
 // The on-modify event is triggered separately for each task added or modified
 //
 // Input:
-// - A line of JSON for the original task
-// - A line of JSON for the modified task
+// - line of JSON for the original task
+// - line of JSON for the modified task, the diff being the modification
 //
 // Output:
-// - all emitted JSON lines must be fully-formed tasks
-// - all emitted non-JSON lines are considered feedback messages
+// - all emitted JSON lines are added/modified as tasks, if the exit code is
+//   zero, otherwise ignored.
+// - minimal new task:  {"description":"Buy milk"}
+// - to modify a task include complete JSON
+// - all emitted non-JSON lines are considered feedback messages if the exit
+//   code is zero, otherwise they are considered errors.
 //
-// Exit:
-//   0 Means:     - all emitted JSON lines are added/modified
-//                - all emitted non-JSON lines become footnote entries
-//   non-0 Means: - all emitted JSON lines are ignored
-//                - all emitted non-JSON lines become error entries
 void Hooks::onModify (const Task& before, Task& after)
 {
   context.timer_hooks.start ();
+  if (! _enabled)
+    return;
 
   std::vector <std::string> matchingScripts = scripts ("on-modify");
   std::vector <std::string>::iterator i;
@@ -293,7 +305,7 @@ void Hooks::onModify (const Task& before, Task& after)
             first = false;
           }
           else
-            context.tdb2.add (newTask);
+            context.tdb2.modify (newTask);
         }
         else
           context.footnote (*line);

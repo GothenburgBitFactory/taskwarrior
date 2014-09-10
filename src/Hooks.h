@@ -39,6 +39,7 @@ public:
   Hooks& operator= (const Hooks&);  // Deliberately unimplemented
 
   void initialize ();
+  bool enable (bool);
 
   void onLaunch ();
   void onExit ();
@@ -51,6 +52,7 @@ private:
   std::vector <std::string> scripts (const std::string&);
 
 private:
+  bool                      _enabled;
   std::vector <std::string> _scripts;
 };
 
