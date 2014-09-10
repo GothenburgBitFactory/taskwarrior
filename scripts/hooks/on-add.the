@@ -1,0 +1,19 @@
+#!/bin/bash
+
+read new_task
+
+re='(.*)([Tt])eh(.*)'
+if [[ $new_task =~ $re ]]
+then
+  while [[ $new_task =~ $re ]]
+  do
+    new_task=${BASH_REMATCH[1]}${BASH_REMATCH[2]}he${BASH_REMATCH[3]}
+  done
+
+  echo "Auto-corrected 'teh' --> 'the'"
+fi
+
+echo $new_task
+exit 0
+
+
