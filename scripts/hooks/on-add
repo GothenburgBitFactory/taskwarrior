@@ -3,20 +3,18 @@
 # The on-add event is triggered separately for each task added
 
 # Input:
-# - A line of JSON for the task added
-read new_task
-
-# Processing goes here
+# - line of JSON for the task added
 
 # Output:
-# - all emitted JSON lines must be fully-formed tasks
-# - all emitted non-JSON lines are considered feedback messages
-echo on-add
+# - all emitted JSON lines are added/modified as tasks, if the exit code is
+#   zero, otherwise ignored.
+# - minimal new task:  {"description":"Buy milk"}
+# - to modify a task include complete JSON
+# - all emitted non-JSON lines are considered feedback messages if the exit
+#   code is zero, otherwise they are considerederrors.
 
-# Exit:
-#   0 Means:     - all emitted JSON lines are added/modified
-#                - all emitted non-JSON lines become footnote entries
-#   non-0 Means: - all emitted JSON lines are ignored
-#                - all emitted non-JSON lines become error entries
+read new_task
+
+echo $new_task
+echo 'on-add'
 exit 0
-

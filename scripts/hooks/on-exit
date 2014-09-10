@@ -1,20 +1,20 @@
 #!/bin/bash
 
-# The on-exit event is triggered once, after all processing is complete
+# The on-exit event is triggered once, after all processing is complete, i.e.
+# last
 
 # Input:
-# - A read-only line of JSON for each task added/modified
-
-# Processing goes here
+# - read-only line of JSON for each task added/modified
 
 # Output:
-# - all emitted non-JSON lines are considered feedback messages
-# - The onExit event occurs too late to allow any changes, so the input is not
-#   to be modified
-echo on-exit
+# - any emitted JSON is ignored
+# - all emitted non-JSON lines are considered feedback messages if the exit
+#   code is zero, otherwise they are considerederrors.
 
-# Exit:
-#   0 Means:     - all emitted non-JSON lines become footnote entries
-#   non-0 Means: - all emitted non-JSON lines become error entries
+while read modified_task
+do
+  # Scan task
+done
+
+echo 'on-exit'
 exit 0
-
