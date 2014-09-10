@@ -965,8 +965,14 @@ bool Variant::operator_partial (const Variant& other) const
     case type_real:     left.cast (type_real);     return left._real == right._real;
     case type_string:   left.cast (type_string);   return left._string == right._string;
 
-    // TODO Implement same-day comparison.
-    case type_date:     left.cast (type_date);     return left._date == right._date;
+    // Same-day comparison.
+    case type_date:
+      {
+        left.cast (type_date);
+        Date left_date (left._date);
+        Date right_date (right._date);
+        return left_date.sameDay (right_date);
+      }
 
     case type_duration: left.cast (type_duration); return left._duration == right._duration;
     }
@@ -981,8 +987,14 @@ bool Variant::operator_partial (const Variant& other) const
     case type_real:     left.cast (type_real);     return left._real == right._real;
     case type_string:   left.cast (type_string);   return left._string == right._string;
 
-    // TODO Implement same-day comparison.
-    case type_date:     left.cast (type_date);     return left._date == right._date;
+    // Same-day comparison.
+    case type_date:
+      {
+        left.cast (type_date);
+        Date left_date (left._date);
+        Date right_date (right._date);
+        return left_date.sameDay (right_date);
+      }
 
     case type_duration: left.cast (type_duration); return left._duration == right._duration;
     }
@@ -1004,10 +1016,14 @@ bool Variant::operator_partial (const Variant& other) const
       left.cast (type_string);
       return left._string == right._string;
 
-    // TODO Implement same-day comparison.
+    // Same-day comparison.
     case type_date:
-      left.cast (type_date);
-      return left._date == right._date;
+      {
+        left.cast (type_date);
+        Date left_date (left._date);
+        Date right_date (right._date);
+        return left_date.sameDay (right_date);
+      }
 
     case type_duration:
       left.cast (type_duration);
@@ -1041,10 +1057,14 @@ bool Variant::operator_partial (const Variant& other) const
         return left._string.substr (0, right._string.length ()) == right._string;
       }
 
-    // TODO Implement same-day comparison.
+    // Same-day comparison.
     case type_date:
-      left.cast (type_date);
-      return left._date == right._date;
+      {
+        left.cast (type_date);
+        Date left_date (left._date);
+        Date right_date (right._date);
+        return left_date.sameDay (right_date);
+      }
 
     case type_duration:
 
@@ -1059,15 +1079,19 @@ bool Variant::operator_partial (const Variant& other) const
     case type_unknown:
       throw std::string (STRING_VARIANT_EQ_UNKNOWN);
 
-    // TODO Implement same-day comparison.
+    // Same-day comparison.
     case type_boolean:
     case type_integer:
     case type_real:
     case type_string:
     case type_date:
     case type_duration:
-      right.cast (type_date);
-      return left._date == right._date;
+      {
+        right.cast (type_date);
+        Date left_date (left._date);
+        Date right_date (right._date);
+        return left_date.sameDay (right_date);
+      }
     }
     break;
 
@@ -1077,7 +1101,7 @@ bool Variant::operator_partial (const Variant& other) const
     case type_unknown:
       throw std::string (STRING_VARIANT_EQ_UNKNOWN);
 
-    // TODO Implement same-day comparison.
+    // Same-day comparison.
     case type_boolean:
     case type_integer:
     case type_real:
