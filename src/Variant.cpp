@@ -960,10 +960,10 @@ bool Variant::operator_partial (const Variant& other) const
     switch (right._type)
     {
     case type_unknown:  throw std::string (STRING_VARIANT_EQ_UNKNOWN);
-    case type_boolean:                             return left._bool == right._bool;
+    case type_boolean:                             return left._bool    == right._bool;
     case type_integer:  left.cast (type_integer);  return left._integer == right._integer;
-    case type_real:     left.cast (type_real);     return left._real == right._real;
-    case type_string:   left.cast (type_string);   return left._string == right._string;
+    case type_real:     left.cast (type_real);     return left._real    == right._real;
+    case type_string:   left.cast (type_string);   return left._string  == right._string;
 
     // Same-day comparison.
     case type_date:
@@ -984,8 +984,8 @@ bool Variant::operator_partial (const Variant& other) const
     case type_unknown:  throw std::string (STRING_VARIANT_EQ_UNKNOWN);
     case type_boolean:  right.cast (type_integer); return left._integer == right._integer;
     case type_integer:                             return left._integer == right._integer;
-    case type_real:     left.cast (type_real);     return left._real == right._real;
-    case type_string:   left.cast (type_string);   return left._string == right._string;
+    case type_real:     left.cast (type_real);     return left._real    == right._real;
+    case type_string:   left.cast (type_string);   return left._string  == right._string;
 
     // Same-day comparison.
     case type_date:
