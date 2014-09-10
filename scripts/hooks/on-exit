@@ -9,7 +9,7 @@
 # Output:
 # - any emitted JSON is ignored
 # - all emitted non-JSON lines are considered feedback messages if the exit
-#   code is zero, otherwise they are considerederrors.
+#   code is zero, otherwise they are considered errors.
 
 while read modified_task
 do

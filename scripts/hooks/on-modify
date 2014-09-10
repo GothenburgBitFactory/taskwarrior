@@ -12,7 +12,7 @@
 # - minimal new task:  {"description":"Buy milk"}
 # - to modify a task include complete JSON
 # - all emitted non-JSON lines are considered feedback messages if the exit
-#   code is zero, otherwise they are considerederrors.
+#   code is zero, otherwise they are considered errors.
 
 read original_task
 read modified_task
