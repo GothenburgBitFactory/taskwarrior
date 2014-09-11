@@ -135,6 +135,20 @@ bool TF2::get (const std::string& uuid, Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool TF2::has (const std::string& uuid)
+{
+  if (! _loaded_tasks)
+    load_tasks ();
+
+  std::vector <Task>::iterator i;
+  for (i = _tasks.begin (); i != _tasks.end (); ++i)
+    if (i->get ("uuid") == uuid)
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void TF2::add_task (Task& task)
 {
   bool enabled = context.hooks.enable (false);
@@ -588,9 +602,6 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
 {
   // Ensure the task is consistent, and provide defaults if necessary.
   task.validate (false);
-
-  // All modified tasks are timestamped.
-  task.setModified ();
 
   // Find task, overwrite it.
   Task original;
@@ -1285,6 +1296,14 @@ bool TDB2::get (const std::string& uuid, Task& task)
 {
   return pending.get   (uuid, task) ||
          completed.get (uuid, task);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Locate task by UUID, wherever it is.
+bool TDB2::has (const std::string& uuid)
+{
+  return pending.has (uuid) ||
+         completed.has (uuid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
