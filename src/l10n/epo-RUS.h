@@ -99,7 +99,7 @@
 // DO NOT include a copyright in the translation.
 //
 #define STRING_LOCALIZATION_DESC     "Por la Esperanta lokalaĵo"
-#define STRING_LOCALIZATION_AUTHOR   "Tradukita Esperanten per Jeremy John Reeder"
+#define STRING_LOCALIZATION_AUTHOR   "Tradukita al la Internacia Lingvo per Jeremy John Reeder"
 
 // Parser
 #define STRING_PARSER_ALIAS_NEST     "Atingis la limon de {1} nest-niveloj de alinomoj."
@@ -171,14 +171,14 @@
 #define STRING_VARIANT_MOD_ZERO      "Ne povas moduli nulon"
 #define STRING_VARIANT_RENDER_UNK    "Ne povas bildigi nekonatan tipon."
 #define STRING_VARIANT_SQRT_NEG      "Ne povas kalkuli kvadratan radikon de negativa nombro."
-#define STRING_VARIANT_COERCE_UNK    "Cannot coerce data either to or from an unknown type"
+#define STRING_VARIANT_COERCE_UNK    "Ne povas konverta datumon ni el ni al nekonata tipo"
 
 // Lexer
 //
 // These are errors generated at the lowest level of input analysis,
 // at the character level.
-#define STRING_LEX_IMMEDIATE_UNK     "Lexer start failure, unknown characters found immediately."
-#define STRING_LEX_TYPE_UNK          "Lexer cannot process and unknown token type."
+#define STRING_LEX_IMMEDIATE_UNK     "Malsukcesis eki leksikan analizon; trovis tuj nekonatajn signojn."
+#define STRING_LEX_TYPE_UNK          "Leksika analizilo ne povas interpreti sintagmon de nekonata tipo."
 
 // Dates
 //
@@ -270,9 +270,9 @@
 #define STRING_CMD_VERSION_DOCS      "Oni povas trovi la dokumentojn por taskwarrior kun 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq', aŭ ĉe http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} kompilita per "
 #define STRING_CMD_VERSION_UNKNOWN   "nekonata"
-#define STRING_CMD_VERSION_COPY      "Kopirajto (C) 2006 - 2014 P. Beckingham, F. Hernandez."
+#define STRING_CMD_VERSION_COPY      "Kopirajto © 2006 - 2014 P. Beckingham, F. Hernandez."
 #define STRING_CMD_LOGO_USAGE        "Montras la logotipon de Taskwarrior"
-#define STRING_CMD_LOGO_COLOR_REQ    "La komando 'logo' bezonas, ke la kolor-subtenado estas ebligata."
+#define STRING_CMD_LOGO_COLOR_REQ    "La komando 'logo' bezonas, ke la kolor-subtenado estus ebligata."
 #define STRING_CMD_EXEC_USAGE        "Lanĉas komandojn kaj skribojn eksternajn"
 #define STRING_CMD_URGENCY_USAGE     "Montras la urĝec-mezuro de tasko"
 #define STRING_CMD_URGENCY_RESULT    "tasko {1} urĝeco {2}"
@@ -384,7 +384,7 @@
 #define STRING_CMD_DELETE_CONFIRM    "Forviŝi taskon {1} '{2}'?"
 #define STRING_CMD_DELETE_TASK       "Viŝanta taskon {1} '{2}'."
 #define STRING_CMD_DELETE_TASK_R     "Viŝanta reokazantan taskon {1} '{2}'."
-#define STRING_CMD_DELETE_CONFIRM_R  "Tiu estas reokazanta tasko. Ĉu vi volas viŝi ĉian okazon?"
+#define STRING_CMD_DELETE_CONFIRM_R  "Tio estas reokazanta tasko. Ĉu vi volas viŝi ĉian okazon?"
 #define STRING_CMD_DELETE_NO         "Ne viŝis taskon."
 #define STRING_CMD_DELETE_NOT_DEL    "Tasko {1} '{2}' ne estas viŝebla."
 #define STRING_CMD_DELETE_1          "Viŝis {1} taskon."
@@ -420,7 +420,7 @@
 #define STRING_CMD_APPEND_N          "Aldonis al {1} taskoj."
 #define STRING_CMD_APPEND_TASK       "Aldonanta al tasko {1} '{2}'."
 #define STRING_CMD_APPEND_TASK_R     "Aldonanta al reokazanta tasko {1} '{2}'."
-#define STRING_CMD_APPEND_CONFIRM_R  "Tiu estas reokazanta tasko. Ĉu vi volas aldoni al ĉia pendanta okazaĵo de ĉi tiu tasko?"
+#define STRING_CMD_APPEND_CONFIRM_R  "Tio estas reokazanta tasko. Ĉu vi volas aldoni al ĉia pendanta okazaĵo de ĉi tiu tasko?"
 #define STRING_CMD_APPEND_CONFIRM    "Aldoni al tasko {1} '{2}'?"
 #define STRING_CMD_APPEND_NO         "Ne aldonis al tasko."
 
@@ -429,7 +429,7 @@
 #define STRING_CMD_PREPEND_N         "Predonis {1} taskoj."
 #define STRING_CMD_PREPEND_TASK      "Predonanta al tasko {1} '{2}'."
 #define STRING_CMD_PREPEND_TASK_R    "Predonanta al reokazanta tasko {1} '{2}'."
-#define STRING_CMD_PREPEND_CONFIRM_R "Tiu estas reokazanta tasko. Ĉu vi volas predoni al ĉia pendanta okazaĵo de ĉi tiu tasko?"
+#define STRING_CMD_PREPEND_CONFIRM_R "Tio estas reokazanta tasko. Ĉu vi volas predoni al ĉia pendanta okazaĵo de ĉi tiu tasko?"
 #define STRING_CMD_PREPEND_CONFIRM   "Predonis al taskon {1} '{2}'?"
 #define STRING_CMD_PREPEND_NO        "Ne predonis al tasko."
 
@@ -451,7 +451,7 @@
 #define STRING_CMD_DENO_NONE         "La specifita tasko ne havas neniun viŝeblan komenton."
 #define STRING_CMD_DENO_CONFIRM      "Malkomenti taskon {1} '{2}'?"
 #define STRING_CMD_DENO_FOUND        "Trovis kaj viŝis komenton '{1}'."
-#define STRING_CMD_DENO_NOMATCH      "Ne trovis neniun komenton por viŝi, ke kongruas al '{1}'."
+#define STRING_CMD_DENO_NOMATCH      "Ne trovis neniun komenton por viŝi, kiu kongruas al '{1}'."
 #define STRING_CMD_DENO_NO           "Ne malkomentis taskon."
 #define STRING_CMD_DENO_1            "Malkomentis {1} taskon."
 #define STRING_CMD_DENO_N            "Malkomentis {1} taskojn."
@@ -509,8 +509,8 @@
 #define STRING_CMD_DIAG_NONE         "-nenio-"
 #define STRING_CMD_DIAG_HOOKS        "Hokoj"
 #define STRING_CMD_HCOMMANDS_USAGE   "Produktas liston de ĉia komando, por motivo memkompletada"
-#define STRING_CMD_ZSHCOMMANDS_USAGE "Produktas liston de ĉia komando, por motivo de memkompletado en zsh"
-#define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
+#define STRING_CMD_ZSHCOMMANDS_USAGE "Produktas liston de ĉia komando, por motivo memkompletada en zsh"
+#define STRING_CMD_ZSHATTS_USAGE     "Produktas liston de ĉia komando, por motivo memkompletada en zsh"
 #define STRING_CMD_ALIASES_USAGE     "Produktas liston de ĉia alinomo, por motivo memkompletada"
 #define STRING_CMD_INSTALL_USAGE     "Instalas kromprogramojn kaj eksternajn skribojn"
 
@@ -524,7 +524,7 @@
 #define STRING_CMD_MODIFY_N          "Modifis {1} taskojn."
 #define STRING_CMD_MODIFY_NO         "Ne modifis taskon."
 #define STRING_CMD_MODIFY_CONFIRM    "Modifi taskon {1} '{2}'?"
-#define STRING_CMD_MODIFY_RECUR      "Tiu estas reokazanta tasko. Ĉu vi volas modifi ĉian pendantan okazon?"
+#define STRING_CMD_MODIFY_RECUR      "Tio estas reokazanta tasko. Ĉu vi volas modifi ĉian pendantan okazon?"
 #define STRING_CMD_MODIFY_NEED_TEXT  "Oni devas provizi plu de teksto."
 
 #define STRING_CMD_COLOR_USAGE       "Ĉia koloro, ekzemplero, aŭ gamo"
@@ -548,7 +548,7 @@
 #define STRING_CMD_CONFIG_NO_ENTRY   "No entry named '{1}' found."
 #define STRING_CMD_CONFIG_FILE_MOD   "Agorda dosiero {1} modifita."
 #define STRING_CMD_CONFIG_NO_CHANGE  "Ne ŝanĝis nenion."
-#define STRING_CMD_CONFIG_NO_NAME    "Specifu la nomon de agordvariablo ke vi volas modifi."
+#define STRING_CMD_CONFIG_NO_NAME    "Specifu la nomon de agordvariablo, kiun vi volas modifi."
 #define STRING_CMD_HCONFIG_USAGE     "Listigas çiun subtenatan agordan variablon, por motivo memkompletada"
 #define STRING_CMD_CUSTOM_MISMATCH   "La nombroj de kolumnoj kaj de siaj titoloj ne kongruas por raporto '{1}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} montritaj"
@@ -593,7 +593,7 @@
 #define STRING_CONFIG_DEPRECATED_VAR "Via dosiero .taskrc enhavas arkaikajn variablojn:"
 
 // Context
-#define STRING_CONTEXT_CREATE_RC     "Ne povis trovi agordan dosieron ĉe {1}\n\nĈu vi volas, ke ekzemplero {2} kreiĝas por permesi vin procedi?"
+#define STRING_CONTEXT_CREATE_RC     "Ne povis trovi agordan dosieron ĉe {1}\n\nĈu vi volas, ke ekzemplero {2} kreiĝus por permesi vin procedi?"
 #define STRING_CONTEXT_NEED_RC       "Ne povos procedi sen rc-dosieron."
 #define STRING_CONTEXT_RC_OVERRIDE   "TASKRC-superrego: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA-superrego: {1}"
@@ -714,7 +714,7 @@
 #define STRING_EDIT_HEADER_5         "iras el redaktilo sen konservi aŭ sen modifi, taskwarrior ne faros"
 #define STRING_EDIT_HEADER_6         "nenion."
 
-#define STRING_EDIT_HEADER_7         "Vicoj ke ekas kun # reprezentas datumojn ke vi no povas ŝanĝi, kiel ID."
+#define STRING_EDIT_HEADER_7         "Vicoj ke ekas kun # reprezentas datumojn neŝanĝeblajn, ekzemple ID."
 #define STRING_EDIT_HEADER_8         "Se vi redaktis tro kreeme, taskwarrior risendos vin al redaktilo por"
 #define STRING_EDIT_HEADER_9         "ripovi."
 
@@ -772,8 +772,8 @@
 #define STRING_FEEDBACK_WAS_NOP      "Ne ŝanĝis nenion."
 #define STRING_FEEDBACK_TAG_NOCOLOR  "Speciala etikedo 'nocolor' malebligos kolorreguloj por tiu tasko."
 #define STRING_FEEDBACK_TAG_NONAG    "Speciala etikedo 'nonag' antaŭmalebligitos molestojn, kiam oni modifus tiun taskon."
-#define STRING_FEEDBACK_TAG_NOCAL    "Speciala etikedo 'nocal' ekskluzivos tiun taskon ĉe la raporto 'calendar'."
-#define STRING_FEEDBACK_TAG_NEXT     "Speciala etikedo 'next' pligrandigos la urĝecon de tiu tasko por ke ĝi aperas ĉe la raporto 'next'."
+#define STRING_FEEDBACK_TAG_NOCAL    "Speciala etikedo 'nocal' ekskluzivos tiun taskon ĉe raporto 'calendar'."
+#define STRING_FEEDBACK_TAG_NEXT     "Speciala etikedo 'next' pligrandigos la urĝecon de tiu tasko por ke ĝi aperus ĉe raporto 'next'."
 #define STRING_FEEDBACK_UNBLOCKED    "Malblokis {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "Tasko {1} '{2}' fortempiĝis do estis viŝata."
 #define STRING_FEEDBACK_BACKLOG      "Estas lokaj ŝanĝoj. Sinkronigo devita."
@@ -785,7 +785,7 @@
 #define STRING_HELPER_PROJECT_CHANGE "Projekto '{1}' ŝanĝis."
 #define STRING_HELPER_PROJECT_COMPL  "Projekto '{1}' estas {2}% kompleta"
 #define STRING_HELPER_PROJECT_REM    "(Restas {1} de {2} taskoj)."
-#define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
+#define STRING_HELPER_PROJECT_REM1   "(Restas {1} tasko)."
 
 // JSON
 #define STRING_JSON_MISSING_VALUE    "Eraro: mankas valoro post ',' ĉe pozicio {1}"
@@ -818,8 +818,8 @@
 #define STRING_CMD_SHOWRAW           "Montras ĉia agordvariablon je maŝinlegebla aranĝo"
 
 // Task
-#define STRING_TASK_NO_FF1           "Taskwarrior ne pli subtenas dosier-aranĝon 1, kio estis originale uzata inter la 27-a de novembro 2006 kaj la 31-a de decembro 2007."
-#define STRING_TASK_NO_FF2           "Taskwarrior ne pli subtenas dosier-aranĝon 2, kio estis originale uzata inter la 1-a de januaro 2008 kaj la 12-a de aprilo 2009."
+#define STRING_TASK_NO_FF1           "Taskwarrior ne pli subtenas dosier-aranĝon 1, kiu estis originale uzata inter la 27-a de novembro 2006 kaj la 31-a de decembro 2007."
+#define STRING_TASK_NO_FF2           "Taskwarrior ne pli subtenas dosier-aranĝon 2, kiu estis originale uzata inter la 1-a de januaro 2008 kaj la 12-a de aprilo 2009."
 #define STRING_TASK_PARSE_ANNO_BRACK "Mankas komentaj krampoj."
 #define STRING_TASK_PARSE_ATT_BRACK  "Mankas atributaj krampoj."
 #define STRING_TASK_PARSE_TAG_BRACK  "Mankas etikedaj krampoj."
