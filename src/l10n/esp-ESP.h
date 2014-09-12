@@ -98,8 +98,8 @@
 //
 // DO NOT include a copyright in the translation.
 //
-#define STRING_LOCALIZATION_DESC     "- localización española"
-#define STRING_LOCALIZATION_AUTHOR   "Traducido al español por Fidel Mato."
+#define STRING_LOCALIZATION_DESC     "Localización española"
+#define STRING_LOCALIZATION_AUTHOR   "Traducido al español por Fidel Mato y Jeremy John Reeder."
 
 // Parser
 #define STRING_PARSER_ALIAS_NEST     "Límite de alias anidados ({1}) alcanzado."
@@ -119,42 +119,42 @@
 #define STRING_VARIANT_CMP_UNKNOWN   "No se puede comparar un tipo desconocido"
 #define STRING_VARIANT_EQ_UNKNOWN    "No se puede equiparar un tipo desconocido"
 #define STRING_VARIANT_EXP_UNKNOWN   "No se puede exponenciar un tipo desconocido"
-#define STRING_VARIANT_EXP_BOOL      "No se puede exponenciar booleanos"
+#define STRING_VARIANT_EXP_BOOL      "No se puede exponenciar un booleano"
 #define STRING_VARIANT_EXP_NON_INT   "No se puede exponenciar a una potencia no entera"
-#define STRING_VARIANT_EXP_STRING    "No se puede exponenciar cadenas de caracteres"
-#define STRING_VARIANT_EXP_DATE      "No se puede exponenciar fechas"
-#define STRING_VARIANT_EXP_DURATION  "No se puede exponenciar duraciones"
+#define STRING_VARIANT_EXP_STRING    "No se puede exponenciar una cadena de caracteres"
+#define STRING_VARIANT_EXP_DATE      "No se puede exponenciar una fecha"
+#define STRING_VARIANT_EXP_DURATION  "No se puede exponenciar una duración"
 #define STRING_VARIANT_SUB_UNKNOWN   "No se puede sustraer un tipo desconocido"
-#define STRING_VARIANT_SUB_BOOL      "No se puede sustraer de un valor booleano"
-#define STRING_VARIANT_SUB_STRING    "No se puede sustraer cadenas de caracteres"
+#define STRING_VARIANT_SUB_BOOL      "No se puede sustraer de un booleano"
+#define STRING_VARIANT_SUB_STRING    "No se puede sustraer una cadenas de caracteres"
 #define STRING_VARIANT_SUB_DATE      "No se puede sustraer una fecha"
 #define STRING_VARIANT_ADD_UNKNOWN   "No se puede sumar un tipo desconocido"
-#define STRING_VARIANT_ADD_BOOL      "No se puede sumar dos valores booleanos"
-#define STRING_VARIANT_ADD_DATE      "No se puede sumar dos valores de fecha"
+#define STRING_VARIANT_ADD_BOOL      "No se puede sumar dos booleanos"
+#define STRING_VARIANT_ADD_DATE      "No se puede sumar dos fechas"
 #define STRING_VARIANT_MUL_UNKNOWN   "No se puede multiplicar un tipo desconocido"
-#define STRING_VARIANT_MUL_BOOL      "No se puede multiplicar valores booleanos"
-#define STRING_VARIANT_MUL_DATE      "No se puede multiplicar valores de fecha"
-#define STRING_VARIANT_MUL_REAL_STR  "No se puede multiplicar números reales por cadenas de caracteres"
-#define STRING_VARIANT_MUL_STR_REAL  "No se puede multiplicar cadenas de caracteres por números reales"
-#define STRING_VARIANT_MUL_STR_STR   "No se puede multiplicar cadenas de caracteres por cadenas de caracteres"
-#define STRING_VARIANT_MUL_STR_DATE  "No se puede multiplicar cadenas de caracteres por fechas"
-#define STRING_VARIANT_MUL_STR_DUR   "No se puede multiplicar cadenas de caracteres por duraciones"
-#define STRING_VARIANT_MUL_DUR_STR   "No se puede multiplicar duraciones por cadenas de caracteres"
-#define STRING_VARIANT_MUL_DUR_DATE  "No se puede multiplicar duraciones por fechas"
-#define STRING_VARIANT_MUL_DUR_DUR   "No se puede multiplicar duraciones por duraciones"
+#define STRING_VARIANT_MUL_BOOL      "No se puede multiplicar un booleano"
+#define STRING_VARIANT_MUL_DATE      "No se puede multiplicar una fecha"
+#define STRING_VARIANT_MUL_REAL_STR  "No se puede multiplicar un número real por una cadena de caracteres"
+#define STRING_VARIANT_MUL_STR_REAL  "No se puede multiplicar una cadena de caracteres por un número real"
+#define STRING_VARIANT_MUL_STR_STR   "No se puede multiplicar una cadena de caracteres por una cadenas de caracteres"
+#define STRING_VARIANT_MUL_STR_DATE  "No se puede multiplicar una cadena de caracteres por una fecha"
+#define STRING_VARIANT_MUL_STR_DUR   "No se puede multiplicar una cadena de caracteres por una duración"
+#define STRING_VARIANT_MUL_DUR_STR   "No se puede multiplicar una duración por una cadena de caracteres"
+#define STRING_VARIANT_MUL_DUR_DATE  "No se puede multiplicar una duración por una fecha"
+#define STRING_VARIANT_MUL_DUR_DUR   "No se puede multiplicar una duración por una duración"
 #define STRING_VARIANT_DIV_UNKNOWN   "No se puede dividir un tipo desconocido"
-#define STRING_VARIANT_DIV_BOOL      "No se puede dividir valores booleanos"
-#define STRING_VARIANT_DIV_INT_BOOL  "No se puede dividir enteros por valores booleanos"
+#define STRING_VARIANT_DIV_BOOL      "No se puede dividir un booleano"
+#define STRING_VARIANT_DIV_INT_BOOL  "No se puede dividir un entero por un booleano"
 #define STRING_VARIANT_DIV_ZERO      "No se puede dividir por cero"
-#define STRING_VARIANT_DIV_INT_STR   "No se puede dividir enteros por cadenas de caracteres"
-#define STRING_VARIANT_DIV_INT_DATE  "Cannot divide integer by date values"
-#define STRING_VARIANT_DIV_REAL_BOOL "Cannot divide real by Boolean"
-#define STRING_VARIANT_DIV_REAL_STR  "Cannot divide real numbers by strings"
-#define STRING_VARIANT_DIV_REAL_DATE "Cannot divide real numbers by dates"
-#define STRING_VARIANT_DIV_DUR_BOOL  "Cannot divide duration by Boolean"
-#define STRING_VARIANT_DIV_DUR_STR   "Cannot divide durations by strings"
-#define STRING_VARIANT_DIV_DUR_DATE  "Cannot divide durations by dates"
-#define STRING_VARIANT_DIV_DUR_DUR   "Cannot divide durations by durations"
+#define STRING_VARIANT_DIV_INT_STR   "No se puede dividir un entero por una cadena de caracteres"
+#define STRING_VARIANT_DIV_INT_DATE  "No se puede dividir un entero por una fecha"
+#define STRING_VARIANT_DIV_REAL_BOOL "No se puede dividir un número real por un booleano"
+#define STRING_VARIANT_DIV_REAL_STR  "No se puede dividir un número real por una cadena de caracteres"
+#define STRING_VARIANT_DIV_REAL_DATE "No se puede dividir un número real por una fecha"
+#define STRING_VARIANT_DIV_DUR_BOOL  "No se puede dividir una duración por un booleano"
+#define STRING_VARIANT_DIV_DUR_STR   "No se puede dividir una duración por una cadena de caracteres"
+#define STRING_VARIANT_DIV_DUR_DATE  "No se puede dividir una duración por una fecha"
+#define STRING_VARIANT_DIV_DUR_DUR   "No se puede dividir una duración por una duración"
 #define STRING_VARIANT_MOD_BOOL      "Cannot modulo Boolean"
 #define STRING_VARIANT_MOD_DATE      "Cannot modulo date values"
 #define STRING_VARIANT_MOD_DUR       "Cannot modulo duration values"
@@ -170,8 +170,8 @@
 #define STRING_VARIANT_MOD_UNKNOWN   "Cannot modulo unknown type"
 #define STRING_VARIANT_MOD_ZERO      "Cannot modulo zero"
 #define STRING_VARIANT_RENDER_UNK    "Cannot render an unknown type."
-#define STRING_VARIANT_SQRT_NEG      "Cannot take the square root of a negative number."
-#define STRING_VARIANT_COERCE_UNK    "Cannot coerce data either to or from an unknown type"
+#define STRING_VARIANT_SQRT_NEG      "No se puede calcular la raíz cuadrada de un tipo desconocido"
+#define STRING_VARIANT_COERCE_UNK    "No se puede convertir un dato ni a un tipo desconocido ni desde el mismo"
 
 // Lexer
 //
@@ -183,8 +183,8 @@
 // Dates
 //
 // These are errors generated when parsing date values.
-#define STRING_DATES_MONTH_31        "Error: no month has more than 31 days."
-#define STRING_DATES_ORD_MISMATCH    "Error: number and ordinal don't match (ie '1st', not '1nd')."
+#define STRING_DATES_MONTH_31        "Error: no hay ningún mes que tenga más de 31 días."
+#define STRING_DATES_ORD_MISMATCH    "Error: el sufijo ordinal no corresponde al número (i.e. '1st', no '1nd')."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "El color '{1}' no se reconoce."
@@ -979,8 +979,8 @@
   "  task rc.color=off list\n" \
   "\n" \
   "Cualquier nombre de comando o atributo puede ser abreviado mientras permanezca único:\n" \
-  "  task list project:Home\n" \
-  "  task li       pro:Home\n" \
+  "  task list project:Casa\n" \
+  "  task li       pro:Casa\n" \
   "\n" \
   "Algunas descripciones de tarea necesitan ser escapadas debido al entorno de comandos:\n" \
   "  task add \"quoted ' quote\"\n" \
@@ -988,7 +988,7 @@
   "\n" \
   "El argumento -- indica a taskwarrior que trate todos los restantes argumentos como descripción, incluso " \
   "aunque de otra manera hubieran sido argumentos o marcas:\n" \
-  "  task add -- project:Home needs scheduling\n" \
+  "  task add -- project:Casa necesita fechas fijadas\n" \
   "\n" \
   "Muchos caracteres tienen significado especial para el entorno de comandos, incluyendo:\n" \
   "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~\n" \
@@ -1003,13 +1003,13 @@
 */
 
 // util
-#define STRING_UTIL_CONFIRM_YN       " (yes/no) "  // |esp-ESP|==|eng-USA|
-#define STRING_UTIL_CONFIRM_YES      "yes"  // |esp-ESP|==|eng-USA|
-#define STRING_UTIL_CONFIRM_YES_U    "Yes"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_YN       " (sí/no) "
+#define STRING_UTIL_CONFIRM_YES      "sí"
+#define STRING_UTIL_CONFIRM_YES_U    "Sí"
 #define STRING_UTIL_CONFIRM_NO       "no"  // |esp-ESP|==|eng-USA|
-#define STRING_UTIL_CONFIRM_ALL      "all"  // |esp-ESP|==|eng-USA|
-#define STRING_UTIL_CONFIRM_ALL_U    "All"  // |esp-ESP|==|eng-USA|
-#define STRING_UTIL_CONFIRM_QUIT     "quit"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_ALL      "todos"
+#define STRING_UTIL_CONFIRM_ALL_U    "Todos"
+#define STRING_UTIL_CONFIRM_QUIT     "sal"
 #define STRING_UTIL_GIBIBYTES        "GiB"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_MEBIBYTES        "MiB"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_KIBIBYTES        "KiB"  // |esp-ESP|==|eng-USA|

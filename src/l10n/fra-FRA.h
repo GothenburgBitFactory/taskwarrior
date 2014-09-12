@@ -99,7 +99,7 @@
 // DO NOT include a copyright in the translation.
 //
 #define STRING_LOCALIZATION_DESC     "Traduction française"
-#define STRING_LOCALIZATION_AUTHOR   "Traduit en Français par Leowzukw et Jeremy John Reeder."
+#define STRING_LOCALIZATION_AUTHOR   "Traduit en français par Leowzukw et Jeremy John Reeder."
 
 // Parser
 #define STRING_PARSER_ALIAS_NEST     "Atteignit la limite d'amboîtage des pseudonymes, {1}."
