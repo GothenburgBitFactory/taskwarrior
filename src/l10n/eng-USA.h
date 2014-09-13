@@ -155,7 +155,7 @@
 #define STRING_VARIANT_DIV_DUR_STR   "Cannot divide durations by strings"
 #define STRING_VARIANT_DIV_DUR_DATE  "Cannot divide durations by dates"
 #define STRING_VARIANT_DIV_DUR_DUR   "Cannot divide durations by durations"
-#define STRING_VARIANT_MOD_BOOL      "Cannot modulo Boolean"
+#define STRING_VARIANT_MOD_BOOL      "Cannot modulo Booleans"
 #define STRING_VARIANT_MOD_DATE      "Cannot modulo date values"
 #define STRING_VARIANT_MOD_DUR       "Cannot modulo duration values"
 #define STRING_VARIANT_MOD_INT_BOOL  "Cannot modulo integer by Boolean"
@@ -184,7 +184,7 @@
 //
 // These are errors generated when parsing date values.
 #define STRING_DATES_MONTH_31        "Error: no month has more than 31 days."
-#define STRING_DATES_ORD_MISMATCH    "Error: number and ordinal don't match (ie '1st', not '1nd')."
+#define STRING_DATES_ORD_MISMATCH    "Error: number and ordinal don't match (e.g., '1st', not '1nd')."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "The color '{1}' is not recognized."
@@ -870,7 +870,7 @@
 // Usage text.  This is an exception, and contains \n characters and formatting.
 #define STRING_CMD_HELP_TEXT \
   "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man " \
-  "task-color', 'man task-synch or at http://taskwarrior.org\n" \
+  "task-color', 'man task-sync or at http://taskwarrior.org\n" \
   "\n" \
   "The general form of commands is:\n" \
   "  task [<filter>] <command> [<mods>]\n" \
