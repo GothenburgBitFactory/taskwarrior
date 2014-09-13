@@ -98,8 +98,8 @@
 //
 // DO NOT include a copyright in the translation.
 //
-#define STRING_LOCALIZATION_DESC     "Localización española"
-#define STRING_LOCALIZATION_AUTHOR   "Traducido al español por Fidel Mato y Jeremy John Reeder."
+#define STRING_LOCALIZATION_DESC     "- localización española"
+#define STRING_LOCALIZATION_AUTHOR   "Traducido al español por Fidel Mato."
 
 // Parser
 #define STRING_PARSER_ALIAS_NEST     "Límite de alias anidados ({1}) alcanzado."
@@ -119,72 +119,73 @@
 #define STRING_VARIANT_CMP_UNKNOWN   "No se puede comparar un tipo desconocido"
 #define STRING_VARIANT_EQ_UNKNOWN    "No se puede equiparar un tipo desconocido"
 #define STRING_VARIANT_EXP_UNKNOWN   "No se puede exponenciar un tipo desconocido"
-#define STRING_VARIANT_EXP_BOOL      "No se puede exponenciar un booleano"
+#define STRING_VARIANT_EXP_BOOL      "No se puede exponenciar booleanos"
 #define STRING_VARIANT_EXP_NON_INT   "No se puede exponenciar a una potencia no entera"
-#define STRING_VARIANT_EXP_STRING    "No se puede exponenciar una cadena de caracteres"
-#define STRING_VARIANT_EXP_DATE      "No se puede exponenciar una fecha"
-#define STRING_VARIANT_EXP_DURATION  "No se puede exponenciar una duración"
+#define STRING_VARIANT_EXP_STRING    "No se puede exponenciar cadenas de caracteres"
+#define STRING_VARIANT_EXP_DATE      "No se puede exponenciar fechas"
+#define STRING_VARIANT_EXP_DURATION  "No se puede exponenciar duraciones"
 #define STRING_VARIANT_SUB_UNKNOWN   "No se puede sustraer un tipo desconocido"
-#define STRING_VARIANT_SUB_BOOL      "No se puede sustraer de un booleano"
-#define STRING_VARIANT_SUB_STRING    "No se puede sustraer una cadenas de caracteres"
+#define STRING_VARIANT_SUB_BOOL      "No se puede sustraer de un valor booleano"
+#define STRING_VARIANT_SUB_STRING    "No se puede sustraer cadenas de caracteres"
 #define STRING_VARIANT_SUB_DATE      "No se puede sustraer una fecha"
 #define STRING_VARIANT_ADD_UNKNOWN   "No se puede sumar un tipo desconocido"
-#define STRING_VARIANT_ADD_BOOL      "No se puede sumar dos booleanos"
-#define STRING_VARIANT_ADD_DATE      "No se puede sumar dos fechas"
+#define STRING_VARIANT_ADD_BOOL      "No se puede sumar dos valores booleanos"
+#define STRING_VARIANT_ADD_DATE      "No se puede sumar dos valores de fecha"
 #define STRING_VARIANT_MUL_UNKNOWN   "No se puede multiplicar un tipo desconocido"
-#define STRING_VARIANT_MUL_BOOL      "No se puede multiplicar un booleano"
-#define STRING_VARIANT_MUL_DATE      "No se puede multiplicar una fecha"
-#define STRING_VARIANT_MUL_REAL_STR  "No se puede multiplicar un número real por una cadena de caracteres"
-#define STRING_VARIANT_MUL_STR_REAL  "No se puede multiplicar una cadena de caracteres por un número real"
-#define STRING_VARIANT_MUL_STR_STR   "No se puede multiplicar una cadena de caracteres por una cadenas de caracteres"
-#define STRING_VARIANT_MUL_STR_DATE  "No se puede multiplicar una cadena de caracteres por una fecha"
-#define STRING_VARIANT_MUL_STR_DUR   "No se puede multiplicar una cadena de caracteres por una duración"
-#define STRING_VARIANT_MUL_DUR_STR   "No se puede multiplicar una duración por una cadena de caracteres"
-#define STRING_VARIANT_MUL_DUR_DATE  "No se puede multiplicar una duración por una fecha"
-#define STRING_VARIANT_MUL_DUR_DUR   "No se puede multiplicar una duración por una duración"
+#define STRING_VARIANT_MUL_BOOL      "No se puede multiplicar valores booleanos"
+#define STRING_VARIANT_MUL_DATE      "No se puede multiplicar valores de fecha"
+#define STRING_VARIANT_MUL_REAL_STR  "No se puede multiplicar números reales por cadenas de caracteres"
+#define STRING_VARIANT_MUL_STR_REAL  "No se puede multiplicar cadenas de caracteres por números reales"
+#define STRING_VARIANT_MUL_STR_STR   "No se puede multiplicar cadenas de caracteres por cadenas de caracteres"
+#define STRING_VARIANT_MUL_STR_DATE  "No se puede multiplicar cadenas de caracteres por fechas"
+#define STRING_VARIANT_MUL_STR_DUR   "No se puede multiplicar cadenas de caracteres por duraciones"
+#define STRING_VARIANT_MUL_DUR_STR   "No se puede multiplicar duraciones por cadenas de caracteres"
+#define STRING_VARIANT_MUL_DUR_DATE  "No se puede multiplicar duraciones por fechas"
+#define STRING_VARIANT_MUL_DUR_DUR   "No se puede multiplicar duraciones por duraciones"
 #define STRING_VARIANT_DIV_UNKNOWN   "No se puede dividir un tipo desconocido"
-#define STRING_VARIANT_DIV_BOOL      "No se puede dividir un booleano"
-#define STRING_VARIANT_DIV_INT_BOOL  "No se puede dividir un entero por un booleano"
+#define STRING_VARIANT_DIV_BOOL      "No se puede dividir valores booleanos"
+#define STRING_VARIANT_DIV_INT_BOOL  "No se puede dividir enteros por valores booleanos"
 #define STRING_VARIANT_DIV_ZERO      "No se puede dividir por cero"
-#define STRING_VARIANT_DIV_INT_STR   "No se puede dividir un entero por una cadena de caracteres"
-#define STRING_VARIANT_DIV_INT_DATE  "No se puede dividir un entero por una fecha"
-#define STRING_VARIANT_DIV_REAL_BOOL "No se puede dividir un número real por un booleano"
-#define STRING_VARIANT_DIV_REAL_STR  "No se puede dividir un número real por una cadena de caracteres"
-#define STRING_VARIANT_DIV_REAL_DATE "No se puede dividir un número real por una fecha"
-#define STRING_VARIANT_DIV_DUR_BOOL  "No se puede dividir una duración por un booleano"
-#define STRING_VARIANT_DIV_DUR_STR   "No se puede dividir una duración por una cadena de caracteres"
-#define STRING_VARIANT_DIV_DUR_DATE  "No se puede dividir una duración por una fecha"
-#define STRING_VARIANT_DIV_DUR_DUR   "No se puede dividir una duración por una duración"
-#define STRING_VARIANT_MOD_BOOL      "Cannot modulo Boolean"
-#define STRING_VARIANT_MOD_DATE      "Cannot modulo date values"
-#define STRING_VARIANT_MOD_DUR       "Cannot modulo duration values"
-#define STRING_VARIANT_MOD_INT_BOOL  "Cannot modulo integer by Boolean"
-#define STRING_VARIANT_MOD_INT_DATE  "Cannot modulo integer by date values"
-#define STRING_VARIANT_MOD_INT_DUR   "Cannot modulo integer by duration values"
-#define STRING_VARIANT_MOD_INT_STR   "Cannot modulo integer by string"
-#define STRING_VARIANT_MOD_REAL_BOOL "Cannot modulo real by Boolean"
-#define STRING_VARIANT_MOD_REAL_DUR  "Cannot modulo real by duration values"
-#define STRING_VARIANT_MOD_REAL_DATE "Cannot modulo real numbers by dates"
-#define STRING_VARIANT_MOD_REAL_STR  "Cannot modulo real numbers by strings"
-#define STRING_VARIANT_MOD_STR       "Cannot modulo string values"
-#define STRING_VARIANT_MOD_UNKNOWN   "Cannot modulo unknown type"
-#define STRING_VARIANT_MOD_ZERO      "Cannot modulo zero"
-#define STRING_VARIANT_RENDER_UNK    "Cannot render an unknown type."
-#define STRING_VARIANT_SQRT_NEG      "No se puede calcular la raíz cuadrada de un tipo desconocido"
-#define STRING_VARIANT_COERCE_UNK    "No se puede convertir un dato ni a un tipo desconocido ni desde el mismo"
+#define STRING_VARIANT_DIV_INT_STR   "No se puede dividir enteros por cadenas de caracteres"
+#define STRING_VARIANT_DIV_INT_DATE  "No se puede dividir enteros por valores de fecha"
+#define STRING_VARIANT_DIV_REAL_BOOL "No se puede dividir real por booleano"
+#define STRING_VARIANT_DIV_REAL_STR  "No se puede dividir números reales por cadenas de caracteres"
+#define STRING_VARIANT_DIV_REAL_DATE "No se puede dividir números reales por fechas"
+#define STRING_VARIANT_DIV_DUR_BOOL  "No se puede dividir duración por booleano"
+#define STRING_VARIANT_DIV_DUR_STR   "No se puede dividir duraciones por cadenas de caracteres"
+#define STRING_VARIANT_DIV_DUR_DATE  "No se puede dividir duraciones por fechas"
+#define STRING_VARIANT_DIV_DUR_DUR   "No se puede dividir duraciones por duraciones"
+#define STRING_VARIANT_MOD_BOOL      "No se puede calcular el residuo (mod n) de un booleano" // "Cannot modulo Boolean"
+// #define STRING_VARIANT_MOD_BOOL      "No se puede calcular el residuo (mod n) de booleanos" // "Cannot modulo Booleans"
+#define STRING_VARIANT_MOD_DATE      "No se puede calcular el residuo (mod n) de valores de fecha"
+#define STRING_VARIANT_MOD_DUR       "No se puede calcular el residuo (mod n) de valores de duración"
+#define STRING_VARIANT_MOD_INT_BOOL  "No se puede calcular el residuo (mod n) de entero sobre booleano"
+#define STRING_VARIANT_MOD_INT_DATE  "No se puede calcular el residuo (mod n) de entero sobre valores de fecha"
+#define STRING_VARIANT_MOD_INT_DUR   "No se puede calcular el residuo (mod n) de entero sobre valores de duración"
+#define STRING_VARIANT_MOD_INT_STR   "No se puede calcular el residuo (mod n) de entero sobre cadena de caracteres"
+#define STRING_VARIANT_MOD_REAL_BOOL "No se puede calcular el residuo (mod n) de real sobre booleano"
+#define STRING_VARIANT_MOD_REAL_DUR  "No se puede calcular el residuo (mod n) de real sobre valores de duración"
+#define STRING_VARIANT_MOD_REAL_DATE "No se puede calcular el residuo (mod n) de números reales sobre fechas"
+#define STRING_VARIANT_MOD_REAL_STR  "No se puede calcular el residuo (mod n) de números reales sobre cadenas de caracteres"
+#define STRING_VARIANT_MOD_STR       "No se puede calcular el residuo (mod n) de cadenas de caracteres"
+#define STRING_VARIANT_MOD_UNKNOWN   "No se puede calcular el residuo (mod n) de elementos de un tipo desconocido"
+#define STRING_VARIANT_MOD_ZERO      "No se puede calcular el residuo (mod n) de cero"
+#define STRING_VARIANT_RENDER_UNK    "No se puede presentar visualmente un tipo desconocido."
+#define STRING_VARIANT_SQRT_NEG      "No se puede calcular la raíz cuadrada de un número negativo."
+#define STRING_VARIANT_COERCE_UNK    "No se puede transformar datos en o desde un tipo desconocido"
 
 // Lexer
 //
 // These are errors generated at the lowest level of input analysis,
 // at the character level.
-#define STRING_LEX_IMMEDIATE_UNK     "Lexer start failure, unknown characters found immediately."
-#define STRING_LEX_TYPE_UNK          "Lexer cannot process and unknown token type."
+#define STRING_LEX_IMMEDIATE_UNK     "Fallo de arranque del analizador léxico, encontrados caracteres desconocidos inmediatamente."
+#define STRING_LEX_TYPE_UNK          "El analizador léxico no puede procesar un tipo de símbolo desconocido."
 
 // Dates
 //
 // These are errors generated when parsing date values.
-#define STRING_DATES_MONTH_31        "Error: no hay ningún mes que tenga más de 31 días."
-#define STRING_DATES_ORD_MISMATCH    "Error: el sufijo ordinal no corresponde al número (i.e. '1st', no '1nd')."
+#define STRING_DATES_MONTH_31        "Error: ningún mes tiene mas de 31 días."
+#define STRING_DATES_ORD_MISMATCH    "Error: número y sufijo ordinal no concuerdan (p.ej. '1st', no '1nd')."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "El color '{1}' no se reconoce."
@@ -292,7 +293,6 @@
 #define STRING_CMD_UUIDS_USAGE_LIST  "Muestra los UUIDs de las tareas coincidentes, como una lista"
 #define STRING_CMD_UUIDS_USAGE_ZSH   "Muestra los UUIDs y descripciones de las tareas coincidentes"
 #define STRING_CMD_EXPORT_USAGE      "Exporta tareas en formato JSON"
-// metadatos: RAE 3ªed
 #define STRING_CMD_INFO_USAGE        "Muestra todos los datos y metadatos"
 #define STRING_CMD_INFO_BLOCKED      "Esta tarea está bloqueada por"
 #define STRING_CMD_INFO_BLOCKING     "Esta tarea bloquea"
@@ -314,7 +314,6 @@
 #define STRING_CMD_STATS_TAGGED      "Tareas marcadas"
 #define STRING_CMD_STATS_OLDEST      "Tarea más antigua"
 #define STRING_CMD_STATS_NEWEST      "Tarea más reciente"
-//#define STRING_CMD_STATS_USED_FOR    "Tarea usada por"
 #define STRING_CMD_STATS_USED_FOR    "Tarea en uso durante"
 #define STRING_CMD_STATS_ADD_EVERY   "Tarea añadida cada"
 #define STRING_CMD_STATS_COMP_EVERY  "Tarea completada cada"
@@ -330,7 +329,6 @@
 #define STRING_CMD_REPORTS_REPORT    "Informe"
 #define STRING_CMD_REPORTS_DESC      "Descripción"
 #define STRING_CMD_REPORTS_SUMMARY   "{1} informes"
-//#define STRING_CMD_REPORTS_SUMMARY   "{1} informa"
 #define STRING_CMD_TAGS_USAGE        "Muestra una lista de todas las marcas en uso"
 #define STRING_CMD_COMTAGS_USAGE     "Muestra una lista de todas las marcas (solo nombres) en uso, con fines de auto-completado"
 #define STRING_CMD_TAGS_SINGLE       "1 marca"
@@ -519,12 +517,11 @@
 #define STRING_CMD_DIAG_HOOKS        "Hooks"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera una lista de todos los comandos, con fines de auto-completado"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera una lista de todos los comandos, con fines de auto-completado zsh"
-#define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
+#define STRING_CMD_ZSHATTS_USAGE     "Genera una lista de todos los atributos, con fines de auto-completado zsh"
 #define STRING_CMD_ALIASES_USAGE     "Genera una lista de todos los alias, con fines de auto-completado"
 #define STRING_CMD_INSTALL_USAGE     "Instala extensiones y scripts externos"
 
 #define STRING_CMD_MODIFY_USAGE1     "Modifica la tarea existente con los argumentos provistos."
-//#define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."
 #define STRING_CMD_MODIFY_NO_DUE     "No puede especificar una tarea recurrente sin una fecha de vencimiento."
 #define STRING_CMD_MODIFY_REM_DUE    "No puede eliminar la fecha de vencimiento de una tarea recurrente."
 #define STRING_CMD_MODIFY_REC_ALWAYS "No puede eliminar la recurrencia de una tarea recurrente."
@@ -536,7 +533,6 @@
 #define STRING_CMD_MODIFY_CONFIRM    "¿Modificar tarea {1} '{2}'?"
 #define STRING_CMD_MODIFY_RECUR      "Esta es una tarea recurrente. ¿Quiere modificar todas las recurrencias pendientes de esta misma tarea?"
 #define STRING_CMD_MODIFY_NEED_TEXT  "Se debe proveer texto adicional."
-//#define STRING_CMD_MODIFY_NEED_TEXT  "Additional text must be provided."  COMPROBAR adicional
 
 #define STRING_CMD_COLOR_USAGE       "Todos los colores, una muestra, o una leyenda"
 #define STRING_CMD_COLOR_HERE        "Aquí están los colores en uso actualmente:"
@@ -551,7 +547,6 @@
 #define STRING_CMD_COLOR_CUBE        "Cubo de color rgb"
 #define STRING_CMD_COLOR_RAMP        "Rampa de grises"
 #define STRING_CMD_COLOR_TRY         "Intente ejecutar '{1}'."
-//#define STRING_CMD_COLOR_TRY         "Try running '{1}'."
 #define STRING_CMD_COLOR_OFF         "El color está actualmente desactivado en su archivo .taskrc . Para activar el color elimine la línea 'color=off', o cambie el 'off' a 'on'."
 #define STRING_CMD_CONFIG_USAGE      "Cambia los ajustes en la configuración de task"
 #define STRING_CMD_CONFIG_CONFIRM    "¿Está seguro de querer cambiar el valor de '{1}' de '{2}' a '{3}'?"
@@ -667,11 +662,11 @@
 #define STRING_DOM_CANNOT_SET        "DOM: No se pudo establecer '{1}'."
 
 // Eval
-#define STRING_EVAL_NO_EXPRESSION    "No expression to evaluate."
+#define STRING_EVAL_NO_EXPRESSION    "Ninguna expresión a evaluar."
 #define STRING_EVAL_UNSUPPORTED      "Operador no soportado '{1}'."
-#define STRING_EVAL_OP_EXPECTED      "Operator expected."
-#define STRING_EVAL_NO_EVAL          "The expression could not be evaluated."
-#define STRING_PAREN_MISMATCH        "Mismatched parentheses in expression"
+#define STRING_EVAL_OP_EXPECTED      "Se esperaba operador."
+#define STRING_EVAL_NO_EVAL          "La expresion podría no ser evaluada."
+#define STRING_PAREN_MISMATCH        "Paréntesis desemparejados en expresión"
 
 // edit
 #define STRING_EDIT_NO_CHANGES       "No se detectaron modificaciones."
@@ -756,8 +751,8 @@
 #define STRING_INVALID_MOD           "El atributo '{1}' no admite un valor '{2}'."
 #define STRING_INVALID_SORT_COL      "La columna '{1}' no es un campo de ordenación válido."
 #define STRING_TLS_INIT_FAIL         "Error inicializando TLS."
-#define STRING_ERROR_MEMORY          "Problem obtaining memory."
-#define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
+#define STRING_ERROR_MEMORY          "Problema obteniendo memoria."
+#define STRING_ERROR_DETAILS         "La variable de configuración 'calendar.details.report' debe contener un único nombre de informe."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."
@@ -788,7 +783,7 @@
 #define STRING_FEEDBACK_TAG_NEXT     "La etiqueta especial 'next' aumentará la urgencia de esta tarea para que aparezca en el informe 'next'."
 #define STRING_FEEDBACK_UNBLOCKED    "Desbloqueada {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "La tarea {1} '{2}' caducó y fue eliminada."
-#define STRING_FEEDBACK_BACKLOG      "There are local changes.  Sync required."
+#define STRING_FEEDBACK_BACKLOG      "Hay cambios locales. Sincronización requerida."
 
 // File
 #define STRING_FILE_PERMS            "Taskwarrior no tiene los permisos adecuados para '{1}'."
@@ -797,7 +792,7 @@
 #define STRING_HELPER_PROJECT_CHANGE "El proyecto '{1}' ha cambiado."
 #define STRING_HELPER_PROJECT_COMPL  "El proyecto '{1}' se ha completado en un {2}%"
 #define STRING_HELPER_PROJECT_REM    "(quedan {1} de {2} tareas)."
-#define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
+#define STRING_HELPER_PROJECT_REM1   "({1} tarea restante)."
 
 // JSON
 #define STRING_JSON_MISSING_VALUE    "Error: falta valor después de ',' en posición {1}"
@@ -850,7 +845,7 @@
 #define STRING_TASK_VALID_PRIORITY   "Valores de prioridad pueden ser 'H', 'M' o 'L', no '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "Este comando no tiene filtro, y modificará todas las tareas. ¿Está seguro?"
 #define STRING_TASK_SAFETY_FAIL      "Se impidió la ejecución del comando."
-#define STRING_TASK_SAFETY_ALLOW     "You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken."
+#define STRING_TASK_SAFETY_ALLOW     "No especificó un filtro, y, dado el valor de 'allow.empty.filter', no se ejecutó ninguna acción."
 
 // TDB2
 #define STRING_TDB2_PARSE_ERROR      " en {1} en la línea {2}"
@@ -871,7 +866,7 @@
 #define STRING_TDB2_REMOVED          "Tarea eliminada."
 #define STRING_TDB2_UNDO_COMPLETE    "Deshacer completado."
 #define STRING_TDB2_UNDO_SYNCED      "No se puede deshacer el cambio porque la tarea ya ha sido sincronizada. Como alternativa, modifique la tarea."
-#define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
+#define STRING_TDB2_DIRTY_EXIT       "Saliendo con cambios no escritos a {1}"
 
 // utf8
 #define STRING_UTF8_INVALID_CP_REP   "Representación de codepoint no válida."
@@ -988,7 +983,7 @@
   "\n" \
   "El argumento -- indica a taskwarrior que trate todos los restantes argumentos como descripción, incluso " \
   "aunque de otra manera hubieran sido argumentos o marcas:\n" \
-  "  task add -- project:Casa necesita fechas fijadas\n" \
+  "  task add -- project:Casa necesita fijar fechas\n" \
   "\n" \
   "Muchos caracteres tienen significado especial para el entorno de comandos, incluyendo:\n" \
   "  $ ! ' \" ( ) ; \\ ` * ? { } [ ] < > | & % # ~\n" \
@@ -1003,13 +998,13 @@
 */
 
 // util
-#define STRING_UTIL_CONFIRM_YN       " (sí/no) "
-#define STRING_UTIL_CONFIRM_YES      "sí"
-#define STRING_UTIL_CONFIRM_YES_U    "Sí"
+#define STRING_UTIL_CONFIRM_YN       " (yes/no) "  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_YES      "yes"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_YES_U    "Yes"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_CONFIRM_NO       "no"  // |esp-ESP|==|eng-USA|
-#define STRING_UTIL_CONFIRM_ALL      "todos"
-#define STRING_UTIL_CONFIRM_ALL_U    "Todos"
-#define STRING_UTIL_CONFIRM_QUIT     "sal"
+#define STRING_UTIL_CONFIRM_ALL      "all"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_ALL_U    "All"  // |esp-ESP|==|eng-USA|
+#define STRING_UTIL_CONFIRM_QUIT     "quit"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_GIBIBYTES        "GiB"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_MEBIBYTES        "MiB"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_KIBIBYTES        "KiB"  // |esp-ESP|==|eng-USA|
