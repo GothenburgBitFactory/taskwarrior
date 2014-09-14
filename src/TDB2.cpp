@@ -604,6 +604,9 @@ void TDB2::update (
   std::vector <Task>::iterator i;
   for (i = changes.begin (); i != changes.end (); ++i)
   {
+    // Validate to add metadata.
+    i->validate (false);
+
     // If the task already exists, it is a modification, else addition.
     Task original;
     if (get (i->get ("uuid"), original))
@@ -623,6 +626,9 @@ void TDB2::update (
     }
     else
     {
+      // Re-validate to add default values.
+      i->validate ();
+
       // Add new task to either pending or completed.
       std::string status = i->get ("status");
       if (status == "completed" ||
