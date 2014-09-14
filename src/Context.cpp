@@ -326,6 +326,12 @@ int Context::run ()
     rc = 2;
   }
 
+  catch (int)
+  {
+    // Hooks can terminate processing by throwing integers.
+    rc = 4;
+  }
+
   catch (...)
   {
     error (STRING_UNKNOWN_ERROR);
