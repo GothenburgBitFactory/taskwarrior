@@ -519,9 +519,10 @@ bool Task::is_overdue () const
 
 ////////////////////////////////////////////////////////////////////////////////
 // Attempt an FF4 parse first, using Task::parse, and in the event of an error
-// try a JSON parse, otherwise a legacy parse (FF3).
+// try a JSON parse, otherwise a legacy parse (currently no legacy formats are
+// supported).
 //
-// Note that FF1 and FF2 are no longer supported.
+// Note that FF1, FF2 and FF3 are no longer supported.
 //
 // start --> [ --> Att --> ] --> end
 //              ^       |
@@ -719,8 +720,7 @@ void Task::parseJSON (const std::string& line)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Support FF2, FF3.
-// Thankfully FF1 is no longer supported.
+// No legacy formats are currently supported as of 2.4.0.
 void Task::parseLegacy (const std::string& line)
 {
   switch (determineVersion (line))
@@ -732,107 +732,7 @@ void Task::parseLegacy (const std::string& line)
   case 2: throw std::string (STRING_TASK_NO_FF2);
 
   // File format version 3, from 2009-3-23 - 2009-05-16, v1.6.0 - v1.7.1
-  case 3:
-    {
-      if (line.length () > 49)       // ^.{36} . \[\] \[\] \[\] \n
-      {
-        set ("uuid", line.substr (0, 36));
-
-        Task::status status = line[37] == '+' ? completed
-                            : line[37] == 'X' ? deleted
-                            : line[37] == 'r' ? recurring
-                            :                   pending;
-
-        set ("status", statusToText (status));
-
-        size_t openTagBracket  = line.find ("[");
-        size_t closeTagBracket = line.find ("]", openTagBracket);
-        if (openTagBracket  != std::string::npos &&
-            closeTagBracket != std::string::npos)
-        {
-          size_t openAttrBracket  = line.find ("[", closeTagBracket);
-          size_t closeAttrBracket = line.find ("]", openAttrBracket);
-          if (openAttrBracket  != std::string::npos &&
-              closeAttrBracket != std::string::npos)
-          {
-            size_t openAnnoBracket  = line.find ("[", closeAttrBracket);
-            size_t closeAnnoBracket = line.find ("]", openAnnoBracket);
-            if (openAnnoBracket  != std::string::npos &&
-                closeAnnoBracket != std::string::npos)
-            {
-              std::string tags = line.substr (
-                openTagBracket + 1, closeTagBracket - openTagBracket - 1);
-              std::vector <std::string> tagSet;
-              split (tagSet, tags, ' ');
-              addTags (tagSet);
-
-              std::string attributes = line.substr (
-                openAttrBracket + 1, closeAttrBracket - openAttrBracket - 1);
-              std::vector <std::string> pairs;
-              split (pairs, attributes, ' ');
-
-              for (size_t i = 0; i <  pairs.size (); ++i)
-              {
-                std::vector <std::string> pair;
-                split (pair, pairs[i], ':');
-                if (pair.size () == 2)
-                  set (pair[0], pair[1]);
-              }
-
-              // Extract and split the annotations, which are of the form:
-              //   1234:"..." 5678:"..."
-              std::string annotations = line.substr (
-                openAnnoBracket + 1, closeAnnoBracket - openAnnoBracket - 1);
-              pairs.clear ();
-
-              std::string::size_type start = 0;
-              std::string::size_type end   = 0;
-              do
-              {
-                end = annotations.find ('"', start);
-                if (end != std::string::npos)
-                {
-                  end = annotations.find ('"', end + 1);
-
-                  if (start != std::string::npos &&
-                      end   != std::string::npos)
-                  {
-                    pairs.push_back (annotations.substr (start, end - start + 1));
-                    start = end + 2;
-                  }
-                }
-              }
-              while (start != std::string::npos &&
-                     end   != std::string::npos);
-
-              for (size_t i = 0; i < pairs.size (); ++i)
-              {
-                std::string pair = pairs[i];
-                std::string::size_type colon = pair.find (":");
-                if (colon != std::string::npos)
-                {
-                  std::string name = pair.substr (0, colon);
-                  std::string value = pair.substr (colon + 2, pair.length () - colon - 3);
-                  set ("annotation_" + name, value);
-                  ++annotation_count;
-                }
-              }
-
-              set ("description", line.substr (closeAnnoBracket + 2));
-            }
-            else
-              throw std::string (STRING_TASK_PARSE_ANNO_BRACK);
-          }
-          else
-            throw std::string (STRING_TASK_PARSE_ATT_BRACK);
-        }
-        else
-          throw std::string (STRING_TASK_PARSE_TAG_BRACK);
-      }
-      else
-        throw std::string (STRING_TASK_PARSE_TOO_SHORT);
-    }
-    break;
+  case 3: throw std::string (STRING_TASK_NO_FF3);
 
   default:
     std::stringstream message;

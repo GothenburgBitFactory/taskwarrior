@@ -198,6 +198,7 @@
   performs the same function.
 - Added rc.hooks, a master control setting for hooks processing, which defaults
   to 'on'.
+- File format 3 (used in version 1.6.0 - 1.7.1) is no longer supported.
 
 ------ current release ---------------------------
 
