@@ -160,7 +160,7 @@ void Hooks::onExit ()
   std::vector <Task> changes;
   context.tdb2.get_changes (changes);
 
-  std::string input;
+  std::string input = "";
   std::vector <Task>::const_iterator t;
   for (t = changes.begin (); t != changes.end (); ++t)
     input += t->composeJSON () + "\n";

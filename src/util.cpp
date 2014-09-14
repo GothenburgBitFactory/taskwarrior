@@ -271,6 +271,17 @@ int execute (
   pipe (pin);
   pipe (pout);
 
+  // Write input to fp, before the fork.
+  if (input != "")
+  {
+    FILE* pinf = fdopen (pin[1], "w");
+    if (pinf)
+    {
+      fputs (input.c_str (), pinf);
+      fclose (pinf);
+    }
+  }
+
   pid_t pid = fork ();
   if (pid == 0)
   {
@@ -278,7 +289,7 @@ int execute (
     dup2 (pin[0], STDIN_FILENO);
     dup2 (pout[1], STDOUT_FILENO);
 
-    char** argv = new char*[args.size () + 1];
+    char** argv = new char* [args.size () + 1];
     for (unsigned int i = 0; i < args.size (); ++i)
       argv[i] = (char*) args[i].c_str ();
 
@@ -287,32 +298,22 @@ int execute (
   }
 
   // This is only reached in the parent
-  close (pin[0]);
-  close (pout[1]);
-
-  // Write input to fp.
-  FILE* pinf = fdopen (pin[1], "w");
-  if (input != "" &&
-      input != "\n")
-  {
-    fputs (input.c_str (), pinf);
-  }
-
-  fclose (pinf);
-  close (pin[1]);
+  close (pin[0]);   // Close the read end of the input pipe.
+  close (pout[1]);  // Close the write end if the output pipe.
+  close (pin[1]);   // Close the write end of the input pipe.
 
   // Read output from fp.
   output = "";
   char* line = NULL;
   size_t len = 0;
-  FILE* poutf = fdopen(pout[0], "r");
+  FILE* poutf = fdopen (pout[0], "r");
   while (getline (&line, &len, poutf) != -1)
     output += line;
 
   free (line);
   line = NULL;
   fclose (poutf);
-  close (pout[0]);
+  close (pout[0]);  // Close the read-end of the output pipe.
 
   int status = -1;
   wait (&status);
