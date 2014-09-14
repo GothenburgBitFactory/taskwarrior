@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest test (30);
+  UnitTest test (23);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -92,20 +92,9 @@ int main (int argc, char** argv)
            "[tag1 tag2] "
            "[att1:value1 att2:value2] "
            "[123:ann1 456:ann2] Description";
-  Task ff3 (sample);
-  std::string value = ff3.get ("uuid");
-  test.is (value, "00000000-0000-0000-0000-000000000000", "ff3 uuid");
-  value = ff3.get ("status");
-  test.is (value, "pending", "ff3 status");
-  test.ok (ff3.hasTag ("tag1"), "ff3 tag1");
-  test.ok (ff3.hasTag ("tag2"), "ff3 tag2");
-  test.is (ff3.getTagCount (), 2, "ff3 # tags");
-  value = ff3.get ("att1");
-  test.is (value, "value1", "ff3 att1");
-  value = ff3.get ("att2");
-  test.is (value, "value2", "ff3 att2");
-  value = ff3.get ("description");
-  test.is (value, "Description", "ff3 description");
+  good = true;
+  try { Task ff3 (sample); } catch (...) { good = false; }
+  test.notok (good, "Support for ff3 removed");
 
   // Current Format 4
   //   [name:"value" ...]\n
@@ -118,7 +107,7 @@ int main (int argc, char** argv)
            "description:\"Description\""
            "]";
   Task ff4 (sample);
-  value = ff4.get ("uuid");
+  std::string value = ff4.get ("uuid");
   test.is (value, "00000000-0000-0000-0000-000000000000", "ff4 uuid");
   value = ff4.get ("status");
   test.is (value, "pending", "ff4 status");
