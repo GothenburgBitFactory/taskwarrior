@@ -820,6 +820,7 @@
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior ne pli subtenas dosier-aranĝon 1, kiu estis originale uzata inter la 27-a de novembro 2006 kaj la 31-a de decembro 2007."
 #define STRING_TASK_NO_FF2           "Taskwarrior ne pli subtenas dosier-aranĝon 2, kiu estis originale uzata inter la 1-a de januaro 2008 kaj la 12-a de aprilo 2009."
+#define STRING_TASK_NO_FF3           "Taskwarrior no longer supports file format 3, originally used between 23 March 2009 and 16 May 2009."
 #define STRING_TASK_PARSE_ANNO_BRACK "Mankas komentaj krampoj."
 #define STRING_TASK_PARSE_ATT_BRACK  "Mankas atributaj krampoj."
 #define STRING_TASK_PARSE_TAG_BRACK  "Mankas etikedaj krampoj."
@@ -839,6 +840,8 @@
 #define STRING_TASK_SAFETY_VALVE     "Tiu komando ne havas filtrilo, do ĝi modifos ĉian taskon.  Ĉu vi estas certa?"
 #define STRING_TASK_SAFETY_FAIL      "Antaŭmalebligis komandon."
 #define STRING_TASK_SAFETY_ALLOW     "Vi ne specifis filtrilon. Laŭ la valoro 'allow.empty.filter', ne faros nenion."
+#define STRING_TASK_INVALID_DUR      "The duration value '{1}' is not supported."
+#define STRING_TASK_INVALID_COL_TYPE "Unrecognized column type '{1}' for column '{2}'"
 
 // TDB2
 #define STRING_TDB2_PARSE_ERROR      " en {1} ĉe vico {2}"

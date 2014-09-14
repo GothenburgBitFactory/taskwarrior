@@ -2102,7 +2102,7 @@ void Task::modify (modType type, bool text_required /* = false */)
               ++modCount;
             }
             else
-              throw format ("The duration value '{1}' is not supported.", value);
+              throw format (STRING_TASK_INVALID_DUR, value);
           }
 
           // Need handling for numeric types, used by UDAs.
@@ -2173,7 +2173,7 @@ void Task::modify (modType type, bool text_required /* = false */)
           }
 
           else
-            throw format ("Unrecognized column type '{1}' for column '{2}'", column->type (), name);
+            throw format (STRING_TASK_INVALID_COL_TYPE, column->type (), name);
 
           // Warn about deprecated/obsolete attribute usage.
           legacyAttributeCheck (name);

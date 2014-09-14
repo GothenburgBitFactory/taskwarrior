@@ -827,6 +827,7 @@
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior ya no admite el formato de archivo 1, usado originalmente entre el 27 de noviembre del 2006 y el 31 de diciembre del 2007."
 #define STRING_TASK_NO_FF2           "Taskwarrior ya no admite el formato de archivo 2, usado originalmente entre el 1 de enero del 2008 y el 12 de abril del 2009."
+#define STRING_TASK_NO_FF3           "Taskwarrior no longer supports file format 3, originally used between 23 March 2009 and 16 May 2009."
 #define STRING_TASK_PARSE_ANNO_BRACK "Faltan corchetes de anotación."
 #define STRING_TASK_PARSE_ATT_BRACK  "Faltan corchetes de atributo."
 #define STRING_TASK_PARSE_TAG_BRACK  "Faltan corchetes de marca."
@@ -846,6 +847,8 @@
 #define STRING_TASK_SAFETY_VALVE     "Este comando no tiene filtro, y modificará todas las tareas. ¿Está seguro?"
 #define STRING_TASK_SAFETY_FAIL      "Se impidió la ejecución del comando."
 #define STRING_TASK_SAFETY_ALLOW     "No especificó un filtro, y, dado el valor de 'allow.empty.filter', no se ejecutó ninguna acción."
+#define STRING_TASK_INVALID_DUR      "The duration value '{1}' is not supported."
+#define STRING_TASK_INVALID_COL_TYPE "Unrecognized column type '{1}' for column '{2}'"
 
 // TDB2
 #define STRING_TDB2_PARSE_ERROR      " en {1} en la línea {2}"

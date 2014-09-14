@@ -820,6 +820,7 @@
 // Task
 #define STRING_TASK_NO_FF1           "Taskwarrior já não suporta o formato 1, originalmente usado entre 27-Novembro-2006 e 31-Dezembro-2007."
 #define STRING_TASK_NO_FF2           "Taskwarrior já não suporta o formato 2, originalmente usado entre 1-Janeiro-2008 e 12-April-2009."
+#define STRING_TASK_NO_FF3           "Taskwarrior no longer supports file format 3, originally used between 23 March 2009 and 16 May 2009."
 #define STRING_TASK_PARSE_ANNO_BRACK "Chavetas de anotação em falta."
 #define STRING_TASK_PARSE_ATT_BRACK  "Chavetas de atributo em falta."
 #define STRING_TASK_PARSE_TAG_BRACK  "Chavetas de marca em falta."
@@ -839,6 +840,8 @@
 #define STRING_TASK_SAFETY_VALVE     "Este comando não possui um filtro e irá modificar todas as tarefas. Tem a certeza?"
 #define STRING_TASK_SAFETY_FAIL      "Execução do comando abortada."
 #define STRING_TASK_SAFETY_ALLOW     "Não especificou um filtro e com o valor de 'allow.empty.filter', nenhuma ação foi tomada."
+#define STRING_TASK_INVALID_DUR      "The duration value '{1}' is not supported."
+#define STRING_TASK_INVALID_COL_TYPE "Unrecognized column type '{1}' for column '{2}'"
 
 // TDB2
 #define STRING_TDB2_PARSE_ERROR      " em {1} na linha {2}"
