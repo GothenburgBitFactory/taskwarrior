@@ -103,6 +103,7 @@ public:
   void add (Task&, bool add_to_backlog = true);
   void modify (Task&, bool add_to_backlog = true);
   void commit ();
+  void get_changes (std::vector <Task>&);
   void revert ();
   int  gc ();
   int  next_id ();
@@ -126,6 +127,7 @@ public:
   void dump ();
 
 private:
+  void gather_changes ();
   void update (const std::string&, Task&, const bool, std::vector <Task>&);
   bool verifyUniqueUUID (const std::string&);
   void show_diff (const std::string&, const std::string&, const std::string&);
@@ -141,8 +143,9 @@ public:
   TF2 backlog;
 
 private:
-  std::string _location;
-  int _id;
+  std::string        _location;
+  int                _id;
+  std::vector <Task> _changes;
 };
 
 #endif

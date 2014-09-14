@@ -671,6 +671,8 @@ void TDB2::commit ()
   dump ();
   context.timer_commit.start ();
 
+  gather_changes ();
+
   pending.commit ();
   completed.commit ();
   undo.commit ();
@@ -686,6 +688,30 @@ void TDB2::commit ()
   signal (SIGUSR2,   SIG_DFL);
 
   context.timer_commit.stop ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::gather_changes ()
+{
+  _changes.clear ();
+  std::vector <Task>::iterator i;
+  for (i = pending._added_tasks.begin (); i != pending._added_tasks.end (); ++i)
+    _changes.push_back (*i);
+
+  for (i = pending._modified_tasks.begin (); i != pending._modified_tasks.end (); ++i)
+    _changes.push_back (*i);
+
+  for (i = completed._added_tasks.begin (); i != completed._added_tasks.end (); ++i)
+    _changes.push_back (*i);
+
+  for (i = completed._modified_tasks.begin (); i != completed._modified_tasks.end (); ++i)
+    _changes.push_back (*i);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::get_changes (std::vector <Task>& changes)
+{
+  changes = _changes;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -157,11 +157,18 @@ void Hooks::onExit ()
 
   context.timer_hooks.start ();
 
+  std::vector <Task> changes;
+  context.tdb2.get_changes (changes);
+
+  std::string input;
+  std::vector <Task>::const_iterator t;
+  for (t = changes.begin (); t != changes.end (); ++t)
+    input += t->composeJSON () + "\n";
+
   std::vector <std::string> matchingScripts = scripts ("on-exit");
   std::vector <std::string>::iterator i;
   for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
   {
-    std::string input;
     std::string output;
     std::vector <std::string> args;
     int status = execute (*i, args, input, output);
