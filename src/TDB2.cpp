@@ -151,10 +151,6 @@ bool TF2::has (const std::string& uuid)
 ////////////////////////////////////////////////////////////////////////////////
 void TF2::add_task (Task& task)
 {
-  bool enabled = context.hooks.enable (false);
-  context.hooks.onAdd (task);
-  context.hooks.enable (enabled);
-
   _tasks.push_back (task);           // For subsequent queries
   _added_tasks.push_back (task);     // For commit/synch
 
@@ -183,14 +179,8 @@ bool TF2::modify_task (const Task& task)
   {
     if (i->get ("uuid") == uuid)
     {
-      Task hookTask (task);
-
-      bool enabled = context.hooks.enable (false);
-      context.hooks.onModify (*i, hookTask);
-      context.hooks.enable (enabled);
-
-      *i = hookTask;
-      _modified_tasks.push_back (hookTask);
+      *i = task;
+      _modified_tasks.push_back (task);
       _dirty = true;
 
       return true;
