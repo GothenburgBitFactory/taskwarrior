@@ -568,32 +568,50 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
     throw format (STRING_TDB2_UUID_NOT_UNIQUE, uuid);
 
   // Create a vector tasks, as hooks can cause them to multiply.
-  std::vector <Task> toAdd;
-  toAdd.push_back (task);
+  std::vector <Task> changes;
+  changes.push_back (task);
 
   // TODO call hooks.
-  // context.hooks.onAdd (toAdd);
+  // context.hooks.onAdd (changes);
 
   std::vector <Task>::iterator i;
-  for (i = toAdd.begin (); i != toAdd.end (); ++i)
+  for (i = changes.begin (); i != changes.end (); ++i)
   {
-    // TODO Upgrade to add or modify, not just add.
+    // If the task already exists, it is a modification, else addition.
+    Task original;
+    if (get (i->get ("uuid"), original))
+    {
+      // Update the task, wherever it is.
+      if (!pending.modify_task (*i))
+        completed.modify_task (*i);
 
-    // Add new task to either pending or completed.
-    std::string status = i->get ("status");
-    if (status == "completed" ||
-        status == "deleted")
-      completed.add_task (*i);
+      // time <time>
+      // old <task>
+      // new <task>
+      // ---
+      undo.add_line ("time " + Date ().toEpochString () + "\n");
+      undo.add_line ("old " + original.composeF4 () + "\n");
+      undo.add_line ("new " + i->composeF4 () + "\n");
+      undo.add_line ("---\n");
+    }
     else
-      pending.add_task (*i);
+    {
+      // Add new task to either pending or completed.
+      std::string status = i->get ("status");
+      if (status == "completed" ||
+          status == "deleted")
+        completed.add_task (*i);
+      else
+        pending.add_task (*i);
 
-    // Add undo data lines:
-    //   time <time>
-    //   new <task>
-    //   ---
-    undo.add_line ("time " + Date ().toEpochString () + "\n");
-    undo.add_line ("new " + i->composeF4 () + "\n");
-    undo.add_line ("---\n");
+      // Add undo data lines:
+      //   time <time>
+      //   new <task>
+      //   ---
+      undo.add_line ("time " + Date ().toEpochString () + "\n");
+      undo.add_line ("new " + i->composeF4 () + "\n");
+      undo.add_line ("---\n");
+    }
 
     // Add task to backlog.
     if (add_to_backlog)
@@ -610,6 +628,7 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
 {
   // Ensure the task is consistent, and provide defaults if necessary.
   task.validate (false);
+  std::string uuid = task.get ("uuid");
 
   // Create a vector tasks, as hooks can cause them to multiply.
   std::vector <Task> toModify;
@@ -645,6 +664,10 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
       // Add modified task to backlog.
       if (add_to_backlog)
         backlog.add_line (task.composeJSON () + "\n");
+
+      // The original task may be further referenced by the caller.
+      if (i->get ("uuid") == uuid)
+        task = *i;
     }
   }
 }
