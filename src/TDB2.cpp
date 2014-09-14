@@ -574,6 +574,33 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
   // TODO call hooks.
   // context.hooks.onAdd (changes);
 
+  update (uuid, task, add_to_backlog, changes);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
+{
+  // Ensure the task is consistent, and provide defaults if necessary.
+  task.validate (false);
+  std::string uuid = task.get ("uuid");
+
+  // Create a vector tasks, as hooks can cause them to multiply.
+  std::vector <Task> changes;
+  changes.push_back (task);
+
+  // TODO call hooks.
+  // context.hooks.onModify (changes);
+
+  update (uuid, task, add_to_backlog, changes);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TDB2::update (
+  const std::string& uuid,
+  Task& task,
+  const bool add_to_backlog,
+  std::vector <Task>& changes)
+{
   std::vector <Task>::iterator i;
   for (i = changes.begin (); i != changes.end (); ++i)
   {
@@ -620,55 +647,6 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
     // The original task may be further referenced by the caller.
     if (i->get ("uuid") == uuid)
       task = *i;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
-{
-  // Ensure the task is consistent, and provide defaults if necessary.
-  task.validate (false);
-  std::string uuid = task.get ("uuid");
-
-  // Create a vector tasks, as hooks can cause them to multiply.
-  std::vector <Task> toModify;
-  toModify.push_back (task);
-
-  // TODO call hooks.
-  // context.hooks.onModify (toModify);
-
-  std::vector <Task>::iterator i;
-  for (i = toModify.begin (); i != toModify.end (); ++i)
-  {
-    // Find task, overwrite it.
-    Task original;
-    get (task.get ("uuid"), original);
-
-    if (taskDiff (original, task))
-    {
-      // TODO Upgrade to add or modify, not just add.
-
-      // Update the task, wherever it is.
-      if (!pending.modify_task (task))
-        completed.modify_task (task);
-
-      // time <time>
-      // old <task>
-      // new <task>
-      // ---
-      undo.add_line ("time " + Date ().toEpochString () + "\n");
-      undo.add_line ("old " + original.composeF4 () + "\n");
-      undo.add_line ("new " + task.composeF4 () + "\n");
-      undo.add_line ("---\n");
-
-      // Add modified task to backlog.
-      if (add_to_backlog)
-        backlog.add_line (task.composeJSON () + "\n");
-
-      // The original task may be further referenced by the caller.
-      if (i->get ("uuid") == uuid)
-        task = *i;
-    }
   }
 }
 
