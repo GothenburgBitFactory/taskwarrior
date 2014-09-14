@@ -197,8 +197,9 @@ void Hooks::onExit ()
 // - all emitted non-JSON lines are considered feedback messages if the exit
 //   code is zero, otherwise they are considered errors.
 //
-void Hooks::onAdd (Task& after)
+void Hooks::onAdd (std::vector <Task>& changes)
 {
+/*
   context.timer_hooks.start ();
   if (! _enabled)
     return;
@@ -249,6 +250,7 @@ void Hooks::onAdd (Task& after)
   }
 
   context.timer_hooks.stop ();
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -266,8 +268,9 @@ void Hooks::onAdd (Task& after)
 // - all emitted non-JSON lines are considered feedback messages if the exit
 //   code is zero, otherwise they are considered errors.
 //
-void Hooks::onModify (const Task& before, Task& after)
+void Hooks::onModify (const Task& before, std::vector <Task>& changes)
 {
+/*
   context.timer_hooks.start ();
   if (! _enabled)
     return;
@@ -322,6 +325,7 @@ void Hooks::onModify (const Task& before, Task& after)
   }
 
   context.timer_hooks.stop ();
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

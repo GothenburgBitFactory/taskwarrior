@@ -29,6 +29,7 @@
 
 #include <vector>
 #include <string>
+#include <Task.h>
 
 class Hooks
 {
@@ -43,8 +44,8 @@ public:
 
   void onLaunch ();
   void onExit ();
-  void onAdd (Task&);
-  void onModify (const Task&, Task&);
+  void onAdd (std::vector <Task>&);
+  void onModify (const Task&, std::vector <Task>&);
 
   std::vector <std::string> list ();
 

@@ -570,9 +570,7 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
   // Create a vector tasks, as hooks can cause them to multiply.
   std::vector <Task> changes;
   changes.push_back (task);
-
-  // TODO call hooks.
-  // context.hooks.onAdd (changes);
+  context.hooks.onAdd (changes);
 
   update (uuid, task, add_to_backlog, changes);
 }
@@ -584,12 +582,14 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
   task.validate (false);
   std::string uuid = task.get ("uuid");
 
+  // Get the unmodified task as reference, so the hook can compare.
+  Task original;
+  get (uuid, original);
+
   // Create a vector tasks, as hooks can cause them to multiply.
   std::vector <Task> changes;
   changes.push_back (task);
-
-  // TODO call hooks.
-  // context.hooks.onModify (changes);
+  context.hooks.onModify (original, changes);
 
   update (uuid, task, add_to_backlog, changes);
 }
