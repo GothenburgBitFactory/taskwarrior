@@ -94,9 +94,10 @@ bool Hooks::enable (bool value)
 //
 void Hooks::onLaunch ()
 {
-  context.timer_hooks.start ();
   if (! _enabled)
     return;
+
+  context.timer_hooks.start ();
 
   std::vector <std::string> matchingScripts = scripts ("on-launch");
   std::vector <std::string>::iterator i;
@@ -151,9 +152,10 @@ void Hooks::onLaunch ()
 //
 void Hooks::onExit ()
 {
-  context.timer_hooks.start ();
   if (! _enabled)
     return;
+
+  context.timer_hooks.start ();
 
   std::vector <std::string> matchingScripts = scripts ("on-exit");
   std::vector <std::string>::iterator i;
@@ -199,16 +201,16 @@ void Hooks::onExit ()
 //
 void Hooks::onAdd (std::vector <Task>& changes)
 {
-/*
-  context.timer_hooks.start ();
   if (! _enabled)
     return;
+
+  context.timer_hooks.start ();
 
   std::vector <std::string> matchingScripts = scripts ("on-add");
   std::vector <std::string>::iterator i;
   for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
   {
-    std::string input = after.composeJSON () + "\n";
+    std::string input = changes[0].composeJSON () + "\n";
     std::string output;
     std::vector <std::string> args;
     int status = execute (*i, args, input, output);
@@ -219,22 +221,11 @@ void Hooks::onAdd (std::vector <Task>& changes)
 
     if (status == 0)
     {
-      bool first = true;
+      changes.clear ();
       for (line = lines.begin (); line != lines.end (); ++line)
       {
         if (line->length () && (*line)[0] == '{')
-        {
-          Task newTask (*line);
-
-          // TODO Not sure if this first/!first thing is good.
-          if (first)
-          {
-            after = newTask;
-            first = false;
-          }
-          else
-            context.tdb2.add (newTask);
-        }
+          changes.push_back (Task (*line));
         else
           context.footnote (*line);
       }
@@ -250,7 +241,6 @@ void Hooks::onAdd (std::vector <Task>& changes)
   }
 
   context.timer_hooks.stop ();
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -270,16 +260,16 @@ void Hooks::onAdd (std::vector <Task>& changes)
 //
 void Hooks::onModify (const Task& before, std::vector <Task>& changes)
 {
-/*
-  context.timer_hooks.start ();
   if (! _enabled)
     return;
+
+  context.timer_hooks.start ();
 
   std::vector <std::string> matchingScripts = scripts ("on-modify");
   std::vector <std::string>::iterator i;
   for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
   {
-    std::string afterJSON = after.composeJSON ();
+    std::string afterJSON = changes[0].composeJSON ();
     std::string input = before.composeJSON ()
                       + "\n"
                       + afterJSON
@@ -294,22 +284,11 @@ void Hooks::onModify (const Task& before, std::vector <Task>& changes)
 
     if (status == 0)
     {
-      bool first = true;
+      changes.clear ();
       for (line = lines.begin (); line != lines.end (); ++line)
       {
         if (line->length () && (*line)[0] == '{')
-        {
-          Task newTask (*line);
-
-          // TODO Not sure if this first/!first thing is good.
-          if (first)
-          {
-            after = newTask;
-            first = false;
-          }
-          else
-            context.tdb2.modify (newTask);
-        }
+          changes.push_back (Task (*line));
         else
           context.footnote (*line);
       }
@@ -325,7 +304,6 @@ void Hooks::onModify (const Task& before, std::vector <Task>& changes)
   }
 
   context.timer_hooks.stop ();
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
