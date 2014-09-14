@@ -87,7 +87,7 @@ int CmdDelete::execute (std::string& output)
       task->modify (Task::modAnnotate);
       task->setStatus (Task::deleted);
       if (! task->has ("end"))
-        task->setEnd ();
+        task->setAsNow ("end");
 
       if (permission (*task, question, filtered.size ()))
       {
@@ -112,7 +112,7 @@ int CmdDelete::execute (std::string& output)
               sibling->modify (Task::modAnnotate);
               sibling->setStatus (Task::deleted);
               if (! sibling->has ("end"))
-                sibling->setEnd ();
+                sibling->setAsNow ("end");
 
               updateRecurrenceMask (*sibling);
               context.tdb2.modify (*sibling);
@@ -126,7 +126,7 @@ int CmdDelete::execute (std::string& output)
             context.tdb2.get (task->get ("parent"), parent);
             parent.setStatus (Task::deleted);
             if (! parent.has ("end"))
-              parent.setEnd ();
+              parent.setAsNow ("end");
 
             context.tdb2.modify (parent);
           }
@@ -145,7 +145,7 @@ int CmdDelete::execute (std::string& output)
               child->modify (Task::modAnnotate);
               child->setStatus (Task::deleted);
               if (! child->has ("end"))
-                child->setEnd ();
+                child->setAsNow ("end");
 
               updateRecurrenceMask (*child);
               context.tdb2.modify (*child);

@@ -82,7 +82,7 @@ int CmdDone::execute (std::string& output)
       task->modify (Task::modAnnotate);
       task->setStatus (Task::completed);
       if (! task->has ("end"))
-        task->setEnd ();
+        task->setAsNow ("end");
 
       // Stop the task, if started.
       if (task->has ("start"))

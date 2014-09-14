@@ -93,7 +93,7 @@ void handleRecurrence ()
           rec.id = context.tdb2.next_id ();      // New ID.
           rec.set ("uuid", uuid ());             // New UUID.
           rec.set ("parent", t->get ("uuid"));   // Remember mom.
-          rec.setEntry ();                       // New entry date.
+          rec.setAsNow ("entry");                // New entry date.
 
           char dueDate[16];
           sprintf (dueDate, "%u", (unsigned int) d->toEpoch ());

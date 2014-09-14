@@ -90,11 +90,7 @@ public:
   static status textToStatus (const std::string&);
   static std::string statusToText (status);
 
-  void setEntry ();
-  void setEnd ();
-  void setStart ();
-  void setModified ();
-
+  void setAsNow (const std::string&);
   bool has (const std::string&) const;
   std::vector <std::string> all ();
   const std::string get (const std::string&) const;

@@ -173,50 +173,22 @@ Task::status Task::textToStatus (const std::string& input)
 std::string Task::statusToText (Task::status s)
 {
        if (s == Task::pending)   return "pending";
-  else if (s == Task::completed) return "completed";
-  else if (s == Task::deleted)   return "deleted";
   else if (s == Task::recurring) return "recurring";
   else if (s == Task::waiting)   return "waiting";
+  else if (s == Task::completed) return "completed";
+  else if (s == Task::deleted)   return "deleted";
 
   return "pending";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Task::setEntry ()
+void Task::setAsNow (const std::string& att)
 {
   char now[16];
   sprintf (now, "%u", (unsigned int) time (NULL));
-  set ("entry", now);
+  set (att, now);
 
   recalc_urgency = true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Task::setEnd ()
-{
-  char now[16];
-  sprintf (now, "%u", (unsigned int) time (NULL));
-  set ("end", now);
-
-  recalc_urgency = true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Task::setStart ()
-{
-  char now[16];
-  sprintf (now, "%u", (unsigned int) time (NULL));
-  set ("start", now);
-
-  recalc_urgency = true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Task::setModified ()
-{
-  char now[16];
-  sprintf (now, "%u", (unsigned int) time (NULL));
-  set ("modified", now);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1485,16 +1457,16 @@ void Task::validate (bool applyDefault /* = true */)
 #ifdef PRODUCT_TASKWARRIOR
   // Provide an entry date unless user already specified one.
   if (!has ("entry") || get ("entry") == "")
-    setEntry ();
+    setAsNow ("entry");
 
   // Completed tasks need an end date, so inherit the entry date.
   if ((status == Task::completed || status == Task::deleted) &&
       (! has ("end") || get ("end") == ""))
-    setEnd ();
+    setAsNow ("end");
 
   // Provide an entry date unless user already specified one.
   if (!has ("modified") || get ("modified") == "")
-    setModified ();
+    setAsNow ("modified");
 
   if (applyDefault)
   {

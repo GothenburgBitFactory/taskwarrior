@@ -78,7 +78,7 @@ int CmdStart::execute (std::string& output)
                                      task->id,
                                      task->get ("description"));
       task->modify (Task::modAnnotate);
-      task->setStart ();
+      task->setAsNow ("start");
 
       if (context.config.getBoolean ("journal.time"))
         task->addAnnotation (context.config.get ("journal.time.start.annotation"));
