@@ -29,8 +29,6 @@
 #include <string.h>
 #include <RX.h>
 
-//#define _POSIX_C_SOURCE 1      // Forgot why this is here.  Moving on...
-
 ////////////////////////////////////////////////////////////////////////////////
 RX::RX ()
 : _compiled (false)

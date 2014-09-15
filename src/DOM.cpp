@@ -254,7 +254,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
           value = Variant ((time_t) Duration (task.get (canonical)), Variant::type_duration);
         else if (column->type () == "numeric")
           value = Variant (task.get_float (canonical));
-        else
+        else // string
           value = Variant (task.get (canonical));
 
         return true;
