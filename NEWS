@@ -65,27 +65,17 @@ Removed features in 2.4.0
 
 Known Issues
 
-  -
+  - https://bug.tasktools.org
 
 Taskwarrior has been built and tested on the following configurations:
 
-  * OS X 10.9 Mavericks
-  * Fedora 18 Spherical Cow and 17 Beefy Miracle
-  * Ubuntu 12.10 Quantal Quetzal and 12.04 Precise Pangolin
-  * Debian 6.0 Squeeze (stable)i and 5.0 Lenny (oldstable) plus Sid (testing)
-  * Slackware 13.37
-  * Arch Linux
-  * Gentoo Linux
-  * Sabayon Linux
-  * SliTaz Linux
-  * CRUX Linux
-  * SuSE
-  * derivatives/customizations/flavors of the above Linux distributions
-  * Solaris 10 and 8
-  * OpenBSD
-  * FreeBSD
-  * NetBSD
-  * Cygwin 1.7
+  * OS X 10.10 Yosemite, 10.9 Mavericks
+  * Fedora 20 Heisenbug
+  * Ubuntu 14.04 Trusty Tahr
+  * Debian 7.0 Wheezy (stable)
+  * Arch 2014.05
+  * FreeBSD 10
+  * Cygwin 1.7.29, 1.7.32
 
 ---
 
