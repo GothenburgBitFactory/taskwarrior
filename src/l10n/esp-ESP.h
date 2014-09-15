@@ -750,7 +750,7 @@
 #define STRING_UDA_COLLISION         "El UDA denominado '{1}' es el mismo que un atributo del núcleo, y no está permitido."
 #define STRING_INVALID_MOD           "El atributo '{1}' no admite un valor '{2}'."
 #define STRING_INVALID_SORT_COL      "La columna '{1}' no es un campo de ordenación válido."
-#define STRING_TLS_INIT_FAIL         "Error inicializando TLS."
+#define STRING_TLS_INIT_FAIL         "Error inicializando TLS. {1}"
 #define STRING_ERROR_MEMORY          "Problema obteniendo memoria."
 #define STRING_ERROR_DETAILS         "La variable de configuración 'calendar.details.report' debe contener un único nombre de informe."
 

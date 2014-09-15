@@ -743,7 +743,7 @@
 #define STRING_UDA_COLLISION         "UDA '{1}' kaj enkonstruita atributo havas la saman nomon.  Tio estas malpermesita."
 #define STRING_INVALID_MOD           "Atributo '{1}' ne permesas valoron '{2}'."
 #define STRING_INVALID_SORT_COL      "Kolumno '{1}' ne estas valida kampo por ordigi."
-#define STRING_TLS_INIT_FAIL         "Erara eko de TLS."
+#define STRING_TLS_INIT_FAIL         "Erara eko de TLS. {1}"
 #define STRING_ERROR_MEMORY          "Ne povis akiri memoron."
 #define STRING_ERROR_DETAILS         "Agordo 'calendar.details.report' devas enhavi sole unu raportnomon."
 

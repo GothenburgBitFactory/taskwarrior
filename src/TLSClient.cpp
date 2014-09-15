@@ -257,7 +257,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   {
     if (_debug)
       std::cout << "c: ERROR Certificate verification failed.\n";
-    throw std::string (STRING_TLS_INIT_FAIL);
+    throw format (STRING_TLS_INIT_FAIL, gnutls_strerror (ret));
   }
 #endif
 
