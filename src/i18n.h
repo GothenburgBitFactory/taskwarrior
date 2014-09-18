@@ -56,6 +56,8 @@
 #include <l10n/por-PRT.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_EPO_RUS
 #include <l10n/epo-RUS.h>
+#elif PACKAGE_LANGUAGE == LANGUAGE_POL_POL
+#include <l10n/pol-POL.h>
 #endif
 
 #endif
