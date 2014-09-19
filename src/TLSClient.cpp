@@ -44,9 +44,9 @@
 #include <sys/types.h>
 #include <netdb.h>
 #include <TLSClient.h>
+#include <gnutls/x509.h>
 #include <text.h>
 #include <i18n.h>
-#include <gnutls/x509.h>
 
 #define MAX_BUF 16384
 
