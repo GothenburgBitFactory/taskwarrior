@@ -289,5 +289,17 @@ __fish.task.complete command filter
 __fish.task.complete attr_value
 __fish.task.complete attr_name
 __fish.task.complete config
-__fish.task.complete task
-__fish.task.complete id with_description
+
+# Uncomment the following line if you want tab-completion of task descriptions.
+# Warning: This often creates a list of suggestions which spans several pages,
+# and it usually pushes some of the commands and attributes to the end of the
+# list.
+
+#__fish.task.complete task
+
+# Uncomment the following line if you want tab-completion of task IDs outside
+# of the "depends" attribute.  Warning: This often creates a list of
+# suggestions which spans several pages, and it pushes all commands and
+# attributes to the end of the list.
+
+#__fish.task.complete id with_description
