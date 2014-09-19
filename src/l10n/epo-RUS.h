@@ -98,7 +98,7 @@
 //
 // DO NOT include a copyright in the translation.
 //
-#define STRING_LOCALIZATION_DESC     "Por la Esperanta lokalaĵo"
+#define STRING_LOCALIZATION_DESC     "— Esperanta lokalaĵo"
 #define STRING_LOCALIZATION_AUTHOR   "Tradukita al la Internacia Lingvo per Jeremy John Reeder"
 
 // Parser
@@ -267,8 +267,8 @@
 #define STRING_CMD_VERSION_USAGE     "Montras la versinombro de taskwarrior"
 #define STRING_CMD_VERSION_USAGE2    "Montras sole la versinombro de taskwarrior"
 #define STRING_CMD_VERSION_MIT       "Oni sole povas kopii Taskwarrior sur la MIT-permisilo, kiun oni povas trovi en la fontkodpako."
-#define STRING_CMD_VERSION_DOCS      "Oni povas trovi la dokumentojn por taskwarrior kun 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq', aŭ ĉe http://taskwarrior.org"
-#define STRING_CMD_VERSION_BUILT     "{1} {2} kompilita per "
+#define STRING_CMD_VERSION_DOCS      "Oni povas trovi la dokumentojn por Taskwarrior kun 'man task', 'man taskrc', 'man task-tutorial', 'man task-color', 'man task-sync', 'man task-faq', aŭ ĉe http://taskwarrior.org."
+#define STRING_CMD_VERSION_BUILT     "{1} {2} kompilita por "
 #define STRING_CMD_VERSION_UNKNOWN   "nekonata"
 #define STRING_CMD_VERSION_COPY      "Kopirajto © 2006 - 2014 P. Beckingham, F. Hernandez."
 #define STRING_CMD_LOGO_USAGE        "Montras la logotipon de Taskwarrior"
@@ -474,7 +474,7 @@
 #define STRING_CMD_SYNC_SUCCESS1     "Sukcesis sinkronigi.  Alŝutis {1} ŝanĝojn."
 #define STRING_CMD_SYNC_SUCCESS2     "Sukcesis sinkronigi.  Elŝutis {1} ŝanĝojn."
 #define STRING_CMD_SYNC_SUCCESS3     "Sukcesis sinkronigi.  Alŝutis {1} ŝanĝojn, elŝutis {2}."
-#define STRING_CMD_SYNC_SUCCESS_NOP  "Sukcesis sinkronigi.  Nenio ŝanĝis."
+#define STRING_CMD_SYNC_SUCCESS_NOP  "Sukcesis sinkronigi.  Ne ŝanĝis nenion."
 #define STRING_CMD_SYNC_FAIL_ACCOUNT "Malsukcesis sinkronigi.  Aŭ viaj akreditaĵoj estas malkorekta, aŭ via Taskserver-konto ne estas ebligata."
 #define STRING_CMD_SYNC_FAIL_ERROR   "Malsukcesis sinkronigi.  La Taskserver redonis eraron: {1} {2}"
 #define STRING_CMD_SYNC_FAIL_CONNECT "Malsukcesis sinkronigi.  Ne povis konekti al la Taskserver."
