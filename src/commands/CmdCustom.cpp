@@ -76,11 +76,6 @@ int CmdCustom::execute (std::string& output)
   if (columns.size () != labels.size () && labels.size () != 0)
     throw format (STRING_CMD_CUSTOM_MISMATCH, _keyword);
 
-  std::map <std::string, std::string> columnLabels;
-  if (labels.size ())
-    for (unsigned int i = 0; i < columns.size (); ++i)
-      columnLabels[columns[i]] = labels[i];
-
   std::vector <std::string> sortOrder;
   split (sortOrder, reportSort, ',');
   validateSortColumns (sortOrder);
