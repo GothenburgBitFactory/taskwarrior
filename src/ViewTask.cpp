@@ -170,7 +170,6 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   int sum_minimal = std::accumulate (minimal.begin (), minimal.end (), 0);
   int sum_ideal   = std::accumulate (ideal.begin (),   ideal.end (),   0);
 
-
   // Calculate final column widths.
   int overage = _width - sum_minimal - all_extra;
   context.debug (format ("ViewTask::render min={1} ideal={2} overage={3} width={4}", 
@@ -234,10 +233,6 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       max_lines = headers[c].size ();
   }
 
-  // Output string.
-  std::string out;
-  _lines = 0;
-
   // Render column headers.
   std::string left_margin = std::string (_left_margin, ' ');
   std::string extra       = std::string (_extra_padding, ' ');
@@ -248,6 +243,8 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   std::string intra_odd   = context.color () ? _intra_odd.colorize  (intra) : intra;
   std::string intra_even  = context.color () ? _intra_even.colorize (intra) : intra;
 
+  std::string out;
+  _lines = 0;
   for (unsigned int i = 0; i < max_lines; ++i)
   {
     out += left_margin + extra;
