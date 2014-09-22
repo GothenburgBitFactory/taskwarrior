@@ -104,12 +104,13 @@ class TAPTestResult(unittest.result.TestResult):
         self._restoreStdout()
 
         desc = self.getDescription(test)
+        trace_msg = None
+
         try:
             exception, msg, _ = err
         except (TypeError, ValueError):
             exception_name = ""
             msg = err
-            trace_msg = None
         else:
             exception_name = exception.__name__
             msg = str(msg)
@@ -133,6 +134,7 @@ class TAPTestResult(unittest.result.TestResult):
             self.stream.writeln("# {0}: {1} {2}:".format(
                 status, exception_name, trace_msg))
 
+            # Magic 3 is just for pretty indentation
             padding = " " * (len(status) + 3)
 
             for line in msg.splitlines():
