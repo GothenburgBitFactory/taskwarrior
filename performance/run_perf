@@ -5,34 +5,39 @@ echo '  - This step will take several minutes'
 rm -f ./pending.data ./completed.data ./undo.data ./backlog.data perf.rc
 ./load
 
+#TASK=/usr/local/bin/tw212
+#TASK=/usr/local/bin/tw220
+#TASK=/usr/local/bin/tw230
+TASK=../src/task
+
 # Run benchmarks.
 # Note that commands are run twice - warm cache testing.
 
 echo 'Performance: benchmarks'
 
 echo '  - task next...'
-../src/task rc.debug:1 rc:perf.rc next >/dev/null 2>&1
-../src/task rc.debug:1 rc:perf.rc next 2>&1 | grep "Perf task"
+$TASK rc.debug:1 rc:perf.rc next >/dev/null 2>&1
+$TASK rc.debug:1 rc:perf.rc next 2>&1 | grep "Perf task"
 
 echo '  - task list...'
-../src/task rc.debug:1 rc:perf.rc list >/dev/null 2>&1
-../src/task rc.debug:1 rc:perf.rc list 2>&1 | grep "Perf task"
+$TASK rc.debug:1 rc:perf.rc list >/dev/null 2>&1
+$TASK rc.debug:1 rc:perf.rc list 2>&1 | grep "Perf task"
 
 echo '  - task all...'
-../src/task rc.debug:1 rc:perf.rc all >/dev/null 2>&1
-../src/task rc.debug:1 rc:perf.rc all 2>&1 | grep "Perf task"
+$TASK rc.debug:1 rc:perf.rc all >/dev/null 2>&1
+$TASK rc.debug:1 rc:perf.rc all 2>&1 | grep "Perf task"
 
 echo '  - task add...'
-../src/task rc.debug:1 rc:perf.rc add >/dev/null 2>&1
-../src/task rc.debug:1 rc:perf.rc add This is a task with an average sized description length project:P priority:H +tag1 +tag2 2>&1 | grep "Perf task"
+$TASK rc.debug:1 rc:perf.rc add >/dev/null 2>&1
+$TASK rc.debug:1 rc:perf.rc add This is a task with an average sized description length project:P priority:H +tag1 +tag2 2>&1 | grep "Perf task"
 
 echo '  - task export...'
-../src/task rc.debug:1 rc:perf.rc export >/dev/null 2>&1
-../src/task rc.debug:1 rc:perf.rc export 2>&1 >export.json | grep "Perf task"
+$TASK rc.debug:1 rc:perf.rc export >/dev/null 2>&1
+$TASK rc.debug:1 rc:perf.rc export 2>&1 >export.json | grep "Perf task"
 
 echo '  - task import...'
 rm -f ./pending.data ./completed.data ./undo.data ./backlog.data
-../src/task rc.debug:1 rc:perf.rc import export.json 2>&1 | grep "Perf task"
+$TASK rc.debug:1 rc:perf.rc import export.json 2>&1 | grep "Perf task"
 
 echo 'End'
 exit 0
