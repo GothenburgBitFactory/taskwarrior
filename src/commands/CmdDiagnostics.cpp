@@ -134,6 +134,22 @@ int CmdDiagnostics::execute (std::string& output)
       << " +l"      << 8 * sizeof (long)
       << " +vp"     << 8 * sizeof (void*)
       << " +time_t" << 8 * sizeof (time_t)
+      << "\n";
+
+  // Compiler compliance level.
+  std::string compliance = "non-compliant";
+#ifdef __cplusplus
+  int level = __cplusplus;
+  if (level == 199711)
+    compliance = "C++98/03";
+  else if (level == 201103)
+    compliance = "C++11";
+  else
+    compliance = format (level);
+#endif
+  out << " " << STRING_CMD_DIAG_COMPLIANCE
+      << ": "
+      << compliance
       << "\n\n";
 
   out << bold.colorize (STRING_CMD_DIAG_FEATURES)

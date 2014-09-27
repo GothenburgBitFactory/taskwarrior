@@ -494,6 +494,7 @@
 #define STRING_CMD_DIAG_COMPILER     "Compilador"
 #define STRING_CMD_DIAG_VERSION      "Versão"
 #define STRING_CMD_DIAG_CAPS         "Capacidades"
+#define STRING_CMD_DIAG_COMPLIANCE   "Compliance"
 #define STRING_CMD_DIAG_FEATURES     "Características da versão"
 #define STRING_CMD_DIAG_BUILT        "Criado"
 #define STRING_CMD_DIAG_COMMIT       "Commit"  // |por-PRT|==|eng-USA|

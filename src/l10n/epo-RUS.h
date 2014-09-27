@@ -494,6 +494,7 @@
 #define STRING_CMD_DIAG_COMPILER     "Kompililo"
 #define STRING_CMD_DIAG_VERSION      "Versio"
 #define STRING_CMD_DIAG_CAPS         "Eblecoj"
+#define STRING_CMD_DIAG_COMPLIANCE   "Compliance"
 #define STRING_CMD_DIAG_FEATURES     "Trajtoj de la Kompilo"
 #define STRING_CMD_DIAG_BUILT        "Kompilita"
 #define STRING_CMD_DIAG_COMMIT       "Ŝanĝaro"

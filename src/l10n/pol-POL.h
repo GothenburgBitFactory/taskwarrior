@@ -494,6 +494,7 @@
 #define STRING_CMD_DIAG_COMPILER     "Kompilator"
 #define STRING_CMD_DIAG_VERSION      "Wersja"
 #define STRING_CMD_DIAG_CAPS         "Flagi"
+#define STRING_CMD_DIAG_COMPLIANCE   "Compliance"
 #define STRING_CMD_DIAG_FEATURES     "Opcje budowania"
 #define STRING_CMD_DIAG_BUILT        "Zbudowano"
 #define STRING_CMD_DIAG_COMMIT       "Zatwierdzenie"
