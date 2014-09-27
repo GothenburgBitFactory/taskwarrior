@@ -243,6 +243,9 @@ void Eval::evaluatePostfixStack (
     if (token->second == Lexer::typeOperator &&
         token->first == "!")
     {
+      if (values.size () < 1)
+        throw std::string (STRING_EVAL_NO_EVAL);
+
       Variant right = values.back ();
       values.pop_back ();
       if (_debug)
@@ -256,6 +259,9 @@ void Eval::evaluatePostfixStack (
     else if (token->second == Lexer::typeOperator &&
              token->first == "_neg_")
     {
+      if (values.size () < 1)
+        throw std::string (STRING_EVAL_NO_EVAL);
+
       Variant right = values.back ();
       values.pop_back ();
       if (_debug)
@@ -279,6 +285,9 @@ void Eval::evaluatePostfixStack (
     // Binary operators.
     else if (token->second == Lexer::typeOperator)
     {
+      if (values.size () < 2)
+        throw std::string (STRING_EVAL_NO_EVAL);
+
       Variant right = values.back ();
       values.pop_back ();
 
