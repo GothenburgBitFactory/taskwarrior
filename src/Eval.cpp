@@ -136,6 +136,7 @@ void Eval::evaluateInfixExpression (const std::string& e, Variant& v) const
   // Parse for syntax checking and operator replacement.
   if (_debug)
     context.debug ("[1;37;42mFILTER[0m Infix        " + dump (tokens));
+
   infixParse (tokens);
   if (_debug)
     context.debug ("[1;37;42mFILTER[0m Infix parsed " + dump (tokens));
