@@ -9,6 +9,7 @@ if (open my $fh, '>', 'perf.rc')
             "color=on\n",
             "_forcecolor=on\n",
             "verbose=label\n",
+            "hooks=off\n",
             "color.debug=\n";
   close $fh;
 }
