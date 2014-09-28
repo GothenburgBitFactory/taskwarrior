@@ -272,12 +272,13 @@ int CmdDiagnostics::execute (std::string& output)
              ? " (readable)" : " (not readable)")
         << "\n";
 
-  if (context.config.get ("taskd.trust") == "allow all")
-    out << "      Trust: allow all\n";
-  else if (context.config.get ("taskd.trust") == "ignore hostname")
-    out << "      Trust: ignore hostanme\n";
+  std::string trust_value = context.config.get ("taskd.trust");
+  if (trust_value == "strict" ||
+      trust_value == "ignore hostname" ||
+      trust_value == "allow all")
+    out << "      Trust: " << trust_value << "\n";
   else
-    out << "      Trust: strict\n";
+    out << "      Trust: Bad value - see 'man taskrc'\n";
 
   out << "Certificate: "
       << context.config.get ("taskd.certificate")

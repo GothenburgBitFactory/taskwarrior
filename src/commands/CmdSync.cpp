@@ -86,10 +86,17 @@ int CmdSync::execute (std::string& output)
   if (credentials.size () != 3)
     throw std::string (STRING_CMD_SYNC_BAD_CRED);
 
+  // This was a Boolean value in 2.3.0, and is a tri-state since 2.4.0.
+  std::string trust_value = context.config.get ("taskd.trust");
+  if (trust_value != "strict" &&
+      trust_value != "ignore hostname" &&
+      trust_value != "allow all")
+    throw std::string (STRING_CMD_SYNC_TRUST_OBS);
+
   enum TLSClient::trust_level trust = TLSClient::strict;
-  if (context.config.get ("taskd.trust") == "allow all")
+  if (trust_value  == "allow all")
     trust = TLSClient::allow_all;
-  else if (context.config.get ("taskd.trust") == "ignore hostname")
+  else if (trust_value == "ignore hostname")
     trust = TLSClient::ignore_hostname;
 
   // CA must exist, if provided.

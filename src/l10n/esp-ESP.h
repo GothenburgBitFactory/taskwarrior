@@ -497,6 +497,7 @@
 #define STRING_CMD_SYNC_CONNECT      "No se pudo conectar a {1} {2}"
 #define STRING_CMD_SYNC_HANDSHAKE    "Handshake fallido.  {1}"
 #define STRING_CMD_SYNC_TRUST_CA     "Debe proveer un certificado CA o la verificación de sobrescritura, pero no ambos."
+#define STRING_CMD_SYNC_TRUST_OBS    "The 'taskd.trust' settings may now only contain a value of 'strict', 'ignore hostname' or 'allow all'."
 #define STRING_CMD_DIAG_USAGE        "Detalles de plataforma, construcción y entorno"
 #define STRING_CMD_DIAG_PLATFORM     "Plataforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<desconocido>"
