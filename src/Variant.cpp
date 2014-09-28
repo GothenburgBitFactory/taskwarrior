@@ -39,6 +39,7 @@
 
 std::string Variant::dateFormat = "";
 bool Variant::searchCaseSensitive = true;
+bool Variant::searchUsingRegex = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant ()
@@ -913,21 +914,42 @@ bool Variant::operator_match (const Variant& other, const Task& task) const
   left.cast (type_string);
   right.cast (type_string);
 
-  RX r (right._string, searchCaseSensitive);
-  if (r.match (left._string))
-    return true;
-
-  // If the above did not match, and the left source is "description", then
-  // in the annotations.
-  if (left.source () == "description")
+  if (searchUsingRegex)
   {
-    std::map <std::string, std::string> annotations;
-    task.getAnnotations (annotations);
+    RX r (right._string, searchCaseSensitive);
+    if (r.match (left._string))
+      return true;
 
-    std::map <std::string, std::string>::iterator a;
-    for (a = annotations.begin (); a != annotations.end (); ++a)
-      if (r.match (a->second))
-        return true;
+    // If the above did not match, and the left source is "description", then
+    // in the annotations.
+    if (left.source () == "description")
+    {
+      std::map <std::string, std::string> annotations;
+      task.getAnnotations (annotations);
+
+      std::map <std::string, std::string>::iterator a;
+      for (a = annotations.begin (); a != annotations.end (); ++a)
+        if (r.match (a->second))
+          return true;
+    }
+  }
+  else
+  {
+    if (find (left._string, right._string, searchCaseSensitive) != std::string::npos)
+      return true;
+
+    // If the above did not match, and the left source is "description", then
+    // in the annotations.
+    if (left.source () == "description")
+    {
+      std::map <std::string, std::string> annotations;
+      task.getAnnotations (annotations);
+
+      std::map <std::string, std::string>::iterator a;
+      for (a = annotations.begin (); a != annotations.end (); ++a)
+        if (find (a->second, right._string, searchCaseSensitive) != std::string::npos)
+          return true;
+    }
   }
 
   return false;

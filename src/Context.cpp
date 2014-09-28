@@ -126,6 +126,7 @@ int Context::initialize (int argc, const char** argv)
     Lexer::dateFormat            = config.get ("dateformat");
     Variant::dateFormat          = config.get ("dateformat");
     Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
+    Variant::searchUsingRegex    = config.getBoolean ("regex");
 
     parser.initialize (argc, argv);                 // task arg0 arg1 ...
 
@@ -148,6 +149,14 @@ int Context::initialize (int argc, const char** argv)
 
     // Create missing config file and data directory, if necessary.
     parser.applyOverrides ();
+
+    // These may have changed.
+    // TODO Uh oh.
+    Lexer::dateFormat            = config.get ("dateformat");
+    Variant::dateFormat          = config.get ("dateformat");
+    Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
+    Variant::searchUsingRegex    = config.getBoolean ("regex");
+
     createDefaultConfig ();
 
     // Initialize the color rules, if necessary.
