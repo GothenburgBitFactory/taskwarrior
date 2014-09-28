@@ -199,6 +199,8 @@
 - Added rc.hooks, a master control setting for hooks processing, which defaults
   to 'on'.
 - File format 3 (used in version 1.6.0 - 1.7.1) is no longer supported.
+- If the 'taskd.trust' setting contains a bad value, the 'diag' command will
+  indicate this, and the 'sync' command will error out.
 
 ------ current release ---------------------------
 
