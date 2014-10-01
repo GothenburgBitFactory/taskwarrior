@@ -1065,6 +1065,11 @@ bool Variant::operator_partial (const Variant& other) const
     case type_string:
       {
         right.cast (type_string);
+
+        // Status is always compared caseless.
+        if (left.source () == "status")
+          return compare (left._string, right._string, false);
+
         int left_len  = left._string.length ();
         int right_len = right._string.length ();
 
@@ -1089,7 +1094,6 @@ bool Variant::operator_partial (const Variant& other) const
       }
 
     case type_duration:
-
       left.cast (type_duration);
       return left._duration == right._duration;
     }
