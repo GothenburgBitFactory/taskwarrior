@@ -201,6 +201,9 @@
 - File format 3 (used in version 1.6.0 - 1.7.1) is no longer supported.
 - If the 'taskd.trust' setting contains a bad value, the 'diag' command will
   indicate this, and the 'sync' command will error out.
+- The filter form 'name:value' now maps to the partial match operator '=',
+  rather than the exact match operator, '=='.  This means that dates now
+  match on the day by default, not the time also.
 
 ------ current release ---------------------------
 
