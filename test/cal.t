@@ -241,7 +241,7 @@ qx{../src/task rc:details.rc add due:$duedate rc.monthsperline:1 nine 2>&1};
 $output = qx{../src/task rc:details.rc calendar 2>&1};
 like   ($output, qr/$month\S*?\s+?$year/, 'Current month and year are displayed');
 like   ($output, qr/$duedate/,            'Due date on current day is displayed');
-like   ($output, qr/1 task/,              '1 due task is displayed');
+like   ($output, qr/[12] task/,           '1/2 due task(s) are displayed');
 
 $output = qx{../src/task rc:details.rc calendar rc.monthsperline:1 1 2015 2>&1};
 like   ($output, qr/Date/,         'Word Date is displayed');
