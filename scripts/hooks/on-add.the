@@ -2,18 +2,11 @@
 
 read new_task
 
-re='(.*)([Tt])eh(.*)'
-if [[ $new_task =~ $re ]]
+if (echo $new_task | grep -qE '[tT]eh');
 then
-  while [[ $new_task =~ $re ]]
-  do
-    new_task=${BASH_REMATCH[1]}${BASH_REMATCH[2]}he${BASH_REMATCH[3]}
-  done
-
+  new_task=$(echo $new_task | sed -r 's/([tT])eh/\1he/g')
   echo "Auto-corrected 'teh' --> 'the'"
 fi
 
 echo $new_task
 exit 0
-
-
