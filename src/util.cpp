@@ -36,6 +36,7 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <cstring>
 #include <string>
 #include <stdint.h>
 #include <sys/types.h>
@@ -267,58 +268,110 @@ int execute (
   const std::string& input,
   std::string& output)
 {
+  pid_t pid;
   int pin[2], pout[2];
-  pipe (pin);
-  pipe (pout);
+  fd_set rfds, wfds;
+  struct timeval tv;
+  int select_retval, read_retval, write_retval;
+  char buf[16384];
+  int written;
+  const char * input_cstr = input.c_str ();
 
-  // Write input to fp, before the fork.
-  if (input != "")
-  {
-    FILE* pinf = fdopen (pin[1], "w");
-    if (pinf)
-    {
-      fputs (input.c_str (), pinf);
-      fclose (pinf);
-    }
-  }
+  signal(SIGPIPE, SIG_IGN); // Handled locally with EPIPE.
 
-  pid_t pid = fork ();
+  if (pipe (pin) == -1)
+    throw std::string (std::strerror (errno));
+  if (pipe (pout) == -1)
+    throw std::string (std::strerror (errno));
+
+  if ((pid = fork ()) == -1)
+    throw std::string (std::strerror (errno));
+
   if (pid == 0)
   {
     // This is only reached in the child
-    dup2 (pin[0], STDIN_FILENO);
-    dup2 (pout[1], STDOUT_FILENO);
+    if (dup2 (pin[0], STDIN_FILENO) == -1)
+      throw std::string (std::strerror (errno));
+    if (dup2 (pout[1], STDOUT_FILENO) == -1)
+      throw std::string (std::strerror (errno));
 
     char** argv = new char* [args.size () + 1];
     for (unsigned int i = 0; i < args.size (); ++i)
       argv[i] = (char*) args[i].c_str ();
 
     argv[args.size ()] = NULL;
-    exit (execvp (executable.c_str (), argv));
+    _exit (execvp (executable.c_str (), argv));
   }
 
   // This is only reached in the parent
   close (pin[0]);   // Close the read end of the input pipe.
   close (pout[1]);  // Close the write end if the output pipe.
+
+  read_retval = -1;
+  written = 0;
+  while (read_retval != 0 || input.size () - written != 0)
+  {
+    FD_ZERO (&rfds);
+    if (read_retval != 0)
+    {
+      FD_SET (pout[0], &rfds);
+    }
+
+    FD_ZERO (&wfds);
+    if (input.size () - written != 0)
+    {
+      FD_SET (pin[1], &wfds);
+    }
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+
+    select_retval = select(std::max(pout[0], pin[1]) + 1, &rfds, &wfds, NULL, &tv);
+
+    if (select_retval == -1)
+      throw std::string (std::strerror (errno));
+
+    if (FD_ISSET (pin[1], &wfds))
+    {
+      write_retval = write(pin[1], input_cstr + written, input.size () - written);
+      if (write_retval == -1)
+      {
+        if (errno == EPIPE)
+        {
+          // Child died (or closed the pipe) before reading all input.
+          // We don't really care; pretend we wrote it all.
+          write_retval = input.size () - written;
+        }
+        else
+        {
+          throw std::string (std::strerror (errno));
+        }
+      }
+      written += write_retval;
+    }
+
+    if (FD_ISSET (pout[0], &rfds))
+    {
+      read_retval = read(pout[0], &buf, sizeof(buf)-1);
+      if (read_retval == -1)
+        throw std::string (std::strerror (errno));
+      buf[read_retval] = '\0';
+      output += buf;
+    }
+  }
   close (pin[1]);   // Close the write end of the input pipe.
-
-  // Read output from fp.
-  output = "";
-  char* line = NULL;
-  size_t len = 0;
-  FILE* poutf = fdopen (pout[0], "r");
-  while (getline (&line, &len, poutf) != -1)
-    output += line;
-
-  free (line);
-  line = NULL;
-  fclose (poutf);
   close (pout[0]);  // Close the read-end of the output pipe.
 
   int status = -1;
-  wait (&status);
+  if (wait (&status) == -1)
+    throw std::string (std::strerror (errno));
   if (WIFEXITED (status))
+  {
     status = WEXITSTATUS (status);
+  }
+  else
+  {
+    throw std::string ("Error: Could not get Hook exit status!");
+  }
 
   return status;
 }
