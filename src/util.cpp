@@ -48,6 +48,8 @@
 #include <string.h>
 #include <pwd.h>
 #include <errno.h>
+#include <signal.h>
+#include <sys/select.h>
 
 #include <Date.h>
 #include <text.h>
@@ -277,7 +279,10 @@ int execute (
   int written;
   const char * input_cstr = input.c_str ();
 
-  signal(SIGPIPE, SIG_IGN); // Handled locally with EPIPE.
+  if (signal (SIGPIPE, SIG_IGN) == SIG_ERR) // Handled locally with EPIPE.
+  {
+    throw std::string (std::strerror (errno));
+  }
 
   if (pipe (pin) == -1)
     throw std::string (std::strerror (errno));
