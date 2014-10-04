@@ -150,6 +150,9 @@ int Context::initialize (int argc, const char** argv)
     // Create missing config file and data directory, if necessary.
     parser.applyOverrides ();
 
+    // Setting the debug switch has ripple effects.
+    propagateDebug ();
+
     // These may have changed.
     // TODO Uh oh.
     Lexer::dateFormat            = config.get ("dateformat");
@@ -751,6 +754,25 @@ void Context::loadAliases ()
   for (i = config.begin (); i != config.end (); ++i)
     if (i->first.substr (0, 6) == "alias.")
       parser.alias (i->first.substr (6), i->second);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Using the general rc.debug setting automaticalls sets debug.tls, debug.hooks
+// and debug.parser, unless they already have values, which by default they do
+// not.
+void Context::propagateDebug ()
+{
+  if (config.getBoolean ("debug"))
+  {
+    if (! config.has ("debug.tls"))
+      config.set ("debug.tls", 2);
+
+    if (! config.has ("debug.hooks"))
+      config.set ("debug.hooks", 2);
+
+    if (! config.has ("debug.parser"))
+      config.set ("debug.parser", 2);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
