@@ -50,7 +50,7 @@ qx{../src/task rc:$rc add ToBeCompleted 2>&1};
 qx{../src/task rc:$rc 1 done 2>&1};
 
 my $output = qx{../src/task all status:Completed rc:$rc 2>&1};
-like ($output, qr/ToBeCompleted/, "$ut: status:Completed returns completed tasks");
+like ($output, qr/ToBeCompleted/, "$ut: status:Completed returns Completed tasks");
 
 $output = qx{../src/task all status:completed rc:$rc 2>&1};
 like ($output, qr/ToBeCompleted/, "$ut: status:completed returns completed tasks");
