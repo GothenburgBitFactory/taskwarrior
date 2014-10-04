@@ -49,6 +49,7 @@ public:
   void setDefaults ();
   void clear ();
 
+  const bool        has        (const std::string&);
   const std::string get        (const std::string&);
   const int         getInteger (const std::string&);
   const double      getReal    (const std::string&);

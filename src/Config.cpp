@@ -586,6 +586,12 @@ void Config::clear ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const bool Config::has (const std::string& key)
+{
+  return (*this).find (key) != (*this).end ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Return the configuration value given the specified key.
 const std::string Config::get (const std::string& key)
 {
