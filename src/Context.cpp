@@ -768,10 +768,10 @@ void Context::propagateDebug ()
       config.set ("debug.tls", 2);
 
     if (! config.has ("debug.hooks"))
-      config.set ("debug.hooks", 2);
+      config.set ("debug.hooks", 1);
 
     if (! config.has ("debug.parser"))
-      config.set ("debug.parser", 2);
+      config.set ("debug.parser", 1);
   }
 }
 

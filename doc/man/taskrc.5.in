@@ -451,8 +451,19 @@ being parsed, but the information is displayed in a developer-friendly, not a
 user-friendly way.
 
 .TP
+.B debug.hooks=0
+Controls the hook system diagnostic level. Level 0 means no diagnostics.
+Level 1 shows hook call and status.  Level 2 also shows I/O.
+
+.TP
+.B debug.parser=0
+Controls the parser diagnostic level.  Level 0 means no diagnostics.  Level 1
+shows the parse tree.  Level 2 shows expression evaluation details.
+
+.TP
 .B debug.tls=0
-Controls the GnuTLS log level.  For 'sync' debugging.
+Controls the GnuTLS diagnostic level.  For 'sync' debugging. Level 0 means no
+diagnostics.  Level 9 is the highest.
 
 .TP
 .B alias.rm=delete
