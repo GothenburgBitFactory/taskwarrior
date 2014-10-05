@@ -101,6 +101,9 @@ void Parser::initialize (int argc, const char** argv)
       continue;
 
     // TODO This seems silly - it's essentially performing a low-quality parse.
+    //      But that is really all that is needed - to separate the args that
+    //      need to be lexed from those that need to be left alone.
+    //      Rule:  if it looks like 'attribute:...' then lex, else ignore.
 
     // Do not lex RC overrides.
     if (raw.length () > 3 &&
@@ -122,6 +125,7 @@ void Parser::initialize (int argc, const char** argv)
       continue;
 
     // If the argument contains a space, it was quoted.  Record that fact.
+    // TODO This is currently ignored. Should it be?
     if (! noSpaces (raw))
       branch->tag ("QUOTED");
 
