@@ -48,6 +48,7 @@ static int safetyValveDefault = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
 Parser::Parser ()
+: _debug (0)
 {
   _tree = new Tree ("root");
 }
@@ -177,6 +178,8 @@ Tree* Parser::tree ()
 ////////////////////////////////////////////////////////////////////////////////
 Tree* Parser::parse ()
 {
+  _debug = context.config.getInteger ("debug.parser");
+
   findBinary ();
   findTerminator ();
   resolveAliases ();
@@ -581,7 +584,8 @@ void Parser::injectDefaults ()
       std::string defaultCommand = context.config.get ("default.command");
       if (defaultCommand != "")
       {
-        context.debug ("No command or sequence found - assuming default.command.");
+        if (_debug >= 1)
+          context.debug ("No command or sequence found - assuming default.command.");
 
         // Split the defaultCommand into args, and add them in reverse order,
         // because captureFirst inserts args immediately after the command, and
@@ -619,7 +623,8 @@ void Parser::injectDefaults ()
     }
     else
     {
-      context.debug ("Sequence but no command found - assuming 'information' command.");
+      if (_debug >= 1)
+        context.debug ("Sequence but no command found - assuming 'information' command.");
       context.header (STRING_ASSUME_INFO);
       Tree* t = captureFirst ("information");
       t->tag ("ASSUMED");
@@ -1776,7 +1781,8 @@ void Parser::validate ()
   std::vector <Tree*>::iterator i;
   for (i = nodes.begin (); i != nodes.end (); ++i)
     if ((*i)->hasTag ("?"))
-      context.debug ("Unrecognized argument '" + (*i)->attribute ("raw") + "'");
+      if (_debug >= 1)
+        context.debug ("Unrecognized argument '" + (*i)->attribute ("raw") + "'");
 
   // TODO Any RC node must have a root/+RC @file that exists.
   // TODO There must be a root/+CMD.

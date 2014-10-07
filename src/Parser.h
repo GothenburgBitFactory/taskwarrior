@@ -90,6 +90,7 @@ private:
   void validate ();
 
 private:
+  int                                      _debug;
   Tree*                                    _tree;
   std::multimap <std::string, std::string> _entities;
   std::map <std::string, std::string>      _aliases;
