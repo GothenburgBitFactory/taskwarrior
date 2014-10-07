@@ -453,7 +453,7 @@ user-friendly way.
 .TP
 .B debug.hooks=0
 Controls the hook system diagnostic level. Level 0 means no diagnostics.
-Level 1 shows hook call and status.  Level 2 also shows I/O.
+Level 1 shows hook calls.  Level 2 also shows exit status and I/O.
 
 .TP
 .B debug.parser=0
@@ -463,7 +463,7 @@ shows the parse tree.  Level 2 shows expression evaluation details.
 .TP
 .B debug.tls=0
 Controls the GnuTLS diagnostic level.  For 'sync' debugging. Level 0 means no
-diagnostics.  Level 9 is the highest.
+diagnostics.  Level 9 is the highest.  Level 2 is a good setting for debugging.
 
 .TP
 .B alias.rm=delete
@@ -471,11 +471,6 @@ Taskwarrior supports command aliases.  This alias provides an alternate name
 (rm) for the delete command.  You can use aliases to provide alternate names for
 any of the commands.  Several commands you may use are actually aliases -
 the 'history' report, for example, or 'export'.
-
-.SS EXTENSIONS
-.TP
-.B extensions=on
-Enables the extension system.  Defaults to on.
 
 .SS DATES
 
