@@ -153,7 +153,6 @@ int CmdShow::execute (std::string& output)
     " editor"
     " exit.on.missing.db"
     " expressions"
-    " extensions"
     " fontunderline"
     " gc"
     " hooks"
