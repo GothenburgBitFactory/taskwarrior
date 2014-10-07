@@ -154,6 +154,7 @@ public:
 
   enum modType {modReplace, modPrepend, modAppend, modAnnotate};
   void modify (modType, bool text_required = false);
+  void upgradeLegacyValues ();
 
 private:
   int determineVersion (const std::string&);

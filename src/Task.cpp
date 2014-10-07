@@ -143,12 +143,13 @@ bool Task::operator== (const Task& other)
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task (const std::string& input)
 {
-  id = 0;
-  urgency_value = 0.0;
-  recalc_urgency = true;
-  is_blocked = false;
-  is_blocking = false;
+  id               = 0;
+  urgency_value    = 0.0;
+  recalc_urgency   = true;
+  is_blocked       = false;
+  is_blocking      = false;
   annotation_count = 0;
+
   parse (input);
 }
 
@@ -586,6 +587,8 @@ void Task::parse (const std::string& input)
       parseJSON (copy);
     else
       throw std::string (STRING_RECORD_NOT_FF4);
+
+    upgradeLegacyValues ();
   }
 
   catch (const std::string&)
@@ -716,6 +719,8 @@ void Task::parseJSON (const std::string& line)
         }
       }
     }
+
+    upgradeLegacyValues ();
   }
 }
 
@@ -2160,6 +2165,44 @@ void Task::modify (modType type, bool text_required /* = false */)
   else if (modCount == 0 && text_required)
   {
     throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::upgradeLegacyValues ()
+{
+  // 2.4.0 Update recurrence values.
+  if (has ("recur"))
+  {
+    std::string value = get ("recur");
+    std::string new_value = "";
+    std::string::size_type len = value.length ();
+    std::string::size_type p;
+
+         if (value == "-")                                                    new_value = "0s";
+    else if ((p = value.find ("hr"))    != std::string::npos && p == len - 2) new_value = value.substr (0, p) + "h";
+    else if ((p = value.find ("hrs"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "h";
+    else if ((p = value.find ("mins"))  != std::string::npos && p == len - 4) new_value = value.substr (0, p) + "min";
+    else if ((p = value.find ("mnths")) != std::string::npos && p == len - 5) new_value = value.substr (0, p) + "mo";
+    else if ((p = value.find ("mos"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "mo";
+    else if ((p = value.find ("mth"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "mo";
+    else if ((p = value.find ("mths"))  != std::string::npos && p == len - 4) new_value = value.substr (0, p) + "mo";
+    else if ((p = value.find ("qrtrs")) != std::string::npos && p == len - 5) new_value = value.substr (0, p) + "q";
+    else if ((p = value.find ("qtr"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "q";
+    else if ((p = value.find ("qtrs"))  != std::string::npos && p == len - 4) new_value = value.substr (0, p) + "q";
+    else if ((p = value.find ("sec"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "s";
+    else if ((p = value.find ("secs"))  != std::string::npos && p == len - 4) new_value = value.substr (0, p) + "s";
+    else if ((p = value.find ("wk"))    != std::string::npos && p == len - 2) new_value = value.substr (0, p) + "w";
+    else if ((p = value.find ("wks"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "w";
+    else if ((p = value.find ("yr"))    != std::string::npos && p == len - 2) new_value = value.substr (0, p) + "y";
+    else if ((p = value.find ("yrs"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "y";
+
+    if (new_value != "" &&
+        new_value != value)
+    {
+      set ("recur", new_value);
+      context.debug (format ("Legacy upgrade: recur {1} --> {2}", value, new_value));
+    }
   }
 }
 

@@ -580,6 +580,7 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
 {
   // Ensure the task is consistent, and provide defaults if necessary.
   task.validate (false);
+  task.upgradeLegacyValues ();
   std::string uuid = task.get ("uuid");
 
   // Get the unmodified task as reference, so the hook can compare.
