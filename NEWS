@@ -40,6 +40,7 @@ New configuration options in taskwarrior 2.4.0
     name says is a combination of the existing truncated and count styles.
   - New 'hooks' setting is a master control switch for hook processing.
   - New 'debug.hooks' for debugging hook scripts.
+  - New 'debug.parser' for debugging parser issues scripts.
 
 Newly deprecated features in taskwarrior 2.4.0
 

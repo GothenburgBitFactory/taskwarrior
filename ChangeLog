@@ -205,6 +205,7 @@
   rather than the exact match operator, '=='.  This means that dates now
   match on the day by default, not the time also.
 - Supports 'debug.hooks' configuration setting.
+- Supports 'debug.parser' configuration setting.
 
 ------ current release ---------------------------
 
