@@ -153,8 +153,7 @@ int Context::initialize (int argc, const char** argv)
     // Setting the debug switch has ripple effects.
     propagateDebug ();
 
-    // These may have changed.
-    // TODO Uh oh.
+    // These may have changed, so reapply.
     Lexer::dateFormat            = config.get ("dateformat");
     Variant::dateFormat          = config.get ("dateformat");
     Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
