@@ -450,6 +450,9 @@ debug output can be useful.  It can also help explain how the command line is
 being parsed, but the information is displayed in a developer-friendly, not a
 user-friendly way.
 
+Turning debug on automatically sets debug.hooks=1, debug.parser=1 and debug.tls=2
+if they do not already have assigned values.
+
 .TP
 .B debug.hooks=0
 Controls the hook system diagnostic level. Level 0 means no diagnostics.
