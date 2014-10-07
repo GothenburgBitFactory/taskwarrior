@@ -330,14 +330,14 @@ int execute (
     tv.tv_sec = 5;
     tv.tv_usec = 0;
 
-    select_retval = select(std::max(pout[0], pin[1]) + 1, &rfds, &wfds, NULL, &tv);
+    select_retval = select (std::max (pout[0], pin[1]) + 1, &rfds, &wfds, NULL, &tv);
 
     if (select_retval == -1)
       throw std::string (std::strerror (errno));
 
     if (FD_ISSET (pin[1], &wfds))
     {
-      write_retval = write(pin[1], input_cstr + written, input.size () - written);
+      write_retval = write (pin[1], input_cstr + written, input.size () - written);
       if (write_retval == -1)
       {
         if (errno == EPIPE)
@@ -356,7 +356,7 @@ int execute (
 
     if (FD_ISSET (pout[0], &rfds))
     {
-      read_retval = read(pout[0], &buf, sizeof(buf)-1);
+      read_retval = read (pout[0], &buf, sizeof(buf)-1);
       if (read_retval == -1)
         throw std::string (std::strerror (errno));
       buf[read_retval] = '\0';
@@ -364,7 +364,7 @@ int execute (
     }
   }
   close (pin[1]);   // Close the write end of the input pipe.
-  close (pout[0]);  // Close the read-end of the output pipe.
+  close (pout[0]);  // Close the read end of the output pipe.
 
   int status = -1;
   if (wait (&status) == -1)
