@@ -72,7 +72,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   context.timer_filter.start ();
   _startCount = (int) input.size ();
 
-  if (context.config.getBoolean ("debug"))
+  if (context.config.getInteger ("debug.parser") >= 1)
   {
     Tree* t = context.parser.tree ();
     if (t)
@@ -89,7 +89,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (context.config.getBoolean ("debug"));
+    eval.debug (context.config.getInteger ("debug.parser") >= 1 ? true : false);
     eval.compileExpression (filterExpr);
     eval.debug (false);
 
@@ -119,7 +119,7 @@ void Filter::subset (std::vector <Task>& output)
 {
   context.timer_filter.start ();
 
-  if (context.config.getBoolean ("debug"))
+  if (context.config.getInteger ("debug.parser") >= 1)
   {
     Tree* t = context.parser.tree ();
     if (t)
@@ -142,7 +142,7 @@ void Filter::subset (std::vector <Task>& output)
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (context.config.getBoolean ("debug"));
+    eval.debug (context.config.getInteger ("debug.parser") >= 1 ? true : false);
     eval.compileExpression (filterExpr);
     eval.debug (false);
 
