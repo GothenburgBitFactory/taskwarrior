@@ -54,6 +54,7 @@ private:
 
 private:
   bool                      _enabled;
+  int                       _debug;
   std::vector <std::string> _scripts;
 };
 
