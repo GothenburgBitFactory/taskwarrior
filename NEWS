@@ -47,6 +47,7 @@ Newly deprecated features in taskwarrior 2.4.0
   - The alias '_query' is deprecated.
   - Bare word search terms are deprecated, so 'task pattern list' will not
     be supported in future releases, instead requiring 'task /pattern/ list'.
+  - The 'limit' pseudo attribute will change to 'rc.limit' in a future release.
 
 Removed features in 2.4.0
 
