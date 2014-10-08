@@ -2188,6 +2188,33 @@ void Task::upgradeLegacyValues ()
       }
     }
   }
+
+  // 2.4.0 Update UDA duration values.
+  Config::const_iterator name;
+  for (name = context.config.begin (); name != context.config.end (); ++name)
+  {
+    if (name->first.substr (0, 4) == "uda." &&
+        name->first.find (".type") != std::string::npos)
+    {
+      if (name->second == "duration")
+      {
+        std::string::size_type period = name->first.find ('.', 4);
+        if (period != std::string::npos)
+        {
+          std::string uda = name->first.substr (4, period - 4);
+          std::string value = get (uda);
+          std::string new_value = value;
+          upgradeLegacyValue (new_value);
+
+          if (new_value != value)
+          {
+            set ("recur", new_value);
+            context.debug (format ("Legacy upgrade: UDA {1}, {2} --> {3}", uda, value, new_value));
+          }
+        }
+      }
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
