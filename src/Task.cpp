@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <iostream> // TODO Remove
 #include <sstream>
 #include <stdlib.h>
 #include <assert.h>
@@ -2175,35 +2176,45 @@ void Task::upgradeLegacyValues ()
   if (has ("recur"))
   {
     std::string value = get ("recur");
-    std::string new_value = "";
-    std::string::size_type len = value.length ();
-    std::string::size_type p;
-
-         if (value == "-")                                                    new_value = "0s";
-    else if ((p = value.find ("hr"))    != std::string::npos && p == len - 2) new_value = value.substr (0, p) + "h";
-    else if ((p = value.find ("hrs"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "h";
-    else if ((p = value.find ("mins"))  != std::string::npos && p == len - 4) new_value = value.substr (0, p) + "min";
-    else if ((p = value.find ("mnths")) != std::string::npos && p == len - 5) new_value = value.substr (0, p) + "mo";
-    else if ((p = value.find ("mos"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "mo";
-    else if ((p = value.find ("mth"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "mo";
-    else if ((p = value.find ("mths"))  != std::string::npos && p == len - 4) new_value = value.substr (0, p) + "mo";
-    else if ((p = value.find ("qrtrs")) != std::string::npos && p == len - 5) new_value = value.substr (0, p) + "q";
-    else if ((p = value.find ("qtr"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "q";
-    else if ((p = value.find ("qtrs"))  != std::string::npos && p == len - 4) new_value = value.substr (0, p) + "q";
-    else if ((p = value.find ("sec"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "s";
-    else if ((p = value.find ("secs"))  != std::string::npos && p == len - 4) new_value = value.substr (0, p) + "s";
-    else if ((p = value.find ("wk"))    != std::string::npos && p == len - 2) new_value = value.substr (0, p) + "w";
-    else if ((p = value.find ("wks"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "w";
-    else if ((p = value.find ("yr"))    != std::string::npos && p == len - 2) new_value = value.substr (0, p) + "y";
-    else if ((p = value.find ("yrs"))   != std::string::npos && p == len - 3) new_value = value.substr (0, p) + "y";
-
-    if (new_value != "" &&
-        new_value != value)
+    if (value != "")
     {
-      set ("recur", new_value);
-      context.debug (format ("Legacy upgrade: recur {1} --> {2}", value, new_value));
+      std::string new_value = value;
+      upgradeLegacyValue (new_value);
+
+      if (new_value != value)
+      {
+        set ("recur", new_value);
+        context.debug (format ("Legacy upgrade: recur {1} --> {2}", value, new_value));
+      }
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::upgradeLegacyValue (std::string& value)
+{
+  std::string::size_type len = value.length ();
+  std::string::size_type p;
+
+       if (value == "-")                                                    value = "0s";
+  else if ((p = value.find ("hr"))    != std::string::npos && p == len - 2) value = value.substr (0, p) + "h";
+  else if ((p = value.find ("hrs"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "h";
+  else if ((p = value.find ("mins"))  != std::string::npos && p == len - 4) value = value.substr (0, p) + "min";
+  else if ((p = value.find ("mnths")) != std::string::npos && p == len - 5) value = value.substr (0, p) + "mo";
+  else if ((p = value.find ("mos"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "mo";
+  else if ((p = value.find ("mth"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "mo";
+  else if ((p = value.find ("mths"))  != std::string::npos && p == len - 4) value = value.substr (0, p) + "mo";
+  else if ((p = value.find ("qrtrs")) != std::string::npos && p == len - 5) value = value.substr (0, p) + "q";
+  else if ((p = value.find ("qtr"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "q";
+  else if ((p = value.find ("qtrs"))  != std::string::npos && p == len - 4) value = value.substr (0, p) + "q";
+  else if ((p = value.find ("sec"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "s";
+  else if ((p = value.find ("secs"))  != std::string::npos && p == len - 4) value = value.substr (0, p) + "s";
+  else if ((p = value.find ("wk"))    != std::string::npos && p == len - 2) value = value.substr (0, p) + "w";
+  else if ((p = value.find ("wks"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "w";
+  else if ((p = value.find ("yr"))    != std::string::npos && p == len - 2) value = value.substr (0, p) + "y";
+  else if ((p = value.find ("yrs"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "y";
+
+  // It is not an error to have a non-legacy value.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
