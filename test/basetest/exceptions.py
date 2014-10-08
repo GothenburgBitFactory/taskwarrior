@@ -28,4 +28,8 @@ class CommandError(Exception):
     def __str__(self):
         return self.msg.format(self.cmd, self.code, self.out, self.err)
 
+
+class HookError(Exception):
+    pass
+
 # vim: ai sts=4 et sw=4
