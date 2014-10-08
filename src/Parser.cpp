@@ -637,9 +637,6 @@ Tree* Parser::captureFirst (const std::string& arg)
 {
   // Insert the arg as the new first branch.
   Tree* t = new Tree ("argIns");
-  if (!t)
-    throw std::string (STRING_ERROR_MEMORY);
-
   t->attribute ("raw", arg);
   t->tag ("?");
   t->_trunk = _tree;
@@ -660,9 +657,6 @@ Tree* Parser::captureLast (const std::string& arg)
 {
   // Insert the arg as the new first branch.
   Tree* t = new Tree ("argIns");
-  if (!t)
-    throw std::string (STRING_ERROR_MEMORY);
-
   t->attribute ("raw", arg);
   t->tag ("?");
   t->_trunk = _tree;
