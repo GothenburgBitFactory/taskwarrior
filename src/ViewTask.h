@@ -40,33 +40,36 @@ public:
   ~ViewTask ();
 
   // View specifications.
-  void add (Column* column)               { _columns.push_back (column); }
-  void width (int width)                  { _width = width;              }
-  void leftMargin (int margin)            { _left_margin = margin;       }
-  void colorHeader (Color& c)             { _header = c;                 }
-  void colorOdd (Color& c)                { _odd = c;                    }
-  void colorEven (Color& c)               { _even = c;                   }
-  void intraPadding (int padding)         { _intra_padding = padding;    }
-  void intraColorOdd (Color& c)           { _intra_odd = c;              }
-  void intraColorEven (Color& c)          { _intra_even = c;             }
-  void extraPadding (int padding)         { _extra_padding = padding;    }
-  void extraColorOdd (Color& c)           { _extra_odd = c;              }
-  void extraColorEven (Color& c)          { _extra_even = c;             }
-  void truncateLines (int n)              { _truncate_lines = n;         }
-  void truncateRows (int n)               { _truncate_rows = n;          }
-  void addBreak (const std::string& attr) { _breaks.push_back (attr);    }
-  int lines ()                            { return _lines;               }
-  int rows ()                             { return _rows;                }
+  void add (Column* column, bool sort = false) { _columns.push_back (column); _sort.push_back (sort); }
+  void width (int width)                       { _width = width;                                      }
+  void leftMargin (int margin)                 { _left_margin = margin;                               }
+  void colorHeader (Color& c)                  { _header = c; if (!_sort_header) _sort_header = c;    }
+  void colorSortHeader (Color& c)              { _sort_header = c;                                    }
+  void colorOdd (Color& c)                     { _odd = c;                                            }
+  void colorEven (Color& c)                    { _even = c;                                           }
+  void intraPadding (int padding)              { _intra_padding = padding;                            }
+  void intraColorOdd (Color& c)                { _intra_odd = c;                                      }
+  void intraColorEven (Color& c)               { _intra_even = c;                                     }
+  void extraPadding (int padding)              { _extra_padding = padding;                            }
+  void extraColorOdd (Color& c)                { _extra_odd = c;                                      }
+  void extraColorEven (Color& c)               { _extra_even = c;                                     }
+  void truncateLines (int n)                   { _truncate_lines = n;                                 }
+  void truncateRows (int n)                    { _truncate_rows = n;                                  }
+  void addBreak (const std::string& attr)      { _breaks.push_back (attr);                            }
+  int lines ()                                 { return _lines;                                       }
+  int rows ()                                  { return _rows;                                        }
 
   // View rendering.
   std::string render (std::vector <Task>&, std::vector <int>&);
 
 private:
   std::vector <Column*>     _columns;
+  std::vector <bool>        _sort;
   std::vector <std::string> _breaks;
   int                       _width;
   int                       _left_margin;
   Color                     _header;
+  Color                     _sort_header;
   Color                     _odd;
   Color                     _even;
   int                       _intra_padding;

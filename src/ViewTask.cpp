@@ -41,6 +41,7 @@ ViewTask::ViewTask ()
 : _width (0)
 , _left_margin (0)
 , _header (0)
+, _sort_header (0)
 , _odd (0)
 , _even (0)
 , _intra_padding (1)
@@ -115,13 +116,13 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
   bool const print_empty_columns = context.config.getBoolean ("print.empty.columns");
   std::vector <Column*> nonempty_columns;
+  std::vector <bool> nonempty_sort;
 
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
   std::vector <int> ideal;
 
-  std::vector <Column*>::iterator i;
-  for (i = _columns.begin (); i != _columns.end (); ++i)
+  for (unsigned int i = 0; i < _columns.size (); ++i)
   {
     // Headers factor in to width calculations.
     unsigned int global_min = 0;
@@ -138,7 +139,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       // Determine minimum and ideal width for this column.
       unsigned int min = 0;
       unsigned int ideal = 0;
-      (*i)->measure (data[sequence[s]], min, ideal);
+      _columns[i]->measure (data[sequence[s]], min, ideal);
 
       if (min   > global_min)   global_min   = min;
       if (ideal > global_ideal) global_ideal = ideal;
@@ -146,7 +147,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
     if (print_empty_columns || global_min != 0)
     {
-      unsigned int label_length = utf8_width ((*i)->label ());
+      unsigned int label_length = utf8_width (_columns[i]->label ());
       if (label_length > global_min)   global_min   = label_length;
       if (label_length > global_ideal) global_ideal = label_length;
       minimal.push_back (global_min);
@@ -155,12 +156,16 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
     if (! print_empty_columns && global_min != 0)
     {
-      nonempty_columns.push_back (*i);
+      nonempty_columns.push_back (_columns[i]);
+      nonempty_sort.push_back (_sort[i]);
     }
   }
 
   if (! print_empty_columns)
+  {
     _columns = nonempty_columns;
+    _sort = nonempty_sort;
+  }
 
   int all_extra = _left_margin
                 + (2 * _extra_padding)
@@ -227,7 +232,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   for (unsigned int c = 0; c < _columns.size (); ++c)
   {
     headers.push_back (std::vector <std::string> ());
-    _columns[c]->renderHeader (headers[c], widths[c], _header);
+    _columns[c]->renderHeader (headers[c], widths[c], _sort[c] ? _sort_header : _header);
 
     if (headers[c].size () > max_lines)
       max_lines = headers[c].size ();
