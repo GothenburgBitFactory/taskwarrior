@@ -128,9 +128,15 @@ int CmdCustom::execute (std::string& output)
   Color label (context.config.get ("color.label"));
   view.colorHeader (label);
 
+  Color label_sort (context.config.get ("color.label.sort"));
+  view.colorSortHeader (label_sort);
+
   Color alternate (context.config.get ("color.alternate"));
   view.colorOdd (alternate);
   view.intraColorOdd (alternate);
+
+  // Capture columns that are sorted.
+  std::vector <std::string> sortColumns;
 
   // Add the break columns, if any.
   std::vector <std::string>::iterator so;
@@ -143,6 +149,8 @@ int CmdCustom::execute (std::string& output)
 
     if (breakIndicator)
       view.addBreak (name);
+
+    sortColumns.push_back (name);
   }
 
   // Add the columns and labels.
@@ -151,7 +159,12 @@ int CmdCustom::execute (std::string& output)
     Column* c = Column::factory (columns[i], _keyword);
     if (i < labels.size ())
       c->setLabel (labels[i]);
-    view.add (c);
+
+    bool sort = std::find (sortColumns.begin (), sortColumns.end (), c->name ()) != sortColumns.end ()
+                  ? true
+                  : false;
+
+    view.add (c, sort);
   }
 
   // How many lines taken up by table header?

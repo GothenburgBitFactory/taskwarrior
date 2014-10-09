@@ -206,6 +206,7 @@
   match on the day by default, not the time also.
 - Supports 'debug.hooks' configuration setting.
 - Supports 'debug.parser' configuration setting.
+- Supports 'color.label.sort' for column labels of sort columns.
 
 ------ current release ---------------------------
 

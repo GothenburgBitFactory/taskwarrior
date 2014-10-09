@@ -41,6 +41,7 @@ New configuration options in taskwarrior 2.4.0
   - New 'hooks' setting is a master control switch for hook processing.
   - New 'debug.hooks' for debugging hook scripts.
   - New 'debug.parser' for debugging parser issues scripts.
+  - New 'color.label.sort' is used to color the column label of sort columns.
 
 Newly deprecated features in taskwarrior 2.4.0
 

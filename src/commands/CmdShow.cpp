@@ -107,6 +107,7 @@ int CmdShow::execute (std::string& output)
     " color.history.delete"
     " color.history.done"
     " color.label"
+    " color.label.sort"
     " color.overdue"
     " color.pri.H"
     " color.pri.L"

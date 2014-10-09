@@ -929,6 +929,11 @@ Colors the report labels.  Defaults to not use color.
 .RE
 
 .TP
+.B color.label.sort=
+Colors the report labels for sort columns.  Defaults to color.label.
+.RE
+
+.TP
 .B color.alternate=on rgb253
 Color of alternate tasks.
 This is to apply a specific color to every other task in a report,
