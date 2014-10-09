@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <iostream>
+#include <new>
 #include <cstring>
 #include <i18n.h>
 #include <Context.h>
@@ -55,6 +56,12 @@ int main (int argc, const char** argv)
     {
       std::cerr << error << "\n";
       status = -1;
+    }
+
+    catch (std::bad_alloc& error)
+    {
+      std::cerr << "Error: Memory allocation failed: " << error.what () << "\n";
+      status = -3;
     }
 
     catch (...)
