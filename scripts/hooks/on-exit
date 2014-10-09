@@ -11,7 +11,7 @@
 # - all emitted non-JSON lines are considered feedback messages if the exit
 #   code is zero, otherwise they are considered errors.
 
-while read modified_task
+while read -t 1 modified_task
 do
   # Scan task
 done
