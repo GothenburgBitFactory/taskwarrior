@@ -256,7 +256,7 @@ class Task(object):
         return run_cmd_wait(cmd, env=self.env)
 
     def runSuccess(self, args=(), input=None, merge_streams=True):
-        """Invoke task with the given arguments
+        """Invoke task with given arguments and fail if exit code != 0
 
         Use runError if you want exit_code to be tested automatically and
         *not* fail if program finishes abnormally.
@@ -282,7 +282,7 @@ class Task(object):
         return output
 
     def runError(self, args=(), input=None, merge_streams=True):
-        """Same as runSuccess but Invoke task with the given arguments
+        """Invoke task with given arguments and fail if exit code == 0
 
         Use runSuccess if you want exit_code to be tested automatically and
         *fail* if program finishes abnormally.
