@@ -19,33 +19,27 @@ class Test1418(TestCase):
         """Check that you can search with a slash (/)"""
         command = ("add", "foo/bar")
         code, out, err = self.t(command)
-        self.assertEquals(code, 0)
 
         command = ("foo/bar",)
         code, out, err = self.t(command)
-        self.assertEquals(code, 0)
         self.assertIn("foo/bar", out)
 
     def test_minus_in_description(self):
         """Check that you can search with a minus (-)"""
         command = ("add", "foo-")
         code, out, err = self.t(command)
-        self.assertEquals(code, 0)
 
         command = ("foo-",)
         code, out, err = self.t(command)
-        self.assertEquals(code, 0)
         self.assertIn("foo-", out)
 
     def test_plus_in_description(self):
         """Check that you can search with a plus (+)"""
         command = ("add", "foo+")
         code, out, err = self.t(command)
-        self.assertEquals(code, 0)
 
         command = ("foo+",)
         code, out, err = self.t(command)
-        self.assertEquals(code, 0)
         self.assertIn("foo+", out)
 
 
