@@ -864,6 +864,11 @@ Colors any task that has the user defined attribute X.
 .RE
 
 .TP
+.B color.uda.X.VALUE=on green
+Colors any task that has the user defined attribute X set to VALUE.
+.RE
+
+.TP
 .B color.error=green
 Colors any of the error messages.
 .RE

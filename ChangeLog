@@ -158,6 +158,7 @@
 - TW-1407 'task calendar 2014' leaks.
 - TW-1409 Allow "1 of N tasks remaining" to be correctly localized (thanks to
           Jeremy John Reeder).
+- TW-1428 Add support for color.uda.<name>.<value> rules.
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
