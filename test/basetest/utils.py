@@ -104,7 +104,7 @@ def _get_output(proc, input):
     except Empty:
         err = None
 
-    return out, err
+    return out, err, exit
 
 
 def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
@@ -123,10 +123,10 @@ def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
 
     p = Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr, bufsize=1,
               close_fds=ON_POSIX, env=env)
-    out, err = _get_output(p, input)
+    out, err, exit = _get_output(p, input)
 
-    if p.returncode != 0:
-        raise CommandError(cmd, p.returncode, out, err)
+    if exit != 0:
+        raise CommandError(cmd, exit, out, err)
 
     return p.returncode, out, err
 
