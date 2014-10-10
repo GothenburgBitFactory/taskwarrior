@@ -128,7 +128,7 @@ def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
     if exit != 0:
         raise CommandError(cmd, exit, out, err)
 
-    return p.returncode, out, err
+    return exit, out, err
 
 
 def run_cmd_wait_nofail(*args, **kwargs):
