@@ -15,32 +15,103 @@ class Test1418(TestCase):
     def setUp(self):
         self.t = Task()
 
-    def test_slash_in_description(self):
-        """Check that you can search with a slash (/)"""
-        command = ("add", "foo/bar")
+    def search_task_pattern(self, description):
+        # TODO escape any "/" in description - check comments on bug 1418
+        command = ("/" + description + "/",)
+        code, out, err = self.t(command)
+        self.assertIn(description, out)
+
+    def search_task_bare(self, description):
+        # TODO escape any "/" in description - check comments on bug 1418
+        command = (description,)
+        code, out, err = self.t(command)
+        self.assertIn(description, out)
+
+    def add_search_task(self, description):
+        command = ("add", description)
         code, out, err = self.t(command)
 
-        command = ("foo/bar",)
+    def add_search_task_description(self, description):
+        command = ("add", "description:'" + description + "'")
         code, out, err = self.t(command)
-        self.assertIn("foo/bar", out)
+
+    def test_slash_in_description_bare_words(self):
+        """Check that you can search with a slash (/) and bare words"""
+        description = "foo/"
+        self.add_search_task(description)
+        self.search_task_bare(description)
+
+    def test_minus_in_description_bare_words(self):
+        """Check that you can search with a minus (-) and bare words"""
+        description = "foo-"
+        self.add_search_task(description)
+        self.search_task_bare(description)
+
+    def test_plus_in_description_bare_words(self):
+        """Check that you can search with a plus (+) and bare words"""
+        description = "foo+"
+        self.add_search_task(description)
+        self.search_task_bare(description)
+
+    def test_explicit_slash_in_description_bare_words(self):
+        """Can add a task with trailing slash (/) using description:"" and bare
+        words
+        """
+        description = "foo/"
+        self.add_search_task_description(description)
+        self.search_task_bare(description)
+
+    def test_explicit_minus_in_description_bare_words(self):
+        """Can add a task with trailing minus (-) using description:"" and bare
+        words
+        """
+        description = "foo-"
+        self.add_search_task_description(description)
+        self.search_task_bare(description)
+
+    def test_explicit_plus_in_description_bare_words(self):
+        """Can add a task with trailing plus (+) using description:"" and bare
+        words
+        """
+        description = "foo+"
+        self.add_search_task_description(description)
+        self.search_task_bare(description)
+
+    def test_slash_in_description(self):
+        """Check that you can search with a slash (/)"""
+        description = "foo/"
+        self.add_search_task(description)
+        self.search_task_pattern(description)
 
     def test_minus_in_description(self):
         """Check that you can search with a minus (-)"""
-        command = ("add", "foo-")
-        code, out, err = self.t(command)
-
-        command = ("foo-",)
-        code, out, err = self.t(command)
-        self.assertIn("foo-", out)
+        description = "foo-"
+        self.add_search_task(description)
+        self.search_task_pattern(description)
 
     def test_plus_in_description(self):
         """Check that you can search with a plus (+)"""
-        command = ("add", "foo+")
-        code, out, err = self.t(command)
+        description = "foo+"
+        self.add_search_task(description)
+        self.search_task_pattern(description)
 
-        command = ("foo+",)
-        code, out, err = self.t(command)
-        self.assertIn("foo+", out)
+    def test_explicit_slash_in_description(self):
+        """Can add a task with trailing slash (/) using description:"" """
+        description = "foo/"
+        self.add_search_task_description(description)
+        self.search_task_pattern(description)
+
+    def test_explicit_minus_in_description(self):
+        """Can add a task with trailing minus (-) using description:"" """
+        description = "foo-"
+        self.add_search_task_description(description)
+        self.search_task_pattern(description)
+
+    def test_explicit_plus_in_description(self):
+        """Can add a task with trailing plus (+) using description:"" """
+        description = "foo+"
+        self.add_search_task_description(description)
+        self.search_task_pattern(description)
 
 
 if __name__ == "__main__":
