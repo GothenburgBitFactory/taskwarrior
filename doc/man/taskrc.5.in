@@ -1081,6 +1081,10 @@ Specific project coefficient.
 .RS
 Presence/absence of UDA data.
 .RE
+.B urgency.uda.<name>.<value>.coefficient=...
+.RS
+Specific value of UDA data.
+.RE
 
 The coefficients reflect the relative importance of the various terms in the
 urgency calculation.  These are default values, and may be modified to suit your

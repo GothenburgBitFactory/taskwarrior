@@ -1683,11 +1683,25 @@ float Task::urgency_c () const
       }
       else if (var->first.substr (0, 12) == "urgency.uda.")
       {
-        // urgency.uda.<name>.coefficient
+        // urgency.uda.<name>.coefficient and urgency.uda.<name>.<value>.coefficient
         std::string::size_type end = var->first.find (".coefficient");
         if (end != std::string::npos)
-          if (has (var->first.substr (12, end - 12)))
-            value += var->second;
+        {
+          const std::string uda = var->first.substr (12, end -12);
+          std::string::size_type dot = uda.find(".");
+          if (dot == std::string::npos)
+          { 
+            // urgency.uda.<name>.coefficient
+            if (has (uda))
+              value += var->second;
+          }
+          else
+          {
+            // urgency.uda.<name>.<value>.coefficient
+            if (get (uda.substr(0, dot)) == uda.substr(dot+1))
+              value += var->second;
+          }
+        }
       }
     }
   }
