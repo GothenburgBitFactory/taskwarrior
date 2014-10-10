@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream> // TODO Remove
 #include <sstream>
 #include <stdlib.h>
 #include <assert.h>
@@ -1683,14 +1682,15 @@ float Task::urgency_c () const
       }
       else if (var->first.substr (0, 12) == "urgency.uda.")
       {
-        // urgency.uda.<name>.coefficient and urgency.uda.<name>.<value>.coefficient
+        // urgency.uda.<name>.coefficient
+        // urgency.uda.<name>.<value>.coefficient
         std::string::size_type end = var->first.find (".coefficient");
         if (end != std::string::npos)
         {
-          const std::string uda = var->first.substr (12, end -12);
-          std::string::size_type dot = uda.find(".");
+          const std::string uda = var->first.substr (12, end - 12);
+          std::string::size_type dot = uda.find (".");
           if (dot == std::string::npos)
-          { 
+          {
             // urgency.uda.<name>.coefficient
             if (has (uda))
               value += var->second;

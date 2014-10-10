@@ -42,6 +42,8 @@ New configuration options in taskwarrior 2.4.0
   - New 'debug.hooks' for debugging hook scripts.
   - New 'debug.parser' for debugging parser issues scripts.
   - New 'color.label.sort' is used to color the column label of sort columns.
+  - New 'urgency.uda.<name>.<value>' allows specific UDA values to affect
+    urgency.
 
 Newly deprecated features in taskwarrior 2.4.0
 
