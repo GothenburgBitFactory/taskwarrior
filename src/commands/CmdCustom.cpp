@@ -28,6 +28,7 @@
 #include <sstream>
 #include <map>
 #include <vector>
+#include <algorithm>
 #include <stdlib.h>
 #include <Context.h>
 #include <Filter.h>
