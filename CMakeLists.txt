@@ -7,7 +7,7 @@ include (CheckStructHasMember)
 set (HAVE_CMAKE true)
 
 project (task)
-set (PROJECT_VERSION "2.4.0.beta1")
+set (PROJECT_VERSION "2.4.0.beta2")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set (LINUX true)
@@ -171,7 +171,7 @@ set (CPACK_SOURCE_GENERATOR "TGZ")
 set (CPACK_SOURCE_PACKAGE_FILE_NAME ${PACKAGE_NAME}-${PACKAGE_VERSION})
 set (CPACK_SOURCE_IGNORE_FILES  "CMakeCache" "CMakeFiles" "CPackConfig" "CPackSourceConfig"
                                 "_CPack_Packages" "cmake_install" "install_manifest" "Makefile$"
-                                "test" "package-config" "misc/*" "src/task$" "src/libtask.a"
-                                "src/columns/libcolumns.a" "src/commands/libcommands.a"
+                                "test" "package-config" "misc/*" "src/task$" "src/calc$" "performance"
+                                "src/libtask.a" "src/columns/libcolumns.a" "src/commands/libcommands.a"
                                 "/\\.gitignore" "/\\.git/" "swp$")
 include (CPack)
