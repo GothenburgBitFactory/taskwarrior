@@ -1624,10 +1624,10 @@ void Parser::findStrayModifications ()
 ////////////////////////////////////////////////////////////////////////////////
 // This is called after parsing. The intention is to find plain arguments that
 // are not otherwise recognized, and potentially promote them to patterns.
+//
+// Note: This functionality is deprecated in 2.4.0.
 void Parser::findPlainArgs ()
 {
-  bool action = false;
-
   std::vector <Tree*> nodes;
   collect (nodes, collectTerminated);
   std::vector <Tree*>::iterator i;
@@ -1664,7 +1664,6 @@ void Parser::findPlainArgs ()
           branch->attribute ("raw", raw);
           branch->tag ("STRING");
           branch->tag ("FILTER");
-          action = true;
         }
       }
     }
