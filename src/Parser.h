@@ -84,6 +84,7 @@ private:
   void findModifications ();
   void findStrayModifications ();
   void findPlainArgs ();
+  void findFilterSubst ();
   void findMissingOperators ();
   bool insertOr ();
   bool insertAnd ();

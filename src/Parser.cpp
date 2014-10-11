@@ -201,6 +201,7 @@ Tree* Parser::parse ()
   findStrayModifications ();
 
   findPlainArgs ();
+  findFilterSubst ();
   findMissingOperators ();
 
   validate ();
@@ -1668,6 +1669,57 @@ void Parser::findPlainArgs ()
       }
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Look for FILTER and downgrate SUBSTITUTION --> PATTERN.
+void Parser::findFilterSubst ()
+{
+  bool action = true;
+  do
+  {
+    action = false;
+
+    std::vector <Tree*> nodes;
+    collect (nodes, collectTerminated);
+    std::vector <Tree*>::iterator i;
+    for (i = nodes.begin (); i != nodes.end (); ++i)
+    {
+      if ((*i)->hasTag ("FILTER") &&
+          (*i)->hasTag ("SUBSTITUTION"))
+      {
+        std::string raw = (*i)->attribute ("raw");
+        if (raw[0] == '/' && raw[raw.length () - 1] == '/')
+        {
+          std::string pattern = raw.substr (1, raw.length () - 2);
+
+          (*i)->unTag ("SUBSTITUTION");
+          (*i)->removeAttribute ("from");
+          (*i)->removeAttribute ("to");
+          (*i)->removeAttribute ("global");
+
+          (*i)->removeAllBranches ();
+
+          Tree* branch = (*i)->addBranch (new Tree ("argPat"));
+          branch->attribute ("raw", "description");
+
+          branch = (*i)->addBranch (new Tree ("argPat"));
+          branch->attribute ("raw", "~");
+          branch->tag ("OP");
+
+          branch = (*i)->addBranch (new Tree ("argPat"));
+          branch->attribute ("raw", pattern);
+          branch->tag ("STRING");
+
+          (*i)->tag ("PATTERN");
+
+          action = true;
+          break;
+        }
+      }
+    }
+  }
+  while (action);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
