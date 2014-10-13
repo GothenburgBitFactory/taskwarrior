@@ -232,9 +232,10 @@ static void colorizeUDA (Task& task, const std::string& rule, const Color& base,
     if (task.has (rule.substr (10)))
       c.blend (base);
   }
-  else {
-    const std::string uda = rule.substr (10, pos-10);
-    const std::string val = rule.substr (pos+1);
+  else
+  {
+    const std::string uda = rule.substr (10, pos - 10);
+    const std::string val = rule.substr (pos + 1);
     if (task.get (uda) == val)
       c.blend (base);
   }
