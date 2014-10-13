@@ -180,8 +180,12 @@ Debugging
       http://tasktools.org/performance).
     - Data load times.
     - Terminal size, color capabilities.
-    - Colorful, confusing, command line parse tree.
+    - Command line parse tree.
     - TDB2 layer and I/O information.
+
+  Additionally, there are other settings (see 'man taskrc' for full details) that
+  may also be helpful: 'rc.hooks=on|off', 'rc.debug.parser=0|1|2',
+  'rc.debug.hooks=0|1|2', 'rc.debug.tls=0|1|2|3...'.
 
 
 Patches

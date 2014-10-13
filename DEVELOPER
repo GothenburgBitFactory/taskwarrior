@@ -98,8 +98,6 @@ Deprecated Code
   This is code that is going to be phased out soon, and therefore is not worth
   fixing or documenting. Don't waste your time.
 
-  - Shadow file support in core. It will migrate to become an external script.
-
   - Priorities in core. This will be migrated to become a UDA as soon as we
     have the right support in place for custom sorting.
 
@@ -185,13 +183,10 @@ Current Codebase Condition
   'master' branch:
     - 2.3.0 Current release, locked.
 
-  '2.3.1' branch:
-    - Bug fix branch. Probably will not be released.
-
   '2.4.0' branch:
     - Current development branch with new command line parser, expressions,
       and heading for beta soon.
 
 ---
 
-2014-07-04 Updated for 2.4.0
+2014-10-12 Updated for 2.4.0
