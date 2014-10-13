@@ -1,7 +1,7 @@
 .TH taskrc 5 2014-10-11 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
-taskrc \- Configuration file for the task(1) command
+taskrc \- Configuration details for the task(1) command
 
 .SH SYNOPSIS
 .B $HOME/.taskrc
