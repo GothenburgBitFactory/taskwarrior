@@ -159,6 +159,11 @@
 - TW-1409 Allow "1 of N tasks remaining" to be correctly localized (thanks to
           Jeremy John Reeder).
 - TW-1415 The recurrence value 'month' is not valid (thanks to Petteri).
+- TW-1420 Modifying 'uuid' fails to generate error (thanks to Black Ops Testing).
+- TW-1421 Modifying 'uuid' with bogus value can corrupt undo.data (thanks to
+          Black Ops Testing).
+- TW-1422 Attempt to modify 'id' attribute creates an id attribute (thanks to
+          Black Ops Testing).
 - TW-1428 Add support for color.uda.<name>.<value> rules.
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.

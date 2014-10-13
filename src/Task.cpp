@@ -1938,6 +1938,14 @@ void Task::modify (modType type, bool text_required /* = false */)
         }
         else
         {
+          // Some columns are not modifiable.
+          if (name == "uuid"  ||
+              name == "id"    ||
+              name == "mask"  ||
+              name == "imask" ||
+              name == "parent")
+            throw format (STRING_INVALID_MOD, name, value);
+
           // Get the column info.
           Column* column = context.columns[name];
 
