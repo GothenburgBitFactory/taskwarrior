@@ -29,6 +29,7 @@
 #include <Context.h>
 #include <Lexer.h>
 #include <CLI.h>
+#include <Color.h>
 #include <util.h>
 #include <i18n.h>
 
@@ -274,29 +275,42 @@ const std::string CLI::getFilter () const
 void CLI::dump (const std::string& label) const
 {
   std::cout << "# " << label << "\n"
-            << "#   _program '" << _program << "'\n";
+            << "#   _program       " << _program << "\n";
 
+  std::cout << "#   _original_args ";
+  Color colorOrigArgs ("gray10 on gray4");
   std::vector <std::string>::const_iterator i;
   for (i = _original_args.begin (); i != _original_args.end (); ++i)
-    std::cout << "#   _original_args '" << *i << "'\n";
+  {
+    if (i != _original_args.begin ())
+      std::cout << ' ';
+    std::cout << colorOrigArgs.colorize (*i);
+  }
+  std::cout << "\n";
 
+  std::cout << "#   _args          ";
+  Color colorArgs ("gray16 on gray4");
   for (i = _args.begin (); i != _args.end (); ++i)
-    std::cout << "#   _args '" << *i << "'\n";
+  {
+    if (i != _args.begin ())
+      std::cout << ' ';
+    std::cout << colorArgs.colorize (*i);
+  }
+  std::cout << "\n";
 
-  std::cout << "#   _rc '" << _rc << "'\n";
+  std::cout << "#   _rc            " << _rc << "\n";
 
   std::map <std::string, std::string>::const_iterator m;
   for (m = _overrides.begin (); m != _overrides.end (); ++m)
-    std::cout << "#   _overrides '" << m->first << "' --> '" << m->second << "'\n";
+    std::cout << "#   _overrides     " << m->first << " --> " << m->second << "\n";
 
   for (i = _filter.begin (); i != _filter.end (); ++i)
-    std::cout << "#   _filter '" << *i << "'\n";
+    std::cout << "#   _filter        " << *i << "\n";
 
-  std::cout << "#   _command '" << _command << "' " << (_readOnly ? "(read)" : "(write)") << "\n";
+  std::cout << "#   _command       " << _command << " " << (_readOnly ? "(read)" : "(write)") << "\n";
 
   for (i = _modifications.begin (); i != _modifications.end (); ++i)
-    std::cout << "#   _modifications '" << *i << "'\n";
-
+    std::cout << "#   _modifications " << *i << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
