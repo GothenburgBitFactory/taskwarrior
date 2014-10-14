@@ -90,6 +90,9 @@ int CmdCustom::execute (std::string& output)
   context.parser.captureLast (")");
 */
 
+  if (reportFilter != "")
+    context.cli.add ("(");
+
   // Prepend the argument list with those from the report filter.
   std::string lexeme;
   Lexer::Type type;
@@ -97,7 +100,13 @@ int CmdCustom::execute (std::string& output)
   lex.ambiguity (false);
   std::vector <std::string> filterArgs;
   while (lex.token (lexeme, type))
+  {
     filterArgs.push_back (lexeme);
+    context.cli.add (lexeme);
+  }
+
+  if (reportFilter != "")
+    context.cli.add (")");
 
   std::vector <std::string>::reverse_iterator arg;
   for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
