@@ -79,6 +79,17 @@ void CLI::initialize (int argc, const char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void CLI::add (const std::string& arg)
+{
+  _args.push_back (arg);
+
+  dump ("CLI::add");
+  extractOverrides ();
+  aliasExpansion ();
+  categorize ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void CLI::extractOverrides ()
 {
   std::vector <std::string> reconstructed;

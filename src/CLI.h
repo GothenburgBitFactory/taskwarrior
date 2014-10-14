@@ -38,6 +38,7 @@ public:
   void alias (const std::string&, const std::string&);
   void entity (const std::string&, const std::string&);
   void initialize (int, const char**);
+  void add (const std::string&);
   void aliasExpansion ();
   void categorize ();
   bool exactMatch (const std::string&, const std::string&) const;
