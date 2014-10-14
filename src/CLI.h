@@ -41,6 +41,7 @@ public:
 
 private:
   void extractOverrides ();
+  void aliasExpansion ();
   void dump (const std::string&) const;
 
 public:

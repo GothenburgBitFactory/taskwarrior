@@ -62,6 +62,7 @@ void CLI::initialize (int argc, const char** argv)
   for (int i = 1; i < argc; ++i)
     _args.push_back (argv[i]);
 
+  dump ("CLI::initialize");
   extractOverrides ();
 }
 
@@ -79,9 +80,9 @@ void CLI::extractOverrides ()
     }
     else if (i->find ("rc.") == 0)
     {
-      std::string::size_type sep = arg.find ('=', 3);
+      std::string::size_type sep = i->find ('=', 3);
       if (sep == std::string::npos)
-        sep = arg.find (':', 3);
+        sep = i->find (':', 3);
       if (sep != std::string::npos)
         _overrides[i->substr (3, sep - 3)] = i->substr (sep + 1);
     }
@@ -90,6 +91,13 @@ void CLI::extractOverrides ()
   }
 
   _args = reconstructed;
+  dump ("CLI::extractOverrides");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::aliasExpansion ()
+{
+  dump ("CLI::aliasExpansion");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
