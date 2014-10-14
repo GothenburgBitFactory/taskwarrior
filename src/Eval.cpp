@@ -136,7 +136,6 @@ void Eval::evaluateInfixExpression (const std::string& e, Variant& v) const
   // Parse for syntax checking and operator replacement.
   if (_debug)
     context.debug ("[1;37;42mFILTER[0m Infix        " + dump (tokens));
-
   infixParse (tokens);
   if (_debug)
     context.debug ("[1;37;42mFILTER[0m Infix parsed " + dump (tokens));
@@ -478,7 +477,7 @@ bool Eval::parseRegex (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Equality    --> Comparative {( "==" | "=" | "!=" ) Comparative}
+// Equality    --> Comparative {( "==" | "=" | "!==" | "!=" ) Comparative}
 bool Eval::parseEquality (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
   int &i) const
@@ -487,8 +486,9 @@ bool Eval::parseEquality (
       parseComparative (infix, i))
   {
     while (i < infix.size () &&
-           (infix[i].first == "==" ||
-            infix[i].first == "="  ||
+           (infix[i].first == "=="  ||
+            infix[i].first == "="   ||
+            infix[i].first == "!==" ||
             infix[i].first == "!=") &&
            infix[i].second == Lexer::typeOperator)
     {
