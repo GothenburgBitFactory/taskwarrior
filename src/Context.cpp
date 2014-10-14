@@ -243,6 +243,8 @@ int Context::initialize (int argc, const char** argv)
     }
 
     // Now the entities are loaded, parsing may resume.
+    cli.aliasExpansion ();
+
     parser.findBinary ();                           // <task|tw|t|cal|calendar>
     parser.resolveAliases ();
     parser.findCommand ();                          // <cmd>
@@ -252,6 +254,7 @@ int Context::initialize (int argc, const char** argv)
 
     staticInitialization ();                        // Decouple code from Context.
     parser.parse ();                                // Parse all elements.
+    cli.categorize ();                              // Parse high-level elements.
 
     tdb2.set_location (data_dir);                   // Prepare the task database.
 
