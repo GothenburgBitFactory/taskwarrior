@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <iostream>
 #include <Context.h>
+#include <Lexer.h>
 #include <CLI.h>
 #include <util.h>
 #include <i18n.h>
@@ -108,6 +109,35 @@ void CLI::extractOverrides ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::aliasExpansion ()
 {
+  bool action;
+  int counter = 0;
+  do
+  {
+    action = false;
+    std::vector <std::string> reconstructed;
+
+    std::vector <std::string>::iterator i;
+    for (i = _args.begin (); i != _args.end (); ++i)
+    {
+      if (_aliases.find (*i) != _aliases.end ())
+      {
+        std::vector <std::string> lexed;
+        Lexer::token_split (lexed, _aliases[*i]);
+
+        std::vector <std::string>::iterator l;
+        for (l = lexed.begin (); l != lexed.end (); ++l)
+          reconstructed.push_back (*l);
+
+        action = true;
+      }
+      else
+        reconstructed.push_back (*i);
+    }
+
+    _args = reconstructed;
+  }
+  while (action && counter++ < safetyValveDefault);
+
   dump ("CLI::aliasExpansion");
 }
 
