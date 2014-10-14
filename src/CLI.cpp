@@ -142,6 +142,37 @@ void CLI::aliasExpansion ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void CLI::categorize ()
+{
+  bool foundCommand = false;
+
+  _filter.clear ();
+  _modifications.clear ();
+  _command = "";
+  _readOnly = false;
+
+  std::vector <std::string>::iterator i;
+  for (i = _args.begin (); i != _args.end (); ++i)
+  {
+    if (canonicalize (_command, "cmd", *i))
+    {
+      foundCommand = true;
+      _readOnly = ! exactMatch ("writecmd", _command);
+    }
+    else if (foundCommand && ! _readOnly)
+    {
+      _modifications.push_back (*i);
+    }
+    else
+    {
+      _filter.push_back (*i);
+    }
+  }
+
+  dump ("CLI::categorize");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Search for exact 'value' in _entities category.
 bool CLI::exactMatch (
   const std::string& category,
