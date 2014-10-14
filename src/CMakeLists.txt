@@ -5,7 +5,8 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src/columns
                      ${TASK_INCLUDE_DIRS})
 
-set (task_SRCS Color.cpp Color.h
+set (task_SRCS CLI.cpp CLI.h
+               Color.cpp Color.h
                Config.cpp Config.h
                Context.cpp Context.h
                DOM.cpp DOM.h
