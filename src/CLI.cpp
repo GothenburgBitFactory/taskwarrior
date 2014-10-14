@@ -106,6 +106,29 @@ void CLI::aliasExpansion ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Search for exact 'value' in _entities category.
+bool CLI::exactMatch (
+  const std::string& category,
+  const std::string& value) const
+{
+  // Find the category.
+  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
+  c = _entities.equal_range (category);
+
+  // Extract a list of entities for category.
+  std::vector <std::string> options;
+  std::multimap <std::string, std::string>::const_iterator e;
+  for (e = c.first; e != c.second; ++e)
+  {
+    // Shortcut: if an exact match is found, success.
+    if (value == e->second)
+      return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void CLI::dump (const std::string& label) const
 {
   std::cout << "# " << label << "\n"
