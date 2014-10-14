@@ -27,6 +27,7 @@
 #define INCLUDED_CLI
 
 #include <string>
+#include <vector>
 #include <map>
 
 class CLI
@@ -36,12 +37,15 @@ public:
   ~CLI ();
   void alias (const std::string&, const std::string&);
   void entity (const std::string&, const std::string&);
+  void initialize (int, const char**);
 
 private:
 
 private:
   std::multimap <std::string, std::string> _entities;
   std::map <std::string, std::string>      _aliases;
+  std::string                              _program;
+  std::vector <std::string>                _args;
 };
 
 #endif

@@ -54,3 +54,13 @@ void CLI::entity (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Capture the original, intact command line arguments. These will not be
+// modified.
+void CLI::initialize (int argc, const char** argv)
+{
+  _program = argv[0];
+  for (int i = 1; i < argc; ++i)
+    _args.push_back (argv[i]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
