@@ -251,7 +251,7 @@ void CLI::dump (const std::string& label) const
   for (i = _filter.begin (); i != _filter.end (); ++i)
     std::cout << "#   _filter '" << *i << "'\n";
 
-  std::cout << "#   _command '" << _command << "'" << (_readOnly ? "(read)" : "(write)") << "\n";
+  std::cout << "#   _command '" << _command << "' " << (_readOnly ? "(read)" : "(write)") << "\n";
 
   for (i = _modifications.begin (); i != _modifications.end (); ++i)
     std::cout << "#   _modifications '" << *i << "'\n";
