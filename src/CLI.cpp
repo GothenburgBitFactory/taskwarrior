@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <iostream>
 #include <Context.h>
 #include <CLI.h>
 #include <i18n.h>
@@ -89,6 +90,23 @@ void CLI::extractOverrides ()
   }
 
   _args = reconstructed;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::dump (const std::string& label) const
+{
+  std::cout << "# " << label << "\n"
+            << "#   _program '" << _program << "'\n";
+
+  std::vector <std::string>::const_iterator i;
+  for (i = _args.begin (); i != _args.end (); ++i)
+    std::cout << "#   _args '" << *i << "'\n";
+
+  std::cout << "#   _rc '" << _rc << "'\n";
+
+  std::map <std::string, std::string>::const_iterator m;
+  for (m = _overrides.begin (); m != _overrides.end (); ++m)
+    std::cout << "#  _overrides '" << m->first << "' --> '" << m->second << "'\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

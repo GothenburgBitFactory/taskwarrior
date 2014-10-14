@@ -41,6 +41,7 @@ public:
 
 private:
   void extractOverrides ();
+  void dump (const std::string&) const;
 
 public:
   std::multimap <std::string, std::string> _entities;
