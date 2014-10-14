@@ -42,6 +42,7 @@ public:
   void categorize ();
   bool exactMatch (const std::string&, const std::string&) const;
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
+  const std::string getFilter () const;
 
 private:
   void extractOverrides ();

@@ -233,6 +233,30 @@ bool CLI::canonicalize (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string CLI::getFilter () const
+{
+  std::string filter = "";
+
+  if (_filter.size ())
+  {
+    filter = "(";
+
+    std::vector <std::string>::const_iterator i;
+    for (i = _filter.begin (); i != _filter.end (); ++i)
+    {
+      if (i != _filter.begin ())
+        filter += ' ';
+
+      filter += *i;
+    }
+
+    filter += ')';
+  }
+
+  return filter;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void CLI::dump (const std::string& label) const
 {
   std::cout << "# " << label << "\n"
