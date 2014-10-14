@@ -54,13 +54,41 @@ void CLI::entity (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Capture the original, intact command line arguments. These will not be
-// modified.
+// Capture the original, intact command line arguments.
 void CLI::initialize (int argc, const char** argv)
 {
   _program = argv[0];
   for (int i = 1; i < argc; ++i)
     _args.push_back (argv[i]);
+
+  extractOverrides ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::extractOverrides ()
+{
+  std::vector <std::string> reconstructed;
+
+  std::vector <std::string>::iterator i;
+  for (i = _args.begin (); i != _args.end (); ++i)
+  {
+    if (i->find ("rc:") == 0)
+    {
+      _rc = i->substr (3);
+    }
+    else if (i->find ("rc.") == 0)
+    {
+      std::string::size_type sep = arg.find ('=', 3);
+      if (sep == std::string::npos)
+        sep = arg.find (':', 3);
+      if (sep != std::string::npos)
+        _overrides[i->substr (3, sep - 3)] = i->substr (sep + 1);
+    }
+    else
+      reconstructed.push_back (*i);
+  }
+
+  _args = reconstructed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

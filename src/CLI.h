@@ -40,12 +40,15 @@ public:
   void initialize (int, const char**);
 
 private:
+  void extractOverrides ();
 
-private:
+public:
   std::multimap <std::string, std::string> _entities;
   std::map <std::string, std::string>      _aliases;
   std::string                              _program;
   std::vector <std::string>                _args;
+  std::string                              _rc;
+  std::map <std::string, std::string>      _overrides;
 };
 
 #endif
