@@ -256,7 +256,7 @@ void Hooks::onAdd (std::vector <Task>& changes)
     if (_debug >= 1)
       context.debug ("Hooks: Calling " + *i);
 
-    std::string input = changes[0].composeJSON ();
+    std::string input = changes.at(0).composeJSON ();
     if (_debug >= 2)
       context.debug ("Hook input: " + input);
 
