@@ -38,10 +38,13 @@ public:
   void alias (const std::string&, const std::string&);
   void entity (const std::string&, const std::string&);
   void initialize (int, const char**);
+  void aliasExpansion ();
+  void categorize ();
+  bool exactMatch (const std::string&, const std::string&) const;
+  bool canonicalize (std::string&, const std::string&, const std::string&) const;
 
 private:
   void extractOverrides ();
-  void aliasExpansion ();
   void dump (const std::string&) const;
 
 public:
@@ -51,6 +54,11 @@ public:
   std::vector <std::string>                _args;
   std::string                              _rc;
   std::map <std::string, std::string>      _overrides;
+
+  std::string                              _command;
+  bool                                     _readOnly;
+  std::vector <std::string>                _filter;
+  std::vector <std::string>                _modifications;
 };
 
 #endif

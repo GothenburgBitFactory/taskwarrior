@@ -28,12 +28,17 @@
 #include <iostream>
 #include <Context.h>
 #include <CLI.h>
+#include <util.h>
 #include <i18n.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CLI::CLI ()
+: _program ("")
+, _rc ("")
+, _command ("")
+, _readOnly (false)
 {
 }
 
