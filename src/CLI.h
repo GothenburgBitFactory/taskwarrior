@@ -53,6 +53,7 @@ public:
   std::multimap <std::string, std::string> _entities;
   std::map <std::string, std::string>      _aliases;
   std::string                              _program;
+  std::vector <std::string>                _original_args;
   std::vector <std::string>                _args;
   std::string                              _rc;
   std::map <std::string, std::string>      _overrides;

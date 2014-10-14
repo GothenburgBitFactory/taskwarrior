@@ -72,7 +72,9 @@ void CLI::initialize (int argc, const char** argv)
 {
   _program = argv[0];
   for (int i = 1; i < argc; ++i)
-    _args.push_back (argv[i]);
+    _original_args.push_back (argv[i]);
+
+  _args = _original_args;
 
   dump ("CLI::initialize");
   extractOverrides ();
@@ -81,6 +83,7 @@ void CLI::initialize (int argc, const char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::add (const std::string& arg)
 {
+  _original_args.push_back (arg);
   _args.push_back (arg);
 
   dump ("CLI::add");
@@ -274,6 +277,9 @@ void CLI::dump (const std::string& label) const
             << "#   _program '" << _program << "'\n";
 
   std::vector <std::string>::const_iterator i;
+  for (i = _original_args.begin (); i != _original_args.end (); ++i)
+    std::cout << "#   _original_args '" << *i << "'\n";
+
   for (i = _args.begin (); i != _args.end (); ++i)
     std::cout << "#   _args '" << *i << "'\n";
 
