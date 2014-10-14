@@ -129,6 +129,7 @@ int Context::initialize (int argc, const char** argv)
     Variant::searchUsingRegex    = config.getBoolean ("regex");
 
     parser.initialize (argc, argv);                 // task arg0 arg1 ...
+    cli.initialize (argc, argv);                    // task arg0 arg1 ...
 
     // Process 'rc:<file>' command line override.
     parser.findOverrides ();                        // rc:<file>  rc.<name>:<value>
