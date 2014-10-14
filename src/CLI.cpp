@@ -246,10 +246,12 @@ void CLI::dump (const std::string& label) const
 
   std::map <std::string, std::string>::const_iterator m;
   for (m = _overrides.begin (); m != _overrides.end (); ++m)
-    std::cout << "#  _overrides '" << m->first << "' --> '" << m->second << "'\n";
+    std::cout << "#   _overrides '" << m->first << "' --> '" << m->second << "'\n";
 
   for (i = _filter.begin (); i != _filter.end (); ++i)
     std::cout << "#   _filter '" << *i << "'\n";
+
+  std::cout << "#   _command '" << _command << "'" << (_readOnly ? "(read)" : "(write)") << "\n";
 
   for (i = _modifications.begin (); i != _modifications.end (); ++i)
     std::cout << "#   _modifications '" << *i << "'\n";
