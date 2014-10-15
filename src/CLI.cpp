@@ -259,8 +259,6 @@ void CLI::initialize (int argc, const char** argv)
   aliasExpansion ();
   extractOverrides ();
   categorize ();
-
-  dump ("CLI::initialize");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -288,8 +286,6 @@ void CLI::add (const std::string& arg)
   aliasExpansion ();
   extractOverrides ();
   categorize ();
-
-  dump ("CLI::add");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -316,6 +312,7 @@ const std::string CLI::getFilter ()
     filter += ')';
   }
 
+  dump ("CLI::getFilter");
   return filter;
 }
 
