@@ -119,6 +119,51 @@ void CLI::add (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string CLI::getFilter ()
+{
+  // Remove all the syntactic sugar.
+  unsweetenTags ();
+
+  std::string filter = "";
+
+  if (_filter.size ())
+  {
+    filter = "(";
+
+    std::vector <std::string>::const_iterator i;
+    for (i = _filter.begin (); i != _filter.end (); ++i)
+    {
+      if (i != _filter.begin ())
+        filter += ' ';
+
+      filter += *i;
+    }
+
+    filter += ')';
+  }
+
+  return filter;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> CLI::getWords ()
+{
+  std::vector <std::string> words;
+  // TODO Processing here.
+  return words;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> CLI::getModifications ()
+{
+  // Remove all the syntactic sugar.
+
+  std::vector <std::string> modifications;
+  // TODO Processing here.
+  return modifications;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void CLI::aliasExpansion ()
 {
   bool action;
@@ -260,44 +305,6 @@ bool CLI::canonicalize (
   }
 
   return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string CLI::getFilter () const
-{
-  std::string filter = "";
-
-  if (_filter.size ())
-  {
-    filter = "(";
-
-    std::vector <std::string>::const_iterator i;
-    for (i = _filter.begin (); i != _filter.end (); ++i)
-    {
-      if (i != _filter.begin ())
-        filter += ' ';
-
-      filter += *i;
-    }
-
-    filter += ')';
-  }
-
-  return filter;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> CLI::getWords () const
-{
-  std::vector <std::string> words;
-  return words;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> CLI::getModifications () const
-{
-  std::vector <std::string> modifications;
-  return modifications;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
