@@ -437,7 +437,7 @@ void CLI::categorize ()
     {
       a->tag ("MODIFICATION");
     }
-    else
+    else if (!foundCommand || (foundCommand && readOnly))
     {
       a->tag ("FILTER");
     }
