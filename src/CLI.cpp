@@ -205,7 +205,6 @@ const std::string A::dump () const
 ////////////////////////////////////////////////////////////////////////////////
 CLI::CLI ()
 : _rc ("")
-, _command ("")
 , _readOnly (false)
 {
 }
@@ -237,7 +236,7 @@ void CLI::initialize (int argc, const char** argv)
   _args.clear ();
   _rc = "";
   _overrides.clear ();
-  _command = "";
+  _command.clear ();
   _readOnly = false;
   _filter.clear ();
   _modifications.clear ();
@@ -272,7 +271,7 @@ void CLI::add (const std::string& arg)
   _args.clear ();
   _rc = "";
   _overrides.clear ();
-  _command = "";
+  _command.clear ();
   _readOnly = false;
   _filter.clear ();
   _modifications.clear ();
@@ -411,10 +410,15 @@ void CLI::categorize ()
   for (i = _args.begin (); i != _args.end (); ++i)
   {
     std::string raw = i->attribute ("raw");
-    if (canonicalize (_command, "cmd", raw))
+    std::string command;
+    if (canonicalize (command, "cmd", raw))
     {
+      _command._name = "argCmd";
+      _command.attribute ("raw", raw);
+      _command.attribute ("canonical", command);
+      _readOnly = ! exactMatch ("writecmd", command);
+      _command.tag (_readOnly ? "READCMD" : "WRITECMD");
       foundCommand = true;
-      _readOnly = ! exactMatch ("writecmd", _command);
     }
     else if (foundCommand && ! _readOnly)
     {
@@ -564,7 +568,8 @@ void CLI::dump (const std::string& label) const
       std::cout << "    " << a->dump () << "\n";
   }
 
-  std::cout << "  _command       " << _command << " " << (_readOnly ? "(read)" : "(write)") << "\n";
+  std::cout << "  _command\n"
+            << "    " << _command.dump () << "\n";
 
   if (_modifications.size ())
   {

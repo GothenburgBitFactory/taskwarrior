@@ -87,7 +87,7 @@ public:
   std::vector <A>                          _args;
   std::string                              _rc;
   std::map <std::string, std::string>      _overrides;
-  std::string                              _command;
+  A                                        _command;
   bool                                     _readOnly;
   std::vector <A>                          _filter;
   std::vector <A>                          _modifications;
