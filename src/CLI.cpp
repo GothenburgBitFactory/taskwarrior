@@ -204,8 +204,6 @@ const std::string A::dump () const
 
 ////////////////////////////////////////////////////////////////////////////////
 CLI::CLI ()
-: _rc ("")
-, _readOnly (false)
 {
 }
 
@@ -233,11 +231,6 @@ void CLI::initialize (int argc, const char** argv)
   // Clean what needs to be cleaned. Everything in this case.
   _original_args.clear ();
   _args.clear ();
-  _rc = "";
-  _command.clear ();
-  _readOnly = false;
-  _filter.clear ();
-  _modifications.clear ();
 
   for (int i = 0; i < argc; ++i)
   {
@@ -269,12 +262,6 @@ void CLI::add (const std::string& arg)
 {
   // Clean what needs to be cleaned. Most in this case.
   _args.clear ();
-  _rc = "";
-  _command.clear ();
-  _readOnly = false;
-  _filter.clear ();
-  _modifications.clear ();
-
   _original_args.push_back (arg);
 
   for (int i = 0; i < _original_args.size (); ++i)
@@ -302,12 +289,16 @@ void CLI::add (const std::string& arg)
 ////////////////////////////////////////////////////////////////////////////////
 const std::string CLI::getFilter ()
 {
+// TODO Convert to _args.
+/*
   // Remove all the syntactic sugar.
   unsweetenTags ();
   // TODO all the other types: att, attmod, pattern, id, uuid ...
+*/
 
   std::string filter = "";
 
+/*
   if (_filter.size ())
   {
     filter = "(";
@@ -323,6 +314,7 @@ const std::string CLI::getFilter ()
 
     filter += ')';
   }
+*/
 
   dump ("CLI::getFilter");
   return filter;
@@ -419,32 +411,35 @@ void CLI::findOverrides ()
 void CLI::categorize ()
 {
   bool foundCommand = false;
+  bool readOnly = false;
 
-  std::vector <A>::iterator i;
-  for (i = _args.begin (); i != _args.end (); ++i)
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
   {
-    std::string raw = i->attribute ("raw");
-    std::string command;
-    if (canonicalize (command, "cmd", raw))
+    std::string raw = a->attribute ("raw");
+    std::string canonical;
+    if (canonicalize (canonical, "cmd", raw))
     {
-      _command._name = "argCmd";
-      _command.attribute ("raw", raw);
-      _command.attribute ("canonical", command);
-      _readOnly = ! exactMatch ("writecmd", command);
-      _command.tag (_readOnly ? "READCMD" : "WRITECMD");
+      readOnly = ! exactMatch ("writecmd", canonical);
+
+      a->tag ("CMD");
+      a->tag (readOnly ? "READCMD" : "WRITECMD");
+      a->attribute ("canonical", canonical);
       foundCommand = true;
     }
-    else if (foundCommand && ! _readOnly)
+    else if (a->hasTag ("BINARY") ||
+             a->hasTag ("CONFIG") ||
+             a->hasTag ("RC"))
     {
-      A a ("argMod", raw);
-      a.tag ("MODIFICATION");
-      _modifications.push_back (a);
+      // NOP
+    }
+    else if (foundCommand && ! readOnly)
+    {
+      a->tag ("MODIFICATION");
     }
     else
     {
-      A a ("argFilt", raw);
-      a.tag ("FILTER");
-      _filter.push_back (a);
+      a->tag ("FILTER");
     }
   }
 }
@@ -514,6 +509,8 @@ bool CLI::canonicalize (
 // -tag --> tags _notag_ tag
 void CLI::unsweetenTags ()
 {
+// TODO Convert from _filter to _args.
+/*
   std::vector <A> reconstructed;
   std::vector <A>::iterator i;
   for (i = _filter.begin (); i != _filter.end (); ++i)
@@ -544,6 +541,7 @@ void CLI::unsweetenTags ()
   }
 
   _filter = reconstructed;
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -565,25 +563,6 @@ void CLI::dump (const std::string& label) const
   std::vector <A>::const_iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
     std::cout << "    " << a->dump () << "\n";
-
-  std::cout << "  _rc            " << _rc << "\n";
-
-  if (_filter.size ())
-  {
-    std::cout << "  _filter\n";
-    for (a = _filter.begin (); a != _filter.end (); ++a)
-      std::cout << "    " << a->dump () << "\n";
-  }
-
-  std::cout << "  _command\n"
-            << "    " << _command.dump () << "\n";
-
-  if (_modifications.size ())
-  {
-    std::cout << "  _modifications\n";
-    for (a = _modifications.begin (); a != _modifications.end (); ++a)
-      std::cout << "    " << a->dump () << "\n";
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

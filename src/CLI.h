@@ -84,11 +84,6 @@ public:
   std::map <std::string, std::string>      _aliases;
   std::vector <std::string>                _original_args;
   std::vector <A>                          _args;
-  std::string                              _rc;
-  A                                        _command;
-  bool                                     _readOnly;
-  std::vector <A>                          _filter;
-  std::vector <A>                          _modifications;
 };
 
 #endif
