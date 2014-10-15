@@ -91,34 +91,8 @@ void CLI::add (const std::string& arg)
   extractOverrides ();
   aliasExpansion ();
   categorize ();
-}
 
-////////////////////////////////////////////////////////////////////////////////
-void CLI::extractOverrides ()
-{
-  std::vector <std::string> reconstructed;
-
-  std::vector <std::string>::iterator i;
-  for (i = _args.begin (); i != _args.end (); ++i)
-  {
-    if (i->find ("rc:") == 0)
-    {
-      _rc = i->substr (3);
-    }
-    else if (i->find ("rc.") == 0)
-    {
-      std::string::size_type sep = i->find ('=', 3);
-      if (sep == std::string::npos)
-        sep = i->find (':', 3);
-      if (sep != std::string::npos)
-        _overrides[i->substr (3, sep - 3)] = i->substr (sep + 1);
-    }
-    else
-      reconstructed.push_back (*i);
-  }
-
-  _args = reconstructed;
-  dump ("CLI::extractOverrides");
+  dump ("CLI::add");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,8 +126,33 @@ void CLI::aliasExpansion ()
     _args = reconstructed;
   }
   while (action && counter++ < safetyValveDefault);
+}
 
-  dump ("CLI::aliasExpansion");
+////////////////////////////////////////////////////////////////////////////////
+void CLI::extractOverrides ()
+{
+  std::vector <std::string> reconstructed;
+
+  std::vector <std::string>::iterator i;
+  for (i = _args.begin (); i != _args.end (); ++i)
+  {
+    if (i->find ("rc:") == 0)
+    {
+      _rc = i->substr (3);
+    }
+    else if (i->find ("rc.") == 0)
+    {
+      std::string::size_type sep = i->find ('=', 3);
+      if (sep == std::string::npos)
+        sep = i->find (':', 3);
+      if (sep != std::string::npos)
+        _overrides[i->substr (3, sep - 3)] = i->substr (sep + 1);
+    }
+    else
+      reconstructed.push_back (*i);
+  }
+
+  _args = reconstructed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
