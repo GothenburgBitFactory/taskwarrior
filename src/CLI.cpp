@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <iostream>
 #include <Context.h>
+#include <Nibbler.h>
 #include <Lexer.h>
 #include <CLI.h>
 #include <Color.h>
@@ -305,6 +306,36 @@ bool CLI::canonicalize (
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// +tag --> tags _hastag_ tag
+// -tag --> tags _notag_ tag
+void CLI::unsweetenTags ()
+{
+  std::vector <std::string> reconstructed;
+
+  std::vector <std::string>::iterator i;
+  for (i = _filter.begin (); i != _filter.end (); ++i)
+  {
+    Nibbler n (*i);
+    std::string tag;
+    std::string sign;
+
+    if (n.getN (1, sign)             &&
+        (sign == "+" || sign == "-") &&
+        n.getUntilEOS (tag)          &&
+        tag.find (' ') == std::string::npos)
+    {
+        reconstructed.push_back ("tags");
+        reconstructed.push_back (sign == "+" ? "_hastag_" : "_notag_");
+        reconstructed.push_back (tag);
+    }
+    else
+      reconstructed.push_back (*i);
+  }
+
+  _filter = reconstructed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
