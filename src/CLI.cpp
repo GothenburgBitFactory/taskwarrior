@@ -287,6 +287,7 @@ void CLI::add (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Extract all the FILTER-tagged items.
 const std::string CLI::getFilter ()
 {
   // Remove all the syntactic sugar.
@@ -295,28 +296,28 @@ const std::string CLI::getFilter ()
   // TODO all the other types: att, attmod, pattern, id, uuid ...
 
   std::string filter = "";
-
-// TODO Convert to _args.
-/*
-  if (_filter.size ())
+  if (_args.size ())
   {
-    filter = "(";
-
-    std::vector <A>::const_iterator i;
-    for (i = _filter.begin (); i != _filter.end (); ++i)
+    std::vector <A>::const_iterator a;
+    for (a = _args.begin (); a != _args.end (); ++a)
     {
-      if (i != _filter.begin ())
-        filter += ' ';
+      if (a->hasTag ("FILTER") &&
+          ! a->hasTag ("PSEUDO"))
+      {
+        if (filter != "")
+          filter += ' ';
 
-      filter += i->attribute ("raw");
+        std::string term = a->attribute ("canonical");
+        if (term == "")
+          term = a->attribute ("raw");
+
+        filter += term;
+      }
     }
-
-    filter += ')';
   }
-*/
 
   dump ("CLI::getFilter");
-  return filter;
+  return "(" + filter + ")";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
