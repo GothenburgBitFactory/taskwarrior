@@ -371,8 +371,15 @@ void CLI::dump (const std::string& label) const
   for (m = _overrides.begin (); m != _overrides.end (); ++m)
     std::cout << "#   _overrides     " << m->first << " --> " << m->second << "\n";
 
+  std::cout << "#   _filter        ";
+  Color colorFilter ("gray20 on gray8");
   for (i = _filter.begin (); i != _filter.end (); ++i)
-    std::cout << "#   _filter        " << *i << "\n";
+  {
+    if (i != _filter.begin ())
+      std::cout << ' ';
+    std::cout << colorFilter.colorize (*i);
+  }
+  std::cout << "\n";
 
   std::cout << "#   _command       " << _command << " " << (_readOnly ? "(read)" : "(write)") << "\n";
 
