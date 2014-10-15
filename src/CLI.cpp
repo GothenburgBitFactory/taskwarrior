@@ -71,25 +71,48 @@ void CLI::entity (const std::string& name, const std::string& value)
 // Capture the original, intact command line arguments.
 void CLI::initialize (int argc, const char** argv)
 {
+  // Clean what needs to be cleaned. Everything in this case.
+  _program = "";
+  _original_args.clear ();
+  _args.clear ();
+  _rc = "";
+  _overrides.clear ();
+  _command = "";
+  _readOnly = false;
+  _filter.clear ();
+  _modifications.clear ();
+
   _program = argv[0];
   for (int i = 1; i < argc; ++i)
     _original_args.push_back (argv[i]);
 
   _args = _original_args;
 
-  dump ("CLI::initialize");
+  aliasExpansion ();
   extractOverrides ();
+  categorize ();
+
+  dump ("CLI::initialize");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::add (const std::string& arg)
 {
-  _original_args.push_back (arg);
-  _args.push_back (arg);
+  // Clean what needs to be cleaned. Most in this case.
+  _program = "";
+  _args.clear ();
+  _rc = "";
+  _overrides.clear ();
+  _command = "";
+  _readOnly = false;
+  _filter.clear ();
+  _modifications.clear ();
 
-  dump ("CLI::add");
-  extractOverrides ();
+  _original_args.push_back (arg);
+  _args = _original_args;
+
   aliasExpansion ();
+  extractOverrides ();
   categorize ();
 
   dump ("CLI::add");
@@ -160,11 +183,6 @@ void CLI::categorize ()
 {
   bool foundCommand = false;
 
-  _filter.clear ();
-  _modifications.clear ();
-  _command = "";
-  _readOnly = false;
-
   std::vector <std::string>::iterator i;
   for (i = _args.begin (); i != _args.end (); ++i)
   {
@@ -182,8 +200,6 @@ void CLI::categorize ()
       _filter.push_back (*i);
     }
   }
-
-  dump ("CLI::categorize");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

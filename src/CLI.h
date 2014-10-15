@@ -39,16 +39,16 @@ public:
   void entity (const std::string&, const std::string&);
   void initialize (int, const char**);
   void add (const std::string&);
-  void aliasExpansion ();
-  void categorize ();
-  bool exactMatch (const std::string&, const std::string&) const;
-  bool canonicalize (std::string&, const std::string&, const std::string&) const;
   const std::string getFilter () const;
   const std::vector <std::string> getWords () const;
   const std::vector <std::string> getModifications () const;
 
 private:
+  void aliasExpansion ();
   void extractOverrides ();
+  void categorize ();
+  bool exactMatch (const std::string&, const std::string&) const;
+  bool canonicalize (std::string&, const std::string&, const std::string&) const;
   void dump (const std::string&) const;
 
 public:
@@ -59,7 +59,6 @@ public:
   std::vector <std::string>                _args;
   std::string                              _rc;
   std::map <std::string, std::string>      _overrides;
-
   std::string                              _command;
   bool                                     _readOnly;
   std::vector <std::string>                _filter;
