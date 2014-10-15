@@ -272,6 +272,20 @@ const std::string CLI::getFilter () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> CLI::getWords () const
+{
+  std::vector <std::string> words;
+  return words;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::vector <std::string> CLI::getModifications () const
+{
+  std::vector <std::string> modifications;
+  return modifications;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void CLI::dump (const std::string& label) const
 {
   std::cout << "# " << label << "\n"

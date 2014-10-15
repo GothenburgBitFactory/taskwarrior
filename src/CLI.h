@@ -44,6 +44,8 @@ public:
   bool exactMatch (const std::string&, const std::string&) const;
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   const std::string getFilter () const;
+  const std::vector <std::string> getWords () const;
+  const std::vector <std::string> getModifications () const;
 
 private:
   void extractOverrides ();
