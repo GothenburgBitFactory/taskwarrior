@@ -129,10 +129,10 @@ void A::attribute (const std::string& name, const double value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Accessor for attributes.
-const std::string A::attribute (const std::string& name)
+const std::string A::attribute (const std::string& name) const
 {
   // Prevent autovivification.
-  std::map<std::string, std::string>::iterator i = _attributes.find (name);
+  std::map<std::string, std::string>::const_iterator i = _attributes.find (name);
   if (i != _attributes.end ())
     return i->second;
 
@@ -289,13 +289,13 @@ const std::string CLI::getFilter ()
   {
     filter = "(";
 
-    std::vector <std::string>::const_iterator i;
+    std::vector <A>::const_iterator i;
     for (i = _filter.begin (); i != _filter.end (); ++i)
     {
       if (i != _filter.begin ())
         filter += ' ';
 
-      filter += *i;
+      filter += i->attribute ("raw");
     }
 
     filter += ')';
@@ -402,11 +402,15 @@ void CLI::categorize ()
     }
     else if (foundCommand && ! _readOnly)
     {
-      _modifications.push_back (raw);
+      A a ("argMod", raw);
+      a.tag ("MODIFICATION");
+      _modifications.push_back (a);
     }
     else
     {
-      _filter.push_back (raw);
+      A a ("argFilt", raw);
+      a.tag ("FILTER");
+      _filter.push_back (a);
     }
   }
 }
@@ -476,12 +480,11 @@ bool CLI::canonicalize (
 // -tag --> tags _notag_ tag
 void CLI::unsweetenTags ()
 {
-  std::vector <std::string> reconstructed;
-
-  std::vector <std::string>::iterator i;
+  std::vector <A> reconstructed;
+  std::vector <A>::iterator i;
   for (i = _filter.begin (); i != _filter.end (); ++i)
   {
-    Nibbler n (*i);
+    Nibbler n (i->attribute ("raw"));
     std::string tag;
     std::string sign;
 
@@ -490,9 +493,17 @@ void CLI::unsweetenTags ()
         n.getUntilEOS (tag)          &&
         tag.find (' ') == std::string::npos)
     {
-        reconstructed.push_back ("tags");
-        reconstructed.push_back (sign == "+" ? "_hastag_" : "_notag_");
-        reconstructed.push_back (tag);
+      A left ("argTag", "tags");
+      left.tag ("ATT");
+      reconstructed.push_back (left);
+
+      A op ("argTag", sign == "+" ? "_hastag_" : "_notag_");
+      op.tag ("OP");
+      reconstructed.push_back (op);
+
+      A right ("argTag", tag);
+      right.tag ("LITERAL");
+      reconstructed.push_back (right);
     }
     else
       reconstructed.push_back (*i);
@@ -529,20 +540,21 @@ void CLI::dump (const std::string& label) const
   for (m = _overrides.begin (); m != _overrides.end (); ++m)
     std::cout << "  _overrides     " << m->first << " --> " << m->second << "\n";
 
-  std::cout << "  _filter        ";
-  Color colorFilter ("gray20 on gray8");
-  for (i = _filter.begin (); i != _filter.end (); ++i)
+  if (_filter.size ())
   {
-    if (i != _filter.begin ())
-      std::cout << ' ';
-    std::cout << colorFilter.colorize (*i);
+    std::cout << "  _filter\n";
+    for (a = _filter.begin (); a != _filter.end (); ++a)
+      std::cout << "    " << a->dump () << "\n";
   }
-  std::cout << "\n";
 
   std::cout << "  _command       " << _command << " " << (_readOnly ? "(read)" : "(write)") << "\n";
 
-  for (i = _modifications.begin (); i != _modifications.end (); ++i)
-    std::cout << "  _modifications " << *i << "\n";
+  if (_modifications.size ())
+  {
+    std::cout << "  _modifications\n";
+    for (a = _modifications.begin (); a != _modifications.end (); ++a)
+      std::cout << "    " << a->dump () << "\n";
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

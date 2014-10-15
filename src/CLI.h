@@ -44,7 +44,7 @@ public:
   void attribute (const std::string&, const std::string&);
   void attribute (const std::string&, const int);
   void attribute (const std::string&, const double);
-  const std::string attribute (const std::string&);
+  const std::string attribute (const std::string&) const;
   void removeAttribute (const std::string&);
   const std::string dump () const;
 
@@ -87,8 +87,8 @@ public:
   std::map <std::string, std::string>      _overrides;
   std::string                              _command;
   bool                                     _readOnly;
-  std::vector <std::string>                _filter;
-  std::vector <std::string>                _modifications;
+  std::vector <A>                          _filter;
+  std::vector <A>                          _modifications;
 };
 
 #endif
