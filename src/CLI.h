@@ -77,6 +77,7 @@ private:
   bool exactMatch (const std::string&, const std::string&) const;
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   void unsweetenTags ();
+  void unsweetenAtts ();
   void dump (const std::string&) const;
 
 public:
