@@ -128,7 +128,7 @@ void A::attribute (const std::string& name, const double value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Accessor for attributes.
-std::string A::attribute (const std::string& name)
+const std::string A::attribute (const std::string& name)
 {
   // Prevent autovivification.
   std::map<std::string, std::string>::iterator i = _attributes.find (name);
@@ -145,9 +145,47 @@ void A::removeAttribute (const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string A::dump ()
+const std::string A::dump ()
 {
-  return "A::dump";
+  std::string output = "";
+
+  // Dump attributes.
+  std::string atts;
+  std::map <std::string, std::string>::iterator a;
+  for (a = _attributes.begin (); a != _attributes.end (); ++a)
+  {
+    if (a != _attributes.begin ())
+      atts += " ";
+
+    atts += a->first + "='\033[33m" + a->second + "\033[0m'";
+  }
+
+  if (atts.length ())
+    output += " " + atts;
+
+  // Dump tags.
+  std::string tags;
+  std::vector <std::string>::iterator tag;
+  for (tag = _tags.begin (); tag != _tags.end (); ++tag)
+  {
+    if (tags.length ())
+      tags += ' ';
+
+         if (*tag == "BINARY")       tags += "\033[1;37;44m"           + *tag + "\033[0m";
+    else if (*tag == "CMD")          tags += "\033[1;37;46m"           + *tag + "\033[0m";
+    else if (*tag == "FILTER")       tags += "\033[1;37;42m"           + *tag + "\033[0m";
+    else if (*tag == "MODIFICATION") tags += "\033[1;37;43m"           + *tag + "\033[0m";
+    else if (*tag == "RC")           tags += "\033[1;37;41m"           + *tag + "\033[0m";
+    else if (*tag == "CONFIG")       tags += "\033[1;37;101m"          + *tag + "\033[0m";
+    else if (*tag == "?")            tags += "\033[38;5;255;48;5;232m" + *tag + "\033[0m";
+    else                             tags += "\033[32m"                + *tag + "\033[0m";
+  }
+
+  if (tags.length ())
+    output += ' ' + tags;
+  output += "\n";
+
+  return output;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

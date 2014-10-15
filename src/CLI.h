@@ -44,9 +44,9 @@ public:
   void attribute (const std::string&, const std::string&);
   void attribute (const std::string&, const int);
   void attribute (const std::string&, const double);
-  std::string attribute (const std::string&);
+  const std::string attribute (const std::string&);
   void removeAttribute (const std::string&);
-  std::string dump ();
+  const std::string dump ();
 
 public:
   std::string                         _name;
