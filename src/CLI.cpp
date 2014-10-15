@@ -204,8 +204,7 @@ const std::string A::dump () const
 
 ////////////////////////////////////////////////////////////////////////////////
 CLI::CLI ()
-: _program ("")
-, _rc ("")
+: _rc ("")
 , _command ("")
 , _readOnly (false)
 {
@@ -233,7 +232,7 @@ void CLI::entity (const std::string& name, const std::string& value)
 void CLI::initialize (int argc, const char** argv)
 {
   // Clean what needs to be cleaned. Everything in this case.
-  _program = "";
+  _program.clear ();
   _original_args.clear ();
   _args.clear ();
   _rc = "";
@@ -243,7 +242,10 @@ void CLI::initialize (int argc, const char** argv)
   _filter.clear ();
   _modifications.clear ();
 
-  _program = argv[0];
+  _program._name = "arg";
+  _program.attribute ("raw", argv[0]);
+  _program.tag ("BINARY");
+
   for (int i = 1; i < argc; ++i)
     _original_args.push_back (argv[i]);
 
@@ -530,7 +532,8 @@ void CLI::unsweetenTags ()
 void CLI::dump (const std::string& label) const
 {
   std::cout << label << "\n"
-            << "  _program       " << _program << "\n";
+            << "  _program\n"
+            << "    " << _program.dump () << "\n";
 
   std::cout << "  _original_args ";
   Color colorOrigArgs ("gray10 on gray4");

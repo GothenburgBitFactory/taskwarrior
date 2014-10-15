@@ -82,7 +82,7 @@ private:
 public:
   std::multimap <std::string, std::string> _entities;
   std::map <std::string, std::string>      _aliases;
-  std::string                              _program;
+  A                                        _program;
   std::vector <std::string>                _original_args;
   std::vector <A>                          _args;
   std::string                              _rc;
