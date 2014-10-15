@@ -289,15 +289,13 @@ void CLI::add (const std::string& arg)
 ////////////////////////////////////////////////////////////////////////////////
 const std::string CLI::getFilter ()
 {
-// TODO Convert to _args.
-/*
   // Remove all the syntactic sugar.
   unsweetenTags ();
   // TODO all the other types: att, attmod, pattern, id, uuid ...
-*/
 
   std::string filter = "";
 
+// TODO Convert to _args.
 /*
   if (_filter.size ())
   {
@@ -509,13 +507,11 @@ bool CLI::canonicalize (
 // -tag --> tags _notag_ tag
 void CLI::unsweetenTags ()
 {
-// TODO Convert from _filter to _args.
-/*
   std::vector <A> reconstructed;
-  std::vector <A>::iterator i;
-  for (i = _filter.begin (); i != _filter.end (); ++i)
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
   {
-    Nibbler n (i->attribute ("raw"));
+    Nibbler n (a->attribute ("raw"));
     std::string tag;
     std::string sign;
 
@@ -540,11 +536,10 @@ void CLI::unsweetenTags ()
       reconstructed.push_back (right);
     }
     else
-      reconstructed.push_back (*i);
+      reconstructed.push_back (*a);
   }
 
-  _filter = reconstructed;
-*/
+  _args = reconstructed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
