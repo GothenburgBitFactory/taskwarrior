@@ -44,9 +44,10 @@ static int minimumMatchLength = 3;
 static int safetyValveDefault = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
-A::A (const std::string& name)
-: _name (name)
+A::A (const std::string& name, const std::string& raw)
 {
+  _name = name;
+  attribute ("raw", raw);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -145,13 +146,13 @@ void A::removeAttribute (const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string A::dump ()
+const std::string A::dump () const
 {
-  std::string output = "";
+  std::string output = _name;
 
   // Dump attributes.
   std::string atts;
-  std::map <std::string, std::string>::iterator a;
+  std::map <std::string, std::string>::const_iterator a;
   for (a = _attributes.begin (); a != _attributes.end (); ++a)
   {
     if (a != _attributes.begin ())
@@ -165,7 +166,7 @@ const std::string A::dump ()
 
   // Dump tags.
   std::string tags;
-  std::vector <std::string>::iterator tag;
+  std::vector <std::string>::const_iterator tag;
   for (tag = _tags.begin (); tag != _tags.end (); ++tag)
   {
     if (tags.length ())
@@ -183,7 +184,6 @@ const std::string A::dump ()
 
   if (tags.length ())
     output += ' ' + tags;
-  output += "\n";
 
   return output;
 }
@@ -233,7 +233,13 @@ void CLI::initialize (int argc, const char** argv)
   for (int i = 1; i < argc; ++i)
     _original_args.push_back (argv[i]);
 
-  _args = _original_args;
+  std::vector <std::string>::iterator i;
+  for (i = _original_args.begin (); i != _original_args.end (); ++i)
+  {
+    A a ("arg", *i);
+    a.tag ("ORIGINAL");
+    _args.push_back (a);
+  }
 
   aliasExpansion ();
   extractOverrides ();
@@ -256,7 +262,13 @@ void CLI::add (const std::string& arg)
   _modifications.clear ();
 
   _original_args.push_back (arg);
-  _args = _original_args;
+  std::vector <std::string>::iterator i;
+  for (i = _original_args.begin (); i != _original_args.end (); ++i)
+  {
+    A a ("argAdd", *i);
+    a.tag ("ORIGINAL");
+    _args.push_back (a);
+  }
 
   aliasExpansion ();
   extractOverrides ();
@@ -318,19 +330,23 @@ void CLI::aliasExpansion ()
   do
   {
     action = false;
-    std::vector <std::string> reconstructed;
+    std::vector <A> reconstructed;
 
-    std::vector <std::string>::iterator i;
+    std::vector <A>::iterator i;
     for (i = _args.begin (); i != _args.end (); ++i)
     {
-      if (_aliases.find (*i) != _aliases.end ())
+      if (_aliases.find (i->_name) != _aliases.end ())
       {
         std::vector <std::string> lexed;
-        Lexer::token_split (lexed, _aliases[*i]);
+        Lexer::token_split (lexed, _aliases[i->_name]);
 
         std::vector <std::string>::iterator l;
         for (l = lexed.begin (); l != lexed.end (); ++l)
-          reconstructed.push_back (*l);
+        {
+          A a ("argLex", *l);
+          a.tag ("LEX");
+          reconstructed.push_back (a);
+        }
 
         action = true;
       }
@@ -346,22 +362,22 @@ void CLI::aliasExpansion ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::extractOverrides ()
 {
-  std::vector <std::string> reconstructed;
-
-  std::vector <std::string>::iterator i;
+  std::vector <A> reconstructed;
+  std::vector <A>::iterator i;
   for (i = _args.begin (); i != _args.end (); ++i)
   {
-    if (i->find ("rc:") == 0)
+    std::string raw = i->attribute ("raw");
+    if (raw.find ("rc:") == 0)
     {
-      _rc = i->substr (3);
+      _rc = raw.substr (3);
     }
-    else if (i->find ("rc.") == 0)
+    else if (raw.find ("rc.") == 0)
     {
-      std::string::size_type sep = i->find ('=', 3);
+      std::string::size_type sep = raw.find ('=', 3);
       if (sep == std::string::npos)
-        sep = i->find (':', 3);
+        sep = raw.find (':', 3);
       if (sep != std::string::npos)
-        _overrides[i->substr (3, sep - 3)] = i->substr (sep + 1);
+        _overrides[raw.substr (3, sep - 3)] = raw.substr (sep + 1);
     }
     else
       reconstructed.push_back (*i);
@@ -375,21 +391,22 @@ void CLI::categorize ()
 {
   bool foundCommand = false;
 
-  std::vector <std::string>::iterator i;
+  std::vector <A>::iterator i;
   for (i = _args.begin (); i != _args.end (); ++i)
   {
-    if (canonicalize (_command, "cmd", *i))
+    std::string raw = i->attribute ("raw");
+    if (canonicalize (_command, "cmd", raw))
     {
       foundCommand = true;
       _readOnly = ! exactMatch ("writecmd", _command);
     }
     else if (foundCommand && ! _readOnly)
     {
-      _modifications.push_back (*i);
+      _modifications.push_back (raw);
     }
     else
     {
-      _filter.push_back (*i);
+      _filter.push_back (raw);
     }
   }
 }
@@ -487,10 +504,10 @@ void CLI::unsweetenTags ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::dump (const std::string& label) const
 {
-  std::cout << "# " << label << "\n"
-            << "#   _program       " << _program << "\n";
+  std::cout << label << "\n"
+            << "  _program       " << _program << "\n";
 
-  std::cout << "#   _original_args ";
+  std::cout << "  _original_args ";
   Color colorOrigArgs ("gray10 on gray4");
   std::vector <std::string>::const_iterator i;
   for (i = _original_args.begin (); i != _original_args.end (); ++i)
@@ -501,23 +518,18 @@ void CLI::dump (const std::string& label) const
   }
   std::cout << "\n";
 
-  std::cout << "#   _args          ";
-  Color colorArgs ("gray16 on gray4");
-  for (i = _args.begin (); i != _args.end (); ++i)
-  {
-    if (i != _args.begin ())
-      std::cout << ' ';
-    std::cout << colorArgs.colorize (*i);
-  }
-  std::cout << "\n";
+  std::cout << "  _args\n";
+  std::vector <A>::const_iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+    std::cout << "    " << a->dump () << "\n";
 
-  std::cout << "#   _rc            " << _rc << "\n";
+  std::cout << "  _rc            " << _rc << "\n";
 
   std::map <std::string, std::string>::const_iterator m;
   for (m = _overrides.begin (); m != _overrides.end (); ++m)
-    std::cout << "#   _overrides     " << m->first << " --> " << m->second << "\n";
+    std::cout << "  _overrides     " << m->first << " --> " << m->second << "\n";
 
-  std::cout << "#   _filter        ";
+  std::cout << "  _filter        ";
   Color colorFilter ("gray20 on gray8");
   for (i = _filter.begin (); i != _filter.end (); ++i)
   {
@@ -527,10 +539,10 @@ void CLI::dump (const std::string& label) const
   }
   std::cout << "\n";
 
-  std::cout << "#   _command       " << _command << " " << (_readOnly ? "(read)" : "(write)") << "\n";
+  std::cout << "  _command       " << _command << " " << (_readOnly ? "(read)" : "(write)") << "\n";
 
   for (i = _modifications.begin (); i != _modifications.end (); ++i)
-    std::cout << "#   _modifications " << *i << "\n";
+    std::cout << "  _modifications " << *i << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

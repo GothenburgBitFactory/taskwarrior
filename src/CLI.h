@@ -34,7 +34,7 @@
 class A
 {
 public:
-  A (const std::string&);
+  A (const std::string&, const std::string&);
   ~A ();
   A (const A&);
   A& operator= (const A&);
@@ -46,7 +46,7 @@ public:
   void attribute (const std::string&, const double);
   const std::string attribute (const std::string&);
   void removeAttribute (const std::string&);
-  const std::string dump ();
+  const std::string dump () const;
 
 public:
   std::string                         _name;
@@ -82,7 +82,7 @@ public:
   std::map <std::string, std::string>      _aliases;
   std::string                              _program;
   std::vector <std::string>                _original_args;
-  std::vector <std::string>                _args;
+  std::vector <A>                          _args;
   std::string                              _rc;
   std::map <std::string, std::string>      _overrides;
   std::string                              _command;
