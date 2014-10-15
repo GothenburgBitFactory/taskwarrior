@@ -109,10 +109,6 @@ int Context::initialize (int argc, const char** argv)
     // Scan command line for 'rc:<file>' only.
     Parser::getOverrides (argc, argv, rc_file._data);
     cli.initialize (argc, argv);                    // task arg0 arg1 ...
-/*
-    std::cout << "# cli._rc=" << cli._rc << "\n";
-    rc_file = cli._rc;
-*/
 
     // TASKRC environment variable overrides the command line.
     char* override = getenv ("TASKRC");
@@ -243,8 +239,6 @@ int Context::initialize (int argc, const char** argv)
     }
 
     // Now the entities are loaded, parsing may resume.
-    cli.aliasExpansion ();
-
     parser.findBinary ();                           // <task|tw|t|cal|calendar>
     parser.resolveAliases ();
     parser.findCommand ();                          // <cmd>
@@ -254,7 +248,6 @@ int Context::initialize (int argc, const char** argv)
 
     staticInitialization ();                        // Decouple code from Context.
     parser.parse ();                                // Parse all elements.
-    cli.categorize ();                              // Parse high-level elements.
 
     tdb2.set_location (data_dir);                   // Prepare the task database.
 
