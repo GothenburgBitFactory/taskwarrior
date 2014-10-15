@@ -30,6 +30,31 @@
 #include <vector>
 #include <map>
 
+// Represents a single argument.
+class A
+{
+public:
+  A (const std::string&);
+  ~A ();
+  A (const A&);
+  A& operator= (const A&);
+  bool hasTag (const std::string&) const;
+  void tag (const std::string&);
+  void unTag (const std::string&);
+  void attribute (const std::string&, const std::string&);
+  void attribute (const std::string&, const int);
+  void attribute (const std::string&, const double);
+  std::string attribute (const std::string&);
+  void removeAttribute (const std::string&);
+  std::string dump ();
+
+public:
+  std::string                         _name;
+  std::vector <std::string>           _tags;
+  std::map <std::string, std::string> _attributes;
+};
+
+// Represents the command line.
 class CLI
 {
 public:

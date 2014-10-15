@@ -31,6 +31,7 @@
 #include <Lexer.h>
 #include <CLI.h>
 #include <Color.h>
+#include <text.h>
 #include <util.h>
 #include <i18n.h>
 
@@ -41,6 +42,113 @@ static int minimumMatchLength = 3;
 
 // Alias expansion limit. Any more indicates some kind of error.
 static int safetyValveDefault = 10;
+
+////////////////////////////////////////////////////////////////////////////////
+A::A (const std::string& name)
+: _name (name)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+A::~A ()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+A::A (const A& other)
+: _name (other._name)
+, _tags (other._tags)
+, _attributes (other._attributes)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+A& A::operator= (const A& other)
+{
+  if (this != &other)
+  {
+    _name       = other._name;
+    _tags       = other._tags;
+    _attributes = other._attributes;
+  }
+
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool A::hasTag (const std::string& tag) const
+{
+  if (std::find (_tags.begin (), _tags.end (), tag) != _tags.end ())
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void A::tag (const std::string& tag)
+{
+  if (! hasTag (tag))
+    _tags.push_back (tag);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void A::unTag (const std::string& tag)
+{
+  std::vector <std::string>::iterator i;
+  for (i = _tags.begin (); i != _tags.end (); ++i)
+  {
+    if (*i == tag)
+    {
+      _tags.erase (i);
+      break;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Accessor for attributes.
+void A::attribute (const std::string& name, const std::string& value)
+{
+  _attributes[name] = value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Accessor for attributes.
+void A::attribute (const std::string& name, const int value)
+{
+  _attributes[name] = format (value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Accessor for attributes.
+void A::attribute (const std::string& name, const double value)
+{
+  _attributes[name] = format (value, 1, 8);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Accessor for attributes.
+std::string A::attribute (const std::string& name)
+{
+  // Prevent autovivification.
+  std::map<std::string, std::string>::iterator i = _attributes.find (name);
+  if (i != _attributes.end ())
+    return i->second;
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void A::removeAttribute (const std::string& name)
+{
+  _attributes.erase (name);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string A::dump ()
+{
+  return "A::dump";
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 CLI::CLI ()
