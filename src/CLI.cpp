@@ -231,33 +231,35 @@ void CLI::entity (const std::string& name, const std::string& value)
 void CLI::initialize (int argc, const char** argv)
 {
   // Clean what needs to be cleaned. Everything in this case.
-  _program.clear ();
   _original_args.clear ();
   _args.clear ();
   _rc = "";
-  _overrides.clear ();
   _command.clear ();
   _readOnly = false;
   _filter.clear ();
   _modifications.clear ();
 
-  _program._name = "arg";
-  _program.attribute ("raw", argv[0]);
-  _program.tag ("BINARY");
-
-  for (int i = 1; i < argc; ++i)
+  for (int i = 0; i < argc; ++i)
+  {
     _original_args.push_back (argv[i]);
 
-  std::vector <std::string>::iterator i;
-  for (i = _original_args.begin (); i != _original_args.end (); ++i)
-  {
-    A a ("arg", *i);
-    a.tag ("ORIGINAL");
-    _args.push_back (a);
+    if (i == 0)
+    {
+      A a ("arg", argv[i]);
+      a.tag ("ORIGINAL");
+      a.tag ("BINARY");
+      _args.push_back (a);
+    }
+    else
+    {
+      A a ("arg", argv[i]);
+      a.tag ("ORIGINAL");
+      _args.push_back (a);
+    }
   }
 
   aliasExpansion ();
-  extractOverrides ();
+  findOverrides ();
   categorize ();
 }
 
@@ -268,23 +270,32 @@ void CLI::add (const std::string& arg)
   // Clean what needs to be cleaned. Most in this case.
   _args.clear ();
   _rc = "";
-  _overrides.clear ();
   _command.clear ();
   _readOnly = false;
   _filter.clear ();
   _modifications.clear ();
 
   _original_args.push_back (arg);
-  std::vector <std::string>::iterator i;
-  for (i = _original_args.begin (); i != _original_args.end (); ++i)
+
+  for (int i = 0; i < _original_args.size (); ++i)
   {
-    A a ("argAdd", *i);
-    a.tag ("ORIGINAL");
-    _args.push_back (a);
+    if (i == 0)
+    {
+      A a ("arg", _original_args[i]);
+      a.tag ("ORIGINAL");
+      a.tag ("BINARY");
+      _args.push_back (a);
+    }
+    else
+    {
+      A a ("arg", _original_args[i]);
+      a.tag ("ORIGINAL");
+      _args.push_back (a);
+    }
   }
 
   aliasExpansion ();
-  extractOverrides ();
+  findOverrides ();
   categorize ();
 }
 
@@ -293,6 +304,7 @@ const std::string CLI::getFilter ()
 {
   // Remove all the syntactic sugar.
   unsweetenTags ();
+  // TODO all the other types: att, attmod, pattern, id, uuid ...
 
   std::string filter = "";
 
@@ -320,17 +332,21 @@ const std::string CLI::getFilter ()
 const std::vector <std::string> CLI::getWords ()
 {
   std::vector <std::string> words;
+
   // TODO Processing here.
+
+  dump ("CLI::getWords");
   return words;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <std::string> CLI::getModifications ()
 {
-  // Remove all the syntactic sugar.
-
   std::vector <std::string> modifications;
+
   // TODO Processing here.
+
+  dump ("CLI::getModifications");
   return modifications;
 }
 
@@ -372,16 +388,17 @@ void CLI::aliasExpansion ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CLI::extractOverrides ()
+void CLI::findOverrides ()
 {
-  std::vector <A> reconstructed;
-  std::vector <A>::iterator i;
-  for (i = _args.begin (); i != _args.end (); ++i)
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
   {
-    std::string raw = i->attribute ("raw");
+    std::string raw = a->attribute ("raw");
+
     if (raw.find ("rc:") == 0)
     {
-      _rc = raw.substr (3);
+      a->tag ("RC");
+      a->attribute ("file", raw.substr (3));
     }
     else if (raw.find ("rc.") == 0)
     {
@@ -389,13 +406,13 @@ void CLI::extractOverrides ()
       if (sep == std::string::npos)
         sep = raw.find (':', 3);
       if (sep != std::string::npos)
-        _overrides[raw.substr (3, sep - 3)] = raw.substr (sep + 1);
+      {
+        a->tag ("CONFIG");
+        a->attribute ("name", raw.substr (3, sep - 3));
+        a->attribute ("value", raw.substr (sep + 1));
+      }
     }
-    else
-      reconstructed.push_back (*i);
   }
-
-  _args = reconstructed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -533,10 +550,7 @@ void CLI::unsweetenTags ()
 void CLI::dump (const std::string& label) const
 {
   std::cout << label << "\n"
-            << "  _program\n"
-            << "    " << _program.dump () << "\n";
-
-  std::cout << "  _original_args ";
+            << "  _original_args ";
   Color colorOrigArgs ("gray10 on gray4");
   std::vector <std::string>::const_iterator i;
   for (i = _original_args.begin (); i != _original_args.end (); ++i)
@@ -553,10 +567,6 @@ void CLI::dump (const std::string& label) const
     std::cout << "    " << a->dump () << "\n";
 
   std::cout << "  _rc            " << _rc << "\n";
-
-  std::map <std::string, std::string>::const_iterator m;
-  for (m = _overrides.begin (); m != _overrides.end (); ++m)
-    std::cout << "  _overrides     " << m->first << " --> " << m->second << "\n";
 
   if (_filter.size ())
   {

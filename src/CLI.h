@@ -72,7 +72,7 @@ public:
 
 private:
   void aliasExpansion ();
-  void extractOverrides ();
+  void findOverrides ();
   void categorize ();
   bool exactMatch (const std::string&, const std::string&) const;
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
@@ -82,11 +82,9 @@ private:
 public:
   std::multimap <std::string, std::string> _entities;
   std::map <std::string, std::string>      _aliases;
-  A                                        _program;
   std::vector <std::string>                _original_args;
   std::vector <A>                          _args;
   std::string                              _rc;
-  std::map <std::string, std::string>      _overrides;
   A                                        _command;
   bool                                     _readOnly;
   std::vector <A>                          _filter;
