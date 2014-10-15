@@ -96,10 +96,10 @@ void CLI::initialize (int argc, const char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Capture a single argument, and recalc everything.
 void CLI::add (const std::string& arg)
 {
   // Clean what needs to be cleaned. Most in this case.
-  _program = "";
   _args.clear ();
   _rc = "";
   _overrides.clear ();
