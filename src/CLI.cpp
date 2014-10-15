@@ -526,14 +526,17 @@ void CLI::unsweetenTags ()
     {
       A left ("argTag", "tags");
       left.tag ("ATT");
+      left.tag ("FILTER");
       reconstructed.push_back (left);
 
       A op ("argTag", sign == "+" ? "_hastag_" : "_notag_");
       op.tag ("OP");
+      op.tag ("FILTER");
       reconstructed.push_back (op);
 
       A right ("argTag", tag);
       right.tag ("LITERAL");
+      right.tag ("FILTER");
       reconstructed.push_back (right);
     }
     else
