@@ -307,7 +307,7 @@ const std::string CLI::getFilter ()
         if (filter != "")
           filter += ' ';
 
-        std::string term = a->attribute ("canonical");
+        std::string term = a->attribute ("name");
         if (term == "")
           term = a->attribute ("raw");
 
@@ -424,7 +424,7 @@ void CLI::categorize ()
 
       a->tag ("CMD");
       a->tag (readOnly ? "READCMD" : "WRITECMD");
-      a->attribute ("canonical", canonical);
+      a->attribute ("name", canonical);
       foundCommand = true;
     }
     else if (a->hasTag ("BINARY") ||
@@ -574,7 +574,7 @@ void CLI::unsweetenAtts ()
           if (canonicalize (canonical, "uda", name))
           {
             A left ("argUDA", name);
-            left.attribute ("canonical", canonical);
+            left.attribute ("name", canonical);
             left.tag ("UDA");
             left.tag ("MODIFIABLE");
             left.tag ("FILTER");
@@ -585,7 +585,7 @@ void CLI::unsweetenAtts ()
           else if (canonicalize (canonical, "pseudo", name))
           {
             A left ("argUDA", name);
-            left.attribute ("canonical", canonical);
+            left.attribute ("name", canonical);
             left.tag ("PSEUDO");
             left.tag ("FILTER");
             reconstructed.push_back (left);
@@ -595,7 +595,7 @@ void CLI::unsweetenAtts ()
           else if (canonicalize (canonical, "attribute", name))
           {
             A lhs ("argAtt", name);
-            lhs.attribute ("canonical", canonical);
+            lhs.attribute ("name", canonical);
             lhs.tag ("ATTRIBUTE");
             lhs.tag ("FILTER");
 
