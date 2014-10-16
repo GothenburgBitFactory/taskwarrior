@@ -46,6 +46,9 @@ def binary_location(cmd):
 def wait_process(proc, timeout=1):
     """Wait for process to finish
     """
+    if timeout is None:
+        timeout = 1
+
     sleeptime = .1
     # Max number of attempts until giving up
     tries = int(timeout / sleeptime)
@@ -62,7 +65,7 @@ def wait_process(proc, timeout=1):
     return exit
 
 
-def _get_output(proc, input):
+def _get_output(proc, input, timeout=None):
     """Collect output from the subprocess without blocking the main process if
     subprocess hangs.
     """
@@ -84,7 +87,7 @@ def _get_output(proc, input):
     t.start()
 
     # A task process shouldn't take longer than 1 second to finish
-    exit = wait_process(proc)
+    exit = wait_process(proc, timeout)
 
     # If it does take longer than 1 second, abort it
     if exit is None:
@@ -113,7 +116,7 @@ def _get_output(proc, input):
 
 
 def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
-                 merge_streams=False, env=os.environ):
+                 merge_streams=False, env=os.environ, timeout=None):
     "Run a subprocess and wait for it to finish"
 
     if input is None:
@@ -128,7 +131,7 @@ def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
 
     p = Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr, bufsize=1,
               close_fds=ON_POSIX, env=env)
-    out, err, exit = _get_output(p, input)
+    out, err, exit = _get_output(p, input, timeout)
 
     if exit != 0:
         raise CommandError(cmd, exit, out, err)
@@ -275,6 +278,7 @@ except ImportError:
                     if _access_check(name, mode):
                         return name
         return None
+
 
 def parse_datafile(file):
     """Parse .data files on the client and server treating files as JSON
