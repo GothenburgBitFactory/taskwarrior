@@ -78,6 +78,7 @@ private:
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   void unsweetenTags ();
   void unsweetenAtts ();
+  void unsweetenAttMods ();
   void dump (const std::string&) const;
 
 public:
