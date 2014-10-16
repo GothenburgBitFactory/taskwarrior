@@ -294,7 +294,8 @@ const std::string CLI::getFilter ()
   unsweetenTags ();
   unsweetenAttributes ();
   unsweetenAttributeModifiers ();
-  // TODO all the other types: pattern, id, uuid ...
+  unsweetenPatterns ();
+  // TODO all the other types: id, uuid ...
 
   std::string filter = "";
   if (_args.size ())
@@ -795,6 +796,43 @@ void CLI::unsweetenAttributeModifiers ()
     }
 
     if (!found)
+      reconstructed.push_back (*a);
+  }
+
+  _args = reconstructed;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// /pattern/ --> description ~ pattern
+void CLI::unsweetenPatterns ()
+{
+  std::vector <A> reconstructed;
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    Nibbler n (a->attribute ("raw"));
+    std::string pattern;
+
+    if (n.getQuoted ('/', pattern) &&
+        n.depleted () &&
+        pattern.length () > 0)
+    {
+      A lhs ("argPattern", "description");
+      lhs.tag ("ATT");
+      lhs.tag ("FILTER");
+      reconstructed.push_back (lhs);
+
+      A op ("argPattern", "~");
+      op.tag ("OP");
+      op.tag ("FILTER");
+      reconstructed.push_back (op);
+
+      A rhs ("argPattern", "'" + pattern + "'");
+      rhs.tag ("LITERAL");
+      rhs.tag ("FILTER");
+      reconstructed.push_back (rhs);
+    }
+    else
       reconstructed.push_back (*a);
   }
 
