@@ -88,7 +88,12 @@ def _get_output(proc, input):
 
     # If it does take longer than 1 second, abort it
     if exit is None:
-        proc.send_signal(signal.SIGABRT)
+        try:
+            proc.send_signal(signal.SIGABRT)
+        except OSError as e:
+            # 3 means the process finished/died between last check and now
+            if e.errno != 3:
+                raise
         exit = wait_process(proc)
 
     # NOTE Increase this value if tests fail with None being received as
