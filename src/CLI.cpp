@@ -292,8 +292,8 @@ const std::string CLI::getFilter ()
 {
   // Remove all the syntactic sugar.
   unsweetenTags ();
-  unsweetenAtts ();
-  unsweetenAttMods ();
+  unsweetenAttributes ();
+  unsweetenAttributeModifiers ();
   // TODO all the other types: pattern, id, uuid ...
 
   std::string filter = "";
@@ -547,7 +547,7 @@ void CLI::unsweetenTags ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>:['"][<value>]['"] --> name = value
-void CLI::unsweetenAtts ()
+void CLI::unsweetenAttributes ()
 {
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
@@ -633,7 +633,7 @@ void CLI::unsweetenAtts ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>.<mod>[:=]['"]<value>['"] --> name <op> value
-void CLI::unsweetenAttMods ()
+void CLI::unsweetenAttributeModifiers ()
 {
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
