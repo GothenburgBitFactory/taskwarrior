@@ -167,6 +167,7 @@
 - TW-1424 Using a date of '1824days' (in the future) fails (thanks to Black Ops
           Testing).
 - TW-1428 Add support for color.uda.<name>.<value> rules.
+- TW-1436 Parser hangs when multiple slashes are used.
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity

@@ -244,6 +244,12 @@ bool Lexer::token (std::string& result, Type& type)
         type = typeEscapeUnicode;
         shift ();
       }
+      else
+      {
+        type = quote ? typeString : typeIdentifier;
+        result += utf8_character (_n0);
+        shift ();
+      }
       break;
 
     case typeEscape:

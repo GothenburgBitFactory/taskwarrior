@@ -15,7 +15,7 @@ class TestBug1436(TestCase):
         self.t = Task()
 
     def test_parser_hangs_with_slashes(self):
-        """Parser hangs with slashes"""
+        """Parser hangs with backslashes"""
         expected = "Cheer everyone up \o/"
         code, out, err = self.t(("add", expected))
         self.assertIn("Created task 1", out)
@@ -24,13 +24,12 @@ class TestBug1436(TestCase):
         self.assertIn(expected, out)
 
     def test_parser_ending_escape_slash(self):
-        """Task created but not found with ending slash"""
-        expected = "Use this slash \\"
-        code, out, err = self.t(("add", expected))
+        """Task created but not found with ending backslash"""
+        code, out, err = self.t(("add", "Use this backslash \\\\"))
         self.assertIn("Created task 1", out)
 
         code, out, err = self.t(("list",))
-        self.assertIn(expected, out)
+        self.assertIn("Use this backslash \\", out)
 
 
 if __name__ == "__main__":
