@@ -90,9 +90,7 @@ class ServerTestBugNumber(ServerTestCase):
 
 
 if __name__ == "__main__":
-    # NOTE Uncomment the next line to actually execute the tests
-    # In this template tests are not valid and are meant to serve as example
     from simpletap import TAPTestRunner
-    #unittest.main(testRunner=TAPTestRunner())
+    unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4
