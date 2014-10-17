@@ -5,7 +5,7 @@ if [ x"$1" = x"--verbose" ];
 then
   for i in ${TESTBLOB}
   do
-    if [[ -x "$i" ]]; then
+    if [ -x "$i" ]; then
       echo '#' $i
       $i > test.log 2>&1
       while read LINE
