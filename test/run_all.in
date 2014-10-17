@@ -5,16 +5,20 @@ if [ x"$1" = x"--verbose" ];
 then
   for i in ${TESTBLOB}
   do
-    echo '#' $i
-    $i > test.log 2>&1
-    while read LINE
-    do
-      echo "$LINE"
-    done < test.log
-    if [ $? -ne 0 ]; then
-      rc=1
+    if [[ -x "$i" ]]; then
+      echo '#' $i
+      $i > test.log 2>&1
+      while read LINE
+      do
+        echo "$LINE"
+      done < test.log
+      if [ $? -ne 0 ]; then
+        rc=1
+      fi
+      rm test.log
+    else
+      echo "# Skipping $(basename $i) execute bit not set"
     fi
-    rm test.log
   done
   exit $rc
 else
