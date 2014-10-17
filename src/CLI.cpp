@@ -803,7 +803,7 @@ void CLI::unsweetenAttributeModifiers ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// /pattern/ --> description ~ pattern
+// /pattern/ --> description ~ 'pattern'
 void CLI::unsweetenPatterns ()
 {
   std::vector <A> reconstructed;
