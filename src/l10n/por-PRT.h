@@ -460,6 +460,7 @@
 #define STRING_CMD_IMPORT_SUMMARY    "Importadas {1} tarefas."
 #define STRING_CMD_IMPORT_NOFILE     "Necessita especificar o ficheiro a importar."
 #define STRING_CMD_IMPORT_FILE       "A importar '{1}'"
+#define STRING_CMD_IMPORT_MISSING    "File '{1}' not found."
 #define STRING_TASK_NO_DESC          "Descrição da anotação em falta: {1}"
 #define STRING_TASK_NO_ENTRY         "Data de entrada da anotação em falta: {1}"
 #define STRING_CMD_SYNC_USAGE        "Sincroniza dados com o Taskserver"

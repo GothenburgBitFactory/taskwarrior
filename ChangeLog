@@ -168,6 +168,7 @@
           Testing).
 - TW-1428 Add support for color.uda.<name>.<value> rules.
 - TW-1436 Parser hangs when multiple slashes are used.
+- TW-1441 task import continues happily if filename doesn't exist.
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity

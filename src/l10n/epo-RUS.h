@@ -460,6 +460,7 @@
 #define STRING_CMD_IMPORT_SUMMARY    "Importis {1} taskojn."
 #define STRING_CMD_IMPORT_NOFILE     "Vi devas specifi kiu dosieron import."
 #define STRING_CMD_IMPORT_FILE       "Importanta '{1}'"
+#define STRING_CMD_IMPORT_MISSING    "File '{1}' not found."
 #define STRING_TASK_NO_DESC          "Komento havas mankon de priskribo: {1}"
 #define STRING_TASK_NO_ENTRY         "Komento havas mankon de enskrib-dato: {1}"
 #define STRING_CMD_SYNC_USAGE        "Sinkronigas datumojn kun la Taskserver"

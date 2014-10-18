@@ -460,6 +460,7 @@
 #define STRING_CMD_IMPORT_SUMMARY    "Zaimportowano {1} zadań."
 #define STRING_CMD_IMPORT_NOFILE     "Musisz podać plik do zaimportowania."
 #define STRING_CMD_IMPORT_FILE       "Importowanie '{1}'"
+#define STRING_CMD_IMPORT_MISSING    "File '{1}' not found."
 #define STRING_TASK_NO_DESC          "Komentarz nie posiada treści: {1}"
 #define STRING_TASK_NO_ENTRY         "Komentarz nie posiada daty utworzenia: {1}"
 #define STRING_CMD_SYNC_USAGE        "Synchronizuje dane z serwerem zadań"

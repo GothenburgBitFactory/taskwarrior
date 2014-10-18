@@ -61,12 +61,15 @@ int CmdImport::execute (std::string& output)
   std::vector <std::string>::iterator word;
   for (word = words.begin (); word != words.end (); ++word)
   {
-    std::string file = *word;
-    std::cout << format (STRING_CMD_IMPORT_FILE, file) << "\n";
+    File incoming (*word);
+    if (! incoming.exists ())
+      throw format (STRING_CMD_IMPORT_MISSING, *word);
+
+    std::cout << format (STRING_CMD_IMPORT_FILE, *word) << "\n";
 
     // Load the file.
     std::vector <std::string> lines;
-    File::read (file, lines);
+    incoming.read (lines);
 
     std::vector <std::string>::iterator line;
     for (line = lines.begin (); line != lines.end (); ++line)

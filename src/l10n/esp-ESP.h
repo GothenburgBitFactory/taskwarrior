@@ -468,6 +468,7 @@
 #define STRING_CMD_IMPORT_SUMMARY    "Importadas {1} tareas."
 #define STRING_CMD_IMPORT_NOFILE     "Debe especificar un archivo a importar."
 #define STRING_CMD_IMPORT_FILE       "Importando '{1}'"
+#define STRING_CMD_IMPORT_MISSING    "File '{1}' not found."
 #define STRING_TASK_NO_DESC          "La anotación carece de descripción: {1}"
 #define STRING_TASK_NO_ENTRY         "La anotación carece de fecha de entrada: {1}"
 
