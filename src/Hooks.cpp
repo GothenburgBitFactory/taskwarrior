@@ -137,7 +137,10 @@ void Hooks::onLaunch ()
         if (isJSON (*line))
         {
           if (_debug >= 2)
-            context.debug ("Hook output: " + *line);
+          {
+            context.debug ("Hook output:");
+            context.debug ("  " + *line);
+          }
 
           // Only 'add' is possible.
           Task newTask (*line);
@@ -211,13 +214,16 @@ void Hooks::onExit ()
     split (lines, output, '\n');
     std::vector <std::string>::iterator line;
 
+    if (_debug >= 2)
+      context.debug ("Hook output:");
+
     for (line = lines.begin (); line != lines.end (); ++line)
     {
-      if (_debug >= 2)
-        context.debug ("Hook output: " + *line);
-
       if (! isJSON (*line))
       {
+        if (_debug >= 2)
+          context.debug ("  " + *line);
+
         if (status == 0)
           context.footnote (*line);
         else
@@ -276,10 +282,14 @@ void Hooks::onAdd (std::vector <Task>& changes)
     if (status == 0)
     {
       changes.clear ();
+
+      if (_debug >= 2)
+        context.debug ("Hook output:");
+
       for (line = lines.begin (); line != lines.end (); ++line)
       {
         if (_debug >= 2)
-          context.debug ("Hook output: " + *line);
+          context.debug ("  " + *line);
 
         if (isJSON (*line))
           changes.push_back (Task (*line));
@@ -333,8 +343,9 @@ void Hooks::onModify (const Task& before, std::vector <Task>& changes)
     std::string afterJSON = changes[0].composeJSON ();
     if (_debug >= 2)
     {
-      context.debug ("Hook input: " + beforeJSON);
-      context.debug ("Hook input: " + afterJSON);
+      context.debug ("Hook input:");
+      context.debug ("  " + beforeJSON);
+      context.debug ("  " + afterJSON);
     }
 
     std::string input = beforeJSON
@@ -355,10 +366,14 @@ void Hooks::onModify (const Task& before, std::vector <Task>& changes)
     if (status == 0)
     {
       changes.clear ();
+
+      if (_debug >= 2)
+        context.debug ("Hook output:");
+
       for (line = lines.begin (); line != lines.end (); ++line)
       {
         if (_debug >= 2)
-          context.debug ("Hook output: " + *line);
+          context.debug ("  " + *line);
 
         if (isJSON (*line))
           changes.push_back (Task (*line));
