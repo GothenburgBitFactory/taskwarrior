@@ -51,6 +51,7 @@ public:
 
 private:
   std::vector <std::string> scripts (const std::string&);
+  bool isJSON (const std::string&) const;
 
 private:
   bool                      _enabled;

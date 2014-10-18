@@ -36,6 +36,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <Context.h>
+#include <JSON.h>
 #include <Hooks.h>
 #include <text.h>
 #include <util.h>
@@ -133,7 +134,7 @@ void Hooks::onLaunch ()
     {
       for (line = lines.begin (); line != lines.end (); ++line)
       {
-        if (line->length () && (*line)[0] == '{')
+        if (isJSON (*line))
         {
           if (_debug >= 2)
             context.debug ("Hook output: " + *line);
@@ -149,7 +150,7 @@ void Hooks::onLaunch ()
     else
     {
       for (line = lines.begin (); line != lines.end (); ++line)
-        if (line->length () && (*line)[0] != '{')
+        if (! isJSON (*line))
           context.error (*line);
 
       throw 0;  // This is how hooks silently terminate processing.
@@ -215,7 +216,7 @@ void Hooks::onExit ()
       if (_debug >= 2)
         context.debug ("Hook output: " + *line);
 
-      if (line->length () && (*line)[0] != '{')
+      if (! isJSON (*line))
       {
         if (status == 0)
           context.footnote (*line);
@@ -280,7 +281,7 @@ void Hooks::onAdd (std::vector <Task>& changes)
         if (_debug >= 2)
           context.debug ("Hook output: " + *line);
 
-        if (line->length () && (*line)[0] == '{')
+        if (isJSON (*line))
           changes.push_back (Task (*line));
         else
           context.footnote (*line);
@@ -289,7 +290,7 @@ void Hooks::onAdd (std::vector <Task>& changes)
     else
     {
       for (line = lines.begin (); line != lines.end (); ++line)
-        if (line->length () && (*line)[0] != '{')
+        if (! isJSON (*line))
           context.error (*line);
 
       throw 0;  // This is how hooks silently terminate processing.
@@ -359,7 +360,7 @@ void Hooks::onModify (const Task& before, std::vector <Task>& changes)
         if (_debug >= 2)
           context.debug ("Hook output: " + *line);
 
-        if (line->length () && (*line)[0] == '{')
+        if (isJSON (*line))
           changes.push_back (Task (*line));
         else
           context.footnote (*line);
@@ -368,7 +369,7 @@ void Hooks::onModify (const Task& before, std::vector <Task>& changes)
     else
     {
       for (line = lines.begin (); line != lines.end (); ++line)
-        if (line->length () && (*line)[0] != '{')
+        if (! isJSON (*line))
           context.error (*line);
 
       throw 0;  // This is how hooks silently terminate processing.
@@ -400,6 +401,38 @@ std::vector <std::string> Hooks::scripts (const std::string& event)
   }
 
   return matching;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Hooks::isJSON (const std::string& input) const
+{
+  if (input.length () &&
+      input[0] == '{' &&
+      input[input.length () - 1] == '}')
+  {
+    try
+    {
+      Task maybe (input);
+      return true;
+    }
+
+    catch (const std::string& e)
+    {
+      if (_debug >= 1)
+        context.debug ("Hook output looks like JSON, but is not a valid task.");
+
+      if (_debug >= 2)
+        context.debug ("JSON parser error: " + e);
+    }
+
+    catch (...)
+    {
+      if (_debug >= 1)
+        context.debug ("Hook output looks like JSON, but fails to parse.");
+    }
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
