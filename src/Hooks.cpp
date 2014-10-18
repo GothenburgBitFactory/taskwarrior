@@ -415,7 +415,6 @@ bool Hooks::isJSON (const std::string& input) const
     {
       // The absolute minimum a task needs is:
       bool foundDescription = false;
-      bool foundStatus = false;
 
       // Parse the whole thing.
       json::value* root = json::parse (input);
@@ -431,23 +430,16 @@ bool Hooks::isJSON (const std::string& input) const
         {
           // If the attribute is a recognized column.
           std::string type = Task::attributes[i->first];
-          if (type != "")
-          {
-            if (i->first == "description" && type == "string")
-              foundDescription = true;
-
-            if (i->first == "status" && type == "string")
-              foundStatus = true;
-          }
+          if (type == "string" && i->first == "description")
+            foundDescription = true;
         }
       }
+      else
+        throw std::string ("Object expected.");
 
       // It's JSON, but is it a task?
       if (! foundDescription)
         throw std::string ("Missing 'description' attribute, of type 'string'.");
-
-      if (! foundStatus)
-        throw std::string ("Missing 'status' attribute, of type 'string'.");
 
       // Yep, looks like a JSON task.
       return true;
