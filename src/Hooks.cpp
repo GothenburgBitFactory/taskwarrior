@@ -406,29 +406,66 @@ std::vector <std::string> Hooks::scripts (const std::string& event)
 ////////////////////////////////////////////////////////////////////////////////
 bool Hooks::isJSON (const std::string& input) const
 {
-  if (input.length () &&
-      input[0] == '{' &&
+  // Does it even look like JSON?  {...}
+  if (input.length () > 2 &&
+      input[0] == '{'     &&
       input[input.length () - 1] == '}')
   {
     try
     {
-      Task maybe (input);
+      // The absolute minimum a task needs is:
+      bool foundDescription = false;
+      bool foundStatus = false;
+
+      // Parse the whole thing.
+      json::value* root = json::parse (input);
+      if (root->type () == json::j_object)
+      {
+        json::object* root_obj = (json::object*)root;
+
+        // For each object element...
+        json_object_iter i;
+        for (i  = root_obj->_data.begin ();
+             i != root_obj->_data.end ();
+             ++i)
+        {
+          // If the attribute is a recognized column.
+          std::string type = Task::attributes[i->first];
+          if (type != "")
+          {
+            if (i->first == "description" && type == "string")
+              foundDescription = true;
+
+            if (i->first == "status" && type == "string")
+              foundStatus = true;
+          }
+        }
+      }
+
+      // It's JSON, but is it a task?
+      if (! foundDescription)
+        throw std::string ("Missing 'description' attribute, of type 'string'.");
+
+      if (! foundStatus)
+        throw std::string ("Missing 'status' attribute, of type 'string'.");
+
+      // Yep, looks like a JSON task.
       return true;
     }
 
     catch (const std::string& e)
     {
       if (_debug >= 1)
-        context.debug ("Hook output looks like JSON, but is not a valid task.");
+        context.error ("Hook output looks like JSON, but is not a valid task.");
 
       if (_debug >= 2)
-        context.debug ("JSON parser error: " + e);
+        context.error ("JSON " + e);
     }
 
     catch (...)
     {
       if (_debug >= 1)
-        context.debug ("Hook output looks like JSON, but fails to parse.");
+        context.error ("Hook output looks like JSON, but fails to parse.");
     }
   }
 
