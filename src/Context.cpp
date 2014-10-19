@@ -775,6 +775,7 @@ void Context::propagateDebug ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// No duplicates.
 void Context::header (const std::string& input)
 {
   if (input.length () &&
@@ -783,6 +784,7 @@ void Context::header (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// No duplicates.
 void Context::footnote (const std::string& input)
 {
   if (input.length () &&
@@ -791,6 +793,7 @@ void Context::footnote (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// No duplicates.
 void Context::error (const std::string& input)
 {
   if (input.length () &&
@@ -801,8 +804,7 @@ void Context::error (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 void Context::debug (const std::string& input)
 {
-  if (input.length () &&
-      std::find (debugMessages.begin (), debugMessages.end (), input) == debugMessages.end ())
+  if (input.length ())
     debugMessages.push_back (input);
 }
 
