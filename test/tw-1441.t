@@ -16,11 +16,10 @@ class TestBug1441(TestCase):
 
     def test_import_filename(self):
         """import fails if file doesn't exist"""
-        command = ("import", "somefile", "otherfile")
-        code, out, err = self.t.runError(command)
+        command = ("import", "xxx_doesnotexist")
+        code, out, err = self.t.runError(command, merge_streams=False)
 
-        self.assertIn("File 'somefile' not found.", err)
-        self.assertIn("File 'otherfile' not found.", err)
+        self.assertIn("File 'xxx_doesnotexist' not found.", err)
 
 
 if __name__ == "__main__":
