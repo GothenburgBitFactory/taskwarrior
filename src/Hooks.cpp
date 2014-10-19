@@ -100,10 +100,8 @@ bool Hooks::enable (bool value)
 // Output:
 // - all emitted JSON lines are added/modified as tasks, if the exit code is
 //   zero, otherwise ignored.
-// - minimal new task:  {"description":"Buy milk"}
-// - to modify a task include complete JSON
-// - all emitted non-JSON lines are considered feedback messages if the exit
-//   code is zero, otherwise they are considered errors.
+// - all emitted non-JSON lines are considered feedback or error messages
+//   depending on the status code.
 //
 void Hooks::onLaunch ()
 {
@@ -113,50 +111,38 @@ void Hooks::onLaunch ()
   context.timer_hooks.start ();
 
   std::vector <std::string> matchingScripts = scripts ("on-launch");
-  std::vector <std::string>::iterator i;
-  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
+  if (matchingScripts.size ())
   {
-    if (_debug >= 1)
-      context.debug ("Hooks: Calling " + *i);
-
-    std::string output;
-    std::vector <std::string> args;
-    int status = execute (*i, args, "", output);
-
-    if (_debug >= 2)
-      context.debug (format ("Hooks: Completed with status {1}", status));
-
-    std::vector <std::string> lines;
-    split (lines, output, '\n');
-    std::vector <std::string>::iterator line;
-
-    if (status == 0)
+    std::vector <std::string>::iterator script;
+    for (script = matchingScripts.begin (); script != matchingScripts.end (); ++script)
     {
-      for (line = lines.begin (); line != lines.end (); ++line)
+      std::vector <std::string> input;
+      std::vector <std::string> output;
+      int status = callHookScript (*script, input, output);
+
+      std::vector <std::string>::iterator line;
+      for (line = output.begin (); line != output.end (); ++line)
       {
         if (isJSON (*line))
         {
-          if (_debug >= 2)
+          if (status == 0)
           {
-            context.debug ("Hook output:");
-            context.debug ("  " + *line);
+            // Only 'add' is possible.
+            Task newTask (*line);
+            context.tdb2.add (newTask);
           }
-
-          // Only 'add' is possible.
-          Task newTask (*line);
-          context.tdb2.add (newTask);
         }
         else
-          context.header (*line);
+        {
+          if (status == 0)
+            context.header (*line);
+          else
+            context.error (*line);
+        }
       }
-    }
-    else
-    {
-      for (line = lines.begin (); line != lines.end (); ++line)
-        if (! isJSON (*line))
-          context.error (*line);
 
-      throw 0;  // This is how hooks silently terminate processing.
+      if (status)
+        throw 0;  // This is how hooks silently terminate processing.
     }
   }
 
@@ -172,8 +158,8 @@ void Hooks::onLaunch ()
 //
 // Output:
 // - any emitted JSON is ignored
-// - all emitted non-JSON lines are considered feedback messages if the exit
-//   code is zero, otherwise they are considered errors.
+// - all emitted non-JSON lines are considered feedback or error messages
+//   depending on the status code.
 //
 void Hooks::onExit ()
 {
@@ -182,52 +168,40 @@ void Hooks::onExit ()
 
   context.timer_hooks.start ();
 
-  std::vector <Task> changes;
-  context.tdb2.get_changes (changes);
-
-  std::string input = "";
-  std::vector <Task>::const_iterator t;
-  for (t = changes.begin (); t != changes.end (); ++t)
-  {
-    std::string json = t->composeJSON ();
-    if (_debug >= 2)
-      context.debug ("Hook input: " + json);
-
-    input += json + "\n";
-  }
-
   std::vector <std::string> matchingScripts = scripts ("on-exit");
-  std::vector <std::string>::iterator i;
-  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
+  if (matchingScripts.size ())
   {
-    if (_debug >= 1)
-      context.debug ("Hooks: Calling " + *i);
+    // Get the set of changed tasks.
+    std::vector <Task> tasks;
+    context.tdb2.get_changes (tasks);
 
-    std::string output;
-    std::vector <std::string> args;
-    int status = execute (*i, args, input, output);
+    // Convert to a vector of strings.
+    std::vector <std::string> input;
+    std::vector <Task>::const_iterator t;
+    for (t = tasks.begin (); t != tasks.end (); ++t)
+      input.push_back (t->composeJSON ());
 
-    if (_debug >= 2)
-      context.debug (format ("Hooks: Completed with status {1}", status));
-
-    std::vector <std::string> lines;
-    split (lines, output, '\n');
-    std::vector <std::string>::iterator line;
-
-    if (_debug >= 2)
-      context.debug ("Hook output:");
-
-    for (line = lines.begin (); line != lines.end (); ++line)
+    // Call the hook scripts, with the invariant input.
+    std::vector <std::string>::iterator script;
+    for (script = matchingScripts.begin (); script != matchingScripts.end (); ++script)
     {
-      if (! isJSON (*line))
-      {
-        if (_debug >= 2)
-          context.debug ("  " + *line);
+      std::vector <std::string> output;
+      int status = callHookScript (*script, input, output);
 
-        if (status == 0)
-          context.footnote (*line);
+      std::vector <std::string>::iterator line;
+      for (line = output.begin (); line != output.end (); ++line)
+      {
+        if (isJSON (*line))
+        {
+          context.error ("JSON output ignored: {1}");
+        }
         else
-          context.error (*line);
+        {
+          if (status == 0)
+            context.footnote (*line);
+          else
+            context.error (*line);
+        }
       }
     }
   }
@@ -244,12 +218,10 @@ void Hooks::onExit ()
 // Output:
 // - all emitted JSON lines are added/modified as tasks, if the exit code is
 //   zero, otherwise ignored.
-// - minimal new task:  {"description":"Buy milk"}
-// - to modify a task include complete JSON
-// - all emitted non-JSON lines are considered feedback messages if the exit
-//   code is zero, otherwise they are considered errors.
+// - all emitted non-JSON lines are considered feedback or error messages
+//   depending on the status code.
 //
-void Hooks::onAdd (std::vector <Task>& changes)
+void Hooks::onAdd (std::vector <Task>& tasks)
 {
   if (! _enabled)
     return;
@@ -257,54 +229,49 @@ void Hooks::onAdd (std::vector <Task>& changes)
   context.timer_hooks.start ();
 
   std::vector <std::string> matchingScripts = scripts ("on-add");
-  std::vector <std::string>::iterator i;
-  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
+  if (matchingScripts.size ())
   {
-    if (_debug >= 1)
-      context.debug ("Hooks: Calling " + *i);
+    // Convert vector of tasks to a vector of strings.
+    std::vector <std::string> input;
+    std::vector <Task>::const_iterator t;
+    for (t = tasks.begin (); t != tasks.end (); ++t)
+      input.push_back (t->composeJSON ());
 
-    std::string input = changes.at(0).composeJSON ();
-    if (_debug >= 2)
-      context.debug ("Hook input: " + input);
-
-    input += "\n";
-    std::string output;
-    std::vector <std::string> args;
-    int status = execute (*i, args, input, output);
-
-    if (_debug >= 2)
-      context.debug (format ("Hooks: Completed with status {1}", status));
-
-    std::vector <std::string> lines;
-    split (lines, output, '\n');
-    std::vector <std::string>::iterator line;
-
-    if (status == 0)
+    // Call the hook scripts.
+    std::vector <std::string>::iterator script;
+    for (script = matchingScripts.begin (); script != matchingScripts.end (); ++script)
     {
-      changes.clear ();
+      std::vector <std::string> output;
+      int status = callHookScript (*script, input, output);
 
-      if (_debug >= 2)
-        context.debug ("Hook output:");
+      input.clear ();
 
-      for (line = lines.begin (); line != lines.end (); ++line)
+      std::vector <std::string>::iterator line;
+      for (line = output.begin (); line != output.end (); ++line)
       {
-        if (_debug >= 2)
-          context.debug ("  " + *line);
-
         if (isJSON (*line))
-          changes.push_back (Task (*line));
+        {
+          if (status == 0)
+            input.push_back (*line);
+        }
         else
-          context.footnote (*line);
+        {
+          if (status == 0)
+            context.footnote (*line);
+          else
+            context.error (*line);
+        }
       }
-    }
-    else
-    {
-      for (line = lines.begin (); line != lines.end (); ++line)
-        if (! isJSON (*line))
-          context.error (*line);
 
-      throw 0;  // This is how hooks silently terminate processing.
+      if (status)
+        throw 0;  // This is how hooks silently terminate processing.
     }
+
+    // Transfer the modified task lines back to the original task list.
+    tasks.clear ();
+    std::vector <std::string>::iterator i;
+    for (i = input.begin (); i != input.end (); ++i)
+      tasks.push_back (Task (*i));
   }
 
   context.timer_hooks.stop ();
@@ -320,75 +287,74 @@ void Hooks::onAdd (std::vector <Task>& changes)
 // Output:
 // - all emitted JSON lines are added/modified as tasks, if the exit code is
 //   zero, otherwise ignored.
-// - minimal new task:  {"description":"Buy milk"}
-// - to modify a task include complete JSON
-// - all emitted non-JSON lines are considered feedback messages if the exit
-//   code is zero, otherwise they are considered errors.
+// - all emitted non-JSON lines are considered feedback or error messages
+//   depending on the status code.
 //
-void Hooks::onModify (const Task& before, std::vector <Task>& changes)
+void Hooks::onModify (const Task& before, std::vector <Task>& tasks)
 {
-  if (! _enabled)
+  if (! _enabled || tasks.size () < 1)
     return;
 
   context.timer_hooks.start ();
 
-  std::vector <std::string> matchingScripts = scripts ("on-modify");
-  std::vector <std::string>::iterator i;
-  for (i = matchingScripts.begin (); i != matchingScripts.end (); ++i)
+  std::vector <std::string> matchingScripts = scripts ("on-modіfy");
+  if (matchingScripts.size ())
   {
-    if (_debug >= 1)
-      context.debug ("Hooks: Calling " + *i);
-
+    // Prepare invariants.
     std::string beforeJSON = before.composeJSON ();
-    std::string afterJSON = changes[0].composeJSON ();
-    if (_debug >= 2)
+    std::string uuidPattern = "\"uuid\":\"" + before.get ("uuid") + "\"";
+
+    // Convert vector of tasks to a vector of strings.
+    std::vector <std::string> input;
+    input.push_back (beforeJSON);               // [0] original, never changes
+    input.push_back (tasks[0].composeJSON ());  // [1] original'
+
+    // Call the hook scripts.
+    std::vector <std::string>::iterator script;
+    for (script = matchingScripts.begin (); script != matchingScripts.end (); ++script)
     {
-      context.debug ("Hook input:");
-      context.debug ("  " + beforeJSON);
-      context.debug ("  " + afterJSON);
-    }
+      std::vector <std::string> firstTwoOnly;
+      firstTwoOnly.push_back (input[0]);
+      firstTwoOnly.push_back (input[1]);
 
-    std::string input = beforeJSON
-                      + "\n"
-                      + afterJSON
-                      + "\n";
-    std::string output;
-    std::vector <std::string> args;
-    int status = execute (*i, args, input, output);
+      std::vector <std::string> output;
+      int status = callHookScript (*script, firstTwoOnly, output);
 
-    if (_debug >= 2)
-      context.debug (format ("Hooks: Completed with status {1}", status));
+      // Start from scratch.
+      input[1] = "";                            // [1] placeholder for original'
 
-    std::vector <std::string> lines;
-    split (lines, output, '\n');
-    std::vector <std::string>::iterator line;
-
-    if (status == 0)
-    {
-      changes.clear ();
-
-      if (_debug >= 2)
-        context.debug ("Hook output:");
-
-      for (line = lines.begin (); line != lines.end (); ++line)
+      std::vector <std::string>::iterator line;
+      for (line = output.begin (); line != output.end (); ++line)
       {
-        if (_debug >= 2)
-          context.debug ("  " + *line);
-
         if (isJSON (*line))
-          changes.push_back (Task (*line));
+        {
+          if (status == 0)
+          {
+            if (line->find (uuidPattern) != std::string::npos)
+              input[1] = *line;                 // [1] original'
+            else
+              input.push_back (*line);          // [n > 1] extras
+          }
+        }
         else
-          context.footnote (*line);
+        {
+          if (status == 0)
+              context.footnote (*line);
+        else
+            context.error (*line);
+        }
       }
-    }
-    else
-    {
-      for (line = lines.begin (); line != lines.end (); ++line)
-        if (! isJSON (*line))
-          context.error (*line);
 
-      throw 0;  // This is how hooks silently terminate processing.
+      if (status)
+        throw 0;  // This is how hooks silently terminate processing.
     }
+
+    // Transfer the modified task lines back to the original task list.
+    tasks.clear ();
+    std::vector <std::string>::iterator i;
+    for (i = input.begin (); i != input.end (); ++i)
+      if (i != input.begin ())
+        tasks.push_back (Task (*i));
   }
 
   context.timer_hooks.stop ();
@@ -477,6 +443,47 @@ bool Hooks::isJSON (const std::string& input) const
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int Hooks::callHookScript (
+  const std::string& script,
+  const std::vector <std::string>& input,
+  std::vector <std::string> output)
+{
+  if (_debug >= 1)
+    context.debug ("Hooks: Calling " + script);
+
+  if (_debug >= 2)
+  {
+    context.debug ("Hook input:");
+    std::vector <std::string>::const_iterator i;
+    for (i = input.begin (); i != input.end (); ++i)
+      context.debug ("  " + *i);
+  }
+
+  std::string inputStr;
+  join (inputStr, "\n", input);
+
+  std::string outputStr;
+  std::vector <std::string> args;
+  int status = execute (script, args, inputStr, outputStr);
+
+  split (output, outputStr, '\n');
+
+  if (_debug >= 2)
+  {
+    context.debug ("Hook output:");
+    std::vector <std::string>::const_iterator i;
+    for (i = output.begin (); i != output.end (); ++i)
+      if (*i != "")
+        context.debug ("  " + *i);
+
+    context.debug (format ("Hooks: Completed with status {1}", status));
+    context.debug (" "); // Blank line
+  }
+
+  return status;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
