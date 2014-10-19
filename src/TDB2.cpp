@@ -1486,7 +1486,7 @@ void TDB2::dump ()
     context.debug (completed.dump ());
     context.debug (undo.dump ());
     context.debug (backlog.dump ());
-    context.debug ("");
+    context.debug (" ");
   }
 }
 
