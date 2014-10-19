@@ -223,7 +223,7 @@ void Hooks::onExit ()
 //
 void Hooks::onAdd (std::vector <Task>& tasks)
 {
-  if (! _enabled)
+  if (! _enabled || tasks.size () < 1)
     return;
 
   context.timer_hooks.start ();
@@ -233,9 +233,7 @@ void Hooks::onAdd (std::vector <Task>& tasks)
   {
     // Convert vector of tasks to a vector of strings.
     std::vector <std::string> input;
-    std::vector <Task>::const_iterator t;
-    for (t = tasks.begin (); t != tasks.end (); ++t)
-      input.push_back (t->composeJSON ());
+    input.push_back (tasks[0].composeJSON ());
 
     // Call the hook scripts.
     std::vector <std::string>::iterator script;
@@ -456,7 +454,7 @@ int Hooks::callHookScript (
 
   if (_debug >= 2)
   {
-    context.debug ("Hook input:");
+    context.debug ("Hooks: input");
     std::vector <std::string>::const_iterator i;
     for (i = input.begin (); i != input.end (); ++i)
       context.debug ("  " + *i);
@@ -475,8 +473,8 @@ int Hooks::callHookScript (
 
   if (_debug >= 2)
   {
-    context.debug ("Hook output:");
-    std::vector <std::string>::const_iterator i;
+    context.debug ("Hooks: output");
+    std::vector <std::string>::iterator i;
     for (i = output.begin (); i != output.end (); ++i)
       if (*i != "")
         context.debug ("  " + *i);
