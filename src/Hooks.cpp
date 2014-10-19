@@ -449,7 +449,7 @@ bool Hooks::isJSON (const std::string& input) const
 int Hooks::callHookScript (
   const std::string& script,
   const std::vector <std::string>& input,
-  std::vector <std::string> output)
+  std::vector <std::string>& output)
 {
   if (_debug >= 1)
     context.debug ("Hooks: Calling " + script);
