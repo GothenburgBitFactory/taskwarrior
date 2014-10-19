@@ -641,162 +641,164 @@ void CLI::unsweetenAttributeModifiers ()
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
-    // Look for a valid attribute name.
-    bool found = false;
-    Nibbler n (a->attribute ("raw"));
-    std::string name;
-    if (n.getUntil (".", name) &&
-        name.length ())
+    if (a->hasTag ("FILTER"))
     {
-      std::string canonical;
-      if (canonicalize (canonical, "attribute", name) ||
-          canonicalize (canonical, "uda",       name))
+      // Look for a valid attribute name.
+      bool found = false;
+      Nibbler n (a->attribute ("raw"));
+      std::string name;
+      if (n.getUntil (".", name) &&
+          name.length ())
       {
-        if (n.skip ('.'))
+        std::string canonical;
+        if (canonicalize (canonical, "attribute", name) ||
+            canonicalize (canonical, "uda",       name))
         {
-          std::string sense = "+";
-          if (n.skip ('~'))
-            sense = "-";
-
-          std::string modifier;
-          n.getUntilOneOf (":=", modifier);
-
-          if (n.skip (':') ||
-              n.skip ('='))
+          if (n.skip ('.'))
           {
-            std::string value;
-            if (n.getQuoted   ('"', value)  ||
-                n.getQuoted   ('\'', value) ||
-                n.getUntilEOS (value)       ||
-                n.depleted ())
+            std::string sense = "+";
+            if (n.skip ('~'))
+              sense = "-";
+
+            std::string modifier;
+            n.getUntilOneOf (":=", modifier);
+
+            if (n.skip (':') ||
+                n.skip ('='))
             {
-              if (value == "")
-                value = "''";
+              std::string value;
+              if (n.getQuoted   ('"', value)  ||
+                  n.getQuoted   ('\'', value) ||
+                  n.getUntilEOS (value)       ||
+                  n.depleted ())
+              {
+                if (value == "")
+                  value = "''";
 
-              A lhs ("argAttMod", name);
-              lhs.tag ("ATTMOD");
-              lhs.tag ("FILTER");
+                A lhs ("argAttMod", name);
+                lhs.tag ("ATTMOD");
+                lhs.tag ("FILTER");
 
-              lhs.attribute ("name", canonical);
-              lhs.attribute ("raw", value);
-              lhs.attribute ("modifier", modifier);
-              lhs.attribute ("sense", sense);
+                lhs.attribute ("name", canonical);
+                lhs.attribute ("raw", value);
+                lhs.attribute ("modifier", modifier);
+                lhs.attribute ("sense", sense);
 
-              std::map <std::string, Column*>::const_iterator col;
-              col = context.columns.find (canonical);
-              if (col != context.columns.end () &&
-                  col->second->modifiable ())
-              {
-                lhs.tag ("MODIFIABLE");
-              }
+                std::map <std::string, Column*>::const_iterator col;
+                col = context.columns.find (canonical);
+                if (col != context.columns.end () &&
+                    col->second->modifiable ())
+                {
+                  lhs.tag ("MODIFIABLE");
+                }
 
-              A op ("argAttmod", "");
-              op.tag ("FILTER");
+                A op ("argAttmod", "");
+                op.tag ("FILTER");
 
-              A rhs ("argAttMod", "");
-              rhs.tag ("FILTER");
+                A rhs ("argAttMod", "");
+                rhs.tag ("FILTER");
 
-              if (modifier == "before" || modifier == "under" || modifier == "below")
-              {
-                op.attribute ("raw", "<");
-                op.tag ("OP");
-                rhs.attribute ("raw", value);
-              }
-              else if (modifier == "after" || modifier == "over" || modifier == "above")
-              {
-                op.attribute ("raw", ">");
-                op.tag ("OP");
-                rhs.attribute ("raw", value);
-              }
-              else if (modifier == "none")
-              {
-                op.attribute ("raw", "==");
-                op.tag ("OP");
-                rhs.attribute ("raw", "''");
-              }
-              else if (modifier == "any")
-              {
-                op.attribute ("raw", "!=");
-                op.tag ("OP");
-                rhs.attribute ("raw", "''");
-              }
-              else if (modifier == "is" || modifier == "equals")
-              {
-                op.attribute ("raw", "==");
-                op.tag ("OP");
-                rhs.attribute ("raw", value);
-              }
-              else if (modifier == "isnt" || modifier == "not")
-              {
-                op.attribute ("raw", "!=");
-                op.tag ("OP");
-                rhs.attribute ("raw", value);
-              }
-              else if (modifier == "has" || modifier == "contains")
-              {
-                op.attribute ("raw", "~");
-                op.tag ("OP");
-                rhs.attribute ("raw", value);
-              }
-              else if (modifier == "hasnt")
-              {
-                op.attribute ("raw", "!~");
-                op.tag ("OP");
-                rhs.attribute ("raw", value);
-              }
-              else if (modifier == "startswith" || modifier == "left")
-              {
-                op.attribute ("raw", "~");
-                op.tag ("OP");
-                rhs.attribute ("raw", "'^" + value + "'");
-              }
-              else if (modifier == "endswith" || modifier == "right")
-              {
-                op.attribute ("raw", "~");
-                op.tag ("OP");
-                rhs.attribute ("raw", "'" + value + "$'");
-              }
-              else if (modifier == "word")
-              {
-                op.attribute ("raw", "~");
-                op.tag ("OP");
-
-
+                if (modifier == "before" || modifier == "under" || modifier == "below")
+                {
+                  op.attribute ("raw", "<");
+                  op.tag ("OP");
+                  rhs.attribute ("raw", value);
+                }
+                else if (modifier == "after" || modifier == "over" || modifier == "above")
+                {
+                  op.attribute ("raw", ">");
+                  op.tag ("OP");
+                  rhs.attribute ("raw", value);
+                }
+                else if (modifier == "none")
+                {
+                  op.attribute ("raw", "==");
+                  op.tag ("OP");
+                  rhs.attribute ("raw", "''");
+                }
+                else if (modifier == "any")
+                {
+                  op.attribute ("raw", "!=");
+                  op.tag ("OP");
+                  rhs.attribute ("raw", "''");
+                }
+                else if (modifier == "is" || modifier == "equals")
+                {
+                  op.attribute ("raw", "==");
+                  op.tag ("OP");
+                  rhs.attribute ("raw", value);
+                }
+                else if (modifier == "isnt" || modifier == "not")
+                {
+                  op.attribute ("raw", "!=");
+                  op.tag ("OP");
+                  rhs.attribute ("raw", value);
+                }
+                else if (modifier == "has" || modifier == "contains")
+                {
+                  op.attribute ("raw", "~");
+                  op.tag ("OP");
+                  rhs.attribute ("raw", value);
+                }
+                else if (modifier == "hasnt")
+                {
+                  op.attribute ("raw", "!~");
+                  op.tag ("OP");
+                  rhs.attribute ("raw", value);
+                }
+                else if (modifier == "startswith" || modifier == "left")
+                {
+                  op.attribute ("raw", "~");
+                  op.tag ("OP");
+                  rhs.attribute ("raw", "'^" + value + "'");
+                }
+                else if (modifier == "endswith" || modifier == "right")
+                {
+                  op.attribute ("raw", "~");
+                  op.tag ("OP");
+                  rhs.attribute ("raw", "'" + value + "$'");
+                }
+                else if (modifier == "word")
+                {
+                  op.attribute ("raw", "~");
+                  op.tag ("OP");
 #if defined (DARWIN)
-                rhs.attribute ("raw", value);
+                  rhs.attribute ("raw", value);
 #elif defined (SOLARIS)
-                rhs.attribute ("raw", "'\\<" + value + "\\>'");
+                  rhs.attribute ("raw", "'\\<" + value + "\\>'");
 #else
-                rhs.attribute ("raw", "'\\b" + value + "\\b'");
+                  rhs.attribute ("raw", "'\\b" + value + "\\b'");
 #endif
-              }
-              else if (modifier == "noword")
-              {
-                op.attribute ("raw", "!~");
-                op.tag ("OP");
-
+                }
+                else if (modifier == "noword")
+                {
+                  op.attribute ("raw", "!~");
+                  op.tag ("OP");
 #if defined (DARWIN)
-                rhs.attribute ("raw", value);
+                  rhs.attribute ("raw", value);
 #elif defined (SOLARIS)
-                rhs.attribute ("raw", "'\\<" + value + "\\>'");
+                  rhs.attribute ("raw", "'\\<" + value + "\\>'");
 #else
-                rhs.attribute ("raw", "'\\b" + value + "\\b'");
+                  rhs.attribute ("raw", "'\\b" + value + "\\b'");
 #endif
-              }
-              else
-                throw format (STRING_PARSER_UNKNOWN_ATTMOD, modifier);
+                }
+                else
+                  throw format (STRING_PARSER_UNKNOWN_ATTMOD, modifier);
 
-              reconstructed.push_back (lhs);
-              reconstructed.push_back (op);
-              reconstructed.push_back (rhs);
-              found = true;
+                reconstructed.push_back (lhs);
+                reconstructed.push_back (op);
+                reconstructed.push_back (rhs);
+                found = true;
+              }
             }
           }
         }
       }
-    }
 
-    if (!found)
+      if (!found)
+        reconstructed.push_back (*a);
+    }
+    else
       reconstructed.push_back (*a);
   }
 
