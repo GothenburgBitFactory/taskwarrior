@@ -66,6 +66,7 @@ public:
   void entity (const std::string&, const std::string&);
   void initialize (int, const char**);
   void add (const std::string&);
+  void analyze ();
   const std::string getFilter ();
   const std::vector <std::string> getWords ();
   const std::vector <std::string> getModifications ();

@@ -230,30 +230,10 @@ void CLI::initialize (int argc, const char** argv)
 {
   // Clean what needs to be cleaned. Everything in this case.
   _original_args.clear ();
-  _args.clear ();
-
   for (int i = 0; i < argc; ++i)
-  {
     _original_args.push_back (argv[i]);
 
-    if (i == 0)
-    {
-      A a ("arg", argv[i]);
-      a.tag ("ORIGINAL");
-      a.tag ("BINARY");
-      _args.push_back (a);
-    }
-    else
-    {
-      A a ("arg", argv[i]);
-      a.tag ("ORIGINAL");
-      _args.push_back (a);
-    }
-  }
-
-  aliasExpansion ();
-  findOverrides ();
-  categorize ();
+  analyze ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,8 +241,19 @@ void CLI::initialize (int argc, const char** argv)
 void CLI::add (const std::string& arg)
 {
   // Clean what needs to be cleaned. Most in this case.
-  _args.clear ();
   _original_args.push_back (arg);
+
+  analyze ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Intended to be called after ::initialize() and ::add(), to perform the final
+// analysis. Analysis is also performed directly after the above, because there
+// is a need to extract overrides early, before entities are proviedd.
+void CLI::analyze ()
+{
+  // Clean what needs to be cleaned. Most in this case.
+  _args.clear ();
 
   for (int i = 0; i < _original_args.size (); ++i)
   {

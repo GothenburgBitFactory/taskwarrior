@@ -248,6 +248,7 @@ int Context::initialize (int argc, const char** argv)
 
     staticInitialization ();                        // Decouple code from Context.
     parser.parse ();                                // Parse all elements.
+    cli.analyze ();                                 // Parse all elements.
 
     tdb2.set_location (data_dir);                   // Prepare the task database.
 
