@@ -813,27 +813,32 @@ void CLI::unsweetenPatterns ()
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
-    Nibbler n (a->attribute ("raw"));
-    std::string pattern;
-
-    if (n.getQuoted ('/', pattern) &&
-        n.depleted () &&
-        pattern.length () > 0)
+    if (a->hasTag ("FILTER"))
     {
-      A lhs ("argPattern", "description");
-      lhs.tag ("ATT");
-      lhs.tag ("FILTER");
-      reconstructed.push_back (lhs);
+      Nibbler n (a->attribute ("raw"));
+      std::string pattern;
 
-      A op ("argPattern", "~");
-      op.tag ("OP");
-      op.tag ("FILTER");
-      reconstructed.push_back (op);
+      if (n.getQuoted ('/', pattern) &&
+          n.depleted () &&
+          pattern.length () > 0)
+      {
+        A lhs ("argPattern", "description");
+        lhs.tag ("ATT");
+        lhs.tag ("FILTER");
+        reconstructed.push_back (lhs);
 
-      A rhs ("argPattern", "'" + pattern + "'");
-      rhs.tag ("LITERAL");
-      rhs.tag ("FILTER");
-      reconstructed.push_back (rhs);
+        A op ("argPattern", "~");
+        op.tag ("OP");
+        op.tag ("FILTER");
+        reconstructed.push_back (op);
+
+        A rhs ("argPattern", "'" + pattern + "'");
+        rhs.tag ("LITERAL");
+        rhs.tag ("FILTER");
+        reconstructed.push_back (rhs);
+      }
+      else
+        reconstructed.push_back (*a);
     }
     else
       reconstructed.push_back (*a);
