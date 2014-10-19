@@ -506,29 +506,34 @@ void CLI::unsweetenTags ()
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
-    Nibbler n (a->attribute ("raw"));
-    std::string tag;
-    std::string sign;
-
-    if (n.getN (1, sign)             &&
-        (sign == "+" || sign == "-") &&
-        n.getUntilEOS (tag)          &&
-        tag.find (' ') == std::string::npos)
+    if (a->hasTag ("FILTER"))
     {
-      A left ("argTag", "tags");
-      left.tag ("ATT");
-      left.tag ("FILTER");
-      reconstructed.push_back (left);
+      Nibbler n (a->attribute ("raw"));
+      std::string tag;
+      std::string sign;
 
-      A op ("argTag", sign == "+" ? "_hastag_" : "_notag_");
-      op.tag ("OP");
-      op.tag ("FILTER");
-      reconstructed.push_back (op);
+      if (n.getN (1, sign)             &&
+          (sign == "+" || sign == "-") &&
+          n.getUntilEOS (tag)          &&
+          tag.find (' ') == std::string::npos)
+      {
+        A left ("argTag", "tags");
+        left.tag ("ATT");
+        left.tag ("FILTER");
+        reconstructed.push_back (left);
 
-      A right ("argTag", tag);
-      right.tag ("LITERAL");
-      right.tag ("FILTER");
-      reconstructed.push_back (right);
+        A op ("argTag", sign == "+" ? "_hastag_" : "_notag_");
+        op.tag ("OP");
+        op.tag ("FILTER");
+        reconstructed.push_back (op);
+
+        A right ("argTag", tag);
+        right.tag ("LITERAL");
+        right.tag ("FILTER");
+        reconstructed.push_back (right);
+      }
+      else
+        reconstructed.push_back (*a);
     }
     else
       reconstructed.push_back (*a);
