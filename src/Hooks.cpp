@@ -203,6 +203,9 @@ void Hooks::onExit ()
             context.error (*line);
         }
       }
+
+      if (status)
+        throw 0;  // This is how hooks silently terminate processing.
     }
   }
 
@@ -243,7 +246,6 @@ void Hooks::onAdd (std::vector <Task>& tasks)
       int status = callHookScript (*script, input, output);
 
       input.clear ();
-
       std::vector <std::string>::iterator line;
       for (line = output.begin (); line != output.end (); ++line)
       {
