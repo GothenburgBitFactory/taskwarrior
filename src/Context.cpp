@@ -772,6 +772,12 @@ void Context::propagateDebug ()
     if (! config.has ("debug.parser"))
       config.set ("debug.parser", 1);
   }
+  else
+  {
+    if ((config.has ("debug.hooks")  && config.getInteger ("debug.hooks")) ||
+        (config.has ("debug.parser") && config.getInteger ("debug.parser")) )
+      config.set ("debug", true);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
