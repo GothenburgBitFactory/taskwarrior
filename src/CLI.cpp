@@ -550,78 +550,83 @@ void CLI::unsweetenAttributes ()
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
-    // Look for a valid attribute name.
-    bool found = false;
-    Nibbler n (a->attribute ("raw"));
-    std::string name;
-    if (n.getName (name) &&
-        name.length ())
+    if (a->hasTag ("FILTER"))
     {
-      if (n.skip (':'))
+      // Look for a valid attribute name.
+      bool found = false;
+      Nibbler n (a->attribute ("raw"));
+      std::string name;
+      if (n.getName (name) &&
+          name.length ())
       {
-        std::string value;
-        if (n.getQuoted   ('"', value)  ||
-            n.getQuoted   ('\'', value) ||
-            n.getUntilEOS (value)       ||
-            n.depleted ())
+        if (n.skip (':'))
         {
-          if (value == "")
-            value = "''";
-
-          std::string canonical;
-          if (canonicalize (canonical, "uda", name))
+          std::string value;
+          if (n.getQuoted   ('"', value)  ||
+              n.getQuoted   ('\'', value) ||
+              n.getUntilEOS (value)       ||
+              n.depleted ())
           {
-            A left ("argUDA", name);
-            left.attribute ("name", canonical);
-            left.tag ("UDA");
-            left.tag ("MODIFIABLE");
-            left.tag ("FILTER");
-            reconstructed.push_back (left);
-            found = true;
-          }
+            if (value == "")
+              value = "''";
 
-          else if (canonicalize (canonical, "pseudo", name))
-          {
-            A left ("argUDA", name);
-            left.attribute ("name", canonical);
-            left.tag ("PSEUDO");
-            left.tag ("FILTER");
-            reconstructed.push_back (left);
-            found = true;
-          }
-
-          else if (canonicalize (canonical, "attribute", name))
-          {
-            A lhs ("argAtt", name);
-            lhs.attribute ("name", canonical);
-            lhs.tag ("ATTRIBUTE");
-            lhs.tag ("FILTER");
-
-            std::map <std::string, Column*>::const_iterator col;
-            col = context.columns.find (canonical);
-            if (col != context.columns.end () &&
-                col->second->modifiable ())
+            std::string canonical;
+            if (canonicalize (canonical, "uda", name))
             {
-              lhs.tag ("MODIFIABLE");
+              A left ("argUDA", name);
+              left.attribute ("name", canonical);
+              left.tag ("UDA");
+              left.tag ("MODIFIABLE");
+              left.tag ("FILTER");
+              reconstructed.push_back (left);
+              found = true;
             }
 
-            A op ("argAtt", "=");
-            op.tag ("OP");
-            op.tag ("FILTER");
+            else if (canonicalize (canonical, "pseudo", name))
+            {
+              A left ("argUDA", name);
+              left.attribute ("name", canonical);
+              left.tag ("PSEUDO");
+              left.tag ("FILTER");
+              reconstructed.push_back (left);
+              found = true;
+            }
 
-            A rhs ("argAtt", value);
-            rhs.tag ("FILTER");
+            else if (canonicalize (canonical, "attribute", name))
+            {
+              A lhs ("argAtt", name);
+              lhs.attribute ("name", canonical);
+              lhs.tag ("ATTRIBUTE");
+              lhs.tag ("FILTER");
 
-            reconstructed.push_back (lhs);
-            reconstructed.push_back (op);
-            reconstructed.push_back (rhs);
-            found = true;
+              std::map <std::string, Column*>::const_iterator col;
+              col = context.columns.find (canonical);
+              if (col != context.columns.end () &&
+                  col->second->modifiable ())
+              {
+                lhs.tag ("MODIFIABLE");
+              }
+
+              A op ("argAtt", "=");
+              op.tag ("OP");
+              op.tag ("FILTER");
+
+              A rhs ("argAtt", value);
+              rhs.tag ("FILTER");
+
+              reconstructed.push_back (lhs);
+              reconstructed.push_back (op);
+              reconstructed.push_back (rhs);
+              found = true;
+            }
           }
         }
       }
-    }
 
-    if (!found)
+      if (!found)
+        reconstructed.push_back (*a);
+    }
+    else
       reconstructed.push_back (*a);
   }
 
