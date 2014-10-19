@@ -297,7 +297,7 @@ void Hooks::onModify (const Task& before, std::vector <Task>& tasks)
 
   context.timer_hooks.start ();
 
-  std::vector <std::string> matchingScripts = scripts ("on-modіfy");
+  std::vector <std::string> matchingScripts = scripts ("on-modify");
   if (matchingScripts.size ())
   {
     // Prepare invariants.
@@ -463,7 +463,9 @@ int Hooks::callHookScript (
   }
 
   std::string inputStr;
-  join (inputStr, "\n", input);
+  std::vector <std::string>::const_iterator i;
+  for (i = input.begin (); i != input.end (); ++i)
+    inputStr += *i + "\n";
 
   std::string outputStr;
   std::vector <std::string> args;
