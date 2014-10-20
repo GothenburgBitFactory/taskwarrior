@@ -296,7 +296,7 @@ void CLI::analyze ()
   unsweetenAttributes ();
   unsweetenAttributeModifiers ();
   unsweetenPatterns ();
-//  unsweetenIDs ();
+  unsweetenIDs ();
   unsweetenUUIDs ();
 }
 
@@ -864,6 +864,14 @@ void CLI::unsweetenPatterns ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// An ID sequence can be:
+//
+//   a single ID:          1
+//   a list of IDs:        1,3,5
+//   a list of IDs:        1 3 5
+//   a range:              5-10
+//   or a combination:     1,3,5-10 12
+//
 void CLI::unsweetenIDs ()
 {
   std::vector <A> reconstructed;
@@ -872,8 +880,180 @@ void CLI::unsweetenIDs ()
   {
     if (a->hasTag ("FILTER"))
     {
+      bool found = false;
+      std::string raw = a->attribute ("raw");
 
+      // IDs have a limited character set.
+      if (raw.find_first_not_of ("0123456789,-") == std::string::npos)
+      {
+        // Container for min/max ID ranges.
+        std::vector <std::pair <int, int> > ranges;
 
+        // Split the ID list into elements.
+        std::vector <std::string> elements;
+        split (elements, raw, ',');
+
+        bool not_an_id = false;
+        std::vector <std::string>::iterator e;
+        for (e = elements.begin (); e != elements.end (); ++e)
+        {
+          // Split the ID range into min/max.
+          std::vector <std::string> terms;
+          split (terms, *e, '-');
+
+          if (terms.size () == 1)
+          {
+            if (! digitsOnly (terms[0]))
+            {
+              not_an_id = true;
+              break;
+            }
+
+            Nibbler n (terms[0]);
+            int id;
+            if (n.getUnsignedInt (id) &&
+                n.depleted ())
+            {
+              ranges.push_back (std::pair <int, int> (id, id));
+            }
+            else
+            {
+              not_an_id = true;
+              break;
+            }
+          }
+          else if (terms.size () == 2)
+          {
+            if (! digitsOnly (terms[0]) ||
+                ! digitsOnly (terms[1]))
+            {
+              not_an_id = true;
+              break;
+            }
+
+            Nibbler n_min (terms[0]);
+            Nibbler n_max (terms[1]);
+            int id_min;
+            int id_max;
+            if (n_min.getUnsignedInt (id_min) &&
+                n_min.depleted ()             &&
+                n_max.getUnsignedInt (id_max) &&
+                n_max.depleted ())
+            {
+              if (id_min > id_max)
+                throw std::string (STRING_PARSER_RANGE_INVERTED);
+
+              ranges.push_back (std::pair <int, int> (id_min, id_max));
+            }
+            else
+            {
+              not_an_id = true;
+              break;
+            }
+          }
+          else
+          {
+            not_an_id = true;
+            break;
+          }
+        }
+
+        if (! not_an_id)
+        {
+          // Now convert the ranges into an infix expression.
+          A openParen ("argSeq", "(");
+          openParen.tag ("FILTER");
+          openParen.tag ("OP");
+          reconstructed.push_back (openParen);
+
+          std::vector <std::pair <int, int> >::iterator r;
+          for (r = ranges.begin (); r != ranges.end (); ++r)
+          {
+            if (r != ranges.begin ())
+            {
+              A opOp ("argSeq", "or");
+              opOp.tag ("FILTER");
+              opOp.tag ("OP");
+              reconstructed.push_back (opOp);
+            }
+
+            if (r->first == r->second)
+            {
+              A id ("argSeq", "id");
+              id.tag ("FILTER");
+              id.tag ("ATTR");
+              reconstructed.push_back (id);
+
+              A equal ("argSeq", "==");
+              equal.tag ("FILTER");
+              equal.tag ("OP");
+              reconstructed.push_back (equal);
+
+              A value ("argSeq", r->first);
+              value.tag ("FILTER");
+              value.tag ("NUMBER");
+              reconstructed.push_back (value);
+            }
+            else
+            {
+              A rangeOpenParen ("argSeq", "(");
+              rangeOpenParen.tag ("FILTER");
+              rangeOpenParen.tag ("OP");
+              reconstructed.push_back (rangeOpenParen);
+
+              A startId ("argSeq", "id");
+              startId.tag ("FILTER");
+              startId.tag ("ATTR");
+              reconstructed.push_back (startId);
+
+              A gte ("argSeq", ">=");
+              gte.tag ("FILTER");
+              gte.tag ("OP");
+              reconstructed.push_back (gte);
+
+              A startValue ("argSeq", r->first);
+              startValue.tag ("FILTER");
+              startValue.tag ("NUMBER");
+              reconstructed.push_back (startValue);
+
+              A andOp ("argSeq", "and");
+              andOp.tag ("FILTER");
+              andOp.tag ("OP");
+              reconstructed.push_back (andOp);
+
+              A endId ("argSeq", "id");
+              endId.tag ("FILTER");
+              endId.tag ("ATTR");
+              reconstructed.push_back (endId);
+
+              A lte ("argSeq", "<=");
+              lte.tag ("FILTER");
+              lte.tag ("OP");
+              reconstructed.push_back (lte);
+
+              A endValue ("argSeq", r->second);
+              endValue.tag ("FILTER");
+              endValue.tag ("NUMBER");
+              reconstructed.push_back (endValue);
+
+              A rangeCloseParen ("argSeq", ")");
+              rangeCloseParen.tag ("FILTER");
+              rangeCloseParen.tag ("OP");
+              reconstructed.push_back (rangeCloseParen);
+            }
+          }
+
+          A closeParen ("argSeq", ")");
+          closeParen.tag ("FILTER");
+          closeParen.tag ("OP");
+          reconstructed.push_back (closeParen);
+
+          found = true;
+        }
+      }
+
+      if (!found)
+        reconstructed.push_back (*a);
     }
     else
       reconstructed.push_back (*a);
