@@ -23,7 +23,7 @@ class TestCMD(TestCase):
     def test_default_command(self):
         """default command"""
         code, out, err = self.t(())
-        self.assertIn("task list]", out)
+        self.assertIn("task list]", err)
 
     def test_info_command(self):
         """info command"""

@@ -59,7 +59,7 @@ class TestBug360RemovalError(BaseTestBug360):
         expected = "Modified 2 tasks."
         self.assertIn(expected, out)
         expected = "You cannot remove the recurrence from a recurring task."
-        self.assertNotIn(expected, out)
+        self.assertNotIn(expected, err)
 
     def test_cannot_remove_recurrence(self):
         """Cannot remove recurrence from recurring task
@@ -73,7 +73,7 @@ class TestBug360RemovalError(BaseTestBug360):
         self.assertEqual(code, 2)
 
         expected = "You cannot remove the recurrence from a recurring task."
-        self.assertIn(expected, out)
+        self.assertIn(expected, err)
 
     def test_cannot_remove_due_date(self):
         """Cannot remove due date from recurring task
@@ -87,7 +87,7 @@ class TestBug360RemovalError(BaseTestBug360):
         self.assertEqual(code, 2)
 
         expected = "You cannot remove the due date from a recurring task."
-        self.assertIn(expected, out)
+        self.assertIn(expected, err)
 
 
 class TestBug360AllowedChanges(BaseTestBug360):
@@ -117,7 +117,7 @@ class TestBug360AllowedChanges(BaseTestBug360):
         expected = "Modified 1 task."
         self.assertIn(expected, out)
         expected = "You cannot remove the due date from a recurring task."
-        self.assertNotIn(expected, out)
+        self.assertNotIn(expected, err)
 
         # Make sure no duplicate tasks were created
         args = ("diag",)
