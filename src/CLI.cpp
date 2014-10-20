@@ -292,12 +292,12 @@ void CLI::analyze ()
   categorize ();
 
   // Remove all the syntactic sugar.
-  unsweetenTags ();
-  unsweetenAttributes ();
-  unsweetenAttributeModifiers ();
-  unsweetenPatterns ();
-  unsweetenIDs ();
-  unsweetenUUIDs ();
+  desugarTags ();
+  desugarAttributes ();
+  desugarAttributeModifiers ();
+  desugarPatterns ();
+  desugarIDs ();
+  desugarUUIDs ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -326,7 +326,7 @@ const std::string CLI::getFilter ()
   }
 
   dump ("CLI::getFilter");
-  return "(" + filter + ")";
+  return "( " + filter + " )";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -516,7 +516,7 @@ bool CLI::canonicalize (
 ////////////////////////////////////////////////////////////////////////////////
 // +tag --> tags _hastag_ tag
 // -tag --> tags _notag_ tag
-void CLI::unsweetenTags ()
+void CLI::desugarTags ()
 {
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
@@ -560,7 +560,7 @@ void CLI::unsweetenTags ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>:['"][<value>]['"] --> name = value
-void CLI::unsweetenAttributes ()
+void CLI::desugarAttributes ()
 {
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
@@ -651,7 +651,7 @@ void CLI::unsweetenAttributes ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>.<mod>[:=]['"]<value>['"] --> name <op> value
-void CLI::unsweetenAttributeModifiers ()
+void CLI::desugarAttributeModifiers ()
 {
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
@@ -823,7 +823,7 @@ void CLI::unsweetenAttributeModifiers ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // /pattern/ --> description ~ 'pattern'
-void CLI::unsweetenPatterns ()
+void CLI::desugarPatterns ()
 {
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
@@ -872,7 +872,7 @@ void CLI::unsweetenPatterns ()
 //   a range:              5-10
 //   or a combination:     1,3,5-10 12
 //
-void CLI::unsweetenIDs ()
+void CLI::desugarIDs ()
 {
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
@@ -1063,7 +1063,7 @@ void CLI::unsweetenIDs ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CLI::unsweetenUUIDs ()
+void CLI::desugarUUIDs ()
 {
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;

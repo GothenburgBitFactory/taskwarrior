@@ -79,12 +79,12 @@ private:
   void categorize ();
   bool exactMatch (const std::string&, const std::string&) const;
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
-  void unsweetenTags ();
-  void unsweetenAttributes ();
-  void unsweetenAttributeModifiers ();
-  void unsweetenPatterns ();
-  void unsweetenIDs ();
-  void unsweetenUUIDs ();
+  void desugarTags ();
+  void desugarAttributes ();
+  void desugarAttributeModifiers ();
+  void desugarPatterns ();
+  void desugarIDs ();
+  void desugarUUIDs ();
   void dump (const std::string&) const;
 
 public:
