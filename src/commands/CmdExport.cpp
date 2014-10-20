@@ -71,7 +71,11 @@ int CmdExport::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     if (task != filtered.begin ())
-      output += ",\n";
+      {
+        if (json_array)
+          output += ",";
+        output += "\n";
+      }
 
     output += task->composeJSON (true);
 

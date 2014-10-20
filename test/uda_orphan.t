@@ -73,7 +73,7 @@ like ($output, qr/"extra":"foo"/, 'UDA orphan exported');
 if (open my $fh, '>', 'import.txt')
 {
   print $fh <<EOF;
-{"uuid":"00000000-0000-0000-0000-000000000000","description":"two","status":"pending","entry":"1234567889","extra":"bar"},
+{"uuid":"00000000-0000-0000-0000-000000000000","description":"two","status":"pending","entry":"1234567889","extra":"bar"}
 EOF
 
   close $fh;

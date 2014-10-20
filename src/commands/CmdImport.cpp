@@ -76,8 +76,7 @@ int CmdImport::execute (std::string& output)
     {
       std::string object = trimLeft (
                              trimRight (
-                               trimRight (
-                                 trim (*line), ","),
+                               trim (*line),
                                "]"),
                              "[");
       // Skip blanks.  May be caused by the trim calls above.
