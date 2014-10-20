@@ -303,6 +303,7 @@ void CLI::analyze ()
   // Decompose the elements for MODIFICATIONs.
   decomposeModAttributes ();
   decomposeModAttributeModifiers ();
+  decomposeModTags ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1185,7 +1186,6 @@ void CLI::decomposeModAttributes ()
     if (a->hasTag ("MODIFICATION"))
     {
       // Look for a valid attribute name.
-      bool found = false;
       Nibbler n (a->attribute ("raw"));
       std::string name;
       if (n.getName (name) &&
@@ -1205,44 +1205,32 @@ void CLI::decomposeModAttributes ()
             std::string canonical;
             if (canonicalize (canonical, "uda", name))
             {
-              A attr ("argUDA", name);
-              attr.attribute ("name", canonical);
-              attr.attribute ("value", value);
-              attr.tag ("UDA");
-              attr.tag ("MODIFIABLE");
-              attr.tag ("MODIFICATION");
-              reconstructed.push_back (attr);
-              found = true;
+              a->attribute ("name", canonical);
+              a->attribute ("value", value);
+              a->tag ("UDA");
+              a->tag ("MODIFIABLE");
             }
 
             else if (canonicalize (canonical, "attribute", name))
             {
-              A attr ("argAtt", name);
-              attr.attribute ("name", canonical);
-              attr.attribute ("value", value);
-              attr.tag ("ATTRIBUTE");
-              attr.tag ("MODIFICATION");
+              a->attribute ("name", canonical);
+              a->attribute ("value", value);
+              a->tag ("ATTRIBUTE");
 
               std::map <std::string, Column*>::const_iterator col;
               col = context.columns.find (canonical);
               if (col != context.columns.end () &&
                   col->second->modifiable ())
               {
-                attr.tag ("MODIFIABLE");
+                a->tag ("MODIFIABLE");
               }
-
-              reconstructed.push_back (attr);
-              found = true;
             }
           }
         }
       }
-
-      if (!found)
-        reconstructed.push_back (*a);
     }
-    else
-      reconstructed.push_back (*a);
+
+    reconstructed.push_back (*a);
   }
 
   _args = reconstructed;
@@ -1258,7 +1246,6 @@ void CLI::decomposeModAttributeModifiers ()
     if (a->hasTag ("MODIFICATION"))
     {
       // Look for a valid attribute name.
-      bool found = false;
       Nibbler n (a->attribute ("raw"));
       std::string name;
       if (n.getUntil (".", name) &&
@@ -1292,50 +1279,68 @@ void CLI::decomposeModAttributeModifiers ()
                 std::string canonical;
                 if (canonicalize (canonical, "uda", name))
                 {
-                  A attmod ("argUDA", name);
-                  attmod.attribute ("name", canonical);
-                  attmod.attribute ("modifier", modifier);
-                  attmod.attribute ("sense", sense);
-                  attmod.attribute ("value", value);
-                  attmod.tag ("UDA");
-                  attmod.tag ("MODIFIABLE");
-                  attmod.tag ("MODIFICATION");
-                  reconstructed.push_back (attmod);
-                  found = true;
+                  a->attribute ("name", canonical);
+                  a->attribute ("modifier", modifier);
+                  a->attribute ("sense", sense);
+                  a->attribute ("value", value);
+                  a->tag ("UDA");
+                  a->tag ("MODIFIABLE");
                 }
 
                 else if (canonicalize (canonical, "attribute", name))
                 {
-                  A attmod ("argAtt", name);
-                  attmod.attribute ("name", canonical);
-                  attmod.attribute ("modifier", modifier);
-                  attmod.attribute ("sense", sense);
-                  attmod.attribute ("value", value);
-                  attmod.tag ("ATTMOD");
-                  attmod.tag ("MODIFICATION");
+                  a->attribute ("name", canonical);
+                  a->attribute ("modifier", modifier);
+                  a->attribute ("sense", sense);
+                  a->attribute ("value", value);
+                  a->tag ("ATTMOD");
 
                   std::map <std::string, Column*>::const_iterator col;
                   col = context.columns.find (canonical);
                   if (col != context.columns.end () &&
                       col->second->modifiable ())
                   {
-                    attmod.tag ("MODIFIABLE");
+                    a->tag ("MODIFIABLE");
                   }
-
-                  reconstructed.push_back (attmod);
-                  found = true;
                 }
               }
             }
           }
         }
       }
-
-      if (!found)
-        reconstructed.push_back (*a);
     }
-    else
-      reconstructed.push_back (*a);
+
+    reconstructed.push_back (*a);
+  }
+
+  _args = reconstructed;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::decomposeModTags ()
+{
+  std::vector <A> reconstructed;
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (a->hasTag ("MODIFICATION"))
+    {
+      Nibbler n (a->attribute ("raw"));
+      std::string tag;
+      std::string sign;
+
+      if (n.getN (1, sign)             &&
+          (sign == "+" || sign == "-") &&
+          n.getUntilEOS (tag)          &&
+          tag.find (' ') == std::string::npos)
+      {
+        a->attribute ("name", tag);
+        a->attribute ("sign", sign);
+        a->tag ("TAG");
+      }
+    }
+
+    reconstructed.push_back (*a);
   }
 
   _args = reconstructed;
