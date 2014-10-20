@@ -87,6 +87,7 @@ private:
   void desugarIDs ();
   void desugarUUIDs ();
   void decomposeModAttributes ();
+  void decomposeModAttributeModifiers ();
 
 public:
   std::multimap <std::string, std::string> _entities;
