@@ -304,6 +304,7 @@ void CLI::analyze ()
   decomposeModAttributes ();
   decomposeModAttributeModifiers ();
   decomposeModTags ();
+  decomposeModSubstitutions ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1179,7 +1180,6 @@ void CLI::desugarUUIDs ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::decomposeModAttributes ()
 {
-  std::vector <A> reconstructed;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
@@ -1229,17 +1229,12 @@ void CLI::decomposeModAttributes ()
         }
       }
     }
-
-    reconstructed.push_back (*a);
   }
-
-  _args = reconstructed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::decomposeModAttributeModifiers ()
 {
-  std::vector <A> reconstructed;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
@@ -1309,17 +1304,12 @@ void CLI::decomposeModAttributeModifiers ()
         }
       }
     }
-
-    reconstructed.push_back (*a);
   }
-
-  _args = reconstructed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::decomposeModTags ()
 {
-  std::vector <A> reconstructed;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
@@ -1339,11 +1329,40 @@ void CLI::decomposeModTags ()
         a->tag ("TAG");
       }
     }
-
-    reconstructed.push_back (*a);
   }
+}
 
-  _args = reconstructed;
+////////////////////////////////////////////////////////////////////////////////
+void CLI::decomposeModSubstitutions ()
+{
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (a->hasTag ("MODIFICATION"))
+    {
+      std::string raw = a->attribute ("raw");
+      Nibbler n (raw);
+      std::string from;
+      std::string to;
+      bool global = false;
+      if (n.getQuoted ('/', from) &&
+          n.backN ()              &&
+          n.getQuoted ('/', to))
+      {
+        if (n.skip ('g'))
+          global = true;
+
+        if (n.depleted () &&
+            ! Directory (raw).exists ())
+        {
+          a->tag ("SUBSTITUTION");
+          a->attribute ("from", from);
+          a->attribute ("to", to);
+          a->attribute ("global", global ? 1 : 0);
+        }
+      }
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

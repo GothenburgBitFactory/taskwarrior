@@ -89,6 +89,7 @@ private:
   void decomposeModAttributes ();
   void decomposeModAttributeModifiers ();
   void decomposeModTags ();
+  void decomposeModSubstitutions ();
 
 public:
   std::multimap <std::string, std::string> _entities;
