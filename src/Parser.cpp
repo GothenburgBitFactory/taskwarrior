@@ -1416,7 +1416,7 @@ void Parser::findUUIDList ()
         continue;
 
       // Easy disqualifiers.
-      if (raw.find_first_not_of ("0123456789abcdefABCDEF-") != std::string::npos)
+      if (raw.find_first_not_of ("0123456789abcdefABCDEF-,") != std::string::npos)
         break;
 
       Nibbler n (raw);
