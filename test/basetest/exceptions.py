@@ -9,7 +9,7 @@ class CommandError(Exception):
                 "\n*** Start STDOUT ***\n{2}\n*** End STDOUT ***\n"
                 "\n*** Start STDERR ***\n{3}\n*** End STDERR ***\n"
                 )
-            if code == signal.SIGABRT:
+            if code == -signal.SIGABRT:
                 self.msg = ("Command '{0}' was aborted, likely due to not "
                             "finishing in due time. The exit code was '{1}'.\n"
                             ) + msg_suffix
