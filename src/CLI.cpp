@@ -881,7 +881,7 @@ void CLI::unsweetenUUIDs ()
       std::string raw = a->attribute ("raw");
 
       // UUIDs have a limited character set.
-      if (raw.find_first_not_of ("0123456789abcdefABCDEF-") == std::string::npos)
+      if (raw.find_first_not_of ("0123456789abcdefABCDEF-,") == std::string::npos)
       {
         Nibbler n (raw);
         std::vector <std::string> uuidList;
@@ -920,7 +920,7 @@ void CLI::unsweetenUUIDs ()
 
               A uuid ("argSeq", "uuid");
               uuid.tag ("FILTER");
-              uuid.tag ("UUID");
+              uuid.tag ("ATTR");
               reconstructed.push_back (uuid);
 
               A equal ("argSeq", "=");
@@ -930,7 +930,7 @@ void CLI::unsweetenUUIDs ()
 
               A value ("argSeq", "'" + *u + "'");
               value.tag ("FILTER");
-              value.tag ("LITERAL");
+              value.tag ("STRING");
               reconstructed.push_back (value);
             }
 
