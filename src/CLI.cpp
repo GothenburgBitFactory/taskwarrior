@@ -282,7 +282,7 @@ void CLI::analyze ()
   unsweetenAttributes ();
   unsweetenAttributeModifiers ();
   unsweetenPatterns ();
-  unsweetenIDs ();
+//  unsweetenIDs ();
   unsweetenUUIDs ();
 }
 
@@ -877,8 +877,75 @@ void CLI::unsweetenUUIDs ()
   {
     if (a->hasTag ("FILTER"))
     {
+      bool found = false;
+      std::string raw = a->attribute ("raw");
 
+      // UUIDs have a limited character set.
+      if (raw.find_first_not_of ("0123456789abcdefABCDEF-") == std::string::npos)
+      {
+        Nibbler n (raw);
+        std::vector <std::string> uuidList;
+        std::string uuid;
+        if (n.getUUID (uuid) ||
+            n.getPartialUUID (uuid))
+        {
+          uuidList.push_back (uuid);
 
+          while (n.skip (','))
+          {
+            if (! n.getUUID (uuid) &&
+                ! n.getPartialUUID (uuid))
+              throw std::string (STRING_PARSER_UUID_AFTER_COMMA);
+
+            uuidList.push_back (uuid);
+          }
+
+          if (n.depleted ())
+          {
+            A openParen ("argSeq", "(");
+            openParen.tag ("FILTER");
+            openParen.tag ("OP");
+            reconstructed.push_back (openParen);
+
+            std::vector <std::string>::iterator u;
+            for (u = uuidList.begin (); u != uuidList.end (); ++u)
+            {
+              if (u != uuidList.begin ())
+              {
+                A openParen ("argSeq", "or");
+                openParen.tag ("FILTER");
+                openParen.tag ("OP");
+                reconstructed.push_back (openParen);
+              }
+
+              A uuid ("argSeq", "uuid");
+              uuid.tag ("FILTER");
+              uuid.tag ("UUID");
+              reconstructed.push_back (uuid);
+
+              A equal ("argSeq", "=");
+              equal.tag ("FILTER");
+              equal.tag ("OP");
+              reconstructed.push_back (equal);
+
+              A value ("argSeq", "'" + *u + "'");
+              value.tag ("FILTER");
+              value.tag ("LITERAL");
+              reconstructed.push_back (value);
+            }
+
+            A closeParen ("argSeq", ")");
+            closeParen.tag ("FILTER");
+            closeParen.tag ("OP");
+            reconstructed.push_back (closeParen);
+
+            found = true;
+          }
+        }
+      }
+
+      if (!found)
+        reconstructed.push_back (*a);
     }
     else
       reconstructed.push_back (*a);
