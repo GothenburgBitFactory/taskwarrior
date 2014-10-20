@@ -272,22 +272,23 @@ void CLI::analyze ()
     }
   }
 
+  // Find argument types.
   aliasExpansion ();
   findOverrides ();
   categorize ();
+
+  // Remove all the syntactic sugar.
+  unsweetenTags ();
+  unsweetenAttributes ();
+  unsweetenAttributeModifiers ();
+  unsweetenPatterns ();
+  unsweetenIDs ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Extract all the FILTER-tagged items.
 const std::string CLI::getFilter ()
 {
-  // Remove all the syntactic sugar.
-  unsweetenTags ();
-  unsweetenAttributes ();
-  unsweetenAttributeModifiers ();
-  unsweetenPatterns ();
-  // TODO all the other types: id, uuid ...
-
   std::string filter = "";
   if (_args.size ())
   {
@@ -839,6 +840,25 @@ void CLI::unsweetenPatterns ()
       }
       else
         reconstructed.push_back (*a);
+    }
+    else
+      reconstructed.push_back (*a);
+  }
+
+  _args = reconstructed;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::unsweetenIDs ()
+{
+  std::vector <A> reconstructed;
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (a->hasTag ("FILTER"))
+    {
+
+
     }
     else
       reconstructed.push_back (*a);
