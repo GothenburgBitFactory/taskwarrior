@@ -283,6 +283,7 @@ void CLI::analyze ()
   unsweetenAttributeModifiers ();
   unsweetenPatterns ();
   unsweetenIDs ();
+  unsweetenUUIDs ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -850,6 +851,25 @@ void CLI::unsweetenPatterns ()
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::unsweetenIDs ()
+{
+  std::vector <A> reconstructed;
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (a->hasTag ("FILTER"))
+    {
+
+
+    }
+    else
+      reconstructed.push_back (*a);
+  }
+
+  _args = reconstructed;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::unsweetenUUIDs ()
 {
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;

@@ -82,6 +82,7 @@ private:
   void unsweetenAttributeModifiers ();
   void unsweetenPatterns ();
   void unsweetenIDs ();
+  void unsweetenUUIDs ();
   void dump (const std::string&) const;
 
 public:
