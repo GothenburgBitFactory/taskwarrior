@@ -74,6 +74,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
   if (context.config.getInteger ("debug.parser") >= 1)
   {
+    context.debug (context.cli.dump ());
+
     Tree* t = context.parser.tree ();
     if (t)
       context.debug (t->dump ());
@@ -121,6 +123,8 @@ void Filter::subset (std::vector <Task>& output)
 
   if (context.config.getInteger ("debug.parser") >= 1)
   {
+    context.debug (context.cli.dump ());
+
     Tree* t = context.parser.tree ();
     if (t)
       context.debug (t->dump ());

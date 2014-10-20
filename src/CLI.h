@@ -72,6 +72,7 @@ public:
   const std::string getFilter ();
   const std::vector <std::string> getWords ();
   const std::vector <std::string> getModifications ();
+  const std::string dump () const;
 
 private:
   void aliasExpansion ();
@@ -85,7 +86,6 @@ private:
   void desugarPatterns ();
   void desugarIDs ();
   void desugarUUIDs ();
-  void dump (const std::string&) const;
 
 public:
   std::multimap <std::string, std::string> _entities;

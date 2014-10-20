@@ -25,7 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream>
+#include <sstream>
+#include <iostream> // TODO Remove.
 #include <Context.h>
 #include <Nibbler.h>
 #include <Lexer.h>
@@ -325,7 +326,6 @@ const std::string CLI::getFilter ()
     }
   }
 
-  dump ("CLI::getFilter");
   return "( " + filter + " )";
 }
 
@@ -336,7 +336,6 @@ const std::vector <std::string> CLI::getWords ()
 
   // TODO Processing here.
 
-  dump ("CLI::getWords");
   return words;
 }
 
@@ -347,8 +346,32 @@ const std::vector <std::string> CLI::getModifications ()
 
   // TODO Processing here.
 
-  dump ("CLI::getModifications");
   return modifications;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string CLI::dump () const
+{
+  std::stringstream out;
+
+  out << "\033[1mCLI Parser\033[0m\n"
+      << "  _original_args\n    ";
+  Color colorOrigArgs ("gray10 on gray4");
+  std::vector <std::string>::const_iterator i;
+  for (i = _original_args.begin (); i != _original_args.end (); ++i)
+  {
+    if (i != _original_args.begin ())
+      out << ' ';
+    out << colorOrigArgs.colorize (*i);
+  }
+  out << "\n";
+
+  out << "  _args\n";
+  std::vector <A>::const_iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+    out << "    " << a->dump () << "\n";
+
+  return out.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1146,27 +1169,6 @@ void CLI::desugarUUIDs ()
   }
 
   _args = reconstructed;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CLI::dump (const std::string& label) const
-{
-  std::cout << label << "\n"
-            << "  _original_args ";
-  Color colorOrigArgs ("gray10 on gray4");
-  std::vector <std::string>::const_iterator i;
-  for (i = _original_args.begin (); i != _original_args.end (); ++i)
-  {
-    if (i != _original_args.begin ())
-      std::cout << ' ';
-    std::cout << colorOrigArgs.colorize (*i);
-  }
-  std::cout << "\n";
-
-  std::cout << "  _args\n";
-  std::vector <A>::const_iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
-    std::cout << "    " << a->dump () << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
