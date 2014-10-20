@@ -36,6 +36,8 @@ class A
 public:
   A ();
   A (const std::string&, const std::string&);
+  A (const std::string&, const int);
+  A (const std::string&, const double);
   ~A ();
   A (const A&);
   A& operator= (const A&);
