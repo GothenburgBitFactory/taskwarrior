@@ -292,13 +292,16 @@ void CLI::analyze ()
   findOverrides ();
   categorize ();
 
-  // Remove all the syntactic sugar.
+  // Remove all the syntactic sugar for FILTERs..
   desugarTags ();
   desugarAttributes ();
   desugarAttributeModifiers ();
   desugarPatterns ();
   desugarIDs ();
   desugarUUIDs ();
+
+  // Decompose the elements for MODIFICATIONs.
+  decomposeModAttributes ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1157,6 +1160,90 @@ void CLI::desugarUUIDs ()
             reconstructed.push_back (closeParen);
 
             found = true;
+          }
+        }
+      }
+
+      if (!found)
+        reconstructed.push_back (*a);
+    }
+    else
+      reconstructed.push_back (*a);
+  }
+
+  _args = reconstructed;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::decomposeModAttributes ()
+{
+  std::vector <A> reconstructed;
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (a->hasTag ("MODIFICATION"))
+    {
+      // Look for a valid attribute name.
+      bool found = false;
+      Nibbler n (a->attribute ("raw"));
+      std::string name;
+      if (n.getName (name) &&
+          name.length ())
+      {
+        if (n.skip (':'))
+        {
+          std::string value;
+          if (n.getQuoted   ('"', value)  ||
+              n.getQuoted   ('\'', value) ||
+              n.getUntilEOS (value)       ||
+              n.depleted ())
+          {
+            if (value == "")
+              value = "''";
+
+            std::string canonical;
+            if (canonicalize (canonical, "uda", name))
+            {
+              A attr ("argUDA", name);
+              attr.attribute ("name", canonical);
+              attr.attribute ("value", value);
+              attr.tag ("UDA");
+              attr.tag ("MODIFIABLE");
+              attr.tag ("MODIFICATION");
+              reconstructed.push_back (attr);
+              found = true;
+            }
+
+            else if (canonicalize (canonical, "pseudo", name))
+            {
+              A attr ("argUDA", name);
+              attr.attribute ("name", canonical);
+              attr.attribute ("value", value);
+              attr.tag ("PSEUDO");
+              attr.tag ("MODIFICATION");
+              reconstructed.push_back (attr);
+              found = true;
+            }
+
+            else if (canonicalize (canonical, "attribute", name))
+            {
+              A attr ("argAtt", name);
+              attr.attribute ("name", canonical);
+              attr.attribute ("value", value);
+              attr.tag ("ATTRIBUTE");
+              attr.tag ("MODIFICATION");
+
+              std::map <std::string, Column*>::const_iterator col;
+              col = context.columns.find (canonical);
+              if (col != context.columns.end () &&
+                  col->second->modifiable ())
+              {
+                attr.tag ("MODIFIABLE");
+              }
+
+              reconstructed.push_back (attr);
+              found = true;
+            }
           }
         }
       }
