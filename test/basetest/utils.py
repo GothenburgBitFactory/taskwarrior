@@ -13,7 +13,7 @@ try:
     import simplejson as json
 except ImportError:
     import json
-from .exceptions import CommandError, TimeoutWaitingForStream, StreamsAreMerged
+from .exceptions import CommandError, TimeoutWaitingForStream
 
 USED_PORTS = set()
 ON_POSIX = 'posix' in sys.builtin_module_names
@@ -133,15 +133,16 @@ def run_cmd_wait(cmd, input=None, stdout=PIPE, stderr=PIPE,
               close_fds=ON_POSIX, env=env)
     out, err, exit = _get_output(p, input, timeout)
 
-    # If streams were merged err should always be None so represent it with a
-    # more informative object
     if merge_streams:
-        err = StreamsAreMerged()
-
-    if exit != 0:
-        raise CommandError(cmd, exit, out, err)
-
-    return exit, out, err
+        if exit != 0:
+            raise CommandError(cmd, exit, out)
+        else:
+            return exit, out
+    else:
+        if exit != 0:
+            raise CommandError(cmd, exit, out, err)
+        else:
+            return exit, out, err
 
 
 def run_cmd_wait_nofail(*args, **kwargs):

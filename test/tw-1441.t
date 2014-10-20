@@ -17,7 +17,7 @@ class TestBug1441(TestCase):
     def test_import_filename(self):
         """import fails if file doesn't exist"""
         command = ("import", "xxx_doesnotexist")
-        code, out, err = self.t.runError(command, merge_streams=False)
+        code, out, err = self.t.runError(command)
 
         self.assertIn("File 'xxx_doesnotexist' not found.", err)
 

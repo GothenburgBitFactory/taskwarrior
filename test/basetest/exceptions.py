@@ -3,11 +3,12 @@ import signal
 
 
 class CommandError(Exception):
-    def __init__(self, cmd, code, out, err, msg=None):
+    def __init__(self, cmd, code, out, err=None, msg=None):
         if msg is None:
-            msg_suffix = (
-                "\n*** Start STDOUT ***\n{2}\n*** End STDOUT ***\n"
-                "\n*** Start STDERR ***\n{3}\n*** End STDERR ***\n"
+            msg_suffix = "\n*** Start STDOUT ***\n{2}\n*** End STDOUT ***\n"
+            if err is not None:
+                msg_suffix += (
+                    "\n*** Start STDERR ***\n{3}\n*** End STDERR ***\n"
                 )
             if code == -signal.SIGABRT:
                 self.msg = ("Command '{0}' was aborted, likely due to not "

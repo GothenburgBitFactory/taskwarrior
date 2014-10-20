@@ -256,7 +256,7 @@ class Task(object):
         cmd = (self.taskw, "config", "--", var, value)
         return run_cmd_wait(cmd, env=self.env)
 
-    def runSuccess(self, args=(), input=None, merge_streams=True,
+    def runSuccess(self, args=(), input=None, merge_streams=False,
                    timeout=1):
         """Invoke task with given arguments and fail if exit code != 0
 
@@ -272,7 +272,8 @@ class Task(object):
         timeout = number of seconds the test will wait for every task call.
         Defaults to 1 second if not specified. Unit is seconds.
 
-        Returns (exit_code, stdout, stderr)
+        Returns (exit_code, stdout, stderr) if merge_streams=False
+                (exit_code, output) if merge_streams=True
         """
         # Create a copy of the command
         command = self._command[:]
@@ -288,7 +289,7 @@ class Task(object):
 
         return output
 
-    def runError(self, args=(), input=None, merge_streams=True, timeout=1):
+    def runError(self, args=(), input=None, merge_streams=False, timeout=1):
         """Invoke task with given arguments and fail if exit code == 0
 
         Use runSuccess if you want exit_code to be tested automatically and
@@ -303,7 +304,8 @@ class Task(object):
         timeout = number of seconds the test will wait for every task call.
         Defaults to 1 second if not specified. Unit is seconds.
 
-        Returns (exit_code, stdout, stderr)
+        Returns (exit_code, stdout, stderr) if merge_streams=False
+                (exit_code, output) if merge_streams=True
         """
         # Create a copy of the command
         command = self._command[:]
