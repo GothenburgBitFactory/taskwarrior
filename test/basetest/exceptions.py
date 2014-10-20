@@ -32,4 +32,17 @@ class CommandError(Exception):
 class HookError(Exception):
     pass
 
+
+class TimeoutWaitingForStream(object):
+    def __init__(self, name):
+        self.stream = name
+
+    def __repr__(self):
+        return "*** Timeout reached while waiting for %s ***".format(self.name)
+
+
+class StreamsAreMerged(object):
+    def __repr__(self):
+        return "*** Streams are merged, STDERR is not available ***"
+
 # vim: ai sts=4 et sw=4
