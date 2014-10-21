@@ -154,10 +154,19 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
       ideal.push_back (global_ideal);
     }
 
-    if (! print_empty_columns && global_min != 0)
+    if (! print_empty_columns)
     {
-      nonempty_columns.push_back (_columns[i]);
-      nonempty_sort.push_back (_sort[i]);
+      if (global_min != 0) // Column is nonempty
+      {
+        nonempty_columns.push_back (_columns[i]);
+        nonempty_sort.push_back (_sort[i]);
+      }
+      else                 // Column is empty, drop it
+      {
+        // Note: This is safe to do because we set _columns = nonempty_columns
+        // after iteration over _columns is finished.
+        delete _columns[i];
+      }
     }
   }
 
