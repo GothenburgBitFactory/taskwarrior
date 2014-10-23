@@ -410,23 +410,35 @@ void CLI::aliasExpansion ()
     action = false;
     std::vector <A> reconstructed;
 
+    bool terminated = false;
+    std::string raw;
     std::vector <A>::iterator i;
     for (i = _args.begin (); i != _args.end (); ++i)
     {
-      if (_aliases.find (i->_name) != _aliases.end ())
+      raw = i->attribute ("raw");
+
+      if (raw == "--")
+        terminated = true;
+
+      if (! terminated)
       {
-        std::vector <std::string> lexed;
-        Lexer::token_split (lexed, _aliases[i->_name]);
-
-        std::vector <std::string>::iterator l;
-        for (l = lexed.begin (); l != lexed.end (); ++l)
+        if (_aliases.find (raw) != _aliases.end ())
         {
-          A a ("argLex", *l);
-          a.tag ("LEX");
-          reconstructed.push_back (a);
-        }
+          std::vector <std::string> lexed;
+          Lexer::token_split (lexed, _aliases[raw]);
 
-        action = true;
+          std::vector <std::string>::iterator l;
+          for (l = lexed.begin (); l != lexed.end (); ++l)
+          {
+            A a ("argLex", *l);
+            a.tag ("LEX");
+            reconstructed.push_back (a);
+          }
+
+          action = true;
+        }
+        else
+          reconstructed.push_back (*i);
       }
       else
         reconstructed.push_back (*i);
@@ -440,10 +452,18 @@ void CLI::aliasExpansion ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::findOverrides ()
 {
+  std::string raw;
+  bool terminated = false;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
-    std::string raw = a->attribute ("raw");
+    raw = a->attribute ("raw");
+
+    if (raw == "--")
+      terminated = true;
+
+    if (terminated)
+      continue;
 
     if (raw.find ("rc:") == 0)
     {
@@ -470,11 +490,29 @@ void CLI::categorize ()
 {
   bool foundCommand = false;
   bool readOnly = false;
+  bool terminated = false;
 
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
     std::string raw = a->attribute ("raw");
+
+    if (raw == "--")
+    {
+      a->tag ("TERMINATOR");
+      terminated = true;
+    }
+
+    if (terminated)
+    {
+      a->unTagAll ();
+      a->tag ("TERMINATED");
+      a->tag ("WORD");
+
+      // TODO This prevents MODIFICATION tagging below. 
+      continue;
+    }
+
     std::string canonical;
     if (canonicalize (canonical, "cmd", raw))
     {
@@ -929,9 +967,9 @@ void CLI::desugarIDs ()
     if (a->hasTag ("FILTER"))
     {
       bool found = false;
-      std::string raw = a->attribute ("raw");
 
       // IDs have a limited character set.
+      std::string raw = a->attribute ("raw");
       if (raw.find_first_not_of ("0123456789,-") == std::string::npos)
       {
         // Container for min/max ID ranges.
@@ -1120,9 +1158,9 @@ void CLI::desugarUUIDs ()
     if (a->hasTag ("FILTER"))
     {
       bool found = false;
-      std::string raw = a->attribute ("raw");
 
       // UUIDs have a limited character set.
+      std::string raw = a->attribute ("raw");
       if (raw.find_first_not_of ("0123456789abcdefABCDEF-,") == std::string::npos)
       {
         Nibbler n (raw);
