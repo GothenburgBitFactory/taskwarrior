@@ -277,6 +277,19 @@ void CLI::analyze ()
       A a ("arg", _original_args[i]);
       a.tag ("ORIGINAL");
       a.tag ("BINARY");
+
+      std::string basename = "task";
+      std::string raw = _original_args[i];
+      std::string::size_type slash = raw.rfind ('/');
+      if (slash != std::string::npos)
+        basename = raw.substr (slash + 1);
+
+      a.attribute ("basename", basename);
+      if (basename == "cal" || basename == "calendar")
+        a.tag ("CALENDAR");
+      else if (basename == "task" || basename == "tw" || basename == "t")
+        a.tag ("TW");
+
       _args.push_back (a);
     }
     else
