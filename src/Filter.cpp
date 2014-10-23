@@ -214,9 +214,11 @@ bool Filter::pendingOnly ()
   Tree* tree = context.parser.tree ();
 
   // To skip loading completed.data, there should be:
-  // - 'status:pending'
-  // - no 'or' operators
-  // - no 'xor' operators
+  // - 'status' in filter
+  // - no 'completed'
+  // - no 'deleted'
+  // - no 'xor'
+  // - no 'or'
   int countStatus  = 0;
   int countPending = 0;
   int countId      = 0;
@@ -244,7 +246,7 @@ bool Filter::pendingOnly ()
     return false;
 
   // Only one 'status == pending' is allowed.
-  if (countStatus == 1 && countPending != 1)
+  if (countStatus != 1 || countPending != 1)
     return false;
 
   return true;
