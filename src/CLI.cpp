@@ -332,8 +332,7 @@ const std::string CLI::getFilter ()
     std::vector <A>::const_iterator a;
     for (a = _args.begin (); a != _args.end (); ++a)
     {
-      if (a->hasTag ("FILTER") &&
-          ! a->hasTag ("PSEUDO"))
+      if (a->hasTag ("FILTER"))
       {
         if (filter != "")
           filter += ' ';
@@ -647,7 +646,6 @@ void CLI::desugarAttributes ()
               A left ("argUDA", name);
               left.attribute ("name", canonical);
               left.tag ("PSEUDO");
-              left.tag ("FILTER");
               reconstructed.push_back (left);
               found = true;
             }
