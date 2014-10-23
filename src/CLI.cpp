@@ -312,6 +312,7 @@ void CLI::analyze ()
   desugarPatterns ();
   desugarIDs ();
   desugarUUIDs ();
+  findOperators ();
   insertJunctions ();
 
   // Decompose the elements for MODIFICATIONs.
@@ -1189,6 +1190,27 @@ void CLI::desugarUUIDs ()
   }
 
   _args = reconstructed;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::findOperators ()
+{
+  // Find the category.
+  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
+  c = _entities.equal_range ("operator");
+
+  // Extract a list of entities for category.
+  std::vector <std::string> options;
+  std::multimap <std::string, std::string>::const_iterator e;
+  for (e = c.first; e != c.second; ++e)
+    options.push_back (e->second);
+
+  // Walk the arguments and tag as OP.
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+    if (a->hasTag ("FILTER"))
+      if (std::find (options.begin (), options.end (), a->attribute ("raw")) != options.end ())
+        a->tag ("OP");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
