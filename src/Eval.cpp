@@ -249,9 +249,9 @@ void Eval::evaluatePostfixStack (
       values.pop_back ();
       if (_debug)
       {
-        context.debug (format ("[{1}] eval pop '{2}'",      values.size () + 1, (std::string) right));
-        context.debug (format ("[{1}] eval operator '{2}'", values.size (),     token->first));
-        context.debug (format ("[{1}] eval result push '{2}'", values.size (),  (bool) !right));
+        context.debug (format ("[{1}] eval pop '{2}'",         values.size () + 1, (std::string) right));
+        context.debug (format ("[{1}] eval operator '{2}'",    values.size (),     token->first));
+        context.debug (format ("[{1}] eval result push '{2}'", values.size (),     (bool) !right));
       }
       values.push_back (! right);
     }
@@ -265,9 +265,9 @@ void Eval::evaluatePostfixStack (
       values.pop_back ();
       if (_debug)
       {
-        context.debug (format ("[{1}] eval pop '{2}'",      values.size () + 1, (std::string) right));
-        context.debug (format ("[{1}] eval operator '{2}'", values.size (),     token->first));
-        context.debug (format ("[{1}] eval result push '{2}'", values.size (),  (bool) !right));
+        context.debug (format ("[{1}] eval pop '{2}'",         values.size () + 1, (std::string) right));
+        context.debug (format ("[{1}] eval operator '{2}'",    values.size (),     token->first));
+        context.debug (format ("[{1}] eval result push '{2}'", values.size (),     (bool) !right));
       }
       values.push_back (Variant (0) - right);
     }
@@ -277,7 +277,7 @@ void Eval::evaluatePostfixStack (
       // NOP?
       if (_debug)
       {
-        context.debug (format ("[{1}] eval operator '{2}'", values.size (),     token->first));
+        context.debug (format ("[{1}] eval operator '{2}'", values.size (), token->first));
       }
     }
 
