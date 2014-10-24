@@ -499,11 +499,12 @@ void CLI::categorize ()
 
     if (raw == "--")
     {
+      a->unTagAll ();
       a->tag ("TERMINATOR");
       terminated = true;
     }
 
-    if (terminated)
+    else if (terminated)
     {
       a->unTagAll ();
       a->tag ("TERMINATED");
