@@ -8,6 +8,8 @@
 - TD-56 File.cpp needs to include <string.h> on Solaris (thanks to Tatjana
         Heuѕer).
 - TD-57 taskdctl script assumes /bin/sh is /bin/bash (thanks to Tatjana Heuser).
+- TD-79 Bad error message for wrong hostname configuration (thanks to Jens
+        Erat).
 - #1255 l10n translation utility improvements (thanks to Renato Alves).
 - #1473 Make TASK_RCDIR customizable (thanks to Elias Probst).
 - #1486 Truncated sentence in task-sync(5) manpage (thanks to Jakub Wilk).
