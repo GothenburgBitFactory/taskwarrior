@@ -500,6 +500,7 @@ void CLI::categorize ()
     if (raw == "--")
     {
       a->unTagAll ();
+      a->tag ("ORIGINAL");
       a->tag ("TERMINATOR");
       terminated = true;
     }
@@ -507,6 +508,7 @@ void CLI::categorize ()
     else if (terminated)
     {
       a->unTagAll ();
+      a->tag ("ORIGINAL");
       a->tag ("TERMINATED");
       a->tag ("WORD");
 
