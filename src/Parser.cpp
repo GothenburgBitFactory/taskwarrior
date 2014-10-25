@@ -851,7 +851,7 @@ void Parser::findSubstitution ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// +tag
+// +tag|-tag
 void Parser::findTag ()
 {
   bool action = true;

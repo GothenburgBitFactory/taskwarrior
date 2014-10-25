@@ -108,6 +108,7 @@ int Context::initialize (int argc, const char** argv)
 
     // Scan command line for 'rc:<file>' only.
     Parser::getOverrides (argc, argv, rc_file._data);
+    cli.initialize (argc, argv);                    // task arg0 arg1 ...
 
     // TASKRC environment variable overrides the command line.
     char* override = getenv ("TASKRC");
@@ -133,11 +134,27 @@ int Context::initialize (int argc, const char** argv)
     // Process 'rc:<file>' command line override.
     parser.findOverrides ();                        // rc:<file>  rc.<name>:<value>
     parser.getOverrides (home_dir, rc_file);        // <-- <file>
+/*
+    home_dir = rc_file;
+    std::string::size_type last_slash = rc._data.rfind ("/");
+    if (last_slash != std::string::npos)
+      home_dir = rc_file.parent ();
+    else
+      home_dir = ".";
+    std::cout << "# home_dir=" << home_dir << "\n";
+*/
 
     // The data location, Context::data_dir, is determined from the assumed
     // location (~/.task), or set by data.location in the config file, or
     // overridden by rc.data.location on the command line.
     parser.getDataLocation (data_dir);              // <-- rc.data.location=<location>
+/*
+    if (cli._overrides.find ("data.location") != cli._overrides.end ())
+      data_dir = cli._overrides["data.location"];
+    else
+      data_dir = config.get ("data.location");
+    std::cout << "# data_dir=" << data_dir << "\n";
+*/
 
     override = getenv ("TASKDATA");
     if (override)
@@ -171,35 +188,55 @@ int Context::initialize (int argc, const char** argv)
     for (cmd = commands.begin (); cmd != commands.end (); ++cmd)
     {
       parser.entity ("cmd", cmd->first);
+      cli.entity ("cmd", cmd->first);
 
       if (cmd->first[0] == '_')
+      {
         parser.entity ("helper", cmd->first);
+        cli.entity ("helper", cmd->first);
+      }
 
       if (cmd->second->read_only ())
+      {
         parser.entity ("readcmd", cmd->first);
+        cli.entity ("readcmd", cmd->first);
+      }
       else
+      {
         parser.entity ("writecmd", cmd->first);
+        cli.entity ("writecmd", cmd->first);
+      }
     }
 
     // Instantiate built-in column objects.
     Column::factory (columns);
     std::map <std::string, Column*>::iterator col;
     for (col = columns.begin (); col != columns.end (); ++col)
+    {
       parser.entity ("attribute", col->first);
+      cli.entity ("attribute", col->first);
+    }
 
     // Entities: Pseudo-attributes.  Hard-coded.
     parser.entity ("pseudo", "limit");
+    cli.entity ("pseudo", "limit");
 
     // Entities: Modifiers.
     for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
+    {
       parser.entity ("modifier", modifierNames[i]);
+      cli.entity ("modifier", modifierNames[i]);
+    }
 
     // Entities: Operators.
     std::vector <std::string> operators;
     Eval::getOperators (operators);
     std::vector <std::string>::iterator op;
     for (op = operators.begin (); op != operators.end (); ++op)
+    {
       parser.entity ("operator", *op);
+      cli.entity ("operator", *op);
+    }
 
     // Now the entities are loaded, parsing may resume.
     parser.findBinary ();                           // <task|tw|t|cal|calendar>
@@ -211,6 +248,7 @@ int Context::initialize (int argc, const char** argv)
 
     staticInitialization ();                        // Decouple code from Context.
     parser.parse ();                                // Parse all elements.
+    cli.analyze ();                                 // Parse all elements.
 
     tdb2.set_location (data_dir);                   // Prepare the task database.
 
@@ -752,7 +790,10 @@ void Context::loadAliases ()
   std::map <std::string, std::string>::iterator i;
   for (i = config.begin (); i != config.end (); ++i)
     if (i->first.substr (0, 6) == "alias.")
+    {
       parser.alias (i->first.substr (6), i->second);
+      cli.alias (i->first.substr (6), i->second);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

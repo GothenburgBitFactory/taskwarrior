@@ -38,6 +38,7 @@
 #include <File.h>
 #include <Directory.h>
 #include <Parser.h>
+#include <CLI.h>
 #include <Timer.h>
 
 class Context
@@ -84,6 +85,7 @@ private:
 public:
   std::string                         program;
   Parser                              parser;
+  CLI                                 cli;
   std::string                         home_dir;
   File                                rc_file;
   Path                                data_dir;

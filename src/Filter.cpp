@@ -74,6 +74,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
   if (context.config.getInteger ("debug.parser") >= 1)
   {
+    context.debug (context.cli.dump ());
+
     Tree* t = context.parser.tree ();
     if (t)
       context.debug (t->dump ());
@@ -121,6 +123,8 @@ void Filter::subset (std::vector <Task>& output)
 
   if (context.config.getInteger ("debug.parser") >= 1)
   {
+    context.debug (context.cli.dump ());
+
     Tree* t = context.parser.tree ();
     if (t)
       context.debug (t->dump ());
@@ -210,24 +214,27 @@ bool Filter::pendingOnly ()
   Tree* tree = context.parser.tree ();
 
   // To skip loading completed.data, there should be:
-  // - 'status:pending'
-  // - no 'or' operators
-  // - no 'xor' operators
+  // - 'status' in filter
+  // - no 'completed'
+  // - no 'deleted'
+  // - no 'xor'
+  // - no 'or'
   int countStatus  = 0;
   int countPending = 0;
   int countId      = 0;
   int countOr      = 0;
   int countXor     = 0;
-  std::vector <Tree*>::iterator i;
-  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
+
+  std::vector <A>::iterator a;
+  for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
   {
-    if ((*i)->hasTag ("FILTER"))
+    if (a->hasTag ("FILTER"))
     {
-      if ((*i)->hasTag ("ID"))                                                ++countId;
-      if ((*i)->hasTag ("OP") && (*i)->attribute ("raw") == "or")             ++countOr;
-      if ((*i)->hasTag ("OP") && (*i)->attribute ("raw") == "xor")            ++countXor;
-      if ((*i)->hasTag ("ATTRIBUTE") && (*i)->attribute ("name") == "status") ++countStatus;
-      if ((*i)->hasTag ("ATTRIBUTE") && (*i)->attribute ("raw") == "pending") ++countPending;
+      if (a->hasTag ("ID"))                                              ++countId;
+      if (a->hasTag ("OP")        && a->attribute ("raw")  == "or")      ++countOr;
+      if (a->hasTag ("OP")        && a->attribute ("raw")  == "xor")     ++countXor;
+      if (a->hasTag ("ATTRIBUTE") && a->attribute ("name") == "status")  ++countStatus;
+      if (                           a->attribute ("raw")  == "pending") ++countPending;
     }
   }
 
@@ -240,7 +247,7 @@ bool Filter::pendingOnly ()
     return false;
 
   // Only one 'status == pending' is allowed.
-  if (countStatus == 1 && countPending != 1)
+  if (countStatus != 1 || countPending != 1)
     return false;
 
   return true;
