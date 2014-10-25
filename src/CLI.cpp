@@ -1330,6 +1330,9 @@ void CLI::decomposeModAttributes ()
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
+    if (a->hasTag ("TERMINATOR"))
+      break;
+
     if (a->hasTag ("MODIFICATION"))
     {
       // Look for a valid attribute name.
@@ -1385,6 +1388,9 @@ void CLI::decomposeModAttributeModifiers ()
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
+    if (a->hasTag ("TERMINATOR"))
+      break;
+
     if (a->hasTag ("MODIFICATION"))
     {
       // Look for a valid attribute name.
@@ -1460,6 +1466,9 @@ void CLI::decomposeModTags ()
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
+    if (a->hasTag ("TERMINATOR"))
+      break;
+
     if (a->hasTag ("MODIFICATION"))
     {
       Nibbler n (a->attribute ("raw"));
@@ -1485,6 +1494,9 @@ void CLI::decomposeModSubstitutions ()
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
+    if (a->hasTag ("TERMINATOR"))
+      break;
+
     if (a->hasTag ("MODIFICATION"))
     {
       std::string raw = a->attribute ("raw");
