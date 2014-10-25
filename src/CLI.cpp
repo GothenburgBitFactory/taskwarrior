@@ -503,21 +503,21 @@ void CLI::categorize ()
       a->tag ("ORIGINAL");
       a->tag ("TERMINATOR");
       terminated = true;
+      continue;
     }
 
-    else if (terminated)
+    if (terminated)
     {
       a->unTagAll ();
       a->tag ("ORIGINAL");
       a->tag ("TERMINATED");
       a->tag ("WORD");
-
-      // TODO This prevents MODIFICATION tagging below. 
-      continue;
     }
 
     std::string canonical;
-    if (canonicalize (canonical, "cmd", raw))
+    if (! terminated   &&
+        ! foundCommand &&
+        canonicalize (canonical, "cmd", raw))
     {
       readOnly = ! exactMatch ("writecmd", canonical);
 
@@ -526,8 +526,9 @@ void CLI::categorize ()
       a->attribute ("name", canonical);
       foundCommand = true;
     }
-    else if (a->hasTag ("BINARY") ||
-             a->hasTag ("CONFIG") ||
+    else if (a->hasTag ("TERMINATOR") ||
+             a->hasTag ("BINARY")     ||
+             a->hasTag ("CONFIG")     ||
              a->hasTag ("RC"))
     {
       // NOP
