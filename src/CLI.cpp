@@ -363,8 +363,23 @@ const std::vector <std::string> CLI::getWords ()
 {
   std::vector <std::string> words;
 
-  // TODO Processing here.
+  std::vector <A>::const_iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (! a->hasTag ("BINARY") &&
+        ! a->hasTag ("RC")     &&
+        ! a->hasTag ("CONFIG") &&
+        ! a->hasTag ("CMD")    &&
+        ! a->hasTag ("TERMINATOR") &&
+        a->hasTag ("ORIGINAL"))
+    {
+      words.push_back (a->attribute ("raw"));
+    }
+  }
 
+  std::string all;
+  join (all, " ", words);
+  std::cout << "# CLI::getWords " << all << "\n";
   return words;
 }
 
