@@ -81,18 +81,6 @@ int CmdCustom::execute (std::string& output)
   split (sortOrder, reportSort, ',');
   validateSortColumns (sortOrder);
 
-/*
-  TODO Wow, this addition causes memory errors.
-
-  // Surround the command-line filter with parentheses, to protect it from
-  // the 'and' placed between the report filter and the command line filter.
-  context.parser.captureFirst ("(");
-  context.parser.captureLast (")");
-*/
-
-  if (reportFilter != "")
-    context.cli.add ("(");
-
   // Prepend the argument list with those from the report filter.
   std::string lexeme;
   Lexer::Type type;
@@ -104,9 +92,6 @@ int CmdCustom::execute (std::string& output)
     filterArgs.push_back (lexeme);
     context.cli.add (lexeme);
   }
-
-  if (reportFilter != "")
-    context.cli.add (")");
 
   std::vector <std::string>::reverse_iterator arg;
   for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
