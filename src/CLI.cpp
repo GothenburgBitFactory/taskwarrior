@@ -681,21 +681,32 @@ void CLI::desugarAttributes ()
             std::string canonical;
             if (canonicalize (canonical, "uda", name))
             {
-              A left ("argUDA", name);
-              left.attribute ("name", canonical);
-              left.tag ("UDA");
-              left.tag ("MODIFIABLE");
-              left.tag ("FILTER");
-              reconstructed.push_back (left);
+              A lhs ("argUDA", name);
+              lhs.attribute ("name", canonical);
+              lhs.tag ("UDA");
+              lhs.tag ("ATTRIBUTE");
+              lhs.tag ("FILTER");
+
+              A op ("argUDA", "=");
+              op.tag ("OP");
+              op.tag ("FILTER");
+
+              A rhs ("argUDA", value);
+              rhs.tag ("LITERAL");
+              rhs.tag ("FILTER");
+
+              reconstructed.push_back (lhs);
+              reconstructed.push_back (op);
+              reconstructed.push_back (rhs);
               found = true;
             }
 
             else if (canonicalize (canonical, "pseudo", name))
             {
-              A left ("argUDA", name);
-              left.attribute ("name", canonical);
-              left.tag ("PSEUDO");
-              reconstructed.push_back (left);
+              A lhs ("argPseudo", name);
+              lhs.attribute ("name", canonical);
+              lhs.tag ("PSEUDO");
+              reconstructed.push_back (lhs);
               found = true;
             }
 
@@ -706,19 +717,16 @@ void CLI::desugarAttributes ()
               lhs.tag ("ATTRIBUTE");
               lhs.tag ("FILTER");
 
-              std::map <std::string, Column*>::const_iterator col;
-              col = context.columns.find (canonical);
-              if (col != context.columns.end () &&
-                  col->second->modifiable ())
-              {
-                lhs.tag ("MODIFIABLE");
-              }
+              std::string operatorLiteral = "=";
+              if (canonical == "status")
+                operatorLiteral = "==";
 
-              A op ("argAtt", "=");
+              A op ("argAtt", operatorLiteral);
               op.tag ("OP");
               op.tag ("FILTER");
 
               A rhs ("argAtt", value);
+              rhs.tag ("LITERAL");
               rhs.tag ("FILTER");
 
               reconstructed.push_back (lhs);
