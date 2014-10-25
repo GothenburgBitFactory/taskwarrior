@@ -1111,6 +1111,7 @@ void CLI::desugarIDs ()
 
               A value ("argSeq", r->first);
               value.tag ("FILTER");
+              value.tag ("LITERAL");
               value.tag ("NUMBER");
               reconstructed.push_back (value);
             }
@@ -1133,6 +1134,7 @@ void CLI::desugarIDs ()
 
               A startValue ("argSeq", r->first);
               startValue.tag ("FILTER");
+              startValue.tag ("LITERAL");
               startValue.tag ("NUMBER");
               reconstructed.push_back (startValue);
 
@@ -1153,6 +1155,7 @@ void CLI::desugarIDs ()
 
               A endValue ("argSeq", r->second);
               endValue.tag ("FILTER");
+              endValue.tag ("LITERAL");
               endValue.tag ("NUMBER");
               reconstructed.push_back (endValue);
 
@@ -1244,6 +1247,7 @@ void CLI::desugarUUIDs ()
 
               A value ("argSeq", "'" + *u + "'");
               value.tag ("FILTER");
+              value.tag ("LITERAL");
               value.tag ("STRING");
               reconstructed.push_back (value);
             }
@@ -1277,6 +1281,7 @@ void CLI::desugarPlainArgs ()
   {
     if (a->hasTag ("FILTER")      &&
         ! a->hasTag ("ATTRIBUTE") &&
+        ! a->hasTag ("ATTMOD")    &&
         ! a->hasTag ("OP")        &&
         ! a->hasTag ("LITERAL"))
     {
