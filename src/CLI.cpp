@@ -351,9 +351,11 @@ const std::string CLI::getFilter ()
         filter += term;
       }
     }
+
+    filter = "( " + filter + " )";
   }
 
-  return "( " + filter + " )";
+  return filter;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
