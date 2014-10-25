@@ -625,7 +625,7 @@ void CLI::desugarTags ()
           tag.find (' ') == std::string::npos)
       {
         A left ("argTag", "tags");
-        left.tag ("ATT");
+        left.tag ("ATTRIBUTE");
         left.tag ("FILTER");
         reconstructed.push_back (left);
 
@@ -929,7 +929,7 @@ void CLI::desugarPatterns ()
           pattern.length () > 0)
       {
         A lhs ("argPattern", "description");
-        lhs.tag ("ATT");
+        lhs.tag ("ATTRIBUTE");
         lhs.tag ("FILTER");
         reconstructed.push_back (lhs);
 
@@ -1071,7 +1071,7 @@ void CLI::desugarIDs ()
             {
               A id ("argSeq", "id");
               id.tag ("FILTER");
-              id.tag ("ATTR");
+              id.tag ("ATTRIBUTE");
               reconstructed.push_back (id);
 
               A equal ("argSeq", "==");
@@ -1093,7 +1093,7 @@ void CLI::desugarIDs ()
 
               A startId ("argSeq", "id");
               startId.tag ("FILTER");
-              startId.tag ("ATTR");
+              startId.tag ("ATTRIBUTE");
               reconstructed.push_back (startId);
 
               A gte ("argSeq", ">=");
@@ -1113,7 +1113,7 @@ void CLI::desugarIDs ()
 
               A endId ("argSeq", "id");
               endId.tag ("FILTER");
-              endId.tag ("ATTR");
+              endId.tag ("ATTRIBUTE");
               reconstructed.push_back (endId);
 
               A lte ("argSeq", "<=");
@@ -1204,7 +1204,7 @@ void CLI::desugarUUIDs ()
 
               A uuid ("argSeq", "uuid");
               uuid.tag ("FILTER");
-              uuid.tag ("ATTR");
+              uuid.tag ("ATTRIBUTE");
               reconstructed.push_back (uuid);
 
               A equal ("argSeq", "=");
