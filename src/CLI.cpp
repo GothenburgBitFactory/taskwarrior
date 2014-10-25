@@ -1330,13 +1330,6 @@ void CLI::findOperators ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Two consecutive FILTER, ID or UUID arguments:
-//
-//  ID ID             --> ID or ID
-//  ID UUID           --> ID or UUID
-//  UUID ID           --> UUID or ID
-//  UUID UUID         --> UUID or UUID
-//
 // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need an
 // "and" operator inserted between them.
 //
@@ -1357,17 +1350,6 @@ void CLI::insertJunctions ()
       // The prev iterator should be the first FILTER arg.
       if (prev == _args.begin ())
         prev = a;
-
-      // Insert OR between consecutive FILTER ID/UUID args.
-      if (a != prev &&
-          (prev->hasTag ("ID") || prev->hasTag ("UUID")) &&
-          (a->hasTag ("ID") || a->hasTag ("UUID")))
-      {
-        A opOr ("argOp", "or");
-        opOr.tag ("FILTER");
-        opOr.tag ("OP");
-        reconstructed.push_back (opOr);
-      }
 
       // Insert AND between terms.
       else if (a != prev)
