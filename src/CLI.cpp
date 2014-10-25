@@ -1131,8 +1131,12 @@ void CLI::findUUIDs ()
 
           if (n.depleted ())
           {
-            _uuid_list = uuidList;
             a->tag ("UUID");
+
+            // Save the list.
+            std::vector <std::string>::iterator u;
+            for (u = uuidList.begin (); u != uuidList.end (); ++u)
+              _uuid_list.push_back (*u);
           }
         }
       }
@@ -1173,6 +1177,7 @@ void CLI::insertIDExpr ()
         //     or ( uuid = $UUID )
         //   )
 
+        // Building block operators.
         A openParen  ("argSeq", "(");    openParen.tag  ("FILTER"); openParen.tag  ("OP");
         A closeParen ("argSeq", ")");    closeParen.tag ("FILTER"); closeParen.tag ("OP");
         A opOr       ("argSeq", "or");   opOr.tag       ("FILTER"); opOr.tag       ("OP");
@@ -1182,15 +1187,14 @@ void CLI::insertIDExpr ()
         A opGTE      ("argSeq", ">=");   opGTE.tag      ("FILTER"); opGTE.tag      ("OP");
         A opLTE      ("argSeq", "<=");   opLTE.tag      ("FILTER"); opLTE.tag      ("OP");
 
+        // Building block attributes.
         A argID ("argSeq", "id");
         argID.tag ("FILTER");
         argID.tag ("ATTRIBUTE");
-        argID.tag ("OP");
 
         A argUUID ("argSeq", "uuid");
         argUUID.tag ("FILTER");
         argUUID.tag ("ATTRIBUTE");
-        argUUID.tag ("OP");
 
         reconstructed.push_back (openParen);
 
@@ -1240,6 +1244,11 @@ void CLI::insertIDExpr ()
             reconstructed.push_back (closeParen);
           }
         }
+
+        // Combine the ID and UUID sections wiþh 'or'.
+        if (_id_ranges.size () &&
+            _uuid_list.size ())
+          reconstructed.push_back (opOr);
 
         // Add all UUID list items.
         std::vector <std::string>::iterator u;
