@@ -224,16 +224,17 @@ bool Filter::pendingOnly ()
   int countId      = 0;
   int countOr      = 0;
   int countXor     = 0;
-  std::vector <Tree*>::iterator i;
-  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
+
+  std::vector <A>::iterator a;
+  for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
   {
-    if ((*i)->hasTag ("FILTER"))
+    if (a->hasTag ("FILTER"))
     {
-      if ((*i)->hasTag ("ID"))                                                ++countId;
-      if ((*i)->hasTag ("OP") && (*i)->attribute ("raw") == "or")             ++countOr;
-      if ((*i)->hasTag ("OP") && (*i)->attribute ("raw") == "xor")            ++countXor;
-      if ((*i)->hasTag ("ATTRIBUTE") && (*i)->attribute ("name") == "status") ++countStatus;
-      if ((*i)->hasTag ("ATTRIBUTE") && (*i)->attribute ("raw") == "pending") ++countPending;
+      if (a->hasTag ("ID"))                                              ++countId;
+      if (a->hasTag ("OP")        && a->attribute ("raw")  == "or")      ++countOr;
+      if (a->hasTag ("OP")        && a->attribute ("raw")  == "xor")     ++countXor;
+      if (a->hasTag ("ATTRIBUTE") && a->attribute ("name") == "status")  ++countStatus;
+      if (                           a->attribute ("raw")  == "pending") ++countPending;
     }
   }
 
