@@ -383,9 +383,6 @@ const std::vector <std::string> CLI::getWords ()
     }
   }
 
-  std::string all;
-  join (all, " ", words);
-  std::cout << "# CLI::getWords " << all << "\n";
   return words;
 }
 
