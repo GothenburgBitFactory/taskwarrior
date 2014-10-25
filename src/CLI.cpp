@@ -431,6 +431,7 @@ void CLI::aliasExpansion ()
           for (l = lexed.begin (); l != lexed.end (); ++l)
           {
             A a ("argLex", *l);
+            a.tag ("ALIAS");
             a.tag ("LEX");
             reconstructed.push_back (a);
           }
