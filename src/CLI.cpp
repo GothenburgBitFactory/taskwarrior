@@ -271,7 +271,7 @@ void CLI::add (const std::string& arg)
 // Intended to be called after ::initialize() and ::add(), to perform the final
 // analysis. Analysis is also performed directly after the above, because there
 // is a need to extract overrides early, before entities are proviedd.
-void CLI::analyze ()
+void CLI::analyze (bool parse /* = true */)
 {
   // Clean what needs to be cleaned. Most in this case.
   _args.clear ();
@@ -311,22 +311,25 @@ void CLI::analyze ()
   findOverrides ();
   categorize ();
 
-  // Remove all the syntactic sugar for FILTERs.
-  desugarTags ();
-  desugarAttributes ();
-  desugarAttributeModifiers ();
-  desugarPatterns ();
-  desugarIDs ();
-  desugarUUIDs ();
-  //desugarPlainArgs ();
-  findOperators ();
-  insertJunctions ();
+  if (parse)
+  {
+    // Remove all the syntactic sugar for FILTERs.
+    desugarTags ();
+    desugarAttributes ();
+    desugarAttributeModifiers ();
+    desugarPatterns ();
+    desugarIDs ();
+    desugarUUIDs ();
+    findOperators ();
+    insertJunctions ();
+    desugarPlainArgs ();
 
-  // Decompose the elements for MODIFICATIONs.
-  decomposeModAttributes ();
-  decomposeModAttributeModifiers ();
-  decomposeModTags ();
-  decomposeModSubstitutions ();
+    // Decompose the elements for MODIFICATIONs.
+    decomposeModAttributes ();
+    decomposeModAttributeModifiers ();
+    decomposeModTags ();
+    decomposeModSubstitutions ();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -361,8 +364,11 @@ const std::string CLI::getFilter ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <std::string> CLI::getWords ()
 {
-  std::vector <std::string> words;
+  // Re-analyze the arguments, but do not de-sugar or decompose any.  Analysis
+  // only.
+  analyze (false);
 
+  std::vector <std::string> words;
   std::vector <A>::const_iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
