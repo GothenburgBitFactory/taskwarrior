@@ -1907,9 +1907,13 @@ float Task::urgency_blocking () const
 void Task::modify (modType type, bool text_required /* = false */)
 {
   std::string text = "";
+
   Tree* tree = context.parser.tree ();
-  if (tree)
+  if (context.config.getInteger ("debug.parser") >= 1)
+  {
+    context.debug (context.cli.dump ());
     context.debug (tree->dump ());
+  }
 
   context.debug ("Task::modify");
   std::string label = "  [1;37;43mMODIFICATION[0m ";
