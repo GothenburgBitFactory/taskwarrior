@@ -795,17 +795,8 @@ void CLI::desugarAttributeModifiers ()
                 lhs.tag ("FILTER");
 
                 lhs.attribute ("name", canonical);
-                lhs.attribute ("raw", value);
                 lhs.attribute ("modifier", modifier);
                 lhs.attribute ("sense", sense);
-
-                std::map <std::string, Column*>::const_iterator col;
-                col = context.columns.find (canonical);
-                if (col != context.columns.end () &&
-                    col->second->modifiable ())
-                {
-                  lhs.tag ("MODIFIABLE");
-                }
 
                 A op ("argAttmod", "");
                 op.tag ("FILTER");
@@ -818,60 +809,70 @@ void CLI::desugarAttributeModifiers ()
                   op.attribute ("raw", "<");
                   op.tag ("OP");
                   rhs.attribute ("raw", value);
+                  rhs.tag ("LITERAL");
                 }
                 else if (modifier == "after" || modifier == "over" || modifier == "above")
                 {
                   op.attribute ("raw", ">");
                   op.tag ("OP");
                   rhs.attribute ("raw", value);
+                  rhs.tag ("LITERAL");
                 }
                 else if (modifier == "none")
                 {
                   op.attribute ("raw", "==");
                   op.tag ("OP");
                   rhs.attribute ("raw", "''");
+                  rhs.tag ("LITERAL");
                 }
                 else if (modifier == "any")
                 {
                   op.attribute ("raw", "!=");
                   op.tag ("OP");
                   rhs.attribute ("raw", "''");
+                  rhs.tag ("LITERAL");
                 }
                 else if (modifier == "is" || modifier == "equals")
                 {
                   op.attribute ("raw", "==");
                   op.tag ("OP");
                   rhs.attribute ("raw", value);
+                  rhs.tag ("LITERAL");
                 }
                 else if (modifier == "isnt" || modifier == "not")
                 {
                   op.attribute ("raw", "!=");
                   op.tag ("OP");
                   rhs.attribute ("raw", value);
+                  rhs.tag ("LITERAL");
                 }
                 else if (modifier == "has" || modifier == "contains")
                 {
                   op.attribute ("raw", "~");
                   op.tag ("OP");
                   rhs.attribute ("raw", value);
+                  rhs.tag ("LITERAL");
                 }
                 else if (modifier == "hasnt")
                 {
                   op.attribute ("raw", "!~");
                   op.tag ("OP");
                   rhs.attribute ("raw", value);
+                  rhs.tag ("LITERAL");
                 }
                 else if (modifier == "startswith" || modifier == "left")
                 {
                   op.attribute ("raw", "~");
                   op.tag ("OP");
                   rhs.attribute ("raw", "'^" + value + "'");
+                  rhs.tag ("REGEX");
                 }
                 else if (modifier == "endswith" || modifier == "right")
                 {
                   op.attribute ("raw", "~");
                   op.tag ("OP");
                   rhs.attribute ("raw", "'" + value + "$'");
+                  rhs.tag ("REGEX");
                 }
                 else if (modifier == "word")
                 {
@@ -884,6 +885,7 @@ void CLI::desugarAttributeModifiers ()
 #else
                   rhs.attribute ("raw", "'\\b" + value + "\\b'");
 #endif
+                  rhs.tag ("REGEX");
                 }
                 else if (modifier == "noword")
                 {
@@ -896,6 +898,7 @@ void CLI::desugarAttributeModifiers ()
 #else
                   rhs.attribute ("raw", "'\\b" + value + "\\b'");
 #endif
+                  rhs.tag ("REGEX");
                 }
                 else
                   throw format (STRING_PARSER_UNKNOWN_ATTMOD, modifier);
