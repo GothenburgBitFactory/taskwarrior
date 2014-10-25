@@ -527,7 +527,7 @@ void CLI::categorize ()
 
       a->tag ("CMD");
       a->tag (readOnly ? "READCMD" : "WRITECMD");
-      a->attribute ("name", canonical);
+      a->attribute ("canonical", canonical);
       foundCommand = true;
     }
     else if (a->hasTag ("TERMINATOR") ||
