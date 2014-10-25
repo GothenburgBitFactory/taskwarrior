@@ -85,8 +85,9 @@ private:
   void desugarAttributes ();
   void desugarAttributeModifiers ();
   void desugarPatterns ();
-  void desugarIDs ();
-  void desugarUUIDs ();
+  void findIDs ();
+  void findUUIDs ();
+  void insertIDExpr ();
   void desugarPlainArgs ();
   void findOperators ();
   void insertJunctions ();
@@ -100,6 +101,9 @@ public:
   std::map <std::string, std::string>      _aliases;
   std::vector <std::string>                _original_args;
   std::vector <A>                          _args;
+
+  std::vector <std::pair <int, int> >      _id_ranges;
+  std::vector <std::string>                _uuid_list;
 };
 
 #endif

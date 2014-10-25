@@ -251,6 +251,9 @@ void CLI::initialize (int argc, const char** argv)
 {
   // Clean what needs to be cleaned. Everything in this case.
   _original_args.clear ();
+  _id_ranges.clear ();
+  _uuid_list.clear ();
+
   for (int i = 0; i < argc; ++i)
     _original_args.push_back (argv[i]);
 
@@ -275,6 +278,8 @@ void CLI::analyze (bool parse /* = true */)
 {
   // Clean what needs to be cleaned. Most in this case.
   _args.clear ();
+  _id_ranges.clear ();
+  _uuid_list.clear ();
 
   for (int i = 0; i < _original_args.size (); ++i)
   {
@@ -318,8 +323,9 @@ void CLI::analyze (bool parse /* = true */)
     desugarAttributes ();
     desugarAttributeModifiers ();
     desugarPatterns ();
-    desugarIDs ();
-    desugarUUIDs ();
+    findIDs ();
+    findUUIDs ();
+    insertIDExpr ();
     findOperators ();
     insertJunctions ();
     desugarPlainArgs ();
@@ -995,9 +1001,8 @@ void CLI::desugarPatterns ()
 //   a range:              5-10
 //   or a combination:     1,3,5-10 12
 //
-void CLI::desugarIDs ()
+void CLI::findIDs ()
 {
-  std::vector <A> reconstructed;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
@@ -1016,7 +1021,7 @@ void CLI::desugarIDs ()
         std::vector <std::string> elements;
         split (elements, raw, ',');
 
-        bool not_an_id = false;
+        bool is_an_id = true;
         std::vector <std::string>::iterator e;
         for (e = elements.begin (); e != elements.end (); ++e)
         {
@@ -1028,7 +1033,7 @@ void CLI::desugarIDs ()
           {
             if (! digitsOnly (terms[0]))
             {
-              not_an_id = true;
+              is_an_id = false;
               break;
             }
 
@@ -1041,7 +1046,7 @@ void CLI::desugarIDs ()
             }
             else
             {
-              not_an_id = true;
+              is_an_id = false;
               break;
             }
           }
@@ -1050,7 +1055,7 @@ void CLI::desugarIDs ()
             if (! digitsOnly (terms[0]) ||
                 ! digitsOnly (terms[1]))
             {
-              not_an_id = true;
+              is_an_id = false;
               break;
             }
 
@@ -1070,135 +1075,39 @@ void CLI::desugarIDs ()
             }
             else
             {
-              not_an_id = true;
+              is_an_id = false;
               break;
             }
           }
           else
           {
-            not_an_id = true;
+            is_an_id = false;
             break;
           }
         }
 
-        if (! not_an_id)
+        if (is_an_id)
         {
-          // Now convert the ranges into an infix expression.
-          A openParen ("argSeq", "(");
-          openParen.tag ("FILTER");
-          openParen.tag ("OP");
-          reconstructed.push_back (openParen);
+          a->tag ("ID");
 
+          // Save the ranges.
           std::vector <std::pair <int, int> >::iterator r;
           for (r = ranges.begin (); r != ranges.end (); ++r)
-          {
-            if (r != ranges.begin ())
-            {
-              A opOp ("argSeq", "or");
-              opOp.tag ("FILTER");
-              opOp.tag ("OP");
-              reconstructed.push_back (opOp);
-            }
-
-            if (r->first == r->second)
-            {
-              A id ("argSeq", "id");
-              id.tag ("FILTER");
-              id.tag ("ATTRIBUTE");
-              reconstructed.push_back (id);
-
-              A equal ("argSeq", "==");
-              equal.tag ("FILTER");
-              equal.tag ("OP");
-              reconstructed.push_back (equal);
-
-              A value ("argSeq", r->first);
-              value.tag ("FILTER");
-              value.tag ("LITERAL");
-              value.tag ("NUMBER");
-              reconstructed.push_back (value);
-            }
-            else
-            {
-              A rangeOpenParen ("argSeq", "(");
-              rangeOpenParen.tag ("FILTER");
-              rangeOpenParen.tag ("OP");
-              reconstructed.push_back (rangeOpenParen);
-
-              A startId ("argSeq", "id");
-              startId.tag ("FILTER");
-              startId.tag ("ATTRIBUTE");
-              reconstructed.push_back (startId);
-
-              A gte ("argSeq", ">=");
-              gte.tag ("FILTER");
-              gte.tag ("OP");
-              reconstructed.push_back (gte);
-
-              A startValue ("argSeq", r->first);
-              startValue.tag ("FILTER");
-              startValue.tag ("LITERAL");
-              startValue.tag ("NUMBER");
-              reconstructed.push_back (startValue);
-
-              A andOp ("argSeq", "and");
-              andOp.tag ("FILTER");
-              andOp.tag ("OP");
-              reconstructed.push_back (andOp);
-
-              A endId ("argSeq", "id");
-              endId.tag ("FILTER");
-              endId.tag ("ATTRIBUTE");
-              reconstructed.push_back (endId);
-
-              A lte ("argSeq", "<=");
-              lte.tag ("FILTER");
-              lte.tag ("OP");
-              reconstructed.push_back (lte);
-
-              A endValue ("argSeq", r->second);
-              endValue.tag ("FILTER");
-              endValue.tag ("LITERAL");
-              endValue.tag ("NUMBER");
-              reconstructed.push_back (endValue);
-
-              A rangeCloseParen ("argSeq", ")");
-              rangeCloseParen.tag ("FILTER");
-              rangeCloseParen.tag ("OP");
-              reconstructed.push_back (rangeCloseParen);
-            }
-          }
-
-          A closeParen ("argSeq", ")");
-          closeParen.tag ("FILTER");
-          closeParen.tag ("OP");
-          reconstructed.push_back (closeParen);
-
-          found = true;
+            _id_ranges.push_back (*r);
         }
       }
-
-      if (!found)
-        reconstructed.push_back (*a);
     }
-    else
-      reconstructed.push_back (*a);
   }
-
-  _args = reconstructed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CLI::desugarUUIDs ()
+void CLI::findUUIDs ()
 {
-  std::vector <A> reconstructed;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
     if (a->hasTag ("FILTER"))
     {
-      bool found = false;
-
       // UUIDs have a limited character set.
       std::string raw = a->attribute ("raw");
       if (raw.find_first_not_of ("0123456789abcdefABCDEF-,") == std::string::npos)
@@ -1222,51 +1131,140 @@ void CLI::desugarUUIDs ()
 
           if (n.depleted ())
           {
-            A openParen ("argSeq", "(");
-            openParen.tag ("FILTER");
-            openParen.tag ("OP");
-            reconstructed.push_back (openParen);
-
-            std::vector <std::string>::iterator u;
-            for (u = uuidList.begin (); u != uuidList.end (); ++u)
-            {
-              if (u != uuidList.begin ())
-              {
-                A openParen ("argSeq", "or");
-                openParen.tag ("FILTER");
-                openParen.tag ("OP");
-                reconstructed.push_back (openParen);
-              }
-
-              A uuid ("argSeq", "uuid");
-              uuid.tag ("FILTER");
-              uuid.tag ("ATTRIBUTE");
-              reconstructed.push_back (uuid);
-
-              A equal ("argSeq", "=");
-              equal.tag ("FILTER");
-              equal.tag ("OP");
-              reconstructed.push_back (equal);
-
-              A value ("argSeq", "'" + *u + "'");
-              value.tag ("FILTER");
-              value.tag ("LITERAL");
-              value.tag ("STRING");
-              reconstructed.push_back (value);
-            }
-
-            A closeParen ("argSeq", ")");
-            closeParen.tag ("FILTER");
-            closeParen.tag ("OP");
-            reconstructed.push_back (closeParen);
-
-            found = true;
+            _uuid_list = uuidList;
+            a->tag ("UUID");
           }
         }
       }
+    }
+  }
+}
 
-      if (!found)
-        reconstructed.push_back (*a);
+////////////////////////////////////////////////////////////////////////////////
+void CLI::insertIDExpr ()
+{
+  // Iterate over all args. The first ID/UUID arg found will be replaced by
+  // the combined ID clause. All other ID/UUID args are removed.
+  bool foundID = false;
+  std::vector <A> reconstructed;
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (a->hasTag ("FILTER") &&
+        (a->hasTag ("ID") ||
+         a->hasTag ("UUID")))
+    {
+      if (! foundID)
+      {
+        foundID = true;
+
+        // Construct a single sequence that represents all _id_ranges and
+        // _uuid_list in one clause. This is essentially converting this:
+        //
+        //   1,2-3 uuid,uuid uuid 4
+        //
+        // into:
+        //
+        //   (
+        //        ( id == 1 )
+        //     or ( ( id >= 2 ) and ( id <= 3 ) )
+        //     or ( id == 4 )
+        //     or ( uuid = $UUID )
+        //     or ( uuid = $UUID )
+        //   )
+
+        A openParen  ("argSeq", "(");    openParen.tag  ("FILTER"); openParen.tag  ("OP");
+        A closeParen ("argSeq", ")");    closeParen.tag ("FILTER"); closeParen.tag ("OP");
+        A opOr       ("argSeq", "or");   opOr.tag       ("FILTER"); opOr.tag       ("OP");
+        A opAnd      ("argSeq", "and");  opAnd.tag      ("FILTER"); opAnd.tag      ("OP");
+        A opSimilar  ("argSeq", "=");    opSimilar.tag  ("FILTER"); opSimilar.tag  ("OP");
+        A opEqual    ("argSeq", "==");   opEqual.tag    ("FILTER"); opEqual.tag    ("OP");
+        A opGTE      ("argSeq", ">=");   opGTE.tag      ("FILTER"); opGTE.tag      ("OP");
+        A opLTE      ("argSeq", "<=");   opLTE.tag      ("FILTER"); opLTE.tag      ("OP");
+
+        A argID ("argSeq", "id");
+        argID.tag ("FILTER");
+        argID.tag ("ATTRIBUTE");
+        argID.tag ("OP");
+
+        A argUUID ("argSeq", "uuid");
+        argUUID.tag ("FILTER");
+        argUUID.tag ("ATTRIBUTE");
+        argUUID.tag ("OP");
+
+        reconstructed.push_back (openParen);
+
+        // Add all ID ranges.
+        std::vector <std::pair <int, int> >::iterator r;
+        for (r = _id_ranges.begin (); r != _id_ranges.end (); ++r)
+        {
+          if (r != _id_ranges.begin ())
+            reconstructed.push_back (opOr);
+
+          if (r->first == r->second)
+          {
+            reconstructed.push_back (openParen);
+            reconstructed.push_back (argID);
+            reconstructed.push_back (opEqual);
+
+            A value ("argSeq", r->first);
+            value.tag ("FILTER");
+            value.tag ("LITERAL");
+            value.tag ("NUMBER");
+            reconstructed.push_back (value);
+
+            reconstructed.push_back (closeParen);
+          }
+          else
+          {
+            reconstructed.push_back (openParen);
+            reconstructed.push_back (argID);
+            reconstructed.push_back (opGTE);
+
+            A startValue ("argSeq", r->first);
+            startValue.tag ("FILTER");
+            startValue.tag ("LITERAL");
+            startValue.tag ("NUMBER");
+            reconstructed.push_back (startValue);
+
+            reconstructed.push_back (opAnd);
+            reconstructed.push_back (argID);
+            reconstructed.push_back (opLTE);
+
+            A endValue ("argSeq", r->second);
+            endValue.tag ("FILTER");
+            endValue.tag ("LITERAL");
+            endValue.tag ("NUMBER");
+            reconstructed.push_back (endValue);
+
+            reconstructed.push_back (closeParen);
+          }
+        }
+
+        // Add all UUID list items.
+        std::vector <std::string>::iterator u;
+        for (u = _uuid_list.begin (); u != _uuid_list.end (); ++u)
+        {
+          if (u != _uuid_list.begin ())
+            reconstructed.push_back (opOr);
+
+          reconstructed.push_back (openParen);
+          reconstructed.push_back (argUUID);
+          reconstructed.push_back (opSimilar);
+
+          A value ("argSeq", "'" + *u + "'");
+          value.tag ("FILTER");
+          value.tag ("LITERAL");
+          value.tag ("STRING");
+          reconstructed.push_back (value);
+
+          reconstructed.push_back (closeParen);
+        }
+
+        reconstructed.push_back (closeParen);
+      }
+
+      // No 'else' which cause all other ID/UUID args to be eaten.
     }
     else
       reconstructed.push_back (*a);
