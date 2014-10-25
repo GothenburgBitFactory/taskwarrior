@@ -87,6 +87,7 @@ private:
   void desugarPatterns ();
   void desugarIDs ();
   void desugarUUIDs ();
+  void desugarPlainArgs ();
   void findOperators ();
   void insertJunctions ();
   void decomposeModAttributes ();

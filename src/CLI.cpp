@@ -318,6 +318,7 @@ void CLI::analyze ()
   desugarPatterns ();
   desugarIDs ();
   desugarUUIDs ();
+  //desugarPlainArgs ();
   findOperators ();
   insertJunctions ();
 
@@ -1242,6 +1243,40 @@ void CLI::desugarUUIDs ()
 
       if (!found)
         reconstructed.push_back (*a);
+    }
+    else
+      reconstructed.push_back (*a);
+  }
+
+  _args = reconstructed;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::desugarPlainArgs ()
+{
+  std::vector <A> reconstructed;
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (a->hasTag ("FILTER")      &&
+        ! a->hasTag ("ATTRIBUTE") &&
+        ! a->hasTag ("OP")        &&
+        ! a->hasTag ("LITERAL"))
+    {
+      A lhs ("argPattern", "description");
+      lhs.tag ("ATTRIBUTE");
+      lhs.tag ("FILTER");
+      reconstructed.push_back (lhs);
+
+      A op ("argPattern", "~");
+      op.tag ("OP");
+      op.tag ("FILTER");
+      reconstructed.push_back (op);
+
+      A rhs ("argPattern", "'" + a->attribute ("raw") + "'");
+      rhs.tag ("LITERAL");
+      rhs.tag ("FILTER");
+      reconstructed.push_back (rhs);
     }
     else
       reconstructed.push_back (*a);
