@@ -335,7 +335,7 @@ int CmdCalendar::execute (std::string& output)
       if (context.commands.find (report) == context.commands.end ())
         throw std::string (STRING_ERROR_DETAILS);
 
-      std::string executable = context.parser.tree ()->_branches[0]->attribute ("raw");
+      std::string executable = context.cli._args[0].attribute ("raw");
 
       std::vector <std::string> args;
       args.push_back ("rc:" + context.rc_file._data);
