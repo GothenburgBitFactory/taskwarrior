@@ -109,16 +109,8 @@ bool DOM::get (const std::string& name, Variant& value)
     }
     else if (name == "context.args")
     {
-      std::string commandLine = "";
-      std::vector <Tree*>::iterator i;
-      for (i = context.parser.tree ()->_branches.begin (); i != context.parser.tree ()->_branches.end (); ++i)
-      {
-        if (commandLine != "")
-          commandLine += " ";
-
-        commandLine += (*i)->attribute ("raw");
-      }
-
+      std::string commandLine;
+      join (commandLine, " ", context.cli._original_args);
       value = Variant (commandLine);
       return true;
     }
@@ -243,7 +235,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
   if (elements.size () == 1)
   {
     std::string canonical;
-    if (task.size () && context.parser.canonicalize (canonical, "attribute", name))
+    if (task.size () && context.cli.canonicalize (canonical, "attribute", name))
     {
       Column* column = context.columns[canonical];
       if (column)
@@ -308,7 +300,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
       }
 
       std::string canonical;
-      if (context.parser.canonicalize (canonical, "attribute", elements[1]))
+      if (context.cli.canonicalize (canonical, "attribute", elements[1]))
       {
         if (elements.size () == 2)
         {
