@@ -49,7 +49,7 @@ int CmdGet::execute (std::string& output)
 {
   // Obtain the arguments from the description.  That way, things like '--'
   // have already been handled.
-  std::vector <std::string> words = context.parser.getWords ();
+  std::vector <std::string> words = context.cli.getWords ();
   if (words.size () == 0)
     throw std::string (STRING_CMD_GET_NO_DOM);
 
