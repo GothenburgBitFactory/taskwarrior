@@ -209,23 +209,10 @@ Chart::Chart (char type)
   _fix_rate = 0.0;
 
   // Set the title.
-  _title = "(";
-  std::vector <Tree*>::iterator i;
-  for (i = context.parser.tree ()->_branches.begin (); i != context.parser.tree ()->_branches.end (); ++i)
-  {
-    if (! (*i)->hasTag ("BINARY")     &&
-        ! (*i)->hasTag ("RC")         &&
-        ! (*i)->hasTag ("CONFIG")     &&
-        ! (*i)->hasTag ("CMD")        &&
-        ! (*i)->hasTag ("TERMINATOR"))
-    {
-      if (_title.length () > 1)
-        _title += " ";
-
-      _title += (*i)->attribute ("raw");
-    }
-  }
-  _title += ")";
+  std::vector <std::string> words = context.cli.getWords ();
+  std::string filter;
+  join (filter, " ", words);
+  _title = "(" + filter + ")";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
