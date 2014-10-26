@@ -715,27 +715,6 @@ const std::string Parser::getFilterExpression ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> Parser::getWords () const
-{
-  std::vector <std::string> words;
-  std::vector <Tree*> nodes;
-  collect (nodes, collectAll);
-  std::vector <Tree*>::iterator i;
-  for (i = nodes.begin (); i != nodes.end (); ++i)
-  {
-    if (! (*i)->hasTag ("BINARY") &&
-        ! (*i)->hasTag ("RC")     &&
-        ! (*i)->hasTag ("CONFIG") &&
-        ! (*i)->hasTag ("CMD")    &&
-        ! (*i)->hasTag ("TERMINATOR") &&
-        (*i)->hasTag ("ORIGINAL"))
-      words.push_back ((*i)->attribute ("raw"));
-  }
-
-  return words;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 std::string Parser::getLimit () const
 {
   std::vector <Tree*> nodes;

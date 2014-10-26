@@ -67,7 +67,6 @@ public:
   Tree* captureLast (const std::string&);
 
   const std::string getFilterExpression ();
-  const std::vector <std::string> getWords () const;
 
   std::string getLimit () const;
   std::string getCommand () const;
