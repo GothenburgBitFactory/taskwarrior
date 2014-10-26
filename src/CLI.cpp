@@ -327,6 +327,7 @@ void CLI::analyze (bool parse /* = true */)
     findUUIDs ();
     insertIDExpr ();
     findOperators ();
+    findAttributes ();
     insertJunctions ();
     desugarPlainArgs ();
 
@@ -1344,6 +1345,27 @@ void CLI::findOperators ()
     if (a->hasTag ("FILTER"))
       if (std::find (options.begin (), options.end (), a->attribute ("raw")) != options.end ())
         a->tag ("OP");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::findAttributes ()
+{
+  // Find the category.
+  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
+  c = _entities.equal_range ("attribute");
+
+  // Extract a list of entities for category.
+  std::vector <std::string> options;
+  std::multimap <std::string, std::string>::const_iterator e;
+  for (e = c.first; e != c.second; ++e)
+    options.push_back (e->second);
+
+  // Walk the arguments and tag as OP.
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+    if (a->hasTag ("FILTER"))
+      if (std::find (options.begin (), options.end (), a->attribute ("raw")) != options.end ())
+        a->tag ("ATTRIBUTE");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

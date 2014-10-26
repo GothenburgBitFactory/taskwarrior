@@ -90,6 +90,7 @@ private:
   void insertIDExpr ();
   void desugarPlainArgs ();
   void findOperators ();
+  void findAttributes ();
   void insertJunctions ();
   void decomposeModAttributes ();
   void decomposeModAttributeModifiers ();
