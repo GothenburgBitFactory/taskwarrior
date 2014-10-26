@@ -72,7 +72,7 @@ int CmdTimesheet::execute (std::string& output)
 
   // Determine how many reports to run.
   int quantity = 1;
-  std::vector <std::string> words = context.parser.getWords ();
+  std::vector <std::string> words = context.cli.getWords ();
   if (words.size () == 1)
     quantity = strtol (words[0].c_str (), NULL, 10);;
 
