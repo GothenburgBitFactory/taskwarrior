@@ -404,6 +404,43 @@ const std::vector <std::string> CLI::getModifications ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Search for 'value' in _entities category, return canonicalized value.
+bool CLI::canonicalize (
+  std::string& canonicalized,
+  const std::string& category,
+  const std::string& value) const
+{
+  // Find the category.
+  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
+  c = _entities.equal_range (category);
+
+  // Extract a list of entities for category.
+  std::vector <std::string> options;
+  std::multimap <std::string, std::string>::const_iterator e;
+  for (e = c.first; e != c.second; ++e)
+  {
+    // Shortcut: if an exact match is found, success.
+    if (value == e->second)
+    {
+      canonicalized = value;
+      return true;
+    }
+
+    options.push_back (e->second);
+  }
+
+  // Match against the options, throw away results.
+  std::vector <std::string> matches;
+  if (autoComplete (value, options, matches, minimumMatchLength) == 1)
+  {
+    canonicalized = matches[0];
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const std::string CLI::dump () const
 {
   std::stringstream out;
@@ -591,43 +628,6 @@ bool CLI::exactMatch (
     // Shortcut: if an exact match is found, success.
     if (value == e->second)
       return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Search for 'value' in _entities category, return canonicalized value.
-bool CLI::canonicalize (
-  std::string& canonicalized,
-  const std::string& category,
-  const std::string& value) const
-{
-  // Find the category.
-  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
-  c = _entities.equal_range (category);
-
-  // Extract a list of entities for category.
-  std::vector <std::string> options;
-  std::multimap <std::string, std::string>::const_iterator e;
-  for (e = c.first; e != c.second; ++e)
-  {
-    // Shortcut: if an exact match is found, success.
-    if (value == e->second)
-    {
-      canonicalized = value;
-      return true;
-    }
-
-    options.push_back (e->second);
-  }
-
-  // Match against the options, throw away results.
-  std::vector <std::string> matches;
-  if (autoComplete (value, options, matches, minimumMatchLength) == 1)
-  {
-    canonicalized = matches[0];
-    return true;
   }
 
   return false;

@@ -73,6 +73,7 @@ public:
   const std::string getFilter ();
   const std::vector <std::string> getWords ();
   const std::vector <std::string> getModifications ();
+  bool canonicalize (std::string&, const std::string&, const std::string&) const;
   const std::string dump () const;
 
 private:
@@ -80,7 +81,6 @@ private:
   void findOverrides ();
   void categorize ();
   bool exactMatch (const std::string&, const std::string&) const;
-  bool canonicalize (std::string&, const std::string&, const std::string&) const;
   void desugarTags ();
   void desugarAttributes ();
   void desugarAttributeModifiers ();
