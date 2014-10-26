@@ -47,7 +47,7 @@ CmdExec::CmdExec ()
 int CmdExec::execute (std::string& output)
 {
   std::string command_line;
-  join (command_line, " ", context.parser.getWords ());
+  join (command_line, " ", context.cli.getWords ());
   return system (command_line.c_str ());
 }
 
