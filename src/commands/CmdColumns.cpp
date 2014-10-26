@@ -51,7 +51,7 @@ int CmdColumns::execute (std::string& output)
 {
   // Obtain the arguments from the description.  That way, things like '--'
   // have already been handled.
-  std::vector <std::string> words = context.parser.getWords ();
+  std::vector <std::string> words = context.cli.getWords ();
   if (words.size () > 1)
     throw std::string (STRING_CMD_COLUMNS_ARGS);
 
