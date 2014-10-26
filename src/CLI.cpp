@@ -362,7 +362,9 @@ const std::string CLI::getFilter ()
       }
     }
 
-    filter = "( " + filter + " )";
+    // Only apply parentheses for non-trivial filters.
+    if (filter != "")
+      filter = "( " + filter + " )";
   }
 
   return filter;
