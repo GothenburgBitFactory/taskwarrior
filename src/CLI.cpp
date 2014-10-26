@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <sstream>
+#include <algorithm>
 #include <iostream> // TODO Remove.
 #include <Context.h>
 #include <Nibbler.h>
