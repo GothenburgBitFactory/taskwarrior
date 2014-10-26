@@ -53,7 +53,7 @@ int CmdConfig::execute (std::string& output)
   std::stringstream out;
 
   // Get the non-attribute, non-fancy command line arguments.
-  std::vector <std::string> words = context.parser.getWords ();
+  std::vector <std::string> words = context.cli.getWords ();
 
   // Support:
   //   task config name value    # set name to value
