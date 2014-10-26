@@ -258,27 +258,29 @@ bool Filter::pendingOnly ()
 // all tasks to be modified. This is usually not intended.
 void Filter::safety ()
 {
-  Tree* tree = context.parser.tree ();
-  std::vector <Tree*>::iterator i;
-  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
+  std::vector <A>::iterator a;
+  for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
   {
-    if ((*i)->hasTag ("WRITECMD"))
+    if (a->hasTag ("CMD"))
     {
-      if (context.parser.getFilterExpression () == "")
+      if (a->hasTag ("WRITECMD"))
       {
-        if (! context.config.getBoolean ("allow.empty.filter"))
-          throw std::string (STRING_TASK_SAFETY_ALLOW);
+        if (context.cli.getFilter () == "")
+        {
+          if (! context.config.getBoolean ("allow.empty.filter"))
+            throw std::string (STRING_TASK_SAFETY_ALLOW);
 
-        // If user is willing to be asked, this can be avoided.
-        if (context.config.getBoolean ("confirmation") &&
-            confirm (STRING_TASK_SAFETY_VALVE))
-          return;
+          // If user is willing to be asked, this can be avoided.
+          if (context.config.getBoolean ("confirmation") &&
+              confirm (STRING_TASK_SAFETY_VALVE))
+            return;
 
-        // Sounds the alarm.
-        throw std::string (STRING_TASK_SAFETY_FAIL);
+          // Sounds the alarm.
+          throw std::string (STRING_TASK_SAFETY_FAIL);
+        }
       }
 
-      // Nothing to see here. Move along.
+      // CMD was found.
       return;
     }
   }

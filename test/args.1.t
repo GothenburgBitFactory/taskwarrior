@@ -27,14 +27,18 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 8;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'args.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=off\n";
@@ -42,22 +46,27 @@ if (open my $fh, '>', 'args.rc')
 }
 
 # Test id before command, and id after command.
-qx{../src/task rc:args.rc add one 2>&1};
-qx{../src/task rc:args.rc add two 2>&1};
-qx{../src/task rc:args.rc add three 2>&1};
-my $output = qx{../src/task rc:args.rc list 2>&1};
-like ($output, qr/one/,   'task 1 added');
-like ($output, qr/two/,   'task 2 added');
-like ($output, qr/three/, 'task 3 added');
+qx{../src/task rc:$rc add one 2>&1};
+qx{../src/task rc:$rc add two 2>&1};
+qx{../src/task rc:$rc add three 2>&1};
+my $output = qx{../src/task rc:$rc list 2>&1};
+like ($output, qr/one/,                                 "$ut: task 1 added");
+like ($output, qr/two/,                                 "$ut: task 2 added");
+like ($output, qr/three/,                               "$ut: task 3 added");
 
-$output = qx{../src/task rc:args.rc 1 done 2>&1};
-like ($output, qr/^Completed 1 task.$/ms, 'COMMAND after ID');
+$output = qx{../src/task rc:$rc 1 done 2>&1};
+like ($output, qr/^Completed 1 task\.$/ms,              "$ut: COMMAND after ID");
 
-$output = qx{../src/task rc:args.rc done 2 2>&1};
-like ($output, qr/^Command prevented from running.$/ms, 'ID after COMMAND');
-unlike ($output, qr/^Completed 1 task.$/ms, 'ID after COMMAND');
+$output = qx{../src/task rc:$rc rc.allow.empty.filter:yes done 2 2>&1};
+like ($output, qr/^Command prevented from running.$/ms, "$ut: ID after COMMAND, allowing empty filter");
+unlike ($output, qr/^Completed 1 task\.$/ms,            "$ut: ID after COMMAND, allowing empty filter");
+
+$output = qx{../src/task rc:$rc rc.allow.empty.filter:no done 2 2>&1};
+like ($output, qr/^You did not specify a filter, and with the 'allow\.empty\.filter' value, no action is taken\.$/ms,
+                                                        "$ut: ID after COMMAND, disallowing empty filter");
+unlike ($output, qr/^Completed 1 task\.$/ms,            "$ut: ID after COMMAND, disallowing empty filter");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data args.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
