@@ -102,7 +102,7 @@ int CmdCalendar::execute (std::string& output)
   int argYear = 0;
   bool argWholeYear = false;
 
-  std::vector <std::string> words = context.parser.getWords ();
+  std::vector <std::string> words = context.cli.getWords ();
 
   std::vector <std::string>::iterator arg;
   for (arg = words.begin (); arg != words.end (); ++arg)
