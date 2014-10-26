@@ -454,9 +454,9 @@ int Context::dispatch (std::string &out)
     if (c->displays_id () && !tdb2.read_only ())
       tdb2.gc ();
 
+/*
     // Only read-only commands can be run when TDB2 is read-only.
     // TODO Implement TDB2::read_only
-/*
     if (tdb2.read_only () && !c->read_only ())
       throw std::string ("");
 */

@@ -63,7 +63,7 @@ int CmdCalc::execute (std::string& output)
 
   // Compile all the args into one expression.
   std::string expression;
-  std::vector <std::string> words = context.parser.getWords ();
+  std::vector <std::string> words = context.cli.getWords ();
   std::vector <std::string>::iterator word;
   for (word = words.begin (); word != words.end (); ++word)
     expression += *word + " ";
