@@ -265,7 +265,6 @@ void CLI::initialize (int argc, const char** argv)
 // Capture a single argument, and recalc everything.
 void CLI::add (const std::string& arg)
 {
-  // Clean what needs to be cleaned. Most in this case.
   _original_args.push_back (arg);
 
   analyze ();
@@ -1290,12 +1289,16 @@ void CLI::desugarPlainArgs ()
 {
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
+  std::vector <A>::iterator prev = _args.begin ();
   for (a = _args.begin (); a != _args.end (); ++a)
   {
-    if (a->hasTag ("FILTER")      &&
+    if (a != prev                 && // Not the first arg.
+        ! prev->hasTag ("OP")     && // An OP before protects the arg.
+        a->hasTag ("FILTER")      &&
         ! a->hasTag ("ATTRIBUTE") &&
         ! a->hasTag ("ATTMOD")    &&
         ! a->hasTag ("OP")        &&
+        ! a->hasTag ("REGEX")     &&
         ! a->hasTag ("LITERAL"))
     {
       A lhs ("argPattern", "description");
@@ -1315,6 +1318,8 @@ void CLI::desugarPlainArgs ()
     }
     else
       reconstructed.push_back (*a);
+
+    prev = a;
   }
 
   _args = reconstructed;
