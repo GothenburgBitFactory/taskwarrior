@@ -66,18 +66,16 @@ int CmdDenotate::execute (std::string& output)
 
   // Extract all the ORIGINAL MODIFICATION args as simple text patter.
   std::string pattern = "";
-  std::vector <Tree*>::iterator arg;
-  for (arg = context.parser.tree ()->_branches.begin ();
-       arg != context.parser.tree ()->_branches.end ();
-       ++arg)
+  std::vector <A>::iterator a;
+  for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
   {
-    if ((*arg)->hasTag ("ORIGINAL") &&
-        (*arg)->hasTag ("MODIFICATION"))
+    if (a->hasTag ("ORIGINAL") &&
+        a->hasTag ("MODIFICATION"))
     {
       if (pattern != "")
         pattern += ' ';
 
-      pattern += (*arg)->attribute ("raw");
+      pattern += a->attribute ("raw");
     }
   }
 
