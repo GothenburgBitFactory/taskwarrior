@@ -1692,6 +1692,15 @@ void CLI::decomposeModSubstitutions ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool CLI::isRCOverride (const std::string& raw) const
+{
+  if (raw.length () > 3 && raw.substr (0, 3) == "rc:")
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool CLI::isUUID (const std::string& raw) const
 {
   // UUIDs have a limited character set.
