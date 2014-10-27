@@ -604,10 +604,18 @@ void CLI::categorize ()
     else if (foundCommand && ! readOnly)
     {
       a->tag ("MODIFICATION");
+
+      // If the argument contains a space, it was quoted.  Record that.
+      if (! noSpaces (raw))
+        a->tag ("QUOTED");
     }
     else if (!foundCommand || (foundCommand && readOnly))
     {
       a->tag ("FILTER");
+
+      // If the argument contains a space, it was quoted.  Record that.
+      if (! noSpaces (raw))
+        a->tag ("QUOTED");
     }
   }
 }
