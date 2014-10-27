@@ -98,7 +98,7 @@ private:
   void decomposeModTags ();
   void decomposeModSubstitutions ();
 
-  bool isUUID (const std::string&, std::string&) const;
+  bool isUUID (const std::string&) const;
 
 public:
   std::multimap <std::string, std::string> _entities;

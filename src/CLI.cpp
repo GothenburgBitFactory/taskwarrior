@@ -476,8 +476,6 @@ const std::string CLI::dump () const
 // Either the arg is appended to _original_args intact, or the lexemes are.
 void CLI::addArg (const std::string& arg)
 {
-  std::string token;
-
   // Do not lex RC overrides.
   if (arg.length () > 3 &&
       (arg.substr (0, 3) == "rc." ||
@@ -498,7 +496,7 @@ void CLI::addArg (const std::string& arg)
     _original_args.push_back (arg);
 
   // Do not lex UUIDs.
-  else if (isUUID (arg, token))
+  else if (isUUID (arg))
     _original_args.push_back (arg);
 
   // Do not lex, unless lexing reveals OPs.
@@ -1694,12 +1692,13 @@ void CLI::decomposeModSubstitutions ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI::isUUID (const std::string& raw, std::string& token) const
+bool CLI::isUUID (const std::string& raw) const
 {
   // UUIDs have a limited character set.
   if (raw.find_first_not_of ("0123456789abcdefABCDEF-,") == std::string::npos)
   {
     Nibbler n (raw);
+    std::string token;
     if (n.getUUID (token) || n.getPartialUUID (token))
       return true;
   }
