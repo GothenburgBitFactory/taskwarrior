@@ -1624,3 +1624,17 @@ void CLI::decomposeModSubstitutions ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool CLI::isUUID (const std::string& raw, std::string& token) const
+{
+  // UUIDs have a limited character set.
+  if (raw.find_first_not_of ("0123456789abcdefABCDEF-,") == std::string::npos)
+  {
+    Nibbler n (raw);
+    if (n.getUUID (token) || n.getPartialUUID (token))
+      return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
