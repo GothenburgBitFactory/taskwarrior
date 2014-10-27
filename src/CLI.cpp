@@ -477,9 +477,10 @@ const std::string CLI::dump () const
 void CLI::addArg (const std::string& arg)
 {
   // Do not lex RC overrides.
-  if (arg.length () > 3 &&
-      (arg.substr (0, 3) == "rc." ||
-       arg.substr (0, 3) == "rc:"))
+  if (isRCOverride (arg))
+    _original_args.push_back (arg);
+
+  if (isConfigOverride (arg))
     _original_args.push_back (arg);
 
   // Do not lex patterns or single substitutions.
@@ -601,12 +602,12 @@ void CLI::findOverrides ()
     if (terminated)
       continue;
 
-    if (raw.find ("rc:") == 0)
+    if (isRCOverride (raw))
     {
       a->tag ("RC");
       a->attribute ("file", raw.substr (3));
     }
-    else if (raw.find ("rc.") == 0)
+    else if (isConfigOverride (raw))
     {
       std::string::size_type sep = raw.find ('=', 3);
       if (sep == std::string::npos)
@@ -1695,6 +1696,15 @@ void CLI::decomposeModSubstitutions ()
 bool CLI::isRCOverride (const std::string& raw) const
 {
   if (raw.length () > 3 && raw.substr (0, 3) == "rc:")
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::isConfigOverride (const std::string& raw) const
+{
+  if (raw.length () > 3 && raw.substr (0, 3) == "rc.")
     return true;
 
   return false;

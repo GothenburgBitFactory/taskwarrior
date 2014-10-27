@@ -99,6 +99,7 @@ private:
   void decomposeModSubstitutions ();
 
   bool isRCOverride (const std::string&) const;
+  bool isConfigOverride (const std::string&) const;
   bool isUUID (const std::string&) const;
 
 public:
