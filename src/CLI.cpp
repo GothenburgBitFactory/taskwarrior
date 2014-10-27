@@ -480,28 +480,20 @@ const std::string CLI::dump () const
 // Either the arg is appended to _original_args intact, or the lexemes are.
 void CLI::addArg (const std::string& arg)
 {
-  // Do not lex RC overrides.
-  if (isRCOverride (arg))
+  // Do not lex RC overrides, UUIDs, patterns.
+  if (isRCOverride (arg)     ||
+      isConfigOverride (arg) ||
+      isUUID (arg)           ||
+      isPattern (arg))
+  {
     _original_args.push_back (arg);
-
-  if (isConfigOverride (arg))
-    _original_args.push_back (arg);
-
-  // Do not lex patterns or single substitutions.
-  else if (arg.length () > 2 &&
-      arg[0] == '/' &&
-      arg[arg.length () - 1] == '/')
-    _original_args.push_back (arg);
+  }
 
   // Do not lex substitutions.
   else if (arg.length () > 2 &&
       arg[0] == '/' &&
       arg[arg.length () - 2] == '/' &&
       arg[arg.length () - 1] == 'g')
-    _original_args.push_back (arg);
-
-  // Do not lex UUIDs.
-  else if (isUUID (arg))
     _original_args.push_back (arg);
 
   // Do not lex, unless lexing reveals OPs.
@@ -1725,6 +1717,17 @@ bool CLI::isUUID (const std::string& raw) const
     if (n.getUUID (token) || n.getPartialUUID (token))
       return true;
   }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::isPattern (const std::string& raw) const
+{
+  if (raw.length () > 2 &&
+      raw[0] == '/' &&
+      raw[raw.length () - 1] == '/')
+    return true;
 
   return false;
 }
