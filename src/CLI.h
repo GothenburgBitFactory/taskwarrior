@@ -77,6 +77,7 @@ public:
   const std::string dump () const;
 
 private:
+  void addArg (const std::string&);
   void aliasExpansion ();
   void findOverrides ();
   void categorize ();

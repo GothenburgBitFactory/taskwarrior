@@ -255,8 +255,10 @@ void CLI::initialize (int argc, const char** argv)
   _id_ranges.clear ();
   _uuid_list.clear ();
 
-  for (int i = 0; i < argc; ++i)
-    _original_args.push_back (argv[i]);
+  _original_args.push_back (argv[0]);
+
+  for (int i = 1; i < argc; ++i)
+    addArg (argv[i]);
 
   analyze ();
 }
@@ -265,8 +267,7 @@ void CLI::initialize (int argc, const char** argv)
 // Capture a single argument, and recalc everything.
 void CLI::add (const std::string& arg)
 {
-  _original_args.push_back (arg);
-
+  addArg (arg);
   analyze ();
 }
 
@@ -465,6 +466,75 @@ const std::string CLI::dump () const
     out << "    " << a->dump () << "\n";
 
   return out.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Note: This seems silly - it's essentially performing a low-quality parse. But
+//       that is really all that is needed - to separate the args that need to
+//       be lexed from those that need to be left alone.
+//
+// Either the arg is appended to _original_args intact, or the lexemes are.
+void CLI::addArg (const std::string& arg)
+{
+  std::string token;
+
+  // Do not lex RC overrides.
+  if (arg.length () > 3 &&
+      (arg.substr (0, 3) == "rc." ||
+       arg.substr (0, 3) == "rc:"))
+    _original_args.push_back (arg);
+
+  // Do not lex patterns or single substitutions.
+  else if (arg.length () > 2 &&
+      arg[0] == '/' &&
+      arg[arg.length () - 1] == '/')
+    _original_args.push_back (arg);
+
+  // Do not lex substitutions.
+  else if (arg.length () > 2 &&
+      arg[0] == '/' &&
+      arg[arg.length () - 2] == '/' &&
+      arg[arg.length () - 1] == 'g')
+    _original_args.push_back (arg);
+
+  // Do not lex UUIDs.
+  else if (isUUID (arg, token))
+    _original_args.push_back (arg);
+
+  // Do not lex, unless lexing reveals OPs.
+  else
+  {
+    // Lex each argument.  If there are multiple lexemes, create sub branches,
+    // otherwise no change.
+    std::string lexeme;
+    Lexer::Type type;
+    Lexer lex (arg);
+    lex.ambiguity (false);
+
+    std::vector <std::pair <std::string, Lexer::Type> > lexemes;
+    while (lex.token (lexeme, type))
+      lexemes.push_back (std::pair <std::string, Lexer::Type> (lexeme, type));
+
+    // This one looks interesting.
+    if (lexemes.size () > 1)
+    {
+      bool foundOP = false;
+      std::vector <std::pair <std::string, Lexer::Type> >::iterator l;
+      for (l = lexemes.begin (); l != lexemes.end (); ++l)
+        if (l->second == Lexer::typeOperator)
+          foundOP = true;
+
+      if (foundOP)
+      {
+        for (l = lexemes.begin (); l != lexemes.end (); ++l)
+          _original_args.push_back (l->first);
+      }
+      else
+        _original_args.push_back (arg);
+    }
+    else
+      _original_args.push_back (arg);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
