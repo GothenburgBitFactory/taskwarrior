@@ -267,6 +267,10 @@ void CLI::initialize (int argc, const char** argv)
 // Capture a single argument, and recalc everything.
 void CLI::add (const std::string& arg)
 {
+  // Clean the ID/UUID lists, because they will be rebuilt.
+  _id_ranges.clear ();
+  _uuid_list.clear ();
+
   addArg (arg);
   analyze ();
 }
