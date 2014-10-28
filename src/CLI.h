@@ -102,6 +102,7 @@ private:
   bool isConfigOverride (const std::string&) const;
   bool isUUID (const std::string&) const;
   bool isPattern (const std::string&) const;
+  bool isSubstitution (const std::string&) const;
 
 public:
   std::multimap <std::string, std::string> _entities;

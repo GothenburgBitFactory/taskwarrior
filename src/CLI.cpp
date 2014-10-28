@@ -480,21 +480,15 @@ const std::string CLI::dump () const
 // Either the arg is appended to _original_args intact, or the lexemes are.
 void CLI::addArg (const std::string& arg)
 {
-  // Do not lex RC overrides, UUIDs, patterns.
+  // Do not lex RC overrides, UUIDs, patterns, substitutions.
   if (isRCOverride (arg)     ||
       isConfigOverride (arg) ||
       isUUID (arg)           ||
-      isPattern (arg))
+      isPattern (arg)        ||
+      isSubstitution (arg))
   {
     _original_args.push_back (arg);
   }
-
-  // Do not lex substitutions.
-  else if (arg.length () > 2 &&
-      arg[0] == '/' &&
-      arg[arg.length () - 2] == '/' &&
-      arg[arg.length () - 1] == 'g')
-    _original_args.push_back (arg);
 
   // Do not lex, unless lexing reveals OPs.
   else
@@ -1725,8 +1719,22 @@ bool CLI::isUUID (const std::string& raw) const
 bool CLI::isPattern (const std::string& raw) const
 {
   if (raw.length () > 2 &&
-      raw[0] == '/' &&
+      raw[0] == '/'     &&
       raw[raw.length () - 1] == '/')
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The non-g case is caught by ::isPattern, but not categorized, so it doesn't
+// matter.
+bool CLI::isSubstitution (const std::string& raw) const
+{
+  if (raw.length () > 3             &&      // /x// = length 4
+      raw[0] == '/'                 &&
+      raw[raw.length () - 2] == '/' &&
+      raw[raw.length () - 1] == 'g')
     return true;
 
   return false;
