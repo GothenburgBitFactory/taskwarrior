@@ -484,6 +484,7 @@ void CLI::addArg (const std::string& arg)
   if (isTerminator     (arg) ||
       isRCOverride     (arg) ||
       isConfigOverride (arg) ||
+      isTag            (arg) ||
       isUUIDList       (arg) ||
       isUUID           (arg) ||
       isIDSequence     (arg) ||
@@ -1706,6 +1707,17 @@ bool CLI::isRCOverride (const std::string& raw) const
 bool CLI::isConfigOverride (const std::string& raw) const
 {
   if (raw.length () > 3 && raw.substr (0, 3) == "rc.")
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::isTag (const std::string& raw) const
+{
+  if (raw.size () >= 2                 &&
+      (raw[0] == '+' || raw[0] == '-') &&
+      raw.find (' ') == std::string::npos)
     return true;
 
   return false;
