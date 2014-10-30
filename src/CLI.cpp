@@ -489,7 +489,8 @@ void CLI::addArg (const std::string& arg)
       isIDSequence     (arg) ||
       isID             (arg) ||
       isPattern        (arg) ||
-      isSubstitution   (arg))
+      isSubstitution   (arg) ||
+      isAttribute      (arg))
   {
     _original_args.push_back (arg);
   }
@@ -850,7 +851,7 @@ void CLI::desugarAttributes ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <name>.<mod>[:=]['"]<value>['"] --> name <op> value
+// <name>.[~]<mod>[:=]['"]<value>['"] --> name <op> value
 void CLI::desugarAttributeModifiers ()
 {
   std::vector <A> reconstructed;
@@ -1813,6 +1814,50 @@ bool CLI::isSubstitution (const std::string& raw) const
     return true;
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Covers attribute and attribute modifiers.
+// <attr>.[~]<mod>[:=]...
+bool CLI::isAttribute (const std::string& raw) const
+{
+  std::string::size_type colon = raw.find (":");
+  std::string::size_type equal = raw.find ("=");
+
+  std::string attr = "";
+  if (colon != std::string::npos)
+    attr = raw.substr (0, colon);
+  else if (equal != std::string::npos)
+    attr = raw.substr (0, equal);
+  else
+    return false;
+
+  std::string::size_type dot = attr.find (".");
+  std::string mod = "";
+  if (dot != std::string::npos)
+  {
+    mod = attr.substr (dot + 1);
+    attr = attr.substr (0, dot);
+
+    if (mod[0] == '~')
+      mod = mod.substr (1);
+
+/*
+    TODO Entities are not loaded yet. Hmm.
+
+    if (! canonicalize (mod, "modifier", mod))
+      return false;
+*/
+  }
+
+/*
+  TODO Entities are not loaded yet. Hmm.
+
+  if (! canonicalize (attr, "attribute", attr))
+    return false;
+*/
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

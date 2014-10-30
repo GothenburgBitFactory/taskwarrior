@@ -107,6 +107,7 @@ private:
   bool isID (const std::string&) const;
   bool isPattern (const std::string&) const;
   bool isSubstitution (const std::string&) const;
+  bool isAttribute (const std::string&) const;
 
 public:
   std::multimap <std::string, std::string> _entities;
