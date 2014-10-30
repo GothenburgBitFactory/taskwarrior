@@ -480,8 +480,9 @@ const std::string CLI::dump () const
 // Either the arg is appended to _original_args intact, or the lexemes are.
 void CLI::addArg (const std::string& arg)
 {
-  // Do not lex RC overrides, UUIDs, patterns, substitutions.
-  if (isRCOverride     (arg) ||
+  // Do not lex RC overrides, IDs, UUIDs, patterns, substitutions.
+  if (isTerminator     (arg) ||
+      isRCOverride     (arg) ||
       isConfigOverride (arg) ||
       isUUIDList       (arg) ||
       isUUID           (arg) ||
@@ -1683,6 +1684,12 @@ void CLI::decomposeModSubstitutions ()
       }
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::isTerminator (const std::string& raw) const
+{
+  return (raw == "--");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
