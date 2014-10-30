@@ -770,7 +770,8 @@ void CLI::desugarAttributes ()
       if (n.getName (name) &&
           name.length ())
       {
-        if (n.skip (':'))
+        if (n.skip (':') ||
+            n.skip ('='))
         {
           std::string value;
           if (n.getQuoted   ('"', value)  ||
