@@ -100,6 +100,7 @@ private:
 
   bool isRCOverride (const std::string&) const;
   bool isConfigOverride (const std::string&) const;
+  bool isUUIDList (const std::string&) const;
   bool isUUID (const std::string&) const;
   bool isPattern (const std::string&) const;
   bool isSubstitution (const std::string&) const;

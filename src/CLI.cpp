@@ -481,11 +481,12 @@ const std::string CLI::dump () const
 void CLI::addArg (const std::string& arg)
 {
   // Do not lex RC overrides, UUIDs, patterns, substitutions.
-  if (isRCOverride (arg)     ||
+  if (isRCOverride     (arg) ||
       isConfigOverride (arg) ||
-      isUUID (arg)           ||
-      isPattern (arg)        ||
-      isSubstitution (arg))
+      isUUIDList       (arg) ||
+      isUUID           (arg) ||
+      isPattern        (arg) ||
+      isSubstitution   (arg))
   {
     _original_args.push_back (arg);
   }
@@ -1701,10 +1702,34 @@ bool CLI::isConfigOverride (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI::isUUID (const std::string& raw) const
+bool CLI::isUUIDList (const std::string& raw) const
 {
   // UUIDs have a limited character set.
   if (raw.find_first_not_of ("0123456789abcdefABCDEF-,") == std::string::npos)
+  {
+    Nibbler n (raw);
+    std::string token;
+    if (n.getUUID (token) ||
+        n.getPartialUUID (token))
+    {
+      while (n.skip (','))
+        if (! n.getUUID (token) &&
+            ! n.getPartialUUID (token))
+          return false;
+
+      if (n.depleted ())
+        return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::isUUID (const std::string& raw) const
+{
+  // UUIDs have a limited character set.
+  if (raw.find_first_not_of ("0123456789abcdefABCDEF-") == std::string::npos)
   {
     Nibbler n (raw);
     std::string token;
