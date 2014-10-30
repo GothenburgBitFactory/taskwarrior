@@ -480,18 +480,18 @@ const std::string CLI::dump () const
 // Either the arg is appended to _original_args intact, or the lexemes are.
 void CLI::addArg (const std::string& arg)
 {
-  // Do not lex RC overrides, IDs, UUIDs, patterns, substitutions.
-  if (isTerminator     (arg) ||
-      isRCOverride     (arg) ||
-      isConfigOverride (arg) ||
-      isTag            (arg) ||
-      isUUIDList       (arg) ||
-      isUUID           (arg) ||
-      isIDSequence     (arg) ||
-      isID             (arg) ||
-      isPattern        (arg) ||
-      isSubstitution   (arg) ||
-      isAttribute      (arg))
+  // Do not lex these constructs.
+  if (isTerminator     (arg) ||     // --
+      isRCOverride     (arg) ||     // rc:<file>
+      isConfigOverride (arg) ||     // rc.<attr>:<value>
+      isTag            (arg) ||     // [+-]<tag>
+      isUUIDList       (arg) ||     // <uuid>,[uuid ...]
+      isUUID           (arg) ||     // <uuid>
+      isIDSequence     (arg) ||     // <id>[-<id>][,<id>[-<id>] ...]
+      isID             (arg) ||     // <id>
+      isPattern        (arg) ||     // /<pattern</
+      isSubstitution   (arg) ||     // /<from>/<to>/[g]
+      isAttribute      (arg))       // <name>[.[~]<modﬁfier>]:<value>
   {
     _original_args.push_back (arg);
   }
@@ -646,6 +646,9 @@ void CLI::categorize ()
       a->tag ("TERMINATED");
       a->tag ("WORD");
     }
+
+    if (raw.find (' ') != std::string::npos)
+      a->tag ("QUOTED");
 
     std::string canonical;
     if (! terminated   &&
