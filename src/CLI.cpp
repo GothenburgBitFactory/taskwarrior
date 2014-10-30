@@ -485,6 +485,7 @@ void CLI::addArg (const std::string& arg)
       isConfigOverride (arg) ||
       isUUIDList       (arg) ||
       isUUID           (arg) ||
+      isID             (arg) ||
       isPattern        (arg) ||
       isSubstitution   (arg))
   {
@@ -1738,6 +1739,12 @@ bool CLI::isUUID (const std::string& raw) const
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::isID (const std::string& raw) const
+{
+  return digitsOnly (raw);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
