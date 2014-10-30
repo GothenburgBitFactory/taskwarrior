@@ -485,6 +485,7 @@ void CLI::addArg (const std::string& arg)
       isConfigOverride (arg) ||
       isUUIDList       (arg) ||
       isUUID           (arg) ||
+      isIDSequence     (arg) ||
       isID             (arg) ||
       isPattern        (arg) ||
       isSubstitution   (arg))
@@ -1736,6 +1737,41 @@ bool CLI::isUUID (const std::string& raw) const
     std::string token;
     if (n.getUUID (token) || n.getPartialUUID (token))
       return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::isIDSequence (const std::string& raw) const
+{
+  if (raw.find_first_not_of ("0123456789,-") == std::string::npos)
+  {
+    // Split the ID list into elements.
+    std::vector <std::string> elements;
+    split (elements, raw, ',');
+
+    std::vector <std::string>::iterator e;
+    for (e = elements.begin (); e != elements.end (); ++e)
+    {
+      // Split the ID range into min/max.
+      std::vector <std::string> terms;
+      split (terms, *e, '-');
+
+      if (terms.size () == 1 &&
+          ! isID (terms[0]))
+        return false;
+
+      else if (terms.size () == 2 &&
+          (! isID (terms[0]) ||
+           ! isID (terms[1])))
+        return false;
+
+      else if (terms.size () > 2)
+        return false;
+    }
+
+    return true;
   }
 
   return false;
