@@ -27,7 +27,6 @@
 #include <cmake.h>
 #include <iostream>
 #include <Context.h>
-#include <Tree.h>
 #include <Filter.h>
 #include <text.h>
 #include <util.h>
