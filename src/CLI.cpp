@@ -448,11 +448,11 @@ bool CLI::canonicalize (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string CLI::dump () const
+const std::string CLI::dump (const std::string& title /* = "CLI Parser" */) const
 {
   std::stringstream out;
 
-  out << "\033[1mCLI Parser\033[0m\n"
+  out << "\033[1m" << title << "\033[0m\n"
       << "  _original_args\n    ";
   Color colorOrigArgs ("gray10 on gray4");
   std::vector <std::string>::const_iterator i;
