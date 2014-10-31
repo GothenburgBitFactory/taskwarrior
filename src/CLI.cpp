@@ -537,6 +537,7 @@ void CLI::addArg (const std::string& arg)
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::aliasExpansion ()
 {
+  bool changes = false;
   bool action;
   int counter = 0;
   do
@@ -571,6 +572,7 @@ void CLI::aliasExpansion ()
           }
 
           action = true;
+          changes = true;
         }
         else
           reconstructed.push_back (*i);
@@ -582,6 +584,10 @@ void CLI::aliasExpansion ()
     _args = reconstructed;
   }
   while (action && counter++ < safetyValveDefault);
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (context.cli.dump ("CLI::analyze aliasExpansion"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
