@@ -744,6 +744,7 @@ bool CLI::exactMatch (
 // -tag --> tags _notag_ tag
 void CLI::desugarTags ()
 {
+  bool changes = false;
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
@@ -773,6 +774,8 @@ void CLI::desugarTags ()
         right.tag ("LITERAL");
         right.tag ("FILTER");
         reconstructed.push_back (right);
+
+        changes = true;
       }
       else
         reconstructed.push_back (*a);
@@ -781,7 +784,13 @@ void CLI::desugarTags ()
       reconstructed.push_back (*a);
   }
 
-  _args = reconstructed;
+  if (changes)
+  {
+    _args = reconstructed;
+
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (context.cli.dump ("CLI::analyze desugarTags"));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
