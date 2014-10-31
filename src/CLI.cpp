@@ -492,7 +492,8 @@ void CLI::addArg (const std::string& arg)
       isID             (arg) ||     // <id>
       isPattern        (arg) ||     // /<pattern</
       isSubstitution   (arg) ||     // /<from>/<to>/[g]
-      isAttribute      (arg))       // <name>[.[~]<modﬁfier>]:<value>
+      isAttribute      (arg) ||     // <name>[.[~]<modﬁfier>]:<value>
+      isOperator       (arg))       // <operator>
   {
     _original_args.push_back (arg);
   }
@@ -1875,6 +1876,23 @@ bool CLI::isAttribute (const std::string& raw) const
 */
 
   return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::isOperator (const std::string& raw) const
+{
+  // Find the category.
+  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
+  c = _entities.equal_range ("operator");
+
+  // Walk the list of entities for category.
+  std::vector <std::string> options;
+  std::multimap <std::string, std::string>::const_iterator e;
+  for (e = c.first; e != c.second; ++e)
+    if (raw == e->second)
+      return true;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
