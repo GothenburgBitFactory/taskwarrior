@@ -103,6 +103,9 @@ int Context::initialize (int argc, const char** argv)
     // Assume default .taskrc and .task locations.
     assumeLocations ();
 
+    // The parser needs all the help it can get.
+    setupEntities ();
+
     // Initialize the command line parser.
     program = (argc ? argv[0] : "task");
 
@@ -215,27 +218,6 @@ int Context::initialize (int argc, const char** argv)
     {
       parser.entity ("attribute", col->first);
       cli.entity ("attribute", col->first);
-    }
-
-    // Entities: Pseudo-attributes.  Hard-coded.
-    parser.entity ("pseudo", "limit");
-    cli.entity ("pseudo", "limit");
-
-    // Entities: Modifiers.
-    for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
-    {
-      parser.entity ("modifier", modifierNames[i]);
-      cli.entity ("modifier", modifierNames[i]);
-    }
-
-    // Entities: Operators.
-    std::vector <std::string> operators;
-    Eval::getOperators (operators);
-    std::vector <std::string>::iterator op;
-    for (op = operators.begin (); op != operators.end (); ++op)
-    {
-      parser.entity ("operator", *op);
-      cli.entity ("operator", *op);
     }
 
     // Now the entities are loaded, parsing may resume.
@@ -670,6 +652,31 @@ void Context::assumeLocations ()
 {
   rc_file  = File      ("~/.taskrc");
   data_dir = Directory ("~/.task");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Context::setupEntities ()
+{
+  // Entities: Pseudo-attributes.  Hard-coded.
+  parser.entity ("pseudo", "limit");
+  cli.entity ("pseudo", "limit");
+
+  // Entities: Modifiers.
+  for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
+  {
+    parser.entity ("modifier", modifierNames[i]);
+    cli.entity ("modifier", modifierNames[i]);
+  }
+
+  // Entities: Operators.
+  std::vector <std::string> operators;
+  Eval::getOperators (operators);
+  std::vector <std::string>::iterator op;
+  for (op = operators.begin (); op != operators.end (); ++op)
+  {
+    parser.entity ("operator", *op);
+    cli.entity ("operator", *op);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
