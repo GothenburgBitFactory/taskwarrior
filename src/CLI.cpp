@@ -797,6 +797,7 @@ void CLI::desugarTags ()
 // <name>:['"][<value>]['"] --> name = value
 void CLI::desugarAttributes ()
 {
+  bool changes = false;
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
@@ -882,14 +883,22 @@ void CLI::desugarAttributes ()
         }
       }
 
-      if (!found)
+      if (found)
+        changes = true;
+      else
         reconstructed.push_back (*a);
     }
     else
       reconstructed.push_back (*a);
   }
 
-  _args = reconstructed;
+  if (changes)
+  {
+    _args = reconstructed;
+
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (context.cli.dump ("CLI::analyze desugarAttributes"));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
