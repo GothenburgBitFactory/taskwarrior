@@ -636,6 +636,7 @@ void CLI::findOverrides ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::categorize ()
 {
+  bool changes = false;
   bool foundCommand = false;
   bool readOnly = false;
   bool terminated = false;
@@ -647,23 +648,26 @@ void CLI::categorize ()
 
     if (raw == "--")
     {
-      a->unTagAll ();
       a->tag ("ORIGINAL");
       a->tag ("TERMINATOR");
       terminated = true;
+      changes = true;
       continue;
     }
 
-    if (terminated)
+    else if (terminated)
     {
-      a->unTagAll ();
       a->tag ("ORIGINAL");
       a->tag ("TERMINATED");
       a->tag ("WORD");
+      changes = true;
     }
 
     if (raw.find (' ') != std::string::npos)
+    {
       a->tag ("QUOTED");
+      changes = true;
+    }
 
     std::string canonical;
     if (! terminated   &&
@@ -676,6 +680,7 @@ void CLI::categorize ()
       a->tag (readOnly ? "READCMD" : "WRITECMD");
       a->attribute ("canonical", canonical);
       foundCommand = true;
+      changes = true;
     }
     else if (a->hasTag ("TERMINATOR") ||
              a->hasTag ("BINARY")     ||
@@ -691,6 +696,8 @@ void CLI::categorize ()
       // If the argument contains a space, it was quoted.  Record that.
       if (! noSpaces (raw))
         a->tag ("QUOTED");
+
+      changes = true;
     }
     else if (!foundCommand || (foundCommand && readOnly))
     {
@@ -699,8 +706,14 @@ void CLI::categorize ()
       // If the argument contains a space, it was quoted.  Record that.
       if (! noSpaces (raw))
         a->tag ("QUOTED");
+
+      changes = true;
     }
   }
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (context.cli.dump ("CLI::analyze categorize"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
