@@ -99,6 +99,7 @@ int CmdCustom::execute (std::string& output)
 
   // Reparse after tree change.
   context.parser.parse ();
+  context.cli.analyze ();
 
   // Apply filter.
   handleRecurrence ();
