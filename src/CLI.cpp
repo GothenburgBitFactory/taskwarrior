@@ -1089,6 +1089,7 @@ void CLI::desugarAttributeModifiers ()
 // /pattern/ --> description ~ 'pattern'
 void CLI::desugarPatterns ()
 {
+  bool changes = false;
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
@@ -1116,6 +1117,7 @@ void CLI::desugarPatterns ()
         rhs.tag ("LITERAL");
         rhs.tag ("FILTER");
         reconstructed.push_back (rhs);
+        changes = true;
       }
       else
         reconstructed.push_back (*a);
@@ -1124,7 +1126,13 @@ void CLI::desugarPatterns ()
       reconstructed.push_back (*a);
   }
 
-  _args = reconstructed;
+  if (changes)
+  {
+    _args = reconstructed;
+
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (context.cli.dump ("CLI::analyze desugarPatterns"));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
