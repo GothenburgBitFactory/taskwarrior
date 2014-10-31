@@ -241,9 +241,10 @@ void CLI::alias (const std::string& name, const std::string& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CLI::entity (const std::string& name, const std::string& value)
+void CLI::entity (const std::string& category, const std::string& name)
 {
-  _entities.insert (std::pair <std::string, std::string> (name, value));
+  if (_entities.find (category) == _entities.end ())
+    _entities.insert (std::pair <std::string, std::string> (category, name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
