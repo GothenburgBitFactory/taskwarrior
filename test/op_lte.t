@@ -52,7 +52,7 @@ qx{../src/task rc:$rc add three priority:L 2>&1};
 qx{../src/task rc:$rc add four             2>&1};
 
 # Test the '<=' operator.
-my $output = qx{../src/task rc:$rc ls 'priority <= M' rc.debug.parser=2 2>&1};
+my $output = qx{../src/task rc:$rc ls 'priority <= M' 2>&1};
 unlike ($output, qr/one/,   "$ut: ls priority <= H --> !one");
 like   ($output, qr/two/,   "$ut: ls priority <= H --> two");
 like   ($output, qr/three/, "$ut: ls priority <= H --> three");
