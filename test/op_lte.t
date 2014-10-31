@@ -33,8 +33,12 @@ use Test::More tests => 12;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'op.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "confirmation=no\n";
@@ -42,31 +46,31 @@ if (open my $fh, '>', 'op.rc')
 }
 
 # Setup: Add a task
-qx{../src/task rc:op.rc add one   priority:H 2>&1};
-qx{../src/task rc:op.rc add two   priority:M 2>&1};
-qx{../src/task rc:op.rc add three priority:L 2>&1};
-qx{../src/task rc:op.rc add four             2>&1};
+qx{../src/task rc:$rc add one   priority:H 2>&1};
+qx{../src/task rc:$rc add two   priority:M 2>&1};
+qx{../src/task rc:$rc add three priority:L 2>&1};
+qx{../src/task rc:$rc add four             2>&1};
 
 # Test the '<=' operator.
-my $output = qx{../src/task rc:op.rc ls 'priority <= M' 2>&1};
-unlike ($output, qr/one/,   'ls priority <= H --> !one');
-like   ($output, qr/two/,   'ls priority <= H --> two');
-like   ($output, qr/three/, 'ls priority <= H --> three');
-like   ($output, qr/four/,  'ls priority <= H --> four');
+my $output = qx{../src/task rc:$rc ls 'priority <= M' rc.debug.parser=2 2>&1};
+unlike ($output, qr/one/,   "$ut: ls priority <= H --> !one");
+like   ($output, qr/two/,   "$ut: ls priority <= H --> two");
+like   ($output, qr/three/, "$ut: ls priority <= H --> three");
+like   ($output, qr/four/,  "$ut: ls priority <= H --> four");
 
-$output = qx{../src/task rc:op.rc ls 'description <= t' 2>&1};
-like   ($output, qr/one/,   'ls description <= t --> one');
-unlike ($output, qr/two/,   'ls description <= t --> !two');
-unlike ($output, qr/three/, 'ls description <= t --> !three');
-like   ($output, qr/four/,  'ls description <= t --> four');
+$output = qx{../src/task rc:$rc ls 'description <= t' 2>&1};
+like   ($output, qr/one/,   "$ut: ls description <= t --> one");
+unlike ($output, qr/two/,   "$ut: ls description <= t --> !two");
+unlike ($output, qr/three/, "$ut: ls description <= t --> !three");
+like   ($output, qr/four/,  "$ut: ls description <= t --> four");
 
-$output = qx{../src/task rc:op.rc 'urgency <= 2.0' ls 2>&1};
-unlike ($output, qr/one/,   'ls urgency <= 2.0 --> !one');
-unlike ($output, qr/two/,   'ls urgency <= 2.0 --> !two');
-like   ($output, qr/three/, 'ls urgency <= 2.0 --> three');
-like   ($output, qr/four/,  'ls urgency <= 2.0 --> four');
+$output = qx{../src/task rc:$rc 'urgency <= 2.0' ls 2>&1};
+unlike ($output, qr/one/,   "$ut: ls urgency <= 2.0 --> !one");
+unlike ($output, qr/two/,   "$ut: ls urgency <= 2.0 --> !two");
+like   ($output, qr/three/, "$ut: ls urgency <= 2.0 --> three");
+like   ($output, qr/four/,  "$ut: ls urgency <= 2.0 --> four");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data op.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
