@@ -593,6 +593,7 @@ void CLI::aliasExpansion ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::findOverrides ()
 {
+  bool changes = false;
   std::string raw;
   bool terminated = false;
   std::vector <A>::iterator a;
@@ -610,6 +611,7 @@ void CLI::findOverrides ()
     {
       a->tag ("RC");
       a->attribute ("file", raw.substr (3));
+      changes = true;
     }
     else if (isConfigOverride (raw))
     {
@@ -621,9 +623,14 @@ void CLI::findOverrides ()
         a->tag ("CONFIG");
         a->attribute ("name", raw.substr (3, sep - 3));
         a->attribute ("value", raw.substr (sep + 1));
+        changes = true;
       }
     }
   }
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (context.cli.dump ("CLI::analyze findOverrides"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
