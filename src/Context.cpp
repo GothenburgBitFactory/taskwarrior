@@ -65,6 +65,33 @@ static const char* modifierNames[] =
 
 #define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
 
+static const char* attributeNames[] =
+{
+  "depends",
+  "description",
+  "due",
+  "end",
+  "entry",
+  "id",
+  "imask",
+  "mask",
+  "modified",
+  "parent",
+  "priority",
+  "project",
+  "recur",
+  "scheduled",
+  "start",
+  "status",
+  "tags",
+  "until",
+  "urgency",
+  "uuid",
+  "wait"
+};
+
+#define NUM_ATTRIBUTE_NAMES       (sizeof (attributeNames) / sizeof (attributeNames[0]))
+
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
 : rc_file ()
@@ -213,6 +240,8 @@ int Context::initialize (int argc, const char** argv)
 
     // Instantiate built-in column objects.
     Column::factory (columns);
+
+    // Extend the fixed list of attribute names with any dynamic ones.
     std::map <std::string, Column*>::iterator col;
     for (col = columns.begin (); col != columns.end (); ++col)
     {
@@ -660,6 +689,13 @@ void Context::setupEntities ()
   // Entities: Pseudo-attributes.  Hard-coded.
   parser.entity ("pseudo", "limit");
   cli.entity ("pseudo", "limit");
+
+  // Entities: Attributes.
+  for (unsigned int i = 0; i < NUM_ATTRIBUTE_NAMES; ++i)
+  {
+    parser.entity ("attribute", attributeNames[i]);
+    cli.entity ("attribute", attributeNames[i]);
+  }
 
   // Entities: Modifiers.
   for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
