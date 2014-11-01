@@ -1496,11 +1496,19 @@ void CLI::findOperators ()
     options.push_back (e->second);
 
   // Walk the arguments and tag as OP.
+  bool changes = false;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
     if (a->hasTag ("FILTER"))
       if (std::find (options.begin (), options.end (), a->attribute ("raw")) != options.end ())
+      {
         a->tag ("OP");
+        changes = true;
+      }
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (context.cli.dump ("CLI::analyze findOperators"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
