@@ -317,6 +317,9 @@ void CLI::analyze (bool parse /* = true */)
     }
   }
 
+  if (context.config.getInteger ("debug.parser") >= 3)
+    context.debug (context.cli.dump ("CLI::analyze start"));
+
   // Find argument types.
   aliasExpansion ();
   findOverrides ();
@@ -343,6 +346,9 @@ void CLI::analyze (bool parse /* = true */)
     decomposeModTags ();
     decomposeModSubstitutions ();
   }
+
+  if (context.config.getInteger ("debug.parser") >= 3)
+    context.debug ("CLI::analyze end");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
