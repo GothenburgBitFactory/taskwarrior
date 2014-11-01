@@ -1665,6 +1665,7 @@ void CLI::decomposeModAttributes ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::decomposeModAttributeModifiers ()
 {
+  bool changes = false;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
@@ -1713,6 +1714,7 @@ void CLI::decomposeModAttributeModifiers ()
                   a->attribute ("value", value);
                   a->tag ("UDA");
                   a->tag ("MODIFIABLE");
+                  changes = true;
                 }
 
                 else if (canonicalize (canonical, "attribute", name))
@@ -1730,6 +1732,8 @@ void CLI::decomposeModAttributeModifiers ()
                   {
                     a->tag ("MODIFIABLE");
                   }
+
+                  changes = true;
                 }
               }
             }
@@ -1738,6 +1742,10 @@ void CLI::decomposeModAttributeModifiers ()
       }
     }
   }
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (context.cli.dump ("CLI::analyze decomposeModAttributeModifiers"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
