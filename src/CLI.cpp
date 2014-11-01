@@ -504,7 +504,7 @@ void CLI::addArg (const std::string& arg)
     _original_args.push_back (arg);
   }
 
-  // Do not lex, unless lexing reveals OPs.
+  // Lex, but only use lexemes if an operator is found in there.
   else
   {
     // Lex each argument.  If there are multiple lexemes, create sub branches,
@@ -518,22 +518,18 @@ void CLI::addArg (const std::string& arg)
     while (lex.token (lexeme, type))
       lexemes.push_back (std::pair <std::string, Lexer::Type> (lexeme, type));
 
-    // This one looks interesting.
-    if (lexemes.size () > 1)
-    {
-      bool foundOP = false;
-      std::vector <std::pair <std::string, Lexer::Type> >::iterator l;
-      for (l = lexemes.begin (); l != lexemes.end (); ++l)
-        if (l->second == Lexer::typeOperator)
-          foundOP = true;
+    bool foundOP = false;
+    std::vector <std::pair <std::string, Lexer::Type> >::iterator l;
+    for (l = lexemes.begin (); l != lexemes.end (); ++l)
+      if (l->second == Lexer::typeOperator)
+        foundOP = true;
 
-      if (foundOP)
-      {
+    // This one looks interesting.
+    if (lexemes.size () > 1 &&
+        foundOP)
+    {
         for (l = lexemes.begin (); l != lexemes.end (); ++l)
           _original_args.push_back (l->first);
-      }
-      else
-        _original_args.push_back (arg);
     }
     else
       _original_args.push_back (arg);
