@@ -885,7 +885,7 @@ void CLI::desugarAttributes ()
             else if (canonicalize (canonical, "pseudo", name))
             {
               A lhs ("argPseudo", a->attribute ("raw"));
-              lhs.attribute ("name", canonical);
+              lhs.attribute ("canonical", canonical);
               lhs.attribute ("value", value);
               lhs.tag ("PSEUDO");
               reconstructed.push_back (lhs);
