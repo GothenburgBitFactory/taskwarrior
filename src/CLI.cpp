@@ -465,6 +465,17 @@ bool CLI::canonicalize (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string CLI::getCommand () const
+{
+  std::vector <A>::const_iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+    if (a->hasTag ("CMD"))
+      return a->attribute ("canonical");
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const std::string CLI::dump (const std::string& title /* = "CLI Parser" */) const
 {
   std::stringstream out;

@@ -74,6 +74,7 @@ public:
   const std::vector <std::string> getWords ();
   const std::vector <std::string> getModifications ();
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
+  std::string getCommand () const;
   const std::string dump (const std::string& title = "CLI Parser") const;
 
 private:
