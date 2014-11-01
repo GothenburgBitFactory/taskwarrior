@@ -1552,6 +1552,7 @@ void CLI::findAttributes ()
 //
 void CLI::insertJunctions ()
 {
+  bool changes = false;
   std::vector <A> reconstructed;
   std::vector <A>::iterator prev = _args.begin ();
   std::vector <A>::iterator a;
@@ -1575,6 +1576,7 @@ void CLI::insertJunctions ()
           opOr.tag ("FILTER");
           opOr.tag ("OP");
           reconstructed.push_back (opOr);
+          changes = true;
         }
       }
 
@@ -1585,7 +1587,13 @@ void CLI::insertJunctions ()
     reconstructed.push_back (*a);
   }
 
-  _args = reconstructed;
+  if (changes)
+  {
+    _args = reconstructed;
+
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (context.cli.dump ("CLI::analyze insertJunctions"));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
