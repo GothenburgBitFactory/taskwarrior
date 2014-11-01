@@ -217,25 +217,12 @@ int Context::initialize (int argc, const char** argv)
     std::map <std::string, Command*>::iterator cmd;
     for (cmd = commands.begin (); cmd != commands.end (); ++cmd)
     {
-      parser.entity ("cmd", cmd->first);
       cli.entity ("cmd", cmd->first);
 
       if (cmd->first[0] == '_')
-      {
-        parser.entity ("helper", cmd->first);
         cli.entity ("helper", cmd->first);
-      }
 
-      if (cmd->second->read_only ())
-      {
-        parser.entity ("readcmd", cmd->first);
-        cli.entity ("readcmd", cmd->first);
-      }
-      else
-      {
-        parser.entity ("writecmd", cmd->first);
-        cli.entity ("writecmd", cmd->first);
-      }
+      cli.entity ((cmd->second->read_only () ? "readcmd" : "writecmd"), cmd->first);
     }
 
     // Instantiate built-in column objects.
@@ -244,21 +231,9 @@ int Context::initialize (int argc, const char** argv)
     // Extend the fixed list of attribute names with any dynamic ones.
     std::map <std::string, Column*>::iterator col;
     for (col = columns.begin (); col != columns.end (); ++col)
-    {
-      parser.entity ("attribute", col->first);
       cli.entity ("attribute", col->first);
-    }
-
-    // Now the entities are loaded, parsing may resume.
-    parser.findBinary ();                           // <task|tw|t|cal|calendar>
-    parser.resolveAliases ();
-    parser.findCommand ();                          // <cmd>
-    parser.findUUIDList ();                         // <uuid> Before findIdSequence
-    parser.findIdSequence ();                       // <id>
-    parser.injectDefaults ();                       // rc.default.command
 
     staticInitialization ();                        // Decouple code from Context.
-    parser.parse ();                                // Parse all elements.
     cli.analyze ();                                 // Parse all elements.
 
     tdb2.set_location (data_dir);                   // Prepare the task database.
@@ -687,32 +662,22 @@ void Context::assumeLocations ()
 void Context::setupEntities ()
 {
   // Entities: Pseudo-attributes.  Hard-coded.
-  parser.entity ("pseudo", "limit");
   cli.entity ("pseudo", "limit");
 
   // Entities: Attributes.
   for (unsigned int i = 0; i < NUM_ATTRIBUTE_NAMES; ++i)
-  {
-    parser.entity ("attribute", attributeNames[i]);
     cli.entity ("attribute", attributeNames[i]);
-  }
 
   // Entities: Modifiers.
   for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
-  {
-    parser.entity ("modifier", modifierNames[i]);
     cli.entity ("modifier", modifierNames[i]);
-  }
 
   // Entities: Operators.
   std::vector <std::string> operators;
   Eval::getOperators (operators);
   std::vector <std::string>::iterator op;
   for (op = operators.begin (); op != operators.end (); ++op)
-  {
-    parser.entity ("operator", *op);
     cli.entity ("operator", *op);
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -770,10 +735,11 @@ void Context::decomposeSortField (
 // Note: The reason some of these are commented out is because the ::clear
 // method is not really "clear" but "clear_some".  Some members do not need to
 // be initialized.  That makes this method something of a misnomer.  So be it.
+//
+// TODO Is this method used anywhere?
 void Context::clear ()
 {
   tdb2.clear ();
-  parser.clear ();
 
   // Eliminate the command objects.
   std::map <std::string, Command*>::iterator com;
@@ -833,10 +799,7 @@ void Context::loadAliases ()
   std::map <std::string, std::string>::iterator i;
   for (i = config.begin (); i != config.end (); ++i)
     if (i->first.substr (0, 6) == "alias.")
-    {
-      parser.alias (i->first.substr (6), i->second);
       cli.alias (i->first.substr (6), i->second);
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
