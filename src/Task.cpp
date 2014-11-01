@@ -1908,28 +1908,24 @@ void Task::modify (modType type, bool text_required /* = false */)
 {
   std::string text = "";
 
-  Tree* tree = context.parser.tree ();
   if (context.config.getInteger ("debug.parser") >= 1)
-  {
     context.debug (context.cli.dump ());
-    context.debug (tree->dump ());
-  }
 
   context.debug ("Task::modify");
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
   int modCount = 0;
-  std::vector <Tree*>::iterator i;
-  for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
+  std::vector <A>::iterator a;
+  for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
   {
-    if ((*i)->hasTag ("MODIFICATION"))
+    if (a->hasTag ("MODIFICATION"))
     {
-      if ((*i)->hasTag ("ATTRIBUTE"))
+      if (a->hasTag ("ATTRIBUTE"))
       {
         // 'name' is canonical.
         // 'value' requires eval.
-        std::string name  = (*i)->attribute ("name");
-        std::string value = (*i)->attribute ("raw");
+        std::string name  = a->attribute ("name");
+        std::string value = a->attribute ("value");
         if (value == ""     ||
             value == "''"   ||
             value == "\"\"")
@@ -2113,22 +2109,22 @@ void Task::modify (modType type, bool text_required /* = false */)
       }
 
       // arg7 from='from' global='1' raw='/from/to/g' to='to' ORIGINAL SUBSTITUTION MODIFICATION
-      else if ((*i)->hasTag ("SUBSTITUTION"))
+      else if (a->hasTag ("SUBSTITUTION"))
       {
-        context.debug (label + "substitute " + (*i)->attribute ("raw"));
-        substitute ((*i)->attribute ("from"),
-                    (*i)->attribute ("to"),
-                    ((*i)->attribute ("global") == "1"));
+        context.debug (label + "substitute " + a->attribute ("raw"));
+        substitute (a->attribute ("from"),
+                    a->attribute ("to"),
+                    (a->attribute ("global") == "1"));
         ++modCount;
       }
 
       // Tags need special handling because they are essentially a vector stored
       // in a single string, therefore Task::{add,remove}Tag must be called as
       // appropriate.
-      else if ((*i)->hasTag ("TAG"))
+      else if (a->hasTag ("TAG"))
       {
-        std::string tag = (*i)->attribute ("tag");
-        if ((*i)->attribute ("sign") == "+")
+        std::string tag = a->attribute ("tag");
+        if (a->attribute ("sign") == "+")
         {
           context.debug (label + "tags <-- add '" + tag + "'");
           addTag (tag);
@@ -2144,12 +2140,12 @@ void Task::modify (modType type, bool text_required /* = false */)
       }
 
       // WORD and TERMINATED args are accumulated.
-      else if ((*i)->hasTag ("WORD") ||
-               (*i)->hasTag ("TERMINATED"))
+      else if (a->hasTag ("WORD") ||
+               a->hasTag ("TERMINATED"))
       {
         if (text != "")
           text += ' ';
-        text += (*i)->attribute ("raw");
+        text += a->attribute ("raw");
       }
 
       // Unknown args are accumulated as though they were WORDs.
@@ -2157,7 +2153,7 @@ void Task::modify (modType type, bool text_required /* = false */)
       {
         if (text != "")
           text += ' ';
-        text += (*i)->attribute ("raw");
+        text += a->attribute ("raw");
       }
     }
   }
