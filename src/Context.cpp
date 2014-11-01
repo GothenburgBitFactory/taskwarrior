@@ -613,7 +613,7 @@ void Context::getLimits (int& rows, int& lines)
   lines = 0;
 
   // This is an integer specified as a filter (limit:10).
-  std::string limit = parser.getLimit ();
+  std::string limit = cli.getLimit ();
   if (limit != "")
   {
     if (limit == "page")
