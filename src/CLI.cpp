@@ -476,6 +476,18 @@ std::string CLI::getCommand () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string CLI::getLimit () const
+{
+  std::vector <A>::const_iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+    if (a->hasTag ("PSEUDO") &&
+        a->attribute ("canonical") == "limit")
+      return a->attribute ("value");
+
+  return "0";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const std::string CLI::dump (const std::string& title /* = "CLI Parser" */) const
 {
   std::stringstream out;
