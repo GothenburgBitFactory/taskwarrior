@@ -1751,6 +1751,7 @@ void CLI::decomposeModAttributeModifiers ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::decomposeModTags ()
 {
+  bool changes = false;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
@@ -1771,9 +1772,14 @@ void CLI::decomposeModTags ()
         a->attribute ("name", tag);
         a->attribute ("sign", sign);
         a->tag ("TAG");
+        changes = true;
       }
     }
   }
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (context.cli.dump ("CLI::analyze decomposeModTags"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
