@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "on-add executed"
+
+while read TASK; do
+    echo "New task $TASK"
+    echo $TASK
+done
+
+exit 0

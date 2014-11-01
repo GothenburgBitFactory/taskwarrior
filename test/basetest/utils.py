@@ -26,6 +26,17 @@ BIN_PREFIX = os.path.abspath(
     os.path.join(CURRENT_DIR, "..", "..", "src")
 )
 
+# Default location of test certificates
+DEFAULT_CERT_PATH = os.path.abspath(
+    os.path.join(CURRENT_DIR, "..", "test_certs")
+)
+
+# Default location of test hooks
+DEFAULT_HOOK_PATH = os.path.abspath(
+    os.path.join(CURRENT_DIR, "..", "test_hooks")
+)
+
+
 # Environment flags to control skipping of task and taskd tests
 TASKW_SKIP = os.environ.get("TASKW_SKIP", False)
 TASKD_SKIP = os.environ.get("TASKD_SKIP", False)

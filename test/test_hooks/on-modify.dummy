@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "on-modify executed"
+
+while read TASK MODTASK; do
+    echo "Existing task $TASK modified to $MODTASK"
+    echo $MODTASK
+done
+
+exit 0

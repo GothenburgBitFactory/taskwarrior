@@ -1,0 +1,9 @@
+#!/bin/sh
+
+echo "on-exit executed"
+
+while read TASK; do
+    echo "New/modified task $TASK"
+done
+
+exit 0

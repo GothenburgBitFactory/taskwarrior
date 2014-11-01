@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "on-launch executed"
+
+exit 0

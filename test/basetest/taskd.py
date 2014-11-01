@@ -8,18 +8,13 @@ import atexit
 from time import sleep
 from subprocess import Popen
 from .utils import (find_unused_port, release_port, port_used, run_cmd_wait,
-                    which, parse_datafile, CURRENT_DIR, binary_location)
+                    which, parse_datafile, DEFAULT_CERT_PATH, binary_location)
 from .exceptions import CommandError
 
 try:
     from subprocess import DEVNULL
 except ImportError:
     DEVNULL = open(os.devnull, 'w')
-
-# Directory relative to basetest module location
-DEFAULT_CERT_PATH = os.path.abspath(
-    os.path.join(CURRENT_DIR, "..", "test_certs")
-)
 
 
 class Taskd(object):
