@@ -73,15 +73,9 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   _startCount = (int) input.size ();
 
   if (context.config.getInteger ("debug.parser") >= 1)
-  {
     context.debug (context.cli.dump ());
 
-    Tree* t = context.parser.tree ();
-    if (t)
-      context.debug (t->dump ());
-  }
-
-  std::string filterExpr = context.parser.getFilterExpression ();
+  std::string filterExpr = context.cli.getFilter ();
   if (filterExpr.length ())
   {
     Eval eval;
@@ -122,16 +116,10 @@ void Filter::subset (std::vector <Task>& output)
   context.timer_filter.start ();
 
   if (context.config.getInteger ("debug.parser") >= 1)
-  {
     context.debug (context.cli.dump ());
 
-    Tree* t = context.parser.tree ();
-    if (t)
-      context.debug (t->dump ());
-  }
-
   bool shortcut = false;
-  std::string filterExpr = context.parser.getFilterExpression ();
+  std::string filterExpr = context.cli.getFilter ();
   if (filterExpr.length ())
   {
     context.timer_filter.stop ();
@@ -211,8 +199,6 @@ void Filter::subset (std::vector <Task>& output)
 // term, then completed.data does not need to be loaded.
 bool Filter::pendingOnly ()
 {
-  Tree* tree = context.parser.tree ();
-
   // To skip loading completed.data, there should be:
   // - 'status' in filter
   // - no 'completed'
