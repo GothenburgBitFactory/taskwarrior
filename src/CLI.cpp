@@ -99,14 +99,6 @@ A& A::operator= (const A& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A::clear ()
-{
-  _name = "";
-  _tags.clear ();
-  _attributes.clear ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool A::hasTag (const std::string& tag) const
 {
   if (std::find (_tags.begin (), _tags.end (), tag) != _tags.end ())

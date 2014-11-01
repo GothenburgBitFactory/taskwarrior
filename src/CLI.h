@@ -41,7 +41,6 @@ public:
   ~A ();
   A (const A&);
   A& operator= (const A&);
-  void clear ();
   bool hasTag (const std::string&) const;
   void tag (const std::string&);
   void unTag (const std::string&);
