@@ -1292,6 +1292,7 @@ void CLI::insertIDExpr ()
 {
   // Iterate over all args. The first ID/UUID arg found will be replaced by
   // the combined ID clause. All other ID/UUID args are removed.
+  bool changes = false;
   bool foundID = false;
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
@@ -1414,6 +1415,7 @@ void CLI::insertIDExpr ()
         }
 
         reconstructed.push_back (closeParen);
+        changes = true;
       }
 
       // No 'else' which cause all other ID/UUID args to be eaten.
@@ -1422,7 +1424,13 @@ void CLI::insertIDExpr ()
       reconstructed.push_back (*a);
   }
 
-  _args = reconstructed;
+  if (changes)
+  {
+    _args = reconstructed;
+
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (context.cli.dump ("CLI::analyze insertIDExpr"));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
