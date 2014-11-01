@@ -146,7 +146,7 @@ void Filter::subset (std::vector <Task>& output)
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (context.config.getInteger ("debug.parser") >= 1 ? true : false);
+    eval.debug (context.config.getInteger ("debug.parser") >= 2 ? true : false);
     eval.compileExpression (filterExpr);
     eval.debug (false);
 
@@ -224,6 +224,9 @@ bool Filter::pendingOnly ()
   int countId      = 0;
   int countOr      = 0;
   int countXor     = 0;
+
+  // TODO Use an int index, and ensure that 'status', '==' and 'pending/waiting'
+  //      are consecutive.
 
   std::vector <A>::iterator a;
   for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
