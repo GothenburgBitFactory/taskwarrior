@@ -461,7 +461,8 @@ Level 1 shows hook calls.  Level 2 also shows exit status and I/O.
 .TP
 .B debug.parser=0
 Controls the parser diagnostic level.  Level 0 means no diagnostics.  Level 1
-shows the parse tree.  Level 2 shows expression evaluation details.
+shows the parse tree.  Level 2 shows expression evaluation details.  Level 3
+shows parse trees from every phase of the parse.
 
 .TP
 .B debug.tls=0
