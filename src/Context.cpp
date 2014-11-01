@@ -34,6 +34,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <Context.h>
+#include <Parser.h> // TODO Remove
 #include <Directory.h>
 #include <File.h>
 #include <Eval.h>
@@ -159,6 +160,7 @@ int Context::initialize (int argc, const char** argv)
     Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
     Variant::searchUsingRegex    = config.getBoolean ("regex");
 
+    Parser parser;
     parser.initialize (argc, argv);                 // task arg0 arg1 ...
 
     // Process 'rc:<file>' command line override.

@@ -37,7 +37,6 @@
 #include <Path.h>
 #include <File.h>
 #include <Directory.h>
-#include <Parser.h>
 #include <CLI.h>
 #include <Timer.h>
 
@@ -85,7 +84,6 @@ private:
 
 public:
   std::string                         program;
-  Parser                              parser;
   CLI                                 cli;
   std::string                         home_dir;
   File                                rc_file;
