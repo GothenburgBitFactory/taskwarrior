@@ -86,19 +86,10 @@ int CmdCustom::execute (std::string& output)
   Lexer::Type type;
   Lexer lex (reportFilter);
   lex.ambiguity (false);
-  std::vector <std::string> filterArgs;
   while (lex.token (lexeme, type))
-  {
-    filterArgs.push_back (lexeme);
     context.cli.add (lexeme);
-  }
-
-  std::vector <std::string>::reverse_iterator arg;
-  for (arg = filterArgs.rbegin (); arg != filterArgs.rend (); ++ arg)
-    context.parser.captureFirst (*arg);
 
   // Reparse after tree change.
-  context.parser.parse ();
   context.cli.analyze ();
 
   // Apply filter.
