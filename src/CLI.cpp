@@ -243,8 +243,18 @@ void CLI::alias (const std::string& name, const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::entity (const std::string& category, const std::string& name)
 {
-  if (_entities.find (category) == _entities.end ())
-    _entities.insert (std::pair <std::string, std::string> (category, name));
+  // Find the category.
+  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
+  c = _entities.equal_range (category);
+
+  // Walk the list of entities for category.
+  std::multimap <std::string, std::string>::const_iterator e;
+  for (e = c.first; e != c.second; ++e)
+    if (e->second == name)
+      return;
+
+  // The category/name pair was not found, therefore add it.
+  _entities.insert (std::pair <std::string, std::string> (category, name));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
