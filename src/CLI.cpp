@@ -1785,6 +1785,7 @@ void CLI::decomposeModTags ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::decomposeModSubstitutions ()
 {
+  bool changes = false;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
@@ -1812,10 +1813,15 @@ void CLI::decomposeModSubstitutions ()
           a->attribute ("from", from);
           a->attribute ("to", to);
           a->attribute ("global", global ? 1 : 0);
+          changes = true;
         }
       }
     }
   }
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (context.cli.dump ("CLI::analyze decomposeModSubstitutions"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
