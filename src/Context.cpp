@@ -451,7 +451,7 @@ int Context::run ()
 int Context::dispatch (std::string &out)
 {
   // Autocomplete args against keywords.
-  std::string command = parser.getCommand ();
+  std::string command = cli.getCommand ();
   if (command != "")
   {
     updateXtermTitle ();
@@ -798,16 +798,16 @@ void Context::updateXtermTitle ()
 {
   if (config.getBoolean ("xterm.title") && isatty (fileno (stdout)))
   {
-    std::string command = parser.getCommand ();
+    std::string command = cli.getCommand ();
     std::string title;
-    Tree* tree = parser.tree ();
-    std::vector <Tree*>::iterator i;
-    for (i = tree->_branches.begin (); i != tree->_branches.end (); ++i)
+
+    std::vector <A>::const_iterator a;
+    for (a = cli._args.begin (); a != cli._args.end (); ++a)
     {
-      if (i != tree->_branches.begin ())
+      if (a != cli._args.begin ())
         title += ' ';
 
-      title += (*i)->attribute ("raw");
+      title += a->attribute ("raw");
     }
 
     std::cout << "]0;task " << command << " " << title << "";
@@ -818,7 +818,7 @@ void Context::updateXtermTitle ()
 // This function allows a clean output if the command is a helper subcommand.
 void Context::updateVerbosity ()
 {
-  std::string command = parser.getCommand ();
+  std::string command = cli.getCommand ();
   if (command != "" &&
       command[0] == '_')
   {
