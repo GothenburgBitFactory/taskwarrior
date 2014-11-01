@@ -1599,6 +1599,7 @@ void CLI::insertJunctions ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::decomposeModAttributes ()
 {
+  bool changes = false;
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
@@ -1631,6 +1632,7 @@ void CLI::decomposeModAttributes ()
               a->attribute ("value", value);
               a->tag ("UDA");
               a->tag ("MODIFIABLE");
+              changes = true;
             }
 
             else if (canonicalize (canonical, "attribute", name))
@@ -1646,12 +1648,18 @@ void CLI::decomposeModAttributes ()
               {
                 a->tag ("MODIFIABLE");
               }
+
+              changes = true;
             }
           }
         }
       }
     }
   }
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (context.cli.dump ("CLI::analyze decomposeModAttributes"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
