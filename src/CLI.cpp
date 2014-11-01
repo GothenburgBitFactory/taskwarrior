@@ -214,6 +214,7 @@ const std::string A::dump () const
     else if (*tag == "MODIFICATION") tags += "\033[1;37;43m"           + *tag + "\033[0m";
     else if (*tag == "RC")           tags += "\033[1;37;41m"           + *tag + "\033[0m";
     else if (*tag == "CONFIG")       tags += "\033[1;37;101m"          + *tag + "\033[0m";
+    else if (*tag == "PSEUDO")       tags += "\033[1;37;45m"           + *tag + "\033[0m";
     else if (*tag == "?")            tags += "\033[38;5;255;48;5;232m" + *tag + "\033[0m";
     else                             tags += "\033[32m"                + *tag + "\033[0m";
   }
@@ -883,8 +884,9 @@ void CLI::desugarAttributes ()
 
             else if (canonicalize (canonical, "pseudo", name))
             {
-              A lhs ("argPseudo", name);
+              A lhs ("argPseudo", a->attribute ("raw"));
               lhs.attribute ("name", canonical);
+              lhs.attribute ("value", value);
               lhs.tag ("PSEUDO");
               reconstructed.push_back (lhs);
               found = true;
