@@ -1436,6 +1436,7 @@ void CLI::insertIDExpr ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::desugarPlainArgs ()
 {
+  bool changes = false;
   std::vector <A> reconstructed;
   std::vector <A>::iterator a;
   std::vector <A>::iterator prev = _args.begin ();
@@ -1464,6 +1465,7 @@ void CLI::desugarPlainArgs ()
       rhs.tag ("LITERAL");
       rhs.tag ("FILTER");
       reconstructed.push_back (rhs);
+      changes = true;
     }
     else
       reconstructed.push_back (*a);
@@ -1471,7 +1473,13 @@ void CLI::desugarPlainArgs ()
     prev = a;
   }
 
-  _args = reconstructed;
+  if (changes)
+  {
+    _args = reconstructed;
+
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (context.cli.dump ("CLI::analyze desugarPlainArgs"));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
