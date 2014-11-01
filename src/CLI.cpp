@@ -1996,12 +1996,8 @@ bool CLI::isAttribute (const std::string& raw) const
     if (mod[0] == '~')
       mod = mod.substr (1);
 
-/*
-    TODO Entities are not loaded yet. Hmm.
-
     if (! canonicalize (mod, "modifier", mod))
       return false;
-*/
   }
 
 /*
