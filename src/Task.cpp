@@ -35,7 +35,6 @@
 #ifdef PRODUCT_TASKWARRIOR
 #include <Context.h>
 #include <Nibbler.h>
-#include <Tree.h>
 #endif
 #include <Date.h>
 #include <Duration.h>
