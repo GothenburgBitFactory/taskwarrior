@@ -78,7 +78,7 @@ public:
   const std::string dump (const std::string& title = "CLI Parser") const;
 
 private:
-  void addArg (const std::string&);
+  void addArg (const std::string&, bool first = false);
   void aliasExpansion ();
   void findOverrides ();
   void categorize ();
