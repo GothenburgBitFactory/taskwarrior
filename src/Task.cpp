@@ -2122,7 +2122,7 @@ void Task::modify (modType type, bool text_required /* = false */)
       // appropriate.
       else if (a->hasTag ("TAG"))
       {
-        std::string tag = a->attribute ("tag");
+        std::string tag = a->attribute ("name");
         if (a->attribute ("sign") == "+")
         {
           context.debug (label + "tags <-- add '" + tag + "'");
