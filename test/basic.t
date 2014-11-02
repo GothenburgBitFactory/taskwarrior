@@ -33,8 +33,12 @@ use Test::More tests => 5;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'basic.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "default.command=\n";
@@ -45,21 +49,21 @@ if (open my $fh, '>', 'basic.rc')
 my $version = slurp ('../CMakeLists.txt');
 
 # Test the usage command.
-my $output = qx{../src/task rc:basic.rc 2>&1 >/dev/null};
-like ($output, qr/You must specify a command or a task to modify./m, 'missing command and ID');
+my $output = qx{../src/task rc:$rc 2>&1 >/dev/null};
+like ($output, qr/You must specify a command or a task to modify./m, "$ut: missing command and ID");
 
 # Test the version command.
-$output = qx{../src/task rc:basic.rc version 2>&1};
-like ($output, qr/task $version/, 'version - task version number');
-like ($output, qr/MIT\slicense/, 'version - license');
-like ($output, qr/http:\/\/taskwarrior\.org/, 'version - url');
+$output = qx{../src/task rc:$rc version 2>&1};
+like ($output, qr/task $version/, "$ut: version - task version number");
+like ($output, qr/MIT\slicense/, "$ut: version - license");
+like ($output, qr/http:\/\/taskwarrior\.org/, "$ut: version - url");
 
 # Test the _version command.
-$output = qx{../src/task rc:basic.rc _version 2>&1};
-like ($output, qr/[a-f0-9]{7}/, '_version - task version number');
+$output = qx{../src/task rc:$rc _version 2>&1};
+like ($output, qr/[a-f0-9]{7}/, "$ut: _version - task version number");
 
 # Cleanup.
-unlink 'basic.rc';
+unlink $rc;
 exit 0;
 
 ################################################################################
