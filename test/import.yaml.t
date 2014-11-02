@@ -33,11 +33,15 @@ use Test::More tests => 16;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 my $source_dir = $0;
 $source_dir =~ s{[^/]+$}{..};
 
 # Create the rc file.
-if (open my $fh, '>', 'import.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "dateformat=m/d/Y\n";
@@ -91,10 +95,10 @@ EOF
 qx{$source_dir/scripts/add-ons/import-yaml.pl <import.txt >import.json 2>&1};
 
 # Import the JSON.
-my $output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
-like ($output, qr/Imported 3 tasks\./, '3 tasks imported');
+my $output = qx{../src/task rc:$rc import import.json 2>&1 >/dev/null};
+like ($output, qr/Imported 3 tasks\./, "$ut: 3 tasks imported");
 
-$output = qx{../src/task rc:import.rc list 2>&1};
+$output = qx{../src/task rc:$rc list 2>&1};
 # ID Project Age     Description
 # -- ------- ------- -----------
 #  1 A       1.5 yrs zero
@@ -102,23 +106,23 @@ $output = qx{../src/task rc:import.rc list 2>&1};
 #
 # 2 tasks
 
-like   ($output, qr/1.+A.+zero/, 't1 present');
-like   ($output, qr/2.+B.+one/,  't2 present');
-unlike ($output, qr/3.+two/,     't3 missing');
+like   ($output, qr/1.+A.+zero/, "$ut: t1 present");
+like   ($output, qr/2.+B.+one/,  "$ut: t2 present");
+unlike ($output, qr/3.+two/,     "$ut: t3 missing");
 
-$output = qx{../src/task rc:import.rc completed 2>&1};
+$output = qx{../src/task rc:$rc completed 2>&1};
 # Complete   Age  Description UUID
 # ---------- ---- ----------- ------------------------------------
 # 9/4/2011   2.9y two         22222222-2222-2222-2222-222222222222
 #
 # 1 task
 
-unlike ($output, qr/A.+zero/,      't1 missing');
-unlike ($output, qr/B.+one/,       't2 missing');
-like   ($output, qr/9\/4\/2011.+two/, 't3 present');
+unlike ($output, qr/A.+zero/,      "$ut: t1 missing");
+unlike ($output, qr/B.+one/,       "$ut: t2 missing");
+like   ($output, qr/9\/4\/2011.+two/, "$ut: t3 present");
 
 # check tags and annotations
-$output = qx{../src/task rc:import.rc +y 2>&1};
+$output = qx{../src/task rc:$rc +y 2>&1};
 # ID Proj Age  Urg  Description
 # -- ---- ---- ---- -----------------------
 #  2 B    2.9y  4.9 one
@@ -126,15 +130,15 @@ $output = qx{../src/task rc:import.rc +y 2>&1};
 #                     7/6/2012 anno THREE
 #  1 A    2.9y  4.8 zero
 #                     7/6/2010 anno ONE
-# 
+#
 # 2 tasks
-like ($output, qr/1.+A.+zero.*\n.+ONE/,           't1 selected by tag, has annotation');
-like ($output, qr/2.+B.+one.*\n.+TWO.*\n.+THREE/, 't2 selected by tag, has two annotations');
-like ($output, qr/\n2 tasks\n/,                   'tag selected two tasks');
+like ($output, qr/1.+A.+zero.*\n.+ONE/,           "$ut: t1 selected by tag, has annotation");
+like ($output, qr/2.+B.+one.*\n.+TWO.*\n.+THREE/, "$ut: t2 selected by tag, has two annotations");
+like ($output, qr/\n2 tasks\n/,                   "$ut: tag selected two tasks");
 
 # Make sure that a duplicate task cannot be imported.
-$output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
-like ($output, qr/Cannot add task because the uuid '.{36}' is not unique\./, 'error on duplicate uuid');
+$output = qx{../src/task rc:$rc import import.json 2>&1 >/dev/null};
+like ($output, qr/Cannot add task because the uuid '.{36}' is not unique\./, "$ut: error on duplicate uuid");
 
 # Create import file.
 if (open my $fh, '>', 'import.txt')
@@ -151,28 +155,28 @@ task:
 EOF
 
   close $fh;
-  ok (-r 'import.txt', 'Created second sample import data');
+  ok (-r "$ut: import.txt', 'Created second sample import data");
 }
 
 # Convert YAML --> task JSON.
 qx{$source_dir/scripts/add-ons/import-yaml.pl <import.txt >import.json 2>&1};
 
 # Import the JSON.
-$output = qx{../src/task rc:import.rc import import.json 2>&1 >/dev/null};
-like ($output, qr/Imported 1 tasks\./, '1 task imported');
+$output = qx{../src/task rc:$rc import import.json 2>&1 >/dev/null};
+like ($output, qr/Imported 1 tasks\./, "$ut: 1 task imported");
 
 # Verify.
-$output = qx{../src/task rc:import.rc list 2>&1};
+$output = qx{../src/task rc:$rc list 2>&1};
 # ID Project Pri Due Active Age  Description
 # -- ------- --- --- ------ ---- -----------
 #  3                        2.6y three
 #  1 A                        3d zero
 #  2 B                        2d one
-like ($output, qr/1.+A.+zero/, 't1 present');
-like ($output, qr/2.+B.+one/,  't2 present');
-like ($output, qr/3.+three/,   't3 present');
+like ($output, qr/1.+A.+zero/, "$ut: t1 present");
+like ($output, qr/2.+B.+one/,  "$ut: t2 present");
+like ($output, qr/3.+three/,   "$ut: t3 present");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data import.rc import.txt import.json);
+unlink qw(pending.data completed.data undo.data backlog.data import.txt import.json), $rc;
 exit 0;
 
