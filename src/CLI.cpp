@@ -511,12 +511,13 @@ const std::string CLI::dump (const std::string& title /* = "CLI Parser" */) cons
 //       be lexed from those that need to be left alone.
 //
 // Either the arg is appended to _original_args intact, or the lexemes are.
-void CLI::addArg (const std::string& arg)
+void CLI::addArg (const std::string& arg, bool first /* = false */)
 {
   // Do not lex these constructs.
   if (isTerminator     (arg) ||     // --
       isRCOverride     (arg) ||     // rc:<file>
       isConfigOverride (arg) ||     // rc.<attr>:<value>
+      isCommand        (arg) ||     // <cmd>
       isTag            (arg) ||     // [+-]<tag>
       isUUIDList       (arg) ||     // <uuid>,[uuid ...]
       isUUID           (arg) ||     // <uuid>
@@ -1875,6 +1876,13 @@ bool CLI::isConfigOverride (const std::string& raw) const
     return true;
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::isCommand (const std::string& raw) const
+{
+  std::string canonical;
+  return canonicalize (canonical, "cmd", raw);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

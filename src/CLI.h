@@ -102,6 +102,7 @@ private:
   bool isTerminator (const std::string&) const;
   bool isRCOverride (const std::string&) const;
   bool isConfigOverride (const std::string&) const;
+  bool isCommand (const std::string&) const;
   bool isTag (const std::string&) const;
   bool isUUIDList (const std::string&) const;
   bool isUUID (const std::string&) const;
