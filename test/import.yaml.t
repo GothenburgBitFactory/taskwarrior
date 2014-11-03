@@ -155,7 +155,7 @@ task:
 EOF
 
   close $fh;
-  ok (-r "$ut: import.txt', 'Created second sample import data");
+  ok (-r 'import.txt', "$ut: Created second sample import data");
 }
 
 # Convert YAML --> task JSON.
