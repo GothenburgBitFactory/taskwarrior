@@ -34,7 +34,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <Context.h>
-#include <Parser.h> // TODO Remove
 #include <Directory.h>
 #include <File.h>
 #include <Eval.h>
@@ -131,7 +130,7 @@ int Context::initialize (int argc, const char** argv)
     // Assume default .taskrc and .task locations.
     assumeLocations ();
 
-    // The parser needs all the help it can get.
+    // The CLI parser needs all the help it can get.
     setupEntities ();
 
     // Scan command line for 'rc:<file>' only.
@@ -151,17 +150,11 @@ int Context::initialize (int argc, const char** argv)
     config.load (rc_file);
     loadAliases ();
 
-    // These are needed in Parser::initialize.
+    // These are useful for parsing.
     Lexer::dateFormat            = config.get ("dateformat");
     Variant::dateFormat          = config.get ("dateformat");
     Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
     Variant::searchUsingRegex    = config.getBoolean ("regex");
-
-    Parser parser;
-    parser.initialize (argc, argv);                 // task arg0 arg1 ...
-
-    // Process 'rc:<file>' command line override.
-    parser.findOverrides ();                        // rc:<file>  rc.<name>:<value>
 
     // The data location, Context::data_dir, is determined from the assumed
     // location (~/.task), or set by data.location in the config file, or
@@ -404,7 +397,7 @@ int Context::run ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Dispatch to the command found by the parser.
+// Dispatch to the command found by the CLI parser.
 int Context::dispatch (std::string &out)
 {
   // Autocomplete args against keywords.
