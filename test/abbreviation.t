@@ -78,22 +78,22 @@ $output = qx{../src/task rc:$rc version 2>&1};
 like ($output, qr/MIT\s+license/, "$ut: version");
 
 $output = qx{../src/task rc:$rc versio 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: version");
+like ($output, qr/MIT\s+license/, "$ut: versio");
 
 $output = qx{../src/task rc:$rc versi 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: version");
+like ($output, qr/MIT\s+license/, "$ut: versi");
 
 $output = qx{../src/task rc:$rc vers 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: version");
+like ($output, qr/MIT\s+license/, "$ut: vers");
 
 $output = qx{../src/task rc:$rc ver 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: version");
+like ($output, qr/MIT\s+license/, "$ut: ver");
 
 $output = qx{../src/task rc:$rc ve 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: version");
+like ($output, qr/MIT\s+license/, "$ut: ve");
 
 $output = qx{../src/task rc:$rc v 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: version");
+like ($output, qr/MIT\s+license/, "$ut: v");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
