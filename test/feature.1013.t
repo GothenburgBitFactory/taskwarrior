@@ -67,9 +67,9 @@ like   ($stderr, qr/^Configuration override rc.debug:on$/ms, "$ut: Footnotes are
 
 # Check that debugs are sent to standard error
 $stdout = qx{../src/task rc:$rc rc.debug:on list 2> /dev/null};
-unlike ($stdout, qr/^Timer Config::load \($rc\) /ms,       "$ut: Debugs are not sent to stdout");
+unlike ($stdout, qr/^Timer Config::load \(.*$rc\) /ms,       "$ut: Debugs are not sent to stdout");
 $stderr = qx{../src/task rc:$rc rc.debug:on list 2>&1 >/dev/null};
-like   ($stderr, qr/^Timer Config::load \($rc\) /ms,       "$ut: Debugs are sent to stderr");
+like   ($stderr, qr/^Timer Config::load \(.*$rc\) /ms,       "$ut: Debugs are sent to stderr");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
