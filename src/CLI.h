@@ -70,6 +70,7 @@ public:
   void entity (const std::string&, const std::string&);
   void initialize (int, const char**);
   void add (const std::string&);
+  void insert (const std::string&);
   void analyze (bool parse = true);
   void applyOverrides ();
   void getOverride (std::string&, File&);
