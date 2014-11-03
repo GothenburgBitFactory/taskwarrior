@@ -28,7 +28,6 @@ t3.t
 taskmod.t
 tdb2.t
 text.t
-tree.t
 uri.t
 utf8.t
 util.t

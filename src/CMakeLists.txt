@@ -29,7 +29,6 @@ set (task_SRCS CLI.cpp CLI.h
                Task.cpp Task.h
                Timer.cpp Timer.h
                TLSClient.cpp TLSClient.h
-               Tree.cpp Tree.h
                Variant.cpp Variant.h
                ViewTask.cpp ViewTask.h
                ViewText.cpp ViewText.h

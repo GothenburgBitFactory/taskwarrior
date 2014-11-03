@@ -8,7 +8,7 @@ include_directories (${CMAKE_SOURCE_DIR}
 
 set (test_SRCS autocomplete.t color.t config.t date.t directory.t dom.t
                file.t i18n.t json.t list.t msg.t nibbler.t path.t rx.t t.t t2.t
-               t3.t tdb2.t text.t tree.t utf8.t util.t view.t width.t json_test
+               t3.t tdb2.t text.t utf8.t util.t view.t width.t json_test
                iso8601d.t iso8601p.t duration.t lexer.t variant_add.t
                variant_and.t variant_cast.t variant_divide.t variant_equal.t
                variant_exp.t variant_gt.t variant_gte.t variant_inequal.t
