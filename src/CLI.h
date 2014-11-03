@@ -101,6 +101,7 @@ private:
   void findOperators ();
   void findAttributes ();
   void insertJunctions ();
+  void injectDefaults ();
   void decomposeModAttributes ();
   void decomposeModAttributeModifiers ();
   void decomposeModTags ();

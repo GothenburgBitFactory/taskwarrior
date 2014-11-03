@@ -349,6 +349,7 @@ void CLI::analyze (bool parse /* = true */)
     desugarPatterns ();
     findIDs ();
     findUUIDs ();
+    injectDefaults ();
     insertIDExpr ();
     findOperators ();
     findAttributes ();
@@ -1709,6 +1710,102 @@ void CLI::insertJunctions ()
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (context.cli.dump ("CLI::analyze insertJunctions"));
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::injectDefaults ()
+{
+  // Scan the top-level branches for evidence of ID, UUID, overrides and other
+  // arguments.
+  bool changes          = false;
+  bool found_command    = false;
+  bool found_sequence   = false;
+  bool found_terminator = false;
+
+  std::vector <A>::iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (a->hasTag ("TERMINATOR"))
+      found_terminator = true;
+
+    if (! found_terminator && a->hasTag ("CMD"))
+      found_command = true;
+
+    else if (! found_terminator && (a->hasTag ("ID") || a->hasTag ("UUID")))
+      found_sequence = true;
+  }
+
+  // TODO Remove
+  context.debug (std::string ("CLI::injectDefaults found_command    ") + (found_command ? "true" : "false"));
+  context.debug (std::string ("CLI::injectDefaults found_sequence   ") + (found_sequence ? "true" : "false"));
+
+  // If no command was specified, then a command will be inserted.
+  if (! found_command)
+  {
+    // Default command.
+    if (! found_sequence)
+    {
+      // Apply overrides, if any.
+      std::string defaultCommand = context.config.get ("default.command");
+      if (defaultCommand != "")
+      {
+        if (context.config.getBoolean ("debug"))
+          context.debug (std::string ("No command or sequence found - assuming default.command '") + defaultCommand + "'.");
+
+/*
+        // Split the defaultCommand into args, and add them in reverse order,
+        // because captureFirst inserts args immediately after the command, and
+        // so has the effect of reversing the list.
+        std::vector <std::string> args;
+        split (args, defaultCommand, ' ');
+        std::vector <std::string>::reverse_iterator r;
+        for (r = args.rbegin (); r != args.rend (); ++r)
+        {
+          if (*r != "")
+          {
+            Tree* t = captureFirst (*r);
+            t->tag ("DEFAULT");
+          }
+        }
+
+        std::string combined;
+        std::vector <Tree*> nodes;
+        collect (nodes, collectTerminated);
+        std::vector <Tree*>::iterator i;
+        for (i = nodes.begin (); i != nodes.end (); ++i)
+        {
+          if (combined.length ())
+            combined += ' ';
+
+          combined += (*i)->attribute ("raw");
+        }
+
+        context.header ("[" + combined + "]");
+*/
+      }
+      else
+      {
+/*
+        throw std::string (STRING_TRIVIAL_INPUT);
+*/
+      }
+    }
+    else
+    {
+/*
+      if (context.config.getBoolean ("debug"))
+        context.debug ("Sequence but no command found - assuming 'information' command.");
+      context.header (STRING_ASSUME_INFO);
+
+      Tree* t = captureFirst ("information");
+      t->tag ("ASSUMED");
+*/
+    }
+  }
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (context.cli.dump ("CLI::analyze injectDefaults"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
