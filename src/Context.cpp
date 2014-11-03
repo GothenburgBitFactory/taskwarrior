@@ -177,7 +177,7 @@ int Context::initialize (int argc, const char** argv)
     }
 
     // Create missing config file and data directory, if necessary.
-    parser.applyOverrides ();
+    cli.applyOverrides ();
 
     // Setting the debug switch has ripple effects.
     propagateDebug ();

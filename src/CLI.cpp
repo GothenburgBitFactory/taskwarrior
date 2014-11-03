@@ -355,6 +355,22 @@ void CLI::analyze (bool parse /* = true */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void CLI::applyOverrides ()
+{
+  std::vector <A>::const_iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (a->hasTag ("CONFIG"))
+    {
+      std::string name  = a->attribute ("name");
+      std::string value = a->attribute ("value");
+      context.config.set (name, value);
+      context.footnote (format (STRING_PARSER_OVERRIDE_RC, name, value));
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void CLI::getOverride (std::string& home, File& rc)
 {
   std::vector <A>::const_iterator a;

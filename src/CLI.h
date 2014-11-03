@@ -71,6 +71,7 @@ public:
   void initialize (int, const char**);
   void add (const std::string&);
   void analyze (bool parse = true);
+  void applyOverrides ();
   void getOverride (std::string&, File&);
   void getDataLocation (Path&);
   const std::string getFilter ();
