@@ -139,7 +139,7 @@ int Context::initialize (int argc, const char** argv)
 
     // Scan command line for 'rc:<file>' only.
     cli.initialize (argc, argv);                    // task arg0 arg1 ...
-    rc_file._data = cli.getOverride ();
+    cli.getOverride (home_dir, rc_file);            // <-- <file>
 
     // TASKRC environment variable overrides the command line.
     char* override = getenv ("TASKRC");
@@ -165,28 +165,11 @@ int Context::initialize (int argc, const char** argv)
 
     // Process 'rc:<file>' command line override.
     parser.findOverrides ();                        // rc:<file>  rc.<name>:<value>
-    parser.getOverrides (home_dir, rc_file);        // <-- <file>
-/*
-    home_dir = rc_file;
-    std::string::size_type last_slash = rc._data.rfind ("/");
-    if (last_slash != std::string::npos)
-      home_dir = rc_file.parent ();
-    else
-      home_dir = ".";
-    std::cout << "# home_dir=" << home_dir << "\n";
-*/
 
     // The data location, Context::data_dir, is determined from the assumed
     // location (~/.task), or set by data.location in the config file, or
     // overridden by rc.data.location on the command line.
     parser.getDataLocation (data_dir);              // <-- rc.data.location=<location>
-/*
-    if (cli._overrides.find ("data.location") != cli._overrides.end ())
-      data_dir = cli._overrides["data.location"];
-    else
-      data_dir = config.get ("data.location");
-    std::cout << "# data_dir=" << data_dir << "\n";
-*/
 
     override = getenv ("TASKDATA");
     if (override)

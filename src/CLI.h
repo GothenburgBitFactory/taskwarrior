@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <File.h>
 
 // Represents a single argument.
 class A
@@ -69,7 +70,7 @@ public:
   void initialize (int, const char**);
   void add (const std::string&);
   void analyze (bool parse = true);
-  const std::string getOverride ();
+  void getOverride (std::string&, File&);
   const std::string getFilter ();
   const std::vector <std::string> getWords ();
   const std::vector <std::string> getModifications ();

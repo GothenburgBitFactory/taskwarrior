@@ -355,14 +355,28 @@ void CLI::analyze (bool parse /* = true */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string CLI::getOverride ()
+void CLI::getOverride (std::string& home, File& rc)
 {
   std::vector <A>::const_iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
+  {
     if (a->hasTag ("RC"))
-      return a->attribute ("file");
+    {
+      rc = File (a->attribute ("file"));
+      home = rc;
 
-  return "";
+      std::string::size_type last_slash = rc._data.rfind ("/");
+      if (last_slash != std::string::npos)
+        home = rc._data.substr (0, last_slash);
+      else
+        home = ".";
+
+      context.header (format (STRING_PARSER_ALTERNATE_RC, rc._data));
+
+      // Keep looping, because if there are multiple rc:file arguments, the last
+      // one should dominate.
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
