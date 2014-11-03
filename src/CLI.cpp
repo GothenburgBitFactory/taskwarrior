@@ -380,6 +380,29 @@ void CLI::getOverride (std::string& home, File& rc)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Look for CONFIG data.location and initialize a Path object.
+void CLI::getDataLocation (Path& data)
+{
+  std::string location = context.config.get ("data.location");
+  if (location != "")
+    data = location;
+
+  std::vector <A>::const_iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+  {
+    if (a->hasTag ("CONFIG") &&
+        a->attribute ("name") == "data.location")
+    {
+      data = Directory (a->attribute ("value"));
+      context.header (format (STRING_PARSER_ALTERNATE_DATA, (std::string) data));
+    }
+
+    // Keep looping, because if there are multiple overrides, the last one
+    // should dominate.
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Extract all the FILTER-tagged items.
 const std::string CLI::getFilter ()
 {

@@ -166,7 +166,7 @@ int Context::initialize (int argc, const char** argv)
     // The data location, Context::data_dir, is determined from the assumed
     // location (~/.task), or set by data.location in the config file, or
     // overridden by rc.data.location on the command line.
-    parser.getDataLocation (data_dir);              // <-- rc.data.location=<location>
+    cli.getDataLocation (data_dir);              // <-- rc.data.location=<location>
 
     override = getenv ("TASKDATA");
     if (override)

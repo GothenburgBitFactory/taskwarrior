@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <Path.h>
 #include <File.h>
 
 // Represents a single argument.
@@ -71,6 +72,7 @@ public:
   void add (const std::string&);
   void analyze (bool parse = true);
   void getOverride (std::string&, File&);
+  void getDataLocation (Path&);
   const std::string getFilter ();
   const std::vector <std::string> getWords ();
   const std::vector <std::string> getModifications ();
