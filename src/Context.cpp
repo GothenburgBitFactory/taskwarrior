@@ -138,8 +138,8 @@ int Context::initialize (int argc, const char** argv)
     program = (argc ? argv[0] : "task");
 
     // Scan command line for 'rc:<file>' only.
-    Parser::getOverrides (argc, argv, rc_file._data);
     cli.initialize (argc, argv);                    // task arg0 arg1 ...
+    rc_file._data = cli.getOverride ();
 
     // TASKRC environment variable overrides the command line.
     char* override = getenv ("TASKRC");

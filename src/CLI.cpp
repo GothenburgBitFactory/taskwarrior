@@ -355,6 +355,17 @@ void CLI::analyze (bool parse /* = true */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string CLI::getOverride ()
+{
+  std::vector <A>::const_iterator a;
+  for (a = _args.begin (); a != _args.end (); ++a)
+    if (a->hasTag ("RC"))
+      return a->attribute ("file");
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Extract all the FILTER-tagged items.
 const std::string CLI::getFilter ()
 {
