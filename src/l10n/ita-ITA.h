@@ -905,6 +905,8 @@
   "  task <filter> <command> project:Home\n" \
   "  task <filter> <command> +weekend +garden due:tomorrow\n" \
   "  task <filter> <command> Description/annotation text\n" \
+  "  task <filter> <command> /from/to/     <- sostituisce la prima occorrenza\n" \
+  "  task <filter> <command> /from/to/g    <- sostituisce tutte le occorrenze\n" \
   "\n" \
   "I tag sono parole arbitrarie, in quantità a discrezione dell'utente:\n" \
   "  +tag       Il + aggiunge il tag\n" \

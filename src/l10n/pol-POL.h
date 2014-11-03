@@ -905,6 +905,8 @@
   "  task <filtr> <polecenie> project:Home\n" \
   "  task <filtr> <polecenie> +weekend +garden due:tomorrow\n" \
   "  task <filtr> <polecenie> Description/annotation text\n" \
+  "  task <filtr> <polecenie> /from/to/     <- zastąpić pierwszego wystąpienia\n" \
+  "  task <filtr> <polecenie> /from/to/g    <- zastąpić wszystkie wystąpienia\n" \
   "\n" \
   "Tagi są dowolnymi słowami występującymi w nieograniczonej ilości:\n" \
   "  +tag       + oznacza dodanie taga\n" \

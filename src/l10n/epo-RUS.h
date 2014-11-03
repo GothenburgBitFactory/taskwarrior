@@ -905,6 +905,8 @@
   "  task <filtrilo> <komando> project:Domo\n" \
   "  task <filtrilo> <komando> +semajnfino +ĝardeno due:tomorrow\n" \
   "  task <filtrilo> <komando> Priskribo/komentara teksto\n" \
+  "  task <filtrilo> <komando> /from/to/     <- replace first match\n" \
+  "  task <filtrilo> <komando> /from/to/g    <- replace all matches\n" \
   "\n" \
   "Etikedoj estas ajnaj vortoj, de ajna kvanto:\n" \
   "  +etikedo       La + signifas aldoni la etikedon\n" \

@@ -905,6 +905,8 @@
   "  task <filter> <command> project:Home\n" \
   "  task <filter> <command> +weekend +garden due:tomorrow\n" \
   "  task <filter> <command> Description/annotation text\n" \
+  "  task <filter> <command> /from/to/     <- replace first match\n" \
+  "  task <filter> <command> /from/to/g    <- replace all matches\n" \
   "\n" \
   "Tags are arbitrary words, any quantity:\n" \
   "  +tag       The + means add the tag\n" \

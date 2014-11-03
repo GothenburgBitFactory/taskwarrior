@@ -83,7 +83,8 @@ as:
   task <filter> <command> project:Home
   task <filter> <command> +weekend +garden due:tomorrow
   task <filter> <command> Description/annotation text
-  task <filter> <command> /from/to/
+  task <filter> <command> /from/to/     <- replace first match
+  task <filter> <command> /from/to/g    <- replace all matches
 
 .SH SUBCOMMANDS
 

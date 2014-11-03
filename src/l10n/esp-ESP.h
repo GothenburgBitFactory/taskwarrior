@@ -933,6 +933,8 @@
   "  task <filter> <command> project:Casa\n" \
   "  task <filter> <command> +finde +jardín due:tomorrow\n" \
   "  task <filter> <command> Descripción/anotación\n" \
+  "  task <filter> <command> /de/para/     <- cambia la primera ocurrencia\n" \
+  "  task <filter> <command> /de/para/g    <- cambia todas las ocurrencias\n" \
   "\n" \
   "Las marcas son palabras arbitrarias, en cualquier número:\n" \
   "  +marca     El + significa añade la marca\n" \

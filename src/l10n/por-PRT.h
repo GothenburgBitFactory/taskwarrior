@@ -905,6 +905,8 @@
   "  task <filter> <command> project:Home\n" \
   "  task <filter> <command> +weekend +garden due:tomorrow\n" \
   "  task <filter> <command> Description/annotation text\n" \
+  "  task <filter> <command> /de/para/     <- substitui a primeira ocorrência\n" \
+  "  task <filter> <command> /de/para/g    <- substitui todas as ocorrências\n" \
   "\n" \
   "Marcas são palavras arbitrárias, em qualquer quantidade:\n" \
   "  +marca       + significa adiciona a marca\n" \
