@@ -134,9 +134,6 @@ int Context::initialize (int argc, const char** argv)
     // The parser needs all the help it can get.
     setupEntities ();
 
-    // Initialize the command line parser.
-    program = (argc ? argv[0] : "task");
-
     // Scan command line for 'rc:<file>' only.
     cli.initialize (argc, argv);                    // task arg0 arg1 ...
     cli.getOverride (home_dir, rc_file);            // <-- <file>

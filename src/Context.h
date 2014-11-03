@@ -83,7 +83,6 @@ private:
   void propagateDebug ();
 
 public:
-  std::string                         program;
   CLI                                 cli;
   std::string                         home_dir;
   File                                rc_file;
