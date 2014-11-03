@@ -23,7 +23,6 @@ set (task_SRCS CLI.cpp CLI.h
                Lexer.cpp Lexer.h
                Msg.cpp Msg.h
                Nibbler.cpp Nibbler.h
-               Parser.cpp Parser.h
                Path.cpp Path.h
                RX.cpp RX.h
                TDB2.cpp TDB2.h
