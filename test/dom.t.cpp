@@ -48,7 +48,6 @@ int main (int argc, char** argv)
     // Prime the pump.
     const char* fake_argv[] = {"task"};
     context.cli.initialize (1, fake_argv);
-    context.program = "task";
     context.config.set ("name", "value");
 
     DOM dom;

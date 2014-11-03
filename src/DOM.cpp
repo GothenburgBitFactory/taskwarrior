@@ -104,7 +104,7 @@ bool DOM::get (const std::string& name, Variant& value)
   {
     if (name == "context.program")
     {
-      value = Variant (context.program);
+      value = Variant (context.cli.getBinary ());
       return true;
     }
     else if (name == "context.args")

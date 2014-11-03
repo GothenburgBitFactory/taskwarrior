@@ -483,6 +483,15 @@ bool CLI::canonicalize (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string CLI::getBinary () const
+{
+  if (_args.size ())
+    return _args[0].attribute ("raw");
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
 std::string CLI::getCommand () const
 {
   std::vector <A>::const_iterator a;
