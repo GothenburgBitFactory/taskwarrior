@@ -337,6 +337,7 @@ void CLI::analyze (bool parse /* = true */)
 
   // Find argument types.
   aliasExpansion ();
+  injectDefaults ();
   findOverrides ();
   categorize ();
 
@@ -349,7 +350,6 @@ void CLI::analyze (bool parse /* = true */)
     desugarPatterns ();
     findIDs ();
     findUUIDs ();
-    injectDefaults ();
     insertIDExpr ();
     findOperators ();
     findAttributes ();
@@ -1725,19 +1725,20 @@ void CLI::injectDefaults ()
   std::vector <A>::iterator a;
   for (a = _args.begin (); a != _args.end (); ++a)
   {
-    if (a->hasTag ("TERMINATOR"))
+    std::string raw = a->attribute ("raw");
+    if (isTerminator (raw))
       found_terminator = true;
 
-    if (! found_terminator && a->hasTag ("CMD"))
+    if (! found_terminator && isCommand (raw))
       found_command = true;
 
-    else if (! found_terminator && (a->hasTag ("ID") || a->hasTag ("UUID")))
+    else if (! found_terminator &&
+             (isUUIDList (raw)   ||
+              isUUID (raw)       ||
+              isIDSequence (raw) ||
+              isID (raw)))
       found_sequence = true;
   }
-
-  // TODO Remove
-  context.debug (std::string ("CLI::injectDefaults found_command    ") + (found_command ? "true" : "false"));
-  context.debug (std::string ("CLI::injectDefaults found_sequence   ") + (found_sequence ? "true" : "false"));
 
   // If no command was specified, then a command will be inserted.
   if (! found_command)
@@ -1752,36 +1753,41 @@ void CLI::injectDefaults ()
         if (context.config.getBoolean ("debug"))
           context.debug (std::string ("No command or sequence found - assuming default.command '") + defaultCommand + "'.");
 
-/*
-        // Split the defaultCommand into args, and add them in reverse order,
-        // because captureFirst inserts args immediately after the command, and
-        // so has the effect of reversing the list.
-        std::vector <std::string> args;
-        split (args, defaultCommand, ' ');
-        std::vector <std::string>::reverse_iterator r;
-        for (r = args.rbegin (); r != args.rend (); ++r)
+        // Split the defaultCommand into separate args.
+        std::vector <std::string> tokens;
+        Lexer::token_split (tokens, defaultCommand);
+
+        // Modify _args to be:   <args0> [<def0> ...] <args1> [...]
+        std::vector <A> reconstructed;
+        for (a = _args.begin (); a != _args.end (); ++a)
         {
-          if (*r != "")
+          reconstructed.push_back (*a);
+
+          if (a == _args.begin ())
           {
-            Tree* t = captureFirst (*r);
-            t->tag ("DEFAULT");
+            std::vector <std::string>::iterator t;
+            for (t = tokens.begin (); t != tokens.end (); ++t)
+            {
+              A arg ("argDefault", *t);
+              arg.tag ("DEFAULT");
+              reconstructed.push_back (arg);
+            }
           }
         }
 
+        _args = reconstructed;
+
+        // Extract a recomposed command line.
         std::string combined;
-        std::vector <Tree*> nodes;
-        collect (nodes, collectTerminated);
-        std::vector <Tree*>::iterator i;
-        for (i = nodes.begin (); i != nodes.end (); ++i)
+        for (a = _args.begin (); a != _args.end (); ++a)
         {
           if (combined.length ())
             combined += ' ';
 
-          combined += (*i)->attribute ("raw");
+          combined += a->attribute ("raw");
         }
 
         context.header ("[" + combined + "]");
-*/
       }
       else
       {
@@ -1792,14 +1798,13 @@ void CLI::injectDefaults ()
     }
     else
     {
-/*
       if (context.config.getBoolean ("debug"))
         context.debug ("Sequence but no command found - assuming 'information' command.");
       context.header (STRING_ASSUME_INFO);
 
-      Tree* t = captureFirst ("information");
-      t->tag ("ASSUMED");
-*/
+      A info ("argDefault", "information");
+      info.tag ("ASSUMED");
+      _args.push_back (info);
     }
   }
 
