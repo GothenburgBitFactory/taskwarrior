@@ -337,8 +337,9 @@ void CLI::analyze (bool parse /* = true */)
 
   // Find argument types.
   aliasExpansion ();
-  injectDefaults ();
   findOverrides ();
+  applyOverrides ();
+  injectDefaults ();
   categorize ();
 
   if (parse)
