@@ -76,6 +76,10 @@ public:
 
   static const std::string type_name (const Type&);
   static bool is_ws (int);
+  static bool is_ident_start (int);
+  static bool is_ident (int);
+  static bool is_single_op (int);
+  static bool is_dec_digit (int);
   static bool boundary (int, int);
   static void word_split (std::vector <std::string>&, const std::string&);
   static void token_split (std::vector <std::string>&, const std::string&);
@@ -86,12 +90,8 @@ private:
   bool is_duration (std::string&);
   bool is_punct (int) const;
   bool is_num (int) const;
-  bool is_ident_start (int) const;
-  bool is_ident (int) const;
   bool is_triple_op (int, int, int) const;
   bool is_double_op (int, int, int) const;
-  bool is_single_op (int) const;
-  bool is_dec_digit (int) const;
   bool is_hex_digit (int) const;
   int decode_escape (int) const;
   int hex_to_int (int) const;

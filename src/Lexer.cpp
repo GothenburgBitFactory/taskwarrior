@@ -616,6 +616,47 @@ bool Lexer::is_ws (int c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Lexer::is_ident_start (int c)
+{
+  return c           &&       // Include null character check.
+         ! is_ws (c) &&
+         ! is_dec_digit (c) &&
+         ! is_single_op (c);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::is_ident (int c)
+{
+  return c           &&       // Include null character check.
+         ! is_ws (c) &&
+         ! is_single_op (c);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::is_single_op (int c)
+{
+  return c == '+' ||
+         c == '-' ||
+         c == '*' ||
+         c == '/' ||
+         c == '(' ||
+         c == ')' ||
+         c == '<' ||
+         c == '>' ||
+         c == '^' ||
+         c == '!' ||
+         c == '%' ||
+         c == '=' ||
+         c == '~';
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::is_dec_digit (int c)
+{
+  return c >= '0' && c <= '9';
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Lexer::boundary (int left, int right)
 {
   // XOR
@@ -748,23 +789,6 @@ bool Lexer::is_num (int c) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Lexer::is_ident_start (int c) const
-{
-  return c           &&       // Include null character check.
-         ! is_ws (c) &&
-         ! is_dec_digit (c) &&
-         ! is_single_op (c);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Lexer::is_ident (int c) const
-{
-  return c           &&       // Include null character check.
-         ! is_ws (c) &&
-         ! is_single_op (c);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Lexer::is_triple_op (int c0, int c1, int c2) const
 {
   return (c0 == 'a' && c1 == 'n' && c2 == 'd' && _boundary23) ||
@@ -783,30 +807,6 @@ bool Lexer::is_double_op (int c0, int c1, int c2) const
          (c0 == '|' && c1 == '|')                ||
          (c0 == '&' && c1 == '&')                ||
          (c0 == '!' && c1 == '~');
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Lexer::is_single_op (int c) const
-{
-  return c == '+' ||
-         c == '-' ||
-         c == '*' ||
-         c == '/' ||
-         c == '(' ||
-         c == ')' ||
-         c == '<' ||
-         c == '>' ||
-         c == '^' ||
-         c == '!' ||
-         c == '%' ||
-         c == '=' ||
-         c == '~';
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Lexer::is_dec_digit (int c) const
-{
-  return c >= '0' && c <= '9';
 }
 
 ////////////////////////////////////////////////////////////////////////////////
