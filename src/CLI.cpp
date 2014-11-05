@@ -28,7 +28,6 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream> // TODO Remove.
-#include <ctype.h>
 #include <Context.h>
 #include <Nibbler.h>
 #include <Lexer.h>
@@ -2069,12 +2068,12 @@ bool CLI::isCommand (const std::string& raw) const
 // Valid tag
 //   - Length > 1
 //   - Starts with +/-
-//   - Tag does not start with a digit
+//   - The rest matches ::isName
 bool CLI::isTag (const std::string& raw) const
 {
   if (raw.size () >= 2                 &&
       (raw[0] == '+' || raw[0] == '-') &&
-      ! isdigit(raw[1])                &&
+      isName (raw.substr (1))          &&
       raw.find (' ') == std::string::npos)
     return true;
 
