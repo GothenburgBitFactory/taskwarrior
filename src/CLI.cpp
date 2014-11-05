@@ -280,18 +280,6 @@ void CLI::add (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Capture a single argument, after BINARY.
-void CLI::insert (const std::string& arg)
-{
-  // Clean the ID/UUID lists, because they will be rebuilt.
-  _id_ranges.clear ();
-  _uuid_list.clear ();
-
-  addArg (arg, true);
-  analyze ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Intended to be called after ::initialize() and ::add(), to perform the final
 // analysis. Analysis is also performed directly after the above, because there
 // is a need to extract overrides early, before entities are proviedd.
@@ -598,7 +586,7 @@ const std::string CLI::dump (const std::string& title /* = "CLI Parser" */) cons
 //       be lexed from those that need to be left alone.
 //
 // Either the arg is appended to _original_args intact, or the lexemes are.
-void CLI::addArg (const std::string& arg, bool first /* = false */)
+void CLI::addArg (const std::string& arg)
 {
   // Do not lex these constructs.
   if (isTerminator     (arg) ||     // --

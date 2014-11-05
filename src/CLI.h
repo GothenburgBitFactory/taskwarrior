@@ -70,7 +70,6 @@ public:
   void entity (const std::string&, const std::string&);
   void initialize (int, const char**);
   void add (const std::string&);
-  void insert (const std::string&);
   void analyze (bool parse = true);
   void applyOverrides ();
   void getOverride (std::string&, File&);
@@ -85,7 +84,7 @@ public:
   const std::string dump (const std::string& title = "CLI Parser") const;
 
 private:
-  void addArg (const std::string&, bool first = false);
+  void addArg (const std::string&);
   void aliasExpansion ();
   void findOverrides ();
   void categorize ();
