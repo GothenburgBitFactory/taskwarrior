@@ -1778,6 +1778,9 @@ void CLI::injectDefaults ()
 
         context.header ("[" + combined + "]");
       }
+
+      // TODO This fails because when ::injectDefaults is first run,
+      //      ::applyOverrides has not yet been called.
       else
       {
 /*
