@@ -588,22 +588,24 @@ const std::string CLI::dump (const std::string& title /* = "CLI Parser" */) cons
 // Either the arg is appended to _original_args intact, or the lexemes are.
 void CLI::addArg (const std::string& arg)
 {
+  std::string raw = trim (arg);
+
   // Do not lex these constructs.
-  if (isTerminator     (arg) ||     // --
-      isRCOverride     (arg) ||     // rc:<file>
-      isConfigOverride (arg) ||     // rc.<attr>:<value>
-      isCommand        (arg) ||     // <cmd>
-      isTag            (arg) ||     // [+-]<tag>
-      isUUIDList       (arg) ||     // <uuid>,[uuid ...]
-      isUUID           (arg) ||     // <uuid>
-      isIDSequence     (arg) ||     // <id>[-<id>][,<id>[-<id>] ...]
-      isID             (arg) ||     // <id>
-      isPattern        (arg) ||     // /<pattern</
-      isSubstitution   (arg) ||     // /<from>/<to>/[g]
-      isAttribute      (arg) ||     // <name>[.[~]<modﬁfier>]:<value>
-      isOperator       (arg))       // <operator>
+  if (isTerminator     (raw) ||     // --
+      isRCOverride     (raw) ||     // rc:<file>
+      isConfigOverride (raw) ||     // rc.<attr>:<value>
+      isCommand        (raw) ||     // <cmd>
+      isTag            (raw) ||     // [+-]<tag>
+      isUUIDList       (raw) ||     // <uuid>,[uuid ...]
+      isUUID           (raw) ||     // <uuid>
+      isIDSequence     (raw) ||     // <id>[-<id>][,<id>[-<id>] ...]
+      isID             (raw) ||     // <id>
+      isPattern        (raw) ||     // /<pattern</
+      isSubstitution   (raw) ||     // /<from>/<to>/[g]
+      isAttribute      (raw) ||     // <name>[.[~]<modﬁfier>]:<value>
+      isOperator       (raw))       // <operator>
   {
-    _original_args.push_back (arg);
+    _original_args.push_back (raw);
   }
 
   // Lex, but only use lexemes if an operator is found in there.
@@ -613,7 +615,7 @@ void CLI::addArg (const std::string& arg)
     // otherwise no change.
     std::string lexeme;
     Lexer::Type type;
-    Lexer lex (arg);
+    Lexer lex (raw);
     lex.ambiguity (false);
 
     std::vector <std::pair <std::string, Lexer::Type> > lexemes;
@@ -631,10 +633,14 @@ void CLI::addArg (const std::string& arg)
         foundOP)
     {
         for (l = lexemes.begin (); l != lexemes.end (); ++l)
+        {
           _original_args.push_back (l->first);
+        }
     }
     else
-      _original_args.push_back (arg);
+    {
+      _original_args.push_back (raw);
+    }
   }
 }
 
