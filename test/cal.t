@@ -230,19 +230,14 @@ unlike ($output, qr/20160101/,      "$ut: Due date 20160101 is not displayed");
 like   ($output, qr/5 tasks/,       "$ut: 5 due tasks are displayed");
 
 $day = $nday;
-if ( $day <= 9)
-{
-  $day = "0".$day;
-}
+$day = "0".$day if $day < 10;
+
 my $mon = $nmon + 1;
-if ( $mon <= 9)
-{
-  $mon = "0".$mon;
-}
+$mon = "0".$mon if $mon < 10;
 my $duedate = $year.$mon.$day;
 
-qx{../src/task rc:$rc add due:$duedate rc.monthsperline:1 nine 2>&1};
-$output = qx{../src/task rc:$rc calendar 2>&1};
+qx{../src/task rc:$rc add due:$duedate nine 2>&1};
+$output = qx{../src/task rc:$rc calendar rc.monthsperline:1 2>&1};
 like   ($output, qr/$month\S*?\s+?$year/, "$ut: Current month and year are displayed");
 like   ($output, qr/$duedate/,            "$ut: Due date on current day is displayed");
 like   ($output, qr/[12] task/,           "$ut: 1/2 due task(s) are displayed");
