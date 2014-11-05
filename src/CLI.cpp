@@ -345,13 +345,13 @@ void CLI::analyze (bool parse /* = true */)
   if (parse)
   {
     // Remove all the syntactic sugar for FILTERs.
+    findIDs ();
+    findUUIDs ();
+    insertIDExpr ();
     desugarTags ();
     desugarAttributes ();
     desugarAttributeModifiers ();
     desugarPatterns ();
-    findIDs ();
-    findUUIDs ();
-    insertIDExpr ();
     findOperators ();
     findAttributes ();
     insertJunctions ();
