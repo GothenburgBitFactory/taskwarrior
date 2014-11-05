@@ -2248,3 +2248,22 @@ bool CLI::isOperator (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool CLI::isName (const std::string& raw) const
+{
+  if (raw != "")
+  {
+    for (int i = 0; i < raw.length (); ++i)
+    {
+      if (i == 0 && ! Lexer::is_ident_start (raw[i]))
+        return false;
+      else if (! Lexer::is_ident (raw[i]))
+        return false;
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
