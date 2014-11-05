@@ -2202,7 +2202,7 @@ bool CLI::isAttribute (const std::string& raw) const
     return false;
 
   // No spaces in name.
-  if (attr.find (' ') != std::string::npos)
+  if (! isName (attr))
     return false;
 
   std::string::size_type dot = attr.find (".");
