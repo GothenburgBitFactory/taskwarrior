@@ -629,7 +629,7 @@ void CLI::addArg (const std::string& arg)
         foundOP = true;
 
     // This one looks interesting.
-    if (lexemes.size () > 1 &&
+    if (lexemes.size () > 2 &&
         foundOP)
     {
         for (l = lexemes.begin (); l != lexemes.end (); ++l)
