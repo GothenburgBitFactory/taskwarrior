@@ -481,16 +481,6 @@ const std::vector <std::string> CLI::getWords ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> CLI::getModifications ()
-{
-  std::vector <std::string> modifications;
-
-  // TODO Processing here.
-
-  return modifications;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Search for 'value' in _entities category, return canonicalized value.
 bool CLI::canonicalize (
   std::string& canonicalized,

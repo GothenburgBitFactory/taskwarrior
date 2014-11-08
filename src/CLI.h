@@ -79,7 +79,6 @@ public:
   void getDataLocation (Path&);
   const std::string getFilter ();
   const std::vector <std::string> getWords ();
-  const std::vector <std::string> getModifications ();
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   std::string getBinary () const;
   std::string getCommand () const;
