@@ -47,13 +47,11 @@ if (open my $fh, '>', $rc)
 # Bug 819: When I run "task add foo\'s bar." the description of the new task is "foo 's bar .".
 qx{../src/task rc:$rc add foo\\'s bar. 2>&1};
 qx{../src/task rc:$rc add foo \\(bar\\) 2>&1};
-qx{../src/task rc:$rc add \\'baz \\(qux\\)\\' 2>&1};
+qx{../src/task rc:$rc add 'baz (qux)' 2>&1};
+
 my $output = qx{../src/task rc:$rc ls 2>&1};
 like ($output, qr/foo's bar\./, "$ut: foo's bar. --> preserved");
-
-#like ($output, qr/foo \(bar\)/, "foo \(bar\) -- preserved");
-pass ("$ut: foo \(bar\) -- preserved -- TEST SKIPPED --");
-
+like ($output, qr/foo \(bar\)/, "$ut: foo \(bar\) -- preserved");
 like ($output, qr/baz \(qux\)/, "$ut: baz \(qux\) -- preserved");
 
 # Cleanup.
