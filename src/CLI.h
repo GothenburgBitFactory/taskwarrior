@@ -64,6 +64,9 @@ public:
 class CLI
 {
 public:
+  static int minimumMatchLength;
+
+public:
   CLI ();
   ~CLI ();
   void alias (const std::string&, const std::string&);

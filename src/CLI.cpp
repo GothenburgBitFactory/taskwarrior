@@ -40,7 +40,7 @@
 extern Context context;
 
 // Overridden by rc.abbreviation.minimum.
-static int minimumMatchLength = 3;
+int CLI::minimumMatchLength = 3;
 
 // Alias expansion limit. Any more indicates some kind of error.
 static int safetyValveDefault = 10;
