@@ -160,6 +160,8 @@
 - TW-1407 'task calendar 2014' leaks.
 - TW-1409 Allow "1 of N tasks remaining" to be correctly localized (thanks to
           Jeremy John Reeder).
+- TW-1414 default.command doesn't work with execute anymore (thanks to Johannes
+          Schlatow).
 - TW-1415 The recurrence value 'month' is not valid (thanks to Petteri).
 - TW-1420 Modifying 'uuid' fails to generate error (thanks to Black Ops Testing).
 - TW-1421 Modifying 'uuid' with bogus value can corrupt undo.data (thanks to
