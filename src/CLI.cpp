@@ -341,6 +341,7 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
     findUUIDs ();
     insertIDExpr ();
     desugarTags ();
+    findStrayModifications ();
     desugarAttributes ();
     desugarAttributeModifiers ();
     desugarPatterns ();
@@ -905,6 +906,32 @@ void CLI::desugarTags ()
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (context.cli.dump ("CLI::analyze desugarTags"));
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::findStrayModifications ()
+{
+  bool changes = false;
+
+  std::string command = getCommand ();
+  if (command == "add" ||
+      command == "log")
+  {
+    std::vector <A>::iterator a;
+    for (a = _args.begin (); a != _args.end (); ++a)
+    {
+      if (a->hasTag ("FILTER"))
+      {
+        a->unTag ("FILTER");
+        a->tag ("MODIFICATION");
+        changes = true;
+      }
+    }
+  }
+
+  if (changes)
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (context.cli.dump ("CLI::analyze findStrayModifications"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -93,6 +93,7 @@ private:
   void categorize ();
   bool exactMatch (const std::string&, const std::string&) const;
   void desugarTags ();
+  void findStrayModifications ();
   void desugarAttributes ();
   void desugarAttributeModifiers ();
   void desugarPatterns ();
