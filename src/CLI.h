@@ -73,7 +73,7 @@ public:
   void entity (const std::string&, const std::string&);
   void initialize (int, const char**);
   void add (const std::string&);
-  void analyze (bool parse = true);
+  void analyze (bool parse = true, bool strict = false);
   void applyOverrides ();
   void getOverride (std::string&, File&);
   void getDataLocation (Path&);
@@ -132,6 +132,7 @@ public:
 
   std::vector <std::pair <int, int> >      _id_ranges;
   std::vector <std::string>                _uuid_list;
+  bool                                     _strict;
 };
 
 #endif

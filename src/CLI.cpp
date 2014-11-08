@@ -219,6 +219,7 @@ const std::string A::dump () const
 
 ////////////////////////////////////////////////////////////////////////////////
 CLI::CLI ()
+: _strict (false)
 {
 }
 
@@ -283,12 +284,15 @@ void CLI::add (const std::string& arg)
 // Intended to be called after ::initialize() and ::add(), to perform the final
 // analysis. Analysis is also performed directly after the above, because there
 // is a need to extract overrides early, before entities are proviedd.
-void CLI::analyze (bool parse /* = true */)
+void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
 {
   // Clean what needs to be cleaned. Most in this case.
   _args.clear ();
   _id_ranges.clear ();
   _uuid_list.clear ();
+
+  // For propagation.
+  _strict = strict;
 
   for (int i = 0; i < _original_args.size (); ++i)
   {
@@ -1785,13 +1789,10 @@ void CLI::injectDefaults ()
         context.header ("[" + combined + "]");
       }
 
-      // TODO This fails because when ::injectDefaults is first run,
-      //      ::applyOverrides has not yet been called.
-      else
+      // Only an error in strict mode.
+      else if (_strict)
       {
-/*
         throw std::string (STRING_TRIVIAL_INPUT);
-*/
       }
     }
     else

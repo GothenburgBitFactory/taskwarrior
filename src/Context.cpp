@@ -209,7 +209,7 @@ int Context::initialize (int argc, const char** argv)
       cli.entity ("attribute", col->first);
 
     staticInitialization ();                        // Decouple code from Context.
-    cli.analyze ();                                 // Parse all elements.
+    cli.analyze (true, true);                       // Parse all elements, strict mode.
 
     tdb2.set_location (data_dir);                   // Prepare the task database.
 
