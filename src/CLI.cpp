@@ -471,8 +471,7 @@ const std::vector <std::string> CLI::getWords ()
         ! a->hasTag ("RC")     &&
         ! a->hasTag ("CONFIG") &&
         ! a->hasTag ("CMD")    &&
-        ! a->hasTag ("TERMINATOR") &&
-        a->hasTag ("ORIGINAL"))
+        ! a->hasTag ("TERMINATOR"))
     {
       words.push_back (a->attribute ("raw"));
     }
