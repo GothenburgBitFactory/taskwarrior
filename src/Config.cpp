@@ -297,7 +297,7 @@ std::string Config::_defaults =
   "#taskd.certificate <certificate file>\n"
   "#taskd.credentials <organization>/<name>/<password>\n"
   "#taskd.server      <server>:<port>\n"
-  "#taskd.trust=strict\n"
+  "taskd.trust=strict\n"
   "#taskd.trust=ignore hostname\n"
   "#taskd.trust=allow all\n"
   "taskd.ciphers=NORMAL\n"
