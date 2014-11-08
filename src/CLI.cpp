@@ -761,7 +761,7 @@ void CLI::categorize ()
   {
     std::string raw = a->attribute ("raw");
 
-    if (raw == "--")
+    if (! terminated && raw == "--")
     {
       a->tag ("ORIGINAL");
       a->tag ("TERMINATOR");
