@@ -123,7 +123,14 @@ void ColumnTags::render (
     if (_style == "default" ||
         _style == "list")
     {
-      std::replace (tags.begin (), tags.end (), ',', ' ');
+      std::vector <std::string> allTags;
+      split (allTags, tags, ',');
+      if (allTags.size () > 1)
+      {
+        std::sort (allTags.begin (), allTags.end ());
+        join (tags, " ", allTags);
+      }
+
       std::vector <std::string> all;
       wrapText (all, tags, width, _hyphenate);
 

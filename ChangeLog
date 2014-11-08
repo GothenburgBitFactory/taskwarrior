@@ -174,6 +174,7 @@
 - TW-1436 Parser hangs when multiple slashes are used.
 - TW-1437 taskd.trust has a bad default value.
 - TW-1441 task import continues happily if filename doesn't exist.
+- TW-1444 Tag ordering is preserved, but should be sorted in reports.
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
