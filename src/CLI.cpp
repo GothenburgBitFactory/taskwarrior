@@ -221,7 +221,7 @@ const std::string A::dump () const
 void CLI::getOverride (int argc, const char** argv, std::string& home, File& rc)
 {
   bool terminated = false;
-  for (int i = 1; i < argc; ++i)
+  for (int i = 0; i < argc; ++i)
   {
     std::string raw = argv[i];
 
@@ -256,7 +256,7 @@ void CLI::getDataLocation (int argc, const char** argv, Path& data)
     data = location;
 
   bool terminated = false;
-  for (int i = 1; i < argc; ++i)
+  for (int i = 0; i < argc; ++i)
   {
     std::string raw = argv[i];
 
@@ -280,7 +280,7 @@ void CLI::getDataLocation (int argc, const char** argv, Path& data)
 void CLI::applyOverrides (int argc, const char** argv)
 {
   bool terminated = false;
-  for (int i = 1; i < argc; ++i)
+  for (int i = 0; i < argc; ++i)
   {
     std::string raw = argv[i];
 
@@ -349,7 +349,6 @@ void CLI::initialize (int argc, const char** argv)
   _uuid_list.clear ();
 
   _original_args.push_back (argv[0]);
-
   for (int i = 1; i < argc; ++i)
     addArg (argv[i]);
 
@@ -384,14 +383,15 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
 
   for (int i = 0; i < _original_args.size (); ++i)
   {
+    std::string raw = _original_args[i];
+    A a ("arg", raw);
+
     if (i == 0)
     {
-      A a ("arg", _original_args[i]);
       a.tag ("ORIGINAL");
       a.tag ("BINARY");
 
       std::string basename = "task";
-      std::string raw = _original_args[i];
       std::string::size_type slash = raw.rfind ('/');
       if (slash != std::string::npos)
         basename = raw.substr (slash + 1);
@@ -401,15 +401,14 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
         a.tag ("CALENDAR");
       else if (basename == "task" || basename == "tw" || basename == "t")
         a.tag ("TW");
-
-      _args.push_back (a);
     }
     else
     {
-      A a ("arg", _original_args[i]);
+      A a ("arg", raw);
       a.tag ("ORIGINAL");
-      _args.push_back (a);
     }
+
+    _args.push_back (a);
   }
 
   if (context.config.getInteger ("debug.parser") >= 3)
