@@ -49,7 +49,7 @@ if (open my $fh, '>', $rc)
 }
 
 # Add two tasks.
-qx{../src/task rc:$rc add priority:H project:A one/1 2>&1};
+qx{../src/task rc:$rc add priority:H project:A -- one/1 2>&1};
 qx{../src/task rc:$rc add +tag1 +tag2 two 2>&1};
 
 # trip 1.
