@@ -33,8 +33,12 @@ use Test::More tests => 25;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'denotate.rc')
+if (open my $fh, '>', $rc)
 {
   # Note: Use 'rrr' to guarantee a unique report name.  Using 'r' conflicts
   #       with 'recurring'.
@@ -48,60 +52,60 @@ if (open my $fh, '>', 'denotate.rc')
 }
 
 # Add four tasks, annotate one three times, one twice, one just once and one none.
-qx{../src/task rc:denotate.rc add one 2>&1};
-qx{../src/task rc:denotate.rc 1 annotate Ernie 2>&1};
-qx{../src/task rc:denotate.rc 1 annotate Bert 2>&1};
-qx{../src/task rc:denotate.rc 1 annotate Bibo 2>&1};
-qx{../src/task rc:denotate.rc 1 annotate Kermit the frog 2>&1};
-qx{../src/task rc:denotate.rc 1 annotate Kermit the frog 2>&1};
-qx{../src/task rc:denotate.rc 1 annotate Kermit 2>&1};
-qx{../src/task rc:denotate.rc 1 annotate Kermit and Miss Piggy 2>&1};
+qx{../src/task rc:$rc add one 2>&1};
+qx{../src/task rc:$rc 1 annotate Ernie 2>&1};
+qx{../src/task rc:$rc 1 annotate Bert 2>&1};
+qx{../src/task rc:$rc 1 annotate Bibo 2>&1};
+qx{../src/task rc:$rc 1 annotate Kermit the frog 2>&1};
+qx{../src/task rc:$rc 1 annotate Kermit the frog 2>&1};
+qx{../src/task rc:$rc 1 annotate Kermit 2>&1};
+qx{../src/task rc:$rc 1 annotate Kermit and Miss Piggy 2>&1};
 
-my $output = qx{../src/task rc:denotate.rc rrr 2>&1};
-like ($output, qr/1 one/,   'task 1');
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Ernie/ms,                    'first   annotation');
-like ($output, qr/Ernie.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   'second  annotation');
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Bibo/ms,                    'third   annotation'); # 5
-like ($output, qr/Bibo.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         'fourth  annotation');
-like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         'fifth   annotation');
-like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit/ms,                  'sixth   annotation');
-like ($output, qr/Kermit.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'seventh annotation');
-like ($output, qr/1 task/, 'count');      # 10
+my $output = qx{../src/task rc:$rc rrr 2>&1};
+like ($output, qr/1 one/,                                                   "$ut: task 1");
+like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Ernie/ms,                    "$ut: first   annotation");
+like ($output, qr/Ernie.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   "$ut: second  annotation");
+like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Bibo/ms,                    "$ut: third   annotation");
+like ($output, qr/Bibo.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: fourth  annotation"); # 5
+like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: fifth   annotation");
+like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit/ms,                  "$ut: sixth   annotation");
+like ($output, qr/Kermit.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, "$ut: seventh annotation");
+like ($output, qr/1 task/, "$ut: count");      # 10
 
-qx{../src/task rc:denotate.rc 1 denotate Ernie 2>&1};
-$output = qx{../src/task rc:denotate.rc rrr 2>&1};
-unlike ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Ernie/ms, 'Delete annotation');
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms, 'Bert now first annotationt');
+qx{../src/task rc:$rc 1 denotate Ernie 2>&1};
+$output = qx{../src/task rc:$rc rrr 2>&1};
+unlike ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Ernie/ms,                  "$ut: Delete annotation");
+like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Bert now first annotationt"); # 10
 
-qx{../src/task rc:denotate.rc 1 denotate Bi 2>&1};
-$output = qx{../src/task rc:denotate.rc rrr 2>&1};
-unlike ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Bibo/ms, 'Delete partial match');
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms, 'Kermit the frog now second annotation');
+qx{../src/task rc:$rc 1 denotate Bi 2>&1};
+$output = qx{../src/task rc:$rc rrr 2>&1};
+unlike ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Bibo/ms,                  "$ut: Delete partial match");
+like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Kermit the frog now second annotation");
 
-qx{../src/task rc:denotate.rc 1 denotate BErt 2>&1};
-$output = qx{../src/task rc:denotate.rc rrr 2>&1};
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms, 'Denotate is case sensitive'); # 15
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms, 'Kermit the frog still second annoation');
+qx{../src/task rc:$rc 1 denotate BErt 2>&1};
+$output = qx{../src/task rc:$rc rrr 2>&1};
+like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Denotate is case sensitive");
+like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Kermit the frog still second annoation");
 
-qx{../src/task rc:denotate.rc 1 denotate Kermit 2>&1};
-$output = qx{../src/task rc:denotate.rc rrr 2>&1};
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   'Exact match deletion - Bert');
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       'Exact match deletion - Kermit the frog');
-like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       'Exact match deletion - Kermit the frog');
-like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'Exact match deletion - Kermit and Miss Piggy'); # 20
+qx{../src/task rc:$rc 1 denotate Kermit 2>&1};
+$output = qx{../src/task rc:$rc rrr 2>&1};
+like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Exact match deletion - Bert"); # 15
+like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Exact match deletion - Kermit the frog");
+like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Exact match deletion - Kermit the frog");
+like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms,   "$ut: Exact match deletion - Kermit and Miss Piggy");
 
-qx{../src/task rc:denotate.rc 1 denotate Kermit the 2>&1};
-$output = qx{../src/task rc:denotate.rc rrr 2>&1};
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   'Delete just one annotation - Bert');
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       'Delete just one annotation - Kermit the frog');
-like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'Delete just one annotation - Kermit and Miss Piggy');
+qx{../src/task rc:$rc 1 denotate Kermit the 2>&1};
+$output = qx{../src/task rc:$rc rrr 2>&1};
+like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Delete just one annotation - Bert");
+like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Delete just one annotation - Kermit the frog"); # 20
+like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms,   "$ut: Delete just one annotation - Kermit and Miss Piggy");
 
-$output = qx{../src/task rc:denotate.rc 1 denotate Kermit a 2>&1};
-$output = qx{../src/task rc:denotate.rc rrr 2>&1};
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   'Delete partial match - Bert');
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       'Delete partial match - Kermit the frog'); # 25
-unlike ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, 'Delete partial match - Kermit and Miss Piggy');
+qx{../src/task rc:$rc 1 denotate Kermit a 2>&1};
+$output = qx{../src/task rc:$rc rrr 2>&1};
+like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Delete partial match - Bert");
+like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Delete partial match - Kermit the frog");
+unlike ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, "$ut: Delete partial match - Kermit and Miss Piggy");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data denotate.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
