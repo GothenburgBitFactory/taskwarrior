@@ -134,6 +134,7 @@ public:
   std::vector <std::pair <int, int> >      _id_ranges;
   std::vector <std::string>                _uuid_list;
   bool                                     _strict;
+  bool                                     _terminated;
 };
 
 #endif

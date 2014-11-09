@@ -308,6 +308,7 @@ void CLI::applyOverrides (int argc, const char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 CLI::CLI ()
 : _strict (false)
+, _terminated (false)
 {
 }
 
@@ -347,10 +348,16 @@ void CLI::initialize (int argc, const char** argv)
   _original_args.clear ();
   _id_ranges.clear ();
   _uuid_list.clear ();
+  _terminated = false;
 
   _original_args.push_back (argv[0]);
+  bool terminated = false;
   for (int i = 1; i < argc; ++i)
+  {
+    if (isTerminator (argv[i]))
+      _terminated = true;
     addArg (argv[i]);
+  }
 
   analyze ();
 }
@@ -619,7 +626,10 @@ void CLI::addArg (const std::string& arg)
   std::string raw = trim (arg);
 
   // Do not lex these constructs.
-  if (isTerminator     (raw) ||     // --
+  if (isTerminator (raw))           // --
+    _terminated = true;
+
+  if (_terminated            ||
       isRCOverride     (raw) ||     // rc:<file>
       isConfigOverride (raw) ||     // rc.<attr>:<value>
       isCommand        (raw) ||     // <cmd>
@@ -660,10 +670,10 @@ void CLI::addArg (const std::string& arg)
     if (lexemes.size () > 2 &&
         foundOP)
     {
-        for (l = lexemes.begin (); l != lexemes.end (); ++l)
-        {
-          _original_args.push_back (l->first);
-        }
+      for (l = lexemes.begin (); l != lexemes.end (); ++l)
+      {
+        _original_args.push_back (l->first);
+      }
     }
     else
     {
