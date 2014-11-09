@@ -75,13 +75,6 @@ class Test1418(TestCase):
         self.find_in_list(description)
         self.search_task_pattern(description)
 
-    def test_slash_minus_in_description(self):
-        """Can add and search a task with (\-) in description"""
-        description = "foo\-"
-        self.add_search_task(description)
-        self.find_in_list(description)
-        self.search_task_pattern(description)
-
     def test_slash_plus_in_description(self):
         """Can add and search a task with (\+) in description"""
         description = "foo\+"
