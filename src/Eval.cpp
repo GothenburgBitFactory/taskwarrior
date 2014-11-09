@@ -45,8 +45,8 @@ static struct
 {
   std::string op;
   int         precedence;
-  char        type;
-  char        associativity;
+  char        type;                  // b=binary, u=unary, c=circumfix
+  char        associativity;         // l=left, r=right, _=?
 } operators[] =
 {
   // Operator   Precedence  Type  Associativity
@@ -83,8 +83,8 @@ static struct
   {  "or",        4,         'b',  'l' },    // Disjunction
   {  "xor",       3,         'b',  'l' },    // Disjunction
 
-  {  "(",         0,         '_',  'l' },    // Precedence start
-  {  ")",         0,         '_',  'l' },    // Precedence end
+  {  "(",         0,         'c',  '_' },    // Precedence start
+  {  ")",         0,         'c',  '_' },    // Precedence end
 };
 
 #define NUM_OPERATORS (sizeof (operators) / sizeof (operators[0]))

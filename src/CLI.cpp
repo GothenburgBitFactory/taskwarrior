@@ -666,7 +666,7 @@ void CLI::addArg (const std::string& arg)
 
     if (disqualifyInsufficientTerms (lexemes) ||
         disqualifyNoOps             (lexemes) ||
-//        disqualifyOnlyParenOps      (lexemes) ||
+        disqualifyOnlyParenOps      (lexemes) ||
         disqualifyFirstLastBinary   (lexemes) ||
         disqualifySugarFree         (lexemes))
     {
@@ -2357,10 +2357,12 @@ bool CLI::disqualifyOnlyParenOps (
   const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
 {
   int opCount      = 0;
+  int opSugarCount = 0;
   int opParenCount = 0;
 
   std::vector <std::pair <std::string, Lexer::Type> >::const_iterator l;
   for (l = lexemes.begin (); l != lexemes.end (); ++l)
+  {
     if (l->second == Lexer::typeOperator)
     {
       ++opCount;
@@ -2370,7 +2372,17 @@ bool CLI::disqualifyOnlyParenOps (
         ++opParenCount;
     }
 
-  return opCount == opParenCount;
+    else if (isTag          (l->first) ||
+             isUUIDList     (l->first) ||
+             isUUID         (l->first) ||
+             isIDSequence   (l->first) ||
+             isID           (l->first) ||
+             isPattern      (l->first) ||
+             isAttribute    (l->first))
+      ++opSugarCount;
+  }
+
+  return opCount == opParenCount && ! opSugarCount;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
