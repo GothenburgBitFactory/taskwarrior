@@ -50,6 +50,7 @@ public:
   void debug (bool);
 
   static void getOperators (std::vector <std::string>&);
+  static void getBinaryOperators (std::vector <std::string>&);
 
 private:
   void evaluatePostfixStack (const std::vector <std::pair <std::string, Lexer::Type> >&, Variant&) const;

@@ -225,6 +225,16 @@ void Eval::getOperators (std::vector <std::string>& all)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Static.
+void Eval::getBinaryOperators (std::vector <std::string>& all)
+{
+  all.clear ();
+  for (unsigned int i = 0; i < NUM_OPERATORS; ++i)
+    if (operators[i].type == 'b')
+      all.push_back (operators[i].op);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Eval::evaluatePostfixStack (
   const std::vector <std::pair <std::string, Lexer::Type> >& tokens,
   Variant& result) const
