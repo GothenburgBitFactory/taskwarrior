@@ -129,6 +129,7 @@ private:
   bool disqualifyInsufficientTerms (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
   bool disqualifyNoOps             (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
   bool disqualifyOnlyParenOps      (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
+  bool disqualifyFirstLastBinary   (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
 
 public:
   std::multimap <std::string, std::string> _entities;

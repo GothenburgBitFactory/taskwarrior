@@ -666,7 +666,8 @@ void CLI::addArg (const std::string& arg)
 
     if (disqualifyInsufficientTerms (lexemes) ||
         disqualifyNoOps             (lexemes) ||
-        disqualifyOnlyParenOps      (lexemes))
+        disqualifyOnlyParenOps      (lexemes) ||
+        disqualifyFirstLastBinary   (lexemes))
     {
       _original_args.push_back (raw);
     }
@@ -2370,4 +2371,20 @@ bool CLI::disqualifyOnlyParenOps (
 
   return opCount == opParenCount;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::disqualifyFirstLastBinary (
+  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+{
+  std::string dummy;
+  if (canonicalize (dummy, "binary_operator", lexemes[0].first))
+    return true;
+
+  if (lexemes.size () > 1 &&
+      canonicalize (dummy, "binary_operator", lexemes[lexemes.size () - 1].first))
+    return true;
+
+  return false;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
