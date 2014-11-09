@@ -220,6 +220,10 @@ int Context::initialize (int argc, const char** argv)
     for (op = operators.begin (); op != operators.end (); ++op)
       cli.entity ("operator", *op);
 
+    Eval::getBinaryOperators (operators);
+    for (op = operators.begin (); op != operators.end (); ++op)
+      cli.entity ("binary_operator", *op);
+
     ////////////////////////////////////////////////////////////////////////////
     //
     // [6] Complete the Context initialization.
