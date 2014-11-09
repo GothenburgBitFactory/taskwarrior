@@ -27,7 +27,6 @@
 #include <cmake.h>
 #include <sstream>
 #include <algorithm>
-#include <iostream> // TODO Remove.
 #include <Context.h>
 #include <Nibbler.h>
 #include <Lexer.h>
@@ -429,15 +428,15 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
     findIDs ();
     findUUIDs ();
     insertIDExpr ();
-    desugarTags ();
+    desugarFilterTags ();
     findStrayModifications ();
-    desugarAttributes ();
-    desugarAttributeModifiers ();
-    desugarPatterns ();
+    desugarFilterAttributes ();
+    desugarFilterAttributeModifiers ();
+    desugarFilterPatterns ();
     findOperators ();
     findAttributes ();
     insertJunctions ();
-    desugarPlainArgs ();
+    desugarFilterPlainArgs ();
 
     // Decompose the elements for MODIFICATIONs.
     decomposeModAttributes ();
@@ -887,7 +886,7 @@ bool CLI::exactMatch (
 ////////////////////////////////////////////////////////////////////////////////
 // +tag --> tags _hastag_ tag
 // -tag --> tags _notag_ tag
-void CLI::desugarTags ()
+void CLI::desugarFilterTags ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
@@ -934,7 +933,7 @@ void CLI::desugarTags ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze desugarTags"));
+      context.debug (context.cli.dump ("CLI::analyze desugarFilterTags"));
   }
 }
 
@@ -966,7 +965,7 @@ void CLI::findStrayModifications ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>:['"][<value>]['"] --> name = value
-void CLI::desugarAttributes ()
+void CLI::desugarFilterAttributes ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
@@ -1069,13 +1068,13 @@ void CLI::desugarAttributes ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze desugarAttributes"));
+      context.debug (context.cli.dump ("CLI::analyze desugarFilterAttributes"));
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // <name>.[~]<mod>[:=]['"]<value>['"] --> name <op> value
-void CLI::desugarAttributeModifiers ()
+void CLI::desugarFilterAttributeModifiers ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
@@ -1253,13 +1252,13 @@ void CLI::desugarAttributeModifiers ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze desugarAttributeModifiers"));
+      context.debug (context.cli.dump ("CLI::analyze desugarFilterAttributeModifiers"));
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // /pattern/ --> description ~ 'pattern'
-void CLI::desugarPatterns ()
+void CLI::desugarFilterPatterns ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
@@ -1303,7 +1302,7 @@ void CLI::desugarPatterns ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze desugarPatterns"));
+      context.debug (context.cli.dump ("CLI::analyze desugarFilterPatterns"));
   }
 }
 
@@ -1606,7 +1605,7 @@ void CLI::insertIDExpr ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CLI::desugarPlainArgs ()
+void CLI::desugarFilterPlainArgs ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
@@ -1650,7 +1649,7 @@ void CLI::desugarPlainArgs ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze desugarPlainArgs"));
+      context.debug (context.cli.dump ("CLI::analyze desugarFilterPlainArgs"));
   }
 }
 
