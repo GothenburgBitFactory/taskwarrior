@@ -1128,6 +1128,7 @@ void CLI::desugarFilterAttributeModifiers ()
 
                 A op ("argAttmod", "");
                 op.tag ("FILTER");
+                op.tag ("OP");
 
                 A rhs ("argAttMod", "");
                 rhs.tag ("FILTER");
@@ -1135,77 +1136,66 @@ void CLI::desugarFilterAttributeModifiers ()
                 if (modifier == "before" || modifier == "under" || modifier == "below")
                 {
                   op.attribute ("raw", "<");
-                  op.tag ("OP");
                   rhs.attribute ("raw", value);
                   rhs.tag ("LITERAL");
                 }
                 else if (modifier == "after" || modifier == "over" || modifier == "above")
                 {
                   op.attribute ("raw", ">");
-                  op.tag ("OP");
                   rhs.attribute ("raw", value);
                   rhs.tag ("LITERAL");
                 }
                 else if (modifier == "none")
                 {
                   op.attribute ("raw", "==");
-                  op.tag ("OP");
                   rhs.attribute ("raw", "''");
                   rhs.tag ("LITERAL");
                 }
                 else if (modifier == "any")
                 {
                   op.attribute ("raw", "!=");
-                  op.tag ("OP");
                   rhs.attribute ("raw", "''");
                   rhs.tag ("LITERAL");
                 }
                 else if (modifier == "is" || modifier == "equals")
                 {
                   op.attribute ("raw", "==");
-                  op.tag ("OP");
                   rhs.attribute ("raw", value);
                   rhs.tag ("LITERAL");
                 }
                 else if (modifier == "isnt" || modifier == "not")
                 {
                   op.attribute ("raw", "!=");
-                  op.tag ("OP");
                   rhs.attribute ("raw", value);
                   rhs.tag ("LITERAL");
                 }
                 else if (modifier == "has" || modifier == "contains")
                 {
                   op.attribute ("raw", "~");
-                  op.tag ("OP");
-                  rhs.attribute ("raw", value);
+                  rhs.attribute ("raw", "'" + value + "'");
                   rhs.tag ("LITERAL");
                 }
                 else if (modifier == "hasnt")
                 {
                   op.attribute ("raw", "!~");
-                  op.tag ("OP");
-                  rhs.attribute ("raw", value);
+                  rhs.attribute ("raw", "'" + value + "'");
                   rhs.tag ("LITERAL");
                 }
                 else if (modifier == "startswith" || modifier == "left")
                 {
                   op.attribute ("raw", "~");
-                  op.tag ("OP");
                   rhs.attribute ("raw", "'^" + value + "'");
                   rhs.tag ("REGEX");
                 }
                 else if (modifier == "endswith" || modifier == "right")
                 {
                   op.attribute ("raw", "~");
-                  op.tag ("OP");
                   rhs.attribute ("raw", "'" + value + "$'");
                   rhs.tag ("REGEX");
                 }
                 else if (modifier == "word")
                 {
                   op.attribute ("raw", "~");
-                  op.tag ("OP");
 #if defined (DARWIN)
                   rhs.attribute ("raw", value);
 #elif defined (SOLARIS)
@@ -1218,7 +1208,6 @@ void CLI::desugarFilterAttributeModifiers ()
                 else if (modifier == "noword")
                 {
                   op.attribute ("raw", "!~");
-                  op.tag ("OP");
 #if defined (DARWIN)
                   rhs.attribute ("raw", value);
 #elif defined (SOLARIS)
