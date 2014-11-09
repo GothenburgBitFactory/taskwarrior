@@ -647,11 +647,14 @@ void CLI::addArg (const std::string& arg)
     _original_args.push_back (raw);
   }
 
-  // Lex the argument, but apply a series of diqualifying tests.
+
+  // How often have I said to you that when you have eliminated the impossible,
+  // whatever remains, however improbable, must be the truth?
   else
   {
-    // Lex each argument.  If there are multiple lexemes, create sub branches,
-    // otherwise no change.
+    // Lex each remaining argument.  The apply a series of disqualifying tests
+    // that cause the lexemes to be ignored, and the original arugment used
+    // intact.
     std::string lexeme;
     Lexer::Type type;
     Lexer lex (raw);
@@ -661,11 +664,9 @@ void CLI::addArg (const std::string& arg)
     while (lex.token (lexeme, type))
       lexemes.push_back (std::pair <std::string, Lexer::Type> (lexeme, type));
 
-    // TODO First or last term is a binary operator
-    // TODO Only operators are parentheses
-
     if (disqualifyInsufficientTerms (lexemes) ||
-        disqualifyNoOps (lexemes))
+        disqualifyNoOps             (lexemes) ||
+        disqualifyOnlyParenOps      (lexemes))
     {
       _original_args.push_back (raw);
     }
@@ -2349,4 +2350,24 @@ bool CLI::disqualifyNoOps (
   return ! foundOP;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::disqualifyOnlyParenOps (
+  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+{
+  int opCount      = 0;
+  int opParenCount = 0;
+
+  std::vector <std::pair <std::string, Lexer::Type> >::const_iterator l;
+  for (l = lexemes.begin (); l != lexemes.end (); ++l)
+    if (l->second == Lexer::typeOperator)
+    {
+      ++opCount;
+
+      if (l->first == "(" ||
+          l->first == ")")
+        ++opParenCount;
+    }
+
+  return opCount == opParenCount;
+}
 ////////////////////////////////////////////////////////////////////////////////
