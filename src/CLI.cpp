@@ -629,6 +629,7 @@ void CLI::addArg (const std::string& arg)
   if (isTerminator (raw))           // --
     _terminated = true;
 
+  // This is the case where the argument should not be lexed.
   if (_terminated            ||
       isRCOverride     (raw) ||     // rc:<file>
       isConfigOverride (raw) ||     // rc.<attr>:<value>
@@ -646,7 +647,7 @@ void CLI::addArg (const std::string& arg)
     _original_args.push_back (raw);
   }
 
-  // Lex, but only use lexemes if an operator is found in there.
+  // Lex the argument, but apply a series of diqualifying tests.
   else
   {
     // Lex each argument.  If there are multiple lexemes, create sub branches,
@@ -660,24 +661,19 @@ void CLI::addArg (const std::string& arg)
     while (lex.token (lexeme, type))
       lexemes.push_back (std::pair <std::string, Lexer::Type> (lexeme, type));
 
-    bool foundOP = false;
-    std::vector <std::pair <std::string, Lexer::Type> >::iterator l;
-    for (l = lexemes.begin (); l != lexemes.end (); ++l)
-      if (l->second == Lexer::typeOperator)
-        foundOP = true;
+    // TODO First or last term is a binary operator
+    // TODO Only operators are parentheses
 
-    // This one looks interesting.
-    if (lexemes.size () > 2 &&
-        foundOP)
+    if (disqualifyInsufficientTerms (lexemes) ||
+        disqualifyNoOps (lexemes))
     {
-      for (l = lexemes.begin (); l != lexemes.end (); ++l)
-      {
-        _original_args.push_back (l->first);
-      }
+      _original_args.push_back (raw);
     }
     else
     {
-      _original_args.push_back (raw);
+      std::vector <std::pair <std::string, Lexer::Type> >::iterator l;
+      for (l = lexemes.begin (); l != lexemes.end (); ++l)
+        _original_args.push_back (l->first);
     }
   }
 }
@@ -2331,6 +2327,26 @@ bool CLI::isName (const std::string& raw) const
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::disqualifyInsufficientTerms (
+  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+{
+  return lexemes.size () < 3 ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool CLI::disqualifyNoOps (
+  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+{
+  bool foundOP = false;
+  std::vector <std::pair <std::string, Lexer::Type> >::const_iterator l;
+  for (l = lexemes.begin (); l != lexemes.end (); ++l)
+    if (l->second == Lexer::typeOperator)
+      foundOP = true;
+
+  return ! foundOP;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

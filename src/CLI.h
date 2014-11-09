@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <Lexer.h>
 #include <Path.h>
 #include <File.h>
 
@@ -110,20 +111,23 @@ private:
   void decomposeModTags ();
   void decomposeModSubstitutions ();
 
-  bool isTerminator (const std::string&) const;
-  bool isRCOverride (const std::string&) const;
+  bool isTerminator     (const std::string&) const;
+  bool isRCOverride     (const std::string&) const;
   bool isConfigOverride (const std::string&) const;
-  bool isCommand (const std::string&) const;
-  bool isTag (const std::string&) const;
-  bool isUUIDList (const std::string&) const;
-  bool isUUID (const std::string&) const;
-  bool isIDSequence (const std::string&) const;
-  bool isID (const std::string&) const;
-  bool isPattern (const std::string&) const;
-  bool isSubstitution (const std::string&) const;
-  bool isAttribute (const std::string&) const;
-  bool isOperator (const std::string&) const;
-  bool isName (const std::string&) const;
+  bool isCommand        (const std::string&) const;
+  bool isTag            (const std::string&) const;
+  bool isUUIDList       (const std::string&) const;
+  bool isUUID           (const std::string&) const;
+  bool isIDSequence     (const std::string&) const;
+  bool isID             (const std::string&) const;
+  bool isPattern        (const std::string&) const;
+  bool isSubstitution   (const std::string&) const;
+  bool isAttribute      (const std::string&) const;
+  bool isOperator       (const std::string&) const;
+  bool isName           (const std::string&) const;
+
+  bool disqualifyInsufficientTerms (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
+  bool disqualifyNoOps             (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
 
 public:
   std::multimap <std::string, std::string> _entities;
