@@ -63,7 +63,7 @@ int CmdDenotate::execute (std::string& output)
     return 1;
   }
 
-  // Extract all the ORIGINAL MODIFICATION args as simple text patter.
+  // Extract all the ORIGINAL MODIFICATION args as simple text patterns.
   std::string pattern = "";
   std::vector <A>::iterator a;
   for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
@@ -106,7 +106,7 @@ int CmdDenotate::execute (std::string& output)
         break;
       }
     }
-    if (!match)
+    if (! match)
     {
       for (i = annotations.begin (); i != annotations.end (); ++i)
       {
