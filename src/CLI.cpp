@@ -385,10 +385,10 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
   {
     std::string raw = _original_args[i];
     A a ("arg", raw);
+    a.tag ("ORIGINAL");
 
     if (i == 0)
     {
-      a.tag ("ORIGINAL");
       a.tag ("BINARY");
 
       std::string basename = "task";
@@ -401,11 +401,6 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
         a.tag ("CALENDAR");
       else if (basename == "task" || basename == "tw" || basename == "t")
         a.tag ("TW");
-    }
-    else
-    {
-      A a ("arg", raw);
-      a.tag ("ORIGINAL");
     }
 
     _args.push_back (a);
