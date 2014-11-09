@@ -41,6 +41,10 @@ static Date now;
 ////////////////////////////////////////////////////////////////////////////////
 void initializeColorRules ()
 {
+  // If color is not enable/supported, short circuit.
+  if (! context.color ())
+    return;
+
   try
   {
     gsColor.clear ();

@@ -51,8 +51,8 @@ qx{../src/task rc:$rc add 'baz (qux)' 2>&1};
 
 my $output = qx{../src/task rc:$rc ls 2>&1};
 like ($output, qr/foo's bar\./, "$ut: foo's bar. --> preserved");
-like ($output, qr/foo \(bar\)/, "$ut: foo \(bar\) -- preserved");
-like ($output, qr/baz \(qux\)/, "$ut: baz \(qux\) -- preserved");
+like ($output, qr/foo \(bar\)/, "$ut: foo \(bar\) --> preserved");
+like ($output, qr/baz \(qux\)/, "$ut: baz \(qux\) --> preserved");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;

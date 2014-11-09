@@ -94,8 +94,8 @@ static const char* attributeNames[] =
 
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
-: rc_file ()
-, data_dir ()
+: rc_file ("~/.taskrc")
+, data_dir ("~/.task")
 , config ()
 , tdb2 ()
 , dom ()
@@ -127,17 +127,19 @@ int Context::initialize (int argc, const char** argv)
 
   try
   {
-    // Assume default .taskrc and .task locations.
-    assumeLocations ();
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // [1] Load the correct config file.
+    //     - Default to ~/.taskrc (ctor).
+    //     - Allow command line override rc:<file>
+    //     - Allow $TASKRC override.
+    //     - Load resultant file.
+    //     - Apply command line overrides to the config.
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
-    // The CLI parser needs all the help it can get.
-    setupEntities ();
+    CLI::getOverride (argc, argv, home_dir, rc_file);
 
-    // Scan command line for 'rc:<file>' only.
-    cli.initialize (argc, argv);                    // task arg0 arg1 ...
-    cli.getOverride (home_dir, rc_file);            // <-- <file>
-
-    // TASKRC environment variable overrides the command line.
     char* override = getenv ("TASKRC");
     if (override)
     {
@@ -145,21 +147,22 @@ int Context::initialize (int argc, const char** argv)
       header (format (STRING_CONTEXT_RC_OVERRIDE, rc_file._data));
     }
 
-    // Dump any existing values and load rc file.
     config.clear ();
     config.load (rc_file);
-    loadAliases ();
+    CLI::applyOverrides (argc, argv);
 
-    // These are useful for parsing.
-    Lexer::dateFormat            = config.get ("dateformat");
-    Variant::dateFormat          = config.get ("dateformat");
-    Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
-    Variant::searchUsingRegex    = config.getBoolean ("regex");
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // [2] Locate the data directory.
+    //     - Default to ~/.task (ctor).
+    //     - Allow command line override rc.data.location:<dir>
+    //     - Allow $TASKDATA override.
+    //     - Inform TDB2 where to find data.
+    //     - Create the rc_file and data_dir, if necessary.
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
-    // The data location, Context::data_dir, is determined from the assumed
-    // location (~/.task), or set by data.location in the config file, or
-    // overridden by rc.data.location on the command line.
-    cli.getDataLocation (data_dir);              // <-- rc.data.location=<location>
+    CLI::getDataLocation (argc, argv, data_dir);
 
     override = getenv ("TASKDATA");
     if (override)
@@ -169,51 +172,81 @@ int Context::initialize (int argc, const char** argv)
       header (format (STRING_CONTEXT_DATA_OVERRIDE, data_dir._data));
     }
 
-    // Create missing config file and data directory, if necessary.
-    cli.applyOverrides ();
-
-    // Setting the debug switch has ripple effects.
-    propagateDebug ();
-
-    // These may have changed, so reapply.
-    Lexer::dateFormat            = config.get ("dateformat");
-    Variant::dateFormat          = config.get ("dateformat");
-    Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
-    Variant::searchUsingRegex    = config.getBoolean ("regex");
-
+    tdb2.set_location (data_dir);
     createDefaultConfig ();
 
-    // Initialize the color rules, if necessary.
-    if (color ())
-      initializeColorRules ();
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // [3] Instantiate Command objects and capture entities.
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
-    // Instantiate built-in command objects.
     Command::factory (commands);
     std::map <std::string, Command*>::iterator cmd;
     for (cmd = commands.begin (); cmd != commands.end (); ++cmd)
     {
       cli.entity ("cmd", cmd->first);
+      cli.entity ((cmd->second->read_only () ? "readcmd" : "writecmd"), cmd->first);
 
       if (cmd->first[0] == '_')
         cli.entity ("helper", cmd->first);
-
-      cli.entity ((cmd->second->read_only () ? "readcmd" : "writecmd"), cmd->first);
     }
 
-    // Instantiate built-in column objects.
-    Column::factory (columns);
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // [4] Instantiate Column objects and capture entities.
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
-    // Extend the fixed list of attribute names with any dynamic ones.
+    Column::factory (columns);
     std::map <std::string, Column*>::iterator col;
     for (col = columns.begin (); col != columns.end (); ++col)
       cli.entity ("attribute", col->first);
 
-    staticInitialization ();                        // Decouple code from Context.
-    cli.analyze (true, true);                       // Parse all elements, strict mode.
+    cli.entity ("pseudo", "limit");
 
-    tdb2.set_location (data_dir);                   // Prepare the task database.
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // [5] Capture modifier and operator entities.
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
-    // First opportunity to run a hook script.
+    for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
+      cli.entity ("modifier", modifierNames[i]);
+
+    std::vector <std::string> operators;
+    Eval::getOperators (operators);
+    std::vector <std::string>::iterator op;
+    for (op = operators.begin (); op != operators.end (); ++op)
+      cli.entity ("operator", *op);
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // [6] Complete the Context initialization.
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    initializeColorRules ();
+    staticInitialization ();
+    propagateDebug ();
+    loadAliases ();
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // [7] Parse the command line.
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
+    // Scan command line for 'rc:<file>' only.
+    cli.initialize (argc, argv);
+    cli.analyze (true, true);
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // [8] Run on.launch hooks.
+    //
+    ////////////////////////////////////////////////////////////////////////////
+
     hooks.initialize ();
   }
 
@@ -589,8 +622,10 @@ void Context::staticInitialization ()
   Task::defaultProject      = config.get ("default.project");
   Task::defaultPriority     = config.get ("default.priority");
   Task::defaultDue          = config.get ("default.due");
-  Task::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
-  Task::regex               = config.getBoolean ("regex");
+
+  Task::searchCaseSensitive = Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
+  Task::regex               = Variant::searchUsingRegex    = config.getBoolean ("regex");
+  Lexer::dateFormat         = Variant::dateFormat          = config.get ("dateformat");
 
   std::map <std::string, Column*>::iterator i;
   for (i = columns.begin (); i != columns.end (); ++i)
@@ -614,47 +649,11 @@ void Context::staticInitialization ()
   // Tag- and project-specific coefficients.
   std::vector <std::string> all;
   config.all (all);
-
   std::vector <std::string>::iterator var;
   for (var = all.begin (); var != all.end (); ++var)
-  {
     if (var->substr (0, 13) == "urgency.user." ||
         var->substr (0, 12) == "urgency.uda.")
       Task::coefficients[*var] = config.getReal (*var);
-  }
-
-  Lexer::dateFormat            = config.get ("dateformat");
-  Variant::dateFormat          = config.get ("dateformat");
-  Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Context::assumeLocations ()
-{
-  rc_file  = File      ("~/.taskrc");
-  data_dir = Directory ("~/.task");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Context::setupEntities ()
-{
-  // Entities: Pseudo-attributes.  Hard-coded.
-  cli.entity ("pseudo", "limit");
-
-  // Entities: Attributes.
-  for (unsigned int i = 0; i < NUM_ATTRIBUTE_NAMES; ++i)
-    cli.entity ("attribute", attributeNames[i]);
-
-  // Entities: Modifiers.
-  for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
-    cli.entity ("modifier", modifierNames[i]);
-
-  // Entities: Operators.
-  std::vector <std::string> operators;
-  Eval::getOperators (operators);
-  std::vector <std::string>::iterator op;
-  for (op = operators.begin (); op != operators.end (); ++op)
-    cli.entity ("operator", *op);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

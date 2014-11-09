@@ -74,8 +74,6 @@ public:
 
 private:
   void staticInitialization ();
-  void assumeLocations ();
-  void setupEntities ();
   void createDefaultConfig ();
   void updateXtermTitle ();
   void updateVerbosity ();

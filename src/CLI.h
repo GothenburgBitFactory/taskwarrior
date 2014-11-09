@@ -65,6 +65,9 @@ class CLI
 {
 public:
   static int minimumMatchLength;
+  static void getOverride (int, const char**, std::string&, File&);
+  static void getDataLocation (int, const char**, Path&);
+  static void applyOverrides (int, const char**);
 
 public:
   CLI ();
@@ -75,8 +78,6 @@ public:
   void add (const std::string&);
   void analyze (bool parse = true, bool strict = false);
   void applyOverrides ();
-  void getOverride (std::string&, File&);
-  void getDataLocation (Path&);
   const std::string getFilter ();
   const std::vector <std::string> getWords ();
   bool canonicalize (std::string&, const std::string&, const std::string&) const;

@@ -218,6 +218,95 @@ const std::string A::dump () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Static method.
+void CLI::getOverride (int argc, const char** argv, std::string& home, File& rc)
+{
+  bool terminated = false;
+  for (int i = 1; i < argc; ++i)
+  {
+    std::string raw = argv[i];
+
+    if (raw == "--")
+      terminated = true;
+
+    if (! terminated      &&
+        raw.length () > 3 &&
+        raw.substr (0, 3) == "rc:")
+    {
+      rc = raw.substr (3);
+
+      home = ".";
+      std::string::size_type last_slash = rc._data.rfind ("/");
+      if (last_slash != std::string::npos)
+        home = rc.parent ();
+
+      context.header (format (STRING_PARSER_ALTERNATE_RC, rc._data));
+
+      // Keep looping, because if there are multiple rc:file arguments, the last
+      // one should dominate.
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Look for CONFIG data.location and initialize a Path object.
+void CLI::getDataLocation (int argc, const char** argv, Path& data)
+{
+  std::string location = context.config.get ("data.location");
+  if (location != "")
+    data = location;
+
+  bool terminated = false;
+  for (int i = 1; i < argc; ++i)
+  {
+    std::string raw = argv[i];
+
+    if (raw == "--")
+      terminated = true;
+
+    if (! terminated       &&
+        raw.length () > 17 &&
+        raw.substr (0, 16) == "rc.data.location")
+    {
+      data = Directory (raw.substr (17));
+      context.header (format (STRING_PARSER_ALTERNATE_DATA, (std::string) data));
+
+      // Keep looping, because if there are multiple rc:file arguments, the last
+      // one should dominate.
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI::applyOverrides (int argc, const char** argv)
+{
+  bool terminated = false;
+  for (int i = 1; i < argc; ++i)
+  {
+    std::string raw = argv[i];
+
+    if (raw == "--")
+      terminated = true;
+
+    if (! terminated      &&
+        raw.length () > 3 &&
+        raw.substr (0, 3) == "rc.")
+    {
+      std::string::size_type sep = raw.find ('=', 3);
+      if (sep == std::string::npos)
+        sep = raw.find (':', 3);
+      if (sep != std::string::npos)
+      {
+        std::string name  = raw.substr (3, sep - 3);
+        std::string value = raw.substr (sep + 1);
+        context.config.set (name, value);
+        context.footnote (format (STRING_PARSER_OVERRIDE_RC, name, value));
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 CLI::CLI ()
 : _strict (false)
 {
@@ -374,54 +463,6 @@ void CLI::applyOverrides ()
       context.config.set (name, value);
       context.footnote (format (STRING_PARSER_OVERRIDE_RC, name, value));
     }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CLI::getOverride (std::string& home, File& rc)
-{
-  std::vector <A>::const_iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
-  {
-    if (a->hasTag ("RC"))
-    {
-      rc = File (a->attribute ("file"));
-      home = rc;
-
-      std::string::size_type last_slash = rc._data.rfind ("/");
-      if (last_slash != std::string::npos)
-        home = rc._data.substr (0, last_slash);
-      else
-        home = ".";
-
-      context.header (format (STRING_PARSER_ALTERNATE_RC, rc._data));
-
-      // Keep looping, because if there are multiple rc:file arguments, the last
-      // one should dominate.
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Look for CONFIG data.location and initialize a Path object.
-void CLI::getDataLocation (Path& data)
-{
-  std::string location = context.config.get ("data.location");
-  if (location != "")
-    data = location;
-
-  std::vector <A>::const_iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
-  {
-    if (a->hasTag ("CONFIG") &&
-        a->attribute ("name") == "data.location")
-    {
-      data = Directory (a->attribute ("value"));
-      context.header (format (STRING_PARSER_ALTERNATE_DATA, (std::string) data));
-    }
-
-    // Keep looping, because if there are multiple overrides, the last one
-    // should dominate.
   }
 }
 
