@@ -83,8 +83,8 @@ static struct
   {  "or",        4,         'b',  'l' },    // Disjunction
   {  "xor",       3,         'b',  'l' },    // Disjunction
 
-  {  "(",         0,         'b',  'l' },    // Precedence start
-  {  ")",         0,         'b',  'l' },    // Precedence end
+  {  "(",         0,         '_',  'l' },    // Precedence start
+  {  ")",         0,         '_',  'l' },    // Precedence end
 };
 
 #define NUM_OPERATORS (sizeof (operators) / sizeof (operators[0]))
