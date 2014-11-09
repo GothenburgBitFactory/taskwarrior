@@ -21,8 +21,7 @@ class Test1418(TestCase):
         self.assertIn(description, out)
 
     def search_task_pattern(self, description):
-        # TODO escape any "/" in description - check comments on bug 1418
-        command = ("/" + description + "/",)
+        command = ("/" + description.replace("/", "\\/") + "/",)
         code, out, err = self.t(command)
         self.assertIn(description, out)
 
