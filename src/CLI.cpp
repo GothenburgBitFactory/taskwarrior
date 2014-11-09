@@ -1672,10 +1672,11 @@ void CLI::findOperators ()
   for (a = _args.begin (); a != _args.end (); ++a)
     if (a->hasTag ("FILTER"))
       if (std::find (options.begin (), options.end (), a->attribute ("raw")) != options.end ())
-      {
-        a->tag ("OP");
-        changes = true;
-      }
+        if (! a->hasTag ("OP"))
+        {
+          a->tag ("OP");
+          changes = true;
+        }
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
