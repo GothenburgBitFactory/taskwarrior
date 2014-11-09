@@ -666,8 +666,9 @@ void CLI::addArg (const std::string& arg)
 
     if (disqualifyInsufficientTerms (lexemes) ||
         disqualifyNoOps             (lexemes) ||
-        disqualifyOnlyParenOps      (lexemes) ||
-        disqualifyFirstLastBinary   (lexemes))
+//        disqualifyOnlyParenOps      (lexemes) ||
+        disqualifyFirstLastBinary   (lexemes) ||
+        disqualifySugarFree         (lexemes))
     {
       _original_args.push_back (raw);
     }
@@ -2373,18 +2374,43 @@ bool CLI::disqualifyOnlyParenOps (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Disqualify terms when there are are binary operators at either end, as long
+// as there are no operators in between, which includes syntactic sugar that
+// hides operators.
 bool CLI::disqualifyFirstLastBinary (
   const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
 {
+  bool firstBinary = false;
+  bool lastBinary  = false;
+
   std::string dummy;
   if (canonicalize (dummy, "binary_operator", lexemes[0].first))
-    return true;
+    firstBinary = true;
 
   if (lexemes.size () > 1 &&
       canonicalize (dummy, "binary_operator", lexemes[lexemes.size () - 1].first))
-    return true;
+    lastBinary = true;
 
-  return false;
+  return firstBinary || lastBinary;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Disqualify terms when there operators hidden by syntactic sugar.
+bool CLI::disqualifySugarFree (
+  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+{
+  bool sugared = true;
+  for (unsigned int i = 1; i < lexemes.size () - 1; ++i)
+    if (isTag          (lexemes[i].first) ||
+        isUUIDList     (lexemes[i].first) ||
+        isUUID         (lexemes[i].first) ||
+        isIDSequence   (lexemes[i].first) ||
+        isID           (lexemes[i].first) ||
+        isPattern      (lexemes[i].first) ||
+        isAttribute    (lexemes[i].first))
+      sugared = true;
+
+  return ! sugared;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
