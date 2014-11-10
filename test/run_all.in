@@ -33,7 +33,7 @@ else
   if [ -x "$VRAMSTEG" ]; then
     BAR=1
     COUNT=0
-    TOTAL=`ls ${TESTBLOB} | wc -l`
+    TOTAL=`find -maxdepth 1 -path "${TESTBLOB}" -perm /u+x | wc -l`
     START=`$VRAMSTEG --now`
   fi
 
