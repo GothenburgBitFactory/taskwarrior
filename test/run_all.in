@@ -39,16 +39,20 @@ else
 
   for i in ${TESTBLOB}
   do
-    echo '#' $i >>all.log
+    if [ -x "$i" ]; then
+      echo '#' $i >>all.log
 
-    if [ $BAR -eq 1 ]; then
-      $VRAMSTEG --label 'All tests' --min 0 --max $TOTAL --current $COUNT --percentage --start $START --estimate
-      COUNT=`expr $COUNT + 1`
-    fi
+      if [ $BAR -eq 1 ]; then
+        $VRAMSTEG --label 'All tests' --min 0 --max $TOTAL --current $COUNT --percentage --start $START --estimate
+        COUNT=`expr $COUNT + 1`
+      fi
 
-    $i >> all.log 2>&1
-    if [ $? -ne 0 ]; then
-      rc=1
+      $i >> all.log 2>&1
+      if [ $? -ne 0 ]; then
+        rc=1
+      fi
+    else
+      echo "# Skipping $(basename $i) execute bit not set" >> all.log 2>&1
     fi
   done
 
