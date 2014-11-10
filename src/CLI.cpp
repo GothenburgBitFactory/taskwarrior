@@ -647,9 +647,8 @@ void CLI::addArg (const std::string& arg)
     _original_args.push_back (raw);
   }
 
-
-  // How often have I said to you that when you have eliminated the impossible,
-  // whatever remains, however improbable, must be the truth?
+  // The argument may require lexing.  Lex anyway, and analyze before comitting
+  // that.
   else
   {
     // Lex each remaining argument.  The apply a series of disqualifying tests
@@ -674,6 +673,8 @@ void CLI::addArg (const std::string& arg)
     }
     else
     {
+      // How often have I said to you that when you have eliminated the
+      // impossible, whatever remains, however improbable, must be the truth?
       std::vector <std::pair <std::string, Lexer::Type> >::iterator l;
       for (l = lexemes.begin (); l != lexemes.end (); ++l)
         _original_args.push_back (l->first);
@@ -917,7 +918,7 @@ void CLI::desugarFilterTags ()
         op.tag ("FILTER");
         reconstructed.push_back (op);
 
-        A right ("argTag", tag);
+        A right ("argTag", "'" + tag + "'");
         right.tag ("LITERAL");
         right.tag ("FILTER");
         reconstructed.push_back (right);
@@ -1160,13 +1161,13 @@ void CLI::desugarFilterAttributeModifiers ()
                 else if (modifier == "is" || modifier == "equals")
                 {
                   op.attribute ("raw", "==");
-                  rhs.attribute ("raw", value);
+                  rhs.attribute ("raw", "'" + value + "'");
                   rhs.tag ("LITERAL");
                 }
                 else if (modifier == "isnt" || modifier == "not")
                 {
                   op.attribute ("raw", "!=");
-                  rhs.attribute ("raw", value);
+                  rhs.attribute ("raw", "'" + value + "'");
                   rhs.tag ("LITERAL");
                 }
                 else if (modifier == "has" || modifier == "contains")
