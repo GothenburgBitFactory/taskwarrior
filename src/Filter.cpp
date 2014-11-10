@@ -205,41 +205,48 @@ bool Filter::pendingOnly ()
   // - no 'deleted'
   // - no 'xor'
   // - no 'or'
-  int countStatus  = 0;
-  int countPending = 0;
-  int countId      = 0;
-  int countOr      = 0;
-  int countXor     = 0;
-
-  // TODO Use an int index, and ensure that 'status', '==' and 'pending/waiting'
-  //      are consecutive.
+  int countStatus    = 0;
+  int countPending   = 0;
+  int countWaiting   = 0;
+  int countRecurring = 0;
+  int countId        = 0;
+  int countOr        = 0;
+  int countXor       = 0;
+  int countNot       = 0;
 
   std::vector <A>::iterator a;
   for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
   {
     if (a->hasTag ("FILTER"))
     {
-      if (a->hasTag ("ID"))                                              ++countId;
-      if (a->hasTag ("OP")        && a->attribute ("raw")  == "or")      ++countOr;
-      if (a->hasTag ("OP")        && a->attribute ("raw")  == "xor")     ++countXor;
-      if (a->hasTag ("ATTRIBUTE") && a->attribute ("name") == "status")  ++countStatus;
-      if (                           a->attribute ("raw")  == "pending") ++countPending;
+      if (a->hasTag ("ID"))                                                ++countId;
+      if (a->hasTag ("OP")        && a->attribute ("raw")  == "or")        ++countOr;
+      if (a->hasTag ("OP")        && a->attribute ("raw")  == "xor")       ++countXor;
+      if (a->hasTag ("OP")        && a->attribute ("raw")  == "not")       ++countNot;
+      if (a->hasTag ("ATTRIBUTE") && a->attribute ("name") == "status")    ++countStatus;
+      if (                           a->attribute ("raw")  == "pending")   ++countPending;
+      if (                           a->attribute ("raw")  == "waiting")   ++countWaiting;
+      if (                           a->attribute ("raw")  == "recurring") ++countRecurring;
     }
   }
 
-  // Use of 'or' or 'xor' means the potential for alternation.
-  if (countOr || countXor)
+  if (countOr || countXor || countNot)
     return false;
 
-  // If the filter does not contain id or status terms, read both files.
-  if (countId == 0 && countStatus == 0)
-    return false;
+  if (countStatus)
+  {
+    if (!countPending && !countWaiting && !countRecurring)
+      return false;
 
-  // Only one 'status == pending' is allowed.
-  if (countStatus != 1 || countPending != 1)
-    return false;
+    return true;
+  }
 
-  return true;
+  if (countId)
+  {
+    return true;
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
