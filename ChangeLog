@@ -81,6 +81,8 @@
 - TW-288 `task edit` mangles descriptions with embedded newlines (thanks to
          Kevin Ballard).
 - TW-294 Display UUID of task created by add (thanks to John West).
+- TW-295 Replacing annotations or descriptions which contain '/'s (thanks to
+         Johannes Schlatow).
 - TW-296 urgency of blocked task should affect urgency of blocking task (thanks
          to Sitaram Chamarty).
 - TW-306 Wrong date format in burndown view (thanks to Michele Santullo).
