@@ -255,7 +255,10 @@ int Context::initialize (int argc, const char** argv)
       if (combined.length ())
         combined += ' ';
 
-      combined += a->attribute ("raw");
+      if (a->attribute ("canonical") != "")
+        combined += a->attribute ("canonical");
+      else
+        combined += a->attribute ("raw");
 
       if (a->hasTag ("DEFAULT"))
         foundDefault = true;
