@@ -53,16 +53,16 @@ qx{../src/task rc:$rc add priority:H project:A -- one/1 2>&1};
 qx{../src/task rc:$rc add +tag1 +tag2 two 2>&1};
 
 # trip 1.
-qx{../src/task rc:$rc export > ./roundtrip1.json 2>/dev/null};
-ok (-s './roundtrip1.json' > 0, "$ut: roundtrip1.json is not empty");
+qx{../src/task rc:$rc export > roundtrip1.json 2>/dev/null};
+ok (-s 'roundtrip1.json' > 0, "$ut: roundtrip1.json is not empty");
 unlink 'pending.data', 'completed.data', 'undo.data', 'backlog.data';
-qx{../src/task rc:$rc import ./roundtrip1.json 2>/dev/null};
+qx{../src/task rc:$rc import roundtrip1.json 2>/dev/null};
 
 # trip 2.
-qx{../src/task rc:$rc export > ./roundtrip2.json 2>/dev/null};
-ok (-s './roundtrip2.json' > 0, "$ut: roundtrip2.json is not empty");
+qx{../src/task rc:$rc export > roundtrip2.json 2>/dev/null};
+ok (-s 'roundtrip2.json' > 0, "$ut: roundtrip2.json is not empty");
 unlink 'pending.data', 'completed.data', 'undo.data', 'backlog.data';
-qx{../src/task rc:$rc import ./roundtrip2.json 2>/dev/null};
+qx{../src/task rc:$rc import roundtrip2.json 2>/dev/null};
 
 # Examine.
 #
@@ -76,7 +76,7 @@ like ($output, qr/1\s+\d+\/\d+\/\d+.+\sH\s+A\s+one\/1/,    "$ut: 2 round trips t
 like ($output, qr/2\s+\d+\/\d+\/\d+.+\stag1\s+tag2\s+two/, "$ut: 2 round trips task 2 identical");
 
 # Compare the actual JSON files.
-$output = qx{diff ./roundtrip1.json ./roundtrip2.json 2>&1};
+$output = qx{diff roundtrip1.json roundtrip2.json 2>&1};
 like ($output, qr/^$/, "$ut: JSON files roundtrip1.json and roundtrip2.json identical");
 
 # Cleanup.
