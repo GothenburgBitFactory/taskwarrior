@@ -324,6 +324,7 @@ int CmdSync::execute (std::string& output)
   return status;
 }
 
+#ifdef HAVE_LIBGNUTLS
 ////////////////////////////////////////////////////////////////////////////////
 bool CmdSync::send (
   const std::string& to,
@@ -334,7 +335,6 @@ bool CmdSync::send (
   const Msg& request,
   Msg& response)
 {
-#ifdef HAVE_LIBGNUTLS
   std::string::size_type colon = to.rfind (':');
   if (colon == std::string::npos)
     throw format (STRING_CMD_SYNC_BAD_SERVER, to);
@@ -367,8 +367,8 @@ bool CmdSync::send (
   }
 
   // Indicate message failed.
-#endif
   return false;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
