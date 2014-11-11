@@ -1799,9 +1799,6 @@ void CLI::injectDefaults ()
       std::string defaultCommand = context.config.get ("default.command");
       if (defaultCommand != "")
       {
-        if (context.config.getBoolean ("debug"))
-          context.debug (std::string ("No command or sequence found - assuming default.command '") + defaultCommand + "'.");
-
         // Split the defaultCommand into separate args.
         std::vector <std::string> tokens;
         Lexer::token_split (tokens, defaultCommand);
@@ -1825,18 +1822,6 @@ void CLI::injectDefaults ()
         }
 
         _args = reconstructed;
-
-        // Extract a recomposed command line.
-        std::string combined;
-        for (a = _args.begin (); a != _args.end (); ++a)
-        {
-          if (combined.length ())
-            combined += ' ';
-
-          combined += a->attribute ("raw");
-        }
-
-        context.header ("[" + combined + "]");
       }
 
       // Only an error in strict mode.
@@ -1847,10 +1832,6 @@ void CLI::injectDefaults ()
     }
     else
     {
-      if (context.config.getBoolean ("debug"))
-        context.debug ("Sequence but no command found - assuming 'information' command.");
-      context.header (STRING_ASSUME_INFO);
-
       A info ("argDefault", "information");
       info.tag ("ASSUMED");
       _args.push_back (info);

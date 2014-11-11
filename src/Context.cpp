@@ -245,6 +245,24 @@ int Context::initialize (int argc, const char** argv)
     cli.initialize (argc, argv);
     cli.analyze (true, true);
 
+    // Extract a recomposed command line.
+    bool foundDefault = false;
+    std::string combined;
+    std::vector <A>::const_iterator a;
+    for (a = cli._args.begin (); a != cli._args.end (); ++a)
+    {
+      if (combined.length ())
+        combined += ' ';
+
+      combined += a->attribute ("raw");
+
+      if (a->hasTag ("DEFAULT"))
+        foundDefault = true;
+    }
+
+    if (foundDefault)
+      header ("[" + combined + "]");
+
     ////////////////////////////////////////////////////////////////////////////
     //
     // [8] Run on.launch hooks.
