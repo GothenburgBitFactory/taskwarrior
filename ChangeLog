@@ -173,6 +173,8 @@
 - TW-1424 Using a date of '1824days' (in the future) fails (thanks to Black Ops
           Testing).
 - TW-1428 Add support for color.uda.<name>.<value> rules.
+- TW-1429 Filtering of tags containing special words does not work (thanks to
+          Johannes Schlatow).
 - TW-1434 Parser issue in description.contains (thanks to Ralph Bean).
 - TW-1436 Parser hangs when multiple slashes are used.
 - TW-1437 taskd.trust has a bad default value.
