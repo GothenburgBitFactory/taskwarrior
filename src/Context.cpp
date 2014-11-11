@@ -247,6 +247,7 @@ int Context::initialize (int argc, const char** argv)
 
     // Extract a recomposed command line.
     bool foundDefault = false;
+    bool foundAssumed = false;
     std::string combined;
     std::vector <A>::const_iterator a;
     for (a = cli._args.begin (); a != cli._args.end (); ++a)
@@ -258,10 +259,16 @@ int Context::initialize (int argc, const char** argv)
 
       if (a->hasTag ("DEFAULT"))
         foundDefault = true;
+
+      if (a->hasTag ("ASSUMED"))
+        foundAssumed = true;
     }
 
     if (foundDefault)
       header ("[" + combined + "]");
+
+    if (foundAssumed)
+      header (STRING_ASSUME_INFO);
 
     ////////////////////////////////////////////////////////////////////////////
     //
