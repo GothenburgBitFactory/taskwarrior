@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -53,14 +53,16 @@ qx{../src/task rc:$rc add priority:H project:A -- one/1 2>&1};
 qx{../src/task rc:$rc add +tag1 +tag2 two 2>&1};
 
 # trip 1.
-qx{../src/task rc:$rc export > ./roundtrip1.json 2>&1};
-unlink 'pending.data', 'completed.data', 'undo.data';
-qx{../src/task rc:$rc rc.debug:1 import ./roundtrip1.json 2>&1};
+qx{../src/task rc:$rc export > ./roundtrip1.json 2>/dev/null};
+ok (-s './roundtrip1.json' > 0, "$ut: roundtrip1.json is not empty");
+unlink 'pending.data', 'completed.data', 'undo.data', 'backlog.data';
+qx{../src/task rc:$rc import ./roundtrip1.json 2>/dev/null};
 
 # trip 2.
-qx{../src/task rc:$rc export > ./roundtrip2.json 2>&1};
-unlink 'pending.data', 'completed.data', 'undo.data';
-qx{../src/task rc:$rc import ./roundtrip2.json 2>&1};
+qx{../src/task rc:$rc export > ./roundtrip2.json 2>/dev/null};
+ok (-s './roundtrip2.json' > 0, "$ut: roundtrip2.json is not empty");
+unlink 'pending.data', 'completed.data', 'undo.data', 'backlog.data';
+qx{../src/task rc:$rc import ./roundtrip2.json 2>/dev/null};
 
 # Examine.
 #
