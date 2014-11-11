@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Limit {1} zagnieżdżonych aliasów osiągnięty"
 #define STRING_PARSER_OVERRIDE_RC    "Nadpisanie konfiguracji rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Błąd: nierozpoznany atrybut '{1}'."
-#define STRING_PARSER_RANGE_INVERTED "Odwrócony zakres 'góra-dół' zamiast 'dół-góra'"
 #define STRING_PARSER_UUID_AFTER_COMMA "Nierozpoznany UUID po przecinku."
 #define STRING_PARSER_ALTERNATE_RC   "Wczytanie alternatywnego pliku .taskrc {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Alternatywne data.location {1}"

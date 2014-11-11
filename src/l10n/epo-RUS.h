@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Atingis la limon de {1} nest-niveloj de alinomoj."
 #define STRING_PARSER_OVERRIDE_RC    "Agorda superrego rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Eraro: nekonata atributa modifanto '{1}'."
-#define STRING_PARSER_RANGE_INVERTED "Atingopovo inversa 'maks-min' anstataŭ 'min-maks'"
 #define STRING_PARSER_UUID_AFTER_COMMA "Nekonata UUID-identigilo post komo."
 #define STRING_PARSER_ALTERNATE_RC   "Uzanta alterna .taskrc-dosiero {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Uzanta alterna data.location {1}"

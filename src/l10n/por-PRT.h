@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Limite de 'alias' em cascata atingido: {1}"
 #define STRING_PARSER_OVERRIDE_RC    "Alteração de configuração rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Erro: modificador de atributo não reconhecido '{1}'."
-#define STRING_PARSER_RANGE_INVERTED "Intervalo invertido 'alta-baixa' em vez de 'baixa-alta'"
 #define STRING_PARSER_UUID_AFTER_COMMA "UUID não reconhecido após a vírgula."
 #define STRING_PARSER_ALTERNATE_RC   "Usando o ficheiro .taskrc alternativo {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Usando data.location alternativa {1}"

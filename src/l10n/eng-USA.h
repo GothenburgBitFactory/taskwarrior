@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Nested alias limit of {1} reached."
 #define STRING_PARSER_OVERRIDE_RC    "Configuration override rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Error: unrecognized attribute modifier '{1}'."
-#define STRING_PARSER_RANGE_INVERTED "Inverted range 'high-low' instead of 'low-high'"
 #define STRING_PARSER_UUID_AFTER_COMMA "Unrecognized UUID after comma."
 #define STRING_PARSER_ALTERNATE_RC   "Using alternate .taskrc file {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Using alternate data.location {1}"

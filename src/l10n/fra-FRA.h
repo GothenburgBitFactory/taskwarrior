@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Atteignit la limite d'amboîtage des pseudonymes, {1}."
 #define STRING_PARSER_OVERRIDE_RC    "Configuration écrasée : rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Erreur : attribut de modification non reconnu '{1}'."
-#define STRING_PARSER_RANGE_INVERTED "Inverted range 'high-low' instead of 'low-high'"
 #define STRING_PARSER_UUID_AFTER_COMMA "UUID non reconnu après la virgule."
 #define STRING_PARSER_ALTERNATE_RC   "Utilise un fichier .taskrc alternatif : {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Utilise une data.location alternative : {1}"

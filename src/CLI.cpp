@@ -1379,7 +1379,10 @@ void CLI::findIDs ()
                 n_max.depleted ())
             {
               if (id_min > id_max)
-                throw std::string (STRING_PARSER_RANGE_INVERTED);
+              {
+                is_an_id = false;
+                break;
+              }
 
               ranges.push_back (std::pair <int, int> (id_min, id_max));
             }
