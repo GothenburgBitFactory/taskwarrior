@@ -44,6 +44,8 @@ New configuration options in taskwarrior 2.4.0
   - New 'color.label.sort' is used to color the column label of sort columns.
   - New 'urgency.uda.<name>.<value>' allows specific UDA values to affect
     urgency.
+  - New 'recurrence.confirmation' which allows bypassing confirmation for
+    changes to recurring tasks, by accepting them.
 
 Newly deprecated features in taskwarrior 2.4.0
 

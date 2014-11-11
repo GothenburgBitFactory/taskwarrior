@@ -171,6 +171,7 @@ int CmdShow::execute (std::string& output)
     " monthsperline"
     " nag"
     " print.empty.columns"
+    " recurrence.confirmation"
     " recurrence.indicator"
     " recurrence.limit"
     " regex"

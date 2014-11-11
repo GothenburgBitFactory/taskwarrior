@@ -103,7 +103,8 @@ int CmdDelete::execute (std::string& output)
         // Delete siblings.
         if (task->has ("parent"))
         {
-          if (confirm (STRING_CMD_DELETE_CONFIRM_R))
+          if (! context.config.getBoolean ("recurrence.confirmation") ||
+              confirm (STRING_CMD_DELETE_CONFIRM_R))
           {
             std::vector <Task> siblings = context.tdb2.siblings (*task);
             std::vector <Task>::iterator sibling;
@@ -137,7 +138,8 @@ int CmdDelete::execute (std::string& output)
         {
           std::vector <Task> children = context.tdb2.children (*task);
           if (children.size () &&
-              confirm (STRING_CMD_DELETE_CONFIRM_R))
+              (context.config.getBoolean ("recurrence.confirmation") ||
+               confirm (STRING_CMD_DELETE_CONFIRM_R)))
           {
             std::vector <Task>::iterator child;
             for (child = children.begin (); child != children.end (); ++child)

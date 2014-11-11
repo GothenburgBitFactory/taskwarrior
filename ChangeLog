@@ -176,6 +176,8 @@
 - TW-1434 Parser issue in description.contains (thanks to Ralph Bean).
 - TW-1436 Parser hangs when multiple slashes are used.
 - TW-1437 taskd.trust has a bad default value.
+- TW-1438 Configuration setting rc.confirmation=no no longer disables
+          confirmation requests (thanks to Adam Coddington).
 - TW-1441 task import continues happily if filename doesn't exist.
 - TW-1444 Tag ordering is preserved, but should be sorted in reports.
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and

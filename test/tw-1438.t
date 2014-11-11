@@ -23,7 +23,7 @@ class TestBug1438(TestCase):
         code, out, err = self.t(("list",))
         self.assertIn("Sometimes", out)
 
-        command = ("rc.confirmation=off", "2", "mod", "/Sometimes/Everytime/")
+        command = ("rc.confirmation=off", "rc.recurrence.confirmation=off", "2", "mod", "/Sometimes/Everytime/")
         code, out, err = self.t(command)
         self.assertIn("Modified 1 task", out)
         code, out, err = self.t(("list",))

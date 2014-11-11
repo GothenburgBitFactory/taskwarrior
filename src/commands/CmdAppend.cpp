@@ -90,7 +90,8 @@ int CmdAppend::execute (std::string& output)
       // Append to siblings.
       if (task->has ("parent"))
       {
-        if (confirm (STRING_CMD_APPEND_CONFIRM_R))
+        if (! context.config.getBoolean ("recurrence.confirmation") ||
+            confirm (STRING_CMD_APPEND_CONFIRM_R))
         {
           std::vector <Task> siblings = context.tdb2.siblings (*task);
           std::vector <Task>::iterator sibling;
