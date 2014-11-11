@@ -747,7 +747,6 @@
 #define STRING_INVALID_MOD           "O atributo '{1}' não permite o valor '{2}'."
 #define STRING_INVALID_SORT_COL      "A coluna '{1}' não pode ser ordenada."
 #define STRING_TLS_INIT_FAIL         "Erro a iniciar componente TLS. {1}"
-#define STRING_ERROR_MEMORY          "Problema a alocar memória."
 #define STRING_ERROR_DETAILS         "A definição 'calendar.details.report' pode apenas indicar um nome de relatório."
 
 // Feedback

@@ -747,7 +747,6 @@
 #define STRING_INVALID_MOD           "Atrybut '{1}' nie zezwala na wartość '{2}'."
 #define STRING_INVALID_SORT_COL      "Kolumna '{1}' nie jest poprawnym parametrem sortowania."
 #define STRING_TLS_INIT_FAIL         "Błąd inicjalizacji TLS."
-#define STRING_ERROR_MEMORY          "Problem z alokacją pamięci."
 #define STRING_ERROR_DETAILS         "Zmienna 'calendar.details.report' musi zawierać nazwę raportu."
 
 // Feedback
