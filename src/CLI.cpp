@@ -733,6 +733,9 @@ void CLI::aliasExpansion ()
   }
   while (action && counter++ < safetyValveDefault);
 
+  if (counter >= safetyValveDefault)
+    context.debug (format (STRING_PARSER_ALIAS_NEST, safetyValveDefault));
+
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (context.cli.dump ("CLI::analyze aliasExpansion"));
