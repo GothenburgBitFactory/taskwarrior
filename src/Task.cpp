@@ -1451,7 +1451,7 @@ void Task::validate (bool applyDefault /* = true */)
     throw std::string (STRING_TASK_VALID_BLANK);
 
   // Cannot have a recur frequency with no due date - when would it recur?
-  if (! has ("due") && has ("recur"))
+  if (has ("recur") && (! has ("due") || get ("due") == ""))
     throw std::string (STRING_TASK_VALID_REC_DUE);
 
   // Recur durations must be valid.

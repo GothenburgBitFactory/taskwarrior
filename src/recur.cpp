@@ -159,6 +159,10 @@ bool generateDueDates (Task& parent, std::vector <Date>& allDue)
 {
   // Determine due date, recur period and until date.
   Date due (parent.get_date ("due"));
+  if (due == 0)
+  {
+    return false;
+  }
   std::string recur = parent.get ("recur");
 
   bool specificEnd = false;
