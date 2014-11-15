@@ -182,6 +182,7 @@
           confirmation requests (thanks to Adam Coddington).
 - TW-1441 task import continues happily if filename doesn't exist.
 - TW-1444 Tag ordering is preserved, but should be sorted in reports.
+- TW-1460 Empty due dates lead to endless loop.
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
 - Removed deprecated 'edit.verbose' setting, in favor of the 'edit' verbosity
