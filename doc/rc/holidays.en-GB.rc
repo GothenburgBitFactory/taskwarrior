@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/en-GB/2013.json
 # http://holidata.net/en-GB/2014.json
+# http://holidata.net/en-GB/2015.json
 #
 # Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 #
@@ -28,34 +28,50 @@
 ###############################################################################
 
 holiday.en-GB1.name=New Year's Day
-holiday.en-GB1.date=20130101
+holiday.en-GB1.date=20140101
 holiday.en-GB2.name=Good Friday
-holiday.en-GB2.date=20130329
+holiday.en-GB2.date=20140418
 holiday.en-GB3.name=Easter Monday
-holiday.en-GB3.date=20130401
+holiday.en-GB3.date=20140421
 holiday.en-GB4.name=Early May Bank Holiday
-holiday.en-GB4.date=20130506
+holiday.en-GB4.date=20140505
 holiday.en-GB5.name=Spring Bank Holiday
-holiday.en-GB5.date=20130527
+holiday.en-GB5.date=20140526
 holiday.en-GB6.name=August Bank Holiday
-holiday.en-GB6.date=20130826
+holiday.en-GB6.date=20140825
 holiday.en-GB7.name=Christmas Day
-holiday.en-GB7.date=20131225
+holiday.en-GB7.date=20141225
 holiday.en-GB8.name=Boxing Day
-holiday.en-GB8.date=20131226
+holiday.en-GB8.date=20141226
 holiday.en-GB9.name=New Year's Day
-holiday.en-GB9.date=20140101
+holiday.en-GB9.date=20150101
 holiday.en-GB10.name=Good Friday
-holiday.en-GB10.date=20140418
+holiday.en-GB10.date=20150403
 holiday.en-GB11.name=Easter Monday
-holiday.en-GB11.date=20140421
+holiday.en-GB11.date=20150406
 holiday.en-GB12.name=Early May Bank Holiday
-holiday.en-GB12.date=20140505
+holiday.en-GB12.date=20150504
 holiday.en-GB13.name=Spring Bank Holiday
-holiday.en-GB13.date=20140526
+holiday.en-GB13.date=20150525
 holiday.en-GB14.name=August Bank Holiday
-holiday.en-GB14.date=20140825
+holiday.en-GB14.date=20150831
 holiday.en-GB15.name=Christmas Day
-holiday.en-GB15.date=20141225
+holiday.en-GB15.date=20151225
 holiday.en-GB16.name=Boxing Day
-holiday.en-GB16.date=20141226
+holiday.en-GB16.date=20151226
+holiday.en-GB17.name=New Year's Day
+holiday.en-GB17.date=20160101
+holiday.en-GB18.name=Good Friday
+holiday.en-GB18.date=20160325
+holiday.en-GB19.name=Easter Monday
+holiday.en-GB19.date=20160328
+holiday.en-GB20.name=Early May Bank Holiday
+holiday.en-GB20.date=20160502
+holiday.en-GB21.name=Spring Bank Holiday
+holiday.en-GB21.date=20160530
+holiday.en-GB22.name=August Bank Holiday
+holiday.en-GB22.date=20160829
+holiday.en-GB23.name=Christmas Day
+holiday.en-GB23.date=20161225
+holiday.en-GB24.name=Boxing Day
+holiday.en-GB24.date=20161226

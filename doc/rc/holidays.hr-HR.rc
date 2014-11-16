@@ -1,0 +1,113 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/hr-HR/2014.json
+# http://holidata.net/hr-HR/2015.json
+#
+# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.hr-HR1.name=Nova Godina
+holiday.hr-HR1.date=20140101
+holiday.hr-HR2.name=Bogojavljenje
+holiday.hr-HR2.date=20140106
+holiday.hr-HR3.name=Uskrs
+holiday.hr-HR3.date=20140420
+holiday.hr-HR4.name=Uskrsni ponedjeljak
+holiday.hr-HR4.date=20140421
+holiday.hr-HR5.name=Međunarodni praznik rada
+holiday.hr-HR5.date=20140501
+holiday.hr-HR6.name=Tijelovo
+holiday.hr-HR6.date=20140619
+holiday.hr-HR7.name=Dan antifašističke borbe
+holiday.hr-HR7.date=20140622
+holiday.hr-HR8.name=Dan državnosti
+holiday.hr-HR8.date=20140625
+holiday.hr-HR9.name=Dan pobjede
+holiday.hr-HR9.date=20140805
+holiday.hr-HR10.name=Velika Gospa
+holiday.hr-HR10.date=20140815
+holiday.hr-HR11.name=Dan neovisnosti
+holiday.hr-HR11.date=20141008
+holiday.hr-HR12.name=Dan svih svetih
+holiday.hr-HR12.date=20141101
+holiday.hr-HR13.name=Božić
+holiday.hr-HR13.date=20141225
+holiday.hr-HR14.name=Prvi dan po Božiću
+holiday.hr-HR14.date=20141226
+holiday.hr-HR15.name=Nova Godina
+holiday.hr-HR15.date=20150101
+holiday.hr-HR16.name=Bogojavljenje
+holiday.hr-HR16.date=20150106
+holiday.hr-HR17.name=Uskrs
+holiday.hr-HR17.date=20150405
+holiday.hr-HR18.name=Uskrsni ponedjeljak
+holiday.hr-HR18.date=20150406
+holiday.hr-HR19.name=Međunarodni praznik rada
+holiday.hr-HR19.date=20150501
+holiday.hr-HR20.name=Tijelovo
+holiday.hr-HR20.date=20150604
+holiday.hr-HR21.name=Dan antifašističke borbe
+holiday.hr-HR21.date=20150622
+holiday.hr-HR22.name=Dan državnosti
+holiday.hr-HR22.date=20150625
+holiday.hr-HR23.name=Dan pobjede
+holiday.hr-HR23.date=20150805
+holiday.hr-HR24.name=Velika Gospa
+holiday.hr-HR24.date=20150815
+holiday.hr-HR25.name=Dan neovisnosti
+holiday.hr-HR25.date=20151008
+holiday.hr-HR26.name=Dan svih svetih
+holiday.hr-HR26.date=20151101
+holiday.hr-HR27.name=Božić
+holiday.hr-HR27.date=20151225
+holiday.hr-HR28.name=Prvi dan po Božiću
+holiday.hr-HR28.date=20151226
+holiday.hr-HR29.name=Nova Godina
+holiday.hr-HR29.date=20160101
+holiday.hr-HR30.name=Bogojavljenje
+holiday.hr-HR30.date=20160106
+holiday.hr-HR31.name=Uskrs
+holiday.hr-HR31.date=20160327
+holiday.hr-HR32.name=Uskrsni ponedjeljak
+holiday.hr-HR32.date=20160328
+holiday.hr-HR33.name=Međunarodni praznik rada
+holiday.hr-HR33.date=20160501
+holiday.hr-HR34.name=Tijelovo
+holiday.hr-HR34.date=20160526
+holiday.hr-HR35.name=Dan antifašističke borbe
+holiday.hr-HR35.date=20160622
+holiday.hr-HR36.name=Dan državnosti
+holiday.hr-HR36.date=20160625
+holiday.hr-HR37.name=Dan pobjede
+holiday.hr-HR37.date=20160805
+holiday.hr-HR38.name=Velika Gospa
+holiday.hr-HR38.date=20160815
+holiday.hr-HR39.name=Dan neovisnosti
+holiday.hr-HR39.date=20161008
+holiday.hr-HR40.name=Dan svih svetih
+holiday.hr-HR40.date=20161101
+holiday.hr-HR41.name=Božić
+holiday.hr-HR41.date=20161225
+holiday.hr-HR42.name=Prvi dan po Božiću
+holiday.hr-HR42.date=20161226

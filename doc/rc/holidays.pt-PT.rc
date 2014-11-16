@@ -3,7 +3,7 @@
 # http://holidata.net/pt-PT/2014.json
 # http://holidata.net/pt-PT/2015.json
 #
-# Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -55,3 +55,59 @@ holiday.pt-PT13.name=Imaculada Conceição
 holiday.pt-PT13.date=20141208
 holiday.pt-PT14.name=Natal
 holiday.pt-PT14.date=20141225
+holiday.pt-PT15.name=Ano Novo
+holiday.pt-PT15.date=20150101
+holiday.pt-PT16.name=Carnaval
+holiday.pt-PT16.date=20150217
+holiday.pt-PT17.name=Sexta-feira Santa
+holiday.pt-PT17.date=20150403
+holiday.pt-PT18.name=Páscoa
+holiday.pt-PT18.date=20150405
+holiday.pt-PT19.name=Dia da Liberdade
+holiday.pt-PT19.date=20150425
+holiday.pt-PT20.name=Dia do Trabalhador
+holiday.pt-PT20.date=20150501
+holiday.pt-PT21.name=Corpo de Deus
+holiday.pt-PT21.date=20150604
+holiday.pt-PT22.name=Dia de Portugal
+holiday.pt-PT22.date=20150610
+holiday.pt-PT23.name=Assunção de Nossa Senhora
+holiday.pt-PT23.date=20150815
+holiday.pt-PT24.name=Implantação da República
+holiday.pt-PT24.date=20151005
+holiday.pt-PT25.name=Todos os Santos
+holiday.pt-PT25.date=20151101
+holiday.pt-PT26.name=Restauração da Independência
+holiday.pt-PT26.date=20151201
+holiday.pt-PT27.name=Imaculada Conceição
+holiday.pt-PT27.date=20151208
+holiday.pt-PT28.name=Natal
+holiday.pt-PT28.date=20151225
+holiday.pt-PT29.name=Ano Novo
+holiday.pt-PT29.date=20160101
+holiday.pt-PT30.name=Carnaval
+holiday.pt-PT30.date=20160209
+holiday.pt-PT31.name=Sexta-feira Santa
+holiday.pt-PT31.date=20160325
+holiday.pt-PT32.name=Páscoa
+holiday.pt-PT32.date=20160327
+holiday.pt-PT33.name=Dia da Liberdade
+holiday.pt-PT33.date=20160425
+holiday.pt-PT34.name=Dia do Trabalhador
+holiday.pt-PT34.date=20160501
+holiday.pt-PT35.name=Corpo de Deus
+holiday.pt-PT35.date=20160526
+holiday.pt-PT36.name=Dia de Portugal
+holiday.pt-PT36.date=20160610
+holiday.pt-PT37.name=Assunção de Nossa Senhora
+holiday.pt-PT37.date=20160815
+holiday.pt-PT38.name=Implantação da República
+holiday.pt-PT38.date=20161005
+holiday.pt-PT39.name=Todos os Santos
+holiday.pt-PT39.date=20161101
+holiday.pt-PT40.name=Restauração da Independência
+holiday.pt-PT40.date=20161201
+holiday.pt-PT41.name=Imaculada Conceição
+holiday.pt-PT41.date=20161208
+holiday.pt-PT42.name=Natal
+holiday.pt-PT42.date=20161225

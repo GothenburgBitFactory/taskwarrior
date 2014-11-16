@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/en-US/2013.json
 # http://holidata.net/en-US/2014.json
+# http://holidata.net/en-US/2015.json
 #
 # Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 #
@@ -28,46 +28,68 @@
 ###############################################################################
 
 holiday.en-US1.name=New Year's Day
-holiday.en-US1.date=20130101
+holiday.en-US1.date=20140101
 holiday.en-US2.name=Birthday of Martin Luther King, Jr.
-holiday.en-US2.date=20130121
+holiday.en-US2.date=20140120
 holiday.en-US3.name=Washington's Birthday
-holiday.en-US3.date=20130218
+holiday.en-US3.date=20140217
 holiday.en-US4.name=Patriots' Day
-holiday.en-US4.date=20130415
+holiday.en-US4.date=20140421
 holiday.en-US5.name=Memorial Day
-holiday.en-US5.date=20130527
+holiday.en-US5.date=20140526
 holiday.en-US6.name=Independence Day
-holiday.en-US6.date=20130704
+holiday.en-US6.date=20140704
 holiday.en-US7.name=Labor Day
-holiday.en-US7.date=20130902
+holiday.en-US7.date=20140901
 holiday.en-US8.name=Columbus Day
-holiday.en-US8.date=20131014
+holiday.en-US8.date=20141013
 holiday.en-US9.name=Veterans Day
-holiday.en-US9.date=20131111
+holiday.en-US9.date=20141111
 holiday.en-US10.name=Thanksgiving Day
-holiday.en-US10.date=20131128
+holiday.en-US10.date=20141127
 holiday.en-US11.name=Christmas Day
-holiday.en-US11.date=20131225
+holiday.en-US11.date=20141225
 holiday.en-US12.name=New Year's Day
-holiday.en-US12.date=20140101
+holiday.en-US12.date=20150101
 holiday.en-US13.name=Birthday of Martin Luther King, Jr.
-holiday.en-US13.date=20140120
+holiday.en-US13.date=20150119
 holiday.en-US14.name=Washington's Birthday
-holiday.en-US14.date=20140217
+holiday.en-US14.date=20150216
 holiday.en-US15.name=Patriots' Day
-holiday.en-US15.date=20140421
+holiday.en-US15.date=20150420
 holiday.en-US16.name=Memorial Day
-holiday.en-US16.date=20140526
+holiday.en-US16.date=20150525
 holiday.en-US17.name=Independence Day
-holiday.en-US17.date=20140704
+holiday.en-US17.date=20150704
 holiday.en-US18.name=Labor Day
-holiday.en-US18.date=20140901
+holiday.en-US18.date=20150907
 holiday.en-US19.name=Columbus Day
-holiday.en-US19.date=20141013
+holiday.en-US19.date=20151012
 holiday.en-US20.name=Veterans Day
-holiday.en-US20.date=20141111
+holiday.en-US20.date=20151111
 holiday.en-US21.name=Thanksgiving Day
-holiday.en-US21.date=20141127
+holiday.en-US21.date=20151126
 holiday.en-US22.name=Christmas Day
-holiday.en-US22.date=20141225
+holiday.en-US22.date=20151225
+holiday.en-US23.name=New Year's Day
+holiday.en-US23.date=20160101
+holiday.en-US24.name=Birthday of Martin Luther King, Jr.
+holiday.en-US24.date=20160118
+holiday.en-US25.name=Washington's Birthday
+holiday.en-US25.date=20160215
+holiday.en-US26.name=Patriots' Day
+holiday.en-US26.date=20160418
+holiday.en-US27.name=Memorial Day
+holiday.en-US27.date=20160530
+holiday.en-US28.name=Independence Day
+holiday.en-US28.date=20160704
+holiday.en-US29.name=Labor Day
+holiday.en-US29.date=20160905
+holiday.en-US30.name=Columbus Day
+holiday.en-US30.date=20161010
+holiday.en-US31.name=Veterans Day
+holiday.en-US31.date=20161111
+holiday.en-US32.name=Thanksgiving Day
+holiday.en-US32.date=20161124
+holiday.en-US33.name=Christmas Day
+holiday.en-US33.date=20161225

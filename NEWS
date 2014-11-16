@@ -23,6 +23,7 @@ New Features in taskwarrior 2.4.0
     rather than the exact match operator, '=='.  This means that dates now
     match on the day by default, not the time also.
   - Hooks.
+  - New and updated holidays.rc files.
 
 New commands in taskwarrior 2.4.0
 

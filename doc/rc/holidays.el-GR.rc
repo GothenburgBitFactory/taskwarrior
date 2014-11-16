@@ -1,0 +1,113 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/el-GR/2014.json
+# http://holidata.net/el-GR/2015.json
+#
+# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.el-GR1.name=Πρωτοχρονιά
+holiday.el-GR1.date=20140101
+holiday.el-GR2.name=Θεοφάνεια
+holiday.el-GR2.date=20140106
+holiday.el-GR3.name=Καθαρά Δευτέρα
+holiday.el-GR3.date=20140303
+holiday.el-GR4.name=Ευαγγελισμός της Θεοτόκου και Εθνική Ημέρα Ανεξαρτησίας της Ελλάδας
+holiday.el-GR4.date=20140325
+holiday.el-GR5.name=Πρωτομαγιά
+holiday.el-GR5.date=20140418
+holiday.el-GR6.name=Μεγάλη Παρασκευή
+holiday.el-GR6.date=20140419
+holiday.el-GR7.name=Μεγάλο Σάββατο
+holiday.el-GR7.date=20140420
+holiday.el-GR8.name=Πάσχα
+holiday.el-GR8.date=20140421
+holiday.el-GR9.name=Δευτέρα του Πάσχα
+holiday.el-GR9.date=20140422
+holiday.el-GR10.name=Δευτέρα του Αγίου Πνεύματος
+holiday.el-GR10.date=20140609
+holiday.el-GR11.name=Κοίμηση της Θεοτόκου
+holiday.el-GR11.date=20140815
+holiday.el-GR12.name=Ημέρα του ΌΧΙ
+holiday.el-GR12.date=20141028
+holiday.el-GR13.name=Χριστούγεννα
+holiday.el-GR13.date=20141225
+holiday.el-GR14.name=Επόμενη ημέρα Χριστουγέννων
+holiday.el-GR14.date=20141226
+holiday.el-GR15.name=Πρωτοχρονιά
+holiday.el-GR15.date=20150101
+holiday.el-GR16.name=Θεοφάνεια
+holiday.el-GR16.date=20150106
+holiday.el-GR17.name=Καθαρά Δευτέρα
+holiday.el-GR17.date=20150223
+holiday.el-GR18.name=Ευαγγελισμός της Θεοτόκου και Εθνική Ημέρα Ανεξαρτησίας της Ελλάδας
+holiday.el-GR18.date=20150325
+holiday.el-GR19.name=Πρωτομαγιά
+holiday.el-GR19.date=20150418
+holiday.el-GR20.name=Μεγάλη Παρασκευή
+holiday.el-GR20.date=20150410
+holiday.el-GR21.name=Μεγάλο Σάββατο
+holiday.el-GR21.date=20150411
+holiday.el-GR22.name=Πάσχα
+holiday.el-GR22.date=20150412
+holiday.el-GR23.name=Δευτέρα του Πάσχα
+holiday.el-GR23.date=20150413
+holiday.el-GR24.name=Δευτέρα του Αγίου Πνεύματος
+holiday.el-GR24.date=20150601
+holiday.el-GR25.name=Κοίμηση της Θεοτόκου
+holiday.el-GR25.date=20150815
+holiday.el-GR26.name=Ημέρα του ΌΧΙ
+holiday.el-GR26.date=20151028
+holiday.el-GR27.name=Χριστούγεννα
+holiday.el-GR27.date=20151225
+holiday.el-GR28.name=Επόμενη ημέρα Χριστουγέννων
+holiday.el-GR28.date=20151226
+holiday.el-GR29.name=Πρωτοχρονιά
+holiday.el-GR29.date=20160101
+holiday.el-GR30.name=Θεοφάνεια
+holiday.el-GR30.date=20160106
+holiday.el-GR31.name=Καθαρά Δευτέρα
+holiday.el-GR31.date=20160314
+holiday.el-GR32.name=Ευαγγελισμός της Θεοτόκου και Εθνική Ημέρα Ανεξαρτησίας της Ελλάδας
+holiday.el-GR32.date=20160325
+holiday.el-GR33.name=Πρωτομαγιά
+holiday.el-GR33.date=20160418
+holiday.el-GR34.name=Μεγάλη Παρασκευή
+holiday.el-GR34.date=20160429
+holiday.el-GR35.name=Μεγάλο Σάββατο
+holiday.el-GR35.date=20160430
+holiday.el-GR36.name=Πάσχα
+holiday.el-GR36.date=20160501
+holiday.el-GR37.name=Δευτέρα του Πάσχα
+holiday.el-GR37.date=20160502
+holiday.el-GR38.name=Δευτέρα του Αγίου Πνεύματος
+holiday.el-GR38.date=20160620
+holiday.el-GR39.name=Κοίμηση της Θεοτόκου
+holiday.el-GR39.date=20160815
+holiday.el-GR40.name=Ημέρα του ΌΧΙ
+holiday.el-GR40.date=20161028
+holiday.el-GR41.name=Χριστούγεννα
+holiday.el-GR41.date=20161225
+holiday.el-GR42.name=Επόμενη ημέρα Χριστουγέννων
+holiday.el-GR42.date=20161226

@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/it-IT/2013.json
 # http://holidata.net/it-IT/2014.json
+# http://holidata.net/it-IT/2015.json
 #
 # Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
 #
@@ -28,26 +28,74 @@
 ###############################################################################
 
 holiday.it-IT1.name=Capodanno
-holiday.it-IT1.date=20130101
+holiday.it-IT1.date=20140101
 holiday.it-IT2.name=Epifania
-holiday.it-IT2.date=20130106
+holiday.it-IT2.date=20140106
 holiday.it-IT3.name=Carnevale
-holiday.it-IT3.date=20130210
+holiday.it-IT3.date=20140304
 holiday.it-IT4.name=Pasqua
-holiday.it-IT4.date=20130401
+holiday.it-IT4.date=20140420
 holiday.it-IT5.name=Festa della liberazione
-holiday.it-IT5.date=20130425
+holiday.it-IT5.date=20140425
 holiday.it-IT6.name=Festa del lavoro
-holiday.it-IT6.date=20130501
+holiday.it-IT6.date=20140501
 holiday.it-IT7.name=Festa della repubblica
-holiday.it-IT7.date=20130602
+holiday.it-IT7.date=20140602
 holiday.it-IT8.name=Assunzione (ferragosto)
-holiday.it-IT8.date=20130815
+holiday.it-IT8.date=20140815
 holiday.it-IT9.name=Ognissanti
-holiday.it-IT9.date=20131101
+holiday.it-IT9.date=20141101
 holiday.it-IT10.name=Immacolata concezione
-holiday.it-IT10.date=20131208
+holiday.it-IT10.date=20141208
 holiday.it-IT11.name=Natale
-holiday.it-IT11.date=20131225
+holiday.it-IT11.date=20141225
 holiday.it-IT12.name=S.to Stefano
-holiday.it-IT12.date=20131226
+holiday.it-IT12.date=20141226
+holiday.it-IT13.name=Capodanno
+holiday.it-IT13.date=20150101
+holiday.it-IT14.name=Epifania
+holiday.it-IT14.date=20150106
+holiday.it-IT15.name=Carnevale
+holiday.it-IT15.date=20150217
+holiday.it-IT16.name=Pasqua
+holiday.it-IT16.date=20150405
+holiday.it-IT17.name=Festa della liberazione
+holiday.it-IT17.date=20150425
+holiday.it-IT18.name=Festa del lavoro
+holiday.it-IT18.date=20150501
+holiday.it-IT19.name=Festa della repubblica
+holiday.it-IT19.date=20150602
+holiday.it-IT20.name=Assunzione (ferragosto)
+holiday.it-IT20.date=20150815
+holiday.it-IT21.name=Ognissanti
+holiday.it-IT21.date=20151101
+holiday.it-IT22.name=Immacolata concezione
+holiday.it-IT22.date=20151208
+holiday.it-IT23.name=Natale
+holiday.it-IT23.date=20151225
+holiday.it-IT24.name=S.to Stefano
+holiday.it-IT24.date=20151226
+holiday.it-IT25.name=Capodanno
+holiday.it-IT25.date=20160101
+holiday.it-IT26.name=Epifania
+holiday.it-IT26.date=20160106
+holiday.it-IT27.name=Carnevale
+holiday.it-IT27.date=20160209
+holiday.it-IT28.name=Pasqua
+holiday.it-IT28.date=20160327
+holiday.it-IT29.name=Festa della liberazione
+holiday.it-IT29.date=20160425
+holiday.it-IT30.name=Festa del lavoro
+holiday.it-IT30.date=20160501
+holiday.it-IT31.name=Festa della repubblica
+holiday.it-IT31.date=20160602
+holiday.it-IT32.name=Assunzione (ferragosto)
+holiday.it-IT32.date=20160815
+holiday.it-IT33.name=Ognissanti
+holiday.it-IT33.date=20161101
+holiday.it-IT34.name=Immacolata concezione
+holiday.it-IT34.date=20161208
+holiday.it-IT35.name=Natale
+holiday.it-IT35.date=20161225
+holiday.it-IT36.name=S.to Stefano
+holiday.it-IT36.date=20161226

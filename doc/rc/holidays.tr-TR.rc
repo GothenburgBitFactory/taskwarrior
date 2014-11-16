@@ -1,0 +1,107 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/tr-TR/2014.json
+# http://holidata.net/tr-TR/2015.json
+#
+# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.tr-TR1.name=Yılbaşı
+holiday.tr-TR1.date=20140101
+holiday.tr-TR2.name=Ulusal Egemenlik ve Çocuk Bayramı
+holiday.tr-TR2.date=20140423
+holiday.tr-TR3.name=Emek ve Dayanışma Günü
+holiday.tr-TR3.date=20140501
+holiday.tr-TR4.name=Atatürk'ü Anma Gençlik ve Spor Bayramı
+holiday.tr-TR4.date=20140519
+holiday.tr-TR5.name=Zafer Bayramı
+holiday.tr-TR5.date=20140830
+holiday.tr-TR6.name=Cumhuriyet Bayramı
+holiday.tr-TR6.date=20141029
+holiday.tr-TR7.name=Ramazan Bayramı 1
+holiday.tr-TR7.date=20140728
+holiday.tr-TR8.name=Ramazan Bayramı 2
+holiday.tr-TR8.date=20140729
+holiday.tr-TR9.name=Ramazan Bayramı 3
+holiday.tr-TR9.date=20140730
+holiday.tr-TR10.name=Kurban Bayramı 1
+holiday.tr-TR10.date=20141004
+holiday.tr-TR11.name=Kurban Bayramı 2
+holiday.tr-TR11.date=20141005
+holiday.tr-TR12.name=Kurban Bayramı 3
+holiday.tr-TR12.date=20141006
+holiday.tr-TR13.name=Kurban Bayramı 4
+holiday.tr-TR13.date=20141007
+holiday.tr-TR14.name=Yılbaşı
+holiday.tr-TR14.date=20150101
+holiday.tr-TR15.name=Ulusal Egemenlik ve Çocuk Bayramı
+holiday.tr-TR15.date=20150423
+holiday.tr-TR16.name=Emek ve Dayanışma Günü
+holiday.tr-TR16.date=20150501
+holiday.tr-TR17.name=Atatürk'ü Anma Gençlik ve Spor Bayramı
+holiday.tr-TR17.date=20150519
+holiday.tr-TR18.name=Zafer Bayramı
+holiday.tr-TR18.date=20150830
+holiday.tr-TR19.name=Cumhuriyet Bayramı
+holiday.tr-TR19.date=20151029
+holiday.tr-TR20.name=Ramazan Bayramı 1
+holiday.tr-TR20.date=20150717
+holiday.tr-TR21.name=Ramazan Bayramı 2
+holiday.tr-TR21.date=20150718
+holiday.tr-TR22.name=Ramazan Bayramı 3
+holiday.tr-TR22.date=20150719
+holiday.tr-TR23.name=Kurban Bayramı 1
+holiday.tr-TR23.date=20150923
+holiday.tr-TR24.name=Kurban Bayramı 2
+holiday.tr-TR24.date=20150924
+holiday.tr-TR25.name=Kurban Bayramı 3
+holiday.tr-TR25.date=20150925
+holiday.tr-TR26.name=Kurban Bayramı 4
+holiday.tr-TR26.date=20150926
+holiday.tr-TR27.name=Yılbaşı
+holiday.tr-TR27.date=20160101
+holiday.tr-TR28.name=Ulusal Egemenlik ve Çocuk Bayramı
+holiday.tr-TR28.date=20160423
+holiday.tr-TR29.name=Emek ve Dayanışma Günü
+holiday.tr-TR29.date=20160501
+holiday.tr-TR30.name=Atatürk'ü Anma Gençlik ve Spor Bayramı
+holiday.tr-TR30.date=20160519
+holiday.tr-TR31.name=Zafer Bayramı
+holiday.tr-TR31.date=20160830
+holiday.tr-TR32.name=Cumhuriyet Bayramı
+holiday.tr-TR32.date=20161029
+holiday.tr-TR33.name=Ramazan Bayramı 1
+holiday.tr-TR33.date=20160705
+holiday.tr-TR34.name=Ramazan Bayramı 2
+holiday.tr-TR34.date=20160706
+holiday.tr-TR35.name=Ramazan Bayramı 3
+holiday.tr-TR35.date=20160707
+holiday.tr-TR36.name=Kurban Bayramı 1
+holiday.tr-TR36.date=20160912
+holiday.tr-TR37.name=Kurban Bayramı 2
+holiday.tr-TR37.date=20160913
+holiday.tr-TR38.name=Kurban Bayramı 3
+holiday.tr-TR38.date=20160914
+holiday.tr-TR39.name=Kurban Bayramı 4
+holiday.tr-TR39.date=20160915

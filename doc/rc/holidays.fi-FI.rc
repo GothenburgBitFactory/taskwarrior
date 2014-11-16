@@ -1,0 +1,119 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/fi-FI/2014.json
+# http://holidata.net/fi-FI/2015.json
+#
+# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.fi-FI1.name=Uudenvuodenpäivä
+holiday.fi-FI1.date=20140101
+holiday.fi-FI2.name=Loppiainen
+holiday.fi-FI2.date=20140106
+holiday.fi-FI3.name=Pitkäperjantai
+holiday.fi-FI3.date=20140418
+holiday.fi-FI4.name=Pääsiäispäivä
+holiday.fi-FI4.date=20140420
+holiday.fi-FI5.name=2. pääsiäispäivä
+holiday.fi-FI5.date=20140421
+holiday.fi-FI6.name=Vappu
+holiday.fi-FI6.date=20140501
+holiday.fi-FI7.name=Helatorstai
+holiday.fi-FI7.date=20140529
+holiday.fi-FI8.name=Helluntaipäivä
+holiday.fi-FI8.date=20140608
+holiday.fi-FI9.name=Juhannusaatto
+holiday.fi-FI9.date=20140620
+holiday.fi-FI10.name=Juhannuspäivä
+holiday.fi-FI10.date=20140621
+holiday.fi-FI11.name=Pyhäinpäivä
+holiday.fi-FI11.date=20141101
+holiday.fi-FI12.name=Itsenäisyyspäivä
+holiday.fi-FI12.date=20141206
+holiday.fi-FI13.name=Jouluaatto
+holiday.fi-FI13.date=20141224
+holiday.fi-FI14.name=Joulupäivä
+holiday.fi-FI14.date=20141225
+holiday.fi-FI15.name=2. joulupäivä
+holiday.fi-FI15.date=20141226
+holiday.fi-FI16.name=Uudenvuodenpäivä
+holiday.fi-FI16.date=20150101
+holiday.fi-FI17.name=Loppiainen
+holiday.fi-FI17.date=20150106
+holiday.fi-FI18.name=Pitkäperjantai
+holiday.fi-FI18.date=20150403
+holiday.fi-FI19.name=Pääsiäispäivä
+holiday.fi-FI19.date=20150405
+holiday.fi-FI20.name=2. pääsiäispäivä
+holiday.fi-FI20.date=20150406
+holiday.fi-FI21.name=Vappu
+holiday.fi-FI21.date=20150501
+holiday.fi-FI22.name=Helatorstai
+holiday.fi-FI22.date=20150514
+holiday.fi-FI23.name=Helluntaipäivä
+holiday.fi-FI23.date=20150524
+holiday.fi-FI24.name=Juhannusaatto
+holiday.fi-FI24.date=20150619
+holiday.fi-FI25.name=Juhannuspäivä
+holiday.fi-FI25.date=20150620
+holiday.fi-FI26.name=Pyhäinpäivä
+holiday.fi-FI26.date=20151031
+holiday.fi-FI27.name=Itsenäisyyspäivä
+holiday.fi-FI27.date=20151206
+holiday.fi-FI28.name=Jouluaatto
+holiday.fi-FI28.date=20151224
+holiday.fi-FI29.name=Joulupäivä
+holiday.fi-FI29.date=20151225
+holiday.fi-FI30.name=2. joulupäivä
+holiday.fi-FI30.date=20151226
+holiday.fi-FI31.name=Uudenvuodenpäivä
+holiday.fi-FI31.date=20160101
+holiday.fi-FI32.name=Loppiainen
+holiday.fi-FI32.date=20160106
+holiday.fi-FI33.name=Pitkäperjantai
+holiday.fi-FI33.date=20160325
+holiday.fi-FI34.name=Pääsiäispäivä
+holiday.fi-FI34.date=20160327
+holiday.fi-FI35.name=2. pääsiäispäivä
+holiday.fi-FI35.date=20160328
+holiday.fi-FI36.name=Vappu
+holiday.fi-FI36.date=20160501
+holiday.fi-FI37.name=Helatorstai
+holiday.fi-FI37.date=20160505
+holiday.fi-FI38.name=Helluntaipäivä
+holiday.fi-FI38.date=20160515
+holiday.fi-FI39.name=Juhannusaatto
+holiday.fi-FI39.date=20160624
+holiday.fi-FI40.name=Juhannuspäivä
+holiday.fi-FI40.date=20160625
+holiday.fi-FI41.name=Pyhäinpäivä
+holiday.fi-FI41.date=20161105
+holiday.fi-FI42.name=Itsenäisyyspäivä
+holiday.fi-FI42.date=20161206
+holiday.fi-FI43.name=Jouluaatto
+holiday.fi-FI43.date=20161224
+holiday.fi-FI44.name=Joulupäivä
+holiday.fi-FI44.date=20161225
+holiday.fi-FI45.name=2. joulupäivä
+holiday.fi-FI45.date=20161226

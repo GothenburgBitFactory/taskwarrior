@@ -1,0 +1,101 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/nl-BE/2014.json
+# http://holidata.net/nl-BE/2015.json
+#
+# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.nl-BE1.name=Nieuwjaar
+holiday.nl-BE1.date=20140101
+holiday.nl-BE2.name=Pasen
+holiday.nl-BE2.date=20140420
+holiday.nl-BE3.name=Paasmaandag
+holiday.nl-BE3.date=20140421
+holiday.nl-BE4.name=Dag van de arbeid
+holiday.nl-BE4.date=20140501
+holiday.nl-BE5.name=Onze Lieve Heer hemelvaart
+holiday.nl-BE5.date=20140529
+holiday.nl-BE6.name=Pinksteren
+holiday.nl-BE6.date=20140608
+holiday.nl-BE7.name=Pinkstermaandag
+holiday.nl-BE7.date=20140609
+holiday.nl-BE8.name=Nationale feestdag
+holiday.nl-BE8.date=20140721
+holiday.nl-BE9.name=Onze Lieve Vrouw hemelvaart
+holiday.nl-BE9.date=20140815
+holiday.nl-BE10.name=Allerheiligen
+holiday.nl-BE10.date=20141101
+holiday.nl-BE11.name=Wapenstilstand
+holiday.nl-BE11.date=20141111
+holiday.nl-BE12.name=Kerstmis
+holiday.nl-BE12.date=20141225
+holiday.nl-BE13.name=Nieuwjaar
+holiday.nl-BE13.date=20150101
+holiday.nl-BE14.name=Pasen
+holiday.nl-BE14.date=20150405
+holiday.nl-BE15.name=Paasmaandag
+holiday.nl-BE15.date=20150406
+holiday.nl-BE16.name=Dag van de arbeid
+holiday.nl-BE16.date=20150501
+holiday.nl-BE17.name=Onze Lieve Heer hemelvaart
+holiday.nl-BE17.date=20150514
+holiday.nl-BE18.name=Pinksteren
+holiday.nl-BE18.date=20150524
+holiday.nl-BE19.name=Pinkstermaandag
+holiday.nl-BE19.date=20150525
+holiday.nl-BE20.name=Nationale feestdag
+holiday.nl-BE20.date=20150721
+holiday.nl-BE21.name=Onze Lieve Vrouw hemelvaart
+holiday.nl-BE21.date=20150815
+holiday.nl-BE22.name=Allerheiligen
+holiday.nl-BE22.date=20151101
+holiday.nl-BE23.name=Wapenstilstand
+holiday.nl-BE23.date=20151111
+holiday.nl-BE24.name=Kerstmis
+holiday.nl-BE24.date=20151225
+holiday.nl-BE25.name=Nieuwjaar
+holiday.nl-BE25.date=20160101
+holiday.nl-BE26.name=Pasen
+holiday.nl-BE26.date=20160527
+holiday.nl-BE27.name=Paasmaandag
+holiday.nl-BE27.date=20160528
+holiday.nl-BE28.name=Dag van de arbeid
+holiday.nl-BE28.date=20160501
+holiday.nl-BE29.name=Onze Lieve Heer hemelvaart
+holiday.nl-BE29.date=20160505
+holiday.nl-BE30.name=Pinksteren
+holiday.nl-BE30.date=20160515
+holiday.nl-BE31.name=Pinkstermaandag
+holiday.nl-BE31.date=20160516
+holiday.nl-BE32.name=Nationale feestdag
+holiday.nl-BE32.date=20160721
+holiday.nl-BE33.name=Onze Lieve Vrouw hemelvaart
+holiday.nl-BE33.date=20160815
+holiday.nl-BE34.name=Allerheiligen
+holiday.nl-BE34.date=20161101
+holiday.nl-BE35.name=Wapenstilstand
+holiday.nl-BE35.date=20161111
+holiday.nl-BE36.name=Kerstmis
+holiday.nl-BE36.date=20161225

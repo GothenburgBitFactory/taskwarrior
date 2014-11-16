@@ -1,0 +1,119 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/is-IS/2014.json
+# http://holidata.net/is-IS/2015.json
+#
+# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.is-IS1.name=Nýársdagur
+holiday.is-IS1.date=20140101
+holiday.is-IS2.name=Skírdagur
+holiday.is-IS2.date=20140417
+holiday.is-IS3.name=Föstudaginn langi
+holiday.is-IS3.date=20140418
+holiday.is-IS4.name=Páskadagur
+holiday.is-IS4.date=20140420
+holiday.is-IS5.name=Annar í páskum
+holiday.is-IS5.date=20140421
+holiday.is-IS6.name=Sumardagurinn fyrsti
+holiday.is-IS6.date=20140424
+holiday.is-IS7.name=Verkalýðsdagurinn
+holiday.is-IS7.date=20140501
+holiday.is-IS8.name=Uppstigningardagur
+holiday.is-IS8.date=20140529
+holiday.is-IS9.name=Annar í hvítasunnu
+holiday.is-IS9.date=20140609
+holiday.is-IS10.name=Lýðveldisdagurinn
+holiday.is-IS10.date=20140617
+holiday.is-IS11.name=Frídagur verslunarmanna
+holiday.is-IS11.date=20140804
+holiday.is-IS12.name=Jól
+holiday.is-IS12.date=20141224
+holiday.is-IS13.name=Jól
+holiday.is-IS13.date=20141225
+holiday.is-IS14.name=Jól
+holiday.is-IS14.date=20141226
+holiday.is-IS15.name=Gamlárskvöld
+holiday.is-IS15.date=20141231
+holiday.is-IS16.name=Nýársdagur
+holiday.is-IS16.date=20150101
+holiday.is-IS17.name=Skírdagur
+holiday.is-IS17.date=20150402
+holiday.is-IS18.name=Föstudaginn langi
+holiday.is-IS18.date=20150403
+holiday.is-IS19.name=Páskadagur
+holiday.is-IS19.date=20150405
+holiday.is-IS20.name=Annar í páskum
+holiday.is-IS20.date=20150406
+holiday.is-IS21.name=Sumardagurinn fyrsti
+holiday.is-IS21.date=20150423
+holiday.is-IS22.name=Verkalýðsdagurinn
+holiday.is-IS22.date=20150501
+holiday.is-IS23.name=Uppstigningardagur
+holiday.is-IS23.date=20150514
+holiday.is-IS24.name=Annar í hvítasunnu
+holiday.is-IS24.date=20150525
+holiday.is-IS25.name=Lýðveldisdagurinn
+holiday.is-IS25.date=20150617
+holiday.is-IS26.name=Frídagur verslunarmanna
+holiday.is-IS26.date=20150803
+holiday.is-IS27.name=Jól
+holiday.is-IS27.date=20151224
+holiday.is-IS28.name=Jól
+holiday.is-IS28.date=20151225
+holiday.is-IS29.name=Jól
+holiday.is-IS29.date=20151226
+holiday.is-IS30.name=Gamlárskvöld
+holiday.is-IS30.date=20151231
+holiday.is-IS31.name=Nýársdagur
+holiday.is-IS31.date=20160101
+holiday.is-IS32.name=Skírdagur
+holiday.is-IS32.date=20160324
+holiday.is-IS33.name=Föstudaginn langi
+holiday.is-IS33.date=20160325
+holiday.is-IS34.name=Páskadagur
+holiday.is-IS34.date=20160327
+holiday.is-IS35.name=Annar í páskum
+holiday.is-IS35.date=20160328
+holiday.is-IS36.name=Sumardagurinn fyrsti
+holiday.is-IS36.date=20160421
+holiday.is-IS37.name=Verkalýðsdagurinn
+holiday.is-IS37.date=20160501
+holiday.is-IS38.name=Uppstigningardagur
+holiday.is-IS38.date=20160505
+holiday.is-IS39.name=Annar í hvítasunnu
+holiday.is-IS39.date=20160516
+holiday.is-IS40.name=Lýðveldisdagurinn
+holiday.is-IS40.date=20160617
+holiday.is-IS41.name=Frídagur verslunarmanna
+holiday.is-IS41.date=20160801
+holiday.is-IS42.name=Jól
+holiday.is-IS42.date=20161224
+holiday.is-IS43.name=Jól
+holiday.is-IS43.date=20161225
+holiday.is-IS44.name=Jól
+holiday.is-IS44.date=20161226
+holiday.is-IS45.name=Gamlárskvöld
+holiday.is-IS45.date=20161231
