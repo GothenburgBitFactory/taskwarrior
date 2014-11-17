@@ -63,6 +63,7 @@
          Harlan).
 - TW-255 'Mask' instead of 'iMask' shown in info report (thanks to Benjamin
          Weber)
+- TW-256 Holidays not displayed for some locales (thanks to Leon Feng).
 - TW-257 limit: not working properly (thanks to Aikido Guy).
 - TW-259 Hyphenated words are split when added (thanks to Ben Boeckel).
 - TW-261 Easy to create "not deletable" task (thanks to Jan Kunder).
