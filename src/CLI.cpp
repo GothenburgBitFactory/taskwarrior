@@ -1637,7 +1637,9 @@ void CLI::desugarFilterPlainArgs ()
       op.tag ("FILTER");
       reconstructed.push_back (op);
 
-      A rhs ("argPattern", "'" + a->attribute ("raw") + "'");
+      std::string pattern = a->attribute ("raw");
+      Lexer::dequote (pattern);
+      A rhs ("argPattern", "'" + pattern + "'");
       rhs.tag ("LITERAL");
       rhs.tag ("FILTER");
       reconstructed.push_back (rhs);

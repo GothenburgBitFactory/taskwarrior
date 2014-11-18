@@ -248,7 +248,7 @@ unlike ($output, qr/five/,  'v5');
 unlike ($output, qr/six/,   'v6');
 like   ($output, qr/seven/, 'v7');
 
-$output = qx{../src/task rc:filter.rc rc.regex:on list /^s/ 2>&1};
+$output = qx{../src/task rc:filter.rc rc.regex:on list /\\^s/ 2>&1};
 unlike ($output, qr/one/,   'w1');
 unlike ($output, qr/two/,   'w2');
 unlike ($output, qr/three/, 'w3');
@@ -257,7 +257,7 @@ unlike ($output, qr/five/,  'w5');
 like   ($output, qr/six/,   'w6');
 like   ($output, qr/seven/, 'w7');
 
-$output = qx{../src/task rc:filter.rc rc.regex:on list /^.i/ 2>&1};
+$output = qx{../src/task rc:filter.rc rc.regex:on list /\\^.i/ 2>&1};
 unlike ($output, qr/one/,   'x1');
 unlike ($output, qr/two/,   'x2');
 unlike ($output, qr/three/, 'x3');

@@ -84,6 +84,7 @@ public:
   static void word_split (std::vector <std::string>&, const std::string&);
   static void token_split (std::vector <std::string>&, const std::string&);
   static void token_split (std::vector <std::pair <std::string, Lexer::Type> >&, const std::string&);
+  static void dequote (std::string&);
 
 private:
   bool is_date (std::string&);

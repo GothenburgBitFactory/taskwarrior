@@ -87,6 +87,7 @@ bool Lexer::token (std::string& result, Type& type)
       {
         type = typeString;
         quote = _n0;
+        result += utf8_character (_n0);
         shift ();
       }
       else if (_n0 == '0' &&
@@ -189,6 +190,7 @@ bool Lexer::token (std::string& result, Type& type)
     case typeString:
       if (_n0 == quote)
       {
+        result += utf8_character (_n0);
         shift ();
         quote = 0;
         return true;
@@ -247,6 +249,7 @@ bool Lexer::token (std::string& result, Type& type)
       else
       {
         type = quote ? typeString : typeIdentifier;
+        result += utf8_character (quote);
         result += utf8_character (_n0);
         shift ();
       }
@@ -265,7 +268,8 @@ bool Lexer::token (std::string& result, Type& type)
       }
       else
       {
-        result += decode_escape (_n0);
+        result += '\\';
+        result += utf8_character (_n0);
         type = quote ? typeString : typeIdentifier;
         shift ();
       }
@@ -444,6 +448,7 @@ bool Lexer::word (std::string& token, Type& type)
       {
         type = typeString;
         quote = _n0;
+        token += utf8_character (_n0);
         shift ();
       }
       else
@@ -457,6 +462,7 @@ bool Lexer::word (std::string& token, Type& type)
     case typeString:
       if (_n0 == quote)
       {
+        token += utf8_character (_n0);
         shift ();
         quote = 0;
         return true;
@@ -491,7 +497,8 @@ bool Lexer::word (std::string& token, Type& type)
       }
       else
       {
-        token += decode_escape (_n0);
+        token += '\\';
+        token += utf8_character (_n0);
         type = typeString;
         shift ();
       }
@@ -710,6 +717,18 @@ void Lexer::token_split (std::vector <std::pair <std::string, Lexer::Type> >& le
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Lexer::dequote (std::string& input)
+{
+  int quote = input[0];
+  size_t len = input.length ();
+  if ((quote == '\'' || quote == '"') &&
+      quote == input[len - 1])
+  {
+    input = input.substr (1, len - 2);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Lexer::is_date (std::string& result)
 {
   // Try an ISO date parse.
@@ -830,7 +849,6 @@ int Lexer::decode_escape (int c) const
   case 'v':  return 0x0B;
   case '\'': return 0x27;
   case '"':  return 0x22;
-  case '\\': return 0x5C;
   default:   return c;
   }
 }

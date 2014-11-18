@@ -101,7 +101,7 @@ int main (int argc, char** argv)
   t.is (tokens[0].first,                      "one",        "tokens[0] = 'left'"); // 30
   t.is (Lexer::type_name (tokens[0].second),  "Identifier", "tokens[0] = Identifier");
 
-  t.is (tokens[1].first,                      "two 'three'", "tokens[1] = 'two \\'three\\''");
+  t.is (tokens[1].first,                      "'two \\'three\\''", "tokens[1] = 'two \\'three\\''");
   t.is (Lexer::type_name (tokens[1].second),  "String",     "tokens[1] = String");
 
   t.is (tokens[2].first,                      "+",          "tokens[2] = '+'");
@@ -146,7 +146,7 @@ int main (int argc, char** argv)
   t.is (tokens[15].first,                     "and",        "tokens[15] = 'and'"); // 60
   t.is (Lexer::type_name (tokens[15].second), "Operator",   "tokens[15] = Operator");
 
-  t.is (tokens[16].first,                     "€",          "tokens[16] = \\u20ac --> '€'");
+  t.is (tokens[16].first,                     "'€'",        "tokens[16] = \\u20ac --> '€'");
   t.is (Lexer::type_name (tokens[16].second), "String",     "tokens[16] = String");
 
   // Test for ISO-8601 dates (favoring dates in ambiguous cases).
@@ -366,7 +366,7 @@ int main (int argc, char** argv)
   t.is (items[0], "+-*",           "word_split '  +-* a+b 12.3e4 'c d'' -> [0] '+-*'");
   t.is (items[1], "a+b",           "word_split '  +-* a+b 12.3e4 'c d'' -> [1] 'a+b'");
   t.is (items[2], "12.3e4",        "word_split '  +-* a+b 12.3e4 'c d'' -> [2] '12.3e4'");
-  t.is (items[3], "c d",           "word_split '  +-* a+b 12.3e4 'c d'' -> [3] 'c d'");
+  t.is (items[3], "'c d'",         "word_split '  +-* a+b 12.3e4 'c d'' -> [3] 'c d'");
 
   // Test common expression element.
   unsplit = "name=value";

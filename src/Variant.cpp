@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <Variant.h>
 #include <ISO8601.h>
+#include <Lexer.h>
 #include <Date.h>
 #include <Duration.h>
 #include <RX.h>
@@ -193,6 +194,12 @@ bool Variant::operator&& (const Variant& other) const
   Variant left (*this);
   Variant right (other);
 
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
+
   left.cast (type_boolean);
   right.cast (type_boolean);
 
@@ -204,6 +211,12 @@ bool Variant::operator|| (const Variant& other) const
 {
   Variant left (*this);
   Variant right (other);
+
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
 
   left.cast (type_boolean);
   right.cast (type_boolean);
@@ -217,6 +230,12 @@ bool Variant::operator_xor (const Variant& other) const
   Variant left (*this);
   Variant right (other);
 
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
+
   left.cast (type_boolean);
   right.cast (type_boolean);
 
@@ -229,6 +248,12 @@ bool Variant::operator< (const Variant& other) const
 {
   Variant left (*this);
   Variant right (other);
+
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
 
   switch (left._type)
   {
@@ -368,6 +393,12 @@ bool Variant::operator<= (const Variant& other) const
 {
   Variant left (*this);
   Variant right (other);
+
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
 
   switch (left._type)
   {
@@ -509,6 +540,12 @@ bool Variant::operator> (const Variant& other) const
   Variant left (*this);
   Variant right (other);
 
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
+
   switch (left._type)
   {
   case type_unknown:
@@ -646,6 +683,12 @@ bool Variant::operator>= (const Variant& other) const
 {
   Variant left (*this);
   Variant right (other);
+
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
 
   switch (left._type)
   {
@@ -787,6 +830,12 @@ bool Variant::operator== (const Variant& other) const
   Variant left (*this);
   Variant right (other);
 
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
+
   switch (left._type)
   {
   case type_unknown:
@@ -911,12 +960,21 @@ bool Variant::operator_match (const Variant& other, const Task& task) const
   Variant left (*this);
   Variant right (other);
 
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
+
   left.cast (type_string);
   right.cast (type_string);
 
+  std::string pattern = right._string;
+  Lexer::dequote (pattern);
+
   if (searchUsingRegex)
   {
-    RX r (right._string, searchCaseSensitive);
+    RX r (pattern, searchCaseSensitive);
     if (r.match (left._string))
       return true;
 
@@ -935,7 +993,7 @@ bool Variant::operator_match (const Variant& other, const Task& task) const
   }
   else
   {
-    if (find (left._string, right._string, searchCaseSensitive) != std::string::npos)
+    if (find (left._string, pattern, searchCaseSensitive) != std::string::npos)
       return true;
 
     // If the above did not match, and the left source is "description", then
@@ -947,7 +1005,7 @@ bool Variant::operator_match (const Variant& other, const Task& task) const
 
       std::map <std::string, std::string>::iterator a;
       for (a = annotations.begin (); a != annotations.end (); ++a)
-        if (find (a->second, right._string, searchCaseSensitive) != std::string::npos)
+        if (find (a->second, pattern, searchCaseSensitive) != std::string::npos)
           return true;
     }
   }
@@ -971,6 +1029,12 @@ bool Variant::operator_partial (const Variant& other) const
 {
   Variant left (*this);
   Variant right (other);
+
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
 
   switch (left._type)
   {
@@ -1155,6 +1219,7 @@ bool Variant::operator_hastag (const Variant& other, const Task& task) const
 {
   Variant right (other);
   right.cast (type_string);
+  Lexer::dequote (right._string);
   return task.hasTag (right._string);
 }
 
@@ -1168,6 +1233,10 @@ bool Variant::operator_notag (const Variant& other, const Task& task) const
 bool Variant::operator! () const
 {
   Variant left (*this);
+
+  if (left._type == type_string)
+    Lexer::dequote (left._string);
+
   left.cast (type_boolean);
   return ! left._bool;
 }
@@ -1330,6 +1399,9 @@ Variant& Variant::operator+= (const Variant& other)
 {
   Variant right (other);
 
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
+
   switch (_type)
   {
   case type_unknown:
@@ -1438,6 +1510,9 @@ Variant Variant::operator+ (const Variant& other) const
 Variant& Variant::operator*= (const Variant& other)
 {
   Variant right (other);
+
+  if (right._type == type_string)
+    Lexer::dequote (right._string);
 
   switch (_type)
   {
@@ -1893,6 +1968,9 @@ Variant::operator std::string () const
 ////////////////////////////////////////////////////////////////////////////////
 void Variant::sqrt ()
 {
+  if (_type == type_string)
+    Lexer::dequote (_string);
+
   cast (type_real);
   if (_real < 0.0)
     throw std::string (STRING_VARIANT_SQRT_NEG);
@@ -1967,6 +2045,7 @@ void Variant::cast (const enum type new_type)
     break;
 
   case type_string:
+    Lexer::dequote (_string);
     switch (new_type)
     {
     case type_unknown:                                                        break;
