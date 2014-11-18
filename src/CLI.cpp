@@ -411,6 +411,12 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
     }
 
     _args.push_back (a);
+
+    if (a.hasTag ("CALENDAR"))
+    {
+      A cal ("argCal", "calendar");
+      _args.push_back (cal);
+    }
   }
 
   if (context.config.getInteger ("debug.parser") >= 3)
