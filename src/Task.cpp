@@ -2009,6 +2009,7 @@ void Task::modify (modType type, bool text_required /* = false */)
           }
 
           // Special case: type duration.
+          // Note: "recur" is marked as type "string" to force storage in raw form.
           else if (name == "recur" ||
                    column->type () == "duration")
           {
@@ -2025,6 +2026,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             if (v.type () == Variant::type_duration)
             {
               // Store the raw value, for 'recur'.
+              context.debug (label + name + " <-- '" + value + "'");
               set (name, value);
               ++modCount;
             }
