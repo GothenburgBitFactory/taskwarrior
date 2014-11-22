@@ -73,7 +73,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   _startCount = (int) input.size ();
 
   if (context.config.getInteger ("debug.parser") >= 1)
-    context.debug (context.cli.dump ());
+    context.debug (context.cli.dump ("Filter::subset"));
 
   std::string filterExpr = context.cli.getFilter ();
   if (filterExpr.length ())
@@ -116,7 +116,7 @@ void Filter::subset (std::vector <Task>& output)
   context.timer_filter.start ();
 
   if (context.config.getInteger ("debug.parser") >= 1)
-    context.debug (context.cli.dump ());
+    context.debug (context.cli.dump ("Filter::subset"));
 
   bool shortcut = false;
   std::string filterExpr = context.cli.getFilter ();
