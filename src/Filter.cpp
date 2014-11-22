@@ -85,7 +85,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (context.config.getInteger ("debug.parser") >= 1 ? true : false);
+    eval.debug (context.config.getInteger ("debug.parser") >= 2 ? true : false);
     eval.compileExpression (filterExpr);
     eval.debug (false);
 
@@ -147,7 +147,9 @@ void Filter::subset (std::vector <Task>& output)
       contextTask = *task;
 
       Variant var;
+      eval.debug (context.config.getInteger ("debug.parser") >= 2 ? true : false);
       eval.evaluateCompiledExpression (var);
+      eval.debug (false);
       if (var.get_bool ())
         output.push_back (*task);
     }
@@ -156,7 +158,7 @@ void Filter::subset (std::vector <Task>& output)
     if (! shortcut)
     {
       context.timer_filter.stop ();
-      const std::vector <Task>& completed = context.tdb2.completed.get_tasks (); // TODO Optional
+      const std::vector <Task>& completed = context.tdb2.completed.get_tasks ();
       context.timer_filter.start ();
       _startCount += (int) completed.size ();
 
@@ -166,7 +168,9 @@ void Filter::subset (std::vector <Task>& output)
         contextTask = *task;
 
         Variant var;
+        eval.debug (context.config.getInteger ("debug.parser") >= 2 ? true : false);
         eval.evaluateCompiledExpression (var);
+        eval.debug (false);
         if (var.get_bool ())
           output.push_back (*task);
       }

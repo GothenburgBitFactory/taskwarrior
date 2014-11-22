@@ -1565,7 +1565,7 @@ void CLI::insertIDExpr ()
           }
         }
 
-        // Combine the ID and UUID sections wiþh 'or'.
+        // Combine the ID and UUID sections with 'or'.
         if (_id_ranges.size () &&
             _uuid_list.size ())
           reconstructed.push_back (opOr);

@@ -242,7 +242,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
       {
         if (column->type () == "date")
           value = Variant (task.get_date (canonical), Variant::type_date);
-        else if (column->type () == "duration")
+        else if (column->type () == "duration" || canonical == "recur")
           value = Variant ((time_t) Duration (task.get (canonical)), Variant::type_duration);
         else if (column->type () == "numeric")
           value = Variant (task.get_float (canonical));
