@@ -442,8 +442,8 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
     desugarFilterPatterns ();
     findOperators ();
     findAttributes ();
-    insertJunctions ();
     desugarFilterPlainArgs ();
+    insertJunctions ();                 // Deliberately after all desugar calls.
 
     // Decompose the elements for MODIFICATIONs.
     decomposeModAttributes ();
