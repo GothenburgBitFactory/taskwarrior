@@ -277,15 +277,14 @@ int execute (
   int select_retval, read_retval, write_retval;
   char buf[16384];
   int written;
-  const char * input_cstr = input.c_str ();
+  const char* input_cstr = input.c_str ();
 
   if (signal (SIGPIPE, SIG_IGN) == SIG_ERR) // Handled locally with EPIPE.
-  {
     throw std::string (std::strerror (errno));
-  }
 
   if (pipe (pin) == -1)
     throw std::string (std::strerror (errno));
+
   if (pipe (pout) == -1)
     throw std::string (std::strerror (errno));
 
@@ -297,6 +296,7 @@ int execute (
     // This is only reached in the child
     if (dup2 (pin[0], STDIN_FILENO) == -1)
       throw std::string (std::strerror (errno));
+
     if (dup2 (pout[1], STDOUT_FILENO) == -1)
       throw std::string (std::strerror (errno));
 
@@ -327,6 +327,7 @@ int execute (
     {
       FD_SET (pin[1], &wfds);
     }
+
     tv.tv_sec = 5;
     tv.tv_usec = 0;
 
@@ -359,16 +360,19 @@ int execute (
       read_retval = read (pout[0], &buf, sizeof(buf)-1);
       if (read_retval == -1)
         throw std::string (std::strerror (errno));
+
       buf[read_retval] = '\0';
       output += buf;
     }
   }
+
   close (pin[1]);   // Close the write end of the input pipe.
   close (pout[0]);  // Close the read end of the output pipe.
 
   int status = -1;
   if (wait (&status) == -1)
     throw std::string (std::strerror (errno));
+
   if (WIFEXITED (status))
   {
     status = WEXITSTATUS (status);
