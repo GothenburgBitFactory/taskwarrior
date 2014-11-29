@@ -183,6 +183,7 @@
           confirmation requests (thanks to Adam Coddington).
 - TW-1441 task import continues happily if filename doesn't exist.
 - TW-1444 Tag ordering is preserved, but should be sorted in reports.
+- TW-1449 Nag function does not respect urgency (thanks to Tomas Babej).
 - TW-1460 Empty due dates lead to endless loop.
 - TW-1463 A few more problems with special characters in filters, pluses,
           question marks, and braces (thanks to Ralph Bean).

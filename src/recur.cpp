@@ -406,6 +406,9 @@ void updateRecurrenceMask (Task& task)
 // Returns a Boolean indicator as to whether a nag message was generated, so
 // that commands can control the number of nag messages displayed (ie one is
 // enough).
+//
+// Otherwise generates a nag message, if one is defined, if there are tasks of
+// higher urgency.
 bool nag (Task& task)
 {
   // Special tag overrides nagging.
@@ -418,56 +421,16 @@ bool nag (Task& task)
     // Load all pending tasks.
     std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
 
-    // Counters.
-    int overdue    = 0;
-    int high       = 0;
-    int medium     = 0;
-    int low        = 0;
-    bool isOverdue = false;
-    char pri       = ' ';
-
     // Scan all pending tasks.
     std::vector <Task>::iterator t;
     for (t = tasks.begin (); t != tasks.end (); ++t)
     {
-      if (t->id == task.id)
+      if (t->urgency () > task.urgency ())
       {
-        if (t->getDateState ("due") == Task::dateBeforeToday)
-          isOverdue = true;
-
-        std::string priority = t->get ("priority");
-        if (priority.length ())
-          pri = priority[0];
-      }
-      else if (t->getStatus () == Task::pending)
-      {
-        if (t->getDateState ("due") == Task::dateBeforeToday)
-          overdue++;
-
-        std::string priority = t->get ("priority");
-        if (priority.length ())
-        {
-          switch (priority[0])
-          {
-          case 'H': high++;   break;
-          case 'M': medium++; break;
-          case 'L': low++;    break;
-          }
-        }
+        context.footnote (nagMessage);
+        return true;
       }
     }
-
-    // General form is "if there are no more deserving tasks", suppress the nag.
-    if (isOverdue                                          ) return false;
-    if (pri == 'H' && !overdue                             ) return false;
-    if (pri == 'M' && !overdue && !high                    ) return false;
-    if (pri == 'L' && !overdue && !high && !medium         ) return false;
-    if (pri == ' ' && !overdue && !high && !medium && !low ) return false;
-    if (task.is_blocking && !task.is_blocked               ) return false;
-
-    // All the excuses are made, all that remains is to nag the user.
-    context.footnote (nagMessage);
-    return true;
   }
 
   return false;
