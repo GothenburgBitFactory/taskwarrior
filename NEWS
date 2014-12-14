@@ -78,6 +78,8 @@ Removed features in 2.4.0
 
 Known Issues
 
+  - On Cygwin, case-insensitive regex searches are broken. The default is
+    now case-sensitive for Cygwin only.
   - https://bug.tasktools.org
 
 Taskwarrior has been built and tested on the following configurations:

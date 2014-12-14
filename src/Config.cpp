@@ -90,7 +90,11 @@ std::string Config::_defaults =
   "column.padding=1                               # Spaces between each column in a report\n"
   "bulk=3                                         # 3 or more tasks considered a bulk change and is confirmed\n"
   "nag=You have more urgent tasks.                # Nag message to keep you honest\n"                      // TODO
+#ifdef CYGWIN
+  "search.case.sensitive=no                       # Case-insensitive regex searches are broken under Cygwin\n"
+#else
   "search.case.sensitive=yes                      # Setting to no allows case insensitive searches\n"
+#endif
   "active.indicator=*                             # What to show as an active task indicator\n"
   "tag.indicator=+                                # What to show as a tag indicator\n"
   "dependency.indicator=D                         # What to show as a dependency indicator\n"

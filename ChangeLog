@@ -189,6 +189,8 @@
           question marks, and braces (thanks to Ralph Bean).
 - TW-1468 Filtering for project and description has issues (thanks to Richard
           Boß).
+- TW-1469 Case-insensitive searching broken on Cygwin (thanks to Richard
+          Boß).
 - Added new holidays.xy-XY.rc definition files
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.
