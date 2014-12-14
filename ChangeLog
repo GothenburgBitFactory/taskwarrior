@@ -191,6 +191,7 @@
           Boß).
 - TW-1469 Case-insensitive searching broken on Cygwin (thanks to Richard
           Boß).
+- TW-1471 task calc uses output it doesn't understand (thanks to Jens Erat).
 - Added new holidays.xy-XY.rc definition files
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.

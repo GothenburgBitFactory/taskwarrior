@@ -2062,20 +2062,18 @@ void Variant::cast (const enum type new_type)
     case type_date:
       {
         _date = 0;
-        if (dateFormat != "")
+
+        ISO8601d iso;
+        std::string::size_type pos = 0;
+        if (iso.parse (_string, pos) &&
+            pos == _string.length ())
+        {
+          _date = (time_t) iso;
+        }
+        else if (dateFormat != "")
         {
           Date d (_string, dateFormat);
           _date = d.toEpoch ();
-        }
-        else
-        {
-          ISO8601d iso;
-          std::string::size_type pos = 0;
-          if (iso.parse (_string, pos) &&
-              pos == _string.length ())
-          {
-            _date = (time_t) iso;
-          }
         }
       }
       break;

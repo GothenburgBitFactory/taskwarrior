@@ -647,7 +647,7 @@ void CLI::addArg (const std::string& arg)
       isID             (raw) ||     // <id>
       isPattern        (raw) ||     // /<pattern</
       isSubstitution   (raw) ||     // /<from>/<to>/[g]
-      isAttribute      (raw) ||     // <name>[.[~]<modﬁfier>]:<value>
+      isAttribute      (raw) ||     // <name>[.[~]<modifier>]:<value>
       isOperator       (raw))       // <operator>
   {
     _original_args.push_back (raw);
