@@ -352,7 +352,9 @@ printed.  Defaults to no.
 .TP
 .B search.case.sensitive=yes
 May be yes or no, and determines whether keyword lookup and substitutions on the
-description and annotations are done in a case sensitive way.  Defaults to yes.
+description and annotations are done in a case sensitive way.  Defaults to yes on
+most platforms.  Defaults to no on Cygwin due to older regex library problems with
+case-insensitivity.
 
 .TP
 .B regex=off
