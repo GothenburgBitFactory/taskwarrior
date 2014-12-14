@@ -357,10 +357,8 @@ most platforms.  Defaults to no on Cygwin due to older regex library problems wi
 case-insensitivity.
 
 .TP
-.B regex=off
-Controls whether regular expression support is enabled.
-The default value is off, because this advanced feature could cause confusion
-among users that are not comfortable with regular expressions.
+.B regex=on
+Controls whether regular expression support is enabled.  The default value is on.
 
 .TP
 .B xterm.title=no
