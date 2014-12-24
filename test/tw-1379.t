@@ -20,6 +20,8 @@ class TestBug1379(TestCase):
 
         self.t.config("color.alternate", "")
         self.t.config("_forcecolor", "1")
+        self.t.config("color.label", "")
+        self.t.config("color.label.sort", "")
 
         # For use with regex
         self.RED = "\033\[31m"
@@ -112,6 +114,7 @@ class TestBug1379(TestCase):
     def test_color_COMPLETED(self):
         """color.tag.COMPLETED changes color of COMPLETED tasks"""
         self.t.config("color.tag.COMPLETED", "red")
+        self.t.config("color.completed", "")
 
         self.t(("add", "Complete"))
         self.t(("1", "done"))
@@ -122,6 +125,7 @@ class TestBug1379(TestCase):
     def test_color_DELETED(self):
         """color.tag.DELETED changes color of DELETED tasks"""
         self.t.config("color.tag.DELETED", "red")
+        self.t.config("color.deleted", "")
 
         self.t(("add", "Delete"))
         self.t(("1", "delete"))
