@@ -738,6 +738,10 @@ void Task::parseLegacy (const std::string& line)
   // File format version 3, from 2009-3-23 - 2009-05-16, v1.6.0 - v1.7.1
   case 3: throw std::string (STRING_TASK_NO_FF3);
 
+  // File format version 4, from 2009-05-16 - today, v1.7.1+
+  case 4:
+    break;
+
   default:
     std::stringstream message;
     message << "Invalid fileformat at line '"
