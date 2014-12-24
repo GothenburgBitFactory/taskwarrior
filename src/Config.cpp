@@ -187,7 +187,7 @@ std::string Config::_defaults =
   "color.tag.none=\n"
   "color.pri.none=\n"
   "\n"
-  "# personal color rules (replace "X" with your value)\n"
+  "# personal color rules (replace 'X' with your value)\n"
   "#color.keyword.X=\n"
   "#color.project.X=\n"
   "color.tag.next=rgb440\n"
