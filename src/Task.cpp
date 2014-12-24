@@ -2008,6 +2008,11 @@ void Task::modify (modType type, bool text_required /* = false */)
               context.debug (label + name + " <-- '" + format ("{1}", v.get_date ()) + "' <-- '" + (std::string) v + "' <-- '" + value + "'");
             }
 
+            // If a date doesn't parse (2/29/2014) then it evaluates to zero.
+            if (value != "" &&
+                v.get_date () == 0)
+              throw format (STRING_DATE_INVALID_FORMAT, value, Variant::dateFormat);
+
             set (name, v.get_date ());
             ++modCount;
           }

@@ -99,8 +99,7 @@ class TestBug360AllowedChanges(BaseTestBug360):
         self.t(("add", "nonrecurring", "due:today"))
 
     def test_allow_modify_due_in_nonrecurring(self):
-        """Allow modifying due date in non recurring task
-        """
+        """Allow modifying due date in non recurring task"""
         # Retrieve the id of the non recurring task
         args = ("ls",)
         code, out, err = self.t(args)

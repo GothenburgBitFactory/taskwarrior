@@ -172,6 +172,8 @@
           Black Ops Testing).
 - TW-1422 Attempt to modify 'id' attribute creates an id attribute (thanks to
           Black Ops Testing).
+- TW-1423 Using the date February 29th, in a non leap year does not fail well
+          (thanks to Black Ops Testing).
 - TW-1424 Using a date of '1824days' (in the future) fails (thanks to Black Ops
           Testing).
 - TW-1428 Add support for color.uda.<name>.<value> rules.
