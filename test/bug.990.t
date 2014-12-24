@@ -43,7 +43,8 @@ if (open my $fh, '>', $rc)
   print $fh "data.location=.\n",
             "color.pri.L=green\n",
             "color.tagged=red\n",
-            "_forcecolor=1\n";
+            "_forcecolor=1\n",
+            "rule.precedence.color=pri.,tagged\n";
   close $fh;
 }
 
