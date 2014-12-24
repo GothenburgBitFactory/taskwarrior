@@ -1,7 +1,17 @@
-###############################################################################
-# Sample taskwarrior 1.9 (or later) light 16-color theme
+# light-16 
 #
-# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
+###############################################################################
+#
+# Color theme for taskwarrior 2.4 (or later) 
+#
+# taskwarrior - a command line task list manager.
+# http://taskwarrior.org - http://tasktools.org
+#
+# For more information on how to use, see 'man taskrc' and 'man task-color'
+#
+###############################################################################
+#
+# Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,51 +35,71 @@
 #
 ###############################################################################
 
-color=on
-color.header=blue
-color.footnote=blue
-color.error=blue
-color.debug=blue
+rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,pri.
 
-color.summary.bar=black on green
-color.summary.background=white on black
+# basics
+color.active=color11 on color8
+color.completed=green on black
+color.deleted=red on black
+color.due.today=on color11
+color.due=on color10
+color.overdue=on color13
+color.blocking=red
+color.blocked=blue
+color.recurring=
+color.scheduled=on color14
+color.tagged=
+color.pri.H=
+color.pri.M=
+color.pri.L=color8
+color.pri.none=
 
-color.history.add=black on red
-color.history.done=black on green
-color.history.delete=black on yellow
+# missing attributes
+color.project.none=
+color.tag.none=
+color.pri.none=
 
-color.burndown.pending=on red
-color.burndown.started=on yellow
-color.burndown.done=on green
+# personal color rules (replace "X" with your value)
+color.keyword.X=
+color.project.X=
+color.tag.next=color11 on color8
+color.uda.X=
 
+# interface
+color.alternate=
+color.header=bold white on color8
+color.label=white on black
+color.footnote=color14 on color8
+
+# burndown report
+color.burndown.pending=on color10 
+color.burndown.started=on color11
+color.burndown.done=on color2
+
+# calendar
+color.calendar.holiday=yellow
+color.calendar.today=color4
+color.calendar.due.today=color4 on color11
+color.calendar.due=on color10
+color.calendar.overdue=on color13
+color.calendar.weekend=on white
+color.calendar.weeknumber=color7 on color8
+
+# history report
+color.history.add=blue on color11
+color.history.done=color2 on color10
+color.history.delete=black on color9
+
+# summary report (background color only)
+color.summary.bar=on color10
+color.summary.background=on white
+
+# status
+color.error=red on white
+color.debug=white on black
+color.undo.before=yellow
+color.undo.after=green
 color.sync.added=green
 color.sync.changed=yellow
 color.sync.rejected=red
-
-color.undo.before=red
-color.undo.after=green
-
-color.calendar.today=black on bright blue
-color.calendar.due=white on red
-color.calendar.due.today=bold white on red
-color.calendar.overdue=black on bright red
-color.calendar.weekend=white on bright black
-color.calendar.holiday=black on yellow
-color.calendar.weeknumber=bold blue
-
-color.recurring=blue
-color.overdue=bold red
-color.due.today=red
-color.due=red
-color.active=black on green
-color.pri.none=
-color.pri.H=bold black
-color.pri.M=black
-color.pri.L=
-color.tagged=green
-color.blocked=white on black
-color.blocking=bold white on black
-color.project.none=
-color.tag.none=
-color.alternate=
-
+color.warning=bold red
