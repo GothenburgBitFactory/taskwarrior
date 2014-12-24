@@ -33,24 +33,30 @@ use Test::More tests => 3;
 delete $ENV{'TASKDATA'};
 delete $ENV{'TASKRC'};
 
+use File::Basename;
+my $ut = basename ($0);
+my $rc = $ut . '.rc';
+
 # Create the rc file.
-if (open my $fh, '>', 'color.rc')
+if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
             "color.pri.H=red\n",
+            "color.label=\n",
+            "color.label.sort=\n",
             "fontunderline=no\n";
   close $fh;
 }
 
 # Test the add command.
-qx{../src/task rc:color.rc add priority:H red 2>&1};
-my $output = qx{../src/task rc:color.rc list 2>&1};
+qx{../src/task rc:$rc add priority:H red 2>&1};
+my $output = qx{../src/task rc:$rc list 2>&1};
 
-like   ($output, qr/red/,       'color.disable - found red');
-unlike ($output, qr/\033\[31m/, 'color.disable - no color red');
-unlike ($output, qr/\033\[0m/,  'color.disable - no color reset');
+like   ($output, qr/red/,       "$ut: color.disable - found red");
+unlike ($output, qr/\033\[31m/, "$ut: color.disable - no color red");
+unlike ($output, qr/\033\[0m/,  "$ut: color.disable - no color reset");
 
 # Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data color.rc);
+unlink qw(pending.data completed.data undo.data backlog.data), $rc;
 exit 0;
 
