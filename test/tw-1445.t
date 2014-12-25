@@ -3,6 +3,7 @@
 
 import sys
 import os
+from datetime import datetime
 import unittest
 
 # Ensure python finds the local simpletap module
@@ -19,7 +20,7 @@ class Test1445(TestCase):
         self.t.config('alias.when', 'execute date')
         code, out, err = self.t(('when',))
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
-        self.assertRegexpMatches(out, r'... ... \d+ \d+:\d+:\d+ ... 20\d\d')
+        self.assertIn(str(datetime.now().year), out)
 
     def test_alias_multi_word(self):
         """Verify multi-word aliases"""
