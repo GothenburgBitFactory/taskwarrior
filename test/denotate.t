@@ -82,10 +82,18 @@ $output = qx{../src/task rc:$rc rrr 2>&1};
 unlike ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Bibo/ms,                  "$ut: Delete partial match");
 like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Kermit the frog now second annotation");
 
-qx{../src/task rc:$rc 1 denotate BErt 2>&1};
-$output = qx{../src/task rc:$rc rrr 2>&1};
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Denotate is case sensitive");
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Kermit the frog still second annoation"); # 15
+if ($^O =~ /cygwin/)
+{
+  skip ("$ut: Denotate is case sensitive");
+  skip ("$ut: Kermit the frog still second annoation");
+}
+else
+{
+  qx{../src/task rc:$rc 1 denotate BErt 2>&1};
+  $output = qx{../src/task rc:$rc rrr 2>&1};
+  like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   "$ut: Denotate is case sensitive");
+  like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       "$ut: Kermit the frog still second annoation"); # 15
+}
 
 qx{../src/task rc:$rc 1 denotate Kermit 2>&1};
 $output = qx{../src/task rc:$rc rrr 2>&1};
