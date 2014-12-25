@@ -82,15 +82,10 @@ $output = qx{../src/task rc:$rc rrr 2>&1};
 unlike ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Bibo/ms,                  "$ut: Delete partial match");
 like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Kermit the frog now second annotation");
 
-if ($^O =~ /cygwin/)
+SKIP:
 {
-  SKIP:
-  {
-    skip ("Skipping regex case-insensitive tests on Cygwin.  Doesn't work.", 2);
-  }
-}
-else
-{
+  skip ("Skipping regex case-insensitive tests on Cygwin.  Doesn't work.", 2) if $^O =~ /cygwin/;
+
   qx{../src/task rc:$rc 1 denotate BErt 2>&1};
   $output = qx{../src/task rc:$rc rrr 2>&1};
   like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   "$ut: Denotate is case sensitive");
