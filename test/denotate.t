@@ -84,8 +84,10 @@ like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut
 
 if ($^O =~ /cygwin/)
 {
-  skip ("$ut: Denotate is case sensitive");
-  skip ("$ut: Kermit the frog still second annoation");
+  SKIP:
+  {
+    skip ("Skipping regex case-insensitive tests on Cygwin.  Doesn't work.", 2);
+  }
 }
 else
 {
