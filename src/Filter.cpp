@@ -80,8 +80,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   {
     Eval eval;
     eval.ambiguity (false);
-    eval.addSource (namedDates);
     eval.addSource (domSource);
+    eval.addSource (namedDates);
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
@@ -129,8 +129,8 @@ void Filter::subset (std::vector <Task>& output)
 
     Eval eval;
     eval.ambiguity (false);
-    eval.addSource (namedDates);
     eval.addSource (domSource);
+    eval.addSource (namedDates);
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.

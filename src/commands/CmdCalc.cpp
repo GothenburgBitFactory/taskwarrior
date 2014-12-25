@@ -56,8 +56,8 @@ int CmdCalc::execute (std::string& output)
 
   // Create an evaluator with DOM access.
   Eval e;
-  e.addSource (namedDates);
   e.addSource (domSource);
+  e.addSource (namedDates);
   e.ambiguity (false);  // TODO Configurable?
   e.debug (context.config.getBoolean ("debug"));
 

@@ -191,6 +191,7 @@
 - TW-1444 Tag ordering is preserved, but should be sorted in reports.
 - TW-1445 Aliases broken: cannot contain multiple arguments anymore (thanks to
           Johannes Schlatow).
+- TW-1447 Not possible to filter on a UDA of type String (thanks to atomicules).
 - TW-1449 Nag function does not respect urgency (thanks to Tomas Babej).
 - TW-1460 Empty due dates lead to endless loop.
 - TW-1463 A few more problems with special characters in filters, pluses,
