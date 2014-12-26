@@ -90,8 +90,9 @@ int CmdPrepend::execute (std::string& output)
       // Prepend to siblings.
       if (task->has ("parent"))
       {
-        if (! context.config.getBoolean ("recurrence.confirmation") ||
-            confirm (STRING_CMD_PREPEND_CONFIRM_R))
+        if ((context.config.get ("recurrence.confirmation") == "prompt"
+             && confirm (STRING_CMD_PREPEND_CONFIRM_R)) ||
+            context.config.getBoolean ("recurrence.confirmation"))
         {
           std::vector <Task> siblings = context.tdb2.siblings (*task);
           std::vector <Task>::iterator sibling;

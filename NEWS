@@ -46,7 +46,7 @@ New configuration options in taskwarrior 2.4.0
   - New 'urgency.uda.<name>.<value>' allows specific UDA values to affect
     urgency.
   - New 'recurrence.confirmation' which allows bypassing confirmation for
-    changes to recurring tasks, by accepting them.
+    changes to recurring tasks, by accepting, rejecting or prompting.
 
 Newly deprecated features in taskwarrior 2.4.0
 

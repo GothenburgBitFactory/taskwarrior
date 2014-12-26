@@ -56,7 +56,7 @@ default, sample
 file in the user's home directory.
 
 The taskwarrior configuration file consists of a series of assignments in each
-line.  The assignments have the syntax:
+line. The assignments have the syntax:
 
 .RS
 <name-of-configuration-variable>=<value-to-be-set>
@@ -83,12 +83,12 @@ of the line is ignored.
 The configuration file supports UTF8 as well as JSON encoding, such as \\uNNNN.
 
 Note that taskwarrior is flexible about the values used to represent Boolean
-items.  You can use "on", "yes", "y", "1" and "true".
+items. You can use "on", "yes", "y", "1" and "true".
 Anything else means "off".
 
 .SH EDITING
 You can edit your .taskrc file by hand if you wish, or you can use the 'config'
-command.  To permanently set a value in your .taskrc file, use this command:
+command. To permanently set a value in your .taskrc file, use this command:
 
 .RS
 $ task config nag "You have more urgent tasks."
@@ -100,7 +100,7 @@ To delete an entry, use this command:
 $ task config nag
 .RE
 
-Taskwarrior will then use the default value.  To explicitly set a value to
+Taskwarrior will then use the default value. To explicitly set a value to
 blank, and therefore avoid using the default value, use this command:
 
 .RS
@@ -170,7 +170,7 @@ Note that the TASKDATA environment variable overrides this setting.
 .TP
 .B locking=on
 Determines whether to use file locking when accessing the pending.data and
-completed.data files.  Defaults to "on". Solaris users who store the data
+completed.data files. Defaults to "on". Solaris users who store the data
 files on an NFS mount may need to set locking to "off". Note that there is
 danger in setting this value to "off" - another program (or another instance of
 task) may write to the task.pending file at the same time.
@@ -178,7 +178,7 @@ task) may write to the task.pending file at the same time.
 .TP
 .B gc=on
 Can be used to temporarily suspend garbage collection (gc), so that task IDs
-don't change.  Note that this should be used in the form of a command line
+don't change. Note that this should be used in the form of a command line
 override (task rc.gc=off ...), and not permanently used in the .taskrc file,
 as this significantly affects performance in the long term.
 
@@ -190,7 +190,7 @@ is 'on', but certain extensions and environments may need to disable hooks.
 .TP
 .B exit.on.missing.db=no
 When set to 'yes' causes the program to exit if the database (~/.task or
-rc.data.location or TASKDATA override) is missing.  Default value is 'no'.
+rc.data.location or TASKDATA override) is missing. Default value is 'no'.
 
 .SS TERMINAL
 .TP
@@ -201,53 +201,53 @@ using, for text wrapping.
 .TP
 .B defaultwidth=80
 The width of output used when auto-detection support is not available. Defaults
-to 80.  If set to 0, it is interpreted as infinite width, therefore with no
+to 80. If set to 0, it is interpreted as infinite width, therefore with no
 word-wrapping; this is useful when redirecting report output to a file for subsequent
 handling.
 
 .TP
 .B defaultheight=24
 The height of output used when auto-detection support is not available. Defaults
-to 24.  If set to 0, it is interpreted as infinite height. This is useful when redirecting
+to 24. If set to 0, it is interpreted as infinite height. This is useful when redirecting
 charts to a file for subsequent handling.
 
 .TP
 .B avoidlastcolumn=no
-Causes the width of the terminal minus one to be used as the full width.  This
+Causes the width of the terminal minus one to be used as the full width. This
 avoids placing color codes in the last column which can cause problems for
-Cygwin users.  Default value is 'no'.
+Cygwin users. Default value is 'no'.
 
 .TP
 .B hyphenate=on
-Hyphenates lines when wrapping breaks occur mid-word.  Default value is 'on'.
+Hyphenates lines when wrapping breaks occur mid-word. Default value is 'on'.
 
 .TP
 .B editor=vi
 Specifies which text editor you wish to use for when the
 .B task edit <ID>
 command is used. Taskwarrior will first look for this configuration variable. If
-found, it is used.  Otherwise it will look for the $VISUAL or $EDITOR
+found, it is used. Otherwise it will look for the $VISUAL or $EDITOR
 environment variables, before it defaults to using "vi".
 
 .TP
 .B reserved.lines=1
 This is the number of lines reserved at the bottom of the screen for the shell
-prompt.  This is only referenced when 'limit:page' is used.
+prompt. This is only referenced when 'limit:page' is used.
 
 .SS MISCELLANEOUS
 
 .TP
 .B verbose=on|off|nothing|list...
 When set to "on" (the default), helpful explanatory comments are added to all
-output from Taskwarrior.  Setting this to "off" means that you would see regular
+output from Taskwarrior. Setting this to "off" means that you would see regular
 output.
 
 The special value "nothing" can be used to eliminate all optional output, which
-results in only the formatted data being shown, with nothing else.  This output
+results in only the formatted data being shown, with nothing else. This output
 is most readily parsed and used by shell scripts.
 
 Alternatively, you can specify a comma-separated list of verbosity tokens that
-control specific occasions when output is generated.  This list may contain:
+control specific occasions when output is generated. This list may contain:
 
     blank      Inserts extra blank lines in output, for clarity
     header     Messages that appear before report output
@@ -277,13 +277,13 @@ Here are the shortcut equivalents:
     verbose=
 
 Those additional comments are sent to the standard error for header, footnote
-and project.  The others are sent to standard output.
+and project. The others are sent to standard output.
 
 .TP
 .B confirmation=yes
 May be "yes" or "no", and determines whether taskwarrior will ask for
 confirmation before deleting a task, performing bulk changes, or the undo
-command.  The default value is "yes".  Consider leaving this setting as "yes",
+command. The default value is "yes". Consider leaving this setting as "yes",
 for safety.
 
 .TP
@@ -296,23 +296,23 @@ filter.
 .TP
 .B indent.annotation=2
 Controls the number of spaces to indent annotations when shown beneath the
-description field.  The default value is "2".
+description field. The default value is "2".
 
 .TP
 .B indent.report=0
-Controls the indentation of the entire report output.  Default is "0".
+Controls the indentation of the entire report output. Default is "0".
 
 .TP
 .B row.padding=0
-Controls left and right padding around each row of the report output.  Default is "0".
+Controls left and right padding around each row of the report output. Default is "0".
 
 .TP
 .B column.padding=0
-Controls padding between columns of the report output.  Default is "1".
+Controls padding between columns of the report output. Default is "1".
 
 .TP
 .B bulk=3
-Is a number, defaulting to 3.  When this number or greater of tasks are modified
+Is a number, defaulting to 3. When this number or greater of tasks are modified
 in a single command, confirmation will be required, unless the
 .B confirmation
 variable is "no".
@@ -322,47 +322,47 @@ This is useful for preventing large-scale unintended changes.
 .TP
 .B nag=You have more urgent tasks.
 This may be a string of text, or blank. It is used as a prompt when a task is
-started or completed that is not considered high priority.  Default value is:
-You have more urgent tasks.  It is a gentle reminder that you are contradicting
+started or completed that is not considered high priority. Default value is:
+You have more urgent tasks. It is a gentle reminder that you are contradicting
 your own priority settings.
 
 .TP
 .B list.all.projects=yes
 May be yes or no, and determines whether the 'projects' command lists all the project
-names you have used, or just the ones used in active tasks.  The default value is
+names you have used, or just the ones used in active tasks. The default value is
 "no".
 
 .TP
 .B complete.all.tags=yes
 May be yes or no, and determines whether the tab completion scripts consider all
-the tag names you have used, or just the ones used in active tasks.  The default
+the tag names you have used, or just the ones used in active tasks. The default
 value is "no".
 
 .TP
 .B list.all.tags=yes
 May be yes or no, and determines whether the 'tags' command lists all the tag
-names you have used, or just the ones used in active tasks.  The default value is
+names you have used, or just the ones used in active tasks. The default value is
 "no".
 
 .TP
 .B print.empty.columns=no
 May be yes or no, and determines whether columns with no data for any task are
-printed.  Defaults to no.
+printed. Defaults to no.
 
 .TP
 .B search.case.sensitive=yes
 May be yes or no, and determines whether keyword lookup and substitutions on the
-description and annotations are done in a case sensitive way.  Defaults to yes on
-most platforms.  Defaults to no on Cygwin due to older regex library problems with
+description and annotations are done in a case sensitive way. Defaults to yes on
+most platforms. Defaults to no on Cygwin due to older regex library problems with
 case-insensitivity.
 
 .TP
 .B regex=on
-Controls whether regular expression support is enabled.  The default value is on.
+Controls whether regular expression support is enabled. The default value is on.
 
 .TP
 .B xterm.title=no
-Sets the xterm window title when reports are run.  Defaults to off.
+Sets the xterm window title when reports are run. Defaults to off.
 
 .TP
 .B expressions=infix|postfix
@@ -372,24 +372,24 @@ Defaults to infix.
 .TP
 .B dom=on
 Enables or disables access to taskwarrior internals and task metadata on the
-command line.  Defaults to on.
+command line. Defaults to on.
 
 .TP
 .B json.array=off
 Determines whether the query command encloses the JSON output in '[...]' to
-create a properly-formed JSON array.  Defaults to off.
+create a properly-formed JSON array. Defaults to off.
 
 .TP
 .B _forcecolor=no
 Taskwarrior shuts off color automatically when the output is not sent directly
-to a TTY.  For example, this command:
+to a TTY. For example, this command:
 
 .RS
 .RS
 $ task list > file
 .RE
 
-will not use any color.  To override this, use:
+will not use any color. To override this, use:
 
 .RS
 $ task rc._forcecolor=yes list > file
@@ -398,28 +398,30 @@ $ task rc._forcecolor=yes list > file
 
 .TP
 .B active.indicator=*
-The character or string to show in the start.active column.  Defaults to *.
+The character or string to show in the start.active column. Defaults to *.
 
 .TP
 .B tag.indicator=+
-The character or string to show in the tag.indicator column.  Defaults to +.
+The character or string to show in the tag.indicator column. Defaults to +.
 
 .TP
 .B dependency.indicator=D
-The character or string to show in the depends.indicator column.  Defaults to +.
+The character or string to show in the depends.indicator column. Defaults to +.
 
 .TP
-.B recurrence.confirmation=yes
+.B recurrence.confirmation=prompt
 Controls whether changes to recurring tasks propagates to other child tasks with
-or without confirmation.  Defaults to yes.
+or without confirmation. A value of 'yes' means propagate changes without
+confirmation. A value of 'no' means do not propagate changes and don't ask for
+confirmation. A value of 'prompt' prompts you every time. Defaults to 'prompt'.
 
 .TP
 .B recurrence.indicator=R
-The character or string to show in the recurrence_indicator column.  Defaults to R.
+The character or string to show in the recurrence_indicator column. Defaults to R.
 
 .TP
 .B recurrence.limit=1
-The number of future recurring tasks to show.  Defaults to 1.  For example, if a
+The number of future recurring tasks to show. Defaults to 1. For example, if a
 weekly recurring task is added with a due date of tomorrow, and recurrence.limit
 is set to 2, then a report will list 2 pending recurring tasks, one for tomorrow,
 and one for a week from tomorrow.
@@ -427,23 +429,23 @@ and one for a week from tomorrow.
 .TP
 .B undo.style=side
 When the 'undo' command is run, taskwarrior presents a before and after
-comparison of the data.  This can be in either the 'side' style, which compares
+comparison of the data. This can be in either the 'side' style, which compares
 values side-by-side in a table, or 'diff' style, which uses a format similar to
 the 'diff' command.
 
 .TP
 .B burndown.bias=0.666
-The burndown bias is a number that lies within the range 0 <= bias <= 1.  The bias
+The burndown bias is a number that lies within the range 0 <= bias <= 1. The bias
 is the fraction of the find/fix rates derived from the short-term data (last
-25% of the report) versus the longer term data (last 50% of the report).  A
+25% of the report) versus the longer term data (last 50% of the report). A
 value of 0.666 (the default) means that the short-term rate has twice the weight
-of the longer-term rate.  The calculation is as follows:
+of the longer-term rate. The calculation is as follows:
 
     rate = (long-term-rate * (1 - bias)) + (short-term-rate * bias)
 
 .TP
 .B abbreviation.minimum=2
-Minimum length of any abbreviated command/value.  This means that "ve", "ver",
+Minimum length of any abbreviated command/value. This means that "ve", "ver",
 "vers", "versi", "versio" will all equate to "version", but "v" will not.
 Default is 2.
 
@@ -451,7 +453,7 @@ Default is 2.
 .B debug=off
 Taskwarrior has a debug mode that causes diagnostic output to be displayed.
 Typically this is not something anyone would want, but when reporting a bug,
-debug output can be useful.  It can also help explain how the command line is
+debug output can be useful. It can also help explain how the command line is
 being parsed, but the information is displayed in a developer-friendly, not a
 user-friendly way.
 
@@ -461,24 +463,24 @@ if they do not already have assigned values.
 .TP
 .B debug.hooks=0
 Controls the hook system diagnostic level. Level 0 means no diagnostics.
-Level 1 shows hook calls.  Level 2 also shows exit status and I/O.
+Level 1 shows hook calls. Level 2 also shows exit status and I/O.
 
 .TP
 .B debug.parser=0
-Controls the parser diagnostic level.  Level 0 means no diagnostics.  Level 1
-shows the parse tree.  Level 2 shows expression evaluation details.  Level 3
+Controls the parser diagnostic level. Level 0 means no diagnostics. Level 1
+shows the parse tree. Level 2 shows expression evaluation details. Level 3
 shows parse trees from every phase of the parse.
 
 .TP
 .B debug.tls=0
-Controls the GnuTLS diagnostic level.  For 'sync' debugging. Level 0 means no
-diagnostics.  Level 9 is the highest.  Level 2 is a good setting for debugging.
+Controls the GnuTLS diagnostic level. For 'sync' debugging. Level 0 means no
+diagnostics. Level 9 is the highest. Level 2 is a good setting for debugging.
 
 .TP
 .B alias.rm=delete
-Taskwarrior supports command aliases.  This alias provides an alternate name
-(rm) for the delete command.  You can use aliases to provide alternate names for
-any of the commands.  Several commands you may use are actually aliases -
+Taskwarrior supports command aliases. This alias provides an alternate name
+(rm) for the delete command. You can use aliases to provide alternate names for
+any of the commands. Several commands you may use are actually aliases -
 the 'history' report, for example, or 'export'.
 
 .SS DATES
@@ -502,10 +504,10 @@ The precedence order for the configuration variable is report.X.dateformat then
 dateformat.report then dateformat for formating the due dates in reports.
 If both report.X.dateformat and dateformat.report are not set then dateformat
 will be applied
-to the date.  Entered dates as well as all other displayed dates in reports
+to the date. Entered dates as well as all other displayed dates in reports
 are formatted according to dateformat.
 
-The default value is the ISO-8601 standard: Y-M-D.  The string can contain the
+The default value is the ISO-8601 standard: Y-M-D. The string can contain the
 characters:
 
 .RS
@@ -597,8 +599,8 @@ a D b Y H:N:S would do an output as "Mon 24 Jan 2011 11:19:42"
 .RS
 Undefined fields are put to their minimal valid values (1 for month and day and
 0 for hour, minutes and seconds) when there is at least one more global date
-field that is set.  Otherwise, they are set to the corresponding values of
-"now".  For example:
+field that is set. Otherwise, they are set to the corresponding values of
+"now". For example:
 .RE
 
 .RS
@@ -618,27 +620,27 @@ default value is "Sunday".
 .TP
 .B displayweeknumber=yes
 Determines if week numbers are displayed when using the "task calendar" command.
-The week number is dependent on the day a week starts.  The default value is
+The week number is dependent on the day a week starts. The default value is
 "yes".
 
 .TP
 .B due=7
 This is the number of days into the future that define when a task is
-considered due, and is colored accordingly.  The default value is 7.
+considered due, and is colored accordingly. The default value is 7.
 
 .TP
 .B calendar.details=sparse
 If set to full running "task calendar" will display the details of tasks with
-due dates that fall into the calendar period.  The corresponding days will be
-color-coded in the calendar.  If set to sparse only the corresponding days will
-be color coded and no details will be displayed.  The displaying of due dates
-with details is turned off by setting the variable to none.  The default value
+due dates that fall into the calendar period. The corresponding days will be
+color-coded in the calendar. If set to sparse only the corresponding days will
+be color coded and no details will be displayed. The displaying of due dates
+with details is turned off by setting the variable to none. The default value
 is "sparse".
 
 .TP
 .B calendar.details.report=list
 The report to run when displaying the details of tasks with due dates when
-running the "task calendar" command.  The default value is "list".
+running the "task calendar" command. The default value is "list".
 
 .TP
 .B calendar.offset=off
@@ -653,14 +655,14 @@ value is "-1".
 .TP
 .B calendar.holidays=full
 If set to full running "task calendar" will display holidays in the calendar by
-color-coding the corresponding days.  A detailed list with the dates and names
-of the holidays is also shown.  If set to sparse only the days are color-coded
+color-coding the corresponding days. A detailed list with the dates and names
+of the holidays is also shown. If set to sparse only the days are color-coded
 and no details on the holidays will be displayed. The displaying of holidays is
-turned off by setting the variable to none.  The default value is "none".
+turned off by setting the variable to none. The default value is "none".
 
 .TP
 .B calendar.legend=yes
-Determines whether the calendar legend is displayed.  The default value is "yes".
+Determines whether the calendar legend is displayed. The default value is "yes".
 
 .SS JOURNAL ENTRIES
 
@@ -683,11 +685,11 @@ having set journal.time.
 .TP
 .B journal.info=on
 When enabled, this setting causes a change log of each task to be displayed by
-the 'info' command.  Default value is "on".
+the 'info' command. Default value is "on".
 
 .SS HOLIDAYS
 Holidays are entered either directly in the .taskrc file or via an include file
-that is specified in .taskrc.  For each holiday the name and the date is
+that is specified in .taskrc. For each holiday the name and the date is
 required to be given:
 
 .RS
@@ -736,7 +738,7 @@ include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 .TP
 .B monthsperline=3
 Determines how many months the "task calendar" command renders across the
-screen.  Defaults to however many will fit.  If more months than will fit are
+screen. Defaults to however many will fit. If more months than will fit are
 specified, taskwarrior will only show as many that will fit.
 
 .SS DEPENDENCIES
@@ -762,9 +764,9 @@ Determines if font underlines or ASCII dashes should be used to underline
 headers, even when color is enabled.
 .RE
 
-Taskwarrior has a number of coloration rules.  They correspond to a particular
+Taskwarrior has a number of coloration rules. They correspond to a particular
 attribute of a task, such as it being due, or being active, and specifies the
-automatic coloring of that task.  A list of valid colors, depending on your
+automatic coloring of that task. A list of valid colors, depending on your
 terminal, can be obtained by running the command:
 
 .RS
@@ -891,12 +893,12 @@ Colors any of the messages printed last.
 
 .TP
 .B color.summary.bar=on green
-Colors the summary progress bar.  Should consist of a background color.
+Colors the summary progress bar. Should consist of a background color.
 .RE
 
 .TP
 .B color.summary.background=on black
-Colors the summary progress bar.  Should consist of a background color.
+Colors the summary progress bar. Should consist of a background color.
 .RE
 
 .TP
@@ -936,19 +938,19 @@ Color of weeknumbers in calendar.
 
 .TP
 .B color.label=
-Colors the report labels.  Defaults to not use color.
+Colors the report labels. Defaults to not use color.
 .RE
 
 .TP
 .B color.label.sort=
-Colors the report labels for sort columns.  Defaults to color.label.
+Colors the report labels for sort columns. Defaults to color.label.
 .RE
 
 .TP
 .B color.alternate=on rgb253
 Color of alternate tasks.
 This is to apply a specific color to every other task in a report,
-which can make it easier to visually separate tasks.  This is especially
+which can make it easier to visually separate tasks. This is especially
 useful when tasks are displayed over multiple lines due to long descriptions
 or annotations.
 .RE
@@ -962,7 +964,7 @@ or annotations.
 .br
 .B color.history.delete=on yellow
 .RS
-Colors the bars on the ghistory report graphs.  Defaults to red, green and
+Colors the bars on the ghistory report graphs. Defaults to red, green and
 yellow bars.
 .RE
 
@@ -975,7 +977,7 @@ yellow bars.
 .br
 .B color.burndown.done=on green
 .RS
-Colors the bars on the burndown reports graphs.  Defaults to red, green and
+Colors the bars on the burndown reports graphs. Defaults to red, green and
 yellow bars.
 .RE
 
@@ -1007,7 +1009,7 @@ Colors the output of the sync command.
 .B                       pri.,tagged,completed,deleted
 .RS
 This setting specifies the precedence of the color rules, from highest to
-lowest.  Note that the prefix 'color.' is omitted (for brevity), and that any
+lowest. Note that the prefix 'color.' is omitted (for brevity), and that any
 wildcard value (color.tag.XXX) is shortened to 'tag.', which places all
 specific tag rules at the same precedence, again for brevity.
 .RE
@@ -1021,7 +1023,7 @@ Colors all debug output, if enabled.
 .SS URGENCY
 
 The urgency calculation uses a polynomial with several terms, each of which
-has a configurable coefficient.  Those coefficients are:
+has a configurable coefficient. Those coefficients are:
 
 .TP
 .B urgency.next.coefficient=15.0
@@ -1098,7 +1100,7 @@ Specific value of UDA data.
 .RE
 
 The coefficients reflect the relative importance of the various terms in the
-urgency calculation.  These are default values, and may be modified to suit your
+urgency calculation. These are default values, and may be modified to suit your
 preferences, but it is important that you carefully consider any modifications.
 
 .SS DEFAULTS
@@ -1108,34 +1110,34 @@ preferences, but it is important that you carefully consider any modifications.
 default.project=foo
 Provides a default project name for the
 .I task add
-command, if you don't specify one.  The default is blank.
+command, if you don't specify one. The default is blank.
 
 .TP
 .B
 default.priority=M
 Provides a default priority for the
 .I task add
-command, if you don't specify one.  The default is blank.
+command, if you don't specify one. The default is blank.
 
 .TP
 .B
 default.due=...
 Provides a default due date for the
 .I task add
-command, if you don't specify one.  The default is blank.
+command, if you don't specify one. The default is blank.
 
 .TP
 .B
 uda.<name>.default=...
 Provides default values for UDA fields when using the
 .I task add
-command, if you don't specify values.  The default is blank.
+command, if you don't specify values. The default is blank.
 
 .TP
 .B
 default.command=next
 Provides a default command that is run every time taskwarrior is invoked with no
-arguments.  For example, if set to:
+arguments. For example, if set to:
 
 .RS
 .RS
@@ -1145,7 +1147,7 @@ default.command=project:foo list
 
 .RS
 then taskwarrior will run the "project:foo list" command if no command is
-specified.  This means that by merely typing
+specified. This means that by merely typing
 .RE
 
 .RS
@@ -1178,7 +1180,7 @@ The description for report X when running the "task help" command.
 
 .TP
 .B report.X.columns
-This is a comma-separated list of columns and formatting specifiers.  See the
+This is a comma-separated list of columns and formatting specifiers. See the
 command 'task columns' for a full list of options and examples.
 
 .TP
@@ -1222,7 +1224,7 @@ section for details on the sequence placeholders.
 This adds the possibility to control the output of annotations for a task in a
 report. See the
 .B annotations
-variable for details on the possible values.  Deprecated.
+variable for details on the possible values. Deprecated.
 
 .TP
 Taskwarrior comes with a number of predefined reports, which are:
@@ -1286,9 +1288,9 @@ Lists all tasks that have dependencies.
 .SS USER DEFINED ATTRIBUTES
 
 User defined attributes (UDAs) are an extension mechanism that allows you to
-define new attributes for Taskwarrior to store and display.  One such example is
+define new attributes for Taskwarrior to store and display. One such example is
 an 'estimate' attribute that could be used to store time estimates associated
-with a task.  This 'estimate' attribute is not built in to Taskwarrior, but with
+with a task. This 'estimate' attribute is not built in to Taskwarrior, but with
 a few simple configuration settings you can instruct Taskwarrior to store this
 item, and provide access to it for custom reports and filters.
 
@@ -1298,8 +1300,8 @@ task-related.
 
 One important restriction is that because this is an open system that allows
 the definition of any new attribute, Taskwarrior cannot understand the meaning
-of that attribute.  So while Taskwarrior will faithfully store, modify, report,
-sort and filter your UDA, it does not understand anything about it.  For example
+of that attribute. So while Taskwarrior will faithfully store, modify, report,
+sort and filter your UDA, it does not understand anything about it. For example
 if you define a UDA named 'estimate', Taskwarrior will not know that this value
 is weeks, hours, minutes, money, or some other resource count.
 
@@ -1319,7 +1321,7 @@ Provides a default report label for the UDA called '<name>'.
 .B uda.<name>.values=A,B,C
 .RS
 For type 'string' UDAs only, this provides a comma-separated list of acceptable
-values.  In this example, the '<name>' UDA may only contain values 'A', 'B',
+values. In this example, the '<name>' UDA may only contain values 'A', 'B',
 or 'C', but may also contain no value.
 .RE
 
@@ -1344,8 +1346,8 @@ server.
 .TP
 .B taskd.server=<host>:<port>
 .RS
-Specifies the hostname and port of the Taskserver.  Hostname may be an IPv4 or
-IPv6 address, or domain.  Port is an integer.
+Specifies the hostname and port of the Taskserver. Hostname may be an IPv4 or
+IPv6 address, or domain. Port is an integer.
 .RE
 
 .TP
@@ -1372,7 +1374,7 @@ Taskserver.
 .B taskd.ca=<path>
 .RS
 Specifies the path to the CA certificate in the event that your Taskserver is
-using a self-signed certificate.  Optional.
+using a self-signed certificate. Optional.
 .RE
 
 .TP
@@ -1387,10 +1389,10 @@ Default is "strict", which requires full validation.
 
 .TP
 .B taskd.ciphers=NORMAL
-Override of the cipher selection.  The set of ciphers used by TLS may be
-controlled by both server and client.  There must be some overlap between
+Override of the cipher selection. The set of ciphers used by TLS may be
+controlled by both server and client. There must be some overlap between
 client and server supported ciphers, or communication cannot occur.
-Default is "NORMAL".  See GnuTLS documentation for full details.
+Default is "NORMAL". See GnuTLS documentation for full details.
 .RE
 
 .SH "CREDITS & COPYRIGHTS"

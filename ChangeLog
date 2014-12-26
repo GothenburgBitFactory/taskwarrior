@@ -22,6 +22,7 @@
 - #1508 Show command highlight configuration (thanks to Nicolas Appriou).
 - #1511 sync init crashes if client certification file is empty or invalid
         (thanks to Marton Suranyi).
+- TW-1 Recurring task message on the same task (thanks to Profpatsch).
 - TW-5 color.due.today does not work (thanks to Max Muller).
 - TW-15 'task recurring' shows only children of recurring tasks (thanks to
         Louis-Claude Canon).
