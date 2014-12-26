@@ -294,7 +294,16 @@ light-256.theme
 solarized-dark-256.theme
 .br
 solarized-light-256.theme
+.br
+dark-default-16.theme
+.br
+dark-gray-blue-256.theme
+.br
+no-color.theme
 .RE
+
+Bear in mind that if you are using a terminal with a dark background, you will
+see better results using a dark theme.
 
 You can also see how the theme will color the various tasks with the command:
 

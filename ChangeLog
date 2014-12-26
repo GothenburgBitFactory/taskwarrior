@@ -30,6 +30,8 @@
 - TW-15 'task recurring' shows only children of recurring tasks (thanks to
         Louis-Claude Canon).
 - TW-21 do not match a UDA if not followed by colon (thanks to Scott Kostyshak).
+- TW-24 incorrect use of xterm colorization escape sequences (thanks to Steve
+        Rader).
 - TW-28 Inserts spaces before punctuation characters (thanks to Matt Kraai).
 - TW-43 Better error handling than: "Found extra operands." (thanks to Benjamin
         Weber).
