@@ -26,6 +26,7 @@
 - TW-2 Unexpected behaviour - marking task as done releases task ID (thanks to
        Cory Donnelly).
 - TW-5 color.due.today does not work (thanks to Max Muller).
+- TW-14 Parent recurring tasks cannot be deleted (thanks to Miguel de Val Borro).
 - TW-15 'task recurring' shows only children of recurring tasks (thanks to
         Louis-Claude Canon).
 - TW-21 do not match a UDA if not followed by colon (thanks to Scott Kostyshak).
