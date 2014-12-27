@@ -53,6 +53,7 @@
 - TW-100 lazy dates (thanks to John Florian).
 - TW-101 New description column format: Truncated WITH annotation count (thanks
          to atomicules).
+- TW-105 Doc needed - a comprehensive 'setup' walkthrough.
 - TW-115 allow "0day" durations for UDAs.
 - TW-128 new helper command; _envs.
 - TW-168 modification of due date relative to current due date (thanks to Dirk
