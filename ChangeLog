@@ -62,6 +62,8 @@
 - TW-161 UDA indicator (thanks to Jim B).
 - TW-168 modification of due date relative to current due date (thanks to Dirk
          Sarpe).
+- TW-174 Provide an easy way to match non-leaf-node projects only (thanks to Ben
+         Armstrong).
 - TW-186 Increase for numerical UDAs (thanks to Steffen Uhlig).
 - TW-193 Support listing breaks.
 - TW-197 New virtual tag READY.
