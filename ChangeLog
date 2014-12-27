@@ -50,6 +50,7 @@
 - TW-72 extend info report with urgency column.
 - TW-90 configurable wait until day/week/month/year (thanks to Aikido Guy).
 - TW-99 info report streamlining.
+- TW-100 lazy dates (thanks to John Florian).
 - TW-101 New description column format: Truncated WITH annotation count (thanks
          to atomicules).
 - TW-115 allow "0day" durations for UDAs.
