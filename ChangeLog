@@ -57,6 +57,7 @@
 - TW-115 allow "0day" durations for UDAs.
 - TW-128 new helper command; _envs.
 - TW-139 Possibility to execute shadow file generation (thanks to Arnoud K).
+- TW-145 default.due should accept a Duration (thanks to Ozgur Akgun).
 - TW-168 modification of due date relative to current due date (thanks to Dirk
          Sarpe).
 - TW-186 Increase for numerical UDAs (thanks to Steffen Uhlig).

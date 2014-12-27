@@ -1124,7 +1124,8 @@ command, if you don't specify one. The default is blank.
 default.due=...
 Provides a default due date for the
 .I task add
-command, if you don't specify one. The default is blank.
+command, if you don't specify one. You can use a date, or a duration value which
+is assumed to be relative to 'now'. The default is blank.
 
 .TP
 .B

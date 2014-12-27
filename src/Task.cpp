@@ -1399,7 +1399,13 @@ void Task::validate (bool applyDefault /* = true */)
         ! has ("due"))
     {
       if (context.columns["due"]->validate (Task::defaultDue))
-        set ("due", Date (Task::defaultDue).toEpoch ());
+      {
+        Duration dur (Task::defaultDue);
+        if ((time_t) dur != 0)
+          set ("due", (Date () + dur).toEpoch ());
+        else
+          set ("due", Date (Task::defaultDue).toEpoch ());
+      }
     }
 
     // If a UDA has a default value in the configuration,
