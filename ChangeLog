@@ -43,6 +43,8 @@
 - TW-45 task recur:daily doesn't behave as expected (thanks to Nick Person).
 - TW-47 odd ball usage (thanks to Aikido Guy).
 - TW-52 "task add ... recur:2 months" interpreted as "2s" (thanks to jwhisnant).
+- TW-55 Bulk edit recurring tasks without answering yes/no for each? (thanks to
+        Max Muller).
 - TW-72 extend info report with urgency column.
 - TW-99 info report streamlining.
 - TW-101 New description column format: Truncated WITH annotation count (thanks
