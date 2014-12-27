@@ -33,6 +33,7 @@
 - TW-24 incorrect use of xterm colorization escape sequences (thanks to Steve
         Rader).
 - TW-28 Inserts spaces before punctuation characters (thanks to Matt Kraai).
+- TW-29 Deletion of recurring tasks behaving strangely (thanks to Cory Donnelly).
 - TW-43 Better error handling than: "Found extra operands." (thanks to Benjamin
         Weber).
 - TW-44 Space handling in dateformat (thanks to Louis-Claude Canon).
