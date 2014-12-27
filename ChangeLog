@@ -42,6 +42,7 @@
 - TW-44 Space handling in dateformat (thanks to Louis-Claude Canon).
 - TW-45 task recur:daily doesn't behave as expected (thanks to Nick Person).
 - TW-47 odd ball usage (thanks to Aikido Guy).
+- TW-52 "task add ... recur:2 months" interpreted as "2s" (thanks to jwhisnant).
 - TW-72 extend info report with urgency column.
 - TW-99 info report streamlining.
 - TW-101 New description column format: Truncated WITH annotation count (thanks
