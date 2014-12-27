@@ -59,6 +59,7 @@
 - TW-139 Possibility to execute shadow file generation (thanks to Arnoud K).
 - TW-145 default.due should accept a Duration (thanks to Ozgur Akgun).
 - TW-159 show sort field(s) as bold in listing headers.
+- TW-161 UDA indicator (thanks to Jim B).
 - TW-168 modification of due date relative to current due date (thanks to Dirk
          Sarpe).
 - TW-186 Increase for numerical UDAs (thanks to Steffen Uhlig).

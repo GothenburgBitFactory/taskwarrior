@@ -409,6 +409,10 @@ The character or string to show in the tag.indicator column. Defaults to +.
 The character or string to show in the depends.indicator column. Defaults to +.
 
 .TP
+.B uda.<name>.indicator=U
+The character or string to show in the <uda>.indicator column. Defaults to U.
+
+.TP
 .B recurrence.confirmation=prompt
 Controls whether changes to recurring tasks propagates to other child tasks with
 or without confirmation. A value of 'yes' means propagate changes without

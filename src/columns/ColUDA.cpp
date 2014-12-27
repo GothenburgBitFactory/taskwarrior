@@ -48,8 +48,7 @@ ColumnUDA::ColumnUDA ()
   _hyphenate = (_type == "string") ? true : false;
 
   _styles.push_back (_style);
-
-  // TODO _examples.push_back ("?");
+  _styles.push_back ("indicator");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -117,6 +116,11 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
       }
     }
   }
+  else if (_style == "indicator")
+  {
+    if (task.has (_name))
+      minimum = maximum = utf8_width (context.config.get ("uda." + _name + ".indicator"));
+  }
   else
     throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
@@ -173,6 +177,13 @@ void ColumnUDA::render (
         lines.push_back (color.colorize (rightJustify (value, width)));
       }
     }
+  }
+  else if (_style == "indicator")
+  {
+    if (task.has (_name))
+      lines.push_back (
+        color.colorize (
+          rightJustify (context.config.get ("uda." + _name + ".indicator"), width)));
   }
 }
 
