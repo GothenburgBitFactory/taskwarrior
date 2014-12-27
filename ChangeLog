@@ -67,6 +67,7 @@
 - TW-186 Increase for numerical UDAs (thanks to Steffen Uhlig).
 - TW-193 Support listing breaks.
 - TW-197 New virtual tag READY.
+- TW-210 project search options.
 - TW-218 Reveal terms of urgency calculation for a given task (thanks to Max
          Muller).
 - TW-221 Migrate task-faq man page to the Wiki.
