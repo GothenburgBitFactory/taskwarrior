@@ -108,6 +108,8 @@
 - TW-285 DUETODAY doesn't give any output (thanks to Jostein Berntsen).
 - TW-288 `task edit` mangles descriptions with embedded newlines (thanks to
          Kevin Ballard).
+- TW-292 Override to suppress "this is reccurring task" message (thanks to Max
+         Muller).
 - TW-294 Display UUID of task created by add (thanks to John West).
 - TW-295 Replacing annotations or descriptions which contain '/'s (thanks to
          Johannes Schlatow).
