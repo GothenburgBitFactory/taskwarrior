@@ -46,7 +46,7 @@ bool get (const std::string& name, Variant& value)
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (46);
+  UnitTest t (52);
 
   // Test the source independently.
   Variant v;
@@ -149,6 +149,19 @@ int main (int argc, char** argv)
   e.evaluateInfixExpression ("!true", result);
   t.is (result.type (), Variant::type_boolean, "infix '!true' --> boolean");
   t.is (result.get_bool (), false,             "infix '!true' --> false");
+
+  // _neg_
+  e.evaluateInfixExpression ("- 1", result);
+  t.is (result.type (), Variant::type_integer, "infix '- 1' --> integer");
+  t.is (result.get_integer (), -1,             "infix '- 1' --> -1");
+
+  e.evaluateInfixExpression ("- 1.2", result);
+  t.is (result.type (), Variant::type_real,    "infix '- 1.2' --> real");
+  t.is (result.get_real (), -1.2,              "infix '- 1.2' --> -1.2");
+
+  e.evaluateInfixExpression ("- 2days", result);
+  t.is (result.type (), Variant::type_duration, "infix '- 2days' --> duration");
+  t.is (result.get_duration (), -86400*2,      "infix '- 2days' --> -86400 * 2");
 
   return 0;
 }
