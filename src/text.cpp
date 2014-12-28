@@ -855,6 +855,22 @@ const std::string format (
 const std::string format (
   const std::string& fmt,
   int arg1,
+  const std::string& arg2,
+  const std::string& arg3,
+  const std::string& arg4)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", format (arg1));
+  replace_positional (output, "{2}", arg2);
+  replace_positional (output, "{3}", arg3);
+  replace_positional (output, "{4}", arg4);
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  int arg1,
   int arg2)
 {
   std::string output = fmt;
@@ -916,6 +932,22 @@ const std::string format (
   replace_positional (output, "{1}", arg1);
   replace_positional (output, "{2}", arg2);
   replace_positional (output, "{3}", arg3);
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (
+  const std::string& fmt,
+  const std::string& arg1,
+  const std::string& arg2,
+  const std::string& arg3,
+  const std::string& arg4)
+{
+  std::string output = fmt;
+  replace_positional (output, "{1}", arg1);
+  replace_positional (output, "{2}", arg2);
+  replace_positional (output, "{3}", arg3);
+  replace_positional (output, "{4}", arg4);
   return output;
 }
 

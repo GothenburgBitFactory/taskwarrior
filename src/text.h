@@ -73,11 +73,13 @@ const std::string format (const std::string&, const std::string&, double);
 const std::string format (const std::string&, int, int, const std::string&);
 const std::string format (const std::string&, int, const std::string&);
 const std::string format (const std::string&, int, const std::string&, const std::string&);
+const std::string format (const std::string&, int, const std::string&, const std::string&, const std::string&);
 const std::string format (const std::string&, int, int);
 const std::string format (const std::string&, int, int, int);
 const std::string format (const std::string&, int, int, int, int);
 const std::string format (const std::string&, int, double);
 const std::string format (const std::string&, const std::string&, const std::string&, const std::string&);
+const std::string format (const std::string&, const std::string&, const std::string&, const std::string&, const std::string&);
 
 std::string leftJustify (const int, const int);
 std::string leftJustify (const std::string&, const int);
