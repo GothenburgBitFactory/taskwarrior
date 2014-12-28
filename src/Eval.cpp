@@ -273,13 +273,17 @@ void Eval::evaluatePostfixStack (
 
       Variant right = values.back ();
       values.pop_back ();
+
+      Variant result (0);
+      result -= right;
+
       if (_debug)
       {
         context.debug (format ("[{1}] eval pop '{2}'",         values.size () + 1, (std::string) right));
         context.debug (format ("[{1}] eval operator '{2}'",    values.size (),     token->first));
-        context.debug (format ("[{1}] eval result push '{2}'", values.size (),     (bool) !right));
+        context.debug (format ("[{1}] eval result push '{2}'", values.size (),     (std::string) result));
       }
-      values.push_back (Variant (0) - right);
+      values.push_back (result);
     }
     else if (token->second == Lexer::typeOperator &&
              token->first == "_pos_")
