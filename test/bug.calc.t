@@ -36,8 +36,8 @@ my $output = qx{../src/calc --debug --noambiguous 15min};
 unlike ($output, qr/token infix '15' Date/,           "$ut: Misinterpretation: 15min -> 15");
 unlike ($output, qr/token infix 'min' Identifier/,    "$ut: Misinterpretation: 15min -> m");
 unlike ($output, qr/Error: Unexpected stack size: 2/, "$ut: Unexpected stack size");
-like ($output, qr/\[0\] eval push 'PT15M'/,           "$ut: 15min -> push PT15M");
-like ($output, qr/^PT15M$/ms,                         "$ut: 15min -> PT15M");
+like   ($output, qr/Eval literal duration ↑'PT15M'/,    "$ut: 15min -> push PT15M");
+like   ($output, qr/^PT15M$/ms,                         "$ut: 15min -> PT15M");
 
 exit 0;
 

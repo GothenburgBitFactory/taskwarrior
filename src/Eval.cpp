@@ -179,7 +179,7 @@ void Eval::compileExpression (const std::string& e)
   while (l.token (token, type))
   {
     if (_debug)
-      context.debug ("evaluateInfixExpression token '" + token + "' " + Lexer::type_name (type));
+      context.debug ("Lexer '" + token + "' " + Lexer::type_name (type));
     _compiled.push_back (std::pair <std::string, Lexer::Type> (token, type));
   }
 
@@ -257,13 +257,10 @@ void Eval::evaluatePostfixStack (
 
       Variant right = values.back ();
       values.pop_back ();
+      Variant result = ! right;
+      values.push_back (result);
       if (_debug)
-      {
-        context.debug (format ("[{1}] eval pop '{2}'",         values.size () + 1, (std::string) right));
-        context.debug (format ("[{1}] eval operator '{2}'",    values.size (),     token->first));
-        context.debug (format ("[{1}] eval result push '{2}'", values.size (),     (bool) !right));
-      }
-      values.push_back (! right);
+        context.debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token->first, (std::string) right, (std::string) result));
     }
     else if (token->second == Lexer::typeOperator &&
              token->first == "_neg_")
@@ -276,23 +273,17 @@ void Eval::evaluatePostfixStack (
 
       Variant result (0);
       result -= right;
+      values.push_back (result);
 
       if (_debug)
-      {
-        context.debug (format ("[{1}] eval pop '{2}'",         values.size () + 1, (std::string) right));
-        context.debug (format ("[{1}] eval operator '{2}'",    values.size (),     token->first));
-        context.debug (format ("[{1}] eval result push '{2}'", values.size (),     (std::string) result));
-      }
-      values.push_back (result);
+        context.debug (format ("Eval {1} ↓'{2}' → ↑'{3}'", token->first, (std::string) right, (std::string) result));
     }
     else if (token->second == Lexer::typeOperator &&
              token->first == "_pos_")
     {
-      // NOP?
+      // The _pos_ operator is a NOP.
       if (_debug)
-      {
-        context.debug (format ("[{1}] eval operator '{2}'", values.size (), token->first));
-      }
+        context.debug (format ("[{1}] eval op {2} NOP", values.size (), token->first));
     }
 
     // Binary operators.
@@ -307,43 +298,38 @@ void Eval::evaluatePostfixStack (
       Variant left = values.back ();
       values.pop_back ();
 
-      if (_debug)
-      {
-        context.debug (format ("[{1}] eval pop '{2}'",      values.size () + 2, (std::string) right));
-        context.debug (format ("[{1}] eval pop '{2}'",      values.size () + 1, (std::string) left));
-        context.debug (format ("[{1}] eval operator '{2}'", values.size (),     token->first));
-      }
-
       // Ordering these by anticipation frequency of use is a good idea.
-           if (token->first == "and")      left = left && right;
-      else if (token->first == "or")       left = left || right;
-      else if (token->first == "&&")       left = left && right;
-      else if (token->first == "||")       left = left || right;
-      else if (token->first == "<")        left = left < right;
-      else if (token->first == "<=")       left = left <= right;
-      else if (token->first == ">")        left = left > right;
-      else if (token->first == ">=")       left = left >= right;
-      else if (token->first == "==")       left = left.operator== (right);
-      else if (token->first == "!==")      left = left.operator!= (right);
-      else if (token->first == "=")        left = left.operator_partial (right);
-      else if (token->first == "!=")       left = left.operator_nopartial (right);
-      else if (token->first == "+")        left += right;
-      else if (token->first == "-")        left -= right;
-      else if (token->first == "*")        left *= right;
-      else if (token->first == "/")        left /= right;
-      else if (token->first == "^")        left ^= right;
-      else if (token->first == "%")        left %= right;
-      else if (token->first == "xor")      left = left.operator_xor (right);
-      else if (token->first == "~")        left = left.operator_match (right, contextTask);
-      else if (token->first == "!~")       left = left.operator_nomatch (right, contextTask);
-      else if (token->first == "_hastag_") left = left.operator_hastag (right, contextTask);
-      else if (token->first == "_notag_")  left = left.operator_notag (right, contextTask);
+      Variant result;
+           if (token->first == "and")      result = left && right;
+      else if (token->first == "or")       result = left || right;
+      else if (token->first == "&&")       result = left && right;
+      else if (token->first == "||")       result = left || right;
+      else if (token->first == "<")        result = left < right;
+      else if (token->first == "<=")       result = left <= right;
+      else if (token->first == ">")        result = left > right;
+      else if (token->first == ">=")       result = left >= right;
+      else if (token->first == "==")       result = left.operator== (right);
+      else if (token->first == "!==")      result = left.operator!= (right);
+      else if (token->first == "=")        result = left.operator_partial (right);
+      else if (token->first == "!=")       result = left.operator_nopartial (right);
+      else if (token->first == "+")        result = left + right;
+      else if (token->first == "-")        result = left - right;
+      else if (token->first == "*")        result = left * right;
+      else if (token->first == "/")        result = left / right;
+      else if (token->first == "^")        result = left ^ right;
+      else if (token->first == "%")        result = left % right;
+      else if (token->first == "xor")      result = left.operator_xor (right);
+      else if (token->first == "~")        result = left.operator_match (right, contextTask);
+      else if (token->first == "!~")       result = left.operator_nomatch (right, contextTask);
+      else if (token->first == "_hastag_") result = left.operator_hastag (right, contextTask);
+      else if (token->first == "_notag_")  result = left.operator_notag (right, contextTask);
       else
         throw format (STRING_EVAL_UNSUPPORTED, token->first);
 
+      values.push_back (result);
+
       if (_debug)
-        context.debug (format ("[{1}] eval result push '{2}'", values.size (), (std::string) left));
-      values.push_back (left);
+        context.debug (format ("Eval ↓'{1}' {2} ↓'{3}' → ↑'{4}'", (std::string) left, token->first, (std::string) right, (std::string) result));
     }
 
     // Literals and identifiers.
@@ -355,10 +341,14 @@ void Eval::evaluatePostfixStack (
       case Lexer::typeNumber:
       case Lexer::typeHex:
         v.cast (Variant::type_integer);
+        if (_debug)
+          context.debug (format ("Eval literal number ↑'{1}'", (std::string) v));
         break;
 
       case Lexer::typeDecimal:
         v.cast (Variant::type_real);
+        if (_debug)
+          context.debug (format ("Eval literal decimal ↑'{1}'", (std::string) v));
         break;
 
       case Lexer::typeOperator:
@@ -374,7 +364,7 @@ void Eval::evaluatePostfixStack (
             if ((*source) (token->first, v))
             {
               if (_debug)
-                context.debug (format ("[{1}] eval source '{2}' --> '{3}'", values.size (), token->first, (std::string) v));
+                context.debug (format ("Eval identifier source '{1}' → ↑'{2}'", token->first, (std::string) v));
               found = true;
               break;
             }
@@ -385,27 +375,31 @@ void Eval::evaluatePostfixStack (
           {
             v.cast (Variant::type_string);
             if (_debug)
-              context.debug (format ("[{1}] eval source failed '{2}'", values.size (), token->first));
+              context.debug (format ("Eval identifier source failed '{1}'", token->first));
           }
         }
         break;
 
       case Lexer::typeDate:
         v.cast (Variant::type_date);
+        if (_debug)
+          context.debug (format ("Eval literal date ↑'{1}'", (std::string) v));
         break;
 
       case Lexer::typeDuration:
         v.cast (Variant::type_duration);
+        if (_debug)
+          context.debug (format ("Eval literal duration ↑'{1}'", (std::string) v));
         break;
 
       // Nothing to do.
       case Lexer::typeString:
       default:
+        if (_debug)
+          context.debug (format ("Eval literal string ↑'{1}'", (std::string) v));
         break;
       }
 
-      if (_debug)
-        context.debug (format ("[{1}] eval push '{2}'", values.size (), (std::string) v));
       values.push_back (v);
     }
   }
