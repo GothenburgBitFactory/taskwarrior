@@ -56,36 +56,36 @@ static struct
   {"biyearly",   730 * DAY,    true},
   {"daily",        1 * DAY,    true},
   {"days",         1 * DAY,    false},
-  {"day",          1 * DAY,    false},
+  {"day",          1 * DAY,    true},
   {"d",            1 * DAY,    false},
   {"fortnight",   14 * DAY,    true},
   {"hours",        1 * HOUR,   false},
-  {"hour",         1 * HOUR,   false},
+  {"hour",         1 * HOUR,   true},
   {"h",            1 * HOUR,   false},
   {"minutes",      1 * MINUTE, false},
   {"minute",       1 * MINUTE, false},
   {"min",          1 * MINUTE, false},
   {"monthly",     30 * DAY,    true},
   {"months",      30 * DAY,    false},
-  {"month",       30 * DAY,    false},
+  {"month",       30 * DAY,    true},
   {"mo",          30 * DAY,    false},
   {"quarterly",   91 * DAY,    true},
   {"quarters",    91 * DAY,    false},
-  {"quarter",     91 * DAY,    false},
+  {"quarter",     91 * DAY,    true},
   {"q",           91 * DAY,    false},
   {"semiannual", 183 * DAY,    true},
   {"sennight",    14 * DAY,    false},
   {"seconds",      1 * SECOND, false},
-  {"second",       1 * SECOND, false},
+  {"second",       1 * SECOND, true},
   {"s",            1 * SECOND, false},
   {"weekdays",     1 * DAY,    true},
   {"weekly",       7 * DAY,    true},
   {"weeks",        7 * DAY,    false},
-  {"week",         7 * DAY,    false},
+  {"week",         7 * DAY,    true},
   {"w",            7 * DAY,    false},
   {"yearly",     365 * DAY,    true},
   {"years",      365 * DAY,    false},
-  {"year",       365 * DAY,    false},
+  {"year",       365 * DAY,    true},
   {"y",          365 * DAY,    false},
 };
 
@@ -284,6 +284,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
   std::string::size_type original_start = start;
   Nibbler n (input.substr (start));
 
+  // TODO This can be made static, and so preserved between calls.
   std::vector <std::string> units;
   for (int i = 0; i < NUM_DURATIONS; i++)
     units.push_back (durations[i].unit);
@@ -327,8 +328,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
         double seconds = 1;
         for (int i = 0; i < NUM_DURATIONS; i++)
         {
-          if (durations[i].unit == unit &&
-              durations[i].standalone == false)
+          if (durations[i].unit == unit)
           {
             seconds = durations[i].seconds;
             _secs = static_cast <int> (quantity * static_cast <double> (seconds));
