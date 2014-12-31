@@ -232,6 +232,7 @@
 - TW-1471 task calc uses output it doesn't understand (thanks to Jens Erat).
 - TW-1477 Incompatibility with recurring tasks created with 2.3.0 (thanks to
           David Costa).
+- TW-1482 Priority values may be 'H', 'M' or 'L', not ''.
 - Added new holidays.xy-XY.rc definition files
 - Removed deprecated 'echo.command' setting, in favor of the 'header' and
   'affected' verbosity tokens.

@@ -1486,7 +1486,8 @@ void Task::validate (bool applyDefault /* = true */)
     std::string priority = get ("priority");
     if (priority != "H" &&
         priority != "M" &&
-        priority != "L")
+        priority != "L" &&
+        priority != "")
       throw format (STRING_TASK_VALID_PRIORITY, priority);
   }
 }
