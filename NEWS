@@ -1,88 +1,15 @@
 
-New Features in taskwarrior 2.4.0
+New Features in taskwarrior 2.4.1
 
-  - The 'show' command displays default configuration values, when appropriate.
-  - Removed deprecated commands 'push', 'pull' and 'merge'.
-  - Portuguese (por-PRT), French (fra-FRA), Esperanto (epo-RUS) and Polish
-    (pol-POL) localizations.
-  - Better handling for deletion of recurring tasks.
-  - New virtual tags: YESTERDAY, TOMORROW, READY, PENDING, COMPLETED, DELETED,
-    TAGGED.
-  - The '_get' command properly uses exit codes.
-  - Regular expressions are now enabled by default.
-  - The 'filter' verbosity token shows the complete filter used for the last
-    command.
-  - The 'new-uuid' verbosity token shows the UUID of newly created tasks.
-  - The 'info' report now breaks down urgency values.
-  - New 'color.until' color rule.
-  - Using a non-zero 'urgency.inherit.coefficient' value means a task inherits
-    the urgency values of the dependency chain.
-  - Listing breaks now supported.  See 'man taskrc'.
-  - New fish shell completion script.
-  - The filter form 'name:value' now maps to the partial match operator '=',
-    rather than the exact match operator, '=='.  This means that dates now
-    match on the day by default, not the time also.
-  - UDA indicator format.
-  - Hooks.
-  - New and updated holidays.rc files.
+New commands in taskwarrior 2.4.1
 
-New commands in taskwarrior 2.4.0
+New configuration options in taskwarrior 2.4.1
 
-  - New 'calc' command (and standalone utility) for quick command line
-    calculations.
+Newly deprecated features in taskwarrior 2.4.1
 
-New configuration options in taskwarrior 2.4.0
-
-  - The 'taskd.trust' setting is now a tri-state, supporting values 'strict',
-    'ignore hostname' and 'allow all', for server certificate validation.
-  - New theme: dark-gray-blue-256.theme
-  - The 'allow.empty.filter' setting can be set to 'no' to disallow the
-    potentially dangerous combination of write commands and empty filters.
-  - New truncated_count column style for the description field which as the
-    name says is a combination of the existing truncated and count styles.
-  - New 'hooks' setting is a master control switch for hook processing.
-  - New 'debug.hooks' for debugging hook scripts.
-  - New 'debug.parser' for debugging parser issues scripts.
-  - New 'color.label.sort' is used to color the column label of sort columns.
-  - New 'urgency.uda.<name>.<value>' allows specific UDA values to affect
-    urgency.
-  - New 'recurrence.confirmation' which allows bypassing confirmation for
-    changes to recurring tasks, by accepting, rejecting or prompting.
-  - New 'uda.<name>.indicator' to override the UDA indicator.
-
-Newly deprecated features in taskwarrior 2.4.0
-
-  - The alias '_query' is deprecated.
-  - Bare word search terms are deprecated, so 'task pattern list' will not
-    be supported in future releases, instead requiring 'task /pattern/ list'.
-  - The 'limit' pseudo attribute will change to 'rc.limit' in a future release.
-
-Removed features in 2.4.0
-
-  - Version 1.x column names no longer supported.
-  - Version 1.x sort columns no longer supported.
-  - Old-style color names including underscores are no longer supported.
-  - Removed priority counts from the 'projects' commands.
-  - Removed the unused 'locale' configuration variable.
-  - Removed the unused 'patterns' confguration variable.
-  - Removed the obsolete 'task-faq.5' man page.
-  - Removed the obsolete 'task-tutorial.5' man page.
-  - Removed the obsolete 'tasksh.1' man page.
-  - Removed the 'tasksh' program from the Taskwarrior distribution. It is now
-    a separate project.
-  - Removed the 'complete.all.projects' setting that was not used.
-  - Removed support for 'report.X.limit', which can now be set in the report
-    filter 'limit:N'.
-  - The 'total active time' information is removed from the 'info' report.
-    This was being misinterpreted as support for time tracking.
-  - The 'shadow file' feature is removed, but replaced with an example hook
-    script that performs the same function..
+Removed features in 2.4.1
 
 Known Issues
-
-  - On Cygwin, case-insensitive regex searches are broken. The default is
-    now case-sensitive for Cygwin only.
-  - https://bug.tasktools.org
 
 Taskwarrior has been built and tested on the following configurations:
 

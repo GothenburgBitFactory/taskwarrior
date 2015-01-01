@@ -1,3 +1,7 @@
+2.4.1 () -
+
+------ current release ---------------------------
+
 2.4.0 (2015-01-01) 670102842c39bdc62ef84ae4b679a8f5a2d89523
 
 - TD-42 Cannot compile taskd - GNUTLS_VERSION undefined in diag.cpp (thanks
@@ -285,8 +289,6 @@
 - Supports 'debug.hooks' configuration setting.
 - Supports 'debug.parser' configuration setting.
 - Supports 'color.label.sort' for column labels of sort columns.
-
------- current release ---------------------------
 
 2.3.0 (2014-01-15) c4eb46507031b7dee839dcb932bb2a22b2f0d3a2
 
