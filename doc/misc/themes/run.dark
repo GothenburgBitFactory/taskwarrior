@@ -3,7 +3,6 @@
 for theme in $PWD/../../rc/dark-16.theme \
              $PWD/../../rc/dark-256.theme \
              $PWD/../../rc/dark-blue-256.theme \
-             $PWD/../../rc/dark-default-16.theme \
              $PWD/../../rc/dark-gray-256.theme \
              $PWD/../../rc/dark-gray-blue-256.theme \
              $PWD/../../rc/dark-green-256.theme \

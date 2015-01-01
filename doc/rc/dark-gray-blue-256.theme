@@ -68,12 +68,12 @@ color.overdue=color0 on rgb035
 # Report: burndown
 color.burndown.pending=on gray9
 color.burndown.started=on gray16
-color.burndown.done=on gray23
+color.burndown.done=on rgb013
 
 # Report: history
 color.history.add=on gray9
 color.history.delete=black on gray23
-color.history.done=black on gray16
+color.history.done=black on rgb013
 
 # Report: summary
 color.summary.bar=on rgb012
