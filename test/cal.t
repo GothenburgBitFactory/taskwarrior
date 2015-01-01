@@ -240,6 +240,8 @@ qx{../src/task rc:$rc add due:$duedate nine 2>&1};
 $output = qx{../src/task rc:$rc calendar rc.monthsperline:1 2>&1};
 like   ($output, qr/$month\S*?\s+?$year/, "$ut: Current month and year are displayed");
 like   ($output, qr/$duedate/,            "$ut: Due date on current day is displayed");
+
+# TODO: This test fails on 2015-01-01.
 like   ($output, qr/[12] task/,           "$ut: 1/2 due task(s) are displayed");
 
 $output = qx{../src/task rc:$rc calendar rc.monthsperline:1 1 2015 2>&1};
@@ -255,7 +257,10 @@ like   ($output, qr/åäö/,          "$ut: Holiday name åäö is displayed");
 $output = qx{../src/task rc:$rc calendar rc._forcecolor:on rc.monthsperline:1 rc.calendar.details:sparse rc.calendar.holidays:sparse 1 2015 2>&1};
 unlike ($output, qr/Date/,         "$ut: Word Date is not displayed");
 unlike ($output, qr/Holiday/,      "$ut: Word Holiday is not displayed");
+
+# TODO: This test fails on 2015-01-01.
 like   ($output, qr/30;103m 1/,    "$ut: Holiday AAAA is color-coded");
+
 like   ($output, qr/30;103m15/,    "$ut: Holiday BBBBBB is color-coded");  # 80
 like   ($output, qr/30;103m25/,    "$ut: Holiday åäö is color-coded");
 
