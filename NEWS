@@ -35,7 +35,7 @@ New configuration options in taskwarrior 2.4.0
 
   - The 'taskd.trust' setting is now a tri-state, supporting values 'strict',
     'ignore hostname' and 'allow all', for server certificate validation.
-  - New themes: dark-default-16.theme, dark-gray-blue-256.theme
+  - New theme: dark-gray-blue-256.theme
   - The 'allow.empty.filter' setting can be set to 'no' to disallow the
     potentially dangerous combination of write commands and empty filters.
   - New truncated_count column style for the description field which as the

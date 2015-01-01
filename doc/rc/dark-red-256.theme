@@ -30,70 +30,70 @@ rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overd
 color.label=
 color.label.sort=
 color.alternate=on gray1
-color.header=black on gray11
-color.footnote=gray2 on gray12
+color.header=rgb100
+color.footnote=rgb100
 color.warning=bold red
-color.error=red on white
-color.debug=black on white
+color.error=rgb100
+color.debug=rgb100
 
 # Task state
 color.completed=rgb020 on white
 color.deleted=rgb200 on white
-color.active=bold yellow
-color.recurring=
+color.active=rgb500 on rgb100
+color.recurring=rgb511
 color.scheduled=on rgb201
 color.until=
-color.blocked=rgb125
-color.blocking=rgb152
+color.blocked=white on rgb100
+color.blocking=white on rgb200
 
 # Project
 color.project.none=
 
 # Priority
-color.pri.H=bold white
-color.pri.M=gray23
-color.pri.L=gray12
-color.pri.none=gray23
+color.pri.H=rgb500
+color.pri.L=rgb300
+color.pri.M=rgb400
+color.pri.none=
 
 # Tags
 color.tag.next=rgb440
 color.tag.none=
-color.tagged=
+color.tagged=color246
 
 # Due
-color.due=on rgb100
-color.due.today=on rgb300
-color.overdue=on rgb200
+color.due.today=color252
+color.due=color249
+color.overdue=color255
 
 # Report: burndown
-color.burndown.pending=on rgb010
-color.burndown.started=on bright yellow
-color.burndown.done=on rgb030
+color.burndown.done=on gray4
+color.burndown.pending=on rgb200
+color.burndown.started=on rgb411
 
 # Report: history
-color.history.add=white on rgb010
-color.history.done=black on rgb030
-color.history.delete=white on rgb100
+color.history.add=color0 on rgb100
+color.history.delete=color0 on rgb500
+color.history.done=color0 on rgb300
 
 # Report: summary
-color.summary.bar=on rgb010
-color.summary.background=gray4
+color.summary.background=white on color0
+color.summary.bar=white on rgb300
 
 # Command: calendar
-color.calendar.due=on rgb100
-color.calendar.due.today=on rgb500
-color.calendar.holiday=rgb550
-color.calendar.overdue=on rgb300
-color.calendar.today=bold white
-color.calendar.weekend=on gray4
-color.calendar.weeknumber=rgb200
+color.calendar.due.today=color0 on color252
+color.calendar.due=color0 on color249
+color.calendar.holiday=rgb522 on rgb300
+color.calendar.overdue=color0 on color255
+color.calendar.today=color0 on rgb511
+color.calendar.weekend=on color235
+color.calendar.weeknumber=rgb100
 
 # Command: sync
-color.sync.added=green
-color.sync.changed=yellow
-color.sync.rejected=red
+color.sync.added=gray4
+color.sync.changed=rgb411
+color.sync.rejected=rgb200
 
 # Command: undo
-color.undo.before=yellow
-color.undo.after=green
+color.undo.after=rgb503
+color.undo.before=rgb301
 

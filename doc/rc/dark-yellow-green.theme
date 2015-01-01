@@ -29,7 +29,7 @@ rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overd
 # General decoration
 color.label=
 color.label.sort=
-color.alternate=on gray0
+color.alternate=on gray2
 color.header=rgb031
 color.footnote=rgb031
 color.warning=

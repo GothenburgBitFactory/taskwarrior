@@ -30,66 +30,66 @@ rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overd
 color.label=
 color.label.sort=
 color.alternate=
-color.header=
-color.footnote=
+color.header=yellow
+color.footnote=yellow
 color.warning=bold red
-color.error=red on white
-color.debug=black on white
+color.error=yellow
+color.debug=yellow
 
 # Task state
 color.completed=green on white
 color.deleted=red on white
-color.active=bold yellow
-color.recurring=
+color.active=black on bright green
+color.recurring=magenta
 color.scheduled=on green
 color.until=
-color.blocked=bold cyan
-color.blocking=bold green
+color.blocked=black on white
+color.blocking=black on bright white
 
 # Project
 color.project.none=
 
 # Priority
 color.pri.H=bold white
-color.pri.M=
+color.pri.M=white
 color.pri.L=
 color.pri.none=
 
 # Tags
 color.tag.next=bold yellow
 color.tag.none=
-color.tagged=
+color.tagged=green
 
 # Due
-color.due=on blue
-color.due.today=on yellow
-color.overdue=on red
+color.due=red
+color.due.today=red
+color.overdue=bold red
 
 # UDA
 #color.uda.X=
 
 # Report: burndown
-color.burndown.done=on bright green
-color.burndown.pending=on green
-color.burndown.started=on bright yellow
+color.burndown.done=on green
+color.burndown.pending=on red
+color.burndown.started=on yellow
 
 # Report: history
-color.history.add=red on green
-color.history.delete=white on red
-color.history.done=black on bright green
+color.history.add=black on red
+color.history.delete=black on yellow
+color.history.done=black on green
 
 # Report: summary
-color.summary.background=on black
-color.summary.bar=on green
+color.summary.background=white on black
+color.summary.bar=black on green
 
 # Command: calendar
-color.calendar.due=on blue
-color.calendar.due.today=on yellow
-color.calendar.holiday=bold yellow
-color.calendar.overdue=on red
-color.calendar.today=bold white
-color.calendar.weekend=on bright black
-color.calendar.weeknumber=bold black
+color.calendar.due=white on red
+color.calendar.due.today=bold white on red
+color.calendar.holiday=black on bright yellow
+color.calendar.overdue=black on bright red
+color.calendar.today=bold white on bright blue
+color.calendar.weekend=white on bright black
+color.calendar.weeknumber=bold blue
 
 # Command: sync
 color.sync.added=green
@@ -98,5 +98,5 @@ color.sync.rejected=red
 
 # Command: undo
 color.undo.after=green
-color.undo.before=yellow
+color.undo.before=red
 

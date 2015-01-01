@@ -30,8 +30,8 @@ rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overd
 color.label=
 color.label.sort=
 color.alternate=
-color.header=bold white on color8
-color.footnote=color14 on color8
+color.header=bold white on bright black
+color.footnote=bold cyan on bright black
 color.warning=bold red
 color.error=red on white
 color.debug=white on black
@@ -39,9 +39,9 @@ color.debug=white on black
 # Task state
 color.completed=green on black
 color.deleted=red on black
-color.active=color11 on color8
+color.active=bold yellow on bright black
 color.recurring=
-color.scheduled=on color14
+color.scheduled=on bright cyan
 color.until=
 color.blocking=red
 color.blocked=blue
@@ -52,41 +52,41 @@ color.project.none=
 # Priority
 color.pri.H=
 color.pri.M=
-color.pri.L=color8
+color.pri.L=bright black
 color.pri.none=
 
 # Tags
-color.tag.next=color11 on color8
+color.tag.next=bold yellow on bright black
 color.tag.none=
 color.tagged=
 
 # Due
-color.due=on color10
-color.due.today=on color11
-color.overdue=on color13
+color.due=on bright green
+color.due.today=on bright yellow
+color.overdue=on bright magenta
 
 # Report: burndown
-color.burndown.pending=on color10 
-color.burndown.started=on color11
-color.burndown.done=on color2
+color.burndown.pending=on bright green
+color.burndown.started=on bright yellow
+color.burndown.done=on green
 
 # Report: history
-color.history.add=blue on color11
-color.history.done=color2 on color10
-color.history.delete=black on color9
+color.history.add=blue on bright yellow
+color.history.done=green on bright green
+color.history.delete=black on red
 
 # Report: summary
-color.summary.bar=on color10
+color.summary.bar=on bright green
 color.summary.background=on white
 
 # Command: calendar
-color.calendar.due=on color10
-color.calendar.due.today=color4 on color11
+color.calendar.due=on bright green
+color.calendar.due.today=blue on bright yellow
 color.calendar.holiday=yellow
-color.calendar.overdue=on color13
-color.calendar.today=color4
+color.calendar.overdue=on bright magenta
+color.calendar.today=blue
 color.calendar.weekend=on white
-color.calendar.weeknumber=color7 on color8
+color.calendar.weeknumber=white on bright black
 
 # Command: sync
 color.sync.added=green

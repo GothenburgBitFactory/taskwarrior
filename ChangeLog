@@ -246,7 +246,7 @@
 - Removed version 1.x sort column support.
 - Old-style color names including underscores are no longer supported.
 - Removed priority counts from the 'projects' report.
-- New themes: dark-default-16.theme, dark-gray-blue-256.theme
+- New theme: dark-gray-blue-256.theme
 - Added certificate verification to GnuTLS versions < 2.9.10 (thanks to Alexander
   Sulfrian).
 - Added certificate hostname verification (thanks to Alexander Sulfrian).
