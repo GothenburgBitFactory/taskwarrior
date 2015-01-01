@@ -66,9 +66,9 @@ color.due.today=on gray4
 color.overdue=on gray6
 
 # Report: burndown
-color.burndown.done=rgb000 on rgb020
-color.burndown.pending=rgb000 on rgb010
-color.burndown.started=rgb000 on bright yellow
+color.burndown.pending=gray15 on gray5
+color.burndown.started=black on gray10
+color.burndown.done=gray5 on gray23
 
 # Report: history
 color.history.add=gray15 on gray5
@@ -89,11 +89,11 @@ color.calendar.weekend=on gray2
 color.calendar.weeknumber=gray6
 
 # Command: sync
-color.sync.added=green
-color.sync.changed=yellow
-color.sync.rejected=red
+color.sync.add=gray15 on gray5
+color.sync.changed=black on gray10
+color.sync.rejected=gray5 on gray23
 
 # Command: undo
-color.undo.before=yellow
-color.undo.after=green
+color.undo.before=white on black
+color.undo.after=black on white
 
