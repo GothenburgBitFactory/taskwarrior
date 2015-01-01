@@ -39,7 +39,7 @@ color.debug=rgb500
 # Task state
 color.completed=
 color.deleted=
-color.active=gray0 on gray23
+color.active=color15 on rgb035
 color.recurring=
 color.scheduled=
 color.until=
@@ -61,9 +61,9 @@ color.tag.none=
 color.tagged=
 
 # Due
-color.due=
-color.due.today=rgb300 on gray15
-color.overdue=underline rgb300 on gray15
+color.due=color0 on rgb013
+color.due.today=color0 on rgb024
+color.overdue=color0 on rgb035
 
 # Report: burndown
 color.burndown.pending=on gray9
@@ -76,8 +76,8 @@ color.history.delete=black on gray23
 color.history.done=black on gray16
 
 # Report: summary
-color.summary.bar=white on gray9
-color.summary.background=white on color0
+color.summary.bar=on rgb012
+color.summary.background=on color0
 
 # Command: calendar
 color.calendar.due=color0 on gray10
