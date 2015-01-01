@@ -20,12 +20,14 @@ class Test1424(TestCase):
         """Check that due:1824d works"""
         self.t(('add', 'foo', 'due:1824d'))
         code, out, err = self.t(('_get', '1.due.year'))
+        # TODO 1824d != 5y, this test needs to be fixed.
         self.assertEqual(out, "%d\n" % (datetime.now().year + 5))
 
     def test_3648_days(self):
         """Check that due:3648d works"""
         self.t(('add', 'foo', 'due:3648d'))
         code, out, err = self.t(('_get', '1.due.year'))
+        # TODO 3648d != 10y, this test needs to be fixed.
         self.assertEqual(out, "%d\n" % (datetime.now().year + 10))
 
 if __name__ == "__main__":
