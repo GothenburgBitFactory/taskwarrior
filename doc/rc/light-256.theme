@@ -27,7 +27,7 @@
 rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,pri.
 
 # General decoration
-color.label=white on gray12
+color.label=
 color.label.sort=
 color.alternate=on gray22
 color.header=bold white on gray8
