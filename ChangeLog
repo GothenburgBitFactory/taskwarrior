@@ -1,4 +1,4 @@
-2.4.0 (2015-01-01) -
+2.4.0 (2015-01-01) 670102842c39bdc62ef84ae4b679a8f5a2d89523
 
 - TD-42 Cannot compile taskd - GNUTLS_VERSION undefined in diag.cpp (thanks
         to Michele Vetturi).
