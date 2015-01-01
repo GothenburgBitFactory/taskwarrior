@@ -145,8 +145,8 @@ Shows a graphical burndown chart, by month.
 .B task calendar [due|<month> <year>|<year>] [y]
 Shows a monthly calendar with due tasks marked.  Shows one horizontal line of
 months.  If the 'y' argument is provided, will show at least one complete year.
-If a year is provided, such as '2014', then that full year is shown.  If both
-a month and a year are specified ('6 2014') then the months displayed begin at
+If a year is provided, such as '2015', then that full year is shown.  If both
+a month and a year are specified ('6 2015') then the months displayed begin at
 the specified month and year.  If the 'due' argument is provided, will show
 the starting month of the earliest due task.
 
@@ -1089,7 +1089,7 @@ The file that contains the completed ("done") tasks.
 The file that contains information needed by the "undo" command.
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2014 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2015 P. Beckingham, F. Hernandez.
 
 Taskwarrior is distributed under the MIT license. See
 http://www.opensource.org/licenses/mit-license.php for more information.
