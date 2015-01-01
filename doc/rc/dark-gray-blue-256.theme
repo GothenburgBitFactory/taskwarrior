@@ -1,9 +1,6 @@
 ###############################################################################
-# Sample taskwarrior 1.9 (or later) dark 256-color theme, featuring blue.
 #
-# taskwarrior - a command line task list manager.
-#
-# Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,51 +24,76 @@
 #
 ###############################################################################
 
-color=on
+rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,pri.
+
+# General decoration
+color.label=
+color.label.sort=
+color.alternate=on gray0
 color.header=gray10
 color.footnote=gray10
+color.warning=
 color.error=rgb500
 color.debug=rgb500
 
-color.summary.bar=white on gray9
-color.summary.background=white on color0
+# Task state
+color.completed=
+color.deleted=
+color.active=gray0 on gray23
+color.recurring=
+color.scheduled=
+color.until=
+color.blocked=bold gray10 on gray4
+color.blocking=bold gray18 on gray6
 
-color.history.add=on gray9
-color.history.done=black on gray16
-color.history.delete=black on gray23
+# Project
+color.project.none=
 
+# Priority
+color.pri.H=
+color.pri.L=
+color.pri.M=
+color.pri.none=
+
+# Tags
+color.tag.next=
+color.tag.none=
+color.tagged=
+
+# Due
+color.due=
+color.due.today=rgb300 on gray15
+color.overdue=underline rgb300 on gray15
+
+# Report: burndown
 color.burndown.pending=on gray9
 color.burndown.started=on gray16
 color.burndown.done=on gray23
 
+# Report: history
+color.history.add=on gray9
+color.history.delete=black on gray23
+color.history.done=black on gray16
+
+# Report: summary
+color.summary.bar=white on gray9
+color.summary.background=white on color0
+
+# Command: calendar
+color.calendar.due=color0 on gray10
+color.calendar.due.today=color0 on gray15
+color.calendar.holiday=color15 on rgb005
+color.calendar.overdue=color0 on gray20
+color.calendar.today=underline black on color15
+color.calendar.weekend=on gray4
+color.calendar.weeknumber=gray10
+
+# Command: sync
 color.sync.added=gray10
 color.sync.changed=gray15
 color.sync.rejected=gray23
 
+# Command: undo
 color.undo.before=green
 color.undo.after=red
 
-color.calendar.today=underline black on color15
-color.calendar.due=color0 on gray10
-color.calendar.due.today=color0 on gray15
-color.calendar.overdue=color0 on gray20
-color.calendar.weekend=on gray4
-color.calendar.holiday=color15 on rgb005
-color.calendar.weeknumber=gray10
-
-color.recurring=
-color.overdue=underline rgb300 on gray15
-color.due.today=rgb300 on gray15
-color.due=
-color.active=gray0 on gray23
-# No color for being prioritized (Pri column will show up if needed)
-color.pri.none=
-color.pri.H=
-color.pri.M=
-color.pri.L=
-color.tagged=
-color.blocked=bold gray10 on gray4
-color.blocking=bold gray18 on gray6
-color.project.none=
-color.tag.none=
-color.alternate=on gray0

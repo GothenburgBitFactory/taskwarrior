@@ -1,19 +1,6 @@
-# dark-16
-# This is the proposed defult color theme
-# and the template file for metadata, layout and precedence
-#
 ###############################################################################
 #
-# Color theme for taskwarrior 2.4 (or later)
-#
-# taskwarrior - a command line task list manager.
-# http://taskwarrior.org - http://tasktools.org
-#
-# For more information on how to use, see 'man taskrc' and 'man task-color'
-#
-###############################################################################
-#
-# Copyright 2006-2014, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -39,68 +26,77 @@
 
 rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,pri.
 
-# basics
-color.active=bold yellow
+# General decoration
+color.label=inverse
+color.label.sort=
+color.alternate=
+color.header=
+color.footnote=
+color.warning=bold red
+color.error=red on white
+color.debug=black on white
+
+# Task state
 color.completed=green on white
 color.deleted=red on white
-color.due.today=on yellow
-color.due=on blue
-color.overdue=on red
-color.blocking=bold green
-color.blocked=bold cyan
+color.active=bold yellow
 color.recurring=
 color.scheduled=on green
-color.tagged=
+color.until=
+color.blocked=bold cyan
+color.blocking=bold green
+
+# Project
+color.project.none=
+
+# Priority
 color.pri.H=bold white
 color.pri.M=
 color.pri.L=
-
-# missing attributes
-color.project.none=
-color.tag.none=
 color.pri.none=
 
-# personal color rules (remove "#" and replace "X" with your value)
-#color.keyword.X=
-#color.project.X=
+# Tags
 color.tag.next=bold yellow
+color.tag.none=
+color.tagged=
+
+# Due
+color.due=on blue
+color.due.today=on yellow
+color.overdue=on red
+
+# UDA
 #color.uda.X=
 
-# interface
-color.alternate=
-color.header=
-color.label=inverse
-color.footnote=
-
-# burndown report
+# Report: burndown
+color.burndown.done=on bright green
 color.burndown.pending=on green
 color.burndown.started=on bright yellow
-color.burndown.done=on bright green
 
-# calendar
-color.calendar.holiday=bold yellow
-color.calendar.today=bold white
-color.calendar.due.today=on yellow
+# Report: history
+color.history.add=red on green
+color.history.delete=white on red
+color.history.done=black on bright green
+
+# Report: summary
+color.summary.background=on black
+color.summary.bar=on green
+
+# Command: calendar
 color.calendar.due=on blue
+color.calendar.due.today=on yellow
+color.calendar.holiday=bold yellow
 color.calendar.overdue=on red
+color.calendar.today=bold white
 color.calendar.weekend=on bright black
 color.calendar.weeknumber=bold black
 
-# history report
-color.history.add=red on green
-color.history.done=black on bright green
-color.history.delete=white on red
-
-# summary report (background color only)
-color.summary.bar=on green
-color.summary.background=on black
-
-# status
-color.error=red on white
-color.debug=black on white
-color.undo.before=yellow
-color.undo.after=green
+# Command: sync
 color.sync.added=green
 color.sync.changed=yellow
 color.sync.rejected=red
-color.warning=bold red
+
+# Command: undo
+color.undo.after=green
+color.undo.before=yellow
+

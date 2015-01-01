@@ -1,7 +1,6 @@
 ###############################################################################
-# Sample taskwarrior 1.9 (or later) dark 256-color theme, featuring green.
 #
-# Copyright 2006 - 2014, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,44 +24,76 @@
 #
 ###############################################################################
 
-color=on
-color.active=on color3
+rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,pri.
+
+# General decoration
+color.label=
+color.label.sort=
 color.alternate=on color8
+color.header=color3 on color0
+color.footnote=color3 on color0
+color.warning=
+color.error=color1 on color7
+color.debug=color7 on color1
+
+# Task state
+color.completed=
+color.deleted=
+color.active=on color3
+color.recurring=color14
+color.scheduled=color11
+color.until=
 color.blocked=on color4
 color.blocking=on color6
+
+# Project
+color.project.none=
+
+# Priority
+color.pri.H=bold white
+color.pri.M=color7
+color.pri.L=color13
+color.pri.none=color7
+
+# Tags
+color.tag.next=
+color.tag.none=
+color.tagged=
+
+# Due
+color.due=on color2
+color.due.today=color11
+color.overdue=on color5
+
+# Report: burndown
 color.burndown.done=on color10
 color.burndown.pending=on color2
 color.burndown.started=on color3
-color.calendar.due.today=color3
+
+# Report: history
+color.history.add=on color2
+color.history.delete=on color1
+color.history.done=color8 on color10
+
+# Report: summary
+color.summary.background=on color6
+color.summary.bar=on color2
+
+# Command: calendar
 color.calendar.due=on color2
+color.calendar.due.today=color3
 color.calendar.holiday=on color3
 color.calendar.overdue=on color5
 color.calendar.today=color14
 color.calendar.weekend=color13
 color.calendar.weeknumber=color4
-color.debug=color7 on color1
-color.due.today=color11
-color.due=on color2
-color.error=color1 on color7
-color.footnote=color3 on color0
-color.header=color3 on color0
-color.history.add=on color2
-color.history.done=color8 on color10
-color.history.delete=on color1
-color.overdue=on color5
-color.pri.H=bold white
-color.pri.L=color13
-color.pri.M=color7
-color.pri.none=color7
-color.project.none=
-color.recurring=color14
-color.scheduled=color11
-color.summary.background=on color6
-color.summary.bar=on color2
+
+# Command: sync
 color.sync.added=color11
 color.sync.changed=color10
 color.sync.rejected=color9
-color.tag.none=
-color.tagged=
-color.undo.after=color9
+
+# Command: undo
 color.undo.before=color10
+color.undo.after=color9
+
