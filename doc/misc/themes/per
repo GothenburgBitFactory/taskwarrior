@@ -1,8 +1,0 @@
-echo '$ task list'
-task rc:rc list | grep -v alternate
-echo '$ task summary'
-task rc:rc summary | grep -v alternate
-echo '$ task ghistory'
-task rc:rc ghistory | grep -v alternate
-echo '$ task calendar'
-task rc:rc calendar | grep -v alternate

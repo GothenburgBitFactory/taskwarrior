@@ -6,7 +6,7 @@ that need to be illustrated in theme sample.
 
 Then edit the 'rc' file to include the desired theme file.
 
-Then run 'per' once per theme, and capture the display.
+Then run 'per' to run a few commands for each theme.
 
 Note that this will require that the terminal window be switched between a black
 and white background to properly show the light and dark themes.

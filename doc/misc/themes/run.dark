@@ -1,0 +1,35 @@
+#!/bin/bash
+
+for theme in $PWD/../../rc/dark-16.theme \
+             $PWD/../../rc/dark-256.theme \
+             $PWD/../../rc/dark-blue-256.theme \
+             $PWD/../../rc/dark-default-16.theme \
+             $PWD/../../rc/dark-gray-256.theme \
+             $PWD/../../rc/dark-gray-blue-256.theme \
+             $PWD/../../rc/dark-green-256.theme \
+             $PWD/../../rc/dark-red-256.theme \
+             $PWD/../../rc/dark-violets-256.theme \
+             $PWD/../../rc/dark-yellow-green.theme
+do
+  cat <<EOF >x
+data.location=.
+confirmation=off
+detection=off
+_forcecolor=on
+default.height=24
+verbose=off
+include $theme
+EOF
+
+  echo "--- $theme -----------------------------------------------------"
+  echo '$ task list'
+  task rc:x list
+  echo '$ task summary'
+  task rc:x summary
+  echo '$ task ghistory'
+  task rc:x ghistory
+  echo '$ task calendar'
+  task rc:x calendar
+  echo '$ task burndown.daily'
+  task rc:x burndown.daily
+done

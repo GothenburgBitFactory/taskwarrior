@@ -1,11 +1,14 @@
+#!/bin/bash
 
-
-for theme in $PWD/../../rc/*.theme
+for theme in $PWD/../../rc/solarized-light-256.theme
 do
-  cat <<EOF >>x
+  cat <<EOF >x
 data.location=.
 confirmation=off
+detection=off
 _forcecolor=on
+default.height=24
+verbose=off
 include $theme
 EOF
 

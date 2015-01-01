@@ -1,0 +1,33 @@
+rm pending.data completed.data undo.data x
+
+cat <<EOF >>x
+
+data.location=.
+confirmation=off
+_forcecolor=on
+EOF
+
+task rc:x add Ordinary task
+task rc:x add Started task
+task rc:x 2 start
+task rc:x add High priority task pri:H
+task rc:x add Medium priority task pri:M
+task rc:x add Low priority task pri:L
+task rc:x add Household task project:Home
+task rc:x add Outdoor task project:Garden
+task rc:x add Overdue task due:yesterday
+task rc:x add Due task due:tomorrow
+task rc:x add Not yet due tasks due:eom
+task rc:x add Recurring task due:eom recur:monthly
+task rc:x add Tagged task +tag1
+task rc:x add Blocking task
+task rc:x add Dependent task
+
+task rc:x log Completed_1 project:Garden
+task rc:x log Completed_2 project:Garden
+task rc:x log Completed_3 project:Home
+task rc:x add Deleted_1
+
+task rc:x 14 mod depends:13
+task rc:x 15 delete
+
