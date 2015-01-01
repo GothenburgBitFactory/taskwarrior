@@ -15,7 +15,7 @@
 #  * Tags
 #  * Attribute names and modifiers
 #
-# Copyright 2014 Roman Inflianskas <infroma@gmail.com>
+# Copyright 2014 - 2015, Roman Inflianskas <infroma@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

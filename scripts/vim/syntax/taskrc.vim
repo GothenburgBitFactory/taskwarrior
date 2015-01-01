@@ -1,6 +1,6 @@
 " Vim syntax file
 "
-" Copyright (c) 2014 Taskwarrior Team
+" Copyright (c) 2014 - 2015 Taskwarrior Team
 " Copyright (c) 2009 - 2014 John Florian
 "
 " Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -526,7 +526,7 @@ D  two-digit day,          for example 01 or 30
 .br
 M  two-digit month,        for example 01 or 12
 .br
-Y  four-digit year,        for example 2009 or 2014
+Y  four-digit year,        for example 2009 or 2015
 .br
 a  short name of weekday,  for example Mon or Wed
 .br
@@ -1401,7 +1401,7 @@ Default is "NORMAL". See GnuTLS documentation for full details.
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2014 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2015 P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez.
 
