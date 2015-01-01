@@ -1,4 +1,4 @@
-.TH task 1 2014-10-11 "${PACKAGE_STRING}" "User Manuals"
+.TH task 1 2015-01-01 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 task \- A command line todo manager.
