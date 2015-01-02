@@ -24,7 +24,7 @@ Command Line Parsing
   determines whether subsequent arguments are interpreted as part of a filter or
   set of modifications.
 
-  The Parser object is fed command line arguments, then through a succession of
+  The CLI object is fed command line arguments, then through a succession of
   calls builds and annotates a parse tree.  To help with this, the Lexer is
   used to break up strings into tokens.
 

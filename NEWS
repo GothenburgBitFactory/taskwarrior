@@ -1,19 +1,31 @@
 
 New Features in taskwarrior 2.4.1
 
+  -
+
 New commands in taskwarrior 2.4.1
+
+  -
 
 New configuration options in taskwarrior 2.4.1
 
+  -
+
 Newly deprecated features in taskwarrior 2.4.1
+
+  -
 
 Removed features in 2.4.1
 
+  -
+
 Known Issues
+
+  - None
 
 Taskwarrior has been built and tested on the following configurations:
 
-  * OS X 10.10 Yosemite, 10.9 Mavericks
+  * OS X 10.10 Yosemite
   * Fedora 20 Heisenbug
   * Ubuntu 14.04 Trusty Tahr
   * Debian 7.0 Wheezy (stable)
