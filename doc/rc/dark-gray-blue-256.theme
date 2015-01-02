@@ -44,7 +44,7 @@ color.recurring=
 color.scheduled=
 color.until=
 color.blocked=bold gray10 on gray4
-color.blocking=bold gray18 on gray6
+color.blocking=gray18 on gray6
 
 # Project
 color.project.none=
