@@ -1,5 +1,8 @@
 2.4.1 () -
 
+- TW-1486 task wait shows completed tasks which has a wait attribute (thanks to
+          Sujeevan Vijayakumaran).
+
 ------ current release ---------------------------
 
 2.4.0 (2015-01-01) 670102842c39bdc62ef84ae4b679a8f5a2d89523

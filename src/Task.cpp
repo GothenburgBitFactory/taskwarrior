@@ -1112,10 +1112,10 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "SCHEDULED") return has ("scheduled");
   if (tag == "CHILD")     return has ("parent");
   if (tag == "UNTIL")     return has ("until");
-  if (tag == "WAITING")   return has ("wait");
   if (tag == "ANNOTATED") return hasAnnotations ();
   if (tag == "TAGGED")    return has ("tags");
   if (tag == "PARENT")    return has ("mask");
+  if (tag == "WAITING")   return get ("status") == "waiting";
   if (tag == "PENDING")   return get ("status") == "pending";
   if (tag == "COMPLETED") return get ("status") == "completed";
   if (tag == "DELETED")   return get ("status") == "deleted";
