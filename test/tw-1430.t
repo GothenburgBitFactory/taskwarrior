@@ -28,7 +28,7 @@ class Test1430(TestCase):
         pro = "home/garden"
         self.t(('add', 'foo', 'project:%s' % pro))
 
-        # TODO Reßtore this test and fix it.
+        # TODO Restore this test and fix it.
         # The form 'name:a/b' does not work, while 'name.is:a/b' does.
         #code, out, err = self.t(('list', 'project:%s' % pro))
         code, out, err = self.t(('list', 'project.is:%s' % pro))
