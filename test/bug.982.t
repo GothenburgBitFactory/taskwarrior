@@ -46,10 +46,9 @@ if (open my $fh, '>', $rc)
 }
 
 # Bug 982: Missing words when adding a description with NUMBER-SOMETHING
-
 qx{../src/task rc:$rc add 1-test 1+tag 2>&1};
 my $output = qx{../src/task rc:$rc 1 info 2>&1};
-like ($output, qr/^Description 1-test 1\+tag$/ms, 'Description contains plus and minus signs');
+like ($output, qr/^Description\s+1-test 1\+tag$/ms, "$ut: Description contains plus and minus signs");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
