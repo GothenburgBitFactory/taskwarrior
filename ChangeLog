@@ -4,7 +4,8 @@
           Sujeevan Vijayakumaran).
 - Fixed assorted color theme problems.
 - Changed assorted reports so they do not use '.age' format for dates that are
-  in the future, because those are never shown with this format.
+  in the future, because those are never shown with this format (thanks to
+  Sujeevan Vijayakumaran).
 
 ------ current release ---------------------------
 
