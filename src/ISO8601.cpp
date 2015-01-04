@@ -702,7 +702,7 @@ void ISO8601d::resolve ()
     t.tm_min = (seconds % 3600) / 60;
     t.tm_sec = seconds % 60;
 
-  _value = utc ? timegm (&t) : timelocal (&t);
+  _value = utc ? timegm (&t) : mktime (&t);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

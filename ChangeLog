@@ -2,6 +2,7 @@
 
 - TW-1486 task wait shows completed tasks which has a wait attribute (thanks to
           Sujeevan Vijayakumaran).
+- TW-1492 compiling v2.4.0 using musl(libc) (thanks to V.Krishn).
 - Fixed assorted color theme problems.
 - Changed assorted reports so they do not use '.age' format for dates that are
   in the future, because those are never shown with this format (thanks to
