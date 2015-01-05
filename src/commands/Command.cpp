@@ -163,29 +163,27 @@ void Command::factory (std::map <std::string, Command*>& all)
 
   // Instantiate a command object for each custom report.
   std::vector <std::string> reports;
-  Config::const_iterator i;
-  for (i = context.config.begin (); i != context.config.end (); ++i)
+  for (auto &i : context.config)
   {
-    if (i->first.substr (0, 7) == "report.")
+    if (i.first.substr (0, 7) == "report.")
     {
-      std::string report = i->first.substr (7);
+      std::string report = i.first.substr (7);
       std::string::size_type columns = report.find (".columns");
       if (columns != std::string::npos)
         reports.push_back (report.substr (0, columns));
     }
   }
 
-  std::vector <std::string>::iterator report;
-  for (report = reports.begin (); report != reports.end (); ++report)
+  for (auto &report : reports)
   {
     // Make sure a custom report does not clash with a built-in command.
-    if (all.find (*report) != all.end ())
-      throw format (STRING_CMD_CONFLICT, *report);
+    if (all.find (report) != all.end ())
+      throw format (STRING_CMD_CONFLICT, report);
 
     c = new CmdCustom (
-              *report,
-              "task <filter> " + *report,
-              context.config.get ("report." + *report + ".description"));
+              report,
+              "task <filter> " + report,
+              context.config.get ("report." + report + ".description"));
 
     all[c->keyword ()] = c;
   }
