@@ -28,7 +28,7 @@
 
 import sys
 import os
-from datetime import datetime
+import datetime
 import unittest
 
 # Ensure python finds the local simpletap module
@@ -45,15 +45,25 @@ class Test1424(TestCase):
         """Check that due:1824d works"""
         self.t(('add', 'foo', 'due:1824d'))
         code, out, err = self.t(('_get', '1.due.year'))
-        # TODO 1824d != 5y, this test needs to be fixed.
-        self.assertEqual(out, "%d\n" % (datetime.now().year + 5))
+        # NOTE This test has a possible race condition when run "during" EOY.
+        # If Taskwarrior is executed at 23:59:59 on new year's eve and the
+        # python code below runs at 00:00:00 on new year's day, the two will
+        # disagree on the proper year. Using libfaketime with a frozen time
+        # or the date set to $year-01-01 might be a good idea here.
+        plus_1824d = datetime.datetime.today() + datetime.timedelta(days=1824)
+        self.assertEqual(out, "%d\n" % (plus_1824d.year))
 
     def test_3648_days(self):
         """Check that due:3648d works"""
         self.t(('add', 'foo', 'due:3648d'))
         code, out, err = self.t(('_get', '1.due.year'))
-        # TODO 3648d != 10y, this test needs to be fixed.
-        self.assertEqual(out, "%d\n" % (datetime.now().year + 10))
+        # NOTE This test has a possible race condition when run "during" EOY.
+        # If Taskwarrior is executed at 23:59:59 on new year's eve and the
+        # python code below runs at 00:00:00 on new year's day, the two will
+        # disagree on the proper year. Using libfaketime with a frozen time
+        # or the date set to $year-01-01 might be a good idea here.
+        plus_3648d = datetime.datetime.today() + datetime.timedelta(days=3648)
+        self.assertEqual(out, "%d\n" % (plus_3648d.year))
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
