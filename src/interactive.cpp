@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <sstream>
 #include <stdio.h>
+#include <unistd.h>
 #include <sys/ioctl.h>
 #include <Context.h>
 #include <main.h>
@@ -53,7 +54,7 @@ int Context::getWidth ()
         terminal_height == 0)
     {
       unsigned short buff[4];
-      if (ioctl (fileno(stdout), TIOCGWINSZ, &buff) != -1)
+      if (ioctl (STDOUT_FILENO, TIOCGWINSZ, &buff) != -1)
       {
         terminal_height = buff[0];
         terminal_width = buff[1];
@@ -88,7 +89,7 @@ int Context::getHeight ()
         terminal_height == 0)
     {
       unsigned short buff[4];
-      if (ioctl (fileno(stdout), TIOCGWINSZ, &buff) != -1)
+      if (ioctl (STDOUT_FILENO, TIOCGWINSZ, &buff) != -1)
       {
         terminal_height = buff[0];
         terminal_width = buff[1];
