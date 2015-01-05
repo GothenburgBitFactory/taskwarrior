@@ -30,7 +30,6 @@
 #include <sstream>
 #include <algorithm>
 #include <assert.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -505,7 +504,7 @@ bool Context::color ()
     use_color = config.getBoolean ("color");
 
     // Only tty's support color.
-    if (! isatty (fileno (stdout)))
+    if (! isatty (STDOUT_FILENO))
     {
       // No ioctl.
       config.set ("detection", "off");
@@ -771,7 +770,7 @@ void Context::clear ()
 // this output?'.
 void Context::updateXtermTitle ()
 {
-  if (config.getBoolean ("xterm.title") && isatty (fileno (stdout)))
+  if (config.getBoolean ("xterm.title") && isatty (STDOUT_FILENO))
   {
     std::string command = cli.getCommand ();
     std::string title;
