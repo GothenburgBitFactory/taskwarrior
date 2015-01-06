@@ -67,7 +67,7 @@ class TestExportCommand(TestCase):
 
     def assertString(self, value, expected_value=None, regexp=False):
         """
-        Checks the type of value to be string, and that context is as passed in
+        Checks the type of value to be string, and that content is as passed in
         the expected_value argument. This can be either a string, or a compiled
         regular expression object.
         """
