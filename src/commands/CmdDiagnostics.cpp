@@ -322,10 +322,15 @@ int CmdDiagnostics::execute (std::string& output)
     for (h = hooks.begin (); h != hooks.end (); ++h)
     {
       Path p (*h);
+      std::string name = p.name ();
       out << "             "
           << *h
           << (p.executable () ? " (executable)" : " (not executable)")
           << (p.is_link () ? " (symlink)" : "")
+          << ((name.substr (0, 6) == "on-add" ||
+               name.substr (0, 9) == "on-modify" ||
+               name.substr (0, 9) == "on-launch" ||
+               name.substr (0, 7) == "on-exit") ? "" : " (unrecognized hook name)")
           << "\n";
     }
   }
