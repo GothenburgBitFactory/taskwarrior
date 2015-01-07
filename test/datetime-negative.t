@@ -36,11 +36,10 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
 
-class TestIncorrectDate(TestCase):
+
+class BaseDateTimeNegativeTest(TestCase):
     """
-    This test case makes sure various formats
-    of incorrect datetimes do not get interpreted
-    as valid timetamps. Covers TW-1499.
+    Base class for Datetime negative tests.
     """
 
     def setUp(self):
@@ -51,6 +50,14 @@ class TestIncorrectDate(TestCase):
         self.t.runError(('add', 'scheduled:%s' % value, 'test2'))
         self.t.runError(('add', 'wait:%s' % value, 'test3'))
         self.t.runError(('add', 'until:%s' % value, 'test4'))
+
+
+class TestIncorrectDate(BaseDateTimeNegativeTest):
+    """
+    This test case makes sure various formats
+    of incorrect datetimes do not get interpreted
+    as valid timetamps. Covers TW-1499.
+    """
 
     def test_set_incorrect_datetime_randomstring(self):
         self.assertInvalidDatetimeFormat('random')
@@ -129,6 +136,373 @@ class TestIncorrectDate(TestCase):
 
     def test_set_incorrect_datetime_huge_overflow_month_in_YYYY_MM(self):
         self.assertInvalidDatetimeFormat('2014-99')
+
+
+class TestIncorrectTime(BaseDateTimeNegativeTest):
+    """
+    This test class makes sure invalid time formats are not getting
+    accepted by TaskWarrior parser.
+    """
+
+    def test_set_incorrect_datetime_hour_overflow_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('24:00')
+
+    def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('99:00')
+
+    def test_set_incorrect_datetime_minute_overflow_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:60')
+
+    def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:99')
+
+    def test_set_incorrect_datetime_invalid_minutes_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:ab')
+
+    def test_set_incorrect_datetime_invalid_hours_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('ab:12')
+
+    def test_set_incorrect_datetime_invalid_time_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('ab:cd')
+
+    def test_set_incorrect_datetime_negative_hours_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('-12:12')
+
+    def test_set_incorrect_datetime_negative_minutes_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:-12')
+
+    def test_set_incorrect_datetime_hour_overflow_in_hh_mmZ(self):
+        self.assertInvalidDatetimeFormat('24:00Z')
+
+    def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mmZ(self):
+        self.assertInvalidDatetimeFormat('99:00Z')
+
+    def test_set_incorrect_datetime_minute_overflow_in_hh_mmZ(self):
+        self.assertInvalidDatetimeFormat('12:60Z')
+
+    def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mmZ(self):
+        self.assertInvalidDatetimeFormat('12:99Z')
+
+    def test_set_incorrect_datetime_invalid_minutes_in_hh_mmZ(self):
+        self.assertInvalidDatetimeFormat('12:abZ')
+
+    def test_set_incorrect_datetime_invalid_hours_in_hh_mmZ(self):
+        self.assertInvalidDatetimeFormat('ab:12Z')
+
+    def test_set_incorrect_datetime_invalid_time_in_hh_mmZ(self):
+        self.assertInvalidDatetimeFormat('ab:cdZ')
+
+    def test_set_incorrect_datetime_negative_hours_in_hh_mmZ(self):
+        self.assertInvalidDatetimeFormat('-12:12Z')
+
+    def test_set_incorrect_datetime_negative_minutes_in_hh_mmZ(self):
+        self.assertInvalidDatetimeFormat('12:-12Z')
+
+    def test_set_incorrect_datetime_hour_overflow_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('24:00+01:00')
+
+    def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('99:00+01:00')
+
+    def test_set_incorrect_datetime_minute_overflow_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:60+01:00')
+
+    def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:99+01:00')
+
+    def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:ab+01:00')
+
+    def test_set_incorrect_datetime_invalid_hours_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('ab:12+01:00')
+
+    def test_set_incorrect_datetime_invalid_time_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('ab:cd+01:00')
+
+    def test_set_incorrect_datetime_negative_hours_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('-12:12+01:00')
+
+    def test_set_incorrect_datetime_negative_minutes_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:-12+01:00')
+
+    def test_set_incorrect_datetime_hour_overflow_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('24:00-01:00')
+
+    def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('99:00-01:00')
+
+    def test_set_incorrect_datetime_minute_overflow_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:60-01:00')
+
+    def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:99-01:00')
+
+    def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:ab-01:00')
+
+    def test_set_incorrect_datetime_invalid_hours_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('ab:12-01:00')
+
+    def test_set_incorrect_datetime_invalid_time_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('ab:cd-01:00')
+
+    def test_set_incorrect_datetime_negative_hours_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('-12:12-01:00')
+
+    def test_set_incorrect_datetime_negative_minutes_in_hh_mm_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:-12-01:00')
+
+    def test_set_incorrect_datetime_hour_overflow_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('24:00:00')
+
+    def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('99:00:00')
+
+    def test_set_incorrect_datetime_minute_overflow_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:60:00')
+
+    def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:99:00')
+
+    def test_set_incorrect_datetime_second_overflow_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:60')
+
+    def test_set_incorrect_datetime_huge_second_overflow_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:99')
+
+    def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:ab:00')
+
+    def test_set_incorrect_datetime_invalid_hours_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('ab:12:00')
+
+    def test_set_incorrect_datetime_invalid_seconds_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:ab')
+
+    def test_set_incorrect_datetime_invalid_time_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('ab:cd:ef')
+
+    def test_set_incorrect_datetime_negative_hours_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('-12:12:12')
+
+    def test_set_incorrect_datetime_negative_minutes_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:-12:12')
+
+    def test_set_incorrect_datetime_negative_seconds_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:-12')
+
+    def test_set_incorrect_datetime_hour_overflow_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('24:00:00Z')
+
+    def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('99:00:00Z')
+
+    def test_set_incorrect_datetime_minute_overflow_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('12:60:00Z')
+
+    def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('12:99:00Z')
+
+    def test_set_incorrect_datetime_second_overflow_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('12:12:60Z')
+
+    def test_set_incorrect_datetime_huge_second_overflow_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('12:12:99Z')
+
+    def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('12:ab:00Z')
+
+    def test_set_incorrect_datetime_invalid_hours_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('ab:12:00Z')
+
+    def test_set_incorrect_datetime_invalid_seconds_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('12:12:abZ')
+
+    def test_set_incorrect_datetime_invalid_time_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('ab:cd:efZ')
+
+    def test_set_incorrect_datetime_negative_hours_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('-12:12:12Z')
+
+    def test_set_incorrect_datetime_negative_minutes_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('12:-12:12Z')
+
+    def test_set_incorrect_datetime_negative_seconds_in_hh_mm_ssZ(self):
+        self.assertInvalidDatetimeFormat('12:12:-12Z')
+
+    def test_set_incorrect_datetime_hour_overflow_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('24:00:00+01:00')
+
+    def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('99:00:00+01:00')
+
+    def test_set_incorrect_datetime_minute_overflow_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:60:00+01:00')
+
+    def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:99:00+01:00')
+
+    def test_set_incorrect_datetime_second_overflow_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12:60+01:00')
+
+    def test_set_incorrect_datetime_huge_second_overflow_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12:99+01:00')
+
+    def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:ab:00+01:00')
+
+    def test_set_incorrect_datetime_invalid_hours_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('ab:12:00+01:00')
+
+    def test_set_incorrect_datetime_invalid_seconds_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12:ab+01:00')
+
+    def test_set_incorrect_datetime_invalid_time_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('ab:cd:ef+01:00')
+
+    def test_set_incorrect_datetime_negative_hours_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('-12:12:12+01:00')
+
+    def test_set_incorrect_datetime_negative_minutes_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:-12:12+01:00')
+
+    def test_set_incorrect_datetime_negative_seconds_in_hh_mm_ss_plus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12:-12+01:00')
+
+    def test_set_incorrect_datetime_hour_overflow_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('24:00:00-01:00')
+
+    def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('99:00:00-01:00')
+
+    def test_set_incorrect_datetime_minute_overflow_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:60:00-01:00')
+
+    def test_set_incorrect_datetime_huge_minute_overflow_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:99:00-01:00')
+
+    def test_set_incorrect_datetime_second_overflow_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12:60-01:00')
+
+    def test_set_incorrect_datetime_huge_second_overflow_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12:99-01:00')
+
+    def test_set_incorrect_datetime_invalid_minutes_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:ab:00-01:00')
+
+    def test_set_incorrect_datetime_invalid_hours_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('ab:12:00-01:00')
+
+    def test_set_incorrect_datetime_invalid_seconds_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12:ab-01:00')
+
+    def test_set_incorrect_datetime_invalid_time_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('ab:cd:ef-01:00')
+
+    def test_set_incorrect_datetime_negative_hours_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('-12:12:12-01:00')
+
+    def test_set_incorrect_datetime_negative_minutes_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:-12:12-01:00')
+
+    def test_set_incorrect_datetime_negative_seconds_in_hh_mm_ss_minus_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12:-12-01:00')
+
+    def test_set_incorrect_datetime_invalid_hour_positive_offset_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12+13:00')
+
+    def test_set_incorrect_datetime_invalid_medium_hour_positive_offset_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12+24:00')
+
+    def test_set_incorrect_datetime_invalid_huge_hour_positive_offset_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12+99:00')
+
+    def test_set_incorrect_datetime_invalid_minute_positive_offset_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12+03:60')
+
+    def test_set_incorrect_datetime_invalid_huge_minute_positive_offset_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12+03:99')
+
+    def test_set_incorrect_datetime_invalid_hour_positive_offset_length_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12+3:20')
+
+    def test_set_incorrect_datetime_invalid_minute_positive_offset_lentgh_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12+03:2')
+
+    def test_set_incorrect_datetime_invalid_positive_offset_length_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12+3:2')
+
+    def test_set_incorrect_datetime_invalid_hour_negative_offset_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12-13:00')
+
+    def test_set_incorrect_datetime_invalid_medium_hour_negative_offset_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12-24:00')
+
+    def test_set_incorrect_datetime_invalid_huge_hour_negative_offset_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12-99:00')
+
+    def test_set_incorrect_datetime_invalid_minute_negative_offset_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12-03:60')
+
+    def test_set_incorrect_datetime_invalid_huge_minute_negative_offset_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12-03:99')
+
+    def test_set_incorrect_datetime_invalid_hour_negative_offset_length_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12-3:20')
+
+    def test_set_incorrect_datetime_invalid_minute_negative_offset_lentgh_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12-03:2')
+
+    def test_set_incorrect_datetime_invalid_negative_offset_length_in_hh_mm_ss(self):
+        self.assertInvalidDatetimeFormat('12:12:12-3:2')
+
+    def test_set_incorrect_datetime_invalid_hour_positive_offset_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12+13:00')
+
+    def test_set_incorrect_datetime_invalid_medium_hour_positive_offset_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12+24:00')
+
+    def test_set_incorrect_datetime_invalid_huge_hour_positive_offset_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12+99:00')
+
+    def test_set_incorrect_datetime_invalid_minute_positive_offset_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12+03:60')
+
+    def test_set_incorrect_datetime_invalid_huge_minute_positive_offset_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12+03:99')
+
+    def test_set_incorrect_datetime_invalid_hour_positive_offset_length_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12+3:20')
+
+    def test_set_incorrect_datetime_invalid_minute_positive_offset_lentgh_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12+03:2')
+
+    def test_set_incorrect_datetime_invalid_positive_offset_length_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12+3:2')
+
+    def test_set_incorrect_datetime_invalid_hour_negative_offset_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12-13:00')
+
+    def test_set_incorrect_datetime_invalid_medium_hour_negative_offset_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12-24:00')
+
+    def test_set_incorrect_datetime_invalid_huge_hour_negative_offset_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12-99:00')
+
+    def test_set_incorrect_datetime_invalid_minute_negative_offset_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12-03:60')
+
+    def test_set_incorrect_datetime_invalid_huge_minute_negative_offset_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12-03:99')
+
+    def test_set_incorrect_datetime_invalid_hour_negative_offset_length_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12-3:20')
+
+    def test_set_incorrect_datetime_invalid_minute_negative_offset_lentgh_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12-03:2')
+
+    def test_set_incorrect_datetime_invalid_negative_offset_length_in_hh_mm(self):
+        self.assertInvalidDatetimeFormat('12:12-3:2')
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
