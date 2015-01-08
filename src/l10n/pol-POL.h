@@ -489,6 +489,8 @@
 #define STRING_CMD_SYNC_HANDSHAKE    "Nieudany handshake.  {1}"
 #define STRING_CMD_SYNC_TRUST_CA     "Powinieneś udostępnić certyfikat CA lub nadpisać weryfikację. Wybierz jedną z opcji."
 #define STRING_CMD_SYNC_TRUST_OBS    "The 'taskd.trust' settings may now only contain a value of 'strict', 'ignore hostname' or 'allow all'."
+
+// STRING_CMD_DIAG_* strings all appear on the 'diag' command output.
 #define STRING_CMD_DIAG_USAGE        "Szczegóły platformy i środowiska budowania"
 #define STRING_CMD_DIAG_PLATFORM     "Platforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<nieznane>"
@@ -510,6 +512,13 @@
 #define STRING_CMD_DIAG_UUID_NO_DUP  "Nie znaleziono duplikatów"
 #define STRING_CMD_DIAG_NONE         "-brak-"
 #define STRING_CMD_DIAG_HOOKS        "Haki"
+#define STRING_CMD_DIAG_HOOK_NAME    "unrecognized hook name"
+#define STRING_CMD_DIAG_HOOK_SYMLINK "symlink"
+#define STRING_CMD_DIAG_HOOK_EXEC    "executable"
+#define STRING_CMD_DIAG_HOOK_NO_EXEC "not executable"
+#define STRING_CMD_DIAG_HOOK_ENABLE  "Enabled"
+#define STRING_CMD_DIAG_HOOK_DISABLE "Disabled"
+
 #define STRING_CMD_HCOMMANDS_USAGE   "Generuje listę wszystkich poleceń dla funkcji autouzupełniania"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generuje listę wszystkich poleceń dla funkcji autouzupełniania w powłoce zsh"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"

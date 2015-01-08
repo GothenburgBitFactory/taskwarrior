@@ -73,7 +73,17 @@ void Hooks::initialize ()
     {
       std::vector <std::string>::iterator i;
       for (i = _scripts.begin (); i != _scripts.end (); ++i)
-        context.debug ("Found hook script " + *i);
+      {
+        Path p (*i);
+        std::string name = p.name ();
+        if (name.substr (0, 6) == "on-add"    ||
+            name.substr (0, 9) == "on-modify" ||
+            name.substr (0, 9) == "on-launch" ||
+            name.substr (0, 7) == "on-exit")
+          context.debug ("Found hook script " + *i);
+        else
+          context.debug ("Found misnamed hook script " + *i);
+      }
     }
   }
   else if (_debug >= 1)

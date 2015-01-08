@@ -312,7 +312,7 @@ int CmdDiagnostics::execute (std::string& output)
   out << bold.colorize (STRING_CMD_DIAG_HOOKS)
       << "\n"
       << "    Scripts: "
-      << (context.config.getBoolean ("hooks") ? "Enabled" : "Disabled")
+      << (context.config.getBoolean ("hooks") ? STRING_CMD_DIAG_HOOK_ENABLE : STRING_CMD_DIAG_HOOK_DISABLE)
       << "\n";
 
   std::vector <std::string> hooks = context.hooks.list ();
@@ -325,17 +325,17 @@ int CmdDiagnostics::execute (std::string& output)
       std::string name = p.name ();
       out << "             "
           << *h
-          << (p.executable () ? " (executable)" : " (not executable)")
-          << (p.is_link () ? " (symlink)" : "")
+          << (p.executable () ? format (" ({1})", STRING_CMD_DIAG_HOOK_EXEC) : format (" ({1})", STRING_CMD_DIAG_HOOK_NO_EXEC))
+          << (p.is_link () ? format (" ({1})", STRING_CMD_DIAG_HOOK_SYMLINK) : "")
           << ((name.substr (0, 6) == "on-add" ||
                name.substr (0, 9) == "on-modify" ||
                name.substr (0, 9) == "on-launch" ||
-               name.substr (0, 7) == "on-exit") ? "" : " (unrecognized hook name)")
+               name.substr (0, 7) == "on-exit") ? "" : format (" ({1})", STRING_CMD_DIAG_HOOK_NAME))
           << "\n";
     }
   }
   else
-    out << "             (none)\n";
+    out << format ("             ({1})\n", STRING_CMD_DIAG_NONE);
 
   out << "\n";
 

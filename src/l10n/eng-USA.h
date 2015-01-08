@@ -489,6 +489,8 @@
 #define STRING_CMD_SYNC_HANDSHAKE    "Handshake failed.  {1}"
 #define STRING_CMD_SYNC_TRUST_CA     "You should either provide a CA certificate or override verification, but not both."
 #define STRING_CMD_SYNC_TRUST_OBS    "The 'taskd.trust' settings may now only contain a value of 'strict', 'ignore hostname' or 'allow all'."
+
+// STRING_CMD_DIAG_* strings all appear on the 'diag' command output.
 #define STRING_CMD_DIAG_USAGE        "Platform, build and environment details"
 #define STRING_CMD_DIAG_PLATFORM     "Platform"
 #define STRING_CMD_DIAG_UNKNOWN      "<unknown>"
@@ -510,6 +512,13 @@
 #define STRING_CMD_DIAG_UUID_NO_DUP  "No duplicates found"
 #define STRING_CMD_DIAG_NONE         "-none-"
 #define STRING_CMD_DIAG_HOOKS        "Hooks"
+#define STRING_CMD_DIAG_HOOK_NAME    "unrecognized hook name"
+#define STRING_CMD_DIAG_HOOK_SYMLINK "symlink"
+#define STRING_CMD_DIAG_HOOK_EXEC    "executable"
+#define STRING_CMD_DIAG_HOOK_NO_EXEC "not executable"
+#define STRING_CMD_DIAG_HOOK_ENABLE  "Enabled"
+#define STRING_CMD_DIAG_HOOK_DISABLE "Disabled"
+
 #define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
@@ -970,7 +979,7 @@
 
 /*
   To be included later, before the 'precendence' line.
- 
+
   "  +  -                    Addition, subtraction\n" \
   "  !                       Inversion\n" \
   "  ~  !~                   Match, no match\n" \
@@ -990,4 +999,3 @@
 #define STRING_UTIL_BYTES            "B"
 
 #endif
-

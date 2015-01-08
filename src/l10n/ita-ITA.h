@@ -58,7 +58,7 @@
 //   1. Copy this file (eng-USA.h) to a new file with the target locale as the
 //      file name.  Using German as an example, do this:
 //
-//        cp eng-USA.h de-DE.h
+//        cp eng-USA.h deu-DEU.h
 //
 //   2. Modify all the strings below.
 //        i.e. change "Unknown error." to "Unbekannter Fehler.".
@@ -67,7 +67,7 @@
 //      by inserting:
 //
 //        #elif PACKAGE_LANGUAGE == LANGUAGE_DEU_DEU
-//        #include <de-DE.h>
+//        #include <deu-DEU.h>
 //
 //   4. Add your new language to task.git/CMakeLists.txt, making sure that
 //      number is unique:
@@ -91,7 +91,6 @@
 
 #ifndef INCLUDED_STRINGS
 #define INCLUDED_STRINGS
-#define L10N                                           // Localization complete.
 
 // Note that for English, the following two lines are not displayed.  For all
 // other localizations, these lines will appear in the output of the 'version'
@@ -141,9 +140,9 @@
 #define STRING_VARIANT_MUL_STR_DUR   "Cannot multiply strings by durations"
 #define STRING_VARIANT_MUL_DUR_STR   "Cannot multiply durations by strings"
 #define STRING_VARIANT_MUL_DUR_DATE  "Cannot multiply durations by dates"
-#define STRING_VARIANT_MUL_DUR_DUR   "Cannot multiply durations by duraitons"
+#define STRING_VARIANT_MUL_DUR_DUR   "Cannot multiply durations by durations"
 #define STRING_VARIANT_DIV_UNKNOWN   "Cannot divide unknown type"
-#define STRING_VARIANT_DIV_BOOL      "Cannot divide Boolean"
+#define STRING_VARIANT_DIV_BOOL      "Cannot divide Boolean values"
 #define STRING_VARIANT_DIV_INT_BOOL  "Cannot divide integers by Boolean values"
 #define STRING_VARIANT_DIV_ZERO      "Cannot divide by zero"
 #define STRING_VARIANT_DIV_INT_STR   "Cannot divide integer by string"
@@ -155,7 +154,7 @@
 #define STRING_VARIANT_DIV_DUR_STR   "Cannot divide durations by strings"
 #define STRING_VARIANT_DIV_DUR_DATE  "Cannot divide durations by dates"
 #define STRING_VARIANT_DIV_DUR_DUR   "Cannot divide durations by durations"
-#define STRING_VARIANT_MOD_BOOL      "Cannot modulo Boolean"
+#define STRING_VARIANT_MOD_BOOL      "Cannot modulo Booleans"
 #define STRING_VARIANT_MOD_DATE      "Cannot modulo date values"
 #define STRING_VARIANT_MOD_DUR       "Cannot modulo duration values"
 #define STRING_VARIANT_MOD_INT_BOOL  "Cannot modulo integer by Boolean"
@@ -178,13 +177,13 @@
 // These are errors generated at the lowest level of input analysis,
 // at the character level.
 #define STRING_LEX_IMMEDIATE_UNK     "Lexer start failure, unknown characters found immediately."
-#define STRING_LEX_TYPE_UNK          "Lexer cannot process and unknown token type."
+#define STRING_LEX_TYPE_UNK          "Lexer cannot process an unknown token type."
 
 // Dates
 //
 // These are errors generated when parsing date values.
 #define STRING_DATES_MONTH_31        "Error: no month has more than 31 days."
-#define STRING_DATES_ORD_MISMATCH    "Error: number and ordinal don't match (ie '1st', not '1nd')."
+#define STRING_DATES_ORD_MISMATCH    "Error: number and ordinal don't match (e.g., '1st', not '1nd')."
 
 // Color
 #define STRING_COLOR_UNRECOGNIZED    "Il colore '{1}' non è riconosciuto."
@@ -489,6 +488,8 @@
 #define STRING_CMD_SYNC_HANDSHAKE    "Handshake failed.  {1}"
 #define STRING_CMD_SYNC_TRUST_CA     "You should either provide a CA certificate or override verification, but not both."
 #define STRING_CMD_SYNC_TRUST_OBS    "The 'taskd.trust' settings may now only contain a value of 'strict', 'ignore hostname' or 'allow all'."
+
+// STRING_CMD_DIAG_* strings all appear on the 'diag' command output.
 #define STRING_CMD_DIAG_USAGE        "Dettagli su piattaforma, build e ambiente"
 #define STRING_CMD_DIAG_PLATFORM     "Piattaforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<sconoscito>"
@@ -510,6 +511,13 @@
 #define STRING_CMD_DIAG_UUID_NO_DUP  "Nessun duplicato trovato"
 #define STRING_CMD_DIAG_NONE         "-nessuno-"
 #define STRING_CMD_DIAG_HOOKS        "Hooks"
+#define STRING_CMD_DIAG_HOOK_NAME    "unrecognized hook name"
+#define STRING_CMD_DIAG_HOOK_SYMLINK "symlink"
+#define STRING_CMD_DIAG_HOOK_EXEC    "executable"
+#define STRING_CMD_DIAG_HOOK_NO_EXEC "not executable"
+#define STRING_CMD_DIAG_HOOK_ENABLE  "Enabled"
+#define STRING_CMD_DIAG_HOOK_DISABLE "Disabled"
+
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera la lista di tutti i comandi, per autocompletamento"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera la lista di tutti i comandi, per autocompletamento in zsh"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
@@ -990,4 +998,3 @@
 #define STRING_UTIL_BYTES            "B"
 
 #endif
-

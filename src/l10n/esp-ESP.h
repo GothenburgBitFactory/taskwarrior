@@ -58,7 +58,7 @@
 //   1. Copy this file (eng-USA.h) to a new file with the target locale as the
 //      file name.  Using German as an example, do this:
 //
-//        cp eng-USA.h de-DE.h
+//        cp eng-USA.h deu-DEU.h
 //
 //   2. Modify all the strings below.
 //        i.e. change "Unknown error." to "Unbekannter Fehler.".
@@ -67,7 +67,7 @@
 //      by inserting:
 //
 //        #elif PACKAGE_LANGUAGE == LANGUAGE_DEU_DEU
-//        #include <de-DE.h>
+//        #include <deu-DEU.h>
 //
 //   4. Add your new language to task.git/CMakeLists.txt, making sure that
 //      number is unique:
@@ -471,6 +471,7 @@
 #define STRING_TASK_NO_DESC          "La anotación carece de descripción: {1}"
 #define STRING_TASK_NO_ENTRY         "La anotación carece de fecha de entrada: {1}"
 
+// STRING_CMD_DIAG_* strings all appear on the 'diag' command output.
 #define STRING_CMD_SYNC_USAGE        "Sincroniza datos con el Servidor Task"
 #define STRING_CMD_SYNC_NO_SERVER    "El Servidor Task no está configurado."
 #define STRING_CMD_SYNC_BAD_CRED     "Credenciales del Servidor Task incorrectas."
@@ -521,6 +522,11 @@
 #define STRING_CMD_DIAG_HOOKS        "Hooks"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera una lista de todos los comandos, con fines de auto-completado"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera una lista de todos los comandos, con fines de auto-completado zsh"
+#define STRING_CMD_DIAG_HOOK_EXEC    "executable"
+#define STRING_CMD_DIAG_HOOK_NO_EXEC "not executable"
+#define STRING_CMD_DIAG_HOOK_ENABLE  "Enabled"
+#define STRING_CMD_DIAG_HOOK_DISABLE "Disabled"
+
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_CMD_ALIASES_USAGE     "Genera una lista de todos los alias, con fines de auto-completado"
 #define STRING_CMD_INSTALL_USAGE     "Instala extensiones y scripts externos"
@@ -1018,4 +1024,3 @@
 #define STRING_UTIL_BYTES            "B"  // |esp-ESP|==|eng-USA|
 
 #endif
-

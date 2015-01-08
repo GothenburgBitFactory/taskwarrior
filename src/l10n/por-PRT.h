@@ -58,7 +58,7 @@
 //   1. Copy this file (eng-USA.h) to a new file with the target locale as the
 //      file name.  Using German as an example, do this:
 //
-//        cp eng-USA.h de-DE.h
+//        cp eng-USA.h deu-DEU.h
 //
 //   2. Modify all the strings below.
 //        i.e. change "Unknown error." to "Unbekannter Fehler.".
@@ -67,7 +67,7 @@
 //      by inserting:
 //
 //        #elif PACKAGE_LANGUAGE == LANGUAGE_DEU_DEU
-//        #include <de-DE.h>
+//        #include <deu-DEU.h>
 //
 //   4. Add your new language to task.git/CMakeLists.txt, making sure that
 //      number is unique:
@@ -489,6 +489,8 @@
 #define STRING_CMD_SYNC_HANDSHAKE    "'Handshake' falhou. {1}"
 #define STRING_CMD_SYNC_TRUST_CA     "Deve fornecer um certificado CA ou desactivar a verificação, mas não ambos."
 #define STRING_CMD_SYNC_TRUST_OBS    "The 'taskd.trust' settings may now only contain a value of 'strict', 'ignore hostname' or 'allow all'."
+
+// STRING_CMD_DIAG_* strings all appear on the 'diag' command output.
 #define STRING_CMD_DIAG_USAGE        "Plataforma, versão e detalhes de ambiente"
 #define STRING_CMD_DIAG_PLATFORM     "Plataforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<desconhecido>"
@@ -510,6 +512,13 @@
 #define STRING_CMD_DIAG_UUID_NO_DUP  "Nenhum duplicado encontrado"
 #define STRING_CMD_DIAG_NONE         "-nenhum-"
 #define STRING_CMD_DIAG_HOOKS        "Âncoras"
+#define STRING_CMD_DIAG_HOOK_NAME    "unrecognized hook name"
+#define STRING_CMD_DIAG_HOOK_SYMLINK "symlink"
+#define STRING_CMD_DIAG_HOOK_EXEC    "executable"
+#define STRING_CMD_DIAG_HOOK_NO_EXEC "not executable"
+#define STRING_CMD_DIAG_HOOK_ENABLE  "Enabled"
+#define STRING_CMD_DIAG_HOOK_DISABLE "Disabled"
+
 #define STRING_CMD_HCOMMANDS_USAGE   "Gera uma lista com todos os comandos, para fins de terminação automática"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Gera uma lista com todos os comandos, para terminação automática em zsh"
 #define STRING_CMD_ZSHATTS_USAGE     "Gera uma lista de todos os atributos, para terminação automática em zsh"
@@ -990,4 +999,3 @@
 #define STRING_UTIL_BYTES            "B"  // |por-PRT|==|eng-USA|
 
 #endif
-
