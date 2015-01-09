@@ -57,7 +57,7 @@ int main (int argc, char** argv)
   try
   {
     bool infix     = true;
-    bool ambiguous = true;
+    bool ambiguous = false;
 
     // Add a source for constants.
     Eval e;
@@ -77,8 +77,8 @@ int main (int argc, char** argv)
                   << "  -d|--debug        Debug mode\n"
                   << "  -i|--infix        Infix expression (default)\n"
                   << "  -p|--postfix      Postfix expression\n"
-                  << "  -a|--ambiguous    Choose dates over numbers when ambiguous (default)\n"
-                  << "  -n|--noambiguous  Choose numbers over dates when ambiguous\n"
+                  << "  -a|--ambiguous    Choose dates over numbers when ambiguous\n"
+                  << "  -n|--noambiguous  Choose numbers over dates when ambiguous (default)\n"
                   << "\n";
         exit (1);
       }
