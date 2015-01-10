@@ -96,6 +96,9 @@ int CmdTags::execute (std::string& output)
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_TAG));
     view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_COUNT));
 
+    Color label (context.config.get ("color.label"));
+    view.colorHeader (label);
+
     Color bold ("bold");
     bool special = false;
     std::map <std::string, int>::iterator i;

@@ -70,6 +70,9 @@ int CmdColumns::execute (std::string& output)
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_STYLES));
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_EXAMPLES));
 
+  Color label (context.config.get ("color.label"));
+  formats.colorHeader (label);
+
   Color alternate (context.config.get ("color.alternate"));
   formats.colorOdd (alternate);
   formats.intraColorOdd (alternate);

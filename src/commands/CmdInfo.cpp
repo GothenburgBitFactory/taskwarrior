@@ -106,6 +106,9 @@ int CmdInfo::execute (std::string& output)
       Color alternate (context.config.get ("color.alternate"));
       view.colorOdd (alternate);
       view.intraColorOdd (alternate);
+
+      Color label (context.config.get ("color.label"));
+      view.colorHeader (label);
     }
 
     Date now;
@@ -427,6 +430,9 @@ int CmdInfo::execute (std::string& output)
       Color alternate (context.config.get ("color.alternate"));
       journal.colorOdd (alternate);
       journal.intraColorOdd (alternate);
+
+      Color label (context.config.get ("color.label"));
+      journal.colorHeader (label);
     }
 
     journal.width (context.getWidth ());

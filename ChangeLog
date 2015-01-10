@@ -1,5 +1,6 @@
 2.4.1 () -
 
+- TW-1484 The 'history' and 'ghistory' reports do not obey rc.color.label.
 - TW-1486 task wait shows completed tasks which has a wait attribute (thanks to
           Sujeevan Vijayakumaran).
 - TW-1492 compiling v2.4.0 using musl(libc) (thanks to V.Krishn).

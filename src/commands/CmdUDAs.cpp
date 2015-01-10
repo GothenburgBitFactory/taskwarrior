@@ -87,6 +87,9 @@ int CmdUDAs::execute (std::string& output)
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_DEFAULT));
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_UDACOUNT));
 
+    Color label (context.config.get ("color.label"));
+    view.colorHeader (label);
+
     std::vector <std::string>::iterator uda;
     for (uda = udas.begin (); uda != udas.end (); ++uda)
     {
@@ -146,6 +149,9 @@ int CmdUDAs::execute (std::string& output)
     orphanView.width (context.getWidth ());
     orphanView.add (Column::factory ("string", STRING_COLUMN_LABEL_ORPHAN));
     orphanView.add (Column::factory ("string", STRING_COLUMN_LABEL_UDACOUNT));
+
+    Color label (context.config.get ("color.label"));
+    orphanView.colorHeader (label);
 
     std::map <std::string, int>::iterator o;
     for (o = orphans.begin (); o != orphans.end (); ++o)

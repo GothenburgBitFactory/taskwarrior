@@ -104,6 +104,9 @@ int CmdHistoryMonthly::execute (std::string& output)
   view.add (Column::factory ("string.right", STRING_CMD_HISTORY_DEL));
   view.add (Column::factory ("string.right", STRING_CMD_HISTORY_NET));
 
+  Color label (context.config.get ("color.label"));
+  view.colorHeader (label);
+
   int totalAdded     = 0;
   int totalCompleted = 0;
   int totalDeleted   = 0;
@@ -256,6 +259,9 @@ int CmdHistoryAnnual::execute (std::string& output)
   view.add (Column::factory ("string.right", STRING_CMD_HISTORY_COMP));
   view.add (Column::factory ("string.right", STRING_CMD_HISTORY_DEL));
   view.add (Column::factory ("string.right", STRING_CMD_HISTORY_NET));
+
+  Color label (context.config.get ("color.label"));
+  view.colorHeader (label);
 
   int totalAdded     = 0;
   int totalCompleted = 0;
@@ -411,6 +417,9 @@ int CmdGHistoryMonthly::execute (std::string& output)
   Color color_add    (context.config.get ("color.history.add"));
   Color color_done   (context.config.get ("color.history.done"));
   Color color_delete (context.config.get ("color.history.delete"));
+  Color label        (context.config.get ("color.label"));
+
+  view.colorHeader (label);
 
   // Determine the longest line, and the longest "added" line.
   int maxAddedLine = 0;
@@ -603,6 +612,9 @@ int CmdGHistoryAnnual::execute (std::string& output)
   Color color_add    (context.config.get ("color.history.add"));
   Color color_done   (context.config.get ("color.history.done"));
   Color color_delete (context.config.get ("color.history.delete"));
+  Color label        (context.config.get ("color.label"));
+
+  view.colorHeader (label);
 
   // Determine the longest line, and the longest "added" line.
   int maxAddedLine = 0;

@@ -260,6 +260,9 @@ int CmdShow::execute (std::string& output)
 
   Color error (context.config.get ("color.error"));
   Color warning (context.config.get ("color.warning"));
+  Color label (context.config.get ("color.label"));
+
+  view.colorHeader (label);
 
   bool issue_error = false;
   bool issue_warning = false;

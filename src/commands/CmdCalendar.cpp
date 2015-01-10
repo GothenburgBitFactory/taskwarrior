@@ -284,6 +284,7 @@ int CmdCalendar::execute (std::string& output)
   Color color_weekend    (context.config.get ("color.calendar.weekend"));
   Color color_holiday    (context.config.get ("color.calendar.holiday"));
   Color color_weeknumber (context.config.get ("color.calendar.weeknumber"));
+  Color color_label      (context.config.get ("color.label"));
 
   if (context.color () && context.config.getBoolean ("calendar.legend"))
     out << "Legend: "
@@ -363,6 +364,7 @@ int CmdCalendar::execute (std::string& output)
       holTable.width (context.getWidth ());
       holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_DATE));
       holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_HOL));
+      holTable.colorHeader (color_label);
 
       Config::const_iterator it;
       std::map <time_t, std::vector<std::string> > hm; // we need to store multiple holidays per day
@@ -426,7 +428,10 @@ std::string CmdCalendar::renderMonths (
     throw std::string (STRING_CMD_CAL_SUN_MON);
 
   // Build table for the number of months to be displayed.
+  Color label (context.config.get ("color.label"));
+
   ViewText view;
+  view.colorHeader (label);
   view.width (context.getWidth ());
   for (int i = 0 ; i < (monthsPerLine * 8); i += 8)
   {

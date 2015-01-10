@@ -85,6 +85,9 @@ int CmdReports::execute (std::string& output)
   view.add (Column::factory ("string", STRING_CMD_REPORTS_REPORT));
   view.add (Column::factory ("string", STRING_CMD_REPORTS_DESC));
 
+  Color label (context.config.get ("color.label"));
+  view.colorHeader (label);
+
   // If an alternating row color is specified, notify the table.
   if (context.color ())
   {

@@ -127,7 +127,7 @@ int CmdSummary::execute (std::string& output)
 
   Color bar_color (context.config.get ("color.summary.bar"));
   Color bg_color  (context.config.get ("color.summary.background"));
-  Color label (context.config.get ("color.label"));
+  Color label     (context.config.get ("color.label"));
 
   view.colorHeader (label);
 

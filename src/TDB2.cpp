@@ -979,6 +979,9 @@ void TDB2::show_diff (
     view.add (Column::factory ("string", STRING_TDB2_UNDO_PRIOR));
     view.add (Column::factory ("string", STRING_TDB2_UNDO_CURRENT));
 
+    Color label (context.config.get ("color.label"));
+    view.colorHeader (label);
+
     Task after (current);
 
     if (prior != "")

@@ -160,6 +160,9 @@ int CmdStats::execute (std::string& output)
   view.add (Column::factory ("string", STRING_CMD_STATS_CATEGORY));
   view.add (Column::factory ("string", STRING_CMD_STATS_DATA));
 
+  Color label (context.config.get ("color.label"));
+  view.colorHeader (label);
+
   int row = view.addRow ();
   view.set (row, 0, STRING_COLUMN_LABEL_STAT_PE);
   view.set (row, 1, pendingT);

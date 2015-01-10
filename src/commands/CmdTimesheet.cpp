@@ -99,6 +99,9 @@ int CmdTimesheet::execute (std::string& output)
     completed.add (Column::factory ("string.right", STRING_COLUMN_LABEL_DUE));
     completed.add (Column::factory ("string",       STRING_COLUMN_LABEL_DESC));
 
+    Color label (context.config.get ("color.label"));
+    completed.colorHeader (label);
+
     std::vector <Task>::iterator task;
     for (task = all.begin (); task != all.end (); ++task)
     {
@@ -155,6 +158,7 @@ int CmdTimesheet::execute (std::string& output)
     started.add (Column::factory ("string",       STRING_COLUMN_LABEL_PROJECT));
     started.add (Column::factory ("string.right", STRING_COLUMN_LABEL_DUE));
     started.add (Column::factory ("string",       STRING_COLUMN_LABEL_DESC));
+    started.colorHeader (label);
 
     for (task = all.begin (); task != all.end (); ++task)
     {
