@@ -240,6 +240,12 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
       Column* column = context.columns[canonical];
       if (column)
       {
+        if (column->is_uda () && ! task.has (canonical))
+        {
+          value = Variant ("''");
+          return true;
+        }
+
         if (column->type () == "date")
           value = Variant (task.get_date (canonical), Variant::type_date);
         else if (column->type () == "duration" || canonical == "recur")
@@ -307,6 +313,12 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
           Column* column = context.columns[canonical];
           if (column)
           {
+            if (column->is_uda () && ! task.has (canonical))
+            {
+              value = Variant ("''");
+              return true;
+            }
+
             if (column->type () == "date")
               value = Variant (ref.get_date (canonical), Variant::type_date);
             else if (column->type () == "duration")

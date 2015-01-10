@@ -4,14 +4,15 @@
           Sujeevan Vijayakumaran).
 - TW-1492 compiling v2.4.0 using musl(libc) (thanks to V.Krishn).
 - TW-1495 German translation for taskwarrior (thanks to Jens Erat).
+- TW-1498 Filtering for presence of UDA matches all tasks (thanks to Ralph Bean).
 - TW-1501 Calc can't handle multi-digit numbers in some expressions (thanks to
           Jeremy John Reeder).
+- TW-1505 completely ignore mis-named hook scripts (thanks to Tomas Babej,
+          David Patrick).
 - Fixed assorted color theme problems.
 - Changed assorted reports so they do not use '.age' format for dates that are
   in the future, because those are never shown with this format (thanks to
   Sujeevan Vijayakumaran).
-- The 'diag' command should indicate misnamed hook scripts (thanks to Tomas
-  Babej).
 
 ------ current release ---------------------------
 
