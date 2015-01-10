@@ -1,11 +1,14 @@
 2.4.1 () -
 
+- TW-1457 Non-existant attributes are not properly handled (thanks to Tomas
+          Babej).
 - TW-1484 The 'history' and 'ghistory' reports do not obey rc.color.label.
 - TW-1486 task wait shows completed tasks which has a wait attribute (thanks to
           Sujeevan Vijayakumaran).
 - TW-1492 compiling v2.4.0 using musl(libc) (thanks to V.Krishn).
 - TW-1495 German translation for taskwarrior (thanks to Jens Erat).
-- TW-1498 Filtering for presence of UDA matches all tasks (thanks to Ralph Bean).
+- TW-1498 Filtering for presence of UDA matches all tasks (thanks to Ralph
+          Bean).
 - TW-1501 Calc can't handle multi-digit numbers in some expressions (thanks to
           Jeremy John Reeder).
 - TW-1505 completely ignore mis-named hook scripts (thanks to Tomas Babej,
@@ -22,8 +25,8 @@
 - TD-42 Cannot compile taskd - GNUTLS_VERSION undefined in diag.cpp (thanks
         to Michele Vetturi).
 - TD-45 Fix preprocessor define (thanks to Jochen Sprickerhof).
-- TD-55 TLSServer/Client need to include <errno.h> on Solaris (thanks to Tatjana
-        Heuser). Also applied to NetBSD.
+- TD-55 TLSServer/Client need to include <errno.h> on Solaris (thanks to
+        Tatjana Heuser). Also applied to NetBSD.
 - TD-56 File.cpp needs to include <string.h> on Solaris (thanks to Tatjana
         Heuѕer).
 - TD-57 taskdctl script assumes /bin/sh is /bin/bash (thanks to Tatjana Heuser).
