@@ -829,6 +829,16 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       ++attributes_written;
     }
 
+    else if (type == "numeric")
+    {
+      out << "\""
+          << i->first
+          << "\":"
+          << i->second;
+
+      ++attributes_written;
+    }
+
     // Tags are converted to an array.
     else if (i->first == "tags")
     {
@@ -847,6 +857,8 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       }
 
       out << "]";
+
+      ++attributes_written;
     }
 
     // Everything else is a quoted value.
@@ -894,9 +906,8 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
   // Include urgency.
   if (decorate)
     out << ","
-        << "\"urgency\":\""
-        << urgency_c ()
-        <<"\"";
+        << "\"urgency\":"
+        << urgency_c ();
 #endif
 
   out << "}";
