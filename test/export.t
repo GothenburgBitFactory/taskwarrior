@@ -30,6 +30,7 @@ import datetime
 import json
 import sys
 import time
+import numbers
 import os
 import re
 import unittest
@@ -82,12 +83,12 @@ class TestExportCommand(TestCase):
                 # Equality match if checking with string
                 self.assertEqual(value, expected_value)
 
-    def assertInt(self, value, expected_value=None):
+    def assertNumeric(self, value, expected_value=None):
         """
         Checks the type of the value to be int, and that the expected value
         matches the actual value produced.
         """
-        self.assertType(value, int)
+        self.assertType(value, numbers.Real)
         if expected_value is not None:
             self.assertEqual(value, expected_value)
 
@@ -151,10 +152,16 @@ class TestExportCommand(TestCase):
         for uuid in values.split(','):
             self.assertString(uuid, UUID_REGEXP, regexp=True)
 
+    def test_export_urgency(self):
+        self.t(('add', 'urgent task', '+urgent'))
+
+        # Urgency can be either integer or float
+        self.assertNumeric(self.export(1)['urgency'])
+
     def test_export_numeric_uda(self):
         self.t.config('uda.estimate.type', 'numeric')
         self.t(('add', 'estimate:42', 'test numeric uda'))
-        self.assertInt(self.export('2')['estimate'], int)
+        self.assertNumeric(self.export('2')['estimate'], 42)
 
     def test_export_string_uda(self):
         self.t.config('uda.estimate.type', 'string')
