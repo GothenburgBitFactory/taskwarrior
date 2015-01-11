@@ -636,8 +636,9 @@ void Task::parseJSON (const std::string& line)
         // Dates are converted from ISO to epoch.
         else if (type == "date")
         {
-          Date d (unquoteText (i->second->dump ()));
-          set (i->first, d.toEpochString ());
+          std::string text = unquoteText (i->second->dump ());
+          Date d (text);
+          set (i->first, text == "" ? "" : d.toEpochString ());
         }
 
         // Tags are an array of JSON strings.
@@ -815,16 +816,12 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     if (type == "date")
     {
       Date d (i->second);
-      if (i->first == "modification")
-        out << "\"modified\":\""
-            << d.toISO ()
-            << "\"";
-      else
-        out << "\""
-            << i->first
-            << "\":\""
-            << d.toISO ()
-            << "\"";
+      out << "\""
+          << (i->first == "modification" ? "modified" : i->first)
+          << "\":\""
+          // Date was deleted, do not export parsed empty string
+          << (i->second == "" ? "" : d.toISO ())
+          << "\"";
 
       ++attributes_written;
     }
