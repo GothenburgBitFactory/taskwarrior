@@ -7,6 +7,7 @@
           Sujeevan Vijayakumaran).
 - TW-1487 Task export exports some numeric attributes as strings (thanks to
           Tomas Babej).
+- TW-1491 Regression in deleting due dates (thanks to Jens Erat).
 - TW-1492 compiling v2.4.0 using musl(libc) (thanks to V.Krishn).
 - TW-1495 German translation for taskwarrior (thanks to Jens Erat).
 - TW-1498 Filtering for presence of UDA matches all tasks (thanks to Ralph
