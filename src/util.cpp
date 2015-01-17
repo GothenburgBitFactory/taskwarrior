@@ -276,7 +276,7 @@ int execute (
   struct timeval tv;
   int select_retval, read_retval, write_retval;
   char buf[16384];
-  int written;
+  unsigned int written;
   const char* input_cstr = input.c_str ();
 
   if (signal (SIGPIPE, SIG_IGN) == SIG_ERR) // Handled locally with EPIPE.
@@ -294,6 +294,9 @@ int execute (
   if (pid == 0)
   {
     // This is only reached in the child
+    close (pin[1]);   // Close the write end of the input pipe.
+    close (pout[0]);  // Close the read end of the output pipe.
+
     if (dup2 (pin[0], STDIN_FILENO) == -1)
       throw std::string (std::strerror (errno));
 
@@ -310,11 +313,17 @@ int execute (
 
   // This is only reached in the parent
   close (pin[0]);   // Close the read end of the input pipe.
-  close (pout[1]);  // Close the write end if the output pipe.
+  close (pout[1]);  // Close the write end of the output pipe.
+
+  if (input.size () == 0)
+  {
+    // Nothing to send to the child, close the pipe early.
+    close (pin[1]);
+  }
 
   read_retval = -1;
   written = 0;
-  while (read_retval != 0 || input.size () - written != 0)
+  while (read_retval != 0 || input.size () != written)
   {
     FD_ZERO (&rfds);
     if (read_retval != 0)
@@ -323,7 +332,7 @@ int execute (
     }
 
     FD_ZERO (&wfds);
-    if (input.size () - written != 0)
+    if (input.size () != written)
     {
       FD_SET (pin[1], &wfds);
     }
@@ -353,6 +362,12 @@ int execute (
         }
       }
       written += write_retval;
+
+      if (written == input.size ())
+      {
+        // Let the child know that no more input is coming by closing the pipe.
+        close (pin[1]);
+      }
     }
 
     if (FD_ISSET (pout[0], &rfds))
@@ -366,7 +381,6 @@ int execute (
     }
   }
 
-  close (pin[1]);   // Close the write end of the input pipe.
   close (pout[0]);  // Close the read end of the output pipe.
 
   int status = -1;
@@ -381,6 +395,9 @@ int execute (
   {
     throw std::string ("Error: Could not get Hook exit status!");
   }
+  
+  if (signal (SIGPIPE, SIG_DFL) == SIG_ERR) // We're done, return to default.
+    throw std::string (std::strerror (errno));
 
   return status;
 }
