@@ -203,7 +203,11 @@ void Hooks::onExit ()
       {
         if (isJSON (*line))
         {
-          context.error ("JSON output ignored: {1}");
+          if (_debug >= 2)
+            context.error ("Line of JSON output ignored: " + (*line));
+
+          else if (_debug >= 1)
+            context.error ("Line(s) of JSON output ignored.");
         }
         else
         {
