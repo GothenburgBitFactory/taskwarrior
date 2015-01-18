@@ -153,7 +153,7 @@ int autoComplete (
 {
   matches.clear ();
 
-  // Handle trivial case. 
+  // Handle trivial case.
   unsigned int length = partial.length ();
   if (length)
   {
@@ -395,7 +395,7 @@ int execute (
   {
     throw std::string ("Error: Could not get Hook exit status!");
   }
-  
+
   if (signal (SIGPIPE, SIG_DFL) == SIG_ERR) // We're done, return to default.
     throw std::string (std::strerror (errno));
 
