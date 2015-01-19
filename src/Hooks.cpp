@@ -38,6 +38,7 @@
 #include <Context.h>
 #include <JSON.h>
 #include <Hooks.h>
+#include <Timer.h>
 #include <text.h>
 #include <util.h>
 
@@ -483,7 +484,19 @@ int Hooks::callHookScript (
 
   std::string outputStr;
   std::vector <std::string> args;
-  int status = execute (script, args, inputStr, outputStr);
+  int status;
+
+  // Measure time for each hook if running in debug
+  if (_debug >= 2)
+  {
+    Timer timer_per_hook("Hooks::execute (" + script + ")");
+    timer_per_hook.start();
+
+    status = execute (script, args, inputStr, outputStr);
+  }
+  else
+    status = execute (script, args, inputStr, outputStr);
+
 
   split (output, outputStr, '\n');
 
