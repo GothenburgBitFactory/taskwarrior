@@ -95,6 +95,93 @@ class TestBugNumber(TestCase):
         """Executed once after all tests in the class"""
 
 
+class TestHooksBugNumber(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t.activate_hooks()
+
+    def test_onmodify_custom(self):
+        # Testing a custom made hook
+        hookname = "on-modify-example-raw"
+
+        content = """#!/usr/bin/env python
+import sys
+import json
+
+original_task = sys.stdin.readline()
+modified_task = sys.stdin.readline()
+
+task = json.loads(modified_task)
+task["description"] = "The hook did its magic"
+
+sys.stdout.write(json.dumps(task, separators=(',', ':')) + '\\n')
+sys.exit(0)
+"""
+
+        self.t.hooks.add(hookname, content)
+
+        self.t(("add", "Hello hooks"))
+        self.t(("1", "mod", "/Hello/Greetings/"))
+        code, out, err = self.t()
+        self.assertIn("The hook did its magic", out)
+
+        self.t.hooks[hookname].disable()
+        self.assertFalse(self.t.hooks[hookname].is_active())
+
+        self.t(("1", "mod", "/magic/thing/"))
+        code, out, err = self.t()
+        self.assertIn("The hook did its thing", out)
+
+    def test_onmodify_builtin_with_log(self):
+        # Testing a builtin hook and keeping track of its input/output
+        # The builtin hook in found in test/test_hooks
+        hookname = "on-modify-for-template.py"
+        self.t.hooks.add_default(hookname, log=True)
+
+        self.t(("add", "Hello hooks"))
+        self.t(("1", "mod", "/Hello/Greetings/"))
+        code, out, err = self.t()
+        self.assertIn("This is an example modify hook", out)
+
+        logs = self.t.hooks[hookname].get_logs()
+
+        # Hook was called once
+        self.assertEqual(len(logs["calls"]), 1)
+
+        # Some message output from the hook
+        self.assertEqual(logs["output"]["msgs"][0],
+                         "Hello from the template hook")
+
+        # This is what taskwarrior received
+        self.assertEqual(logs["output"]["json"][0]["description"],
+                         "This is an example modify hook")
+
+    def test_onmodify_bad_builtin_with_log(self):
+        # Testing a builtin hook and keeping track of its input/output
+        # The builtin hook in found in test/test_hooks
+        hookname = "on-modify-for-template-badexit.py"
+        self.t.hooks.add_default(hookname, log=True)
+
+        self.t(("add", "Hello hooks"))
+        self.t.runError(("1", "mod", "/Hello/Greetings/"))
+        code, out, err = self.t()
+        self.assertNotIn("This is an example modify hook", out)
+
+        logs = self.t.hooks[hookname].get_logs()
+
+        # Hook was called once
+        self.assertEqual(len(logs["calls"]), 1)
+
+        # Some message output from the hook
+        self.assertEqual(logs["output"]["msgs"][0],
+                         "Hello from the template hook")
+
+        # This is what taskwarrior would have used if hook finished cleanly
+        self.assertEqual(logs["output"]["json"][0]["description"],
+                         "This is an example modify hook")
+
+
 class ServerTestBugNumber(ServerTestCase):
     @classmethod
     def setUpClass(cls):
