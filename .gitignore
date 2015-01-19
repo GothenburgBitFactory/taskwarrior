@@ -2,6 +2,7 @@ cmake.h
 commit.h
 Makefile
 src/task
+src/taskd
 src/libtask.a
 src/commands/libcommands.a
 src/columns/libcolumns.a
