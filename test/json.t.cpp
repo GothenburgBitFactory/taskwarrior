@@ -45,6 +45,8 @@ const char *positive_tests[] =
 
   "{\n\"one\"\n:\n1\n}\n",
 
+  "  {  \"one\"  :  1  }  ",
+
   "{\"name\":123, \"array\":[1,2,3.4], \"object\":{\"m1\":\"v1\", \"m2\":\"v2\"}}",
 
   "{\"name\":\"value\",\"array\":[\"one\",\"two\"],\"object\":{\"name2\":123,\"literal\":false}}",
