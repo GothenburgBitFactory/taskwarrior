@@ -51,10 +51,10 @@ class Hooks(object):
     def __getitem__(self, name):
         return self._hooks[name]
 
-    def __setitem(self, key, value):
+    def __setitem__(self, key, value):
         self._hooks[key] = value
 
-    def __delitem(self, key):
+    def __delitem__(self, key):
         del self._hooks[key]
 
     def __iter__(self):
@@ -81,6 +81,8 @@ class Hooks(object):
         else:
             self[hookname] = Hook(hookname, self.hookdir, content)
 
+        self[hookname].enable()
+
     def add_default(self, hookname, log=False):
         """Register a pre-built hook that exists in the folder containing hooks
         used for testing.
@@ -93,6 +95,9 @@ class Hooks(object):
             self[hookname] = LoggedHook(hookname, self.hookdir, default=True)
         else:
             self[hookname] = Hook(hookname, self.hookdir, default=True)
+
+        # Finally enable this hook
+        self[hookname].enable()
 
     def remove(self, hook):
         """Remove the hook matching given hookname"""
@@ -177,9 +182,6 @@ class Hook(object):
             self.default_hookfile = None
             with open(self.hookfile, 'w') as fh:
                 fh.write(content)
-
-        # Finally enable the hook
-        self.enable()
 
     def __eq__(self, other):
         try:
@@ -292,9 +294,6 @@ class LoggedHook(Hook):
         # Setup wrapper pointing to the correct hook name
         self._setup_wrapper()
 
-        # Finally enable all hooks
-        self.enable()
-
     def __repr__(self):
         return "<LoggedHook '{0}'>".format(self.hookname)
 
@@ -381,6 +380,7 @@ class LoggedHook(Hook):
 
         with open(self.hooklog_in) as fh:
             for i, line in enumerate(fh):
+                line = line.rstrip("\n")
                 if line.startswith("%"):
                     # Timestamp includes nanosecond resolution
                     timestamp = line.split(" ")[-1]
@@ -393,6 +393,7 @@ class LoggedHook(Hook):
 
         with open(self.hooklog_out) as fh:
             for line in fh:
+                line = line.rstrip("\n")
                 if line.startswith("!"):
                     exitcode = int(line.split(" ")[-1])
                     log["exitcode"] = exitcode
@@ -405,6 +406,8 @@ class LoggedHook(Hook):
 
         # Update last modification timestamp in cache
         self._cache["last_change"] = self._get_log_stat()
+
+        return self._cache["log"]
 
     def enable(self):
         """Make hookfile executable to allow triggering
