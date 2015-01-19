@@ -99,6 +99,7 @@ class Task(object):
         self.config("taskd.certificate", cert)
         self.config("taskd.key", key)
         self.config("taskd.ca", self.taskd.ca_cert)
+        self.config("taskd.trust", "ignore hostname")
 
         address = ":".join((self.taskd.address, str(self.taskd.port)))
         self.config("taskd.server", address)
