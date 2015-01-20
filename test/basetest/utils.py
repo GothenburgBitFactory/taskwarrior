@@ -164,16 +164,40 @@ def run_cmd_wait_nofail(*args, **kwargs):
         return e.code, e.out, e.err
 
 
+def get_IPs(hostname):
+    output = {}
+    addrs = socket.getaddrinfo(hostname, 0, 0, 0, socket.IPPROTO_TCP)
+
+    for family, socktype, proto, canonname, sockaddr in addrs:
+        addr = sockaddr[0]
+        output[family] = addr
+
+    return output
+
+
 def port_used(addr="localhost", port=None):
     "Return True if port is in use, False otherwise"
     if port is None:
         raise TypeError("Argument 'port' may not be None")
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    result = s.connect_ex((addr, port))
-    s.close()
-    # result == 0 if connection was successful
-    return result == 0
+    # If we got an address name, resolve it both to IPv6 and IPv4.
+    IPs = get_IPs(addr)
+
+    # Taskd seems to prefer IPv6 so we do it first
+    for family in (socket.AF_INET6, socket.AF_INET):
+        try:
+            addr = IPs[family]
+        except KeyError:
+            continue
+
+        s = socket.socket(family, socket.SOCK_STREAM)
+        result = s.connect_ex((addr, port))
+        s.close()
+        if result == 0:
+            # connection was successful
+            return True
+    else:
+        return False
 
 
 def find_unused_port(addr="localhost", start=53589, track=True):

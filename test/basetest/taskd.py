@@ -33,7 +33,7 @@ class Taskd(object):
     DEFAULT_TASKD = binary_location("taskd")
 
     def __init__(self, taskd=DEFAULT_TASKD, certpath=None,
-                 address="127.0.0.1"):
+                 address="localhost"):
         """Initialize a Task server that runs in the background and stores data
         in a temporary folder
 
@@ -60,7 +60,7 @@ class Taskd(object):
         self.certpath = certpath
 
         self.address = address
-        self.port = find_unused_port()
+        self.port = find_unused_port(self.address)
 
         # Keep all certificate paths public for access by TaskClients
         self.client_cert = os.path.join(self.certpath, "client.cert.pem")
@@ -182,7 +182,7 @@ class Taskd(object):
         if self.proc.poll() is not None:
             return False
 
-        if not port_used(port=self.port):
+        if not port_used(addr=self.address, port=self.port):
             return False
 
         return True
