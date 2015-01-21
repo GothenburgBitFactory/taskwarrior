@@ -32,6 +32,12 @@ There are three varieties of tests:
     line, hooks and syncing. There is an example, 'template.t', that shows how
     to perform various high level tests.
 
+All tests are named with the pattern '*.t', and any other forms are not run by
+the test harness. This allows us to rename tests (foo.t --> foo.x) to ensure
+that they are not run. Sometimes tests are submitted for bugs that are not
+scheduled to be fixed in the upcoming release, and we don't want the failing
+tests to prevent us from seeing 100% pass rate for the bugs we *have* fixed.
+
 
 Goals
 -----
@@ -55,6 +61,8 @@ are:
 
   * Eliminate obsolete tests, which are tests that have overlapping coverage.
     This means migrate bug-specific tests to feature tests.
+
+  * Categorize the tests, restructure the directories.
 
 
 What Makes a Good Test
