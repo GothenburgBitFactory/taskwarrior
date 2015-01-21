@@ -16,6 +16,8 @@
           Jeremy John Reeder).
 - TW-1505 completely ignore mis-named hook scripts (thanks to Tomas Babej,
           David Patrick).
+- TW-1519 Testing suite forces taskd.trust="ignore hostname" (thanks to Renato
+          Alves).
 - Fixed assorted color theme problems.
 - Changed assorted reports so they do not use '.age' format for dates that are
   in the future, because those are never shown with this format (thanks to
