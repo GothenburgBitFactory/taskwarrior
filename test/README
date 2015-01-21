@@ -1,0 +1,73 @@
+README
+======
+
+This is the task.git/test/README file, and contains notes about the Taskwarrior
+test suite.
+
+
+Running Tests
+-------------
+
+All unit tests produce TAP output, and are run by the 'run_all' test harness.
+The 'run_all' script produces an 'all.log' file which is the accumulated output
+of all tests. The script 'problems' will list all the tests that fail, with a
+count of the failing tests.
+
+Any TAP harness may be used.
+
+
+Architecture
+------------
+
+There are three varieties of tests:
+
+  * Perl unit tests that use Test::More and the JSON module. We are phasing
+    these out, and will accept no new Perl tests. These tests are high level
+    and exercise Taskwarrior at the command line level.
+
+  * C++ unit tests that test low-level object interfaces. These are typically
+    very fast tests, and are exhaustive in nature.
+
+  * Python unit tests that are at the highest level, exercising the command
+    line, hooks and syncing. There is an example, 'template.t', that shows how
+    to perform various high level tests.
+
+
+Goals
+-----
+
+The test suite is evolving, and becoming a better tool for determining whether
+code is ready for release. There are goals that shape these changes, and they
+are:
+
+  * Migrate test suite to Python and C++, eliminating all Perl.  The Python
+    test suite is more expressive and high level. Migrating reduces
+    dependencies.
+
+  * Increase test coverage by testing more features, more thoroughly.
+
+  * Write fewer bug regression tests. Over time, bug regression tests are less
+    useful than feature tests, and more likely to contain overlapping coverage.
+
+  * The Python test suite provides test isolation, such that each test is run
+    in a separate directory. This will allow eventual parallelization, but not
+    until the Perl tests are eliminated.
+
+  * Eliminate obsolete tests, which are tests that have overlapping coverage.
+    This means migrate bug-specific tests to feature tests.
+
+
+What Makes a Good Test
+----------------------
+
+A good test ensures that a feature is functioning as expected, and contains
+both positive and negative aspects, or in other words looks for expected
+behavior as well as looking for the absence of unexpected behavior.
+
+
+How to Submit a Test Change/Addition
+------------------------------------
+
+Mail it to us, or attach it to an open bug.
+
+---
