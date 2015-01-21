@@ -317,7 +317,6 @@ void Hooks::onModify (const Task& before, std::vector <Task>& tasks)
   {
     // Prepare invariants.
     std::string beforeJSON = before.composeJSON ();
-    std::string uuidPattern = "\"uuid\":\"" + before.get ("uuid") + "\"";
 
     // Convert vector of tasks to a vector of strings.
     std::vector <std::string> input;
@@ -345,7 +344,7 @@ void Hooks::onModify (const Task& before, std::vector <Task>& tasks)
         {
           if (status == 0)
           {
-            if (line->find (uuidPattern) != std::string::npos)
+            if (JSONContainsUUID((*line), before.get("uuid")))
               input[1] = *line;                 // [1] original'
             else
               input.push_back (*line);          // [n > 1] extras
@@ -458,6 +457,31 @@ bool Hooks::isJSON (const std::string& input) const
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// This method assumes that input has already been validated with isJSON method
+bool Hooks::JSONContainsUUID(const std::string& input, const std::string& uuid) const
+{
+   bool foundUUID = false;
+
+   // Parse the whole thing.
+   json::object* root_obj = (json::object*) (json::parse (input));
+
+   // For each object element...
+   json_object_iter i;
+   for (i  = root_obj->_data.begin ();
+        i != root_obj->_data.end ();
+        ++i)
+   {
+     // If the attribute is a recognized column.
+     std::string type = Task::attributes[i->first];
+     if (type == "string" && i->first == "uuid" &&
+         json::decode (unquoteText (i->second->dump ())) == uuid)
+       foundUUID = true;
+   }
+
+   return foundUUID;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

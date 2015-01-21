@@ -52,6 +52,7 @@ public:
 private:
   std::vector <std::string> scripts (const std::string&);
   bool isJSON (const std::string&) const;
+  bool JSONContainsUUID (const std::string&, const std::string&) const;
   int callHookScript (const std::string&, const std::vector <std::string>&, std::vector <std::string>&);
 
 private:
