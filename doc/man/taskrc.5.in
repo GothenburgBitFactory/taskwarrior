@@ -282,9 +282,8 @@ and project. The others are sent to standard output.
 .TP
 .B confirmation=yes
 May be "yes" or "no", and determines whether taskwarrior will ask for
-confirmation before deleting a task, performing bulk changes, or the undo
-command. The default value is "yes". Consider leaving this setting as "yes",
-for safety.
+confirmation before deleting a task or performing the undo command. The default
+value is "yes". Consider leaving this setting as "yes", for safety.
 
 .TP
 .B allow.empty.filter=yes
@@ -313,9 +312,9 @@ Controls padding between columns of the report output. Default is "1".
 .TP
 .B bulk=3
 Is a number, defaulting to 3. When this number or greater of tasks are modified
-in a single command, confirmation will be required, unless the
+in a single command, confirmation will be required, regardless of the value of
 .B confirmation
-variable is "no".
+variable.
 
 This is useful for preventing large-scale unintended changes.
 
