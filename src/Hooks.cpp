@@ -344,7 +344,7 @@ void Hooks::onModify (const Task& before, std::vector <Task>& tasks)
         {
           if (status == 0)
           {
-            if (JSONContainsUUID((*line), before.get("uuid")))
+            if (JSONContainsUUID ((*line), before.get ("uuid")))
               input[1] = *line;                 // [1] original'
             else
               input.push_back (*line);          // [n > 1] extras
@@ -461,10 +461,8 @@ bool Hooks::isJSON (const std::string& input) const
 
 ////////////////////////////////////////////////////////////////////////////////
 // This method assumes that input has already been validated with isJSON method
-bool Hooks::JSONContainsUUID(const std::string& input, const std::string& uuid) const
+bool Hooks::JSONContainsUUID (const std::string& input, const std::string& uuid) const
 {
-   bool foundUUID = false;
-
    // Parse the whole thing.
    json::object* root_obj = (json::object*) (json::parse (input));
 
@@ -476,12 +474,15 @@ bool Hooks::JSONContainsUUID(const std::string& input, const std::string& uuid) 
    {
      // If the attribute is a recognized column.
      std::string type = Task::attributes[i->first];
-     if (type == "string" && i->first == "uuid" &&
+     if (type == "string"   &&
+         i->first == "uuid" &&
          json::decode (unquoteText (i->second->dump ())) == uuid)
-       foundUUID = true;
+     {
+       return true;
+     }
    }
 
-   return foundUUID;
+   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
