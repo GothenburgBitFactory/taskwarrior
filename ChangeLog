@@ -14,6 +14,8 @@
           Bean).
 - TW-1501 Calc can't handle multi-digit numbers in some expressions (thanks to
           Jeremy John Reeder).
+- TW-1504 On-modify hook does not accept correct JSON format (thanks to Tomas
+          Babej).
 - TW-1505 completely ignore mis-named hook scripts (thanks to Tomas Babej,
           David Patrick).
 - TW-1517 Hook performance should be measured individually for each hook (thanks
