@@ -54,6 +54,11 @@ extern Context context;
 // child tasks need to be generated to fill gaps.
 void handleRecurrence ()
 {
+  // Recurrence can be disabled.
+  // Note: This is currently a workaround for TD-44, TW-1520.
+  if (! context.config.getBoolean ("recurrence"))
+    return;
+
   std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
   Date now;
 

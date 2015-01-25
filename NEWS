@@ -12,6 +12,8 @@ New configuration options in taskwarrior 2.4.1
   - The 'date.iso' setting allows you to enable (default) or disable support
     for ISO-8601 dates.  This is because some of you have 'dateformat' settings
     that conflict.
+  - The 'recurrence' setting enables (default) or disables recurring task
+    instance generation.
 
 Newly deprecated features in taskwarrior 2.4.1
 

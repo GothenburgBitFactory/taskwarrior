@@ -412,6 +412,11 @@ The character or string to show in the depends.indicator column. Defaults to +.
 The character or string to show in the <uda>.indicator column. Defaults to U.
 
 .TP
+.B recurrence=yes
+Controls whether recurrence is enable, and whether recurring tasks continue to
+generate new task instances. Defaults to 'yes'.
+
+.TP
 .B recurrence.confirmation=prompt
 Controls whether changes to recurring tasks propagates to other child tasks with
 or without confirmation. A value of 'yes' means propagate changes without

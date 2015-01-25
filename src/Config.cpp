@@ -82,6 +82,7 @@ std::string Config::_defaults =
   "#                                              # Comma-separated list.  May contain any subset of:\n"
   "#verbose=blank,header,footnote,label,new-id,new-uuid,affected,edit,special,project,sync,filter\n"
   "confirmation=yes                               # Confirmation on delete, big changes\n"
+  "recurrence=yes                                 # Enable recurrence\n"
   "recurrence.confirmation=prompt                 # Confirmation for propagating changes among recurring tasks (yes/no/prompt)\n"
   "allow.empty.filter=yes                         # An empty filter gets a warning and requires confirmation\n"
   "indent.annotation=2                            # Indent spaces for annotations\n"
