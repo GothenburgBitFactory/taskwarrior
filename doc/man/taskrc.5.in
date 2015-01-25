@@ -616,6 +616,10 @@ field that is set. Otherwise, they are set to the corresponding values of
 .RE
 
 .TP
+.B date.iso=yes
+Enables ISO-8601 date support.  The default value is "yes".
+
+.TP
 .B weekstart=Sunday
 Determines the day a week starts. Valid values are Sunday or Monday only. The
 default value is "Sunday".

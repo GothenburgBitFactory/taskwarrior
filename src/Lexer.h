@@ -34,6 +34,7 @@ class Lexer
 {
 public:
   static std::string dateFormat;
+  static bool isoEnabled;
 
   enum Type
   {

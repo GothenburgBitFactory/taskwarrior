@@ -41,6 +41,7 @@
 std::string Variant::dateFormat = "";
 bool Variant::searchCaseSensitive = true;
 bool Variant::searchUsingRegex = true;
+bool Variant::isoEnabled = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant ()
@@ -2065,7 +2066,8 @@ void Variant::cast (const enum type new_type)
 
         ISO8601d iso;
         std::string::size_type pos = 0;
-        if (iso.parse (_string, pos) &&
+        if (isoEnabled               &&
+            iso.parse (_string, pos) &&
             pos == _string.length ())
         {
           _date = (time_t) iso;

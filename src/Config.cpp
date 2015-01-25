@@ -116,6 +116,7 @@ std::string Config::_defaults =
   "dateformat.info=Y-M-D H:N:S                    # Preferred display date format for information\n"
   "dateformat.report=                             # Preferred display date format for reports\n"
   "dateformat.annotation=                         # Preferred display date format for annotations\n"
+  "date.iso=yes                                   # Enable ISO date support\n"
   "weekstart="
              STRING_DATE_SUNDAY_LONG
                   "                               # Sunday or Monday only\n"

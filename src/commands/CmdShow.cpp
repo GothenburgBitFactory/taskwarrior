@@ -134,6 +134,7 @@ int CmdShow::execute (std::string& output)
     " dateformat.holiday"
     " dateformat.info"
     " dateformat.report"
+    " date.iso"
     " debug"
     " debug.hooks"
     " debug.parser"

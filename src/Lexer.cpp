@@ -34,6 +34,7 @@
 #include <i18n.h>
 
 std::string Lexer::dateFormat = "";
+bool Lexer::isoEnabled = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 Lexer::Lexer (const std::string& input)
@@ -732,15 +733,18 @@ void Lexer::dequote (std::string& input)
 bool Lexer::is_date (std::string& result)
 {
   // Try an ISO date parse.
-  std::string::size_type iso_i = 0;
-  std::string iso_result;
-  ISO8601d iso;
-  iso.ambiguity (_ambiguity);
-  if (iso.parse (_input.substr (_shift_counter), iso_i))
+  if (isoEnabled)
   {
-    result = _input.substr (_shift_counter, iso_i);
-    while (iso_i--) shift ();
-    return true;
+    std::string::size_type iso_i = 0;
+    std::string iso_result;
+    ISO8601d iso;
+    iso.ambiguity (_ambiguity);
+    if (iso.parse (_input.substr (_shift_counter), iso_i))
+    {
+      result = _input.substr (_shift_counter, iso_i);
+      while (iso_i--) shift ();
+      return true;
+    }
   }
 
   // Try a legacy rc.dateformat parse here.
