@@ -1,6 +1,6 @@
 2.4.1 () -
 
-- TW-1457 Non-existant attributes are not properly handled (thanks to Tomas
+- TW-1457 Non-existent attributes are not properly handled (thanks to Tomas
           Babej).
 - TW-1484 The 'history' and 'ghistory' reports do not obey rc.color.label.
 - TW-1486 task wait shows completed tasks which has a wait attribute (thanks to

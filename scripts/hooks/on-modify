@@ -1,22 +1,21 @@
 #!/bin/bash
 
-# The on-modify event is triggered separately for each task added or modified
+# The on-modify event is triggered separately for each task modified. This hook
+# script can accept/reject the modification. Processing will continue.
 
 # Input:
 # - line of JSON for the original task
 # - line of JSON for the modified task, the diff being the modification
-
-# Output:
-# - all emitted JSON lines are added/modified as tasks, if the exit code is
-#   zero, otherwise ignored.
-# - minimal new task:  {"description":"Buy milk"}
-# - to modify a task include complete JSON
-# - all emitted non-JSON lines are considered feedback messages if the exit
-#   code is zero, otherwise they are considered errors.
-
 read original_task
 read modified_task
 
+# Output:
+# - JSON, modified or unmodified.
+# - Optional feedback/error.
 echo $modified_task
 echo 'on-modify'
+
+# Status:
+# - 0:     JSON accepted, non-JSON is feedback.
+# - non-0: JSON ignored, non-JSON is error.
 exit 0

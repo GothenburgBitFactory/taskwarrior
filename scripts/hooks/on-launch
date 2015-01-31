@@ -1,18 +1,17 @@
 #!/bin/bash
 
 # The on-launch event is triggered once, after initialization, before any
-# processing occurs, i.e first
+# processing occurs. This hooks script has no effect on processing.
 
 # Input:
-# - none
+# - None
 
 # Output:
-# - all emitted JSON lines are added/modified as tasks, if the exit code is
-#   zero, otherwise ignored.
-# - minimal new task:  {"description":"Buy milk"}
-# - to modify a task include complete JSON
-# - all emitted non-JSON lines are considered feedback messages if the exit
-#   code is zero, otherwise they are considered errors.
-
+# - Optional feedback/error.
 echo 'on-launch'
+
+# Status:
+# - 0:     JSON ignored, non-JSON is feedback.
+# - non-0: JSON ignored, non-JSON is error.
 exit 0
+

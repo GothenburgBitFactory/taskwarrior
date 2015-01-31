@@ -44,8 +44,8 @@ public:
 
   void onLaunch ();
   void onExit ();
-  void onAdd (std::vector <Task>&);
-  void onModify (const Task&, std::vector <Task>&);
+  void onAdd (Task&);
+  void onModify (const Task&, Task&);
 
   std::vector <std::string> list ();
 

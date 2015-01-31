@@ -567,12 +567,12 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
   if (!verifyUniqueUUID (uuid))
     throw format (STRING_TDB2_UUID_NOT_UNIQUE, uuid);
 
-  // Create a vector tasks, as hooks can cause them to multiply.
-  std::vector <Task> changes;
-  changes.push_back (task);
-  context.hooks.onAdd (changes);
+  // Only locally-added tasks trigger hooks.  This means that tasks introduced
+  // via 'sync' do not trigger hooks.
+  if (add_to_backlog)
+    context.hooks.onAdd (task);
 
-  update (uuid, task, add_to_backlog, changes);
+  update (uuid, task, add_to_backlog);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -584,77 +584,64 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
   std::string uuid = task.get ("uuid");
 
   // Get the unmodified task as reference, so the hook can compare.
-  Task original;
-  get (uuid, original);
+  if (add_to_backlog)
+  {
+    Task original;
+    get (uuid, original);
+    context.hooks.onModify (original, task);
+  }
 
-  // Create a vector tasks, as hooks can cause them to multiply.
-  std::vector <Task> changes;
-  changes.push_back (task);
-  context.hooks.onModify (original, changes);
-
-  update (uuid, task, add_to_backlog, changes);
+  update (uuid, task, add_to_backlog);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::update (
   const std::string& uuid,
   Task& task,
-  const bool add_to_backlog,
-  std::vector <Task>& changes)
+  const bool add_to_backlog)
 {
-  std::vector <Task>::iterator i;
-  for (i = changes.begin (); i != changes.end (); ++i)
+  // Validate to add metadata.
+  task.validate (false);
+
+  // If the task already exists, it is a modification, else addition.
+  Task original;
+  if (get (task.get ("uuid"), original))
   {
-    // Validate to add metadata.
-    i->validate (false);
+    // Update the task, wherever it is.
+    if (!pending.modify_task (task))
+      completed.modify_task (task);
 
-    // If the task already exists, it is a modification, else addition.
-    Task original;
-    if (get (i->get ("uuid"), original))
-    {
-      // Update the task, wherever it is.
-      if (!pending.modify_task (*i))
-        completed.modify_task (*i);
-
-      // time <time>
-      // old <task>
-      // new <task>
-      // ---
-      undo.add_line ("time " + Date ().toEpochString () + "\n");
-      undo.add_line ("old " + original.composeF4 () + "\n");
-      undo.add_line ("new " + i->composeF4 () + "\n");
-      undo.add_line ("---\n");
-    }
-    else
-    {
-      // Re-validate to add default values.
-      i->validate ();
-
-      // Add new task to either pending or completed.
-      std::string status = i->get ("status");
-      if (status == "completed" ||
-          status == "deleted")
-        completed.add_task (*i);
-      else
-        pending.add_task (*i);
-
-      // Add undo data lines:
-      //   time <time>
-      //   new <task>
-      //   ---
-      undo.add_line ("time " + Date ().toEpochString () + "\n");
-      undo.add_line ("new " + i->composeF4 () + "\n");
-      undo.add_line ("---\n");
-    }
-
-    // Add task to backlog.
-    if (add_to_backlog)
-      backlog.add_line (i->composeJSON () + "\n");
-
-    // The original task may be further referenced by the caller.
-    if (i->get ("uuid") == uuid)
-      task = *i;
+    // time <time>
+    // old <task>
+    // new <task>
+    // ---
+    undo.add_line ("time " + Date ().toEpochString () + "\n");
+    undo.add_line ("old " + original.composeF4 () + "\n");
+    undo.add_line ("new " + task.composeF4 () + "\n");
+    undo.add_line ("---\n");
   }
+  else
+  {
+    // Add new task to either pending or completed.
+    std::string status = task.get ("status");
+    if (status == "completed" ||
+        status == "deleted")
+      completed.add_task (task);
+    else
+      pending.add_task (task);
+
+    // Add undo data lines:
+    //   time <time>
+    //   new <task>
+    //   ---
+    undo.add_line ("time " + Date ().toEpochString () + "\n");
+    undo.add_line ("new " + task.composeF4 () + "\n");
+    undo.add_line ("---\n");
+  }
+
+  // Add task to backlog.
+  if (add_to_backlog)
+    backlog.add_line (task.composeJSON () + "\n");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
