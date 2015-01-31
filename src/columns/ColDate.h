@@ -37,7 +37,7 @@ class ColumnDate : public Column
 {
 public:
   ColumnDate ();
-  ~ColumnDate ();
+  virtual ~ColumnDate ();
 
   virtual bool validate (std::string&);
   virtual void measure (Task&, unsigned int&, unsigned int&);
