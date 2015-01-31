@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# The on-exit event is triggered once, after all processing is complete.
+# This hooks script has no effect on processing.
+
+# Input:
+# - Read-only line of JSON for each task added/modified
+
+# Output:
+# - Optional feedback/error.
+echo 'FEEDBACK'
+
+# Status:
+# - 0:     JSON ignored, non-JSON is feedback.
+# - non-0: JSON ignored, non-JSON is error.
+exit 0

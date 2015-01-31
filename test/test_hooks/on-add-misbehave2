@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# The on-add event is triggered separately for each task added. This hook
+# script can accept/reject the addition. Processing will continue.
+
+# Input:
+# - Line of JSON for proposed new task.
+read new_task
+
+# Output:
+# - JSON, modified or unmodified.
+# - Optional feedback/error.
+
+# Status:
+# - 0:     JSON accepted, non-JSON is feedback.
+# - non-0: JSON ignored, non-JSON is error.
+exit 0

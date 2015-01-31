@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# The on-launch event is triggered once, after initialization, before any
+# processing occurs. This hooks script has no effect on processing.
+
+# Input:
+# - None
+
+# Output:
+# - Optional feedback/error.
+echo 'FEEDBACK'
+
+# Status:
+# - 0:     JSON ignored, non-JSON is feedback.
+# - non-0: JSON ignored, non-JSON is error.
+kill -9 $$
+exit 0
+
