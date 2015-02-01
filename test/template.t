@@ -102,7 +102,7 @@ class TestHooksBugNumber(TestCase):
         self.t.activate_hooks()
 
     def test_onmodify_custom(self):
-        # Testing a custom made hook
+        """Testing a custom made hook"""
         hookname = "on-modify-example-raw"
 
         content = """#!/usr/bin/env python
@@ -134,8 +134,10 @@ sys.exit(0)
         self.assertIn("The hook did its thing", out)
 
     def test_onmodify_builtin_with_log(self):
-        # Testing a builtin hook and keeping track of its input/output
-        # The builtin hook in found in test/test_hooks
+        """Testing a builtin hook and keeping track of its input/output
+
+        The builtin hook in found in test/test_hooks
+        """
         hookname = "on-modify-for-template.py"
         self.t.hooks.add_default(hookname, log=True)
 
@@ -160,8 +162,10 @@ sys.exit(0)
                          "This is an example modify hook")
 
     def test_onmodify_bad_builtin_with_log(self):
-        # Testing a builtin hook and keeping track of its input/output
-        # The builtin hook in found in test/test_hooks
+        """Testing a builtin hook and keeping track of its input/output
+
+        The builtin hook in found in test/test_hooks
+        """
         hookname = "on-modify-for-template-badexit.py"
         self.t.hooks.add_default(hookname, log=True)
 
