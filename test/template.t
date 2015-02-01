@@ -144,10 +144,12 @@ sys.exit(0)
         code, out, err = self.t()
         self.assertIn("This is an example modify hook", out)
 
-        logs = self.t.hooks[hookname].get_logs()
+        hook = self.t.hooks[hookname]
+        logs = hook.get_logs()
 
         # Hook was called once
-        self.assertEqual(len(logs["calls"]), 1)
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
 
         # Some message output from the hook
         self.assertEqual(logs["output"]["msgs"][0],
@@ -168,10 +170,12 @@ sys.exit(0)
         code, out, err = self.t()
         self.assertNotIn("This is an example modify hook", out)
 
-        logs = self.t.hooks[hookname].get_logs()
+        hook = self.t.hooks[hookname]
+        logs = hook.get_logs()
 
         # Hook was called once
-        self.assertEqual(len(logs["calls"]), 1)
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(1)
 
         # Some message output from the hook
         self.assertEqual(logs["output"]["msgs"][0],
