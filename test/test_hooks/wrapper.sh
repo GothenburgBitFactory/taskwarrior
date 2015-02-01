@@ -6,7 +6,7 @@ IN="${ORIGINALHOOK}.log.in"
 OUT="${ORIGINALHOOK}.log.out"
 
 # Let it know that we were executed
-echo "% Called at $(date +%s%N)" >> ${IN}
+echo "% Called at $(python -c 'import time; print(time.time())')" >> ${IN}
 
 # Log what arrives via stdin to ${IN} and what comes via stdout to ${OUT}
 $ORIGINALHOOK < <(tee -a ${IN}) > >(tee -a ${OUT})

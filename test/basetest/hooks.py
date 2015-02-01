@@ -441,7 +441,7 @@ class LoggedHook(Hook):
         for k1 in log:
             # Timestamps
             if k1 == "calls":
-                timestamp = lambda x: datetime.fromtimestamp(int(x) / 1e9)
+                timestamp = lambda x: datetime.fromtimestamp(float(x))
                 newlog[k1] = map(timestamp, log[k1])
 
             elif k1 in ("input", "output"):
