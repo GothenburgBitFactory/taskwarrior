@@ -36,10 +36,11 @@ class HookError(Exception):
 
 class TimeoutWaitingForStream(object):
     def __init__(self, name):
-        self.stream = name
+        self.name = name
 
     def __repr__(self):
-        return "*** Timeout reached while waiting for %s ***".format(self.name)
+        return "*** Timeout reached while waiting for {0} ***".format(
+            self.name)
 
 
 class StreamsAreMerged(object):

@@ -441,7 +441,7 @@ class LoggedHook(Hook):
         for k1 in log:
             # Timestamps
             if k1 == "calls":
-                timestamp = lambda x: datetime.fromtimestamp(int(x) / 1e9)
+                timestamp = lambda x: datetime.fromtimestamp(float(x))
                 newlog[k1] = map(timestamp, log[k1])
 
             elif k1 in ("input", "output"):
@@ -460,35 +460,36 @@ class LoggedHook(Hook):
 
         return newlog
 
-    def assert_triggered(self):
+    def assertTriggered(self):
         """Check if current hook file was triggered/used by taskwarrior
         """
         log = self._parse_log()
 
-        if log["calls"]:
-            return True
-        else:
-            return False
+        assert log["calls"], "{0} was never called".format(self.hookname)
 
-    def assert_triggered_count(self, count):
+    def assertTriggeredCount(self, count):
         """Check if current hook file was triggered/used by taskwarrior and
         how many times.
         """
         log = self._parse_log()
 
-        if len(log["calls"]) == count:
-            return True
-        else:
-            return False
+        assert len(log["calls"]) == count, ("{0} calls expected for {1} but "
+                                            "found {2}".format(
+                                                count,
+                                                self.hookname,
+                                                log["calls"]
+                                            ))
 
-    def assert_exitcode(self, exitcode):
+    def assertExitcode(self, exitcode):
         """Check if current hook finished with the expected exit code
         """
         log = self._parse_log()
 
-        if log["exitcode"] == exitcode:
-            return True
-        else:
-            return False
+        assert log["exitcode"] == exitcode, ("Expected exit code {0} for {1} "
+                                             "but found {2}".format(
+                                                 exitcode,
+                                                 self.hookname,
+                                                 log["exitcode"]
+                                             ))
 
 # vim: ai sts=4 et sw=4
