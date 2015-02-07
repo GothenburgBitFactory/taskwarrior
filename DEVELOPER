@@ -25,8 +25,8 @@ How to Build Taskwarrior
   current development branch. The source tarballs do not reflect HEAD, and do
   not contain the test suite.
 
-  If you send us a patch, make sure that patch is made against git HEAD. We
-  cannot apply patches made against the tarball source.
+  If you send a patch (support@taskwarrior.org), make sure that patch is made
+  against git HEAD. We cannot apply patches made against the tarball source.
 
 General Statement
   This file is intended to convey the current efforts, priorities and needs of
