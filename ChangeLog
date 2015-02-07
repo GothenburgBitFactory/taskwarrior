@@ -24,6 +24,8 @@
           Alves).
 - TW-1522 Date format doesn't like hyphens (thanks to Scott Carter).
 - TW-1524 Build Broken (thanks to Jack).
+- TW-1532 Hooks does not execute any script on Cygwin (thanks to Taisuke
+          Hachimura).
 - Fixed assorted color theme problems.
 - Changed assorted reports so they do not use '.age' format for dates that are
   in the future, because those are never shown with this format (thanks to
