@@ -343,7 +343,6 @@ int CmdCalendar::execute (std::string& output)
         executable = executable.substr (0, cal) + PACKAGE;
 
       std::vector <std::string> args;
-      args.push_back (executable);
       args.push_back ("rc:" + context.rc_file._data);
       args.push_back ("rc.due:0");
       args.push_back ("rc.verbose:label,affected,blank");

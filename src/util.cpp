@@ -303,11 +303,12 @@ int execute (
     if (dup2 (pout[1], STDOUT_FILENO) == -1)
       throw std::string (std::strerror (errno));
 
-    char** argv = new char* [args.size () + 1];
+    char** argv = new char* [args.size () + 2];
+    argv[0] = (char*) executable.c_str ();
     for (unsigned int i = 0; i < args.size (); ++i)
-      argv[i] = (char*) args[i].c_str ();
+      argv[i+1] = (char*) args[i].c_str ();
 
-    argv[args.size ()] = NULL;
+    argv[args.size () + 1] = NULL;
     _exit (execvp (executable.c_str (), argv));
   }
 
