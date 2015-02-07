@@ -1,5 +1,12 @@
 How to Build Taskwarrior
 
+  Satisfy the Requirements:
+    - gcc 4.4 or later, clang 2.9 or later or equivalent. This is because 2.4.1
+      marks the first step towards using modern C++11. Initially this involves
+      only feature N1984.
+    - libuuid
+    - gnutls (optional)
+
   Obtain and build code:
     $ git clone https://git.tasktools.org/scm/tm/task.git task.git
     $ cd task.git
