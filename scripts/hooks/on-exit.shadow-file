@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This hook script replaces the shadow file feature, found in Taskwarrior
 # prior to version 2.4.0.
