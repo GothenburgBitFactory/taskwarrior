@@ -23,6 +23,7 @@
 - TW-1519 Testing suite forces taskd.trust="ignore hostname" (thanks to Renato
           Alves).
 - TW-1522 Date format doesn't like hyphens (thanks to Scott Carter).
+- TW-1524 Build Broken (thanks to Jack).
 - Fixed assorted color theme problems.
 - Changed assorted reports so they do not use '.age' format for dates that are
   in the future, because those are never shown with this format (thanks to
