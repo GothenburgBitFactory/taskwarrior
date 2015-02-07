@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # The on-modify event is triggered separately for each task modified. This hook
 # script can accept/reject the modification. Processing will continue.

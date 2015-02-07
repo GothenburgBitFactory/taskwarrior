@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 SELF=$(basename $0)
 ORIGINALHOOK="$(dirname $0)/original_${SELF}"

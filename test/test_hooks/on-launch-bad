@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # The on-launch event is triggered once, after initialization, before any
 # processing occurs. This hooks script has no effect on processing.

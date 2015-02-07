@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # The on-add event is triggered separately for each task added. This hook
 # script can accept/reject the addition. Processing will continue.
