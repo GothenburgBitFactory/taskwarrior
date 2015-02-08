@@ -334,7 +334,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
 #        self.assertInvalidDatetimeFormat('24:00:00+01:00')
 
     def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_ss_plus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('99:00:00+01:00')
+        self.assertInvalidDatetimeFormat('95:00:00+01:00')
 
 #    def test_set_incorrect_datetime_minute_overflow_in_hh_mm_ss_plus_hh_mm(self):
 #        self.assertInvalidDatetimeFormat('12:60:00+01:00')
@@ -373,7 +373,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
 #        self.assertInvalidDatetimeFormat('24:00:00-01:00')
 
     def test_set_incorrect_datetime_huge_hour_overflow_in_hh_mm_ss_minus_hh_mm(self):
-        self.assertInvalidDatetimeFormat('99:00:00-01:00')
+        self.assertInvalidDatetimeFormat('95:00:00-01:00')
 
 #    def test_set_incorrect_datetime_minute_overflow_in_hh_mm_ss_minus_hh_mm(self):
 #        self.assertInvalidDatetimeFormat('12:60:00-01:00')
