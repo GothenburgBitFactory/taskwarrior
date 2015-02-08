@@ -85,6 +85,26 @@ behavior as well as looking for the absence of unexpected behavior.
 How to Submit a Test Change/Addition
 ------------------------------------
 
-Mail it to us, or attach it to an open bug.
+Mail it to support@taskwarrior.org, or attach it to an open bug.
+
+
+TODO
+----
+
+For anyone looking for test-related tasks to take on, here are some suggestions:
+
+  * Take tw-285.t and improve it to test more (if not all) virtual tags, then
+    rename it virtual-tags.t.
+
+  * Select a bug.*.t Perl test and convert it to Python using the template.
+
+  * Look at the latest todo.txt file format spec, and make sure that
+    import.todo.sh.t is testing the current format.
+
+  * Select a feature.*.t Perl test, convert it to Python using the template,
+    then rename it to <feature>.t
+
+  * Find and eliminate individual test that do the same thing.
+
 
 ---
