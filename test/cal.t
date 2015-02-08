@@ -51,7 +51,8 @@ if (open my $fh, '>', $rc)
             "color.calendar.overdue=black on red\n",
             "color.calendar.weekend=white on bright black\n",
             "confirmation=off\n",
-            "bulk=10\n";
+            "bulk=10\n",
+            "verbose=none\n";
   close $fh;
 }
 
