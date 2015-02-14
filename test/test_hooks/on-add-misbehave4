@@ -10,7 +10,7 @@ read new_task
 # Output:
 # - JSON, modified or unmodified.
 # - Optional feedback/error.
-echo '{"description":"different","status":"pending"}'
+echo '{"description":"different","status":"pending","uuid":"bad"}'
 echo 'FEEDBACK'
 
 # Status:

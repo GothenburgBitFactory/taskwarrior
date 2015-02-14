@@ -95,7 +95,7 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-misbehave3'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t(("add", "foo"))
+        code, out, err = self.t.runError(("add", "foo"))
         self.assertIn("Hook Error: Expected 1 JSON task(s), found 2", err)
         self.t.hooks[hookname].assertTriggered()
         self.t.hooks[hookname].assertTriggeredCount(1)
@@ -107,8 +107,8 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-misbehave4'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t(("add", "foo"))
-        self.assertIn("ERROR DIFFERENT JSON", err)
+        code, out, err = self.t.runError(("add", "foo"))
+        self.assertIn("Hook Error: JSON must be for the same task:", err)
         self.t.hooks[hookname].assertTriggered()
         self.t.hooks[hookname].assertTriggeredCount(1)
         self.t.hooks[hookname].assertExitcode(0)
@@ -120,7 +120,7 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-misbehave5'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t(("add", "foo"))
+        code, out, err = self.t.runError(("add", "foo"))
         self.assertIn("ERROR SYNTACTICALLY WRONG JSON", err)
         self.t.hooks[hookname].assertTriggered()
         self.t.hooks[hookname].assertTriggeredCount(1)
