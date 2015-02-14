@@ -402,6 +402,9 @@ bool Hooks::isJSON (const std::string& input) const
       input[input.length () - 1] != '}')
     return false;
 
+/*
+  I think this is not necessary, and a simple JSON test is all that is needed.
+
   try
   {
     json::value* root = json::parse (input);
@@ -419,6 +422,7 @@ bool Hooks::isJSON (const std::string& input) const
   {
     return false;
   }
+*/
 
   return true;
 }
@@ -481,11 +485,11 @@ void Hooks::assertValidJSON (const std::vector <std::string>& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Hooks::assertNTasks (const std::vector <std::string>& json, int n) const
+void Hooks::assertNTasks (const std::vector <std::string>& input, int n) const
 {
-  if (json.size () != n)
+  if (input.size () != n)
   {
-    context.error (format ("Hook Error: Expected {1} JSON task(s), found {2}", n, (int) json.size ()));
+    context.error (format ("Hook Error: Expected {1} JSON task(s), found {2}", n, (int) input.size ()));
     throw 0;
   }
 }
