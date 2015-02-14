@@ -441,7 +441,8 @@ void Hooks::assertValidJSON (const std::vector <std::string>& input) const
     catch (const std::string& e)
     {
       context.error ("Hook Error: JSON syntax error in: " + *i);
-      context.error ("Hook Error: JSON " + e);
+      if (_debug)
+        context.error ("Hook Error: JSON " + e);
       throw 0;
     }
 
