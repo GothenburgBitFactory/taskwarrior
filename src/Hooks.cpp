@@ -333,7 +333,7 @@ void Hooks::onModify (const Task& before, Task& after)
 
       if (status == 0)
       {
-        // Propagate forward to the next script.
+        // Propagate accepted changes forward to the next script.
         input[1] = outputJSON[0];
 
         std::vector <std::string>::iterator message;
@@ -397,34 +397,9 @@ void Hooks::separateOutput (
 ////////////////////////////////////////////////////////////////////////////////
 bool Hooks::isJSON (const std::string& input) const
 {
-  if (input.length () < 3 ||
-      input[0] != '{'     ||
-      input[input.length () - 1] != '}')
-    return false;
-
-/*
-  I think this is not necessary, and a simple JSON test is all that is needed.
-
-  try
-  {
-    json::value* root = json::parse (input);
-    if (root->type () != json::j_object)
-      return false;
-
-    if (((json::object*)root)->_data.find ("description") == ((json::object*)root)->_data.end ())
-      return false;
-
-    if (((json::object*)root)->_data.find ("uuid") == ((json::object*)root)->_data.end ())
-      return false;
-  }
-
-  catch (...)
-  {
-    return false;
-  }
-*/
-
-  return true;
+  return input.length ()            >  2   &&
+         input[0]                   == '{' &&
+         input[input.length () - 1] == '}';
 }
 
 ////////////////////////////////////////////////////////////////////////////////
