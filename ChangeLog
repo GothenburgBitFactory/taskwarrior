@@ -18,6 +18,7 @@
           Babej).
 - TW-1505 completely ignore mis-named hook scripts (thanks to Tomas Babej,
           David Patrick).
+- TW-1510 Task can save empty value in the data backlog (thanks to Tomas Babej).
 - TW-1517 Hook performance should be measured individually for each hook (thanks
           to Tomas Babej).
 - TW-1519 Testing suite forces taskd.trust="ignore hostname" (thanks to Renato
