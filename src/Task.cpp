@@ -805,6 +805,10 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     if (i->first.substr (0, 11) == "annotation_")
       continue;
 
+    // If value is an empty string, do not ever output it
+    if (i->second == "")
+        continue;
+
     if (attributes_written)
       out << ",";
 
