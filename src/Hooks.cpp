@@ -327,7 +327,7 @@ void Hooks::onModify (const Task& before, Task& after)
       std::vector <std::string> outputFeedback;
       separateOutput (output, outputJSON, outputFeedback);
 
-      assertNTasks    (outputJSON, 2);
+      assertNTasks    (outputJSON, 1);
       assertValidJSON (outputJSON);
       assertSameTask  (outputJSON, before);
 
