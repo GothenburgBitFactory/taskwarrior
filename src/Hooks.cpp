@@ -452,33 +452,27 @@ void Hooks::assertValidJSON (const std::vector <std::string>& input) const
 
       if (((json::object*)root)->_data.find ("description") == ((json::object*)root)->_data.end ())
       {
-        context.error ("Hook Error: JSON Object missing 'description' attribute: '{\"description\":\"...\",...}'.");
+        context.error ("Hook Error: JSON Object missing 'description' attribute.");
         throw 0;
       }
 
       if (((json::object*)root)->_data.find ("uuid") == ((json::object*)root)->_data.end ())
       {
-        context.error ("Hook Error: JSON Object missing 'uuid' attribute: '{\"uuid\":\"...\",...}'.");
+        context.error ("Hook Error: JSON Object missing 'uuid' attribute.");
         throw 0;
       }
     }
 
     catch (const std::string& e)
     {
-      if (_debug >= 1)
-        context.error ("Hook Error: JSON syntax error in: " + *i);
-
-      if (_debug >= 2)
-        context.error ("Hook Error: JSON " + e);
-
+      context.error ("Hook Error: JSON syntax error in: " + *i);
+      context.error ("Hook Error: JSON " + e);
       throw 0;
     }
 
     catch (...)
     {
-      if (_debug >= 1)
-        context.error ("Hook Error: JSON fails to parse: " + *i);
-
+      context.error ("Hook Error: JSON failed to parse: " + *i);
       throw 0;
     }
   }
