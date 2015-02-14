@@ -12,6 +12,7 @@ read modified_task
 # Output:
 # - JSON, modified or unmodified.
 # - Optional feedback/error.
+echo 'FEEDBACK'
 
 # Status:
 # - 0:     JSON accepted, non-JSON is feedback.
