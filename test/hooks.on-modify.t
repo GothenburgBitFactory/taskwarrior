@@ -131,7 +131,7 @@ class TestHooksOnModify(TestCase):
 
         code, out, err = self.t(("add", "foo"))
         code, out, err = self.t.runError(("1", "modify", "+tag"))
-        self.assertIn("ERROR INCOMPLETE JSON", err)
+        self.assertIn("Hook Error: JSON Object missing 'uuid' attribute.", err)
         self.t.hooks[hookname].assertTriggered()
         self.t.hooks[hookname].assertTriggeredCount(1)
         self.t.hooks[hookname].assertExitcode(0)
