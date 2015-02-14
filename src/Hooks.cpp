@@ -258,12 +258,12 @@ void Hooks::onAdd (Task& task)
       std::vector <std::string> outputFeedback;
       separateOutput (output, outputJSON, outputFeedback);
 
-      assertNTasks    (outputJSON, 1);
-      assertValidJSON (outputJSON);
-      assertSameTask  (outputJSON, task);
-
       if (status == 0)
       {
+        assertNTasks    (outputJSON, 1);
+        assertValidJSON (outputJSON);
+        assertSameTask  (outputJSON, task);
+
         // Propagate forward to the next script.
         input[0] = outputJSON[0];
 
@@ -327,12 +327,12 @@ void Hooks::onModify (const Task& before, Task& after)
       std::vector <std::string> outputFeedback;
       separateOutput (output, outputJSON, outputFeedback);
 
-      assertNTasks    (outputJSON, 1);
-      assertValidJSON (outputJSON);
-      assertSameTask  (outputJSON, before);
-
       if (status == 0)
       {
+        assertNTasks    (outputJSON, 1);
+        assertValidJSON (outputJSON);
+        assertSameTask  (outputJSON, before);
+
         // Propagate accepted changes forward to the next script.
         input[1] = outputJSON[0];
 
