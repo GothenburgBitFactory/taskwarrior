@@ -2,10 +2,11 @@
 New Features in taskwarrior 2.4.1
 
   - New German translation.
+  - Hook scripts are now under much stricter control.
 
 New commands in taskwarrior 2.4.1
 
-  -
+  - None
 
 New configuration options in taskwarrior 2.4.1
 
@@ -17,11 +18,11 @@ New configuration options in taskwarrior 2.4.1
 
 Newly deprecated features in taskwarrior 2.4.1
 
-  -
+  - None
 
 Removed features in 2.4.1
 
-  -
+  - None
 
 Known Issues
 

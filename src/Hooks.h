@@ -56,6 +56,7 @@ private:
   void assertValidJSON (const std::vector <std::string>&) const;
   void assertNTasks (const std::vector <std::string>&, int) const;
   void assertSameTask (const std::vector <std::string>&, const Task&) const;
+  void assertFeedback (const std::vector <std::string>&) const;
   int callHookScript (const std::string&, const std::vector <std::string>&, std::vector <std::string>&);
 
 private:

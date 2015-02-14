@@ -144,6 +144,8 @@ void Hooks::onLaunch ()
       }
       else
       {
+        assertFeedback (outputFeedback);
+
         std::vector <std::string>::iterator message;
         for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
           context.error (*message);
@@ -209,6 +211,8 @@ void Hooks::onExit ()
       }
       else
       {
+        assertFeedback (outputFeedback);
+
         std::vector <std::string>::iterator message;
         for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
           context.error (*message);
@@ -273,6 +277,8 @@ void Hooks::onAdd (Task& task)
       }
       else
       {
+        assertFeedback (outputFeedback);
+
         std::vector <std::string>::iterator message;
         for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
           context.error (*message);
@@ -342,6 +348,8 @@ void Hooks::onModify (const Task& before, Task& after)
       }
       else
       {
+        assertFeedback (outputFeedback);
+
         std::vector <std::string>::iterator message;
         for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
           context.error (*message);
@@ -490,6 +498,22 @@ void Hooks::assertSameTask (const std::vector <std::string>& input, const Task& 
       context.error (format ("Hook Error: JSON must be for the same task: {1} != {2}", uuid, json_uuid));
       throw 0;
     }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Hooks::assertFeedback (const std::vector <std::string>& input) const
+{
+  bool foundSomething = false;
+  std::vector <std::string>::const_iterator i;
+  for (i = input.begin (); i != input.end (); ++i)
+    if (nontrivial (*i))
+      foundSomething = true;
+
+  if (! foundSomething)
+  {
+    context.error ("Hook Error: Expected feedback from a failing hook script.");
+    throw 0;
   }
 }
 
