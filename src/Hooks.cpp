@@ -130,29 +130,24 @@ void Hooks::onLaunch ()
       std::vector <std::string> output;
       int status = callHookScript (*script, input, output);
 
-      std::vector <std::string>::iterator line;
-      for (line = output.begin (); line != output.end (); ++line)
-      {
-        if (isJSON (*line))
-        {
-          if (_debug >= 2)
-            context.error ("Line of JSON output ignored: " + (*line));
+      std::vector <std::string> outputJSON;
+      std::vector <std::string> outputFeedback;
+      separateOutput (output, outputJSON, outputFeedback);
 
-          else if (_debug >= 1)
-            context.error ("Line(s) of JSON output ignored.");
-        }
-        else
-        {
-          if (status == 0)
-            context.header (*line);
-          else
-            context.error (*line);
-        }
+      assertNTasks (outputJSON, 0);
+
+      if (status == 0)
+      {
+        std::vector <std::string>::iterator message;
+        for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
+          context.debug (*message);
       }
-
-      if (status)
+      else
       {
-        // TODO Hooks debug info needed.
+        std::vector <std::string>::iterator message;
+        for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
+          context.error (*message);
+
         throw 0;  // This is how hooks silently terminate processing.
       }
     }
@@ -200,29 +195,24 @@ void Hooks::onExit ()
       std::vector <std::string> output;
       int status = callHookScript (*script, input, output);
 
-      std::vector <std::string>::iterator line;
-      for (line = output.begin (); line != output.end (); ++line)
-      {
-        if (isJSON (*line))
-        {
-          if (_debug >= 2)
-            context.error ("Line of JSON output ignored: " + (*line));
+      std::vector <std::string> outputJSON;
+      std::vector <std::string> outputFeedback;
+      separateOutput (output, outputJSON, outputFeedback);
 
-          else if (_debug >= 1)
-            context.error ("Line(s) of JSON output ignored.");
-        }
-        else
-        {
-          if (status == 0)
-            context.footnote (*line);
-          else
-            context.error (*line);
-        }
+      assertNTasks (outputJSON, 0);
+
+      if (status == 0)
+      {
+        std::vector <std::string>::iterator message;
+        for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
+          context.debug (*message);
       }
-
-      if (status)
+      else
       {
-        // TODO Hooks debug info needed.
+        std::vector <std::string>::iterator message;
+        for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
+          context.error (*message);
+
         throw 0;  // This is how hooks silently terminate processing.
       }
     }
@@ -253,7 +243,7 @@ void Hooks::onAdd (Task& task)
   std::vector <std::string> matchingScripts = scripts ("on-add");
   if (matchingScripts.size ())
   {
-    // Convert vector of tasks to a vector of strings.
+    // Convert task to a vector of strings.
     std::vector <std::string> input;
     input.push_back (task.composeJSON ());
 
@@ -264,31 +254,29 @@ void Hooks::onAdd (Task& task)
       std::vector <std::string> output;
       int status = callHookScript (*script, input, output);
 
-      std::vector <std::string>::iterator line;
-      for (line = output.begin (); line != output.end (); ++line)
-      {
-        if (isJSON (*line))
-        {
-          // TODO Verify the same task UUID.
-          // TODO Verify only one task.
+      std::vector <std::string> outputJSON;
+      std::vector <std::string> outputFeedback;
+      separateOutput (output, outputJSON, outputFeedback);
 
-          if (status == 0)
-            input[0] = *line;
-          else
-            ; // TODO Hooks debug info needed.
-        }
-        else
-        {
-          if (status == 0)
-            context.footnote (*line);
-          else
-            context.error (*line);
-        }
+      assertNTasks    (outputJSON, 1);
+      assertValidJSON (outputJSON);
+      assertSameTask  (outputJSON, task);
+
+      if (status == 0)
+      {
+        // Propagate forward to the next script.
+        input[0] = outputJSON[0];
+
+        std::vector <std::string>::iterator message;
+        for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
+          context.debug (*message);
       }
-
-      if (status)
+      else
       {
-        // TODO Hooks debug info needed.
+        std::vector <std::string>::iterator message;
+        for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
+          context.error (*message);
+
         throw 0;  // This is how hooks silently terminate processing.
       }
     }
@@ -335,34 +323,29 @@ void Hooks::onModify (const Task& before, Task& after)
       std::vector <std::string> output;
       int status = callHookScript (*script, input, output);
 
-      std::vector <std::string>::iterator line;
-      for (line = output.begin (); line != output.end (); ++line)
-      {
-        if (isJSON (*line))
-        {
-          // TODO Verify the same task UUID.
-          // TODO Verify only one task.
+      std::vector <std::string> outputJSON;
+      std::vector <std::string> outputFeedback;
+      separateOutput (output, outputJSON, outputFeedback);
 
-          if (status == 0)
-          {
-            if (JSONContainsUUID ((*line), before.get ("uuid")))
-              input[1] = *line;                 // [1] original'
-            else
-              ; // TODO Error/debug
-          }
-        }
-        else
-        {
-          if (status == 0)
-            context.footnote (*line);
-          else
-            context.error (*line);
-        }
+      assertNTasks    (outputJSON, 2);
+      assertValidJSON (outputJSON);
+      assertSameTask  (outputJSON, before);
+
+      if (status == 0)
+      {
+        // Propagate forward to the next script.
+        input[1] = outputJSON[0];
+
+        std::vector <std::string>::iterator message;
+        for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
+          context.debug (*message);
       }
-
-      if (status)
+      else
       {
-        // TODO Hooks debug info needed.
+        std::vector <std::string>::iterator message;
+        for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
+          context.error (*message);
+
         throw 0;  // This is how hooks silently terminate processing.
       }
     }
@@ -396,90 +379,144 @@ std::vector <std::string> Hooks::scripts (const std::string& event)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Hooks::separateOutput (
+  const std::vector <std::string>& output,
+  std::vector <std::string>& json,
+  std::vector <std::string>& feedback) const
+{
+  std::vector <std::string>::const_iterator i;
+  for (i = output.begin (); i != output.end (); ++i)
+  {
+    if (isJSON (*i))
+      json.push_back (*i);
+    else
+      feedback.push_back (*i);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Hooks::isJSON (const std::string& input) const
 {
-  // Does it even look like JSON?  {...}
-  if (input.length () > 2 &&
-      input[0] == '{'     &&
-      input[input.length () - 1] == '}')
+  if (input.length () < 3 ||
+      input[0] != '{'     ||
+      input[input.length () - 1] != '}')
+    return false;
+
+  try
   {
+    json::value* root = json::parse (input);
+    if (root->type () != json::j_object)
+      return false;
+
+    if (((json::object*)root)->_data.find ("description") == ((json::object*)root)->_data.end ())
+      return false;
+
+    if (((json::object*)root)->_data.find ("uuid") == ((json::object*)root)->_data.end ())
+      return false;
+  }
+
+  catch (...)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Hooks::assertValidJSON (const std::vector <std::string>& input) const
+{
+  std::vector <std::string>::const_iterator i;
+  for (i = input.begin (); i != input.end (); i++)
+  {
+    if (i->length () < 3 ||
+        (*i)[0] != '{'   ||
+        (*i)[i->length () - 1] != '}')
+    {
+      context.error ("Hook Error: JSON Object '{...}' expected.");
+      throw 0;
+    }
+
     try
     {
-      // The absolute minimum a task needs is:
-      bool foundDescription = false;
-
-      // Parse the whole thing.
-      json::value* root = json::parse (input);
-      if (root->type () == json::j_object)
+      json::value* root = json::parse (*i);
+      if (root->type () != json::j_object)
       {
-        json::object* root_obj = (json::object*)root;
-
-        // For each object element...
-        json_object_iter i;
-        for (i  = root_obj->_data.begin ();
-             i != root_obj->_data.end ();
-             ++i)
-        {
-          // If the attribute is a recognized column.
-          std::string type = Task::attributes[i->first];
-          if (type == "string" && i->first == "description")
-            foundDescription = true;
-        }
+        context.error ("Hook Error: JSON Object '{...}' expected.");
+        throw 0;
       }
-      else
-        throw std::string ("Object expected.");
 
-      // It's JSON, but is it a task?
-      if (! foundDescription)
-        throw std::string ("Missing 'description' attribute, of type 'string'.");
+      if (((json::object*)root)->_data.find ("description") == ((json::object*)root)->_data.end ())
+      {
+        context.error ("Hook Error: JSON Object missing 'description' attribute: '{\"description\":\"...\",...}'.");
+        throw 0;
+      }
 
-      // Yep, looks like a JSON task.
-      return true;
+      if (((json::object*)root)->_data.find ("uuid") == ((json::object*)root)->_data.end ())
+      {
+        context.error ("Hook Error: JSON Object missing 'uuid' attribute: '{\"uuid\":\"...\",...}'.");
+        throw 0;
+      }
     }
 
     catch (const std::string& e)
     {
       if (_debug >= 1)
-        context.error ("Hook output looks like JSON, but is not a valid task.");
+        context.error ("Hook Error: JSON syntax error in: " + *i);
 
       if (_debug >= 2)
-        context.error ("JSON " + e);
+        context.error ("Hook Error: JSON " + e);
+
+      throw 0;
     }
 
     catch (...)
     {
       if (_debug >= 1)
-        context.error ("Hook output looks like JSON, but fails to parse.");
+        context.error ("Hook Error: JSON fails to parse: " + *i);
+
+      throw 0;
     }
   }
-
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// This method assumes that input has already been validated with isJSON method
-bool Hooks::JSONContainsUUID (const std::string& input, const std::string& uuid) const
+void Hooks::assertNTasks (const std::vector <std::string>& json, int n) const
 {
-   // Parse the whole thing.
-   json::object* root_obj = (json::object*) (json::parse (input));
+  if (json.size () != n)
+  {
+    context.error (format ("Hook Error: Expected {1} JSON task(s), found {2}", n, (int) json.size ()));
+    throw 0;
+  }
+}
 
-   // For each object element...
-   json_object_iter i;
-   for (i  = root_obj->_data.begin ();
-        i != root_obj->_data.end ();
-        ++i)
-   {
-     // If the attribute is a recognized column.
-     std::string type = Task::attributes[i->first];
-     if (type == "string"   &&
-         i->first == "uuid" &&
-         json::decode (unquoteText (i->second->dump ())) == uuid)
-     {
-       return true;
-     }
-   }
+////////////////////////////////////////////////////////////////////////////////
+void Hooks::assertSameTask (const std::vector <std::string>& input, const Task& task) const
+{
+  std::string uuid = task.get ("uuid");
 
-   return false;
+  std::vector <std::string>::const_iterator i;
+  for (i = input.begin (); i != input.end (); i++)
+  {
+    json::object* root_obj = (json::object*)json::parse (*i);
+
+    // If there is no UUID at all.
+    json_object_iter u = root_obj->_data.find ("uuid");
+    if (u == root_obj->_data.end ()          ||
+        u->second->type () != json::j_string)
+    {
+      context.error (format ("Hook Error: JSON must be for the same task: {1}", uuid));
+      throw 0;
+    }
+
+    json::string* up = (json::string*) u->second;
+    std::string json_uuid = json::decode (unquoteText (up->dump ()));
+    if (json_uuid != uuid)
+    {
+      context.error (format ("Hook Error: JSON must be for the same task: {1} != {2}", uuid, json_uuid));
+      throw 0;
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -489,11 +526,11 @@ int Hooks::callHookScript (
   std::vector <std::string>& output)
 {
   if (_debug >= 1)
-    context.debug ("Hooks: Calling " + script);
+    context.debug ("Hook: Calling " + script);
 
   if (_debug >= 2)
   {
-    context.debug ("Hooks: input");
+    context.debug ("Hook: input");
     std::vector <std::string>::const_iterator i;
     for (i = input.begin (); i != input.end (); ++i)
       context.debug ("  " + *i);
@@ -519,18 +556,17 @@ int Hooks::callHookScript (
   else
     status = execute (script, args, inputStr, outputStr);
 
-
   split (output, outputStr, '\n');
 
   if (_debug >= 2)
   {
-    context.debug ("Hooks: output");
+    context.debug ("Hook: output");
     std::vector <std::string>::iterator i;
     for (i = output.begin (); i != output.end (); ++i)
       if (*i != "")
         context.debug ("  " + *i);
 
-    context.debug (format ("Hooks: Completed with status {1}", status));
+    context.debug (format ("Hook: Completed with status {1}", status));
     context.debug (" "); // Blank line
   }
 

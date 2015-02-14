@@ -83,13 +83,12 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-misbehave2'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t(("add", "foo"))
-        self.assertIn("ERROR MISSING JSON", err)
+        code, out, err = self.t.runError(("add", "foo"))
+        self.assertIn("Hook Error: Expected 1 JSON task(s), found 0", err)
         self.t.hooks[hookname].assertTriggered()
         self.t.hooks[hookname].assertTriggeredCount(1)
         self.t.hooks[hookname].assertExitcode(0)
         logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
 
     def test_onadd_builtin_misbehave3(self):
         """on-add-misbehave3 - emits additional JSON."""
@@ -97,12 +96,11 @@ class TestHooksOnAdd(TestCase):
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t(("add", "foo"))
-        self.assertIn("ERROR EXTRA JSON", err)
+        self.assertIn("Hook Error: Expected 1 JSON task(s), found 2", err)
         self.t.hooks[hookname].assertTriggered()
         self.t.hooks[hookname].assertTriggeredCount(1)
         self.t.hooks[hookname].assertExitcode(0)
         logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
 
     def test_onadd_builtin_misbehave4(self):
         """on-add-misbehave4 - emits different task JSON."""
