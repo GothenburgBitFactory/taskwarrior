@@ -985,7 +985,11 @@ std::string rightJustify (const int input, const int width)
 ////////////////////////////////////////////////////////////////////////////////
 std::string rightJustify (const std::string& input, const int width)
 {
-  return std::string (width - utf8_text_width (input), ' ') + input;
+  unsigned int len = utf8_text_width (input);
+  return ((width > len)
+           ? std::string (width - len, ' ')
+           : "")
+         + input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -29,6 +29,7 @@
 
 #include <string>
 #include <Command.h>
+#include <ViewText.h>
 
 class CmdInfo : public Command
 {
@@ -37,7 +38,7 @@ public:
   int execute (std::string&);
 
 private:
-  std::string urgencyTerm (const std::string&, float, float) const;
+  void urgencyTerm (ViewText&, const std::string&, float, float) const;
 };
 
 #endif

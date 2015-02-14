@@ -27,6 +27,8 @@
 - TW-1531 'task export' should handle recurrence (thanks to Tomas Babej).
 - TW-1532 Hooks does not execute any script on Cygwin (thanks to Taisuke
           Hachimura).
+- TW-1534 Urgency coefficient for user project disables 'info' output(thanks to
+          Martin).
 - Fixed assorted color theme problems.
 - Changed assorted reports so they do not use '.age' format for dates that are
   in the future, because those are never shown with this format (thanks to

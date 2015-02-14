@@ -32,7 +32,6 @@
 #include <Filter.h>
 #include <Date.h>
 #include <Duration.h>
-#include <ViewText.h>
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
@@ -324,62 +323,7 @@ int CmdInfo::execute (std::string& output)
     // Task::urgency
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_URGENCY);
-
-    std::string urgency =
-      trimLeft (format (task->urgency (), 4, 4)) + "\n" +
-      urgencyTerm ("project",     task->urgency_project (),     Task::urgencyProjectCoefficient)     +
-      urgencyTerm ("priority",    task->urgency_priority (),    Task::urgencyPriorityCoefficient)    +
-      urgencyTerm ("active",      task->urgency_active (),      Task::urgencyActiveCoefficient)      +
-      urgencyTerm ("scheduled",   task->urgency_scheduled (),   Task::urgencyScheduledCoefficient)   +
-      urgencyTerm ("waiting",     task->urgency_waiting (),     Task::urgencyWaitingCoefficient)     +
-      urgencyTerm ("blocked",     task->urgency_blocked (),     Task::urgencyBlockedCoefficient)     +
-      urgencyTerm ("blocking",    task->urgency_blocking (),    Task::urgencyBlockingCoefficient)    +
-      urgencyTerm ("annotations", task->urgency_annotations (), Task::urgencyAnnotationsCoefficient) +
-      urgencyTerm ("tags",        task->urgency_tags (),        Task::urgencyTagsCoefficient)        +
-      urgencyTerm ("next",        task->urgency_next (),        Task::urgencyNextCoefficient)        +
-      urgencyTerm ("due",         task->urgency_due (),         Task::urgencyDueCoefficient)         +
-      urgencyTerm ("age",         task->urgency_age (),         Task::urgencyAgeCoefficient);
-
-    // Tag, Project- and UDA-specific coefficients.
-    std::map <std::string, float>::iterator var;
-    for (var = Task::coefficients.begin (); var != Task::coefficients.end (); ++var)
-    {
-      if (var->first.substr (0, 13) == "urgency.user.")
-      {
-        // urgency.user.project.<project>.coefficient
-        std::string::size_type end = std::string::npos;
-        if (var->first.substr (13, 8) == "project." &&
-            (end = var->first.find (".coefficient")) != std::string::npos)
-        {
-          std::string project = var->first.substr (21, end - 21);
-          if (task->get ("project").find (project) == 0)
-            urgency += urgencyTerm ("PROJECT " + project, 1.0, var->second);
-        }
-
-        // urgency.user.tag.<tag>.coefficient
-        if (var->first.substr (13, 4) == "tag." &&
-            (end = var->first.find (".coefficient")) != std::string::npos)
-        {
-          std::string name = var->first.substr (17, end - 17);
-          if (task->hasTag (name))
-            urgency += urgencyTerm ("TAG " + name, 1.0, var->second);
-        }
-      }
-
-      // urgency.uda.<name>.coefficient
-      else if (var->first.substr (0, 12) == "urgency.uda.")
-      {
-        std::string::size_type end = var->first.find (".coefficient");
-        if (end != std::string::npos)
-        {
-          std::string name = var->first.substr (12, end - 12);
-          if (task->has (name))
-            urgency += urgencyTerm ("UDA " + name, 1.0, var->second);
-        }
-      }
-    }
-
-    view.set (row, 1, urgency);
+    view.set (row, 1, format (task->urgency (), 4, 4));
 
     // Show any UDAs
     std::vector <std::string> all = task->all ();
@@ -413,6 +357,7 @@ int CmdInfo::execute (std::string& output)
     // Show any orphaned UDAs, which are identified by not being represented in
     // the context.columns map.
     for (att = all.begin (); att != all.end (); ++att)
+    {
       if (att->substr (0, 11) != "annotation_" &&
           context.columns.find (*att) == context.columns.end ())
       {
@@ -420,8 +365,86 @@ int CmdInfo::execute (std::string& output)
          view.set (row, 0, "[" + *att);
          view.set (row, 1, task->get (*att) + "]");
       }
+    }
 
-    // Create a second table, containing undo log change details.
+    // Create a second table, containing urgency details.
+    ViewText urgencyDetails;
+    if (context.color ())
+    {
+      Color alternate (context.config.get ("color.alternate"));
+      urgencyDetails.colorOdd (alternate);
+      urgencyDetails.intraColorOdd (alternate);
+
+      Color label (context.config.get ("color.label"));
+      urgencyDetails.colorHeader (label);
+    }
+
+    urgencyDetails.width (context.getWidth ());
+    urgencyDetails.add (Column::factory ("string", "")); // Attribute
+    urgencyDetails.add (Column::factory ("string", "")); // Value
+    urgencyDetails.add (Column::factory ("string", "")); // *
+    urgencyDetails.add (Column::factory ("string", "")); // Coefficient
+    urgencyDetails.add (Column::factory ("string", "")); // =
+    urgencyDetails.add (Column::factory ("string", "")); // Result
+
+    urgencyTerm (urgencyDetails, "project",     task->urgency_project (),     Task::urgencyProjectCoefficient);
+    urgencyTerm (urgencyDetails, "priority",    task->urgency_priority (),    Task::urgencyPriorityCoefficient);
+    urgencyTerm (urgencyDetails, "active",      task->urgency_active (),      Task::urgencyActiveCoefficient);
+    urgencyTerm (urgencyDetails, "scheduled",   task->urgency_scheduled (),   Task::urgencyScheduledCoefficient);
+    urgencyTerm (urgencyDetails, "waiting",     task->urgency_waiting (),     Task::urgencyWaitingCoefficient);
+    urgencyTerm (urgencyDetails, "blocked",     task->urgency_blocked (),     Task::urgencyBlockedCoefficient);
+    urgencyTerm (urgencyDetails, "blocking",    task->urgency_blocking (),    Task::urgencyBlockingCoefficient);
+    urgencyTerm (urgencyDetails, "annotations", task->urgency_annotations (), Task::urgencyAnnotationsCoefficient);
+    urgencyTerm (urgencyDetails, "tags",        task->urgency_tags (),        Task::urgencyTagsCoefficient);
+    urgencyTerm (urgencyDetails, "next",        task->urgency_next (),        Task::urgencyNextCoefficient);
+    urgencyTerm (urgencyDetails, "due",         task->urgency_due (),         Task::urgencyDueCoefficient);
+    urgencyTerm (urgencyDetails, "age",         task->urgency_age (),         Task::urgencyAgeCoefficient);
+
+    // Tag, Project- and UDA-specific coefficients.
+    std::map <std::string, float>::iterator var;
+    for (var = Task::coefficients.begin (); var != Task::coefficients.end (); ++var)
+    {
+      if (var->first.substr (0, 13) == "urgency.user.")
+      {
+        // urgency.user.project.<project>.coefficient
+        std::string::size_type end = std::string::npos;
+        if (var->first.substr (13, 8) == "project." &&
+            (end = var->first.find (".coefficient")) != std::string::npos)
+        {
+          std::string project = var->first.substr (21, end - 21);
+          if (task->get ("project").find (project) == 0)
+            urgencyTerm (urgencyDetails, "PROJECT " + project, 1.0, var->second);
+        }
+
+        // urgency.user.tag.<tag>.coefficient
+        if (var->first.substr (13, 4) == "tag." &&
+            (end = var->first.find (".coefficient")) != std::string::npos)
+        {
+          std::string name = var->first.substr (17, end - 17);
+          if (task->hasTag (name))
+            urgencyTerm (urgencyDetails, "TAG " + name, 1.0, var->second);
+        }
+      }
+
+      // urgency.uda.<name>.coefficient
+      else if (var->first.substr (0, 12) == "urgency.uda.")
+      {
+        std::string::size_type end = var->first.find (".coefficient");
+        if (end != std::string::npos)
+        {
+          std::string name = var->first.substr (12, end - 12);
+          if (task->has (name))
+            urgencyTerm (urgencyDetails, "UDA " + name, 1.0, var->second);
+        }
+      }
+    }
+
+    row = urgencyDetails.addRow ();
+    urgencyDetails.set (row, 5, rightJustify ("------", 6));
+    row = urgencyDetails.addRow ();
+    urgencyDetails.set (row, 5, rightJustify (format (task->urgency (), 4, 4), 6));
+
+    // Create a third table, containing undo log change details.
     ViewText journal;
 
     // If an alternating row color is specified, notify the table.
@@ -479,6 +502,10 @@ int CmdInfo::execute (std::string& output)
         << view.render ()
         << "\n";
 
+    if (urgencyDetails.rows () > 0)
+      out << urgencyDetails.render ()
+          << "\n";
+
     if (journal.rows () > 0)
       out << journal.render ()
           << "\n";
@@ -489,24 +516,23 @@ int CmdInfo::execute (std::string& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CmdInfo::urgencyTerm (
+void CmdInfo::urgencyTerm (
+  ViewText& view,
   const std::string& label,
   float measure,
   float coefficient) const
 {
   float value = measure * coefficient;
-  if (fabsf (value) > epsilon)
-    return std::string (
-             rightJustify (label, 20) +
-             " " +
-             leftJustify (format (measure, 5, 3), 6) +
-             " * " +
-             leftJustify (format (coefficient, 4, 2), 4) +
-             " = " +
-             leftJustify (format (value, 5, 3), 5) +
-             "\n");
-
-  return "";
+  if (value != 0.0)
+  {
+    int row = view.addRow ();
+    view.set (row, 0, "    " + label);
+    view.set (row, 1, rightJustify (format (measure, 5, 3), 6));
+    view.set (row, 2, "+");
+    view.set (row, 3, rightJustify (format (coefficient, 4, 2), 4));
+    view.set (row, 4, "=");
+    view.set (row, 5, rightJustify (format (value, 5, 3), 6));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
