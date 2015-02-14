@@ -24,6 +24,7 @@
           Alves).
 - TW-1522 Date format doesn't like hyphens (thanks to Scott Carter).
 - TW-1524 Build Broken (thanks to Jack).
+- TW-1531 'task export' should handle recurrence (thanks to Tomas Babej).
 - TW-1532 Hooks does not execute any script on Cygwin (thanks to Taisuke
           Hachimura).
 - Fixed assorted color theme problems.
