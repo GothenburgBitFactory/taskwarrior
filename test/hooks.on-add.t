@@ -50,7 +50,6 @@ class TestHooksOnAdd(TestCase):
         code, out, err = self.t(("add", "foo"))
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
@@ -65,7 +64,6 @@ class TestHooksOnAdd(TestCase):
         code, out, err = self.t.runError(("add", "foo"))
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(1)
 
@@ -80,7 +78,6 @@ class TestHooksOnAdd(TestCase):
         code, out, err = self.t.runError(("add", "foo"))
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(1)
 
@@ -96,7 +93,6 @@ class TestHooksOnAdd(TestCase):
         self.assertIn("Hook Error: Expected 1 JSON task(s), found 0", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
@@ -109,7 +105,6 @@ class TestHooksOnAdd(TestCase):
         self.assertIn("Hook Error: Expected 1 JSON task(s), found 2", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
@@ -122,7 +117,6 @@ class TestHooksOnAdd(TestCase):
         self.assertIn("Hook Error: JSON must be for the same task:", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
@@ -138,7 +132,6 @@ class TestHooksOnAdd(TestCase):
         self.assertIn("Hook Error: JSON syntax error in: {\"}", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
         hook.assertInvalidJSONOutput()
@@ -155,7 +148,6 @@ class TestHooksOnAdd(TestCase):
         self.assertIn("Hook Error: JSON Object missing 'uuid' attribute.", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 

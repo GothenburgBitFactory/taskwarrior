@@ -478,13 +478,6 @@ class LoggedHook(Hook):
 
         return newlog
 
-    def assertTriggered(self):
-        """Check if current hook file was triggered/used by taskwarrior
-        """
-        log = self._parse_log()
-
-        assert log["calls"], "{0} was never called".format(self.hookname)
-
     def assertTriggeredCount(self, count):
         """Check if current hook file was triggered/used by taskwarrior and
         how many times.

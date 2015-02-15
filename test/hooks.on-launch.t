@@ -51,7 +51,6 @@ class TestHooksOnLaunch(TestCase):
         self.assertIn("Taskwarrior", out)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
@@ -68,7 +67,6 @@ class TestHooksOnLaunch(TestCase):
         self.assertNotIn("Taskwarrior", out)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(1)
 
@@ -85,7 +83,6 @@ class TestHooksOnLaunch(TestCase):
         self.assertNotIn("Could not get Hook exit status!", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(137)
 
@@ -102,7 +99,6 @@ class TestHooksOnLaunch(TestCase):
         self.assertIn("Hook Error: Expected 0 JSON task(s), found 1", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 

@@ -51,7 +51,6 @@ class TestHooksOnModify(TestCase):
         code, out, err = self.t(("1", "modify", "+tag"))
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
@@ -67,7 +66,6 @@ class TestHooksOnModify(TestCase):
         code, out, err = self.t.runError(("1", "modify", "+tag"))
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(1)
 
@@ -84,7 +82,6 @@ class TestHooksOnModify(TestCase):
         self.assertIn("Hook Error: Expected 1 JSON task(s), found 0", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
@@ -101,7 +98,6 @@ class TestHooksOnModify(TestCase):
         self.assertIn("Hook Error: Expected 1 JSON task(s), found 2", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
@@ -118,7 +114,6 @@ class TestHooksOnModify(TestCase):
         self.assertIn("Hook Error: JSON must be for the same task:", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
@@ -135,7 +130,6 @@ class TestHooksOnModify(TestCase):
         self.assertIn("Hook Error: JSON syntax error in: {\"}", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
@@ -152,7 +146,6 @@ class TestHooksOnModify(TestCase):
         self.assertIn("Hook Error: JSON Object missing 'uuid' attribute.", err)
 
         hook = self.t.hooks[hookname]
-        hook.assertTriggered()
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
