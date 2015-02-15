@@ -41,6 +41,7 @@
 #include <Timer.h>
 #include <text.h>
 #include <util.h>
+#include <i18n.h>
 
 extern Context context;
 
@@ -109,7 +110,7 @@ bool Hooks::enable (bool value)
 // - none
 //
 // Output:
-// - all emitted JSON is ignored.
+// - JSON not allowed.
 // - all emitted non-JSON lines are considered feedback or error messages
 //   depending on the status code.
 //
@@ -420,7 +421,7 @@ void Hooks::assertValidJSON (const std::vector <std::string>& input) const
         (*i)[0] != '{'   ||
         (*i)[i->length () - 1] != '}')
     {
-      context.error ("Hook Error: JSON Object '{...}' expected.");
+      context.error (STRING_HOOK_ERROR_OBJECT);
       throw 0;
     }
 
@@ -429,34 +430,34 @@ void Hooks::assertValidJSON (const std::vector <std::string>& input) const
       json::value* root = json::parse (*i);
       if (root->type () != json::j_object)
       {
-        context.error ("Hook Error: JSON Object '{...}' expected.");
+        context.error (STRING_HOOK_ERROR_OBJECT);
         throw 0;
       }
 
       if (((json::object*)root)->_data.find ("description") == ((json::object*)root)->_data.end ())
       {
-        context.error ("Hook Error: JSON Object missing 'description' attribute.");
+        context.error (STRING_HOOK_ERROR_NODESC);
         throw 0;
       }
 
       if (((json::object*)root)->_data.find ("uuid") == ((json::object*)root)->_data.end ())
       {
-        context.error ("Hook Error: JSON Object missing 'uuid' attribute.");
+        context.error (STRING_HOOK_ERROR_NOUUID);
         throw 0;
       }
     }
 
     catch (const std::string& e)
     {
-      context.error ("Hook Error: JSON syntax error in: " + *i);
+      context.error (format (STRING_HOOK_ERROR_SYNTAX, *i));
       if (_debug)
-        context.error ("Hook Error: JSON " + e);
+        context.error (STRING_HOOK_ERROR_JSON + e);
       throw 0;
     }
 
     catch (...)
     {
-      context.error ("Hook Error: JSON failed to parse: " + *i);
+      context.error (STRING_HOOK_ERROR_NOPARSE + *i);
       throw 0;
     }
   }
@@ -467,7 +468,7 @@ void Hooks::assertNTasks (const std::vector <std::string>& input, int n) const
 {
   if (input.size () != n)
   {
-    context.error (format ("Hook Error: Expected {1} JSON task(s), found {2}", n, (int) input.size ()));
+    context.error (format (STRING_HOOK_ERROR_BAD_NUM, n, (int) input.size ()));
     throw 0;
   }
 }
@@ -487,7 +488,7 @@ void Hooks::assertSameTask (const std::vector <std::string>& input, const Task& 
     if (u == root_obj->_data.end ()          ||
         u->second->type () != json::j_string)
     {
-      context.error (format ("Hook Error: JSON must be for the same task: {1}", uuid));
+      context.error (format (STRING_HOOK_ERROR_SAME1, uuid));
       throw 0;
     }
 
@@ -495,7 +496,7 @@ void Hooks::assertSameTask (const std::vector <std::string>& input, const Task& 
     std::string json_uuid = json::decode (unquoteText (up->dump ()));
     if (json_uuid != uuid)
     {
-      context.error (format ("Hook Error: JSON must be for the same task: {1} != {2}", uuid, json_uuid));
+      context.error (format (STRING_HOOK_ERROR_SAME2, uuid, json_uuid));
       throw 0;
     }
   }
@@ -512,7 +513,7 @@ void Hooks::assertFeedback (const std::vector <std::string>& input) const
 
   if (! foundSomething)
   {
-    context.error ("Hook Error: Expected feedback from a failing hook script.");
+    context.error (STRING_HOOK_ERROR_NOFEEDBACK);
     throw 0;
   }
 }

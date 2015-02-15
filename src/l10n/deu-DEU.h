@@ -792,10 +792,22 @@
 #define STRING_FILE_PERMS            "Taskwarrior hat die erforderlichen Rechte auf '{1}' nicht."
 
 // helpers
-#define STRING_HELPER_PROJECT_CHANGE "Projekt '{1}' wurde geändert."
-#define STRING_HELPER_PROJECT_COMPL  "Projekt '{1}' ist zu {2}% abgeschlossen"
-#define STRING_HELPER_PROJECT_REM    "({1} von {2} Aufgaben verbleibend)."
-#define STRING_HELPER_PROJECT_REM1   "({1} Aufgabe verbleibend)."
+#define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."
+#define STRING_HELPER_PROJECT_COMPL  "Project '{1}' is {2}% complete"
+#define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
+#define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
+
+// Hooks
+#define STRING_HOOK_ERROR_OBJECT     "Hook Error: JSON Object '{...}' expected."
+#define STRING_HOOK_ERROR_NODESC     "Hook Error: JSON Object missing 'description' attribute."
+#define STRING_HOOK_ERROR_NOUUID     "Hook Error: JSON Object missing 'uuid' attribute."
+#define STRING_HOOK_ERROR_SYNTAX     "Hook Error: JSON syntax error in: {1}"
+#define STRING_HOOK_ERROR_JSON       "Hook Error: JSON "
+#define STRING_HOOK_ERROR_NOPARSE    "Hook Error: JSON failed to parse: "
+#define STRING_HOOK_ERROR_BAD_NUM    "Hook Error: Expected {1} JSON task(s), found {2}"
+#define STRING_HOOK_ERROR_SAME1      "Hook Error: JSON must be for the same task: {1}"
+#define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON must be for the same task: {1} != {2}"
+#define STRING_HOOK_ERROR_NOFEEDBACK "Hook Error: Expected feedback from a failing hook script."
 
 // JSON
 #define STRING_JSON_MISSING_VALUE    "Fehler: Fehlender Wert nach ',' an Position {1}"
