@@ -49,11 +49,14 @@ class TestHooksOnExit(TestCase):
 
         code, out, err = self.t(("version",))
         self.assertIn("Taskwarrior", out)
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(0)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
     def test_onexit_builtin_bad(self):
         """on-exit-bad - a well-behaved, failing, on-exit hook."""
@@ -63,11 +66,14 @@ class TestHooksOnExit(TestCase):
         # Failing hook should prevent processing.
         code, out, err = self.t.runError(("version",))
         self.assertIn("Taskwarrior", out)
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(1)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(1)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
     def test_onexit_builtin_misbehave1(self):
         """on-exit-misbehave1 - Does not consume input."""
@@ -77,11 +83,14 @@ class TestHooksOnExit(TestCase):
         # Failing hook should prevent processing.
         code, out, err = self.t(("version",))
         self.assertIn("Taskwarrior", out)
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(0)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
     def test_onexit_builtin_misbehave2(self):
         """on-exit-misbehave2 - Emits unexpected JSON."""
@@ -91,11 +100,14 @@ class TestHooksOnExit(TestCase):
         # Failing hook should prevent processing.
         code, out, err = self.t.runError(("version",))
         self.assertIn("Hook Error: Expected 0 JSON task(s), found 1", err)
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(0)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

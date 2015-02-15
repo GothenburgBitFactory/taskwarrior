@@ -49,11 +49,14 @@ class TestHooksOnModify(TestCase):
 
         code, out, err = self.t(("add", "foo"))
         code, out, err = self.t(("1", "modify", "+tag"))
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(0)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
     def test_onmodify_builtin_reject(self):
         """on-modify-reject - a well-behaved, failing, on-modify hook."""
@@ -62,11 +65,14 @@ class TestHooksOnModify(TestCase):
 
         code, out, err = self.t(("add", "foo"))
         code, out, err = self.t.runError(("1", "modify", "+tag"))
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(1)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(1)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
     def test_onmodify_builtin_misbehave2(self):
         """on-modify-misbehave2 - does not emit JSON."""
@@ -76,11 +82,14 @@ class TestHooksOnModify(TestCase):
         code, out, err = self.t(("add", "foo"))
         code, out, err = self.t.runError(("1", "modify", "+tag"))
         self.assertIn("Hook Error: Expected 1 JSON task(s), found 0", err)
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(0)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
     def test_onmodify_builtin_misbehave3(self):
         """on-modify-misbehave3 - emits additional JSON."""
@@ -90,11 +99,14 @@ class TestHooksOnModify(TestCase):
         code, out, err = self.t(("add", "foo"))
         code, out, err = self.t.runError(("1", "modify", "+tag"))
         self.assertIn("Hook Error: Expected 1 JSON task(s), found 2", err)
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(0)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
     def test_onmodify_builtin_misbehave4(self):
         """on-modify-misbehave4 - emits different task JSON."""
@@ -104,11 +116,14 @@ class TestHooksOnModify(TestCase):
         code, out, err = self.t(("add", "foo"))
         code, out, err = self.t.runError(("1", "modify", "+tag"))
         self.assertIn("Hook Error: JSON must be for the same task:", err)
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(0)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
     def test_onmodify_builtin_misbehave5(self):
         """on-modify-misbehave5 - emits syntactically wrong JSON."""
@@ -118,11 +133,14 @@ class TestHooksOnModify(TestCase):
         code, out, err = self.t(("add", "foo"))
         code, out, err = self.t.runError(("1", "modify", "+tag"))
         self.assertIn("Hook Error: JSON syntax error in: {\"}", err)
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(0)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
     def test_onmodify_builtin_misbehave6(self):
         """on-modify-misbehave6 - emits incomplete JSON."""
@@ -132,11 +150,14 @@ class TestHooksOnModify(TestCase):
         code, out, err = self.t(("add", "foo"))
         code, out, err = self.t.runError(("1", "modify", "+tag"))
         self.assertIn("Hook Error: JSON Object missing 'uuid' attribute.", err)
-        self.t.hooks[hookname].assertTriggered()
-        self.t.hooks[hookname].assertTriggeredCount(1)
-        self.t.hooks[hookname].assertExitcode(0)
-        logs = self.t.hooks[hookname].get_logs()
-        self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggered()
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
+        logs = hook.get_logs()
+        self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
