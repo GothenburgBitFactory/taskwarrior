@@ -16,6 +16,26 @@ from .utils import DEFAULT_HOOK_PATH
 from .exceptions import HookError
 
 
+class InvalidJSON(object):
+    """Object representing the original unparsed JSON string and the JSON error
+    """
+    def __init__(self, original, error):
+        self.original = original
+        self.error = error
+
+
+def json_decoder(string):
+    """Attempt to decode a JSON string and in case of error return an
+    InvalidJSON object
+    """
+    decoder = json.JSONDecoder().decode
+
+    try:
+        return decoder(string)
+    except json.JSONDecodeError as e:
+        return InvalidJSON(string, str(e))
+
+
 class Hooks(object):
     """Abstraction to help interact with hooks (add, remove) during tests and
     keep track of which are active.
@@ -436,8 +456,6 @@ class LoggedHook(Hook):
         log = self._parse_log()
         newlog = {}
 
-        json_decoder = json.JSONDecoder().decode
-
         for k1 in log:
             # Timestamps
             if k1 == "calls":
@@ -491,5 +509,31 @@ class LoggedHook(Hook):
                                                  self.hookname,
                                                  log["exitcode"]
                                              ))
+
+    def assertValidJSONOutput(self):
+        """Check if current hook output is valid JSON in all expected replies
+        """
+        log = self.get_logs()
+
+        for i, out in enumerate(log["output"]["json"]):
+            assert not isinstance(out, InvalidJSON), ("Invalid JSON found at "
+                                                      "reply number {0} with "
+                                                      "content {1}".format(
+                                                          i + 1,
+                                                          out.original
+                                                      ))
+
+    def assertInvalidJSONOutput(self):
+        """Check if current hook output is invalid JSON in any expected reply
+        """
+        log = self.get_logs()
+
+        for i, out in enumerate(log["output"]["json"]):
+            assert isinstance(out, InvalidJSON), ("Valid JSON found at reply "
+                                                  "number {0} with content "
+                                                  "{1}".format(
+                                                      i + 1,
+                                                      out.original
+                                                  ))
 
 # vim: ai sts=4 et sw=4

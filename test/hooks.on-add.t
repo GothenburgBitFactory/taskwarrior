@@ -125,6 +125,7 @@ class TestHooksOnAdd(TestCase):
         self.t.hooks[hookname].assertTriggered()
         self.t.hooks[hookname].assertTriggeredCount(1)
         self.t.hooks[hookname].assertExitcode(0)
+        self.t.hooks[hookname].assertInvalidJSONOutput()
         logs = self.t.hooks[hookname].get_logs()
         self.assertEqual(self.t.hooks[hookname].get_logs()["output"]["msgs"][0], "FEEDBACK")
 
