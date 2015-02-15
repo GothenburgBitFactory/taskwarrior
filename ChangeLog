@@ -14,17 +14,25 @@
           Bean).
 - TW-1501 Calc can't handle multi-digit numbers in some expressions (thanks to
           Jeremy John Reeder).
+- TW-1502 Successful on-add hook with no output confuses TW (thanks to Tomas
+          Babej).
 - TW-1504 On-modify hook does not accept correct JSON format (thanks to Tomas
           Babej).
 - TW-1505 completely ignore mis-named hook scripts (thanks to Tomas Babej,
           David Patrick).
+- TW-1509 Hooks modifications performed on sync not sycning back (thanks to
+          Tomas Babej).
 - TW-1510 Task can save empty value in the data backlog (thanks to Tomas Babej).
 - TW-1517 Hook performance should be measured individually for each hook (thanks
           to Tomas Babej).
+- TW-1518 Misbehaving hooks silently break task processing (thanks to Wim
+          Schuermann).
 - TW-1519 Testing suite forces taskd.trust="ignore hostname" (thanks to Renato
           Alves).
 - TW-1522 Date format doesn't like hyphens (thanks to Scott Carter).
 - TW-1524 Build Broken (thanks to Jack).
+- TW-1530 Multiple on-add hooks generating new tasks are ignored (thanks to
+          Tomas Babej).
 - TW-1531 'task export' should handle recurrence (thanks to Tomas Babej).
 - TW-1532 Hooks does not execute any script on Cygwin (thanks to Taisuke
           Hachimura).
