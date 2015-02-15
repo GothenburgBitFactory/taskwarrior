@@ -38,6 +38,8 @@
           Hachimura).
 - TW-1534 Urgency coefficient for user project disables 'info' output (thanks to
           Martin).
+- TW-1542 Large numeric UDA values get rendered in scientific notation on export
+          (thanks to Ralph Bean).
 - Fixed assorted color theme problems.
 - Changed assorted reports so they do not use '.age' format for dates that are
   in the future, because those are never shown with this format (thanks to

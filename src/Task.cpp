@@ -2080,9 +2080,6 @@ void Task::modify (modType type, bool text_required /* = false */)
             if (v.type () == Variant::type_string)
               throw format (STRING_UDA_NUMERIC, v.get_string ());
 
-            v.cast (Variant::type_real);
-            v.cast (Variant::type_string);
-
             set (name, v);
             ++modCount;
           }
