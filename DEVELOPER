@@ -26,7 +26,8 @@ How to Build Taskwarrior
   not contain the test suite.
 
   If you send a patch (support@taskwarrior.org), make sure that patch is made
-  against git HEAD. We cannot apply patches made against the tarball source.
+  against git HEAD on the development branch. We cannot apply patches made
+  against the tarball source, or master.
 
 General Statement
   This file is intended to convey the current efforts, priorities and needs of
@@ -188,11 +189,11 @@ Work in Progress
 Current Codebase Condition
 
   'master' branch:
-    - 2.3.0 Current release, locked.
+    - 2.4.1 Current release, locked.
 
-  '2.4.1' branch:
+  '2.4.2' branch:
     - Current development branch no plans yet.
 
 ---
 
-2015-01-01 Updated for 2.4.1
+2015-02-14 Updated for 2.4.1

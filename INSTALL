@@ -99,10 +99,12 @@ Currently the defined languages are:
 
   eng_USA 1
   esp_ESP 2
+  deu_DEU 3
   fra_FRA 4
   ita_ITA 5
   por_PRT 6
-
+  epo_RUS 7
+  pol_POL 8
 
 Uninstallation
 --------------
@@ -138,9 +140,7 @@ Cygwin
 
 
 Darwin, 32bit
-  The taskwarrior packages will not work on a 32-bit OSX installation on Core
-  Duo hardware.  You will need to build Taskwarrior from source, and use this
-  configure command:
+  Taskwarrior needs to be built from source, and use this configure command:
 
     cmake -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32 .
 
