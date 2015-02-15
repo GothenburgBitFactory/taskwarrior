@@ -153,6 +153,10 @@ sys.exit(0)
         hook.assertTriggeredCount(1)
         hook.assertExitcode(0)
 
+        # Ensure output from hook is valid JSON
+        # (according to python's JSON parser)
+        hook.assertValidJSONOutput()
+
         # Some message output from the hook
         self.assertEqual(logs["output"]["msgs"][0],
                          "Hello from the template hook")
