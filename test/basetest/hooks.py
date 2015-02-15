@@ -32,7 +32,7 @@ def json_decoder(string):
 
     try:
         return decoder(string)
-    except json.JSONDecodeError as e:
+    except ValueError as e:
         return InvalidJSON(string, str(e))
 
 
