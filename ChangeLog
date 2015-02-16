@@ -1,4 +1,4 @@
-2.4.1 (2015-02-16) -
+2.4.1 (2015-02-16) 82e019a4a8b20de63d53b51d59b8d1c89d3c05b2
 
 - TW-1457 Non-existent attributes are not properly handled (thanks to Tomas
           Babej).
