@@ -60,7 +60,9 @@ def wait_condition(cond, timeout=1):
     if timeout is None:
         timeout = 1
 
-    sleeptime = .1
+    # NOTE Increasing sleeptime can dramatically increase testsuite runtime
+    # It also reduces CPU load significantly
+    sleeptime = .01
 
     if timeout < sleeptime:
         print("Warning, timeout cannot be smaller than", sleeptime)
