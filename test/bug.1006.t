@@ -1,4 +1,5 @@
-#! /usr/bin/env perl
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
 ################################################################################
 ##
 ## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
@@ -25,46 +26,63 @@
 ##
 ################################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 4;
+import sys
+import os
+import unittest
+from datetime import datetime
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase, Taskd, ServerTestCase
 
-use File::Basename;
-my $ut = basename ($0);
-my $rc = $ut . '.rc';
 
-# Create the rc file.
-if (open my $fh, '>', $rc)
-{
-  print $fh "data.location=.\n",
-            "verbose=affected\n";
-  close $fh;
-}
+class TestBug1006(TestCase):
+    """Bug with completion of "des" in task descriptions and annotations. It
+    happens for all the shortcuts for column attributes that are automatically
+    completed. This is because DOM elements are checked before standard words
+    when strings are tokenized.
+    """
+    def setUp(self):
+        self.t = Task()
+        self.t.config("verbose", "affected")
 
-# Bug with completion of "des" in task descriptions and annotations. It happens
-# for all the shortcuts for column attributes that are automatically completed.
-# This is because DOM elements are checked before standard words when strings
-# are tokenized.
+    def initial_tasks(self):
+        self.t(("add", "des"))
+        self.t(("1", "annotate", "des"))
 
-# Check that the completion is inactive in task descriptions
-qx{../src/task rc:$rc add des 2>&1};
-qx{../src/task rc:$rc 1 annotate des 2>&1};
-my $output = qx{../src/task rc:$rc 1 info 2>&1};
-like ($output, qr/^Description\s+des$/ms, "$ut: Attribute not completed in description");
-unlike ($output, qr/description/ms,       "$ut: Attribute not completed in description");
+    def test_completion_of_des_inactive(self):
+        "Check that the completion is inactive in task descriptions"
 
-# Check that the completion works when needed
-$output = qx{../src/task rc:$rc des:des 2>&1};
-like ($output, qr/^1 task$/ms,            "$ut: Task found using its description");
+        self.initial_tasks()
+        code, out, err = self.t(("1", "info"))
 
-qx{../src/task rc:$rc add entrée interdite 2>&1};
-$output = qx{../src/task rc:$rc list interdite 2>&1};
-like ($output, qr/entrée interdite/,      "$ut: 'entrée' left intact");
+        expected = "Description +des\n"
+        errormsg = "Attribute not completed in description"
+        self.assertRegexpMatches(out, expected, msg=errormsg)
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data), $rc;
-exit 0;
+        notexpected = "description"
+        self.assertNotIn(notexpected, out, msg=errormsg)
+
+    def test_completion_as_expected(self):
+        "Check that the completion works when needed"
+
+        self.initial_tasks()
+        code, out, err = self.t(("des:des",))
+
+        errormsg = "Task found using its description"
+        self.assertIn("1 task", out, msg=errormsg)
+
+    def test_accented_chars(self):
+        "Check that é in entrée remains untouched"
+
+        self.t(("add", "entrée interdite"))
+        code, out, err = self.t(("list", "interdite"))
+
+        errormsg = "'entrée' left intact"
+        self.assertIn("entrée interdite", out, msg=errormsg)
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
