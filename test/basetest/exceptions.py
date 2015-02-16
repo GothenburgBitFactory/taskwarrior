@@ -1,23 +1,28 @@
 # -*- coding: utf-8 -*-
 import signal
 
+sig_names = dict((k, v) for v, k in reversed(sorted(signal.__dict__.items()))
+                 if v.startswith('SIG') and not v.startswith('SIG_'))
+
 
 class CommandError(Exception):
     def __init__(self, cmd, code, out, err=None, msg=None):
+        DEFAULT = ("Command '{{0}}' was {signal}'ed. "
+                   "SIGABRT usually means task timed out.\n")
         if msg is None:
             msg_suffix = "\n*** Start STDOUT ***\n{2}\n*** End STDOUT ***\n"
             if err is not None:
                 msg_suffix += (
                     "\n*** Start STDERR ***\n{3}\n*** End STDERR ***\n"
                 )
-            if code == -signal.SIGABRT:
-                self.msg = ("Command '{0}' was aborted, likely due to not "
-                            "finishing in due time. The exit code was '{1}'.\n"
-                            ) + msg_suffix
+
+            if code < 0:
+                self.msg = DEFAULT.format(signal=sig_names[abs(code)])
             else:
                 self.msg = ("Command '{0}' finished with unexpected exit "
-                            "code '{1}'.\n"
-                            ) + msg_suffix
+                            "code '{1}'.\n")
+
+            self.msg += msg_suffix
         else:
             self.msg = msg
 
@@ -34,7 +39,7 @@ class HookError(Exception):
     pass
 
 
-class TimeoutWaitingForStream(object):
+class TimeoutWaitingFor(object):
     def __init__(self, name):
         self.name = name
 
