@@ -43,6 +43,8 @@ TASKD_SKIP = os.environ.get("TASKD_SKIP", False)
 # Environment flags to control use of PATH or in-tree binaries
 USE_PATH = os.environ.get("USE_PATH", False)
 
+UUID_regex = ("[0-9A-Fa-f]{8}-" + ("[0-9A-Fa-f]{4}-" * 3) + "[0-9A-Fa-f]{12}")
+
 
 def binary_location(cmd):
     """If USE_PATH is set rely on PATH to look for task/taskd binaries.
