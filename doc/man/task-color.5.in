@@ -1,4 +1,4 @@
-.TH task-color 5 2015-01-01 "${PACKAGE_STRING}" "User Manuals"
+.TH task-color 5 2015-02-16 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 task-color \- A color tutorial for the taskwarrior command line todo manager.
