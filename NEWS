@@ -1,42 +1,15 @@
 
-New Features in taskwarrior 2.4.1
+New Features in taskwarrior 2.4.2
 
-  - New German translation.
-  - Hook scripts are now under much stricter control.
+New commands in taskwarrior 2.4.2
 
-New commands in taskwarrior 2.4.1
+New configuration options in taskwarrior 2.4.2
 
-  - None
+Newly deprecated features in taskwarrior 2.4.2
 
-New configuration options in taskwarrior 2.4.1
-
-  - The 'date.iso' setting allows you to enable (default) or disable support
-    for ISO-8601 dates.  This is because some of you have 'dateformat' settings
-    that conflict.
-  - The 'recurrence' setting enables (default) or disables recurring task
-    instance generation.
-
-Newly deprecated features in taskwarrior 2.4.1
-
-  - None
-
-Removed features in 2.4.1
-
-  - None
+Removed features in 2.4.2
 
 Known Issues
-
-  - If you upgraded from Taskwarrior 2.3.0, you will need one of the following
-    settings to allow continued syncing to a Taskserver:
-
-      $ task config taskd.trust strict
-      $ task config taskd.trust 'ignore hostname'
-      $ task config taskd.trust 'allow all'
-
-    These are presented in order of preference from most to least secure, and
-    depend on how your certs were generated.
-
-  - https://bug.tasktools.org/
 
 Taskwarrior has been built and tested on the following configurations:
 

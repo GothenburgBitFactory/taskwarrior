@@ -1,3 +1,7 @@
+2.4.2 () -
+
+------ current release ---------------------------
+
 2.4.1 (2015-02-16) 82e019a4a8b20de63d53b51d59b8d1c89d3c05b2
 
 - TW-1457 Non-existent attributes are not properly handled (thanks to Tomas
@@ -45,8 +49,6 @@
   in the future, because those are never shown with this format (thanks to
   Sujeevan Vijayakumaran).
 - New 'recurrence' configuration setting can disable recurring task generation.
-
------- current release ---------------------------
 
 2.4.0 (2015-01-01) 670102842c39bdc62ef84ae4b679a8f5a2d89523
 
