@@ -28,7 +28,7 @@ else
   # because 'date +%s' isn't supported on Solaris.
   STARTEPOCH=`perl -e 'print time'`
 
-  VRAMSTEG=`which vramsteg`
+  VRAMSTEG=`which vramsteg 2>/dev/null`
   BAR=0
   if [ -x "$VRAMSTEG" ]; then
     BAR=1
