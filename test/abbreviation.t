@@ -35,7 +35,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from basetest import Task, TestCase, Taskd, ServerTestCase  # noqa
 
 
-class TestBugNumber(TestCase):
+class TestAbbreviation(TestCase):
     def setUp(self):
         self.t = Task()
         self.t.config("abbreviation.minimum", "1")
