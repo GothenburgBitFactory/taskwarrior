@@ -1,101 +1,94 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 19;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase, Taskd, ServerTestCase  # noqa
 
-use File::Basename;
-my $ut = basename ($0);
-my $rc = $ut . '.rc';
 
-# Create the rc file.
-if (open my $fh, '>', $rc)
-{
-  print $fh "data.location=.\n",
-            "abbreviation.minimum=1\n";
-  close $fh;
-}
+class TestBugNumber(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t.config("abbreviation.minimum", "1")
 
-# Test the priority attribute abbrevations.
-qx{../src/task rc:$rc add priority:H with 2>&1};
-qx{../src/task rc:$rc add without 2>&1};
+        self.t(("add", "project:home", "priority:H", "hasattributes"))
+        self.t(("add", "noattributes"))
 
-my $output = qx{../src/task rc:$rc list priority:H 2>&1};
-like   ($output, qr/\bwith\b/,    "$ut: priority:H with");
-unlike ($output, qr/\bwithout\b/, "$ut: priority:H without");
+    def verify_attibute(self, expr):
+        code, out, err = self.t(("list", expr))
 
-$output = qx{../src/task rc:$rc list priorit:H 2>&1};
-like   ($output, qr/\bwith\b/,    "$ut: priorit:H with");
-unlike ($output, qr/\bwithout\b/, "$ut: priorit:H without");
+        self.assertIn("hasattributes", out, msg=expr + " hasattributes")
+        self.assertNotIn("noattributes", out, msg=expr + " noattributes")
 
-$output = qx{../src/task rc:$rc list priori:H 2>&1};
-like   ($output, qr/\bwith\b/,    "$ut: priori:H with");
-unlike ($output, qr/\bwithout\b/, "$ut: priori:H without");
+    def test_attribute_abbreviations(self):
+        "Test project attribute abbrevations"
 
-$output = qx{../src/task rc:$rc list prior:H 2>&1};
-like   ($output, qr/\bwith\b/,    "$ut: prior:H with");
-unlike ($output, qr/\bwithout\b/, "$ut: prior:H without");
+        self.verify_attibute("project:home")
+        self.verify_attibute("projec:home")
+        self.verify_attibute("proje:home")
+        self.verify_attibute("proj:home")
+        self.verify_attibute("pro:home")
 
-$output = qx{../src/task rc:$rc list prio:H 2>&1};
-like   ($output, qr/\bwith\b/,    "$ut: prio:H with");
-unlike ($output, qr/\bwithout\b/, "$ut: prio:H without");
+    def test_uda_abbreviations(self):
+        "Test uda attribute abbrevations"
+        # NOTE This will be an UDA when TW-1541 is closed, for now it's just
+        # one more attribute
 
-$output = qx{../src/task rc:$rc list pri:H 2>&1};
-like   ($output, qr/\bwith\b/,    "$ut: pri:H with");
-unlike ($output, qr/\bwithout\b/, "$ut: pri:H without");
+        self.verify_attibute("priority:H")
+        self.verify_attibute("priorit:H")
+        self.verify_attibute("priori:H")
+        self.verify_attibute("prior:H")
+        self.verify_attibute("prio:H")
+        self.verify_attibute("pri:H")
 
-# Test the version command abbreviations.
-$output = qx{../src/task rc:$rc version 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: version");
+    def verify_command(self, cmd):
+        code, out, err = self.t((cmd,))
 
-$output = qx{../src/task rc:$rc versio 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: versio");
+        self.assertIn("MIT license", out, msg=cmd)
 
-$output = qx{../src/task rc:$rc versi 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: versi");
+    def test_command_abbreviations(self):
+        "Test version command abbrevations"
 
-$output = qx{../src/task rc:$rc vers 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: vers");
+        self.verify_command("version")
+        self.verify_command("versio")
+        self.verify_command("versi")
+        self.verify_command("vers")
+        self.verify_command("ver")
+        self.verify_command("ve")
+        self.verify_command("v")
 
-$output = qx{../src/task rc:$rc ver 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: ver");
 
-$output = qx{../src/task rc:$rc ve 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: ve");
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
 
-$output = qx{../src/task rc:$rc v 2>&1};
-like ($output, qr/MIT\s+license/, "$ut: v");
-
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data), $rc;
-exit 0;
-
+# vim: ai sts=4 et sw=4
