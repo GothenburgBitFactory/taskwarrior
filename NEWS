@@ -13,13 +13,13 @@ Known Issues
 
 Taskwarrior has been built and tested on the following configurations:
 
-  * OS X 10.10 Yosemite
-  * Fedora 20 Heisenbug
-  * Ubuntu 14.04 Trusty Tahr
-  * Debian 7.0 Wheezy (stable)
-  * Arch 2014.05
-  * FreeBSD 10
-  * Cygwin 1.7.29, 1.7.32
+  * OS X
+  * Fedora
+  * Ubuntu
+  * Debian
+  * Arch
+  * FreeBSD
+  * Cygwin
 
 ---
 
