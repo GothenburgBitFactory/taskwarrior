@@ -1,8 +1,8 @@
 #!/bin/sh
 
 printf "C++:     %5d\n" $(ls *.t.cpp | wc -l)
-printf "Python:  %5d\n" $(grep '\bpython' *.t | wc -l)
-printf "Perl:    %5d\n" $(grep '\bperl\b' *.t | wc -l)
+printf "Python:  %5d\n" $(head -n1 *.t | grep '\bpython' | wc -l)
+printf "Perl:    %5d\n" $(head -n1 *.t | grep '\bperl\b' | wc -l)
 echo
 printf "Feature  %5d\n" $(ls feature.*.t | wc -l)
 printf "Bug      %5d\n" $(ls {tw-,bug.}*.t | wc -l)
