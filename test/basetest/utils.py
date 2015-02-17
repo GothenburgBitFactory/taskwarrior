@@ -108,14 +108,24 @@ def _queue_output(arguments, pidq, outputq):
     kwargs = arguments["process"]
     input = arguments["input"]
 
-    proc = Popen(**kwargs)
+    try:
+        proc = Popen(**kwargs)
+    except OSError as e:
+        # pid None is read by the main thread as a crash of the process
+        pidq.put(None)
 
-    # NOTE If for whatever reason pid is None at the time of access, use the
-    # following line instead
-    # pid = wait_condition(lambda: proc.pid)
-    pid = proc.pid
-    # Put the PID in the queue for main process to know
-    pidq.put(pid)
+        outputq.put((
+            "",
+            ("Unexpected exception caught during execution of taskw: '{0}' . "
+             "If you are running out-of-tree tests set USE_PATH=1 in shell "
+             "env before execution and add the location of the task binary to "
+             "the PATH".format(e)),
+            255))  # false exitcode
+
+        return
+
+    # Put the PID in the queue for main process to know.
+    pidq.put(proc.pid)
 
     # Send input and wait for finish
     out, err = proc.communicate(input)
@@ -161,6 +171,10 @@ def _get_output(arguments, timeout=None):
     try:
         pid = pidq.get(timeout=timeout)
     except Empty:
+        pid = None
+
+    # Process crashed or timed out for some reason
+    if pid is None:
         return _retrieve_output(t, output_timeout, outputq,
                                 "TaskWarrior to start")
 
