@@ -160,12 +160,13 @@ std::string legacyCheckForDeprecatedColumns ()
 ////////////////////////////////////////////////////////////////////////////////
 void legacyAttributeMap (std::string& name)
 {
-  // TW-1274
+  // TW-1274, 2.4.0
   if (name == "modification")
     name = "modified";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Is this needed, given Task::upgradeLegacyValues?
 void legacyValueMap (const std::string& name, std::string& value)
 {
   // 2014-07-03: One-time initialization value mapping.
@@ -173,20 +174,19 @@ void legacyValueMap (const std::string& name, std::string& value)
   if (mapping.size () == 0)
   {
     mapping["hrs"]   = "hours";
-    mapping["hrs"]   = "hours";
     mapping["hr"]    = "hours";
     mapping["mins"]  = "minutes";
     mapping["mnths"] = "months";
     mapping["mths"]  = "months";
     mapping["mth"]   = "months";
     mapping["mos"]   = "months";
-    mapping["m"]     = "months";
+    mapping["m"]     = "months";   // ?
     mapping["qrtrs"] = "quarters";
     mapping["qtrs"]  = "quarters";
     mapping["qtr"]   = "quarters";
     mapping["secs"]  = "seconds";
     mapping["sec"]   = "seconds";
-    mapping["s"]     = "seconds";
+    mapping["s"]     = "seconds";  // ?
     mapping["wks"]   = "weeks";
     mapping["wk"]    = "weeks";
     mapping["yrs"]   = "years";
