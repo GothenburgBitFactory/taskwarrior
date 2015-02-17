@@ -40,15 +40,15 @@ int main (int argc, char** argv)
 {
 #ifdef NIBBLER_FEATURE_DATE
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (417);
+  UnitTest t (410);
 #else
-  UnitTest t (387);
+  UnitTest t (380);
 #endif
 #else
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (353);
+  UnitTest t (346);
 #else
-  UnitTest t (329);
+  UnitTest t (322);
 #endif
 #endif
 
@@ -83,7 +83,6 @@ int main (int argc, char** argv)
     t.notok (n.getQuoted ('"', s),       "trivial: getQuoted");
     t.notok (n.getDigit (i),             "trivial: getDigit");
     t.notok (n.getInt (i),               "trivial: getInt"); // 10
-    t.notok (n.getHex (i),               "trivial: getHex");
     t.notok (n.getUnsignedInt (i),       "trivial: getUnsignedInt");
     t.notok (n.getUntilEOL (s),          "trivial: getUntilEOL");
     t.notok (n.getUntilEOS (s),          "trivial: getUntilEOS");
@@ -299,16 +298,6 @@ int main (int argc, char** argv)
     t.ok    (n.skip (' '),            "     ' -4' :           skip (' ')    -> true");
     t.ok    (n.getInt (i),            "      '-4' :         getInt ()       -> true");
     t.is    (i, -4,                   "      '-4' :         getInt ()       -> '-4'");
-    t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
-
-    // bool getHex (int&);
-    t.diag ("Nibbler::getHex");
-    n = Nibbler ("123 7b");
-    t.ok    (n.getHex (i),            "  '123 7b' :         getHex ()       -> true");
-    t.is    (i, 291,                  "  '123 7b' :         getHex ()       -> '291'");
-    t.ok    (n.skip (' '),            "     ' 7b' :           skip (' ')    -> true");
-    t.ok    (n.getHex (i),            "      '7b' :         getHex ()       -> true");
-    t.is    (i, 123,                  "      '7b' :         getHex ()       -> '123'");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
 
     // bool getUnsignedInt (int&i);

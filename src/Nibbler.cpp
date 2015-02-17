@@ -404,33 +404,6 @@ bool Nibbler::getInt (int& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getHex (int& result)
-{
-  std::string::size_type i = _cursor;
-
-  if (i < _length)
-  {
-    if (_input[i] == '-')
-      ++i;
-    else if (_input[i] == '+')
-      ++i;
-  }
-
-  // TODO Potential for use of find_first_not_of
-  while (i < _length && isxdigit (_input[i]))
-    ++i;
-
-  if (i > _cursor)
-  {
-    result = strtoimax (_input.substr (_cursor, i - _cursor).c_str (), NULL, 16);
-    _cursor = i;
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUnsignedInt (int& result)
 {
   std::string::size_type i = _cursor;

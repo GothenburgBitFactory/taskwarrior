@@ -68,7 +68,6 @@ public:
   bool getDigit3 (int&);
   bool getDigit2 (int&);
   bool getInt (int&);
-  bool getHex (int&);
   bool getUnsignedInt (int&);
   bool getNumber (std::string&);
   bool getNumber (double&);
