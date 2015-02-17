@@ -1,68 +1,80 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 5;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'alias.rc')
-{
-  print $fh "data.location=.\n",
-            "alias.foo=_projects\n",
-            "alias.bar=foo\n",
-            "alias.baz=bar\n",
-            "alias.qux=baz\n";
-  close $fh;
-}
 
-# Add a task with a certain project, then access that task via aliases.
-qx{../src/task rc:alias.rc add project:ALIAS foo 2>&1};
+class TestAlias(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        # Used to initialize objects that should be re-initialized or
+        # re-created for each individual test
+        self.t = Task()
 
-my $output = qx{../src/task rc:alias.rc _projects 2>&1};
-like ($output, qr/ALIAS/, 'task _projects -> ALIAS');
+        self.t.config("alias.foo", "_projects")
+        self.t.config("alias.bar", "foo")
+        self.t.config("alias.baz", "bar")
+        self.t.config("alias.qux", "baz")
 
-$output = qx{../src/task rc:alias.rc qux 2>&1};
-like ($output, qr/ALIAS/, 'task foo -> _projects -> ALIAS');
+    def test_alias_to_project(self):
+        """Access a project via aliases"""
 
-$output = qx{../src/task rc:alias.rc bar 2>&1};
-like ($output, qr/ALIAS/, 'task bar -> foo -> _projects -> ALIAS');
+        expected = "ALIAS"
+        self.t(("add", "project:{0}".format(expected), "foo"))
 
-$output = qx{../src/task rc:alias.rc baz 2>&1};
-like ($output, qr/ALIAS/, 'task baz -> bar -> foo -> _projects -> ALIAS');
+        code, out, err = self.t(("_projects",))
+        self.assertIn(expected, out,
+                      msg="task _projects -> ALIAS")
 
-$output = qx{../src/task rc:alias.rc qux 2>&1};
-like ($output, qr/ALIAS/, 'task qux -> baz -> bar -> foo -> _projects -> ALIAS');
+        code, out, err = self.t(("foo",))
+        self.assertIn(expected, out,
+                      msg="task foo -> _projects > ALIAS")
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data alias.rc);
-exit 0;
+        code, out, err = self.t(("bar",))
+        self.assertIn(expected, out,
+                      msg="task bar -> foo > _projects > ALIAS")
 
+        code, out, err = self.t(("baz",))
+        self.assertIn(expected, out,
+                      msg="task baz -> bar > foo > _projects > ALIAS")
+
+        code, out, err = self.t(("qux",))
+        self.assertIn(expected, out,
+                      msg="task qux -> baz > bar > foo > _projects > ALIAS")
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
