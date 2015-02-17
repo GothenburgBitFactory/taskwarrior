@@ -123,12 +123,8 @@ def _queue_output(arguments, pidq, outputq):
 
         return
 
-    # NOTE If for whatever reason pid is None at the time of access, use the
-    # following line instead
-    # pid = wait_condition(lambda: proc.pid)
-    pid = proc.pid
-    # Put the PID in the queue for main process to know
-    pidq.put(pid)
+    # Put the PID in the queue for main process to know.
+    pidq.put(proc.pid)
 
     # Send input and wait for finish
     out, err = proc.communicate(input)
