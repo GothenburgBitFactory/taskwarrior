@@ -118,7 +118,8 @@ def _queue_output(arguments, pidq, outputq):
             "",
             ("Unexpected exception caught during execution of taskw: '{0}' . "
              "If you are running out-of-tree tests set USE_PATH=1 in shell "
-             "env before execution".format(e)),
+             "env before execution and add the location of the task binary to "
+             "the PATH".format(e)),
             255))  # false exitcode
 
         return
