@@ -53,17 +53,14 @@ ColumnPriority::~ColumnPriority ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Allow lower case, but implicitly convert.
 bool ColumnPriority::validate (std::string& value)
 {
-  value = upperCase (value);
+       if (value == "h") { value = "H"; return true; }
+  else if (value == "m") { value = "M"; return true; }
+  else if (value == "l") { value = "L"; return true; }
 
-  if (value == "H" ||
-      value == "M" ||
-      value == "L" ||
-      value == "")
-    return true;
-
-  return false;
+  return value == "H" || value == "M" || value == "L" || value == "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +117,11 @@ void ColumnPriority::render (
 ////////////////////////////////////////////////////////////////////////////////
 std::string ColumnPriority::modify (std::string& value)
 {
-  return upperCase (value);
+       if (value == "h") value = "H";
+  else if (value == "m") value = "M";
+  else if (value == "l") value = "L";
+
+  return value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
