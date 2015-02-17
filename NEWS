@@ -1,15 +1,37 @@
 
 New Features in taskwarrior 2.4.2
 
+  - None
+
 New commands in taskwarrior 2.4.2
+
+  - None
 
 New configuration options in taskwarrior 2.4.2
 
+  - None
+
 Newly deprecated features in taskwarrior 2.4.2
+
+  - None
 
 Removed features in 2.4.2
 
+  - None
+
 Known Issues
+
+  - If you upgraded from Taskwarrior 2.3.0, you will need one of the following
+    settings to allow continued syncing to a Taskserver:
+
+      $ task config taskd.trust strict
+      $ task config taskd.trust 'ignore hostname'
+      $ task config taskd.trust 'allow all'
+
+    These are presented in order of preference from most to least secure, and
+    depend on how your certs were generated.
+
+  - https://bug.tasktools.org/
 
 Taskwarrior has been built and tested on the following configurations:
 
