@@ -425,14 +425,6 @@ std::string lowerCase (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string upperCase (const std::string& input)
-{
-  std::string output = input;
-  std::transform (output.begin (), output.end (), output.begin (), toupper);
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 std::string ucFirst (const std::string& input)
 {
   std::string output = input;

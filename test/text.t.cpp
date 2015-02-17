@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (216);
+  UnitTest t (214);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -278,10 +278,6 @@ int main (int argc, char** argv)
   // std::string lowerCase (const std::string& input)
   t.is (lowerCase (""),            "",            "lowerCase '' -> ''");
   t.is (lowerCase ("pre01_:POST"), "pre01_:post", "lowerCase 'pre01_:POST' -> 'pre01_:post'");
-
-  // std::string upperCase (const std::string& input)
-  t.is (upperCase (""),            "",            "upperCase '' -> ''");
-  t.is (upperCase ("pre01_:POST"), "PRE01_:POST", "upperCase 'pre01_:POST' -> 'PRE01_:POST'");
 
   // bool nontrivial (const std::string&);
   t.notok (nontrivial (""),                       "nontrivial '' -> false");
