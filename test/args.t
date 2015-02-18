@@ -1,68 +1,104 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 5;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'args.rc')
-{
-  print $fh "data.location=.\n",
-            "confirmation=no\n";
-  close $fh;
-}
 
-# Test the -- argument.
-qx{../src/task rc:args.rc add project:p pri:H +tag foo 2>&1};
-my $output = qx{../src/task rc:args.rc info 1 2>&1};
-like ($output, qr/Description\s+foo\n/ms, 'task add project:p pri:H +tag foo');
+class TestArgs(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
 
-qx{../src/task rc:args.rc 1 modify project:p pri:H +tag -- foo 2>&1};
-$output = qx{../src/task rc:args.rc info 1 2>&1};
-like ($output, qr/Description\s+foo\n/ms, 'task 1 modify project:p pri:H +tag -- foo');
+    def test_dash_dash_argument(self):
+        """Test the -- argument"""
+        self.t(("add", "project:p", "pri:H", "+tag", "foo"))
 
-qx{../src/task rc:args.rc 1 modify project:p pri:H -- +tag foo 2>&1};
-$output = qx{../src/task rc:args.rc info 1 2>&1};
-like ($output, qr/Description\s+\+tag\sfoo\n/ms, 'task 1 modify project:p pri:H -- +tag foo');
+        code, out, err = self.t(("info", "1"))
+        self.assertRegexpMatches(
+            out,
+            "Description\s+foo\n",
+            msg='add project:p pri:H +tag foo',
+        )
 
-qx{../src/task rc:args.rc 1 modify project:p -- pri:H +tag foo 2>&1};
-$output = qx{../src/task rc:args.rc info 1 2>&1};
-like ($output, qr/Description\s+pri:H\s\+tag\sfoo\n/ms, 'task 1 modify project:p -- pri:H +tag foo');
+        self.t(("1", "modify", "project:p", "pri:H", "+tag", "--", "foo"))
 
-qx{../src/task rc:args.rc 1 modify -- project:p pri:H +tag foo 2>&1};
-$output = qx{../src/task rc:args.rc info 1 2>&1};
-like ($output, qr/Description\s+project:p\spri:H\s\+tag\sfoo\n/ms, 'task 1 modify -- project:p pri:H +tag foo');
+        code, out, err = self.t(("info", "1"))
+        self.assertRegexpMatches(
+            out,
+            "Description\s+foo\n",
+            msg='1 modify project:p pri:H +tag -- foo',
+        )
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data args.rc);
-exit 0;
+        self.t(("1", "modify", "project:p", "pri:H", "--", "+tag", "foo"))
 
+        code, out, err = self.t(("info", "1"))
+        self.assertRegexpMatches(
+            out,
+            "Description\s+\+tag\sfoo\n",
+            msg='1 modify project:p pri:H -- +tag foo',
+        )
+
+        self.t(("1", "modify", "project:p", "--", "pri:H", "+tag", "foo"))
+
+        code, out, err = self.t(("info", "1"))
+        self.assertRegexpMatches(
+            out,
+            "Description\s+pri:H\s\+tag\sfoo\n",
+            msg='1 modify project:p -- pri:H +tag foo',
+        )
+
+        self.t(("1", "modify", "--", "project:p", "pri:H", "+tag", "foo"))
+
+        code, out, err = self.t(("info", "1"))
+        self.assertRegexpMatches(
+            out,
+            "Description\s+project:p\spri:H\s\+tag\sfoo\n",
+            msg='1 modify project:p -- pri:H +tag foo',
+        )
+
+        self.t(("1", "modify", "--", "project:p", "pri:H", "+tag", "--"))
+
+        code, out, err = self.t(("info", "1"))
+        self.assertRegexpMatches(
+            out,
+            "Description\s+project:p\spri:H\s\+tag\s--\n",
+            msg='1 modify project:p -- pri:H +tag foo --',
+        )
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
