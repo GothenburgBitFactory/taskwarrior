@@ -1,59 +1,71 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 4;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'append.rc')
-{
-  print $fh "data.location=.\n",
-            "confirmation=off\n";
-  close $fh;
-}
 
-# Add a task, then append more description.
-qx{../src/task rc:append.rc add foo 2>&1};
-my $output = qx{../src/task rc:append.rc 1 append bar 2>&1};
-like ($output, qr/^Appended 1 task.$/m, 'append worked');
-$output = qx{../src/task rc:append.rc info 1 2>&1};
-like ($output, qr/Description\s+foo\sbar\n/, 'append worked');
+class TestAppend(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t(("add", "foo"))
 
-# Should cause an error when nothing is appended.
-$output = qx{../src/task rc:append.rc 1 append 2>&1};
-like ($output, qr/^Additional text must be provided.$/m, 'blank append failed');
-unlike ($output, qr/^Appended 1 task.$/, 'blank append failed');
+    def test_append(self):
+        """Add a task and then append more description"""
+        code, out, err = self.t(("1", "append", "bar"))
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data append.rc);
-exit 0;
+        expected = "Appended 1 task."
+        self.assertIn(expected, out)
 
+        code, out, err = self.t(("info", "1"))
+
+        expected = "Description\s+foo\sbar\n"
+        self.assertRegexpMatches(out, expected)
+
+    def test_append_error_on_empty(self):
+        """Should cause an error when nothing is appended"""
+        code, out, err = self.t.runError(("1", "append"))
+
+        expected = "Additional text must be provided."
+        self.assertIn(expected, err)
+
+        notexpected = "Appended 1 task."
+        self.assertNotIn(notexpected, out)
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
