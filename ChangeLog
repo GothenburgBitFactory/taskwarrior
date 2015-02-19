@@ -1,11 +1,11 @@
 2.4.2 () -
 
-- TW-1547 Recur column is always shown even if no recurring task is displayed
-          (thanks to Renato Alves).
 - TW-1545 cc1plus: error: unrecognized command line option '-std=c++11' (thanks
           to Petteri).
 - TW-1546 column type due.remaining breaks colors on due tasks (thanks to
           Renato Alves).
+- TW-1547 Recur column is always shown even if no recurring task is displayed
+          (thanks to Renato Alves).
 - Eliminated some code that is not UTF8-safe.
 - Removed pthreads linkage.
 
