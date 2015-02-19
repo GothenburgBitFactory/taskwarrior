@@ -21,6 +21,7 @@ set (task_SRCS CLI.cpp CLI.h
                ISO8601.cpp ISO8601.h
                JSON.cpp JSON.h
                Lexer.cpp Lexer.h
+               Lexer2.cpp Lexer2.h
                Msg.cpp Msg.h
                Nibbler.cpp Nibbler.h
                Path.cpp Path.h
