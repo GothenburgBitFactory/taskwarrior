@@ -1,74 +1,83 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 5;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'args.rc')
-{
-  print $fh "data.location=.\n",
-            "confirmation=off\n";
-  close $fh;
-}
 
-# Test 'start' with en-passant changes.
-qx{../src/task rc:args.rc add one 2>&1};
-qx{../src/task rc:args.rc add two 2>&1};
-qx{../src/task rc:args.rc add three 2>&1};
-qx{../src/task rc:args.rc add four 2>&1};
-qx{../src/task rc:args.rc add five 2>&1};
+class TestStartEnpassant(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        # No journal log which may contain the words we are looking for
+        self.t.config("journal.info", "off")
 
-qx{../src/task rc:args.rc 1 start oneanno 2>&1};
-my $output = qx{../src/task rc:args.rc 1 info 2>&1};
-like ($output, qr/oneanno/, 'start enpassant anno');
+    def test_start(self):
+        """Test 'start' with en-passant changes"""
+        self.t(("add", "one"))
+        self.t(("add", "two"))
+        self.t(("add", "three"))
+        self.t(("add", "four"))
+        self.t(("add", "five"))
 
-qx{../src/task rc:args.rc 2 start /two/TWO/ 2>&1};
-$output = qx{../src/task rc:args.rc 2 info 2>&1};
-like ($output, qr/Description\s+TWO/, 'start enpassant subst');
+        self.t(("1", "start", "oneanno"))
+        code, out, err = self.t(("1", "info"))
+        self.assertRegexpMatches(out, "Description +one\n[0-9: -]+ oneanno",
+                                 msg="start enpassant annotation")
 
-qx{../src/task rc:args.rc 3 start +threetag 2>&1};
-$output = qx{../src/task rc:args.rc 3 info 2>&1};
-like ($output, qr/Tags\s+threetag/, 'start enpassant tag');
+        self.t(("2", "start", "/two/TWO/"))
+        code, out, err = self.t(("2", "info"))
+        self.assertRegexpMatches(out, "Description +TWO",
+                                 msg="start enpassant modify")
 
-qx{../src/task rc:args.rc 4 start pri:H 2>&1};
-$output = qx{../src/task rc:args.rc 4 info 2>&1};
-like ($output, qr/Priority\s+H/, 'start enpassant priority');
+        self.t(("3", "start", "+threetag"))
+        code, out, err = self.t(("3", "info"))
+        self.assertRegexpMatches(out, "Tags +threetag",
+                                 msg="start enpassant tag")
 
-qx{../src/task rc:args.rc 5 start pro:A 2>&1};
-$output = qx{../src/task rc:args.rc 5 info 2>&1};
-like ($output, qr/Project\s+A/, 'start enpassant project');
+        self.t(("4", "start", "pri:H"))
+        code, out, err = self.t(("4", "info"))
+        self.assertRegexpMatches(out, "Priority +H",
+                                 msg="start enpassant priority")
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data args.rc);
-exit 0;
+        self.t(("5", "start", "pro:PROJ"))
+        code, out, err = self.t(("5", "info"))
+        self.assertRegexpMatches(out, "Project +PROJ",
+                                 msg="start enpassant project")
 
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
