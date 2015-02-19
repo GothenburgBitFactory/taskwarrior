@@ -9,3 +9,5 @@ fi
 echo
 printf "Feature  %5d\n" $(ls feature.*.t | wc -l)
 printf "Bug      %5d\n" $(ls {tw-,bug.}*.t | wc -l)
+echo
+printf "Total:   %5d\n" $(ls *.t | wc -l)
