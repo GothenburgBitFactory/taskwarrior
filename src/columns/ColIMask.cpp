@@ -62,11 +62,16 @@ bool ColumnIMask::validate (std::string& value)
 // Set the minimum and maximum widths for the value.
 void ColumnIMask::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-  minimum = maximum = task.get ("imask").length ();
+  minimum = maximum = 0;
 
-  if (_style != "default" &&
-      _style != "number")
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+  if (task.has (_name))
+  {
+    minimum = maximum = task.get ("imask").length ();
+
+    if (_style != "default" &&
+        _style != "number")
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +81,8 @@ void ColumnIMask::render (
   int width,
   Color& color)
 {
-  lines.push_back (color.colorize (rightJustify (task.get ("imask"), width)));
+  if (task.has (_name))
+    lines.push_back (color.colorize (rightJustify (task.get ("imask"), width)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

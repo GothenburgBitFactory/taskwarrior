@@ -71,6 +71,8 @@ void ColumnString::setReport (const std::string& value)
 //
 void ColumnString::measure (const std::string& value, unsigned int& minimum, unsigned int& maximum)
 {
+  minimum = maximum = 0;
+
   if (_style == "left"  ||
       _style == "right" ||
       _style == "default")

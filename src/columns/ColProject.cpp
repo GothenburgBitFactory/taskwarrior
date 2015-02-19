@@ -68,25 +68,30 @@ bool ColumnProject::validate (std::string& value)
 // Set the minimum and maximum widths for the value.
 void ColumnProject::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-  std::string project = task.get (_name);
+  minimum = maximum = 0;
 
-  if (_style == "parent")
+  if (task.has (_name))
   {
-    std::string::size_type period = project.find ('.');
-    if (period != std::string::npos)
-      project = project.substr (0, period);
-  }
-  else if (_style == "indented")
-  {
-    project = indentProject (project, "  ", '.');
-  }
-  else if (_style != "default"  &&
-           _style != "full"     &&
-           _style != "indented")
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+    std::string project = task.get (_name);
 
-  minimum = longestWord (project);
-  maximum = utf8_width (project);
+    if (_style == "parent")
+    {
+      std::string::size_type period = project.find ('.');
+      if (period != std::string::npos)
+        project = project.substr (0, period);
+    }
+    else if (_style == "indented")
+    {
+      project = indentProject (project, "  ", '.');
+    }
+    else if (_style != "default"  &&
+             _style != "full"     &&
+             _style != "indented")
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+
+    minimum = longestWord (project);
+    maximum = utf8_width (project);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,24 +101,27 @@ void ColumnProject::render (
   int width,
   Color& color)
 {
-  std::string project = task.get (_name);
-  if (_style == "parent")
+  if (task.has (_name))
   {
-    std::string::size_type period = project.find ('.');
-    if (period != std::string::npos)
-      project = project.substr (0, period);
-  }
-  else if (_style == "indented")
-  {
-    project = indentProject (project, "  ", '.');
-  }
+    std::string project = task.get (_name);
+    if (_style == "parent")
+    {
+      std::string::size_type period = project.find ('.');
+      if (period != std::string::npos)
+        project = project.substr (0, period);
+    }
+    else if (_style == "indented")
+    {
+      project = indentProject (project, "  ", '.');
+    }
 
-  std::vector <std::string> raw;
-  wrapText (raw, project, width, _hyphenate);
+    std::vector <std::string> raw;
+    wrapText (raw, project, width, _hyphenate);
 
-  std::vector <std::string>::iterator i;
-  for (i = raw.begin (); i != raw.end (); ++i)
-    lines.push_back (color.colorize (leftJustify (*i, width)));
+    std::vector <std::string>::iterator i;
+    for (i = raw.begin (); i != raw.end (); ++i)
+      lines.push_back (color.colorize (leftJustify (*i, width)));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

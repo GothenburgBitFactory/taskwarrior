@@ -84,30 +84,34 @@ void ColumnTags::setStyle (const std::string& value)
 // Set the minimum and maximum widths for the value.
 void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-       if (_style == "indicator") minimum = maximum = utf8_width (context.config.get ("tag.indicator"));
-  else if (_style == "count")     minimum = maximum = 3;
-  else if (_style == "default" ||
-           _style == "list")
-  {
-    std::string tags = task.get (_name);
-    minimum = 0;
-    maximum = utf8_width (tags);
+  minimum = maximum = 0;
 
-    if (maximum)
+  if (task.has (_name))
+  {
+         if (_style == "indicator") minimum = maximum = utf8_width (context.config.get ("tag.indicator"));
+    else if (_style == "count")     minimum = maximum = 3;
+    else if (_style == "default" ||
+             _style == "list")
     {
-      std::vector <std::string> all;
-      split (all, tags, ',');
-      std::vector <std::string>::iterator i;
-      for (i = all.begin (); i != all.end (); ++i)
+      std::string tags = task.get (_name);
+      maximum = utf8_width (tags);
+
+      if (maximum)
       {
-        unsigned int length = utf8_width (*i);
-        if (length > minimum)
-          minimum = length;
+        std::vector <std::string> all;
+        split (all, tags, ',');
+        std::vector <std::string>::iterator i;
+        for (i = all.begin (); i != all.end (); ++i)
+        {
+          unsigned int length = utf8_width (*i);
+          if (length > minimum)
+            minimum = length;
+        }
       }
     }
+    else
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
-  else
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -117,9 +121,9 @@ void ColumnTags::render (
   int width,
   Color& color)
 {
-  std::string tags = task.get (_name);
-  if (tags != "")
+  if (task.has (_name))
   {
+    std::string tags = task.get (_name);
     if (_style == "default" ||
         _style == "list")
     {

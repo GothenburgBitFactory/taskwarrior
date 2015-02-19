@@ -62,10 +62,14 @@ bool ColumnMask::validate (std::string& value)
 // Set the minimum and maximum widths for the value.
 void ColumnMask::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-  minimum = maximum = task.get ("mask").length ();
+  minimum = maximum = 0;
+  if (task.has (_name))
+  {
+    minimum = maximum = task.get ("mask").length ();
 
-  if (_style != "default")
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+    if (_style != "default")
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +79,8 @@ void ColumnMask::render (
   int width,
   Color& color)
 {
-  lines.push_back (color.colorize (task.get ("mask")));
+  if (task.has (_name))
+    lines.push_back (color.colorize (task.get ("mask")));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

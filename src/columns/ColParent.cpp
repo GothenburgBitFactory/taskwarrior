@@ -62,12 +62,17 @@ bool ColumnParent::validate (std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnParent::measure (Task&, unsigned int& minimum, unsigned int& maximum)
+void ColumnParent::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-       if (_style == "default" || _style == "long") minimum = maximum = 36;
-  else if (_style == "short")                       minimum = maximum = 8;
-  else
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+  minimum = maximum = 0;
+
+  if (task.has (_name))
+  {
+         if (_style == "default" || _style == "long") minimum = maximum = 36;
+    else if (_style == "short")                       minimum = maximum = 8;
+    else
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,20 +82,23 @@ void ColumnParent::render (
   int width,
   Color& color)
 {
-  // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
-  //                             34f00694  short
-  if (_style == "default" ||
-      _style == "long")
+  if (task.has (_name))
   {
-    lines.push_back (color.colorize (leftJustify (task.get (_name), width)));
-  }
+    // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
+    //                             34f00694  short
+    if (_style == "default" ||
+        _style == "long")
+    {
+      lines.push_back (color.colorize (leftJustify (task.get (_name), width)));
+    }
 
-  else if (_style == "short")
-  {
-    if (task.has (_name))
-      lines.push_back (color.colorize (leftJustify (task.get (_name).substr (28), width)));
-    else
-      lines.push_back (color.colorize (leftJustify ("", width)));
+    else if (_style == "short")
+    {
+      if (task.has (_name))
+        lines.push_back (color.colorize (leftJustify (task.get (_name).substr (28), width)));
+      else
+        lines.push_back (color.colorize (leftJustify ("", width)));
+    }
   }
 }
 

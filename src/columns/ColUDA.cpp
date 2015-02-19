@@ -80,49 +80,52 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
 {
   minimum = maximum = 0;
 
-  if (_style == "default")
+  if (task.has (_name))
   {
-    std::string value = task.get (_name);
-    if (value != "")
+    if (_style == "default")
     {
-      if (_type == "date")
+      std::string value = task.get (_name);
+      if (value != "")
       {
-        // Determine the output date format, which uses a hierarchy of definitions.
-        //   rc.report.<report>.dateformat
-        //   rc.dateformat.report
-        //   rc.dateformat
-        Date date ((time_t) strtol (value.c_str (), NULL, 10));
-        std::string format = context.config.get ("report." + _report + ".dateformat");
-        if (format == "")
-          format = context.config.get ("dateformat.report");
-        if (format == "")
-          format = context.config.get ("dateformat");
+        if (_type == "date")
+        {
+          // Determine the output date format, which uses a hierarchy of definitions.
+          //   rc.report.<report>.dateformat
+          //   rc.dateformat.report
+          //   rc.dateformat
+          Date date ((time_t) strtol (value.c_str (), NULL, 10));
+          std::string format = context.config.get ("report." + _report + ".dateformat");
+          if (format == "")
+            format = context.config.get ("dateformat.report");
+          if (format == "")
+            format = context.config.get ("dateformat");
 
-        minimum = maximum = Date::length (format);
-      }
-      else if (_type == "duration")
-      {
-        minimum = maximum = utf8_width (Duration (value).formatISO ());
-      }
-      else if (_type == "string")
-      {
-        std::string stripped = Color::strip (value);
-        maximum = longestLine (stripped);
-        minimum = longestWord (stripped);
-      }
-      else if (_type == "numeric")
-      {
-        minimum = maximum = utf8_width (value);
+          minimum = maximum = Date::length (format);
+        }
+        else if (_type == "duration")
+        {
+          minimum = maximum = utf8_width (Duration (value).formatISO ());
+        }
+        else if (_type == "string")
+        {
+          std::string stripped = Color::strip (value);
+          maximum = longestLine (stripped);
+          minimum = longestWord (stripped);
+        }
+        else if (_type == "numeric")
+        {
+          minimum = maximum = utf8_width (value);
+        }
       }
     }
+    else if (_style == "indicator")
+    {
+      if (task.has (_name))
+        minimum = maximum = utf8_width (context.config.get ("uda." + _name + ".indicator"));
+    }
+    else
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
   }
-  else if (_style == "indicator")
-  {
-    if (task.has (_name))
-      minimum = maximum = utf8_width (context.config.get ("uda." + _name + ".indicator"));
-  }
-  else
-    throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,11 +135,11 @@ void ColumnUDA::render (
   int width,
   Color& color)
 {
-  if (_style == "default")
+  if (task.has (_name))
   {
-    std::string value = task.get (_name);
-    if (value != "")
+    if (_style == "default")
     {
+      std::string value = task.get (_name);
       if (_type == "date")
       {
         // Determine the output date format, which uses a hierarchy of definitions.
@@ -177,13 +180,13 @@ void ColumnUDA::render (
         lines.push_back (color.colorize (rightJustify (value, width)));
       }
     }
-  }
-  else if (_style == "indicator")
-  {
-    if (task.has (_name))
-      lines.push_back (
-        color.colorize (
-          rightJustify (context.config.get ("uda." + _name + ".indicator"), width)));
+    else if (_style == "indicator")
+    {
+      if (task.has (_name))
+        lines.push_back (
+          color.colorize (
+            rightJustify (context.config.get ("uda." + _name + ".indicator"), width)));
+    }
   }
 }
 

@@ -78,22 +78,26 @@ void ColumnPriority::setStyle (const std::string& value)
 // Set the minimum and maximum widths for the value.
 void ColumnPriority::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-  std::string priority = task.get (_name);
-
-  if (priority == "")
-    minimum = maximum = 0;
-  else
-    minimum = maximum = 1;
-
-  if (_style == "long")
+  minimum = maximum = 0;
+  if (task.has (_name))
   {
-         if (priority == "H") minimum = maximum = 4;
-    else if (priority == "M") minimum = maximum = 6;
-    else if (priority == "L") minimum = maximum = 3;
+    std::string priority = task.get (_name);
+
+    if (priority == "")
+      minimum = maximum = 0;
+    else
+      minimum = maximum = 1;
+
+    if (_style == "long")
+    {
+           if (priority == "H") minimum = maximum = 4;
+      else if (priority == "M") minimum = maximum = 6;
+      else if (priority == "L") minimum = maximum = 3;
+    }
+    else if (_style != "default" &&
+             _style != "short")
+      throw format (STRING_COLUMN_BAD_FORMAT, "priority", _style);
   }
-  else if (_style != "default" &&
-           _style != "short")
-    throw format (STRING_COLUMN_BAD_FORMAT, "priority", _style);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -103,15 +107,18 @@ void ColumnPriority::render (
   int width,
   Color& color)
 {
-  std::string priority = task.get (_name);
-  if (_style == "long")
+  if (task.has (_name))
   {
-         if (priority == "H") priority = "High";
-    else if (priority == "M") priority = "Medium";
-    else if (priority == "L") priority = "Low";
-  }
+    std::string priority = task.get (_name);
+    if (_style == "long")
+    {
+           if (priority == "H") priority = "High";
+      else if (priority == "M") priority = "Medium";
+      else if (priority == "L") priority = "Low";
+    }
 
-  lines.push_back (color.colorize (leftJustify (priority, width)));
+    lines.push_back (color.colorize (leftJustify (priority, width)));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
