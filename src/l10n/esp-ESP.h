@@ -891,10 +891,6 @@
 #define STRING_TDB2_UNDO_SYNCED      "No se puede deshacer el cambio porque la tarea ya ha sido sincronizada. Como alternativa, modifique la tarea."
 #define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
 
-// utf8
-#define STRING_UTF8_INVALID_CP_REP   "Representación de codepoint no válida."
-#define STRING_UTF8_INVALID_CP       "Codepoint Unicode no válido."
-
 // View
 #define STRING_VIEW_TOO_SMALL        "El informe tiene una anchura mínima de {1} y no cabe en la disponible, que es {2}."
 

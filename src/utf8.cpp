@@ -26,9 +26,7 @@
 
 #include <cmake.h>
 #include <string>
-#include <text.h>
 #include <utf8.h>
-#include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Converts '0'     -> 0
@@ -66,8 +64,6 @@ unsigned int utf8_codepoint (const std::string& input)
                 XDIGIT (input[2]) <<  4 |
                 XDIGIT (input[3]);
   }
-  else
-    throw std::string (STRING_UTF8_INVALID_CP_REP);
 
   return codepoint;
 }
@@ -117,13 +113,12 @@ unsigned int utf8_next_char (const std::string& input, std::string::size_type& i
 // http://en.wikipedia.org/wiki/UTF-8
 std::string utf8_character (unsigned int codepoint)
 {
-  char sequence[5];
+  char sequence[5] = {0};
 
   // 0xxxxxxx -> 0xxxxxxx
   if (codepoint < 0x80)
   {
     sequence[0] = codepoint;
-    sequence[1] = 0;
   }
 
   // 00000yyy yyxxxxxx -> 110yyyyy 10xxxxxx
@@ -131,7 +126,6 @@ std::string utf8_character (unsigned int codepoint)
   {
     sequence[0] = 0xC0 | (codepoint & 0x7C0) >> 6;
     sequence[1] = 0x80 | (codepoint & 0x3F);
-    sequence[2] = 0;
   }
 
   // zzzzyyyy yyxxxxxx -> 1110zzzz 10yyyyyy 10xxxxxx
@@ -140,7 +134,6 @@ std::string utf8_character (unsigned int codepoint)
     sequence[0] = 0xE0 | (codepoint & 0xF000) >> 12;
     sequence[1] = 0x80 | (codepoint & 0xFC0)  >> 6;
     sequence[2] = 0x80 | (codepoint & 0x3F);
-    sequence[3] = 0;
   }
 
   // 000wwwzz zzzzyyyy yyxxxxxx -> 11110www 10zzzzzz 10yyyyyy 10xxxxxx
@@ -150,12 +143,8 @@ std::string utf8_character (unsigned int codepoint)
     sequence[1] = 0x80 | (codepoint & 0x03F000) >> 12;
     sequence[2] = 0x80 | (codepoint & 0x0FC0)   >> 6;
     sequence[3] = 0x80 | (codepoint & 0x3F);
-    sequence[4] = 0;
   }
-  else
-    throw std::string (STRING_UTF8_INVALID_CP);
 
-  sequence[4] = '\0';
   return std::string (sequence);
 }
 

@@ -881,10 +881,6 @@
 #define STRING_TDB2_UNDO_SYNCED      "Nie można cofnąć zmian ponieważ zadanie zostało zsynchronizowane.  Zmodyfikuj zadanie."
 #define STRING_TDB2_DIRTY_EXIT       "Zamykanie z niezapisanymi zmianami w {1}"
 
-// utf8
-#define STRING_UTF8_INVALID_CP_REP   "Niepoprawna reprezentacja znaku."
-#define STRING_UTF8_INVALID_CP       "Niepoprawny znak Unicode."
-
 // View
 #define STRING_VIEW_TOO_SMALL        "Raport ma minimalną szerokość {1} i nie mieści się w dostępnej przestrzeni {2}."
 

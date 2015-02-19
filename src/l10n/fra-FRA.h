@@ -881,10 +881,6 @@
 #define STRING_TDB2_UNDO_SYNCED      "Impossible d'annuler les changements car la tâche a déjà été synchronysée. Modifiez plutôt la tâche."
 #define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
 
-// utf8
-#define STRING_UTF8_INVALID_CP_REP   "Invalid codepoint representation."
-#define STRING_UTF8_INVALID_CP       "Invalid Unicode codepoint."
-
 // View
 #define STRING_VIEW_TOO_SMALL        "The report has a minimum width of {1} and does not fit in the available width of {2}."
 
