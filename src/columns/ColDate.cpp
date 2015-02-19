@@ -207,8 +207,6 @@ void ColumnDate::render (
           color.colorize (
             rightJustify (
               Duration (date - now).format (), width)));
-      else
-        lines.push_back (rightJustify ("", width));
     }
   }
 }

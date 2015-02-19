@@ -1,5 +1,7 @@
 2.4.2 () -
 
+- TW-1546 column type due.remaining breaks colors on due tasks (thanks to Renato
+          Alves).
 - Eliminated some code that is not UTF8-safe.
 - Removed pthreads linkage.
 
