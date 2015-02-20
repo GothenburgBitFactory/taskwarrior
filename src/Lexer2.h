@@ -76,7 +76,6 @@ public:
   // Classifiers.
   bool isString       (std::string&, Lexer2::Type&, int quote);
   bool isUUID         (std::string&, Lexer2::Type&);
-  bool isPartialUUID  (std::string&, Lexer2::Type&);
   bool isNumber       (std::string&, Lexer2::Type&);
   bool isHexNumber    (std::string&, Lexer2::Type&);
   bool isSeparator    (std::string&, Lexer2::Type&);

@@ -69,7 +69,6 @@ bool Lexer2::token (std::string& token, Lexer2::Type& type)
   if (isString       (token, type, '\'') ||
       isString       (token, type, '"')  ||
       isUUID         (token, type)       ||
-      isPartialUUID  (token, type)       ||
       isHexNumber    (token, type)       ||
       isNumber       (token, type)       ||
       isSeparator    (token, type)       ||
@@ -387,64 +386,15 @@ bool Lexer2::isString (std::string& token, Lexer2::Type& type, int quote)
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer2::Type::uuid
 //   XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+//   XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXX
+//   XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXX
+//   XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXX
+//   ...
+//   XXXXXXXX-XX
+//   XXXXXXXX-X
+//   XXXXXXXX-
+//   XXXXXXXX
 bool Lexer2::isUUID (std::string& token, Lexer2::Type& type)
-{
-  std::size_t marker = _cursor;
-
-  if (_eos - marker >= 36)
-  {
-    if (isHexDigit (_text[marker + 0]) &&
-        isHexDigit (_text[marker + 1]) &&
-        isHexDigit (_text[marker + 2]) &&
-        isHexDigit (_text[marker + 3]) &&
-        isHexDigit (_text[marker + 4]) &&
-        isHexDigit (_text[marker + 5]) &&
-        isHexDigit (_text[marker + 6]) &&
-        isHexDigit (_text[marker + 7]) &&
-        _text[marker + 8] == '-'       &&
-        isHexDigit (_text[marker + 9]) &&
-        isHexDigit (_text[marker + 10]) &&
-        isHexDigit (_text[marker + 11]) &&
-        isHexDigit (_text[marker + 12]) &&
-        _text[marker + 13] == '-'       &&
-        isHexDigit (_text[marker + 14]) &&
-        isHexDigit (_text[marker + 15]) &&
-        isHexDigit (_text[marker + 16]) &&
-        isHexDigit (_text[marker + 17]) &&
-        _text[marker + 18] == '-'       &&
-        isHexDigit (_text[marker + 19]) &&
-        isHexDigit (_text[marker + 20]) &&
-        isHexDigit (_text[marker + 20]) &&
-        isHexDigit (_text[marker + 20]) &&
-        _text[marker + 23] == '-'       &&
-        isHexDigit (_text[marker + 24]) &&
-        isHexDigit (_text[marker + 25]) &&
-        isHexDigit (_text[marker + 26]) &&
-        isHexDigit (_text[marker + 27]) &&
-        isHexDigit (_text[marker + 28]) &&
-        isHexDigit (_text[marker + 29]) &&
-        isHexDigit (_text[marker + 30]) &&
-        isHexDigit (_text[marker + 31]) &&
-        isHexDigit (_text[marker + 32]) &&
-        isHexDigit (_text[marker + 33]) &&
-        isHexDigit (_text[marker + 34]) &&
-        isHexDigit (_text[marker + 35]))
-    {
-      marker += 36;
-      token = _text.substr (_cursor, marker - _cursor);
-      type = Lexer2::Type::uuid;
-      _cursor = marker;
-      return true;
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Lexer2::Type::uuid
-//   XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-bool Lexer2::isPartialUUID (std::string& token, Lexer2::Type& type)
 {
   std::size_t marker = _cursor;
 
