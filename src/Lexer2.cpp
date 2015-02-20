@@ -46,6 +46,8 @@ Lexer2::~Lexer2 ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// When a Lexer2 object is constructed with a string, this method walks through
+// the stream of low-level tokens.
 bool Lexer2::token (std::string& token, Lexer2::Type& type)
 {
   // Eat white space.
@@ -58,11 +60,11 @@ bool Lexer2::token (std::string& token, Lexer2::Type& type)
 
   // The sequence is specific, and must follow these rules:
   // - date < uuid < identifier
-  // - duraiton < identifier
-  // - pair < identifier
+  // - duration < identifier
+  // - url < pair < identifier
   // - hex < number
   // - separator < tag < operator
-  // - substitution < pattern
+  // - path < substitution < pattern
   // - word last
   if (isString       (token, type, '\'') ||
       isString       (token, type, '"')  ||
@@ -72,8 +74,10 @@ bool Lexer2::token (std::string& token, Lexer2::Type& type)
       isNumber       (token, type)       ||
       isSeparator    (token, type)       ||
       isList         (token, type)       ||
+      isURL          (token, type)       ||
       isPair         (token, type)       ||
       isTag          (token, type)       ||
+      isPath         (token, type)       ||
       isSubstitution (token, type)       ||
       isPattern      (token, type)       ||
       isOperator     (token, type)       ||
@@ -82,6 +86,22 @@ bool Lexer2::token (std::string& token, Lexer2::Type& type)
     return true;
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// This static method tokenizes the input and provides a vector of token/type
+// results from a high-level lex.
+std::vector <std::pair <std::string, Lexer2::Type>> Lexer2::tokens (
+  const std::string& text)
+{
+  std::vector <std::pair <std::string, Lexer2::Type>> all;
+  std::string token;
+  Lexer2::Type type;
+  Lexer2 l (text);
+  while (l.token (token, type))
+    all.push_back (std::pair <std::string, Lexer2::Type> (token, type));
+
+  return all;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -95,9 +115,11 @@ const std::string Lexer2::typeName (const Lexer2::Type& type)
   case Lexer2::Type::hex:          return "hex";
   case Lexer2::Type::string:       return "string";
   case Lexer2::Type::list:         return "list";
+  case Lexer2::Type::url:          return "url";
   case Lexer2::Type::pair:         return "pair";
   case Lexer2::Type::separator:    return "separator";
   case Lexer2::Type::tag:          return "tag";
+  case Lexer2::Type::path:         return "path";
   case Lexer2::Type::substitution: return "substitution";
   case Lexer2::Type::pattern:      return "pattern";
   case Lexer2::Type::op:           return "op";
@@ -565,6 +587,43 @@ bool Lexer2::isList (std::string& token, Lexer2::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Lexer2::Type::url
+//   http [s] :// ...
+bool Lexer2::isURL (std::string& token, Lexer2::Type& type)
+{
+  std::size_t marker = _cursor;
+
+  if (_eos - _cursor > 9 &&    // length 'https://*'
+      (_text[marker + 0] == 'h' || _text[marker + 0] == 'H') &&
+      (_text[marker + 1] == 't' || _text[marker + 1] == 'T') &&
+      (_text[marker + 2] == 't' || _text[marker + 2] == 'T') &&
+      (_text[marker + 3] == 'p' || _text[marker + 3] == 'P'))
+  {
+    marker += 4;
+    if (_text[marker + 0] == 's' || _text[marker + 0] == 'S')
+      ++marker;
+
+    if (_text[marker + 0] == ':' &&
+        _text[marker + 1] == '/' &&
+        _text[marker + 2] == '/')
+    {
+      marker += 3;
+
+      while (marker < _eos &&
+             ! isWhitespace (_text[marker]))
+        utf8_next_char (_text, marker);
+
+      token = _text.substr (_cursor, marker - _cursor);
+      type = Lexer2::Type::url;
+      _cursor = marker;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Lexer2::Type::pair
 //   <identifier> : [ <string> | <word> ]
 bool Lexer2::isPair (std::string& token, Lexer2::Type& type)
@@ -619,6 +678,48 @@ bool Lexer2::isTag (std::string& token, Lexer2::Type& type)
       _cursor = marker;
       return true;
     }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Lexer2::Type::path
+//   ( / <non-slash, non-whitespace> )+
+bool Lexer2::isPath (std::string& token, Lexer2::Type& type)
+{
+  std::size_t marker = _cursor;
+  int slashCount = 0;
+
+  while (1)
+  {
+    if (_text[marker] == '/')
+    {
+      ++marker;
+      ++slashCount;
+    }
+    else
+      break;
+
+    if (! isWhitespace (_text[marker]) &&
+        _text[marker] != '/')
+    {
+      utf8_next_char (_text, marker);
+      while (! isWhitespace (_text[marker]) &&
+             _text[marker] != '/')
+        utf8_next_char (_text, marker);
+    }
+    else
+      break;
+  }
+
+  if (marker > _cursor &&
+      slashCount > 3)
+  {
+    type = Lexer2::Type::path;
+    token = _text.substr (_cursor, marker - _cursor);
+    _cursor = marker;
+    return true;
   }
 
   return false;
@@ -807,8 +908,10 @@ std::string Lexer2::typeToString (Lexer2::Type type)
   else if (type == Lexer2::Type::number)       return std::string ("\033[38;5;7m\033[48;5;6m")    + "number"       + "\033[0m";
   else if (type == Lexer2::Type::separator)    return std::string ("\033[38;5;7m\033[48;5;4m")    + "separator"    + "\033[0m";
   else if (type == Lexer2::Type::list)         return std::string ("\033[38;5;7m\033[48;5;4m")    + "list"         + "\033[0m";
+  else if (type == Lexer2::Type::url)          return std::string ("\033[38;5;7m\033[48;5;4m")    + "url"          + "\033[0m";
   else if (type == Lexer2::Type::pair)         return std::string ("\033[38;5;7m\033[48;5;1m")    + "pair"         + "\033[0m";
   else if (type == Lexer2::Type::tag)          return std::string ("\033[37;45m")                 + "tag"          + "\033[0m";
+  else if (type == Lexer2::Type::path)         return std::string ("\033[37;102m")                + "path"         + "\033[0m";
   else if (type == Lexer2::Type::substitution) return std::string ("\033[37;102m")                + "substitution" + "\033[0m";
   else if (type == Lexer2::Type::pattern)      return std::string ("\033[37;42m")                 + "pattern"      + "\033[0m";
   else if (type == Lexer2::Type::op)           return std::string ("\033[38;5;7m\033[48;5;203m")  + "op"           + "\033[0m";

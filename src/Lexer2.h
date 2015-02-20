@@ -28,6 +28,7 @@
 #define INCLUDED_LEXER2
 
 #include <string>
+#include <vector>
 #include <cstddef>
 
 // Lexer2: A UTF8 lexical analyzer for every construct used on the Taskwarrior
@@ -38,9 +39,10 @@ class Lexer2
 public:
   enum class Type { uuid, number, hex,
                     string,
-                    list, pair, separator,
-                    substitution, pattern,
+                    list, url, pair, separator,
                     tag,
+                    path,
+                    substitution, pattern,
                     op,
                     identifier, word,
                     /*date,*/ /*duration,*/ };
@@ -48,6 +50,7 @@ public:
   Lexer2 (const std::string&);
   ~Lexer2 ();
   bool token (std::string&, Lexer2::Type&);
+  static std::vector <std::pair <std::string, Lexer2::Type>> tokens (const std::string&);
   static std::string typeToString (Lexer2::Type);
 
   // Static helpers.
@@ -78,8 +81,10 @@ public:
   bool isHexNumber    (std::string&, Lexer2::Type&);
   bool isSeparator    (std::string&, Lexer2::Type&);
   bool isList         (std::string&, Lexer2::Type&);
+  bool isURL          (std::string&, Lexer2::Type&);
   bool isPair         (std::string&, Lexer2::Type&);
   bool isTag          (std::string&, Lexer2::Type&);
+  bool isPath         (std::string&, Lexer2::Type&);
   bool isSubstitution (std::string&, Lexer2::Type&);
   bool isPattern      (std::string&, Lexer2::Type&);
   bool isOperator     (std::string&, Lexer2::Type&);
