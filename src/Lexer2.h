@@ -62,6 +62,7 @@ public:
   static bool isTripleCharOperator (int, int, int, int);
   static bool isBoundary           (int, int);
   static bool isPunctuation        (int);
+  static void dequote (std::string&);
 
   // Helpers.
   bool isEOS () const;

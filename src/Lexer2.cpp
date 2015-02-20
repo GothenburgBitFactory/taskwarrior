@@ -238,6 +238,18 @@ bool Lexer2::isPunctuation (int c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Lexer2::dequote (std::string& input)
+{
+  int quote = input[0];
+  size_t len = input.length ();
+  if ((quote == '\'' || quote == '"') &&
+      quote == input[len - 1])
+  {
+    input = input.substr (1, len - 2);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Lexer2::isEOS () const
 {
   return _cursor >= _eos;

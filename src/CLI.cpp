@@ -30,6 +30,7 @@
 #include <Context.h>
 #include <Nibbler.h>
 #include <Lexer.h>
+#include <Lexer2.h>
 #include <CLI.h>
 #include <Color.h>
 #include <text.h>
@@ -1638,7 +1639,7 @@ void CLI::desugarFilterPlainArgs ()
       reconstructed.push_back (op);
 
       std::string pattern = a->attribute ("raw");
-      Lexer::dequote (pattern);
+      Lexer2::dequote (pattern);
       A rhs ("argPattern", "'" + pattern + "'");
       rhs.tag ("LITERAL");
       rhs.tag ("FILTER");
