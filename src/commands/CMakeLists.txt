@@ -18,6 +18,7 @@ set (commands_SRCS Command.cpp        Command.h
                    CmdColor.cpp       CmdColor.h
                    CmdColumns.cpp     CmdColumns.h
                    CmdConfig.cpp      CmdConfig.h
+                   CmdContext.cpp     CmdContext.h
                    CmdCount.cpp       CmdCount.h
                    CmdCustom.cpp      CmdCustom.h
                    CmdDelete.cpp      CmdDelete.h

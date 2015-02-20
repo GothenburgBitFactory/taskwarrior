@@ -46,6 +46,7 @@
 #include <CmdColumns.h>
 #include <CmdCommands.h>
 #include <CmdConfig.h>
+#include <CmdContext.h>
 #include <CmdCount.h>
 #include <CmdCustom.h>
 #include <CmdDelete.h>
@@ -109,6 +110,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdCompletionColumns ();  all[c->keyword ()] = c;
   c = new CmdCompletionCommands (); all[c->keyword ()] = c;
   c = new CmdCompletionConfig ();   all[c->keyword ()] = c;
+  c = new CmdCompletionContext ();  all[c->keyword ()] = c;
   c = new CmdCompletionIds ();      all[c->keyword ()] = c;
   c = new CmdCompletionUDAs ();     all[c->keyword ()] = c;
   c = new CmdCompletionUuids ();    all[c->keyword ()] = c;
@@ -116,6 +118,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdCompletionTags ();     all[c->keyword ()] = c;
   c = new CmdCompletionVersion ();  all[c->keyword ()] = c;
   c = new CmdConfig ();             all[c->keyword ()] = c;
+  c = new CmdContext ();            all[c->keyword ()] = c;
   c = new CmdCount ();              all[c->keyword ()] = c;
   c = new CmdDelete ();             all[c->keyword ()] = c;
   c = new CmdDenotate ();           all[c->keyword ()] = c;

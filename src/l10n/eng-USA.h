@@ -561,6 +561,8 @@
 #define STRING_CMD_CONFIG_NO_CHANGE  "No changes made."
 #define STRING_CMD_CONFIG_NO_NAME    "Specify the name of a config variable to modify."
 #define STRING_CMD_HCONFIG_USAGE     "Lists all supported configuration variables, for completion purposes"
+#define STRING_CMD_CONTEXT_USAGE     "Set and define contexts (default filters)"
+#define STRING_CMD_HCONTEXT_USAGE    "Lists all supported contexts, for completion purposes"
 #define STRING_CMD_CUSTOM_MISMATCH   "There are different numbers of columns and labels for report '{1}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} shown"
 #define STRING_CMD_CUSTOM_COUNT      "1 task"
