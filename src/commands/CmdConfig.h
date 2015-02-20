@@ -34,6 +34,8 @@ class CmdConfig : public Command
 {
 public:
   CmdConfig ();
+  static bool setConfigVariable (std::string name, std::string value, bool confirmation = false);
+  static int unsetConfigVariable (std::string name, bool confirmation = false);
   int execute (std::string&);
 };
 
