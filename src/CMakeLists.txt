@@ -49,16 +49,19 @@ set (task_SRCS CLI.cpp CLI.h
 add_library (task STATIC ${task_SRCS})
 add_executable (task_executable main.cpp)
 add_executable (calc_executable calc.cpp)
+add_executable (lex_executable lex.cpp)
 
 # Yes, 'task' is included twice, otherwise linking fails on assorted OSes.
 target_link_libraries (task_executable task commands columns task ${TASK_LIBRARIES})
 target_link_libraries (calc_executable task commands columns task ${TASK_LIBRARIES})
+target_link_libraries (lex_executable task commands columns task ${TASK_LIBRARIES})
 
 set_property (TARGET task_executable PROPERTY OUTPUT_NAME "task")
 
 install (TARGETS task_executable DESTINATION ${TASK_BINDIR})
 
 set_property (TARGET calc_executable PROPERTY OUTPUT_NAME "calc")
+set_property (TARGET lex_executable PROPERTY OUTPUT_NAME "lex")
 
 #SET(CMAKE_BUILD_TYPE gcov)
 #SET(CMAKE_CXX_FLAGS_GCOV "--coverage")

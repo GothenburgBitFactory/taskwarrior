@@ -3,3 +3,4 @@ Makefile.in
 tw-*
 args
 calc
+lex
