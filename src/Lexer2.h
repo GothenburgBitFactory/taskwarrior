@@ -45,7 +45,7 @@ public:
                     substitution, pattern,
                     op,
                     identifier, word,
-                    /*date,*/ /*duration,*/ };
+                    date, duration };
 
   Lexer2 (const std::string&);
   ~Lexer2 ();
@@ -75,6 +75,8 @@ public:
 
   // Classifiers.
   bool isString       (std::string&, Lexer2::Type&, int quote);
+  bool isDate         (std::string&, Lexer2::Type&);
+  bool isDuration     (std::string&, Lexer2::Type&);
   bool isUUID         (std::string&, Lexer2::Type&);
   bool isNumber       (std::string&, Lexer2::Type&);
   bool isHexNumber    (std::string&, Lexer2::Type&);

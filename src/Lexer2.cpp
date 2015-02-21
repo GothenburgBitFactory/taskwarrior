@@ -59,8 +59,7 @@ bool Lexer2::token (std::string& token, Lexer2::Type& type)
     return false;
 
   // The sequence is specific, and must follow these rules:
-  // - date < uuid < identifier
-  // - duration < identifier
+  // - date < duration < uuid < identifier
   // - url < pair < identifier
   // - hex < number
   // - separator < tag < operator
@@ -68,6 +67,8 @@ bool Lexer2::token (std::string& token, Lexer2::Type& type)
   // - word last
   if (isString       (token, type, '\'') ||
       isString       (token, type, '"')  ||
+      isDate         (token, type)       ||
+      isDuration     (token, type)       ||
       isUUID         (token, type)       ||
       isHexNumber    (token, type)       ||
       isNumber       (token, type)       ||
@@ -124,6 +125,8 @@ const std::string Lexer2::typeName (const Lexer2::Type& type)
   case Lexer2::Type::op:           return "op";
   case Lexer2::Type::identifier:   return "identifier";
   case Lexer2::Type::word:         return "word";
+  case Lexer2::Type::date:         return "date";
+  case Lexer2::Type::duration:     return "duration";
   }
 }
 
@@ -380,6 +383,22 @@ bool Lexer2::isString (std::string& token, Lexer2::Type& type, int quote)
     }
   }
 
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Lexer2::Type::date
+//   
+bool Lexer2::isDate (std::string& token, Lexer2::Type& type)
+{
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Lexer2::Type::duration
+//   
+bool Lexer2::isDuration (std::string& token, Lexer2::Type& type)
+{
   return false;
 }
 
@@ -867,7 +886,9 @@ std::string Lexer2::typeToString (Lexer2::Type type)
   else if (type == Lexer2::Type::op)           return std::string ("\033[38;5;7m\033[48;5;203m")  + "op"           + "\033[0m";
   else if (type == Lexer2::Type::identifier)   return std::string ("\033[38;5;15m\033[48;5;244m") + "identifier"   + "\033[0m";
   else if (type == Lexer2::Type::word)         return std::string ("\033[38;5;15m\033[48;5;236m") + "word"         + "\033[0m";
-  else                                        return std::string ("\033[37;41m")                 + "unknown"      + "\033[0m";
+  else if (type == Lexer2::Type::date)         return std::string ("\033[38;5;15m\033[48;5;34")   + "date"         + "\033[0m";
+  else if (type == Lexer2::Type::duration)     return std::string ("\033[38;5;15m\033[48;5;34")   + "duration"     + "\033[0m";
+  else                                         return std::string ("\033[37;41m")                 + "unknown"      + "\033[0m";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
