@@ -37,6 +37,7 @@ public:
   int execute (std::string&);
   std::string joinWords (std::vector <std::string>& words, unsigned int from, unsigned int to = 0);
   int defineContext (std::vector <std::string>& words, std::stringstream& out);
+  int deleteContext (std::vector <std::string>& words, std::stringstream& out);
 };
 
 class CmdCompletionContext : public Command

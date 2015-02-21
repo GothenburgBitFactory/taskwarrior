@@ -55,8 +55,11 @@ int CmdContext::execute (std::string& output)
   if (words.size () > 0)
   {
     std::string subcommand = words[0];
+
     if (subcommand == "define")
       rc = defineContext(words, out);
+    else if (subcommand == "delete")
+      rc = deleteContext(words, out);
   }
 
   output = out.str ();
@@ -107,6 +110,33 @@ int CmdContext::defineContext (std::vector <std::string>& words, std::stringstre
   }
   else
     throw "You have to specify both context name and definition.";
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdContext::deleteContext (std::vector <std::string>& words, std::stringstream& out)
+{
+  // task context delete home
+  if (words.size () > 1)
+  {
+    std::string name = "context." + words[1];
+
+    bool confirmation = context.config.getBoolean ("confirmation");
+    int status = CmdConfig::unsetConfigVariable(name, confirmation);
+
+    std::string currentContext = context.config.get ("context");
+
+    if (currentContext == words[1])
+      CmdConfig::unsetConfigVariable("context", false);
+
+    if (status == 0)
+      out << "Context '" << words[1] << "' successfully undefined." << "\n";
+    else
+      out << "Context '" << words[1] << "' was not undefined." << "\n";
+  }
+  else
+    throw "You have to specify context name.";
 
   return 0;
 }
