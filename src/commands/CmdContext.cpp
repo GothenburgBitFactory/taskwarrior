@@ -27,7 +27,9 @@
 #include <cmake.h>
 #include <Context.h>
 #include <sstream>
+#include <algorithm>
 #include <i18n.h>
+#include <text.h>
 #include <CmdContext.h>
 #include <CmdConfig.h>
 
@@ -60,6 +62,8 @@ int CmdContext::execute (std::string& output)
       rc = defineContext(words, out);
     else if (subcommand == "delete")
       rc = deleteContext(words, out);
+    else if (subcommand == "list")
+      rc = listContexts(words, out);
   }
 
   output = out.str ();
@@ -88,6 +92,25 @@ std::string CmdContext::joinWords (std::vector <std::string>& words, unsigned in
   }
 
   return value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Returns all user defined contexts.
+//
+std::vector <std::string> CmdContext::getContexts ()
+{
+  std::vector <std::string> contexts;
+
+  Config::const_iterator name;
+  for (name = context.config.begin (); name != context.config.end (); ++name)
+  {
+    if (name->first.substr (0, 8) == "context.")
+    {
+      contexts.push_back (name->first.substr (8));
+    }
+  }
+
+  return contexts;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +162,49 @@ int CmdContext::deleteContext (std::vector <std::string>& words, std::stringstre
     throw "You have to specify context name.";
 
   return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdContext::listContexts (std::vector <std::string>& words, std::stringstream& out)
+{
+  int rc = 0;
+  std::vector <std::string> contexts = getContexts();
+
+  if (contexts.size ())
+  {
+    std::sort (contexts.begin (), contexts.end ());
+
+    // Render a list of UDA name, type, label, allowed values,
+    // possible default value, and finally the usage count.
+    ViewText view;
+    view.width (context.getWidth ());
+    view.add (Column::factory ("string", "Name"));
+    view.add (Column::factory ("string", "Definition"));
+
+    Color label (context.config.get ("color.label"));
+    view.colorHeader (label);
+
+    std::vector <std::string>::iterator userContext;
+    for (userContext = contexts.begin (); userContext != contexts.end (); ++userContext)
+    {
+      std::string definition = context.config.get ("context." + *userContext);
+
+      int row = view.addRow ();
+      view.set (row, 0, *userContext);
+      view.set (row, 1, definition);
+    }
+
+    out << optionalBlankLine ()
+        << view.render ()
+        << optionalBlankLine ();
+  }
+  else
+  {
+    out << "No contexts defined." << "\n";
+    rc = 1;
+  }
+
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
