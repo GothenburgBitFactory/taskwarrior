@@ -534,6 +534,9 @@ void CLI::applyOverrides ()
 // Extract all the FILTER-tagged items.
 const std::string CLI::getFilter ()
 {
+  // Handle context setting
+  addContextFilter ();
+
   std::string filter = "";
   if (_args.size ())
   {
@@ -558,6 +561,7 @@ const std::string CLI::getFilter ()
       filter = "( " + filter + " )";
   }
 
+  context.debug("Derived filter: '" + filter + "'");
   return filter;
 }
 
