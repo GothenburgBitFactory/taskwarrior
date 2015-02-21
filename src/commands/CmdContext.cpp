@@ -64,6 +64,8 @@ int CmdContext::execute (std::string& output)
       rc = deleteContext(words, out);
     else if (subcommand == "list")
       rc = listContexts(words, out);
+    else if (subcommand == "none")
+      rc = unsetContext(words, out);
     else
       rc = setContext(words, out);
   }
@@ -227,6 +229,24 @@ int CmdContext::setContext (std::vector <std::string>& words, std::stringstream&
     out << "Context '" << value << "' was not applied." << "\n";
 
   return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdContext::unsetContext (std::vector <std::string>& words, std::stringstream& out)
+{
+  // task context none
+  int rc = 0;
+  int status = CmdConfig::unsetConfigVariable("context", false);
+
+  if (status == 0)
+    out << "Context unset." << "\n";
+  else
+  {
+    out << "Context not unset." << "\n";
+    rc = 1;
+  }
+
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
