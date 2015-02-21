@@ -40,6 +40,7 @@ public:
   int defineContext (std::vector <std::string>& words, std::stringstream& out);
   int deleteContext (std::vector <std::string>& words, std::stringstream& out);
   int listContexts (std::vector <std::string>& words, std::stringstream& out);
+  int setContext (std::vector <std::string>& words, std::stringstream& out);
 };
 
 class CmdCompletionContext : public Command

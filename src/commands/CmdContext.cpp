@@ -64,6 +64,8 @@ int CmdContext::execute (std::string& output)
       rc = deleteContext(words, out);
     else if (subcommand == "list")
       rc = listContexts(words, out);
+    else
+      rc = setContext(words, out);
   }
 
   output = out.str ();
@@ -205,6 +207,26 @@ int CmdContext::listContexts (std::vector <std::string>& words, std::stringstrea
   }
 
   return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdContext::setContext (std::vector <std::string>& words, std::stringstream& out)
+{
+  // task context home
+  std::string value = words[0];
+  std::vector <std::string> contexts = getContexts ();
+
+  if (std::find (contexts.begin (), contexts.end (), value) == contexts.end())
+    throw format ("Context '{1}' not found.", value);
+
+  bool success = CmdConfig::setConfigVariable("context", value, false);
+
+  if (success)
+    out << "Context '" << value << "' applied." << "\n";
+  else
+    out << "Context '" << value << "' was not applied." << "\n";
+
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
