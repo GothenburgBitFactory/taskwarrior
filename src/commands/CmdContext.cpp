@@ -220,7 +220,11 @@ CmdCompletionContext::CmdCompletionContext ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionContext::execute (std::string& output)
 {
-  std::vector <std::string> contexts;
+  std::vector <std::string> userContexts = CmdContext::getContexts ();
+
+  std::vector <std::string>::iterator userContext;
+  for (userContext = userContexts.begin (); userContext != userContexts.end (); ++userContext)
+    output += *userContext + "\n";
 
   return 0;
 }
