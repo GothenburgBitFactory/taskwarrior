@@ -375,6 +375,20 @@ void CLI::add (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Process raw string into parsed filter.
+//
+void CLI::addRawFilter (const std::string& arg)
+{
+  std::string lexeme;
+  Lexer::Type type;
+  Lexer lex (arg);
+  lex.ambiguity (false);
+
+  while (lex.token (lexeme, type))
+    add (lexeme);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Intended to be called after ::initialize() and ::add(), to perform the final
 // analysis. Analysis is also performed directly after the above, because there
 // is a need to extract overrides early, before entities are proviedd.
