@@ -51,6 +51,7 @@ public:
   ~Lexer2 ();
   bool token (std::string&, Lexer2::Type&);
   static std::vector <std::pair <std::string, Lexer2::Type>> tokens (const std::string&);
+  static std::vector <std::string> split (const std::string&);
   static std::string typeToString (Lexer2::Type);
 
   // Static helpers.

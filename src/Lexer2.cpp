@@ -105,6 +105,20 @@ std::vector <std::pair <std::string, Lexer2::Type>> Lexer2::tokens (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// This static method tokenizes the input, but discards the type information.
+std::vector <std::string> Lexer2::split (const std::string& text)
+{
+  std::vector <std::string> all;
+  std::string token;
+  Lexer2::Type ignored;
+  Lexer2 l (text);
+  while (l.token (token, ignored))
+    all.push_back (token);
+
+  return all;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // No L10N - these are for internal purposes.
 const std::string Lexer2::typeName (const Lexer2::Type& type)
 {
@@ -391,6 +405,38 @@ bool Lexer2::isString (std::string& token, Lexer2::Type& type, int quote)
 //   
 bool Lexer2::isDate (std::string& token, Lexer2::Type& type)
 {
+#if 0
+  // Try an ISO date parse.
+  if (isoEnabled)
+  {
+    std::string::size_type iso_i = 0;
+    std::string iso_result;
+    ISO8601d iso;
+    iso.ambiguity (_ambiguity);
+    if (iso.parse (_input.substr (_shift_counter), iso_i))
+    {
+      result = _input.substr (_shift_counter, iso_i);
+      while (iso_i--) shift ();
+      return true;
+    }
+  }
+
+  // Try a legacy rc.dateformat parse here.
+  if (Lexer::dateFormat != "")
+  {
+    try
+    {
+      std::string::size_type legacy_i = 0;
+      Date legacyDate (_input.substr (_shift_counter), legacy_i, Lexer::dateFormat, false, false);
+      result = _input.substr (_shift_counter, legacy_i);
+      while (legacy_i--) shift ();
+      return true;
+    }
+
+    catch (...) { /* Never mind. */ }
+  }
+#endif
+
   return false;
 }
 
@@ -399,6 +445,28 @@ bool Lexer2::isDate (std::string& token, Lexer2::Type& type)
 //   
 bool Lexer2::isDuration (std::string& token, Lexer2::Type& type)
 {
+#if 0
+  std::string::size_type iso_i = 0;
+  std::string iso_result;
+  ISO8601p iso;
+  if (iso.parse (_input.substr (_shift_counter), iso_i))
+  {
+    result = _input.substr (_shift_counter, iso_i);
+    while (iso_i--) shift ();
+    return true;
+  }
+
+  std::string::size_type dur_i = 0;
+  std::string dur_result;
+  Duration dur;
+  if (dur.parse (_input.substr (_shift_counter), dur_i))
+  {
+    result = _input.substr (_shift_counter, dur_i);
+    while (dur_i--) shift ();
+    return true;
+  }
+#endif
+
   return false;
 }
 
