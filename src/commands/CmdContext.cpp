@@ -66,6 +66,8 @@ int CmdContext::execute (std::string& output)
       rc = listContexts(words, out);
     else if (subcommand == "none")
       rc = unsetContext(words, out);
+    else if (subcommand == "show")
+      rc = showContext(words, out);
     else
       rc = setContext(words, out);
   }
@@ -227,6 +229,23 @@ int CmdContext::setContext (std::vector <std::string>& words, std::stringstream&
     out << "Context '" << value << "' applied." << "\n";
   else
     out << "Context '" << value << "' was not applied." << "\n";
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdContext::showContext (std::vector <std::string>& words, std::stringstream& out)
+{
+  // task context show
+  std::string currentContext = context.config.get ("context");
+
+  if (currentContext == "")
+    out << "No context is currently applied." << "\n";
+  else
+  {
+    std::string currentFilter = context.config.get ("context." + currentContext);
+    out << format ("Context '{1}' with filter '{2}' is currently applied.", currentContext, currentFilter) << "\n";
+  }
 
   return 0;
 }
