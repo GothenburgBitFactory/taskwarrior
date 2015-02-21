@@ -27,10 +27,17 @@
 #include <cmake.h>
 #include <ctype.h>
 #include <Lexer2.h>
+#include <ISO8601.h>
+#include <Date.h>
+#include <Duration.h>
 #include <utf8.h>
 
 static const std::string uuid_pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 static const int uuid_min_length = 8;
+
+std::string Lexer2::dateFormat = "";
+bool Lexer2::isoEnabled = true;
+bool Lexer2::ambiguity = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 Lexer2::Lexer2 (const std::string& text)
@@ -405,37 +412,37 @@ bool Lexer2::isString (std::string& token, Lexer2::Type& type, int quote)
 //   
 bool Lexer2::isDate (std::string& token, Lexer2::Type& type)
 {
-#if 0
   // Try an ISO date parse.
-  if (isoEnabled)
+  if (Lexer2::isoEnabled)
   {
-    std::string::size_type iso_i = 0;
-    std::string iso_result;
+    std::size_t iso_i = 0;
     ISO8601d iso;
-    iso.ambiguity (_ambiguity);
-    if (iso.parse (_input.substr (_shift_counter), iso_i))
+    iso.ambiguity (Lexer2::ambiguity);
+    if (iso.parse (_text.substr (_cursor), iso_i))
     {
-      result = _input.substr (_shift_counter, iso_i);
-      while (iso_i--) shift ();
+      type = Lexer2::Type::date;
+      token = _text.substr (_cursor, iso_i);
+      _cursor += iso_i;
       return true;
     }
   }
 
   // Try a legacy rc.dateformat parse here.
-  if (Lexer::dateFormat != "")
+  if (Lexer2::dateFormat != "")
   {
     try
     {
-      std::string::size_type legacy_i = 0;
-      Date legacyDate (_input.substr (_shift_counter), legacy_i, Lexer::dateFormat, false, false);
-      result = _input.substr (_shift_counter, legacy_i);
-      while (legacy_i--) shift ();
+      std::size_t legacy_i = 0;
+      Date legacyDate (_text.substr (_cursor), legacy_i, Lexer2::dateFormat, false, false);
+
+      type = Lexer2::Type::date;
+      token = _text.substr (_cursor, legacy_i);
+      _cursor += legacy_i;
       return true;
     }
 
     catch (...) { /* Never mind. */ }
   }
-#endif
 
   return false;
 }
@@ -445,27 +452,25 @@ bool Lexer2::isDate (std::string& token, Lexer2::Type& type)
 //   
 bool Lexer2::isDuration (std::string& token, Lexer2::Type& type)
 {
-#if 0
-  std::string::size_type iso_i = 0;
-  std::string iso_result;
+  std::size_t marker = 0;
+
   ISO8601p iso;
-  if (iso.parse (_input.substr (_shift_counter), iso_i))
+  if (iso.parse (_text.substr (_cursor), marker))
   {
-    result = _input.substr (_shift_counter, iso_i);
-    while (iso_i--) shift ();
+    type = Lexer2::Type::duration;
+    token = _text.substr (_cursor, marker);
+    _cursor += marker;
     return true;
   }
 
-  std::string::size_type dur_i = 0;
-  std::string dur_result;
   Duration dur;
-  if (dur.parse (_input.substr (_shift_counter), dur_i))
+  if (dur.parse (_text.substr (_cursor), marker))
   {
-    result = _input.substr (_shift_counter, dur_i);
-    while (dur_i--) shift ();
+    type = Lexer2::Type::duration;
+    token = _text.substr (_cursor, marker);
+    _cursor += marker;
     return true;
   }
-#endif
 
   return false;
 }
@@ -954,8 +959,8 @@ std::string Lexer2::typeToString (Lexer2::Type type)
   else if (type == Lexer2::Type::op)           return std::string ("\033[38;5;7m\033[48;5;203m")  + "op"           + "\033[0m";
   else if (type == Lexer2::Type::identifier)   return std::string ("\033[38;5;15m\033[48;5;244m") + "identifier"   + "\033[0m";
   else if (type == Lexer2::Type::word)         return std::string ("\033[38;5;15m\033[48;5;236m") + "word"         + "\033[0m";
-  else if (type == Lexer2::Type::date)         return std::string ("\033[38;5;15m\033[48;5;34")   + "date"         + "\033[0m";
-  else if (type == Lexer2::Type::duration)     return std::string ("\033[38;5;15m\033[48;5;34")   + "duration"     + "\033[0m";
+  else if (type == Lexer2::Type::date)         return std::string ("\033[38;5;15m\033[48;5;34m")  + "date"         + "\033[0m";
+  else if (type == Lexer2::Type::duration)     return std::string ("\033[38;5;15m\033[48;5;34m")  + "duration"     + "\033[0m";
   else                                         return std::string ("\033[37;41m")                 + "unknown"      + "\033[0m";
 }
 

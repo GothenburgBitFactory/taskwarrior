@@ -37,6 +37,11 @@
 class Lexer2
 {
 public:
+  // These are overridable.
+  static std::string dateFormat;
+  static bool isoEnabled;
+  static bool ambiguity;
+
   enum class Type { uuid, number, hex,
                     string,
                     list, url, pair, separator,
