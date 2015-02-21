@@ -29,6 +29,7 @@
 #include <sstream>
 #include <i18n.h>
 #include <CmdContext.h>
+#include <CmdConfig.h>
 
 extern Context context;
 
@@ -51,7 +52,63 @@ int CmdContext::execute (std::string& output)
   // Get the non-attribute, non-fancy command line arguments.
   std::vector <std::string> words = context.cli.getWords ();
 
+  if (words.size () > 0)
+  {
+    std::string subcommand = words[0];
+    if (subcommand == "define")
+      rc = defineContext(words, out);
+  }
+
+  output = out.str ();
   return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Joins all the words in the specified interval <from, to) to a one string,
+// which is returned.
+//
+// If to is specified as 0, all remaining words will be joined.
+//
+std::string CmdContext::joinWords (std::vector <std::string>& words, unsigned int from, unsigned int to /* = 0 */)
+{
+  std::string value = "";
+
+  if (to == 0)
+    to = words.size();
+
+  for (unsigned int i = from; i < to; ++i)
+  {
+    if (i > from)
+      value += " ";
+
+    value += words[i];
+  }
+
+  return value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdContext::defineContext (std::vector <std::string>& words, std::stringstream& out)
+{
+  // task context define home project:Home
+  if (words.size () > 2)
+  {
+    std::string name = "context." + words[1];
+    std::string value = joinWords(words, 2);
+    // TODO: Check if the value is a proper filter
+
+    bool confirmation = context.config.getBoolean ("confirmation");
+    bool success = CmdConfig::setConfigVariable(name, value, confirmation);
+
+    if (success)
+      out << "Context '" << words[1] << "' successfully defined." << "\n";
+    else
+      out << "Context '" << words[1] << "' was not defined." << "\n";
+  }
+  else
+    throw "You have to specify both context name and definition.";
+
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
