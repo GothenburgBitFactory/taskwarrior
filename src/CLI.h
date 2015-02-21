@@ -77,6 +77,7 @@ public:
   void entity (const std::string&, const std::string&);
   void initialize (int, const char**);
   void add (const std::string&);
+  void addContextFilter ();
   void addRawFilter (const std::string& arg);
   void analyze (bool parse = true, bool strict = false);
   void applyOverrides ();
