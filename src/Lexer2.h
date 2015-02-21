@@ -58,6 +58,7 @@ public:
   static std::vector <std::pair <std::string, Lexer2::Type>> tokens (const std::string&);
   static std::vector <std::string> split (const std::string&);
   static std::string typeToString (Lexer2::Type);
+  static bool isAllDigits (const std::string&);
 
   // Static helpers.
   static const std::string typeName (const Lexer2::Type&);
