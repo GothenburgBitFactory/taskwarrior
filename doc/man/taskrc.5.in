@@ -1351,6 +1351,26 @@ of a task.
 .B uda.estimate.values=trivial,small,medium,large,huge
 .RE
 
+.SS CONTEXT
+Context setting is a mechanism which allows the user to set a permanent filter,
+thus avoiding the need to specify one filter repeatedly. More details on usage
+can be found in the task(1) manpage.
+
+The current context is stored in the taskrc file, along with definitions for
+all user provided contexts.
+
+.TP
+.B context=<name>
+.RS
+Stores the value of the currently active context.
+.RE
+
+.TP
+.B context.<name>=<filter>
+.RS
+Stores the definition of the context with the name <name>.
+.RE
+
 .SS SYNC
 
 These configuration settings are used to connect and sync tasks with the task
