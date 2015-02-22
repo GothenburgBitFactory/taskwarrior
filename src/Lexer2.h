@@ -40,7 +40,6 @@ public:
   // These are overridable.
   static std::string dateFormat;
   static bool isoEnabled;
-  static bool ambiguity;
 
   enum class Type { uuid, number, hex,
                     string,
@@ -54,6 +53,7 @@ public:
 
   Lexer2 (const std::string&);
   ~Lexer2 ();
+  void ambiguity (bool);
   bool token (std::string&, Lexer2::Type&);
   static std::vector <std::pair <std::string, Lexer2::Type>> tokens (const std::string&);
   static std::vector <std::string> split (const std::string&);
@@ -101,8 +101,9 @@ public:
 
 private:
   std::string _text;
-  std::size_t _cursor = 0;
-  std::size_t _eos = 0;
+  std::size_t _cursor;
+  std::size_t _eos;
+  bool        _ambiguity;
 };
 
 #endif

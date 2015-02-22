@@ -28,7 +28,7 @@
 #include <iostream>
 #include <vector>
 #include <test.h>
-#include <Lexer.h>
+#include <Lexer2.h>
 #include <Context.h>
 
 Context context;
@@ -36,360 +36,349 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (212);
+  UnitTest t (211);
 
-  std::vector <std::pair <std::string, Lexer::Type> > tokens;
+  std::vector <std::pair <std::string, Lexer2::Type> > tokens;
   std::string token;
-  Lexer::Type type;
+  Lexer2::Type type;
 
   // White space detection.
-  t.notok (Lexer::is_ws (0x0041), "U+0041 (A) is not ws");
-  t.ok (Lexer::is_ws (0x0020), "U+0020 is_ws");
-  t.ok (Lexer::is_ws (0x0009), "U+0009 is_ws");
-  t.ok (Lexer::is_ws (0x000A), "U+000A is_ws");
-  t.ok (Lexer::is_ws (0x000B), "U+000B is_ws");
-  t.ok (Lexer::is_ws (0x000C), "U+000C is_ws");
-  t.ok (Lexer::is_ws (0x000D), "U+000D is_ws");
-  t.ok (Lexer::is_ws (0x0085), "U+0085 is_ws");
-  t.ok (Lexer::is_ws (0x00A0), "U+00A0 is_ws");
-  t.ok (Lexer::is_ws (0x1680), "U+1680 is_ws"); // 10
-  t.ok (Lexer::is_ws (0x180E), "U+180E is_ws");
-  t.ok (Lexer::is_ws (0x2000), "U+2000 is_ws");
-  t.ok (Lexer::is_ws (0x2001), "U+2001 is_ws");
-  t.ok (Lexer::is_ws (0x2002), "U+2002 is_ws");
-  t.ok (Lexer::is_ws (0x2003), "U+2003 is_ws");
-  t.ok (Lexer::is_ws (0x2004), "U+2004 is_ws");
-  t.ok (Lexer::is_ws (0x2005), "U+2005 is_ws");
-  t.ok (Lexer::is_ws (0x2006), "U+2006 is_ws");
-  t.ok (Lexer::is_ws (0x2007), "U+2007 is_ws");
-  t.ok (Lexer::is_ws (0x2008), "U+2008 is_ws"); // 20
-  t.ok (Lexer::is_ws (0x2009), "U+2009 is_ws");
-  t.ok (Lexer::is_ws (0x200A), "U+200A is_ws");
-  t.ok (Lexer::is_ws (0x2028), "U+2028 is_ws");
-  t.ok (Lexer::is_ws (0x2029), "U+2029 is_ws");
-  t.ok (Lexer::is_ws (0x202F), "U+202F is_ws");
-  t.ok (Lexer::is_ws (0x205F), "U+205F is_ws");
-  t.ok (Lexer::is_ws (0x3000), "U+3000 is_ws");
+  t.notok (Lexer2::isWhitespace (0x0041), "U+0041 (A) ! isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x0020), "U+0020 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x0009), "U+0009 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x000A), "U+000A isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x000B), "U+000B isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x000C), "U+000C isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x000D), "U+000D isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x0085), "U+0085 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x00A0), "U+00A0 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x1680), "U+1680 isWhitespace"); // 10
+  t.ok (Lexer2::isWhitespace (0x180E), "U+180E isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2000), "U+2000 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2001), "U+2001 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2002), "U+2002 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2003), "U+2003 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2004), "U+2004 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2005), "U+2005 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2006), "U+2006 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2007), "U+2007 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2008), "U+2008 isWhitespace"); // 20
+  t.ok (Lexer2::isWhitespace (0x2009), "U+2009 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x200A), "U+200A isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2028), "U+2028 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x2029), "U+2029 isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x202F), "U+202F isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x205F), "U+205F isWhitespace");
+  t.ok (Lexer2::isWhitespace (0x3000), "U+3000 isWhitespace");
 
-  // static bool Lexer::boundary(int, int);
-  t.ok    (Lexer::boundary (' ', 'a'), "' ' --> 'a' = boundary");
-  t.ok    (Lexer::boundary ('a', ' '), "'a' --> ' ' = boundary");
-  t.ok    (Lexer::boundary (' ', '+'), "' ' --> '+' = boundary");
-  t.ok    (Lexer::boundary (' ', ','), "' ' --> ',' = boundary");
-  t.notok (Lexer::boundary ('3', '4'), "'3' --> '4' = boundary");
-  t.ok    (Lexer::boundary ('(', '('), "'(' --> '(' = boundary");
-  t.notok (Lexer::boundary ('r', 'd'), "'r' --> 'd' = boundary");
+  // static bool Lexer2::isBoundary(int, int);
+  t.ok    (Lexer2::isBoundary (' ', 'a'), "' ' --> 'a' = isBoundary");
+  t.ok    (Lexer2::isBoundary ('a', ' '), "'a' --> ' ' = isBoundary");
+  t.ok    (Lexer2::isBoundary (' ', '+'), "' ' --> '+' = isBoundary");
+  t.ok    (Lexer2::isBoundary (' ', ','), "' ' --> ',' = isBoundary");
+  t.notok (Lexer2::isBoundary ('3', '4'), "'3' --> '4' = isBoundary");
+  t.ok    (Lexer2::isBoundary ('(', '('), "'(' --> '(' = isBoundary");
+  t.notok (Lexer2::isBoundary ('r', 'd'), "'r' --> 'd' = isBoundary");
 
   // Should result in no tokens.
-  Lexer l0 ("");
+  Lexer2 l0 ("");
   t.notok (l0.token (token, type), "'' --> no tokens");
 
   // Should result in no tokens.
-  Lexer l1 ("       \t ");
+  Lexer2 l1 ("       \t ");
   t.notok (l1.token (token, type), "'       \\t ' --> no tokens");
 
   // \u20ac = Euro symbol.
-  Lexer l2 (" one 'two \\'three\\''+456-(1.3*2 - 0x12) \\u0041 1.2e-3.4    foo.bar and '\\u20ac'");
+  Lexer2 l2 (" one 'two \\'three\\''+456-(1.3*2 - 0x12) 1.2e-3.4    foo.bar and '\\u20ac'");
 
   tokens.clear ();
   while (l2.token (token, type))
   {
-    std::cout << "# «" << token << "» " << type  << " " << Lexer::type_name (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    std::cout << "# «" << token << "» " << Lexer2::typeName (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer2::Type> (token, type));
   }
 
   t.is (tokens[0].first,                      "one",        "tokens[0] = 'left'"); // 30
-  t.is (Lexer::type_name (tokens[0].second),  "Identifier", "tokens[0] = Identifier");
+  t.is (Lexer2::typeName (tokens[0].second),  "identifier", "tokens[0] = identifier");
 
-  t.is (tokens[1].first,                      "'two \\'three\\''", "tokens[1] = 'two \\'three\\''");
-  t.is (Lexer::type_name (tokens[1].second),  "String",     "tokens[1] = String");
+  t.is (tokens[1].first,                      "two 'three'", "tokens[1] = 'two 'three''");
+  t.is (Lexer2::typeName (tokens[1].second),  "string",     "tokens[1] = string");
 
   t.is (tokens[2].first,                      "+",          "tokens[2] = '+'");
-  t.is (Lexer::type_name (tokens[2].second),  "Operator",   "tokens[2] = Operator");
+  t.is (Lexer2::typeName (tokens[2].second),  "op",         "tokens[2] = op");
 
   t.is (tokens[3].first,                      "456",        "tokens[3] = '456'");
-  t.is (Lexer::type_name (tokens[3].second),  "Number",     "tokens[3] = Number");
+  t.is (Lexer2::typeName (tokens[3].second),  "number",     "tokens[3] = number");
 
   t.is (tokens[4].first,                      "-",          "tokens[4] = '-'");
-  t.is (Lexer::type_name (tokens[4].second),  "Operator",   "tokens[4] = Operator");
+  t.is (Lexer2::typeName (tokens[4].second),  "op",         "tokens[4] = op");
 
   t.is (tokens[5].first,                      "(",          "tokens[5] = '('"); // 40
-  t.is (Lexer::type_name (tokens[5].second),  "Operator",   "tokens[5] = Operator");
+  t.is (Lexer2::typeName (tokens[5].second),  "op",         "tokens[5] = op");
 
   t.is (tokens[6].first,                      "1.3",        "tokens[6] = '1.3'");
-  t.is (Lexer::type_name (tokens[6].second),  "Decimal",    "tokens[6] = Decimal");
+  t.is (Lexer2::typeName (tokens[6].second),  "number",     "tokens[6] = number");
 
   t.is (tokens[7].first,                      "*",          "tokens[7] = '*'");
-  t.is (Lexer::type_name (tokens[7].second),  "Operator",   "tokens[7] = Operator");
+  t.is (Lexer2::typeName (tokens[7].second),  "op",         "tokens[7] = op");
 
   t.is (tokens[8].first,                      "2",          "tokens[8] = '2'");
-  t.is (Lexer::type_name (tokens[8].second),  "Number",     "tokens[8] = Number");
+  t.is (Lexer2::typeName (tokens[8].second),  "number",     "tokens[8] = number");
 
   t.is (tokens[9].first,                      "-",          "tokens[9] = '-'");
-  t.is (Lexer::type_name (tokens[9].second),  "Operator",   "tokens[9] = Operator");
+  t.is (Lexer2::typeName (tokens[9].second),  "op",         "tokens[9] = op");
 
   t.is (tokens[10].first,                     "0x12",       "tokens[10] = '0x12'"); // 50
-  t.is (Lexer::type_name (tokens[10].second), "Hex",        "tokens[10] = Hex");
+  t.is (Lexer2::typeName (tokens[10].second), "hex",        "tokens[10] = hex");
 
   t.is (tokens[11].first,                     ")",          "tokens[11] = ')'");
-  t.is (Lexer::type_name (tokens[11].second), "Operator",   "tokens[11] = Operator");
+  t.is (Lexer2::typeName (tokens[11].second), "op",         "tokens[11] = op");
 
-  t.is (tokens[12].first,                     "A",          "tokens[12] = \\u0041 --> 'A'");
-  t.is (Lexer::type_name (tokens[12].second), "Identifier", "tokens[12] = Identifier");
+  t.is (tokens[12].first,                     "1.2e-3.4",   "tokens[12] = '1.2e-3.4'");
+  t.is (Lexer2::typeName (tokens[12].second), "number",     "tokens[12] = number");
 
-  t.is (tokens[13].first,                     "1.2e-3.4",   "tokens[13] = '1.2e-3.4'");
-  t.is (Lexer::type_name (tokens[13].second), "Decimal",    "tokens[13] = Decimal");
+  t.is (tokens[13].first,                     "foo.bar",    "tokens[13] = 'foo.bar'");
+  t.is (Lexer2::typeName (tokens[13].second), "identifier", "tokens[13] = identifier");
 
-  t.is (tokens[14].first,                     "foo.bar",    "tokens[14] = 'foo.bar'");
-  t.is (Lexer::type_name (tokens[14].second), "Identifier", "tokens[14] = Identifier");
+  t.is (tokens[14].first,                     "and",        "tokens[14] = 'and'"); // 60
+  t.is (Lexer2::typeName (tokens[14].second), "op",         "tokens[14] = op");
 
-  t.is (tokens[15].first,                     "and",        "tokens[15] = 'and'"); // 60
-  t.is (Lexer::type_name (tokens[15].second), "Operator",   "tokens[15] = Operator");
-
-  t.is (tokens[16].first,                     "'€'",        "tokens[16] = \\u20ac --> '€'");
-  t.is (Lexer::type_name (tokens[16].second), "String",     "tokens[16] = String");
+  t.is (tokens[15].first,                     "€",          "tokens[15] = \\u20ac --> '€'");
+  t.is (Lexer2::typeName (tokens[15].second), "string",     "tokens[15] = string");
 
   // Test for ISO-8601 dates (favoring dates in ambiguous cases).
-  Lexer l3 ("1 12 123 1234 12345 123456 1234567 12345678 20131129T225800Z 2013-11-29T22:58:00Z");
+  Lexer2 l3 ("1 12 123 1234 12345 123456 1234567 12345678 20131129T225800Z 2013-11-29T22:58:00Z");
   l3.ambiguity (true);
   tokens.clear ();
   while (l3.token (token, type))
   {
-    std::cout << "# «" << token << "» " << type  << " " << Lexer::type_name (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    std::cout << "# «" << token << "» " << Lexer2::typeName (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer2::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),                  10,                     "10 tokens");
-  t.is (tokens[0].first,                      "1",                    "tokens[0] == '1'");
-  t.is (tokens[0].second,                     Lexer::typeNumber,      "tokens[0] == typeNumber");
-  t.is (tokens[1].first,                      "12",                   "tokens[1] == '12'");
-  t.is (tokens[1].second,                     Lexer::typeDate,        "tokens[1] == typeDate");
-  t.is (tokens[2].first,                      "123",                  "tokens[2] == '123'");
-  t.is (tokens[2].second,                     Lexer::typeNumber,      "tokens[2] == typeNumber"); // 70
-  t.is (tokens[3].first,                      "1234",                 "tokens[3] == '1234'");
-  t.is (tokens[3].second,                     Lexer::typeDate,        "tokens[3] == typeDate");
-  t.is (tokens[4].first,                      "12345",                "tokens[4] == '12345'");
-  t.is (tokens[4].second,                     Lexer::typeNumber,      "tokens[4] == typeNumber");
-  t.is (tokens[5].first,                      "123456",               "tokens[5] == '123456'");
-  t.is (tokens[5].second,                     Lexer::typeDate,        "tokens[5] == typeDate");
-  t.is (tokens[6].first,                      "1234567",              "tokens[6] == '1234567'");
-  t.is (tokens[6].second,                     Lexer::typeNumber,      "tokens[6] == typeNumber");
-  t.is (tokens[7].first,                      "12345678",             "tokens[7] == '12345678'");
-  t.is (tokens[7].second,                     Lexer::typeNumber,      "tokens[7] == typeNumber"); // 80
-  t.is (tokens[8].first,                      "20131129T225800Z",     "tokens[8] == '20131129T225800Z'");
-  t.is (tokens[8].second,                     Lexer::typeDate,        "tokens[8] == typeDate");
-  t.is (tokens[9].first,                      "2013-11-29T22:58:00Z", "tokens[9] == '2013-11-29T22:58:00Z'");
-  t.is (tokens[9].second,                     Lexer::typeDate,        "tokens[9] == typeDate");
+  t.is ((int)tokens.size (),     10,                         "10 tokens");
+  t.is (tokens[0].first,         "1",                        "tokens[0] == '1'");
+  t.is ((int) tokens[0].second,  (int) Lexer2::Type::number, "tokens[0] == Type::number");
+  t.is (tokens[1].first,         "12",                       "tokens[1] == '12'");
+  t.is ((int) tokens[1].second,  (int) Lexer2::Type::date,   "tokens[1] == Type::date");
+  t.is (tokens[2].first,         "123",                      "tokens[2] == '123'");
+  t.is ((int) tokens[2].second,  (int) Lexer2::Type::number, "tokens[2] == Type::number"); // 70
+  t.is (tokens[3].first,         "1234",                     "tokens[3] == '1234'");
+  t.is ((int) tokens[3].second,  (int) Lexer2::Type::date,   "tokens[3] == Type::date");
+  t.is (tokens[4].first,         "12345",                    "tokens[4] == '12345'");
+  t.is ((int) tokens[4].second,  (int) Lexer2::Type::number, "tokens[4] == Type::number");
+  t.is (tokens[5].first,         "123456",                   "tokens[5] == '123456'");
+  t.is ((int) tokens[5].second,  (int) Lexer2::Type::date,   "tokens[5] == Type::date");
+  t.is (tokens[6].first,         "1234567",                  "tokens[6] == '1234567'");
+  t.is ((int) tokens[6].second,  (int) Lexer2::Type::number, "tokens[6] == Type::number");
+  t.is (tokens[7].first,         "12345678",                 "tokens[7] == '12345678'");
+  t.is ((int) tokens[7].second,  (int) Lexer2::Type::number, "tokens[7] == Type::number"); // 80
+  t.is (tokens[8].first,         "20131129T225800Z",         "tokens[8] == '20131129T225800Z'");
+  t.is ((int) tokens[8].second,  (int) Lexer2::Type::date,   "tokens[8] == Type::date");
+  t.is (tokens[9].first,         "2013-11-29T22:58:00Z",     "tokens[9] == '2013-11-29T22:58:00Z'");
+  t.is ((int) tokens[9].second,  (int) Lexer2::Type::date,   "tokens[9] == Type::date");
 
   // Test for ISO-8601 dates (favoring numbers in ambiguous cases).
-  Lexer l4 ("1 12 123 1234 12345 123456 1234567 12345678 20131129T225800Z 2013-11-29T22:58:00Z");
+  Lexer2 l4 ("1 12 123 1234 12345 123456 1234567 12345678 20131129T225800Z 2013-11-29T22:58:00Z");
   l4.ambiguity (false);
   tokens.clear ();
   while (l4.token (token, type))
   {
-    std::cout << "# «" << token << "» " << type  << " " << Lexer::type_name (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    std::cout << "# «" << token << "» " << Lexer2::typeName (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer2::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),                  10,                     "10 tokens");
-  t.is (tokens[0].first,                      "1",                    "tokens[0] == '1'");
-  t.is (tokens[0].second,                     Lexer::typeNumber,      "tokens[0] == typeNumber");
-  t.is (tokens[1].first,                      "12",                   "tokens[1] == '12'");
-  t.is (tokens[1].second,                     Lexer::typeNumber,      "tokens[1] == typeNumber");
-  t.is (tokens[2].first,                      "123",                  "tokens[2] == '123'"); // 90
-  t.is (tokens[2].second,                     Lexer::typeNumber,      "tokens[2] == typeNumber");
-  t.is (tokens[3].first,                      "1234",                 "tokens[3] == '1234'");
-  t.is (tokens[3].second,                     Lexer::typeNumber,      "tokens[3] == typeNumber");
-  t.is (tokens[4].first,                      "12345",                "tokens[4] == '12345'");
-  t.is (tokens[4].second,                     Lexer::typeNumber,      "tokens[4] == typeNumber");
-  t.is (tokens[5].first,                      "123456",               "tokens[5] == '123456'");
-  t.is (tokens[5].second,                     Lexer::typeNumber,      "tokens[5] == typeNumber");
-  t.is (tokens[6].first,                      "1234567",              "tokens[6] == '1234567'");
-  t.is (tokens[6].second,                     Lexer::typeNumber,      "tokens[6] == typeNumber");
-  t.is (tokens[7].first,                      "12345678",             "tokens[7] == '12345678'"); // 100
-  t.is (tokens[7].second,                     Lexer::typeNumber,      "tokens[7] == typeNumber");
-  t.is (tokens[8].first,                      "20131129T225800Z",     "tokens[8] == '20131129T225800Z'");
-  t.is (tokens[8].second,                     Lexer::typeDate,        "tokens[8] == typeDate");
-  t.is (tokens[9].first,                      "2013-11-29T22:58:00Z", "tokens[9] == '2013-11-29T22:58:00Z'");
-  t.is (tokens[9].second,                     Lexer::typeDate,        "tokens[9] == typeDate");
+  t.is ((int)tokens.size (),       10,                           "10 tokens");
+  t.is (tokens[0].first,           "1",                          "tokens[0] == '1'");
+  t.is ((int) tokens[0].second,    (int) Lexer2::Type::number,   "tokens[0] == Type::number");
+  t.is (tokens[1].first,           "12",                         "tokens[1] == '12'");
+  t.is ((int) tokens[1].second,    (int) Lexer2::Type::number,   "tokens[1] == Type::number");
+  t.is (tokens[2].first,           "123",                        "tokens[2] == '123'"); // 90
+  t.is ((int) tokens[2].second,    (int) Lexer2::Type::number,   "tokens[2] == Type::number");
+  t.is (tokens[3].first,           "1234",                       "tokens[3] == '1234'");
+  t.is ((int) tokens[3].second,    (int) Lexer2::Type::number,   "tokens[3] == Type::number");
+  t.is (tokens[4].first,           "12345",                      "tokens[4] == '12345'");
+  t.is ((int) tokens[4].second,    (int) Lexer2::Type::number,   "tokens[4] == Type::number");
+  t.is (tokens[5].first,           "123456",                     "tokens[5] == '123456'");
+  t.is ((int) tokens[5].second,    (int) Lexer2::Type::number,   "tokens[5] == Type::number");
+  t.is (tokens[6].first,           "1234567",                    "tokens[6] == '1234567'");
+  t.is ((int) tokens[6].second,    (int) Lexer2::Type::number,   "tokens[6] == Type::number");
+  t.is (tokens[7].first,           "12345678",                   "tokens[7] == '12345678'"); // 100
+  t.is ((int) tokens[7].second,    (int) Lexer2::Type::number,   "tokens[7] == Type::number");
+  t.is (tokens[8].first,           "20131129T225800Z",           "tokens[8] == '20131129T225800Z'");
+  t.is ((int) tokens[8].second,    (int) Lexer2::Type::date,     "tokens[8] == Type::date");
+  t.is (tokens[9].first,           "2013-11-29T22:58:00Z",       "tokens[9] == '2013-11-29T22:58:00Z'");
+  t.is ((int) tokens[9].second,    (int) Lexer2::Type::date,     "tokens[9] == Type::date");
 
   // Test for durations
-  Lexer l5 ("1second 1minute 2hour 3 days 4w 5mo 6 years");
+  Lexer2 l5 ("1second 1minute 2hour 3 days 4w 5mo 6 years");
   tokens.clear ();
   while (l5.token (token, type))
   {
-    std::cout << "# «" << token << "» " << type  << " " << Lexer::type_name (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    std::cout << "# «" << token << "» " << Lexer2::typeName (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer2::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),                  7,                      "7 tokens");
-  t.is (tokens[0].first,                      "1second",              "tokens[0] == '1second'");
-  t.is (tokens[0].second,                     Lexer::typeDuration,    "tokens[0] == typeDuration");
-  t.is (tokens[1].first,                      "1minute",              "tokens[1] == '1minute'");
-  t.is (tokens[1].second,                     Lexer::typeDuration,    "tokens[1] == typeDuration"); // 110
-  t.is (tokens[2].first,                      "2hour",                "tokens[2] == '2hour'");
-  t.is (tokens[2].second,                     Lexer::typeDuration,    "tokens[2] == typeDuration");
-  t.is (tokens[3].first,                      "3 days",               "tokens[3] == '3 days'");
-  t.is (tokens[3].second,                     Lexer::typeDuration,    "tokens[3] == typeDuration");
-  t.is (tokens[4].first,                      "4w",                   "tokens[4] == '4w'");
-  t.is (tokens[4].second,                     Lexer::typeDuration,    "tokens[4] == typeDuration");
-  t.is (tokens[5].first,                      "5mo",                  "tokens[5] == '5mo'");
-  t.is (tokens[5].second,                     Lexer::typeDuration,    "tokens[5] == typeDuration");
-  t.is (tokens[6].first,                      "6 years",              "tokens[6] == '6 years'");
-  t.is (tokens[6].second,                     Lexer::typeDuration,    "tokens[6] == typeDuration"); // 120
+  t.is ((int)tokens.size (),       7,                            "7 tokens");
+  t.is (tokens[0].first,           "1second",                    "tokens[0] == '1second'");
+  t.is ((int) tokens[0].second,    (int) Lexer2::Type::duration, "tokens[0] == Type::duration");
+  t.is (tokens[1].first,           "1minute",                    "tokens[1] == '1minute'");
+  t.is ((int) tokens[1].second,    (int) Lexer2::Type::duration, "tokens[1] == Type::duration"); // 110
+  t.is (tokens[2].first,           "2hour",                      "tokens[2] == '2hour'");
+  t.is ((int) tokens[2].second,    (int) Lexer2::Type::duration, "tokens[2] == Type::duration");
+  t.is (tokens[3].first,           "3 days",                     "tokens[3] == '3 days'");
+  t.is ((int) tokens[3].second,    (int) Lexer2::Type::duration, "tokens[3] == Type::duration");
+  t.is (tokens[4].first,           "4w",                         "tokens[4] == '4w'");
+  t.is ((int) tokens[4].second,    (int) Lexer2::Type::duration, "tokens[4] == Type::duration");
+  t.is (tokens[5].first,           "5mo",                        "tokens[5] == '5mo'");
+  t.is ((int) tokens[5].second,    (int) Lexer2::Type::duration, "tokens[5] == Type::duration");
+  t.is (tokens[6].first,           "6 years",                    "tokens[6] == '6 years'");
+  t.is ((int) tokens[6].second,    (int) Lexer2::Type::duration, "tokens[6] == Type::duration"); // 120
 
   // All the Eval operators.
-  Lexer l6 ("P1Y PT1H P1Y1M1DT1H1M1S 1s 1second");
+  Lexer2 l6 ("P1Y PT1H P1Y1M1DT1H1M1S 1s 1second");
   tokens.clear ();
   while (l6.token (token, type))
   {
-    std::cout << "# «" << token << "» " << type  << " " << Lexer::type_name (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    std::cout << "# «" << token << "» " << Lexer2::typeName (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer2::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),                  5,                      "5 ISO periods");
-  t.is (tokens[0].first,                      "P1Y",                  "tokens[0] == 'P1Y'");
-  t.is (tokens[0].second,                     Lexer::typeDuration,    "tokens[0] == typeDuration");
-  t.is (tokens[1].first,                      "PT1H",                 "tokens[1] == 'PT1H'");
-  t.is (tokens[1].second,                     Lexer::typeDuration,    "tokens[1] == typeDuration");
-  t.is (tokens[2].first,                      "P1Y1M1DT1H1M1S",       "tokens[2] == 'P1Y1M1DT1H1M1S'");
-  t.is (tokens[2].second,                     Lexer::typeDuration,    "tokens[2] == typeDuration");
-  t.is (tokens[3].first,                      "1s",                   "tokens[3] == '1s'");
-  t.is (tokens[3].second,                     Lexer::typeDuration,    "tokens[3] == typeDuration");
-  t.is (tokens[4].first,                      "1second",              "tokens[4] == '1second'");
-  t.is (tokens[4].second,                     Lexer::typeDuration,    "tokens[4] == typeDuration");
+  t.is ((int)tokens.size (),       5,                            "5 ISO periods");
+  t.is (tokens[0].first,           "P1Y",                        "tokens[0] == 'P1Y'");
+  t.is ((int) tokens[0].second,    (int) Lexer2::Type::duration, "tokens[0] == Type::duration");
+  t.is (tokens[1].first,           "PT1H",                       "tokens[1] == 'PT1H'");
+  t.is ((int) tokens[1].second,    (int) Lexer2::Type::duration, "tokens[1] == Type::duration");
+  t.is (tokens[2].first,           "P1Y1M1DT1H1M1S",             "tokens[2] == 'P1Y1M1DT1H1M1S'");
+  t.is ((int) tokens[2].second,    (int) Lexer2::Type::duration, "tokens[2] == Type::duration");
+  t.is (tokens[3].first,           "1s",                         "tokens[3] == '1s'");
+  t.is ((int) tokens[3].second,    (int) Lexer2::Type::duration, "tokens[3] == Type::duration");
+  t.is (tokens[4].first,           "1second",                    "tokens[4] == '1second'");
+  t.is ((int) tokens[4].second,    (int) Lexer2::Type::duration, "tokens[4] == Type::duration");
 
-  // All the Eval operators.
-  Lexer l7 ("and xor or <= >= !~ != == = ^ > ~ ! * / % + - < ( )");
+  // All (int) the Eval operators.
+  Lexer2 l7 ("and xor or <= >= !~ != == = ^ > ~ ! * / % + - < ( )");
   tokens.clear ();
   while (l7.token (token, type))
   {
-    std::cout << "# «" << token << "» " << type  << " " << Lexer::type_name (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    std::cout << "# «" << token << "» " << Lexer2::typeName (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer2::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),                  21,                     "21 operators");
-  t.is (tokens[0].first,                      "and",                  "tokens[0] == 'and'");
-  t.is (tokens[0].second,                     Lexer::typeOperator,    "tokens[0] == typeOperator"); // 130
-  t.is (tokens[1].first,                      "xor",                  "tokens[1] == 'xor'");
-  t.is (tokens[1].second,                     Lexer::typeOperator,    "tokens[1] == typeOperator");
-  t.is (tokens[2].first,                      "or",                   "tokens[2] == 'or'");
-  t.is (tokens[2].second,                     Lexer::typeOperator,    "tokens[2] == typeOperator");
-  t.is (tokens[3].first,                      "<=",                   "tokens[3] == '<='");
-  t.is (tokens[3].second,                     Lexer::typeOperator,    "tokens[3] == typeOperator");
-  t.is (tokens[4].first,                      ">=",                   "tokens[4] == '>='");
-  t.is (tokens[4].second,                     Lexer::typeOperator,    "tokens[4] == typeOperator");
-  t.is (tokens[5].first,                      "!~",                   "tokens[5] == '!~'");
-  t.is (tokens[5].second,                     Lexer::typeOperator,    "tokens[5] == typeOperator"); // 140
-  t.is (tokens[6].first,                      "!=",                   "tokens[6] == '!='");
-  t.is (tokens[6].second,                     Lexer::typeOperator,    "tokens[6] == typeOperator");
-  t.is (tokens[7].first,                      "==",                   "tokens[7] == '=='");
-  t.is (tokens[7].second,                     Lexer::typeOperator,    "tokens[7] == typeOperator");
-  t.is (tokens[8].first,                      "=",                    "tokens[8] == '='");
-  t.is (tokens[8].second,                     Lexer::typeOperator,    "tokens[8] == typeOperator");
-  t.is (tokens[9].first,                      "^",                    "tokens[9] == '^'");
-  t.is (tokens[9].second,                     Lexer::typeOperator,    "tokens[9] == typeOperator");
-  t.is (tokens[10].first,                     ">",                    "tokens[10] == '>'");
-  t.is (tokens[10].second,                    Lexer::typeOperator,    "tokens[10] == typeOperator"); // 150
-  t.is (tokens[11].first,                     "~",                    "tokens[11] == '~'");
-  t.is (tokens[11].second,                    Lexer::typeOperator,    "tokens[11] == typeOperator");
-  t.is (tokens[12].first,                     "!",                    "tokens[12] == '!'");
-  t.is (tokens[12].second,                    Lexer::typeOperator,    "tokens[12] == typeOperator");
-  t.is (tokens[13].first,                     "*",                    "tokens[13] == '*'");
-  t.is (tokens[13].second,                    Lexer::typeOperator,    "tokens[13] == typeOperator");
-  t.is (tokens[14].first,                     "/",                    "tokens[14] == '/'");
-  t.is (tokens[14].second,                    Lexer::typeOperator,    "tokens[14] == typeOperator");
-  t.is (tokens[15].first,                     "%",                    "tokens[15] == '%'");
-  t.is (tokens[15].second,                    Lexer::typeOperator,    "tokens[15] == typeOperator"); // 160
-  t.is (tokens[16].first,                     "+",                    "tokens[16] == '+'");
-  t.is (tokens[16].second,                    Lexer::typeOperator,    "tokens[16] == typeOperator");
-  t.is (tokens[17].first,                     "-",                    "tokens[17] == '-'");
-  t.is (tokens[17].second,                    Lexer::typeOperator,    "tokens[17] == typeOperator");
-  t.is (tokens[18].first,                     "<",                    "tokens[18] == '<'");
-  t.is (tokens[18].second,                    Lexer::typeOperator,    "tokens[18] == typeOperator");
-  t.is (tokens[19].first,                     "(",                    "tokens[19] == '('");
-  t.is (tokens[19].second,                    Lexer::typeOperator,    "tokens[19] == typeOperator");
-  t.is (tokens[20].first,                     ")",                    "tokens[20] == ')'");
-  t.is (tokens[20].second,                    Lexer::typeOperator,    "tokens[20] == typeOperator"); // 170
+  t.is ((int)tokens.size (),       21,                     "21 operators");
+  t.is (tokens[0].first,           "and",                  "tokens[0] == 'and'");
+  t.is ((int) tokens[0].second,    (int) Lexer2::Type::op, "tokens[0] == Type::op"); // 130
+  t.is (tokens[1].first,           "xor",                  "tokens[1] == 'xor'");
+  t.is ((int) tokens[1].second,    (int) Lexer2::Type::op, "tokens[1] == Type::op");
+  t.is (tokens[2].first,           "or",                   "tokens[2] == 'or'");
+  t.is ((int) tokens[2].second,    (int) Lexer2::Type::op, "tokens[2] == Type::op");
+  t.is (tokens[3].first,           "<=",                   "tokens[3] == '<='");
+  t.is ((int) tokens[3].second,    (int) Lexer2::Type::op, "tokens[3] == Type::op");
+  t.is (tokens[4].first,           ">=",                   "tokens[4] == '>='");
+  t.is ((int) tokens[4].second,    (int) Lexer2::Type::op, "tokens[4] == Type::op");
+  t.is (tokens[5].first,           "!~",                   "tokens[5] == '!~'");
+  t.is ((int) tokens[5].second,    (int) Lexer2::Type::op, "tokens[5] == Type::op"); // 140
+  t.is (tokens[6].first,           "!=",                   "tokens[6] == '!='");
+  t.is ((int) tokens[6].second,    (int) Lexer2::Type::op, "tokens[6] == Type::op");
+  t.is (tokens[7].first,           "==",                   "tokens[7] == '=='");
+  t.is ((int) tokens[7].second,    (int) Lexer2::Type::op, "tokens[7] == Type::op");
+  t.is (tokens[8].first,           "=",                    "tokens[8] == '='");
+  t.is ((int) tokens[8].second,    (int) Lexer2::Type::op, "tokens[8] == Type::op");
+  t.is (tokens[9].first,           "^",                    "tokens[9] == '^'");
+  t.is ((int) tokens[9].second,    (int) Lexer2::Type::op, "tokens[9] == Type::op");
+  t.is (tokens[10].first,          ">",                    "tokens[10] == '>'");
+  t.is ((int) tokens[10].second,   (int) Lexer2::Type::op, "tokens[10] == Type::op"); // 150
+  t.is (tokens[11].first,          "~",                    "tokens[11] == '~'");
+  t.is ((int) tokens[11].second,   (int) Lexer2::Type::op, "tokens[11] == Type::op");
+  t.is (tokens[12].first,          "!",                    "tokens[12] == '!'");
+  t.is ((int) tokens[12].second,   (int) Lexer2::Type::op, "tokens[12] == Type::op");
+  t.is (tokens[13].first,          "*",                    "tokens[13] == '*'");
+  t.is ((int) tokens[13].second,   (int) Lexer2::Type::op, "tokens[13] == Type::op");
+  t.is (tokens[14].first,          "/",                    "tokens[14] == '/'");
+  t.is ((int) tokens[14].second,   (int) Lexer2::Type::op, "tokens[14] == Type::op");
+  t.is (tokens[15].first,          "%",                    "tokens[15] == '%'");
+  t.is ((int) tokens[15].second,   (int) Lexer2::Type::op, "tokens[15] == Type::op"); // 160
+  t.is (tokens[16].first,          "+",                    "tokens[16] == '+'");
+  t.is ((int) tokens[16].second,   (int) Lexer2::Type::op, "tokens[16] == Type::op");
+  t.is (tokens[17].first,          "-",                    "tokens[17] == '-'");
+  t.is ((int) tokens[17].second,   (int) Lexer2::Type::op, "tokens[17] == Type::op");
+  t.is (tokens[18].first,          "<",                    "tokens[18] == '<'");
+  t.is ((int) tokens[18].second,   (int) Lexer2::Type::op, "tokens[18] == Type::op");
+  t.is (tokens[19].first,          "(",                    "tokens[19] == '('");
+  t.is ((int) tokens[19].second,   (int) Lexer2::Type::op, "tokens[19] == Type::op");
+  t.is (tokens[20].first,          ")",                    "tokens[20] == ')'");
+  t.is ((int) tokens[20].second,   (int)Lexer2::Type::op,  "tokens[20] == Type::op"); // 170
 
   // Test ordinal dates.
-  Lexer l8 ("9th 10th");
+  Lexer2 l8 ("9th 10th");
   l8.ambiguity (false);
   tokens.clear ();
   while (l8.token (token, type))
   {
-    std::cout << "# «" << token << "» " << type  << " " << Lexer::type_name (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    std::cout << "# «" << token << "» " << Lexer2::typeName (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer2::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),                  2,                      "2 tokens");
-  t.is (tokens[0].first,                      "9th",                  "tokens[0] == '9th'");
-  t.is (tokens[0].second,                     Lexer::typeIdentifier,  "tokens[0] == typeIdentifier");
-  t.is (tokens[1].first,                      "10th",                 "tokens[1] == '10th'");
-  t.is (tokens[1].second,                     Lexer::typeIdentifier,  "tokens[1] == typeIdentifier");
+  t.is ((int)tokens.size (),       2,                              "2 tokens");
+  t.is (tokens[0].first,           "9th",                          "tokens[0] == '9th'");
+  t.is ((int) tokens[0].second,    (int) Lexer2::Type::identifier, "tokens[0] == Type::identifier");
+  t.is (tokens[1].first,           "10th",                         "tokens[1] == '10th'");
+  t.is ((int) tokens[1].second,    (int) Lexer2::Type::identifier, "tokens[1] == Type::identifier");
 
   // Test tag recognition.
-  Lexer l9 ("+with -WITHOUT + 2");
+  Lexer2 l9 ("+with -WITHOUT + 2");
   l9.ambiguity (false);
   tokens.clear ();
   while (l9.token (token, type))
   {
-    std::cout << "# «" << token << "» " << type  << " " << Lexer::type_name (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    std::cout << "# «" << token << "» " << Lexer2::typeName (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer2::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),                  4,                      "4 tokens");
-  t.is (tokens[0].first,                      "+with",                "tokens[0] == '+with'");
-  t.is (tokens[0].second,                     Lexer::typeTag,         "tokens[0] == typeTag");
-  t.is (tokens[1].first,                      "-WITHOUT",             "tokens[1] == '-WITHOUT'");
-  t.is (tokens[1].second,                     Lexer::typeTag,         "tokens[1] == typeTag");
-  t.is (tokens[2].first,                      "+",                    "tokens[2] == '+'");
-  t.is (tokens[2].second,                     Lexer::typeOperator,    "tokens[2] == typeOperator");
-  t.is (tokens[3].first,                      "2",                    "tokens[3] == '2'");
-  t.is (tokens[3].second,                     Lexer::typeNumber,      "tokens[3] == typeNumber");
+  t.is ((int)tokens.size (),       4,                          "4 tokens");
+  t.is (tokens[0].first,           "+with",                    "tokens[0] == '+with'");
+  t.is ((int) tokens[0].second,    (int) Lexer2::Type::tag,    "tokens[0] == Type::tag");
+  t.is (tokens[1].first,           "-WITHOUT",                 "tokens[1] == '-WITHOUT'");
+  t.is ((int) tokens[1].second,    (int) Lexer2::Type::tag,    "tokens[1] == Type::tag");
+  t.is (tokens[2].first,           "+",                        "tokens[2] == '+'");
+  t.is ((int) tokens[2].second,    (int) Lexer2::Type::op,     "tokens[2] == Type::op");
+  t.is (tokens[3].first,           "2",                        "tokens[3] == '2'");
+  t.is ((int) tokens[3].second,    (int) Lexer2::Type::number, "tokens[3] == Type::number");
 
-  // void word_split (std::vector<std::string>&, const std::string&);
+  // void split (std::vector<std::string>&, const std::string&);
   std::string unsplit = " ( A or B ) ";
   std::vector <std::string> items;
-  Lexer::word_split (items, unsplit);
-  t.is (items.size (), (size_t) 5, "word_split ' ( A or B ) '");
-  t.is (items[0], "(",             "word_split ' ( A or B ) ' -> [0] '('");
-  t.is (items[1], "A",             "word_split ' ( A or B ) ' -> [1] 'A'");
-  t.is (items[2], "or",            "word_split ' ( A or B ) ' -> [2] 'or'");
-  t.is (items[3], "B",             "word_split ' ( A or B ) ' -> [3] 'B'");
-  t.is (items[4], ")",             "word_split ' ( A or B ) ' -> [4] ')'");
+  items = Lexer2::split (unsplit);
+  t.is (items.size (), (size_t) 5, "split ' ( A or B ) '");
+  t.is (items[0], "(",             "split ' ( A or B ) ' -> [0] '('");
+  t.is (items[1], "A",             "split ' ( A or B ) ' -> [1] 'A'");
+  t.is (items[2], "or",            "split ' ( A or B ) ' -> [2] 'or'");
+  t.is (items[3], "B",             "split ' ( A or B ) ' -> [3] 'B'");
+  t.is (items[4], ")",             "split ' ( A or B ) ' -> [4] ')'");
 
   // Test simple mode with contrived tokens that ordinarily split.
   unsplit = "  +-* a+b 12.3e4 'c d'";
-  Lexer::word_split (items, unsplit);
-  t.is (items.size (), (size_t) 4, "word_split '  +-* a+b 12.3e4 'c d''");
-  t.is (items[0], "+-*",           "word_split '  +-* a+b 12.3e4 'c d'' -> [0] '+-*'");
-  t.is (items[1], "a+b",           "word_split '  +-* a+b 12.3e4 'c d'' -> [1] 'a+b'");
-  t.is (items[2], "12.3e4",        "word_split '  +-* a+b 12.3e4 'c d'' -> [2] '12.3e4'");
-  t.is (items[3], "'c d'",         "word_split '  +-* a+b 12.3e4 'c d'' -> [3] 'c d'");
+  items = Lexer2::split (unsplit);
+  t.is (items.size (), (size_t) 8, "split '  +-* a+b 12.3e4 'c d''");
+  t.is (items[0], "+",             "split '  +-* a+b 12.3e4 'c d'' -> [0] '+'");
+  t.is (items[1], "-",             "split '  +-* a+b 12.3e4 'c d'' -> [1] '-'");
+  t.is (items[2], "*",             "split '  +-* a+b 12.3e4 'c d'' -> [2] '*'");
+  t.is (items[3], "a",             "split '  +-* a+b 12.3e4 'c d'' -> [3] 'a'");
+  t.is (items[4], "+",             "split '  +-* a+b 12.3e4 'c d'' -> [4] '+'");
+  t.is (items[5], "b",             "split '  +-* a+b 12.3e4 'c d'' -> [5] 'b'");
+  t.is (items[6], "12.3e4",        "split '  +-* a+b 12.3e4 'c d'' -> [6] '12.3e4'");
+  t.is (items[7], "c d",           "split '  +-* a+b 12.3e4 'c d'' -> [7] 'c d'");
 
   // Test common expression element.
   unsplit = "name=value";
-  Lexer::token_split (items, unsplit);
-  t.is (items.size (), (size_t) 3, "token_split 'name=value'");
-  if (items.size () == 3)
-  {
-    t.is (items[0], "name",          "token_split 'name=value' -> [0] 'name'");
-    t.is (items[1], "=",             "token_split 'name=value' -> [1] '='");
-    t.is (items[2], "value",         "token_split 'name=value' -> [2] 'value'");
-  }
-  else
-  {
-    t.fail ("token_split 'name=value' -> [0] 'name'");
-    t.fail ("token_split 'name=value' -> [1] '='");
-    t.fail ("token_split 'name=value' -> [2] 'value'");
-  }
+  items = Lexer2::split (unsplit);
+  t.is (items.size (), (size_t) 1, "split 'name=value'");
 
   // Test unterminated tokens.
   unsplit = " ordinary ";
-  Lexer::token_split (items, unsplit);
-  t.is (items.size (), (size_t) 1, "token_split 'ordinary' --> 1 token");
-  t.is (items[0], "ordinary",      "token_split 'ordinary' --> 'ordinary'");
+  items = Lexer2::split (unsplit);
+  t.is (items.size (), (size_t) 1, "split 'ordinary' --> 1 token");
+  t.is (items[0], "ordinary",      "split 'ordinary' --> 'ordinary'");
 
   return 0;
 }

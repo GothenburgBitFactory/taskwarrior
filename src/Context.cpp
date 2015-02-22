@@ -657,8 +657,8 @@ void Context::staticInitialization ()
 
   Task::searchCaseSensitive = Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
   Task::regex               = Variant::searchUsingRegex    = config.getBoolean ("regex");
-  Lexer::dateFormat         = Variant::dateFormat          = config.get ("dateformat");
-  Lexer::isoEnabled         = Variant::isoEnabled          = config.getBoolean ("date.iso");
+  Lexer2::dateFormat        = Variant::dateFormat          = config.get ("dateformat");
+  Lexer2::isoEnabled        = Variant::isoEnabled          = config.getBoolean ("date.iso");
 
   std::map <std::string, Column*>::iterator i;
   for (i = columns.begin (); i != columns.end (); ++i)

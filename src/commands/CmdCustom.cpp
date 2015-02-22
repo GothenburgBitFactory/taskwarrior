@@ -32,7 +32,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <Filter.h>
-#include <Lexer.h>
+#include <Lexer2.h>
 #include <ViewTask.h>
 #include <i18n.h>
 #include <text.h>
@@ -83,8 +83,8 @@ int CmdCustom::execute (std::string& output)
 
   // Prepend the argument list with those from the report filter.
   std::string lexeme;
-  Lexer::Type type;
-  Lexer lex (reportFilter);
+  Lexer2::Type type;
+  Lexer2 lex (reportFilter);
   lex.ambiguity (false);
   while (lex.token (lexeme, type))
     context.cli.add (lexeme);

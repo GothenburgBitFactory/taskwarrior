@@ -29,7 +29,6 @@
 #include <algorithm>
 #include <Context.h>
 #include <Nibbler.h>
-#include <Lexer.h>
 #include <Lexer2.h>
 #include <CLI.h>
 #include <Color.h>
@@ -662,13 +661,13 @@ void CLI::addArg (const std::string& arg)
     // that cause the lexemes to be ignored, and the original arugment used
     // intact.
     std::string lexeme;
-    Lexer::Type type;
-    Lexer lex (raw);
+    Lexer2::Type type;
+    Lexer2 lex (raw);
     lex.ambiguity (false);
 
-    std::vector <std::pair <std::string, Lexer::Type> > lexemes;
+    std::vector <std::pair <std::string, Lexer2::Type> > lexemes;
     while (lex.token (lexeme, type))
-      lexemes.push_back (std::pair <std::string, Lexer::Type> (lexeme, type));
+      lexemes.push_back (std::pair <std::string, Lexer2::Type> (lexeme, type));
 
     if (disqualifyInsufficientTerms (lexemes) ||
         disqualifyNoOps             (lexemes) ||
@@ -682,7 +681,7 @@ void CLI::addArg (const std::string& arg)
     {
       // How often have I said to you that when you have eliminated the
       // impossible, whatever remains, however improbable, must be the truth?
-      std::vector <std::pair <std::string, Lexer::Type> >::iterator l;
+      std::vector <std::pair <std::string, Lexer2::Type> >::iterator l;
       for (l = lexemes.begin (); l != lexemes.end (); ++l)
         _original_args.push_back (l->first);
     }
@@ -714,9 +713,7 @@ void CLI::aliasExpansion ()
       {
         if (_aliases.find (raw) != _aliases.end ())
         {
-          std::vector <std::string> lexed;
-          Lexer::token_split (lexed, _aliases[raw]);
-
+          std::vector <std::string> lexed = Lexer2::split (_aliases[raw]);
           std::vector <std::string>::iterator l;
           for (l = lexed.begin (); l != lexed.end (); ++l)
           {
@@ -1815,8 +1812,7 @@ void CLI::injectDefaults ()
       if (defaultCommand != "")
       {
         // Split the defaultCommand into separate args.
-        std::vector <std::string> tokens;
-        Lexer::token_split (tokens, defaultCommand);
+        std::vector <std::string> tokens = Lexer2::split (defaultCommand);
 
         // Modify _args to be:   <args0> [<def0> ...] <args1> [...]
         std::vector <A> reconstructed;
@@ -2306,9 +2302,9 @@ bool CLI::isName (const std::string& raw) const
   {
     for (int i = 0; i < raw.length (); ++i)
     {
-      if (i == 0 && ! Lexer::is_ident_start (raw[i]))
+      if (i == 0 && ! Lexer2::isIdentifierStart (raw[i]))
         return false;
-      else if (! Lexer::is_ident (raw[i]))
+      else if (! Lexer2::isIdentifierNext (raw[i]))
         return false;
     }
 
@@ -2320,19 +2316,19 @@ bool CLI::isName (const std::string& raw) const
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CLI::disqualifyInsufficientTerms (
-  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+  const std::vector <std::pair <std::string, Lexer2::Type> >& lexemes) const
 {
   return lexemes.size () < 3 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CLI::disqualifyNoOps (
-  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+  const std::vector <std::pair <std::string, Lexer2::Type> >& lexemes) const
 {
   bool foundOP = false;
-  std::vector <std::pair <std::string, Lexer::Type> >::const_iterator l;
+  std::vector <std::pair <std::string, Lexer2::Type> >::const_iterator l;
   for (l = lexemes.begin (); l != lexemes.end (); ++l)
-    if (l->second == Lexer::typeOperator)
+    if (l->second == Lexer2::Type::op)
       foundOP = true;
 
   return ! foundOP;
@@ -2340,16 +2336,16 @@ bool CLI::disqualifyNoOps (
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CLI::disqualifyOnlyParenOps (
-  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+  const std::vector <std::pair <std::string, Lexer2::Type> >& lexemes) const
 {
   int opCount      = 0;
   int opSugarCount = 0;
   int opParenCount = 0;
 
-  std::vector <std::pair <std::string, Lexer::Type> >::const_iterator l;
+  std::vector <std::pair <std::string, Lexer2::Type> >::const_iterator l;
   for (l = lexemes.begin (); l != lexemes.end (); ++l)
   {
-    if (l->second == Lexer::typeOperator)
+    if (l->second == Lexer2::Type::op)
     {
       ++opCount;
 
@@ -2376,7 +2372,7 @@ bool CLI::disqualifyOnlyParenOps (
 // as there are no operators in between, which includes syntactic sugar that
 // hides operators.
 bool CLI::disqualifyFirstLastBinary (
-  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+  const std::vector <std::pair <std::string, Lexer2::Type> >& lexemes) const
 {
   bool firstBinary = false;
   bool lastBinary  = false;
@@ -2395,7 +2391,7 @@ bool CLI::disqualifyFirstLastBinary (
 ////////////////////////////////////////////////////////////////////////////////
 // Disqualify terms when there operators hidden by syntactic sugar.
 bool CLI::disqualifySugarFree (
-  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+  const std::vector <std::pair <std::string, Lexer2::Type> >& lexemes) const
 {
   bool sugared = true;
   for (unsigned int i = 1; i < lexemes.size () - 1; ++i)

@@ -37,19 +37,25 @@ static const int uuid_min_length = 8;
 
 std::string Lexer2::dateFormat = "";
 bool Lexer2::isoEnabled = true;
-bool Lexer2::ambiguity = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 Lexer2::Lexer2 (const std::string& text)
 : _text (text)
 , _cursor (0)
 , _eos (text.size ())
+, _ambiguity (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Lexer2::~Lexer2 ()
 {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Lexer2::ambiguity (bool value)
+{
+  _ambiguity = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -417,7 +423,7 @@ bool Lexer2::isDate (std::string& token, Lexer2::Type& type)
   {
     std::size_t iso_i = 0;
     ISO8601d iso;
-    iso.ambiguity (Lexer2::ambiguity);
+    iso.ambiguity (_ambiguity);
     if (iso.parse (_text.substr (_cursor), iso_i))
     {
       type = Lexer2::Type::date;
@@ -504,10 +510,13 @@ bool Lexer2::isUUID (std::string& token, Lexer2::Type& type)
 
   if (i >= uuid_min_length)
   {
-    token = _text.substr (_cursor, i + 1);
-    type = Lexer2::Type::uuid;
-    _cursor += i;
-    return true;
+    token = _text.substr (_cursor, i);
+    if (! isAllDigits (token))
+    {
+      type = Lexer2::Type::uuid;
+      _cursor += i;
+      return true;
+    }
   }
 
   return false;
@@ -545,7 +554,7 @@ bool Lexer2::isHexNumber (std::string& token, Lexer2::Type& type)
 // Lexer2::Type::number
 //   \d+
 //   [ . \d+ ]
-//   [ e|E [ +|- ] \d+ ]
+//   [ e|E [ +|- ] \d+ [ . \d+ ] ]
 bool Lexer2::isNumber (std::string& token, Lexer2::Type& type)
 {
   std::size_t marker = _cursor;
@@ -581,6 +590,17 @@ bool Lexer2::isNumber (std::string& token, Lexer2::Type& type)
         ++marker;
         while (isDigit (_text[marker]))
           utf8_next_char (_text, marker);
+
+        if (_text[marker] == '.')
+        {
+          ++marker;
+          if (isDigit (_text[marker]))
+          {
+            ++marker;
+            while (isDigit (_text[marker]))
+              utf8_next_char (_text, marker);
+          }
+        }
       }
     }
 
@@ -667,7 +687,7 @@ bool Lexer2::isURL (std::string& token, Lexer2::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer2::Type::pair
-//   <identifier> : [ <string> | <word> ]
+//   <identifier> :|= [ <string> | <word> ]
 bool Lexer2::isPair (std::string& token, Lexer2::Type& type)
 {
   std::size_t marker = _cursor;
@@ -698,10 +718,17 @@ bool Lexer2::isPair (std::string& token, Lexer2::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer2::Type::tag
-//   [ +|- ] <isIdentifierStart> [ <isIdentifierNext> ]*
+//   ^ | <isWhiteSpace>    [ +|- ] <isIdentifierStart> [ <isIdentifierNext> ]*
 bool Lexer2::isTag (std::string& token, Lexer2::Type& type)
 {
   std::size_t marker = _cursor;
+
+  // This test requires a tag to have a preceding space or start a string.
+  //   bad:  'a+b' --> identifier tag
+  //   good: 'a+b' --> identifier op identifier
+  if (marker > 0 &&
+      ! isWhitespace (_text[marker - 1]))
+    return false;
 
   if (_text[marker] == '+' ||
       _text[marker] == '-')
@@ -926,7 +953,7 @@ bool Lexer2::isWord (std::string& token, Lexer2::Type& type)
 {
   std::size_t marker = _cursor;
 
-  while (! isWhitespace (_text[marker]))
+  while (_text[marker] && ! isWhitespace (_text[marker]))
     utf8_next_char (_text, marker);
 
   if (marker > _cursor)
