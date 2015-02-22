@@ -490,18 +490,6 @@ bool digitsOnly (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool noSpaces (const std::string& input)
-{
-  std::string::size_type i = 0;
-  int character;
-  while ((character = utf8_next_char (input, i)))
-    if (Lexer::isWhitespace (character))
-      return false;
-
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Override of ispunct, that considers #, $ and @ not to be punctuation.
 //
 // ispunct:      ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~

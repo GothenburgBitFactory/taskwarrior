@@ -51,7 +51,6 @@ const std::string str_replace (const std::string&, const std::string&, const std
 const char* optionalBlankLine ();
 bool nontrivial (const std::string&);
 bool digitsOnly (const std::string&);
-bool noSpaces (const std::string&);
 bool isPunctuation (char);
 bool compare (const std::string&, const std::string&, bool sensitive = true);
 bool closeEnough (const std::string&, const std::string&, unsigned int minLength = 0);

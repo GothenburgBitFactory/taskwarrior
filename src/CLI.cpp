@@ -849,7 +849,7 @@ void CLI::categorize ()
       a->tag ("MODIFICATION");
 
       // If the argument contains a space, it was quoted.  Record that.
-      if (! noSpaces (raw))
+      if (! Lexer::isOneWord (raw))
         a->tag ("QUOTED");
 
       changes = true;
@@ -859,7 +859,7 @@ void CLI::categorize ()
       a->tag ("FILTER");
 
       // If the argument contains a space, it was quoted.  Record that.
-      if (! noSpaces (raw))
+      if (! Lexer::isOneWord (raw))
         a->tag ("QUOTED");
 
       changes = true;
