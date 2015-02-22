@@ -299,9 +299,11 @@ int execute (
 
     if (dup2 (pin[0], STDIN_FILENO) == -1)
       throw std::string (std::strerror (errno));
+    close (pin[0]);
 
     if (dup2 (pout[1], STDOUT_FILENO) == -1)
       throw std::string (std::strerror (errno));
+    close (pout[1]);
 
     char** argv = new char* [args.size () + 2];
     argv[0] = (char*) executable.c_str ();
