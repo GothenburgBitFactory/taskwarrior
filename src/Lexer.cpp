@@ -999,3 +999,15 @@ bool Lexer::isAllDigits (const std::string& text)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isOneWord (const std::string& text)
+{
+  std::string::size_type i = 0;
+  int character;
+  while ((character = utf8_next_char (text, i)))
+    if (Lexer::isWhitespace (character))
+      return false;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////

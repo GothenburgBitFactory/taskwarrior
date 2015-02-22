@@ -59,6 +59,7 @@ public:
   static std::vector <std::string> split (const std::string&);
   static std::string typeToString (Lexer::Type);
   static bool isAllDigits (const std::string&);
+  static bool isOneWord (const std::string&);
 
   // Static helpers.
   static const std::string typeName (const Lexer::Type&);
