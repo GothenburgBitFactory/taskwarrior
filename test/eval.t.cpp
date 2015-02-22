@@ -137,9 +137,9 @@ int main (int argc, char** argv)
   t.is (result.get_integer (), 7,              "infix '2*3+1' --> 7");
 
   // TW-1254 - Unary minus support.
-  e.evaluateInfixExpression ("2--3", result);
-  t.is (result.type (), Variant::type_integer, "infix '2--3' --> integer");
-  t.is (result.get_integer (), 5,              "infix '2--3' --> 5");
+  e.evaluateInfixExpression ("2- -3", result);
+  t.is (result.type (), Variant::type_integer, "infix '2- -3' --> integer");
+  t.is (result.get_integer (), 5,              "infix '2- -3' --> 5");
 
   //e.debug ();
   e.evaluateInfixExpression ("!false", result);
