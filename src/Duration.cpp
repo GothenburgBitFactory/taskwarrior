@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <Nibbler.h>
-#include <Lexer2.h>
+#include <Lexer.h>
 #include <Duration.h>
 #include <text.h>
 
@@ -295,7 +295,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
   if (n.getOneOf (units, unit))
   {
     if (n.depleted () ||
-        Lexer2::isWhitespace (n.next ()))
+        Lexer::isWhitespace (n.next ()))
     {
       start = original_start + n.cursor ();
 
@@ -319,7 +319,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
     if (n.getOneOf (units, unit))
     {
       if (n.depleted () ||
-          Lexer2::isWhitespace (n.next ()))
+          Lexer::isWhitespace (n.next ()))
       {
         start = original_start + n.cursor ();
         double quantity = strtod (number.c_str (), NULL);

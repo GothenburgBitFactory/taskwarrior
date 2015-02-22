@@ -24,17 +24,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LEXER2
-#define INCLUDED_LEXER2
+#ifndef INCLUDED_LEXER
+#define INCLUDED_LEXER
 
 #include <string>
 #include <vector>
 #include <cstddef>
 
-// Lexer2: A UTF8 lexical analyzer for every construct used on the Taskwarrior
-//         command line, with additional recognized types for disambiguation.
+// Lexer: A UTF8 lexical analyzer for every construct used on the Taskwarrior
+//        command line, with additional recognized types for disambiguation.
 
-class Lexer2
+class Lexer
 {
 public:
   // These are overridable.
@@ -51,17 +51,17 @@ public:
                     identifier, word,
                     date, duration };
 
-  Lexer2 (const std::string&);
-  ~Lexer2 ();
+  Lexer (const std::string&);
+  ~Lexer ();
   void ambiguity (bool);
-  bool token (std::string&, Lexer2::Type&);
-  static std::vector <std::pair <std::string, Lexer2::Type>> tokens (const std::string&);
+  bool token (std::string&, Lexer::Type&);
+  static std::vector <std::pair <std::string, Lexer::Type>> tokens (const std::string&);
   static std::vector <std::string> split (const std::string&);
-  static std::string typeToString (Lexer2::Type);
+  static std::string typeToString (Lexer::Type);
   static bool isAllDigits (const std::string&);
 
   // Static helpers.
-  static const std::string typeName (const Lexer2::Type&);
+  static const std::string typeName (const Lexer::Type&);
   static bool isWhitespace         (int);
   static bool isDigit              (int);
   static bool isHexDigit           (int);
@@ -81,23 +81,23 @@ public:
   int hexToInt (int, int, int, int) const;
 
   // Classifiers.
-  bool isString       (std::string&, Lexer2::Type&, int quote);
-  bool isDate         (std::string&, Lexer2::Type&);
-  bool isDuration     (std::string&, Lexer2::Type&);
-  bool isUUID         (std::string&, Lexer2::Type&);
-  bool isNumber       (std::string&, Lexer2::Type&);
-  bool isHexNumber    (std::string&, Lexer2::Type&);
-  bool isSeparator    (std::string&, Lexer2::Type&);
-  bool isList         (std::string&, Lexer2::Type&);
-  bool isURL          (std::string&, Lexer2::Type&);
-  bool isPair         (std::string&, Lexer2::Type&);
-  bool isTag          (std::string&, Lexer2::Type&);
-  bool isPath         (std::string&, Lexer2::Type&);
-  bool isSubstitution (std::string&, Lexer2::Type&);
-  bool isPattern      (std::string&, Lexer2::Type&);
-  bool isOperator     (std::string&, Lexer2::Type&);
-  bool isIdentifier   (std::string&, Lexer2::Type&);
-  bool isWord         (std::string&, Lexer2::Type&);
+  bool isString       (std::string&, Lexer::Type&, int quote);
+  bool isDate         (std::string&, Lexer::Type&);
+  bool isDuration     (std::string&, Lexer::Type&);
+  bool isUUID         (std::string&, Lexer::Type&);
+  bool isNumber       (std::string&, Lexer::Type&);
+  bool isHexNumber    (std::string&, Lexer::Type&);
+  bool isSeparator    (std::string&, Lexer::Type&);
+  bool isList         (std::string&, Lexer::Type&);
+  bool isURL          (std::string&, Lexer::Type&);
+  bool isPair         (std::string&, Lexer::Type&);
+  bool isTag          (std::string&, Lexer::Type&);
+  bool isPath         (std::string&, Lexer::Type&);
+  bool isSubstitution (std::string&, Lexer::Type&);
+  bool isPattern      (std::string&, Lexer::Type&);
+  bool isOperator     (std::string&, Lexer::Type&);
+  bool isIdentifier   (std::string&, Lexer::Type&);
+  bool isWord         (std::string&, Lexer::Type&);
 
 private:
   std::string _text;

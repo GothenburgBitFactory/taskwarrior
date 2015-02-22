@@ -37,7 +37,7 @@
 #ifdef NIBBLER_FEATURE_REGEX
 #include <RX.h>
 #endif
-#include <Lexer2.h>
+#include <Lexer.h>
 
 static const char*        _uuid_pattern    = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 static const unsigned int _uuid_min_length = 8;
@@ -1005,12 +1005,12 @@ bool Nibbler::getName (std::string& result)
   {
     if (! isdigit (_input[i]) &&
         ! ispunct (_input[i]) &&
-        ! Lexer2::isWhitespace (_input[i]))
+        ! Lexer::isWhitespace (_input[i]))
     {
       ++i;
       while (i < _length &&
              (_input[i] == '_' || ! ispunct (_input[i])) &&
-             ! Lexer2::isWhitespace (_input[i]))
+             ! Lexer::isWhitespace (_input[i]))
       {
         ++i;
       }
@@ -1037,7 +1037,7 @@ bool Nibbler::getWord (std::string& result)
   {
     while (!isdigit (_input[i]) &&
            !isPunctuation (_input[i]) &&
-           !Lexer2::isWhitespace (_input[i]))
+           !Lexer::isWhitespace (_input[i]))
     {
       ++i;
     }

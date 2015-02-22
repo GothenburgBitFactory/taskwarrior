@@ -34,7 +34,7 @@
 #include <strings.h>
 #include <ctype.h>
 #include <Context.h>
-#include <Lexer2.h>
+#include <Lexer.h>
 #include <math.h>
 #include <util.h>
 #include <text.h>
@@ -473,7 +473,7 @@ bool nontrivial (const std::string& input)
   std::string::size_type i = 0;
   int character;
   while ((character = utf8_next_char (input, i)))
-    if (! Lexer2::isWhitespace (character))
+    if (! Lexer::isWhitespace (character))
       return true;
 
   return false;
@@ -495,7 +495,7 @@ bool noSpaces (const std::string& input)
   std::string::size_type i = 0;
   int character;
   while ((character = utf8_next_char (input, i)))
-    if (Lexer2::isWhitespace (character))
+    if (Lexer::isWhitespace (character))
       return false;
 
   return true;

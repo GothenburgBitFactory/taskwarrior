@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <Lexer2.h>
+#include <Lexer.h>
 #include <Path.h>
 #include <File.h>
 
@@ -126,11 +126,11 @@ private:
   bool isOperator       (const std::string&) const;
   bool isName           (const std::string&) const;
 
-  bool disqualifyInsufficientTerms (const std::vector <std::pair <std::string, Lexer2::Type> >&) const;
-  bool disqualifyNoOps             (const std::vector <std::pair <std::string, Lexer2::Type> >&) const;
-  bool disqualifyOnlyParenOps      (const std::vector <std::pair <std::string, Lexer2::Type> >&) const;
-  bool disqualifyFirstLastBinary   (const std::vector <std::pair <std::string, Lexer2::Type> >&) const;
-  bool disqualifySugarFree         (const std::vector <std::pair <std::string, Lexer2::Type> >&) const;
+  bool disqualifyInsufficientTerms (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
+  bool disqualifyNoOps             (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
+  bool disqualifyOnlyParenOps      (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
+  bool disqualifyFirstLastBinary   (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
+  bool disqualifySugarFree         (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
 
 public:
   std::multimap <std::string, std::string> _entities;
