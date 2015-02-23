@@ -127,6 +127,7 @@ int CmdShow::execute (std::string& output)
     " column.padding"
     " complete.all.tags"
     " confirmation"
+    " context"
     " data.location"
     " dateformat"
     " dateformat.annotation"
@@ -230,6 +231,7 @@ int CmdShow::execute (std::string& output)
           i->first.substr (0, 14) != "color.project."        &&
           i->first.substr (0, 10) != "color.tag."            &&
           i->first.substr (0, 10) != "color.uda."            &&
+          i->first.substr (0,  8) != "context."              &&
           i->first.substr (0,  8) != "holiday."              &&
           i->first.substr (0,  7) != "report."               &&
           i->first.substr (0,  6) != "alias."                &&
