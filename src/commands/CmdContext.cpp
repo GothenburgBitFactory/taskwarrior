@@ -39,7 +39,7 @@ extern Context context;
 CmdContext::CmdContext ()
 {
   _keyword     = "context";
-  _usage       = "task          context [name [value | '']]";
+  _usage       = "task          context [<name> | subcommand]";
   _description = STRING_CMD_CONTEXT_USAGE;
   _read_only   = true;
   _displays_id = false;
@@ -59,17 +59,17 @@ int CmdContext::execute (std::string& output)
     std::string subcommand = words[0];
 
     if (subcommand == "define")
-      rc = defineContext(words, out);
+      rc = defineContext (words, out);
     else if (subcommand == "delete")
-      rc = deleteContext(words, out);
+      rc = deleteContext (words, out);
     else if (subcommand == "list")
-      rc = listContexts(words, out);
+      rc = listContexts (words, out);
     else if (subcommand == "none")
-      rc = unsetContext(words, out);
+      rc = unsetContext (words, out);
     else if (subcommand == "show")
-      rc = showContext(words, out);
+      rc = showContext (words, out);
     else
-      rc = setContext(words, out);
+      rc = setContext (words, out);
   }
 
   output = out.str ();
@@ -77,10 +77,10 @@ int CmdContext::execute (std::string& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Joins all the words in the specified interval <from, to) to a one string,
-// which is returned.
+// Joins all the words in the specified interval <from, to) to one string,
+// which is then returned.
 //
-// If to is specified as 0, all remaining words will be joined.
+// If to is specified as 0 (default value), all the remaining words will be joined.
 //
 std::string CmdContext::joinWords (std::vector <std::string>& words, unsigned int from, unsigned int to /* = 0 */)
 {
@@ -109,68 +109,98 @@ std::vector <std::string> CmdContext::getContexts ()
 
   Config::const_iterator name;
   for (name = context.config.begin (); name != context.config.end (); ++name)
-  {
     if (name->first.substr (0, 8) == "context.")
-    {
       contexts.push_back (name->first.substr (8));
-    }
-  }
 
   return contexts;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Defines a new user-provided context.
+//  - The context definition is written into .taskrc as a context.<name> variable.
+//  - Deletion of the context requires confirmation if rc.confirmation=yes.
+//
+// Returns: 0 if the addition of the config variable was successful, 1 otherwise
+//
+// Invoked with: task context define <name> <filter>
+// Example:      task context define home project:Home
+//
 int CmdContext::defineContext (std::vector <std::string>& words, std::stringstream& out)
 {
-  // task context define home project:Home
+  int rc = 0;
+
   if (words.size () > 2)
   {
     std::string name = "context." + words[1];
     std::string value = joinWords(words, 2);
     // TODO: Check if the value is a proper filter
 
+    // Set context definition config variable
     bool confirmation = context.config.getBoolean ("confirmation");
     bool success = CmdConfig::setConfigVariable(name, value, confirmation);
 
     if (success)
-      out << "Context '" << words[1] << "' successfully defined." << "\n";
+      out << "Context '" << words[1] << "' defined." << "\n";
     else
+    {
       out << "Context '" << words[1] << "' was not defined." << "\n";
+      rc = 1;
+    }
   }
   else
-    throw "You have to specify both context name and definition.";
+    throw "Both context name and its definition must be provided.";
 
-  return 0;
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Deletes the specified context.
+//  - If the deleted context is currently active, unset it.
+//  - Deletion of the context requires confirmation if rc.confirmation=yes.
+//
+// Returns: 0 if the removal of the config variable was successful, 1 otherwise
+//
+// Invoked with: task context delete <name>
+// Example:      task context delete home
+//
 int CmdContext::deleteContext (std::vector <std::string>& words, std::stringstream& out)
 {
-  // task context delete home
+  int rc = 0;
+
   if (words.size () > 1)
   {
+    // Delete the specified context
     std::string name = "context." + words[1];
 
     bool confirmation = context.config.getBoolean ("confirmation");
-    int status = CmdConfig::unsetConfigVariable(name, confirmation);
+    rc = CmdConfig::unsetConfigVariable(name, confirmation);
 
+    // If the currently set context was deleted, unset it
     std::string currentContext = context.config.get ("context");
 
     if (currentContext == words[1])
       CmdConfig::unsetConfigVariable("context", false);
 
-    if (status == 0)
-      out << "Context '" << words[1] << "' successfully undefined." << "\n";
+    // Output feedback
+    if (rc == 0)
+      out << "Context '" << words[1] << "' undefined." << "\n";
     else
       out << "Context '" << words[1] << "' was not undefined." << "\n";
   }
   else
-    throw "You have to specify context name.";
+    throw "Context name needs to be specified.";
 
-  return 0;
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Render a list of context names and their definitions.
+//
+// Returns: 0 the resulting list is non-empty, 1 otherwise
+//
+// Invoked with: task context list
+// Example:      task context list
+//
 int CmdContext::listContexts (std::vector <std::string>& words, std::stringstream& out)
 {
   int rc = 0;
@@ -180,8 +210,6 @@ int CmdContext::listContexts (std::vector <std::string>& words, std::stringstrea
   {
     std::sort (contexts.begin (), contexts.end ());
 
-    // Render a list of UDA name, type, label, allowed values,
-    // possible default value, and finally the usage count.
     ViewText view;
     view.width (context.getWidth ());
     view.add (Column::factory ("string", "Name"));
@@ -214,29 +242,51 @@ int CmdContext::listContexts (std::vector <std::string>& words, std::stringstrea
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Sets the specified context as currently active.
+//   - If some other context was active, the value of currently active context
+//     is replaced, not added.
+//   - Setting of the context does not require confirmation.
+//
+// Returns: 0 if the setting of the context was successful, 1 otherwise
+//
+// Invoked with: task context <name>
+// Example:      task context home
+//
 int CmdContext::setContext (std::vector <std::string>& words, std::stringstream& out)
 {
-  // task context home
+  int rc = 0;
   std::string value = words[0];
   std::vector <std::string> contexts = getContexts ();
 
+  // Check that the specified context is defined
   if (std::find (contexts.begin (), contexts.end (), value) == contexts.end())
     throw format ("Context '{1}' not found.", value);
 
+  // Set the active context.
+  // Should always succeed, as we do not require confirmation.
   bool success = CmdConfig::setConfigVariable("context", value, false);
 
   if (success)
     out << "Context '" << value << "' applied." << "\n";
   else
+  {
     out << "Context '" << value << "' was not applied." << "\n";
+    rc = 1;
+  }
 
-  return 0;
+  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Shows the currently active context.
+//
+// Returns: Always returns 0.
+//
+// Invoked with: task context show
+// Example:      task context show
+//
 int CmdContext::showContext (std::vector <std::string>& words, std::stringstream& out)
 {
-  // task context show
   std::string currentContext = context.config.get ("context");
 
   if (currentContext == "")
@@ -251,9 +301,17 @@ int CmdContext::showContext (std::vector <std::string>& words, std::stringstream
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Unsets the currently active context.
+//   - Unsetting of the context does not require confirmation.
+//
+// Returns: 0 if the unsetting of the context was successful, 1 otherwise (also
+//          returned if no context is currently active)
+//
+// Invoked with: task context none
+// Example:      task context none
+//
 int CmdContext::unsetContext (std::vector <std::string>& words, std::stringstream& out)
 {
-  // task context none
   int rc = 0;
   int status = CmdConfig::unsetConfigVariable("context", false);
 

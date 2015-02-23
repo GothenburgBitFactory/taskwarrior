@@ -156,13 +156,13 @@ int CmdConfig::execute (std::string& output)
   if (words.size ())
   {
     bool confirmation = context.config.getBoolean ("confirmation");
-
     bool change = false;
     bool found = false;
 
     std::string name = words[0];
     std::string value = "";
 
+    // Join the remaining words into config variable's value
     if (words.size () > 1)
     {
       for (unsigned int i = 1; i < words.size (); ++i)
@@ -199,7 +199,7 @@ int CmdConfig::execute (std::string& output)
           throw format (STRING_CMD_CONFIG_NO_ENTRY, name);
       }
 
-      // Write .taskrc (or equivalent)
+      // Show feedback depending on whether .taskrc has been rewritten
       if (change)
       {
         out << format (STRING_CMD_CONFIG_FILE_MOD,
