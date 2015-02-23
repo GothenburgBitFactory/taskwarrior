@@ -823,7 +823,7 @@ void Date::operator++ (int)
 ////////////////////////////////////////////////////////////////////////////////
 bool Date::isEpoch (const std::string& input)
 {
-  if (digitsOnly (input) &&
+  if (Lexer::isAllDigits (input) &&
       input.length () <= 10 )
   {
     _t = (time_t) atoi (input.c_str ());

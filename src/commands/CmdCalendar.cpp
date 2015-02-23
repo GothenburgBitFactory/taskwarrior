@@ -120,11 +120,11 @@ int CmdCalendar::execute (std::string& output)
       argWholeYear = true;
 
     // YYYY.
-    else if (digitsOnly (*arg) && arg->length () == 4)
+    else if (Lexer::isAllDigits (*arg) && arg->length () == 4)
       argYear = strtol (arg->c_str (), NULL, 10);
 
     // MM.
-    else if (digitsOnly (*arg) && arg->length () <= 2)
+    else if (Lexer::isAllDigits (*arg) && arg->length () <= 2)
     {
       argMonth = strtol (arg->c_str (), NULL, 10);
       if (argMonth < 1 || argMonth > 12)

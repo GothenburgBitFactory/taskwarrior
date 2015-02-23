@@ -107,7 +107,7 @@ Duration::Duration (time_t input)
 Duration::Duration (const std::string& input)
 : _secs (0)
 {
-  if (digitsOnly (input))
+  if (Lexer::isAllDigits (input))
   {
     time_t value = (time_t) strtol (input.c_str (), NULL, 10);
     if (value == 0 || value > 60)

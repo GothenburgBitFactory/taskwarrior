@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (209);
+  UnitTest t (205);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -289,12 +289,6 @@ int main (int argc, char** argv)
   t.ok    (nontrivial ("a   "),                   "nontrivial 'a   ' -> true");
   t.ok    (nontrivial ("  \t\ta"),                "nontrivial '  \\t\\ta' -> true");
   t.ok    (nontrivial ("a\t\t  "),                "nontrivial 'a\\t\\t  ' -> true");
-
-  // bool digitsOnly (const std::string&);
-  t.ok    (digitsOnly (""),                       "digitsOnly '' -> true");
-  t.ok    (digitsOnly ("0"),                      "digitsOnly '0' -> true");
-  t.ok    (digitsOnly ("123"),                    "digitsOnly '123' -> true");
-  t.notok (digitsOnly ("12fa"),                   "digitsOnly '12fa' -> false");
 
   // bool compare (const std::string&, const std::string&, bool caseless = false);
   // Make sure degenerate cases are handled.

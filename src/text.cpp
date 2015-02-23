@@ -480,16 +480,6 @@ bool nontrivial (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool digitsOnly (const std::string& input)
-{
-  for (size_t i = 0; i < input.length (); ++i)
-    if (!isdigit (input[i]))
-      return false;
-
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Override of ispunct, that considers #, $ and @ not to be punctuation.
 //
 // ispunct:      ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~

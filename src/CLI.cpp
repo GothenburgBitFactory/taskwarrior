@@ -1345,7 +1345,7 @@ void CLI::findIDs ()
 
           if (terms.size () == 1)
           {
-            if (! digitsOnly (terms[0]))
+            if (! Lexer::isAllDigits (terms[0]))
             {
               is_an_id = false;
               break;
@@ -1366,8 +1366,8 @@ void CLI::findIDs ()
           }
           else if (terms.size () == 2)
           {
-            if (! digitsOnly (terms[0]) ||
-                ! digitsOnly (terms[1]))
+            if (! Lexer::isAllDigits (terms[0]) ||
+                ! Lexer::isAllDigits (terms[1]))
             {
               is_an_id = false;
               break;
@@ -2206,7 +2206,7 @@ bool CLI::isIDSequence (const std::string& raw) const
 ////////////////////////////////////////////////////////////////////////////////
 bool CLI::isID (const std::string& raw) const
 {
-  return digitsOnly (raw);
+  return Lexer::isAllDigits (raw);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
