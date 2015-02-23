@@ -140,15 +140,15 @@ int CmdContext::defineContext (std::vector <std::string>& words, std::stringstre
     bool success = CmdConfig::setConfigVariable(name, value, confirmation);
 
     if (success)
-      out << "Context '" << words[1] << "' defined." << "\n";
+      out << format (STRING_CMD_CONTEXT_DEF_SUCC, words[1]) << "\n";
     else
     {
-      out << "Context '" << words[1] << "' was not defined." << "\n";
+      out << format (STRING_CMD_CONTEXT_DEF_FAIL, words[1]) << "\n";
       rc = 1;
     }
   }
   else
-    throw "Both context name and its definition must be provided.";
+    throw STRING_CMD_CONTEXT_DEF_USAG;
 
   return rc;
 }
@@ -183,12 +183,12 @@ int CmdContext::deleteContext (std::vector <std::string>& words, std::stringstre
 
     // Output feedback
     if (rc == 0)
-      out << "Context '" << words[1] << "' undefined." << "\n";
+      out << format (STRING_CMD_CONTEXT_DEL_SUCC, words[1]) << "\n";
     else
-      out << "Context '" << words[1] << "' was not undefined." << "\n";
+      out << format (STRING_CMD_CONTEXT_DEL_FAIL, words[1]) << "\n";
   }
   else
-    throw "Context name needs to be specified.";
+    throw STRING_CMD_CONTEXT_DEL_USAG;
 
   return rc;
 }
@@ -234,7 +234,7 @@ int CmdContext::listContexts (std::vector <std::string>& words, std::stringstrea
   }
   else
   {
-    out << "No contexts defined." << "\n";
+    out << STRING_CMD_CONTEXT_LIST_EMPT << "\n";
     rc = 1;
   }
 
@@ -260,17 +260,17 @@ int CmdContext::setContext (std::vector <std::string>& words, std::stringstream&
 
   // Check that the specified context is defined
   if (std::find (contexts.begin (), contexts.end (), value) == contexts.end())
-    throw format ("Context '{1}' not found.", value);
+    throw format (STRING_CMD_CONTEXT_SET_NFOU, value);
 
   // Set the active context.
   // Should always succeed, as we do not require confirmation.
   bool success = CmdConfig::setConfigVariable("context", value, false);
 
   if (success)
-    out << "Context '" << value << "' applied." << "\n";
+    out << format (STRING_CMD_CONTEXT_SET_SUCC, value) << "\n";
   else
   {
-    out << "Context '" << value << "' was not applied." << "\n";
+    out << format (STRING_CMD_CONTEXT_SET_FAIL, value) << "\n";
     rc = 1;
   }
 
@@ -290,11 +290,11 @@ int CmdContext::showContext (std::vector <std::string>& words, std::stringstream
   std::string currentContext = context.config.get ("context");
 
   if (currentContext == "")
-    out << "No context is currently applied." << "\n";
+    out << STRING_CMD_CONTEXT_SHOW_EMPT << "\n";
   else
   {
     std::string currentFilter = context.config.get ("context." + currentContext);
-    out << format ("Context '{1}' with filter '{2}' is currently applied.", currentContext, currentFilter) << "\n";
+    out << format (STRING_CMD_CONTEXT_SHOW, currentContext, currentFilter) << "\n";
   }
 
   return 0;
@@ -316,10 +316,10 @@ int CmdContext::unsetContext (std::vector <std::string>& words, std::stringstrea
   int status = CmdConfig::unsetConfigVariable("context", false);
 
   if (status == 0)
-    out << "Context unset." << "\n";
+    out << STRING_CMD_CONTEXT_NON_SUCC << "\n";
   else
   {
-    out << "Context not unset." << "\n";
+    out << STRING_CMD_CONTEXT_NON_FAIL << "\n";
     rc = 1;
   }
 
