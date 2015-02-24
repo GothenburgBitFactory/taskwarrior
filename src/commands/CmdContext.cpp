@@ -148,7 +148,10 @@ int CmdContext::defineContext (std::vector <std::string>& words, std::stringstre
     }
   }
   else
-    throw STRING_CMD_CONTEXT_DEF_USAG;
+  {
+    out << STRING_CMD_CONTEXT_DEF_USAG << "\n";
+    rc = 1;
+  }
 
   return rc;
 }
@@ -188,7 +191,10 @@ int CmdContext::deleteContext (std::vector <std::string>& words, std::stringstre
       out << format (STRING_CMD_CONTEXT_DEL_FAIL, words[1]) << "\n";
   }
   else
-    throw STRING_CMD_CONTEXT_DEL_USAG;
+  {
+    out << STRING_CMD_CONTEXT_DEL_USAG << "\n";
+    rc = 1;
+  }
 
   return rc;
 }
