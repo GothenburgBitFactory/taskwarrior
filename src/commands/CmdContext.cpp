@@ -132,12 +132,12 @@ int CmdContext::defineContext (std::vector <std::string>& words, std::stringstre
   if (words.size () > 2)
   {
     std::string name = "context." + words[1];
-    std::string value = joinWords(words, 2);
+    std::string value = joinWords (words, 2);
     // TODO: Check if the value is a proper filter
 
     // Set context definition config variable
     bool confirmation = context.config.getBoolean ("confirmation");
-    bool success = CmdConfig::setConfigVariable(name, value, confirmation);
+    bool success = CmdConfig::setConfigVariable (name, value, confirmation);
 
     if (success)
       out << format (STRING_CMD_CONTEXT_DEF_SUCC, words[1]) << "\n";
@@ -259,12 +259,12 @@ int CmdContext::setContext (std::vector <std::string>& words, std::stringstream&
   std::vector <std::string> contexts = getContexts ();
 
   // Check that the specified context is defined
-  if (std::find (contexts.begin (), contexts.end (), value) == contexts.end())
+  if (std::find (contexts.begin (), contexts.end (), value) == contexts.end ())
     throw format (STRING_CMD_CONTEXT_SET_NFOU, value);
 
   // Set the active context.
   // Should always succeed, as we do not require confirmation.
-  bool success = CmdConfig::setConfigVariable("context", value, false);
+  bool success = CmdConfig::setConfigVariable ("context", value, false);
 
   if (success)
     out << format (STRING_CMD_CONTEXT_SET_SUCC, value) << "\n";
@@ -313,7 +313,7 @@ int CmdContext::showContext (std::vector <std::string>& words, std::stringstream
 int CmdContext::unsetContext (std::vector <std::string>& words, std::stringstream& out)
 {
   int rc = 0;
-  int status = CmdConfig::unsetConfigVariable("context", false);
+  int status = CmdConfig::unsetConfigVariable ("context", false);
 
   if (status == 0)
     out << STRING_CMD_CONTEXT_NON_SUCC << "\n";
