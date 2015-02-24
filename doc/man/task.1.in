@@ -433,7 +433,7 @@ Outputs a list of available contexts along with their definitions.
 Unsets the currently active context, if any was set.
 
 .TP
-.B task context none
+.B task context show
 Shows the currently active context, along with its definition.
 
 .TP
