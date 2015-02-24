@@ -107,8 +107,10 @@ int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = fal
   bool change = false;
 
   std::vector <std::string>::iterator line;
-  for (line = contents.begin (); line != contents.end (); ++line)
+  for (line = contents.begin (); line != contents.end (); )
   {
+    bool lineDeleted = false;
+
     // If there is a comment on the line, it must follow the pattern.
     std::string::size_type comment = line->find ("#");
     std::string::size_type pos     = line->find (name + "=");
@@ -123,10 +125,15 @@ int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = fal
       if (!confirmation ||
           confirm (format (STRING_CMD_CONFIG_CONFIRM3, name)))
       {
-        *line = "";
+        // vector::erase method returns a valid iterator to the next object
+        line = contents.erase (line);
+        lineDeleted = true;
         change = true;
       }
     }
+
+    if (! lineDeleted)
+      line++;
   }
 
   if (change)
