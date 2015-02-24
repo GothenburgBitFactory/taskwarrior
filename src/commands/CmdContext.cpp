@@ -26,9 +26,11 @@
 
 #include <cmake.h>
 #include <Context.h>
+#include <Filter.h>
 #include <sstream>
 #include <algorithm>
 #include <i18n.h>
+#include <util.h>
 #include <text.h>
 #include <CmdContext.h>
 #include <CmdConfig.h>
@@ -128,15 +130,35 @@ std::vector <std::string> CmdContext::getContexts ()
 int CmdContext::defineContext (std::vector <std::string>& words, std::stringstream& out)
 {
   int rc = 0;
+  bool confirmation = context.config.getBoolean ("confirmation");
 
   if (words.size () > 2)
   {
     std::string name = "context." + words[1];
     std::string value = joinWords (words, 2);
-    // TODO: Check if the value is a proper filter
+
+    // Check if the value is a proper filter by filtering current pending.data
+    Filter filter;
+    std::vector <Task> filtered;
+    const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
+
+    try
+    {
+      context.cli.addRawFilter ("( " + value + " )");
+      filter.subset (pending, filtered);
+    }
+    catch (std::string exception)
+    {
+      throw format (STRING_CMD_CONTEXT_DEF_ABRT2, exception);
+    }
+
+    // Make user explicitly confirm filters that are matching no pending tasks
+    if (filtered.size () == 0)
+      if (confirmation &&
+          ! confirm (format (STRING_CMD_CONTEXT_DEF_CONF, value)))
+        throw std::string (STRING_CMD_CONTEXT_DEF_ABRT);
 
     // Set context definition config variable
-    bool confirmation = context.config.getBoolean ("confirmation");
     bool success = CmdConfig::setConfigVariable (name, value, confirmation);
 
     if (success)
