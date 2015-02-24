@@ -397,6 +397,46 @@ Finally, this command removes any 'name=...' entry from the .taskrc file:
     task config name
 
 .TP
+.B task context <name>
+Sets the currectly active context. See the CONTEXT section.
+
+Example:
+
+    task context work
+
+.TP
+.B task context delete <name>
+Deletes the context with the name <name>. If the context being deleted is currently
+set as active, it will be unset.
+
+Example:
+
+    task context delete work
+
+.TP
+.B task context define <name> <filter>
+Defines a new context with name <name> and definition <filter>. This command
+does not affect the currently set context, just adds a new context definition.
+
+Examples:
+
+    task context define work project:Work
+    task context define home project:Home or +home
+    task context define superurgent due:today and +urgent
+
+.TP
+.B task context list
+Outputs a list of available contexts along with their definitions.
+
+.TP
+.B task context none
+Unsets the currently active context, if any was set.
+
+.TP
+.B task context none
+Shows the currently active context, along with its definition.
+
+.TP
 .B task diagnostics
 Shows diagnostic information, of the kind needed when reporting a problem.
 When you report a bug, it is likely that the platform, version, and environment
@@ -473,6 +513,10 @@ Generates a list of all commands, for autocompletion purposes.
 .TP
 .B task _config
 Lists all supported configuration variables, for completion purposes.
+
+.TP
+.B task _context
+Lists all available context variables, for completion purposes.
 
 .TP
 .B task <filter> _ids
@@ -961,6 +1005,66 @@ Every year or a number of years.
 biannual, biyearly, 2yr
 Every two years.
 .RE
+
+.SH CONTEXT
+Context is a user-defined filter, which is automatically applied to all commands
+that filter the task list. In particular, any report command will have its
+result affected by the current active context.
+
+    $ task list
+    ID Age Project  Description        Urg
+    1  2d  Sport    Run 5 miles        1.42
+    2  1d  Home     Clean the dishes   1.14
+
+    $ task context home
+    Context 'home' applied.
+
+    $ task list
+    ID Age Project  Description        Urg
+    2  1d  Home     Clean the dishes   1.14
+    Context 'home' applied.
+
+As seen in the example above, context is applied by specifying its name to the
+"context" command. To change the currently applied context, just pass the
+new context's name to the 'context' command.
+
+To unset any context, use the 'none' subcommand.
+
+    $ task context none
+    Context unset.
+
+    $ task list
+    ID Age Project  Description        Urg
+    1  2d  Sport    Run 5 miles        1.42
+    2  1d  Home     Clean the dishes   1.14
+
+Context can be defined using the 'define' subcommand, specifying both the name
+of the new context, and it's assigned filter.
+
+    $ task context define home
+    Are you sure you want to add 'context.home' with a value of 'project:Home'? (yes/no) yes
+    Context 'home' successfully defined.
+
+To remove the definition, use the 'delete' subcommand.
+
+    $ task context delete home
+    Are you sure you want to remove 'context.home'? (yes/no) yes
+    Context 'home' successfully undefined.
+
+To check what is the currently active context, use the 'show' subcommand.
+
+    $ task context show
+    Context 'home' with filter 'project:Home' is currently applied.
+
+Contexts can store arbitrarily complex filters.
+
+    $ task context define family project:Family or +paul or +nancy
+    Are you sure you want to add 'context.home' with a value of 'project:Family or +paul or +nancy'? (yes/no) yes
+    Context 'family' successfully defined.
+
+Contexts are permanent, and the currently set context name is stored in the
+"context" configuration variable. The context definition is stored in the
+"context.<name>" configuration variable.
 
 .SH COMMAND ABBREVIATION
 All taskwarrior commands may be abbreviated as long as a unique prefix is used,

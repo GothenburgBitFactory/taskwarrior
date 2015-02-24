@@ -47,6 +47,100 @@ CmdConfig::CmdConfig ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool CmdConfig::setConfigVariable (std::string name, std::string value, bool confirmation /* = false */)
+{
+  // Read .taskrc (or equivalent)
+  std::vector <std::string> contents;
+  File::read (context.config._original_file, contents);
+
+  bool found = false;
+  bool change = false;
+
+  std::vector <std::string>::iterator line;
+  for (line = contents.begin (); line != contents.end (); ++line)
+  {
+    // If there is a comment on the line, it must follow the pattern.
+    std::string::size_type comment = line->find ("#");
+    std::string::size_type pos     = line->find (name + "=");
+
+    if (pos != std::string::npos &&
+        (comment == std::string::npos ||
+         comment > pos))
+    {
+      found = true;
+      if (!confirmation ||
+          confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
+      {
+        if (comment != std::string::npos)
+          *line = name + "=" + json::encode (value) + " " + line->substr (comment);
+        else
+          *line = name + "=" + json::encode (value);
+
+        change = true;
+      }
+    }
+  }
+
+  // Not found, so append instead.
+  if (!found &&
+      (!confirmation ||
+       confirm (format (STRING_CMD_CONFIG_CONFIRM2, name, value))))
+  {
+    contents.push_back (name + "=" + json::encode (value));
+    change = true;
+  }
+
+  if (change)
+    File::write (context.config._original_file, contents);
+
+  return change;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = false */)
+{
+  // Read .taskrc (or equivalent)
+  std::vector <std::string> contents;
+  File::read (context.config._original_file, contents);
+
+  bool found = false;
+  bool change = false;
+
+  std::vector <std::string>::iterator line;
+  for (line = contents.begin (); line != contents.end (); ++line)
+  {
+    // If there is a comment on the line, it must follow the pattern.
+    std::string::size_type comment = line->find ("#");
+    std::string::size_type pos     = line->find (name + "=");
+
+    if (pos != std::string::npos &&
+        (comment == std::string::npos ||
+         comment > pos))
+    {
+      found = true;
+
+      // Remove name
+      if (!confirmation ||
+          confirm (format (STRING_CMD_CONFIG_CONFIRM3, name)))
+      {
+        *line = "";
+        change = true;
+      }
+    }
+  }
+
+  if (change)
+    File::write (context.config._original_file, contents);
+
+  if ( change && found )
+    return 0;
+  else if ( found )
+    return 1;
+  else
+    return 2;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int CmdConfig::execute (std::string& output)
 {
   int rc = 0;
@@ -62,10 +156,13 @@ int CmdConfig::execute (std::string& output)
   if (words.size ())
   {
     bool confirmation = context.config.getBoolean ("confirmation");
+    bool change = false;
+    bool found = false;
 
     std::string name = words[0];
     std::string value = "";
 
+    // Join the remaining words into config variable's value
     if (words.size () > 1)
     {
       for (unsigned int i = 1; i < words.size (); ++i)
@@ -81,85 +178,30 @@ int CmdConfig::execute (std::string& output)
     {
       bool change = false;
 
-      // Read .taskrc (or equivalent)
-      std::vector <std::string> contents;
-      File::read (context.config._original_file, contents);
-
       // task config name value
       // task config name ""
       if (words.size () > 1)
-      {
-        bool found = false;
-        std::vector <std::string>::iterator line;
-        for (line = contents.begin (); line != contents.end (); ++line)
-        {
-          // If there is a comment on the line, it must follow the pattern.
-          std::string::size_type comment = line->find ("#");
-          std::string::size_type pos     = line->find (name + "=");
-
-          if (pos != std::string::npos &&
-              (comment == std::string::npos ||
-               comment > pos))
-          {
-            found = true;
-            if (!confirmation ||
-                confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
-            {
-              if (comment != std::string::npos)
-                *line = name + "=" + json::encode (value) + " " + line->substr (comment);
-              else
-                *line = name + "=" + json::encode (value);
-
-              change = true;
-            }
-          }
-        }
-
-        // Not found, so append instead.
-        if (!found &&
-            (!confirmation ||
-             confirm (format (STRING_CMD_CONFIG_CONFIRM2, name, value))))
-        {
-          contents.push_back (name + "=" + json::encode (value));
-          change = true;
-        }
-      }
+        change = setConfigVariable(name, value, confirmation);
 
       // task config name
       else
       {
-        bool found = false;
-        std::vector <std::string>::iterator line;
-        for (line = contents.begin (); line != contents.end (); ++line)
+        rc = unsetConfigVariable(name, confirmation);
+        if (rc == 0)
         {
-          // If there is a comment on the line, it must follow the pattern.
-          std::string::size_type comment = line->find ("#");
-          std::string::size_type pos     = line->find (name + "=");
-
-          if (pos != std::string::npos &&
-              (comment == std::string::npos ||
-               comment > pos))
-          {
-            found = true;
-
-            // Remove name
-            if (!confirmation ||
-                confirm (format (STRING_CMD_CONFIG_CONFIRM3, name)))
-            {
-              *line = "";
-              change = true;
-            }
-          }
+          change = true;
+          found = true;
         }
+        else if (rc == 1)
+          found = true;
 
         if (!found)
           throw format (STRING_CMD_CONFIG_NO_ENTRY, name);
       }
 
-      // Write .taskrc (or equivalent)
+      // Show feedback depending on whether .taskrc has been rewritten
       if (change)
       {
-        File::write (context.config._original_file, contents);
         out << format (STRING_CMD_CONFIG_FILE_MOD,
                        context.config._original_file._data)
             << "\n";

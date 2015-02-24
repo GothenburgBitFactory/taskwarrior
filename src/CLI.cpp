@@ -375,6 +375,64 @@ void CLI::add (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void CLI::addContextFilter ()
+{
+  // Detect if any context is set, and bail out if not
+  std::string contextName = context.config.get ("context");
+
+  if (contextName == "")
+  {
+    context.debug("No context applied.");
+    return;
+  }
+
+  // Detect if UUID or ID is set, and bail out
+  if (_args.size ())
+  {
+    std::vector <A>::const_iterator a;
+    for (a = _args.begin (); a != _args.end (); ++a)
+    {
+      if (a->hasTag ("FILTER") &&
+          a->hasTag ("ATTRIBUTE") &&
+          ! a->hasTag ("TERMINATED") &&
+          ! a->hasTag ("WORD") &&
+          (a->attribute ("raw") == "id" || a->attribute ("raw") == "uuid"))
+      {
+        context.debug(format("UUID/ID lexeme found '{1}', not applying context.", a->attribute ("raw")));
+        return;
+      }
+    }
+  }
+
+  // Apply context
+  context.debug("Applying context: " + contextName);
+  std::string contextFilter = context.config.get ("context." + contextName);
+
+  if (contextFilter == "")
+    context.debug("Context '" + contextName + "' not defined!");
+  else
+  {
+    addRawFilter("( " + contextFilter + " )");
+    if (context.verbose ("context"))
+      context.footnote (format("Context '{1}' applied.", contextName));
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Process raw string into parsed filter.
+//
+void CLI::addRawFilter (const std::string& arg)
+{
+  std::string lexeme;
+  Lexer::Type type;
+  Lexer lex (arg);
+  lex.ambiguity (false);
+
+  while (lex.token (lexeme, type))
+    add (lexeme);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Intended to be called after ::initialize() and ::add(), to perform the final
 // analysis. Analysis is also performed directly after the above, because there
 // is a need to extract overrides early, before entities are proviedd.
@@ -476,6 +534,9 @@ void CLI::applyOverrides ()
 // Extract all the FILTER-tagged items.
 const std::string CLI::getFilter ()
 {
+  // Handle context setting
+  addContextFilter ();
+
   std::string filter = "";
   if (_args.size ())
   {
@@ -500,6 +561,7 @@ const std::string CLI::getFilter ()
       filter = "( " + filter + " )";
   }
 
+  context.debug("Derived filter: '" + filter + "'");
   return filter;
 }
 

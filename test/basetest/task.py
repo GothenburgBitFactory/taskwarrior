@@ -137,6 +137,15 @@ class Task(object):
         cmd = (self.taskw, "config", "--", var, value)
         return run_cmd_wait(cmd, env=self.env)
 
+    @property
+    def taskrc_content(self):
+        """
+        Returns the contents of the taskrc file.
+        """
+
+        with open(self.taskrc, "r") as f:
+            return f.readlines()
+
     def runSuccess(self, args=(), input=None, merge_streams=False,
                    timeout=1):
         """Invoke task with given arguments and fail if exit code != 0

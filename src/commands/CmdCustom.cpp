@@ -82,15 +82,7 @@ int CmdCustom::execute (std::string& output)
   validateSortColumns (sortOrder);
 
   // Prepend the argument list with those from the report filter.
-  std::string lexeme;
-  Lexer::Type type;
-  Lexer lex (reportFilter);
-  lex.ambiguity (false);
-  while (lex.token (lexeme, type))
-    context.cli.add (lexeme);
-
-  // Reparse after tree change.
-  context.cli.analyze ();
+  context.cli.addRawFilter(reportFilter);
 
   // Apply filter.
   handleRecurrence ();

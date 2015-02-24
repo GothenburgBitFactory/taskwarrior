@@ -24,25 +24,31 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CMDCONFIG
-#define INCLUDED_CMDCONFIG
+#ifndef INCLUDED_CMDCONTEXT
+#define INCLUDED_CMDCONTEXT
 
 #include <string>
 #include <Command.h>
 
-class CmdConfig : public Command
+class CmdContext : public Command
 {
 public:
-  CmdConfig ();
-  static bool setConfigVariable (std::string name, std::string value, bool confirmation = false);
-  static int unsetConfigVariable (std::string name, bool confirmation = false);
+  CmdContext ();
   int execute (std::string&);
+  std::string joinWords (std::vector <std::string>& words, unsigned int from, unsigned int to = 0);
+  static std::vector <std::string> getContexts ();
+  int defineContext (std::vector <std::string>& words, std::stringstream& out);
+  int deleteContext (std::vector <std::string>& words, std::stringstream& out);
+  int listContexts (std::vector <std::string>& words, std::stringstream& out);
+  int setContext (std::vector <std::string>& words, std::stringstream& out);
+  int showContext (std::vector <std::string>& words, std::stringstream& out);
+  int unsetContext (std::vector <std::string>& words, std::stringstream& out);
 };
 
-class CmdCompletionConfig : public Command
+class CmdCompletionContext : public Command
 {
 public:
-  CmdCompletionConfig ();
+  CmdCompletionContext ();
   int execute (std::string&);
 };
 
