@@ -569,7 +569,7 @@
 #define STRING_CMD_CONTEXT_DEL_USAG  "Context name needs to be specified."
 #define STRING_CMD_CONTEXT_LIST_EMPT "No contexts defined."
 #define STRING_CMD_CONTEXT_SET_NFOU  "Context '{1}' not found."
-#define STRING_CMD_CONTEXT_SET_SUCC  "Context '{1}' applied."
+#define STRING_CMD_CONTEXT_SET_SUCC  "Context '{1}' set. Use 'task context none' to remove."
 #define STRING_CMD_CONTEXT_SET_FAIL  "Context '{1}' not applied."
 #define STRING_CMD_CONTEXT_SHOW_EMPT "No context is currently applied."
 #define STRING_CMD_CONTEXT_SHOW      "Context '{1}' with filter '{2}' is currently applied."

@@ -414,7 +414,7 @@ void CLI::addContextFilter ()
   {
     addRawFilter("( " + contextFilter + " )");
     if (context.verbose ("context"))
-      context.footnote (format("Context '{1}' applied.", contextName));
+      context.footnote (format("Context '{1}' set. Use 'task context none' to remove.", contextName));
   }
 }
 
