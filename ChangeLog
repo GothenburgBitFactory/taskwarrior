@@ -8,6 +8,7 @@
           (thanks to Renato Alves).
 - Eliminated some code that is not UTF8-safe.
 - Removed pthreads linkage.
+- Implemented the context feature.
 - Closed dangling pipes in execute (), resolving problems when a hook script
   forks (thanks to Jens Erat).
 

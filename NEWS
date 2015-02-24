@@ -1,15 +1,17 @@
 
 New Features in taskwarrior 2.4.2
 
-  - None
+  - Ability to set context, which serves as a permanent user-defined filter.
 
 New commands in taskwarrior 2.4.2
 
-  - None
+  - The 'context' command has been added, along with it subcommands 'define',
+    'delete', 'show', 'list' and 'none'.
 
 New configuration options in taskwarrior 2.4.2
 
-  - None
+  - 'context' to store the current context applied.
+  - 'context.<name>' to store the definition of context 'name'
 
 Newly deprecated features in taskwarrior 2.4.2
 
