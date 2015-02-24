@@ -105,7 +105,7 @@ class ContextManagementTest(TestCase):
         output = self.t(('context', 'delete', 'work'))[1]
 
         # Assert correct output
-        self.assertIn("Context 'work' undefined.", output)
+        self.assertIn("Context 'work' deleted.", output)
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
@@ -118,7 +118,7 @@ class ContextManagementTest(TestCase):
         output = self.t.runError(('context', 'delete', 'work'))[1]
 
         # Assert correct output
-        self.assertIn("Context 'work' was not undefined.", output)
+        self.assertIn("Context 'work' not deleted.", output)
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
@@ -133,7 +133,7 @@ class ContextManagementTest(TestCase):
         output = self.t(('context', 'delete', 'work'))[1]
 
         # Assert correct output
-        self.assertIn("Context 'work' undefined.", output)
+        self.assertIn("Context 'work' deleted.", output)
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
