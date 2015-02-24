@@ -105,7 +105,7 @@ class ContextManagementTest(TestCase):
         output = self.t(('context', 'delete', 'work'))[1]
 
         # Assert correct output
-        self.assertIn("Context 'work' undefined.", output)
+        self.assertIn("Context 'work' deleted.", output)
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
@@ -118,7 +118,7 @@ class ContextManagementTest(TestCase):
         output = self.t.runError(('context', 'delete', 'work'))[1]
 
         # Assert correct output
-        self.assertIn("Context 'work' was not undefined.", output)
+        self.assertIn("Context 'work' not deleted.", output)
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
@@ -133,7 +133,7 @@ class ContextManagementTest(TestCase):
         output = self.t(('context', 'delete', 'work'))[1]
 
         # Assert correct output
-        self.assertIn("Context 'work' undefined.", output)
+        self.assertIn("Context 'work' deleted.", output)
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
@@ -182,7 +182,7 @@ class ContextManagementTest(TestCase):
         self.t(('context', 'define', 'home', '+home'))[1]
 
         output = self.t(('context', 'home'))[1]
-        self.assertIn("Context 'home' applied.", output)
+        self.assertIn("Context 'home' set.", output)
         self.assertIn("context=home\n", self.t.taskrc_content)
 
     def test_context_resetting(self):
@@ -195,7 +195,7 @@ class ContextManagementTest(TestCase):
 
         self.t(('context', 'home'))[1]
         output = self.t(('context', 'home'))[1]
-        self.assertIn("Context 'home' applied.", output)
+        self.assertIn("Context 'home' set.", output)
 
         contains_home = lambda line: line == "context=home\n"
         self.assertEqual(len(filter(contains_home, self.t.taskrc_content)), 1)
@@ -213,20 +213,20 @@ class ContextManagementTest(TestCase):
 
         # Switch to home context
         output = self.t(('context', 'home'))[1]
-        self.assertIn("Context 'home' applied.", output)
+        self.assertIn("Context 'home' set.", output)
 
         self.assertEqual(len(filter(contains_home, self.t.taskrc_content)), 1)
 
         # Switch to work context
         output = self.t(('context', 'work'))[1]
-        self.assertIn("Context 'work' applied.", output)
+        self.assertIn("Context 'work' set.", output)
 
         self.assertNotIn("context=home\n", self.t.taskrc_content)
         self.assertEqual(len(filter(contains_work, self.t.taskrc_content)), 1)
 
         # Switch back to home context
         output = self.t(('context', 'home'))[1]
-        self.assertIn("Context 'home' applied.", output)
+        self.assertIn("Context 'home' set.", output)
 
         self.assertNotIn("context=work\n", self.t.taskrc_content)
         self.assertEqual(len(filter(contains_home, self.t.taskrc_content)), 1)

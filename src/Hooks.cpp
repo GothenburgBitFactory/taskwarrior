@@ -141,7 +141,7 @@ void Hooks::onLaunch ()
       {
         std::vector <std::string>::iterator message;
         for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
-          context.debug (*message);
+          context.footnote (*message);
       }
       else
       {
@@ -208,7 +208,7 @@ void Hooks::onExit ()
       {
         std::vector <std::string>::iterator message;
         for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
-          context.debug (*message);
+          context.footnote (*message);
       }
       else
       {
@@ -274,7 +274,7 @@ void Hooks::onAdd (Task& task)
 
         std::vector <std::string>::iterator message;
         for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
-          context.debug (*message);
+          context.footnote (*message);
       }
       else
       {
@@ -345,7 +345,7 @@ void Hooks::onModify (const Task& before, Task& after)
 
         std::vector <std::string>::iterator message;
         for (message = outputFeedback.begin (); message != outputFeedback.end (); ++message)
-          context.debug (*message);
+          context.footnote (*message);
       }
       else
       {

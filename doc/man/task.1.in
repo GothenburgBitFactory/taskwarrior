@@ -433,7 +433,7 @@ Outputs a list of available contexts along with their definitions.
 Unsets the currently active context, if any was set.
 
 .TP
-.B task context none
+.B task context show
 Shows the currently active context, along with its definition.
 
 .TP
@@ -1017,12 +1017,12 @@ result affected by the current active context.
     2  1d  Home     Clean the dishes   1.14
 
     $ task context home
-    Context 'home' applied.
+    Context 'home' set. Use 'task context none' to remove.
 
     $ task list
     ID Age Project  Description        Urg
     2  1d  Home     Clean the dishes   1.14
-    Context 'home' applied.
+    Context 'home' set. Use 'task context none' to remove.
 
 As seen in the example above, context is applied by specifying its name to the
 "context" command. To change the currently applied context, just pass the
