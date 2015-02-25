@@ -6,6 +6,8 @@
           Renato Alves).
 - TW-1547 Recur column is always shown even if no recurring task is displayed
           (thanks to Renato Alves).
+- TW-1549 task annotate hangs with specific text pattern (thanks to Alexandre
+          de Verteuil).
 - TW-1550 _contexts helper-command (thanks to David Patrick).
 - Eliminated some code that is not UTF8-safe.
 - Removed pthreads linkage.

@@ -387,6 +387,12 @@ bool Lexer::token (std::string& result, Type& type)
         result += utf8_character (_n0);
         shift ();
       }
+      else
+      {
+        result += utf8_character (hex_to_int (_n0, _n1, _n2, _n3));
+        shift ();
+        type = quote ? typeString : typeIdentifier;
+      }
       break;
 
     case typeExponent:
