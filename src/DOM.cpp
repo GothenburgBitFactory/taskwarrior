@@ -313,7 +313,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
           Column* column = context.columns[canonical];
           if (column)
           {
-            if (column->is_uda () && ! task.has (canonical))
+            if (column->is_uda () && ! ref.has (canonical))
             {
               value = Variant ("''");
               return true;
