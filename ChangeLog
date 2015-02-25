@@ -1,5 +1,6 @@
 2.4.2 () -
 
+- TW-1535 move default listing-break from list to ls (thanks to David Patrick).
 - TW-1545 cc1plus: error: unrecognized command line option '-std=c++11' (thanks
           to Petteri).
 - TW-1546 column type due.remaining breaks colors on due tasks (thanks to
