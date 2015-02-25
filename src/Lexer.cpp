@@ -344,8 +344,7 @@ bool Lexer::isString (std::string& token, Lexer::Type& type, int quote)
 
   if (_text[marker] == quote)
   {
-    ++marker;
-    token = "";
+    token = _text.substr (marker++, 1);
 
     int c;
     while ((c = _text[marker]))
@@ -403,7 +402,7 @@ bool Lexer::isString (std::string& token, Lexer::Type& type, int quote)
 
     if (_text[marker] == quote)
     {
-      ++marker;
+      token += _text.substr (marker++, 1);
       type = Lexer::Type::string;
       _cursor = marker;
       return true;
