@@ -368,7 +368,7 @@ std::string Config::_defaults =
   "report.list.labels=ID,Active,Age,D,P,Project,Tags,R,Sch,Due,Until,Description,Urg\n"
   "report.list.columns=id,start.age,entry.age,depends.indicator,priority,project,tags,recur.indicator,scheduled.countdown,due,until.remaining,description.count,urgency\n"
   "report.list.filter=status:pending\n"
-  "report.list.sort=start-,due+,project+/,urgency-\n"
+  "report.list.sort=start-,due+,project+,urgency-\n"
   "\n"
   "report.ls.description=Few details of tasks\n"
   "report.ls.labels=ID,A,D,Project,Tags,R,Wait,S,Due,Until,Description\n"

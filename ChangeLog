@@ -1,11 +1,16 @@
 2.4.2 () -
 
+- TW-1535 move default listing-break from list to ls (thanks to David Patrick).
 - TW-1545 cc1plus: error: unrecognized command line option '-std=c++11' (thanks
           to Petteri).
 - TW-1546 column type due.remaining breaks colors on due tasks (thanks to
           Renato Alves).
 - TW-1547 Recur column is always shown even if no recurring task is displayed
           (thanks to Renato Alves).
+- TW-1549 task annotate hangs with specific text pattern (thanks to Alexandre
+          de Verteuil).
+- TW-1550 _contexts helper-command (thanks to David Patrick).
+- TW-1551 Unable to get a UDA value from DOM (thanks to Tomas Babej).
 - Eliminated some code that is not UTF8-safe.
 - Removed pthreads linkage.
 - Implemented the context feature.
