@@ -10,7 +10,8 @@ int main (int argc, char** argv)
 {
   for (auto i = 1; i < argc; i++)
   {
-    std::cout << "input '" << argv[i] << "'\n";
+    std::cout << "argument '" << argv[i] << "'\n";
+
     // Low-level tokens.
     Lexer lexer (argv[i]);
     std::string token;
