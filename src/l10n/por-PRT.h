@@ -296,6 +296,7 @@
 #define STRING_CMD_INFO_UNTIL        "Até"
 #define STRING_CMD_INFO_MODIFICATION "Modificação"
 #define STRING_CMD_INFO_MODIFIED     "Última modificação"
+#define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
 #define STRING_CMD_UNDO_USAGE        "Reverte a mais recente modificação a uma tarefa"
 #define STRING_CMD_UNDO_MODS         "O comando undo não permite outras modificações simultâneas."
 #define STRING_CMD_STATS_USAGE       "Exibe estatísticas da base de dados de tarefas"

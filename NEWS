@@ -2,6 +2,7 @@
 New Features in taskwarrior 2.4.2
 
   - Ability to set context, which serves as a permanent user-defined filter.
+  - The 'info' command now shows virtual tags.
 
 New commands in taskwarrior 2.4.2
 

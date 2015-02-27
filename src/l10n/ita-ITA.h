@@ -295,6 +295,7 @@
 #define STRING_CMD_INFO_UNTIL        "Fino a"
 #define STRING_CMD_INFO_MODIFICATION "Modifica"
 #define STRING_CMD_INFO_MODIFIED     "Ultima modifica"
+#define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
 #define STRING_CMD_UNDO_USAGE        "Ritorna alla più recente modifica di un task"
 #define STRING_CMD_UNDO_MODS         "Il comando undo non ammette ulteriori modifiche al task."
 #define STRING_CMD_STATS_USAGE       "Mostra le statistiche sul task"

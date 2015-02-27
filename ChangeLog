@@ -17,6 +17,7 @@
 - Closed dangling pipes in execute (), resolving problems when a hook script
   forks (thanks to Jens Erat).
 - Re-enabled hook script feedback when exiting with 0 exit status.
+- The 'info' command now shows virtual tags.
 
 ------ current release ---------------------------
 

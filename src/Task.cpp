@@ -1105,6 +1105,7 @@ int Task::getTagCount () const
 bool Task::hasTag (const std::string& tag) const
 {
   // Synthetic tags - dynamically generated, but do not occupy storage space.
+  // Note: This list must match that in CmdInfo::execute.
   if (tag == "BLOCKED")   return is_blocked;
   if (tag == "UNBLOCKED") return !is_blocked;
   if (tag == "BLOCKING")  return is_blocking;

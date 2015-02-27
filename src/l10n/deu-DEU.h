@@ -296,6 +296,7 @@
 #define STRING_CMD_INFO_UNTIL        "Bis"
 #define STRING_CMD_INFO_MODIFICATION "Änderung"
 #define STRING_CMD_INFO_MODIFIED     "Letzte Änderung"
+#define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
 #define STRING_CMD_UNDO_USAGE        "Macht die letzte Änderung an einer Aufgabe Rückgängig"
 #define STRING_CMD_UNDO_MODS         "Der undo-Befehl erlaubt keine weitere Aufgaben-Änderung."
 #define STRING_CMD_STATS_USAGE       "Zeigt Statistiken zur Aufgaben-Datenbank"
