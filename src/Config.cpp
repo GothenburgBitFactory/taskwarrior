@@ -385,7 +385,7 @@ std::string Config::_defaults =
   "report.newest.description=Newest tasks\n"
   "report.newest.labels=ID,Active,Created,Age,Mod,D,P,Project,Tags,R,Wait,Sch,Due,Until,Description\n"
   "report.newest.columns=id,start.age,entry,entry.age,modified.age,depends.indicator,priority,project,tags,recur.indicator,wait.remaining,scheduled.countdown,due,until.age,description\n"
-  "report.newest.filter=(status:pending or status:waiting) and recur.none:\n"
+  "report.newest.filter=(status:pending or status:waiting)\n"
   "report.newest.sort=entry-\n"
   "\n"
   "report.oldest.description=Oldest tasks\n"
