@@ -53,6 +53,9 @@ int CmdProjects::execute (std::string& output)
 {
   int rc = 0;
 
+  // Enforce the garbage collector to show correct task counts
+  context.tdb2.gc ();
+
   // Get all the tasks.
   handleRecurrence ();
   std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
