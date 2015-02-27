@@ -98,53 +98,53 @@ int main (int argc, char** argv)
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
   }
 
-  t.is (tokens[0].first,                      "one",       "tokens[0] = 'left'"); // 30
-  t.is (Lexer::typeName (tokens[0].second),  "identifier", "tokens[0] = identifier");
+  t.is (tokens[0].first,                     "one",           "tokens[0] = 'left'"); // 30
+  t.is (Lexer::typeName (tokens[0].second),  "identifier",    "tokens[0] = identifier");
 
-  t.is (tokens[1].first,                      "two 'three'", "tokens[1] = 'two 'three''");
-  t.is (Lexer::typeName (tokens[1].second),  "string",     "tokens[1] = string");
+  t.is (tokens[1].first,                     "'two 'three''", "tokens[1] = 'two 'three''");
+  t.is (Lexer::typeName (tokens[1].second),  "string",        "tokens[1] = string");
 
-  t.is (tokens[2].first,                      "+",         "tokens[2] = '+'");
-  t.is (Lexer::typeName (tokens[2].second),  "op",         "tokens[2] = op");
+  t.is (tokens[2].first,                     "+",             "tokens[2] = '+'");
+  t.is (Lexer::typeName (tokens[2].second),  "op",            "tokens[2] = op");
 
-  t.is (tokens[3].first,                      "456",       "tokens[3] = '456'");
-  t.is (Lexer::typeName (tokens[3].second),  "number",     "tokens[3] = number");
+  t.is (tokens[3].first,                     "456",           "tokens[3] = '456'");
+  t.is (Lexer::typeName (tokens[3].second),  "number",        "tokens[3] = number");
 
-  t.is (tokens[4].first,                      "-",         "tokens[4] = '-'");
-  t.is (Lexer::typeName (tokens[4].second),  "op",         "tokens[4] = op");
+  t.is (tokens[4].first,                     "-",             "tokens[4] = '-'");
+  t.is (Lexer::typeName (tokens[4].second),  "op",            "tokens[4] = op");
 
-  t.is (tokens[5].first,                      "(",         "tokens[5] = '('"); // 40
-  t.is (Lexer::typeName (tokens[5].second),  "op",         "tokens[5] = op");
+  t.is (tokens[5].first,                     "(",             "tokens[5] = '('"); // 40
+  t.is (Lexer::typeName (tokens[5].second),  "op",            "tokens[5] = op");
 
-  t.is (tokens[6].first,                      "1.3",       "tokens[6] = '1.3'");
-  t.is (Lexer::typeName (tokens[6].second),  "number",     "tokens[6] = number");
+  t.is (tokens[6].first,                     "1.3",           "tokens[6] = '1.3'");
+  t.is (Lexer::typeName (tokens[6].second),  "number",        "tokens[6] = number");
 
-  t.is (tokens[7].first,                      "*",         "tokens[7] = '*'");
-  t.is (Lexer::typeName (tokens[7].second),  "op",         "tokens[7] = op");
+  t.is (tokens[7].first,                     "*",             "tokens[7] = '*'");
+  t.is (Lexer::typeName (tokens[7].second),  "op",            "tokens[7] = op");
 
-  t.is (tokens[8].first,                      "2",         "tokens[8] = '2'");
-  t.is (Lexer::typeName (tokens[8].second),  "number",     "tokens[8] = number");
+  t.is (tokens[8].first,                     "2",             "tokens[8] = '2'");
+  t.is (Lexer::typeName (tokens[8].second),  "number",        "tokens[8] = number");
 
-  t.is (tokens[9].first,                      "-",         "tokens[9] = '-'");
-  t.is (Lexer::typeName (tokens[9].second),  "op",         "tokens[9] = op");
+  t.is (tokens[9].first,                     "-",             "tokens[9] = '-'");
+  t.is (Lexer::typeName (tokens[9].second),  "op",            "tokens[9] = op");
 
-  t.is (tokens[10].first,                     "0x12",      "tokens[10] = '0x12'"); // 50
-  t.is (Lexer::typeName (tokens[10].second), "hex",        "tokens[10] = hex");
+  t.is (tokens[10].first,                    "0x12",          "tokens[10] = '0x12'"); // 50
+  t.is (Lexer::typeName (tokens[10].second), "hex",           "tokens[10] = hex");
 
-  t.is (tokens[11].first,                     ")",         "tokens[11] = ')'");
-  t.is (Lexer::typeName (tokens[11].second), "op",         "tokens[11] = op");
+  t.is (tokens[11].first,                    ")",             "tokens[11] = ')'");
+  t.is (Lexer::typeName (tokens[11].second), "op",            "tokens[11] = op");
 
-  t.is (tokens[12].first,                     "1.2e-3.4",  "tokens[12] = '1.2e-3.4'");
-  t.is (Lexer::typeName (tokens[12].second), "number",     "tokens[12] = number");
+  t.is (tokens[12].first,                    "1.2e-3.4",      "tokens[12] = '1.2e-3.4'");
+  t.is (Lexer::typeName (tokens[12].second), "number",        "tokens[12] = number");
 
-  t.is (tokens[13].first,                     "foo.bar",   "tokens[13] = 'foo.bar'");
-  t.is (Lexer::typeName (tokens[13].second), "identifier", "tokens[13] = identifier");
+  t.is (tokens[13].first,                    "foo.bar",       "tokens[13] = 'foo.bar'");
+  t.is (Lexer::typeName (tokens[13].second), "identifier",    "tokens[13] = identifier");
 
-  t.is (tokens[14].first,                     "and",       "tokens[14] = 'and'"); // 60
-  t.is (Lexer::typeName (tokens[14].second), "op",         "tokens[14] = op");
+  t.is (tokens[14].first,                    "and",           "tokens[14] = 'and'"); // 60
+  t.is (Lexer::typeName (tokens[14].second), "op",            "tokens[14] = op");
 
-  t.is (tokens[15].first,                     "€",         "tokens[15] = \\u20ac --> '€'");
-  t.is (Lexer::typeName (tokens[15].second), "string",     "tokens[15] = string");
+  t.is (tokens[15].first,                    "'€'",           "tokens[15] = \\u20ac --> ''€''");
+  t.is (Lexer::typeName (tokens[15].second), "string",        "tokens[15] = string");
 
   // Test for ISO-8601 dates (favoring dates in ambiguous cases).
   Lexer l3 ("1 12 123 1234 12345 123456 1234567 12345678 20131129T225800Z 2013-11-29T22:58:00Z");
@@ -367,7 +367,7 @@ int main (int argc, char** argv)
   t.is (items[4], "+",             "split '  +-* a+b 12.3e4 'c d'' -> [4] '+'");
   t.is (items[5], "b",             "split '  +-* a+b 12.3e4 'c d'' -> [5] 'b'");
   t.is (items[6], "12.3e4",        "split '  +-* a+b 12.3e4 'c d'' -> [6] '12.3e4'");
-  t.is (items[7], "c d",           "split '  +-* a+b 12.3e4 'c d'' -> [7] 'c d'");
+  t.is (items[7], "'c d'",         "split '  +-* a+b 12.3e4 'c d'' -> [7] ''c d''");
 
   // Test common expression element.
   unsplit = "name=value";
