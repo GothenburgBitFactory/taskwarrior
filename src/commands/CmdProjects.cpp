@@ -92,8 +92,16 @@ int CmdProjects::execute (std::string& output)
       continue;
     }
 
+    // Increase the count for the project the task belongs to and all
+    // its super-projects
     project = task->get ("project");
-    unique[project] += 1;
+
+    std::vector <std::string> projects = extractParents (project);
+    projects.push_back (project);
+
+    std::vector <std::string>::const_iterator parent;
+    for (parent = projects.begin (); parent != projects.end (); ++parent)
+      unique[*parent] += 1;
 
     if (project == "")
       no_project = true;
