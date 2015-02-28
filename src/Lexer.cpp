@@ -695,8 +695,27 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
   Lexer::Type ignoredType;
   if (isIdentifier (ignoredToken, ignoredType))
   {
+    if (ignoredToken == "rc" ||
+        ignoredToken.substr (0, 3) == "rc.")
+    {
+      if (_eos - _cursor > 1 &&
+          (_text[_cursor] == ':' || _text[_cursor] == '='))
+      {
+        _cursor++;
+
+        if (isString (ignoredToken, ignoredType, '\'') ||
+            isString (ignoredToken, ignoredType, '"')  ||
+            isWord   (ignoredToken, ignoredType))
+        {
+          token = _text.substr (marker, _cursor - marker);
+          type = Lexer::Type::pair;
+          return true;
+        }
+      }
+    }
+
     if (_eos - _cursor > 1 &&
-        (_text[_cursor] == ':' || _text[_cursor] == '='))
+        _text[_cursor] == ':')
     {
       _cursor++;
 
