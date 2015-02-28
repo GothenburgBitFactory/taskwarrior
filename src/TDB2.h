@@ -128,7 +128,7 @@ public:
 
 private:
   void gather_changes ();
-  void update (const std::string&, Task&, const bool);
+  void update (const std::string&, Task&, const bool, const bool addition = false);
   bool verifyUniqueUUID (const std::string&);
   void show_diff (const std::string&, const std::string&, const std::string&);
   void revert_undo (std::vector <std::string>&, std::string&, std::string&, std::string&, std::string&);
