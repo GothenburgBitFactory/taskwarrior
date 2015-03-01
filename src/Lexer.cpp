@@ -554,6 +554,7 @@ bool Lexer::isHexNumber (std::string& token, Lexer::Type& type)
 //   \d+
 //   [ . \d+ ]
 //   [ e|E [ +|- ] \d+ [ . \d+ ] ]
+//   not followed by non-operator.
 bool Lexer::isNumber (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
@@ -602,6 +603,12 @@ bool Lexer::isNumber (std::string& token, Lexer::Type& type)
         }
       }
     }
+
+    // If there is an immediately consecutive character, that is not an operator, fail.
+    if (_eos > marker &&
+        ! isWhitespace (_text[marker]) &&
+        ! isSingleCharOperator (_text[marker]))
+      return false;
 
     token = _text.substr (_cursor, marker - _cursor);
     type = Lexer::Type::number;
