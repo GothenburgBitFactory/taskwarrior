@@ -48,7 +48,7 @@ public:
                     path,
                     substitution, pattern,
                     op,
-                    identifier, word,
+                    dom, identifier, word,
                     date, duration };
 
   Lexer (const std::string&);
@@ -97,6 +97,7 @@ public:
   bool isSubstitution (std::string&, Lexer::Type&);
   bool isPattern      (std::string&, Lexer::Type&);
   bool isOperator     (std::string&, Lexer::Type&);
+  bool isDOM          (std::string&, Lexer::Type&);
   bool isIdentifier   (std::string&, Lexer::Type&);
   bool isWord         (std::string&, Lexer::Type&);
 

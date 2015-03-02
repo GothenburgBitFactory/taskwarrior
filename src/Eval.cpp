@@ -358,6 +358,7 @@ void Eval::evaluatePostfixStack (
         throw std::string (STRING_EVAL_OP_EXPECTED);
         break;
 
+      case Lexer::Type::dom:
       case Lexer::Type::identifier:
         {
           bool found = false;
@@ -873,6 +874,7 @@ std::string Eval::dump (
   color_map[Lexer::Type::number]     = Color ("rgb530 on gray6");
   color_map[Lexer::Type::hex]        = Color ("rgb303 on gray6");
   color_map[Lexer::Type::string]     = Color ("rgb550 on gray6");
+  color_map[Lexer::Type::dom]        = Color ("rgb045 on gray6");
   color_map[Lexer::Type::identifier] = Color ("rgb035 on gray6");
   color_map[Lexer::Type::date]       = Color ("rgb150 on gray6");
   color_map[Lexer::Type::duration]   = Color ("rgb531 on gray6");

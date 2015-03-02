@@ -73,6 +73,7 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
 
   // The sequence is specific, and must follow these rules:
   // - date < duration < uuid < identifier
+  // - uuid < hex < number
   // - url < pair < identifier
   // - hex < number
   // - separator < tag < operator
@@ -82,13 +83,14 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
       isString       (token, type, '"')  ||
       isDate         (token, type)       ||
       isDuration     (token, type)       ||
+      isURL          (token, type)       ||
+      isPair         (token, type)       ||
+      isDOM          (token, type)       ||
       isUUID         (token, type)       ||
       isHexNumber    (token, type)       ||
       isNumber       (token, type)       ||
       isSeparator    (token, type)       ||
       isList         (token, type)       ||
-      isURL          (token, type)       ||
-      isPair         (token, type)       ||
       isTag          (token, type)       ||
       isPath         (token, type)       ||
       isSubstitution (token, type)       ||
@@ -150,6 +152,7 @@ const std::string Lexer::typeName (const Lexer::Type& type)
   case Lexer::Type::substitution: return "substitution";
   case Lexer::Type::pattern:      return "pattern";
   case Lexer::Type::op:           return "op";
+  case Lexer::Type::dom:          return "dom";
   case Lexer::Type::identifier:   return "identifier";
   case Lexer::Type::word:         return "word";
   case Lexer::Type::date:         return "date";
@@ -491,6 +494,7 @@ bool Lexer::isDuration (std::string& token, Lexer::Type& type)
 //   XXXXXXXX-X
 //   XXXXXXXX-
 //   XXXXXXXX
+//   Followed only by EOS, whitespace, operator or list.
 bool Lexer::isUUID (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
@@ -950,23 +954,75 @@ bool Lexer::isOperator (std::string& token, Lexer::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Lexer::Type::identifier
-//   [ <idDigit>+ . ] <isIdentifierStart> [ <isIdentifierNext> ]*
-bool Lexer::isIdentifier (std::string& token, Lexer::Type& type)
+// Lexer::Type::dom
+//   [ <isUUID> | <isDigit>+ . ] <isIdentifier> [ . <isIdentifier> ]*
+bool Lexer::isDOM (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
-  if (isDigit (_text[marker]))
+  std::string extractedToken;
+  Lexer::Type extractedType;
+  if (isUUID (extractedToken, extractedType))
   {
-    ++marker;
-    while (isDigit (_text[marker]))
-      ++marker;
-
-    if (_text[marker] == '.')
-      ++marker;
+    if (_text[_cursor] == '.')
+      ++_cursor;
     else
+    {
+      _cursor = marker;
       return false;
+    }
   }
+  else
+  {
+    if (isDigit (_text[_cursor]))
+    {
+      ++_cursor;
+      while (isDigit (_text[_cursor]))
+        ++_cursor;
+
+      if (_text[_cursor] == '.')
+        ++_cursor;
+      else
+      {
+        _cursor = marker;
+        return false;
+      }
+    }
+  }
+
+  if (! isOperator (extractedToken, extractedType) &&
+      isIdentifier (extractedToken, extractedType))
+  {
+    while (1)
+    {
+      if (_text[_cursor] == '.')
+        ++_cursor;
+      else
+        break;
+
+      if (isOperator (extractedToken, extractedType) ||
+          ! isIdentifier (extractedToken, extractedType))
+      {
+        _cursor = marker;
+        return false;
+      }
+    }
+
+    type = Lexer::Type::dom;
+    token = _text.substr (marker, _cursor - marker);
+    return true;
+  }
+
+  _cursor = marker;
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Lexer::Type::identifier
+//   <isIdentifierStart> [ <isIdentifierNext> ]*
+bool Lexer::isIdentifier (std::string& token, Lexer::Type& type)
+{
+  std::size_t marker = _cursor;
 
   if (isIdentifierStart (_text[marker]))
   {
@@ -1022,6 +1078,7 @@ std::string Lexer::typeToString (Lexer::Type type)
   else if (type == Lexer::Type::substitution) return std::string ("\033[37;102m")                + "substitution" + "\033[0m";
   else if (type == Lexer::Type::pattern)      return std::string ("\033[37;42m")                 + "pattern"      + "\033[0m";
   else if (type == Lexer::Type::op)           return std::string ("\033[38;5;7m\033[48;5;203m")  + "op"           + "\033[0m";
+  else if (type == Lexer::Type::dom)          return std::string ("\033[38;5;15m\033[48;5;244m") + "dom"          + "\033[0m";
   else if (type == Lexer::Type::identifier)   return std::string ("\033[38;5;15m\033[48;5;244m") + "identifier"   + "\033[0m";
   else if (type == Lexer::Type::word)         return std::string ("\033[38;5;15m\033[48;5;236m") + "word"         + "\033[0m";
   else if (type == Lexer::Type::date)         return std::string ("\033[38;5;15m\033[48;5;34m")  + "date"         + "\033[0m";
