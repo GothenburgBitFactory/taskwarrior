@@ -565,7 +565,6 @@ void Task::parse (const std::string& input)
               nl.getQuoted ('"', value))
           {
             legacyAttributeMap (name);
-            legacyValueMap (name, value);
 
             if (name.substr (0, 11) == "annotation_")
               ++annotation_count;
@@ -586,8 +585,6 @@ void Task::parse (const std::string& input)
       parseJSON (copy);
     else
       throw std::string (STRING_RECORD_NOT_FF4);
-
-    upgradeLegacyValues ();
   }
 
   catch (const std::string&)
@@ -719,8 +716,6 @@ void Task::parseJSON (const std::string& line)
         }
       }
     }
-
-    upgradeLegacyValues ();
   }
 }
 
@@ -2216,81 +2211,6 @@ void Task::modify (modType type, bool text_required /* = false */)
   {
     throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Task::upgradeLegacyValues ()
-{
-  // 2.4.0 Update recurrence values.
-  if (has ("recur"))
-  {
-    std::string value = get ("recur");
-    if (value != "")
-    {
-      std::string new_value = value;
-      upgradeLegacyValue (new_value);
-
-      if (new_value != value)
-      {
-        set ("recur", new_value);
-        context.debug (format ("Legacy upgrade: recur {1} --> {2}", value, new_value));
-      }
-    }
-  }
-
-  // 2.4.0 Update UDA duration values.
-  Config::const_iterator name;
-  for (name = context.config.begin (); name != context.config.end (); ++name)
-  {
-    if (name->first.substr (0, 4) == "uda." &&
-        name->first.find (".type") != std::string::npos)
-    {
-      if (name->second == "duration")
-      {
-        std::string::size_type period = name->first.find ('.', 4);
-        if (period != std::string::npos)
-        {
-          std::string uda = name->first.substr (4, period - 4);
-          std::string value = get (uda);
-          std::string new_value = value;
-          upgradeLegacyValue (new_value);
-
-          if (new_value != value)
-          {
-            set ("recur", new_value);
-            context.debug (format ("Legacy upgrade: UDA {1}, {2} --> {3}", uda, value, new_value));
-          }
-        }
-      }
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Task::upgradeLegacyValue (std::string& value)
-{
-  std::string::size_type len = value.length ();
-  std::string::size_type p;
-
-       if (value == "-")                                                    value = "0s";
-  else if ((p = value.find ("hr"))    != std::string::npos && p == len - 2) value = value.substr (0, p) + "h";
-  else if ((p = value.find ("hrs"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "h";
-  else if ((p = value.find ("mins"))  != std::string::npos && p == len - 4) value = value.substr (0, p) + "min";
-  else if ((p = value.find ("mnths")) != std::string::npos && p == len - 5) value = value.substr (0, p) + "mo";
-  else if ((p = value.find ("mos"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "mo";
-  else if ((p = value.find ("mth"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "mo";
-  else if ((p = value.find ("mths"))  != std::string::npos && p == len - 4) value = value.substr (0, p) + "mo";
-  else if ((p = value.find ("qrtrs")) != std::string::npos && p == len - 5) value = value.substr (0, p) + "q";
-  else if ((p = value.find ("qtr"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "q";
-  else if ((p = value.find ("qtrs"))  != std::string::npos && p == len - 4) value = value.substr (0, p) + "q";
-  else if ((p = value.find ("sec"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "s";
-  else if ((p = value.find ("secs"))  != std::string::npos && p == len - 4) value = value.substr (0, p) + "s";
-  else if ((p = value.find ("wk"))    != std::string::npos && p == len - 2) value = value.substr (0, p) + "w";
-  else if ((p = value.find ("wks"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "w";
-  else if ((p = value.find ("yr"))    != std::string::npos && p == len - 2) value = value.substr (0, p) + "y";
-  else if ((p = value.find ("yrs"))   != std::string::npos && p == len - 3) value = value.substr (0, p) + "y";
-
-  // It is not an error to have a non-legacy value.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
