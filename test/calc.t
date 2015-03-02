@@ -48,7 +48,7 @@ like ($output, qr/Eval literal number ↑'56'/,   'Number 56');
 like ($output, qr/^45296$/ms,                   'Result 45296');
 unlike ($output, qr/Error/,                     'No errors');
 
-$output = qx{../src/calc --debug --noambiguous '2--3'};
+$output = qx{../src/calc --debug --noambiguous '2- -3'};
 like ($output, qr/Eval literal number ↑'2'/ms,  'Number 2');
 like ($output, qr/Eval _neg_ ↓'3' → ↑'-3'/ms,   'Operator -');
 like ($output, qr/Eval literal number ↑'2'/ms,  'Number 3');
