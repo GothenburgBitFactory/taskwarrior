@@ -84,78 +84,26 @@ qx{../src/task rc:$rc add testing project:.myProject. 2>&1 >/dev/null};
 $output = qx{../src/task rc:$rc projects 2>&1};
 my @lines = split ('\n',$output);
 
-# It's easier to make a pattern for the end than the beginning because priority
-# counts are more predictable than project names.
-my $project_name_column;
-if ($lines[4] =~ s/\d+$//)
-{
-  $project_name_column = $lines[4];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^\.myProject\s*$/, "$ut: '.myProject' not indented");
+my ($project_name_column) = $lines[4] =~ /^(\s*\S+)/;
+like ($project_name_column, qr/^\.myProject$/, "$ut: '.myProject' not indented");
 
-if ($lines[5] =~ s/\d+$//)
-{
-  $project_name_column = $lines[5];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^\.myProject\.\s*$/, "$ut: '.myProject.' not indented");
+($project_name_column) = $lines[5] =~ /^(\s*\S+)/;
+like ($project_name_column, qr/^\.myProject\.$/, "$ut: '.myProject.' not indented");
 
-if ($lines[6] =~ s/\d+$//)
-{
-  $project_name_column = "error";
-}
-else
-{
-  $project_name_column = $lines[6];
-}
-like ($project_name_column, qr/^abstractParent\s*$/, "$ut: abstract parent not indented and no priority columns");
+($project_name_column) = $lines[6] =~ /^(\s*\S+)/;
+like ($project_name_column, qr/^abstractParent$/, "$ut: abstract parent not indented");
 
-if ($lines[7] =~ s/\d+$//)
-{
-  $project_name_column = $lines[7];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^  kid\s*$/, "$ut: child indented and without parent name");
+($project_name_column) = $lines[7] =~ /^(\s*\S+)/;
+like ($project_name_column, qr/^  kid$/, "$ut: child indented and without parent name");
 
-if ($lines[8] =~ s/\d+$//)
-{
-  $project_name_column = $lines[8];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^existingParent\s*$/, "$ut: existing parent not indented and has priority columns");
+($project_name_column) = $lines[8] =~ /^(\s*\S+)/;
+like ($project_name_column, qr/^existingParent$/, "$ut: existing parent not indented");
 
-if ($lines[9] =~ s/\d+$//)
-{
-  $project_name_column = $lines[9];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^  child\s*$/, "$ut: child of existing parent indented and without parent name");
+($project_name_column) = $lines[9] =~ /^(\s*\S+)/;
+like ($project_name_column, qr/^  child$/, "$ut: child of existing parent indented and without parent name");
 
-if ($lines[12] =~ s/\d+$//)
-{
-  $project_name_column = $lines[12];
-}
-else
-{
-  $project_name_column = "error";
-}
-like ($project_name_column, qr/^myProject\.\s*$/, "$ut: 'myProject.' not indented");
+($project_name_column) = $lines[12] =~ /^(\s*\S+)/;
+like ($project_name_column, qr/^myProject\.$/, "$ut: 'myProject.' not indented");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
