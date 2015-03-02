@@ -1,5 +1,9 @@
 2.4.2 () -
 
+- TW-41   Tasks in subprojects are not counted in project completion (thanks
+          to Renato Alves).
+- TW-1450 Projects command should trigger running garbage collector (thanks to
+          Tomas Babej).
 - TW-1535 move default listing-break from list to ls (thanks to David Patrick).
 - TW-1545 cc1plus: error: unrecognized command line option '-std=c++11' (thanks
           to Petteri).
@@ -17,6 +21,7 @@
 - Closed dangling pipes in execute (), resolving problems when a hook script
   forks (thanks to Jens Erat).
 - Re-enabled hook script feedback when exiting with 0 exit status.
+- The 'info' command now shows virtual tags.
 
 ------ current release ---------------------------
 

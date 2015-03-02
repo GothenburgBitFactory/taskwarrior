@@ -68,7 +68,13 @@ _task_offer_projects() {
     COMPREPLY=( $(compgen -W "$($taskcommand _projects)" -- ${cur/*:/}) )
 }
 
-_task() 
+_task_offer_contexts() {
+    COMPREPLY=( $(compgen -W "$($taskcommand _context) define delete list none show" -- $cur) )
+}
+
+_task_context_alias=$($taskcommand show | grep alias.*context | cut -d' ' -f1 | cut -d. -f2)
+
+_task()
 {
     local cur prev opts base
 
@@ -91,6 +97,10 @@ _task()
     opts="$commands_aliases $($taskcommand _columns)"
 
     case "${prev}" in
+        $_task_context_alias|cont|conte|contex|context)
+                _task_offer_contexts
+                return 0
+                ;;
         :)
             case "${prev2}" in
                 pri|prior|priori|priorit|priority)

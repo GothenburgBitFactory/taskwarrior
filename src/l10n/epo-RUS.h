@@ -296,6 +296,7 @@
 #define STRING_CMD_INFO_UNTIL        "Ĝis"
 #define STRING_CMD_INFO_MODIFICATION "Modifado"
 #define STRING_CMD_INFO_MODIFIED     "Modifado lasta"
+#define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
 #define STRING_CMD_UNDO_USAGE        "Malfaras la plej malfrua modifado al tasko"
 #define STRING_CMD_UNDO_MODS         "La komando 'undo' ne permesos, ke oni pli modifus la taskojn."
 #define STRING_CMD_STATS_USAGE       "Montras statistikon de la taska datumbazo"

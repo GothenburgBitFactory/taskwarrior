@@ -572,7 +572,7 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
   if (add_to_backlog)
     context.hooks.onAdd (task);
 
-  update (uuid, task, add_to_backlog);
+  update (uuid, task, add_to_backlog, true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -598,14 +598,15 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
 void TDB2::update (
   const std::string& uuid,
   Task& task,
-  const bool add_to_backlog)
+  const bool add_to_backlog,
+  const bool addition)
 {
   // Validate to add metadata.
   task.validate (false);
 
   // If the task already exists, it is a modification, else addition.
   Task original;
-  if (get (task.get ("uuid"), original))
+  if (not addition && get (task.get ("uuid"), original))
   {
     // Update the task, wherever it is.
     if (!pending.modify_task (task))
