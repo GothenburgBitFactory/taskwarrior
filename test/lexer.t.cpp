@@ -98,8 +98,8 @@ int main (int argc, char** argv)
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
   }
 
-  t.is (tokens[0].first,                     "one",           "tokens[0] = 'left'"); // 30
-  t.is (Lexer::typeName (tokens[0].second),  "identifier",    "tokens[0] = identifier");
+  t.is (tokens[0].first,                     "one",           "tokens[0] = 'one'"); // 30
+  t.is (Lexer::typeName (tokens[0].second),  "dom",           "tokens[0] = dom");
 
   t.is (tokens[1].first,                     "'two 'three''", "tokens[1] = 'two 'three''");
   t.is (Lexer::typeName (tokens[1].second),  "string",        "tokens[1] = string");
@@ -138,7 +138,7 @@ int main (int argc, char** argv)
   t.is (Lexer::typeName (tokens[12].second), "number",        "tokens[12] = number");
 
   t.is (tokens[13].first,                    "foo.bar",       "tokens[13] = 'foo.bar'");
-  t.is (Lexer::typeName (tokens[13].second), "identifier",    "tokens[13] = identifier");
+  t.is (Lexer::typeName (tokens[13].second), "dom",           "tokens[13] = dom");
 
   t.is (tokens[14].first,                    "and",           "tokens[14] = 'and'"); // 60
   t.is (Lexer::typeName (tokens[14].second), "op",            "tokens[14] = op");
