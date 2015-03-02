@@ -319,11 +319,11 @@ int main (int argc, char** argv)
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),       2,                             "2 tokens");
-  t.is (tokens[0].first,           "9th",                         "tokens[0] == '9th'");
-  t.is ((int) tokens[0].second,    (int) Lexer::Type::identifier, "tokens[0] == Type::identifier");
-  t.is (tokens[1].first,           "10th",                        "tokens[1] == '10th'");
-  t.is ((int) tokens[1].second,    (int) Lexer::Type::identifier, "tokens[1] == Type::identifier");
+  t.is ((int)tokens.size (),       2,                       "2 tokens");
+  t.is (tokens[0].first,           "9th",                   "tokens[0] == '9th'");
+  t.is ((int) tokens[0].second,    (int) Lexer::Type::word, "tokens[0] == Type::word");
+  t.is (tokens[1].first,           "10th",                  "tokens[1] == '10th'");
+  t.is ((int) tokens[1].second,    (int) Lexer::Type::word, "tokens[1] == Type::word");
 
   // Test tag recognition.
   Lexer l9 ("+with -WITHOUT + 2");
