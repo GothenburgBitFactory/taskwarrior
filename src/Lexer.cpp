@@ -951,17 +951,29 @@ bool Lexer::isOperator (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::identifier
-//   <isIdentifierStart> [ <isIdentifierNext> ]*
+//   [ <idDigit>+ . ] <isIdentifierStart> [ <isIdentifierNext> ]*
 bool Lexer::isIdentifier (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
+
+  if (isDigit (_text[marker]))
+  {
+    ++marker;
+    while (isDigit (_text[marker]))
+      ++marker;
+
+    if (_text[marker] == '.')
+      ++marker;
+    else
+      return false;
+  }
 
   if (isIdentifierStart (_text[marker]))
   {
     utf8_next_char (_text, marker);
 
     while (isIdentifierNext (_text[marker]))
-        utf8_next_char (_text, marker);
+      utf8_next_char (_text, marker);
 
     token = _text.substr (_cursor, marker - _cursor);
     type = Lexer::Type::identifier;
