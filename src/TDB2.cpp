@@ -1179,18 +1179,21 @@ int TDB2::gc ()
   // Allowed as an override, but not recommended.
   if (context.config.getBoolean ("gc"))
   {
-    std::vector <Task> pending_tasks   = pending.get_tasks ();
+    std::vector <Task> pending_tasks = pending.get_tasks ();
+
+    // TODO Thread.
     std::vector <Task> completed_tasks = completed.get_tasks ();
+
+    // TODO Assume pending < completed, therefore there is room here to process
+    //      data before joining with the completed.data thread.
 
     bool pending_changes = false;
     bool completed_changes = false;
-
     std::vector <Task> pending_tasks_after;
     std::vector <Task> completed_tasks_after;
 
     // Reduce unnecessary allocation/copies.
     pending_tasks_after.reserve (pending_tasks.size ());
-    completed_tasks_after.reserve (completed_tasks.size ());
 
     // Scan all pending tasks, looking for any that need to be relocated to
     // completed, or need to be 'woken'.
@@ -1226,6 +1229,11 @@ int TDB2::gc ()
         completed_changes = true;
       }
     }
+
+    // TODO Join completed.data thread.
+
+    // Reduce unnecessary allocation/copies.
+    completed_tasks_after.reserve (completed_tasks.size ());
 
     // Scan all completed tasks, looking for any that need to be relocated to
     // pending.
