@@ -8,7 +8,8 @@ import atexit
 from time import sleep
 from subprocess import Popen
 from .utils import (find_unused_port, release_port, port_used, run_cmd_wait,
-                    which, parse_datafile, DEFAULT_CERT_PATH, binary_location)
+                    which, parse_datafile, DEFAULT_CERT_PATH,
+                    taskd_binary_location)
 from .exceptions import CommandError
 
 try:
@@ -30,7 +31,7 @@ class Taskd(object):
     A server can be stopped and started multiple times, but should not be
     started or stopped after being destroyed.
     """
-    DEFAULT_TASKD = binary_location("taskd")
+    DEFAULT_TASKD = taskd_binary_location()
 
     def __init__(self, taskd=DEFAULT_TASKD, certpath=None,
                  address="localhost"):
