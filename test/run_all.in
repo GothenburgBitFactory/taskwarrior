@@ -1,5 +1,8 @@
 #! /bin/sh
 
+# Look for taskd in $PATH instead of task/src/
+export TASKD_USE_PATH=1
+
 rc=0
 if [ x"$1" = x"--verbose" ];
 then
