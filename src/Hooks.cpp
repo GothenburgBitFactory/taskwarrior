@@ -358,6 +358,7 @@ void Hooks::onModify (const Task& before, Task& after)
         throw 0;  // This is how hooks silently terminate processing.
       }
     }
+    after = Task (input[1]);
   }
 
   context.timer_hooks.stop ();

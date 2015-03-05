@@ -22,6 +22,8 @@
   forks (thanks to Jens Erat).
 - Re-enabled hook script feedback when exiting with 0 exit status.
 - The 'info' command now shows virtual tags.
+- Fixed major on-modify hooks regression where hooks could no longer modify
+  the tasks handed to them.
 
 ------ current release ---------------------------
 
