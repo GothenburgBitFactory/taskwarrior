@@ -804,7 +804,8 @@ bool Lexer::isPath (std::string& token, Lexer::Type& type)
         _text[marker] != '/')
     {
       utf8_next_char (_text, marker);
-      while (! isWhitespace (_text[marker]) &&
+      while (_text[marker] &&
+             ! isWhitespace (_text[marker]) &&
              _text[marker] != '/')
         utf8_next_char (_text, marker);
     }
