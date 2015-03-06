@@ -1,111 +1,144 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 16;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-use File::Basename;
-my $ut = basename ($0);
-my $rc = $ut . '.rc';
 
-# Create the rc file.
-if (open my $fh, '>', $rc)
-{
-  print $fh "data.location=.\n",
-            "confirmation=off\n";
-  close $fh;
-}
+class TestProjects(TestCase):
+    def setUp(self):
+        self.t = Task()
 
-# Test the project status numbers.
-my $output = qx{../src/task rc:$rc add one pro:foo 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(1 task remaining\)\./, "$ut: add one");
+        self.STATUS = ("The project '{0}' has changed\.  "
+                       "Project '{0}' is {1} complete \({2} remaining\)\.")
 
-$output = qx{../src/task rc:$rc add two pro:'foo' 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(2 of 2 tasks remaining\)\./, "$ut: add two");
+    def test_project_summary_count(self):
+        """'task projects' shouldn't consider deleted tasks in summary.
+        Reported in bug 1044
+        """
+        self.t(("add", "project:A", "1"))
+        self.t(("add", "project:B", "2"))
+        self.t(("add", "project:B", "3"))
+        self.t(("3", "delete"))
+        code, out, err = self.t(("project:B", "projects"))
 
-$output = qx{../src/task rc:$rc add three pro:'foo' 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(3 of 3 tasks remaining\)\./, "$ut: add three");
+        expected = "1 project \(1 task\)"
+        self.assertRegexpMatches(out, expected)
 
-$output = qx{../src/task rc:$rc add four pro:'foo' 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 0% complete \(4 of 4 tasks remaining\)\./, "$ut: add four");
+    def test_project_progress(self):
+        """project status/progress is shown and is up-to-date"""
 
-$output = qx{../src/task rc:$rc 1 done 2>&1 >/dev/null};
-like ($output, qr/Project 'foo' is 25% complete \(3 of 4 tasks remaining\)\./, "$ut: done one");
+        code, out, err = self.t(("add", "one", "pro:foo"))
+        self.assertRegexpMatches(err, self.STATUS.format("foo", "0%",
+                                                         "1 task"))
 
-$output = qx{../src/task rc:$rc 2 delete 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 33% complete \(2 of 3 tasks remaining\)\./, "$ut: delete two");
+        code, out, err = self.t(("add", "two", "pro:foo"))
+        self.assertRegexpMatches(err, self.STATUS.format("foo", "0%",
+                                                         "2 of 2 tasks"))
 
-$output = qx{../src/task rc:$rc 3 modify pro:bar 2>&1 >/dev/null};
-like ($output, qr/The project 'foo' has changed\.  Project 'foo' is 50% complete \(1 of 2 tasks remaining\)\./, "$ut: change project");
-like ($output, qr/The project 'bar' has changed\.  Project 'bar' is 0% complete \(1 task remaining\)\./, "$ut: change project");
+        code, out, err = self.t(("add", "three", "pro:foo"))
+        self.assertRegexpMatches(err, self.STATUS.format("foo", "0%",
+                                                         "3 of 3 tasks"))
 
-# Test projects with spaces in them.
-$output = qx{../src/task rc:$rc 3 modify pro:"foo bar" 2>&1 >/dev/null};
-like ($output, qr/The project 'foo bar' has changed\./, "$ut: project with spaces");
+        code, out, err = self.t(("add", "four", "pro:foo"))
+        self.assertRegexpMatches(err, self.STATUS.format("foo", "0%",
+                                                         "4 of 4 tasks"))
 
-# Bug 1056: Project indentation.
-# see also the tests of helper functions for CmdProjects in util.t.cpp
-qx{../src/task rc:$rc add testing project:existingParent 2>&1 >/dev/null};
-qx{../src/task rc:$rc add testing project:existingParent.child 2>&1 >/dev/null};
-qx{../src/task rc:$rc add testing project:abstractParent.kid 2>&1 >/dev/null};
-qx{../src/task rc:$rc add testing project:.myProject 2>&1 >/dev/null};
-qx{../src/task rc:$rc add testing project:myProject. 2>&1 >/dev/null};
-qx{../src/task rc:$rc add testing project:.myProject. 2>&1 >/dev/null};
+        code, out, err = self.t(("1", "done"))
+        self.assertRegexpMatches(err, self.STATUS.format("foo", "25%",
+                                                         "3 of 4 tasks"))
 
-$output = qx{../src/task rc:$rc projects 2>&1};
-my @lines = split ('\n',$output);
+        code, out, err = self.t(("2", "delete"))
+        self.assertRegexpMatches(err, self.STATUS.format("foo", "33%",
+                                                         "2 of 3 tasks"))
 
-my ($project_name_column) = $lines[4] =~ /^(\s*\S+)/;
-like ($project_name_column, qr/^\.myProject$/, "$ut: '.myProject' not indented");
+        code, out, err = self.t(("3", "modify", "pro:bar"))
+        self.assertRegexpMatches(err, self.STATUS.format("foo", "50%",
+                                                         "1 of 2 tasks"))
+        self.assertRegexpMatches(err, self.STATUS.format("bar", "0%",
+                                                         "1 task"))
 
-($project_name_column) = $lines[5] =~ /^(\s*\S+)/;
-like ($project_name_column, qr/^\.myProject\.$/, "$ut: '.myProject.' not indented");
+    def test_project_spaces(self):
+        """projects with spaces are handled correctly"""
 
-($project_name_column) = $lines[6] =~ /^(\s*\S+)/;
-like ($project_name_column, qr/^abstractParent$/, "$ut: abstract parent not indented");
+        self.t(("add", "hello", "pro:bob"))
+        code, out, err = self.t(("1", "mod", 'pro:"foo bar"'))
+        self.assertRegexpMatches(err, self.STATUS.format("foo bar", "0%",
+                                                         "1 task"))
 
-($project_name_column) = $lines[7] =~ /^(\s*\S+)/;
-like ($project_name_column, qr/^  kid$/, "$ut: child indented and without parent name");
+    def test_project_indentation(self):
+        """check project/subproject indentation
 
-($project_name_column) = $lines[8] =~ /^(\s*\S+)/;
-like ($project_name_column, qr/^existingParent$/, "$ut: existing parent not indented");
+        Reported in bug 1056
 
-($project_name_column) = $lines[9] =~ /^(\s*\S+)/;
-like ($project_name_column, qr/^  child$/, "$ut: child of existing parent indented and without parent name");
+        See also the tests of helper functions for CmdProjects in util.t.cpp
+        """
+        self.t(("add", "testing", "project:existingParent"))
+        self.t(("add", "testing", "project:existingParent.child"))
+        self.t(("add", "testing", "project:abstractParent.kid"))
+        self.t(("add", "testing", "project:.myProject"))
+        self.t(("add", "testing", "project:myProject"))
+        self.t(("add", "testing", "project:.myProject."))
 
-($project_name_column) = $lines[12] =~ /^(\s*\S+)/;
-like ($project_name_column, qr/^myProject\.$/, "$ut: 'myProject.' not indented");
+        code, out, err = self.t(("projects",))
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data), $rc;
-exit 0;
+        order = (
+            # NOTE all but abstractParent have 1 task hence the trailing space
+            ".myProject ",
+            ".myProject. ",
+            "abstractParent\n",
+            "  kid ",
+            "existingParent ",
+            "  child ",
+            "myProject ",
+        )
 
+        lines = out.splitlines(True)  # True = keep newlines
+        # position where project names start on the lines list
+        position = 3
+
+        for i, proj in enumerate(order):
+            pos = position + i
+
+            self.assertTrue(
+                lines[pos].startswith(proj),
+                msg=("Project '{0}' is not in line #{1} or has an unexpected "
+                     "indentation.{2}".format(proj, pos, out))
+            )
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
