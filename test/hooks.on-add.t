@@ -56,6 +56,9 @@ class TestHooksOnAdd(TestCase):
         logs = hook.get_logs()
         self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
+        code, out, err = self.t(("1", "info"))
+        self.assertIn("Description   foo", out)
+
     def test_onadd_builtin_reject(self):
         """on-add-reject - a well-behaved, failing, on-add hook."""
         hookname = 'on-add-reject'
