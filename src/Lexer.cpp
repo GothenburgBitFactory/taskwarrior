@@ -706,6 +706,7 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
   Lexer::Type ignoredType;
   if (isIdentifier (ignoredToken, ignoredType))
   {
+    // Look for rc.name[:=]value first, because '=' is allowed.
     if (ignoredToken == "rc" ||
         ignoredToken.substr (0, 3) == "rc.")
     {
@@ -1048,8 +1049,8 @@ bool Lexer::isWord (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
-  while (_text[marker]                          &&
-         ! isWhitespace         (_text[marker]) &&
+  while (_text[marker]                  &&
+         ! isWhitespace (_text[marker]) &&
          ! isSingleCharOperator (_text[marker]))
     utf8_next_char (_text, marker);
 
