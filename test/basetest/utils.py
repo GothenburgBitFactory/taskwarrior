@@ -41,13 +41,28 @@ DEFAULT_HOOK_PATH = os.path.abspath(
 TASKW_SKIP = os.environ.get("TASKW_SKIP", False)
 TASKD_SKIP = os.environ.get("TASKD_SKIP", False)
 # Environment flags to control use of PATH or in-tree binaries
-USE_PATH = os.environ.get("USE_PATH", False)
+TASK_USE_PATH = os.environ.get("TASK_USE_PATH", False)
+TASKD_USE_PATH = os.environ.get("TASKD_USE_PATH", False)
 
 UUID_regex = ("[0-9A-Fa-f]{8}-" + ("[0-9A-Fa-f]{4}-" * 3) + "[0-9A-Fa-f]{12}")
 
 
-def binary_location(cmd):
-    """If USE_PATH is set rely on PATH to look for task/taskd binaries.
+def task_binary_location(cmd="task"):
+    """If TASK_USE_PATH is set rely on PATH to look for task binaries.
+    Otherwise ../src/ is used by default.
+    """
+    return binary_location(cmd, TASK_USE_PATH)
+
+
+def taskd_binary_location(cmd="taskd"):
+    """If TASKD_USE_PATH is set rely on PATH to look for taskd binaries.
+    Otherwise ../src/ is used by default.
+    """
+    return binary_location(cmd, TASKD_USE_PATH)
+
+
+def binary_location(cmd, USE_PATH=False):
+    """If USE_PATH is True rely on PATH to look for taskd binaries.
     Otherwise ../src/ is used by default.
     """
     if USE_PATH:

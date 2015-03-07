@@ -35,29 +35,33 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from basetest import Task, TestCase
 
 
-class TestBug1036(TestCase):
-    "'until' attribute should be modifiable in non-recurring tasks"
-
+class TestAliasesCompletion(TestCase):
+    """Aliases should be listed by '_aliases' not '_commands' or '_zshcommands'
+    reported as bug 1043
+    """
     def setUp(self):
         self.t = Task()
+        self.t.config("alias.samplealias", "long")
 
-        self.t.config("dateformat", "m/d/Y")
+    def test__aliases(self):
+        """samplealias in _aliases"""
+        code, out, err = self.t(("_aliases",))
 
-    def test_until_may_modify(self):
-        """check that until attribute may be modified"""
-        self.t(("add", "test"))
-        code, out, err = self.t(("1", "mod", "until:1/1/2020"))
+        self.assertIn("samplealias", out)
 
-        expected = "Modifying task 1 'test'."
-        self.assertIn(expected, out)
+    def test__commands(self):
+        """samplealias not in _commands"""
+        code, out, err = self.t(("_commands",))
 
-    def test_may_modify_on_until(self):
-        """check that task with until attribute set may be modified"""
-        self.t(("add", "test", "until:1/1/2020"))
-        code, out, err = self.t(("1", "mod", "/test/Hello/"))
+        self.assertIn("information", out)
+        self.assertNotIn("samplealias", out)
 
-        expected = "Modifying task 1 'Hello'."
-        self.assertIn(expected, out)
+    def test__zshcommands(self):
+        """samplealias not in _zshcommands"""
+        code, out, err = self.t(("_zshcommands",))
+
+        self.assertIn("information", out)
+        self.assertNotIn("samplealias", out)
 
 
 if __name__ == "__main__":

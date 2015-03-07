@@ -29,35 +29,28 @@
 import sys
 import os
 import unittest
+from datetime import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
 
 
-class TestBug1036(TestCase):
-    "'until' attribute should be modifiable in non-recurring tasks"
+class TestFilterPrefix(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("verbose", "nothing")
+        cls.t(('add', 'foo'))
 
-    def setUp(self):
-        self.t = Task()
+    def test_success(self):
+        """Test successful search returns zero."""
+        code, out, err = self.t(('list', '/foo/'))
 
-        self.t.config("dateformat", "m/d/Y")
-
-    def test_until_may_modify(self):
-        """check that until attribute may be modified"""
-        self.t(("add", "test"))
-        code, out, err = self.t(("1", "mod", "until:1/1/2020"))
-
-        expected = "Modifying task 1 'test'."
-        self.assertIn(expected, out)
-
-    def test_may_modify_on_until(self):
-        """check that task with until attribute set may be modified"""
-        self.t(("add", "test", "until:1/1/2020"))
-        code, out, err = self.t(("1", "mod", "/test/Hello/"))
-
-        expected = "Modifying task 1 'Hello'."
-        self.assertIn(expected, out)
+    def test_failure(self):
+        """Test failed search returns non-zero."""
+        code, out, err = self.t.runError(('list', '/bar/'))
 
 
 if __name__ == "__main__":

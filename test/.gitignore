@@ -53,7 +53,6 @@ variant_partial.t
 variant_subtract.t
 variant_xor.t
 view.t
-width.t
 
 json_test
 

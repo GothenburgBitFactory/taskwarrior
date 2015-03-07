@@ -57,6 +57,10 @@ class TestHooksOnModify(TestCase):
         logs = hook.get_logs()
         self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
+        code, out, err = self.t(("1", "info"))
+        self.assertIn("Description   foo", out)
+        self.assertIn("Tags          tag", out)
+
     def test_onmodify_builtin_reject(self):
         """on-modify-reject - a well-behaved, failing, on-modify hook."""
         hookname = 'on-modify-reject'

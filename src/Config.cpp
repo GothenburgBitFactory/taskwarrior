@@ -433,7 +433,7 @@ std::string Config::_defaults =
   "report.next.labels=ID,Active,Age,Deps,P,Project,Tag,Recur,S,Due,Until,Description,Urg\n"
   "report.next.columns=id,start.age,entry.age,depends,priority,project,tags,recur,scheduled.countdown,due.remaining,until.remaining,description,urgency\n"
   "report.next.filter=status:pending limit:page\n"
-  "report.next.sort=start-,urgency-\n"
+  "report.next.sort=urgency-\n"
   "\n"
   "report.ready.description=Most urgent actionable tasks\n"
   "report.ready.labels=ID,Active,Age,D,P,Project,Tags,R,S,Due,Until,Description,Urg\n"
