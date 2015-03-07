@@ -7,17 +7,25 @@ if (open my $fh, '<', 'all.log')
 {
   my $test_file;
   my %errors;
+  my %skipped;
 
   while (my $line = <$fh>)
   {
-    $test_file = $1       if $line =~ /^# (\S+\.t)$/;
-    $errors{$test_file}++ if $line =~ /^not /;
+    $test_file = $1        if $line =~ /^# (\S+\.t)$/;
+    $errors{$test_file}++  if $line =~ /^not /;
+    $skipped{$test_file}++ if $line =~ /^skip /;
   }
 
   close $fh;
 
-  printf "%-24s %4d\n", $_, $errors{$_}
+  print "Failed\n";
+  printf "%-32s %4d\n", $_, $errors{$_}
     for sort {$errors{$b} <=> $errors{$a}} keys %errors;
+
+  print "\n";
+  print "Skipped\n";
+  printf "%-32s %4d\n", $_, $skipped{$_}
+    for sort {$skipped{$b} <=> $skipped{$a}} keys %skipped;
 }
 
 exit 0;
