@@ -284,10 +284,11 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
   std::string::size_type original_start = start;
   Nibbler n (input.substr (start));
 
-  // TODO This can be made static, and so preserved between calls.
-  std::vector <std::string> units;
-  for (int i = 0; i < NUM_DURATIONS; i++)
-    units.push_back (durations[i].unit);
+  // Static and so preserved between calls.
+  static std::vector <std::string> units;
+  if (units.size () == 0)
+    for (int i = 0; i < NUM_DURATIONS; i++)
+      units.push_back (durations[i].unit);
 
   std::string number;
   std::string unit;
