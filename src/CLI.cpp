@@ -220,16 +220,14 @@ const std::string A::dump () const
 // Static method.
 void CLI::getOverride (int argc, const char** argv, std::string& home, File& rc)
 {
-  bool terminated = false;
   for (int i = 0; i < argc; ++i)
   {
     std::string raw = argv[i];
 
     if (raw == "--")
-      terminated = true;
+      return;
 
-    if (! terminated      &&
-        raw.length () > 3 &&
+    if (raw.length () > 3 &&
         raw.substr (0, 3) == "rc:")
     {
       rc = raw.substr (3);
@@ -379,10 +377,9 @@ void CLI::addContextFilter ()
 {
   // Detect if any context is set, and bail out if not
   std::string contextName = context.config.get ("context");
-
   if (contextName == "")
   {
-    context.debug("No context applied.");
+    context.debug ("No context applied.");
     return;
   }
 
@@ -392,35 +389,35 @@ void CLI::addContextFilter ()
     std::vector <A>::const_iterator a;
     for (a = _args.begin (); a != _args.end (); ++a)
     {
+      // TODO This looks wrong.
       if (a->hasTag ("FILTER") &&
           a->hasTag ("ATTRIBUTE") &&
           ! a->hasTag ("TERMINATED") &&
           ! a->hasTag ("WORD") &&
           (a->attribute ("raw") == "id" || a->attribute ("raw") == "uuid"))
       {
-        context.debug(format("UUID/ID lexeme found '{1}', not applying context.", a->attribute ("raw")));
+        context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a->attribute ("raw")));
         return;
       }
     }
   }
 
   // Apply context
-  context.debug("Applying context: " + contextName);
+  context.debug ("Applying context: " + contextName);
   std::string contextFilter = context.config.get ("context." + contextName);
 
   if (contextFilter == "")
-    context.debug("Context '" + contextName + "' not defined!");
+    context.debug ("Context '" + contextName + "' not defined.");
   else
   {
-    addRawFilter("( " + contextFilter + " )");
+    addRawFilter ("( " + contextFilter + " )");
     if (context.verbose ("context"))
-      context.footnote (format("Context '{1}' set. Use 'task context none' to remove.", contextName));
+      context.footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Process raw string into parsed filter.
-//
 void CLI::addRawFilter (const std::string& arg)
 {
   std::string lexeme;
@@ -689,7 +686,7 @@ const std::string CLI::dump (const std::string& title /* = "CLI Parser" */) cons
 //       be lexed from those that need to be left alone.
 //
 // Either the arg is appended to _original_args intact, or the lexemes are.
-void CLI::addArg (const std::string& arg)
+void CLI::addArg (const std::string& arg, Lexer::Type type /* = Lexer::Type::word */)
 {
   std::string raw = trim (arg);
 

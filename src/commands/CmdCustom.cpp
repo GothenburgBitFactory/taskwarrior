@@ -82,7 +82,7 @@ int CmdCustom::execute (std::string& output)
   validateSortColumns (sortOrder);
 
   // Prepend the argument list with those from the report filter.
-  context.cli.addRawFilter(reportFilter);
+  context.cli.addRawFilter (reportFilter);
 
   // Apply filter.
   handleRecurrence ();

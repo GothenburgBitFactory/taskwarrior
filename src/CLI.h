@@ -90,7 +90,7 @@ public:
   const std::string dump (const std::string& title = "CLI Parser") const;
 
 private:
-  void addArg (const std::string&);
+  void addArg (const std::string&, Lexer::Type type = Lexer::Type::word);
   void aliasExpansion ();
   void findOverrides ();
   void categorize ();
