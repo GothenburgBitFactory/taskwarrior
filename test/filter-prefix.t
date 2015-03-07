@@ -65,7 +65,7 @@ class TestFilterPrefix(TestCase):
         self.assertIn('eight', out)
 
     def test_list_project_foo(self):
-        """No filter shows all tasks."""
+        """Filter on project name."""
         code, out, err = self.t(('list', 'project:foo'))
         self.assertIn('one', out)
         self.assertIn('two', out)
@@ -77,7 +77,7 @@ class TestFilterPrefix(TestCase):
         self.assertNotIn('eight', out)
 
     def test_list_project_not_foo(self):
-        """No filter shows all tasks."""
+        """Filter on not project name."""
         code, out, err = self.t(('list', 'project.not:foo'))
         self.assertNotIn('one', out)
         self.assertNotIn('two', out)
@@ -89,7 +89,7 @@ class TestFilterPrefix(TestCase):
         self.assertIn('eight', out)
 
     def test_list_project_startwsith_bar(self):
-        """No filter shows all tasks."""
+        """Filter on project name start."""
         code, out, err = self.t(('list', 'project.startswith:bar'))
         self.assertNotIn('one', out)
         self.assertNotIn('two', out)
@@ -101,7 +101,7 @@ class TestFilterPrefix(TestCase):
         self.assertNotIn('eight', out)
 
     def test_list_project_ba(self):
-        """No filter shows all tasks."""
+        """Filter on project partial match."""
         code, out, err = self.t(('list', 'project:ba'))
         self.assertNotIn('one', out)
         self.assertNotIn('two', out)
@@ -113,7 +113,7 @@ class TestFilterPrefix(TestCase):
         self.assertIn('eight', out)
 
     def test_list_project_not_ba(self):
-        """No filter shows all tasks."""
+        """Filter on project partial non-match."""
         code, out, err = self.t(('list', 'project.not:ba'))
         self.assertIn('one', out)
         self.assertIn('two', out)
@@ -125,7 +125,7 @@ class TestFilterPrefix(TestCase):
         self.assertNotIn('eight', out)
 
     def test_list_descrtiption_has_foo(self):
-        """No filter shows all tasks."""
+        """Filter on description pattern."""
         code, out, err = self.t(('list', 'description.has:foo'))
         self.assertIn('one', out)
         self.assertNotIn('two', out)
