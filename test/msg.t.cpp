@@ -25,8 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream>
-#include <stdlib.h>
 #include <Context.h>
 #include <Msg.h>
 #include <test.h>
@@ -37,10 +35,6 @@ Context context;
 int main (int argc, char** argv)
 {
   UnitTest t (12);
-
-  // Ensure environment has no influence.
-  unsetenv ("TASKDATA");
-  unsetenv ("TASKRC");
 
   Msg m;
   t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize '' --> '\\n\\n'");
@@ -55,16 +49,17 @@ int main (int argc, char** argv)
   t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\nfoo: bar\nname: value\n\npayload\n", "Msg::serialize 2 vars + payload");
 
   Msg m2;
-  t.ok (m2.parse ("foo: bar\nname: value\n\npayload\n"), "Msg::parse ok");
-  t.is (m2.get ("foo"),   "bar",       "Msg::get");
-  t.is (m2.get ("name"),  "value",     "Msg::get");
-  t.is (m2.getPayload (), "payload\n", "Msg::getPayload");
+  t.ok (m2.parse ("foo: bar\nname: value\n\npayload\n"),  "Msg::parse ok");
+  t.is (m2.get ("foo"),   "bar",                          "Msg::get");
+  t.is (m2.get ("name"),  "value",                        "Msg::get");
+  t.is (m2.getPayload (), "payload\n",                    "Msg::getPayload");
 
   Msg m3;
   t.ok (m3.parse ("foo:bar\nname:   value\n\npayload\n"), "Msg::parse ok");
-  t.is (m3.get ("foo"),   "bar",       "Msg::get");
-  t.is (m3.get ("name"),  "value",     "Msg::get");
-  t.is (m3.getPayload (), "payload\n", "Msg::getPayload");
+  t.is (m3.get ("foo"),   "bar",                          "Msg::get");
+  t.is (m3.get ("name"),  "value",                        "Msg::get");
+  t.is (m3.getPayload (), "payload\n",                    "Msg::getPayload");
+
   return 0;
 }
 
