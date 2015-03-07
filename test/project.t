@@ -113,10 +113,9 @@ class TestProjects(TestCase):
         code, out, err = self.t(("projects",))
 
         order = (
-            # NOTE all but abstractParent have 1 task hence the trailing space
             ".myProject ",
             ".myProject. ",
-            "abstractParent\n",
+            "abstractParent ",
             "  kid ",
             "existingParent ",
             "  child ",
