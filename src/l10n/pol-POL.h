@@ -296,6 +296,7 @@
 #define STRING_CMD_INFO_UNTIL        "Do"
 #define STRING_CMD_INFO_MODIFICATION "Modyfikacja"
 #define STRING_CMD_INFO_MODIFIED     "Ostatnio zmodyfikowane"
+#define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
 #define STRING_CMD_UNDO_USAGE        "Odwraca ostatnią zmianę w zadaniu"
 #define STRING_CMD_UNDO_MODS         "Polecenie cofnij nie pozwala na późniejsze modyfikacje zadania."
 #define STRING_CMD_STATS_USAGE       "Pokazuje statystyki bazy danych zadań"

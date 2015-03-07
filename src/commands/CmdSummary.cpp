@@ -92,27 +92,34 @@ int CmdSummary::execute (std::string& output)
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {
     std::string project = task->get ("project");
-    ++counter[project];
+    std::vector <std::string> projects = extractParents (project);
+    projects.push_back (project);
+
+    std::vector <std::string>::const_iterator parent;
+    for (parent = projects.begin (); parent != projects.end (); ++parent)
+      ++counter[*parent];
 
     if (task->getStatus () == Task::pending ||
         task->getStatus () == Task::waiting)
-    {
-      ++countPending[project];
+      for (parent = projects.begin (); parent != projects.end (); ++parent)
+      {
+        ++countPending[*parent];
 
-      time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
-      if (entry)
-        sumEntry[project] = sumEntry[project] + (double) (now - entry);
-    }
+        time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
+        if (entry)
+          sumEntry[*parent] = sumEntry[*parent] + (double) (now - entry);
+      }
 
     else if (task->getStatus () == Task::completed)
-    {
-      ++countCompleted[project];
+      for (parent = projects.begin (); parent != projects.end (); ++parent)
+      {
+        ++countCompleted[*parent];
 
-      time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
-      time_t end   = strtol (task->get ("end").c_str (), NULL, 10);
-      if (entry && end)
-        sumEntry[project] = sumEntry[project] + (double) (end - entry);
-    }
+        time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
+        time_t end   = strtol (task->get ("end").c_str (), NULL, 10);
+        if (entry && end)
+          sumEntry[*parent] = sumEntry[*parent] + (double) (end - entry);
+      }
   }
 
 

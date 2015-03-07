@@ -86,7 +86,6 @@ std::string legacyCheckForDeprecatedColor ();
 std::string legacyCheckForDeprecatedVariables ();
 std::string legacyCheckForDeprecatedColumns ();
 void legacyAttributeMap (std::string&);
-void legacyValueMap (const std::string&, std::string&);
 
 // list template
 ///////////////////////////////////////////////////////////////////////////////

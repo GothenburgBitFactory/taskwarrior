@@ -572,7 +572,7 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
   if (add_to_backlog)
     context.hooks.onAdd (task);
 
-  update (uuid, task, add_to_backlog);
+  update (uuid, task, add_to_backlog, true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -580,7 +580,6 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
 {
   // Ensure the task is consistent, and provide defaults if necessary.
   task.validate (false);
-  task.upgradeLegacyValues ();
   std::string uuid = task.get ("uuid");
 
   // Get the unmodified task as reference, so the hook can compare.
@@ -598,14 +597,15 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
 void TDB2::update (
   const std::string& uuid,
   Task& task,
-  const bool add_to_backlog)
+  const bool add_to_backlog,
+  const bool addition)
 {
   // Validate to add metadata.
   task.validate (false);
 
   // If the task already exists, it is a modification, else addition.
   Task original;
-  if (get (task.get ("uuid"), original))
+  if (not addition && get (task.get ("uuid"), original))
   {
     // Update the task, wherever it is.
     if (!pending.modify_task (task))
@@ -1179,18 +1179,21 @@ int TDB2::gc ()
   // Allowed as an override, but not recommended.
   if (context.config.getBoolean ("gc"))
   {
-    std::vector <Task> pending_tasks   = pending.get_tasks ();
+    std::vector <Task> pending_tasks = pending.get_tasks ();
+
+    // TODO Thread.
     std::vector <Task> completed_tasks = completed.get_tasks ();
+
+    // TODO Assume pending < completed, therefore there is room here to process
+    //      data before joining with the completed.data thread.
 
     bool pending_changes = false;
     bool completed_changes = false;
-
     std::vector <Task> pending_tasks_after;
     std::vector <Task> completed_tasks_after;
 
     // Reduce unnecessary allocation/copies.
     pending_tasks_after.reserve (pending_tasks.size ());
-    completed_tasks_after.reserve (completed_tasks.size ());
 
     // Scan all pending tasks, looking for any that need to be relocated to
     // completed, or need to be 'woken'.
@@ -1226,6 +1229,11 @@ int TDB2::gc ()
         completed_changes = true;
       }
     }
+
+    // TODO Join completed.data thread.
+
+    // Reduce unnecessary allocation/copies.
+    completed_tasks_after.reserve (completed_tasks.size ());
 
     // Scan all completed tasks, looking for any that need to be relocated to
     // pending.

@@ -154,7 +154,6 @@ public:
 
   enum modType {modReplace, modPrepend, modAppend, modAnnotate};
   void modify (modType, bool text_required = false);
-  void upgradeLegacyValues ();
 
 private:
   int determineVersion (const std::string&);
@@ -163,7 +162,6 @@ private:
   void validate_before (const std::string&, const std::string&);
   const std::string encode (const std::string&) const;
   const std::string decode (const std::string&) const;
-  void upgradeLegacyValue (std::string&);
 
 public:
   float urgency_priority () const;

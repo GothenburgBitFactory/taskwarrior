@@ -314,6 +314,40 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 1, allTags);
     }
 
+    // Virtual tags.
+    {
+      // Note: This list must match that in Task::hasTag.
+      std::string virtualTags = "";
+      if (task->hasTag ("ACTIVE"))    virtualTags += "ACTIVE ";
+      if (task->hasTag ("ANNOTATED")) virtualTags += "ANNOTATED ";
+      if (task->hasTag ("BLOCKED"))   virtualTags += "BLOCKED ";
+      if (task->hasTag ("BLOCKING"))  virtualTags += "BLOCKING ";
+      if (task->hasTag ("CHILD"))     virtualTags += "CHILD ";
+      if (task->hasTag ("COMPLETED")) virtualTags += "COMPLETED ";
+      if (task->hasTag ("DELETED"))   virtualTags += "DELETED ";
+      if (task->hasTag ("DUE"))       virtualTags += "DUE ";
+      if (task->hasTag ("DUETODAY"))  virtualTags += "DUETODAY ";
+      if (task->hasTag ("MONTH"))     virtualTags += "MONTH ";
+      if (task->hasTag ("OVERDUE"))   virtualTags += "OVERDUE ";
+      if (task->hasTag ("PARENT"))    virtualTags += "PARENT ";
+      if (task->hasTag ("PENDING"))   virtualTags += "PENDING ";
+      if (task->hasTag ("READY"))     virtualTags += "READY ";
+      if (task->hasTag ("SCHEDULED")) virtualTags += "SCHEDULED ";
+      if (task->hasTag ("TAGGED"))    virtualTags += "TAGGED ";
+      if (task->hasTag ("TODAY"))     virtualTags += "TODAY ";
+      if (task->hasTag ("TOMORROW"))  virtualTags += "TOMORROW ";
+      if (task->hasTag ("UNBLOCKED")) virtualTags += "UNBLOCKED ";
+      if (task->hasTag ("UNTIL"))     virtualTags += "UNTIL ";
+      if (task->hasTag ("WAITING"))   virtualTags += "WAITING ";
+      if (task->hasTag ("WEEK"))      virtualTags += "WEEK ";
+      if (task->hasTag ("YEAR"))      virtualTags += "YEAR ";
+      if (task->hasTag ("YESTERDAY")) virtualTags += "YESTERDAY ";
+
+      row = view.addRow ();
+      view.set (row, 0, STRING_CMD_INFO_VIRTUAL_TAGS);
+      view.set (row, 1, virtualTags);
+    }
+
     // uuid
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_UUID);
