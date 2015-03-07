@@ -36,11 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1036);
-
-  // Ensure environment has no influence.
-  unsetenv ("TASKDATA");
-  unsetenv ("TASKRC");
+  UnitTest t (40 + 256 + 256 + 6*6*6 + 6*6*6 + 1 + 24 + 24 + 3);
 
   // Names matched to values.
   t.is ((int) Color (""),        (int) Color (Color::nocolor), "''        == Color::nocolor");
