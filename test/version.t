@@ -29,6 +29,7 @@
 import sys
 import os
 import unittest
+import re
 from datetime import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -41,27 +42,75 @@ class TestVersion(TestCase):
     def setUp(self):
         self.t = Task()
 
-    def test_version(self):
-        """Copyright is current"""
-        args = ("version",)
+        self.t.config("default.command", "")
 
-        code, out, err = self.t(args)
+    def test_usage_command(self):
+        """no_command = usage - reports failure"""
+        code, out, err = self.t.runError()
+
+        self.assertIn("You must specify a command or a task to modify", err)
+
+    def test_copyright_up_to_date(self):
+        """Copyright is current"""
+        code, out, err = self.t(("version",))
 
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
-        self.assertRegexpMatches(out.decode("utf8"), expected)
+        self.assertRegexpMatches(out, expected)
+
+    def slurp(self, file="../CMakeLists.txt"):
+        number = "\.".join(["[0-9]+"] * 3)
+        ver = re.compile("^set \(PROJECT_VERSION \"({0})\"\)$".format(number))
+        with open(file) as fh:
+            for line in fh:
+                if "PROJECT_VERSION" in line:
+                    match = ver.match(line)
+                    if match:
+                        return match.group(1)
+        raise ValueError("Couldn't find matching version in {0}".format(file))
+
+    def test_version(self):
+        """version command outputs expected version and license"""
+        code, out, err = self.t(("version",))
+
+        expected = "task {0}".format(self.slurp())
+        self.assertIn(expected, out)
+        self.assertIn("MIT license", out)
+        self.assertIn("http://taskwarrior.org", out)
+
+    def slurp_git(self):
+        git_cmd = ("git", "rev-parse", "--short", "--verify", "HEAD")
+        _, hash, _ = run_cmd_wait(git_cmd)
+        return hash.rstrip("\n")
+
+    def test_under_version(self):
+        """_version outputs expected version and syntax"""
+        code, out, err = self.t(("_version",))
+
+        # version = "x.x.x (git-hash)" or simply "x.x.x"
+        # corresponding to "compiled from git" or "compiled from tarball"
+        version = out.split()
+
+        if 2 >= len(version) > 0:
+            git = version[1]
+            git_expected = "({0})".format(self.slurp_git())
+            self.assertEqual(git_expected, git)
+        else:
+            raise ValueError("Unexpected output from _version '{0}'".format(
+                out))
+
+        ver = version[0]
+        ver_expected = self.slurp()
+        self.assertEqual(ver_expected, ver)
 
     def test_task_git_version(self):
         """Task binary matches the current git commit"""
-
-        git_cmd = ("git", "rev-parse", "--short", "--verify", "HEAD")
-        _, hash, _ = run_cmd_wait(git_cmd)
-
-        expected = "Commit: {0}".format(hash)
+        expected = "Commit: {0}".format(self.slurp_git())
 
         args = ("diag",)
 
         code, out, err = self.t(args)
         self.assertIn(expected, out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

@@ -135,7 +135,10 @@ CmdCompletionVersion::CmdCompletionVersion ()
 int CmdCompletionVersion::execute (std::string& output)
 {
 #ifdef HAVE_COMMIT
-  output = COMMIT;
+  output = std::string (VERSION)
+         + std::string (" (")
+         + std::string (COMMIT)
+         + std::string (")");
 #else
   output = VERSION;
 #endif

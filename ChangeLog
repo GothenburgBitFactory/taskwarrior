@@ -24,6 +24,8 @@
 - The 'info' command now shows virtual tags.
 - Fixed major on-modify hooks regression where hooks could no longer modify
   the tasks handed to them.
+- 'task _version' now outputs "2.4.2 (git-ref)" when built from git. "2.4.2"
+  when built from release tarballs (thanks to Renato Alves).
 
 ------ current release ---------------------------
 
