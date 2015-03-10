@@ -96,13 +96,7 @@ class TestProjects(TestCase):
         self.assertRegexpMatches(err, self.STATUS.format("foo bar", "0%",
                                                          "1 task"))
 
-    def test_project_indentation(self):
-        """check project/subproject indentation
-
-        Reported in bug 1056
-
-        See also the tests of helper functions for CmdProjects in util.t.cpp
-        """
+    def add_tasks(self):
         self.t(("add", "testing", "project:existingParent"))
         self.t(("add", "testing", "project:existingParent.child"))
         self.t(("add", "testing", "project:abstractParent.kid"))
@@ -110,8 +104,7 @@ class TestProjects(TestCase):
         self.t(("add", "testing", "project:myProject"))
         self.t(("add", "testing", "project:.myProject."))
 
-        code, out, err = self.t(("projects",))
-
+    def validate_indentation(self, out):
         order = (
             ".myProject ",
             ".myProject. ",
@@ -134,6 +127,30 @@ class TestProjects(TestCase):
                 msg=("Project '{0}' is not in line #{1} or has an unexpected "
                      "indentation.{2}".format(proj, pos, out))
             )
+
+    def test_project_indentation(self):
+        """check project/subproject indentation in 'task projects'
+
+        Reported in bug 1056
+
+        See also the tests of helper functions for CmdProjects in util.t.cpp
+        """
+        self.add_tasks()
+
+        code, out, err = self.t(("projects",))
+
+        self.validate_indentation(out)
+
+    def test_project_indentation_in_summary(self):
+        """check project/subproject indentation in 'task summary'
+
+        Reported in bug 1056
+        """
+        self.add_tasks()
+
+        code, out, err = self.t(("summary",))
+
+        self.validate_indentation(out)
 
 
 if __name__ == "__main__":
