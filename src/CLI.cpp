@@ -532,10 +532,13 @@ void CLI::applyOverrides ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Extract all the FILTER-tagged items.
-const std::string CLI::getFilter ()
+const std::string CLI::getFilter (bool applyContext /* = true */)
 {
   // Handle context setting
-  addContextFilter ();
+  // Commands that don't want to respect current context should leverage
+  // the applyContext argument
+  if (applyContext)
+    addContextFilter ();
 
   std::string filter = "";
   if (_args.size ())

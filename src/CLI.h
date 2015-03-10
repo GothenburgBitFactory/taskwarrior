@@ -81,7 +81,7 @@ public:
   void addRawFilter (const std::string& arg);
   void analyze (bool parse = true, bool strict = false);
   void applyOverrides ();
-  const std::string getFilter ();
+  const std::string getFilter (bool applyContext = true);
   const std::vector <std::string> getWords ();
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   std::string getBinary () const;
