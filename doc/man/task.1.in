@@ -1161,11 +1161,11 @@ the 'data.location' configuration setting of the task data directory.
 For examples please see the online documentation starting at
 
 .RS
-<http://taskwarrior.org/projects/taskwarrior/wiki>
+<http://taskwarrior.org/docs>
 .RE
 
-Note that the online documentation is more detailed and more current than this
-man page.
+Note that the online documentation can be more detailed and more current than
+this man page.
 
 .SH FILES
 
