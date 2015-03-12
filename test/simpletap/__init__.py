@@ -128,6 +128,9 @@ class TAPTestResult(unittest.result.TestResult):
             if status == "SKIP":
                 self.stream.writeln("skip {0} - {1}".format(
                     self.testsRun, desc))
+            elif status == "EXPECTED_FAILURE":
+                self.stream.writeln("ok {0} - {1}".format(
+                    self.testsRun, desc))
             else:
                 self.stream.writeln("not ok {0} - {1}".format(
                     self.testsRun, desc))
@@ -162,6 +165,10 @@ class TAPTestResult(unittest.result.TestResult):
     def addSkip(self, test, reason):
         super(TAPTestResult, self).addSkip(test, reason)
         self.report(test, "SKIP", reason)
+
+    def addExpectedFailure(self, test, err):
+        super(TAPTestResult, self).addExpectedFailure(test, err)
+        self.report(test, "EXPECTED_FAILURE", err)
 
 
 class TAPTestRunner(unittest.runner.TextTestRunner):
