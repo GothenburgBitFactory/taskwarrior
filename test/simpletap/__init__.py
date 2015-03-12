@@ -33,6 +33,23 @@ import warnings
 import traceback
 
 
+def color(text, c):
+    """
+    Add color on the keyword that identifies the state of the test
+    """
+    if sys.stdout.isatty():
+        clear = "\033[0m"
+
+        colors = {
+            "red": "\033[1m\033[91m",
+            "yellow": "\033[1m\033[93m",
+            "green": "\033[1m\033[92m",
+        }
+        return colors[c] + text + clear
+    else:
+        return text
+
+
 class TAPTestResult(unittest.result.TestResult):
     def __init__(self, stream, descriptions, verbosity):
         super(TAPTestResult, self).__init__(stream, descriptions, verbosity)
@@ -126,16 +143,20 @@ class TAPTestResult(unittest.result.TestResult):
 
         if status:
             if status == "SKIP":
-                self.stream.writeln("skip {0} - {1}".format(
-                    self.testsRun, desc))
+                self.stream.writeln("{0} {1} - {2}".format(
+                    color("skip", "yellow"), self.testsRun, desc)
+                )
             elif status == "EXPECTED_FAILURE":
-                self.stream.writeln("ok {0} - {1}".format(
-                    self.testsRun, desc))
+                self.stream.writeln("{0} {1} - {2}".format(
+                    color("ok", "green"), self.testsRun, desc)
+                )
             else:
-                self.stream.writeln("not ok {0} - {1}".format(
-                    self.testsRun, desc))
+                self.stream.writeln("{0} {1} - {2}".format(
+                    color("not ok", "red"), self.testsRun, desc)
+                )
             self.stream.writeln("# {0}: {1} {2}:".format(
-                status, exception_name, trace_msg))
+                status, exception_name, trace_msg)
+            )
 
             # Magic 3 is just for pretty indentation
             padding = " " * (len(status) + 3)
@@ -145,7 +166,9 @@ class TAPTestResult(unittest.result.TestResult):
                 line = line.replace("\\n", "\n# ")
                 self.stream.writeln("#{0}{1}".format(padding, line))
         else:
-            self.stream.writeln("ok {0} - {1}".format(self.testsRun, desc))
+            self.stream.writeln("{0} {1} - {2}".format(
+                color("ok", "green"), self.testsRun, desc)
+            )
 
         # Flush all buffers to stdout
         self._mergeStdout()
