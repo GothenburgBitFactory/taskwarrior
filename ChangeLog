@@ -124,6 +124,7 @@
 - TW-52 "task add ... recur:2 months" interpreted as "2s" (thanks to jwhisnant).
 - TW-55 Bulk edit recurring tasks without answering yes/no for each? (thanks to
         Max Muller).
+- TW-63 indicators for UDAs (thanks to David Patrick).
 - TW-71 task ls/list/long/etc. should match contents of projects too (thanks to
         Cory Donnelly).
 - TW-72 extend info report with urgency column.
