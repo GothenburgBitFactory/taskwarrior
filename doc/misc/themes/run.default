@@ -1,0 +1,24 @@
+#!/bin/bash
+
+cat <<EOF >x
+data.location=.
+confirmation=off
+detection=off
+_forcecolor=on
+default.height=24
+verbose=off
+EOF
+
+echo "--- DEFAULT -----------------------------------------------------"
+echo '$ task color legend'
+task rc:x color legend
+echo '$ task list'
+task rc:x list
+echo '$ task summary'
+task rc:x summary
+echo '$ task ghistory'
+task rc:x ghistory
+echo '$ task calendar'
+task rc:x calendar
+echo '$ task burndown.daily'
+task rc:x burndown.daily
