@@ -1,4 +1,4 @@
-2.4.2 (2015-03-15) -
+2.4.2 (2015-03-15) b9dc0813d9a8922b4cef9595033f133f9fbabf44
 
 - TW-41   Tasks in subprojects are not counted in project completion (thanks
           to Renato Alves).
