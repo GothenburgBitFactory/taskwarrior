@@ -34,14 +34,14 @@ color.header=yellow
 color.footnote=yellow
 color.warning=bold red
 color.error=yellow
-color.debug=yellow
+color.debug=blue
 
 # Task state
-color.completed=green on white
-color.deleted=red on white
+color.completed=
+color.deleted=
 color.active=black on bright green
 color.recurring=magenta
-color.scheduled=on green
+color.scheduled=white on green
 color.until=
 color.blocked=black on white
 color.blocking=black on bright white
