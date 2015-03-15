@@ -1,38 +1,15 @@
 
-New Features in taskwarrior 2.4.2
+New Features in taskwarrior 2.4.3
 
-  - Ability to set context, which serves as a permanent user-defined filter.
-  - The 'info' command now shows virtual tags.
+New commands in taskwarrior 2.4.3
 
-New commands in taskwarrior 2.4.2
+New configuration options in taskwarrior 2.4.3
 
-  - The 'context' command has been added, along with it subcommands 'define',
-    'delete', 'show', 'list' and 'none'.
+Newly deprecated features in taskwarrior 2.4.3
 
-New configuration options in taskwarrior 2.4.2
-
-  - 'context' to store the current context applied.
-  - 'context.<name>' to store the definition of context 'name'
-
-Newly deprecated features in taskwarrior 2.4.2
-
-  - None
-
-Removed features in 2.4.2
-
-  - None
+Removed features in 2.4.3
 
 Known Issues
-
-  - If you upgraded from Taskwarrior 2.3.0, you will need one of the following
-    settings to allow continued syncing to a Taskserver:
-
-      $ task config taskd.trust strict
-      $ task config taskd.trust 'ignore hostname'
-      $ task config taskd.trust 'allow all'
-
-    These are presented in order of preference from most to least secure, and
-    depend on how your certs were generated.
 
   - https://bug.tasktools.org/
 

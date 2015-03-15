@@ -1,3 +1,7 @@
+2.4.3 () -
+
+------ current release ---------------------------
+
 2.4.2 (2015-03-15) b9dc0813d9a8922b4cef9595033f133f9fbabf44
 
 - TW-41   Tasks in subprojects are not counted in project completion (thanks
@@ -26,8 +30,6 @@
   the tasks handed to them.
 - 'task _version' now outputs "2.4.2 (git-ref)" when built from git. "2.4.2"
   when built from release tarballs (thanks to Renato Alves).
-
------- current release ---------------------------
 
 2.4.1 (2015-02-16) 82e019a4a8b20de63d53b51d59b8d1c89d3c05b2
 
