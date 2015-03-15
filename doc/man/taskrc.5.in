@@ -1,4 +1,4 @@
-.TH taskrc 5 2015-02-16 "${PACKAGE_STRING}" "User Manuals"
+.TH taskrc 5 2015-03-15 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 taskrc \- Configuration details for the task(1) command
