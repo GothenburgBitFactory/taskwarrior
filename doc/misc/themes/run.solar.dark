@@ -13,6 +13,8 @@ include $theme
 EOF
 
   echo "--- $theme -----------------------------------------------------"
+  echo '$ task color legend'
+  task rc:x color legend
   echo '$ task list'
   task rc:x list
   echo '$ task summary'
