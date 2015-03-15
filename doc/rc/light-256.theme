@@ -33,7 +33,7 @@ color.alternate=on gray22
 color.header=color15 on gray8
 color.footnote=on gray18
 color.warning=color9
-color.error=red on white
+color.error=white on red
 color.debug=rgb025
 
 # Task state
