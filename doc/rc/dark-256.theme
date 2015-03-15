@@ -29,12 +29,12 @@ rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overd
 # General decoration
 color.label=
 color.label.sort=
-color.alternate=on gray1
+color.alternate=on gray2
 color.header=color3
 color.footnote=color3
 color.warning=bold red
 color.error=color3
-color.debug=color3
+color.debug=color4
 
 # Task state
 color.completed=rgb010 on white
