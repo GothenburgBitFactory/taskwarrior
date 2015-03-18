@@ -288,7 +288,7 @@ value is "yes". Consider leaving this setting as "yes", for safety.
 .TP
 .B allow.empty.filter=yes
 An empty filter combined with a write command is potentially a way to modify
-all tasks by mistkae, and when this is detected, confirmation is required.
+all tasks by mistake, and when this is detected, confirmation is required.
 Setting this to 'no' means that it is an error to use a write command with no
 filter.
 
