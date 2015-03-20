@@ -712,8 +712,8 @@ void CLI::addArg (const std::string& arg, Lexer::Type type /* = Lexer::Type::wor
     _original_args.push_back (raw);
   }
 
-  // The argument may require lexing.  Lex anyway, and analyze before comitting
-  // that.
+  // The argument may require lexing. Lex anyway, and analyze before comitting
+  // to that.
   else
   {
     // Lex each remaining argument.  The apply a series of disqualifying tests

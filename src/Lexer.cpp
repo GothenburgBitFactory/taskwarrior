@@ -608,6 +608,7 @@ bool Lexer::isNumber (std::string& token, Lexer::Type& type)
       }
     }
 
+    // Lookahread: !<isWhitespace> | !<isSingleCharOperator>
     // If there is an immediately consecutive character, that is not an operator, fail.
     if (_eos > marker &&
         ! isWhitespace (_text[marker]) &&
@@ -753,9 +754,7 @@ bool Lexer::isTag (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
-  // This test requires a tag to have a preceding space or start a string.
-  //   bad:  'a+b' --> identifier tag
-  //   good: 'a+b' --> identifier op identifier
+  // Lookbehind: ^ | <isWhiteSpace>
   if (marker > 0 &&
       ! isWhitespace (_text[marker - 1]))
     return false;
@@ -844,6 +843,7 @@ bool Lexer::isSubstitution (std::string& token, Lexer::Type& type)
       if (_text[_cursor] == 'g')
         ++_cursor;
 
+      // Lookahread: <isWhitespace>
       if (isWhitespace (_text[_cursor]))
       {
         token = _text.substr (marker, _cursor - marker);
