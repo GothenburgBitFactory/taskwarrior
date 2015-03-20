@@ -46,7 +46,7 @@ rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overd
 # General decoration
 color.label=
 color.label.sort=
-color.alternate=on white #color7 (allows bold for alternate rows)
+color.alternate=on color7
 color.header=color2
 color.footnote=color2
 color.warning=
@@ -56,20 +56,20 @@ color.debug=color3
 # Task state
 color.completed=
 color.deleted=
-color.active=bold red #color9
+color.active=color9
 color.recurring=color4
 color.scheduled=
 color.until=
-color.blocked=on color14
-color.blocking=on color14
+color.blocked=color0 on color14
+color.blocking=color15 on color0
 
 # Project
 color.project.none=
 
 # Priority
-color.pri.H=bold black #color0
-color.pri.M=bold yellow #color11
-color.pri.L=bold cyan #color14
+color.pri.H=bold color0
+color.pri.M=bold color11
+color.pri.L=bold color14
 color.pri.none=
 
 # Tags
@@ -83,14 +83,14 @@ color.due.today=color1
 color.overdue=color5
 
 # Report: burndown
-color.burndown.done=color0 on color4
+color.burndown.done=color0 on color6
 color.burndown.pending=color0 on color1
-color.burndown.started=color0 on color9
+color.burndown.started=color0 on color3
 
 # Report: history
 color.history.add=color0 on color1
 color.history.delete=color0 on color3
-color.history.done=color14 on color0
+color.history.done=color0 on color6
 
 # Report: summary
 color.summary.background=on color7

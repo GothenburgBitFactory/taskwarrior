@@ -29,16 +29,16 @@ rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overd
 # General decoration
 color.label=
 color.label.sort=
-color.alternate=on gray1
+color.alternate=on gray2
 color.header=color0 on gray11
 color.footnote=on gray5
 color.warning=bold red
-color.error=red on white
-color.debug=black on white
+color.error=white on red
+color.debug=blue
 
 # Task state
-color.completed=black on white
-color.deleted=black on white
+color.completed=
+color.deleted=
 color.active=black on gray18
 color.recurring=
 color.scheduled=on gray8
@@ -61,7 +61,7 @@ color.tag.none=
 color.tagged=
 
 # Due
-color.due=on gray2
+color.due=on gray3
 color.due.today=on gray4
 color.overdue=on gray6
 
@@ -76,12 +76,12 @@ color.history.delete=black on gray10
 color.history.done=gray5 on gray23
 
 # Report: summary
-color.summary.bar=on gray15
-color.summary.background=on black
+color.summary.bar=on gray12
+color.summary.background=on gray5
 
 # Command: calendar
 color.calendar.due=on gray8
-color.calendar.due.today=on gray15
+color.calendar.due.today=black on gray15
 color.calendar.holiday=black on gray20
 color.calendar.overdue=gray2 on gray10
 color.calendar.today=bold white
@@ -89,7 +89,7 @@ color.calendar.weekend=on gray2
 color.calendar.weeknumber=gray6
 
 # Command: sync
-color.sync.add=gray15 on gray5
+color.sync.added=gray15 on gray5
 color.sync.changed=black on gray10
 color.sync.rejected=gray5 on gray23
 

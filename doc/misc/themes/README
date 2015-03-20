@@ -1,15 +1,24 @@
 Themes
 
-To generate samples of themes, first execute the 'run' script to generate the
+To generate samples of themes, first execute the 'setup' script to generate the
 sample data.  Note that this data may need to be tweaked to include qualities
 that need to be illustrated in theme sample.
 
-Then edit the 'rc' file to include the desired theme file.
+Using a dark-background terminal (black recommended), run the following:
 
-Then run 'per' to run a few commands for each theme.
+  run.dark
 
-Note that this will require that the terminal window be switched between a black
-and white background to properly show the light and dark themes.
+Using a light-background terminal, run the following:
+
+  run.light
+
+Using a solarized dark terminal, run the following:
+
+  run.solar.dark
+
+Using a solarized light terminal, run the following:
+
+  run.solar.light
 
 Note that for the solarized themes, the terminal color palette needs to be set
 to specific colors.

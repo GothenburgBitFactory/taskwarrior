@@ -54,7 +54,7 @@ int CmdExport::execute (std::string& output)
   // Apply filter.
   Filter filter;
   std::vector <Task> filtered;
-  filter.subset (filtered);
+  filter.subset (filtered, false);
 
   // Obey 'limit:N'.
   int rows = 0;

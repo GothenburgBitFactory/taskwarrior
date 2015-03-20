@@ -33,12 +33,12 @@ color.alternate=
 color.header=bold white on bright black
 color.footnote=bold cyan on bright black
 color.warning=bold red
-color.error=red on white
-color.debug=white on black
+color.error=white on red
+color.debug=blue
 
 # Task state
-color.completed=green on black
-color.deleted=red on black
+color.completed=
+color.deleted=
 color.active=bold yellow on bright black
 color.recurring=
 color.scheduled=on bright cyan
@@ -63,17 +63,17 @@ color.tagged=
 # Due
 color.due=on bright green
 color.due.today=on bright yellow
-color.overdue=on bright magenta
+color.overdue=on bright red
 
 # Report: burndown
-color.burndown.pending=on bright green
+color.burndown.pending=on bright red
 color.burndown.started=on bright yellow
 color.burndown.done=on green
 
 # Report: history
-color.history.add=blue on bright yellow
-color.history.done=green on bright green
-color.history.delete=black on red
+color.history.add=black on bright red
+color.history.done=black on bright green
+color.history.delete=black on yellow
 
 # Report: summary
 color.summary.bar=on bright green
@@ -82,11 +82,11 @@ color.summary.background=on white
 # Command: calendar
 color.calendar.due=on bright green
 color.calendar.due.today=blue on bright yellow
-color.calendar.holiday=yellow
-color.calendar.overdue=on bright magenta
+color.calendar.holiday=on yellow
+color.calendar.overdue=on bright red
 color.calendar.today=blue
 color.calendar.weekend=on white
-color.calendar.weeknumber=white on bright black
+color.calendar.weeknumber=blue
 
 # Command: sync
 color.sync.added=green

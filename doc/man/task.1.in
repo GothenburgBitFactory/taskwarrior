@@ -1,4 +1,4 @@
-.TH task 1 2015-02-16 "${PACKAGE_STRING}" "User Manuals"
+.TH task 1 2015-03-15 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 task \- A command line todo manager.
@@ -378,6 +378,22 @@ time from the specified task.
 
 Miscellaneous subcommands either accept no command line arguments, or accept
 non-standard arguments.
+
+.TP
+.B task calc <expression>
+Evaluates an algebraic expression. Can be used to test how TaskWarrior
+parses and evaluates the expression given on the command line.
+
+Examples:
+
+    task calc 1 + 1
+    2
+
+    task calc now + 8d
+    2015-03-26T18:06:57
+
+    task calc eom
+    2015-03-31T23:59:59
 
 .TP
 .B task config [name [value | '']]
@@ -1161,11 +1177,11 @@ the 'data.location' configuration setting of the task data directory.
 For examples please see the online documentation starting at
 
 .RS
-<http://taskwarrior.org/projects/taskwarrior/wiki>
+<http://taskwarrior.org/docs>
 .RE
 
-Note that the online documentation is more detailed and more current than this
-man page.
+Note that the online documentation can be more detailed and more current than
+this man page.
 
 .SH FILES
 

@@ -29,19 +29,19 @@ rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overd
 # General decoration
 color.label=
 color.label.sort=
-color.alternate=on gray1
+color.alternate=on gray2
 color.header=rgb031
 color.footnote=rgb031
-color.warning=bold red
-color.error=rgb031
-color.debug=rgb031
+color.warning=rgb020
+color.error=white on red
+color.debug=blue
 
 # Task state
-color.completed=rgb020 on white
-color.deleted=rgb200 on white
+color.completed=
+color.deleted=
 color.active=rgb050 on rgb010
 color.recurring=rgb151
-color.scheduled=on rgb011
+color.scheduled=black on rgb031
 color.until=
 color.blocked=white on rgb010
 color.blocking=white on rgb020
@@ -76,7 +76,7 @@ color.history.delete=color0 on rgb050
 color.history.done=color0 on rgb030
 
 # Report: summary
-color.summary.background=white on color0
+color.summary.background=white on gray3
 color.summary.bar=white on rgb030
 
 # Command: calendar
@@ -95,4 +95,4 @@ color.sync.rejected=rgb010
 
 # Command: undo
 color.undo.after=rgb053
-color.undo.before=rgb031
+color.undo.before=rgb021

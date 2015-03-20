@@ -67,7 +67,7 @@ Filter::~Filter ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take an input set of tasks and filter into a subset.
-void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
+void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output, bool applyContext /* = true */)
 {
   context.timer_filter.start ();
   _startCount = (int) input.size ();
@@ -75,7 +75,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   if (context.config.getInteger ("debug.parser") >= 1)
     context.debug (context.cli.dump ("Filter::subset"));
 
-  std::string filterExpr = context.cli.getFilter ();
+  std::string filterExpr = context.cli.getFilter (applyContext);
   if (filterExpr.length ())
   {
     Eval eval;
@@ -111,7 +111,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take the set of all tasks and filter into a subset.
-void Filter::subset (std::vector <Task>& output)
+void Filter::subset (std::vector <Task>& output, bool applyContext /* = true */)
 {
   context.timer_filter.start ();
 
@@ -119,7 +119,7 @@ void Filter::subset (std::vector <Task>& output)
     context.debug (context.cli.dump ("Filter::subset"));
 
   bool shortcut = false;
-  std::string filterExpr = context.cli.getFilter ();
+  std::string filterExpr = context.cli.getFilter (applyContext);
   if (filterExpr.length ())
   {
     context.timer_filter.stop ();

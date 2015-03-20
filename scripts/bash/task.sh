@@ -50,7 +50,7 @@
 #
 ################################################################################
 #the following variable is substituted for by ../../test/bash_completion.t
-taskcommand='task rc.verbose:nothing'
+taskcommand='task rc.verbose:nothing rc.confirmation:no'
 
 _task_get_tags() {
     $taskcommand _tags

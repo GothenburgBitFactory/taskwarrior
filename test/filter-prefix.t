@@ -88,7 +88,7 @@ class TestFilterPrefix(TestCase):
         self.assertIn('seven', out)
         self.assertIn('eight', out)
 
-    def test_list_project_startwsith_bar(self):
+    def test_list_project_startswith_bar(self):
         """Filter on project name start."""
         code, out, err = self.t(('list', 'project.startswith:bar'))
         self.assertNotIn('one', out)
@@ -124,7 +124,7 @@ class TestFilterPrefix(TestCase):
         self.assertNotIn('seven', out)
         self.assertNotIn('eight', out)
 
-    def test_list_descrtiption_has_foo(self):
+    def test_list_description_has_foo(self):
         """Filter on description pattern."""
         code, out, err = self.t(('list', 'description.has:foo'))
         self.assertIn('one', out)

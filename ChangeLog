@@ -1,4 +1,11 @@
-2.4.2 () -
+2.4.3 () -
+
+- TW-1578 Bash tab completion problems on first run
+          (thanks to Renato Alves and Ptolemarch).
+
+------ current release ---------------------------
+
+2.4.2 (2015-03-15) b9dc0813d9a8922b4cef9595033f133f9fbabf44
 
 - TW-41   Tasks in subprojects are not counted in project completion (thanks
           to Renato Alves).
@@ -24,8 +31,8 @@
 - The 'info' command now shows virtual tags.
 - Fixed major on-modify hooks regression where hooks could no longer modify
   the tasks handed to them.
-
------- current release ---------------------------
+- 'task _version' now outputs "2.4.2 (git-ref)" when built from git. "2.4.2"
+  when built from release tarballs (thanks to Renato Alves).
 
 2.4.1 (2015-02-16) 82e019a4a8b20de63d53b51d59b8d1c89d3c05b2
 
@@ -122,6 +129,7 @@
 - TW-52 "task add ... recur:2 months" interpreted as "2s" (thanks to jwhisnant).
 - TW-55 Bulk edit recurring tasks without answering yes/no for each? (thanks to
         Max Muller).
+- TW-63 indicators for UDAs (thanks to David Patrick).
 - TW-71 task ls/list/long/etc. should match contents of projects too (thanks to
         Cory Donnelly).
 - TW-72 extend info report with urgency column.

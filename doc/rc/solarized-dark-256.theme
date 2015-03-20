@@ -83,14 +83,14 @@ color.due.today=color1
 color.overdue=color5
 
 # Report: burndown
-color.burndown.done=color0 on color4
+color.burndown.done=color0 on color6
 color.burndown.pending=color0 on color1
-color.burndown.started=color0 on color9
+color.burndown.started=color0 on color3
 
 # Report: history
 color.history.add=color0 on color1
 color.history.delete=color0 on color3
-color.history.done=color0 on color10
+color.history.done=color0 on color6
 
 # Report: summary
 color.summary.background=on color0

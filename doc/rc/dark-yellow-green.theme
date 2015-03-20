@@ -33,15 +33,15 @@ color.alternate=on gray2
 color.header=rgb031
 color.footnote=rgb031
 color.warning=
-color.error=rgb031
-color.debug=rgb031
+color.error=white on red
+color.debug=blue
 
 # Task state
 color.completed=
 color.deleted=
-color.active=rgb451 on rgb310
+color.active=rgb451 on rgb320
 color.recurring=rgb343
-color.scheduled=
+color.scheduled=black on rgb441
 color.until=
 color.blocked=white on rgb110
 color.blocking=white on rgb220
@@ -61,9 +61,9 @@ color.tag.none=
 color.tagged=rgb342
 
 # Due
-color.due=rgb420
-color.due.today=rgb410
-color.overdue=rgb400
+color.due=rgb440
+color.due.today=rgb430
+color.overdue=rgb420
 
 # Report: burndown
 color.burndown.pending=on rgb110
@@ -71,19 +71,19 @@ color.burndown.started=on rgb430
 color.burndown.done=on gray4
 
 # Report: history
-color.history.add=color0 on rgb010
-color.history.done=color0 on rgb030
-color.history.delete=color0 on rgb050
+color.history.add=color0 on rgb110
+color.history.done=color0 on rgb430
+color.history.delete=white on gray4
 
 # Report: summary
-color.summary.bar=white on rgb030
-color.summary.background=white on color0
+color.summary.bar=white on rgb330
+color.summary.background=white on rgb110
 
 # Command: calendar
-color.calendar.due=color0 on rgb430
-color.calendar.due.today=color0 on rgb410
+color.calendar.due=color0 on rgb440
+color.calendar.due.today=color0 on rgb430
 color.calendar.holiday=rgb151 on rgb020
-color.calendar.overdue=color0 on rgb400
+color.calendar.overdue=color0 on rgb420
 color.calendar.today=color15 on rgb110
 color.calendar.weekend=on color235
 color.calendar.weeknumber=rgb110
@@ -94,6 +94,6 @@ color.sync.changed=rgb430
 color.sync.rejected=rgb110
 
 # Command: undo
-color.undo.before=rgb031
-color.undo.after=rgb053
+color.undo.before=rgb021
+color.undo.after=rgb042
 

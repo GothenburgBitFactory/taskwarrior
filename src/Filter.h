@@ -40,8 +40,8 @@ public:
   Filter ();
   ~Filter ();
 
-  void subset (const std::vector <Task>&, std::vector <Task>&);
-  void subset (std::vector <Task>&);
+  void subset (const std::vector <Task>&, std::vector <Task>&, bool applyContext = true);
+  void subset (std::vector <Task>&, bool applyContext = true);
   bool pendingOnly ();
   void safety ();
 

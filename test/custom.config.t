@@ -28,43 +28,64 @@
 
 import sys
 import os
-import re
 import unittest
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task, TestCase
+from basetest import Task, TestCase, Taskd, ServerTestCase
 
 
-class TestBug1063(TestCase):
+class TestCustomConfig(TestCase):
     def setUp(self):
         self.t = Task()
 
-        self.t.config("uda.foo.type", "numeric")
-        self.t.config("uda.foo.label", "Foo")
-        self.t.config("report.bar.columns", "foo,description")
-        self.t.config("report.bar.description", "Bar")
-        self.t.config("report.bar.labels", "Foo,Desc")
-        self.t.config("report.bar.sort", "foo-")
+        self.t.config("alias.xyzzyx", "status:waiting")
+        self.t.config("imnotrecognized", "kai")
 
-    def test_sortable_uda(self):
-        """numeric UDA fields are sortable
+        self.DIFFER_MSG = ("Some of your .taskrc variables differ from the "
+                           "default values.")
+        self.NOT_RECOG_MSG = ("Your .taskrc file contains these unrecognized "
+                              "variables:")
 
-        Reported as bug 1063
+    def test_show_alias(self):
+        """task show <filter> - warns when non-default values are matched
+
+        Reported in bug 1065
         """
+        code, out, err = self.t(("show", "alias"))
 
-        self.t(("add", "four", "foo:4"))
-        self.t(("add", "one", "foo:1"))
-        self.t(("add", "three", "foo:3"))
-        self.t(("add", "two", "foo:2"))
+        self.assertIn(self.DIFFER_MSG, out)
+        self.assertNotIn(self.NOT_RECOG_MSG, out)
 
-        code, out, err = self.t(("bar",))
-        expected = re.compile("4.+3.+2.+1", re.DOTALL)  # dot matches \n too
-        self.assertRegexpMatches(out, expected)
+    def test_show(self):
+        """task show - warns when non-default values are matched
 
-        code, out, err = self.t(("bar", "rc.report.bar.sort=foo+"))
-        expected = re.compile("1.+2.+3.+4", re.DOTALL)  # dot matches \n too
-        self.assertRegexpMatches(out, expected)
+        Reported in bug 1065
+        """
+        code, out, err = self.t(("show",))
+
+        self.assertIn(self.DIFFER_MSG, out)
+        self.assertIn(self.NOT_RECOG_MSG, out)
+
+    def test_show_report_overdue(self):
+        """task show <filter> - no warn when no non-default values are matched
+
+        Reported in bug 1065
+        """
+        code, out, err = self.t(("show", "report.overdue"))
+
+        self.assertNotIn(self.DIFFER_MSG, out)
+        self.assertNotIn(self.NOT_RECOG_MSG, out)
+
+    def test_show_notrecog(self):
+        """task show <filter> - warns when unrecognized values are matched
+
+        Reported in bug 1065
+        """
+        code, out, err = self.t(("show", "notrecog"))
+
+        self.assertNotIn(self.DIFFER_MSG, out)
+        self.assertIn(self.NOT_RECOG_MSG, out)
 
 
 if __name__ == "__main__":
