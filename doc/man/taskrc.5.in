@@ -314,7 +314,7 @@ Controls padding between columns of the report output. Default is "1".
 Is a number, defaulting to 3. When this number or greater of tasks are modified
 in a single command, confirmation will be required, regardless of the value of
 .B confirmation
-variable.
+variable. The special value bulk=0 is treated as an infinity.
 
 This is useful for preventing large-scale unintended changes.
 
