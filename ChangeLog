@@ -2,6 +2,7 @@
 
 - TW-1578 Bash tab completion problems on first run
           (thanks to Renato Alves and Ptolemarch).
+- TW-1580 "modified" attribute no longer updated (thanks to David Patrick).
 - Setting 'bulk' to zero is interpreted as infinity, which means there is no
   amount of changes that is considered dangerous (thanks to Tomas Babej).
 

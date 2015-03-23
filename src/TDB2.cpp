@@ -598,7 +598,7 @@ void TDB2::update (
   const std::string& uuid,
   Task& task,
   const bool add_to_backlog,
-  const bool addition)
+  const bool addition /* = false */)
 {
   // Validate to add metadata.
   task.validate (false);
@@ -607,6 +607,13 @@ void TDB2::update (
   Task original;
   if (not addition && get (task.get ("uuid"), original))
   {
+    if (add_to_backlog)
+    {
+      // All locally modified tasks are timestamped, implicitly overwriting any
+      // changes the user or hooks tried to apply to the "modified" attribute.
+      task.setAsNow ("modified");
+    }
+
     // Update the task, wherever it is.
     if (!pending.modify_task (task))
       completed.modify_task (task);
