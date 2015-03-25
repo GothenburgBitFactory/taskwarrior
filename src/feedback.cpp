@@ -252,6 +252,7 @@ std::string taskInfoDifferences (
 
   for (name = beforeAtts.begin (); name != beforeAtts.end (); ++name)
     if (*name              != "uuid" &&
+        *name              != "modified" &&
         before.get (*name) != after.get (*name) &&
         before.get (*name) != "" && after.get (*name) != "")
     {

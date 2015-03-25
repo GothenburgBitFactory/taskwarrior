@@ -323,8 +323,8 @@ bool Command::permission (
   }
 
   // 1 < Quantity < bulk modifications have optional confirmation, in the (y/n/a/q)
-  // style.
-  if (quantity < bulk && (!_needs_confirm || !confirmation))
+  // style. Bulk = 0 denotes infinite bulk.
+  if ((bulk == 0 || quantity < bulk) && (!_needs_confirm || !confirmation))
     return true;
 
   if (context.verbose ("blank") && !_first_iteration)

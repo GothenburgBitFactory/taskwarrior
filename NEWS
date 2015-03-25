@@ -9,7 +9,8 @@ New commands in taskwarrior 2.4.3
 
 New configuration options in taskwarrior 2.4.3
 
-  -
+  - Setting 'bulk' to zero is interpreted as infinity, which means there is no
+    amount of changes that is considered dangerous.
 
 Newly deprecated features in taskwarrior 2.4.3
 
