@@ -462,9 +462,13 @@ void TF2::dependency_scan ()
         {
           if (right->get ("uuid") == *d)
           {
-            Task::status status = right->getStatus ();
-            if (status != Task::completed &&
-                status != Task::deleted)
+            // GC hasn't run yet, check both tasks for their current status
+            Task::status lstatus = left->getStatus ();
+            Task::status rstatus = right->getStatus ();
+            if (lstatus != Task::completed &&
+                lstatus != Task::deleted &&
+                rstatus != Task::completed &&
+                rstatus != Task::deleted)
             {
               left->is_blocked = true;
               right->is_blocking = true;
