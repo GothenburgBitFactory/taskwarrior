@@ -39,9 +39,8 @@ import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
+from basetest.utils import UUID_REGEXP
 
-# TODO: Move to common file with all regexpes
-UUID_REGEXP = r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
 DATETIME_FORMAT = "%Y%m%dT%H%M%SZ"
 
 

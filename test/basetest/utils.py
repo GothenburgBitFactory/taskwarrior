@@ -44,7 +44,7 @@ TASKD_SKIP = os.environ.get("TASKD_SKIP", False)
 TASK_USE_PATH = os.environ.get("TASK_USE_PATH", False)
 TASKD_USE_PATH = os.environ.get("TASKD_USE_PATH", False)
 
-UUID_regex = ("[0-9A-Fa-f]{8}-" + ("[0-9A-Fa-f]{4}-" * 3) + "[0-9A-Fa-f]{12}")
+UUID_REGEXP = ("[0-9A-Fa-f]{8}-" + ("[0-9A-Fa-f]{4}-" * 3) + "[0-9A-Fa-f]{12}")
 
 
 def task_binary_location(cmd="task"):

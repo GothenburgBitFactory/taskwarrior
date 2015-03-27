@@ -33,7 +33,7 @@ import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
-from basetest.utils import UUID_regex
+from basetest.utils import UUID_REGEXP
 
 
 class TestAdd(TestCase):
@@ -49,7 +49,7 @@ class TestAdd(TestCase):
         self.assertRegexpMatches(out, "ID\s+1\n")
         self.assertRegexpMatches(out, "Description\s+This is a test\n")
         self.assertRegexpMatches(out, "Status\s+Pending\n")
-        self.assertRegexpMatches(out, "UUID\s+" + UUID_regex + "\n")
+        self.assertRegexpMatches(out, "UUID\s+" + UUID_REGEXP + "\n")
 
     def test_modify_slash(self):
         "Test the /// modifier"
@@ -62,7 +62,7 @@ class TestAdd(TestCase):
         self.assertRegexpMatches(out, "ID\s+1\n")
         self.assertRegexpMatches(out, "Status\s+Pending\n")
         self.assertRegexpMatches(out, "Description\s+This a TEST\n")
-        self.assertRegexpMatches(out, "UUID\s+" + UUID_regex + "\n")
+        self.assertRegexpMatches(out, "UUID\s+" + UUID_REGEXP + "\n")
 
 
 if __name__ == "__main__":
