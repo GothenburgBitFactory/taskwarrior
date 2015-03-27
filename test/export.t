@@ -29,10 +29,8 @@
 import datetime
 import json
 import sys
-import time
 import numbers
 import os
-import re
 import unittest
 
 # Ensure python finds the local simpletap module
@@ -109,7 +107,7 @@ class TestExportCommand(TestCase):
 
     def test_export_end(self):
         self.t(('1', 'start'))
-        time.sleep(2)
+        self.t.faketime("+5s")
         self.t(('1', 'done'))
         self.assertTimestamp(self.export(1)['end'])
 
