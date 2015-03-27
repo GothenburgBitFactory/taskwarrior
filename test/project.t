@@ -153,6 +153,47 @@ class TestProjects(TestCase):
         self.validate_indentation(out)
 
 
+class TestBug299(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t(("add", "project:one", "foo"))
+        self.t(("add", "project:ones", "faz"))
+        self.t(("add", "project:phone", "boo"))
+        self.t(("add", "project:bones", "too"))
+        self.t(("add", "project:two", "bar"))
+        self.t(("add", "project:three", "baz"))
+
+    def test_project_exclusion_isnt(self):
+        """check project exclusion using project.isnt:<name>
+
+        Reported in bug 299
+        """
+        code, out, err = self.t(("list", "project.isnt:one", "pro.isnt:two"))
+
+        self.assertNotRegexpMatches(out, "one.*foo")
+        self.assertRegexpMatches(out, "ones.*faz")
+        self.assertRegexpMatches(out, "phone.*boo")
+        self.assertRegexpMatches(out, "bones.*too")
+
+        self.assertNotRegexpMatches(out, "two.*bar")
+        self.assertRegexpMatches(out, "three.*baz")
+
+    def test_project_exclusion_hasnt(self):
+        """check project exclusion using project.hasnt:<name>
+
+        Reported in bug 299
+        """
+        code, out, err = self.t(("list", "project.hasnt:one", "pro.hasnt:two"))
+
+        self.assertNotRegexpMatches(out, "one.*foo")
+        self.assertNotRegexpMatches(out, "ones.*faz")
+        self.assertNotRegexpMatches(out, "phone.*boo")
+        self.assertNotRegexpMatches(out, "bones.*too")
+
+        self.assertNotRegexpMatches(out, "two.*bar")
+        self.assertRegexpMatches(out, "three.*baz")
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
