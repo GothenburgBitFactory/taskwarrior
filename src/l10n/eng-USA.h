@@ -341,7 +341,7 @@
 #define STRING_CMD_HISTORY_USAGE_A   "Shows a report of task history, by year"
 #define STRING_CMD_HISTORY_AVERAGE   "Average"
 #define STRING_CMD_HISTORY_LEGEND    "Legend: {1}, {2}, {3}"
-#define STRING_CMD_HISTORY_LEGEND_A  "Legend: + added, X completed, - deleted"
+#define STRING_CMD_HISTORY_LEGEND_A  "Legend: + Added, X Completed, - Deleted"
 #define STRING_CMD_GHISTORY_USAGE_M  "Shows a graphical report of task history, by month"
 #define STRING_CMD_GHISTORY_USAGE_A  "Shows a graphical report of task history, by year"
 #define STRING_CMD_GHISTORY_YEAR     "Year"
