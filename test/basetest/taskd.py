@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import division
 import os
 import tempfile
 import shutil
@@ -188,7 +189,7 @@ class Taskd(object):
 
         return True
 
-    def start(self, minutes=5):
+    def start(self, minutes=5, tries_per_minute=2):
         """Start the taskd server if it's not running.
         If it's already running OSError will be raised
         """
@@ -199,10 +200,10 @@ class Taskd(object):
             raise OSError("Taskd server is still running or crashed")
 
         # Wait for server to listen by checking connectivity in the port
-        # Default is to wait up to 5 minutes checking once each second
-        for i in range(minutes * 60):
+        # Default is to wait up to 5 minutes checking once every 500ms
+        for i in range(minutes * 60 * tries_per_minute):
             if not self.status():
-                sleep(1)
+                sleep(1 / tries_per_minute)
             else:
                 return
 

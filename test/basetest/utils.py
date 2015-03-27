@@ -88,7 +88,6 @@ def wait_condition(cond, timeout=1):
     # Max number of attempts until giving up
     tries = int(timeout / sleeptime)
 
-    # Wait for up to a second for the process to finish and avoid zombies
     for i in range(tries):
         val = cond()
 
