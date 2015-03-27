@@ -71,15 +71,13 @@ def binary_location(cmd, USE_PATH=False):
         return os.path.join(BIN_PREFIX, cmd)
 
 
-def wait_condition(cond, timeout=1):
+def wait_condition(cond, timeout=1, sleeptime=.01):
     """Wait for condition to return anything other than None
     """
-    if timeout is None:
-        timeout = 1
-
     # NOTE Increasing sleeptime can dramatically increase testsuite runtime
     # It also reduces CPU load significantly
-    sleeptime = .01
+    if timeout is None:
+        timeout = 1
 
     if timeout < sleeptime:
         print("Warning, timeout cannot be smaller than", sleeptime)
