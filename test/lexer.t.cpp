@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (687);
+  UnitTest t (776);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -195,59 +195,6 @@ int main (int argc, char** argv)
   t.is (tokens[9].first,           "2013-11-29T22:58:00Z",      "tokens[9] == '2013-11-29T22:58:00Z'");
   t.is ((int) tokens[9].second,    (int) Lexer::Type::date,     "tokens[9] == Type::date");
 
-  // All (int) the Eval operators.
-  Lexer l7 ("and xor or <= >= !~ != == = ^ > ~ ! * / % + - < ( )");
-  tokens.clear ();
-  while (l7.token (token, type))
-  {
-    std::cout << "# «" << token << "» " << Lexer::typeName (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
-  }
-
-  t.is ((int)tokens.size (),       21,                    "21 operators");
-  t.is (tokens[0].first,           "and",                 "tokens[0] == 'and'");
-  t.is ((int) tokens[0].second,    (int) Lexer::Type::op, "tokens[0] == Type::op"); // 130
-  t.is (tokens[1].first,           "xor",                 "tokens[1] == 'xor'");
-  t.is ((int) tokens[1].second,    (int) Lexer::Type::op, "tokens[1] == Type::op");
-  t.is (tokens[2].first,           "or",                  "tokens[2] == 'or'");
-  t.is ((int) tokens[2].second,    (int) Lexer::Type::op, "tokens[2] == Type::op");
-  t.is (tokens[3].first,           "<=",                  "tokens[3] == '<='");
-  t.is ((int) tokens[3].second,    (int) Lexer::Type::op, "tokens[3] == Type::op");
-  t.is (tokens[4].first,           ">=",                  "tokens[4] == '>='");
-  t.is ((int) tokens[4].second,    (int) Lexer::Type::op, "tokens[4] == Type::op");
-  t.is (tokens[5].first,           "!~",                  "tokens[5] == '!~'");
-  t.is ((int) tokens[5].second,    (int) Lexer::Type::op, "tokens[5] == Type::op"); // 140
-  t.is (tokens[6].first,           "!=",                  "tokens[6] == '!='");
-  t.is ((int) tokens[6].second,    (int) Lexer::Type::op, "tokens[6] == Type::op");
-  t.is (tokens[7].first,           "==",                  "tokens[7] == '=='");
-  t.is ((int) tokens[7].second,    (int) Lexer::Type::op, "tokens[7] == Type::op");
-  t.is (tokens[8].first,           "=",                   "tokens[8] == '='");
-  t.is ((int) tokens[8].second,    (int) Lexer::Type::op, "tokens[8] == Type::op");
-  t.is (tokens[9].first,           "^",                   "tokens[9] == '^'");
-  t.is ((int) tokens[9].second,    (int) Lexer::Type::op, "tokens[9] == Type::op");
-  t.is (tokens[10].first,          ">",                   "tokens[10] == '>'");
-  t.is ((int) tokens[10].second,   (int) Lexer::Type::op, "tokens[10] == Type::op"); // 150
-  t.is (tokens[11].first,          "~",                   "tokens[11] == '~'");
-  t.is ((int) tokens[11].second,   (int) Lexer::Type::op, "tokens[11] == Type::op");
-  t.is (tokens[12].first,          "!",                   "tokens[12] == '!'");
-  t.is ((int) tokens[12].second,   (int) Lexer::Type::op, "tokens[12] == Type::op");
-  t.is (tokens[13].first,          "*",                   "tokens[13] == '*'");
-  t.is ((int) tokens[13].second,   (int) Lexer::Type::op, "tokens[13] == Type::op");
-  t.is (tokens[14].first,          "/",                   "tokens[14] == '/'");
-  t.is ((int) tokens[14].second,   (int) Lexer::Type::op, "tokens[14] == Type::op");
-  t.is (tokens[15].first,          "%",                   "tokens[15] == '%'");
-  t.is ((int) tokens[15].second,   (int) Lexer::Type::op, "tokens[15] == Type::op"); // 160
-  t.is (tokens[16].first,          "+",                   "tokens[16] == '+'");
-  t.is ((int) tokens[16].second,   (int) Lexer::Type::op, "tokens[16] == Type::op");
-  t.is (tokens[17].first,          "-",                   "tokens[17] == '-'");
-  t.is ((int) tokens[17].second,   (int) Lexer::Type::op, "tokens[17] == Type::op");
-  t.is (tokens[18].first,          "<",                   "tokens[18] == '<'");
-  t.is ((int) tokens[18].second,   (int) Lexer::Type::op, "tokens[18] == Type::op");
-  t.is (tokens[19].first,          "(",                   "tokens[19] == '('");
-  t.is ((int) tokens[19].second,   (int) Lexer::Type::op, "tokens[19] == Type::op");
-  t.is (tokens[20].first,          ")",                   "tokens[20] == ')'");
-  t.is ((int) tokens[20].second,   (int)Lexer::Type::op,  "tokens[20] == Type::op"); // 170
-
   // Test tag recognition.
   Lexer l9 ("+with -WITHOUT + 2");
   l9.ambiguity (false);
@@ -367,11 +314,33 @@ int main (int argc, char** argv)
     { "rc.name:value",                                { { "rc.name:value",                                Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "rc.name=value",                                { { "rc.name=value",                                Lexer::Type::pair         }, NO, NO, NO, NO }, },
 
-    // Operator
-    { "*",                                            { { "*",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { ">=",                                           { { ">=",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
-    { "xor",                                          { { "xor",                                          Lexer::Type::op           }, NO, NO, NO, NO }, },
+    // Operator - complete set
+    { "^",                                            { { "^",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "!",                                            { { "!",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "_neg_",                                        { { "_neg_",                                        Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "_pos_",                                        { { "_pos_",                                        Lexer::Type::op           }, NO, NO, NO, NO }, },
     { "_hastag_",                                     { { "_hastag_",                                     Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "_notag_",                                      { { "_notag_",                                      Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "*",                                            { { "*",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "/",                                            { { "/",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "%",                                            { { "%",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "+",                                            { { "+",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "-",                                            { { "-",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "<=",                                           { { "<=",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { ">=",                                           { { ">=",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { ">",                                            { { ">",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "<",                                            { { "<",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "=",                                            { { "=",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "==",                                           { { "==",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "!=",                                           { { "!=",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "!==",                                          { { "!==",                                          Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "~",                                            { { "~",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "!~",                                           { { "!~",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "and",                                          { { "and",                                          Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "or",                                           { { "or",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "xor",                                          { { "xor",                                          Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { "(",                                            { { "(",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
+    { ")",                                            { { ")",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
 
       // Word that starts wih 'or', which is an operator, but should be ignored.
     { "ordinary",                                     { { "ordinary",                                     Lexer::Type::dom          }, NO, NO, NO, NO }, },
