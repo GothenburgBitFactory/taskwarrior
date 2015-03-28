@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (454);
+  UnitTest t (508);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -464,14 +464,15 @@ int main (int argc, char** argv)
     //   ( /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331,3b6218f9-726a-44fc-aa63-889ff52be442 )
     //   (1+2)
 
-    // UUIDs
-    //   a360fc44-315c-4366-b70c-ea7e7520b749
-    //   a360fc44-315c-4366-b70c-ea7e7520b749,b7f8c869-b2ca-4983-995c-299d58bcc0b6
-    //   a360fc44-315c-4366-b70c-ea7e752
-    //   a360fc44-315c-4366-b70c
-    //   a360fc44-315c-4366
-    //   a360fc44-315c
-    //   a360fc44
+    { "a360fc44-315c-4366-b70c-ea7e7520b749",         { { "a360fc44-315c-4366-b70c-ea7e7520b749",         Lexer::Type::uuid         }, NO, NO }, },
+    { "a360fc44-315c-4366-b70c-ea7e752",              { { "a360fc44-315c-4366-b70c-ea7e752",              Lexer::Type::uuid         }, NO, NO }, },
+    { "a360fc44-315c-4366-b70c",                      { { "a360fc44-315c-4366-b70c",                      Lexer::Type::uuid         }, NO, NO }, },
+    { "a360fc44-315c-4366",                           { { "a360fc44-315c-4366",                           Lexer::Type::uuid         }, NO, NO }, },
+    { "a360fc44-315c",                                { { "a360fc44-315c",                                Lexer::Type::uuid         }, NO, NO }, },
+    { "a360fc44",                                     { { "a360fc44",                                     Lexer::Type::uuid         }, NO, NO }, },
+    { "a360fc44,b7f8c869",                            { { "a360fc44",                                     Lexer::Type::uuid         },
+                                                        { ",",                                            Lexer::Type::list         },
+                                                        { "b7f8c869",                                     Lexer::Type::uuid         },        }, },
 
     // Dates
     //   today
