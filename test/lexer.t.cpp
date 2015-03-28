@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (508);
+  UnitTest t (514);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -485,8 +485,7 @@ int main (int argc, char** argv)
     //   4weeks
     //   PT23H
 
-    // Misc
-    //   --
+    { "--",                                           { { "--",                                           Lexer::Type::separator    }, NO, NO }, },
   };
   #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
