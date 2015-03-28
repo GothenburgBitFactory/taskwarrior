@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (388);
+  UnitTest t (418);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -426,7 +426,6 @@ int main (int argc, char** argv)
     { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", { { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", Lexer::Type::dom          }, NO, NO }, },
     { "http://tasktools.org",                         { { "http://tasktools.org",                         Lexer::Type::url          }, NO, NO }, },
     { "https://bug.tasktools.org",                    { { "https://bug.tasktools.org",                    Lexer::Type::url          }, NO, NO }, },
-
     { "'one two'",                                    { { "'one two'",                                    Lexer::Type::string       }, NO, NO }, },
     { "\\\"three\\\"",                                { { "\\\"three\\\"",                                Lexer::Type::string       }, NO, NO }, },
     { "'\\''",                                        { { "'\\''",                                        Lexer::Type::string       }, NO, NO }, },
@@ -434,6 +433,11 @@ int main (int argc, char** argv)
     { "\"\tfoo\t\"",                                  { { "\"\tfoo\t\"",                                  Lexer::Type::string       }, NO, NO }, },
     { "\"\\u20A43\"",                                 { { "\"₤3\"",                                       Lexer::Type::string       }, NO, NO }, },
     { "\"U+20AC4\"",                                  { { "\"€4\"",                                       Lexer::Type::string       }, NO, NO }, },
+    { "1",                                            { { "1",                                            Lexer::Type::number       }, NO, NO }, },
+    { "3.14",                                         { { "3.14",                                         Lexer::Type::number       }, NO, NO }, },
+    { "6.02217e23",                                   { { "6.02217e23",                                   Lexer::Type::number       }, NO, NO }, },
+    { "1.2e-3.4",                                     { { "1.2e-3.4",                                     Lexer::Type::number       }, NO, NO }, },
+    { "0x2f",                                         { { "0x2f",                                         Lexer::Type::hex          }, NO, NO }, },
   };
   #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
