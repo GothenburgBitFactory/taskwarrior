@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (640);
+  UnitTest t (647);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -309,22 +309,6 @@ int main (int argc, char** argv)
   t.is (tokens[20].first,          ")",                   "tokens[20] == ')'");
   t.is ((int) tokens[20].second,   (int)Lexer::Type::op,  "tokens[20] == Type::op"); // 170
 
-  // Test ordinal dates.
-  Lexer l8 ("9th 10th");
-  l8.ambiguity (false);
-  tokens.clear ();
-  while (l8.token (token, type))
-  {
-    std::cout << "# «" << token << "» " << Lexer::typeName (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
-  }
-
-  t.is ((int)tokens.size (),       2,                       "2 tokens");
-  t.is (tokens[0].first,           "9th",                   "tokens[0] == '9th'");
-  t.is ((int) tokens[0].second,    (int) Lexer::Type::word, "tokens[0] == Type::word");
-  t.is (tokens[1].first,           "10th",                  "tokens[1] == '10th'");
-  t.is ((int) tokens[1].second,    (int) Lexer::Type::word, "tokens[1] == Type::word");
-
   // Test tag recognition.
   Lexer l9 ("+with -WITHOUT + 2");
   l9.ambiguity (false);
@@ -397,6 +381,10 @@ int main (int argc, char** argv)
 
     // Path
     { "/long/path/to/file.txt",                       { { "/long/path/to/file.txt",                       Lexer::Type::path         }, NO, NO, NO, NO }, },
+
+    // Word
+    { "9th",                                          { { "9th",                                          Lexer::Type::word         }, NO, NO, NO, NO }, },
+    { "10th",                                         { { "10th",                                         Lexer::Type::word         }, NO, NO, NO, NO }, },
 
     // DOM
     { "foo",                                          { { "foo",                                          Lexer::Type::dom          }, NO, NO, NO, NO }, },
