@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (334);
+  UnitTest t (346);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -424,7 +424,8 @@ int main (int argc, char** argv)
     { "foo.bar",                                      { { "foo.bar",                                      Lexer::Type::dom          }, NO, NO }, },
     { "1.foo.bar",                                    { { "1.foo.bar",                                    Lexer::Type::dom          }, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", { { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", Lexer::Type::dom          }, NO, NO }, },
-
+    { "http://tasktools.org",                         { { "http://tasktools.org",                         Lexer::Type::url          }, NO, NO }, },
+    { "https://bug.tasktools.org",                    { { "https://bug.tasktools.org",                    Lexer::Type::url          }, NO, NO }, },
   };
   #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
