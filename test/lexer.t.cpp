@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (256);
+  UnitTest t (268);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -404,13 +404,15 @@ int main (int argc, char** argv)
     } results[3];
   } lexerTests[] =
   {
-    { "/foo/",             { { "/foo/",             Lexer::Type::pattern }, NOPE, NOPE }, },
-    { "/a\\/b/",           { { "/a\\/b/",           Lexer::Type::pattern }, NOPE, NOPE }, },
-    { "/'/",               { { "/'/",               Lexer::Type::pattern }, NOPE, NOPE }, },
-    { "desc~pattern",      { { "desc",              Lexer::Type::dom     },
-                             { "~",                 Lexer::Type::op      },
-                             { "pattern",           Lexer::Type::dom     },            }, },
-    { "desc.cont:pattern", { { "desc.cont:pattern", Lexer::Type::pair    }, NOPE, NOPE }, },
+    { "/foo/",             { { "/foo/",             Lexer::Type::pattern      }, NOPE, NOPE }, },
+    { "/a\\/b/",           { { "/a\\/b/",           Lexer::Type::pattern      }, NOPE, NOPE }, },
+    { "/'/",               { { "/'/",               Lexer::Type::pattern      }, NOPE, NOPE }, },
+    { "desc~pattern",      { { "desc",              Lexer::Type::dom          },
+                             { "~",                 Lexer::Type::op           },
+                             { "pattern",           Lexer::Type::dom          },            }, },
+    { "desc.cont:pattern", { { "desc.cont:pattern", Lexer::Type::pair         }, NOPE, NOPE }, },
+    { "/from/to/g",        { { "/from/to/g",        Lexer::Type::substitution }, NOPE, NOPE }, },
+    { "/from/to/",         { { "/from/to/",         Lexer::Type::substitution }, NOPE, NOPE }, },
   };
   #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
