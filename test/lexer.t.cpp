@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (628);
+  UnitTest t (634);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -369,29 +369,6 @@ int main (int argc, char** argv)
   t.is (items[6], "12.3e4",        "split '  +-* a+b 12.3e4 'c d'' -> [6] '12.3e4'");
   t.is (items[7], "'c d'",         "split '  +-* a+b 12.3e4 'c d'' -> [7] ''c d''");
 
-  // Test common expression element.
-  unsplit = "name=value";
-  items = Lexer::split (unsplit);
-  t.is (items.size (), (size_t) 3, "split 'name=value'");
-  if (items.size () == 3)
-  {
-    t.is (items[0], "name",        "split 'name=value' -> [0] 'name'");
-    t.is (items[1], "=",           "split 'name=value' -> [1] '='");
-    t.is (items[2], "value",       "split 'name=value' -> [2] 'value'");
-  }
-  else
-  {
-    t.fail ("split 'name=value' -> [0] 'name'");
-    t.fail ("split 'name=value' -> [1] '='");
-    t.fail ("split 'name=value' -> [2] 'value'");
-  }
-
-  // Test unterminated tokens.
-  unsplit = " ordinary ";
-  items = Lexer::split (unsplit);
-  t.is (items.size (), (size_t) 1, "split 'ordinary' --> 1 token");
-  t.is (items[0], "ordinary",      "split 'ordinary' --> 'ordinary'");
-
   // Test all Lexer types.
   #define NO {"",Lexer::Type::word}
   struct
@@ -455,6 +432,7 @@ int main (int argc, char** argv)
     { "desc.cont:pattern",                            { { "desc.cont:pattern",                            Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "pro:'P 1'",                                    { { "pro:'P 1'",                                    Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "pro:PROJECT",                                  { { "pro:PROJECT",                                  Lexer::Type::pair         }, NO, NO, NO, NO }, },
+    { "due:'eow - 2d'",                               { { "due:'eow - 2d'",                               Lexer::Type::pair         }, NO, NO, NO, NO }, },
 
     // RC override
     { "rc:x",                                         { { "rc:x",                                         Lexer::Type::pair         }, NO, NO, NO, NO }, },
@@ -466,6 +444,9 @@ int main (int argc, char** argv)
     { ">=",                                           { { ">=",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
     { "xor",                                          { { "xor",                                          Lexer::Type::op           }, NO, NO, NO, NO }, },
     { "_hastag_",                                     { { "_hastag_",                                     Lexer::Type::op           }, NO, NO, NO, NO }, },
+
+      // Word that starts wih 'or', which is an operator, but should be ignored.
+    { "ordinary",                                     { { "ordinary",                                     Lexer::Type::dom          }, NO, NO, NO, NO }, },
 
     // UUID
     { "a360fc44-315c-4366-b70c-ea7e7520b749",         { { "a360fc44-315c-4366-b70c-ea7e7520b749",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
@@ -497,7 +478,6 @@ int main (int argc, char** argv)
     //   4,5-6
 
     // Expression
-    //   due:'eow - 2d'
     //   due:eom-2w
     //   due < eom + 1w + 1d
     //   ( /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331,3b6218f9-726a-44fc-aa63-889ff52be442 )
