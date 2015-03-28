@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (776);
+  UnitTest t (767);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -194,26 +194,6 @@ int main (int argc, char** argv)
   t.is ((int) tokens[8].second,    (int) Lexer::Type::date,     "tokens[8] == Type::date");
   t.is (tokens[9].first,           "2013-11-29T22:58:00Z",      "tokens[9] == '2013-11-29T22:58:00Z'");
   t.is ((int) tokens[9].second,    (int) Lexer::Type::date,     "tokens[9] == Type::date");
-
-  // Test tag recognition.
-  Lexer l9 ("+with -WITHOUT + 2");
-  l9.ambiguity (false);
-  tokens.clear ();
-  while (l9.token (token, type))
-  {
-    std::cout << "# «" << token << "» " << Lexer::typeName (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
-  }
-
-  t.is ((int)tokens.size (),       4,                         "4 tokens");
-  t.is (tokens[0].first,           "+with",                   "tokens[0] == '+with'");
-  t.is ((int) tokens[0].second,    (int) Lexer::Type::tag,    "tokens[0] == Type::tag");
-  t.is (tokens[1].first,           "-WITHOUT",                "tokens[1] == '-WITHOUT'");
-  t.is ((int) tokens[1].second,    (int) Lexer::Type::tag,    "tokens[1] == Type::tag");
-  t.is (tokens[2].first,           "+",                       "tokens[2] == '+'");
-  t.is ((int) tokens[2].second,    (int) Lexer::Type::op,     "tokens[2] == Type::op");
-  t.is (tokens[3].first,           "2",                       "tokens[3] == '2'");
-  t.is ((int) tokens[3].second,    (int) Lexer::Type::number, "tokens[3] == Type::number");
 
   // void split (std::vector<std::string>&, const std::string&);
   std::string unsplit = " ( A or B ) ";
