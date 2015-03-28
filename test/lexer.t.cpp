@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (538);
+  UnitTest t (556);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -449,7 +449,6 @@ int main (int argc, char** argv)
     { "rc:x",                                         { { "rc:x",                                         Lexer::Type::pair         }, NO, NO }, },
     { "rc.name:value",                                { { "rc.name:value",                                Lexer::Type::pair         }, NO, NO }, },
     { "rc.name=value",                                { { "rc.name=value",                                Lexer::Type::pair         }, NO, NO }, },
-
     { "*",                                            { { "*",                                            Lexer::Type::op           }, NO, NO }, },
     { ">=",                                           { { ">=",                                           Lexer::Type::op           }, NO, NO }, },
     { "xor",                                          { { "xor",                                          Lexer::Type::op           }, NO, NO }, },
@@ -479,11 +478,9 @@ int main (int argc, char** argv)
     //   2015-W01
     //   2015-02-17
 
-    // Durations
-    //   year
-    //   4weeks
-    //   PT23H
-
+    { "year",                                         { { "year",                                         Lexer::Type::duration     }, NO, NO }, },
+    { "4weeks",                                       { { "4weeks",                                       Lexer::Type::duration     }, NO, NO }, },
+    { "PT23H",                                        { { "PT23H",                                        Lexer::Type::duration     }, NO, NO }, },
     { "--",                                           { { "--",                                           Lexer::Type::separator    }, NO, NO }, },
   };
   #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
