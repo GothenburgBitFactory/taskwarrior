@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (304);
+  UnitTest t (334);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -393,7 +393,7 @@ int main (int argc, char** argv)
   t.is (items[0], "ordinary",      "split 'ordinary' --> 'ordinary'");
 
   // Test all Lexer types.
-  #define NOPE {"",Lexer::Type::word}
+  #define NO {"",Lexer::Type::word}
   struct
   {
     const char* input;
@@ -404,21 +404,27 @@ int main (int argc, char** argv)
     } results[3];
   } lexerTests[] =
   {
-    { "/foo/",                  { { "/foo/",                  Lexer::Type::pattern      }, NOPE, NOPE }, },
-    { "/a\\/b/",                { { "/a\\/b/",                Lexer::Type::pattern      }, NOPE, NOPE }, },
-    { "/'/",                    { { "/'/",                    Lexer::Type::pattern      }, NOPE, NOPE }, },
-    { "desc~pattern",           { { "desc",                   Lexer::Type::dom          },
-                                  { "~",                      Lexer::Type::op           },
-                                  { "pattern",                Lexer::Type::dom          },            }, },
-    { "desc.cont:pattern",      { { "desc.cont:pattern",      Lexer::Type::pair         }, NOPE, NOPE }, },
-    { "/from/to/g",             { { "/from/to/g",             Lexer::Type::substitution }, NOPE, NOPE }, },
-    { "/from/to/",              { { "/from/to/",              Lexer::Type::substitution }, NOPE, NOPE }, },
-    { "+tag",                   { { "+tag",                   Lexer::Type::tag          }, NOPE, NOPE }, },
-    { "-tag",                   { { "-tag",                   Lexer::Type::tag          }, NOPE, NOPE }, },
-    { "foo",                    { { "foo",                    Lexer::Type::dom          }, NOPE, NOPE }, },
-    { "/long/path/to/file.txt", { { "/long/path/to/file.txt", Lexer::Type::path         }, NOPE, NOPE }, },
-    { "Çirçös",                 { { "Çirçös",                 Lexer::Type::dom          }, NOPE, NOPE }, },
-    { "☺",                      { { "☺",                      Lexer::Type::dom          }, NOPE, NOPE }, },
+    { "/foo/",                                        { { "/foo/",                                        Lexer::Type::pattern      }, NO, NO }, },
+    { "/a\\/b/",                                      { { "/a\\/b/",                                      Lexer::Type::pattern      }, NO, NO }, },
+    { "/'/",                                          { { "/'/",                                          Lexer::Type::pattern      }, NO, NO }, },
+    { "desc~pattern",                                 { { "desc",                                         Lexer::Type::dom          },
+                                                        { "~",                                            Lexer::Type::op           },
+                                                        { "pattern",                                      Lexer::Type::dom          },        }, },
+    { "desc.cont:pattern",                            { { "desc.cont:pattern",                            Lexer::Type::pair         }, NO, NO }, },
+    { "/from/to/g",                                   { { "/from/to/g",                                   Lexer::Type::substitution }, NO, NO }, },
+    { "/from/to/",                                    { { "/from/to/",                                    Lexer::Type::substitution }, NO, NO }, },
+    { "+tag",                                         { { "+tag",                                         Lexer::Type::tag          }, NO, NO }, },
+    { "-tag",                                         { { "-tag",                                         Lexer::Type::tag          }, NO, NO }, },
+    { "foo",                                          { { "foo",                                          Lexer::Type::dom          }, NO, NO }, },
+    { "/long/path/to/file.txt",                       { { "/long/path/to/file.txt",                       Lexer::Type::path         }, NO, NO }, },
+    { "Çirçös",                                       { { "Çirçös",                                       Lexer::Type::dom          }, NO, NO }, },
+    { "☺",                                            { { "☺",                                            Lexer::Type::dom          }, NO, NO }, },
+    { "name",                                         { { "name",                                         Lexer::Type::dom          }, NO, NO }, },
+    { "f1",                                           { { "f1",                                           Lexer::Type::dom          }, NO, NO }, },
+    { "foo.bar",                                      { { "foo.bar",                                      Lexer::Type::dom          }, NO, NO }, },
+    { "1.foo.bar",                                    { { "1.foo.bar",                                    Lexer::Type::dom          }, NO, NO }, },
+    { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", { { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", Lexer::Type::dom          }, NO, NO }, },
+
   };
   #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
