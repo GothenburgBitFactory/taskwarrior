@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (214);
+  UnitTest t (229);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -391,6 +391,39 @@ int main (int argc, char** argv)
   items = Lexer::split (unsplit);
   t.is (items.size (), (size_t) 1, "split 'ordinary' --> 1 token");
   t.is (items[0], "ordinary",      "split 'ordinary' --> 'ordinary'");
+
+  // Test recognized lexeme types.
+  Lexer l10 ("/foo/ "
+             "/a\\/b/ "
+             "/'/ "
+             "desc~pattern "
+             "desc.cont:pattern ");
+  l10.ambiguity (false);
+  tokens.clear ();
+  while (l10.token (token, type))
+  {
+    std::cout << "# «" << token << "» " << Lexer::typeName (type) << "\n";
+    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+  }
+
+  t.is ((int)tokens.size (),       7,                          "7 tokens");
+  t.is (tokens[0].first,           "/foo/",                    "tokens[0] == '/foo/'");
+  t.is ((int) tokens[0].second,    (int) Lexer::Type::pattern, "tokens[0] == Lexer::Type::pattern");
+
+  t.is (tokens[1].first,           "/a\\/b/",                  "tokens[1] == '/a\\/b/'");
+  t.is ((int) tokens[1].second,    (int) Lexer::Type::pattern, "tokens[1] == Lexer::Type::pattern");
+  t.is (tokens[2].first,           "/'/",                      "tokens[2] == '/'/'");
+  t.is ((int) tokens[2].second,    (int) Lexer::Type::pattern, "tokens[2] == Lexer::Type::pattern");
+
+  t.is (tokens[3].first,           "desc",                     "tokens[3] == 'desc'");
+  t.is ((int) tokens[3].second,    (int) Lexer::Type::dom,     "tokens[3] == Lexer::Type::dom");
+  t.is (tokens[4].first,           "~",                        "tokens[4] == '~'");
+  t.is ((int) tokens[4].second,    (int) Lexer::Type::op,      "tokens[4] == Lexer::Type::op");
+  t.is (tokens[5].first,           "pattern",                  "tokens[5] == 'pattern'");
+  t.is ((int) tokens[5].second,    (int) Lexer::Type::dom,     "tokens[5] == Lexer::Type::dom");
+
+  t.is (tokens[6].first,           "desc.cont:pattern",        "tokens[6] == 'desc.cont:pattern'");
+  t.is ((int) tokens[6].second,    (int) Lexer::Type::pair,    "tokens[6] == Lexer::Type::pair");
 
   return 0;
 }
