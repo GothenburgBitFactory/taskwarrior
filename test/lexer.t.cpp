@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (514);
+  UnitTest t (538);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -450,11 +450,10 @@ int main (int argc, char** argv)
     { "rc.name:value",                                { { "rc.name:value",                                Lexer::Type::pair         }, NO, NO }, },
     { "rc.name=value",                                { { "rc.name=value",                                Lexer::Type::pair         }, NO, NO }, },
 
-    // Operators
-    //   *
-    //   >=
-    //   xor
-    //   _hastag_
+    { "*",                                            { { "*",                                            Lexer::Type::op           }, NO, NO }, },
+    { ">=",                                           { { ">=",                                           Lexer::Type::op           }, NO, NO }, },
+    { "xor",                                          { { "xor",                                          Lexer::Type::op           }, NO, NO }, },
+    { "_hastag_",                                     { { "_hastag_",                                     Lexer::Type::op           }, NO, NO }, },
 
     // Expressions
     //   name=value
