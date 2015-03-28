@@ -101,6 +101,7 @@ Context::Context ()
 , dom ()
 , determine_color_use (true)
 , use_color (true)
+, run_gc (true)
 , verbosity_legacy (false)
 , terminal_width (0)
 , terminal_height (0)
@@ -478,7 +479,14 @@ int Context::dispatch (std::string &out)
     // GC is invoked prior to running any command that displays task IDs, if
     // possible.
     if (c->displays_id () && !tdb2.read_only ())
+    {
+      run_gc = true;
       tdb2.gc ();
+    }
+    else
+    {
+      run_gc = false;
+    }
 
 /*
     // Only read-only commands can be run when TDB2 is read-only.

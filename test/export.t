@@ -108,8 +108,10 @@ class TestExportCommand(TestCase):
     def test_export_end(self):
         self.t(('1', 'start'))
         self.t.faketime("+5s")
-        self.t(('1', 'done'))
-        self.assertTimestamp(self.export(1)['end'])
+        # After a task is "done" or "deleted", it does not have an ID by which
+        # to filter it anymore. Add a tag to work around this.
+        self.t(('1', 'done', '+workaround'))
+        self.assertTimestamp(self.export('+workaround')['end'])
 
     def test_export_due(self):
         self.t(('1', 'modify', 'due:today'))
