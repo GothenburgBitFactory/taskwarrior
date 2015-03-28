@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (229);
+  UnitTest t (256);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -392,38 +392,53 @@ int main (int argc, char** argv)
   t.is (items.size (), (size_t) 1, "split 'ordinary' --> 1 token");
   t.is (items[0], "ordinary",      "split 'ordinary' --> 'ordinary'");
 
-  // Test recognized lexeme types.
-  Lexer l10 ("/foo/ "
-             "/a\\/b/ "
-             "/'/ "
-             "desc~pattern "
-             "desc.cont:pattern ");
-  l10.ambiguity (false);
-  tokens.clear ();
-  while (l10.token (token, type))
+  // Test all Lexer types.
+  #define NOPE {"",Lexer::Type::word}
+  struct
   {
-    std::cout << "# «" << token << "» " << Lexer::typeName (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
+    const char* input;
+    struct
+    {
+      const char* token;
+      Lexer::Type type;
+    } results[3];
+  } lexerTests[] =
+  {
+    { "/foo/",             { { "/foo/",             Lexer::Type::pattern }, NOPE, NOPE }, },
+    { "/a\\/b/",           { { "/a\\/b/",           Lexer::Type::pattern }, NOPE, NOPE }, },
+    { "/'/",               { { "/'/",               Lexer::Type::pattern }, NOPE, NOPE }, },
+    { "desc~pattern",      { { "desc",              Lexer::Type::dom     },
+                             { "~",                 Lexer::Type::op      },
+                             { "pattern",           Lexer::Type::dom     },            }, },
+    { "desc.cont:pattern", { { "desc.cont:pattern", Lexer::Type::pair    }, NOPE, NOPE }, },
+  };
+  #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
+
+  for (int i = 0; i < NUM_TESTS; i++)
+  {
+    // The isolated test puts the input string directly into the Lexer.
+    Lexer isolated (lexerTests[i].input);
+
+    // The embedded test surrounds the input string with a space.
+    Lexer embedded (std::string (" ") + lexerTests[i].input + " ");
+
+    for (int j = 0; j < 3; j++)
+    {
+      if (lexerTests[i].results[j].token[0])
+      {
+        // Isolated: "<token>"
+        t.ok (isolated.token (token, type),                  "Isolated Lexer::token(...) --> true");
+        t.is (token, lexerTests[i].results[j].token,         "  token --> " + token);
+        t.is ((int)type, (int)lexerTests[i].results[j].type, "  type --> Lexer::Type::" + Lexer::typeToString (type));
+
+        // Embedded: "<token>"
+        t.ok (embedded.token (token, type),                  "Embedded Lexer::token(...) --> true");
+        t.is (token, lexerTests[i].results[j].token,         "  token --> " + token);
+        t.is ((int)type, (int)lexerTests[i].results[j].type, "  type --> Lexer::Type::" + Lexer::typeToString (type));
+      }
+    }
   }
 
-  t.is ((int)tokens.size (),       7,                          "7 tokens");
-  t.is (tokens[0].first,           "/foo/",                    "tokens[0] == '/foo/'");
-  t.is ((int) tokens[0].second,    (int) Lexer::Type::pattern, "tokens[0] == Lexer::Type::pattern");
-
-  t.is (tokens[1].first,           "/a\\/b/",                  "tokens[1] == '/a\\/b/'");
-  t.is ((int) tokens[1].second,    (int) Lexer::Type::pattern, "tokens[1] == Lexer::Type::pattern");
-  t.is (tokens[2].first,           "/'/",                      "tokens[2] == '/'/'");
-  t.is ((int) tokens[2].second,    (int) Lexer::Type::pattern, "tokens[2] == Lexer::Type::pattern");
-
-  t.is (tokens[3].first,           "desc",                     "tokens[3] == 'desc'");
-  t.is ((int) tokens[3].second,    (int) Lexer::Type::dom,     "tokens[3] == Lexer::Type::dom");
-  t.is (tokens[4].first,           "~",                        "tokens[4] == '~'");
-  t.is ((int) tokens[4].second,    (int) Lexer::Type::op,      "tokens[4] == Lexer::Type::op");
-  t.is (tokens[5].first,           "pattern",                  "tokens[5] == 'pattern'");
-  t.is ((int) tokens[5].second,    (int) Lexer::Type::dom,     "tokens[5] == Lexer::Type::dom");
-
-  t.is (tokens[6].first,           "desc.cont:pattern",        "tokens[6] == 'desc.cont:pattern'");
-  t.is ((int) tokens[6].second,    (int) Lexer::Type::pair,    "tokens[6] == Lexer::Type::pair");
 
   return 0;
 }
