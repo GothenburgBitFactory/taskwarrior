@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (647);
+  UnitTest t (687);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -100,49 +100,34 @@ int main (int argc, char** argv)
 
   t.is (tokens[0].first,                     "one",           "tokens[0] = 'one'"); // 30
   t.is (Lexer::typeName (tokens[0].second),  "dom",           "tokens[0] = dom");
-
   t.is (tokens[1].first,                     "'two 'three''", "tokens[1] = 'two 'three''");
   t.is (Lexer::typeName (tokens[1].second),  "string",        "tokens[1] = string");
-
   t.is (tokens[2].first,                     "+",             "tokens[2] = '+'");
   t.is (Lexer::typeName (tokens[2].second),  "op",            "tokens[2] = op");
-
   t.is (tokens[3].first,                     "456",           "tokens[3] = '456'");
   t.is (Lexer::typeName (tokens[3].second),  "number",        "tokens[3] = number");
-
   t.is (tokens[4].first,                     "-",             "tokens[4] = '-'");
   t.is (Lexer::typeName (tokens[4].second),  "op",            "tokens[4] = op");
-
   t.is (tokens[5].first,                     "(",             "tokens[5] = '('"); // 40
   t.is (Lexer::typeName (tokens[5].second),  "op",            "tokens[5] = op");
-
   t.is (tokens[6].first,                     "1.3",           "tokens[6] = '1.3'");
   t.is (Lexer::typeName (tokens[6].second),  "number",        "tokens[6] = number");
-
   t.is (tokens[7].first,                     "*",             "tokens[7] = '*'");
   t.is (Lexer::typeName (tokens[7].second),  "op",            "tokens[7] = op");
-
   t.is (tokens[8].first,                     "2",             "tokens[8] = '2'");
   t.is (Lexer::typeName (tokens[8].second),  "number",        "tokens[8] = number");
-
   t.is (tokens[9].first,                     "-",             "tokens[9] = '-'");
   t.is (Lexer::typeName (tokens[9].second),  "op",            "tokens[9] = op");
-
   t.is (tokens[10].first,                    "0x12",          "tokens[10] = '0x12'"); // 50
   t.is (Lexer::typeName (tokens[10].second), "hex",           "tokens[10] = hex");
-
   t.is (tokens[11].first,                    ")",             "tokens[11] = ')'");
   t.is (Lexer::typeName (tokens[11].second), "op",            "tokens[11] = op");
-
   t.is (tokens[12].first,                    "1.2e-3.4",      "tokens[12] = '1.2e-3.4'");
   t.is (Lexer::typeName (tokens[12].second), "number",        "tokens[12] = number");
-
   t.is (tokens[13].first,                    "foo.bar",       "tokens[13] = 'foo.bar'");
   t.is (Lexer::typeName (tokens[13].second), "dom",           "tokens[13] = dom");
-
   t.is (tokens[14].first,                    "and",           "tokens[14] = 'and'"); // 60
   t.is (Lexer::typeName (tokens[14].second), "op",            "tokens[14] = op");
-
   t.is (tokens[15].first,                    "'€'",           "tokens[15] = \\u20ac --> ''€''");
   t.is (Lexer::typeName (tokens[15].second), "string",        "tokens[15] = string");
 
@@ -209,52 +194,6 @@ int main (int argc, char** argv)
   t.is ((int) tokens[8].second,    (int) Lexer::Type::date,     "tokens[8] == Type::date");
   t.is (tokens[9].first,           "2013-11-29T22:58:00Z",      "tokens[9] == '2013-11-29T22:58:00Z'");
   t.is ((int) tokens[9].second,    (int) Lexer::Type::date,     "tokens[9] == Type::date");
-
-  // Test for durations
-  Lexer l5 ("1second 1minute 2hour 3 days 4w 5mo 6 years");
-  tokens.clear ();
-  while (l5.token (token, type))
-  {
-    std::cout << "# «" << token << "» " << Lexer::typeName (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
-  }
-
-  t.is ((int)tokens.size (),       7,                           "7 tokens");
-  t.is (tokens[0].first,           "1second",                   "tokens[0] == '1second'");
-  t.is ((int) tokens[0].second,    (int) Lexer::Type::duration, "tokens[0] == Type::duration");
-  t.is (tokens[1].first,           "1minute",                   "tokens[1] == '1minute'");
-  t.is ((int) tokens[1].second,    (int) Lexer::Type::duration, "tokens[1] == Type::duration"); // 110
-  t.is (tokens[2].first,           "2hour",                     "tokens[2] == '2hour'");
-  t.is ((int) tokens[2].second,    (int) Lexer::Type::duration, "tokens[2] == Type::duration");
-  t.is (tokens[3].first,           "3 days",                    "tokens[3] == '3 days'");
-  t.is ((int) tokens[3].second,    (int) Lexer::Type::duration, "tokens[3] == Type::duration");
-  t.is (tokens[4].first,           "4w",                        "tokens[4] == '4w'");
-  t.is ((int) tokens[4].second,    (int) Lexer::Type::duration, "tokens[4] == Type::duration");
-  t.is (tokens[5].first,           "5mo",                       "tokens[5] == '5mo'");
-  t.is ((int) tokens[5].second,    (int) Lexer::Type::duration, "tokens[5] == Type::duration");
-  t.is (tokens[6].first,           "6 years",                   "tokens[6] == '6 years'");
-  t.is ((int) tokens[6].second,    (int) Lexer::Type::duration, "tokens[6] == Type::duration"); // 120
-
-  // All the Eval operators.
-  Lexer l6 ("P1Y PT1H P1Y1M1DT1H1M1S 1s 1second");
-  tokens.clear ();
-  while (l6.token (token, type))
-  {
-    std::cout << "# «" << token << "» " << Lexer::typeName (type) << "\n";
-    tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
-  }
-
-  t.is ((int)tokens.size (),       5,                           "5 ISO periods");
-  t.is (tokens[0].first,           "P1Y",                       "tokens[0] == 'P1Y'");
-  t.is ((int) tokens[0].second,    (int) Lexer::Type::duration, "tokens[0] == Type::duration");
-  t.is (tokens[1].first,           "PT1H",                      "tokens[1] == 'PT1H'");
-  t.is ((int) tokens[1].second,    (int) Lexer::Type::duration, "tokens[1] == Type::duration");
-  t.is (tokens[2].first,           "P1Y1M1DT1H1M1S",            "tokens[2] == 'P1Y1M1DT1H1M1S'");
-  t.is ((int) tokens[2].second,    (int) Lexer::Type::duration, "tokens[2] == Type::duration");
-  t.is (tokens[3].first,           "1s",                        "tokens[3] == '1s'");
-  t.is ((int) tokens[3].second,    (int) Lexer::Type::duration, "tokens[3] == Type::duration");
-  t.is (tokens[4].first,           "1second",                   "tokens[4] == '1second'");
-  t.is ((int) tokens[4].second,    (int) Lexer::Type::duration, "tokens[4] == Type::duration");
 
   // All (int) the Eval operators.
   Lexer l7 ("and xor or <= >= !~ != == = ^ > ~ ! * / % + - < ( )");
@@ -458,6 +397,17 @@ int main (int argc, char** argv)
     { "year",                                         { { "year",                                         Lexer::Type::duration     }, NO, NO, NO, NO }, },
     { "4weeks",                                       { { "4weeks",                                       Lexer::Type::duration     }, NO, NO, NO, NO }, },
     { "PT23H",                                        { { "PT23H",                                        Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "1second",                                      { { "1second",                                      Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "1s",                                           { { "1s",                                           Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "1minute",                                      { { "1minute",                                      Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "2hour",                                        { { "2hour",                                        Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "3 days",                                       { { "3 days",                                       Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "4w",                                           { { "4w",                                           Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "5mo",                                          { { "5mo",                                          Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "6 years",                                      { { "6 years",                                      Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "P1Y",                                          { { "P1Y",                                          Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "PT1H",                                         { { "PT1H",                                         Lexer::Type::duration     }, NO, NO, NO, NO }, },
+    { "P1Y1M1DT1H1M1S",                               { { "P1Y1M1DT1H1M1S",                               Lexer::Type::duration     }, NO, NO, NO, NO }, },
 
     // Misc
     { "--",                                           { { "--",                                           Lexer::Type::separator    }, NO, NO, NO, NO }, },
