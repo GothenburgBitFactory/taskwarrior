@@ -316,9 +316,15 @@ void TF2::load_tasks ()
       ++line_number;
       Task task (*i);
 
-      // Some tasks gets an ID.
+      // Some tasks get an ID.
       if (_has_ids)
-        task.id = context.tdb2.next_id ();
+      {
+        Task::status status = task.getStatus ();
+        // Completed / deleted tasks in pending.data get an ID if GC is off.
+        if (!context.run_gc ||
+            (status != Task::completed && status != Task::deleted))
+          task.id = context.tdb2.next_id ();
+      }
 
       _tasks.push_back (task);
 

@@ -94,6 +94,8 @@ public:
   bool                                determine_color_use;
   bool                                use_color;
 
+  bool                                run_gc;
+
   bool                                verbosity_legacy;
   std::vector <std::string>           verbosity;
   std::vector <std::string>           headers;
