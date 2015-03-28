@@ -404,19 +404,24 @@ int main (int argc, char** argv)
     } results[5];
   } lexerTests[] =
   {
+    // Pattern
     { "/foo/",                                        { { "/foo/",                                        Lexer::Type::pattern      }, NO, NO, NO, NO }, },
     { "/a\\/b/",                                      { { "/a\\/b/",                                      Lexer::Type::pattern      }, NO, NO, NO, NO }, },
     { "/'/",                                          { { "/'/",                                          Lexer::Type::pattern      }, NO, NO, NO, NO }, },
-    { "desc~pattern",                                 { { "desc",                                         Lexer::Type::dom          },
-                                                        { "~",                                            Lexer::Type::op           },
-                                                        { "pattern",                                      Lexer::Type::dom          },         NO, NO }, },
-    { "desc.cont:pattern",                            { { "desc.cont:pattern",                            Lexer::Type::pair         }, NO, NO, NO, NO }, },
+
+    // Substitution
     { "/from/to/g",                                   { { "/from/to/g",                                   Lexer::Type::substitution }, NO, NO, NO, NO }, },
     { "/from/to/",                                    { { "/from/to/",                                    Lexer::Type::substitution }, NO, NO, NO, NO }, },
+
+    // Tag
     { "+tag",                                         { { "+tag",                                         Lexer::Type::tag          }, NO, NO, NO, NO }, },
     { "-tag",                                         { { "-tag",                                         Lexer::Type::tag          }, NO, NO, NO, NO }, },
-    { "foo",                                          { { "foo",                                          Lexer::Type::dom          }, NO, NO, NO, NO }, },
+
+    // Path
     { "/long/path/to/file.txt",                       { { "/long/path/to/file.txt",                       Lexer::Type::path         }, NO, NO, NO, NO }, },
+
+    // DOM
+    { "foo",                                          { { "foo",                                          Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "Çirçös",                                       { { "Çirçös",                                       Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "☺",                                            { { "☺",                                            Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "name",                                         { { "name",                                         Lexer::Type::dom          }, NO, NO, NO, NO }, },
@@ -424,8 +429,12 @@ int main (int argc, char** argv)
     { "foo.bar",                                      { { "foo.bar",                                      Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "1.foo.bar",                                    { { "1.foo.bar",                                    Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", { { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", Lexer::Type::dom          }, NO, NO, NO, NO }, },
+
+    // URL
     { "http://tasktools.org",                         { { "http://tasktools.org",                         Lexer::Type::url          }, NO, NO, NO, NO }, },
     { "https://bug.tasktools.org",                    { { "https://bug.tasktools.org",                    Lexer::Type::url          }, NO, NO, NO, NO }, },
+
+    // String
     { "'one two'",                                    { { "'one two'",                                    Lexer::Type::string       }, NO, NO, NO, NO }, },
     { "\\\"three\\\"",                                { { "\\\"three\\\"",                                Lexer::Type::string       }, NO, NO, NO, NO }, },
     { "'\\''",                                        { { "'\\''",                                        Lexer::Type::string       }, NO, NO, NO, NO }, },
@@ -433,21 +442,32 @@ int main (int argc, char** argv)
     { "\"\tfoo\t\"",                                  { { "\"\tfoo\t\"",                                  Lexer::Type::string       }, NO, NO, NO, NO }, },
     { "\"\\u20A43\"",                                 { { "\"₤3\"",                                       Lexer::Type::string       }, NO, NO, NO, NO }, },
     { "\"U+20AC4\"",                                  { { "\"€4\"",                                       Lexer::Type::string       }, NO, NO, NO, NO }, },
+
+    // Number
     { "1",                                            { { "1",                                            Lexer::Type::number       }, NO, NO, NO, NO }, },
     { "3.14",                                         { { "3.14",                                         Lexer::Type::number       }, NO, NO, NO, NO }, },
     { "6.02217e23",                                   { { "6.02217e23",                                   Lexer::Type::number       }, NO, NO, NO, NO }, },
     { "1.2e-3.4",                                     { { "1.2e-3.4",                                     Lexer::Type::number       }, NO, NO, NO, NO }, },
     { "0x2f",                                         { { "0x2f",                                         Lexer::Type::hex          }, NO, NO, NO, NO }, },
+
+    // Pair
     { "name:value",                                   { { "name:value",                                   Lexer::Type::pair         }, NO, NO, NO, NO }, },
+    { "desc.cont:pattern",                            { { "desc.cont:pattern",                            Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "pro:'P 1'",                                    { { "pro:'P 1'",                                    Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "pro:PROJECT",                                  { { "pro:PROJECT",                                  Lexer::Type::pair         }, NO, NO, NO, NO }, },
+
+    // RC override
     { "rc:x",                                         { { "rc:x",                                         Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "rc.name:value",                                { { "rc.name:value",                                Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "rc.name=value",                                { { "rc.name=value",                                Lexer::Type::pair         }, NO, NO, NO, NO }, },
+
+    // Operator
     { "*",                                            { { "*",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
     { ">=",                                           { { ">=",                                           Lexer::Type::op           }, NO, NO, NO, NO }, },
     { "xor",                                          { { "xor",                                          Lexer::Type::op           }, NO, NO, NO, NO }, },
     { "_hastag_",                                     { { "_hastag_",                                     Lexer::Type::op           }, NO, NO, NO, NO }, },
+
+    // UUID
     { "a360fc44-315c-4366-b70c-ea7e7520b749",         { { "a360fc44-315c-4366-b70c-ea7e7520b749",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e752",              { { "a360fc44-315c-4366-b70c-ea7e752",              Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c",                      { { "a360fc44-315c-4366-b70c",                      Lexer::Type::uuid         }, NO, NO, NO, NO }, },
@@ -457,33 +477,41 @@ int main (int argc, char** argv)
     { "a360fc44,b7f8c869",                            { { "a360fc44",                                     Lexer::Type::uuid         },
                                                         { ",",                                            Lexer::Type::list         },
                                                         { "b7f8c869",                                     Lexer::Type::uuid         },         NO, NO }, },
+
+    // Date
     { "today",                                        { { "today",                                        Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "23rd",                                         { { "23rd",                                         Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "2015-W01",                                     { { "2015-W01",                                     Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "2015-02-17",                                   { { "2015-02-17",                                   Lexer::Type::date         }, NO, NO, NO, NO }, },
+
+    // Duration
     { "year",                                         { { "year",                                         Lexer::Type::duration     }, NO, NO, NO, NO }, },
     { "4weeks",                                       { { "4weeks",                                       Lexer::Type::duration     }, NO, NO, NO, NO }, },
     { "PT23H",                                        { { "PT23H",                                        Lexer::Type::duration     }, NO, NO, NO, NO }, },
+
+    // Misc
     { "--",                                           { { "--",                                           Lexer::Type::separator    }, NO, NO, NO, NO }, },
 
-    // IDs
+    // ID
     //   2,3
     //   4,5-6
 
-    { "name=value",                                   { { "name",                                         Lexer::Type::dom          },
-                                                        { "=",                                            Lexer::Type::op           },
-                                                        { "value",                                        Lexer::Type::dom          },         NO, NO }, },
-    // Expressions
+    // Expression
     //   due:'eow - 2d'
     //   due:eom-2w
     //   due < eom + 1w + 1d
     //   ( /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331,3b6218f9-726a-44fc-aa63-889ff52be442 )
+    { "name=value",                                   { { "name",                                         Lexer::Type::dom          },
+                                                        { "=",                                            Lexer::Type::op           },
+                                                        { "value",                                        Lexer::Type::dom          },         NO, NO }, },
     { "(1+2)",                                        { { "(",                                            Lexer::Type::op           },
                                                         { "1",                                            Lexer::Type::number       },
                                                         { "+",                                            Lexer::Type::op           },
                                                         { "2",                                            Lexer::Type::number       },
                                                         { ")",                                            Lexer::Type::op           },                }, },
-
+    { "desc~pattern",                                 { { "desc",                                         Lexer::Type::dom          },
+                                                        { "~",                                            Lexer::Type::op           },
+                                                        { "pattern",                                      Lexer::Type::dom          },         NO, NO }, },
   };
   #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
