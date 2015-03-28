@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (418);
+  UnitTest t (454);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -438,6 +438,54 @@ int main (int argc, char** argv)
     { "6.02217e23",                                   { { "6.02217e23",                                   Lexer::Type::number       }, NO, NO }, },
     { "1.2e-3.4",                                     { { "1.2e-3.4",                                     Lexer::Type::number       }, NO, NO }, },
     { "0x2f",                                         { { "0x2f",                                         Lexer::Type::hex          }, NO, NO }, },
+
+    // IDs
+    //   2,3
+    //   4,5-6
+
+    { "name:value",                                   { { "name:value",                                   Lexer::Type::pair         }, NO, NO }, },
+    { "pro:'P 1'",                                    { { "pro:'P 1'",                                    Lexer::Type::pair         }, NO, NO }, },
+    { "pro:PROJECT",                                  { { "pro:PROJECT",                                  Lexer::Type::pair         }, NO, NO }, },
+    { "rc:x",                                         { { "rc:x",                                         Lexer::Type::pair         }, NO, NO }, },
+    { "rc.name:value",                                { { "rc.name:value",                                Lexer::Type::pair         }, NO, NO }, },
+    { "rc.name=value",                                { { "rc.name=value",                                Lexer::Type::pair         }, NO, NO }, },
+
+    // Operators
+    //   *
+    //   >=
+    //   xor
+    //   _hastag_
+
+    // Expressions
+    //   name=value
+    //   due:'eow - 2d'
+    //   due:eom-2w
+    //   due < eom + 1w + 1d
+    //   ( /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331,3b6218f9-726a-44fc-aa63-889ff52be442 )
+    //   (1+2)
+
+    // UUIDs
+    //   a360fc44-315c-4366-b70c-ea7e7520b749
+    //   a360fc44-315c-4366-b70c-ea7e7520b749,b7f8c869-b2ca-4983-995c-299d58bcc0b6
+    //   a360fc44-315c-4366-b70c-ea7e752
+    //   a360fc44-315c-4366-b70c
+    //   a360fc44-315c-4366
+    //   a360fc44-315c
+    //   a360fc44
+
+    // Dates
+    //   today
+    //   23rd
+    //   2015-W01
+    //   2015-02-17
+
+    // Durations
+    //   year
+    //   4weeks
+    //   PT23H
+
+    // Misc
+    //   --
   };
   #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
@@ -465,7 +513,6 @@ int main (int argc, char** argv)
       }
     }
   }
-
 
   return 0;
 }
