@@ -446,7 +446,7 @@ void Eval::evaluatePostfixStack (
 void Eval::infixParse (
   std::vector <std::pair <std::string, Lexer::Type> >& infix) const
 {
-  int i = 0;
+  unsigned int i = 0;
   parseLogical (infix, i);
 }
 
@@ -454,7 +454,7 @@ void Eval::infixParse (
 // Logical     --> Regex {( "and" | "or" | "xor" ) Regex}
 bool Eval::parseLogical (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
-  int &i) const
+  unsigned int &i) const
 {
   if (i < infix.size () &&
       parseRegex (infix, i))
@@ -480,7 +480,7 @@ bool Eval::parseLogical (
 // Regex       --> Equality {( "~" | "!~" ) Equality}
 bool Eval::parseRegex (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
-  int &i) const
+  unsigned int &i) const
 {
   if (i < infix.size () &&
       parseEquality (infix, i))
@@ -505,7 +505,7 @@ bool Eval::parseRegex (
 // Equality    --> Comparative {( "==" | "=" | "!==" | "!=" ) Comparative}
 bool Eval::parseEquality (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
-  int &i) const
+  unsigned int &i) const
 {
   if (i < infix.size () &&
       parseComparative (infix, i))
@@ -532,7 +532,7 @@ bool Eval::parseEquality (
 // Comparative --> Arithmetic {( "<=" | "<" | ">=" | ">" ) Arithmetic}
 bool Eval::parseComparative (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
-  int &i) const
+  unsigned int &i) const
 {
   if (i < infix.size () &&
       parseArithmetic (infix, i))
@@ -559,7 +559,7 @@ bool Eval::parseComparative (
 // Arithmetic  --> Geometric {( "+" | "-" ) Geometric}
 bool Eval::parseArithmetic (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
-  int &i) const
+  unsigned int &i) const
 {
   if (i < infix.size () &&
       parseGeometric (infix, i))
@@ -584,7 +584,7 @@ bool Eval::parseArithmetic (
 // Geometric   --> Tag {( "*" | "/" | "%" ) Tag}
 bool Eval::parseGeometric (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
-  int &i) const
+  unsigned int &i) const
 {
   if (i < infix.size () &&
       parseTag (infix, i))
@@ -610,7 +610,7 @@ bool Eval::parseGeometric (
 // Tag         --> Unary {( "_hastag_" | "_notag_" ) Unary}
 bool Eval::parseTag (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
-  int &i) const
+  unsigned int &i) const
 {
   if (i < infix.size () &&
       parseUnary (infix, i))
@@ -635,7 +635,7 @@ bool Eval::parseTag (
 // Unary       --> [( "-" | "+" | "!" )] Exponent
 bool Eval::parseUnary (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
-  int &i) const
+  unsigned int &i) const
 {
   if (i < infix.size ())
   {
@@ -662,7 +662,7 @@ bool Eval::parseUnary (
 // Exponent    --> Primitive ["^" Primitive]
 bool Eval::parseExponent (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
-  int &i) const
+  unsigned int& i) const
 {
   if (i < infix.size () &&
       parsePrimitive (infix, i))
@@ -686,7 +686,7 @@ bool Eval::parseExponent (
 // Primitive   --> "(" Logical ")" | Variant
 bool Eval::parsePrimitive (
   std::vector <std::pair <std::string, Lexer::Type> >& infix,
-  int &i) const
+  unsigned int &i) const
 {
   if (i < infix.size ())
   {
@@ -781,7 +781,7 @@ void Eval::infixToPostfix (
 
   // Operator characteristics.
   char type;
-  int precedence;
+  unsigned int precedence;
   char associativity;
 
   std::vector <std::pair <std::string, Lexer::Type> >::iterator token;
@@ -811,7 +811,7 @@ void Eval::infixToPostfix (
              identifyOperator (token->first, type, precedence, associativity))
     {
       char type2;
-      int precedence2;
+      unsigned int precedence2;
       char associativity2;
       while (op_stack.size () > 0 &&
              identifyOperator (op_stack.back ().first, type2, precedence2, associativity2) &&
@@ -847,7 +847,7 @@ void Eval::infixToPostfix (
 bool Eval::identifyOperator (
   const std::string& op,
   char& type,
-  int& precedence,
+  unsigned int& precedence,
   char& associativity) const
 {
   for (unsigned int i = 0; i < NUM_OPERATORS; ++i)

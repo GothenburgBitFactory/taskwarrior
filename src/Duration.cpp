@@ -319,6 +319,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
       start = original_start + n.cursor ();
 
       // Linear lookup - should be logarithmic.
+      double seconds = 1;
       for (unsigned int i = 0; i < NUM_DURATIONS; i++)
       {
         if (durations[i].unit == unit &&
