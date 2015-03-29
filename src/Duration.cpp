@@ -61,47 +61,48 @@ static struct
   {"fortnight",   14 * DAY,    true},
   {"hours",        1 * HOUR,   false},
   {"hour",         1 * HOUR,   true},
-  {"hrs",          1 * HOUR,   true},
+  {"hrs",          1 * HOUR,   false},
   {"hr",           1 * HOUR,   true},
   {"h",            1 * HOUR,   false},
   {"minutes",      1 * MINUTE, false},
-  {"minute",       1 * MINUTE, false},
+  {"minute",       1 * MINUTE, true},
   {"mins",         1 * MINUTE, false},
-  {"min",          1 * MINUTE, false},
+  {"min",          1 * MINUTE, true},
   {"monthly",     30 * DAY,    true},
   {"months",      30 * DAY,    false},
   {"month",       30 * DAY,    true},
   {"mnths",       30 * DAY,    false},
   {"mths",        30 * DAY,    false},
-  {"mth",         30 * DAY,    false},
+  {"mth",         30 * DAY,    true},
   {"mos",         30 * DAY,    false},
-  {"mo",          30 * DAY,    false},
+  {"mo",          30 * DAY,    true},
   {"m",           30 * DAY,    false},
   {"quarterly",   91 * DAY,    true},
   {"quarters",    91 * DAY,    false},
   {"quarter",     91 * DAY,    true},
   {"qrtrs",       91 * DAY,    false},
+  {"qrtr",        91 * DAY,    true},
   {"qtrs",        91 * DAY,    false},
-  {"qtr",         91 * DAY,    false},
+  {"qtr",         91 * DAY,    true},
   {"q",           91 * DAY,    false},
   {"semiannual", 183 * DAY,    true},
   {"sennight",    14 * DAY,    false},
   {"seconds",      1 * SECOND, false},
   {"second",       1 * SECOND, true},
-  {"secs",         1 * SECOND, true},
+  {"secs",         1 * SECOND, false},
   {"sec",          1 * SECOND, true},
   {"s",            1 * SECOND, false},
   {"weekdays",     1 * DAY,    true},
   {"weekly",       7 * DAY,    true},
   {"weeks",        7 * DAY,    false},
   {"week",         7 * DAY,    true},
-  {"wks",          7 * DAY,    true},
+  {"wks",          7 * DAY,    false},
   {"wk",           7 * DAY,    true},
   {"w",            7 * DAY,    false},
   {"yearly",     365 * DAY,    true},
   {"years",      365 * DAY,    false},
   {"year",       365 * DAY,    true},
-  {"yrs",        365 * DAY,    true},
+  {"yrs",        365 * DAY,    false},
   {"yr",         365 * DAY,    true},
   {"y",          365 * DAY,    false},
 };
@@ -304,7 +305,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
   // Static and so preserved between calls.
   static std::vector <std::string> units;
   if (units.size () == 0)
-    for (int i = 0; i < NUM_DURATIONS; i++)
+    for (unsigned int i = 0; i < NUM_DURATIONS; i++)
       units.push_back (durations[i].unit);
 
   std::string number;
@@ -318,8 +319,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
       start = original_start + n.cursor ();
 
       // Linear lookup - should be logarithmic.
-      double seconds = 1;
-      for (int i = 0; i < NUM_DURATIONS; i++)
+      for (unsigned int i = 0; i < NUM_DURATIONS; i++)
       {
         if (durations[i].unit == unit &&
             durations[i].standalone == true)
@@ -344,7 +344,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
 
         // Linear lookup - should be logarithmic.
         double seconds = 1;
-        for (int i = 0; i < NUM_DURATIONS; i++)
+        for (unsigned int i = 0; i < NUM_DURATIONS; i++)
         {
           if (durations[i].unit == unit)
           {
