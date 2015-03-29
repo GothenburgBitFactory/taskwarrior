@@ -113,7 +113,7 @@ int main (int argc, char** argv)
   unsetenv ("TASKRC");
 
   // Positive tests.
-  for (int i = 0; i < NUM_POSITIVE_TESTS; ++i)
+  for (unsigned int i = 0; i < NUM_POSITIVE_TESTS; ++i)
   {
     try
     {
@@ -131,7 +131,7 @@ int main (int argc, char** argv)
   }
 
   // Negative tests.
-  for (int i = 0; i < NUM_NEGATIVE_TESTS; ++i)
+  for (unsigned int i = 0; i < NUM_NEGATIVE_TESTS; ++i)
   {
     try
     {

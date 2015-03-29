@@ -377,7 +377,7 @@ int main (int argc, char** argv)
   };
   #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
-  for (int i = 0; i < NUM_TESTS; i++)
+  for (unsigned int i = 0; i < NUM_TESTS; i++)
   {
     // The isolated test puts the input string directly into the Lexer.
     Lexer isolated (lexerTests[i].input);

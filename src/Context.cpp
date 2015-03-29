@@ -65,33 +65,6 @@ static const char* modifierNames[] =
 
 #define NUM_MODIFIER_NAMES       (sizeof (modifierNames) / sizeof (modifierNames[0]))
 
-static const char* attributeNames[] =
-{
-  "depends",
-  "description",
-  "due",
-  "end",
-  "entry",
-  "id",
-  "imask",
-  "mask",
-  "modified",
-  "parent",
-  "priority",
-  "project",
-  "recur",
-  "scheduled",
-  "start",
-  "status",
-  "tags",
-  "until",
-  "urgency",
-  "uuid",
-  "wait"
-};
-
-#define NUM_ATTRIBUTE_NAMES       (sizeof (attributeNames) / sizeof (attributeNames[0]))
-
 ////////////////////////////////////////////////////////////////////////////////
 Context::Context ()
 : rc_file ("~/.taskrc")

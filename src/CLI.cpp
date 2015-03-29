@@ -349,7 +349,6 @@ void CLI::initialize (int argc, const char** argv)
   _terminated = false;
 
   _original_args.push_back (argv[0]);
-  bool terminated = false;
   for (int i = 1; i < argc; ++i)
   {
     if (isTerminator (argv[i]))
@@ -1384,8 +1383,6 @@ void CLI::findIDs ()
   {
     if (a->hasTag ("FILTER"))
     {
-      bool found = false;
-
       // IDs have a limited character set.
       std::string raw = a->attribute ("raw");
       if (raw.find_first_not_of ("0123456789,-") == std::string::npos)

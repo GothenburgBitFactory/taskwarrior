@@ -163,7 +163,6 @@ int CmdConfig::execute (std::string& output)
   if (words.size ())
   {
     bool confirmation = context.config.getBoolean ("confirmation");
-    bool change = false;
     bool found = false;
 
     std::string name = words[0];
