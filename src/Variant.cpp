@@ -1964,6 +1964,8 @@ Variant::operator std::string () const
   case type_unknown:
     throw std::string (STRING_VARIANT_RENDER_UNK);
   }
+
+  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

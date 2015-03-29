@@ -33,7 +33,7 @@
 #include <utf8.h>
 
 static const std::string uuid_pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-static const int uuid_min_length = 8;
+static const unsigned int uuid_min_length = 8;
 
 std::string Lexer::dateFormat = "";
 bool Lexer::isoEnabled = true;
@@ -158,6 +158,8 @@ const std::string Lexer::typeName (const Lexer::Type& type)
   case Lexer::Type::date:         return "date";
   case Lexer::Type::duration:     return "duration";
   }
+
+  return "unknown";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
