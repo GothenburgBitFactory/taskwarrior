@@ -443,7 +443,7 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
   // For propagation.
   _strict = strict;
 
-  for (int i = 0; i < _original_args.size (); ++i)
+  for (unsigned int i = 0; i < _original_args.size (); ++i)
   {
     std::string raw = _original_args[i];
     A a ("arg", raw);
@@ -2362,7 +2362,7 @@ bool CLI::isName (const std::string& raw) const
 {
   if (raw != "")
   {
-    for (int i = 0; i < raw.length (); ++i)
+    for (unsigned int i = 0; i < raw.length (); ++i)
     {
       if (i == 0 && ! Lexer::isIdentifierStart (raw[i]))
         return false;

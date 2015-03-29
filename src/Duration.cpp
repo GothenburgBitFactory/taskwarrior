@@ -304,7 +304,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
   // Static and so preserved between calls.
   static std::vector <std::string> units;
   if (units.size () == 0)
-    for (int i = 0; i < NUM_DURATIONS; i++)
+    for (unsigned int i = 0; i < NUM_DURATIONS; i++)
       units.push_back (durations[i].unit);
 
   std::string number;
@@ -319,7 +319,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
 
       // Linear lookup - should be logarithmic.
       double seconds = 1;
-      for (int i = 0; i < NUM_DURATIONS; i++)
+      for (unsigned int i = 0; i < NUM_DURATIONS; i++)
       {
         if (durations[i].unit == unit &&
             durations[i].standalone == true)
@@ -344,7 +344,7 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
 
         // Linear lookup - should be logarithmic.
         double seconds = 1;
-        for (int i = 0; i < NUM_DURATIONS; i++)
+        for (unsigned int i = 0; i < NUM_DURATIONS; i++)
         {
           if (durations[i].unit == unit)
           {

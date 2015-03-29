@@ -466,7 +466,7 @@ void Hooks::assertValidJSON (const std::vector <std::string>& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Hooks::assertNTasks (const std::vector <std::string>& input, int n) const
+void Hooks::assertNTasks (const std::vector <std::string>& input, unsigned int n) const
 {
   if (input.size () != n)
   {
