@@ -152,6 +152,18 @@ Darwin, 32bit
     http://stackoverflow.com/questions/6077414/cmake-how-to-set-the-ldflags-in-cmakelists-txt
 
 
+OpenBSD
+  In order to build Taskwarrior 2.4.2+, you might need to install a newer GCC
+  version from ports or packages.
+
+  Afterwards, run
+    cmake -DCMAKE_CXX_COMPILER=eg++ .
+
+  and build normally.
+
+  See: https://bug.tasktools.org/browse/TW-1579
+
+
 Troubleshooting
 ---------------
 
