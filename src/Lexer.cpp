@@ -275,6 +275,9 @@ bool Lexer::isTripleCharOperator (int c0, int c1, int c2, int c3)
 ////////////////////////////////////////////////////////////////////////////////
 bool Lexer::isBoundary (int left, int right)
 {
+  // EOS
+  if (right == '\0')                                 return true;
+
   // XOR
   if (isalpha (left)       != isalpha (right))       return true;
   if (isDigit (left)       != isDigit (right))       return true;
@@ -928,7 +931,7 @@ bool Lexer::isOperator (std::string& token, Lexer::Type& type)
     return true;
   }
 
-  else if (_eos - marker >= 4 &&
+  else if (_eos - marker >= 3 &&
       isTripleCharOperator (_text[marker], _text[marker + 1], _text[marker + 2], _text[marker + 3]))
   {
     marker += 3;
