@@ -869,7 +869,8 @@ bool Lexer::isPattern (std::string& token, Lexer::Type& type)
   std::string extractedToken;
   Lexer::Type extractedType;
   if (isString (extractedToken, extractedType, '/') &&
-      isWhitespace (_text[_cursor]))
+      (_text[_cursor] == '\0' ||
+       isWhitespace (_text[_cursor])))
   {
     token = _text.substr (marker, _cursor - marker);
     type = Lexer::Type::pattern;
