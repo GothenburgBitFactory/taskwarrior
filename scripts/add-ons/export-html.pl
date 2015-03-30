@@ -60,7 +60,7 @@ print "<html>\n",
       "      <tbody>\n";
 
 my $count = 0;
-for my $task (split /,$/ms, qx{$command})
+for my $task (split /\n/ms, qx{$command})
 {
   ++$count;
   my $data = from_json ($task);
