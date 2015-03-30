@@ -829,7 +829,7 @@ bool Lexer::isPath (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::substitution
-//   / <unquoted-string> / <unquoted-string> / [g]
+//   / <unquoted-string> / <unquoted-string> / [g]  <EOS> | <isWhiteSpace>
 bool Lexer::isSubstitution (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
@@ -845,8 +845,9 @@ bool Lexer::isSubstitution (std::string& token, Lexer::Type& type)
       if (_text[_cursor] == 'g')
         ++_cursor;
 
-      // Lookahread: <isWhitespace>
-      if (isWhitespace (_text[_cursor]))
+      // Lookahread: <EOS> | <isWhitespace>
+      if (_text[_cursor] == '\0' ||
+          isWhitespace (_text[_cursor]))
       {
         token = _text.substr (marker, _cursor - marker);
         type = Lexer::Type::substitution;
@@ -861,7 +862,7 @@ bool Lexer::isSubstitution (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::pattern
-//   / <unquoted-string> /
+//   / <unquoted-string> /  <EOS> | <isWhiteSpace>
 bool Lexer::isPattern (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
