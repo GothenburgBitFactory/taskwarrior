@@ -3,13 +3,6 @@
 # The on-exit event is triggered once, after all processing is complete.
 # This hooks script has no effect on processing.
 
-# Input:
-# - Read-only line of JSON for each task added/modified
-while read modified_task
-do
-  echo $modified_task
-done
-
 # Output:
 # - Optional feedback/error.
 echo 'on-exit'
