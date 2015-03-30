@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (771);
+  UnitTest t (765);
 
   std::vector <std::pair <std::string, Lexer::Type> > tokens;
   std::string token;
@@ -253,6 +253,7 @@ int main (int argc, char** argv)
     { "foo.bar",                                      { { "foo.bar",                                      Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "1.foo.bar",                                    { { "1.foo.bar",                                    Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", { { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "today",                                        { { "today",                                        Lexer::Type::dom          }, NO, NO, NO, NO }, },
 
     // URL
     { "http://tasktools.org",                         { { "http://tasktools.org",                         Lexer::Type::url          }, NO, NO, NO, NO }, },
@@ -329,8 +330,6 @@ int main (int argc, char** argv)
                                                         { "b7f8c869",                                     Lexer::Type::uuid         },         NO, NO }, },
 
     // Date
-    { "today",                                        { { "today",                                        Lexer::Type::date         }, NO, NO, NO, NO }, },
-    { "23rd",                                         { { "23rd",                                         Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "2015-W01",                                     { { "2015-W01",                                     Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "2015-02-17",                                   { { "2015-02-17",                                   Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "20131129T225800Z",                             { { "20131129T225800Z",                             Lexer::Type::date         }, NO, NO, NO, NO }, },
