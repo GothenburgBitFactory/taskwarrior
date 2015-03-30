@@ -108,7 +108,7 @@ class TestProjects(TestCase):
         order = (
             ".myProject ",
             ".myProject. ",
-            "abstractParent ",
+            "abstractParent",   # No space at EOL because this line in the summary ends here.
             "  kid ",
             "existingParent ",
             "  child ",
