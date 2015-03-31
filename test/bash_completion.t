@@ -55,9 +55,9 @@ if (open my $target, '>', 'task.sh')
     {
       my $temp=$_;
       chomp($_);
-      if ($_ eq "taskcommand='task rc.verbose:nothing'")
+      if ($_ eq "taskcommand='task rc.verbose:nothing rc.confirmation:no'")
       {
-        print $target "taskcommand='../src/task rc.verbose:nothing rc:bug.rc'";
+        print $target "taskcommand='../src/task rc.verbose:nothing rc.confirmation:no rc:bug.rc'";
       }
       else
       {
