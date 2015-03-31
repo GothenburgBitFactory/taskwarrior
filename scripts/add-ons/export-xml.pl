@@ -46,7 +46,7 @@ if ($command =~ /No matches/)
 
 # Generate output.
 print "<tasks>\n";
-for my $task (split /,$/ms, qx{$command})
+for my $task (split "\n", qx{$command})
 {
   my $data = from_json ($task);
 

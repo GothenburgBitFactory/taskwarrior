@@ -140,10 +140,10 @@ def main():
     """ Return a list of SQL statements. """
 
     # Use the taskwarrior 2.0+ export command to filter and return JSON
-    command = "task rc.verbose=nothing rc.json.array=no export " + " ".join(sys.argv[1:])
+    command = "task rc.verbose=nothing rc.json.array=yes " + " ".join(sys.argv[1:]) + " export"
 
     # Load each task from json to a python dict
-    tasks = map(json.loads, commands.getoutput(command).split(",\n"))
+    tasks = json.loads(commands.getoutput(command))
 
     # Mangle datetime strings into python datetime objects
     tasks = map(parse_datetime, tasks)

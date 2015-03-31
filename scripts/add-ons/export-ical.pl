@@ -49,7 +49,7 @@ print "BEGIN:VCALENDAR\n",
       "VERSION:2.0\n",
       "PRODID:=//GBF/taskwarrior 1.9.4//EN\n";
 
-for my $task (split /,$/ms, qx{$command})
+for my $task (split "\n", qx{$command})
 {
   my $data = from_json ($task);
 

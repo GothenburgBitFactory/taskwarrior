@@ -48,7 +48,7 @@ if ($command =~ /No matches/)
 print "uuid\tstatus\ttags\tentry\tstart\tdue\trecur\tend\tproject\t",
       "priority\tfg\tbg\tdescription\n";
 
-for my $task (split /,$/ms, qx{$command})
+for my $task (split "\n", qx{$command})
 {
   my $data = from_json ($task);
 

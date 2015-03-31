@@ -10,6 +10,8 @@
   Ulf Eliasson).
 - TW-1587 Fix and improve example on-exit hook, adjust to new hooks API
   (thanks to Jochen Sprickerhof).
+- TW-1588 Most Export scripts cannot deal with new export format (thanks to
+  Scott Carter).
 - Setting 'bulk' to zero is interpreted as infinity, which means there is no
   amount of changes that is considered dangerous (thanks to Tomas Babej).
 
