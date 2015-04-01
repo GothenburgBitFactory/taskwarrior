@@ -57,6 +57,7 @@ private:
   void assertNTasks (const std::vector <std::string>&, unsigned int) const;
   void assertSameTask (const std::vector <std::string>&, const Task&) const;
   void assertFeedback (const std::vector <std::string>&) const;
+  std::vector <std::string>& buildHookScriptArgs (std::vector <std::string>&);
   int callHookScript (const std::string&, const std::vector <std::string>&, std::vector <std::string>&);
 
 private:

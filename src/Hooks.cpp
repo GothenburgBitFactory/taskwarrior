@@ -521,6 +521,30 @@ void Hooks::assertFeedback (const std::vector <std::string>& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string>& Hooks::buildHookScriptArgs (std::vector <std::string>& args)
+{
+  Variant v;
+
+  // Hooks API version.
+  args.push_back ("api:2");
+
+  // Command line Taskwarrior was called with.
+  context.dom.get ("context.args", v);
+  args.push_back ("args:" + std::string (v));
+
+  // Command to be executed.
+  args.push_back ("command:" + context.cli.getCommand ());
+
+  // rc file used after applying all overrides.
+  args.push_back ("rc:" + context.rc_file._data);
+
+  // Directory containing *.data files.
+  args.push_back ("data:" + context.data_dir._data);
+
+  return args;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int Hooks::callHookScript (
   const std::string& script,
   const std::vector <std::string>& input,
@@ -545,6 +569,8 @@ int Hooks::callHookScript (
   std::string outputStr;
   std::vector <std::string> args;
   int status;
+
+  buildHookScriptArgs (args);
 
   // Measure time for each hook if running in debug
   if (_debug >= 2)
