@@ -465,9 +465,18 @@ bool Lexer::isDate (std::string& token, Lexer::Type& type)
 //   <ISO8106p> | <Duration>
 bool Lexer::isDuration (std::string& token, Lexer::Type& type)
 {
-  std::size_t marker = 0;
-
+  std::size_t marker = _cursor;
   ISO8601p iso;
+
+  std::string extractedToken;
+  Lexer::Type extractedType;
+  if (isOperator(extractedToken, extractedType))
+  {
+    _cursor = marker;
+    return false;
+  }
+
+  marker = 0;
   if (iso.parse (_text.substr (_cursor), marker))
   {
     type = Lexer::Type::duration;

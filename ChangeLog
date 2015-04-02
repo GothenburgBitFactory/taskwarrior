@@ -16,6 +16,7 @@
   amount of changes that is considered dangerous (thanks to Tomas Babej).
 - Disable hooks in bash completion script.  Hooks were previously able to
   abort processing or output interfering data, breaking completion.
+- Fix "task add due:tomorrow+3days" failing to work without spaces.
 
 ------ current release ---------------------------
 
