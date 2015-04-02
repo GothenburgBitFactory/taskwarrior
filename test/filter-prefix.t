@@ -79,9 +79,9 @@ class TestFilterPrefix(TestCase):
     def test_list_project_not_foo(self):
         """Filter on not project name."""
         code, out, err = self.t(('list', 'project.not:foo'))
-        self.assertNotIn('one', out)
-        self.assertNotIn('two', out)
-        self.assertNotIn('three', out)
+        self.assertIn('one', out)
+        self.assertIn('two', out)
+        self.assertIn('three', out)
         self.assertIn('four', out)
         self.assertIn('five', out)
         self.assertIn('six', out)
@@ -111,18 +111,6 @@ class TestFilterPrefix(TestCase):
         self.assertIn('six', out)
         self.assertIn('seven', out)
         self.assertIn('eight', out)
-
-    def test_list_project_not_ba(self):
-        """Filter on project partial non-match."""
-        code, out, err = self.t(('list', 'project.not:ba'))
-        self.assertIn('one', out)
-        self.assertIn('two', out)
-        self.assertIn('three', out)
-        self.assertNotIn('four', out)
-        self.assertNotIn('five', out)
-        self.assertNotIn('six', out)
-        self.assertNotIn('seven', out)
-        self.assertNotIn('eight', out)
 
     def test_list_description_has_foo(self):
         """Filter on description pattern."""

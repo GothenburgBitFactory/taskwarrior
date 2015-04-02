@@ -66,7 +66,7 @@ unlike ($output, qr/two/,  "$ut: list - two included");
 
 $output = qx{../src/task rc:$rc list pro.not:a 2>&1};
 like   ($output, qr/zero/, "$ut: list - zero included");
-unlike ($output, qr/one/,  "$ut: list - one excluded");
+like   ($output, qr/one/,  "$ut: list - one included");
 unlike ($output, qr/two/,  "$ut: list - two excluded");
 
 $output = qx{../src/task rc:$rc list pro.not:a.b 2>&1};

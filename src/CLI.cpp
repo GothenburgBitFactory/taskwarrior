@@ -1234,7 +1234,7 @@ void CLI::desugarFilterAttributeModifiers ()
                 }
                 else if (modifier == "isnt" || modifier == "not")
                 {
-                  op.attribute ("raw", "!=");
+                  op.attribute ("raw", "!==");
                   rhs.attribute ("raw", "'" + value + "'");
                   rhs.tag ("LITERAL");
                 }

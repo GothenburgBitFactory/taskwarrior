@@ -9,6 +9,7 @@
   to Ulf Eliasson).
 - TW-1583 Invalid ID displayed for first report after done/delete (thanks to
   Ulf Eliasson).
+- TW-1584 attr.{isnt,not} use partial matching.
 - TW-1587 Fix and improve example on-exit hook, adjust to new hooks API
   (thanks to Jochen Sprickerhof).
 - TW-1588 Most Export scripts cannot deal with new export format (thanks to
