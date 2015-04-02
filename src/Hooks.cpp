@@ -541,6 +541,9 @@ std::vector <std::string>& Hooks::buildHookScriptArgs (std::vector <std::string>
   // Directory containing *.data files.
   args.push_back ("data:" + context.data_dir._data);
 
+  // Taskwarrior version, same as returned by "task --version"
+  args.push_back ("version:" + std::string(VERSION));
+
   return args;
 }
 
