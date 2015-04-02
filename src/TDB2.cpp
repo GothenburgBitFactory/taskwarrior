@@ -569,7 +569,9 @@ void TDB2::set_location (const std::string& location)
 void TDB2::add (Task& task, bool add_to_backlog /* = true */)
 {
   // Ensure the task is consistent, and provide defaults if necessary.
-  task.validate ();
+  // bool argument to validate() is "applyDefault". Pass add_to_backlog through
+  // in order to not apply defaults to synchronized tasks.
+  task.validate (add_to_backlog);
   std::string uuid = task.get ("uuid");
 
   // If the tasks are loaded, then verify that this uuid is not already in
@@ -588,7 +590,7 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
 {
-  // Ensure the task is consistent, and provide defaults if necessary.
+  // Ensure the task is consistent.
   task.validate (false);
   std::string uuid = task.get ("uuid");
 
