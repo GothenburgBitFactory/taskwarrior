@@ -1,5 +1,6 @@
 2.4.3 () -
 
+- TW-1279 Make default.* not apply to recurring tasks.
 - TW-1578 Bash tab completion problems on first run
           (thanks to Renato Alves and Ptolemarch).
 - TW-1580 "modified" attribute no longer updated (thanks to David Patrick).

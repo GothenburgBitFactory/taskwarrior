@@ -1384,7 +1384,7 @@ void Task::validate (bool applyDefault /* = true */)
   if (!has ("modified") || get ("modified") == "")
     setAsNow ("modified");
 
-  if (applyDefault)
+  if (applyDefault && (! has ("parent") || get ("parent") == ""))
   {
     // Override with default.project, if not specified.
     if (Task::defaultProject != "" &&
