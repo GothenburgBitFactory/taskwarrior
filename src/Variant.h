@@ -53,7 +53,7 @@ public:
   ~Variant ();
 
   void source (const std::string&);
-  std::string source () const;
+  const std::string& source () const;
 
   Variant& operator= (const Variant&);
 
@@ -99,12 +99,12 @@ public:
   int type ();
   bool trivial () const;
 
-  bool        get_bool () const;
-  int         get_integer () const;
-  double      get_real () const;
-  std::string get_string () const;
-  time_t      get_date () const;
-  time_t      get_duration () const;
+  bool               get_bool () const;
+  int                get_integer () const;
+  double             get_real () const;
+  const std::string& get_string () const;
+  time_t             get_date () const;
+  time_t             get_duration () const;
 
 private:
   enum type   _type;

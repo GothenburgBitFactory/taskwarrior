@@ -166,7 +166,7 @@ void Variant::source (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Variant::source () const
+const std::string& Variant::source () const
 {
   return _source;
 }
@@ -2174,7 +2174,7 @@ double Variant::get_real () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Variant::get_string () const
+const std::string& Variant::get_string () const
 {
   return _string;
 }
