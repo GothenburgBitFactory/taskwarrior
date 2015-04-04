@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <sstream>
+#include <algorithm>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -314,19 +315,25 @@ bool Variant::operator< (const Variant& other) const
       return left._string < right._string;
 
     case type_string:
-      if (left.source () == "priority" || right.source () == "priority")
       {
-             if (left._string != "H" && right._string == "H") return true;
-        else if (left._string == "L" && right._string == "M") return true;
-        else if (left._string == ""  && right._string != "")  return true;
-        else                                                  return false;
-      }
-      else
-      {
-        if (left.trivial () || right.trivial ())
+        if (left._string == right._string)
           return false;
 
-        return left._string < right._string;
+        auto order = Task::customOrder.find (left.source ());
+        if (order != Task::customOrder.end ())
+        {
+          // Guaranteed to be found, because of ColUDA::validate ().
+          auto posLeft  = std::find (order->second.begin (), order->second.end (), left._string);
+          auto posRight = std::find (order->second.begin (), order->second.end (), right._string);
+          return posLeft < posRight;
+        }
+        else
+        {
+          if (left.trivial () || right.trivial ())
+            return false;
+
+          return left._string < right._string;
+        }
       }
 
     case type_date:
@@ -459,20 +466,25 @@ bool Variant::operator<= (const Variant& other) const
       return left._string <= right._string;
 
     case type_string:
-      if (left.source () == "priority" || right.source () == "priority")
       {
-             if (left._string        == right._string       ) return true;
-        else if (                       right._string == "H") return true;
-        else if (left._string == "L" && right._string == "M") return true;
-        else if (left._string == ""                         ) return true;
-        else                                                  return false;
-      }
-      else
-      {
-        if (left.trivial () || right.trivial ())
+        if (left._string == right._string)
           return false;
 
-        return left._string <= right._string;
+        auto order = Task::customOrder.find (left.source ());
+        if (order != Task::customOrder.end ())
+        {
+          // Guaranteed to be found, because of ColUDA::validate ().
+          auto posLeft  = std::find (order->second.begin (), order->second.end (), left._string);
+          auto posRight = std::find (order->second.begin (), order->second.end (), right._string);
+          return posLeft <= posRight;
+        }
+        else
+        {
+          if (left.trivial () || right.trivial ())
+            return false;
+
+          return left._string <= right._string;
+        }
       }
 
     case type_date:
@@ -605,20 +617,27 @@ bool Variant::operator> (const Variant& other) const
       return left._string > right._string;
 
     case type_string:
-      if (left.source () == "priority" || right.source () == "priority")
       {
-             if (left._string == "H" && right._string != "H") return true;
-        else if (left._string == "M" && right._string == "L") return true;
-        else if (left._string != ""  && right._string == "")  return true;
-        else                                                  return false;
-      }
-      else
-      {
-        if (left.trivial () || right.trivial ())
+        if (left._string == right._string)
           return false;
 
-        return left._string> right._string;
+        auto order = Task::customOrder.find (left.source ());
+        if (order != Task::customOrder.end ())
+        {
+          // Guaranteed to be found, because of ColUDA::validate ().
+          auto posLeft  = std::find (order->second.begin (), order->second.end (), left._string);
+          auto posRight = std::find (order->second.begin (), order->second.end (), right._string);
+          return posLeft > posRight;
+        }
+        else
+        {
+          if (left.trivial () || right.trivial ())
+            return false;
+
+          return left._string > right._string;
+        }
       }
+
     case type_date:
       if (left.trivial () || right.trivial ())
         return false;
@@ -749,20 +768,25 @@ bool Variant::operator>= (const Variant& other) const
       return left._string >= right._string;
 
     case type_string:
-      if (left.source () == "priority" || right.source () == "priority")
       {
-             if (left._string        == right._string       ) return true;
-        else if (left._string == "H"                        ) return true;
-        else if (left._string == "M" && right._string == "L") return true;
-        else if (                       right._string == "" ) return true;
-        else                                                  return false;
-      }
-      else
-      {
-        if (left.trivial () || right.trivial ())
+        if (left._string == right._string)
           return false;
 
-        return left._string >= right._string;
+        auto order = Task::customOrder.find (left.source ());
+        if (order != Task::customOrder.end ())
+        {
+          // Guaranteed to be found, because of ColUDA::validate ().
+          auto posLeft  = std::find (order->second.begin (), order->second.end (), left._string);
+          auto posRight = std::find (order->second.begin (), order->second.end (), right._string);
+          return posLeft >= posRight;
+        }
+        else
+        {
+          if (left.trivial () || right.trivial ())
+            return false;
+
+          return left._string >= right._string;
+        }
       }
 
     case type_date:

@@ -650,7 +650,9 @@ void Context::staticInitialization ()
       std::string name = rc->first.substr (4, rc->first.length () - 7 - 4);
       std::vector <std::string> values;
       split (values, rc->second, ',');
-      Task::customOrder[name] = values;
+
+      for (auto r = values.rbegin(); r != values.rend (); ++r)
+        Task::customOrder[name].push_back (*r);
     }
   }
 

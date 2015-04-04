@@ -27,6 +27,7 @@
 #ifndef INCLUDED_VARIANT
 #define INCLUDED_VARIANT
 
+#include <map>
 #include <string>
 #include <time.h>
 #include <Task.h>
