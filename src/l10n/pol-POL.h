@@ -204,8 +204,6 @@
 #define STRING_COLUMN_LABEL_ADDED    "Dodane"
 #define STRING_COLUMN_LABEL_AGE      "Wiek"
 #define STRING_COLUMN_LABEL_ID       "ID"
-#define STRING_COLUMN_LABEL_PRI      "Pri"
-#define STRING_COLUMN_LABEL_PRIORITY "Priorytet"
 #define STRING_COLUMN_LABEL_PROJECT  "Projekt"
 #define STRING_COLUMN_LABEL_UNTIL    "Do"
 #define STRING_COLUMN_LABEL_WAIT     "Czeka"
@@ -708,8 +706,6 @@
 
 #define STRING_EDIT_PROJECT_MOD      "Projekt zmieniony."
 #define STRING_EDIT_PROJECT_DEL      "Projekt usunięty."
-#define STRING_EDIT_PRIORITY_MOD     "Priorytet zmieniony."
-#define STRING_EDIT_PRIORITY_DEL     "Priorytet usunięty."
 #define STRING_EDIT_DESC_MOD         "Opis zmieniony."
 #define STRING_EDIT_DESC_REMOVE_ERR  "Nie można usunąć opisu."
 #define STRING_EDIT_ENTRY_REMOVE_ERR "Nie można usunąć daty utworzenia."
@@ -874,7 +870,6 @@
 #define STRING_TASK_VALID_BEFORE     "Uwaga: podałeś datę '{1}' jako datę po '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Zadanie cykliczne musi posiadać datę zakończenia."
 #define STRING_TASK_VALID_RECUR      "Wartość '{1}' określająca okres zadania jest niepoprawna."
-#define STRING_TASK_VALID_PRIORITY   "Poprawne wartości określające priorytet to 'H', 'M' lub 'L', nie '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "Nie nałożono filtra, wszystkie zadania zostaną poddane modyfikacji.  Czy chcesz kontynuować?"
 #define STRING_TASK_SAFETY_FAIL      "Niedopuszczono do wykonania polecenia."
 #define STRING_TASK_SAFETY_ALLOW     "Brak filtra, z aktywną flagą 'allow.empty.filter', nie podjęto akcji."
@@ -1025,5 +1020,8 @@
 #define STRING_UTIL_MEBIBYTES        "MiB"
 #define STRING_UTIL_KIBIBYTES        "KiB"
 #define STRING_UTIL_BYTES            "B"
+
+// Legacy
+#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 
 #endif

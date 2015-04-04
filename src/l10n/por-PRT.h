@@ -204,8 +204,6 @@
 #define STRING_COLUMN_LABEL_ADDED    "Adicionada"
 #define STRING_COLUMN_LABEL_AGE      "Idade"
 #define STRING_COLUMN_LABEL_ID       "ID"  // |por-PRT|==|eng-USA|
-#define STRING_COLUMN_LABEL_PRI      "Pri"  // |por-PRT|==|eng-USA|
-#define STRING_COLUMN_LABEL_PRIORITY "Prioridade"
 #define STRING_COLUMN_LABEL_PROJECT  "Projeto"
 #define STRING_COLUMN_LABEL_UNTIL    "Até"
 #define STRING_COLUMN_LABEL_WAIT     "Adiada"
@@ -708,8 +706,6 @@
 
 #define STRING_EDIT_PROJECT_MOD      "Projeto modificado."
 #define STRING_EDIT_PROJECT_DEL      "Projeto removido."
-#define STRING_EDIT_PRIORITY_MOD     "Prioridade modificada."
-#define STRING_EDIT_PRIORITY_DEL     "Prioridade removida."
 #define STRING_EDIT_DESC_MOD         "Descrição modificada."
 #define STRING_EDIT_DESC_REMOVE_ERR  "Não é possível remover a descrição."
 #define STRING_EDIT_ENTRY_REMOVE_ERR "Não é possível remover a data de criação."
@@ -874,7 +870,6 @@
 #define STRING_TASK_VALID_BEFORE     "Aviso: Especificou que a data de '{1}' é posterior à data de '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Uma tarefa recorrente necessita de uma data de vencimento."
 #define STRING_TASK_VALID_RECUR      "O valor de recorrência '{1}' não é válido."
-#define STRING_TASK_VALID_PRIORITY   "Valores de prioridade podem ser 'A', 'M' ou 'B', não '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "Este comando não possui um filtro e irá modificar todas as tarefas. Tem a certeza?"
 #define STRING_TASK_SAFETY_FAIL      "Execução do comando abortada."
 #define STRING_TASK_SAFETY_ALLOW     "Não especificou um filtro e com o valor de 'allow.empty.filter', nenhuma ação foi tomada."
@@ -1025,5 +1020,8 @@
 #define STRING_UTIL_MEBIBYTES        "MiB"  // |por-PRT|==|eng-USA|
 #define STRING_UTIL_KIBIBYTES        "KiB"  // |por-PRT|==|eng-USA|
 #define STRING_UTIL_BYTES            "B"  // |por-PRT|==|eng-USA|
+
+// Legacy
+#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 
 #endif

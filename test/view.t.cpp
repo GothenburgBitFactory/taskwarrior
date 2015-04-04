@@ -114,7 +114,7 @@ int main (int argc, char** argv)
     view.add (Column::factory ("id", report));
     view.add (Column::factory ("uuid.short", report));
     view.add (Column::factory ("project", report));
-    view.add (Column::factory ("priority.long", report));
+    view.add (Column::factory ("priority", report));
     view.add (Column::factory ("tags", report));
     view.add (Column::factory ("tags.count", report));
     view.add (Column::factory ("description", report));

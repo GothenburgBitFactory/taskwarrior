@@ -79,8 +79,6 @@ static bool sort_compare (int left, int right)
   int right_number;
   float left_real;
   float right_real;
-  char left_char;
-  char right_char;
 
   std::vector <std::string>::iterator k;
   for (k = global_keys.begin (); k != global_keys.end (); ++k)
@@ -131,25 +129,6 @@ static bool sort_compare (int left, int right)
 
       return ascending ? (left_string < right_string)
                        : (left_string > right_string);
-    }
-
-    // Priority.
-    else if (field == "priority")
-    {
-      left_char  = ((*global_data)[left].get  (field))[0];
-      right_char = ((*global_data)[right].get (field))[0];
-
-      if (left_char == right_char)
-        continue;
-
-      if (ascending)
-        return (left_char == '\0'  && right_char != '\0')                           ||
-               (left_char == 'L' && (right_char == 'M' || right_char == 'H')) ||
-               (left_char == 'M' && right_char == 'H');
-
-      return (left_char != '\0'  && right_char == '\0')                           ||
-             (left_char == 'M' && right_char == 'L')                          ||
-             (left_char == 'H' && (right_char == 'M' || right_char == 'L'));
     }
 
     // Due Date.

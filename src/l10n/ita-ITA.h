@@ -204,8 +204,6 @@
 #define STRING_COLUMN_LABEL_ADDED    "Aggiunto"
 #define STRING_COLUMN_LABEL_AGE      "Età"
 #define STRING_COLUMN_LABEL_ID       "ID"
-#define STRING_COLUMN_LABEL_PRI      "Pri"
-#define STRING_COLUMN_LABEL_PRIORITY "Priorità"
 #define STRING_COLUMN_LABEL_PROJECT  "Progetto"
 #define STRING_COLUMN_LABEL_UNTIL    "Fino a"
 #define STRING_COLUMN_LABEL_WAIT     "Attesa"
@@ -707,8 +705,6 @@
 
 #define STRING_EDIT_PROJECT_MOD      "Progetto modificato."
 #define STRING_EDIT_PROJECT_DEL      "Progetto cancellato."
-#define STRING_EDIT_PRIORITY_MOD     "Progetto modificato."
-#define STRING_EDIT_PRIORITY_DEL     "Priorità cancellata."
 #define STRING_EDIT_DESC_MOD         "Descrizione modificata."
 #define STRING_EDIT_DESC_REMOVE_ERR  "Impossibile rimuovere la descrizione."
 #define STRING_EDIT_ENTRY_REMOVE_ERR "Impossibile rimuovere la data di creazione."
@@ -873,7 +869,6 @@
 #define STRING_TASK_VALID_BEFORE     "Warning: data '{1}' con valore successivo alla data '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Un task periodico deve avere una data di scadenza."
 #define STRING_TASK_VALID_RECUR      "Il valore di periodicità '{1}' non è valido."
-#define STRING_TASK_VALID_PRIORITY   "I valori di priorità possono essere 'H', 'M' o 'L', non '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "Questo comando non ha filtro, e modificherà tutti i task. Sicuro?"
 #define STRING_TASK_SAFETY_FAIL      "Prevenuta l'esecuzione del comando."
 #define STRING_TASK_SAFETY_ALLOW     "You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken."
@@ -1024,5 +1019,8 @@
 #define STRING_UTIL_MEBIBYTES        "Mb"
 #define STRING_UTIL_KIBIBYTES        "Kb"
 #define STRING_UTIL_BYTES            "B"
+
+// Legacy
+#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 
 #endif

@@ -206,8 +206,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
          << "# Status:            " << ucFirst (Task::statusToText (task.getStatus ())) << "\n"  // L10N safe ucFirst.
          << "# Mask:              " << task.get ("mask")                                << "\n"
          << "# iMask:             " << task.get ("imask")                               << "\n"
-         << "  Project:           " << task.get ("project")                             << "\n"
-         << "  Priority:          " << task.get ("priority")                            << "\n";
+         << "  Project:           " << task.get ("project")                             << "\n";
 
   std::vector <std::string> tags;
   task.getTags (tags);
@@ -340,25 +339,6 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     {
       context.footnote (STRING_EDIT_PROJECT_DEL);
       task.remove ("project");
-    }
-  }
-
-  // priority
-  value = findValue (after, "\n  Priority:");
-  if (task.get ("priority") != value)
-  {
-    if (value != "")
-    {
-      if (context.columns["priority"]->validate (value))
-      {
-        context.footnote (STRING_EDIT_PRIORITY_MOD);
-        task.set ("priority", value);
-      }
-    }
-    else
-    {
-      context.footnote (STRING_EDIT_PRIORITY_DEL);
-      task.remove ("priority");
     }
   }
 

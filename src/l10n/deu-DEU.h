@@ -204,8 +204,6 @@
 #define STRING_COLUMN_LABEL_ADDED    "Hinzugefügt"
 #define STRING_COLUMN_LABEL_AGE      "Alter"
 #define STRING_COLUMN_LABEL_ID       "ID"
-#define STRING_COLUMN_LABEL_PRI      "Pri"
-#define STRING_COLUMN_LABEL_PRIORITY "Priorität"
 #define STRING_COLUMN_LABEL_PROJECT  "Projekt"
 #define STRING_COLUMN_LABEL_UNTIL    "Bis"
 #define STRING_COLUMN_LABEL_WAIT     "Aufgeschoben"
@@ -708,8 +706,6 @@
 
 #define STRING_EDIT_PROJECT_MOD      "Projekt geändert."
 #define STRING_EDIT_PROJECT_DEL      "Projekt gelöscht."
-#define STRING_EDIT_PRIORITY_MOD     "Wichtigkeit geändert."
-#define STRING_EDIT_PRIORITY_DEL     "Wichtigkeit gelöscht."
 #define STRING_EDIT_DESC_MOD         "Beschreibung geändert."
 #define STRING_EDIT_DESC_REMOVE_ERR  "Beschreibung kann nicht entfernt werden."
 #define STRING_EDIT_ENTRY_REMOVE_ERR "Erstelldatum kann nicht entfernt werden."
@@ -874,7 +870,6 @@
 #define STRING_TASK_VALID_BEFORE     "Warnung: Das '{1}'-Datum ist nach dem '{2}'-Datum."
 #define STRING_TASK_VALID_REC_DUE    "Wiederholende Aufgaben müssen eine Fälligkeit besitzen."
 #define STRING_TASK_VALID_RECUR      "Wiederhol-Periode '{1}' ist ungültig."
-#define STRING_TASK_VALID_PRIORITY   "Die Wichtigkeit kann die Werte 'H', 'M' oder 'L' annehmen, nicht jedoch '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "Dieser Befehl hat keinen Filter und wird alle Aufgaben verändern.  Sind Sie sicher?"
 #define STRING_TASK_SAFETY_FAIL      "Befehl an Ausführung gehindert."
 #define STRING_TASK_SAFETY_ALLOW     "Kein Filter angegeben, und durch den konfigurierten 'allow.empty.filter'-Wert wurde keine Aktion durchgeführt."
@@ -1028,5 +1023,8 @@
 #define STRING_UTIL_MEBIBYTES        "MiB"
 #define STRING_UTIL_KIBIBYTES        "KiB"
 #define STRING_UTIL_BYTES            "B"
+
+// Legacy
+#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 
 #endif

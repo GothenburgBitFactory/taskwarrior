@@ -82,7 +82,6 @@ int CmdProjects::execute (std::string& output)
   std::map <std::string, int> unique;
   bool no_project = false;
   std::string project;
-  std::string priority;
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
   {

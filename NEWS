@@ -1,7 +1,8 @@
 
 New Features in taskwarrior 2.4.3
 
-  -
+  - UDA string attributes with allowable values can now define their sort order.
+  - The 'priority' attribute is now a UDA, configured by default.
 
 New commands in taskwarrior 2.4.3
 

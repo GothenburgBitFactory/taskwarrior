@@ -204,8 +204,6 @@
 #define STRING_COLUMN_LABEL_ADDED    "Ajoutée"
 #define STRING_COLUMN_LABEL_AGE      "Age"
 #define STRING_COLUMN_LABEL_ID       "ID"
-#define STRING_COLUMN_LABEL_PRI      "Pri"
-#define STRING_COLUMN_LABEL_PRIORITY "Priorité"
 #define STRING_COLUMN_LABEL_PROJECT  "Projet"
 #define STRING_COLUMN_LABEL_UNTIL    "Until"
 #define STRING_COLUMN_LABEL_WAIT     "Attente"
@@ -707,8 +705,6 @@
 
 #define STRING_EDIT_PROJECT_MOD      "Projet modifié."
 #define STRING_EDIT_PROJECT_DEL      "Projet supprimé."
-#define STRING_EDIT_PRIORITY_MOD     "Priorité modifiée."
-#define STRING_EDIT_PRIORITY_DEL     "Priorité supprimée."
 #define STRING_EDIT_DESC_MOD         "Description modifiée."
 #define STRING_EDIT_DESC_REMOVE_ERR  "Impossible de supprimer la description."
 #define STRING_EDIT_ENTRY_REMOVE_ERR "Impossible de supprimer la date de création."
@@ -873,7 +869,6 @@
 #define STRING_TASK_VALID_BEFORE     "Warning: You have specified that the '{1}' date is after the '{2}' date."
 #define STRING_TASK_VALID_REC_DUE    "A recurring task must also have a 'due' date."
 #define STRING_TASK_VALID_RECUR      "The recurrence value '{1}' is not valid."
-#define STRING_TASK_VALID_PRIORITY   "Priority values may be 'H', 'M' or 'L', not '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "This command has no filter, and will modify all tasks.  Are you sure?"
 #define STRING_TASK_SAFETY_FAIL      "Command prevented from running."
 #define STRING_TASK_SAFETY_ALLOW     "You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken."
@@ -1024,5 +1019,8 @@
 #define STRING_UTIL_MEBIBYTES        "Mio"
 #define STRING_UTIL_KIBIBYTES        "kio"
 #define STRING_UTIL_BYTES            "o"
+
+// Legacy
+#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 
 #endif

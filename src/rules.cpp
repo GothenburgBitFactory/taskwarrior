@@ -112,34 +112,6 @@ static void colorizeTagged (Task& task, const Color& base, Color& c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void colorizePriorityL (Task& task, const Color& base, Color& c)
-{
-  if (task.get ("priority") == "L")
-    c.blend (base);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static void colorizePriorityM (Task& task, const Color& base, Color& c)
-{
-  if (task.get ("priority") == "M")
-    c.blend (base);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static void colorizePriorityH (Task& task, const Color& base, Color& c)
-{
-  if (task.get ("priority") == "H")
-    c.blend (base);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-static void colorizePriorityNone (Task& task, const Color& base, Color& c)
-{
-  if (task.get ("priority") == "")
-    c.blend (base);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 static void colorizeActive (Task& task, const Color& base, Color& c)
 {
   if (task.has ("start") &&
@@ -329,10 +301,6 @@ void autoColorize (Task& task, Color& c)
            if (*r == "color.blocked")                 colorizeBlocked      (task, base, c);
       else if (*r == "color.blocking")                colorizeBlocking     (task, base, c);
       else if (*r == "color.tagged")                  colorizeTagged       (task, base, c);
-      else if (*r == "color.pri.L")                   colorizePriorityL    (task, base, c);
-      else if (*r == "color.pri.M")                   colorizePriorityM    (task, base, c);
-      else if (*r == "color.pri.H")                   colorizePriorityH    (task, base, c);
-      else if (*r == "color.pri.none")                colorizePriorityNone (task, base, c);
       else if (*r == "color.active")                  colorizeActive       (task, base, c);
       else if (*r == "color.scheduled")               colorizeScheduled    (task, base, c);
       else if (*r == "color.until")                   colorizeUntil        (task, base, c);

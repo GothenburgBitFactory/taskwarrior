@@ -315,14 +315,6 @@ bool Variant::operator< (const Variant& other) const
       return left._string < right._string;
 
     case type_string:
-      if (left.source () == "priority" || right.source () == "priority")
-      {
-             if (left._string != "H" && right._string == "H") return true;
-        else if (left._string == "L" && right._string == "M") return true;
-        else if (left._string == ""  && right._string != "")  return true;
-        else                                                  return false;
-      }
-      else
       {
         if (left._string == right._string)
           return false;
@@ -474,15 +466,6 @@ bool Variant::operator<= (const Variant& other) const
       return left._string <= right._string;
 
     case type_string:
-      if (left.source () == "priority" || right.source () == "priority")
-      {
-             if (left._string        == right._string       ) return true;
-        else if (                       right._string == "H") return true;
-        else if (left._string == "L" && right._string == "M") return true;
-        else if (left._string == ""                         ) return true;
-        else                                                  return false;
-      }
-      else
       {
         if (left._string == right._string)
           return true;
@@ -634,14 +617,6 @@ bool Variant::operator> (const Variant& other) const
       return left._string > right._string;
 
     case type_string:
-      if (left.source () == "priority" || right.source () == "priority")
-      {
-             if (left._string == "H" && right._string != "H") return true;
-        else if (left._string == "M" && right._string == "L") return true;
-        else if (left._string != ""  && right._string == "")  return true;
-        else                                                  return false;
-      }
-      else
       {
         if (left._string == right._string)
           return false;
@@ -793,15 +768,6 @@ bool Variant::operator>= (const Variant& other) const
       return left._string >= right._string;
 
     case type_string:
-      if (left.source () == "priority" || right.source () == "priority")
-      {
-             if (left._string        == right._string       ) return true;
-        else if (left._string == "H"                        ) return true;
-        else if (left._string == "M" && right._string == "L") return true;
-        else if (                       right._string == "" ) return true;
-        else                                                  return false;
-      }
-      else
       {
         if (left._string == right._string)
           return true;

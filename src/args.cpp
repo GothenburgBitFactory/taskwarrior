@@ -135,7 +135,6 @@ int main (int argc, const char** argv)
     cli.entity ("attribute",  "mask");
     cli.entity ("attribute",  "modified");
     cli.entity ("attribute",  "parent");
-    cli.entity ("attribute",  "priority");
     cli.entity ("attribute",  "project");
     cli.entity ("attribute",  "recur");
     cli.entity ("attribute",  "scheduled");

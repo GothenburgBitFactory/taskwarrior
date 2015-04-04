@@ -39,7 +39,7 @@ if (open my $fh, '>', 'default.rc')
   print $fh "data.location=.\n",
             "default.command=list\n",
             "default.project=PROJECT\n",
-            "default.priority=M\n",
+            "uda.priority.default=M\n",
             "default.due=eom\n",
             "dateformat=m/d/Y\n";
   close $fh;

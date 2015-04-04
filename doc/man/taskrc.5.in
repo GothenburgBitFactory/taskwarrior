@@ -320,10 +320,10 @@ This is useful for preventing large-scale unintended changes.
 
 .TP
 .B nag=You have more urgent tasks.
-This may be a string of text, or blank. It is used as a prompt when a task is
-started or completed that is not considered high priority. Default value is:
-You have more urgent tasks. It is a gentle reminder that you are contradicting
-your own priority settings.
+This may be a string of text, or blank.  It is used as a prompt when a task is
+started of completed, when there are other tasks with a higher urgency.
+Default value is: 'You have more urgent tasks'.
+It is a gentle reminder that you are contradicting your own urgency settings.
 
 .TP
 .B list.all.projects=yes
@@ -828,18 +828,6 @@ Task has at least one tag.
 .B color.recurring
 Task is recurring.
 .br
-.B color.pri.H
-Task has priority H.
-.br
-.B color.pri.M
-Task has priority M.
-.br
-.B color.pri.L
-Task has priority L.
-.br
-.B color.pri.none
-Task has no priority.
-.br
 .B color.completed
 Task is completed.
 .br
@@ -1058,10 +1046,6 @@ Urgency inherited from dependency chain
 .RS
 Urgency coefficient for due dates
 .RE
-.B urgency.priority.coefficient=6.0
-.RS
-Urgency coefficient for priorities
-.RE
 .B urgency.waiting.coefficient=-3.0
 .RS
 Urgency coefficient for waiting status
@@ -1121,13 +1105,6 @@ preferences, but it is important that you carefully consider any modifications.
 .B
 default.project=foo
 Provides a default project name for the
-.I task add
-command, if you don't specify one. The default is blank.
-
-.TP
-.B
-default.priority=M
-Provides a default priority for the
 .I task add
 command, if you don't specify one. The default is blank.
 
@@ -1336,19 +1313,36 @@ Provides a default report label for the UDA called '<name>'.
 For type 'string' UDAs only, this provides a comma-separated list of acceptable
 values. In this example, the '<name>' UDA may only contain values 'A', 'B',
 or 'C', but may also contain no value.
+
+Note that the order of the value is important, and denotes the sort order from
+highest ('A') to lowest ('C').
+
+Note that a blank value is permitted.
+.RE
+
+.TP
+.B uda.<name>.default=...
+.RS
+Provides a default value for the UDA called '<name>'.
 .RE
 
 .TP
 .B Example 'estimate' UDA
 This example shows an 'estimate' UDA that stores specific values for the size
-of a task.
+of a task.  Note the blank value after 'trivial'.
 
 .RS
 .B uda.estimate.type=string
 .br
 .B uda.estimate.label=Size Estimate
 .br
-.B uda.estimate.values=trivial,small,medium,large,huge
+.B uda.estimate.values=huge,large,medium,small,trivial,
+.RE
+
+.RS
+Note that the value are sorted
+
+    huge > large > medium > small > trivial > ''
 .RE
 
 .SS CONTEXT

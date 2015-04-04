@@ -150,14 +150,6 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 1, task->get ("project"));
     }
 
-    // priority
-    if (task->has ("priority"))
-    {
-      row = view.addRow ();
-      view.set (row, 0, STRING_COLUMN_LABEL_PRIORITY);
-      view.set (row, 1, task->get ("priority"));
-    }
-
     // dependencies: blocked
     {
       std::vector <Task> blocked;
@@ -420,7 +412,6 @@ int CmdInfo::execute (std::string& output)
     urgencyDetails.add (Column::factory ("string", "")); // Result
 
     urgencyTerm (urgencyDetails, "project",     task->urgency_project (),     Task::urgencyProjectCoefficient);
-    urgencyTerm (urgencyDetails, "priority",    task->urgency_priority (),    Task::urgencyPriorityCoefficient);
     urgencyTerm (urgencyDetails, "active",      task->urgency_active (),      Task::urgencyActiveCoefficient);
     urgencyTerm (urgencyDetails, "scheduled",   task->urgency_scheduled (),   Task::urgencyScheduledCoefficient);
     urgencyTerm (urgencyDetails, "waiting",     task->urgency_waiting (),     Task::urgencyWaitingCoefficient);

@@ -142,7 +142,6 @@ int CmdShow::execute (std::string& output)
     " debug.tls"
     " default.command"
     " default.due"
-    " default.priority"
     " default.project"
     " defaultheight"
     " defaultwidth"
@@ -200,7 +199,6 @@ int CmdShow::execute (std::string& output)
     " urgency.inherit.coefficient"
     " urgency.due.coefficient"
     " urgency.next.coefficient"
-    " urgency.priority.coefficient"
     " urgency.project.coefficient"
     " urgency.tags.coefficient"
     " urgency.waiting.coefficient"
@@ -365,15 +363,6 @@ int CmdShow::execute (std::string& output)
       calendarholidays != "sparse" &&
       calendarholidays != "none")
     out << format (STRING_CMD_SHOW_CONFIG_ERROR, "calendar.holidays", calendarholidays)
-        << "\n";
-
-  // Check for bad values in rc.default.priority.
-  std::string defaultPriority = context.config.get ("default.priority");
-  if (defaultPriority != "H" &&
-      defaultPriority != "M" &&
-      defaultPriority != "L" &&
-      defaultPriority != "")
-    out << format (STRING_CMD_SHOW_CONFIG_ERROR, "default.priority", defaultPriority)
         << "\n";
 
   // Verify installation.  This is mentioned in the documentation as the way

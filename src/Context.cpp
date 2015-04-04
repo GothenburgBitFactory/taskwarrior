@@ -633,7 +633,6 @@ void Context::staticInitialization ()
   CLI::minimumMatchLength   = config.getInteger ("abbreviation.minimum");
 
   Task::defaultProject      = config.get ("default.project");
-  Task::defaultPriority     = config.get ("default.priority");
   Task::defaultDue          = config.get ("default.due");
 
   Task::searchCaseSensitive = Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
@@ -660,7 +659,6 @@ void Context::staticInitialization ()
   for (i = columns.begin (); i != columns.end (); ++i)
     Task::attributes[i->first] = i->second->type ();
 
-  Task::urgencyPriorityCoefficient    = config.getReal ("urgency.priority.coefficient");
   Task::urgencyProjectCoefficient     = config.getReal ("urgency.project.coefficient");
   Task::urgencyActiveCoefficient      = config.getReal ("urgency.active.coefficient");
   Task::urgencyScheduledCoefficient   = config.getReal ("urgency.scheduled.coefficient");

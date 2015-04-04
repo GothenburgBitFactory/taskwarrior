@@ -37,14 +37,12 @@ class Task : public std::map <std::string, std::string>
 {
 public:
   static std::string defaultProject;
-  static std::string defaultPriority;
   static std::string defaultDue;
   static bool searchCaseSensitive;
   static bool regex;
   static std::map <std::string, std::string> attributes;  // name -> type
   static std::map <std::string, float> coefficients;
   static std::map <std::string, std::vector <std::string> > customOrder;
-  static float urgencyPriorityCoefficient;
   static float urgencyProjectCoefficient;
   static float urgencyActiveCoefficient;
   static float urgencyScheduledCoefficient;
@@ -165,7 +163,6 @@ private:
   const std::string decode (const std::string&) const;
 
 public:
-  float urgency_priority () const;
   float urgency_project () const;
   float urgency_active () const;
   float urgency_scheduled () const;

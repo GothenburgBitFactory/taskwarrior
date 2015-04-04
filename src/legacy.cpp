@@ -54,6 +54,21 @@ void legacyColumnMap (std::string& name)
   // 2014-01-26: recurrence_indicator --> recur.indicator      Mapping removed
   // 2014-01-26: tag_indicator        --> tags.indicator       Mapping removed
   // 2014-01-26: description_only     --> description.desc     Mapping removed
+
+  // One-time initialization, on demand.
+  static std::map <std::string, std::string> legacyMap;
+  if (! legacyMap.size ())
+  {
+    legacyMap["priority."] = "priority";
+  }
+
+  // If a legacy column was used, complain about it, but modify it anyway.
+  std::map <std::string, std::string>::iterator found = legacyMap.find (name);
+  if (found != legacyMap.end ())
+  {
+    context.footnote (format (STRING_LEGACY_PRIORITY, name, found->second));
+    name = found->second;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -71,6 +86,21 @@ void legacySortColumnMap (std::string& name)
   // 2014-01-26: recurrence_indicator --> recur                Mapping removed
   // 2014-01-26: tag_indicator        --> tags                 Mapping removed
   // 2014-01-26: description_only     --> description          Mapping removed
+
+  // One-time initialization, on demand.
+  static std::map <std::string, std::string> legacyMap;
+  if (! legacyMap.size ())
+  {
+    legacyMap["priority."] = "priority";
+  }
+
+  // If a legacy column was used, complain about it, but modify it anyway.
+  std::map <std::string, std::string>::iterator found = legacyMap.find (name);
+  if (found != legacyMap.end ())
+  {
+    context.footnote (format (STRING_LEGACY_PRIORITY, name, found->second));
+    name = found->second;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

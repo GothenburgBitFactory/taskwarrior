@@ -204,8 +204,6 @@
 #define STRING_COLUMN_LABEL_ADDED    "Kreita"
 #define STRING_COLUMN_LABEL_AGE      "Aĝo"
 #define STRING_COLUMN_LABEL_ID       "ID"
-#define STRING_COLUMN_LABEL_PRI      "Gr"
-#define STRING_COLUMN_LABEL_PRIORITY "Graveco"
 #define STRING_COLUMN_LABEL_PROJECT  "Projekto"
 #define STRING_COLUMN_LABEL_UNTIL    "Ĝis"
 #define STRING_COLUMN_LABEL_WAIT     "Atendu"
@@ -708,8 +706,6 @@
 
 #define STRING_EDIT_PROJECT_MOD      "Modifis la projekton."
 #define STRING_EDIT_PROJECT_DEL      "Viŝis la projekton."
-#define STRING_EDIT_PRIORITY_MOD     "Modifis la gravecon."
-#define STRING_EDIT_PRIORITY_DEL     "Viŝis la gravecon."
 #define STRING_EDIT_DESC_MOD         "Modifis la priskribon."
 #define STRING_EDIT_DESC_REMOVE_ERR  "Ne povis viŝi la priskribon."
 #define STRING_EDIT_ENTRY_REMOVE_ERR "Ne povis viŝi la krean daton."
@@ -874,7 +870,6 @@
 #define STRING_TASK_VALID_BEFORE     "Averto: Vi specifis daton '{1}' post dato '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Reokazanta tasko devas ankaŭ havi daton 'due'."
 #define STRING_TASK_VALID_RECUR      "Reokaz-valoro '{1}' ne estas valida."
-#define STRING_TASK_VALID_PRIORITY   "Gravec-valoro povas esti 'H', 'M', aŭ 'L', sed ne '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "Tiu komando ne havas filtrilo, do ĝi modifos ĉian taskon.  Ĉu vi estas certa?"
 #define STRING_TASK_SAFETY_FAIL      "Antaŭmalebligis komandon."
 #define STRING_TASK_SAFETY_ALLOW     "Vi ne specifis filtrilon. Laŭ la valoro 'allow.empty.filter', ne faros nenion."
@@ -1025,5 +1020,8 @@
 #define STRING_UTIL_MEBIBYTES        "MiB"
 #define STRING_UTIL_KIBIBYTES        "KiB"
 #define STRING_UTIL_BYTES            "B"
+
+// Legacy
+#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 
 #endif

@@ -204,8 +204,6 @@
 #define STRING_COLUMN_LABEL_ADDED    "Añadida"
 #define STRING_COLUMN_LABEL_AGE      "Edad"
 #define STRING_COLUMN_LABEL_ID       "ID"  // |esp-ESP|==|eng-USA|
-#define STRING_COLUMN_LABEL_PRI      "Pri"  // |esp-ESP|==|eng-USA|
-#define STRING_COLUMN_LABEL_PRIORITY "Prioridad"
 #define STRING_COLUMN_LABEL_PROJECT  "Proyecto"
 #define STRING_COLUMN_LABEL_UNTIL    "Hasta"
 #define STRING_COLUMN_LABEL_WAIT     "Espera"
@@ -717,8 +715,6 @@
 
 #define STRING_EDIT_PROJECT_MOD      "Proyecto modificado."
 #define STRING_EDIT_PROJECT_DEL      "Proyecto eliminado."
-#define STRING_EDIT_PRIORITY_MOD     "Prioridad modificada."
-#define STRING_EDIT_PRIORITY_DEL     "Prioridad eliminada."
 #define STRING_EDIT_DESC_MOD         "Descripción modificada."
 #define STRING_EDIT_DESC_REMOVE_ERR  "No se puede eliminar la descripción."
 #define STRING_EDIT_ENTRY_REMOVE_ERR "No se puede eliminar la fecha de creación."
@@ -883,7 +879,6 @@
 #define STRING_TASK_VALID_BEFORE     "Advertencia: ha especificado que la fecha '{1}' es después de la fecha '{2}'."
 #define STRING_TASK_VALID_REC_DUE    "Una tarea recurrente debe tener también una fecha de vencimiento."
 #define STRING_TASK_VALID_RECUR      "El valor de recurrencia '{1}' no es válido."
-#define STRING_TASK_VALID_PRIORITY   "Valores de prioridad pueden ser 'H', 'M' o 'L', no '{1}'."
 #define STRING_TASK_SAFETY_VALVE     "Este comando no tiene filtro, y modificará todas las tareas. ¿Está seguro?"
 #define STRING_TASK_SAFETY_FAIL      "Se impidió la ejecución del comando."
 #define STRING_TASK_SAFETY_ALLOW     "You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken."
@@ -1050,5 +1045,8 @@
 #define STRING_UTIL_MEBIBYTES        "MiB"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_KIBIBYTES        "KiB"  // |esp-ESP|==|eng-USA|
 #define STRING_UTIL_BYTES            "B"  // |esp-ESP|==|eng-USA|
+
+// Legacy
+#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
 
 #endif

@@ -37,7 +37,6 @@
 #include <ColMask.h>
 #include <ColModified.h>
 #include <ColParent.h>
-#include <ColPriority.h>
 #include <ColProject.h>
 #include <ColRecur.h>
 #include <ColScheduled.h>
@@ -88,7 +87,6 @@ Column* Column::factory (const std::string& name, const std::string& report)
   else if (column_name == "mask")        c = new ColumnMask ();
   else if (column_name == "modified")    c = new ColumnModified ();
   else if (column_name == "parent")      c = new ColumnParent ();
-  else if (column_name == "priority")    c = new ColumnPriority ();
   else if (column_name == "project")     c = new ColumnProject ();
   else if (column_name == "recur")       c = new ColumnRecur ();
   else if (column_name == "scheduled")   c = new ColumnScheduled ();
@@ -131,7 +129,6 @@ void Column::factory (std::map <std::string, Column*>& all)
   c = new ColumnMask ();           all[c->_name] = c;
   c = new ColumnModified ();       all[c->_name] = c;
   c = new ColumnParent ();         all[c->_name] = c;
-  c = new ColumnPriority ();       all[c->_name] = c;
   c = new ColumnProject ();        all[c->_name] = c;
   c = new ColumnRecur ();          all[c->_name] = c;
   c = new ColumnScheduled ();      all[c->_name] = c;

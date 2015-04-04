@@ -86,7 +86,6 @@
 
 #include <Context.h>
 #include <ColProject.h>
-#include <ColPriority.h>
 #include <ColDue.h>
 
 extern Context context;
