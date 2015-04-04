@@ -111,39 +111,15 @@ static bool sort_compare (int left, int right)
                        : (left_number > right_number);
     }
 
-    // Depends string.
-    else if (field == "depends")
-    {
-      // Raw data is a comma-separated list of uuids
-      const std::string& left_string  = (*global_data)[left].get_ref  (field);
-      const std::string& right_string = (*global_data)[right].get_ref (field);
-
-      if (left_string == right_string)
-        continue;
-
-      if (left_string == "" && right_string != "")
-        return ascending;
-
-      if (left_string != "" && right_string == "")
-        return !ascending;
-
-      // Sort on the first dependency.
-      left_number  = context.tdb2.id (left_string.substr (0, 36));
-      right_number = context.tdb2.id (right_string.substr (0, 36));
-
-      if (left_number == right_number)
-        continue;
-
-      return ascending ? (left_number < right_number)
-                       : (left_number > right_number);
-    }
-
     // String.
     else if (field == "description" ||
              field == "project"     ||
              field == "status"      ||
              field == "tags"        ||
-             field == "uuid")
+             field == "uuid"        ||
+             field == "parent"      ||
+             field == "imask"       ||
+             field == "mask")
     {
       const std::string& left_string  = (*global_data)[left].get_ref  (field);
       const std::string& right_string = (*global_data)[right].get_ref (field);
@@ -194,11 +170,13 @@ static bool sort_compare (int left, int right)
     }
 
     // Date.
-    else if (field == "end"   ||
-             field == "entry" ||
-             field == "start" ||
-             field == "until" ||
-             field == "wait")
+    else if (field == "end"      ||
+             field == "entry"    ||
+             field == "start"    ||
+             field == "until"    ||
+             field == "wait"     ||
+             field == "modified" ||
+             field == "scheduled")
     {
       const std::string& left_string  = (*global_data)[left].get_ref  (field);
       const std::string& right_string = (*global_data)[right].get_ref (field);
@@ -208,6 +186,33 @@ static bool sort_compare (int left, int right)
 
       return ascending ? (left_string < right_string)
                        : (left_string > right_string);
+    }
+
+    // Depends string.
+    else if (field == "depends")
+    {
+      // Raw data is a comma-separated list of uuids
+      const std::string& left_string  = (*global_data)[left].get_ref  (field);
+      const std::string& right_string = (*global_data)[right].get_ref (field);
+
+      if (left_string == right_string)
+        continue;
+
+      if (left_string == "" && right_string != "")
+        return ascending;
+
+      if (left_string != "" && right_string == "")
+        return !ascending;
+
+      // Sort on the first dependency.
+      left_number  = context.tdb2.id (left_string.substr (0, 36));
+      right_number = context.tdb2.id (right_string.substr (0, 36));
+
+      if (left_number == right_number)
+        continue;
+
+      return ascending ? (left_number < right_number)
+                       : (left_number > right_number);
     }
 
     // Duration.
