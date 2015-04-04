@@ -43,6 +43,7 @@ public:
   static bool regex;
   static std::map <std::string, std::string> attributes;  // name -> type
   static std::map <std::string, float> coefficients;
+  static std::map <std::string, std::vector <std::string> > customOrder;
   static float urgencyPriorityCoefficient;
   static float urgencyProjectCoefficient;
   static float urgencyActiveCoefficient;

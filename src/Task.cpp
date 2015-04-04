@@ -87,6 +87,8 @@ float Task::urgencyBlockingCoefficient    = 0.0;
 float Task::urgencyAgeCoefficient         = 0.0;
 float Task::urgencyAgeMax                 = 0.0;
 
+std::map <std::string, std::vector <std::string> > Task::customOrder;
+
 static const std::string dummy ("");
 
 ////////////////////////////////////////////////////////////////////////////////

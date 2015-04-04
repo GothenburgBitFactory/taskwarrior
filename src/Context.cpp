@@ -641,6 +641,19 @@ void Context::staticInitialization ()
   Lexer::dateFormat         = Variant::dateFormat          = config.get ("dateformat");
   Lexer::isoEnabled         = Variant::isoEnabled          = config.getBoolean ("date.iso");
 
+  Config::const_iterator rc;
+  for (rc = config.begin (); rc != config.end (); ++rc)
+  {
+    if (rc->first.substr (0, 4) == "uda." &&
+        rc->first.substr (rc->first.length () - 7, 7) == ".values")
+    {
+      std::string name = rc->first.substr (4, rc->first.length () - 7 - 4);
+      std::vector <std::string> values;
+      split (values, rc->second, ',');
+      Task::customOrder[name] = values;
+    }
+  }
+
   std::map <std::string, Column*>::iterator i;
   for (i = columns.begin (); i != columns.end (); ++i)
     Task::attributes[i->first] = i->second->type ();
