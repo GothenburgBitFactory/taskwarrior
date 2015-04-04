@@ -188,20 +188,17 @@ unsigned int utf8_length (const std::string& str)
 unsigned int utf8_width (const std::string& str)
 {
   unsigned int length = 0;
-  int l;
   std::string::size_type i = 0;
   unsigned int c;
   while ((c = utf8_next_char (str, i)))
   {
-    l = mk_wcwidth (c);
     // Control characters, and more especially newline characters, make
     // mk_wcwidth() return -1.  Ignore that, thereby "adding zero" to length.
     // Since control characters are not displayed in reports, this is a valid
     // choice.
+    int l = mk_wcwidth (c);
     if (l != -1)
-    {
       length += l;
-    }
   }
 
   return length;
