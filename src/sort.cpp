@@ -30,6 +30,7 @@
 #include <string>
 #include <stdlib.h>
 #include <Context.h>
+#include <Variant.h>
 #include <Duration.h>
 #include <Task.h>
 #include <text.h>
@@ -67,6 +68,7 @@ void sort_tasks (
 // require re-parsing.
 //
 // Essentially a static implementation of a dynamic operator<.
+// UDA string values delegate to Variant::operator<.
 static bool sort_compare (int left, int right)
 {
   std::string field;
@@ -245,16 +247,19 @@ static bool sort_compare (int left, int right)
         return ascending ? (left_real < right_real)
                          : (left_real > right_real);
       }
+      // UDA values of type 'string' are sorted by Variant::operator<.
+      // By setting 'source' to the UDA name, the comparison operator can use
+      // the custom sort order, if defined.
       else if (type == "string")
       {
-        const std::string& left_string  = (*global_data)[left].get_ref  (field);
-        const std::string& right_string = (*global_data)[right].get_ref (field);
-
-        if (left_string == right_string)
+        Variant l ((*global_data)[left].get_ref  (field));
+        Variant r ((*global_data)[right].get_ref (field));
+        if (l == r)
           continue;
 
-        return ascending ? (left_string < right_string)
-                         : (left_string > right_string);
+        l.source (field);
+        r.source (field);
+        return ascending ? (l < r) : (r < l);
       }
       else if (type == "date")
       {
