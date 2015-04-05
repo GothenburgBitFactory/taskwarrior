@@ -238,6 +238,7 @@ int CmdShow::execute (std::string& output)
           i->first.substr (0,  8) != "default."              &&
           i->first.substr (0, 21) != "urgency.user.project." &&
           i->first.substr (0, 17) != "urgency.user.tag."     &&
+          i->first.substr (0, 21) != "urgency.user.keyword." &&
           i->first.substr (0, 12) != "urgency.uda.")
       {
         unrecognized.push_back (i->first);

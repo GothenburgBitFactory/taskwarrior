@@ -1677,6 +1677,16 @@ float Task::urgency_c () const
           if (hasTag (tag))
             value += var->second;
         }
+
+        // urgency.user.keyword.<keyword>.coefficient
+        if (var->first.substr (13, 8) == "keyword." &&
+            (end = var->first.find (".coefficient")) != std::string::npos)
+        {
+          std::string keyword = var->first.substr (21, end - 21);
+
+          if (get ("description").find (keyword) != std::string::npos)
+            value += var->second;
+        }
       }
       else if (var->first.substr (0, 12) == "urgency.uda.")
       {

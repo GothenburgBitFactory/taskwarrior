@@ -1086,6 +1086,10 @@ Specific tag coefficient.
 .RS
 Specific project coefficient.
 .RE
+.B urgency.user.keyword.<keyword>.coefficient=...
+.RS
+Specific description keyword coefficient.
+.RE
 .B urgency.uda.<name>.coefficient=...
 .RS
 Presence/absence of UDA data.
