@@ -62,10 +62,9 @@ class TestColorRules(TestCase):
         cls.t.config('color.debug',           'green')
         cls.t.config('color.project.x',       'red')
         cls.t.config('color.project.none',    '')
-        cls.t.config('color.pri.H',           'red')
-        cls.t.config('color.pri.M',           'blue')
-        cls.t.config('color.pri.L',           'green')
-        cls.t.config('color.pri.none',        '')
+        cls.t.config('color.uda.priority.H',  'red')
+        cls.t.config('color.uda.priority.M',  'blue')
+        cls.t.config('color.uda.priority.L',  'green')
         cls.t.config('color.keyword.keyword', 'red')
         cls.t.config('color.tagged',          '')
         cls.t.config('color.tag.none',        '')
@@ -177,11 +176,6 @@ class TestColorRules(TestCase):
         """Priority L color rule."""
         code, out, err = self.t(('/pri_l/', 'info'))
         self.assertIn('\x1b[32m', out)
-
-    def test_priority_none(self):
-        """Priority none color rule."""
-        code, out, err = self.t(('/control/', 'rc.color.pri.none=red', 'info'))
-        self.assertIn('\x1b[31m', out)
 
     def test_keyword(self):
         """Keyword color rule."""
