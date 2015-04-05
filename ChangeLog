@@ -2,6 +2,7 @@
 
 - TW-57   user defined attribute sort order (thanks to Max Muller).
 - TW-70   urgency.user.keyword.<keyword>.coefficient=...
+- TW-111  User-defined priorities.
 - TW-1279 Make default.* not apply to recurring tasks.
 - TW-1287 Make default.* not apply to synced tasks.
 - TW-1578 Bash tab completion problems on first run
