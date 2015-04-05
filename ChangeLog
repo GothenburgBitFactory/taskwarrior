@@ -5,6 +5,7 @@
 - TW-111  User-defined priorities.
 - TW-1279 Make default.* not apply to recurring tasks.
 - TW-1287 Make default.* not apply to synced tasks.
+- TW-1539 user-defined urgency coefficients for priority values.
 - TW-1578 Bash tab completion problems on first run
           (thanks to Renato Alves and Ptolemarch).
 - TW-1580 "modified" attribute no longer updated (thanks to David Patrick).
