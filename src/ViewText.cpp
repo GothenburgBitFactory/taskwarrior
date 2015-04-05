@@ -135,7 +135,7 @@ std::string ViewText::render ()
 
       // If a fixed-width column was just measured, there is no point repeating
       // the measurement for all tasks.
-      if (_columns[i]->is_fixed_width ())
+      if (_columns[col]->is_fixed_width ())
         break;
     }
 
