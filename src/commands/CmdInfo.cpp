@@ -461,12 +461,25 @@ int CmdInfo::execute (std::string& output)
       // urgency.uda.<name>.coefficient
       else if (var->first.substr (0, 12) == "urgency.uda.")
       {
+        // urgency.uda.<name>.coefficient
+        // urgency.uda.<name>.<value>.coefficient
         std::string::size_type end = var->first.find (".coefficient");
         if (end != std::string::npos)
         {
-          std::string name = var->first.substr (12, end - 12);
-          if (task->has (name))
-            urgencyTerm (urgencyDetails, "UDA " + name, 1.0, var->second);
+          const std::string uda = var->first.substr (12, end - 12);
+          std::string::size_type dot = uda.find (".");
+          if (dot == std::string::npos)
+          {
+            // urgency.uda.<name>.coefficient
+            if (task->has (uda))
+              urgencyTerm (urgencyDetails, std::string ("UDA ") + uda, 1.0, var->second);
+          }
+          else
+          {
+            // urgency.uda.<name>.<value>.coefficient
+            if (task->get (uda.substr(0, dot)) == uda.substr(dot+1))
+              urgencyTerm (urgencyDetails, std::string ("UDA ") + uda, 1.0, var->second);
+          }
         }
       }
     }
