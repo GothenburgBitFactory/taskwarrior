@@ -447,6 +447,15 @@ int CmdInfo::execute (std::string& output)
           if (task->hasTag (name))
             urgencyTerm (urgencyDetails, "TAG " + name, 1.0, var->second);
         }
+
+        // urgency.user.keyword.<keyword>.coefficient
+        if (var->first.substr (13, 8) == "keyword." &&
+            (end = var->first.find (".coefficient")) != std::string::npos)
+        {
+          std::string keyword = var->first.substr (21, end - 21);
+          if (task->get ("description").find (keyword) != std::string::npos)
+            urgencyTerm (urgencyDetails, "KEYWORD " + keyword, 1.0, var->second);
+        }
       }
 
       // urgency.uda.<name>.coefficient
@@ -551,7 +560,7 @@ void CmdInfo::urgencyTerm (
     int row = view.addRow ();
     view.set (row, 0, "    " + label);
     view.set (row, 1, rightJustify (format (measure, 5, 3), 6));
-    view.set (row, 2, "+");
+    view.set (row, 2, "*");
     view.set (row, 3, rightJustify (format (coefficient, 4, 2), 4));
     view.set (row, 4, "=");
     view.set (row, 5, rightJustify (format (value, 5, 3), 6));
