@@ -54,7 +54,6 @@ class TestHooksOnLaunch(TestCase):
         hook.assertExitcode(0)
 
         logs = hook.get_logs()
-        self.t.diag(logs)
         taskenv = {k:v for k, v in (line.split(":", 1) for line in logs["output"]["msgs"])}
 
         self.assertEqual('api'     in taskenv, True, 'api:...')
