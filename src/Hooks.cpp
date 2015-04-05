@@ -569,13 +569,18 @@ int Hooks::callHookScript (
   for (i = input.begin (); i != input.end (); ++i)
     inputStr += *i + "\n";
 
-  std::string outputStr;
   std::vector <std::string> args;
-  int status;
-
   buildHookScriptArgs (args);
+  if (_debug >= 2)
+  {
+    context.debug ("Hooks: args");
+    for (auto arg: args)
+      context.debug ("  " + arg);
+  }
 
   // Measure time for each hook if running in debug
+  int status;
+  std::string outputStr;
   if (_debug >= 2)
   {
     Timer timer_per_hook("Hooks::execute (" + script + ")");
