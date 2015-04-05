@@ -56,7 +56,9 @@ sub in_range
 if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
-            "urgency.priority.coefficient=10\n",
+            "urgency.uda.priority.H.coefficient=10\n",
+            "urgency.uda.priority.M.coefficient=6.5\n",
+            "urgency.uda.priority.L.coefficient=3\n",
             "urgency.active.coefficient=10\n",
             "urgency.project.coefficient=10\n",
             "urgency.due.coefficient=10\n",
@@ -330,7 +332,7 @@ like ($output, qr/urgency 5$/ms, "$ut: scheduled past = 5");
 
 # urgency values between 0 and 1
 qx {../src/task rc:$rc add 13 pri:H 2>&1};
-$output = qx{../src/task rc:$rc rc.urgency.priority.coefficient:0.01234 46 info 2>&1};
+$output = qx{../src/task rc:$rc rc.urgency.uda.priority.H.coefficient:0.01234 46 info 2>&1};
 like ($output, qr/Urgency\s+0\.01$/ms, "$ut: near-zero urgency is truncated");
 
 # Cleanup.
