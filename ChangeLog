@@ -26,6 +26,9 @@
 - Disable hooks in bash completion script.  Hooks were previously able to
   abort processing or output interfering data, breaking completion.
 - Fix "task add due:tomorrow+3days" failing to work without spaces.
+- Performance improvements:
+  + Stops after measuring a fixed-width column format.
+  + Reduced number of std::string copies.
 
 ------ current release ---------------------------
 

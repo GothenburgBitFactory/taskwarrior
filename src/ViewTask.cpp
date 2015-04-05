@@ -143,6 +143,11 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
       if (min   > global_min)   global_min   = min;
       if (ideal > global_ideal) global_ideal = ideal;
+
+      // If a fixed-width column was just measured, there is no point repeating
+      // the measurement for all tasks.
+      if (_columns[i]->is_fixed_width ())
+        break;
     }
 
     if (print_empty_columns || global_min != 0)

@@ -83,8 +83,15 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
   std::vector <Task> blocking;
   dependencyGetBlocking (task, blocking);
 
-       if (_style == "indicator") minimum = maximum = utf8_width (context.config.get ("dependency.indicator"));
-  else if (_style == "count")     minimum = maximum = 2 + format ((int) blocking.size ()).length ();
+  if (_style == "indicator")
+  {
+    minimum = maximum = utf8_width (context.config.get ("dependency.indicator"));
+    _fixed_width = true;
+  }
+  else if (_style == "count")
+  {
+    minimum = maximum = 2 + format ((int) blocking.size ()).length ();
+  }
   else if (_style == "default" ||
            _style == "list")
   {

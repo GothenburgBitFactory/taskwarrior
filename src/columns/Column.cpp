@@ -208,19 +208,21 @@ Column::Column ()
 , _report ("")
 , _modifiable (true)
 , _uda (false)
+, _fixed_width (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Column::Column (const Column& other)
 {
-  _name       = other._name;
-  _type       = other._type;
-  _style      = other._style;
-  _label      = other._label;
-  _label      = other._report;
-  _modifiable = other._modifiable;
-  _uda        = other._uda;
+  _name        = other._name;
+  _type        = other._type;
+  _style       = other._style;
+  _label       = other._label;
+  _label       = other._report;
+  _modifiable  = other._modifiable;
+  _uda         = other._uda;
+  _fixed_width = other._fixed_width;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -235,6 +237,7 @@ Column& Column::operator= (const Column& other)
     _report      = other._report;
     _modifiable  = other._modifiable;
     _uda         = other._uda;
+    _fixed_width = other._fixed_width;
   }
 
   return *this;

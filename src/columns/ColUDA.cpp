@@ -120,8 +120,8 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
     }
     else if (_style == "indicator")
     {
-      if (task.has (_name))
-        minimum = maximum = utf8_width (context.config.get ("uda." + _name + ".indicator"));
+      minimum = maximum = utf8_width (context.config.get ("uda." + _name + ".indicator"));
+      _fixed_width = true;
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);

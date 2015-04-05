@@ -76,8 +76,8 @@ void ColumnStart::measure (Task& task, unsigned int& minimum, unsigned int& maxi
   {
     if (_style == "active")
     {
-      if (! task.has ("end"))
-        minimum = maximum = utf8_width (context.config.get ("active.indicator"));
+      minimum = maximum = utf8_width (context.config.get ("active.indicator"));
+      _fixed_width = true;
     }
     else
       ColumnDate::measure (task, minimum, maximum);

@@ -88,8 +88,15 @@ void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maxim
 
   if (task.has (_name))
   {
-         if (_style == "indicator") minimum = maximum = utf8_width (context.config.get ("tag.indicator"));
-    else if (_style == "count")     minimum = maximum = 3;
+    if (_style == "indicator")
+    {
+      minimum = maximum = utf8_width (context.config.get ("tag.indicator"));
+      _fixed_width = true;
+    }
+    else if (_style == "count")
+    {
+      minimum = maximum = 3;
+    }
     else if (_style == "default" ||
              _style == "list")
     {

@@ -132,6 +132,11 @@ std::string ViewText::render ()
 
       if (min   > global_min)   global_min = min;
       if (ideal > global_ideal) global_ideal = ideal;
+
+      // If a fixed-width column was just measured, there is no point repeating
+      // the measurement for all tasks.
+      if (_columns[i]->is_fixed_width ())
+        break;
     }
 
     minimal.push_back (global_min);
