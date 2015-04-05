@@ -50,10 +50,9 @@ color.blocked=blue
 color.project.none=
 
 # Priority
-color.pri.H=
-color.pri.M=
-color.pri.L=bright black
-color.pri.none=
+color.uda.priority.H=
+color.uda.priority.M=
+color.uda.priority.L=bright black
 
 # Tags
 color.tag.next=bold yellow on bright black

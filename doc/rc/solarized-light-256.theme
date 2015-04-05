@@ -67,10 +67,9 @@ color.blocking=color15 on color0
 color.project.none=
 
 # Priority
-color.pri.H=bold color0
-color.pri.M=bold color11
-color.pri.L=bold color14
-color.pri.none=
+color.uda.priority.H=bold color0
+color.uda.priority.M=bold color11
+color.uda.priority.L=bold color14
 
 # Tags
 color.tag.next=

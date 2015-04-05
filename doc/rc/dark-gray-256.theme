@@ -50,10 +50,9 @@ color.blocking=bold white
 color.project.none=
 
 # Priority
-color.pri.H=gray21
-color.pri.M=gray18
-color.pri.L=gray12
-color.pri.none=gray18
+color.uda.priority.H=gray21
+color.uda.priority.M=gray18
+color.uda.priority.L=gray12
 
 # Tags
 color.tag.next=bold white

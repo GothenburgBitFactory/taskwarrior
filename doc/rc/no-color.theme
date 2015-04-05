@@ -53,10 +53,9 @@ color.blocking=
 color.project.none=
 
 # Priority
-color.pri.H=
-color.pri.L=
-color.pri.M=
-color.pri.none=
+color.uda.priority.H=
+color.uda.priority.L=
+color.uda.priority.M=
 
 # Tags
 color.tag.next=
