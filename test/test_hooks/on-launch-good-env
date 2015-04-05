@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# The on-launch event is triggered once, after initialization, before any
+# processing occurs. This hooks script has no effect on processing.
+
+# Input:
+# - None
+
+# Output:
+# - Optional feedback/error.
+echo $1
+echo $2
+echo $3
+echo $4
+echo $5
+echo $6
+#for arg in $*
+#do
+#  echo $arg
+#done
+
+# Status:
+# - 0:     JSON ignored, non-JSON is feedback.
+# - non-0: JSON ignored, non-JSON is error.
+exit 0
+
