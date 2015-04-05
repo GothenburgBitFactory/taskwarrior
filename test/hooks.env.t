@@ -47,7 +47,7 @@ class TestHooksOnLaunch(TestCase):
         hookname = 'on-launch-good-env'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t(("_get", "system.os"))    # Arbitrary command
+        code, out, err = self.t(("version", ))    # Arbitrary command that generates output.
 
         hook = self.t.hooks[hookname]
         hook.assertTriggeredCount(1)
