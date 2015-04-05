@@ -82,9 +82,6 @@ like ($output, qr/Deleted 1 task\./, '3 deleted');
 
 # TODO Delete a recurring task.
 #$output = qx{echo 'y' | ../src/task rc:recur.rc 4 delete 2>&1};
-#diag ('---');
-#diag ($output);
-#diag ('---');
 
 # TODO Wait a recurring task
 # TODO Upgrade a task to a recurring task
