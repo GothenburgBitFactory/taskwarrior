@@ -7,7 +7,7 @@ import shutil
 import signal
 import atexit
 from time import sleep
-from subprocess import Popen
+from subprocess import Popen, PIPE
 from .utils import (find_unused_port, release_port, port_used, run_cmd_wait,
                     which, parse_datafile, DEFAULT_CERT_PATH,
                     taskd_binary_location)
@@ -33,6 +33,10 @@ class Taskd(object):
     started or stopped after being destroyed.
     """
     DEFAULT_TASKD = taskd_binary_location()
+    TASKD_RUNNING = 0
+    TASKD_NEVER_STARTED = 1
+    TASKD_EXITED = 2
+    TASKD_NOT_LISTENING = 3
 
     def __init__(self, taskd=DEFAULT_TASKD, certpath=None,
                  address="localhost"):
@@ -175,19 +179,24 @@ class Taskd(object):
     def status(self):
         """Check the status of the server by checking if it's still running and
         listening for connections
-        :returns: True if running and listening, False otherwise (including
-            crashed and not started)
+        :returns: Taskd.TASKD_[NEVER_STARTED/EXITED/NOT_LISTENING/RUNNING]
         """
         if self.proc is None:
-            return False
+            return self.TASKD_NEVER_STARTED
 
-        if self.proc.poll() is not None:
-            return False
+        if self.returncode() is not None:
+            return self.TASKD_EXITED
 
         if not port_used(addr=self.address, port=self.port):
-            return False
+            return self.TASKD_NOT_LISTENING
 
-        return True
+        return self.TASKD_RUNNING
+
+    def returncode(self):
+        """If taskd finished, return its exit code, otherwise return None.
+        :returns: taskd's exit code or None
+        """
+        return self.proc.poll()
 
     def start(self, minutes=5, tries_per_minute=2):
         """Start the taskd server if it's not running.
@@ -195,20 +204,53 @@ class Taskd(object):
         """
         if self.proc is None:
             cmd = (self.taskd, "server", "--data", self.datadir)
-            self.proc = Popen(cmd, stdout=DEVNULL, stdin=DEVNULL, env=self.env)
+            self.proc = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=DEVNULL,
+                              env=self.env)
         else:
             raise OSError("Taskd server is still running or crashed")
 
         # Wait for server to listen by checking connectivity in the port
         # Default is to wait up to 5 minutes checking once every 500ms
         for i in range(minutes * 60 * tries_per_minute):
-            if not self.status():
-                sleep(1 / tries_per_minute)
-            else:
+            status = self.status()
+
+            if status == self.TASKD_RUNNING:
                 return
 
-        raise OSError("Task server failed to start and listen on port {0}"
-                      " after {1} minutes".format(self.port, minutes))
+            elif status == self.TASKD_NEVER_STARTED:
+                raise OSError("Task server was never started. "
+                              "This shouldn't happen!!")
+
+            elif status == self.TASKD_EXITED:
+                # Collect output logs
+                out, err = self.proc.communicate()
+
+                raise OSError(
+                    "Task server launched with '{0}' crashed or exited "
+                    "prematurely. Exit code: {1}. "
+                    "Listening on port: {2}. "
+                    "Stdout: {3!r}, "
+                    "Stderr: {4!r}.".format(
+                        self.taskd,
+                        self.returncode(),
+                        self.port,
+                        out,
+                        err,
+                    ))
+
+            elif status == self.TASKD_NOT_LISTENING:
+                sleep(1 / tries_per_minute)
+
+            else:
+                raise OSError("Unknown running status for taskd '{0}'".format(
+                    status))
+
+        # Collect output logs
+        out, err = self.proc.communicate()
+
+        raise OSError("Task server didn't start and listen on port {0} after "
+                      "{1} minutes. Stdout: {2!r}. Stderr: {3!r}.".format(
+                          self.port, minutes, out, err))
 
     def stop(self):
         """Stop the server by sending a SIGTERM and SIGKILL if fails to
@@ -218,17 +260,10 @@ class Taskd(object):
         if self.proc is None:
             raise OSError("Taskd server is not running")
 
-        self.proc.send_signal(signal.SIGTERM)
+        if self._check_pid():
+            self.proc.send_signal(signal.SIGTERM)
 
-        # Wait ~1 sec for taskd to finish and send a SIGKILL if still running
-        kill = True
-        for i in range(10):
-            sleep(0.1)
-            if self.proc.poll() is not None:
-                kill = False
-                break
-
-        if kill:
+        if self._check_pid():
             self.proc.kill()
 
         # Wait for process to end to avoid zombies
@@ -236,6 +271,18 @@ class Taskd(object):
 
         # Unset the process to inform that no process is running
         self.proc = None
+
+    def _check_pid(self):
+        "Check if self.proc is still running and a PID still exists"
+        # Wait ~1 sec for taskd to finish
+        signal = True
+        for i in range(10):
+            sleep(0.1)
+            if self.proc.poll() is not None:
+                signal = False
+                break
+
+        return signal
 
     def destroy(self):
         """Cleanup the data folder and release server port for other instances
