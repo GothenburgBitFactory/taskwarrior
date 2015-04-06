@@ -157,6 +157,9 @@ sys.exit(0)
         # (according to python's JSON parser)
         hook.assertValidJSONOutput()
 
+        # Checking which arguments were passed to the hook
+        self.assertIn("/Hello/Greetings/", logs["calls"][0]["args"])
+
         # Some message output from the hook
         self.assertEqual(logs["output"]["msgs"][0],
                          "Hello from the template hook")

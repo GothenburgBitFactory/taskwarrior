@@ -10,7 +10,6 @@ try:
 except ImportError:
     import json
 
-from copy import deepcopy
 from datetime import datetime
 from .utils import DEFAULT_HOOK_PATH
 from .exceptions import HookError
@@ -396,7 +395,7 @@ class LoggedHook(Hook):
         It should look something like this:
 
         ## STDIN file
-        % Called at 1414874711
+        % Called at 1414874711 with 'arg1 arg2 ...'
         {... JSON received by the hook ... }
         {... more JSON ...}
 
@@ -424,12 +423,14 @@ class LoggedHook(Hook):
             for i, line in enumerate(fh):
                 line = line.rstrip("\n")
                 if line.startswith("%"):
+                    tstamp, args = line.split(" with ")
                     # Timestamp includes nanosecond resolution
-                    timestamp = line.split(" ")[-1]
+                    timestamp = tstamp.split(" ")[-1]
                     # convert timestamp to python datetime object
-                    log["calls"].append(
-                        datetime.fromtimestamp(float(timestamp))
-                    )
+                    log["calls"].append({
+                        "timestamp": datetime.fromtimestamp(float(timestamp)),
+                        "args": args,
+                    })
                 elif line.startswith("{"):
                     # Decode json input (to hook)
                     log["input"]["json"].append(json_decoder(line))

@@ -29,7 +29,6 @@
 import sys
 import os
 import unittest
-from datetime import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -62,6 +61,7 @@ class TestHooksOnLaunch(TestCase):
         self.assertEqual('rc'      in taskenv, True, 'rc:...')
         self.assertEqual('data'    in taskenv, True, 'data:...')
         self.assertEqual('version' in taskenv, True, 'version:...')
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
