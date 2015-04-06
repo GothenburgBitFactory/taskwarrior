@@ -245,6 +245,9 @@ class Taskd(object):
                 raise OSError("Unknown running status for taskd '{0}'".format(
                     status))
 
+        # Force stop so we can collect output
+        self.stop()
+
         # Collect output logs
         out, err = self.proc.communicate()
 
