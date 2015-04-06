@@ -466,7 +466,7 @@
 #define STRING_CMD_IMPORT_SUMMARY    "Importadas {1} tareas."
 #define STRING_CMD_IMPORT_NOFILE     "Debe especificar un archivo a importar."
 #define STRING_CMD_IMPORT_FILE       "Importando '{1}'"
-#define STRING_CMD_IMPORT_MISSING    "File '{1}' not found."
+#define STRING_CMD_IMPORT_MISSING    "Archivo '{1}' no encontrado."
 #define STRING_TASK_NO_DESC          "La anotación carece de descripción: {1}"
 #define STRING_TASK_NO_ENTRY         "La anotación carece de fecha de entrada: {1}"
 
@@ -497,14 +497,14 @@
 #define STRING_CMD_SYNC_CONNECT      "No se pudo conectar a {1} {2}"
 #define STRING_CMD_SYNC_HANDSHAKE    "Handshake fallido.  {1}"
 #define STRING_CMD_SYNC_TRUST_CA     "Debe proveer un certificado CA o la verificación de sobrescritura, pero no ambos."
-#define STRING_CMD_SYNC_TRUST_OBS    "The 'taskd.trust' settings may now only contain a value of 'strict', 'ignore hostname' or 'allow all'."
+#define STRING_CMD_SYNC_TRUST_OBS    "Los ajustes de 'taskd.trust' ahora solo pueden contener uno de los valores 'strict', 'ignore hostname' o 'allow all'."
 #define STRING_CMD_DIAG_USAGE        "Detalles de plataforma, construcción y entorno"
 #define STRING_CMD_DIAG_PLATFORM     "Plataforma"
 #define STRING_CMD_DIAG_UNKNOWN      "<desconocido>"
 #define STRING_CMD_DIAG_COMPILER     "Compilador"
 #define STRING_CMD_DIAG_VERSION      "Versión"
 #define STRING_CMD_DIAG_CAPS         "Capacidades"
-#define STRING_CMD_DIAG_COMPLIANCE   "Compliance"
+#define STRING_CMD_DIAG_COMPLIANCE   "Conformidad"
 #define STRING_CMD_DIAG_FEATURES     "Características Constructivas"
 #define STRING_CMD_DIAG_BUILT        "Construido"
 #define STRING_CMD_DIAG_COMMIT       "Commit"  // |esp-ESP|==|eng-USA|
@@ -521,12 +521,12 @@
 #define STRING_CMD_DIAG_HOOKS        "Hooks"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera una lista de todos los comandos, con fines de auto-completado"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera una lista de todos los comandos, con fines de auto-completado zsh"
-#define STRING_CMD_DIAG_HOOK_EXEC    "executable"
-#define STRING_CMD_DIAG_HOOK_NO_EXEC "not executable"
-#define STRING_CMD_DIAG_HOOK_ENABLE  "Enabled"
-#define STRING_CMD_DIAG_HOOK_DISABLE "Disabled"
+#define STRING_CMD_DIAG_HOOK_EXEC    "ejecutable"
+#define STRING_CMD_DIAG_HOOK_NO_EXEC "no ejecutable"
+#define STRING_CMD_DIAG_HOOK_ENABLE  "Habilitado"
+#define STRING_CMD_DIAG_HOOK_DISABLE "Inhabilitado"
 
-#define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
+#define STRING_CMD_ZSHATTS_USAGE     "Genera una lista de todos los atributos, con fines de auto-completado zsh"
 #define STRING_CMD_ALIASES_USAGE     "Genera una lista de todos los alias, con fines de auto-completado"
 #define STRING_CMD_INSTALL_USAGE     "Instala extensiones y scripts externos"
 
@@ -569,25 +569,25 @@
 #define STRING_CMD_CONFIG_NO_CHANGE  "No se hicieron cambios."
 #define STRING_CMD_CONFIG_NO_NAME    "Especifique el nombre de una variable de configuración a modificar."
 #define STRING_CMD_HCONFIG_USAGE     "Lista todas las variables de configuración soportadas, a fines de completado"
-#define STRING_CMD_CONTEXT_USAGE     "Set and define contexts (default filters)"
-#define STRING_CMD_CONTEXT_DEF_SUCC  "Context '{1}' defined."
-#define STRING_CMD_CONTEXT_DEF_FAIL  "Context '{1}' not defined."
-#define STRING_CMD_CONTEXT_DEF_USAG  "Both context name and its definition must be provided."
-#define STRING_CMD_CONTEXT_DEF_ABRT  "Context definiton aborted."
-#define STRING_CMD_CONTEXT_DEF_ABRT2 "Filter validation failed: {1}"
-#define STRING_CMD_CONTEXT_DEF_CONF  "The filter '{1}' matches 0 pending tasks. Do you wish to continue?"
-#define STRING_CMD_CONTEXT_DEL_SUCC  "Context '{1}' deleted."
-#define STRING_CMD_CONTEXT_DEL_FAIL  "Context '{1}' not deleted."
-#define STRING_CMD_CONTEXT_DEL_USAG  "Context name needs to be specified."
-#define STRING_CMD_CONTEXT_LIST_EMPT "No contexts defined."
-#define STRING_CMD_CONTEXT_SET_NFOU  "Context '{1}' not found."
-#define STRING_CMD_CONTEXT_SET_SUCC  "Context '{1}' set. Use 'task context none' to remove."
-#define STRING_CMD_CONTEXT_SET_FAIL  "Context '{1}' not applied."
-#define STRING_CMD_CONTEXT_SHOW_EMPT "No context is currently applied."
-#define STRING_CMD_CONTEXT_SHOW      "Context '{1}' with filter '{2}' is currently applied."
-#define STRING_CMD_CONTEXT_NON_SUCC  "Context unset."
-#define STRING_CMD_CONTEXT_NON_FAIL  "Context not unset."
-#define STRING_CMD_HCONTEXT_USAGE    "Lists all supported contexts, for completion purposes"
+#define STRING_CMD_CONTEXT_USAGE     "Establece y define contextos (filtros por defecto)"
+#define STRING_CMD_CONTEXT_DEF_SUCC  "Contexto '{1}' definido."
+#define STRING_CMD_CONTEXT_DEF_FAIL  "Contexto '{1}' no definido."
+#define STRING_CMD_CONTEXT_DEF_USAG  "Se deben definir tanto el nombre de un contexto como su definición."
+#define STRING_CMD_CONTEXT_DEF_ABRT  "Definición de contexto abortada."
+#define STRING_CMD_CONTEXT_DEF_ABRT2 "Validación de filtro fallida: {1}"
+#define STRING_CMD_CONTEXT_DEF_CONF  "El filtro '{1}' coincide con 0 tareas pendientes. ¿Quiere continuar?"
+#define STRING_CMD_CONTEXT_DEL_SUCC  "Contexto '{1}' eliminado."
+#define STRING_CMD_CONTEXT_DEL_FAIL  "Contexto '{1}' no eliminado."
+#define STRING_CMD_CONTEXT_DEL_USAG  "El nombre del contexto necesita ser especificado."
+#define STRING_CMD_CONTEXT_LIST_EMPT "No hay contextos definidos."
+#define STRING_CMD_CONTEXT_SET_NFOU  "Contexto '{1}' noencontrado."
+#define STRING_CMD_CONTEXT_SET_SUCC  "Contexto '{1}' establecido. Use 'task context none' para eliminarlo."
+#define STRING_CMD_CONTEXT_SET_FAIL  "Contexto '{1}' no aplicado."
+#define STRING_CMD_CONTEXT_SHOW_EMPT "Actualmente no se aplica ningún contexto."
+#define STRING_CMD_CONTEXT_SHOW      "El contexto '{1}' con filtro '{2}' se aplica actualmente."
+#define STRING_CMD_CONTEXT_NON_SUCC  "Contexto deshabilitado."
+#define STRING_CMD_CONTEXT_NON_FAIL  "Context no deshabilitado."
+#define STRING_CMD_HCONTEXT_USAGE    "Lista todos los contextos soportados, con fines de completado"
 #define STRING_CMD_CUSTOM_MISMATCH   "Hay diferente número de columnas y etiquetas para el informe '{1}'."
 #define STRING_CMD_CUSTOM_SHOWN      "{1} mostrada(s)"
 #define STRING_CMD_CUSTOM_COUNT      "1 tarea"
@@ -693,11 +693,11 @@
 #define STRING_DOM_CANNOT_SET        "DOM: No se pudo establecer '{1}'."
 
 // Eval
-#define STRING_EVAL_NO_EXPRESSION    "No expression to evaluate."
+#define STRING_EVAL_NO_EXPRESSION    "Ninguna expresión para evaluar."
 #define STRING_EVAL_UNSUPPORTED      "Operador no soportado '{1}'."
-#define STRING_EVAL_OP_EXPECTED      "Operator expected."
-#define STRING_EVAL_NO_EVAL          "The expression could not be evaluated."
-#define STRING_PAREN_MISMATCH        "Mismatched parentheses in expression"
+#define STRING_EVAL_OP_EXPECTED      "Se esperaba operador."
+#define STRING_EVAL_NO_EVAL          "La expresión podría no ser evaluada."
+#define STRING_PAREN_MISMATCH        "Paréntesis desemparejados en expresión"
 
 // edit
 #define STRING_EDIT_NO_CHANGES       "No se detectaron modificaciones."
@@ -780,7 +780,7 @@
 #define STRING_INVALID_MOD           "El atributo '{1}' no admite un valor '{2}'."
 #define STRING_INVALID_SORT_COL      "La columna '{1}' no es un campo de ordenación válido."
 #define STRING_TLS_INIT_FAIL         "Error inicializando TLS. {1}"
-#define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
+#define STRING_ERROR_DETAILS         "El ajuste 'calendar.details.report' debe contener un único nombre de informe."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."
@@ -817,22 +817,22 @@
 #define STRING_FILE_PERMS            "Taskwarrior no tiene los permisos adecuados para '{1}'."
 
 // helpers
-#define STRING_HELPER_PROJECT_CHANGE "The project '{1}' has changed."
-#define STRING_HELPER_PROJECT_COMPL  "Project '{1}' is {2}% complete"
-#define STRING_HELPER_PROJECT_REM    "({1} of {2} tasks remaining)."
-#define STRING_HELPER_PROJECT_REM1   "({1} task remaining)."
+#define STRING_HELPER_PROJECT_CHANGE "El proyecto '{1}' ha cambiado."
+#define STRING_HELPER_PROJECT_COMPL  "El proyecto '{1}' está completado en un {2}%"
+#define STRING_HELPER_PROJECT_REM    "({1} de {2} tareas restantes)."
+#define STRING_HELPER_PROJECT_REM1   "({1} tarea restante)."
 
 // Hooks
-#define STRING_HOOK_ERROR_OBJECT     "Hook Error: JSON Object '{...}' expected."
-#define STRING_HOOK_ERROR_NODESC     "Hook Error: JSON Object missing 'description' attribute."
-#define STRING_HOOK_ERROR_NOUUID     "Hook Error: JSON Object missing 'uuid' attribute."
-#define STRING_HOOK_ERROR_SYNTAX     "Hook Error: JSON syntax error in: {1}"
+#define STRING_HOOK_ERROR_OBJECT     "Hook Error: se esperaba 0bjeto JSON '{...}'."
+#define STRING_HOOK_ERROR_NODESC     "Hook Error: falta atributo 'description' en objeto JSON."
+#define STRING_HOOK_ERROR_NOUUID     "Hook Error: falta atributo 'uuid' en objeto JSON."
+#define STRING_HOOK_ERROR_SYNTAX     "Hook Error: error de sintaxis JSON en: {1}"
 #define STRING_HOOK_ERROR_JSON       "Hook Error: JSON "
-#define STRING_HOOK_ERROR_NOPARSE    "Hook Error: JSON failed to parse: "
-#define STRING_HOOK_ERROR_BAD_NUM    "Hook Error: Expected {1} JSON task(s), found {2}"
-#define STRING_HOOK_ERROR_SAME1      "Hook Error: JSON must be for the same task: {1}"
-#define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON must be for the same task: {1} != {2}"
-#define STRING_HOOK_ERROR_NOFEEDBACK "Hook Error: Expected feedback from a failing hook script."
+#define STRING_HOOK_ERROR_NOPARSE    "Hook Error: JSON falló al analizar: "
+#define STRING_HOOK_ERROR_BAD_NUM    "Hook Error: se esperaba {1} tarea(s) JSON, se encontraron {2}"
+#define STRING_HOOK_ERROR_SAME1      "Hook Error: JSON debe ser para la misma tarea: {1}"
+#define STRING_HOOK_ERROR_SAME2      "Hook Error: JSON debe ser para la misma tarea: {1} != {2}"
+#define STRING_HOOK_ERROR_NOFEEDBACK "Hook Error: se esperaba retro-alimentación desde un hook script que falló."
 
 // JSON
 #define STRING_JSON_MISSING_VALUE    "Error: falta valor después de ',' en posición {1}"
@@ -865,9 +865,9 @@
 #define STRING_CMD_SHOWRAW           "Muestra todas las variables de configuración en un formato legible por la máquina"
 
 // Task
-#define STRING_TASK_NO_FF1           "Taskwarrior ya no admite el formato de archivo 1, usado originalmente entre el 27 de noviembre del 2006 y el 31 de diciembre del 2007."
-#define STRING_TASK_NO_FF2           "Taskwarrior ya no admite el formato de archivo 2, usado originalmente entre el 1 de enero del 2008 y el 12 de abril del 2009."
-#define STRING_TASK_NO_FF3           "Taskwarrior no longer supports file format 3, originally used between 23 March 2009 and 16 May 2009."
+#define STRING_TASK_NO_FF1           "Taskwarrior ya no admite el formato de archivo 1, usado originalmente entre el 27 de noviembre de 2006 y el 31 de diciembre de 2007."
+#define STRING_TASK_NO_FF2           "Taskwarrior ya no admite el formato de archivo 2, usado originalmente entre el 1 de enero de 2008 y el 12 de abril de 2009."
+#define STRING_TASK_NO_FF3           "Taskwarrior ya no admite el formato de archivo 3, usado originalmente entre el 23 de marzo de 2009 y el  16 de mayo de 2009."
 #define STRING_TASK_PARSE_UNREC_FF   "Formato de archivo taskwarrior no reconocido."
 #define STRING_TASK_DEPEND_ITSELF    "Una tarea no puede depender de sí misma."
 #define STRING_TASK_DEPEND_MISS_CREA "No se pudo crear una dependencia de la tarea {1} - no encontrada."
@@ -881,9 +881,9 @@
 #define STRING_TASK_VALID_RECUR      "El valor de recurrencia '{1}' no es válido."
 #define STRING_TASK_SAFETY_VALVE     "Este comando no tiene filtro, y modificará todas las tareas. ¿Está seguro?"
 #define STRING_TASK_SAFETY_FAIL      "Se impidió la ejecución del comando."
-#define STRING_TASK_SAFETY_ALLOW     "You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken."
-#define STRING_TASK_INVALID_DUR      "The duration value '{1}' is not supported."
-#define STRING_TASK_INVALID_COL_TYPE "Unrecognized column type '{1}' for column '{2}'"
+#define STRING_TASK_SAFETY_ALLOW     "No especificó un filtro, y con el valor de 'allow.empty.filter', no se toma ninguna acción."
+#define STRING_TASK_INVALID_DUR      "El valor de duración '{1}' no está soportado."
+#define STRING_TASK_INVALID_COL_TYPE "Tipo de columna no reconocido '{1}' para la columna '{2}'"
 
 // TDB2
 #define STRING_TDB2_PARSE_ERROR      " en {1} en la línea {2}"
@@ -904,7 +904,7 @@
 #define STRING_TDB2_REMOVED          "Tarea eliminada."
 #define STRING_TDB2_UNDO_COMPLETE    "Deshacer completado."
 #define STRING_TDB2_UNDO_SYNCED      "No se puede deshacer el cambio porque la tarea ya ha sido sincronizada. Como alternativa, modifique la tarea."
-#define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
+#define STRING_TDB2_DIRTY_EXIT       "Saliendo con cambios sin escribir a {1}"
 
 // View
 #define STRING_VIEW_TOO_SMALL        "El informe tiene una anchura mínima de {1} y no cabe en la disponible, que es {2}."
@@ -1047,6 +1047,6 @@
 #define STRING_UTIL_BYTES            "B"  // |esp-ESP|==|eng-USA|
 
 // Legacy
-#define STRING_LEGACY_PRIORITY       "Legacy attribute found.  Please change '{1}' to '{2}'."
+#define STRING_LEGACY_PRIORITY       "Encontrado atributo anticuado.  Por favor, cambie '{1}' a '{2}'."
 
 #endif
