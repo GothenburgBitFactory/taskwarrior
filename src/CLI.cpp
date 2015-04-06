@@ -726,7 +726,7 @@ void CLI::addArg (const std::string& arg, Lexer::Type type /* = Lexer::Type::wor
     Lexer lex (raw);
     lex.ambiguity (false);
 
-    std::vector <std::pair <std::string, Lexer::Type> > lexemes;
+    std::vector <std::pair <std::string, Lexer::Type>> lexemes;
     while (lex.token (lexeme, type))
       lexemes.push_back (std::pair <std::string, Lexer::Type> (lexeme, type));
 
@@ -742,7 +742,7 @@ void CLI::addArg (const std::string& arg, Lexer::Type type /* = Lexer::Type::wor
     {
       // How often have I said to you that when you have eliminated the
       // impossible, whatever remains, however improbable, must be the truth?
-      std::vector <std::pair <std::string, Lexer::Type> >::iterator l;
+      std::vector <std::pair <std::string, Lexer::Type>>::iterator l;
       for (l = lexemes.begin (); l != lexemes.end (); ++l)
         _original_args.push_back (l->first);
     }
@@ -1388,7 +1388,7 @@ void CLI::findIDs ()
       if (raw.find_first_not_of ("0123456789,-") == std::string::npos)
       {
         // Container for min/max ID ranges.
-        std::vector <std::pair <int, int> > ranges;
+        std::vector <std::pair <int, int>> ranges;
 
         // Split the ID list into elements.
         std::vector <std::string> elements;
@@ -1467,7 +1467,7 @@ void CLI::findIDs ()
           a->tag ("ID");
 
           // Save the ranges.
-          std::vector <std::pair <int, int> >::iterator r;
+          std::vector <std::pair <int, int>>::iterator r;
           for (r = ranges.begin (); r != ranges.end (); ++r)
             _id_ranges.push_back (*r);
         }
@@ -1576,7 +1576,7 @@ void CLI::insertIDExpr ()
         reconstructed.push_back (openParen);
 
         // Add all ID ranges.
-        std::vector <std::pair <int, int> >::iterator r;
+        std::vector <std::pair <int, int>>::iterator r;
         for (r = _id_ranges.begin (); r != _id_ranges.end (); ++r)
         {
           if (r != _id_ranges.begin ())
@@ -2375,17 +2375,17 @@ bool CLI::isName (const std::string& raw) const
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CLI::disqualifyInsufficientTerms (
-  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+  const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {
   return lexemes.size () < 3 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CLI::disqualifyNoOps (
-  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+  const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {
   bool foundOP = false;
-  std::vector <std::pair <std::string, Lexer::Type> >::const_iterator l;
+  std::vector <std::pair <std::string, Lexer::Type>>::const_iterator l;
   for (l = lexemes.begin (); l != lexemes.end (); ++l)
     if (l->second == Lexer::Type::op)
       foundOP = true;
@@ -2395,13 +2395,13 @@ bool CLI::disqualifyNoOps (
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CLI::disqualifyOnlyParenOps (
-  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+  const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {
   int opCount      = 0;
   int opSugarCount = 0;
   int opParenCount = 0;
 
-  std::vector <std::pair <std::string, Lexer::Type> >::const_iterator l;
+  std::vector <std::pair <std::string, Lexer::Type>>::const_iterator l;
   for (l = lexemes.begin (); l != lexemes.end (); ++l)
   {
     if (l->second == Lexer::Type::op)
@@ -2431,7 +2431,7 @@ bool CLI::disqualifyOnlyParenOps (
 // as there are no operators in between, which includes syntactic sugar that
 // hides operators.
 bool CLI::disqualifyFirstLastBinary (
-  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+  const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {
   bool firstBinary = false;
   bool lastBinary  = false;
@@ -2450,7 +2450,7 @@ bool CLI::disqualifyFirstLastBinary (
 ////////////////////////////////////////////////////////////////////////////////
 // Disqualify terms when there operators hidden by syntactic sugar.
 bool CLI::disqualifySugarFree (
-  const std::vector <std::pair <std::string, Lexer::Type> >& lexemes) const
+  const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {
   bool sugared = true;
   for (unsigned int i = 1; i < lexemes.size () - 1; ++i)

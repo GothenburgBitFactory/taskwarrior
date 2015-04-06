@@ -38,7 +38,7 @@ int main (int argc, char** argv)
 {
   UnitTest t (765);
 
-  std::vector <std::pair <std::string, Lexer::Type> > tokens;
+  std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
   Lexer::Type type;
 

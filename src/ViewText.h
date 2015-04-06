@@ -68,24 +68,24 @@ public:
   std::string render ();
 
 private:
-  std::vector <std::vector <std::string> > _data;
-  std::vector <std::vector <Color> >       _color;
-  std::vector <Column*>                    _columns;
-  int                                      _width;
-  int                                      _left_margin;
-  Color                                    _header;
-  Color                                    _odd;
-  Color                                    _even;
-  int                                      _intra_padding;
-  Color                                    _intra_odd;
-  Color                                    _intra_even;
-  int                                      _extra_padding;
-  Color                                    _extra_odd;
-  Color                                    _extra_even;
-  int                                      _truncate_lines;
-  int                                      _truncate_rows;
-  int                                      _lines;
-  int                                      _rows;
+  std::vector <std::vector <std::string>> _data;
+  std::vector <std::vector <Color>>       _color;
+  std::vector <Column*>                   _columns;
+  int                                     _width;
+  int                                     _left_margin;
+  Color                                   _header;
+  Color                                   _odd;
+  Color                                   _even;
+  int                                     _intra_padding;
+  Color                                   _intra_odd;
+  Color                                   _intra_even;
+  int                                     _extra_padding;
+  Color                                   _extra_odd;
+  Color                                   _extra_even;
+  int                                     _truncate_lines;
+  int                                     _truncate_rows;
+  int                                     _lines;
+  int                                     _rows;
 };
 
 #endif

@@ -366,7 +366,7 @@ int CmdCalendar::execute (std::string& output)
       holTable.colorHeader (color_label);
 
       Config::const_iterator it;
-      std::map <time_t, std::vector<std::string> > hm; // we need to store multiple holidays per day
+      std::map <time_t, std::vector<std::string>> hm; // we need to store multiple holidays per day
       for (it = context.config.begin (); it != context.config.end (); ++it)
         if (it->first.substr (0, 8) == "holiday.")
           if (it->first.substr (it->first.size () - 4) == "name")
@@ -389,7 +389,7 @@ int CmdCalendar::execute (std::string& output)
       if (format == "")
         format = context.config.get ("dateformat");
 
-      std::map <time_t, std::vector<std::string> >::iterator hm_it;
+      std::map <time_t, std::vector<std::string>>::iterator hm_it;
       for (hm_it = hm.begin(); hm_it != hm.end(); ++hm_it)
       {
         std::vector <std::string> v = hm_it->second;

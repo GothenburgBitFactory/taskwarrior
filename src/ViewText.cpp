@@ -186,7 +186,7 @@ std::string ViewText::render ()
 
   // Compose column headers.
   unsigned int max_lines = 0;
-  std::vector <std::vector <std::string> > headers;
+  std::vector <std::vector <std::string>> headers;
   for (unsigned int c = 0; c < _columns.size (); ++c)
   {
     headers.push_back (std::vector <std::string> ());
@@ -238,7 +238,7 @@ std::string ViewText::render ()
 
   // Compose, render columns, in sequence.
   _rows = 0;
-  std::vector <std::vector <std::string> > cells;
+  std::vector <std::vector <std::string>> cells;
   for (unsigned int row = 0; row < _data.size (); ++row)
   {
     max_lines = 0;

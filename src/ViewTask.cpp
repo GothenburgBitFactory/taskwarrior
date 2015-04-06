@@ -242,7 +242,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
   // Compose column headers.
   unsigned int max_lines = 0;
-  std::vector <std::vector <std::string> > headers;
+  std::vector <std::vector <std::string>> headers;
   for (unsigned int c = 0; c < _columns.size (); ++c)
   {
     headers.push_back (std::vector <std::string> ());
@@ -295,7 +295,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
   // Compose, render columns, in sequence.
   _rows = 0;
-  std::vector <std::vector <std::string> > cells;
+  std::vector <std::vector <std::string>> cells;
   std::vector <int>::iterator s;
   for (unsigned int s = 0; s < sequence.size (); ++s)
   {

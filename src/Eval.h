@@ -53,28 +53,28 @@ public:
   static void getBinaryOperators (std::vector <std::string>&);
 
 private:
-  void evaluatePostfixStack (const std::vector <std::pair <std::string, Lexer::Type> >&, Variant&) const;
-  void infixToPostfix (std::vector <std::pair <std::string, Lexer::Type> >&) const;
-  void infixParse (std::vector <std::pair <std::string, Lexer::Type> >&) const;
-  bool parseLogical (std::vector <std::pair <std::string, Lexer::Type> >&, unsigned int &) const;
-  bool parseRegex (std::vector <std::pair <std::string, Lexer::Type> >&, unsigned int &) const;
-  bool parseEquality (std::vector <std::pair <std::string, Lexer::Type> >&, unsigned int &) const;
-  bool parseComparative (std::vector <std::pair <std::string, Lexer::Type> >&, unsigned int &) const;
-  bool parseArithmetic (std::vector <std::pair <std::string, Lexer::Type> >&, unsigned int &) const;
-  bool parseGeometric (std::vector <std::pair <std::string, Lexer::Type> >&, unsigned int &) const;
-  bool parseTag (std::vector <std::pair <std::string, Lexer::Type> >&, unsigned int &) const;
-  bool parseUnary (std::vector <std::pair <std::string, Lexer::Type> >&, unsigned int &) const;
-  bool parseExponent (std::vector <std::pair <std::string, Lexer::Type> >&, unsigned int &) const;
-  bool parsePrimitive (std::vector <std::pair <std::string, Lexer::Type> >&, unsigned int &) const;
+  void evaluatePostfixStack (const std::vector <std::pair <std::string, Lexer::Type>>&, Variant&) const;
+  void infixToPostfix (std::vector <std::pair <std::string, Lexer::Type>>&) const;
+  void infixParse (std::vector <std::pair <std::string, Lexer::Type>>&) const;
+  bool parseLogical (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
+  bool parseRegex (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
+  bool parseEquality (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
+  bool parseComparative (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
+  bool parseArithmetic (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
+  bool parseGeometric (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
+  bool parseTag (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
+  bool parseUnary (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
+  bool parseExponent (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
+  bool parsePrimitive (std::vector <std::pair <std::string, Lexer::Type>>&, unsigned int &) const;
   bool identifyOperator (const std::string&, char&, unsigned int&, char&) const;
 
-  std::string dump (std::vector <std::pair <std::string, Lexer::Type> >&) const;
+  std::string dump (std::vector <std::pair <std::string, Lexer::Type>>&) const;
 
 private:
   std::vector <bool (*)(const std::string&, Variant&)> _sources;
   bool _ambiguity;
   bool _debug;
-  std::vector <std::pair <std::string, Lexer::Type> > _compiled;
+  std::vector <std::pair <std::string, Lexer::Type>> _compiled;
 };
 
 

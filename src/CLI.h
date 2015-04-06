@@ -128,11 +128,11 @@ private:
   bool isOperator       (const std::string&) const;
   bool isName           (const std::string&) const;
 
-  bool disqualifyInsufficientTerms (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
-  bool disqualifyNoOps             (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
-  bool disqualifyOnlyParenOps      (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
-  bool disqualifyFirstLastBinary   (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
-  bool disqualifySugarFree         (const std::vector <std::pair <std::string, Lexer::Type> >&) const;
+  bool disqualifyInsufficientTerms (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
+  bool disqualifyNoOps             (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
+  bool disqualifyOnlyParenOps      (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
+  bool disqualifyFirstLastBinary   (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
+  bool disqualifySugarFree         (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
 
 public:
   std::multimap <std::string, std::string> _entities;
@@ -140,7 +140,7 @@ public:
   std::vector <std::string>                _original_args;
   std::vector <A>                          _args;
 
-  std::vector <std::pair <int, int> >      _id_ranges;
+  std::vector <std::pair <int, int>>       _id_ranges;
   std::vector <std::string>                _uuid_list;
   bool                                     _strict;
   bool                                     _terminated;
