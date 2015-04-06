@@ -11,7 +11,7 @@ taskrc \- Configuration details for the task(1) command
 .B TASKRC=<directory-path>/.taskrc task ...
 
 .SH DESCRIPTION
-.B taskwarrior
+.B Taskwarrior
 obtains its configuration data from a file called
 .I .taskrc
 \&. This file is normally located in the user's home directory:
@@ -55,36 +55,49 @@ default, sample
 .I .taskrc
 file in the user's home directory.
 
-The taskwarrior configuration file consists of a series of assignments in each
-line. The assignments have the syntax:
+The .taskrc file follows a very simply syntax defining name/value pairs:
 
 .RS
-<name-of-configuration-variable>=<value-to-be-set>
+<name> = <value>
 .RE
 
-where:
-.RS
-.TP
-<name-of-configuration-variable>
-is one of the variables described below
-
-.TP
-<value-to-be-set>
-is the value the variable is to be set to.
-.RE
-
-and set a configuration variable to a certain value. The equal sign ("=") is
-used to separate the variable name from the value to be set.
-
-The hash mark, or pound sign ("#") is used as a comment character. It can be
-used to annotate the configuration file. All text after the character to the end
-of the line is ignored.
-
-The configuration file supports UTF8 as well as JSON encoding, such as \\uNNNN.
+There may be whitespace around <name>, '=' and <value>, and it is ignored.
+Whitespace within the <value> is left intact.
+Whitespace is not permitted in comma-separated lists.
+The entry must be on a single line, no continuations.
+Values support UTF8 as well as JSON encoding, such as \\uNNNN.
 
 Note that taskwarrior is flexible about the values used to represent Boolean
 items. You can use "on", "yes", "y", "1" and "true".
 Anything else means "off".
+
+.RS
+include <file>
+.RE
+
+There may be whitespace around 'include' and <file>. The file may be an
+absolute or relative path, and the special character '~' is expanded to mean
+$HOME.
+The entry must be on a single line, no continuations.
+
+.RS
+# <comment>
+.RE
+
+A comment consists of the character '#', and extends from the '#' to the end
+of the line. There is no way to comment a multi-line block. There may be
+blank lines.
+
+Almost every value has a default setting, and an empty .taskrc file is one
+that makes use of every default. The contents of the .taskrc file therefore
+represent overrides of the default values. To remove a default value completely
+there must be an entry like this:
+
+.RS
+<name> =
+.RE
+
+This entry overrides the default value with a blank value.
 
 .SH EDITING
 You can edit your .taskrc file by hand if you wish, or you can use the 'config'
