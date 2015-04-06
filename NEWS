@@ -14,6 +14,8 @@ New configuration options in taskwarrior 2.4.3
     amount of changes that is considered dangerous.
   - The 'urgency.user.keyword.<keyword>.coefficient' setting allows tasks with
     specific words in the description to have adjusted urgency.
+  - The 'summary.all.projects' setting shows all projects in the 'summary'
+    reportş instead of just those with pending tasks.
 
 Newly deprecated features in taskwarrior 2.4.3
 

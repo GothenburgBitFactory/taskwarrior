@@ -339,10 +339,15 @@ Default value is: 'You have more urgent tasks'.
 It is a gentle reminder that you are contradicting your own urgency settings.
 
 .TP
-.B list.all.projects=yes
+.B list.all.projects=no
 May be yes or no, and determines whether the 'projects' command lists all the project
 names you have used, or just the ones used in active tasks. The default value is
 "no".
+
+.TP
+.B summary.all.projects=no
+If set to yes, shows all projects in the summary report, even if there are no
+pending tasks.  The default value is "no".
 
 .TP
 .B complete.all.tags=yes

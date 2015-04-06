@@ -57,6 +57,7 @@ CmdSummary::CmdSummary ()
 int CmdSummary::execute (std::string& output)
 {
   int rc = 0;
+  bool showAllProjects = context.config.getBoolean ("summary.all.projects");
 
   // Apply filter.
   handleRecurrence ();
@@ -68,7 +69,7 @@ int CmdSummary::execute (std::string& output)
   std::map <std::string, bool> allProjects;
   std::vector <Task>::iterator task;
   for (task = filtered.begin (); task != filtered.end (); ++task)
-    if (task->getStatus () == Task::pending)
+    if (showAllProjects || task->getStatus () == Task::pending)
       allProjects[task->get ("project")] = false;
 
   // Initialize counts, sum.
@@ -122,7 +123,6 @@ int CmdSummary::execute (std::string& output)
       }
   }
 
-
   // Create a table for output.
   ViewText view;
   view.width (context.getWidth ());
@@ -143,7 +143,7 @@ int CmdSummary::execute (std::string& output)
   std::map <std::string, bool>::iterator i;
   for (i = allProjects.begin (); i != allProjects.end (); ++i)
   {
-    if (countPending[i->first] > 0)
+    if (showAllProjects || countPending[i->first] > 0)
     {
       const std::vector <std::string> parents = extractParents (i->first);
       std::vector <std::string>::const_iterator parent;
@@ -169,7 +169,9 @@ int CmdSummary::execute (std::string& output)
 
       int c = countCompleted[i->first];
       int p = countPending[i->first];
-      int completedBar = (c * barWidth) / (c + p);
+      int completedBar = 0;
+      if (c + p)
+        completedBar = (c * barWidth) / (c + p);
 
       std::string bar;
       std::string subbar;
@@ -185,8 +187,9 @@ int CmdSummary::execute (std::string& output)
       }
       view.set (row, 4, bar);
 
-      char percent[12];
-      sprintf (percent, "%d%%", 100 * c / (c + p));
+      char percent[12] = "0%";
+      if (c + p)
+        sprintf (percent, "%d%%", 100 * c / (c + p));
       view.set (row, 3, percent);
       processed.push_back (i->first);
     }

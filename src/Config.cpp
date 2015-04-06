@@ -338,6 +338,7 @@ std::string Config::_defaults =
   "_forcecolor=no                                 # Forces color to be on, even for non TTY output\n"
   "complete.all.tags=no                           # Include old tag names in '_ags' command\n"
   "list.all.projects=no                           # Include old project names in 'projects' command\n"
+  "summary.all.projects=no                        # Include old project names in 'summary' command\n"
   "list.all.tags=no                               # Include old tag names in 'tags' command\n"
   "print.empty.columns=no                         # Print columns which have no data for any task\n"
   "debug=no                                       # Display diagnostics\n"
