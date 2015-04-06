@@ -8,6 +8,8 @@
 - TW-1539 user-defined urgency coefficients for priority values.
 - TW-1541 Priority should be converted to UDA (in default taskrc) (thanks to
           Tomas Babej).
+- TW-1556 task hangs when modifying uda field with percent-encoded (url-encoded)
+          value (thanks to Stefan Frühwirth).
 - TW-1578 Bash tab completion problems on first run
           (thanks to Renato Alves and Ptolemarch).
 - TW-1580 "modified" attribute no longer updated (thanks to David Patrick).
