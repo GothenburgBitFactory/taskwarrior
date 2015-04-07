@@ -172,13 +172,6 @@
 #define STRING_VARIANT_SQRT_NEG      "Ne povas kalkuli kvadratan radikon de negativa nombro."
 #define STRING_VARIANT_COERCE_UNK    "Ne povas konverta datumon ni el ni al nekonata tipo"
 
-// Lexer
-//
-// These are errors generated at the lowest level of input analysis,
-// at the character level.
-#define STRING_LEX_IMMEDIATE_UNK     "Malsukcesis eki leksikan analizon; trovis tuj nekonatajn signojn."
-#define STRING_LEX_TYPE_UNK          "Leksika analizilo ne povas interpreti sintagmon de nekonata tipo."
-
 // Dates
 //
 // These are errors generated when parsing date values.

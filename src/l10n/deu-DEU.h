@@ -172,13 +172,6 @@
 #define STRING_VARIANT_SQRT_NEG      "Quadratwurzel einer negativen Zahl kann nicht berechnet werden."
 #define STRING_VARIANT_COERCE_UNK    "Kann nicht in oder von einem unbekannten Typ konvertieren"
 
-// Lexer
-//
-// These are errors generated at the lowest level of input analysis,
-// at the character level.
-#define STRING_LEX_IMMEDIATE_UNK     "Lexer konnte nicht gestartet werden, sofort unbekannte Zeichen gefunden."
-#define STRING_LEX_TYPE_UNK          "Lexer kann unbekanntes Symbol nicht verarbeiten."
-
 // Dates
 //
 // These are errors generated when parsing date values.

@@ -172,13 +172,6 @@
 #define STRING_VARIANT_SQRT_NEG      "Ne peut pas calculer la racine carrée d'un nombre négatif."
 #define STRING_VARIANT_COERCE_UNK    "Cannot coerce data either to or from an unknown type"
 
-// Lexer
-//
-// These are errors generated at the lowest level of input analysis,
-// at the character level.
-#define STRING_LEX_IMMEDIATE_UNK     "Lexer start failure, unknown characters found immediately."
-#define STRING_LEX_TYPE_UNK          "Lexer cannot process and unknown token type."
-
 // Dates
 //
 // These are errors generated when parsing date values.
@@ -565,6 +558,7 @@
 #define STRING_CMD_CONTEXT_DEF_FAIL  "Context '{1}' not defined."
 #define STRING_CMD_CONTEXT_DEF_USAG  "Both context name and its definition must be provided."
 #define STRING_CMD_CONTEXT_DEF_ABRT  "Context definiton aborted."
+#define STRING_CMD_CONTEXT_DEF_ABRT2 "Filter validation failed: {1}"
 #define STRING_CMD_CONTEXT_DEF_CONF  "The filter '{1}' matches 0 pending tasks. Do you wish to continue?"
 #define STRING_CMD_CONTEXT_DEL_SUCC  "Context '{1}' deleted."
 #define STRING_CMD_CONTEXT_DEL_FAIL  "Context '{1}' not deleted."

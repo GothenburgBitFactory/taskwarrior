@@ -172,13 +172,6 @@
 #define STRING_VARIANT_SQRT_NEG      "Nie można wyciągnąć pierwiastka kwadratowego z wartości ujemnej."
 #define STRING_VARIANT_COERCE_UNK    "Nie można rzutować danych z/na nieznaney typ"
 
-// Lexer
-//
-// These are errors generated at the lowest level of input analysis,
-// at the character level.
-#define STRING_LEX_IMMEDIATE_UNK     "Nieudany start lexera, znaleziono niepoprawny symbol."
-#define STRING_LEX_TYPE_UNK          "Lexer nie może przetworzyć nieznanego tokenu."
-
 // Dates
 //
 // These are errors generated when parsing date values.

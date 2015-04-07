@@ -172,13 +172,6 @@
 #define STRING_VARIANT_SQRT_NEG      "No se puede calcular la raíz cuadrada de un tipo desconocido"
 #define STRING_VARIANT_COERCE_UNK    "No se puede convertir un dato ni a un tipo desconocido ni desde el mismo"
 
-// Lexer
-//
-// These are errors generated at the lowest level of input analysis,
-// at the character level.
-#define STRING_LEX_IMMEDIATE_UNK     "El analizador léxico falló, encontró caracteres desconocidos al comienzo."
-#define STRING_LEX_TYPE_UNK          "El analizador léxico no puede procesar un tipo desconocido de sintagma."
-
 // Dates
 //
 // These are errors generated when parsing date values.

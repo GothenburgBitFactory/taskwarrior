@@ -172,13 +172,6 @@
 #define STRING_VARIANT_SQRT_NEG      "Cannot take the square root of a negative number."
 #define STRING_VARIANT_COERCE_UNK    "Cannot coerce data either to or from an unknown type"
 
-// Lexer
-//
-// These are errors generated at the lowest level of input analysis,
-// at the character level.
-#define STRING_LEX_IMMEDIATE_UNK     "Lexer start failure, unknown characters found immediately."
-#define STRING_LEX_TYPE_UNK          "Lexer cannot process an unknown token type."
-
 // Dates
 //
 // These are errors generated when parsing date values.

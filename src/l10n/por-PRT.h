@@ -172,13 +172,6 @@
 #define STRING_VARIANT_SQRT_NEG      "Impossível calcular a raiz quadrada de um número negativo."
 #define STRING_VARIANT_COERCE_UNK    "Impossível converter dados de ou para um tipo desconhecido"
 
-// Lexer
-//
-// These are errors generated at the lowest level of input analysis,
-// at the character level.
-#define STRING_LEX_IMMEDIATE_UNK     "Falha de parser lexical, caracteres desconhecidos encontrados imediatamente."
-#define STRING_LEX_TYPE_UNK          "O parser lexical consegue processar tokens de tipo desconhecido."
-
 // Dates
 //
 // These are errors generated when parsing date values.
