@@ -72,10 +72,9 @@ syn match taskrcGoodKey '^\s*\Vcolor.history.add='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolor.history.delete='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolor.history.done='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolor.overdue='he=e-1
-syn match taskrcGoodKey '^\s*\Vcolor.pri.H='he=e-1
-syn match taskrcGoodKey '^\s*\Vcolor.pri.L='he=e-1
-syn match taskrcGoodKey '^\s*\Vcolor.pri.M='he=e-1
-syn match taskrcGoodKey '^\s*\Vcolor.pri.none='he=e-1
+syn match taskrcGoodKey '^\s*\Vcolor.uda.priority.H='he=e-1
+syn match taskrcGoodKey '^\s*\Vcolor.uda.priority.L='he=e-1
+syn match taskrcGoodKey '^\s*\Vcolor.uda.priority.M='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolor.recurring='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolor.scheduled='he=e-1
 syn match taskrcGoodKey '^\s*\Vcolor.summary.background='he=e-1
@@ -154,7 +153,9 @@ syn match taskrcGoodKey '^\s*\Vurgency.blocking.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.due.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.inherit.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.next.coefficient='he=e-1
-syn match taskrcGoodKey '^\s*\Vurgency.priority.coefficient='he=e-1
+syn match taskrcGoodKey '^\s*\Vurgency.uda.priority.H.coefficient='he=e-1
+syn match taskrcGoodKey '^\s*\Vurgency.uda.priority.M.coefficient='he=e-1
+syn match taskrcGoodKey '^\s*\Vurgency.uda.priority.L.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.project.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.scheduled.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.tags.coefficient='he=e-1
