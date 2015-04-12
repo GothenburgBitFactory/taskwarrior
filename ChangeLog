@@ -27,6 +27,8 @@
           (thanks to Scott M).
 - TW-1591 add an option to see non-pending project with command task summary
           (thanks to Pierre Campet).
+- TW-1595 info command doesn't print urgency details, if urgency is negative
+          (thanks to Peter Rochen).
 - Setting 'bulk' to zero is interpreted as infinity, which means there is no
   amount of changes that is considered dangerous (thanks to Tomas Babej).
 - Disable hooks in bash completion script.  Hooks were previously able to

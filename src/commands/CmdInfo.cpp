@@ -393,7 +393,7 @@ int CmdInfo::execute (std::string& output)
 
     // Create a second table, containing urgency details, if necessary.
     ViewText urgencyDetails;
-    if (task->urgency () > 0.0)
+    if (task->urgency () != 0.0)
     {
       if (context.color ())
       {
