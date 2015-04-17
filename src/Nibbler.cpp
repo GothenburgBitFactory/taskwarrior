@@ -27,7 +27,6 @@
 #include <cmake.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <time.h>
 #include <inttypes.h>
 #include <Lexer.h>
@@ -1036,9 +1035,9 @@ bool Nibbler::getWord (std::string& result)
 
   if (i < _length)
   {
-    while (!Lexer::isDigit (_input[i]) &&
-           !isPunctuation (_input[i]) &&
-           !Lexer::isWhitespace (_input[i]))
+    while (!Lexer::isDigit       (_input[i]) &&
+           !Lexer::isPunctuation (_input[i]) &&
+           !Lexer::isWhitespace  (_input[i]))
     {
       ++i;
     }
@@ -1226,21 +1225,6 @@ bool Nibbler::depleted ()
     return true;
 
   return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Override of ispunct, that considers #, $, _ and @ not to be punctuation.
-//
-// ispunct:      ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
-// Punctuation:  ! "     % & ' ( ) * + , - . / : ; < = > ?   [ \ ] ^ _ ` { | } ~
-// delta:            # $                                   @
-//
-bool Nibbler::isPunctuation (char c)
-{
-  if (c == '@' || c == '#' || c == '$' || c == '_')
-    return false;
-
-  return ispunct (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

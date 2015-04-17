@@ -31,7 +31,6 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <Nibbler.h>
 #include <Date.h>
 #include <Variant.h>

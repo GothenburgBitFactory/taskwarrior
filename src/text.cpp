@@ -32,7 +32,6 @@
 #include <vector>
 #include <string>
 #include <strings.h>
-#include <ctype.h>
 #include <Context.h>
 #include <Lexer.h>
 #include <math.h>
@@ -477,21 +476,6 @@ bool nontrivial (const std::string& input)
       return true;
 
   return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Override of ispunct, that considers #, $ and @ not to be punctuation.
-//
-// ispunct:      ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
-// Punctuation:  ! "     % & ' ( ) * + , - . / : ; < = > ?   [ \ ] ^ _ ` { | } ~
-// delta:            # $                                   @
-//
-bool isPunctuation (char c)
-{
-  if (c == '@' || c == '#' || c == '$')
-    return false;
-
-  return ispunct (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

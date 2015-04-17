@@ -299,8 +299,14 @@ bool Lexer::isBoundary (int left, int right)
 ////////////////////////////////////////////////////////////////////////////////
 bool Lexer::isPunctuation (int c)
 {
-  return c != '@' &&
-         ispunct (c);
+  return isprint (c)   &&
+         c != ' '      &&
+         c != '@'      &&
+         c != '#'      &&
+         c != '$'      &&
+         c != '_'      &&
+         ! isDigit (c) &&
+         ! isAlpha (c);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

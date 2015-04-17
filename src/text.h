@@ -50,7 +50,6 @@ const std::string str_replace (std::string&, const std::string&, const std::stri
 const std::string str_replace (const std::string&, const std::string&, const std::string&);
 const char* optionalBlankLine ();
 bool nontrivial (const std::string&);
-bool isPunctuation (char);
 bool compare (const std::string&, const std::string&, bool sensitive = true);
 bool closeEnough (const std::string&, const std::string&, unsigned int minLength = 0);
 std::string::size_type find (const std::string&, const std::string&, bool sensitive = true);

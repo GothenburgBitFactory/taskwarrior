@@ -110,7 +110,6 @@ public:
 
   bool depleted ();
 
-  static bool isPunctuation (char);
   std::string dump ();
 
 private:
