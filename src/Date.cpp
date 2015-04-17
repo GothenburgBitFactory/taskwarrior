@@ -38,6 +38,7 @@
 #include <Dates.h>
 #include <text.h>
 #include <util.h>
+#include <utf8.h>
 #include <i18n.h>
 #include <Context.h>
 
