@@ -199,6 +199,13 @@ bool Lexer::isWhitespace (int c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isAlpha (int c)
+{
+  return (c >= 'A' && c <= 'Z') ||
+         (c >= 'a' && c <= 'z');
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Digits 0-9.
 bool Lexer::isDigit (int c)
 {
@@ -279,7 +286,7 @@ bool Lexer::isBoundary (int left, int right)
   if (right == '\0')                                 return true;
 
   // XOR
-  if (isalpha (left)       != isalpha (right))       return true;
+  if (isAlpha (left)       != isAlpha (right))       return true;
   if (isDigit (left)       != isDigit (right))       return true;
   if (isWhitespace (left)  != isWhitespace (right))  return true;
 
