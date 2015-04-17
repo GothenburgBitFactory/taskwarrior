@@ -116,16 +116,16 @@ bool DOM::get (const std::string& name, Variant& value)
     }
     else if (name == "context.width")
     {
-      value = Variant (context.terminal_width
-                         ? context.terminal_width
-                         : context.getWidth ());
+      value = Variant (static_cast<int> (context.terminal_width
+                                           ? context.terminal_width
+                                           : context.getWidth ()));
       return true;
     }
     else if (name == "context.height")
     {
-      value = Variant (context.terminal_height
-                         ? context.terminal_height
-                         : context.getHeight ());
+      value = Variant (static_cast<int> (context.terminal_height
+                                           ? context.terminal_height
+                                           : context.getHeight ()));
       return true;
     }
     else
@@ -218,7 +218,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
   // <attr>
   if (task.size () && name == "id")
   {
-    value = Variant (task.id);
+    value = Variant (static_cast<int> (task.id));
     return true;
   }
 
@@ -296,7 +296,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
     {
       if (elements[1] == "id")
       {
-        value = Variant (ref.id);
+        value = Variant (static_cast<int> (ref.id));
         return true;
       }
       else if (elements[1] == "urgency")
@@ -353,15 +353,15 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
             // <date>.minute
             // <date>.second
             Date date (ref.get_date (canonical));
-                 if (elements[2] == "year")    { value = Variant (date.year ());      return true; }
-            else if (elements[2] == "month")   { value = Variant (date.month ());     return true; }
-            else if (elements[2] == "day")     { value = Variant (date.day ());       return true; }
-            else if (elements[2] == "week")    { value = Variant (date.week ());      return true; }
-            else if (elements[2] == "weekday") { value = Variant (date.dayOfWeek ()); return true; }
-            else if (elements[2] == "julian")  { value = Variant (date.dayOfYear ()); return true; }
-            else if (elements[2] == "hour")    { value = Variant (date.hour ());      return true; }
-            else if (elements[2] == "minute")  { value = Variant (date.minute ());    return true; }
-            else if (elements[2] == "second")  { value = Variant (date.second ());    return true; }
+                 if (elements[2] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
+            else if (elements[2] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
+            else if (elements[2] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
+            else if (elements[2] == "week")    { value = Variant (static_cast<int> (date.week ()));      return true; }
+            else if (elements[2] == "weekday") { value = Variant (static_cast<int> (date.dayOfWeek ())); return true; }
+            else if (elements[2] == "julian")  { value = Variant (static_cast<int> (date.dayOfYear ())); return true; }
+            else if (elements[2] == "hour")    { value = Variant (static_cast<int> (date.hour ()));      return true; }
+            else if (elements[2] == "minute")  { value = Variant (static_cast<int> (date.minute ()));    return true; }
+            else if (elements[2] == "second")  { value = Variant (static_cast<int> (date.second ()));    return true; }
           }
         }
       }
@@ -420,15 +420,15 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
               // <annotations>.<N>.entry.minute
               // <annotations>.<N>.entry.second
               Date date (i->first.substr (11));
-                   if (elements[4] == "year")    { value = Variant (date.year ());      return true; }
-              else if (elements[4] == "month")   { value = Variant (date.month ());     return true; }
-              else if (elements[4] == "day")     { value = Variant (date.day ());       return true; }
-              else if (elements[4] == "week")    { value = Variant (date.week ());      return true; }
-              else if (elements[4] == "weekday") { value = Variant (date.dayOfWeek ()); return true; }
-              else if (elements[4] == "julian")  { value = Variant (date.dayOfYear ()); return true; }
-              else if (elements[4] == "hour")    { value = Variant (date.hour ());      return true; }
-              else if (elements[4] == "minute")  { value = Variant (date.minute ());    return true; }
-              else if (elements[4] == "second")  { value = Variant (date.second ());    return true; }
+                   if (elements[4] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
+              else if (elements[4] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
+              else if (elements[4] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
+              else if (elements[4] == "week")    { value = Variant (static_cast<int> (date.week ()));      return true; }
+              else if (elements[4] == "weekday") { value = Variant (static_cast<int> (date.dayOfWeek ())); return true; }
+              else if (elements[4] == "julian")  { value = Variant (static_cast<int> (date.dayOfYear ())); return true; }
+              else if (elements[4] == "hour")    { value = Variant (static_cast<int> (date.hour ()));      return true; }
+              else if (elements[4] == "minute")  { value = Variant (static_cast<int> (date.minute ()));    return true; }
+              else if (elements[4] == "second")  { value = Variant (static_cast<int> (date.second ()));    return true; }
             }
           }
         }
