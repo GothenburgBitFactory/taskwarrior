@@ -30,6 +30,7 @@
 #include <text.h>
 #include <Dates.h>
 #include <Date.h>
+#include <Lexer.h>
 #include <i18n.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -354,7 +355,7 @@ bool namedDates (const std::string& name, Variant& value)
   // 4th
   else if ((
             name.length () == 3 &&
-            isdigit (name[0])   &&
+            Lexer::isDigit (name[0])   &&
             ((name[1] == 's' && name[2] == 't') ||
              (name[1] == 'n' && name[2] == 'd') ||
              (name[1] == 'r' && name[2] == 'd') ||
@@ -363,8 +364,8 @@ bool namedDates (const std::string& name, Variant& value)
            ||
            (
             name.length () == 4 &&
-            isdigit (name[0])   &&
-            isdigit (name[1])   &&
+            Lexer::isDigit (name[0])   &&
+            Lexer::isDigit (name[1])   &&
             ((name[2] == 's' && name[3] == 't') ||
              (name[2] == 'n' && name[3] == 'd') ||
              (name[2] == 'r' && name[3] == 'd') ||
@@ -375,7 +376,7 @@ bool namedDates (const std::string& name, Variant& value)
     int number;
     std::string ordinal;
 
-    if (isdigit (name[1]))
+    if (Lexer::isDigit (name[1]))
     {
       number = strtol (name.substr (0, 2).c_str (), NULL, 10);
       ordinal = lowerCase (name.substr (2));

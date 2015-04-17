@@ -351,7 +351,7 @@ std::string commify (const std::string& data)
   int i;
   for (int i = 0; i < (int) data.length (); ++i)
   {
-    if (isdigit (data[i]))
+    if (Lexer::isDigit (data[i]))
       end = i;
 
     if (data[i] == '.')
@@ -369,11 +369,11 @@ std::string commify (const std::string& data)
     int consecutiveDigits = 0;
     for (; i >= 0; --i)
     {
-      if (isdigit (data[i]))
+      if (Lexer::isDigit (data[i]))
       {
         result += data[i];
 
-        if (++consecutiveDigits == 3 && i && isdigit (data[i - 1]))
+        if (++consecutiveDigits == 3 && i && Lexer::isDigit (data[i - 1]))
         {
           result += ',';
           consecutiveDigits = 0;
@@ -393,11 +393,11 @@ std::string commify (const std::string& data)
     int consecutiveDigits = 0;
     for (; i >= 0; --i)
     {
-      if (isdigit (data[i]))
+      if (Lexer::isDigit (data[i]))
       {
         result += data[i];
 
-        if (++consecutiveDigits == 3 && i && isdigit (data[i - 1]))
+        if (++consecutiveDigits == 3 && i && Lexer::isDigit (data[i - 1]))
         {
           result += ',';
           consecutiveDigits = 0;

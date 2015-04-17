@@ -40,6 +40,7 @@
 #include <Context.h>
 #include <Date.h>
 #include <Duration.h>
+#include <Lexer.h>
 #include <ISO8601.h>
 #include <text.h>
 #include <util.h>
@@ -242,7 +243,7 @@ Date getNextRecurrence (Date& current, std::string& period)
     return current + (days * 86400);
   }
 
-  else if (isdigit (period[0]) && period[period.length () - 1] == 'm')
+  else if (Lexer::isDigit (period[0]) && period[period.length () - 1] == 'm')
   {
     std::string numeric = period.substr (0, period.length () - 1);
     int increment = atoi (numeric.c_str ());
@@ -275,7 +276,7 @@ Date getNextRecurrence (Date& current, std::string& period)
     return Date (m, d, y);
   }
 
-  else if (isdigit (period[0]) && period[period.length () - 1] == 'q')
+  else if (Lexer::isDigit (period[0]) && period[period.length () - 1] == 'q')
   {
     std::string numeric = period.substr (0, period.length () - 1);
     int increment = atoi (numeric.c_str ());

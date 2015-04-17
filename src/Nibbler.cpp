@@ -30,6 +30,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <inttypes.h>
+#include <Lexer.h>
 #include <Nibbler.h>
 #ifdef NIBBLER_FEATURE_DATE
 #include <Date.h>
@@ -284,7 +285,7 @@ bool Nibbler::getQuoted (
 bool Nibbler::getDigit (int& result)
 {
   if (_cursor < _length &&
-      isdigit (_input[_cursor]))
+      Lexer::isDigit (_input[_cursor]))
   {
     result = _input[_cursor++] - '0';
     return true;
@@ -300,12 +301,12 @@ bool Nibbler::getDigit6 (int& result)
   if (i < _length &&
       _length - i >= 6)
   {
-    if (isdigit (_input[i + 0]) &&
-        isdigit (_input[i + 1]) &&
-        isdigit (_input[i + 2]) &&
-        isdigit (_input[i + 3]) &&
-        isdigit (_input[i + 4]) &&
-        isdigit (_input[i + 5]))
+    if (Lexer::isDigit (_input[i + 0]) &&
+        Lexer::isDigit (_input[i + 1]) &&
+        Lexer::isDigit (_input[i + 2]) &&
+        Lexer::isDigit (_input[i + 3]) &&
+        Lexer::isDigit (_input[i + 4]) &&
+        Lexer::isDigit (_input[i + 5]))
     {
       result = strtoimax (_input.substr (_cursor, 6).c_str (), NULL, 10);
       _cursor += 6;
@@ -323,10 +324,10 @@ bool Nibbler::getDigit4 (int& result)
   if (i < _length &&
       _length - i >= 4)
   {
-    if (isdigit (_input[i + 0]) &&
-        isdigit (_input[i + 1]) &&
-        isdigit (_input[i + 2]) &&
-        isdigit (_input[i + 3]))
+    if (Lexer::isDigit (_input[i + 0]) &&
+        Lexer::isDigit (_input[i + 1]) &&
+        Lexer::isDigit (_input[i + 2]) &&
+        Lexer::isDigit (_input[i + 3]))
     {
       result = strtoimax (_input.substr (_cursor, 4).c_str (), NULL, 10);
       _cursor += 4;
@@ -344,9 +345,9 @@ bool Nibbler::getDigit3 (int& result)
   if (i < _length &&
       _length - i >= 3)
   {
-    if (isdigit (_input[i + 0]) &&
-        isdigit (_input[i + 1]) &&
-        isdigit (_input[i + 2]))
+    if (Lexer::isDigit (_input[i + 0]) &&
+        Lexer::isDigit (_input[i + 1]) &&
+        Lexer::isDigit (_input[i + 2]))
     {
       result = strtoimax (_input.substr (_cursor, 3).c_str (), NULL, 10);
       _cursor += 3;
@@ -364,8 +365,8 @@ bool Nibbler::getDigit2 (int& result)
   if (i < _length &&
       _length - i >= 2)
   {
-    if (isdigit (_input[i + 0]) &&
-        isdigit (_input[i + 1]))
+    if (Lexer::isDigit (_input[i + 0]) &&
+        Lexer::isDigit (_input[i + 1]))
     {
       result = strtoimax (_input.substr (_cursor, 2).c_str (), NULL, 10);
       _cursor += 2;
@@ -390,7 +391,7 @@ bool Nibbler::getInt (int& result)
   }
 
   // TODO Potential for use of find_first_not_of
-  while (i < _length && isdigit (_input[i]))
+  while (i < _length && Lexer::isDigit (_input[i]))
     ++i;
 
   if (i > _cursor)
@@ -408,7 +409,7 @@ bool Nibbler::getUnsignedInt (int& result)
 {
   std::string::size_type i = _cursor;
   // TODO Potential for use of find_first_not_of
-  while (i < _length && isdigit (_input[i]))
+  while (i < _length && Lexer::isDigit (_input[i]))
     ++i;
 
   if (i > _cursor)
@@ -446,11 +447,11 @@ bool Nibbler::getNumber (std::string& result)
     ++i;
 
   // digit+
-  if (i < _length && isdigit (_input[i]))
+  if (i < _length && Lexer::isDigit (_input[i]))
   {
     ++i;
 
-    while (i < _length && isdigit (_input[i]))
+    while (i < _length && Lexer::isDigit (_input[i]))
       ++i;
 
     // ( . digit+ )?
@@ -458,7 +459,7 @@ bool Nibbler::getNumber (std::string& result)
     {
       ++i;
 
-      while (i < _length && isdigit (_input[i]))
+      while (i < _length && Lexer::isDigit (_input[i]))
         ++i;
     }
 
@@ -470,11 +471,11 @@ bool Nibbler::getNumber (std::string& result)
       if (i < _length && (_input[i] == '+' || _input[i] == '-'))
         ++i;
 
-      if (i < _length && isdigit (_input[i]))
+      if (i < _length && Lexer::isDigit (_input[i]))
       {
         ++i;
 
-        while (i < _length && isdigit (_input[i]))
+        while (i < _length && Lexer::isDigit (_input[i]))
           ++i;
 
         result = _input.substr (_cursor, i - _cursor);
@@ -528,11 +529,11 @@ bool Nibbler::getUnsignedNumber (double& result)
   std::string::size_type i = _cursor;
 
   // digit+
-  if (i < _length && isdigit (_input[i]))
+  if (i < _length && Lexer::isDigit (_input[i]))
   {
     ++i;
 
-    while (i < _length && isdigit (_input[i]))
+    while (i < _length && Lexer::isDigit (_input[i]))
       ++i;
 
     // ( . digit+ )?
@@ -540,7 +541,7 @@ bool Nibbler::getUnsignedNumber (double& result)
     {
       ++i;
 
-      while (i < _length && isdigit (_input[i]))
+      while (i < _length && Lexer::isDigit (_input[i]))
         ++i;
     }
 
@@ -552,11 +553,11 @@ bool Nibbler::getUnsignedNumber (double& result)
       if (i < _length && (_input[i] == '+' || _input[i] == '-'))
         ++i;
 
-      if (i < _length && isdigit (_input[i]))
+      if (i < _length && Lexer::isDigit (_input[i]))
       {
         ++i;
 
-        while (i < _length && isdigit (_input[i]))
+        while (i < _length && Lexer::isDigit (_input[i]))
           ++i;
 
         result = strtof (_input.substr (_cursor, i - _cursor).c_str (), NULL);
@@ -710,21 +711,21 @@ bool Nibbler::getDateISO (time_t& t)
   if (i < _length &&
       _length - i >= 16)
   {
-    if (isdigit (_input[i + 0]) &&
-        isdigit (_input[i + 1]) &&
-        isdigit (_input[i + 2]) &&
-        isdigit (_input[i + 3]) &&
-        isdigit (_input[i + 4]) &&
-        isdigit (_input[i + 5]) &&
-        isdigit (_input[i + 6]) &&
-        isdigit (_input[i + 7]) &&
+    if (Lexer::isDigit (_input[i + 0]) &&
+        Lexer::isDigit (_input[i + 1]) &&
+        Lexer::isDigit (_input[i + 2]) &&
+        Lexer::isDigit (_input[i + 3]) &&
+        Lexer::isDigit (_input[i + 4]) &&
+        Lexer::isDigit (_input[i + 5]) &&
+        Lexer::isDigit (_input[i + 6]) &&
+        Lexer::isDigit (_input[i + 7]) &&
         _input[i + 8] == 'T' &&
-        isdigit (_input[i + 9]) &&
-        isdigit (_input[i + 10]) &&
-        isdigit (_input[i + 11]) &&
-        isdigit (_input[i + 12]) &&
-        isdigit (_input[i + 13]) &&
-        isdigit (_input[i + 14]) &&
+        Lexer::isDigit (_input[i + 9]) &&
+        Lexer::isDigit (_input[i + 10]) &&
+        Lexer::isDigit (_input[i + 11]) &&
+        Lexer::isDigit (_input[i + 12]) &&
+        Lexer::isDigit (_input[i + 13]) &&
+        Lexer::isDigit (_input[i + 14]) &&
         _input[i + 15] == 'Z')
     {
       _cursor += 16;
@@ -790,7 +791,7 @@ bool Nibbler::parseDigits(std::string::size_type& i,
       // Check that 'f' of them are digits
       unsigned int g;
       for (g = 0; g < f; g++)
-        if (! isdigit (_input[i + g]))
+        if (! Lexer::isDigit (_input[i + g]))
             break;
       // Parse the integer when it is the case
       if (g == f)
@@ -881,9 +882,9 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
     case 'a':
     case 'A':
       if (i + 3 <= _length          &&
-          ! isdigit (_input[i + 0]) &&
-          ! isdigit (_input[i + 1]) &&
-          ! isdigit (_input[i + 2]))
+          ! Lexer::isDigit (_input[i + 0]) &&
+          ! Lexer::isDigit (_input[i + 1]) &&
+          ! Lexer::isDigit (_input[i + 2]))
       {
         wday = Date::dayOfWeek (_input.substr (i, 3).c_str ());
         i += (format[f] == 'a') ? 3 : Date::dayName (wday).size ();
@@ -895,9 +896,9 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
     case 'b':
     case 'B':
       if (i + 3 <= _length          &&
-          ! isdigit (_input[i + 0]) &&
-          ! isdigit (_input[i + 1]) &&
-          ! isdigit (_input[i + 2]))
+          ! Lexer::isDigit (_input[i + 0]) &&
+          ! Lexer::isDigit (_input[i + 1]) &&
+          ! Lexer::isDigit (_input[i + 2]))
       {
         if (month != -1)
           return false;
@@ -1003,7 +1004,7 @@ bool Nibbler::getName (std::string& result)
 
   if (i < _length)
   {
-    if (! isdigit (_input[i]) &&
+    if (! Lexer::isDigit (_input[i]) &&
         ! ispunct (_input[i]) &&
         ! Lexer::isWhitespace (_input[i]))
     {
@@ -1035,7 +1036,7 @@ bool Nibbler::getWord (std::string& result)
 
   if (i < _length)
   {
-    while (!isdigit (_input[i]) &&
+    while (!Lexer::isDigit (_input[i]) &&
            !isPunctuation (_input[i]) &&
            !Lexer::isWhitespace (_input[i]))
     {

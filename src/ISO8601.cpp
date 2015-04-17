@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Lexer.h>
 #include <ISO8601.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +197,7 @@ bool ISO8601d::parse_date_time_ext (Nibbler& n)
       else if (parse_off_ext (n))
         ;
 
-      if (! isdigit (n.next ()))
+      if (! Lexer::isDigit (n.next ()))
         return true;
     }
 
@@ -228,16 +229,16 @@ bool ISO8601d::parse_date_time (Nibbler& n)
       if (n.skip ('Z'))
       {
         _utc = true;
-        if (!isdigit (n.next ()))
+        if (!Lexer::isDigit (n.next ()))
           return true;
       }
       else if (parse_off (n))
       {
-        if (!isdigit (n.next ()))
+        if (!Lexer::isDigit (n.next ()))
           return true;
       }
 
-      if (!isdigit (n.next ()))
+      if (!Lexer::isDigit (n.next ()))
         return true;
     }
 
@@ -277,13 +278,13 @@ bool ISO8601d::parse_date_ext (Nibbler& n)
       }
 
       _year = year;
-      if (!isdigit (n.next ()))
+      if (!Lexer::isDigit (n.next ()))
         return true;
     }
     else if (n.getDigit3 (_julian))
     {
       _year = year;
-      if (!isdigit (n.next ()))
+      if (!Lexer::isDigit (n.next ()))
         return true;
     }
     else if (n.getDigit2 (month) &&
@@ -293,7 +294,7 @@ bool ISO8601d::parse_date_ext (Nibbler& n)
       _year = year;
       _month = month;
       _day = day;
-      if (!isdigit (n.next ()))
+      if (!Lexer::isDigit (n.next ()))
         return true;
     }
   }
@@ -327,7 +328,7 @@ bool ISO8601d::parse_date (Nibbler& n, bool ambiguous)
           _weekday = day;
 
         _year = year;
-        if (!isdigit (n.next ()))
+        if (!Lexer::isDigit (n.next ()))
           return true;
       }
     }
@@ -336,7 +337,7 @@ bool ISO8601d::parse_date (Nibbler& n, bool ambiguous)
       if (n.getDigit2 (_month))
       {
         _year = year;
-        if (!isdigit (n.next ()))
+        if (!Lexer::isDigit (n.next ()))
           return true;
       }
     }
@@ -345,13 +346,13 @@ bool ISO8601d::parse_date (Nibbler& n, bool ambiguous)
       _year = year;
       _month = month / 100;
       _day = month % 100;
-      if (!isdigit (n.next ()))
+      if (!Lexer::isDigit (n.next ()))
         return true;
     }
     else if (ambiguous && n.getDigit3 (_julian))
     {
       _year = year;
-      if (!isdigit (n.next ()))
+      if (!Lexer::isDigit (n.next ()))
         return true;
     }
   }
@@ -382,7 +383,7 @@ bool ISO8601d::parse_off_ext (Nibbler& n)
           offset += mm * 60;
 
         _offset = (sign == "-") ? -offset : offset;
-        if (!isdigit (n.next ()))
+        if (!Lexer::isDigit (n.next ()))
           return true;
       }
     }
@@ -412,7 +413,7 @@ bool ISO8601d::parse_off (Nibbler& n)
           offset += mm * 60;
 
         _offset = (sign == "-") ? -offset : offset;
-        if (!isdigit (n.next ()))
+        if (!Lexer::isDigit (n.next ()))
           return true;
       }
     }
@@ -453,7 +454,7 @@ bool ISO8601d::parse_time_ext (Nibbler& n)
     if (_ambiguity)
     {
       _seconds = seconds;
-      if (!isdigit (n.next ()))
+      if (!Lexer::isDigit (n.next ()))
         return true;
     }
   }
@@ -487,7 +488,7 @@ bool ISO8601d::parse_time (Nibbler& n, bool ambiguous)
     }
 
     _seconds = seconds;
-    if (!isdigit (n.next ()))
+    if (!Lexer::isDigit (n.next ()))
       return true;
   }
 
@@ -504,7 +505,7 @@ bool ISO8601d::parse_time_utc_ext (Nibbler& n)
       n.skip ('Z'))
   {
     _utc = true;
-    if (!isdigit (n.next ()))
+    if (!Lexer::isDigit (n.next ()))
       return true;
   }
 
@@ -521,7 +522,7 @@ bool ISO8601d::parse_time_utc (Nibbler& n)
       n.skip ('Z'))
   {
     _utc = true;
-    if (!isdigit (n.next ()))
+    if (!Lexer::isDigit (n.next ()))
       return true;
   }
 
@@ -537,7 +538,7 @@ bool ISO8601d::parse_time_off_ext  (Nibbler& n)
   if (parse_time_ext (n) &&
       parse_off_ext (n))
   {
-    if (!isdigit (n.next ()))
+    if (!Lexer::isDigit (n.next ()))
       return true;
   }
 
@@ -553,7 +554,7 @@ bool ISO8601d::parse_time_off  (Nibbler& n)
   if (parse_time (n, true) &&
       parse_off (n))
   {
-    if (!isdigit (n.next ()))
+    if (!Lexer::isDigit (n.next ()))
       return true;
   }
 
