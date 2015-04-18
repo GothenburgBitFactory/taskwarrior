@@ -136,7 +136,7 @@ Variant::Variant (const char* value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Variant::Variant (const time_t value, const enum type new_type /*=type_date*/)
+Variant::Variant (const time_t value, const enum type new_type)
 : _type (new_type)
 , _bool (false)
 , _integer (0)

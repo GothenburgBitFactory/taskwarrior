@@ -176,24 +176,24 @@ int main (int argc, char** argv)
     t.is (v35b.get_duration (), 3628800,          "cast string --> duration");
 
     // Variant::type_date --> *
-    Variant v40 ((time_t) 1234567890);
+    Variant v40 ((time_t) 1234567890, Variant::type_date);
     v40.cast (Variant::type_boolean);
     t.ok (v40.type () == Variant::type_boolean, "cast date --> boolean");
     t.ok (v40.get_bool () == true,              "cast date --> boolean");
 
-    Variant v41 ((time_t) 1234567890);
+    Variant v41 ((time_t) 1234567890, Variant::type_date);
     v41.cast (Variant::type_integer);
     t.ok (v41.type () == Variant::type_integer, "cast date --> integer");
     t.ok (v41.get_integer () == 1234567890,     "cast date --> integer");
 
-    Variant v42 ((time_t) 1234567890);
+    Variant v42 ((time_t) 1234567890, Variant::type_date);
     v42.cast (Variant::type_real);
     t.ok (v42.type () == Variant::type_real,      "cast date --> real");
     t.is (v42.get_real (), 1234567890.0, EPSILON, "cast date --> real");
 
     // YYYY-MM-DDThh:mm:ss
     //     ^  ^  ^  ^  ^
-    Variant v43 ((time_t) 1234567890);
+    Variant v43 ((time_t) 1234567890, Variant::type_date);
     v43.cast (Variant::type_string);
     t.ok (v43.type () == Variant::type_string, "cast date --> string");
     std::string s = v43.get_string ();
@@ -204,12 +204,12 @@ int main (int argc, char** argv)
     t.is ((int)s[16], (int)':',                "cast date --> string");
     t.is ((int)s.length (), 19,                "cast date --> string");
 
-    Variant v44 ((time_t) 1234567890);
+    Variant v44 ((time_t) 1234567890, Variant::type_date);
     v44.cast (Variant::type_date);
     t.ok (v44.type () == Variant::type_date,    "cast date --> date");
     t.ok (v44.get_date () == 1234567890,        "cast date --> date");
 
-    Variant v45 ((time_t) 1234567890);
+    Variant v45 ((time_t) 1234567890, Variant::type_date);
     v45.cast (Variant::type_duration);
     t.ok (v45.type () == Variant::type_duration, "cast date --> duration");
     t.ok (v45.get_duration () == 1234567890,     "cast date --> duration");

@@ -50,7 +50,7 @@ public:
   Variant (const double);
   Variant (const std::string&);
   Variant (const char*);
-  Variant (const time_t, const enum type new_type = type_date);
+  Variant (const time_t, const enum type);
   ~Variant ();
 
   void source (const std::string&);
