@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <Directory.h>
 
-#if defined SOLARIS || defined NETBSD
+#if defined SOLARIS || defined NETBSD || defined FREEBSD
 #include <limits.h>
 #endif
 
