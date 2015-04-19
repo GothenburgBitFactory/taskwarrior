@@ -1,31 +1,13 @@
 
-New Features in taskwarrior 2.4.3
+New Features in taskwarrior 2.4.4
 
-  - UDA string attributes with allowable values can now define their sort order.
-  - The 'priority' attribute is now a UDA, configured by default.
+New commands in taskwarrior 2.4.4
 
-New commands in taskwarrior 2.4.3
+New configuration options in taskwarrior 2.4.4
 
-  -
+Newly deprecated features in taskwarrior 2.4.4
 
-New configuration options in taskwarrior 2.4.3
-
-  - Setting 'bulk' to zero is interpreted as infinity, which means there is no
-    amount of changes that is considered dangerous.
-  - The 'urgency.user.keyword.<keyword>.coefficient' setting allows tasks with
-    specific words in the description to have adjusted urgency.
-  - The 'summary.all.projects' setting shows all projects in the 'summary'
-    reportş instead of just those with pending tasks.
-
-Newly deprecated features in taskwarrior 2.4.3
-
-  -
-
-Removed features in 2.4.3
-
-  - The 'priority.long' and 'priority.short' column formats are no longer
-    supported.
-  - The 'default.priority' setting is now 'uda.priority.default'.
+Removed features in 2.4.4
 
 Known Issues
 

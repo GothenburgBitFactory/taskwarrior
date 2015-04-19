@@ -1,3 +1,7 @@
+2.4.4 () -
+
+------ current release ---------------------------
+
 2.4.3 (2015-04-19) 499044b9b6bdbc95338ea585204e949d80b24a09
 
 - TW-57   user defined attribute sort order (thanks to Max Muller).
@@ -37,8 +41,6 @@
 - Performance improvements:
   + Stops after measuring a fixed-width column format.
   + Reduced number of std::string copies.
-
------- current release ---------------------------
 
 2.4.2 (2015-03-15) b9dc0813d9a8922b4cef9595033f133f9fbabf44
 
