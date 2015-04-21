@@ -10,10 +10,10 @@ Pre-requisites
 You will need the CMake build system installed in order to build taskwarrior
 from source. More information on cmake can be obtained at http://cmake.org
 
-You will need a C++ compiler that supports C++11 N1984, which includes:
+You will need a C++ compiler that supports full C++11, which includes:
 
-  - gcc 4.4   (released 2009-04-21)
-  - clang 2.9 (released 2011-04-06)
+  - gcc 4.7   (released 2012-03-23)
+  - clang 3.3 (released 2013-01-07)
 
 In addition:
 

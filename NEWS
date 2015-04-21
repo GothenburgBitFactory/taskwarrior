@@ -1,13 +1,23 @@
 
 New Features in taskwarrior 2.4.4
 
+  - Taskwarrior now requires GCC 4.7+ / Clang 3.3+, for full C++11 support.
+
 New commands in taskwarrior 2.4.4
+
+  -
 
 New configuration options in taskwarrior 2.4.4
 
+  -
+
 Newly deprecated features in taskwarrior 2.4.4
 
+  -
+
 Removed features in 2.4.4
+
+  -
 
 Known Issues
 
