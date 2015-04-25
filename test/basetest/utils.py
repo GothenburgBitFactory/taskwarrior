@@ -279,7 +279,7 @@ def get_IPs(hostname):
     return output
 
 
-def port_used(addr="localhost", port=None):
+def port_used(addr="127.0.0.1", port=None):
     "Return True if port is in use, False otherwise"
     if port is None:
         raise TypeError("Argument 'port' may not be None")
@@ -304,7 +304,7 @@ def port_used(addr="localhost", port=None):
         return False
 
 
-def find_unused_port(addr="localhost", start=53589, track=True):
+def find_unused_port(addr="127.0.0.1", start=53589, track=True):
     """Find an unused port starting at `start` port
 
     If track=False the returned port will not be marked as in-use and the code
