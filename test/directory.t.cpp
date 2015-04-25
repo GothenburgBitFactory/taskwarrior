@@ -129,7 +129,7 @@ int main (int argc, char** argv)
   t.notok (d9.up (),                "parent / --> false");
 
   // Test permissions.
-  umask(0022);
+  umask (0022);
   Directory d10 ("tmp/dir.perm");
   d10.create (0750);
   t.ok (d10.exists (),               "Directory::create perm file exists");
