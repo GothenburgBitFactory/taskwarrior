@@ -255,10 +255,13 @@ int CmdSync::execute (std::string& output)
         else if (upload_count > 0 && download_count > 0)
           context.footnote (format (STRING_CMD_SYNC_SUCCESS3, upload_count, download_count));
       }
+
+      status = 0;
     }
     else if (code == "201")
     {
       context.footnote (STRING_CMD_SYNC_SUCCESS_NOP);
+      status = 0;
     }
     else if (code == "301")
     {
@@ -266,6 +269,7 @@ int CmdSync::execute (std::string& output)
       context.config.set ("taskd.server", new_server);
       context.error (STRING_CMD_SYNC_RELOCATE0);
       context.error ("  " + format (STRING_CMD_SYNC_RELOCATE1, new_server));
+      status = 2;
     }
     else if (code == "430")
     {
