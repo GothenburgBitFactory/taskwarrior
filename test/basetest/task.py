@@ -147,7 +147,7 @@ class Task(object):
             return f.readlines()
 
     def runSuccess(self, args=(), input=None, merge_streams=False,
-                   timeout=1):
+                   timeout=5):
         """Invoke task with given arguments and fail if exit code != 0
 
         Use runError if you want exit_code to be tested automatically and
@@ -179,7 +179,7 @@ class Task(object):
 
         return output
 
-    def runError(self, args=(), input=None, merge_streams=False, timeout=1):
+    def runError(self, args=(), input=None, merge_streams=False, timeout=5):
         """Invoke task with given arguments and fail if exit code == 0
 
         Use runSuccess if you want exit_code to be tested automatically and
