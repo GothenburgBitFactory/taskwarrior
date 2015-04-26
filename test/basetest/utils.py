@@ -129,9 +129,9 @@ def _queue_output(arguments, pidq, outputq):
         outputq.put((
             "",
             ("Unexpected exception caught during execution of taskw: '{0}' . "
-             "If you are running out-of-tree tests set USE_PATH=1 in shell "
-             "env before execution and add the location of the task(d) binary "
-             "to the PATH".format(e)),
+             "If you are running out-of-tree tests set TASK_USE_PATH=1 or "
+             "TASKD_USE_PATH=1 in shell env before execution and add the "
+             "location of the task(d) binary to the PATH".format(e)),
             255))  # false exitcode
 
         return
@@ -279,7 +279,7 @@ def get_IPs(hostname):
     return output
 
 
-def port_used(addr="127.0.0.1", port=None):
+def port_used(addr="localhost", port=None):
     "Return True if port is in use, False otherwise"
     if port is None:
         raise TypeError("Argument 'port' may not be None")
@@ -304,7 +304,7 @@ def port_used(addr="127.0.0.1", port=None):
         return False
 
 
-def find_unused_port(addr="127.0.0.1", start=53589, track=True):
+def find_unused_port(addr="localhost", start=53589, track=True):
     """Find an unused port starting at `start` port
 
     If track=False the returned port will not be marked as in-use and the code
