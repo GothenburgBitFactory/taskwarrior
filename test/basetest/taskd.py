@@ -39,7 +39,7 @@ class Taskd(object):
     TASKD_NOT_LISTENING = 3
 
     def __init__(self, taskd=DEFAULT_TASKD, certpath=None,
-                 address="127.0.0.1"):
+                 address="localhost"):
         """Initialize a Task server that runs in the background and stores data
         in a temporary folder
 
