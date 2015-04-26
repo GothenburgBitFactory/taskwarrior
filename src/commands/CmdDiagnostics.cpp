@@ -162,12 +162,6 @@ int CmdDiagnostics::execute (std::string& output)
 #endif
       << "      CMake: " << CMAKE_VERSION << "\n"
       << "       " << STRING_CMD_DIAG_CAPS << ":"
-#ifdef HAVE_LIBPTHREAD
-      << " +pthreads"
-#else
-      << " -pthreads"
-#endif
-
 #ifdef HAVE_LIBGNUTLS
       << " +tls"
 #else

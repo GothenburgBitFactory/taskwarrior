@@ -51,12 +51,6 @@
 /* Found the GnuTLS library */
 #cmakedefine HAVE_LIBGNUTLS
 
-/* Found the Readline library */
-#cmakedefine HAVE_READLINE
-
-/* Found the pthread library */
-#cmakedefine HAVE_LIBPTHREAD
-
 /* Found tm_gmtoff */
 #cmakedefine HAVE_TM_GMTOFF
 
