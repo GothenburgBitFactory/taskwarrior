@@ -166,7 +166,7 @@ std::string Config::_defaults =
   "color=on                                       # Enable color\n"
 #if defined(LINUX) || defined(DARWIN)
   "\n"
-  "rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,pri.\n"
+  "rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged\n"
   "\n"
   "# General decoration\n"
   "color.label=\n"
@@ -240,7 +240,7 @@ std::string Config::_defaults =
   "\n"
 #else
   "\n"
-  "rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,pri.\n"
+  "rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged\n"
   "\n"
   "# General decoration\n"
   "color.label=\n"

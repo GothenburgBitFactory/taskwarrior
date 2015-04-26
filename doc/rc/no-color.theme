@@ -24,7 +24,7 @@
 #
 ###############################################################################
 
-rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,pri.
+rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged
 
 # This is a theme that disables all default colors
 # It can be used as template for other themes
