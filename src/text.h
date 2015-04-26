@@ -55,6 +55,7 @@ bool closeEnough (const std::string&, const std::string&, unsigned int minLength
 std::string::size_type find (const std::string&, const std::string&, bool sensitive = true);
 std::string::size_type find (const std::string&, const std::string&, std::string::size_type, bool sensitive = true);
 int strippedLength (const std::string&);
+const std::string obfuscateText (const std::string&);
 const std::string format (char);
 const std::string format (int);
 const std::string formatHex (int);

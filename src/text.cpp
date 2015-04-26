@@ -625,6 +625,38 @@ int strippedLength (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string obfuscateText (const std::string& input)
+{
+  std::stringstream output;
+  std::string::size_type i = 0;
+  int character;
+  bool inside = false;
+
+  while ((character = utf8_next_char (input, i)))
+  {
+    if (inside)
+    {
+      output << (char) character;
+
+      if (character == 'm')
+        inside = false;
+    }
+    else
+    {
+      if (character == 033)
+        inside = true;
+
+      if (inside || character == ' ')
+        output << (char) character;
+      else
+        output << 'x';
+    }
+  }
+
+  return output.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const std::string format (char value)
 {
   std::stringstream s;

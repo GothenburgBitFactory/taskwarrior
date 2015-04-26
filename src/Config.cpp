@@ -342,6 +342,7 @@ std::string Config::_defaults =
   "list.all.tags=no                               # Include old tag names in 'tags' command\n"
   "print.empty.columns=no                         # Print columns which have no data for any task\n"
   "debug=no                                       # Display diagnostics\n"
+  "obfuscate=no                                   # Obfuscate data for error reporting\n"
   "fontunderline=yes                              # Uses underlines rather than -------\n"
   "shell.prompt=task>                             # Prompt used by the shell command\n"
   "\n"

@@ -114,6 +114,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 {
   context.timer_render.start ();
 
+  bool const obfuscate           = context.config.getBoolean ("obfuscate");
   bool const print_empty_columns = context.config.getBoolean ("print.empty.columns");
   std::vector <Column*> nonempty_columns;
   std::vector <bool> nonempty_sort;
@@ -321,6 +322,10 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
 
       if (cells[c].size () > max_lines)
         max_lines = cells[c].size ();
+
+      if (obfuscate)
+        for (unsigned int line = 0; line < cells[c].size (); ++line)
+          cells[c][line] = obfuscateText (cells[c][line]);
     }
 
     // Listing breaks are simply blank lines inserted when a column value

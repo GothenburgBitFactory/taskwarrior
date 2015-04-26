@@ -114,6 +114,8 @@ void ViewText::set (int row, int col, Color color)
 ////////////////////////////////////////////////////////////////////////////////
 std::string ViewText::render ()
 {
+  bool const obfuscate = context.config.getBoolean ("obfuscate");
+
   // Determine minimal, ideal column widths.
   std::vector <int> minimal;
   std::vector <int> ideal;
@@ -265,6 +267,10 @@ std::string ViewText::render ()
 
       if (cells[col].size () > max_lines)
         max_lines = cells[col].size ();
+
+      if (obfuscate)
+        for (unsigned int line = 0; line < cells[col].size (); ++line)
+          cells[col][line] = obfuscateText (cells[col][line]);
     }
 
     for (unsigned int i = 0; i < max_lines; ++i)
