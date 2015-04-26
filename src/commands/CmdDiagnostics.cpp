@@ -160,14 +160,7 @@ int CmdDiagnostics::execute (std::string& output)
 #ifdef HAVE_COMMIT
       << "     " << STRING_CMD_DIAG_COMMIT << ": " << COMMIT << "\n"
 #endif
-      << "      CMake: " << CMAKE_VERSION << "\n"
-      << "       " << STRING_CMD_DIAG_CAPS << ":"
-#ifdef HAVE_LIBGNUTLS
-      << " +tls"
-#else
-      << " -tls"
-#endif
-      << "\n";
+      << "      CMake: " << CMAKE_VERSION << "\n";
 
   out << "    libuuid: "
 #ifdef HAVE_UUID_UNPARSE_LOWER
