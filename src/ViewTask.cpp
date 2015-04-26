@@ -324,8 +324,9 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
         max_lines = cells[c].size ();
 
       if (obfuscate)
-        for (unsigned int line = 0; line < cells[c].size (); ++line)
-          cells[c][line] = obfuscateText (cells[c][line]);
+        if (_columns[c]->type () == "string")
+          for (unsigned int line = 0; line < cells[c].size (); ++line)
+            cells[c][line] = obfuscateText (cells[c][line]);
     }
 
     // Listing breaks are simply blank lines inserted when a column value

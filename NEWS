@@ -10,7 +10,8 @@ New commands in taskwarrior 2.4.4
 
 New configuration options in taskwarrior 2.4.4
 
-  -
+  - The 'obfuscate' setting, if set to '1' will replace all text with 'xxx'.
+    This is useful when sharing data for bug reporting purposes.
 
 Newly deprecated features in taskwarrior 2.4.4
 

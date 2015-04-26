@@ -503,6 +503,12 @@ Controls the GnuTLS diagnostic level. For 'sync' debugging. Level 0 means no
 diagnostics. Level 9 is the highest. Level 2 is a good setting for debugging.
 
 .TP
+.B obfuscate=1
+When set to '1', will replace all report text with 'xxx'.
+This is useful for sharing report output in bug reports.
+Default value is '0'.
+
+.TP
 .B alias.rm=delete
 Taskwarrior supports command aliases. This alias provides an alternate name
 (rm) for the delete command. You can use aliases to provide alternate names for

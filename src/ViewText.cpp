@@ -269,8 +269,9 @@ std::string ViewText::render ()
         max_lines = cells[col].size ();
 
       if (obfuscate)
-        for (unsigned int line = 0; line < cells[col].size (); ++line)
-          cells[col][line] = obfuscateText (cells[col][line]);
+        if (_columns[col]->type () == "string")
+          for (unsigned int line = 0; line < cells[col].size (); ++line)
+            cells[col][line] = obfuscateText (cells[col][line]);
     }
 
     for (unsigned int i = 0; i < max_lines; ++i)
