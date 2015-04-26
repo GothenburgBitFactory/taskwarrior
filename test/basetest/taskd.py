@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+from __future__ import division, print_function
 import os
 import tempfile
 import shutil
@@ -39,7 +39,7 @@ class Taskd(object):
     TASKD_NOT_LISTENING = 3
 
     def __init__(self, taskd=DEFAULT_TASKD, certpath=None,
-                 address="localhost"):
+                 address="127.0.0.1"):
         """Initialize a Task server that runs in the background and stores data
         in a temporary folder
 
@@ -207,6 +207,8 @@ class Taskd(object):
             self.proc = Popen(cmd, stdout=PIPE, stderr=PIPE, stdin=DEVNULL,
                               env=self.env)
         else:
+            self.show_log_contents()
+
             raise OSError("Taskd server is still running or crashed")
 
         # Wait for server to listen by checking connectivity in the port
@@ -218,12 +220,16 @@ class Taskd(object):
                 return
 
             elif status == self.TASKD_NEVER_STARTED:
+                self.show_log_contents()
+
                 raise OSError("Task server was never started. "
                               "This shouldn't happen!!")
 
             elif status == self.TASKD_EXITED:
                 # Collect output logs
                 out, err = self.proc.communicate()
+
+                self.show_log_contents()
 
                 raise OSError(
                     "Task server launched with '{0}' crashed or exited "
@@ -242,6 +248,8 @@ class Taskd(object):
                 sleep(1 / tries_per_minute)
 
             else:
+                self.show_log_contents()
+
                 raise OSError("Unknown running status for taskd '{0}'".format(
                     status))
 
@@ -250,6 +258,8 @@ class Taskd(object):
 
         # Collect output logs
         out, err = self.proc.communicate()
+
+        self.show_log_contents()
 
         raise OSError("Task server didn't start and listen on port {0} after "
                       "{1} minutes. Stdout: {2!r}. Stderr: {3!r}.".format(
@@ -338,5 +348,15 @@ class Taskd(object):
                             "tx.data")
 
         return parse_datafile(file)
+
+    def show_log_contents(self):
+        """Print to to STDOUT the contents of taskd.log
+        """
+        if os.path.isfile(self.tasklog):
+            with open(self.tasklog) as fh:
+                print("#### Start taskd.log ####")
+                for line in fh:
+                    print(line, end='')
+                print("#### End taskd.log ####")
 
 # vim: ai sts=4 et sw=4
