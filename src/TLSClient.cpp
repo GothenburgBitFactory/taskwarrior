@@ -376,6 +376,8 @@ int TLSClient::verify_certificate () const
     return GNUTLS_E_CERTIFICATE_ERROR;
   }
 
+  if (_debug)
+    std::cout << "c: INFO " << out.data << "\n";
   gnutls_free (out.data);
 #endif
 
