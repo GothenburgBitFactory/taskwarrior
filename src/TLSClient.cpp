@@ -365,7 +365,7 @@ int TLSClient::verify_certificate () const
   }
 #endif
 
-#if GNUTLS_VERSION_NUMBER >= 0x030105
+#if GNUTLS_VERSION_NUMBER >= 0x030104
   gnutls_certificate_type_t type = gnutls_certificate_type_get (_session);
   gnutls_datum_t out;
   ret = gnutls_certificate_verification_status_print (status, type, &out, 0);
