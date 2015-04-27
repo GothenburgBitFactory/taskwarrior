@@ -298,7 +298,6 @@ int TLSClient::verify_certificate () const
   // This verification function uses the trusted CAs in the credentials
   // structure. So you must have installed one or more CA certificates.
   unsigned int status = 0;
-
   const char* hostname = _host.c_str();
 #if GNUTLS_VERSION_NUMBER >= 0x030104
   if (_trust == TLSClient::ignore_hostname)
@@ -350,7 +349,7 @@ int TLSClient::verify_certificate () const
         if (_debug)
           std::cout << "c: ERROR x509 cert import. " << gnutls_strerror (ret) << "\n";
         gnutls_x509_crt_deinit(cert);
-        status = GNUTLS_E_CERTIFICATE_ERROR;
+        return GNUTLS_E_CERTIFICATE_ERROR;
       }
 
       if (gnutls_x509_crt_check_hostname (cert, hostname) == 0)
