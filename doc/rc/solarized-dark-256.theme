@@ -41,7 +41,7 @@
 #
 # Taskwarrior solarized-dark-256 theme created by Stefan A. Keel.
 
-rule.precedence.color=deleted,completed,active,keyword.,tag.,uda.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged
+rule.precedence.color=deleted,completed,active,keyword.,tag.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,uda.
 
 # General decoration
 color.label=

@@ -2,6 +2,8 @@
 
 - TW-1596 taskwarrior can't compile FreeBSD 9.3 32bit environment (thanks to
           ribbon)
+- TW-1603 Priority color precedence changed since it is a UDA, should be lowered
+          again (thanks to Jens Erat).
 - The 'obfuscate' setting, if set to '1' will replace all text with 'xxx'.
 
 ------ current release ---------------------------
