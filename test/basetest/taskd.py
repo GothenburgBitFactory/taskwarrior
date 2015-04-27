@@ -254,10 +254,10 @@ class Taskd(object):
                     status))
 
         # Force stop so we can collect output
-        self.stop()
+        proc = self.stop()
 
         # Collect output logs
-        out, err = self.proc.communicate()
+        out, err = proc.communicate()
 
         self.show_log_contents()
 
@@ -269,6 +269,8 @@ class Taskd(object):
         """Stop the server by sending a SIGTERM and SIGKILL if fails to
         terminate.
         If it's already stopped OSError will be raised
+
+        Returns: a reference to the old process object
         """
         if self.proc is None:
             raise OSError("Taskd server is not running")
@@ -282,8 +284,13 @@ class Taskd(object):
         # Wait for process to end to avoid zombies
         self.proc.wait()
 
+        # Keep a reference to the old process
+        proc = self.proc
+
         # Unset the process to inform that no process is running
         self.proc = None
+
+        return proc
 
     def _check_pid(self):
         "Check if self.proc is still running and a PID still exists"
