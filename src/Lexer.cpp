@@ -754,14 +754,16 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
       }
     }
 
-    if (_eos - _cursor > 1 &&
+    if (_eos - _cursor >= 1 &&
         _text[_cursor] == ':')
     {
       _cursor++;
 
       if (isString (ignoredToken, ignoredType, '\'') ||
           isString (ignoredToken, ignoredType, '"')  ||
-          isWord   (ignoredToken, ignoredType))
+          isWord   (ignoredToken, ignoredType)       ||
+          _eos == _cursor                            ||
+          _text[_cursor] == ' ')
       {
         token = _text.substr (marker, _cursor - marker);
         type = Lexer::Type::pair;

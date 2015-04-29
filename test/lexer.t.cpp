@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (765);
+  UnitTest t (771);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -278,6 +278,7 @@ int main (int argc, char** argv)
     // Pair
     { "name:value",                                   { { "name:value",                                   Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "desc.cont:pattern",                            { { "desc.cont:pattern",                            Lexer::Type::pair         }, NO, NO, NO, NO }, },
+    { "desc.any:",                                    { { "desc.any:",                                    Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "pro:'P 1'",                                    { { "pro:'P 1'",                                    Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "pro:PROJECT",                                  { { "pro:PROJECT",                                  Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "due:'eow - 2d'",                               { { "due:'eow - 2d'",                               Lexer::Type::pair         }, NO, NO, NO, NO }, },
