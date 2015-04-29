@@ -58,6 +58,8 @@
 #include <l10n/epo-RUS.h>
 #elif PACKAGE_LANGUAGE == LANGUAGE_POL_POL
 #include <l10n/pol-POL.h>
+#elif PACKAGE_LANGUAGE == LANGUAGE_JPN_JPN
+#include <l10n/jpn-JPN.h>
 #endif
 
 #endif

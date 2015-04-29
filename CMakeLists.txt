@@ -163,6 +163,7 @@ set (LANGUAGE_ITA_ITA 5)
 set (LANGUAGE_POR_PRT 6)
 set (LANGUAGE_EPO_RUS 7)
 set (LANGUAGE_POL_POL 8)
+set (LANGUAGE_JPN_JPN 9)
 
 message ("-- Configuring cmake.h")
 configure_file (

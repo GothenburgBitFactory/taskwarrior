@@ -4,6 +4,7 @@
           ribbon)
 - TW-1603 Priority color precedence changed since it is a UDA, should be lowered
           again (thanks to Jens Erat).
+- TW-1605 Japanese translation for Taskwarrior (thanks to Oota Toshiya).
 - The 'obfuscate' setting, if set to '1' will replace all text with 'xxx'.
 
 ------ current release ---------------------------
