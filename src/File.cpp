@@ -28,14 +28,10 @@
 #include <fstream>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef SOLARIS
-#include <fcntl.h> // for flock() replacement
-#include <string.h> // for memset()
-#else
-#include <sys/file.h>
-#endif
-#include <pwd.h>
+#include <stdio.h>
+#include <fcntl.h>
 #include <unistd.h>
+#include <pwd.h>
 #include <File.h>
 #include <text.h>
 #include <util.h>
@@ -151,6 +147,9 @@ void File::close ()
 {
   if (_fh)
   {
+    if (_locked)
+      unlock ();
+
     fclose (_fh);
     _fh = NULL;
     _h = -1;
@@ -161,38 +160,31 @@ void File::close ()
 ////////////////////////////////////////////////////////////////////////////////
 bool File::lock ()
 {
+  _locked = false;
   if (_fh && _h != -1)
   {
-    // Try three times before failing.
-    int retry = 0;
-    while (flock (_h, LOCK_NB | LOCK_EX) && ++retry <= 3)
-      ;
-
-    if (retry <= 3)
-    {
+                    // l_type   l_whence  l_start  l_len  l_pid
+    struct flock fl = {F_WRLCK, SEEK_SET, 0,       0,     0 };
+    fl.l_pid = getpid ();
+    if (fcntl (_h, F_SETLKW, &fl) == 0)
       _locked = true;
-      return true;
-    }
   }
 
-  _locked = false;
-  return false;
+  return _locked;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool File::waitForLock ()
+void File::unlock ()
 {
   if (_locked)
-    return true;
+  {
+                    // l_type   l_whence  l_start  l_len  l_pid
+    struct flock fl = {F_UNLCK, SEEK_SET, 0,       0,     0 };
+    fl.l_pid = getpid ();
 
-  if (_fh && _h != -1)
-    if (flock (_h, LOCK_EX) == 0)
-    {
-      _locked = true;
-      return true;
-    }
-
-  return false;
+    fcntl (_h, F_SETLK, &fl);
+    _locked = false;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

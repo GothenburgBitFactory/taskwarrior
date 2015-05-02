@@ -226,7 +226,7 @@ void TF2::commit ()
       if (_file.open ())
       {
         if (context.config.getBoolean ("locking"))
-          _file.waitForLock ();
+          _file.lock ();
 
         // Write out all the added tasks.
         std::vector <Task>::iterator task;
@@ -258,7 +258,7 @@ void TF2::commit ()
       if (_file.open ())
       {
         if (context.config.getBoolean ("locking"))
-          _file.waitForLock ();
+          _file.lock ();
 
         // Truncate the file and rewrite.
         _file.truncate ();
@@ -358,7 +358,7 @@ void TF2::load_lines ()
   if (_file.open ())
   {
     if (context.config.getBoolean ("locking"))
-      _file.waitForLock ();
+      _file.lock ();
 
     _file.read (_lines);
     _file.close ();

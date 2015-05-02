@@ -52,15 +52,6 @@ const std::string uuid ();
 
 int execute (const std::string&, const std::vector <std::string>&, const std::string&, std::string&);
 
-#ifdef SOLARIS
-  #define LOCK_SH 1
-  #define LOCK_EX 2
-  #define LOCK_NB 4
-  #define LOCK_UN 8
-
-  int flock (int, int);
-#endif
-
 const std::string indentProject (
   const std::string&,
   const std::string& whitespace = "  ",

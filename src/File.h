@@ -52,7 +52,7 @@ public:
   void close ();
 
   bool lock ();
-  bool waitForLock ();
+  void unlock ();
 
   void read (std::string&);
   void read (std::vector <std::string>&);

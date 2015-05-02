@@ -42,7 +42,6 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/wait.h>
-#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -225,40 +224,6 @@ const std::string uuid ()
   buffer[36] = '\0';
 
   return std::string (buffer);
-}
-#endif
-
-////////////////////////////////////////////////////////////////////////////////
-// On Solaris no flock function exists.
-#ifdef SOLARIS
-int flock (int fd, int operation)
-{
-  struct flock fl;
-
-  switch (operation & ~LOCK_NB)
-  {
-  case LOCK_SH:
-    fl.l_type = F_RDLCK;
-    break;
-
-  case LOCK_EX:
-    fl.l_type = F_WRLCK;
-    break;
-
-  case LOCK_UN:
-    fl.l_type = F_UNLCK;
-    break;
-
-  default:
-    errno = EINVAL;
-    return -1;
-  }
-
-  fl.l_whence = 0;
-  fl.l_start  = 0;
-  fl.l_len    = 0;
-
-  return fcntl (fd, (operation & LOCK_NB) ? F_SETLK : F_SETLKW, &fl);
 }
 #endif
 
