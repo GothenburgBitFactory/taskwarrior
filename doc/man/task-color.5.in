@@ -1,7 +1,7 @@
 .TH task-color 5 2015-04-19 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
-task-color \- A color tutorial for the taskwarrior command line todo manager.
+task-color \- A color tutorial for the Taskwarrior command line todo manager.
 
 .SH SETUP
 The first thing you need is a terminal program that supports color.  All
@@ -18,8 +18,8 @@ which shell you use).  If this is a new setting, you will need to either run
 that profile script, or close and reopen the terminal window (which does the
 same thing).
 
-Now tell taskwarrior that you want to use color.  This is the default for
-taskwarrior, so the following step may be unnecessary.
+Now tell Taskwarrior that you want to use color.  This is the default for
+Taskwarrior, so the following step may be unnecessary.
 
     $ task config color on
 
@@ -28,11 +28,11 @@ like:
 
     color=on
 
-Now taskwarrior is ready.
+Now Taskwarrior is ready.
 
 .SH AUTOMATIC MONOCHROME
-It should be mentioned that taskwarrior is aware of whether its output is going
-to a terminal, or to a file or through a pipe.  When taskwarrior output goes to
+It should be mentioned that Taskwarrior is aware of whether its output is going
+to a terminal, or to a file or through a pipe.  When Taskwarrior output goes to
 a terminal, color is desirable, but consider the following command:
 
     $ task list > file.txt
@@ -268,7 +268,7 @@ from the example):
 include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-256.theme
 .RE
 
-You can use any of the standard taskwarrior themes:
+You can use any of the standard Taskwarrior themes:
 
 .RS
 dark-16.theme
@@ -323,7 +323,7 @@ http://www.opensource.org/licenses/mit-license.php for more information.
 .BR taskrc(5),
 .BR task-sync(5)
 
-For more information regarding taskwarrior, the following may be referenced:
+For more information regarding Taskwarrior, the following may be referenced:
 
 .TP
 The official site at
@@ -339,5 +339,5 @@ You can contact the project by writing an email to
 
 .SH REPORTING BUGS
 .TP
-Bugs in taskwarrior may be reported to the issue-tracker at
+Bugs in Taskwarrior may be reported to the issue-tracker at
 <http://taskwarrior.org>

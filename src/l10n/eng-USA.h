@@ -254,10 +254,10 @@
 // commands/Cmd*
 // USAGE strings are visible in 'task help'
 #define STRING_CMD_CONFLICT          "Custom report '{1}' conflicts with built-in task command."
-#define STRING_CMD_VERSION_USAGE     "Shows the taskwarrior version number"
-#define STRING_CMD_VERSION_USAGE2    "Shows only the taskwarrior version number"
-#define STRING_CMD_VERSION_MIT       "Taskwarrior may be copied only under the terms of the MIT license, which may be found in the taskwarrior source kit."
-#define STRING_CMD_VERSION_DOCS      "Documentation for taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at http://taskwarrior.org"
+#define STRING_CMD_VERSION_USAGE     "Shows the Taskwarrior version number"
+#define STRING_CMD_VERSION_USAGE2    "Shows only the Taskwarrior version number"
+#define STRING_CMD_VERSION_MIT       "Taskwarrior may be copied only under the terms of the MIT license, which may be found in the Taskwarrior source kit."
+#define STRING_CMD_VERSION_DOCS      "Documentation for Taskwarrior can be found using 'man task', 'man taskrc', 'man task-color', 'man task-sync' or at http://taskwarrior.org"
 #define STRING_CMD_VERSION_BUILT     "{1} {2} built for "
 #define STRING_CMD_VERSION_UNKNOWN   "unknown"
 #define STRING_CMD_VERSION_COPY      "Copyright (C) 2006 - 2015 P. Beckingham, F. Hernandez."
@@ -557,7 +557,7 @@
 #define STRING_CMD_CONTEXT_DEF_SUCC  "Context '{1}' defined."
 #define STRING_CMD_CONTEXT_DEF_FAIL  "Context '{1}' not defined."
 #define STRING_CMD_CONTEXT_DEF_USAG  "Both context name and its definition must be provided."
-#define STRING_CMD_CONTEXT_DEF_ABRT  "Context definiton aborted."
+#define STRING_CMD_CONTEXT_DEF_ABRT  "Context definition aborted."
 #define STRING_CMD_CONTEXT_DEF_ABRT2 "Filter validation failed: {1}"
 #define STRING_CMD_CONTEXT_DEF_CONF  "The filter '{1}' matches 0 pending tasks. Do you wish to continue?"
 #define STRING_CMD_CONTEXT_DEL_SUCC  "Context '{1}' deleted."
@@ -615,7 +615,7 @@
 #define STRING_CONFIG_DEPRECATED_VAR "Your .taskrc file contains variables that are deprecated:"
 
 // Context
-#define STRING_CONTEXT_CREATE_RC     "A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so taskwarrior can proceed?"
+#define STRING_CONTEXT_CREATE_RC     "A configuration file could not be found in {1}\n\nWould you like a sample {2} created, so Taskwarrior can proceed?"
 #define STRING_CONTEXT_NEED_RC       "Cannot proceed without rc file."
 #define STRING_CONTEXT_RC_OVERRIDE   "TASKRC override: {1}"
 #define STRING_CONTEXT_DATA_OVERRIDE "TASKDATA override: {1}"
@@ -730,12 +730,12 @@
 #define STRING_EDIT_HEADER_1         "The 'task <id> edit' command allows you to modify all aspects of a task"
 #define STRING_EDIT_HEADER_2         "using a text editor.  Below is a representation of all the task details."
 #define STRING_EDIT_HEADER_3         "Modify what you wish, and when you save and quit your editor,"
-#define STRING_EDIT_HEADER_4         "taskwarrior will read this file, determine what changed, and apply"
+#define STRING_EDIT_HEADER_4         "Taskwarrior will read this file, determine what changed, and apply"
 #define STRING_EDIT_HEADER_5         "those changes.  If you exit your editor without saving or making"
-#define STRING_EDIT_HEADER_6         "modifications, taskwarrior will do nothing."
+#define STRING_EDIT_HEADER_6         "modifications, Taskwarrior will do nothing."
 
 #define STRING_EDIT_HEADER_7         "Lines that begin with # represent data you cannot change, like ID."
-#define STRING_EDIT_HEADER_8         "If you get too creative with your editing, taskwarrior will send you"
+#define STRING_EDIT_HEADER_8         "If you get too creative with your editing, Taskwarrior will send you"
 #define STRING_EDIT_HEADER_9         "back to the editor to try again."
 
 #define STRING_EDIT_HEADER_10        "Should you find yourself in an endless loop, re-editing the same file,"
@@ -852,7 +852,7 @@
 #define STRING_TASK_NO_FF1           "Taskwarrior no longer supports file format 1, originally used between 27 November 2006 and 31 December 2007."
 #define STRING_TASK_NO_FF2           "Taskwarrior no longer supports file format 2, originally used between 1 January 2008 and 12 April 2009."
 #define STRING_TASK_NO_FF3           "Taskwarrior no longer supports file format 3, originally used between 23 March 2009 and 16 May 2009."
-#define STRING_TASK_PARSE_UNREC_FF   "Unrecognized taskwarrior file format."
+#define STRING_TASK_PARSE_UNREC_FF   "Unrecognized Taskwarrior file format."
 #define STRING_TASK_DEPEND_ITSELF    "A task cannot be dependent on itself."
 #define STRING_TASK_DEPEND_MISS_CREA "Could not create a dependency on task {1} - not found."
 #define STRING_TASK_DEPEND_MISS_DEL  "Could not delete a dependency on task {1} - not found."
@@ -985,7 +985,7 @@
   "  task add \"quoted ' quote\"\n" \
   "  task add escaped \\' quote\n" \
   "\n" \
-  "The argument -- tells taskwarrior to treat all other args as description, even " \
+  "The argument -- tells Taskwarrior to treat all other args as description, even " \
   "if they would otherwise be attributes or tags:\n" \
   "  task add -- project:Home needs scheduling\n" \
   "\n" \
@@ -994,7 +994,7 @@
   "\n"
 
 /*
-  To be included later, before the 'precendence' line.
+  To be included later, before the 'precedence' line.
 
   "  +  -                    Addition, subtraction\n" \
   "  !                       Inversion\n" \

@@ -49,7 +49,7 @@ $ task rc.<name>=<value> ...
 .RE
 
 If
-.B taskwarrior
+.B Taskwarrior
 is run without an existing configuration file it will ask if it should create a
 default, sample
 .I .taskrc
@@ -67,7 +67,7 @@ Whitespace is not permitted in comma-separated lists.
 The entry must be on a single line, no continuations.
 Values support UTF8 as well as JSON encoding, such as \\uNNNN.
 
-Note that taskwarrior is flexible about the values used to represent Boolean
+Note that Taskwarrior is flexible about the values used to represent Boolean
 items. You can use "on", "yes", "y", "1" and "true".
 Anything else means "off".
 
@@ -149,7 +149,7 @@ include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/dark-16.theme
 .RE
 
-This includes two standard files that are distributed with taskwarrior, which
+This includes two standard files that are distributed with Taskwarrior, which
 define a set of US holidays, and set up a 16-color theme to use, to color the
 reports and calendar.
 
@@ -158,7 +158,7 @@ These environment variables override defaults and command line arguments.
 
 .TP
 .B TASKDATA=~/.task
-This overrides the default path for the taskwarrior data files.
+This overrides the default path for the Taskwarrior data files.
 
 .TP
 .B TASKRC=~/.taskrc
@@ -171,7 +171,7 @@ Valid variable names and their default values are:
 
 .TP
 .B data.location=$HOME/.task
-This is a path to the directory containing all the taskwarrior files. By
+This is a path to the directory containing all the Taskwarrior files. By
 default, it is set up to be ~/.task, for example: /home/paul/.task
 
 Note that you can use the
@@ -294,7 +294,7 @@ and project. The others are sent to standard output.
 
 .TP
 .B confirmation=yes
-May be "yes" or "no", and determines whether taskwarrior will ask for
+May be "yes" or "no", and determines whether Taskwarrior will ask for
 confirmation before deleting a task or performing the undo command. The default
 value is "yes". Consider leaving this setting as "yes", for safety.
 
@@ -388,7 +388,7 @@ Defaults to infix.
 
 .TP
 .B dom=on
-Enables or disables access to taskwarrior internals and task metadata on the
+Enables or disables access to Taskwarrior internals and task metadata on the
 command line. Defaults to on.
 
 .TP
@@ -454,7 +454,7 @@ and one for a week from tomorrow.
 
 .TP
 .B undo.style=side
-When the 'undo' command is run, taskwarrior presents a before and after
+When the 'undo' command is run, Taskwarrior presents a before and after
 comparison of the data. This can be in either the 'side' style, which compares
 values side-by-side in a table, or 'diff' style, which uses a format similar to
 the 'diff' command.
@@ -531,7 +531,7 @@ the 'history' report, for example, or 'export'.
 .B dateformat.annotation=
 .TP
 .B report.X.dateformat=Y-M-D
-This is a string of characters that defines how taskwarrior formats date values.
+This is a string of characters that defines how Taskwarrior formats date values.
 The precedence order for the configuration variable is report.X.dateformat then
 dateformat.report then dateformat for formating the due dates in reports.
 If both report.X.dateformat and dateformat.report are not set then dateformat
@@ -761,7 +761,7 @@ holiday.eastersunday.date=easter
 .RE
 .RE
 
-Note that the taskwarrior distribution contains example holiday files that can
+Note that the Taskwarrior distribution contains example holiday files that can
 be included like this:
 
 .RS
@@ -775,7 +775,7 @@ include ${CMAKE_INSTALL_PREFIX}/${TASK_RCDIR}/holidays.en-US.rc
 .B monthsperline=3
 Determines how many months the "task calendar" command renders across the
 screen. Defaults to however many will fit. If more months than will fit are
-specified, taskwarrior will only show as many that will fit.
+specified, Taskwarrior will only show as many that will fit.
 
 .SS DEPENDENCIES
 
@@ -791,7 +791,7 @@ Determines whether dependency chain repair requires confirmation.
 
 .TP
 .B color=on
-May be "on" or "off". Determines whether taskwarrior uses color. When "off",
+May be "on" or "off". Determines whether Taskwarrior uses color. When "off",
 will use dashes (-----) to underline column headings.
 
 .TP
@@ -1154,7 +1154,7 @@ command, if you don't specify values. The default is blank.
 .TP
 .B
 default.command=next
-Provides a default command that is run every time taskwarrior is invoked with no
+Provides a default command that is run every time Taskwarrior is invoked with no
 arguments. For example, if set to:
 
 .RS
@@ -1164,7 +1164,7 @@ default.command=project:foo list
 .RE
 
 .RS
-then taskwarrior will run the "project:foo list" command if no command is
+then Taskwarrior will run the "project:foo list" command if no command is
 specified. This means that by merely typing
 .RE
 
@@ -1463,7 +1463,7 @@ http://www.opensource.org/licenses/mit-license.php for more information.
 .BR task-color(5),
 .BR task-sync(5)
 
-For more information regarding taskwarrior, see the following:
+For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
@@ -1479,6 +1479,6 @@ You can contact the project by emailing
 
 .SH REPORTING BUGS
 .TP
-Bugs in taskwarrior may be reported to the issue-tracker at
+Bugs in Taskwarrior may be reported to the issue-tracker at
 <http://taskwarrior.org>
 

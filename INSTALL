@@ -8,7 +8,7 @@ source.
 Pre-requisites
 --------------
 
-You will need the CMake build system installed in order to build taskwarrior
+You will need the CMake build system installed in order to build Taskwarrior
 from source. More information on cmake can be obtained at http://cmake.org
 
 You will also need:
@@ -48,7 +48,7 @@ These commands are explained below:
   3. Invokes CMake to scan for dependencies and machine-specific details, then
      generate the makefiles.  This may take a minute.
 
-  4. Builds taskwarrior.  This may take a minute.
+  4. Builds Taskwarrior.  This may take a minute.
 
   5. Installs the program, documentation and other data files.
 
@@ -113,7 +113,7 @@ Currently the defined languages are:
 Uninstallation
 --------------
 
-There is no uninstall option in CMake makefiles. This ia a manual process.
+There is no uninstall option in CMake makefiles. This is a manual process.
 
 To uninstall Taskwarrior, remove the files listed in the install_manifest.txt
 file that was generated when you built Taskwarrior.
@@ -122,11 +122,11 @@ file that was generated when you built Taskwarrior.
 Taskwarrior Build Notes
 -----------------------
 
-Taskwarrior has dependencies that are detected by cmake in almost all cases, but
+Taskwarrior has dependencies that are detected by CMake in almost all cases, but
 there are situations and operating systems that mean you will need to offer a
 little help.
 
-If taskwarrior will not build on your system, first take a look at the Operating
+If Taskwarrior will not build on your system, first take a look at the Operating
 System notes below.  If this doesn't help, then go to the Troubleshooting
 section, which includes instructions on how to contact us for help.
 
@@ -182,7 +182,7 @@ If a build does not succeed, please send the contents of the 'CMakeCache.txt'
 and 'CMakeFiles/CMakeOutput.log' files to support@taskwarrior.org, or post a
 message in the support forums at taskwarrior.org along with the information.
 
-If CMake runs but taskwarrior does not build, please send the contents of the
+If CMake runs but Taskwarrior does not build, please send the contents of the
 above files as well as a transcript from the build, which is not written to a
 file and must be captured from the terminal.
 

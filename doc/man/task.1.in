@@ -14,7 +14,7 @@ that you want to do, allowing you to add/remove, and otherwise manipulate them.
 Taskwarrior has a rich set of subcommands that allow you to do various things
 with it.
 
-At the core, taskwarrior is a list processing program. You add text and
+At the core, Taskwarrior is a list processing program. You add text and
 additional related parameters and redisplay the information in a nice way.  It
 turns into a todo list program when you add due dates and recurrence. It turns
 into an organized todo list program when you add priorities, tags (one word
@@ -98,7 +98,7 @@ generated, as with verbose=nothing).
 .SH READ SUBCOMMANDS
 
 Reports are read subcommands. There are several reports currently predefined in
-taskwarrior. The output and sort behavior of these reports can be configured in
+Taskwarrior. The output and sort behavior of these reports can be configured in
 the configuration file. See also the man page taskrc(5).  There are also other
 read subcommands that are not reports.
 
@@ -381,7 +381,7 @@ non-standard arguments.
 
 .TP
 .B task calc <expression>
-Evaluates an algebraic expression. Can be used to test how TaskWarrior
+Evaluates an algebraic expression. Can be used to test how Taskwarrior
 parses and evaluates the expression given on the command line.
 
 Examples:
@@ -397,7 +397,7 @@ Examples:
 
 .TP
 .B task config [name [value | '']]
-Add, modify and remove settings directly in the taskwarrior configuration.
+Add, modify and remove settings directly in the Taskwarrior configuration.
 This command either modifies the 'name' setting with a new value of 'value',
 or adds a new entry that is equivalent to 'name=value':
 
@@ -414,7 +414,7 @@ Finally, this command removes any 'name=...' entry from the .taskrc file:
 
 .TP
 .B task context <name>
-Sets the currectly active context. See the CONTEXT section.
+Sets the currently active context. See the CONTEXT section.
 
 Example:
 
@@ -510,7 +510,7 @@ Reverts the most recent action.  Obeys the confirmation setting.
 
 .TP
 .B task version
-Shows the taskwarrior version number.
+Shows the Taskwarrior version number.
 
 .SH HELPER SUBCOMMANDS
 
@@ -566,7 +566,7 @@ Displays the urgency measure of a task.
 
 .TP
 .B task _version
-Shows only the taskwarrior version number.
+Shows only the Taskwarrior version number.
 
 .TP
 .B task _zshcommands
@@ -870,7 +870,7 @@ The original example therefore must be entered as:
   task '( project:Home or project:Garden )' list
 
 This includes quotes to escape the parentheses, so that the shell doesn't
-interpret them and hide them from taskwarrior.
+interpret them and hide them from Taskwarrior.
 
 There is redundancy between operators, attribute modifiers and other syntactic
 sugar.  For example, the following are all equivalent:
@@ -1083,7 +1083,7 @@ Contexts are permanent, and the currently set context name is stored in the
 "context.<name>" configuration variable.
 
 .SH COMMAND ABBREVIATION
-All taskwarrior commands may be abbreviated as long as a unique prefix is used,
+All Taskwarrior commands may be abbreviated as long as a unique prefix is used,
 for example:
 
 .RS
@@ -1122,7 +1122,7 @@ $ task add "quoted ' quote"
 $ task add escaped \\' quote
 .RE
 
-The argument \-\- (a double dash) tells taskwarrior to treat all other args
+The argument \-\- (a double dash) tells Taskwarrior to treat all other args
 as description:
 
 .RS
@@ -1219,7 +1219,7 @@ http://www.opensource.org/licenses/mit-license.php for more information.
 .BR task-color(5),
 .BR task-sync(5)
 
-For more information regarding taskwarrior, see the following:
+For more information regarding Taskwarrior, see the following:
 
 .TP
 The official site at
@@ -1235,6 +1235,6 @@ You can contact the project by emailing
 
 .SH REPORTING BUGS
 .TP
-Bugs in taskwarrior may be reported to the issue-tracker at
+Bugs in Taskwarrior may be reported to the issue-tracker at
 <http://taskwarrior.org>
 
