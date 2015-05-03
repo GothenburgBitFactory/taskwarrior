@@ -81,6 +81,7 @@ class Taskd(object):
         run_cmd_wait(cmd, env=self.env)
 
         self.config("server", "{0}:{1}".format(self.address, self.port))
+        self.config("family", "IPv4")
         self.config("log", self.tasklog)
         self.config("pid.file", self.taskpid)
         self.config("root", self.datadir)
