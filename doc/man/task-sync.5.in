@@ -80,24 +80,25 @@ The Taskserver was designed for this purpose to be secure, fast and conflict
 free, allowing data interchange between assorted Taskwarrior clients, and
 tolerant of network connectivity problems.
 
-There is a 'sync' command built in to Taskwarrior, and with a server account
-and client configuration, syncing is done on demand.
+There is a 'sync' command built in to Taskwarrior (provided the GnuTLS library
+is installed), and with a server account and client configuration, syncing is
+done on demand.
 
 Setup is a matter of creating an account on a Taskserver (see your Taskserver
 provider or operate your own - see
 http://taskwarrior.org/docs/server_setup.html)
 
-Once you have an account, you'll receive a certificate, key and a password.
+Once you have an account, you'll receive a certificate, key, and credentials.
 You'll need to put the certificate and key somewhere like this:
 
     $ cp <name>.cert.pem ~/.task
     $ cp <name>.key.pem ~/.task
 
-Then you configure Taskwarrior, using the account details:
+Then you configure Taskwarrior, using the provided details:
 
     $ task config taskd.certificate ~/.task/<name>.cert.pem
     $ task config taskd.key         ~/.task/<name>.key.pem
-    $ task config taskd.credentials <organization>/<name>/<password>
+    $ task config taskd.credentials <organization>/<name>/<UUID>
     $ task config taskd.server      <server domain>:<port>
 
 If you are using a private server, you are likely also using a self-signed
@@ -108,7 +109,7 @@ certificate, which means you will need one of the following additional entries:
 The CA (Certificate Authority) will be used to verify the server certificate.
 Alternatively, you can override the cert verification process using:
 
-    $ task config taskd.trust       yes
+    $ task config taskd.trust       'allow all'
 
 This is an insecure option that should be used with caution, because it directs
 Taskwarrior to trust any certificate.
