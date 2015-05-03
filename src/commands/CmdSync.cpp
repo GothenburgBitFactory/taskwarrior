@@ -339,6 +339,8 @@ bool CmdSync::send (
   const Msg& request,
   Msg& response)
 {
+  // It is important that the ':' be the *last* colon, in order to support
+  // IPv6 addresses.
   std::string::size_type colon = to.rfind (':');
   if (colon == std::string::npos)
     throw format (STRING_CMD_SYNC_BAD_SERVER, to);
