@@ -1,5 +1,7 @@
 2.4.5 () -
 
+- TW-1572 Better urgency inheritance (thanks to Jens Erat).
+
 ------ current release ---------------------------
 
 2.4.4 (2015-05-10) df49aaba126484b668c41d3ff9301f8d8ec49987

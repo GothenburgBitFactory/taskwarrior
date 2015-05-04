@@ -48,7 +48,6 @@ public:
   static float urgencyScheduledCoefficient;
   static float urgencyWaitingCoefficient;
   static float urgencyBlockedCoefficient;
-  static float urgencyInheritCoefficient;
   static float urgencyAnnotationsCoefficient;
   static float urgencyTagsCoefficient;
   static float urgencyNextCoefficient;

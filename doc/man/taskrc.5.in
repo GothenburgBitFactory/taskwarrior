@@ -1062,10 +1062,6 @@ Urgency coefficient for blocking tasks
 .RS
 Urgency coefficient for blocked tasks
 .RE
-.B urgency.inherit.coefficient=0.0
-.RS
-Urgency inherited from dependency chain
-.RE
 .B urgency.due.coefficient=12.0
 .RS
 Urgency coefficient for due dates
@@ -1126,6 +1122,16 @@ Specific value of UDA data.
 The coefficients reflect the relative importance of the various terms in the
 urgency calculation. These are default values, and may be modified to suit your
 preferences, but it is important that you carefully consider any modifications.
+
+.B urgency.inherit=off
+.RS
+Not actually a coefficient. When enabled, blocking tasks inherit
+the highest urgency value found in the tasks they block. This is
+done recursively.
+It is recommended to set urgency.blocking.coefficient and
+urgency.blocked.coefficient to 0.0 in order for this setting to
+be the most useful.
+.RE
 
 .SS DEFAULTS
 

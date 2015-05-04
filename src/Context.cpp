@@ -643,7 +643,6 @@ void Context::staticInitialization ()
   Task::urgencyScheduledCoefficient   = config.getReal ("urgency.scheduled.coefficient");
   Task::urgencyWaitingCoefficient     = config.getReal ("urgency.waiting.coefficient");
   Task::urgencyBlockedCoefficient     = config.getReal ("urgency.blocked.coefficient");
-  Task::urgencyInheritCoefficient     = config.getReal ("urgency.inherit.coefficient");
   Task::urgencyAnnotationsCoefficient = config.getReal ("urgency.annotations.coefficient");
   Task::urgencyTagsCoefficient        = config.getReal ("urgency.tags.coefficient");
   Task::urgencyNextCoefficient        = config.getReal ("urgency.next.coefficient");

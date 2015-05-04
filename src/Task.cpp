@@ -30,6 +30,7 @@
 #include <assert.h>
 #ifdef PRODUCT_TASKWARRIOR
 #include <math.h>
+#include <cfloat>
 #endif
 #include <algorithm>
 #ifdef PRODUCT_TASKWARRIOR
@@ -76,7 +77,6 @@ float Task::urgencyActiveCoefficient      = 0.0;
 float Task::urgencyScheduledCoefficient   = 0.0;
 float Task::urgencyWaitingCoefficient     = 0.0;
 float Task::urgencyBlockedCoefficient     = 0.0;
-float Task::urgencyInheritCoefficient     = 0.0;
 float Task::urgencyAnnotationsCoefficient = 0.0;
 float Task::urgencyTagsCoefficient        = 0.0;
 float Task::urgencyNextCoefficient        = 0.0;
@@ -1621,7 +1621,6 @@ float Task::urgency_c () const
   value += fabsf (Task::urgencyDueCoefficient)         > epsilon ? (urgency_due ()         * Task::urgencyDueCoefficient)         : 0.0;
   value += fabsf (Task::urgencyBlockingCoefficient)    > epsilon ? (urgency_blocking ()    * Task::urgencyBlockingCoefficient)    : 0.0;
   value += fabsf (Task::urgencyAgeCoefficient)         > epsilon ? (urgency_age ()         * Task::urgencyAgeCoefficient)         : 0.0;
-  value += fabsf (Task::urgencyInheritCoefficient)     > epsilon ? (urgency_inherit ()     * Task::urgencyInheritCoefficient)     : 0.0;
 
   // Tag- and project-specific coefficients.
   for (auto& var : Task::coefficients)
@@ -1686,6 +1685,17 @@ float Task::urgency_c () const
       }
     }
   }
+
+  if (is_blocking && context.config.getBoolean ("urgency.inherit"))
+  {
+    float prev = value;
+    value = std::max (value, urgency_inherit ());
+
+    // This is a hackish way of making sure parent tasks are sorted above
+    // child tasks.  For reports that hide blocked tasks, this is not needed.
+    if (prev < value)
+      value += 0.01;
+  }
 #endif
 
   return value;
@@ -1708,28 +1718,16 @@ float Task::urgency ()
 ////////////////////////////////////////////////////////////////////////////////
 float Task::urgency_inherit () const
 {
-  if (!is_blocking)
-    return 0.0;
-
   // Calling dependencyGetBlocked is rather expensive.
   // It is called recursively for each dependency in the chain here.
   std::vector <Task> blocked;
   dependencyGetBlocked (*this, blocked);
 
-  float v = 0.0;
+  float v = FLT_MIN;
   for (auto& task : blocked)
   {
-    // urgency_blocked, _blocking, _project and _tags left out.
-    v += task.urgency_active ();
-    v += task.urgency_age ();
-    v += task.urgency_annotations ();
-    v += task.urgency_due ();
-    v += task.urgency_next ();
-    v += task.urgency_scheduled ();
-    v += task.urgency_waiting ();
-
-    // Inherit from all parent tasks in the dependency chain recursively.
-    v += task.urgency_inherit ();
+    // Find highest urgency in all blocked tasks.
+    v = std::max (v, task.urgency ());
   }
 
   return v;

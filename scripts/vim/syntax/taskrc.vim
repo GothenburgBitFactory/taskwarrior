@@ -151,7 +151,6 @@ syn match taskrcGoodKey '^\s*\Vurgency.annotations.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.blocked.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.blocking.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.due.coefficient='he=e-1
-syn match taskrcGoodKey '^\s*\Vurgency.inherit.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.next.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.uda.priority.H.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.uda.priority.M.coefficient='he=e-1
@@ -161,6 +160,7 @@ syn match taskrcGoodKey '^\s*\Vurgency.scheduled.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.tags.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.uda.\S\{-}.coefficient='he=e-1
 syn match taskrcGoodKey '^\s*\Vurgency.waiting.coefficient='he=e-1
+syn match taskrcGoodKey '^\s*\Vurgency.inherit='he=e-1
 syn match taskrcGoodKey '^\s*\Vverbose='he=e-1
 syn match taskrcGoodKey '^\s*\Vweekstart='he=e-1
 syn match taskrcGoodKey '^\s*\Vxterm.title='he=e-1

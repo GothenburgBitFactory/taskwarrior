@@ -133,6 +133,10 @@ std::string legacyCheckForDeprecatedVariables ()
     // Deprecated іn 2.4.0.
     if (it.first == "alias._query")
       deprecated.push_back (it.first);
+
+    // Deprecated in 2.4.5.
+    if (it.first == "urgency.inherit.coefficient")
+        deprecated.push_back (it.first);
   }
 
   std::stringstream out;
