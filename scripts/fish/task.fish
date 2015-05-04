@@ -15,6 +15,24 @@
 #  * Tags
 #  * Attribute names and modifiers
 #
+#
+# You can override some default options in your config.fish:
+#
+# # Tab-completion of task descriptions.
+# # Warning: This often creates a list of suggestions which spans several pages,
+# # and it usually pushes some of the commands and attributes to the end of the
+# # list.
+# set -g task_complete_task yes
+#
+# # Tab-completion of task IDs outside of the "depends" attribute.
+# # Warning: This often creates a list of suggestions which spans several pages,
+# # and it pushes all commands and attributes to the end of the list.
+# set -g task_complete_id yes
+#
+# # Attribute modifiers (DEPRECATED since 2.4.0)
+# set -g task_complete_attribute_modifiers yes
+#
+#
 # Copyright 2014 - 2015, Roman Inflianskas <infroma@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -150,8 +168,7 @@ function __fish.task.list.attr_value_by_name
       __fish.task.combos_simple $attr (__fish.task.list $attr)
     # case 'description' 'due' 'entry' 'end' 'start' 'project' 'recur' 'until' 'wait'
     case '*'
-      # BUG: remove in 2.4.0
-      if echo (commandline -ct) | grep -q '\.'
+      if [ "$task_complete_attribute_modifiers" = 'yes' ]; and echo (commandline -ct) | grep -q '\.'
         __fish.task.combos_with_mods $attr (__fish.task.list $attr)
       else
         __fish.task.combos_simple $attr (__fish.task.list $attr)
@@ -195,7 +212,7 @@ function __fish.task.list.id
   end
 end
 
-# BUG: remove in 2.4.0
+# Attribure modifiers (DEPRECATED since 2.4.0)
 function __fish.task.list.mod
   for mod in 'before' 'after' 'over' 'under' 'none' 'is' 'isnt' 'has' 'hasnt' 'startswith' 'endswith' 'word' 'noword'
     echo $mod
@@ -266,7 +283,7 @@ function __fish.task.combos_simple
   end
 end
 
-# BUG: remove in 2.4.0
+# Attribure modifiers (DEPRECATED since 2.4.0)
 function __fish.task.combos_with_mods
   __fish.task.combos_simple $argv
   for mod in (__fish.task.list.mod)
@@ -290,16 +307,10 @@ __fish.task.complete attr_value
 __fish.task.complete attr_name
 __fish.task.complete config
 
-# Uncomment the following line if you want tab-completion of task descriptions.
-# Warning: This often creates a list of suggestions which spans several pages,
-# and it usually pushes some of the commands and attributes to the end of the
-# list.
+if [ "$task_complete_task" = 'yes' ]
+  __fish.task.complete task
+end
 
-#__fish.task.complete task
-
-# Uncomment the following line if you want tab-completion of task IDs outside
-# of the "depends" attribute.  Warning: This often creates a list of
-# suggestions which spans several pages, and it pushes all commands and
-# attributes to the end of the list.
-
-#__fish.task.complete id with_description
+if [ "$task_complete_id" = 'yes' ]
+  __fish.task.complete id with_description
+end
