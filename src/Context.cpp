@@ -453,7 +453,7 @@ int Context::dispatch (std::string &out)
     // possible.
     if (c->displays_id () && !tdb2.read_only ())
     {
-      run_gc = true;
+      run_gc = config.getBoolean ("gc");
       tdb2.gc ();
     }
     else
