@@ -167,6 +167,17 @@ class Task(object):
         """
         # Create a copy of the command
         command = self._command[:]
+
+        # Enable nicer-looking calls by allowing plain strings
+        try:
+            # Python 2.x
+            if isinstance(args, basestring):
+                args = args.split()
+        except NameError:
+            # Python 3.x
+            if isinstance(args, str):
+                args = args.split()
+
         command.extend(args)
 
         output = run_cmd_wait_nofail(command, input,
