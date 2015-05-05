@@ -34,12 +34,13 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from basetest import Task, TestCase
 
 
-class TestBug327(TestCase):
+class TestRecurrenceProblems(TestCase):
     def setUp(self):
         self.t = Task()
 
     def test_recurring_due_removal(self):
         """Removing due from a recurring task causes date wrapping"""
+        # Originally bug.327.t
 
         self.t(("add", "foo", "recur:yearly", "due:eoy"))
         self.t(("list",))  # Trigger garbage collection
@@ -51,6 +52,18 @@ class TestBug327(TestCase):
 
         self.assertIn("\n1 task", out)
         self.assertNotIn("1969", out)
+
+    def test_recurring_not_as_epoch(self):
+        """Ensure 'until' is rendered as date, not epoch"""
+        # Originally bug.368.t
+
+        self.t.config("dateformat.info", "m/d/Y")
+
+        self.t(("add", "foo", "due:today", "recur:yearly", "until:eom"))
+        code, out, err = self.t(("info", "1"))
+
+        self.assertNotRegexpMatches(out, "Until\s+\d{10}")
+        self.assertRegexpMatches(out, "Until\s+\d+\/\d+\/\d{4}")
 
 
 if __name__ == "__main__":
