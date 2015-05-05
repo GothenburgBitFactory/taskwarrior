@@ -41,25 +41,34 @@ class TestGC(TestCase):
         self.t.config("report.gctest.description", "gctest")
         self.t.config("report.gctest.columns", "id,description,tags")
         self.t.config("report.gctest.sort", "id+")
-        self.t(("add", "one"))
-        self.t(("add", "two"))
-        self.t(("add", "three"))
+        self.t("add one")
+        self.t("add two")
+        self.t("add three")
 
     def test_gc_off_id(self):
         """ID retained when GC off"""
         self.t.config("gc", "off")
-        self.t(("1", "done"))
-        code, out, err = self.t(("gctest",))
+        self.t("1 done")
+        code, out, err = self.t("gctest")
         self.assertRegexpMatches(out, "1\s+one", "should still have ID")
 
     def test_gc_off_mod(self):
         """mod by ID after done with gc off"""
         self.t.config("gc", "off")
-        self.t(("1", "done"))
-        self.t(("gctest",))
-        self.t(("2", "mod", "+TWO"))
-        code, out, err = self.t(("gctest",))
+        self.t("1 done")
+        self.t("gctest")
+        self.t("2 mod +TWO")
+        code, out, err = self.t("gctest")
         self.assertRegexpMatches(out, "2\s+two\s+TWO", "modified 'two'")
+
+    def test_gc_on_id(self):
+        """IDs reshuffle after report when GC on"""
+        self.t.config("gc", "on")
+        self.t("1 done")
+        self.t("2 mod +TWO")
+        code, out, err = self.t("gctest")
+        self.assertRegexpMatches(out, "1\s+two\s+TWO")
+        self.assertRegexpMatches(out, "2\s+three")
 
 
 if __name__ == "__main__":
