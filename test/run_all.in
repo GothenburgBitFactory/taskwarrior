@@ -29,9 +29,6 @@ elif [ "$1" = "--fast" ]; then
   # Useful for faster local testing, might not be portable. Use at own risk.
   # Results in (almost) the exact same "all.log" as a normal run.
   # Ordering is off, but could easily be adjusted to be the same.
-  #
-  # A lot of copy&paste from the "normal" version below went into this, so if
-  # you're looking for beautiful code look elsewhere.
 
   date > all.log
 
