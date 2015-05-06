@@ -2,6 +2,9 @@
 *.pyc
 *.data
 *.log
+*.runlog
+_run_all_parallel.txt
+_run_all_serial.txt
 autocomplete.t
 color.t
 config.t

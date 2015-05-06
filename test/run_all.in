@@ -3,6 +3,24 @@
 # Look for taskd in $PATH instead of task/src/
 export TASKD_USE_PATH=1
 
+
+runlog_cleanup() {
+  if [ -f "_run_all_parallel.txt" ]; then
+   rm _run_all_parallel.txt
+  fi
+  if [ -f "_run_all_serial.txt" ]; then
+    rm _run_all_serial.txt
+  fi
+  for i in *.runlog; do
+    # Ugly hack. :)
+    if [ -f "$i" ]; then
+      rm *.runlog
+    fi
+    break
+  done
+}
+
+
 rc=0
 if [ x"$1" = x"--verbose" ];
 then
@@ -36,19 +54,8 @@ elif [ "$1" = "--fast" ]; then
   # because 'date +%s' isn't supported on Solaris.
   STARTEPOCH=`perl -e 'print time'`
 
-  if [ -f "_run_all_parallel.txt" ]; then
-    rm _run_all_parallel.txt
-  fi
-  if [ -f "_run_all_serial.txt" ]; then
-    rm _run_all_serial.txt
-  fi
-  for i in *.runlog; do
-    # Ugly hack. :)
-    if [ -f "$i" ]; then
-      rm *.runlog
-    fi
-    break
-  done
+  # Clean up after aborted runs
+  runlog_cleanup
 
   for i in ${TESTBLOB}; do
     if [ -x "$i" ]; then
@@ -85,6 +92,8 @@ elif [ "$1" = "--fast" ]; then
   fi
 
   cat *.runlog >> all.log
+
+  runlog_cleanup
 
   date >> all.log
 
