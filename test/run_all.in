@@ -24,6 +24,82 @@ then
     fi
   done
   exit $rc
+
+elif [ "$1" = "--fast" ]; then
+  # Useful for faster local testing, might not be portable. Use at own risk.
+  # Results in (almost) the exact same "all.log" as a normal run.
+  # Ordering is off, but could easily be adjusted to be the same.
+  #
+  # A lot of copy&paste from the "normal" version below went into this, so if
+  # you're looking for beautiful code look elsewhere.
+
+  date > all.log
+
+  # Perl is used here to get the time in seconds
+  # because 'date +%s' isn't supported on Solaris.
+  STARTEPOCH=`perl -e 'print time'`
+
+  if [ -f "_run_all_parallel.txt" ]; then
+    rm _run_all_parallel.txt
+  fi
+  if [ -f "_run_all_serial.txt" ]; then
+    rm _run_all_serial.txt
+  fi
+  for i in *.runlog; do
+    # Ugly hack. :)
+    if [ -f "$i" ]; then
+      rm *.runlog
+    fi
+    break
+  done
+
+  for i in ${TESTBLOB}; do
+    if [ -x "$i" ]; then
+      # Only Python tests are guaranteed to run isolated.
+      if head -c 21 "$i" | grep -q '#!/usr/bin/env python'; then
+        echo $i >> _run_all_parallel.txt
+      else
+        echo $i >> _run_all_serial.txt
+      fi
+    else
+      echo "# Skipping $(basename $i) execute bit not set" >> all.log 2>&1
+    fi
+  done
+
+  while read i; do
+    echo '#' $i >>all.log
+
+    $i >> all.log 2>&1
+    if [ $? -ne 0 ]; then
+      rc=1
+    fi
+  done < _run_all_serial.txt
+
+  if command -v getconf >/dev/null 2>&1; then
+    numprocs=$(getconf _NPROCESSORS_ONLN)
+    numprocs=$((numprocs+1))
+  else
+    numprocs=2
+  fi
+
+  cat _run_all_parallel.txt | xargs -n 1 -P $numprocs sh -c 'echo "#" $0 > $0.runlog; $0 >> $0.runlog 2>&1'
+  if [ $? -ne 0 ]; then
+    rc=1
+  fi
+
+  cat *.runlog >> all.log
+
+  date >> all.log
+
+  ENDEPOCH=`perl -e 'print time'`
+  RUNTIME=`expr $ENDEPOCH - $STARTEPOCH`
+
+  printf "Pass:    %5d\n" `grep -c '^ok' all.log`
+  printf "Fail:    %5d\n" `grep -c '^not' all.log`
+  printf "Skipped: %5d\n" `grep -c '^skip' all.log`
+  printf "Runtime: %5d seconds\n" $RUNTIME
+  exit $rc
+
 else
   date > all.log
 
