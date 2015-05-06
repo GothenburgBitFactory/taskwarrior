@@ -6,7 +6,7 @@ export TASKD_USE_PATH=1
 
 runlog_cleanup() {
   if [ -f "_run_all_parallel.txt" ]; then
-   rm _run_all_parallel.txt
+    rm _run_all_parallel.txt
   fi
   if [ -f "_run_all_serial.txt" ]; then
     rm _run_all_serial.txt
@@ -18,6 +18,29 @@ runlog_cleanup() {
     fi
     break
   done
+}
+
+get_numprocs() {
+  numprocs=""
+  # Most Linux systems and OSX have getconf and _NPROCESSORS_ONLN.
+  if command -v getconf >/dev/null 2>&1; then
+    numprocs=$(getconf _NPROCESSORS_ONLN 2>/dev/null)
+  fi
+
+  # OpenBSD doesn't know _NPROCESSORS_ONLN, but it does have hw.ncpu
+  if [ "$numprocs" = "" ] && command -v sysctl >/dev/null 2>&1; then
+    numprocs=$(sysctl -n hw.ncpu 2>/dev/null)
+  fi
+
+  # If we still haven't found the number of CPU cores available, give up.
+  if [ "$numprocs" = "" ] || [ "$numprocs" -lt 1 ]; then
+    echo "Couldn't find number of CPU cores for parallelization. Assuming 2." 1>&2
+    numprocs=2
+  else
+    numprocs=$((numprocs+1))
+  fi
+
+  echo $numprocs
 }
 
 
@@ -57,10 +80,12 @@ elif [ "$1" = "--fast" ]; then
   # Clean up after aborted runs
   runlog_cleanup
 
+  numprocs=$(get_numprocs)
+
   for i in ${TESTBLOB}; do
     if [ -x "$i" ]; then
       # Only Python tests are guaranteed to run isolated.
-      if head -c 21 "$i" | grep -q '#!/usr/bin/env python'; then
+      if head -n 1 "$i" | grep -q '/usr/bin/env python'; then
         echo $i >> _run_all_parallel.txt
       else
         echo $i >> _run_all_serial.txt
@@ -78,13 +103,6 @@ elif [ "$1" = "--fast" ]; then
       rc=1
     fi
   done < _run_all_serial.txt
-
-  if command -v getconf >/dev/null 2>&1; then
-    numprocs=$(getconf _NPROCESSORS_ONLN)
-    numprocs=$((numprocs+1))
-  else
-    numprocs=2
-  fi
 
   cat _run_all_parallel.txt | xargs -n 1 -P $numprocs sh -c 'echo "#" $0 > $0.runlog; $0 >> $0.runlog 2>&1'
   if [ $? -ne 0 ]; then
