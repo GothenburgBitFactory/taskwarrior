@@ -11,6 +11,9 @@ runlog_cleanup() {
   if [ -f "_run_all_serial.txt" ]; then
     rm _run_all_serial.txt
   fi
+  if [ -f "_run_all_parallel_rc1" ]; then
+    rm _run_all_parallel_rc1
+  fi
   for i in *.runlog; do
     # Ugly hack. :)
     if [ -f "$i" ]; then
@@ -41,6 +44,15 @@ get_numprocs() {
   fi
 
   echo $numprocs
+}
+
+run_all_parallel() {
+  numprocs=$(get_numprocs)
+  cat _run_all_parallel.txt | xargs -n 1 -P $numprocs sh -c 'echo "#" $0 > $0.runlog; $0 >> $0.runlog 2>&1'
+  if [ $? -ne 0 ]; then
+    touch _run_all_parallel_rc1
+  fi
+  rm _run_all_parallel.txt
 }
 
 
@@ -80,8 +92,6 @@ elif [ "$1" = "--fast" ]; then
   # Clean up after aborted runs
   runlog_cleanup
 
-  numprocs=$(get_numprocs)
-
   for i in ${TESTBLOB}; do
     if [ -x "$i" ]; then
       # Only Python tests are guaranteed to run isolated.
@@ -95,6 +105,8 @@ elif [ "$1" = "--fast" ]; then
     fi
   done
 
+  run_all_parallel&
+
   while read i; do
     echo '#' $i >>all.log
 
@@ -104,8 +116,12 @@ elif [ "$1" = "--fast" ]; then
     fi
   done < _run_all_serial.txt
 
-  cat _run_all_parallel.txt | xargs -n 1 -P $numprocs sh -c 'echo "#" $0 > $0.runlog; $0 >> $0.runlog 2>&1'
-  if [ $? -ne 0 ]; then
+  while [ -f "_run_all_parallel.txt" ]; do
+    # Wait for the parallelized tests to finish running.
+    sleep 1  # sleep 0.1 is not portable.
+  done
+
+  if [ -f "_run_all_parallel_rc1" ]; then
     rc=1
   fi
 

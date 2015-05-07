@@ -5,6 +5,7 @@
 *.runlog
 _run_all_parallel.txt
 _run_all_serial.txt
+_run_all_parallel_rc1
 autocomplete.t
 color.t
 config.t
