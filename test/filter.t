@@ -36,16 +36,17 @@ from basetest import Task, TestCase
 
 
 class TestFilter(TestCase):
-    def setUp(self):
-        self.t = Task()
+    @classmethod
+    def setUpClass(cls):
+        cls.t = Task()
 
-        self.t(("add", "project:A", "prio:H", "+tag", "one", "foo"))
-        self.t(("add", "project:A", "prio:H",         "two"))
-        self.t(("add", "project:A",                   "three"))
-        self.t(("add",              "prio:H",         "four"))
-        self.t(("add",                        "+tag", "five"))
-        self.t(("add",                                "six", "foo"))
-        self.t(("add",              "prio:L",         "seven", "bar", "foo"))
+        cls.t(("add", "project:A", "prio:H", "+tag", "one", "foo"))
+        cls.t(("add", "project:A", "prio:H",         "two"))
+        cls.t(("add", "project:A",                   "three"))
+        cls.t(("add",              "prio:H",         "four"))
+        cls.t(("add",                        "+tag", "five"))
+        cls.t(("add",                                "six", "foo"))
+        cls.t(("add",              "prio:L",         "seven", "bar", "foo"))
 
     def test_list(self):
         """filter - list"""
