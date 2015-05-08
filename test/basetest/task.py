@@ -172,11 +172,13 @@ class Task(object):
         try:
             # Python 2.x
             if isinstance(args, basestring):
-                args = args.split()
+                import shlex
+                args = shlex.split(args)
         except NameError:
             # Python 3.x
             if isinstance(args, str):
-                args = args.split()
+                import shlex
+                args = shlex.split(args)
 
         command.extend(args)
 
