@@ -1,5 +1,6 @@
 2.4.4 () -
 
+- TW-69   wait dates relative to due date (thanks to John Florian).
 - TW-1474 Documentation is confusing with respect to user/uuid on the server
           (thanks to Tomas Babej).
 - TW-1596 taskwarrior can't compile FreeBSD 9.3 32bit environment (thanks to
