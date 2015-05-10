@@ -10,7 +10,7 @@ include (CheckStructHasMember)
 set (HAVE_CMAKE true)
 
 project (task)
-set (PROJECT_VERSION "2.4.4")
+set (PROJECT_VERSION "2.4.5")
 
 OPTION(USE_GNUTLS "Build gnutls support." ON)
 

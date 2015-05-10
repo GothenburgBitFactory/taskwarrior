@@ -1,26 +1,13 @@
 
-New Features in Taskwarrior 2.4.4
+New Features in Taskwarrior 2.4.5
 
-  - Taskwarrior now requires GCC 4.7+ / Clang 3.3+, for full C++11 support.
-  - Taskwarrior now builds properly on 32-bit platforms.
-  - The beginnings of a Japaneѕe translation.
+New commands in Taskwarrior 2.4.5
 
-New commands in Taskwarrior 2.4.4
+New configuration options in Taskwarrior 2.4.5
 
-  - None
+Newly deprecated features in Taskwarrior 2.4.5
 
-New configuration options in Taskwarrior 2.4.4
-
-  - The 'obfuscate' setting, if set to '1' will replace all text with 'xxx'.
-    This is useful when sharing data for bug reporting purposes.
-
-Newly deprecated features in Taskwarrior 2.4.4
-
-  - None
-
-Removed features in 2.4.4
-
-  - None
+Removed features in 2.4.5
 
 Known Issues
 
