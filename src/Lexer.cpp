@@ -778,14 +778,17 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::tag
-//   ^ | <isWhiteSpace>    [ +|- ] <isIdentifierStart> [ <isIdentifierNext> ]*
+//   ^ | '(' | ')' | <isWhiteSpace>
+//     [ +|- ] <isIdentifierStart> [ <isIdentifierNext> ]*
 bool Lexer::isTag (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
-  // Lookbehind: ^ | <isWhiteSpace>
-  if (marker > 0 &&
-      ! isWhitespace (_text[marker - 1]))
+  // Lookbehind: ^ | '(' | ')' | <isWhiteSpace>
+  if (marker > 0                         &&
+      ! isWhitespace (_text[marker - 1]) &&
+      _text[marker - 1] != '('           &&
+      _text[marker - 1] != ')')
     return false;
 
   if (_text[marker] == '+' ||

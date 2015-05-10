@@ -11,6 +11,8 @@
           again (thanks to Jens Erat).
 - TW-1605 Japanese translation for Taskwarrior (thanks to Oota Toshiya).
 - TW-1606 scheduled.any filter (thanks to Peter Rochen).
+- TW-1608 The recur/recurring report shows tasks without a recur interval
+          (thanks to Brad Collette).
 - TW-1610 Disabling GC can lead to editing the wrong task (thanks to Scott M).
 - The 'obfuscate' setting, if set to '1' will replace all text with 'xxx'.
 - POSIX file locking mechanism, eliminating platform-specific code.

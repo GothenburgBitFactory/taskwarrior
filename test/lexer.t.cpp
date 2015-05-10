@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (771);
+  UnitTest t (789);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -374,6 +374,9 @@ int main (int argc, char** argv)
     { "desc~pattern",                                 { { "desc",                                         Lexer::Type::dom          },
                                                         { "~",                                            Lexer::Type::op           },
                                                         { "pattern",                                      Lexer::Type::dom          },         NO, NO }, },
+    { "(+tag)",                                       { { "(",                                            Lexer::Type::op           },
+                                                        { "+tag",                                         Lexer::Type::tag          },
+                                                        { ")",                                            Lexer::Type::op           },         NO, NO }, },
   };
   #define NUM_TESTS (sizeof (lexerTests) / sizeof (lexerTests[0]))
 
