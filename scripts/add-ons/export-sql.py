@@ -29,7 +29,7 @@ export-sql.py -- Export the taskwarrior database as a series of SQL commands.
 
 Example usage::
 
-    $ ./export-sql.py | sqlite3 mytasks.db
+    $ PYTHONIOENCODING=UTF-8 ./export-sql.py | sqlite3 mytasks.db
     $ /usr/bin/sqlite3 mytasks.db "select * from annotations;"
 
 This script has only been tested with sqlite3, but in theory, it could be
@@ -120,8 +120,8 @@ def to_sql(task):
         values = template.format(**annot)
         return "INSERT INTO \"annotations\" VALUES(%s)" % values
 
-    template = "{uuid}, {description}, {entry}, {end}, " + \
-           "{priority}, {project}, {status}"
+    template = u"{uuid}, {description}, {entry}, {end}, " + \
+           u"{priority}, {project}, {status}"
 
     nullables = ['end', 'priority', 'project', 'status']
     defaults = dict([(key, None) for key in nullables])
@@ -162,7 +162,7 @@ if __name__ == '__main__':
     sql = table_definitions + ";\n".join(lines) + ';'
 
     # Print them out, decorated with sqlite3 trappings
-    print """
+    print u"""
 BEGIN TRANSACTION;
 {sql}
 COMMIT;""".format(sql=sql)
