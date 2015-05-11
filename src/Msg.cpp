@@ -102,8 +102,7 @@ void Msg::setPayload (const std::string& payload)
 ////////////////////////////////////////////////////////////////////////////////
 std::string Msg::get (const std::string& name) const
 {
-  std::map <std::string, std::string>::const_iterator i;
-  i = _header.find (name);
+  auto i = _header.find (name);
   if (i != _header.end ())
     return i->second;
 
@@ -119,9 +118,8 @@ std::string Msg::getPayload () const
 ////////////////////////////////////////////////////////////////////////////////
 void Msg::all (std::vector <std::string>& names) const
 {
-  std::map <std::string, std::string>::const_iterator i;
-  for (i = _header.begin (); i != _header.end (); ++i)
-    names.push_back (i->first);
+  for (auto& i : _header)
+    names.push_back (i.first);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,9 +127,8 @@ std::string Msg::serialize () const
 {
   std::string output;
 
-  std::map <std::string, std::string>::const_iterator i;
-  for (i = _header.begin (); i != _header.end (); ++i)
-    output += i->first + ": " + i->second + "\n";
+  for (auto& i : _header)
+    output += i.first + ": " + i.second + "\n";
 
   output += "\n" + _payload + "\n";
 
@@ -144,21 +141,20 @@ bool Msg::parse (const std::string& input)
   _header.clear ();
   _payload = "";
 
-  std::string::size_type separator = input.find ("\n\n");
+  auto separator = input.find ("\n\n");
   if (separator == std::string::npos)
     throw std::string ("ERROR: Malformed message");
 
   // Parse header.
   std::vector <std::string> lines;
   split (lines, input.substr (0, separator), '\n');
-  std::vector <std::string>::iterator i;
-  for (i = lines.begin (); i != lines.end (); ++i)
+  for (auto& i : lines)
   {
-    std::string::size_type delimiter = i->find (':');
+    std::string::size_type delimiter = i.find (':');
     if (delimiter == std::string::npos)
-        throw std::string ("ERROR: Malformed message header '") + *i + "'";
+        throw std::string ("ERROR: Malformed message header '") + i + "'";
 
-    _header[trim (i->substr (0, delimiter))] = trim (i->substr (delimiter + 1));
+    _header[trim (i.substr (0, delimiter))] = trim (i.substr (delimiter + 1));
     }
 
   // Parse payload.

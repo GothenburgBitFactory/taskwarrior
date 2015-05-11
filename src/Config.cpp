@@ -528,11 +528,8 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
   split (lines, input, "\n");
 
   // Parse each line.
-  std::vector <std::string>::iterator it;
-  for (it = lines.begin (); it != lines.end (); ++it)
+  for (auto& line : lines)
   {
-    std::string line = *it;
-
     // Remove comments.
     std::string::size_type pound = line.find ("#"); // no i18n
     if (pound != std::string::npos)
@@ -714,9 +711,8 @@ void Config::set (const std::string& key, const std::string& value)
 // Provide a vector of all configuration keys.
 void Config::all (std::vector<std::string>& items) const
 {
-  std::map <std::string, std::string>::const_iterator it;
-  for (it = this->begin (); it != this->end (); ++it)
-    items.push_back (it->first);
+  for (auto& it : *this)
+    items.push_back (it.first);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

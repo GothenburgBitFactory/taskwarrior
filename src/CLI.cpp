@@ -116,8 +116,7 @@ void A::tag (const std::string& tag)
 ////////////////////////////////////////////////////////////////////////////////
 void A::unTag (const std::string& tag)
 {
-  std::vector <std::string>::iterator i;
-  for (i = _tags.begin (); i != _tags.end (); ++i)
+  for (auto i = _tags.begin (); i != _tags.end (); ++i)
   {
     if (*i == tag)
     {
@@ -159,7 +158,7 @@ void A::attribute (const std::string& name, const double value)
 const std::string A::attribute (const std::string& name) const
 {
   // Prevent autovivification.
-  std::map<std::string, std::string>::const_iterator i = _attributes.find (name);
+  auto i = _attributes.find (name);
   if (i != _attributes.end ())
     return i->second;
 
@@ -179,8 +178,7 @@ const std::string A::dump () const
 
   // Dump attributes.
   std::string atts;
-  std::map <std::string, std::string>::const_iterator a;
-  for (a = _attributes.begin (); a != _attributes.end (); ++a)
+  for (auto a = _attributes.begin (); a != _attributes.end (); ++a)
   {
     if (a != _attributes.begin ())
       atts += " ";
@@ -193,21 +191,20 @@ const std::string A::dump () const
 
   // Dump tags.
   std::string tags;
-  std::vector <std::string>::const_iterator tag;
-  for (tag = _tags.begin (); tag != _tags.end (); ++tag)
+  for (auto& tag : _tags)
   {
     if (tags.length ())
       tags += ' ';
 
-         if (*tag == "BINARY")       tags += "\033[1;37;44m"           + *tag + "\033[0m";
-    else if (*tag == "CMD")          tags += "\033[1;37;46m"           + *tag + "\033[0m";
-    else if (*tag == "FILTER")       tags += "\033[1;37;42m"           + *tag + "\033[0m";
-    else if (*tag == "MODIFICATION") tags += "\033[1;37;43m"           + *tag + "\033[0m";
-    else if (*tag == "RC")           tags += "\033[1;37;41m"           + *tag + "\033[0m";
-    else if (*tag == "CONFIG")       tags += "\033[1;37;101m"          + *tag + "\033[0m";
-    else if (*tag == "PSEUDO")       tags += "\033[1;37;45m"           + *tag + "\033[0m";
-    else if (*tag == "?")            tags += "\033[38;5;255;48;5;232m" + *tag + "\033[0m";
-    else                             tags += "\033[32m"                + *tag + "\033[0m";
+         if (tag == "BINARY")       tags += "\033[1;37;44m"           + tag + "\033[0m";
+    else if (tag == "CMD")          tags += "\033[1;37;46m"           + tag + "\033[0m";
+    else if (tag == "FILTER")       tags += "\033[1;37;42m"           + tag + "\033[0m";
+    else if (tag == "MODIFICATION") tags += "\033[1;37;43m"           + tag + "\033[0m";
+    else if (tag == "RC")           tags += "\033[1;37;41m"           + tag + "\033[0m";
+    else if (tag == "CONFIG")       tags += "\033[1;37;101m"          + tag + "\033[0m";
+    else if (tag == "PSEUDO")       tags += "\033[1;37;45m"           + tag + "\033[0m";
+    else if (tag == "?")            tags += "\033[38;5;255;48;5;232m" + tag + "\033[0m";
+    else                            tags += "\033[32m"                + tag + "\033[0m";
   }
 
   if (tags.length ())
@@ -324,13 +321,9 @@ void CLI::alias (const std::string& name, const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::entity (const std::string& category, const std::string& name)
 {
-  // Find the category.
-  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
-  c = _entities.equal_range (category);
-
   // Walk the list of entities for category.
-  std::multimap <std::string, std::string>::const_iterator e;
-  for (e = c.first; e != c.second; ++e)
+  auto c = _entities.equal_range (category);
+  for (auto e = c.first; e != c.second; ++e)
     if (e->second == name)
       return;
 
@@ -385,17 +378,16 @@ void CLI::addContextFilter ()
   // Detect if UUID or ID is set, and bail out
   if (_args.size ())
   {
-    std::vector <A>::const_iterator a;
-    for (a = _args.begin (); a != _args.end (); ++a)
+    for (auto& a : _args)
     {
       // TODO This looks wrong.
-      if (a->hasTag ("FILTER") &&
-          a->hasTag ("ATTRIBUTE") &&
-          ! a->hasTag ("TERMINATED") &&
-          ! a->hasTag ("WORD") &&
-          (a->attribute ("raw") == "id" || a->attribute ("raw") == "uuid"))
+      if (a.hasTag ("FILTER") &&
+          a.hasTag ("ATTRIBUTE") &&
+          ! a.hasTag ("TERMINATED") &&
+          ! a.hasTag ("WORD") &&
+          (a.attribute ("raw") == "id" || a.attribute ("raw") == "uuid"))
       {
-        context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a->attribute ("raw")));
+        context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a.attribute ("raw")));
         return;
       }
     }
@@ -513,13 +505,12 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::applyOverrides ()
 {
-  std::vector <A>::const_iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("CONFIG"))
+    if (a.hasTag ("CONFIG"))
     {
-      std::string name  = a->attribute ("name");
-      std::string value = a->attribute ("value");
+      std::string name  = a.attribute ("name");
+      std::string value = a.attribute ("value");
       context.config.set (name, value);
       context.footnote (format (STRING_PARSER_OVERRIDE_RC, name, value));
     }
@@ -539,17 +530,16 @@ const std::string CLI::getFilter (bool applyContext /* = true */)
   std::string filter = "";
   if (_args.size ())
   {
-    std::vector <A>::const_iterator a;
-    for (a = _args.begin (); a != _args.end (); ++a)
+    for (auto& a : _args)
     {
-      if (a->hasTag ("FILTER"))
+      if (a.hasTag ("FILTER"))
       {
         if (filter != "")
           filter += ' ';
 
-        std::string term = a->attribute ("name");
+        std::string term = a.attribute ("name");
         if (term == "")
-          term = a->attribute ("raw");
+          term = a.attribute ("raw");
 
         filter += term;
       }
@@ -572,16 +562,15 @@ const std::vector <std::string> CLI::getWords ()
   analyze (false);
 
   std::vector <std::string> words;
-  std::vector <A>::const_iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (! a->hasTag ("BINARY") &&
-        ! a->hasTag ("RC")     &&
-        ! a->hasTag ("CONFIG") &&
-        ! a->hasTag ("CMD")    &&
-        ! a->hasTag ("TERMINATOR"))
+    if (! a.hasTag ("BINARY") &&
+        ! a.hasTag ("RC")     &&
+        ! a.hasTag ("CONFIG") &&
+        ! a.hasTag ("CMD")    &&
+        ! a.hasTag ("TERMINATOR"))
     {
-      words.push_back (a->attribute ("raw"));
+      words.push_back (a.attribute ("raw"));
     }
   }
 
@@ -595,14 +584,10 @@ bool CLI::canonicalize (
   const std::string& category,
   const std::string& value) const
 {
-  // Find the category.
-  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
-  c = _entities.equal_range (category);
-
   // Extract a list of entities for category.
   std::vector <std::string> options;
-  std::multimap <std::string, std::string>::const_iterator e;
-  for (e = c.first; e != c.second; ++e)
+  auto c = _entities.equal_range (category);
+  for (auto e = c.first; e != c.second; ++e)
   {
     // Shortcut: if an exact match is found, success.
     if (value == e->second)
@@ -637,10 +622,9 @@ std::string CLI::getBinary () const
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI::getCommand () const
 {
-  std::vector <A>::const_iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
-    if (a->hasTag ("CMD"))
-      return a->attribute ("canonical");
+  for (auto& a : _args)
+    if (a.hasTag ("CMD"))
+      return a.attribute ("canonical");
 
   return "";
 }
@@ -648,11 +632,10 @@ std::string CLI::getCommand () const
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI::getLimit () const
 {
-  std::vector <A>::const_iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
-    if (a->hasTag ("PSEUDO") &&
-        a->attribute ("canonical") == "limit")
-      return a->attribute ("value");
+  for (auto& a : _args)
+    if (a.hasTag ("PSEUDO") &&
+        a.attribute ("canonical") == "limit")
+      return a.attribute ("value");
 
   return "0";
 }
@@ -665,8 +648,7 @@ const std::string CLI::dump (const std::string& title /* = "CLI Parser" */) cons
   out << "\033[1m" << title << "\033[0m\n"
       << "  _original_args\n    ";
   Color colorOrigArgs ("gray10 on gray4");
-  std::vector <std::string>::const_iterator i;
-  for (i = _original_args.begin (); i != _original_args.end (); ++i)
+  for (auto i = _original_args.begin (); i != _original_args.end (); ++i)
   {
     if (i != _original_args.begin ())
       out << ' ';
@@ -675,9 +657,8 @@ const std::string CLI::dump (const std::string& title /* = "CLI Parser" */) cons
   out << "\n";
 
   out << "  _args\n";
-  std::vector <A>::const_iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
-    out << "    " << a->dump () << "\n";
+  for (auto& a : _args)
+    out << "    " << a.dump () << "\n";
 
   return out.str ();
 }
@@ -742,9 +723,8 @@ void CLI::addArg (const std::string& arg, Lexer::Type type /* = Lexer::Type::wor
     {
       // How often have I said to you that when you have eliminated the
       // impossible, whatever remains, however improbable, must be the truth?
-      std::vector <std::pair <std::string, Lexer::Type>>::iterator l;
-      for (l = lexemes.begin (); l != lexemes.end (); ++l)
-        _original_args.push_back (l->first);
+      for (auto& l : lexemes)
+        _original_args.push_back (l.first);
     }
   }
 }
@@ -762,10 +742,9 @@ void CLI::aliasExpansion ()
 
     bool terminated = false;
     std::string raw;
-    std::vector <A>::iterator i;
-    for (i = _args.begin (); i != _args.end (); ++i)
+    for (auto& i : _args)
     {
-      raw = i->attribute ("raw");
+      raw = i.attribute ("raw");
 
       if (raw == "--")
         terminated = true;
@@ -774,11 +753,10 @@ void CLI::aliasExpansion ()
       {
         if (_aliases.find (raw) != _aliases.end ())
         {
-          std::vector <std::string> lexed = Lexer::split (_aliases[raw]);
-          std::vector <std::string>::iterator l;
-          for (l = lexed.begin (); l != lexed.end (); ++l)
+          auto lexed = Lexer::split (_aliases[raw]);
+          for (auto& l : lexed)
           {
-            A a ("argLex", *l);
+            A a ("argLex", l);
             a.tag ("ALIAS");
             a.tag ("LEX");
             reconstructed.push_back (a);
@@ -788,10 +766,10 @@ void CLI::aliasExpansion ()
           changes = true;
         }
         else
-          reconstructed.push_back (*i);
+          reconstructed.push_back (i);
       }
       else
-        reconstructed.push_back (*i);
+        reconstructed.push_back (i);
     }
 
     _args = reconstructed;
@@ -812,10 +790,9 @@ void CLI::findOverrides ()
   bool changes = false;
   std::string raw;
   bool terminated = false;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    raw = a->attribute ("raw");
+    raw = a.attribute ("raw");
 
     if (raw == "--")
       terminated = true;
@@ -825,8 +802,8 @@ void CLI::findOverrides ()
 
     if (isRCOverride (raw))
     {
-      a->tag ("RC");
-      a->attribute ("file", raw.substr (3));
+      a.tag ("RC");
+      a.attribute ("file", raw.substr (3));
       changes = true;
     }
     else if (isConfigOverride (raw))
@@ -836,9 +813,9 @@ void CLI::findOverrides ()
         sep = raw.find (':', 3);
       if (sep != std::string::npos)
       {
-        a->tag ("CONFIG");
-        a->attribute ("name", raw.substr (3, sep - 3));
-        a->attribute ("value", raw.substr (sep + 1));
+        a.tag ("CONFIG");
+        a.attribute ("name", raw.substr (3, sep - 3));
+        a.attribute ("value", raw.substr (sep + 1));
         changes = true;
       }
     }
@@ -857,15 +834,14 @@ void CLI::categorize ()
   bool readOnly = false;
   bool terminated = false;
 
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    std::string raw = a->attribute ("raw");
+    std::string raw = a.attribute ("raw");
 
     if (! terminated && raw == "--")
     {
-      a->tag ("ORIGINAL");
-      a->tag ("TERMINATOR");
+      a.tag ("ORIGINAL");
+      a.tag ("TERMINATOR");
       terminated = true;
       changes = true;
       continue;
@@ -873,15 +849,15 @@ void CLI::categorize ()
 
     else if (terminated)
     {
-      a->tag ("ORIGINAL");
-      a->tag ("TERMINATED");
-      a->tag ("WORD");
+      a.tag ("ORIGINAL");
+      a.tag ("TERMINATED");
+      a.tag ("WORD");
       changes = true;
     }
 
     if (raw.find (' ') != std::string::npos)
     {
-      a->tag ("QUOTED");
+      a.tag ("QUOTED");
       changes = true;
     }
 
@@ -892,36 +868,36 @@ void CLI::categorize ()
     {
       readOnly = ! exactMatch ("writecmd", canonical);
 
-      a->tag ("CMD");
-      a->tag (readOnly ? "READCMD" : "WRITECMD");
-      a->attribute ("canonical", canonical);
+      a.tag ("CMD");
+      a.tag (readOnly ? "READCMD" : "WRITECMD");
+      a.attribute ("canonical", canonical);
       foundCommand = true;
       changes = true;
     }
-    else if (a->hasTag ("TERMINATOR") ||
-             a->hasTag ("BINARY")     ||
-             a->hasTag ("CONFIG")     ||
-             a->hasTag ("RC"))
+    else if (a.hasTag ("TERMINATOR") ||
+             a.hasTag ("BINARY")     ||
+             a.hasTag ("CONFIG")     ||
+             a.hasTag ("RC"))
     {
       // NOP
     }
     else if (foundCommand && ! readOnly)
     {
-      a->tag ("MODIFICATION");
+      a.tag ("MODIFICATION");
 
       // If the argument contains a space, it was quoted.  Record that.
       if (! Lexer::isOneWord (raw))
-        a->tag ("QUOTED");
+        a.tag ("QUOTED");
 
       changes = true;
     }
     else if (!foundCommand || (foundCommand && readOnly))
     {
-      a->tag ("FILTER");
+      a.tag ("FILTER");
 
       // If the argument contains a space, it was quoted.  Record that.
       if (! Lexer::isOneWord (raw))
-        a->tag ("QUOTED");
+        a.tag ("QUOTED");
 
       changes = true;
     }
@@ -938,14 +914,10 @@ bool CLI::exactMatch (
   const std::string& category,
   const std::string& value) const
 {
-  // Find the category.
-  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
-  c = _entities.equal_range (category);
-
   // Extract a list of entities for category.
   std::vector <std::string> options;
-  std::multimap <std::string, std::string>::const_iterator e;
-  for (e = c.first; e != c.second; ++e)
+  auto c = _entities.equal_range (category);
+  for (auto e = c.first; e != c.second; ++e)
   {
     // Shortcut: if an exact match is found, success.
     if (value == e->second)
@@ -962,12 +934,11 @@ void CLI::desugarFilterTags ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("FILTER"))
+    if (a.hasTag ("FILTER"))
     {
-      Nibbler n (a->attribute ("raw"));
+      Nibbler n (a.attribute ("raw"));
       std::string tag;
       std::string sign;
 
@@ -994,10 +965,10 @@ void CLI::desugarFilterTags ()
         changes = true;
       }
       else
-        reconstructed.push_back (*a);
+        reconstructed.push_back (a);
     }
     else
-      reconstructed.push_back (*a);
+      reconstructed.push_back (a);
   }
 
   if (changes)
@@ -1018,13 +989,12 @@ void CLI::findStrayModifications ()
   if (command == "add" ||
       command == "log")
   {
-    std::vector <A>::iterator a;
-    for (a = _args.begin (); a != _args.end (); ++a)
+    for (auto& a : _args)
     {
-      if (a->hasTag ("FILTER"))
+      if (a.hasTag ("FILTER"))
       {
-        a->unTag ("FILTER");
-        a->tag ("MODIFICATION");
+        a.unTag ("FILTER");
+        a.tag ("MODIFICATION");
         changes = true;
       }
     }
@@ -1041,14 +1011,13 @@ void CLI::desugarFilterAttributes ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("FILTER"))
+    if (a.hasTag ("FILTER"))
     {
       // Look for a valid attribute name.
       bool found = false;
-      Nibbler n (a->attribute ("raw"));
+      Nibbler n (a.attribute ("raw"));
       std::string name;
       if (n.getName (name) &&
           name.length ())
@@ -1090,7 +1059,7 @@ void CLI::desugarFilterAttributes ()
 
             else if (canonicalize (canonical, "pseudo", name))
             {
-              A lhs ("argPseudo", a->attribute ("raw"));
+              A lhs ("argPseudo", a.attribute ("raw"));
               lhs.attribute ("canonical", canonical);
               lhs.attribute ("value", value);
               lhs.tag ("PSEUDO");
@@ -1129,10 +1098,10 @@ void CLI::desugarFilterAttributes ()
       if (found)
         changes = true;
       else
-        reconstructed.push_back (*a);
+        reconstructed.push_back (a);
     }
     else
-      reconstructed.push_back (*a);
+      reconstructed.push_back (a);
   }
 
   if (changes)
@@ -1150,14 +1119,13 @@ void CLI::desugarFilterAttributeModifiers ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("FILTER"))
+    if (a.hasTag ("FILTER"))
     {
       // Look for a valid attribute name.
       bool found = false;
-      Nibbler n (a->attribute ("raw"));
+      Nibbler n (a.attribute ("raw"));
       std::string name;
       if (n.getUntil (".", name) &&
           name.length ())
@@ -1302,10 +1270,10 @@ void CLI::desugarFilterAttributeModifiers ()
       if (found)
         changes = true;
       else
-        reconstructed.push_back (*a);
+        reconstructed.push_back (a);
     }
     else
-      reconstructed.push_back (*a);
+      reconstructed.push_back (a);
   }
 
   if (changes)
@@ -1323,12 +1291,11 @@ void CLI::desugarFilterPatterns ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("FILTER"))
+    if (a.hasTag ("FILTER"))
     {
-      Nibbler n (a->attribute ("raw"));
+      Nibbler n (a.attribute ("raw"));
       std::string pattern;
 
       if (n.getQuoted ('/', pattern) &&
@@ -1352,10 +1319,10 @@ void CLI::desugarFilterPatterns ()
         changes = true;
       }
       else
-        reconstructed.push_back (*a);
+        reconstructed.push_back (a);
     }
     else
-      reconstructed.push_back (*a);
+      reconstructed.push_back (a);
   }
 
   if (changes)
@@ -1378,13 +1345,12 @@ void CLI::desugarFilterPatterns ()
 //
 void CLI::findIDs ()
 {
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("FILTER"))
+    if (a.hasTag ("FILTER"))
     {
       // IDs have a limited character set.
-      std::string raw = a->attribute ("raw");
+      std::string raw = a.attribute ("raw");
       if (raw.find_first_not_of ("0123456789,-") == std::string::npos)
       {
         // Container for min/max ID ranges.
@@ -1395,12 +1361,11 @@ void CLI::findIDs ()
         split (elements, raw, ',');
 
         bool is_an_id = true;
-        std::vector <std::string>::iterator e;
-        for (e = elements.begin (); e != elements.end (); ++e)
+        for (auto& e : elements)
         {
           // Split the ID range into min/max.
           std::vector <std::string> terms;
-          split (terms, *e, '-');
+          split (terms, e, '-');
 
           if (terms.size () == 1)
           {
@@ -1464,12 +1429,11 @@ void CLI::findIDs ()
 
         if (is_an_id)
         {
-          a->tag ("ID");
+          a.tag ("ID");
 
           // Save the ranges.
-          std::vector <std::pair <int, int>>::iterator r;
-          for (r = ranges.begin (); r != ranges.end (); ++r)
-            _id_ranges.push_back (*r);
+          for (auto& r : ranges)
+            _id_ranges.push_back (r);
         }
       }
     }
@@ -1479,13 +1443,12 @@ void CLI::findIDs ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::findUUIDs ()
 {
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("FILTER"))
+    if (a.hasTag ("FILTER"))
     {
       // UUIDs have a limited character set.
-      std::string raw = a->attribute ("raw");
+      std::string raw = a.attribute ("raw");
       if (raw.find_first_not_of ("0123456789abcdefABCDEF-,") == std::string::npos)
       {
         Nibbler n (raw);
@@ -1507,12 +1470,11 @@ void CLI::findUUIDs ()
 
           if (n.depleted ())
           {
-            a->tag ("UUID");
+            a.tag ("UUID");
 
             // Save the list.
-            std::vector <std::string>::iterator u;
-            for (u = uuidList.begin (); u != uuidList.end (); ++u)
-              _uuid_list.push_back (*u);
+            for (auto& uuid : uuidList)
+              _uuid_list.push_back (uuid);
           }
         }
       }
@@ -1528,12 +1490,11 @@ void CLI::insertIDExpr ()
   bool changes = false;
   bool foundID = false;
   std::vector <A> reconstructed;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("FILTER") &&
-        (a->hasTag ("ID") ||
-         a->hasTag ("UUID")))
+    if (a.hasTag ("FILTER") &&
+        (a.hasTag ("ID") ||
+         a.hasTag ("UUID")))
     {
       if (! foundID)
       {
@@ -1576,8 +1537,7 @@ void CLI::insertIDExpr ()
         reconstructed.push_back (openParen);
 
         // Add all ID ranges.
-        std::vector <std::pair <int, int>>::iterator r;
-        for (r = _id_ranges.begin (); r != _id_ranges.end (); ++r)
+        for (auto r = _id_ranges.begin (); r != _id_ranges.end (); ++r)
         {
           if (r != _id_ranges.begin ())
             reconstructed.push_back (opOr);
@@ -1628,8 +1588,7 @@ void CLI::insertIDExpr ()
           reconstructed.push_back (opOr);
 
         // Add all UUID list items.
-        std::vector <std::string>::iterator u;
-        for (u = _uuid_list.begin (); u != _uuid_list.end (); ++u)
+        for (auto u = _uuid_list.begin (); u != _uuid_list.end (); ++u)
         {
           if (u != _uuid_list.begin ())
             reconstructed.push_back (opOr);
@@ -1654,7 +1613,7 @@ void CLI::insertIDExpr ()
       // No 'else' which cause all other ID/UUID args to be eaten.
     }
     else
-      reconstructed.push_back (*a);
+      reconstructed.push_back (a);
   }
 
   if (changes)
@@ -1671,9 +1630,8 @@ void CLI::desugarFilterPlainArgs ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
-  std::vector <A>::iterator a;
-  std::vector <A>::iterator prev = _args.begin ();
-  for (a = _args.begin (); a != _args.end (); ++a)
+  auto prev = _args.begin ();
+  for (auto a = _args.begin (); a != _args.end (); ++a)
   {
     if (a != prev                 && // Not the first arg.
         ! prev->hasTag ("OP")     && // An OP before protects the arg.
@@ -1720,25 +1678,20 @@ void CLI::desugarFilterPlainArgs ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::findOperators ()
 {
-  // Find the category.
-  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
-  c = _entities.equal_range ("operator");
-
   // Extract a list of entities for category.
   std::vector <std::string> options;
-  std::multimap <std::string, std::string>::const_iterator e;
-  for (e = c.first; e != c.second; ++e)
+  auto c = _entities.equal_range ("operator");
+  for (auto e = c.first; e != c.second; ++e)
     options.push_back (e->second);
 
   // Walk the arguments and tag as OP.
   bool changes = false;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
-    if (a->hasTag ("FILTER"))
-      if (std::find (options.begin (), options.end (), a->attribute ("raw")) != options.end ())
-        if (! a->hasTag ("OP"))
+  for (auto& a : _args)
+    if (a.hasTag ("FILTER"))
+      if (std::find (options.begin (), options.end (), a.attribute ("raw")) != options.end ())
+        if (! a.hasTag ("OP"))
         {
-          a->tag ("OP");
+          a.tag ("OP");
           changes = true;
         }
 
@@ -1750,25 +1703,20 @@ void CLI::findOperators ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::findAttributes ()
 {
-  // Find the category.
-  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
-  c = _entities.equal_range ("attribute");
-
   // Extract a list of entities for category.
   std::vector <std::string> options;
-  std::multimap <std::string, std::string>::const_iterator e;
-  for (e = c.first; e != c.second; ++e)
+  auto c = _entities.equal_range ("attribute");
+  for (auto e = c.first; e != c.second; ++e)
     options.push_back (e->second);
 
   // Walk the arguments and tag as OP.
   bool changes = false;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
-    if (a->hasTag ("FILTER"))
-      if (std::find (options.begin (), options.end (), a->attribute ("raw")) != options.end ())
-        if (! a->hasTag ("ATTRIBUTE"))
+  for (auto& a : _args)
+    if (a.hasTag ("FILTER"))
+      if (std::find (options.begin (), options.end (), a.attribute ("raw")) != options.end ())
+        if (! a.hasTag ("ATTRIBUTE"))
         {
-          a->tag ("ATTRIBUTE");
+          a.tag ("ATTRIBUTE");
           changes = true;
         }
 
@@ -1790,9 +1738,8 @@ void CLI::insertJunctions ()
 {
   bool changes = false;
   std::vector <A> reconstructed;
-  std::vector <A>::iterator prev = _args.begin ();
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  auto prev = _args.begin ();
+  for (auto a = _args.begin (); a != _args.end (); ++a)
   {
     if (a->hasTag ("FILTER"))
     {
@@ -1842,10 +1789,9 @@ void CLI::injectDefaults ()
   bool found_sequence   = false;
   bool found_terminator = false;
 
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    std::string raw = a->attribute ("raw");
+    std::string raw = a.attribute ("raw");
     if (isTerminator (raw))
       found_terminator = true;
 
@@ -1875,16 +1821,15 @@ void CLI::injectDefaults ()
 
         // Modify _args to be:   <args0> [<def0> ...] <args1> [...]
         std::vector <A> reconstructed;
-        for (a = _args.begin (); a != _args.end (); ++a)
+        for (auto a = _args.begin (); a != _args.end (); ++a)
         {
           reconstructed.push_back (*a);
 
           if (a == _args.begin ())
           {
-            std::vector <std::string>::iterator t;
-            for (t = tokens.begin (); t != tokens.end (); ++t)
+            for (auto& token : tokens)
             {
-              A arg ("argDefault", *t);
+              A arg ("argDefault", token);
               arg.tag ("DEFAULT");
               reconstructed.push_back (arg);
             }
@@ -1917,16 +1862,15 @@ void CLI::injectDefaults ()
 void CLI::decomposeModAttributes ()
 {
   bool changes = false;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("TERMINATOR"))
+    if (a.hasTag ("TERMINATOR"))
       break;
 
-    if (a->hasTag ("MODIFICATION"))
+    if (a.hasTag ("MODIFICATION"))
     {
       // Look for a valid attribute name.
-      Nibbler n (a->attribute ("raw"));
+      Nibbler n (a.attribute ("raw"));
       std::string name;
       if (n.getName (name) &&
           name.length ())
@@ -1945,25 +1889,24 @@ void CLI::decomposeModAttributes ()
             std::string canonical;
             if (canonicalize (canonical, "uda", name))
             {
-              a->attribute ("name", canonical);
-              a->attribute ("value", value);
-              a->tag ("UDA");
-              a->tag ("MODIFIABLE");
+              a.attribute ("name", canonical);
+              a.attribute ("value", value);
+              a.tag ("UDA");
+              a.tag ("MODIFIABLE");
               changes = true;
             }
 
             else if (canonicalize (canonical, "attribute", name))
             {
-              a->attribute ("name", canonical);
-              a->attribute ("value", value);
-              a->tag ("ATTRIBUTE");
+              a.attribute ("name", canonical);
+              a.attribute ("value", value);
+              a.tag ("ATTRIBUTE");
 
-              std::map <std::string, Column*>::const_iterator col;
-              col = context.columns.find (canonical);
+              auto col = context.columns.find (canonical);
               if (col != context.columns.end () &&
                   col->second->modifiable ())
               {
-                a->tag ("MODIFIABLE");
+                a.tag ("MODIFIABLE");
               }
 
               changes = true;
@@ -1983,16 +1926,15 @@ void CLI::decomposeModAttributes ()
 void CLI::decomposeModAttributeModifiers ()
 {
   bool changes = false;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("TERMINATOR"))
+    if (a.hasTag ("TERMINATOR"))
       break;
 
-    if (a->hasTag ("MODIFICATION"))
+    if (a.hasTag ("MODIFICATION"))
     {
       // Look for a valid attribute name.
-      Nibbler n (a->attribute ("raw"));
+      Nibbler n (a.attribute ("raw"));
       std::string name;
       if (n.getUntil (".", name) &&
           name.length ())
@@ -2025,29 +1967,28 @@ void CLI::decomposeModAttributeModifiers ()
                 std::string canonical;
                 if (canonicalize (canonical, "uda", name))
                 {
-                  a->attribute ("name", canonical);
-                  a->attribute ("modifier", modifier);
-                  a->attribute ("sense", sense);
-                  a->attribute ("value", value);
-                  a->tag ("UDA");
-                  a->tag ("MODIFIABLE");
+                  a.attribute ("name", canonical);
+                  a.attribute ("modifier", modifier);
+                  a.attribute ("sense", sense);
+                  a.attribute ("value", value);
+                  a.tag ("UDA");
+                  a.tag ("MODIFIABLE");
                   changes = true;
                 }
 
                 else if (canonicalize (canonical, "attribute", name))
                 {
-                  a->attribute ("name", canonical);
-                  a->attribute ("modifier", modifier);
-                  a->attribute ("sense", sense);
-                  a->attribute ("value", value);
-                  a->tag ("ATTMOD");
+                  a.attribute ("name", canonical);
+                  a.attribute ("modifier", modifier);
+                  a.attribute ("sense", sense);
+                  a.attribute ("value", value);
+                  a.tag ("ATTMOD");
 
-                  std::map <std::string, Column*>::const_iterator col;
-                  col = context.columns.find (canonical);
+                  auto col = context.columns.find (canonical);
                   if (col != context.columns.end () &&
                       col->second->modifiable ())
                   {
-                    a->tag ("MODIFIABLE");
+                    a.tag ("MODIFIABLE");
                   }
 
                   changes = true;
@@ -2069,15 +2010,14 @@ void CLI::decomposeModAttributeModifiers ()
 void CLI::decomposeModTags ()
 {
   bool changes = false;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("TERMINATOR"))
+    if (a.hasTag ("TERMINATOR"))
       break;
 
-    if (a->hasTag ("MODIFICATION"))
+    if (a.hasTag ("MODIFICATION"))
     {
-      Nibbler n (a->attribute ("raw"));
+      Nibbler n (a.attribute ("raw"));
       std::string tag;
       std::string sign;
 
@@ -2086,9 +2026,9 @@ void CLI::decomposeModTags ()
           n.getUntilEOS (tag)          &&
           tag.find (' ') == std::string::npos)
       {
-        a->attribute ("name", tag);
-        a->attribute ("sign", sign);
-        a->tag ("TAG");
+        a.attribute ("name", tag);
+        a.attribute ("sign", sign);
+        a.tag ("TAG");
         changes = true;
       }
     }
@@ -2103,15 +2043,14 @@ void CLI::decomposeModTags ()
 void CLI::decomposeModSubstitutions ()
 {
   bool changes = false;
-  std::vector <A>::iterator a;
-  for (a = _args.begin (); a != _args.end (); ++a)
+  for (auto& a : _args)
   {
-    if (a->hasTag ("TERMINATOR"))
+    if (a.hasTag ("TERMINATOR"))
       break;
 
-    if (a->hasTag ("MODIFICATION"))
+    if (a.hasTag ("MODIFICATION"))
     {
-      std::string raw = a->attribute ("raw");
+      std::string raw = a.attribute ("raw");
       Nibbler n (raw);
       std::string from;
       std::string to;
@@ -2126,10 +2065,10 @@ void CLI::decomposeModSubstitutions ()
         if (n.depleted () &&
             ! Directory (raw).exists ())
         {
-          a->tag ("SUBSTITUTION");
-          a->attribute ("from", from);
-          a->attribute ("to", to);
-          a->attribute ("global", global ? 1 : 0);
+          a.tag ("SUBSTITUTION");
+          a.attribute ("from", from);
+          a.attribute ("to", to);
+          a.attribute ("global", global ? 1 : 0);
           changes = true;
         }
       }
@@ -2236,12 +2175,11 @@ bool CLI::isIDSequence (const std::string& raw) const
     std::vector <std::string> elements;
     split (elements, raw, ',');
 
-    std::vector <std::string>::iterator e;
-    for (e = elements.begin (); e != elements.end (); ++e)
+    for (auto& e : elements)
     {
       // Split the ID range into min/max.
       std::vector <std::string> terms;
-      split (terms, *e, '-');
+      split (terms, e, '-');
 
       if (terms.size () == 1 &&
           ! isID (terms[0]))
@@ -2340,14 +2278,10 @@ bool CLI::isAttribute (const std::string& raw) const
 ////////////////////////////////////////////////////////////////////////////////
 bool CLI::isOperator (const std::string& raw) const
 {
-  // Find the category.
-  std::pair <std::multimap <std::string, std::string>::const_iterator, std::multimap <std::string, std::string>::const_iterator> c;
-  c = _entities.equal_range ("operator");
-
   // Walk the list of entities for category.
   std::vector <std::string> options;
-  std::multimap <std::string, std::string>::const_iterator e;
-  for (e = c.first; e != c.second; ++e)
+  auto c = _entities.equal_range ("operator");
+  for (auto e = c.first; e != c.second; ++e)
     if (raw == e->second)
       return true;
 
@@ -2385,9 +2319,8 @@ bool CLI::disqualifyNoOps (
   const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {
   bool foundOP = false;
-  std::vector <std::pair <std::string, Lexer::Type>>::const_iterator l;
-  for (l = lexemes.begin (); l != lexemes.end (); ++l)
-    if (l->second == Lexer::Type::op)
+  for (auto& lexeme : lexemes)
+    if (lexeme.second == Lexer::Type::op)
       foundOP = true;
 
   return ! foundOP;
@@ -2401,25 +2334,24 @@ bool CLI::disqualifyOnlyParenOps (
   int opSugarCount = 0;
   int opParenCount = 0;
 
-  std::vector <std::pair <std::string, Lexer::Type>>::const_iterator l;
-  for (l = lexemes.begin (); l != lexemes.end (); ++l)
+  for (auto& lexeme : lexemes)
   {
-    if (l->second == Lexer::Type::op)
+    if (lexeme.second == Lexer::Type::op)
     {
       ++opCount;
 
-      if (l->first == "(" ||
-          l->first == ")")
+      if (lexeme.first == "(" ||
+          lexeme.first == ")")
         ++opParenCount;
     }
 
-    else if (isTag          (l->first) ||
-             isUUIDList     (l->first) ||
-             isUUID         (l->first) ||
-             isIDSequence   (l->first) ||
-             isID           (l->first) ||
-             isPattern      (l->first) ||
-             isAttribute    (l->first))
+    else if (isTag          (lexeme.first) ||
+             isUUIDList     (lexeme.first) ||
+             isUUID         (lexeme.first) ||
+             isIDSequence   (lexeme.first) ||
+             isID           (lexeme.first) ||
+             isPattern      (lexeme.first) ||
+             isAttribute    (lexeme.first))
       ++opSugarCount;
   }
 

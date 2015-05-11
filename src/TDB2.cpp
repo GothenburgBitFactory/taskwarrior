@@ -121,12 +121,11 @@ bool TF2::get (const std::string& uuid, Task& task)
   if (! _loaded_tasks)
     load_tasks ();
 
-  std::vector <Task>::iterator i;
-  for (i = _tasks.begin (); i != _tasks.end (); ++i)
+  for (auto& i : _tasks)
   {
-    if (i->get ("uuid") == uuid)
+    if (i.get ("uuid") == uuid)
     {
-      task = *i;
+      task = i;
       return true;
     }
   }
@@ -140,9 +139,8 @@ bool TF2::has (const std::string& uuid)
   if (! _loaded_tasks)
     load_tasks ();
 
-  std::vector <Task>::iterator i;
-  for (i = _tasks.begin (); i != _tasks.end (); ++i)
-    if (i->get ("uuid") == uuid)
+  for (auto& i : _tasks)
+    if (i.get ("uuid") == uuid)
       return true;
 
   return false;
@@ -174,12 +172,11 @@ bool TF2::modify_task (const Task& task)
 {
   // Modify in-place.
   std::string uuid = task.get ("uuid");
-  std::vector <Task>::iterator i;
-  for (i = _tasks.begin (); i != _tasks.end (); ++i)
+  for (auto& i : _tasks)
   {
-    if (i->get ("uuid") == uuid)
+    if (i.get ("uuid") == uuid)
     {
-      *i = task;
+      i = task;
       _modified_tasks.push_back (task);
       _dirty = true;
 
@@ -229,24 +226,14 @@ void TF2::commit ()
           _file.lock ();
 
         // Write out all the added tasks.
-        std::vector <Task>::iterator task;
-        for (task = _added_tasks.begin ();
-             task != _added_tasks.end ();
-             ++task)
-        {
-          _file.append (task->composeF4 () + "\n");
-        }
+        for (auto& task : _added_tasks)
+          _file.append (task.composeF4 () + "\n");
 
         _added_tasks.clear ();
 
         // Write out all the added lines.
-        std::vector <std::string>::iterator line;
-        for (line = _added_lines.begin ();
-             line != _added_lines.end ();
-             ++line)
-        {
-          _file.append (*line);
-        }
+        for (auto& line : _added_lines)
+          _file.append (line);
 
         _added_lines.clear ();
         _file.close ();
@@ -264,22 +251,12 @@ void TF2::commit ()
         _file.truncate ();
 
         // Only write out _tasks, because any deltas have already been applied.
-        std::vector <Task>::iterator task;
-        for (task = _tasks.begin ();
-             task != _tasks.end ();
-             ++task)
-        {
-          _file.append (task->composeF4 () + "\n");
-        }
+        for (auto& task : _tasks)
+          _file.append (task.composeF4 () + "\n");
 
         // Write out all the added lines.
-        std::vector <std::string>::iterator line;
-        for (line = _added_lines.begin ();
-             line != _added_lines.end ();
-             ++line)
-        {
-          _file.append (*line);
-        }
+        for (auto& line : _added_lines)
+          _file.append (line);
 
         _added_lines.clear ();
         _file.close ();
@@ -299,9 +276,8 @@ void TF2::load_tasks ()
     load_lines ();
 
     // Apply previously added lines.
-    std::vector <std::string>::iterator i;
-    for (i = _added_lines.begin (); i != _added_lines.end (); ++i)
-      _lines.push_back (*i);
+    for (auto& line : _added_lines)
+      _lines.push_back (line);
   }
 
   int line_number = 0;
@@ -310,11 +286,10 @@ void TF2::load_tasks ()
     // Reduce unnecessary allocations/copies.
     _tasks.reserve (_lines.size ());
 
-    std::vector <std::string>::iterator i;
-    for (i = _lines.begin (); i != _lines.end (); ++i)
+    for (auto& line : _lines)
     {
       ++line_number;
-      Task task (*i);
+      Task task (line);
 
       // Some tasks get an ID.
       if (_has_ids)
@@ -374,13 +349,12 @@ std::string TF2::uuid (int id)
     load_tasks ();
 
     // Apply previously added tasks.
-    std::vector <Task>::iterator i;
-    for (i = _added_tasks.begin (); i != _added_tasks.end (); ++i)
-      _tasks.push_back (*i);
+    for (auto& task : _added_tasks)
+      _tasks.push_back (task);
   }
 
-  std::map <int, std::string>::const_iterator i;
-  if ((i = _I2U.find (id)) != _I2U.end ())
+  auto i = _I2U.find (id);
+  if (i != _I2U.end ())
     return i->second;
 
   return "";
@@ -394,13 +368,12 @@ int TF2::id (const std::string& uuid)
     load_tasks ();
 
     // Apply previously added tasks.
-    std::vector <Task>::iterator i;
-    for (i = _added_tasks.begin (); i != _added_tasks.end (); ++i)
-      _tasks.push_back (*i);
+    for (auto& task : _added_tasks)
+      _tasks.push_back (task);
   }
 
-  std::map <std::string, int>::const_iterator i;
-  if ((i = _U2I.find (uuid)) != _U2I.end ())
+  auto i = _U2I.find (uuid);
+  if (i != _U2I.end ())
     return i->second;
 
   return 0;
@@ -448,38 +421,32 @@ void TF2::clear ()
 void TF2::dependency_scan ()
 {
   // Iterate and modify TDB2 in-place.  Don't do this at home.
-  std::vector <Task>::iterator left;
-  for (left  = _tasks.begin ();
-       left != _tasks.end ();
-       ++left)
+  for (auto& left : _tasks)
   {
-    if (left->has ("depends"))
+    if (left.has ("depends"))
     {
       std::vector <std::string> deps;
-      left->getDependencies (deps);
+      left.getDependencies (deps);
 
-      std::vector <std::string>::iterator d;
-      for (d = deps.begin (); d != deps.end (); ++d)
+      for (auto& dep : deps)
       {
-        std::vector <Task>::iterator right;
-        for (right  = _tasks.begin ();
-             right != _tasks.end ();
-             ++right)
+        for (auto& right : _tasks)
         {
-          if (right->get ("uuid") == *d)
+          if (right.get ("uuid") == dep)
           {
             // GC hasn't run yet, check both tasks for their current status
-            Task::status lstatus = left->getStatus ();
-            Task::status rstatus = right->getStatus ();
+            Task::status lstatus = left.getStatus ();
+            Task::status rstatus = right.getStatus ();
             if (lstatus != Task::completed &&
                 lstatus != Task::deleted &&
                 rstatus != Task::completed &&
                 rstatus != Task::deleted)
             {
-              left->is_blocked = true;
-              right->is_blocking = true;
+              left.is_blocked = true;
+              right.is_blocking = true;
             }
 
+            // Only want to break out of the "right" loop.
             break;
           }
         }
@@ -701,18 +668,17 @@ void TDB2::commit ()
 void TDB2::gather_changes ()
 {
   _changes.clear ();
-  std::vector <Task>::iterator i;
-  for (i = pending._added_tasks.begin (); i != pending._added_tasks.end (); ++i)
-    _changes.push_back (*i);
+  for (auto& task : pending._added_tasks)
+    _changes.push_back (task);
 
-  for (i = pending._modified_tasks.begin (); i != pending._modified_tasks.end (); ++i)
-    _changes.push_back (*i);
+  for (auto& task : pending._modified_tasks)
+    _changes.push_back (task);
 
-  for (i = completed._added_tasks.begin (); i != completed._added_tasks.end (); ++i)
-    _changes.push_back (*i);
+  for (auto& task : completed._added_tasks)
+    _changes.push_back (task);
 
-  for (i = completed._modified_tasks.begin (); i != completed._modified_tasks.end (); ++i)
-    _changes.push_back (*i);
+  for (auto& task : completed._modified_tasks)
+    _changes.push_back (task);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -842,8 +808,7 @@ void TDB2::revert_pending (
   std::string uuid_att = "uuid:\"" + uuid + "\"";
 
   // is 'current' in pending?
-  std::vector <std::string>::iterator task;
-  for (task = p.begin (); task != p.end (); ++task)
+  for (auto task = p.begin (); task != p.end (); ++task)
   {
     if (task->find (uuid_att) != std::string::npos)
     {
@@ -877,8 +842,7 @@ void TDB2::revert_completed (
   std::string uuid_att = "uuid:\"" + uuid + "\"";
 
   // is 'current' in completed?
-  std::vector <std::string>::iterator task;
-  for (task = c.begin (); task != c.end (); ++task)
+  for (auto task = c.begin (); task != c.end (); ++task)
   {
     if (task->find (uuid_att) != std::string::npos)
     {
@@ -927,8 +891,7 @@ void TDB2::revert_backlog (
   std::string uuid_att = "\"uuid\":\"" + uuid + "\"";
 
   bool found = false;
-  std::vector <std::string>::reverse_iterator task;
-  for (task = b.rbegin (); task != b.rend (); ++task)
+  for (auto task = b.rbegin (); task != b.rend (); ++task)
   {
     if (task->find (uuid_att) != std::string::npos)
     {
@@ -995,59 +958,56 @@ void TDB2::show_diff (
       Task before (prior);
 
       std::vector <std::string> beforeAtts;
-      std::map <std::string, std::string>::iterator att;
-      for (att = before.begin (); att != before.end (); ++att)
-        beforeAtts.push_back (att->first);
+      for (auto& att : before)
+        beforeAtts.push_back (att.first);
 
       std::vector <std::string> afterAtts;
-      for (att = after.begin (); att != after.end (); ++att)
-        afterAtts.push_back (att->first);
+      for (auto& att : after)
+        afterAtts.push_back (att.first);
 
       std::vector <std::string> beforeOnly;
       std::vector <std::string> afterOnly;
       listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
 
       int row;
-      std::vector <std::string>::iterator name;
-      for (name = beforeOnly.begin (); name != beforeOnly.end (); ++name)
+      for (auto& name : beforeOnly)
       {
         row = view.addRow ();
-        view.set (row, 0, *name);
-        view.set (row, 1, renderAttribute (*name, before.get (*name)), color_red);
+        view.set (row, 0, name);
+        view.set (row, 1, renderAttribute (name, before.get (name)), color_red);
       }
 
-      for (att = before.begin (); att != before.end (); ++att)
+      for (auto& att : before)
       {
-        std::string priorValue   = before.get (att->first);
-        std::string currentValue = after.get  (att->first);
+        std::string priorValue   = before.get (att.first);
+        std::string currentValue = after.get  (att.first);
 
         if (currentValue != "")
         {
           row = view.addRow ();
-          view.set (row, 0, att->first);
-          view.set (row, 1, renderAttribute (att->first, priorValue),
+          view.set (row, 0, att.first);
+          view.set (row, 1, renderAttribute (att.first, priorValue),
                     (priorValue != currentValue ? color_red : Color ()));
-          view.set (row, 2, renderAttribute (att->first, currentValue),
+          view.set (row, 2, renderAttribute (att.first, currentValue),
                     (priorValue != currentValue ? color_green : Color ()));
         }
       }
 
-      for (name = afterOnly.begin (); name != afterOnly.end (); ++name)
+      for (auto& name : afterOnly)
       {
         row = view.addRow ();
-        view.set (row, 0, *name);
-        view.set (row, 2, renderAttribute (*name, after.get (*name)), color_green);
+        view.set (row, 0, name);
+        view.set (row, 2, renderAttribute (name, after.get (name)), color_green);
       }
     }
     else
     {
       int row;
-      std::map <std::string, std::string>::iterator att;
-      for (att = after.begin (); att != after.end (); ++att)
+      for (auto& att : after)
       {
         row = view.addRow ();
-        view.set (row, 0, att->first);
-        view.set (row, 2, renderAttribute (att->first, after.get (att->first)), color_green);
+        view.set (row, 0, att.first);
+        view.set (row, 2, renderAttribute (att.first, after.get (att.first)), color_green);
       }
     }
 
@@ -1101,14 +1061,13 @@ void TDB2::show_diff (
     std::vector <std::string> all = context.getColumns ();
 
     // Now factor in the annotation attributes.
-    Task::iterator it;
-    for (it = before.begin (); it != before.end (); ++it)
-      if (it->first.substr (0, 11) == "annotation_")
-        all.push_back (it->first);
+    for (auto& it : before)
+      if (it.first.substr (0, 11) == "annotation_")
+        all.push_back (it.first);
 
-    for (it = after.begin (); it != after.end (); ++it)
-      if (it->first.substr (0, 11) == "annotation_")
-        all.push_back (it->first);
+    for (auto& it : after)
+      if (it.first.substr (0, 11) == "annotation_")
+        all.push_back (it.first);
 
     // Now render all the attributes.
     std::sort (all.begin (), all.end ());
@@ -1116,19 +1075,18 @@ void TDB2::show_diff (
     std::string before_att;
     std::string after_att;
     std::string last_att;
-    std::vector <std::string>::iterator a;
-    for (a = all.begin (); a != all.end (); ++a)
+    for (auto& a : all)
     {
-      if (*a != last_att)  // Skip duplicates.
+      if (a != last_att)  // Skip duplicates.
       {
-        last_att = *a;
+        last_att = a;
 
-        before_att = before.get (*a);
-        after_att  = after.get (*a);
+        before_att = before.get (a);
+        after_att  = after.get (a);
 
         // Don't report different uuid.
         // Show nothing if values are the unchanged.
-        if (*a == "uuid" ||
+        if (a == "uuid" ||
             before_att == after_att)
         {
           // Show nothing - no point displaying that which did not change.
@@ -1142,21 +1100,21 @@ void TDB2::show_diff (
         else if (before_att != "" && after_att == "")
         {
           row = view.addRow ();
-          view.set (row, 0, "-" + *a + ":", color_red);
+          view.set (row, 0, "-" + a + ":", color_red);
           view.set (row, 1, before_att, color_red);
 
           row = view.addRow ();
-          view.set (row, 0, "+" + *a + ":", color_green);
+          view.set (row, 0, "+" + a + ":", color_green);
         }
 
         // Attribute added.
         else if (before_att == "" && after_att != "")
         {
           row = view.addRow ();
-          view.set (row, 0, "-" + *a + ":", color_red);
+          view.set (row, 0, "-" + a + ":", color_red);
 
           row = view.addRow ();
-          view.set (row, 0, "+" + *a + ":", color_green);
+          view.set (row, 0, "+" + a + ":", color_green);
           view.set (row, 1, after_att, color_green);
         }
 
@@ -1164,11 +1122,11 @@ void TDB2::show_diff (
         else
         {
           row = view.addRow ();
-          view.set (row, 0, "-" + *a + ":", color_red);
+          view.set (row, 0, "-" + a + ":", color_red);
           view.set (row, 1, before_att, color_red);
 
           row = view.addRow ();
-          view.set (row, 0, "+" + *a + ":", color_green);
+          view.set (row, 0, "+" + a + ":", color_green);
           view.set (row, 1, after_att, color_green);
         }
       }
@@ -1198,10 +1156,10 @@ int TDB2::gc ()
   // Allowed as an override, but not recommended.
   if (context.config.getBoolean ("gc"))
   {
-    std::vector <Task> pending_tasks = pending.get_tasks ();
+    auto pending_tasks = pending.get_tasks ();
 
     // TODO Thread.
-    std::vector <Task> completed_tasks = completed.get_tasks ();
+    auto completed_tasks = completed.get_tasks ();
 
     // TODO Assume pending < completed, therefore there is room here to process
     //      data before joining with the completed.data thread.
@@ -1218,32 +1176,29 @@ int TDB2::gc ()
     // completed, or need to be 'woken'.
     Date now;
     std::string status;
-    std::vector <Task>::iterator task;
-    for (task = pending_tasks.begin ();
-         task != pending_tasks.end ();
-         ++task)
+    for (auto& task : pending_tasks)
     {
-      status = task->get ("status");
+      status = task.get ("status");
       if (status == "pending" ||
           status == "recurring")
       {
-        pending_tasks_after.push_back (*task);
+        pending_tasks_after.push_back (task);
       }
       else if (status == "waiting")
       {
-        Date wait (task->get_date ("wait"));
+        Date wait (task.get_date ("wait"));
         if (wait < now)
         {
-          task->set ("status", "pending");
-          task->remove ("wait");
+          task.set ("status", "pending");
+          task.remove ("wait");
           pending_changes = true;
         }
 
-        pending_tasks_after.push_back (*task);
+        pending_tasks_after.push_back (task);
       }
       else
       {
-        completed_tasks_after.push_back (*task);
+        completed_tasks_after.push_back (task);
         pending_changes = true;
         completed_changes = true;
       }
@@ -1256,35 +1211,33 @@ int TDB2::gc ()
 
     // Scan all completed tasks, looking for any that need to be relocated to
     // pending.
-    for (task = completed_tasks.begin ();
-         task != completed_tasks.end ();
-         ++task)
+    for (auto& task : completed_tasks)
     {
-      status = task->get ("status");
+      status = task.get ("status");
       if (status == "pending" ||
           status == "recurring")
       {
-        pending_tasks_after.push_back (*task);
+        pending_tasks_after.push_back (task);
         pending_changes = true;
         completed_changes = true;
       }
       else if (status == "waiting")
       {
-        Date wait (task->get_date ("wait"));
+        Date wait (task.get_date ("wait"));
         if (wait < now)
         {
-          task->set ("status", "pending");
-          task->remove ("wait");
-          pending_tasks_after.push_back (*task);
+          task.set ("status", "pending");
+          task.remove ("wait");
+          pending_tasks_after.push_back (task);
           pending_changes = true;
           completed_changes = true;
         }
 
-        pending_tasks_after.push_back (*task);
+        pending_tasks_after.push_back (task);
       }
       else
       {
-        completed_tasks_after.push_back (*task);
+        completed_tasks_after.push_back (task);
       }
     }
 
@@ -1296,12 +1249,8 @@ int TDB2::gc ()
       pending._loaded_tasks = true;
       _id = 1;
 
-      for (task = pending._tasks.begin ();
-           task != pending._tasks.end ();
-           ++task)
-      {
-        task->id = _id++;
-      }
+      for (auto& task : pending._tasks)
+        task.id = _id++;
 
       // Note: deliberately no commit.
     }
@@ -1347,9 +1296,8 @@ const std::vector <Task> TDB2::all_tasks ()
                             completed._added_tasks.size ());
   extra = completed.get_tasks ();
 
-  std::vector <Task>::iterator task;
-  for (task = extra.begin (); task != extra.end (); ++task)
-    all.push_back (*task);
+  for (auto& task : extra)
+    all.push_back (task);
 
   return all;
 }
@@ -1390,21 +1338,20 @@ const std::vector <Task> TDB2::siblings (Task& task)
     if (! pending._loaded_tasks)
       pending.load_tasks ();
 
-    std::vector <Task>::iterator i;
-    for (i = pending._tasks.begin (); i != pending._tasks.end (); ++i)
+    for (auto& i : pending._tasks)
     {
       // Do not include self in results.
-      if (i->id != task.id)
+      if (i.id != task.id)
       {
         // Do not include completed or deleted tasks.
-        if (i->getStatus () != Task::completed &&
-            i->getStatus () != Task::deleted)
+        if (i.getStatus () != Task::completed &&
+            i.getStatus () != Task::deleted)
         {
           // If task has the same parent, it is a sibling.
-          if (i->has ("parent") &&
-              i->get ("parent") == parent)
+          if (i.has ("parent") &&
+              i.get ("parent") == parent)
           {
-            results.push_back (*i);
+            results.push_back (i);
           }
         }
       }
@@ -1424,19 +1371,18 @@ const std::vector <Task> TDB2::children (Task& task)
   if (! pending._loaded_tasks)
     pending.load_tasks ();
 
-  std::vector <Task>::iterator i;
-  for (i = pending._tasks.begin (); i != pending._tasks.end (); ++i)
+  for (auto& i : pending._tasks)
   {
     // Do not include self in results.
-    if (i->id != task.id)
+    if (i.id != task.id)
     {
       // Do not include completed or deleted tasks.
-      if (i->getStatus () != Task::completed &&
-          i->getStatus () != Task::deleted)
+      if (i.getStatus () != Task::completed &&
+          i.getStatus () != Task::deleted)
       {
         // If task has the same parent, it is a sibling.
-        if (i->get ("parent") == parent)
-          results.push_back (*i);
+        if (i.get ("parent") == parent)
+          results.push_back (i);
       }
     }
   }

@@ -88,7 +88,7 @@ bool DOM::get (const std::string& name, Variant& value)
       name.substr (0, 3) == "rc.")
   {
     std::string key = name.substr (3);
-    std::map <std::string, std::string>::iterator c = context.config.find (key);
+    auto c = context.config.find (key);
     if (c != context.config.end ())
     {
       value = Variant (c->second);
@@ -376,8 +376,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
           int count = 0;
 
           // Count off the 'a'th annotation.
-          std::map <std::string, std::string>::iterator i;
-          for (i = annos.begin (); i != annos.end (); ++i)
+          for (auto& i : annos)
           {
             if (++count == a)
             {
@@ -385,12 +384,12 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
               {
                 // annotation_1234567890
                 // 0          ^11
-                value = Variant ((time_t) strtol (i->first.substr (11).c_str (), NULL, 10), Variant::type_date);
+                value = Variant ((time_t) strtol (i.first.substr (11).c_str (), NULL, 10), Variant::type_date);
                 return true;
               }
               else if (elements[3] == "description")
               {
-                value = Variant (i->second);
+                value = Variant (i.second);
                 return true;
               }
             }
@@ -405,8 +404,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
           int count = 0;
 
           // Count off the 'a'th annotation.
-          std::map <std::string, std::string>::iterator i;
-          for (i = annos.begin (); i != annos.end (); ++i)
+          for (auto& i : annos)
           {
             if (++count == a)
             {
@@ -419,7 +417,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
               // <annotations>.<N>.entry.hour
               // <annotations>.<N>.entry.minute
               // <annotations>.<N>.entry.second
-              Date date (i->first.substr (11));
+              Date date (i.first.substr (11));
                    if (elements[4] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
               else if (elements[4] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
               else if (elements[4] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }

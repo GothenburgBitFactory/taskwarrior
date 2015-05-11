@@ -244,9 +244,8 @@ void File::write (const std::vector <std::string>& lines)
 
   if (_fh)
   {
-    std::vector <std::string>::const_iterator it;
-    for (it = lines.begin (); it != lines.end (); ++it)
-      fputs (it->c_str (), _fh);
+    for (auto& line : lines)
+      fputs (line.c_str (), _fh);
   }
 }
 
@@ -274,9 +273,8 @@ void File::append (const std::vector <std::string>& lines)
   if (_fh)
   {
     fseek (_fh, 0, SEEK_END);
-    std::vector <std::string>::const_iterator it;
-    for (it = lines.begin (); it != lines.end (); ++it)
-      fputs (((*it) + "\n").c_str (), _fh);
+    for (auto& line : lines)
+      fputs ((line + "\n").c_str (), _fh);
   }
 }
 
@@ -458,10 +456,9 @@ bool File::write (
                      std::ios_base::out | std::ios_base::trunc);
   if (out.good ())
   {
-    std::vector <std::string>::const_iterator it;
-    for (it = lines.begin (); it != lines.end (); ++it)
+    for (auto& line : lines)
     {
-      out << *it;
+      out << line;
 
       if (addNewlines)
         out << "\n";
@@ -499,10 +496,9 @@ bool File::append (
                      std::ios_base::out | std::ios_base::app);
   if (out.good ())
   {
-    std::vector <std::string>::const_iterator it;
-    for (it = lines.begin (); it != lines.end (); ++it)
+    for (auto& line : lines)
     {
-      out << *it;
+      out << line;
 
       if (addNewlines)
         out << "\n";

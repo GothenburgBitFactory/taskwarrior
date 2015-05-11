@@ -162,9 +162,8 @@ std::string json::literal::dump ()
 ////////////////////////////////////////////////////////////////////////////////
 json::array::~array ()
 {
-  std::vector <json::value*>::iterator i;
-  for (i = _data.begin (); i != _data.end (); ++i)
-    delete *i;
+  for (auto& i : _data)
+    delete i;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -227,10 +226,7 @@ std::string json::array::dump ()
   std::string output;
   output += "[";
 
-  std::vector <json::value*>::iterator i;
-  for (i  = _data.begin ();
-       i != _data.end ();
-       ++i)
+  for (auto i = _data.begin (); i != _data.end (); ++i)
   {
     if (i != _data.begin ())
       output += ",";
@@ -245,9 +241,8 @@ std::string json::array::dump ()
 ////////////////////////////////////////////////////////////////////////////////
 json::object::~object ()
 {
-  std::map <std::string, json::value*>::iterator i;
-  for (i = _data.begin (); i != _data.end (); ++i)
-    delete i->second;
+  for (auto& i : _data)
+    delete i.second;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -341,8 +336,7 @@ std::string json::object::dump ()
   std::string output;
   output += "{";
 
-  std::map <std::string, json::value*>::iterator i;
-  for (i = _data.begin (); i != _data.end (); ++i)
+  for (auto i = _data.begin (); i != _data.end (); ++i)
   {
     if (i != _data.begin ())
       output += ",";
@@ -384,9 +378,9 @@ std::string json::encode (const std::string& input)
 {
   std::string output;
 
-  for (std::string::size_type i = 0; i < input.length (); ++i)
+  for (auto& i : input)
   {
-    switch (input[i])
+    switch (i)
     {
     // Simple translations.
     case '"':  output += "\\\"";   break;
@@ -399,7 +393,7 @@ std::string json::encode (const std::string& input)
     case '\t': output += "\\t";    break;
 
     // Default NOP.
-    default:   output += input[i]; break;
+    default:   output += i; break;
     }
   }
 

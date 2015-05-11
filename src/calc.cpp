@@ -141,9 +141,8 @@ int main (int argc, char** argv)
       e.evaluatePostfixExpression (expression, result);
 
     // Show any debug output.
-    std::vector <std::string>::iterator i;
-    for (i = context.debugMessages.begin (); i != context.debugMessages.end (); ++i)
-      std::cout << *i << "\n";
+    for (auto& i : context.debugMessages)
+      std::cout << i << "\n";
 
     // Show the result in string form.
     std::cout << (std::string) result

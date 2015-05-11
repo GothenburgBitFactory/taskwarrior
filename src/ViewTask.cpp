@@ -60,9 +60,8 @@ ViewTask::ViewTask ()
 ////////////////////////////////////////////////////////////////////////////////
 ViewTask::~ViewTask ()
 {
-  std::vector <Column*>::iterator i;
-  for (i = _columns.begin (); i != _columns.end (); ++i)
-    delete *i;
+  for (auto& col : _columns)
+    delete col;
 
   _columns.clear ();
 }
@@ -297,7 +296,6 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
   // Compose, render columns, in sequence.
   _rows = 0;
   std::vector <std::vector <std::string>> cells;
-  std::vector <int>::iterator s;
   for (unsigned int s = 0; s < sequence.size (); ++s)
   {
     max_lines = 0;
@@ -334,10 +332,9 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
     if (s > 0 &&
         _breaks.size () > 0)
     {
-      std::vector <std::string>::iterator b;
-      for (b = _breaks.begin (); b != _breaks.end (); ++b)
+      for (auto& b : _breaks)
       {
-        if (data[sequence[s - 1]].get (*b) != data[sequence[s]].get (*b))
+        if (data[sequence[s - 1]].get (b) != data[sequence[s]].get (b))
         {
           out += "\n";
           ++_lines;

@@ -1010,9 +1010,8 @@ bool Variant::operator_match (const Variant& other, const Task& task) const
       std::map <std::string, std::string> annotations;
       task.getAnnotations (annotations);
 
-      std::map <std::string, std::string>::iterator a;
-      for (a = annotations.begin (); a != annotations.end (); ++a)
-        if (r.match (a->second))
+      for (auto& a : annotations)
+        if (r.match (a.second))
           return true;
     }
   }
@@ -1028,9 +1027,8 @@ bool Variant::operator_match (const Variant& other, const Task& task) const
       std::map <std::string, std::string> annotations;
       task.getAnnotations (annotations);
 
-      std::map <std::string, std::string>::iterator a;
-      for (a = annotations.begin (); a != annotations.end (); ++a)
-        if (find (a->second, pattern, searchCaseSensitive) != std::string::npos)
+      for (auto& a : annotations)
+        if (find (a.second, pattern, searchCaseSensitive) != std::string::npos)
           return true;
     }
   }

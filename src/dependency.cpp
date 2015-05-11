@@ -42,14 +42,13 @@ void dependencyGetBlocked (const Task& task, std::vector <Task>& blocked)
 {
   std::string uuid = task.get ("uuid");
 
-  const std::vector <Task>& all = context.tdb2.pending.get_tasks ();
-  std::vector <Task>::const_iterator it;
-  for (it = all.begin (); it != all.end (); ++it)
-    if ((it->getStatus () == Task::pending  ||
-         it->getStatus () == Task::waiting) &&
-        it->has ("depends")                 &&
-        it->get ("depends").find (uuid) != std::string::npos)
-      blocked.push_back (*it);
+  auto all = context.tdb2.pending.get_tasks ();
+  for (auto& it : all)
+    if ((it.getStatus () == Task::pending  ||
+         it.getStatus () == Task::waiting) &&
+        it.has ("depends")                 &&
+        it.get ("depends").find (uuid) != std::string::npos)
+      blocked.push_back (it);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,15 +56,11 @@ void dependencyGetBlocking (const Task& task, std::vector <Task>& blocking)
 {
   std::string depends = task.get ("depends");
   if (depends != "")
-  {
-    const std::vector <Task>& all = context.tdb2.pending.get_tasks ();
-    std::vector <Task>::const_iterator it;
-    for (it = all.begin (); it != all.end (); ++it)
-      if ((it->getStatus () == Task::pending  ||
-           it->getStatus () == Task::waiting) &&
-          depends.find (it->get ("uuid")) != std::string::npos)
-        blocking.push_back (*it);
-  }
+    for (auto& it : context.tdb2.pending.get_tasks ())
+      if ((it.getStatus () == Task::pending  ||
+           it.getStatus () == Task::waiting) &&
+          depends.find (it.get ("uuid")) != std::string::npos)
+        blocking.push_back (it);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,9 +147,8 @@ void dependencyChainOnComplete (Task& task)
       std::cout << format (STRING_DEPEND_BLOCKED, task.id)
                 << "\n";
 
-      std::vector <Task>::iterator b;
-      for (b = blocking.begin (); b != blocking.end (); ++b)
-        std::cout << "  " << b->id << " " << b->get ("description") << "\n";
+      for (auto& b : blocking)
+        std::cout << "  " << b.id << " " << b.get ("description") << "\n";
     }
 
     // If there are both blocking and blocked tasks, the chain is broken.
@@ -165,9 +159,8 @@ void dependencyChainOnComplete (Task& task)
         std::cout << STRING_DEPEND_BLOCKING
                   << "\n";
 
-        std::vector <Task>::iterator b;
-        for (b = blocked.begin (); b != blocked.end (); ++b)
-          std::cout << "  " << b->id << " " << b->get ("description") << "\n";
+        for (auto& b : blocked)
+          std::cout << "  " << b.id << " " << b.get ("description") << "\n";
       }
 
       if (!context.config.getBoolean ("dependency.confirmation") ||
@@ -175,22 +168,20 @@ void dependencyChainOnComplete (Task& task)
       {
         // Repair the chain - everything in blocked should now depend on
         // everything in blocking, instead of task.id.
-        std::vector <Task>::iterator left;
-        std::vector <Task>::iterator right;
-        for (left = blocked.begin (); left != blocked.end (); ++left)
+        for (auto& left : blocked)
         {
-          left->removeDependency (task.id);
+          left.removeDependency (task.id);
 
-          for (right = blocking.begin (); right != blocking.end (); ++right)
-            left->addDependency (right->id);
+          for (auto& right : blocking)
+            left.addDependency (right.id);
         }
 
         // Now update TDB2, now that the updates have all occurred.
-        for (left = blocked.begin (); left != blocked.end (); ++left)
-          context.tdb2.modify (*left);
+        for (auto& left : blocked)
+          context.tdb2.modify (left);
 
-        for (right = blocking.begin (); right != blocking.end (); ++right)
-          context.tdb2.modify (*right);
+        for (auto& right : blocking)
+          context.tdb2.modify (right);
       }
     }
   }
@@ -211,9 +202,8 @@ void dependencyChainOnStart (Task& task)
       std::cout << format (STRING_DEPEND_BLOCKED, task.id)
                 << "\n";
 
-      std::vector <Task>::iterator b;
-      for (b = blocking.begin (); b != blocking.end (); ++b)
-        std::cout << "  " << b->id << " " << b->get ("description") << "\n";
+      for (auto& b : blocking)
+        std::cout << "  " << b.id << " " << b.get ("description") << "\n";
     }
   }
 }
@@ -254,11 +244,8 @@ void dependencyChainOnModify (Task& before, Task& after)
     std::vector <Task> blocked;
     dependencyGetBlocked (after, blocked);
 
-    std::vector <Task>::iterator b;
-    for (b = blocked.begin (); b != blocked.end (); ++b)
-    {
+    for (auto& b : blocked)
       std::cout << "# dependencyChainOnModify\n";
-    }
   }
 */
 }

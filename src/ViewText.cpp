@@ -56,9 +56,8 @@ ViewText::ViewText ()
 ////////////////////////////////////////////////////////////////////////////////
 ViewText::~ViewText ()
 {
-  std::vector <Column*>::iterator i;
-  for (i = _columns.begin (); i != _columns.end (); ++i)
-    delete *i;
+  for (auto& col : _columns)
+    delete col;
 
   _columns.clear ();
 }
@@ -147,14 +146,13 @@ std::string ViewText::render ()
 
   // Sum the minimal widths.
   int sum_minimal = 0;
-  std::vector <int>::iterator c;
-  for (c = minimal.begin (); c != minimal.end (); ++c)
-    sum_minimal += *c;
+  for (auto& c : minimal)
+    sum_minimal += c;
 
   // Sum the ideal widths.
   int sum_ideal = 0;
-  for (c = ideal.begin (); c != ideal.end (); ++c)
-    sum_ideal += *c;
+  for (auto& c : ideal)
+    sum_ideal += c;
 
   // Calculate final column widths.
   int overage = _width

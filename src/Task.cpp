@@ -130,10 +130,9 @@ bool Task::operator== (const Task& other)
   if (size () != other.size ())
     return false;
 
-  Task::iterator i;
-  for (i = this->begin (); i != this->end (); ++i)
-    if (i->first != "uuid" &&
-        i->second != other.get (i->first))
+  for (auto& i : *this)
+    if (i.first != "uuid" &&
+        i.second != other.get (i.first))
       return false;
 
   return true;
@@ -194,7 +193,7 @@ void Task::setAsNow (const std::string& att)
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::has (const std::string& name) const
 {
-  Task::const_iterator i = this->find (name);
+  auto i = this->find (name);
   if (i != this->end ())
     return true;
 
@@ -205,8 +204,7 @@ bool Task::has (const std::string& name) const
 std::vector <std::string> Task::all ()
 {
   std::vector <std::string> all;
-  Task::iterator i;
-  for (i = this->begin (); i != this->end (); ++i)
+  for (auto i = this->begin (); i != this->end (); ++i)
     all.push_back (i->first);
 
   return all;
@@ -215,7 +213,7 @@ std::vector <std::string> Task::all ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::string Task::get (const std::string& name) const
 {
-  Task::const_iterator i = this->find (name);
+  auto i = this->find (name);
   if (i != this->end ())
     return i->second;
 
@@ -225,7 +223,7 @@ const std::string Task::get (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 const std::string& Task::get_ref (const std::string& name) const
 {
-  Task::const_iterator i = this->find (name);
+  auto i = this->find (name);
   if (i != this->end ())
     return i->second;
 
@@ -235,7 +233,7 @@ const std::string& Task::get_ref (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 int Task::get_int (const std::string& name) const
 {
-  Task::const_iterator i = this->find (name);
+  auto i = this->find (name);
   if (i != this->end ())
     return strtol (i->second.c_str (), NULL, 10);
 
@@ -245,7 +243,7 @@ int Task::get_int (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 unsigned long Task::get_ulong (const std::string& name) const
 {
-  Task::const_iterator i = this->find (name);
+  auto i = this->find (name);
   if (i != this->end ())
     return strtoul (i->second.c_str (), NULL, 10);
 
@@ -255,7 +253,7 @@ unsigned long Task::get_ulong (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::get_float (const std::string& name) const
 {
-  Task::const_iterator i = this->find (name);
+  auto i = this->find (name);
   if (i != this->end ())
     return strtof (i->second.c_str (), NULL);
 
@@ -265,7 +263,7 @@ float Task::get_float (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 time_t Task::get_date (const std::string& name) const
 {
-  Task::const_iterator i = this->find (name);
+  auto i = this->find (name);
   if (i != this->end ())
     return (time_t) strtoul (i->second.c_str (), NULL, 10);
 
@@ -291,8 +289,8 @@ void Task::set (const std::string& name, int value)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::remove (const std::string& name)
 {
-  Task::iterator it;
-  if ((it = this->find (name)) != this->end ())
+  auto it = this->find (name);
+  if (it != this->end ())
   {
     this->erase (it);
     recalc_urgency = true;
@@ -606,66 +604,60 @@ void Task::parseJSON (const std::string& line)
     json::object* root_obj = (json::object*)root;
 
     // For each object element...
-    json_object_iter i;
-    for (i  = root_obj->_data.begin ();
-         i != root_obj->_data.end ();
-         ++i)
+    for (auto& i : root_obj->_data)
     {
       // If the attribute is a recognized column.
-      std::string type = Task::attributes[i->first];
+      std::string type = Task::attributes[i.first];
       if (type != "")
       {
         // Any specified id is ignored.
-        if (i->first == "id")
+        if (i.first == "id")
           ;
 
         // Urgency, if present, is ignored.
-        else if (i->first == "urgency")
+        else if (i.first == "urgency")
           ;
 
         // TW-1274 Standardization.
-        else if (i->first == "modification")
+        else if (i.first == "modification")
         {
-          Date d (unquoteText (i->second->dump ()));
+          Date d (unquoteText (i.second->dump ()));
           set ("modified", d.toEpochString ());
         }
 
         // Dates are converted from ISO to epoch.
         else if (type == "date")
         {
-          std::string text = unquoteText (i->second->dump ());
+          std::string text = unquoteText (i.second->dump ());
           Date d (text);
-          set (i->first, text == "" ? "" : d.toEpochString ());
+          set (i.first, text == "" ? "" : d.toEpochString ());
         }
 
         // Tags are an array of JSON strings.
-        else if (i->first == "tags" && i->second->type() == json::j_array)
+        else if (i.first == "tags" && i.second->type() == json::j_array)
         {
-          json::array* tags = (json::array*)i->second;
-          json_array_iter t;
-          for (t  = tags->_data.begin ();
-               t != tags->_data.end ();
-               ++t)
+          json::array* tags = (json::array*)i.second;
+          for (auto& t : tags->_data)
           {
-            json::string* tag = (json::string*)*t;
+            json::string* tag = (json::string*)t;
             addTag (tag->_data);
           }
         }
         // This is a temporary measure to allow Mirakel sync, and will be removed
         // in a future release.
-        else if (i->first == "tags" && i->second->type() == json::j_string)
+        else if (i.first == "tags" && i.second->type() == json::j_string)
         {
-          json::string* tag = (json::string*)i->second;
+          json::string* tag = (json::string*)i.second;
           addTag (tag->_data);
         }
 
         // Strings are decoded.
         else if (type == "string")
-          set (i->first, json::decode (unquoteText (i->second->dump ())));
+          set (i.first, json::decode (unquoteText (i.second->dump ())));
 
         // Other types are simply added.
         else
-          set (i->first, unquoteText (i->second->dump ()));
+          set (i.first, unquoteText (i.second->dump ()));
       }
 
       // UDA orphans and annotations do not have columns.
@@ -673,17 +665,14 @@ void Task::parseJSON (const std::string& line)
       {
         // Annotations are an array of JSON objects with 'entry' and
         // 'description' values and must be converted.
-        if (i->first == "annotations")
+        if (i.first == "annotations")
         {
           std::map <std::string, std::string> annos;
 
-          json::array* atts = (json::array*)i->second;
-          json_array_iter annotations;
-          for (annotations  = atts->_data.begin ();
-               annotations != atts->_data.end ();
-               ++annotations)
+          json::array* atts = (json::array*)i.second;
+          for (auto& annotations : atts->_data)
           {
-            json::object* annotation = (json::object*)*annotations;
+            json::object* annotation = (json::object*)annotations;
             json::string* when = (json::string*)annotation->_data["entry"];
             json::string* what = (json::string*)annotation->_data["description"];
 
@@ -706,13 +695,13 @@ void Task::parseJSON (const std::string& line)
 #ifdef PRODUCT_TASKWARRIOR
           std::stringstream message;
           message << "Task::parseJSON found orphan '"
-                  << i->first
+                  << i.first
                   << "' with value '"
-                  << i->second
+                  << i.second
                   << "' --> preserved\n";
           context.debug (message.str ());
 #endif
-          set (i->first, json::decode (unquoteText (i->second->dump ())));
+          set (i.first, json::decode (unquoteText (i.second->dump ())));
         }
       }
     }
@@ -761,15 +750,14 @@ std::string Task::composeF4 () const
   std::string ff4 = "[";
 
   bool first = true;
-  Task::const_iterator it;
-  for (it = this->begin (); it != this->end (); ++it)
+  for (auto it : *this)
   {
-    if (it->second != "")
+    if (it.second != "")
     {
       ff4 += (first ? "" : " ")
-           + it->first
+           + it.first
            + ":\""
-           + encode (json::encode (it->second))
+           + encode (json::encode (it.second))
            + "\"";
 
       first = false;
@@ -793,33 +781,32 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
 
   // First the non-annotations.
   int attributes_written = 0;
-  Task::const_iterator i;
-  for (i = this->begin (); i != this->end (); ++i)
+  for (auto& i : *this)
   {
     // Annotations are not written out here.
-    if (i->first.substr (0, 11) == "annotation_")
+    if (i.first.substr (0, 11) == "annotation_")
       continue;
 
     // If value is an empty string, do not ever output it
-    if (i->second == "")
+    if (i.second == "")
         continue;
 
     if (attributes_written)
       out << ",";
 
-    std::string type = Task::attributes[i->first];
+    std::string type = Task::attributes[i.first];
     if (type == "")
       type = "string";
 
     // Date fields are written as ISO 8601.
     if (type == "date")
     {
-      Date d (i->second);
+      Date d (i.second);
       out << "\""
-          << (i->first == "modification" ? "modified" : i->first)
+          << (i.first == "modification" ? "modified" : i.first)
           << "\":\""
           // Date was deleted, do not export parsed empty string
-          << (i->second == "" ? "" : d.toISO ())
+          << (i.second == "" ? "" : d.toISO ())
           << "\"";
 
       ++attributes_written;
@@ -828,23 +815,22 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     else if (type == "numeric")
     {
       out << "\""
-          << i->first
+          << i.first
           << "\":"
-          << i->second;
+          << i.second;
 
       ++attributes_written;
     }
 
     // Tags are converted to an array.
-    else if (i->first == "tags")
+    else if (i.first == "tags")
     {
       std::vector <std::string> tags;
-      split (tags, i->second, ',');
+      split (tags, i.second, ',');
 
       out << "\"tags\":[";
 
-      std::vector <std::string>::iterator i;
-      for (i = tags.begin (); i != tags.end (); ++i)
+      for (auto i = tags.begin (); i != tags.end (); ++i)
       {
         if (i != tags.begin ())
           out << ",";
@@ -861,9 +847,9 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     else
     {
       out << "\""
-          << i->first
+          << i.first
           << "\":\""
-          << json::encode (i->second)
+          << json::encode (i.second)
           << "\"";
 
       ++attributes_written;
@@ -877,18 +863,18 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
         << "\"annotations\":[";
 
     int annotations_written = 0;
-    for (i = this->begin (); i != this->end (); ++i)
+    for (auto& i : *this)
     {
-      if (i->first.substr (0, 11) == "annotation_")
+      if (i.first.substr (0, 11) == "annotation_")
       {
         if (annotations_written)
           out << ",";
 
-        Date d (i->first.substr (11));
+        Date d (i.first.substr (11));
         out << "{\"entry\":\""
             << d.toISO ()
             << "\",\"description\":\""
-            << json::encode (i->second)
+            << json::encode (i.second)
             << "\"}";
 
         ++annotations_written;
@@ -943,7 +929,7 @@ void Task::addAnnotation (const std::string& description)
 void Task::removeAnnotations ()
 {
   // Erase old annotations.
-  Task::iterator i = this->begin ();
+  auto i = this->begin ();
   while (i != this->end ())
   {
     if (i->first.substr (0, 11) == "annotation_")
@@ -963,10 +949,9 @@ void Task::getAnnotations (std::map <std::string, std::string>& annotations) con
 {
   annotations.clear ();
 
-  Task::const_iterator ci;
-  for (ci = this->begin (); ci != this->end (); ++ci)
-    if (ci->first.substr (0, 11) == "annotation_")
-      annotations.insert (*ci);
+  for (auto& ann : *this)
+    if (ann.first.substr (0, 11) == "annotation_")
+      annotations.insert (ann);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -975,9 +960,8 @@ void Task::setAnnotations (const std::map <std::string, std::string>& annotation
   // Erase old annotations.
   removeAnnotations ();
 
-  std::map <std::string, std::string>::const_iterator ci;
-  for (ci = annotations.begin (); ci != annotations.end (); ++ci)
-    this->insert (*ci);
+  for (auto& anno : annotations)
+    this->insert (anno);
 
   annotation_count = annotations.size ();
   recalc_urgency = true;
@@ -1031,8 +1015,7 @@ void Task::removeDependency (const std::string& uuid)
   std::vector <std::string> deps;
   split (deps, get ("depends"), ',');
 
-  std::vector <std::string>::iterator i;
-  i = std::find (deps.begin (), deps.end (), uuid);
+  auto i = std::find (deps.begin (), deps.end (), uuid);
   if (i != deps.end ())
   {
     deps.erase (i);
@@ -1064,9 +1047,8 @@ void Task::getDependencies (std::vector <int>& all) const
 
   all.clear ();
 
-  std::vector <std::string>::iterator i;
-  for (i = deps.begin (); i != deps.end (); ++i)
-    all.push_back (context.tdb2.pending.id (*i));
+  for (auto& dep : deps)
+    all.push_back (context.tdb2.pending.id (dep));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1160,9 +1142,8 @@ void Task::addTags (const std::vector <std::string>& tags)
 {
   remove ("tags");
 
-  std::vector <std::string>::const_iterator it;
-  for (it = tags.begin (); it != tags.end (); ++it)
-    addTag (*it);
+  for (auto& tag : tags)
+    addTag (tag);
 
   recalc_urgency = true;
 }
@@ -1179,8 +1160,7 @@ void Task::removeTag (const std::string& tag)
   std::vector <std::string> tags;
   split (tags, get ("tags"), ',');
 
-  std::vector <std::string>::iterator i;
-  i = std::find (tags.begin (), tags.end (), tag);
+  auto i = std::find (tags.begin (), tags.end (), tag);
   if (i != tags.end ())
   {
     tags.erase (i);
@@ -1198,21 +1178,19 @@ void Task::removeTag (const std::string& tag)
 // 'uda.<name>.type'
 void Task::getUDAs (std::vector <std::string>& names) const
 {
-  Task::const_iterator it;
-  for (it = this->begin (); it != this->end (); ++it)
-    if (context.config.get ("uda." + it->first + ".type") != "")
-      names.push_back (it->first);
+  for (auto& it : *this)
+    if (context.config.get ("uda." + it.first + ".type") != "")
+      names.push_back (it.first);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // A UDA Orphan is an attribute that is not represented in context.columns.
 void Task::getUDAOrphans (std::vector <std::string>& names) const
 {
-  Task::const_iterator it;
-  for (it = this->begin (); it != this->end (); ++it)
-    if (it->first.substr (0, 11) != "annotation_")
-      if (context.columns.find (it->first) == context.columns.end ())
-        names.push_back (it->first);
+  for (auto& it : *this)
+    if (it.first.substr (0, 11) != "annotation_")
+      if (context.columns.find (it.first) == context.columns.end ())
+        names.push_back (it.first);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1257,17 +1235,16 @@ void Task::substitute (
     if (!done)
     {
       // Perform all subs on annotations.
-      std::map <std::string, std::string>::iterator it;
-      for (it = annotations.begin (); it != annotations.end () && !done; ++it)
+      for (auto& it : annotations)
       {
         start.clear ();
         end.clear ();
-        if (rx.match (start, end, it->second))
+        if (rx.match (start, end, it.second))
         {
           int skew = 0;
           for (unsigned int i = 0; i < start.size () && !done; ++i)
           {
-            it->second.replace (start[i + skew], end[i] - start[i], to);
+            it.second.replace (start[i + skew], end[i] - start[i], to);
             skew += to.length () - (end[i] - start[i]);
             ++changes;
 
@@ -1304,14 +1281,13 @@ void Task::substitute (
     {
       // Perform all subs on annotations.
       counter = 0;
-      std::map <std::string, std::string>::iterator i;
-      for (i = annotations.begin (); i != annotations.end () && !done; ++i)
+      for (auto& anno : annotations)
       {
         pos = 0;
         skew = 0;
-        while ((pos = ::find (i->second, from, pos, Task::searchCaseSensitive)) != std::string::npos && !done)
+        while ((pos = ::find (anno.second, from, pos, Task::searchCaseSensitive)) != std::string::npos && !done)
         {
-          i->second.replace (pos + skew, from.length (), to);
+          anno.second.replace (pos + skew, from.length (), to);
           skew += to.length () - from.length ();
 
           pos += to.length ();
@@ -1412,15 +1388,14 @@ void Task::validate (bool applyDefault /* = true */)
     // override with uda.(uda).default, if not specified.
     // Gather a list of all UDAs with a .default value
     std::vector <std::string> udas;
-    Config::const_iterator var;
-    for (var = context.config.begin (); var != context.config.end (); ++var)
+    for (auto& var : context.config)
     {
-      if (var->first.substr (0, 4) == "uda." &&
-          var->first.find (".default") != std::string::npos)
+      if (var.first.substr (0, 4) == "uda." &&
+          var.first.find (".default") != std::string::npos)
       {
-        std::string::size_type period = var->first.find ('.', 4);
+        std::string::size_type period = var.first.find ('.', 4);
         if (period != std::string::npos)
-          udas.push_back (var->first.substr (4, period - 4));
+          udas.push_back (var.first.substr (4, period - 4));
       }
     }
 
@@ -1428,14 +1403,13 @@ void Task::validate (bool applyDefault /* = true */)
     {
       // For each of those, setup the default value on the task now,
       // of course only if we don't have one on the command line already
-      std::vector <std::string>::iterator uda;
-      for (uda = udas.begin (); uda != udas.end (); ++uda)
+      for (auto& uda : udas)
       {
-        std::string defVal= context.config.get ("uda." + *uda + ".default");
+        std::string defVal= context.config.get ("uda." + uda + ".default");
 
         // If the default is empty, or we already have a value, skip it
-        if (defVal != "" && get (*uda) == "")
-          set (*uda, defVal);
+        if (defVal != "" && get (uda) == "")
+          set (uda, defVal);
       }
     }
   }
@@ -1650,64 +1624,63 @@ float Task::urgency_c () const
   value += fabsf (Task::urgencyInheritCoefficient)     > epsilon ? (urgency_inherit ()     * Task::urgencyInheritCoefficient)     : 0.0;
 
   // Tag- and project-specific coefficients.
-  std::map <std::string, float>::iterator var;
-  for (var = Task::coefficients.begin (); var != Task::coefficients.end (); ++var)
+  for (auto& var : Task::coefficients)
   {
-    if (fabs (var->second) > epsilon)
+    if (fabs (var.second) > epsilon)
     {
-      if (var->first.substr (0, 13) == "urgency.user.")
+      if (var.first.substr (0, 13) == "urgency.user.")
       {
         // urgency.user.project.<project>.coefficient
         std::string::size_type end = std::string::npos;
-        if (var->first.substr (13, 8) == "project." &&
-            (end = var->first.find (".coefficient")) != std::string::npos)
+        if (var.first.substr (13, 8) == "project." &&
+            (end = var.first.find (".coefficient")) != std::string::npos)
         {
-          std::string project = var->first.substr (21, end - 21);
+          std::string project = var.first.substr (21, end - 21);
 
           if (get ("project").find (project) == 0)
-            value += var->second;
+            value += var.second;
         }
 
         // urgency.user.tag.<tag>.coefficient
-        if (var->first.substr (13, 4) == "tag." &&
-            (end = var->first.find (".coefficient")) != std::string::npos)
+        if (var.first.substr (13, 4) == "tag." &&
+            (end = var.first.find (".coefficient")) != std::string::npos)
         {
-          std::string tag = var->first.substr (17, end - 17);
+          std::string tag = var.first.substr (17, end - 17);
 
           if (hasTag (tag))
-            value += var->second;
+            value += var.second;
         }
 
         // urgency.user.keyword.<keyword>.coefficient
-        if (var->first.substr (13, 8) == "keyword." &&
-            (end = var->first.find (".coefficient")) != std::string::npos)
+        if (var.first.substr (13, 8) == "keyword." &&
+            (end = var.first.find (".coefficient")) != std::string::npos)
         {
-          std::string keyword = var->first.substr (21, end - 21);
+          std::string keyword = var.first.substr (21, end - 21);
 
           if (get ("description").find (keyword) != std::string::npos)
-            value += var->second;
+            value += var.second;
         }
       }
-      else if (var->first.substr (0, 12) == "urgency.uda.")
+      else if (var.first.substr (0, 12) == "urgency.uda.")
       {
         // urgency.uda.<name>.coefficient
         // urgency.uda.<name>.<value>.coefficient
-        std::string::size_type end = var->first.find (".coefficient");
+        std::string::size_type end = var.first.find (".coefficient");
         if (end != std::string::npos)
         {
-          const std::string uda = var->first.substr (12, end - 12);
+          const std::string uda = var.first.substr (12, end - 12);
           std::string::size_type dot = uda.find (".");
           if (dot == std::string::npos)
           {
             // urgency.uda.<name>.coefficient
             if (has (uda))
-              value += var->second;
+              value += var.second;
           }
           else
           {
             // urgency.uda.<name>.<value>.coefficient
             if (get (uda.substr(0, dot)) == uda.substr(dot+1))
-              value += var->second;
+              value += var.second;
           }
         }
       }
@@ -1744,20 +1717,19 @@ float Task::urgency_inherit () const
   dependencyGetBlocked (*this, blocked);
 
   float v = 0.0;
-  std::vector <Task>::const_iterator it;
-  for (it = blocked.begin (); it != blocked.end (); ++it)
+  for (auto& task : blocked)
   {
     // urgency_blocked, _blocking, _project and _tags left out.
-    v += it->urgency_active ();
-    v += it->urgency_age ();
-    v += it->urgency_annotations ();
-    v += it->urgency_due ();
-    v += it->urgency_next ();
-    v += it->urgency_scheduled ();
-    v += it->urgency_waiting ();
+    v += task.urgency_active ();
+    v += task.urgency_age ();
+    v += task.urgency_annotations ();
+    v += task.urgency_due ();
+    v += task.urgency_next ();
+    v += task.urgency_scheduled ();
+    v += task.urgency_waiting ();
 
     // Inherit from all parent tasks in the dependency chain recursively.
-    v += it->urgency_inherit ();
+    v += task.urgency_inherit ();
   }
 
   return v;
@@ -1910,17 +1882,16 @@ void Task::modify (modType type, bool text_required /* = false */)
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
   int modCount = 0;
-  std::vector <A>::iterator a;
-  for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
+  for (auto& a : context.cli._args)
   {
-    if (a->hasTag ("MODIFICATION"))
+    if (a.hasTag ("MODIFICATION"))
     {
-      if (a->hasTag ("ATTRIBUTE"))
+      if (a.hasTag ("ATTRIBUTE"))
       {
         // 'name' is canonical.
         // 'value' requires eval.
-        std::string name  = a->attribute ("name");
-        std::string value = a->attribute ("value");
+        std::string name  = a.attribute ("name");
+        std::string value = a.attribute ("value");
         if (value == ""     ||
             value == "''"   ||
             value == "\"\"")
@@ -1948,22 +1919,21 @@ void Task::modify (modType type, bool text_required /* = false */)
             split (deps, value, ',');
 
             // Apply or remove dendencies in turn.
-            std::vector <std::string>::iterator i;
-            for (i = deps.begin (); i != deps.end (); i++)
+            for (auto& dep : deps)
             {
-              if ((*i)[0] == '-')
+              if (dep[0] == '-')
               {
-                if ((*i).length () == 37)
-                  removeDependency (context.tdb2.pending.id ((*i).substr (1)));
+                if (dep.length () == 37)
+                  removeDependency (context.tdb2.pending.id (dep.substr (1)));
                 else
-                  removeDependency (strtol ((*i).substr (1).c_str (), NULL, 10));
+                  removeDependency (strtol (dep.substr (1).c_str (), NULL, 10));
               }
               else
               {
-                if ((*i).length () == 36)
-                  addDependency (context.tdb2.pending.id ((*i)));
+                if (dep.length () == 36)
+                  addDependency (context.tdb2.pending.id (dep));
                 else
-                  addDependency (strtol ((*i).c_str (), NULL, 10));
+                  addDependency (strtol (dep.c_str (), NULL, 10));
               }
             }
 
@@ -2104,22 +2074,22 @@ void Task::modify (modType type, bool text_required /* = false */)
       }
 
       // arg7 from='from' global='1' raw='/from/to/g' to='to' ORIGINAL SUBSTITUTION MODIFICATION
-      else if (a->hasTag ("SUBSTITUTION"))
+      else if (a.hasTag ("SUBSTITUTION"))
       {
-        context.debug (label + "substitute " + a->attribute ("raw"));
-        substitute (a->attribute ("from"),
-                    a->attribute ("to"),
-                    (a->attribute ("global") == "1"));
+        context.debug (label + "substitute " + a.attribute ("raw"));
+        substitute (a.attribute ("from"),
+                    a.attribute ("to"),
+                    (a.attribute ("global") == "1"));
         ++modCount;
       }
 
       // Tags need special handling because they are essentially a vector stored
       // in a single string, therefore Task::{add,remove}Tag must be called as
       // appropriate.
-      else if (a->hasTag ("TAG"))
+      else if (a.hasTag ("TAG"))
       {
-        std::string tag = a->attribute ("name");
-        if (a->attribute ("sign") == "+")
+        std::string tag = a.attribute ("name");
+        if (a.attribute ("sign") == "+")
         {
           context.debug (label + "tags <-- add '" + tag + "'");
           addTag (tag);
@@ -2135,12 +2105,12 @@ void Task::modify (modType type, bool text_required /* = false */)
       }
 
       // WORD and TERMINATED args are accumulated.
-      else if (a->hasTag ("WORD") ||
-               a->hasTag ("TERMINATED"))
+      else if (a.hasTag ("WORD") ||
+               a.hasTag ("TERMINATED"))
       {
         if (text != "")
           text += ' ';
-        text += a->attribute ("raw");
+        text += a.attribute ("raw");
       }
 
       // Unknown args are accumulated as though they were WORDs.
@@ -2148,7 +2118,7 @@ void Task::modify (modType type, bool text_required /* = false */)
       {
         if (text != "")
           text += ' ';
-        text += a->attribute ("raw");
+        text += a.attribute ("raw");
       }
     }
   }

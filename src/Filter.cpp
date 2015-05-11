@@ -89,16 +89,15 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
     eval.compileExpression (filterExpr);
     eval.debug (false);
 
-    std::vector <Task>::const_iterator task;
-    for (task = input.begin (); task != input.end (); ++task)
+    for (auto& task : input)
     {
       // Set up context for any DOM references.
-      contextTask = *task;
+      contextTask = task;
 
       Variant var;
       eval.evaluateCompiledExpression (var);
       if (var.get_bool ())
-        output.push_back (*task);
+        output.push_back (task);
     }
   }
   else
@@ -123,7 +122,7 @@ void Filter::subset (std::vector <Task>& output, bool applyContext /* = true */)
   if (filterExpr.length ())
   {
     context.timer_filter.stop ();
-    const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
+    auto pending = context.tdb2.pending.get_tasks ();
     context.timer_filter.start ();
     _startCount = (int) pending.size ();
 
@@ -139,58 +138,53 @@ void Filter::subset (std::vector <Task>& output, bool applyContext /* = true */)
     eval.debug (false);
 
     output.clear ();
-    std::vector <Task>::const_iterator task;
-
-    for (task = pending.begin (); task != pending.end (); ++task)
+    for (auto& task : pending)
     {
       // Set up context for any DOM references.
-      contextTask = *task;
+      contextTask = task;
 
       Variant var;
       eval.debug (context.config.getInteger ("debug.parser") >= 2 ? true : false);
       eval.evaluateCompiledExpression (var);
       eval.debug (false);
       if (var.get_bool ())
-        output.push_back (*task);
+        output.push_back (task);
     }
 
     shortcut = pendingOnly ();
     if (! shortcut)
     {
       context.timer_filter.stop ();
-      const std::vector <Task>& completed = context.tdb2.completed.get_tasks ();
+      auto completed = context.tdb2.completed.get_tasks ();
       context.timer_filter.start ();
       _startCount += (int) completed.size ();
 
-      for (task = completed.begin (); task != completed.end (); ++task)
+      for (auto& task : completed)
       {
         // Set up context for any DOM references.
-        contextTask = *task;
+        contextTask = task;
 
         Variant var;
         eval.debug (context.config.getInteger ("debug.parser") >= 2 ? true : false);
         eval.evaluateCompiledExpression (var);
         eval.debug (false);
         if (var.get_bool ())
-          output.push_back (*task);
+          output.push_back (task);
       }
     }
   }
   else
   {
     safety ();
-
     context.timer_filter.stop ();
-    const std::vector <Task>& pending   = context.tdb2.pending.get_tasks ();
-    const std::vector <Task>& completed = context.tdb2.completed.get_tasks ();
+
+    for (auto& task : context.tdb2.pending.get_tasks ())
+      output.push_back (task);
+
+    for (auto& task : context.tdb2.completed.get_tasks ())
+      output.push_back (task);
+
     context.timer_filter.start ();
-
-    std::vector <Task>::const_iterator task;
-    for (task = pending.begin (); task != pending.end (); ++task)
-      output.push_back (*task);
-
-    for (task = completed.begin (); task != completed.end (); ++task)
-      output.push_back (*task);
   }
 
   _endCount = (int) output.size ();
@@ -218,19 +212,18 @@ bool Filter::pendingOnly ()
   int countXor       = 0;
   int countNot       = 0;
 
-  std::vector <A>::iterator a;
-  for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
+  for (auto& a : context.cli._args)
   {
-    if (a->hasTag ("FILTER"))
+    if (a.hasTag ("FILTER"))
     {
-      if (a->hasTag ("ID"))                                                ++countId;
-      if (a->hasTag ("OP")        && a->attribute ("raw")  == "or")        ++countOr;
-      if (a->hasTag ("OP")        && a->attribute ("raw")  == "xor")       ++countXor;
-      if (a->hasTag ("OP")        && a->attribute ("raw")  == "not")       ++countNot;
-      if (a->hasTag ("ATTRIBUTE") && a->attribute ("name") == "status")    ++countStatus;
-      if (                           a->attribute ("raw")  == "pending")   ++countPending;
-      if (                           a->attribute ("raw")  == "waiting")   ++countWaiting;
-      if (                           a->attribute ("raw")  == "recurring") ++countRecurring;
+      if (a.hasTag ("ID"))                                                ++countId;
+      if (a.hasTag ("OP")        && a.attribute ("raw")  == "or")        ++countOr;
+      if (a.hasTag ("OP")        && a.attribute ("raw")  == "xor")       ++countXor;
+      if (a.hasTag ("OP")        && a.attribute ("raw")  == "not")       ++countNot;
+      if (a.hasTag ("ATTRIBUTE") && a.attribute ("name") == "status")    ++countStatus;
+      if (                          a.attribute ("raw")  == "pending")   ++countPending;
+      if (                          a.attribute ("raw")  == "waiting")   ++countWaiting;
+      if (                          a.attribute ("raw")  == "recurring") ++countRecurring;
     }
   }
 
@@ -258,12 +251,11 @@ bool Filter::pendingOnly ()
 // all tasks to be modified. This is usually not intended.
 void Filter::safety ()
 {
-  std::vector <A>::iterator a;
-  for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
+  for (auto& a : context.cli._args)
   {
-    if (a->hasTag ("CMD"))
+    if (a.hasTag ("CMD"))
     {
-      if (a->hasTag ("WRITECMD"))
+      if (a.hasTag ("WRITECMD"))
       {
         if (context.cli.getFilter () == "")
         {

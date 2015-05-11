@@ -53,15 +53,14 @@ void initializeColorRules ()
     // Load all the configuration values, filter to only the ones that begin with
     // "color.", then store name/value in gsColor, and name in rules.
     std::vector <std::string> rules;
-    Config::const_iterator v;
-    for (v = context.config.begin (); v != context.config.end (); ++v)
+    for (auto& v : context.config)
     {
-      if (v->first.substr (0, 6) == "color.")
+      if (v.first.substr (0, 6) == "color.")
       {
-        Color c (v->second);
-        gsColor[v->first] = c;
+        Color c (v.second);
+        gsColor[v.first] = c;
 
-        rules.push_back (v->first);
+        rules.push_back (v.first);
       }
     }
 
@@ -71,16 +70,14 @@ void initializeColorRules ()
     std::vector <std::string> precedence;
     split (precedence, context.config.get ("rule.precedence.color"), ',');
 
-    std::vector <std::string>::iterator p;
-    for (p = precedence.begin (); p != precedence.end (); ++p)
+    for (auto& p : precedence)
     {
       // Add the leading "color." string.
-      std::string rule = "color." + *p;
+      std::string rule = "color." + p;
       autoComplete (rule, rules, results, 3); // Hard-coded 3.
 
-      std::vector <std::string>::iterator r;
-      for (r = results.begin (); r != results.end (); ++r)
-        gsPrecedence.push_back (*r);
+      for (auto& r : results)
+        gsPrecedence.push_back (r);
     }
   }
 
@@ -185,11 +182,10 @@ static void colorizeKeyword (Task& task, const std::string& rule, const Color& b
   // first match.
   else
   {
-    Task::iterator it;
-    for (it = task.begin (); it != task.end (); ++it)
+    for (auto& it : task)
     {
-      if (it->first.substr (0, 11) == "annotation_" &&
-          find (it->second, rule.substr (14), sensitive) != std::string::npos)
+      if (it.first.substr (0, 11) == "annotation_" &&
+          find (it.second, rule.substr (14), sensitive) != std::string::npos)
       {
         c.blend (base);
         return;
@@ -292,8 +288,7 @@ void autoColorize (Task& task, Color& c)
   // Note: c already contains colors specifically assigned via command.
   // Note: These rules form a hierarchy - the last rule is King, hence the
   //       reverse iterator.
-  std::vector <std::string>::reverse_iterator r;
-  for (r = gsPrecedence.rbegin (); r != gsPrecedence.rend (); ++r)
+  for (auto r = gsPrecedence.rbegin (); r != gsPrecedence.rend (); ++r)
   {
     Color base = gsColor[*r];
     if (base.nontrivial ())

@@ -60,56 +60,54 @@ void handleRecurrence ()
   if (! context.config.getBoolean ("recurrence"))
     return;
 
-  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = context.tdb2.pending.get_tasks ();
   Date now;
 
   // Look at all tasks and find any recurring ones.
-  std::vector <Task>::iterator t;
-  for (t = tasks.begin (); t != tasks.end (); ++t)
+  for (auto& t : tasks)
   {
-    if (t->getStatus () == Task::recurring)
+    if (t.getStatus () == Task::recurring)
     {
       // Generate a list of due dates for this recurring task, regardless of
       // the mask.
       std::vector <Date> due;
-      if (!generateDueDates (*t, due))
+      if (!generateDueDates (t, due))
       {
         // Determine the end date.
-        t->setStatus (Task::deleted);
-        context.tdb2.modify (*t);
-        context.footnote (onExpiration (*t));
+        t.setStatus (Task::deleted);
+        context.tdb2.modify (t);
+        context.footnote (onExpiration (t));
         continue;
       }
 
       // Get the mask from the parent task.
-      std::string mask = t->get ("mask");
+      std::string mask = t.get ("mask");
 
       // Iterate over the due dates, and check each against the mask.
       bool changed = false;
       unsigned int i = 0;
-      std::vector <Date>::iterator d;
-      for (d = due.begin (); d != due.end (); ++d)
+      for (auto& d : due)
       {
         if (mask.length () <= i)
         {
           changed = true;
 
-          Task rec (*t);                         // Clone the parent.
+          Task rec (t);                          // Clone the parent.
           rec.setStatus (Task::pending);         // Change the status.
           rec.id = context.tdb2.next_id ();      // New ID.
           rec.set ("uuid", uuid ());             // New UUID.
-          rec.set ("parent", t->get ("uuid"));   // Remember mom.
+          rec.set ("parent", t.get ("uuid"));    // Remember mom.
           rec.setAsNow ("entry");                // New entry date.
 
           char dueDate[16];
-          sprintf (dueDate, "%u", (unsigned int) d->toEpoch ());
+          sprintf (dueDate, "%u", (unsigned int) d.toEpoch ());
           rec.set ("due", dueDate);              // Store generated due date.
 
-          if (t->has ("wait"))
+          if (t.has ("wait"))
           {
-            Date old_wait (t->get_date ("wait"));
-            Date old_due (t->get_date ("due"));
-            Date due (*d);
+            Date old_wait (t.get_date ("wait"));
+            Date old_due (t.get_date ("due"));
+            Date due (d);
             sprintf (dueDate, "%u", (unsigned int) (due + (old_wait - old_due)).toEpoch ());
             rec.set ("wait", dueDate);
             rec.setStatus (Task::waiting);
@@ -137,20 +135,20 @@ void handleRecurrence ()
       // Only modify the parent if necessary.
       if (changed)
       {
-        t->set ("mask", mask);
-        context.tdb2.modify (*t);
+        t.set ("mask", mask);
+        context.tdb2.modify (t);
       }
     }
 
     // Non-recurring tasks expire too.
     else
     {
-      if (t->has ("until") &&
-          Date (t->get_date ("until")) < now)
+      if (t.has ("until") &&
+          Date (t.get_date ("until")) < now)
       {
-        t->setStatus (Task::deleted);
-        context.tdb2.modify(*t);
-        context.footnote (onExpiration (*t));
+        t.setStatus (Task::deleted);
+        context.tdb2.modify(t);
+        context.footnote (onExpiration (t));
       }
     }
   }
@@ -424,14 +422,11 @@ bool nag (Task& task)
   std::string nagMessage = context.config.get ("nag");
   if (nagMessage != "")
   {
-    // Load all pending tasks.
-    std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
-
     // Scan all pending tasks.
-    std::vector <Task>::iterator t;
-    for (t = tasks.begin (); t != tasks.end (); ++t)
+    auto pending = context.tdb2.pending.get_tasks ();
+    for (auto& t : pending)
     {
-      if (t->urgency () > task.urgency ())
+      if (t.urgency () > task.urgency ())
       {
         context.footnote (nagMessage);
         return true;

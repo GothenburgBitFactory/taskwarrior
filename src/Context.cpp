@@ -84,13 +84,11 @@ Context::Context ()
 ////////////////////////////////////////////////////////////////////////////////
 Context::~Context ()
 {
-  std::map<std::string, Command*>::iterator com;
-  for (com = commands.begin (); com != commands.end (); ++com)
-    delete com->second;
+  for (auto& com : commands)
+    delete com.second;
 
-  std::map<std::string, Column*>::iterator col;
-  for (col = columns.begin (); col != columns.end (); ++col)
-    delete col->second;
+  for (auto& col : columns)
+    delete col.second;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -156,14 +154,13 @@ int Context::initialize (int argc, const char** argv)
     ////////////////////////////////////////////////////////////////////////////
 
     Command::factory (commands);
-    std::map <std::string, Command*>::iterator cmd;
-    for (cmd = commands.begin (); cmd != commands.end (); ++cmd)
+    for (auto& cmd : commands)
     {
-      cli.entity ("cmd", cmd->first);
-      cli.entity ((cmd->second->read_only () ? "readcmd" : "writecmd"), cmd->first);
+      cli.entity ("cmd", cmd.first);
+      cli.entity ((cmd.second->read_only () ? "readcmd" : "writecmd"), cmd.first);
 
-      if (cmd->first[0] == '_')
-        cli.entity ("helper", cmd->first);
+      if (cmd.first[0] == '_')
+        cli.entity ("helper", cmd.first);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -173,9 +170,8 @@ int Context::initialize (int argc, const char** argv)
     ////////////////////////////////////////////////////////////////////////////
 
     Column::factory (columns);
-    std::map <std::string, Column*>::iterator col;
-    for (col = columns.begin (); col != columns.end (); ++col)
-      cli.entity ("attribute", col->first);
+    for (auto& col : columns)
+      cli.entity ("attribute", col.first);
 
     cli.entity ("pseudo", "limit");
 
@@ -188,15 +184,11 @@ int Context::initialize (int argc, const char** argv)
     for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
       cli.entity ("modifier", modifierNames[i]);
 
-    std::vector <std::string> operators;
-    Eval::getOperators (operators);
-    std::vector <std::string>::iterator op;
-    for (op = operators.begin (); op != operators.end (); ++op)
-      cli.entity ("operator", *op);
+    for (auto& op : Eval::getOperators ())
+      cli.entity ("operator", op);
 
-    Eval::getBinaryOperators (operators);
-    for (op = operators.begin (); op != operators.end (); ++op)
-      cli.entity ("binary_operator", *op);
+    for (auto& op : Eval::getBinaryOperators ())
+      cli.entity ("binary_operator", op);
 
     ////////////////////////////////////////////////////////////////////////////
     //
@@ -223,21 +215,20 @@ int Context::initialize (int argc, const char** argv)
     bool foundDefault = false;
     bool foundAssumed = false;
     std::string combined;
-    std::vector <A>::const_iterator a;
-    for (a = cli._args.begin (); a != cli._args.end (); ++a)
+    for (auto& a : cli._args)
     {
       if (combined.length ())
         combined += ' ';
 
-      if (a->attribute ("canonical") != "")
-        combined += a->attribute ("canonical");
+      if (a.attribute ("canonical") != "")
+        combined += a.attribute ("canonical");
       else
-        combined += a->attribute ("raw");
+        combined += a.attribute ("raw");
 
-      if (a->hasTag ("DEFAULT"))
+      if (a.hasTag ("DEFAULT"))
         foundDefault = true;
 
-      if (a->hasTag ("ASSUMED"))
+      if (a.hasTag ("ASSUMED"))
         foundAssumed = true;
     }
 
@@ -280,44 +271,40 @@ int Context::initialize (int argc, const char** argv)
     // Dump all debug messages, controlled by rc.debug.
     if (config.getBoolean ("debug"))
     {
-      std::vector <std::string>::iterator d;
-      for (d = debugMessages.begin (); d != debugMessages.end (); ++d)
+      for (auto& d : debugMessages)
         if (color ())
-          std::cerr << colorizeDebug (*d) << "\n";
+          std::cerr << colorizeDebug (d) << "\n";
         else
-          std::cerr << *d << "\n";
+          std::cerr << d << "\n";
     }
 
     // Dump all headers, controlled by 'header' verbosity token.
     if (verbose ("header"))
     {
-      std::vector <std::string>::iterator h;
-      for (h = headers.begin (); h != headers.end (); ++h)
+      for (auto& h : headers)
         if (color ())
-          std::cerr << colorizeHeader (*h) << "\n";
+          std::cerr << colorizeHeader (h) << "\n";
         else
-          std::cerr << *h << "\n";
+          std::cerr << h << "\n";
     }
 
     // Dump all footnotes, controlled by 'footnote' verbosity token.
     if (verbose ("footnote"))
     {
-      std::vector <std::string>::iterator f;
-      for (f = footnotes.begin (); f != footnotes.end (); ++f)
+      for (auto& f : footnotes)
         if (color ())
-          std::cerr << colorizeFootnote (*f) << "\n";
+          std::cerr << colorizeFootnote (f) << "\n";
         else
-          std::cerr << *f << "\n";
+          std::cerr << f << "\n";
     }
 
     // Dump all errors, non-maskable.
     // Colorized as footnotes.
-    std::vector <std::string>::iterator e;
-    for (e = errors.begin (); e != errors.end (); ++e)
+    for (auto& e : errors)
       if (color ())
-        std::cerr << colorizeFootnote (*e) << "\n";
+        std::cerr << colorizeFootnote (e) << "\n";
       else
-        std::cerr << *e << "\n";
+        std::cerr << e << "\n";
   }
 
   timer_init.stop ();
@@ -390,23 +377,21 @@ int Context::run ()
   // Dump all debug messages, controlled by rc.debug.
   if (config.getBoolean ("debug"))
   {
-    std::vector <std::string>::iterator d;
-    for (d = debugMessages.begin (); d != debugMessages.end (); ++d)
+    for (auto& d : debugMessages)
       if (color ())
-        std::cerr << colorizeDebug (*d) << "\n";
+        std::cerr << colorizeDebug (d) << "\n";
       else
-        std::cerr << *d << "\n";
+        std::cerr << d << "\n";
   }
 
   // Dump all headers, controlled by 'header' verbosity token.
   if (verbose ("header"))
   {
-    std::vector <std::string>::iterator h;
-    for (h = headers.begin (); h != headers.end (); ++h)
+    for (auto& h : headers)
       if (color ())
-        std::cerr << colorizeHeader (*h) << "\n";
+        std::cerr << colorizeHeader (h) << "\n";
       else
-        std::cerr << *h << "\n";
+        std::cerr << h << "\n";
   }
 
   // Dump the report output.
@@ -415,22 +400,20 @@ int Context::run ()
   // Dump all footnotes, controlled by 'footnote' verbosity token.
   if (verbose ("footnote"))
   {
-    std::vector <std::string>::iterator f;
-    for (f = footnotes.begin (); f != footnotes.end (); ++f)
+    for (auto& f : footnotes)
       if (color ())
-        std::cerr << colorizeFootnote (*f) << "\n";
+        std::cerr << colorizeFootnote (f) << "\n";
       else
-        std::cerr << *f << "\n";
+        std::cerr << f << "\n";
   }
 
   // Dump all errors, non-maskable.
   // Colorized as footnotes.
-  std::vector <std::string>::iterator e;
-  for (e = errors.begin (); e != errors.end (); ++e)
+  for (auto& e : errors)
     if (color ())
-      std::cerr << colorizeError (*e) << "\n";
+      std::cerr << colorizeError (e) << "\n";
     else
-      std::cerr << *e << "\n";
+      std::cerr << e << "\n";
 
   return rc;
 }
@@ -581,9 +564,8 @@ bool Context::verbose (const std::string& token)
 const std::vector <std::string> Context::getColumns () const
 {
   std::vector <std::string> output;
-  std::map <std::string, Column*>::const_iterator i;
-  for (i = columns.begin (); i != columns.end (); ++i)
-    output.push_back (i->first);
+  for (auto& col : columns)
+    output.push_back (col.first);
 
   return output;
 }
@@ -592,9 +574,8 @@ const std::vector <std::string> Context::getColumns () const
 const std::vector <std::string> Context::getCommands () const
 {
   std::vector <std::string> output;
-  std::map <std::string, Command*>::const_iterator i;
-  for (i = commands.begin (); i != commands.end (); ++i)
-    output.push_back (i->first);
+  for (auto& cmd : commands)
+    output.push_back (cmd.first);
 
   return output;
 }
@@ -640,24 +621,22 @@ void Context::staticInitialization ()
   Lexer::dateFormat         = Variant::dateFormat          = config.get ("dateformat");
   Lexer::isoEnabled         = Variant::isoEnabled          = config.getBoolean ("date.iso");
 
-  Config::const_iterator rc;
-  for (rc = config.begin (); rc != config.end (); ++rc)
+  for (auto& rc : config)
   {
-    if (rc->first.substr (0, 4) == "uda." &&
-        rc->first.substr (rc->first.length () - 7, 7) == ".values")
+    if (rc.first.substr (0, 4) == "uda." &&
+        rc.first.substr (rc.first.length () - 7, 7) == ".values")
     {
-      std::string name = rc->first.substr (4, rc->first.length () - 7 - 4);
+      std::string name = rc.first.substr (4, rc.first.length () - 7 - 4);
       std::vector <std::string> values;
-      split (values, rc->second, ',');
+      split (values, rc.second, ',');
 
       for (auto r = values.rbegin(); r != values.rend (); ++r)
         Task::customOrder[name].push_back (*r);
     }
   }
 
-  std::map <std::string, Column*>::iterator i;
-  for (i = columns.begin (); i != columns.end (); ++i)
-    Task::attributes[i->first] = i->second->type ();
+  for (auto& col : columns)
+    Task::attributes[col.first] = col.second->type ();
 
   Task::urgencyProjectCoefficient     = config.getReal ("urgency.project.coefficient");
   Task::urgencyActiveCoefficient      = config.getReal ("urgency.active.coefficient");
@@ -676,11 +655,10 @@ void Context::staticInitialization ()
   // Tag- and project-specific coefficients.
   std::vector <std::string> all;
   config.all (all);
-  std::vector <std::string>::iterator var;
-  for (var = all.begin (); var != all.end (); ++var)
-    if (var->substr (0, 13) == "urgency.user." ||
-        var->substr (0, 12) == "urgency.uda.")
-      Task::coefficients[*var] = config.getReal (*var);
+  for (auto& var : all)
+    if (var.substr (0, 13) == "urgency.user." ||
+        var.substr (0, 12) == "urgency.uda.")
+      Task::coefficients[var] = config.getReal (var);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -745,16 +723,14 @@ void Context::clear ()
   tdb2.clear ();
 
   // Eliminate the command objects.
-  std::map <std::string, Command*>::iterator com;
-  for (com = commands.begin (); com != commands.end (); ++com)
-    delete com->second;
+  for (auto& cmd : commands)
+    delete cmd.second;
 
   commands.clear ();
 
   // Eliminate the column objects.
-  std::map <std::string, Column*>::iterator col;
-  for (col = columns.begin (); col != columns.end (); ++col)
-    delete col->second;
+  for (auto& col : columns)
+    delete col.second;
 
   columns.clear ();
   clearMessages ();
@@ -770,8 +746,7 @@ void Context::updateXtermTitle ()
     std::string command = cli.getCommand ();
     std::string title;
 
-    std::vector <A>::const_iterator a;
-    for (a = cli._args.begin (); a != cli._args.end (); ++a)
+    for (auto a = cli._args.begin (); a != cli._args.end (); ++a)
     {
       if (a != cli._args.begin ())
         title += ' ';
@@ -799,10 +774,9 @@ void Context::updateVerbosity ()
 ////////////////////////////////////////////////////////////////////////////////
 void Context::loadAliases ()
 {
-  std::map <std::string, std::string>::iterator i;
-  for (i = config.begin (); i != config.end (); ++i)
-    if (i->first.substr (0, 6) == "alias.")
-      cli.alias (i->first.substr (6), i->second);
+  for (auto& i : config)
+    if (i.first.substr (0, 6) == "alias.")
+      cli.alias (i.first.substr (6), i.second);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -131,8 +131,5 @@ namespace json
   std::string decode (const std::string&);
 }
 
-typedef std::vector <json::value*>::iterator           json_array_iter;
-typedef std::map <std::string, json::value*>::iterator json_object_iter;
-
 #endif
 ////////////////////////////////////////////////////////////////////////////////

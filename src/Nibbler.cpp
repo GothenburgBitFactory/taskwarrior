@@ -982,12 +982,11 @@ bool Nibbler::getOneOf (
   const std::vector <std::string>& options,
   std::string& found)
 {
-  std::vector <std::string>::const_iterator option;
-  for (option = options.begin (); option != options.end (); ++option)
+  for (auto& option : options)
   {
-    if (getLiteral (*option))
+    if (getLiteral (option))
     {
-      found = *option;
+      found = option;
       return true;
     }
   }

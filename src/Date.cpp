@@ -536,10 +536,9 @@ int Date::length (const std::string& format)
 {
   int total = 0;
 
-  std::string::const_iterator i;
-  for (i = format.begin (); i != format.end (); ++i)
+  for (auto& i : format)
   {
-    switch (*i)
+    switch (i)
     {
     case 'm':
     case 'M':
@@ -563,7 +562,7 @@ int Date::length (const std::string& format)
     case 'B': total += 10; break;
 
     // Calculate the width, don't assume a single character width.
-    default:  total += mk_wcwidth (*i); break;
+    default:  total += mk_wcwidth (i); break;
     }
   }
 

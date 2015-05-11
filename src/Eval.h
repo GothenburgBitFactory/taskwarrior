@@ -49,8 +49,8 @@ public:
   void ambiguity (bool);
   void debug (bool);
 
-  static void getOperators (std::vector <std::string>&);
-  static void getBinaryOperators (std::vector <std::string>&);
+  static std::vector <std::string> getOperators ();
+  static std::vector <std::string> getBinaryOperators ();
 
 private:
   void evaluatePostfixStack (const std::vector <std::pair <std::string, Lexer::Type>>&, Variant&) const;
