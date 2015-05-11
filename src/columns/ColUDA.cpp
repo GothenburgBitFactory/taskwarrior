@@ -64,9 +64,8 @@ bool ColumnUDA::validate (std::string& value)
     return true;
 
   // Look for exact match value.
-  std::vector <std::string>::iterator i;
-  for (i = _values.begin (); i != _values.end (); ++i)
-    if (*i == value)
+  for (auto& i : _values)
+    if (i == value)
       return true;
 
   // Fail if not found.
@@ -171,9 +170,8 @@ void ColumnUDA::render (
         std::vector <std::string> raw;
         wrapText (raw, value, width, _hyphenate);
 
-        std::vector <std::string>::iterator i;
-        for (i = raw.begin (); i != raw.end (); ++i)
-          lines.push_back (color.colorize (leftJustify (*i, width)));
+        for (auto& i : raw)
+          lines.push_back (color.colorize (leftJustify (i, width)));
       }
       else if (_type == "numeric")
       {

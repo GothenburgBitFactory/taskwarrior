@@ -107,10 +107,9 @@ void ColumnTags::measure (Task& task, unsigned int& minimum, unsigned int& maxim
       {
         std::vector <std::string> all;
         split (all, tags, ',');
-        std::vector <std::string>::iterator i;
-        for (i = all.begin (); i != all.end (); ++i)
+        for (auto& i : all)
         {
-          unsigned int length = utf8_width (*i);
+          unsigned int length = utf8_width (i);
           if (length > minimum)
             minimum = length;
         }
@@ -145,9 +144,8 @@ void ColumnTags::render (
       std::vector <std::string> all;
       wrapText (all, tags, width, _hyphenate);
 
-      std::vector <std::string>::iterator i;
-      for (i = all.begin (); i != all.end (); ++i)
-        lines.push_back (color.colorize (leftJustify (*i, width)));
+      for (auto& i : all)
+        lines.push_back (color.colorize (leftJustify (i, width)));
     }
     else if (_style == "indicator")
     {

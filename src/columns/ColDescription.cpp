@@ -116,10 +116,9 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
 
       std::map <std::string, std::string> annos;
       task.getAnnotations (annos);
-      std::map <std::string, std::string>::iterator i;
-      for (i = annos.begin (); i != annos.end (); i++)
+      for (auto& i : annos)
       {
-        unsigned int len = min_anno + 1 + utf8_width (i->second);
+        unsigned int len = min_anno + 1 + utf8_width (i.second);
         if (len > maximum)
           maximum = len;
       }
@@ -144,9 +143,8 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
       unsigned int min_anno = Date::length (_dateformat);
       std::map <std::string, std::string> annos;
       task.getAnnotations (annos);
-      std::map <std::string, std::string>::iterator i;
-      for (i = annos.begin (); i != annos.end (); i++)
-        maximum += min_anno + 1 + utf8_width (i->second);
+      for (auto& i : annos)
+        maximum += min_anno + 1 + utf8_width (i.second);
     }
   }
 
@@ -195,20 +193,18 @@ void ColumnDescription::render (
     task.getAnnotations (annos);
     if (annos.size ())
     {
-      std::map <std::string, std::string>::iterator i;
-      for (i = annos.begin (); i != annos.end (); i++)
+      for (auto& i : annos)
       {
-        Date dt (strtol (i->first.substr (11).c_str (), NULL, 10));
-        description += "\n" + std::string (_indent, ' ') + dt.toString (_dateformat) + " " + i->second;
+        Date dt (strtol (i.first.substr (11).c_str (), NULL, 10));
+        description += "\n" + std::string (_indent, ' ') + dt.toString (_dateformat) + " " + i.second;
       }
     }
 
     std::vector <std::string> raw;
     wrapText (raw, description, width, _hyphenate);
 
-    std::vector <std::string>::iterator i;
-    for (i = raw.begin (); i != raw.end (); ++i)
-      lines.push_back (color.colorize (leftJustify (*i, width)));
+    for (auto& i : raw)
+      lines.push_back (color.colorize (leftJustify (i, width)));
   }
 
   // This is a description
@@ -217,9 +213,8 @@ void ColumnDescription::render (
     std::vector <std::string> raw;
     wrapText (raw, description, width, _hyphenate);
 
-    std::vector <std::string>::iterator i;
-    for (i = raw.begin (); i != raw.end (); ++i)
-      lines.push_back (color.colorize (leftJustify (*i, width)));
+    for (auto& i : raw)
+      lines.push_back (color.colorize (leftJustify (i, width)));
   }
 
   // This is a description <date> <anno> ...
@@ -229,20 +224,18 @@ void ColumnDescription::render (
     task.getAnnotations (annos);
     if (annos.size ())
     {
-      std::map <std::string, std::string>::iterator i;
-      for (i = annos.begin (); i != annos.end (); i++)
+      for (auto& i : annos)
       {
-        Date dt (atoi (i->first.substr (11).c_str ()));
-        description += " " + dt.toString (_dateformat) + " " + i->second;
+        Date dt (atoi (i.first.substr (11).c_str ()));
+        description += " " + dt.toString (_dateformat) + " " + i.second;
       }
     }
 
     std::vector <std::string> raw;
     wrapText (raw, description, width, _hyphenate);
 
-    std::vector <std::string>::iterator i;
-    for (i = raw.begin (); i != raw.end (); ++i)
-      lines.push_back (color.colorize (leftJustify (*i, width)));
+    for (auto& i : raw)
+      lines.push_back (color.colorize (leftJustify (i, width)));
   }
 
   // This is a des...
@@ -267,9 +260,8 @@ void ColumnDescription::render (
     std::vector <std::string> raw;
     wrapText (raw, description, width, _hyphenate);
 
-    std::vector <std::string>::iterator i;
-    for (i = raw.begin (); i != raw.end (); ++i)
-      lines.push_back (color.colorize (leftJustify (*i, width)));
+    for (auto& i : raw)
+      lines.push_back (color.colorize (leftJustify (i, width)));
   }
 
   // This is a des... [2]
@@ -292,7 +284,6 @@ void ColumnDescription::render (
       lines.push_back (color.colorize (description.substr (0, width - len_annos - 3) + "..." + annos_count));
     else
       lines.push_back (color.colorize (leftJustify (description + annos_count, width)));
-
   }
 }
 

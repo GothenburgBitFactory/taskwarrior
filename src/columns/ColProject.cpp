@@ -118,9 +118,8 @@ void ColumnProject::render (
     std::vector <std::string> raw;
     wrapText (raw, project, width, _hyphenate);
 
-    std::vector <std::string>::iterator i;
-    for (i = raw.begin (); i != raw.end (); ++i)
-      lines.push_back (color.colorize (leftJustify (*i, width)));
+    for (auto& i : raw)
+      lines.push_back (color.colorize (leftJustify (i, width)));
   }
 }
 

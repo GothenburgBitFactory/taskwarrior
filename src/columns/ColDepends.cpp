@@ -99,18 +99,17 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
     if (task.has ("depends"))
     {
       std::vector <int> blocking_ids;
-      std::vector <Task>::iterator i;
-      for (i = blocking.begin (); i != blocking.end (); ++i)
-        blocking_ids.push_back (i->id);
+      for (auto& i : blocking)
+        blocking_ids.push_back (i.id);
 
       std::string all;
       join (all, " ", blocking_ids);
       maximum = all.length ();
 
       unsigned int length;
-      for (i = blocking.begin (); i != blocking.end (); ++i)
+      for (auto& i : blocking)
       {
-        length = format (i->id).length ();
+        length = format (i.id).length ();
         if (length > minimum)
           minimum = length;
       }
@@ -150,9 +149,8 @@ void ColumnDepends::render (
              _style == "list")
     {
       std::vector <int> blocking_ids;
-      std::vector <Task>::iterator t;
-      for (t = blocking.begin (); t != blocking.end (); ++t)
-        blocking_ids.push_back (t->id);
+      for (auto& t : blocking)
+        blocking_ids.push_back (t.id);
 
       std::string combined;
       join (combined, " ", blocking_ids);
@@ -160,9 +158,8 @@ void ColumnDepends::render (
       std::vector <std::string> all;
       wrapText (all, combined, width, _hyphenate);
 
-      std::vector <std::string>::iterator i;
-      for (i = all.begin (); i != all.end (); ++i)
-        lines.push_back (color.colorize (leftJustify (*i, width)));
+      for (auto& i : all)
+        lines.push_back (color.colorize (leftJustify (i, width)));
     }
   }
 }

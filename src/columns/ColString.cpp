@@ -100,18 +100,16 @@ void ColumnString::render (
     std::vector <std::string> raw;
     wrapText (raw, value, width, _hyphenate);
 
-    std::vector <std::string>::iterator i;
-    for (i = raw.begin (); i != raw.end (); ++i)
-      lines.push_back (color.colorize (leftJustify (*i, width)));
+    for (auto& i : raw)
+      lines.push_back (color.colorize (leftJustify (i, width)));
   }
   else if (_style == "right")
   {
     std::vector <std::string> raw;
     wrapText (raw, value, width, _hyphenate);
 
-    std::vector <std::string>::iterator i;
-    for (i = raw.begin (); i != raw.end (); ++i)
-      lines.push_back (color.colorize (rightJustify (*i, width)));
+    for (auto& i : raw)
+      lines.push_back (color.colorize (rightJustify (i, width)));
   }
   else if (_style == "left_fixed")
   {
