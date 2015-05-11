@@ -102,43 +102,41 @@ int CmdTimesheet::execute (std::string& output)
     Color label (context.config.get ("color.label"));
     completed.colorHeader (label);
 
-    std::vector <Task>::iterator task;
-    for (task = all.begin (); task != all.end (); ++task)
+    for (auto& task : all)
     {
       // If task completed within range.
-      if (task->getStatus () == Task::completed)
+      if (task.getStatus () == Task::completed)
       {
-        Date compDate (task->get_date ("end"));
+        Date compDate (task.get_date ("end"));
         if (compDate >= start && compDate < end)
         {
           Color c;
           if (context.color ())
-            autoColorize (*task, c);
+            autoColorize (task, c);
 
           int row = completed.addRow ();
           std::string format = context.config.get ("dateformat.report");
           if (format == "")
             format = context.config.get ("dateformat");
-          completed.set (row, 1, task->get ("project"), c);
+          completed.set (row, 1, task.get ("project"), c);
 
-          if(task->has ("due"))
+          if(task.has ("due"))
           {
-            Date dt (task->get_date ("due"));
+            Date dt (task.get_date ("due"));
             completed.set (row, 2, dt.toString (format));
           }
 
-          std::string description = task->get ("description");
+          std::string description = task.get ("description");
           int indent = context.config.getInteger ("indent.annotation");
 
           std::map <std::string, std::string> annotations;
-          task->getAnnotations (annotations);
-          std::map <std::string, std::string>::iterator ann;
-          for (ann = annotations.begin (); ann != annotations.end (); ++ann)
+          task.getAnnotations (annotations);
+          for (auto& ann : annotations)
             description += "\n"
                          + std::string (indent, ' ')
-                         + Date (ann->first.substr (11)).toString (context.config.get ("dateformat"))
+                         + Date (ann.first.substr (11)).toString (context.config.get ("dateformat"))
                          + " "
-                         + ann->second;
+                         + ann.second;
 
           completed.set (row, 3, description, c);
         }
@@ -160,43 +158,42 @@ int CmdTimesheet::execute (std::string& output)
     started.add (Column::factory ("string",       STRING_COLUMN_LABEL_DESC));
     started.colorHeader (label);
 
-    for (task = all.begin (); task != all.end (); ++task)
+    for (auto& task : all)
     {
       // If task started within range, but not completed withing range.
-      if (task->getStatus () == Task::pending &&
-          task->has ("start"))
+      if (task.getStatus () == Task::pending &&
+          task.has ("start"))
       {
-        Date startDate (task->get_date ("start"));
+        Date startDate (task.get_date ("start"));
         if (startDate >= start && startDate < end)
         {
           Color c;
           if (context.color ())
-            autoColorize (*task, c);
+            autoColorize (task, c);
 
           int row = started.addRow ();
           std::string format = context.config.get ("dateformat.report");
           if (format == "")
             format = context.config.get ("dateformat");
-          started.set (row, 1, task->get ("project"), c);
+          started.set (row, 1, task.get ("project"), c);
 
-          if(task->has ("due"))
+          if (task.has ("due"))
           {
-            Date dt (task->get_date ("due"));
+            Date dt (task.get_date ("due"));
             started.set (row, 2, dt.toString (format));
           }
 
-          std::string description = task->get ("description");
+          std::string description = task.get ("description");
           int indent = context.config.getInteger ("indent.annotation");
 
           std::map <std::string, std::string> annotations;
-          task->getAnnotations (annotations);
-          std::map <std::string, std::string>::iterator ann;
-          for (ann = annotations.begin (); ann != annotations.end (); ++ann)
+          task.getAnnotations (annotations);
+          for (auto& ann : annotations)
             description += "\n"
                          + std::string (indent, ' ')
-                         + Date (ann->first.substr (11)).toString (context.config.get ("dateformat"))
+                         + Date (ann.first.substr (11)).toString (context.config.get ("dateformat"))
                          + " "
-                         + ann->second;
+                         + ann.second;
 
           started.set (row, 3, description, c);
         }

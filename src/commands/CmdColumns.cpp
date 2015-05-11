@@ -57,9 +57,8 @@ int CmdColumns::execute (std::string& output)
 
   // Include all columns in the table.
   std::vector <std::string> names;
-  std::map <std::string, Column*>::const_iterator col;
-  for (col = context.columns.begin (); col != context.columns.end (); ++col)
-    names.push_back (col->first);
+  for (auto& col : context.columns)
+    names.push_back (col.first);
 
   std::sort (names.begin (), names.end ());
 
@@ -77,19 +76,18 @@ int CmdColumns::execute (std::string& output)
   formats.colorOdd (alternate);
   formats.intraColorOdd (alternate);
 
-  std::vector <std::string>::iterator name;
-  for (name = names.begin (); name != names.end (); ++name)
+  for (auto& name : names)
   {
     if (words.size () == 0 ||
-        find (*name, words[0], false) != std::string::npos)
+        find (name, words[0], false) != std::string::npos)
     {
-      const std::vector <std::string> styles   = context.columns[*name]->styles ();
-      const std::vector <std::string> examples = context.columns[*name]->examples ();
+      const std::vector <std::string> styles   = context.columns[name]->styles ();
+      const std::vector <std::string> examples = context.columns[name]->examples ();
 
       for (unsigned int i = 0; i < styles.size (); ++i)
       {
         int row = formats.addRow ();
-        formats.set (row, 0, i == 0 ? *name : "");
+        formats.set (row, 0, i == 0 ? name : "");
         formats.set (row, 1, styles[i] + (i == 0 ? "*" : ""));
         formats.set (row, 2, i < examples.size () ? examples[i] : "");
       }
@@ -120,16 +118,14 @@ int CmdCompletionColumns::execute (std::string& output)
 {
   // Include all columns.
   std::vector <std::string> names;
-  std::map <std::string, Column*>::const_iterator col;
-  for (col = context.columns.begin (); col != context.columns.end (); ++col)
-    names.push_back (col->first);
+  for (auto& col : context.columns)
+    names.push_back (col.first);
 
   std::sort (names.begin (), names.end ());
 
   // Render only the column names.
-  std::vector <std::string>::iterator name;
-  for (name = names.begin (); name != names.end (); ++name)
-    output += *name + "\n";
+  for (auto& name : names)
+    output += name + "\n";
 
   return 0;
 }

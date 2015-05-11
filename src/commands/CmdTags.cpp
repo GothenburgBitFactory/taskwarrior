@@ -54,15 +54,11 @@ int CmdTags::execute (std::string& output)
   std::stringstream out;
 
   // Get all the tasks.
-  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = context.tdb2.pending.get_tasks ();
 
   if (context.config.getBoolean ("list.all.tags"))
-  {
-    std::vector <Task> extra = context.tdb2.completed.get_tasks ();
-    std::vector <Task>::iterator task;
-    for (task = extra.begin (); task != extra.end (); ++task)
-      tasks.push_back (*task);
-  }
+    for (auto& task : context.tdb2.completed.get_tasks ())
+      tasks.push_back (task);
 
   int quantity = tasks.size ();
 
@@ -74,18 +70,16 @@ int CmdTags::execute (std::string& output)
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
   std::map <std::string, int> unique;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
     std::vector <std::string> tags;
-    task->getTags (tags);
+    task.getTags (tags);
 
-    std::vector <std::string>::iterator tag;
-    for (tag = tags.begin (); tag != tags.end (); ++tag)
-      if (unique.find (*tag) != unique.end ())
-        unique[*tag]++;
+    for (auto& tag : tags)
+      if (unique.find (tag) != unique.end ())
+        unique[tag]++;
       else
-        unique[*tag] = 1;
+        unique[tag] = 1;
   }
 
   if (unique.size ())
@@ -101,19 +95,18 @@ int CmdTags::execute (std::string& output)
 
     Color bold ("bold");
     bool special = false;
-    std::map <std::string, int>::iterator i;
-    for (i = unique.begin (); i != unique.end (); ++i)
+    for (auto& i : unique)
     {
       // Highlight the special tags.
       special = (context.color () &&
-                 (i->first == "nocolor" ||
-                  i->first == "nonag"   ||
-                  i->first == "nocal"   ||
-                  i->first == "next")) ? true : false;
+                 (i.first == "nocolor" ||
+                  i.first == "nonag"   ||
+                  i.first == "nocal"   ||
+                  i.first == "next")) ? true : false;
 
       int row = view.addRow ();
-      view.set (row, 0, i->first,  special ? bold : Color ());
-      view.set (row, 1, i->second, special ? bold : Color ());
+      view.set (row, 0, i.first,  special ? bold : Color ());
+      view.set (row, 1, i.second, special ? bold : Color ());
     }
 
     out << optionalBlankLine ()
@@ -156,15 +149,11 @@ CmdCompletionTags::CmdCompletionTags ()
 int CmdCompletionTags::execute (std::string& output)
 {
   // Get all the tasks.
-  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = context.tdb2.pending.get_tasks ();
 
   if (context.config.getBoolean ("complete.all.tags"))
-  {
-    std::vector <Task> extra = context.tdb2.completed.get_tasks ();
-    std::vector <Task>::iterator task;
-    for (task = extra.begin (); task != extra.end (); ++task)
-      tasks.push_back (*task);
-  }
+    for (auto& task : context.tdb2.completed.get_tasks ())
+      tasks.push_back (task);
 
   // Apply filter.
   Filter filter;
@@ -174,15 +163,13 @@ int CmdCompletionTags::execute (std::string& output)
   // Scan all the tasks for their tags, building a map using tag
   // names as keys.
   std::map <std::string, int> unique;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
     std::vector <std::string> tags;
-    task->getTags (tags);
+    task.getTags (tags);
 
-    std::vector <std::string>::iterator tag;
-    for (tag = tags.begin (); tag != tags.end (); ++tag)
-      unique[*tag] = 0;
+    for (auto& tag : tags)
+      unique[tag] = 0;
   }
 
   // add built-in tags to map
@@ -192,9 +179,8 @@ int CmdCompletionTags::execute (std::string& output)
   unique["next"]    = 0;
 
   std::stringstream out;
-  std::map <std::string, int>::iterator it;
-  for (it = unique.begin (); it != unique.end (); ++it)
-    out << it->first << "\n";
+  for (auto& it : unique)
+    out << it.first << "\n";
 
   output = out.str ();
   return 0;

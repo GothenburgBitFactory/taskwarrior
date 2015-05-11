@@ -57,10 +57,9 @@ int CmdSync::execute (std::string& output)
   // Loog for the 'init' keyword to indicate one-time pending.data upload.
   bool first_time_init = false;
   std::vector <std::string> words = context.cli.getWords ();
-  std::vector <std::string>::iterator word;
-  for (word = words.begin (); word != words.end (); ++word)
+  for (auto& word : words)
   {
-    if (closeEnough ("initialize", *word, 4))
+    if (closeEnough ("initialize", word, 4))
     {
       if (!context.config.getBoolean ("confirmation") ||
           confirm (STRING_CMD_SYNC_INIT))
@@ -125,24 +124,22 @@ int CmdSync::execute (std::string& output)
     // deltas is meaningless.
     context.tdb2.backlog._file.truncate ();
 
-    std::vector <Task> pending = context.tdb2.pending.get_tasks ();
-    std::vector <Task>::iterator i;
-    for (i = pending.begin (); i != pending.end (); ++i)
+    auto pending = context.tdb2.pending.get_tasks ();
+    for (auto& i : pending)
     {
-      payload += i->composeJSON () + "\n";
+      payload += i.composeJSON () + "\n";
       ++upload_count;
     }
   }
   else
   {
     std::vector <std::string> lines = context.tdb2.backlog.get_lines ();
-    std::vector <std::string>::iterator i;
-    for (i = lines.begin (); i != lines.end (); ++i)
+    for (auto& i : lines)
     {
-      if ((*i)[0] == '{')
+      if (i[0] == '{')
         ++upload_count;
 
-      payload += *i + "\n";
+      payload += i + "\n";
     }
   }
 
@@ -190,14 +187,13 @@ int CmdSync::execute (std::string& output)
         context.tdb2.all_tasks ();
 
       std::string sync_key = "";
-      std::vector <std::string>::iterator line;
-      for (line = lines.begin (); line != lines.end (); ++line)
+      for (auto& line : lines)
       {
-        if ((*line)[0] == '{')
+        if (line[0] == '{')
         {
           ++download_count;
 
-          Task from_server (*line);
+          Task from_server (line);
           std::string uuid = from_server.get ("uuid");
 
           // Is it a new task from the server, or an update to an existing one?
@@ -225,9 +221,9 @@ int CmdSync::execute (std::string& output)
             context.tdb2.add (from_server, false);
           }
         }
-        else if (*line != "")
+        else if (line != "")
         {
-          sync_key = *line;
+          sync_key = line;
           context.debug ("Sync key " + sync_key);
         }
 

@@ -67,104 +67,101 @@ int CmdModify::execute (std::string& output)
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
-    Task before (*task);
-    task->modify (Task::modReplace);
+    Task before (task);
+    task.modify (Task::modReplace);
 
-    if (taskDiff (before, *task))
+    if (taskDiff (before, task))
     {
       // Perform some logical consistency checks.
-      if (task->has ("recur")  &&
-          !task->has ("due")   &&
+      if (task.has ("recur")  &&
+          !task.has ("due")   &&
           !before.has ("due"))
         throw std::string (STRING_CMD_MODIFY_NO_DUE);
 
       if (before.has ("recur") &&
           before.has ("due")   &&
-          (!task->has ("due")  ||
-           task->get ("due") == ""))
+          (!task.has ("due")  ||
+           task.get ("due") == ""))
         throw std::string (STRING_CMD_MODIFY_REM_DUE);
 
       if (before.has ("recur")  &&
-          (!task->has ("recur") ||
-           task->get ("recur") == ""))
+          (!task.has ("recur") ||
+           task.get ("recur") == ""))
         throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
 
       // Delete the specified task.
       std::string question;
-      if (task->id != 0)
+      if (task.id != 0)
         question = format (STRING_CMD_MODIFY_CONFIRM,
-                           task->id,
-                           task->get ("description"));
+                           task.id,
+                           task.get ("description"));
       else
         question = format (STRING_CMD_MODIFY_CONFIRM,
-                           task->get ("uuid"),
-                           task->get ("description"));
+                           task.get ("uuid"),
+                           task.get ("description"));
 
-      if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
+      if (permission (task, taskDifferences (before, task) + question, filtered.size ()))
       {
-        updateRecurrenceMask (*task);
-        dependencyChainOnModify (before, *task);
+        updateRecurrenceMask (task);
+        dependencyChainOnModify (before, task);
         ++count;
-        feedback_affected (STRING_CMD_MODIFY_TASK, *task);
-        feedback_unblocked (*task);
-        context.tdb2.modify (*task);
+        feedback_affected (STRING_CMD_MODIFY_TASK, task);
+        feedback_unblocked (task);
+        context.tdb2.modify (task);
         if (context.verbose ("project"))
-          projectChanges[task->get ("project")] = onProjectChange (before, *task);
+          projectChanges[task.get ("project")] = onProjectChange (before, task);
 
         // Task potentially has siblings - modify them.
-        if (task->has ("parent"))
+        if (task.has ("parent"))
         {
           if ((context.config.get ("recurrence.confirmation") == "prompt"
                && confirm (STRING_CMD_MODIFY_RECUR)) ||
               context.config.getBoolean ("recurrence.confirmation"))
           {
-            std::vector <Task> siblings = context.tdb2.siblings (*task);
-            std::vector <Task>::iterator sibling;
-            for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
+            std::vector <Task> siblings = context.tdb2.siblings (task);
+            for (auto& sibling : siblings)
             {
-              Task alternate (*sibling);
-              sibling->modify (Task::modReplace);
-              updateRecurrenceMask (*sibling);
-              dependencyChainOnModify (alternate, *sibling);
+              Task alternate (sibling);
+              sibling.modify (Task::modReplace);
+              updateRecurrenceMask (sibling);
+              dependencyChainOnModify (alternate, sibling);
               ++count;
-              feedback_affected (STRING_CMD_MODIFY_TASK_R, *sibling);
-              feedback_unblocked (*sibling);
-              context.tdb2.modify (*sibling);
+              feedback_affected (STRING_CMD_MODIFY_TASK_R, sibling);
+              feedback_unblocked (sibling);
+              context.tdb2.modify (sibling);
               if (context.verbose ("project"))
-                projectChanges[sibling->get ("project")] = onProjectChange (alternate, *sibling);
+                projectChanges[sibling.get ("project")] = onProjectChange (alternate, sibling);
             }
 
             // Modify the parent
             Task parent;
-            context.tdb2.get (task->get ("parent"), parent);
+            context.tdb2.get (task.get ("parent"), parent);
             parent.modify (Task::modReplace);
             context.tdb2.modify (parent);
           }
         }
 
         // Task potentially has child tasks - modify them.
-        else if (task->get ("status") == "recurring")
+        else if (task.get ("status") == "recurring")
         {
-          std::vector <Task> children = context.tdb2.children (*task);
+          std::vector <Task> children = context.tdb2.children (task);
           if (children.size () &&
               (! context.config.getBoolean ("recurrence.confirmation") ||
                confirm (STRING_CMD_MODIFY_RECUR)))
           {
-            std::vector <Task>::iterator child;
-            for (child = children.begin (); child != children.end (); ++child)
+            for (auto& child : children)
             {
-              Task alternate (*child);
-              child->modify (Task::modReplace);
-              updateRecurrenceMask (*child);
-              context.tdb2.modify (*child);
-              dependencyChainOnModify (alternate, *child);
+              Task alternate (child);
+              child.modify (Task::modReplace);
+              updateRecurrenceMask (child);
+              context.tdb2.modify (child);
+              dependencyChainOnModify (alternate, child);
               if (context.verbose ("project"))
-                projectChanges[child->get ("project")] = onProjectChange (alternate, *child);
+                projectChanges[child.get ("project")] = onProjectChange (alternate, child);
               ++count;
-              feedback_affected (STRING_CMD_MODIFY_TASK_R, *child);
+              feedback_affected (STRING_CMD_MODIFY_TASK_R, child);
             }
           }
         }
@@ -180,10 +177,9 @@ int CmdModify::execute (std::string& output)
   }
 
   // Now list the project changes.
-  std::map <std::string, std::string>::iterator i;
-  for (i = projectChanges.begin (); i != projectChanges.end (); ++i)
-    if (i->first != "")
-      context.footnote (i->second);
+  for (auto& change : projectChanges)
+    if (change.first != "")
+      context.footnote (change.second);
 
   feedback_affected (count == 1 ? STRING_CMD_MODIFY_1 : STRING_CMD_MODIFY_N, count);
   return rc;

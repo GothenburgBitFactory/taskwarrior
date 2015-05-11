@@ -45,9 +45,8 @@ CmdUndo::CmdUndo ()
 int CmdUndo::execute (std::string& output)
 {
   // Detect attempts to modify the task.
-  std::vector <A>::iterator a;
-  for (a = context.cli._args.begin (); a != context.cli._args.end (); ++a)
-    if (a->hasTag ("MODIFICATION"))
+  for (auto& a : context.cli._args)
+    if (a.hasTag ("MODIFICATION"))
       throw std::string (STRING_CMD_UNDO_MODS);
 
   context.tdb2.revert ();

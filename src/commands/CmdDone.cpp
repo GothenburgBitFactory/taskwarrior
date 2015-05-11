@@ -66,44 +66,43 @@ int CmdDone::execute (std::string& output)
   std::map <std::string, std::string> projectChanges;
 
   bool nagged = false;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
-    Task before (*task);
+    Task before (task);
 
-    if (task->getStatus () == Task::pending ||
-        task->getStatus () == Task::waiting)
+    if (task.getStatus () == Task::pending ||
+        task.getStatus () == Task::waiting)
     {
       // Complete the specified task.
       std::string question = format (STRING_CMD_DONE_CONFIRM,
-                                     task->id,
-                                     task->get ("description"));
+                                     task.id,
+                                     task.get ("description"));
 
-      task->modify (Task::modAnnotate);
-      task->setStatus (Task::completed);
-      if (! task->has ("end"))
-        task->setAsNow ("end");
+      task.modify (Task::modAnnotate);
+      task.setStatus (Task::completed);
+      if (! task.has ("end"))
+        task.setAsNow ("end");
 
       // Stop the task, if started.
-      if (task->has ("start"))
+      if (task.has ("start"))
       {
-        task->remove ("start");
+        task.remove ("start");
         if (context.config.getBoolean ("journal.time"))
-          task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
+          task.addAnnotation (context.config.get ("journal.time.stop.annotation"));
       }
 
-      if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
+      if (permission (task, taskDifferences (before, task) + question, filtered.size ()))
       {
-        updateRecurrenceMask (*task);
-        context.tdb2.modify (*task);
+        updateRecurrenceMask (task);
+        context.tdb2.modify (task);
         ++count;
-        feedback_affected (STRING_CMD_DONE_TASK, *task);
-        feedback_unblocked (*task);
+        feedback_affected (STRING_CMD_DONE_TASK, task);
+        feedback_unblocked (task);
         if (!nagged)
-          nagged = nag (*task);
-        dependencyChainOnComplete (*task);
+          nagged = nag (task);
+        dependencyChainOnComplete (task);
         if (context.verbose ("project"))
-          projectChanges[task->get ("project")] = onProjectChange (*task);
+          projectChanges[task.get ("project")] = onProjectChange (task);
       }
       else
       {
@@ -116,18 +115,17 @@ int CmdDone::execute (std::string& output)
     else
     {
       std::cout << format (STRING_CMD_DONE_NOTPEND,
-                           task->id,
-                           task->get ("description"))
+                           task.id,
+                           task.get ("description"))
                 << "\n";
       rc = 1;
     }
   }
 
   // Now list the project changes.
-  std::map <std::string, std::string>::iterator i;
-  for (i = projectChanges.begin (); i != projectChanges.end (); ++i)
-    if (i->first != "")
-      context.footnote (i->second);
+  for (auto& change : projectChanges)
+    if (change.first != "")
+      context.footnote (change.second);
 
   feedback_affected (count == 1 ? STRING_CMD_DONE_1 : STRING_CMD_DONE_N, count);
   return rc;

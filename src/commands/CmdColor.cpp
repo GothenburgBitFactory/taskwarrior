@@ -55,9 +55,8 @@ int CmdColor::execute (std::string& output)
   // Get the non-attribute, non-fancy command line arguments.
   bool legend = false;
   std::vector <std::string> words = context.cli.getWords ();
-  std::vector <std::string>::iterator word;
-  for (word = words.begin (); word != words.end (); ++word)
-    if (closeEnough ("legend", *word))
+  for (auto& word : words)
+    if (closeEnough ("legend", word))
       legend = true;
 
   std::stringstream out;
@@ -74,19 +73,18 @@ int CmdColor::execute (std::string& output)
       view.add (Column::factory ("string", STRING_CMD_COLOR_COLOR));
       view.add (Column::factory ("string", STRING_CMD_COLOR_DEFINITION));
 
-      Config::const_iterator item;
-      for (item = context.config.begin (); item != context.config.end (); ++item)
+      for (auto& item : context.config)
       {
         // Skip items with 'color' in their name, that are not referring to
         // actual colors.
-        if (item->first != "_forcecolor" &&
-            item->first != "color"       &&
-            item->first.find ("color") == 0)
+        if (item.first != "_forcecolor" &&
+            item.first != "color"       &&
+            item.first.find ("color") == 0)
         {
-          Color color (context.config.get (item->first));
+          Color color (context.config.get (item.first));
           int row = view.addRow ();
-          view.set (row, 0, item->first, color);
-          view.set (row, 1, item->second, color);
+          view.set (row, 0, item.first, color);
+          view.set (row, 1, item.second, color);
         }
       }
 
@@ -106,7 +104,7 @@ int CmdColor::execute (std::string& output)
       Color six    ("red on color173");
 
       std::string swatch;
-      for (word = words.begin (); word != words.end (); ++word)
+      for (auto word = words.begin (); word != words.end (); ++word)
       {
         if (word != words.begin ())
           swatch += " ";

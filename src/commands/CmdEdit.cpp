@@ -66,10 +66,9 @@ int CmdEdit::execute (std::string& output)
   filter.subset (filtered);
 
   // Find number of matching tasks.
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
-    if (editFile (*task))
-      context.tdb2.modify (*task);
+  for (auto& task : filtered)
+    if (editFile (task))
+      context.tdb2.modify (task);
 
   return 0;
 }
@@ -236,12 +235,11 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
   std::map <std::string, std::string> annotations;
   task.getAnnotations (annotations);
-  std::map <std::string, std::string>::iterator anno;
-  for (anno = annotations.begin (); anno != annotations.end (); ++anno)
+  for (auto& anno : annotations)
   {
-    Date dt (strtol (anno->first.substr (11).c_str (), NULL, 10));
+    Date dt (strtol (anno.first.substr (11).c_str (), NULL, 10));
     before << "  Annotation:        " << dt.toString (dateformat)
-           << " -- "                  << anno->second << "\n";
+           << " -- "                  << anno.second << "\n";
   }
 
   Date now;
@@ -272,30 +270,28 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
   // UDAs
   std::vector <std::string> udas;
-  std::map <std::string, Column*>::iterator col;
-  for (col = context.columns.begin (); col != context.columns.end (); ++col)
-    if (context.config.get ("uda." + col->first + ".type") != "")
-      udas.push_back (col->first);
+  for (auto& col : context.columns)
+    if (context.config.get ("uda." + col.first + ".type") != "")
+      udas.push_back (col.first);
 
   if (udas.size ())
   {
     before << "# " << STRING_EDIT_UDA_SEP << "\n";
     std::sort (udas.begin (), udas.end ());
-    std::vector <std::string>::iterator uda;
-    for (uda = udas.begin (); uda != udas.end (); ++uda)
+    for (auto& uda : udas)
     {
-      int pad = 13 - uda->length ();
+      int pad = 13 - uda.length ();
       std::string padding = "";
       if (pad > 0)
         padding = std::string (pad, ' ');
 
-      std::string type = context.config.get ("uda." + *uda + ".type");
+      std::string type = context.config.get ("uda." + uda + ".type");
       if (type == "string" || type == "numeric")    
-        before << "  UDA " << *uda << ": " << padding << task.get (*uda) << "\n";
+        before << "  UDA " << uda << ": " << padding << task.get (uda) << "\n";
       else if (type == "date")
-        before << "  UDA " << *uda << ": " << padding << formatDate (task, *uda, dateformat) << "\n";
+        before << "  UDA " << uda << ": " << padding << formatDate (task, uda, dateformat) << "\n";
       else if (type == "duration")
-        before << "  UDA " << *uda << ": " << padding << formatDuration (task, *uda) << "\n";
+        before << "  UDA " << uda << ": " << padding << formatDuration (task, uda) << "\n";
     }
   }
 
@@ -307,15 +303,14 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   {
     before << "# " << STRING_EDIT_UDA_ORPHAN_SEP << "\n";
     std::sort (orphans.begin (), orphans.end ());
-    std::vector <std::string>::iterator orphan;
-    for (orphan = orphans.begin (); orphan != orphans.end (); ++orphan)
+    for (auto& orphan : orphans)
     {
-      int pad = 6 - orphan->length ();
+      int pad = 6 - orphan.length ();
       std::string padding = "";
       if (pad > 0)
         padding = std::string (pad, ' ');
 
-      before << "  UDA Orphan " << *orphan << ": " << padding << task.get (*orphan) << "\n";
+      before << "  UDA Orphan " << orphan << ": " << padding << task.get (orphan) << "\n";
     }
   }
 
@@ -657,35 +652,33 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   split (dependencies, value, ",");
 
   task.remove ("depends");
-  std::vector <std::string>::iterator dep;
-  for (dep = dependencies.begin (); dep != dependencies.end (); ++dep)
+  for (auto& dep : dependencies)
   {
-    if (dep->length () >= 7)
-      task.addDependency (*dep);
+    if (dep.length () >= 7)
+      task.addDependency (dep);
     else
-      task.addDependency ((int) strtol (dep->c_str (), NULL, 10));
+      task.addDependency ((int) strtol (dep.c_str (), NULL, 10));
   }
 
   // UDAs
-  std::map <std::string, Column*>::iterator col;
-  for (col = context.columns.begin (); col != context.columns.end (); ++col)
+  for (auto& col : context.columns)
   {
-    std::string type = context.config.get ("uda." + col->first + ".type");
+    std::string type = context.config.get ("uda." + col.first + ".type");
     if (type != "")
     {
-      std::string value = findValue (after, "\n  UDA " + col->first + ":");
-      if ((task.get (col->first) != value) && (type != "date" ||
-           (task.get (col->first) != Date (value, dateformat).toEpochString ())) &&
+      std::string value = findValue (after, "\n  UDA " + col.first + ":");
+      if ((task.get (col.first) != value) && (type != "date" ||
+           (task.get (col.first) != Date (value, dateformat).toEpochString ())) &&
            (type != "duration" ||
-           (task.get (col->first) != (std::string) Duration (value) )))
+           (task.get (col.first) != (std::string) Duration (value))))
       {
         if (value != "")
         {
-          context.footnote (format (STRING_EDIT_UDA_MOD, col->first));
+          context.footnote (format (STRING_EDIT_UDA_MOD, col.first));
 
           if (type == "string")
           {
-            task.set (col->first, value);
+            task.set (col.first, value);
           }
           else if (type == "numeric")
           {
@@ -693,25 +686,25 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
             double d;
             if (n.getNumber (d) &&
                 n.depleted ())
-              task.set (col->first, value);
+              task.set (col.first, value);
             else
               throw format (STRING_UDA_NUMERIC, value);
           }
           else if (type == "date")
           {
             Date d (value, dateformat);
-            task.set (col->first, d.toEpochString ());
+            task.set (col.first, d.toEpochString ());
           }
           else if (type == "duration")
           {
             Duration d (value);
-            task.set (col->first, (time_t) d);
+            task.set (col.first, (time_t) d);
           }
         }
         else
         {
-          context.footnote (format (STRING_EDIT_UDA_DEL, col->first));
-          task.remove (col->first);
+          context.footnote (format (STRING_EDIT_UDA_DEL, col.first));
+          task.remove (col.first);
         }
       }
     }
@@ -719,14 +712,13 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 
   // UDA orphans
   std::vector <std::string> orphanValues = findValues (after, "\n  UDA Orphan ");
-  std::vector <std::string>::iterator orphan;
-  for (orphan = orphanValues.begin (); orphan != orphanValues.end (); ++orphan)
+  for (auto& orphan : orphanValues)
   {
-    std::string::size_type colon = orphan->find (':');
+    std::string::size_type colon = orphan.find (':');
     if (colon != std::string::npos)
     {
-      std::string name  = trim (orphan->substr (0, colon),  "\t ");
-      std::string value = trim (orphan->substr (colon + 1), "\t ");
+      std::string name  = trim (orphan.substr (0, colon),  "\t ");
+      std::string value = trim (orphan.substr (colon + 1), "\t ");
 
       if (value != "")
         task.set (name, value);

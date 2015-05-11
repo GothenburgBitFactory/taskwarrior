@@ -58,35 +58,34 @@ int CmdImport::execute (std::string& output)
   if (! words.size ())
     throw std::string (STRING_CMD_IMPORT_NOFILE);
 
-  std::vector <std::string>::iterator word;
-  for (word = words.begin (); word != words.end (); ++word)
+  for (auto& word : words)
   {
-    File incoming (*word);
+    File incoming (word);
     if (! incoming.exists ())
-      throw format (STRING_CMD_IMPORT_MISSING, *word);
+      throw format (STRING_CMD_IMPORT_MISSING, word);
 
-    std::cout << format (STRING_CMD_IMPORT_FILE, *word) << "\n";
+    std::cout << format (STRING_CMD_IMPORT_FILE, word) << "\n";
 
     // Load the file.
     std::vector <std::string> lines;
     incoming.read (lines);
 
-    std::vector <std::string>::iterator line;
-    for (line = lines.begin (); line != lines.end (); ++line)
+    for (auto& line : lines)
     {
       std::string object = trimLeft (
                              trimRight (
-                               trim (*line),
+                               trim (line),
                                "]"),
                              "[");
+
       // Skip blanks.  May be caused by the trim calls above.
       if (! object.length ())
         continue;
 
       // Parse the whole thing.
       Task task (object);
-
       context.tdb2.add (task);
+
       ++count;
       std::cout << "  "
                 << task.get ("uuid")

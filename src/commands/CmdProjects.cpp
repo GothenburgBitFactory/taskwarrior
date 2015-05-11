@@ -58,15 +58,11 @@ int CmdProjects::execute (std::string& output)
 
   // Get all the tasks.
   handleRecurrence ();
-  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = context.tdb2.pending.get_tasks ();
 
   if (context.config.getBoolean ("list.all.projects"))
-  {
-    std::vector <Task> extra = context.tdb2.completed.get_tasks ();
-    std::vector <Task>::iterator task;
-    for (task = extra.begin (); task != extra.end (); ++task)
-      tasks.push_back (*task);
-  }
+    for (auto& task : context.tdb2.completed.get_tasks ())
+      tasks.push_back (task);
 
   // Apply the filter.
   Filter filter;
@@ -82,10 +78,9 @@ int CmdProjects::execute (std::string& output)
   std::map <std::string, int> unique;
   bool no_project = false;
   std::string project;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
-    if (task->getStatus () == Task::deleted)
+    if (task.getStatus () == Task::deleted)
     {
       --quantity;
       continue;
@@ -93,14 +88,13 @@ int CmdProjects::execute (std::string& output)
 
     // Increase the count for the project the task belongs to and all
     // its super-projects
-    project = task->get ("project");
+    project = task.get ("project");
 
     std::vector <std::string> projects = extractParents (project);
     projects.push_back (project);
 
-    std::vector <std::string>::const_iterator parent;
-    for (parent = projects.begin (); parent != projects.end (); ++parent)
-      unique[*parent] += 1;
+    for (auto& parent : projects)
+      unique[parent] += 1;
 
     if (project == "")
       no_project = true;
@@ -118,27 +112,24 @@ int CmdProjects::execute (std::string& output)
     view.colorHeader (label);
 
     std::vector <std::string> processed;
-    std::map <std::string, int>::iterator project;
-    for (project = unique.begin (); project != unique.end (); ++project)
+    for (auto& project : unique)
     {
-      const std::vector <std::string> parents = extractParents (project->first);
-      std::vector <std::string>::const_iterator parent;
-      for (parent = parents.begin (); parent != parents.end (); parent++)
+      const std::vector <std::string> parents = extractParents (project.first);
+      for (auto& parent : parents)
       {
-        if (std::find (processed.begin (), processed.end (), *parent)
-           == processed.end ())
+        if (std::find (processed.begin (), processed.end (), parent) == processed.end ())
         {
           int row = view.addRow ();
-          view.set (row, 0, indentProject (*parent));
-          processed.push_back (*parent);
+          view.set (row, 0, indentProject (parent));
+          processed.push_back (parent);
         }
       }
       int row = view.addRow ();
-      view.set (row, 0, (project->first == ""
+      view.set (row, 0, (project.first == ""
                           ? STRING_CMD_PROJECTS_NONE
-                          : indentProject (project->first, "  ", '.')));
-      view.set (row, 1, project->second);
-      processed.push_back (project->first);
+                          : indentProject (project.first, "  ", '.')));
+      view.set (row, 1, project.second);
+      processed.push_back (project.first);
     }
 
     int number_projects = unique.size ();
@@ -182,15 +173,11 @@ int CmdCompletionProjects::execute (std::string& output)
 {
   // Get all the tasks.
   handleRecurrence ();
-  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = context.tdb2.pending.get_tasks ();
 
   if (context.config.getBoolean ("list.all.projects"))
-  {
-    std::vector <Task> extra = context.tdb2.completed.get_tasks ();
-    std::vector <Task>::iterator task;
-    for (task = extra.begin (); task != extra.end (); ++task)
-      tasks.push_back (*task);
-  }
+    for (auto& task : context.tdb2.completed.get_tasks ())
+      tasks.push_back (task);
 
   // Apply the filter.
   Filter filter;
@@ -200,14 +187,12 @@ int CmdCompletionProjects::execute (std::string& output)
   // Scan all the tasks for their project name, building a map using project
   // names as keys.
   std::map <std::string, int> unique;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
-    unique[task->get ("project")] = 0;
+  for (auto& task : filtered)
+    unique[task.get ("project")] = 0;
 
-  std::map <std::string, int>::iterator project;
-  for (project = unique.begin (); project != unique.end (); ++project)
-    if (project->first.length ())
-      output += project->first + "\n";
+  for (auto& project : unique)
+    if (project.first.length ())
+      output += project.first + "\n";
 
   return 0;
 }

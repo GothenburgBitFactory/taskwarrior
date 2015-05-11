@@ -67,16 +67,15 @@ int CmdStats::execute (std::string& output)
   // Count the undo transactions.
   std::vector <std::string> undoTxns = context.tdb2.undo.get_lines ();
   int undoCount = 0;
-  std::vector <std::string>::iterator tx;
-  for (tx = undoTxns.begin (); tx != undoTxns.end (); ++tx)
-    if (*tx == "---")
+  for (auto& tx : undoTxns)
+    if (tx == "---")
       ++undoCount;
 
   // Count the backlog transactions.
   std::vector <std::string> backlogTxns = context.tdb2.backlog.get_lines ();
   int backlogCount = 0;
-  for (tx = backlogTxns.begin (); tx != backlogTxns.end (); ++tx)
-    if ((*tx)[0] == '{')
+  for (auto& tx : backlogTxns)
+    if (tx[0] == '{')
       ++backlogCount;
 
   // Get all the tasks.
@@ -103,12 +102,11 @@ int CmdStats::execute (std::string& output)
   std::map <std::string, int> allTags;
   std::map <std::string, int> allProjects;
 
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
     ++totalT;
 
-    Task::status status = task->getStatus ();
+    Task::status status = task.getStatus ();
     switch (status)
     {
     case Task::deleted:   ++deletedT;   break;
@@ -118,37 +116,37 @@ int CmdStats::execute (std::string& output)
     case Task::waiting:   ++waitingT;   break;
     }
 
-    if (task->is_blocked)  ++blockedT;
-    if (task->is_blocking) ++blockingT;
+    if (task.is_blocked)  ++blockedT;
+    if (task.is_blocking) ++blockingT;
 
-    time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
+    time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
     if (status == Task::completed)
     {
-      time_t end = strtol (task->get ("end").c_str (), NULL, 10);
+      time_t end = strtol (task.get ("end").c_str (), NULL, 10);
       daysPending += (end - entry) / 86400.0;
     }
 
     if (status == Task::pending)
       daysPending += (now.toEpoch () - entry) / 86400.0;
 
-    descLength += task->get ("description").length ();
+    descLength += task.get ("description").length ();
 
     std::map <std::string, std::string> annotations;
-    task->getAnnotations (annotations);
+    task.getAnnotations (annotations);
     annotationsT += annotations.size ();
 
     std::vector <std::string> tags;
-    task->getTags (tags);
-    if (tags.size ()) ++taggedT;
+    task.getTags (tags);
+    if (tags.size ())
+      ++taggedT;
 
-    std::vector <std::string>::iterator t;
-    for (t = tags.begin (); t != tags.end (); ++t)
-      allTags[*t] = 0;
+    for (auto& tag : tags)
+      allTags[tag] = 0;
 
-    std::string project = task->get ("project");
+    std::string project = task.get ("project");
     if (project != "")
       allProjects[project] = 0;
   }

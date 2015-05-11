@@ -66,66 +66,64 @@ int CmdDelete::execute (std::string& output)
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
-    Task before (*task);
+    Task before (task);
 
-    if (task->getStatus () != Task::deleted)
+    if (task.getStatus () != Task::deleted)
     {
       // Delete the specified task.
       std::string question;
-      if (task->id)
+      if (task.id)
         question = format (STRING_CMD_DELETE_CONFIRM,
-                           task->id,
-                           task->get ("description"));
+                           task.id,
+                           task.get ("description"));
       else
         question = format (STRING_CMD_DELETE_CONFIRM,
-                           task->get ("uuid"),
-                           task->get ("description"));
+                           task.get ("uuid"),
+                           task.get ("description"));
 
-      task->modify (Task::modAnnotate);
-      task->setStatus (Task::deleted);
-      if (! task->has ("end"))
-        task->setAsNow ("end");
+      task.modify (Task::modAnnotate);
+      task.setStatus (Task::deleted);
+      if (! task.has ("end"))
+        task.setAsNow ("end");
 
-      if (permission (*task, question, filtered.size ()))
+      if (permission (task, question, filtered.size ()))
       {
-        updateRecurrenceMask (*task);
+        updateRecurrenceMask (task);
         ++count;
-        context.tdb2.modify (*task);
-        feedback_affected (STRING_CMD_DELETE_TASK, *task);
-        feedback_unblocked (*task);
-        dependencyChainOnComplete (*task);
+        context.tdb2.modify (task);
+        feedback_affected (STRING_CMD_DELETE_TASK, task);
+        feedback_unblocked (task);
+        dependencyChainOnComplete (task);
         if (context.verbose ("project"))
-          projectChanges[task->get ("project")] = onProjectChange (*task);
+          projectChanges[task.get ("project")] = onProjectChange (task);
 
         // Delete siblings.
-        if (task->has ("parent"))
+        if (task.has ("parent"))
         {
           if ((context.config.get ("recurrence.confirmation") == "prompt"
                && confirm (STRING_CMD_DELETE_CONFIRM_R)) ||
               context.config.getBoolean ("recurrence.confirmation"))
           {
-            std::vector <Task> siblings = context.tdb2.siblings (*task);
-            std::vector <Task>::iterator sibling;
-            for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
+            std::vector <Task> siblings = context.tdb2.siblings (task);
+            for (auto& sibling : siblings)
             {
-              sibling->modify (Task::modAnnotate);
-              sibling->setStatus (Task::deleted);
-              if (! sibling->has ("end"))
-                sibling->setAsNow ("end");
+              sibling.modify (Task::modAnnotate);
+              sibling.setStatus (Task::deleted);
+              if (! sibling.has ("end"))
+                sibling.setAsNow ("end");
 
-              updateRecurrenceMask (*sibling);
-              context.tdb2.modify (*sibling);
-              feedback_affected (STRING_CMD_DELETE_TASK_R, *sibling);
-              feedback_unblocked (*sibling);
+              updateRecurrenceMask (sibling);
+              context.tdb2.modify (sibling);
+              feedback_affected (STRING_CMD_DELETE_TASK_R, sibling);
+              feedback_unblocked (sibling);
               ++count;
             }
 
             // Delete the parent
             Task parent;
-            context.tdb2.get (task->get ("parent"), parent);
+            context.tdb2.get (task.get ("parent"), parent);
             parent.setStatus (Task::deleted);
             if (! parent.has ("end"))
               parent.setAsNow ("end");
@@ -137,23 +135,22 @@ int CmdDelete::execute (std::string& output)
         // Task potentially has child tasks - optionally delete them.
         else
         {
-          std::vector <Task> children = context.tdb2.children (*task);
+          std::vector <Task> children = context.tdb2.children (task);
           if (children.size () &&
               (context.config.getBoolean ("recurrence.confirmation") ||
                confirm (STRING_CMD_DELETE_CONFIRM_R)))
           {
-            std::vector <Task>::iterator child;
-            for (child = children.begin (); child != children.end (); ++child)
+            for (auto& child : children)
             {
-              child->modify (Task::modAnnotate);
-              child->setStatus (Task::deleted);
-              if (! child->has ("end"))
-                child->setAsNow ("end");
+              child.modify (Task::modAnnotate);
+              child.setStatus (Task::deleted);
+              if (! child.has ("end"))
+                child.setAsNow ("end");
 
-              updateRecurrenceMask (*child);
-              context.tdb2.modify (*child);
-              feedback_affected (STRING_CMD_DELETE_TASK_R, *child);
-              feedback_unblocked (*child);
+              updateRecurrenceMask (child);
+              context.tdb2.modify (child);
+              feedback_affected (STRING_CMD_DELETE_TASK_R, child);
+              feedback_unblocked (child);
               ++count;
             }
           }
@@ -170,18 +167,17 @@ int CmdDelete::execute (std::string& output)
     else
     {
       std::cout << format (STRING_CMD_DELETE_NOT_DEL,
-                           task->id,
-                           task->get ("description"))
+                           task.id,
+                           task.get ("description"))
           << "\n";
       rc = 1;
     }
   }
 
   // Now list the project changes.
-  std::map <std::string, std::string>::iterator i;
-  for (i = projectChanges.begin (); i != projectChanges.end (); ++i)
-    if (i->first != "")
-      context.footnote (i->second);
+  for (auto& change : projectChanges)
+    if (change.first != "")
+      context.footnote (change.second);
 
   feedback_affected (count == 1 ? STRING_CMD_DELETE_1 : STRING_CMD_DELETE_N, count);
   return rc;

@@ -70,8 +70,7 @@ int CmdExport::execute (std::string& output)
     output += "[\n";
 
   int counter = 0;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto task = filtered.begin (); task != filtered.end (); ++task)
   {
     if (task != filtered.begin ())
       {

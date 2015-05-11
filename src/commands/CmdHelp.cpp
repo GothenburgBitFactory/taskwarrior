@@ -62,33 +62,31 @@ int CmdHelp::execute (std::string& output)
 
   // Obsolete method of getting a list of all commands.
   std::vector <std::string> all;
-  std::map <std::string, Command*>::iterator i;
-  for (i = context.commands.begin (); i != context.commands.end (); ++i)
-    all.push_back (i->first);
+  for (auto& cmd : context.commands)
+    all.push_back (cmd.first);
 
   // Sort alphabetically by usage.
   std::sort (all.begin (), all.end ());
 
   // Add the regular commands.
-  std::vector <std::string>::iterator name;
-  for (name = all.begin (); name != all.end (); ++name)
+  for (auto& name : all)
   {
-    if ((*name)[0] != '_')
+    if (name[0] != '_')
     {
       row = view.addRow ();
-      view.set (row, 1, context.commands[*name]->usage ());
-      view.set (row, 2, context.commands[*name]->description ());
+      view.set (row, 1, context.commands[name]->usage ());
+      view.set (row, 2, context.commands[name]->description ());
     }
   }
 
   // Add the helper commands.
-  for (name = all.begin (); name != all.end (); ++name)
+  for (auto& name : all)
   {
-    if ((*name)[0] == '_')
+    if (name[0] == '_')
     {
       row = view.addRow ();
-      view.set (row, 1, context.commands[*name]->usage ());
-      view.set (row, 2, context.commands[*name]->description ());
+      view.set (row, 1, context.commands[name]->usage ());
+      view.set (row, 2, context.commands[name]->description ());
     }
   }
 
@@ -96,14 +94,13 @@ int CmdHelp::execute (std::string& output)
   row = view.addRow ();
   view.set (row, 1, " ");
 
-  std::map <std::string, std::string>::iterator alias;
-  for (alias = context.config.begin (); alias != context.config.end (); ++alias)
+  for (auto& alias : context.config)
   {
-    if (alias->first.substr (0, 6) == "alias.")
+    if (alias.first.substr (0, 6) == "alias.")
     {
       row = view.addRow ();
-      view.set (row, 1, alias->first.substr (6));
-      view.set (row, 2, format (STRING_CMD_HELP_ALIASED, alias->second));
+      view.set (row, 1, alias.first.substr (6));
+      view.set (row, 2, format (STRING_CMD_HELP_ALIASED, alias.second));
     }
   }
 

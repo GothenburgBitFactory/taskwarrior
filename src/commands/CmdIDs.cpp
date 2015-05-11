@@ -59,10 +59,9 @@ int CmdIDs::execute (std::string& output)
 
   // Find number of matching tasks.
   std::vector <int> ids;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
-    if (task->id)
-      ids.push_back (task->id);
+  for (auto& task : filtered)
+    if (task.id)
+      ids.push_back (task.id);
 
   std::sort (ids.begin (), ids.end ());
   output = compressIds (ids) + "\n";
@@ -146,11 +145,10 @@ int CmdCompletionIds::execute (std::string& output)
   filter.subset (filtered);
 
   std::vector <int> ids;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
-    if (task->getStatus () != Task::deleted &&
-        task->getStatus () != Task::completed)
-      ids.push_back (task->id);
+  for (auto& task : filtered)
+    if (task.getStatus () != Task::deleted &&
+        task.getStatus () != Task::completed)
+      ids.push_back (task.id);
 
   std::sort (ids.begin (), ids.end ());
   join (output, "\n", ids);
@@ -180,13 +178,12 @@ int CmdZshCompletionIds::execute (std::string& output)
   filter.subset (filtered);
 
   std::stringstream out;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
-    if (task->getStatus () != Task::deleted &&
-        task->getStatus () != Task::completed)
-      out << task->id
+  for (auto& task : filtered)
+    if (task.getStatus () != Task::deleted &&
+        task.getStatus () != Task::completed)
+      out << task.id
           << ":"
-          << str_replace(task->get ("description"), ":", zshColonReplacement)
+          << str_replace(task.get ("description"), ":", zshColonReplacement)
           << "\n";
 
   output = out.str ();
@@ -215,9 +212,8 @@ int CmdUUIDs::execute (std::string& output)
   filter.subset (filtered);
 
   std::vector <std::string> uuids;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
-    uuids.push_back (task->get ("uuid"));
+  for (auto& task : filtered)
+    uuids.push_back (task.get ("uuid"));
 
   std::sort (uuids.begin (), uuids.end ());
   join (output, ",", uuids);
@@ -247,9 +243,8 @@ int CmdCompletionUuids::execute (std::string& output)
   filter.subset (filtered);
 
   std::vector <std::string> uuids;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
-    uuids.push_back (task->get ("uuid"));
+  for (auto& task : filtered)
+    uuids.push_back (task.get ("uuid"));
 
   std::sort (uuids.begin (), uuids.end ());
   join (output, "\n", uuids);
@@ -279,11 +274,10 @@ int CmdZshCompletionUuids::execute (std::string& output)
   filter.subset (filtered);
 
   std::stringstream out;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
-    out << task->get ("uuid")
+  for (auto& task : filtered)
+    out << task.get ("uuid")
         << ":"
-        << str_replace (task->get ("description"), ":", zshColonReplacement)
+        << str_replace (task.get ("description"), ":", zshColonReplacement)
         << "\n";
 
   output = out.str ();

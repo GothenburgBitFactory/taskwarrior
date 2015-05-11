@@ -55,12 +55,11 @@ int CmdGet::execute (std::string& output)
 
   bool found = false;
   std::vector <std::string> results;
-  std::vector <std::string>::iterator word;
-  for (word = words.begin (); word != words.end (); ++word)
+  for (auto& word : words)
   {
     Task t;
     Variant result;
-    if (context.dom.get (*word, t, result))
+    if (context.dom.get (word, t, result))
     {
       results.push_back ((std::string) result);
       found = true;

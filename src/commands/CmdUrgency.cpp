@@ -62,20 +62,19 @@ int CmdUrgency::execute (std::string& output)
 
   // Display urgency for the selected tasks.
   std::stringstream out;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
-    if (task->id)
+    if (task.id)
     {
       out << format (STRING_CMD_URGENCY_RESULT,
-                     task->id, task->urgency ())
+                     task.id, task.urgency ())
           << "\n";
     }
     else
     {
       out << format (STRING_CMD_URGENCY_RESULT,
-                     task->get ("uuid"),
-                     task->urgency ())
+                     task.get ("uuid"),
+                     task.urgency ())
           << "\n";
     }
   }

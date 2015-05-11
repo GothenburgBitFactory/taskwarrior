@@ -109,10 +109,9 @@ std::vector <std::string> CmdContext::getContexts ()
 {
   std::vector <std::string> contexts;
 
-  Config::const_iterator name;
-  for (name = context.config.begin (); name != context.config.end (); ++name)
-    if (name->first.substr (0, 8) == "context.")
-      contexts.push_back (name->first.substr (8));
+  for (auto& name : context.config)
+    if (name.first.substr (0, 8) == "context.")
+      contexts.push_back (name.first.substr (8));
 
   return contexts;
 }
@@ -140,7 +139,7 @@ int CmdContext::defineContext (std::vector <std::string>& words, std::stringstre
     // Check if the value is a proper filter by filtering current pending.data
     Filter filter;
     std::vector <Task> filtered;
-    const std::vector <Task>& pending = context.tdb2.pending.get_tasks ();
+    auto pending = context.tdb2.pending.get_tasks ();
 
     try
     {
@@ -246,13 +245,12 @@ int CmdContext::listContexts (std::vector <std::string>& words, std::stringstrea
     Color label (context.config.get ("color.label"));
     view.colorHeader (label);
 
-    std::vector <std::string>::iterator userContext;
-    for (userContext = contexts.begin (); userContext != contexts.end (); ++userContext)
+    for (auto& userContext : contexts)
     {
-      std::string definition = context.config.get ("context." + *userContext);
+      std::string definition = context.config.get ("context." + userContext);
 
       int row = view.addRow ();
-      view.set (row, 0, *userContext);
+      view.set (row, 0, userContext);
       view.set (row, 1, definition);
     }
 
@@ -369,9 +367,8 @@ int CmdCompletionContext::execute (std::string& output)
 {
   std::vector <std::string> userContexts = CmdContext::getContexts ();
 
-  std::vector <std::string>::iterator userContext;
-  for (userContext = userContexts.begin (); userContext != userContexts.end (); ++userContext)
-    output += *userContext + "\n";
+  for (auto& userContext : userContexts)
+    output += userContext + "\n";
 
   return 0;
 }

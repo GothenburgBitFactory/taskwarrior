@@ -64,33 +64,32 @@ int CmdStop::execute (std::string& output)
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
-    if (task->has ("start"))
+    if (task.has ("start"))
     {
-      Task before (*task);
+      Task before (task);
 
       // Stop the specified task.
       std::string question = format (STRING_CMD_STOP_CONFIRM,
-                                     task->id,
-                                     task->get ("description"));
+                                     task.id,
+                                     task.get ("description"));
 
-      task->modify (Task::modAnnotate);
-      task->remove ("start");
+      task.modify (Task::modAnnotate);
+      task.remove ("start");
 
       if (context.config.getBoolean ("journal.time"))
-        task->addAnnotation (context.config.get ("journal.time.stop.annotation"));
+        task.addAnnotation (context.config.get ("journal.time.stop.annotation"));
 
-      if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
+      if (permission (task, taskDifferences (before, task) + question, filtered.size ()))
       {
-        updateRecurrenceMask (*task);
-        context.tdb2.modify (*task);
+        updateRecurrenceMask (task);
+        context.tdb2.modify (task);
         ++count;
-        feedback_affected (STRING_CMD_STOP_TASK, *task);
-        dependencyChainOnStart (*task);
+        feedback_affected (STRING_CMD_STOP_TASK, task);
+        dependencyChainOnStart (task);
         if (context.verbose ("project"))
-          projectChanges[task->get ("project")] = onProjectChange (*task, false);
+          projectChanges[task.get ("project")] = onProjectChange (task, false);
       }
       else
       {
@@ -103,18 +102,17 @@ int CmdStop::execute (std::string& output)
     else
     {
       std::cout << format (STRING_CMD_STOP_ALREADY,
-                           task->id,
-                           task->get ("description"))
+                           task.id,
+                           task.get ("description"))
                 << "\n";
       rc = 1;
     }
   }
 
   // Now list the project changes.
-  std::map <std::string, std::string>::iterator i;
-  for (i = projectChanges.begin (); i != projectChanges.end (); ++i)
-    if (i->first != "")
-      context.footnote (i->second);
+  for (auto& change : projectChanges)
+    if (change.first != "")
+      context.footnote (change.second);
 
   feedback_affected (count == 1 ? STRING_CMD_STOP_1 : STRING_CMD_STOP_N, count);
   return rc;

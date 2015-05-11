@@ -65,11 +65,10 @@ int CmdDuplicate::execute (std::string& output)
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
     // Duplicate the specified task.
-    Task dup (*task);
+    Task dup (task);
     dup.id = 0;                    // Reset, and TDB2::add will set.
     dup.set ("uuid", uuid ());     // Needs a new UUID.
     dup.remove ("start");          // Does not inherit start date.
@@ -83,7 +82,7 @@ int CmdDuplicate::execute (std::string& output)
       dup.remove ("recur");
       dup.remove ("until");
       dup.remove ("imask");
-      std::cout << format (STRING_CMD_DUPLICATE_NON_REC, task->id)
+      std::cout << format (STRING_CMD_DUPLICATE_NON_REC, task.id)
           << "\n";
     }
 
@@ -91,7 +90,7 @@ int CmdDuplicate::execute (std::string& output)
     else if (dup.getStatus () == Task::recurring)
     {
       dup.remove ("mask");
-      std::cout << format (STRING_CMD_DUPLICATE_REC, task->id)
+      std::cout << format (STRING_CMD_DUPLICATE_REC, task.id)
           << "\n";
     }
 
@@ -102,13 +101,13 @@ int CmdDuplicate::execute (std::string& output)
 
     if (permission (dup,
                     format (STRING_CMD_DUPLICATE_CONFIRM,
-                            task->id,
-                            task->get ("description")),
+                            task.id,
+                            task.get ("description")),
                     filtered.size ()))
     {
       context.tdb2.add (dup);
       ++count;
-      feedback_affected (STRING_CMD_DUPLICATE_TASK, *task);
+      feedback_affected (STRING_CMD_DUPLICATE_TASK, task);
 
       if (context.verbose ("new-id"))
         std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.id) + "\n";
@@ -116,7 +115,7 @@ int CmdDuplicate::execute (std::string& output)
         std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.get ("uuid")) + "\n";
 
       if (context.verbose ("project"))
-        projectChanges[task->get ("project")] = onProjectChange (*task);
+        projectChanges[task.get ("project")] = onProjectChange (task);
     }
     else
     {
@@ -128,10 +127,9 @@ int CmdDuplicate::execute (std::string& output)
   }
 
   // Now list the project changes.
-  std::map <std::string, std::string>::iterator i;
-  for (i = projectChanges.begin (); i != projectChanges.end (); ++i)
-    if (i->first != "")
-      context.footnote (i->second);
+  for (auto& change : projectChanges)
+    if (change.first != "")
+      context.footnote (change.second);
 
   feedback_affected (count == 1 ? STRING_CMD_DUPLICATE_1 : STRING_CMD_DUPLICATE_N, count);
   return rc;

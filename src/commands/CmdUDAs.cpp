@@ -55,15 +55,14 @@ int CmdUDAs::execute (std::string& output)
   std::stringstream out;
 
   std::vector <std::string> udas;
-  Config::const_iterator name;
-  for (name = context.config.begin (); name != context.config.end (); ++name)
+  for (auto& name : context.config)
   {
-    if (name->first.substr (0, 4) == "uda." &&
-        name->first.find (".type") != std::string::npos)
+    if (name.first.substr (0, 4) == "uda." &&
+        name.first.find (".type") != std::string::npos)
     {
-      std::string::size_type period = name->first.find ('.', 4);
+      std::string::size_type period = name.first.find ('.', 4);
       if (period != std::string::npos)
-        udas.push_back (name->first.substr (4, period - 4));
+        udas.push_back (name.first.substr (4, period - 4));
     }
   }
 
@@ -90,25 +89,23 @@ int CmdUDAs::execute (std::string& output)
     Color label (context.config.get ("color.label"));
     view.colorHeader (label);
 
-    std::vector <std::string>::iterator uda;
-    for (uda = udas.begin (); uda != udas.end (); ++uda)
+    for (auto& uda : udas)
     {
-      std::string type   = context.config.get ("uda." + *uda + ".type");
-      std::string label  = context.config.get ("uda." + *uda + ".label");
-      std::string values = context.config.get ("uda." + *uda + ".values");
-      std::string defval = context.config.get ("uda." + *uda + ".default");
+      std::string type   = context.config.get ("uda." + uda + ".type");
+      std::string label  = context.config.get ("uda." + uda + ".label");
+      std::string values = context.config.get ("uda." + uda + ".values");
+      std::string defval = context.config.get ("uda." + uda + ".default");
       if (label == "")
-        label = *uda;
+        label = uda;
 
       // Count UDA usage by UDA.
       int count = 0;
-      std::vector <Task>::iterator i;
-      for (i = filtered.begin (); i != filtered.end (); ++i)
-        if (i->has (*uda))
+      for (auto& i : filtered)
+        if (i.has (uda))
           ++count;
 
       int row = view.addRow ();
-      view.set (row, 0, *uda);
+      view.set (row, 0, uda);
       view.set (row, 1, type);
       view.set (row, 2, label);
       view.set (row, 3, values);
@@ -132,14 +129,12 @@ int CmdUDAs::execute (std::string& output)
 
   // Orphans are task attributes that are not represented in context.columns.
   std::map <std::string, int> orphans;
-  std::vector <Task>::iterator i;
-  for (i = filtered.begin (); i != filtered.end (); ++i)
+  for (auto& i : filtered)
   {
-    std::map <std::string, std::string>::iterator att;
-    for (att = i->begin (); att != i->end (); ++att)
-      if (att->first.substr (0, 11) != "annotation_" &&
-          context.columns.find (att->first) == context.columns.end ())
-        orphans[att->first]++;
+    for (auto& att : i)
+      if (att.first.substr (0, 11) != "annotation_" &&
+          context.columns.find (att.first) == context.columns.end ())
+        orphans[att.first]++;
   }
 
   if (orphans.size ())
@@ -153,12 +148,11 @@ int CmdUDAs::execute (std::string& output)
     Color label (context.config.get ("color.label"));
     orphanView.colorHeader (label);
 
-    std::map <std::string, int>::iterator o;
-    for (o = orphans.begin (); o != orphans.end (); ++o)
+    for (auto& o : orphans)
     {
       int row = orphanView.addRow ();
-      orphanView.set (row, 0, o->first);
-      orphanView.set (row, 1, o->second);
+      orphanView.set (row, 0, o.first);
+      orphanView.set (row, 1, o.second);
     }
 
     out << optionalBlankLine ()
@@ -188,15 +182,14 @@ CmdCompletionUDAs::CmdCompletionUDAs ()
 int CmdCompletionUDAs::execute (std::string& output)
 {
   std::vector <std::string> udas;
-  Config::const_iterator name;
-  for (name = context.config.begin (); name != context.config.end (); ++name)
+  for (auto& name : context.config)
   {
-    if (name->first.substr (0, 4) == "uda." &&
-        name->first.find (".type") != std::string::npos)
+    if (name.first.substr (0, 4) == "uda." &&
+        name.first.find (".type") != std::string::npos)
     {
-      std::string::size_type period = name->first.find ('.', 4);
+      std::string::size_type period = name.first.find ('.', 4);
       if (period != std::string::npos)
-        udas.push_back (name->first.substr (4, period - 4));
+        udas.push_back (name.first.substr (4, period - 4));
     }
   }
 

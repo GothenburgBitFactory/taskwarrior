@@ -67,10 +67,9 @@ int CmdSummary::execute (std::string& output)
 
   // Generate unique list of project names from all pending tasks.
   std::map <std::string, bool> allProjects;
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
-    if (showAllProjects || task->getStatus () == Task::pending)
-      allProjects[task->get ("project")] = false;
+  for (auto& task : filtered)
+    if (showAllProjects || task.getStatus () == Task::pending)
+      allProjects[task.get ("project")] = false;
 
   // Initialize counts, sum.
   std::map <std::string, int> countPending;
@@ -80,47 +79,49 @@ int CmdSummary::execute (std::string& output)
   time_t now = time (NULL);
 
   // Initialize counters.
-  std::map <std::string, bool>::iterator project;
-  for (project = allProjects.begin (); project != allProjects.end (); ++project)
+  for (auto& project : allProjects)
   {
-    countPending   [project->first] = 0;
-    countCompleted [project->first] = 0;
-    sumEntry       [project->first] = 0.0;
-    counter        [project->first] = 0;
+    countPending   [project.first] = 0;
+    countCompleted [project.first] = 0;
+    sumEntry       [project.first] = 0.0;
+    counter        [project.first] = 0;
   }
 
   // Count the various tasks.
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
-    std::string project = task->get ("project");
+    std::string project = task.get ("project");
     std::vector <std::string> projects = extractParents (project);
     projects.push_back (project);
 
-    std::vector <std::string>::const_iterator parent;
-    for (parent = projects.begin (); parent != projects.end (); ++parent)
-      ++counter[*parent];
+    for (auto& parent : projects)
+      ++counter[parent];
 
-    if (task->getStatus () == Task::pending ||
-        task->getStatus () == Task::waiting)
-      for (parent = projects.begin (); parent != projects.end (); ++parent)
+    if (task.getStatus () == Task::pending ||
+        task.getStatus () == Task::waiting)
+    {
+      for (auto& parent : projects)
       {
-        ++countPending[*parent];
+        ++countPending[parent];
 
-        time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
+        time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
         if (entry)
-          sumEntry[*parent] = sumEntry[*parent] + (double) (now - entry);
+          sumEntry[parent] = sumEntry[parent] + (double) (now - entry);
       }
+    }
 
-    else if (task->getStatus () == Task::completed)
-      for (parent = projects.begin (); parent != projects.end (); ++parent)
+    else if (task.getStatus () == Task::completed)
+    {
+      for (auto& parent : projects)
       {
-        ++countCompleted[*parent];
+        ++countCompleted[parent];
 
-        time_t entry = strtol (task->get ("entry").c_str (), NULL, 10);
-        time_t end   = strtol (task->get ("end").c_str (), NULL, 10);
+        time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
+        time_t end   = strtol (task.get ("end").c_str (), NULL, 10);
         if (entry && end)
-          sumEntry[*parent] = sumEntry[*parent] + (double) (end - entry);
+          sumEntry[parent] = sumEntry[parent] + (double) (end - entry);
       }
+    }
   }
 
   // Create a table for output.
@@ -140,35 +141,33 @@ int CmdSummary::execute (std::string& output)
 
   int barWidth = 30;
   std::vector <std::string> processed;
-  std::map <std::string, bool>::iterator i;
-  for (i = allProjects.begin (); i != allProjects.end (); ++i)
+  for (auto& i : allProjects)
   {
-    if (showAllProjects || countPending[i->first] > 0)
+    if (showAllProjects || countPending[i.first] > 0)
     {
-      const std::vector <std::string> parents = extractParents (i->first);
-      std::vector <std::string>::const_iterator parent;
-      for (parent = parents.begin (); parent != parents.end (); parent++)
+      const std::vector <std::string> parents = extractParents (i.first);
+      for (auto& parent : parents)
       {
-        if (std::find (processed.begin (), processed.end (), *parent)
+        if (std::find (processed.begin (), processed.end (), parent)
            == processed.end ())
         {
           int row = view.addRow ();
-          view.set (row, 0, indentProject (*parent));
-          processed.push_back (*parent);
+          view.set (row, 0, indentProject (parent));
+          processed.push_back (parent);
         }
       }
 
       int row = view.addRow ();
-      view.set (row, 0, (i->first == ""
+      view.set (row, 0, (i.first == ""
                           ? STRING_CMD_SUMMARY_NONE
-                          : indentProject (i->first, "  ", '.')));
+                          : indentProject (i.first, "  ", '.')));
 
-      view.set (row, 1, countPending[i->first]);
-      if (counter[i->first])
-        view.set (row, 2, Duration ((int) (sumEntry[i->first] / (double)counter[i->first])).format ());
+      view.set (row, 1, countPending[i.first]);
+      if (counter[i.first])
+        view.set (row, 2, Duration ((int) (sumEntry[i.first] / (double)counter[i.first])).format ());
 
-      int c = countCompleted[i->first];
-      int p = countPending[i->first];
+      int c = countCompleted[i.first];
+      int p = countPending[i.first];
       int completedBar = 0;
       if (c + p)
         completedBar = (c * barWidth) / (c + p);
@@ -191,7 +190,7 @@ int CmdSummary::execute (std::string& output)
       if (c + p)
         sprintf (percent, "%d%%", 100 * c / (c + p));
       view.set (row, 3, percent);
-      processed.push_back (i->first);
+      processed.push_back (i.first);
     }
   }
 

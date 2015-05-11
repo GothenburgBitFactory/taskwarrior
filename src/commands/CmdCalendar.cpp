@@ -66,7 +66,7 @@ int CmdCalendar::execute (std::string& output)
 
   // Load the pending tasks.
   handleRecurrence ();
-  std::vector <Task> tasks = context.tdb2.pending.get_tasks ();
+  auto tasks = context.tdb2.pending.get_tasks ();
 
   Date today;
   bool getpendingdate = false;
@@ -104,43 +104,42 @@ int CmdCalendar::execute (std::string& output)
 
   std::vector <std::string> words = context.cli.getWords ();
 
-  std::vector <std::string>::iterator arg;
-  for (arg = words.begin (); arg != words.end (); ++arg)
+  for (auto& arg : words)
   {
     // Some version of "calendar".
-    if (autoComplete (lowerCase (*arg), commandNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
+    if (autoComplete (lowerCase (arg), commandNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
       continue;
 
     // "due".
-    else if (autoComplete (lowerCase (*arg), keywordNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
+    else if (autoComplete (lowerCase (arg), keywordNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
       getpendingdate = true;
 
     // "y".
-    else if (lowerCase (*arg) == "y")
+    else if (lowerCase (arg) == "y")
       argWholeYear = true;
 
     // YYYY.
-    else if (Lexer::isAllDigits (*arg) && arg->length () == 4)
-      argYear = strtol (arg->c_str (), NULL, 10);
+    else if (Lexer::isAllDigits (arg) && arg.length () == 4)
+      argYear = strtol (arg.c_str (), NULL, 10);
 
     // MM.
-    else if (Lexer::isAllDigits (*arg) && arg->length () <= 2)
+    else if (Lexer::isAllDigits (arg) && arg.length () <= 2)
     {
-      argMonth = strtol (arg->c_str (), NULL, 10);
+      argMonth = strtol (arg.c_str (), NULL, 10);
       if (argMonth < 1 || argMonth > 12)
-        throw format (STRING_CMD_CAL_BAD_MONTH, *arg);
+        throw format (STRING_CMD_CAL_BAD_MONTH, arg);
     }
 
     // "January" etc.
-    else if (autoComplete (lowerCase (*arg), monthNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
+    else if (autoComplete (lowerCase (arg), monthNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
     {
       argMonth = Date::monthOfYear (matches[0]);
       if (argMonth == -1)
-        throw format (STRING_CMD_CAL_BAD_MONTH, *arg);
+        throw format (STRING_CMD_CAL_BAD_MONTH, arg);
     }
 
     else
-      throw format (STRING_CMD_CAL_BAD_ARG, *arg);
+      throw format (STRING_CMD_CAL_BAD_ARG, arg);
   }
 
   // Supported combinations:
@@ -172,16 +171,15 @@ int CmdCalendar::execute (std::string& output)
   {
     // Find the oldest pending due date.
     Date oldest (12, 31, 2037);
-    std::vector <Task>::iterator task;
-    for (task = tasks.begin (); task != tasks.end (); ++task)
+    for (auto& task : tasks)
     {
-      if (task->getStatus () == Task::pending)
+      if (task.getStatus () == Task::pending)
       {
-        if (task->has ("due") &&
-            !task->hasTag ("nocal"))
+        if (task.has ("due") &&
+            !task.hasTag ("nocal"))
         {
           ++countDueDates;
-          Date d (task->get ("due"));
+          Date d (task.get ("due"));
           if (d < oldest) oldest = d;
         }
       }
@@ -365,20 +363,17 @@ int CmdCalendar::execute (std::string& output)
       holTable.add (Column::factory ("string", STRING_CMD_CAL_LABEL_HOL));
       holTable.colorHeader (color_label);
 
-      Config::const_iterator it;
       std::map <time_t, std::vector<std::string>> hm; // we need to store multiple holidays per day
-      for (it = context.config.begin (); it != context.config.end (); ++it)
-        if (it->first.substr (0, 8) == "holiday.")
-          if (it->first.substr (it->first.size () - 4) == "name")
+      for (auto& it : context.config)
+        if (it.first.substr (0, 8) == "holiday.")
+          if (it.first.substr (it.first.size () - 4) == "name")
           {
-            std::string holName = context.config.get ("holiday." + it->first.substr (8, it->first.size () - 13) + ".name");
-            std::string holDate = context.config.get ("holiday." + it->first.substr (8, it->first.size () - 13) + ".date");
+            std::string holName = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".name");
+            std::string holDate = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
             Date hDate (holDate.c_str (), context.config.get ("dateformat.holiday"));
 
             if (date_after < hDate && hDate < date_before)
-            {
               hm[hDate.toEpoch()].push_back(holName);
-            }
           }
 
       std::string format = context.config.get ("report." +
@@ -389,11 +384,10 @@ int CmdCalendar::execute (std::string& output)
       if (format == "")
         format = context.config.get ("dateformat");
 
-      std::map <time_t, std::vector<std::string>>::iterator hm_it;
-      for (hm_it = hm.begin(); hm_it != hm.end(); ++hm_it)
+      for (auto& hm_it : hm)
       {
-        std::vector <std::string> v = hm_it->second;
-        Date hDate (hm_it->first);
+        std::vector <std::string> v = hm_it.second;
+        Date hDate (hm_it.first);
         std::string d = hDate.toString (format);
         for (size_t i = 0; i < v.size(); i++)
         {
@@ -535,12 +529,11 @@ std::string CmdCalendar::renderMonths (
         // colorize holidays
         if (context.config.get ("calendar.holidays") != "none")
         {
-          Config::const_iterator hol;
-          for (hol = context.config.begin (); hol != context.config.end (); ++hol)
-            if (hol->first.substr (0, 8) == "holiday.")
-              if (hol->first.substr (hol->first.size () - 4) == "date")
+          for (auto& hol : context.config)
+            if (hol.first.substr (0, 8) == "holiday.")
+              if (hol.first.substr (hol.first.size () - 4) == "date")
               {
-                std::string value = hol->second;
+                std::string value = hol.second;
                 Date holDate (value.c_str (), context.config.get ("dateformat.holiday"));
                 if (holDate.day   () == d           &&
                     holDate.month () == months[mpl] &&
@@ -559,21 +552,20 @@ std::string CmdCalendar::renderMonths (
         if (context.config.get ("calendar.details") != "none")
         {
           context.config.set ("due", 0);
-          std::vector <Task>::iterator task;
-          for (task = all.begin (); task != all.end (); ++task)
+          for (auto& task : all)
           {
-            if (task->getStatus () == Task::pending &&
-                !task->hasTag ("nocal")             &&
-                task->has ("due"))
+            if (task.getStatus () == Task::pending &&
+                !task.hasTag ("nocal")             &&
+                task.has ("due"))
             {
-              std::string due = task->get ("due");
+              std::string due = task.get ("due");
               Date duedmy (strtol (due.c_str(), NULL, 10));
 
               if (duedmy.day   () == d           &&
                   duedmy.month () == months[mpl] &&
                   duedmy.year  () == years[mpl])
               {
-                switch (task->getDateState ("due"))
+                switch (task.getDateState ("due"))
                 {
                 case Task::dateNotDue:
                   break;

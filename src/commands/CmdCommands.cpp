@@ -51,21 +51,15 @@ int CmdCompletionCommands::execute (std::string& output)
   // Get a list of all commands.
   std::vector <std::string> commands;
 
-  std::map <std::string, Command*>::iterator command;
-  for (command = context.commands.begin ();
-       command != context.commands.end ();
-       ++command)
-  {
-    commands.push_back (command->first);
-  }
+  for (auto& command : context.commands)
+    commands.push_back (command.first);
 
   // Sort alphabetically.
   std::sort (commands.begin (), commands.end ());
 
   std::stringstream out;
-  std::vector <std::string>::iterator c;
-  for (c = commands.begin (); c != commands.end (); ++c)
-    out << *c << "\n";
+  for (auto& c : commands)
+    out << c << "\n";
 
   output = out.str ();
   return 0;
@@ -87,21 +81,15 @@ int CmdZshCommands::execute (std::string& output)
   // Get a list of all commands.
   std::vector <std::string> commands;
 
-  std::map <std::string, Command*>::iterator command;
-  for (command = context.commands.begin ();
-       command != context.commands.end ();
-       ++command)
-  {
-    commands.push_back (command->first);
-  }
+  for (auto& command : context.commands)
+    commands.push_back (command.first);
 
   // Sort alphabetically.
   std::sort (commands.begin (), commands.end ());
 
   std::stringstream out;
-  std::vector <std::string>::iterator c;
-  for (c = commands.begin (); c != commands.end (); ++c)
-    out << *c << ":" << context.commands[*c]->description () << "\n";
+  for (auto& c : commands)
+    out << c << ":" << context.commands[c]->description () << "\n";
 
   output = out.str ();
   return 0;

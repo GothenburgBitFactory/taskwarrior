@@ -67,46 +67,44 @@ int CmdPrepend::execute (std::string& output)
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
-  std::vector <Task>::iterator task;
-  for (task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
-    Task before (*task);
+    Task before (task);
 
     // Prepend to the specified task.
     std::string question = format (STRING_CMD_PREPEND_CONFIRM,
-                                   task->id,
-                                   task->get ("description"));
+                                   task.id,
+                                   task.get ("description"));
 
-    task->modify (Task::modPrepend, true);
+    task.modify (Task::modPrepend, true);
 
-    if (permission (*task, taskDifferences (before, *task) + question, filtered.size ()))
+    if (permission (task, taskDifferences (before, task) + question, filtered.size ()))
     {
-      context.tdb2.modify (*task);
+      context.tdb2.modify (task);
       ++count;
-      feedback_affected (STRING_CMD_PREPEND_TASK, *task);
+      feedback_affected (STRING_CMD_PREPEND_TASK, task);
       if (context.verbose ("project"))
-        projectChanges[task->get ("project")] = onProjectChange (*task, false);
+        projectChanges[task.get ("project")] = onProjectChange (task, false);
 
       // Prepend to siblings.
-      if (task->has ("parent"))
+      if (task.has ("parent"))
       {
         if ((context.config.get ("recurrence.confirmation") == "prompt"
              && confirm (STRING_CMD_PREPEND_CONFIRM_R)) ||
             context.config.getBoolean ("recurrence.confirmation"))
         {
-          std::vector <Task> siblings = context.tdb2.siblings (*task);
-          std::vector <Task>::iterator sibling;
-          for (sibling = siblings.begin (); sibling != siblings.end (); ++sibling)
+          std::vector <Task> siblings = context.tdb2.siblings (task);
+          for (auto& sibling : siblings)
           {
-            sibling->modify (Task::modPrepend, true);
-            context.tdb2.modify (*sibling);
+            sibling.modify (Task::modPrepend, true);
+            context.tdb2.modify (sibling);
             ++count;
-            feedback_affected (STRING_CMD_PREPEND_TASK_R, *sibling);
+            feedback_affected (STRING_CMD_PREPEND_TASK_R, sibling);
           }
 
           // Prepend to the parent
           Task parent;
-          context.tdb2.get (task->get ("parent"), parent);
+          context.tdb2.get (task.get ("parent"), parent);
           parent.modify (Task::modPrepend, true);
           context.tdb2.modify (parent);
         }
@@ -122,10 +120,9 @@ int CmdPrepend::execute (std::string& output)
   }
 
   // Now list the project changes.
-  std::map <std::string, std::string>::iterator i;
-  for (i = projectChanges.begin (); i != projectChanges.end (); ++i)
-    if (i->first != "")
-      context.footnote (i->second);
+  for (auto& change : projectChanges)
+    if (change.first != "")
+      context.footnote (change.second);
 
   feedback_affected (count == 1 ? STRING_CMD_PREPEND_1 : STRING_CMD_PREPEND_N, count);
   return rc;

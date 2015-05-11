@@ -118,13 +118,12 @@ int CmdCustom::execute (std::string& output)
   std::vector <std::string> sortColumns;
 
   // Add the break columns, if any.
-  std::vector <std::string>::iterator so;
-  for (so = sortOrder.begin (); so != sortOrder.end (); ++so)
+  for (auto& so : sortOrder)
   {
     std::string name;
     bool ascending;
     bool breakIndicator;
-    context.decomposeSortField (*so, name, ascending, breakIndicator);
+    context.decomposeSortField (so, name, ascending, breakIndicator);
 
     if (breakIndicator)
       view.addBreak (name);
@@ -211,17 +210,15 @@ int CmdCustom::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 void CmdCustom::validateReportColumns (std::vector <std::string>& columns)
 {
-  std::vector <std::string>::iterator i;
-  for (i = columns.begin (); i != columns.end (); ++i)
-    legacyColumnMap (*i);
+  for (auto& col : columns)
+    legacyColumnMap (col);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CmdCustom::validateSortColumns (std::vector <std::string>& columns)
 {
-  std::vector <std::string>::iterator i;
-  for (i = columns.begin (); i != columns.end (); ++i)
-    legacySortColumnMap (*i);
+  for (auto& col : columns)
+    legacySortColumnMap (col);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

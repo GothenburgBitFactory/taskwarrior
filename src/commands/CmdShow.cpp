@@ -213,33 +213,32 @@ int CmdShow::execute (std::string& output)
   recognized += "_forcecolor ";
 
   std::vector <std::string> unrecognized;
-  Config::const_iterator i;
-  for (i = context.config.begin (); i != context.config.end (); ++i)
+  for (auto& i : context.config)
   {
     // Disallow partial matches by tacking a leading and trailing space on each
     // variable name.
-    std::string pattern = " " + i->first + " ";
+    std::string pattern = " " + i.first + " ";
     if (recognized.find (pattern) == std::string::npos)
     {
       // These are special configuration variables, because their name is
       // dynamic.
-      if (i->first.substr (0, 14) != "color.keyword."        &&
-          i->first.substr (0, 14) != "color.project."        &&
-          i->first.substr (0, 10) != "color.tag."            &&
-          i->first.substr (0, 10) != "color.uda."            &&
-          i->first.substr (0,  8) != "context."              &&
-          i->first.substr (0,  8) != "holiday."              &&
-          i->first.substr (0,  7) != "report."               &&
-          i->first.substr (0,  6) != "alias."                &&
-          i->first.substr (0,  5) != "hook."                 &&
-          i->first.substr (0,  4) != "uda."                  &&
-          i->first.substr (0,  8) != "default."              &&
-          i->first.substr (0, 21) != "urgency.user.project." &&
-          i->first.substr (0, 17) != "urgency.user.tag."     &&
-          i->first.substr (0, 21) != "urgency.user.keyword." &&
-          i->first.substr (0, 12) != "urgency.uda.")
+      if (i.first.substr (0, 14) != "color.keyword."        &&
+          i.first.substr (0, 14) != "color.project."        &&
+          i.first.substr (0, 10) != "color.tag."            &&
+          i.first.substr (0, 10) != "color.uda."            &&
+          i.first.substr (0,  8) != "context."              &&
+          i.first.substr (0,  8) != "holiday."              &&
+          i.first.substr (0,  7) != "report."               &&
+          i.first.substr (0,  6) != "alias."                &&
+          i.first.substr (0,  5) != "hook."                 &&
+          i.first.substr (0,  4) != "uda."                  &&
+          i.first.substr (0,  8) != "default."              &&
+          i.first.substr (0, 21) != "urgency.user.project." &&
+          i.first.substr (0, 17) != "urgency.user.tag."     &&
+          i.first.substr (0, 21) != "urgency.user.keyword." &&
+          i.first.substr (0, 12) != "urgency.uda.")
       {
-        unrecognized.push_back (i->first);
+        unrecognized.push_back (i.first);
       }
     }
   }
@@ -249,9 +248,9 @@ int CmdShow::execute (std::string& output)
   Config default_config;
   default_config.setDefaults ();
 
-  for (i = context.config.begin (); i != context.config.end (); ++i)
-    if (i->second != default_config.get (i->first))
-      default_values.push_back (i->first);
+  for (auto& i : context.config)
+    if (i.second != default_config.get (i.first))
+      default_values.push_back (i.first);
 
   // Create output view.
   ViewText view;
@@ -278,35 +277,35 @@ int CmdShow::execute (std::string& output)
     section = "";
 
   std::string::size_type loc;
-  for (i = context.config.begin (); i != context.config.end (); ++i)
+  for (auto& i : context.config)
   {
-    loc = i->first.find (section, 0);
+    loc = i.first.find (section, 0);
     if (loc != std::string::npos)
     {
       // Look for unrecognized.
       Color color;
-      if (std::find (unrecognized.begin (), unrecognized.end (), i->first) != unrecognized.end ())
+      if (std::find (unrecognized.begin (), unrecognized.end (), i.first) != unrecognized.end ())
       {
         issue_error = true;
         color = error;
       }
-      else if (std::find (default_values.begin (), default_values.end (), i->first) != default_values.end ())
+      else if (std::find (default_values.begin (), default_values.end (), i.first) != default_values.end ())
       {
         issue_warning = true;
         color = warning;
       }
 
-      std::string value = i->second;
+      std::string value = i.second;
       int row = view.addRow ();
-      view.set (row, 0, i->first, color);
+      view.set (row, 0, i.first, color);
       view.set (row, 1, value, color);
 
-      if (default_config[i->first] != value &&
-          default_config[i->first] != "")
+      if (default_config[i.first] != value &&
+          default_config[i.first] != "")
       {
         row = view.addRow ();
         view.set (row, 0, std::string ("  ") + STRING_CMD_SHOW_CONF_DEFAULT, color);
-        view.set (row, 1, default_config[i->first], color);
+        view.set (row, 1, default_config[i.first], color);
       }
     }
   }
@@ -331,9 +330,8 @@ int CmdShow::execute (std::string& output)
   {
     out << STRING_CMD_SHOW_UNREC << "\n";
 
-    std::vector <std::string>::iterator i;
-    for (i = unrecognized.begin (); i != unrecognized.end (); ++i)
-      out << "  " << *i << "\n";
+    for (auto& i : unrecognized)
+      out << "  " << i << "\n";
 
     if (context.color ())
       out << "\n" << format (STRING_CMD_SHOW_DIFFER_COLOR, error.colorize ("color"));
@@ -408,10 +406,9 @@ int CmdShowRaw::execute (std::string& output)
   std::sort (all.begin (), all.end ());
 
   // Display them all.
-  std::vector <std::string>::iterator i;
   std::stringstream out;
-  for (i = all.begin (); i != all.end (); ++i)
-    out << *i << '=' << context.config.get (*i) << "\n";
+  for (auto& i : all)
+    out << i << '=' << context.config.get (i) << "\n";
 
   output = out.str ();
   return 0;

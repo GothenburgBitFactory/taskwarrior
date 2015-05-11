@@ -229,11 +229,10 @@ void Chart::scan (std::vector <Task>& tasks)
   Date now;
 
   time_t epoch;
-  std::vector <Task>::iterator task;
-  for (task = tasks.begin (); task != tasks.end (); ++task)
+  for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
-    Date from = quantize (Date (task->get_date ("entry")));
+    Date from = quantize (Date (task.get_date ("entry")));
     epoch = from.toEpoch ();
 
     if (_bars.find (epoch) != _bars.end ())
@@ -241,24 +240,26 @@ void Chart::scan (std::vector <Task>& tasks)
 
     // e-->   e--s-->
     // ppp>   pppsss>
-    Task::status status = task->getStatus ();
+    Task::status status = task.getStatus ();
     if (status == Task::pending ||
         status == Task::waiting)
     {
-      if (task->has ("start"))
+      if (task.has ("start"))
       {
-        Date start = quantize (Date (task->get_date ("start")));
+        Date start = quantize (Date (task.get_date ("start")));
         while (from < start)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._pending;
           from = increment (from);
         }
 
         while (from < now)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._started;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._started;
           from = increment (from);
         }
       }
@@ -267,7 +268,8 @@ void Chart::scan (std::vector <Task>& tasks)
         while (from < now)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._pending;
           from = increment (from);
         }
       }
@@ -278,7 +280,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::completed)
     {
       // Truncate history so it starts at 'earliest' for completed tasks.
-      Date end = quantize (Date (task->get_date ("end")));
+      Date end = quantize (Date (task.get_date ("end")));
       epoch = end.toEpoch ();
 
       if (_bars.find (epoch) != _bars.end ())
@@ -292,44 +294,49 @@ void Chart::scan (std::vector <Task>& tasks)
         continue;
       }
 
-      if (task->has ("start"))
+      if (task.has ("start"))
       {
-        Date start = quantize (Date (task->get_date ("start")));
+        Date start = quantize (Date (task.get_date ("start")));
         while (from < start)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._pending;
           from = increment (from);
         }
 
         while (from < end)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._started;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._started;
           from = increment (from);
         }
 
         while (from < now)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._done;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._done;
           from = increment (from);
         }
       }
       else
       {
-        Date end = quantize (Date (task->get_date ("end")));
+        Date end = quantize (Date (task.get_date ("end")));
         while (from < end)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._pending;
           from = increment (from);
         }
 
         while (from < now)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._done;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._done;
           from = increment (from);
         }
       }
@@ -340,7 +347,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::deleted)
     {
       // Skip old deleted tasks.
-      Date end = quantize (Date (task->get_date ("end")));
+      Date end = quantize (Date (task.get_date ("end")));
       epoch = end.toEpoch ();
       if (_bars.find (epoch) != _bars.end ())
         ++_bars[epoch]._removed;
@@ -348,30 +355,33 @@ void Chart::scan (std::vector <Task>& tasks)
       if (end < _earliest)
         continue;
 
-      if (task->has ("start"))
+      if (task.has ("start"))
       {
-        Date start = quantize (Date (task->get_date ("start")));
+        Date start = quantize (Date (task.get_date ("start")));
         while (from < start)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._pending;
           from = increment (from);
         }
 
         while (from < end)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._started;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._started;
           from = increment (from);
         }
       }
       else
       {
-        Date end = quantize (Date (task->get_date ("end")));
+        Date end = quantize (Date (task.get_date ("end")));
         while (from < end)
         {
           epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ()) ++_bars[epoch]._pending;
+          if (_bars.find (epoch) != _bars.end ())
+            ++_bars[epoch]._pending;
           from = increment (from);
         }
       }
@@ -474,16 +484,14 @@ std::string Chart::render ()
 
   // Draw x-axis labels.
   std::vector <time_t> bars_in_sequence;
-  std::map <time_t, Bar>::iterator it;
-  for (it = _bars.begin (); it != _bars.end (); ++it)
-    bars_in_sequence.push_back (it->first);
+  for (auto& bar : _bars)
+    bars_in_sequence.push_back (bar.first);
 
   std::sort (bars_in_sequence.begin (), bars_in_sequence.end ());
-  std::vector <time_t>::iterator seq;
   std::string _major_label;
-  for (seq = bars_in_sequence.begin (); seq != bars_in_sequence.end (); ++seq)
+  for (auto& seq : bars_in_sequence)
   {
-    Bar bar = _bars[*seq];
+    Bar bar = _bars[seq];
 
     // If it fits within the allowed space.
     if (bar._offset < _actual_bars)
@@ -498,15 +506,15 @@ std::string Chart::render ()
   }
 
   // Draw bars.
-  for (seq = bars_in_sequence.begin (); seq != bars_in_sequence.end (); ++seq)
+  for (auto& seq : bars_in_sequence)
   {
-    Bar bar = _bars[*seq];
+    Bar bar = _bars[seq];
 
     // If it fits within the allowed space.
     if (bar._offset < _actual_bars)
     {
-      int pending = ( bar._pending                                            * _graph_height) / _labels[2];
-      int started = ((bar._pending + bar._started)                             * _graph_height) / _labels[2];
+      int pending = ( bar._pending                                               * _graph_height) / _labels[2];
+      int started = ((bar._pending + bar._started)                               * _graph_height) / _labels[2];
       int done    = ((bar._pending + bar._started + bar._done + _carryover_done) * _graph_height) / _labels[2];
 
       for (int b = 0; b < pending; ++b)
@@ -772,13 +780,12 @@ void Chart::maxima ()
   _max_value = 0;
   _max_label = 1;
 
-  std::map <time_t, Bar>::iterator it;
-  for (it = _bars.begin (); it != _bars.end (); it++)
+  for (auto& bar : _bars)
   {
     // Determine _max_label.
-    int total = it->second._pending +
-                it->second._started +
-                it->second._done    +
+    int total = bar.second._pending +
+                bar.second._started +
+                bar.second._done    +
                 _carryover_done;
 
     // Determine _max_value.

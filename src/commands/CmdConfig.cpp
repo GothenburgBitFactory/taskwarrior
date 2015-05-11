@@ -56,12 +56,11 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
   bool found = false;
   bool change = false;
 
-  std::vector <std::string>::iterator line;
-  for (line = contents.begin (); line != contents.end (); ++line)
+  for (auto& line : contents)
   {
     // If there is a comment on the line, it must follow the pattern.
-    std::string::size_type comment = line->find ("#");
-    std::string::size_type pos     = line->find (name + "=");
+    std::string::size_type comment = line.find ("#");
+    std::string::size_type pos     = line.find (name + "=");
 
     if (pos != std::string::npos &&
         (comment == std::string::npos ||
@@ -72,9 +71,9 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
           confirm (format (STRING_CMD_CONFIG_CONFIRM, name, context.config.get (name), value)))
       {
         if (comment != std::string::npos)
-          *line = name + "=" + json::encode (value) + " " + line->substr (comment);
+          line = name + "=" + json::encode (value) + " " + line.substr (comment);
         else
-          *line = name + "=" + json::encode (value);
+          line = name + "=" + json::encode (value);
 
         change = true;
       }
@@ -106,8 +105,7 @@ int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = fal
   bool found = false;
   bool change = false;
 
-  std::vector <std::string>::iterator line;
-  for (line = contents.begin (); line != contents.end (); )
+  for (auto line = contents.begin (); line != contents.end (); )
   {
     bool lineDeleted = false;
 
@@ -243,9 +241,8 @@ int CmdCompletionConfig::execute (std::string& output)
   context.config.all (configs);
   std::sort (configs.begin (), configs.end ());
 
-  std::vector <std::string>::iterator config;
-  for (config = configs.begin (); config != configs.end (); ++config)
-    output += *config + "\n";
+  for (auto& config : configs)
+    output += config + "\n";
 
   return 0;
 }
