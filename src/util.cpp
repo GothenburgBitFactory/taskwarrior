@@ -261,14 +261,17 @@ int execute (
     close (pin[1]);   // Close the write end of the input pipe.
     close (pout[0]);  // Close the read end of the output pipe.
 
+    // Parent writes to pin[1]. Set read end pin[0] as STDIN for child.
     if (dup2 (pin[0], STDIN_FILENO) == -1)
       throw std::string (std::strerror (errno));
     close (pin[0]);
 
+    // Parent reads from pout[0]. Set write end pout[1] as STDOUT for child.
     if (dup2 (pout[1], STDOUT_FILENO) == -1)
       throw std::string (std::strerror (errno));
     close (pout[1]);
 
+    // Add executable as argv[0] and NULL-terminate the array for execvp().
     char** argv = new char* [args.size () + 2];
     argv[0] = (char*) executable.c_str ();
     for (unsigned int i = 0; i < args.size (); ++i)
@@ -294,16 +297,16 @@ int execute (
   {
     FD_ZERO (&rfds);
     if (read_retval != 0)
-    {
       FD_SET (pout[0], &rfds);
-    }
 
     FD_ZERO (&wfds);
     if (input.size () != written)
-    {
       FD_SET (pin[1], &wfds);
-    }
 
+    // On Linux, tv may be overwritten by select().  Reset it each time.
+    // NOTE: Timeout chosen arbitrarily - we don't time out execute() calls.
+    // select() is run over and over again unless the child exits or closes
+    // its pipes.
     tv.tv_sec = 5;
     tv.tv_usec = 0;
 
@@ -312,6 +315,7 @@ int execute (
     if (select_retval == -1)
       throw std::string (std::strerror (errno));
 
+    // Write data to child's STDIN
     if (FD_ISSET (pin[1], &wfds))
     {
       write_retval = write (pin[1], input_cstr + written, input.size () - written);
@@ -337,9 +341,10 @@ int execute (
       }
     }
 
+    // Read data from child's STDOUT
     if (FD_ISSET (pout[0], &rfds))
     {
-      read_retval = read (pout[0], &buf, sizeof(buf)-1);
+      read_retval = read (pout[0], &buf, sizeof (buf) - 1);
       if (read_retval == -1)
         throw std::string (std::strerror (errno));
 
@@ -363,7 +368,7 @@ int execute (
     throw std::string ("Error: Could not get Hook exit status!");
   }
 
-  if (signal (SIGPIPE, SIG_DFL) == SIG_ERR) // We're done, return to default.
+  if (signal (SIGPIPE, SIG_DFL) == SIG_ERR)  // We're done, return to default.
     throw std::string (std::strerror (errno));
 
   return status;
