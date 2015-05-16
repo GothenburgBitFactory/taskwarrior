@@ -47,6 +47,8 @@
           (thanks to Denis Kasak).
 - TW-1615 Japanese translation for Taskwarrior(150513) (thanks to ribbon).
 - TW-1617 Can't search for multi-word project (thanks to Audrey Easterday).
+- TW-1619 fish completion contain backspaces in fish master version (thanks to
+          Johannes Wienke₎.
 - TW-1622 Duration UDA can't take an algebraic expression (thanks to Jeremy John
           Reeder).
 - TW-1626 Wrong wait date (thanks to Andrea Rizzi).

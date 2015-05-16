@@ -55,6 +55,8 @@
 #
 # http://www.opensource.org/licenses/mit-license.php
 
+# NOTE: remember that sed on OS X is different in some aspects. E.g. it does
+#       not understand \t for tabs.
 
 # convinience functions
 
@@ -74,7 +76,7 @@ end
 
 function __fish.task.zsh
   set -q argv[2]; and set task_argv $argv[2..-1]
-  task _zsh$argv[1] $task_argv | sed 's/:/\t/'
+  task _zsh$argv[1] $task_argv | sed 's/:/	/'
 end
 
 
@@ -141,7 +143,7 @@ function __fish.task.token_clean
 end
 
 function __fish.task.list.attr_name
-  task _columns | sed 's/$/:\tattribute/g'
+  task _columns | sed 's/$/:	attribute/g'
   # BUG: doesn't support file completion
   echo rc
 end
@@ -149,7 +151,7 @@ end
 function __fish.task.list.attr_value
   set token (commandline -ct | cut -d ':' -f 1 | cut -d '.' -f 1 | __fish.task.token_clean)
   if test -n $token
-    set attr_names (__fish.task.list.attr_name | sed 's/:\t/\t/g' | grep '^'$token | cut -d '	' -f 1)
+    set attr_names (__fish.task.list.attr_name | sed 's/:	/	/g' | grep '^'$token | cut -d '	' -f 1)
     for attr_name in $attr_names
       if test -n $attr_name
         __fish.task.list.attr_value_by_name $attr_name
@@ -250,7 +252,7 @@ function __fish.task.list.tag
 end
 
 function __fish.task.list.task
-  __fish.task.zsh ids | sed -E 's/^(.*)\t(.*)$/\2\ttask [id = \1]/g'
+  __fish.task.zsh ids | sed -E 's/^(.*)	(.*)$/\2	task [id = \1]/g'
 end
 
 function __fish.task.list
