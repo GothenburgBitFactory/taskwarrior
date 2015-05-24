@@ -129,7 +129,7 @@ void ISO8601d::ambiguity (bool value)
 //
 bool ISO8601d::parse (const std::string& input, std::string::size_type& start)
 {
-  std::string::size_type i = start;
+  auto i = start;
   Nibbler n (input.substr (i));
 
   if (parse_date_time_ext (n)             ||   // Most complex first.
@@ -749,7 +749,7 @@ ISO8601p::operator time_t () const
 //
 bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
 {
-  std::string::size_type i = start;
+  auto i = start;
   Nibbler n (input.substr (i));
 
   if (parse_designated (n))

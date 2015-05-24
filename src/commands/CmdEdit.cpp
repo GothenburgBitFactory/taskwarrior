@@ -78,10 +78,10 @@ std::string CmdEdit::findValue (
   const std::string& text,
   const std::string& name)
 {
-  std::string::size_type found = text.find (name);
+  auto found = text.find (name);
   if (found != std::string::npos)
   {
-    std::string::size_type eol = text.find ("\n", found + 1);
+    auto eol = text.find ("\n", found + 1);
     if (eol != std::string::npos)
     {
       std::string value = text.substr (
@@ -101,10 +101,10 @@ std::string CmdEdit::findMultilineValue (
   const std::string& startMarker,
   const std::string& endMarker)
 {
-  std::string::size_type start = text.find (startMarker);
+  auto start = text.find (startMarker);
   if (start != std::string::npos)
   {
-    std::string::size_type end = text.find (endMarker, start);
+    auto end = text.find (endMarker, start);
     if (end != std::string::npos)
     {
       std::string value = text.substr (start + startMarker.length (),
@@ -128,7 +128,7 @@ std::vector <std::string> CmdEdit::findValues (
     found = text.find (name, found + 1);
     if (found != std::string::npos)
     {
-      std::string::size_type eol = text.find ("\n", found + 1);
+      auto eol = text.find ("\n", found + 1);
       if (eol != std::string::npos)
       {
         std::string value = text.substr (
@@ -612,14 +612,14 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   {
     found += 14;  // Length of "\n  Annotation:".
 
-    std::string::size_type eol = after.find ("\n", found + 1);
+    auto eol = after.find ("\n", found + 1);
     if (eol != std::string::npos)
     {
       std::string value = trim (after.substr (
         found,
         eol - found), "\t ");
 
-      std::string::size_type gap = value.find (" -- ");
+      auto gap = value.find (" -- ");
       if (gap != std::string::npos)
       {
         // TODO keeping the initial dates even if dateformat approximates them
@@ -714,7 +714,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   std::vector <std::string> orphanValues = findValues (after, "\n  UDA Orphan ");
   for (auto& orphan : orphanValues)
   {
-    std::string::size_type colon = orphan.find (':');
+    auto colon = orphan.find (':');
     if (colon != std::string::npos)
     {
       std::string name  = trim (orphan.substr (0, colon),  "\t ");

@@ -71,7 +71,7 @@ void ColumnProject::measure (Task& task, unsigned int& minimum, unsigned int& ma
 
     if (_style == "parent")
     {
-      std::string::size_type period = project.find ('.');
+      auto period = project.find ('.');
       if (period != std::string::npos)
         project = project.substr (0, period);
     }
@@ -101,7 +101,7 @@ void ColumnProject::render (
     std::string project = task.get (_name);
     if (_style == "parent")
     {
-      std::string::size_type period = project.find ('.');
+      auto period = project.find ('.');
       if (period != std::string::npos)
         project = project.substr (0, period);
     }

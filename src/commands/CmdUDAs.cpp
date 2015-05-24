@@ -60,7 +60,7 @@ int CmdUDAs::execute (std::string& output)
     if (name.first.substr (0, 4) == "uda." &&
         name.first.find (".type") != std::string::npos)
     {
-      std::string::size_type period = name.first.find ('.', 4);
+      auto period = name.first.find ('.', 4);
       if (period != std::string::npos)
         udas.push_back (name.first.substr (4, period - 4));
     }
@@ -187,7 +187,7 @@ int CmdCompletionUDAs::execute (std::string& output)
     if (name.first.substr (0, 4) == "uda." &&
         name.first.find (".type") != std::string::npos)
     {
-      std::string::size_type period = name.first.find ('.', 4);
+      auto period = name.first.find ('.', 4);
       if (period != std::string::npos)
         udas.push_back (name.first.substr (4, period - 4));
     }

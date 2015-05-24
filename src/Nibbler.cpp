@@ -91,7 +91,7 @@ bool Nibbler::getUntil (char c, std::string& result)
 {
   if (_cursor < _length)
   {
-    std::string::size_type i = _input.find (c, _cursor);
+    auto i = _input.find (c, _cursor);
     if (i != std::string::npos)
     {
       result = _input.substr (_cursor, i - _cursor);
@@ -114,7 +114,7 @@ bool Nibbler::getUntil (const std::string& terminator, std::string& result)
 {
   if (_cursor < _length)
   {
-    std::string::size_type i = _input.find (terminator, _cursor);
+    auto i = _input.find (terminator, _cursor);
     if (i != std::string::npos)
     {
       result = _input.substr (_cursor, i - _cursor);
@@ -164,7 +164,7 @@ bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
 {
   if (_cursor < _length)
   {
-    std::string::size_type i = _input.find_first_of (chars, _cursor);
+    auto i = _input.find_first_of (chars, _cursor);
     if (i != std::string::npos)
     {
       result = _input.substr (_cursor, i - _cursor);
@@ -238,7 +238,7 @@ bool Nibbler::getQuoted (
     return false;
   }
 
-  for (std::string::size_type i = _cursor; i < _length; ++i)
+  for (auto i = _cursor; i < _length; ++i)
   {
     current = _input[i];
 
@@ -296,7 +296,7 @@ bool Nibbler::getDigit (int& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getDigit6 (int& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
   if (i < _length &&
       _length - i >= 6)
   {
@@ -319,7 +319,7 @@ bool Nibbler::getDigit6 (int& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getDigit4 (int& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
   if (i < _length &&
       _length - i >= 4)
   {
@@ -340,7 +340,7 @@ bool Nibbler::getDigit4 (int& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getDigit3 (int& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
   if (i < _length &&
       _length - i >= 3)
   {
@@ -360,7 +360,7 @@ bool Nibbler::getDigit3 (int& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getDigit2 (int& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
   if (i < _length &&
       _length - i >= 2)
   {
@@ -379,7 +379,7 @@ bool Nibbler::getDigit2 (int& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getInt (int& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
 
   if (i < _length)
   {
@@ -406,7 +406,7 @@ bool Nibbler::getInt (int& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUnsignedInt (int& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
   // TODO Potential for use of find_first_not_of
   while (i < _length && Lexer::isDigit (_input[i]))
     ++i;
@@ -439,7 +439,7 @@ bool Nibbler::getUnsignedInt (int& result)
 // 
 bool Nibbler::getNumber (std::string& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
 
   // [+-]?
   if (i < _length && (_input[i] == '-' || _input[i] == '+'))
@@ -525,7 +525,7 @@ bool Nibbler::getNumber (double &result)
 // 
 bool Nibbler::getUnsignedNumber (double& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
 
   // digit+
   if (i < _length && Lexer::isDigit (_input[i]))
@@ -619,7 +619,7 @@ bool Nibbler::getRx (const std::string& regex, std::string& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUUID (std::string& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
 
   if (i < _length &&
       _length - i >= 36)
@@ -705,7 +705,7 @@ bool Nibbler::getPartialUUID (std::string& result)
 // 19980119T070000Z =  YYYYMMDDThhmmssZ
 bool Nibbler::getDateISO (time_t& t)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
 
   if (i < _length &&
       _length - i >= 16)
@@ -815,7 +815,7 @@ bool Nibbler::parseDigits(std::string::size_type& i,
 #ifdef NIBBLER_FEATURE_DATE
 bool Nibbler::getDate (const std::string& format, time_t& t)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
 
   int month  = -1;   // So we can check later.
   int day    = -1;
@@ -998,7 +998,7 @@ bool Nibbler::getOneOf (
 // A name is a string of alpha-numeric characters.
 bool Nibbler::getName (std::string& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
 
   if (i < _length)
   {
@@ -1030,7 +1030,7 @@ bool Nibbler::getName (std::string& result)
 // A word is a contiguous string of non-space, non-digit, non-punct characters.
 bool Nibbler::getWord (std::string& result)
 {
-  std::string::size_type i = _cursor;
+  auto i = _cursor;
 
   if (i < _length)
   {
@@ -1083,7 +1083,7 @@ bool Nibbler::skipAll (char c)
 {
   if (_cursor < _length)
   {
-    std::string::size_type i = _input.find_first_not_of (c, _cursor);
+    auto i = _input.find_first_not_of (c, _cursor);
     if (i == _cursor)
       return false;
 
@@ -1156,7 +1156,7 @@ bool Nibbler::skipAllOneOf (const std::string& chars)
 {
   if (_cursor < _length)
   {
-    std::string::size_type i = _input.find_first_not_of (chars, _cursor);
+    auto i = _input.find_first_not_of (chars, _cursor);
     if (i == _cursor)
       return false;
 

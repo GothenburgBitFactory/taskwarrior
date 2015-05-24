@@ -108,7 +108,7 @@ int CmdDenotate::execute (std::string& output)
     {
       for (auto i = annotations.begin (); i != annotations.end (); ++i)
       {
-        std::string::size_type loc = find (i->second, pattern, sensitive);
+        auto loc = find (i->second, pattern, sensitive);
         if (loc != std::string::npos)
         {
           anno = i->second;

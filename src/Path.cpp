@@ -116,7 +116,7 @@ std::string Path::name () const
 {
   if (_data.length ())
   {
-    std::string::size_type slash = _data.rfind ('/');
+    auto slash = _data.rfind ('/');
     if (slash != std::string::npos)
       return _data.substr (slash + 1, std::string::npos);
   }
@@ -129,7 +129,7 @@ std::string Path::parent () const
 {
   if (_data.length ())
   {
-    std::string::size_type slash = _data.rfind ('/');
+    auto slash = _data.rfind ('/');
     if (slash != std::string::npos)
       return _data.substr (0, slash);
   }
@@ -142,7 +142,7 @@ std::string Path::extension () const
 {
   if (_data.length ())
   {
-    std::string::size_type dot = _data.rfind ('.');
+    auto dot = _data.rfind ('.');
     if (dot != std::string::npos)
       return _data.substr (dot + 1, std::string::npos);
   }
@@ -231,7 +231,7 @@ std::string Path::expand (const std::string& in)
 {
   std::string copy = in;
 
-  std::string::size_type tilde = copy.find ("~");
+  auto tilde = copy.find ("~");
   std::string::size_type slash;
 
   if (tilde != std::string::npos)

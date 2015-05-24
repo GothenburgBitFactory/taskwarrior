@@ -285,7 +285,7 @@ int CmdDiagnostics::execute (std::string& output)
 
   // Get credentials, but mask out the key.
   std::string credentials = context.config.get ("taskd.credentials");
-  std::string::size_type last_slash = credentials.rfind ('/');
+  auto last_slash = credentials.rfind ('/');
   if (last_slash != std::string::npos)
     credentials = credentials.substr (0, last_slash)
                 + "/"

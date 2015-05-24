@@ -392,8 +392,8 @@ void UnitTest::is (
 ///////////////////////////////////////////////////////////////////////////////
 void UnitTest::diag (const std::string& text)
 {
-  std::string::size_type start = text.find_first_not_of (" \t\n\r\f");
-  std::string::size_type end   = text.find_last_not_of  (" \t\n\r\f");
+  auto start = text.find_first_not_of (" \t\n\r\f");
+  auto end   = text.find_last_not_of  (" \t\n\r\f");
   std::cout << "# " << text.substr (start, end - start + 1) << "\n";
 }
 

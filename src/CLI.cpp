@@ -230,7 +230,7 @@ void CLI::getOverride (int argc, const char** argv, std::string& home, File& rc)
       rc = raw.substr (3);
 
       home = ".";
-      std::string::size_type last_slash = rc._data.rfind ("/");
+      auto last_slash = rc._data.rfind ("/");
       if (last_slash != std::string::npos)
         home = rc.parent ();
 
@@ -286,7 +286,7 @@ void CLI::applyOverrides (int argc, const char** argv)
         raw.length () > 3 &&
         raw.substr (0, 3) == "rc.")
     {
-      std::string::size_type sep = raw.find ('=', 3);
+      auto sep = raw.find ('=', 3);
       if (sep == std::string::npos)
         sep = raw.find (':', 3);
       if (sep != std::string::npos)
@@ -445,7 +445,7 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
       a.tag ("BINARY");
 
       std::string basename = "task";
-      std::string::size_type slash = raw.rfind ('/');
+      auto slash = raw.rfind ('/');
       if (slash != std::string::npos)
         basename = raw.substr (slash + 1);
 
@@ -808,7 +808,7 @@ void CLI::findOverrides ()
     }
     else if (isConfigOverride (raw))
     {
-      std::string::size_type sep = raw.find ('=', 3);
+      auto sep = raw.find ('=', 3);
       if (sep == std::string::npos)
         sep = raw.find (':', 3);
       if (sep != std::string::npos)
@@ -2236,8 +2236,8 @@ bool CLI::isSubstitution (const std::string& raw) const
 // <attr>.[~]<mod>[:=]...
 bool CLI::isAttribute (const std::string& raw) const
 {
-  std::string::size_type colon = raw.find (":");
-  std::string::size_type equal = raw.find ("=");
+  auto colon = raw.find (":");
+  auto equal = raw.find ("=");
 
   std::string attr = "";
   if (colon != std::string::npos)
@@ -2251,7 +2251,7 @@ bool CLI::isAttribute (const std::string& raw) const
   if (! isName (attr))
     return false;
 
-  std::string::size_type dot = attr.find (".");
+  auto dot = attr.find (".");
   std::string mod = "";
   if (dot != std::string::npos)
   {

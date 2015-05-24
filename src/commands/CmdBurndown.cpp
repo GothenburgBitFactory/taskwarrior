@@ -593,7 +593,7 @@ void Chart::optimizeGrid ()
   std::string::size_type ws;
   while ((ws = _grid.find (" \n")) != std::string::npos)
   {
-    std::string::size_type non_ws = ws;
+    auto non_ws = ws;
     while (_grid[non_ws] == ' ')
       --non_ws;
 

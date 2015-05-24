@@ -531,7 +531,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
   for (auto& line : lines)
   {
     // Remove comments.
-    std::string::size_type pound = line.find ("#"); // no i18n
+    auto pound = line.find ("#"); // no i18n
     if (pound != std::string::npos)
       line = line.substr (0, pound);
 
@@ -540,7 +540,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
     // Skip empty lines.
     if (line.length () > 0)
     {
-      std::string::size_type equal = line.find ("="); // no i18n
+      auto equal = line.find ("="); // no i18n
       if (equal != std::string::npos)
       {
         std::string key   = trim (line.substr (0, equal), " \t"); // no i18n
@@ -550,7 +550,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
       }
       else
       {
-        std::string::size_type include = line.find ("include"); // no i18n.
+        auto include = line.find ("include"); // no i18n.
         if (include != std::string::npos)
         {
           Path included (trim (line.substr (include + 7), " \t"));
@@ -575,7 +575,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
 void Config::createDefaultRC (const std::string& rc, const std::string& data)
 {
   // Override data.location in the defaults.
-  std::string::size_type loc = _defaults.find ("data.location=~/.task");
+  auto loc = _defaults.find ("data.location=~/.task");
   //                                      loc+0^          +14^   +21^
 
   Date now;

@@ -59,8 +59,8 @@ bool CmdConfig::setConfigVariable (std::string name, std::string value, bool con
   for (auto& line : contents)
   {
     // If there is a comment on the line, it must follow the pattern.
-    std::string::size_type comment = line.find ("#");
-    std::string::size_type pos     = line.find (name + "=");
+    auto comment = line.find ("#");
+    auto pos     = line.find (name + "=");
 
     if (pos != std::string::npos &&
         (comment == std::string::npos ||
@@ -110,8 +110,8 @@ int CmdConfig::unsetConfigVariable (std::string name, bool confirmation /* = fal
     bool lineDeleted = false;
 
     // If there is a comment on the line, it must follow the pattern.
-    std::string::size_type comment = line->find ("#");
-    std::string::size_type pos     = line->find (name + "=");
+    auto comment = line->find ("#");
+    auto pos     = line->find (name + "=");
 
     if (pos != std::string::npos &&
         (comment == std::string::npos ||

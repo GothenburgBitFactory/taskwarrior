@@ -426,7 +426,7 @@ int CmdInfo::execute (std::string& output)
         if (var.first.substr (0, 13) == "urgency.user.")
         {
           // urgency.user.project.<project>.coefficient
-          std::string::size_type end = std::string::npos;
+          auto end = std::string::npos;
           if (var.first.substr (13, 8) == "project." &&
               (end = var.first.find (".coefficient")) != std::string::npos)
           {
@@ -459,11 +459,11 @@ int CmdInfo::execute (std::string& output)
         {
           // urgency.uda.<name>.coefficient
           // urgency.uda.<name>.<value>.coefficient
-          std::string::size_type end = var.first.find (".coefficient");
+          auto end = var.first.find (".coefficient");
           if (end != std::string::npos)
           {
             const std::string uda = var.first.substr (12, end - 12);
-            std::string::size_type dot = uda.find (".");
+            auto dot = uda.find (".");
             if (dot == std::string::npos)
             {
               // urgency.uda.<name>.coefficient

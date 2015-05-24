@@ -175,7 +175,7 @@ bool Directory::up ()
   if (_data == "/")
     return false;
 
-  std::string::size_type slash = _data.rfind ('/');
+  auto slash = _data.rfind ('/');
   if (slash == 0)
   {
     _data = "/";  // Root dir should retain the slash.

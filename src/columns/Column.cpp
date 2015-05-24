@@ -62,7 +62,7 @@ extern Context context;
 Column* Column::factory (const std::string& name, const std::string& report)
 {
   // Decompose name into type and style.
-  std::string::size_type dot = name.find ('.');
+  auto dot = name.find ('.');
   std::string column_name;
   std::string column_style;
   if (dot != std::string::npos)

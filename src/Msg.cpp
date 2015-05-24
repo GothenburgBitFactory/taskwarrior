@@ -150,7 +150,7 @@ bool Msg::parse (const std::string& input)
   split (lines, input.substr (0, separator), '\n');
   for (auto& i : lines)
   {
-    std::string::size_type delimiter = i.find (':');
+    auto delimiter = i.find (':');
     if (delimiter == std::string::npos)
         throw std::string ("ERROR: Malformed message header '") + i + "'";
 

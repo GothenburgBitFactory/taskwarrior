@@ -299,7 +299,7 @@ std::string Duration::formatISO () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Duration::parse (const std::string& input, std::string::size_type& start)
 {
-  std::string::size_type original_start = start;
+  auto original_start = start;
   Nibbler n (input.substr (start));
 
   // Static and so preserved between calls.

@@ -464,7 +464,7 @@ const std::string TF2::dump ()
 
   // File label.
   std::string label;
-  std::string::size_type slash = _file._data.rfind ('/');
+  auto slash = _file._data.rfind ('/');
   if (slash != std::string::npos)
     label = rightJustify (_file._data.substr (slash + 1), 14);
 
@@ -791,7 +791,7 @@ void TDB2::revert_undo (
   }
 
   // Extract identifying uuid.
-  std::string::size_type uuidAtt = current.find ("uuid:\"");
+  auto uuidAtt = current.find ("uuid:\"");
   if (uuidAtt != std::string::npos)
     uuid = current.substr (uuidAtt + 6, 36); // "uuid:"<uuid>" --> <uuid>
   else

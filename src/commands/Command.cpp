@@ -170,7 +170,7 @@ void Command::factory (std::map <std::string, Command*>& all)
     if (i.first.substr (0, 7) == "report.")
     {
       std::string report = i.first.substr (7);
-      std::string::size_type columns = report.find (".columns");
+      auto columns = report.find (".columns");
       if (columns != std::string::npos)
         reports.push_back (report.substr (0, columns));
     }
