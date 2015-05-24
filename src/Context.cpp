@@ -534,13 +534,8 @@ bool Context::verbose (const std::string& token)
         verbosity[0]      != "sync"     &&  //
         verbosity[0]      != "filter")      //
     {
-      verbosity.clear ();
-
       // This list emulates rc.verbose=off in version 1.9.4.
-      verbosity.push_back ("blank");
-      verbosity.push_back ("label");
-      verbosity.push_back ("new-id");
-      verbosity.push_back ("edit");
+      verbosity = {"blank", "label", "new-id", "edit"};
     }
   }
 
@@ -765,8 +760,7 @@ void Context::updateVerbosity ()
   if (command != "" &&
       command[0] == '_')
   {
-    verbosity.clear ();
-    verbosity.push_back ("nothing");
+    verbosity = {"nothing"};
   }
 }
 

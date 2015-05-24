@@ -41,10 +41,8 @@ ColumnMask::ColumnMask ()
   _style      = "default";
   _label      = STRING_COLUMN_LABEL_MASK;
   _modifiable = false;
-
-  _styles.push_back ("default");
-
-  _examples.push_back ("++++---");
+  _styles     = {"default"};
+  _examples   = {"++++---"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

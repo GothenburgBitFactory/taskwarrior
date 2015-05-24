@@ -37,20 +37,16 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnRecur::ColumnRecur ()
 {
-  _name  = "recur";
+  _name     = "recur";
 
   // This is 'string', and not 'duration' to force the value to be stored as a
   // raw duration, so that it can be reevaluated every time.
-  _type  = "string";
+  _type     = "string";
 
-  _style = "duration";
-  _label = STRING_COLUMN_LABEL_RECUR;
-
-  _styles.push_back ("duration");
-  _styles.push_back ("indicator");
-
-  _examples.push_back ("weekly");
-  _examples.push_back (context.config.get ("recurrence.indicator"));
+  _style    = "duration";
+  _label    = STRING_COLUMN_LABEL_RECUR;
+  _styles   = {"duration", "indicator"};
+  _examples = {"weekly", context.config.get ("recurrence.indicator")};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

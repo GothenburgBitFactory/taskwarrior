@@ -171,10 +171,7 @@ int main (int argc, char** argv)
   t.is (joined.length (), (size_t) 0,  "join -> length 0");
   t.is (joined,           "",          "join -> ''");
 
-  unjoined.push_back ("");
-  unjoined.push_back ("a");
-  unjoined.push_back ("bc");
-  unjoined.push_back ("def");
+  unjoined = {"", "a", "bc", "def"};
   join (joined, "", unjoined);
   t.is (joined.length (), (size_t) 6, "join '' 'a' 'bc' 'def' -> length 6");
   t.is (joined,           "abcdef",   "join '' 'a' 'bc' 'def' -> 'abcdef'");
@@ -190,9 +187,7 @@ int main (int argc, char** argv)
   t.is (joined.length (), (size_t) 0, "join -> length 0");
   t.is (joined,           "",         "join -> ''");
 
-  unjoined2.push_back (0);
-  unjoined2.push_back (1);
-  unjoined2.push_back (2);
+  unjoined2 = {0, 1, 2};
   join (joined, "", unjoined2);
   t.is (joined.length (), (size_t) 3, "join 0 1 2 -> length 3");
   t.is (joined,           "012",      "join 0 1 2 -> '012'");

@@ -38,14 +38,13 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnScheduled::ColumnScheduled ()
 {
-  _name      = "scheduled";
-  _label     = STRING_COLUMN_LABEL_SCHED;
-
-  _styles.push_back ("countdown");
+  _name     = "scheduled";
+  _label    = STRING_COLUMN_LABEL_SCHED;
+  _styles   = {"countdown"};
 
   Date now;
   now += 125;
-  _examples.push_back (Duration (now - Date ()).formatCompact ());
+  _examples = {Duration (now - Date ()).formatCompact ()};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

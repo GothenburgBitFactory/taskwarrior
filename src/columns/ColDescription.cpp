@@ -44,12 +44,12 @@ ColumnDescription::ColumnDescription ()
   _style = "combined";
   _label = STRING_COLUMN_LABEL_DESC;
 
-  _styles.push_back ("combined");
-  _styles.push_back ("desc");
-  _styles.push_back ("oneline");
-  _styles.push_back ("truncated");
-  _styles.push_back ("count");
-  _styles.push_back ("truncated_count");
+  _styles = {"combined",
+             "desc",
+             "oneline",
+             "truncated",
+             "count",
+             "truncated_count"};
 
   _dateformat = context.config.get ("dateformat.annotation");
   if (_dateformat == "")
@@ -62,20 +62,18 @@ ColumnDescription::ColumnDescription ()
   std::string a3 = STRING_COLUMN_EXAMPLES_ANNO3;
   std::string a4 = STRING_COLUMN_EXAMPLES_ANNO4;
 
-  _examples.push_back (d
-                       + "\n  " + t + " " + a1
-                       + "\n  " + t + " " + a2
-                       + "\n  " + t + " " + a3
-                       + "\n  " + t + " " + a4);
-  _examples.push_back (d);
-  _examples.push_back (d
-                       + " " + t + " " + a1
-                       + " " + t + " " + a2
-                       + " " + t + " " + a3
-                       + " " + t + " " + a4);
-  _examples.push_back (d.substr (0, 20) + "...");
-  _examples.push_back (d + " [4]");
-  _examples.push_back (d.substr (0, 20) + "... [4]");
+  _examples = {d + "\n  " + t + " " + a1
+                 + "\n  " + t + " " + a2
+                 + "\n  " + t + " " + a3
+                 + "\n  " + t + " " + a4,
+               d,
+               d + " " + t + " " + a1
+                 + " " + t + " " + a2
+                 + " " + t + " " + a3
+                 + " " + t + " " + a4,
+               d.substr (0, 20) + "...",
+               d + " [4]",
+               d.substr (0, 20) + "... [4]"};
 
   _hyphenate = context.config.getBoolean ("hyphenate");
 

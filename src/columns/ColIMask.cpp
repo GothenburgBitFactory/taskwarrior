@@ -41,10 +41,8 @@ ColumnIMask::ColumnIMask ()
   _style      = "number";
   _label      = STRING_COLUMN_LABEL_MASK_IDX;
   _modifiable = false;
-
-  _styles.push_back ("number");
-
-  _examples.push_back ("12");
+  _styles     = {"number"};
+  _examples   = {"12"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

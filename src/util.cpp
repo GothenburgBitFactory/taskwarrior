@@ -65,9 +65,8 @@ extern Context context;
 // std::getline, the newline can be detected, and the prompt re-written.
 bool confirm (const std::string& question)
 {
-  std::vector <std::string> options;
-  options.push_back (STRING_UTIL_CONFIRM_YES);
-  options.push_back (STRING_UTIL_CONFIRM_NO);
+  std::vector <std::string> options {STRING_UTIL_CONFIRM_YES,
+                                     STRING_UTIL_CONFIRM_NO};
 
   std::string answer;
   std::vector <std::string> matches;
@@ -94,13 +93,12 @@ bool confirm (const std::string& question)
 // 3 = quit
 int confirm4 (const std::string& question)
 {
-  std::vector <std::string> options;
-  options.push_back (STRING_UTIL_CONFIRM_YES_U);
-  options.push_back (STRING_UTIL_CONFIRM_YES);
-  options.push_back (STRING_UTIL_CONFIRM_NO);
-  options.push_back (STRING_UTIL_CONFIRM_ALL_U);
-  options.push_back (STRING_UTIL_CONFIRM_ALL);
-  options.push_back (STRING_UTIL_CONFIRM_QUIT);
+  std::vector <std::string> options {STRING_UTIL_CONFIRM_YES_U,
+                                     STRING_UTIL_CONFIRM_YES,
+                                     STRING_UTIL_CONFIRM_NO,
+                                     STRING_UTIL_CONFIRM_ALL_U,
+                                     STRING_UTIL_CONFIRM_ALL,
+                                     STRING_UTIL_CONFIRM_QUIT};
 
   std::string answer;
   std::vector <std::string> matches;

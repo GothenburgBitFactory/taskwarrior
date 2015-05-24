@@ -37,19 +37,14 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnProject::ColumnProject ()
 {
-  _name  = "project";
-  _type  = "string";
-  _style = "full";
-  _label = STRING_COLUMN_LABEL_PROJECT;
-
-  _styles.push_back ("full");
-  _styles.push_back ("parent");
-  _styles.push_back ("indented");
-
-  _examples.push_back (STRING_COLUMN_EXAMPLES_PROJ);
-  _examples.push_back (STRING_COLUMN_EXAMPLES_PAR);
-  _examples.push_back (STRING_COLUMN_EXAMPLES_IND);
-
+  _name      = "project";
+  _type      = "string";
+  _style     = "full";
+  _label     = STRING_COLUMN_LABEL_PROJECT;
+  _styles    = {"full", "parent", "indented"};
+  _examples  = {STRING_COLUMN_EXAMPLES_PROJ,
+                STRING_COLUMN_EXAMPLES_PAR,
+                STRING_COLUMN_EXAMPLES_IND};
   _hyphenate = context.config.getBoolean ("hyphenate");
 }
 

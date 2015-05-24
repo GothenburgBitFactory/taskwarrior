@@ -36,12 +36,10 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStart::ColumnStart ()
 {
-  _name  = "start";
-  _label = STRING_COLUMN_LABEL_STARTED;
-
-  _styles.push_back ("active");
-
-  _examples.push_back (context.config.get ("active.indicator"));
+  _name     = "start";
+  _label    = STRING_COLUMN_LABEL_STARTED;
+  _styles   = {"active"};
+  _examples = {context.config.get ("active.indicator")};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

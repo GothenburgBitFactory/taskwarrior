@@ -43,21 +43,9 @@ int main (int argc, char** argv)
   unsetenv ("TASKRC");
 
   // 1,2,3  <=>  2,3,4
-  std::vector <std::string> string_one;
-  string_one.push_back ("1");
-  string_one.push_back ("2");
-  string_one.push_back ("3");
-
-  std::vector <std::string> string_two;
-  string_two.push_back ("2");
-  string_two.push_back ("3");
-  string_two.push_back ("4");
-
-  std::vector <std::string> string_three;
-  string_three.push_back ("2");
-  string_three.push_back ("3");
-  string_three.push_back ("4");
-
+  std::vector <std::string> string_one {"1", "2", "3"};
+  std::vector <std::string> string_two {"2", "3", "4"};
+  std::vector <std::string> string_three {"2", "3", "4"};
   std::vector <std::string> string_four;
 
   // Differences?
@@ -87,21 +75,9 @@ int main (int argc, char** argv)
   // Now do it all again, with integers.
 
   // 1,2,3  <=>  2,3,4
-  std::vector <int> int_one;
-  int_one.push_back (1);
-  int_one.push_back (2);
-  int_one.push_back (3);
-
-  std::vector <int> int_two;
-  int_two.push_back (2);
-  int_two.push_back (3);
-  int_two.push_back (4);
-
-  std::vector <int> int_three;
-  int_three.push_back (2);
-  int_three.push_back (3);
-  int_three.push_back (4);
-
+  std::vector <int> int_one {1, 2, 3};
+  std::vector <int> int_two {2, 3, 4};
+  std::vector <int> int_three {2, 3, 4};
   std::vector <int> int_four;
 
   // Differences?

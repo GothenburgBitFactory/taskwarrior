@@ -35,16 +35,12 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnUrgency::ColumnUrgency ()
 {
-  _name  = "urgency";
-  _type  = "numeric";
-  _style = "real";
-  _label = STRING_COLUMN_LABEL_URGENCY;
-
-  _styles.push_back ("real");
-  _styles.push_back ("integer");
-
-  _examples.push_back ("4.6");
-  _examples.push_back ("4");
+  _name     = "urgency";
+  _type     = "numeric";
+  _style    = "real";
+  _label    = STRING_COLUMN_LABEL_URGENCY;
+  _styles   = {"real", "integer"};
+  _examples = {"4.6", "4"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

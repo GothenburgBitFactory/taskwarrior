@@ -42,13 +42,7 @@ int main (int argc, char** argv)
   unsetenv ("TASKDATA");
   unsetenv ("TASKRC");
 
-  std::vector <std::string> options;
-  options.push_back ("abc");
-  options.push_back ("abcd");
-  options.push_back ("abcde");
-  options.push_back ("bcdef");
-  options.push_back ("cdefg");
-
+  std::vector <std::string> options {"abc", "abcd", "abcde", "bcdef", "cdefg"};
   std::vector <std::string> matches;
   int result = autoComplete ("", options, matches);
   t.is (result, 0, "no match on empty string");

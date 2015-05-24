@@ -43,23 +43,23 @@ ColumnDate::ColumnDate ()
   _style     = "formatted";
   _label     = "";
 
-  _styles.push_back ("formatted");
-  _styles.push_back ("julian");
-  _styles.push_back ("epoch");
-  _styles.push_back ("iso");
-  _styles.push_back ("age");
-  _styles.push_back ("remaining");
-  _styles.push_back ("countdown");
+  _styles = {"formatted",
+             "julian",
+             "epoch", 
+             "iso",
+             "age",
+             "remaining",
+             "countdown"};
 
   Date now;
   now -= 125; // So that "age" is non-zero.
-  _examples.push_back (now.toString (context.config.get ("dateformat")));
-  _examples.push_back (format (now.toJulian (), 13, 12));
-  _examples.push_back (now.toEpochString ());
-  _examples.push_back (now.toISO ());
-  _examples.push_back (Duration (Date () - now).formatCompact ());
-  _examples.push_back ("");
-  _examples.push_back (Duration (Date () - now).format ());
+  _examples = {now.toString (context.config.get ("dateformat")),
+               format (now.toJulian (), 13, 12),
+               now.toEpochString (),
+               now.toISO (),
+               Duration (Date () - now).formatCompact (),
+               "",
+               Duration (Date () - now).format ()};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

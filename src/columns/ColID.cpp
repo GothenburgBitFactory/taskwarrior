@@ -41,10 +41,8 @@ ColumnID::ColumnID ()
   _style      = "number";
   _label      = STRING_COLUMN_LABEL_ID;
   _modifiable = false;
-
-  _styles.push_back ("number");
-
-  _examples.push_back ("123");
+  _styles     = {"number"};
+  _examples   = {"123"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

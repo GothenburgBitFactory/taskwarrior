@@ -35,21 +35,18 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnString::ColumnString ()
 {
-  _name  = "string";
-  _type  = "string";
-  _style = "left";
-  _label = "";
-
-  _styles.push_back ("left");
-  _styles.push_back ("right");
-  _styles.push_back ("left_fixed");
-  _styles.push_back ("right_fixed");
-
-  _styles.push_back ("Hello (wrapped)           ");
-  _styles.push_back ("           Hello (wrapped)");
-  _styles.push_back ("Hello (no-wrap)           ");
-  _styles.push_back ("           Hello (no-wrap)");
-
+  _name     = "string";
+  _type     = "string";
+  _style    = "left";
+  _label    = "";
+  _styles   = {"left",
+               "right",
+               "left_fixed",
+               "right_fixed"};
+  _examples = {"Hello (wrapped)           ",
+               "           Hello (wrapped)",
+               "Hello (no-wrap)           ",
+               "           Hello (no-wrap)"};
   _hyphenate = context.config.getBoolean ("hyphenate");
 }
 

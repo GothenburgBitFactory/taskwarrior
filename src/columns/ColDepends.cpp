@@ -43,13 +43,13 @@ ColumnDepends::ColumnDepends ()
   _style = "list";
   _label = STRING_COLUMN_LABEL_DEP;
 
-  _styles.push_back ("list");
-  _styles.push_back ("count");
-  _styles.push_back ("indicator");
+  _styles = {"list",
+             "count",
+             "indicator"};
 
-  _examples.push_back ("1 2 10");
-  _examples.push_back ("[3]");
-  _examples.push_back (context.config.get ("dependency.indicator"));
+  _examples = {"1 2 10",
+               "[3]",
+               context.config.get ("dependency.indicator")};
 
   _hyphenate = context.config.getBoolean ("hyphenate");
 }

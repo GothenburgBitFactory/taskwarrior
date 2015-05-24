@@ -36,16 +36,13 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStatus::ColumnStatus ()
 {
-  _name  = "status";
-  _type  = "string";
-  _style = "long";
-  _label = STRING_COLUMN_LABEL_STATUS;
-
-  _styles.push_back ("long");
-  _styles.push_back ("short");
-
-  _examples.push_back (STRING_COLUMN_LABEL_STAT_PE);
-  _examples.push_back (STRING_COLUMN_LABEL_STAT_P);
+  _name     = "status";
+  _type     = "string";
+  _style    = "long";
+  _label    = STRING_COLUMN_LABEL_STATUS;
+  _styles   = {"long", "short"};
+  _examples = {STRING_COLUMN_LABEL_STAT_PE,
+               STRING_COLUMN_LABEL_STAT_P};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

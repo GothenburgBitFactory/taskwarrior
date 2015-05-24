@@ -37,19 +37,14 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTags::ColumnTags ()
 {
-  _name  = "tags";
-  _type  = "string";
-  _style = "list";
-  _label = STRING_COLUMN_LABEL_TAGS;
-
-  _styles.push_back ("list");
-  _styles.push_back ("indicator");
-  _styles.push_back ("count");
-
-  _examples.push_back (STRING_COLUMN_EXAMPLES_TAGS);
-  _examples.push_back (context.config.get ("tag.indicator"));
-  _examples.push_back ("[2]");
-
+  _name      = "tags";
+  _type      = "string";
+  _style     = "list";
+  _label     = STRING_COLUMN_LABEL_TAGS;
+  _styles    = {"list", "indicator", "count"};
+  _examples  = {STRING_COLUMN_EXAMPLES_TAGS,
+                context.config.get ("tag.indicator"),
+                "[2]"};
   _hyphenate = context.config.getBoolean ("hyphenate");
 }
 

@@ -634,9 +634,7 @@ int main (int argc, char** argv)
 
     // bool getOneOf (const std::vector <std::string>&, std::string&);
     t.diag ("Nibbler::getOneOf");
-    options.push_back ("one");
-    options.push_back ("two");
-    options.push_back ("three");
+    options = {"one", "two", "three"};
     n = Nibbler ("onetwothreefour");
     t.ok    (n.getOneOf (options, s),         "'onetwothreefour':   getOneOf () -> true");
     t.is    (s, "one",                        "'onetwothreefour':   getOneOf () -> one");

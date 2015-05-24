@@ -41,12 +41,8 @@ ColumnUUID::ColumnUUID ()
   _style      = "long";
   _label      = STRING_COLUMN_LABEL_UUID;
   _modifiable = false;
-
-  _styles.push_back ("long");
-  _styles.push_back ("short");
-
-  _examples.push_back ("f30cb9c3-3fc0-483f-bfb2-3bf134f00694");
-  _examples.push_back ("f30cb9c3");
+  _styles     = {"long", "short"};
+  _examples   = {"f30cb9c3-3fc0-483f-bfb2-3bf134f00694", "f30cb9c3"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -39,16 +39,13 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnUDA::ColumnUDA ()
 {
-  _name  = "<uda>";
-  _type  = "string";
-  _style = "default";
-  _label = "";
-  _uda   = true;
-
+  _name      = "<uda>";
+  _type      = "string";
+  _style     = "default";
+  _label     = "";
+  _uda       = true;
   _hyphenate = (_type == "string") ? true : false;
-
-  _styles.push_back (_style);
-  _styles.push_back ("indicator");
+  _styles    = {_style, "indicator"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

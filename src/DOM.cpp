@@ -52,16 +52,12 @@ DOM::~DOM ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::vector <std::string> DOM::get_references () const
 {
-  std::vector <std::string> refs;
-
-  refs.push_back ("context.program");
-  refs.push_back ("context.args");
-  refs.push_back ("context.width");
-  refs.push_back ("context.height");
-  refs.push_back ("system.version");
-  refs.push_back ("system.os");
-
-  return refs;
+  return {"context.program",
+          "context.args",
+          "context.width",
+          "context.height",
+          "system.version",
+          "system.os"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
