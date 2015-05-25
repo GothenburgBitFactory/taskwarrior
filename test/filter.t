@@ -369,6 +369,54 @@ class TestBug1110(TestCase):
         self.assertIn("ToBeCompleted", out)
 
 
+@unittest.skip("WaitingFor TW-1600")
+class TestBug1600(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_filter_plus_in_descriptions(self):
+        """filter - description contains +"""
+        self.t(("add", "foobar1"))
+        self.t(("add", "foobar2"))
+        self.t(("add", "foobar+"))
+
+        code, out, err = self.t(("all",))
+        self.assertIn("foobar+", out)
+        self.assertIn("foobar1", out)
+        self.assertIn("foobar2", out)
+
+        code, out, err = self.t(("all", "description.contains:'foobar+'"))
+        self.assertIn("foobar+", out)
+        self.assertNotIn("foobar1", out)
+        self.assertNotIn("foobar2", out)
+
+    def test_filter_question_in_descriptions(self):
+        """filter - description contains ? """
+        self.t(("add", "foobar1"))
+        self.t(("add", "foo?bar"))
+
+        code, out, err = self.t(("all",))
+        self.assertIn("foobar1", out)
+        self.assertIn("foo?bar", out)
+
+        code, out, err = self.t(("all", "description.contains:'foo?bar'"))
+        self.assertIn("foo?bar", out)
+        self.assertNotIn("foobar1", out)
+
+    def test_filter_brackets_in_descriptions(self):
+        """filter - description contains [] """
+        self.t(("add", "[foobar1]"))
+        self.t(("add", "[foobar2]"))
+
+        code, out, err = self.t(("all",))
+        self.assertIn("[foobar1]", out)
+        self.assertIn("[foobar2]", out)
+
+        code, out, err = self.t(("all", "description.contains:'[foobar]'"))
+        self.assertIn("[foobar1]", out)
+        self.assertNotIn("[foobar2]", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
