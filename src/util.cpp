@@ -289,6 +289,7 @@ int execute (
     close (pin[1]);
   }
 
+  output = "";
   read_retval = -1;
   written = 0;
   while (read_retval != 0 || input.size () != written)
