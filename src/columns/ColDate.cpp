@@ -42,14 +42,13 @@ ColumnDate::ColumnDate ()
   _type      = "date";
   _style     = "formatted";
   _label     = "";
-
-  _styles = {"formatted",
-             "julian",
-             "epoch", 
-             "iso",
-             "age",
-             "remaining",
-             "countdown"};
+  _styles    = {"formatted",
+                "julian",
+                "epoch", 
+                "iso",
+                "age",
+                "remaining",
+                "countdown"};
 
   Date now;
   now -= 125; // So that "age" is non-zero.

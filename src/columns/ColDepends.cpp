@@ -38,18 +38,16 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 ColumnDepends::ColumnDepends ()
 {
-  _name  = "depends";
-  _type  = "string";
-  _style = "list";
-  _label = STRING_COLUMN_LABEL_DEP;
-
-  _styles = {"list",
-             "count",
-             "indicator"};
-
-  _examples = {"1 2 10",
-               "[3]",
-               context.config.get ("dependency.indicator")};
+  _name      = "depends";
+  _type      = "string";
+  _style     = "list";
+  _label     = STRING_COLUMN_LABEL_DEP;
+  _styles    = {"list",
+                "count",
+                "indicator"};
+  _examples  = {"1 2 10",
+                "[3]",
+                context.config.get ("dependency.indicator")};
 
   _hyphenate = context.config.getBoolean ("hyphenate");
 }
