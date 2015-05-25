@@ -4,7 +4,7 @@ printf "C++:     %5d\n" $(ls *.t.cpp | wc -l)
 printf "Python:  %5d\n" $(head -n1 *.t | grep -a '\bpython' | wc -l)
 printf "Perl:    %5d\n" $(head -n1 *.t | grep -a '\bperl\b' | wc -l)
 if [ "$1" = "-v" ]; then
-    echo "Perl left:    " $(grep -l '^#\! \?/usr/bin/env perl\b' *.t)
+    echo "Perl left:    " $(grep -Rl '^#\! \?/usr/bin/env perl\b' *)
 fi
 echo
 printf "Feature  %5d\n" $(ls feature.*.t | wc -l)
