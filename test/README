@@ -82,6 +82,31 @@ both positive and negative aspects, or in other words looks for expected
 behavior as well as looking for the absence of unexpected behavior.
 
 
+Conventions for writing a test
+------------------------------
+
+If you wish to contribute tests, please consider the following guidelines:
+
+  * Tests created after bugs or feature requests should (ideally) have an entry
+    on https://bug.tasktools.org/ and should include the issue ID in a
+    docstring or comment.
+
+  * Tests should be added to the file that best matches the "thing" being
+    tested. For instance, a test on filters should live in filter.t
+
+  * Class and method names should be descriptive of what they are testing.
+    Example: TestFilterOnReports
+
+  * Docstrings on Python tests are mandatory. The first line is used as title
+    of the test.
+
+  * Extra information and details should go into multi-line docstrings or
+    comments.
+
+  * Python tests for bugs or features not yet fixed/implemented should be
+    decorated with: @unittest.skip("WaitingFor TW-xxxx")
+
+
 How to Submit a Test Change/Addition
 ------------------------------------
 
