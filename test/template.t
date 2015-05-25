@@ -87,6 +87,11 @@ class TestBugNumber(TestCase):
     def test_skipped(self):
         """Test all logic of the world"""
 
+    @unittest.expectedFailure
+    def test_expected_failure(self):
+        """Test something that fails and we know or expect that"""
+        self.assertEqual(1, 0)
+
     def tearDown(self):
         """Executed after each test in the class"""
 
