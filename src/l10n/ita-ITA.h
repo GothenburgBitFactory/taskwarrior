@@ -448,7 +448,6 @@
 
 #define STRING_CMD_IMPORT_USAGE      "Importa file JSON"
 #define STRING_CMD_IMPORT_SUMMARY    "Importati {1} task."
-#define STRING_CMD_IMPORT_NOFILE     "Specificare il file da importare."
 #define STRING_CMD_IMPORT_FILE       "Importazione di '{1}'"
 #define STRING_CMD_IMPORT_MISSING    "File '{1}' not found."
 #define STRING_TASK_NO_DESC          "Annotazione senza descrizione: {1}"

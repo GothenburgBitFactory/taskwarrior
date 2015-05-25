@@ -449,7 +449,6 @@
 
 #define STRING_CMD_IMPORT_USAGE      "Importiert eine JSON-Datei"
 #define STRING_CMD_IMPORT_SUMMARY    "{1} Aufgabe importiert."
-#define STRING_CMD_IMPORT_NOFILE     "Sie müssen eine zu importierende Datei angeben."
 #define STRING_CMD_IMPORT_FILE       "Importiere '{1}'"
 #define STRING_CMD_IMPORT_MISSING    "Datei '{1}' nicht gefunden."
 #define STRING_TASK_NO_DESC          "Kommentar fehlt Beschreibung: {1}"

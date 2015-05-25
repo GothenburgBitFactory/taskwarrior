@@ -41,7 +41,7 @@ extern Context context;
 CmdImport::CmdImport ()
 {
   _keyword     = "import";
-  _usage       = "task          import <file> [<file> ...]";
+  _usage       = "task          import [<file> ...]";
   _description = STRING_CMD_IMPORT_USAGE;
   _read_only   = false;
   _displays_id = false;
@@ -53,50 +53,74 @@ int CmdImport::execute (std::string& output)
   int rc = 0;
   int count = 0;
 
-  // Use the description as a file name.
+  // Get filenames from command line arguments.
   std::vector <std::string> words = context.cli.getWords ();
-  if (! words.size ())
-    throw std::string (STRING_CMD_IMPORT_NOFILE);
-
-  for (auto& word : words)
+  if (! words.size () || (words.size () == 1 && words[0] == "-"))
   {
-    File incoming (word);
-    if (! incoming.exists ())
-      throw format (STRING_CMD_IMPORT_MISSING, word);
-
-    std::cout << format (STRING_CMD_IMPORT_FILE, word) << "\n";
-
-    // Load the file.
+    // No files or only "-" specified, import tasks from STDIN.
     std::vector <std::string> lines;
-    incoming.read (lines);
+    std::string line;
 
-    for (auto& line : lines)
+    std::cout << format (STRING_CMD_IMPORT_FILE, "STDIN") << "\n";
+
+    while (std::getline (std::cin, line))
+      lines.push_back (line);
+
+    if (lines.size () > 0)
+      count = import (lines);
+  }
+  else
+  {
+    // Import tasks from all specified files.
+    for (auto& word : words)
     {
-      std::string object = trimLeft (
-                             trimRight (
-                               trim (line),
-                               "]"),
-                             "[");
+      File incoming (word);
+      if (! incoming.exists ())
+        throw format (STRING_CMD_IMPORT_MISSING, word);
 
-      // Skip blanks.  May be caused by the trim calls above.
-      if (! object.length ())
-        continue;
+      std::cout << format (STRING_CMD_IMPORT_FILE, word) << "\n";
 
-      // Parse the whole thing.
-      Task task (object);
-      context.tdb2.add (task);
+      // Load the file.
+      std::vector <std::string> lines;
+      incoming.read (lines);
 
-      ++count;
-      std::cout << "  "
-                << task.get ("uuid")
-                << " "
-                << task.get ("description")
-                << "\n";
+      count += import (lines);
     }
   }
 
   context.footnote (format (STRING_CMD_IMPORT_SUMMARY, count));
   return rc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdImport::import (std::vector <std::string>& lines)
+{
+  int count = 0;
+  for (auto& line : lines)
+  {
+    std::string object = trimLeft (
+                          trimRight (
+                            trim (line),
+                            "]"),
+                          "[");
+
+    // Skip blanks.  May be caused by the trim calls above.
+    if (! object.length ())
+      continue;
+
+    // Parse the whole thing.
+    Task task (object);
+    context.tdb2.add (task);
+
+    ++count;
+    std::cout << "  "
+              << task.get ("uuid")
+              << " "
+              << task.get ("description")
+              << "\n";
+  }
+
+  return count;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

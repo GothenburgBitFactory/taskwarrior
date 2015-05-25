@@ -35,6 +35,7 @@ class CmdImport : public Command
 public:
   CmdImport ();
   int execute (std::string&);
+  int import (std::vector <std::string>& lines);
 };
 
 /*

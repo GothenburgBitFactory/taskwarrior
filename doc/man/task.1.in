@@ -345,12 +345,14 @@ In general, this is not the recommended method of modifying tasks, but is
 provided for exceptional circumstances.  Use carefully.
 
 .TP
-.B task import <file> [<file> ...]
+.B task import [<file> ...]
 Imports tasks in the JSON format.  The standard task release comes with a few
 example scripts, such as:
 
   import-todo.sh.pl
   import-yaml.pl
+
+If no file or "-" is specified, import tasks from STDIN.
 
 .TP
 .B task log <mods>

@@ -1,5 +1,6 @@
 2.4.5 () -
 
+- TW-1440 "task import" from STDIN (thanks to Renato Alves).
 - TW-1572 Better urgency inheritance (thanks to Jens Erat).
 
 ------ current release ---------------------------

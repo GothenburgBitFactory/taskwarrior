@@ -449,7 +449,6 @@
 
 #define STRING_CMD_IMPORT_USAGE      "Importas JSON-dosierojn"
 #define STRING_CMD_IMPORT_SUMMARY    "Importis {1} taskojn."
-#define STRING_CMD_IMPORT_NOFILE     "Vi devas specifi kiu dosieron import."
 #define STRING_CMD_IMPORT_FILE       "Importanta '{1}'"
 #define STRING_CMD_IMPORT_MISSING    "File '{1}' not found."
 #define STRING_TASK_NO_DESC          "Komento havas mankon de priskribo: {1}"

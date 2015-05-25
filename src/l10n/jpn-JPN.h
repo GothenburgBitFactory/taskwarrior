@@ -449,7 +449,6 @@
 
 #define STRING_CMD_IMPORT_USAGE      "JSON ファイルをインポート"
 #define STRING_CMD_IMPORT_SUMMARY    "{1} task をインポートしました。"
-#define STRING_CMD_IMPORT_NOFILE     "インポートするファイルを指定してください。"
 #define STRING_CMD_IMPORT_FILE       "'{1}' をインポート中"
 #define STRING_CMD_IMPORT_MISSING    "ファイル '{1}' が見つかりません。"
 #define STRING_TASK_NO_DESC          "Annotation is missing a description: {1}"
