@@ -30,7 +30,7 @@ if (open my $fh, '<', 'all.log')
     for sort {$skipped{$b} <=> $skipped{$a}} keys %skipped;
 
   print "\n";
-  print "Expected failures\n";
+  print "Expected failures (part of skipped)\n";
   printf "%-32s %4d\n", $_, $expected{$_}
     for sort {$expected{$b} <=> $expected{$a}} keys %expected;
 }

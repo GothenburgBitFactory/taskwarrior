@@ -148,7 +148,7 @@ class TAPTestResult(unittest.result.TestResult):
                 )
             elif status == "EXPECTED_FAILURE":
                 self.stream.writeln("{0} {1} - {2}".format(
-                    color("ok", "green"), self.testsRun, desc)
+                    color("skip", "yellow"), self.testsRun, desc)
                 )
             else:
                 self.stream.writeln("{0} {1} - {2}".format(
