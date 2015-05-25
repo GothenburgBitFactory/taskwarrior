@@ -8,12 +8,14 @@ if (open my $fh, '<', 'all.log')
   my $test_file;
   my %errors;
   my %skipped;
+  my %expected;
 
   while (my $line = <$fh>)
   {
-    $test_file = $1        if $line =~ /^# (\S+\.t)$/;
-    $errors{$test_file}++  if $line =~ /^not /;
-    $skipped{$test_file}++ if $line =~ /^skip /;
+    $test_file = $1         if $line =~ /^# (\S+\.t)$/;
+    $errors{$test_file}++   if $line =~ /^not /;
+    $skipped{$test_file}++  if $line =~ /^skip /;
+    $expected{$test_file}++ if $line =~ /^# EXPECTED_FAILURE: /;
   }
 
   close $fh;
@@ -26,6 +28,11 @@ if (open my $fh, '<', 'all.log')
   print "Skipped\n";
   printf "%-32s %4d\n", $_, $skipped{$_}
     for sort {$skipped{$b} <=> $skipped{$a}} keys %skipped;
+
+  print "\n";
+  print "Expected failures\n";
+  printf "%-32s %4d\n", $_, $expected{$_}
+    for sort {$expected{$b} <=> $expected{$a}} keys %expected;
 }
 
 exit 0;
