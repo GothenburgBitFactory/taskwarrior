@@ -24,14 +24,47 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_FILE
-#define INCLUDED_FILE
+#ifndef INCLUDED_FS
+#define INCLUDED_FS
 
 #include <stdio.h>
 #include <string>
 #include <vector>
 #include <sys/stat.h>
-#include <Path.h>
+
+class Path
+{
+public:
+  Path ();
+  Path (const Path&);
+  Path (const std::string&);
+  virtual ~Path ();
+
+  Path& operator= (const Path&);
+  bool operator== (const Path&);
+  Path& operator+= (const std::string&);
+  operator std::string () const;
+
+  std::string name () const;
+  std::string parent () const;
+  std::string extension () const;
+  bool exists () const;
+  bool is_directory () const;
+  bool is_absolute () const;
+  bool is_link () const;
+  bool readable () const;
+  bool writable () const;
+  bool executable () const;
+  bool rename (const std::string&);
+
+  // Statics
+  static std::string expand (const std::string&);
+  static std::vector<std::string> glob (const std::string&);
+
+public:
+  std::string _original;
+  std::string _data;
+};
 
 class File : public Path
 {
@@ -87,5 +120,35 @@ private:
   bool  _locked;
 };
 
+class Directory : public File
+{
+public:
+  Directory ();
+  Directory (const Directory&);
+  Directory (const File&);
+  Directory (const Path&);
+  Directory (const std::string&);
+  virtual ~Directory ();
+
+  Directory& operator= (const Directory&);
+
+  virtual bool create (int mode = 0755);
+  virtual bool remove () const;
+
+  std::vector <std::string> list ();
+  std::vector <std::string> listRecursive ();
+
+  static std::string cwd ();
+  bool up ();
+  bool cd () const;
+
+private:
+  void list (const std::string&, std::vector <std::string>&, bool);
+  bool remove_directory (const std::string&) const;
+};
+
+std::ostream& operator<< (std::ostream&, const Path&);
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////
+

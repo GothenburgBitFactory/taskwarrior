@@ -32,7 +32,7 @@
 #include <i18n.h>
 #include <main.h>
 #include <Context.h>
-#include <Directory.h>
+#include <FS.h>
 #include <ViewText.h>
 #include <CmdShow.h>
 

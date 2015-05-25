@@ -34,9 +34,7 @@
 #include <TDB2.h>
 #include <Hooks.h>
 #include <DOM.h>
-#include <Path.h>
-#include <File.h>
-#include <Directory.h>
+#include <FS.h>
 #include <CLI.h>
 #include <Timer.h>
 

@@ -28,20 +28,148 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <Context.h>
-#include <Directory.h>
+#include <FS.h>
 #include <test.h>
 
 Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (49);
+  UnitTest t (108);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
   unsetenv ("TASKRC");
 
+  // Path ();
+  Path p0;
+  t.is (p0._data, "", "Path::Path");
+
+  // Path (const Path&);
+  Path p1 = Path ("foo");
+  t.is (p1._data, Directory::cwd () + "/foo", "Path::operator=");
+
+  // Path (const std::string&);
+  Path p2 ("~");
+  t.ok (p2._data != "~", "~ expanded to " + p2._data);
+
+  Path p3 ("/tmp");
+  t.ok (p3._data == "/tmp", "/tmp -> /tmp");
+
+  // Path& operator= (const Path&);
+  Path p3_copy (p3);
+  t.is (p3._data, p3_copy._data, "Path::Path (Path&)");
+
+  // operator (std::string) const;
+  t.is ((std::string) p3, "/tmp", "Path::operator (std::string) const");
+
+  // std::string name () const;
+  Path p4 ("/a/b/c/file.ext");
+  t.is (p4.name (), "file.ext",  "/a/b/c/file.ext name is file.ext");
+
+  // std::string parent () const;
+  t.is (p4.parent (), "/a/b/c",  "/a/b/c/file.ext parent is /a/b/c");
+
+  // std::string extension () const;
+  t.is (p4.extension (), "ext",  "/a/b/c/file.ext extension is ext");
+
+  // bool exists () const;
+  t.ok (p2.exists (), "~ exists");
+  t.ok (p3.exists (), "/tmp exists");
+
+  // bool is_directory () const;
+  t.ok (p2.is_directory (), "~ is_directory");
+  t.ok (p3.is_directory (), "/tmp is_directory");
+
+  // bool readable () const;
+  t.ok (p2.readable (), "~ readable");
+  t.ok (p3.readable (), "/tmp readable");
+
+  // bool writable () const;
+  t.ok (p2.writable (), "~ writable");
+  t.ok (p3.writable (), "/tmp writable");
+
+  // bool executable () const;
+  t.ok (p2.executable (), "~ executable");
+  t.ok (p3.executable (), "/tmp executable");
+
+  // static std::string expand (const std::string&);
+  t.ok (Path::expand ("~") != "~", "Path::expand ~ != ~");
+  t.ok (Path::expand ("~/") != "~/", "Path::expand ~/ != ~/");
+
+  // static std::vector <std::string> glob (const std::string&);
+  std::vector <std::string> out = Path::glob ("/tmp");
+  t.ok (out.size () == 1, "/tmp -> 1 result");
+  t.is (out[0], "/tmp", "/tmp -> /tmp");
+
+  out = Path::glob ("/t?p");
+  t.ok (out.size () == 1, "/t?p -> 1 result");
+  t.is (out[0], "/tmp", "/t?p -> /tmp");
+
+  out = Path::glob ("/[s-u]mp");
+  t.ok (out.size () == 1, "/[s-u]mp -> 1 result");
+  t.is (out[0], "/tmp", "/[s-u]mp -> /tmp");
+
+  // bool is_absolute () const;
+  t.notok (p0.is_absolute (), "'' !is_absolute");
+  t.ok    (p1.is_absolute (), "foo is_absolute");
+  t.ok    (p2.is_absolute (), "~ is_absolute (after expansion)");
+  t.ok    (p3.is_absolute (), "/tmp is_absolute");
+  t.ok    (p4.is_absolute (), "/a/b/c/file.ext is_absolute");
+
   Directory tmp ("tmp");
+  tmp.create ();
+  t.ok (tmp.exists (), "tmp dir created.");
+
+  File::write ("tmp/file.t.txt", "This is a test\n");
+  File f6 ("tmp/file.t.txt");
+  t.ok (f6.size () == 15, "File::size tmp/file.t.txt good");
+  t.ok (f6.mode () & S_IRUSR, "File::mode tmp/file.t.txt good");
+  t.ok (File::remove ("tmp/file.t.txt"), "File::remove tmp/file.t.txt good");
+
+  // operator (std::string) const;
+  t.is ((std::string) f6, Directory::cwd () + "/tmp/file.t.txt", "File::operator (std::string) const");
+
+  t.ok (File::create ("tmp/file.t.create"), "File::create tmp/file.t.create good");
+  t.ok (File::remove ("tmp/file.t.create"), "File::remove tmp/file.t.create good");
+
+  // basename (std::string) const;
+  t.is (f6.name (), "file.t.txt", "File::basename tmp/file.t.txt --> file.t.txt");
+
+  // dirname (std::string) const;
+  t.is (f6.parent (), Directory::cwd () + "/tmp", "File::dirname tmp/file.t.txt --> tmp");
+
+  // bool rename (const std::string&);
+  File f7 ("tmp/file.t.2.txt");
+  f7.append ("something\n");
+  f7.close ();
+
+  t.ok (f7.rename ("tmp/file.t.3.txt"),  "File::rename did not fail");
+  t.is (f7._data, Directory::cwd () + "/tmp/file.t.3.txt",    "File::rename stored new name");
+  t.ok (f7.exists (),                    "File::rename new file exists");
+  t.ok (f7.remove (),                    "File::remove tmp/file.t.3.txt good");
+  t.notok (f7.exists (),                 "File::remove new file no longer exists");
+
+  // Test permissions.
+  File f8 ("tmp/file.t.perm.txt");
+  f8.create (0744);
+  t.ok (f8.exists (),                    "File::create perm file exists");
+  mode_t m = f8.mode ();
+  t.ok    (m & S_IFREG,                  "File::mode tmp/file.t.perm.txt S_IFREG good");
+  t.ok    (m & S_IRUSR,                  "File::mode tmp/file.t.perm.txt r-------- good");
+  t.ok    (m & S_IWUSR,                  "File::mode tmp/file.t.perm.txt -w------- good");
+  t.ok    (m & S_IXUSR,                  "File::mode tmp/file.t.perm.txt --x------ good");
+  t.ok    (m & S_IRGRP,                  "File::mode tmp/file.t.perm.txt ---r----- good");
+  t.notok (m & S_IWGRP,                  "File::mode tmp/file.t.perm.txt ----w---- good");
+  t.notok (m & S_IXGRP,                  "File::mode tmp/file.t.perm.txt -----x--- good");
+  t.ok    (m & S_IROTH,                  "File::mode tmp/file.t.perm.txt ------r-- good");
+  t.notok (m & S_IWOTH,                  "File::mode tmp/file.t.perm.txt -------w- good");
+  t.notok (m & S_IXOTH,                  "File::mode tmp/file.t.perm.txt --------x good");
+  f8.remove ();
+  t.notok (f8.exists (),                 "File::remove perm file no longer exists");
+
+  tmp.remove ();
+  t.notok (tmp.exists (),                "tmp dir removed.");
   tmp.create ();
   t.ok (tmp.exists (), "tmp dir created.");
 
@@ -133,7 +261,7 @@ int main (int argc, char** argv)
   Directory d10 ("tmp/dir.perm");
   d10.create (0750);
   t.ok (d10.exists (),               "Directory::create perm file exists");
-  mode_t m = d10.mode ();
+  m = d10.mode ();
   t.ok    (m & S_IFDIR,             "Directory::mode tmp/dir.perm S_IFDIR good");
   t.ok    (m & S_IRUSR,             "Directory::mode tmp/dir.perm r-------- good");
   t.ok    (m & S_IWUSR,             "Directory::mode tmp/dir.perm -w------- good");

@@ -26,16 +26,286 @@
 
 #include <cmake.h>
 #include <fstream>
+#include <glob.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include <stdlib.h>
 #include <pwd.h>
-#include <File.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <string.h>
+#include <errno.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
+#include <FS.h>
+
+#if defined SOLARIS || defined NETBSD || defined FREEBSD
+#include <limits.h>
+#endif
+
+// Fixes build with musl libc.
+#ifndef GLOB_TILDE
+#define GLOB_TILDE 0
+#endif
+
+#ifndef GLOB_BRACE
+#define GLOB_BRACE 0
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
+std::ostream& operator<< (std::ostream& out, const Path& path)
+{
+  out << path._data;
+  return out;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Path::Path ()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Path::Path (const Path& other)
+{
+  if (this != &other)
+  {
+    _original = other._original;
+    _data     = other._data;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Path::Path (const std::string& in)
+{
+  _original = in;
+  _data = expand (in);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Path::~Path ()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Path& Path::operator= (const Path& other)
+{
+  if (this != &other)
+  {
+    this->_original = other._original;
+    this->_data     = other._data;
+  }
+
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::operator== (const Path& other)
+{
+  return _data == other._data;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Path& Path::operator+= (const std::string& dir)
+{
+  _data += "/" + dir;
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Path::operator std::string () const
+{
+  return _data;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Path::name () const
+{
+  if (_data.length ())
+  {
+    auto slash = _data.rfind ('/');
+    if (slash != std::string::npos)
+      return _data.substr (slash + 1, std::string::npos);
+  }
+
+ return _data;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Path::parent () const
+{
+  if (_data.length ())
+  {
+    auto slash = _data.rfind ('/');
+    if (slash != std::string::npos)
+      return _data.substr (0, slash);
+  }
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Path::extension () const
+{
+  if (_data.length ())
+  {
+    auto dot = _data.rfind ('.');
+    if (dot != std::string::npos)
+      return _data.substr (dot + 1, std::string::npos);
+  }
+
+  return "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::exists () const
+{
+  return access (_data.c_str (), F_OK) ? false : true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::is_directory () const
+{
+  struct stat s = {0};
+  if (! stat (_data.c_str (), &s) &&
+      S_ISDIR (s.st_mode))
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::is_absolute () const
+{
+  if (_data.length () && _data[0] == '/')
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::is_link () const
+{
+  struct stat s = {0};
+  if (! lstat (_data.c_str (), &s) &&
+      S_ISLNK (s.st_mode))
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::readable () const
+{
+  return access (_data.c_str (), R_OK) ? false : true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::writable () const
+{
+  return access (_data.c_str (), W_OK) ? false : true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::executable () const
+{
+  return access (_data.c_str (), X_OK) ? false : true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Path::rename (const std::string& new_name)
+{
+  std::string expanded = expand (new_name);
+  if (_data != expanded)
+  {
+    if (::rename (_data.c_str (), expanded.c_str ()) == 0)
+    {
+      _data = expanded;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// ~      --> /home/user
+// ~foo/x --> /home/foo/s
+// ~/x    --> /home/foo/x
+// ./x    --> $PWD/x
+// x      --> $PWD/x
+std::string Path::expand (const std::string& in)
+{
+  std::string copy = in;
+
+  auto tilde = copy.find ("~");
+  std::string::size_type slash;
+
+  if (tilde != std::string::npos)
+  {
+    const char *home = getenv("HOME");
+    if (home == NULL)
+    {
+      struct passwd* pw = getpwuid (getuid ());
+      home = pw->pw_dir;
+    }
+
+    // Convert: ~ --> /home/user
+    if (copy.length () == 1)
+      copy = home;
+
+    // Convert: ~/x --> /home/user/x
+    else if (copy.length () > tilde + 1 &&
+             copy[tilde + 1] == '/')
+    {
+      copy.replace (tilde, 1, home);
+    }
+
+    // Convert: ~foo/x --> /home/foo/x
+    else if ((slash = copy.find  ("/", tilde)) != std::string::npos)
+    {
+      std::string name = copy.substr (tilde + 1, slash - tilde - 1);
+      struct passwd* pw = getpwnam (name.c_str ());
+      if (pw)
+        copy.replace (tilde, slash - tilde, pw->pw_dir);
+    }
+  }
+
+  // Relative paths
+  else if (in.length () > 2 &&
+           in.substr (0, 2) == "./")
+  {
+    copy = Directory::cwd () + "/" + in.substr (2);
+  }
+  else if (in.length () > 1 &&
+           in[0] != '.' &&
+           in[0] != '/')
+  {
+    copy = Directory::cwd () + "/" + in;
+  }
+
+  return copy;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string> Path::glob (const std::string& pattern)
+{
+  std::vector <std::string> results;
+
+  glob_t g;
+#ifdef SOLARIS
+  if (!::glob (pattern.c_str (), GLOB_ERR, NULL, &g))
+#else
+  if (!::glob (pattern.c_str (), GLOB_ERR | GLOB_BRACE | GLOB_TILDE, NULL, &g))
+#endif
+    for (int i = 0; i < (int) g.gl_pathc; ++i)
+      results.push_back (g.gl_pathv[i]);
+
+  globfree (&g);
+  return results;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 File::File ()
@@ -518,4 +788,203 @@ bool File::remove (const std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Directory::Directory ()
+{
+}
 
+////////////////////////////////////////////////////////////////////////////////
+Directory::Directory (const Directory& other)
+: File::File (other)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Directory::Directory (const File& other)
+: File::File (other)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Directory::Directory (const Path& other)
+: File::File (other)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Directory::Directory (const std::string& in)
+: File::File (in)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Directory::~Directory ()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Directory& Directory::operator= (const Directory& other)
+{
+  if (this != &other)
+  {
+    File::operator= (other);
+  }
+
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Directory::create (int mode /* = 0755 */)
+{
+  return mkdir (_data.c_str (), mode) == 0 ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Directory::remove () const
+{
+  return remove_directory (_data);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Directory::remove_directory (const std::string& dir) const
+{
+  DIR* dp = opendir (dir.c_str ());
+  if (dp != NULL)
+  {
+    struct dirent* de;
+    while ((de = readdir (dp)) != NULL)
+    {
+      if (!strcmp (de->d_name, ".") ||
+          !strcmp (de->d_name, ".."))
+        continue;
+
+#if defined (SOLARIS) || defined (HAIKU)
+      struct stat s;
+      lstat ((dir + "/" + de->d_name).c_str (), &s);
+      if (S_ISDIR (s.st_mode))
+        remove_directory (dir + "/" + de->d_name);
+      else
+        unlink ((dir + "/" + de->d_name).c_str ());
+#else
+      if (de->d_type == DT_UNKNOWN)
+      {
+        struct stat s;
+        lstat ((dir + "/" + de->d_name).c_str (), &s);
+        if (S_ISDIR (s.st_mode))
+          de->d_type = DT_DIR;
+      }
+      if (de->d_type == DT_DIR)
+        remove_directory (dir + "/" + de->d_name);
+      else
+        unlink ((dir + "/" + de->d_name).c_str ());
+#endif
+    }
+
+    closedir (dp);
+  }
+
+  return rmdir (dir.c_str ()) ? false : true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string> Directory::list ()
+{
+  std::vector <std::string> files;
+  list (_data, files, false);
+  return files;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::vector <std::string> Directory::listRecursive ()
+{
+  std::vector <std::string> files;
+  list (_data, files, true);
+  return files;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Directory::cwd ()
+{
+#ifdef HAVE_GET_CURRENT_DIR_NAME
+  char *buf = get_current_dir_name ();
+  if (buf == NULL)
+    throw std::bad_alloc ();
+  std::string result (buf);
+  free (buf);
+  return result;
+#else
+  char buf[PATH_MAX];
+  getcwd (buf, PATH_MAX - 1);
+  return std::string (buf);
+#endif
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Directory::up ()
+{
+  if (_data == "/")
+    return false;
+
+  auto slash = _data.rfind ('/');
+  if (slash == 0)
+  {
+    _data = "/";  // Root dir should retain the slash.
+    return true;
+  }
+  else if (slash != std::string::npos)
+  {
+    _data = _data.substr (0, slash);
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Directory::cd () const
+{
+  return chdir (_data.c_str ()) == 0 ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Directory::list (
+  const std::string& base,
+  std::vector <std::string>& results,
+  bool recursive)
+{
+  DIR* dp = opendir (base.c_str ());
+  if (dp != NULL)
+  {
+    struct dirent* de;
+    while ((de = readdir (dp)) != NULL)
+    {
+      if (!strcmp (de->d_name, ".") ||
+          !strcmp (de->d_name, ".."))
+        continue;
+
+#if defined (SOLARIS) || defined (HAIKU)
+      struct stat s;
+      stat ((base + "/" + de->d_name).c_str (), &s);
+      if (recursive && S_ISDIR (s.st_mode))
+        list (base + "/" + de->d_name, results, recursive);
+      else
+        results.push_back (base + "/" + de->d_name);
+#else
+      if (recursive && de->d_type == DT_UNKNOWN)
+      {
+        struct stat s;
+        lstat ((base + "/" + de->d_name).c_str (), &s);
+        if (S_ISDIR (s.st_mode))
+          de->d_type = DT_DIR;
+      }
+      if (recursive && de->d_type == DT_DIR)
+        list (base + "/" + de->d_name, results, recursive);
+      else
+        results.push_back (base + "/" + de->d_name);
+#endif
+    }
+
+    closedir (dp);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////

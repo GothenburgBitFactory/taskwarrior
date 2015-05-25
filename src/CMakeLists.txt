@@ -12,18 +12,16 @@ set (task_SRCS CLI.cpp CLI.h
                DOM.cpp DOM.h
                Date.cpp Date.h
                Dates.cpp Dates.h
-               Directory.cpp Directory.h
                Duration.cpp Duration.h
                Eval.cpp Eval.h
-               File.cpp File.h
                Filter.cpp Filter.h
+               FS.cpp FS.h
                Hooks.cpp Hooks.h
                ISO8601.cpp ISO8601.h
                JSON.cpp JSON.h
                Lexer.cpp Lexer.h
                Msg.cpp Msg.h
                Nibbler.cpp Nibbler.h
-               Path.cpp Path.h
                RX.cpp RX.h
                TDB2.cpp TDB2.h
                Task.cpp Task.h

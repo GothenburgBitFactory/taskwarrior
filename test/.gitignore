@@ -11,11 +11,10 @@ color.t
 config.t
 date.t
 dates.t
-directory.t
 dom.t
 duration.t
 eval.t
-file.t
+fs.t
 i18n.t
 iso8601d.t
 iso8601p.t
@@ -24,7 +23,6 @@ lexer.t
 list.t
 msg.t
 nibbler.t
-path.t
 rx.t
 t.t
 t2.t

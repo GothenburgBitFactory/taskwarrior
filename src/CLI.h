@@ -30,8 +30,7 @@
 #include <vector>
 #include <map>
 #include <Lexer.h>
-#include <Path.h>
-#include <File.h>
+#include <FS.h>
 
 // Represents a single argument.
 class A

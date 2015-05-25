@@ -30,7 +30,7 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <File.h>
+#include <FS.h>
 
 class Config : public std::map <std::string, std::string>
 {

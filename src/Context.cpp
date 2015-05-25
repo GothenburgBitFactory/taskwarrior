@@ -34,8 +34,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <Context.h>
-#include <Directory.h>
-#include <File.h>
+#include <FS.h>
 #include <Eval.h>
 #include <Variant.h>
 #include <text.h>

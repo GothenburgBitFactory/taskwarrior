@@ -33,9 +33,8 @@
 #include <inttypes.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <Directory.h>
 #include <Date.h>
-#include <File.h>
+#include <FS.h>
 #include <Timer.h>
 #include <JSON.h>
 #include <Config.h>
