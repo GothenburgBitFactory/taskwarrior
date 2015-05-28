@@ -79,6 +79,13 @@ int CmdStart::execute (std::string& output)
       task.modify (Task::modAnnotate);
       task.setAsNow ("start");
 
+      Task::status status = task.getStatus ();
+      if (status == Task::completed || status == Task::deleted)
+      {
+        // "waiting" handled by Task::validate(), no special care needed here.
+        task.setStatus (Task::pending);
+      }
+
       if (context.config.getBoolean ("journal.time"))
         task.addAnnotation (context.config.get ("journal.time.start.annotation"));
 
