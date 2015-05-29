@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 8;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -78,10 +78,6 @@ $output = qx{../src/task rc:import.rc completed 2>&1};
 unlike ($output, qr/1.+A.+zero/,       't1 missing');
 unlike ($output, qr/2.+B.+one/,        't2 missing');
 like   ($output, qr/2\/13\/2009.+two/, 't3 present');
-
-# Make sure that a duplicate task cannot be imported.
-$output = qx{../src/task rc:import.rc import import.txt 2>&1 >/dev/null};
-like ($output, qr/Cannot add task because the uuid .+ is not unique\./, 'error on duplicate uuid');
 
 # Create import file.
 if (open my $fh, '>', 'import2.txt')

@@ -110,11 +110,22 @@ int CmdImport::import (std::vector <std::string>& lines)
 
     // Parse the whole thing.
     Task task (object);
-    context.tdb2.add (task);
+
+    // Check whether the imported task is new or a modified existing task.
+    Task dummy;
+    if (context.tdb2.get (task.get ("uuid"), dummy))
+    {
+      context.tdb2.modify (task);
+      std::cout << " mod ";
+    }
+    else
+    {
+      context.tdb2.add (task);
+      std::cout << " add ";
+    }
 
     ++count;
-    std::cout << "  "
-              << task.get ("uuid")
+    std::cout << task.get ("uuid")
               << " "
               << task.get ("description")
               << "\n";

@@ -346,13 +346,16 @@ provided for exceptional circumstances.  Use carefully.
 
 .TP
 .B task import [<file> ...]
-Imports tasks in the JSON format.  The standard task release comes with a few
-example scripts, such as:
+Imports tasks in the JSON format.  Can be used to add new tasks, or update
+existing ones.  Tasks are identified by their UUID.
+
+If no file or "-" is specified, import tasks from STDIN.
+
+For importing other file formats, the standard task release comes with a
+few example scripts, such as:
 
   import-todo.sh.pl
   import-yaml.pl
-
-If no file or "-" is specified, import tasks from STDIN.
 
 .TP
 .B task log <mods>

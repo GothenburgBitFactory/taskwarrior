@@ -35,7 +35,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from basetest import Task, TestCase
 
 
-class TestImportSTDIN(TestCase):
+class TestImport(TestCase):
     def setUp(self):
         self.t = Task()
         self.t.config("report.foo.description", "foo")
@@ -54,6 +54,28 @@ class TestImportSTDIN(TestCase):
         self.assertRegexpMatches(out, "1\s+zero", "first task present")
         self.assertRegexpMatches(out, "2\s+one", "second task present")
         self.assertRegexpMatches(out, "-\s+two", "third task present")
+
+    def test_import_update(self):
+        """Update existing tasks"""
+        json_data = """
+        {"uuid":"00000000-0000-0000-0000-000000000000","description":"zero","project":"A","status":"pending","entry":"1234567889"}
+        {"uuid":"11111111-1111-1111-1111-111111111111","description":"one","project":"B","status":"deleted","entry":"1234567889"}
+        {"uuid":"22222222-2222-2222-2222-222222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690"}"""
+        self.t("import", input=json_data)
+
+        self.t("next")  # Run GC
+
+        json_data = """
+        {"uuid":"00000000-0000-0000-0000-000000000000","description":"zero","project":"C","status":"pending","entry":"1234567889"}
+        {"uuid":"11111111-1111-1111-1111-111111111111","description":"one","project":"B","status":"pending","entry":"1234567889"}
+        {"uuid":"22222222-2222-2222-2222-222222222222","description":"two","status":"pending","entry":"1234524689","end":"1234524690"}"""
+        self.t("import", input=json_data)
+
+        zero, one, two = sorted(self.t.export(), key=lambda t: t["uuid"])
+        self.assertEqual(zero["status"], "pending", "status for 'zero' unchanged")
+        self.assertEqual(zero["project"], "C", "project for 'zero' changed to 'C'")
+        self.assertEqual(one["status"], "pending", "status for 'one' changed to pending")
+        self.assertEqual(two["status"], "pending", "status for 'two' changed to pending")
 
 
 if __name__ == "__main__":

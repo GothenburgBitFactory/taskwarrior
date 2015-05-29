@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 15;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -135,10 +135,6 @@ $output = qx{../src/task rc:$rc +y 2>&1};
 like ($output, qr/1.+A.+zero.*\n.+ONE/,           "$ut: t1 selected by tag, has annotation");
 like ($output, qr/2.+B.+one.*\n.+TWO.*\n.+THREE/, "$ut: t2 selected by tag, has two annotations");
 like ($output, qr/\n2 tasks\n/,                   "$ut: tag selected two tasks");
-
-# Make sure that a duplicate task cannot be imported.
-$output = qx{../src/task rc:$rc import import.json 2>&1 >/dev/null};
-like ($output, qr/Cannot add task because the uuid '.{36}' is not unique\./, "$ut: error on duplicate uuid");
 
 # Create import file.
 if (open my $fh, '>', 'import.txt')
