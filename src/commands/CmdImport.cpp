@@ -112,19 +112,32 @@ int CmdImport::import (std::vector <std::string>& lines)
     Task task (object);
 
     // Check whether the imported task is new or a modified existing task.
-    Task dummy;
-    if (context.tdb2.get (task.get ("uuid"), dummy))
+    Task before;
+    if (context.tdb2.get (task.get ("uuid"), before))
     {
-      context.tdb2.modify (task);
-      std::cout << " mod ";
+      // "modified:" is automatically set to the current time when a task is
+      // changed.  If the imported task has a modification timestamp we need
+      // to ignore it in taskDiff() in order to check for meaningful
+      // differences.  Setting it to the previous value achieves just that.
+      task.set ("modified", before.get ("modified"));
+      if (taskDiff (before, task))
+      {
+        context.tdb2.modify (task);
+        std::cout << " mod  ";
+        ++count;
+      }
+      else
+      {
+        std::cout << " skip ";
+      }
     }
     else
     {
       context.tdb2.add (task);
-      std::cout << " add ";
+      std::cout << " add  ";
+      ++count;
     }
 
-    ++count;
     std::cout << task.get ("uuid")
               << " "
               << task.get ("description")
