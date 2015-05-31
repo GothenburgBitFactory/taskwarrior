@@ -137,7 +137,6 @@ int CmdModify::modifyAndUpdate (
   int count = 0;
 
   updateRecurrenceMask (after);
-  dependencyChainOnModify (before, after);
   ++count;
   feedback_affected (STRING_CMD_MODIFY_TASK, after);
   feedback_unblocked (after);
@@ -176,7 +175,6 @@ int CmdModify::modifyRecurrenceSiblings (
       Task alternate (sibling);
       sibling.modify (Task::modReplace);
       updateRecurrenceMask (sibling);
-      dependencyChainOnModify (alternate, sibling);
       ++count;
       feedback_affected (STRING_CMD_MODIFY_TASK_R, sibling);
       feedback_unblocked (sibling);
@@ -213,7 +211,6 @@ int CmdModify::modifyRecurrenceParent (
       child.modify (Task::modReplace);
       updateRecurrenceMask (child);
       context.tdb2.modify (child);
-      dependencyChainOnModify (alternate, child);
       if (context.verbose ("project") && projectChanges)
         (*projectChanges)[child.get ("project")] = onProjectChange (alternate, child);
       ++count;

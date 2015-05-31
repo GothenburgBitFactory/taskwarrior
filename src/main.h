@@ -58,7 +58,6 @@ void dependencyGetBlocking (const Task&, std::vector <Task>&);
 bool dependencyIsCircular (const Task&);
 void dependencyChainOnComplete (Task&);
 void dependencyChainOnStart (Task&);
-void dependencyChainOnModify (Task&, Task&);
 
 // feedback.cpp
 bool taskDiff (const Task&, const Task&);
