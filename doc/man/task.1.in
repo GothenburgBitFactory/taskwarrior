@@ -351,6 +351,9 @@ existing ones.  Tasks are identified by their UUID.
 
 If no file or "-" is specified, import tasks from STDIN.
 
+Setting rc.recurrence.confirmation to an appropriate level is recommended
+if import is to be used in automated workflows.  See taskrc(5).
+
 For importing other file formats, the standard task release comes with a
 few example scripts, such as:
 

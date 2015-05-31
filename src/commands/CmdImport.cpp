@@ -34,6 +34,7 @@
 #include <i18n.h>
 #include <main.h>
 #include <CmdImport.h>
+#include <CmdModify.h>
 
 extern Context context;
 
@@ -122,9 +123,10 @@ int CmdImport::import (std::vector <std::string>& lines)
       task.set ("modified", before.get ("modified"));
       if (taskDiff (before, task))
       {
-        context.tdb2.modify (task);
+        CmdModify modHelper;
+        modHelper.checkConsistency (before, task);
+        count += modHelper.modifyAndUpdate (before, task);
         std::cout << " mod  ";
-        ++count;
       }
       else
       {
