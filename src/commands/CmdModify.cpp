@@ -62,8 +62,6 @@ int CmdModify::execute (std::string& output)
     return 1;
   }
 
-  // TODO Complain when no modifications are specified.
-
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
@@ -74,24 +72,9 @@ int CmdModify::execute (std::string& output)
 
     if (taskDiff (before, task))
     {
-      // Perform some logical consistency checks.
-      if (task.has ("recur")  &&
-          !task.has ("due")   &&
-          !before.has ("due"))
-        throw std::string (STRING_CMD_MODIFY_NO_DUE);
+      // Abort if change introduces inconsistencies.
+      checkConsistency(before, task);
 
-      if (before.has ("recur") &&
-          before.has ("due")   &&
-          (!task.has ("due")  ||
-           task.get ("due") == ""))
-        throw std::string (STRING_CMD_MODIFY_REM_DUE);
-
-      if (before.has ("recur")  &&
-          (!task.has ("recur") ||
-           task.get ("recur") == ""))
-        throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
-
-      // Delete the specified task.
       std::string question;
       if (task.id != 0)
         question = format (STRING_CMD_MODIFY_CONFIRM,
@@ -104,67 +87,7 @@ int CmdModify::execute (std::string& output)
 
       if (permission (task, taskDifferences (before, task) + question, filtered.size ()))
       {
-        updateRecurrenceMask (task);
-        dependencyChainOnModify (before, task);
-        ++count;
-        feedback_affected (STRING_CMD_MODIFY_TASK, task);
-        feedback_unblocked (task);
-        context.tdb2.modify (task);
-        if (context.verbose ("project"))
-          projectChanges[task.get ("project")] = onProjectChange (before, task);
-
-        // Task potentially has siblings - modify them.
-        if (task.has ("parent"))
-        {
-          if ((context.config.get ("recurrence.confirmation") == "prompt"
-               && confirm (STRING_CMD_MODIFY_RECUR)) ||
-              context.config.getBoolean ("recurrence.confirmation"))
-          {
-            std::vector <Task> siblings = context.tdb2.siblings (task);
-            for (auto& sibling : siblings)
-            {
-              Task alternate (sibling);
-              sibling.modify (Task::modReplace);
-              updateRecurrenceMask (sibling);
-              dependencyChainOnModify (alternate, sibling);
-              ++count;
-              feedback_affected (STRING_CMD_MODIFY_TASK_R, sibling);
-              feedback_unblocked (sibling);
-              context.tdb2.modify (sibling);
-              if (context.verbose ("project"))
-                projectChanges[sibling.get ("project")] = onProjectChange (alternate, sibling);
-            }
-
-            // Modify the parent
-            Task parent;
-            context.tdb2.get (task.get ("parent"), parent);
-            parent.modify (Task::modReplace);
-            context.tdb2.modify (parent);
-          }
-        }
-
-        // Task potentially has child tasks - modify them.
-        else if (task.get ("status") == "recurring")
-        {
-          std::vector <Task> children = context.tdb2.children (task);
-          if (children.size () &&
-              (! context.config.getBoolean ("recurrence.confirmation") ||
-               confirm (STRING_CMD_MODIFY_RECUR)))
-          {
-            for (auto& child : children)
-            {
-              Task alternate (child);
-              child.modify (Task::modReplace);
-              updateRecurrenceMask (child);
-              context.tdb2.modify (child);
-              dependencyChainOnModify (alternate, child);
-              if (context.verbose ("project"))
-                projectChanges[child.get ("project")] = onProjectChange (alternate, child);
-              ++count;
-              feedback_affected (STRING_CMD_MODIFY_TASK_R, child);
-            }
-          }
-        }
+        count += modifyAndUpdate (before, task, &projectChanges);
       }
       else
       {
@@ -186,3 +109,120 @@ int CmdModify::execute (std::string& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void CmdModify::checkConsistency (Task &before, Task &after)
+{
+  // Perform some logical consistency checks.
+  if (after.has ("recur")  &&
+      !after.has ("due")   &&
+      !before.has ("due"))
+    throw std::string (STRING_CMD_MODIFY_NO_DUE);
+
+  if (before.has ("recur") &&
+      before.has ("due")   &&
+      (!after.has ("due")  ||
+        after.get ("due") == ""))
+    throw std::string (STRING_CMD_MODIFY_REM_DUE);
+
+  if (before.has ("recur")  &&
+      (!after.has ("recur") ||
+        after.get ("recur") == ""))
+    throw std::string (STRING_CMD_MODIFY_REC_ALWAYS);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdModify::modifyAndUpdate (
+  Task &before, Task &after,
+  std::map <std::string, std::string> *projectChanges /* = NULL */)
+{
+  int count = 0;
+
+  updateRecurrenceMask (after);
+  dependencyChainOnModify (before, after);
+  ++count;
+  feedback_affected (STRING_CMD_MODIFY_TASK, after);
+  feedback_unblocked (after);
+  context.tdb2.modify (after);
+  if (context.verbose ("project") && projectChanges)
+    (*projectChanges)[after.get ("project")] = onProjectChange (before, after);
+
+  if (after.has ("parent"))
+  {
+    // Task has siblings - modify them.
+    count += modifyRecurrenceSiblings (after, projectChanges);
+  }
+  else if (after.get ("status") == "recurring")
+  {
+    // Task has child tasks - modify them.
+    count += modifyRecurrenceParent (after, projectChanges);
+  }
+
+  return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdModify::modifyRecurrenceSiblings (
+  Task &task,
+  std::map <std::string, std::string> *projectChanges /* = NULL */)
+{
+  int count = 0;
+
+  if ((context.config.get ("recurrence.confirmation") == "prompt"
+        && confirm (STRING_CMD_MODIFY_RECUR)) ||
+      context.config.getBoolean ("recurrence.confirmation"))
+  {
+    std::vector <Task> siblings = context.tdb2.siblings (task);
+    for (auto& sibling : siblings)
+    {
+      Task alternate (sibling);
+      sibling.modify (Task::modReplace);
+      updateRecurrenceMask (sibling);
+      dependencyChainOnModify (alternate, sibling);
+      ++count;
+      feedback_affected (STRING_CMD_MODIFY_TASK_R, sibling);
+      feedback_unblocked (sibling);
+      context.tdb2.modify (sibling);
+      if (context.verbose ("project") && projectChanges)
+        (*projectChanges)[sibling.get ("project")] = onProjectChange (alternate, sibling);
+    }
+
+    // Modify the parent
+    Task parent;
+    context.tdb2.get (task.get ("parent"), parent);
+    parent.modify (Task::modReplace);
+    context.tdb2.modify (parent);
+  }
+
+  return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdModify::modifyRecurrenceParent (
+  Task &task,
+  std::map <std::string, std::string> *projectChanges /* = NULL */)
+{
+  int count = 0;
+
+  std::vector <Task> children = context.tdb2.children (task);
+  if (children.size () &&
+      (! context.config.getBoolean ("recurrence.confirmation") ||
+        confirm (STRING_CMD_MODIFY_RECUR)))
+  {
+    for (auto& child : children)
+    {
+      Task alternate (child);
+      child.modify (Task::modReplace);
+      updateRecurrenceMask (child);
+      context.tdb2.modify (child);
+      dependencyChainOnModify (alternate, child);
+      if (context.verbose ("project") && projectChanges)
+        (*projectChanges)[child.get ("project")] = onProjectChange (alternate, child);
+      ++count;
+      feedback_affected (STRING_CMD_MODIFY_TASK_R, child);
+    }
+  }
+
+  return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
