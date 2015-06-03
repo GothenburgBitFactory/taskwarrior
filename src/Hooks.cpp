@@ -426,6 +426,8 @@ void Hooks::assertValidJSON (const std::vector <std::string>& input) const
         context.error (STRING_HOOK_ERROR_NOUUID);
         throw 0;
       }
+
+      delete root;
     }
 
     catch (const std::string& e)
@@ -479,6 +481,8 @@ void Hooks::assertSameTask (const std::vector <std::string>& input, const Task& 
       context.error (format (STRING_HOOK_ERROR_SAME2, uuid, json_uuid));
       throw 0;
     }
+
+    delete root_obj;
   }
 }
 
