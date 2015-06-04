@@ -241,17 +241,26 @@ int CmdContext::listContexts (std::vector <std::string>& words, std::stringstrea
     view.width (context.getWidth ());
     view.add (Column::factory ("string", "Name"));
     view.add (Column::factory ("string", "Definition"));
+    view.add (Column::factory ("string", "Active"));
 
     Color label (context.config.get ("color.label"));
     view.colorHeader (label);
+
+    std::string activeContext = context.config.get ("context");
 
     for (auto& userContext : contexts)
     {
       std::string definition = context.config.get ("context." + userContext);
 
+      std::string active = "no";
+
+      if (userContext == activeContext)
+          active = "yes";
+
       int row = view.addRow ();
       view.set (row, 0, userContext);
       view.set (row, 1, definition);
+      view.set (row, 2, active);
     }
 
     out << optionalBlankLine ()

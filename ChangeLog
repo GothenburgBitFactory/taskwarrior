@@ -6,6 +6,7 @@ Harlan).
 - TW-1432 start/stop can be issued on completed tasks  (thanks to Renato Alves).
 - TW-1572 Better urgency inheritance (thanks to Jens Erat).
 - Prevent potential task duplication during import for non-pending tasks.
+- Show the active context in "context list", if any is active.
 
 ------ current release ---------------------------
 
