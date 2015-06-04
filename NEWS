@@ -1,6 +1,8 @@
 
 New Features in Taskwarrior 2.4.5
 
+  - The active context, if one is set, is now identified in "task context list"
+
 New commands in Taskwarrior 2.4.5
 
 New configuration options in Taskwarrior 2.4.5

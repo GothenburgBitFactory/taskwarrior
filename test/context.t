@@ -143,18 +143,19 @@ class ContextManagementTest(TestCase):
         self.assertIn('No context is currently applied.', output)
         self.assertFalse(any(re.search("^context=", line) for line in self.t.taskrc_content))
 
-    def test_context_list(self):
+    def test_context_list_active(self):
         """
         Test the 'context list' command.
         """
 
-        self.t(('context', 'define', 'work', 'project:Work'))[1]
-        self.t(('context', 'define', 'home', '+home'))[1]
+        self.t(('context', 'define', 'work', 'project:Work'))
+        self.t(('context', 'define', 'home', '+home'))
+        self.t(('context', 'home'))
 
         output = self.t(('context', 'list'))[1]
 
-        contains_work = lambda line: 'work' in line and 'project:Work' in line
-        contains_home = lambda line: 'home' in line and '+home' in line
+        contains_work = lambda line: 'work' in line and 'project:Work' in line and 'no' in line
+        contains_home = lambda line: 'home' in line and '+home' in line and 'yes' in line
 
         # Assert that output contains work and home context definitions exactly
         # once
