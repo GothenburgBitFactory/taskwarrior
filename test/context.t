@@ -62,7 +62,7 @@ class ContextManagementTest(TestCase):
         Test re-defining the context with the same definition.
         """
 
-        self.t(('context', 'define', 'work', 'project:Work'))[1]
+        self.t(('context', 'define', 'work', 'project:Work'))
         output = self.t(('context', 'define', 'work', 'project:Work'))[1]
 
         # Assert successful output
@@ -80,7 +80,7 @@ class ContextManagementTest(TestCase):
         Test re-defining the context with different definition.
         """
 
-        self.t(('context', 'define', 'work', 'project:Work'))[1]
+        self.t(('context', 'define', 'work', 'project:Work'))
         output = self.t(('context', 'define', 'work', '+work'))[1]
 
         # Assert successful output
@@ -167,8 +167,8 @@ class ContextManagementTest(TestCase):
         Test that no context is set initially.
         """
 
-        self.t(('context', 'define', 'work', 'project:Work'))[1]
-        self.t(('context', 'define', 'home', '+home'))[1]
+        self.t(('context', 'define', 'work', 'project:Work'))
+        self.t(('context', 'define', 'home', '+home'))
 
         output = self.t(('context', 'show'))[1]
         self.assertIn('No context is currently applied.', output)
@@ -179,8 +179,8 @@ class ContextManagementTest(TestCase):
         Test simple context setting.
         """
 
-        self.t(('context', 'define', 'work', 'project:Work'))[1]
-        self.t(('context', 'define', 'home', '+home'))[1]
+        self.t(('context', 'define', 'work', 'project:Work'))
+        self.t(('context', 'define', 'home', '+home'))
 
         output = self.t(('context', 'home'))[1]
         self.assertIn("Context 'home' set.", output)
@@ -191,10 +191,10 @@ class ContextManagementTest(TestCase):
         Test resetting the same context.
         """
 
-        self.t(('context', 'define', 'work', 'project:Work'))[1]
-        self.t(('context', 'define', 'home', '+home'))[1]
+        self.t(('context', 'define', 'work', 'project:Work'))
+        self.t(('context', 'define', 'home', '+home'))
 
-        self.t(('context', 'home'))[1]
+        self.t(('context', 'home'))
         output = self.t(('context', 'home'))[1]
         self.assertIn("Context 'home' set.", output)
 
@@ -206,8 +206,8 @@ class ContextManagementTest(TestCase):
         Test changing the context.
         """
 
-        self.t(('context', 'define', 'work', 'project:Work'))[1]
-        self.t(('context', 'define', 'home', '+home'))[1]
+        self.t(('context', 'define', 'work', 'project:Work'))
+        self.t(('context', 'define', 'home', '+home'))
 
         contains_home = lambda line: line == "context=home\n"
         contains_work = lambda line: line == "context=work\n"
@@ -237,8 +237,8 @@ class ContextManagementTest(TestCase):
         Test removing the context.
         """
 
-        self.t(('context', 'define', 'work', 'project:Work'))[1]
-        self.t(('context', 'define', 'home', '+home'))[1]
+        self.t(('context', 'define', 'work', 'project:Work'))
+        self.t(('context', 'define', 'home', '+home'))
 
         self.t(('context', 'home'))
         output = self.t(('context', 'none'))[1]
@@ -259,8 +259,8 @@ class ContextManagementTest(TestCase):
         Test unsetting the context after changing the context around.
         """
 
-        self.t(('context', 'define', 'work', 'project:Work'))[1]
-        self.t(('context', 'define', 'home', '+home'))[1]
+        self.t(('context', 'define', 'work', 'project:Work'))
+        self.t(('context', 'define', 'home', '+home'))
 
         # Switch to contexts around
         self.t(('context', 'home'))
