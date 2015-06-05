@@ -40,6 +40,7 @@
 #include <i18n.h>
 #include <main.h>
 #include <CmdEdit.h>
+#include <JSON.h>
 
 extern Context context;
 
@@ -239,7 +240,7 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
   {
     Date dt (strtol (anno.first.substr (11).c_str (), NULL, 10));
     before << "  Annotation:        " << dt.toString (dateformat)
-           << " -- "                  << anno.second << "\n";
+           << " -- "                  << json::encode (anno.second) << "\n";
   }
 
   Date now;
@@ -639,7 +640,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
         std::stringstream name;
         name << "annotation_" << when.toEpoch ();
         std::string text = trim (value.substr (gap + 4), "\t ");
-        annotations.insert (std::make_pair (name.str (), text));
+        annotations.insert (std::make_pair (name.str (), json::decode (text)));
       }
     }
   }
