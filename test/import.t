@@ -1,98 +1,99 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 8;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
+from basetest.utils import mkstemp
 
-# Create the rc file.
-if (open my $fh, '>', 'import.rc')
-{
-  print $fh "data.location=.\n",
-            "dateformat=m/d/Y\n";
-  close $fh;
-}
 
-# Create import file.
-if (open my $fh, '>', 'import.txt')
-{
-  print $fh <<EOF;
-{"uuid":"00000000-0000-0000-0000-000000000000","description":"zero","project":"A","status":"pending","entry":"1234567889"}
+class TestImport(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t.config("dateformat", "m/d/Y")
+
+        self.data1 = """{"uuid":"00000000-0000-0000-0000-000000000000","description":"zero","project":"A","status":"pending","entry":"1234567889"}
 {"uuid":"11111111-1111-1111-1111-111111111111","description":"one","project":"B","status":"pending","entry":"1234567889"}
 {"uuid":"22222222-2222-2222-2222-222222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690"}
-EOF
-  close $fh;
-}
+"""
 
-my $output = qx{../src/task rc:import.rc import import.txt 2>&1 >/dev/null};
-like ($output, qr/Imported 3 tasks\./, 'no errors');
-# Imported 3 tasks successfully.
+        self.data2 = """{"uuid":"44444444-4444-4444-4444-444444444444","description":"three","status":"pending","entry":"1234567889"}
+"""
 
-$output = qx{../src/task rc:import.rc list 2>&1};
-# ID Project Pri Due Active Age     Description
-# -- ------- --- --- ------ ------- -----------
-#  1 A                      1.5 yrs zero
-#  2 B                      1.5 yrs one
-#
-# 2 tasks
+    def assertData1(self):
+        code, out, err = self.t(("list",))
+        self.assertRegexpMatches(out, "1.+A.+zero")
+        self.assertRegexpMatches(out, "2.+B.+one")
+        self.assertNotIn("two", out)
 
-like   ($output, qr/1.+A.+zero/, 't1 present');
-like   ($output, qr/2.+B.+one/,  't2 present');
-unlike ($output, qr/3.+two/,     't3 missing');
+        code, out, err = self.t(("completed",))
+        self.assertNotIn("zero", out)
+        self.assertNotIn("one", out)
+        # complete has completion date as 1st column
+        self.assertRegexpMatches(out, "2/13/2009.+two")
 
-$output = qx{../src/task rc:import.rc completed 2>&1};
-# Complete  Project Pri Age     Description
-# --------- ------- --- ------- -----------
-# 2/13/2009             1.5 yrs two
-#
-# 1 task
+    def assertData2(self):
+        code, out, err = self.t(("list",))
+        self.assertRegexpMatches(out, "3.+three")
 
-unlike ($output, qr/1.+A.+zero/,       't1 missing');
-unlike ($output, qr/2.+B.+one/,        't2 missing');
-like   ($output, qr/2\/13\/2009.+two/, 't3 present');
+    def test_import_stdin(self):
+        """Import from stdin"""
+        code, out, err = self.t(("import", "-"), input=self.data1)
+        self.assertIn("Imported 3 tasks", err)
 
-# Create import file.
-if (open my $fh, '>', 'import2.txt')
-{
-  print $fh <<EOF;
-{"uuid":"44444444-4444-4444-4444-444444444444","description":"three","status":"pending","entry":"1234567889"}
-EOF
-  close $fh;
-}
+        self.assertData1()
 
-$output = qx{../src/task rc:import.rc import import2.txt 2>&1 >/dev/null};
-like ($output, qr/Imported 1 tasks\./, 'no errors');
-# Imported 1 tasks successfully.
+    def test_import_file(self):
+        """Import from a file"""
+        filename = mkstemp(self.data1)
 
-# Cleanup.
-unlink qw(import.txt import2.txt pending.data completed.data undo.data backlog.data  import.rc);
-exit 0;
+        code, out, err = self.t(("import", filename))
+        self.assertIn("Imported 3 tasks", err)
 
+        self.assertData1()
+
+    def test_double_import(self):
+        """Multiple imports persist data"""
+        code, out, err = self.t(("import", "-"), input=self.data1)
+        self.assertIn("Imported 3 tasks", err)
+
+        code, out, err = self.t(("import", "-"), input=self.data2)
+        self.assertIn("Imported 1 tasks", err)
+
+        self.assertData1()
+        self.assertData2()
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
