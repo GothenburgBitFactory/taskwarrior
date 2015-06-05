@@ -57,7 +57,7 @@ class TestBugNumber(TestCase):
         code, out, err = self.t(command)
 
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
-        self.assertRegexpMatches(out.decode("utf8"), expected)
+        self.assertRegexpMatches(out, expected)
 
         # TAP diagnostics on the bas
         self.diag("Yay TAP diagnostics")
