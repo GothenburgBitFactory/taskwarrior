@@ -980,7 +980,10 @@ void Task::addDependency (int id)
 
   std::string depends = get ("depends");
   if (depends.find (uuid) != std::string::npos)
-    throw format (STRING_TASK_DEPEND_DUP, this->id, id);
+  {
+    context.footnote (format (STRING_TASK_DEPEND_DUP, this->id, id));
+    return;
+  }
 
   addDependency(uuid);
 }
@@ -999,7 +1002,10 @@ void Task::addDependency (const std::string& uuid)
     if (depends.find (uuid) == std::string::npos)
       set ("depends", depends + "," + uuid);
     else
-      throw format (STRING_TASK_DEPEND_DUP, this->get ("uuid"), uuid);
+    {
+      context.footnote (format (STRING_TASK_DEPEND_DUP, this->get ("uuid"), uuid));
+      return;
+    }
   }
   else
     set ("depends", uuid);
