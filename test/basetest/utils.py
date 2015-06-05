@@ -5,6 +5,8 @@ import sys
 import socket
 import signal
 import functools
+import atexit
+import tempfile
 from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
 from Queue import Queue, Empty
@@ -443,5 +445,33 @@ def parse_datafile(file):
                 data.append(line)
     return data
 
+
+def mkstemp(data):
+    """
+    Create a temporary file that is removed at process exit
+    """
+    def rmtemp(name):
+        try:
+            os.remove(name)
+        except OSError:
+            pass
+
+    f = tempfile.NamedTemporaryFile(delete=False)
+    f.write(data)
+    f.close()
+
+    # Ensure removal at end of python session
+    atexit.register(rmtemp, f.name)
+
+    return f.name
+
+
+def mkstemp_exec(data):
+    """Create a temporary executable file that is removed at process exit
+    """
+    name = mkstemp(data)
+    os.chmod(name, 0755)
+
+    return name
 
 # vim: ai sts=4 et sw=4
