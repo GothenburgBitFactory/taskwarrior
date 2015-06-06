@@ -43,7 +43,7 @@ class TestTaskEdit(TestCase):
         # Workaround to always assume changes were introduced via "task edit"
         self.editor = mkstemp_exec("echo '' >> $1\n")
 
-        self.t.env["EDITOR"] = self.editor
+        self.t.env["VISUAL"] = self.editor
 
     def test_newline_description_edit(self):
         """task edit - parsing entries containing multiline descriptions"""
