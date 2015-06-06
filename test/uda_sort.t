@@ -59,9 +59,9 @@ class TestUDACustomSort(TestCase):
         three = out.find('three')
         four  = out.find('four')
 
-        self.assertEqual(one   < two,   True)
-        self.assertEqual(two   < three, True)
-        self.assertEqual(three < four,  True)
+        self.assertTrue(one   < two)
+        self.assertTrue(two   < three)
+        self.assertTrue(three < four)
 
     def test_descending(self):
         """Descending sort order"""
@@ -73,9 +73,9 @@ class TestUDACustomSort(TestCase):
         three = out.find('three')
         four  = out.find('four')
 
-        self.assertEqual(four  < three, True)
-        self.assertEqual(three < two,   True)
-        self.assertEqual(two   < one,   True)
+        self.assertTrue(four  < three)
+        self.assertTrue(three < two)
+        self.assertTrue(two   < one)
 
     def test_ridiculous(self):
         """Ridiculous sort order"""
@@ -87,9 +87,9 @@ class TestUDACustomSort(TestCase):
         three = out.find('three')
         four  = out.find('four')
 
-        self.assertEqual(four  < three, True)
-        self.assertEqual(three < one,   True)
-        self.assertEqual(one   < two,   True)
+        self.assertTrue(four  < three)
+        self.assertTrue(three < one)
+        self.assertTrue(one   < two)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
