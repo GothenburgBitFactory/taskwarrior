@@ -339,11 +339,7 @@ void CLI::initialize (int argc, const char** argv)
 
   _original_args.push_back (argv[0]);
   for (int i = 1; i < argc; ++i)
-  {
-    if (isTerminator (argv[i]))
-      _terminated = true;
     addArg (argv[i]);
-  }
 
   analyze ();
 }
