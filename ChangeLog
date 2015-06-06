@@ -10,6 +10,7 @@ Babej).
 - Prevent potential task duplication during import for non-pending tasks.
 - Show the active context in "context list", if any is active.
 - Fix "task edit" dropping annotation text after newlines.
+- Removed obsolete script 'context'.
 
 ------ current release ---------------------------
 

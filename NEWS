@@ -11,6 +11,8 @@ Newly deprecated features in Taskwarrior 2.4.5
 
 Removed features in 2.4.5
 
+  - The script 'context' was removed, now that context is a core feature.
+
 Known Issues
 
   - https://bug.tasktools.org/
