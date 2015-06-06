@@ -1,9 +1,16 @@
 2.4.5 () -
 
+- TW-32   Unable to change annotations via task edit (thanks to Peter De
+Poorter).
+- TW-50   Creation time is lost after editing (thanks to Ben Boeckel).
+- TW-148  default.command options (thanks to David Patrick).
+- TW-269  \t is not rendered correctly (thanks to Scott Kostyshak).
+- TW-283  Process rc.* items when executing config (thanks to Ben Armstrong).
 - TW-303  Ability for "import" to update existing tasks (thanks to Kosta
 Harlan).
-- TW-1440 "task import" from STDIN (thanks to Renato Alves).
+- TW-1285 relative dates combined with times (thanks to Adam Gibbins).
 - TW-1432 start/stop can be issued on completed tasks  (thanks to Renato Alves).
+- TW-1440 "task import" from STDIN (thanks to Renato Alves).
 - TW-1454 Redundant dependency should not stop modification  (thanks to Tomas
 Babej).
 - TW-1572 Better urgency inheritance (thanks to Jens Erat).
