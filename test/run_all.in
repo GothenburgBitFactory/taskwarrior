@@ -55,6 +55,17 @@ run_all_parallel() {
   rm _run_all_parallel.txt
 }
 
+if [ ! -z "$1" ] && [ "$1" -ne "--verbose" ] && [ "$1" -ne "--fast" ];
+then
+  echo "Did you mean --fast or --verbose?"
+  exit 1
+fi
+
+if [ "$#" -gt 1 ];
+then
+  echo "Can only use arguments one at a time."
+  exit 1
+fi
 
 rc=0
 if [ x"$1" = x"--verbose" ];
