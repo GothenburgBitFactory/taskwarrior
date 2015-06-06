@@ -1,70 +1,75 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 2;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'uda.rc')
-{
-  print $fh "data.location=.\n",
-            "confirmation=off\n",
-            "uda.extra.type=string\n",
-            "uda.extra.label=Extra\n",
-            "report.good.columns=id,extra\n",
-            "report.good.description=Test report\n",
-            "report.good.filter=\n",
-            "report.good.labels=ID,Extra\n",
-            "report.good.sort=ID\n",
-            "report.bad.columns=id,extra2\n",
-            "report.bad.description=Test report2\n",
-            "report.bad.filter=\n",
-            "report.bad.labels=ID,Extra2\n",
-            "report.bad.sort=ID\n";
-  close $fh;
-}
 
-# Add a task with a defined UDA.
-qx{../src/task rc:uda.rc add one extra:foo 2>&1};
+class TestUdaReports(TestCase):
+    @classmethod
+    def setUp(cls):
+        cls.t = Task()
+        cls.t.config("uda.extra.label", "Extra")
+        cls.t.config("uda.extra.type", "string")
+        cls.t.config("report.good.columns", "id,extra")
+        cls.t.config("report.good.description", "Test report")
+        cls.t.config("report.good.filter", "")
+        cls.t.config("report.good.labels", "ID,Extra")
+        cls.t.config("report.good.sort", "ID")
+        cls.t.config("report.bad.columns", "id,extra2")
+        cls.t.config("report.bad.description", "Test report2")
+        cls.t.config("report.bad.filter", "")
+        cls.t.config("report.bad.labels", "ID,Extra2")
+        cls.t.config("report.bad.sort", "ID")
 
-# Run a report that references the UDA.
-my $output = qx{../src/task rc:uda.rc good 2>&1};
-like ($output, qr/foo/, 'UDA shown in report');
+        cls.t(("add", "one", "extra:foo"))
 
-# Run a report that references an Orphan UDA.
-$output = qx{../src/task rc:uda.rc bad 2>&1};
-like ($output, qr/Unrecognized column name/, 'UDA Orphan causes error');
+    def test_uda_show_report(self):
+        """UDA shown in report"""
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data uda.rc import.txt);
-exit 0;
+        code, out, err = self.t(("good",))
+        self.assertIn("foo", out)
 
+    def test_uda_no_show_report(self):
+        """UDA not shown in report"""
+
+        code, out, err = self.t.runError(("bad",))
+        self.assertNotIn("foo", out)
+        self.assertIn("Unrecognized column name", err)
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
