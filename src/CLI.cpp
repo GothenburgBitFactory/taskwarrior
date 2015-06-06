@@ -250,16 +250,14 @@ void CLI::getDataLocation (int argc, const char** argv, Path& data)
   if (location != "")
     data = location;
 
-  bool terminated = false;
   for (int i = 0; i < argc; ++i)
   {
     std::string raw = argv[i];
 
     if (raw == "--")
-      terminated = true;
+      break;
 
-    if (! terminated       &&
-        raw.length () > 17 &&
+    if (raw.length () > 17 &&
         raw.substr (0, 16) == "rc.data.location")
     {
       data = Directory (raw.substr (17));
@@ -274,16 +272,14 @@ void CLI::getDataLocation (int argc, const char** argv, Path& data)
 ////////////////////////////////////////////////////////////////////////////////
 void CLI::applyOverrides (int argc, const char** argv)
 {
-  bool terminated = false;
   for (int i = 0; i < argc; ++i)
   {
     std::string raw = argv[i];
 
     if (raw == "--")
-      terminated = true;
+      break;
 
-    if (! terminated      &&
-        raw.length () > 3 &&
+    if (raw.length () > 3 &&
         raw.substr (0, 3) == "rc.")
     {
       auto sep = raw.find ('=', 3);
