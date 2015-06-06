@@ -781,16 +781,13 @@ void CLI::findOverrides ()
 {
   bool changes = false;
   std::string raw;
-  bool terminated = false;
+
   for (auto& a : _args)
   {
     raw = a.attribute ("raw");
 
     if (raw == "--")
-      terminated = true;
-
-    if (terminated)
-      continue;
+      break;
 
     if (isRCOverride (raw))
     {
