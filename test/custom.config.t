@@ -32,7 +32,7 @@ import unittest
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import Task, TestCase, Taskd, ServerTestCase
+from basetest import Task, TestCase
 
 
 class TestCustomConfig(TestCase):
