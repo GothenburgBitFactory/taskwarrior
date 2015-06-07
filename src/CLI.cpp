@@ -840,7 +840,6 @@ void CLI::categorize ()
       changes = true;
       continue;
     }
-
     else if (terminated)
     {
       a.tag ("ORIGINAL");
@@ -909,14 +908,10 @@ bool CLI::exactMatch (
   const std::string& value) const
 {
   // Extract a list of entities for category.
-  std::vector <std::string> options;
   auto c = _entities.equal_range (category);
   for (auto e = c.first; e != c.second; ++e)
-  {
-    // Shortcut: if an exact match is found, success.
     if (value == e->second)
       return true;
-  }
 
   return false;
 }
@@ -2273,7 +2268,6 @@ bool CLI::isAttribute (const std::string& raw) const
 bool CLI::isOperator (const std::string& raw) const
 {
   // Walk the list of entities for category.
-  std::vector <std::string> options;
   auto c = _entities.equal_range ("operator");
   for (auto e = c.first; e != c.second; ++e)
     if (raw == e->second)
