@@ -275,6 +275,8 @@ control specific occasions when output is generated. This list may contain:
     sync       Feedback about sync
     filter     Shows the filter used in the command
 
+"affected", "new-id", "new-uuid" and "project" imply "footnote".
+
 Note that the "on" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
 
