@@ -357,6 +357,8 @@ void CLI::add (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// There are situations where a context filter is applied. This method
+// determines whether one applies, and if so, applies it.
 void CLI::addContextFilter ()
 {
   // Detect if any context is set, and bail out if not
@@ -368,20 +370,17 @@ void CLI::addContextFilter ()
   }
 
   // Detect if UUID or ID is set, and bail out
-  if (_args.size ())
+  for (auto& a : _args)
   {
-    for (auto& a : _args)
+    // TODO This looks wrong.
+    if (a.hasTag ("FILTER") &&
+        a.hasTag ("ATTRIBUTE") &&
+        ! a.hasTag ("TERMINATED") &&
+        ! a.hasTag ("WORD") &&
+        (a.attribute ("raw") == "id" || a.attribute ("raw") == "uuid"))
     {
-      // TODO This looks wrong.
-      if (a.hasTag ("FILTER") &&
-          a.hasTag ("ATTRIBUTE") &&
-          ! a.hasTag ("TERMINATED") &&
-          ! a.hasTag ("WORD") &&
-          (a.attribute ("raw") == "id" || a.attribute ("raw") == "uuid"))
-      {
-        context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a.attribute ("raw")));
-        return;
-      }
+      context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a.attribute ("raw")));
+      return;
     }
   }
 
@@ -495,6 +494,8 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Scan arguments, looking for any tagged CONFIG, in which case extract the name
+// and value, applying it to context.config.
 void CLI::applyOverrides ()
 {
   for (auto& a : _args)
