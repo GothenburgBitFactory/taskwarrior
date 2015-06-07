@@ -81,7 +81,8 @@ int CmdCustom::execute (std::string& output)
   split (sortOrder, reportSort, ',');
   validateSortColumns (sortOrder);
 
-  // Prepend the argument list with those from the report filter.
+  // Add the report filter to any existing filter from the command line or
+  // context.
   context.cli.addRawFilter (reportFilter);
 
   // Apply filter.

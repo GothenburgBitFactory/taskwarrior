@@ -334,6 +334,9 @@ int CmdCalendar::execute (std::string& output)
       if (context.commands.find (report) == context.commands.end ())
         throw std::string (STRING_ERROR_DETAILS);
 
+      // TODO Fix this:  cal --> task
+      //                 calendar --> taskendar
+
       // If the executable was "cal" or equivalent, replace it with "task".
       std::string executable = context.cli._args[0].attribute ("raw");
       auto cal = executable.find ("cal");

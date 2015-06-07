@@ -671,7 +671,8 @@ void CLI::addArg (const std::string& arg)
   if (isTerminator (raw))           // --
     _terminated = true;
 
-  // This is the case where the argument should not be lexed.
+  // This is the case where the argument should not be lexed, which is when it
+  // is a single entity, and recognized.
   if (_terminated            ||
       isRCOverride     (raw) ||     // rc:<file>
       isConfigOverride (raw) ||     // rc.<attr>:<value>
@@ -2365,7 +2366,8 @@ bool CLI::disqualifyFirstLastBinary (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Disqualify terms when there operators hidden by syntactic sugar.
+// Disqualify terms when there are operators hidden by syntactic sugar.
+// TODO This always returns false. Why bother?
 bool CLI::disqualifySugarFree (
   const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {
