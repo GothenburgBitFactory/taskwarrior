@@ -819,6 +819,8 @@ void CLI::findOverrides ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO This method should further categorize args into whether or not they are
+//      extracted by ::getWords.
 void CLI::categorize ()
 {
   bool changes = false;
