@@ -206,7 +206,6 @@ int Context::initialize (int argc, const char** argv)
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    // Scan command line for 'rc:<file>' only.
     cli.initialize (argc, argv);
     cli.analyze (true, true);
 
