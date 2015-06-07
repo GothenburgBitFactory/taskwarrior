@@ -67,14 +67,14 @@ int CmdUrgency::execute (std::string& output)
     if (task.id)
     {
       out << format (STRING_CMD_URGENCY_RESULT,
-                     task.id, task.urgency ())
+                     task.id, trim (format (task.urgency (), 6, 3)))
           << "\n";
     }
     else
     {
       out << format (STRING_CMD_URGENCY_RESULT,
                      task.get ("uuid"),
-                     task.urgency ())
+                     trim (format (task.urgency (), 6, 3)))
           << "\n";
     }
   }

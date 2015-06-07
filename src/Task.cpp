@@ -28,6 +28,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <assert.h>
+#include <string>
 #ifdef PRODUCT_TASKWARRIOR
 #include <math.h>
 #include <cfloat>
@@ -1961,7 +1962,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             // If v is duration, add 'now' to it, else store as date.
             if (v.type () == Variant::type_duration)
             {
-              context.debug (label + name + " <-- '" + format ("{1}", v.get_duration ()) + "' <-- '" + (std::string) v + "' <-- '" + value + "'");
+              context.debug (label + name + " <-- '" + format ("{1}", std::to_string (v.get_duration ())) + "' <-- '" + (std::string) v + "' <-- '" + value + "'");
               Variant now;
               if (namedDates ("now", now))
                 v += now;

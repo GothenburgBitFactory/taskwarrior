@@ -20,6 +20,8 @@ Babej).
 - Removed obsolete script 'context'.
 - Fix "project" verbosity info not showing without "footnote" being manually
 enabled.
+- Internal plumbing:  Use variadic templates for format(), reducing code bloat
+and enabling more flexible use of the function.
 
 ------ current release ---------------------------
 
