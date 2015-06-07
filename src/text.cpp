@@ -45,8 +45,6 @@ extern Context context;
 static const char* newline = "\n";
 static const char* noline  = "";
 
-static void replace_positional (std::string&, const std::string&, const std::string&);
-
 ///////////////////////////////////////////////////////////////////////////////
 void wrapText (
   std::vector <std::string>& lines,
@@ -676,6 +674,19 @@ const std::string obfuscateText (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string format (std::string& value)
+{
+  return value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (const char* value)
+{
+  std::string s (value);
+  return s;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const std::string format (char value)
 {
   std::stringstream s;
@@ -685,6 +696,30 @@ const std::string format (char value)
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::string format (int value)
+{
+  std::stringstream s;
+  s << value;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (unsigned int value)
+{
+  std::stringstream s;
+  s << value;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (unsigned long value)
+{
+  std::stringstream s;
+  s << value;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string format (long value)
 {
   std::stringstream s;
   s << value;
@@ -747,7 +782,7 @@ const std::string format (double value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-static void replace_positional (
+void replace_positional (
   std::string& fmt,
   const std::string& from,
   const std::string& to)
@@ -758,202 +793,6 @@ static void replace_positional (
     fmt.replace (pos, from.length (), to);
     pos += to.length ();
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  const std::string& arg1)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", arg1);
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  int arg1)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", format (arg1));
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  const std::string& arg1,
-  const std::string& arg2)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", arg1);
-  replace_positional (output, "{2}", arg2);
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  const std::string& arg1,
-  int arg2)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", arg1);
-  replace_positional (output, "{2}", format (arg2));
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  const std::string& arg1,
-  double arg2)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", arg1);
-  replace_positional (output, "{2}", trim (format (arg2, 6, 3)));
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  int arg1,
-  int arg2,
-  const std::string& arg3)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", format (arg1));
-  replace_positional (output, "{2}", format (arg2));
-  replace_positional (output, "{3}", arg3);
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  int arg1,
-  const std::string& arg2)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", format (arg1));
-  replace_positional (output, "{2}", arg2);
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  int arg1,
-  const std::string& arg2,
-  const std::string& arg3)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", format (arg1));
-  replace_positional (output, "{2}", arg2);
-  replace_positional (output, "{3}", arg3);
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  int arg1,
-  const std::string& arg2,
-  const std::string& arg3,
-  const std::string& arg4)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", format (arg1));
-  replace_positional (output, "{2}", arg2);
-  replace_positional (output, "{3}", arg3);
-  replace_positional (output, "{4}", arg4);
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  int arg1,
-  int arg2)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", format (arg1));
-  replace_positional (output, "{2}", format (arg2));
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  int arg1,
-  int arg2,
-  int arg3)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", format (arg1));
-  replace_positional (output, "{2}", format (arg2));
-  replace_positional (output, "{3}", format (arg3));
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  int arg1,
-  int arg2,
-  int arg3,
-  int arg4)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", format (arg1));
-  replace_positional (output, "{2}", format (arg2));
-  replace_positional (output, "{3}", format (arg3));
-  replace_positional (output, "{4}", format (arg4));
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  int arg1,
-  double arg2)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", format (arg1));
-  replace_positional (output, "{2}", trim (format (arg2, 6, 3)));
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  const std::string& arg1,
-  const std::string& arg2,
-  const std::string& arg3)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", arg1);
-  replace_positional (output, "{2}", arg2);
-  replace_positional (output, "{3}", arg3);
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-const std::string format (
-  const std::string& fmt,
-  const std::string& arg1,
-  const std::string& arg2,
-  const std::string& arg3,
-  const std::string& arg4)
-{
-  std::string output = fmt;
-  replace_positional (output, "{1}", arg1);
-  replace_positional (output, "{2}", arg2);
-  replace_positional (output, "{3}", arg3);
-  replace_positional (output, "{4}", arg4);
-  return output;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

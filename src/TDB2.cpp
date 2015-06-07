@@ -58,7 +58,7 @@ TF2::TF2 ()
 TF2::~TF2 ()
 {
   if (_dirty && context.verbose ("debug"))
-    std::cout << format (STRING_TDB2_DIRTY_EXIT, _file)
+    std::cout << format (STRING_TDB2_DIRTY_EXIT, std::string (_file))
               << "\n";
 }
 

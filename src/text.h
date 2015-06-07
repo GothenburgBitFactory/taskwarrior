@@ -28,6 +28,7 @@
 #define INCLUDED_TEXT
 
 #include <set>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -58,27 +59,39 @@ std::string::size_type find (const std::string&, const std::string&, bool sensit
 std::string::size_type find (const std::string&, const std::string&, std::string::size_type, bool sensitive = true);
 int strippedLength (const std::string&);
 const std::string obfuscateText (const std::string&);
+const std::string format (std::string&);
+const std::string format (const char*);
 const std::string format (char);
 const std::string format (int);
+const std::string format (unsigned int);
+const std::string format (long);
+const std::string format (unsigned long);
 const std::string formatHex (int);
 const std::string format (float, int, int);
 const std::string format (double, int, int);
 const std::string format (double);
-const std::string format (const std::string&, const std::string&);
-const std::string format (const std::string&, int);
-const std::string format (const std::string&, const std::string&, const std::string&);
-const std::string format (const std::string&, const std::string&, int);
-const std::string format (const std::string&, const std::string&, double);
-const std::string format (const std::string&, int, int, const std::string&);
-const std::string format (const std::string&, int, const std::string&);
-const std::string format (const std::string&, int, const std::string&, const std::string&);
-const std::string format (const std::string&, int, const std::string&, const std::string&, const std::string&);
-const std::string format (const std::string&, int, int);
-const std::string format (const std::string&, int, int, int);
-const std::string format (const std::string&, int, int, int, int);
-const std::string format (const std::string&, int, double);
-const std::string format (const std::string&, const std::string&, const std::string&, const std::string&);
-const std::string format (const std::string&, const std::string&, const std::string&, const std::string&, const std::string&);
+void replace_positional (std::string&, const std::string&, const std::string&);
+
+template<typename T>
+const std::string format (int fmt_num, const std::string& fmt, T arg)
+{
+    std::string output = fmt;
+    replace_positional (output, "{" + std::to_string(fmt_num) + "}", format (arg));
+    return output;
+}
+
+template<typename T, typename... Args>
+const std::string format (int fmt_num, const std::string& fmt, T arg, Args... args)
+{
+    const std::string fmt_replaced (format (fmt_num, fmt, arg));
+    return format (fmt_num+1, fmt_replaced, args...);
+}
+
+template<typename... Args>
+const std::string format (const std::string& fmt, Args... args)
+{
+    return format (1, fmt, args...);
+}
 
 std::string leftJustify (const int, const int);
 std::string leftJustify (const std::string&, const int);
