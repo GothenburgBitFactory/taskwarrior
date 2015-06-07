@@ -554,6 +554,8 @@ const std::vector <std::string> CLI::getWords ()
   // only.
   analyze (false);
 
+  // TODO Args that should be extracted as words, should be tagged accordingly,
+  //      thereby removing the need for a hard-coded exclusion list.
   std::vector <std::string> words;
   for (auto& a : _args)
   {
@@ -662,7 +664,7 @@ const std::string CLI::dump (const std::string& title /* = "CLI Parser" */) cons
 //       be lexed from those that need to be left alone.
 //
 // Either the arg is appended to _original_args intact, or the lexemes are.
-void CLI::addArg (const std::string& arg, Lexer::Type type /* = Lexer::Type::word */)
+void CLI::addArg (const std::string& arg)
 {
   std::string raw = trim (arg);
 
