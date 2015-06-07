@@ -220,7 +220,6 @@ void CLI::getOverride (int argc, const char** argv, std::string& home, File& rc)
   for (int i = 0; i < argc; ++i)
   {
     std::string raw = argv[i];
-
     if (raw == "--")
       return;
 
@@ -244,6 +243,7 @@ void CLI::getOverride (int argc, const char** argv, std::string& home, File& rc)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Look for CONFIG data.location and initialize a Path object.
+// Static method.
 void CLI::getDataLocation (int argc, const char** argv, Path& data)
 {
   std::string location = context.config.get ("data.location");
@@ -253,7 +253,6 @@ void CLI::getDataLocation (int argc, const char** argv, Path& data)
   for (int i = 0; i < argc; ++i)
   {
     std::string raw = argv[i];
-
     if (raw == "--")
       break;
 
@@ -270,12 +269,12 @@ void CLI::getDataLocation (int argc, const char** argv, Path& data)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Static method.
 void CLI::applyOverrides (int argc, const char** argv)
 {
   for (int i = 0; i < argc; ++i)
   {
     std::string raw = argv[i];
-
     if (raw == "--")
       break;
 
@@ -457,7 +456,7 @@ void CLI::analyze (bool parse /* = true */, bool strict /* = false */)
   }
 
   if (context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze start"));
+    context.debug (dump ("CLI::analyze start"));
 
   // Find argument types.
   aliasExpansion ();
@@ -740,7 +739,6 @@ void CLI::aliasExpansion ()
     for (auto& i : _args)
     {
       raw = i.attribute ("raw");
-
       if (raw == "--")
         terminated = true;
 
@@ -776,7 +774,7 @@ void CLI::aliasExpansion ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze aliasExpansion"));
+    context.debug (dump ("CLI::analyze aliasExpansion"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -788,7 +786,6 @@ void CLI::findOverrides ()
   for (auto& a : _args)
   {
     raw = a.attribute ("raw");
-
     if (raw == "--")
       break;
 
@@ -815,7 +812,7 @@ void CLI::findOverrides ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze findOverrides"));
+    context.debug (dump ("CLI::analyze findOverrides"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -898,7 +895,7 @@ void CLI::categorize ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze categorize"));
+    context.debug (dump ("CLI::analyze categorize"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -965,7 +962,7 @@ void CLI::desugarFilterTags ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze desugarFilterTags"));
+      context.debug (dump ("CLI::analyze desugarFilterTags"));
   }
 }
 
@@ -991,7 +988,7 @@ void CLI::findStrayModifications ()
 
   if (changes)
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze findStrayModifications"));
+      context.debug (dump ("CLI::analyze findStrayModifications"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1098,7 +1095,7 @@ void CLI::desugarFilterAttributes ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze desugarFilterAttributes"));
+      context.debug (dump ("CLI::analyze desugarFilterAttributes"));
   }
 }
 
@@ -1270,7 +1267,7 @@ void CLI::desugarFilterAttributeModifiers ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze desugarFilterAttributeModifiers"));
+      context.debug (dump ("CLI::analyze desugarFilterAttributeModifiers"));
   }
 }
 
@@ -1319,7 +1316,7 @@ void CLI::desugarFilterPatterns ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze desugarFilterPatterns"));
+      context.debug (dump ("CLI::analyze desugarFilterPatterns"));
   }
 }
 
@@ -1610,7 +1607,7 @@ void CLI::insertIDExpr ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze insertIDExpr"));
+      context.debug (dump ("CLI::analyze insertIDExpr"));
   }
 }
 
@@ -1660,7 +1657,7 @@ void CLI::desugarFilterPlainArgs ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze desugarFilterPlainArgs"));
+      context.debug (dump ("CLI::analyze desugarFilterPlainArgs"));
   }
 }
 
@@ -1686,7 +1683,7 @@ void CLI::findOperators ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze findOperators"));
+    context.debug (dump ("CLI::analyze findOperators"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1711,7 +1708,7 @@ void CLI::findAttributes ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze findAttributes"));
+    context.debug (dump ("CLI::analyze findAttributes"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1764,7 +1761,7 @@ void CLI::insertJunctions ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (context.cli.dump ("CLI::analyze insertJunctions"));
+      context.debug (dump ("CLI::analyze insertJunctions"));
   }
 }
 
@@ -1844,7 +1841,7 @@ void CLI::injectDefaults ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze injectDefaults"));
+    context.debug (dump ("CLI::analyze injectDefaults"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1908,7 +1905,7 @@ void CLI::decomposeModAttributes ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze decomposeModAttributes"));
+    context.debug (dump ("CLI::analyze decomposeModAttributes"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1992,7 +1989,7 @@ void CLI::decomposeModAttributeModifiers ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze decomposeModAttributeModifiers"));
+    context.debug (dump ("CLI::analyze decomposeModAttributeModifiers"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2025,7 +2022,7 @@ void CLI::decomposeModTags ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze decomposeModTags"));
+    context.debug (dump ("CLI::analyze decomposeModTags"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2066,13 +2063,13 @@ void CLI::decomposeModSubstitutions ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (context.cli.dump ("CLI::analyze decomposeModSubstitutions"));
+    context.debug (dump ("CLI::analyze decomposeModSubstitutions"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool CLI::isTerminator (const std::string& raw) const
 {
-  return (raw == "--");
+  return raw == "--";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
