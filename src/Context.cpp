@@ -507,7 +507,7 @@ bool Context::color ()
 //      take the place of '0'.
 bool Context::verbose (const std::string& token)
 {
-  if (! verbosity.size ())
+  if (verbosity.empty ())
   {
     verbosity_legacy = config.getBoolean ("verbose");
     split (verbosity, config.get ("verbose"), ',');
@@ -516,24 +516,40 @@ bool Context::verbose (const std::string& token)
     // This odd test is to see if a Boolean-false value is a real one, which
     // means it is not 1/true/T/yes/on, but also should not be one of the
     // valid tokens either.
-    if (!verbosity_legacy               &&
-        verbosity.size ()               &&
-        verbosity[0]      != "nothing"  &&
-        verbosity[0]      != "blank"    &&  // This list must be complete.
-        verbosity[0]      != "header"   &&  //
-        verbosity[0]      != "footnote" &&  //
-        verbosity[0]      != "label"    &&  //
-        verbosity[0]      != "new-id"   &&  //
-        verbosity[0]      != "new-uuid" &&  //
-        verbosity[0]      != "affected" &&  //
-        verbosity[0]      != "edit"     &&  //
-        verbosity[0]      != "special"  &&  //
-        verbosity[0]      != "project"  &&  //
-        verbosity[0]      != "sync"     &&  //
-        verbosity[0]      != "filter")      //
+    if (!verbosity_legacy && ! verbosity.empty ())
     {
-      // This list emulates rc.verbose=off in version 1.9.4.
-      verbosity = {"blank", "label", "new-id", "edit"};
+      std::string v = *(verbosity.begin ());
+      if (v != "nothing"  &&
+          v != "blank"    &&  // This list must be complete.
+          v != "header"   &&  //
+          v != "footnote" &&  //
+          v != "label"    &&  //
+          v != "new-id"   &&  //
+          v != "new-uuid" &&  //
+          v != "affected" &&  //
+          v != "edit"     &&  //
+          v != "special"  &&  //
+          v != "project"  &&  //
+          v != "sync"     &&  //
+          v != "filter")      //
+      {
+        // This list emulates rc.verbose=off in version 1.9.4.
+        verbosity = {"blank", "label", "new-id", "edit"};
+      }
+    }
+
+    // Some flags imply "footnote" verbosity being active.  Make it so.
+    if (! verbosity.count ("footnote"))
+    {
+      // TODO: Some of these may not use footnotes yet.  They should.
+      for (auto flag : {"affected", "new-id", "new-uuid", "project"})
+      {
+        if (verbosity.count (flag))
+        {
+          verbosity.insert ("footnote");
+          break;
+        }
+      }
     }
   }
 
@@ -543,11 +559,11 @@ bool Context::verbose (const std::string& token)
 
   // rc.verbose=nothing overrides all.
   if (verbosity.size () == 1 &&
-      verbosity[0] == "nothing")
+      *(verbosity.begin ()) == "nothing")
     return false;
 
   // Specific token match.
-  if (std::find (verbosity.begin (), verbosity.end (), token) != verbosity.end ())
+  if (verbosity.count (token))
     return true;
 
   return false;

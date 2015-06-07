@@ -27,6 +27,7 @@
 #ifndef INCLUDED_TEXT
 #define INCLUDED_TEXT
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -39,6 +40,7 @@ std::string unquoteText (const std::string&);
 int longestWord (const std::string&);
 int longestLine (const std::string&);
 bool extractLine (std::string&, const std::string&, int, bool, unsigned int&);
+void split (std::set<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const char);
 void split (std::vector<std::string>&, const std::string&, const std::string&);
 void join (std::string&, const std::string&, const std::vector<std::string>&);

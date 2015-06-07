@@ -37,6 +37,7 @@
 #include <FS.h>
 #include <CLI.h>
 #include <Timer.h>
+#include <set>
 
 class Context
 {
@@ -95,7 +96,7 @@ public:
   bool                                run_gc;
 
   bool                                verbosity_legacy;
-  std::vector <std::string>           verbosity;
+  std::set <std::string>              verbosity;
   std::vector <std::string>           headers;
   std::vector <std::string>           footnotes;
   std::vector <std::string>           errors;
