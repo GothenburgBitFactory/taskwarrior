@@ -1,39 +1,38 @@
-#!/usr/bin/env perl
+#!/usr/bin/env python
 
-use strict;
-use warnings;
+import re
+from collections import defaultdict
 
-if (open my $fh, '<', 'all.log')
-{
-  my $test_file;
-  my %errors;
-  my %skipped;
-  my %expected;
+errors = defaultdict(int)
+skipped = defaultdict(int)
+expected = defaultdict(int)
 
-  while (my $line = <$fh>)
-  {
-    $test_file = $1         if $line =~ /^# (\S+\.t)$/;
-    $errors{$test_file}++   if $line =~ /^not /;
-    $skipped{$test_file}++  if $line =~ /^skip /;
-    $expected{$test_file}++ if $line =~ /^# EXPECTED_FAILURE: /;
-  }
+file = re.compile("^# [/.]{2}(\S+\.t)$")
 
-  close $fh;
+with open("all.log") as fh:
+    for line in fh:
+        match = file.match(line)
+        if match:
+            filename = match.group(1)
 
-  print "Failed\n";
-  printf "%-32s %4d\n", $_, $errors{$_}
-    for sort {$errors{$b} <=> $errors{$a}} keys %errors;
+        if line.startswith("not "):
+            errors[filename] += 1
 
-  print "\n";
-  print "Skipped\n";
-  printf "%-32s %4d\n", $_, $skipped{$_}
-    for sort {$skipped{$b} <=> $skipped{$a}} keys %skipped;
+        if line.startswith("skip "):
+            skipped[filename] += 1
 
-  print "\n";
-  print "Expected failures (part of skipped)\n";
-  printf "%-32s %4d\n", $_, $expected{$_}
-    for sort {$expected{$b} <=> $expected{$a}} keys %expected;
-}
+        if line.startswith("# EXPECTED_FAILURE: "):
+            expected[filename] += 1
 
-exit 0;
 
+print "Failed"
+for key in sorted(errors):
+    print "%-32s %4d" % (key, errors[key])
+
+print "\nSkipped"
+for key in sorted(skipped):
+    print "%-32s %4d" % (key, skipped[key])
+
+print "\nExpected failures (part of skipped)"
+for key in sorted(expected):
+    print "%-32s %4d" % (key, expected[key])
