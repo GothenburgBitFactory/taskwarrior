@@ -61,16 +61,19 @@ int strippedLength (const std::string&);
 const std::string obfuscateText (const std::string&);
 const std::string format (std::string&);
 const std::string format (const char*);
-const std::string format (char);
-const std::string format (int);
-const std::string format (unsigned int);
-const std::string format (long);
-const std::string format (unsigned long);
 const std::string formatHex (int);
 const std::string format (float, int, int);
 const std::string format (double, int, int);
 const std::string format (double);
 void replace_positional (std::string&, const std::string&, const std::string&);
+
+template<typename T>
+const std::string format (T value)
+{
+    std::stringstream s;
+    s << value;
+    return s.str ();
+}
 
 template<typename T>
 const std::string format (int fmt_num, const std::string& fmt, T arg)
