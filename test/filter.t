@@ -29,6 +29,7 @@
 import sys
 import os
 import unittest
+from datetime import datetime, timedelta
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -351,6 +352,37 @@ class TestFilter(TestCase):
         self.assertIn("five", out)
         self.assertNotIn("six", out)
         self.assertNotIn("seven", out)
+
+
+class TestFilterDue(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+        self.t.config("due", "4")
+        self.t.config("dateformat", "m/d/Y")
+
+        just = datetime.now() + timedelta(days=3)
+        almost = datetime.now() + timedelta(days=5)
+        # NOTE: %-m and %-d are unix only
+        self.just = just.strftime("%-m/%-d/%Y")
+        self.almost = almost.strftime("%-m/%-d/%Y")
+
+    def test_due_filter(self):
+        """due tasks filtered correctly"""
+
+        self.t(("add", "one", "due:{0}".format(self.just)))
+        self.t(("add", "two", "due:{0}".format(self.almost)))
+        self.t(("add", "three", "due:today"))
+
+        code, out, err = self.t(("list", "due:today"))
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertIn("three", out)
+
+        code, out, err = self.t(("list", "due.is:today"))
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertIn("three", out)
 
 
 class TestBug1110(TestCase):

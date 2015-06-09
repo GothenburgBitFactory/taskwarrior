@@ -1,72 +1,120 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 4;
+import sys
+import os
+import unittest
+from datetime import datetime, timedelta
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'due.rc')
-{
-  print $fh "data.location=.\n",
-            "due=4\n",
-            "color=on\n",
-            "color.due=red\n",
-            "color.alternate=\n",
-            "_forcecolor=on\n",
-            "dateformat=m/d/Y\n";
-  close $fh;
-}
 
-# Add a task that is almost due, and one that is just due.
-my ($d, $m, $y) = (localtime (time + 3 * 86_400))[3..5];
-my $just = sprintf ("%d/%d/%d", $m + 1, $d, $y + 1900);
+class TestDue(TestCase):
+    def setUp(self):
+        self.t = Task()
 
-($d, $m, $y) = (localtime (time + 5 * 86_400))[3..5];
-my $almost = sprintf ("%d/%d/%d", $m + 1, $d, $y + 1900);
+        self.t.config("due", "4")
+        self.t.config("color", "on")
+        self.t.config("color.due", "red")
+        self.t.config("color.alternate", "")
+        self.t.config("_forcecolor", "on")
+        self.t.config("dateformat", "m/d/Y")
 
-qx{../src/task rc:due.rc add one due:$just 2>&1};
-qx{../src/task rc:due.rc add two due:$almost 2>&1};
-my $output = qx{../src/task rc:due.rc list 2>&1};
-like ($output, qr/\[31m.+$just.+\[0m/, 'one marked due');
-like ($output, qr/\s+$almost\s+/, 'two not marked due');
+        just = datetime.now() + timedelta(days=3)
+        almost = datetime.now() + timedelta(days=5)
+        # NOTE: %-m and %-d are unix only
+        self.just = just.strftime("%-m/%-d/%Y")
+        self.almost = almost.strftime("%-m/%-d/%Y")
 
-qx{../src/task rc:due.rc add three due:today 2>&1};
-$output = qx{../src/task rc:due.rc list due:today 2>&1};
-like ($output, qr/three/, 'due:today works as a filter');
+        self.t(("add", "one", "due:{0}".format(self.just)))
+        self.t(("add", "two", "due:{0}".format(self.almost)))
 
-$output = qx{../src/task rc:due.rc list due.is:today 2>&1};
-like ($output, qr/three/, 'due.is:today works as a filter');
+    def test_due(self):
+        """due tasks displayed correctly"""
+        code, out, err = self.t(("list",))
+        self.assertRegexpMatches(out, "\033\[31m.+{0}.+\033\[0m".format(self.just))
+        self.assertRegexpMatches(out, "\s+{0}\s+".format(self.almost))
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data due.rc);
-exit 0;
 
+class TestBug418(TestCase):
+    # NOTE: Originally Bug #418: due.before:eow not working
+    #   - with dateformat 'MD'
+    def setUp(self):
+        self.t = Task()
+
+        self.t.config("due", "4")
+        self.t.config("dateformat", "m/d/Y")
+        self.t.config("report.foo.description", "Sample")
+        self.t.config("report.foo.columns", "id,due,description")
+        self.t.config("report.foo.labels", "ID,Due,Description")
+        self.t.config("report.foo.sort", "due+")
+        self.t.config("report.foo.filter", "status:pending")
+        self.t.config("report.foo.dateformat", "MD")
+
+    def test_bug_418(self):
+        """due.before:eow bad with dateformat 'MD'"""
+        self.t(("add", "one",   "due:6/28/2010"))
+        self.t(("add", "two",   "due:6/29/2010"))
+        self.t(("add", "three", "due:6/30/2010"))
+        self.t(("add", "four",  "due:7/1/2010"))
+        self.t(("add", "five",  "due:7/2/2010"))
+        self.t(("add", "six",   "due:7/3/2010"))
+        self.t(("add", "seven", "due:7/4/2010"))
+        self.t(("add", "eight", "due:7/5/2010"))
+        self.t(("add", "nine",  "due:7/6/2010"))
+
+        code, out, err = self.t(("foo",))
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+        self.assertIn("three", out)
+        self.assertIn("four", out)
+        self.assertIn("five", out)
+        self.assertIn("six", out)
+        self.assertIn("seven", out)
+        self.assertIn("eight", out)
+        self.assertIn("nine", out)
+
+        code, out, err = self.t(("foo", "due.before:7/2/2010"))
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+        self.assertIn("three", out)
+        self.assertIn("four", out)
+        self.assertNotIn("five", out)
+        self.assertNotIn("six", out)
+        self.assertNotIn("seven", out)
+        self.assertNotIn("eight", out)
+        self.assertNotIn("nine", out)
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
