@@ -64,25 +64,28 @@ class TestMath(TestCase):
         code, out, err = self.t(('_get', '2.due'))
         self.assertEqual(out, self.when)
 
-#    def test_compact_arg_quoted(self):
-#        """compact arg quoted"""
-#        code, out, err = self.t(('_get', '3.due'))
-#        self.assertEqual(out, self.when)
+    @unittest.expectedFailure
+    def test_compact_arg_quoted(self):
+        """compact arg quoted"""
+        code, out, err = self.t(('_get', '3.due'))
+        self.assertEqual(out, self.when)
 
     def test_sparse_value_quoted(self):
         """sparse value quoted"""
         code, out, err = self.t(('_get', '4.due'))
         self.assertEqual(out, self.when)
 
-#    def test_sparse_arg_quoted(self):
-#        """sparse arg quoted"""
-#        code, out, err = self.t(('_get', '5.due'))
-#        self.assertEqual(out, self.when)
+    @unittest.expectedFailure
+    def test_sparse_arg_quoted(self):
+        """sparse arg quoted"""
+        code, out, err = self.t(('_get', '5.due'))
+        self.assertEqual(out, self.when)
 
-#    def test_sparse_arg_quoted_literal(self):
-#        """sparse arg quoted literal"""
-#        code, out, err = self.t(('_get', '6.due'))
-#        self.assertEqual(out, self.when)
+    @unittest.expectedFailure
+    def test_sparse_arg_quoted_literal(self):
+        """sparse arg quoted literal"""
+        code, out, err = self.t(('_get', '6.due'))
+        self.assertEqual(out, self.when)
 
 
 if __name__ == "__main__":
