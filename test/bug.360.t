@@ -119,8 +119,7 @@ class TestBug360AllowedChanges(BaseTestBug360):
         self.assertNotIn(expected, err)
 
         # Make sure no duplicate tasks were created
-        args = ("diag",)
-        code, out, err = self.t(args)
+        code, out, err = self.t.diag()
         expected = "No duplicates found"
         self.assertIn(expected, out)
 

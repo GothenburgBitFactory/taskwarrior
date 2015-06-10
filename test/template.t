@@ -60,7 +60,7 @@ class TestBugNumber(TestCase):
         self.assertRegexpMatches(out, expected)
 
         # TAP diagnostics on the bas
-        self.diag("Yay TAP diagnostics")
+        self.tap("Yay TAP diagnostics")
 
     def test_faketime(self):
         """Running tests using libfaketime"""

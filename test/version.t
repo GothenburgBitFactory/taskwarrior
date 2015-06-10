@@ -106,9 +106,7 @@ class TestVersion(TestCase):
         """Task binary matches the current git commit"""
         expected = "Commit: {0}".format(self.slurp_git())
 
-        args = ("diag",)
-
-        code, out, err = self.t(args)
+        code, out, err = self.t.diag()
         self.assertIn(expected, out)
 
 

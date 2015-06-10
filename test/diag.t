@@ -42,7 +42,7 @@ class TestDiagColor(TestCase):
     def test_diag_color_builtin(self):
         """Task diag output, so we can monitor platforms"""
         code, out, err = self.t.diag()
-        self.diag (out)
+        self.tap(out)
 
 
 if __name__ == "__main__":
