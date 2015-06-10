@@ -64,6 +64,30 @@ class TestAppend(TestCase):
         self.assertNotIn(notexpected, out)
 
 
+class TestBug440(TestCase):
+    # Bug #440: Parser recognizes an attempt to simultaneously subst and
+    #           append, but doesn't do it
+    def setUp(self):
+        self.t = Task()
+
+    def test_subst_and_append_at_once(self):
+        """Simultaneous substitution and append"""
+        self.t(("add", "Foo"))
+        self.t(("add", "Foo"))
+
+        self.t(("1", "append", "/Foo/Bar/", "Appendtext"))
+        self.t(("2", "append", "Appendtext", "/Foo/Bar/"))
+
+        code1, out1, err1 = self.t(("1", "ls"))
+        code2, out2, err2 = self.t(("2", "ls"))
+
+        self.assertNotIn("Foo", out1)
+        self.assertRegexpMatches(out1, "\w+ Appendtext")
+
+        self.assertNotIn("Foo", out2)
+        self.assertRegexpMatches(out2, "\w+ Appendtext")
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
