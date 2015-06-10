@@ -30,6 +30,7 @@ import sys
 import os
 import re
 import unittest
+import time
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -43,11 +44,12 @@ class MetaTests(type):
     filter used.
     """
     @staticmethod
-    def _make_function(filter, expectations):
+    def _make_function(prefix, filter, expectations):
         def test(self):
             # ### Body of the usual test_testcase ### #
             code, out, err = self.t(
-                ("rc.report.list.sort:{0}".format(filter), "list")
+                ("rc.report.{0}.sort:{1}".format(self._report, filter),
+                 self._report)
             )
 
             for expected in expectations:
@@ -55,7 +57,7 @@ class MetaTests(type):
                 self.assertRegexpMatches(out, regex)
 
         # Title of test in report
-        test.__doc__ = "sort:{0}".format(filter)
+        test.__doc__ = "{0} sort:{1}".format(prefix, filter)
 
         # Rename the function according to its parameters
         # Name of function must start with test_ to be ran by unittest
@@ -71,7 +73,7 @@ class MetaTests(type):
         tests = dct.get("TESTS")
 
         for filter, expectations in tests.iteritems():
-            func = meta._make_function(filter, expectations)
+            func = meta._make_function(name, filter, expectations)
 
             # Ensure function exists only once
             try:
@@ -93,6 +95,9 @@ class TestSorting(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.t = Task()
+
+        # Report to use when running this class's tests
+        cls._report = "list"
 
         cls.t(("add",                                             "zero"))
         cls.t(("add", "priority:H", "project:A", "due:yesterday", "one"))
@@ -220,6 +225,62 @@ class TestSorting(TestCase):
         # Four sort columns.
         'start+,project+,due+,priority+': ['zero.+two.+four.+three.+one'],
         'project+,due+,priority+,start+': ['zero.+one.+two.+four.+three'],
+    }
+
+
+class TestBug438(TestCase):
+    __metaclass__ = MetaTests
+
+    # Bug #438: Reports sorting by end, start, and entry are ordered
+    #           incorrectly, if time is included.
+    @classmethod
+    def setUpClass(cls):
+        cls.t = Task()
+
+        # Report to use when running this class's tests
+        cls._report = "foo"
+
+        cls.t.config("dateformat", "SNHDMY")
+        cls.t.config("report.foo.columns", "entry,start,end,description")
+        cls.t.config("report.foo.dateformat", "SNHDMY")
+
+        # Preparing data:
+        #  2 tasks created in the past, 1 second apart
+        #  2 tasks created in the past, and started 10 seconds later
+        #  2 tasks created in the past, and finished 20 seconds later
+
+        stamp = int(time.time())
+        cls.t(("add", "one older",
+               "entry:{0}".format(stamp)))
+        stamp += 1
+        cls.t(("add", "one newer",
+               "entry:{0}".format(stamp)))
+
+        start = stamp + 10
+        cls.t(("add", "two older",
+               "entry:{0}".format(stamp),
+               "start:{0}".format(start)))
+        start += 1
+        cls.t(("add", "two newer",
+               "entry:{0}".format(stamp),
+               "start:{0}".format(start)))
+
+        end = start + 10
+        cls.t(("log", "three older",
+               "entry:{0}".format(stamp),
+               "end:{0}".format(end)))
+        end += 1
+        cls.t(("log", "three newer",
+               "entry:{0}".format(stamp),
+               "end:{0}".format(end)))
+
+    TESTS = {
+        "entry+": ["one older.+one newer"],
+        "entry-": ["one newer.+one older"],
+        "start+": ["two older.+two newer"],
+        "start-": ["two newer.+two older"],
+        "end+":   ["three older.+three newer"],
+        "end-":   ["three newer.+three older"],
     }
 
 
