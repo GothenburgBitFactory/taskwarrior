@@ -28,6 +28,7 @@
 
 import sys
 import os
+import re
 import unittest
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -57,6 +58,22 @@ class TestUtf8(TestCase):
         code, out, err = self.t(("list", "-föo"))
         self.assertNotIn("two", out)
         self.assertIn("one", out)
+
+    def test_wide_utf8(self):
+        """Text alignment in reports with wide utf8 characters"""
+        # Originally Bug #455 - Text alignment in reports is broken when text
+        #                       contains wide utf8 characters
+        self.t.config("print.empty.columns", "no")
+
+        self.t(("add", "abc", "pro:Bar\u263a"))
+        self.t(("add", "def", "pro:Foo"))
+
+        code, out, err = self.t(("ls",))
+
+        expected = re.compile("\S\s{4}abc", re.MULTILINE)
+        self.assertRegexpMatches(out, expected)
+        expected = re.compile("\S\s{5}def", re.MULTILINE)
+        self.assertRegexpMatches(out, expected)
 
 
 if __name__ == "__main__":
