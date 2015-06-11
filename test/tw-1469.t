@@ -101,18 +101,15 @@ class Test1469(TestCase):
         self.assertIn('möbel', out)
         self.assertNotIn('foo', out)
 
+    @unittest.skipIf('CYGWIN' in platform.system(), 'Skipping regex case-insensitive test for Cygwin')
     def test_explicit_search_insensitive_regex(self):
         """Explicit search, case insensitive, regex """
-        if 'CYGWIN' in platform.system():
-            self.diag('Skipping regex case-insensitive test for Cygwin')
-        else:
-            code, out, err = self.t(('list', '/möbel/',
-                                     'rc.search.case.sensitive=no',
-                                     'rc.regex=on'))
-            self.assertEqual(0, code,
-                             "Exit code was non-zero ({0})".format(code))
-            self.assertIn('möbel', out)
-            self.assertNotIn('foo', out)
+        code, out, err = self.t(('list', '/möbel/',
+                                 'rc.search.case.sensitive=no',
+                                 'rc.regex=on'))
+        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.assertIn('möbel', out)
+        self.assertNotIn('foo', out)
 
     def test_explicit_search_insensitive_noregex(self):
         """Explicit search, case insensitive, no regex """
