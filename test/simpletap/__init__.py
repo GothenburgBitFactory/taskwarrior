@@ -121,25 +121,26 @@ class TAPTestResult(unittest.result.TestResult):
         self._restoreStdout()
 
         desc = self.getDescription(test)
-        trace_msg = None
 
         try:
-            exception, msg, _ = err
+            exception, msg, tb = err
         except (TypeError, ValueError):
             exception_name = ""
             msg = err
+            tb = None
         else:
             exception_name = exception.__name__
             msg = str(msg)
 
-            # Extract line where error happened for easier debugging
-            _, _, tb = sys.exc_info()
-            trace = traceback.extract_tb(tb)
-            for t in trace:
-                # t = (filename, line_number, function_name, raw_line)
-                if t[2].startswith("test"):
-                    trace_msg = "on file {0} line {1} in {2}: '{3}'".format(*t)
-                    break
+        trace_msg = ""
+
+        # Extract line where error happened for easier debugging
+        trace = traceback.extract_tb(tb)
+        for t in trace:
+            # t = (filename, line_number, function_name, raw_line)
+            if t[2].startswith("test"):
+                trace_msg = " on file {0} line {1} in {2}: '{3}'".format(*t)
+                break
 
         if status:
             if status == "SKIP":
@@ -154,9 +155,13 @@ class TAPTestResult(unittest.result.TestResult):
                 self.stream.writeln("{0} {1} - {2}".format(
                     color("not ok", "red"), self.testsRun, desc)
                 )
-            self.stream.writeln("# {0}: {1} {2}:".format(
-                status, exception_name, trace_msg)
-            )
+
+            if exception_name:
+                self.stream.writeln("# {0}: {1}{2}:".format(
+                    status, exception_name, trace_msg)
+                )
+            else:
+                self.stream.writeln("# {0}:".format(status))
 
             # Magic 3 is just for pretty indentation
             padding = " " * (len(status) + 3)
