@@ -510,6 +510,29 @@ class TestBug480B(TestCase):
         self.assertNotIn("three", out)
 
 
+class TestBug485(TestCase):
+    @classmethod
+    def setUp(cls):
+        cls.t = Task()
+
+        cls.t.config("verbose", "nothing")
+
+        cls.t(("add", "one", "due:tomorrow", "recur:monthly"))
+        cls.t(("add", "two", "due:tomorrow", "recur:1month"))
+
+    def test_filter_recur_monthly(self):
+        """filter 'recur:monthly' doesn't list monthly tasks"""
+        code, out, err = self.t(("list", "recur:monthly"))
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+
+    def test_filter_recur_1month(self):
+        """filter 'recur:1month' doesn't list monthly tasks"""
+        code, out, err = self.t(("list", "recur:1month"))
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+
+
 @unittest.skip("WaitingFor TW-1600")
 class TestBug1600(TestCase):
     def setUp(self):
