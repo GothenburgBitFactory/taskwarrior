@@ -401,6 +401,115 @@ class TestBug1110(TestCase):
         self.assertIn("ToBeCompleted", out)
 
 
+class TestBug480A(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.t = Task()
+
+        cls.t.config("defaultwidth", "0")
+
+        cls.t(("add", "one", "+ordinary"))
+        cls.t(("add", "two", "+@strange"))
+
+    def test_long_plus_ordinary(self):
+        """filter '@' in tags breaks filters: +ordinary"""
+        code, out, err = self.t(("long", "+ordinary"))
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+
+    def test_long_minus_ordinary(self):
+        """filter '@' in tags breaks filters: -ordinary"""
+        code, out, err = self.t(("long", "-ordinary"))
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
+
+    def test_long_plus_at_strange(self):
+        """filter '@' in tags breaks filters: +@strange"""
+        code, out, err = self.t(("long", "+@strange"))
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
+
+    def test_long_minus_at_strange(self):
+        """filter '@' in tags breaks filters: -@strange"""
+        code, out, err = self.t(("long", "-@strange"))
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+
+
+class TestBug480B(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+        self.t.config("defaultwidth", "0")
+
+        self.t(("add", "one", "+t1"))
+        self.t(("add", "two", "+t2"))
+        self.t(("add", "three", "+t3"))
+
+    def test_numbered_tags(self):
+        """filter '-t1 -t2' doesn't work"""
+        code, out, err = self.t(("list", "-t1"))
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
+        self.assertIn("three", out)
+
+        code, out, err = self.t(("list", "-t1", "-t2"))
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertIn("three", out)
+
+        code, out, err = self.t.runError(("list", "-t1", "-t2", "-t3"))
+        self.assertIn("No matches", err)
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertNotIn("three", out)
+
+    def test_numbered_at_tags(self):
+        """filter '-t1 -t2' doesn't work when '@' characters are involved"""
+        self.t(("1", "modify", "+@1"))
+        self.t(("2", "modify", "+@2"))
+        self.t(("3", "modify", "+@3"))
+
+        code, out, err = self.t(("list", "-@1"))
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
+        self.assertIn("three", out)
+
+        code, out, err = self.t(("list", "-@1", "-@2"))
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertIn("three", out)
+
+        code, out, err = self.t.runError(("list", "-@1", "-@2", "-@3"))
+        self.assertIn("No matches", err)
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertNotIn("three", out)
+
+    def test_numbered_at_tags_punctuation(self):
+        """filter '-t1 -t2' doesn't work with '@' characters and punctuation"""
+        self.t(("1", "modify", "+@foo.1"))
+        self.t(("2", "modify", "+@foo.2"))
+        self.t(("3", "modify", "+@foo.3"))
+
+        code, out, err = self.t(("list", "-@foo.1"))
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
+        self.assertIn("three", out)
+
+        code, out, err = self.t(("list", "-@foo.1", "-@foo.2"))
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertIn("three", out)
+
+        code, out, err = self.t.runError(("list", "-@foo.1", "-@foo.2",
+                                          "-@foo.3"))
+        self.assertIn("No matches", err)
+        self.assertNotIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertNotIn("three", out)
+
+
 @unittest.skip("WaitingFor TW-1600")
 class TestBug1600(TestCase):
     def setUp(self):
