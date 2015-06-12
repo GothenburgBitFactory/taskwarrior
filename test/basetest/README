@@ -1,6 +1,9 @@
 Shell environment variables that affect how and what tests are executed:
 
-TASKW_SKIP -> Causes any test that needs Taskwarrior (task binary) to be skipped
-TASKD_SKIP -> Causes any test that needs Task Server (taskd binary) to be skipped
+TASKW_SKIP -> Causes any test that needs Taskwarrior (task binary only) to be skipped (TestCase)
+TASKD_SKIP -> Causes any test that needs Task Server (taskd) to be skipped (ServerTestCase)
+
+# NOTE: Tests that use both "task" and "taskd" (ServerTestCase) are not skipped when TASKW_SKIP is set.
+
 TASK_USE_PATH -> Causes tests to look for "task" in PATH instead of the default location
 TASKD_USE_PATH -> Causes tests to look for "taskd" in PATH instead of the default location
