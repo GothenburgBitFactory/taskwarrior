@@ -38,16 +38,20 @@
 class A2
 {
 public:
+/*
   A2 ();
+*/
   A2 (const std::string&, const std::string&, Lexer::Type);
 /*
   A2 (const std::string&, const int);
   A2 (const std::string&, const double);
+*/
   ~A2 ();
-  A2 (const A&);
+  A2 (const A2&);
   A2& operator= (const A2&);
   bool hasTag (const std::string&) const;
   void tag (const std::string&);
+/*
   void unTag (const std::string&);
   void unTagAll ();
 */
@@ -63,9 +67,7 @@ public:
 public:
   std::string                         _name;
   Lexer::Type                         _lextype;
-/*
   std::vector <std::string>           _tags;
-*/
   std::map <std::string, std::string> _attributes;
 };
 

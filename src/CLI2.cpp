@@ -48,6 +48,7 @@ static int safetyValveDefault = 10;
 ////////////////////////////////////////////////////////////////////////////////
 A2::A2 ()
 : _name ("")
+, _lextype (Lexer::Type::word)
 {
 }
 */
@@ -73,6 +74,7 @@ A2::A2 (const std::string& name, const double raw)
   _name = name;
   attribute ("raw", raw);
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 A2::~A2 ()
@@ -82,6 +84,7 @@ A2::~A2 ()
 ////////////////////////////////////////////////////////////////////////////////
 A2::A2 (const A2& other)
 : _name (other._name)
+, _lextype (other._lextype)
 , _tags (other._tags)
 , _attributes (other._attributes)
 {
@@ -93,6 +96,7 @@ A2& A2::operator= (const A2& other)
   if (this != &other)
   {
     _name       = other._name;
+    _lextype    = other._lextype;
     _tags       = other._tags;
     _attributes = other._attributes;
   }
@@ -116,6 +120,7 @@ void A2::tag (const std::string& tag)
     _tags.push_back (tag);
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void A2::unTag (const std::string& tag)
 {
@@ -194,7 +199,6 @@ const std::string A2::dump () const
   if (atts.length ())
     output += " " + atts;
 
-/*
   // Dump tags.
   std::string tags;
   for (auto& tag : _tags)
@@ -215,7 +219,6 @@ const std::string A2::dump () const
 
   if (tags.length ())
     output += ' ' + tags;
-*/
 
   return output;
 }
