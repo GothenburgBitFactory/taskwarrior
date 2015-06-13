@@ -330,6 +330,13 @@ void CLI2::entity (const std::string& category, const std::string& name)
   _entities.insert (std::pair <std::string, std::string> (category, name));
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Capture a single argument.
+void CLI2::add (const std::string& argument)
+{
+  _original_args.push_back (argument);
+}
+
 /*
 ////////////////////////////////////////////////////////////////////////////////
 // Capture the original, intact command line arguments.

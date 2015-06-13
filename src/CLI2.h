@@ -79,6 +79,8 @@ public:
   ~CLI2 ();
   void alias (const std::string&, const std::string&);
   void entity (const std::string&, const std::string&);
+
+  void add (const std::string&);
 /*
   void initialize (int, const char**);
   void add (const std::string&);
@@ -143,8 +145,8 @@ private:
 public:
   std::multimap <std::string, std::string> _entities;
   std::map <std::string, std::string>      _aliases;
-/*
   std::vector <std::string>                _original_args;
+/*
   std::vector <A>                          _args;
 
   std::vector <std::pair <int, int>>       _id_ranges;
