@@ -804,6 +804,10 @@ void Context::loadAliases ()
 {
   for (auto& i : config)
     if (i.first.substr (0, 6) == "alias.")
+      cli2.alias (i.first.substr (6), i.second);
+
+  for (auto& i : config)
+    if (i.first.substr (0, 6) == "alias.")
       cli.alias (i.first.substr (6), i.second);
 }
 

@@ -311,13 +311,11 @@ CLI2::~CLI2 ()
 {
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::alias (const std::string& name, const std::string& value)
 {
   _aliases.insert (std::pair <std::string, std::string> (name, value));
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::entity (const std::string& category, const std::string& name)
