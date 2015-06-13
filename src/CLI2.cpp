@@ -162,6 +162,7 @@ void A2::attribute (const std::string& name, const double value)
 {
   _attributes[name] = format (value, 1, 8);
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Accessor for attributes.
@@ -175,6 +176,7 @@ const std::string A2::attribute (const std::string& name) const
   return "";
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void A2::removeAttribute (const std::string& name)
 {
@@ -740,9 +742,12 @@ const std::string CLI2::dump (const std::string& title) const
   }
   out << "\n";
 
-  out << "  _args\n";
-  for (auto& a : _args)
-    out << "    " << a.dump () << "\n";
+  if (_args.size ())
+  {
+    out << "  _args\n";
+    for (auto& a : _args)
+      out << "    " << a.dump () << "\n";
+  }
 
   return out.str ();
 }
