@@ -31,7 +31,7 @@
 //#include <Nibbler.h>
 //#include <Lexer.h>
 #include <CLI2.h>
-//#include <Color.h>
+#include <Color.h>
 #include <text.h>
 //#include <util.h>
 #include <i18n.h>
@@ -175,7 +175,7 @@ void A2::removeAttribute (const std::string& name)
 {
   _attributes.erase (name);
 }
-
+*/
 ////////////////////////////////////////////////////////////////////////////////
 const std::string A2::dump () const
 {
@@ -194,6 +194,7 @@ const std::string A2::dump () const
   if (atts.length ())
     output += " " + atts;
 
+/*
   // Dump tags.
   std::string tags;
   for (auto& tag : _tags)
@@ -214,10 +215,10 @@ const std::string A2::dump () const
 
   if (tags.length ())
     output += ' ' + tags;
+*/
 
   return output;
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Static method.
@@ -345,8 +346,10 @@ void CLI2::add (const std::string& argument)
 // Intended to be called after ::add() to perform the final analysis.
 void CLI2::analyze ()
 {
+  // Start from scratch.
   _args.clear ();
 
+  // Look at each arg, and decide if it warrants lexing.
   for (unsigned int i = 0; i < _original_args.size (); ++i)
   {
     std::string raw = _original_args[i];
@@ -382,7 +385,10 @@ void CLI2::analyze ()
   }
 
   if (context.config.getInteger ("debug.parser") >= 3)
+  {
+    context.debug (dump ());
     context.debug ("CLI2::analyze end");
+  }
 }
 
 /*
@@ -693,6 +699,7 @@ std::string CLI2::getLimit () const
 
   return "0";
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::string CLI2::dump (const std::string& title) const
@@ -717,6 +724,7 @@ const std::string CLI2::dump (const std::string& title) const
   return out.str ();
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 // Note: This seems silly - it's essentially performing a low-quality parse. But
 //       that is really all that is needed - to separate the args that need to

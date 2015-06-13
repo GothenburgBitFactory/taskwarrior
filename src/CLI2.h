@@ -57,8 +57,9 @@ public:
   void attribute (const std::string&, const double);
   const std::string attribute (const std::string&) const;
   void removeAttribute (const std::string&);
-  const std::string dump () const;
 */
+  const std::string dump () const;
+
 public:
   std::string                         _name;
   Lexer::Type                         _lextype;
@@ -99,8 +100,10 @@ public:
   std::string getBinary () const;
   std::string getCommand () const;
   std::string getLimit () const;
+*/
   const std::string dump (const std::string& title = "CLI2 Parser") const;
 
+/*
 private:
   void addArg (const std::string&);
   void aliasExpansion ();
