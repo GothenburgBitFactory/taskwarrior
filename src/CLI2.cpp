@@ -184,7 +184,7 @@ void A2::removeAttribute (const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 const std::string A2::dump () const
 {
-  std::string output = _name;
+  std::string output = _name + " " + Lexer::typeToString (_lextype);
 
   // Dump attributes.
   std::string atts;
@@ -401,16 +401,8 @@ void CLI2::analyze ()
     Lexer lex (raw);
     lex.ambiguity (false);
 
-    std::vector <std::pair <std::string, Lexer::Type>> lexemes;
     while (lex.token (lexeme, type))
-    {
-      lexemes.push_back (std::pair <std::string, Lexer::Type> (lexeme, type));
-      context.debug (format ("lexeme {1} {2}", lexeme, lex.typeToString (type)));
-    }
-
-    // TODO Replace this with some discerning logic.
-    A2 arg ("arg", raw, Lexer::Type::word);
-    _args.push_back (arg);
+      _args.push_back (A2 ("arg", lexeme, type));
   }
 
   if (context.config.getInteger ("debug.parser") >= 3)
