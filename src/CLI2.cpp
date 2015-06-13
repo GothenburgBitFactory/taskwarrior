@@ -407,6 +407,9 @@ void CLI2::analyze ()
       _args.push_back (A2 ("arg", lexeme, type));
   }
 
+  // Now process _args.
+  findOverrides ();
+
   if (context.config.getInteger ("debug.parser") >= 3)
   {
     context.debug (dump ());
@@ -873,6 +876,7 @@ void CLI2::aliasExpansion ()
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze aliasExpansion"));
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::findOverrides ()
@@ -886,13 +890,15 @@ void CLI2::findOverrides ()
     if (raw == "--")
       break;
 
-    if (isRCOverride (raw))
+    if (raw.length () > 3 &&
+        raw.find ("rc:") == 0)
     {
       a.tag ("RC");
       a.attribute ("file", raw.substr (3));
       changes = true;
     }
-    else if (isConfigOverride (raw))
+    else if (raw.length () > 3 &&
+             raw.find ("rc.") == 0)
     {
       auto sep = raw.find ('=', 3);
       if (sep == std::string::npos)
@@ -912,6 +918,7 @@ void CLI2::findOverrides ()
     context.debug (dump ("CLI2::analyze findOverrides"));
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 // TODO This method should further categorize args into whether or not they are
 //      extracted by ::getWords.

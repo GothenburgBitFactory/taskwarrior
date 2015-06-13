@@ -107,11 +107,13 @@ public:
 */
   const std::string dump (const std::string& title = "CLI2 Parser") const;
 
-/*
 private:
+/*
   void addArg (const std::string&);
   void aliasExpansion ();
+*/
   void findOverrides ();
+/*
   void categorize ();
   bool exactMatch (const std::string&, const std::string&) const;
   void desugarFilterTags ();
