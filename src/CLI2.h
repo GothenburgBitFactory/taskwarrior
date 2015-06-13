@@ -30,22 +30,22 @@
 #include <string>
 #include <vector>
 #include <map>
+*/
 #include <Lexer.h>
 #include <FS.h>
-*/
 
 // Represents a single argument.
 class A2
 {
 public:
   A2 ();
-  A2 (const std::string&, const std::string&);
+  A2 (const std::string&, const std::string&, Lexer::Type);
 /*
-  A (const std::string&, const int);
-  A (const std::string&, const double);
-  ~A ();
-  A (const A&);
-  A& operator= (const A&);
+  A2 (const std::string&, const int);
+  A2 (const std::string&, const double);
+  ~A2 ();
+  A2 (const A&);
+  A2& operator= (const A2&);
   bool hasTag (const std::string&) const;
   void tag (const std::string&);
   void unTag (const std::string&);
@@ -61,6 +61,7 @@ public:
 */
 public:
   std::string                         _name;
+  Lexer::Type                         _lextype;
 /*
   std::vector <std::string>           _tags;
 */
@@ -150,7 +151,7 @@ public:
   std::multimap <std::string, std::string> _entities;
   std::map <std::string, std::string>      _aliases;
   std::vector <std::string>                _original_args;
-  std::vector <A>                          _args;
+  std::vector <A2>                         _args;
 
 /*
   std::vector <std::pair <int, int>>       _id_ranges;

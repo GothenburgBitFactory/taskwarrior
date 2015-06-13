@@ -52,9 +52,10 @@ A2::A2 ()
 }
 */
 ////////////////////////////////////////////////////////////////////////////////
-A2::A2 (const std::string& name, const std::string& raw)
+A2::A2 (const std::string& name, const std::string& raw, Lexer::Type lextype)
 {
   _name = name;
+  _lextype = lextype;
   attribute ("raw", raw);
 }
 
@@ -344,10 +345,12 @@ void CLI2::add (const std::string& argument)
 // Intended to be called after ::add() to perform the final analysis.
 void CLI2::analyze ()
 {
+  _args.clear ();
+
   for (unsigned int i = 0; i < _original_args.size (); ++i)
   {
     std::string raw = _original_args[i];
-    A a ("arg", raw);
+    A2 a ("arg", raw, Lexer::Type::word);
 /*
     a.tag ("ORIGINAL");
 
