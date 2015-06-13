@@ -35,12 +35,12 @@
 */
 
 // Represents a single argument.
-/*
-class A
+class A2
 {
 public:
-  A ();
-  A (const std::string&, const std::string&);
+  A2 ();
+  A2 (const std::string&, const std::string&);
+/*
   A (const std::string&, const int);
   A (const std::string&, const double);
   ~A ();
@@ -50,19 +50,22 @@ public:
   void tag (const std::string&);
   void unTag (const std::string&);
   void unTagAll ();
+*/
   void attribute (const std::string&, const std::string&);
+/*
   void attribute (const std::string&, const int);
   void attribute (const std::string&, const double);
   const std::string attribute (const std::string&) const;
   void removeAttribute (const std::string&);
   const std::string dump () const;
-
+*/
 public:
   std::string                         _name;
+/*
   std::vector <std::string>           _tags;
+*/
   std::map <std::string, std::string> _attributes;
 };
-*/
 
 // Represents the command line.
 class CLI2
@@ -81,6 +84,7 @@ public:
   void entity (const std::string&, const std::string&);
 
   void add (const std::string&);
+  void analyze ();
 /*
   void initialize (int, const char**);
   void add (const std::string&);
@@ -146,9 +150,9 @@ public:
   std::multimap <std::string, std::string> _entities;
   std::map <std::string, std::string>      _aliases;
   std::vector <std::string>                _original_args;
-/*
   std::vector <A>                          _args;
 
+/*
   std::vector <std::pair <int, int>>       _id_ranges;
   std::vector <std::string>                _uuid_list;
   bool                                     _strict;

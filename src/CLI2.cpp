@@ -46,39 +46,40 @@ int CLI2::minimumMatchLength = 3;
 static int safetyValveDefault = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
-A::A ()
+A2::A2 ()
 : _name ("")
 {
 }
-
+*/
 ////////////////////////////////////////////////////////////////////////////////
-A::A (const std::string& name, const std::string& raw)
+A2::A2 (const std::string& name, const std::string& raw)
+{
+  _name = name;
+  attribute ("raw", raw);
+}
+
+/*
+////////////////////////////////////////////////////////////////////////////////
+A2::A2 (const std::string& name, const int raw)
 {
   _name = name;
   attribute ("raw", raw);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A::A (const std::string& name, const int raw)
+A2::A2 (const std::string& name, const double raw)
 {
   _name = name;
   attribute ("raw", raw);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A::A (const std::string& name, const double raw)
-{
-  _name = name;
-  attribute ("raw", raw);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-A::~A ()
+A2::~A2 ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A::A (const A& other)
+A2::A2 (const A2& other)
 : _name (other._name)
 , _tags (other._tags)
 , _attributes (other._attributes)
@@ -86,7 +87,7 @@ A::A (const A& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A& A::operator= (const A& other)
+A2& A2::operator= (const A2& other)
 {
   if (this != &other)
   {
@@ -99,7 +100,7 @@ A& A::operator= (const A& other)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool A::hasTag (const std::string& tag) const
+bool A2::hasTag (const std::string& tag) const
 {
   if (std::find (_tags.begin (), _tags.end (), tag) != _tags.end ())
     return true;
@@ -108,14 +109,14 @@ bool A::hasTag (const std::string& tag) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A::tag (const std::string& tag)
+void A2::tag (const std::string& tag)
 {
   if (! hasTag (tag))
     _tags.push_back (tag);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A::unTag (const std::string& tag)
+void A2::unTag (const std::string& tag)
 {
   for (auto i = _tags.begin (); i != _tags.end (); ++i)
   {
@@ -128,35 +129,37 @@ void A::unTag (const std::string& tag)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A::unTagAll ()
+void A2::unTagAll ()
 {
   _tags.clear ();
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Accessor for attributes.
-void A::attribute (const std::string& name, const std::string& value)
+void A2::attribute (const std::string& name, const std::string& value)
 {
   _attributes[name] = value;
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 // Accessor for attributes.
-void A::attribute (const std::string& name, const int value)
+void A2::attribute (const std::string& name, const int value)
 {
   _attributes[name] = format (value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Accessor for attributes.
-void A::attribute (const std::string& name, const double value)
+void A2::attribute (const std::string& name, const double value)
 {
   _attributes[name] = format (value, 1, 8);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Accessor for attributes.
-const std::string A::attribute (const std::string& name) const
+const std::string A2::attribute (const std::string& name) const
 {
   // Prevent autovivification.
   auto i = _attributes.find (name);
@@ -167,13 +170,13 @@ const std::string A::attribute (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void A::removeAttribute (const std::string& name)
+void A2::removeAttribute (const std::string& name)
 {
   _attributes.erase (name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::string A::dump () const
+const std::string A2::dump () const
 {
   std::string output = _name;
 
@@ -335,6 +338,48 @@ void CLI2::entity (const std::string& category, const std::string& name)
 void CLI2::add (const std::string& argument)
 {
   _original_args.push_back (argument);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Intended to be called after ::add() to perform the final analysis.
+void CLI2::analyze ()
+{
+  for (unsigned int i = 0; i < _original_args.size (); ++i)
+  {
+    std::string raw = _original_args[i];
+    A a ("arg", raw);
+/*
+    a.tag ("ORIGINAL");
+
+    if (i == 0)
+    {
+      a.tag ("BINARY");
+
+      std::string basename = "task";
+      auto slash = raw.rfind ('/');
+      if (slash != std::string::npos)
+        basename = raw.substr (slash + 1);
+
+      a.attribute ("basename", basename);
+      if (basename == "cal" || basename == "calendar")
+        a.tag ("CALENDAR");
+      else if (basename == "task" || basename == "tw" || basename == "t")
+        a.tag ("TW");
+    }
+*/
+    _args.push_back (a);
+
+/*
+    if (a.hasTag ("CALENDAR"))
+    {
+      A cal ("argCal", "calendar");
+      _args.push_back (cal);
+    }
+*/
+  }
+
+  if (context.config.getInteger ("debug.parser") >= 3)
+    context.debug ("CLI2::analyze end");
 }
 
 /*

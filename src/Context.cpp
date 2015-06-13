@@ -229,6 +229,8 @@ int Context::initialize (int argc, const char** argv)
     for (int i = 0; i < argc; i++)
       cli2.add (argv[i]);
 
+    cli2.analyze ();
+
     cli.initialize (argc, argv);
     cli.analyze (true, true);
 
