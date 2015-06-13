@@ -79,7 +79,9 @@ public:
   ~CLI2 ();
 /*
   void alias (const std::string&, const std::string&);
+*/
   void entity (const std::string&, const std::string&);
+/*
   void initialize (int, const char**);
   void add (const std::string&);
   void addContextFilter ();
@@ -138,9 +140,11 @@ private:
   bool disqualifyOnlyParenOps      (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
   bool disqualifyFirstLastBinary   (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
   bool disqualifySugarFree         (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
+*/
 
 public:
   std::multimap <std::string, std::string> _entities;
+/*
   std::map <std::string, std::string>      _aliases;
   std::vector <std::string>                _original_args;
   std::vector <A>                          _args;

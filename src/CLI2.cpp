@@ -26,7 +26,7 @@
 
 #include <cmake.h>
 //#include <sstream>
-//#include <algorithm>
+#include <algorithm>
 #include <Context.h>
 //#include <Nibbler.h>
 //#include <Lexer.h>
@@ -317,6 +317,7 @@ void CLI2::alias (const std::string& name, const std::string& value)
 {
   _aliases.insert (std::pair <std::string, std::string> (name, value));
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::entity (const std::string& category, const std::string& name)
@@ -331,6 +332,7 @@ void CLI2::entity (const std::string& category, const std::string& name)
   _entities.insert (std::pair <std::string, std::string> (category, name));
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 // Capture the original, intact command line arguments.
 void CLI2::initialize (int argc, const char** argv)

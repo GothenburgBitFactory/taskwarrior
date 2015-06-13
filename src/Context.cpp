@@ -155,6 +155,12 @@ int Context::initialize (int argc, const char** argv)
     Command::factory (commands);
     for (auto& cmd : commands)
     {
+      cli2.entity ("cmd", cmd.first);
+      cli2.entity ((cmd.second->read_only () ? "readcmd" : "writecmd"), cmd.first);
+
+      if (cmd.first[0] == '_')
+        cli2.entity ("helper", cmd.first);
+
       cli.entity ("cmd", cmd.first);
       cli.entity ((cmd.second->read_only () ? "readcmd" : "writecmd"), cmd.first);
 
@@ -170,6 +176,11 @@ int Context::initialize (int argc, const char** argv)
 
     Column::factory (columns);
     for (auto& col : columns)
+      cli2.entity ("attribute", col.first);
+
+    cli2.entity ("pseudo", "limit");
+
+    for (auto& col : columns)
       cli.entity ("attribute", col.first);
 
     cli.entity ("pseudo", "limit");
@@ -179,6 +190,15 @@ int Context::initialize (int argc, const char** argv)
     // [5] Capture modifier and operator entities.
     //
     ////////////////////////////////////////////////////////////////////////////
+
+    for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
+      cli2.entity ("modifier", modifierNames[i]);
+
+    for (auto& op : Eval::getOperators ())
+      cli2.entity ("operator", op);
+
+    for (auto& op : Eval::getBinaryOperators ())
+      cli2.entity ("binary_operator", op);
 
     for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
       cli.entity ("modifier", modifierNames[i]);
