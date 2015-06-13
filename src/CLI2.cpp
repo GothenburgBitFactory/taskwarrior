@@ -343,6 +343,9 @@ void CLI2::entity (const std::string& category, const std::string& name)
 void CLI2::add (const std::string& argument)
 {
   _original_args.push_back (argument);
+
+  // Adding a new argument invalidates prior analysis.
+  _args.clear ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -357,7 +360,6 @@ void CLI2::analyze ()
   {
     std::string raw = _original_args[i];
     A2 a ("arg", raw, Lexer::Type::word);
-/*
     a.tag ("ORIGINAL");
 
     if (i == 0)
@@ -375,22 +377,29 @@ void CLI2::analyze ()
       else if (basename == "task" || basename == "tw" || basename == "t")
         a.tag ("TW");
     }
-*/
+
     _args.push_back (a);
 
-/*
     if (a.hasTag ("CALENDAR"))
     {
-      A cal ("argCal", "calendar");
+      A2 cal ("argCal", "calendar", Lexer::Type::word);
       _args.push_back (cal);
     }
-*/
   }
+
+  if (context.config.getInteger ("debug.parser") >= 3)
+  {
+    context.debug ("---------------------------------------------------------------------------------");
+    context.debug (dump ("CLI2::analyze start"));
+  }
+
+  // TODO Analysis here.
 
   if (context.config.getInteger ("debug.parser") >= 3)
   {
     context.debug (dump ());
     context.debug ("CLI2::analyze end");
+    context.debug ("---------------------------------------------------------------------------------");
   }
 }
 
@@ -711,6 +720,7 @@ const std::string CLI2::dump (const std::string& title) const
 
   out << "\033[1m" << title << "\033[0m\n"
       << "  _original_args\n    ";
+
   Color colorOrigArgs ("gray10 on gray4");
   for (auto i = _original_args.begin (); i != _original_args.end (); ++i)
   {
