@@ -25,7 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-//#include <sstream>
+#include <sstream>
 #include <algorithm>
 #include <Context.h>
 //#include <Nibbler.h>
@@ -355,45 +355,63 @@ void CLI2::analyze ()
   // Start from scratch.
   _args.clear ();
 
-  // Look at each arg, and decide if it warrants lexing.
-  for (unsigned int i = 0; i < _original_args.size (); ++i)
-  {
-    std::string raw = _original_args[i];
-    A2 a ("arg", raw, Lexer::Type::word);
-    a.tag ("ORIGINAL");
-
-    if (i == 0)
-    {
-      a.tag ("BINARY");
-
-      std::string basename = "task";
-      auto slash = raw.rfind ('/');
-      if (slash != std::string::npos)
-        basename = raw.substr (slash + 1);
-
-      a.attribute ("basename", basename);
-      if (basename == "cal" || basename == "calendar")
-        a.tag ("CALENDAR");
-      else if (basename == "task" || basename == "tw" || basename == "t")
-        a.tag ("TW");
-    }
-
-    _args.push_back (a);
-
-    if (a.hasTag ("CALENDAR"))
-    {
-      A2 cal ("argCal", "calendar", Lexer::Type::word);
-      _args.push_back (cal);
-    }
-  }
-
   if (context.config.getInteger ("debug.parser") >= 3)
   {
     context.debug ("---------------------------------------------------------------------------------");
     context.debug (dump ("CLI2::analyze start"));
   }
 
-  // TODO Analysis here.
+  // Capture _original_args[0] separately, because it is the command run, and
+  // could need special handling.
+  std::string raw = _original_args[0];
+  A2 a ("arg", raw, Lexer::Type::word);
+  a.tag ("ORIGINAL");
+  a.tag ("BINARY");
+
+  std::string basename = "task";
+  auto slash = raw.rfind ('/');
+  if (slash != std::string::npos)
+    basename = raw.substr (slash + 1);
+
+  a.attribute ("basename", basename);
+  if (basename == "cal" || basename == "calendar")
+    a.tag ("CALENDAR");
+  else if (basename == "task" || basename == "tw" || basename == "t")
+    a.tag ("TW");
+
+  _args.push_back (a);
+
+  if (a.hasTag ("CALENDAR"))
+  {
+    A2 cal ("argCal", "calendar", Lexer::Type::word);
+    _args.push_back (cal);
+  }
+
+  // Look at each arg, and decide if it warrants lexing.
+  // Note: Starts interating at index 1.
+  for (unsigned int i = 1; i < _original_args.size (); ++i)
+  {
+    raw = _original_args[i];
+
+    // Lex each remaining argument.  The apply a series of disqualifying tests
+    // that cause the lexemes to be ignored, and the original arugment used
+    // intact.
+    std::string lexeme;
+    Lexer::Type type;
+    Lexer lex (raw);
+    lex.ambiguity (false);
+
+    std::vector <std::pair <std::string, Lexer::Type>> lexemes;
+    while (lex.token (lexeme, type))
+    {
+      lexemes.push_back (std::pair <std::string, Lexer::Type> (lexeme, type));
+      context.debug (format ("lexeme {1} {2}", lexeme, lex.typeToString (type)));
+    }
+
+    // TODO Replace this with some discerning logic.
+    A2 arg ("arg", raw, Lexer::Type::word);
+    _args.push_back (arg);
+  }
 
   if (context.config.getInteger ("debug.parser") >= 3)
   {
