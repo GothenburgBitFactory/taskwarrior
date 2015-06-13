@@ -74,10 +74,10 @@ public:
   static void getDataLocation (int, const char**, Path&);
   static void applyOverrides (int, const char**);
 
-/*
 public:
   CLI2 ();
   ~CLI2 ();
+/*
   void alias (const std::string&, const std::string&);
   void entity (const std::string&, const std::string&);
   void initialize (int, const char**);

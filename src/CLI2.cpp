@@ -297,11 +297,12 @@ void CLI2::applyOverrides (int argc, const char** argv)
   }
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 CLI2::CLI2 ()
+/*
 : _strict (false)
 , _terminated (false)
+*/
 {
 }
 
@@ -310,6 +311,7 @@ CLI2::~CLI2 ()
 {
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::alias (const std::string& name, const std::string& value)
 {
