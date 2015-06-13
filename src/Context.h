@@ -36,6 +36,7 @@
 #include <DOM.h>
 #include <FS.h>
 #include <CLI.h>
+#include <CLI2.h>
 #include <Timer.h>
 #include <set>
 
@@ -81,6 +82,7 @@ private:
 
 public:
   CLI                                 cli;
+  CLI2                                cli2;
   std::string                         home_dir;
   File                                rc_file;
   Path                                data_dir;

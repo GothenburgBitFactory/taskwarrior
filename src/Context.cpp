@@ -109,6 +109,7 @@ int Context::initialize (int argc, const char** argv)
     //
     ////////////////////////////////////////////////////////////////////////////
 
+    CLI2::getOverride (argc, argv, home_dir, rc_file);
     CLI::getOverride (argc, argv, home_dir, rc_file);
 
     char* override = getenv ("TASKRC");
@@ -120,6 +121,7 @@ int Context::initialize (int argc, const char** argv)
 
     config.clear ();
     config.load (rc_file);
+    CLI2::applyOverrides (argc, argv);
     CLI::applyOverrides (argc, argv);
 
     ////////////////////////////////////////////////////////////////////////////
@@ -133,6 +135,7 @@ int Context::initialize (int argc, const char** argv)
     //
     ////////////////////////////////////////////////////////////////////////////
 
+    CLI2::getDataLocation (argc, argv, data_dir);
     CLI::getDataLocation (argc, argv, data_dir);
 
     override = getenv ("TASKDATA");
