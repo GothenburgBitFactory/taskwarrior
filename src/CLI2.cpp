@@ -944,7 +944,7 @@ void CLI2::findOverrides ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CLI2::findCommand ()
+bool CLI2::findCommand ()
 {
   for (auto& a : _args)
   {
@@ -960,10 +960,13 @@ void CLI2::findCommand ()
       if (context.config.getInteger ("debug.parser") >= 3)
         context.debug (dump ("CLI2::analyze findCommand"));
 
-      // Stop at first command.
-      break;
+      // Stop and indicate command found.
+      return true;
     }
   }
+
+  // Indicate command not found.
+  return false;
 }
 
 /*

@@ -113,7 +113,7 @@ private:
   void handleTerminator ();
   void aliasExpansion ();
   void findOverrides ();
-  void findCommand ();
+  bool findCommand ();
 /*
   void categorize ();
 */
