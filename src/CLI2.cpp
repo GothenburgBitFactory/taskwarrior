@@ -2177,24 +2177,6 @@ bool CLI2::isTerminator (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isRCOverride (const std::string& raw) const
-{
-  if (raw.length () > 3 && raw.substr (0, 3) == "rc:")
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isConfigOverride (const std::string& raw) const
-{
-  if (raw.length () > 3 && raw.substr (0, 3) == "rc.")
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::isCommand (const std::string& raw) const
 {
   std::string canonical;
