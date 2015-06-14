@@ -33,7 +33,7 @@
 #include <CLI2.h>
 #include <Color.h>
 #include <text.h>
-//#include <util.h>
+#include <util.h>
 #include <i18n.h>
 
 extern Context context;
@@ -658,6 +658,7 @@ const std::vector <std::string> CLI2::getWords ()
 
   return words;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Search for 'value' in _entities category, return canonicalized value.
@@ -692,6 +693,7 @@ bool CLI2::canonicalize (
   return false;
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI2::getBinary () const
 {
