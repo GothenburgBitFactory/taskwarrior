@@ -130,7 +130,9 @@ private:
   void findOperators ();
   void findAttributes ();
   void insertJunctions ();
-  void injectDefaults ();
+*/
+  void defaultCommand ();
+/*
   void decomposeModAttributes ();
   void decomposeModAttributeModifiers ();
   void decomposeModTags ();

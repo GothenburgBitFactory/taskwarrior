@@ -436,7 +436,12 @@ void CLI2::analyze ()
   // Process _args.
   aliasExpansion ();
   findOverrides ();
-  findCommand ();
+  if (! findCommand ())
+  {
+    defaultCommand ();
+    if (! findCommand ())
+      throw std::string (STRING_TRIVIAL_INPUT);
+  }
 
   if (context.config.getInteger ("debug.parser") >= 3)
   {
@@ -1914,31 +1919,25 @@ void CLI2::insertJunctions ()
       context.debug (dump ("CLI2::analyze insertJunctions"));
   }
 }
-
+*/
 ////////////////////////////////////////////////////////////////////////////////
-void CLI2::injectDefaults ()
+void CLI2::defaultCommand ()
 {
   // Scan the top-level branches for evidence of ID, UUID, overrides and other
   // arguments.
   bool changes          = false;
   bool found_command    = false;
   bool found_sequence   = false;
-  bool found_terminator = false;
 
   for (auto& a : _args)
   {
     std::string raw = a.attribute ("raw");
-    if (isTerminator (raw))
-      found_terminator = true;
 
-    if (! found_terminator && isCommand (raw))
+    if (a.hasTag ("CMD"))
       found_command = true;
 
-    else if (! found_terminator &&
-             (isUUIDList (raw)   ||
-              isUUID (raw)       ||
-              isIDSequence (raw) ||
-              isID (raw)))
+    if (a._lextype == Lexer::Type::uuid ||
+        a._lextype == Lexer::Type::number)
       found_sequence = true;
   }
 
@@ -1952,48 +1951,49 @@ void CLI2::injectDefaults ()
       std::string defaultCommand = context.config.get ("default.command");
       if (defaultCommand != "")
       {
-        // Split the defaultCommand into separate args.
-        std::vector <std::string> tokens = Lexer::split (defaultCommand);
-
         // Modify _args to be:   <args0> [<def0> ...] <args1> [...]
-        std::vector <A> reconstructed;
+        std::vector <A2> reconstructed;
         for (auto a = _args.begin (); a != _args.end (); ++a)
         {
+          // This stores the argument, and has the side effect of positioning
+          // insertions *after* the CMD.
           reconstructed.push_back (*a);
 
           if (a == _args.begin ())
           {
-            for (auto& token : tokens)
+            std::string lexeme;
+            Lexer::Type type;
+            Lexer lex (defaultCommand);
+            lex.ambiguity (false);
+
+            while (lex.token (lexeme, type))
             {
-              A arg ("argDefault", token);
-              arg.tag ("DEFAULT");
-              reconstructed.push_back (arg);
+              A2 cmd (lexeme, type);
+              cmd.tag ("DEFAULT");
+              reconstructed.push_back (cmd);
             }
           }
         }
 
         _args = reconstructed;
-      }
-
-      // Only an error in strict mode.
-      else if (_strict)
-      {
-        throw std::string (STRING_TRIVIAL_INPUT);
+        changes = true;
       }
     }
     else
     {
-      A info ("argDefault", "information");
-      info.tag ("ASSUMED");
+      A2 info ("information", Lexer::Type::word);
+      info.tag ("DEFAULT");
       _args.push_back (info);
+      changes = true;
     }
   }
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::analyze injectDefaults"));
+    context.debug (dump ("CLI2::analyze defaultCommand"));
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::decomposeModAttributes ()
 {
