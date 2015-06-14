@@ -110,8 +110,9 @@ public:
 private:
 /*
   void addArg (const std::string&);
-  void aliasExpansion ();
 */
+  void handleArg0 ();
+  void aliasExpansion ();
   void findOverrides ();
 /*
   void categorize ();

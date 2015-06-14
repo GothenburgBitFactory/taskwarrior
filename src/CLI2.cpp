@@ -41,10 +41,10 @@ extern Context context;
 // Overridden by rc.abbreviation.minimum.
 int CLI2::minimumMatchLength = 3;
 
-/*
 // Alias expansion limit. Any more indicates some kind of error.
 static int safetyValveDefault = 10;
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 A2::A2 ()
 : _name ("")
@@ -351,20 +351,10 @@ void CLI2::add (const std::string& argument)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Intended to be called after ::add() to perform the final analysis.
-void CLI2::analyze ()
+void CLI2::handleArg0 ()
 {
-  // Start from scratch.
-  _args.clear ();
-
-  if (context.config.getInteger ("debug.parser") >= 3)
-  {
-    context.debug ("---------------------------------------------------------------------------------");
-    context.debug (dump ("CLI2::analyze start"));
-  }
-
-  // Capture _original_args[0] separately, because it is the command run, and
-  // could need special handling.
+  // Capture arg0 separately, because it is the command that was run, and could
+  // need special handling.
   std::string raw = _original_args[0];
   A2 a ("arg", raw, Lexer::Type::word);
   a.tag ("ORIGINAL");
@@ -388,19 +378,29 @@ void CLI2::analyze ()
     A2 cal ("argCal", "calendar", Lexer::Type::word);
     _args.push_back (cal);
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Intended to be called after ::add() to perform the final analysis.
+void CLI2::analyze ()
+{
+  if (context.config.getInteger ("debug.parser") >= 3)
+  {
+    context.debug ("---------------------------------------------------------------------------------");
+    context.debug (dump ("CLI2::analyze start"));
+  }
+
+  // Start from scratch.
+  _args.clear ();
+  handleArg0 ();
 
   // Look at each arg, and decide if it warrants lexing.
   // Note: Starts interating at index 1.
   for (unsigned int i = 1; i < _original_args.size (); ++i)
   {
-    raw = _original_args[i];
-
-    // Lex each remaining argument.  The apply a series of disqualifying tests
-    // that cause the lexemes to be ignored, and the original arugment used
-    // intact.
     std::string lexeme;
     Lexer::Type type;
-    Lexer lex (raw);
+    Lexer lex (_original_args[i]);
     lex.ambiguity (false);
 
     while (lex.token (lexeme, type))
@@ -408,6 +408,7 @@ void CLI2::analyze ()
   }
 
   // Now process _args.
+  aliasExpansion ();
   findOverrides ();
 
   if (context.config.getInteger ("debug.parser") >= 3)
@@ -822,7 +823,7 @@ void CLI2::addArg (const std::string& arg)
     }
   }
 }
-
+*/
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::aliasExpansion ()
 {
@@ -832,7 +833,7 @@ void CLI2::aliasExpansion ()
   do
   {
     action = false;
-    std::vector <A> reconstructed;
+    std::vector <A2> reconstructed;
 
     bool terminated = false;
     std::string raw;
@@ -849,7 +850,7 @@ void CLI2::aliasExpansion ()
           auto lexed = Lexer::split (_aliases[raw]);
           for (auto& l : lexed)
           {
-            A a ("argLex", l);
+            A2 a ("argLex", l, Lexer::Type::word);
             a.tag ("ALIAS");
             a.tag ("LEX");
             reconstructed.push_back (a);
@@ -876,7 +877,6 @@ void CLI2::aliasExpansion ()
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze aliasExpansion"));
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::findOverrides ()
