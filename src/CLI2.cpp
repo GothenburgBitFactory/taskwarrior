@@ -375,21 +375,10 @@ void CLI2::handleArg0 ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Intended to be called after ::add() to perform the final analysis.
-void CLI2::analyze ()
+void CLI2::lexArguments ()
 {
-  if (context.config.getInteger ("debug.parser") >= 3)
-  {
-    context.debug ("---------------------------------------------------------------------------------");
-    context.debug (dump ("CLI2::analyze start"));
-  }
-
-  // Start from scratch.
-  _args.clear ();
-  handleArg0 ();
-
-  // Look at each arg, and decide if it warrants lexing.
-  // Note: Starts interating at index 1.
+  // Note: Starts interating at index 1, because ::handleArg0 has already
+  //       processed it.
   for (unsigned int i = 1; i < _original_args.size (); ++i)
   {
     std::string lexeme;
@@ -401,7 +390,26 @@ void CLI2::analyze ()
       _args.push_back (A2 ("arg", lexeme, type));
   }
 
-  // Now process _args.
+  if (context.config.getInteger ("debug.parser") >= 3)
+    context.debug (dump ("CLI2::analyze lexArguments"));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Intended to be called after ::add() to perform the final analysis.
+void CLI2::analyze ()
+{
+  if (context.config.getInteger ("debug.parser") >= 3)
+  {
+    context.debug ("---------------------------------------------------------------------------------");
+    context.debug (dump ("CLI2::analyze start"));
+  }
+
+  // Process _original_args.
+  _args.clear ();
+  handleArg0 ();
+  lexArguments ();
+
+  // Process _args.
   aliasExpansion ();
   findOverrides ();
 

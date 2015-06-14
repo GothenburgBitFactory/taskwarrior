@@ -111,6 +111,7 @@ private:
   void addArg (const std::string&);
 */
   void handleArg0 ();
+  void lexArguments ();
   void aliasExpansion ();
   void findOverrides ();
 /*
