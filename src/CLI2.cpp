@@ -350,7 +350,6 @@ void CLI2::handleArg0 ()
   // need special handling.
   std::string raw = _original_args[0];
   A2 a ("arg", raw, Lexer::Type::word);
-  a.tag ("ORIGINAL");
   a.tag ("BINARY");
 
   std::string basename = "task";
