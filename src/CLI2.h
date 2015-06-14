@@ -110,6 +110,7 @@ private:
 */
   void handleArg0 ();
   void lexArguments ();
+  void handleTerminator ();
   void aliasExpansion ();
   void findOverrides ();
   void findCommand ();
