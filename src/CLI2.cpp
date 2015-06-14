@@ -412,6 +412,7 @@ void CLI2::analyze ()
   // Process _args.
   aliasExpansion ();
   findOverrides ();
+  findCommand ();
 
   if (context.config.getInteger ("debug.parser") >= 3)
   {
@@ -921,6 +922,49 @@ void CLI2::findOverrides ()
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze findOverrides"));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CLI2::findCommand ()
+{
+  bool changes = false;
+  bool foundCommand = false;
+  bool readOnly = false;
+  bool terminated = false;
+
+  for (auto& a : _args)
+  {
+    std::string raw = a.attribute ("raw");
+
+    if (a._lextype == Lexer::Type::separator)
+    {
+      terminated = true;
+    }
+    else if (terminated)
+    {
+      a.tag ("WORD");
+      changes = true;
+    }
+    else
+    {
+      std::string canonical;
+      if (! foundCommand &&
+          canonicalize (canonical, "cmd", raw))
+      {
+        readOnly = ! exactMatch ("writecmd", canonical);
+
+        a.tag ("CMD");
+        a.tag (readOnly ? "READCMD" : "WRITECMD");
+        a.attribute ("canonical", canonical);
+        foundCommand = true;
+        changes = true;
+      }
+    }
+  }
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (dump ("CLI2::analyze findCommand"));
 }
 
 /*

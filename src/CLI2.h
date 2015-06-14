@@ -114,6 +114,7 @@ private:
   void lexArguments ();
   void aliasExpansion ();
   void findOverrides ();
+  void findCommand ();
 /*
   void categorize ();
 */
