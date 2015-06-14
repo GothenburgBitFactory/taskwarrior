@@ -61,9 +61,6 @@ public:
   void attribute (const std::string&, const double);
 */
   const std::string attribute (const std::string&) const;
-/*
-  void removeAttribute (const std::string&);
-*/
   const std::string dump () const;
 
 public:

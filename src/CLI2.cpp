@@ -176,13 +176,6 @@ const std::string A2::attribute (const std::string& name) const
   return "";
 }
 
-/*
-////////////////////////////////////////////////////////////////////////////////
-void A2::removeAttribute (const std::string& name)
-{
-  _attributes.erase (name);
-}
-*/
 ////////////////////////////////////////////////////////////////////////////////
 const std::string A2::dump () const
 {
