@@ -2497,26 +2497,6 @@ bool CLI2::disqualifyFirstLastBinary (
 
   return firstBinary || lastBinary;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// Disqualify terms when there are operators hidden by syntactic sugar.
-// TODO This always returns false. Why bother?
-bool CLI2::disqualifySugarFree (
-  const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
-{
-  bool sugared = true;
-  for (unsigned int i = 1; i < lexemes.size () - 1; ++i)
-    if (isTag          (lexemes[i].first) ||
-        isUUIDList     (lexemes[i].first) ||
-        isUUID         (lexemes[i].first) ||
-        isIDSequence   (lexemes[i].first) ||
-        isID           (lexemes[i].first) ||
-        isPattern      (lexemes[i].first) ||
-        isAttribute    (lexemes[i].first))
-      sugared = true;
-
-  return ! sugared;
-}
 */
 
 ////////////////////////////////////////////////////////////////////////////////
