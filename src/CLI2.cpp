@@ -872,32 +872,23 @@ void CLI2::aliasExpansion ()
     action = false;
     std::vector <A2> reconstructed;
 
-    bool terminated = false;
     std::string raw;
     for (auto& i : _args)
     {
       raw = i.attribute ("raw");
-      if (i._lextype == Lexer::Type::separator)
-        terminated = true;
-
-      if (! terminated)
+      if (_aliases.find (raw) != _aliases.end ())
       {
-        if (_aliases.find (raw) != _aliases.end ())
+        auto lexed = Lexer::split (_aliases[raw]);
+        for (auto& l : lexed)
         {
-          auto lexed = Lexer::split (_aliases[raw]);
-          for (auto& l : lexed)
-          {
-            A2 a ("argLex", l, Lexer::Type::word);
-            a.tag ("ALIAS");
-            a.tag ("LEX");
-            reconstructed.push_back (a);
-          }
-
-          action = true;
-          changes = true;
+          A2 a ("argLex", l, Lexer::Type::word);
+          a.tag ("ALIAS");
+          a.tag ("LEX");
+          reconstructed.push_back (a);
         }
-        else
-          reconstructed.push_back (i);
+
+        action = true;
+        changes = true;
       }
       else
         reconstructed.push_back (i);
@@ -923,9 +914,6 @@ void CLI2::findOverrides ()
 
   for (auto& a : _args)
   {
-    if (a._lextype == Lexer::Type::separator)
-      break;
-
     raw = a.attribute ("raw");
     if (raw.length () > 3 &&
         raw.find ("rc:") == 0)
@@ -960,9 +948,6 @@ void CLI2::findCommand ()
 {
   for (auto& a : _args)
   {
-    if (a._lextype == Lexer::Type::separator)
-      break;
-
     std::string canonical;
     if (canonicalize (canonical, "cmd", a.attribute ("raw")))
     {
