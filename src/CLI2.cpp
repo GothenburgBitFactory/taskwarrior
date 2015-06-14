@@ -927,44 +927,27 @@ void CLI2::findOverrides ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::findCommand ()
 {
-  bool changes = false;
-  bool foundCommand = false;
-  bool readOnly = false;
-  bool terminated = false;
-
   for (auto& a : _args)
   {
-    std::string raw = a.attribute ("raw");
-
     if (a._lextype == Lexer::Type::separator)
-    {
-      terminated = true;
-    }
-    else if (terminated)
-    {
-      a.tag ("WORD");
-      changes = true;
-    }
-    else
-    {
-      std::string canonical;
-      if (! foundCommand &&
-          canonicalize (canonical, "cmd", raw))
-      {
-        readOnly = ! exactMatch ("writecmd", canonical);
+      break;
 
-        a.tag ("CMD");
-        a.tag (readOnly ? "READCMD" : "WRITECMD");
-        a.attribute ("canonical", canonical);
-        foundCommand = true;
-        changes = true;
-      }
+    std::string canonical;
+    if (canonicalize (canonical, "cmd", a.attribute ("raw")))
+    {
+      a.attribute ("canonical", canonical);
+      a.tag ("CMD");
+
+      bool readOnly = ! exactMatch ("writecmd", canonical);
+      a.tag (readOnly ? "READCMD" : "WRITECMD");
+
+      if (context.config.getInteger ("debug.parser") >= 3)
+        context.debug (dump ("CLI2::analyze findCommand"));
+
+      // Stop at first command.
+      break;
     }
   }
-
-  if (changes &&
-      context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::analyze findCommand"));
 }
 
 /*
