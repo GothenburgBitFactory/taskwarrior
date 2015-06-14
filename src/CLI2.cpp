@@ -358,17 +358,19 @@ void CLI2::handleArg0 ()
     basename = raw.substr (slash + 1);
 
   a.attribute ("basename", basename);
-  if (basename == "cal" || basename == "calendar")
-    a.tag ("CALENDAR");
-  else if (basename == "task" || basename == "tw" || basename == "t")
-    a.tag ("TW");
-
-  _args.push_back (a);
-
-  if (a.hasTag ("CALENDAR"))
+  if (basename == "cal" ||
+      basename == "calendar")
   {
+    _args.push_back (a);
+
     A2 cal ("argCal", "calendar", Lexer::Type::word);
     _args.push_back (cal);
+  }
+  else if (basename == "task" ||
+           basename == "tw" ||
+           basename == "t")
+  {
+    _args.push_back (a);
   }
 }
 
