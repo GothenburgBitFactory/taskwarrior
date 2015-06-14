@@ -39,7 +39,7 @@ class A2
 {
 public:
   A2 ();
-  A2 (const std::string&, const std::string&, Lexer::Type);
+  A2 (const std::string&, Lexer::Type);
 /*
   A2 (const std::string&, const int);
   A2 (const std::string&, const double);
@@ -62,7 +62,6 @@ public:
   const std::string dump () const;
 
 public:
-  std::string                         _name;
   Lexer::Type                         _lextype;
   std::vector <std::string>           _tags;
   std::map <std::string, std::string> _attributes;

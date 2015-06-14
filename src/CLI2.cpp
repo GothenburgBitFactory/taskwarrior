@@ -46,31 +46,27 @@ static int safetyValveDefault = 10;
 
 ////////////////////////////////////////////////////////////////////////////////
 A2::A2 ()
-: _name ("")
-, _lextype (Lexer::Type::word)
+: _lextype (Lexer::Type::word)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A2::A2 (const std::string& name, const std::string& raw, Lexer::Type lextype)
+A2::A2 (const std::string& raw, Lexer::Type lextype)
 {
-  _name = name;
   _lextype = lextype;
   attribute ("raw", raw);
 }
 
 /*
 ////////////////////////////////////////////////////////////////////////////////
-A2::A2 (const std::string& name, const int raw)
+A2::A2 (const int raw)
 {
-  _name = name;
   attribute ("raw", raw);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A2::A2 (const std::string& name, const double raw)
+A2::A2 (const double raw)
 {
-  _name = name;
   attribute ("raw", raw);
 }
 */
@@ -82,8 +78,7 @@ A2::~A2 ()
 
 ////////////////////////////////////////////////////////////////////////////////
 A2::A2 (const A2& other)
-: _name (other._name)
-, _lextype (other._lextype)
+: _lextype (other._lextype)
 , _tags (other._tags)
 , _attributes (other._attributes)
 {
@@ -94,7 +89,6 @@ A2& A2::operator= (const A2& other)
 {
   if (this != &other)
   {
-    _name       = other._name;
     _lextype    = other._lextype;
     _tags       = other._tags;
     _attributes = other._attributes;
@@ -178,7 +172,7 @@ const std::string A2::attribute (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 const std::string A2::dump () const
 {
-  std::string output = _name + " " + Lexer::typeToString (_lextype);
+  std::string output = Lexer::typeToString (_lextype);
 
   // Dump attributes.
   std::string atts;
@@ -348,7 +342,7 @@ void CLI2::handleArg0 ()
   // Capture arg0 separately, because it is the command that was run, and could
   // need special handling.
   std::string raw = _original_args[0];
-  A2 a ("arg", raw, Lexer::Type::word);
+  A2 a (raw, Lexer::Type::word);
   a.tag ("BINARY");
 
   std::string basename = "task";
@@ -362,7 +356,7 @@ void CLI2::handleArg0 ()
   {
     _args.push_back (a);
 
-    A2 cal ("argCal", "calendar", Lexer::Type::word);
+    A2 cal ("calendar", Lexer::Type::word);
     _args.push_back (cal);
   }
   else if (basename == "task" ||
@@ -386,7 +380,7 @@ void CLI2::lexArguments ()
     lex.ambiguity (false);
 
     while (lex.token (lexeme, type))
-      _args.push_back (A2 ("arg", lexeme, type));
+      _args.push_back (A2 (lexeme, type));
   }
 
   if (context.config.getInteger ("debug.parser") >= 3)
@@ -881,7 +875,7 @@ void CLI2::aliasExpansion ()
         auto lexed = Lexer::split (_aliases[raw]);
         for (auto& l : lexed)
         {
-          A2 a ("argLex", l, Lexer::Type::word);
+          A2 a (l, Lexer::Type::word);
           a.tag ("ALIAS");
           a.tag ("LEX");
           reconstructed.push_back (a);
