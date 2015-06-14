@@ -38,9 +38,7 @@
 class A2
 {
 public:
-/*
   A2 ();
-*/
   A2 (const std::string&, const std::string&, Lexer::Type);
 /*
   A2 (const std::string&, const int);

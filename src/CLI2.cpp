@@ -44,14 +44,13 @@ int CLI2::minimumMatchLength = 3;
 // Alias expansion limit. Any more indicates some kind of error.
 static int safetyValveDefault = 10;
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 A2::A2 ()
 : _name ("")
 , _lextype (Lexer::Type::word)
 {
 }
-*/
+
 ////////////////////////////////////////////////////////////////////////////////
 A2::A2 (const std::string& name, const std::string& raw, Lexer::Type lextype)
 {
