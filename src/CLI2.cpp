@@ -816,6 +816,7 @@ void CLI2::addArg (const std::string& arg)
   }
 }
 */
+
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::aliasExpansion ()
 {
@@ -832,7 +833,7 @@ void CLI2::aliasExpansion ()
     for (auto& i : _args)
     {
       raw = i.attribute ("raw");
-      if (raw == "--")
+      if (i._lextype == Lexer::Type::separator)
         terminated = true;
 
       if (! terminated)
@@ -878,10 +879,10 @@ void CLI2::findOverrides ()
 
   for (auto& a : _args)
   {
-    raw = a.attribute ("raw");
-    if (raw == "--")
+    if (a._lextype == Lexer::Type::separator)
       break;
 
+    raw = a.attribute ("raw");
     if (raw.length () > 3 &&
         raw.find ("rc:") == 0)
     {
