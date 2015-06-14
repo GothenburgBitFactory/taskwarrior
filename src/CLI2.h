@@ -115,7 +115,9 @@ private:
   void findOverrides ();
 /*
   void categorize ();
+*/
   bool exactMatch (const std::string&, const std::string&) const;
+/*
   void desugarFilterTags ();
   void findStrayModifications ();
   void desugarFilterAttributes ();

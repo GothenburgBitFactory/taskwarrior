@@ -998,6 +998,7 @@ void CLI2::categorize ()
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze categorize"));
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Search for exact 'value' in _entities category.
@@ -1014,6 +1015,7 @@ bool CLI2::exactMatch (
   return false;
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 // +tag --> tags _hastag_ tag
 // -tag --> tags _notag_ tag
