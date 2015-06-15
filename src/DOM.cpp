@@ -231,7 +231,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
   if (elements.size () == 1)
   {
     std::string canonical;
-    if (task.size () && context.cli.canonicalize (canonical, "attribute", name))
+    if (task.size () && context.cli2.canonicalize (canonical, "attribute", name))
     {
       Column* column = context.columns[canonical];
       if (column)
@@ -302,7 +302,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
       }
 
       std::string canonical;
-      if (context.cli.canonicalize (canonical, "attribute", elements[1]))
+      if (context.cli2.canonicalize (canonical, "attribute", elements[1]))
       {
         if (elements.size () == 2)
         {
