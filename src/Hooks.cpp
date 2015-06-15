@@ -514,7 +514,7 @@ std::vector <std::string>& Hooks::buildHookScriptArgs (std::vector <std::string>
   args.push_back ("args:" + std::string (v));
 
   // Command to be executed.
-  args.push_back ("command:" + context.cli.getCommand ());
+  args.push_back ("command:" + context.cli2.getCommand ());
 
   // rc file used after applying all overrides.
   args.push_back ("rc:" + context.rc_file._data);
