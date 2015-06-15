@@ -106,7 +106,7 @@ bool DOM::get (const std::string& name, Variant& value)
     else if (name == "context.args")
     {
       std::string commandLine;
-      join (commandLine, " ", context.cli._original_args);
+      join (commandLine, " ", context.cli2._original_args);
       value = Variant (commandLine);
       return true;
     }
