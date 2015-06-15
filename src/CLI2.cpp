@@ -671,32 +671,44 @@ const std::string CLI2::getFilter (bool applyContext)
   context.debug("Derived filter: '" + filter + "'");
   return filter;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
+// Get the original command line arguments, in pristine condition, but skipping:
+//   - BINARY
+//   - CMD
+//   - RC
+//   - CONFIG
+//   - --
 const std::vector <std::string> CLI2::getWords ()
 {
-  // Re-analyze the arguments, but do not de-sugar or decompose any.  Analysis
-  // only.
-  analyze (false);
+  auto binary = getBinary ();
+  auto command = getCommand ();
 
-  // TODO Args that should be extracted as words, should be tagged accordingly,
-  //      thereby removing the need for a hard-coded exclusion list.
   std::vector <std::string> words;
-  for (auto& a : _args)
+  for (auto& a : _original_args)
   {
-    if (! a.hasTag ("BINARY") &&
-        ! a.hasTag ("RC")     &&
-        ! a.hasTag ("CONFIG") &&
-        ! a.hasTag ("CMD")    &&
-        ! a.hasTag ("TERMINATOR"))
+    if (a != binary         &&
+        a != command        &&
+        a != "--"           &&
+        a.find ("rc:") != 0 &&
+        a.find ("rc.") != 0)
     {
-      words.push_back (a.attribute ("raw"));
+      words.push_back (a);
     }
+  }
+
+  if (context.config.getInteger ("debug.parser") >= 3)
+  {
+    Color colorOrigArgs ("gray10 on gray4");
+    std::string message = " ";
+    for (auto& word : words)
+      message += colorOrigArgs.colorize (word) + " ";
+    context.debug ("CLI2::getWords" + message);
   }
 
   return words;
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Search for 'value' in _entities category, return canonicalized value.

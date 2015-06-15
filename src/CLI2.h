@@ -93,8 +93,8 @@ public:
   void analyze (bool parse = true, bool strict = false);
   void applyOverrides ();
   const std::string getFilter (bool applyContext = true);
-  const std::vector <std::string> getWords ();
 */
+  const std::vector <std::string> getWords ();
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   std::string getBinary () const;
   std::string getCommand () const;
