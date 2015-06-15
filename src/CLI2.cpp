@@ -740,7 +740,6 @@ std::string CLI2::getBinary () const
   return "";
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI2::getCommand () const
 {
@@ -751,6 +750,7 @@ std::string CLI2::getCommand () const
   return "";
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI2::getLimit () const
 {
