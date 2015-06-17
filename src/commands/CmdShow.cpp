@@ -56,7 +56,7 @@ int CmdShow::execute (std::string& output)
 
   // Obtain the arguments from the description.  That way, things like '--'
   // have already been handled.
-  std::vector <std::string> words = context.cli.getWords ();
+  std::vector <std::string> words = context.cli2.getWords ();
   if (words.size () > 1)
     throw std::string (STRING_CMD_SHOW_ARGS);
 
