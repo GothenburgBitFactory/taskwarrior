@@ -1991,30 +1991,33 @@ void CLI2::defaultCommand ()
       std::string defaultCommand = context.config.get ("default.command");
       if (defaultCommand != "")
       {
-        // Modify _args to be:   <args0> [<def0> ...] <args1> [...]
-        std::vector <A2> reconstructed;
-        for (auto a = _args.begin (); a != _args.end (); ++a)
+        // Modify _args, _original_args to be:
+        //   <args0> [<def0> ...] <args1> [...]
+
+        std::vector <std::string> reconstructedOriginals {_original_args[0]};
+        std::vector <A2> reconstructed {_args[0]};
+
+        std::string lexeme;
+        Lexer::Type type;
+        Lexer lex (defaultCommand);
+        lex.ambiguity (false);
+
+        while (lex.token (lexeme, type))
         {
-          // This stores the argument, and has the side effect of positioning
-          // insertions *after* the CMD.
-          reconstructed.push_back (*a);
+          reconstructedOriginals.push_back (lexeme);
 
-          if (a == _args.begin ())
-          {
-            std::string lexeme;
-            Lexer::Type type;
-            Lexer lex (defaultCommand);
-            lex.ambiguity (false);
-
-            while (lex.token (lexeme, type))
-            {
-              A2 cmd (lexeme, type);
-              cmd.tag ("DEFAULT");
-              reconstructed.push_back (cmd);
-            }
-          }
+          A2 cmd (lexeme, type);
+          cmd.tag ("DEFAULT");
+          reconstructed.push_back (cmd);
         }
 
+        for (unsigned int i = 1; i < _original_args.size (); ++i)
+          reconstructedOriginals.push_back (_original_args[i]);
+
+        for (unsigned int i = 1; i < _args.size (); ++i)
+          reconstructed.push_back (_args[i]);
+
+        _original_args = reconstructedOriginals;
         _args = reconstructed;
         changes = true;
       }
