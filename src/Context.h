@@ -68,7 +68,6 @@ public:
   void debug (const std::string&);     // Debug message sink
   void error (const std::string&);     // Error message sink - non-maskable
   void clearMessages ();
-  void clear ();
 
   void decomposeSortField (const std::string&, std::string&, bool&, bool&);
 

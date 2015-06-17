@@ -747,30 +747,6 @@ void Context::decomposeSortField (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Note: The reason some of these are commented out is because the ::clear
-// method is not really "clear" but "clear_some".  Some members do not need to
-// be initialized.  That makes this method something of a misnomer.  So be it.
-//
-// TODO Is this method used anywhere?
-void Context::clear ()
-{
-  tdb2.clear ();
-
-  // Eliminate the command objects.
-  for (auto& cmd : commands)
-    delete cmd.second;
-
-  commands.clear ();
-
-  // Eliminate the column objects.
-  for (auto& col : columns)
-    delete col.second;
-
-  columns.clear ();
-  clearMessages ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // This capability is to answer the question of 'what did I just do to generate
 // this output?'.
 void Context::updateXtermTitle ()
