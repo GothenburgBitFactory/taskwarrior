@@ -900,8 +900,7 @@ void CLI2::aliasExpansion ()
       raw = i.attribute ("raw");
       if (_aliases.find (raw) != _aliases.end ())
       {
-        auto lexed = Lexer::split (_aliases[raw]);
-        for (auto& l : lexed)
+        for (auto& l : Lexer::split (_aliases[raw]))
         {
           A2 a (l, Lexer::Type::word);
           a.tag ("ALIAS");
@@ -917,6 +916,23 @@ void CLI2::aliasExpansion ()
     }
 
     _args = reconstructed;
+
+    std::vector <std::string> reconstructedOriginals;
+    for (auto& i : _original_args)
+    {
+      if (_aliases.find (i) != _aliases.end ())
+      {
+        for (auto& l : Lexer::split (_aliases[i]))
+          reconstructedOriginals.push_back (l);
+
+        action = true;
+        changes = true;
+      }
+      else
+        reconstructedOriginals.push_back (i);
+    }
+
+    _original_args = reconstructedOriginals;
   }
   while (action && counter++ < safetyValveDefault);
 
