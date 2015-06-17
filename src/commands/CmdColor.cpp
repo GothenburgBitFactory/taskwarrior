@@ -54,7 +54,7 @@ int CmdColor::execute (std::string& output)
 #ifdef FEATURE_COLOR
   // Get the non-attribute, non-fancy command line arguments.
   bool legend = false;
-  std::vector <std::string> words = context.cli.getWords ();
+  std::vector <std::string> words = context.cli2.getWords ();
   for (auto& word : words)
     if (closeEnough ("legend", word))
       legend = true;
