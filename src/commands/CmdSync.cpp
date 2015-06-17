@@ -56,7 +56,7 @@ int CmdSync::execute (std::string& output)
 
   // Loog for the 'init' keyword to indicate one-time pending.data upload.
   bool first_time_init = false;
-  std::vector <std::string> words = context.cli.getWords ();
+  std::vector <std::string> words = context.cli2.getWords ();
   for (auto& word : words)
   {
     if (closeEnough ("initialize", word, 4))
