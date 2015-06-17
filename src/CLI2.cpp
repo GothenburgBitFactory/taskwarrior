@@ -684,12 +684,14 @@ const std::vector <std::string> CLI2::getWords ()
 {
   auto binary = getBinary ();
   auto command = getCommand ();
+  auto commandRaw = getCommandRaw ();
 
   std::vector <std::string> words;
   for (auto& a : _original_args)
   {
     if (a != binary         &&
         a != command        &&
+        a != commandRaw     &&
         a != "--"           &&
         a.find ("rc:") != 0 &&
         a.find ("rc.") != 0)
