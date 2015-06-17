@@ -680,11 +680,11 @@ const std::string CLI2::getFilter (bool applyContext)
 //   - RC
 //   - CONFIG
 //   - --
-const std::vector <std::string> CLI2::getWords ()
+const std::vector <std::string> CLI2::getWords (bool filtered)
 {
   auto binary = getBinary ();
   auto command = getCommand ();
-  auto commandRaw = getCommandRaw ();
+  auto commandRaw = getCommand (false);
 
   std::vector <std::string> words;
   for (auto& a : _original_args)
@@ -692,11 +692,14 @@ const std::vector <std::string> CLI2::getWords ()
     if (a != binary         &&
         a != command        &&
         a != commandRaw     &&
-        a != "--"           &&
-        a.find ("rc:") != 0 &&
-        a.find ("rc.") != 0)
+        a != "--")
     {
-      words.push_back (a);
+      if (! filtered ||
+          (a.find ("rc:") != 0 &&
+           a.find ("rc.") != 0))
+      {
+        words.push_back (a);
+      }
     }
   }
 
@@ -755,21 +758,11 @@ std::string CLI2::getBinary () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string CLI2::getCommand () const
+std::string CLI2::getCommand (bool canonical) const
 {
   for (auto& a : _args)
     if (a.hasTag ("CMD"))
-      return a.attribute ("canonical");
-
-  return "";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string CLI2::getCommandRaw () const
-{
-  for (auto& a : _args)
-    if (a.hasTag ("CMD"))
-      return a.attribute ("raw");
+      return a.attribute (canonical ? "canonical" : "raw");
 
   return "";
 }
