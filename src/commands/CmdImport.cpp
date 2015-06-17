@@ -55,7 +55,7 @@ int CmdImport::execute (std::string& output)
   int count = 0;
 
   // Get filenames from command line arguments.
-  std::vector <std::string> words = context.cli.getWords ();
+  std::vector <std::string> words = context.cli2.getWords ();
   if (! words.size () || (words.size () == 1 && words[0] == "-"))
   {
     // No files or only "-" specified, import tasks from STDIN.
