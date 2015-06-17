@@ -98,6 +98,7 @@ public:
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   std::string getBinary () const;
   std::string getCommand () const;
+  std::string getCommandRaw () const;
 /*
   std::string getLimit () const;
 */

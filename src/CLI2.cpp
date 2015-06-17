@@ -762,6 +762,16 @@ std::string CLI2::getCommand () const
   return "";
 }
 
+////////////////////////////////////////////////////////////////////////////////
+std::string CLI2::getCommandRaw () const
+{
+  for (auto& a : _args)
+    if (a.hasTag ("CMD"))
+      return a.attribute ("raw");
+
+  return "";
+}
+
 /*
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI2::getLimit () const
