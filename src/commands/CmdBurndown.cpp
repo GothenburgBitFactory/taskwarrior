@@ -209,7 +209,7 @@ Chart::Chart (char type)
   _fix_rate = 0.0;
 
   // Set the title.
-  std::vector <std::string> words = context.cli.getWords ();
+  std::vector <std::string> words = context.cli2.getWords ();
   std::string filter;
   join (filter, " ", words);
   _title = "(" + filter + ")";
