@@ -678,6 +678,135 @@ const std::string CLI2::getFilter (bool applyContext)
 // sugar as necessary.
 void CLI2::prepareFilter (bool applyContext)
 {
+  // TODO This is from the old CLI::categorize method, and needs to be replicated
+  //      here.
+  bool changes = false;
+  bool foundCommand = false;
+  bool readOnly = false;
+
+  for (auto& a : _args)
+  {
+    if (a.hasTag ("CMD"))
+    {
+      foundCommand = true;
+      if (a.hasTag ("READCMD"))
+        readOnly = true;
+    }
+    else if (a.hasTag ("BINARY") ||
+             a.hasTag ("RC")     ||
+             a.hasTag ("CONFIG"))
+    {
+      // NOP.
+    }
+    else if (foundCommand && ! readOnly)
+    {
+      a.tag ("MODIFICATION");
+      changes = true;
+    }
+    else if (!foundCommand || (foundCommand && readOnly))
+    {
+      a.tag ("FILTER");
+      changes = true;
+    }
+  }
+
+/*
+  for (auto& a : _args)
+  {
+    std::string raw = a.attribute ("raw");
+
+    if (! terminated && raw == "--")
+    {
+      a.tag ("ORIGINAL");
+      a.tag ("TERMINATOR");
+      terminated = true;
+      changes = true;
+      continue;
+    }
+    else if (terminated)
+    {
+      a.tag ("ORIGINAL");
+      a.tag ("TERMINATED");
+      a.tag ("WORD");
+      changes = true;
+    }
+
+    if (raw.find (' ') != std::string::npos)
+    {
+      a.tag ("QUOTED");
+      changes = true;
+    }
+
+    std::string canonical;
+    if (! terminated   &&
+        ! foundCommand &&
+        canonicalize (canonical, "cmd", raw))
+    {
+      readOnly = ! exactMatch ("writecmd", canonical);
+
+      a.tag ("CMD");
+      a.tag (readOnly ? "READCMD" : "WRITECMD");
+      a.attribute ("canonical", canonical);
+      foundCommand = true;
+      changes = true;
+    }
+    else if (a.hasTag ("TERMINATOR") ||
+             a.hasTag ("BINARY")     ||
+             a.hasTag ("CONFIG")     ||
+             a.hasTag ("RC"))
+    {
+      // NOP
+    }
+    else if (foundCommand && ! readOnly)
+    {
+      a.tag ("MODIFICATION");
+
+      // If the argument contains a space, it was quoted.  Record that.
+      if (! Lexer::isOneWord (raw))
+        a.tag ("QUOTED");
+
+      changes = true;
+    }
+    else if (!foundCommand || (foundCommand && readOnly))
+    {
+      a.tag ("FILTER");
+
+      // If the argument contains a space, it was quoted.  Record that.
+      if (! Lexer::isOneWord (raw))
+        a.tag ("QUOTED");
+
+      changes = true;
+    }
+  }
+*/
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (dump ("CLI2::prepareFilter categorize"));
+
+/*
+  // TODO This is from the old CLI::analyze method, but need to be replicated here.
+
+  // Remove all the syntactic sugar for FILTERs.
+  findIDs ();
+  findUUIDs ();
+  insertIDExpr ();
+  desugarFilterTags ();
+  findStrayModifications ();
+  desugarFilterAttributes ();
+  desugarFilterAttributeModifiers ();
+  desugarFilterPatterns ();
+  findOperators ();
+  findAttributes ();
+  desugarFilterPlainArgs ();
+  insertJunctions ();                 // Deliberately after all desugar calls.
+
+  // Decompose the elements for MODIFICATIONs.
+  decomposeModAttributes ();
+  decomposeModAttributeModifiers ();
+  decomposeModTags ();
+  decomposeModSubstitutions ();
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
