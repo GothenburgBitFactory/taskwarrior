@@ -668,10 +668,17 @@ const std::string CLI2::getFilter (bool applyContext)
       filter = "( " + filter + " )";
   }
 
-  context.debug("Derived filter: '" + filter + "'");
+  context.debug("CLI2: Derived filter: '" + filter + "'");
   return filter;
 }
 */
+
+////////////////////////////////////////////////////////////////////////////////
+// Parset the commnad line, identifiying filter components, expanding syntactic
+// sugar as necessary.
+void CLI2::prepareFilter (bool applyContext)
+{
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Get the original command line arguments, in pristine condition, but skipping:

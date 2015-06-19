@@ -72,6 +72,11 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   context.timer_filter.start ();
   _startCount = (int) input.size ();
 
+  context.cli2.prepareFilter (applyContext);
+  // TODO Need to replace CLI2::getFilter with something that just walks the
+  //      the parse tree.  No point in combining the parse tree into a string,
+  //      only to lex it back into tokens for Eval.
+
   if (context.config.getInteger ("debug.parser") >= 1)
     context.debug (context.cli.dump ("Filter::subset"));
 
@@ -113,6 +118,11 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 void Filter::subset (std::vector <Task>& output, bool applyContext /* = true */)
 {
   context.timer_filter.start ();
+
+  context.cli2.prepareFilter (applyContext);
+  // TODO Need to replace CLI2::getFilter with something that just walks the
+  //      the parse tree.  No point in combining the parse tree into a string,
+  //      only to lex it back into tokens for Eval.
 
   if (context.config.getInteger ("debug.parser") >= 1)
     context.debug (context.cli.dump ("Filter::subset"));

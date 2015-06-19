@@ -94,6 +94,7 @@ public:
   void applyOverrides ();
   const std::string getFilter (bool applyContext = true);
 */
+  void prepareFilter (bool applyContext = true);
   const std::vector <std::string> getWords (bool filtered = true);
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   std::string getBinary () const;
