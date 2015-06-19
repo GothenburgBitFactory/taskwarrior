@@ -646,7 +646,7 @@ void Context::getLimits (int& rows, int& lines)
 void Context::staticInitialization ()
 {
   CLI::minimumMatchLength   = config.getInteger ("abbreviation.minimum");
-  CLI2::minimumMatchLength   = config.getInteger ("abbreviation.minimum");
+  CLI2::minimumMatchLength  = config.getInteger ("abbreviation.minimum");
 
   Task::defaultProject      = config.get ("default.project");
   Task::defaultDue          = config.get ("default.due");
@@ -753,7 +753,7 @@ void Context::updateXtermTitle ()
 {
   if (config.getBoolean ("xterm.title") && isatty (STDOUT_FILENO))
   {
-    std::string command = cli.getCommand ();
+    std::string command = cli2.getCommand ();
     std::string title;
 
     for (auto a = cli._args.begin (); a != cli._args.end (); ++a)
@@ -772,7 +772,7 @@ void Context::updateXtermTitle ()
 // This function allows a clean output if the command is a helper subcommand.
 void Context::updateVerbosity ()
 {
-  std::string command = cli.getCommand ();
+  std::string command = cli2.getCommand ();
   if (command != "" &&
       command[0] == '_')
   {
