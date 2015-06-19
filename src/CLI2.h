@@ -90,7 +90,6 @@ public:
   void add (const std::string&);
   void addContextFilter ();
   void addRawFilter (const std::string& arg);
-  void analyze (bool parse = true, bool strict = false);
   void applyOverrides ();
   const std::string getFilter (bool applyContext = true);
 */
