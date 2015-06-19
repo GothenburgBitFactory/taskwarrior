@@ -113,9 +113,6 @@ private:
   void aliasExpansion ();
   void findOverrides ();
   bool findCommand ();
-/*
-  void categorize ();
-*/
   bool exactMatch (const std::string&, const std::string&) const;
 /*
   void desugarFilterTags ();
