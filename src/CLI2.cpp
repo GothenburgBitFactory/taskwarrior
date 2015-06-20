@@ -1475,7 +1475,7 @@ void CLI2::insertIDExpr ()
           reconstructed.push_back (argUUID);
           reconstructed.push_back (opSimilar);
 
-          A2 value ("'" + *u + "'", Lexer::Type::string);
+          A2 value (*u, Lexer::Type::string);
           value.tag ("FILTER");
           reconstructed.push_back (value);
 
