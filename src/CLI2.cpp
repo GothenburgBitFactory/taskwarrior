@@ -492,43 +492,6 @@ void CLI2::addRawFilter (const std::string& arg)
   while (lex.token (lexeme, type))
     add (lexeme);
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// Extract all the FILTER-tagged items.
-const std::string CLI2::getFilter (bool applyContext)
-{
-  // Handle context setting
-  // Commands that don't want to respect current context should leverage
-  // the applyContext argument
-  if (applyContext)
-    addContextFilter ();
-
-  std::string filter = "";
-  if (_args.size ())
-  {
-    for (auto& a : _args)
-    {
-      if (a.hasTag ("FILTER"))
-      {
-        if (filter != "")
-          filter += ' ';
-
-        std::string term = a.attribute ("name");
-        if (term == "")
-          term = a.attribute ("raw");
-
-        filter += term;
-      }
-    }
-
-    // Only apply parentheses for non-trivial filters.
-    if (filter != "")
-      filter = "( " + filter + " )";
-  }
-
-  context.debug("CLI2: Derived filter: '" + filter + "'");
-  return filter;
-}
 */
 
 ////////////////////////////////////////////////////////////////////////////////
