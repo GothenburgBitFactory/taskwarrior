@@ -105,8 +105,8 @@ private:
 /*
   void desugarFilterAttributes ();
   void desugarFilterAttributeModifiers ();
-  void desugarFilterPatterns ();
 */
+  void desugarFilterPatterns ();
   void findIDs ();
   void findUUIDs ();
   void insertIDExpr ();

@@ -521,7 +521,9 @@ void CLI2::prepareFilter (bool applyContext)
 /*
   desugarFilterAttributes ();
   desugarFilterAttributeModifiers ();
+*/
   desugarFilterPatterns ();
+/*
   findAttributes ();
   desugarFilterPlainArgs ();
   insertJunctions ();                 // Deliberately after all desugar calls.
@@ -1179,42 +1181,34 @@ void CLI2::desugarFilterAttributeModifiers ()
       context.debug (dump ("CLI2::analyze desugarFilterAttributeModifiers"));
   }
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // /pattern/ --> description ~ 'pattern'
 void CLI2::desugarFilterPatterns ()
 {
   bool changes = false;
-  std::vector <A> reconstructed;
+  std::vector <A2> reconstructed;
   for (auto& a : _args)
   {
-    if (a.hasTag ("FILTER"))
+    if (a.hasTag ("FILTER") &&
+        a._lextype == Lexer::Type::pattern)
     {
-      Nibbler n (a.attribute ("raw"));
-      std::string pattern;
+      changes = true;
+      std::string raw = a.attribute ("raw");
+      std::string pattern = raw.substr (1, raw.length () - 2);
 
-      if (n.getQuoted ('/', pattern) &&
-          n.depleted () &&
-          pattern.length () > 0)
-      {
-        A lhs ("argPattern", "description");
-        lhs.tag ("ATTRIBUTE");
-        lhs.tag ("FILTER");
-        reconstructed.push_back (lhs);
+      A2 lhs ("description", Lexer::Type::dom);
+      lhs.tag ("FILTER");
+      reconstructed.push_back (lhs);
 
-        A op ("argPattern", "~");
-        op.tag ("OP");
-        op.tag ("FILTER");
-        reconstructed.push_back (op);
+      A2 op ("~", Lexer::Type::op);
+      op.tag ("FILTER");
+      reconstructed.push_back (op);
 
-        A rhs ("argPattern", "'" + pattern + "'");
-        rhs.tag ("LITERAL");
-        rhs.tag ("FILTER");
-        reconstructed.push_back (rhs);
-        changes = true;
-      }
-      else
-        reconstructed.push_back (a);
+      A2 rhs (pattern, Lexer::Type::string);
+      rhs.tag ("FILTER");
+      reconstructed.push_back (rhs);
     }
     else
       reconstructed.push_back (a);
@@ -1225,10 +1219,9 @@ void CLI2::desugarFilterPatterns ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (dump ("CLI2::analyze desugarFilterPatterns"));
+      context.debug (dump ("CLI2::prepareFilter desugarFilterPatterns"));
   }
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // An ID sequence can be:
