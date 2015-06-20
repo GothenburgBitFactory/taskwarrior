@@ -1495,6 +1495,10 @@ void CLI2::findUUIDs ()
       changes = true;
     }
   }
+
+  if (changes)
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (dump ("CLI2::prepareFilter findUUIDs"));
 }
 
 /*
