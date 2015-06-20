@@ -2059,12 +2059,6 @@ bool CLI2::isUUIDList (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isID (const std::string& raw) const
-{
-  return Lexer::isAllDigits (raw);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::isPattern (const std::string& raw) const
 {
   if (raw.length () > 2 &&
@@ -2204,7 +2198,7 @@ bool CLI2::disqualifyOnlyParenOps (
              isUUIDList     (lexeme.first) ||
              isUUID         (lexeme.first) || // obsolete
              isIDSequence   (lexeme.first) || // obsolete
-             isID           (lexeme.first) ||
+             isID           (lexeme.first) || // obsolete
              isPattern      (lexeme.first) ||
              isAttribute    (lexeme.first))
       ++opSugarCount;
