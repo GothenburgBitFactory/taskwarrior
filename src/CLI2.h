@@ -40,10 +40,6 @@ class A2
 public:
   A2 ();
   A2 (const std::string&, Lexer::Type);
-/*
-  A2 (const std::string&, const int);
-  A2 (const std::string&, const double);
-*/
   ~A2 ();
   A2 (const A2&);
   A2& operator= (const A2&);
