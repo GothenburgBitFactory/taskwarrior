@@ -525,7 +525,9 @@ void CLI2::prepareFilter (bool applyContext)
   desugarFilterPatterns ();
 /*
   findAttributes ();
+*/
   desugarFilterPlainArgs ();
+/*
   insertJunctions ();                 // Deliberately after all desugar calls.
 
   // Decompose the elements for MODIFICATIONs.
@@ -1424,44 +1426,41 @@ void CLI2::insertIDExpr ()
   }
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::desugarFilterPlainArgs ()
 {
   bool changes = false;
-  std::vector <A> reconstructed;
-  auto prev = _args.begin ();
-  for (auto a = _args.begin (); a != _args.end (); ++a)
+  std::vector <A2> reconstructed;
+  auto& prev = _args[0];
+  for (auto& a : _args)
   {
-    if (a != prev                 && // Not the first arg.
-        ! prev->hasTag ("OP")     && // An OP before protects the arg.
-        a->hasTag ("FILTER")      &&
-        ! a->hasTag ("ATTRIBUTE") &&
-        ! a->hasTag ("ATTMOD")    &&
-        ! a->hasTag ("OP")        &&
-        ! a->hasTag ("REGEX")     &&
-        ! a->hasTag ("LITERAL"))
+    if (prev._lextype != Lexer::Type::op       &&
+        a.hasTag ("FILTER")                    &&
+        (a._lextype == Lexer::Type::dom        ||
+         a._lextype == Lexer::Type::identifier ||
+         a._lextype == Lexer::Type::word       ||
+         a._lextype == Lexer::Type::string     ||
+         a._lextype == Lexer::Type::number     ||
+         a._lextype == Lexer::Type::hex))
     {
-      A lhs ("argPattern", "description");
-      lhs.tag ("ATTRIBUTE");
+      changes = true;
+
+      A2 lhs ("description", Lexer::Type::dom);
       lhs.tag ("FILTER");
       reconstructed.push_back (lhs);
 
-      A op ("argPattern", "~");
-      op.tag ("OP");
+      A2 op ("~", Lexer::Type::op);
       op.tag ("FILTER");
       reconstructed.push_back (op);
 
-      std::string pattern = a->attribute ("raw");
-      Lexer::dequote (pattern);
-      A rhs ("argPattern", "'" + pattern + "'");
-      rhs.tag ("LITERAL");
+      std::string raw = a.attribute ("raw");
+      Lexer::dequote (raw);
+      A2 rhs (raw, Lexer::Type::string);
       rhs.tag ("FILTER");
       reconstructed.push_back (rhs);
-      changes = true;
     }
     else
-      reconstructed.push_back (*a);
+      reconstructed.push_back (a);
 
     prev = a;
   }
@@ -1471,10 +1470,11 @@ void CLI2::desugarFilterPlainArgs ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (dump ("CLI2::analyze desugarFilterPlainArgs"));
+      context.debug (dump ("CLI2::prepareFilter desugarFilterPlainArgs"));
   }
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::findAttributes ()
 {

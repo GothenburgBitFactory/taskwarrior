@@ -110,8 +110,8 @@ private:
   void findIDs ();
   void findUUIDs ();
   void insertIDExpr ();
-/*
   void desugarFilterPlainArgs ();
+/*
   void findAttributes ();
   void insertJunctions ();
 */
