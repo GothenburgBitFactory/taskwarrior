@@ -408,10 +408,7 @@ void CLI2::handleTerminator ()
 void CLI2::analyze ()
 {
   if (context.config.getInteger ("debug.parser") >= 3)
-  {
-    context.debug ("---------------------------------------------------------------------------------");
     context.debug (dump ("CLI2::analyze start"));
-  }
 
   // Process _original_args.
   _args.clear ();
@@ -430,11 +427,7 @@ void CLI2::analyze ()
   }
 
   if (context.config.getInteger ("debug.parser") >= 3)
-  {
-    context.debug (dump ());
-    context.debug ("CLI2::analyze end");
-    context.debug ("---------------------------------------------------------------------------------");
-  }
+    context.debug (dump ("CLI2::analyze end"));
 }
 
 /*
