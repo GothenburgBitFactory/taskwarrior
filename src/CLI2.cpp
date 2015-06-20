@@ -2059,21 +2059,6 @@ bool CLI2::isUUIDList (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isUUID (const std::string& raw) const
-{
-  // UUIDs have a limited character set.
-  if (raw.find_first_not_of ("0123456789abcdefABCDEF-") == std::string::npos)
-  {
-    Nibbler n (raw);
-    std::string token;
-    if (n.getUUID (token) || n.getPartialUUID (token))
-      return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::isIDSequence (const std::string& raw) const
 {
   if (raw.find_first_not_of ("0123456789,-") == std::string::npos)
