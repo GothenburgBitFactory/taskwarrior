@@ -2012,13 +2012,6 @@ bool CLI2::isTerminator (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isCommand (const std::string& raw) const
-{
-  std::string canonical;
-  return canonicalize (canonical, "cmd", raw);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Valid tag
 //   - Length > 1
 //   - Starts with +/-
