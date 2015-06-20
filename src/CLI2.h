@@ -82,7 +82,6 @@ public:
   void add (const std::string&);
   void analyze ();
 /*
-  void initialize (int, const char**);
   void add (const std::string&);
   void addContextFilter ();
   void addRawFilter (const std::string& arg);

@@ -439,23 +439,6 @@ void CLI2::analyze ()
 
 /*
 ////////////////////////////////////////////////////////////////////////////////
-// Capture the original, intact command line arguments.
-void CLI2::initialize (int argc, const char** argv)
-{
-  // Clean what needs to be cleaned. Everything in this case.
-  _original_args.clear ();
-  _id_ranges.clear ();
-  _uuid_list.clear ();
-  _terminated = false;
-
-  _original_args.push_back (argv[0]);
-  for (int i = 1; i < argc; ++i)
-    addArg (argv[i]);
-
-  analyze ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Capture a single argument, and recalc everything.
 void CLI2::add (const std::string& arg)
 {
