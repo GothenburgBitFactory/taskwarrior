@@ -1338,7 +1338,6 @@ void CLI2::findIDs ()
           }
         }
       }
-      a.tag ("ID");
     }
   }
 
