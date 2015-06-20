@@ -112,7 +112,6 @@ private:
   void insertIDExpr ();
   void desugarFilterPlainArgs ();
 /*
-  void findAttributes ();
   void insertJunctions ();
 */
   void defaultCommand ();

@@ -523,9 +523,6 @@ void CLI2::prepareFilter (bool applyContext)
   desugarFilterAttributeModifiers ();
 */
   desugarFilterPatterns ();
-/*
-  findAttributes ();
-*/
   desugarFilterPlainArgs ();
 /*
   insertJunctions ();                 // Deliberately after all desugar calls.
@@ -1475,31 +1472,6 @@ void CLI2::desugarFilterPlainArgs ()
 }
 
 /*
-////////////////////////////////////////////////////////////////////////////////
-void CLI2::findAttributes ()
-{
-  // Extract a list of entities for category.
-  std::vector <std::string> options;
-  auto c = _entities.equal_range ("attribute");
-  for (auto e = c.first; e != c.second; ++e)
-    options.push_back (e->second);
-
-  // Walk the arguments and tag as OP.
-  bool changes = false;
-  for (auto& a : _args)
-    if (a.hasTag ("FILTER"))
-      if (std::find (options.begin (), options.end (), a.attribute ("raw")) != options.end ())
-        if (! a.hasTag ("ATTRIBUTE"))
-        {
-          a.tag ("ATTRIBUTE");
-          changes = true;
-        }
-
-  if (changes &&
-      context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::analyze findAttributes"));
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need an
 // "and" operator inserted between them.
