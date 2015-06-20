@@ -1418,23 +1418,21 @@ void CLI2::insertIDExpr ()
         //   )
 
         // Building block operators.
-        A2 openParen  ("(",   Lexer::Type::op);  openParen.tag  ("FILTER"); openParen.tag  ("OP");
-        A2 closeParen (")",   Lexer::Type::op);  closeParen.tag ("FILTER"); closeParen.tag ("OP");
-        A2 opOr       ("or",  Lexer::Type::op);  opOr.tag       ("FILTER"); opOr.tag       ("OP");
-        A2 opAnd      ("and", Lexer::Type::op);  opAnd.tag      ("FILTER"); opAnd.tag      ("OP");
-        A2 opSimilar  ("=",   Lexer::Type::op);  opSimilar.tag  ("FILTER"); opSimilar.tag  ("OP");
-        A2 opEqual    ("==",  Lexer::Type::op);  opEqual.tag    ("FILTER"); opEqual.tag    ("OP");
-        A2 opGTE      (">=",  Lexer::Type::op);  opGTE.tag      ("FILTER"); opGTE.tag      ("OP");
-        A2 opLTE      ("<=",  Lexer::Type::op);  opLTE.tag      ("FILTER"); opLTE.tag      ("OP");
+        A2 openParen  ("(",   Lexer::Type::op);  openParen.tag  ("FILTER");
+        A2 closeParen (")",   Lexer::Type::op);  closeParen.tag ("FILTER");
+        A2 opOr       ("or",  Lexer::Type::op);  opOr.tag       ("FILTER");
+        A2 opAnd      ("and", Lexer::Type::op);  opAnd.tag      ("FILTER");
+        A2 opSimilar  ("=",   Lexer::Type::op);  opSimilar.tag  ("FILTER");
+        A2 opEqual    ("==",  Lexer::Type::op);  opEqual.tag    ("FILTER");
+        A2 opGTE      (">=",  Lexer::Type::op);  opGTE.tag      ("FILTER");
+        A2 opLTE      ("<=",  Lexer::Type::op);  opLTE.tag      ("FILTER");
 
         // Building block attributes.
         A2 argID ("id", Lexer::Type::dom);
         argID.tag ("FILTER");
-        argID.tag ("ATTRIBUTE");
 
         A2 argUUID ("uuid", Lexer::Type::uuid);
         argUUID.tag ("FILTER");
-        argUUID.tag ("ATTRIBUTE");
 
         reconstructed.push_back (openParen);
 
@@ -1452,8 +1450,6 @@ void CLI2::insertIDExpr ()
 
             A2 value (r->first, Lexer::Type::number);
             value.tag ("FILTER");
-            value.tag ("LITERAL");
-            value.tag ("NUMBER");
             reconstructed.push_back (value);
 
             reconstructed.push_back (closeParen);
@@ -1466,8 +1462,6 @@ void CLI2::insertIDExpr ()
 
             A2 startValue (r->first, Lexer::Type::number);
             startValue.tag ("FILTER");
-            startValue.tag ("LITERAL");
-            startValue.tag ("NUMBER");
             reconstructed.push_back (startValue);
 
             reconstructed.push_back (opAnd);
@@ -1476,8 +1470,6 @@ void CLI2::insertIDExpr ()
 
             A2 endValue (r->second, Lexer::Type::number);
             endValue.tag ("FILTER");
-            endValue.tag ("LITERAL");
-            endValue.tag ("NUMBER");
             reconstructed.push_back (endValue);
 
             reconstructed.push_back (closeParen);
@@ -1501,8 +1493,6 @@ void CLI2::insertIDExpr ()
 
           A2 value ("'" + *u + "'", Lexer::Type::string);
           value.tag ("FILTER");
-          value.tag ("LITERAL");
-          value.tag ("STRING");
           reconstructed.push_back (value);
 
           reconstructed.push_back (closeParen);
