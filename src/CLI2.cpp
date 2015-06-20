@@ -126,22 +126,6 @@ void A2::attribute (const std::string& name, const std::string& value)
   _attributes[name] = value;
 }
 
-/*
-////////////////////////////////////////////////////////////////////////////////
-// Accessor for attributes.
-void A2::attribute (const std::string& name, const int value)
-{
-  _attributes[name] = format (value);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Accessor for attributes.
-void A2::attribute (const std::string& name, const double value)
-{
-  _attributes[name] = format (value, 1, 8);
-}
-*/
-
 ////////////////////////////////////////////////////////////////////////////////
 // Accessor for attributes.
 const std::string A2::attribute (const std::string& name) const
