@@ -26,11 +26,9 @@
 #ifndef INCLUDED_CLI2
 #define INCLUDED_CLI2
 
-/*
 #include <string>
 #include <vector>
 #include <map>
-*/
 #include <Lexer.h>
 #include <FS.h>
 
