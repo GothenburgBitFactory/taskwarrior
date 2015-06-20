@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (789);
+  UnitTest t (819);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -274,6 +274,13 @@ int main (int argc, char** argv)
     { "6.02217e23",                                   { { "6.02217e23",                                   Lexer::Type::number       }, NO, NO, NO, NO }, },
     { "1.2e-3.4",                                     { { "1.2e-3.4",                                     Lexer::Type::number       }, NO, NO, NO, NO }, },
     { "0x2f",                                         { { "0x2f",                                         Lexer::Type::hex          }, NO, NO, NO, NO }, },
+
+    // Set (1,2,4-7,9)
+    { "1,2",                                          { { "1,2",                                          Lexer::Type::set          }, NO, NO, NO, NO }, },
+    { "1-2",                                          { { "1-2",                                          Lexer::Type::set          }, NO, NO, NO, NO }, },
+    { "1-2,4",                                        { { "1-2,4",                                        Lexer::Type::set          }, NO, NO, NO, NO }, },
+    { "1-2,4,6-8",                                    { { "1-2,4,6-8",                                    Lexer::Type::set          }, NO, NO, NO, NO }, },
+    { "1-2,4,6-8,10-12",                              { { "1-2,4,6-8,10-12",                              Lexer::Type::set          }, NO, NO, NO, NO }, },
 
     // Pair
     { "name:value",                                   { { "name:value",                                   Lexer::Type::pair         }, NO, NO, NO, NO }, },
