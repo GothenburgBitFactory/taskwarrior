@@ -792,6 +792,8 @@ const std::string CLI2::dump (const std::string& title) const
       else
         out << colorArgs.colorize (format ("{1}", range.first)) << " ";
     }
+
+    out << "\n";
   }
 
   if (_uuid_list.size ())
@@ -799,9 +801,10 @@ const std::string CLI2::dump (const std::string& title) const
     out << "  _uuid_list\n    ";
     for (auto& uuid : _uuid_list)
       out << colorArgs.colorize (uuid) << " ";
+
+    out << "\n";
   }
 
-  out << "\n";
   return out.str ();
 }
 
