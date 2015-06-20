@@ -84,7 +84,6 @@ public:
 /*
   void addContextFilter ();
   void addRawFilter (const std::string& arg);
-  void applyOverrides ();
   const std::string getFilter (bool applyContext = true);
 */
   void prepareFilter (bool applyContext = true);

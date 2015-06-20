@@ -494,23 +494,6 @@ void CLI2::addRawFilter (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Scan arguments, looking for any tagged CONFIG, in which case extract the name
-// and value, applying it to context.config.
-void CLI2::applyOverrides ()
-{
-  for (auto& a : _args)
-  {
-    if (a.hasTag ("CONFIG"))
-    {
-      std::string name  = a.attribute ("name");
-      std::string value = a.attribute ("value");
-      context.config.set (name, value);
-      context.footnote (format (STRING_PARSER_OVERRIDE_RC, name, value));
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Extract all the FILTER-tagged items.
 const std::string CLI2::getFilter (bool applyContext)
 {
