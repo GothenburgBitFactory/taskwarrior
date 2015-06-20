@@ -517,8 +517,8 @@ void CLI2::prepareFilter (bool applyContext)
   changes = false;
   findIDs ();
   findUUIDs ();
-/*
   insertIDExpr ();
+/*
   desugarFilterTags ();
   findStrayModifications ();
   desugarFilterAttributes ();
@@ -678,9 +678,9 @@ const std::string CLI2::dump (const std::string& title) const
     for (auto& range : _id_ranges)
     {
       if (range.first != range.second)
-        out << colorArgs.colorize (format ("{1}-{2}", range.first, range.second)) << " ";
+        out << colorArgs.colorize (range.first + "-" + range.second) << " ";
       else
-        out << colorArgs.colorize (format ("{1}", range.first)) << " ";
+        out << colorArgs.colorize (range.first) << " ";
     }
 
     out << "\n";
@@ -1331,8 +1331,8 @@ void CLI2::findIDs ()
     {
       if (a._lextype == Lexer::Type::number)
       {
-        unsigned int number = strtol (a.attribute ("raw").c_str (), NULL, 10);
-        _id_ranges.push_back (std::pair <int, int> (number, number));
+        std::string number = a.attribute ("raw");
+        _id_ranges.push_back (std::pair <std::string, std::string> (number, number));
       }
       else if (a._lextype == Lexer::Type::set)
       {
@@ -1345,14 +1345,11 @@ void CLI2::findIDs ()
           auto hyphen = element.find ("-");
           if (hyphen != std::string::npos)
           {
-            unsigned int number_low  = strtol (element.substr (0, hyphen).c_str (), NULL, 10);
-            unsigned int number_high = strtol (element.substr (hyphen + 1).c_str (), NULL, 10);
-            _id_ranges.push_back (std::pair <int, int> (number_low, number_high));
+            _id_ranges.push_back (std::pair <std::string, std::string> (element.substr (0, hyphen), element.substr (hyphen + 1)));
           }
           else
           {
-            unsigned int number = strtol (element.c_str (), NULL, 10);
-            _id_ranges.push_back (std::pair <int, int> (number, number));
+            _id_ranges.push_back (std::pair <std::string, std::string> (element, element));
           }
         }
       }
@@ -1386,23 +1383,24 @@ void CLI2::findUUIDs ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::insertIDExpr ()
 {
-/*
   // TODO Strip out Lexer::Type::list from between Lexer::Type::uuid's.
 
-  // Iterate over all args. The first ID/UUID arg found will be replaced by
-  // the combined ID clause. All other ID/UUID args are removed.
+  // Find the *first* occurence of lexer type set/number/uuid, and replace it
+  // with a synthesized expression. All other occurences are eaten.
   bool changes = false;
   bool foundID = false;
-  std::vector <A> reconstructed;
+  std::vector <A2> reconstructed;
   for (auto& a : _args)
   {
     if (a.hasTag ("FILTER") &&
-        (a.hasTag ("ID") ||
-         a.hasTag ("UUID")))
+        (a._lextype == Lexer::Type::set ||
+         a._lextype == Lexer::Type::number ||
+         a._lextype == Lexer::Type::uuid))
     {
       if (! foundID)
       {
         foundID = true;
+        changes = true;
 
         // Construct a single sequence that represents all _id_ranges and
         // _uuid_list in one clause. This is essentially converting this:
@@ -1420,21 +1418,21 @@ void CLI2::insertIDExpr ()
         //   )
 
         // Building block operators.
-        A openParen  ("argSeq", "(");    openParen.tag  ("FILTER"); openParen.tag  ("OP");
-        A closeParen ("argSeq", ")");    closeParen.tag ("FILTER"); closeParen.tag ("OP");
-        A opOr       ("argSeq", "or");   opOr.tag       ("FILTER"); opOr.tag       ("OP");
-        A opAnd      ("argSeq", "and");  opAnd.tag      ("FILTER"); opAnd.tag      ("OP");
-        A opSimilar  ("argSeq", "=");    opSimilar.tag  ("FILTER"); opSimilar.tag  ("OP");
-        A opEqual    ("argSeq", "==");   opEqual.tag    ("FILTER"); opEqual.tag    ("OP");
-        A opGTE      ("argSeq", ">=");   opGTE.tag      ("FILTER"); opGTE.tag      ("OP");
-        A opLTE      ("argSeq", "<=");   opLTE.tag      ("FILTER"); opLTE.tag      ("OP");
+        A2 openParen  ("(",   Lexer::Type::op);  openParen.tag  ("FILTER"); openParen.tag  ("OP");
+        A2 closeParen (")",   Lexer::Type::op);  closeParen.tag ("FILTER"); closeParen.tag ("OP");
+        A2 opOr       ("or",  Lexer::Type::op);  opOr.tag       ("FILTER"); opOr.tag       ("OP");
+        A2 opAnd      ("and", Lexer::Type::op);  opAnd.tag      ("FILTER"); opAnd.tag      ("OP");
+        A2 opSimilar  ("=",   Lexer::Type::op);  opSimilar.tag  ("FILTER"); opSimilar.tag  ("OP");
+        A2 opEqual    ("==",  Lexer::Type::op);  opEqual.tag    ("FILTER"); opEqual.tag    ("OP");
+        A2 opGTE      (">=",  Lexer::Type::op);  opGTE.tag      ("FILTER"); opGTE.tag      ("OP");
+        A2 opLTE      ("<=",  Lexer::Type::op);  opLTE.tag      ("FILTER"); opLTE.tag      ("OP");
 
         // Building block attributes.
-        A argID ("argSeq", "id");
+        A2 argID ("id", Lexer::Type::dom);
         argID.tag ("FILTER");
         argID.tag ("ATTRIBUTE");
 
-        A argUUID ("argSeq", "uuid");
+        A2 argUUID ("uuid", Lexer::Type::uuid);
         argUUID.tag ("FILTER");
         argUUID.tag ("ATTRIBUTE");
 
@@ -1452,7 +1450,7 @@ void CLI2::insertIDExpr ()
             reconstructed.push_back (argID);
             reconstructed.push_back (opEqual);
 
-            A value ("argSeq", r->first);
+            A2 value (r->first, Lexer::Type::number);
             value.tag ("FILTER");
             value.tag ("LITERAL");
             value.tag ("NUMBER");
@@ -1466,7 +1464,7 @@ void CLI2::insertIDExpr ()
             reconstructed.push_back (argID);
             reconstructed.push_back (opGTE);
 
-            A startValue ("argSeq", r->first);
+            A2 startValue (r->first, Lexer::Type::number);
             startValue.tag ("FILTER");
             startValue.tag ("LITERAL");
             startValue.tag ("NUMBER");
@@ -1476,7 +1474,7 @@ void CLI2::insertIDExpr ()
             reconstructed.push_back (argID);
             reconstructed.push_back (opLTE);
 
-            A endValue ("argSeq", r->second);
+            A2 endValue (r->second, Lexer::Type::number);
             endValue.tag ("FILTER");
             endValue.tag ("LITERAL");
             endValue.tag ("NUMBER");
@@ -1501,7 +1499,7 @@ void CLI2::insertIDExpr ()
           reconstructed.push_back (argUUID);
           reconstructed.push_back (opSimilar);
 
-          A value ("argSeq", "'" + *u + "'");
+          A2 value ("'" + *u + "'", Lexer::Type::string);
           value.tag ("FILTER");
           value.tag ("LITERAL");
           value.tag ("STRING");
@@ -1511,10 +1509,9 @@ void CLI2::insertIDExpr ()
         }
 
         reconstructed.push_back (closeParen);
-        changes = true;
       }
 
-      // No 'else' which cause all other ID/UUID args to be eaten.
+      // No 'else' because all set/number/uuid args but the first are removed.
     }
     else
       reconstructed.push_back (a);
@@ -1525,9 +1522,8 @@ void CLI2::insertIDExpr ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (dump ("CLI2::analyze insertIDExpr"));
+      context.debug (dump ("CLI2::prepareFilter insertIDExpr"));
   }
-*/
 }
 
 /*

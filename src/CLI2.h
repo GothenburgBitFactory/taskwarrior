@@ -132,13 +132,13 @@ private:
 */
 
 public:
-  std::multimap <std::string, std::string> _entities;
-  std::map <std::string, std::string>      _aliases;
-  std::vector <std::string>                _original_args;
-  std::vector <A2>                         _args;
+  std::multimap <std::string, std::string>           _entities;
+  std::map <std::string, std::string>                _aliases;
+  std::vector <std::string>                          _original_args;
+  std::vector <A2>                                   _args;
 
-  std::vector <std::pair <int, int>>       _id_ranges;
-  std::vector <std::string>                _uuid_list;
+  std::vector <std::pair <std::string, std::string>> _id_ranges;
+  std::vector <std::string>                          _uuid_list;
 };
 
 #endif
