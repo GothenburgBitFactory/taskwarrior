@@ -2012,22 +2012,6 @@ bool CLI2::isTerminator (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Valid tag
-//   - Length > 1
-//   - Starts with +/-
-//   - The rest matches ::isName
-bool CLI2::isTag (const std::string& raw) const
-{
-  if (raw.size () >= 2                 &&
-      (raw[0] == '+' || raw[0] == '-') &&
-      isName (raw.substr (1))          &&
-      raw.find (' ') == std::string::npos)
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::isUUIDList (const std::string& raw) const
 {
   // UUIDs have a limited character set.
@@ -2187,7 +2171,7 @@ bool CLI2::disqualifyOnlyParenOps (
         ++opParenCount;
     }
 
-    else if (isTag          (lexeme.first) ||
+    else if (isTag          (lexeme.first) || // obsolete
              isUUIDList     (lexeme.first) ||
              isUUID         (lexeme.first) || // obsolete
              isIDSequence   (lexeme.first) || // obsolete
