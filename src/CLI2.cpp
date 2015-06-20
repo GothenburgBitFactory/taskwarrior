@@ -522,7 +522,6 @@ void CLI2::prepareFilter (bool applyContext)
   desugarFilterAttributes ();
   desugarFilterAttributeModifiers ();
   desugarFilterPatterns ();
-  findOperators ();
   findAttributes ();
   desugarFilterPlainArgs ();
   insertJunctions ();                 // Deliberately after all desugar calls.
@@ -1549,31 +1548,6 @@ void CLI2::desugarFilterPlainArgs ()
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (dump ("CLI2::analyze desugarFilterPlainArgs"));
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CLI2::findOperators ()
-{
-  // Extract a list of entities for category.
-  std::vector <std::string> options;
-  auto c = _entities.equal_range ("operator");
-  for (auto e = c.first; e != c.second; ++e)
-    options.push_back (e->second);
-
-  // Walk the arguments and tag as OP.
-  bool changes = false;
-  for (auto& a : _args)
-    if (a.hasTag ("FILTER"))
-      if (std::find (options.begin (), options.end (), a.attribute ("raw")) != options.end ())
-        if (! a.hasTag ("OP"))
-        {
-          a.tag ("OP");
-          changes = true;
-        }
-
-  if (changes &&
-      context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::analyze findOperators"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
