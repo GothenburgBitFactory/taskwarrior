@@ -517,8 +517,8 @@ void CLI2::prepareFilter (bool applyContext)
   findUUIDs ();
   insertIDExpr ();
   desugarFilterTags ();
-/*
   findStrayModifications ();
+/*
   desugarFilterAttributes ();
   desugarFilterAttributeModifiers ();
   desugarFilterPatterns ();
@@ -942,7 +942,6 @@ void CLI2::desugarFilterTags ()
   }
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::findStrayModifications ()
 {
@@ -965,9 +964,10 @@ void CLI2::findStrayModifications ()
 
   if (changes)
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (dump ("CLI2::analyze findStrayModifications"));
+      context.debug (dump ("CLI2::prepareFilter findStrayModifications"));
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 // <name>:['"][<value>]['"] --> name = value
 void CLI2::desugarFilterAttributes ()
