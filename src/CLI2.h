@@ -129,7 +129,6 @@ private:
   void decomposeModTags ();
   void decomposeModSubstitutions ();
 
-  bool isTerminator     (const std::string&) const;
   bool isUUIDList       (const std::string&) const;
   bool isPattern        (const std::string&) const;
   bool isSubstitution   (const std::string&) const;

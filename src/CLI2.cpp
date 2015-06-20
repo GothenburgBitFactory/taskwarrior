@@ -2006,12 +2006,6 @@ void CLI2::decomposeModSubstitutions ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isTerminator (const std::string& raw) const
-{
-  return raw == "--";
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::isUUIDList (const std::string& raw) const
 {
   // UUIDs have a limited character set.
