@@ -98,7 +98,6 @@ void A2::tag (const std::string& tag)
     _tags.push_back (tag);
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 void A2::unTag (const std::string& tag)
 {
@@ -112,6 +111,7 @@ void A2::unTag (const std::string& tag)
   }
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void A2::unTagAll ()
 {

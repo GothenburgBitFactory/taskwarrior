@@ -43,8 +43,8 @@ public:
   A2& operator= (const A2&);
   bool hasTag (const std::string&) const;
   void tag (const std::string&);
-/*
   void unTag (const std::string&);
+/*
   void unTagAll ();
 */
   void attribute (const std::string&, const std::string&);
