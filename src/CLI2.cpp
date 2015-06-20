@@ -2072,18 +2072,6 @@ bool CLI2::isAttribute (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isOperator (const std::string& raw) const
-{
-  // Walk the list of entities for category.
-  auto c = _entities.equal_range ("operator");
-  for (auto e = c.first; e != c.second; ++e)
-    if (raw == e->second)
-      return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::isName (const std::string& raw) const
 {
   if (raw != "")
