@@ -122,8 +122,8 @@ private:
   void desugarFilterPatterns ();
 */
   void findIDs ();
-/*
   void findUUIDs ();
+/*
   void insertIDExpr ();
   void desugarFilterPlainArgs ();
   void findOperators ();
@@ -163,8 +163,8 @@ public:
   std::vector <A2>                         _args;
 
   std::vector <std::pair <int, int>>       _id_ranges;
-/*
   std::vector <std::string>                _uuid_list;
+/*
   bool                                     _strict;
   bool                                     _terminated;
 */

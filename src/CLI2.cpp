@@ -639,8 +639,8 @@ void CLI2::prepareFilter (bool applyContext)
   // Remove all the syntactic sugar for FILTERs.
   changes = false;
   findIDs ();
-/*
   findUUIDs ();
+/*
   insertIDExpr ();
   desugarFilterTags ();
   findStrayModifications ();
@@ -1480,49 +1480,24 @@ void CLI2::findIDs ()
   }
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::findUUIDs ()
 {
+  bool changes = false;
+
   for (auto& a : _args)
   {
-    if (a.hasTag ("FILTER"))
+    if (a.hasTag ("FILTER") &&
+        a._lextype == Lexer::Type::uuid)
     {
-      // UUIDs have a limited character set.
-      std::string raw = a.attribute ("raw");
-      if (raw.find_first_not_of ("0123456789abcdefABCDEF-,") == std::string::npos)
-      {
-        Nibbler n (raw);
-        std::vector <std::string> uuidList;
-        std::string uuid;
-        if (n.getUUID (uuid) ||
-            n.getPartialUUID (uuid))
-        {
-          uuidList.push_back (uuid);
-
-          while (n.skip (','))
-          {
-            if (! n.getUUID (uuid) &&
-                ! n.getPartialUUID (uuid))
-              throw std::string (STRING_PARSER_UUID_AFTER_COMMA);
-
-            uuidList.push_back (uuid);
-          }
-
-          if (n.depleted ())
-          {
-            a.tag ("UUID");
-
-            // Save the list.
-            for (auto& uuid : uuidList)
-              _uuid_list.push_back (uuid);
-          }
-        }
-      }
+      a.tag ("UUID");
+      _uuid_list.push_back (a.attribute ("raw"));
+      changes = true;
     }
   }
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::insertIDExpr ()
 {
