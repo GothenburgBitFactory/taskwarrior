@@ -2072,25 +2072,6 @@ bool CLI2::isAttribute (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isName (const std::string& raw) const
-{
-  if (raw != "")
-  {
-    for (unsigned int i = 0; i < raw.length (); ++i)
-    {
-      if (i == 0 && ! Lexer::isIdentifierStart (raw[i]))
-        return false;
-      else if (! Lexer::isIdentifierNext (raw[i]))
-        return false;
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::disqualifyInsufficientTerms (
   const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {

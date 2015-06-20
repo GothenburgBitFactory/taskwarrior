@@ -131,7 +131,6 @@ private:
 
   bool isUUIDList       (const std::string&) const;
   bool isAttribute      (const std::string&) const;
-  bool isName           (const std::string&) const;
 
   bool disqualifyInsufficientTerms (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
   bool disqualifyNoOps             (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
