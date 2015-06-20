@@ -82,7 +82,6 @@ public:
   void add (const std::string&);
   void analyze ();
 /*
-  void add (const std::string&);
   void addContextFilter ();
   void addRawFilter (const std::string& arg);
   void applyOverrides ();

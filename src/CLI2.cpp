@@ -439,18 +439,6 @@ void CLI2::analyze ()
 
 /*
 ////////////////////////////////////////////////////////////////////////////////
-// Capture a single argument, and recalc everything.
-void CLI2::add (const std::string& arg)
-{
-  // Clean the ID/UUID lists, because they will be rebuilt.
-  _id_ranges.clear ();
-  _uuid_list.clear ();
-
-  addArg (arg);
-  analyze ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // There are situations where a context filter is applied. This method
 // determines whether one applies, and if so, applies it.
 void CLI2::addContextFilter ()
