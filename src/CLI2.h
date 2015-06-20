@@ -123,8 +123,8 @@ private:
 */
   void findIDs ();
   void findUUIDs ();
-/*
   void insertIDExpr ();
+/*
   void desugarFilterPlainArgs ();
   void findOperators ();
   void findAttributes ();

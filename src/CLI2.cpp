@@ -598,6 +598,7 @@ void CLI2::prepareFilter (bool applyContext)
 {
   // Clear and re-populate.
   _id_ranges.clear ();
+  _uuid_list.clear ();
 
   // Classify FILTER and MODIFICATION args, based on CMD and READCMD/WRITECMD.
   bool changes = false;
@@ -779,12 +780,12 @@ const std::string CLI2::dump (const std::string& title) const
   out << "\033[1m" << title << "\033[0m\n"
       << "  _original_args\n    ";
 
-  Color colorOrigArgs ("gray10 on gray4");
+  Color colorArgs ("gray10 on gray4");
   for (auto i = _original_args.begin (); i != _original_args.end (); ++i)
   {
     if (i != _original_args.begin ())
       out << ' ';
-    out << colorOrigArgs.colorize (*i);
+    out << colorArgs.colorize (*i);
   }
   out << "\n";
 
@@ -795,6 +796,26 @@ const std::string CLI2::dump (const std::string& title) const
       out << "    " << a.dump () << "\n";
   }
 
+  if (_id_ranges.size ())
+  {
+    out << "  _id_ranges\n    ";
+    for (auto& range : _id_ranges)
+    {
+      if (range.first != range.second)
+        out << colorArgs.colorize (format ("{1}-{2}", range.first, range.second)) << " ";
+      else
+        out << colorArgs.colorize (format ("{1}", range.first)) << " ";
+    }
+  }
+
+  if (_uuid_list.size ())
+  {
+    out << "  _uuid_list\n    ";
+    for (auto& uuid : _uuid_list)
+      out << colorArgs.colorize (uuid) << " ";
+  }
+
+  out << "\n";
   return out.str ();
 }
 
@@ -1457,34 +1478,18 @@ void CLI2::findIDs ()
           }
         }
       }
-
       a.tag ("ID");
     }
   }
 
-  if (_id_ranges.size () &&
-      context.config.getInteger ("debug.parser") >= 3)
-  {
-    Color colorRanges ("gray10 on gray4");
-    std::string ids;
-    for (auto& range : _id_ranges)
-    {
-      ids += " ";
-      if (range.first != range.second)
-        ids += colorRanges.colorize (format ("{1}-{2}", range.first, range.second));
-      else
-        ids += colorRanges.colorize (format ("{1}", range.first));
-    }
-    context.debug ("CLI2::prepareFilter findIDs");
-    context.debug ("  _id_ranges" + ids + "\n");
-  }
+  if (_id_ranges.size ())
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (dump ("CLI2::prepareFilter findIDs"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::findUUIDs ()
 {
-  bool changes = false;
-
   for (auto& a : _args)
   {
     if (a.hasTag ("FILTER") &&
@@ -1492,19 +1497,20 @@ void CLI2::findUUIDs ()
     {
       a.tag ("UUID");
       _uuid_list.push_back (a.attribute ("raw"));
-      changes = true;
     }
   }
 
-  if (changes)
+  if (_uuid_list.size ())
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (dump ("CLI2::prepareFilter findUUIDs"));
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::insertIDExpr ()
 {
+/*
+  // TODO Strip out Lexer::Type::list from between Lexer::Type::uuid's.
+
   // Iterate over all args. The first ID/UUID arg found will be replaced by
   // the combined ID clause. All other ID/UUID args are removed.
   bool changes = false;
@@ -1643,8 +1649,10 @@ void CLI2::insertIDExpr ()
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (dump ("CLI2::analyze insertIDExpr"));
   }
+*/
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::desugarFilterPlainArgs ()
 {
