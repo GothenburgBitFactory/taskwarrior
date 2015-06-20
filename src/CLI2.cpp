@@ -27,8 +27,8 @@
 #include <cmake.h>
 #include <sstream>
 #include <algorithm>
+#include <stdlib.h>
 #include <Context.h>
-//#include <Nibbler.h>
 #include <CLI2.h>
 #include <Color.h>
 #include <text.h>
@@ -596,8 +596,10 @@ const std::string CLI2::getFilter (bool applyContext)
 // sugar as necessary.
 void CLI2::prepareFilter (bool applyContext)
 {
-  // TODO This is from the old CLI::categorize method, and needs to be replicated
-  //      here.
+  // Clear and re-populate.
+  _id_ranges.clear ();
+
+  // Classify FILTER and MODIFICATION args, based on CMD and READCMD/WRITECMD.
   bool changes = false;
   bool foundCommand = false;
   bool readOnly = false;
@@ -632,11 +634,12 @@ void CLI2::prepareFilter (bool applyContext)
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::prepareFilter categorize"));
 
-/*
   // TODO This is from the old CLI::analyze method, but need to be replicated here.
 
   // Remove all the syntactic sugar for FILTERs.
+  changes = false;
   findIDs ();
+/*
   findUUIDs ();
   insertIDExpr ();
   desugarFilterTags ();
@@ -655,6 +658,10 @@ void CLI2::prepareFilter (bool applyContext)
   decomposeModTags ();
   decomposeModSubstitutions ();
 */
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (dump ("CLI2::prepareFilter desugar"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1406,6 +1413,7 @@ void CLI2::desugarFilterPatterns ()
       context.debug (dump ("CLI2::analyze desugarFilterPatterns"));
   }
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // An ID sequence can be:
@@ -1422,97 +1430,57 @@ void CLI2::findIDs ()
   {
     if (a.hasTag ("FILTER"))
     {
-      // IDs have a limited character set.
-      std::string raw = a.attribute ("raw");
-      if (raw.find_first_not_of ("0123456789,-") == std::string::npos)
+      if (a._lextype == Lexer::Type::number)
       {
-        // Container for min/max ID ranges.
-        std::vector <std::pair <int, int>> ranges;
-
+        unsigned int number = strtol (a.attribute ("raw").c_str (), NULL, 10);
+        _id_ranges.push_back (std::pair <int, int> (number, number));
+      }
+      else if (a._lextype == Lexer::Type::set)
+      {
         // Split the ID list into elements.
         std::vector <std::string> elements;
-        split (elements, raw, ',');
+        split (elements, a.attribute ("raw"), ',');
 
-        bool is_an_id = true;
-        for (auto& e : elements)
+        for (auto& element : elements)
         {
-          // Split the ID range into min/max.
-          std::vector <std::string> terms;
-          split (terms, e, '-');
-
-          if (terms.size () == 1)
+          auto hyphen = element.find ("-");
+          if (hyphen != std::string::npos)
           {
-            if (! Lexer::isAllDigits (terms[0]))
-            {
-              is_an_id = false;
-              break;
-            }
-
-            Nibbler n (terms[0]);
-            int id;
-            if (n.getUnsignedInt (id) &&
-                n.depleted ())
-            {
-              ranges.push_back (std::pair <int, int> (id, id));
-            }
-            else
-            {
-              is_an_id = false;
-              break;
-            }
-          }
-          else if (terms.size () == 2)
-          {
-            if (! Lexer::isAllDigits (terms[0]) ||
-                ! Lexer::isAllDigits (terms[1]))
-            {
-              is_an_id = false;
-              break;
-            }
-
-            Nibbler n_min (terms[0]);
-            Nibbler n_max (terms[1]);
-            int id_min;
-            int id_max;
-            if (n_min.getUnsignedInt (id_min) &&
-                n_min.depleted ()             &&
-                n_max.getUnsignedInt (id_max) &&
-                n_max.depleted ())
-            {
-              if (id_min > id_max)
-              {
-                is_an_id = false;
-                break;
-              }
-
-              ranges.push_back (std::pair <int, int> (id_min, id_max));
-            }
-            else
-            {
-              is_an_id = false;
-              break;
-            }
+            unsigned int number_low  = strtol (element.substr (0, hyphen).c_str (), NULL, 10);
+            unsigned int number_high = strtol (element.substr (hyphen + 1).c_str (), NULL, 10);
+            _id_ranges.push_back (std::pair <int, int> (number_low, number_high));
           }
           else
           {
-            is_an_id = false;
-            break;
+            unsigned int number = strtol (element.c_str (), NULL, 10);
+            _id_ranges.push_back (std::pair <int, int> (number, number));
           }
         }
-
-        if (is_an_id)
-        {
-          a.tag ("ID");
-
-          // Save the ranges.
-          for (auto& r : ranges)
-            _id_ranges.push_back (r);
-        }
       }
+
+      a.tag ("ID");
     }
+  }
+
+  if (_id_ranges.size () &&
+      context.config.getInteger ("debug.parser") >= 3)
+  {
+    Color colorRanges ("gray10 on gray4");
+    std::string ids;
+    for (auto& range : _id_ranges)
+    {
+      ids += " ";
+      if (range.first != range.second)
+        ids += colorRanges.colorize (format ("{1}-{2}", range.first, range.second));
+      else
+        ids += colorRanges.colorize (format ("{1}", range.first));
+    }
+    context.debug ("CLI2::prepareFilter findIDs");
+    context.debug ("  _id_ranges" + ids + "\n");
   }
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::findUUIDs ()
 {
