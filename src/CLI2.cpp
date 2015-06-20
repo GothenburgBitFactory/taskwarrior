@@ -511,15 +511,13 @@ void CLI2::prepareFilter (bool applyContext)
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::prepareFilter categorize"));
 
-  // TODO This is from the old CLI::analyze method, but need to be replicated here.
-
   // Remove all the syntactic sugar for FILTERs.
   changes = false;
   findIDs ();
   findUUIDs ();
   insertIDExpr ();
-/*
   desugarFilterTags ();
+/*
   findStrayModifications ();
   desugarFilterAttributes ();
   desugarFilterAttributeModifiers ();
@@ -905,46 +903,32 @@ bool CLI2::exactMatch (
   return false;
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 // +tag --> tags _hastag_ tag
 // -tag --> tags _notag_ tag
 void CLI2::desugarFilterTags ()
 {
   bool changes = false;
-  std::vector <A> reconstructed;
+  std::vector <A2> reconstructed;
   for (auto& a : _args)
   {
-    if (a.hasTag ("FILTER"))
+    if (a._lextype == Lexer::Type::tag)
     {
-      Nibbler n (a.attribute ("raw"));
-      std::string tag;
-      std::string sign;
+      changes = true;
 
-      if (n.getN (1, sign)             &&
-          (sign == "+" || sign == "-") &&
-          n.getUntilEOS (tag)          &&
-          tag.find (' ') == std::string::npos)
-      {
-        A left ("argTag", "tags");
-        left.tag ("ATTRIBUTE");
-        left.tag ("FILTER");
-        reconstructed.push_back (left);
+      A2 left ("tags", Lexer::Type::dom);
+      left.tag ("FILTER");
+      reconstructed.push_back (left);
 
-        A op ("argTag", sign == "+" ? "_hastag_" : "_notag_");
-        op.tag ("OP");
-        op.tag ("FILTER");
-        reconstructed.push_back (op);
+      std::string raw = a.attribute ("raw");
 
-        A right ("argTag", "'" + tag + "'");
-        right.tag ("LITERAL");
-        right.tag ("FILTER");
-        reconstructed.push_back (right);
+      A2 op (raw[0] == '+' ? "_hastag_" : "_notag_", Lexer::Type::op);
+      op.tag ("FILTER");
+      reconstructed.push_back (op);
 
-        changes = true;
-      }
-      else
-        reconstructed.push_back (a);
+      A2 right ("" + raw.substr (1) + "", Lexer::Type::string);
+      right.tag ("FILTER");
+      reconstructed.push_back (right);
     }
     else
       reconstructed.push_back (a);
@@ -955,10 +939,11 @@ void CLI2::desugarFilterTags ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (dump ("CLI2::analyze desugarFilterTags"));
+      context.debug (dump ("CLI2::prepareFilter desugarFilterTags"));
   }
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::findStrayModifications ()
 {
