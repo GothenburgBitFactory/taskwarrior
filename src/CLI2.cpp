@@ -2030,17 +2030,6 @@ bool CLI2::isUUIDList (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isPattern (const std::string& raw) const
-{
-  if (raw.length () > 2 &&
-      raw[0] == '/'     &&
-      raw[raw.length () - 1] == '/')
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // The non-g case is caught by ::isPattern, but not categorized, so it doesn't
 // matter.
 bool CLI2::isSubstitution (const std::string& raw) const
@@ -2170,7 +2159,7 @@ bool CLI2::disqualifyOnlyParenOps (
              isUUID         (lexeme.first) || // obsolete
              isIDSequence   (lexeme.first) || // obsolete
              isID           (lexeme.first) || // obsolete
-             isPattern      (lexeme.first) ||
+             isPattern      (lexeme.first) || // obsolete
              isAttribute    (lexeme.first))
       ++opSugarCount;
   }
