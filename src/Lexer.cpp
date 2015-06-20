@@ -78,6 +78,7 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
   // - hex < number
   // - separator < tag < operator
   // - path < substitution < pattern
+  // - set < number
   // - word last
   if (isString       (token, type, '\'') ||
       isString       (token, type, '"')  ||
@@ -85,6 +86,7 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
       isDuration     (token, type)       ||
       isURL          (token, type)       ||
       isPair         (token, type)       ||
+      isSet          (token, type)       ||
       isDOM          (token, type)       ||
       isUUID         (token, type)       ||
       isHexNumber    (token, type)       ||
@@ -146,6 +148,7 @@ const std::string Lexer::typeName (const Lexer::Type& type)
   case Lexer::Type::list:         return "list";
   case Lexer::Type::url:          return "url";
   case Lexer::Type::pair:         return "pair";
+  case Lexer::Type::set:          return "set";
   case Lexer::Type::separator:    return "separator";
   case Lexer::Type::tag:          return "tag";
   case Lexer::Type::path:         return "path";
@@ -777,6 +780,64 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Lexer::Type::set
+//   a single number:      1
+//   a list of numbers:    1,3,5
+//   a list of numbers:    1 3 5
+//   a range:              5-10
+//   or a combination:     1,3,5-10 12
+//
+//   <id> [ - <id> ] [ , <id> [ - <id> ] ] ...
+bool Lexer::isSet (std::string& token, Lexer::Type& type)
+{
+  std::size_t marker = _cursor;
+  bool moreThanJustANumber = false;
+
+  if (isDigit (_text[marker]))
+  {
+    ++marker;
+    while (isDigit (_text[marker]))
+      utf8_next_char (_text, marker);
+
+    if (_text[marker] == '-')
+    {
+      ++marker;
+      while (isDigit (_text[marker]))
+      {
+        utf8_next_char (_text, marker);
+        moreThanJustANumber = true;
+      }
+    }
+
+    while (_text[marker] == ',')
+    {
+      ++marker;
+      while (isDigit (_text[marker]))
+        utf8_next_char (_text, marker);
+
+      moreThanJustANumber = true;
+
+      if (_text[marker] == '-')
+      {
+        ++marker;
+        while (isDigit (_text[marker]))
+          utf8_next_char (_text, marker);
+      }
+    }
+
+    if (moreThanJustANumber)
+    {
+      token = _text.substr (_cursor, marker - _cursor);
+      type = Lexer::Type::set;
+      _cursor = marker;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::tag
 //   ^ | '(' | ')' | <isWhiteSpace>
 //     [ +|- ] <isIdentifierStart> [ <isIdentifierNext> ]*
@@ -1111,6 +1172,7 @@ std::string Lexer::typeToString (Lexer::Type type)
   else if (type == Lexer::Type::list)         return std::string ("\033[38;5;7m\033[48;5;4m")    + "list"         + "\033[0m";
   else if (type == Lexer::Type::url)          return std::string ("\033[38;5;7m\033[48;5;4m")    + "url"          + "\033[0m";
   else if (type == Lexer::Type::pair)         return std::string ("\033[38;5;7m\033[48;5;1m")    + "pair"         + "\033[0m";
+  else if (type == Lexer::Type::set)          return std::string ("\033[38;5;15m\033[48;5;208m") + "set"          + "\033[0m";
   else if (type == Lexer::Type::tag)          return std::string ("\033[37;45m")                 + "tag"          + "\033[0m";
   else if (type == Lexer::Type::path)         return std::string ("\033[37;102m")                + "path"         + "\033[0m";
   else if (type == Lexer::Type::substitution) return std::string ("\033[37;102m")                + "substitution" + "\033[0m";

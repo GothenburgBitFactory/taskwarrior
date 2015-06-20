@@ -43,7 +43,7 @@ public:
 
   enum class Type { uuid, number, hex,
                     string,
-                    list, url, pair, separator,
+                    list, url, pair, set, separator,
                     tag,
                     path,
                     substitution, pattern,
@@ -93,6 +93,7 @@ public:
   bool isList         (std::string&, Lexer::Type&);
   bool isURL          (std::string&, Lexer::Type&);
   bool isPair         (std::string&, Lexer::Type&);
+  bool isSet          (std::string&, Lexer::Type&);
   bool isTag          (std::string&, Lexer::Type&);
   bool isPath         (std::string&, Lexer::Type&);
   bool isSubstitution (std::string&, Lexer::Type&);
