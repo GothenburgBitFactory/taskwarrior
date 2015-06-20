@@ -130,7 +130,6 @@ private:
   void decomposeModSubstitutions ();
 
   bool isUUIDList       (const std::string&) const;
-  bool isSubstitution   (const std::string&) const;
   bool isAttribute      (const std::string&) const;
   bool isOperator       (const std::string&) const;
   bool isName           (const std::string&) const;

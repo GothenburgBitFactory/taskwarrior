@@ -2030,20 +2030,6 @@ bool CLI2::isUUIDList (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// The non-g case is caught by ::isPattern, but not categorized, so it doesn't
-// matter.
-bool CLI2::isSubstitution (const std::string& raw) const
-{
-  if (raw.length () > 3             &&      // /x// = length 4
-      raw[0] == '/'                 &&
-      raw[raw.length () - 2] == '/' &&
-      raw[raw.length () - 1] == 'g')
-    return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Covers attribute and attribute modifiers.
 // <attr>.[~]<mod>[:=]...
 bool CLI2::isAttribute (const std::string& raw) const
