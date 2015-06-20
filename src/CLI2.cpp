@@ -264,10 +264,6 @@ void CLI2::applyOverrides (int argc, const char** argv)
 
 ////////////////////////////////////////////////////////////////////////////////
 CLI2::CLI2 ()
-/*
-: _strict (false)
-, _terminated (false)
-*/
 {
 }
 
