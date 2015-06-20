@@ -751,8 +751,7 @@ void CLI2::addArg (const std::string& arg)
     if (disqualifyInsufficientTerms (lexemes) ||
         disqualifyNoOps             (lexemes) ||
         disqualifyOnlyParenOps      (lexemes) ||
-        disqualifyFirstLastBinary   (lexemes) ||
-        disqualifySugarFree         (lexemes))
+        disqualifyFirstLastBinary   (lexemes))
     {
       _original_args.push_back (raw);
     }
@@ -2010,48 +2009,6 @@ bool CLI2::isUUIDList (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Covers attribute and attribute modifiers.
-// <attr>.[~]<mod>[:=]...
-bool CLI2::isAttribute (const std::string& raw) const
-{
-  auto colon = raw.find (":");
-  auto equal = raw.find ("=");
-
-  std::string attr = "";
-  if (colon != std::string::npos)
-    attr = raw.substr (0, colon);
-  else if (equal != std::string::npos)
-    attr = raw.substr (0, equal);
-  else
-    return false;
-
-  // No spaces in name.
-  if (! isName (attr))
-    return false;
-
-  auto dot = attr.find (".");
-  std::string mod = "";
-  if (dot != std::string::npos)
-  {
-    mod = attr.substr (dot + 1);
-    attr = attr.substr (0, dot);
-
-    if (mod[0] == '~')
-      mod = mod.substr (1);
-
-    if (! canonicalize (mod, "modifier", mod))
-      return false;
-  }
-
-//  TODO Entities are not loaded yet. Hmm.
-//
-//  if (! canonicalize (attr, "attribute", attr))
-//    return false;
-
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::disqualifyInsufficientTerms (
   const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {
@@ -2095,7 +2052,7 @@ bool CLI2::disqualifyOnlyParenOps (
              isIDSequence   (lexeme.first) || // obsolete
              isID           (lexeme.first) || // obsolete
              isPattern      (lexeme.first) || // obsolete
-             isAttribute    (lexeme.first))
+             isAttribute    (lexeme.first))   // obsolete
       ++opSugarCount;
   }
 
