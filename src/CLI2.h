@@ -133,7 +133,6 @@ private:
   bool isCommand        (const std::string&) const;
   bool isTag            (const std::string&) const;
   bool isUUIDList       (const std::string&) const;
-  bool isIDSequence     (const std::string&) const;
   bool isID             (const std::string&) const;
   bool isPattern        (const std::string&) const;
   bool isSubstitution   (const std::string&) const;

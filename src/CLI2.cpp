@@ -2059,40 +2059,6 @@ bool CLI2::isUUIDList (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isIDSequence (const std::string& raw) const
-{
-  if (raw.find_first_not_of ("0123456789,-") == std::string::npos)
-  {
-    // Split the ID list into elements.
-    std::vector <std::string> elements;
-    split (elements, raw, ',');
-
-    for (auto& e : elements)
-    {
-      // Split the ID range into min/max.
-      std::vector <std::string> terms;
-      split (terms, e, '-');
-
-      if (terms.size () == 1 &&
-          ! isID (terms[0]))
-        return false;
-
-      else if (terms.size () == 2 &&
-          (! isID (terms[0]) ||
-           ! isID (terms[1])))
-        return false;
-
-      else if (terms.size () > 2)
-        return false;
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::isID (const std::string& raw) const
 {
   return Lexer::isAllDigits (raw);
@@ -2236,8 +2202,8 @@ bool CLI2::disqualifyOnlyParenOps (
 
     else if (isTag          (lexeme.first) ||
              isUUIDList     (lexeme.first) ||
-             isUUID         (lexeme.first) ||
-             isIDSequence   (lexeme.first) ||
+             isUUID         (lexeme.first) || // obsolete
+             isIDSequence   (lexeme.first) || // obsolete
              isID           (lexeme.first) ||
              isPattern      (lexeme.first) ||
              isAttribute    (lexeme.first))
