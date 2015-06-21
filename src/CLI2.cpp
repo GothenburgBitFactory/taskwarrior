@@ -519,10 +519,7 @@ void CLI2::prepareFilter (bool applyContext)
   desugarFilterPlainArgs ();
   desugarFilterTags ();
   findStrayModifications ();
-/*
   desugarFilterAttributes ();
-  desugarFilterAttributeModifiers ();
-*/
   desugarFilterPatterns ();
 /*
   insertJunctions ();                 // Deliberately after all desugar calls.
@@ -923,7 +920,10 @@ void CLI2::desugarFilterAttributes ()
       std::string mod   = "";
       std::string value = "";
 
-      if (dot != std::string::npos)
+      // If the dot appears after the colon, then it is part of the value, and
+      // should be ignored.
+      if (dot != std::string::npos &&
+          dot < colon)
       {
         name = raw.substr (0, dot);
         mod  = raw.substr (dot + 1, colon - dot - 1);
