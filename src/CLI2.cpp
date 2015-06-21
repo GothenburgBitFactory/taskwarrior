@@ -953,10 +953,6 @@ void CLI2::desugarFilterAttributes ()
         if (! canonicalize (canonical, "attribute", name))
           canonicalize (canonical, "uda", name);
 
-        // <name>:<value> is an assumed <name> is <value>
-        if (mod == "")
-          mod = "is";
-
         // TODO The "!" modifier is being dropped.
 
         A2 lhs (name, Lexer::Type::dom);
@@ -970,7 +966,13 @@ void CLI2::desugarFilterAttributes ()
         A2 rhs ("", Lexer::Type::string);
         rhs.tag ("FILTER");
 
-        if (mod == "before" || mod == "under" || mod == "below")
+        // Special case for '<name>:<value>'.
+        if (mod == "")
+        {
+          op.attribute ("raw", "=");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "before" || mod == "under" || mod == "below")
         {
           op.attribute ("raw", "<");
           rhs.attribute ("raw", value);
@@ -1050,12 +1052,6 @@ void CLI2::desugarFilterAttributes ()
         reconstructed.push_back (rhs);
         found = true;
       }
-
-/*
-        std::string operatorLiteral = "=";
-        if (canonical == "status")
-          operatorLiteral = "==";
-*/
 
       if (found)
         changes = true;
