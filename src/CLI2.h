@@ -102,8 +102,8 @@ private:
   bool exactMatch (const std::string&, const std::string&) const;
   void desugarFilterTags ();
   void findStrayModifications ();
-/*
   void desugarFilterAttributes ();
+/*
   void desugarFilterAttributeModifiers ();
 */
   void desugarFilterPatterns ();

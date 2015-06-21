@@ -900,96 +900,162 @@ void CLI2::findStrayModifications ()
       context.debug (dump ("CLI2::prepareFilter findStrayModifications"));
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
-// <name>:['"][<value>]['"] --> name = value
+// <name>[.<mod>]:['"][<value>]['"] --> name = value
 void CLI2::desugarFilterAttributes ()
 {
   bool changes = false;
-  std::vector <A> reconstructed;
+  std::vector <A2> reconstructed;
   for (auto& a : _args)
   {
-    if (a.hasTag ("FILTER"))
+    if (a.hasTag ("FILTER") &&
+        a._lextype == Lexer::Type::pair)
     {
-      // Look for a valid attribute name.
-      bool found = false;
-      Nibbler n (a.attribute ("raw"));
-      std::string name;
-      if (n.getName (name) &&
-          name.length ())
+      changes = true;
+
+      auto raw   = a.attribute ("raw");
+      auto dot   = raw.find ('.');
+      auto colon = raw.find (':');
+      if (colon == std::string::npos)
+        colon = raw.find ('=');
+
+      std::string name  = "";
+      std::string mod   = "";
+      std::string value = "";
+
+      if (dot != std::string::npos)
       {
-        if (n.skip (':') ||
-            n.skip ('='))
-        {
-          std::string value;
-          if (n.getQuoted   ('"', value)  ||
-              n.getQuoted   ('\'', value) ||
-              n.getUntilEOS (value)       ||
-              n.depleted ())
-          {
-            if (value == "")
-              value = "''";
-
-            std::string canonical;
-            if (canonicalize (canonical, "uda", name))
-            {
-              A lhs ("argUDA", name);
-              lhs.attribute ("name", canonical);
-              lhs.tag ("UDA");
-              lhs.tag ("ATTRIBUTE");
-              lhs.tag ("FILTER");
-
-              A op ("argUDA", "=");
-              op.tag ("OP");
-              op.tag ("FILTER");
-
-              A rhs ("argUDA", value);
-              rhs.tag ("LITERAL");
-              rhs.tag ("FILTER");
-
-              reconstructed.push_back (lhs);
-              reconstructed.push_back (op);
-              reconstructed.push_back (rhs);
-              found = true;
-            }
-
-            else if (canonicalize (canonical, "pseudo", name))
-            {
-              A lhs ("argPseudo", a.attribute ("raw"));
-              lhs.attribute ("canonical", canonical);
-              lhs.attribute ("value", value);
-              lhs.tag ("PSEUDO");
-              reconstructed.push_back (lhs);
-              found = true;
-            }
-
-            else if (canonicalize (canonical, "attribute", name))
-            {
-              A lhs ("argAtt", name);
-              lhs.attribute ("name", canonical);
-              lhs.tag ("ATTRIBUTE");
-              lhs.tag ("FILTER");
-
-              std::string operatorLiteral = "=";
-              if (canonical == "status")
-                operatorLiteral = "==";
-
-              A op ("argAtt", operatorLiteral);
-              op.tag ("OP");
-              op.tag ("FILTER");
-
-              A rhs ("argAtt", value);
-              rhs.tag ("LITERAL");
-              rhs.tag ("FILTER");
-
-              reconstructed.push_back (lhs);
-              reconstructed.push_back (op);
-              reconstructed.push_back (rhs);
-              found = true;
-            }
-          }
-        }
+        name = raw.substr (0, dot);
+        mod  = raw.substr (dot + 1, colon - dot - 1);
       }
+      else
+      {
+        name = raw.substr (0, colon);
+      }
+
+      value = raw.substr (colon + 1);
+      if (value == "")
+        value = "''";
+
+      bool found = false;
+      std::string canonical;
+      if (canonicalize (canonical, "pseudo", name))
+      {
+        A2 lhs (raw, Lexer::Type::identifier);
+        lhs.attribute ("canonical", canonical);
+        lhs.attribute ("value", value);
+        lhs.tag ("PSEUDO");
+        reconstructed.push_back (lhs);
+        found = true;
+      }
+      else
+      {
+        if (! canonicalize (canonical, "attribute", name))
+          canonicalize (canonical, "uda", name);
+
+        // <name>:<value> is an assumed <name> is <value>
+        if (mod == "")
+          mod = "is";
+
+        // TODO The "!" modifier is being dropped.
+
+        A2 lhs (name, Lexer::Type::dom);
+        lhs.tag ("FILTER");
+        lhs.attribute ("name", canonical);
+        lhs.attribute ("modifier", mod);
+
+        A2 op ("", Lexer::Type::op);
+        op.tag ("FILTER");
+
+        A2 rhs ("", Lexer::Type::string);
+        rhs.tag ("FILTER");
+
+        if (mod == "before" || mod == "under" || mod == "below")
+        {
+          op.attribute ("raw", "<");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "after" || mod == "over" || mod == "above")
+        {
+          op.attribute ("raw", ">");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "none")
+        {
+          op.attribute ("raw", "==");
+          rhs.attribute ("raw", "''");
+        }
+        else if (mod == "any")
+        {
+          op.attribute ("raw", "!==");
+          rhs.attribute ("raw", "''");
+        }
+        else if (mod == "is" || mod == "equals")
+        {
+          op.attribute ("raw", "==");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "isnt" || mod == "not")
+        {
+          op.attribute ("raw", "!==");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "has" || mod == "contains")
+        {
+          op.attribute ("raw", "~");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "hasnt")
+        {
+          op.attribute ("raw", "!~");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "startswith" || mod == "left")
+        {
+          op.attribute ("raw", "~");
+          rhs.attribute ("raw", "^" + value);
+        }
+        else if (mod == "endswith" || mod == "right")
+        {
+          op.attribute ("raw", "~");
+          rhs.attribute ("raw", value + "$");
+        }
+        else if (mod == "word")
+        {
+          op.attribute ("raw", "~");
+#if defined (DARWIN)
+          rhs.attribute ("raw", value);
+#elif defined (SOLARIS)
+          rhs.attribute ("raw", "\\<" + value + "\\>");
+#else
+          rhs.attribute ("raw", "\\b" + value + "\\b");
+#endif
+        }
+        else if (mod == "noword")
+        {
+          op.attribute ("raw", "!~");
+#if defined (DARWIN)
+          rhs.attribute ("raw", value);
+#elif defined (SOLARIS)
+          rhs.attribute ("raw", "\\<" + value + "\\>");
+#else
+          rhs.attribute ("raw", "\\b" + value + "\\b");
+#endif
+        }
+        else
+          throw format (STRING_PARSER_UNKNOWN_ATTMOD, mod);
+
+        reconstructed.push_back (lhs);
+        reconstructed.push_back (op);
+        reconstructed.push_back (rhs);
+        found = true;
+      }
+
+/*
+        std::string operatorLiteral = "=";
+        if (canonical == "status")
+          operatorLiteral = "==";
+*/
 
       if (found)
         changes = true;
@@ -1005,10 +1071,11 @@ void CLI2::desugarFilterAttributes ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (dump ("CLI2::analyze desugarFilterAttributes"));
+      context.debug (dump ("CLI2::prepareFilter desugarFilterAttributes"));
   }
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 // <name>.[~]<mod>[:=]['"]<value>['"] --> name <op> value
 void CLI2::desugarFilterAttributeModifiers ()
