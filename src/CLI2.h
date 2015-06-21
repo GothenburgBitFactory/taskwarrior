@@ -103,9 +103,6 @@ private:
   void desugarFilterTags ();
   void findStrayModifications ();
   void desugarFilterAttributes ();
-/*
-  void desugarFilterAttributeModifiers ();
-*/
   void desugarFilterPatterns ();
   void findIDs ();
   void findUUIDs ();
