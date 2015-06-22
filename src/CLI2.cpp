@@ -475,6 +475,8 @@ void CLI2::addFilter (const std::string& arg)
 
   if (arg.length ())
     add (")");
+
+  analyze ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
