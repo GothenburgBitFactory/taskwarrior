@@ -1165,6 +1165,47 @@ void CLI2::findIDs ()
     }
   }
 
+  // If no IDs were found, look for number/set listed as a MODIFICATION for a
+  // WRITECMD.
+  if (! _id_ranges.size ())
+  {
+    for (auto& a : _args)
+    {
+      if (a.hasTag ("MODIFICATION"))
+      {
+        if (a._lextype == Lexer::Type::number)
+        {
+          a.unTag ("MODIFICATION");
+          a.tag ("FILTER");
+          std::string number = a.attribute ("raw");
+          _id_ranges.push_back (std::pair <std::string, std::string> (number, number));
+        }
+        else if (a._lextype == Lexer::Type::set)
+        {
+          a.unTag ("MODIFICATION");
+          a.tag ("FILTER");
+
+          // Split the ID list into elements.
+          std::vector <std::string> elements;
+          split (elements, a.attribute ("raw"), ',');
+
+          for (auto& element : elements)
+          {
+            auto hyphen = element.find ("-");
+            if (hyphen != std::string::npos)
+            {
+              _id_ranges.push_back (std::pair <std::string, std::string> (element.substr (0, hyphen), element.substr (hyphen + 1)));
+            }
+            else
+            {
+              _id_ranges.push_back (std::pair <std::string, std::string> (element, element));
+            }
+          }
+        }
+      }
+    }
+  }
+
   if (_id_ranges.size ())
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (dump ("CLI2::prepareFilter findIDs"));
@@ -1178,8 +1219,21 @@ void CLI2::findUUIDs ()
     if (a.hasTag ("FILTER") &&
         a._lextype == Lexer::Type::uuid)
     {
-      a.tag ("UUID");
       _uuid_list.push_back (a.attribute ("raw"));
+    }
+  }
+
+  if (! _uuid_list.size ())
+  {
+    for (auto& a : _args)
+    {
+      if (a.hasTag ("MODIFICATION") &&
+          a._lextype == Lexer::Type::uuid)
+      {
+        a.unTag ("MODIFICATION");
+        a.tag ("FILTER");
+        _uuid_list.push_back (a.attribute ("raw"));
+      }
     }
   }
 
