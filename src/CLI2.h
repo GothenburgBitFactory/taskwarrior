@@ -108,9 +108,7 @@ private:
   void findUUIDs ();
   void insertIDExpr ();
   void desugarFilterPlainArgs ();
-/*
   void insertJunctions ();
-*/
   void defaultCommand ();
 /*
   void decomposeModAttributes ();

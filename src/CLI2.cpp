@@ -521,10 +521,10 @@ void CLI2::prepareFilter (bool applyContext)
   findStrayModifications ();
   desugarFilterAttributes ();
   desugarFilterPatterns ();
-/*
   insertJunctions ();                 // Deliberately after all desugar calls.
 
   // Decompose the elements for MODIFICATIONs.
+/*
   decomposeModAttributes ();
   decomposeModAttributeModifiers ();
   decomposeModTags ();
@@ -1360,7 +1360,6 @@ void CLI2::desugarFilterPlainArgs ()
   }
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 // Two consecutive FILTER, non-OP arguments that are not "(" or ")" need an
 // "and" operator inserted between them.
@@ -1373,8 +1372,9 @@ void CLI2::desugarFilterPlainArgs ()
 void CLI2::insertJunctions ()
 {
   bool changes = false;
-  std::vector <A> reconstructed;
+  std::vector <A2> reconstructed;
   auto prev = _args.begin ();
+
   for (auto a = _args.begin (); a != _args.end (); ++a)
   {
     if (a->hasTag ("FILTER"))
@@ -1386,14 +1386,13 @@ void CLI2::insertJunctions ()
       // Insert AND between terms.
       else if (a != prev)
       {
-        if ((! prev->hasTag ("OP")          && a->attribute ("raw") == "(") ||
-            (! prev->hasTag ("OP")          && ! a->hasTag ("OP"))          ||
-            (prev->attribute ("raw") == ")" && ! a->hasTag ("OP"))          ||
-            (prev->attribute ("raw") == ")" && a->attribute ("raw") == "("))
+        if ((prev->_lextype != Lexer::Type::op && a->attribute ("raw") == "(")    ||
+            (prev->_lextype != Lexer::Type::op && a->_lextype != Lexer::Type::op) ||
+            (prev->attribute ("raw") == ")"    && a->_lextype != Lexer::Type::op) ||
+            (prev->attribute ("raw") == ")"    && a->attribute ("raw") == "("))
         {
-          A opOr ("argOp", "and");
+          A2 opOr ("and", Lexer::Type::op);
           opOr.tag ("FILTER");
-          opOr.tag ("OP");
           reconstructed.push_back (opOr);
           changes = true;
         }
@@ -1411,10 +1410,9 @@ void CLI2::insertJunctions ()
     _args = reconstructed;
 
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (dump ("CLI2::analyze insertJunctions"));
+      context.debug (dump ("CLI2::prepareFilter insertJunctions"));
   }
 }
-*/
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::defaultCommand ()
 {
