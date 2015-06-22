@@ -12,7 +12,14 @@ set (HAVE_CMAKE true)
 project (task)
 set (PROJECT_VERSION "2.4.5")
 
-OPTION(USE_GNUTLS "Build gnutls support." ON)
+OPTION (ENABLE_SYNC "Enable 'task sync' support" ON)
+
+if (ENABLE_SYNC)
+  set (USE_GNUTLS ON CACHE BOOL "Build gnutls support." FORCE)
+else (ENABLE_SYNC)
+  set (USE_GNUTLS OFF CACHE BOOL "Build gnutls support." FORCE)
+  message (WARNING "ENABLE_SYNC=OFF. Not building sync support.")
+endif (ENABLE_SYNC)
 
 message ("CMAKE_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}")
 
@@ -115,6 +122,10 @@ if (USE_GNUTLS)
      set (TASK_LIBRARIES    ${TASK_LIBRARIES}    ${GNUTLS_LIBRARIES})
    endif (GNUTLS_FOUND)
 endif (USE_GNUTLS)
+
+if (ENABLE_SYNC AND NOT GNUTLS_FOUND)
+  message (FATAL_ERROR "Cannot find GnuTLS. Use -DENABLE_SYNC=OFF to build Taskwarrior without sync support. See INSTALL for more information.")
+endif (ENABLE_SYNC AND NOT GNUTLS_FOUND)
 
 check_function_exists (timegm  HAVE_TIMEGM)
 check_function_exists (get_current_dir_name HAVE_GET_CURRENT_DIR_NAME)
