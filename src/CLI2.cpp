@@ -798,8 +798,16 @@ bool CLI2::findCommand ()
 {
   for (auto& a : _args)
   {
+    std::string raw = a.attribute ("raw");
     std::string canonical;
-    if (canonicalize (canonical, "cmd", a.attribute ("raw")))
+
+    // If the arg canonicalized to a 'cmd', but is also not an exact match
+    // for an 'attribute', proceed. Example:
+    //   task project=foo list
+    //        ^cmd        ^cmd
+    //        ^attribute
+    if (canonicalize (canonical, "cmd", raw) &&
+        ! exactMatch ("attribute", raw))
     {
       a.attribute ("canonical", canonical);
       a.tag ("CMD");
