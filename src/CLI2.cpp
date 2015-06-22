@@ -1723,13 +1723,6 @@ bool CLI2::isUUIDList (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::disqualifyInsufficientTerms (
-  const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
-{
-  return lexemes.size () < 3 ? true : false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::disqualifyNoOps (
   const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {
