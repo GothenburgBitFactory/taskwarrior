@@ -807,21 +807,24 @@ bool CLI2::findCommand ()
     //   task project=foo list
     //        ^cmd        ^cmd
     //        ^attribute
-    if (canonicalize (canonical, "cmd", raw) &&
-        ! exactMatch ("attribute", raw))
-    {
-      a.attribute ("canonical", canonical);
-      a.tag ("CMD");
+    if (exactMatch ("cmd", raw))
+      canonical = raw;
+    else if (exactMatch ("attribute", raw))
+      continue;
+    else if (! canonicalize (canonical, "cmd", raw))
+      continue;
 
-      bool readOnly = ! exactMatch ("writecmd", canonical);
-      a.tag (readOnly ? "READCMD" : "WRITECMD");
+    a.attribute ("canonical", canonical);
+    a.tag ("CMD");
 
-      if (context.config.getInteger ("debug.parser") >= 3)
-        context.debug (dump ("CLI2::analyze findCommand"));
+    bool readOnly = ! exactMatch ("writecmd", canonical);
+    a.tag (readOnly ? "READCMD" : "WRITECMD");
 
-      // Stop and indicate command found.
-      return true;
-    }
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (dump ("CLI2::analyze findCommand"));
+
+    // Stop and indicate command found.
+    return true;
   }
 
   // Indicate command not found.
