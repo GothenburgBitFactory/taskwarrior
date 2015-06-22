@@ -1880,11 +1880,6 @@ float Task::urgency_blocking () const
 // It came from the Command base object, but doesn't really belong there either.
 void Task::modify (modType type, bool text_required /* = false */)
 {
-  std::string text = "";
-
-  if (context.config.getInteger ("debug.parser") >= 1)
-    context.debug (context.cli.dump ());
-
   context.debug ("Task::modify");
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
@@ -1911,6 +1906,8 @@ void Task::modify (modType type, bool text_required /* = false */)
         }
         else
         {
+          Lexer::dequote (value);
+
           // Get the column info.
           Column* column = context.columns[name];
 
