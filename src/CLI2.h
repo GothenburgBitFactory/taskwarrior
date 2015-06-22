@@ -44,9 +44,6 @@ public:
   bool hasTag (const std::string&) const;
   void tag (const std::string&);
   void unTag (const std::string&);
-/*
-  void unTagAll ();
-*/
   void attribute (const std::string&, const std::string&);
   void attribute (const std::string&, const int);
   const std::string attribute (const std::string&) const;
@@ -89,9 +86,6 @@ public:
   const std::string dump (const std::string& title = "CLI2 Parser") const;
 
 private:
-/*
-  void addArg (const std::string&);
-*/
   void handleArg0 ();
   void lexArguments ();
   void handleTerminator ();
