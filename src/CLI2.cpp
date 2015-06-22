@@ -843,7 +843,8 @@ void CLI2::desugarFilterTags ()
   std::vector <A2> reconstructed;
   for (auto& a : _args)
   {
-    if (a._lextype == Lexer::Type::tag)
+    if (a.hasTag ("FILTER") &&
+        a._lextype == Lexer::Type::tag)
     {
       changes = true;
 
