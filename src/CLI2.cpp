@@ -1723,18 +1723,6 @@ bool CLI2::isUUIDList (const std::string& raw) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CLI2::disqualifyNoOps (
-  const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
-{
-  bool foundOP = false;
-  for (auto& lexeme : lexemes)
-    if (lexeme.second == Lexer::Type::op)
-      foundOP = true;
-
-  return ! foundOP;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool CLI2::disqualifyOnlyParenOps (
   const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
 {
