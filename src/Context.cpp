@@ -624,7 +624,7 @@ void Context::getLimits (int& rows, int& lines)
   lines = 0;
 
   // This is an integer specified as a filter (limit:10).
-  std::string limit = cli.getLimit ();
+  std::string limit = cli2.getLimit ();
   if (limit != "")
   {
     if (limit == "page")
