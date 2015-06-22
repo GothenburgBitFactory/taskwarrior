@@ -1311,10 +1311,10 @@ void CLI2::desugarFilterPlainArgs ()
 {
   bool changes = false;
   std::vector <A2> reconstructed;
-  auto& prev = _args[0];
+  auto prev = &_args[0];
   for (auto& a : _args)
   {
-    if (prev._lextype != Lexer::Type::op       &&
+    if (prev->_lextype != Lexer::Type::op      &&
         a.hasTag ("FILTER")                    &&
         (a._lextype == Lexer::Type::dom        ||
          a._lextype == Lexer::Type::identifier ||
@@ -1342,7 +1342,7 @@ void CLI2::desugarFilterPlainArgs ()
     else
       reconstructed.push_back (a);
 
-    prev = a;
+    prev = &a;
   }
 
   if (changes)
