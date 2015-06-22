@@ -113,7 +113,9 @@ private:
 /*
   void decomposeModAttributes ();
   void decomposeModAttributeModifiers ();
+*/
   void decomposeModTags ();
+/*
   void decomposeModSubstitutions ();
 
   bool isUUIDList       (const std::string&) const;

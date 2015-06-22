@@ -527,7 +527,9 @@ void CLI2::prepareFilter (bool applyContext)
 /*
   decomposeModAttributes ();
   decomposeModAttributeModifiers ();
+*/
   decomposeModTags ();
+/*
   decomposeModSubstitutions ();
 */
 
@@ -1637,6 +1639,7 @@ void CLI2::decomposeModAttributeModifiers ()
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze decomposeModAttributeModifiers"));
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::decomposeModTags ()
@@ -1644,25 +1647,13 @@ void CLI2::decomposeModTags ()
   bool changes = false;
   for (auto& a : _args)
   {
-    if (a.hasTag ("TERMINATOR"))
-      break;
-
-    if (a.hasTag ("MODIFICATION"))
+    if (a._lextype == Lexer::Type::tag &&
+        a.hasTag ("MODIFICATION"))
     {
-      Nibbler n (a.attribute ("raw"));
-      std::string tag;
-      std::string sign;
-
-      if (n.getN (1, sign)             &&
-          (sign == "+" || sign == "-") &&
-          n.getUntilEOS (tag)          &&
-          tag.find (' ') == std::string::npos)
-      {
-        a.attribute ("name", tag);
-        a.attribute ("sign", sign);
-        a.tag ("TAG");
-        changes = true;
-      }
+      std::string raw = a.attribute ("raw");
+      a.attribute ("name", raw.substr (1));
+      a.attribute ("sign", raw.substr (0, 1));
+      changes = true;
     }
   }
 
@@ -1671,6 +1662,7 @@ void CLI2::decomposeModTags ()
     context.debug (dump ("CLI2::analyze decomposeModTags"));
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::decomposeModSubstitutions ()
 {
