@@ -64,8 +64,6 @@ int CmdCustom::execute (std::string& output)
   std::string reportLabels  = context.config.get ("report." + _keyword + ".labels");
   std::string reportSort    = context.config.get ("report." + _keyword + ".sort");
   std::string reportFilter  = context.config.get ("report." + _keyword + ".filter");
-  if (reportFilter != "")
-    reportFilter = "( " + reportFilter + " )";
 
   std::vector <std::string> columns;
   split (columns, reportColumns, ',');
@@ -81,9 +79,12 @@ int CmdCustom::execute (std::string& output)
   split (sortOrder, reportSort, ',');
   validateSortColumns (sortOrder);
 
-  // Add the report filter to any existing filter from the command line or
-  // context.
-  context.cli.addRawFilter (reportFilter);
+  // Add the report filter to any existing filter.
+  if (reportFilter != "")
+  {
+    context.cli2.addFilter (reportFilter);
+    context.cli2.prepareFilter ();
+  }
 
   // Apply filter.
   handleRecurrence ();
