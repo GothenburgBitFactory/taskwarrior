@@ -523,8 +523,8 @@ void CLI2::prepareFilter (bool applyContext)
   insertJunctions ();                 // Deliberately after all desugar calls.
 
   // Decompose the elements for MODIFICATIONs.
-/*
   decomposeModAttributes ();
+/*
   decomposeModAttributeModifiers ();
 */
   decomposeModTags ();
@@ -1487,71 +1487,59 @@ void CLI2::defaultCommand ()
     context.debug (dump ("CLI2::analyze defaultCommand"));
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::decomposeModAttributes ()
 {
   bool changes = false;
   for (auto& a : _args)
   {
-    if (a.hasTag ("TERMINATOR"))
-      break;
-
-    if (a.hasTag ("MODIFICATION"))
+    if (a._lextype == Lexer::Type::pair &&
+        a.hasTag ("MODIFICATION"))
     {
-      // Look for a valid attribute name.
-      Nibbler n (a.attribute ("raw"));
-      std::string name;
-      if (n.getName (name) &&
-          name.length ())
+      changes = true;
+      auto raw  = a.attribute ("raw");
+      auto colon = raw.find (':');
+      auto equal = raw.find ('=');
+
+      // Q: Which of ':', '=' is the separator?
+      // A: Whichever comes first. For example:
+      //      name:a=b
+      //      name=a:b
+      //    Both are valid, and 'name' is the attribute name in each case.
+      std::string::size_type separator = std::min (colon, equal);
+      std::string name  = raw.substr (0, separator);
+      std::string value = raw.substr (separator + 1);
+
+      a.attribute ("name", name);
+      a.attribute ("value", value);
+
+      std::string canonical;
+      if (canonicalize (canonical, "attribute", name))
       {
-        if (n.skip (':'))
+        a.attribute ("canonical", canonical);
+
+        auto col = context.columns.find (canonical);
+        if (col != context.columns.end () &&
+            col->second->modifiable ())
         {
-          std::string value;
-          if (n.getQuoted   ('"', value)  ||
-              n.getQuoted   ('\'', value) ||
-              n.getUntilEOS (value)       ||
-              n.depleted ())
-          {
-            if (value == "")
-              value = "''";
-
-            std::string canonical;
-            if (canonicalize (canonical, "uda", name))
-            {
-              a.attribute ("name", canonical);
-              a.attribute ("value", value);
-              a.tag ("UDA");
-              a.tag ("MODIFIABLE");
-              changes = true;
-            }
-
-            else if (canonicalize (canonical, "attribute", name))
-            {
-              a.attribute ("name", canonical);
-              a.attribute ("value", value);
-              a.tag ("ATTRIBUTE");
-
-              auto col = context.columns.find (canonical);
-              if (col != context.columns.end () &&
-                  col->second->modifiable ())
-              {
-                a.tag ("MODIFIABLE");
-              }
-
-              changes = true;
-            }
-          }
+          a.tag ("MODIFIABLE");
         }
       }
+      else if (canonicalize (canonical, "uda", name))
+      {
+        a.attribute ("canonical", canonical);
+      }
+
+      // TODO Good place to complain about unrecognized attributes?
     }
   }
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::analyze decomposeModAttributes"));
+    context.debug (dump ("CLI2::prepareFilter decomposeModAttributes"));
 }
 
+/*
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::decomposeModAttributeModifiers ()
 {
