@@ -1296,7 +1296,7 @@ void CLI2::insertIDExpr ()
         A2 argID ("id", Lexer::Type::dom);
         argID.tag ("FILTER");
 
-        A2 argUUID ("uuid", Lexer::Type::uuid);
+        A2 argUUID ("uuid", Lexer::Type::dom);
         argUUID.tag ("FILTER");
 
         reconstructed.push_back (openParen);
