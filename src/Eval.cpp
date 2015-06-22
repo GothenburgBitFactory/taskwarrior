@@ -197,6 +197,25 @@ void Eval::compileExpression (const std::string& e)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Eval::compileExpression (
+  const std::vector <std::pair <std::string, Lexer::Type>>& precompiled)
+{
+  _compiled = precompiled;
+
+  // Parse for syntax checking and operator replacement.
+  if (_debug)
+    context.debug ("[1;37;42mFILTER[0m Infix        " + dump (_compiled));
+  infixParse (_compiled);
+  if (_debug)
+    context.debug ("[1;37;42mFILTER[0m Infix parsed " + dump (_compiled));
+
+  // Convert infix --> postfix.
+  infixToPostfix (_compiled);
+  if (_debug)
+    context.debug ("[1;37;42mFILTER[0m Postfix      " + dump (_compiled));
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Eval::evaluateCompiledExpression (Variant& v)
 {
   // Call the postfix evaluator.

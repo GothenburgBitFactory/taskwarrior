@@ -45,6 +45,7 @@ public:
   void evaluateInfixExpression (const std::string&, Variant&) const;
   void evaluatePostfixExpression (const std::string&, Variant&) const;
   void compileExpression (const std::string&);
+  void compileExpression (const std::vector <std::pair <std::string, Lexer::Type>>&);
   void evaluateCompiledExpression (Variant&);
   void ambiguity (bool);
   void debug (bool);
