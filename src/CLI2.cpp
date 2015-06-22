@@ -128,6 +128,13 @@ void A2::attribute (const std::string& name, const std::string& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Accessor for attributes.
+void A2::attribute (const std::string& name, const int value)
+{
+  _attributes[name] = format (value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Accessor for attributes.
 const std::string A2::attribute (const std::string& name) const
 {
   // Prevent autovivification.
