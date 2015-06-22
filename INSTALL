@@ -91,6 +91,25 @@ get absolute installation directories:
   CMAKE_INSTALL_PREFIX/TASK_MAN5DIR  /usr/local/share/man/man5
 
 
+"sync" command
+--------------
+
+In order to enable the "sync" command, you will need to have GnuTLS available.
+
+cmake may fail with the following error message:
+   "Cannot find GnuTLS.  Use -DENABLE_SYNC=OFF to build Taskwarrior without
+    sync support.  See INSTALL for more information."
+
+This means that it cannot find your GnuTLS installation, and you will need to
+install GnuTLS as well as its header files.  For Debian based distributions,
+installing "libgnutls-dev" is usually sufficient.
+
+In order to build Taskwarrior without "sync" support, call cmake with the
+"-DENABLE_SYNC=OFF" flag:
+   $ cmake . -DENABLE_SYNC=OFF
+and proceed as described in "Basic Installation".
+
+
 Localizations
 -------------
 
