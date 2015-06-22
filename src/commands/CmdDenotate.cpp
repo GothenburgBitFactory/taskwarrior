@@ -65,10 +65,9 @@ int CmdDenotate::execute (std::string& output)
 
   // Extract all the ORIGINAL MODIFICATION args as simple text patterns.
   std::string pattern = "";
-  for (auto& a : context.cli._args)
+  for (auto& a : context.cli2._args)
   {
-    if (a.hasTag ("ORIGINAL") &&
-        a.hasTag ("MODIFICATION"))
+    if (a.hasTag ("MODIFICATION"))
     {
       if (pattern != "")
         pattern += ' ';
