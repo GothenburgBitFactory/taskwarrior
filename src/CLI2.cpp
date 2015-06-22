@@ -1510,18 +1510,8 @@ void CLI2::decomposeModAttributes ()
       a.attribute ("value", value);
 
       std::string canonical;
-      if (canonicalize (canonical, "attribute", name))
-      {
-        a.attribute ("canonical", canonical);
-
-        auto col = context.columns.find (canonical);
-        if (col != context.columns.end () &&
-            col->second->modifiable ())
-        {
-          a.tag ("MODIFIABLE");
-        }
-      }
-      else if (canonicalize (canonical, "uda", name))
+      if (canonicalize (canonical, "attribute", name) ||
+          canonicalize (canonical, "uda",       name))
       {
         a.attribute ("canonical", canonical);
       }
