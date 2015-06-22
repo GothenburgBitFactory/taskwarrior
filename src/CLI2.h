@@ -36,7 +36,6 @@
 class A2
 {
 public:
-  A2 ();
   A2 (const std::string&, Lexer::Type);
   ~A2 ();
   A2 (const A2&);
