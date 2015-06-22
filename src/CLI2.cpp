@@ -958,7 +958,7 @@ void CLI2::desugarFilterAttributes ()
 
         A2 lhs (name, Lexer::Type::dom);
         lhs.tag ("FILTER");
-        lhs.attribute ("name", canonical);
+        lhs.attribute ("canonical", canonical);
         lhs.attribute ("modifier", mod);
 
         A2 op ("", Lexer::Type::op);
