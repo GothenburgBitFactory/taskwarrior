@@ -230,7 +230,6 @@ int Context::initialize (int argc, const char** argv)
       cli2.add (argv[i]);
 
     cli2.analyze ();
-
     cli.initialize (argc, argv);
     cli.analyze (true, true);
 

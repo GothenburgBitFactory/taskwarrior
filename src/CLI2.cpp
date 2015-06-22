@@ -363,7 +363,8 @@ void CLI2::handleTerminator ()
   std::vector <A2> reconstructed;
   for (auto& a : _args)
   {
-    if (a._lextype == Lexer::Type::separator)
+    if (a._lextype == Lexer::Type::separator &&
+        ! terminated)
     {
       terminated = true;
       changes = true;
