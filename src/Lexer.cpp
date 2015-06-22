@@ -757,8 +757,9 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
       }
     }
 
-    if (_eos - _cursor >= 1 &&
-        _text[_cursor] == ':')
+    if (_eos - _cursor >= 1    &&
+        (_text[_cursor] == ':' ||
+         _text[_cursor] == '='))
     {
       _cursor++;
 
