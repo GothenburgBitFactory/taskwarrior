@@ -116,9 +116,9 @@ private:
   void decomposeModAttributeModifiers ();
 */
   void decomposeModTags ();
-/*
   void decomposeModSubstitutions ();
 
+/*
   bool isUUIDList       (const std::string&) const;
 
   // These methods come up iwht reasons not to Lex a token. Probably no longer needed.
