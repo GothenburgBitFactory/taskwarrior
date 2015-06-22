@@ -416,7 +416,8 @@ void CLI2::analyze ()
 /*
 ////////////////////////////////////////////////////////////////////////////////
 // There are situations where a context filter is applied. This method
-// determines whether one applies, and if so, applies it.
+// determines whether one applies, and if so, applies it. Disqualifiers include:
+//   - filter contains ID or UUID
 void CLI2::addContextFilter ()
 {
   // Detect if any context is set, and bail out if not
