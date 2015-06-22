@@ -455,11 +455,15 @@ void CLI2::addContextFilter ()
       context.footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
   }
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
-// Process raw string into parsed filter.
-void CLI2::addRawFilter (const std::string& arg)
+// Process raw string.
+void CLI2::addFilter (const std::string& arg)
 {
+  if (arg.length ())
+    add ("(");
+
   std::string lexeme;
   Lexer::Type type;
   Lexer lex (arg);
@@ -467,8 +471,10 @@ void CLI2::addRawFilter (const std::string& arg)
 
   while (lex.token (lexeme, type))
     add (lexeme);
+
+  if (arg.length ())
+    add (")");
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Parset the commnad line, identifiying filter components, expanding syntactic
