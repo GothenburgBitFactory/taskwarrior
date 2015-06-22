@@ -524,9 +524,6 @@ void CLI2::prepareFilter (bool applyContext)
 
   // Decompose the elements for MODIFICATIONs.
   decomposeModAttributes ();
-/*
-  decomposeModAttributeModifiers ();
-*/
   decomposeModTags ();
   decomposeModSubstitutions ();
 
@@ -1538,92 +1535,6 @@ void CLI2::decomposeModAttributes ()
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::prepareFilter decomposeModAttributes"));
 }
-
-/*
-////////////////////////////////////////////////////////////////////////////////
-void CLI2::decomposeModAttributeModifiers ()
-{
-  bool changes = false;
-  for (auto& a : _args)
-  {
-    if (a.hasTag ("TERMINATOR"))
-      break;
-
-    if (a.hasTag ("MODIFICATION"))
-    {
-      // Look for a valid attribute name.
-      Nibbler n (a.attribute ("raw"));
-      std::string name;
-      if (n.getUntil (".", name) &&
-          name.length ())
-      {
-        std::string canonical;
-        if (canonicalize (canonical, "attribute", name) ||
-            canonicalize (canonical, "uda",       name))
-        {
-          if (n.skip ('.'))
-          {
-            std::string sense = "+";
-            if (n.skip ('~'))
-              sense = "-";
-
-            std::string modifier;
-            n.getUntilOneOf (":=", modifier);
-
-            if (n.skip (':') ||
-                n.skip ('='))
-            {
-              std::string value;
-              if (n.getQuoted   ('"', value)  ||
-                  n.getQuoted   ('\'', value) ||
-                  n.getUntilEOS (value)       ||
-                  n.depleted ())
-              {
-                if (value == "")
-                  value = "''";
-
-                std::string canonical;
-                if (canonicalize (canonical, "uda", name))
-                {
-                  a.attribute ("name", canonical);
-                  a.attribute ("modifier", modifier);
-                  a.attribute ("sense", sense);
-                  a.attribute ("value", value);
-                  a.tag ("UDA");
-                  a.tag ("MODIFIABLE");
-                  changes = true;
-                }
-
-                else if (canonicalize (canonical, "attribute", name))
-                {
-                  a.attribute ("name", canonical);
-                  a.attribute ("modifier", modifier);
-                  a.attribute ("sense", sense);
-                  a.attribute ("value", value);
-                  a.tag ("ATTMOD");
-
-                  auto col = context.columns.find (canonical);
-                  if (col != context.columns.end () &&
-                      col->second->modifiable ())
-                  {
-                    a.tag ("MODIFIABLE");
-                  }
-
-                  changes = true;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  if (changes &&
-      context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::analyze decomposeModAttributeModifiers"));
-}
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::decomposeModTags ()
