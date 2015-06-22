@@ -481,7 +481,7 @@ void CLI2::addFilter (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Parset the commnad line, identifiying filter components, expanding syntactic
+// Parse the command line, identifiying filter components, expanding syntactic
 // sugar as necessary.
 void CLI2::prepareFilter (bool applyContext)
 {
@@ -528,9 +528,9 @@ void CLI2::prepareFilter (bool applyContext)
   findIDs ();
   findUUIDs ();
   insertIDExpr ();
-  desugarFilterPlainArgs ();
   desugarFilterTags ();
   findStrayModifications ();
+  desugarFilterPlainArgs ();
   desugarFilterAttributes ();
   desugarFilterPatterns ();
   insertJunctions ();                 // Deliberately after all desugar calls.
