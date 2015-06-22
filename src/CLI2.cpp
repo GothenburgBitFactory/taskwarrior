@@ -1721,59 +1721,6 @@ bool CLI2::isUUIDList (const std::string& raw) const
 
   return false;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-bool CLI2::disqualifyOnlyParenOps (
-  const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
-{
-  int opCount      = 0;
-  int opSugarCount = 0;
-  int opParenCount = 0;
-
-  for (auto& lexeme : lexemes)
-  {
-    if (lexeme.second == Lexer::Type::op)
-    {
-      ++opCount;
-
-      if (lexeme.first == "(" ||
-          lexeme.first == ")")
-        ++opParenCount;
-    }
-
-    else if (isTag          (lexeme.first) || // obsolete
-             isUUIDList     (lexeme.first) ||
-             isUUID         (lexeme.first) || // obsolete
-             isIDSequence   (lexeme.first) || // obsolete
-             isID           (lexeme.first) || // obsolete
-             isPattern      (lexeme.first) || // obsolete
-             isAttribute    (lexeme.first))   // obsolete
-      ++opSugarCount;
-  }
-
-  return opCount == opParenCount && ! opSugarCount;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Disqualify terms when there are are binary operators at either end, as long
-// as there are no operators in between, which includes syntactic sugar that
-// hides operators.
-bool CLI2::disqualifyFirstLastBinary (
-  const std::vector <std::pair <std::string, Lexer::Type>>& lexemes) const
-{
-  bool firstBinary = false;
-  bool lastBinary  = false;
-
-  std::string dummy;
-  if (canonicalize (dummy, "binary_operator", lexemes[0].first))
-    firstBinary = true;
-
-  if (lexemes.size () > 1 &&
-      canonicalize (dummy, "binary_operator", lexemes[lexemes.size () - 1].first))
-    lastBinary = true;
-
-  return firstBinary || lastBinary;
-}
 */
 
 ////////////////////////////////////////////////////////////////////////////////

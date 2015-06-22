@@ -120,9 +120,6 @@ private:
 
 /*
   bool isUUIDList       (const std::string&) const;
-
-  // These methods come up iwht reasons not to Lex a token. Probably no longer needed.
-  bool disqualifyFirstLastBinary   (const std::vector <std::pair <std::string, Lexer::Type>>&) const;
 */
 
 public:
