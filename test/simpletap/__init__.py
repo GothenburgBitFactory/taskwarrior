@@ -198,6 +198,10 @@ class TAPTestResult(unittest.result.TestResult):
         super(TAPTestResult, self).addExpectedFailure(test, err)
         self.report(test, "EXPECTED_FAILURE", err)
 
+    def addUnexpectedSuccess(self, test):
+        super(TAPTestResult, self).addUnexpectedSuccess(test)
+        self.report(test, "UNEXPECTED_SUCCESS", str(test))
+
 
 class TAPTestRunner(unittest.runner.TextTestRunner):
     """A test runner that displays results using the Test Anything Protocol
