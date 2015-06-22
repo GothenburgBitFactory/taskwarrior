@@ -138,6 +138,16 @@ const std::string A2::attribute (const std::string& name) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string A2::getToken () const
+{
+  auto i = _attributes.find ("canonical");
+  if (i == _attributes.end ())
+    i = _attributes.find ("raw");
+
+  return i->second;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const std::string A2::dump () const
 {
   std::string output = Lexer::typeToString (_lextype);
