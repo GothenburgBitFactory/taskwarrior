@@ -511,7 +511,6 @@ void CLI2::prepareFilter (bool applyContext)
     context.debug (dump ("CLI2::prepareFilter categorize"));
 
   // Remove all the syntactic sugar for FILTERs.
-  changes = false;
   findIDs ();
   findUUIDs ();
   insertIDExpr ();
@@ -526,10 +525,6 @@ void CLI2::prepareFilter (bool applyContext)
   decomposeModAttributes ();
   decomposeModTags ();
   decomposeModSubstitutions ();
-
-  if (changes &&
-      context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::prepareFilter desugar"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
