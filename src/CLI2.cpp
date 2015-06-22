@@ -637,7 +637,6 @@ std::string CLI2::getCommand (bool canonical) const
   return "";
 }
 
-/*
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI2::getLimit () const
 {
@@ -648,7 +647,6 @@ std::string CLI2::getLimit () const
 
   return "0";
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::string CLI2::dump (const std::string& title) const
