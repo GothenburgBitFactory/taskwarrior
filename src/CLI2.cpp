@@ -528,9 +528,9 @@ void CLI2::prepareFilter (bool applyContext)
   findIDs ();
   findUUIDs ();
   insertIDExpr ();
-  desugarFilterTags ();
-  findStrayModifications ();
   desugarFilterPlainArgs ();
+  findStrayModifications ();
+  desugarFilterTags ();
   desugarFilterAttributes ();
   desugarFilterPatterns ();
   insertJunctions ();                 // Deliberately after all desugar calls.
