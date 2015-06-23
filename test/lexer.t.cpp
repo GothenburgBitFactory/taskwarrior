@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (819);
+  UnitTest t (801);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -370,9 +370,6 @@ int main (int argc, char** argv)
     //   due:eom-2w
     //   due < eom + 1w + 1d
     //   ( /pattern/ or 8ad2e3db-914d-4832-b0e6-72fa04f6e331,3b6218f9-726a-44fc-aa63-889ff52be442 )
-    { "name=value",                                   { { "name",                                         Lexer::Type::dom          },
-                                                        { "=",                                            Lexer::Type::op           },
-                                                        { "value",                                        Lexer::Type::dom          },         NO, NO }, },
     { "(1+2)",                                        { { "(",                                            Lexer::Type::op           },
                                                         { "1",                                            Lexer::Type::number       },
                                                         { "+",                                            Lexer::Type::op           },
