@@ -746,9 +746,9 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
       {
         _cursor++;
 
-        if (isString (ignoredToken, ignoredType, '\'') ||
-            isString (ignoredToken, ignoredType, '"')  ||
-            isWord   (ignoredToken, ignoredType))
+        if (isString     (ignoredToken, ignoredType, '\'') ||
+            isString     (ignoredToken, ignoredType, '"')  ||
+            isContiguous (ignoredToken, ignoredType))
         {
           token = _text.substr (marker, _cursor - marker);
           type = Lexer::Type::pair;
@@ -763,10 +763,10 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
     {
       _cursor++;
 
-      if (isString (ignoredToken, ignoredType, '\'') ||
-          isString (ignoredToken, ignoredType, '"')  ||
-          isWord   (ignoredToken, ignoredType)       ||
-          _eos == _cursor                            ||
+      if (isString     (ignoredToken, ignoredType, '\'') ||
+          isString     (ignoredToken, ignoredType, '"')  ||
+          isContiguous (ignoredToken, ignoredType)       ||
+          _eos == _cursor                                ||
           _text[_cursor] == ' ')
       {
         token = _text.substr (marker, _cursor - marker);
@@ -1148,6 +1148,28 @@ bool Lexer::isWord (std::string& token, Lexer::Type& type)
   while (_text[marker]                  &&
          ! isWhitespace (_text[marker]) &&
          ! isSingleCharOperator (_text[marker]))
+    utf8_next_char (_text, marker);
+
+  if (marker > _cursor)
+  {
+    token = _text.substr (_cursor, marker - _cursor);
+    type = Lexer::Type::word;
+    _cursor = marker;
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Lexer::Type::word
+//   [^\s]+
+bool Lexer::isContiguous (std::string& token, Lexer::Type& type)
+{
+  std::size_t marker = _cursor;
+
+  while (_text[marker] &&
+         ! isWhitespace (_text[marker]))
     utf8_next_char (_text, marker);
 
   if (marker > _cursor)
