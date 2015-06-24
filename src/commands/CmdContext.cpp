@@ -144,7 +144,7 @@ int CmdContext::defineContext (std::vector <std::string>& words, std::stringstre
     try
     {
       // This result is not used, and is just to check validity.
-      context.cli.addRawFilter ("( " + value + " )");
+      context.cli2.addFilter (value);
       filter.subset (pending, filtered);
     }
     catch (std::string exception)

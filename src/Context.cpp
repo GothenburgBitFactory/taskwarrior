@@ -160,12 +160,6 @@ int Context::initialize (int argc, const char** argv)
 
       if (cmd.first[0] == '_')
         cli2.entity ("helper", cmd.first);
-
-      cli.entity ("cmd", cmd.first);
-      cli.entity ((cmd.second->read_only () ? "readcmd" : "writecmd"), cmd.first);
-
-      if (cmd.first[0] == '_')
-        cli.entity ("helper", cmd.first);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -179,11 +173,6 @@ int Context::initialize (int argc, const char** argv)
       cli2.entity ("attribute", col.first);
 
     cli2.entity ("pseudo", "limit");
-
-    for (auto& col : columns)
-      cli.entity ("attribute", col.first);
-
-    cli.entity ("pseudo", "limit");
 
     ////////////////////////////////////////////////////////////////////////////
     //
@@ -199,15 +188,6 @@ int Context::initialize (int argc, const char** argv)
 
     for (auto& op : Eval::getBinaryOperators ())
       cli2.entity ("binary_operator", op);
-
-    for (unsigned int i = 0; i < NUM_MODIFIER_NAMES; ++i)
-      cli.entity ("modifier", modifierNames[i]);
-
-    for (auto& op : Eval::getOperators ())
-      cli.entity ("operator", op);
-
-    for (auto& op : Eval::getBinaryOperators ())
-      cli.entity ("binary_operator", op);
 
     ////////////////////////////////////////////////////////////////////////////
     //
@@ -230,14 +210,12 @@ int Context::initialize (int argc, const char** argv)
       cli2.add (argv[i]);
 
     cli2.analyze ();
-    cli.initialize (argc, argv);
-    cli.analyze (true, true);
 
     // Extract a recomposed command line.
     bool foundDefault = false;
     bool foundAssumed = false;
     std::string combined;
-    for (auto& a : cli._args)
+    for (auto& a : cli2._args)
     {
       if (combined.length ())
         combined += ' ';
@@ -445,7 +423,7 @@ int Context::run ()
 int Context::dispatch (std::string &out)
 {
   // Autocomplete args against keywords.
-  std::string command = cli.getCommand ();
+  std::string command = cli2.getCommand ();
   if (command != "")
   {
     updateXtermTitle ();
@@ -472,6 +450,10 @@ int Context::dispatch (std::string &out)
     if (tdb2.read_only () && !c->read_only ())
       throw std::string ("");
 */
+
+    // This is something that is only needed for write commands with no other
+    // filter processing.
+    cli2.prepareFilter ();
 
     return c->execute (out);
   }
@@ -644,7 +626,6 @@ void Context::getLimits (int& rows, int& lines)
 // easier, it has been decoupled from Context.
 void Context::staticInitialization ()
 {
-  CLI::minimumMatchLength   = config.getInteger ("abbreviation.minimum");
   CLI2::minimumMatchLength  = config.getInteger ("abbreviation.minimum");
 
   Task::defaultProject      = config.get ("default.project");
@@ -755,9 +736,9 @@ void Context::updateXtermTitle ()
     std::string command = cli2.getCommand ();
     std::string title;
 
-    for (auto a = cli._args.begin (); a != cli._args.end (); ++a)
+    for (auto a = cli2._args.begin (); a != cli2._args.end (); ++a)
     {
-      if (a != cli._args.begin ())
+      if (a != cli2._args.begin ())
         title += ' ';
 
       title += a->attribute ("raw");
@@ -785,10 +766,6 @@ void Context::loadAliases ()
   for (auto& i : config)
     if (i.first.substr (0, 6) == "alias.")
       cli2.alias (i.first.substr (6), i.second);
-
-  for (auto& i : config)
-    if (i.first.substr (0, 6) == "alias.")
-      cli.alias (i.first.substr (6), i.second);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

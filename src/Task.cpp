@@ -1883,16 +1883,17 @@ void Task::modify (modType type, bool text_required /* = false */)
   context.debug ("Task::modify");
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
+  std::string text = "";
   int modCount = 0;
-  for (auto& a : context.cli._args)
+  for (auto& a : context.cli2._args)
   {
     if (a.hasTag ("MODIFICATION"))
     {
-      if (a.hasTag ("ATTRIBUTE"))
+      if (a._lextype == Lexer::Type::pair)
       {
-        // 'name' is canonical.
+        // 'canonical' is the canonical name. Needs to be said.
         // 'value' requires eval.
-        std::string name  = a.attribute ("name");
+        std::string name  = a.attribute ("canonical");
         std::string value = a.attribute ("value");
         if (value == ""     ||
             value == "''"   ||
@@ -2078,7 +2079,7 @@ void Task::modify (modType type, bool text_required /* = false */)
       }
 
       // arg7 from='from' global='1' raw='/from/to/g' to='to' ORIGINAL SUBSTITUTION MODIFICATION
-      else if (a.hasTag ("SUBSTITUTION"))
+      else if (a._lextype == Lexer::Type::substitution)
       {
         context.debug (label + "substitute " + a.attribute ("raw"));
         substitute (a.attribute ("from"),
@@ -2090,7 +2091,7 @@ void Task::modify (modType type, bool text_required /* = false */)
       // Tags need special handling because they are essentially a vector stored
       // in a single string, therefore Task::{add,remove}Tag must be called as
       // appropriate.
-      else if (a.hasTag ("TAG"))
+      else if (a._lextype == Lexer::Type::tag)
       {
         std::string tag = a.attribute ("name");
         if (a.attribute ("sign") == "+")
@@ -2106,15 +2107,6 @@ void Task::modify (modType type, bool text_required /* = false */)
         }
 
         ++modCount;
-      }
-
-      // WORD and TERMINATED args are accumulated.
-      else if (a.hasTag ("WORD") ||
-               a.hasTag ("TERMINATED"))
-      {
-        if (text != "")
-          text += ' ';
-        text += a.attribute ("raw");
       }
 
       // Unknown args are accumulated as though they were WORDs.
