@@ -22,6 +22,10 @@ failing tests.
 
 Any TAP harness may be used.
 
+Note that adding the '--fast' option to ./run_all, the Python and C++ tests all
+run in parallel, alongside the Perl test that run serially. The result is a much
+quicker test run.
+
 
 Architecture
 ------------
@@ -65,8 +69,8 @@ are:
     useful than feature tests, and more likely to contain overlapping coverage.
 
   * The Python test suite provides test isolation, such that each test is run
-    in a separate directory. This will allow eventual parallelization, but not
-    until the Perl tests are eliminated.
+    in a separate directory. This allows parallelization, which will improve
+    as the Perl tests are eliminated.
 
   * Eliminate obsolete tests, which are tests that have overlapping coverage.
     This means migrate bug-specific tests to feature tests.
@@ -129,7 +133,7 @@ For anyone looking for test-related tasks to take on, here are some suggestions:
   * Select a feature.*.t Perl test, convert it to Python using the template,
     then rename it to <feature>.t
 
-  * Find and eliminate individual test that do the same thing.
+  * Find and eliminate individuals test that do the same thing.
 
 
 ---
