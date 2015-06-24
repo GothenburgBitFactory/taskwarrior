@@ -965,8 +965,15 @@ void CLI2::desugarFilterAttributes ()
       }
       else
       {
-        if (! canonicalize (canonical, "attribute", name))
-          canonicalize (canonical, "uda", name);
+        // If the name does not canonicalize to either an attribute or a UDA
+        // then it is not a recognized Lexer::Type::pair, so downgrade it to
+        // Lexer::Type::word.
+        if (! canonicalize (canonical, "attribute", name) &&
+            ! canonicalize (canonical, "uda", name))
+        {
+          a._lextype = Lexer::Type::word;
+          continue;
+        }
 
         // TODO The "!" modifier is being dropped.
 
@@ -1581,17 +1588,23 @@ void CLI2::decomposeModAttributes ()
       std::string name  = raw.substr (0, separator);
       std::string value = raw.substr (separator + 1);
 
-      a.attribute ("name", name);
-      a.attribute ("value", value);
-
       std::string canonical;
       if (canonicalize (canonical, "attribute", name) ||
           canonicalize (canonical, "uda",       name))
       {
         a.attribute ("canonical", canonical);
+        a.attribute ("name", name);
+        a.attribute ("value", value);
       }
 
-      // TODO Good place to complain about unrecognized attributes?
+      // If the name does not canonicalize to either an attribute or a UDA
+      // then it is not a recognized Lexer::Type::pair, so downgrade it to
+      // Lexer::Type::word.
+      else
+      {
+        a._lextype = Lexer::Type::word;
+        continue;
+      }
     }
   }
 
