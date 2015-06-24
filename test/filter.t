@@ -533,6 +533,21 @@ class TestBug485(TestCase):
         self.assertIn("two", out)
 
 
+class TestBug489(TestCase):
+    @classmethod
+    def setUp(cls):
+        cls.t = Task()
+
+    def test_filter_tagless_tasks(self):
+        """tags.none: filters tagless tasks"""
+        self.t(("add", "with", "+tag"))
+        self.t(("add", "without"))
+
+        code, out, err = self.t(("list", "tags.none:"))
+        self.assertNotIn("with ", out)
+        self.assertIn("without", out)
+
+
 @unittest.skip("WaitingFor TW-1600")
 class TestBug1600(TestCase):
     def setUp(self):
