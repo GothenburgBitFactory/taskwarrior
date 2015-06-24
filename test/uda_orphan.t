@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 9;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -83,6 +83,14 @@ $output = qx{../src/task rc:uda.rc import import.txt 2>&1 >/dev/null};
 like ($output, qr/Imported 1 tasks\./, 'UDA orphan import');
 $output = qx{../src/task rc:uda.rc 2 info 2>&1};
 like ($output, qr/extra\s+bar/, 'UDA orphan imported and visible');
+
+# Make sure an orphan cannot be created from the command line.
+$output = qx{../src/task rc:uda.rc add three name:value 2>&1};
+like ($output, qr/Created task 3/, 'Task with orphan added, but as description');
+$output = qx{../src/task rc:uda.rc _get 3.name};
+is ($output, "\n", 'name:value not added as <name>:<value>');
+$output = qx{../src/task rc:uda.rc _get 3.description};
+is ($output, "three name:value\n", 'name:value added as description');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data uda.rc import.txt);
