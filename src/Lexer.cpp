@@ -1168,8 +1168,10 @@ bool Lexer::isContiguous (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
-  while (_text[marker] &&
-         ! isWhitespace (_text[marker]))
+  while (_text[marker]                  &&
+         ! isWhitespace (_text[marker]) &&
+         _text[marker] != '('           &&
+         _text[marker] != ')')
     utf8_next_char (_text, marker);
 
   if (marker > _cursor)
