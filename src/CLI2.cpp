@@ -528,7 +528,7 @@ void CLI2::prepareFilter (bool applyContext)
   findIDs ();
   findUUIDs ();
   insertIDExpr ();
-  desugarFilterPlainArgs ();
+  desugarFilterPlainArgs ();          // Unimplemented.
   findStrayModifications ();
   desugarFilterTags ();
   desugarFilterAttributes ();
@@ -1403,8 +1403,11 @@ void CLI2::insertIDExpr ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// TODO Removed because this algorithm is unreliable.
+
 void CLI2::desugarFilterPlainArgs ()
 {
+/*
   bool changes = false;
   std::vector <A2> reconstructed;
   auto prev = &_args[0];
@@ -1448,6 +1451,7 @@ void CLI2::desugarFilterPlainArgs ()
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (dump ("CLI2::prepareFilter desugarFilterPlainArgs"));
   }
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
