@@ -94,7 +94,7 @@ elif [ "$1" = "--fast" ]; then
   # Results in (almost) the exact same "all.log" as a normal run.
   # Ordering is off, but could easily be adjusted to be the same.
 
-  date > all.log
+  date +"# %s ==> %a %b %d %H:%M:%S %Z %Y" > all.log
 
   # Perl is used here to get the time in seconds
   # because 'date +%s' isn't supported on Solaris.
@@ -140,7 +140,7 @@ elif [ "$1" = "--fast" ]; then
 
   runlog_cleanup
 
-  date >> all.log
+  date +"# %s ==> %a %b %d %H:%M:%S %Z %Y" >> all.log
 
   ENDEPOCH=`perl -e 'print time'`
   RUNTIME=`expr $ENDEPOCH - $STARTEPOCH`
@@ -152,7 +152,7 @@ elif [ "$1" = "--fast" ]; then
   exit $rc
 
 else
-  date > all.log
+  date +"# %s ==> %a %b %d %H:%M:%S %Z %Y" > all.log
 
   # Perl is used here to get the time in seconds
   # because 'date +%s' isn't supported on Solaris.
@@ -190,7 +190,7 @@ else
     $VRAMSTEG --remove
   fi
 
-  date >> all.log
+  date +"# %s ==> %a %b %d %H:%M:%S %Z %Y" >> all.log
 
   ENDEPOCH=`perl -e 'print time'`
   RUNTIME=`expr $ENDEPOCH - $STARTEPOCH`

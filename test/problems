@@ -1,38 +1,112 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+import sys
 import re
+import argparse
 from collections import defaultdict
 
-errors = defaultdict(int)
-skipped = defaultdict(int)
-expected = defaultdict(int)
 
-file = re.compile("^# [/.]{2}(\S+\.t)$")
+def color(text, c):
+    """
+    Add color on the keyword that identifies the state of the test
+    """
+    if sys.stdout.isatty():
+        clear = "\033[0m"
 
-with open("all.log") as fh:
-    for line in fh:
-        match = file.match(line)
-        if match:
-            filename = match.group(1)
-
-        if line.startswith("not "):
-            errors[filename] += 1
-
-        if line.startswith("skip "):
-            skipped[filename] += 1
-
-        if line.startswith("# EXPECTED_FAILURE: "):
-            expected[filename] += 1
+        colors = {
+            "red": "\033[1m\033[91m",
+            "yellow": "\033[1m\033[93m",
+            "green": "\033[1m\033[92m",
+        }
+        return colors[c] + text + clear
+    else:
+        return text
 
 
-print "Failed"
-for key in sorted(errors):
-    print "%-32s %4d" % (key, errors[key])
+def parse_args():
+    parser = argparse.ArgumentParser(description="Report on test results")
+    parser.add_argument('--summary', action="store_true",
+                        help="Display only the totals in each category")
+    parser.add_argument('tapfile', default="all.log", nargs="?",
+                        help="File containing TAP output")
+    return parser.parse_args()
 
-print "\nSkipped"
-for key in sorted(skipped):
-    print "%-32s %4d" % (key, skipped[key])
 
-print "\nExpected failures (part of skipped)"
-for key in sorted(expected):
-    print "%-32s %4d" % (key, expected[key])
+def print_category(tests):
+    if not cmd_args.summary:
+        for key in sorted(tests):
+            print("%-32s %4d" % (key, tests[key]))
+
+
+def pad(i):
+    return " " * i
+
+
+if __name__ == "__main__":
+    cmd_args = parse_args()
+
+    errors = defaultdict(int)
+    skipped = defaultdict(int)
+    expected = defaultdict(int)
+    passed = defaultdict(int)
+
+    file = re.compile("^# (?:./)?(\S+\.t)$")
+    timestamp = re.compile("^# (\d+(?:\.\d+)?) ==>.*$")
+    start = None
+    stop = None
+
+    with open(cmd_args.tapfile) as fh:
+        for line in fh:
+            if start is None:
+                # First line contains the starting timestamp
+                start = float(timestamp.match(line).group(1))
+                continue
+
+            match = file.match(line)
+            if match:
+                filename = match.group(1)
+
+            if line.startswith("ok "):
+                passed[filename] += 1
+
+            if line.startswith("not "):
+                errors[filename] += 1
+
+            if line.startswith("skip "):
+                skipped[filename] += 1
+
+            if line.startswith("# EXPECTED_FAILURE: "):
+                expected[filename] += 1
+
+        # Last line contains the ending timestamp
+        stop = float(timestamp.match(line).group(1))
+
+    v = "{0:>5d}"
+    passed_str = "Passed:" + pad(24)
+    passed_int = v.format(sum(passed.values()))
+    error_str = "Failed:" + pad(24)
+    error_int = v.format(sum(errors.values()))
+    skipped_str = "Skipped:" + pad(23)
+    skipped_int = v.format(sum(skipped.values()))
+    expected_str = "Expected failures:" + pad(13)
+    expected_int = v.format(sum(expected.values()))
+    runtime_str = "Runtime:" + pad(20)
+    runtime_int = "{0:>8.2f} seconds".format(stop - start)
+
+    if cmd_args.summary:
+        print(color(passed_str, "green"), passed_int)
+        print(color(error_str, "red"), error_int)
+        print(color(skipped_str, "yellow"), skipped_int)
+        print(color(expected_str, "yellow"), expected_int)
+        print(runtime_str, runtime_int)
+
+    else:
+        print(color(error_str, "red"))
+        print_category(errors)
+        print()
+        print(color(skipped_str, "yellow"))
+        print_category(skipped)
+        print()
+        print(color(expected_str, "yellow"))
+        print_category(expected)
