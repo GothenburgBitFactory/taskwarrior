@@ -1144,14 +1144,20 @@ void CLI2::desugarFilterPatterns ()
 //
 void CLI2::findIDs ()
 {
+  bool previousArgWasAnOperator = false;
+
   for (auto& a : _args)
   {
     if (a.hasTag ("FILTER"))
     {
       if (a._lextype == Lexer::Type::number)
       {
-        std::string number = a.attribute ("raw");
-        _id_ranges.push_back (std::pair <std::string, std::string> (number, number));
+        // Skip any number that was preceded by an operator.
+        if (! previousArgWasAnOperator)
+        {
+          std::string number = a.attribute ("raw");
+          _id_ranges.push_back (std::pair <std::string, std::string> (number, number));
+        }
       }
       else if (a._lextype == Lexer::Type::set)
       {
@@ -1172,6 +1178,8 @@ void CLI2::findIDs ()
           }
         }
       }
+
+      previousArgWasAnOperator = (a._lextype == Lexer::Type::op) ? true : false;
     }
   }
 
@@ -1255,6 +1263,12 @@ void CLI2::findUUIDs ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::insertIDExpr ()
 {
+  // Skip completely if no ID/UUID was found. This is because below, '(' and ')'
+  // are inserted regardless of list size.
+  if (! _id_ranges.size () &&
+      ! _uuid_list.size ())
+    return;
+
   // TODO Strip out Lexer::Type::list from between Lexer::Type::uuid's.
 
   // Find the *first* occurence of lexer type set/number/uuid, and replace it
