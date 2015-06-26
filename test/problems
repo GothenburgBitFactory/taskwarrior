@@ -82,6 +82,13 @@ if __name__ == "__main__":
         # Last line contains the ending timestamp
         stop = float(timestamp.match(line).group(1))
 
+    # Remove expected failures from the skipped tests category
+    for filename, value in expected.iteritems():
+        if skipped[filename] == value:
+            del skipped[filename]
+        else:
+            skipped[filename] -= value
+
     v = "{0:>5d}"
     passed_str = "Passed:" + pad(24)
     passed_int = v.format(sum(passed.values()))

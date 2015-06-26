@@ -22,9 +22,10 @@ failing tests.
 
 Any TAP harness may be used.
 
-Note that adding the '--fast' option to ./run_all, the Python and C++ tests all
-run in parallel, alongside the Perl test that run serially. The result is a much
-quicker test run.
+Note that adding the '--serial' option to ./run_all, all tests are executed serially.
+The default runs Python and C++ tests in parallel, alongside the Perl tests
+that run serially (due to isolation limitations).
+Using '--serial' will make for a slower test run.
 
 
 Architecture
