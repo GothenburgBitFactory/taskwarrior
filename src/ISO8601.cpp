@@ -47,7 +47,7 @@ ISO8601d::operator time_t () const
 
 ////////////////////////////////////////////////////////////////////////////////
 // By default, ISO8601d allows ambiguous dates, such as YYYY, YYYYMMDD, HHMMSS.
-// These are also valid numbers.  Setting ambiguity to false inhibites the
+// These are also valid numbers.  Setting ambiguity to false inhibits the
 // parsing of these as dates.
 void ISO8601d::ambiguity (bool value)
 {
@@ -66,7 +66,7 @@ void ISO8601d::ambiguity (bool value)
 //                   | date 'T' time
 //                   | date
 //                   | time-ext 'Z'
-//                   | time-ext offset-ext
+//                   | time-ext offset-ext            Not needed
 //                   | time-ext
 //                   | time 'Z'
 //                   | time offset
@@ -464,7 +464,7 @@ bool ISO8601d::parse_time_ext (Nibbler& n)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// hh[mm[ss]]
+// hhmm[ss]
 bool ISO8601d::parse_time (Nibbler& n, bool ambiguous)
 {
   if (!ambiguous)
@@ -473,19 +473,15 @@ bool ISO8601d::parse_time (Nibbler& n, bool ambiguous)
   Nibbler backup (n);
   int seconds = 0;
   int hh;
-  if (n.getDigit2 (hh))
+  int mm;
+  if (n.getDigit2 (hh) &&
+      n.getDigit2 (mm))
   {
-    seconds = hh * 3600;
+    seconds = hh * 3600 + mm * 60;
 
-    int mm;
-    if (n.getDigit2 (mm))
-    {
-      seconds += mm * 60;
-
-      int ss;
-      if (n.getDigit2 (ss))
-        seconds += ss;
-    }
+    int ss;
+    if (n.getDigit2 (ss))
+      seconds += ss;
 
     _seconds = seconds;
     if (!Lexer::isDigit (n.next ()))
