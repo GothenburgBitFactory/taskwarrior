@@ -16,23 +16,6 @@ set (test_SRCS autocomplete.t color.t config.t date.t fs.t i18n.t json.t list.t
                variant_nomatch.t variant_not.t variant_or.t variant_partial.t
                variant_subtract.t variant_xor.t eval.t dates.t)
 
-message ("-- Configuring run_all")
-if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-
-set (TESTBLOB "./*.t")
-if (CYGWIN)
-  set (TESTBLOB "./*.t ./*.t.exe")
-endif (CYGWIN)
-
-else (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-
-set (TESTBLOB "${CMAKE_SOURCE_DIR}/test/*.t ${CMAKE_BINARY_DIR}/test/*.t")
-if (CYGWIN)
-  set (TESTBLOB "${CMAKE_SOURCE_DIR}/test/*.t ${CMAKE_BINARY_DIR}/test/*.t.exe")
-endif (CYGWIN)
-
-endif (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-
 add_custom_target (test ./run_all --verbose
                         DEPENDS ${test_SRCS} task_executable
                         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test)
