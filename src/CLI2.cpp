@@ -414,51 +414,6 @@ void CLI2::analyze ()
     context.debug (dump ("CLI2::analyze end"));
 }
 
-/*
-////////////////////////////////////////////////////////////////////////////////
-// There are situations where a context filter is applied. This method
-// determines whether one applies, and if so, applies it. Disqualifiers include:
-//   - filter contains ID or UUID
-void CLI2::addContextFilter ()
-{
-  // Detect if any context is set, and bail out if not
-  std::string contextName = context.config.get ("context");
-  if (contextName == "")
-  {
-    context.debug ("No context applied.");
-    return;
-  }
-
-  // Detect if UUID or ID is set, and bail out
-  for (auto& a : _args)
-  {
-    // TODO This looks wrong.
-    if (a.hasTag ("FILTER") &&
-        a.hasTag ("ATTRIBUTE") &&
-        ! a.hasTag ("TERMINATED") &&
-        ! a.hasTag ("WORD") &&
-        (a.attribute ("raw") == "id" || a.attribute ("raw") == "uuid"))
-    {
-      context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a.attribute ("raw")));
-      return;
-    }
-  }
-
-  // Apply context
-  context.debug ("Applying context: " + contextName);
-  std::string contextFilter = context.config.get ("context." + contextName);
-
-  if (contextFilter == "")
-    context.debug ("Context '" + contextName + "' not defined.");
-  else
-  {
-    addRawFilter ("( " + contextFilter + " )");
-    if (context.verbose ("context"))
-      context.footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
-  }
-}
-*/
-
 ////////////////////////////////////////////////////////////////////////////////
 // Process raw string.
 void CLI2::addFilter (const std::string& arg)
@@ -481,6 +436,52 @@ void CLI2::addFilter (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// There are situations where a context filter is applied. This method
+// determines whether one applies, and if so, applies it. Disqualifiers include:
+//   - filter contains ID or UUID
+void CLI2::addContextFilter ()
+{
+  // Detect if any context is set, and bail out if not
+  std::string contextName = context.config.get ("context");
+  if (contextName == "")
+  {
+    context.debug ("No context applied.");
+    return;
+  }
+
+/*
+  // Detect if UUID or ID is set, and bail out
+  for (auto& a : _args)
+  {
+    // TODO This is needed, but the parsing is not yet complete, so the logic
+    //      below is not valid.
+    if (a.hasTag ("FILTER") &&
+        a.hasTag ("ATTRIBUTE") &&
+        ! a.hasTag ("TERMINATED") &&
+        ! a.hasTag ("WORD") &&
+        (a.attribute ("raw") == "id" || a.attribute ("raw") == "uuid"))
+    {
+      context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a.attribute ("raw")));
+      return;
+    }
+  }
+*/
+
+  // Apply context
+  context.debug ("Applying context: " + contextName);
+  std::string contextFilter = context.config.get ("context." + contextName);
+
+  if (contextFilter == "")
+    context.debug ("Context '" + contextName + "' not defined.");
+  else
+  {
+    addFilter (contextFilter);
+    if (context.verbose ("context"))
+      context.footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Parse the command line, identifiying filter components, expanding syntactic
 // sugar as necessary.
 void CLI2::prepareFilter (bool applyContext)
@@ -488,6 +489,9 @@ void CLI2::prepareFilter (bool applyContext)
   // Clear and re-populate.
   _id_ranges.clear ();
   _uuid_list.clear ();
+
+  if (applyContext)
+    addContextFilter ();
 
   // Classify FILTER and MODIFICATION args, based on CMD and READCMD/WRITECMD.
   bool changes = false;

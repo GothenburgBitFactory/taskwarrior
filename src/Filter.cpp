@@ -73,7 +73,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   context.timer_filter.start ();
   _startCount = (int) input.size ();
 
-//  context.cli2.prepareFilter (applyContext);
+  context.cli2.prepareFilter (applyContext);
+
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
   for (auto& a : context.cli2._args)
     if (a.hasTag ("FILTER"))
@@ -117,6 +118,8 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 void Filter::subset (std::vector <Task>& output, bool applyContext /* = true */)
 {
   context.timer_filter.start ();
+
+  context.cli2.prepareFilter (applyContext);
 
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
   for (auto& a : context.cli2._args)
