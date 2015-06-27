@@ -352,6 +352,41 @@ void feedback_affected (const std::string& effect, const Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Implements feedback and error when adding a reserved tag name.
+void feedback_reserved_tags (const std::string& tag)
+{
+  // Note: This list must match that in Task::hasTag.
+  // Note: This list must match that in CmdInfo::execute.
+  if (tag == "BLOCKED"   ||
+      tag == "UNBLOCKED" ||
+      tag == "BLOCKING"  ||
+      tag == "READY"     ||
+      tag == "DUE"       ||
+      tag == "DUETODAY"  ||
+      tag == "TODAY"     ||
+      tag == "YESTERDAY" ||
+      tag == "TOMORROW"  ||
+      tag == "OVERDUE"   ||
+      tag == "WEEK"      ||
+      tag == "MONTH"     ||
+      tag == "YEAR"      ||
+      tag == "ACTIVE"    ||
+      tag == "SCHEDULED" ||
+      tag == "CHILD"     ||
+      tag == "UNTIL"     ||
+      tag == "ANNOTATED" ||
+      tag == "TAGGED"    ||
+      tag == "PARENT"    ||
+      tag == "WAITING"   ||
+      tag == "PENDING"   ||
+      tag == "COMPLETED" ||
+      tag == "DELETED")
+  {
+    throw format (STRING_FEEDBACK_TAG_VIRTUAL, tag);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Implements feedback when adding special tags to a task.
 void feedback_special_tags (const Task& task, const std::string& tag)
 {

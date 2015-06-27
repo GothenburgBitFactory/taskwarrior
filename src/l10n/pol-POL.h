@@ -792,6 +792,7 @@
 #define STRING_FEEDBACK_TAG_NONAG    "Specjalny tag 'nonag' uchroni przed upierdliwością kiedy zadanie jest modyfikowane."
 #define STRING_FEEDBACK_TAG_NOCAL    "Specjalny tag 'nocal' spowoduje nie dodawanie zadania do kalendarza."
 #define STRING_FEEDBACK_TAG_NEXT     "Specjalny tag 'next' podniesie pilność tego zadania co spowoduje wyświetlenie go w raporcie 'next'."
+#define STRING_FEEDBACK_TAG_VIRTUAL  "Virtual tags (including '{1}') are reserved and may not be added or removed."
 #define STRING_FEEDBACK_UNBLOCKED    "Odblokowane {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "Zadanie {1} '{2}' jest przedawnione i zostało usunięte."
 #define STRING_FEEDBACK_BACKLOG      "Wykryto lokalne zmiany. Wymagana synchronizacja."

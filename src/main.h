@@ -67,6 +67,7 @@ std::string renderAttribute (const std::string&, const std::string&, const std::
 void feedback_affected (const std::string&);
 void feedback_affected (const std::string&, int);
 void feedback_affected (const std::string&, const Task&);
+void feedback_reserved_tags (const std::string&);
 void feedback_special_tags (const Task&, const std::string&);
 void feedback_unblocked (const Task&);
 void feedback_backlog ();
