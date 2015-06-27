@@ -340,15 +340,28 @@ void CLI2::lexArguments ()
 {
   // Note: Starts interating at index 1, because ::handleArg0 has already
   //       processed it.
+  bool terminated = false;
   for (unsigned int i = 1; i < _original_args.size (); ++i)
   {
-    std::string lexeme;
-    Lexer::Type type;
-    Lexer lex (_original_args[i]);
-    lex.ambiguity (false);
+    if (_original_args[i] == "--")
+    {
+      terminated = true;
+      _args.push_back (A2 (_original_args[i], Lexer::Type::separator));
+    }
+    else if (terminated)
+    {
+      _args.push_back (A2 (_original_args[i], Lexer::Type::word));
+    }
+    else
+    {
+      std::string lexeme;
+      Lexer::Type type;
+      Lexer lex (_original_args[i]);
+      lex.ambiguity (false);
 
-    while (lex.token (lexeme, type))
-      _args.push_back (A2 (lexeme, type));
+      while (lex.token (lexeme, type))
+        _args.push_back (A2 (lexeme, type));
+    }
   }
 
   if (context.config.getInteger ("debug.parser") >= 3)
