@@ -61,16 +61,9 @@ void ISO8601d::ambiguity (bool value)
 //                   | date-ext 'T' time-ext offset-ext       # Specified TZ
 //                   | date-ext 'T' time-ext                  # Local
 //                   | date-ext                               # Local
-//                   | date 'T' time 'Z'
-//                   | date 'T' time offset-ext
-//                   | date 'T' time
-//                   | date
 //                   | time-ext 'Z'
 //                   | time-ext offset-ext            Not needed
 //                   | time-ext
-//                   | time 'Z'
-//                   | time offset
-//                   | time
 //                   ;
 //
 //    date-ext     ::= ±YYYYY-MM-DD                   Νot needed
@@ -83,37 +76,14 @@ void ISO8601d::ambiguity (bool value)
 //                   | YYYY-Www
 //                   ;
 //
-//    date         ::= ±YYYYYMMDD                     Νot needed
-//                   | ±YYYYYWwwD                     Νot needed
-//                   | ±YYYYYWww                      Νot needed
-//                   | ±YYYYYDDD                      Νot needed
-//                   | ±YYYYYMM                       Νot needed
-//                   | ±YYYYY                         Νot needed
-//                   | ±YYY                           Νot needed
-//                   | YYYYMMDD                       Ambiguous (number)
-//                   | YYYYWwwD
-//                   | YYYYWww
-//                   | YYYYDDD                        Ambiguous (number)
-//                   | YYYY-MM
-//                   | YYYY                           Ambiguous (number)
-//                   | YY                             Ambiguous (number)
-//                   ;
-//
 //    time-ext     ::= hh:mm:ss[,ss]
 //                   | hh:mm[,mm]
 //                   | hh[,hh]                        Ambiguous (number)
 //                   ;
 //
-//    time         ::= hhmmss[,ss]                    Ambiguous (number)
-//                   | hhmm[,mm]                      Ambiguous (number)
-//                   | hh[,hh]                        Ambiguous (number)
-//                   ;
-//
 //    time-utc-ext ::= hh:mm[:ss] 'Z' ;
-//    time-utc     ::= hh[mm[ss]] 'Z' ;
 //
 //    offset-ext   ::= ±hh[:mm] ;
-//    offset       ::= ±hh[mm] ;
 //
 // Not yet supported:
 //
@@ -136,12 +106,7 @@ bool ISO8601d::parse (const std::string& input, std::string::size_type& start)
       parse_date_ext      (n)             ||
       parse_time_utc_ext  (n)             ||
       parse_time_off_ext  (n)             ||
-      parse_date_time     (n)             ||
-      parse_date          (n, _ambiguity) ||
-      parse_time_utc      (n)             ||
-      parse_time_off      (n)             ||
-      parse_time_ext      (n)             ||   // Time last, as it is the most permissive.
-      parse_time          (n, _ambiguity))
+      parse_time_ext      (n))                 // Time last, as it is the most permissive.
   {
     // Check the values and determine time_t.
     if (validate ())
@@ -215,47 +180,6 @@ bool ISO8601d::parse_date_time_ext (Nibbler& n)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// date 'T' time 'Z'
-// date 'T' time offset
-// date 'T' time
-bool ISO8601d::parse_date_time (Nibbler& n)
-{
-  Nibbler backup (n);
-  if (parse_date (n, true))
-  {
-    if (n.skip ('T') &&
-        parse_time (n, true))
-    {
-      if (n.skip ('Z'))
-      {
-        _utc = true;
-        if (!Lexer::isDigit (n.next ()))
-          return true;
-      }
-      else if (parse_off (n))
-      {
-        if (!Lexer::isDigit (n.next ()))
-          return true;
-      }
-
-      if (!Lexer::isDigit (n.next ()))
-        return true;
-    }
-
-    // Restore date
-    _year    = 0;
-    _month   = 0;
-    _week    = 0;
-    _weekday = 0;
-    _julian  = 0;
-    _day     = 0;
-  }
-
-  n = backup;
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // YYYY-MM-DD
 // YYYY-DDD
 // YYYY-Www-D
@@ -304,64 +228,6 @@ bool ISO8601d::parse_date_ext (Nibbler& n)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// YYYYMMDD              Ambiguous (number)
-// YYYYWwwD
-// YYYYWww
-// YYYYDDD               Ambiguous (number)
-// YYYY-MM
-bool ISO8601d::parse_date (Nibbler& n, bool ambiguous)
-{
-  Nibbler backup (n);
-  int year;
-  if (n.getDigit4 (year))
-  {
-    int month;
-    if (n.skip ('W'))
-    {
-      int week;
-      if (n.getDigit2 (week))
-      {
-        _week = week;
-
-        int day;
-        if (n.getDigit (day))
-          _weekday = day;
-
-        _year = year;
-        if (!Lexer::isDigit (n.next ()))
-          return true;
-      }
-    }
-    else if (n.skip ('-'))
-    {
-      if (n.getDigit2 (_month))
-      {
-        _year = year;
-        if (!Lexer::isDigit (n.next ()))
-          return true;
-      }
-    }
-    else if (n.getDigit4 (month))
-    {
-      _year = year;
-      _month = month / 100;
-      _day = month % 100;
-      if (!Lexer::isDigit (n.next ()))
-        return true;
-    }
-    else if (ambiguous && n.getDigit3 (_julian))
-    {
-      _year = year;
-      if (!Lexer::isDigit (n.next ()))
-        return true;
-    }
-  }
-
-  n = backup;
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // ±hh[:mm]
 bool ISO8601d::parse_off_ext (Nibbler& n)
 {
@@ -394,37 +260,7 @@ bool ISO8601d::parse_off_ext (Nibbler& n)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// ±hh[mm]
-bool ISO8601d::parse_off (Nibbler& n)
-{
-  Nibbler backup (n);
-  std::string sign;
-  if (n.getN (1, sign))
-  {
-    if (sign == "+" || sign == "-")
-    {
-      int offset;
-      int hh;
-      if (n.getDigit2 (hh))
-      {
-        offset = hh * 3600;
-        int mm;
-        if (n.getDigit2 (mm))
-          offset += mm * 60;
-
-        _offset = (sign == "-") ? -offset : offset;
-        if (!Lexer::isDigit (n.next ()))
-          return true;
-      }
-    }
-  }
-
-  n = backup;
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// hh[:mm[:ss]]
+// hh:mm[:ss]
 bool ISO8601d::parse_time_ext (Nibbler& n)
 {
   Nibbler backup (n);
@@ -433,20 +269,15 @@ bool ISO8601d::parse_time_ext (Nibbler& n)
   int mm;
   int ss;
   if (n.getDigit2 (hh) &&
-      !n.getDigit (mm))
+      n.skip (':')     &&
+      n.getDigit2 (mm))
   {
-    seconds = hh * 3600;
+    seconds = (hh * 3600) + (mm * 60);
 
     if (n.skip (':') &&
-        n.getDigit2 (mm) &&
-        !n.getDigit (ss))
+        n.getDigit2 (ss))
     {
-      seconds += mm * 60;
-
-      if (n.skip (':') &&
-          n.getDigit2 (ss))
-        seconds += ss;
-
+      seconds += ss;
       _seconds = seconds;
       return true;
     }
@@ -457,35 +288,6 @@ bool ISO8601d::parse_time_ext (Nibbler& n)
       if (!Lexer::isDigit (n.next ()))
         return true;
     }
-  }
-
-  n = backup;
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// hhmm[ss]
-bool ISO8601d::parse_time (Nibbler& n, bool ambiguous)
-{
-  if (!ambiguous)
-    return false;
-
-  Nibbler backup (n);
-  int seconds = 0;
-  int hh;
-  int mm;
-  if (n.getDigit2 (hh) &&
-      n.getDigit2 (mm))
-  {
-    seconds = hh * 3600 + mm * 60;
-
-    int ss;
-    if (n.getDigit2 (ss))
-      seconds += ss;
-
-    _seconds = seconds;
-    if (!Lexer::isDigit (n.next ()))
-      return true;
   }
 
   n = backup;
@@ -510,45 +312,12 @@ bool ISO8601d::parse_time_utc_ext (Nibbler& n)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// time 'Z'
-bool ISO8601d::parse_time_utc (Nibbler& n)
-{
-  n.save ();
-  if (parse_time (n, true) &&
-      n.skip ('Z'))
-  {
-    _utc = true;
-    if (!Lexer::isDigit (n.next ()))
-      return true;
-  }
-
-  n.restore ();
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // time-ext offset-ext
 bool ISO8601d::parse_time_off_ext  (Nibbler& n)
 {
   Nibbler backup (n);
   if (parse_time_ext (n) &&
       parse_off_ext (n))
-  {
-    if (!Lexer::isDigit (n.next ()))
-      return true;
-  }
-
-  n = backup;
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// time offset
-bool ISO8601d::parse_time_off  (Nibbler& n)
-{
-  Nibbler backup (n);
-  if (parse_time (n, true) &&
-      parse_off (n))
   {
     if (!Lexer::isDigit (n.next ()))
       return true;
