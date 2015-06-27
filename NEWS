@@ -12,6 +12,11 @@ Newly deprecated features in Taskwarrior 2.4.5
 Removed features in 2.4.5
 
   - The script 'context' was removed, now that context is a core feature.
+  - Non­extended forms of ISO-8601 date/time support is removed. This means
+    that 'YYYYMMDD' is no longer supported, but 'YYYY-MM-DD' is. For times,
+    'hhmmss' is no longer supported, but 'hh:mm:ss' is. The non-enxtended
+    forms all contain sequences of digits that make the identification of
+    IDs, UUIDs, and various date/time formats problematic.
 
 Known Issues
 
