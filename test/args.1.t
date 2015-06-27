@@ -42,7 +42,6 @@ class TestIDPosition(TestCase):
 
         self.t(("add", "one"))
         self.t(("add", "two"))
-        self.t(("add", "three"))
 
     def test_id(self):
         """Test id before and after command"""
@@ -50,21 +49,12 @@ class TestIDPosition(TestCase):
 
         self.assertIn("one", out)
         self.assertIn("two", out)
-        self.assertIn("three", out)
 
         code, out, err = self.t(("1", "done"))
         self.assertIn("Completed 1 task.", out)
 
-        filter = "rc.allow.empty.filter:yes"
-        code, out, err = self.t.runError((filter, "done", "2"))
-        self.assertIn("Command prevented from running.", err)
-        self.assertNotIn("Completed 1 task.", out)
-
-        filter = "rc.allow.empty.filter:no"
-        code, out, err = self.t.runError((filter, "done", "2"))
-        self.assertIn("You did not specify a filter, and with the "
-                      "'allow.empty.filter' value, no action is taken.", err)
-        self.assertNotIn("Completed 1 task.", out)
+        code, out, err = self.t(("done", "2"))
+        self.assertIn("Completed 1 task.", out)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
