@@ -343,15 +343,27 @@ void CLI2::lexArguments ()
   bool terminated = false;
   for (unsigned int i = 1; i < _original_args.size (); ++i)
   {
+    // The terminator itself is captured.
     if (_original_args[i] == "--")
     {
       terminated = true;
       _args.push_back (A2 (_original_args[i], Lexer::Type::separator));
     }
+
+    // Any arguments that are after the terminator are captured as words.
     else if (terminated)
     {
       _args.push_back (A2 (_original_args[i], Lexer::Type::word));
     }
+
+    // rc:<file> and rc.<name>[:=]<value> argumenst are captured whole.
+    else if (_original_args[i].substr (0, 3) == "rc:" ||
+             _original_args[i].substr (0, 3) == "rc.")
+    {
+      _args.push_back (A2 (_original_args[i], Lexer::Type::pair));
+    }
+
+    // Everything else gets lexed.
     else
     {
       std::string lexeme;
