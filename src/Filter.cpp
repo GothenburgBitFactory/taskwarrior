@@ -182,7 +182,7 @@ void Filter::subset (std::vector <Task>& output, bool applyContext /* = true */)
   }
   else
   {
-    safety (precompiled.size ());
+    safety ();
     context.timer_filter.stop ();
 
     for (auto& task : context.tdb2.pending.get_tasks ())
@@ -261,7 +261,7 @@ bool Filter::pendingOnly ()
 ////////////////////////////////////////////////////////////////////////////////
 // Disaster avoidance mechanism. If a WRITECMD has no filter, then it can cause
 // all tasks to be modified. This is usually not intended.
-void Filter::safety (unsigned int terms)
+void Filter::safety ()
 {
   for (auto& a : context.cli2._args)
   {
@@ -269,19 +269,16 @@ void Filter::safety (unsigned int terms)
     {
       if (a.hasTag ("WRITECMD"))
       {
-        if (terms)
-        {
-          if (! context.config.getBoolean ("allow.empty.filter"))
-            throw std::string (STRING_TASK_SAFETY_ALLOW);
+        if (! context.config.getBoolean ("allow.empty.filter"))
+          throw std::string (STRING_TASK_SAFETY_ALLOW);
 
-          // If user is willing to be asked, this can be avoided.
-          if (context.config.getBoolean ("confirmation") &&
-              confirm (STRING_TASK_SAFETY_VALVE))
-            return;
+        // If user is willing to be asked, this can be avoided.
+        if (context.config.getBoolean ("confirmation") &&
+            confirm (STRING_TASK_SAFETY_VALVE))
+          return;
 
-          // Sounds the alarm.
-          throw std::string (STRING_TASK_SAFETY_FAIL);
-        }
+        // Sounds the alarm.
+        throw std::string (STRING_TASK_SAFETY_FAIL);
       }
 
       // CMD was found.
