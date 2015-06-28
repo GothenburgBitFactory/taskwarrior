@@ -84,17 +84,17 @@ $output = qx{../src/task rc:caseless.rc info 1 2>&1};
 like ($output, qr/four five six/, 'one two three\nfour FIVE six -> /five/five/ = caseless succeed');
 
 # Description filter.
-$output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:yes ls One 2>&1};
-unlike ($output, qr/one two three/, 'one two three\nfour five six -> ls One = fail');
+$output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:yes ls /One/ 2>&1};
+unlike ($output, qr/one two three/, 'one two three\nfour five six -> ls /One/ = fail');
 
-$output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:no ls One 2>&1};
+$output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:no ls /One/ 2>&1};
 like ($output, qr/one two three/, 'one two three\nfour five six -> ls One caseless = succeed');
 
-$output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:yes ls Five 2>&1};
-unlike ($output, qr/four five six/, 'one two three\nfour five six -> ls Five = fail');
+$output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:yes ls /Five/ 2>&1};
+unlike ($output, qr/four five six/, 'one two three\nfour five six -> ls /Five/ = fail');
 
-$output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:no ls Five 2>&1};
-like ($output, qr/four five six/, 'one two three\nfour five six -> ls Five caseless = succeed');
+$output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:no ls /Five/ 2>&1};
+like ($output, qr/four five six/, 'one two three\nfour five six -> ls /Five/ caseless = succeed');
 
 # Annotation filter.
 $output = qx{../src/task rc:caseless.rc rc.search.case.sensitive:yes ls description.contains:Three 2>&1};
