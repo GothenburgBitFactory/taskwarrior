@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (795);
+  UnitTest t (799);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -71,7 +71,7 @@ int main (int argc, char** argv)
   t.ok (Lexer::isWhitespace (0x205F), "U+205F isWhitespace");
   t.ok (Lexer::isWhitespace (0x3000), "U+3000 isWhitespace");
 
-  // static bool Lexer::isBoundary(int, int);
+  // static bool Lexer::isBoundary (int, int);
   t.ok    (Lexer::isBoundary (' ', 'a'), "' ' --> 'a' = isBoundary");
   t.ok    (Lexer::isBoundary ('a', ' '), "'a' --> ' ' = isBoundary");
   t.ok    (Lexer::isBoundary (' ', '+'), "' ' --> '+' = isBoundary");
@@ -79,6 +79,12 @@ int main (int argc, char** argv)
   t.notok (Lexer::isBoundary ('3', '4'), "'3' --> '4' = isBoundary");
   t.ok    (Lexer::isBoundary ('(', '('), "'(' --> '(' = isBoundary");
   t.notok (Lexer::isBoundary ('r', 'd'), "'r' --> 'd' = isBoundary");
+
+  // static bool Lexer::wasQuoted (const std::string&);
+  t.notok (Lexer::wasQuoted (""),        "'' --> !wasQuoted");
+  t.notok (Lexer::wasQuoted ("foo"),     "'foo' --> !wasQuoted");
+  t.ok    (Lexer::wasQuoted ("a b"),     "'a b' --> wasQuoted");
+  t.ok    (Lexer::wasQuoted ("(a)"),     "'(a)' --> wasQuoted");
 
   // Should result in no tokens.
   Lexer l0 ("");

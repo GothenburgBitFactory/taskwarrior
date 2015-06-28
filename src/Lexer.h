@@ -63,18 +63,19 @@ public:
 
   // Static helpers.
   static const std::string typeName (const Lexer::Type&);
-  static bool isWhitespace         (int);
-  static bool isAlpha              (int);
-  static bool isDigit              (int);
-  static bool isHexDigit           (int);
-  static bool isIdentifierStart    (int);
-  static bool isIdentifierNext     (int);
-  static bool isSingleCharOperator (int);
-  static bool isDoubleCharOperator (int, int, int);
-  static bool isTripleCharOperator (int, int, int, int);
-  static bool isBoundary           (int, int);
-  static bool isPunctuation        (int);
-  static void dequote (std::string&);
+  static bool isWhitespace          (int);
+  static bool isAlpha               (int);
+  static bool isDigit               (int);
+  static bool isHexDigit            (int);
+  static bool isIdentifierStart     (int);
+  static bool isIdentifierNext      (int);
+  static bool isSingleCharOperator  (int);
+  static bool isDoubleCharOperator  (int, int, int);
+  static bool isTripleCharOperator  (int, int, int, int);
+  static bool isBoundary            (int, int);
+  static bool isPunctuation         (int);
+  static void dequote               (std::string&);
+  static bool wasQuoted             (const std::string&);
 
   // Helpers.
   bool isEOS () const;
