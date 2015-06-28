@@ -36,25 +36,29 @@ from basetest import Task, TestCase
 
 
 class TestIDPosition(TestCase):
-    def setUp(self):
-        """Executed before each test in the class"""
-        self.t = Task()
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
 
-        self.t(("add", "one"))
-        self.t(("add", "two"))
+        cls.t(("add", "one"))
+        cls.t(("add", "two"))
 
-    def test_id(self):
-        """Test id before and after command"""
-        code, out, err = self.t(("list",))
-
+    def test_id_read_cmd(self):
+        """Test id before and after read command"""
+        code, out, err = self.t(("1", "info"))
         self.assertIn("one", out)
-        self.assertIn("two", out)
+        self.assertNotIn("two", out)
 
-        code, out, err = self.t(("1", "done"))
-        self.assertIn("Completed 1 task.", out)
+        code, out, err = self.t(("info", "1"))
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
 
-        code, out, err = self.t(("done", "2"))
-        self.assertIn("Completed 1 task.", out)
+    def test_id_write_cmd(self):
+        """Test id before write command"""
+        code, out, err = self.t(("2", "done"))
+        self.assertIn("Completed task 2", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
