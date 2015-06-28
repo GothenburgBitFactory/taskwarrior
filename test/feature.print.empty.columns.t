@@ -42,13 +42,13 @@ if (open my $fh, '>', 'bug.rc')
 }
 
 # Feature: variable to control printing of empty columns
-qx{../src/task rc:bug.rc add sample desc 2>&1};
+qx{../src/task rc:bug.rc add /sample/ desc 2>&1};
 qx{../src/task rc:bug.rc add withP project:house 2>&1};
 
-my $output = qx{../src/task test sample rc:bug.rc 2>&1};
+my $output = qx{../src/task test /sample/ rc:bug.rc 2>&1};
 unlike ($output, qr/Project/, 'empty \'project\' column is not printed by default');
 
-$output = qx{../src/task test sample rc.print.empty.columns:yes rc:bug.rc 2>&1};
+$output = qx{../src/task test /sample/ rc.print.empty.columns:yes rc:bug.rc 2>&1};
 like ($output, qr/Project/, 'empty \'project\' column is printed if rc.print.empty.columns:yes');
 
 $output = qx{../src/task test rc:bug.rc 2>&1};
