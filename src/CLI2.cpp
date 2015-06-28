@@ -353,7 +353,9 @@ void CLI2::lexArguments ()
     // Any arguments that are after the terminator are captured as words.
     else if (terminated)
     {
-      _args.push_back (A2 (_original_args[i], Lexer::Type::word));
+      A2 word (_original_args[i], Lexer::Type::word);
+      word.tag ("TERMINATED");
+      _args.push_back (word);
     }
 
     // rc:<file> and rc.<name>[:=]<value> argumenst are captured whole.
@@ -740,13 +742,15 @@ void CLI2::aliasExpansion ()
     for (auto& i : _args)
     {
       raw = i.attribute ("raw");
-      if (_aliases.find (raw) != _aliases.end ())
+      if (i.hasTag ("TERMINATED"))
+      {
+        reconstructed.push_back (i);
+      }
+      else if (_aliases.find (raw) != _aliases.end ())
       {
         for (auto& l : Lexer::split (_aliases[raw]))
         {
           A2 a (l, Lexer::Type::word);
-          a.tag ("ALIAS");
-          a.tag ("LEX");
           reconstructed.push_back (a);
         }
 
@@ -754,15 +758,25 @@ void CLI2::aliasExpansion ()
         changes = true;
       }
       else
+      {
         reconstructed.push_back (i);
+      }
     }
 
     _args = reconstructed;
 
     std::vector <std::string> reconstructedOriginals;
+    bool terminated = false;
     for (auto& i : _original_args)
     {
-      if (_aliases.find (i) != _aliases.end ())
+      if (i == "--")
+        terminated = true;
+
+      if (terminated)
+      {
+        reconstructedOriginals.push_back (i);
+      }
+      else if (_aliases.find (i) != _aliases.end ())
       {
         for (auto& l : Lexer::split (_aliases[i]))
           reconstructedOriginals.push_back (l);
@@ -771,7 +785,9 @@ void CLI2::aliasExpansion ()
         changes = true;
       }
       else
+      {
         reconstructedOriginals.push_back (i);
+      }
     }
 
     _original_args = reconstructedOriginals;
