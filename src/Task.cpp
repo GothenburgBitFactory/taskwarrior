@@ -503,7 +503,8 @@ bool Task::is_overdue () const
     Task::status status = getStatus ();
 
     if (status != Task::completed &&
-        status != Task::deleted)
+        status != Task::deleted &&
+        status != Task::recurring)
     {
       Task::dateState state = getDateState ("due");
       if (state == dateEarlierToday ||
