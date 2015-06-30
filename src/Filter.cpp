@@ -227,7 +227,7 @@ bool Filter::pendingOnly ()
 
       if (a._lextype == Lexer::Type::op  && raw == "or")           ++countOr;
       if (a._lextype == Lexer::Type::op  && raw == "xor")          ++countXor;
-      if (a._lextype == Lexer::Type::op  && raw == "not")          ++countXor;
+      if (a._lextype == Lexer::Type::op  && raw == "not")          ++countNot;
       if (a._lextype == Lexer::Type::dom && canonical == "status") ++countStatus;
       if (                                  raw == "pending")      ++countPending;
       if (                                  raw == "waiting")      ++countPending;
