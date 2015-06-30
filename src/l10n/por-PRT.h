@@ -466,7 +466,7 @@
 #define STRING_CMD_SYNC_SUCCESS2     "Sincronizado com sucesso. {1} alterações recebidas."
 #define STRING_CMD_SYNC_SUCCESS3     "Sincronizado com sucesso. {1} alterações enviadas, {2} alterações recebidas."
 #define STRING_CMD_SYNC_SUCCESS_NOP  "Sincronizado com sucesso. Sem alterações."
-#define STRING_CMD_SYNC_FAIL_ACCOUNT "Sincronização falhou. As suas credenciais estão incorretas, ou a sua conta no Taskserver não está ativa."
+#define STRING_CMD_SYNC_FAIL_ACCOUNT "Sincronização falhou. As suas credenciais estão incorretas ou a sua conta não existe no Taskserver."
 #define STRING_CMD_SYNC_FAIL_ERROR   "Sincronização falhou. O Taskserver devolveu o seguinte erro: {1} {2}"
 #define STRING_CMD_SYNC_FAIL_CONNECT "Sincronização falhou. Não foi possível contactar ao Taskserver."
 #define STRING_CMD_SYNC_BAD_SERVER   "Sincronização falhou. Erro no parametro de configuração '{1}'"

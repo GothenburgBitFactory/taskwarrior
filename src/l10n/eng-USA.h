@@ -466,7 +466,7 @@
 #define STRING_CMD_SYNC_SUCCESS2     "Sync successful.  {1} changes downloaded."
 #define STRING_CMD_SYNC_SUCCESS3     "Sync successful.  {1} changes uploaded, {2} changes downloaded."
 #define STRING_CMD_SYNC_SUCCESS_NOP  "Sync successful.  No changes."
-#define STRING_CMD_SYNC_FAIL_ACCOUNT "Sync failed.  Either your credentials are incorrect, or your Taskserver account is not enabled."
+#define STRING_CMD_SYNC_FAIL_ACCOUNT "Sync failed.  Either your credentials are incorrect, or your account doesn't exist on the Taskserver."
 #define STRING_CMD_SYNC_FAIL_ERROR   "Sync failed.  The Taskserver returned error: {1} {2}"
 #define STRING_CMD_SYNC_FAIL_CONNECT "Sync failed.  Could not connect to the Taskserver."
 #define STRING_CMD_SYNC_BAD_SERVER   "Sync failed.  Malformed configuration setting '{1}'"
