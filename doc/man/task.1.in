@@ -504,9 +504,10 @@ Shows a report of aggregated task status by project.
 
 .TP
 .B task <filter> tags
-Show a list of all tags used.  Any special tags used are highlighted.  Note that
+Show a list of all tags used. Any special tags used are highlighted. Note that
 virtual tags are not listed - they don't really exist, and are just a convenient
-notation for other task metadata.
+notation for other task metadata. It is an error to attempt to add or remove a
+virtual tag.
 
 .TP
 .B task timesheet [weeks]
@@ -666,7 +667,8 @@ are:
     DELETED      Matches if the task has deleted status
 
 You can use +BLOCKED to filter blocked tasks, or -BLOCKED for unblocked tasks.
-Similarly, -BLOCKED is equivalent to +UNBLOCKED.
+Similarly, -BLOCKED is equivalent to +UNBLOCKED. It is an error to attempt to
+add or remove a virtual tag.
 
 .TP
 .B project:<project-name>
@@ -905,7 +907,7 @@ task ... due:7/14/2008
 
 .TP
 ISO-8601
-task ... due:20130314T223000Z
+task ... due:2013-03-14T22:30:00Z
 
 .TP
 Relative wording

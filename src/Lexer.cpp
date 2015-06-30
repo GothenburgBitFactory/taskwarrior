@@ -325,6 +325,15 @@ void Lexer::dequote (std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Lexer::wasQuoted (const std::string& input)
+{
+  if (input.find_first_of (" \t()") != std::string::npos)
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Lexer::isEOS () const
 {
   return _cursor >= _eos;

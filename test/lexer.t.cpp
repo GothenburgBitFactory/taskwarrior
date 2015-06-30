@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (801);
+  UnitTest t (799);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -71,7 +71,7 @@ int main (int argc, char** argv)
   t.ok (Lexer::isWhitespace (0x205F), "U+205F isWhitespace");
   t.ok (Lexer::isWhitespace (0x3000), "U+3000 isWhitespace");
 
-  // static bool Lexer::isBoundary(int, int);
+  // static bool Lexer::isBoundary (int, int);
   t.ok    (Lexer::isBoundary (' ', 'a'), "' ' --> 'a' = isBoundary");
   t.ok    (Lexer::isBoundary ('a', ' '), "'a' --> ' ' = isBoundary");
   t.ok    (Lexer::isBoundary (' ', '+'), "' ' --> '+' = isBoundary");
@@ -79,6 +79,12 @@ int main (int argc, char** argv)
   t.notok (Lexer::isBoundary ('3', '4'), "'3' --> '4' = isBoundary");
   t.ok    (Lexer::isBoundary ('(', '('), "'(' --> '(' = isBoundary");
   t.notok (Lexer::isBoundary ('r', 'd'), "'r' --> 'd' = isBoundary");
+
+  // static bool Lexer::wasQuoted (const std::string&);
+  t.notok (Lexer::wasQuoted (""),        "'' --> !wasQuoted");
+  t.notok (Lexer::wasQuoted ("foo"),     "'foo' --> !wasQuoted");
+  t.ok    (Lexer::wasQuoted ("a b"),     "'a b' --> wasQuoted");
+  t.ok    (Lexer::wasQuoted ("(a)"),     "'(a)' --> wasQuoted");
 
   // Should result in no tokens.
   Lexer l0 ("");
@@ -131,7 +137,7 @@ int main (int argc, char** argv)
   t.is (tokens[15].first,                    "'€'",           "tokens[15] = \\u20ac --> ''€''");
   t.is (Lexer::typeName (tokens[15].second), "string",        "tokens[15] = string");
 
-  // Test for ISO-8601 dates (favoring dates in ambiguous cases).
+  // Test for numbers that are no longer ISO-8601 dates.
   Lexer l3 ("1 12 123 1234 12345 123456 1234567 12345678");
   l3.ambiguity (true);
   tokens.clear ();
@@ -145,21 +151,21 @@ int main (int argc, char** argv)
   t.is (tokens[0].first,         "1",                       "tokens[0] == '1'");
   t.is ((int) tokens[0].second,  (int) Lexer::Type::number, "tokens[0] == Type::number");
   t.is (tokens[1].first,         "12",                      "tokens[1] == '12'");
-  t.is ((int) tokens[1].second,  (int) Lexer::Type::date,   "tokens[1] == Type::date");
+  t.is ((int) tokens[1].second,  (int) Lexer::Type::number, "tokens[1] == Type::date");
   t.is (tokens[2].first,         "123",                     "tokens[2] == '123'");
   t.is ((int) tokens[2].second,  (int) Lexer::Type::number, "tokens[2] == Type::number"); // 70
   t.is (tokens[3].first,         "1234",                    "tokens[3] == '1234'");
-  t.is ((int) tokens[3].second,  (int) Lexer::Type::date,   "tokens[3] == Type::date");
+  t.is ((int) tokens[3].second,  (int) Lexer::Type::number, "tokens[3] == Type::date");
   t.is (tokens[4].first,         "12345",                   "tokens[4] == '12345'");
   t.is ((int) tokens[4].second,  (int) Lexer::Type::number, "tokens[4] == Type::number");
   t.is (tokens[5].first,         "123456",                  "tokens[5] == '123456'");
-  t.is ((int) tokens[5].second,  (int) Lexer::Type::date,   "tokens[5] == Type::date");
+  t.is ((int) tokens[5].second,  (int) Lexer::Type::number, "tokens[5] == Type::date");
   t.is (tokens[6].first,         "1234567",                 "tokens[6] == '1234567'");
   t.is ((int) tokens[6].second,  (int) Lexer::Type::number, "tokens[6] == Type::number");
   t.is (tokens[7].first,         "12345678",                "tokens[7] == '12345678'");
   t.is ((int) tokens[7].second,  (int) Lexer::Type::number, "tokens[7] == Type::number"); // 80
 
-  // Test for ISO-8601 dates (favoring numbers in ambiguous cases).
+  // Test for numbers that are no longer ISO-8601 dates.
   Lexer l4 ("1 12 123 1234 12345 123456 1234567 12345678");
   l4.ambiguity (false);
   tokens.clear ();
@@ -340,7 +346,6 @@ int main (int argc, char** argv)
     // Date
     { "2015-W01",                                     { { "2015-W01",                                     Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "2015-02-17",                                   { { "2015-02-17",                                   Lexer::Type::date         }, NO, NO, NO, NO }, },
-    { "20131129T225800Z",                             { { "20131129T225800Z",                             Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "2013-11-29T22:58:00Z",                         { { "2013-11-29T22:58:00Z",                         Lexer::Type::date         }, NO, NO, NO, NO }, },
 
     // Duration

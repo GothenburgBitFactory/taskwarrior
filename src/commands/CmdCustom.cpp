@@ -81,10 +81,7 @@ int CmdCustom::execute (std::string& output)
 
   // Add the report filter to any existing filter.
   if (reportFilter != "")
-  {
     context.cli2.addFilter (reportFilter);
-    context.cli2.prepareFilter ();
-  }
 
   // Apply filter.
   handleRecurrence ();

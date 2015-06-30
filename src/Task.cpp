@@ -1092,6 +1092,7 @@ bool Task::hasTag (const std::string& tag) const
 {
   // Synthetic tags - dynamically generated, but do not occupy storage space.
   // Note: This list must match that in CmdInfo::execute.
+  // Note: This list must match that in ::feedback_reserved_tags.
   if (tag == "BLOCKED")   return is_blocked;
   if (tag == "UNBLOCKED") return !is_blocked;
   if (tag == "BLOCKING")  return is_blocking;
@@ -2094,11 +2095,13 @@ void Task::modify (modType type, bool text_required /* = false */)
       else if (a._lextype == Lexer::Type::tag)
       {
         std::string tag = a.attribute ("name");
+        feedback_reserved_tags (tag);
+
         if (a.attribute ("sign") == "+")
         {
           context.debug (label + "tags <-- add '" + tag + "'");
           addTag (tag);
-          feedback_special_tags ((*this), tag);
+          feedback_special_tags (*this, tag);
         }
         else
         {

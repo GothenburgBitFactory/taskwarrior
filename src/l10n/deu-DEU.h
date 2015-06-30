@@ -792,6 +792,7 @@
 #define STRING_FEEDBACK_TAG_NONAG    "Das besondere Schlagwort 'nonag' verhindert Nachfragen, wenn diese Aufgabe geändert wird."
 #define STRING_FEEDBACK_TAG_NOCAL    "Das besondere Schlagwort 'nocal' verhindert, dass diese Aufgabe im 'calendar'-Report erscheint."
 #define STRING_FEEDBACK_TAG_NEXT     "Das besondere Schlagwort 'next' erhöht die Dringlichkeit dieser Aufgabe, sodass sie im 'next'-Report erscheint."
+#define STRING_FEEDBACK_TAG_VIRTUAL  "Virtual tags (including '{1}') are reserved and may not be added or removed."
 #define STRING_FEEDBACK_UNBLOCKED    "Aufgabe {1} '{2}' entsperrt."
 #define STRING_FEEDBACK_EXPIRED      "Aufgabe {1} '{2}' ist abgelaufen und wurde gelöscht."
 #define STRING_FEEDBACK_BACKLOG      "Lokale Änderungen.  Datenabgleich erforderlich."

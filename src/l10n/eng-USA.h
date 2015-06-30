@@ -372,7 +372,7 @@
 #define STRING_CMD_UDAS_ORPHANS      "{1} Orphan UDAs"
 
 #define STRING_CMD_DELETE_USAGE      "Deletes the specified task"
-#define STRING_CMD_DELETE_CONFIRM    "Permanently delete task {1} '{2}'?"
+#define STRING_CMD_DELETE_CONFIRM    "Delete task {1} '{2}'?"
 #define STRING_CMD_DELETE_TASK       "Deleting task {1} '{2}'."
 #define STRING_CMD_DELETE_TASK_R     "Deleting recurring task {1} '{2}'."
 #define STRING_CMD_DELETE_CONFIRM_R  "This is a recurring task.  Do you want to delete all pending recurrences of this same task?"
@@ -792,6 +792,7 @@
 #define STRING_FEEDBACK_TAG_NONAG    "The 'nonag' special tag will prevent nagging when this task is modified."
 #define STRING_FEEDBACK_TAG_NOCAL    "The 'nocal' special tag will keep this task off the 'calendar' report."
 #define STRING_FEEDBACK_TAG_NEXT     "The 'next' special tag will boost the urgency of this task so it appears on the 'next' report."
+#define STRING_FEEDBACK_TAG_VIRTUAL  "Virtual tags (including '{1}') are reserved and may not be added or removed."
 #define STRING_FEEDBACK_UNBLOCKED    "Unblocked {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "Task {1} '{2}' expired and was deleted."
 #define STRING_FEEDBACK_BACKLOG      "There are local changes.  Sync required."

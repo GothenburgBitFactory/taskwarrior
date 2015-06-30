@@ -43,7 +43,7 @@ public:
   void subset (const std::vector <Task>&, std::vector <Task>&, bool applyContext = true);
   void subset (std::vector <Task>&, bool applyContext = true);
   bool pendingOnly ();
-  void safety (unsigned int);
+  void safety ();
 
 private:
   int _startCount;

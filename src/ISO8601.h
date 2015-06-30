@@ -45,17 +45,11 @@ public:
 
 private:
   bool parse_date_time_ext (Nibbler&);
-  bool parse_date_time     (Nibbler&);
   bool parse_date_ext      (Nibbler&);
-  bool parse_date          (Nibbler&, bool);
   bool parse_off_ext       (Nibbler&);
-  bool parse_off           (Nibbler&);
   bool parse_time_ext      (Nibbler&);
-  bool parse_time          (Nibbler&, bool);
   bool parse_time_utc_ext  (Nibbler&);
-  bool parse_time_utc      (Nibbler&);
   bool parse_time_off_ext  (Nibbler&);
-  bool parse_time_off      (Nibbler&);
   int dayOfWeek (int, int, int);
   bool validate ();
   void resolve ();

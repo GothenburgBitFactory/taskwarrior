@@ -33,9 +33,6 @@
 
 Context context;
 
-#define AMBIGUOUS          // Include ambiguous forms
-#undef  AMBIGUOUS          // Exclude ambiguous forms
-
 ////////////////////////////////////////////////////////////////////////////////
 void testParse (
   UnitTest& t,
@@ -74,11 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1214
-#ifdef AMBIGUOUS
-              + 48
-#endif
-             );
+  UnitTest t (734);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -139,7 +132,6 @@ int main (int argc, char** argv)
 
   int hms = (12 * 3600) + (34 * 60) + 56; // The time 12:34:56 in seconds.
   int hm  = (12 * 3600) + (34 * 60);      // The time 12:34:00 in seconds.
-  int h   = (12 * 3600);                  // The time 12:00:00 in seconds.
   int z   = 3600;                         // TZ offset.
 
   int ld = local_s > hms ? 86400 : 0;     // Local extra day if now > hms.
@@ -155,31 +147,12 @@ int main (int argc, char** argv)
   //            input                         i  Year  Mo  Wk WD  Jul  Da   Secs     TZ    UTC      time_t
   testParse (t, "12:34:56Z",                  9,    0,  0,  0, 0,   0,  0,   hms,     0,  true, utc+hms+ud   );
   testParse (t, "12:34Z",                     6,    0,  0,  0, 0,   0,  0,    hm,     0,  true, utc+hm+ud    );
-  testParse (t, "12Z",                        3,    0,  0,  0, 0,   0,  0,     h,     0,  true, utc+h+ud     );
   testParse (t, "12:34:56+01:00",            14,    0,  0,  0, 0,   0,  0,   hms,  3600, false, utc+hms-z+ud );
   testParse (t, "12:34:56+01",               11,    0,  0,  0, 0,   0,  0,   hms,  3600, false, utc+hms-z+ud );
   testParse (t, "12:34+01:00",               11,    0,  0,  0, 0,   0,  0,    hm,  3600, false, utc+hm-z+ud  );
   testParse (t, "12:34+01",                   8,    0,  0,  0, 0,   0,  0,    hm,  3600, false, utc+hm-z+ud  );
-//  testParse (t, "12+01:00",                   8,    0,  0,  0, 0,   0,  0,     h,  3600, false, utc+h-z+ud   );
-//  testParse (t, "12+01",                      5,    0,  0,  0, 0,   0,  0,     h,  3600, false, utc+h-z+ud   );
   testParse (t, "12:34:56",                   8,    0,  0,  0, 0,   0,  0,   hms,     0, false, local+hms+ld );
   testParse (t, "12:34",                      5,    0,  0,  0, 0,   0,  0,    hm,     0, false, local+hm+ld  );
-#ifdef AMBIGUOUS
-  testParse (t, "12",                         2,    0,  0,  0, 0,   0,  0,     h,     0, false, local+h+ld   );
-#endif
-
-  // time
-  //            input                         i  Year  Mo  Wk WD  Jul  Da   Secs     TZ    UTC      time_t
-  testParse (t, "123456Z",                    7,    0,  0,  0, 0,   0,  0,   hms,     0,  true, utc+hms+ud   );
-  testParse (t, "1234Z",                      5,    0,  0,  0, 0,   0,  0,    hm,     0,  true, utc+hm+ud    );
-  testParse (t, "123456+0100",               11,    0,  0,  0, 0,   0,  0,   hms,  3600, false, utc+hms-z+ud );
-  testParse (t, "123456+01",                  9,    0,  0,  0, 0,   0,  0,   hms,  3600, false, utc+hms-z+ud );
-  testParse (t, "1234+0100",                  9,    0,  0,  0, 0,   0,  0,    hm,  3600, false, utc+hm-z+ud  );
-  testParse (t, "1234+01",                    7,    0,  0,  0, 0,   0,  0,    hm,  3600, false, utc+hm-z+ud  );
-//  testParse (t, "12+0100",                    7,    0,  0,  0, 0,   0,  0,     h,  3600, false, utc+h-z+ud   );
-#ifdef AMBIGUOUS
-  testParse (t, "123456",                     6,    0,  0,  0, 0,   0,  0,   hms,     0, false, local+hms+ld );
-#endif
 
   // datetime-ext
   //            input                         i  Year  Mo  Wk WD  Jul  Da   Secs     TZ    UTC      time_t
@@ -238,82 +211,6 @@ int main (int argc, char** argv)
   testParse (t, "2013-W49T12:34+01",         17, 2013,  0, 49, 0,   0,  0,    hm,  3600, false, utc1+hm-z );
   testParse (t, "2013-W49T12:34-01:00",      20, 2013,  0, 49, 0,   0,  0,    hm, -3600, false, utc1+hm+z );
   testParse (t, "2013-W49T12:34-01",         17, 2013,  0, 49, 0,   0,  0,    hm, -3600, false, utc1+hm+z );
-
-  // datetime
-#ifdef AMBIGUOUS
-  testParse (t, "20131206",                   8, 2013, 12,  0, 0,   0,  6,     0,     0, false, local6    );
-#endif
-  testParse (t, "2013W495",                   8, 2013,  0, 49, 5,   0,  0,     0,     0, false, local6    );
-  testParse (t, "2013W49",                    7, 2013,  0, 49, 0,   0,  0,     0,     0, false, local1    );
-#ifdef AMBIGUOUS
-  testParse (t, "2013340",                    7, 2013,  0,  0, 0, 340,  0,     0,     0, false, local6    );
-#endif
-  testParse (t, "2013-12",                    7, 2013, 12,  0, 0,   0,  0,     0,     0, false, local1    );
-
-  testParse (t, "20131206T123456",           15, 2013, 12,  0, 0,   0,  6,   hms,     0, false, local6+hms);
-//  testParse (t, "20131206T12",               11, 2013, 12,  0, 0,   0,  6,     h,     0, false, local6+h  );
-  testParse (t, "2013W495T123456",           15, 2013,  0, 49, 5,   0,  0,   hms,     0, false, local6+hms);
-//  testParse (t, "2013W495T12",               11, 2013,  0, 49, 5,   0,  0,     h,     0, false, local6+h  );
-  testParse (t, "2013W49T123456",            14, 2013,  0, 49, 0,   0,  0,   hms,     0, false, local1+hms);
-//  testParse (t, "2013W49T12",                10, 2013,  0, 49, 0,   0,  0,     h,     0, false, local1+h  );
-  testParse (t, "2013340T123456",            14, 2013,  0,  0, 0, 340,  0,   hms,     0, false, local6+hms);
-//  testParse (t, "2013340T12",                10, 2013,  0,  0, 0, 340,  0,     h,     0, false, local6+h  );
-  testParse (t, "2013-12T1234",              12, 2013, 12,  0, 0,   0,  0,    hm,     0, false, local1+hm );
-//  testParse (t, "2013-12T12",                10, 2013, 12,  0, 0,   0,  0,     h,     0, false, local1+h  );
-
-  testParse (t, "20131206T123456Z",          16, 2013, 12,  0, 0,   0,  6,   hms,     0,  true, utc6+hms  );
-//  testParse (t, "20131206T12Z",              12, 2013, 12,  0, 0,   0,  6,     h,     0,  true, utc6+h    );
-  testParse (t, "2013W495T123456Z",          16, 2013,  0, 49, 5,   0,  0,   hms,     0,  true, utc6+hms  );
-//  testParse (t, "2013W495T12Z",              12, 2013,  0, 49, 5,   0,  0,     h,     0,  true, utc6+h    );
-  testParse (t, "2013W49T123456Z",           15, 2013,  0, 49, 0,   0,  0,   hms,     0,  true, utc1+hms  );
-//  testParse (t, "2013W49T12Z",               11, 2013,  0, 49, 0,   0,  0,     h,     0,  true, utc1+h    );
-  testParse (t, "2013340T123456Z",           15, 2013,  0,  0, 0, 340,  0,   hms,     0,  true, utc6+hms  );
-//  testParse (t, "2013340T12Z",               11, 2013,  0,  0, 0, 340,  0,     h,     0,  true, utc6+h    );
-  testParse (t, "2013-12T123456Z",           15, 2013, 12,  0, 0,   0,  0,   hms,     0,  true, utc1+hms  );
- // testParse (t, "2013-12T12Z",               11, 2013, 12,  0, 0,   0,  0,     h,     0,  true, utc1+h    );
-
-  testParse (t, "20131206T123456+0100",      20, 2013, 12,  0, 0,   0,  6,   hms,  3600, false, utc6+hms-z);
-  testParse (t, "20131206T123456+01",        18, 2013, 12,  0, 0,   0,  6,   hms,  3600, false, utc6+hms-z);
-  testParse (t, "20131206T123456-0100",      20, 2013, 12,  0, 0,   0,  6,   hms, -3600, false, utc6+hms+z);
-  testParse (t, "20131206T123456-01",        18, 2013, 12,  0, 0,   0,  6,   hms, -3600, false, utc6+hms+z);
-//  testParse (t, "20131206T12+0100",          16, 2013, 12,  0, 0,   0,  6,     h,  3600, false, utc6+h-z  );
-//  testParse (t, "20131206T12+01",            14, 2013, 12,  0, 0,   0,  6,     h,  3600, false, utc6+h-z  );
-//  testParse (t, "20131206T12-0100",          16, 2013, 12,  0, 0,   0,  6,     h, -3600, false, utc6+h+z  );
-//  testParse (t, "20131206T12-01",            14, 2013, 12,  0, 0,   0,  6,     h, -3600, false, utc6+h+z  );
-  testParse (t, "2013W495T123456+0100",      20, 2013,  0, 49, 5,   0,  0,   hms,  3600, false, utc6+hms-z);
-  testParse (t, "2013W495T123456+01",        18, 2013,  0, 49, 5,   0,  0,   hms,  3600, false, utc6+hms-z);
-  testParse (t, "2013W495T123456-0100",      20, 2013,  0, 49, 5,   0,  0,   hms, -3600, false, utc6+hms+z);
-  testParse (t, "2013W495T123456-01",        18, 2013,  0, 49, 5,   0,  0,   hms, -3600, false, utc6+hms+z);
-//  testParse (t, "2013W495T12+0100",          16, 2013,  0, 49, 5,   0,  0,     h,  3600, false, utc6+h-z  );
-//  testParse (t, "2013W495T12+01",            14, 2013,  0, 49, 5,   0,  0,     h,  3600, false, utc6+h-z  );
-//  testParse (t, "2013W495T12-0100",          16, 2013,  0, 49, 5,   0,  0,     h, -3600, false, utc6+h+z  );
-//  testParse (t, "2013W495T12-01",            14, 2013,  0, 49, 5,   0,  0,     h, -3600, false, utc6+h+z  );
-  testParse (t, "2013W49T123456+0100",       19, 2013,  0, 49, 0,   0,  0,   hms,  3600, false, utc1+hms-z);
-  testParse (t, "2013W49T123456+01",         17, 2013,  0, 49, 0,   0,  0,   hms,  3600, false, utc1+hms-z);
-  testParse (t, "2013W49T123456-0100",       19, 2013,  0, 49, 0,   0,  0,   hms, -3600, false, utc1+hms+z);
-  testParse (t, "2013W49T123456-01",         17, 2013,  0, 49, 0,   0,  0,   hms, -3600, false, utc1+hms+z);
-//  testParse (t, "2013W49T12+0100",           15, 2013,  0, 49, 0,   0,  0,     h,  3600, false, utc1+h-z  );
-//  testParse (t, "2013W49T12+01",             13, 2013,  0, 49, 0,   0,  0,     h,  3600, false, utc1+h-z  );
-//  testParse (t, "2013W49T12-0100",           15, 2013,  0, 49, 0,   0,  0,     h, -3600, false, utc1+h+z  );
-//  testParse (t, "2013W49T12-01",             13, 2013,  0, 49, 0,   0,  0,     h, -3600, false, utc1+h+z  );
-  testParse (t, "2013340T123456+0100",       19, 2013,  0,  0, 0, 340,  0,   hms,  3600, false, utc6+hms-z);
-  testParse (t, "2013340T123456+01",         17, 2013,  0,  0, 0, 340,  0,   hms,  3600, false, utc6+hms-z);
-  testParse (t, "2013340T123456-0100",       19, 2013,  0,  0, 0, 340,  0,   hms, -3600, false, utc6+hms+z);
-  testParse (t, "2013340T123456-01",         17, 2013,  0,  0, 0, 340,  0,   hms, -3600, false, utc6+hms+z);
-//  testParse (t, "2013340T12+0100",           15, 2013,  0,  0, 0, 340,  0,     h,  3600, false, utc6+h-z  );
-//  testParse (t, "2013340T12+01",             13, 2013,  0,  0, 0, 340,  0,     h,  3600, false, utc6+h-z  );
-//  testParse (t, "2013340T12-0100",           15, 2013,  0,  0, 0, 340,  0,     h, -3600, false, utc6+h+z  );
-//  testParse (t, "2013340T12-01",             13, 2013,  0,  0, 0, 340,  0,     h, -3600, false, utc6+h+z  );
-  testParse (t, "2013-12T123456+0100",       19, 2013, 12,  0, 0,   0,  0,   hms,  3600, false, utc1+hms-z);
-  testParse (t, "2013-12T123456+01",         17, 2013, 12,  0, 0,   0,  0,   hms,  3600, false, utc1+hms-z);
-  testParse (t, "2013-12T123456-0100",       19, 2013, 12,  0, 0,   0,  0,   hms, -3600, false, utc1+hms+z);
-  testParse (t, "2013-12T123456-01",         17, 2013, 12,  0, 0,   0,  0,   hms, -3600, false, utc1+hms+z);
-//  testParse (t, "2013-12T12+0100",           15, 2013, 12,  0, 0,   0,  0,     h,  3600, false, utc1+h-z  );
-//  testParse (t, "2013-12T12+01",             13, 2013, 12,  0, 0,   0,  0,     h,  3600, false, utc1+h-z  );
-//  testParse (t, "2013-12T12-0100",           15, 2013, 12,  0, 0,   0,  0,     h, -3600, false, utc1+h+z  );
-//  testParse (t, "2013-12T12-01",             13, 2013, 12,  0, 0,   0,  0,     h, -3600, false, utc1+h+z  );
-
-  // TODO Test validation of individual values.
 
   return 0;
 }

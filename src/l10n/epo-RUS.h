@@ -792,6 +792,7 @@
 #define STRING_FEEDBACK_TAG_NONAG    "Speciala etikedo 'nonag' antaŭmalebligitos molestojn, kiam oni modifus tiun taskon."
 #define STRING_FEEDBACK_TAG_NOCAL    "Speciala etikedo 'nocal' ekskluzivos tiun taskon ĉe raporto 'calendar'."
 #define STRING_FEEDBACK_TAG_NEXT     "Speciala etikedo 'next' pligrandigos la urĝecon de tiu tasko por ke ĝi aperus ĉe raporto 'next'."
+#define STRING_FEEDBACK_TAG_VIRTUAL  "Virtual tags (including '{1}') are reserved and may not be added or removed."
 #define STRING_FEEDBACK_UNBLOCKED    "Malblokis {1} '{2}'."
 #define STRING_FEEDBACK_EXPIRED      "Tasko {1} '{2}' fortempiĝis do estis viŝata."
 #define STRING_FEEDBACK_BACKLOG      "Estas lokaj ŝanĝoj. Sinkronigo devita."

@@ -340,15 +340,42 @@ void CLI2::lexArguments ()
 {
   // Note: Starts interating at index 1, because ::handleArg0 has already
   //       processed it.
+  bool terminated = false;
   for (unsigned int i = 1; i < _original_args.size (); ++i)
   {
-    std::string lexeme;
-    Lexer::Type type;
-    Lexer lex (_original_args[i]);
-    lex.ambiguity (false);
+    // The terminator itself is captured.
+    if (_original_args[i] == "--")
+    {
+      terminated = true;
+      _args.push_back (A2 (_original_args[i], Lexer::Type::separator));
+    }
 
-    while (lex.token (lexeme, type))
-      _args.push_back (A2 (lexeme, type));
+    // Any arguments that are after the terminator are captured as words.
+    else if (terminated)
+    {
+      A2 word (_original_args[i], Lexer::Type::word);
+      word.tag ("TERMINATED");
+      _args.push_back (word);
+    }
+
+    // rc:<file> and rc.<name>[:=]<value> argumenst are captured whole.
+    else if (_original_args[i].substr (0, 3) == "rc:" ||
+             _original_args[i].substr (0, 3) == "rc.")
+    {
+      _args.push_back (A2 (_original_args[i], Lexer::Type::pair));
+    }
+
+    // Everything else gets lexed.
+    else
+    {
+      std::string lexeme;
+      Lexer::Type type;
+      Lexer lex (_original_args[i]);
+      lex.ambiguity (false);
+
+      while (lex.token (lexeme, type))
+        _args.push_back (A2 (lexeme, type));
+    }
   }
 
   if (context.config.getInteger ("debug.parser") >= 3)
@@ -414,51 +441,6 @@ void CLI2::analyze ()
     context.debug (dump ("CLI2::analyze end"));
 }
 
-/*
-////////////////////////////////////////////////////////////////////////////////
-// There are situations where a context filter is applied. This method
-// determines whether one applies, and if so, applies it. Disqualifiers include:
-//   - filter contains ID or UUID
-void CLI2::addContextFilter ()
-{
-  // Detect if any context is set, and bail out if not
-  std::string contextName = context.config.get ("context");
-  if (contextName == "")
-  {
-    context.debug ("No context applied.");
-    return;
-  }
-
-  // Detect if UUID or ID is set, and bail out
-  for (auto& a : _args)
-  {
-    // TODO This looks wrong.
-    if (a.hasTag ("FILTER") &&
-        a.hasTag ("ATTRIBUTE") &&
-        ! a.hasTag ("TERMINATED") &&
-        ! a.hasTag ("WORD") &&
-        (a.attribute ("raw") == "id" || a.attribute ("raw") == "uuid"))
-    {
-      context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a.attribute ("raw")));
-      return;
-    }
-  }
-
-  // Apply context
-  context.debug ("Applying context: " + contextName);
-  std::string contextFilter = context.config.get ("context." + contextName);
-
-  if (contextFilter == "")
-    context.debug ("Context '" + contextName + "' not defined.");
-  else
-  {
-    addRawFilter ("( " + contextFilter + " )");
-    if (context.verbose ("context"))
-      context.footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
-  }
-}
-*/
-
 ////////////////////////////////////////////////////////////////////////////////
 // Process raw string.
 void CLI2::addFilter (const std::string& arg)
@@ -481,6 +463,52 @@ void CLI2::addFilter (const std::string& arg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// There are situations where a context filter is applied. This method
+// determines whether one applies, and if so, applies it. Disqualifiers include:
+//   - filter contains ID or UUID
+void CLI2::addContextFilter ()
+{
+  // Detect if any context is set, and bail out if not
+  std::string contextName = context.config.get ("context");
+  if (contextName == "")
+  {
+    context.debug ("No context applied.");
+    return;
+  }
+
+/*
+  // Detect if UUID or ID is set, and bail out
+  for (auto& a : _args)
+  {
+    // TODO This is needed, but the parsing is not yet complete, so the logic
+    //      below is not valid.
+    if (a.hasTag ("FILTER") &&
+        a.hasTag ("ATTRIBUTE") &&
+        ! a.hasTag ("TERMINATED") &&
+        ! a.hasTag ("WORD") &&
+        (a.attribute ("raw") == "id" || a.attribute ("raw") == "uuid"))
+    {
+      context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a.attribute ("raw")));
+      return;
+    }
+  }
+*/
+
+  // Apply context
+  context.debug ("Applying context: " + contextName);
+  std::string contextFilter = context.config.get ("context." + contextName);
+
+  if (contextFilter == "")
+    context.debug ("Context '" + contextName + "' not defined.");
+  else
+  {
+    addFilter (contextFilter);
+    if (context.verbose ("context"))
+      context.footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Parse the command line, identifiying filter components, expanding syntactic
 // sugar as necessary.
 void CLI2::prepareFilter (bool applyContext)
@@ -488,6 +516,9 @@ void CLI2::prepareFilter (bool applyContext)
   // Clear and re-populate.
   _id_ranges.clear ();
   _uuid_list.clear ();
+
+  if (applyContext)
+    addContextFilter ();
 
   // Classify FILTER and MODIFICATION args, based on CMD and READCMD/WRITECMD.
   bool changes = false;
@@ -711,13 +742,15 @@ void CLI2::aliasExpansion ()
     for (auto& i : _args)
     {
       raw = i.attribute ("raw");
-      if (_aliases.find (raw) != _aliases.end ())
+      if (i.hasTag ("TERMINATED"))
+      {
+        reconstructed.push_back (i);
+      }
+      else if (_aliases.find (raw) != _aliases.end ())
       {
         for (auto& l : Lexer::split (_aliases[raw]))
         {
           A2 a (l, Lexer::Type::word);
-          a.tag ("ALIAS");
-          a.tag ("LEX");
           reconstructed.push_back (a);
         }
 
@@ -725,15 +758,25 @@ void CLI2::aliasExpansion ()
         changes = true;
       }
       else
+      {
         reconstructed.push_back (i);
+      }
     }
 
     _args = reconstructed;
 
     std::vector <std::string> reconstructedOriginals;
+    bool terminated = false;
     for (auto& i : _original_args)
     {
-      if (_aliases.find (i) != _aliases.end ())
+      if (i == "--")
+        terminated = true;
+
+      if (terminated)
+      {
+        reconstructedOriginals.push_back (i);
+      }
+      else if (_aliases.find (i) != _aliases.end ())
       {
         for (auto& l : Lexer::split (_aliases[i]))
           reconstructedOriginals.push_back (l);
@@ -742,7 +785,9 @@ void CLI2::aliasExpansion ()
         changes = true;
       }
       else
+      {
         reconstructedOriginals.push_back (i);
+      }
     }
 
     _original_args = reconstructedOriginals;

@@ -269,8 +269,8 @@ class TestFilter(TestCase):
 
     @unittest.expectedFailure
     def test_regex_list_project(self):
-        """filter - rc.regex:on list project:/[A-Z]/"""
-        code, out, err = self.t(("rc.regex:on", "list", "project:/[A-Z]/"))
+        """filter - rc.regex:on list project~[A-Z]"""
+        code, out, err = self.t(("rc.regex:on", "list", "project~[A-Z]"))
 
         self.assertIn("one", out)
         self.assertIn("two", out)
@@ -280,10 +280,9 @@ class TestFilter(TestCase):
         self.assertNotIn("six", out)
         self.assertNotIn("seven", out)
 
-    @unittest.expectedFailure
     def test_regex_list_project_any(self):
-        """filter - rc.regex:on list project:."""
-        code, out, err = self.t(("rc.regex:on", "list", "project:."))
+        """filter - rc.regex:on list project~."""
+        code, out, err = self.t(("rc.regex:on", "list", "project~."))
 
         self.assertIn("one", out)
         self.assertIn("two", out)
