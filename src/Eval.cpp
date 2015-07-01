@@ -104,8 +104,7 @@ static bool namedConstants (const std::string& name, Variant& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 Eval::Eval ()
-: _ambiguity (true)
-, _debug (false)
+: _debug (false)
 {
   addSource (namedConstants);
 }
@@ -217,12 +216,6 @@ void Eval::evaluateCompiledExpression (Variant& v)
 {
   // Call the postfix evaluator.
   evaluatePostfixStack (_compiled, v);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Eval::ambiguity (bool value)
-{
-  _ambiguity = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -418,7 +411,6 @@ void Eval::evaluatePostfixStack (
 /*
       case Lexer::Type::uuid:
       case Lexer::Type::hex:
-      case Lexer::Type::list:
       case Lexer::Type::url:
       case Lexer::Type::pair:
       case Lexer::Type::separator:

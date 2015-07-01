@@ -47,7 +47,6 @@ public:
   void compileExpression (const std::string&);
   void compileExpression (const std::vector <std::pair <std::string, Lexer::Type>>&);
   void evaluateCompiledExpression (Variant&);
-  void ambiguity (bool);
   void debug (bool);
 
   static std::vector <std::string> getOperators ();
@@ -73,7 +72,6 @@ private:
 
 private:
   std::vector <bool (*)(const std::string&, Variant&)> _sources;
-  bool _ambiguity;
   bool _debug;
   std::vector <std::pair <std::string, Lexer::Type>> _compiled;
 };
