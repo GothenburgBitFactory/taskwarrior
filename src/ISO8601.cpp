@@ -46,15 +46,6 @@ ISO8601d::operator time_t () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// By default, ISO8601d allows ambiguous dates, such as YYYY, YYYYMMDD, HHMMSS.
-// These are also valid numbers.  Setting ambiguity to false inhibits the
-// parsing of these as dates.
-void ISO8601d::ambiguity (bool value)
-{
-  _ambiguity = value;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Supported:
 //
 //    result       ::= date-ext 'T' time-ext 'Z'              # UTC
@@ -125,7 +116,6 @@ bool ISO8601d::parse (const std::string& input, std::string::size_type& start)
 ////////////////////////////////////////////////////////////////////////////////
 void ISO8601d::clear ()
 {
-  _ambiguity       = true;
   _year            = 0;
   _month           = 0;
   _week            = 0;
@@ -279,15 +269,14 @@ bool ISO8601d::parse_time_ext (Nibbler& n)
     {
       seconds += ss;
       _seconds = seconds;
-      return true;
-    }
 
-    if (_ambiguity)
-    {
-      _seconds = seconds;
       if (!Lexer::isDigit (n.next ()))
         return true;
     }
+
+    _seconds = seconds;
+    if (!Lexer::isDigit (n.next ()))
+      return true;
   }
 
   n = backup;

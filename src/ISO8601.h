@@ -38,7 +38,6 @@ public:
   ISO8601d (const ISO8601d&);                 // Unimplemented
   ISO8601d& operator= (const ISO8601d&);      // Unimplemented
   operator time_t () const;
-  void ambiguity (bool);
   bool parse (const std::string&, std::string::size_type&);
   void clear ();
   void set_default_time (int, int, int);
@@ -55,7 +54,6 @@ private:
   void resolve ();
 
 public:
-  bool _ambiguity;
   int _year;
   int _month;
   int _week;
