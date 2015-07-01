@@ -83,7 +83,6 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
   if (precompiled.size ())
   {
     Eval eval;
-    eval.ambiguity (false);
     eval.addSource (domSource);
     eval.addSource (namedDates);
 
@@ -137,7 +136,6 @@ void Filter::subset (std::vector <Task>& output, bool applyContext /* = true */)
     _startCount = (int) pending.size ();
 
     Eval eval;
-    eval.ambiguity (false);
     eval.addSource (domSource);
     eval.addSource (namedDates);
 
