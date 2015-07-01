@@ -54,6 +54,11 @@ public:
   void skip (const std::string&);
 
 private:
+  std::string red (const std::string&);
+  std::string green (const std::string&);
+  std::string yellow (const std::string&);
+
+private:
   int _planned;
   int _counter;
   int _passed;
