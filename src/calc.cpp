@@ -57,7 +57,6 @@ int main (int argc, char** argv)
   try
   {
     bool infix     = true;
-    bool ambiguous = false;
 
     // Add a source for constants.
     Eval e;
@@ -77,8 +76,6 @@ int main (int argc, char** argv)
                   << "  -d|--debug        Debug mode\n"
                   << "  -i|--infix        Infix expression (default)\n"
                   << "  -p|--postfix      Postfix expression\n"
-                  << "  -a|--ambiguous    Choose dates over numbers when ambiguous\n"
-                  << "  -n|--noambiguous  Choose numbers over dates when ambiguous (default)\n"
                   << "\n";
         exit (1);
       }
@@ -125,14 +122,8 @@ int main (int argc, char** argv)
         infix = true;
       else if (!strcmp (argv[i], "-p") || !strcmp (argv[i], "--postfix"))
         infix = false;
-      else if (!strcmp (argv[i], "-a") || !strcmp (argv[i], "--ambiguous"))
-        ambiguous = true;
-      else if (!strcmp (argv[i], "-n") || !strcmp (argv[i], "--noambiguous"))
-        ambiguous = false;
       else
         expression += std::string (argv[i]) + " ";
-
-    e.ambiguity (ambiguous);
 
     Variant result;
     if (infix)
