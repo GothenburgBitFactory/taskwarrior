@@ -43,7 +43,7 @@ public:
 
   enum class Type { uuid, number, hex,
                     string,
-                    list, url, pair, set, separator,
+                    url, pair, set, separator,
                     tag,
                     path,
                     substitution, pattern,

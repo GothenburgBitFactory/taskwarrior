@@ -85,7 +85,6 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
       isHexNumber    (token, type)       ||
       isNumber       (token, type)       ||
       isSeparator    (token, type)       ||
-      isList         (token, type)       ||
       isTag          (token, type)       ||
       isPath         (token, type)       ||
       isSubstitution (token, type)       ||
@@ -138,7 +137,6 @@ const std::string Lexer::typeName (const Lexer::Type& type)
   case Lexer::Type::number:       return "number";
   case Lexer::Type::hex:          return "hex";
   case Lexer::Type::string:       return "string";
-  case Lexer::Type::list:         return "list";
   case Lexer::Type::url:          return "url";
   case Lexer::Type::pair:         return "pair";
   case Lexer::Type::set:          return "set";
@@ -164,6 +162,8 @@ const std::string Lexer::typeName (const Lexer::Type& type)
 // http://en.wikipedia.org/wiki/Whitespace_character
 // Updated 2013-11-18
 // Static
+//
+// TODO This list should be derived from the Unicode database.
 bool Lexer::isWhitespace (int c)
 {
   return (c == 0x0020 ||   // space Common  Separator, space
@@ -203,6 +203,8 @@ bool Lexer::isAlpha (int c)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Digits 0-9.
+//
+// TODO This list should be derived from the Unicode database.
 bool Lexer::isDigit (int c)
 {
   return c >= 0x30 && c <= 0x39;
@@ -232,6 +234,7 @@ bool Lexer::isIdentifierNext (int c)
 {
   return c                          &&  // Include null character check.
          c != ':'                   &&  // Used in isPair.
+         c != '='                   &&  // Used in isPair.
          ! isWhitespace         (c) &&
          ! isSingleCharOperator (c);
 }
@@ -318,9 +321,11 @@ void Lexer::dequote (std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Detects characters in an input string that indicate quotes were required, or
+// escapes, to get them past the shell.
 bool Lexer::wasQuoted (const std::string& input)
 {
-  if (input.find_first_of (" \t()") != std::string::npos)
+  if (input.find_first_of (" \t()<>&~") != std::string::npos)
     return true;
 
   return false;
@@ -674,23 +679,6 @@ bool Lexer::isSeparator (std::string& token, Lexer::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Lexer::Type::list
-//   ,
-bool Lexer::isList (std::string& token, Lexer::Type& type)
-{
-  if (_eos - _cursor > 1 &&
-      _text[_cursor] == ',')
-  {
-    ++_cursor;
-    type = Lexer::Type::list;
-    token = ",";
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::url
 //   http [s] :// ...
 bool Lexer::isURL (std::string& token, Lexer::Type& type)
@@ -729,7 +717,9 @@ bool Lexer::isURL (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::pair
-//   <identifier> :|= [ <string> | <word> ]
+//   <identifier> :  [ <string> | <word> ]
+//   <identifier> =  [ <string> | <word> ]
+//   <identifier> := [ <string> | <word> ]
 bool Lexer::isPair (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
@@ -738,12 +728,13 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
   Lexer::Type ignoredType;
   if (isIdentifier (ignoredToken, ignoredType))
   {
-    // Look for rc.name[:=]value first, because '=' is allowed.
+    // Look for rc.name{:=,=,:}value first, because '=' is allowed.
     if (ignoredToken == "rc" ||
         ignoredToken.substr (0, 3) == "rc.")
     {
       if (_eos - _cursor > 1 &&
-          (_text[_cursor] == ':' || _text[_cursor] == '='))
+          (_text[_cursor] == ':' ||
+           _text[_cursor] == '='))
       {
         _cursor++;
 
@@ -1195,7 +1186,6 @@ std::string Lexer::typeToString (Lexer::Type type)
   else if (type == Lexer::Type::hex)          return std::string ("\033[38;5;7m\033[48;5;14m")   + "hex"          + "\033[0m";
   else if (type == Lexer::Type::number)       return std::string ("\033[38;5;7m\033[48;5;6m")    + "number"       + "\033[0m";
   else if (type == Lexer::Type::separator)    return std::string ("\033[38;5;7m\033[48;5;4m")    + "separator"    + "\033[0m";
-  else if (type == Lexer::Type::list)         return std::string ("\033[38;5;7m\033[48;5;4m")    + "list"         + "\033[0m";
   else if (type == Lexer::Type::url)          return std::string ("\033[38;5;7m\033[48;5;4m")    + "url"          + "\033[0m";
   else if (type == Lexer::Type::pair)         return std::string ("\033[38;5;7m\033[48;5;1m")    + "pair"         + "\033[0m";
   else if (type == Lexer::Type::set)          return std::string ("\033[38;5;15m\033[48;5;208m") + "set"          + "\033[0m";
@@ -1209,7 +1199,7 @@ std::string Lexer::typeToString (Lexer::Type type)
   else if (type == Lexer::Type::word)         return std::string ("\033[38;5;15m\033[48;5;236m") + "word"         + "\033[0m";
   else if (type == Lexer::Type::date)         return std::string ("\033[38;5;15m\033[48;5;34m")  + "date"         + "\033[0m";
   else if (type == Lexer::Type::duration)     return std::string ("\033[38;5;15m\033[48;5;34m")  + "duration"     + "\033[0m";
-  else                                         return std::string ("\033[37;41m")                 + "unknown"      + "\033[0m";
+  else                                        return std::string ("\033[37;41m")                 + "unknown"      + "\033[0m";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
