@@ -382,6 +382,29 @@ void CLI2::lexArguments ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void CLI2::demoteDOM ()
+{
+  bool changes = false;
+
+  for (auto& a : _args)
+  {
+    if (a._lextype == Lexer::Type::dom)
+    {
+      std::string canonicalized;
+      if (! canonicalize (canonicalized, "attribute", a.attribute ("raw")))
+      {
+        a._lextype = Lexer::Type::word;
+        changes = true;
+      }
+    }
+  }
+
+  if (changes)
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (dump ("CLI2::analyze demoteDOM"));
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void CLI2::handleTerminator ()
 {
   bool changes = false;
@@ -424,6 +447,7 @@ void CLI2::analyze ()
   _args.clear ();
   handleArg0 ();
   lexArguments ();
+  demoteDOM ();
   handleTerminator ();
 
   // Process _args.
