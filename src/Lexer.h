@@ -53,7 +53,6 @@ public:
 
   Lexer (const std::string&);
   ~Lexer ();
-  void ambiguity (bool);
   bool token (std::string&, Lexer::Type&);
   static std::vector <std::pair <std::string, Lexer::Type>> tokens (const std::string&);
   static std::vector <std::string> split (const std::string&);
@@ -109,7 +108,6 @@ private:
   std::string _text;
   std::size_t _cursor;
   std::size_t _eos;
-  bool        _ambiguity;
 };
 
 #endif

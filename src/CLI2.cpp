@@ -371,7 +371,6 @@ void CLI2::lexArguments ()
       std::string lexeme;
       Lexer::Type type;
       Lexer lex (_original_args[i]);
-      lex.ambiguity (false);
 
       while (lex.token (lexeme, type))
         _args.push_back (A2 (lexeme, type));
@@ -451,7 +450,6 @@ void CLI2::addFilter (const std::string& arg)
   std::string lexeme;
   Lexer::Type type;
   Lexer lex (arg);
-  lex.ambiguity (false);
 
   while (lex.token (lexeme, type))
     add (lexeme);
@@ -1592,7 +1590,6 @@ void CLI2::defaultCommand ()
         std::string lexeme;
         Lexer::Type type;
         Lexer lex (defaultCommand);
-        lex.ambiguity (false);
 
         while (lex.token (lexeme, type))
         {

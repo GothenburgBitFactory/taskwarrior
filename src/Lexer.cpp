@@ -43,19 +43,12 @@ Lexer::Lexer (const std::string& text)
 : _text (text)
 , _cursor (0)
 , _eos (text.size ())
-, _ambiguity (false)
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Lexer::~Lexer ()
 {
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void Lexer::ambiguity (bool value)
-{
-  _ambiguity = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -455,7 +448,6 @@ bool Lexer::isDate (std::string& token, Lexer::Type& type)
   {
     std::size_t iso_i = 0;
     ISO8601d iso;
-    iso.ambiguity (_ambiguity);
     if (iso.parse (_text.substr (_cursor), iso_i))
     {
       type = Lexer::Type::date;

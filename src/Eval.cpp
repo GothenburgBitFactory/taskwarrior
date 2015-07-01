@@ -126,7 +126,6 @@ void Eval::evaluateInfixExpression (const std::string& e, Variant& v) const
 {
   // Reduce e to a vector of tokens.
   Lexer l (e);
-  l.ambiguity (_ambiguity);
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
   Lexer::Type type;
@@ -154,7 +153,6 @@ void Eval::evaluatePostfixExpression (const std::string& e, Variant& v) const
 {
   // Reduce e to a vector of tokens.
   Lexer l (e);
-  l.ambiguity (_ambiguity);
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
   Lexer::Type type;
@@ -173,7 +171,6 @@ void Eval::compileExpression (const std::string& e)
 {
   // Reduce e to a vector of tokens.
   Lexer l (e);
-  l.ambiguity (_ambiguity);
   std::string token;
   Lexer::Type type;
   while (l.token (token, type))
