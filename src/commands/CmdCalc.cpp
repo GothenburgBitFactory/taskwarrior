@@ -58,7 +58,6 @@ int CmdCalc::execute (std::string& output)
   Eval e;
   e.addSource (domSource);
   e.addSource (namedDates);
-  e.ambiguity (false);  // TODO Configurable?
   e.debug (context.config.getBoolean ("debug"));
 
   // Compile all the args into one expression.
