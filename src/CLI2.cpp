@@ -347,7 +347,10 @@ void CLI2::lexArguments ()
     if (_original_args[i] == "--")
     {
       terminated = true;
-      _args.push_back (A2 (_original_args[i], Lexer::Type::separator));
+      A2 sep (_original_args[i], Lexer::Type::separator);
+      sep.tag ("INTACT");
+      sep.attribute ("N", i);
+      _args.push_back (sep);
     }
 
     // Any arguments that are after the terminator are captured as words.
@@ -355,6 +358,8 @@ void CLI2::lexArguments ()
     {
       A2 word (_original_args[i], Lexer::Type::word);
       word.tag ("TERMINATED");
+      word.tag ("INTACT");
+      word.attribute ("N", i);
       _args.push_back (word);
     }
 
@@ -362,18 +367,77 @@ void CLI2::lexArguments ()
     else if (_original_args[i].substr (0, 3) == "rc:" ||
              _original_args[i].substr (0, 3) == "rc.")
     {
-      _args.push_back (A2 (_original_args[i], Lexer::Type::pair));
+      A2 pair (_original_args[i], Lexer::Type::pair);
+      pair.tag ("INTACT");
+      pair.attribute ("N", i);
+      _args.push_back (pair);
     }
 
     // Everything else gets lexed.
     else
     {
+/*
+      if (leaveIntact (_original_args[i]))
+      {
+        A2 arg (_original_args[i], Lexer::Type::word);
+        arg.tag ("INTACT");
+        _args.push_back (arg);
+      }
+      else
+      {
+        std::string lexeme;
+        Lexer::Type type;
+        Lexer lex (_original_args[i]);
+
+        while (lex.token (lexeme, type))
+          _args.push_back (A2 (lexeme, type));
+      }
+*/
       std::string lexeme;
       Lexer::Type type;
       Lexer lex (_original_args[i]);
 
       while (lex.token (lexeme, type))
-        _args.push_back (A2 (lexeme, type));
+      {
+        // If the lexeme matches the original, tag as INTACT.
+        if (lexeme == _original_args[i])
+        {
+          A2 arg (lexeme, type);
+          arg.tag ("INTACT");
+          arg.attribute ("N", i);
+          _args.push_back (arg);
+        }
+
+        // If the lexeme is a pair, assume the whole _original_args[i] is also
+        // the same pair.
+        else if (type == Lexer::Type::pair)
+        {
+          A2 arg (_original_args[i], type);
+          arg.tag ("INTACT");
+          arg.attribute ("N", i);
+          _args.push_back (arg);
+          break;
+        }
+
+        // If the original args was not a pair, but was quoted, then leave it
+        // intact.
+        else if (Lexer::wasQuoted (_original_args[i]))
+        {
+          A2 arg (_original_args[i], type);
+          arg.tag ("INTACT");
+          arg.attribute ("N", i);
+          _args.push_back (arg);
+          break;
+        }
+
+        // Multiple lexemes.
+        else
+        {
+          A2 arg (lexeme, type);
+          arg.attribute ("N", i);
+          _args.push_back (arg);
+        }
+      }
     }
   }
 
@@ -1335,8 +1399,6 @@ void CLI2::insertIDExpr ()
   if (! _id_ranges.size () &&
       ! _uuid_list.size ())
     return;
-
-  // TODO Strip out Lexer::Type::list from between Lexer::Type::uuid's.
 
   // Find the *first* occurence of lexer type set/number/uuid, and replace it
   // with a synthesized expression. All other occurences are eaten.
