@@ -87,7 +87,6 @@ private:
   void handleArg0 ();
   void lexArguments ();
   void demoteDOM ();
-  void handleTerminator ();
   void aliasExpansion ();
   void findOverrides ();
   bool findCommand ();

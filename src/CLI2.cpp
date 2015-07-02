@@ -469,38 +469,6 @@ void CLI2::demoteDOM ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CLI2::handleTerminator ()
-{
-  bool changes = false;
-  bool terminated = false;
-  std::vector <A2> reconstructed;
-  for (auto& a : _args)
-  {
-    if (a._lextype == Lexer::Type::separator &&
-        ! terminated)
-    {
-      terminated = true;
-      changes = true;
-    }
-    else
-    {
-      if (terminated)
-        a._lextype = Lexer::Type::word;
-
-      reconstructed.push_back (a);
-    }
-  }
-
-  if (changes)
-  {
-    _args = reconstructed;
-
-    if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (dump ("CLI2::analyze handleTerminator"));
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Intended to be called after ::add() to perform the final analysis.
 void CLI2::analyze ()
 {
@@ -512,7 +480,6 @@ void CLI2::analyze ()
   handleArg0 ();
   lexArguments ();
   demoteDOM ();
-  handleTerminator ();
 
   // Process _args.
   aliasExpansion ();
