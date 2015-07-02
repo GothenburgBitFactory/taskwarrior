@@ -305,6 +305,12 @@ void CLI2::add (const std::string& argument)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Arg0 is the first argument, which is the name and potentially a relative or
+// absolute path to the invoked binary.
+//
+// The binary name is 'task', but if the binary is reported as 'cal' or
+// 'calendar' then it was invoked via symbolic link, in which case capture the
+// first argument as 'calendar'.
 void CLI2::handleArg0 ()
 {
   // Capture arg0 separately, because it is the command that was run, and could
@@ -336,108 +342,39 @@ void CLI2::handleArg0 ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// All arguments must be individually, and wholly recognized by the Lexer. Any
+// argument not recognized is considered a Lexer::Type::word.
+//
+// As a side effect, tags all arguments after a terminator ('--') with
+// TERMINATED.
 void CLI2::lexArguments ()
 {
-  // Note: Starts interating at index 1, because ::handleArg0 has already
+  // Note: Starts iterating at index 1, because ::handleArg0 has already
   //       processed it.
   bool terminated = false;
   for (unsigned int i = 1; i < _original_args.size (); ++i)
   {
-    // The terminator itself is captured.
-    if (_original_args[i] == "--")
+    std::string lexeme;
+    Lexer::Type type;
+    Lexer lex (_original_args[i]);
+    if (lex.token (lexeme, type) &&
+        lex.isEOS ())
     {
-      terminated = true;
-      A2 sep (_original_args[i], Lexer::Type::separator);
-      sep.tag ("INTACT");
-      sep.attribute ("N", i);
-      _args.push_back (sep);
-    }
+      if (type == Lexer::Type::separator)
+        terminated = true;
+      else if (terminated)
+        type = Lexer::Type::word;
 
-    // Any arguments that are after the terminator are captured as words.
-    else if (terminated)
-    {
-      A2 word (_original_args[i], Lexer::Type::word);
-      word.tag ("TERMINATED");
-      word.tag ("INTACT");
-      word.attribute ("N", i);
-      _args.push_back (word);
-    }
+      A2 a (lexeme, type);
+      if (terminated)
+        a.tag ("TERMINATED");
 
-    // rc:<file> and rc.<name>[:=]<value> argumenst are captured whole.
-    else if (_original_args[i].substr (0, 3) == "rc:" ||
-             _original_args[i].substr (0, 3) == "rc.")
-    {
-      A2 pair (_original_args[i], Lexer::Type::pair);
-      pair.tag ("INTACT");
-      pair.attribute ("N", i);
-      _args.push_back (pair);
+      _args.push_back (a);
     }
-
-    // Everything else gets lexed.
     else
     {
-/*
-      if (leaveIntact (_original_args[i]))
-      {
-        A2 arg (_original_args[i], Lexer::Type::word);
-        arg.tag ("INTACT");
-        _args.push_back (arg);
-      }
-      else
-      {
-        std::string lexeme;
-        Lexer::Type type;
-        Lexer lex (_original_args[i]);
-
-        while (lex.token (lexeme, type))
-          _args.push_back (A2 (lexeme, type));
-      }
-*/
-      std::string lexeme;
-      Lexer::Type type;
-      Lexer lex (_original_args[i]);
-
-      while (lex.token (lexeme, type))
-      {
-        // If the lexeme matches the original, tag as INTACT.
-        if (lexeme == _original_args[i])
-        {
-          A2 arg (lexeme, type);
-          arg.tag ("INTACT");
-          arg.attribute ("N", i);
-          _args.push_back (arg);
-        }
-
-        // If the lexeme is a pair, assume the whole _original_args[i] is also
-        // the same pair.
-        else if (type == Lexer::Type::pair)
-        {
-          A2 arg (_original_args[i], type);
-          arg.tag ("INTACT");
-          arg.attribute ("N", i);
-          _args.push_back (arg);
-          break;
-        }
-
-        // If the original args was not a pair, but was quoted, then leave it
-        // intact.
-        else if (Lexer::wasQuoted (_original_args[i]))
-        {
-          A2 arg (_original_args[i], type);
-          arg.tag ("INTACT");
-          arg.attribute ("N", i);
-          _args.push_back (arg);
-          break;
-        }
-
-        // Multiple lexemes.
-        else
-        {
-          A2 arg (lexeme, type);
-          arg.attribute ("N", i);
-          _args.push_back (arg);
-        }
-      }
+      A2 unknown (_original_args[i], Lexer::Type::word);
+      _args.push_back (unknown);
     }
   }
 
@@ -446,6 +383,9 @@ void CLI2::lexArguments ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Until the Lexer gains access to CLI2::_entities, it can only guess at whether
+// a command is a DOM reference. Scan all Lexer::Type::dom arguments, and demote
+// to Lexer::Type::word any unrecognized arguments.
 void CLI2::demoteDOM ()
 {
   bool changes = false;
@@ -781,6 +721,8 @@ const std::string CLI2::dump (const std::string& title) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// If any aliases are found in un-TERMINATED arguments, replace the alias with
+// a set of Lexed tokens from the configuration.
 void CLI2::aliasExpansion ()
 {
   bool changes = false;
@@ -856,6 +798,8 @@ void CLI2::aliasExpansion ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Scan all arguments that begin with either "rc:" or "rc.", extract the
+// name/values.
 void CLI2::findOverrides ()
 {
   bool changes = false;
@@ -893,6 +837,9 @@ void CLI2::findOverrides ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Scan all arguments and if any are an exact match for a command name, then
+// tag as CMD. If an argument is an exact match for an attribute, despite being
+// an inexact match for a command, then it is not a command.
 bool CLI2::findCommand ()
 {
   for (auto& a : _args)
@@ -1603,7 +1550,16 @@ void CLI2::insertJunctions ()
       context.debug (dump ("CLI2::prepareFilter insertJunctions"));
   }
 }
+
 ////////////////////////////////////////////////////////////////////////////////
+// Look for situations that require defaults:
+//
+// 1. If no command was found, and no ID/UUID, and if rc.default.command is
+//    configured, inject the lexed tokens from rc.default.command.
+//
+// 2. If no command was found, but an ID/UUID was found, then assume a command
+//    of 'information'.
+//
 void CLI2::defaultCommand ()
 {
   // Scan the top-level branches for evidence of ID, UUID, overrides and other
