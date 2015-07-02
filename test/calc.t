@@ -30,7 +30,7 @@ use warnings;
 use Test::More tests => 19;
 
 # '15min' is seen as '15', 'min', not '15min' duration.
-my $output = qx{../src/calc --debug --noambiguous '12 * 3600 + 34 * 60 + 56'};
+my $output = qx{../src/calc --debug '12 * 3600 + 34 * 60 + 56'};
 like ($output, qr/Eval literal number ↑'12'/,   'Number 12');
 like ($output, qr/Eval literal number ↑'3600'/, 'Number 3600');
 like ($output, qr/Eval literal number ↑'60'/,   'Number 60');
@@ -39,7 +39,7 @@ like ($output, qr/Eval literal number ↑'56'/,   'Number 56');
 like ($output, qr/^45296$/ms,                   'Result 45296');
 unlike ($output, qr/Error/,                     'No errors');
 
-$output = qx{../src/calc --debug --noambiguous --postfix '12 3600 * 34 60 * 56 + +'};
+$output = qx{../src/calc --debug --postfix '12 3600 * 34 60 * 56 + +'};
 like ($output, qr/Eval literal number ↑'12'/,   'Number 12');
 like ($output, qr/Eval literal number ↑'3600'/, 'Number 3600');
 like ($output, qr/Eval literal number ↑'60'/,   'Number 60');
@@ -48,7 +48,7 @@ like ($output, qr/Eval literal number ↑'56'/,   'Number 56');
 like ($output, qr/^45296$/ms,                   'Result 45296');
 unlike ($output, qr/Error/,                     'No errors');
 
-$output = qx{../src/calc --debug --noambiguous '2- -3'};
+$output = qx{../src/calc --debug '2- -3'};
 like ($output, qr/Eval literal number ↑'2'/ms,  'Number 2');
 like ($output, qr/Eval _neg_ ↓'3' → ↑'-3'/ms,   'Operator -');
 like ($output, qr/Eval literal number ↑'2'/ms,  'Number 3');
