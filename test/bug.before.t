@@ -68,22 +68,22 @@ like ($output, qr/Start\s+12\/22\/2008/, "$ut: task 1 start date as expected");
 $output = qx{../src/task rc:$rc 2 info 2>&1};
 like ($output, qr/Start\s+4\/17\/2009/, "$ut: task 2 start date as expected");
 
-$output = qx{../src/task rc:$rc ls start.before:12/1/2008 2>&1};
+$output = qx{../src/task rc:$rc ls start.before:12/1/2008 2>/dev/null};
 unlike ($output, qr/foo/, "$ut: no foo before 12/1/2008");
 unlike ($output, qr/bar/, "$ut: no bar before 12/1/2008");
-$output = qx{../src/task rc:$rc ls start.before:1/1/2009 2>&1};
+$output = qx{../src/task rc:$rc ls start.before:1/1/2009 2>/dev/null};
 like ($output, qr/foo/, "$ut: foo before 1/1/2009");
 unlike ($output, qr/bar/, "$ut: no bar before 1/1/2009");
-$output = qx{../src/task rc:$rc ls start.before:5/1/2009 2>&1};
+$output = qx{../src/task rc:$rc ls start.before:5/1/2009 2>/dev/null};
 like ($output, qr/foo/, "$ut: foo before 5/1/2009");
 like ($output, qr/bar/, "$ut: bar before 5/1/2009");
-$output = qx{../src/task rc:$rc ls start.after:12/1/2008 2>&1};
+$output = qx{../src/task rc:$rc ls start.after:12/1/2008 2>/dev/null};
 like ($output, qr/foo/, "$ut: foo after 12/1/2008");
 like ($output, qr/bar/, "$ut: bar after 12/1/2008");
-$output = qx{../src/task rc:$rc ls start.after:1/1/2009 2>&1};
+$output = qx{../src/task rc:$rc ls start.after:1/1/2009 2>/dev/null};
 unlike ($output, qr/foo/, "$ut: no foo after 1/1/2009");
 like ($output, qr/bar/, "$ut: bar after 1/1/2009");
-$output = qx{../src/task rc:$rc ls start.after:5/1/2009 2>&1};
+$output = qx{../src/task rc:$rc ls start.after:5/1/2009 2>/dev/null};
 unlike ($output, qr/foo/, "$ut: no foo after 5/1/2009");
 unlike ($output, qr/bar/, "$ut: no bar after 5/1/2009");
 
