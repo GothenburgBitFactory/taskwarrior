@@ -1,92 +1,91 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 19;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'default.rc')
-{
-  print $fh "data.location=.\n",
-            "default.command=list\n",
-            "default.project=PROJECT\n",
-            "uda.priority.default=M\n",
-            "default.due=eom\n",
-            "dateformat=m/d/Y\n";
-  close $fh;
-}
 
-# Set up a default command, project and priority.
-qx{../src/task rc:default.rc add all defaults 2>&1};
-my $output = qx{../src/task rc:default.rc list 2>&1};
-like ($output, qr/ all defaults/, 'task added');
-like ($output, qr/ PROJECT /,     'default project added');
-like ($output, qr/ M /,           'default priority added');
-like ($output, qr/\//,            'default due added');
-unlink 'pending.data';
+class TestDefaults(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("default.command",      "list")
+        cls.t.config("default.project",      "PROJECT")
+        cls.t.config("uda.priority.default", "M")
+        cls.t.config("default.due",          "eom")
 
-qx{../src/task rc:default.rc add project:specific priority:L due:eoy all specified 2>&1};
-$output = qx{../src/task rc:default.rc list 2>&1};
-like ($output, qr/ all specified/, 'task added');
-like ($output, qr/ specific /,     'project specified');
-like ($output, qr/ L /,            'priority specified');
-like ($output, qr/\//,             'due specified');
-unlink 'pending.data';
+    def test_all_defaults(self):
+        """Verify all defaults are emplyoed"""
+        self.t("add all defaults")
+        code, out, err = self.t("export")
+        self.assertIn('"description":"all defaults"', out)
+        self.assertIn('"project":"PROJECT"', out)
+        self.assertIn('"priority":"M"', out)
+        self.assertIn('"due":"', out)
 
-qx{../src/task rc:default.rc add project:specific project specified 2>&1};
-$output = qx{../src/task rc:default.rc list 2>&1};
-like ($output, qr/ project specified/, 'task added');
-like ($output, qr/ specific /,         'project specified');
-like ($output, qr/ M /,                'default priority added');
-like ($output, qr/\//,                 'default due added');
-unlink 'pending.data';
+    def test_all_specified(self):
+        self.t("add project:specific priority:L due:eoy all specified")
+        code, out, err = self.t("export")
+        self.assertIn('"description":"all specified"', out)
+        self.assertIn('"project":"specific"', out)
+        self.assertIn('"priority":"L"', out)
+        self.assertIn('"due":"', out)
 
-qx{../src/task rc:default.rc add priority:L priority specified 2>&1};
-$output = qx{../src/task rc:default.rc list 2>&1};
-like ($output, qr/ priority specified/, 'task added');
-like ($output, qr/ PROJECT /,           'default project added');
-like ($output, qr/ L /,                 'priority specified');
-like ($output, qr/\//,                  'default due added');
+    def test_project_specified(self):
+        self.t("add project:specific project specified")
+        code, out, err = self.t("export")
+        self.assertIn('"description":"project specified"', out)
+        self.assertIn('"project":"specific"', out)
+        self.assertIn('"priority":"M"', out)
+        self.assertIn('"due":"', out)
 
-$output = qx{../src/task rc:default.rc 2>&1};
-like ($output, qr/1 .+ L PROJECT .+ priority specified/, 'default command worked');
+    def test_priority_specified(self):
+        self.t("add priority:L priority specified")
+        code, out, err = self.t("export")
+        self.assertIn('"description":"priority specified"', out)
+        self.assertIn('"project":"PROJECT"', out)
+        self.assertIn('"priority":"L"', out)
+        self.assertIn('"due":"', out)
 
-qx{../src/task rc:default.rc add project:HOME priority:M due:tomorrow all specified 2>&1};
-qx{echo 'y' | ../src/task rc:default.rc config default.command 'list priority:M' 2>&1};
-$output = qx{../src/task rc:default.rc 2>&1};
-like   ($output, qr/ M /, 'priority:M included in default command');
-unlike ($output, qr/ L /, 'priority:L excluded from default command');
+    def test_default_command(self):
+        self.t("add foo")
+        code, out, err = self.t("")
+        self.assertIn("foo", out)
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data default.rc);
-exit 0;
 
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
