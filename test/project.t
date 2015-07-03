@@ -194,6 +194,22 @@ class TestBug299(TestCase):
         self.assertRegexpMatches(out, "three.*baz")
 
 
+class TestBug555(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_log_with_project_segfault(self):
+        """log with a project causes a segfault
+
+        Reported in bug 555
+        """
+        code, out, err = self.t(("log", "description", "project:p"))
+
+        self.assertNotIn("Segmentation fault", out)
+        self.assertNotIn("Segmentation fault", err)
+        self.assertIn("Logged task", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
