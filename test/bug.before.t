@@ -40,50 +40,50 @@ class TestBefore(TestCase):
     def setUpClass(cls):
         """Executed once before any test in the class"""
         cls.t = Task()
-        cls.t(('add', 'foo', 'entry:2008-12-22', 'start:2008-12-22'))
-        cls.t(('add', 'bar', 'entry:2009-04-17', 'start:2009-04-17'))
+        cls.t('add foo entry:2008-12-22 start:2008-12-22')
+        cls.t('add bar entry:2009-04-17 start:2009-04-17')
 
     def test_correctly_recorded_start(self):
         """Verify start dates properly recorded"""
-        code, out, err = self.t(("_get", "1.start"))
+        code, out, err = self.t("_get 1.start")
         self.assertEqual(out, "2008-12-22T00:00:00\n", "1.start is 2008-12-22T00:00:00")
 
-        code, out, err = self.t(("_get", "2.start"))
+        code, out, err = self.t("_get 2.start")
         self.assertEqual(out, "2009-04-17T00:00:00\n", "2.start is 2009-04-17T00:00:00")
 
     def test_before_none(self):
         """Verify start.before:2008-12-01 yields nothing"""
-        code, out, err = self.t(("start.before:2008-12-01", "_ids"))
+        code, out, err = self.t("start.before:2008-12-01 _ids")
         self.assertNotIn("1", out)
         self.assertNotIn("2", out)
 
     def test_after_none(self):
         """Verify start.after:2009-05-01 yields nothing"""
-        code, out, err = self.t(("start.after:2009-05-01", "_ids"))
+        code, out, err = self.t("start.after:2009-05-01 _ids")
         self.assertNotIn("1", out)
         self.assertNotIn("2", out)
 
     def test_before_a(self):
         """Verify start.before:2009-01-01 yields '1'"""
-        code, out, err = self.t(("start.before:2009-01-01", "_ids"))
+        code, out, err = self.t("start.before:2009-01-01 _ids")
         self.assertIn("1", out)
         self.assertNotIn("2", out)
 
     def test_before_b(self):
         """Verify start.before:2009-05-01 yields '1' and '2'"""
-        code, out, err = self.t(("start.before:2009-05-01", "_ids"))
+        code, out, err = self.t("start.before:2009-05-01 _ids")
         self.assertIn("1", out)
         self.assertIn("2", out)
 
     def test_after_a(self):
         """Verify start.after:2008-12-01 yields '1' and '2'"""
-        code, out, err = self.t(("start.after:2008-12-01", "_ids"))
+        code, out, err = self.t("start.after:2008-12-01 _ids")
         self.assertIn("1", out)
         self.assertIn("2", out)
 
     def test_after_b(self):
         """Verify start.after:2009-01-01 yields '2'"""
-        code, out, err = self.t(("start.after:2009-01-01", "_ids"))
+        code, out, err = self.t("start.after:2009-01-01 _ids")
         self.assertNotIn("1", out)
         self.assertIn("2", out)
 

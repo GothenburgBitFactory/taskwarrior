@@ -43,15 +43,15 @@ class TestPrepend(TestCase):
 
     def test_prepend(self):
         """verify prepend command"""
-        self.t(("add", "bar"))
-        self.t(("1", "prepend", "foo"))
-        code, out, err = self.t(("_get", "1.description"))
+        self.t("add bar")
+        self.t("1 prepend foo")
+        code, out, err = self.t("_get 1.description")
         self.assertIn("foo bar", out)
 
     def test_prepend_nothing(self):
         """verify prepend of nothing is an error"""
-        self.t(("add", "bar"))
-        code, out, err = self.t.runError(("1", "prepend"))
+        self.t("add bar")
+        code, out, err = self.t.runError("1 prepend")
 
 
 if __name__ == "__main__":
