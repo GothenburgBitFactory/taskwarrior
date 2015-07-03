@@ -394,9 +394,12 @@ Enables or disables access to Taskwarrior internals and task metadata on the
 command line. Defaults to on.
 
 .TP
-.B json.array=off
-Determines whether the query command encloses the JSON output in '[...]' to
-create a properly-formed JSON array. Defaults to off.
+.B json.array=on
+Determines whether the export command encloses the JSON output in '[...]' and
+adds ',' after each exported task object to create a properly-formed JSON
+array.
+With json.array=off, export writes raw JSON objects to STDOUT, one per line.
+Defaults to on.
 
 .TP
 .B _forcecolor=no

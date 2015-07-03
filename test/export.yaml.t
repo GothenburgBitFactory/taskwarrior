@@ -44,7 +44,8 @@ $source_dir =~ s{[^/]+$}{..};
 if (open my $fh, '>', $rc)
 {
   print $fh "data.location=.\n",
-            "verbose=no\n";
+            "verbose=no\n",
+            "json.array=off";
   close $fh;
 }
 

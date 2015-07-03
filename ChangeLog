@@ -25,6 +25,8 @@
 - Enable "task sync" support by default.  "cmake -DENABLE_SYNC=OFF" allows
   disabling it and building Taskwarrior without libgnutls available.
 - An attempt to add or remove a virtual tag is now an error (thanks to Scott M).
+- json.array now defaults to "on", making "export" output a JSON array that
+  can be parsed by most JSON libraries without changes.
 
 ------ current release ---------------------------
 

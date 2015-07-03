@@ -48,7 +48,7 @@ class TestExportCommand(TestCase):
         self.t(('add', 'test'))
 
     def export(self, identifier):
-        return json.loads(self.t((str(identifier), 'export'))[1].strip())
+        return json.loads(self.t((str(identifier), 'rc.json.array=off', 'export'))[1].strip())
 
     def assertType(self, value, type):
         self.assertEqual(isinstance(value, type), True)
