@@ -46,10 +46,10 @@ class TestBefore(TestCase):
     def test_correctly_recorded_start(self):
         """Verify start dates properly recorded"""
         code, out, err = self.t("_get 1.start")
-        self.assertEqual(out, "2008-12-22T00:00:00\n", "1.start is 2008-12-22T00:00:00")
+        self.assertEqual(out, "2008-12-22T00:00:00\n")
 
         code, out, err = self.t("_get 2.start")
-        self.assertEqual(out, "2009-04-17T00:00:00\n", "2.start is 2009-04-17T00:00:00")
+        self.assertEqual(out, "2009-04-17T00:00:00\n")
 
     def test_before_none(self):
         """Verify start.before:2008-12-01 yields nothing"""
