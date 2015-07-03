@@ -33,10 +33,9 @@ import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
-from basetest import Taskd, ServerTestCase
 
 
-class TestBugNumber(TestCase):
+class TestDateISOAndEpoch(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
