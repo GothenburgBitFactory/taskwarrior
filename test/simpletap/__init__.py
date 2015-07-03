@@ -27,10 +27,12 @@
 
 # Original version by Renato Alves
 
+import os
 import sys
 import unittest
 import warnings
 import traceback
+import inspect
 
 
 def color(text, c):
@@ -142,18 +144,22 @@ class TAPTestResult(unittest.result.TestResult):
                 trace_msg = " on file {0} line {1} in {2}: '{3}'".format(*t)
                 break
 
+        # Retrieve the name of the file containing the test
+        filename = os.path.basename(inspect.getfile(test.__class__))
+
         if status:
+
             if status == "SKIP":
-                self.stream.writeln("{0} {1} - {2}".format(
-                    color("skip", "yellow"), self.testsRun, desc)
+                self.stream.writeln("{0} {1} - {2}: {3}".format(
+                    color("skip", "yellow"), self.testsRun, filename, desc)
                 )
             elif status == "EXPECTED_FAILURE":
-                self.stream.writeln("{0} {1} - {2}".format(
-                    color("skip", "yellow"), self.testsRun, desc)
+                self.stream.writeln("{0} {1} - {2}: {3}".format(
+                    color("skip", "yellow"), self.testsRun, filename, desc)
                 )
             else:
-                self.stream.writeln("{0} {1} - {2}".format(
-                    color("not ok", "red"), self.testsRun, desc)
+                self.stream.writeln("{0} {1} - {2}: {3}".format(
+                    color("not ok", "red"), self.testsRun, filename, desc)
                 )
 
             if exception_name:
@@ -171,8 +177,8 @@ class TAPTestResult(unittest.result.TestResult):
                 line = line.replace("\\n", "\n# ")
                 self.stream.writeln("#{0}{1}".format(padding, line))
         else:
-            self.stream.writeln("{0} {1} - {2}".format(
-                color("ok", "green"), self.testsRun, desc)
+            self.stream.writeln("{0} {1} - {2}: {3}".format(
+                color("ok", "green"), self.testsRun, filename, desc)
             )
 
         # Flush all buffers to stdout
