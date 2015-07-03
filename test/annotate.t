@@ -128,6 +128,21 @@ class TestAnnotate(TestCase):
                                  msg="dateformat - first  annotation task 3")
 
 
+class TestBug495(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_double_hyphen_annotation(self):
+        """double hyphen mishandled for annotations"""
+        # NOTE: originally Bug #495
+        self.t(("add", "foo"))
+        self.t(("1", "annotate", "This -- is -- a -- test"))
+
+        code, out, err = self.t(("long",))
+        # Double hyphens preserved except the first ones
+        self.assertIn("This is -- a -- test", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
