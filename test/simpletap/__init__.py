@@ -66,7 +66,7 @@ class TAPTestResult(unittest.result.TestResult):
         if self.descriptions and doc_first_line:
             return doc_first_line
         else:
-            return str(test)
+            return "{0} ({1})".format(test._testMethodName, test.__class__.__name__)
 
     def startTestRun(self, total="unk"):
         self.stream.writeln("1..{0}".format(total))
