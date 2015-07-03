@@ -210,6 +210,25 @@ class TestBug555(TestCase):
         self.assertIn("Logged task", out)
 
 
+class TestBug605(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_delete_task_for_empty_project(self):
+        """Project correctly reports % completion when empty or all tasks completed
+
+        Reported in bug 605
+        """
+        self.t("add One project:p1")
+
+        code, out, err = self.t(("1", "delete"), input="y")
+        self.assertIn("is 0% complete", err)
+
+        self.t("add Two project:p1")
+        code, out, err = self.t(("2", "done"))
+        self.assertIn("is 100% complete", err)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
