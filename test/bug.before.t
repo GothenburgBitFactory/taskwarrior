@@ -93,10 +93,3 @@ if __name__ == "__main__":
     unittest.main(testRunner=TAPTestRunner())
 
 # vim: ai sts=4 et sw=4
-
-x="""
-$output = qx{../src/task rc:$rc ls start.after:1/1/2009 2>/dev/null};
-unlike ($output, qr/foo/, "$ut: no foo after 1/1/2009");
-like ($output, qr/bar/, "$ut: bar after 1/1/2009");
-
-"""
