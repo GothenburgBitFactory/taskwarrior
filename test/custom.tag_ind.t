@@ -1,62 +1,67 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 5;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'custom.rc')
-{
-  print $fh "data.location=.\n",
-            "report.foo.description=DESC\n",
-            "report.foo.columns=id,tags.indicator\n",
-            "report.foo.labels=ID,T\n",
-            "report.foo.sort=id+\n";
-  close $fh;
-}
 
-# Generate the usage screen, and locate the custom report on it.
-qx{../src/task rc:custom.rc add foo +tag 2>&1};
-qx{../src/task rc:custom.rc add bar 2>&1};
-my $output = qx{../src/task rc:custom.rc foo 2>&1};
-like ($output,   qr/ID.+T/,  'Tag indicator heading');
-like ($output,   qr/1\s+\+/, 'Tag indicator t1');
-unlike ($output, qr/2\s+\+/, 'No tag indicator t2');
+class TestCustomTagIndicator(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("report.foo.description", "DESC")
+        cls.t.config("report.foo.columns",     "id,tags.indicator")
+        cls.t.config("report.foo.labels",      "ID,T")
+        cls.t.config("report.foo.sort",        "id+")
 
-$output = qx{../src/task rc:custom.rc foo rc.tag.indicator=TAG 2>&1};
-like ($output,   qr/1\s+TAG/, 'Custom ag indicator t1');
-unlike ($output, qr/2\s+TAG/, 'No custom tag indicator t2');
+        cls.t("add foo +tag")
+        cls.t("add bar")
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data custom.rc);
-exit 0;
+    def test_default_indicator(self):
+        """Verify default tag indicator (+) is shown"""
+        code, out, err = self.t("foo")
+        self.assertRegexpMatches(out, "ID.+T")
+        self.assertRegexpMatches(out, "1\s+\+")
 
+    def test_custom_indicator(self):
+        """Verify custom tag indicator (TAG) is shown"""
+        code, out, err = self.t("rc.tag.indicator:TAG foo")
+        self.assertRegexpMatches(out, "1\s+TAG")
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
