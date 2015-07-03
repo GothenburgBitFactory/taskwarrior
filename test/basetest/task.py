@@ -157,6 +157,25 @@ class Task(object):
 
         return json.loads(out)
 
+    @staticmethod
+    def _split_string_args_if_string(args):
+        """Helper function to parse and split into arguments a single string
+        argument. The string is literally the same as if written in the shell.
+        """
+        # Enable nicer-looking calls by allowing plain strings
+        try:
+            # Python 2.x
+            if isinstance(args, basestring):
+                import shlex
+                args = shlex.split(args)
+        except NameError:
+            # Python 3.x
+            if isinstance(args, str):
+                import shlex
+                args = shlex.split(args)
+
+        return args
+
     def runSuccess(self, args=(), input=None, merge_streams=False,
                    timeout=5):
         """Invoke task with given arguments and fail if exit code != 0
@@ -179,18 +198,7 @@ class Task(object):
         # Create a copy of the command
         command = self._command[:]
 
-        # Enable nicer-looking calls by allowing plain strings
-        try:
-            # Python 2.x
-            if isinstance(args, basestring):
-                import shlex
-                args = shlex.split(args)
-        except NameError:
-            # Python 3.x
-            if isinstance(args, str):
-                import shlex
-                args = shlex.split(args)
-
+        args = self._split_string_args_if_string(args)
         command.extend(args)
 
         output = run_cmd_wait_nofail(command, input,
@@ -223,6 +231,8 @@ class Task(object):
         """
         # Create a copy of the command
         command = self._command[:]
+
+        args = self._split_string_args_if_string(args)
         command.extend(args)
 
         output = run_cmd_wait_nofail(command, input,
