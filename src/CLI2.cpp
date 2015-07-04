@@ -365,7 +365,7 @@ void CLI2::lexArguments ()
         )
        )
     {
-      if (type == Lexer::Type::separator)
+      if (! terminated && type == Lexer::Type::separator)
         terminated = true;
       else if (terminated)
         type = Lexer::Type::word;
@@ -530,6 +530,9 @@ void CLI2::prepareFilter (bool applyContext)
 
   for (auto& a : _args)
   {
+    if (a._lextype == Lexer::Type::separator)
+      continue;
+
     if (a.hasTag ("CMD"))
     {
       foundCommand = true;
