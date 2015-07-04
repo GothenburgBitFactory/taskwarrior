@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (818);
+  UnitTest t (806);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -213,8 +213,6 @@ int main (int argc, char** argv)
     { "+tag",                                         { { "+tag",                                         Lexer::Type::tag          }, NO, NO, NO, NO }, },
     { "-tag",                                         { { "-tag",                                         Lexer::Type::tag          }, NO, NO, NO, NO }, },
     { "+@tag",                                        { { "+@tag",                                        Lexer::Type::tag          }, NO, NO, NO, NO }, },
-    { "+'tag 1'",                                     { { "+tag 1",                                       Lexer::Type::tag          }, NO, NO, NO, NO }, },
-    { "'+tag 1'",                                     { { "+tag 1",                                       Lexer::Type::tag          }, NO, NO, NO, NO }, },
 
     // Path
     { "/long/path/to/file.txt",                       { { "/long/path/to/file.txt",                       Lexer::Type::path         }, NO, NO, NO, NO }, },
