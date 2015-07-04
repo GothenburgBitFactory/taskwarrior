@@ -43,6 +43,7 @@ public:
   void set_default_time (int, int, int);
 
 private:
+  bool parse_date_time     (Nibbler&);
   bool parse_date_time_ext (Nibbler&);
   bool parse_date_ext      (Nibbler&);
   bool parse_off_ext       (Nibbler&);

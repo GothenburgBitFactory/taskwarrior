@@ -48,7 +48,9 @@ ISO8601d::operator time_t () const
 ////////////////////////////////////////////////////////////////////////////////
 // Supported:
 //
-//    result       ::= date-ext 'T' time-ext 'Z'              # UTC
+//    result       ::= date 'T' time 'Z'                      # UTC
+//                   | date 'T' time                          # Local
+//                   | date-ext 'T' time-ext 'Z'              # UTC
 //                   | date-ext 'T' time-ext offset-ext       # Specified TZ
 //                   | date-ext 'T' time-ext                  # Local
 //                   | date-ext                               # Local
@@ -93,7 +95,8 @@ bool ISO8601d::parse (const std::string& input, std::string::size_type& start)
   auto i = start;
   Nibbler n (input.substr (i));
 
-  if (parse_date_time_ext (n)             ||   // Most complex first.
+  if (parse_date_time     (n)             ||   // Most complex first.
+      parse_date_time_ext (n)             ||
       parse_date_ext      (n)             ||
       parse_time_utc_ext  (n)             ||
       parse_time_off_ext  (n)             ||
@@ -133,6 +136,39 @@ void ISO8601d::clear ()
 void ISO8601d::set_default_time (int hours, int minutes, int seconds)
 {
   _default_seconds = (hours * 3600) + (minutes * 60) + seconds;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ISO8601d::parse_date_time (Nibbler& n)
+{
+  n.save ();
+  int year, month, day, hour, minute, second;
+  if (n.getDigit4 (year)   &&
+      n.getDigit2 (month)  &&
+      n.getDigit2 (day)    &&
+      n.skip      ('T')    &&
+      n.getDigit2 (hour)   &&
+      n.getDigit2 (minute) &&
+      n.getDigit2 (second))
+  {
+    if (n.skip ('Z'))
+      _utc = true;
+
+    _year    = year;
+    _month   = month;
+    _day     = day;
+    _seconds = (((hour * 60) + minute) * 60) + second;
+
+    return true;
+  }
+
+  _year    = 0;
+  _month   = 0;
+  _day     = 0;
+  _seconds = 0;
+
+  n.restore ();
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
