@@ -54,16 +54,16 @@ class TestAnnotate(TestCase):
         #
         # 4 tasks
 
-        self.t(("add", "one"))
-        self.t(("add", "two"))
-        self.t(("add", "three"))
-        self.t(("add", "four"))
-        self.t(("1", "annotate", "foo1"))
-        self.t(("1", "annotate", "foo2"))
-        self.t(("1", "annotate", "foo3"))
-        self.t(("2", "annotate", "bar1"))
-        self.t(("2", "annotate", "bar2"))
-        self.t(("3", "annotate", "baz1"))
+        self.t("add one")
+        self.t("add two")
+        self.t("add three")
+        self.t("add four")
+        self.t("1 annotate foo1")
+        self.t("1 annotate foo2")
+        self.t("1 annotate foo3")
+        self.t("2 annotate bar1")
+        self.t("2 annotate bar2")
+        self.t("3 annotate baz1")
 
     def assertTasksExist(self, out):
         self.assertIn("1 one", out)
@@ -78,12 +78,12 @@ class TestAnnotate(TestCase):
         # NOTE: Use 'rrr' to guarantee a unique report name.  Using 'r'
         # conflicts with 'recurring'.
         self.t.config("report.rrr.description", "rrr")
-        self.t.config("report.rrr.columns", "id,description")
-        self.t.config("report.rrr.sort", "id+")
-        self.t.config("dateformat", "m/d/Y")
-        self.t.config("color", "off")
+        self.t.config("report.rrr.columns",     "id,description")
+        self.t.config("report.rrr.sort",        "id+")
+        self.t.config("dateformat",             "m/d/Y")
+        self.t.config("color",                  "off")
 
-        code, out, err = self.t(("rrr",))
+        code, out, err = self.t("rrr")
 
         self.assertTasksExist(out)
 
@@ -106,11 +106,11 @@ class TestAnnotate(TestCase):
         # NOTE: Use 'rrr' to guarantee a unique report name.  Using 'r'
         # conflicts with 'recurring'.
         self.t.config("report.rrr.description", "rrr")
-        self.t.config("report.rrr.columns", "id,description")
-        self.t.config("report.rrr.sort", "id+")
-        self.t.config("dateformat.annotation", "yMD HNS")
+        self.t.config("report.rrr.columns",     "id,description")
+        self.t.config("report.rrr.sort",        "id+")
+        self.t.config("dateformat.annotation",  "yMD HNS")
 
-        code, out, err = self.t(("rrr",))
+        code, out, err = self.t("rrr")
 
         self.assertTasksExist(out)
 
@@ -135,12 +135,12 @@ class TestBug495(TestCase):
     def test_double_hyphen_annotation(self):
         """double hyphen mishandled for annotations"""
         # NOTE: originally Bug #495
-        self.t(("add", "foo"))
-        self.t(("1", "annotate", "This -- is -- a -- test"))
+        self.t("add foo")
+        self.t("1 annotate This -- is -- a -- test")
 
-        code, out, err = self.t(("long",))
         # Double hyphens preserved except the first ones
-        self.assertIn("This is -- a -- test", out)
+        code, out, err = self.t("_get 1.annotations.1.description")
+        self.assertEqual("This is -- a -- test\n", out)
 
 
 if __name__ == "__main__":
