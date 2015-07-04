@@ -42,59 +42,30 @@ class TestArgs(TestCase):
 
     def test_dash_dash_argument(self):
         """Test the -- argument"""
-        self.t(("add", "project:p", "pri:H", "+tag", "foo"))
+        self.t("add project:p pri:H +tag foo")
 
-        code, out, err = self.t(("info", "1"))
-        self.assertRegexpMatches(
-            out,
-            "Description\s+foo\n",
-            msg='add project:p pri:H +tag foo',
-        )
+        code, out, err = self.t("_get 1.description")
+        self.assertIn("foo\n", out, msg='add project:p pri:H +tag foo')
 
-        self.t(("1", "modify", "project:p", "pri:H", "+tag", "--", "foo"))
+        self.t("1 modify project:p pri:H +tag -- foo")
+        code, out, err = self.t("_get 1.description")
+        self.assertIn("foo\n", out, msg='add project:p pri:H +tag -- foo')
 
-        code, out, err = self.t(("info", "1"))
-        self.assertRegexpMatches(
-            out,
-            "Description\s+foo\n",
-            msg='1 modify project:p pri:H +tag -- foo',
-        )
+        self.t("1 modify project:p pri:H -- +tag foo")
+        code, out, err = self.t("_get 1.description")
+        self.assertIn("+tag foo\n", out, msg='add project:p pri:H -- +tag foo')
 
-        self.t(("1", "modify", "project:p", "pri:H", "--", "+tag", "foo"))
+        self.t("1 modify project:p -- pri:H +tag foo")
+        code, out, err = self.t("_get 1.description")
+        self.assertIn("pri:H +tag foo\n", out, msg='add project:p -- pri:H +tag foo')
 
-        code, out, err = self.t(("info", "1"))
-        self.assertRegexpMatches(
-            out,
-            "Description\s+\+tag\sfoo\n",
-            msg='1 modify project:p pri:H -- +tag foo',
-        )
+        self.t("1 modify -- project:p pri:H +tag foo")
+        code, out, err = self.t("_get 1.description")
+        self.assertIn("project:p pri:H +tag foo\n", out, msg='add -- project:p pri:H +tag foo')
 
-        self.t(("1", "modify", "project:p", "--", "pri:H", "+tag", "foo"))
-
-        code, out, err = self.t(("info", "1"))
-        self.assertRegexpMatches(
-            out,
-            "Description\s+pri:H\s\+tag\sfoo\n",
-            msg='1 modify project:p -- pri:H +tag foo',
-        )
-
-        self.t(("1", "modify", "--", "project:p", "pri:H", "+tag", "foo"))
-
-        code, out, err = self.t(("info", "1"))
-        self.assertRegexpMatches(
-            out,
-            "Description\s+project:p\spri:H\s\+tag\sfoo\n",
-            msg='1 modify project:p -- pri:H +tag foo',
-        )
-
-        self.t(("1", "modify", "--", "project:p", "pri:H", "+tag", "--"))
-
-        code, out, err = self.t(("info", "1"))
-        self.assertRegexpMatches(
-            out,
-            "Description\s+project:p\spri:H\s\+tag\s--\n",
-            msg='1 modify project:p -- pri:H +tag foo --',
-        )
+        self.t("1 modify -- project:p pri:H +tag --")
+        code, out, err = self.t("_get 1.description")
+        self.assertIn("project:p pri:H +tag foo --\n", out, msg='add -- project:p pri:H +tag --')
 
 
 if __name__ == "__main__":
