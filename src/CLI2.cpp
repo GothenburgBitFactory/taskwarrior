@@ -354,11 +354,16 @@ void CLI2::lexArguments ()
   bool terminated = false;
   for (unsigned int i = 1; i < _original_args.size (); ++i)
   {
+    bool quoted = Lexer::wasQuoted (_original_args[i]);
+
     std::string lexeme;
     Lexer::Type type;
     Lexer lex (_original_args[i]);
     if (lex.token (lexeme, type) &&
-        lex.isEOS ())
+        (lex.isEOS () ||                        // Token goes to EOS
+        (quoted && type == Lexer::Type::pair)   // Quoted pairs automatically go to EOS
+        )
+       )
     {
       if (type == Lexer::Type::separator)
         terminated = true;
@@ -368,12 +373,17 @@ void CLI2::lexArguments ()
       A2 a (lexeme, type);
       if (terminated)
         a.tag ("TERMINATED");
+      if (quoted)
+        a.tag ("QUOTED");
 
       _args.push_back (a);
     }
     else
     {
       A2 unknown (_original_args[i], Lexer::Type::word);
+      if (lex.wasQuoted (_original_args[i]))
+        unknown.tag ("QUOTED");
+
       _args.push_back (unknown);
     }
   }
