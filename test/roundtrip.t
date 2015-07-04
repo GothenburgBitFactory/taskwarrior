@@ -44,7 +44,8 @@ if (open my $fh, '>', $rc)
             "verbose=off\n",
             "confirmation=no\n",
             "defaultwidth=100\n",
-            "dateformat=m/d/Y\n";
+            "dateformat=m/d/Y\n",
+            "json.array=off";
   close $fh;
 }
 
