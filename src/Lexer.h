@@ -51,11 +51,9 @@ public:
                     dom, identifier, word,
                     date, duration };
 
-  Lexer ();
   Lexer (const std::string&);
   ~Lexer ();
   bool token (std::string&, Lexer::Type&);
-  Lexer::Type token (const std::string&);
   static std::vector <std::pair <std::string, Lexer::Type>> tokens (const std::string&);
   static std::vector <std::string> split (const std::string&);
   static std::string typeToString (Lexer::Type);
@@ -104,31 +102,6 @@ public:
   bool isIdentifier   (std::string&, Lexer::Type&);
   bool isWord         (std::string&, Lexer::Type&);
   bool isContiguous   (std::string&, Lexer::Type&);
-
-  // Token Classifiers.
-/*
-  bool isString       (const std::string&);
-  bool isDate         (const std::string&);
-  bool isDuration     (const std::string&);
-  bool isUUID         (const std::string&);
-  bool isNumber       (const std::string&);
-  bool isHexNumber    (const std::string&);
-  bool isSeparator    (const std::string&);
-  bool isURL          (const std::string&);
-  bool isPair         (const std::string&);
-  bool isSet          (const std::string&);
-*/
-  bool isTag          (const std::string&);
-/*
-  bool isPath         (const std::string&);
-  bool isSubstitution (const std::string&);
-  bool isPattern      (const std::string&);
-  bool isOperator     (const std::string&);
-  bool isDOM          (const std::string&);
-  bool isIdentifier   (const std::string&);
-  bool isWord         (const std::string&);
-  bool isContiguous   (const std::string&);
-*/
 
 private:
   std::string _text;
