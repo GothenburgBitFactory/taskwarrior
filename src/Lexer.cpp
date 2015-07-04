@@ -838,7 +838,7 @@ bool Lexer::isTag (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
-  // Lookbehind: ^ | '(' | ')' | <isWhiteSpace>
+  // Lookbehind: Assert ^ or preceded by whitespace, (, or ).
   if (marker > 0                         &&
       ! isWhitespace (_text[marker - 1]) &&
       _text[marker - 1] != '('           &&
