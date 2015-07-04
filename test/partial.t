@@ -42,23 +42,14 @@ class TestPartialMatch(TestCase):
 
     def test_partial_date_match_spaced(self):
         """Partial match for dates: today = now --> true"""
-        code, out, err = self.t(('calc', 'today = now'))
+        code, out, err = self.t('calc today = now')
         self.assertIn('true', out)
 
     def test_exact_date_match_spaced(self):
         """Exact match for dates: today == now --> false"""
-        code, out, err = self.t(('calc', 'today == now'))
+        code, out, err = self.t('calc today == now')
         self.assertIn('false', out)
 
-    def test_partial_date_match(self):
-        """Partial match for dates: today=now --> true"""
-        code, out, err = self.t(('calc', 'today=now'))
-        self.assertIn('true', out)
-
-    def test_exact_date_match(self):
-        """Exact match for dates: today==now --> false"""
-        code, out, err = self.t(('calc', 'today==now'))
-        self.assertIn('false', out)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
