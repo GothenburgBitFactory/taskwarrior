@@ -63,9 +63,9 @@ class TestArgs(TestCase):
         code, out, err = self.t("_get 1.description")
         self.assertIn("project:p pri:H +tag foo\n", out, msg='add -- project:p pri:H +tag foo')
 
-        self.t("1 modify -- project:p pri:H +tag --")
+        self.t("1 modify -- project:p pri:H +tag foo --")
         code, out, err = self.t("_get 1.description")
-        self.assertIn("project:p pri:H +tag foo --\n", out, msg='add -- project:p pri:H +tag --')
+        self.assertIn("project:p pri:H +tag foo --\n", out, msg='add -- project:p pri:H +tag foo --')
 
 
 if __name__ == "__main__":
