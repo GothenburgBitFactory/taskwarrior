@@ -39,6 +39,14 @@ std::string Lexer::dateFormat = "";
 bool Lexer::isoEnabled = true;
 
 ////////////////////////////////////////////////////////////////////////////////
+Lexer::Lexer ()
+: _text ("")
+, _cursor (0)
+, _eos (0)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Lexer::Lexer (const std::string& text)
 : _text (text)
 , _cursor (0)
@@ -95,6 +103,35 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
     return true;
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Classify the whole token.
+Lexer::Type Lexer::token (const std::string& token)
+{
+/*
+       if (isString       (token, '\'')) return Lexer::Type:string;
+  else if (isString       (token, '"'))  return Lexer::Type:string;
+  else if (isDate         (token))       return Lexer::Type:date;
+  else if (isDuration     (token))       return Lexer::Type:duration;
+  else if (isURL          (token))       return Lexer::Type:url;
+  else if (isPair         (token))       return Lexer::Type:pair;
+  else if (isSet          (token))       return Lexer::Type:set;
+  else if (isDOM          (token))       return Lexer::Type:dom;
+  else if (isUUID         (token))       return Lexer::Type:uuid;
+  else if (isHexNumber    (token))       return Lexer::Type:hex;
+  else if (isNumber       (token))       return Lexer::Type:number;
+  else if (isSeparator    (token))       return Lexer::Type:separator;
+  else*/ if (isTag          (token))       return Lexer::Type::tag;
+/*
+  else if (isPath         (token))       return Lexer::Type:path;
+  else if (isSubstitution (token))       return Lexer::Type:substitution;
+  else if (isPattern      (token))       return Lexer::Type:pattern;
+  else if (isOperator     (token))       return Lexer::Type:op;
+  else if (isIdentifier   (token))       return Lexer::Type:identifier;
+  else if (isWord         (token))       return Lexer::Type:word;
+*/
+  return Lexer::Type::word;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1219,5 +1256,144 @@ bool Lexer::isOneWord (const std::string& text)
 
   return true;
 }
+
+/*
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isString (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isDate (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isDuration (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isUUID (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isNumber (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isHexNumber (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isSeparator (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isURL (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isPair (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isSet (const std::string& input)
+{
+
+  return false;
+}
+*/
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isTag (const std::string& input)
+{
+  return (input[0] == '+'             ||
+          input[0] == '-')            &&
+         isIdentifierStart (input[0]) &&
+         input.length () > 1;
+}
+
+/*
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isPath (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isSubstitution (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isPattern (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isOperator (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isDOM (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isIdentifier (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isWord (const std::string& input)
+{
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isContiguous (const std::string& input)
+{
+
+  return false;
+}
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
