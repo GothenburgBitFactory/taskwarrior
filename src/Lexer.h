@@ -82,7 +82,7 @@ public:
   int hexToInt (int, int) const;
   int hexToInt (int, int, int, int) const;
 
-  // Classifiers.
+  // Stream Classifiers.
   bool isString       (std::string&, Lexer::Type&, int quote);
   bool isDate         (std::string&, Lexer::Type&);
   bool isDuration     (std::string&, Lexer::Type&);
@@ -90,7 +90,6 @@ public:
   bool isNumber       (std::string&, Lexer::Type&);
   bool isHexNumber    (std::string&, Lexer::Type&);
   bool isSeparator    (std::string&, Lexer::Type&);
-  bool isList         (std::string&, Lexer::Type&);
   bool isURL          (std::string&, Lexer::Type&);
   bool isPair         (std::string&, Lexer::Type&);
   bool isSet          (std::string&, Lexer::Type&);
