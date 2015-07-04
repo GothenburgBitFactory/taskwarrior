@@ -1,82 +1,92 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 7;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'subst.rc')
-{
-  print $fh "data.location=.\n",
-            "regex=off\n";
-  close $fh;
-}
 
-# Test the substitution command.
-qx{../src/task rc:subst.rc add foo foo foo 2>&1};
-qx{../src/task rc:subst.rc 1 modify /foo/FOO/ 2>&1};
-my $output = qx{../src/task rc:subst.rc info 1 2>&1};
-like ($output, qr/FOO foo foo/, 'substitution in description');
+class TestSubstitutions(TestCase):
 
-qx{../src/task rc:subst.rc 1 modify /foo/FOO/g 2>&1};
-$output = qx{../src/task rc:subst.rc info 1 2>&1};
-like ($output, qr/FOO FOO FOO/, 'global substitution in description');
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
 
-# Test the substitution command on annotations.
-qx{../src/task rc:subst.rc 1 annotate bar bar bar 2>&1};
-qx{../src/task rc:subst.rc 1 modify /bar/BAR/ 2>&1};
-$output = qx{../src/task rc:subst.rc info 1 2>&1};
-like ($output, qr/BAR bar bar/, 'substitution in annotation');
+    def test_substitution(self):
+        """Verify substitution for task description"""
+        self.t.config("regex", "off")
 
-qx{../src/task rc:subst.rc 1 modify /bar/BAR/g 2>&1};
-$output = qx{../src/task rc:subst.rc info 1 2>&1};
-like ($output, qr/BAR BAR BAR/, 'global substitution in annotation');
+        self.t("add foo foo foo")
+        self.t("1 modify /foo/FOO/")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("FOO foo foo\n", out)
 
-qx{../src/task rc:subst.rc 1 modify /FOO/aaa/ 2>&1};
-qx{../src/task rc:subst.rc 1 modify /FOO/bbb/ 2>&1};
-qx{../src/task rc:subst.rc 1 modify /FOO/ccc/ 2>&1};
-$output = qx{../src/task rc:subst.rc info 1 2>&1};
-like ($output, qr/aaa bbb ccc/, 'individual successive substitution in description');
+        self.t("1 modify /foo/FOO/g")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("FOO FOO FOO\n", out)
 
-qx{../src/task rc:subst.rc 1 modify /bbb// 2>&1};
-$output = qx{../src/task rc:subst.rc info 1 2>&1};
-like ($output, qr/aaa  ccc/, 'word deletion in description');
+        self.t("1 modify /FOO/aaa/")
+        self.t("1 modify /FOO/bbb/")
+        self.t("1 modify /FOO/ccc/")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("aaa bbb ccc\n", out)
 
-# Regexes
-qx{../src/task rc:subst.rc rc.regex:on 1 modify "/c{3}/CcC/" 2>&1};
-$output = qx{../src/task rc:subst.rc info 1 2>&1};
-like ($output, qr/aaa  CcC/, 'regex');
+        self.t("1 modify /bbb//")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("aaa  ccc\n", out)
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data subst.rc);
-exit 0;
+    def test_substitution_annotation(self):
+        """Verify substitution for task annotation"""
+        self.t("add foo foo foo")
+        self.t("1 annotate bar bar bar")
+        self.t("1 modify /bar/BAR/")
+        code, out, err = self.t("_get 1.annotations.1.description")
+        self.assertEqual("BAR bar bar\n", out)
 
+        self.t("1 modify /bar/BAR/g")
+        code, out, err = self.t("_get 1.annotations.1.description")
+        self.assertEqual("BAR BAR BAR\n", out)
+
+    def test_substitution_regex(self):
+        """Verify regex substitution for task description"""
+        self.t.config("regex", "on")
+        self.t("add aaa bbb")
+        self.t("1 modify /b{3}/BbB/")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("aaa BbB\n", out)
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
