@@ -32,7 +32,7 @@ use Test::More tests => 5;
 my $ut = 'bug.calc.t';
 
 # '15min' is seen as '15', 'min', not '15min' duration.
-my $output = qx{../src/calc --debug --noambiguous 15min};
+my $output = qx{../src/calc --debug 15min};
 unlike ($output, qr/token infix '15' Date/,           "$ut: Misinterpretation: 15min -> 15");
 unlike ($output, qr/token infix 'min' Identifier/,    "$ut: Misinterpretation: 15min -> m");
 unlike ($output, qr/Error: Unexpected stack size: 2/, "$ut: Unexpected stack size");
