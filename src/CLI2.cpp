@@ -913,8 +913,8 @@ void CLI2::desugarFilterTags ()
   std::vector <A2> reconstructed;
   for (auto& a : _args)
   {
-    if (a.hasTag ("FILTER") &&
-        a._lextype == Lexer::Type::tag)
+    if (a._lextype == Lexer::Type::tag &&
+        a.hasTag ("FILTER"))
     {
       changes = true;
 
@@ -978,8 +978,8 @@ void CLI2::desugarFilterAttributes ()
   std::vector <A2> reconstructed;
   for (auto& a : _args)
   {
-    if (a.hasTag ("FILTER") &&
-        a._lextype == Lexer::Type::pair)
+    if (a._lextype == Lexer::Type::pair &&
+        a.hasTag ("FILTER"))
     {
       changes = true;
 
@@ -1159,8 +1159,8 @@ void CLI2::desugarFilterPatterns ()
   std::vector <A2> reconstructed;
   for (auto& a : _args)
   {
-    if (a.hasTag ("FILTER") &&
-        a._lextype == Lexer::Type::pattern)
+    if (a._lextype == Lexer::Type::pattern &&
+        a.hasTag ("FILTER"))
     {
       changes = true;
       std::string raw = a.attribute ("raw");
@@ -1292,8 +1292,8 @@ void CLI2::findUUIDs ()
 {
   for (auto& a : _args)
   {
-    if (a.hasTag ("FILTER") &&
-        a._lextype == Lexer::Type::uuid)
+    if (a._lextype == Lexer::Type::uuid &&
+        a.hasTag ("FILTER"))
     {
       _uuid_list.push_back (a.attribute ("raw"));
     }
@@ -1303,8 +1303,8 @@ void CLI2::findUUIDs ()
   {
     for (auto& a : _args)
     {
-      if (a.hasTag ("MODIFICATION") &&
-          a._lextype == Lexer::Type::uuid)
+      if (a._lextype == Lexer::Type::uuid &&
+          a.hasTag ("MODIFICATION"))
       {
         a.unTag ("MODIFICATION");
         a.tag ("FILTER");
@@ -1334,10 +1334,10 @@ void CLI2::insertIDExpr ()
   std::vector <A2> reconstructed;
   for (auto& a : _args)
   {
-    if (a.hasTag ("FILTER") &&
-        (a._lextype == Lexer::Type::set ||
+    if ((a._lextype == Lexer::Type::set ||
          a._lextype == Lexer::Type::number ||
-         a._lextype == Lexer::Type::uuid))
+         a._lextype == Lexer::Type::uuid) &&
+        a.hasTag ("FILTER"))
     {
       if (! foundID)
       {
@@ -1744,31 +1744,5 @@ void CLI2::decomposeModSubstitutions ()
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::prepareFilter decomposeModSubstitutions"));
 }
-
-/*
-////////////////////////////////////////////////////////////////////////////////
-bool CLI2::isUUIDList (const std::string& raw) const
-{
-  // UUIDs have a limited character set.
-  if (raw.find_first_not_of ("0123456789abcdefABCDEF-,") == std::string::npos)
-  {
-    Nibbler n (raw);
-    std::string token;
-    if (n.getUUID (token) ||
-        n.getPartialUUID (token))
-    {
-      while (n.skip (','))
-        if (! n.getUUID (token) &&
-            ! n.getPartialUUID (token))
-          return false;
-
-      if (n.depleted ())
-        return true;
-    }
-  }
-
-  return false;
-}
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
