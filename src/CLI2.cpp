@@ -110,6 +110,9 @@ void A2::unTag (const std::string& tag)
 void A2::attribute (const std::string& name, const std::string& value)
 {
   _attributes[name] = value;
+
+  if (name == "raw")
+    decompose ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -117,6 +120,9 @@ void A2::attribute (const std::string& name, const std::string& value)
 void A2::attribute (const std::string& name, const int value)
 {
   _attributes[name] = format (value);
+
+  if (name == "raw")
+    decompose ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +145,64 @@ const std::string A2::getToken () const
     i = _attributes.find ("raw");
 
   return i->second;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void A2::decompose ()
+{
+  if (_lextype == Lexer::Type::tag)
+  {
+    std::string raw = _attributes["raw"];
+    attribute ("name", raw.substr (1));
+    attribute ("sign", raw.substr (0, 1));
+  }
+
+  else if (_lextype == Lexer::Type::substitution)
+  {
+    std::string raw = _attributes["raw"];
+
+    auto slash1 = raw.find ("/");
+    auto slash2 = raw.find ("/", slash1 + 1);
+    auto slash3 = raw.find ("/", slash2 + 1);
+
+    attribute ("from",   raw.substr (slash1 + 1, slash2 - slash1  - 1));
+    attribute ("to",     raw.substr (slash2 + 1, slash3 - slash2  - 1));
+    attribute ("global", raw.substr (slash3 + 1) == "g" ? 1 : 0);
+  }
+
+  else if (_lextype == Lexer::Type::pair)
+  {
+    std::string raw = _attributes["raw"];
+
+    // TODO name:value      --> canonical="name" value="value"
+    // TODO name=value      --> canonical="name" value="value"
+    // TODO name:=value     --> canonical="name" value="value"
+    // TODO name::value     --> canonical="name" value="value"
+    // TODO name.mod:value  -->
+    // TODO name.mod=value  -->
+    // TODO name.mod:=value -->
+    // TODO name.mod::value -->
+    auto colon = raw.find (':');
+    auto equal = raw.find ('=');
+
+    // Q: Which of ':', '=' is the separator?
+    // A: Whichever comes first. For example:
+    //      name:a=b
+    //      name=a:b
+    //    Both are valid, and 'name' is the attribute name in each case.
+    std::string::size_type separator = std::min (colon, equal);
+    std::string name  = raw.substr (0, separator);
+    std::string value = raw.substr (separator + 1);
+
+    attribute ("name", name);
+    attribute ("value", value);
+
+    if (raw.substr (0, 3) == "rc:")
+      tag ("RC");
+
+    if (raw.substr (0, 3) == "rc.")
+      tag ("CONFIG");
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -433,13 +497,14 @@ void CLI2::analyze ()
 
   // Process _args.
   aliasExpansion ();
-  findOverrides ();
   if (! findCommand ())
   {
     defaultCommand ();
     if (! findCommand ())
       throw std::string (STRING_TRIVIAL_INPUT);
   }
+
+  canonicalizeNames ();
 
   if (context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze end"));
@@ -573,9 +638,9 @@ void CLI2::prepareFilter (bool applyContext)
   insertJunctions ();                 // Deliberately after all desugar calls.
 
   // Decompose the elements for MODIFICATIONs.
-  decomposeModAttributes ();
-  decomposeModTags ();
-  decomposeModSubstitutions ();
+  //decomposeModAttributes ();
+  //decomposeModTags ();
+  //decomposeModSubstitutions ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -811,34 +876,21 @@ void CLI2::aliasExpansion ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Scan all arguments that begin with either "rc:" or "rc.", extract the
-// name/values.
-void CLI2::findOverrides ()
+// Scan all arguments and canonicalize names that need it.
+void CLI2::canonicalizeNames ()
 {
   bool changes = false;
-  std::string raw;
-
   for (auto& a : _args)
   {
-    raw = a.attribute ("raw");
-    if (raw.length () > 3 &&
-        raw.find ("rc:") == 0)
+    if (a._lextype == Lexer::Type::pair)
     {
-      a.tag ("RC");
-      a.attribute ("file", raw.substr (3));
-      changes = true;
-    }
-    else if (raw.length () > 3 &&
-             raw.find ("rc.") == 0)
-    {
-      auto sep = raw.find ('=', 3);
-      if (sep == std::string::npos)
-        sep = raw.find (':', 3);
-      if (sep != std::string::npos)
+      std::string name = a.attribute ("name");
+      std::string canonical;
+      if (canonicalize (canonical, "pseudo",    name)    ||
+          canonicalize (canonical, "attribute", name)    ||
+          canonicalize (canonical, "uda", name))
       {
-        a.tag ("CONFIG");
-        a.attribute ("name", raw.substr (3, sep - 3));
-        a.attribute ("value", raw.substr (sep + 1));
+        a.attribute ("canonical", canonical);
         changes = true;
       }
     }
@@ -846,7 +898,7 @@ void CLI2::findOverrides ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::analyze findOverrides"));
+    context.debug (dump ("CLI2::analyze canonicalizeNames"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1459,8 +1511,7 @@ void CLI2::insertIDExpr ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Removed because this algorithm is unreliable.
-
+// TODO Removed because this algorithm is unreliable. Fix it.
 void CLI2::desugarFilterPlainArgs ()
 {
 /*

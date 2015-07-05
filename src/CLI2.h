@@ -49,6 +49,9 @@ public:
   const std::string getToken () const;
   const std::string dump () const;
 
+private:
+  void decompose ();
+
 public:
   Lexer::Type                         _lextype;
   std::vector <std::string>           _tags;
@@ -88,7 +91,7 @@ private:
   void lexArguments ();
   void demoteDOM ();
   void aliasExpansion ();
-  void findOverrides ();
+  void canonicalizeNames ();
   bool findCommand ();
   bool exactMatch (const std::string&, const std::string&) const;
   void desugarFilterTags ();
