@@ -638,7 +638,6 @@ void CLI2::prepareFilter (bool applyContext)
   insertJunctions ();                 // Deliberately after all desugar calls.
 
   // Decompose the elements for MODIFICATIONs.
-  //decomposeModTags ();
   //decomposeModSubstitutions ();
 }
 
@@ -1695,27 +1694,6 @@ void CLI2::defaultCommand ()
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze defaultCommand"));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CLI2::decomposeModTags ()
-{
-  bool changes = false;
-  for (auto& a : _args)
-  {
-    if (a._lextype == Lexer::Type::tag &&
-        a.hasTag ("MODIFICATION"))
-    {
-      std::string raw = a.attribute ("raw");
-      a.attribute ("name", raw.substr (1));
-      a.attribute ("sign", raw.substr (0, 1));
-      changes = true;
-    }
-  }
-
-  if (changes &&
-      context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::prepareFilter decomposeModTags"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
