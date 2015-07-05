@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <Lexer.h>
 #include <ISO8601.h>
+#include <Date.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601d::ISO8601d ()
@@ -95,7 +96,7 @@ bool ISO8601d::parse (const std::string& input, std::string::size_type& start)
   auto i = start;
   Nibbler n (input.substr (i));
 
-  if (parse_date_time     (n)             ||   // Most complex first.
+  if (parse_date_time     (n)             ||   // Strictest first.
       parse_date_time_ext (n)             ||
       parse_date_ext      (n)             ||
       parse_time_utc_ext  (n)             ||
@@ -144,12 +145,12 @@ bool ISO8601d::parse_date_time (Nibbler& n)
   n.save ();
   int year, month, day, hour, minute, second;
   if (n.getDigit4 (year)   &&
-      n.getDigit2 (month)  &&
-      n.getDigit2 (day)    &&
+      n.getDigit2 (month)  && month &&
+      n.getDigit2 (day)    && day   &&
       n.skip      ('T')    &&
       n.getDigit2 (hour)   &&
-      n.getDigit2 (minute) &&
-      n.getDigit2 (second))
+      n.getDigit2 (minute) && minute < 60 &&
+      n.getDigit2 (second) && second < 60)
   {
     if (n.skip ('Z'))
       _utc = true;
@@ -220,7 +221,7 @@ bool ISO8601d::parse_date_ext (Nibbler& n)
     int month;
     int day;
     if (n.skip ('W') &&
-        n.getDigit2 (_week))
+        n.getDigit2 (_week) && _week)
     {
       if (n.skip ('-') &&
           n.getDigit (_weekday))
@@ -231,15 +232,15 @@ bool ISO8601d::parse_date_ext (Nibbler& n)
       if (!Lexer::isDigit (n.next ()))
         return true;
     }
-    else if (n.getDigit3 (_julian))
+    else if (n.getDigit3 (_julian) && _julian)
     {
       _year = year;
       if (!Lexer::isDigit (n.next ()))
         return true;
     }
-    else if (n.getDigit2 (month) &&
+    else if (n.getDigit2 (month) && month &&
              n.skip ('-')        &&
-             n.getDigit2 (day))
+             n.getDigit2 (day)   && day)
     {
       _year = year;
       _month = month;
@@ -259,25 +260,32 @@ bool ISO8601d::parse_off_ext (Nibbler& n)
 {
   Nibbler backup (n);
   std::string sign;
-  if (n.getN (1, sign))
+  if (n.getN (1, sign) && (sign == "+" || sign == "-"))
   {
-    if (sign == "+" || sign == "-")
+    int offset;
+    int hh;
+    int mm;
+    if (n.getDigit2 (hh) && hh <= 12 &&
+        !n.getDigit (mm))
     {
-      int offset;
-      int hh;
-      int mm;
-      if (n.getDigit2 (hh) &&
-          !n.getDigit (mm))
-      {
-        offset = hh * 3600;
-        if (n.skip (':') &&
-            n.getDigit2 (mm))
-          offset += mm * 60;
+      offset = hh * 3600;
 
-        _offset = (sign == "-") ? -offset : offset;
-        if (!Lexer::isDigit (n.next ()))
-          return true;
+      if (n.skip (':'))
+      {
+        if (n.getDigit2 (mm) && mm < 60)
+        {
+          offset += mm * 60;
+        }
+        else
+        {
+          n = backup;
+          return false;
+        }
       }
+
+      _offset = (sign == "-") ? -offset : offset;
+      if (!Lexer::isDigit (n.next ()))
+        return true;
     }
   }
 
@@ -294,20 +302,25 @@ bool ISO8601d::parse_time_ext (Nibbler& n)
   int hh;
   int mm;
   int ss;
-  if (n.getDigit2 (hh) &&
+  if (n.getDigit2 (hh) && hh <= 24 &&
       n.skip (':')     &&
-      n.getDigit2 (mm))
+      n.getDigit2 (mm) && mm < 60)
   {
     seconds = (hh * 3600) + (mm * 60);
 
-    if (n.skip (':') &&
-        n.getDigit2 (ss))
+    if (n.skip (':'))
     {
-      seconds += ss;
-      _seconds = seconds;
+      if (n.getDigit2 (ss) && ss < 60)
+      {
+        seconds += ss;
+        _seconds = seconds;
 
-      if (!Lexer::isDigit (n.next ()))
-        return true;
+        if (!Lexer::isDigit (n.next ()))
+          return true;
+      }
+
+      n = backup;
+      return false;
     }
 
     _seconds = seconds;
@@ -367,14 +380,14 @@ int ISO8601d::dayOfWeek (int year, int month, int day)
 bool ISO8601d::validate ()
 {
   // _year;
-  if ((_year    && (_year    <   1900 || _year    >  2100)) ||
-      (_month   && (_month   <      1 || _month   >    12)) ||
-      (_week    && (_week    <      1 || _week    >    53)) ||
-      (_weekday && (_weekday <      0 || _weekday >     6)) ||
-      (_julian  && (_julian  <      0 || _julian  >   366)) ||
-      (_day     && (_day     <      1 || _day     >    31)) ||
-      (_seconds && (_seconds <      1 || _seconds > 86400)) ||
-      (_offset  && (_offset  < -86400 || _offset  > 86400)))
+  if ((_year    && (_year    <   1900 || _year    >                              2100)) ||
+      (_month   && (_month   <      1 || _month   >                                12)) ||
+      (_week    && (_week    <      1 || _week    >                                53)) ||
+      (_weekday && (_weekday <      0 || _weekday >                                 6)) ||
+      (_julian  && (_julian  <      1 || _julian  >          Date::daysInYear (_year))) ||
+      (_day     && (_day     <      1 || _day     > Date::daysInMonth (_month, _year))) ||
+      (_seconds && (_seconds <      1 || _seconds >                             86400)) ||
+      (_offset  && (_offset  < -86400 || _offset  >                             86400)))
     return false;
 
   return true;
