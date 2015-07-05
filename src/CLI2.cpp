@@ -636,9 +636,6 @@ void CLI2::prepareFilter (bool applyContext)
   desugarFilterAttributes ();
   desugarFilterPatterns ();
   insertJunctions ();                 // Deliberately after all desugar calls.
-
-  // Decompose the elements for MODIFICATIONs.
-  //decomposeModSubstitutions ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1694,35 +1691,6 @@ void CLI2::defaultCommand ()
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze defaultCommand"));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CLI2::decomposeModSubstitutions ()
-{
-  bool changes = false;
-  for (auto& a : _args)
-  {
-    if (a._lextype == Lexer::Type::substitution &&
-        a.hasTag ("MODIFICATION"))
-    {
-      std::string raw = a.attribute ("raw");
-      if (! Directory (raw).exists ())
-      {
-        auto slash1 = raw.find ("/");
-        auto slash2 = raw.find ("/", slash1 + 1);
-        auto slash3 = raw.find ("/", slash2 + 1);
-
-        a.attribute ("from",   raw.substr (slash1 + 1, slash2 - slash1  - 1));
-        a.attribute ("to",     raw.substr (slash2 + 1, slash3 - slash2  - 1));
-        a.attribute ("global", raw.substr (slash3 + 1) == "g" ? 1 : 0);
-        changes = true;
-      }
-    }
-  }
-
-  if (changes &&
-      context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::prepareFilter decomposeModSubstitutions"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -104,7 +104,6 @@ private:
   void desugarFilterPlainArgs ();
   void insertJunctions ();
   void defaultCommand ();
-  void decomposeModSubstitutions ();
 
 public:
   std::multimap <std::string, std::string>           _entities;
