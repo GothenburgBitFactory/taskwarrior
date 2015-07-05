@@ -1,70 +1,81 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 8;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'sp.rc')
-{
-  print $fh "data.location=.\n";
-  close $fh;
-}
 
-my $setup = "../src/task rc:sp.rc add project:abc abc 2>&1;"
-          . "../src/task rc:sp.rc add project:ab  ab 2>&1;"
-          . "../src/task rc:sp.rc add project:a   a 2>&1;"
-          . "../src/task rc:sp.rc add project:b   b 2>&1;";
-qx{$setup};
+class TestSubprojects(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t("add project:abc abc")
+        cls.t("add project:ab ab")
+        cls.t("add project:a a")
+        cls.t("add project:b b")
 
-my $output = qx{../src/task rc:sp.rc list project:b 2>&1};
-like ($output, qr/\bb\s/m, 'abc,ab,a,b | b -> b');
+    def test_project_exact1(self):
+        """Verify single character exact"""
+        code, out, err = self.t("list project:b")
+        self.assertRegexpMatches(out, r"\bb\s")
 
-$output = qx{../src/task rc:sp.rc list project:a 2>&1};
-like ($output, qr/\babc\s/m, 'abc,ab,a,b | a -> abc');
-like ($output, qr/\bab\s/m,  'abc,ab,a,b | a -> ab');
-like ($output, qr/\ba\s/m,   'abc,ab,a,b | a -> a');
+    def test_project_top1(self):
+        """Verify single character parent"""
+        code, out, err = self.t("list project:a")
+        self.assertRegexpMatches(out, r"\babc\s")
+        self.assertRegexpMatches(out, r"\bab\s")
+        self.assertRegexpMatches(out, r"\ba\s")
 
-$output = qx{../src/task rc:sp.rc list project:ab 2>&1};
-like ($output, qr/\babc\s/m, 'abc,ab,a,b | a -> abc');
-like ($output, qr/\bab\s/m,  'abc,ab,a,b | a -> ab');
+    def test_project_top2(self):
+        """Verify double character parent"""
+        code, out, err = self.t("list project:ab")
+        self.assertRegexpMatches(out, r"\babc\s")
+        self.assertRegexpMatches(out, r"\bab\s")
 
-$output = qx{../src/task rc:sp.rc list project:abc 2>&1};
-like ($output, qr/\babc\s/m, 'abc,ab,a,b | a -> abc');
+    def test_project_exact3(self):
+        """Verify triple character exact"""
+        code, out, err = self.t("list project:abc")
+        self.assertRegexpMatches(out, r"\babc\s")
 
-$output = qx{../src/task rc:sp.rc list project:abcd 2>&1 >/dev/null};
-like ($output, qr/No matches\./, 'abc,ab,a,b | abcd -> nul');
+    def test_project_mismatch4(self):
+        """Verify quad character mismatch"""
+        code, out, err = self.t.runError("list project:abcd")
+        self.assertIn("No matches", err)
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data sp.rc);
-exit 0;
 
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
