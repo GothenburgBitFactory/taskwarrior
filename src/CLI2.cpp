@@ -638,7 +638,6 @@ void CLI2::prepareFilter (bool applyContext)
   insertJunctions ();                 // Deliberately after all desugar calls.
 
   // Decompose the elements for MODIFICATIONs.
-  //decomposeModAttributes ();
   //decomposeModTags ();
   //decomposeModSubstitutions ();
 }
@@ -1696,54 +1695,6 @@ void CLI2::defaultCommand ()
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze defaultCommand"));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void CLI2::decomposeModAttributes ()
-{
-  bool changes = false;
-  for (auto& a : _args)
-  {
-    if (a._lextype == Lexer::Type::pair &&
-        a.hasTag ("MODIFICATION"))
-    {
-      changes = true;
-      auto raw  = a.attribute ("raw");
-      auto colon = raw.find (':');
-      auto equal = raw.find ('=');
-
-      // Q: Which of ':', '=' is the separator?
-      // A: Whichever comes first. For example:
-      //      name:a=b
-      //      name=a:b
-      //    Both are valid, and 'name' is the attribute name in each case.
-      std::string::size_type separator = std::min (colon, equal);
-      std::string name  = raw.substr (0, separator);
-      std::string value = raw.substr (separator + 1);
-
-      std::string canonical;
-      if (canonicalize (canonical, "attribute", name) ||
-          canonicalize (canonical, "uda",       name))
-      {
-        a.attribute ("canonical", canonical);
-        a.attribute ("name", name);
-        a.attribute ("value", value);
-      }
-
-      // If the name does not canonicalize to either an attribute or a UDA
-      // then it is not a recognized Lexer::Type::pair, so downgrade it to
-      // Lexer::Type::word.
-      else
-      {
-        a._lextype = Lexer::Type::word;
-        continue;
-      }
-    }
-  }
-
-  if (changes &&
-      context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::prepareFilter decomposeModAttributes"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

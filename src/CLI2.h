@@ -104,7 +104,6 @@ private:
   void desugarFilterPlainArgs ();
   void insertJunctions ();
   void defaultCommand ();
-  void decomposeModAttributes ();
   void decomposeModTags ();
   void decomposeModSubstitutions ();
 
