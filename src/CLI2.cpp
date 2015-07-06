@@ -173,35 +173,25 @@ void A2::decompose ()
   else if (_lextype == Lexer::Type::pair)
   {
     std::string raw = _attributes["raw"];
+    std::string name;
+    std::string mod;
+    std::string sep;
+    std::string value;
+    if (Lexer::decomposePair (_attributes["raw"], name, mod, sep, value))
+    {
+      attribute ("name",      name);
+      attribute ("modifier",  mod);
+      attribute ("separator", sep);
+      attribute ("value",     value);
 
-    // TODO name:value      --> canonical="name" value="value"
-    // TODO name=value      --> canonical="name" value="value"
-    // TODO name:=value     --> canonical="name" value="value"
-    // TODO name::value     --> canonical="name" value="value"
-    // TODO name.mod:value  -->
-    // TODO name.mod=value  -->
-    // TODO name.mod:=value -->
-    // TODO name.mod::value -->
-    auto colon = raw.find (':');
-    auto equal = raw.find ('=');
-
-    // Q: Which of ':', '=' is the separator?
-    // A: Whichever comes first. For example:
-    //      name:a=b
-    //      name=a:b
-    //    Both are valid, and 'name' is the attribute name in each case.
-    std::string::size_type separator = std::min (colon, equal);
-    std::string name  = raw.substr (0, separator);
-    std::string value = raw.substr (separator + 1);
-
-    attribute ("name", name);
-    attribute ("value", value);
-
-    if (raw.substr (0, 3) == "rc:")
-      tag ("RC");
-
-    if (raw.substr (0, 3) == "rc.")
-      tag ("CONFIG");
+      if (name == "rc")
+      {
+        if (mod != "")
+          tag ("CONFIG");
+        else
+          tag ("RC");
+      }
+    }
   }
 }
 
