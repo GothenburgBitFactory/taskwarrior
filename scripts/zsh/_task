@@ -252,3 +252,5 @@ _task_default() {
 
 	return ret
 }
+
+_task "$@"
