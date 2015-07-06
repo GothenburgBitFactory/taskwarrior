@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <iostream>
 #include <vector>
+#include <string.h>
 #include <test.h>
 #include <Lexer.h>
 #include <Context.h>
