@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1046);
+  UnitTest t (1061);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -209,6 +209,42 @@ int main (int argc, char** argv)
         }
       }
     }
+  }
+
+  // static bool readWord (const std::string&, const std::string&, std::string::size_type&, std::string&);
+  std::string::size_type cursor = 0;
+  std::string word;
+  t.ok (Lexer::readWord ("input", "'\"", cursor, word),     "readWord 'input' --> true");
+  t.is (word, "input",                                      "  word '" + word + "'");
+  t.is ((int)cursor, 5,                                     "  cursor");
+
+  cursor = 0;
+  t.ok (Lexer::readWord ("'one two'", "'\"", cursor, word), "readWord ''one two'' --> true");
+  t.is (word, "one two",                                    "  word '" + word + "'");
+  t.is ((int)cursor, 9,                                     "  cursor");
+
+  cursor = 0;
+  t.ok (Lexer::readWord ("one\\ two", "'\"", cursor, word), "readWord 'one\\ two' --> true");
+  t.is (word, "one two",                                    "  word '" + word + "'");
+  t.is ((int)cursor, 8,                                     "  cursor");
+
+  cursor = 0;
+  t.ok (Lexer::readWord ("\\u20A43", "'\"", cursor, word),  "readWord '\\u20A43' --> true");
+  t.is (word, "₤3",                                         "  word '" + word + "'");
+  t.is ((int)cursor, 7,                                     "  cursor");
+
+  cursor = 0;
+  t.ok (Lexer::readWord ("U+20AC4", "'\"", cursor, word),   "readWord '\\u20AC4' --> true");
+  t.is (word, "€4",                                         "  word '" + word + "'");
+  t.is ((int)cursor, 7,                                     "  cursor");
+
+  std::string text = "one 'two' three\\ four";
+  cursor = 0;
+  while (Lexer::readWord (text, "'\"", cursor, word))
+  {
+    t.diag ("'" + word + "'");
+    while (Lexer::isWhitespace(text[cursor]))
+      ++cursor;
   }
 
   // Test all Lexer types.
