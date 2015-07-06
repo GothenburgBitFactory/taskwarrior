@@ -36,11 +36,8 @@ from basetest import Task, TestCase
 
 
 class TestDuplication(TestCase):
-
     def setUp(self):
         """Executed before each test in the class"""
-        # Used to initialize objects that should be re-initialized or
-        # re-created for each individual test
         self.t = Task()
         self.t("add foo")
 
@@ -59,6 +56,41 @@ class TestDuplication(TestCase):
         self.assertIn('"status":"pending"', out)
         self.assertIn('"priority":"H"', out)
         self.assertIn('"tags":["tag"]', out)
+
+class TestDuplication2(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_duplication_recurrence(self):
+        """Verify that recurring tasks are properly duplicated"""
+        self.t("add R due:tomorrow recur:weekly")
+        self.t("list")   # To force handleRecurrence().
+
+        code, out, err = self.t("1 duplicate")
+        self.assertIn("The duplicated task is too", out)
+
+        code, out, err = self.t("2 duplicate")
+        self.assertIn("The duplicated task is not", out)
+
+        self.t("list")   # To force handleRecurrence().
+        code, out, err = self.t("1 export")
+        self.assertIn('"status":"recurring"', out)
+
+        code, out, err = self.t("2 export")
+        self.assertIn('"status":"pending"', out)
+        self.assertIn('"parent":', out)
+
+        code, out, err = self.t("3 export")
+        self.assertIn('"status":"recurring"', out)
+
+        code, out, err = self.t("4 export")
+        self.assertIn('"status":"pending"', out)
+        self.assertNotIn('"parent":', out)
+
+        code, out, err = self.t("5 export")
+        self.assertIn('"status":"pending"', out)
+        self.assertIn('"parent":', out)
 
 
 if __name__ == "__main__":
