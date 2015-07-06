@@ -76,6 +76,7 @@ public:
   static void dequote               (std::string&);
   static bool wasQuoted             (const std::string&);
   static bool readWord              (const std::string&, const std::string&, std::string::size_type&, std::string&);
+  static bool readWord              (const std::string&, std::string::size_type&, std::string&);
   static bool decomposePair         (const std::string&, std::string&, std::string&, std::string&, std::string&);
   static int hexToInt               (int);
   static int hexToInt               (int, int);

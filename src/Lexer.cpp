@@ -1222,16 +1222,12 @@ bool Lexer::isOneWord (const std::string& text)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Full implementation of a word.  Includes:
-//   one\ two
+// Full implementation of a quoted word.  Includes:
 //   '\''
 //   '"'
 //   "'"
 //   "\""
 //   'one two'
-//   abcU+0020def
-//   abc\u0020def
-//   a\tb
 bool Lexer::readWord (
   const std::string& text,
   const std::string& quotes,
@@ -1255,8 +1251,75 @@ bool Lexer::readWord (
       break;
     }
 
+    // Unicode U+XXXX or \uXXXX codepoint.
+    else if (eos - cursor >= 6 &&
+             ((text[cursor + 0] == 'U'  && text[cursor + 1] == '+') ||
+              (text[cursor + 0] == '\\' && text[cursor + 1] == 'u')) &&
+             isHexDigit (text[cursor + 2]) &&
+             isHexDigit (text[cursor + 3]) &&
+             isHexDigit (text[cursor + 4]) &&
+             isHexDigit (text[cursor + 5]))
+    {
+      word += utf8_character (
+                hexToInt (
+                  text[cursor + 2],
+                  text[cursor + 3],
+                  text[cursor + 4],
+                  text[cursor + 5]));
+      cursor += 6;
+    }
+
+    // An escaped thing.
+    else if (c == '\\')
+    {
+      c = text[++cursor];
+
+      switch (c)
+      {
+      case '"':  word += (char) 0x22; ++cursor; break;
+      case '\'': word += (char) 0x27; ++cursor; break;
+      case '\\': word += (char) 0x5C; ++cursor; break;
+      case 'b':  word += (char) 0x08; ++cursor; break;
+      case 'f':  word += (char) 0x0C; ++cursor; break;
+      case 'n':  word += (char) 0x0A; ++cursor; break;
+      case 'r':  word += (char) 0x0D; ++cursor; break;
+      case 't':  word += (char) 0x09; ++cursor; break;
+      case 'v':  word += (char) 0x0B; ++cursor; break;
+
+      // This pass-through default case means that anything can be escaped
+      // harmlessly. In particular 'quote' is included, if it not one of the
+      // above characters.
+      default:   word += (char) c;    ++cursor; break;
+      }
+    }
+
+    // Ordinary character.
+    else
+      word += utf8_character (utf8_next_char (text, cursor));
+  }
+
+  return word.length () > 0 ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Full implementation of an unquoted word.  Includes:
+//   one\ two
+//   abcU+0020def
+//   abc\u0020def
+//   a\tb
+bool Lexer::readWord (
+  const std::string& text,
+  std::string::size_type& cursor,
+  std::string& word)
+{
+  std::string::size_type eos = text.length ();
+
+  word = "";
+  int c;
+  while ((c = text[cursor]))
+  {
     // Unquoted word ends on white space.
-    if (! quote && Lexer::isWhitespace (c))
+    if (Lexer::isWhitespace (c))
     {
       ++cursor;
       break;
