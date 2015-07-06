@@ -676,6 +676,7 @@ are:
     PENDING      Matches if the task has pending status
     COMPLETED    Matches if the task has completed status
     DELETED      Matches if the task has deleted status
+.\" If you update the above list, update src/commands/CmdTags.cpp as well.
 
 You can use +BLOCKED to filter blocked tasks, or -BLOCKED for unblocked tasks.
 Similarly, -BLOCKED is equivalent to +UNBLOCKED. It is an error to attempt to

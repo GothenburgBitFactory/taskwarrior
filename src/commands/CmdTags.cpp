@@ -177,6 +177,31 @@ int CmdCompletionTags::execute (std::string& output)
   unique["nonag"]   = 0;
   unique["nocal"]   = 0;
   unique["next"]    = 0;
+  unique["BLOCKED"]   = 0;
+  unique["UNBLOCKED"] = 0;
+  unique["BLOCKING"]  = 0;
+  unique["YESTERDAY"] = 0;
+  unique["DUE"]       = 0;
+  unique["DUETODAY"]  = 0;
+  unique["TODAY"]     = 0;
+  unique["TOMORROW"]  = 0;
+  unique["WEEK"]      = 0;
+  unique["MONTH"]     = 0;
+  unique["YEAR"]      = 0;
+  unique["OVERDUE"]   = 0;
+  unique["ACTIVE"]    = 0;
+  unique["SCHEDULED"] = 0;
+  unique["READY"]     = 0;
+  unique["PARENT"]    = 0;
+  unique["CHILD"]     = 0;
+  unique["UNTIL"]     = 0;
+  unique["WAITING"]   = 0;
+  unique["ANNOTATED"] = 0;
+  unique["TAGGED"]    = 0;
+  unique["PENDING"]   = 0;
+  unique["COMPLETED"] = 0;
+  unique["DELETED"]   = 0;
+  // If you update this list, update doc/man/task.1.in as well.
 
   std::stringstream out;
   for (auto& it : unique)
