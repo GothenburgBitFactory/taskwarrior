@@ -36,7 +36,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (806);
+  UnitTest t (1046);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -187,6 +187,28 @@ int main (int argc, char** argv)
   t.is (items[5], "b",             "split '  +-* a+b 12.3e4 'c d'' -> [5] 'b'");
   t.is (items[6], "12.3e4",        "split '  +-* a+b 12.3e4 'c d'' -> [6] '12.3e4'");
   t.is (items[7], "'c d'",         "split '  +-* a+b 12.3e4 'c d'' -> [7] ''c d''");
+
+  // static bool decomposePair (const std::string&, std::string&, std::string&, std::string&, std::string&);
+  // 2 * 4 * 2 * 5 = 80 tests.
+  std::string outName, outMod, outValue, outSep;
+  for (auto& name : {"name"})
+  {
+    for (auto& mod : {"", "mod"})
+    {
+      for (auto& sep : {":", "=", "::", ":="})
+      {
+        for (auto& value : {"", "value", "a:b", "a::b", "a=b", "a:=b"})
+        {
+          std::string input = std::string ("name") + (strlen (mod) ? "." : "") + mod + sep + value;
+          t.ok (Lexer::decomposePair (input, outName, outMod, outValue, outSep), "decomposePair '" + input + "' --> true");
+          t.is (name,  outName,  "  '" + input + "' --> name '"  + name  + "'");
+          t.is (mod,   outMod,   "  '" + input + "' --> mod '"   + mod   + "'");
+          t.is (value, outValue, "  '" + input + "' --> value '" + value + "'");
+          t.is (sep,   outSep,   "  '" + input + "' --> sep '"   + sep   + "'");
+        }
+      }
+    }
+  }
 
   // Test all Lexer types.
   #define NO {"",Lexer::Type::word}
