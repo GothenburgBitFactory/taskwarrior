@@ -1226,8 +1226,8 @@ bool Lexer::decomposePair (
   const std::string& text,
   std::string& name,
   std::string& modifier,
-  std::string& value,
-  std::string& separator)
+  std::string& separator,
+  std::string& value)
 {
   // Look for the required elements.
   std::string::size_type dot       = text.find ('.');

@@ -200,7 +200,7 @@ int main (int argc, char** argv)
         for (auto& value : {"", "value", "a:b", "a::b", "a=b", "a:=b"})
         {
           std::string input = std::string ("name") + (strlen (mod) ? "." : "") + mod + sep + value;
-          t.ok (Lexer::decomposePair (input, outName, outMod, outValue, outSep), "decomposePair '" + input + "' --> true");
+          t.ok (Lexer::decomposePair (input, outName, outMod, outSep, outValue), "decomposePair '" + input + "' --> true");
           t.is (name,  outName,  "  '" + input + "' --> name '"  + name  + "'");
           t.is (mod,   outMod,   "  '" + input + "' --> mod '"   + mod   + "'");
           t.is (value, outValue, "  '" + input + "' --> value '" + value + "'");
