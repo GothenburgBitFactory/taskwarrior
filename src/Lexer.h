@@ -85,7 +85,7 @@ public:
   bool isEOS                        () const;
 
   // Stream Classifiers.
-  bool isString       (std::string&, Lexer::Type&, int quote);
+  bool isString       (std::string&, Lexer::Type&, const std::string&);
   bool isDate         (std::string&, Lexer::Type&);
   bool isDuration     (std::string&, Lexer::Type&);
   bool isUUID         (std::string&, Lexer::Type&);

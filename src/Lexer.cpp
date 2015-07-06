@@ -73,24 +73,23 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
   //   - path < substitution < pattern
   //   - set < number
   //   - word last
-  if (isString       (token, type, '\'') ||
-      isString       (token, type, '"')  ||
-      isDate         (token, type)       ||
-      isDuration     (token, type)       ||
-      isURL          (token, type)       ||
-      isPair         (token, type)       ||
-      isSet          (token, type)       ||
-      isDOM          (token, type)       ||
-      isUUID         (token, type)       ||
-      isHexNumber    (token, type)       ||
-      isNumber       (token, type)       ||
-      isSeparator    (token, type)       ||
-      isTag          (token, type)       ||
-      isPath         (token, type)       ||
-      isSubstitution (token, type)       ||
-      isPattern      (token, type)       ||
-      isOperator     (token, type)       ||
-      isIdentifier   (token, type)       ||
+  if (isString       (token, type, "'\"") ||
+      isDate         (token, type)        ||
+      isDuration     (token, type)        ||
+      isURL          (token, type)        ||
+      isPair         (token, type)        ||
+      isSet          (token, type)        ||
+      isDOM          (token, type)        ||
+      isUUID         (token, type)        ||
+      isHexNumber    (token, type)        ||
+      isNumber       (token, type)        ||
+      isSeparator    (token, type)        ||
+      isTag          (token, type)        ||
+      isPath         (token, type)        ||
+      isSubstitution (token, type)        ||
+      isPattern      (token, type)        ||
+      isOperator     (token, type)        ||
+      isIdentifier   (token, type)        ||
       isWord         (token, type))
     return true;
 
@@ -369,12 +368,24 @@ int Lexer::hexToInt (int c0, int c1, int c2, int c3)
 //   '|"
 //   [ U+XXXX | \uXXXX | \" | \' | \\ | \/ | \b | \f | \n | \r | \t | . ]
 //   '|"
-bool Lexer::isString (std::string& token, Lexer::Type& type, int quote)
+bool Lexer::isString (std::string& token, Lexer::Type& type, const std::string& quotes)
 {
   std::size_t marker = _cursor;
 
-  if (_text[marker] == quote)
+/*
+  if (readWord (_text, quotes, marker, token))
   {
+    type = Lexer::Type::string;
+    _cursor = marker;
+    return true;
+  }
+
+  return false;
+*/
+
+  if (quotes.find (_text[marker]) != std::string::npos)
+  {
+    int quote = _text[marker];
     token = _text.substr (marker++, 1);
 
     int c;
@@ -738,8 +749,7 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
       {
         _cursor++;
 
-        if (isString     (ignoredToken, ignoredType, '\'') ||
-            isString     (ignoredToken, ignoredType, '"')  ||
+        if (isString     (ignoredToken, ignoredType, "'\"")  ||
             isContiguous (ignoredToken, ignoredType))
         {
           token = _text.substr (marker, _cursor - marker);
@@ -755,10 +765,9 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
     {
       _cursor++;
 
-      if (isString     (ignoredToken, ignoredType, '\'') ||
-          isString     (ignoredToken, ignoredType, '"')  ||
-          isContiguous (ignoredToken, ignoredType)       ||
-          _eos == _cursor                                ||
+      if (isString     (ignoredToken, ignoredType, "'\"") ||
+          isContiguous (ignoredToken, ignoredType)        ||
+          _eos == _cursor                                 ||
           _text[_cursor] == ' ')
       {
         token = _text.substr (marker, _cursor - marker);
@@ -920,11 +929,11 @@ bool Lexer::isSubstitution (std::string& token, Lexer::Type& type)
 
   std::string extractedToken;
   Lexer::Type extractedType;
-  if (isString (extractedToken, extractedType, '/'))
+  if (isString (extractedToken, extractedType, "/"))
   {
     --_cursor;  // Step back over the '/'.
 
-    if (isString (extractedToken, extractedType, '/'))
+    if (isString (extractedToken, extractedType, "/"))
     {
       if (_text[_cursor] == 'g')
         ++_cursor;
@@ -953,7 +962,7 @@ bool Lexer::isPattern (std::string& token, Lexer::Type& type)
 
   std::string extractedToken;
   Lexer::Type extractedType;
-  if (isString (extractedToken, extractedType, '/') &&
+  if (isString (extractedToken, extractedType, "/") &&
       (_text[_cursor] == '\0' ||
        isWhitespace (_text[_cursor])))
   {
