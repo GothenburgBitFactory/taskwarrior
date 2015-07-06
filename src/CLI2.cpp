@@ -161,6 +161,9 @@ void A2::decompose ()
   {
     std::string raw = _attributes["raw"];
 
+    //if (Directory (raw).exists ())
+    //  return;
+
     auto slash1 = raw.find ("/");
     auto slash2 = raw.find ("/", slash1 + 1);
     auto slash3 = raw.find ("/", slash2 + 1);
