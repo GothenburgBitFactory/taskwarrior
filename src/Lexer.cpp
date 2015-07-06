@@ -1221,3 +1221,82 @@ bool Lexer::isOneWord (const std::string& text)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// <name> [. <modifier>] <: | = | :: | :=> [<value>]
+bool Lexer::decomposePair (
+  const std::string& text,
+  std::string& name,
+  std::string& modifier,
+  std::string& value,
+  std::string& separator)
+{
+  // Look for the required elements.
+  std::string::size_type dot       = text.find ('.');
+  std::string::size_type sep_defer = text.find ("::");
+  std::string::size_type sep_eval  = text.find (":=");
+  std::string::size_type sep_colon = text.find (':');
+  std::string::size_type sep_equal = text.find ('=');
+
+  // Determine which separator is dominant, which would be the first one seen,
+  // taking into consideration the overlapping : characters.
+  std::string::size_type sep     = std::string::npos;
+  std::string::size_type sep_end = std::string::npos;
+  if (sep_defer != std::string::npos &&
+      (sep_eval  == std::string::npos || sep_defer <= sep_eval)  &&
+      (sep_colon == std::string::npos || sep_defer <= sep_colon) &&
+      (sep_equal == std::string::npos || sep_defer <= sep_equal))
+  {
+    sep     = sep_defer;
+    sep_end = sep_defer + 2;
+  }
+  else if (sep_eval != std::string::npos &&
+           (sep_defer == std::string::npos || sep_eval <= sep_defer) &&
+           (sep_colon == std::string::npos || sep_eval <= sep_colon) &&
+           (sep_equal == std::string::npos || sep_eval <= sep_equal))
+  {
+    sep     = sep_eval;
+    sep_end = sep_eval + 2;
+  }
+  else if (sep_colon != std::string::npos &&
+           (sep_defer == std::string::npos || sep_colon <= sep_defer) &&
+           (sep_eval  == std::string::npos || sep_colon <= sep_eval)  &&
+           (sep_equal == std::string::npos || sep_colon <= sep_equal))
+  {
+    sep     = sep_colon;
+    sep_end = sep_colon + 1;
+  }
+  else if (sep_equal != std::string::npos &&
+           (sep_defer == std::string::npos || sep_equal <= sep_defer) &&
+           (sep_eval  == std::string::npos || sep_equal <= sep_eval)  &&
+           (sep_colon == std::string::npos || sep_equal <= sep_colon))
+  {
+    sep     = sep_equal;
+    sep_end = sep_equal + 1;
+  }
+
+  // If sep is known, all is well.
+  if (sep != std::string::npos)
+  {
+    // Now the only unknown is whethere there is a modifier.
+    if (dot != std::string::npos && dot < sep)
+    {
+      name     = text.substr (0, dot);
+      modifier = text.substr (dot + 1, sep - dot - 1);
+    }
+    else
+    {
+      name     = text.substr (0, sep);
+      modifier = "";
+    }
+
+    separator = text.substr (sep, sep_end - sep);
+    value     = text.substr (sep_end);
+
+    // An empty name is an error.
+    if (name.length ())
+      return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////

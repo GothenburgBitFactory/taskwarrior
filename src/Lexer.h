@@ -57,8 +57,6 @@ public:
   static std::vector <std::pair <std::string, Lexer::Type>> tokens (const std::string&);
   static std::vector <std::string> split (const std::string&);
   static std::string typeToString (Lexer::Type);
-  static bool isAllDigits (const std::string&);
-  static bool isOneWord (const std::string&);
 
   // Static helpers.
   static const std::string typeName (const Lexer::Type&);
@@ -73,8 +71,11 @@ public:
   static bool isTripleCharOperator  (int, int, int, int);
   static bool isBoundary            (int, int);
   static bool isPunctuation         (int);
+  static bool isAllDigits           (const std::string&);
+  static bool isOneWord             (const std::string&);
   static void dequote               (std::string&);
   static bool wasQuoted             (const std::string&);
+  static bool decomposePair         (const std::string&, std::string&, std::string&, std::string&, std::string&);
 
   // Helpers.
   bool isEOS () const;
