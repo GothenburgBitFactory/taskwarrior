@@ -869,13 +869,23 @@ void CLI2::canonicalizeNames ()
   {
     if (a._lextype == Lexer::Type::pair)
     {
-      std::string name = a.attribute ("name");
-      std::string canonical;
-      if (canonicalize (canonical, "pseudo",    name)    ||
-          canonicalize (canonical, "attribute", name)    ||
-          canonicalize (canonical, "uda", name))
+      std::string raw = a.attribute ("raw");
+      if (raw.substr (0, 3) != "rc:" &&
+          raw.substr (0, 3) != "rc.")
       {
-        a.attribute ("canonical", canonical);
+        std::string name = a.attribute ("name");
+        std::string canonical;
+        if (canonicalize (canonical, "pseudo",    name)    ||
+            canonicalize (canonical, "attribute", name)    ||
+            canonicalize (canonical, "uda", name))
+        {
+          a.attribute ("canonical", canonical);
+        }
+        else
+        {
+          a._lextype = Lexer::Type::word;
+        }
+
         changes = true;
       }
     }
