@@ -5,6 +5,7 @@ How to Build Taskwarrior
       will be utilizing C++11.
     - libuuid
     - gnutls (optional)
+    - python 2.7 or 3 (optional, for running the test suite)
 
   Obtain and build code:
     $ git clone https://git.tasktools.org/scm/tm/task.git task.git

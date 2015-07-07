@@ -9,9 +9,15 @@ import argparse
 import logging
 import time
 from multiprocessing import cpu_count
-from Queue import Queue, Empty
 from threading import Thread
 from subprocess import call, Popen, PIPE
+
+try:
+    # python 2
+    from Queue import Queue, Empty
+except ImportError:
+    # python 3
+    from queue import Queue, Empty
 
 # Look for taskd in $PATH instead of task/src/
 os.environ["TASKD_USE_PATH"] = "1"
@@ -38,6 +44,9 @@ def run_test(testqueue, outqueue, threadname):
             # Premature end
             break
 
+        if sys.version_info > (3,):
+            out, err = out.decode('utf-8'), err.decode('utf-8')
+
         output = ("# {0}\n".format(os.path.basename(test)), out, err)
         log.debug("Collected output %s", output)
         outqueue.put(output)
@@ -62,8 +71,8 @@ class TestRunner(object):
             if os.access(test, os.X_OK):
                 # Executables only
                 if not cmd_args.serial:
-                    with open(test) as fh:
-                        if "/usr/bin/env python" in fh.readline():
+                    with open(test, 'rb') as fh:
+                        if b"/usr/bin/env python" in fh.read(50):
                             log.debug("Treating as parallel: %s", test)
                             self._parallelq.put(test)
                         else:
@@ -166,6 +175,7 @@ def parse_args():
     parser.add_argument('--verbose', '-v', action="store_true",
                         help="Also send TAP output to stdout")
     parser.add_argument('--logging', '-l', action="count",
+                        default=0,
                         help="Logging level. -lll is the highest level")
     parser.add_argument('--serial', action="store_true",
                         help="Do not run tests in parallel")
