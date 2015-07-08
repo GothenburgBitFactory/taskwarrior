@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1061);
+  UnitTest t (1067);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -215,7 +215,7 @@ int main (int argc, char** argv)
   std::string::size_type cursor = 0;
   std::string word;
   t.ok (Lexer::readWord ("'one two'", "'\"", cursor, word), "readWord ''one two'' --> true");
-  t.is (word, "one two",                                    "  word '" + word + "'");
+  t.is (word, "'one two'",                                  "  word '" + word + "'");
   t.is ((int)cursor, 9,                                     "  cursor");
 
   // static bool readWord (const std::string&, std::string::size_type&, std::string&);
@@ -241,12 +241,12 @@ int main (int argc, char** argv)
 
   std::string text = "one 'two' three\\ four";
   cursor = 0;
-  while (Lexer::readWord (text, cursor, word))
-  {
-    t.diag ("'" + word + "'");
-    while (Lexer::isWhitespace(text[cursor]))
-      ++cursor;
-  }
+  t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
+  t.is (word, "one",                                        "  word '" + word + "'");
+  t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
+  t.is (word, "'two'",                                      "  word '" + word + "'");
+  t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
+  t.is (word, "three four",                                 "  word '" + word + "'");
 
   // Test all Lexer types.
   #define NO {"",Lexer::Type::word}

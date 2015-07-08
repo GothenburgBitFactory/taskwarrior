@@ -1237,26 +1237,27 @@ bool Lexer::isOneWord (const std::string& text)
 //   "'"
 //   "\""
 //   'one two'
+// Result includes the quotes.
 bool Lexer::readWord (
   const std::string& text,
   const std::string& quotes,
   std::string::size_type& cursor,
   std::string& word)
 {
+  if (quotes.find (text[cursor]) == std::string::npos)
+    return false;
+
   std::string::size_type eos = text.length ();
+  int quote = text[cursor++];
+  word = quote;
 
-  int quote = 0;
-  if (quotes.find (text[cursor]) != std::string::npos)
-    quote = text[cursor++];
-
-  word = "";
   int c;
   while ((c = text[cursor]))
   {
     // Quoted word ends on a quote.
     if (quote && quote == c)
     {
-      ++cursor;
+      word += utf8_character (utf8_next_char (text, cursor));
       break;
     }
 
