@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1067);
+  UnitTest t (1069);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -247,6 +247,11 @@ int main (int argc, char** argv)
   t.is (word, "'two'",                                      "  word '" + word + "'");
   t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
   t.is (word, "three four",                                 "  word '" + word + "'");
+
+  text = "one     ";
+  cursor = 0;
+  t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one     \" --> true");
+  t.is (word, "one",                                        "  word '" + word + "'");
 
   // Test all Lexer types.
   #define NO {"",Lexer::Type::word}

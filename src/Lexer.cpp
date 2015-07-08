@@ -1324,16 +1324,18 @@ bool Lexer::readWord (
 {
   std::string::size_type eos = text.length ();
 
+  // Skip initial whitespace.
+  while (cursor <= eos &&
+         Lexer::isWhitespace(text[cursor]))
+    ++cursor;
+
   word = "";
   int c;
   while ((c = text[cursor]))
   {
     // Unquoted word ends on white space.
     if (Lexer::isWhitespace (c))
-    {
-      ++cursor;
       break;
-    }
 
     // Unicode U+XXXX or \uXXXX codepoint.
     else if (eos - cursor >= 6 &&
