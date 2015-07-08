@@ -40,16 +40,16 @@ class TestOperatorsIdentity(TestCase):
     def setUpClass(cls):
         cls.t = Task()
 
-        cls.t(("add", "one",   "project:A", "priority:H"))
-        cls.t(("add", "two",   "project:A"))
-        cls.t(("add", "three",              "priority:H"))
-        cls.t(("add", "four"))
+        cls.t("add one   project:A priority:H")
+        cls.t("add two   project:A")
+        cls.t("add three           priority:H")
+        cls.t("add four")
 
     # AND operator #
 
     def test_implicit_and(self):
         """operator implicit and :"""
-        code, out, err = self.t(("ls", "project:A", "priority:H"))
+        code, out, err = self.t("ls project:A priority:H")
 
         self.assertIn("one", out)
         self.assertNotIn("two", out)
@@ -58,7 +58,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_explicit_and(self):
         """operator explicit and :"""
-        code, out, err = self.t(("ls", "project:A", "and", "priority:H"))
+        code, out, err = self.t("ls project:A and priority:H")
 
         self.assertIn("one", out)
         self.assertNotIn("two", out)
@@ -67,7 +67,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_and_not(self):
         """operator and + not :"""
-        code, out, err = self.t(("ls", "project:A", "and", "priority.not:H"))
+        code, out, err = self.t("ls project:A and priority.not:H")
 
         self.assertNotIn("one", out)
         self.assertIn("two", out)
@@ -76,7 +76,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_implicit_and_equal(self):
         """operator implicit and ="""
-        code, out, err = self.t(("ls", "project:A", "priority:H"))
+        code, out, err = self.t("ls project:A priority:H")
 
         self.assertIn("one", out)
         self.assertNotIn("two", out)
@@ -85,7 +85,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_explicit_and_equal(self):
         """operator explicit and ="""
-        code, out, err = self.t(("ls", "project:A", "and", "priority:H"))
+        code, out, err = self.t("ls project:A and priority:H")
 
         self.assertIn("one", out)
         self.assertNotIn("two", out)
@@ -94,7 +94,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_and_not_equal(self):
         """operator and + not ="""
-        code, out, err = self.t(("ls", "project:A", "and", "priority.not:H"))
+        code, out, err = self.t("ls project:A and priority.not:H")
 
         self.assertNotIn("one", out)
         self.assertIn("two", out)
@@ -105,7 +105,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_colon_or_colon(self):
         """operator : or :"""
-        code, out, err = self.t(("ls", "project:A", "or", "priority:H"))
+        code, out, err = self.t("ls project:A or priority:H")
 
         self.assertIn("one", out)
         self.assertIn("two", out)
@@ -114,7 +114,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_colon_or_equal(self):
         """operator : or ="""
-        code, out, err = self.t(("ls", "project:A", "or", "priority=H"))
+        code, out, err = self.t("ls project:A or priority=H")
 
         self.assertIn("one", out)
         self.assertIn("two", out)
@@ -123,7 +123,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_equal_or_colon(self):
         """operator = or :"""
-        code, out, err = self.t(("ls", "project=A", "or", "priority:H"))
+        code, out, err = self.t("ls project=A or priority:H")
 
         self.assertIn("one", out)
         self.assertIn("two", out)
@@ -132,7 +132,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_equal_or_equal(self):
         """operator = or ="""
-        code, out, err = self.t(("ls", "project=A", "or", "priority=H"))
+        code, out, err = self.t("ls project=A or priority=H")
 
         self.assertIn("one", out)
         self.assertIn("two", out)
@@ -141,7 +141,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_colon_or_not_colon(self):
         """operator : or not :"""
-        code, out, err = self.t(("ls", "project:A", "or", "priority.not:H"))
+        code, out, err = self.t("ls project:A or priority.not:H")
 
         self.assertIn("one", out)
         self.assertIn("two", out)
@@ -152,7 +152,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_colon_xor_colon(self):
         """operator : xor :"""
-        code, out, err = self.t(("ls", "project:A", "xor", "priority:H"))
+        code, out, err = self.t("ls project:A xor priority:H")
 
         self.assertNotIn("one", out)
         self.assertIn("two", out)
@@ -161,7 +161,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_colon_xor_equal(self):
         """operator : xor ="""
-        code, out, err = self.t(("ls", "project:A", "xor", "priority=H"))
+        code, out, err = self.t("ls project:A xor priority=H")
 
         self.assertNotIn("one", out)
         self.assertIn("two", out)
@@ -170,7 +170,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_equal_xor_colon(self):
         """operator = xor :"""
-        code, out, err = self.t(("ls", "project=A", "xor", "priority:H"))
+        code, out, err = self.t("ls project=A xor priority:H")
 
         self.assertNotIn("one", out)
         self.assertIn("two", out)
@@ -179,7 +179,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_equal_xor_equal(self):
         """operator = xor ="""
-        code, out, err = self.t(("ls", "project=A", "xor", "priority=H"))
+        code, out, err = self.t("ls project=A xor priority=H")
 
         self.assertNotIn("one", out)
         self.assertIn("two", out)
@@ -188,7 +188,7 @@ class TestOperatorsIdentity(TestCase):
 
     def test_colon_xor_not_colon(self):
         """operator : xor not :"""
-        code, out, err = self.t(("ls", "project:A", "xor", "priority.not:H"))
+        code, out, err = self.t("ls project:A xor priority.not:H")
 
         self.assertIn("one", out)
         self.assertNotIn("two", out)
@@ -201,17 +201,17 @@ class TestOperatorsQuantity(TestCase):
     def setUpClass(cls):
         cls.t = Task()
 
-        cls.t(("add", "one",   "due:yesterday", "priority:H"))
-        cls.t(("add", "two",   "due:tomorrow",  "priority:M"))
-        cls.t(("add", "three",                  "priority:L"))
-        cls.t(("add", "four"))
-        cls.t(("add", "five",  "due:today"))
+        cls.t("add one   due:yesterday priority:H")
+        cls.t("add two   due:tomorrow  priority:M")
+        cls.t("add three               priority:L")
+        cls.t("add four")
+        cls.t("add five  due:today")
 
     # > operator #
 
     def test_due_after(self):
         """operator due.after:today"""
-        code, out, err = self.t(("ls", "due.after:today"))
+        code, out, err = self.t("ls due.after:today")
 
         self.assertNotIn("one", out)
         self.assertIn("two", out)
@@ -221,7 +221,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_due_greater(self):
         """operator due > today"""
-        code, out, err = self.t(("ls", "due", ">", "today"))
+        code, out, err = self.t("ls due > today")
 
         self.assertNotIn("one", out)
         self.assertIn("two", out)
@@ -231,7 +231,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_priority_above(self):
         """operator priority.above:M"""
-        code, out, err = self.t(("ls", "priority.above:M"))
+        code, out, err = self.t("ls priority.above:M")
 
         self.assertIn("one", out)
         self.assertNotIn("two", out)
@@ -241,7 +241,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_priority_greater(self):
         """operator priority > M"""
-        code, out, err = self.t(("ls", "priority", ">", "M"))
+        code, out, err = self.t("ls priority > M")
 
         self.assertIn("one", out)
         self.assertNotIn("two", out)
@@ -251,7 +251,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_description_greater(self):
         """operator description > o"""
-        code, out, err = self.t(("ls", "description", ">", "o"))
+        code, out, err = self.t("ls description > o")
 
         self.assertIn("one", out)
         self.assertIn("two", out)
@@ -261,7 +261,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_urgency_greater(self):
         """operator urgency > 10.0"""
-        code, out, err = self.t(("ls", "urgency", ">", "10.0"))
+        code, out, err = self.t("ls urgency > 10.0")
 
         self.assertIn("one", out)
         self.assertIn("two", out)
@@ -273,7 +273,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_due_before(self):
         """operator due.before:today"""
-        code, out, err = self.t(("ls", "due.before:today"))
+        code, out, err = self.t("ls due.before:today")
 
         self.assertIn("one", out)
         self.assertNotIn("two", out)
@@ -283,7 +283,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_due_smaller(self):
         """operator due < today"""
-        code, out, err = self.t(("ls", "due", "<", "today"))
+        code, out, err = self.t("ls due < today")
 
         self.assertIn("one", out)
         self.assertNotIn("two", out)
@@ -293,7 +293,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_priority_below(self):
         """operator priority.below:M"""
-        code, out, err = self.t(("ls", "priority.below:M"))
+        code, out, err = self.t("ls priority.below:M")
 
         self.assertNotIn("one", out)
         self.assertNotIn("two", out)
@@ -303,7 +303,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_priority_smaller(self):
         """operator priority < M"""
-        code, out, err = self.t(("ls", "priority", "<", "M"))
+        code, out, err = self.t("ls priority < M")
 
         self.assertNotIn("one", out)
         self.assertNotIn("two", out)
@@ -313,7 +313,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_description_smaller(self):
         """operator description < o"""
-        code, out, err = self.t(("ls", "description", "<", "o"))
+        code, out, err = self.t("ls description < o")
 
         self.assertNotIn("one", out)
         self.assertNotIn("two", out)
@@ -323,7 +323,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_urgency_smaller(self):
         """operator urgency < 10.0"""
-        code, out, err = self.t(("ls", "urgency", "<", "10.0"))
+        code, out, err = self.t("ls urgency < 10.0")
 
         self.assertNotIn("one", out)
         self.assertNotIn("two", out)
@@ -335,7 +335,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_due_greater_equal(self):
         """operator due >= today"""
-        code, out, err = self.t(("ls", "due", ">=", "today"))
+        code, out, err = self.t("ls due >= today")
 
         self.assertNotIn("one", out)
         self.assertIn("two", out)
@@ -345,7 +345,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_priority_greater_equal(self):
         """operator priority >= M"""
-        code, out, err = self.t(("ls", "priority", ">=", "M"))
+        code, out, err = self.t("ls priority >= M")
 
         self.assertIn("one", out)
         self.assertIn("two", out)
@@ -355,7 +355,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_description_greater_equal(self):
         """operator description >= o"""
-        code, out, err = self.t(("ls", "description", ">=", "o"))
+        code, out, err = self.t("ls description >= o")
 
         # NOTE >= is > + ==, not > + =
         # a single = is a partial match, check: task calc 'a = aa' vs 'a == aa'
@@ -367,7 +367,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_urgency_greater_equal(self):
         """operator urgency >= 10.0"""
-        code, out, err = self.t(("ls", "urgency", ">=", "10.0"))
+        code, out, err = self.t("ls urgency >= 10.0")
 
         self.assertIn("one", out)
         self.assertIn("two", out)
@@ -379,7 +379,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_due_smaller_equal(self):
         """operator due <= today"""
-        code, out, err = self.t(("ls", "due", "<=", "today"))
+        code, out, err = self.t("ls due <= today")
 
         self.assertIn("one", out)
         self.assertNotIn("two", out)
@@ -389,7 +389,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_priority_smaller_equal(self):
         """operator priority <= M"""
-        code, out, err = self.t(("ls", "priority", "<=", "M"))
+        code, out, err = self.t("ls priority <= M")
 
         self.assertNotIn("one", out)
         self.assertIn("two", out)
@@ -399,7 +399,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_description_smaller_equal(self):
         """operator description <= o"""
-        code, out, err = self.t(("ls", "description", "<=", "o"))
+        code, out, err = self.t("ls description <= o")
 
         # NOTE <= is < + ==, not < + =
         # a single = is a partial match, check: task calc 'a = aa' vs 'a == aa'
@@ -411,7 +411,7 @@ class TestOperatorsQuantity(TestCase):
 
     def test_urgency_smaller_equal(self):
         """operator urgency <= 10.0"""
-        code, out, err = self.t(("ls", "urgency", "<=", "10.0"))
+        code, out, err = self.t("ls urgency <= 10.0")
 
         self.assertNotIn("one", out)
         self.assertNotIn("two", out)
