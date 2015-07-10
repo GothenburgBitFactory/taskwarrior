@@ -382,7 +382,6 @@ bool Lexer::isString (std::string& token, Lexer::Type& type, const std::string& 
 
   return false;
 */
-
   if (quotes.find (_text[marker]) != std::string::npos)
   {
     int quote = _text[marker];
@@ -728,9 +727,8 @@ bool Lexer::isURL (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::pair
-//   <identifier> :  [ <string> | <word> ]
-//   <identifier> =  [ <string> | <word> ]
-//   <identifier> := [ <string> | <word> ]
+//   <identifier> <separator> [ <string> | <word> ]
+//   separator '::' | ':=' | ':' | '='
 bool Lexer::isPair (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
@@ -739,41 +737,27 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
   Lexer::Type ignoredType;
   if (isIdentifier (ignoredToken, ignoredType))
   {
-    // Look for rc.name{:=,=,:}value first, because '=' is allowed.
-    if (ignoredToken == "rc" ||
-        ignoredToken.substr (0, 3) == "rc.")
+    // Look for a valid separator.
+    std::string separator = _text.substr (_cursor, 2);
+    if (separator == "::" || separator == ":=")
+      _cursor += 2;
+    else if (separator[0] == ':' || separator[0] == '=')
+      _cursor++;
+    else
     {
-      if (_eos - _cursor > 1 &&
-          (_text[_cursor] == ':' ||
-           _text[_cursor] == '='))
-      {
-        _cursor++;
-
-        if (isString     (ignoredToken, ignoredType, "'\"")  ||
-            isContiguous (ignoredToken, ignoredType))
-        {
-          token = _text.substr (marker, _cursor - marker);
-          type = Lexer::Type::pair;
-          return true;
-        }
-      }
+      _cursor = marker;
+      return false;
     }
 
-    if (_eos - _cursor >= 1    &&
-        (_text[_cursor] == ':' ||
-         _text[_cursor] == '='))
+    // String, word or nothing are all valid.
+    if (readWord (_text, "'\"", _cursor, ignoredToken) ||
+        readWord (_text,        _cursor, ignoredToken) ||
+        isEOS ()                                       ||
+        isWhitespace (_text[_cursor]))
     {
-      _cursor++;
-
-      if (isString     (ignoredToken, ignoredType, "'\"") ||
-          isContiguous (ignoredToken, ignoredType)        ||
-          _eos == _cursor                                 ||
-          _text[_cursor] == ' ')
-      {
-        token = _text.substr (marker, _cursor - marker);
-        type = Lexer::Type::pair;
-        return true;
-      }
+      token = _text.substr (marker, _cursor - marker);
+      type = Lexer::Type::pair;
+      return true;
     }
   }
 
@@ -841,7 +825,7 @@ bool Lexer::isSet (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::tag
-//   ^ | '(' | ')' | <isWhiteSpace>
+//   ^ | '(' | ')' | <isWhitespace>
 //     [ +|- ] <isIdentifierStart> [ <isIdentifierNext> ]*
 bool Lexer::isTag (std::string& token, Lexer::Type& type)
 {
@@ -922,7 +906,7 @@ bool Lexer::isPath (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::substitution
-//   / <unquoted-string> / <unquoted-string> / [g]  <EOS> | <isWhiteSpace>
+//   / <unquoted-string> / <unquoted-string> / [g]  <EOS> | <isWhitespace>
 bool Lexer::isSubstitution (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
@@ -955,7 +939,7 @@ bool Lexer::isSubstitution (std::string& token, Lexer::Type& type)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::pattern
-//   / <unquoted-string> /  <EOS> | <isWhiteSpace>
+//   / <unquoted-string> /  <EOS> | <isWhitespace>
 bool Lexer::isPattern (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
