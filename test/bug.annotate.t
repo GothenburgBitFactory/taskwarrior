@@ -45,21 +45,24 @@ class TestAnnotation(TestCase):
     def test_blank_annotation(self):
         """Verify blank annotations are prevented"""
         self.t("add foo")
+
         code, out, err = self.t.runError("1 annotate")
         self.assertIn("Additional text must be provided", err)
 
     def test_filterless_annotate_decline(self):
         """Verify filterless annotation is trapped, declined"""
-        code, out, err = self.t.runError(("annotate", "bar"), input="no\n")
+        self.t("add foo")
 
-        # Fails.  This output is not seen until after the "no\n" has been processed.
-        self.assertIn("Command prevented from running", out)
+        code, out, err = self.t.runError(("annotate", "bar"), input="no\n")
+        self.assertIn("Command prevented from running", err)
+        self.assertNotIn("Command prevented from running", out)
 
     def test_filterless_annotate(self):
         """Verify filterless annotation is trapped, overridden"""
+        self.t("add foo")
         code, out, err = self.t(("annotate", "bar"), input="yes\n")
 
-        # Fails.  This output is not seen until after the "yes\n" has been processed.
+        self.assertNotIn("Command prevented from running", err)
         self.assertNotIn("Command prevented from running", out)
         self.assertIn("Annotated 1 task", out)
 
