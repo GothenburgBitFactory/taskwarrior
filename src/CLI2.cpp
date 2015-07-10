@@ -437,11 +437,26 @@ void CLI2::lexArguments ()
     }
     else
     {
-      A2 unknown (_original_args[i], Lexer::Type::word);
-      if (lex.wasQuoted (_original_args[i]))
-        unknown.tag ("QUOTED");
+      std::string::size_type cursor = 0;
+      std::string word;
+      if (Lexer::readWord ("'" + _original_args[i] + "'", "'", cursor, word))
+      {
+        A2 unknown (word, Lexer::Type::word);
+        if (lex.wasQuoted (_original_args[i]))
+          unknown.tag ("QUOTED");
 
-      _args.push_back (unknown);
+        _args.push_back (unknown);
+      }
+
+      // This branch may have no use-case.
+      else
+      {
+        A2 unknown (_original_args[i], Lexer::Type::word);
+        if (lex.wasQuoted (_original_args[i]))
+          unknown.tag ("QUOTED");
+
+        _args.push_back (unknown);
+      }
     }
   }
 
