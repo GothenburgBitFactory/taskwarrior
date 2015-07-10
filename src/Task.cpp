@@ -2122,6 +2122,8 @@ void Task::modify (modType type, bool text_required /* = false */)
   //  any.
   if (text != "")
   {
+    Lexer::dequote (text);
+
     switch (type)
     {
     case modReplace:
