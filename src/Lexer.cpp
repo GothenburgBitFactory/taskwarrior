@@ -1324,11 +1324,6 @@ bool Lexer::readWord (
 {
   std::string::size_type eos = text.length ();
 
-  // Skip initial whitespace.
-  while (cursor <= eos &&
-         Lexer::isWhitespace(text[cursor]))
-    ++cursor;
-
   word = "";
   int c;
   while ((c = text[cursor]))

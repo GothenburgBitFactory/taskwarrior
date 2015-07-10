@@ -243,8 +243,10 @@ int main (int argc, char** argv)
   cursor = 0;
   t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
   t.is (word, "one",                                        "  word '" + word + "'");
+  cursor++;
   t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
   t.is (word, "'two'",                                      "  word '" + word + "'");
+  cursor++;
   t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one 'two' three\\ four\" --> true");
   t.is (word, "three four",                                 "  word '" + word + "'");
 
