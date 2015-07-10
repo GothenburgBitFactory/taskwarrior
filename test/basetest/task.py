@@ -185,7 +185,7 @@ class Task(object):
 
         If you wish to pass instructions to task such as confirmations or other
         input via stdin, you can do so by providing a input string.
-        Such as input="y\ny".
+        Such as input="y\ny\n".
 
         If merge_streams=True stdout and stderr will be merged into stdout.
 
@@ -219,7 +219,7 @@ class Task(object):
 
         If you wish to pass instructions to task such as confirmations or other
         input via stdin, you can do so by providing a input string.
-        Such as input="y\ny".
+        Such as input="y\ny\n".
 
         If merge_streams=True stdout and stderr will be merged into stdout.
 
