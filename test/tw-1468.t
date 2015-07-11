@@ -49,9 +49,9 @@ class Test1468(TestCase):
         self.assertIn('buy milk', out)
         self.assertIn('mow the lawn', out)
 
-    def test_attribute_and_implicit_search_filter(self):
-        """Attribute and implicit search filter (project:home lawn)"""
-        code, out, err = self.t('list project:home lawn')
+    def test_attribute_and_search_filter(self):
+        """Attribute and implicit search filter (project:home /lawn/)"""
+        code, out, err = self.t('list project:home /lawn/')
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
         self.assertNotIn('buy milk', out)
         self.assertIn('mow the lawn', out)
