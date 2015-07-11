@@ -72,143 +72,143 @@ class TestColorRules(TestCase):
         cls.t.config('color.uda.xxx',         'red')
         cls.t.config('color.uda.xxx.4',       'blue')
 
-        cls.t(('add', 'control task'))                             # 1
-        cls.t(('add', 'active task'))                              # 2
-        cls.t(('2', 'start'))
-        cls.t(('add', 'blocked task'))                             # 3
-        cls.t(('add', 'blocking task'))                            # 4
-        cls.t(('3', 'modify', 'depends:4'))
-        cls.t(('add', 'tomorrow',  'due:tomorrow'))                # 5
-        cls.t(('add', 'yesterday', 'due:yesterday'))               # 6
-        cls.t(('add', 'someday',   'due:yesterday'))               # 7
-        cls.t(('add', 'project_x', 'project:x'))                   # 8
-        cls.t(('add', 'pri_h',     'priority:H'))                  # 9
-        cls.t(('add', 'pri_m',     'priority:M'))                  # 10
-        cls.t(('add', 'pri_l',     'priority:L'))                  # 11
-        cls.t(('add', 'keyword'))                                  # 12
-        cls.t(('add', 'tag_x',     '+x'))                          # 13
-        cls.t(('add', 'uda_xxx_1', 'xxx:1'))                       # 14
-        cls.t(('add', 'uda_xxx_4', 'xxx:4'))                       # 15
-        cls.t(('add', 'recurring', 'due:tomorrow', 'recur:1week')) # 16 # Keep this last
+        cls.t('add control task')                         # 1
+        cls.t('add active task')                          # 2
+        cls.t('2 start')
+        cls.t('add blocked task')                         # 3
+        cls.t('add blocking task')                        # 4
+        cls.t('3 modify depends:4')
+        cls.t('add tomorrow  due:tomorrow')               # 5
+        cls.t('add yesterday due:yesterday')              # 6
+        cls.t('add someday   due:yesterday')              # 7
+        cls.t('add project_x project:x')                  # 8
+        cls.t('add pri_h     priority:H')                 # 9
+        cls.t('add pri_m     priority:M')                 # 10
+        cls.t('add pri_l     priority:L')                 # 11
+        cls.t('add keyword')                              # 12
+        cls.t('add tag_x     +x')                         # 13
+        cls.t('add uda_xxx_1 xxx:1')                      # 14
+        cls.t('add uda_xxx_4 xxx:4')                      # 15
+        cls.t('add recurring due:tomorrow recur:1week')   # 16 # Keep this last
 
     def test_control(self):
         """No color on control task."""
-        code, out, err = self.t(('1', 'info'))
+        code, out, err = self.t('1 info')
         self.assertNotIn('\x1b[', out)
 
     def test_disable_in_pipe(self):
         """No color in pipe unless forced."""
-        code, out, err = self.t(('2', 'info', 'rc._forcecolor:off'))
+        code, out, err = self.t('2 info rc._forcecolor:off')
         self.assertNotIn('\x1b[', out)
 
     def test_active(self):
         """Active color rule."""
-        code, out, err = self.t(('/active/', 'info'))
+        code, out, err = self.t('/active/ info')
         self.assertIn('\x1b[31m', out)
 
     def test_blocked(self):
         """Blocked color rule."""
-        code, out, err = self.t(('/blocked/', 'info'))
+        code, out, err = self.t('/blocked/ info')
         self.assertIn('\x1b[31m', out)
 
     def test_blocking(self):
         """Blocking color rule."""
-        code, out, err = self.t(('/blocking/', 'info'))
+        code, out, err = self.t('/blocking/ info')
         self.assertIn('\x1b[34m', out)
 
     def test_due_yesterday(self):
         """Overdue color rule."""
-        code, out, err = self.t(('/yesterday/', 'info'))
+        code, out, err = self.t('/yesterday/ info')
         self.assertIn('\x1b[34m', out)
 
     def test_due_tomorrow(self):
         """Due tomorrow color rule."""
-        code, out, err = self.t(('/tomorrow/', 'info'))
+        code, out, err = self.t('/tomorrow/ info')
         self.assertIn('\x1b[31m', out)
 
     def test_due_someday(self):
         """Due someday color rule."""
-        code, out, err = self.t(('/someday/', 'info'))
+        code, out, err = self.t('/someday/ info')
         self.assertIn('\x1b[', out)
 
     def test_color_error(self):
         """Error color."""
-        code, out, err = self.t.runError(('add', 'error', 'priority:X'))
+        code, out, err = self.t.runError('add error priority:X')
         self.assertIn('\x1b[34m', err)
 
     def test_color_header(self):
         """Header color."""
-        code, out, err = self.t(('rc.verbose=header', '/control/'))
+        code, out, err = self.t('rc.verbose=header /control/')
         self.assertIn('\x1b[34m', err)
 
     def test_color_footnote(self):
         """Footnote color."""
-        code, out, err = self.t(('rc.verbose=footnote', '/control/'))
+        code, out, err = self.t('rc.verbose=footnote /control/')
         self.assertIn('\x1b[31mConfiguration override', err)
 
     def test_color_debug(self):
         """Debug color."""
-        code, out, err = self.t(('rc.debug=1', '/control/'))
+        code, out, err = self.t('rc.debug=1 /control/')
         self.assertIn('\x1b[32mTimer', err)
 
     def test_project_x(self):
         """Project x color rule."""
-        code, out, err = self.t(('/project_x/', 'info'))
+        code, out, err = self.t('/project_x/ info')
         self.assertIn('\x1b[31m', out)
 
     def test_project_none(self):
         """Project none color rule."""
-        code, out, err = self.t(('/control/', 'rc.color.project.none=red', 'info'))
+        code, out, err = self.t('/control/ rc.color.project.none=red info')
         self.assertIn('\x1b[31m', out)
 
     def test_priority_h(self):
         """Priority H color rule."""
-        code, out, err = self.t(('/pri_h/', 'info'))
+        code, out, err = self.t('/pri_h/ info')
         self.assertIn('\x1b[31m', out)
 
     def test_priority_m(self):
         """Priority M color rule."""
-        code, out, err = self.t(('/pri_m/', 'info'))
+        code, out, err = self.t('/pri_m/ info')
         self.assertIn('\x1b[34m', out)
 
     def test_priority_l(self):
         """Priority L color rule."""
-        code, out, err = self.t(('/pri_l/', 'info'))
+        code, out, err = self.t('/pri_l/ info')
         self.assertIn('\x1b[32m', out)
 
     def test_keyword(self):
         """Keyword color rule."""
-        code, out, err = self.t(('/keyword/', 'info'))
+        code, out, err = self.t('/keyword/ info')
         self.assertIn('\x1b[31m', out)
 
     def test_tag_x(self):
         """Tag x color rule."""
-        code, out, err = self.t(('/tag_x/', 'info'))
+        code, out, err = self.t('/tag_x/ info')
         self.assertIn('\x1b[31m', out)
 
     def test_tag_none(self):
         """Tag none color rule."""
-        code, out, err = self.t(('/control/', 'rc.color.tag.none=red', 'info'))
+        code, out, err = self.t('/control/ rc.color.tag.none=red info')
         self.assertIn('\x1b[31m', out)
 
     def test_tagged(self):
         """Tagged color rule."""
-        code, out, err = self.t(('/tag_x/', 'rc.color.tag.x=', 'rc.color.tagged=blue', 'info'))
+        code, out, err = self.t('/tag_x/ rc.color.tag.x= rc.color.tagged=blue info')
         self.assertIn('\x1b[34m', out)
 
     def test_recurring(self):
         """Recurring color rule."""
-        code, out, err = self.t(('/recurring/', 'info'))
+        code, out, err = self.t('/recurring/ info')
         self.assertIn('\x1b[31m', out)
 
     def test_uda(self):
         """UDA color rule."""
-        code, out, err = self.t(('/uda_xxx_1/', 'info'))
+        code, out, err = self.t('/uda_xxx_1/ info')
         self.assertIn('\x1b[31m', out)
 
     def test_uda_value(self):
         """UDA Value color rule."""
-        code, out, err = self.t(('/uda_xxx_4/', 'rc.color.uda.xxx=', 'info'))
+        code, out, err = self.t('/uda_xxx_4/ rc.color.uda.xxx= info')
         self.assertIn('\x1b[34m', out)
 
 
