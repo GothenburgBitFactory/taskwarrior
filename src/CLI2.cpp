@@ -427,7 +427,7 @@ void CLI2::lexArguments ()
       else if (terminated)
         type = Lexer::Type::word;
 
-      A2 a (lexeme, type);
+      A2 a (_original_args[i], type);
       if (terminated)
         a.tag ("TERMINATED");
       if (quoted)
