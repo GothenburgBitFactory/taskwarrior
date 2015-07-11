@@ -1290,7 +1290,8 @@ bool Lexer::readWord (
       word += utf8_character (utf8_next_char (text, cursor));
   }
 
-  return word.length () > 0 ? true : false;
+  // Word has to at least contain the quotes.
+  return word.length () >= 2 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
