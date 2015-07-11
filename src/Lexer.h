@@ -80,6 +80,7 @@ public:
   static bool readWord              (const std::string&, std::string::size_type&, std::string&);
   static bool decomposePair         (const std::string&, std::string&, std::string&, std::string&, std::string&);
   static bool decomposeSubstitution (const std::string&, std::string&, std::string&, std::string&);
+  static bool decomposePattern      (const std::string&, std::string&, std::string&);
   static int hexToInt               (int);
   static int hexToInt               (int, int);
   static int hexToInt               (int, int, int, int);
