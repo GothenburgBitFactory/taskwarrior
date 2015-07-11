@@ -324,14 +324,14 @@ bool Lexer::isPunctuation (int c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Lexer::dequote (std::string& input)
+void Lexer::dequote (std::string& input, const std::string& quotes)
 {
   int quote = input[0];
-  size_t len = input.length ();
-  if ((quote == '\'' || quote == '"') &&
-      quote == input[len - 1])
+  if (quotes.find (quote) != std::string::npos)
   {
-    input = input.substr (1, len - 2);
+    size_t len = input.length ();
+    if (input[0] == input[len - 1])
+      input = input.substr (1, len - 2);
   }
 }
 
@@ -1397,6 +1397,40 @@ bool Lexer::decomposePair (
     // An empty name is an error.
     if (name.length ())
       return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// / <from> / <to> / [<flags>]
+bool Lexer::decomposeSubstitution (
+  const std::string& text,
+  std::string& from,
+  std::string& to,
+  std::string& flags)
+{
+  std::string parsed_from;
+  std::string::size_type cursor = 0;
+  if (readWord (text, "/", cursor, parsed_from) &&
+      parsed_from.length ())
+  {
+    --cursor;
+    std::string parsed_to;
+    if (readWord (text, "/", cursor, parsed_to))
+    {
+      std::string parsed_flags = text.substr (cursor);
+      if (parsed_flags.find ("/") == std::string::npos)
+      {
+        dequote (parsed_from, "/");
+        dequote (parsed_to,   "/");
+
+        from  = parsed_from;
+        to    = parsed_to;
+        flags = parsed_flags;
+        return true;
+      }
+    }
   }
 
   return false;
