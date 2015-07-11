@@ -371,83 +371,11 @@ int Lexer::hexToInt (int c0, int c1, int c2, int c3)
 bool Lexer::isString (std::string& token, Lexer::Type& type, const std::string& quotes)
 {
   std::size_t marker = _cursor;
-
-/*
   if (readWord (_text, quotes, marker, token))
   {
     type = Lexer::Type::string;
     _cursor = marker;
     return true;
-  }
-
-  return false;
-*/
-  if (quotes.find (_text[marker]) != std::string::npos)
-  {
-    int quote = _text[marker];
-    token = _text.substr (marker++, 1);
-
-    int c;
-    while ((c = _text[marker]))
-    {
-      // EOS.
-      if (c == quote)
-        break;
-
-      // Unicode U+XXXX or \uXXXX codepoint.
-      else if (_eos - marker >= 6 &&
-               ((_text[marker + 0] == 'U' && _text[marker + 1] == '+') ||
-                (_text[marker + 0] == '\\' && _text[marker + 1] == 'u')) &&
-               isHexDigit (_text[marker + 2]) &&
-               isHexDigit (_text[marker + 3]) &&
-               isHexDigit (_text[marker + 4]) &&
-               isHexDigit (_text[marker + 5]))
-      {
-        token += utf8_character (
-                   hexToInt (
-                     _text[marker + 2],
-                     _text[marker + 3],
-                     _text[marker + 4],
-                     _text[marker + 5]));
-        marker += 6;
-      }
-
-      // An escaped thing.
-      else if (c == '\\')
-      {
-        c = _text[++marker];
-
-        switch (c)
-        {
-        case '"':  token += (char) 0x22; ++marker; break;
-        case '\'': token += (char) 0x27; ++marker; break;
-        case '\\': token += (char) 0x5C; ++marker; break;
-        case 'b':  token += (char) 0x08; ++marker; break;
-        case 'f':  token += (char) 0x0C; ++marker; break;
-        case 'n':  token += (char) 0x0A; ++marker; break;
-        case 'r':  token += (char) 0x0D; ++marker; break;
-        case 't':  token += (char) 0x09; ++marker; break;
-        case 'v':  token += (char) 0x0B; ++marker; break;
-
-        // This pass-through default case means that anythign can be escaped
-        // harmlessly. In particular 'quote' is included, if it not one of the
-        // above characters.
-        default:   token += (char) c;    ++marker; break;
-        }
-      }
-
-      // Ordinary character.
-      else
-        token += utf8_character (utf8_next_char (_text, marker));
-    }
-
-    if (_text[marker] == quote)
-    {
-      token += _text.substr (marker++, 1);
-      type = Lexer::Type::string;
-      _cursor = marker;
-      return true;
-    }
   }
 
   return false;
