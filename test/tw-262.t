@@ -71,7 +71,7 @@ class TestBug262(TestCase):
 
     def test_proj_isnt_space_trailing(self):
         """project.isnt works if trailing space is present"""
-        command = (" project.isnt:tw",)
+        command = ("project.isnt:tw ",)
         self._check_expectation(command)
 
     def test_proj_isnt_parenthesis(self):
