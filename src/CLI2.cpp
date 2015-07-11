@@ -441,6 +441,7 @@ void CLI2::lexArguments ()
       std::string word;
       if (Lexer::readWord ("'" + _original_args[i] + "'", "'", cursor, word))
       {
+        Lexer::dequote (word);
         A2 unknown (word, Lexer::Type::word);
         if (lex.wasQuoted (_original_args[i]))
           unknown.tag ("QUOTED");
