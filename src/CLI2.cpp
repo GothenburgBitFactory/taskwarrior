@@ -1061,142 +1061,138 @@ void CLI2::desugarFilterAttributes ()
         a.hasTag ("FILTER"))
     {
       std::string raw = a.attribute ("raw");
-      std::string name;
-      std::string mod;
-      std::string sep;
-      std::string value;
-      if (Lexer::decomposePair (raw, name, mod, sep, value))
+      std::string name  = a.attribute ("name");
+      std::string mod   = a.attribute ("modifier");
+      std::string sep   = a.attribute ("separator");
+      std::string value = a.attribute ("value");
+
+      if (value == "")
+        value = "''";
+
+      bool found = false;
+      std::string canonical;
+      if (canonicalize (canonical, "pseudo", name))
       {
-        if (value == "")
-          value = "''";
-
-        bool found = false;
-        std::string canonical;
-        if (canonicalize (canonical, "pseudo", name))
-        {
-          A2 lhs (raw, Lexer::Type::identifier);
-          lhs.attribute ("canonical", canonical);
-          lhs.attribute ("value", value);
-          lhs.tag ("PSEUDO");
-          reconstructed.push_back (lhs);
-          found = true;
-        }
-        else if (canonicalize (canonical, "attribute", name) ||
-                 canonicalize (canonical, "uda",       name))
-        {
-          // TODO The "!" modifier is being dropped.
-
-          A2 lhs (name, Lexer::Type::dom);
-          lhs.tag ("FILTER");
-          lhs.attribute ("canonical", canonical);
-          lhs.attribute ("modifier", mod);
-
-          A2 op ("", Lexer::Type::op);
-          op.tag ("FILTER");
-
-          A2 rhs ("", Lexer::Type::string);
-          rhs.tag ("FILTER");
-
-          // Special case for '<name>:<value>'.
-          if (mod == "")
-          {
-            op.attribute ("raw", "=");
-            rhs.attribute ("raw", value);
-          }
-          else if (mod == "before" || mod == "under" || mod == "below")
-          {
-            op.attribute ("raw", "<");
-            rhs.attribute ("raw", value);
-          }
-          else if (mod == "after" || mod == "over" || mod == "above")
-          {
-            op.attribute ("raw", ">");
-            rhs.attribute ("raw", value);
-          }
-          else if (mod == "none")
-          {
-            op.attribute ("raw", "==");
-            rhs.attribute ("raw", "''");
-          }
-          else if (mod == "any")
-          {
-            op.attribute ("raw", "!==");
-            rhs.attribute ("raw", "''");
-          }
-          else if (mod == "is" || mod == "equals")
-          {
-            op.attribute ("raw", "==");
-            rhs.attribute ("raw", value);
-          }
-          else if (mod == "isnt" || mod == "not")
-          {
-            op.attribute ("raw", "!==");
-            rhs.attribute ("raw", value);
-          }
-          else if (mod == "has" || mod == "contains")
-          {
-            op.attribute ("raw", "~");
-            rhs.attribute ("raw", value);
-          }
-          else if (mod == "hasnt")
-          {
-            op.attribute ("raw", "!~");
-            rhs.attribute ("raw", value);
-          }
-          else if (mod == "startswith" || mod == "left")
-          {
-            op.attribute ("raw", "~");
-            rhs.attribute ("raw", "^" + value);
-          }
-          else if (mod == "endswith" || mod == "right")
-          {
-            op.attribute ("raw", "~");
-            rhs.attribute ("raw", value + "$");
-          }
-          else if (mod == "word")
-          {
-            op.attribute ("raw", "~");
-#if defined (DARWIN)
-            rhs.attribute ("raw", value);
-#elif defined (SOLARIS)
-            rhs.attribute ("raw", "\\<" + value + "\\>");
-#else
-            rhs.attribute ("raw", "\\b" + value + "\\b");
-#endif
-          }
-          else if (mod == "noword")
-          {
-            op.attribute ("raw", "!~");
-#if defined (DARWIN)
-            rhs.attribute ("raw", value);
-#elif defined (SOLARIS)
-            rhs.attribute ("raw", "\\<" + value + "\\>");
-#else
-            rhs.attribute ("raw", "\\b" + value + "\\b");
-#endif
-          }
-          else
-            throw format (STRING_PARSER_UNKNOWN_ATTMOD, mod);
-
-          reconstructed.push_back (lhs);
-          reconstructed.push_back (op);
-          reconstructed.push_back (rhs);
-          found = true;
-        }
-        // If the name does not canonicalize to either an attribute or a UDA
-        // then it is not a recognized Lexer::Type::pair, so downgrade it to
-        // Lexer::Type::word.
-        else
-        {
-          a._lextype = Lexer::Type::word;
-        }
-
-        if (found)
-          changes = true;
-        else
-          reconstructed.push_back (a);
+        A2 lhs (raw, Lexer::Type::identifier);
+        lhs.attribute ("canonical", canonical);
+        lhs.attribute ("value", value);
+        lhs.tag ("PSEUDO");
+        reconstructed.push_back (lhs);
+        found = true;
       }
-      // Failed to decompose.
+      else if (canonicalize (canonical, "attribute", name) ||
+               canonicalize (canonical, "uda",       name))
+      {
+        // TODO The "!" modifier is being dropped.
+
+        A2 lhs (name, Lexer::Type::dom);
+        lhs.tag ("FILTER");
+        lhs.attribute ("canonical", canonical);
+        lhs.attribute ("modifier", mod);
+
+        A2 op ("", Lexer::Type::op);
+        op.tag ("FILTER");
+
+        A2 rhs ("", Lexer::Type::string);
+        rhs.tag ("FILTER");
+
+        // Special case for '<name>:<value>'.
+        if (mod == "")
+        {
+          op.attribute ("raw", "=");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "before" || mod == "under" || mod == "below")
+        {
+          op.attribute ("raw", "<");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "after" || mod == "over" || mod == "above")
+        {
+          op.attribute ("raw", ">");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "none")
+        {
+          op.attribute ("raw", "==");
+          rhs.attribute ("raw", "''");
+        }
+        else if (mod == "any")
+        {
+          op.attribute ("raw", "!==");
+          rhs.attribute ("raw", "''");
+        }
+        else if (mod == "is" || mod == "equals")
+        {
+          op.attribute ("raw", "==");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "isnt" || mod == "not")
+        {
+          op.attribute ("raw", "!==");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "has" || mod == "contains")
+        {
+          op.attribute ("raw", "~");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "hasnt")
+        {
+          op.attribute ("raw", "!~");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "startswith" || mod == "left")
+        {
+          op.attribute ("raw", "~");
+          rhs.attribute ("raw", "^" + value);
+        }
+        else if (mod == "endswith" || mod == "right")
+        {
+          op.attribute ("raw", "~");
+          rhs.attribute ("raw", value + "$");
+        }
+        else if (mod == "word")
+        {
+          op.attribute ("raw", "~");
+#if defined (DARWIN)
+          rhs.attribute ("raw", value);
+#elif defined (SOLARIS)
+          rhs.attribute ("raw", "\\<" + value + "\\>");
+#else
+          rhs.attribute ("raw", "\\b" + value + "\\b");
+#endif
+        }
+        else if (mod == "noword")
+        {
+          op.attribute ("raw", "!~");
+#if defined (DARWIN)
+          rhs.attribute ("raw", value);
+#elif defined (SOLARIS)
+          rhs.attribute ("raw", "\\<" + value + "\\>");
+#else
+          rhs.attribute ("raw", "\\b" + value + "\\b");
+#endif
+        }
+        else
+          throw format (STRING_PARSER_UNKNOWN_ATTMOD, mod);
+
+        reconstructed.push_back (lhs);
+        reconstructed.push_back (op);
+        reconstructed.push_back (rhs);
+        found = true;
+      }
+
+      // If the name does not canonicalize to either an attribute or a UDA
+      // then it is not a recognized Lexer::Type::pair, so downgrade it to
+      // Lexer::Type::word.
+      else
+      {
+        a._lextype = Lexer::Type::word;
+      }
+
+      if (found)
+        changes = true;
       else
         reconstructed.push_back (a);
     }
