@@ -295,6 +295,22 @@ bool Lexer::isBoundary (int left, int right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isHardBoundary (int left, int right)
+{
+  // EOS
+  if (right == '\0')                                               return true;
+
+  // FILTER operators that don't need to be surrounded by whitespace.
+  if (left == '(' ||
+      left == ')' ||
+      right == '(' ||
+      right == ')')
+    return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Lexer::isPunctuation (int c)
 {
   return isprint (c)   &&
@@ -1230,6 +1246,11 @@ bool Lexer::readWord (
 //   abcU+0020def
 //   abc\u0020def
 //   a\tb
+//
+// Ends at:
+//   Lexer::isEOS
+//   Lexer::isWhitespace
+//   Lexer::isHardBoundary
 bool Lexer::readWord (
   const std::string& text,
   std::string::size_type& cursor,
@@ -1239,10 +1260,15 @@ bool Lexer::readWord (
 
   word = "";
   int c;
-  while ((c = text[cursor]))
+  int prev = 0;
+  while ((c = text[cursor]))  // Handles EOS.
   {
     // Unquoted word ends on white space.
     if (Lexer::isWhitespace (c))
+      break;
+
+    // Parentheses mostly.
+    if (prev && Lexer::isHardBoundary (prev, c))
       break;
 
     // Unicode U+XXXX or \uXXXX codepoint.
@@ -1290,6 +1316,8 @@ bool Lexer::readWord (
     // Ordinary character.
     else
       word += utf8_character (utf8_next_char (text, cursor));
+
+    prev = c;
   }
 
   return word.length () > 0 ? true : false;

@@ -70,6 +70,7 @@ public:
   static bool isDoubleCharOperator  (int, int, int);
   static bool isTripleCharOperator  (int, int, int, int);
   static bool isBoundary            (int, int);
+  static bool isHardBoundary        (int, int);
   static bool isPunctuation         (int);
   static bool isAllDigits           (const std::string&);
   static bool isOneWord             (const std::string&);
