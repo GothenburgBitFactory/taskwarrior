@@ -221,7 +221,7 @@ class TestBug605(TestCase):
         """
         self.t("add One project:p1")
 
-        code, out, err = self.t(("1", "delete"), input="y")
+        code, out, err = self.t(("1", "delete"), input="y\n")
         self.assertIn("is 0% complete", err)
 
         self.t("add Two project:p1")
