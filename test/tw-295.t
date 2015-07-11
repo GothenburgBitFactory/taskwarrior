@@ -40,9 +40,18 @@ class TestBug295(TestCase):
 
     def test_subst_with_slashes(self):
         """Test substitution containing slashes"""
-        self.t(('add', '--', 'one/two/three'))
-        self.t(('1', 'modify', '/\\/two\\//TWO/'))
-        code, out, err = self.t(('list',))
+        self.t('add -- one/two/three')
+
+        # Python string contains \\\\, converts to internal \\.
+        # Something in the command processing converts \\ --> \.
+        # Taskwarrior sees /\/twp\//TWO/.
+        #
+        # Verify using:
+        # code, out, err = self.t('rc.debug.parser=3 1 modify /\\\\/two\\\\//TWO/')
+        # self.tap(err)
+
+        self.t('1 modify /\\\\/two\\\\//TWO/')
+        code, out, err = self.t('list')
         self.assertIn('oneTWOthree', out)
 
 if __name__ == "__main__":
