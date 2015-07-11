@@ -1208,8 +1208,10 @@ void Task::getUDAOrphans (std::vector <std::string>& names) const
 void Task::substitute (
   const std::string& from,
   const std::string& to,
-  bool global)
+  const std::string& flags)
 {
+  bool global = (flags.find ('g') != std::string::npos ? true : false);
+
   // Get the data to modify.
   std::string description = get ("description");
   std::map <std::string, std::string> annotations;
@@ -2076,13 +2078,13 @@ void Task::modify (modType type, bool text_required /* = false */)
         }
       }
 
-      // arg7 from='from' global='1' raw='/from/to/g' to='to' ORIGINAL SUBSTITUTION MODIFICATION
+      // Perform description/annotation substitution.
       else if (a._lextype == Lexer::Type::substitution)
       {
         context.debug (label + "substitute " + a.attribute ("raw"));
         substitute (a.attribute ("from"),
                     a.attribute ("to"),
-                    (a.attribute ("global") == "1"));
+                    a.attribute ("flags"));
         ++modCount;
       }
 

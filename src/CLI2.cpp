@@ -159,23 +159,22 @@ void A2::decompose ()
 
   else if (_lextype == Lexer::Type::substitution)
   {
-    std::string raw = _attributes["raw"];
-
     //if (Directory (raw).exists ())
     //  return;
 
-    auto slash1 = raw.find ("/");
-    auto slash2 = raw.find ("/", slash1 + 1);
-    auto slash3 = raw.find ("/", slash2 + 1);
-
-    attribute ("from",   raw.substr (slash1 + 1, slash2 - slash1  - 1));
-    attribute ("to",     raw.substr (slash2 + 1, slash3 - slash2  - 1));
-    attribute ("global", raw.substr (slash3 + 1) == "g" ? 1 : 0);
+    std::string from;
+    std::string to;
+    std::string flags;
+    if (Lexer::decomposeSubstitution (_attributes["raw"], from, to, flags))
+    {
+      attribute ("from",  from);
+      attribute ("to",    to);
+      attribute ("flags", flags);
+    }
   }
 
   else if (_lextype == Lexer::Type::pair)
   {
-    std::string raw = _attributes["raw"];
     std::string name;
     std::string mod;
     std::string sep;

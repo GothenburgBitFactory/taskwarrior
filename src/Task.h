@@ -142,7 +142,7 @@ public:
   void getUDAs (std::vector <std::string>&) const;
   void getUDAOrphans (std::vector <std::string>&) const;
 
-  void substitute (const std::string&, const std::string&, bool);
+  void substitute (const std::string&, const std::string&, const std::string&);
 #endif
 
   void validate (bool applyDefault = true);
