@@ -911,13 +911,12 @@ bool Lexer::isSubstitution (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
-  std::string extractedToken;
-  Lexer::Type extractedType;
-  if (isString (extractedToken, extractedType, "/"))
+  std::string word;
+  if (readWord (_text, "/", _cursor, word))
   {
-    --_cursor;  // Step back over the '/'.
+    --_cursor;  // Step backwards over the '/'.
 
-    if (isString (extractedToken, extractedType, "/"))
+    if (readWord (_text, "/", _cursor, word))
     {
       if (_text[_cursor] == 'g')
         ++_cursor;
