@@ -84,7 +84,16 @@ class TestUnicode(TestCase):
 
     def test_unicode_escape2(self):
         """Verify \\uNNNN unicode sequences"""
-        self.t("add Price \\u20A43")
+
+        # The following can be used to prove that \\\\ --> \.
+        # The Python string converts \\\\ --> \\.
+        # Something in the launch code converts \\ --> \.
+        # Taskwarrior sees \.
+        #
+        #code, out, err = self.t("add rc.debug.parser=3 Price \\\\u20A43")
+        #self.tap(err)
+
+        self.t("add Price \\\\u20A43")
         code, out, err = self.t("_get 1.description")
         self.assertEqual("Price ₤3\n", out);
 
