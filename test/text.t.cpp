@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (205);
+  UnitTest t (206);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -102,6 +102,12 @@ int main (int argc, char** argv)
   t.is (line, "width", "extractLine 10 'width' -> 'width'");
 
   t.notok (extractLine (line, text, 10, true, offset), "extractLine 10 '' -> ''");
+
+  text = "AAAAAAAAAABBBBBBBBBB";
+  offset = 0;
+  extractLine (line, text, 10, true, offset);
+  t.is (line, "AAAAAAAAA-", "extractLine hyphenated unbreakable line");
+  t.diag (line);
 
   // void split (std::vector<std::string>& results, const std::string& input, const char delimiter)
   std::vector <std::string> items;
