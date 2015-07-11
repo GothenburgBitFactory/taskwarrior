@@ -218,8 +218,9 @@ int main (int argc, char** argv)
   t.is (word, "'one two'",                                  "  word '" + word + "'");
   t.is ((int)cursor, 9,                                     "  cursor");
 
+  // Unterminated quoted string is invalid.
   cursor = 0;
-  t.ok (Lexer::readWord ("'one", "'\"", cursor, word),      "readWord ''one' --> false");
+  t.notok (Lexer::readWord ("'one", "'\"", cursor, word),   "readWord ''one' --> false");
 
   // static bool readWord (const std::string&, std::string::size_type&, std::string&);
   cursor = 0;
