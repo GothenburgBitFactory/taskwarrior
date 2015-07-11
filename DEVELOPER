@@ -105,9 +105,6 @@ Deprecated Code
   This is code that is going to be phased out soon, and therefore is not worth
   fixing or documenting. Don't waste your time.
 
-  - Priorities in core. This will be migrated to become a UDA as soon as we
-    have the right support in place for custom sorting.
-
   - Nag feature.
 
   - Attribute modifiers.
@@ -119,9 +116,6 @@ New Code Needs
     or template script serving as a starting-point for anyone who needed this
     format.
   - Need new export_xxx.* scripts - the more the better. Any language.
-  - The JSON.{h,cpp} code is fast and efficient up to a point, but has a non-
-    linear performance curve, implying a slowdown due to fragmentation, but who
-    know? Find it, fix it.
   - Need an external script that can locate and correct duplicate UUIDs in the
     data file, as found by 'task diag'. This should check to see if there is
     a suitable UUID generator installed. This should also be careful to
@@ -142,20 +136,20 @@ Unit Tests Needed
      For example, dependencies.t runs through a long list of commands that test
      dependencies, but do so by using 'add', 'modify', 'done' and 'delete'.
   2. Regression tests that ensure certain bugs are fixed and stay fixed. These
-     tests are named bug.NNN.t where NNN refers to the Redmine issue number.
-     While it is not worth creating tests for small fixes like typos, it is for
-     changes to the logic.
+     tests are named bug.NNN.t where NNN refers to the bug number. While it is
+     not worth creating tests for small fixes like typos, it is for changes to
+     the logic.
   3. Small feature tests. When small features are added, we would like small,
-     low-level feature tests named feature.NNN.t, where NNN is the Redmine
-     issue number.
+     low-level feature tests named feature.t, with a descriptive name and
+     focused tests.
   4. Code tests. These are tests written in C++ that exercise C++ objects, or
      function calls. These are the lowest level tests. It is important that
      these kind of tests be extensive and thorough, because the software depends
      on this code the most.
 
-  The tests are mainly written in Perl, and all use TAP. We want them all to be
-  eventually replaced by Python, so we are now only accepting new tests that use
-  the Python-based approach you can see in some of the existing tests.
+  The tests are mainly written in Perl, and all use TAP. We are replacing these
+  with Python equivalents, so we are now only accepting new tests that use the
+  Python-test framework.
 
   Tests needed:
 
@@ -173,7 +167,7 @@ Unit Tests Needed
     'needsTest' label.
 
   Note that running the unit tests currently requires the Perl JSON module to
-  be installed.
+  be installed. This will change soon.
 
   Note that all new unit tests should follow the test/template.t standard.
 
@@ -188,11 +182,11 @@ Work in Progress
 Current Codebase Condition
 
   'master' branch:
-    - 2.4.3 Current release, locked.
+    - 2.4.4 Current release, locked.
 
-  '2.4.4' branch:
+  '2.4.5' branch:
     - Current development branch no plans yet.
 
 ---
 
-2015-04-21 Updated for 2.4.4
+2015-07-11 Updated for 2.4.5

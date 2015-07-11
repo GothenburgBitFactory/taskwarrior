@@ -151,16 +151,16 @@ Test Suite
   A strong and diverse test suite is critical to the successful release of any
   software. With the complex command set and its myriad permutations, a test
   suite is the only way to ensure quality levels, and guarantee that big changes
-  are sound.
+  are robust.
 
   It is intended that the test suite continues growing, mostly adding more
   regression and feature tests. The test are mostly written in Perl, and utilize
   the Test::More module to generate TAP output. This is changing though, and the
-  suite is slowly migrating to Python. Some tests are written in C++ and all
-  tets generate TAP output.
+  suite is migrating to Python. Some tests are written in C++ and all tests
+  generate TAP output.
 
-  There are currently about 8,000 unit tests, that take a minute or two to run
-  in total.
+  There are currently about 8,000 unit tests, that take only a few seconds to
+  run on a multi-core machine.
 
   Taskwarrior uses flod software to automate continuous integration across many
   platforms. Code changes are automatically detected, propagated, built and
@@ -184,7 +184,7 @@ Debugging
     - TDB2 layer and I/O information.
 
   Additionally, there are other settings (see 'man taskrc' for full details) that
-  may also be helpful: 'rc.hooks=on|off', 'rc.debug.parser=0|1|2',
+  may also be helpful: 'rc.hooks=on|off', 'rc.debug.parser=0|1|2|3',
   'rc.debug.hooks=0|1|2', 'rc.debug.tls=0|1|2|3...'.
 
 
@@ -193,7 +193,8 @@ Patches
   Jira issue, or send them to support@taskwarrior.org. A good patch:
 
     - Maintains the MIT license, and does not contain code lifted from other
-      sources.
+      sources. You will have written 100% of the code in the patch, otherwise
+      we cannot maintain the license.
     - Precisely addresses one issue only.
     - Doesn't break unit tests.
     - Doesn't introduce dependencies.
@@ -202,9 +203,10 @@ Patches
     - Conforms to the prevailing coding standards - in other words, it should
       fit right in with the existing code.
 
-  A patch may be rejected for not following the above guidelines, and more.
+  A patch may be rejected for violating any of the above rules, and more.
   Bad patches may be accepted and modified depending on work load and mood. It
   is possible that a patch may be rejected because it conflicts in some way with
-  plans or upcoming changes.
+  plans or upcoming changes. Check with us first, before sinking time and effort
+  into a patch.
 
 ---
