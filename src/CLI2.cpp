@@ -195,6 +195,20 @@ void A2::decompose ()
       }
     }
   }
+
+  else if (_lextype == Lexer::Type::pattern)
+  {
+    //if (Directory (raw).exists ())
+    //  return;
+
+    std::string pattern;
+    std::string flags;
+    if (Lexer::decomposePattern (_attributes["raw"], pattern, flags))
+    {
+      attribute ("pattern", pattern);
+      attribute ("flags",   flags);
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1212,8 +1226,6 @@ void CLI2::desugarFilterPatterns ()
         a.hasTag ("FILTER"))
     {
       changes = true;
-      std::string raw = a.attribute ("raw");
-      std::string pattern = raw.substr (1, raw.length () - 2);
 
       A2 lhs ("description", Lexer::Type::dom);
       lhs.tag ("FILTER");
@@ -1223,7 +1235,8 @@ void CLI2::desugarFilterPatterns ()
       op.tag ("FILTER");
       reconstructed.push_back (op);
 
-      A2 rhs (pattern, Lexer::Type::string);
+      A2 rhs (a.attribute ("pattern"), Lexer::Type::string);
+      rhs.attribute ("flags", a.attribute ("flags"));
       rhs.tag ("FILTER");
       reconstructed.push_back (rhs);
     }
