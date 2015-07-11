@@ -49,11 +49,11 @@ class TestHyphenation(TestCase):
         code, out, err = self.t("ls")
         self.assertIn("1   AAAAAAAAAA\n", out)
 
-    def test_hyphenation_on_comma(self):
-        """Split on comma instead of hyphenating"""
-        self.t("add AAAAAAAAAA,BBBBBBBBBB")
+    def test_hyphenation(self):
+        """Verify hyphenation in the absence of white space"""
+        self.t("add AAAAAAAAAABBBBBBBBBBCCCCCCCCCC")
         code, out, err = self.t("ls")
-        self.assertIn("1   AAAAAAAAAA,\n", out)
+        self.assertIn("1   AAAAAAAAAABBBB-\n", out)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
