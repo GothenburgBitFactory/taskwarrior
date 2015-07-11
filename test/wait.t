@@ -64,7 +64,7 @@ class TestWait(TestCase):
 
 
 class TestBug434(TestCase):
-    # Bug #434: Task shouldn't prevent users from marking as done tasks with
+    # Bug #434: Task should not prevent users from marking as done tasks with
     #           status:waiting
     def setUp(self):
         self.t = Task()
