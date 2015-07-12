@@ -66,8 +66,10 @@ class TestAdd(TestCase):
         self.assertRegexpMatches(out, "UUID\s+" + UUID_REGEXP + "\n")
 
     def test_floating_point_preservation(self):
-        """Verify that floating point numbers are unmolested"""
-        # Bug 924: '1.0' --> '1.0000'
+        """Verify that floating point numbers are unmolested
+
+           Bug 924: '1.0' --> '1.0000'
+        """
         self.t("add release 1.0")
         self.t("add 'release 2.0'")
         self.t("add \\\"release 3.0\\\"")
@@ -82,8 +84,10 @@ class TestAdd(TestCase):
         self.assertEqual(out, "release 3.0\n")
 
     def test_escaped_quotes_are_preserved(self):
-        """Verify that escaped quotes are preserved"""
-        # Bug 917: escaping runs amok
+        """Verify that escaped quotes are preserved
+
+           Bug 917: escaping runs amok
+        """
         self.t("add one \\'two\\' three")
         self.t("add four \\\"five\\\" six")
 
