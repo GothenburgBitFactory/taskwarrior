@@ -33,7 +33,6 @@ import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
-from basetest.utils import UUID_REGEXP
 
 
 class TestAdd(TestCase):
@@ -43,27 +42,19 @@ class TestAdd(TestCase):
     def test_add(self):
         "Testing add command"
 
-        self.t(("add", "This is a test"))
-        code, out, err = self.t(("info", "1"))
-
-        self.assertRegexpMatches(out, "ID\s+1\n")
-        self.assertRegexpMatches(out, "Description\s+This is a test\n")
-        self.assertRegexpMatches(out, "Status\s+Pending\n")
-        self.assertRegexpMatches(out, "UUID\s+" + UUID_REGEXP + "\n")
+        self.t("add This is a test")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual(out, "This is a test\n")
 
     def test_modify_slash(self):
         "Test the /// modifier"
 
-        self.t(("add", "This is a test"))
-        self.t(("1", "modify", "/test/TEST/"))
-        self.t(("1", "modify", "/is //"))
+        self.t("add This is a test")
+        self.t("1 modify /test/TEST/")
+        self.t("1 modify '/is //'")
 
-        code, out, err = self.t(("info", "1"))
-
-        self.assertRegexpMatches(out, "ID\s+1\n")
-        self.assertRegexpMatches(out, "Status\s+Pending\n")
-        self.assertRegexpMatches(out, "Description\s+This a TEST\n")
-        self.assertRegexpMatches(out, "UUID\s+" + UUID_REGEXP + "\n")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual(out, "This a TEST\n")
 
     def test_floating_point_preservation(self):
         """Verify that floating point numbers are unmolested
@@ -107,6 +98,19 @@ class TestAdd(TestCase):
         self.assertIn("/one/two/three/", out)
         self.assertIn("/four/five/six/", out)
 
+    def test_parentheses_and_spaces_preserved(self):
+        """Test parentheses and spacing is preserved on add
+
+           Bug 819: When I run "task add foo\'s bar." the description of the new task is "foo 's bar .".
+        """
+        self.t("add foo\\\'s bar")
+        self.t("add foo (bar)")
+        self.t("add 'baz (qux)'")
+
+        code, out, err = self.t("ls")
+        self.assertIn("foo's bar", out)
+        self.assertIn("foo (bar)", out)
+        self.assertIn("baz (qux)", out)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
