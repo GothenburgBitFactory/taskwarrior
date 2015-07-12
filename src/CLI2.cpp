@@ -430,9 +430,8 @@ void CLI2::lexArguments ()
     Lexer::Type type;
     Lexer lex (_original_args[i]);
     if (lex.token (lexeme, type) &&
-        (lex.isEOS () ||                        // Token goes to EOS
-        (quoted && type == Lexer::Type::pair)   // Quoted pairs automatically go to EOS
-        )
+        (lex.isEOS () ||                         // Token goes to EOS
+         (quoted && type == Lexer::Type::pair))  // Quoted pairs automatically go to EOS
        )
     {
       if (! terminated && type == Lexer::Type::separator)
