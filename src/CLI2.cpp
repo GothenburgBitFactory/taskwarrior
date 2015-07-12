@@ -650,6 +650,7 @@ void CLI2::prepareFilter (bool applyContext)
     context.debug (dump ("CLI2::prepareFilter categorize"));
 
   // Remove all the syntactic sugar for FILTERs.
+  lexFilterArgs ();
   findIDs ();
   findUUIDs ();
   insertIDExpr ();
@@ -1520,6 +1521,43 @@ void CLI2::insertIDExpr ()
 
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (dump ("CLI2::prepareFilter insertIDExpr"));
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// FILTER Lexer::Type::word args will become part of an expression, and so they
+// need to be Lexed.
+void CLI2::lexFilterArgs ()
+{
+  bool changes = false;
+  std::vector <A2> reconstructed;
+  for (auto& a : _args)
+  {
+    if (a._lextype == Lexer::Type::word &&
+        a.hasTag ("FILTER"))
+    {
+      changes = true;
+
+      std::string lexeme;
+      Lexer::Type type;
+      Lexer lex (a.attribute ("raw"));
+      while (lex.token (lexeme, type))
+      {
+        A2 extra (lexeme, type);
+        extra.tag ("FILTER");
+        reconstructed.push_back (extra);
+      }
+    }
+    else
+      reconstructed.push_back (a);
+  }
+
+  if (changes)
+  {
+    _args = reconstructed;
+
+    if (context.config.getInteger ("debug.parser") >= 3)
+      context.debug (dump ("CLI2::prepareFilter lexFilterArgs"));
   }
 }
 

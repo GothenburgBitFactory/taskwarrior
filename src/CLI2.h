@@ -101,6 +101,7 @@ private:
   void findIDs ();
   void findUUIDs ();
   void insertIDExpr ();
+  void lexFilterArgs ();
   void desugarFilterPlainArgs ();
   void insertJunctions ();
   void defaultCommand ();
