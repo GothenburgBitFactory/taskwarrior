@@ -652,7 +652,7 @@ void CLI2::prepareFilter (bool applyContext)
   findIDs ();
   findUUIDs ();
   insertIDExpr ();
-  desugarFilterPlainArgs ();          // Unimplemented.
+  desugarFilterPlainArgs ();
   findStrayModifications ();
   desugarFilterTags ();
   desugarFilterAttributes ();
@@ -1517,44 +1517,81 @@ void CLI2::insertIDExpr ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Removed because this algorithm is unreliable. Fix it.
+// FILTER, Lexer::Type::word args are treated as search terms.
+//
+// Algorithm:
+//   Given:
+//     - task ... argX candidate argY
+//   Where:
+//     - neither argX nor argY are an operator, except (, ), and, or, xor
+//     - candidate is Lexer::Type::word
+//
 void CLI2::desugarFilterPlainArgs ()
 {
-/*
-  bool changes = false;
-  std::vector <A2> reconstructed;
+  // First walk the arg list looking for plain words that are not part of an
+  // existing expression.
+  auto prevprev = &_args[0];
   auto prev = &_args[0];
   for (auto& a : _args)
   {
-    if (prev->_lextype != Lexer::Type::op      &&
-        a.hasTag ("FILTER")                    &&
-        (a._lextype == Lexer::Type::dom        ||
-         a._lextype == Lexer::Type::identifier ||
-         a._lextype == Lexer::Type::word       ||
-         a._lextype == Lexer::Type::string     ||
-         a._lextype == Lexer::Type::number     ||
-         a._lextype == Lexer::Type::hex))
+    auto raw   = a.attribute ("raw");
+    auto praw  = prev->attribute ("raw");
+    auto ppraw = prevprev->attribute ("raw");
+
+    if ((prevprev->_lextype != Lexer::Type::op ||  // argX
+         ppraw == "("                          ||
+         ppraw == ")"                          ||
+         ppraw == "and"                        ||
+         ppraw == "or"                         ||
+         ppraw == "xor")                       &&
+
+        prev->_lextype == Lexer::Type::word    &&  // candidate
+
+        prev->hasTag ("FILTER")                &&  // candidate
+
+        (a._lextype != Lexer::Type::op         ||  // argY
+         raw == "("                            ||
+         raw == ")"                            ||
+         raw == "and"                          ||
+         raw == "or"                           ||
+         raw == "xor"))
+    {
+      prev->tag ("PLAIN");
+    }
+
+    prevprev = prev;
+    prev = &a;
+  }
+
+  // Walk the list again, upgrading PLAIN args.
+  bool changes = false;
+  std::vector <A2> reconstructed;
+  for (auto& a : _args)
+  {
+    if (a.hasTag ("PLAIN"))
     {
       changes = true;
 
       A2 lhs ("description", Lexer::Type::dom);
+      lhs.attribute ("canonical", "description");
       lhs.tag ("FILTER");
+      lhs.tag ("PLAIN");
       reconstructed.push_back (lhs);
 
       A2 op ("~", Lexer::Type::op);
       op.tag ("FILTER");
+      op.tag ("PLAIN");
       reconstructed.push_back (op);
 
-      std::string raw = a.attribute ("raw");
-      Lexer::dequote (raw);
-      A2 rhs (raw, Lexer::Type::string);
+      std::string word = a.attribute ("raw");
+      Lexer::dequote (word);
+      A2 rhs (word, Lexer::Type::string);
       rhs.tag ("FILTER");
+      rhs.tag ("PLAIN");
       reconstructed.push_back (rhs);
     }
     else
       reconstructed.push_back (a);
-
-    prev = &a;
   }
 
   if (changes)
@@ -1564,7 +1601,6 @@ void CLI2::desugarFilterPlainArgs ()
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (dump ("CLI2::prepareFilter desugarFilterPlainArgs"));
   }
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
