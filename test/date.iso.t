@@ -43,17 +43,20 @@ class TestDateISOAndEpoch(TestCase):
     def test_iso(self):
         """Verify adding ISO dates works regardless of rc.dateformat"""
         self.t("add one due:20150703T000000Z")
-        code, out, err = self.t("_get 1.due")
 
         # Partial date, because _get returns local time, and that would make
         # the test sensitive to TZ.
-        self.assertIn("2015-07-", out)
+        code, out, err = self.t("_get 1.due")
+        self.assertRegexpMatches(out, "^2015-07-0.T..:..:..$")
 
     def test_epoch(self):
         """Verify adding epoch dates works regardless of rc.dateformat"""
         self.t("add one due:1234567890")
+
+        # Partial date, because _get returns local time, and that would make
+        # the test sensitive to TZ.
         code, out, err = self.t("_get 1.due")
-        self.assertIn("2009-02-13T18:31:30", out)
+        self.assertRegexpMatches(out, "^2009-02-1.T..:..:..$")
 
 
 if __name__ == "__main__":
