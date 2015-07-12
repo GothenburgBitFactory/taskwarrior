@@ -261,6 +261,30 @@ class TestBug906(TestCase):
         self.assertNotIn("one", out)
         self.assertIn("two", out)
 
+class TestBug856(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_project_hierarchy_filter(self):
+        """Test project.none: works
+
+           Bug 856: "task list project.none:" does not work.
+        """
+        self.t("add assigned project:X")
+        self.t("add floating")
+
+        code, out, err = self.t("project: ls")
+        self.assertIn("floating", out)
+        self.assertNotIn("assigned", out)
+
+        code, out, err = self.t("project:\'\' ls")
+        self.assertIn("floating", out)
+        self.assertNotIn("assigned", out)
+
+        code, out, err = self.t("project.none: ls")
+        self.assertIn("floating", out)
+        self.assertNotIn("assigned", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
