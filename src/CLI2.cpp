@@ -465,6 +465,8 @@ void CLI2::lexArguments ()
       else
       {
         A2 unknown (_original_args[i], Lexer::Type::word);
+        unknown.tag ("UNKNOWN");
+
         if (lex.wasQuoted (_original_args[i]))
           unknown.tag ("QUOTED");
 
