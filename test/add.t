@@ -95,6 +95,18 @@ class TestAdd(TestCase):
         self.assertIn("one 'two' three", out)
         self.assertIn("four \"five\" six", out)
 
+    def test_extra_space_in_path(self):
+        """Test that path-like args are preserved
+
+           Bug 884: Extra space in path name.
+        """
+        self.t("add /one/two/three/")
+        self.t("add '/four/five/six/'")
+
+        code, out, err = self.t("ls")
+        self.assertIn("/one/two/three/", out)
+        self.assertIn("/four/five/six/", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
