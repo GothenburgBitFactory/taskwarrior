@@ -81,6 +81,16 @@ class TestAdd(TestCase):
         code, out, err = self.t("_get 3.description")
         self.assertEqual(out, "release 3.0\n")
 
+    def test_escaped_quotes_are_preserved(self):
+        """Verify that escaped quotes are preserved"""
+        # Bug 917: escaping runs amok
+        self.t("add one \\'two\\' three")
+        self.t("add four \\\"five\\\" six")
+
+        code, out, err = self.t("list")
+        self.assertIn("one 'two' three", out)
+        self.assertIn("four \"five\" six", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
