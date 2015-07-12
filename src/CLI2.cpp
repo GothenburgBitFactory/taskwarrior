@@ -1307,12 +1307,18 @@ void CLI2::findIDs ()
     {
       if (a.hasTag ("MODIFICATION"))
       {
-        if (a._lextype == Lexer::Type::number)
+        std::string raw = a.attribute ("raw");
+
+        // For a number to be an ID, it must not contain any sign or floating
+        // point elements.
+        if (a._lextype == Lexer::Type::number   &&
+            raw.find ('.') == std::string::npos &&
+            raw.find ('e') == std::string::npos &&
+            raw.find ('-') == std::string::npos)
         {
           a.unTag ("MODIFICATION");
           a.tag ("FILTER");
-          std::string number = a.attribute ("raw");
-          _id_ranges.push_back (std::pair <std::string, std::string> (number, number));
+          _id_ranges.push_back (std::pair <std::string, std::string> (raw, raw));
         }
         else if (a._lextype == Lexer::Type::set)
         {
@@ -1321,7 +1327,7 @@ void CLI2::findIDs ()
 
           // Split the ID list into elements.
           std::vector <std::string> elements;
-          split (elements, a.attribute ("raw"), ',');
+          split (elements, raw, ',');
 
           for (auto& element : elements)
           {
