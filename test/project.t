@@ -228,6 +228,39 @@ class TestBug605(TestCase):
         code, out, err = self.t(("2", "done"))
         self.assertIn("is 100% complete", err)
 
+class TestBug906(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_project_hierarchy_filter(self):
+        """Test project hierarchy filters
+
+           Bug 906
+        """
+        self.t("add zero")
+        self.t("add one pro:a.b")
+        self.t("add two pro:a")
+
+        code, out, err = self.t("pro:a list")
+        self.assertNotIn("zero", out)
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+
+        code, out, err = self.t("pro:a.b list")
+        self.assertNotIn("zero", out)
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+
+        code, out, err = self.t("pro.not:a list")
+        self.assertIn("zero", out)
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+
+        code, out, err = self.t("pro.not:a.b list")
+        self.assertIn("zero", out)
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
