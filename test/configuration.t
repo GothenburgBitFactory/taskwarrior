@@ -35,17 +35,26 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from basetest import Task, TestCase
 
 
-class TestObsoleteConfig(TestCase):
+class TestConfiguration(TestCase):
 
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
 
-    def test_show_obsolete_config(self):
+    def test_default_config(self):
+        """Verify that by default, the 'show' command has no complaints"""
+        code, out, err = self.t("show")
+        self.assertNotIn("Configuration error:", out)
+        self.assertNotIn("unrecognized variables", out)
+        self.assertNotIn("unrecognized value", out)
+        self.assertNotIn("data.location not specified", out)
+        self.assertNotIn("data.location contains", out)
+
+    def test_obsolete_config(self):
         """Verify that the 'show' command detects obsolete configuration"""
         self.t.config("foo", "1")
         code, out, err = self.t("show")
-        self.assertIn("Your .taskrc file contains these unrecognized variables", out)
+        self.assertIn("unrecognized variables", out)
         self.assertIn("  foo\n", out)
 
 
