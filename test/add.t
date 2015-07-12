@@ -39,11 +39,11 @@ from basetest.utils import UUID_REGEXP
 class TestAdd(TestCase):
     def setUp(self):
         self.t = Task()
-        self.t(("add", "This is a test"))
 
     def test_add(self):
         "Testing add command"
 
+        self.t(("add", "This is a test"))
         code, out, err = self.t(("info", "1"))
 
         self.assertRegexpMatches(out, "ID\s+1\n")
@@ -54,6 +54,7 @@ class TestAdd(TestCase):
     def test_modify_slash(self):
         "Test the /// modifier"
 
+        self.t(("add", "This is a test"))
         self.t(("1", "modify", "/test/TEST/"))
         self.t(("1", "modify", "/is //"))
 
@@ -63,6 +64,22 @@ class TestAdd(TestCase):
         self.assertRegexpMatches(out, "Status\s+Pending\n")
         self.assertRegexpMatches(out, "Description\s+This a TEST\n")
         self.assertRegexpMatches(out, "UUID\s+" + UUID_REGEXP + "\n")
+
+    def test_floating_point_preservation(self):
+        """Verify that floating point numbers are unmolested"""
+        # Bug 924: '1.0' --> '1.0000'
+        self.t("add release 1.0")
+        self.t("add 'release 2.0'")
+        self.t("add \\\"release 3.0\\\"")
+
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual(out, "release 1.0\n")
+
+        code, out, err = self.t("_get 2.description")
+        self.assertEqual(out, "release 2.0\n")
+
+        code, out, err = self.t("_get 3.description")
+        self.assertEqual(out, "release 3.0\n")
 
 
 if __name__ == "__main__":
