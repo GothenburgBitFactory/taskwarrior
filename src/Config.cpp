@@ -414,7 +414,7 @@ std::string Config::_defaults =
   "report.active.sort=project+,start+\n"
   "\n"
   "report.completed.description=Completed tasks\n"
-  "report.completed.labels=ID,UUID,Created,Completed,took,Deps,P,Project,Tags,R,Due,Description\n"
+  "report.completed.labels=ID,UUID,Created,Completed,Age,Deps,P,Project,Tags,R,Due,Description\n"
   "report.completed.columns=id,uuid.short,entry,end,entry.age,depends,priority,project,tags,recur.indicator,due,description\n"
   "report.completed.filter=status:completed\n"
   "report.completed.sort=end+\n"
