@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -91,6 +91,11 @@ like ($output, qr/Deleted 1 task\./, '3 deleted');
 
 $output = qx{../src/task rc:recur.rc diag 2>&1};
 like ($output, qr/No duplicates found/, 'No duplicate UUIDs detected');
+
+# Bug 972: A recurrence period of "7" is interpreted as "7s", not "7d" as
+# intended.
+$output = qx{../src/task rc:recur.rc add foo due:now recur:2 2>&1};
+like ($output, qr/The duration value '2' is not supported./, "'recur:2' is not valid");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data recur.rc);
