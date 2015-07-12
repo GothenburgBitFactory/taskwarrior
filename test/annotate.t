@@ -142,6 +142,20 @@ class TestBug495(TestCase):
         code, out, err = self.t("_get 1.annotations.1.description")
         self.assertEqual("This is -- a -- test\n", out)
 
+class TestBug694(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_annotation_with_due(self):
+        """Add an annotation as well as a due date"""
+        self.t("add one")
+        self.t("1 annotate two due:today")
+
+        code, out, err = self.t("rc.journal.info:off 1 info")
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+        self.assertIn("Due", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
