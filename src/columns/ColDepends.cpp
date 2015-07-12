@@ -83,8 +83,10 @@ void ColumnDepends::measure (Task& task, unsigned int& minimum, unsigned int& ma
 
   if (_style == "indicator")
   {
-    minimum = maximum = utf8_width (context.config.get ("dependency.indicator"));
-    _fixed_width = true;
+    if (task.has ("depends"))
+      minimum = maximum = utf8_width (context.config.get ("dependency.indicator"));
+    else
+      minimum = maximum = 0;
   }
   else if (_style == "count")
   {

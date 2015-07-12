@@ -46,15 +46,15 @@ public:
   bool operator== (const Column&) const;     // TODO Is this necessary?
   virtual ~Column ();
 
-  const std::string& name () const            { return _name;       }
-  const std::string& style () const           { return _style;      }
-  const std::string& label () const           { return _label;      }
-  const std::string& type () const            { return _type;       }
-  bool modifiable () const                    { return _modifiable; }
-  bool is_uda () const                        { return _uda;        }
-  bool is_fixed_width () const                { return _fixed_width;}
-  std::vector <std::string> styles () const   { return _styles;     }
-  std::vector <std::string> examples () const { return _examples;   }
+  const std::string& name () const            { return _name;        }
+  const std::string& style () const           { return _style;       }
+  const std::string& label () const           { return _label;       }
+  const std::string& type () const            { return _type;        }
+  bool modifiable () const                    { return _modifiable;  }
+  bool is_uda () const                        { return _uda;         }
+  bool is_fixed_width () const                { return _fixed_width; }
+  std::vector <std::string> styles () const   { return _styles;      }
+  std::vector <std::string> examples () const { return _examples;    }
 
   virtual void setStyle  (const std::string& value) { _style = value;  }
   virtual void setLabel  (const std::string& value) { _label = value;  }
