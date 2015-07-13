@@ -1263,11 +1263,14 @@ void CLI2::desugarFilterPatterns ()
 void CLI2::findIDs ()
 {
   bool previousArgWasAnOperator = false;
+  int filterCount = 0;
 
   for (auto& a : _args)
   {
     if (a.hasTag ("FILTER"))
     {
+      ++filterCount;
+
       if (a._lextype == Lexer::Type::number)
       {
         // Skip any number that was preceded by an operator.
@@ -1301,9 +1304,14 @@ void CLI2::findIDs ()
     }
   }
 
-  // If no IDs were found, look for number/set listed as a MODIFICATION for a
-  // WRITECMD.
-  if (! _id_ranges.size ())
+  // If no IDs were found, and no filter was specified, look for number/set
+  // listed as a MODIFICATION for a WRITECMD.
+  std::string command = getCommand ();
+
+  if (! _id_ranges.size () &&
+      filterCount == 0     &&
+      command != "add"     &&
+      command != "log")
   {
     for (auto& a : _args)
     {
