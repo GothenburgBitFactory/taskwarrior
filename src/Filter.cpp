@@ -58,6 +58,7 @@ bool domSource (const std::string& identifier, Variant& value)
 Filter::Filter ()
 : _startCount (0)
 , _endCount (0)
+, _safety (true)
 {
 }
 
@@ -261,28 +262,37 @@ bool Filter::pendingOnly ()
 // all tasks to be modified. This is usually not intended.
 void Filter::safety ()
 {
-  for (auto& a : context.cli2._args)
+  if (_safety)
   {
-    if (a.hasTag ("CMD"))
+    for (auto& a : context.cli2._args)
     {
-      if (a.hasTag ("WRITECMD"))
+      if (a.hasTag ("CMD"))
       {
-        if (! context.config.getBoolean ("allow.empty.filter"))
-          throw std::string (STRING_TASK_SAFETY_ALLOW);
+        if (a.hasTag ("WRITECMD"))
+        {
+          if (! context.config.getBoolean ("allow.empty.filter"))
+            throw std::string (STRING_TASK_SAFETY_ALLOW);
 
-        // If user is willing to be asked, this can be avoided.
-        if (context.config.getBoolean ("confirmation") &&
-            confirm (STRING_TASK_SAFETY_VALVE))
-          return;
+          // If user is willing to be asked, this can be avoided.
+          if (context.config.getBoolean ("confirmation") &&
+              confirm (STRING_TASK_SAFETY_VALVE))
+            return;
 
-        // Sounds the alarm.
-        throw std::string (STRING_TASK_SAFETY_FAIL);
+          // Sounds the alarm.
+          throw std::string (STRING_TASK_SAFETY_FAIL);
+        }
+
+        // CMD was found.
+        return;
       }
-
-      // CMD was found.
-      return;
     }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Filter::disableSafety ()
+{
+  _safety = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -44,10 +44,12 @@ public:
   void subset (std::vector <Task>&, bool applyContext = true);
   bool pendingOnly ();
   void safety ();
+  void disableSafety ();
 
 private:
-  int _startCount;
-  int _endCount;
+  int  _startCount;
+  int  _endCount;
+  bool _safety;
 };
 
 #endif
