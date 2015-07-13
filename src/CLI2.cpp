@@ -1068,10 +1068,31 @@ void CLI2::desugarFilterAttributes ()
       if (value == "")
         value = "''";
 
+      // Some values are expressions, which need to be lexed. The best way to
+      // determine whether an expression is either a single value, or needs to
+      // be lexed, is to lex it and count the tokens. For example:
+      //    now+1d
+      // This should be lexed and surrounded by parentheses:
+      //    (
+      //    now
+      //    +
+      //    1d
+      //    )
+      // Use this sequence in place of a single value.
+      std::vector <A2> values = lexExpression (value);
+      if (context.config.getInteger ("debug.parser") >= 3)
+      {
+        context.debug ("CLI2::lexExpression " + name + ":" + value);
+        for (auto& v : values)
+          context.debug ("  " + v.dump ());
+        context.debug (" ");
+      }
+
       bool found = false;
       std::string canonical;
       if (canonicalize (canonical, "pseudo", name))
       {
+        // No eval.
         A2 lhs (raw, Lexer::Type::identifier);
         lhs.attribute ("canonical", canonical);
         lhs.attribute ("value", value);
@@ -1082,6 +1103,19 @@ void CLI2::desugarFilterAttributes ()
       else if (canonicalize (canonical, "attribute", name) ||
                canonicalize (canonical, "uda",       name))
       {
+        // Certain attribute types do not suport math.
+        //   string   --> no
+        //   numeric  --> yes
+        //   date     --> yes
+        //   duration --> yes
+        bool evalSupported = true;
+        Column* col = context.columns[canonical];
+        if (col &&
+            col->type () == "string")
+        {
+          evalSupported = false;
+        }
+
         // TODO The "!" modifier is being dropped.
 
         A2 lhs (name, Lexer::Type::dom);
@@ -1178,7 +1212,13 @@ void CLI2::desugarFilterAttributes ()
 
         reconstructed.push_back (lhs);
         reconstructed.push_back (op);
-        reconstructed.push_back (rhs);
+
+        if (values.size () == 1 || ! evalSupported)
+          reconstructed.push_back (rhs);
+        else
+          for (auto& v : values)
+            reconstructed.push_back (v);
+
         found = true;
       }
 
@@ -1788,6 +1828,46 @@ void CLI2::defaultCommand ()
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze defaultCommand"));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Some values are expressions, which need to be lexed. The best way to
+// determine whether an expression is either a single value, or needs to be
+// lexed, is to lex it and count the tokens. For example:
+//    now+1d
+// This should be lexed and surrounded by parentheses:
+//    (
+//    now
+//    +
+//    1d
+//    )
+std::vector <A2> CLI2::lexExpression (const std::string& expression)
+{
+  std::vector <A2> lexed;
+  std::string lexeme;
+  Lexer::Type type;
+  Lexer lex (expression);
+  while (lex.token (lexeme, type))
+  {
+    A2 token (lexeme, type);
+    token.tag ("FILTER");
+    lexed.push_back (token);
+  }
+
+  // If there were multiple tokens, parenthesize, because this expression will
+  // be used as a value.
+  if (lexed.size () > 1)
+  {
+    A2 openParen  ("(", Lexer::Type::op);
+    openParen.tag ("FILTER");
+    A2 closeParen (")", Lexer::Type::op);
+    closeParen.tag ("FILTER");
+
+    lexed.insert (lexed.begin (), openParen);
+    lexed.push_back (closeParen);
+  }
+
+  return lexed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

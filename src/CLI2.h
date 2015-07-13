@@ -105,6 +105,7 @@ private:
   void desugarFilterPlainArgs ();
   void insertJunctions ();
   void defaultCommand ();
+  std::vector <A2> lexExpression (const std::string&);
 
 public:
   std::multimap <std::string, std::string>           _entities;
