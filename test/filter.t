@@ -543,7 +543,6 @@ class TestBug489(TestCase):
         self.assertIn("without", out)
 
 
-#@unittest.skip("WaitingFor TW-1600")
 class TestBug1600(TestCase):
     def setUp(self):
         self.t = Task()
