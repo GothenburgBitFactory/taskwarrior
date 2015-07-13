@@ -20,6 +20,7 @@
           Babej).
 - TW-1527 Extra spaces added around slashes (thanks to Renato Alves).
 - TW-1572 Better urgency inheritance (thanks to Jens Erat).
+- TW-1575 `task log` mangles URLs when quoted (thanks to Luke Macken).
 - TW-1600 Filtering "regressions"(?) in task-2.4.3, task-2.4.4 (thanks to Ralph
           Bean).
 - TW-1609 In 'urgency<10', 10 is interpreted as an ID (thanks to Wim Schuermann).
