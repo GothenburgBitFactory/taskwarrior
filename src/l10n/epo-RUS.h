@@ -338,6 +338,9 @@
 #define STRING_CMD_GHISTORY_YEAR     "Jaro"
 #define STRING_CMD_GHISTORY_MONTH    "Monato"
 #define STRING_CMD_GHISTORY_NUMBER   "Nombro Kreitaj/Finitaj/Viŝitaj"
+#define STRING_CMD_UNIQUE_USAGE      "Generates lists of unique attribute values"
+#define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
+#define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
 #define STRING_CMD_DONE_USAGE        "Markas la specifatan taskon kiel finita"
 #define STRING_CMD_DONE_CONFIRM      "Fini taskon {1} '{2}'?"

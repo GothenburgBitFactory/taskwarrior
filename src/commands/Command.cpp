@@ -81,6 +81,7 @@
 #include <CmdTimesheet.h>
 #include <CmdUDAs.h>
 #include <CmdUndo.h>
+#include <CmdUnique.h>
 #include <CmdUrgency.h>
 #include <CmdVersion.h>
 
@@ -155,6 +156,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdTimesheet ();          all[c->keyword ()] = c;
   c = new CmdUDAs ();               all[c->keyword ()] = c;
   c = new CmdUndo ();               all[c->keyword ()] = c;
+  c = new CmdUnique ();             all[c->keyword ()] = c;
   c = new CmdUrgency ();            all[c->keyword ()] = c;
   c = new CmdUUIDs ();              all[c->keyword ()] = c;
   c = new CmdVersion ();            all[c->keyword ()] = c;

@@ -338,6 +338,9 @@
 #define STRING_CMD_GHISTORY_YEAR     "An"
 #define STRING_CMD_GHISTORY_MONTH    "Mois"
 #define STRING_CMD_GHISTORY_NUMBER   "Number Added/Completed/Deleted"
+#define STRING_CMD_UNIQUE_USAGE      "Generates lists of unique attribute values"
+#define STRING_CMD_UNIQUE_MISSING    "An attribute must be specified.  See 'task _columns'."
+#define STRING_CMD_UNIQUE_VALID      "You must specify an attribute or UDA."
 
 #define STRING_CMD_DONE_USAGE        "Marque la tâche spécifiée comme terminée"
 #define STRING_CMD_DONE_CONFIRM      "Terminer la tâche {1} '{2}'?"
