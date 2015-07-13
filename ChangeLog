@@ -16,6 +16,7 @@
 - TW-1572 Better urgency inheritance (thanks to Jens Erat).
 - TW-1600 Filtering "regressions"(?) in task-2.4.3, task-2.4.4 (thanks to Ralph
           Bean).
+- TW-1609 In 'urgency<10', 10 is interpreted as an ID (thanks to Wim Schuermann).
 - TW-1615 Japanese translation for Taskwarrior(150513) (thanks to ribbon).
 - Prevent potential task duplication during import for non-pending tasks.
 - Show the active context in "context list", if any is active.
