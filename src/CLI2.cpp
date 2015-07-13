@@ -510,7 +510,7 @@ void CLI2::demoteDOM ()
 void CLI2::analyze ()
 {
   if (context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::analyze start"));
+    context.debug (dump ("CLI2::analyze"));
 
   // Process _original_args.
   _args.clear ();
@@ -528,9 +528,6 @@ void CLI2::analyze ()
   }
 
   canonicalizeNames ();
-
-  if (context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::analyze end"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
