@@ -29,6 +29,10 @@ class TestBug1262(TestCase):
 
     def test_dependency_contains_matches_ID(self):
         """dep.contains matches task IDs"""
+        # NOTE: A more robust test is needed as alternative to this
+        # If it happens that the UUID doesn't contain a 1 nor a 2 the test will
+        # fail, which means it's actually using the UUID.
+        # Still, it passes on most cases. Which is WRONG!.
         for char in self.DEPS:
             self.t(("list", "dep.contains:{0}".format(char)))
 
