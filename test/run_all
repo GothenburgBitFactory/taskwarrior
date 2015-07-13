@@ -19,7 +19,8 @@ os.environ["TASKD_USE_PATH"] = "1"
 TIMEOUT = .2
 
 
-def run_test(testqueue, outqueue):
+def run_test(testqueue, outqueue, threadname):
+    start = time.time()
     while True:
         try:
             test = testqueue.get(block=True, timeout=TIMEOUT)
@@ -42,6 +43,9 @@ def run_test(testqueue, outqueue):
         outqueue.put(output)
 
         testqueue.task_done()
+
+    log.warning("Finished %s thread after %s seconds",
+                threadname, round(time.time() - start, 3))
 
 
 class TestRunner(object):
@@ -77,11 +81,11 @@ class TestRunner(object):
     def _prepare_threads(self):
         # Serial thread
         self.threads.append(
-            Thread(target=run_test, args=(self._serialq, self._outputq))
+            Thread(target=run_test, args=(self._serialq, self._outputq, "Serial"))
         )
         # Parallel threads
         self.threads.extend([
-            Thread(target=run_test, args=(self._parallelq, self._outputq))
+            Thread(target=run_test, args=(self._parallelq, self._outputq, "Parallel"))
             for i in range(cpu_count())
         ])
         log.info("Spawned %s threads to run tests", len(self.threads))
