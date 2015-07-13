@@ -18,6 +18,8 @@
           Babej).
 - TW-1475 task config expands values with unnecessary spaces (thanks to Tomas
           Babej).
+- TW-1480 Weird behaviour on redundant filter beginning with number (thanks to
+          Tomas Babej).
 - TW-1527 Extra spaces added around slashes (thanks to Renato Alves).
 - TW-1529 Parser incorrectly inserting spaces into task description (thanks to
           David Brenner).
