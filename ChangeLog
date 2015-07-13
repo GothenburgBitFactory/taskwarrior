@@ -31,6 +31,7 @@
 - TW-1612 Spurious whitespace added in task descriptions around certain symbols
           (thanks to Denis Kasak).
 - TW-1615 Japanese translation for Taskwarrior(150513) (thanks to ribbon).
+- TW-1617 Can't search for multi-word project (thanks to Audrey Easterday).
 - TW-1632 Japanese translation for Taskwarrior(150713) (thanks to ribbon).
 - Prevent potential task duplication during import for non-pending tasks.
 - Show the active context in "context list", if any is active.
