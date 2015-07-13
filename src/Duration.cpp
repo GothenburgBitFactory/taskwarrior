@@ -313,8 +313,9 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
 
   if (n.getOneOf (units, unit))
   {
-    if (n.depleted () ||
-        Lexer::isWhitespace (n.next ()))
+    if (n.depleted ()                           ||
+        Lexer::isWhitespace         (n.next ()) ||
+        Lexer::isSingleCharOperator (n.next ()))
     {
       start = original_start + n.cursor ();
 
@@ -336,8 +337,9 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
     n.skipWS ();
     if (n.getOneOf (units, unit))
     {
-      if (n.depleted () ||
-          Lexer::isWhitespace (n.next ()))
+      if (n.depleted ()                           ||
+          Lexer::isWhitespace         (n.next ()) ||
+          Lexer::isSingleCharOperator (n.next ()))
       {
         start = original_start + n.cursor ();
         double quantity = strtod (number.c_str (), NULL);
