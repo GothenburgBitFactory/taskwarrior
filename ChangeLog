@@ -18,6 +18,8 @@
           Babej).
 - TW-1455 Filter parser does not properly handle parentheses in attributes
           (thanks to Tomas Babej).
+- TW-1456 Filter parser does not always handle multiple arguments bundled into
+          one with apostrophes (thanks to Tomas Babej).
 - TW-1475 task config expands values with unnecessary spaces (thanks to Tomas
           Babej).
 - TW-1479 Task arguments not properly parsed if they contain a space (thanks to
