@@ -9,6 +9,8 @@
 - TW-303  Ability for "import" to update existing tasks (thanks to Kosta
           Harlan).
 - TW-1285 relative dates combined with times (thanks to Adam Gibbins).
+- TW-1389 tw will import same UUID n-times if part of same import (thanks to
+          Markus Beppler).
 - TW-1432 start/stop can be issued on completed tasks  (thanks to Renato Alves).
 - TW-1440 "task import" from STDIN (thanks to Renato Alves).
 - TW-1454 Redundant dependency should not stop modification  (thanks to Tomas
