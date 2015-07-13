@@ -27,6 +27,9 @@
 - An attempt to add or remove a virtual tag is now an error (thanks to Scott M).
 - json.array now defaults to "on", making "export" output a JSON array that
   can be parsed by most JSON libraries without changes.
+- The '_ids', '_projects', '_tags', '_uuids' helper commands are deprecated,
+  and replaced by the new '_unique' helper command, which generates lists of
+  unique values for the specified attribute.
 
 ------ current release ---------------------------
 

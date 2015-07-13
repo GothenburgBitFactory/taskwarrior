@@ -546,6 +546,7 @@ Lists all available context variables, for completion purposes.
 .TP
 .B task <filter> _ids
 Shows only the IDs of matching tasks, in the form of a list.
+Deprecated in favor of _unique.
 
 .TP
 .B task _show
@@ -553,9 +554,17 @@ Shows the combined defaults and overrides of the configuration settings, for use
 by third-party applications.
 
 .TP
+.B task <filter> _unique <attribute>
+Reports a unique set of attribute values. For example, to see all the active
+projects:
+
+  task +PENDING _unique projects
+
+.TP
 .B task <filter> _uuids
 Shows only the UUIDs of matching tasks among all tasks (even deleted and
 completed tasks), in the form of a list.
+Deprecated in favor of _unique.
 
 .TP
 .B task _udas
@@ -564,10 +573,12 @@ Shows only defined UDA names, in the form of a list.
 .TP
 .B task <filter> _projects
 Shows only a list of all project names used.
+Deprecated in favor of _unique.
 
 .TP
 .B task <filter> _tags
 Shows only a list of all tags used, for autocompletion purposes.
+Deprecated in favor of _unique.
 
 .TP
 .B task <filter> _urgency

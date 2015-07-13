@@ -6,9 +6,15 @@ New Features in Taskwarrior 2.4.5
 
 New commands in Taskwarrior 2.4.5
 
+  - The '_unique' command shows a set of unique values for the specified
+    attribute
+
 New configuration options in Taskwarrior 2.4.5
 
 Newly deprecated features in Taskwarrior 2.4.5
+
+  - The '_ids', '_projects', '_tags', '_uuids' helper commands are deprecated,
+    and replaced by the new '_unique' helper command.
 
 Removed features in 2.4.5
 
