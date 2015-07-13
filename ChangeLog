@@ -13,6 +13,7 @@
           (thanks to Onion).
 - TW-1389 tw will import same UUID n-times if part of same import (thanks to
           Markus Beppler).
+- TW-1419 On add '-tag' is considered a tag removal, which makes no sense.
 - TW-1430 Slashes in project names don't work (thanks to Richard Boß).
 - TW-1432 start/stop can be issued on completed tasks  (thanks to Renato Alves).
 - TW-1440 "task import" from STDIN (thanks to Renato Alves).

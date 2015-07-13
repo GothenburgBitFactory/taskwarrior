@@ -481,9 +481,13 @@ void CLI2::lexArguments ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Until the Lexer gains access to CLI2::_entities, it can only guess at whether
-// a command is a DOM reference. Scan all Lexer::Type::dom arguments, and demote
-// to Lexer::Type::word any unrecognized arguments.
-void CLI2::demoteDOM ()
+// a command is a DOM reference.
+//
+// [1] Scan all Lexer::Type::dom arguments, and demote to Lexer::Type::word any
+//     unrecognized arguments.
+// [2] Scan all MODIFICATION args for the 'add' and 'log' commands, and demote
+//     any Lexer::Type::Tag args with sense '-' to Lexer::Type::word.
+void CLI2::demotion ()
 {
   bool changes = false;
 
@@ -498,11 +502,23 @@ void CLI2::demoteDOM ()
         changes = true;
       }
     }
+
+    if (a._lextype == Lexer::Type::tag &&
+        a.attribute ("sign") == "-")
+    {
+      std::string command = getCommand ();
+      if (command == "add" ||
+          command == "log")
+      {
+        a._lextype = Lexer::Type::word;
+        changes = true;
+      }
+    }
   }
 
   if (changes)
     if (context.config.getInteger ("debug.parser") >= 3)
-      context.debug (dump ("CLI2::analyze demoteDOM"));
+      context.debug (dump ("CLI2::analyze demotion"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -516,7 +532,6 @@ void CLI2::analyze ()
   _args.clear ();
   handleArg0 ();
   lexArguments ();
-  demoteDOM ();
 
   // Process _args.
   aliasExpansion ();
@@ -527,6 +542,7 @@ void CLI2::analyze ()
       throw std::string (STRING_TRIVIAL_INPUT);
   }
 
+  demotion ();
   canonicalizeNames ();
 }
 

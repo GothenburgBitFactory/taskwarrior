@@ -89,7 +89,7 @@ public:
 private:
   void handleArg0 ();
   void lexArguments ();
-  void demoteDOM ();
+  void demotion ();
   void aliasExpansion ();
   void canonicalizeNames ();
   bool findCommand ();
