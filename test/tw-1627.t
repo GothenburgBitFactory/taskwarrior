@@ -45,7 +45,6 @@ class TestBug1627(TestCase):
         self.t("add foo project:mon")
         code, out, err = self.t("_get 1.project")
         self.assertEqual("mon\n", out)
-        self.assertNotIn("monday", out)
 
 
 if __name__ == "__main__":
