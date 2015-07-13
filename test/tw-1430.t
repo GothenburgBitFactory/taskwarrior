@@ -36,29 +36,22 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from basetest import Task, TestCase
 
 
-class Test1430(TestCase):
+class TestBug1430(TestCase):
     def setUp(self):
         self.t = Task()
 
     def test_project_names_with_dots(self):
         """Check that filtering works for project names with dots"""
-        pro = "home.garden"
-        self.t(('add', 'foo', 'project:%s' % pro))
-        code, out, err = self.t(('list', 'project:%s' % pro))
-        # We expect a clean exit
-        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.t("add foo project:home.garden")
+        code, out, err = self.t("_get 1.project")
+        self.assertEqual("home.garden\n", out)
 
     def test_project_names_with_slashes(self):
         """Check that filtering works for project names with slashes"""
-        pro = "home/garden"
-        self.t(('add', 'foo', 'project:%s' % pro))
+        self.t("add foo project:home/garden")
+        code, out, err = self.t("_get 1.project")
+        self.assertEqual("home/garden\n", out)
 
-        # TODO Restore this test and fix it.
-        # The form 'name:a/b' does not work, while 'name.is:a/b' does.
-        # code, out, err = self.t(('list', 'project:%s' % pro))
-        code, out, err = self.t(('list', 'project.is:%s' % pro))
-        # We expect a clean exit
-        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
