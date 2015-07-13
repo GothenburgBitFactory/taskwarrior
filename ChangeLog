@@ -16,6 +16,8 @@
 - TW-1440 "task import" from STDIN (thanks to Renato Alves).
 - TW-1454 Redundant dependency should not stop modification  (thanks to Tomas
           Babej).
+- TW-1455 Filter parser does not properly handle parentheses in attributes
+          (thanks to Tomas Babej).
 - TW-1475 task config expands values with unnecessary spaces (thanks to Tomas
           Babej).
 - TW-1480 Weird behaviour on redundant filter beginning with number (thanks to

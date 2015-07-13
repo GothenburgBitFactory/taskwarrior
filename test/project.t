@@ -300,6 +300,21 @@ class TestBug1511(TestCase):
         self.assertIn("one", out)
         self.assertNotIn("zero", out)
 
+class TestBug1455(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_project_hierarchy_filter(self):
+        """Test project:school)
+
+           Bug 1455: Filter parser does not properly handle parentheses in attributes
+        """
+        self.t("add zero")
+        self.t("add one project:two)")
+        code, out, err = self.t("project:two) list")
+        self.assertIn("one", out)
+        self.assertNotIn("zero", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
