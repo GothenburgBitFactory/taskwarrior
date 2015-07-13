@@ -47,13 +47,12 @@ class TestFeature891(TestCase):
 
     def test_uuid_filter(self):
         for i in range(35,7,-1):
-            self.tap("UUID %s" % self.uuid[0:i])
             code, out, err = self.t((self.uuid[0:i], "list"))
             self.assertIn("one", out)
             self.assertNotIn("two", out)
 
         # TODO This should fail because a 7-character UUID is not a UUID, but
-        #      instead it blindly does nothing, and succeeds.
+        #      instead it blindly does nothing, and succeeds. Voodoo.
         #code, out, err = self.t((self.uuid[0:6], "list"))
 
 if __name__ == "__main__":
