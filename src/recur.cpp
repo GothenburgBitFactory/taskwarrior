@@ -422,11 +422,13 @@ bool nag (Task& task)
   std::string nagMessage = context.config.get ("nag");
   if (nagMessage != "")
   {
-    // Scan all pending tasks.
+    // Scan all pending, non-recurring tasks.
     auto pending = context.tdb2.pending.get_tasks ();
     for (auto& t : pending)
     {
-      if (t.urgency () > task.urgency ())
+      if ((t.getStatus () == Task::pending ||
+           t.getStatus () == Task::waiting) &&
+          t.urgency () > task.urgency ())
       {
         context.footnote (nagMessage);
         return true;
