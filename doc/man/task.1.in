@@ -714,7 +714,9 @@ to 25 lines.
 
 .TP
 .B wait:<wait-date>
-Date until task becomes pending.
+When a task is given a wait date, it is hidden from most reports by changing
+its status to 'waiting'. When that date is passed, the status is changed back
+to 'pending', and the task becomes visible.
 
 .TP
 .B depends:<id1,id2 ...>
