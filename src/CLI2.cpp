@@ -1132,8 +1132,6 @@ void CLI2::desugarFilterAttributes ()
           evalSupported = false;
         }
 
-        // TODO The "!" modifier is being dropped.
-
         A2 lhs (name, Lexer::Type::dom);
         lhs.tag ("FILTER");
         lhs.attribute ("canonical", canonical);
