@@ -9,6 +9,8 @@
 - TW-303  Ability for "import" to update existing tasks (thanks to Kosta
           Harlan).
 - TW-1285 relative dates combined with times (thanks to Adam Gibbins).
+- TW-1319 UDA is NOT sorted corresponding to the order of UDA list entries
+          (thanks to Onion).
 - TW-1389 tw will import same UUID n-times if part of same import (thanks to
           Markus Beppler).
 - TW-1430 Slashes in project names don't work (thanks to Richard Boß).
