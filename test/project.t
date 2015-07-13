@@ -285,6 +285,21 @@ class TestBug856(TestCase):
         self.assertIn("floating", out)
         self.assertNotIn("assigned", out)
 
+class TestBug1511(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_project_hierarchy_filter(self):
+        """Test project:one-two can be added and queried
+
+           Bug 1511: Project titles not properly parsed if they contain hyphens
+        """
+        self.t("add zero")
+        self.t("add one project:two-three")
+        code, out, err = self.t("project:two-three list")
+        self.assertIn("one", out)
+        self.assertNotIn("zero", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
