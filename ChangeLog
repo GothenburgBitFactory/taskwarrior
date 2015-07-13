@@ -14,6 +14,8 @@
 - TW-1454 Redundant dependency should not stop modification  (thanks to Tomas
           Babej).
 - TW-1572 Better urgency inheritance (thanks to Jens Erat).
+- TW-1600 Filtering "regressions"(?) in task-2.4.3, task-2.4.4 (thanks to Ralph
+          Bean).
 - Prevent potential task duplication during import for non-pending tasks.
 - Show the active context in "context list", if any is active.
 - Fix "task edit" dropping annotation text after newlines.
