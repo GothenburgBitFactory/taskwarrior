@@ -332,7 +332,11 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
     }
   }
 
-  else if (n.getNumber (number))
+  else if (n.getNumber (number) &&
+           number.find ('e') == std::string::npos &&
+           number.find ('E') == std::string::npos &&
+           (number.find ('+') == std::string::npos || number.find ('+') == 0) &&
+           (number.find ('-') == std::string::npos || number.find ('-') == 0))
   {
     n.skipWS ();
     if (n.getOneOf (units, unit))
