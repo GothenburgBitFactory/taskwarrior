@@ -73,8 +73,7 @@ int CmdUnique::execute (std::string& output)
     throw std::string (STRING_CMD_UNIQUE_MISSING);
 
   std::string canonical;
-  if (! context.cli2.canonicalize (canonical, "attribute", attribute) &&
-      ! context.cli2.canonicalize (canonical, "uda",       attribute))
+  if (! context.cli2.canonicalize (canonical, "attribute", attribute))
     throw std::string (STRING_CMD_UNIQUE_VALID);
 
   // Find number of matching tasks.

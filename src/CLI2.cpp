@@ -923,8 +923,7 @@ void CLI2::canonicalizeNames ()
         std::string name = a.attribute ("name");
         std::string canonical;
         if (canonicalize (canonical, "pseudo",    name)    ||
-            canonicalize (canonical, "attribute", name)    ||
-            canonicalize (canonical, "uda", name))
+            canonicalize (canonical, "attribute", name))
         {
           a.attribute ("canonical", canonical);
         }
@@ -1116,8 +1115,7 @@ void CLI2::desugarFilterAttributes ()
         reconstructed.push_back (lhs);
         found = true;
       }
-      else if (canonicalize (canonical, "attribute", name) ||
-               canonicalize (canonical, "uda",       name))
+      else if (canonicalize (canonical, "attribute", name))
       {
         // Certain attribute types do not suport math.
         //   string   --> no
