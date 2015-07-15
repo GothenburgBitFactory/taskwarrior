@@ -40,15 +40,16 @@ class TestBug954(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
+        self.t("add foo")
 
     def test_deletion_by_uuid(self):
-        """"""
-        self.t("add foo")
-        self.t("add bar")
+        """Verify deletion using extant UUID"""
         code, out, err = self.t("_get 1.uuid")
-        code, out, err = self.t("%s delete" % out.strip())
+        code, out, err = self.t(out.strip() + " delete")
         self.assertIn("Deleting task 1 'foo'", out)
 
+    def test_deletion_by_missing_uuid(self):
+        """Verify deletion using missing UUID"""
         code, out, err = self.t.runError("874e146d-07a2-2d2c-7808-a76e74b1a332 delete")
         self.assertIn("No tasks specified.", err)
 
