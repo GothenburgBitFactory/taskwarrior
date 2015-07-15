@@ -1949,6 +1949,23 @@ void Task::modify (modType type, bool text_required /* = false */)
             ++modCount;
           }
 
+          // For those using the "tags:..." attribute directly.
+          else if (name == "tags")
+          {
+            std::vector <std::string> tags;
+            split (tags, value, ',');
+
+            for (auto& tag : tags)
+            {
+              addTag (tag);
+              context.debug (label + "tags <-- add '" + tag + "'");
+              addTag (tag);
+              feedback_special_tags (*this, tag);
+            }
+
+            ++modCount;
+          }
+
           // Dates are special, maybe.
           else if (column->type () == "date")
           {
