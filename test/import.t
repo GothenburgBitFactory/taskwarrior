@@ -29,6 +29,7 @@
 import sys
 import os
 import unittest
+import json
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,9 +42,11 @@ class TestImport(TestCase):
         self.t = Task()
         self.t.config("dateformat", "m/d/Y")
 
-        self.data1 = """{"uuid":"00000000-0000-0000-0000-000000000000","description":"zero","project":"A","status":"pending","entry":"1234567889"}
-{"uuid":"11111111-1111-1111-1111-111111111111","description":"one","project":"B","status":"pending","entry":"1234567889"}
+        self.data1 = """[
+{"uuid":"00000000-0000-0000-0000-000000000000","description":"zero","project":"A","status":"pending","entry":"1234567889"},
+{"uuid":"11111111-1111-1111-1111-111111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},
 {"uuid":"22222222-2222-2222-2222-222222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690"}
+]
 """
 
         self.data2 = """{"uuid":"44444444-4444-4444-4444-444444444444","description":"three","status":"pending","entry":"1234567889"}
@@ -72,6 +75,13 @@ class TestImport(TestCase):
 
         self.assertData1()
 
+    def test_import_stdin_default(self):
+        """Import from stdin is default"""
+        code, out, err = self.t("import", input=self.data1)
+        self.assertIn("Imported 3 tasks", err)
+
+        self.assertData1()
+
     def test_import_file(self):
         """Import from a file"""
         filename = mkstemp(self.data1)
@@ -91,6 +101,28 @@ class TestImport(TestCase):
 
         self.assertData1()
         self.assertData2()
+
+    def test_import_update(self):
+        """Update existing tasks"""
+        self.t("import", input=self.data1)
+        self.t("2 delete")  # Depends on import order. Bad. See next line.
+        # TODO: Use this once filtering by UUID works again...
+        #self.t("11111111-1111-1111-1111-111111111111 delete")
+        self.t("next")  # Run GC
+
+        _t = sorted(self.t.export(), key=lambda t: t["uuid"])
+        _t[0]["project"] = "C"
+        _t[1]["status"] = "pending"
+        _t[2]["status"] = "pending"
+
+        self.t("import", input="\n".join(json.dumps(t) for t in _t))
+
+        _t = sorted(self.t.export(), key=lambda t: t["uuid"])
+        self.assertEqual(_t[0]["status"], "pending")
+        self.assertEqual(_t[0]["project"], "C")
+        self.assertEqual(_t[1]["status"], "pending")
+        self.assertEqual(_t[2]["status"], "pending")
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
