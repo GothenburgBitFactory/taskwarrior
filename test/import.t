@@ -123,6 +123,36 @@ class TestImport(TestCase):
         self.assertEqual(_t[1]["status"], "pending")
         self.assertEqual(_t[2]["status"], "pending")
 
+    def test_import_python_json(self):
+        """Python's default JSON formatting"""
+        _t = json.loads(self.data1)
+        code, out, err = self.t("import", input=json.dumps(_t))
+        self.assertIn("Imported 3 tasks", err)
+        self.assertData1()
+
+    def test_import_no_newlines(self):
+        """JSON array without newlines"""
+        code, out, err = self.t("import", input=self.data1.replace("\n", ""))
+        self.assertIn("Imported 3 tasks", err)
+        self.assertData1()
+
+    def test_import_newlines(self):
+        """JSON array with newlines after each value"""
+        _t = json.loads(self.data1)
+        code, out, err = self.t("import", input=json.dumps(_t, indent=0))
+        self.assertIn("Imported 3 tasks", err)
+        self.assertData1()
+
+    def test_import_newlines_whitespace(self):
+        """JSON array with whitespace before and after names and values"""
+        _data = """[
+{ "uuid":"00000000-0000-0000-0000-000000000000" ,  "description"  :  "zero" ,"project":"A", "status":"pending","entry":"1234567889" } ,   
+{ "uuid":"11111111-1111-1111-1111-111111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},     {"uuid":"22222222-2222-2222-2222-222222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690" }
+]"""
+        code, out, err = self.t("import", input=_data)
+        self.assertIn("Imported 3 tasks", err)
+        self.assertData1()
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
