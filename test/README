@@ -136,4 +136,23 @@ For anyone looking for test-related tasks to take on, here are some suggestions:
 
   * Find and eliminate individuals test that do the same thing.
 
+  * Using /pattern/ with rc.regex:off still uses regex.
+
+  * Import JSON validates absolutely no attribute.  Create tests with bad data
+    in all fields.
+
+  * DOM references are not validated, make this painfully obvious with tests
+
+  * Crazy dateformat values are not tested
+
+  * All add-on scripts should work
+
+  * Invalid UTF8 is not tested
+
+  * read-only data files are not tested
+
+  * all the attribute modifiers need to be tested, only a few are
+
+  * aliases are not well tested, and fragile
+
 ---
