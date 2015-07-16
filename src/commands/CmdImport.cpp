@@ -101,7 +101,9 @@ int CmdImport::import (std::vector <std::string>& lines)
   {
     std::string object = trimLeft (
                           trimRight (
-                            trim (line),
+                            trimRight (
+                              trim (line),
+                              ","),
                             "]"),
                           "[");
 
