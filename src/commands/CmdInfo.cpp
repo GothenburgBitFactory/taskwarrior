@@ -30,6 +30,7 @@
 #include <math.h>
 #include <Context.h>
 #include <Filter.h>
+#include <ISO8601.h>
 #include <Date.h>
 #include <Duration.h>
 #include <main.h>
@@ -351,25 +352,33 @@ int CmdInfo::execute (std::string& output)
     std::string type;
     for (auto& att: all)
     {
-      type = context.config.get ("uda." + att + ".type");
-      if (type != "")
+      Column* col = context.columns[att];
+      if (col && col->is_uda ())
       {
-        Column* col = context.columns[att];
-        if (col)
+        std::string value = task.get (att);
+        if (value != "")
         {
-          std::string value = task.get (att);
-          if (value != "")
+          row = view.addRow ();
+          view.set (row, 0, col->label ());
+
+          if (type == "date")
+            value = Date (value).toString (dateformat);
+          else if (type == "duration")
           {
-            row = view.addRow ();
-            view.set (row, 0, col->label ());
-
-            if (type == "date")
-              value = Date (value).toString (dateformat);
-            else if (type == "duration")
+            if (value[0] == 'P')
+            {
+              ISO8601p iso;
+              std::string::size_type cursor = 0;
+              if (iso.parse (value, cursor))
+                value = (std::string) Variant ((time_t) iso._value, Variant::type_duration);
+              else
+                value = "PT0S";
+            }
+            else
               value = Duration (value).formatCompact ();
-
-            view.set (row, 1, value);
           }
+
+          view.set (row, 1, value);
         }
       }
     }
