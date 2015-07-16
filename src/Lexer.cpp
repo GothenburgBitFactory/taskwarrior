@@ -66,6 +66,7 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
 
   // The sequence is specific, and must follow these rules:
   //   - date < duration < uuid < identifier
+  //   - dom < uuid
   //   - uuid < hex < number
   //   - url < pair < identifier
   //   - hex < number
@@ -461,6 +462,7 @@ bool Lexer::isDuration (std::string& token, Lexer::Type& type)
     return true;
   }
 
+  marker = 0;
   Duration dur;
   if (dur.parse (_text.substr (_cursor), marker))
   {
@@ -484,7 +486,7 @@ bool Lexer::isDuration (std::string& token, Lexer::Type& type)
 //   XXXXXXXX-X
 //   XXXXXXXX-
 //   XXXXXXXX
-//   Followed only by EOS, whitespace, operator or list.
+//   Followed only by EOS, whitespace, or single character operator.
 bool Lexer::isUUID (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
@@ -501,7 +503,10 @@ bool Lexer::isUUID (std::string& token, Lexer::Type& type)
       break;
   }
 
-  if (i >= uuid_min_length)
+  if (i >= uuid_min_length &&
+      (_text[marker + i] == 0           ||
+       isWhitespace (_text[marker + i]) ||
+       isSingleCharOperator (_text[marker + i])))
   {
     token = _text.substr (_cursor, i);
     if (! isAllDigits (token))
