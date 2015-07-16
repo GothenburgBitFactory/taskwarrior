@@ -42,13 +42,14 @@ class TestAlias(TestCase):
         # re-created for each individual test
         self.t = Task()
 
+    def test_simple_alias_to_project(self):
+        """Access a project via aliases"""
+
+        # Setup aliases
         self.t.config("alias.foo", "_projects")
         self.t.config("alias.bar", "foo")
         self.t.config("alias.baz", "bar")
         self.t.config("alias.qux", "baz")
-
-    def test_alias_to_project(self):
-        """Access a project via aliases"""
 
         # Setup a task with dummy project called Home
         expected = "Home"
@@ -78,6 +79,59 @@ class TestAlias(TestCase):
         code, out, err = self.t(("qux",))
         self.assertIn(expected, out,
                       msg="task qux -> baz > bar > foo > _projects > Home")
+
+    def test_alias_with_implicit_filter(self):
+        """Test alias containing simple filter string"""
+
+        # Setup alias with simple filter string
+        self.t.config("alias.foofilter", "project:Home _projects")
+
+        # Setup tasks for projects Home and Work
+        self.t(("add", "project:Home", "Home task"))
+        self.t(("add", "project:Work", "Work task"))
+
+        # Sanity check that _projects command outputs
+        # both the "Home" and "Work" projects
+        code, out, err = self.t(("_projects",))
+        self.assertIn("Home", out,
+                      msg="task _projects -> Home")
+        self.assertIn("Work", out,
+                      msg="task _projects -> Work")
+
+        # Check that foo command outputs the "Home" project
+        code, out, err = self.t(("foofilter",))
+        self.assertIn("Home", out,
+                msg="task foofilter -> project:Home _projects > Home")
+        self.assertNotIn("Work", out,
+                msg="task foofilter -> project:Home _projects > Work")
+
+    def test_alias_with_implicit_complex_filter(self):
+        """Test alias containing filter string with conjuction"""
+
+        # Setup alias with simple filter string
+        self.t.config("alias.hometoday", "project:Home and due:today minimal")
+
+        # Setup tasks for projects Home and Work
+        self.t(("add", "project:Home", "due:today", "Home urgent task"))
+        self.t(("add", "project:Home", "Home task"))
+        self.t(("add", "project:Work", "due:today", "Work task"))
+
+        # Check that hometoday command outputs the "Home urgent task"
+        code, out, err = self.t(("hometoday",))
+        self.assertIn("Home urgent task", out,
+                msg="task hometoday -> project:Home and due:today minimal > "
+                    "Home urgent task")
+
+        # It should not output "Home task", as that one is not due:today
+        self.assertNotIn("Home task", out,
+                msg="task hometoday -> project:Home and due:today minimal > "
+                    "Home task")
+
+        # It should not output "Work task" either, it has entirely wrong
+        # project
+        self.assertNotIn("Work task", out,
+                msg="task hometoday -> project:Home and due:today minimal > "
+                    "Work task")
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
