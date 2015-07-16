@@ -32,6 +32,7 @@
 #include <Duration.h>
 #include <Context.h>
 #include <Nibbler.h>
+#include <ISO8601.h>
 #include <Date.h>
 #include <text.h>
 #include <i18n.h>
@@ -318,7 +319,19 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
             if (column->type () == "date")
               value = Variant (ref.get_date (canonical), Variant::type_date);
             else if (column->type () == "duration")
-              value = Variant ((time_t) Duration (ref.get (canonical)), Variant::type_duration);
+            {
+              std::string period = ref.get (canonical);
+              context.debug ("ref.get(" + canonical + ") --> " + period);
+
+              ISO8601p iso;
+              std::string::size_type cursor = 0;
+              if (iso.parse (period, cursor))
+                value = Variant ((time_t) iso._value, Variant::type_duration);
+              else
+                value = Variant ((time_t) Duration (ref.get (canonical)), Variant::type_duration);
+
+              context.debug ("value --> " + (std::string) value);
+            }
             else if (column->type () == "numeric")
               value = Variant (ref.get_float (canonical));
             else
