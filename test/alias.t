@@ -53,30 +53,30 @@ class TestAlias(TestCase):
 
         # Setup a task with dummy project called Home
         expected = "Home"
-        self.t(("add", "project:{0}".format(expected), "foo"))
+        self.t("add project:{0} foo".format(expected))
 
         # Sanity check that _projects command outputs the "Home" project
-        code, out, err = self.t(("_projects",))
+        code, out, err = self.t("_projects")
         self.assertIn(expected, out,
                       msg="task _projects -> Home")
 
         # Check that foo command outputs the "Home" project
-        code, out, err = self.t(("foo",))
+        code, out, err = self.t("foo")
         self.assertIn(expected, out,
                       msg="task foo -> _projects > Home")
 
         # Check that bar command outputs the "Home" project
-        code, out, err = self.t(("bar",))
+        code, out, err = self.t("bar")
         self.assertIn(expected, out,
                       msg="task bar -> foo > _projects > Home")
 
         # Check that baz command outputs the "Home" project
-        code, out, err = self.t(("baz",))
+        code, out, err = self.t("baz")
         self.assertIn(expected, out,
                       msg="task baz -> bar > foo > _projects > Home")
 
         # Check that qux command outputs the "Home" project
-        code, out, err = self.t(("qux",))
+        code, out, err = self.t("qux")
         self.assertIn(expected, out,
                       msg="task qux -> baz > bar > foo > _projects > Home")
 
@@ -87,19 +87,19 @@ class TestAlias(TestCase):
         self.t.config("alias.foofilter", "project:Home _projects")
 
         # Setup tasks for projects Home and Work
-        self.t(("add", "project:Home", "Home task"))
-        self.t(("add", "project:Work", "Work task"))
+        self.t("add project:Home Home task")
+        self.t("add project:Work Work task")
 
         # Sanity check that _projects command outputs
         # both the "Home" and "Work" projects
-        code, out, err = self.t(("_projects",))
+        code, out, err = self.t("_projects")
         self.assertIn("Home", out,
                       msg="task _projects -> Home")
         self.assertIn("Work", out,
                       msg="task _projects -> Work")
 
         # Check that foo command outputs the "Home" project
-        code, out, err = self.t(("foofilter",))
+        code, out, err = self.t("foofilter")
         self.assertIn("Home", out,
                 msg="task foofilter -> project:Home _projects > Home")
         self.assertNotIn("Work", out,
@@ -112,12 +112,12 @@ class TestAlias(TestCase):
         self.t.config("alias.hometoday", "project:Home and due:today minimal")
 
         # Setup tasks for projects Home and Work
-        self.t(("add", "project:Home", "due:today", "Home urgent task"))
-        self.t(("add", "project:Home", "Home task"))
-        self.t(("add", "project:Work", "due:today", "Work task"))
+        self.t("add project:Home due:today Home urgent task")
+        self.t("add project:Home Home task")
+        self.t("add project:Work due:today Work task")
 
         # Check that hometoday command outputs the "Home urgent task"
-        code, out, err = self.t(("hometoday",))
+        code, out, err = self.t("hometoday")
         self.assertIn("Home urgent task", out,
                 msg="task hometoday -> project:Home and due:today minimal > "
                     "Home urgent task")
