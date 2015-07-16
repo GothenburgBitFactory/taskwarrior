@@ -52,9 +52,7 @@ class TestBugNumber(TestCase):
 
     def test_version(self):
         """Copyright is current"""
-        command = ("version",)
-
-        code, out, err = self.t(command)
+        code, out, err = self.t("version")
 
         expected = "Copyright \(C\) \d{4} - %d" % (2010,)
         self.assertRegexpMatches(out, expected)
@@ -66,14 +64,13 @@ class TestBugNumber(TestCase):
         """Running tests using libfaketime"""
         self.t.faketime("-2y")
 
-        command = ("add", "Testing")
+        command = ("add Testing")
         self.t(command)
 
         # Remove FAKETIME settings
         self.t.faketime()
 
-        command = ("list",)
-        code, out, err = self.t(command)
+        code, out, err = self.t("list")
 
         # Task should be 2 years old
         expected = "2.0y"
@@ -126,15 +123,15 @@ sys.exit(0)
 
         self.t.hooks.add(hookname, content)
 
-        self.t(("add", "Hello hooks"))
-        self.t(("1", "mod", "/Hello/Greetings/"))
+        self.t("add Hello hooks")
+        self.t("1 mod /Hello/Greetings/")
         code, out, err = self.t()
         self.assertIn("The hook did its magic", out)
 
         self.t.hooks[hookname].disable()
         self.assertFalse(self.t.hooks[hookname].is_active())
 
-        self.t(("1", "mod", "/magic/thing/"))
+        self.t("1 mod /magic/thing/")
         code, out, err = self.t()
         self.assertIn("The hook did its thing", out)
 
@@ -146,8 +143,8 @@ sys.exit(0)
         hookname = "on-modify-for-template.py"
         self.t.hooks.add_default(hookname, log=True)
 
-        self.t(("add", "Hello hooks"))
-        self.t(("1", "mod", "/Hello/Greetings/"))
+        self.t("add Hello hooks")
+        self.t("1 mod /Hello/Greetings/")
         code, out, err = self.t()
         self.assertIn("This is an example modify hook", out)
 
@@ -181,8 +178,8 @@ sys.exit(0)
         hookname = "on-modify-for-template-badexit.py"
         self.t.hooks.add_default(hookname, log=True)
 
-        self.t(("add", "Hello hooks"))
-        self.t.runError(("1", "mod", "/Hello/Greetings/"))
+        self.t("add Hello hooks")
+        self.t.runError("1 mod /Hello/Greetings/")
         code, out, err = self.t()
         self.assertNotIn("This is an example modify hook", out)
 
@@ -217,8 +214,8 @@ class ServerTestBugNumber(ServerTestCase):
 
     def test_server_sync(self):
         """Testing if client and server can speak to each other"""
-        self.t(("add", "Something to sync"))
-        self.t(("sync",))
+        self.t("add Something to sync")
+        self.t("sync")
 
 
 if __name__ == "__main__":
