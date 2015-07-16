@@ -1647,7 +1647,8 @@ void CLI2::desugarFilterPlainArgs ()
          ppraw == "or"                         ||
          ppraw == "xor")                       &&
 
-        prev->_lextype == Lexer::Type::word    &&  // candidate
+        (prev->_lextype == Lexer::Type::dom    ||  // candidate
+         prev->_lextype == Lexer::Type::word)  &&  // candidate
 
         prev->hasTag ("FILTER")                &&  // candidate
 
