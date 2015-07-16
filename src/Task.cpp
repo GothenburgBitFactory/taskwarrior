@@ -2002,8 +2002,7 @@ void Task::modify (modType type, bool text_required /* = false */)
 
           // Special case: type duration.
           // Note: "recur" is marked as type "string" to force storage in raw form.
-          else if (name == "recur" ||
-                   column->type () == "duration")
+          else if (name == "recur")
           {
             // The duration is stored in raw form, but it must still be valid,
             // and therefore is parsed first.
@@ -2019,6 +2018,28 @@ void Task::modify (modType type, bool text_required /* = false */)
               // Store the raw value, for 'recur'.
               context.debug (label + name + " <-- '" + value + "'");
               set (name, value);
+              ++modCount;
+            }
+            else
+              throw format (STRING_TASK_INVALID_DUR, value);
+          }
+
+          else if (column->type () == "duration")
+          {
+            // The duration is stored in raw form, but it must still be valid,
+            // and therefore is parsed first.
+            Eval e;
+            e.addSource (domSource);
+            e.addSource (namedDates);
+            contextTask = *this;
+
+            Variant v;
+            e.evaluateInfixExpression (value, v);
+            if (v.type () == Variant::type_duration)
+            {
+              // Store the raw value, for 'recur'.
+              context.debug (label + name + " <-- " + (std::string)v + " <-- '" + value + "'");
+              set (name, v);
               ++modCount;
             }
             else
