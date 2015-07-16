@@ -1979,7 +1979,7 @@ Variant::operator std::string () const
       }
       else
       {
-        return "P0S";
+        return "PT0S";
       }
     }
 

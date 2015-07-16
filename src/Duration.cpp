@@ -292,7 +292,7 @@ std::string Duration::formatISO () const
   }
   else
   {
-    return "P0S";
+    return "PT0S";
   }
 }
 
