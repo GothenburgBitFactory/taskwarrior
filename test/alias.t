@@ -50,28 +50,34 @@ class TestAlias(TestCase):
     def test_alias_to_project(self):
         """Access a project via aliases"""
 
-        expected = "ALIAS"
+        # Setup a task with dummy project called Home
+        expected = "Home"
         self.t(("add", "project:{0}".format(expected), "foo"))
 
+        # Sanity check that _projects command outputs the "Home" project
         code, out, err = self.t(("_projects",))
         self.assertIn(expected, out,
-                      msg="task _projects -> ALIAS")
+                      msg="task _projects -> Home")
 
+        # Check that foo command outputs the "Home" project
         code, out, err = self.t(("foo",))
         self.assertIn(expected, out,
-                      msg="task foo -> _projects > ALIAS")
+                      msg="task foo -> _projects > Home")
 
+        # Check that bar command outputs the "Home" project
         code, out, err = self.t(("bar",))
         self.assertIn(expected, out,
-                      msg="task bar -> foo > _projects > ALIAS")
+                      msg="task bar -> foo > _projects > Home")
 
+        # Check that baz command outputs the "Home" project
         code, out, err = self.t(("baz",))
         self.assertIn(expected, out,
-                      msg="task baz -> bar > foo > _projects > ALIAS")
+                      msg="task baz -> bar > foo > _projects > Home")
 
+        # Check that qux command outputs the "Home" project
         code, out, err = self.t(("qux",))
         self.assertIn(expected, out,
-                      msg="task qux -> baz > bar > foo > _projects > ALIAS")
+                      msg="task qux -> baz > bar > foo > _projects > Home")
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
