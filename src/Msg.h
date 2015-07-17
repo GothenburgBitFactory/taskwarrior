@@ -35,16 +35,9 @@ class Msg
 {
 public:
   Msg ();
-  Msg (const Msg&);
-  Msg& operator= (const Msg&);
-  bool operator== (const Msg&) const;
   ~Msg ();
 
-  void clear ();
-
-  void set (const std::string&, const int);
   void set (const std::string&, const std::string&);
-  void set (const std::string&, const double);
   void setPayload (const std::string&);
   std::string get (const std::string&) const;
   std::string getPayload () const;
