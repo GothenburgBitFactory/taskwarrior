@@ -40,8 +40,7 @@ public:
   static bool searchUsingRegex;
   static bool isoEnabled;
 
-  enum type {type_unknown, type_boolean, type_integer, type_real, type_string,
-             type_date, type_duration};
+  enum type {type_boolean, type_integer, type_real, type_string, type_date, type_duration};
 
   Variant ();
   Variant (const Variant&);
