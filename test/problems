@@ -83,7 +83,7 @@ if __name__ == "__main__":
         stop = float(timestamp.match(line).group(1))
 
     # Remove expected failures from the skipped tests category
-    for filename, value in expected.iteritems():
+    for filename, value in expected.items():
         if skipped[filename] == value:
             del skipped[filename]
         else:
