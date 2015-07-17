@@ -165,16 +165,17 @@ class Task(object):
         # Enable nicer-looking calls by allowing plain strings
         try:
             # Python 2.x
-            if isinstance(args, basestring):
-                args = shlex.split(args)
+            type_check = basestring
         except NameError:
             # Python 3.x
-            if isinstance(args, str):
-                args = shlex.split(args)
+            type_check = str
+
+        if isinstance(args, type_check):
+            args = shlex.split(args)
 
         return args
 
-    def runSuccess(self, args=(), input=None, merge_streams=False,
+    def runSuccess(self, args="", input=None, merge_streams=False,
                    timeout=5):
         """Invoke task with given arguments and fail if exit code != 0
 
@@ -279,7 +280,7 @@ class Task(object):
         which should be the output of any previous process that failed.
         """
         try:
-            output = self.runSuccess(("diag",))
+            output = self.runSuccess("diag")
         except CommandError as e:
             # If task diag failed add the error to stderr
             output = (e.code, None, str(e))

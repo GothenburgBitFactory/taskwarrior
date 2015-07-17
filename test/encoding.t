@@ -42,20 +42,20 @@ class TestUtf8(TestCase):
 
     def test_utf8_tags(self):
         """Correct handling of UTF8 characters"""
-        self.t(("add", "one", "+osobní"))
+        self.t("add one +osobní")
 
-        code, out, err = self.t(("list", "+osobní"))
+        code, out, err = self.t("list +osobní")
         self.assertIn("one", out)
 
-        code, out, err = self.t.runError(("list", "-osobní"))
+        code, out, err = self.t.runError("list -osobní")
         self.assertNotIn("one", out)
 
-        self.t(("add", "two", "+föo"))
-        code, out, err = self.t(("list", "+föo"))
+        self.t("add two +föo")
+        code, out, err = self.t("list +föo")
         self.assertIn("two", out)
         self.assertNotIn("one", out)
 
-        code, out, err = self.t(("list", "-föo"))
+        code, out, err = self.t("list -föo")
         self.assertNotIn("two", out)
         self.assertIn("one", out)
 
@@ -66,9 +66,9 @@ class TestUtf8(TestCase):
         self.t.config("print.empty.columns", "no")
 
         self.t(("add", "abc", "pro:Bar\u263a"))
-        self.t(("add", "def", "pro:Foo"))
+        self.t("add def pro:Foo")
 
-        code, out, err = self.t(("ls",))
+        code, out, err = self.t("ls")
 
         expected = re.compile("\S\s{4}abc", re.MULTILINE)
         self.assertRegexpMatches(out, expected)

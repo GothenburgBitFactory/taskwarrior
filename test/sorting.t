@@ -48,8 +48,7 @@ class MetaTests(type):
         def test(self):
             # ### Body of the usual test_testcase ### #
             code, out, err = self.t(
-                ("rc.report.{0}.sort:{1}".format(self._report, filter),
-                 self._report)
+                "rc.report.{0}.sort:{1} {0}".format(self._report, filter)
             )
 
             for expected in expectations:
@@ -99,12 +98,12 @@ class TestSorting(TestCase):
         # Report to use when running this class's tests
         cls._report = "list"
 
-        cls.t(("add",                                             "zero"))
-        cls.t(("add", "priority:H", "project:A", "due:yesterday", "one"))
-        cls.t(("add", "priority:M", "project:B", "due:today",     "two"))
-        cls.t(("add", "priority:L", "project:C", "due:tomorrow",  "three"))
-        cls.t(("add", "priority:H", "project:C", "due:today",     "four"))
-        cls.t(("2", "start"))
+        cls.t("add                                    zero")
+        cls.t("add priority:H project:A due:yesterday one")
+        cls.t("add priority:M project:B due:today     two")
+        cls.t("add priority:L project:C due:tomorrow  three")
+        cls.t("add priority:H project:C due:today     four")
+        cls.t("2 start")
 
     TESTS = {
         # Filter                           # Expected matches/outputs
@@ -250,29 +249,19 @@ class TestBug438(TestCase):
         #  2 tasks created in the past, and finished 20 seconds later
 
         stamp = int(time.time())
-        cls.t(("add", "one older",
-               "entry:{0}".format(stamp)))
+        cls.t("add one older entry:{0}".format(stamp))
         stamp += 1
-        cls.t(("add", "one newer",
-               "entry:{0}".format(stamp)))
+        cls.t("add one newer entry:{0}".format(stamp))
 
         start = stamp + 10
-        cls.t(("add", "two older",
-               "entry:{0}".format(stamp),
-               "start:{0}".format(start)))
+        cls.t("add two older entry:{0} start:{1}".format(stamp, start))
         start += 1
-        cls.t(("add", "two newer",
-               "entry:{0}".format(stamp),
-               "start:{0}".format(start)))
+        cls.t("add two newer entry:{0} start:{1}".format(stamp, start))
 
         end = start + 10
-        cls.t(("log", "three older",
-               "entry:{0}".format(stamp),
-               "end:{0}".format(end)))
+        cls.t("log three older entry:{0} end:{1}".format(stamp, end))
         end += 1
-        cls.t(("log", "three newer",
-               "entry:{0}".format(stamp),
-               "end:{0}".format(end)))
+        cls.t("log three newer entry:{0} end:{1}".format(stamp, end))
 
     TESTS = {
         "entry+": ["one older.+one newer"],

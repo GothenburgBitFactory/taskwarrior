@@ -40,21 +40,16 @@ class BaseTestBug360(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        args = ("add", "foo", "due:tomorrow", "recur:daily")
-        self.t(args)
+        self.t("add foo due:tomorrow recur:daily")
         # TODO: Add explanation why this line is necessary
-        args = ("ls",)
-        self.t(args)
+        self.t("ls")
 
 
 class TestBug360RemovalError(BaseTestBug360):
     def test_modify_recursive_project(self):
         """Modifying a recursive task by adding project: also modifies parent
         """
-        commands = "y\n"
-        args = ("1", "modify", "project:bar")
-
-        code, out, err = self.t(args, commands)
+        code, out, err = self.t("1 modify project:bar", input="y\n")
 
         expected = "Modified 2 tasks."
         self.assertIn(expected, out)
@@ -66,9 +61,8 @@ class TestBug360RemovalError(BaseTestBug360):
         """
         # TODO Removing recur: from a recurring task should also remove imask
         # and parent.
-        args = ("2", "modify", "recur:")
 
-        code, out, err = self.t.runError(args)
+        code, out, err = self.t.runError("2 modify recur:")
         # Expected non zero exit-code
         self.assertEqual(code, 2)
 
@@ -80,9 +74,7 @@ class TestBug360RemovalError(BaseTestBug360):
         """
         # TODO Removing due: from a recurring task should also remove recur,
         # imask and parent
-        args = ("2", "modify", "due:")
-
-        code, out, err = self.t.runError(args)
+        code, out, err = self.t.runError("2 modify due:")
         # Expected non zero exit-code
         self.assertEqual(code, 2)
 
@@ -96,13 +88,12 @@ class TestBug360AllowedChanges(BaseTestBug360):
         # Also do setUp from BaseTestBug360
         super(TestBug360AllowedChanges, self).setUp()
 
-        self.t(("add", "nonrecurring", "due:today"))
+        self.t("add nonrecurring due:today")
 
     def test_allow_modify_due_in_nonrecurring(self):
         """Allow modifying due date in non recurring task"""
         # Retrieve the id of the non recurring task
-        args = ("ls",)
-        code, out, err = self.t(args)
+        code, out, err = self.t("ls")
 
         expected = "2 tasks"
         self.assertIn(expected, out)
@@ -110,8 +101,7 @@ class TestBug360AllowedChanges(BaseTestBug360):
         # NOTE: raw python string r"" avoids having to escape backslashes
         id = re.search(r"(\d+)\s.+\snonrecurring", out).group(1)
 
-        args = (id, "modify", "due:")
-        code, out, err = self.t(args)
+        code, out, err = self.t((id, "modify", "due:"))
 
         expected = "Modified 1 task."
         self.assertIn(expected, out)

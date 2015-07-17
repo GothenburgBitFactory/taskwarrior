@@ -50,16 +50,16 @@ class TestDefaultProject(TestCase):
         """
         self.set_default_project()
 
-        self.t(("add", "foobar", "project:garden"))
-        code, out, err = self.t("1", "info")
+        self.t("add foobar project:garden")
+        code, out, err = self.t("1 info")
 
         self.assertIn("foobar", out)
 
         expected = "Project\s+garden"
         self.assertRegexpMatches(out, expected)
 
-        self.t(("1", "modify", "project:"))
-        code, out, err = self.t("1", "info")
+        self.t("1 modify project:")
+        code, out, err = self.t("1 info")
 
         self.assertIn("foobar", out)
         self.assertNotRegexpMatches(out, expected)
@@ -71,8 +71,8 @@ class TestDefaultProject(TestCase):
         """default.project applied when no project is specified"""
         self.set_default_project()
 
-        self.t(("add", "foobar"))
-        code, out, err = self.t("1", "info")
+        self.t("add foobar")
+        code, out, err = self.t("1 info")
 
         self.assertIn("foobar", out)
 
@@ -83,7 +83,7 @@ class TestDefaultProject(TestCase):
         """no project applied when default.project is overridden"""
         self.set_default_project()
 
-        self.t(("add", "foobar", "rc.default.project="))
+        self.t("add foobar rc.default.project=")
         code, out, err = self.t("1", "info")
 
         self.assertIn("foobar", out)
@@ -91,38 +91,38 @@ class TestDefaultProject(TestCase):
 
     def test_without_default_project(self):
         """no project applied when default.project is blank"""
-        self.t(("add", "foobar"))
-        code, out, err = self.t("1", "info")
+        self.t("add foobar")
+        code, out, err = self.t("1 info")
 
         self.assertIn("foobar", out)
         self.assertNotIn("Project", out)
 
     def test_modify_default_project(self):
         """default.project is not applied when modifying a task"""
-        self.t(("add", "foobar"))
-        code, out, err = self.t("1", "info")
+        self.t("add foobar")
+        code, out, err = self.t("1 info")
 
         self.assertIn("foobar", out)
         self.assertNotIn("Project", out)
 
         self.set_default_project()
 
-        self.t(("1", "modify", "+tag"))
+        self.t("1 modify +tag")
         code, out, err = self.t("1", "info")
         self.assertNotIn("Project", out)
 
     def test_annotate_default_project(self):
         """default.project is not applied when annotating a task"""
-        self.t(("add", "foobar"))
-        code, out, err = self.t("1", "info")
+        self.t("add foobar")
+        code, out, err = self.t("1 info")
 
         self.assertIn("foobar", out)
         self.assertNotIn("Project", out)
 
         self.set_default_project()
 
-        self.t(("1", "annotate", "Hello"))
-        code, out, err = self.t("1", "info")
+        self.t("1 annotate Hello")
+        code, out, err = self.t("1 info")
 
         expected = "Description\s+foobar\n[0-9-: ]+ Hello"
         self.assertRegexpMatches(out, expected)
@@ -133,16 +133,16 @@ class TestDefaultProject(TestCase):
         # Allow keeping track of time spent on task
         self.t.config("journal.time", "yes")
 
-        self.t(("add", "foobar"))
-        code, out, err = self.t("1", "info")
+        self.t("add foobar")
+        code, out, err = self.t("1 info")
 
         self.assertIn("foobar", out)
         self.assertNotIn("Project", out)
 
         self.set_default_project()
 
-        self.t(("1", "start"))
-        self.t(("1", "stop"))
+        self.t("1 start")
+        self.t("1 stop")
         code, out, err = self.t("1", "info")
 
         self.assertIn("foobar", out)
@@ -153,9 +153,9 @@ class TestDefaultProject(TestCase):
         self.set_default_project()
 
         DESC = "foobar"
-        self.t(("add", "recur:daily", "due:today", DESC))
+        self.t(('add', 'recur:daily', 'due:today', DESC))
         self.t()  # Ensure creation of recurring children
-        code, out, err = self.t(("1", "info"))
+        code, out, err = self.t("1 info")
 
         self.assertIn(DESC, out)
         self.assertRegexpMatches(out, "Status\s+Recurring")  # is a parent task
@@ -165,7 +165,7 @@ class TestDefaultProject(TestCase):
 
         self.t()  # Ensure creation of recurring children
         # Try to figure out the ID of last created task
-        code, out, err = self.t(("count",))
+        code, out, err = self.t("count")
 
         # Will fail if some other message is printed as part of "count"
         id = out.split()[-1]
@@ -189,7 +189,7 @@ class TestDefaultProject(TestCase):
         """no project is applied on recurring tasks"""
         # NOTE - reported on TW-1279
         DESC = "foobar"
-        self.t(("add", "recur:daily", "due:today", DESC))
+        self.t(('add', 'recur:daily', 'due:today', DESC))
         code, out, err = self.t()
 
         self.assertIn(DESC, out)
@@ -211,7 +211,7 @@ class TestDefaultProject(TestCase):
         self.set_default_project()
 
         DESC = "foobar"
-        self.t(("add", "recur:daily", "due:today", "project:HELLO", DESC))
+        self.t(('add', 'recur:daily', 'due:today', 'project:HELLO', DESC))
         code, out, err = self.t()
 
         self.assertIn(DESC, out)
@@ -243,7 +243,7 @@ class ServerTestDefaultProject(ServerTestCase):
         # NOTE - reported on TW-1287
         desc = "Testing task"
         self.t1(("add", desc))
-        self.t1(("sync",))
+        self.t1("sync")
 
         code, out, err = self.t1()
 
@@ -252,18 +252,18 @@ class ServerTestDefaultProject(ServerTestCase):
         # Testing scenario - default.project is applied on task arrival
         proj2 = "Client2"
         self.t2.config("default.project", proj2)
-        self.t2(("sync",))
+        self.t2("sync")
 
         code, out, err = self.t2()
         self.assertIn(desc, out)
         self.assertNotIn(proj2, out)
 
-        self.t2(("sync",))
+        self.t2("sync")
 
         # Testing scenario - default.project is applied on task delivery
         proj3 = "Client3"
         self.t3.config("default.project", proj3)
-        self.t3(("sync",))
+        self.t3("sync")
 
         code, out, err = self.t3()
         self.assertIn(desc, out)

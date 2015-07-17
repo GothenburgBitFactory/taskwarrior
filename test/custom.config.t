@@ -52,7 +52,7 @@ class TestCustomConfig(TestCase):
 
         Reported in bug 1065
         """
-        code, out, err = self.t(("show", "alias"))
+        code, out, err = self.t("show alias")
 
         self.assertIn(self.DIFFER_MSG, out)
         self.assertNotIn(self.NOT_RECOG_MSG, out)
@@ -62,7 +62,7 @@ class TestCustomConfig(TestCase):
 
         Reported in bug 1065
         """
-        code, out, err = self.t(("show",))
+        code, out, err = self.t("show")
 
         self.assertIn(self.DIFFER_MSG, out)
         self.assertIn(self.NOT_RECOG_MSG, out)
@@ -72,7 +72,7 @@ class TestCustomConfig(TestCase):
 
         Reported in bug 1065
         """
-        code, out, err = self.t(("show", "report.overdue"))
+        code, out, err = self.t("show report.overdue")
 
         self.assertNotIn(self.DIFFER_MSG, out)
         self.assertNotIn(self.NOT_RECOG_MSG, out)
@@ -82,7 +82,7 @@ class TestCustomConfig(TestCase):
 
         Reported in bug 1065
         """
-        code, out, err = self.t(("show", "notrecog"))
+        code, out, err = self.t("show notrecog")
 
         self.assertNotIn(self.DIFFER_MSG, out)
         self.assertIn(self.NOT_RECOG_MSG, out)

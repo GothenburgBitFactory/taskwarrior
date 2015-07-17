@@ -45,20 +45,20 @@ class TestAliasesCompletion(TestCase):
 
     def test__aliases(self):
         """samplealias in _aliases"""
-        code, out, err = self.t(("_aliases",))
+        code, out, err = self.t("_aliases")
 
         self.assertIn("samplealias", out)
 
     def test__commands(self):
         """samplealias not in _commands"""
-        code, out, err = self.t(("_commands",))
+        code, out, err = self.t("_commands")
 
         self.assertIn("information", out)
         self.assertNotIn("samplealias", out)
 
     def test__zshcommands(self):
         """samplealias not in _zshcommands"""
-        code, out, err = self.t(("_zshcommands",))
+        code, out, err = self.t("_zshcommands")
 
         self.assertIn("information", out)
         self.assertNotIn("samplealias", out)

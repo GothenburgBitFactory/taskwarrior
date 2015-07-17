@@ -53,14 +53,14 @@ class TestAnnotation(TestCase):
         """Verify filterless annotation is trapped, declined"""
         self.t("add foo")
 
-        code, out, err = self.t.runError(("annotate", "bar"), input="no\n")
+        code, out, err = self.t.runError("annotate bar", input="no\n")
         self.assertIn("Command prevented from running", err)
         self.assertNotIn("Command prevented from running", out)
 
     def test_filterless_annotate(self):
         """Verify filterless annotation is trapped, overridden"""
         self.t("add foo")
-        code, out, err = self.t(("annotate", "bar"), input="yes\n")
+        code, out, err = self.t("annotate bar", input="yes\n")
 
         self.assertNotIn("Command prevented from running", err)
         self.assertNotIn("Command prevented from running", out)

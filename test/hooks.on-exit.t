@@ -46,7 +46,7 @@ class TestHooksOnExit(TestCase):
         hookname = 'on-exit-good'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t(("version",))
+        code, out, err = self.t("version")
         self.assertIn("Taskwarrior", out)
 
         hook = self.t.hooks[hookname]
@@ -62,7 +62,7 @@ class TestHooksOnExit(TestCase):
         self.t.hooks.add_default(hookname, log=True)
 
         # Failing hook should prevent processing.
-        code, out, err = self.t.runError(("version",))
+        code, out, err = self.t.runError("version")
         self.assertIn("Taskwarrior", out)
 
         hook = self.t.hooks[hookname]
@@ -78,7 +78,7 @@ class TestHooksOnExit(TestCase):
         self.t.hooks.add_default(hookname, log=True)
 
         # Failing hook should prevent processing.
-        code, out, err = self.t(("version",))
+        code, out, err = self.t("version")
         self.assertIn("Taskwarrior", out)
 
         hook = self.t.hooks[hookname]
@@ -94,7 +94,7 @@ class TestHooksOnExit(TestCase):
         self.t.hooks.add_default(hookname, log=True)
 
         # Failing hook should prevent processing.
-        code, out, err = self.t.runError(("version",))
+        code, out, err = self.t.runError("version")
         self.assertIn("Hook Error: Expected 0 JSON task(s), found 1", err)
 
         hook = self.t.hooks[hookname]

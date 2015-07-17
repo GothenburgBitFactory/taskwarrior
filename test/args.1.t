@@ -41,22 +41,22 @@ class TestIDPosition(TestCase):
         """Executed once before any test in the class"""
         cls.t = Task()
 
-        cls.t(("add", "one"))
-        cls.t(("add", "two"))
+        cls.t("add one")
+        cls.t("add two")
 
     def test_id_read_cmd(self):
         """Test id before and after read command"""
-        code, out, err = self.t(("1", "info"))
+        code, out, err = self.t("1 info")
         self.assertIn("one", out)
         self.assertNotIn("two", out)
 
-        code, out, err = self.t(("info", "1"))
+        code, out, err = self.t("info 1")
         self.assertIn("one", out)
         self.assertNotIn("two", out)
 
     def test_id_write_cmd(self):
         """Test id before write command"""
-        code, out, err = self.t(("2", "done"))
+        code, out, err = self.t("2 done")
         self.assertIn("Completed task 2", out)
 
 

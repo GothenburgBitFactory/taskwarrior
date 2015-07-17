@@ -48,13 +48,13 @@ class TestTaskEdit(TestCase):
     def test_newline_description_edit(self):
         """task edit - parsing entries containing multiline descriptions"""
 
-        self.t(("add", "Hello\nLost"))
+        self.t('add "Hello\nLost"')
 
         code, out, err = self.t()
         self.assertIn("Lost", out)
 
         # Newlines may not be correctly parsed
-        code, out, err = self.t(("1", "edit"))
+        code, out, err = self.t("1 edit")
 
         code, out, err = self.t()
         self.assertIn("Lost", out)
@@ -62,14 +62,14 @@ class TestTaskEdit(TestCase):
     def test_newline_annotation_edit(self):
         """task edit - parsing entries containing multiline annotations"""
 
-        self.t(("add", "Hello"))
-        self.t(("1", "annotate", "Something\nLost"))
+        self.t("add Hello")
+        self.t('1 annotate "Something\nLost"')
 
         code, out, err = self.t()
         self.assertIn("Lost", out)
 
         # Newlines may not be correctly parsed
-        code, out, err = self.t(("1", "edit"))
+        code, out, err = self.t("1 edit")
 
         code, out, err = self.t()
         self.assertIn("Lost", out)

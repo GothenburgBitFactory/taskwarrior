@@ -44,12 +44,12 @@ class TestCLI(TestCase):
 
     def test_quoted_args_remain_intact(self):
         """Quoted arguments should remain unmolested."""
-        self.t(("add", "'a/b'"))
-        code, out, err = self.t(("_get", "1.description"))
+        self.t("add 'a/b'")
+        code, out, err = self.t("_get 1.description")
         self.assertIn("a/b", out)
 
-        self.t(("add", "'1-2'"))
-        code, out, err = self.t(("_get", "2.description"))
+        self.t("add '1-2'")
+        code, out, err = self.t("_get 2.description")
         self.assertIn("1-2", out)
 
 

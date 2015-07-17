@@ -43,9 +43,9 @@ class Test1447(TestCase):
     def test_filter_uda(self):
         """Verify single-word aliases"""
         self.t.config('uda.sep.type', 'string')
-        self.t(('add', 'one'))
-        self.t(('add', 'two', 'sep:foo'))
-        code, out, err = self.t(('sep:', 'list'))
+        self.t('add one')
+        self.t('add two sep:foo')
+        code, out, err = self.t('sep: list')
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
         self.assertIn('one', out)
 

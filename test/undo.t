@@ -42,23 +42,23 @@ class TestUndo(TestCase):
 
     def test_add_undo(self):
         """'add' then 'undo'"""
-        code, out, err = self.t(('add', 'one'))
-        code, out, err = self.t(('_get', '1.status'))
+        code, out, err = self.t('add one')
+        code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'pending')
-        code, out, err = self.t(('undo'))
-        code, out, err = self.t(('_get', '1.status'))
+        code, out, err = self.t('undo')
+        code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), '')
 
     def test_add_done_undo(self):
         """'add' then 'done' then 'undo'"""
-        code, out, err = self.t(('add', 'two'))
-        code, out, err = self.t(('_get', '1.status'))
+        code, out, err = self.t('add two')
+        code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'pending')
-        code, out, err = self.t(('1', 'done'))
-        code, out, err = self.t(('_get', '1.status'))
+        code, out, err = self.t('1 done')
+        code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'completed')
-        code, out, err = self.t(('undo'))
-        code, out, err = self.t(('_get', '1.status'))
+        code, out, err = self.t('undo')
+        code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'pending')
 
     def test_undo_en_passant(self):

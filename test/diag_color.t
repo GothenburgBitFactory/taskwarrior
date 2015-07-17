@@ -48,21 +48,21 @@ class TestDiagColor(TestCase):
 
     def test_diag_color(self):
         """Task diag detects terminal as color compatible"""
-        code, out, err = self.t(("diag",))
+        code, out, err = self.t("diag")
 
         expected = "\x1b[1m"
         self.assertNotIn(expected, out)
 
     def test_diag_nocolor(self):
         """Task diag respects rc:color=off and disables color"""
-        code, out, err = self.t(("rc.color:off", "diag"))
+        code, out, err = self.t("rc.color:off diag")
 
         expected = "\x1b[1m"
         self.assertNotIn(expected, out)
 
     def test_diag_force_color(self):
         """Task diag respects rc:_forcecolor=on and forces color"""
-        code, out, err = self.t(("rc._forcecolor:on", "diag"))
+        code, out, err = self.t("rc._forcecolor:on diag")
 
         expected = "\x1b[1m"
         self.assertIn(expected, out)

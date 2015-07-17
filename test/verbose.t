@@ -43,16 +43,16 @@ class TestVerbosity(TestCase):
         self.t = Task()
         self.t.config("print.empty.columns", "yes")
 
-        self.t(("add", "Sample"))
+        self.t("add Sample")
 
     # TODO Verbosity: 'edit'
 
     def test_verbosity_new_id(self):
         """Verbosity new-id"""
-        code, out, err = self.t(("rc.verbose:new-id", "add", "Sample1"))
+        code, out, err = self.t("rc.verbose:new-id add Sample1")
         self.assertRegexpMatches(out, r"Created task \d")
 
-        code, out, err = self.t(("rc.verbose:nothing", "add", "Sample2"))
+        code, out, err = self.t("rc.verbose:nothing add Sample2")
         self.assertNotRegexpMatches(out, r"Created task \d")
 
     def test_verbosity_new_uuid(self):
@@ -62,7 +62,7 @@ class TestVerbosity(TestCase):
 
     def test_verbosity_label(self):
         """Verbosity label"""
-        code, out, err = self.t(("rc.verbose:label", "ls"))
+        code, out, err = self.t("rc.verbose:label ls")
         self.assertRegexpMatches(
             out,
             "ID.+A.+D.+Project.+Tags.+R.+Wait.+S.+Due.+Until.+Description"
@@ -70,14 +70,14 @@ class TestVerbosity(TestCase):
 
     def test_verbosity_affected(self):
         """Verbosity affected"""
-        code, out, err = self.t(("rc.verbose:affected", "ls"))
+        code, out, err = self.t("rc.verbose:affected ls")
 
         expected = re.compile(r"^\d+ tasks?$", re.MULTILINE)
         self.assertRegexpMatches(out, expected)
 
     def test_verbosity_off(self):
         """Verbosity off"""
-        code, out, err = self.t(("rc.verbose:nothing", "ls"))
+        code, out, err = self.t("rc.verbose:nothing ls")
 
         expected = re.compile(r"^\d+ tasks?$", re.MULTILINE)
         self.assertNotRegexpMatches(out, expected)
@@ -85,7 +85,7 @@ class TestVerbosity(TestCase):
 
     def test_verbosity_special(self):
         """Verbosity special"""
-        code, out, err = self.t(("rc.verbose:special", "1", "mod", "+next"))
+        code, out, err = self.t("rc.verbose:special 1 mod +next")
 
         self.assertIn("The 'next' special tag will boost the urgency of this "
                       "task so it appears on the 'next' report.", out)
@@ -96,30 +96,30 @@ class TestVerbosity(TestCase):
         def count_blank_lines(x):
             return len(filter(operator.not_, x.splitlines()))
 
-        code, out, err = self.t(("rc.verbose:nothing", "ls"))
+        code, out, err = self.t("rc.verbose:nothing ls")
         self.assertEqual(count_blank_lines(out), 0)
 
-        code, out, err = self.t(("rc.verbose:blank", "ls"))
+        code, out, err = self.t("rc.verbose:blank ls")
         self.assertEqual(count_blank_lines(out), 2)
 
     def test_verbosity_header(self):
         """Verbosity header"""
 
-        code, out, err = self.t(("rc.verbose:nothing", "ls"))
+        code, out, err = self.t("rc.verbose:nothing ls")
         self.assertNotIn("TASKRC override:", err)
         self.assertNotIn("TASKDATA override:", err)
 
-        code, out, err = self.t(("rc.verbose:header", "ls"))
+        code, out, err = self.t("rc.verbose:header ls")
         self.assertIn("TASKRC override:", err)
         self.assertIn("TASKDATA override:", err)
 
     def test_verbosity_project(self):
         """Verbosity project"""
 
-        code, out, err = self.t(("rc.verbose:nothing", "add", "proj:T", "one"))
+        code, out, err = self.t("rc.verbose:nothing add proj:T one")
         self.assertNotIn("The project 'T' has changed.", err)
 
-        code, out, err = self.t(("rc.verbose:project", "add", "proj:T", "two"))
+        code, out, err = self.t("rc.verbose:project add proj:T two")
         self.assertIn("The project 'T' has changed.", err)
 
 

@@ -49,16 +49,16 @@ class TestWait(TestCase):
         #  [1] an hour before current time (visible 'now')
         #  [2] 22 hours after current time (hidden 'now', visible 'tomorrow')
         self.t.faketime("-2h")
-        self.t(("add", "wait:1h", "visible"))
-        self.t(("add", "wait:1d", "hidden"))
+        self.t("add wait:1h visible")
+        self.t("add wait:1d hidden")
 
         self.t.faketime()
-        code, out, err = self.t(("ls",))
+        code, out, err = self.t("ls")
         self.assertIn("visible", out)
         self.assertNotIn("hidden", out)
 
         self.t.faketime("+1d")
-        code, out, err = self.t(("ls",))
+        code, out, err = self.t("ls")
         self.assertIn("visible", out)
         self.assertIn("hidden", out)
 
@@ -71,12 +71,12 @@ class TestBug434(TestCase):
 
     def test_complete_waiting(self):
         """completion of waiting tasks"""
-        self.t(("add", "One", "wait:tomorrow"))
+        self.t("add One wait:tomorrow")
 
-        code, out, err = self.t(("1", "done"))
+        code, out, err = self.t("1 done")
         self.assertIn("Completed 1 task", out)
 
-        code, out, err = self.t.runError(("ls",))
+        code, out, err = self.t.runError("ls")
         self.assertNotIn("One", out)
         self.assertIn("No matches", err)
 

@@ -46,14 +46,14 @@ class TestBug1006(TestCase):
         self.t.config("verbose", "affected")
 
     def initial_tasks(self):
-        self.t(("add", "des"))
-        self.t(("1", "annotate", "des"))
+        self.t("add des")
+        self.t("1 annotate des")
 
     def test_completion_of_des_inactive(self):
         "Check that the completion is inactive in task descriptions"
 
         self.initial_tasks()
-        code, out, err = self.t(("1", "info"))
+        code, out, err = self.t("1 info")
 
         expected = "Description +des\n"
         errormsg = "Attribute not completed in description"
@@ -66,7 +66,7 @@ class TestBug1006(TestCase):
         "Check that the completion works when needed"
 
         self.initial_tasks()
-        code, out, err = self.t(("des:des",))
+        code, out, err = self.t("des:des")
 
         errormsg = "Task found using its description"
         self.assertIn("1 task", out, msg=errormsg)
@@ -74,8 +74,8 @@ class TestBug1006(TestCase):
     def test_accented_chars(self):
         "Check that é in entrée remains untouched"
 
-        self.t(("add", "entrée interdite"))
-        code, out, err = self.t(("list", "interdite"))
+        self.t("add entrée interdite")
+        code, out, err = self.t("list interdite")
 
         errormsg = "'entrée' left intact"
         self.assertIn("entrée interdite", out, msg=errormsg)

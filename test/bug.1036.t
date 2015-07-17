@@ -45,16 +45,16 @@ class TestBug1036(TestCase):
 
     def test_until_may_modify(self):
         """check that until attribute may be modified"""
-        self.t(("add", "test"))
-        code, out, err = self.t(("1", "mod", "until:1/1/2020"))
+        self.t("add test")
+        code, out, err = self.t("1 mod until:1/1/2020")
 
         expected = "Modifying task 1 'test'."
         self.assertIn(expected, out)
 
     def test_may_modify_on_until(self):
         """check that task with until attribute set may be modified"""
-        self.t(("add", "test", "until:1/1/2020"))
-        code, out, err = self.t(("1", "mod", "/test/Hello/"))
+        self.t("add test until:1/1/2020")
+        code, out, err = self.t("1 mod /test/Hello/")
 
         expected = "Modifying task 1 'Hello'."
         self.assertIn(expected, out)

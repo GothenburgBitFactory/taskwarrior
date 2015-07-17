@@ -43,9 +43,9 @@ class TestImport(TestCase):
         self.t.config("dateformat", "m/d/Y")
 
         self.data1 = """[
-{"uuid":"00000000-0000-0000-0000-000000000000","description":"zero","project":"A","status":"pending","entry":"1234567889"},
-{"uuid":"11111111-1111-1111-1111-111111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},
-{"uuid":"22222222-2222-2222-2222-222222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690"}
+{"uuid":"a0000000-a000-a000-a000-a00000000000","description":"zero","project":"A","status":"pending","entry":"1234567889"},
+{"uuid":"a1111111-a111-a111-a111-a11111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},
+{"uuid":"a2222222-a222-a222-a222-a22222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690"}
 ]
 """
 
@@ -53,24 +53,24 @@ class TestImport(TestCase):
 """
 
     def assertData1(self):
-        code, out, err = self.t(("list",))
+        code, out, err = self.t("list")
         self.assertRegexpMatches(out, "1.+A.+zero")
         self.assertRegexpMatches(out, "2.+B.+one")
         self.assertNotIn("two", out)
 
-        code, out, err = self.t(("completed",))
+        code, out, err = self.t("completed")
         self.assertNotIn("zero", out)
         self.assertNotIn("one", out)
         # complete has completion date as 1st column
         self.assertRegexpMatches(out, "2/13/2009.+two")
 
     def assertData2(self):
-        code, out, err = self.t(("list",))
+        code, out, err = self.t("list")
         self.assertRegexpMatches(out, "3.+three")
 
     def test_import_stdin(self):
         """Import from stdin"""
-        code, out, err = self.t(("import", "-"), input=self.data1)
+        code, out, err = self.t("import -", input=self.data1)
         self.assertIn("Imported 3 tasks", err)
 
         self.assertData1()
@@ -86,17 +86,17 @@ class TestImport(TestCase):
         """Import from a file"""
         filename = mkstemp(self.data1)
 
-        code, out, err = self.t(("import", filename))
+        code, out, err = self.t("import {0}".format(filename))
         self.assertIn("Imported 3 tasks", err)
 
         self.assertData1()
 
     def test_double_import(self):
         """Multiple imports persist data"""
-        code, out, err = self.t(("import", "-"), input=self.data1)
+        code, out, err = self.t("import -", input=self.data1)
         self.assertIn("Imported 3 tasks", err)
 
-        code, out, err = self.t(("import", "-"), input=self.data2)
+        code, out, err = self.t("import -", input=self.data2)
         self.assertIn("Imported 1 tasks", err)
 
         self.assertData1()
@@ -105,9 +105,7 @@ class TestImport(TestCase):
     def test_import_update(self):
         """Update existing tasks"""
         self.t("import", input=self.data1)
-        self.t("2 delete")  # Depends on import order. Bad. See next line.
-        # TODO: Use this once filtering by UUID works again...
-        #self.t("11111111-1111-1111-1111-111111111111 delete")
+        self.t("a1111111-a111-a111-a111-a11111111111 delete")
         self.t("next")  # Run GC
 
         _t = sorted(self.t.export(), key=lambda t: t["uuid"])
@@ -146,12 +144,51 @@ class TestImport(TestCase):
     def test_import_newlines_whitespace(self):
         """JSON array with whitespace before and after names and values"""
         _data = """[
-{ "uuid":"00000000-0000-0000-0000-000000000000" ,  "description"  :  "zero" ,"project":"A", "status":"pending","entry":"1234567889" } ,   
-{ "uuid":"11111111-1111-1111-1111-111111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},     {"uuid":"22222222-2222-2222-2222-222222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690" }
+{ "uuid":"a0000000-a000-a000-a000-a00000000000" ,  "description"  :  "zero" ,"project":"A", "status":"pending","entry":"1234567889" } ,   
+{ "uuid":"a1111111-a111-a111-a111-a11111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},     {"uuid":"a2222222-a222-a222-a222-a22222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690" }
 ]"""
         code, out, err = self.t("import", input=_data)
         self.assertIn("Imported 3 tasks", err)
         self.assertData1()
+
+
+class TestImportExportRoundtrip(TestCase):
+    def setUp(self):
+        self.t1 = Task()
+        self.t2 = Task()
+
+        for client in (self.t1, self.t2):
+            client.config("dateformat", "m/d/Y")
+            client.config("verbose", "off")
+            client.config("defaultwidth", "100")
+            client.config("json.array", "off")
+
+    def _validate_data(self, client):
+        code, out, err = client("_get 1.priority")
+        self.assertEqual("H\n", out)
+        code, out, err = client("_get 1.project")
+        self.assertEqual("A\n", out)
+        code, out, err = client("_get 1.description")
+        self.assertEqual("one/1\n", out)
+        code, out, err = client("_get 2.tags")
+        self.assertEqual("tag1,tag2\n", out)
+        code, out, err = client("_get 2.description")
+        self.assertEqual("two\n", out)
+
+    def test_import_export(self):
+        """Test importing exported data"""
+        self.t1("add priority:H project:A -- one/1")
+        self.t1("add +tag1 +tag2 two")
+
+        code, out1, err = self.t1("export")
+
+        self.t2("import -", input=out1)
+        code, out2, err = self.t2("export")
+
+        self.assertEqual(out1, out2)
+
+        self._validate_data(self.t1)
+        self._validate_data(self.t2)
 
 
 if __name__ == "__main__":

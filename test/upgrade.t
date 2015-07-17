@@ -41,20 +41,20 @@ class TestUpgrade(TestCase):
 
     def test_upgrade_to_recurring(self):
         """Upgrade a task to recurring"""
-        self.t(("add", "one"))
+        self.t("add one")
 
-        code, out, err = self.t(("1", "info"))
+        code, out, err = self.t("1 info")
         self.assertRegexpMatches(out, "Status\s+Pending")
 
-        self.t(("1", "modify", "due:tomorrow", "recur:weekly"))
-        self.t(("list",))
+        self.t("1 modify due:tomorrow recur:weekly")
+        self.t("list")
 
-        code, out, err = self.t(("1", "info"))
+        code, out, err = self.t("1 info")
         self.assertRegexpMatches(out, "Status\s+Recurring")
         self.assertRegexpMatches(out, "Recurrence\s+weekly")
 
         # Also check for the presence of a children task with pending state
-        code, out, err = self.t(("2", "info"))
+        code, out, err = self.t("2 info")
         self.assertRegexpMatches(out, "Status\s+Pending")
         self.assertRegexpMatches(out, "Recurrence\s+weekly")
 

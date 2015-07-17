@@ -41,10 +41,10 @@ class TestBug425(TestCase):
 
     def test_bug425(self):
         """parser interpret 'in' in description"""
-        self.t(("add", "Foo"))
-        self.t(("1", "modify", "Bar in Bar"))
+        self.t("add Foo")
+        self.t("1 modify Bar in Bar")
 
-        code, out, err = self.t(("1", "ls"))
+        code, out, err = self.t("1 ls")
         self.assertRegexpMatches(out, "1\s+Bar in Bar")
 
 

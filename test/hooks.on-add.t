@@ -46,7 +46,7 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-accept'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t(("add", "foo"))
+        code, out, err = self.t("add foo")
 
         hook = self.t.hooks[hookname]
         hook.assertTriggeredCount(1)
@@ -55,7 +55,7 @@ class TestHooksOnAdd(TestCase):
         logs = hook.get_logs()
         self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
-        code, out, err = self.t(("1", "info"))
+        code, out, err = self.t("1 info")
         self.assertIn("Description   foo", out)
 
     def test_onadd_builtin_reject(self):
@@ -63,7 +63,7 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-reject'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t.runError(("add", "foo"))
+        code, out, err = self.t.runError("add foo")
 
         hook = self.t.hooks[hookname]
         hook.assertTriggeredCount(1)
@@ -77,7 +77,7 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-misbehave1'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t.runError(("add", "foo"))
+        code, out, err = self.t.runError("add foo")
 
         hook = self.t.hooks[hookname]
         hook.assertTriggeredCount(1)
@@ -91,7 +91,7 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-misbehave2'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t.runError(("add", "foo"))
+        code, out, err = self.t.runError("add foo")
         self.assertIn("Hook Error: Expected 1 JSON task(s), found 0", err)
 
         hook = self.t.hooks[hookname]
@@ -103,7 +103,7 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-misbehave3'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t.runError(("add", "foo"))
+        code, out, err = self.t.runError("add foo")
         self.assertIn("Hook Error: Expected 1 JSON task(s), found 2", err)
 
         hook = self.t.hooks[hookname]
@@ -115,7 +115,7 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-misbehave4'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t.runError(("add", "foo"))
+        code, out, err = self.t.runError("add foo")
         self.assertIn("Hook Error: JSON must be for the same task:", err)
 
         hook = self.t.hooks[hookname]
@@ -130,7 +130,7 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-misbehave5'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t.runError(("add", "foo"))
+        code, out, err = self.t.runError("add foo")
         self.assertIn("Hook Error: JSON syntax error in: {\"}", err)
 
         hook = self.t.hooks[hookname]
@@ -146,7 +146,7 @@ class TestHooksOnAdd(TestCase):
         hookname = 'on-add-misbehave6'
         self.t.hooks.add_default(hookname, log=True)
 
-        code, out, err = self.t.runError(("add", "foo"))
+        code, out, err = self.t.runError("add foo")
         self.assertIn("Hook Error: JSON Object missing 'uuid' attribute.", err)
 
         hook = self.t.hooks[hookname]

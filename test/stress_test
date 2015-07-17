@@ -41,7 +41,7 @@ def run_test(test):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Run Taskwarrior tests repeatedly")
-    parser.add_argument('--logging', '-l', action="count",
+    parser.add_argument('--logging', '-l', action="count", default=0,
                         help="Logging level. -lll is the highest level")
     parser.add_argument('--repeat', metavar="N", type=int, default=100,
                         help="How many times to run each test (default: 100)")

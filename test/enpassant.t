@@ -47,9 +47,9 @@ class TestEnpassantMultiple(BaseTestEnpassant):
     def setUp(self):
         super(TestEnpassantMultiple, self).setUp()
 
-        self.t(("add", "foo"))
-        self.t(("add", "foo", "bar"))
-        self.t(("add", "baz foo baz"))
+        self.t("add foo")
+        self.t("add foo bar")
+        self.t("add baz foo baz")
 
     def validate_info(self, id, desc):
         code, out, err = self.t((id, "info"))
@@ -73,7 +73,7 @@ class TestEnpassantMultiple(BaseTestEnpassant):
 
     def test_multiple(self):
         "Test enpassant in multiple tasks and with multiple changes at once"
-        self.t(("1,2,3", "done", "/foo/FOO/", "pri:H", "+tag"), input="all\n")
+        self.t("1,2,3 done /foo/FOO/ pri:H +tag", input="all\n")
 
         self.validate_info("1", desc="FOO")
         self.validate_info("2", desc="FOO bar")
@@ -84,35 +84,35 @@ class TestEnpassant(BaseTestEnpassant):
     def setUp(self):
         super(TestEnpassant, self).setUp()
 
-        self.t(("add", "one"))
-        self.t(("add", "two"))
-        self.t(("add", "three"))
-        self.t(("add", "four"))
-        self.t(("add", "five"))
+        self.t("add one")
+        self.t("add two")
+        self.t("add three")
+        self.t("add four")
+        self.t("add five")
 
     def perform_action(self, action):
         self.t(("1", action, "oneanno"))
-        code, out, err = self.t(("1", "info"))
+        code, out, err = self.t("1 info")
         self.assertRegexpMatches(out, "Description +one\n[0-9: -]+ oneanno",
                                  msg="{0} enpassant annotation".format(action))
 
         self.t(("2", action, "/two/TWO/"))
-        code, out, err = self.t(("2", "info"))
+        code, out, err = self.t("2 info")
         self.assertRegexpMatches(out, "Description +TWO",
                                  msg="{0} enpassant modify".format(action))
 
         self.t(("3", action, "+threetag"))
-        code, out, err = self.t(("3", "info"))
+        code, out, err = self.t("3 info")
         self.assertRegexpMatches(out, "Tags +threetag",
                                  msg="{0} enpassant tag".format(action))
 
         self.t(("4", action, "pri:H"))
-        code, out, err = self.t(("4", "info"))
+        code, out, err = self.t("4 info")
         self.assertRegexpMatches(out, "Priority +H",
                                  msg="{0} enpassant priority".format(action))
 
         self.t(("5", action, "pro:PROJ"))
-        code, out, err = self.t(("5", "info"))
+        code, out, err = self.t("5 info")
         self.assertRegexpMatches(out, "Project +PROJ",
                                  msg="{0} enpassant project".format(action))
 
@@ -130,7 +130,7 @@ class TestEnpassant(BaseTestEnpassant):
 
     def test_stop(self):
         """Test 'stop' with en-passant changes"""
-        self.t(("1-5", "start"), input="all\n")
+        self.t("1-5 start", input="all\n")
 
         self.perform_action("stop")
 

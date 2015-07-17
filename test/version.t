@@ -52,7 +52,7 @@ class TestVersion(TestCase):
 
     def test_copyright_up_to_date(self):
         """Copyright is current"""
-        code, out, err = self.t(("version",))
+        code, out, err = self.t("version")
 
         expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
         self.assertRegexpMatches(out, expected)
@@ -70,7 +70,7 @@ class TestVersion(TestCase):
 
     def test_version(self):
         """version command outputs expected version and license"""
-        code, out, err = self.t(("version",))
+        code, out, err = self.t("version")
 
         expected = "task {0}".format(self.slurp())
         self.assertIn(expected, out)
@@ -84,7 +84,7 @@ class TestVersion(TestCase):
 
     def test_under_version(self):
         """_version outputs expected version and syntax"""
-        code, out, err = self.t(("_version",))
+        code, out, err = self.t("_version")
 
         # version = "x.x.x (git-hash)" or simply "x.x.x"
         # corresponding to "compiled from git" or "compiled from tarball"
