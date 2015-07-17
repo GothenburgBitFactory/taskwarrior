@@ -194,7 +194,7 @@ if __name__ == "__main__":
         level = logging.ERROR
 
     logging.basicConfig(
-        format="# %(asctime)s - %(levelname)s - %(message)s",
+        format="%(asctime)s - %(levelname)s - %(message)s",
         level=level,
     )
     log = logging.getLogger(__name__)
