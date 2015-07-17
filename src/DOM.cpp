@@ -51,17 +51,6 @@ DOM::~DOM ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> DOM::get_references () const
-{
-  return {"context.program",
-          "context.args",
-          "context.width",
-          "context.height",
-          "system.version",
-          "system.os"};
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // DOM Supported References:
 //   rc.<name>
 //
@@ -445,23 +434,6 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
 
   // Delegate to the context-free version of DOM::get.
   return this->get (name, value);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void DOM::set (const std::string& name, const Variant& value)
-{
-  int len = name.length ();
-
-  // rc. --> context.config
-  if (len > 3 &&
-      name.substr (0, 3) == "rc.")
-  {
-    context.config.set (name.substr (3), (std::string) value);
-  }
-
-  // Unrecognized --> error.
-  else
-    throw format (STRING_DOM_CANNOT_SET, name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
