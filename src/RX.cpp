@@ -30,14 +30,6 @@
 #include <RX.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-RX::RX ()
-: _compiled (false)
-, _pattern ("")
-, _case_sensitive (true)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 RX::RX (
   const std::string& pattern,
   bool case_sensitive /* = true */)
@@ -46,34 +38,6 @@ RX::RX (
 , _case_sensitive (case_sensitive)
 {
   compile ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-RX::RX (const RX& other)
-: _compiled (false)
-, _pattern (other._pattern)
-, _case_sensitive (other._case_sensitive)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-RX& RX::operator= (const RX& other)
-{
-  if (this != &other)
-  {
-    _compiled       = false;
-    _pattern        = other._pattern;
-    _case_sensitive = other._case_sensitive;
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool RX::operator== (const RX& other) const
-{
-  return _pattern        == other._pattern &&
-         _case_sensitive == other._case_sensitive;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
