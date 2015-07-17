@@ -130,13 +130,6 @@ void ISO8601d::clear ()
   _offset          = 0;
   _utc             = false;
   _value           = 0;
-  _default_seconds = 0;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ISO8601d::set_default_time (int hours, int minutes, int seconds)
-{
-  _default_seconds = (hours * 3600) + (minutes * 60) + seconds;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

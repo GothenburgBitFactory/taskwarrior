@@ -40,7 +40,6 @@ public:
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&);
   void clear ();
-  void set_default_time (int, int, int);
 
 private:
   bool parse_date_time     (Nibbler&);
@@ -65,8 +64,6 @@ public:
   int _offset;
   bool _utc;
   time_t _value;
-
-  int _default_seconds;
 };
 
 // Period
