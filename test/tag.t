@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 32;
+use Test::More tests => 33;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -145,6 +145,10 @@ $output = qx{../src/task rc:$rc +ANNOTATED list};
 like ($output, qr/maximal/, "$ut: +ANNOTATED");
 $output = qx{../src/task rc:$rc -ANNOTATED list};
 unlike ($output, qr/maximal/, "$ut: -ANNOTATED");
+
+qx{../src/task rc:$rc add seven tags:A,A,B,C,C,C};
+$output = qx{../src/task rc:$rc /seven/ list};
+like ($output, qr/ A B C /, 'Direct tags setting enforces uniqueness');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
