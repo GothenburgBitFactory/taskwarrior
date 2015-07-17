@@ -98,22 +98,6 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// This static method tokenizes the input and provides a vector of token/type
-// results from a high-level lex.
-std::vector <std::pair <std::string, Lexer::Type>> Lexer::tokens (
-  const std::string& text)
-{
-  std::vector <std::pair <std::string, Lexer::Type>> all;
-  std::string token;
-  Lexer::Type type;
-  Lexer l (text);
-  while (l.token (token, type))
-    all.push_back (std::pair <std::string, Lexer::Type> (token, type));
-
-  return all;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // This static method tokenizes the input, but discards the type information.
 std::vector <std::string> Lexer::split (const std::string& text)
 {
@@ -1094,30 +1078,6 @@ bool Lexer::isWord (std::string& token, Lexer::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Lexer::Type::word
-//   [^\s]+
-bool Lexer::isContiguous (std::string& token, Lexer::Type& type)
-{
-  std::size_t marker = _cursor;
-
-  while (_text[marker]                  &&
-         ! isWhitespace (_text[marker]) &&
-         _text[marker] != '('           &&
-         _text[marker] != ')')
-    utf8_next_char (_text, marker);
-
-  if (marker > _cursor)
-  {
-    token = _text.substr (_cursor, marker - _cursor);
-    type = Lexer::Type::word;
-    _cursor = marker;
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Static
 std::string Lexer::typeToString (Lexer::Type type)
 {
@@ -1146,19 +1106,6 @@ std::string Lexer::typeToString (Lexer::Type type)
 bool Lexer::isAllDigits (const std::string& text)
 {
   return text.find_first_not_of ("0123456789") == std::string::npos;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Not escape-proof.
-bool Lexer::isOneWord (const std::string& text)
-{
-  std::string::size_type i = 0;
-  int character;
-  while ((character = utf8_next_char (text, i)))
-    if (Lexer::isWhitespace (character))
-      return false;
-
-  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
