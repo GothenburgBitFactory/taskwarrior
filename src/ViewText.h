@@ -61,7 +61,6 @@ public:
   int addRow ();
   void set (int, int, const std::string&, Color color = Color::nocolor);
   void set (int, int, int, Color color = Color::nocolor);
-  void set (int, int, float, int, int, Color color = Color::nocolor);
   void set (int, int, Color);
 
   // View rendering.
