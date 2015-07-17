@@ -109,6 +109,11 @@ class TestVersion(TestCase):
         code, out, err = self.t.diag()
         self.assertIn(expected, out)
 
+    def test_version_option(self):
+        """Verify that  'task --version' returnes something valid"""
+        code, out, err = self.t("--version")
+        self.assertRegexpMatches(out, r'^\d\.\d+\.\d+$')
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
