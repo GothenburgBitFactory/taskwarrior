@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import os
-import tempfile
-import shutil
 import atexit
-import unittest
 import json
-from .utils import (run_cmd_wait, run_cmd_wait_nofail, which,
-                    task_binary_location)
+import os
+import shlex
+import shutil
+import tempfile
+import unittest
 from .exceptions import CommandError
 from .hooks import Hooks
+from .utils import run_cmd_wait, run_cmd_wait_nofail, which, task_binary_location
 
 
 class Task(object):
@@ -166,12 +166,10 @@ class Task(object):
         try:
             # Python 2.x
             if isinstance(args, basestring):
-                import shlex
                 args = shlex.split(args)
         except NameError:
             # Python 3.x
             if isinstance(args, str):
-                import shlex
                 args = shlex.split(args)
 
         return args
