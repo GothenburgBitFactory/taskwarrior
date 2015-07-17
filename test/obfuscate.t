@@ -36,19 +36,31 @@ from basetest import Task, TestCase
 
 
 class TestObfuscation(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t("add SECRET project:SECRET +SECRET")
+        cls.t("1 annotate SECRET")
+
     def setUp(self):
         """Executed before each test in the class"""
-        self.t = Task()
 
-    def test_obfuscation(self):
-        """Verify that obfuscation hides all text"""
-        self.t("add SECRET project:SECRET +SECRET")
-        self.t("1 annotate SECRET")
-
+    def test_info_obfuscation(self):
+        """Verify that obfuscation hides all text in the 'info' command"""
         code, out, err = self.t("1 info")
         self.assertIn("SECRET", out)
 
         code, out, err = self.t("rc.obfuscate:1 1 info")
+        self.assertIn("xxxxxx", out)
+        self.assertNotIn("SECRET", out)
+
+    def test_list_obfuscation(self):
+        """Verify that obfuscation hides all text in a report"""
+        code, out, err = self.t("list")
+        self.assertIn("SECRET", out)
+
+        code, out, err = self.t("rc.obfuscate:1 list")
         self.assertIn("xxxxxx", out)
         self.assertNotIn("SECRET", out)
 
