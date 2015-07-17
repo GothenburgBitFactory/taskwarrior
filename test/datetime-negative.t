@@ -1,30 +1,30 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
 import sys
 import os
@@ -45,10 +45,10 @@ class BaseDateTimeNegativeTest(TestCase):
         self.t = Task()
 
     def assertInvalidDatetimeFormat(self, value):
-        self.t.runError(('add', 'due:%s' % value, 'test1'))
-        self.t.runError(('add', 'scheduled:%s' % value, 'test2'))
-        self.t.runError(('add', 'wait:%s' % value, 'test3'))
-        self.t.runError(('add', 'until:%s' % value, 'test4'))
+        self.t.runError('add due:{0} test1'.format(value))
+        self.t.runError('add scheduled:{0} test2'.format(value))
+        self.t.runError('add wait:{0} test3'.format(value))
+        self.t.runError('add until:{0} test4'.format(value))
 
 
 class TestIncorrectDate(BaseDateTimeNegativeTest):
@@ -390,7 +390,7 @@ class TestIncorrectTime(BaseDateTimeNegativeTest):
     # longer considered an offset, and is instead considered to be the addition
     # or subtraction of two times. Although valid, the tests are not
     # datetime-negative.t tests.
-    # 
+    #
     # Tests were:
     #   12:12:12-13:00
     #   12:12:12-24:00

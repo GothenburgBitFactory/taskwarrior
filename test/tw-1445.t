@@ -44,16 +44,16 @@ class Test1445(TestCase):
     def test_alias_single_word(self):
         """Verify single-word aliases"""
         self.t.config('alias.when', 'execute date')
-        code, out, err = self.t(('when',))
+        code, out, err = self.t('when')
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
         self.assertIn(str(datetime.now().year), out)
 
     def test_alias_multi_word(self):
         """Verify multi-word aliases"""
         self.t.config('alias.worktasks', 'list +work')
-        self.t(('add', 'one', '+work'))
-        self.t(('add', 'two'))
-        code, out, err = self.t(('worktasks',))
+        self.t('add one +work')
+        self.t('add two')
+        code, out, err = self.t('worktasks')
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
         self.assertIn('one', out)
 

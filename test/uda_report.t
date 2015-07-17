@@ -52,18 +52,18 @@ class TestUdaReports(TestCase):
         cls.t.config("report.bad.labels", "ID,Extra2")
         cls.t.config("report.bad.sort", "ID")
 
-        cls.t(("add", "one", "extra:foo"))
+        cls.t("add one extra:foo")
 
     def test_uda_show_report(self):
         """UDA shown in report"""
 
-        code, out, err = self.t(("good",))
+        code, out, err = self.t("good")
         self.assertIn("foo", out)
 
     def test_uda_no_show_report(self):
         """UDA not shown in report"""
 
-        code, out, err = self.t.runError(("bad",))
+        code, out, err = self.t.runError("bad")
         self.assertNotIn("foo", out)
         self.assertIn("Unrecognized column name", err)
 

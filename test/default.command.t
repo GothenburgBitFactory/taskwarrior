@@ -41,17 +41,17 @@ class TestCMD(TestCase):
         cls.t = Task()
         cls.t.config("default.command", "list")
 
-        cls.t(('add', 'one'))
-        cls.t(('add', 'two'))
+        cls.t('add one')
+        cls.t('add two')
 
     def test_default_command(self):
         """default command"""
-        code, out, err = self.t(())
+        code, out, err = self.t()
         self.assertIn("task list]", err)
 
     def test_info_command(self):
         """info command"""
-        code, out, err = self.t(('1'))
+        code, out, err = self.t('1')
         self.assertRegexpMatches(out, 'Description\s+one')
 
 

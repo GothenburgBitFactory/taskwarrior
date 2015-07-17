@@ -44,10 +44,10 @@ class Test1486(TestCase):
         """Verify waiting report shows waiting tasks"""
         self.t.config('uda.sep.type', 'string')
 
-        self.t(('add', 'regular'))
-        self.t(('add', 'waited', 'wait:later'))
+        self.t('add regular')
+        self.t('add waited wait:later')
 
-        code, out, err = self.t(('waiting',))
+        code, out, err = self.t('waiting')
         self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
         self.assertIn('waited', out)
         self.assertNotIn('regular', out)

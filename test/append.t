@@ -39,23 +39,23 @@ class TestAppend(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
-        self.t(("add", "foo"))
+        self.t("add foo")
 
     def test_append(self):
         """Add a task and then append more description"""
-        code, out, err = self.t(("1", "append", "bar"))
+        code, out, err = self.t("1 append bar")
 
         expected = "Appended 1 task."
         self.assertIn(expected, out)
 
-        code, out, err = self.t(("info", "1"))
+        code, out, err = self.t("info 1")
 
         expected = "Description\s+foo\sbar\n"
         self.assertRegexpMatches(out, expected)
 
     def test_append_error_on_empty(self):
         """Should cause an error when nothing is appended"""
-        code, out, err = self.t.runError(("1", "append"))
+        code, out, err = self.t.runError("1 append")
 
         expected = "Additional text must be provided."
         self.assertIn(expected, err)
@@ -72,14 +72,14 @@ class TestBug440(TestCase):
 
     def test_subst_and_append_at_once(self):
         """Simultaneous substitution and append"""
-        self.t(("add", "Foo"))
-        self.t(("add", "Foo"))
+        self.t("add Foo")
+        self.t("add Foo")
 
-        self.t(("1", "append", "/Foo/Bar/", "Appendtext"))
-        self.t(("2", "append", "Appendtext", "/Foo/Bar/"))
+        self.t("1 append /Foo/Bar/ Appendtext")
+        self.t("2 append Appendtext /Foo/Bar/")
 
-        code1, out1, err1 = self.t(("1", "ls"))
-        code2, out2, err2 = self.t(("2", "ls"))
+        code1, out1, err1 = self.t("1 ls")
+        code2, out2, err2 = self.t("2 ls")
 
         self.assertNotIn("Foo", out1)
         self.assertRegexpMatches(out1, "\w+ Appendtext")

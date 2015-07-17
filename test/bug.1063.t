@@ -53,16 +53,16 @@ class TestBug1063(TestCase):
         Reported as bug 1063
         """
 
-        self.t(("add", "four", "foo:4"))
-        self.t(("add", "one", "foo:1"))
-        self.t(("add", "three", "foo:3"))
-        self.t(("add", "two", "foo:2"))
+        self.t("add four foo:4")
+        self.t("add one foo:1")
+        self.t("add three foo:3")
+        self.t("add two foo:2")
 
-        code, out, err = self.t(("bar",))
+        code, out, err = self.t("bar")
         expected = re.compile("4.+3.+2.+1", re.DOTALL)  # dot matches \n too
         self.assertRegexpMatches(out, expected)
 
-        code, out, err = self.t(("bar", "rc.report.bar.sort=foo+"))
+        code, out, err = self.t("bar rc.report.bar.sort=foo+")
         expected = re.compile("1.+2.+3.+4", re.DOTALL)  # dot matches \n too
         self.assertRegexpMatches(out, expected)
 

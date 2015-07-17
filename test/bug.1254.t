@@ -43,15 +43,12 @@ class TestBug1254(TestCase):
     def test_no_segmentation_fault_calc_negative_multiplication(self):
         """calc can multiply zero and negative numbers
         """
-        args = ("calc", "0*-1")
-        self.run_command(args)
+        self.run_command("calc 0*-1")
 
     def test_calc_positive_multiplication(self):
         """calc can multiply negative zero and positive
         """
-
-        args = ("calc", "0*1")
-        self.run_command(args)
+        self.run_command("calc 0*1")
 
     def run_command(self, args):
         code, out, err = self.t(args)

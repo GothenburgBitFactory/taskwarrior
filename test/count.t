@@ -41,17 +41,17 @@ class TestCount(TestCase):
     def setUpClass(cls):
         """Executed once before any test in the class"""
         cls.t = Task()
-        cls.t(("add", "one"))
-        cls.t(("log", "two"))
-        cls.t(("add", "three"))
-        cls.t(("1", "delete"))
+        cls.t("add one")
+        cls.t("log two")
+        cls.t("add three")
+        cls.t("1 delete")
 
     def test_count_unfiltered(self):
-        code, out, err = self.t(("count",))
+        code, out, err = self.t("count")
         self.assertEqual(out.strip(), "3")
 
     def test_count_filtered(self):
-        code, out, err = self.t(("status:deleted", "count"))
+        code, out, err = self.t("status:deleted count")
         self.assertEqual(out.strip(), "1")
 
 

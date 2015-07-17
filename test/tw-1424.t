@@ -43,8 +43,8 @@ class Test1424(TestCase):
 
     def test_1824_days(self):
         """Check that due:1824d works"""
-        self.t(('add', 'foo', 'due:1824d'))
-        code, out, err = self.t(('_get', '1.due.year'))
+        self.t('add foo due:1824d')
+        code, out, err = self.t('_get 1.due.year')
         # NOTE This test has a possible race condition when run "during" EOY.
         # If Taskwarrior is executed at 23:59:59 on new year's eve and the
         # python code below runs at 00:00:00 on new year's day, the two will
@@ -55,8 +55,8 @@ class Test1424(TestCase):
 
     def test_3648_days(self):
         """Check that due:3648d works"""
-        self.t(('add', 'foo', 'due:3648d'))
-        code, out, err = self.t(('_get', '1.due.year'))
+        self.t('add foo due:3648d')
+        code, out, err = self.t('_get 1.due.year')
         # NOTE This test has a possible race condition when run "during" EOY.
         # If Taskwarrior is executed at 23:59:59 on new year's eve and the
         # python code below runs at 00:00:00 on new year's day, the two will

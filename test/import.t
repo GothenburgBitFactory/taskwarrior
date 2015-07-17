@@ -53,24 +53,24 @@ class TestImport(TestCase):
 """
 
     def assertData1(self):
-        code, out, err = self.t(("list",))
+        code, out, err = self.t("list")
         self.assertRegexpMatches(out, "1.+A.+zero")
         self.assertRegexpMatches(out, "2.+B.+one")
         self.assertNotIn("two", out)
 
-        code, out, err = self.t(("completed",))
+        code, out, err = self.t("completed")
         self.assertNotIn("zero", out)
         self.assertNotIn("one", out)
         # complete has completion date as 1st column
         self.assertRegexpMatches(out, "2/13/2009.+two")
 
     def assertData2(self):
-        code, out, err = self.t(("list",))
+        code, out, err = self.t("list")
         self.assertRegexpMatches(out, "3.+three")
 
     def test_import_stdin(self):
         """Import from stdin"""
-        code, out, err = self.t(("import", "-"), input=self.data1)
+        code, out, err = self.t("import -", input=self.data1)
         self.assertIn("Imported 3 tasks", err)
 
         self.assertData1()
@@ -86,17 +86,17 @@ class TestImport(TestCase):
         """Import from a file"""
         filename = mkstemp(self.data1)
 
-        code, out, err = self.t(("import", filename))
+        code, out, err = self.t("import {0}".format(filename))
         self.assertIn("Imported 3 tasks", err)
 
         self.assertData1()
 
     def test_double_import(self):
         """Multiple imports persist data"""
-        code, out, err = self.t(("import", "-"), input=self.data1)
+        code, out, err = self.t("import -", input=self.data1)
         self.assertIn("Imported 3 tasks", err)
 
-        code, out, err = self.t(("import", "-"), input=self.data2)
+        code, out, err = self.t("import -", input=self.data2)
         self.assertIn("Imported 1 tasks", err)
 
         self.assertData1()

@@ -42,18 +42,18 @@ class TestFilterPrefix(TestCase):
         cls.t = Task()
         cls.t.config("verbose", "nothing")
 
-        cls.t(('add', 'project:foo.uno',  'priority:H', '+tag', 'one foo'      ))
-        cls.t(('add', 'project:foo.dos',  'priority:H',         'two'          ))
-        cls.t(('add', 'project:foo.tres',                       'three'        ))
-        cls.t(('add', 'project:bar.uno',  'priority:H',         'four'         ))
-        cls.t(('add', 'project:bar.dos',                '+tag', 'five'         ))
-        cls.t(('add', 'project:bar.tres',                       'six foo'      ))
-        cls.t(('add', 'project:bazuno',                         'seven bar foo'))
-        cls.t(('add', 'project:bazdos',                         'eight bar foo'))
+        cls.t('add project:foo.uno  priority:H +tag "one foo"'      )
+        cls.t('add project:foo.dos  priority:H      "two"'          )
+        cls.t('add project:foo.tres                 "three"'        )
+        cls.t('add project:bar.uno  priority:H      "four"'         )
+        cls.t('add project:bar.dos             +tag "five"'         )
+        cls.t('add project:bar.tres                 "six foo"'      )
+        cls.t('add project:bazuno                   "seven bar foo"')
+        cls.t('add project:bazdos                   "eight bar foo"')
 
     def test_list_all(self):
         """No filter shows all tasks."""
-        code, out, err = self.t(('list',))
+        code, out, err = self.t('list')
         self.assertIn('one', out)
         self.assertIn('two', out)
         self.assertIn('three', out)
@@ -65,7 +65,7 @@ class TestFilterPrefix(TestCase):
 
     def test_list_project_foo(self):
         """Filter on project name."""
-        code, out, err = self.t(('list', 'project:foo'))
+        code, out, err = self.t('list project:foo')
         self.assertIn('one', out)
         self.assertIn('two', out)
         self.assertIn('three', out)
@@ -77,7 +77,7 @@ class TestFilterPrefix(TestCase):
 
     def test_list_project_not_foo(self):
         """Filter on not project name."""
-        code, out, err = self.t(('list', 'project.not:foo'))
+        code, out, err = self.t('list project.not:foo')
         self.assertIn('one', out)
         self.assertIn('two', out)
         self.assertIn('three', out)
@@ -89,7 +89,7 @@ class TestFilterPrefix(TestCase):
 
     def test_list_project_startswith_bar(self):
         """Filter on project name start."""
-        code, out, err = self.t(('list', 'project.startswith:bar'))
+        code, out, err = self.t('list project.startswith:bar')
         self.assertNotIn('one', out)
         self.assertNotIn('two', out)
         self.assertNotIn('three', out)
@@ -101,7 +101,7 @@ class TestFilterPrefix(TestCase):
 
     def test_list_project_ba(self):
         """Filter on project partial match."""
-        code, out, err = self.t(('list', 'project:ba'))
+        code, out, err = self.t('list project:ba')
         self.assertNotIn('one', out)
         self.assertNotIn('two', out)
         self.assertNotIn('three', out)
@@ -113,7 +113,7 @@ class TestFilterPrefix(TestCase):
 
     def test_list_description_has_foo(self):
         """Filter on description pattern."""
-        code, out, err = self.t(('list', 'description.has:foo'))
+        code, out, err = self.t('list description.has:foo')
         self.assertIn('one', out)
         self.assertNotIn('two', out)
         self.assertNotIn('three', out)

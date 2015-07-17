@@ -45,10 +45,11 @@ DATETIME_FORMAT = "%Y%m%dT%H%M%SZ"
 class TestExportCommand(TestCase):
     def setUp(self):
         self.t = Task()
-        self.t(('add', 'test'))
+        self.t('add test')
 
-    def export(self, identifier):
-        return json.loads(self.t((str(identifier), 'rc.json.array=off', 'export'))[1].strip())
+    def export(self, id):
+        code, out, err = self.t(("{0}".format(id), "rc.json.array=off", "export"))
+        return json.loads(out.strip())
 
     def assertType(self, value, type):
         self.assertEqual(isinstance(value, type), True)
@@ -102,48 +103,48 @@ class TestExportCommand(TestCase):
         self.assertString(self.export(1)['description'], "test")
 
     def test_export_start(self):
-        self.t(('1', 'start'))
+        self.t('1 start')
         self.assertTimestamp(self.export(1)['start'])
 
     def test_export_end(self):
-        self.t(('1', 'start'))
+        self.t('1 start')
         self.t.faketime("+5s")
         # After a task is "done" or "deleted", it does not have an ID by which
         # to filter it anymore. Add a tag to work around this.
-        self.t(('1', 'done', '+workaround'))
+        self.t('1 done +workaround')
         self.assertTimestamp(self.export('+workaround')['end'])
 
     def test_export_due(self):
-        self.t(('1', 'modify', 'due:today'))
+        self.t('1 modify due:today')
         self.assertTimestamp(self.export(1)['due'])
 
     def test_export_wait(self):
-        self.t(('1', 'modify', 'wait:tomorrow'))
+        self.t('1 modify wait:tomorrow')
         self.assertTimestamp(self.export(1)['wait'])
 
     def test_export_modified(self):
         self.assertTimestamp(self.export(1)['modified'])
 
     def test_export_scheduled(self):
-        self.t(('1', 'modify', 'schedule:tomorrow'))
+        self.t('1 modify schedule:tomorrow')
         self.assertTimestamp(self.export(1)['scheduled'])
 
     def test_export_recur(self):
-        self.t(('1', 'modify', 'recur:daily', 'due:today'))
+        self.t('1 modify recur:daily due:today')
         self.assertString(self.export(1)['recur'], "daily")
 
     def test_export_project(self):
-        self.t(('1', 'modify', 'project:Home'))
+        self.t('1 modify project:Home')
         self.assertString(self.export(1)['project'], "Home")
 
     def test_export_priority(self):
-        self.t(('1', 'modify', 'priority:H'))
+        self.t('1 modify priority:H')
         self.assertString(self.export(1)['priority'], "H")
 
     def test_export_depends(self):
         self.t(('add', 'everything depends on me task'))
         self.t(('add', 'wrong, everything depends on me task'))
-        self.t(('1', 'modify', 'depends:2,3'))
+        self.t('1 modify depends:2,3')
 
         values = self.export(1)['depends']
         self.assertString(values)
@@ -152,29 +153,29 @@ class TestExportCommand(TestCase):
             self.assertString(uuid, UUID_REGEXP, regexp=True)
 
     def test_export_urgency(self):
-        self.t(('add', 'urgent task', '+urgent'))
+        self.t('add urgent task +urgent')
 
         # Urgency can be either integer or float
         self.assertNumeric(self.export(1)['urgency'])
 
     def test_export_numeric_uda(self):
         self.t.config('uda.estimate.type', 'numeric')
-        self.t(('add', 'estimate:42', 'test numeric uda'))
+        self.t('add estimate:42 test numeric uda')
         self.assertNumeric(self.export('2')['estimate'], 42)
 
     def test_export_string_uda(self):
         self.t.config('uda.estimate.type', 'string')
-        self.t(('add', 'estimate:big', 'test string uda'))
+        self.t('add estimate:big test string uda')
         self.assertString(self.export('2')['estimate'], 'big')
 
     def test_export_datetime_uda(self):
         self.t.config('uda.estimate.type', 'date')
-        self.t(('add', 'estimate:eom', 'test date uda'))
+        self.t('add estimate:eom test date uda')
         self.assertTimestamp(self.export('2')['estimate'])
 
     def test_export_duration_uda(self):
         self.t.config('uda.estimate.type', 'duration')
-        self.t(('add', 'estimate:month', 'test duration uda'))
+        self.t('add estimate:month test duration uda')
         self.assertString(self.export('2')['estimate'], 'month')
 
 if __name__ == "__main__":

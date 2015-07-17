@@ -44,15 +44,15 @@ class TestUDACustomSort(TestCase):
         cls.t.config('uda.foo.values', 'H,M,L,')
         cls.t.config('report.list.columns', 'id,description,foo')
         cls.t.config('report.list.labels', 'ID,Desc,Foo')
-        cls.t(('add', 'four',  'foo:H'))
-        cls.t(('add', 'three', 'foo:M'))
-        cls.t(('add', 'two',   'foo:L'))
-        cls.t(('add', 'one'))
+        cls.t('add four foo:H')
+        cls.t('add three foo:M')
+        cls.t('add two foo:L')
+        cls.t('add one')
 
     def test_ascending(self):
         """Ascending sort order"""
         self.t.config('uda.foo.values', 'H,M,L,')
-        code, out, err = self.t(('rc.report.list.sort:foo+', 'list'))
+        code, out, err = self.t('rc.report.list.sort:foo+ list')
 
         one   = out.find('one')
         two   = out.find('two')
@@ -66,7 +66,7 @@ class TestUDACustomSort(TestCase):
     def test_descending(self):
         """Descending sort order"""
         self.t.config('uda.foo.values', 'H,M,L,')
-        code, out, err = self.t(('rc.report.list.sort:foo-', 'list'))
+        code, out, err = self.t('rc.report.list.sort:foo- list')
 
         one   = out.find('one')
         two   = out.find('two')
@@ -80,7 +80,7 @@ class TestUDACustomSort(TestCase):
     def test_ridiculous(self):
         """Ridiculous sort order"""
         self.t.config('uda.foo.values', 'H,M,,L')
-        code, out, err = self.t(('rc.report.list.sort:foo-', 'list'))
+        code, out, err = self.t('rc.report.list.sort:foo- list')
 
         one   = out.find('one')
         two   = out.find('two')

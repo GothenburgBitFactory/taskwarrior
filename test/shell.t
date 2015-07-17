@@ -41,15 +41,15 @@ class TestFilterPrefix(TestCase):
         """Executed once before any test in the class"""
         cls.t = Task()
         cls.t.config("verbose", "nothing")
-        cls.t(('add', 'foo'))
+        cls.t('add foo')
 
     def test_success(self):
         """Test successful search returns zero."""
-        code, out, err = self.t(('list', '/foo/'))
+        code, out, err = self.t('list /foo/')
 
     def test_failure(self):
         """Test failed search returns non-zero."""
-        code, out, err = self.t.runError(('list', '/bar/'))
+        code, out, err = self.t.runError('list /bar/')
 
 
 if __name__ == "__main__":

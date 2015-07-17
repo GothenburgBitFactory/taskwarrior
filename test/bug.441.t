@@ -42,10 +42,10 @@ class TestBug441(TestCase):
     def test_bad_colon_replacement(self):
         """Substitution containing a colon"""
 
-        self.t(("add", "one two three"))
-        self.t(("1", "modify", "/two/two:/"))
+        self.t("add one two three")
+        self.t("1 modify /two/two:/")
 
-        code, out, err = self.t(("ls",))
+        code, out, err = self.t("ls")
         self.assertIn("one two: three", out)
 
 

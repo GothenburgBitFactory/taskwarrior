@@ -58,12 +58,12 @@ class TestDue(TestCase):
         self.just = timestamp_without_leading_zeros(just)
         self.almost = timestamp_without_leading_zeros(almost)
 
-        self.t(("add", "one", "due:{0}".format(self.just)))
-        self.t(("add", "two", "due:{0}".format(self.almost)))
+        self.t("add one due:{0}".format(self.just))
+        self.t("add two due:{0}".format(self.almost))
 
     def test_due(self):
         """due tasks displayed correctly"""
-        code, out, err = self.t(("list",))
+        code, out, err = self.t("list")
         self.assertRegexpMatches(out, "\033\[31m.+{0}.+\033\[0m".format(self.just))
         self.assertRegexpMatches(out, "\s+{0}\s+".format(self.almost))
 
@@ -85,17 +85,17 @@ class TestBug418(TestCase):
 
     def test_bug_418(self):
         """due.before:eow bad with dateformat 'MD'"""
-        self.t(("add", "one",   "due:6/28/2010"))
-        self.t(("add", "two",   "due:6/29/2010"))
-        self.t(("add", "three", "due:6/30/2010"))
-        self.t(("add", "four",  "due:7/1/2010"))
-        self.t(("add", "five",  "due:7/2/2010"))
-        self.t(("add", "six",   "due:7/3/2010"))
-        self.t(("add", "seven", "due:7/4/2010"))
-        self.t(("add", "eight", "due:7/5/2010"))
-        self.t(("add", "nine",  "due:7/6/2010"))
+        self.t("add one   due:6/28/2010")
+        self.t("add two   due:6/29/2010")
+        self.t("add three due:6/30/2010")
+        self.t("add four  due:7/1/2010")
+        self.t("add five  due:7/2/2010")
+        self.t("add six   due:7/3/2010")
+        self.t("add seven due:7/4/2010")
+        self.t("add eight due:7/5/2010")
+        self.t("add nine  due:7/6/2010")
 
-        code, out, err = self.t(("foo",))
+        code, out, err = self.t("foo")
         self.assertIn("one", out)
         self.assertIn("two", out)
         self.assertIn("three", out)
@@ -106,7 +106,7 @@ class TestBug418(TestCase):
         self.assertIn("eight", out)
         self.assertIn("nine", out)
 
-        code, out, err = self.t(("foo", "due.before:7/2/2010"))
+        code, out, err = self.t("foo due.before:7/2/2010")
         self.assertIn("one", out)
         self.assertIn("two", out)
         self.assertIn("three", out)

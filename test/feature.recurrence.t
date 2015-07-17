@@ -42,13 +42,13 @@ class TestRecurrenceProblems(TestCase):
         """Removing due from a recurring task causes date wrapping"""
         # Originally bug.327.t
 
-        self.t(("add", "foo", "recur:yearly", "due:eoy"))
-        self.t(("list",))  # Trigger garbage collection
+        self.t("add foo recur:yearly due:eoy")
+        self.t("list")  # Trigger garbage collection
 
-        code, out, err = self.t.runError(("2", "modify", "due:"))
+        code, out, err = self.t.runError("2 modify due:")
         self.assertIn("cannot remove the due date from a recurring task", err)
 
-        code, out, err = self.t(("list",))
+        code, out, err = self.t("list")
 
         self.assertIn("\n1 task", out)
         self.assertNotIn("1969", out)
@@ -59,8 +59,8 @@ class TestRecurrenceProblems(TestCase):
 
         self.t.config("dateformat.info", "m/d/Y")
 
-        self.t(("add", "foo", "due:today", "recur:yearly", "until:eom"))
-        code, out, err = self.t(("info", "1"))
+        self.t("add foo due:today recur:yearly until:eom")
+        code, out, err = self.t("info 1")
 
         self.assertNotRegexpMatches(out, "Until\s+\d{10}")
         self.assertRegexpMatches(out, "Until\s+\d+\/\d+\/\d{4}")
