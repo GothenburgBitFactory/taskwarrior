@@ -50,7 +50,6 @@ public:
   std::string formatISO () const;
 
   bool parse (const std::string&, std::string::size_type&);
-  void clear ();
 
 protected:
   time_t _secs;
