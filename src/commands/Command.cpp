@@ -207,47 +207,6 @@ Command::Command ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Command::Command (const Command& other)
-{
-  _usage           = other._usage;
-  _description     = other._description;
-  _read_only       = other._read_only;
-  _displays_id     = other._displays_id;
-  _needs_confirm   = other._needs_confirm;
-  _permission_quit = other._permission_quit;
-  _permission_all  = other._permission_all;
-  _first_iteration = other._first_iteration;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Command& Command::operator= (const Command& other)
-{
-  if (this != &other)
-  {
-    _usage           = other._usage;
-    _description     = other._description;
-    _read_only       = other._read_only;
-    _displays_id     = other._displays_id;
-    _needs_confirm   = other._needs_confirm;
-    _permission_quit = other._permission_quit;
-    _permission_all  = other._permission_all;
-    _first_iteration = other._first_iteration;
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Command::operator== (const Command& other) const
-{
-  return _usage         == other._usage       &&
-         _description   == other._description &&
-         _read_only     == other._read_only   &&
-         _displays_id   == other._displays_id &&
-         _needs_confirm == other._needs_confirm;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Command::~Command ()
 {
 }

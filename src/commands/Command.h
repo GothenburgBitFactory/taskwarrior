@@ -36,9 +36,6 @@ class Command
 {
 public:
   Command ();
-  Command (const Command&);
-  Command& operator= (const Command&);
-  bool operator== (const Command&) const;     // TODO Is this necessary?
   virtual ~Command ();
 
   static void factory (std::map <std::string, Command*>&);
