@@ -1185,16 +1185,6 @@ void Task::removeTag (const std::string& tag)
 
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
-// A UDA is an attribute that has supporting config entries such as a data type:
-// 'uda.<name>.type'
-void Task::getUDAs (std::vector <std::string>& names) const
-{
-  for (auto& it : *this)
-    if (context.config.get ("uda." + it.first + ".type") != "")
-      names.push_back (it.first);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // A UDA Orphan is an attribute that is not represented in context.columns.
 void Task::getUDAOrphans (std::vector <std::string>& names) const
 {
