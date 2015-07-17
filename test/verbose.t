@@ -55,6 +55,11 @@ class TestVerbosity(TestCase):
         code, out, err = self.t(("rc.verbose:nothing", "add", "Sample2"))
         self.assertNotRegexpMatches(out, r"Created task \d")
 
+    def test_verbosity_new_uuid(self):
+        """Verbosity new-uuid"""
+        code, out, err = self.t(("rc.verbose:new-uuid", "add", "Sample1"))
+        self.assertRegexpMatches(out, r"Created task [0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
+
     def test_verbosity_label(self):
         """Verbosity label"""
         code, out, err = self.t(("rc.verbose:label", "ls"))
