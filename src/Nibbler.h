@@ -71,7 +71,6 @@ public:
   bool getUnsignedInt (int&);
   bool getNumber (std::string&);
   bool getNumber (double&);
-  bool getUnsignedNumber (double&);
   bool getLiteral (const std::string&);
 #ifdef NIBBLER_FEATURE_REGEX
   bool getRx (const std::string&, std::string&);
