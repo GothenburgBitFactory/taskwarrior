@@ -98,8 +98,6 @@ public:
 
   bool backN (const int quantity = 1);
 
-  void getRemainder (std::string&);
-
   char next ();
   std::string next (const int quantity);
 
