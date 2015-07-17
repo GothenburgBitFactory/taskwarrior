@@ -61,6 +61,12 @@ class TestUndo(TestCase):
         code, out, err = self.t(('_get', '1.status'))
         self.assertEqual(out.strip(), 'pending')
 
+    def test_undo_en_passant(self):
+        """Verify that en-passant changes during undo are an error"""
+        self.t("add one")
+        code, out, err = self.t.runError("undo +tag")
+        self.assertIn("The undo command does not allow further task modification.", err)
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
