@@ -68,6 +68,8 @@
   and replaced by the new '_unique' helper command, which generates lists of
   unique values for the specified attribute.
 - "import" can now import JSON arrays, the new default "export" output.
+- The '_tags' helper command now includes virtual tags (thanks to Daniel
+  Shahaf).
 
 ------ current release ---------------------------
 

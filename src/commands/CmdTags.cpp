@@ -172,11 +172,11 @@ int CmdCompletionTags::execute (std::string& output)
       unique[tag] = 0;
   }
 
-  // add built-in tags to map
-  unique["nocolor"] = 0;
-  unique["nonag"]   = 0;
-  unique["nocal"]   = 0;
-  unique["next"]    = 0;
+  // Add built-in tags to map.
+  unique["nocolor"]   = 0;
+  unique["nonag"]     = 0;
+  unique["nocal"]     = 0;
+  unique["next"]      = 0;
   unique["BLOCKED"]   = 0;
   unique["UNBLOCKED"] = 0;
   unique["BLOCKING"]  = 0;
