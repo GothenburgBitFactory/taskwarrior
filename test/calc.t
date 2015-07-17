@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 19;
+use Test::More tests => 23;
 
 # '15min' is seen as '15', 'min', not '15min' duration.
 my $output = qx{../src/calc --debug '12 * 3600 + 34 * 60 + 56'};
@@ -54,6 +54,14 @@ like ($output, qr/Eval _neg_ ↓'3' → ↑'-3'/ms,   'Operator -');
 like ($output, qr/Eval literal number ↑'2'/ms,  'Number 3');
 like ($output, qr/^5$/ms,                       'Result 5');
 unlike ($output, qr/Error/,                     'No errors');
+
+$output = qx{../src/calc --help};
+like ($output, qr/Usage:/,                      '--help shows usage');
+like ($output, qr/Options:/,                    '--help shows options');
+
+$output = qx{../src/calc --version};
+like ($output, qr/calc \d\.\d+\.\d+/,           '--version shows version');
+like ($output, qr/Copyright/,                   '--version shows Copyright');
 
 exit 0;
 
