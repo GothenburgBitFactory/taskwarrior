@@ -56,7 +56,6 @@ public:
   int getHeight ();                    // determine terminal height
 
   const std::vector <std::string> getColumns () const;
-  const std::vector <std::string> getCommands () const;
   void getLimits (int&, int&);
 
   bool color ();                       // TTY or <other>?

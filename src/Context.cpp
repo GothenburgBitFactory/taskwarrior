@@ -586,16 +586,6 @@ const std::vector <std::string> Context::getColumns () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const std::vector <std::string> Context::getCommands () const
-{
-  std::vector <std::string> output;
-  for (auto& cmd : commands)
-    output.push_back (cmd.first);
-
-  return output;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // A value of zero mean unlimited.
 // A value of 'page' means however many screen lines there are.
 // A value of a positive integer is a row/task limit.
