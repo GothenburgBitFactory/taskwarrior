@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (12);
+  UnitTest t (13);
 
   Msg m;
   t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize '' --> '\\n\\n'");
@@ -59,6 +59,10 @@ int main (int argc, char** argv)
   t.is (m3.get ("foo"),   "bar",                          "Msg::get");
   t.is (m3.get ("name"),  "value",                        "Msg::get");
   t.is (m3.getPayload (), "payload\n",                    "Msg::getPayload");
+
+  std::vector <std::string> vars;
+  m3.all (vars);
+  t.ok (vars.size () == 2,                                "Msg::all --> 2 vars");
 
   return 0;
 }
