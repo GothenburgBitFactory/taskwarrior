@@ -52,25 +52,6 @@ private:
   unsigned long  _total;
 };
 
-// HighResTimer is a stop watch with microsecond resolution.
-class HighResTimer
-{
-public:
-  HighResTimer ();
-  ~HighResTimer ();
-  HighResTimer (const HighResTimer&);
-  HighResTimer& operator= (const HighResTimer&);
-
-  void start ();
-  void stop ();
-  double total () const;
-
-private:
-  struct timeval _start;
-  struct timeval _stop;
-};
-
-
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
