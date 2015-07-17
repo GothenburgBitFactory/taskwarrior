@@ -47,6 +47,15 @@ class TestLogCommand(TestCase):
         code, out, err = self.t("completed")
         self.assertIn("This is a test", out)
 
+    def test_log_wait(self):
+        """Verify that you cannot log a waited task"""
+        code, out, err = self.t.runError("log This is a test wait:eoy")
+        self.assertIn("You cannot log waiting tasks.", err)
+
+    def test_log_recur(self):
+        """Verify that you cannot log a recurring task"""
+        code, out, err = self.t.runError("log This is a test due:eom recur:weekly")
+        self.assertIn("You cannot log recurring tasks.", err)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
