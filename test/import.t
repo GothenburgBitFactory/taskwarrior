@@ -43,9 +43,9 @@ class TestImport(TestCase):
         self.t.config("dateformat", "m/d/Y")
 
         self.data1 = """[
-{"uuid":"00000000-0000-0000-0000-000000000000","description":"zero","project":"A","status":"pending","entry":"1234567889"},
-{"uuid":"11111111-1111-1111-1111-111111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},
-{"uuid":"22222222-2222-2222-2222-222222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690"}
+{"uuid":"a0000000-a000-a000-a000-a00000000000","description":"zero","project":"A","status":"pending","entry":"1234567889"},
+{"uuid":"a1111111-a111-a111-a111-a11111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},
+{"uuid":"a2222222-a222-a222-a222-a22222222222","description":"two","status":"completed","entry":"1234524689","end":"1234524690"}
 ]
 """
 
@@ -105,9 +105,7 @@ class TestImport(TestCase):
     def test_import_update(self):
         """Update existing tasks"""
         self.t("import", input=self.data1)
-        self.t("2 delete")  # Depends on import order. Bad. See next line.
-        # TODO: Use this once filtering by UUID works again...
-        #self.t("11111111-1111-1111-1111-111111111111 delete")
+        self.t("a1111111-a111-a111-a111-a11111111111 delete")
         self.t("next")  # Run GC
 
         _t = sorted(self.t.export(), key=lambda t: t["uuid"])
