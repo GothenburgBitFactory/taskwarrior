@@ -317,7 +317,7 @@ int CmdShow::execute (std::string& output)
 
   if (issue_warning)
   {
-    out << STRING_CMD_SHOW_DIFFER;
+    out << STRING_CMD_SHOW_DIFFER << "\n";
 
     if (context.color ())
       out << "  "
