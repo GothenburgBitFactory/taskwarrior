@@ -130,13 +130,13 @@ class TestUrgencyFormats(TestCase):
     def test_urgency_real(self):
         """Verify formatting of 'urgency.real' column"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,urgency.real")
-        self.assertIn("11.4", out)
+        self.assertIn("11.", out)
 
     def test_urgency_integer(self):
         """Verify formatting of 'urgency.integer' column"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,urgency.integer")
         self.assertIn("11", out)
-        self.assertNotIn("11.4", out)
+        self.assertNotIn("11.", out)
 
 class TestIDFormats(TestCase):
     @classmethod
@@ -156,6 +156,31 @@ class TestIDFormats(TestCase):
         code, out, err = self.t("xxx ")
         code, out, err = self.t("xxx rc.report.xxx.columns:id.number")
         self.assertEqual(" 1\n", out)
+
+class TestStatusFormats(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("report.xxx.columns", "id,status")
+        cls.t.config("verbose",            "nothing")
+
+        cls.t("add zero")
+
+    def setUp(self):
+        """Executed before each test in the class"""
+
+    def test_status_short(self):
+        """Verify formatting of 'status.short' column"""
+        code, out, err = self.t("xxx ")
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,status.short")
+        self.assertEqual(" 1 P\n", out)
+
+    def test_status_long(self):
+        """Verify formatting of 'status.long' column"""
+        code, out, err = self.t("xxx ")
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,status.long")
+        self.assertEqual(" 1 Pending\n", out)
 
 
         """
@@ -188,13 +213,7 @@ project     full*             home.garden
 recur       duration*         weekly
             indicator         R
 
-reviewed    default*
-            indicator
-
 start       active*           ✓
-
-status      long*             Pending
-            short             P
 
 tags        list*             home @chore next
             indicator         +
