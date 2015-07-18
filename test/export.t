@@ -187,7 +187,7 @@ class TestExportCommandLimit(TestCase):
         self.t('add one')
         self.t('add two')
 
-        code, out, err = self.t("export limit:1")
+        code, out, err = self.t("/o/ limit:1 export")
         self.assertIn("one", out)
         self.assertNotIn("two", out)
 
