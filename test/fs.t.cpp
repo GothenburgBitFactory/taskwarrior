@@ -35,7 +35,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest t (108);
+  UnitTest t (110);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -55,6 +55,9 @@ int main (int argc, char** argv)
 
   Path p3 ("/tmp");
   t.ok (p3._data == "/tmp", "/tmp -> /tmp");
+
+  // operator==
+  t.notok (p2 == p3, "p2 != p3");
 
   // Path& operator= (const Path&);
   Path p3_copy (p3);
@@ -80,6 +83,9 @@ int main (int argc, char** argv)
   // bool is_directory () const;
   t.ok (p2.is_directory (), "~ is_directory");
   t.ok (p3.is_directory (), "/tmp is_directory");
+
+  // bool is_link () const;
+  t.notok (p2.is_link (), "~ !is_link");
 
   // bool readable () const;
   t.ok (p2.readable (), "~ readable");
