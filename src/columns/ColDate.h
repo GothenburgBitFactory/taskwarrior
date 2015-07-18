@@ -39,7 +39,6 @@ public:
   ColumnDate ();
   virtual ~ColumnDate ();
 
-  virtual bool validate (std::string&);
   virtual void measure (Task&, unsigned int&, unsigned int&);
   virtual void render (std::vector <std::string>&, Task&, int, Color&);
 };

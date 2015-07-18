@@ -86,12 +86,6 @@ ColumnDescription::~ColumnDescription ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnDescription::validate (std::string& value)
-{
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {

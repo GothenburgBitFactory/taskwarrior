@@ -45,7 +45,13 @@ class TestBurndownCommand(TestCase):
         cls.t("2 start")
         cls.t("add three")
         cls.t("3 delete")
-        cls.t("log four")
+        cls.t("add four")
+        cls.t("4 start")
+        cls.t("4 done")
+        cls.t("add five")
+        cls.t("5 start")
+        cls.t("5 done")
+        cls.t("log six")
 
     def setUp(self):
         """Executed before each test in the class"""

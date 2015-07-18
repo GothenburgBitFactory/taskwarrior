@@ -39,7 +39,6 @@ public:
   ColumnProject ();
   ~ColumnProject ();
 
-  bool validate (std::string&);
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
 

@@ -51,12 +51,6 @@ ColumnUUID::~ColumnUUID ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnUUID::validate (std::string& value)
-{
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnUUID::measure (Task&, unsigned int& minimum, unsigned int& maximum)
 {

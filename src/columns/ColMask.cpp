@@ -51,12 +51,6 @@ ColumnMask::~ColumnMask ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnMask::validate (std::string& value)
-{
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnMask::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {

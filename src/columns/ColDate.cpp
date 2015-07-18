@@ -67,12 +67,6 @@ ColumnDate::~ColumnDate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnDate::validate (std::string& value)
-{
-  return true;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
