@@ -45,6 +45,11 @@ class TestDOM(TestCase):
         cls.t("add three due:20110901 wait:due +tag1 +tag2")
         cls.t("3 annotate note")
 
+    def test_dom_no_ref(self):
+        """ DOM missing reference """
+        code, out, err = self.t.runError("_get")
+        self.assertEqual("No DOM reference specified.\n", err)
+
     def test_dom_task_ref(self):
         """ DOM reference to other task """
         code, out, err = self.t("_get 2.due")
