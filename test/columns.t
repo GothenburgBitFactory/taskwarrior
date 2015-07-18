@@ -178,7 +178,6 @@ class TestStatusFormats(TestCase):
 
     def test_status_short(self):
         """Verify formatting of 'status.short' column"""
-        code, out, err = self.t("xxx ")
         code, out, err = self.t("xxx rc.report.xxx.columns:id,status.short")
         self.assertIn(" 1 P", out)
         self.assertIn(" 2 R", out)
@@ -189,7 +188,6 @@ class TestStatusFormats(TestCase):
 
     def test_status_long(self):
         """Verify formatting of 'status.long' column"""
-        code, out, err = self.t("xxx ")
         code, out, err = self.t("xxx rc.report.xxx.columns:id,status.long")
         self.assertIn(" 1 Pending", out)
         self.assertIn(" 2 Recurring", out)
@@ -197,6 +195,32 @@ class TestStatusFormats(TestCase):
         self.assertIn(" 4 Pending", out)
         self.assertIn(" - Deleted", out)
         self.assertIn(" - Completed", out)
+
+class TestRecurringAttributeFormats(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("report.xxx.columns", "id")
+        cls.t.config("verbose",            "nothing")
+
+        cls.t("add one due:eoy recur:monthly")
+        cls.t("list")
+
+    def setUp(self):
+        """Executed before each test in the class"""
+
+    def test_recurrence_formats_short(self):
+        """Verify formatting of assorted recurrence columns"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,status,due,recur.indicator,mask,imask,parent.short")
+        self.assertRegexpMatches(out, "1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+R\s+-")
+        self.assertRegexpMatches(out, "2\sPending\s+\d{4}-\d{2}-\d{2}\s+R\s+0\s+[0-9a-fA-F]{8}")
+
+    def test_recurrence_formats_long(self):
+        """Verify formatting of assorted recurrence columns"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,status,due,recur.duration,mask,imask,parent.long")
+        self.assertRegexpMatches(out, "1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+P1M\s+-")
+        self.assertRegexpMatches(out, "2\sPending\s+\d{4}-\d{2}-\d{2}\s+P1M\s+0\s+[0-9a-fA-F-]{36}")
 
 
         """
@@ -212,22 +236,12 @@ due         formatted*        2min
             remaining
             countdown
 
-imask       number*           12
-
-mask        default*          ++++---
-
-parent      long*             f30cb9c3-3fc0-483f-bfb2-3bf134f00694
-            short             34f00694
-
 priority    default*
             indicator
 
 project     full*             home.garden
             parent            home
             indented            home.garden
-
-recur       duration*         weekly
-            indicator         R
 
 start       active*           ✓
 
