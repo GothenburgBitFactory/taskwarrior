@@ -119,7 +119,7 @@ class TestRecurrenceWeekdays(TestCase):
         code, friday, err = self.t("_get 2.due.julian")
 
         # Generate the second instance, obtain due date.
-        self.t ("list rc.recurrence.limit:2")  # GC/handleRecurrence
+        self.t("list rc.recurrence.limit:2")  # GC/handleRecurrence
         code, monday, err = self.t("_get 3.due.julian")
 
         # The due dates should be Friday and Monday, three days apart,
