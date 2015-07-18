@@ -89,6 +89,11 @@ class TestDescriptionFormats(TestCase):
         self.assertIn("exceed... [1]", out)
         self.assertNotIn("annotation", out)
 
+    def test_description_format_unrecognized(self):
+        """Verify descriptionuuid.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,description.donkey")
+        self.assertEqual(err, "Unrecognized column format 'description.donkey'\n")
+
 class TestUUIDFormats(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -114,6 +119,11 @@ class TestUUIDFormats(TestCase):
         code, out, err = self.t("xxx rc.report.xxx.columns:id,uuid.short")
         self.assertIn(self.uuid[:7], out)
 
+    def test_uuid_format_unrecognized(self):
+        """Verify uuid.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,uuid.donkey")
+        self.assertEqual(err, "Unrecognized column format 'uuid.donkey'\n")
+
 class TestUrgencyFormats(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -138,6 +148,11 @@ class TestUrgencyFormats(TestCase):
         self.assertIn("11", out)
         self.assertNotIn("11.", out)
 
+    def test_urgency_format_unrecognized(self):
+        """Verify urgency.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,urgency.donkey")
+        self.assertEqual(err, "Unrecognized column format 'urgency.donkey'\n")
+
 class TestIDFormats(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -156,6 +171,11 @@ class TestIDFormats(TestCase):
         code, out, err = self.t("xxx ")
         code, out, err = self.t("xxx rc.report.xxx.columns:id.number")
         self.assertEqual(" 1\n", out)
+
+    def test_id_format_unrecognized(self):
+        """Verify id.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id.donkey")
+        self.assertEqual(err, "Unrecognized column format 'id.donkey'\n")
 
 class TestStatusFormats(TestCase):
     @classmethod
@@ -196,6 +216,11 @@ class TestStatusFormats(TestCase):
         self.assertIn(" - Deleted", out)
         self.assertIn(" - Completed", out)
 
+    def test_status_format_unrecognized(self):
+        """Verify status.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,status.donkey")
+        self.assertEqual(err, "Unrecognized column format 'status.donkey'\n")
+
 class TestRecurringAttributeFormats(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -222,6 +247,13 @@ class TestRecurringAttributeFormats(TestCase):
         self.assertRegexpMatches(out, "1\sRecurring\s+\d{4}-\d{2}-\d{2}\s+P1M\s+-")
         self.assertRegexpMatches(out, "2\sPending\s+\d{4}-\d{2}-\d{2}\s+P1M\s+0\s+[0-9a-fA-F-]{36}")
 
+    def test_recurrence_format_unrecognized(self):
+        """Verify *.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,status,due,recur.donkey,mask,imask,parent.long")
+        self.assertEqual(err, "Unrecognized column format 'recur.donkey'\n")
+
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,status,due,recur.duration,mask,imask,parent.donkey")
+        self.assertEqual(err, "Unrecognized column format 'parent.donkey'\n")
 
 class TestProjectFormats(TestCase):
     @classmethod
@@ -259,7 +291,10 @@ class TestProjectFormats(TestCase):
         self.assertRegexpMatches(out, r'2\s+MIDDLE\s+two')
         self.assertRegexpMatches(out, r'3\s+BOTTOM\s+three')
 
-
+    def test_project_format_unrecognized(self):
+        """Verify project.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,project.donkey,description")
+        self.assertEqual(err, "Unrecognized column format 'project.donkey'\n")
 
 
         """
