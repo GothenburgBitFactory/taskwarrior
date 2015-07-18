@@ -218,7 +218,32 @@ class TestBug972(TestCase):
         self.assertIn("The duration value '2' is not supported.", err)
 
 
-# TODO Delete a parent recurring task.
+class TestDeletionRecurrence(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_delete_parent(self):
+        """Delete a parent with child tasks"""
+        self.t("add one due:eom recur:daily")
+        self.t("list") # GC/handleRecurrence
+        code, out, err = self.t("1 delete", input="y\n")
+        self.assertIn("Deleted 2 tasks.", out)
+
+        code, out, err = self.t.runError("list")
+        self.assertIn("No matches.", err)
+
+    def test_delete_child_with_siblings(self):
+        """Delete a child with sibling tasks"""
+        self.t("add one due:eom recur:daily")
+        self.t("list rc.recurrence.limit:5")
+        code, out, err = self.t("list rc.verbose:nothing") # GC/handleRecurrence
+        self.assertEqual(out.count("one"), 5)
+
+        code, out, err = self.t("2 delete", input="y\n")
+        self.assertIn("Deleted 5 tasks.", out)
+
+
 # TODO Wait a recurring task
 # TODO Upgrade a task to a recurring task
 # TODO Upgrade a task to a recurring task, but omit the due date (error handling)
