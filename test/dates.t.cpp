@@ -55,7 +55,7 @@ void testInit (UnitTest& t, const std::string& value, Variant& var)
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (87);
+  UnitTest t (91);
 
   Variant sunday;    testInit (t, "sunday",    sunday);
   Variant monday;    testInit (t, "monday",    monday);
@@ -119,41 +119,44 @@ int main (int argc, char** argv)
   t.ok (november  == nov, "november == nov");
   t.ok (december  == dec, "december == dec");
 
-
   // Simply instantiate these for now.  Test later.
-  Variant now;          testInit (t, "now", now);
-  Variant today;        testInit (t, "today", today);
-  Variant sod;          testInit (t, "sod", sod);
-  Variant yesterday;    testInit (t, "yesterday", yesterday);
-  Variant tomorrow;     testInit (t, "tomorrow", tomorrow);
-  Variant eod;          testInit (t, "eod", eod);
-  Variant soy;          testInit (t, "soy", soy);
-  Variant eoy;          testInit (t, "eoy", eoy);
-  Variant socm;         testInit (t, "socm", socm);
-  Variant eocm;         testInit (t, "eocm", eocm);
-  Variant som;          testInit (t, "som", som);
-  Variant eom;          testInit (t, "eom", eom);
-  Variant later;        testInit (t, "later", later);
-  Variant someday;      testInit (t, "someday", someday);
-  Variant easter;       testInit (t, "easter", easter);
-  Variant eastermonday; testInit (t, "eastermonday", eastermonday);
-  Variant ascension;    testInit (t, "ascension", ascension);
-  Variant pentecost;    testInit (t, "pentecost", pentecost);
-  Variant goodfriday;   testInit (t, "goodfriday", goodfriday);
-  Variant pi;           testInit (t, "pi", pi);
-  Variant var_true;     testInit (t, "true", var_true);
-  Variant var_false;    testInit (t, "false", var_false);
+  Variant now;            testInit (t, "now", now);
+  Variant today;          testInit (t, "today", today);
+  Variant sod;            testInit (t, "sod", sod);
+  Variant yesterday;      testInit (t, "yesterday", yesterday);
+  Variant tomorrow;       testInit (t, "tomorrow", tomorrow);
+  Variant eod;            testInit (t, "eod", eod);
+  Variant soy;            testInit (t, "soy", soy);
+  Variant eoy;            testInit (t, "eoy", eoy);
+  Variant socm;           testInit (t, "socm", socm);
+  Variant eocm;           testInit (t, "eocm", eocm);
+  Variant som;            testInit (t, "som", som);
+  Variant eom;            testInit (t, "eom", eom);
+  Variant later;          testInit (t, "later", later);
+  Variant someday;        testInit (t, "someday", someday);
+  Variant easter;         testInit (t, "easter", easter);
+  Variant eastermonday;   testInit (t, "eastermonday", eastermonday);
+  Variant ascension;      testInit (t, "ascension", ascension);
+  Variant pentecost;      testInit (t, "pentecost", pentecost);
+  Variant goodfriday;     testInit (t, "goodfriday", goodfriday);
+  Variant pi;             testInit (t, "pi", pi);
+  Variant var_true;       testInit (t, "true", var_true);
+  Variant var_false;      testInit (t, "false", var_false);
+  Variant midsommar;      testInit (t, "midsommar", midsommar);
+  Variant midsommarafton; testInit (t, "midsommarafton", midsommarafton);
 
-  t.ok (now >= today,          "now >= today");
-  t.ok (sod == tomorrow,       "sod == tomorrow");
-  t.ok (sod > eod,             "sod > eod");
-  t.ok (yesterday < today,     "yesterday < today");
-  t.ok (today < tomorrow,      "today < tomorrow");
-  t.ok (socm < eocm,           "socm < eocm");
-  t.ok (now < later,           "now < later");
-  t.ok (now < someday,         "now < someday");
-  t.ok (goodfriday < easter,   "goodfriday < easter");
-  t.ok (easter < eastermonday, "easter < eastermonday");
+  t.ok (now >= today,               "now >= today");
+  t.ok (sod == tomorrow,            "sod == tomorrow");
+  t.ok (sod > eod,                  "sod > eod");
+  t.ok (yesterday < today,          "yesterday < today");
+  t.ok (today < tomorrow,           "today < tomorrow");
+  t.ok (socm < eocm,                "socm < eocm");
+  t.ok (now < later,                "now < later");
+  t.ok (now < someday,              "now < someday");
+  t.ok (goodfriday < easter,        "goodfriday < easter");
+  t.ok (easter < eastermonday,      "easter < eastermonday");
+  t.ok (easter < midsommarafton,    "easter < midsommarafton");
+  t.ok (midsommarafton < midsommar, "midsommarafton < midsommar");
 
   return 0;
 }
