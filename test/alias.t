@@ -38,8 +38,6 @@ from basetest import Task, TestCase
 class TestAlias(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
-        # Used to initialize objects that should be re-initialized or
-        # re-created for each individual test
         self.t = Task()
 
     def test_simple_alias_to_project(self):
@@ -132,6 +130,18 @@ class TestAlias(TestCase):
         self.assertNotIn("Work task", out,
                 msg="task hometoday -> project:Home and due:today minimal > "
                     "Work task")
+
+class TestAliasesCommand(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_aliases_helper(self):
+        """Verify that aliases are listed by the _aliases command"""
+        self.t.config("alias.foo", "bar")
+        code, out, err = self.t("_aliases")
+        self.assertIn("foo", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
