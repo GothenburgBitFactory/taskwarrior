@@ -897,7 +897,7 @@
 // Usage text.  This is an exception, and contains \n characters and formatting.
 #define STRING_CMD_HELP_TEXT \
   "La documentazione di Taskwarrior può essere consultata con 'man task', 'man taskrc', 'man " \
-  "task-color', 'man task-synch o presso http://taskwarrior.org\n" \
+  "task-color', 'man task-sync' o presso http://taskwarrior.org\n" \
   "\n" \
   "La forma generale del comando è:\n" \
   "  task [<filter>] <command> [<mods>]\n" \
