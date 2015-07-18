@@ -178,6 +178,20 @@ class TestExportCommand(TestCase):
         self.t('add estimate:month test duration uda')
         self.assertString(self.export('2')['estimate'], 'month')
 
+class TestExportCommandLimit(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_export_obeys_limit(self):
+        """Verify that 'task export limit:1' is obeyed"""
+        self.t('add one')
+        self.t('add two')
+
+        code, out, err = self.t("export limit:1")
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
