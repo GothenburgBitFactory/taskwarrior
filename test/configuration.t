@@ -57,6 +57,21 @@ class TestConfiguration(TestCase):
         self.assertIn("unrecognized variables", out)
         self.assertIn("  foo\n", out)
 
+    def test_config_completion(self):
+        """verify that the '_config' command generates a full list"""
+        code, out, err = self.t("_config")
+        self.assertIn("_forcecolor", out) # first
+        self.assertIn("xterm.title", out) # last
+
+    def test_config_nothing(self):
+        """Verify error handling with no args"""
+        code, out, err = self.t.runError("config")
+        self.assertIn("Specify the name of a config variable to modify.", err)
+
+    def test_config_no_change(self):
+        """Verify error handling with no change"""
+        code, out, err = self.t.runError("config foo")
+        self.assertIn("No entry named 'foo' found.", err)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
