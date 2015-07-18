@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (224);
+  UnitTest t (225);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -380,6 +380,8 @@ int main (int argc, char** argv)
   t.is (formatHex (123), "7b", "formatHex (123) -> 7b");
 
   // std::string format (float, int, int);
+  t.is (format (0.12345678, 8, 4),      "  0.1235",     "format (0.12345678,    8,   4) -> __0.1235");
+
   t.is (format (1.23456789, 8, 1),      "       1",     "format (1.23456789,    8,   1) -> _______1");
   t.is (format (1.23456789, 8, 2),      "     1.2",     "format (1.23456789,    8,   2) -> _____1.2");
   t.is (format (1.23456789, 8, 3),      "    1.23",     "format (1.23456789,    8,   3) -> ____1.23");
