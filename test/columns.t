@@ -384,14 +384,37 @@ class TestDateFormats(TestCase):
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,due.donkey,description")
         self.assertEqual(err, "Unrecognized column format 'due.donkey'\n")
 
+class TestUDAFormats(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("report.xxx.columns",     "id,priority")
+        cls.t.config("verbose",                "nothing")
+        cls.t.config("uda.priority.indicator", "P")
+
+        cls.t("add one priority:H")
+
+    def test_uda_format_formatted(self):
+        """Verify priority.default formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,priority.default")
+        self.assertRegexpMatches(out, r'1\s+H')
+
+    def test_uda_format_indicator(self):
+        """Verify priority.indicator formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,priority.indicator")
+        self.assertRegexpMatches(out, r'1\s+P')
+
+    def test_uda_format_unrecognized(self):
+        """Verify priority.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,priority.donkey")
+        self.assertEqual(err, "Unrecognized column format 'priority.donkey'\n")
+
 
         """
 depends     list*             1 2 10
             count             [3]
             indicator         D
-
-priority    default*
-(uda)       indicator
 
 start       active*           ✓
         """
