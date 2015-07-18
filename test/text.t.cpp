@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (216);
+  UnitTest t (222);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -411,10 +411,16 @@ int main (int argc, char** argv)
   t.is (rightJustify ("foo", 5), "  foo", "rightJustify foo,5 -> '  foo'");
   t.is (rightJustify ("föo", 5), "  föo", "rightJustify föo,5 -> '  föo'");
 
-  // int utf8_length (const std::string&);
-  t.is ((int) utf8_length ("Çirçös"),            6, "utf8_length (Çirçös) == 6");
-  t.is ((int) utf8_length ("ツネナラム"),        5, "utf8_length (ツネナラム) == 5");
-  t.is ((int) utf8_length ("Zwölf Boxkämpfer"), 16, "utf8_length (Zwölf Boxkämpfer) == 16");
+  // bool closeEnough (const std::string&, const std::string&, unsigned int minLength = 0);
+  t.ok (closeEnough ("foobar", "foobar"),      "closeEnough foobar == foobar");
+  t.ok (closeEnough ("foobar", "foobar", 0),   "closeEnough foobar == foobar,0");
+  t.ok (closeEnough ("foobar", "foobar", 1),   "closeEnough foobar == foobar,1");
+  t.ok (closeEnough ("foobar", "foobar", 2),   "closeEnough foobar == foobar,2");
+  t.ok (closeEnough ("foobar", "foobar", 3),   "closeEnough foobar == foobar,3");
+  t.ok (closeEnough ("foobar", "foobar", 4),   "closeEnough foobar == foobar,4");
+  t.ok (closeEnough ("foobar", "foobar", 5),   "closeEnough foobar == foobar,5");
+  t.ok (closeEnough ("foobar", "foobar", 6),   "closeEnough foobar == foobar,6");
+  t.ok (closeEnough ("foobar", "foo", 3),      "closeEnough foobar == foo,3");
 
   return 0;
 }
