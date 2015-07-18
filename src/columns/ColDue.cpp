@@ -52,12 +52,6 @@ ColumnDue::~ColumnDue ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnDue::validate (std::string& value)
-{
-  return ColumnDate::validate (value);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
 void ColumnDue::setStyle (const std::string& value)

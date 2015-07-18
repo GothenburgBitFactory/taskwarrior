@@ -41,12 +41,6 @@ ColumnEntry::~ColumnEntry ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnEntry::validate (std::string& value)
-{
-  return ColumnDate::validate (value);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
 void ColumnEntry::setStyle (const std::string& value)

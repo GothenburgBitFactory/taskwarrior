@@ -34,8 +34,6 @@ class ColumnUntil : public ColumnDate
 public:
   ColumnUntil ();
   ~ColumnUntil ();
-
-  bool validate (std::string&);
 };
 
 #endif

@@ -35,7 +35,6 @@ public:
   ColumnScheduled ();
   ~ColumnScheduled ();
 
-  bool validate (std::string&);
   void setStyle (const std::string&);
 };
 

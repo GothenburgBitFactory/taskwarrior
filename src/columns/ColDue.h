@@ -35,7 +35,6 @@ public:
   ColumnDue ();
   ~ColumnDue ();
 
-  bool validate (std::string&);
   void setStyle (const std::string&);
 };
 

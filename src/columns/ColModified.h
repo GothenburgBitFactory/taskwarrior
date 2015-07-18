@@ -34,8 +34,6 @@ class ColumnModified : public ColumnDate
 public:
   ColumnModified ();
   ~ColumnModified ();
-
-  bool validate (std::string&);
 };
 
 #endif
