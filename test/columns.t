@@ -166,6 +166,12 @@ class TestStatusFormats(TestCase):
         cls.t.config("verbose",            "nothing")
 
         cls.t("add zero")
+        cls.t("add one")
+        cls.t("2 delete")
+        cls.t("log two")
+        cls.t("add three due:eom recur:weekly")
+        cls.t("add four wait:eom")
+        cls.t("list")
 
     def setUp(self):
         """Executed before each test in the class"""
@@ -174,13 +180,23 @@ class TestStatusFormats(TestCase):
         """Verify formatting of 'status.short' column"""
         code, out, err = self.t("xxx ")
         code, out, err = self.t("xxx rc.report.xxx.columns:id,status.short")
-        self.assertEqual(" 1 P\n", out)
+        self.assertIn(" 1 P", out)
+        self.assertIn(" 2 R", out)
+        self.assertIn(" 3 W", out)
+        self.assertIn(" 4 P", out)
+        self.assertIn(" - D", out)
+        self.assertIn(" - C", out)
 
     def test_status_long(self):
         """Verify formatting of 'status.long' column"""
         code, out, err = self.t("xxx ")
         code, out, err = self.t("xxx rc.report.xxx.columns:id,status.long")
-        self.assertEqual(" 1 Pending\n", out)
+        self.assertIn(" 1 Pending", out)
+        self.assertIn(" 2 Recurring", out)
+        self.assertIn(" 3 Waiting", out)
+        self.assertIn(" 4 Pending", out)
+        self.assertIn(" - Deleted", out)
+        self.assertIn(" - Completed", out)
 
 
         """
