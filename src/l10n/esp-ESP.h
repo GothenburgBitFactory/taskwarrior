@@ -926,7 +926,7 @@
   "  task add -- project:Home needs scheduling\n" */
  #define STRING_CMD_HELP_TEXT \
   "La documentación de Taskwarrior se puede consultar usando 'man task', 'man taskrc'" \
-  "man task-color', 'man task-synch o en http://taskwarrior.org\n" \
+  "man task-color', 'man task-sync' o en http://taskwarrior.org\n" \
   "\n" \
   "La forma general para los comandos es:\n" \
   "  task [<filter>] <command> [<mods>]\n" \
