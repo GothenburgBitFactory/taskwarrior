@@ -47,6 +47,23 @@ class TestBaseUda(TestCase):
         self.t.config("report.uda.labels", "ID,Extra,Description")
 
 
+class TestUdaCommand(TestBaseUda):
+    def setUp(self):
+        super(TestUdaCommand, self).setUp()
+
+    def test_uda_command(self):
+        """The 'udas' command should list 'priority' and 'extra'"""
+        code, out, err = self.t("udas")
+        self.assertIn("priority", out)
+        self.assertIn("extra", out)
+
+    def test_uda_helper_command(self):
+        """The '_udas' helper command should list 'priority' and 'extra'"""
+        code, out, err = self.t("_udas")
+        self.assertIn("priority", out)
+        self.assertIn("extra", out)
+
+
 class TestUdaDate(TestBaseUda):
     def setUp(self):
         super(TestUdaDate, self).setUp()
