@@ -64,6 +64,15 @@ class TestDebugMode(TestCase):
         self.assertIn("CLI2::prepareFilter", err)
         self.assertIn("Infix parsed", err)
 
+    def test_debug_hooks_output(self):
+        """Verify debug hooks mode generates interesting output"""
+        code, out, err = self.t("list rc.debug.hooks=2")
+
+        # Debug
+        self.assertIn("Config::load", err)
+        self.assertIn("Filtered 2 tasks --> 2 tasks [pending only]", err)
+        self.assertIn("Perf task", err)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
