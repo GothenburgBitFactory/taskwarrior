@@ -51,7 +51,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (450);
+  UnitTest t (451);
 
   Duration dur;
   std::string::size_type start = 0;
@@ -290,8 +290,10 @@ int main (int argc, char** argv)
   d = Duration (365 * 86400);     t.is (d.formatPrecise (), "365d 0:00:00",  "365 days -> 365d 0:00:00");
   d = Duration (365 * 86400 + 1); t.is (d.formatPrecise (), "365d 0:00:01",  "365 days + 1 s -> 365d 0:00:01");
 
+  d = Duration (123);             t.is (d.formatSeconds (), "123s",          "123 -> 123s");
+
   // std::string formatISO ();
-  d = Duration (0);               t.is (d.formatISO (), "P0S",             "0 -> P0S");
+  d = Duration (0);               t.is (d.formatISO (), "PT0S",            "0 -> PT0S");
   d = Duration (1);               t.is (d.formatISO (), "PT1S",            "1 -> PT1S");
   d = Duration (2);               t.is (d.formatISO (), "PT2S",            "2 -> PT2S");
   d = Duration (59);              t.is (d.formatISO (), "PT59S",           "59 -> PT59S");
