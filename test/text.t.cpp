@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (222);
+  UnitTest t (224);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -356,6 +356,9 @@ int main (int argc, char** argv)
   // Test start offset.
   t.is ((int) find ("one two three", "e",  3, true), (int) 11, "offset obeyed");
   t.is ((int) find ("one two three", "e", 11, true), (int) 11, "offset obeyed");
+
+  t.is ((int) find ("one two three", "e",  3, false), (int) 11, "offset obeyed");
+  t.is ((int) find ("one two three", "e", 11, false), (int) 11, "offset obeyed");
 
   // int strippedLength (const std::string&);
   t.is (strippedLength (std::string ("")),                                  0, "strippedLength                              -> 0");
