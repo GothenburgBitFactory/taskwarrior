@@ -56,11 +56,12 @@ void ColumnID::measure (Task& task, unsigned int& minimum, unsigned int& maximum
 {
   int length;
 
-       if (task.id < 10)     length = 1;                              // Fast
-  else if (task.id < 100)    length = 2;                              // Fast
-  else if (task.id < 1000)   length = 3;                              // Fast
-  else if (task.id < 10000)  length = 4;                              // Fast
-  else                       length = (int) log10 ((double) task.id); // Slow
+       if (task.id < 10)     length = 1;                                  // Fast
+  else if (task.id < 100)    length = 2;                                  // Fast
+  else if (task.id < 1000)   length = 3;                                  // Fast
+  else if (task.id < 10000)  length = 4;                                  // Fast
+  else if (task.id < 100000) length = 5;                                  // Fast
+  else                       length = 1 + (int) log10 ((double) task.id); // Slow
 
   minimum = maximum = length;
 
