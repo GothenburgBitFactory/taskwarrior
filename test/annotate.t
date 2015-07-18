@@ -127,6 +127,27 @@ class TestAnnotate(TestCase):
         self.assertRegexpMatches(out, "three\n.+\d{1,6}\s+\d{1,6}\s+baz1",
                                  msg="dateformat - first  annotation task 3")
 
+class TestAnnotationPropagation(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_annotate_nothing(self):
+        """Test that an error is produced when annotating no tasks"""
+        code, out, err = self.t.runError("999 annotate no way")
+        self.assertIn("No tasks specified.", err)
+
+    def test_annotate_recurring(self):
+        """Test propagation of annotation to recurring siblings"""
+        self.t("add foo due:eom recur:weekly")
+        self.t("list") # GC/handleRecurrence
+        self.t("2 annotate bar", input="y\n")
+        code, out, err = self.t("all rc.verbose:nothing")
+
+        code, out, err = self.t("_get 1.annotations.1.description")
+        self.assertEqual("bar\n", out)
+
+        code, out, err = self.t("_get 2.annotations.1.description")
+        self.assertEqual("bar\n", out)
 
 class TestBug495(TestCase):
     def setUp(self):
