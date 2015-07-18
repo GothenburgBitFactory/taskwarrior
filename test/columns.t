@@ -223,6 +223,45 @@ class TestRecurringAttributeFormats(TestCase):
         self.assertRegexpMatches(out, "2\sPending\s+\d{4}-\d{2}-\d{2}\s+P1M\s+0\s+[0-9a-fA-F-]{36}")
 
 
+class TestProjectFormats(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("report.xxx.columns", "id,project,description")
+        cls.t.config("verbose",            "nothing")
+
+        cls.t("add one   project:TOP")
+        cls.t("add two   project:TOP.MIDDLE")
+        cls.t("add three project:TOP.MIDDLE.BOTTOM")
+
+    def setUp(self):
+        """Executed before each test in the class"""
+
+    def test_project_format_full(self):
+        """Verify project.full formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,project.full,description")
+        self.assertRegexpMatches(out, r'1\s+TOP\s+one')
+        self.assertRegexpMatches(out, r'2\s+TOP.MIDDLE\s+two')
+        self.assertRegexpMatches(out, r'3\s+TOP.MIDDLE.BOTTOM\s+three')
+
+    def test_project_format_parent(self):
+        """Verify project.parent formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,project.parent,description")
+        self.assertRegexpMatches(out, r'1\s+TOP\s+one')
+        self.assertRegexpMatches(out, r'2\s+TOP\s+two')
+        self.assertRegexpMatches(out, r'3\s+TOP\s+three')
+
+    def test_project_format_indented(self):
+        """Verify project.indented formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,project.indented,description")
+        self.assertRegexpMatches(out, r'1\s+TOP\s+one')
+        self.assertRegexpMatches(out, r'2\s+MIDDLE\s+two')
+        self.assertRegexpMatches(out, r'3\s+BOTTOM\s+three')
+
+
+
+
         """
 depends     list*             1 2 10
             count             [3]
@@ -238,10 +277,6 @@ due         formatted*        2min
 
 priority    default*
             indicator
-
-project     full*             home.garden
-            parent            home
-            indented            home.garden
 
 start       active*           ✓
 
