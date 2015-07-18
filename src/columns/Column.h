@@ -58,13 +58,13 @@ public:
   virtual void setReport (const std::string& value) { _report = value; }
 
   virtual bool validate (std::string&);
-  virtual void measure (const std::string&, unsigned int&, unsigned int&);
-  virtual void measure (Task&, unsigned int&, unsigned int&);
+  virtual void measure (const std::string&, unsigned int&, unsigned int&)           {};
+  virtual void measure (Task&, unsigned int&, unsigned int&)                        {};
   virtual void renderHeader (std::vector <std::string>&, int, Color&);
-  virtual void render (std::vector <std::string>&, const std::string&, int, Color&);
-  virtual void render (std::vector <std::string>&, Task&, int, Color&);
+  virtual void render (std::vector <std::string>&, const std::string&, int, Color&) {};
+  virtual void render (std::vector <std::string>&, Task&, int, Color&)              {};
   virtual bool can_modify ();
-  virtual std::string modify (std::string&);
+  virtual std::string modify (std::string& input)                                   { return input; };
 
 protected:
   std::string _name;

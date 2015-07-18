@@ -255,44 +255,9 @@ bool Column::validate (std::string& input)
 
 ////////////////////////////////////////////////////////////////////////////////
 // No L10N.
-void Column::measure (const std::string&, unsigned int&, unsigned int&)
-{
-  throw std::string ("Virtual method Column::measure not overridden.");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// No L10N.
-void Column::measure (Task&, unsigned int&, unsigned int&)
-{
-  throw std::string ("Virtual method Column::measure not overridden.");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// No L10N.
-void Column::render (std::vector <std::string>&, const std::string&, int, Color&)
-{
-  throw std::string ("Virtual method Column::render not overridden.");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// No L10N.
-void Column::render (std::vector <std::string>&, Task&, int, Color&)
-{
-  throw std::string ("Virtual method Column::render not overridden.");
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// No L10N.
 bool Column::can_modify ()
 {
   return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// No L10N.
-std::string Column::modify (std::string& value)
-{
-  throw std::string ("Virtual method Column::modify not overridden.");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
