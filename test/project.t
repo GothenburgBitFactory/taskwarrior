@@ -152,6 +152,23 @@ class TestProjects(TestCase):
 
         self.validate_indentation(out)
 
+    def test_project_helper(self):
+        """Verify _projects helper list projects"""
+        self.t("add project:A one")
+        self.t("add project:B two")
+        self.t("2 delete")
+        self.t("log project:C three")
+        self.t("list")
+
+        code, out, err = self.t("_projects")
+        self.assertIn("A", out)
+        self.assertNotIn("B", out)
+        self.assertNotIn("C", out)
+
+        code, out, err = self.t("_projects rc.list.all.projects:1")
+        self.assertIn("A", out)
+        self.assertIn("B", out)
+        self.assertIn("C", out)
 
 class TestBug299(TestCase):
     def setUp(self):
