@@ -94,6 +94,14 @@ int CmdColumns::execute (std::string& output)
     }
   }
 
+  int row = formats.addRow ();
+  formats.set (row, 0, "<uda>");
+  formats.set (row, 1, "default*");
+
+  row = formats.addRow ();
+  formats.set (row, 0, "");
+  formats.set (row, 1, "indicator");
+
   output = optionalBlankLine ()
          + formats.render ()
          + "\n"

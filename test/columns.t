@@ -326,31 +326,74 @@ class TestTagsFormats(TestCase):
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,tags.donkey,description")
         self.assertEqual(err, "Unrecognized column format 'tags.donkey'\n")
 
+class TestDateFormats(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("report.xxx.columns", "id,due")
+        cls.t.config("verbose",            "nothing")
+
+        cls.t("add one due:yesterday")
+        cls.t("add two due:tomorrow")
+
+    def test_date_format_formatted(self):
+        """Verify due.formatted formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,due.formatted")
+        self.assertRegexpMatches(out, r'1\s+\d{4}-\d{2}-\d{2}')
+        self.assertRegexpMatches(out, r'2\s+\d{4}-\d{2}-\d{2}')
+
+    def test_date_format_julian(self):
+        """Verify due.julian formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,due.julian")
+        self.assertRegexpMatches(out, r'1\s+\d+\.\d{5}')
+        self.assertRegexpMatches(out, r'2\s+\d+\.\d{5}')
+
+    def test_date_format_epoch(self):
+        """Verify due.epoch formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,due.epoch")
+        self.assertRegexpMatches(out, r'1\s+\d{10}')
+        self.assertRegexpMatches(out, r'2\s+\d{10}')
+
+    def test_date_format_iso(self):
+        """Verify due.iso formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,due.iso")
+        self.assertRegexpMatches(out, r'1\s+\d{8}T\d{6}Z')
+        self.assertRegexpMatches(out, r'2\s+\d{8}T\d{6}Z')
+
+    def test_date_format_age(self):
+        """Verify due.age formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,due.age")
+        self.assertRegexpMatches(out, r'1\s+1d')
+        self.assertRegexpMatches(out, r'2$')
+
+    def test_date_format_remaining(self):
+        """Verify due.remaining formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,due.remaining")
+        self.assertRegexpMatches(out, r'1')
+        self.assertRegexpMatches(out, r'2\s+\d+ \S+')
+
+    def test_date_format_countdown(self):
+        """Verify due.countdown formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,due.countdown")
+        self.assertRegexpMatches(out, r'1\s+\d+\s\S+')
+        self.assertRegexpMatches(out, r'2\s+-')
+
+    def test_date_format_unrecognized(self):
+        """Verify due.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,due.donkey,description")
+        self.assertEqual(err, "Unrecognized column format 'due.donkey'\n")
+
 
         """
 depends     list*             1 2 10
             count             [3]
             indicator         D
 
-due         formatted*        2min
-            julian            2457221.33061
-            epoch
-            iso
-            age
-            remaining
-            countdown
-
 priority    default*
-            indicator
+(uda)       indicator
 
 start       active*           ✓
-
-tags        list*             home @chore next
-            indicator         +
-            count             [2]
-
-uda         default*
-            indicator
         """
 
 if __name__ == "__main__":
