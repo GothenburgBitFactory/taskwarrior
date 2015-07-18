@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -69,9 +69,13 @@ EOF
 }
 
 my $output = qx{../src/task rc:$rc history.monthly 2>&1};
-like ($output, qr/7\s+1\s+0\s+6/, 'history.monthly - last month');
+like ($output, qr/7\s+1\s+0\s+6/,  'history.monthly - last month');
 like ($output, qr/2\s+3\s+3\s+-4/, 'history.monthly - this month');
-like ($output, qr/4\s+2\s+1\s+1/, 'history.monthly - average');
+like ($output, qr/4\s+2\s+1\s+1/,  'history.monthly - average');
+
+$output = qx{../src/task rc:$rc ghistory.monthly rc._forcecolor:on 2>&1};
+like ($output, qr/7.+1.+$/m,       'ghistory.monthly - last month');
+like ($output, qr/2.+3.+3.+$/m,    'ghistory.monthly - this month');
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
