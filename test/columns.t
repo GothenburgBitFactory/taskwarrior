@@ -296,6 +296,36 @@ class TestProjectFormats(TestCase):
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,project.donkey,description")
         self.assertEqual(err, "Unrecognized column format 'project.donkey'\n")
 
+class TestTagsFormats(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("report.xxx.columns", "id,tags,description")
+        cls.t.config("verbose",            "nothing")
+
+        cls.t("add one +tag1 +tag2")
+
+    def test_tags_format_list(self):
+        """Verify tags.list formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,tags.list")
+        self.assertRegexpMatches(out, r'1\s+tag1\stag2$')
+
+    def test_tags_format_indicator(self):
+        """Verify tags.indicator formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,tags.indicator")
+        self.assertRegexpMatches(out, r'1\s+\+$')
+
+    def test_tags_format_count(self):
+        """Verify tags.count formatting"""
+        code, out, err = self.t("xxx rc.report.xxx.columns:id,tags.count")
+        self.assertRegexpMatches(out, r'1\s+\[2\]$')
+
+    def test_tags_format_unrecognized(self):
+        """Verify tags.donkey formatting fails"""
+        code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,tags.donkey,description")
+        self.assertEqual(err, "Unrecognized column format 'tags.donkey'\n")
+
 
         """
 depends     list*             1 2 10
@@ -318,6 +348,9 @@ start       active*           ✓
 tags        list*             home @chore next
             indicator         +
             count             [2]
+
+uda         default*
+            indicator
         """
 
 if __name__ == "__main__":
