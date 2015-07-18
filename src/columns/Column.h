@@ -41,9 +41,6 @@ public:
   static Column* uda (const std::string&);
 
   Column ();
-  Column (const Column&);
-  Column& operator= (const Column&);
-  bool operator== (const Column&) const;     // TODO Is this necessary?
   virtual ~Column ();
 
   const std::string& name () const            { return _name;        }

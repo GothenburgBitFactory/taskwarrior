@@ -211,49 +211,6 @@ Column::Column ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Column::Column (const Column& other)
-{
-  _name        = other._name;
-  _type        = other._type;
-  _style       = other._style;
-  _label       = other._label;
-  _label       = other._report;
-  _modifiable  = other._modifiable;
-  _uda         = other._uda;
-  _fixed_width = other._fixed_width;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Column& Column::operator= (const Column& other)
-{
-  if (this != &other)
-  {
-    _name        = other._name;
-    _type        = other._type;
-    _style       = other._style;
-    _label       = other._label;
-    _report      = other._report;
-    _modifiable  = other._modifiable;
-    _uda         = other._uda;
-    _fixed_width = other._fixed_width;
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool Column::operator== (const Column& other) const
-{
-  return _name       == other._name       &&
-         _type       == other._type       &&
-         _style      == other._style      &&
-         _label      == other._label      &&
-         _report     == other._report     &&
-         _modifiable == other._modifiable &&
-         _uda        == other._uda;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Column::~Column ()
 {
 }
