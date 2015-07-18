@@ -4,6 +4,7 @@
 *.log
 *.runlog
 autocomplete.t
+col.t
 color.t
 config.t
 date.t
