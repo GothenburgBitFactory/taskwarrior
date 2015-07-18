@@ -243,6 +243,27 @@ class TestDeletionRecurrence(TestCase):
         code, out, err = self.t("2 delete", input="y\n")
         self.assertIn("Deleted 5 tasks.", out)
 
+class TestAppendPrependRecurrence(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_append_propagate(self):
+        """Append and propagate"""
+        self.t("add one due:eom recur:daily")
+        self.t("list rc.recurrence.limit:2") # GC/handleRecurrence
+
+        code, out, err = self.t("2 append APP", input="y\n")
+        self.assertIn("Appended 2 tasks.", out)
+
+    def test_prepend_propagate(self):
+        """Prepend and propagate"""
+        self.t("add one due:eom recur:daily")
+        self.t("list rc.recurrence.limit:2") # GC/handleRecurrence
+
+        code, out, err = self.t("2 prepend PRE", input="y\n")
+        self.assertIn("Prepended 2 tasks.", out)
+
 
 # TODO Wait a recurring task
 # TODO Upgrade a task to a recurring task
