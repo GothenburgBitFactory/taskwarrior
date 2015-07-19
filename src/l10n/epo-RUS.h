@@ -587,6 +587,7 @@
 #define STRING_CMD_BURN_USAGE_D      "Montras ĉiutagan abakon de taskbrulo"
 #define STRING_CMD_BURN_TITLE        "Brulo"
 #define STRING_CMD_BURN_TOO_SMALL    "Terminala fenestro tro malgranda por vidigi grafeon."
+#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
 #define STRING_CMD_BURN_DAILY        "Ĉiutaga"
 #define STRING_CMD_BURN_WEEKLY       "Ĉiusemajna"
 #define STRING_CMD_BURN_MONTHLY      "Ĉiumonata"

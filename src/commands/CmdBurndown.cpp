@@ -419,6 +419,12 @@ std::string Chart::render ()
     return std::string (STRING_CMD_BURN_TOO_SMALL) + "\n";
   }
 
+  else if (_graph_height > 1000 || // each line is a string allloc
+           _graph_width  > 1000)
+  {
+    return std::string (STRING_CMD_BURN_TOO_LARGE) + "\n";
+  }
+
   if (_max_value == 0)
     context.footnote (STRING_FEEDBACK_NO_MATCH);
 

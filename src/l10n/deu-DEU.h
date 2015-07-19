@@ -587,6 +587,7 @@
 #define STRING_CMD_BURN_USAGE_D      "Zeigt ein Burn-Down-Diagramm, per Tag"
 #define STRING_CMD_BURN_TITLE        "Burn-Down"
 #define STRING_CMD_BURN_TOO_SMALL    "Terminal-Fenster zu klein um Graph zu zeichnen"
+#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
 #define STRING_CMD_BURN_DAILY        "Tägliches"
 #define STRING_CMD_BURN_WEEKLY       "Wöchentliches"
 #define STRING_CMD_BURN_MONTHLY      "Monatliches"

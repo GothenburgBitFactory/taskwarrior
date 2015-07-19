@@ -599,6 +599,7 @@
 #define STRING_CMD_BURN_USAGE_D      "Muestra un diagrama burndown, por días"
 #define STRING_CMD_BURN_TITLE        "Burndown"  // |esp-ESP|==|eng-USA|
 #define STRING_CMD_BURN_TOO_SMALL    "Ventana de terminal demasiado pequeña para dibujar una gráfica."
+#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
 #define STRING_CMD_BURN_DAILY        "Diario"
 #define STRING_CMD_BURN_WEEKLY       "Semanal"
 #define STRING_CMD_BURN_MONTHLY      "Mensual"

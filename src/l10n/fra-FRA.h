@@ -587,6 +587,7 @@
 #define STRING_CMD_BURN_USAGE_D      "Affiche un graphique d'avancement, par jour"
 #define STRING_CMD_BURN_TITLE        "Burndown"
 #define STRING_CMD_BURN_TOO_SMALL    "Terminal window too small to draw a graph."
+#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
 #define STRING_CMD_BURN_DAILY        "Daily"
 #define STRING_CMD_BURN_WEEKLY       "Weekly"
 #define STRING_CMD_BURN_MONTHLY      "Monthly"

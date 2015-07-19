@@ -586,6 +586,7 @@
 #define STRING_CMD_BURN_USAGE_D      "Mostra un grafico del lavoro da svolgere, per giorno"
 #define STRING_CMD_BURN_TITLE        "Lavoro da svolgere"
 #define STRING_CMD_BURN_TOO_SMALL    "Finestra troppo piccola per mostrare il grafico."
+#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
 #define STRING_CMD_BURN_DAILY        "Giornaliero"
 #define STRING_CMD_BURN_WEEKLY       "Settimanale"
 #define STRING_CMD_BURN_MONTHLY      "Mensile"

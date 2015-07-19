@@ -587,6 +587,7 @@
 #define STRING_CMD_BURN_USAGE_D      "Wyświetla dzienny postęp w postaci wykresu."
 #define STRING_CMD_BURN_TITLE        "Postęp"
 #define STRING_CMD_BURN_TOO_SMALL    "Okno terminal jest za małe do wyświetlenia wykresu."
+#define STRING_CMD_BURN_TOO_LARGE    "Terminal window too large to draw a graph."
 #define STRING_CMD_BURN_DAILY        "Dzienny"
 #define STRING_CMD_BURN_WEEKLY       "Tygodniowy"
 #define STRING_CMD_BURN_MONTHLY      "Miesięczny"
