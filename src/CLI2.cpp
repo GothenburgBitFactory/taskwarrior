@@ -1157,14 +1157,19 @@ void CLI2::desugarFilterAttributes ()
           op.attribute ("raw", "!==");
           rhs.attribute ("raw", "''");
         }
-        else if (mod == "is" || mod == "equals")
+        else if (mod == "is")
+        {
+          op.attribute ("raw", "=");
+          rhs.attribute ("raw", value);
+        }
+        else if (mod == "equals")
         {
           op.attribute ("raw", "==");
           rhs.attribute ("raw", value);
         }
         else if (mod == "isnt" || mod == "not")
         {
-          op.attribute ("raw", "!==");
+          op.attribute ("raw", "!=");
           rhs.attribute ("raw", value);
         }
         else if (mod == "has" || mod == "contains")
