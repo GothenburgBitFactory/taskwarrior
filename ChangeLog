@@ -35,6 +35,8 @@
 - TW-1527 Extra spaces added around slashes (thanks to Renato Alves).
 - TW-1529 Parser incorrectly inserting spaces into task description (thanks to
           David Brenner).
+- TW-1543 cmake complains "test" is not a valid target (on arch linux) (thanks
+          to Renato Alves).
 - TW-1569 update wait:<wait-date> manpage entry (thanks to David Patrick).
 - TW-1572 Better urgency inheritance (thanks to Jens Erat).
 - TW-1575 `task log` mangles URLs when quoted (thanks to Luke Macken).

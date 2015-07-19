@@ -1,4 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
+if(POLICY CMP0037)
+  cmake_policy(SET CMP0037 OLD)
+endif()
 include_directories (${CMAKE_SOURCE_DIR}
                      ${CMAKE_SOURCE_DIR}/src
                      ${CMAKE_SOURCE_DIR}/src/commands
