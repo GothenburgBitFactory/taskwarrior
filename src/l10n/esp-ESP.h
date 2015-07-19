@@ -639,47 +639,26 @@
 #define STRING_DATE_INVALID_FORMAT   "'{1}' no es una fecha válida según el formato '{2}'."
 #define STRING_DATE_BAD_WEEKSTART    "La variable de configuración 'weekstart' solamente puede contener 'Sunday' (domingo) o 'Monday' (lunes)."
 
-#define STRING_DATE_JANUARY_LONG     "enero"
-#define STRING_DATE_FEBRUARY_LONG    "febrero"
-#define STRING_DATE_MARCH_LONG       "marzo"
-#define STRING_DATE_APRIL_LONG       "abril"
-#define STRING_DATE_MAY_LONG         "mayo"
-#define STRING_DATE_JUNE_LONG        "junio"
-#define STRING_DATE_JULY_LONG        "julio"
-#define STRING_DATE_AUGUST_LONG      "agosto"
-#define STRING_DATE_SEPTEMBER_LONG   "septiembre"
-#define STRING_DATE_OCTOBER_LONG     "octubre"
-#define STRING_DATE_NOVEMBER_LONG    "noviembre"
-#define STRING_DATE_DECEMBER_LONG    "diciembre"
+#define STRING_DATE_JANUARY          "enero"
+#define STRING_DATE_FEBRUARY         "febrero"
+#define STRING_DATE_MARCH            "marzo"
+#define STRING_DATE_APRIL            "abril"
+#define STRING_DATE_MAY              "mayo"
+#define STRING_DATE_JUNE             "junio"
+#define STRING_DATE_JULY             "julio"
+#define STRING_DATE_AUGUST           "agosto"
+#define STRING_DATE_SEPTEMBER        "septiembre"
+#define STRING_DATE_OCTOBER          "octubre"
+#define STRING_DATE_NOVEMBER         "noviembre"
+#define STRING_DATE_DECEMBER         "diciembre"
 
-#define STRING_DATE_JANUARY_SHORT    "ene"
-#define STRING_DATE_FEBRUARY_SHORT   "feb"  // |esp-ESP|==|eng-USA|
-#define STRING_DATE_MARCH_SHORT      "mar"  // |esp-ESP|==|eng-USA|
-#define STRING_DATE_APRIL_SHORT      "abr"
-#define STRING_DATE_MAY_SHORT        "may"  // |esp-ESP|==|eng-USA|
-#define STRING_DATE_JUNE_SHORT       "jun"  // |esp-ESP|==|eng-USA|
-#define STRING_DATE_JULY_SHORT       "jul"  // |esp-ESP|==|eng-USA|
-#define STRING_DATE_AUGUST_SHORT     "ago"
-#define STRING_DATE_SEPTEMBER_SHORT  "sep"  // |esp-ESP|==|eng-USA|
-#define STRING_DATE_OCTOBER_SHORT    "oct"  // |esp-ESP|==|eng-USA|
-#define STRING_DATE_NOVEMBER_SHORT   "nov"  // |esp-ESP|==|eng-USA|
-#define STRING_DATE_DECEMBER_SHORT   "dic"
-
-#define STRING_DATE_SUNDAY_LONG      "domingo"
-#define STRING_DATE_MONDAY_LONG      "lunes"
-#define STRING_DATE_TUESDAY_LONG     "martes"
-#define STRING_DATE_WEDNESDAY_LONG   "miércoles"
-#define STRING_DATE_THURSDAY_LONG    "jueves"
-#define STRING_DATE_FRIDAY_LONG      "viernes"
-#define STRING_DATE_SATURDAY_LONG    "sábado"
-
-#define STRING_DATE_SUNDAY_SHORT     "dom"
-#define STRING_DATE_MONDAY_SHORT     "lun"
-#define STRING_DATE_TUESDAY_SHORT    "mar"
-#define STRING_DATE_WEDNESDAY_SHORT  "mie"
-#define STRING_DATE_THURSDAY_SHORT   "jue"
-#define STRING_DATE_FRIDAY_SHORT     "vie"
-#define STRING_DATE_SATURDAY_SHORT   "sab"
+#define STRING_DATE_SUNDAY           "domingo"
+#define STRING_DATE_MONDAY           "lunes"
+#define STRING_DATE_TUESDAY          "martes"
+#define STRING_DATE_WEDNESDAY        "miércoles"
+#define STRING_DATE_THURSDAY         "jueves"
+#define STRING_DATE_FRIDAY           "viernes"
+#define STRING_DATE_SATURDAY         "sábado"
 
 // dependency
 #define STRING_DEPEND_BLOCKED        "La tarea {1} está bloqueada por:"

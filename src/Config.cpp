@@ -118,7 +118,7 @@ std::string Config::_defaults =
   "dateformat.annotation=                         # Preferred display date format for annotations\n"
   "date.iso=yes                                   # Enable ISO date support\n"
   "weekstart="
-             STRING_DATE_SUNDAY_LONG
+             STRING_DATE_SUNDAY
                   "                               # Sunday or Monday only\n"
   "displayweeknumber=yes                          # Show week numbers on calendar\n"
   "due=7                                          # Task is considered due in 7 days\n"

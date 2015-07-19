@@ -406,18 +406,18 @@ std::string Date::monthName (int month)
 {
   static const char* months[12] =
   {
-    STRING_DATE_JANUARY_LONG,
-    STRING_DATE_FEBRUARY_LONG,
-    STRING_DATE_MARCH_LONG,
-    STRING_DATE_APRIL_LONG,
-    STRING_DATE_MAY_LONG,
-    STRING_DATE_JUNE_LONG,
-    STRING_DATE_JULY_LONG,
-    STRING_DATE_AUGUST_LONG,
-    STRING_DATE_SEPTEMBER_LONG,
-    STRING_DATE_OCTOBER_LONG,
-    STRING_DATE_NOVEMBER_LONG,
-    STRING_DATE_DECEMBER_LONG,
+    STRING_DATE_JANUARY,
+    STRING_DATE_FEBRUARY,
+    STRING_DATE_MARCH,
+    STRING_DATE_APRIL,
+    STRING_DATE_MAY,
+    STRING_DATE_JUNE,
+    STRING_DATE_JULY,
+    STRING_DATE_AUGUST,
+    STRING_DATE_SEPTEMBER,
+    STRING_DATE_OCTOBER,
+    STRING_DATE_NOVEMBER,
+    STRING_DATE_DECEMBER,
   };
 
   assert (month > 0);
@@ -430,13 +430,13 @@ void Date::dayName (int dow, std::string& name)
 {
   static const char* days[7] =
   {
-    STRING_DATE_SUNDAY_LONG,
-    STRING_DATE_MONDAY_LONG,
-    STRING_DATE_TUESDAY_LONG,
-    STRING_DATE_WEDNESDAY_LONG,
-    STRING_DATE_THURSDAY_LONG,
-    STRING_DATE_FRIDAY_LONG,
-    STRING_DATE_SATURDAY_LONG,
+    STRING_DATE_SUNDAY,
+    STRING_DATE_MONDAY,
+    STRING_DATE_TUESDAY,
+    STRING_DATE_WEDNESDAY,
+    STRING_DATE_THURSDAY,
+    STRING_DATE_FRIDAY,
+    STRING_DATE_SATURDAY,
   };
 
   name = ucFirst (days[dow]);
@@ -447,13 +447,13 @@ std::string Date::dayName (int dow)
 {
   static const char* days[7] =
   {
-    STRING_DATE_SUNDAY_LONG,
-    STRING_DATE_MONDAY_LONG,
-    STRING_DATE_TUESDAY_LONG,
-    STRING_DATE_WEDNESDAY_LONG,
-    STRING_DATE_THURSDAY_LONG,
-    STRING_DATE_FRIDAY_LONG,
-    STRING_DATE_SATURDAY_LONG,
+    STRING_DATE_SUNDAY,
+    STRING_DATE_MONDAY,
+    STRING_DATE_TUESDAY,
+    STRING_DATE_WEDNESDAY,
+    STRING_DATE_THURSDAY,
+    STRING_DATE_FRIDAY,
+    STRING_DATE_SATURDAY,
   };
 
   return ucFirst (days[dow]);
@@ -490,15 +490,17 @@ int Date::dayOfWeek () const
 ////////////////////////////////////////////////////////////////////////////////
 int Date::dayOfWeek (const std::string& input)
 {
-  std::string in = lowerCase (input);
+  int minimum = CLI2::minimumMatchLength;
+  if (minimum == 0)
+    minimum = 3;
 
-  if (in == STRING_DATE_SUNDAY_LONG    || in == STRING_DATE_SUNDAY_SHORT)    return 0;
-  if (in == STRING_DATE_MONDAY_LONG    || in == STRING_DATE_MONDAY_SHORT)    return 1;
-  if (in == STRING_DATE_TUESDAY_LONG   || in == STRING_DATE_TUESDAY_SHORT)   return 2;
-  if (in == STRING_DATE_WEDNESDAY_LONG || in == STRING_DATE_WEDNESDAY_SHORT) return 3;
-  if (in == STRING_DATE_THURSDAY_LONG  || in == STRING_DATE_THURSDAY_SHORT)  return 4;
-  if (in == STRING_DATE_FRIDAY_LONG    || in == STRING_DATE_FRIDAY_SHORT)    return 5;
-  if (in == STRING_DATE_SATURDAY_LONG  || in == STRING_DATE_SATURDAY_SHORT)  return 6;
+       if (closeEnough (STRING_DATE_SUNDAY,    input, minimum)) return 0;
+  else if (closeEnough (STRING_DATE_MONDAY,    input, minimum)) return 1;
+  else if (closeEnough (STRING_DATE_TUESDAY,   input, minimum)) return 2;
+  else if (closeEnough (STRING_DATE_WEDNESDAY, input, minimum)) return 3;
+  else if (closeEnough (STRING_DATE_THURSDAY,  input, minimum)) return 4;
+  else if (closeEnough (STRING_DATE_FRIDAY,    input, minimum)) return 5;
+  else if (closeEnough (STRING_DATE_SATURDAY,  input, minimum)) return 6;
 
   return -1;
 }
@@ -513,20 +515,22 @@ int Date::dayOfYear () const
 ////////////////////////////////////////////////////////////////////////////////
 int Date::monthOfYear (const std::string& input)
 {
-  std::string in = lowerCase (input);
+  int minimum = CLI2::minimumMatchLength;
+  if (minimum == 0)
+    minimum = 3;
 
-  if (in == STRING_DATE_JANUARY_LONG   || in == STRING_DATE_JANUARY_SHORT  )     return  1;
-  if (in == STRING_DATE_FEBRUARY_LONG  || in == STRING_DATE_FEBRUARY_SHORT )     return  2;
-  if (in == STRING_DATE_MARCH_LONG     || in == STRING_DATE_MARCH_SHORT    )     return  3;
-  if (in == STRING_DATE_APRIL_LONG     || in == STRING_DATE_APRIL_SHORT    )     return  4;
-  if (in == STRING_DATE_MAY_LONG       || in == STRING_DATE_MAY_SHORT      )     return  5;
-  if (in == STRING_DATE_JUNE_LONG      || in == STRING_DATE_JUNE_SHORT     )     return  6;
-  if (in == STRING_DATE_JULY_LONG      || in == STRING_DATE_JULY_SHORT     )     return  7;
-  if (in == STRING_DATE_AUGUST_LONG    || in == STRING_DATE_AUGUST_SHORT   )     return  8;
-  if (in == STRING_DATE_SEPTEMBER_LONG || in == STRING_DATE_SEPTEMBER_SHORT)     return  9;
-  if (in == STRING_DATE_OCTOBER_LONG   || in == STRING_DATE_OCTOBER_SHORT  )     return 10;
-  if (in == STRING_DATE_NOVEMBER_LONG  || in == STRING_DATE_NOVEMBER_SHORT )     return 11;
-  if (in == STRING_DATE_DECEMBER_LONG  || in == STRING_DATE_DECEMBER_SHORT )     return 12;
+       if (closeEnough (STRING_DATE_JANUARY,   input, minimum)) return 1;
+  else if (closeEnough (STRING_DATE_FEBRUARY,  input, minimum)) return 2;
+  else if (closeEnough (STRING_DATE_MARCH,     input, minimum)) return 3;
+  else if (closeEnough (STRING_DATE_APRIL,     input, minimum)) return 4;
+  else if (closeEnough (STRING_DATE_MAY,       input, minimum)) return 5;
+  else if (closeEnough (STRING_DATE_JUNE,      input, minimum)) return 6;
+  else if (closeEnough (STRING_DATE_JULY,      input, minimum)) return 7;
+  else if (closeEnough (STRING_DATE_AUGUST,    input, minimum)) return 8;
+  else if (closeEnough (STRING_DATE_SEPTEMBER, input, minimum)) return 9;
+  else if (closeEnough (STRING_DATE_OCTOBER,   input, minimum)) return 10;
+  else if (closeEnough (STRING_DATE_NOVEMBER,  input, minimum)) return 11;
+  else if (closeEnough (STRING_DATE_DECEMBER,  input, minimum)) return 12;
 
   return -1;
 }

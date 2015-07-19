@@ -136,6 +136,8 @@ bool namedDates (const std::string& name, Variant& value)
   int i;
 
   int minimum = CLI2::minimumMatchLength;
+  if (minimum == 0)
+    minimum = 3;
 
   // Dynamics.
   if (closeEnough ("now", name, minimum))
