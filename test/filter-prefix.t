@@ -78,9 +78,9 @@ class TestFilterPrefix(TestCase):
     def test_list_project_not_foo(self):
         """Filter on not project name."""
         code, out, err = self.t('list project.not:foo')
-        self.assertIn('one', out)
-        self.assertIn('two', out)
-        self.assertIn('three', out)
+        self.assertNotIn('one', out)
+        self.assertNotIn('two', out)
+        self.assertNotIn('three', out)
         self.assertIn('four', out)
         self.assertIn('five', out)
         self.assertIn('six', out)
