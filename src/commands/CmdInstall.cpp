@@ -40,6 +40,7 @@ CmdInstall::CmdInstall ()
   _description = STRING_CMD_INSTALL_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::UNDOCUMENTED;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

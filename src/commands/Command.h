@@ -58,6 +58,7 @@ public:
     migration,
     misc,
     internal,
+    UNDOCUMENTED,
     // Whenever you extend this enum, update categoryNames.
   };
   Category _category;

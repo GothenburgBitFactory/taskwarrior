@@ -206,6 +206,7 @@ const std::map <Command::Category, std::string> Command::categoryNames =
   ,{Command::Category::migration,    "migration"}
   ,{Command::Category::misc,         "misc"     }
   ,{Command::Category::internal,     "internal"}
+  ,{Command::Category::UNDOCUMENTED, "undocumented"}
 };
  
 ////////////////////////////////////////////////////////////////////////////////
