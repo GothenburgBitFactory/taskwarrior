@@ -45,6 +45,7 @@ class TestDiagnostics(TestCase):
 
     def test_diagnostics(self):
         """Task diag output, so we can monitor platforms"""
+        self.t.activate_hooks()
         code, out, err = self.t.diag()
         self.tap(out)
         self.assertRegexpMatches(out, "Compliance:\s+C\+\+11")
