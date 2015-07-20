@@ -267,6 +267,20 @@ class TestUrgency(TestCase):
         code, out, err = self.t("rc.urgency.uda.priority.H.coefficient:0.01234 _get 47.urgency")
         self.assertApproximately(0.01234, out)
 
+    def test_urgency_no_task(self):
+        """Verify no error when no tasks match"""
+        code, out, err = self.t.runError("999 _urgency")
+        self.assertEqual("", out)
+        self.assertEqual("", err)
+
+    def test_urgency_all_tasks(self):
+        """Verify all tasks when no filter is specified"""
+        code, out, err = self.t("_urgency")
+        self.assertIn("task 10 ", out)
+        self.assertIn("task 20 ", out)
+        self.assertIn("task 30 ", out)
+        self.assertIn("task 40 ", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
