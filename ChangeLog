@@ -17,6 +17,7 @@
 - TW-1430 Slashes in project names don't work (thanks to Richard Boß).
 - TW-1432 start/stop can be issued on completed tasks  (thanks to Renato Alves).
 - TW-1440 "task import" from STDIN (thanks to Renato Alves).
+- TW-1452 The uuid:<uuid> filter does not work (thanks to Tomas Babej).
 - TW-1454 Redundant dependency should not stop modification  (thanks to Tomas
           Babej).
 - TW-1455 Filter parser does not properly handle parentheses in attributes
