@@ -201,6 +201,7 @@ const std::map <Command::Category, std::string> Command::categoryNames =
   ,{Command::Category::interrogator, "interrogator"}
   ,{Command::Category::report,       "report"}
   ,{Command::Category::operation,    "operation"}
+  ,{Command::Category::context,      "context"}
   ,{Command::Category::graphs,       "graphs"   }
   ,{Command::Category::config,       "config"   }
   ,{Command::Category::migration,    "migration"}

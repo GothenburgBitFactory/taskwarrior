@@ -53,6 +53,7 @@ public:
     interrogator,
     report,
     operation,
+    context,
     graphs,
     config,
     migration,
