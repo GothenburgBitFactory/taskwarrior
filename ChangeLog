@@ -25,6 +25,8 @@
           one with apostrophes (thanks to Tomas Babej).
 - TW-1466 UDA with type duration is stored as text/string (thanks to Thomas
           Sullivan).
+- TW-1472 Syntactic sugar morphs into regex expressions, even if turned off
+          (thanks to Richard Boß).
 - TW-1475 task config expands values with unnecessary spaces (thanks to Tomas
           Babej).
 - TW-1478 due:easter sets the easter of the current year regardless of the date

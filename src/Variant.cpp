@@ -937,7 +937,25 @@ bool Variant::operator_match (const Variant& other, const Task& task) const
   }
   else
   {
-    if (find (left._string, pattern, searchCaseSensitive) != std::string::npos)
+    // If pattern starts with '^', look for a leftmost compare only.
+    if (pattern[0] == '^' &&
+        find (left._string,
+              pattern.substr (1),
+              searchCaseSensitive) == 0)
+    {
+      return true;
+    }
+
+    // If pattern ends with '$', look for a rightmost compare only.
+    else if (pattern[pattern.length () - 1] == '$' &&
+             find (left._string,
+                   pattern.substr (0, pattern.length () - 1),
+                   searchCaseSensitive) == (left._string.length () - pattern.length () + 1))
+    {
+      return true;
+    }
+
+    else if (find (left._string, pattern, searchCaseSensitive) != std::string::npos)
       return true;
 
     // If the above did not match, and the left source is "description", then

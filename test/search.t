@@ -65,7 +65,43 @@ class TestSearch(TestCase):
         self.assertIn("one", out)
         self.assertNotIn("two", out)
 
-# TODO Search with rc.regex on and off
+class TestBug1472(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("verbose", "nothing")
+        cls.t("add A to Z")
+        cls.t("add Z to A")
+
+    def setUp(self):
+        """Executed before each test in the class"""
+
+    def test_startswith_regex(self):
+        """Verify .startswith works with regexes"""
+        code, out, err = self.t("rc.regex:on rc.debug.parser=3 description.startswith:A ls")
+        self.assertIn("A to Z", out)
+        self.assertNotIn("Z to A", out)
+
+    def test_endswith_regex(self):
+        """Verify .endswith works with regexes"""
+        code, out, err = self.t("rc.regex:on description.endswith:Z ls")
+        self.assertIn("A to Z", out)
+        self.assertNotIn("Z to A", out)
+
+    def test_startswith_no_regex(self):
+        """Verify .startswith works without regexes"""
+        code, out, err = self.t("rc.regex:off description.startswith:A ls")
+        self.assertIn("A to Z", out)
+        self.assertNotIn("Z to A", out)
+
+    def test_endswith_no_regex(self):
+        """Verify .endswith works without regexes"""
+        code, out, err = self.t("rc.regex:off description.endswith:Z ls")
+        self.assertIn("A to Z", out)
+        self.assertNotIn("Z to A", out)
+
+
 # TODO Search with patterns
 
 
