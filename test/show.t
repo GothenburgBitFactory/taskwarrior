@@ -71,6 +71,18 @@ class TestShowCommand(TestCase):
         self.assertIn("Your .taskrc file contains these unrecognized variables:\n  foo", out)
 
 
+class TestShowHelperCommand(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_show_helper_no_arg(self):
+        """Verify _show command lists all with no arg provided"""
+        code, out, err = self.t("_show")
+        self.assertIn("debug=no\n", out)
+        self.assertIn("verbose=yes\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
