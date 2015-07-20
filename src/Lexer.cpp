@@ -79,9 +79,9 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
       isDuration     (token, type)        ||
       isURL          (token, type)        ||
       isPair         (token, type)        ||
+      isUUID         (token, type)        ||
       isSet          (token, type)        ||
       isDOM          (token, type)        ||
-      isUUID         (token, type)        ||
       isHexNumber    (token, type)        ||
       isNumber       (token, type)        ||
       isSeparator    (token, type)        ||
