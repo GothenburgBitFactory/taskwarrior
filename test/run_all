@@ -70,16 +70,11 @@ class TestRunner(object):
         for test in glob.glob("*.t") + glob.glob("*.t.exe"):
             if os.access(test, os.X_OK):
                 # Executables only
-                if not cmd_args.serial:
-                    with open(test, 'rb') as fh:
-                        if b"/usr/bin/env python" in fh.read(50):
-                            log.debug("Treating as parallel: %s", test)
-                            self._parallelq.put(test)
-                        else:
-                            log.debug("Treating as serial: %s", test)
-                            self._serialq.put(test)
+                if self._is_parallelizable(test):
+                    log.debug("Treating as parallel: %s", test)
+                    self._parallelq.put(test)
                 else:
-                    log.debug("Treating %s as serial", test)
+                    log.debug("Treating as serial: %s", test)
                     self._serialq.put(test)
             else:
                 log.debug("Ignored test %s as it is not executable", test)
@@ -115,6 +110,21 @@ class TestRunner(object):
 
         log.debug("Adding timestamp %s to TAP file", timestamp)
         self.tap.write(timestamp)
+
+    def _is_parallelizable(self, test):
+        if cmd_args.serial:
+            return False
+
+        # This is a pretty weird way to do it, and not realiable.
+        # We are dealing with some binary tests though.
+        with open(test, 'rb') as fh:
+            header = fh.read(100).split(b"\n")
+            if len(header) >= 2 and \
+                ((b"/usr/bin/env python" in header[0]) or \
+                (header[1][-14:] == b"bash_tap_tw.sh")):
+                return True
+            else:
+                return False
 
     def _get_remaining_tests(self):
         return self._parallelq.qsize() + self._serialq.qsize()
