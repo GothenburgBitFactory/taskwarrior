@@ -138,7 +138,7 @@ class TestUUID(TestCase):
         self.assertIn("completed\n", out)
 
         code, out, err = self.t("12345678-1234-1234-1234-123456789012 export")
-        self.assertIn("'description':'six'", out)
+        self.assertIn('"description":"six"', out)
 
     def test_alpha_uuid(self):
         """Using alphabetic UUID"""
