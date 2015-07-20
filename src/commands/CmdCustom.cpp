@@ -52,6 +52,7 @@ CmdCustom::CmdCustom (
   _description = d;
   _read_only   = true;
   _displays_id = true;
+  _category    = Category::report;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
