@@ -47,8 +47,24 @@ public:
   bool displays_id () const;
   virtual int execute (std::string&) = 0;
 
+  enum class Category
+  {
+    unassigned,
+    interrogator,
+    report,
+    operation,
+    graphs,
+    config,
+    migration,
+    misc,
+    internal,
+    // Whenever you extend this enum, update categoryNames.
+  };
+  Category _category;
+
 protected:
   bool permission (const Task&, const std::string&, unsigned int);
+  static const std::map <Command::Category, std::string> categoryNames;
 
 protected:
   std::string _keyword;

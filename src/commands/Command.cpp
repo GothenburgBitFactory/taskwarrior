@@ -194,8 +194,24 @@ void Command::factory (std::map <std::string, Command*>& all)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::map <Command::Category, std::string> Command::categoryNames =
+{
+  // These strings are intentionally not l10n'd: they are used as identifiers.
+   {Command::Category::unassigned,   "unassigned"} // should never happen
+  ,{Command::Category::interrogator, "interrogator"}
+  ,{Command::Category::report,       "report"}
+  ,{Command::Category::operation,    "operation"}
+  ,{Command::Category::graphs,       "graphs"   }
+  ,{Command::Category::config,       "config"   }
+  ,{Command::Category::migration,    "migration"}
+  ,{Command::Category::misc,         "misc"     }
+  ,{Command::Category::internal,     "internal"}
+};
+ 
+////////////////////////////////////////////////////////////////////////////////
 Command::Command ()
-: _usage ("")
+: _category(Category::unassigned)
+, _usage ("")
 , _description ("")
 , _read_only (true)
 , _displays_id (true)
