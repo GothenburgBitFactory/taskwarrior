@@ -58,7 +58,7 @@ _task_conjunctions=(
 	'>'
 )
 _task_cmds=($(task _commands; task _aliases))
-_task_zshcmds=( ${(f)"$(task _zshcommands)"} )
+_task_zshcmds=( ${(f)"$(task _zshcommands)"} sentinel:sentinel:sentinel )
 
 _task_aliases=($(task _aliases))
 
@@ -224,6 +224,34 @@ _task_id() {
 	_describe -t values 'task IDs' _task_zshids
 }
 
+# subcommand-only function
+(( $+functions[_task_subcommands] )) ||
+_task_subcommands() {
+  local -a subcommands
+  local _zshcmd
+  local cmd category desc
+  local lastcategory=''
+  # The list is sorted by category, in the right order.
+  for _zshcmd in "$_task_zshcmds[@]"; do
+    # Parse out the three fields
+    cmd=${_zshcmd%%:*}
+    category=${${_zshcmd#*:}%%:*}
+    desc=${_zshcmd#*:*:}
+
+    # Present each category as soon as the first entry in the *next* category
+    # is seen.
+    if [[ $category != $lastcategory && -n $lastcategory ]]; then
+      _describe -t ${lastcategory}-commands "task ${lastcategory} command" subcommands
+      subcommands=()
+    fi
+
+    # Log the subcommand; we will process it in some future iteration.
+    subcommands+=( "$cmd:$desc" )
+
+    lastcategory=$category
+  done
+}
+
 ## first level completion => task sub-command completion
 (( $+functions[_task_default] )) ||
 _task_default() {
@@ -245,8 +273,8 @@ _task_default() {
 	# update IDs
 	_task_zshids=( ${(f)"$(task _zshids)"} )
 
-	_describe -t commands 'task command' _task_zshcmds
-	_describe -t values 'task IDs' _task_zshids
+	_task_subcommands
+	_describe -t tasks 'task IDs' _task_zshids
 	_describe -t aliases 'task aliases' _task_aliases
 	_call_function ret _task_filter
 

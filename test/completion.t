@@ -63,6 +63,22 @@ class TestAliasesCompletion(TestCase):
         self.assertIn("information", out)
         self.assertNotIn("samplealias", out)
 
+class TestZshCompletion(TestCase):
+    """Test _zshcommands and related completion subcommands"""
+
+    def setUp(self):
+        self.t = Task()
+        self.t.config("report.foobar.columns", "id")
+
+    def test_categories(self):
+        """test _zshcommands categories"""
+        code, out, err = self.t("_zshcommands")
+
+        self.assertIn("\nfoobar:report:", out)
+        self.assertIn("\ninformation:interrogator:", out)
+        self.assertIn("\nexport:migration:", out)
+        self.assertNotIn(":unassigned:", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

@@ -80,18 +80,22 @@ CmdZshCommands::CmdZshCommands ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdZshCommands::execute (std::string& output)
 {
-  // Get a list of all commands.
-  std::vector <std::string> commands;
-
+  // Get a list of all command descriptions, sorted by category and then
+  // alphabetically by command name.
+  typedef std::tuple <Command::Category, std::string, std::string> Element;
+  std::vector <Element> commands;
   for (auto& command : context.commands)
-    commands.push_back (command.first);
-
-  // Sort alphabetically.
+    commands.push_back (std::make_tuple (command.second->_category,
+                                         command.first,
+                                         command.second->description()));
   std::sort (commands.begin (), commands.end ());
 
+  // Emit the commands in order.
   std::stringstream out;
   for (auto& c : commands)
-    out << c << ":" << context.commands[c]->description () << "\n";
+    out << std::get<1> (c) << ":"
+        << Command::categoryNames.at (std::get<0> (c)) << ":"
+        << std::get<2> (c) << "\n";
 
   output = out.str ();
   return 0;

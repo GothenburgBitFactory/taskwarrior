@@ -50,6 +50,7 @@ public:
   enum class Category
   {
     unassigned,
+    // In presentation ("usefulness") order: frequently-used categories first.
     interrogator,
     report,
     operation,
