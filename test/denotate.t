@@ -27,7 +27,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 25;
+use Test::More tests => 26;
 
 # Ensure environment has no influence.
 delete $ENV{'TASKDATA'};
@@ -110,6 +110,9 @@ $output = qx{../src/task rc:$rc rrr 2>&1};
 like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Delete partial match - Bert");
 like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Delete partial match - Kermit the frog");
 unlike ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, "$ut: Delete partial match - Kermit and Miss Piggy"); # 25
+
+$output = qx{../src/task rc:$rc 999 denotate 2>&1};
+like ($output, qr/No tasks specified./,                                     "$ut: No matching tasks");
 
 # Cleanup.
 unlink qw(pending.data completed.data undo.data backlog.data), $rc;
