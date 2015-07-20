@@ -45,6 +45,7 @@ CmdDelete::CmdDelete ()
   _read_only     = false;
   _displays_id   = false;
   _needs_confirm = true;
+  _category      = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

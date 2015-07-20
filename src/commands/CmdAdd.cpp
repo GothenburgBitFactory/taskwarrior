@@ -42,6 +42,7 @@ CmdAdd::CmdAdd ()
   _description = STRING_CMD_ADD_USAGE;
   _read_only   = false;
   _displays_id = false;
+  _category    = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

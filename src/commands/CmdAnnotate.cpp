@@ -44,6 +44,7 @@ CmdAnnotate::CmdAnnotate ()
   _description = STRING_CMD_ANNO_USAGE;
   _read_only   = false;
   _displays_id = false;
+  _category    = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

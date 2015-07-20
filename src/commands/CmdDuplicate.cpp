@@ -44,6 +44,7 @@ CmdDuplicate::CmdDuplicate ()
   _description = STRING_CMD_DUPLICATE_USAGE;
   _read_only   = false;
   _displays_id = false;
+  _category    = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

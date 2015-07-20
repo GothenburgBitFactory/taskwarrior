@@ -44,6 +44,7 @@ CmdModify::CmdModify ()
   _description = STRING_CMD_MODIFY_USAGE1;
   _read_only   = false;
   _displays_id = false;
+  _category    = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

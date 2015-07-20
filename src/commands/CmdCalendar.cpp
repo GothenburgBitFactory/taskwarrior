@@ -47,6 +47,7 @@ CmdCalendar::CmdCalendar ()
   _description = STRING_CMD_CAL_USAGE;
   _read_only   = true;
   _displays_id = true;
+  _category    = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

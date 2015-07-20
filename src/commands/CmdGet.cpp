@@ -42,6 +42,7 @@ CmdGet::CmdGet ()
   _description = STRING_CMD_GET_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

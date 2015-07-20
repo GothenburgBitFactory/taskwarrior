@@ -44,6 +44,7 @@ CmdConfig::CmdConfig ()
   _description = STRING_CMD_CONFIG_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -232,6 +233,7 @@ CmdCompletionConfig::CmdCompletionConfig ()
   _description = STRING_CMD_HCONFIG_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

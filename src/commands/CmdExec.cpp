@@ -41,6 +41,7 @@ CmdExec::CmdExec ()
   _description = STRING_CMD_EXEC_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -44,6 +44,7 @@ CmdColor::CmdColor ()
   _description = STRING_CMD_COLOR_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

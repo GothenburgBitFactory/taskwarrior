@@ -45,6 +45,7 @@ CmdTags::CmdTags ()
   _description = STRING_CMD_TAGS_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::interrogator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -143,6 +144,7 @@ CmdCompletionTags::CmdCompletionTags ()
   _description = STRING_CMD_COMTAGS_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

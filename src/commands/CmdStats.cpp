@@ -48,6 +48,7 @@ CmdStats::CmdStats ()
   _description = STRING_CMD_STATS_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::interrogator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -46,6 +46,7 @@ CmdUDAs::CmdUDAs ()
   _description = STRING_CMD_UDAS_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -181,6 +182,7 @@ CmdCompletionUDAs::CmdCompletionUDAs ()
   _description = STRING_CMD_UDAS_COMPL_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

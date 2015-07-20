@@ -43,6 +43,7 @@ CmdZshAttributes::CmdZshAttributes ()
   _description = STRING_CMD_ZSHATTS_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

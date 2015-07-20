@@ -44,6 +44,7 @@ CmdHelp::CmdHelp ()
   _description = STRING_CMD_HELP_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

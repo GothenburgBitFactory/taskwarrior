@@ -46,6 +46,7 @@ CmdSync::CmdSync ()
   _description = STRING_CMD_SYNC_USAGE;
   _read_only   = false;
   _displays_id = false;
+  _category    = Command::Category::migration;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

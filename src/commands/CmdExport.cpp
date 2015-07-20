@@ -41,6 +41,7 @@ CmdExport::CmdExport ()
   _description = STRING_CMD_EXPORT_USAGE;
   _read_only   = true;
   _displays_id = true;
+  _category    = Command::Category::migration;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

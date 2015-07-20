@@ -54,6 +54,7 @@ CmdInfo::CmdInfo ()
   //
   // Once the test suite is completely modified, this can be corrected.
   _displays_id = false;
+  _category    = Command::Category::interrogator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

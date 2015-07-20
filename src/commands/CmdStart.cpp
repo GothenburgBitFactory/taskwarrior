@@ -44,6 +44,7 @@ CmdStart::CmdStart ()
   _description = STRING_CMD_START_USAGE;
   _read_only   = false;
   _displays_id = false;
+  _category    = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

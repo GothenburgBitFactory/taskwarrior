@@ -44,6 +44,7 @@ CmdHistoryMonthly::CmdHistoryMonthly ()
   _description = STRING_CMD_HISTORY_USAGE_M;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -200,6 +201,7 @@ CmdHistoryAnnual::CmdHistoryAnnual ()
   _description = STRING_CMD_HISTORY_USAGE_A;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -352,6 +354,7 @@ CmdGHistoryMonthly::CmdGHistoryMonthly ()
   _description = STRING_CMD_GHISTORY_USAGE_M;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -545,6 +548,7 @@ CmdGHistoryAnnual::CmdGHistoryAnnual ()
   _description = STRING_CMD_GHISTORY_USAGE_A;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

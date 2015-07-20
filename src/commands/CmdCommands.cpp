@@ -43,6 +43,7 @@ CmdCompletionCommands::CmdCompletionCommands ()
   _description = STRING_CMD_HCOMMANDS_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +74,7 @@ CmdZshCommands::CmdZshCommands ()
   _description = STRING_CMD_ZSHCOMMANDS_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

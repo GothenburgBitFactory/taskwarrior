@@ -1019,6 +1019,7 @@ CmdBurndownMonthly::CmdBurndownMonthly ()
   _description = STRING_CMD_BURN_USAGE_M;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1047,6 +1048,7 @@ CmdBurndownWeekly::CmdBurndownWeekly ()
   _description = STRING_CMD_BURN_USAGE_W;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1075,6 +1077,7 @@ CmdBurndownDaily::CmdBurndownDaily ()
   _description = STRING_CMD_BURN_USAGE_D;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

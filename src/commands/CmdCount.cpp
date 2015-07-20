@@ -42,6 +42,7 @@ CmdCount::CmdCount ()
   _description = STRING_CMD_COUNT_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::interrogator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

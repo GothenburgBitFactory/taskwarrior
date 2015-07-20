@@ -47,6 +47,7 @@ CmdVersion::CmdVersion ()
   _description = STRING_CMD_VERSION_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -136,6 +137,7 @@ CmdCompletionVersion::CmdCompletionVersion ()
   _description = STRING_CMD_VERSION_USAGE2;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

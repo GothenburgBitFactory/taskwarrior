@@ -46,6 +46,7 @@ CmdIDs::CmdIDs ()
   _description = STRING_CMD_IDS_USAGE_RANGE;
   _read_only   = true;
   _displays_id = true;
+  _category    = Command::Category::interrogator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +134,7 @@ CmdCompletionIds::CmdCompletionIds ()
   _description = STRING_CMD_IDS_USAGE_LIST;
   _read_only   = true;
   _displays_id = true;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -166,6 +168,7 @@ CmdZshCompletionIds::CmdZshCompletionIds ()
   _description = STRING_CMD_IDS_USAGE_ZSH;
   _read_only   = true;
   _displays_id = true;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -200,6 +203,7 @@ CmdUUIDs::CmdUUIDs ()
   _description = STRING_CMD_UUIDS_USAGE_RANGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::interrogator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -231,6 +235,7 @@ CmdCompletionUuids::CmdCompletionUuids ()
   _description = STRING_CMD_UUIDS_USAGE_LIST;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -262,6 +267,7 @@ CmdZshCompletionUuids::CmdZshCompletionUuids ()
   _description = STRING_CMD_UUIDS_USAGE_ZSH;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -40,6 +40,7 @@ CmdUndo::CmdUndo ()
   _description = STRING_CMD_UNDO_USAGE;
   _read_only   = false;
   _displays_id = false;
+  _category    = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

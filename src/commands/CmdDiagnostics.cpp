@@ -56,6 +56,7 @@ CmdDiagnostics::CmdDiagnostics ()
   _description = STRING_CMD_DIAG_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

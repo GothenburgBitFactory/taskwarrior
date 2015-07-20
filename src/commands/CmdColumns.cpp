@@ -44,6 +44,7 @@ CmdColumns::CmdColumns ()
   _description = STRING_CMD_COLUMNS_USAGE;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -119,6 +120,7 @@ CmdCompletionColumns::CmdCompletionColumns ()
   _description = STRING_CMD_COLUMNS_USAGE2;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

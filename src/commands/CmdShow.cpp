@@ -46,6 +46,7 @@ CmdShow::CmdShow ()
   _description = STRING_CMD_SHOW;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -393,6 +394,7 @@ CmdShowRaw::CmdShowRaw ()
   _description = STRING_CMD_SHOWRAW;
   _read_only   = true;
   _displays_id = false;
+  _category    = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
