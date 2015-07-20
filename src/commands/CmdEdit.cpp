@@ -28,6 +28,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
+#include <cstring>
 #include <algorithm>
 #include <unistd.h>
 #include <Duration.h>
@@ -68,8 +69,13 @@ int CmdEdit::execute (std::string& output)
 
   // Find number of matching tasks.
   for (auto& task : filtered)
-    if (editFile (task))
+  {
+    CmdEdit::editResult result = editFile (task);
+    if (result == CmdEdit::editResult::error)
+      break;
+    else if (result == CmdEdit::editResult::changes)
       context.tdb2.modify (task);
+  }
 
   return 0;
 }
@@ -730,7 +736,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool CmdEdit::editFile (Task& task)
+CmdEdit::editResult CmdEdit::editFile (Task& task)
 {
   // Check for file permissions.
   Directory location (context.config.get ("data.location"));
@@ -775,10 +781,16 @@ ARE_THESE_REALLY_HARMFUL:
 
   // Launch the editor.
   std::cout << format (STRING_EDIT_LAUNCHING, editor) << "\n";
-  if (-1 == system (editor.c_str ()))
-    std::cout << STRING_EDIT_NO_EDITS << "\n";
-  else
+  int exitcode = system (editor.c_str ());
+  if (0 == exitcode)
     std::cout << STRING_EDIT_COMPLETE << "\n";
+  else
+  {
+    std::cout << format (STRING_EDIT_FAILED, exitcode) << "\n";
+    if (-1 == exitcode)
+      std::cout << std::strerror (errno) << "\n";
+    return CmdEdit::editResult::error;
+  }
 
   // Slurp file.
   std::string after;
@@ -826,7 +838,9 @@ ARE_THESE_REALLY_HARMFUL:
   // Cleanup.
   File::remove (file.str ());
   ignored = chdir (current_dir.c_str ());
-  return changes;
+  return changes
+         ? CmdEdit::editResult::changes
+         : CmdEdit::editResult::nochanges;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

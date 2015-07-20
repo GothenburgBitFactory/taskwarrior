@@ -84,6 +84,8 @@
 - "import" can now import JSON arrays, the new default "export" output.
 - The '_tags' helper command now includes virtual tags (thanks to Daniel
   Shahaf).
+ -When multiple tasks are 'edit'ed, a failure causes the editing to stop (thanks
+  to Daniel Shahaf).
 
 ------ current release ---------------------------
 

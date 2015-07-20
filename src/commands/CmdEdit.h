@@ -45,7 +45,8 @@ private:
   std::string formatDuration (Task&, const std::string&);
   std::string formatTask (Task, const std::string&);
   void parseTask (Task&, const std::string&, const std::string&);
-  bool editFile (Task&);
+  enum class editResult { error, changes, nochanges };
+  editResult editFile (Task&);
 };
 
 #endif

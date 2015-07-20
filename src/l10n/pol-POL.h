@@ -667,7 +667,7 @@
 
 // edit
 #define STRING_EDIT_NO_CHANGES       "Nie znaleziono żadnych edycji."
-#define STRING_EDIT_NO_EDITS         "Nie wykonano żadnych edycji"
+#define STRING_EDIT_FAILED           "Editing failed with exit code {1}."
 #define STRING_EDIT_COMPLETE         "Edycja zakończona."
 #define STRING_EDIT_LAUNCHING        "Uruchamianie '{1}'..."
 #define STRING_EDIT_CHANGES          "Zmiany wykryte."
