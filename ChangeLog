@@ -27,6 +27,8 @@
           Sullivan).
 - TW-1475 task config expands values with unnecessary spaces (thanks to Tomas
           Babej).
+- TW-1478 due:easter sets the easter of the current year regardless of the date
+          (thanks to David Costa).
 - TW-1479 Task arguments not properly parsed if they contain a space (thanks to
           Tomas Babej).
 - TW-1480 Weird behaviour on redundant filter beginning with number (thanks to
