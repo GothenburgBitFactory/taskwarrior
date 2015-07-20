@@ -188,7 +188,7 @@ class TestBug299(TestCase):
         code, out, err = self.t("list project.isnt:one pro.isnt:two")
 
         self.assertNotRegexpMatches(out, "one.*foo")
-        self.assertRegexpMatches(out, "ones.*faz")
+        self.assertNotRegexpMatches(out, "ones.*faz")
         self.assertRegexpMatches(out, "phone.*boo")
         self.assertRegexpMatches(out, "bones.*too")
 
@@ -270,7 +270,7 @@ class TestBug906(TestCase):
 
         code, out, err = self.t("pro.not:a list")
         self.assertIn("zero", out)
-        self.assertIn("one", out)
+        self.assertNotIn("one", out)
         self.assertNotIn("two", out)
 
         code, out, err = self.t("pro.not:a.b list")
