@@ -57,6 +57,12 @@ class TestDuplication(TestCase):
         self.assertIn('"priority":"H"', out)
         self.assertIn('"tags":["tag"]', out)
 
+    def test_duplication_with_no_tasks(self):
+        """Verify an empty filter generates an error"""
+        code, out, err = self.t.runError("999 duplicate")
+        self.assertIn("No tasks specified.", err)
+
+
 class TestDuplication2(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
