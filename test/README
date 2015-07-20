@@ -33,9 +33,9 @@ Architecture
 
 There are three varieties of tests:
 
-  * Perl unit tests that use Test::More and the JSON module. We are phasing
-    these out, and will accept no new Perl tests. These tests are high level
-    and exercise Taskwarrior at the command line level.
+  * Perl unit tests that use Test::More module. We are phasing these out, and
+    will accept no new Perl tests. These tests are high level and exercise
+    Taskwarrior at the command line level.
 
   * C++ unit tests that test low-level object interfaces. These are typically
     very fast tests, and are exhaustive in nature.
