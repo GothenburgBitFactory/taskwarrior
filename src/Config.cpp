@@ -426,7 +426,7 @@ std::string Config::_defaults =
   "report.recurring.sort=due+,urgency-,entry+\n"
   "\n"
   "report.waiting.description=Waiting (hidden) tasks\n"
-  "report.waiting.labels=ID,A,Age,D,P,Project,Tags,R,Wait,for,Sched,Due,Until,Description\n"
+  "report.waiting.labels=ID,A,Age,D,P,Project,Tags,R,Wait,Remaining,Sched,Due,Until,Description\n"
   "report.waiting.columns=id,start.active,entry.age,depends.indicator,priority,project,tags,recur.indicator,wait,wait.remaining,scheduled,due,until,description\n"
   "report.waiting.filter=+WAITING\n"
   "report.waiting.sort=due+,wait+,entry+\n"
