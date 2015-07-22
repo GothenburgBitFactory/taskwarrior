@@ -35,20 +35,23 @@ import time
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
+from basetest.meta import MetaTest
 
 
-class MetaTests(type):
+class MetaTestSorting(MetaTest):
     """Helper metaclass to simplify test logic below (TestSorting)
 
     Creates test_methods in the TestCase class dynamically named after the
     filter used.
     """
     @staticmethod
-    def _make_function(prefix, filter, expectations):
+    def make_function(classname, *args, **kwargs):
+        _filter, expectations = args
+
         def test(self):
             # ### Body of the usual test_testcase ### #
             code, out, err = self.t(
-                "rc.report.{0}.sort:{1} {0}".format(self._report, filter)
+                "rc.report.{0}.sort:{1} {0}".format(self._report, _filter)
             )
 
             for expected in expectations:
@@ -56,40 +59,13 @@ class MetaTests(type):
                 self.assertRegexpMatches(out, regex)
 
         # Title of test in report
-        test.__doc__ = "{0} sort:{1}".format(prefix, filter)
-
-        # Rename the function according to its parameters
-        # Name of function must start with test_ to be ran by unittest
-        test.__name__ = "test_{0}".format(
-            filter.replace(",", "_")
-                  .replace("+", "_asc")
-                  .replace("-", "_desc")
-        )
+        test.__doc__ = "{0} sort:{1}".format(classname, _filter)
 
         return test
 
-    def __new__(meta, name, bases, dct):
-        tests = dct.get("TESTS")
-
-        for filter, expectations in tests.iteritems():
-            func = meta._make_function(name, filter, expectations)
-
-            # Ensure function exists only once
-            try:
-                dct[func.__name__]
-            except KeyError:
-                dct[func.__name__] = func
-            else:
-                raise ValueError(
-                    "Test {0}->{1} exists twice, consider merging"
-                    .format(filter, func.__name__)
-                )
-
-        return super(MetaTests, meta).__new__(meta, name, bases, dct)
-
 
 class TestSorting(TestCase):
-    __metaclass__ = MetaTests
+    __metaclass__ = MetaTestSorting
 
     @classmethod
     def setUpClass(cls):
@@ -105,130 +81,130 @@ class TestSorting(TestCase):
         cls.t("add priority:H project:C due:today     four")
         cls.t("2 start")
 
-    TESTS = {
+    TESTS = (
         # Filter                           # Expected matches/outputs
 
         # Single sort column.
-        'priority-':                       ['(?:one.+four|four.+one).+two.+three.+zero'],
-        'priority+':                       ['zero.+three.+two.+(?:one.+four|four.+one)'],
-        'project-':                        ['(?:three.+four|four.+three).+two.+one.+zero'],
-        'project+':                        ['zero.+one.+two.+(?:three.+four|four.+three)'],
-        'start-':                          ['one.+zero', 'one.+two', 'one.+three', 'one.+four'],
-        'start+':                          ['zero.+one', 'two.+one', 'three.+one', 'four.+one'],
-        'due-':                            ['three.+(?:two.+four|four.+two).+one.+zero'],
-        'due+':                            ['one.+(?:two.+four|four.+two).+three.+zero'],
-        'description-':                    ['zero.+two.+three.+one.+four'],
-        'description+':                    ['four.+one.+three.+two.+zero'],
+        ('priority-',                       ('(?:one.+four|four.+one).+two.+three.+zero',)),
+        ('priority+',                       ('zero.+three.+two.+(?:one.+four|four.+one)',)),
+        ('project-',                        ('(?:three.+four|four.+three).+two.+one.+zero',)),
+        ('project+',                        ('zero.+one.+two.+(?:three.+four|four.+three)',)),
+        ('start-',                          ('one.+zero', 'one.+two', 'one.+three', 'one.+four',)),
+        ('start+',                          ('zero.+one', 'two.+one', 'three.+one', 'four.+one',)),
+        ('due-',                            ('three.+(?:two.+four|four.+two).+one.+zero',)),
+        ('due+',                            ('one.+(?:two.+four|four.+two).+three.+zero',)),
+        ('description-',                    ('zero.+two.+three.+one.+four',)),
+        ('description+',                    ('four.+one.+three.+two.+zero',)),
 
         # Two sort columns.
-        'priority-,project-':              ['four.+one.+two.+three.+zero'],
-        'priority-,project+':              ['one.+four.+two.+three.+zero'],
-        'priority+,project-':              ['zero.+three.+two.+four.+one'],
-        'priority+,project+':              ['zero.+three.+two.+one.+four'],
+        ('priority-,project-',              ('four.+one.+two.+three.+zero',)),
+        ('priority-,project+',              ('one.+four.+two.+three.+zero',)),
+        ('priority+,project-',              ('zero.+three.+two.+four.+one',)),
+        ('priority+,project+',              ('zero.+three.+two.+one.+four',)),
 
-        'priority-,start-':                ['one.+four.+two.+three.+zero'],
-        'priority-,start+':                ['four.+one.+two.+three.+zero'],
-        'priority+,start-':                ['zero.+three.+two.+one.+four'],
-        'priority+,start+':                ['zero.+three.+two.+four.+one'],
+        ('priority-,start-',                ('one.+four.+two.+three.+zero',)),
+        ('priority-,start+',                ('four.+one.+two.+three.+zero',)),
+        ('priority+,start-',                ('zero.+three.+two.+one.+four',)),
+        ('priority+,start+',                ('zero.+three.+two.+four.+one',)),
 
-        'priority-,due-':                  ['four.+one.+two.+three.+zero'],
-        'priority-,due+':                  ['one.+four.+two.+three.+zero'],
-        'priority+,due-':                  ['zero.+three.+two.+four.+one'],
-        'priority+,due+':                  ['zero.+three.+two.+one.+four'],
+        ('priority-,due-',                  ('four.+one.+two.+three.+zero',)),
+        ('priority-,due+',                  ('one.+four.+two.+three.+zero',)),
+        ('priority+,due-',                  ('zero.+three.+two.+four.+one',)),
+        ('priority+,due+',                  ('zero.+three.+two.+one.+four',)),
 
-        'priority-,description-':          ['one.+four.+two.+three.+zero'],
-        'priority-,description+':          ['four.+one.+two.+three.+zero'],
-        'priority+,description-':          ['zero.+three.+two.+one.+four'],
-        'priority+,description+':          ['zero.+three.+two.+four.+one'],
+        ('priority-,description-',          ('one.+four.+two.+three.+zero',)),
+        ('priority-,description+',          ('four.+one.+two.+three.+zero',)),
+        ('priority+,description-',          ('zero.+three.+two.+one.+four',)),
+        ('priority+,description+',          ('zero.+three.+two.+four.+one',)),
 
-        'project-,priority-':              ['four.+three.+two.+one.+zero'],
-        'project-,priority+':              ['three.+four.+two.+one.+zero'],
-        'project+,priority-':              ['zero.+one.+two.+four.+three'],
-        'project+,priority+':              ['zero.+one.+two.+three.+four'],
+        ('project-,priority-',              ('four.+three.+two.+one.+zero',)),
+        ('project-,priority+',              ('three.+four.+two.+one.+zero',)),
+        ('project+,priority-',              ('zero.+one.+two.+four.+three',)),
+        ('project+,priority+',              ('zero.+one.+two.+three.+four',)),
 
-        'project-,start-':                 ['three.+four.+two.+one.+zero'],
-        'project-,start+':                 ['(?:four.+three|three.+four).+two.+one.+zero'],
-        'project+,start-':                 ['zero.+one.+two.+three.+four'],
-        'project+,start+':                 ['zero.+one.+two.+(?:four.+three|three.+four)'],
+        ('project-,start-',                 ('three.+four.+two.+one.+zero',)),
+        ('project-,start+',                 ('(?:four.+three|three.+four).+two.+one.+zero',)),
+        ('project+,start-',                 ('zero.+one.+two.+three.+four',)),
+        ('project+,start+',                 ('zero.+one.+two.+(?:four.+three|three.+four)',)),
 
-        'project-,due-':                   ['three.+four.+two.+one.+zero'],
-        'project-,due+':                   ['four.+three.+two.+one.+zero'],
-        'project+,due-':                   ['zero.+one.+two.+three.+four'],
-        'project+,due+':                   ['zero.+one.+two.+four.+three'],
+        ('project-,due-',                   ('three.+four.+two.+one.+zero',)),
+        ('project-,due+',                   ('four.+three.+two.+one.+zero',)),
+        ('project+,due-',                   ('zero.+one.+two.+three.+four',)),
+        ('project+,due+',                   ('zero.+one.+two.+four.+three',)),
 
-        'project-,description-':           ['three.+four.+two.+one.+zero'],
-        'project-,description+':           ['four.+three.+two.+one.+zero'],
-        'project+,description-':           ['zero.+one.+two.+three.+four'],
-        'project+,description+':           ['zero.+one.+two.+four.+three'],
+        ('project-,description-',           ('three.+four.+two.+one.+zero',)),
+        ('project-,description+',           ('four.+three.+two.+one.+zero',)),
+        ('project+,description-',           ('zero.+one.+two.+three.+four',)),
+        ('project+,description+',           ('zero.+one.+two.+four.+three',)),
 
-        'start-,priority-':                ['one.+four.+two.+three.+zero'],
-        'start-,priority+':                ['one.+zero.+three.+two.+four'],
-        'start+,priority-':                ['four.+two.+three.+zero.+one'],
-        'start+,priority+':                ['zero.+three.+two.+four.+one'],
+        ('start-,priority-',                ('one.+four.+two.+three.+zero',)),
+        ('start-,priority+',                ('one.+zero.+three.+two.+four',)),
+        ('start+,priority-',                ('four.+two.+three.+zero.+one',)),
+        ('start+,priority+',                ('zero.+three.+two.+four.+one',)),
 
-        'start-,project-':                 ['one.+(?:three.+four|four.+three).+two.+zero'],
-        'start-,project+':                 ['one.+zero.+two.+(?:three.+four|four.+three)'],
-        'start+,project-':                 ['(?:three.+four|four.+three).+two.+zero.+one'],
-        'start+,project+':                 ['zero.+two.+(?:three.+four|four.+three).+one'],
+        ('start-,project-',                 ('one.+(?:three.+four|four.+three).+two.+zero',)),
+        ('start-,project+',                 ('one.+zero.+two.+(?:three.+four|four.+three)',)),
+        ('start+,project-',                 ('(?:three.+four|four.+three).+two.+zero.+one',)),
+        ('start+,project+',                 ('zero.+two.+(?:three.+four|four.+three).+one',)),
 
-        'start-,due-':                     ['one.+three.+(?:four.+two|two.+four).+zero'],
-        'start-,due+':                     ['one.+(?:four.+two|two.+four).+three.+zero'],
-        'start+,due-':                     ['three.+(?:four.+two|two.+four).+zero.+one'],
-        'start+,due+':                     ['(?:four.+two|two.+four).+three.+zero.+one'],
+        ('start-,due-',                     ('one.+three.+(?:four.+two|two.+four).+zero',)),
+        ('start-,due+',                     ('one.+(?:four.+two|two.+four).+three.+zero',)),
+        ('start+,due-',                     ('three.+(?:four.+two|two.+four).+zero.+one',)),
+        ('start+,due+',                     ('(?:four.+two|two.+four).+three.+zero.+one',)),
 
-        'start-,description-':             ['one.+zero.+two.+three.+four'],
-        'start-,description+':             ['one.+four.+three.+two.+zero'],
-        'start+,description-':             ['zero.+two.+three.+four.+one'],
-        'start+,description+':             ['four.+three.+two.+zero.+one'],
+        ('start-,description-',             ('one.+zero.+two.+three.+four',)),
+        ('start-,description+',             ('one.+four.+three.+two.+zero',)),
+        ('start+,description-',             ('zero.+two.+three.+four.+one',)),
+        ('start+,description+',             ('four.+three.+two.+zero.+one',)),
 
-        'due-,priority-':                  ['three.+four.+two.+one.+zero'],
-        'due-,priority+':                  ['three.+two.+four.+one.+zero'],
-        'due+,priority-':                  ['one.+four.+two.+three.+zero'],
-        'due+,priority+':                  ['one.+two.+four.+three.+zero'],
+        ('due-,priority-',                  ('three.+four.+two.+one.+zero',)),
+        ('due-,priority+',                  ('three.+two.+four.+one.+zero',)),
+        ('due+,priority-',                  ('one.+four.+two.+three.+zero',)),
+        ('due+,priority+',                  ('one.+two.+four.+three.+zero',)),
 
-        'due-,project-':                   ['three.+four.+two.+one.+zero'],
-        'due-,project+':                   ['three.+two.+four.+one.+zero'],
-        'due+,project-':                   ['one.+four.+two.+three.+zero'],
-        'due+,project+':                   ['one.+two.+four.+three.+zero'],
+        ('due-,project-',                   ('three.+four.+two.+one.+zero',)),
+        ('due-,project+',                   ('three.+two.+four.+one.+zero',)),
+        ('due+,project-',                   ('one.+four.+two.+three.+zero',)),
+        ('due+,project+',                   ('one.+two.+four.+three.+zero',)),
 
-        'due-,start-':                     ['three.+(?:four.+two|two.+four).+one.+zero'],
-        'due-,start+':                     ['three.+(?:four.+two|two.+four).+one.+zero'],
-        'due+,start-':                     ['one.+(?:four.+two|two.+four).+three.+zero'],
-        'due+,start+':                     ['one.+(?:four.+two|two.+four).+three.+zero'],
+        ('due-,start-',                     ('three.+(?:four.+two|two.+four).+one.+zero',)),
+        ('due-,start+',                     ('three.+(?:four.+two|two.+four).+one.+zero',)),
+        ('due+,start-',                     ('one.+(?:four.+two|two.+four).+three.+zero',)),
+        ('due+,start+',                     ('one.+(?:four.+two|two.+four).+three.+zero',)),
 
-        'due-,description-':               ['three.+two.+four.+one.+zero'],
-        'due-,description+':               ['three.+four.+two.+one.+zero'],
-        'due+,description-':               ['one.+two.+four.+three.+zero'],
-        'due+,description+':               ['one.+four.+two.+three.+zero'],
+        ('due-,description-',               ('three.+two.+four.+one.+zero',)),
+        ('due-,description+',               ('three.+four.+two.+one.+zero',)),
+        ('due+,description-',               ('one.+two.+four.+three.+zero',)),
+        ('due+,description+',               ('one.+four.+two.+three.+zero',)),
 
-        'description-,priority-':          ['zero.+two.+three.+one.+four'],
-        'description-,priority+':          ['zero.+two.+three.+one.+four'],
-        'description+,priority-':          ['four.+one.+three.+two.+zero'],
-        'description+,priority+':          ['four.+one.+three.+two.+zero'],
+        ('description-,priority-',          ('zero.+two.+three.+one.+four',)),
+        ('description-,priority+',          ('zero.+two.+three.+one.+four',)),
+        ('description+,priority-',          ('four.+one.+three.+two.+zero',)),
+        ('description+,priority+',          ('four.+one.+three.+two.+zero',)),
 
-        'description-,project-':           ['zero.+two.+three.+one.+four'],
-        'description-,project+':           ['zero.+two.+three.+one.+four'],
-        'description+,project-':           ['four.+one.+three.+two.+zero'],
-        'description+,project+':           ['four.+one.+three.+two.+zero'],
+        ('description-,project-',           ('zero.+two.+three.+one.+four',)),
+        ('description-,project+',           ('zero.+two.+three.+one.+four',)),
+        ('description+,project-',           ('four.+one.+three.+two.+zero',)),
+        ('description+,project+',           ('four.+one.+three.+two.+zero',)),
 
-        'description-,start-':             ['zero.+two.+three.+one.+four'],
-        'description-,start+':             ['zero.+two.+three.+one.+four'],
-        'description+,start-':             ['four.+one.+three.+two.+zero'],
-        'description+,start+':             ['four.+one.+three.+two.+zero'],
+        ('description-,start-',             ('zero.+two.+three.+one.+four',)),
+        ('description-,start+',             ('zero.+two.+three.+one.+four',)),
+        ('description+,start-',             ('four.+one.+three.+two.+zero',)),
+        ('description+,start+',             ('four.+one.+three.+two.+zero',)),
 
-        'description-,due-':               ['zero.+two.+three.+one.+four'],
-        'description-,due+':               ['zero.+two.+three.+one.+four'],
-        'description+,due-':               ['four.+one.+three.+two.+zero'],
-        'description+,due+':               ['four.+one.+three.+two.+zero'],
+        ('description-,due-',               ('zero.+two.+three.+one.+four',)),
+        ('description-,due+',               ('zero.+two.+three.+one.+four',)),
+        ('description+,due-',               ('four.+one.+three.+two.+zero',)),
+        ('description+,due+',               ('four.+one.+three.+two.+zero',)),
 
         # Four sort columns.
-        'start+,project+,due+,priority+': ['zero.+two.+four.+three.+one'],
-        'project+,due+,priority+,start+': ['zero.+one.+two.+four.+three'],
-    }
+        ('start+,project+,due+,priority+',  ('zero.+two.+four.+three.+one',)),
+        ('project+,due+,priority+,start+',  ('zero.+one.+two.+four.+three',)),
+    )
 
 
 class TestBug438(TestCase):
-    __metaclass__ = MetaTests
+    __metaclass__ = MetaTestSorting
 
     # Bug #438: Reports sorting by end, start, and entry are ordered
     #           incorrectly, if time is included.
@@ -264,12 +240,12 @@ class TestBug438(TestCase):
         cls.t("log three newer entry:{0} end:{1}".format(stamp, end))
 
     TESTS = {
-        "entry+": ["one older.+one newer"],
-        "entry-": ["one newer.+one older"],
-        "start+": ["two older.+two newer"],
-        "start-": ["two newer.+two older"],
-        "end+":   ["three older.+three newer"],
-        "end-":   ["three newer.+three older"],
+        ("entry+", ("one older.+one newer",)),
+        ("entry-", ("one newer.+one older",)),
+        ("start+", ("two older.+two newer",)),
+        ("start-", ("two newer.+two older",)),
+        ("end+",   ("three older.+three newer",)),
+        ("end-",   ("three newer.+three older",)),
     }
 
 
