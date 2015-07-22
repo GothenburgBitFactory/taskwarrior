@@ -1,62 +1,70 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 4;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'bug.rc')
-{
-  print $fh "data.location=.\n",
-            "report.test.columns=id,project\n";
-  close $fh;
-}
 
-# Feature: variable to control printing of empty columns
-qx{../src/task rc:bug.rc add /sample/ desc 2>&1};
-qx{../src/task rc:bug.rc add withP project:house 2>&1};
+class TestPrintEmptyColumns(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
 
-my $output = qx{../src/task test /sample/ rc:bug.rc 2>&1};
-unlike ($output, qr/Project/, 'empty \'project\' column is not printed by default');
 
-$output = qx{../src/task test /sample/ rc.print.empty.columns:yes rc:bug.rc 2>&1};
-like ($output, qr/Project/, 'empty \'project\' column is printed if rc.print.empty.columns:yes');
+    def test_empty_columns_feature(self):
+        """Verify rc.print.empty.columns:yes shows more nothing than rc.print.empty.columns:no"""
+        self.t("add one")
+        self.t("add two project:work")
 
-$output = qx{../src/task test rc:bug.rc 2>&1};
-like ($output, qr/Project/, 'non-empty \'project\' column is printed by default');
+        # Should show empty 'Project' column.
+        code, out, err = self.t("rc.print.empty.columns:yes /one/ list")
+        self.assertIn("Project", out)
 
-$output = qx{../src/task test rc.print.empty.columns:yes rc:bug.rc 2>&1};
-like ($output, qr/Project/, 'non-empty \'project\' column is printed if rc.print.empty.columns:yes');
+        # Should show populated 'Project' column.
+        code, out, err = self.t("rc.print.empty.columns:yes /two/ list")
+        self.assertIn("Project", out)
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data bug.rc);
-exit 0;
+        # Should not show empty 'Project' column.
+        code, out, err = self.t("rc.print.empty.columns:no /one/ list")
+        self.assertNotIn("Project", out)
+
+        # Should show populated 'Project' column.
+        code, out, err = self.t("rc.print.empty.columns:no /two/ list")
+        self.assertIn("Project", out)
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
