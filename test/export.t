@@ -146,10 +146,22 @@ class TestExportCommand(TestCase):
         self.t(('add', 'wrong, everything depends on me task'))
         self.t('1 modify depends:2,3')
 
-        values = self.export(1)['depends']
-        self.assertString(values)
+        deps = self.export(1)['depends']
+        self.assertType(deps, list)
 
-        for uuid in values.split(','):
+        for uuid in deps:
+            self.assertString(uuid, UUID_REGEXP, regexp=True)
+
+    def test_export_depends_oldformat(self):
+        self.t(('add', 'everything depends on me task'))
+        self.t(('add', 'wrong, everything depends on me task'))
+        self.t('1 modify depends:2,3')
+
+        code, out, err = self.t("rc.json.array=off rc.json.depends.array=off 1 export")
+        deps = json.loads(out)["depends"]
+        self.assertString(deps)
+
+        for uuid in deps.split(','):
             self.assertString(uuid, UUID_REGEXP, regexp=True)
 
     def test_export_urgency(self):
