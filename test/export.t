@@ -148,6 +148,7 @@ class TestExportCommand(TestCase):
 
         deps = self.export(1)['depends']
         self.assertType(deps, list)
+        self.assertEqual(len(deps), 2)
 
         for uuid in deps:
             self.assertString(uuid, UUID_REGEXP, regexp=True)
@@ -160,6 +161,7 @@ class TestExportCommand(TestCase):
         code, out, err = self.t("rc.json.array=off rc.json.depends.array=off 1 export")
         deps = json.loads(out)["depends"]
         self.assertString(deps)
+        self.assertEqual(len(deps.split(",")), 2)
 
         for uuid in deps.split(','):
             self.assertString(uuid, UUID_REGEXP, regexp=True)
