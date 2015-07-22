@@ -42,22 +42,22 @@ class TestUndo(TestCase):
 
     def test_add_undo(self):
         """'add' then 'undo'"""
-        code, out, err = self.t('add one')
+        self.t('add one')
         code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'pending')
-        code, out, err = self.t('undo')
+        self.t('undo')
         code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), '')
 
     def test_add_done_undo(self):
         """'add' then 'done' then 'undo'"""
-        code, out, err = self.t('add two')
+        self.t('add two')
         code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'pending')
-        code, out, err = self.t('1 done')
+        self.t('1 done')
         code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'completed')
-        code, out, err = self.t('undo')
+        self.t('undo')
         code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'pending')
 
@@ -66,6 +66,21 @@ class TestUndo(TestCase):
         self.t("add one")
         code, out, err = self.t.runError("undo +tag")
         self.assertIn("The undo command does not allow further task modification.", err)
+
+
+class TestBug634(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_undo_no_confirmation(self):
+        """Undo honors confirmation=off"""
+
+        self.t("add Test")
+
+        # If a prompt happens, the test will timeout on input (exitcode != 0)
+        code, out, err = self.t("rc.confirmation=off undo")
+        self.assertIn("Task removed", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
