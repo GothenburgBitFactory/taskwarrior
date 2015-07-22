@@ -76,6 +76,7 @@
           Tomas Babej).
 - TW-1636 UUID with numeric-only first segment is not parsed properly (thanks
           to Tomas Babej).
+- TW-1638 Undo doesn't work when a context is set (thanks to Jeremy John Reeder).
 - Prevent potential task duplication during import for non-pending tasks.
 - Show the active context in "context list", if any is active.
 - Fix "task edit" dropping annotation text after newlines.

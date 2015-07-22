@@ -570,6 +570,11 @@ void CLI2::addContextFilter ()
     return;
   }
 
+  // The 'undo' command does not apply context.
+  auto cmd = getCommand ();
+  if (cmd == "undo")
+    return;
+
 /*
   // Detect if UUID or ID is set, and bail out
   for (auto& a : _args)
