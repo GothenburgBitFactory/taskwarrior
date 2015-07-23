@@ -243,6 +243,7 @@ class TestDeletionRecurrence(TestCase):
         code, out, err = self.t("2 delete", input="y\n")
         self.assertIn("Deleted 5 tasks.", out)
 
+
 class TestAppendPrependRecurrence(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -264,6 +265,7 @@ class TestAppendPrependRecurrence(TestCase):
         code, out, err = self.t("2 prepend PRE", input="y\n")
         self.assertIn("Prepended 2 tasks.", out)
 
+
 class TestNoDueDate(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -273,6 +275,33 @@ class TestNoDueDate(TestCase):
         """Look for an error when adding a recurring task with no due date"""
         code, out, err = self.t.runError("add foo recur:daily")
         self.assertIn("A recurring task must also have a 'due' date.", err)
+
+
+class TestBug932(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_modify_due_propagate(self):
+        """Verify due date modifications propagate"""
+
+        # add a recurring task with multiple child tasks
+        # - modify a child task and test for propagation
+        # - modify the parent task and test for propagation
+        self.t("add R due:yesterday recur:daily")
+        self.t("list") # GC/handleRecurrence
+
+        self.t("2 modify project:P", input="y\n")
+        code, out, err = self.t("list")
+        self.assertIn("2 P", out)
+        self.assertIn("3 P", out)
+        self.assertIn("4 P", out)
+
+        self.t("1 modify priority:H", input="y\n")
+        code, out, err = self.t("list")
+        self.assertIn("2 H P", out)
+        self.assertIn("3 H P", out)
+        self.assertIn("4 H P", out)
 
 
 # TODO Wait a recurring task
