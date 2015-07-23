@@ -33,15 +33,11 @@ import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
+from basetest.exceptions import CommandError
 
 
 class TestDelete(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        """Executed once before any test in the class"""
-
     def setUp(self):
-        """Executed before each test in the class"""
         self.t = Task()
 
     def test_add_delete_undo(self):
@@ -89,6 +85,38 @@ class TestDelete(TestCase):
 
         code, out, err = self.t("_get %s.status" % uuid)
         self.assertIn("deleted\n", out)
+
+    def test_delete_single_prompt_loop(self):
+        """Delete prompt with closed STDIN causes infinite loop and floods stdout (single)"""
+        self.t("add foo1")
+
+        self._validate_prompt_loop()
+
+    def test_delete_bulk_prompt_loop(self):
+        """Delete prompt with closed STDIN causes infinite loop and floods stdout (bulk)"""
+        self.t.config("bulk", "2")
+        self.t("add foo1")
+        self.t("add foo2")
+        self.t("add foo3")
+
+        self._validate_prompt_loop()
+
+    def _validate_prompt_loop(self):
+        """Helper method to check if task flooded stream on closed STDIN"""
+        try:
+            code, out, err = self.t("/foo[1-3]/ delete", input="", timeout=0.2)
+        except CommandError as e:
+            # If delete fails with a timeout, don't fail the test immediately
+            code, out, err = e.code, e.out, e.err
+
+        # If task fails to notice STDIN is closed it will loop and flood for
+        # confirmation until timeout
+        # 500 bytes is arbitrary. Shouldn't reach this value in normal execution
+        self.assertLessEqual(len(out), 500)
+        self.assertLessEqual(len(err), 500)
+
+        # Finally ensure the process exited successfully
+        self.assertEqual(code, 0)
 
 
 if __name__ == "__main__":
