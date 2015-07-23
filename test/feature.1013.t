@@ -37,10 +37,6 @@ from basetest import Task, TestCase
 
 # Feature 1013: output error, header, footnote and debug messages on standard error
 class TestFeature1013(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        """Executed once before any test in the class"""
-
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
