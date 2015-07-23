@@ -40,7 +40,7 @@ class TestBug649(TestCase):
         """Executed before each test in the class"""
         self.t = Task()
 
-    def test_(self):
+    def test_delete_recurring_immediately(self):
         """Verify that recurring tasks cannot be immediately marked completed"""
         self.t("add one due:3d recur:1week")
         code, out, err = self.t.runError("1 done")
