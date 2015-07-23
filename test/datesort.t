@@ -1,64 +1,71 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 2;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'datesort.rc')
-{
-  print $fh "data.location=.\n",
-            "dateformat=YMD\n",
-            "report.small_list.description=Small list\n",
-            "report.small_list.columns=due,description\n",
-            "report.small_list.labels=Due,Description\n",
-            "report.small_list.sort=due+\n",
-            "report.small_list.filter=status:pending\n",
-            "report.small_list.dateformat=MD\n";
 
-  close $fh;
-}
+class TestDateSort(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
 
-qx{../src/task rc:datesort.rc add two   due:20100201 2>&1};
-qx{../src/task rc:datesort.rc add one   due:20100101 2>&1};
-qx{../src/task rc:datesort.rc add three due:20100301 2>&1};
+    def test_datesort(self):
+        """Verify dates sort properly with a report date format that hides date details"""
+        self.t.config("verbose",                       "nothing")
+        self.t.config("dateformat",                    "YMD")
+        self.t.config("report.small_list.columns",     "due,description")
+        self.t.config("report.small_list.labels",      "Due,Description")
+        self.t.config("report.small_list.sort",        "due+")
+        self.t.config("report.small_list.filter",      "status:pending")
+        self.t.config("report.small_list.dateformat",  "D")
 
-my $output = qx{../src/task rc:datesort.rc small_list 2>&1};
-like ($output, qr/one.+two.+three/ms, 'Sorting by due+ with format MD works');
+        self.t("add one due:20150101")
+        self.t("add two due:20150201")
+        self.t("add three due:20150301")
 
-$output = qx{../src/task rc:datesort.rc rc.report.small_list.sort=due- small_list 2>&1};
-like ($output, qr/three.+two.+one/ms, 'Sorting by due- with format MD works');
+        # The sort order shoudl be correct, despite the display format being
+        # identical for all tasks. This proves sorting is correct, independent
+        # of display.
+        code, out, err = self.t("small_list")
+        self.assertEqual("01  one\n01  two\n01  three\n", out)
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data datesort.rc);
-exit 0;
+        code, out, err = self.t("rc.report.small_list.sort=due- small_list")
+        self.assertEqual("01  three\n01  two\n01  one\n", out)
 
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
