@@ -1,98 +1,84 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 14;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-use File::Basename;
-my $ut = basename ($0);
-my $rc = $ut . '.rc';
 
-# Create the rc file.
-if (open my $fh, '>', $rc)
-{
-  print $fh "data.location=.\n",
-            "confirmation=no\n";
-  close $fh;
-}
+class TestHasHasnt(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
 
-# 1
-qx{../src/task rc:$rc add foo 2>&1};
+    def test_has_hasnt(self):
+        """Verify the 'has' and 'hasnt' attribute modifiers"""
+        self.t("add foo")              # 1
+        self.t("add foo")              # 2
+        self.t("2 annotate bar")
+        self.t("add foo")              # 3
+        self.t("3 annotate bar")
+        self.t("3 annotate baz")
+        self.t("add bar")              # 4
+        self.t("add bar")              # 5
+        self.t("5 annotate foo")
+        self.t("add bar")              # 6
+        self.t("6 annotate foo")
+        self.t("6 annotate baz")
+        self.t("add one")              # 7
+        self.t("7 annotate two")
+        self.t("7 annotate three")
 
-# 2
-qx{../src/task rc:$rc add foo 2>&1};
-qx{../src/task rc:$rc 2 annotate bar 2>&1};
+        code, out, err = self.t("description.has:foo long")
+        self.assertIn("\n 1", out)
+        self.assertIn("\n 2", out)
+        self.assertIn("\n 3", out)
+        self.assertNotIn("\n 4", out)
+        self.assertIn("\n 5", out)
+        self.assertIn("\n 6", out)
+        self.assertNotIn("\n 7", out)
 
-# 3
-qx{../src/task rc:$rc add foo 2>&1};
-qx{../src/task rc:$rc 3 annotate bar 2>&1};
-qx{../src/task rc:$rc 3 annotate baz 2>&1};
+        code, out, err = self.t("description.hasnt:foo long")
+        self.assertNotIn("\n 1", out)
+        self.assertNotIn("\n 2", out)
+        self.assertNotIn("\n 3", out)
+        self.assertIn("\n 4", out)
+        self.assertNotIn("\n 5", out)
+        self.assertNotIn("\n 6", out)
+        self.assertIn("\n 7", out)
 
-# 4
-qx{../src/task rc:$rc add bar 2>&1};
 
-# 5
-qx{../src/task rc:$rc add bar 2>&1};
-qx{../src/task rc:$rc 5 annotate foo 2>&1};
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
 
-# 6
-qx{../src/task rc:$rc add bar 2>&1};
-qx{../src/task rc:$rc 6 annotate foo 2>&1};
-qx{../src/task rc:$rc 6 annotate baz 2>&1};
-
-#7
-qx{../src/task rc:$rc add one 2>&1};
-qx{../src/task rc:$rc 7 annotate two 2>&1};
-qx{../src/task rc:$rc 7 annotate three 2>&1};
-
-my $output = qx{../src/task rc:$rc long description.has:foo 2>&1};
-like   ($output, qr/\n 1/, "$ut: 1 has foo -> yes");
-like   ($output, qr/\n 2/, "$ut: 2 has foo -> yes");
-like   ($output, qr/\n 3/, "$ut: 3 has foo -> yes");
-unlike ($output, qr/\n 4/, "$ut: 4 has foo -> no");
-like   ($output, qr/\n 5/, "$ut: 5 has foo -> yes");
-like   ($output, qr/\n 6/, "$ut: 6 has foo -> yes");
-unlike ($output, qr/\n 7/, "$ut: 7 has foo -> no");
-
-$output = qx{../src/task rc:$rc long description.hasnt:foo 2>&1};
-unlike ($output, qr/\n 1/, "$ut: 1 hasnt foo -> no");
-unlike ($output, qr/\n 2/, "$ut: 2 hasnt foo -> no");
-unlike ($output, qr/\n 3/, "$ut: 3 hasnt foo -> no");
-like   ($output, qr/\n 4/, "$ut: 4 hasnt foo -> yes");
-unlike ($output, qr/\n 5/, "$ut: 5 hasnt foo -> no");
-unlike ($output, qr/\n 6/, "$ut: 6 hasnt foo -> no");
-like   ($output, qr/\n 7/, "$ut: 7 hasnt foo -> yes");
-
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data), $rc;
-exit 0;
-
+# vim: ai sts=4 et sw=4
