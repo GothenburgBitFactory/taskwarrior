@@ -572,7 +572,8 @@ void CLI2::addContextFilter ()
 
   // The 'undo' command does not apply context.
   auto cmd = getCommand ();
-  if (cmd == "undo")
+  if (cmd == "undo" ||
+      cmd == "export")
     return;
 
 /*
