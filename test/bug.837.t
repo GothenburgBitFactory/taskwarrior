@@ -36,10 +36,6 @@ from basetest import Task, TestCase
 
 
 class TestBug837(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        """Executed once before any test in the class"""
-
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
