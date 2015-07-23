@@ -1,77 +1,79 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 8;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-use File::Basename;
-my $ut = basename ($0);
-my $rc = $ut . '.rc';
 
-# Create the rc file.
-if (open my $fh, '>', $rc)
-{
-  print $fh "data.location=.\n";
-  close $fh;
-}
+# Feature 1013: output error, header, footnote and debug messages on standard error
+class TestFeature1013(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
 
-# Feature 1013: output error, header, footnote and debug messages on standard
-# error
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
 
-# Check that errors are sent to standard error
-my $stdout = qx{../src/task rc:$rc add 2> /dev/null};
-unlike ($stdout, qr/^Additional text must be provided\.$/ms, "$ut: Errors are not sent to stdout");
-my $stderr = qx{../src/task rc:$rc add 2>&1 >/dev/null};
-like   ($stderr, qr/^Additional text must be provided\.$/ms, "$ut: Errors are sent to stderr");
+    def test_errors(self):
+        """Verify that errors are sent to standard error"""
+        code, out, err = self.t.runError("add")
+        self.assertNotIn("Additional text must be provided", out)
+        self.assertIn("Additional text must be provided", err)
 
-# Check that headers are sent to standard error
-$stdout = qx{../src/task rc:$rc list 2> /dev/null};
-unlike ($stdout, qr/^Using alternate .taskrc file .+$rc$/ms, "$ut: Headers are not sent to stdout");
-$stderr = qx{../src/task rc:$rc list 2>&1 >/dev/null};
-like   ($stderr, qr/^Using alternate .taskrc file .+$rc$/ms, "$ut: Headers are sent to stderr");
+    def test_headers(self):
+        """Verify that headers are sent to standard error"""
+        code, out, err = self.t.runError("list")
+        self.assertNotIn("TASKRC override:", out)
+        self.assertIn("TASKRC override:", err)
 
-# Check that footnotes are sent to standard error
-$stdout = qx{../src/task rc:$rc rc.debug:on list 2> /dev/null};
-unlike ($stdout, qr/^Configuration override rc.debug:on$/ms, "$ut: Footnotes are not sent to stdout");
-$stderr = qx{../src/task rc:$rc rc.debug:on list 2>&1 >/dev/null};
-like   ($stderr, qr/^Configuration override rc.debug:on$/ms, "$ut: Footnotes are sent to stderr");
+    def test_footnotes(self):
+        """Verify that footnotes are sent to standard error"""
+        self.t("add foo")
+        code, out, err = self.t("list rc.foo:bar")
+        self.assertNotIn("Perf task", out)
+        self.assertNotIn("Configuration override rc.foo:bar", out)
+        self.assertIn("Configuration override rc.foo:bar", err)
 
-# Check that debugs are sent to standard error
-$stdout = qx{../src/task rc:$rc rc.debug:on list 2> /dev/null};
-unlike ($stdout, qr/^Timer Config::load \(.*$rc\) /ms,       "$ut: Debugs are not sent to stdout");
-$stderr = qx{../src/task rc:$rc rc.debug:on list 2>&1 >/dev/null};
-like   ($stderr, qr/^Timer Config::load \(.*$rc\) /ms,       "$ut: Debugs are sent to stderr");
+    def test_debug(self):
+        """Verify that debug messages are sent to standard error"""
+        code, out, err = self.t.runError("list rc.debug:on")
+        self.assertNotIn("Perf task", out)
+        self.assertIn("Perf task", err)
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data), $rc;
-exit 0;
 
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
