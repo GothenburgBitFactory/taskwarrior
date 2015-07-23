@@ -56,6 +56,33 @@ class TestHyphenation(TestCase):
         code, out, err = self.t("ls")
         self.assertIn("1 AAAAAAAAAABBBB-\n", out)
 
+class TestBug804(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_hyphenation(self):
+        """Verify hyphenation is controllable"""
+        self.t.config("print.empty.columns",     "yes")
+        self.t.config("report.unittest.labels",  "ID,Project,Pri,Description")
+        self.t.config("report.unittest.columns", "id,project,priority,description")
+        self.t.config("report.unittest.filter",  "status:pending")
+
+        # Setup: Add a tasks, annotate with long word.
+        self.t("add one")
+        self.t("1 annotate abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")
+
+        # List with rc.hyphenate=on.
+        code, out, err = self.t("rc.defaultwidth:40 rc.hyphenate:on unittest")
+        self.assertIn("vwx-\n", out)
+        self.assertIn("tuv-\n", out)
+
+        # List with rc.hyphenate=off.
+        code, out, err = self.t("rc.defaultwidth:40 rc.hyphenate:off unittest")
+        self.assertIn("vwxy\n", out)
+        self.assertIn("uvwx\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
