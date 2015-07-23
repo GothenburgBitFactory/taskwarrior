@@ -41,7 +41,7 @@ class TestBug1630(TestCase):
         self.t = Task()
 
     def test_attribute_modifier_with_duration(self):
-        """Veridy that 'due.before:10d' is correctly interpreted"""
+        """Verify that 'due.before:10d' is correctly interpreted"""
         self.t("add one due:7d")
         code, out, err = self.t("due.before:10d list")
         self.tap(out)
