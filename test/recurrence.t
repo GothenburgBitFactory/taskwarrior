@@ -264,6 +264,16 @@ class TestAppendPrependRecurrence(TestCase):
         code, out, err = self.t("2 prepend PRE", input="y\n")
         self.assertIn("Prepended 2 tasks.", out)
 
+class TestNoDueDate(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_no_due_date(self):
+        """Look for an error when adding a recurring task with no due date"""
+        code, out, err = self.t.runError("add foo recur:daily")
+        self.assertIn("A recurring task must also have a 'due' date.", err)
+
 
 # TODO Wait a recurring task
 # TODO Upgrade a task to a recurring task
