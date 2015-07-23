@@ -382,6 +382,31 @@ class TestDuplicateTags(TestCase):
         self.assertEqual("A,B,C\n", out)
 
 
+class TestListAllTags(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_list_all_tags(self):
+        """Verify the 'tags' command obeys 'rc.list.all.tags'
+
+           Create a data set of two tasks, with unique tags, one
+           pending, one completed.
+        """
+        self.t("add +t1 one")
+        self.t("add +t2 two")
+        self.t("1 done")
+        self.t("list") # GC/handleRecurrence
+
+        code, out, err = self.t("rc.verbose:nothing tags")
+        self.assertNotIn("t1", out)
+        self.assertIn("t2", out)
+
+        code, out, err = self.t("rc.verbose:nothing rc.list.all.tags:yes tags")
+        self.assertIn("t1", out)
+        self.assertIn("t2", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
