@@ -1,98 +1,90 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 9;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'uda.rc')
-{
-  print $fh "data.location=.\n",
-            "confirmation=off\n",
-            "uda.extra.type=string\n",
-            "uda.extra.label=Extra\n";
-  close $fh;
-}
 
-# Add a task with a defined UDA.
-qx{../src/task rc:uda.rc add one extra:foo 2>&1};
-my $output = qx{../src/task rc:uda.rc 1 info 2>&1};
-like ($output, qr/Extra\s+foo/, 'UDA created');
+class TestUDAOrphans(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
 
-# Eliminate the UDA.
-if (open my $fh, '>', 'uda.rc')
-{
-  print $fh "data.location=.\n",
-            "confirmation=off\n";
-  close $fh;
-}
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
 
-# Observe the UDA properly reported by the 'info' command.
-$output = qx{../src/task rc:uda.rc 1 info 2>&1};
-like ($output, qr/extra\s+foo/, 'UDA orphan shown');
+    def test_orphan_handling(self):
+        """Verify that orphans are preserved during various operations"""
 
-# Modify the task, ensure UDA preserved.
-qx{../src/task rc:uda.rc 1 modify /one/two/ 2>&1};
-$output = qx{../src/task rc:uda.rc 1 info 2>&1};
-like ($output, qr/extra\s+foo/, 'UDA orphan preserved by modification');
+        self.t("rc.uda.extra.type:string rc.uda.extra.label:Extra add one extra:foo")
+        code, out, err = self.t("rc.uda.extra.type:string rc.uda.extra.label:Extra _get 1.extra")
+        self.assertEqual("foo\n", out)
 
-# Make sure an orphan UDA is exported.
-$output = qx{../src/task rc:uda.rc export 2>&1};
-like ($output, qr/"extra":"foo"/, 'UDA orphan exported');
+        # DOM access for orphans is not supported.
+        self.t.runError("_get 1.extra")
 
-# Make sure an orphan UDA can be exported.
-if (open my $fh, '>', 'import.txt')
-{
-  print $fh <<EOF;
-{"uuid":"00000000-0000-0000-0000-000000000000","description":"two","status":"pending","entry":"1234567889","extra":"bar"}
-EOF
+        # 'info' should show orphans.
+        code, out, err = self.t("1 info")
+        self.assertRegexpMatches(out, "\[extra\s+foo\]")
 
-  close $fh;
-}
+        # 'modify' should not change the orphan
+        self.t("1 modify /one/two/")
+        code, out, err = self.t("1 info")
+        self.assertRegexpMatches(out, "\[extra\s+foo\]")
 
-$output = qx{../src/task rc:uda.rc import import.txt 2>&1 >/dev/null};
-like ($output, qr/Imported 1 tasks\./, 'UDA orphan import');
-$output = qx{../src/task rc:uda.rc 2 info 2>&1};
-like ($output, qr/extra\s+bar/, 'UDA orphan imported and visible');
+        # 'export' should include orphans.
+        code, out, err = self.t("1 export")
+        self.assertIn('"extra":"foo"', out)
 
-# Make sure an orphan cannot be created from the command line.
-$output = qx{../src/task rc:uda.rc add three name:value 2>&1};
-like ($output, qr/Created task 3/, 'Task with orphan added, but as description');
-$output = qx{../src/task rc:uda.rc _get 3.name};
-is ($output, "\n", 'name:value not added as <name>:<value>');
-$output = qx{../src/task rc:uda.rc _get 3.description};
-is ($output, "three name:value\n", 'name:value added as description');
+    def test_orphan_import(self):
+        """Verify importing an orphan succeeds and is visible"""
+        json = '{"description":"one","extra":"foo","status":"pending"}'
+        code, out, err = self.t("import -", input=json)
+        self.assertIn("Imported 1 tasks.", err)
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data uda.rc import.txt);
-exit 0;
+        code, out, err = self.t("export")
+        self.assertIn('"extra":"foo"', out)
 
+    def test_orphan_creation_forbidden(self):
+        """It should not be possible to create and orphan from the command line"""
+        self.t("add one extra:foo")
+        code, out, err = self.t("_get 1.description")
+        self.assertIn("one extra:foo", out)
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
