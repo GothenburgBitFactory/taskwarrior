@@ -67,8 +67,6 @@ bool confirm (const std::string& question)
 {
   std::vector <std::string> options {STRING_UTIL_CONFIRM_YES,
                                      STRING_UTIL_CONFIRM_NO};
-
-  std::string answer;
   std::vector <std::string> matches;
 
   do
@@ -76,6 +74,7 @@ bool confirm (const std::string& question)
     std::cout << question
               << STRING_UTIL_CONFIRM_YN;
 
+    std::string answer {""};
     std::getline (std::cin, answer);
     answer = std::cin.eof() ? STRING_UTIL_CONFIRM_NO : lowerCase (trim (answer));
 
@@ -99,8 +98,6 @@ int confirm4 (const std::string& question)
                                      STRING_UTIL_CONFIRM_ALL_U,
                                      STRING_UTIL_CONFIRM_ALL,
                                      STRING_UTIL_CONFIRM_QUIT};
-
-  std::string answer;
   std::vector <std::string> matches;
 
   do
@@ -113,6 +110,7 @@ int confirm4 (const std::string& question)
               << options[5]
               << ") ";
 
+    std::string answer {""};
     std::getline (std::cin, answer);
     answer = trim (answer);
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
