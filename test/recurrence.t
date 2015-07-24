@@ -28,6 +28,7 @@
 
 import sys
 import os
+import re
 import unittest
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -304,6 +305,34 @@ class TestBug932(TestCase):
         self.assertIn("2 H P", out)
         self.assertIn("3 H P", out)
         self.assertIn("4 H P", out)
+
+
+class TestBug955(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_no_prompt_for_parent_on_child_delete(self):
+        """Deleting a child of a recurring task doesn't prompt for parent deletion
+
+        Previously bug.955.t
+        """
+        self.t("add foo due:now recur:1day")
+        code, out, err = self.t("ls")
+        self.assertRegexpMatches(out, re.compile("^2 tasks", re.MULTILINE))
+
+        code, out, err = self.t("2 delete", input="y\nn\n")
+        self.assertIn("Deleting task 2", out)
+        self.assertIn("Deleted 1 task", out)
+
+        code, out, err = self.t("ls")
+        self.assertRegexpMatches(out, re.compile("^1 task", re.MULTILINE))
+
+        code, out, err = self.t("2 delete", input="y\ny\n")
+        self.assertIn("Deleting task 2", out)
+        self.assertIn("Deleted 1 task", out)
+
+        code, out, err = self.t.runError("ls")
+        self.assertIn("No matches", err)
 
 
 # TODO Wait a recurring task
