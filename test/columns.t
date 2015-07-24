@@ -94,6 +94,7 @@ class TestDescriptionFormats(TestCase):
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,description.donkey")
         self.assertEqual(err, "Unrecognized column format 'description.donkey'\n")
 
+
 class TestUUIDFormats(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -124,6 +125,7 @@ class TestUUIDFormats(TestCase):
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,uuid.donkey")
         self.assertEqual(err, "Unrecognized column format 'uuid.donkey'\n")
 
+
 class TestUrgencyFormats(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -153,6 +155,7 @@ class TestUrgencyFormats(TestCase):
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,urgency.donkey")
         self.assertEqual(err, "Unrecognized column format 'urgency.donkey'\n")
 
+
 class TestIDFormats(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -176,6 +179,7 @@ class TestIDFormats(TestCase):
         """Verify id.donkey formatting fails"""
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id.donkey")
         self.assertEqual(err, "Unrecognized column format 'id.donkey'\n")
+
 
 class TestStatusFormats(TestCase):
     @classmethod
@@ -221,6 +225,7 @@ class TestStatusFormats(TestCase):
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,status.donkey")
         self.assertEqual(err, "Unrecognized column format 'status.donkey'\n")
 
+
 class TestRecurringAttributeFormats(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -254,6 +259,7 @@ class TestRecurringAttributeFormats(TestCase):
 
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,status,due,recur.duration,mask,imask,parent.donkey")
         self.assertEqual(err, "Unrecognized column format 'parent.donkey'\n")
+
 
 class TestProjectFormats(TestCase):
     @classmethod
@@ -296,6 +302,7 @@ class TestProjectFormats(TestCase):
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,project.donkey,description")
         self.assertEqual(err, "Unrecognized column format 'project.donkey'\n")
 
+
 class TestTagsFormats(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -325,6 +332,7 @@ class TestTagsFormats(TestCase):
         """Verify tags.donkey formatting fails"""
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,tags.donkey,description")
         self.assertEqual(err, "Unrecognized column format 'tags.donkey'\n")
+
 
 class TestDateFormats(TestCase):
     @classmethod
@@ -383,6 +391,24 @@ class TestDateFormats(TestCase):
         """Verify due.donkey formatting fails"""
         code, out, err = self.t.runError("xxx rc.report.xxx.columns:id,due.donkey,description")
         self.assertEqual(err, "Unrecognized column format 'due.donkey'\n")
+
+
+class TestCustomColumns(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_unrecognized_column(self):
+        """verify that using a bogus colum generates an error"""
+        self.t.config("report.foo.description", "DESC")
+        self.t.config("report.foo.columns",     "id,foo,description")
+        self.t.config("report.foo.sort",        "id+")
+        self.t.config("report.foo.filter",      "project:A")
+
+        # Generate the usage screen, and locate the custom report on it.
+        code, out, err = self.t.runError("foo")
+        self.assertIn("Unrecognized column name 'foo'.", err)
+
 
 class TestUDAFormats(TestCase):
     @classmethod
