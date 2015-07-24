@@ -38,6 +38,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
 from basetest.utils import UUID_REGEXP
+from basetest.compat import STRING_TYPE
 
 DATETIME_FORMAT = "%Y%m%dT%H%M%SZ"
 
@@ -60,7 +61,7 @@ class TestExportCommand(TestCase):
         """
 
         # Timestamps should be exported as strings
-        self.assertType(value, unicode)
+        self.assertType(value, STRING_TYPE)
         # And they should follow the %Y%m%dT%H%M%SZ format
         datetime.datetime.strptime(value, DATETIME_FORMAT)
 
@@ -71,7 +72,7 @@ class TestExportCommand(TestCase):
         regular expression object.
         """
 
-        self.assertType(value, unicode)
+        self.assertType(value, STRING_TYPE)
 
         if expected_value is not None:
             if regexp:
@@ -191,6 +192,7 @@ class TestExportCommand(TestCase):
         self.t.config('uda.estimate.type', 'duration')
         self.t('add estimate:month test duration uda')
         self.assertString(self.export('2')['estimate'], 'month')
+
 
 class TestExportCommandLimit(TestCase):
     def setUp(self):

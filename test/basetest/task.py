@@ -10,6 +10,7 @@ import unittest
 from .exceptions import CommandError
 from .hooks import Hooks
 from .utils import run_cmd_wait, run_cmd_wait_nofail, which, task_binary_location
+from .compat import STRING_TYPE
 
 
 class Task(object):
@@ -163,14 +164,7 @@ class Task(object):
         argument. The string is literally the same as if written in the shell.
         """
         # Enable nicer-looking calls by allowing plain strings
-        try:
-            # Python 2.x
-            type_check = basestring
-        except NameError:
-            # Python 3.x
-            type_check = str
-
-        if isinstance(args, type_check):
+        if isinstance(args, STRING_TYPE):
             args = shlex.split(args)
 
         return args
