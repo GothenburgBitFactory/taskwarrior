@@ -76,6 +76,7 @@ bool confirm (const std::string& question)
 
     std::string answer {""};
     std::getline (std::cin, answer);
+    context.debug ("STDIN '" + answer + "'");
     answer = std::cin.eof() ? STRING_UTIL_CONFIRM_NO : lowerCase (trim (answer));
 
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
@@ -112,6 +113,7 @@ int confirm4 (const std::string& question)
 
     std::string answer {""};
     std::getline (std::cin, answer);
+    context.debug ("STDIN '" + answer + "'");
     answer = trim (answer);
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }
