@@ -1,109 +1,103 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 15;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'start.rc')
-{
-  print $fh "data.location=.\n";
-  close $fh;
-}
 
-# Test the add/start/stop commands.
-qx{../src/task rc:start.rc add one 2>&1};
-qx{../src/task rc:start.rc add two 2>&1};
-my $output = qx{../src/task rc:start.rc active 2>&1};
-unlike ($output, qr/one/, 'one not active');
-unlike ($output, qr/two/, 'two not active');
+class TestStart(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
 
-qx{../src/task rc:start.rc 1 start 2>&1};
-qx{../src/task rc:start.rc 2 start 2>&1};
-$output = qx{../src/task rc:start.rc active 2>&1};
-like ($output, qr/one/, 'one active');
-like ($output, qr/two/, 'two active');
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
 
-qx{../src/task rc:start.rc 1 stop 2>&1};
-$output = qx{../src/task rc:start.rc active 2>&1};
-unlike ($output, qr/one/, 'one not active');
-like   ($output, qr/two/, 'two active');
+    def test_start_stop(self):
+        """Add, start, stop a task"""
+        self.t("add one")
+        self.t("add two")
+        code, out, err = self.t.runError("active")
 
-qx{../src/task rc:start.rc 2 stop 2>&1};
-$output = qx{../src/task rc:start.rc active 2>&1};
-unlike ($output, qr/one/, 'one not active');
-unlike ($output, qr/two/, 'two not active');
+        self.t("1,2 start")
+        code, out, err = self.t("active")
+        self.assertIn("one", out)
+        self.assertIn("two", out)
 
-qx{../src/task rc:start.rc 2 done 2>&1};
-$output = qx{../src/task rc:start.rc long 2>&1};
-unlike ($output, qr/two/, 'two deleted');
+        self.t("1 stop")
+        code, out, err = self.t("active")
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
 
-# Create the rc file.
-if (open my $fh, '>', 'start2.rc')
-{
-  print $fh "data.location=.\n",
-            "journal.time=on\n";
-  close $fh;
-  ok (-r 'start2.rc', 'Created start2.rc');
-}
+        self.t("2 stop")
+        code, out, err = self.t.runError("active")
 
-qx{../src/task rc:start2.rc 1 start 2>&1};
-$output = qx{../src/task rc:start2.rc long 2>&1};
-like ($output, qr/Started task/, 'one start and annotated');
+        self.t("2 done")
+        code, out, err = self.t("list")
+        self.assertNotIn("two", out)
 
-qx{../src/task rc:start2.rc 1 stop 2>&1};
-$output = qx{../src/task rc:start2.rc long 2>&1};
-like ($output, qr/Stopped task/, 'one stopped and annotated');
+    def test_journal_time(self):
+        """Verify journal.time tracks state"""
+        self.t.config("journal.time", "on")
 
-# Create the rc file.
-if (open my $fh, '>', 'start3.rc')
-{
-  print $fh "data.location=.\n",
-            "journal.time=on\n",
-            "journal.time.start.annotation=Nu kör vi\n",
-            "journal.time.stop.annotation=Nu stannar vi\n";
-  close $fh;
-  ok (-r 'start3.rc', 'Created start3.rc');
-}
+        self.t("add one")
+        self.t("1 start")
+        code, out, err = self.t("long")
+        self.assertIn("Started task", out)
 
-qx{../src/task rc:start3.rc 1 start 2>&1};
-$output = qx{../src/task rc:start3.rc long 2>&1};
-like ($output, qr/Nu.+kör.+vi/ms, 'one start and annotated with custom description');
+        self.t("1 stop")
+        code, out, err = self.t("long")
+        self.assertIn("Stopped task", out)
 
-qx{../src/task rc:start3.rc 1 stop 2>&1};
-$output = qx{../src/task rc:start3.rc long 2>&1};
-like ($output, qr/Nu.+stannar.+vi/ms, 'one stopped and annotated with custom description');
+    def test_journal_annotations(self):
+        """Verify journal start/stop annotations are used"""
+        self.t.config("journal.time",                  "on")
+        self.t.config("journal.time.start.annotation", "Nu kör vi")
+        self.t.config("journal.time.stop.annotation",  "Nu stannar vi")
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data start.rc start2.rc start3.rc);
-exit 0;
+        self.t("add one")
+        self.t("1 start")
+        code, out, err = self.t("long")
+        self.assertIn("Nu kör vi", out)
 
+        self.t("1 stop")
+        code, out, err = self.t("long")
+        self.assertIn("Nu stannar vi", out)
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
