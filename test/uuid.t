@@ -152,6 +152,29 @@ class TestUUID(TestCase):
         self.assertIn('"description":"seven"', out)
 
 
+class TestUUIDuplicates(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_uuid_duplicates(self):
+        """Verify that duplicating tasks, and recurring tasks do no create duplicates UUIDs"""
+        self.t("add simple")
+        self.t("1 duplicate")
+        self.t("add periodic recur:daily due:yesterday")
+        self.t("list") # GC/handleRecurrence
+
+        uuids = list()
+        for id in range(1,7):
+            code, out, err = self.t("_get %d.uuid" % id)
+            uuids.append(out.strip())
+
+        self.assertEqual(len(uuids), len(set(uuids)))
+
+        code, out, err = self.t("diag")
+        self.assertIn("No duplicates found", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
