@@ -78,24 +78,55 @@ CmdZshCommands::CmdZshCommands ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+struct ZshCommand
+{
+  bool operator< (const struct ZshCommand&);
+  Command::Category _category;
+  std::string _command;
+  std::string _description;
+};
+
+bool ZshCommand::operator< (const struct ZshCommand& other)
+{
+  // Lexicographical comparison.
+  if (_category != other._category)
+    return (_category < other._category);
+
+  if (_command != other._command)
+    return (_command < other._command);
+
+  if (_description != other._description)
+    return (_description < other._description);
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 int CmdZshCommands::execute (std::string& output)
 {
   // Get a list of all command descriptions, sorted by category and then
   // alphabetically by command name.
-  typedef std::tuple <Command::Category, std::string, std::string> Element;
-  std::vector <Element> commands;
+
+  // Since not all supported compilers support tuples, we use a least common
+  // denominator alternative: a custom struct type.
+
+  std::vector <ZshCommand> commands;
   for (auto& command : context.commands)
-    commands.push_back (std::make_tuple (command.second->_category,
-                                         command.first,
-                                         command.second->description()));
+  {
+    ZshCommand zshCommand {command.second->_category,
+                           command.first,
+                           command.second->description ()};
+    commands.push_back (zshCommand);
+  }
+
   std::sort (commands.begin (), commands.end ());
 
   // Emit the commands in order.
   std::stringstream out;
-  for (auto& c : commands)
-    out << std::get<1> (c) << ":"
-        << Command::categoryNames.at (std::get<0> (c)) << ":"
-        << std::get<2> (c) << "\n";
+  for (auto& zc : commands)
+    out << zc._command << ":"
+        << Command::categoryNames.at (zc._category) << ":"
+        << zc._description << "\n";
 
   output = out.str ();
   return 0;
