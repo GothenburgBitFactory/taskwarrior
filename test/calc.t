@@ -93,6 +93,17 @@ class TestCalc(TestCase):
         self.assertIn("Copyright", out)
         self.assertGreaterEqual(code, 1)
 
+    def test_duration(self):
+        """'15min' is seen as '15', 'min', not '15min' duration"""
+        code, out, err = run_cmd_wait((CALC, "--debug", "15min"))
+
+        self.assertNotIn("token infix '15' Date", out)
+        self.assertNotIn("token infix 'min' Identifier", out)
+        self.assertNotIn("Error: Unexpected stack size: 2", out)
+        self.assertNotIn("Error: Unexpected stack size: 2", err)
+        self.assertIn("Eval literal duration ↑'PT15M'", out)
+        self.assertRegexpMatches(out, re.compile("^PT15M$", re.MULTILINE))
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
