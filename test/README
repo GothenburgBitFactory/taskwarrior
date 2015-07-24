@@ -15,27 +15,22 @@ All unit tests produce TAP (Test Anything Protocol) output, and are run by the
 
 The 'run_all' script produces an 'all.log' file which is the accumulated output
 of all tests. Before executing 'run_all' you need to compile the C++ unit
-tests, by running 'make' on the 'test' directory.
+tests, by running 'make' in the 'test' directory.
 
 The script 'problems' will list all the tests that fail, with a count of the
-failing tests.
+failing tests, once you have run all the tests and produced an 'all.log' file.
 
 Any TAP harness may be used.
 
 Note that adding the '--serial' option to ./run_all, all tests are executed serially.
-The default runs Python and C++ tests in parallel, alongside the Perl tests
-that run serially (due to isolation limitations).
-Using '--serial' will make for a slower test run.
+The default runs Python, C++ and Bash tests in parallel. Using '--serial' will
+make for a slower test run.
 
 
 Architecture
 ------------
 
 There are three varieties of tests:
-
-  * Perl unit tests that use Test::More module. We are phasing these out, and
-    will accept no new Perl tests. These tests are high level and exercise
-    Taskwarrior at the command line level.
 
   * C++ unit tests that test low-level object interfaces. These are typically
     very fast tests, and are exhaustive in nature.
@@ -44,13 +39,16 @@ There are three varieties of tests:
     line, hooks and syncing. There is an example, 'template.t', that shows how
     to perform various high level tests.
 
+  * Bash unit tests, one test per file, using the bash_tap_tw.sh script. These
+    tests are small, quick tests, not intended to be permanent.
+
 All tests are named with the pattern '*.t', and any other forms are not run by
 the test harness. Additionally a test must be set executable (chmod +x) for it
-to be run. In the case of Perl and Python tests one can still run them manually
-by launching them with 'perl/python test.t'. It also allows us to keep tests
-submitted for bugs that are not scheduled to be fixed in the upcoming release,
-and we don't want the failing tests to prevent us from seeing 100% pass rate
-for the bugs we *have* fixed.
+to be run. In the case of Python tests one can still run them manually by
+launching them with 'python test.t' or simply './test.t'. It also allows us to
+keep tests submitted for bugs that are not scheduled to be fixed in the
+upcoming release, and we don't want the failing tests to prevent us from seeing
+100% pass rate for the bugs we *have* fixed.
 
 
 Goals
@@ -60,23 +58,14 @@ The test suite is evolving, and becoming a better tool for determining whether
 code is ready for release. There are goals that shape these changes, and they
 are:
 
-  * Migrate test suite to Python and C++, eliminating all Perl.  The Python
-    test suite is more expressive and high level. Migrating reduces
-    dependencies.
-
-  * Increase test coverage by testing more features, more thoroughly.
+  * Increase test coverage by testing more features, more thoroughly. The test
+    coverage level is (as of 2015-07-24) at 86.5%.
 
   * Write fewer bug regression tests. Over time, bug regression tests are less
     useful than feature tests, and more likely to contain overlapping coverage.
 
-  * The Python test suite provides test isolation, such that each test is run
-    in a separate directory. This allows parallelization, which will improve
-    as the Perl tests are eliminated.
-
   * Eliminate obsolete tests, which are tests that have overlapping coverage.
     This means migrate bug-specific tests to feature tests.
-
-  * Categorize the tests, restructure the directories.
 
 
 What Makes a Good Test
@@ -109,7 +98,8 @@ If you wish to contribute tests, please consider the following guidelines:
     comments.
 
   * Python tests for bugs or features not yet fixed/implemented should be
-    decorated with: @unittest.skip("WaitingFor TW-xxxx")
+    decorated with: @unittest.skip("WaitingFor TW-xxxx"). We would rather have
+    a live test that is skipped, than no test.
 
 
 How to Submit a Test Change/Addition
@@ -123,33 +113,18 @@ TODO
 
 For anyone looking for test-related tasks to take on, here are some suggestions:
 
-  * Take tw-285.t and improve it to test more (if not all) virtual tags, then
-    rename it virtual-tags.t.
+  * Find and eliminate duplicate tests.
 
-  * Select a bug.*.t Perl test and convert it to Python using the template.
+  * Using <attribute>.startswith:<value> with rc.regex:off still uses regex.
 
-  * Look at the latest todo.txt file format spec, and make sure that
-    import.todo.sh.t is thoroughly testing the current format.
-
-  * Select a feature.*.t Perl test, convert it to Python using the template,
-    then rename it to <feature>.t
-
-  * Find and eliminate individuals test that do the same thing.
-
-  * Using /pattern/ with rc.regex:off still uses regex.
-
-  * Import JSON validates absolutely no attribute.  Create tests with bad data
-    in all fields.
+  * Import JSON validates absolutely no attributes.  Create tests with bad data
+    in all fields, to exercise validation.
 
   * DOM references are not validated, make this painfully obvious with tests
 
   * Crazy dateformat values are not tested
 
-  * All add-on scripts should work
-
   * Invalid UTF8 is not tested
-
-  * read-only data files are not tested
 
   * all the attribute modifiers need to be tested, only a few are
 
