@@ -132,6 +132,11 @@ class TestDOM(TestCase):
         code, out, err = self.t("_get 3.annotations.1.entry")
         self.assertRegexpMatches(out, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}")
 
+    def test_dom_annotation_entry_second(self):
+        """ DOM 3.annotations.1.entry """
+        code, out, err = self.t("_get 3.annotations.1.entry.second")
+        self.assertRegexpMatches(out, r"\d{1,2}")
+
     def test_dom_annotation_description(self):
         """ DOM 3.annotations.1.description """
         code, out, err = self.t("_get 3.annotations.1.description")
