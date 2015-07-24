@@ -281,6 +281,8 @@ class TestBug932(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
+        self.t.config("report.id_pri_proj.columns", "id,priority,project")
+        self.t.config("report.id_pri_proj.labels", "ID,P,Proj")
 
     def test_modify_due_propagate(self):
         """Verify due date modifications propagate"""
@@ -289,16 +291,16 @@ class TestBug932(TestCase):
         # - modify a child task and test for propagation
         # - modify the parent task and test for propagation
         self.t("add R due:yesterday recur:daily")
-        self.t("list") # GC/handleRecurrence
+        self.t("list")  # GC/handleRecurrence
 
         self.t("2 modify project:P", input="y\n")
-        code, out, err = self.t("list")
+        code, out, err = self.t("id_pri_proj")
         self.assertIn("2 P", out)
         self.assertIn("3 P", out)
         self.assertIn("4 P", out)
 
         self.t("1 modify priority:H", input="y\n")
-        code, out, err = self.t("list")
+        code, out, err = self.t("id_pri_proj")
         self.assertIn("2 H P", out)
         self.assertIn("3 H P", out)
         self.assertIn("4 H P", out)
