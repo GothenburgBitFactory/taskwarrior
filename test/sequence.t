@@ -1,126 +1,97 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 24;
+import sys
+import os
+import json
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'seq.rc')
-{
-  print $fh "data.location=.\n",
-            "confirmation=off\n",
-            "dateformat.annotation=m/d/Y\n";
-  close $fh;
-}
 
-# Test sequences in done/undo
-qx{../src/task rc:seq.rc add one mississippi 2>&1};
-qx{../src/task rc:seq.rc add two mississippi 2>&1};
-qx{../src/task rc:seq.rc 1,2 done 2>&1};
-my $output = qx{../src/task rc:seq.rc info 1 2>&1};
-like ($output, qr/Status\s+Completed/, 'sequence done 1');
-$output = qx{../src/task rc:seq.rc info 2 2>&1};
-like ($output, qr/Status\s+Completed/, 'sequence done 2');
-qx{../src/task rc:seq.rc undo 2>&1};
-qx{../src/task rc:seq.rc undo 2>&1};
-$output = qx{../src/task rc:seq.rc info 1 2>&1};
-like ($output, qr/Status\s+Pending/, 'sequence undo 1');
-$output = qx{../src/task rc:seq.rc info 2 2>&1};
-like ($output, qr/Status\s+Pending/, 'sequence undo 2');
+class TestSequences(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t("add one mississippi")
+        self.t("add two mississippi")
 
-# Test sequences in delete/undelete
-qx{../src/task rc:seq.rc 1,2 delete 2>&1};
-$output = qx{../src/task rc:seq.rc info 1 2>&1};
-like ($output, qr/Status\s+Deleted/, 'sequence delete 1');
-$output = qx{../src/task rc:seq.rc info 2 2>&1};
-like ($output, qr/Status\s+Deleted/, 'sequence delete 2');
-qx{../src/task rc:seq.rc undo 2>&1};
-qx{../src/task rc:seq.rc undo 2>&1};
-$output = qx{../src/task rc:seq.rc info 1 2>&1};
-like ($output, qr/Status\s+Pending/, 'sequence undo 1');
-$output = qx{../src/task rc:seq.rc info 2 2>&1};
-like ($output, qr/Status\s+Pending/, 'sequence undo 2');
+    def test_sequence_done(self):
+        """Test sequences in done"""
+        self.t("1,2 done")
+        code, out, err = self.t("_get 1.status 2.status")
+        self.assertEqual("completed completed\n", out)
 
-# Test sequences in start/stop
-qx{../src/task rc:seq.rc 1,2 start 2>&1};
-$output = qx{../src/task rc:seq.rc info 1 2>&1};
-like ($output, qr/Start/, 'sequence start 1');
-$output = qx{../src/task rc:seq.rc info 2 2>&1};
-like ($output, qr/Start/, 'sequence start 2');
-qx{../src/task rc:seq.rc 1,2 stop 2>&1};
-$output = qx{../src/task rc:seq.rc info 1 2>&1};
-like ($output, qr/Start\sdeleted/, 'sequence stop 1');
-$output = qx{../src/task rc:seq.rc info 2 2>&1};
-like ($output, qr/Start\sdeleted/, 'sequence stop 2');
+    def test_sequence_delete(self):
+        """Test sequences in delete"""
+        self.t("1,2 delete")
+        code, out, err = self.t("_get 1.status 2.status")
+        self.assertEqual("deleted deleted\n", out)
 
-# Test sequences in modify
-qx{../src/task rc:seq.rc 1,2 modify +tag 2>&1};
-$output = qx{../src/task rc:seq.rc info 1 2>&1};
-like ($output, qr/Tags\s+tag/, 'sequence modify 1');
-$output = qx{../src/task rc:seq.rc info 2 2>&1};
-like ($output, qr/Tags\s+tag/, 'sequence modify 2');
-qx{../src/task rc:seq.rc 1,2 modify -tag 2>&1};
-$output = qx{../src/task rc:seq.rc info 1 2>&1};
-unlike ($output, qr/Tags\s+tag/, 'sequence unmodify 1');
-$output = qx{../src/task rc:seq.rc info 2 2>&1};
-unlike ($output, qr/Tags\s+tag/, 'sequence unmodify 2');
+    def test_sequence_start_stop(self):
+        """Test sequences in start/stop"""
+        self.t("1,2 start")
+        code, out, err = self.t("_get 1.start 2.start")
+        self.assertRegexpMatches(out, "\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} \d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\n")
 
-# Test sequences in substitutions
-qx{../src/task rc:seq.rc 1,2 modify /miss/Miss/ 2>&1};
-$output = qx{../src/task rc:seq.rc info 1 2>&1};
-like ($output, qr/Description\s+one Miss/, 'sequence substitution 1');
-$output = qx{../src/task rc:seq.rc info 2 2>&1};
-like ($output, qr/Description\s+two Miss/, 'sequence substitution 2');
+        self.t("1,2 stop")
+        code, out, err = self.t("_get 1.start 2.start")
+        self.assertEqual("\n", out)
 
-# Test sequences in info
-$output = qx{../src/task rc:seq.rc info 1,2 2>&1};
-like ($output, qr/Description\s+one Miss/, 'sequence info 1');
-like ($output, qr/Description\s+two Miss/, 'sequence info 2');
+    def test_sequence_modify(self):
+        """Test sequences in modify"""
+        self.t("1,2 modify +xyz")
+        code, out, err = self.t("_get 1.tags 2.tags")
+        self.assertEqual("xyz xyz\n", out)
 
-# Test sequences in duplicate
-qx{../src/task rc:seq.rc 1,2 duplicate pri:H 2>&1};
-$output = qx{../src/task rc:seq.rc info 3 2>&1};
-like ($output, qr/Priority\s+H/, 'sequence duplicate 1');
-$output = qx{../src/task rc:seq.rc info 4 2>&1};
-like ($output, qr/Priority\s+H/, 'sequence duplicate 2');
+    def test_sequence_info(self):
+        """Test sequences in info"""
+        self.t("1,2 info")
+        code, out, err = self.t("_get 1.description 2.description")
+        self.assertEqual(out.count("miss"), 2)
 
-# Test sequences in annotate
-qx{../src/task rc:seq.rc 1,2 annotate note 2>&1};
-$output = qx{../src/task rc:seq.rc info 1 2>&1};
-like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence 1 annotate');
-$output = qx{../src/task rc:seq.rc info 2 2>&1};
-like ($output, qr/\d+\/\d+\/\d+ note/, 'sequence 2 annotate');
+    def test_sequence_duplicate(self):
+        """Test sequences in duplicate"""
+        self.t("1,2 duplicate priority:H")
+        code, out, err = self.t("_get 3.priority 4.priority")
+        self.assertEqual("H H\n", out)
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data seq.rc);
-exit 0;
+    def test_sequence_annotate(self):
+        """Test sequences in annotate"""
+        self.t("1,2 annotate note")
+        code, out, err = self.t("_get 1.annotations.1.description 2.annotations.1.description")
+        self.assertEqual("note note\n", out)
 
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
