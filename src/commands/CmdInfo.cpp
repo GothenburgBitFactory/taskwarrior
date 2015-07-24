@@ -388,7 +388,7 @@ int CmdInfo::execute (std::string& output)
     for (auto& att : all)
     {
       if (att.substr (0, 11) != "annotation_" &&
-          context.columns.find (att) == context.columns.end ())
+          ! context.columns[att])
       {
          row = view.addRow ();
          view.set (row, 0, "[" + att);
