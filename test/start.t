@@ -96,6 +96,37 @@ class TestStart(TestCase):
         self.assertIn("Nu stannar vi", out)
 
 
+class TestActiveTaskHandling(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t("add one +one")
+
+    def test_start_completed(self):
+        """Completed task set to pending by start"""
+        self.t("+one done")
+        self.t("+one start")
+        tl = self.t.export()
+        self.assertEqual(tl[0]["status"], "pending")
+
+    def test_start_deleted(self):
+        """Deleted task set to pending by start"""
+        self.t("+one delete")
+        self.t("+one start")
+        tl = self.t.export()
+        self.assertEqual(tl[0]["status"], "pending")
+
+    def test_start_nothing(self):
+        """Verify error message when no tasks are specified"""
+        code, out, err = self.t.runError ("999 start")
+        self.assertIn("No tasks specified.", err)
+
+    def test_start_started(self):
+        """Verify error when starting a started task"""
+        self.t("1 start")
+        code, out, err = self.t.runError("1 start")
+        self.assertIn("Task 1 'one' already started.", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
