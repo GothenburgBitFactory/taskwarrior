@@ -1,119 +1,97 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 26;
+import sys
+import os
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-use File::Basename;
-my $ut = basename ($0);
-my $rc = $ut . '.rc';
 
-# Create the rc file.
-if (open my $fh, '>', $rc)
-{
-  # Note: Use 'rrr' to guarantee a unique report name.  Using 'r' conflicts
-  #       with 'recurring'.
-  print $fh "data.location=.\n",
-            "confirmation=off\n",
-            "report.rrr.description=rrr\n",
-            "report.rrr.columns=id,description\n",
-            "report.rrr.sort=id+\n",
-            "dateformat=m/d/Y\n";
-  close $fh;
-}
+class TestDenotate(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
 
-# Add four tasks, annotate one three times, one twice, one just once and one none.
-qx{../src/task rc:$rc add one 2>&1};
-qx{../src/task rc:$rc 1 annotate Ernie 2>&1};
-qx{../src/task rc:$rc 1 annotate Bert 2>&1};
-qx{../src/task rc:$rc 1 annotate Bibo 2>&1};
-qx{../src/task rc:$rc 1 annotate Kermit the frog 2>&1};
-qx{../src/task rc:$rc 1 annotate Kermit the frog 2>&1};
-qx{../src/task rc:$rc 1 annotate Kermit 2>&1};
-qx{../src/task rc:$rc 1 annotate Kermit and Miss Piggy 2>&1};
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
 
-my $output = qx{../src/task rc:$rc rrr 2>&1};
-like ($output, qr/1 one/,                                                   "$ut: task 1");
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Ernie/ms,                    "$ut: first   annotation");
-like ($output, qr/Ernie.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   "$ut: second  annotation");
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Bibo/ms,                    "$ut: third   annotation");
-like ($output, qr/Bibo.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: fourth  annotation"); # 5
-like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: fifth   annotation");
-like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit/ms,                  "$ut: sixth   annotation");
-like ($output, qr/Kermit.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, "$ut: seventh annotation");
-like ($output, qr/1 task/,                                                  "$ut: count");
+    def test_denotation(self):
+        """Test the various forms of denotation"""
 
-qx{../src/task rc:$rc 1 denotate Ernie 2>&1};
-$output = qx{../src/task rc:$rc rrr 2>&1};
-unlike ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Ernie/ms,                  "$ut: Delete annotation"); # 10
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Bert now first annotationt");
+        self.t("add one")
+        self.t("1 annotate alpha")
+        self.t("1 annotate beta")
+        self.t("1 annotate beta")  # Deliberately identical, not a typo
+        self.t("1 annotate gamma")
 
-qx{../src/task rc:$rc 1 denotate Bi 2>&1};
-$output = qx{../src/task rc:$rc rrr 2>&1};
-unlike ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Bibo/ms,                  "$ut: Delete partial match");
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Kermit the frog now second annotation");
+        self.t("add two")
+        self.t("2 annotate alpha")
+        self.t("2 annotate beta")
 
-SKIP:
-{
-  skip ("Skipping regex case-insensitive tests on Cygwin.  Doesn't work.", 2) if $^O =~ /cygwin/;
+        # Exact match, one annotation
+        code, out, err = self.t("1 denotate alpha")
+        self.assertIn("Found annotation 'alpha' and deleted it.", out)
+        code, out, err = self.t("_get 1.annotations.1.description")
+        self.assertEqual("beta\n", out)
 
-  qx{../src/task rc:$rc 1 denotate BErt 2>&1};
-  $output = qx{../src/task rc:$rc rrr 2>&1};
-  like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                   "$ut: Denotate is case sensitive");
-  like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,       "$ut: Kermit the frog still second annoation"); # 15
-}
+        # Partial match, one annotation
+        code, out, err = self.t("1 denotate gam")
+        self.assertIn("Found annotation 'gamma' and deleted it.", out)
 
-qx{../src/task rc:$rc 1 denotate Kermit 2>&1};
-$output = qx{../src/task rc:$rc rrr 2>&1};
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Exact match deletion - Bert");
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Exact match deletion - Kermit the frog");
-like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Exact match deletion - Kermit the frog");
-like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms,   "$ut: Exact match deletion - Kermit and Miss Piggy");
+        # Failed partial match, one annotation
+        code, out, err = self.t.runError("2 denotate AL")
+        self.assertIn("Did not find any matching annotation to be deleted for 'AL'.", out)
 
-qx{../src/task rc:$rc 1 denotate Kermit the 2>&1};
-$output = qx{../src/task rc:$rc rrr 2>&1};
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Delete just one annotation - Bert"); # 20
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Delete just one annotation - Kermit the frog");
-like ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms,   "$ut: Delete just one annotation - Kermit and Miss Piggy");
+        # Exact match, two annotations
+        code, out, err = self.t("1 denotate beta")
+        self.assertIn("Found annotation 'beta' and deleted it.", out)
+        code, out, err = self.t("1 denotate beta")
+        self.assertIn("Found annotation 'beta' and deleted it.", out)
 
-qx{../src/task rc:$rc 1 denotate Kermit a 2>&1};
-$output = qx{../src/task rc:$rc rrr 2>&1};
-like ($output, qr/one.+\d{1,2}\/\d{1,2}\/\d{4} Bert/ms,                     "$ut: Delete partial match - Bert");
-like ($output, qr/Bert.+\d{1,2}\/\d{1,2}\/\d{4} Kermit the frog/ms,         "$ut: Delete partial match - Kermit the frog");
-unlike ($output, qr/frog.+\d{1,2}\/\d{1,2}\/\d{4} Kermit and Miss Piggy/ms, "$ut: Delete partial match - Kermit and Miss Piggy"); # 25
+        # No annotation specified
+        code, out, err = self.t("2 denotate")
+        self.assertIn("Found annotation 'alpha' and deleted it.", out)
+        code, out, err = self.t("2 denotate")
+        self.assertIn("Found annotation 'beta' and deleted it.", out)
+        code, out, err = self.t.runError("2 denotate")
+        self.assertIn("The specified task has no annotations that can be deleted.", err)
 
-$output = qx{../src/task rc:$rc 999 denotate 2>&1};
-like ($output, qr/No tasks specified./,                                     "$ut: No matching tasks");
+        # No matching task
+        code, out, err = self.t.runError("999 denotate")
+        self.assertIn("No tasks specified.", err)
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data), $rc;
-exit 0;
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
