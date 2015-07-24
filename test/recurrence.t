@@ -311,6 +311,7 @@ class TestBug955(TestCase):
     def setUp(self):
         self.t = Task()
 
+    @unittest.expectedFailure
     def test_no_prompt_for_parent_on_child_delete(self):
         """Deleting a child of a recurring task doesn't prompt for parent deletion
 
@@ -320,6 +321,12 @@ class TestBug955(TestCase):
         code, out, err = self.t("ls")
         self.assertRegexpMatches(out, re.compile("^2 tasks", re.MULTILINE))
 
+        # NOTE: Test fails here due to some strange handling of STDIN in task
+        # "y\nn\n" actually behaves as "y\ny\n" so both tasks are deleted
+        # in the shell 'printf "y\nn\n" | task 2 delete' works as expected.
+        # Yet replacing the task binary with something like "hexdump", all
+        # bytes received via STDIN are identical in python vs shell.
+        # NOTE: This may be related to delete.t test_delete_bulk_prompt_loop
         code, out, err = self.t("2 delete", input="y\nn\n")
         self.assertIn("Deleting task 2", out)
         self.assertIn("Deleted 1 task", out)
@@ -330,6 +337,9 @@ class TestBug955(TestCase):
         code, out, err = self.t("2 delete", input="y\ny\n")
         self.assertIn("Deleting task 2", out)
         self.assertIn("Deleted 1 task", out)
+
+        code, out, err = self.t.runError("all status:recurring")
+        self.assertIn("No matches", err)
 
         code, out, err = self.t.runError("ls")
         self.assertIn("No matches", err)
