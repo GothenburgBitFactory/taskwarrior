@@ -65,7 +65,16 @@ class TestInfoCommand(TestCase):
         self.assertRegexpMatches(out, "Last modified\s+\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\s+\(-\)")
 
         self.assertRegexpMatches(out, "Tags\s+tag")
-        self.assertRegexpMatches(out, "Virtual tags\s+ACTIVE ANNOTATED MONTH SCHEDULED TAGGED UNBLOCKED UNTIL YEAR")
+        self.assertIn("ACTIVE", out)
+        self.assertIn("ANNOTATED", out)
+        self.assertIn("MONTH", out)
+        self.assertIn("SCHEDULED", out)
+        self.assertIn("TAGGED", out)
+        self.assertIn("UNBLOCKED", out)
+        self.assertIn("UNTIL", out)
+        self.assertIn("YEAR", out)
+        self.assertIn("UDA", out)
+
         self.assertRegexpMatches(out, "UUID\s+[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
         self.assertRegexpMatches(out, "Urgency\s+\d+(\.\d+)?")
         self.assertRegexpMatches(out, "Priority\s+H")
