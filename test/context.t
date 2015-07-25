@@ -42,12 +42,8 @@ class ContextManagementTest(TestCase):
         self.t = Task()
 
     def test_context_define(self):
-        """
-        Test simple context definition.
-        """
-
+        """Test simple context definition."""
         code, out, err = self.t('context define work project:Work')
-
         self.assertIn("Context 'work' defined.", out)
 
         # Assert the config contains context definition
@@ -58,13 +54,9 @@ class ContextManagementTest(TestCase):
         self.assertEqual(len(filter(is_context_line, self.t.taskrc_content)), 1)
 
     def test_context_redefine_same_definition(self):
-        """
-        Test re-defining the context with the same definition.
-        """
-
+        """Test re-defining the context with the same definition."""
         self.t('context define work project:Work')
         code, out, err = self.t('context define work project:Work')
-
         self.assertIn("Context 'work' defined.", out)
 
         # Assert the config contains context definition
@@ -75,13 +67,9 @@ class ContextManagementTest(TestCase):
         self.assertEqual(len(filter(is_context_line, self.t.taskrc_content)), 1)
 
     def test_context_redefine_different_definition(self):
-        """
-        Test re-defining the context with different definition.
-        """
-
+        """Test re-defining the context with different definition."""
         self.t('context define work project:Work')
         code, out, err = self.t('context define work +work')
-
         self.assertIn("Context 'work' defined.", out)
 
         # Assert the config does not contain the old context definition
@@ -95,39 +83,27 @@ class ContextManagementTest(TestCase):
         self.assertEqual(len(filter(is_context_line, self.t.taskrc_content)), 1)
 
     def test_context_delete(self):
-        """
-        Test simple context deletion.
-        """
-
+        """Test simple context deletion."""
         self.t('context define work project:Work')
         code, out, err = self.t('context delete work')
-
         self.assertIn("Context 'work' deleted.", out)
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
 
     def test_context_delete_undefined(self):
-        """
-        Test deletion of undefined context.
-        """
-
+        """Test deletion of undefined context."""
         code, out, err = self.t.runError('context delete work')
-
         self.assertIn("Context 'work' not deleted.", out)
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
 
     def test_context_delete_unset_after_removal(self):
-        """
-        Test that context is unset if its definition has been removed.
-        """
-
+        """Test that context is unset if its definition has been removed."""
         self.t('context define work project:Work')
         self.t('context work')
         code, out, err = self.t('context delete work')
-
         self.assertIn("Context 'work' deleted.", out)
 
         # Assert that taskrc does not countain context work definition
@@ -139,16 +115,11 @@ class ContextManagementTest(TestCase):
         self.assertFalse(any(re.search("^context=", line) for line in self.t.taskrc_content))
 
     def test_context_list_active(self):
-        """
-        Test the 'context list' command.
-        """
-
+        """Test the 'context list' command."""
         self.t('context define work project:Work')
         self.t('context define home +home')
         self.t('context home')
-
         code, out, err = self.t('context list')
-
         contains_work = lambda line: 'work' in line and 'project:Work' in line and 'no' in line
         contains_home = lambda line: 'home' in line and '+home' in line and 'yes' in line
 
@@ -158,10 +129,7 @@ class ContextManagementTest(TestCase):
         self.assertEqual(len(filter(contains_home, out.splitlines())), 1)
 
     def test_context_initially_empty(self):
-        """
-        Test that no context is set initially.
-        """
-
+        """Test that no context is set initially."""
         self.t('context define work project:Work')
         self.t('context define home +home')
 
@@ -170,10 +138,7 @@ class ContextManagementTest(TestCase):
         self.assertFalse(any(re.search("^context=", line) for line in self.t.taskrc_content))
 
     def test_context_setting(self):
-        """
-        Test simple context setting.
-        """
-
+        """Test simple context setting."""
         self.t('context define work project:Work')
         self.t('context define home home')
 
@@ -182,10 +147,7 @@ class ContextManagementTest(TestCase):
         self.assertIn("context=home\n", self.t.taskrc_content)
 
     def test_context_resetting(self):
-        """
-        Test resetting the same context.
-        """
-
+        """Test resetting the same context."""
         self.t('context define work project:Work')
         self.t('context define home +home')
 
@@ -197,10 +159,7 @@ class ContextManagementTest(TestCase):
         self.assertEqual(len(filter(contains_home, self.t.taskrc_content)), 1)
 
     def test_context_switching(self):
-        """
-        Test changing the context.
-        """
-
+        """Test changing the context."""
         self.t('context define work project:Work')
         self.t('context define home +home')
 
@@ -210,28 +169,22 @@ class ContextManagementTest(TestCase):
         # Switch to home context
         code, out, err = self.t('context home')
         self.assertIn("Context 'home' set.", out)
-
         self.assertEqual(len(filter(contains_home, self.t.taskrc_content)), 1)
 
         # Switch to work context
         code, out, err = self.t('context work')
         self.assertIn("Context 'work' set.", out)
-
         self.assertNotIn("context=home\n", self.t.taskrc_content)
         self.assertEqual(len(filter(contains_work, self.t.taskrc_content)), 1)
 
         # Switch back to home context
         code, out, err = self.t('context home')
         self.assertIn("Context 'home' set.", out)
-
         self.assertNotIn("context=work\n", self.t.taskrc_content)
         self.assertEqual(len(filter(contains_home, self.t.taskrc_content)), 1)
 
     def test_context_unsetting(self):
-        """
-        Test removing the context.
-        """
-
+        """Test removing the context."""
         self.t('context define work project:Work')
         self.t('context define home +home')
 
@@ -250,10 +203,7 @@ class ContextManagementTest(TestCase):
         self.assertIn("No context is currently applied.", out)
 
     def test_context_unsetting_after_switching(self):
-        """
-        Test unsetting the context after changing the context around.
-        """
-
+        """Test unsetting the context after changing the context around."""
         self.t('context define work project:Work')
         self.t('context define home +home')
 
@@ -277,10 +227,7 @@ class ContextManagementTest(TestCase):
         self.assertIn("No context is currently applied.", out)
 
     def test_context_unsetting_with_no_context_set(self):
-        """
-        Test removing the context when no context is set.
-        """
-
+        """Test removing the context when no context is set."""
         self.t('context define work project:Work')
         self.t('context define home +home')
 
@@ -298,13 +245,9 @@ class ContextManagementTest(TestCase):
         self.assertIn("No context is currently applied.", out)
 
     def test_context(self):
-        """
-        Test the _context command.
-        """
-
+        """Test the _context command."""
         self.t('context define work project:Work')
         self.t('context define home +home')
-
         code, out, err = self.t('_context')
 
         # Assert expected output.
@@ -313,16 +256,12 @@ class ContextManagementTest(TestCase):
         self.assertEqual(len(out.splitlines()), 2)
 
     def test_context_completion(self):
-        """
-        Test the _context command with some context set.
-        """
-
+        """Test the _context command with some context set."""
         self.t('context define work project:Work')
         self.t('context define home +home')
 
-        # Activete some context
+        # Activate some context
         self.t('context work')
-
         code, out, err = self.t('_context')
 
         # Assert expected output.
@@ -347,10 +286,7 @@ class ContextEvaluationTest(TestCase):
         self.t('add +home due:today "home today task"')
 
     def test_context_evaluation(self):
-        """
-        Test the context applied with report list command.
-        """
-
+        """Test the context applied with report list command."""
         code, out, err = self.t('list')
 
         # Assert all the tasks are present in the output
@@ -370,10 +306,7 @@ class ContextEvaluationTest(TestCase):
         self.assertIn("home today task", out)
 
     def test_context_evaluation_switching(self):
-        """
-        Test swtiching context using the list report.
-        """
-
+        """Test swtiching context using the list report."""
         code, out, err = self.t('list')
 
         # Assert all the tasks are present in the output
@@ -413,10 +346,7 @@ class ContextEvaluationTest(TestCase):
         self.assertIn("home today task", out)
 
     def test_context_evaluation_unset(self):
-        """
-        Test unsetting context with report list command.
-        """
-
+        """Test unsetting context with report list command."""
         self.t('context home')
         code, out, err = self.t('list')
 
@@ -437,10 +367,7 @@ class ContextEvaluationTest(TestCase):
         self.assertIn("home today task", out)
 
     def test_context_evaluation_with_user_filters(self):
-        """
-        Test the context applied with report list command
-        combined with user filters.
-        """
+        """Test the context applied with report list command combined with user filters."""
 
         # Set the home context
         self.t('context home')
@@ -461,6 +388,13 @@ class ContextEvaluationTest(TestCase):
         self.assertNotIn("home task", out)
         self.assertIn("work today task", out)
         self.assertNotIn("home today task", out)
+
+
+# TODO Prove context does not interfere with ID-based filters
+# TODO Prove context does not interfere with UUID-based filters
+# TODO Prove context does not interfere with export
+# TODO Prove context does not interfere with undo
+# TODO Prove context does not interfere with helper commands
 
 
 if __name__ == "__main__":
