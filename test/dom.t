@@ -190,6 +190,11 @@ class TestDOM(TestCase):
         code, out, err = self.t.runError("_get rc.missing")
         self.assertEqual(code, 1)
 
+    def test_dom_attribute_missing(self):
+        """DOM 1.end (missing)"""
+        code, out, err = self.t("_get 1.end")
+        self.assertEqual("\n", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

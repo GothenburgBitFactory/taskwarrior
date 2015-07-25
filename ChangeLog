@@ -79,6 +79,8 @@
 - TW-1636 UUID with numeric-only first segment is not parsed properly (thanks
           to Tomas Babej).
 - TW-1638 Undo doesn't work when a context is set (thanks to Jeremy John Reeder).
+- TW-1640 '_get <id>.start' for an inactive tasks returns a date formatted from
+          epoch 0.
 - Prevent potential task duplication during import for non-pending tasks.
 - Show the active context in "context list", if any is active.
 - Fix "task edit" dropping annotation text after newlines.
