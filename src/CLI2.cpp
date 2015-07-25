@@ -566,34 +566,31 @@ void CLI2::addContextFilter ()
   std::string contextName = context.config.get ("context");
   if (contextName == "")
   {
-    context.debug ("No context applied.");
+    context.debug ("No context.");
     return;
   }
 
-  // The 'undo' command does not apply context.
+  // Some commands operate independently of context.
   auto cmd = getCommand ();
   if (cmd    == "undo"   ||
       cmd    == "export" ||
       cmd[0] == '_')
+  {
+    context.debug ("Context-free command.");
     return;
+  }
 
-/*
   // Detect if UUID or ID is set, and bail out
   for (auto& a : _args)
   {
-    // TODO This is needed, but the parsing is not yet complete, so the logic
-    //      below is not valid.
-    if (a.hasTag ("FILTER") &&
-        a.hasTag ("ATTRIBUTE") &&
-        ! a.hasTag ("TERMINATED") &&
-        ! a.hasTag ("WORD") &&
-        (a.attribute ("raw") == "id" || a.attribute ("raw") == "uuid"))
+    if ((a._lextype == Lexer::Type::uuid ||
+         a._lextype == Lexer::Type::set) &&
+        a.hasTag ("FILTER"))
     {
       context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a.attribute ("raw")));
       return;
     }
   }
-*/
 
   // Apply context
   context.debug ("Applying context: " + contextName);
