@@ -42,6 +42,7 @@ public:
 
   void subset (const std::vector <Task>&, std::vector <Task>&, bool applyContext = true);
   void subset (std::vector <Task>&, bool applyContext = true);
+  bool hasModifications ();
   bool pendingOnly ();
   void safety ();
   void disableSafety ();

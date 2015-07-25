@@ -199,6 +199,16 @@ void Filter::subset (std::vector <Task>& output, bool applyContext /* = true */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Filter::hasModifications ()
+{
+  for (auto& a : context.cli2._args)
+    if (a.hasTag ("MODIFICATION"))
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // If the filter contains no 'or', 'xor' or 'not' operators, and only includes
 // status values 'pending', 'waiting' or 'recurring', then the filter is
 // guaranteed to only need data from pending.data.
