@@ -29,6 +29,7 @@
 #include <inttypes.h>
 #include <signal.h>
 #include <Context.h>
+#include <Filter.h>
 #include <Color.h>
 #include <text.h>
 #include <util.h>
@@ -53,6 +54,10 @@ int CmdSync::execute (std::string& output)
   int status = 0;
 #ifdef HAVE_LIBGNUTLS
   std::stringstream out;
+
+  Filter filter;
+  if (filter.hasFilter ())
+    throw std::string (STRING_ERROR_NO_FILTER);
 
   // Loog for the 'init' keyword to indicate one-time pending.data upload.
   bool first_time_init = false;

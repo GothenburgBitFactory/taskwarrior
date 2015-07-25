@@ -105,6 +105,8 @@
 - When multiple tasks are 'edit'ed, a failure causes the editing to stop (thanks
   to Daniel Shahaf).
 - New 'UDA' and 'ORPHAN' virtual tags.
+- Commands that do not accept filters or modifications now generate an error
+  when extra arguments are specified.
 
 ------ current release ---------------------------
 

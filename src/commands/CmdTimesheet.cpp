@@ -28,6 +28,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
+#include <Filter.h>
 #include <ViewText.h>
 #include <Date.h>
 #include <main.h>
