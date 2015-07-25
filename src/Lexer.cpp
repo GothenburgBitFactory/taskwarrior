@@ -1395,18 +1395,16 @@ bool Lexer::decomposePattern (
   std::string& pattern,
   std::string& flags)
 {
-  std::string parsed_pattern;
+  std::string ignored;
   std::string::size_type cursor = 0;
-  if (readWord (text, "/", cursor, parsed_pattern) &&
-      parsed_pattern.length ())
+  if (readWord (text, "/", cursor, ignored) &&
+      ignored.length ())
   {
-    std::string parsed_flags = text.substr (cursor);
+    auto parsed_flags = text.substr (cursor);
     if (parsed_flags.find ("/") == std::string::npos)
     {
-      dequote (parsed_pattern, "/");
-
-      pattern = parsed_pattern;
       flags   = parsed_flags;
+      pattern = text.substr (1, cursor - 2 - flags.length ());
       return true;
     }
   }
