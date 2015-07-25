@@ -466,6 +466,11 @@ bool namedDates (const std::string& name, Variant& value)
     }
 
          if (closeEnough ("goodfriday",   name, minimum)) t->tm_mday -= 2;
+
+    // DO NOT REMOVE THIS USELESS-LOOKING LINE.
+    // It is here to capture an exact match for 'easter', to prevent 'easter'
+    // being a partial match for 'eastermonday'.
+    else if (closeEnough ("easter",       name, minimum)) ;
     else if (closeEnough ("eastermonday", name, minimum)) t->tm_mday += 1;
     else if (closeEnough ("ascension",    name, minimum)) t->tm_mday += 39;
     else if (closeEnough ("pentecost",    name, minimum)) t->tm_mday += 49;
