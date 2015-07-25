@@ -79,7 +79,7 @@ bool Lexer::token (std::string& token, Lexer::Type& type)
       isDuration     (token, type)        ||
       isURL          (token, type)        ||
       isPair         (token, type)        ||
-      isUUID         (token, type)        ||
+      isUUID         (token, type, true)  ||
       isSet          (token, type)        ||
       isDOM          (token, type)        ||
       isHexNumber    (token, type)        ||
@@ -471,7 +471,7 @@ bool Lexer::isDuration (std::string& token, Lexer::Type& type)
 //   XXXXXXXX-
 //   XXXXXXXX
 //   Followed only by EOS, whitespace, or single character operator.
-bool Lexer::isUUID (std::string& token, Lexer::Type& type)
+bool Lexer::isUUID (std::string& token, Lexer::Type& type, bool endBoundary)
 {
   std::size_t marker = _cursor;
 
@@ -487,10 +487,11 @@ bool Lexer::isUUID (std::string& token, Lexer::Type& type)
       break;
   }
 
-  if (i >= uuid_min_length &&
-      (_text[marker + i] == 0           ||
-       isWhitespace (_text[marker + i]) ||
-       isSingleCharOperator (_text[marker + i])))
+  if (! endBoundary                      ||
+      (i >= uuid_min_length              &&
+       (_text[marker + i] == 0           ||
+        isWhitespace (_text[marker + i]) ||
+        isSingleCharOperator (_text[marker + i]))))
   {
     token = _text.substr (_cursor, i);
     if (! isAllDigits (token))
