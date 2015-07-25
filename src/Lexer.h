@@ -91,6 +91,7 @@ public:
   bool isDuration     (std::string&, Lexer::Type&);
   bool isUUID         (std::string&, Lexer::Type&);
   bool isNumber       (std::string&, Lexer::Type&);
+  bool isInteger      (std::string&, Lexer::Type&);
   bool isHexNumber    (std::string&, Lexer::Type&);
   bool isSeparator    (std::string&, Lexer::Type&);
   bool isURL          (std::string&, Lexer::Type&);

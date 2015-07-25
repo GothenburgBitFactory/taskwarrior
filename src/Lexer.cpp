@@ -604,6 +604,28 @@ bool Lexer::isNumber (std::string& token, Lexer::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Lexer::Type::number
+//   \d+
+bool Lexer::isInteger (std::string& token, Lexer::Type& type)
+{
+  std::size_t marker = _cursor;
+
+  if (isDigit (_text[marker]))
+  {
+    ++marker;
+    while (isDigit (_text[marker]))
+      utf8_next_char (_text, marker);
+
+    token = _text.substr (_cursor, marker - _cursor);
+    type = Lexer::Type::number;
+    _cursor = marker;
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::separator
 //   --
 bool Lexer::isSeparator (std::string& token, Lexer::Type& type)
