@@ -316,6 +316,7 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("DUE"))       virtualTags += "DUE ";
       if (task.hasTag ("DUETODAY"))  virtualTags += "DUETODAY ";
       if (task.hasTag ("MONTH"))     virtualTags += "MONTH ";
+      if (task.hasTag ("ORPHAN"))    virtualTags += "ORPHAN ";
       if (task.hasTag ("OVERDUE"))   virtualTags += "OVERDUE ";
       if (task.hasTag ("PARENT"))    virtualTags += "PARENT ";
       if (task.hasTag ("PENDING"))   virtualTags += "PENDING ";
@@ -324,12 +325,14 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("TAGGED"))    virtualTags += "TAGGED ";
       if (task.hasTag ("TODAY"))     virtualTags += "TODAY ";
       if (task.hasTag ("TOMORROW"))  virtualTags += "TOMORROW ";
+      if (task.hasTag ("UDA"))       virtualTags += "UDA ";
       if (task.hasTag ("UNBLOCKED")) virtualTags += "UNBLOCKED ";
       if (task.hasTag ("UNTIL"))     virtualTags += "UNTIL ";
       if (task.hasTag ("WAITING"))   virtualTags += "WAITING ";
       if (task.hasTag ("WEEK"))      virtualTags += "WEEK ";
       if (task.hasTag ("YEAR"))      virtualTags += "YEAR ";
       if (task.hasTag ("YESTERDAY")) virtualTags += "YESTERDAY ";
+      // If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
 
       row = view.addRow ();
       view.set (row, 0, STRING_CMD_INFO_VIRTUAL_TAGS);

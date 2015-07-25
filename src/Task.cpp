@@ -496,6 +496,29 @@ bool Task::is_dueyear () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Task::is_udaPresent () const
+{
+  for (auto& col : context.columns)
+    if (col.first.substr (0, 11) != "annotation_")
+      if (col.second->is_uda () &&
+          has (col.first))
+        return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Task::is_orphanPresent () const
+{
+  for (auto& att : *this)
+    if (att.first.substr (0, 11) != "annotation_")
+      if (context.columns.find (att.first) == context.columns.end ())
+        return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Task::is_overdue () const
 {
   if (has ("due"))
@@ -1120,6 +1143,8 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "PENDING")   return get ("status") == "pending";
   if (tag == "COMPLETED") return get ("status") == "completed";
   if (tag == "DELETED")   return get ("status") == "deleted";
+  if (tag == "UDA")       return is_udaPresent();
+  if (tag == "ORPHAN")    return is_orphanPresent();
 
   // Concrete tags.
   std::vector <std::string> tags;

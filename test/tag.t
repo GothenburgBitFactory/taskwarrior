@@ -354,7 +354,6 @@ class TestVirtualTags(TestCase):
         self.assertIn("due_eom", out)
         self.assertIn("due_eow", out)
 
-
     def test_virtual_tags_helper(self):
         """Verify '_tags' shows appropriate tags"""
         code, out, err = self.t("_tags")
@@ -364,6 +363,36 @@ class TestVirtualTags(TestCase):
         self.assertIn("nocolor", out)
         self.assertIn("nonag", out)
         self.assertIn("tag", out)
+
+
+class TestVirtualTagUDA(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t.config("uda.animal.type",  "string")
+        self.t.config("uda.animal.label", "Animal")
+        self.t("add one animal:donkey")
+        self.t("add two")
+
+    def test_virtual_tag_UDA(self):
+        """Verify 'UDA' appears when expected"""
+        code, out, err = self.t("+UDA all")
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+
+
+class TestVirtualTagORPHAN(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t("add one rc.uda.animal.type:string rc.uda.animal.label:Animal animal:donkey")
+        self.t("add two")
+
+    def test_virtual_tag_ORPHAN(self):
+        """Verify 'ORPHAN' appears when expected"""
+        code, out, err = self.t("+ORPHAN all")
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
 
 
 class Test285(TestCase):

@@ -111,6 +111,8 @@ public:
   bool is_duemonth () const;
   bool is_dueyear () const;
   bool is_overdue () const;
+  bool is_udaPresent () const;
+  bool is_orphanPresent () const;
 #endif
 
   status getStatus () const;

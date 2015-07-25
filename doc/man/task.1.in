@@ -652,31 +652,33 @@ There are also virtual tags, which represent task metadata in tag form.  These
 tags do not exist, but can be used to filter tasks.  The supported virtual tags
 are:
 
-    BLOCKED      Matches if the task is blocked
-    UNBLOCKED    Matches if the task is not blocked
-    BLOCKING     Matches if the task is blocking
-    YESTERDAY    Matches if the task was due sometime yesterday
-    DUE          Matches if the task is due
-    DUETODAY     Matches if the task is due today
-    TODAY        Matches if the task is due today
-    TOMORROW     Matches if the task is due sometime tomorrow
-    WEEK         Matches if the task is due this week
-    MONTH        Matches if the task is due this month
-    YEAR         Matches if the task is due this year
-    OVERDUE      Matches if the task is overdue
     ACTIVE       Matches if the task is started
-    SCHEDULED    Matches if the task is scheduled
-    READY        Matches if the task is actionable
-    PARENT       Matches if the task is a parent
-    CHILD        Matches if the task has a parent
-    UNTIL        Matches if the task expires
-    WAITING      Matches if the task is waiting
     ANNOTATED    Matches if the task has annotations
-    TAGGED       Matches if the task has tags
-    PENDING      Matches if the task has pending status
+    BLOCKED      Matches if the task is blocked
+    BLOCKING     Matches if the task is blocking
+    CHILD        Matches if the task has a parent
     COMPLETED    Matches if the task has completed status
     DELETED      Matches if the task has deleted status
-.\" If you update the above list, update src/commands/CmdTags.cpp as well.
+    DUE          Matches if the task is due
+    DUETODAY     Matches if the task is due today
+    MONTH        Matches if the task is due this month
+    ORPHAN       Matches if the task has any orphaned UDA values
+    OVERDUE      Matches if the task is overdue
+    PARENT       Matches if the task is a parent
+    PENDING      Matches if the task has pending status
+    READY        Matches if the task is actionable
+    SCHEDULED    Matches if the task is scheduled
+    TAGGED       Matches if the task has tags
+    TODAY        Matches if the task is due today
+    TOMORROW     Matches if the task is due sometime tomorrow
+    UDA          Matches if the task has any UDA values
+    UNBLOCKED    Matches if the task is not blocked
+    UNTIL        Matches if the task expires
+    WAITING      Matches if the task is waiting
+    WEEK         Matches if the task is due this week
+    YEAR         Matches if the task is due this year
+    YESTERDAY    Matches if the task was due sometime yesterday
+.\" If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
 
 You can use +BLOCKED to filter blocked tasks, or -BLOCKED for unblocked tasks.
 Similarly, -BLOCKED is equivalent to +UNBLOCKED. It is an error to attempt to
