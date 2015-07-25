@@ -86,7 +86,7 @@ class TestTaskEdit(TestCase):
     def test_command_line_modifications(self):
         """Verify that the 'edit' command does not accept command line modifications"""
         code, out, err = self.t.runError("1 edit +foo")
-        self.assertIn("Command line modifications are not support by this command.", err)
+        self.assertIn("Command line modifications are not supported by this command.", err)
 
 
 if __name__ == "__main__":

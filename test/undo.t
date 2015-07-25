@@ -65,7 +65,7 @@ class TestUndo(TestCase):
         """Verify that en-passant changes during undo are an error"""
         self.t("add one")
         code, out, err = self.t.runError("undo +tag")
-        self.assertIn("The undo command does not allow further task modification.", err)
+        self.assertIn("Command line modifications are not supported by this command.", err)
 
 
 class TestBug634(TestCase):
