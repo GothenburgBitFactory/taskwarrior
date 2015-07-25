@@ -156,7 +156,8 @@ class TestRecurrenceUntil(TestCase):
         # change the 3 to a 0.
         self.t.faketime("+24h")
         code, out, err = self.t("list rc.verbose:nothing")
-        self.assertEqual(out.count("one"), 3)
+        #self.assertEqual(out.count("one"), 3)
+        self.assertEqual(out.count("one"), 0)
 
 
 class TestRecurrenceTasks(TestCase):
