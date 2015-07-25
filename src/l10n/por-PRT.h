@@ -747,6 +747,7 @@
 #define STRING_INVALID_SORT_COL      "A coluna '{1}' não pode ser ordenada."
 #define STRING_TLS_INIT_FAIL         "Erro a iniciar componente TLS. {1}"
 #define STRING_ERROR_DETAILS         "A definição 'calendar.details.report' pode apenas indicar um nome de relatório."
+#define STRING_ERROR_NO_MODS         "Command line modifications are not support by this command."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Nenhuma tarefa."

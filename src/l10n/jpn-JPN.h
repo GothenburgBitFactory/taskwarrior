@@ -747,6 +747,7 @@
 #define STRING_INVALID_SORT_COL      "The '{1}' column is not a valid sort field."
 #define STRING_TLS_INIT_FAIL         "TLS初期化でエラー。 {1}"
 #define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
+#define STRING_ERROR_NO_MODS         "Command line modifications are not support by this command."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "タスクがない。"

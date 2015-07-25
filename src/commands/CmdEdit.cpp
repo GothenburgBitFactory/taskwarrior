@@ -67,6 +67,9 @@ int CmdEdit::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
+  if (filter.hasModifications ())
+    throw std::string (STRING_ERROR_NO_MODS);
+
   // Find number of matching tasks.
   for (auto& task : filtered)
   {

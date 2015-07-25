@@ -747,6 +747,7 @@
 #define STRING_INVALID_SORT_COL      "Kolumno '{1}' ne estas valida kampo por ordigi."
 #define STRING_TLS_INIT_FAIL         "Erara eko de TLS. {1}"
 #define STRING_ERROR_DETAILS         "Agordo 'calendar.details.report' devas enhavi sole unu raportnomon."
+#define STRING_ERROR_NO_MODS         "Command line modifications are not support by this command."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Nenia tasko."

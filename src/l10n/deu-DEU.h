@@ -747,6 +747,7 @@
 #define STRING_INVALID_SORT_COL      "Nach Spalte '{1}' kann nicht sortiert weden."
 #define STRING_TLS_INIT_FAIL         "Fehler bei der TLS-Initialisierung. {1}"
 #define STRING_ERROR_DETAILS         "Die Option 'calendar.details.report' muss einen einzelnen Report-Namen enthalten."
+#define STRING_ERROR_NO_MODS         "Command line modifications are not support by this command."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Keine Aufgaben."
