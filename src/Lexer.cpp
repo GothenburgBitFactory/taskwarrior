@@ -1078,6 +1078,21 @@ bool Lexer::isWord (std::string& token, Lexer::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isLiteral (const std::string& literal)
+{
+  if (_text.find (literal, _cursor) == 0 &&
+      (isEOS () ||
+       Lexer::isWhitespace (_text[_cursor + literal.length ()]) ||
+       Lexer::isSingleCharOperator (_text[_cursor + literal.length ()])))
+  {
+    _cursor += literal.length ();
+    return true;
+  }
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Static
 std::string Lexer::typeToString (Lexer::Type type)
 {

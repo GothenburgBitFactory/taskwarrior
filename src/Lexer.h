@@ -104,6 +104,7 @@ public:
   bool isDOM          (std::string&, Lexer::Type&);
   bool isIdentifier   (std::string&, Lexer::Type&);
   bool isWord         (std::string&, Lexer::Type&);
+  bool isLiteral      (const std::string&);
 
 private:
   std::string _text;
