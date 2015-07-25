@@ -62,7 +62,7 @@ class TestSequences(TestCase):
 
         self.t("1,2 stop")
         code, out, err = self.t("_get 1.start 2.start")
-        self.assertEqual("\n", out)
+        self.assertEqual(" \n", out)  # Space separating the two blank values.
 
     def test_sequence_modify(self):
         """Test sequences in modify"""
