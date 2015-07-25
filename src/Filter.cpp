@@ -199,6 +199,16 @@ void Filter::subset (std::vector <Task>& output, bool applyContext /* = true */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Filter::hasFilter ()
+{
+  for (auto& a : context.cli2._args)
+    if (a.hasTag ("FILTER"))
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Filter::hasModifications ()
 {
   for (auto& a : context.cli2._args)
