@@ -746,8 +746,8 @@
 #define STRING_INVALID_SORT_COL      "La colonna '{1}' non è un campo di ordinamento valido."
 #define STRING_TLS_INIT_FAIL         "Error initializing TLS. {1}"
 #define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
-#define STRING_ERROR_NO_FILTER       "Command line filters are not support by this command."
-#define STRING_ERROR_NO_MODS         "Command line modifications are not support by this command."
+#define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
+#define STRING_ERROR_NO_MODS         "Command line modifications are not supported by this command."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Nessun task."

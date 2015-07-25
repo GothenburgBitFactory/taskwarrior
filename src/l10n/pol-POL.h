@@ -747,8 +747,8 @@
 #define STRING_INVALID_SORT_COL      "Kolumna '{1}' nie jest poprawnym parametrem sortowania."
 #define STRING_TLS_INIT_FAIL         "Błąd inicjalizacji TLS."
 #define STRING_ERROR_DETAILS         "Zmienna 'calendar.details.report' musi zawierać nazwę raportu."
-#define STRING_ERROR_NO_FILTER       "Command line filters are not support by this command."
-#define STRING_ERROR_NO_MODS         "Command line modifications are not support by this command."
+#define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
+#define STRING_ERROR_NO_MODS         "Command line modifications are not supported by this command."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Brak zadań."
