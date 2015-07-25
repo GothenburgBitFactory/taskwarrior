@@ -34,7 +34,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest ut (23);
+  UnitTest ut (24);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -118,6 +118,10 @@ int main (int argc, char** argv)
   RX r12 ("\\bthe\\b");
   ut.ok (r12.match (text), text + " =~ /\\bthe\\b/");
 #endif
+
+  text = "D0";
+  RX r13 ("D\\d");
+  ut.ok (r13.match (text), text + " =~ /D\\d/");
 
   return 0;
 }

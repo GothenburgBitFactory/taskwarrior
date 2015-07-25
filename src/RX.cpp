@@ -56,7 +56,7 @@ void RX::compile ()
 
     int result;
     if ((result = regcomp (&_regex, _pattern.c_str (),
-                           REG_EXTENDED | REG_NEWLINE |
+                           REG_ENHANCED | REG_EXTENDED | REG_NEWLINE |
                            (_case_sensitive ? 0 : REG_ICASE))) != 0)
     {
       char message[256];
