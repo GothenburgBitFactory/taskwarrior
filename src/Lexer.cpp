@@ -1093,6 +1093,16 @@ bool Lexer::isLiteral (const std::string& literal)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isOneOf (const std::vector <std::string>& options)
+{
+  for (auto& item : options)
+    if (isLiteral (item))
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Static
 std::string Lexer::typeToString (Lexer::Type type)
 {

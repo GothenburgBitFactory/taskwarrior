@@ -105,6 +105,7 @@ public:
   bool isIdentifier   (std::string&, Lexer::Type&);
   bool isWord         (std::string&, Lexer::Type&);
   bool isLiteral      (const std::string&);
+  bool isOneOf        (const std::vector <std::string>&);
 
 private:
   std::string _text;
