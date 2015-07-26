@@ -37,11 +37,17 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1111);
+  UnitTest t (1160);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
   Lexer::Type type;
+
+  // Feed in some attributes and types, so that the Lexer knows what a DOM
+  // reference is.
+  Lexer::attributes["due"]         = "date";
+  Lexer::attributes["tags"]        = "string";
+  Lexer::attributes["description"] = "string";
 
   // White space detection.
   t.notok (Lexer::isWhitespace (0x0041), "U+0041 (A) ! isWhitespace");
@@ -106,7 +112,7 @@ int main (int argc, char** argv)
   }
 
   t.is (tokens[0].first,                     "one",           "tokens[0] = 'one'"); // 30
-  t.is (Lexer::typeName (tokens[0].second),  "dom",           "tokens[0] = dom");
+  t.is (Lexer::typeName (tokens[0].second),  "identifier",    "tokens[0] = identifier");
   t.is (tokens[1].first,                     "'two 'three''", "tokens[1] = 'two 'three''");
   t.is (Lexer::typeName (tokens[1].second),  "string",        "tokens[1] = string");
   t.is (tokens[2].first,                     "+",             "tokens[2] = '+'");
@@ -132,7 +138,7 @@ int main (int argc, char** argv)
   t.is (tokens[12].first,                    "1.2e-3.4",      "tokens[12] = '1.2e-3.4'");
   t.is (Lexer::typeName (tokens[12].second), "number",        "tokens[12] = number");
   t.is (tokens[13].first,                    "foo.bar",       "tokens[13] = 'foo.bar'");
-  t.is (Lexer::typeName (tokens[13].second), "dom",           "tokens[13] = dom");
+  t.is (Lexer::typeName (tokens[13].second), "identifier",    "tokens[13] = identifier");
   t.is (tokens[14].first,                    "and",           "tokens[14] = 'and'"); // 60
   t.is (Lexer::typeName (tokens[14].second), "op",            "tokens[14] = op");
   t.is (tokens[15].first,                    "'€'",           "tokens[15] = \\u20ac --> ''€''");
@@ -304,18 +310,33 @@ int main (int argc, char** argv)
     // Word
     { "9th",                                          { { "9th",                                          Lexer::Type::word         }, NO, NO, NO, NO }, },
     { "10th",                                         { { "10th",                                         Lexer::Type::word         }, NO, NO, NO, NO }, },
+    { "1.foo.bar",                                    { { "1.foo.bar",                                    Lexer::Type::word         }, NO, NO, NO, NO }, },
+
+    // Identifier
+    { "foo",                                          { { "foo",                                          Lexer::Type::identifier   }, NO, NO, NO, NO }, },
+    { "Çirçös",                                       { { "Çirçös",                                       Lexer::Type::identifier   }, NO, NO, NO, NO }, },
+    { "☺",                                            { { "☺",                                            Lexer::Type::identifier   }, NO, NO, NO, NO }, },
+    { "name",                                         { { "name",                                         Lexer::Type::identifier   }, NO, NO, NO, NO }, },
+    { "f1",                                           { { "f1",                                           Lexer::Type::identifier   }, NO, NO, NO, NO }, },
+    { "foo.bar",                                      { { "foo.bar",                                      Lexer::Type::identifier   }, NO, NO, NO, NO }, },
+
+      // Not a date, because Eval extracts named dates via data source, and Date/ISO8601d does not do that.
+    { "today",                                        { { "today",                                        Lexer::Type::identifier   }, NO, NO, NO, NO }, },
+
+      // Word that starts wih 'or', which is an operator, but should be ignored.
+    { "ordinary",                                     { { "ordinary",                                     Lexer::Type::identifier   }, NO, NO, NO, NO }, },
 
     // DOM
-    { "foo",                                          { { "foo",                                          Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "Çirçös",                                       { { "Çirçös",                                       Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "☺",                                            { { "☺",                                            Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "name",                                         { { "name",                                         Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "f1",                                           { { "f1",                                           Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "foo.bar",                                      { { "foo.bar",                                      Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "1.foo.bar",                                    { { "1.foo.bar",                                    Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "due",                                          { { "due",                                          Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "123.tags",                                     { { "123.tags",                                     Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "123.tags.PENDING",                             { { "123.tags.PENDING",                             Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "123.description",                              { { "123.description",                              Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "123.annotations.1.description",                { { "123.annotations.1.description",                Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "123.annotations.1.entry",                      { { "123.annotations.1.entry",                      Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "123.annotations.1.entry.year",                 { { "123.annotations.1.entry.year",                 Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", { { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "today",                                        { { "today",                                        Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "system.os",                                    { { "system.os",                                    Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "rc.foo",                                       { { "rc.foo",                                       Lexer::Type::dom          }, NO, NO, NO, NO }, },
 
     // URL
     { "http://tasktools.org",                         { { "http://tasktools.org",                         Lexer::Type::url          }, NO, NO, NO, NO }, },
@@ -389,9 +410,6 @@ int main (int argc, char** argv)
     { "(",                                            { { "(",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
     { ")",                                            { { ")",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
 
-      // Word that starts wih 'or', which is an operator, but should be ignored.
-    { "ordinary",                                     { { "ordinary",                                     Lexer::Type::dom          }, NO, NO, NO, NO }, },
-
     // UUID
     { "ffffffff-ffff-ffff-ffff-ffffffffffff",         { { "ffffffff-ffff-ffff-ffff-ffffffffffff",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "00000000-0000-0000-0000-000000000000",         { { "00000000-0000-0000-0000-000000000000",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
@@ -438,7 +456,7 @@ int main (int argc, char** argv)
                                                         { ")",                                            Lexer::Type::op           },                }, },
     { "desc~pattern",                                 { { "desc",                                         Lexer::Type::dom          },
                                                         { "~",                                            Lexer::Type::op           },
-                                                        { "pattern",                                      Lexer::Type::dom          },         NO, NO }, },
+                                                        { "pattern",                                      Lexer::Type::identifier   },         NO, NO }, },
     { "(+tag)",                                       { { "(",                                            Lexer::Type::op           },
                                                         { "+tag",                                         Lexer::Type::tag          },
                                                         { ")",                                            Lexer::Type::op           },         NO, NO }, },
