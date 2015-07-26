@@ -28,6 +28,7 @@
 #define INCLUDED_LEXER
 
 #include <string>
+#include <map>
 #include <vector>
 #include <cstddef>
 
@@ -107,6 +108,7 @@ public:
   bool isWord         (std::string&, Lexer::Type&);
   bool isLiteral      (const std::string&, bool);
   bool isOneOf        (const std::vector <std::string>&, bool);
+  bool isOneOf        (const std::map <std::string, std::string>&, bool);
 
 private:
   std::string _text;

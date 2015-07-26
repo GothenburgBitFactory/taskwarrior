@@ -1128,6 +1128,16 @@ bool Lexer::isOneOf (const std::vector <std::string>& options, bool endBoundary)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isOneOf (const std::map <std::string, std::string>& options, bool endBoundary)
+{
+  for (auto& item : options)
+    if (isLiteral (item.first, endBoundary))
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Static
 std::string Lexer::typeToString (Lexer::Type type)
 {
