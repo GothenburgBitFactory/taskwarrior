@@ -52,15 +52,15 @@ DOM::~DOM ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // DOM Supported References:
+//
+// Configuration:
 //   rc.<name>
 //
+// System:
 //   context.program
 //   context.args
 //   context.width
 //   context.height
-//
-//   TODO stats.<name>           <-- context.stats
-//
 //   system.version
 //   system.os
 //
@@ -170,11 +170,15 @@ bool DOM::get (const std::string& name, Variant& value)
 ////////////////////////////////////////////////////////////////////////////////
 // DOM Supported References:
 //
+// Relative or absolute attribute:
 //   <attribute>
 //   <id>.<attribute>
 //   <uuid>.<attribute>
 //
-// For certain attributes:
+// Single tag:
+//   tags.<word>
+//
+// Date type:
 //   <date>.year
 //   <date>.month
 //   <date>.day
@@ -185,18 +189,8 @@ bool DOM::get (const std::string& name, Variant& value)
 //   <date>.minute
 //   <date>.second
 //
-//   tags.<literal>                  Includes virtual tags
-//
+// Annotations (entry is a date):
 //   annotations.<N>.entry
-//   annotations.<N>.entry.year
-//   annotations.<N>.entry.month
-//   annotations.<N>.entry.day
-//   annotations.<N>.entry.week
-//   annotations.<N>.entry.weekday
-//   annotations.<N>.entry.julian
-//   annotations.<N>.entry.hour
-//   annotations.<N>.entry.minute
-//   annotations.<N>.entry.second
 //   annotations.<N>.description
 //
 bool DOM::get (const std::string& name, const Task& task, Variant& value)
