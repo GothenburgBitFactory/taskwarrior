@@ -1101,14 +1101,16 @@ bool Lexer::isWord (std::string& token, Lexer::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Lexer::isLiteral (const std::string& literal)
+bool Lexer::isLiteral (const std::string& literal, bool endBoundary)
 {
-  if (_text.find (literal, _cursor) == 0 &&
-      (isEOS () ||
-       Lexer::isWhitespace (_text[_cursor + literal.length ()]) ||
-       Lexer::isSingleCharOperator (_text[_cursor + literal.length ()])))
+  auto len = literal.length ();
+  if (_text.find (literal, _cursor) == _cursor &&
+      (! endBoundary                              ||
+       _text.length () == _cursor + len           ||
+       Lexer::isWhitespace (_text[_cursor + len]) ||
+       Lexer::isSingleCharOperator (_text[_cursor + len])))
   {
-    _cursor += literal.length ();
+    _cursor += len;
     return true;
   }
 
@@ -1116,10 +1118,10 @@ bool Lexer::isLiteral (const std::string& literal)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Lexer::isOneOf (const std::vector <std::string>& options)
+bool Lexer::isOneOf (const std::vector <std::string>& options, bool endBoundary)
 {
   for (auto& item : options)
-    if (isLiteral (item))
+    if (isLiteral (item, endBoundary))
       return true;
 
   return false;

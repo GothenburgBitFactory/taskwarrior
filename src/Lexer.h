@@ -105,8 +105,8 @@ public:
   bool isDOM          (std::string&, Lexer::Type&);
   bool isIdentifier   (std::string&, Lexer::Type&);
   bool isWord         (std::string&, Lexer::Type&);
-  bool isLiteral      (const std::string&);
-  bool isOneOf        (const std::vector <std::string>&);
+  bool isLiteral      (const std::string&, bool);
+  bool isOneOf        (const std::vector <std::string>&, bool);
 
 private:
   std::string _text;
