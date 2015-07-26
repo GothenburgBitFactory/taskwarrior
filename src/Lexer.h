@@ -41,6 +41,7 @@ public:
   // These are overridable.
   static std::string dateFormat;
   static bool isoEnabled;
+  static std::map <std::string, std::string> attributes;
 
   enum class Type { uuid, number, hex,
                     string,

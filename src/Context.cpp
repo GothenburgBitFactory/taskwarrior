@@ -641,7 +641,10 @@ void Context::staticInitialization ()
   }
 
   for (auto& col : columns)
+  {
     Task::attributes[col.first] = col.second->type ();
+    Lexer::attributes[col.first] = col.second->type ();
+  }
 
   Task::urgencyProjectCoefficient     = config.getReal ("urgency.project.coefficient");
   Task::urgencyActiveCoefficient      = config.getReal ("urgency.active.coefficient");
