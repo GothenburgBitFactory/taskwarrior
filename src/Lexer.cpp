@@ -1033,6 +1033,16 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
+  std::string partialToken;
+  Lexer::Type partialType;
+  if (isLiteral ("rc.", false) &&
+      isWord (partialToken, partialType))
+  {
+    token = _text.substr (marker, _cursor - marker);
+    type = Lexer::Type::dom;
+    return true;
+  }
+
   if (isOneOf ({"context.program",
                 "context.args",
                 "context.width",
@@ -1064,8 +1074,6 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
   std::size_t checkpoint = _cursor;
 
   // [prefix]tags.<word>
-  std::string partialToken;
-  Lexer::Type partialType;
   if (isLiteral ("tags.", false) &&
       isWord (partialToken, partialType))
   {
