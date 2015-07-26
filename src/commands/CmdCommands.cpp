@@ -80,13 +80,14 @@ CmdZshCommands::CmdZshCommands ()
 ////////////////////////////////////////////////////////////////////////////////
 struct ZshCommand
 {
-  bool operator< (const struct ZshCommand&);
+  bool operator< (const struct ZshCommand&) const;
   Command::Category _category;
   std::string _command;
   std::string _description;
 };
 
-bool ZshCommand::operator< (const struct ZshCommand& other)
+////////////////////////////////////////////////////////////////////////////////
+bool ZshCommand::operator< (const struct ZshCommand& other) const
 {
   // Lexicographical comparison.
   if (_category != other._category)
