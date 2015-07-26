@@ -994,61 +994,160 @@ bool Lexer::isOperator (std::string& token, Lexer::Type& type)
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::dom
 //   [ <isUUID> | <isDigit>+ . ] <isIdentifier> [ . <isIdentifier> ]*
+//
+// Configuration:
+//   rc.<name>
+//
+// System:
+//   context.program
+//   context.args
+//   context.width
+//   context.height
+//   system.version
+//   system.os
+//
+// Relative or absolute attribute:
+//   <attribute>
+//   <id>.<attribute>
+//   <uuid>.<attribute>
+//
+// Single tag:
+//   tags.<word>
+//
+// Date type:
+//   <date>.year
+//   <date>.month
+//   <date>.day
+//   <date>.week
+//   <date>.weekday
+//   <date>.julian
+//   <date>.hour
+//   <date>.minute
+//   <date>.second
+//
+// Annotations (entry is a date):
+//   annotations.<N>.entry
+//   annotations.<N>.description
+//
 bool Lexer::isDOM (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
 
+  if (isOneOf ({"context.program",
+                "context.args",
+                "context.width",
+                "context.height",
+                "system.version",
+                "system.os"}, true))
+  {
+    token = _text.substr (marker, _cursor - marker);
+    type = Lexer::Type::dom;
+    return true;
+  }
+
+  // Optional:
+  //   <uuid>.
+  //   <id>.
   std::string extractedToken;
   Lexer::Type extractedType;
-  if (isUUID (extractedToken, extractedType))
+  if (isUUID (extractedToken, extractedType, false) ||
+      isInteger (extractedToken, extractedType))
   {
-    if (_text[_cursor] == '.')
-      ++_cursor;
-    else
+    if (! isLiteral (".", false))
     {
       _cursor = marker;
       return false;
     }
   }
-  else
-  {
-    if (isDigit (_text[_cursor]))
-    {
-      ++_cursor;
-      while (isDigit (_text[_cursor]))
-        ++_cursor;
 
-      if (_text[_cursor] == '.')
-        ++_cursor;
-      else
+  // Any failure after this line should rollback to the checkpoint.
+  std::size_t checkpoint = _cursor;
+
+  // [prefix]tags.<word>
+  std::string partialToken;
+  Lexer::Type partialType;
+  if (isLiteral ("tags.", false) &&
+      isWord (partialToken, partialType))
+  {
+    token = _text.substr (marker, _cursor - marker);
+    type = Lexer::Type::dom;
+    return true;
+  }
+  else
+    _cursor = checkpoint;
+
+  // [prefix]attribute
+  if (isOneOf (attributes, true))
+  {
+    token = _text.substr (marker, _cursor - marker);
+    type = Lexer::Type::dom;
+    return true;
+  }
+  else
+    _cursor = checkpoint;
+
+  // [prefix]attribute
+  if (isOneOf (attributes, false))
+  {
+    if (isLiteral (".", false))
+    {
+      std::string attribute = _text.substr (checkpoint, _cursor - checkpoint - 1);
+
+      // if attribute type is 'date'
+      if (attributes[attribute] == "date" &&
+          isOneOf ({"year", "month", "day",
+                    "week", "weekday",
+                    "julian",
+                    "hour", "minute", "second"}, true))
       {
-        _cursor = marker;
-        return false;
+        token = _text.substr (marker, _cursor - marker);
+        type = Lexer::Type::dom;
+        return true;
       }
+    }
+    else
+    {
+      token = _text.substr (marker, _cursor - marker);
+      type = Lexer::Type::dom;
+      return true;
     }
   }
+  else
+    _cursor = checkpoint;
 
-  if (! isOperator (extractedToken, extractedType) &&
-      isIdentifier (extractedToken, extractedType))
+  // [prefix]annotations.
+  if (isLiteral ("annotations.", false))
   {
-    while (1)
+    std::string extractedToken;
+    Lexer::Type extractedType;
+    if (isInteger (extractedToken, extractedType))
     {
-      if (_text[_cursor] == '.')
-        ++_cursor;
-      else
-        break;
-
-      if (isOperator (extractedToken, extractedType) ||
-          ! isIdentifier (extractedToken, extractedType))
+      if (isLiteral (".", false))
       {
-        _cursor = marker;
-        return false;
+        if (isLiteral ("description", true))
+        {
+          token = _text.substr (marker, _cursor - marker);
+          type = Lexer::Type::dom;
+          return true;
+        }
+        else if (isLiteral ("entry", true))
+        {
+          token = _text.substr (marker, _cursor - marker);
+          type = Lexer::Type::dom;
+          return true;
+        }
+        else if (isLiteral ("entry.", false) &&
+                 isOneOf ({"year", "month", "day",
+                           "week", "weekday",
+                           "julian",
+                           "hour", "minute", "second"}, true))
+        {
+          token = _text.substr (marker, _cursor - marker);
+          type = Lexer::Type::dom;
+          return true;
+        }
       }
     }
-
-    type = Lexer::Type::dom;
-    token = _text.substr (marker, _cursor - marker);
-    return true;
   }
 
   _cursor = marker;
