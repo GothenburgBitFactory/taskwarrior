@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1100);
+  UnitTest t (1111);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -259,6 +259,19 @@ int main (int argc, char** argv)
   t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one     \" --> true");
   t.is (word, "one",                                        "  word '" + word + "'");
 
+  // bool isLiteral (const std::string&, bool);
+  Lexer l4 ("one.two");
+  t.notok (l4.isLiteral("zero", false),                     "isLiteral 'one.two' --> false");
+  t.ok    (l4.isLiteral("one", false),                      "isLiteral 'one.two' --> 'one'");
+  t.ok    (l4.isLiteral(".", false),                        "isLiteral 'one.two' --> '.'");
+  t.ok    (l4.isLiteral("two", true),                       "isLiteral 'one.two' --> 'two'");
+
+  // bool isOneOf (const std::string&, bool);
+  Lexer l5 ("Grumpy.");
+  std::vector <std::string> dwarves = {"Sneezy", "Doc", "Bashful", "Grumpy", "Happy", "Sleepy", "Dopey"};
+  t.notok (l5.isOneOf (dwarves, true),                      "isOneof ('Grumpy', true) --> false");
+  t.ok    (l5.isOneOf (dwarves, false),                     "isOneOf ('Grumpy', false) --> true");
+
   // Test all Lexer types.
   #define NO {"",Lexer::Type::word}
   struct
@@ -302,6 +315,7 @@ int main (int argc, char** argv)
     { "1.foo.bar",                                    { { "1.foo.bar",                                    Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", { { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "today",                                        { { "today",                                        Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "system.os",                                    { { "system.os",                                    Lexer::Type::dom          }, NO, NO, NO, NO }, },
 
     // URL
     { "http://tasktools.org",                         { { "http://tasktools.org",                         Lexer::Type::url          }, NO, NO, NO, NO }, },
