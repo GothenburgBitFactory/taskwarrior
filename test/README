@@ -108,6 +108,37 @@ How to Submit a Test Change/Addition
 Mail it to support@taskwarrior.org, or attach it to an open bug.
 
 
+Wisdom
+------
+
+Here are some guildelines that may help:
+
+  * If there are any lexer.t tests failing, then ignore all the others and fix
+    these first. They are fundamental and affect everything else. One Lexer
+    failure can cause 30 symptomatic failures, and addressing any of those is
+    wrong.
+
+  * If any of the C++ tests fail, fix them next, for the same reason as above.
+
+  * If you are about to fix a bug, and no tests are failing, add tests that fail
+    in a script named tw-XXXX.t. Later, someone will incorporate that test
+    script into higher-level feature tests.
+
+  * If the command line parser is not working, always blame the Lexer.
+
+  * While the lowest level (C++) tests should be exhaustive, higher level tests
+    should not do the same by iterating over the entire problem space. It is a
+    waste of time.
+
+  * If you find that you are combining two features into one test, you are
+    probably doing it wrong.
+
+  * If you add a feature, then add a test to prove it works, also add a test to
+    prove it doesn't simultaneously generate errors. Furthermore test that with
+    the feature disabled, or command line arguments missing, appropriate errors
+    are reported.
+
+
 TODO
 ----
 
@@ -120,14 +151,12 @@ For anyone looking for test-related tasks to take on, here are some suggestions:
   * Import JSON validates absolutely no attributes.  Create tests with bad data
     in all fields, to exercise validation.
 
-  * DOM references are not validated, make this painfully obvious with tests
+  * Crazy dateformat values are not tested.
 
-  * Crazy dateformat values are not tested
+  * Invalid UTF8 is not tested.
 
-  * Invalid UTF8 is not tested
+  * All the attribute modifiers need to be tested, only a few are.
 
-  * all the attribute modifiers need to be tested, only a few are
-
-  * aliases are not well tested, and fragile
+  * Aliases are not well tested, and fragile.
 
 ---
