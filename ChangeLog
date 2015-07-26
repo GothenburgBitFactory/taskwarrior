@@ -107,6 +107,7 @@
 - New 'UDA' and 'ORPHAN' virtual tags.
 - Commands that do not accept filters or modifications now generate an error
   when extra arguments are specified.
+- Improved zsh support (thanks to Daniel Shahaf).
 
 ------ current release ---------------------------
 
