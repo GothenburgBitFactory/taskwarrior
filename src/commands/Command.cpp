@@ -209,7 +209,7 @@ const std::map <Command::Category, std::string> Command::categoryNames =
   ,{Command::Category::internal,     "internal"}
   ,{Command::Category::UNDOCUMENTED, "undocumented"}
 };
- 
+
 ////////////////////////////////////////////////////////////////////////////////
 Command::Command ()
 : _category(Category::unassigned)
