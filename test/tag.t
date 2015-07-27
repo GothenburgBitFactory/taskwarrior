@@ -283,7 +283,7 @@ class TestVirtualTags(TestCase):
         self.assertIn("maximal", out)
         self.assertNotIn("blocked", out)
         self.assertIn("due_eom", out)
-        self.assertIn("due_eow", out)
+        # Ignore due_eow, which may be a different month.
 
         code, out, err = self.t("-MONTH all")
         self.assertIn("completed", out)
@@ -292,7 +292,7 @@ class TestVirtualTags(TestCase):
         self.assertNotIn("maximal", out)
         self.assertIn("blocked", out)
         self.assertNotIn("due_eom", out)
-        self.assertNotIn("due_eow", out)
+        # Ignore due_eow, which may be a different month.
 
     def test_virtual_tag_WEEK(self):
         """Verify 'WEEK' appears when expected"""
@@ -302,7 +302,7 @@ class TestVirtualTags(TestCase):
         self.assertNotIn("minimal", out)
         self.assertIn("maximal", out)
         self.assertNotIn("blocked", out)
-        self.assertNotIn("due_eom", out)
+        # Ignore due_eom, which may be a different week.
         self.assertIn("due_eow", out)
 
         code, out, err = self.t("-WEEK all")
@@ -311,7 +311,7 @@ class TestVirtualTags(TestCase):
         self.assertIn("minimal", out)
         self.assertNotIn("maximal", out)
         self.assertIn("blocked", out)
-        self.assertIn("due_eom", out)
+        # Ignore due_eom, which may be a different week.
         self.assertNotIn("due_eow", out)
 
     def test_virtual_tag_ACTIVE(self):
