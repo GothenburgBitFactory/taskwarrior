@@ -368,6 +368,24 @@ int Lexer::hexToInt (int c0, int c1, int c2, int c3)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Compares two strings, and returns the number bytes in common.
+//
+// left:   wonderful
+// right:  wonderbread
+// returns:     ^ 6
+int Lexer::commonLength (const std::string& left, const std::string& right)
+{
+  std::string::size_type l = 0;
+  std::string::size_type r = 0;
+  while (left[l] == right[r]        &&
+         utf8_next_char (left,  l)  &&
+         utf8_next_char (right, r))
+    ;
+
+  return (int) l;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::string
 //   '|"
 //   [ U+XXXX | \uXXXX | \" | \' | \\ | \/ | \b | \f | \n | \r | \t | . ]
