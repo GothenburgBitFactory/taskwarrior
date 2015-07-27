@@ -473,9 +473,7 @@ void CLI2::lexArguments ()
 // Until the Lexer gains access to CLI2::_entities, it can only guess at whether
 // a command is a DOM reference.
 //
-// [1] Scan all Lexer::Type::dom arguments, and demote to Lexer::Type::word any
-//     unrecognized arguments.
-// [2] Scan all MODIFICATION args for the 'add' and 'log' commands, and demote
+// [1] Scan all MODIFICATION args for the 'add' and 'log' commands, and demote
 //     any Lexer::Type::Tag args with sense '-' to Lexer::Type::word.
 void CLI2::demotion ()
 {
@@ -483,16 +481,6 @@ void CLI2::demotion ()
 
   for (auto& a : _args)
   {
-    if (a._lextype == Lexer::Type::dom)
-    {
-      std::string canonicalized;
-      if (! canonicalize (canonicalized, "attribute", a.attribute ("raw")))
-      {
-        a._lextype = Lexer::Type::word;
-        changes = true;
-      }
-    }
-
     if (a._lextype == Lexer::Type::tag &&
         a.attribute ("sign") == "-")
     {
