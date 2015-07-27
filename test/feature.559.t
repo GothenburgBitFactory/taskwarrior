@@ -1,56 +1,78 @@
-#! /usr/bin/env perl
-################################################################################
-##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
-##
-## Permission is hereby granted, free of charge, to any person obtaining a copy
-## of this software and associated documentation files (the "Software"), to deal
-## in the Software without restriction, including without limitation the rights
-## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-## copies of the Software, and to permit persons to whom the Software is
-## furnished to do so, subject to the following conditions:
-##
-## The above copyright notice and this permission notice shall be included
-## in all copies or substantial portions of the Software.
-##
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-## OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-## FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-## THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-## SOFTWARE.
-##
-## http://www.opensource.org/licenses/mit-license.php
-##
-################################################################################
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+###############################################################################
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
 
-use strict;
-use warnings;
-use Test::More tests => 2;
+import sys
+import os
+import re
+import unittest
+# Ensure python finds the local simpletap module
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Ensure environment has no influence.
-delete $ENV{'TASKDATA'};
-delete $ENV{'TASKRC'};
+from basetest import Task, TestCase
 
-# Create the rc file.
-if (open my $fh, '>', 'bug.rc')
-{
-  print $fh "data.location=.\n",
-            "exit.on.missing.db=yes\n",
-            "confirmation=no\n";
-  close $fh;
-}
 
-# Feature 559: rc.exit.on.missing.db should cause exit if rc.data.location is missing.
-qx{../src/task rc:bug.rc add foo rc.debug:1 2>&1};
-my $output = qx{../src/task rc:bug.rc list 2>&1 >/dev/null};
-unlike ($output, qr/Error.+does not exist/, 'No error on existent rc.data.location');
+class TestFeature559(TestCase):
+    def setUp(self):
+        self.t = Task()
 
-$output = qx{../src/task rc:bug.rc rc.data.location=donkey list 2>&1 >/dev/null};
-like ($output, qr/Error.+does not exist/, 'Error on missing rc.data.location');
+        self.t.config("exit.on.missing.db", "yes")
 
-# Cleanup.
-unlink qw(pending.data completed.data undo.data backlog.data  bug.rc);
-exit 0;
+        # NOTE the framework uses TASKDATA and TASKRC to tell taskwarrior where
+        # data is stored. Since these env variables take precedence over
+        # command-line specified options, overriding rc.data.location has no
+        # effect.
+        # In order to test rc.exit.on.missing.db we must unset the env vars and
+        # point taskwarrior to the configuration files via rc:override.
+        del self.t.env["TASKDATA"]
+        del self.t.env["TASKRC"]
 
+        # Inject rc:taskrc before any command used in this client
+        # NOTE This will break if self.t.faketime() is used
+        self.t._command.append("rc:{0}".format(self.t.taskrc))
+
+    def test_exit_on_missing_db(self):
+        """Missing db causes exit when rc.exit.on.missing.db=yes"""
+
+        self.t("add footask")
+
+        code, out, err = self.t("list")
+        self.assertIn("footask", out)
+        self.assertNotIn("Error", out)
+        self.assertNotIn("Error", err)
+
+        code, out, err = self.t.runError("rc.data.location=locationdoesnotexist list")
+        self.assertNotIn("footask", out)
+        self.assertNotIn("Error", out)
+        self.assertRegexpMatches(err, re.compile("Error:.+does not exist", re.DOTALL))
+
+
+if __name__ == "__main__":
+    from simpletap import TAPTestRunner
+    unittest.main(testRunner=TAPTestRunner())
+
+# vim: ai sts=4 et sw=4
