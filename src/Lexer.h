@@ -86,6 +86,7 @@ public:
   static int hexToInt               (int, int);
   static int hexToInt               (int, int, int, int);
   static int commonLength           (const std::string&, const std::string&);
+  static int commonLength           (const std::string&, std::string::size_type, const std::string&, std::string::size_type);
 
   bool isEOS                        () const;
 

@@ -386,6 +386,28 @@ int Lexer::commonLength (const std::string& left, const std::string& right)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Compares two strings with offsets, and returns the number bytes in common.
+//
+// left:   wonderful
+// l:      ^
+// right:  prowonderbread
+// r:         ^
+// returns:        ^ 6
+int Lexer::commonLength (
+  const std::string& left,
+  std::string::size_type l,
+  const std::string& right,
+  std::string::size_type r)
+{
+  while (left[l] == right[r]        &&
+         utf8_next_char (left,  l)  &&
+         utf8_next_char (right, r))
+    ;
+
+  return (int) l;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::string
 //   '|"
 //   [ U+XXXX | \uXXXX | \" | \' | \\ | \/ | \b | \f | \n | \r | \t | . ]
