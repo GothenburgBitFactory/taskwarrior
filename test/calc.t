@@ -34,9 +34,9 @@ import unittest
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import TestCase
-from basetest.utils import CURRENT_DIR, run_cmd_wait, run_cmd_wait_nofail
+from basetest.utils import BIN_PREFIX, run_cmd_wait, run_cmd_wait_nofail
 
-CALC = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", "src/calc"))
+CALC = os.path.join(BIN_PREFIX, "calc")
 
 
 @unittest.skipIf(not os.path.isfile(CALC),
