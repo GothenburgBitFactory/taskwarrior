@@ -51,7 +51,7 @@ namespace json
     virtual ~value () {}
     static value* parse (Nibbler&);
     virtual jtype type ();
-    virtual std::string dump ();
+    virtual std::string dump () const;
   };
 
   class string : public value
@@ -62,7 +62,7 @@ namespace json
     ~string () {}
     static string* parse (Nibbler&);
     jtype type ();
-    std::string dump ();
+    std::string dump () const;
 
   public:
     std::string _data;
@@ -75,7 +75,7 @@ namespace json
     ~number () {}
     static number* parse (Nibbler&);
     jtype type ();
-    std::string dump ();
+    std::string dump () const;
     operator double () const;
 
   public:
@@ -89,7 +89,7 @@ namespace json
     ~literal () {}
     static literal* parse (Nibbler&);
     jtype type ();
-    std::string dump ();
+    std::string dump () const;
 
   public:
     enum literal_value {none, nullvalue, falsevalue, truevalue};
@@ -103,7 +103,7 @@ namespace json
     ~array ();
     static array* parse (Nibbler&);
     jtype type ();
-    std::string dump ();
+    std::string dump () const;
 
   public:
     std::vector <value*> _data;
@@ -117,7 +117,7 @@ namespace json
     static object* parse (Nibbler&);
     static bool parse_pair (Nibbler&, std::string&, value*&);
     jtype type ();
-    std::string dump ();
+    std::string dump () const;
 
   public:
     std::map <std::string, value*> _data;

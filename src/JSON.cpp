@@ -51,7 +51,7 @@ json::jtype json::value::type ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string json::value::dump ()
+std::string json::value::dump () const
 {
   return "<value>";
 }
@@ -83,7 +83,7 @@ json::jtype json::string::type ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string json::string::dump ()
+std::string json::string::dump () const
 {
   return std::string ("\"") + _data + "\"";
 }
@@ -109,7 +109,7 @@ json::jtype json::number::type ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string json::number::dump ()
+std::string json::number::dump () const
 {
   return format (_dvalue);
 }
@@ -152,7 +152,7 @@ json::jtype json::literal::type ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string json::literal::dump ()
+std::string json::literal::dump () const
 {
        if (_lvalue == nullvalue)  return "null";
   else if (_lvalue == falsevalue) return "false";
@@ -221,7 +221,7 @@ json::jtype json::array::type ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string json::array::dump ()
+std::string json::array::dump () const
 {
   std::string output;
   output += "[";
@@ -331,7 +331,7 @@ json::jtype json::object::type ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string json::object::dump ()
+std::string json::object::dump () const
 {
   std::string output;
   output += "{";
