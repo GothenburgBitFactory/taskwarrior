@@ -1166,7 +1166,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
 
   // [prefix]annotations.
   if (isLiteral ("annotations", true,  false) &&
-      isLiteral (".",           false, true))
+      isLiteral (".",           false, false))
   {
     std::string extractedToken;
     Lexer::Type extractedType;
@@ -1187,7 +1187,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
           return true;
         }
         else if (isLiteral ("entry", true,  false) &&
-                 isLiteral (".",     false, true) &&
+                 isLiteral (".",     false, false) &&
                  isOneOf ({"year", "month", "day",
                            "week", "weekday",
                            "julian",
