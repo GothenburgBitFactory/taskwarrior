@@ -520,6 +520,7 @@ bool Lexer::isUUID (std::string& token, Lexer::Type& type, bool endBoundary)
 {
   std::size_t marker = _cursor;
 
+  // Greedy.
   std::size_t i = 0;
   for (; i < 36 && marker + i < _eos; i++)
   {
@@ -532,11 +533,11 @@ bool Lexer::isUUID (std::string& token, Lexer::Type& type, bool endBoundary)
       break;
   }
 
-  if (! endBoundary                      ||
-      (i >= uuid_min_length              &&
-       (_text[marker + i] == 0           ||
-        isWhitespace (_text[marker + i]) ||
-        isSingleCharOperator (_text[marker + i]))))
+  if (i >= uuid_min_length              &&
+      (! endBoundary                    ||
+       ! _text[marker + i]              ||
+       isWhitespace (_text[marker + i]) ||
+       isSingleCharOperator (_text[marker + i])))
   {
     token = _text.substr (_cursor, i);
     if (! isAllDigits (token))
