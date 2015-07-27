@@ -32,6 +32,7 @@
 #include <string>
 #include <stdio.h>
 #include <time.h>
+#include <JSON.h>
 
 class Task : public std::map <std::string, std::string>
 {
@@ -157,6 +158,7 @@ public:
 private:
   int determineVersion (const std::string&);
   void parseJSON (const std::string&);
+  void parseJSON (const json::object*);
   void parseLegacy (const std::string&);
   void validate_before (const std::string&, const std::string&);
   const std::string encode (const std::string&) const;

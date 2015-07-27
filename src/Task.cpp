@@ -41,7 +41,6 @@
 #include <Date.h>
 #include <Duration.h>
 #include <Task.h>
-#include <JSON.h>
 #ifdef PRODUCT_TASKWARRIOR
 #include <RX.h>
 #endif
@@ -624,115 +623,118 @@ void Task::parseJSON (const std::string& line)
 {
   // Parse the whole thing.
   json::value* root = json::parse (line);
-  if (root->type () == json::j_object)
+  if (root &&
+      root->type () == json::j_object)
+    parseJSON ((json::object*) root);
+
+  delete root;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Task::parseJSON (const json::object* root_obj)
+{
+  // For each object element...
+  for (auto& i : root_obj->_data)
   {
-    json::object* root_obj = (json::object*)root;
-
-    // For each object element...
-    for (auto& i : root_obj->_data)
+    // If the attribute is a recognized column.
+    std::string type = Task::attributes[i.first];
+    if (type != "")
     {
-      // If the attribute is a recognized column.
-      std::string type = Task::attributes[i.first];
-      if (type != "")
+      // Any specified id is ignored.
+      if (i.first == "id")
+        ;
+
+      // Urgency, if present, is ignored.
+      else if (i.first == "urgency")
+        ;
+
+      // TW-1274 Standardization.
+      else if (i.first == "modification")
       {
-        // Any specified id is ignored.
-        if (i.first == "id")
-          ;
-
-        // Urgency, if present, is ignored.
-        else if (i.first == "urgency")
-          ;
-
-        // TW-1274 Standardization.
-        else if (i.first == "modification")
-        {
-          Date d (unquoteText (i.second->dump ()));
-          set ("modified", d.toEpochString ());
-        }
-
-        // Dates are converted from ISO to epoch.
-        else if (type == "date")
-        {
-          std::string text = unquoteText (i.second->dump ());
-          Date d (text);
-          set (i.first, text == "" ? "" : d.toEpochString ());
-        }
-
-        // Tags are an array of JSON strings.
-        else if (i.first == "tags" && i.second->type() == json::j_array)
-        {
-          json::array* tags = (json::array*)i.second;
-          for (auto& t : tags->_data)
-          {
-            json::string* tag = (json::string*)t;
-            addTag (tag->_data);
-          }
-        }
-        // This is a temporary measure to allow Mirakel sync, and will be removed
-        // in a future release.
-        else if (i.first == "tags" && i.second->type() == json::j_string)
-        {
-          json::string* tag = (json::string*)i.second;
-          addTag (tag->_data);
-        }
-
-        // Strings are decoded.
-        else if (type == "string")
-          set (i.first, json::decode (unquoteText (i.second->dump ())));
-
-        // Other types are simply added.
-        else
-          set (i.first, unquoteText (i.second->dump ()));
+        Date d (unquoteText (i.second->dump ()));
+        set ("modified", d.toEpochString ());
       }
 
-      // UDA orphans and annotations do not have columns.
+      // Dates are converted from ISO to epoch.
+      else if (type == "date")
+      {
+        std::string text = unquoteText (i.second->dump ());
+        Date d (text);
+        set (i.first, text == "" ? "" : d.toEpochString ());
+      }
+
+      // Tags are an array of JSON strings.
+      else if (i.first == "tags" && i.second->type() == json::j_array)
+      {
+        json::array* tags = (json::array*)i.second;
+        for (auto& t : tags->_data)
+        {
+          json::string* tag = (json::string*)t;
+          addTag (tag->_data);
+        }
+      }
+      // This is a temporary measure to allow Mirakel sync, and will be removed
+      // in a future release.
+      else if (i.first == "tags" && i.second->type() == json::j_string)
+      {
+        json::string* tag = (json::string*)i.second;
+        addTag (tag->_data);
+      }
+
+      // Strings are decoded.
+      else if (type == "string")
+        set (i.first, json::decode (unquoteText (i.second->dump ())));
+
+      // Other types are simply added.
+      else
+        set (i.first, unquoteText (i.second->dump ()));
+    }
+
+    // UDA orphans and annotations do not have columns.
+    else
+    {
+      // Annotations are an array of JSON objects with 'entry' and
+      // 'description' values and must be converted.
+      if (i.first == "annotations")
+      {
+        std::map <std::string, std::string> annos;
+
+        json::array* atts = (json::array*)i.second;
+        for (auto& annotations : atts->_data)
+        {
+          json::object* annotation = (json::object*)annotations;
+          json::string* when = (json::string*)annotation->_data["entry"];
+          json::string* what = (json::string*)annotation->_data["description"];
+
+          if (! when)
+            throw format (STRING_TASK_NO_ENTRY, root_obj->dump ());
+
+          if (! what)
+            throw format (STRING_TASK_NO_DESC, root_obj->dump ());
+
+          std::string name = "annotation_" + Date (when->_data).toEpochString ();
+          annos.insert (std::make_pair (name, json::decode (what->_data)));
+        }
+
+        setAnnotations (annos);
+      }
+
+      // UDA Orphan - must be preserved.
       else
       {
-        // Annotations are an array of JSON objects with 'entry' and
-        // 'description' values and must be converted.
-        if (i.first == "annotations")
-        {
-          std::map <std::string, std::string> annos;
-
-          json::array* atts = (json::array*)i.second;
-          for (auto& annotations : atts->_data)
-          {
-            json::object* annotation = (json::object*)annotations;
-            json::string* when = (json::string*)annotation->_data["entry"];
-            json::string* what = (json::string*)annotation->_data["description"];
-
-            if (! when)
-              throw format (STRING_TASK_NO_ENTRY, line);
-
-            if (! what)
-              throw format (STRING_TASK_NO_DESC, line);
-
-            std::string name = "annotation_" + Date (when->_data).toEpochString ();
-            annos.insert (std::make_pair (name, json::decode (what->_data)));
-          }
-
-          setAnnotations (annos);
-        }
-
-        // UDA Orphan - must be preserved.
-        else
-        {
 #ifdef PRODUCT_TASKWARRIOR
-          std::stringstream message;
-          message << "Task::parseJSON found orphan '"
-                  << i.first
-                  << "' with value '"
-                  << i.second
-                  << "' --> preserved\n";
-          context.debug (message.str ());
+        std::stringstream message;
+        message << "Task::parseJSON found orphan '"
+                << i.first
+                << "' with value '"
+                << i.second
+                << "' --> preserved\n";
+        context.debug (message.str ());
 #endif
-          set (i.first, json::decode (unquoteText (i.second->dump ())));
-        }
+        set (i.first, json::decode (unquoteText (i.second->dump ())));
       }
     }
   }
-
-  delete root;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
