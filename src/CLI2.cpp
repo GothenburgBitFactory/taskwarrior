@@ -1627,23 +1627,23 @@ void CLI2::desugarFilterPlainArgs ()
     auto praw  = prev->attribute ("raw");
     auto ppraw = prevprev->attribute ("raw");
 
-    if ((prevprev->_lextype != Lexer::Type::op ||  // argX
-         ppraw == "("                          ||
-         ppraw == ")"                          ||
-         ppraw == "and"                        ||
-         ppraw == "or"                         ||
-         ppraw == "xor")                       &&
+    if ((prevprev->_lextype != Lexer::Type::op     ||  // argX
+         ppraw == "("                              ||
+         ppraw == ")"                              ||
+         ppraw == "and"                            ||
+         ppraw == "or"                             ||
+         ppraw == "xor")                           &&
 
-        (prev->_lextype == Lexer::Type::dom    ||  // candidate
-         prev->_lextype == Lexer::Type::word)  &&  // candidate
+        (prev->_lextype == Lexer::Type::identifier ||  // candidate
+         prev->_lextype == Lexer::Type::word)      &&  // candidate
 
-        prev->hasTag ("FILTER")                &&  // candidate
+        prev->hasTag ("FILTER")                    &&  // candidate
 
-        (a._lextype != Lexer::Type::op         ||  // argY
-         raw == "("                            ||
-         raw == ")"                            ||
-         raw == "and"                          ||
-         raw == "or"                           ||
+        (a._lextype != Lexer::Type::op             ||  // argY
+         raw == "("                                ||
+         raw == ")"                                ||
+         raw == "and"                              ||
+         raw == "or"                               ||
          raw == "xor"))
     {
       prev->tag ("PLAIN");
