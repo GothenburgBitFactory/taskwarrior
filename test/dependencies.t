@@ -167,6 +167,7 @@ class TestDependencies(TestCase):
         code, out, err = self.t("4 delete")
         self.assertNotIn("Would you like the dependency chain fixed?", out)
 
+    @unittest.expectedFailure
     def test_id_range_dep(self):
         """Check that an ID range can be used for deps"""
         self.t("add three")
