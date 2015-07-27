@@ -1271,6 +1271,7 @@ bool Lexer::isLiteral (
 
   // End boundary conditions must be met.
   if (endBoundary &&
+      _text[_cursor + common] &&
       ! Lexer::isWhitespace (_text[_cursor + common]) &&
       ! Lexer::isSingleCharOperator (_text[_cursor + common]))
     return false;

@@ -272,9 +272,9 @@ int main (int argc, char** argv)
   t.ok    (l4.isLiteral(".",    false, false),              "isLiteral 'one.two' --> '.'");
   t.ok    (l4.isLiteral("two",  false, true),               "isLiteral 'one.two' --> 'two'");
 
-  Lexer l5 ("wonderful");
-  t.notok (l5.isLiteral ("wonder", false, false),           "isLiteral 'wonder' != 'wonderful' without abbreviation");
-  t.ok    (l5.isLiteral ("wonder", true,  false),           "isLiteral 'wonder' == 'wonderful' with abbreviation");
+  Lexer l5 ("wonder");
+  t.notok (l5.isLiteral ("wonderful", false, false),        "isLiteral 'wonderful' != 'wonder' without abbreviation");
+  t.ok    (l5.isLiteral ("wonderful", true,  false),        "isLiteral 'wonderful' == 'wonder' with abbreviation");
 
   // bool isOneOf (const std::string&, bool, bool);
   Lexer l6 ("Grumpy.");
