@@ -37,7 +37,7 @@ static const unsigned int uuid_min_length = 8;
 
 std::string Lexer::dateFormat = "";
 bool Lexer::isoEnabled = true;
-int Lexer::minimumMatchLength = 3;
+std::string::size_type Lexer::minimumMatchLength = 3;
 std::map <std::string, std::string> Lexer::attributes;
 
 
@@ -373,7 +373,9 @@ int Lexer::hexToInt (int c0, int c1, int c2, int c3)
 // left:   wonderful
 // right:  wonderbread
 // returns:     ^ 6
-int Lexer::commonLength (const std::string& left, const std::string& right)
+std::string::size_type Lexer::commonLength (
+  const std::string& left,
+  const std::string& right)
 {
   std::string::size_type l = 0;
   std::string::size_type r = 0;
@@ -382,7 +384,7 @@ int Lexer::commonLength (const std::string& left, const std::string& right)
          utf8_next_char (right, r))
     ;
 
-  return (int) l;
+  return l;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -393,7 +395,7 @@ int Lexer::commonLength (const std::string& left, const std::string& right)
 // right:  prowonderbread
 // r:         ^
 // returns:        ^ 6
-int Lexer::commonLength (
+std::string::size_type Lexer::commonLength (
   const std::string& left,
   std::string::size_type l,
   const std::string& right,
@@ -404,7 +406,7 @@ int Lexer::commonLength (
          utf8_next_char (right, r))
     ;
 
-  return (int) l;
+  return l;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1077,7 +1079,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
 
   std::string partialToken;
   Lexer::Type partialType;
-  if (isLiteral ("rc.", false) &&
+  if (isLiteral ("rc.", false, false) &&
       isWord (partialToken, partialType))
   {
     token = _text.substr (marker, _cursor - marker);
@@ -1090,7 +1092,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
                 "context.width",
                 "context.height",
                 "system.version",
-                "system.os"}, true))
+                "system.os"}, false, true))
   {
     token = _text.substr (marker, _cursor - marker);
     type = Lexer::Type::dom;
@@ -1105,7 +1107,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
   if (isUUID (extractedToken, extractedType, false) ||
       isInteger (extractedToken, extractedType))
   {
-    if (! isLiteral (".", false))
+    if (! isLiteral (".", false, false))
     {
       _cursor = marker;
       return false;
@@ -1116,8 +1118,9 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
   std::size_t checkpoint = _cursor;
 
   // [prefix]tags.<word>
-  if (isLiteral ("tags.", false) &&
-      isWord (partialToken, partialType))
+  if (isLiteral ("tags", true,  false) &&
+      isLiteral (".",    false, false) &&
+      isWord    (partialToken, partialType))
   {
     token = _text.substr (marker, _cursor - marker);
     type = Lexer::Type::dom;
@@ -1127,28 +1130,26 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
     _cursor = checkpoint;
 
   // [prefix]attribute
-  if (isOneOf (attributes, true))
+  if (isOneOf (attributes, true, true))
   {
     token = _text.substr (marker, _cursor - marker);
     type = Lexer::Type::dom;
     return true;
   }
-  else
-    _cursor = checkpoint;
 
   // [prefix]attribute
-  if (isOneOf (attributes, false))
+  if (isOneOf (attributes, true, false))
   {
-    if (isLiteral (".", false))
+    if (isLiteral (".", false, false))
     {
       std::string attribute = _text.substr (checkpoint, _cursor - checkpoint - 1);
 
-      // if attribute type is 'date'
+      // if attribute type is 'date', then it has sub-elements.
       if (attributes[attribute] == "date" &&
           isOneOf ({"year", "month", "day",
                     "week", "weekday",
                     "julian",
-                    "hour", "minute", "second"}, true))
+                    "hour", "minute", "second"}, true, true))
       {
         token = _text.substr (marker, _cursor - marker);
         type = Lexer::Type::dom;
@@ -1162,35 +1163,35 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
       return true;
     }
   }
-  else
-    _cursor = checkpoint;
 
   // [prefix]annotations.
-  if (isLiteral ("annotations.", false))
+  if (isLiteral ("annotations", true,  false) &&
+      isLiteral (".",           false, true))
   {
     std::string extractedToken;
     Lexer::Type extractedType;
     if (isInteger (extractedToken, extractedType))
     {
-      if (isLiteral (".", false))
+      if (isLiteral (".", false, false))
       {
-        if (isLiteral ("description", true))
+        if (isLiteral ("description", true, true))
         {
           token = _text.substr (marker, _cursor - marker);
           type = Lexer::Type::dom;
           return true;
         }
-        else if (isLiteral ("entry", true))
+        else if (isLiteral ("entry", true, true))
         {
           token = _text.substr (marker, _cursor - marker);
           type = Lexer::Type::dom;
           return true;
         }
-        else if (isLiteral ("entry.", false) &&
+        else if (isLiteral ("entry", true,  false) &&
+                 isLiteral (".",     false, true) &&
                  isOneOf ({"year", "month", "day",
                            "week", "weekday",
                            "julian",
-                           "hour", "minute", "second"}, true))
+                           "hour", "minute", "second"}, true, true))
         {
           token = _text.substr (marker, _cursor - marker);
           type = Lexer::Type::dom;
@@ -1251,37 +1252,54 @@ bool Lexer::isWord (std::string& token, Lexer::Type& type)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Lexer::isLiteral (const std::string& literal, bool endBoundary)
+bool Lexer::isLiteral (
+  const std::string& literal,
+  bool allowAbbreviations,
+  bool endBoundary)
 {
-  auto len = literal.length ();
-  if (_text.find (literal, _cursor) == _cursor &&
-      (! endBoundary                              ||
-       _text.length () == _cursor + len           ||
-       Lexer::isWhitespace (_text[_cursor + len]) ||
-       Lexer::isSingleCharOperator (_text[_cursor + len])))
-  {
-    _cursor += len;
-    return true;
-  }
+  auto common = commonLength (literal, 0, _text, _cursor);
 
-  return false;
+  // Without abbreviations, common must equal literal length.
+  if (! allowAbbreviations &&
+      common < literal.length ())
+    return false;
+
+  // Abbreviations must meet the minimum size.
+  if (allowAbbreviations &&
+      common < minimumMatchLength)
+    return false;
+
+  // End boundary conditions must be met.
+  if (endBoundary &&
+      ! Lexer::isWhitespace (_text[_cursor + common]) &&
+      ! Lexer::isSingleCharOperator (_text[_cursor + common]))
+    return false;
+
+  _cursor += common;
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Lexer::isOneOf (const std::vector <std::string>& options, bool endBoundary)
+bool Lexer::isOneOf (
+  const std::vector <std::string>& options,
+  bool allowAbbreviations,
+  bool endBoundary)
 {
   for (auto& item : options)
-    if (isLiteral (item, endBoundary))
+    if (isLiteral (item, allowAbbreviations, endBoundary))
       return true;
 
   return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Lexer::isOneOf (const std::map <std::string, std::string>& options, bool endBoundary)
+bool Lexer::isOneOf (
+  const std::map <std::string, std::string>& options,
+  bool allowAbbreviations,
+  bool endBoundary)
 {
   for (auto& item : options)
-    if (isLiteral (item.first, endBoundary))
+    if (isLiteral (item.first, allowAbbreviations, endBoundary))
       return true;
 
   return false;

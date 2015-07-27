@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1160);
+  UnitTest t (1170);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -265,18 +265,34 @@ int main (int argc, char** argv)
   t.ok (Lexer::readWord (text, cursor, word),               "readWord \"one     \" --> true");
   t.is (word, "one",                                        "  word '" + word + "'");
 
-  // bool isLiteral (const std::string&, bool);
+  // bool isLiteral (const std::string&, bool, bool);
   Lexer l4 ("one.two");
-  t.notok (l4.isLiteral("zero", false),                     "isLiteral 'one.two' --> false");
-  t.ok    (l4.isLiteral("one", false),                      "isLiteral 'one.two' --> 'one'");
-  t.ok    (l4.isLiteral(".", false),                        "isLiteral 'one.two' --> '.'");
-  t.ok    (l4.isLiteral("two", true),                       "isLiteral 'one.two' --> 'two'");
+  t.notok (l4.isLiteral("zero", false, false),              "isLiteral 'one.two' --> false");
+  t.ok    (l4.isLiteral("one",  false, false),              "isLiteral 'one.two' --> 'one'");
+  t.ok    (l4.isLiteral(".",    false, false),              "isLiteral 'one.two' --> '.'");
+  t.ok    (l4.isLiteral("two",  false, true),               "isLiteral 'one.two' --> 'two'");
 
-  // bool isOneOf (const std::string&, bool);
-  Lexer l5 ("Grumpy.");
+  Lexer l5 ("wonderful");
+  t.notok (l5.isLiteral ("wonder", false, false),           "isLiteral 'wonder' != 'wonderful' without abbreviation");
+  t.ok    (l5.isLiteral ("wonder", true,  false),           "isLiteral 'wonder' == 'wonderful' with abbreviation");
+
+  // bool isOneOf (const std::string&, bool, bool);
+  Lexer l6 ("Grumpy.");
   std::vector <std::string> dwarves = {"Sneezy", "Doc", "Bashful", "Grumpy", "Happy", "Sleepy", "Dopey"};
-  t.notok (l5.isOneOf (dwarves, true),                      "isOneof ('Grumpy', true) --> false");
-  t.ok    (l5.isOneOf (dwarves, false),                     "isOneOf ('Grumpy', false) --> true");
+  t.notok (l6.isOneOf (dwarves, false, true),               "isOneof ('Grumpy', true) --> false");
+  t.ok    (l6.isOneOf (dwarves, false, false),              "isOneOf ('Grumpy', false) --> true");
+
+  // static std::string::size_type commonLength (const std::string&, const std::string&);
+  t.is ((int)Lexer::commonLength ("", ""),           0, "commonLength '' : '' --> 0");
+  t.is ((int)Lexer::commonLength ("a", "a"),         1, "commonLength 'a' : 'a' --> 1");
+  t.is ((int)Lexer::commonLength ("abcde", "abcde"), 5, "commonLength 'abcde' : 'abcde' --> 5");
+  t.is ((int)Lexer::commonLength ("abc", ""),        0, "commonLength 'abc' : '' --> 0");
+  t.is ((int)Lexer::commonLength ("abc", "def"),     0, "commonLength 'abc' : 'def' --> 0");
+  t.is ((int)Lexer::commonLength ("foobar", "foo"),  3, "commonLength 'foobar' : 'foo' --> 3");
+  t.is ((int)Lexer::commonLength ("foo", "foobar"),  3, "commonLength 'foo' : 'foobar' --> 3");
+
+  // static std::string::size_type commonLength (const std::string&, std::string::size_type, const std::string&, std::string::size_type);
+  t.is ((int)Lexer::commonLength ("wonder", 0, "prowonderbread", 3), 6, "'wonder'+0 : 'prowonderbread'+3 --> 6");
 
   // Test all Lexer types.
   #define NO {"",Lexer::Type::word}

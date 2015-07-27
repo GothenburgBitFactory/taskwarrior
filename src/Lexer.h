@@ -41,7 +41,7 @@ public:
   // These are overridable.
   static std::string dateFormat;
   static bool isoEnabled;
-  static int minimumMatchLength;
+  static std::string::size_type minimumMatchLength;
   static std::map <std::string, std::string> attributes;
 
   enum class Type { uuid, number, hex,
@@ -61,36 +61,35 @@ public:
   static std::string typeToString (Lexer::Type);
 
   // Static helpers.
-  static const std::string typeName (const Lexer::Type&);
-  static bool isWhitespace          (int);
-  static bool isAlpha               (int);
-  static bool isDigit               (int);
-  static bool isHexDigit            (int);
-  static bool isIdentifierStart     (int);
-  static bool isIdentifierNext      (int);
-  static bool isSingleCharOperator  (int);
-  static bool isDoubleCharOperator  (int, int, int);
-  static bool isTripleCharOperator  (int, int, int, int);
-  static bool isBoundary            (int, int);
-  static bool isHardBoundary        (int, int);
-  static bool isPunctuation         (int);
-  static bool isAllDigits           (const std::string&);
-  static void dequote               (std::string&, const std::string& quotes = "'\"");
-  static bool wasQuoted             (const std::string&);
-  static bool readWord              (const std::string&, const std::string&, std::string::size_type&, std::string&);
-  static bool readWord              (const std::string&, std::string::size_type&, std::string&);
-  static bool decomposePair         (const std::string&, std::string&, std::string&, std::string&, std::string&);
-  static bool decomposeSubstitution (const std::string&, std::string&, std::string&, std::string&);
-  static bool decomposePattern      (const std::string&, std::string&, std::string&);
-  static int hexToInt               (int);
-  static int hexToInt               (int, int);
-  static int hexToInt               (int, int, int, int);
-  static int commonLength           (const std::string&, const std::string&);
-  static int commonLength           (const std::string&, std::string::size_type, const std::string&, std::string::size_type);
-
-  bool isEOS                        () const;
+  static const std::string typeName          (const Lexer::Type&);
+  static bool isWhitespace                   (int);
+  static bool isAlpha                        (int);
+  static bool isDigit                        (int);
+  static bool isHexDigit                     (int);
+  static bool isIdentifierStart              (int);
+  static bool isIdentifierNext               (int);
+  static bool isSingleCharOperator           (int);
+  static bool isDoubleCharOperator           (int, int, int);
+  static bool isTripleCharOperator           (int, int, int, int);
+  static bool isBoundary                     (int, int);
+  static bool isHardBoundary                 (int, int);
+  static bool isPunctuation                  (int);
+  static bool isAllDigits                    (const std::string&);
+  static void dequote                        (std::string&, const std::string& quotes = "'\"");
+  static bool wasQuoted                      (const std::string&);
+  static bool readWord                       (const std::string&, const std::string&, std::string::size_type&, std::string&);
+  static bool readWord                       (const std::string&, std::string::size_type&, std::string&);
+  static bool decomposePair                  (const std::string&, std::string&, std::string&, std::string&, std::string&);
+  static bool decomposeSubstitution          (const std::string&, std::string&, std::string&, std::string&);
+  static bool decomposePattern               (const std::string&, std::string&, std::string&);
+  static int hexToInt                        (int);
+  static int hexToInt                        (int, int);
+  static int hexToInt                        (int, int, int, int);
+  static std::string::size_type commonLength (const std::string&, const std::string&);
+  static std::string::size_type commonLength (const std::string&, std::string::size_type, const std::string&, std::string::size_type);
 
   // Stream Classifiers.
+  bool isEOS          () const;
   bool isString       (std::string&, Lexer::Type&, const std::string&);
   bool isDate         (std::string&, Lexer::Type&);
   bool isDuration     (std::string&, Lexer::Type&);
@@ -110,9 +109,9 @@ public:
   bool isDOM          (std::string&, Lexer::Type&);
   bool isIdentifier   (std::string&, Lexer::Type&);
   bool isWord         (std::string&, Lexer::Type&);
-  bool isLiteral      (const std::string&, bool);
-  bool isOneOf        (const std::vector <std::string>&, bool);
-  bool isOneOf        (const std::map <std::string, std::string>&, bool);
+  bool isLiteral      (const std::string&, bool, bool);
+  bool isOneOf        (const std::vector <std::string>&, bool, bool);
+  bool isOneOf        (const std::map <std::string, std::string>&, bool, bool);
 
 private:
   std::string _text;
