@@ -1638,6 +1638,7 @@ void CLI2::desugarFilterPlainArgs ()
          prev->_lextype == Lexer::Type::word)      &&  // candidate
 
         prev->hasTag ("FILTER")                    &&  // candidate
+        ! prev->hasTag ("PSEUDO")                  &&  // non-candidate
 
         (a._lextype != Lexer::Type::op             ||  // argY
          raw == "("                                ||
