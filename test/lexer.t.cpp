@@ -350,7 +350,7 @@ int main (int argc, char** argv)
     { "123.annotations.1.description",                { { "123.annotations.1.description",                Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "123.annotations.1.entry",                      { { "123.annotations.1.entry",                      Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "123.annotations.1.entry.year",                 { { "123.annotations.1.entry.year",                 Lexer::Type::dom          }, NO, NO, NO, NO }, },
-    { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", { { "a360fc44-315c-4366-b70c-ea7e7520b749.foo.bar", Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "a360fc44-315c-4366-b70c-ea7e7520b749.due",     { { "a360fc44-315c-4366-b70c-ea7e7520b749.due",     Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "system.os",                                    { { "system.os",                                    Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "rc.foo",                                       { { "rc.foo",                                       Lexer::Type::dom          }, NO, NO, NO, NO }, },
 
