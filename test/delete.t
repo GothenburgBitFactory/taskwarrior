@@ -90,16 +90,38 @@ class TestDelete(TestCase):
         """Delete prompt with closed STDIN causes infinite loop and floods stdout (single)"""
         self.t("add foo1")
 
-        self._validate_prompt_loop(input="y\n")
+        # Would expect 1 yes via input none sent
+        code, out, err = self._validate_prompt_loop(input="")
+
+        self.assertIn("Task not deleted", out)
+        self.assertIn("Deleted 0 tasks", out)
+
+        # If command was aborted, exit code should be 1
+        self.assertEqual(code, 1)
+
+    def test_delete_multiple_prompt_loop(self):
+        """Delete prompt with closed STDIN causes infinite loop and floods stdout (multiple)"""
+        self.t("add foo1")
+        self.t("add foo2")
+
+        # Would expect 2 yes via input only 1 sent
+        code, out, err = self._validate_prompt_loop(input="y\n")
+        self.assertEqual(code, 0)
 
     def test_delete_bulk_prompt_loop(self):
         """Delete prompt with closed STDIN causes infinite loop and floods stdout (bulk)"""
+        self.t.config("confirmation", "off")
+        # bulk is applied when confirmation is disabled
         self.t.config("bulk", "2")
+
         self.t("add foo1")
         self.t("add foo2")
         self.t("add foo3")
 
-        self._validate_prompt_loop(input="y\n")
+        # Would expect 3 yes via input only 2 sent
+        code, out, err = self._validate_prompt_loop(input="y\ny\n")
+
+        self.assertEqual(code, 0)
 
     def _validate_prompt_loop(self, input=""):
         """Helper method to check if task flooded stream on closed STDIN"""
@@ -115,8 +137,7 @@ class TestDelete(TestCase):
         self.assertLessEqual(len(out), 500)
         self.assertLessEqual(len(err), 500)
 
-        # Finally ensure the process exited successfully
-        self.assertEqual(code, 0)
+        return code, out, err
 
 
 if __name__ == "__main__":
