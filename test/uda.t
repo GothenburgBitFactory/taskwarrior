@@ -72,7 +72,7 @@ class TestUdaDate(TestBaseUda):
         self.t.config("dateformat", "m/d/Y")
 
     def test_uda_date_task(self):
-        """Add tasks with and without an UDA date"""
+        """Add tasks with and without a UDA date"""
 
         code, out, err = self.t("add with extra:tomorrow")
         self.assertIn("Created task", out)
@@ -140,23 +140,19 @@ class TestUdaDuration(TestBaseUda):
         self.t.config("uda.extra.type", "duration")
 
     def test_uda_duration_task(self):
-        """Add tasks with and without an UDA duration"""
-
+        """Add tasks with and without a UDA duration"""
         code, out, err = self.t("add with extra:1day")
-        self.assertIn("Created task", out)
-
         code, out, err = self.t("add without")
-        self.assertIn("Created task", out)
 
-        code, out, err = self.t("uda")
-        self.tap(out)
-        self.assertRegexpMatches(out, "1\s+P1D\s+with")
-        self.assertRegexpMatches(out, "2\s+without")
+        code, out, err = self.t("_get 1.extra")
+        self.assertEqual("P1D\n", out)
+
+        code, out, err = self.t("_get 2.extra")
+        self.assertEqual("\n", out)
 
         # Ensure 'extra' is stored in original form.
         code, out, err = self.t("1 export")
-        self.tap(out)
-        self.assertRaisesRegexp(out, '"extra":"1day"')
+        self.assertRaisesRegexp(out, '"extra":"P1D"')
 
     def test_uda_bad_duration_task(self):
         """Add tasks with an invalid UDA duration"""
@@ -173,7 +169,7 @@ class TestUdaNumeric(TestBaseUda):
         self.t.config("uda.extra.type", "numeric")
 
     def test_uda_numeric_task(self):
-        """Add tasks with and without an UDA numeric"""
+        """Add tasks with and without a UDA numeric"""
 
         code, out, err = self.t("add with extra:123")
         self.assertIn("Created task", out)
@@ -200,7 +196,7 @@ class TestUdaString(TestBaseUda):
         self.t.config("uda.extra.type", "string")
 
     def test_uda_string_task(self):
-        """Add tasks with and without an UDA string"""
+        """Add tasks with and without a UDA string"""
 
         code, out, err = self.t("add with extra:'one two'")
         self.assertIn("Created task", out)
