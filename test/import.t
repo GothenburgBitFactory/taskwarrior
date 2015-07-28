@@ -52,6 +52,29 @@ class TestImport(TestCase):
         self.data2 = """{"uuid":"44444444-4444-4444-4444-444444444444","description":"three","status":"pending","entry":"1234567889"}
 """
 
+        self.data3 = """
+
+{
+"uuid"
+:
+		"55555555-5555-5555-5555-555555555555"
+,
+"description"
+:
+"four"
+,
+    "status"
+    :
+    "pending"
+    ,
+"entry"
+:
+"1234567889"
+}
+
+
+"""
+
     def assertData1(self):
         code, out, err = self.t("list")
         self.assertRegexpMatches(out, "1.+A.+zero")
@@ -67,6 +90,10 @@ class TestImport(TestCase):
     def assertData2(self):
         code, out, err = self.t("list")
         self.assertRegexpMatches(out, "3.+three")
+
+    def assertData3(self):
+        code, out, err = self.t("list")
+        self.assertIn("four", out)
 
     def test_import_stdin(self):
         """Import from stdin"""
@@ -101,6 +128,13 @@ class TestImport(TestCase):
 
         self.assertData1()
         self.assertData2()
+
+    def test_freeform_import(self):
+        """Import JSON with arbitrary formatting"""
+        code, out, err = self.t("import -", input=self.data3)
+        self.assertIn("Imported 1 tasks", err)
+
+        self.assertData3()
 
     def test_import_update(self):
         """Update existing tasks"""
