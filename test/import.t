@@ -230,7 +230,6 @@ class TestImportExportRoundtrip(TestCase):
             client.config("dateformat", "m/d/Y")
             client.config("verbose", "off")
             client.config("defaultwidth", "100")
-            client.config("json.array", "off")
 
     def _validate_data(self, client):
         code, out, err = client("_get 1.priority")
