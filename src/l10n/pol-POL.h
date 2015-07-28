@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Limit {1} zagnieżdżonych aliasów osiągnięty"
 #define STRING_PARSER_OVERRIDE_RC    "Nadpisanie konfiguracji rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Błąd: nierozpoznany atrybut '{1}'."
-#define STRING_PARSER_UUID_AFTER_COMMA "Nierozpoznany UUID po przecinku."
 #define STRING_PARSER_ALTERNATE_RC   "Wczytanie alternatywnego pliku .taskrc {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Alternatywne data.location {1}"
 
@@ -115,22 +114,16 @@
 // mostly concerned with how various operators interact with the different
 // data types.
 #define STRING_VARIANT_TIME_T        "Nie można utworzyć tego typu z wartością time_t."
-#define STRING_VARIANT_CMP_UNKNOWN   "Nie można porównać nieznanych typów"
-#define STRING_VARIANT_EQ_UNKNOWN    "Nie można powiązać nieznanych typów"
-#define STRING_VARIANT_EXP_UNKNOWN   "Nie można potęgować nieznanych typów"
 #define STRING_VARIANT_EXP_BOOL      "Nie można potęgować wartości Boolowskich"
 #define STRING_VARIANT_EXP_NON_INT   "Nie można potęgować z wykłanikiem nie numerycznym"
 #define STRING_VARIANT_EXP_STRING    "Nie można potęgować ciągów znaków"
 #define STRING_VARIANT_EXP_DATE      "Nie można potęgować dat"
 #define STRING_VARIANT_EXP_DURATION  "Nie można potęgować okresów"
-#define STRING_VARIANT_SUB_UNKNOWN   "Nie można odejmować nieznanch typów"
 #define STRING_VARIANT_SUB_BOOL      "Nie można odejmować od wartości Boolowskich"
 #define STRING_VARIANT_SUB_STRING    "Nie można odejmować ciągów znaków"
 #define STRING_VARIANT_SUB_DATE      "Nie można odejmować dat"
-#define STRING_VARIANT_ADD_UNKNOWN   "Nie można sumować nieznanch typów"
 #define STRING_VARIANT_ADD_BOOL      "Nie można sumować wartości Boolowskich"
 #define STRING_VARIANT_ADD_DATE      "Nie można sumować dat"
-#define STRING_VARIANT_MUL_UNKNOWN   "Nie można mnożyć nieznanch typów"
 #define STRING_VARIANT_MUL_BOOL      "Nie można mnożyć wartości Boolowskich"
 #define STRING_VARIANT_MUL_DATE      "Nie można mnożyć dat"
 #define STRING_VARIANT_MUL_REAL_STR  "Nie można mnożyć wartości rzeczywistych przez ciągi"
@@ -141,7 +134,6 @@
 #define STRING_VARIANT_MUL_DUR_STR   "Nie można mnożyć okresu przez ciąg"
 #define STRING_VARIANT_MUL_DUR_DATE  "Nie można mnożyć okresu przez datę"
 #define STRING_VARIANT_MUL_DUR_DUR   "Nie można mnożyć okresu przez okres"
-#define STRING_VARIANT_DIV_UNKNOWN   "Nie można dzielić nieznanch typów"
 #define STRING_VARIANT_DIV_BOOL      "Nie można dzielić wartości Boolowskich"
 #define STRING_VARIANT_DIV_INT_BOOL  "Nie można dzielić liczb przez wartości Boolowskie"
 #define STRING_VARIANT_DIV_ZERO      "Nie można dzielić przez zero"
@@ -166,11 +158,8 @@
 #define STRING_VARIANT_MOD_REAL_DATE "Nie można uzyskać modulo z wartości rzeczywistych przez datę"
 #define STRING_VARIANT_MOD_REAL_STR  "Nie można uzyskać modulo z wartości rzeczywistych przez ciąg"
 #define STRING_VARIANT_MOD_STR       "Nie można uzyskać modulo z ciągów"
-#define STRING_VARIANT_MOD_UNKNOWN   "Nie można uzyskać modulo z nieznanych typów"
 #define STRING_VARIANT_MOD_ZERO      "Nie można uzyskać modulo z zera"
-#define STRING_VARIANT_RENDER_UNK    "Nie można wypisać wartości nieznanego typu."
 #define STRING_VARIANT_SQRT_NEG      "Nie można wyciągnąć pierwiastka kwadratowego z wartości ujemnej."
-#define STRING_VARIANT_COERCE_UNK    "Nie można rzutować danych z/na nieznaney typ"
 
 // Dates
 //
@@ -517,7 +506,6 @@
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generuje listę wszystkich poleceń dla funkcji autouzupełniania w powłoce zsh"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_CMD_ALIASES_USAGE     "Generuje listę wszystkich aliasów dla funkcji autouzupełniania"
-#define STRING_CMD_INSTALL_USAGE     "Instaluje dodatki i zewnętrzne skrypty"
 
 #define STRING_CMD_MODIFY_USAGE1     "Modyfikuje istniejące zadanie pod kątem podanych argumentów."
 #define STRING_CMD_MODIFY_NO_DUE     "Nie możesz specyfikować rekurencyjnego zadania bez podania terminu."
@@ -656,7 +644,6 @@
 // DOM
 #define STRING_DOM_UNKNOWN           "<nieznane>"
 #define STRING_DOM_UNREC             "DOM: Nie mogę pobrać nierozpoznanej nazwy '{1}'."
-#define STRING_DOM_CANNOT_SET        "DOM: Nie mogę ustawić '{1}'."
 
 // Eval
 #define STRING_EVAL_NO_EXPRESSION    "Brak wyrażenia do przetworzenia."

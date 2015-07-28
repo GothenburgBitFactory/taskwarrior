@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Límite de alias anidados ({1}) alcanzado."
 #define STRING_PARSER_OVERRIDE_RC    "Sobrescritura de configuración rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Error: modificador de atributo no reconocido '{1}'."
-#define STRING_PARSER_UUID_AFTER_COMMA "UUID no reconocido tras coma."
 #define STRING_PARSER_ALTERNATE_RC   "Usando el archivo .taskrc alternativo {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Usando data.location alternativa {1}"
 
@@ -115,22 +114,16 @@
 // mostly concerned with how various operators interact with the different
 // data types.
 #define STRING_VARIANT_TIME_T        "No se puede instanciar este tipo con un valor de naturaleza time_t."
-#define STRING_VARIANT_CMP_UNKNOWN   "No se puede comparar un tipo desconocido"
-#define STRING_VARIANT_EQ_UNKNOWN    "No se puede equiparar un tipo desconocido"
-#define STRING_VARIANT_EXP_UNKNOWN   "No se puede exponenciar un tipo desconocido"
 #define STRING_VARIANT_EXP_BOOL      "No se puede exponenciar un booleano"
 #define STRING_VARIANT_EXP_NON_INT   "No se puede exponenciar a una potencia no entera"
 #define STRING_VARIANT_EXP_STRING    "No se puede exponenciar una cadena de caracteres"
 #define STRING_VARIANT_EXP_DATE      "No se puede exponenciar una fecha"
 #define STRING_VARIANT_EXP_DURATION  "No se puede exponenciar una duración"
-#define STRING_VARIANT_SUB_UNKNOWN   "No se puede sustraer un tipo desconocido"
 #define STRING_VARIANT_SUB_BOOL      "No se puede sustraer de un booleano"
 #define STRING_VARIANT_SUB_STRING    "No se puede sustraer una cadenas de caracteres"
 #define STRING_VARIANT_SUB_DATE      "No se puede sustraer una fecha"
-#define STRING_VARIANT_ADD_UNKNOWN   "No se puede sumar un tipo desconocido"
 #define STRING_VARIANT_ADD_BOOL      "No se puede sumar dos booleanos"
 #define STRING_VARIANT_ADD_DATE      "No se puede sumar dos fechas"
-#define STRING_VARIANT_MUL_UNKNOWN   "No se puede multiplicar un tipo desconocido"
 #define STRING_VARIANT_MUL_BOOL      "No se puede multiplicar un booleano"
 #define STRING_VARIANT_MUL_DATE      "No se puede multiplicar una fecha"
 #define STRING_VARIANT_MUL_REAL_STR  "No se puede multiplicar un número real por una cadena de caracteres"
@@ -141,7 +134,6 @@
 #define STRING_VARIANT_MUL_DUR_STR   "No se puede multiplicar una duración por una cadena de caracteres"
 #define STRING_VARIANT_MUL_DUR_DATE  "No se puede multiplicar una duración por una fecha"
 #define STRING_VARIANT_MUL_DUR_DUR   "No se puede multiplicar una duración por otra"
-#define STRING_VARIANT_DIV_UNKNOWN   "No se puede dividir un tipo desconocido"
 #define STRING_VARIANT_DIV_BOOL      "No se puede dividir un booleano"
 #define STRING_VARIANT_DIV_INT_BOOL  "No se puede dividir un entero por un booleano"
 #define STRING_VARIANT_DIV_ZERO      "No se puede dividir por cero"
@@ -166,11 +158,8 @@
 #define STRING_VARIANT_MOD_REAL_DATE "No se puede modular un real por una fecha"
 #define STRING_VARIANT_MOD_REAL_STR  "No se puede modular un real por una cadena de caracteres"
 #define STRING_VARIANT_MOD_STR       "No se puede modular una cadena de caracteres"
-#define STRING_VARIANT_MOD_UNKNOWN   "No se puede modular un tipo desconocido"
 #define STRING_VARIANT_MOD_ZERO      "No se puede modular cero"
-#define STRING_VARIANT_RENDER_UNK    "No se puede dibujar un tipo desconocido."
 #define STRING_VARIANT_SQRT_NEG      "No se puede calcular la raíz cuadrada de un tipo desconocido"
-#define STRING_VARIANT_COERCE_UNK    "No se puede convertir un dato ni a un tipo desconocido ni desde el mismo"
 
 // Dates
 //
@@ -526,7 +515,6 @@
 
 #define STRING_CMD_ZSHATTS_USAGE     "Genera una lista de todos los atributos, con fines de auto-completado zsh"
 #define STRING_CMD_ALIASES_USAGE     "Genera una lista de todos los alias, con fines de auto-completado"
-#define STRING_CMD_INSTALL_USAGE     "Instala extensiones y scripts externos"
 
 #define STRING_CMD_MODIFY_USAGE1     "Modifica la tarea existente con los argumentos provistos."
 //#define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."
@@ -668,7 +656,6 @@
 // DOM
 #define STRING_DOM_UNKNOWN           "<desconocido>"
 #define STRING_DOM_UNREC             "DOM: No se pudo obtener el nombre no reconocido '{1}'."
-#define STRING_DOM_CANNOT_SET        "DOM: No se pudo establecer '{1}'."
 
 // Eval
 #define STRING_EVAL_NO_EXPRESSION    "Ninguna expresión para evaluar."

@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Nested alias limit of {1} reached."
 #define STRING_PARSER_OVERRIDE_RC    "Modifica configurazione rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Errore: modificatore di attributo non riconosciuto '{1}'."
-#define STRING_PARSER_UUID_AFTER_COMMA "UUID non riconosciuto dopo la virgola."
 #define STRING_PARSER_ALTERNATE_RC   "Uso del file .taskrc alternativo {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Uso di data.location alternativa {1}"
 
@@ -115,22 +114,16 @@
 // mostly concerned with how various operators interact with the different
 // data types.
 #define STRING_VARIANT_TIME_T        "Cannot instantiate this type with a time_t value."
-#define STRING_VARIANT_CMP_UNKNOWN   "Cannot compare unknown type"
-#define STRING_VARIANT_EQ_UNKNOWN    "Cannot equate unknown type"
-#define STRING_VARIANT_EXP_UNKNOWN   "Cannot exponentiate unknown type"
 #define STRING_VARIANT_EXP_BOOL      "Cannot exponentiate Booleans"
 #define STRING_VARIANT_EXP_NON_INT   "Cannot exponentiate to a non-integer power"
 #define STRING_VARIANT_EXP_STRING    "Cannot exponentiate strings"
 #define STRING_VARIANT_EXP_DATE      "Cannot exponentiate dates"
 #define STRING_VARIANT_EXP_DURATION  "Cannot exponentiate durations"
-#define STRING_VARIANT_SUB_UNKNOWN   "Cannot subtract unknown type"
 #define STRING_VARIANT_SUB_BOOL      "Cannot subtract from a Boolean value"
 #define STRING_VARIANT_SUB_STRING    "Cannot subtract strings"
 #define STRING_VARIANT_SUB_DATE      "Cannot subtract a date"
-#define STRING_VARIANT_ADD_UNKNOWN   "Cannot add unknown type"
 #define STRING_VARIANT_ADD_BOOL      "Cannot add two Boolean values"
 #define STRING_VARIANT_ADD_DATE      "Cannot add two date values"
-#define STRING_VARIANT_MUL_UNKNOWN   "Cannot multiply unknown type"
 #define STRING_VARIANT_MUL_BOOL      "Cannot multiply Boolean values"
 #define STRING_VARIANT_MUL_DATE      "Cannot multiply date values"
 #define STRING_VARIANT_MUL_REAL_STR  "Cannot multiply real numbers by strings"
@@ -141,7 +134,6 @@
 #define STRING_VARIANT_MUL_DUR_STR   "Cannot multiply durations by strings"
 #define STRING_VARIANT_MUL_DUR_DATE  "Cannot multiply durations by dates"
 #define STRING_VARIANT_MUL_DUR_DUR   "Cannot multiply durations by durations"
-#define STRING_VARIANT_DIV_UNKNOWN   "Cannot divide unknown type"
 #define STRING_VARIANT_DIV_BOOL      "Cannot divide Boolean values"
 #define STRING_VARIANT_DIV_INT_BOOL  "Cannot divide integers by Boolean values"
 #define STRING_VARIANT_DIV_ZERO      "Cannot divide by zero"
@@ -166,11 +158,8 @@
 #define STRING_VARIANT_MOD_REAL_DATE "Cannot modulo real numbers by dates"
 #define STRING_VARIANT_MOD_REAL_STR  "Cannot modulo real numbers by strings"
 #define STRING_VARIANT_MOD_STR       "Cannot modulo string values"
-#define STRING_VARIANT_MOD_UNKNOWN   "Cannot modulo unknown type"
 #define STRING_VARIANT_MOD_ZERO      "Cannot modulo zero"
-#define STRING_VARIANT_RENDER_UNK    "Cannot render an unknown type."
 #define STRING_VARIANT_SQRT_NEG      "Cannot take the square root of a negative number."
-#define STRING_VARIANT_COERCE_UNK    "Cannot coerce data either to or from an unknown type"
 
 // Dates
 //
@@ -516,7 +505,6 @@
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera la lista di tutti i comandi, per autocompletamento in zsh"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_CMD_ALIASES_USAGE     "Genera la lista di tutti gli alias, per autocompletamento"
-#define STRING_CMD_INSTALL_USAGE     "Installa estensioni e script esterni"
 
 #define STRING_CMD_MODIFY_USAGE1     "Modifica il task esistente usando gli argomenti specificati."
 #define STRING_CMD_MODIFY_NO_DUE     "Impossibile specificare un task periodico senza una data di scadenza."
@@ -655,7 +643,6 @@
 // DOM
 #define STRING_DOM_UNKNOWN           "<sconosciuto>"
 #define STRING_DOM_UNREC             "DOM: Impossibile ottenere il nome non riconosciuto '{1}'."
-#define STRING_DOM_CANNOT_SET        "DOM: Impossibile impostare '{1}'."
 
 // Eval
 #define STRING_EVAL_NO_EXPRESSION    "No expression to evaluate."

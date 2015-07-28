@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "ネストされたエイリアスの制限 {1} に到達した。"
 #define STRING_PARSER_OVERRIDE_RC    "設定は上書きされた rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "エラー: 不明な属性変更子 '{1}'."
-#define STRING_PARSER_UUID_AFTER_COMMA "カンマのあとの不明な UUID."
 #define STRING_PARSER_ALTERNATE_RC   "代替の .taskrc ファイル {1} を使用"
 #define STRING_PARSER_ALTERNATE_DATA "代替の data.location {1} を使用"
 
@@ -115,22 +114,16 @@
 // mostly concerned with how various operators interact with the different
 // data types.
 #define STRING_VARIANT_TIME_T        "Cannot instantiate this type with a time_t value."
-#define STRING_VARIANT_CMP_UNKNOWN   "不明なタイプを比較できない"
-#define STRING_VARIANT_EQ_UNKNOWN    "不明なタイプを同一視は出来ません"
-#define STRING_VARIANT_EXP_UNKNOWN   "不明なタイプをべき乗する事は出来ません"
 #define STRING_VARIANT_EXP_BOOL      "論理型はべき乗出来ません"
 #define STRING_VARIANT_EXP_NON_INT   "Cannot exponentiate to a non-integer power"
 #define STRING_VARIANT_EXP_STRING    "文字列はべき乗できません"
 #define STRING_VARIANT_EXP_DATE      "日付はべき乗できません"
 #define STRING_VARIANT_EXP_DURATION  "期間はべき乗できません"
-#define STRING_VARIANT_SUB_UNKNOWN   "不明なタイプは減算できません"
 #define STRING_VARIANT_SUB_BOOL      "論理型からは減算できません"
 #define STRING_VARIANT_SUB_STRING    "文字列は減算できません"
 #define STRING_VARIANT_SUB_DATE      "日付は減算できません"
-#define STRING_VARIANT_ADD_UNKNOWN   "不明なタイプは追加できません"
 #define STRING_VARIANT_ADD_BOOL      "2つの論理値は加算できません"
 #define STRING_VARIANT_ADD_DATE      "2つの日付値は加算できません"
-#define STRING_VARIANT_MUL_UNKNOWN   "不明なタイプは乗算できません"
 #define STRING_VARIANT_MUL_BOOL      "論理値は乗算できません"
 #define STRING_VARIANT_MUL_DATE      "日付は乗算できません"
 #define STRING_VARIANT_MUL_REAL_STR  "実数を文字列では乗算できません"
@@ -141,7 +134,6 @@
 #define STRING_VARIANT_MUL_DUR_STR   "期間を文字列では乗算できません"
 #define STRING_VARIANT_MUL_DUR_DATE  "文字列を日付では乗算できません"
 #define STRING_VARIANT_MUL_DUR_DUR   "期間を期間では乗算できません"
-#define STRING_VARIANT_DIV_UNKNOWN   "不明なタイプは除算できません"
 #define STRING_VARIANT_DIV_BOOL      "論理値は除算できません"
 #define STRING_VARIANT_DIV_INT_BOOL  "整数値を論理値では除算できません"
 #define STRING_VARIANT_DIV_ZERO      "零では除算できません"
@@ -166,11 +158,8 @@
 #define STRING_VARIANT_MOD_REAL_DATE "実数値を日付で剰余を取ることは出来ません。"
 #define STRING_VARIANT_MOD_REAL_STR  "実数値を文字列で剰余を取ることは出来ません。"
 #define STRING_VARIANT_MOD_STR       "Cannot modulo string values"
-#define STRING_VARIANT_MOD_UNKNOWN   "Cannot modulo unknown type"
 #define STRING_VARIANT_MOD_ZERO      "零で剰余を取ることは出来ません。"
-#define STRING_VARIANT_RENDER_UNK    "不明なタイプは描画できません。"
 #define STRING_VARIANT_SQRT_NEG      "負の数は平方根を計算できません。"
-#define STRING_VARIANT_COERCE_UNK    "Cannot coerce data either to or from an unknown type"
 
 // Dates
 //
@@ -517,7 +506,6 @@
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_CMD_ALIASES_USAGE     "Generates a list of all aliases, for autocompletion purposes"
-#define STRING_CMD_INSTALL_USAGE     "Installs extensions and external scripts"
 
 #define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."
 #define STRING_CMD_MODIFY_NO_DUE     "You cannot specify a recurring task without a due date."
@@ -656,7 +644,6 @@
 // DOM
 #define STRING_DOM_UNKNOWN           "<unknown>"
 #define STRING_DOM_UNREC             "DOM: Cannot get unrecognized name '{1}'."
-#define STRING_DOM_CANNOT_SET        "DOM: Cannot set '{1}'."
 
 // Eval
 #define STRING_EVAL_NO_EXPRESSION    "No expression to evaluate."

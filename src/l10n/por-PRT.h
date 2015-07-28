@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Limite de 'alias' em cascata atingido: {1}"
 #define STRING_PARSER_OVERRIDE_RC    "Alteração de configuração rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Erro: modificador de atributo não reconhecido '{1}'."
-#define STRING_PARSER_UUID_AFTER_COMMA "UUID não reconhecido após a vírgula."
 #define STRING_PARSER_ALTERNATE_RC   "Usando o ficheiro .taskrc alternativo {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Usando data.location alternativa {1}"
 
@@ -115,22 +114,16 @@
 // mostly concerned with how various operators interact with the different
 // data types.
 #define STRING_VARIANT_TIME_T        "Impossível inicializar este tipo com um valor time_t."
-#define STRING_VARIANT_CMP_UNKNOWN   "Impossível comparar tipo desconhecido"
-#define STRING_VARIANT_EQ_UNKNOWN    "Impossível equiparar tipo desconhecido"
-#define STRING_VARIANT_EXP_UNKNOWN   "Impossivel exponenciar tipo desconhecido"
 #define STRING_VARIANT_EXP_BOOL      "Impossível exponenciar booleanos"
 #define STRING_VARIANT_EXP_NON_INT   "Impossível exponenciar a uma potencia não inteira"
 #define STRING_VARIANT_EXP_STRING    "Impossível exponenciar texto"
 #define STRING_VARIANT_EXP_DATE      "Impossível exponenciar datas"
 #define STRING_VARIANT_EXP_DURATION  "Impossível exponenciar durações"
-#define STRING_VARIANT_SUB_UNKNOWN   "Impossível subtrair tipo desconhecido"
 #define STRING_VARIANT_SUB_BOOL      "Impossível subtrair de um valor booleano"
 #define STRING_VARIANT_SUB_STRING    "Impossível subtrair texto"
 #define STRING_VARIANT_SUB_DATE      "Impossível subtrair uma data"
-#define STRING_VARIANT_ADD_UNKNOWN   "Impossível somar tipo desconhecido"
 #define STRING_VARIANT_ADD_BOOL      "Impossível somar dois valores booleanos"
 #define STRING_VARIANT_ADD_DATE      "Impossível somar duas datas"
-#define STRING_VARIANT_MUL_UNKNOWN   "Impossível multiplicar tipo desconhecido"
 #define STRING_VARIANT_MUL_BOOL      "Impossível multiplicar valores booleanos"
 #define STRING_VARIANT_MUL_DATE      "Impossível multiplicar datas"
 #define STRING_VARIANT_MUL_REAL_STR  "Impossível multiplicar números reais por texto"
@@ -141,7 +134,6 @@
 #define STRING_VARIANT_MUL_DUR_STR   "Impossível multiplicar durações por texto"
 #define STRING_VARIANT_MUL_DUR_DATE  "Impossível multiplicar durações por datas"
 #define STRING_VARIANT_MUL_DUR_DUR   "Impossível multiplicar durações por durações"
-#define STRING_VARIANT_DIV_UNKNOWN   "Impossível dividir tipo desconhecido"
 #define STRING_VARIANT_DIV_BOOL      "Impossível dividir booleano"
 #define STRING_VARIANT_DIV_INT_BOOL  "Impossível dividir inteiros por booleanos"
 #define STRING_VARIANT_DIV_ZERO      "Impossível dividir por zero"
@@ -166,11 +158,8 @@
 #define STRING_VARIANT_MOD_REAL_DATE "Impossível calcular módulo de reais por datas"
 #define STRING_VARIANT_MOD_REAL_STR  "Impossível calcular módulo de reais por texto"
 #define STRING_VARIANT_MOD_STR       "Impossível calcular módulo de texto"
-#define STRING_VARIANT_MOD_UNKNOWN   "Impossível calcular módulo tipo desconhecido"
 #define STRING_VARIANT_MOD_ZERO      "Impossível calcular módulo de zero"
-#define STRING_VARIANT_RENDER_UNK    "Impossível mostrar um tipo desconhecido."
 #define STRING_VARIANT_SQRT_NEG      "Impossível calcular a raiz quadrada de um número negativo."
-#define STRING_VARIANT_COERCE_UNK    "Impossível converter dados de ou para um tipo desconhecido"
 
 // Dates
 //
@@ -517,7 +506,6 @@
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Gera uma lista com todos os comandos, para terminação automática em zsh"
 #define STRING_CMD_ZSHATTS_USAGE     "Gera uma lista de todos os atributos, para terminação automática em zsh"
 #define STRING_CMD_ALIASES_USAGE     "Gera uma lista com todos os 'alias', para fins de terminação automática"
-#define STRING_CMD_INSTALL_USAGE     "Instala extensões e scripts externos"
 
 #define STRING_CMD_MODIFY_USAGE1     "Modifica a tarefa existente com os argumentos indicados."
 #define STRING_CMD_MODIFY_NO_DUE     "Não pode criar tarefas recorrentes sem uma data de vencimento."
@@ -656,7 +644,6 @@
 // DOM
 #define STRING_DOM_UNKNOWN           "<desconhecido>"
 #define STRING_DOM_UNREC             "DOM: Não foi possível obter nome não reconhecido '{1}'."
-#define STRING_DOM_CANNOT_SET        "DOM: Não foi possível definir '{1}'."
 
 // Eval
 #define STRING_EVAL_NO_EXPRESSION    "Nenhuma expressão a calcular."

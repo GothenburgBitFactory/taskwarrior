@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Maximale Alias-Schachteltiefe von {1} erreicht."
 #define STRING_PARSER_OVERRIDE_RC    "Konfigurations außer Kraft gesetzt durch: rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Fehler: Nicht erkannter Attribut-Operator '{1}'."
-#define STRING_PARSER_UUID_AFTER_COMMA "UUID nach Komma nicht erkannt."
 #define STRING_PARSER_ALTERNATE_RC   "Verwende alternative .taskrc-Datei {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Verwende alternative data.location {1}"
 
@@ -115,22 +114,16 @@
 // mostly concerned with how various operators interact with the different
 // data types.
 #define STRING_VARIANT_TIME_T        "Dieser Typ kann nicht mit einem time_t-Wert initialisiert werden."
-#define STRING_VARIANT_CMP_UNKNOWN   "Unbekannter Typ kann nicht verglichen werden"
-#define STRING_VARIANT_EQ_UNKNOWN    "Unbekannter Typ kann nicht verglichen werden"
-#define STRING_VARIANT_EXP_UNKNOWN   "Unbekannter Typ kann nicht potenziert werden"
 #define STRING_VARIANT_EXP_BOOL      "Boolesche Werte können nicht potenziert werden"
 #define STRING_VARIANT_EXP_NON_INT   "Potenzieren ist nur mit Ganzzahlen möglich"
 #define STRING_VARIANT_EXP_STRING    "Zeichenketten können nicht potenziert werden"
 #define STRING_VARIANT_EXP_DATE      "Datumsangaben können nicht potenziert werden"
 #define STRING_VARIANT_EXP_DURATION  "Zeitspannen können nicht potenziert werden"
-#define STRING_VARIANT_SUB_UNKNOWN   "Unbekannter Typ kann nicht abgezogen werden"
 #define STRING_VARIANT_SUB_BOOL      "Kann nicht von booleschem Wert abziehen"
 #define STRING_VARIANT_SUB_STRING    "Zeichenketten können nicht abgezogen werden"
 #define STRING_VARIANT_SUB_DATE      "Datumsangaben können nicht abgezogen werden"
-#define STRING_VARIANT_ADD_UNKNOWN   "Unbekannter Typ kann nicht addiert werden"
 #define STRING_VARIANT_ADD_BOOL      "Boolesche Werte können nicht addiert werden"
 #define STRING_VARIANT_ADD_DATE      "Datumsangaben können nicht addiert werden"
-#define STRING_VARIANT_MUL_UNKNOWN   "Unbekannter Typ kann nicht multipliziert werden"
 #define STRING_VARIANT_MUL_BOOL      "Boolesche Werte können nicht multipliziert werden"
 #define STRING_VARIANT_MUL_DATE      "Datumsangaben können nicht multipliziert werden"
 #define STRING_VARIANT_MUL_REAL_STR  "Reelle Zahlen können nicht mit Zeichenketten multipliziert werden"
@@ -141,7 +134,6 @@
 #define STRING_VARIANT_MUL_DUR_STR   "Zeitangaben können nicht mit Zeichenketten multipliziert werden"
 #define STRING_VARIANT_MUL_DUR_DATE  "Zeitangaben können nicht mit Datumsangaben multipliziert werden"
 #define STRING_VARIANT_MUL_DUR_DUR   "Zeitangaben können nicht mit Zeitangaben multipliziert werden"
-#define STRING_VARIANT_DIV_UNKNOWN   "Unbekannte Typen können nicht geteilt werden"
 #define STRING_VARIANT_DIV_BOOL      "Boolesche Werte können nicht geteilt werden"
 #define STRING_VARIANT_DIV_INT_BOOL  "Ganzzahlen können nicht durch boolesche Werte geteilt werden"
 #define STRING_VARIANT_DIV_ZERO      "Kann nicht durch null teilen"
@@ -166,11 +158,8 @@
 #define STRING_VARIANT_MOD_REAL_DATE "Divisionsrest von reellen Zahlen durch Datumsangaben kann nicht berechnet werden"
 #define STRING_VARIANT_MOD_REAL_STR  "Divisionsrest von reellen Zahlen durch Zeichenketten kann nicht berechnet werden"
 #define STRING_VARIANT_MOD_STR       "Divisionsrest von Zeichenketten kan nicht berechnet werden"
-#define STRING_VARIANT_MOD_UNKNOWN   "Divisionsrest von unbekannten Typen kann nicht berechnet werden"
 #define STRING_VARIANT_MOD_ZERO      "Divisionsrest von null kann nicht berechnet werden"
-#define STRING_VARIANT_RENDER_UNK    "Unbekannter Typ kann nicht dargestellt werden."
 #define STRING_VARIANT_SQRT_NEG      "Quadratwurzel einer negativen Zahl kann nicht berechnet werden."
-#define STRING_VARIANT_COERCE_UNK    "Kann nicht in oder von einem unbekannten Typ konvertieren"
 
 // Dates
 //
@@ -517,7 +506,6 @@
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Erzeugt eine Liste aller Befehle zur ZSH-Auto-Verfollständigung"
 #define STRING_CMD_ZSHATTS_USAGE     "Erzeugt eine Liste Eigenschaften zur ZSH-Auto-Vervollständigung"
 #define STRING_CMD_ALIASES_USAGE     "Erzeugt eine Liste aller Aliase zur Auto-Vervollständigung"
-#define STRING_CMD_INSTALL_USAGE     "Installiert Erweiterungen und externe Skripte"
 
 #define STRING_CMD_MODIFY_USAGE1     "Ändert eine bestehende Aufgabe mit den übergebenen Parametern"
 #define STRING_CMD_MODIFY_NO_DUE     "Wiederholende Aufgaben können nicht ohne Fälligkeitsdatum angelegt werden."
@@ -656,7 +644,6 @@
 // DOM
 #define STRING_DOM_UNKNOWN           "<unbekannt>"
 #define STRING_DOM_UNREC             "DOM: Unbekannten Namen nicht erkannt '{1}'."
-#define STRING_DOM_CANNOT_SET        "DOM: Kann '{1}' nicht setzen."
 
 // Eval
 #define STRING_EVAL_NO_EXPRESSION    "Kein Ausdruck auszuwerten."

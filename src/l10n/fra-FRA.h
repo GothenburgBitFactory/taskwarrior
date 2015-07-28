@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Atteignit la limite d'amboîtage des pseudonymes, {1}."
 #define STRING_PARSER_OVERRIDE_RC    "Configuration écrasée : rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Erreur : attribut de modification non reconnu '{1}'."
-#define STRING_PARSER_UUID_AFTER_COMMA "UUID non reconnu après la virgule."
 #define STRING_PARSER_ALTERNATE_RC   "Utilise un fichier .taskrc alternatif : {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Utilise une data.location alternative : {1}"
 
@@ -115,22 +114,16 @@
 // mostly concerned with how various operators interact with the different
 // data types.
 #define STRING_VARIANT_TIME_T        "Ne peut pas initier ce type avec un valeur time_t."
-#define STRING_VARIANT_CMP_UNKNOWN   "Ne peut pas comparer type inconnu"
-#define STRING_VARIANT_EQ_UNKNOWN    "Cannot equate unknown type"
-#define STRING_VARIANT_EXP_UNKNOWN   "Cannot exponentiate unknown type"
 #define STRING_VARIANT_EXP_BOOL      "Cannot exponentiate Booleans"
 #define STRING_VARIANT_EXP_NON_INT   "Cannot exponentiate to a non-integer power"
 #define STRING_VARIANT_EXP_STRING    "Cannot exponentiate strings"
 #define STRING_VARIANT_EXP_DATE      "Cannot exponentiate dates"
 #define STRING_VARIANT_EXP_DURATION  "Cannot exponentiate durations"
-#define STRING_VARIANT_SUB_UNKNOWN   "Ne peut pas soustraire un type inconnu"
 #define STRING_VARIANT_SUB_BOOL      "Ne peut pas soustraire d'un booléen"
 #define STRING_VARIANT_SUB_STRING    "Ne peut pas soustraire une chaine"
 #define STRING_VARIANT_SUB_DATE      "Ne peut pas soustraire une date"
-#define STRING_VARIANT_ADD_UNKNOWN   "Ne peut pas ajouter un type inconnu"
 #define STRING_VARIANT_ADD_BOOL      "Ne peut pas ajouter deux booléens"
 #define STRING_VARIANT_ADD_DATE      "Ne peut pas ajouter deux dates"
-#define STRING_VARIANT_MUL_UNKNOWN   "Ne peut pas multiplier un type inconnu"
 #define STRING_VARIANT_MUL_BOOL      "Ne peut pas multiplier un booléen"
 #define STRING_VARIANT_MUL_DATE      "Ne peut pas multiplier une date"
 #define STRING_VARIANT_MUL_REAL_STR  "Ne peut pas multiplier un nombre réel par une chaine"
@@ -141,7 +134,6 @@
 #define STRING_VARIANT_MUL_DUR_STR   "Ne peut pas multiplier une durée par une chaine"
 #define STRING_VARIANT_MUL_DUR_DATE  "Ne peut pas multiplier une durée par une date"
 #define STRING_VARIANT_MUL_DUR_DUR   "Ne peut pas multiplier une durée par une durée"
-#define STRING_VARIANT_DIV_UNKNOWN   "Ne peut pas diviser un type inconnu"
 #define STRING_VARIANT_DIV_BOOL      "Ne peut pas diviser un booléen"
 #define STRING_VARIANT_DIV_INT_BOOL  "Ne peut pas diviser un nombre entier par un booléen"
 #define STRING_VARIANT_DIV_ZERO      "Ne peut pas diviser par zéro"
@@ -166,11 +158,8 @@
 #define STRING_VARIANT_MOD_REAL_DATE "Ne peut pas moduler un nombre réel par une date"
 #define STRING_VARIANT_MOD_REAL_STR  "Ne peut pas moduler un nombre réel par une chaine"
 #define STRING_VARIANT_MOD_STR       "Ne peut pas moduler une chaine"
-#define STRING_VARIANT_MOD_UNKNOWN   "Ne peut pas moduler un type inconnu"
 #define STRING_VARIANT_MOD_ZERO      "Ne peut pas moduler zéro"
-#define STRING_VARIANT_RENDER_UNK    "Ne peut pas rendre un type inconnu."
 #define STRING_VARIANT_SQRT_NEG      "Ne peut pas calculer la racine carrée d'un nombre négatif."
-#define STRING_VARIANT_COERCE_UNK    "Cannot coerce data either to or from an unknown type"
 
 // Dates
 //
@@ -517,7 +506,6 @@
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_CMD_ALIASES_USAGE     "Generates a list of all aliases, for autocompletion purposes"
-#define STRING_CMD_INSTALL_USAGE     "Installs extensions and external scripts"
 
 #define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."
 #define STRING_CMD_MODIFY_NO_DUE     "You cannot specify a recurring task without a due date."
@@ -656,7 +644,6 @@
 // DOM
 #define STRING_DOM_UNKNOWN           "<unknown>"
 #define STRING_DOM_UNREC             "DOM: Cannot get unrecognized name '{1}'."
-#define STRING_DOM_CANNOT_SET        "DOM: Cannot set '{1}'."
 
 // Eval
 #define STRING_EVAL_NO_EXPRESSION    "No expression to evaluate."

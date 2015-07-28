@@ -105,7 +105,6 @@
 #define STRING_PARSER_ALIAS_NEST     "Atingis la limon de {1} nest-niveloj de alinomoj."
 #define STRING_PARSER_OVERRIDE_RC    "Agorda superrego rc.{1}:{2}"
 #define STRING_PARSER_UNKNOWN_ATTMOD "Eraro: nekonata atributa modifanto '{1}'."
-#define STRING_PARSER_UUID_AFTER_COMMA "Nekonata UUID-identigilo post komo."
 #define STRING_PARSER_ALTERNATE_RC   "Uzanta alterna .taskrc-dosiero {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Uzanta alterna data.location {1}"
 
@@ -115,22 +114,16 @@
 // mostly concerned with how various operators interact with the different
 // data types.
 #define STRING_VARIANT_TIME_T        "Ne povas aperaĵigi tiun tipon kun valoro de tipo 'time_t'."
-#define STRING_VARIANT_CMP_UNKNOWN   "Ne povas kompari nekonatan tipon"
-#define STRING_VARIANT_EQ_UNKNOWN    "Ne povas egaligi nekonatan tipon"
-#define STRING_VARIANT_EXP_UNKNOWN   "Ne povas potencigi nekonatan tipon"
 #define STRING_VARIANT_EXP_BOOL      "Ne povas potencigi buleon"
 #define STRING_VARIANT_EXP_NON_INT   "Ne povas potencigi kun malentjera eksponento"
 #define STRING_VARIANT_EXP_STRING    "Ne povas potencigi ĉenon"
 #define STRING_VARIANT_EXP_DATE      "Ne povas potencigi daton"
 #define STRING_VARIANT_EXP_DURATION  "Ne povas potencigi daŭron"
-#define STRING_VARIANT_SUB_UNKNOWN   "Ne povas subtrahi nekonatan tipon"
 #define STRING_VARIANT_SUB_BOOL      "Ne povas subtrahi el buleo"
 #define STRING_VARIANT_SUB_STRING    "Ne povas subtrahi ĉenon"
 #define STRING_VARIANT_SUB_DATE      "Ne povas subtrahi daton"
-#define STRING_VARIANT_ADD_UNKNOWN   "Ne povas adicii nekonatan tipon"
 #define STRING_VARIANT_ADD_BOOL      "Ne povas adicii du buleojn"
 #define STRING_VARIANT_ADD_DATE      "Ne povas adicii du datojn"
-#define STRING_VARIANT_MUL_UNKNOWN   "Ne povas multipliki nekonatan tipon"
 #define STRING_VARIANT_MUL_BOOL      "Ne povas multipliki buleon"
 #define STRING_VARIANT_MUL_DATE      "Ne povas multipliki daton"
 #define STRING_VARIANT_MUL_REAL_STR  "Ne povas multipliki reelon per ĉeno"
@@ -141,7 +134,6 @@
 #define STRING_VARIANT_MUL_DUR_STR   "Ne povas multipliki daŭron per ĉeno"
 #define STRING_VARIANT_MUL_DUR_DATE  "Ne povas multipliki daŭron per dato"
 #define STRING_VARIANT_MUL_DUR_DUR   "Ne povas multipliki daŭron per daŭro"
-#define STRING_VARIANT_DIV_UNKNOWN   "Ne povas dividi nekonatan tipon"
 #define STRING_VARIANT_DIV_BOOL      "Ne povas dividi buleon"
 #define STRING_VARIANT_DIV_INT_BOOL  "Ne povas dividi entjeron per buleo"
 #define STRING_VARIANT_DIV_ZERO      "Ne povas dividi per nulo"
@@ -166,11 +158,8 @@
 #define STRING_VARIANT_MOD_REAL_DATE "Ne povas moduli reelon per dato"
 #define STRING_VARIANT_MOD_REAL_STR  "Ne povas moduli reelon per ĉeno"
 #define STRING_VARIANT_MOD_STR       "Ne povas moduli ĉenon"
-#define STRING_VARIANT_MOD_UNKNOWN   "Ne povas moduli nekonatan tipon"
 #define STRING_VARIANT_MOD_ZERO      "Ne povas moduli nulon"
-#define STRING_VARIANT_RENDER_UNK    "Ne povas bildigi nekonatan tipon."
 #define STRING_VARIANT_SQRT_NEG      "Ne povas kalkuli kvadratan radikon de negativa nombro."
-#define STRING_VARIANT_COERCE_UNK    "Ne povas konverta datumon ni el ni al nekonata tipo"
 
 // Dates
 //
@@ -517,7 +506,6 @@
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"
 #define STRING_CMD_ALIASES_USAGE     "Generates a list of all aliases, for autocompletion purposes"
-#define STRING_CMD_INSTALL_USAGE     "Installs extensions and external scripts"
 
 #define STRING_CMD_MODIFY_USAGE1     "Modifies the existing task with provided arguments."
 #define STRING_CMD_MODIFY_NO_DUE     "You cannot specify a recurring task without a due date."
@@ -656,7 +644,6 @@
 // DOM
 #define STRING_DOM_UNKNOWN           "<nekonata>"
 #define STRING_DOM_UNREC             "DOM: Ne povis inspekti nekonatan nomon '{1}'."
-#define STRING_DOM_CANNOT_SET        "DOM: Ne povis ŝanĝi '{1}'."
 
 // Eval
 #define STRING_EVAL_NO_EXPRESSION    "Nenia esprimo por kalkuli."
