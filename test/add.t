@@ -112,6 +112,17 @@ class TestAdd(TestCase):
         self.assertIn("foo (bar)", out)
         self.assertIn("baz (qux)", out)
 
+    def test_single_quote_preserved(self):
+        """Test single quote in a terminated multi-word string is preserved
+
+           TW-1642: After "--", an apostrophe unexpectedly ends the task description
+        """
+        self.t("add -- \"Return Randy's stuff\"")
+
+        code, out, err = self.t ("_get 1.description")
+        self.assertIn("Return Randy's stuff\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
