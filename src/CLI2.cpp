@@ -439,9 +439,13 @@ void CLI2::lexArguments ()
     }
     else
     {
+      std::string quote = "'";
+      std::string escaped = _original_args[i];
+      str_replace (escaped, quote, "\\'");
+
       std::string::size_type cursor = 0;
       std::string word;
-      if (Lexer::readWord ("'" + _original_args[i] + "'", "'", cursor, word))
+      if (Lexer::readWord (quote + escaped + quote, quote, cursor, word))
       {
         Lexer::dequote (word);
         A2 unknown (word, Lexer::Type::word);
