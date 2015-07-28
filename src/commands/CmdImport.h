@@ -38,7 +38,6 @@ public:
   int execute (std::string&);
 
 private:
-  int import (std::vector <std::string>&);
   int import (const std::string&);
   void importSingleTask (json::object*);
 };

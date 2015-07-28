@@ -97,64 +97,6 @@ int CmdImport::execute (std::string& output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdImport::import (std::vector <std::string>& lines)
-{
-  int count = 0;
-  for (auto& line : lines)
-  {
-    std::string object = trimLeft (
-                          trimRight (
-                            trimRight (
-                              trim (line),
-                              ","),
-                            "]"),
-                          "[");
-
-    // Skip blanks.  May be caused by the trim calls above.
-    if (! object.length ())
-      continue;
-
-    // Parse the whole thing.
-    Task task (object);
-
-    // Check whether the imported task is new or a modified existing task.
-    Task before;
-    if (context.tdb2.get (task.get ("uuid"), before))
-    {
-      // "modified:" is automatically set to the current time when a task is
-      // changed.  If the imported task has a modification timestamp we need
-      // to ignore it in taskDiff() in order to check for meaningful
-      // differences.  Setting it to the previous value achieves just that.
-      task.set ("modified", before.get ("modified"));
-      if (taskDiff (before, task))
-      {
-        CmdModify modHelper;
-        modHelper.checkConsistency (before, task);
-        count += modHelper.modifyAndUpdate (before, task);
-        std::cout << " mod  ";
-      }
-      else
-      {
-        std::cout << " skip ";
-      }
-    }
-    else
-    {
-      context.tdb2.add (task);
-      std::cout << " add  ";
-      ++count;
-    }
-
-    std::cout << task.get ("uuid")
-              << " "
-              << task.get ("description")
-              << "\n";
-  }
-
-  return count;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 int CmdImport::import (const std::string& input)
 {
   int count = 0;
