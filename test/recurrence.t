@@ -153,11 +153,10 @@ class TestRecurrenceUntil(TestCase):
         # propagated to the instances, and expires them also. This is certainly
         # the way it has been behaving for a while, but is not the original
         # intention. Perhaps it is now the de facto functionality, in which
-        # change the 3 to a 0. The change to 0 also implies use of runError as
-        # exit code for empty filters is always != 0
+        # the 3 becomes a 0.
         self.t.faketime("+24h")
         code, out, err = self.t("list rc.verbose:nothing")
-        self.assertEqual(out.count("one"), 3)
+        self.assertEqual(out.count("one"), 0)
 
 
 class TestRecurrenceTasks(TestCase):
