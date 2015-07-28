@@ -50,7 +50,7 @@ class TestTags(TestCase):
         code, out, err = self.t("_get 1.tags")
         self.assertEqual("one,two,three\n", out)
 
-       # Remove tags.
+        # Remove tags.
         self.t("1 modify -three -two -one")
         code, out, err = self.t("_get 1.tags")
         self.assertEqual("\n", out)
@@ -74,6 +74,7 @@ class TestTags(TestCase):
         code, out, err = self.t("1 modify -missing")
         self.assertIn("Modified 0 tasks", out)
 
+
 class TestVirtualTags(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -82,7 +83,7 @@ class TestVirtualTags(TestCase):
         cls.t.config("verbose", "nothing")
         cls.t("log completed")
         cls.t("add deleted")
-        cls.t("1 delete")
+        cls.t("1 delete", input="y\n")
         cls.t("add minimal")
         cls.t("add maximal +tag pro:PRO pri:H due:yesterday")
         cls.t("3 start")
@@ -480,7 +481,7 @@ class TestListAllTags(TestCase):
         self.t("add +t1 one")
         self.t("add +t2 two")
         self.t("1 done")
-        self.t("list") # GC/handleRecurrence
+        self.t("list")  # GC/handleRecurrence
 
         code, out, err = self.t("rc.verbose:nothing tags")
         self.assertNotIn("t1", out)

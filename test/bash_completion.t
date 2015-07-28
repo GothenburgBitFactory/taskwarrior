@@ -154,7 +154,7 @@ class TestProject(TestBashCompletionBase):
         code, out, err = self.t("add this task should be number 2 and stay number 2")
         self.assertIn("Created task 2", out)
 
-        code, out, err = self.t("1 delete")
+        code, out, err = self.t("1 delete", input="y\n")
         self.assertIn("Deleted 1 task", out)
 
         with tasksh(self.t):

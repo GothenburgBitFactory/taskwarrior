@@ -44,7 +44,7 @@ class TestCount(TestCase):
         cls.t("add one")
         cls.t("log two")
         cls.t("add three")
-        cls.t("1 delete")
+        cls.t("1 delete", input="y\n")
 
     def test_count_unfiltered(self):
         code, out, err = self.t("count")

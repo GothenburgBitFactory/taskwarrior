@@ -164,8 +164,9 @@ class TestDependencies(TestCase):
 
         # 3 <-- 4  Deleting 4 requires no repair
         # 3
-        code, out, err = self.t("4 delete")
+        code, out, err = self.t("4 delete", input="y\n")
         self.assertNotIn("Would you like the dependency chain fixed?", out)
+        self.assertIn("Deleted 1 task", out)
 
     @unittest.expectedFailure
     def test_id_range_dep(self):

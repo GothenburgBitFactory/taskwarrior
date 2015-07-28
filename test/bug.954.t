@@ -45,7 +45,7 @@ class TestBug954(TestCase):
     def test_deletion_by_uuid(self):
         """Verify deletion using extant UUID"""
         code, out, err = self.t("_get 1.uuid")
-        code, out, err = self.t(out.strip() + " delete")
+        code, out, err = self.t(out.strip() + " delete", input="y\n")
         self.assertIn("Deleting task 1 'foo'", out)
 
     def test_deletion_by_missing_uuid(self):

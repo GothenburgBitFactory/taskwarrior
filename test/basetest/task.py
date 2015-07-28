@@ -49,10 +49,8 @@ class Task(object):
 
         self.reset_env()
 
-        # Cannot call self.config until confirmation is disabled
         with open(self.taskrc, 'w') as rc:
             rc.write("data.location={0}\n"
-                     "confirmation=no\n"
                      "hooks=off\n"
                      "".format(self.datadir))
 
@@ -137,7 +135,7 @@ class Task(object):
         """
         # Add -- to avoid misinterpretation of - in things like UUIDs
         cmd = (self.taskw, "config", "--", var, value)
-        return run_cmd_wait(cmd, env=self.env)
+        return run_cmd_wait(cmd, env=self.env, input="y\n")
 
     @property
     def taskrc_content(self):

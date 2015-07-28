@@ -46,7 +46,7 @@ class TestUnique(TestCase):
         self.t("add two project:A")
         self.t("add three project:B")
         self.t("add four project:C")
-        self.t("4 delete")
+        self.t("4 delete", input="y\n")
         self.t("log five project:D")
 
         code, out, err = self.t("_unique project")

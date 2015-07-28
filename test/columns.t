@@ -191,7 +191,7 @@ class TestStatusFormats(TestCase):
 
         cls.t("add zero")
         cls.t("add one")
-        cls.t("2 delete")
+        cls.t("2 delete", input="y\n")
         cls.t("log two")
         cls.t("add three due:eom recur:weekly")
         cls.t("add four wait:eom")

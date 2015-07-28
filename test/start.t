@@ -110,7 +110,7 @@ class TestActiveTaskHandling(TestCase):
 
     def test_start_deleted(self):
         """Deleted task set to pending by start"""
-        self.t("+one delete")
+        self.t("+one delete", input="y\n")
         self.t("+one start")
         tl = self.t.export()
         self.assertEqual(tl[0]["status"], "pending")

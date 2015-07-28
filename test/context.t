@@ -41,6 +41,19 @@ class ContextManagementTest(TestCase):
     def setUp(self):
         self.t = Task()
 
+        self.t.config("confirmation", "off")
+
+    def test_context_define_confirmation(self):
+        """With confirmation active, prompt if context filter matches no tasks"""
+        self.t.config("confirmation", "on")
+
+        code, out, err = self.t.runError('context define work project:Work', timeout=0.2)
+        self.assertIn("The filter 'project:Work' matches 0 pending tasks.", out)
+        self.assertNotIn("Context 'work' defined.", out)
+
+        # Assert the config contains context definition
+        self.assertNotIn('context.work=project:Work\n', self.t.taskrc_content)
+
     def test_context_define(self):
         """Test simple context definition."""
         code, out, err = self.t('context define work project:Work')
@@ -273,6 +286,8 @@ class ContextManagementTest(TestCase):
 class ContextEvaluationTest(TestCase):
     def setUp(self):
         self.t = Task()
+
+        self.t.config("confirmation", "off")
 
         # Setup contexts
         self.t('context define work project:Work')

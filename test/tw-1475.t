@@ -42,7 +42,14 @@ class TestBug1475(TestCase):
 
     def test_config_unmolested(self):
         """Verify that a config value is not borked by lex/eval"""
-        self.t("config name one/two/three")
+        self.t.config("name", "one/two/three")
+
+        code, out, err = self.t("_get rc.name")
+        self.assertEqual("one/two/three\n", out)
+
+    def test_config_unmolested_2(self):
+        """Verify that a config value is not borked by lex/eval - literal"""
+        self.t("config name one/two/three", input="y\n")
 
         code, out, err = self.t("_get rc.name")
         self.assertEqual("one/two/three\n", out)

@@ -46,7 +46,7 @@ class TestSummaryPercentage(TestCase):
         self.t("add project:A two")
         self.t("add project:A three")
         self.t("1 done")
-        self.t("2 delete")
+        self.t("2 delete", input="y\n")
         code, out, err = self.t("summary")
         self.assertIn(" 50%", out)
 

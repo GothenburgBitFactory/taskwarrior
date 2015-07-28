@@ -49,7 +49,7 @@ class TestProjects(TestCase):
         self.t("add project:A 1")
         self.t("add project:B 2")
         self.t("add project:B 3")
-        self.t("3 delete")
+        self.t("3 delete", input="y\n")
         code, out, err = self.t("project:B projects")
 
         expected = "1 project \(1 task\)"
@@ -78,7 +78,7 @@ class TestProjects(TestCase):
         self.assertRegexpMatches(err, self.STATUS.format("foo", "25%",
                                                          "3 of 4 tasks"))
 
-        code, out, err = self.t("2 delete")
+        code, out, err = self.t("2 delete", input="y\n")
         self.assertRegexpMatches(err, self.STATUS.format("foo", "33%",
                                                          "2 of 3 tasks"))
 
@@ -156,7 +156,7 @@ class TestProjects(TestCase):
         """Verify _projects helper list projects"""
         self.t("add project:A one")
         self.t("add project:B two")
-        self.t("2 delete")
+        self.t("2 delete", input="y\n")
         self.t("log project:C three")
         self.t("list")
 
@@ -169,6 +169,7 @@ class TestProjects(TestCase):
         self.assertIn("A", out)
         self.assertIn("B", out)
         self.assertIn("C", out)
+
 
 class TestBug299(TestCase):
     def setUp(self):
@@ -245,6 +246,7 @@ class TestBug605(TestCase):
         code, out, err = self.t("2 done")
         self.assertIn("is 100% complete", err)
 
+
 class TestBug906(TestCase):
     def setUp(self):
         self.t = Task()
@@ -278,6 +280,7 @@ class TestBug906(TestCase):
         self.assertNotIn("one", out)
         self.assertIn("two", out)
 
+
 class TestBug856(TestCase):
     def setUp(self):
         self.t = Task()
@@ -302,6 +305,7 @@ class TestBug856(TestCase):
         self.assertIn("floating", out)
         self.assertNotIn("assigned", out)
 
+
 class TestBug1511(TestCase):
     def setUp(self):
         self.t = Task()
@@ -316,6 +320,7 @@ class TestBug1511(TestCase):
         code, out, err = self.t("project:two-three list")
         self.assertIn("one", out)
         self.assertNotIn("zero", out)
+
 
 class TestBug1455(TestCase):
     def setUp(self):

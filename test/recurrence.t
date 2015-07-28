@@ -194,7 +194,7 @@ class TestRecurrenceTasks(TestCase):
         self.assertEqual("complex3\n", out)
 
         # Delete a child task, do not propagate.
-        code, out, err = self.t("3 delete", input="n\n")
+        code, out, err = self.t("3 delete", input="y\n")
         self.assertIn("Deleted 1 task.", out)
 
         # Delete a child task, propagate.
@@ -229,7 +229,7 @@ class TestDeletionRecurrence(TestCase):
         """Delete a parent with child tasks"""
         self.t("add one due:eom recur:daily")
         self.t("list") # GC/handleRecurrence
-        code, out, err = self.t("1 delete", input="y\n")
+        code, out, err = self.t("1 delete", input="y\ny\n")
         self.assertIn("Deleted 2 tasks.", out)
 
         code, out, err = self.t.runError("list")
@@ -242,7 +242,7 @@ class TestDeletionRecurrence(TestCase):
         code, out, err = self.t("list rc.verbose:nothing") # GC/handleRecurrence
         self.assertEqual(out.count("one"), 5)
 
-        code, out, err = self.t("2 delete", input="y\n")
+        code, out, err = self.t("2 delete", input="y\ny\n")
         self.assertIn("Deleted 5 tasks.", out)
 
 
@@ -312,7 +312,6 @@ class TestBug955(TestCase):
     def setUp(self):
         self.t = Task()
 
-    @unittest.expectedFailure
     def test_no_prompt_for_parent_on_child_delete(self):
         """Deleting a child of a recurring task doesn't prompt for parent deletion
 
@@ -322,13 +321,7 @@ class TestBug955(TestCase):
         code, out, err = self.t("ls")
         self.assertRegexpMatches(out, re.compile("^2 tasks", re.MULTILINE))
 
-        # NOTE: Test fails here due to some strange handling of STDIN in task
-        # "y\nn\n" actually behaves as "y\ny\n" so both tasks are deleted
-        # in the shell 'printf "y\nn\n" | task 2 delete' works as expected.
-        # Yet replacing the task binary with something like "hexdump", all
-        # bytes received via STDIN are identical in python vs shell.
-        # NOTE: This may be related to delete.t test_delete_bulk_prompt_loop
-        code, out, err = self.t("2 delete", input="y\nn\n")
+        code, out, err = self.t("2 delete", input="n\ny\n")
         self.assertIn("Deleting task 2", out)
         self.assertIn("Deleted 1 task", out)
 

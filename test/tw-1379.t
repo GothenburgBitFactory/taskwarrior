@@ -153,7 +153,7 @@ class TestBug1379(TestCase):
         self.t.config("color.deleted", "")
 
         self.t("add Delete")
-        self.t("1 delete")
+        self.t("1 delete", input="y\n")
 
         code, out, err = self.t("all +DELETED")
         self.assertRegexpMatches(out, self.RED + r".*Delete.*" + self.CLEAR)

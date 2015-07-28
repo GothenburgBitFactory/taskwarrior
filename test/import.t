@@ -139,7 +139,7 @@ class TestImport(TestCase):
     def test_import_update(self):
         """Update existing tasks"""
         self.t("import", input=self.data1)
-        self.t("a1111111-a111-a111-a111-a11111111111 delete")
+        self.t("a1111111-a111-a111-a111-a11111111111 delete", input="y\n")
         self.t("next")  # Run GC
 
         _t = sorted(self.t.export(), key=lambda t: t["uuid"])

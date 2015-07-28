@@ -45,7 +45,7 @@ class TestUndo(TestCase):
         self.t('add one')
         code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'pending')
-        self.t('undo')
+        self.t('undo', input="y\n")
         code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), '')
 
@@ -57,7 +57,7 @@ class TestUndo(TestCase):
         self.t('1 done')
         code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'completed')
-        self.t('undo')
+        self.t('undo', input="y\n")
         code, out, err = self.t('_get 1.status')
         self.assertEqual(out.strip(), 'pending')
 

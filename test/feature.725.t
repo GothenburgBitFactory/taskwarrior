@@ -58,7 +58,7 @@ class TestFeature725(TestCase):
         self.assertIn("Unblocked", out)
 
         # 1 does unblock 4.
-        code, out, er = self.t("1 delete")
+        code, out, er = self.t("1 delete", input="y\n")
         self.assertIn("Unblocked", out)
 
 

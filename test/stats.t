@@ -44,7 +44,7 @@ class TestStatisticsCommand(TestCase):
         """Verify stats records task states"""
         self.t("add one")
         self.t("add two")
-        self.t("2 delete")
+        self.t("2 delete", input="y\n")
         self.t("log three")
 
         code, out, err = self.t("stats")

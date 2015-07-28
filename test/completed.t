@@ -47,7 +47,7 @@ class TestCompleted(TestCase):
         self.t("add two")
         self.t("add three")
         self.t("1 done")
-        self.t("2 delete")
+        self.t("2 delete", input="y\n")
 
         code, out, err = self.t("completed")
         self.assertIn('one', out)

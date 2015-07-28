@@ -46,7 +46,7 @@ class TestDelete(TestCase):
         code, out, err = self.t("_get 1.uuid")
         uuid = out.strip()
 
-        self.t("1 delete")
+        self.t("1 delete", input="y\n")
         self.t.runError("list") # GC/handleRecurrence
         code, out, err = self.t("_get 1.status")
         self.assertEqual("\n", out)
@@ -54,7 +54,7 @@ class TestDelete(TestCase):
         code, out, err = self.t("_get %s.status" % uuid)
         self.assertIn("deleted\n", out)
 
-        self.t("undo")
+        self.t("undo", input="y\n")
         code, out, err = self.t("_get 1.status")
         self.assertIn("pending\n", out)
         code, out, err = self.t("_get %s.status" % uuid)
@@ -63,7 +63,7 @@ class TestDelete(TestCase):
     def test_delete_en_passant(self):
         """Verify that en-passant works with delete"""
         self.t("add foo")
-        code, out, err = self.t("1 delete project:work")
+        code, out, err = self.t("1 delete project:work", input="y\n")
         self.assertIn("Deleted 1 task.", out)
 
         code, out, err = self.t("all rc.verbose:nothing")
@@ -80,7 +80,7 @@ class TestDelete(TestCase):
 
         self.t("all") # GC/handleRecurrence
 
-        code, out, err = self.t("%s delete" % uuid)
+        code, out, err = self.t("%s delete" % uuid, input="y\n")
         self.assertIn("Deleted 1 task.", out)
 
         code, out, err = self.t("_get %s.status" % uuid)
@@ -90,7 +90,7 @@ class TestDelete(TestCase):
         """Delete prompt with closed STDIN causes infinite loop and floods stdout (single)"""
         self.t("add foo1")
 
-        self._validate_prompt_loop()
+        self._validate_prompt_loop(input="y\n")
 
     def test_delete_bulk_prompt_loop(self):
         """Delete prompt with closed STDIN causes infinite loop and floods stdout (bulk)"""
@@ -99,12 +99,12 @@ class TestDelete(TestCase):
         self.t("add foo2")
         self.t("add foo3")
 
-        self._validate_prompt_loop()
+        self._validate_prompt_loop(input="y\n")
 
-    def _validate_prompt_loop(self):
+    def _validate_prompt_loop(self, input=""):
         """Helper method to check if task flooded stream on closed STDIN"""
         try:
-            code, out, err = self.t("/foo[1-3]/ delete", input="", timeout=0.2)
+            code, out, err = self.t("/foo[1-3]/ delete", input=input, timeout=0.2)
         except CommandError as e:
             # If delete fails with a timeout, don't fail the test immediately
             code, out, err = e.code, e.out, e.err

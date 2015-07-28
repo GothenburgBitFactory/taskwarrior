@@ -44,7 +44,7 @@ class TestBurndownCommand(TestCase):
         cls.t("add two")
         cls.t("2 start")
         cls.t("add three")
-        cls.t("3 delete")
+        cls.t("3 delete", input="y\n")
         cls.t("add four")
         cls.t("4 start")
         cls.t("4 done")

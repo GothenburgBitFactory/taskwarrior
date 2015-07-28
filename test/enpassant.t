@@ -84,6 +84,8 @@ class TestEnpassant(BaseTestEnpassant):
     def setUp(self):
         super(TestEnpassant, self).setUp()
 
+        self.t.config("confirmation", "off")
+
         self.t("add one")
         self.t("add two")
         self.t("add three")

@@ -50,7 +50,7 @@ class TestSequences(TestCase):
 
     def test_sequence_delete(self):
         """Test sequences in delete"""
-        self.t("1,2 delete")
+        self.t("1,2 delete", input="y\ny\n")
         code, out, err = self.t("_get 1.status 2.status")
         self.assertEqual("deleted deleted\n", out)
 
