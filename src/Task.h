@@ -63,6 +63,7 @@ public:
   Task& operator= (const Task&); // Assignment operator
   bool operator== (const Task&); // Comparison operator
   Task (const std::string&);     // Parse
+  Task (const json::object*);    // Parse
   ~Task ();                      // Destructor
 
   void parse (const std::string&);

@@ -152,6 +152,19 @@ Task::Task (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+Task::Task (const json::object* obj)
+{
+  id               = 0;
+  urgency_value    = 0.0;
+  recalc_urgency   = true;
+  is_blocked       = false;
+  is_blocking      = false;
+  annotation_count = 0;
+
+  parseJSON (obj);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 Task::~Task ()
 {
 }

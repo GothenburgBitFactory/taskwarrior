@@ -29,7 +29,6 @@
 #include <sstream>
 #include <Context.h>
 #include <Filter.h>
-#include <JSON.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -64,17 +63,15 @@ int CmdImport::execute (std::string& output)
   std::vector <std::string> words = context.cli2.getWords ();
   if (! words.size () || (words.size () == 1 && words[0] == "-"))
   {
-    // No files or only "-" specified, import tasks from STDIN.
-    std::vector <std::string> lines;
-    std::string line;
-
     std::cout << format (STRING_CMD_IMPORT_FILE, "STDIN") << "\n";
 
+    std::string json;
+    std::string line;
     while (std::getline (std::cin, line))
-      lines.push_back (line);
+      json += line + " ";
 
-    if (lines.size () > 0)
-      count = import (lines);
+    if (nontrivial (json))
+      count = import (json);
   }
   else
   {
@@ -88,10 +85,10 @@ int CmdImport::execute (std::string& output)
       std::cout << format (STRING_CMD_IMPORT_FILE, word) << "\n";
 
       // Load the file.
-      std::vector <std::string> lines;
-      incoming.read (lines);
-
-      count += import (lines);
+      std::string json;
+      incoming.read (json);
+      if (nontrivial (json))
+        count += import (json);
     }
   }
 
@@ -155,6 +152,87 @@ int CmdImport::import (std::vector <std::string>& lines)
   }
 
   return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdImport::import (const std::string& input)
+{
+  int count = 0;
+  json::value* root = json::parse (input);
+
+  // Single object parse. Input looks like:
+  //   { ... }
+  if (root->type () == json::j_object)
+  {
+    // For each object element...
+    json::object* root_obj = (json::object*)root;
+    if (root_obj)
+    {
+      importSingleTask (root_obj);
+      ++count;
+    }
+  }
+
+  // Multiple object array. Input looks like:
+  //   [ { ... } , { ... } ]
+  else if (root->type () == json::j_array)
+  {
+    json::array* root_arr = (json::array*)root;
+
+    // For each object element...
+    for (auto& element : root_arr->_data)
+    {
+      // For each object element...
+      json::object* root_obj = (json::object*)element;
+      if (root_obj)
+      {
+        importSingleTask (root_obj);
+        ++count;
+      }
+    }
+  }
+
+  delete root;
+  return count;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void CmdImport::importSingleTask (json::object* obj)
+{
+  // Parse the whole thing.
+  Task task (obj);
+
+  // Check whether the imported task is new or a modified existing task.
+  Task before;
+  if (context.tdb2.get (task.get ("uuid"), before))
+  {
+    // "modified:" is automatically set to the current time when a task is
+    // changed.  If the imported task has a modification timestamp we need
+    // to ignore it in taskDiff() in order to check for meaningful
+    // differences.  Setting it to the previous value achieves just that.
+    task.set ("modified", before.get ("modified"));
+    if (taskDiff (before, task))
+    {
+      CmdModify modHelper;
+      modHelper.checkConsistency (before, task);
+      modHelper.modifyAndUpdate (before, task);
+      std::cout << " mod  ";
+    }
+    else
+    {
+      std::cout << " skip ";
+    }
+  }
+  else
+  {
+    context.tdb2.add (task);
+    std::cout << " add  ";
+  }
+
+  std::cout << task.get ("uuid")
+            << " "
+            << task.get ("description")
+            << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
