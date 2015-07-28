@@ -191,7 +191,7 @@ class TestExportCommand(TestCase):
     def test_export_duration_uda(self):
         self.t.config('uda.estimate.type', 'duration')
         self.t('add estimate:month test duration uda')
-        self.assertString(self.export('2')['estimate'], 'month')
+        self.assertString(self.export('2')['estimate'], 'P1M')
 
 
 class TestExportCommandLimit(TestCase):
