@@ -153,11 +153,9 @@ Test Suite
   suite is the only way to ensure quality levels, and guarantee that big changes
   are robust.
 
-  It is intended that the test suite continues growing, mostly adding more
-  regression and feature tests. The test are mostly written in Perl, and utilize
-  the Test::More module to generate TAP output. This is changing though, and the
-  suite is migrating to Python. Some tests are written in C++ and all tests
-  generate TAP output.
+  It is intended that the test suite continues growing, mostly feature tests.
+  The test are mostly written in Python. Some tests are written in C++ and all
+  tests generate TAP output.
 
   There are currently about 8,000 unit tests, that take only a few seconds to
   run on a multi-core machine.
