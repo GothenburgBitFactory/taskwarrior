@@ -89,13 +89,12 @@ class TestHistoryAnnual(TestCase):
 
     def test_history_annual(self):
         """Verify 'history.annual' correctly categorizes data"""
-        code, out, err = self.t("history.monthly")
+        code, out, err = self.t("history.annual")
         self.assertRegexpMatches(out, "7\s+1\s+0\s+6")
         self.assertRegexpMatches(out, "2\s+3\s+3\s+-4")
         self.assertRegexpMatches(out, "4\s+2\s+1\s+1")
 
-        code, out, err = self.t("ghistory.monthly rc._forcecolor:on")
-        self.tap(out)
+        code, out, err = self.t("ghistory.annual rc._forcecolor:on")
         self.assertRegexpMatches(out, "\s7.+\s1.+")
         self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
 
