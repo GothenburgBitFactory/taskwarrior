@@ -854,6 +854,12 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       ++attributes_written;
     }
 
+/*
+    else if (type == "duration")
+    {
+      // TODO Emit ISO8601d
+    }
+*/
     else if (type == "numeric")
     {
       out << "\""
