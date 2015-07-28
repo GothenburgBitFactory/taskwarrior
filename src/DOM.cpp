@@ -222,7 +222,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
       {
         if (column->is_uda () && ! task.has (canonical))
         {
-          value = Variant ("''");
+          value = Variant ("");
           return true;
         }
 
@@ -301,7 +301,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
           {
             if (column->is_uda () && ! ref.has (canonical))
             {
-              value = Variant ("''");
+              value = Variant ("");
               return true;
             }
 
