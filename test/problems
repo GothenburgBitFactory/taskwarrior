@@ -49,6 +49,7 @@ if __name__ == "__main__":
     errors = defaultdict(int)
     skipped = defaultdict(int)
     expected = defaultdict(int)
+    unexpected = defaultdict(int)
     passed = defaultdict(int)
 
     file = re.compile("^# (?:./)?(\S+\.t)$")
@@ -76,8 +77,11 @@ if __name__ == "__main__":
             if line.startswith("skip "):
                 skipped[filename] += 1
 
-            if line.startswith("# EXPECTED_FAILURE: "):
+            if line.startswith("# EXPECTED_FAILURE:"):
                 expected[filename] += 1
+
+            if line.startswith("# UNEXPECTED_SUCCESS:"):
+                unexpected[filename] += 1
 
         # Last line contains the ending timestamp
         stop = float(timestamp.match(line).group(1))
@@ -94,6 +98,8 @@ if __name__ == "__main__":
     passed_int = v.format(sum(passed.values()))
     error_str = "Failed:" + pad(24)
     error_int = v.format(sum(errors.values()))
+    unexpected_str = "Unexpected successes:" + pad(10)
+    unexpected_int = v.format(sum(unexpected.values()))
     skipped_str = "Skipped:" + pad(23)
     skipped_int = v.format(sum(skipped.values()))
     expected_str = "Expected failures:" + pad(13)
@@ -104,6 +110,7 @@ if __name__ == "__main__":
     if cmd_args.summary:
         print(color(passed_str, "green"), passed_int)
         print(color(error_str, "red"), error_int)
+        print(color(unexpected_str, "red"), unexpected_int)
         print(color(skipped_str, "yellow"), skipped_int)
         print(color(expected_str, "yellow"), expected_int)
         print(runtime_str, runtime_int)
@@ -111,6 +118,9 @@ if __name__ == "__main__":
     else:
         print(color(error_str, "red"))
         print_category(errors)
+        print()
+        print(color(unexpected_str, "red"))
+        print_category(unexpected)
         print()
         print(color(skipped_str, "yellow"))
         print_category(skipped)
