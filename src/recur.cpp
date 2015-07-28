@@ -30,6 +30,7 @@
 #include <fstream>
 #include <sstream>
 #include <sys/types.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -215,7 +216,8 @@ Date getNextRecurrence (Date& current, std::string& period)
   int y = current.year ();
 
   // Some periods are difficult, because they can be vague.
-  if (period == "monthly")
+  if (period == "monthly" ||
+      period == "P1M")
   {
     if (++m > 12)
     {
@@ -241,10 +243,10 @@ Date getNextRecurrence (Date& current, std::string& period)
     return current + (days * 86400);
   }
 
-  else if (Lexer::isDigit (period[0]) && period[period.length () - 1] == 'm')
+  else if (Lexer::isDigit (period[0]) &&
+           period[period.length () - 1] == 'm')
   {
-    std::string numeric = period.substr (0, period.length () - 1);
-    int increment = atoi (numeric.c_str ());
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
 
     m += increment;
     while (m > 12)
@@ -259,7 +261,27 @@ Date getNextRecurrence (Date& current, std::string& period)
     return Date (m, d, y);
   }
 
-  else if (period == "quarterly")
+  else if (period[0] == 'P'                                            &&
+           Lexer::isAllDigits (period.substr (1, period.length () - 2)) &&
+           period[period.length () - 1] == 'M')
+  {
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
+
+    m += increment;
+    while (m > 12)
+    {
+       m -= 12;
+       ++y;
+    }
+
+    while (! Date::valid (m, d, y))
+      --d;
+
+    return Date (m, d, y);
+  }
+
+  else if (period == "quarterly" ||
+           period == "P3M")
   {
     m += 3;
     if (m > 12)
@@ -276,8 +298,7 @@ Date getNextRecurrence (Date& current, std::string& period)
 
   else if (Lexer::isDigit (period[0]) && period[period.length () - 1] == 'q')
   {
-    std::string numeric = period.substr (0, period.length () - 1);
-    int increment = atoi (numeric.c_str ());
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
 
     m += 3 * increment;
     while (m > 12)
@@ -292,7 +313,8 @@ Date getNextRecurrence (Date& current, std::string& period)
     return Date (m, d, y);
   }
 
-  else if (period == "semiannual")
+  else if (period == "semiannual" ||
+           period == "P6M")
   {
     m += 6;
     if (m > 12)
@@ -307,7 +329,8 @@ Date getNextRecurrence (Date& current, std::string& period)
     return Date (m, d, y);
   }
 
-  else if (period == "bimonthly")
+  else if (period == "bimonthly" ||
+           period == "P2M")
   {
     m += 2;
     if (m > 12)
@@ -322,8 +345,9 @@ Date getNextRecurrence (Date& current, std::string& period)
     return Date (m, d, y);
   }
 
-  else if (period == "biannual"    ||
-           period == "biyearly")
+  else if (period == "biannual" ||
+           period == "biyearly" ||
+           period == "P2Y")
   {
     y += 2;
 
@@ -331,7 +355,8 @@ Date getNextRecurrence (Date& current, std::string& period)
   }
 
   else if (period == "annual" ||
-           period == "yearly")
+           period == "yearly" ||
+           period == "P1Y")
   {
     y += 1;
 
@@ -350,7 +375,7 @@ Date getNextRecurrence (Date& current, std::string& period)
   Duration du;
   if (du.parse (period, idx))
   {
-   secs = du;
+    secs = du;
   }
   else
   {
