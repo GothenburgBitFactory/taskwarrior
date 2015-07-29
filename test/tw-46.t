@@ -46,7 +46,7 @@ class TestBug46(TestCase):
     def test_bug46(self):
         """Circular dependency detection broken by deletion of completed.data"""
         self.t("1 mod dep:2")
-        self.t("2 delete")
+        self.t("2 delete", input="y\n")
         self.t("rc.gc=on list")
         os.remove(os.path.join(self.t.datadir, "completed.data"))
         self.t("1 mod dep:2")
