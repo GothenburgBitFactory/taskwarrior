@@ -4,6 +4,8 @@
           Poorter).
 - TW-50   Creation time is lost after editing (thanks to Ben Boeckel).
 - TW-148  default.command options (thanks to David Patrick).
+- TW-158  JSON export should model dependencies as array (thanks to Nicholas E.
+          Rabenau).
 - TW-269  \t is not rendered correctly (thanks to Scott Kostyshak).
 - TW-283  Process rc.* items when executing config (thanks to Ben Armstrong).
 - TW-303  Ability for "import" to update existing tasks (thanks to Kosta
