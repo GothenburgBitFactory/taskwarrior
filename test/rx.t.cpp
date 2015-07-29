@@ -124,7 +124,7 @@ int main (int argc, char** argv)
   RX r13 ("D\\d");
   ut.ok (r13.match (text), text + " =~ /D\\d/");
 #else
-  ut.skip (" =~ /D\\d/"")
+  ut.skip (" =~ /D\\d/")
 #endif
 
   text = "D0";
