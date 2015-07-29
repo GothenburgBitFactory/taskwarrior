@@ -53,6 +53,7 @@
           to Renato Alves).
 - TW-1553 Setting defaultheight:0 makes burndown command hang (thanks to Tomas
           Babej).
+- TW-1555 Project Names Converted to Dates (thanks to Ryan).
 - TW‐1566 Context is applied on 'task export' (thanks to Tomas Babej).
 - TW-1569 update wait:<wait-date> manpage entry (thanks to David Patrick).
 - TW-1572 Better urgency inheritance (thanks to Jens Erat).
