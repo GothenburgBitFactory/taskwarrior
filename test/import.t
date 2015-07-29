@@ -42,6 +42,7 @@ class TestImport(TestCase):
         self.t = Task()
         self.t.config("dateformat", "m/d/Y")
 
+        # Multiple tasks.
         self.data1 = """[
 {"uuid":"a0000000-a000-a000-a000-a00000000000","description":"zero","project":"A","status":"pending","entry":"1234567889"},
 {"uuid":"a1111111-a111-a111-a111-a11111111111","description":"one","project":"B","status":"pending","entry":"1234567889"},
@@ -49,9 +50,11 @@ class TestImport(TestCase):
 ]
 """
 
+        # Single task.
         self.data2 = """{"uuid":"44444444-4444-4444-4444-444444444444","description":"three","status":"pending","entry":"1234567889"}
 """
 
+        # Free-form JSON.
         self.data3 = """
 
 {
@@ -71,7 +74,6 @@ class TestImport(TestCase):
 :
 "1234567889"
 }
-
 
 """
 
@@ -190,6 +192,7 @@ class TestImport(TestCase):
         _data = """{"uuid":"a0000000-a000-a000-a000-a00000000000","depends":"a1111111-a111-a111-a111-a11111111111","description":"zero","project":"A","status":"pending","entry":"1234567889"}"""
         self.t("import", input=self.data1)
         self.t("import", input=_data)
+        self.t.config("json.depends.array", "off")
         _t = self.t.export("a0000000-a000-a000-a000-a00000000000")[0]
         self.assertEqual(_t["depends"], "a1111111-a111-a111-a111-a11111111111")
 
