@@ -543,7 +543,7 @@
 #define STRING_CMD_CONFIG_NO_NAME    "Specificare il nome di una variabile di configurazione da modificare."
 #define STRING_CMD_HCONFIG_USAGE     "Elenca le variabili di configurazione supportate, per autocompletamento"
 #define STRING_CMD_CONTEXT_USAGE     "Set and define contexts (default filters)"
-#define STRING_CMD_CONTEXT_DEF_SUCC  "Context '{1}' defined."
+#define STRING_CMD_CONTEXT_DEF_SUCC  "Context '{1}' defined. Use 'task context {1}' to activate."
 #define STRING_CMD_CONTEXT_DEF_FAIL  "Context '{1}' not defined."
 #define STRING_CMD_CONTEXT_DEF_USAG  "Both context name and its definition must be provided."
 #define STRING_CMD_CONTEXT_DEF_ABRT  "Context definiton aborted."
