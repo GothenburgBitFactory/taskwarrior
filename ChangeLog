@@ -79,6 +79,7 @@
           Tomas Babej).
 - TW-1636 UUID with numeric-only first segment is not parsed properly (thanks
           to Tomas Babej).
+- TW-1637 project name "mod" interpreted as date (thanks to Wim Schuermann).
 - TW-1638 Undo doesn't work when a context is set (thanks to Jeremy John Reeder).
 - TW-1640 '_get <id>.start' for an inactive tasks returns a date formatted from
           epoch 0.
