@@ -74,8 +74,9 @@ int CmdHistoryMonthly::execute (std::string& output)
     time_t epoch = entry.startOfMonth ().toEpoch ();
     groups[epoch] = 0;
 
-    // Every task has an entry date.
-    ++addedGroup[epoch];
+    // Every task has an entry date, but exclude templates.
+    if (task.getStatus () != Task::recurring)
+      ++addedGroup[epoch];
 
     // All deleted tasks have an end date.
     if (task.getStatus () == Task::deleted)
@@ -230,8 +231,9 @@ int CmdHistoryAnnual::execute (std::string& output)
     time_t epoch = entry.startOfYear ().toEpoch ();
     groups[epoch] = 0;
 
-    // Every task has an entry date.
-    ++addedGroup[epoch];
+    // Every task has an entry date, but exclude templates.
+    if (task.getStatus () != Task::recurring)
+      ++addedGroup[epoch];
 
     // All deleted tasks have an end date.
     if (task.getStatus () == Task::deleted)
@@ -383,8 +385,9 @@ int CmdGHistoryMonthly::execute (std::string& output)
     time_t epoch = entry.startOfMonth ().toEpoch ();
     groups[epoch] = 0;
 
-    // Every task has an entry date.
-    ++addedGroup[epoch];
+    // Every task has an entry date, but exclude templates.
+    if (task.getStatus () != Task::recurring)
+      ++addedGroup[epoch];
 
     // All deleted tasks have an end date.
     if (task.getStatus () == Task::deleted)
@@ -577,8 +580,9 @@ int CmdGHistoryAnnual::execute (std::string& output)
     time_t epoch = entry.startOfYear ().toEpoch ();
     groups[epoch] = 0;
 
-    // Every task has an entry date.
-    ++addedGroup[epoch];
+    // Every task has an entry date, but exclude templates.
+    if (task.getStatus () != Task::recurring)
+      ++addedGroup[epoch];
 
     // All deleted tasks have an end date.
     if (task.getStatus () == Task::deleted)
