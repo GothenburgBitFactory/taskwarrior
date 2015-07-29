@@ -12,6 +12,10 @@ New commands in Taskwarrior 2.4.5
 
 New configuration options in Taskwarrior 2.4.5
 
+  - The 'json.depends.array' setting controls whether dependencies are exported
+    as a JSON array, of a comma-separated string.  Default is 'on'.
+    Both variations are imported.
+
 Newly deprecated features in Taskwarrior 2.4.5
 
   - The '_ids', '_projects', '_tags', '_uuids' helper commands are deprecated,

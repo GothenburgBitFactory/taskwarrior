@@ -694,6 +694,18 @@ void Task::parseJSON (const json::object* root_obj)
         addTag (tag->_data);
       }
 
+      // Dependencies can be exported as a single comma-separated string, or as
+      // an array of strings.
+      else if (i.first == "depends" && i.second->type() == json::j_array)
+      {
+        json::array* tags = (json::array*)i.second;
+        for (auto& t : tags->_data)
+        {
+          json::string* tag = (json::string*)t;
+          addDependency (tag->_data);
+        }
+      }
+
       // Strings are decoded.
       else if (type == "string")
         set (i.first, json::decode (unquoteText (i.second->dump ())));
@@ -887,7 +899,27 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       }
 
       out << "]";
+      ++attributes_written;
+    }
 
+    // Dependencies are an array by default.
+    else if (i.first == "depends" &&
+             context.config.getBoolean ("json.depends.array"))
+    {
+      std::vector <std::string> deps;
+      split (deps, i.second, ',');
+
+      out << "\"depends\":[";
+
+      for (auto i = deps.begin (); i != deps.end (); ++i)
+      {
+        if (i != deps.begin ())
+          out << ",";
+
+        out << "\"" << *i << "\"";
+      }
+
+      out << "]";
       ++attributes_written;
     }
 

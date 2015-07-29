@@ -107,6 +107,7 @@ std::string Config::_defaults =
   "expressions=infix                              # Prefer infix over postfix expressions\n"
   "dom=on                                         # Support DOM access\n"
   "json.array=on                                  # Enclose JSON output in [ ]\n"
+  "json.depends.array=on                          # Encode dependencies as a JSON array\n"
   "abbreviation.minimum=2                         # Shortest allowed abbreviation\n"
   "\n"
   "# Dates\n"

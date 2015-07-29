@@ -402,6 +402,12 @@ With json.array=off, export writes raw JSON objects to STDOUT, one per line.
 Defaults to on.
 
 .TP
+.B json.depends.array=on
+Determines whether the export command encodes dependencies as an array of string
+UUIDs, or one comma-separated string.
+Defaults to on.
+
+.TP
 .B _forcecolor=no
 Taskwarrior shuts off color automatically when the output is not sent directly
 to a TTY. For example, this command:

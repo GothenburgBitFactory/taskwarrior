@@ -110,6 +110,8 @@
 - Commands that do not accept filters or modifications now generate an error
   when extra arguments are specified.
 - Improved zsh support (thanks to Daniel Shahaf).
+- Dependencies are exported as a JSON array by default, overridable using
+  'rc.json.depends.array=off'. Both forms are imported.
 
 ------ current release ---------------------------
 
