@@ -34,7 +34,7 @@ Context context;
 
 int main (int argc, char** argv)
 {
-  UnitTest ut (24);
+  UnitTest ut (26);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -119,9 +119,21 @@ int main (int argc, char** argv)
   ut.ok (r12.match (text), text + " =~ /\\bthe\\b/");
 #endif
 
+#if defined(DARWIN)
   text = "D0";
   RX r13 ("D\\d");
   ut.ok (r13.match (text), text + " =~ /D\\d/");
+#else
+  ut.skip (" =~ /D\\d/"")
+#endif
+
+  text = "D0";
+  RX r14 ("D[[:digit:]]");
+  ut.ok (r14.match (text), text + " =~ /D[[:digit:]]/");
+
+  text = "D0";
+  RX r15 ("D[0-9]");
+  ut.ok (r15.match (text), text + " =~ /D[0-9]/");
 
   return 0;
 }
