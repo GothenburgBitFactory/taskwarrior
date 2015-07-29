@@ -2135,39 +2135,21 @@ void Task::modify (modType type, bool text_required /* = false */)
             ++modCount;
           }
 
-          // String type columns may eval, or may not make sense to eval, and
-          // the best way to determine this is to try.
+          // String type columns are not eval'd.
           else if (column->type () == "string")
           {
-            std::string evaluated = value;
-            try
-            {
-              Eval e;
-              e.addSource (domSource);
-              e.addSource (namedDates);
-              contextTask = *this;
-
-              Variant v;
-              e.evaluateInfixExpression (value, v);
-              v.cast (Variant::type_string);
-              evaluated = v.get_string ();
-            }
-
-            catch (...) { /* NOP */ }
-
-            // Final default action
-            if (column->validate (evaluated))
+            if (column->validate (value))
             {
               if (column->can_modify ())
               {
-                std::string col_value = column->modify (evaluated);
-                context.debug (label + name + " <-- '" + col_value + "' <-- '" + evaluated + "' <-- '" + value + "'");
+                std::string col_value = column->modify (value);
+                context.debug (label + name + " <-- '" + col_value + "' <-- '" + value + "'");
                 (*this).set (name, col_value);
               }
               else
               {
-                context.debug (label + name + " <-- '" + evaluated + "' <-- '" + value + "'");
-                (*this).set (name, evaluated);
+                context.debug (label + name + " <-- '" + value + "'");
+                (*this).set (name, value);
               }
 
               ++modCount;

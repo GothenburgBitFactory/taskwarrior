@@ -71,6 +71,7 @@
 - TW-1622 Duration UDA can't take an algebraic expression (thanks to Jeremy John
           Reeder).
 - TW-1626 Wrong wait date (thanks to Andrea Rizzi).
+- TW-1627 'mon' is replaced with date in project field (thanks to James Cline).
 - TW-1632 Japanese translation for Taskwarrior(150713) (thanks to ribbon).
 - TW-1634 due.not:<date> excludes only tasks scheduled at mitnight (thanks to
           Tomas Babej).
