@@ -68,7 +68,7 @@ int CmdImport::execute (std::string& output)
     std::string json;
     std::string line;
     while (std::getline (std::cin, line))
-      json += line + " ";
+      json += line + "\n";
 
     if (nontrivial (json))
       count = import (json);
@@ -100,41 +100,69 @@ int CmdImport::execute (std::string& output)
 int CmdImport::import (const std::string& input)
 {
   int count = 0;
-  json::value* root = json::parse (input);
-
-  // Single object parse. Input looks like:
-  //   { ... }
-  if (root->type () == json::j_object)
+  try
   {
-    // For each object element...
-    json::object* root_obj = (json::object*)root;
-    if (root_obj)
+    json::value* root = json::parse (input);
+    if (root)
     {
-      importSingleTask (root_obj);
-      ++count;
+      // Single object parse. Input looks like:
+      //   { ... }
+      if (root->type () == json::j_object)
+      {
+        // For each object element...
+        json::object* root_obj = (json::object*)root;
+        importSingleTask (root_obj);
+        ++count;
+      }
+
+      // Multiple object array. Input looks like:
+      //   [ { ... } , { ... } ]
+      else if (root->type () == json::j_array)
+      {
+        json::array* root_arr = (json::array*)root;
+
+        // For each object element...
+        for (auto& element : root_arr->_data)
+        {
+          // For each object element...
+          json::object* root_obj = (json::object*)element;
+          importSingleTask (root_obj);
+          ++count;
+        }
+      }
+
+      delete root;
     }
   }
 
-  // Multiple object array. Input looks like:
-  //   [ { ... } , { ... } ]
-  else if (root->type () == json::j_array)
+  // If an exception is caught, then it is because the free-form JSON
+  // objects/array above failed to parse. This is an indication that the input
+  // is an old-style line-by-line set of JSON objects, because both an array of
+  // objects, and a single object have failed to parse..
+  //
+  // Input looks like:
+  //   { ... }
+  //   { ... }
+  catch (std::string& e)
   {
-    json::array* root_arr = (json::array*)root;
+    std::vector <std::string> lines;
+    split (lines, input, '\n');
 
-    // For each object element...
-    for (auto& element : root_arr->_data)
+    for (auto& line : lines)
     {
-      // For each object element...
-      json::object* root_obj = (json::object*)element;
-      if (root_obj)
+      if (line.length ())
       {
-        importSingleTask (root_obj);
-        ++count;
+        json::value* root = json::parse (line);
+        if (root)
+        {
+          importSingleTask ((json::object*) root);
+          ++count;
+          delete root;
+        }
       }
     }
   }
 
-  delete root;
   return count;
 }
 
