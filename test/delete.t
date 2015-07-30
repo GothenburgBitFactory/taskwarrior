@@ -106,7 +106,7 @@ class TestDelete(TestCase):
 
         # Would expect 2 yes via input only 1 sent
         code, out, err = self._validate_prompt_loop(input="y\n")
-        self.assertEqual(code, 0)
+        self.assertEqual(code, 1)
 
     def test_delete_bulk_prompt_loop(self):
         """Delete prompt with closed STDIN causes infinite loop and floods stdout (bulk)"""
@@ -121,7 +121,7 @@ class TestDelete(TestCase):
         # Would expect 3 yes via input only 2 sent
         code, out, err = self._validate_prompt_loop(input="y\ny\n")
 
-        self.assertEqual(code, 0)
+        self.assertEqual(code, 1)
 
     def _validate_prompt_loop(self, input=""):
         """Helper method to check if task flooded stream on closed STDIN"""

@@ -77,13 +77,13 @@ bool confirm (const std::string& question)
     std::string answer {""};
     std::getline (std::cin, answer);
     context.debug ("STDIN '" + answer + "'");
-    answer = std::cin.eof() ? STRING_UTIL_CONFIRM_NO : lowerCase (trim (answer));
+    answer = std::cin.eof () ? STRING_UTIL_CONFIRM_NO : lowerCase (trim (answer));
 
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }
-  while (matches.size () != 1);
+  while (! std::cin.eof () && matches.size () != 1);
 
-  return matches[0] == STRING_UTIL_CONFIRM_YES ? true : false;
+  return matches.size () == 1 && matches[0] == STRING_UTIL_CONFIRM_YES ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -114,17 +114,21 @@ int confirm4 (const std::string& question)
     std::string answer {""};
     std::getline (std::cin, answer);
     context.debug ("STDIN '" + answer + "'");
-    answer = trim (answer);
+    answer = std::cin.eof () ? STRING_UTIL_CONFIRM_QUIT : lowerCase (trim (answer));
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }
-  while (matches.size () != 1);
+  while (! std::cin.eof () && matches.size () != 1);
 
-       if (matches[0] == STRING_UTIL_CONFIRM_YES_U) return 1;
-  else if (matches[0] == STRING_UTIL_CONFIRM_YES)   return 1;
-  else if (matches[0] == STRING_UTIL_CONFIRM_ALL_U) return 2;
-  else if (matches[0] == STRING_UTIL_CONFIRM_ALL)   return 2;
-  else if (matches[0] == STRING_UTIL_CONFIRM_QUIT)  return 3;
-  else                           return 0;
+  if (matches.size () == 1)
+  {
+         if (matches[0] == STRING_UTIL_CONFIRM_YES_U) return 1;
+    else if (matches[0] == STRING_UTIL_CONFIRM_YES)   return 1;
+    else if (matches[0] == STRING_UTIL_CONFIRM_ALL_U) return 2;
+    else if (matches[0] == STRING_UTIL_CONFIRM_ALL)   return 2;
+    else if (matches[0] == STRING_UTIL_CONFIRM_QUIT)  return 3;
+  }
+
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
