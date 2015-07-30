@@ -38,8 +38,11 @@ function bashtap_run_testcase {
             bashtap_output+=$'\n'
             local cmd_output
             local cmd_ret
-            cmd_output=$(eval "$bashtap_line" 2>&1 | sed 's/^/# >>> /')
+
+            eval "$bashtap_line" &> bashtap_out_tmp
             cmd_ret=$?
+            cmd_output="$(sed 's/^/# >>> /' < bashtap_out_tmp)"
+
             if [ ! -z "$cmd_output" ]; then
                 bashtap_output+="$cmd_output"
                 bashtap_output+=$'\n'
@@ -55,6 +58,9 @@ function bashtap_clean_tmpdir {
     if [ ! -z "$bashtap_tmpdir" ] && [ -d "$bashtap_tmpdir" ]; then
         cd "$bashtap_org_pwd"
         rm -rf "$bashtap_tmpdir"
+    fi
+    if [ -f bashtap_out_tmp ]; then
+        rm bashtap_out_tmp
     fi
 }
 
