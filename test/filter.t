@@ -432,6 +432,118 @@ class TestBug480A(TestCase):
         self.assertNotIn("two", out)
 
 
+class TestEmptyFilter(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_empty_filter_warning(self):
+        """Modify tasks with no filter."""
+
+        self.t("add foo")
+        self.t("add bar")
+
+        code, out, err = self.t.runError("modify rc.allow.empty.filter=yes rc.confirmation=no priority:H")
+        self.assertIn("Command prevented from running.", err)
+
+    def test_empty_filter_error(self):
+        """Modify tasks with no filter, and disallowed confirmation."""
+
+        self.t("add foo")
+        self.t("add bar")
+
+        code, out, err = self.t.runError("modify rc.allow.empty.filter=no priority:H")
+        self.assertIn("You did not specify a filter, and with the 'allow.empty.filter' value, no action is taken.", err)
+
+
+class TestFilterPrefix(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("verbose", "nothing")
+
+        cls.t('add project:foo.uno  priority:H +tag "one foo"'      )
+        cls.t('add project:foo.dos  priority:H      "two"'          )
+        cls.t('add project:foo.tres                 "three"'        )
+        cls.t('add project:bar.uno  priority:H      "four"'         )
+        cls.t('add project:bar.dos             +tag "five"'         )
+        cls.t('add project:bar.tres                 "six foo"'      )
+        cls.t('add project:bazuno                   "seven bar foo"')
+        cls.t('add project:bazdos                   "eight bar foo"')
+
+    def test_list_all(self):
+        """No filter shows all tasks."""
+        code, out, err = self.t('list')
+        self.assertIn('one', out)
+        self.assertIn('two', out)
+        self.assertIn('three', out)
+        self.assertIn('four', out)
+        self.assertIn('five', out)
+        self.assertIn('six', out)
+        self.assertIn('seven', out)
+        self.assertIn('eight', out)
+
+    def test_list_project_foo(self):
+        """Filter on project name."""
+        code, out, err = self.t('list project:foo')
+        self.assertIn('one', out)
+        self.assertIn('two', out)
+        self.assertIn('three', out)
+        self.assertNotIn('four', out)
+        self.assertNotIn('five', out)
+        self.assertNotIn('six', out)
+        self.assertNotIn('seven', out)
+        self.assertNotIn('eight', out)
+
+    def test_list_project_not_foo(self):
+        """Filter on not project name."""
+        code, out, err = self.t('list project.not:foo')
+        self.assertNotIn('one', out)
+        self.assertNotIn('two', out)
+        self.assertNotIn('three', out)
+        self.assertIn('four', out)
+        self.assertIn('five', out)
+        self.assertIn('six', out)
+        self.assertIn('seven', out)
+        self.assertIn('eight', out)
+
+    def test_list_project_startswith_bar(self):
+        """Filter on project name start."""
+        code, out, err = self.t('list project.startswith:bar')
+        self.assertNotIn('one', out)
+        self.assertNotIn('two', out)
+        self.assertNotIn('three', out)
+        self.assertIn('four', out)
+        self.assertIn('five', out)
+        self.assertIn('six', out)
+        self.assertNotIn('seven', out)
+        self.assertNotIn('eight', out)
+
+    def test_list_project_ba(self):
+        """Filter on project partial match."""
+        code, out, err = self.t('list project:ba')
+        self.assertNotIn('one', out)
+        self.assertNotIn('two', out)
+        self.assertNotIn('three', out)
+        self.assertIn('four', out)
+        self.assertIn('five', out)
+        self.assertIn('six', out)
+        self.assertIn('seven', out)
+        self.assertIn('eight', out)
+
+    def test_list_description_has_foo(self):
+        """Filter on description pattern."""
+        code, out, err = self.t('list description.has:foo')
+        self.assertIn('one', out)
+        self.assertNotIn('two', out)
+        self.assertNotIn('three', out)
+        self.assertNotIn('four', out)
+        self.assertNotIn('five', out)
+        self.assertIn('six', out)
+        self.assertIn('seven', out)
+        self.assertIn('eight', out)
+
+
 class TestBug480B(TestCase):
     def setUp(self):
         self.t = Task()
