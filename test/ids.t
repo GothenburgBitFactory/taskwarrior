@@ -88,6 +88,17 @@ class TestIDs(TestCase):
         self.assertRegexpMatches(
             out, "{0}:one\n{0}:two\n{0}:three\n{0}:five".format(UUID_REGEXP))
 
+class TestIDMisParse(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_number_not_an_id(self):
+        """Verify that numbers in 'add' are not considered IDs"""
+        self.t("add 123")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("123\n", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
