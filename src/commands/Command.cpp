@@ -218,6 +218,10 @@ Command::Command ()
 , _read_only (true)
 , _displays_id (true)
 , _needs_confirm (false)
+, _needs_gc (true)
+, _uses_context (true)
+, _accepts_filter (true)
+, _accepts_modifications (true)
 , _permission_quit (false)
 , _permission_all (false)
 , _first_iteration (true)
@@ -257,6 +261,36 @@ bool Command::read_only () const
 bool Command::displays_id () const
 {
   return _displays_id;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Command::needs_gc () const
+{
+  return _needs_gc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Command::uses_context () const
+{
+  return _uses_context;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Command::accepts_filter () const
+{
+  return _accepts_filter;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Command::accepts_modifications () const
+{
+  return _accepts_modifications;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool Command::accepts_miscellaneous () const
+{
+  return _accepts_miscellaneous;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
