@@ -1257,9 +1257,11 @@ section for details on the sequence placeholders.
 .TP
 .B report.X.annotations
 This adds the possibility to control the output of annotations for a task in a
-report. See the
-.B annotations
-variable for details on the possible values. Deprecated.
+report. Deprecated. Use the
+.B description
+column with a format (e.g.,
+\fBdescription.count\fP)
+instead.
 
 .TP
 Taskwarrior comes with a number of predefined reports, which are:
