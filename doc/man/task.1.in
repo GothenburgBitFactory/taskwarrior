@@ -162,6 +162,10 @@ custom reports.  If a substring is provided, only matching column names are
 shown.
 
 .TP
+.B task commands
+Shows all the supported commands, with some details of each.
+
+.TP
 .B task <filter> completed
 Shows all tasks matching the filter that are completed.
 

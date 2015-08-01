@@ -9,6 +9,8 @@ New commands in Taskwarrior 2.4.5
 
   - The '_unique' command shows a set of unique values for the specified
     attribute
+  - The 'commands' command shows the supported commands, with additional
+    details that determine some of their behavior.
 
 New configuration options in Taskwarrior 2.4.5
 

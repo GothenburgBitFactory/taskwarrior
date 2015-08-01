@@ -121,6 +121,8 @@
 - Improved zsh support (thanks to Daniel Shahaf).
 - Dependencies are exported as a JSON array by default, overridable using
   'rc.json.depends.array=off'. Both forms are imported.
+- The 'commands' command shows the supported commands, with additional details
+  that determine some of their behavior.
 
 ------ current release ---------------------------
 
