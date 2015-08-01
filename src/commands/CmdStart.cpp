@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdStart::CmdStart ()
 {
-  _keyword     = "start";
-  _usage       = "task <filter> start <mods>";
-  _description = STRING_CMD_START_USAGE;
-  _read_only   = false;
-  _displays_id = false;
-  _category    = Command::Category::operation;
+  _keyword               = "start";
+  _usage                 = "task <filter> start <mods>";
+  _description           = STRING_CMD_START_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = true;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

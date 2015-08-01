@@ -40,12 +40,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdContext::CmdContext ()
 {
-  _keyword     = "context";
-  _usage       = "task          context [<name> | subcommand]";
-  _description = STRING_CMD_CONTEXT_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::context;
+  _keyword               = "context";
+  _usage                 = "task          context [<name> | subcommand]";
+  _description           = STRING_CMD_CONTEXT_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::context;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -366,12 +371,17 @@ int CmdContext::unsetContext (std::vector <std::string>& words, std::stringstrea
 ////////////////////////////////////////////////////////////////////////////////
 CmdCompletionContext::CmdCompletionContext ()
 {
-  _keyword     = "_context";
-  _usage       = "task          _context";
-  _description = STRING_CMD_HCONTEXT_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::internal;
+  _keyword               = "_context";
+  _usage                 = "task          _context";
+  _description           = STRING_CMD_HCONTEXT_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

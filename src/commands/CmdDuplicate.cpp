@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdDuplicate::CmdDuplicate ()
 {
-  _keyword     = "duplicate";
-  _usage       = "task <filter> duplicate <mods>";
-  _description = STRING_CMD_DUPLICATE_USAGE;
-  _read_only   = false;
-  _displays_id = false;
-  _category    = Command::Category::operation;
+  _keyword               = "duplicate";
+  _usage                 = "task <filter> duplicate <mods>";
+  _description           = STRING_CMD_DUPLICATE_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = true;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -41,12 +41,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdSync::CmdSync ()
 {
-  _keyword     = "synchronize";
-  _usage       = "task          synchronize [initialize]";
-  _description = STRING_CMD_SYNC_USAGE;
-  _read_only   = false;
-  _displays_id = false;
-  _category    = Command::Category::migration;
+  _keyword               = "synchronize";
+  _usage                 = "task          synchronize [initialize]";
+  _description           = STRING_CMD_SYNC_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::migration;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -35,12 +35,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdUndo::CmdUndo ()
 {
-  _keyword     = "undo";
-  _usage       = "task          undo";
-  _description = STRING_CMD_UNDO_USAGE;
-  _read_only   = false;
-  _displays_id = false;
-  _category    = Command::Category::operation;
+  _keyword               = "undo";
+  _usage                 = "task          undo";
+  _description           = STRING_CMD_UNDO_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

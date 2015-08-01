@@ -41,12 +41,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdImport::CmdImport ()
 {
-  _keyword     = "import";
-  _usage       = "task          import [<file> ...]";
-  _description = STRING_CMD_IMPORT_USAGE;
-  _read_only   = false;
-  _displays_id = false;
-  _category    = Command::Category::migration;
+  _keyword               = "import";
+  _usage                 = "task          import [<file> ...]";
+  _description           = STRING_CMD_IMPORT_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::migration;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

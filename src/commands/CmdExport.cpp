@@ -36,12 +36,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdExport::CmdExport ()
 {
-  _keyword     = "export";
-  _usage       = "task <filter> export";
-  _description = STRING_CMD_EXPORT_USAGE;
-  _read_only   = true;
-  _displays_id = true;
-  _category    = Command::Category::migration;
+  _keyword               = "export";
+  _usage                 = "task <filter> export";
+  _description           = STRING_CMD_EXPORT_USAGE;
+  _read_only             = true;
+  _displays_id           = true;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::migration;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

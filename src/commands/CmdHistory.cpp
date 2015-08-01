@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdHistoryMonthly::CmdHistoryMonthly ()
 {
-  _keyword     = "history.monthly";
-  _usage       = "task <filter> history.monthly";
-  _description = STRING_CMD_HISTORY_USAGE_M;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::graphs;
+  _keyword               = "history.monthly";
+  _usage                 = "task <filter> history.monthly";
+  _description           = STRING_CMD_HISTORY_USAGE_M;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -197,12 +202,17 @@ int CmdHistoryMonthly::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 CmdHistoryAnnual::CmdHistoryAnnual ()
 {
-  _keyword     = "history.annual";
-  _usage       = "task <filter> history.annual";
-  _description = STRING_CMD_HISTORY_USAGE_A;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::graphs;
+  _keyword               = "history.annual";
+  _usage                 = "task <filter> history.annual";
+  _description           = STRING_CMD_HISTORY_USAGE_A;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -351,12 +361,17 @@ int CmdHistoryAnnual::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 CmdGHistoryMonthly::CmdGHistoryMonthly ()
 {
-  _keyword     = "ghistory.monthly";
-  _usage       = "task <filter> ghistory.monthly";
-  _description = STRING_CMD_GHISTORY_USAGE_M;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::graphs;
+  _keyword               = "ghistory.monthly";
+  _usage                 = "task <filter> ghistory.monthly";
+  _description           = STRING_CMD_GHISTORY_USAGE_M;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -546,12 +561,17 @@ int CmdGHistoryMonthly::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 CmdGHistoryAnnual::CmdGHistoryAnnual ()
 {
-  _keyword     = "ghistory.annual";
-  _usage       = "task <filter> ghistory.annual";
-  _description = STRING_CMD_GHISTORY_USAGE_A;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::graphs;
+  _keyword               = "ghistory.annual";
+  _usage                 = "task <filter> ghistory.annual";
+  _description           = STRING_CMD_GHISTORY_USAGE_A;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

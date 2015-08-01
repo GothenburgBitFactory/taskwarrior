@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdHelp::CmdHelp ()
 {
-  _keyword     = "help";
-  _usage       = "task          help";
-  _description = STRING_CMD_HELP_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::misc;
+  _keyword               = "help";
+  _usage                 = "task          help";
+  _description           = STRING_CMD_HELP_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

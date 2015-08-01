@@ -39,13 +39,18 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdDelete::CmdDelete ()
 {
-  _keyword       = "delete";
-  _usage         = "task <filter> delete <mods>";
-  _description   = STRING_CMD_DELETE_USAGE;
-  _read_only     = false;
-  _displays_id   = false;
-  _needs_confirm = true;
-  _category      = Command::Category::operation;
+  _keyword               = "delete";
+  _usage                 = "task <filter> delete <mods>";
+  _description           = STRING_CMD_DELETE_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_confirm         = true;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = true;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -43,12 +43,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdStats::CmdStats ()
 {
-  _keyword     = "stats";
-  _usage       = "task <filter> stats";
-  _description = STRING_CMD_STATS_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::interrogator;
+  _keyword               = "stats";
+  _usage                 = "task <filter> stats";
+  _description           = STRING_CMD_STATS_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::interrogator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -37,12 +37,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdCalc::CmdCalc ()
 {
-  _keyword     = "calc";
-  _usage       = "task          calc <expression>";
-  _description = STRING_CMD_CALC_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::misc;
+  _keyword               = "calc";
+  _usage                 = "task          calc <expression>";
+  _description           = STRING_CMD_CALC_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

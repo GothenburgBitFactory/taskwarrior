@@ -37,12 +37,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdCount::CmdCount ()
 {
-  _keyword     = "count";
-  _usage       = "task <filter> count";
-  _description = STRING_CMD_COUNT_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::interrogator;
+  _keyword               = "count";
+  _usage                 = "task <filter> count";
+  _description           = STRING_CMD_COUNT_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::interrogator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

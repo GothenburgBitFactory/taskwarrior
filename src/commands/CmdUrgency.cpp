@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdUrgency::CmdUrgency ()
 {
-  _keyword     = "_urgency";
-  _usage       = "task <filter> _urgency";
-  _description = STRING_CMD_URGENCY_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::internal;
+  _keyword               = "_urgency";
+  _usage                 = "task <filter> _urgency";
+  _description           = STRING_CMD_URGENCY_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

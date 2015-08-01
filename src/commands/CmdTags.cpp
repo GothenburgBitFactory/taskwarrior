@@ -40,12 +40,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdTags::CmdTags ()
 {
-  _keyword     = "tags";
-  _usage       = "task <filter> tags";
-  _description = STRING_CMD_TAGS_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::interrogator;
+  _keyword               = "tags";
+  _usage                 = "task <filter> tags";
+  _description           = STRING_CMD_TAGS_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::interrogator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,12 +144,17 @@ int CmdTags::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 CmdCompletionTags::CmdCompletionTags ()
 {
-  _keyword     = "_tags";
-  _usage       = "task <filter> _tags";
-  _description = STRING_CMD_COMTAGS_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::internal;
+  _keyword               = "_tags";
+  _usage                 = "task <filter> _tags";
+  _description           = STRING_CMD_COMTAGS_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

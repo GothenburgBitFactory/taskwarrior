@@ -37,11 +37,16 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdLog::CmdLog ()
 {
-  _keyword     = "log";
-  _usage       = "task          log <mods>";
-  _description = STRING_CMD_LOG_USAGE;
-  _read_only   = false;
-  _displays_id = false;
+  _keyword               = "log";
+  _usage                 = "task          log <mods>";
+  _description           = STRING_CMD_LOG_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = false;
+  _accepts_modifications = true;
+  _accepts_miscellaneous = false;
   _category    = Command::Category::operation;
 }
 

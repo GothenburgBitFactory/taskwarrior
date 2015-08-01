@@ -43,12 +43,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdSummary::CmdSummary ()
 {
-  _keyword     = "summary";
-  _usage       = "task <filter> summary";
-  _description = STRING_CMD_SUMMARY_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::graphs;
+  _keyword               = "summary";
+  _usage                 = "task <filter> summary";
+  _description           = STRING_CMD_SUMMARY_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

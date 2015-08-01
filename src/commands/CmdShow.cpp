@@ -41,12 +41,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdShow::CmdShow ()
 {
-  _keyword     = "show";
-  _usage       = "task          show [all | substring]";
-  _description = STRING_CMD_SHOW;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::config;
+  _keyword               = "show";
+  _usage                 = "task          show [all | substring]";
+  _description           = STRING_CMD_SHOW;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

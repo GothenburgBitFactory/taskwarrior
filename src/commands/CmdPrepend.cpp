@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdPrepend::CmdPrepend ()
 {
-  _keyword     = "prepend";
-  _usage       = "task <filter> prepend <mods>";
-  _description = STRING_CMD_PREPEND_USAGE;
-  _read_only   = false;
-  _displays_id = false;
-  _category    = Command::Category::operation;
+  _keyword               = "prepend";
+  _usage                 = "task <filter> prepend <mods>";
+  _description           = STRING_CMD_PREPEND_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = true;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

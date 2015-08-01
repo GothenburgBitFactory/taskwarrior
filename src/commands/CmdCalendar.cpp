@@ -42,12 +42,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdCalendar::CmdCalendar ()
 {
-  _keyword     = "calendar";
-  _usage       = "task          calendar [due|<month> <year>|<year>] [y]";
-  _description = STRING_CMD_CAL_USAGE;
-  _read_only   = true;
-  _displays_id = true;
-  _category    = Command::Category::graphs;
+  _keyword               = "calendar";
+  _usage                 = "task          calendar [due|<month> <year>|<year>] [y]";
+  _description           = STRING_CMD_CAL_USAGE;
+  _read_only             = true;
+  _displays_id           = true;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

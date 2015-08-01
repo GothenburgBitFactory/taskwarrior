@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdAppend::CmdAppend ()
 {
-  _keyword     = "append";
-  _usage       = "task <filter> append <mods>";
-  _description = STRING_CMD_APPEND_USAGE;
-  _read_only   = false;
-  _displays_id = false;
-  _category    = Command::Category::operation;
+  _keyword               = "append";
+  _usage                 = "task <filter> append <mods>";
+  _description           = STRING_CMD_APPEND_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = true;
+  _accepts_modifications = true;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

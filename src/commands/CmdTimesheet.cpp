@@ -41,12 +41,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdTimesheet::CmdTimesheet ()
 {
-  _keyword     = "timesheet";
-  _usage       = "task          timesheet [weeks]";
-  _description = STRING_CMD_TIMESHEET_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::graphs;
+  _keyword               = "timesheet";
+  _usage                 = "task          timesheet [weeks]";
+  _description           = STRING_CMD_TIMESHEET_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = true;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

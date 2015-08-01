@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdConfig::CmdConfig ()
 {
-  _keyword     = "config";
-  _usage       = "task          config [name [value | '']]";
-  _description = STRING_CMD_CONFIG_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::config;
+  _keyword               = "config";
+  _usage                 = "task          config [name [value | '']]";
+  _description           = STRING_CMD_CONFIG_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -228,12 +233,17 @@ int CmdConfig::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 CmdCompletionConfig::CmdCompletionConfig ()
 {
-  _keyword     = "_config";
-  _usage       = "task          _config";
-  _description = STRING_CMD_HCONFIG_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::internal;
+  _keyword               = "_config";
+  _usage                 = "task          _config";
+  _description           = STRING_CMD_HCONFIG_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

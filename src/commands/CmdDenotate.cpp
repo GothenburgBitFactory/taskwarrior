@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdDenotate::CmdDenotate ()
 {
-  _keyword     = "denotate";
-  _usage       = "task <filter> denotate <pattern>";
-  _description = STRING_CMD_DENO_USAGE;
-  _read_only   = false;
-  _displays_id = false;
-  _category    = Command::Category::operation;
+  _keyword               = "denotate";
+  _usage                 = "task <filter> denotate <pattern>";
+  _description           = STRING_CMD_DENO_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

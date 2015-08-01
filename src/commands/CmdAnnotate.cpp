@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdAnnotate::CmdAnnotate ()
 {
-  _keyword     = "annotate";
-  _usage       = "task <filter> annotate <mods>";
-  _description = STRING_CMD_ANNO_USAGE;
-  _read_only   = false;
-  _displays_id = false;
-  _category    = Command::Category::operation;
+  _keyword               = "annotate";
+  _usage                 = "task <filter> annotate <mods>";
+  _description           = STRING_CMD_ANNO_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = true;
+  _accepts_modifications = true;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

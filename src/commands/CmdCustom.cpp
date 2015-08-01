@@ -43,16 +43,21 @@ extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 CmdCustom::CmdCustom (
-  const std::string& k,
-  const std::string& u,
-  const std::string& d)
+  const std::string& keyword,
+  const std::string& usage,
+  const std::string& description)
 {
-  _keyword     = k;
-  _usage       = u;
-  _description = d;
-  _read_only   = true;
-  _displays_id = true;
-  _category    = Category::report;
+  _keyword               = keyword;
+  _usage                 = usage;
+  _description           = description;
+  _read_only             = true;
+  _displays_id           = true;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Category::report;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +83,9 @@ int CmdCustom::execute (std::string& output)
 
   std::vector <std::string> sortOrder;
   split (sortOrder, reportSort, ',');
-  validateSortColumns (sortOrder);
+  if (sortOrder.size () != 0 &&
+      sortOrder[0] != "none")
+    validateSortColumns (sortOrder);
 
   // Add the report filter to any existing filter.
   if (reportFilter != "")
@@ -95,7 +102,9 @@ int CmdCustom::execute (std::string& output)
   for (unsigned int i = 0; i < filtered.size (); ++i)
     sequence.push_back (i);
 
-  sort_tasks (filtered, sequence, reportSort);
+  if (sortOrder.size () != 0 &&
+      sortOrder[0] != "none")
+    sort_tasks (filtered, sequence, reportSort);
 
   // Configure the view.
   ViewTask view;

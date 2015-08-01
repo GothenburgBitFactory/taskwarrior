@@ -43,18 +43,23 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdInfo::CmdInfo ()
 {
-  _keyword     = "information";
-  _usage       = "task <filter> information";
-  _description = STRING_CMD_INFO_USAGE;
-  _read_only   = true;
+  _keyword               = "information";
+  _usage                 = "task <filter> information";
+  _description           = STRING_CMD_INFO_USAGE;
+  _read_only             = true;
 
   // This is inaccurate, but it does prevent a GC.  While this doesn't make a
   // lot of sense, given that the info command shows the ID, it does mimic the
   // behavior of versions prior to 2.0, which the test suite relies upon.
   //
   // Once the test suite is completely modified, this can be corrected.
-  _displays_id = false;
-  _category    = Command::Category::interrogator;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::interrogator;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

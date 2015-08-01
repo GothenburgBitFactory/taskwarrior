@@ -38,12 +38,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdZshAttributes::CmdZshAttributes ()
 {
-  _keyword     = "_zshattributes";
-  _usage       = "task          _zshattributes";
-  _description = STRING_CMD_ZSHATTS_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::internal;
+  _keyword               = "_zshattributes";
+  _usage                 = "task          _zshattributes";
+  _description           = STRING_CMD_ZSHATTS_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

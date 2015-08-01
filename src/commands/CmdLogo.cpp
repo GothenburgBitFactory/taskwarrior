@@ -36,12 +36,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdLogo::CmdLogo ()
 {
-  _keyword     = "logo";
-  _usage       = "task          logo";
-  _description = STRING_CMD_LOGO_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::misc;
+  _keyword               = "logo";
+  _usage                 = "task          logo";
+  _description           = STRING_CMD_LOGO_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

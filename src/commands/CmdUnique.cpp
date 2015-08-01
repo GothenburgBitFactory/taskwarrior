@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdUnique::CmdUnique ()
 {
-  _keyword     = "_unique";
-  _usage       = "task <filter> _unique <attribute>";
-  _description = STRING_CMD_UNIQUE_USAGE;
-  _read_only   = false;
-  _displays_id = true;
-  _category    = Command::Category::internal;
+  _keyword               = "_unique";
+  _usage                 = "task <filter> _unique <attribute>";
+  _description           = STRING_CMD_UNIQUE_USAGE;
+  _read_only             = false;
+  _displays_id           = true;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

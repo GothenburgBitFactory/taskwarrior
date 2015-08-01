@@ -48,12 +48,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdEdit::CmdEdit ()
 {
-  _keyword     = "edit";
-  _usage       = "task <filter> edit";
-  _description = STRING_CMD_EDIT_USAGE;
-  _read_only   = false;
-  _displays_id = false;
-  _category    = Command::Category::operation;
+  _keyword               = "edit";
+  _usage                 = "task <filter> edit";
+  _description           = STRING_CMD_EDIT_USAGE;
+  _read_only             = false;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::operation;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

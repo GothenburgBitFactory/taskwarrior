@@ -41,12 +41,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdUDAs::CmdUDAs ()
 {
-  _keyword     = "udas";
-  _usage       = "task          udas";
-  _description = STRING_CMD_UDAS_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::config;
+  _keyword               = "udas";
+  _usage                 = "task          udas";
+  _description           = STRING_CMD_UDAS_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -177,12 +182,17 @@ int CmdUDAs::execute (std::string& output)
 ///////////////////////////////////////////////////////////////////////////////
 CmdCompletionUDAs::CmdCompletionUDAs ()
 {
-  _keyword     = "_udas";
-  _usage       = "task          _udas";
-  _description = STRING_CMD_UDAS_COMPL_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::internal;
+  _keyword               = "_udas";
+  _usage                 = "task          _udas";
+  _description           = STRING_CMD_UDAS_COMPL_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

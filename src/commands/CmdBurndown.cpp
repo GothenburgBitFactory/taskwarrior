@@ -1014,12 +1014,17 @@ unsigned Chart::burndown_size (unsigned ntasks)
 ////////////////////////////////////////////////////////////////////////////////
 CmdBurndownMonthly::CmdBurndownMonthly ()
 {
-  _keyword     = "burndown.monthly";
-  _usage       = "task <filter> burndown.monthly";
-  _description = STRING_CMD_BURN_USAGE_M;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::graphs;
+  _keyword               = "burndown.monthly";
+  _usage                 = "task <filter> burndown.monthly";
+  _description           = STRING_CMD_BURN_USAGE_M;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1043,12 +1048,17 @@ int CmdBurndownMonthly::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 CmdBurndownWeekly::CmdBurndownWeekly ()
 {
-  _keyword     = "burndown.weekly";
-  _usage       = "task <filter> burndown.weekly";
-  _description = STRING_CMD_BURN_USAGE_W;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::graphs;
+  _keyword               = "burndown.weekly";
+  _usage                 = "task <filter> burndown.weekly";
+  _description           = STRING_CMD_BURN_USAGE_W;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1072,12 +1082,17 @@ int CmdBurndownWeekly::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 CmdBurndownDaily::CmdBurndownDaily ()
 {
-  _keyword     = "burndown.daily";
-  _usage       = "task <filter> burndown.daily";
-  _description = STRING_CMD_BURN_USAGE_D;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::graphs;
+  _keyword               = "burndown.daily";
+  _usage                 = "task <filter> burndown.daily";
+  _description           = STRING_CMD_BURN_USAGE_D;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = true;
+  _uses_context          = true;
+  _accepts_filter        = true;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::graphs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -39,12 +39,17 @@ extern Context context;
 ////////////////////////////////////////////////////////////////////////////////
 CmdColumns::CmdColumns ()
 {
-  _keyword     = "columns";
-  _usage       = "task          columns [substring]";
-  _description = STRING_CMD_COLUMNS_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::config;
+  _keyword               = "columns";
+  _usage                 = "task          columns [substring]";
+  _description           = STRING_CMD_COLUMNS_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = true;
+  _category              = Command::Category::config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -115,12 +120,17 @@ int CmdColumns::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 CmdCompletionColumns::CmdCompletionColumns ()
 {
-  _keyword     = "_columns";
-  _usage       = "task          _columns";
-  _description = STRING_CMD_COLUMNS_USAGE2;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::internal;
+  _keyword               = "_columns";
+  _usage                 = "task          _columns";
+  _description           = STRING_CMD_COLUMNS_USAGE2;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
