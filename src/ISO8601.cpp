@@ -373,7 +373,7 @@ int ISO8601d::dayOfWeek (int year, int month, int day)
 bool ISO8601d::validate ()
 {
   // _year;
-  if ((_year    && (_year    <   1900 || _year    >                              2100)) ||
+  if ((_year    && (_year    <   1900 || _year    >                              2200)) ||
       (_month   && (_month   <      1 || _month   >                                12)) ||
       (_week    && (_week    <      1 || _week    >                                53)) ||
       (_weekday && (_weekday <      0 || _weekday >                                 6)) ||
