@@ -229,6 +229,16 @@
 #define STRING_COLUMN_LABEL_UDACOUNT "Usage Count"
 #define STRING_COLUMN_LABEL_ORPHAN   "Orphan UDA"
 
+#define STRING_COLUMN_LABEL_COMMAND  "Command"
+#define STRING_COLUMN_LABEL_CATEGORY "Category"
+#define STRING_COLUMN_LABEL_RO       "R/W"
+#define STRING_COLUMN_LABEL_SHOWS_ID "ID?"
+#define STRING_COLUMN_LABEL_GC       "GC?"
+#define STRING_COLUMN_LABEL_CONTEXT  "Context?"
+#define STRING_COLUMN_LABEL_FILTER   "Filter?"
+#define STRING_COLUMN_LABEL_MODS     "Mods?"
+#define STRING_COLUMN_LABEL_MISC     "Other?"
+
 // Column Examples
 #define STRING_COLUMN_EXAMPLES_TAGS  "home @chore next"
 #define STRING_COLUMN_EXAMPLES_PROJ  "home.garden"
@@ -502,6 +512,7 @@
 #define STRING_CMD_DIAG_HOOK_ENABLE  "Enabled"
 #define STRING_CMD_DIAG_HOOK_DISABLE "Disabled"
 
+#define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_HCOMMANDS_USAGE   "Generates a list of all commands, for autocompletion purposes"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Generates a list of all commands, for zsh autocompletion purposes"
 #define STRING_CMD_ZSHATTS_USAGE     "Generates a list of all attributes, for zsh autocompletion purposes"

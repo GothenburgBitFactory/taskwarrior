@@ -230,6 +230,16 @@
 #define STRING_COLUMN_LABEL_UDACOUNT "Recuento de uso"
 #define STRING_COLUMN_LABEL_ORPHAN   "UDA huérfano"
 
+#define STRING_COLUMN_LABEL_COMMAND  "Command"
+#define STRING_COLUMN_LABEL_CATEGORY "Category"
+#define STRING_COLUMN_LABEL_RO       "R/W"
+#define STRING_COLUMN_LABEL_SHOWS_ID "ID?"
+#define STRING_COLUMN_LABEL_GC       "GC?"
+#define STRING_COLUMN_LABEL_CONTEXT  "Context?"
+#define STRING_COLUMN_LABEL_FILTER   "Filter?"
+#define STRING_COLUMN_LABEL_MODS     "Mods?"
+#define STRING_COLUMN_LABEL_MISC     "Other?"
+
 // Column Examples
 #define STRING_COLUMN_EXAMPLES_TAGS  "casa @tarea"
 #define STRING_COLUMN_EXAMPLES_PROJ  "casa.jardín"
@@ -510,6 +520,7 @@
 #define STRING_CMD_DIAG_HOOK_ENABLE  "Habilitado"
 #define STRING_CMD_DIAG_HOOK_DISABLE "Inhabilitado"
 
+#define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_HCOMMANDS_USAGE   "Genera una lista de todos los comandos, con fines de auto-completado"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Genera una lista de todos los comandos, con fines de auto-completado zsh"
 

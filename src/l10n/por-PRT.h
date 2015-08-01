@@ -230,6 +230,16 @@
 #define STRING_COLUMN_LABEL_UDACOUNT "Contagem de Uso"
 #define STRING_COLUMN_LABEL_ORPHAN   "UDA Orfão"
 
+#define STRING_COLUMN_LABEL_COMMAND  "Command"
+#define STRING_COLUMN_LABEL_CATEGORY "Category"
+#define STRING_COLUMN_LABEL_RO       "R/W"
+#define STRING_COLUMN_LABEL_SHOWS_ID "ID?"
+#define STRING_COLUMN_LABEL_GC       "GC?"
+#define STRING_COLUMN_LABEL_CONTEXT  "Context?"
+#define STRING_COLUMN_LABEL_FILTER   "Filter?"
+#define STRING_COLUMN_LABEL_MODS     "Mods?"
+#define STRING_COLUMN_LABEL_MISC     "Other?"
+
 // Column Examples
 #define STRING_COLUMN_EXAMPLES_TAGS  "casa @contas próxima"
 #define STRING_COLUMN_EXAMPLES_PROJ  "casa.jardim"
@@ -502,6 +512,7 @@
 #define STRING_CMD_DIAG_HOOK_ENABLE  "Enabled"
 #define STRING_CMD_DIAG_HOOK_DISABLE "Disabled"
 
+#define STRING_CMD_COMMANDS_USAGE    "Generates a list of all commands, with behavior details"
 #define STRING_CMD_HCOMMANDS_USAGE   "Gera uma lista com todos os comandos, para fins de terminação automática"
 #define STRING_CMD_ZSHCOMMANDS_USAGE "Gera uma lista com todos os comandos, para terminação automática em zsh"
 #define STRING_CMD_ZSHATTS_USAGE     "Gera uma lista de todos os atributos, para terminação automática em zsh"

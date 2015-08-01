@@ -29,21 +29,109 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <Context.h>
+#include <ViewText.h>
 #include <Command.h>
 #include <CmdCommands.h>
+#include <ColString.h>
+#include <text.h>
 #include <i18n.h>
 
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
+CmdCommands::CmdCommands ()
+{
+  _keyword               = "commands";
+  _usage                 = "task          commands";
+  _description           = STRING_CMD_COMMANDS_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::interrogator;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+int CmdCommands::execute (std::string& output)
+{
+  ViewText view;
+  view.width (context.getWidth ());
+  view.add (Column::factory ("string",       STRING_COLUMN_LABEL_COMMAND));
+  view.add (Column::factory ("string",       STRING_COLUMN_LABEL_CATEGORY));
+  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_RO));
+  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_SHOWS_ID));
+  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_GC));
+  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_CONTEXT));
+  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_FILTER));
+  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_MODS));
+  view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_MISC));
+
+  Color label (context.config.get ("color.label"));
+  view.colorHeader (label);
+
+  Color alternate (context.config.get ("color.alternate"));
+  view.colorOdd (alternate);
+  view.intraColorOdd (alternate);
+
+  view.leftMargin (context.config.getInteger ("indent.report"));
+  view.extraPadding (context.config.getInteger ("row.padding"));
+  view.intraPadding (context.config.getInteger ("column.padding"));
+
+  for (auto& command : context.commands)
+  {
+    int row = view.addRow ();
+    view.set (row, 0, command.first);
+    view.set (row, 1, Command::categoryNames.at (command.second->_category));
+
+    if (command.second->read_only ())
+      view.set (row, 2, "RO");
+    else
+      view.set (row, 2, "RW");
+
+    if (command.second->displays_id ())
+      view.set (row, 3, "ID");
+
+    if (command.second->needs_gc ())
+      view.set (row, 4, "GC");
+
+    if (command.second->uses_context ())
+      view.set (row, 5, "Context");
+
+    if (command.second->accepts_filter ())
+      view.set (row, 6, "Filter");
+
+    if (command.second->accepts_modifications ())
+      view.set (row, 7, "Modifications");
+
+    if (command.second->accepts_miscellaneous ())
+      view.set (row, 8, "Args");
+  }
+
+  output = optionalBlankLine ()
+         + view.render ()
+         + optionalBlankLine ()
+         + "\n";
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 CmdCompletionCommands::CmdCompletionCommands ()
 {
-  _keyword     = "_commands";
-  _usage       = "task          _commands";
-  _description = STRING_CMD_HCOMMANDS_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::internal;
+  _keyword               = "_commands";
+  _usage                 = "task          _commands";
+  _description           = STRING_CMD_HCOMMANDS_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,12 +157,17 @@ int CmdCompletionCommands::execute (std::string& output)
 ////////////////////////////////////////////////////////////////////////////////
 CmdZshCommands::CmdZshCommands ()
 {
-  _keyword     = "_zshcommands";
-  _usage       = "task          _zshcommands";
-  _description = STRING_CMD_ZSHCOMMANDS_USAGE;
-  _read_only   = true;
-  _displays_id = false;
-  _category    = Command::Category::internal;
+  _keyword               = "_zshcommands";
+  _usage                 = "task          _zshcommands";
+  _description           = STRING_CMD_ZSHCOMMANDS_USAGE;
+  _read_only             = true;
+  _displays_id           = false;
+  _needs_gc              = false;
+  _uses_context          = false;
+  _accepts_filter        = false;
+  _accepts_modifications = false;
+  _accepts_miscellaneous = false;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

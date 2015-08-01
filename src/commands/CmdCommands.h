@@ -30,6 +30,13 @@
 #include <string>
 #include <Command.h>
 
+class CmdCommands : public Command
+{
+public:
+  CmdCommands ();
+  int execute (std::string&);
+};
+
 class CmdCompletionCommands : public Command
 {
 public:

@@ -106,6 +106,7 @@ void Command::factory (std::map <std::string, Command*>& all)
   c = new CmdCalendar ();           all[c->keyword ()] = c;
   c = new CmdColor ();              all[c->keyword ()] = c;
   c = new CmdColumns ();            all[c->keyword ()] = c;
+  c = new CmdCommands ();           all[c->keyword ()] = c;
   c = new CmdCompletionAliases ();  all[c->keyword ()] = c;
   c = new CmdCompletionColumns ();  all[c->keyword ()] = c;
   c = new CmdCompletionCommands (); all[c->keyword ()] = c;
