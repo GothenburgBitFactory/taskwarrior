@@ -354,8 +354,8 @@ class TestDateFormats(TestCase):
     def test_date_format_julian(self):
         """Verify due.julian formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.julian")
-        self.assertRegexpMatches(out, r'1\s+\d+\.\d{5}')
-        self.assertRegexpMatches(out, r'2\s+\d+\.\d{5}')
+        self.assertRegexpMatches(out, r'1\s+\d+\.\d+')
+        self.assertRegexpMatches(out, r'2\s+\d+\.\d+')
 
     def test_date_format_epoch(self):
         """Verify due.epoch formatting"""
