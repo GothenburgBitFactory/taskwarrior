@@ -299,18 +299,16 @@ class TestVirtualTags(TestCase):
         self.assertNotIn("completed", out)
         self.assertNotIn("deleted", out)
         self.assertNotIn("minimal", out)
-        self.assertIn("maximal", out)
         self.assertNotIn("blocked", out)
-        # Ignore due_eom, which may be a different week.
+        # Ignore maximal, due_eom, which may be a different week.
         self.assertIn("due_eow", out)
 
         code, out, err = self.t("-WEEK all")
         self.assertIn("completed", out)
         self.assertIn("deleted", out)
         self.assertIn("minimal", out)
-        self.assertNotIn("maximal", out)
         self.assertIn("blocked", out)
-        # Ignore due_eom, which may be a different week.
+        # Ignore maximal, due_eom, which may be a different week.
         self.assertNotIn("due_eow", out)
 
     def test_virtual_tag_ACTIVE(self):
