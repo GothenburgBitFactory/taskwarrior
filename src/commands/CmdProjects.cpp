@@ -59,9 +59,6 @@ int CmdProjects::execute (std::string& output)
 {
   int rc = 0;
 
-  // Enforce the garbage collector to show correct task counts
-  context.tdb2.gc ();
-
   // Get all the tasks.
   handleRecurrence ();
   auto tasks = context.tdb2.pending.get_tasks ();
@@ -74,7 +71,6 @@ int CmdProjects::execute (std::string& output)
   Filter filter;
   std::vector <Task> filtered;
   filter.subset (tasks, filtered);
-
   int quantity = filtered.size ();
 
   std::stringstream out;

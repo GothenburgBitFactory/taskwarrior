@@ -432,9 +432,9 @@ int Context::dispatch (std::string &out)
     Command* c = commands[command];
     assert (c);
 
-    // GC is invoked prior to running any command that displays task IDs, if
-    // possible.
-    if (c->displays_id () && !tdb2.read_only ())
+    // The command know whether they need a GC.
+    if (c->needs_gc () &&
+        ! tdb2.read_only ())
     {
       run_gc = config.getBoolean ("gc");
       tdb2.gc ();
