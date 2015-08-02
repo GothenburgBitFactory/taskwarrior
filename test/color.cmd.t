@@ -70,7 +70,7 @@ class TestColorCommand(TestCase):
         code, out, err = self.t("colors rc._forcecolor:on legend")
         if 'CYGWIN' in platform.system() or 'FreeBSD' in platform.system():
             # 16-color
-            self.assertRegexpMatches(out, "color.debug\s+.\[0m\s.\[34mcolor4\s+.\[0m")
+            self.assertRegexpMatches(out, "color.debug\s+.\[0m\s.\[34mblue\s+.\[0m")
         else:
             # 256-color
             self.assertRegexpMatches(out, "color.debug\s+.\[0m\s.\[38;5;4mcolor4\s+.\[0m")
