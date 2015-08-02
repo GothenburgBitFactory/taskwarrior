@@ -69,12 +69,12 @@ Filter::~Filter ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take an input set of tasks and filter into a subset.
-void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output, bool applyContext /* = true */)
+void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output)
 {
   context.timer_filter.start ();
   _startCount = (int) input.size ();
 
-  context.cli2.prepareFilter (applyContext);
+  context.cli2.prepareFilter ();
 
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
   for (auto& a : context.cli2._args)
@@ -115,11 +115,11 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
 ////////////////////////////////////////////////////////////////////////////////
 // Take the set of all tasks and filter into a subset.
-void Filter::subset (std::vector <Task>& output, bool applyContext /* = true */)
+void Filter::subset (std::vector <Task>& output)
 {
   context.timer_filter.start ();
 
-  context.cli2.prepareFilter (applyContext);
+  context.cli2.prepareFilter ();
 
   std::vector <std::pair <std::string, Lexer::Type>> precompiled;
   for (auto& a : context.cli2._args)

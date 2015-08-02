@@ -60,7 +60,7 @@ int CmdExport::execute (std::string& output)
   // Apply filter.
   Filter filter;
   std::vector <Task> filtered;
-  filter.subset (filtered, false);
+  filter.subset (filtered);
 
   if (filter.hasModifications ())
     throw std::string (STRING_ERROR_NO_MODS);

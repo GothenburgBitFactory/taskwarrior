@@ -296,7 +296,7 @@ void TF2::load_tasks ()
       {
         Task::status status = task.getStatus ();
         // Completed / deleted tasks in pending.data get an ID if GC is off.
-        if (!context.run_gc ||
+        if (! context.run_gc ||
             (status != Task::completed && status != Task::deleted))
           task.id = context.tdb2.next_id ();
       }

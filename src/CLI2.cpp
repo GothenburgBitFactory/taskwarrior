@@ -601,13 +601,16 @@ void CLI2::addContextFilter ()
 ////////////////////////////////////////////////////////////////////////////////
 // Parse the command line, identifiying filter components, expanding syntactic
 // sugar as necessary.
-void CLI2::prepareFilter (bool applyContext)
+void CLI2::prepareFilter ()
 {
   // Clear and re-populate.
   _id_ranges.clear ();
   _uuid_list.clear ();
 
-  if (applyContext)
+  // Context is only applied for commands that request it.
+  std::string command = getCommand ();
+  Command* cmd = context.commands[command];
+  if (cmd && cmd->uses_context ())
     addContextFilter ();
 
   // Classify FILTER and MODIFICATION args, based on CMD and READCMD/WRITECMD.
