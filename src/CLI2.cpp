@@ -1673,6 +1673,27 @@ void CLI2::desugarFilterPlainArgs ()
     prev = &a;
   }
 
+  // Cover the case where the *last* argument is a plain arg.
+  auto& penultimate = _args[_args.size () - 2];
+  auto praw         = penultimate.attribute ("raw");
+  auto& last        = _args[_args.size () - 1];
+  if ((penultimate._lextype != Lexer::Type::op     ||  // argX
+       praw == "("                                 ||
+       praw == ")"                                 ||
+       praw == "and"                               ||
+       praw == "or"                                ||
+       praw == "xor")                              &&
+
+      (last._lextype == Lexer::Type::identifier    ||  // candidate
+       last._lextype == Lexer::Type::word)         &&  // candidate
+
+      last.hasTag ("FILTER")                       &&  // candidate
+      ! last.hasTag ("PSEUDO"))                        // non-candidate
+  {
+    last.tag ("PLAIN");
+  }
+
+
   // Walk the list again, upgrading PLAIN args.
   bool changes = false;
   std::vector <A2> reconstructed;
