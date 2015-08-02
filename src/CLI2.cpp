@@ -562,16 +562,6 @@ void CLI2::addContextFilter ()
     return;
   }
 
-  // Some commands operate independently of context.
-  auto cmd = getCommand ();
-  if (cmd    == "undo"   ||
-      cmd    == "export" ||
-      cmd[0] == '_')
-  {
-    context.debug ("Context-free command.");
-    return;
-  }
-
   // Detect if UUID or ID is set, and bail out
   for (auto& a : _args)
   {
