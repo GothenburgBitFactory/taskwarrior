@@ -453,7 +453,11 @@ int Context::dispatch (std::string &out)
 
     // This is something that is only needed for write commands with no other
     // filter processing.
-    cli2.prepareFilter ();
+    if (! c->read_only () &&
+        ! c->accepts_filter ())
+    {
+      cli2.prepareFilter ();
+    }
 
     return c->execute (out);
   }
