@@ -365,6 +365,25 @@ void CLI2::add (const std::string& argument)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Capture a set of arguments, inserted immediately after the binary.
+void CLI2::add (const std::vector <std::string>& arguments)
+{
+  std::vector <std::string> replacement;
+  replacement.push_back (_original_args[0]);
+
+  for (auto& arg : arguments)
+    replacement.push_back (arg);
+
+  for (unsigned int i = 1; i < _original_args.size (); ++i)
+    replacement.push_back (_original_args[i]);
+
+  _original_args = replacement;
+
+  // Adding a new argument invalidates prior analysis.
+  _args.clear ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Arg0 is the first argument, which is the name and potentially a relative or
 // absolute path to the invoked binary.
 //
@@ -532,19 +551,22 @@ void CLI2::analyze ()
 // Process raw string.
 void CLI2::addFilter (const std::string& arg)
 {
+  std::vector <std::string> filter;
+
   if (arg.length ())
-    add ("(");
+    filter.push_back ("(");
 
   std::string lexeme;
   Lexer::Type type;
   Lexer lex (arg);
 
   while (lex.token (lexeme, type))
-    add (lexeme);
+    filter.push_back (lexeme);
 
   if (arg.length ())
-    add (")");
+    filter.push_back (")");
 
+  add (filter);
   analyze ();
 }
 

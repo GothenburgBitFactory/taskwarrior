@@ -74,6 +74,7 @@ public:
   void entity (const std::string&, const std::string&);
 
   void add (const std::string&);
+  void add (const std::vector <std::string>&);
   void analyze ();
   void addFilter (const std::string& arg);
   void addContextFilter ();
