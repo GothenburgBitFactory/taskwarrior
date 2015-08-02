@@ -29,6 +29,7 @@
 import sys
 import os
 import unittest
+import platform
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -67,9 +68,15 @@ class TestColorCommand(TestCase):
     def test_colors_legend(self):
         """ Verify 'task colors legend' shows theme colors"""
         code, out, err = self.t("colors rc._forcecolor:on legend")
-        self.assertRegexpMatches(out, "color.debug\s+.\[0m\s.\[38;5;4mcolor4\s+.\[0m")
+        if 'CYGWIN' in platform.system() or 'FreeBSD' in platform.system():
+            # 16-color
+            self.assertRegexpMatches(out, "color.debug\s+.\[0m\s.\[34mcolor4\s+.\[0m")
+        else:
+            # 256-color
+            self.assertRegexpMatches(out, "color.debug\s+.\[0m\s.\[38;5;4mcolor4\s+.\[0m")
 
-        # Verify 'task colors legend' obeys rc overrides.
+    def test_colors_legend_override(self):
+        """Verify 'task colors legend' obeys rc overrides"""
         code, out, err = self.t("colors rc._forcecolor:on rc.color.debug:red legend")
         self.assertRegexpMatches(out, "color.debug\s+.\[0m\s.\[31mred\s+.\[0m")
 
