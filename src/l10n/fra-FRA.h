@@ -366,6 +366,7 @@
 #define STRING_CMD_COUNT_USAGE       "Compte les taches correspondantes"
 #define STRING_CMD_GET_USAGE         "Accesseur au DOM"
 #define STRING_CMD_GET_NO_DOM        "Aucune référence de DOM spécifié."
+#define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
 #define STRING_CMD_UDAS_NO           "Aucuns ADUs définies."
 #define STRING_CMD_UDAS_SUMMARY      "{1} ADU définie"

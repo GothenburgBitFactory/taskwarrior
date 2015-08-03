@@ -366,6 +366,7 @@
 #define STRING_CMD_COUNT_USAGE       "Zlicza pasujące zadania"
 #define STRING_CMD_GET_USAGE         "DOM Akcesor"
 #define STRING_CMD_GET_NO_DOM        "Brak zdefiniowanej referencji do DOM."
+#define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
 #define STRING_CMD_UDAS_NO           "Nie zdefiniowano UDA"
 #define STRING_CMD_UDAS_SUMMARY      "{1} zdefiniowane UDA"

@@ -50,6 +50,11 @@ class TestDOM(TestCase):
         code, out, err = self.t.runError("_get")
         self.assertEqual("No DOM reference specified.\n", err)
 
+    def test_dom_bad_ref(self):
+        """ DOM bad reference """
+        code, out, err = self.t.runError("_get donkey")
+        self.assertEqual("'donkey' is not a DOM reference.\n", err)
+
     def test_dom_task_ref(self):
         """ DOM reference to other task """
         code, out, err = self.t("_get 2.due")
@@ -187,8 +192,8 @@ class TestDOM(TestCase):
 
     def test_dom_rc_missing(self):
         """ DOM rc.missing """
-        code, out, err = self.t.runError("_get rc.missing")
-        self.assertEqual(code, 1)
+        code, out, err = self.t("_get rc.missing")
+        self.assertEqual("\n", out)
 
     def test_dom_attribute_missing(self):
         """DOM 1.end (missing)"""

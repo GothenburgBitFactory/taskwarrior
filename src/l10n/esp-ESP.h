@@ -373,6 +373,7 @@
 #define STRING_CMD_COUNT_USAGE       "Cuenta tareas que coinciden"
 #define STRING_CMD_GET_USAGE         "Método de acceso al DOM"
 #define STRING_CMD_GET_NO_DOM        "Referencia a DOM no especificada."
+#define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
 #define STRING_CMD_UDAS_NO           "Ningún UDA definido."
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA definido"

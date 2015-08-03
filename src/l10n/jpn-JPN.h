@@ -366,6 +366,7 @@
 #define STRING_CMD_COUNT_USAGE       "一致した タスク をカウント"
 #define STRING_CMD_GET_USAGE         "DOM Accessor"
 #define STRING_CMD_GET_NO_DOM        "No DOM reference specified."
+#define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
 #define STRING_CMD_UDAS_NO           "UDAが一つも定義されていません。"
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA が定義されました。"

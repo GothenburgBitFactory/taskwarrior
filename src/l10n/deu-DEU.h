@@ -366,6 +366,7 @@
 #define STRING_CMD_COUNT_USAGE       "Zählt gewählte Aufgaben"
 #define STRING_CMD_GET_USAGE         "DOM-Accessor"
 #define STRING_CMD_GET_NO_DOM        "Keine DOM-Referenz spezifiziert."
+#define STRING_CMD_GET_BAD_REF       "'{1}' is not a DOM reference."
 
 #define STRING_CMD_UDAS_NO           "Keine UDAs festgelegt."
 #define STRING_CMD_UDAS_SUMMARY      "{1} UDA festgelegt"
