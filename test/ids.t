@@ -99,6 +99,17 @@ class TestIDMisParse(TestCase):
         code, out, err = self.t("_get 1.description")
         self.assertEqual("123\n", out)
 
+    def test_parse_numbers_as_ids_not_patterns(self):
+        """Verify that numbers are parsed as IDs"""
+        self.t("add 2 two")    # ID 1
+        self.t("add 1 one")    # ID 2
+        self.t("add 3 three")  # ID 3
+
+        code, out, err = self.t("2 ls rc.verbose:nothing")
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+        self.assertNotIn("three", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
