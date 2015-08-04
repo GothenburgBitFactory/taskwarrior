@@ -771,58 +771,55 @@ bool Lexer::isPair (std::string& token, Lexer::Type& type)
 // Lexer::Type::set
 //   a single number:      1
 //   a list of numbers:    1,3,5
-//   a list of numbers:    1 3 5
 //   a range:              5-10
-//   or a combination:     1,3,5-10 12
+//   or a combination:     1,3,5-10
 //
 //   <id> [ - <id> ] [ , <id> [ - <id> ] ] ...
 bool Lexer::isSet (std::string& token, Lexer::Type& type)
 {
   std::size_t marker = _cursor;
-  bool moreThanJustANumber = false;
+  int count = 0;
+  std::string dummyToken;
+  Lexer::Type dummyType;
 
-  if (isDigit (_text[marker]))
+  do
   {
-    ++marker;
-    while (isDigit (_text[marker]))
-      utf8_next_char (_text, marker);
-
-    if (_text[marker] == '-')
+    if (isInteger (dummyToken, dummyType))
     {
-      ++marker;
-      while (isDigit (_text[marker]))
+      ++count;
+      if (isLiteral ("-", false, false))
       {
-        utf8_next_char (_text, marker);
-        moreThanJustANumber = true;
+        if (isInteger (dummyToken, dummyType))
+          ++count;
+        else
+        {
+          _cursor = marker;
+          return false;
+        }
       }
     }
-
-    while (_text[marker] == ',')
+    else
     {
-      ++marker;
-      while (isDigit (_text[marker]))
-        utf8_next_char (_text, marker);
-
-      moreThanJustANumber = true;
-
-      if (_text[marker] == '-')
-      {
-        ++marker;
-        while (isDigit (_text[marker]))
-          utf8_next_char (_text, marker);
-      }
-    }
-
-    if (moreThanJustANumber)
-    {
-      token = _text.substr (_cursor, marker - _cursor);
-      type = Lexer::Type::set;
       _cursor = marker;
-      return true;
+      return false;
     }
   }
+  while (isLiteral (",", false, false));
 
+  // Success is multiple numbers, matching the pattern.
+  if (count > 1 &&
+      (isEOS () ||
+       isWhitespace (_text[_cursor]) ||
+       isHardBoundary (_text[_cursor], _text[_cursor + 1])))
+  {
+    token = _text.substr (marker, _cursor - marker);
+    type = Lexer::Type::set;
+    return true;
+  }
+
+  _cursor = marker;
   return false;
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
