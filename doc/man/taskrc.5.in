@@ -442,7 +442,7 @@ The character or string to show in the <uda>.indicator column. Defaults to U.
 
 .TP
 .B recurrence=yes
-Controls whether recurrence is enable, and whether recurring tasks continue to
+Controls whether recurrence is enabled, and whether recurring tasks continue to
 generate new task instances. Defaults to 'yes'.
 
 .TP

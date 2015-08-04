@@ -96,6 +96,7 @@
           Shahaf).
 - TW-1642 After "--", an apostrophe unexpectedly ends the task description
           (thanks to Jeremy John Reeder).
+- TW-1648 Typo in Documentation (thanks to Simon W. Jackson).
 - Prevent potential task duplication during import for non-pending tasks.
 - Show the active context in "context list", if any is active.
 - Fix "task edit" dropping annotation text after newlines.
