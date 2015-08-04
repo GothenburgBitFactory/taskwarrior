@@ -625,17 +625,17 @@ Examples for other values of dateformat.report:
 .RS
 .RS
 .br
-a D b Y (V)   would do an output as "Fri 24 Jul 2009 (30)"
+a D b Y (V)   would emit "Fri 24 Jul 2009 (30)"
 .br
-A, B D, Y     would do an output as "Friday, July 24, 2009"
+A, B D, Y     would emit "Friday, July 24, 2009"
 .br
-wV a Y-M-D    would do an output as "w30 Fri 2009-07-24"
+wV a Y-M-D    would emit "w30 Fri 2009-07-24"
 .br
-yMD.HN        would do an output as "110124.2342"
+yMD.HN        would emit "110124.2342"
 .br
-m/d/Y H:N     would do an output as "1/24/2011 10:42"
+m/d/Y H:N     would emit "1/24/2011 10:42"
 .br
-a D b Y H:N:S would do an output as "Mon 24 Jan 2011 11:19:42"
+a D b Y H:N:S would emit "Mon 24 Jan 2011 11:19:42"
 .RE
 .RE
 
@@ -1395,7 +1395,7 @@ Note that the value are sorted
 .SS CONTEXT
 Context setting is a mechanism which allows the user to set a permanent filter,
 thus avoiding the need to specify one filter repeatedly. More details on usage
-can be found in the task(1) manpage.
+can be found in the task(1) man page.
 
 The current context is stored in the taskrc file, along with definitions for
 all user provided contexts.

@@ -458,7 +458,7 @@ Outputs a list of available contexts along with their definitions.
 
 .TP
 .B task context none
-Unsets the currently active context, if any was set.
+Clears the currently active context, if any was set.
 
 .TP
 .B task context show
@@ -741,7 +741,7 @@ For report purposes, specifies the date that a task was created.
 Attribute modifiers improve filters.  Supported modifiers are:
 
 .RS
-.B before     (synonyms under, below)
+.B  before     (synonyms under, below)
 .br
 .B  after      (synonyms over, above)
 .br

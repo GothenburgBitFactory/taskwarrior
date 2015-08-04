@@ -243,7 +243,7 @@ be a visual mess.  Beware!
 The precedence for the color rules is determined by the configuration
 variable 'rule.precedence.color', which by default contains:
 
-    due.today,active,blocking,blocked,overdue,due,scheduled,keyword.,project.,tag.,uda.,recurring,pri.,tagged,completed,deleted
+    deleted,completed,active,keyword.,tag.,project.,overdue,scheduled,due.today,due,blocked,blocking,recurring,tagged,uda.
 
 These are just the color rules with the 'color.' prefix removed.  The
 rule 'color.due.today' is the highest precedence, and 'color.deleted' is the lowest.
