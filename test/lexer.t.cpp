@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1173);
+  UnitTest t (1197);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -364,6 +364,7 @@ int main (int argc, char** argv)
     { "123.annotations.1.entry",                      { { "123.annotations.1.entry",                      Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "123.annotations.1.entry.year",                 { { "123.annotations.1.entry.year",                 Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e7520b749.due",     { { "a360fc44-315c-4366-b70c-ea7e7520b749.due",     Lexer::Type::dom          }, NO, NO, NO, NO }, },
+    { "12345678-1234-1234-1234-123456789012.due",     { { "12345678-1234-1234-1234-123456789012.due",     Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "system.os",                                    { { "system.os",                                    Lexer::Type::dom          }, NO, NO, NO, NO }, },
     { "rc.foo",                                       { { "rc.foo",                                       Lexer::Type::dom          }, NO, NO, NO, NO }, },
 
@@ -441,13 +442,17 @@ int main (int argc, char** argv)
 
     // UUID
     { "ffffffff-ffff-ffff-ffff-ffffffffffff",         { { "ffffffff-ffff-ffff-ffff-ffffffffffff",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-    { "00000000-0000-0000-0000-000000000000",         { { "00000000-0000-0000-0000-000000000000",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
+    { "00000000-0000-0000-0000-0000000",              { { "00000000-0000-0000-0000-0000000",              Lexer::Type::uuid         }, NO, NO, NO, NO }, },
+    { "00000000-0000-0000-0000",                      { { "00000000-0000-0000-0000",                      Lexer::Type::uuid         }, NO, NO, NO, NO }, },
+    { "00000000-0000-0000",                           { { "00000000-0000-0000",                           Lexer::Type::uuid         }, NO, NO, NO, NO }, },
+    { "00000000-0000",                                { { "00000000-0000",                                Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e7520b749",         { { "a360fc44-315c-4366-b70c-ea7e7520b749",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e752",              { { "a360fc44-315c-4366-b70c-ea7e752",              Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c",                      { { "a360fc44-315c-4366-b70c",                      Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366",                           { { "a360fc44-315c-4366",                           Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c",                                { { "a360fc44-315c",                                Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44",                                     { { "a360fc44",                                     Lexer::Type::uuid         }, NO, NO, NO, NO }, },
+
 
     // Date
     { "2015-W01",                                     { { "2015-W01",                                     Lexer::Type::date         }, NO, NO, NO, NO }, },
