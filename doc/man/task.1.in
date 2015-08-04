@@ -859,14 +859,31 @@ modifier.
 
 You can use the following operators in filter expressions:
 
-  and  or  xor            Logical operators
-  <  <=  =  !=  >=  >     Relational operators
-  (  )                    Precedence
+  and  or  xor                  Logical operators
+  <  <=  =  ==  !=  !==  >=  >  Relational operators
+  (  )                          Precedence
 
 For example:
 
   task due.before:eom priority.not:L list
   task '( due < eom or priority != L )'  list
+
+The
+.I =
+operator tests for approximate equality.  Dates compare
+equal if they are on the same day (hour and minutes are ignored).
+Strings compare equal if the left operand starts with the right operand.
+The
+.I ==
+operator tests for exact equality.  The
+.I !=
+and
+.I !==
+operators are the negation of
+.I =
+and
+.I ==
+respectively.
 
 Note that the parentheses are required when using a logical operator other than
 the 'and' operator.  The reason is that some reports contain filters that must
