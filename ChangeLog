@@ -79,6 +79,7 @@
           Denis Kasak).
 - TW-1622 Duration UDA can't take an algebraic expression (thanks to Jeremy John
           Reeder).
+- TW-1624 Report filters combine incorrectly with command line with terminator.
 - TW-1626 Wrong wait date (thanks to Andrea Rizzi).
 - TW-1627 'mon' is replaced with date in project field (thanks to James Cline).
 - TW-1629 Descriptions often get overwritten with "( or )" (thanks to Jeremy
