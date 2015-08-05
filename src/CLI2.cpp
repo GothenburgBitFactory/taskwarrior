@@ -1075,7 +1075,7 @@ void CLI2::desugarFilterAttributes ()
     if (a._lextype == Lexer::Type::pair &&
         a.hasTag ("FILTER"))
     {
-      std::string raw = a.attribute ("raw");
+      std::string raw   = a.attribute ("raw");
       std::string name  = a.attribute ("name");
       std::string mod   = a.attribute ("modifier");
       std::string sep   = a.attribute ("separator");
@@ -1125,11 +1125,8 @@ void CLI2::desugarFilterAttributes ()
         //   duration --> yes
         bool evalSupported = true;
         Column* col = context.columns[canonical];
-        if (col &&
-            col->type () == "string")
-        {
+        if (col && col->type () == "string")
           evalSupported = false;
-        }
 
         A2 lhs (name, Lexer::Type::dom);
         lhs.tag ("FILTER");
