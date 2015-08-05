@@ -66,6 +66,8 @@
           Babej).
 - TW-1594 Filter "due.before" with relative dates stopped working (thanks to
           Sebastien Badia).
+- TW-1598 (Bulk) modification of tasks unintentionally overwrites description
+          if a context is active (thanks to Johannes Schlatow).
 - TW-1600 Filtering "regressions"(?) in task-2.4.3, task-2.4.4 (thanks to Ralph
           Bean).
 - TW-1609 In 'urgency<10', 10 is interpreted as an ID (thanks to Wim Schuermann).
