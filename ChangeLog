@@ -81,6 +81,7 @@
 - TW-1627 'mon' is replaced with date in project field (thanks to James Cline).
 - TW-1629 Descriptions often get overwritten with "( or )" (thanks to Jeremy
           John Reeder).
+- TW-1630 "Due" parsing behavior seems inconsistent (thanks to Jim B).
 - TW-1632 Japanese translation for Taskwarrior(150713) (thanks to ribbon).
 - TW-1634 due.not:<date> excludes only tasks scheduled at mitnight (thanks to
           Tomas Babej).

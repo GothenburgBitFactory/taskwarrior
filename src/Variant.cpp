@@ -1942,11 +1942,32 @@ void Variant::cast (const enum type new_type)
             pos == _string.length ())
         {
           _date = (time_t) iso;
+          break;
         }
-        else if (dateFormat != "")
+
+        pos = 0;
+        ISO8601p isop;
+        if (isoEnabled                &&
+            isop.parse (_string, pos) &&
+            pos == _string.length ())
         {
-          Date d (_string, dateFormat);
-          _date = d.toEpoch ();
+          _date = Date ().toEpoch () + (time_t) isop;
+          break;
+        }
+
+        pos = 0;
+        Duration dur;
+        if (dur.parse (_string, pos) &&
+            pos == _string.length ())
+        {
+          _date = Date ().toEpoch () + (time_t) dur;
+          break;
+        }
+
+        if (dateFormat != "")
+        {
+          _date = Date (_string, dateFormat).toEpoch ();
+          break;
         }
       }
       break;
