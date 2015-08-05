@@ -1317,7 +1317,7 @@ void CLI2::desugarFilterPatterns ()
 //
 void CLI2::findIDs ()
 {
-  bool previousArgWasAnOperator = false;
+  bool previousFilterArgWasAnOperator = false;
   int filterCount = 0;
 
   for (auto& a : _args)
@@ -1329,7 +1329,7 @@ void CLI2::findIDs ()
       if (a._lextype == Lexer::Type::number)
       {
         // Skip any number that was preceded by an operator.
-        if (! previousArgWasAnOperator)
+        if (! previousFilterArgWasAnOperator)
         {
           std::string number = a.attribute ("raw");
           _id_ranges.push_back (std::pair <std::string, std::string> (number, number));
@@ -1355,7 +1355,12 @@ void CLI2::findIDs ()
         }
       }
 
-      previousArgWasAnOperator = (a._lextype == Lexer::Type::op) ? true : false;
+      std::string raw = a.attribute ("raw");
+      previousFilterArgWasAnOperator = (a._lextype == Lexer::Type::op &&
+                                  raw != "("                    &&
+                                  raw != ")")
+                               ? true
+                               : false;
     }
   }
 
