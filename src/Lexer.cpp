@@ -1084,6 +1084,8 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
     type = Lexer::Type::dom;
     return true;
   }
+  else
+    _cursor = marker;
 
   if (isOneOf ({"context.program",
                 "context.args",
@@ -1135,7 +1137,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
     return true;
   }
 
-  // [prefix]attribute
+  // [prefix]attribute.
   if (isOneOf (attributes, true, false))
   {
     if (isLiteral (".", false, false))
