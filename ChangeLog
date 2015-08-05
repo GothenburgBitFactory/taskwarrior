@@ -64,6 +64,8 @@
 - TW-1575 `task log` mangles URLs when quoted (thanks to Luke Macken).
 - TW-1592 Able to add duplicate tags using 'tags:<value>' (thanks to Tomas
           Babej).
+- TW-1594 Filter "due.before" with relative dates stopped working (thanks to
+          Sebastien Badia).
 - TW-1600 Filtering "regressions"(?) in task-2.4.3, task-2.4.4 (thanks to Ralph
           Bean).
 - TW-1609 In 'urgency<10', 10 is interpreted as an ID (thanks to Wim Schuermann).
