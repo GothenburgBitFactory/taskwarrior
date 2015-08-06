@@ -100,7 +100,7 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
     if (i + 1 == ids.size ())
     {
       if (result.str ().length ())
-        result << ",";
+        result << " ";
 
       if (range_start < range_end)
         result << ids[range_start] << "-" << ids[range_end];
@@ -116,7 +116,7 @@ std::string CmdIDs::compressIds (const std::vector <int>& ids)
       else
       {
         if (result.str ().length ())
-          result << ",";
+          result << " ";
 
         if (range_start < range_end)
           result << ids[range_start] << "-" << ids[range_end];
@@ -240,7 +240,7 @@ int CmdUUIDs::execute (std::string& output)
     uuids.push_back (task.get ("uuid"));
 
   std::sort (uuids.begin (), uuids.end ());
-  join (output, ",", uuids);
+  join (output, " ", uuids);
   output += "\n";
 
   context.headers.clear ();
