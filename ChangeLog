@@ -72,6 +72,7 @@
 - TW-1600 Filtering "regressions"(?) in task-2.4.3, task-2.4.4 (thanks to Ralph
           Bean).
 - TW-1609 In 'urgency<10', 10 is interpreted as an ID (thanks to Wim Schuermann).
+- TW-1611 soww weirdness (thanks to Wim Schuermann).
 - TW-1612 Spurious whitespace added in task descriptions around certain symbols
           (thanks to Denis Kasak).
 - TW-1615 Japanese translation for Taskwarrior(150513) (thanks to ribbon).

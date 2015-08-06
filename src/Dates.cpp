@@ -335,12 +335,10 @@ bool namedDates (const std::string& name, Variant& value)
   else if (closeEnough ("soww", name, minimum))
   {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
-    int extra = (t->tm_wday - 1) * 86400;
-    if (extra > 0)
-      extra += 7 * 86400;
-
+    int days = (8 - t->tm_wday) % 7;
+    int extra = days * 86400;
     t->tm_isdst = -1;
-    value = Variant (mktime (t) - extra, Variant::type_date);
+    value = Variant (mktime (t) + extra, Variant::type_date);
   }
 
   else if (closeEnough ("eoww", name, minimum))
