@@ -13,6 +13,8 @@
 - TW-1285 relative dates combined with times (thanks to Adam Gibbins).
 - TW-1319 UDA is NOT sorted corresponding to the order of UDA list entries
           (thanks to Onion).
+- TW-1344 Filter due:yyyy-mm-dd is failing to display daily recurring tasks if
+          there is deleted task in the series.(thanks to Svetoslav Trochev).
 - TW-1389 tw will import same UUID n-times if part of same import (thanks to
           Markus Beppler).
 - TW-1419 On add '-tag' is considered a tag removal, which makes no sense.
