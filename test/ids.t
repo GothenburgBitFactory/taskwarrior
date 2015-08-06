@@ -50,12 +50,12 @@ class TestIDs(TestCase):
     def test_ids_count_A(self):
         """ids +A"""
         code, out, err = self.t("ids +A")
-        self.assertRegexpMatches(out, "^1-3,5$")
+        self.assertRegexpMatches(out, "^1-3 5$")
 
     def test_ids_count_B(self):
         """ids +B"""
         code, out, err = self.t("ids +B")
-        self.assertRegexpMatches(out, "^1,3,5$")
+        self.assertRegexpMatches(out, "^1 3 5$")
 
     def test_ids_count_A_B(self):
         """ids +A -B"""
@@ -75,7 +75,7 @@ class TestIDs(TestCase):
     def test_uuids_count_A(self):
         """uuids +A"""
         code, out, err = self.t("uuids +A")
-        self.assertRegexpMatches(out, "{0},{0},{0},{0}".format(UUID_REGEXP))
+        self.assertRegexpMatches(out, "{0} {0} {0} {0}".format(UUID_REGEXP))
 
     def test_get_uuids_count_A(self):
         """_uuids +A"""
