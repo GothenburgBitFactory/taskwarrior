@@ -53,6 +53,7 @@
 - TW-1529 Parser incorrectly inserting spaces into task description (thanks to
           David Brenner).
 - TW-1533 dateformat confusion, regress tests (thanks to Peter Rochen).
+- TW-1537 soww Synonym produces wrong date (thanks to Michael Meier).
 - TW-1543 cmake complains "test" is not a valid target (on arch linux) (thanks
           to Renato Alves).
 - TW-1553 Setting defaultheight:0 makes burndown command hang (thanks to Tomas
