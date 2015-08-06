@@ -76,7 +76,7 @@
 //
 //   5. Add your new language to task.git/cmake.h.in:
 //
-//        #define LANGUAGE_DEU_DEU ${LANGUAGE_DEU_DEU}                                        
+//        #define LANGUAGE_DEU_DEU ${LANGUAGE_DEU_DEU}
 //
 //   6. Build your localized Taskwarrior with these commands:
 //
