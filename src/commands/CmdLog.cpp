@@ -71,8 +71,8 @@ int CmdLog::execute (std::string& output)
   if (context.verbose ("project"))
     context.footnote (onProjectChange (task));
 
-  if (context.verbose ("affected"))
-    output = std::string (STRING_CMD_LOG_LOGGED) + "\n";
+  if (context.verbose ("new-uuid"))
+    output = format (STRING_CMD_LOG_LOGGED, task.get ("uuid")) + "\n";
 
   return 0;
 }
