@@ -17,6 +17,8 @@ New configuration options in Taskwarrior 2.4.5
   - The 'json.depends.array' setting controls whether dependencies are exported
     as a JSON array, of a comma-separated string.  Default is 'on'.
     Both variations are imported.
+  - The 'color.uda.<name>.none' is a color that is applieѕ to tasks that do
+    not have a value for the UDA '<name>'.
 
 Newly deprecated features in Taskwarrior 2.4.5
 

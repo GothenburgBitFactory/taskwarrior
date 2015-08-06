@@ -197,7 +197,7 @@ static void colorizeKeyword (Task& task, const std::string& rule, const Color& b
 ////////////////////////////////////////////////////////////////////////////////
 static void colorizeUDA (Task& task, const std::string& rule, const Color& base, Color& c)
 {
-  // Is the rule uda.name.value or uda.name?
+  // Is the rule color.uda.name.value or color.uda.name?
   size_t pos = rule.find (".", 10);
   if (pos == std::string::npos)
   {
@@ -208,7 +208,9 @@ static void colorizeUDA (Task& task, const std::string& rule, const Color& base,
   {
     const std::string uda = rule.substr (10, pos - 10);
     const std::string val = rule.substr (pos + 1);
-    if (task.get (uda) == val)
+    if (val == "none" && ! task.has (uda))
+      c.blend (base);
+    else if (task.get (uda) == val)
       c.blend (base);
   }
 }

@@ -78,6 +78,7 @@
           if a context is active (thanks to Johannes Schlatow).
 - TW-1600 Filtering "regressions"(?) in task-2.4.3, task-2.4.4 (thanks to Ralph
           Bean).
+- TW-1607 Theme Support for missing UDAs (thanks to Stefan Betz).
 - TW-1609 In 'urgency<10', 10 is interpreted as an ID (thanks to Wim Schuermann).
 - TW-1611 soww weirdness (thanks to Wim Schuermann).
 - TW-1612 Spurious whitespace added in task descriptions around certain symbols
