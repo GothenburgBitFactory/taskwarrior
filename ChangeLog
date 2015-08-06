@@ -64,6 +64,7 @@
 - TW-1575 `task log` mangles URLs when quoted (thanks to Luke Macken).
 - TW-1592 Able to add duplicate tags using 'tags:<value>' (thanks to Tomas
           Babej).
+- TW-1593 context and description substring (thanks to Peter Rochen).
 - TW-1594 Filter "due.before" with relative dates stopped working (thanks to
           Sebastien Badia).
 - TW-1598 (Bulk) modification of tasks unintentionally overwrites description
