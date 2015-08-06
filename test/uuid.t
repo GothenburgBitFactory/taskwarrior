@@ -140,6 +140,17 @@ class TestUUID(TestCase):
         code, out, err = self.t("12345678-1234-1234-1234-123456789012 export")
         self.assertIn('"description":"six"', out)
 
+    def test_numerical_short_uuid(self):
+        """Using numerical UUID in the short form"""
+        # NOTE: Reported on TW-1636
+        self.t("12345678 modify status:pending")
+
+        code, out, err = self.t("_get 12345678.status")
+        self.assertIn("pending\n", out)
+
+        code, out, err = self.t("12345678 export")
+        self.assertIn('"description":"six"', out)
+
     def test_alpha_uuid(self):
         """Using alphabetic UUID"""
         # NOTE: complement numerical only reported on TW-1636
@@ -149,6 +160,17 @@ class TestUUID(TestCase):
         self.assertIn("completed\n", out)
 
         code, out, err = self.t("abcdefab-abcd-abcd-abcd-abcdefabcdef export")
+        self.assertIn('"description":"seven"', out)
+
+    def test_alpha_short_uuid(self):
+        """Using alphabetic UUID in the short form"""
+        # NOTE: complement numerical only reported on TW-1636
+        self.t("abcdefab modify status:pending")
+
+        code, out, err = self.t("_get abcdefab.status")
+        self.assertIn("pending\n", out)
+
+        code, out, err = self.t("abcdefab export")
         self.assertIn('"description":"seven"', out)
 
 
