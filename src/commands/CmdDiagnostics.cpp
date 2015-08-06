@@ -269,8 +269,9 @@ int CmdDiagnostics::execute (std::string& output)
     out << "         CA: "
         << context.config.get ("taskd.ca")
         << (File (context.config.get ("taskd.ca")).readable ()
-             ? " (readable)" : " (not readable)")
-        << "\n";
+             ? ", readable, " : ", not readable, ")
+        << File (context.config.get ("taskd.ca")).size ()
+        << " bytes\n";
 
   std::string trust_value = context.config.get ("taskd.trust");
   if (trust_value == "strict" ||
@@ -283,14 +284,16 @@ int CmdDiagnostics::execute (std::string& output)
   out << "Certificate: "
       << context.config.get ("taskd.certificate")
       << (File (context.config.get ("taskd.certificate")).readable ()
-           ? " (readable)" : " (not readable)")
-      << "\n";
+           ? ", readable, " : ", not readable, ")
+      << File (context.config.get ("taskd.certificate")).size ()
+      << " bytes\n";
 
   out << "        Key: "
       << context.config.get ("taskd.key")
       << (File (context.config.get ("taskd.key")).readable ()
-           ? " (readable)" : " (not readable)")
-      << "\n";
+           ? ", readable, " : ", not readable, ")
+      << File (context.config.get ("taskd.key")).size ()
+      << " bytes\n";
 
   out << "    Ciphers: "
       << context.config.get ("taskd.ciphers")
