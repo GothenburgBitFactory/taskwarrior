@@ -270,7 +270,10 @@
 #define STRING_CMD_LOG_USAGE         "Protokolliert eine Aufgabe"
 #define STRING_CMD_LOG_NO_RECUR      "Wiederholende Aufgaben können nicht protokolliert werden."
 #define STRING_CMD_LOG_NO_WAITING    "Aufgeschobene Aufgaben können nicht protokolliert werden."
-#define STRING_CMD_LOG_LOGGED        "Aufgabe protokolliert."
+
+//#define STRING_CMD_LOG_LOGGED        "Aufgabe protokolliert."
+#define STRING_CMD_LOG_LOGGED        "Logged task {1}."
+
 #define STRING_CMD_IDS_USAGE_RANGE   "Zeigt die IDs passender Aufgaben als Folge"
 #define STRING_CMD_IDS_USAGE_LIST    "Zeigt die IDs passender Aufgaben als Liste"
 #define STRING_CMD_IDS_USAGE_ZSH     "Zeigt die IDs und Beschreibungen passender Aufgaben"
