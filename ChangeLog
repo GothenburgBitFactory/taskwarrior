@@ -145,6 +145,7 @@
   'rc.json.depends.array=off'. Both forms are imported.
 - The 'commands' command shows the supported commands, with additional details
   that determine some of their behavior.
+- Improved feedback for tasks that do not have ID (thanks to Tomas Babej).
 
 ------ current release ---------------------------
 

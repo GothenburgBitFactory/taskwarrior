@@ -59,7 +59,7 @@ int CmdAdd::execute (std::string& output)
   context.tdb2.add (task);
 
   // Do not display ID 0, users cannot query by that
-  if (context.verbose ("new-id") and task.id != 0)
+  if (context.verbose ("new-id") && task.id != 0)
     output += format (STRING_CMD_ADD_FEEDBACK, task.id) + "\n";
   else if (context.verbose ("new-uuid"))
     output += format (STRING_CMD_ADD_FEEDBACK, task.get ("uuid")) + "\n";
