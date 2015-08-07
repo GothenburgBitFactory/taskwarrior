@@ -540,12 +540,9 @@ bool Lexer::isUUID (std::string& token, Lexer::Type& type, bool endBoundary)
        isSingleCharOperator (_text[marker + i])))
   {
     token = _text.substr (_cursor, i);
-    if (! isAllDigits (token))
-    {
-      type = Lexer::Type::uuid;
-      _cursor += i;
-      return true;
-    }
+    type = Lexer::Type::uuid;
+    _cursor += i;
+    return true;
   }
 
   return false;

@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1197);
+  UnitTest t (1201);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -158,7 +158,7 @@ int main (int argc, char** argv)
   t.is (Lexer::typeName (tokens[15].second), "string",        "tokens[15] = string");
 
   // Test for numbers that are no longer ISO-8601 dates.
-  Lexer l3 ("1 12 123 1234 12345 123456 1234567 12345678");
+  Lexer l3 ("1 12 123 1234 12345 123456 1234567");
   tokens.clear ();
   while (l3.token (token, type))
   {
@@ -166,7 +166,7 @@ int main (int argc, char** argv)
     tokens.push_back (std::pair <std::string, Lexer::Type> (token, type));
   }
 
-  t.is ((int)tokens.size (),     8,                         "7 tokens");
+  t.is ((int)tokens.size (),     7,                         "7 tokens");
   t.is (tokens[0].first,         "1",                       "tokens[0] == '1'");
   t.is ((int) tokens[0].second,  (int) Lexer::Type::number, "tokens[0] == Type::number");
   t.is (tokens[1].first,         "12",                      "tokens[1] == '12'");
@@ -181,8 +181,6 @@ int main (int argc, char** argv)
   t.is ((int) tokens[5].second,  (int) Lexer::Type::number, "tokens[5] == Type::date");
   t.is (tokens[6].first,         "1234567",                 "tokens[6] == '1234567'");
   t.is ((int) tokens[6].second,  (int) Lexer::Type::number, "tokens[6] == Type::number");
-  t.is (tokens[7].first,         "12345678",                "tokens[7] == '12345678'");
-  t.is ((int) tokens[7].second,  (int) Lexer::Type::number, "tokens[7] == Type::number"); // 80
 
   // void split (std::vector<std::string>&, const std::string&);
   std::string unsplit = " ( A or B ) ";
@@ -446,6 +444,7 @@ int main (int argc, char** argv)
     { "00000000-0000-0000-0000",                      { { "00000000-0000-0000-0000",                      Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "00000000-0000-0000",                           { { "00000000-0000-0000",                           Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "00000000-0000",                                { { "00000000-0000",                                Lexer::Type::uuid         }, NO, NO, NO, NO }, },
+    { "00000000",                                     { { "00000000",                                     Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e7520b749",         { { "a360fc44-315c-4366-b70c-ea7e7520b749",         Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c-ea7e752",              { { "a360fc44-315c-4366-b70c-ea7e752",              Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c-4366-b70c",                      { { "a360fc44-315c-4366-b70c",                      Lexer::Type::uuid         }, NO, NO, NO, NO }, },
