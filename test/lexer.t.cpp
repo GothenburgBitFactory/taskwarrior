@@ -487,7 +487,7 @@ int main (int argc, char** argv)
                                                         { "+",                                            Lexer::Type::op           },
                                                         { "2",                                            Lexer::Type::number       },
                                                         { ")",                                            Lexer::Type::op           },                }, },
-    { "desc~pattern",                                 { { "desc",                                         Lexer::Type::dom          },
+    { "description~pattern",                          { { "description",                                  Lexer::Type::dom          },
                                                         { "~",                                            Lexer::Type::op           },
                                                         { "pattern",                                      Lexer::Type::identifier   },         NO, NO }, },
     { "(+tag)",                                       { { "(",                                            Lexer::Type::op           },
