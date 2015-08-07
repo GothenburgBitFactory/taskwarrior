@@ -24,6 +24,7 @@ Newly deprecated features in Taskwarrior 2.4.5
 
   - The '_ids', '_projects', '_tags', '_uuids' helper commands are deprecated,
     and replaced by the new '_unique' helper command.
+  - Comma-separated ID lists are deprecated.
 
 Removed features in 2.4.5
 
@@ -33,6 +34,7 @@ Removed features in 2.4.5
     'hhmmss' is no longer supported, but 'hh:mm:ss' is. The non-enxtended
     forms all contain sequences of digits that make the identification of
     IDs, UUIDs, and various date/time formats problematic.
+  - Comma-separated UUID lists are no longer supported.
 
 Known Issues
 
