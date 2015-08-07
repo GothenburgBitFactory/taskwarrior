@@ -168,7 +168,7 @@ class TestUUID(TestCase):
         self.t("abcdefab modify status:pending")
 
         code, out, err = self.t("_get abcdefab.status")
-        self.assertIn("completed\n", out)
+        self.assertIn("pending\n", out)
 
         code, out, err = self.t("abcdefab export")
         self.assertIn('"description":"seven"', out)
