@@ -104,14 +104,14 @@ class TestDependencies(TestCase):
         """Check blocked/blocking status of two tasks"""
         self.t("2 modify dep:1")
 
-        code, out, err = self.t("_get 1.tag.BLOCKED")
+        code, out, err = self.t("_get 1.tags.BLOCKED")
         self.assertEqual("\n", out)
-        code, out, err = self.t("_get 1.tag.BLOCKING")
+        code, out, err = self.t("_get 1.tags.BLOCKING")
         self.assertEqual("BLOCKING\n", out)
 
-        code, out, err = self.t("_get 2.tag.BLOCKED")
+        code, out, err = self.t("_get 2.tags.BLOCKED")
         self.assertEqual("BLOCKED\n", out)
-        code, out, err = self.t("_get 2.tag.BLOCKING")
+        code, out, err = self.t("_get 2.tags.BLOCKING")
         self.assertEqual("\n", out)
 
     def test_modify_multiple(self):
@@ -125,23 +125,23 @@ class TestDependencies(TestCase):
         code, out, err = self.t("1 modify dep:5,-4")
         self.assertIn("Modified 1 task.", out)
 
-        code, out, err = self.t("_get 3.tag.BLOCKING")
+        code, out, err = self.t("_get 3.tags.BLOCKING")
         self.assertEqual("BLOCKING\n", out)
 
-        code, out, err = self.t("_get 4.tag.BLOCKING")
+        code, out, err = self.t("_get 4.tags.BLOCKING")
         self.assertEqual("\n", out)
 
     def test_done_dep(self):
         """Check that completing a task unblocks"""
         self.t("1 modify dep:2")
 
-        code, out, err = self.t("_get 1.tag.BLOCKED")
+        code, out, err = self.t("_get 1.tags.BLOCKED")
         self.assertEqual("BLOCKED\n", out)
 
         code, out, err = self.t("2 done")
         self.assertIn("Unblocked 1 'one'.", out)
 
-        code, out, err = self.t("_get 1.tag.BLOCKED")
+        code, out, err = self.t("_get 1.tags.BLOCKED")
         self.assertEqual("\n", out)
 
     def test_chain_repair(self):
@@ -175,7 +175,7 @@ class TestDependencies(TestCase):
 
         # Add a range of IDs
         self.t("3 modify dep:1-2")
-        code, out, err = self.t("_get 1.tag.BLOCKING")
+        code, out, err = self.t("_get 1.tags.BLOCKING")
         self.assertEqual("BLOCKING\n", out)
         code, out, err = self.t("_get 2.tag.BLOCKING")
         self.assertEqual("BLOCKING\n", out)
