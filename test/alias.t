@@ -142,6 +142,20 @@ class TestAliasesCommand(TestCase):
         code, out, err = self.t("_aliases")
         self.assertIn("foo", out)
 
+class TestBug1652(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t("add one")
+
+    def test_odd_alias(self):
+        """Verify that 'delete' is not lexed further"""
+        self.t.config("alias.rm", "delete")
+        self.t.config("confirmation", "off")
+        code, out, err = self.t("1 rm")
+        self.assertIn("Deleted 1 task.", out)
+        self.assertNotIn("No matches.", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner

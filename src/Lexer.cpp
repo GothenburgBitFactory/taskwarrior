@@ -1115,7 +1115,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
   std::size_t checkpoint = _cursor;
 
   // [prefix]tags.<word>
-  if (isLiteral ("tags", true,  false) &&
+  if (isLiteral ("tags", false, false) &&
       isLiteral (".",    false, false) &&
       isWord    (partialToken, partialType))
   {
@@ -1127,7 +1127,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
     _cursor = checkpoint;
 
   // [prefix]attribute
-  if (isOneOf (attributes, true, true))
+  if (isOneOf (attributes, false, true))
   {
     token = _text.substr (marker, _cursor - marker);
     type = Lexer::Type::dom;
@@ -1135,7 +1135,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
   }
 
   // [prefix]attribute.
-  if (isOneOf (attributes, true, false))
+  if (isOneOf (attributes, false, false))
   {
     if (isLiteral (".", false, false))
     {
@@ -1146,7 +1146,7 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
           isOneOf ({"year", "month", "day",
                     "week", "weekday",
                     "julian",
-                    "hour", "minute", "second"}, true, true))
+                    "hour", "minute", "second"}, false, true))
       {
         token = _text.substr (marker, _cursor - marker);
         type = Lexer::Type::dom;
@@ -1171,24 +1171,24 @@ bool Lexer::isDOM (std::string& token, Lexer::Type& type)
     {
       if (isLiteral (".", false, false))
       {
-        if (isLiteral ("description", true, true))
+        if (isLiteral ("description", false, true))
         {
           token = _text.substr (marker, _cursor - marker);
           type = Lexer::Type::dom;
           return true;
         }
-        else if (isLiteral ("entry", true, true))
+        else if (isLiteral ("entry", false, true))
         {
           token = _text.substr (marker, _cursor - marker);
           type = Lexer::Type::dom;
           return true;
         }
-        else if (isLiteral ("entry", true,  false) &&
+        else if (isLiteral ("entry", false,  false) &&
                  isLiteral (".",     false, false) &&
                  isOneOf ({"year", "month", "day",
                            "week", "weekday",
                            "julian",
-                           "hour", "minute", "second"}, true, true))
+                           "hour", "minute", "second"}, false, true))
         {
           token = _text.substr (marker, _cursor - marker);
           type = Lexer::Type::dom;

@@ -854,11 +854,11 @@ void CLI2::aliasExpansion ()
       }
       else if (_aliases.find (raw) != _aliases.end ())
       {
-        for (auto& l : Lexer::split (_aliases[raw]))
-        {
-          A2 a (l, Lexer::Type::word);
-          reconstructed.push_back (a);
-        }
+        std::string lexeme;
+        Lexer::Type type;
+        Lexer lex (_aliases[raw]);
+        while (lex.token (lexeme, type))
+          reconstructed.push_back (A2 (lexeme, type));
 
         action = true;
         changes = true;
@@ -884,8 +884,11 @@ void CLI2::aliasExpansion ()
       }
       else if (_aliases.find (i) != _aliases.end ())
       {
-        for (auto& l : Lexer::split (_aliases[i]))
-          reconstructedOriginals.push_back (l);
+        std::string lexeme;
+        Lexer::Type type;
+        Lexer lex (_aliases[i]);
+        while (lex.token (lexeme, type))
+          reconstructedOriginals.push_back (lexeme);
 
         action = true;
         changes = true;

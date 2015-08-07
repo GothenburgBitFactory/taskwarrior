@@ -35,6 +35,7 @@ Removed features in 2.4.5
     forms all contain sequences of digits that make the identification of
     IDs, UUIDs, and various date/time formats problematic.
   - Comma-separated UUID lists are no longer supported.
+  - DOM references may no longer be abbreviated.
 
 Known Issues
 
