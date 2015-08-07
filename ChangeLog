@@ -146,6 +146,8 @@
 - The 'commands' command shows the supported commands, with additional details
   that determine some of their behavior.
 - Improved feedback for tasks that do not have ID (thanks to Tomas Babej).
+- Comma-separated lists of UUIDs can no longer be used as a filter. Use the
+  space character instead.
 
 ------ current release ---------------------------
 
