@@ -859,14 +859,15 @@ modifier.
 
 You can use the following operators in filter expressions:
 
-  and  or  xor                  Logical operators
+  and  or  xor  !               Logical operators
   <  <=  =  ==  !=  !==  >=  >  Relational operators
   (  )                          Precedence
 
 For example:
 
   task due.before:eom priority.not:L list
-  task '( due < eom or priority != L )'  list
+  task '( due < eom or priority != L )' list
+  task '! ( project:Home or project:Garden )' list
 
 The
 .I =
@@ -883,7 +884,8 @@ operators are the negation of
 .I =
 and
 .I ==
-respectively.
+respectively.  The negation operator is
+.IR ! .
 
 Note that the parentheses are required when using a logical operator other than
 the 'and' operator.  The reason is that some reports contain filters that must
