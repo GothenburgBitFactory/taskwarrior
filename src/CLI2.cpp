@@ -1314,90 +1314,38 @@ void CLI2::desugarFilterPatterns ()
 //
 void CLI2::findIDs ()
 {
-  bool previousFilterArgWasAnOperator = false;
-  int filterCount = 0;
+  bool changes = false;
 
-  for (auto& a : _args)
+  if (context.config.getBoolean ("sugar"))
   {
-    if (a.hasTag ("FILTER"))
-    {
-      ++filterCount;
+    bool previousFilterArgWasAnOperator = false;
+    int filterCount = 0;
 
-      if (a._lextype == Lexer::Type::number)
-      {
-        // Skip any number that was preceded by an operator.
-        if (! previousFilterArgWasAnOperator)
-        {
-          std::string number = a.attribute ("raw");
-          _id_ranges.push_back (std::pair <std::string, std::string> (number, number));
-        }
-      }
-      else if (a._lextype == Lexer::Type::set)
-      {
-        // Split the ID list into elements.
-        std::vector <std::string> elements;
-        split (elements, a.attribute ("raw"), ',');
-
-        for (auto& element : elements)
-        {
-          auto hyphen = element.find ("-");
-          if (hyphen != std::string::npos)
-          {
-            _id_ranges.push_back (std::pair <std::string, std::string> (element.substr (0, hyphen), element.substr (hyphen + 1)));
-          }
-          else
-          {
-            _id_ranges.push_back (std::pair <std::string, std::string> (element, element));
-          }
-        }
-      }
-
-      std::string raw = a.attribute ("raw");
-      previousFilterArgWasAnOperator = (a._lextype == Lexer::Type::op &&
-                                  raw != "("                    &&
-                                  raw != ")")
-                               ? true
-                               : false;
-    }
-  }
-
-  // If no IDs were found, and no filter was specified, look for number/set
-  // listed as a MODIFICATION for a WRITECMD.
-  std::string command = getCommand ();
-
-  if (! _id_ranges.size () &&
-      filterCount == 0     &&
-      command != "add"     &&
-      command != "log")
-  {
     for (auto& a : _args)
     {
-      if (a.hasTag ("MODIFICATION"))
+      if (a.hasTag ("FILTER"))
       {
-        std::string raw = a.attribute ("raw");
+        ++filterCount;
 
-        // For a number to be an ID, it must not contain any sign or floating
-        // point elements.
-        if (a._lextype == Lexer::Type::number   &&
-            raw.find ('.') == std::string::npos &&
-            raw.find ('e') == std::string::npos &&
-            raw.find ('-') == std::string::npos)
-        {
-          a.unTag ("MODIFICATION");
-          a.tag ("FILTER");
-          _id_ranges.push_back (std::pair <std::string, std::string> (raw, raw));
+        if (a._lextype == Lexer::Type::number)
+          {
+        // Skip any number that was preceded by an operator.
+          if (! previousFilterArgWasAnOperator)
+          {
+            changes = true;
+            std::string number = a.attribute ("raw");
+            _id_ranges.push_back (std::pair <std::string, std::string> (number, number));
+          }
         }
         else if (a._lextype == Lexer::Type::set)
         {
-          a.unTag ("MODIFICATION");
-          a.tag ("FILTER");
-
           // Split the ID list into elements.
           std::vector <std::string> elements;
-          split (elements, raw, ',');
+          split (elements, a.attribute ("raw"), ',');
 
           for (auto& element : elements)
           {
+            changes = true;
             auto hyphen = element.find ("-");
             if (hyphen != std::string::npos)
             {
@@ -1409,11 +1357,95 @@ void CLI2::findIDs ()
             }
           }
         }
+
+        std::string raw = a.attribute ("raw");
+        previousFilterArgWasAnOperator = (a._lextype == Lexer::Type::op &&
+                                    raw != "("                    &&
+                                    raw != ")")
+                                 ? true
+                                 : false;
+      }
+    }
+
+    // If no IDs were found, and no filter was specified, look for number/set
+    // listed as a MODIFICATION for a WRITECMD.
+    std::string command = getCommand ();
+
+    if (! _id_ranges.size () &&
+        filterCount == 0     &&
+        command != "add"     &&
+        command != "log")
+    {
+      for (auto& a : _args)
+      {
+        if (a.hasTag ("MODIFICATION"))
+        {
+          std::string raw = a.attribute ("raw");
+
+          // For a number to be an ID, it must not contain any sign or floating
+          // point elements.
+          if (a._lextype == Lexer::Type::number   &&
+              raw.find ('.') == std::string::npos &&
+              raw.find ('e') == std::string::npos &&
+              raw.find ('-') == std::string::npos)
+          {
+            changes = true;
+            a.unTag ("MODIFICATION");
+            a.tag ("FILTER");
+            _id_ranges.push_back (std::pair <std::string, std::string> (raw, raw));
+          }
+          else if (a._lextype == Lexer::Type::set)
+          {
+            a.unTag ("MODIFICATION");
+            a.tag ("FILTER");
+
+            // Split the ID list into elements.
+            std::vector <std::string> elements;
+            split (elements, raw, ',');
+
+            for (auto& element : elements)
+            {
+              changes = true;
+              auto hyphen = element.find ("-");
+              if (hyphen != std::string::npos)
+              {
+                _id_ranges.push_back (std::pair <std::string, std::string> (element.substr (0, hyphen), element.substr (hyphen + 1)));
+              }
+              else
+              {
+                _id_ranges.push_back (std::pair <std::string, std::string> (element, element));
+              }
+            }
+          }
+        }
       }
     }
   }
 
-  if (_id_ranges.size ())
+  // Sugar-free.
+  else
+  {
+    std::vector <A2> reconstructed;
+    for (auto& a : _args)
+    {
+      if (a.hasTag ("FILTER") &&
+          a._lextype == Lexer::Type::number)
+      {
+        changes = true;
+        A2 pair ("id:" + a.attribute ("raw"), Lexer::Type::pair);
+        pair.tag ("FILTER");
+        pair.decompose ();
+        reconstructed.push_back (pair);
+      }
+      else
+        reconstructed.push_back (a);
+    }
+
+    if (changes)
+      _args = reconstructed;
+  }
+
+  if (changes)
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (dump ("CLI2::prepareFilter findIDs"));
 }
@@ -1421,30 +1453,60 @@ void CLI2::findIDs ()
 ////////////////////////////////////////////////////////////////////////////////
 void CLI2::findUUIDs ()
 {
-  for (auto& a : _args)
-  {
-    if (a._lextype == Lexer::Type::uuid &&
-        a.hasTag ("FILTER"))
-    {
-      _uuid_list.push_back (a.attribute ("raw"));
-    }
-  }
+  bool changes = false;
 
-  if (! _uuid_list.size ())
+  if (context.config.getBoolean ("sugar"))
   {
     for (auto& a : _args)
     {
       if (a._lextype == Lexer::Type::uuid &&
-          a.hasTag ("MODIFICATION"))
+          a.hasTag ("FILTER"))
       {
-        a.unTag ("MODIFICATION");
-        a.tag ("FILTER");
+        changes = true;
         _uuid_list.push_back (a.attribute ("raw"));
+      }
+    }
+
+    if (! _uuid_list.size ())
+    {
+      for (auto& a : _args)
+      {
+        if (a._lextype == Lexer::Type::uuid &&
+            a.hasTag ("MODIFICATION"))
+        {
+          changes = true;
+          a.unTag ("MODIFICATION");
+          a.tag ("FILTER");
+          _uuid_list.push_back (a.attribute ("raw"));
+        }
       }
     }
   }
 
-  if (_uuid_list.size ())
+  // Sugar-free.
+  else
+  {
+    std::vector <A2> reconstructed;
+    for (auto& a : _args)
+    {
+      if (a.hasTag ("FILTER") &&
+          a._lextype == Lexer::Type::uuid)
+      {
+        changes = true;
+        A2 pair ("uuid:" + a.attribute ("raw"), Lexer::Type::pair);
+        pair.tag ("FILTER");
+        pair.decompose ();
+        reconstructed.push_back (pair);
+      }
+      else
+        reconstructed.push_back (a);
+    }
+
+    if (changes)
+      _args = reconstructed;
+  }
+
+  if (changes)
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (dump ("CLI2::prepareFilter findUUIDs"));
 }

@@ -47,8 +47,6 @@ public:
   const std::string attribute (const std::string&) const;
   const std::string getToken () const;
   const std::string dump () const;
-
-private:
   void decompose ();
 
 public:

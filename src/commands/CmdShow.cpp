@@ -186,6 +186,7 @@ int CmdShow::execute (std::string& output)
     " rule.precedence.color"
     " search.case.sensitive"
     " shell.prompt"
+    " sugar"
     " summary.all.projects"
     " tag.indicator"
     " taskd.server"
