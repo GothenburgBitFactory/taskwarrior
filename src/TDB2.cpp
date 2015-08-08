@@ -115,7 +115,7 @@ bool TF2::get (int id, Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Locate task by uuid.
+// Locate task by uuid, which may be a partial UUID.
 bool TF2::get (const std::string& uuid, Task& task)
 {
   if (! _loaded_tasks)
@@ -123,7 +123,7 @@ bool TF2::get (const std::string& uuid, Task& task)
 
   for (auto& i : _tasks)
   {
-    if (i.get ("uuid") == uuid)
+    if (closeEnough (i.get ("uuid"), uuid, uuid.length ()))
     {
       task = i;
       return true;

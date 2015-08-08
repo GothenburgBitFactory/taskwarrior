@@ -255,24 +255,23 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
     std::string uuid;
     bool proceed = false;
 
-    if (n.getInt (id) && n.depleted ())
+    if (n.getPartialUUID (uuid) && n.depleted ())
     {
-      if (id == task.id)
+      if (uuid == task.get ("uuid"))
         ref = task;
       else
-        context.tdb2.get (id, ref);
+        context.tdb2.get (uuid, ref);
 
       proceed = true;
     }
     else
     {
-      n.restore ();
-      if (n.getUUID (uuid) && n.depleted ())
+      if (n.getInt (id) && n.depleted ())
       {
-        if (uuid == task.get ("uuid"))
+        if (id == task.id)
           ref = task;
         else
-          context.tdb2.get (uuid, ref);
+          context.tdb2.get (id, ref);
 
         proceed = true;
       }
