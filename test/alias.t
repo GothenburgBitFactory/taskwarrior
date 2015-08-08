@@ -154,7 +154,7 @@ class TestBug1652(TestCase):
         self.t.config("confirmation", "off")
         code, out, err = self.t("1 rm")
         self.assertIn("Deleted 1 task.", out)
-        self.assertNotIn("No matches.", out)
+        self.assertNotIn("No matches.", err)
 
 
 if __name__ == "__main__":
