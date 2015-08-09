@@ -38,6 +38,7 @@
 #include <RX.h>
 #endif
 #include <Lexer.h>
+#include <util.h>
 
 static const char*        _uuid_pattern    = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 static const unsigned int _uuid_min_length = 8;
