@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <sstream>
+#include <stdlib.h>
 #include <Lexer.h>
 #include <ISO8601.h>
 #include <Date.h>
@@ -514,6 +516,60 @@ ISO8601p::~ISO8601p ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+ISO8601p::ISO8601p (const std::string& input)
+{
+  if (Lexer::isAllDigits (input))
+  {
+    time_t value = (time_t) strtol (input.c_str (), NULL, 10);
+    if (value == 0 || value > 60)
+    {
+      _value = value;
+      return;
+    }
+  }
+
+  std::string::size_type idx = 0;
+  parse (input, idx);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ISO8601p& ISO8601p::operator= (const ISO8601p& other)
+{
+  if (this != &other)
+  {
+    _year    = other._year;
+    _month   = other._month;
+    _day     = other._day;
+    _hours   = other._hours;
+    _minutes = other._minutes;
+    _seconds = other._seconds;
+    _value   = other._value;
+  }
+
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ISO8601p::operator< (const ISO8601p& other)
+{
+  return _value < other._value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ISO8601p::operator> (const ISO8601p& other)
+{
+  return _value > other._value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ISO8601p::operator std::string () const
+{
+  std::stringstream s;
+  s << _value;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 ISO8601p::operator time_t () const
 {
   return _value;
@@ -574,6 +630,41 @@ void ISO8601p::clear ()
   _minutes = 0;
   _seconds = 0;
   _value   = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string ISO8601p::format () const
+{
+  if (_value)
+  {
+    time_t t = _value;
+    int seconds = t % 60; t /= 60;
+    int minutes = t % 60; t /= 60;
+    int hours   = t % 24; t /= 24;
+    int days    = t % 30; t /= 30;
+    int months  = t % 12; t /= 12;
+    int years   = t;
+
+    std::stringstream s;
+    s << 'P';
+    if (years)  s << years  << 'Y';
+    if (months) s << months << 'M';
+    if (days)   s << days   << 'D';
+
+    if (hours || minutes || seconds)
+    {
+      s << 'T';
+      if (hours)   s << hours   << 'H';
+      if (minutes) s << minutes << 'M';
+      if (seconds) s << seconds << 'S';
+    }
+
+    return s.str ();
+  }
+  else
+  {
+    return "PT0S";
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

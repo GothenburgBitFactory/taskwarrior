@@ -72,11 +72,16 @@ class ISO8601p
 public:
   ISO8601p ();
   ~ISO8601p ();
-  ISO8601p (const ISO8601p&);                 // Unimplemented
-  ISO8601p& operator= (const ISO8601p&);      // Unimplemented
+  ISO8601p (const ISO8601p&);            // Unimplemented
+  ISO8601p (const std::string&);
+  ISO8601p& operator= (const ISO8601p&);
+  bool operator< (const ISO8601p&);
+  bool operator> (const ISO8601p&);
+  operator std::string () const;
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&);
   void clear ();
+  const std::string format () const;
 
 private:
   bool parse_designated (Nibbler&);
