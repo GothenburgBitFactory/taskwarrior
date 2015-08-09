@@ -278,6 +278,13 @@ class TestImportValidate(TestCase):
         code, out, err = self.t.runError("import", input=j)
         self.assertIn("Not a valid UUID", err)
 
+    def test_import_invalid_uuid2(self):
+        """Verify invalid UUID is caught, part two"""
+        # UUID is the right length, but with s/-/0/.
+        j = '{"uuid":"a1a1a1a10a1a10a1a10a1a10a1a1a1a1a1a1", "description":"bad"}'
+        code, out, err = self.t.runError("import", input=j)
+        self.assertIn("Not a valid UUID", err)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
