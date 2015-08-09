@@ -1439,7 +1439,7 @@ void Task::validate (bool applyDefault /* = true */)
 
 #ifdef PRODUCT_TASKWARRIOR
   // Provide an entry date unless user already specified one.
-  if (!has ("entry") || get ("entry") == "")
+  if (! has ("entry") || get ("entry") == "")
     setAsNow ("entry");
 
   // Completed tasks need an end date, so inherit the entry date.
@@ -1448,7 +1448,7 @@ void Task::validate (bool applyDefault /* = true */)
     setAsNow ("end");
 
   // Provide an entry date unless user already specified one.
-  if (!has ("modified") || get ("modified") == "")
+  if (! has ("modified") || get ("modified") == "")
     setAsNow ("modified");
 
   if (applyDefault && (! has ("parent") || get ("parent") == ""))
@@ -1520,7 +1520,7 @@ void Task::validate (bool applyDefault /* = true */)
   // 3) To generate errors when the inconsistencies are not fixable
 
   // There is no fixing a missing description.
-  if (!has ("description"))
+  if (! has ("description"))
     throw std::string (STRING_TASK_VALID_DESC);
   else if (get ("description") == "")
     throw std::string (STRING_TASK_VALID_BLANK);
