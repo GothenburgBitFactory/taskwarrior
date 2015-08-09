@@ -82,7 +82,6 @@ void sort_tasks (std::vector <Task>&, std::vector <int>&, const std::string&);
 void legacyAttributeCheck (const std::string&);
 void legacyColumnMap (std::string&);
 void legacySortColumnMap (std::string&);
-std::string legacyCheckForDeprecatedColor ();
 std::string legacyCheckForDeprecatedVariables ();
 std::string legacyCheckForDeprecatedColumns ();
 void legacyAttributeMap (std::string&);

@@ -348,7 +348,6 @@ int CmdShow::execute (std::string& output)
   }
 
   out << legacyCheckForDeprecatedVariables ();
-  out << legacyCheckForDeprecatedColor ();
   out << legacyCheckForDeprecatedColumns ();
 
   // TODO Check for referenced but missing theme files.

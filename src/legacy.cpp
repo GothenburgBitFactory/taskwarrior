@@ -104,14 +104,6 @@ void legacySortColumnMap (std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string legacyCheckForDeprecatedColor ()
-{
-  // 2014-01-26: Color defs containing '_' removed.
-
-  return "";
-}
-
-////////////////////////////////////////////////////////////////////////////////
 std::string legacyCheckForDeprecatedVariables ()
 {
   std::vector <std::string> deprecated;
