@@ -341,6 +341,25 @@ bool Duration::parse (const std::string& input, std::string::size_type& start)
     n.skipWS ();
     if (n.getOneOf (units, unit))
     {
+      // The "d" unit is a special case, because it is the only one that can
+      // legitimately occur at the beginning of a UUID, and be followed by an
+      // operator:
+      //
+      //   1111111d-0000-0000-0000-000000000000
+      //
+      // Because Lexer::isDuration is higher precedence than Lexer::isUUID,
+      // the above UUID looks like:
+      //
+      //   <1111111d> <-> ...
+      //   duration   op  ...
+      //
+      // So as a special case, durations, with units of "d" are rejected if the
+      // quantity exceeds 10000.
+      //
+      if (unit == "d" &&
+          strtol (number.c_str (), NULL, 10) > 10000)
+        return false;
+
       if (n.depleted ()                           ||
           Lexer::isWhitespace         (n.next ()) ||
           Lexer::isSingleCharOperator (n.next ()))
