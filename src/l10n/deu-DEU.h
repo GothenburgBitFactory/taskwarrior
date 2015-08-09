@@ -457,6 +457,7 @@
 #define STRING_CMD_IMPORT_SUMMARY    "{1} Aufgabe importiert."
 #define STRING_CMD_IMPORT_FILE       "Importiere '{1}'"
 #define STRING_CMD_IMPORT_MISSING    "Datei '{1}' nicht gefunden."
+#define STRING_CMD_IMPORT_UUID_BAD   "Not a valid UUID '{1}'."
 #define STRING_TASK_NO_DESC          "Kommentar fehlt Beschreibung: {1}"
 #define STRING_TASK_NO_ENTRY         "Kommentar fehlt Erfassungsdatum: {1}"
 #define STRING_CMD_SYNC_USAGE        "Gleicht Daten mit dem Task-Server ab"

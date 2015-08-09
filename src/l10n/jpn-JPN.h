@@ -457,6 +457,7 @@
 #define STRING_CMD_IMPORT_SUMMARY    "{1} task をインポートしました。"
 #define STRING_CMD_IMPORT_FILE       "'{1}' をインポート中"
 #define STRING_CMD_IMPORT_MISSING    "ファイル '{1}' が見つかりません。"
+#define STRING_CMD_IMPORT_UUID_BAD   "Not a valid UUID '{1}'."
 #define STRING_TASK_NO_DESC          "Annotation is missing a description: {1}"
 #define STRING_TASK_NO_ENTRY         "Annotation is missing an entry date: {1}"
 #define STRING_CMD_SYNC_USAGE        "Taskserver とデータを同期"

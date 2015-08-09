@@ -1404,8 +1404,18 @@ void Task::validate (bool applyDefault /* = true */)
   Task::status status = getStatus ();
 
   // 1) Provide missing attributes where possible
-  // Provide a UUID if necessary.
-  if (! has ("uuid") || get ("uuid") == "")
+  // Provide a UUID if necessary. Validate if present.
+  std::string uid = get ("uuid");
+  if (has ("uuid") && uid != "")
+  {
+    Lexer lex (uid);
+    Lexer::Type type;
+    if (! lex.token (uid, type) ||
+        uid.length () != 36     ||
+        type != Lexer::Type::uuid)
+      throw format (STRING_CMD_IMPORT_UUID_BAD, uid);
+  }
+  else
     set ("uuid", uuid ());
 
   // Recurring tasks get a special status.

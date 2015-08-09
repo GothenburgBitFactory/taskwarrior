@@ -174,8 +174,9 @@ int CmdImport::import (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 void CmdImport::importSingleTask (json::object* obj)
 {
-  // Parse the whole thing.
+  // Parse the whole thing, validate the data.
   Task task (obj);
+  task.validate ();
 
   // Check whether the imported task is new or a modified existing task.
   Task before;
