@@ -262,6 +262,23 @@ class TestImportExportRoundtrip(TestCase):
         self._validate_data(self.t2)
 
 
+class TestImportValidate(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_import_empty_json(self):
+        """Verify empty JSON is caught"""
+        j = '{}'
+        code, out, err = self.t.runError("import", input=j)
+        self.assertIn("A task must have a description.", err)
+
+    def test_import_invalid_uuid(self):
+        """Verify invalid UUID is caught"""
+        j = '{"uuid":"1", "description":"bad"}'
+        code, out, err = self.t.runError("import", input=j)
+        self.assertIn("Not a valid UUID", err)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
