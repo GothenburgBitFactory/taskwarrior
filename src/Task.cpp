@@ -1541,7 +1541,7 @@ void Task::validate (bool applyDefault /* = true */)
       i = 0;
       ISO8601p p;
       if (! p.parse (value, i))
-        throw std::string (format (STRING_TASK_VALID_RECUR, value));
+        throw format (STRING_TASK_VALID_RECUR, value);
     }
   }
 }
