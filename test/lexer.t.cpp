@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1201);
+  UnitTest t (1207);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -346,6 +346,7 @@ int main (int argc, char** argv)
     { "name",                                         { { "name",                                         Lexer::Type::identifier   }, NO, NO, NO, NO }, },
     { "f1",                                           { { "f1",                                           Lexer::Type::identifier   }, NO, NO, NO, NO }, },
     { "foo.bar",                                      { { "foo.bar",                                      Lexer::Type::identifier   }, NO, NO, NO, NO }, },
+    { "a1a1a1a1_a1a1_a1a1_a1a1_a1a1a1a1a1a1",         { { "a1a1a1a1_a1a1_a1a1_a1a1_a1a1a1a1a1a1",         Lexer::Type::identifier   }, NO, NO, NO, NO }, },
 
       // Not a date, because Eval extracts named dates via data source, and Date/ISO8601d does not do that.
     { "today",                                        { { "today",                                        Lexer::Type::identifier   }, NO, NO, NO, NO }, },
@@ -451,7 +452,6 @@ int main (int argc, char** argv)
     { "a360fc44-315c-4366",                           { { "a360fc44-315c-4366",                           Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44-315c",                                { { "a360fc44-315c",                                Lexer::Type::uuid         }, NO, NO, NO, NO }, },
     { "a360fc44",                                     { { "a360fc44",                                     Lexer::Type::uuid         }, NO, NO, NO, NO }, },
-
 
     // Date
     { "2015-W01",                                     { { "2015-W01",                                     Lexer::Type::date         }, NO, NO, NO, NO }, },
