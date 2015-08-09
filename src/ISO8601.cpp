@@ -31,6 +31,80 @@
 #include <ISO8601.h>
 #include <Date.h>
 
+#define DAY    86400
+#define HOUR    3600
+#define MINUTE    60
+#define SECOND     1
+
+static struct
+{
+  std::string unit;
+  int seconds;
+  bool standalone;
+} durations[] =
+{
+  // These are sorted by first character, then length, so that Nibbler::getOneOf
+  // returns a maximal match.
+  {"annual",     365 * DAY,    true},
+  {"biannual",   730 * DAY,    true},
+  {"bimonthly",   61 * DAY,    true},
+  {"biweekly",    14 * DAY,    true},
+  {"biyearly",   730 * DAY,    true},
+  {"daily",        1 * DAY,    true},
+  {"days",         1 * DAY,    false},
+  {"day",          1 * DAY,    true},
+  {"d",            1 * DAY,    false},
+  {"fortnight",   14 * DAY,    true},
+  {"hours",        1 * HOUR,   false},
+  {"hour",         1 * HOUR,   true},
+  {"hrs",          1 * HOUR,   false},
+  {"hr",           1 * HOUR,   true},
+  {"h",            1 * HOUR,   false},
+  {"minutes",      1 * MINUTE, false},
+  {"minute",       1 * MINUTE, true},
+  {"mins",         1 * MINUTE, false},
+  {"min",          1 * MINUTE, true},
+  {"monthly",     30 * DAY,    true},
+  {"months",      30 * DAY,    false},
+  {"month",       30 * DAY,    true},
+  {"mnths",       30 * DAY,    false},
+  {"mths",        30 * DAY,    false},
+  {"mth",         30 * DAY,    true},
+  {"mos",         30 * DAY,    false},
+  {"mo",          30 * DAY,    true},
+  {"m",           30 * DAY,    false},
+  {"quarterly",   91 * DAY,    true},
+  {"quarters",    91 * DAY,    false},
+  {"quarter",     91 * DAY,    true},
+  {"qrtrs",       91 * DAY,    false},
+  {"qrtr",        91 * DAY,    true},
+  {"qtrs",        91 * DAY,    false},
+  {"qtr",         91 * DAY,    true},
+  {"q",           91 * DAY,    false},
+  {"semiannual", 183 * DAY,    true},
+  {"sennight",    14 * DAY,    false},
+  {"seconds",      1 * SECOND, false},
+  {"second",       1 * SECOND, true},
+  {"secs",         1 * SECOND, false},
+  {"sec",          1 * SECOND, true},
+  {"s",            1 * SECOND, false},
+  {"weekdays",     1 * DAY,    true},
+  {"weekly",       7 * DAY,    true},
+  {"weeks",        7 * DAY,    false},
+  {"week",         7 * DAY,    true},
+  {"wks",          7 * DAY,    false},
+  {"wk",           7 * DAY,    true},
+  {"w",            7 * DAY,    false},
+  {"yearly",     365 * DAY,    true},
+  {"years",      365 * DAY,    false},
+  {"year",       365 * DAY,    true},
+  {"yrs",        365 * DAY,    false},
+  {"yr",         365 * DAY,    true},
+  {"y",          365 * DAY,    false},
+};
+
+#define NUM_DURATIONS (sizeof (durations) / sizeof (durations[0]))
+
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601d::ISO8601d ()
 {
@@ -601,8 +675,10 @@ ISO8601p::operator time_t () const
 //
 bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
 {
-  auto i = start;
-  Nibbler n (input.substr (i));
+  // Attempt and ISO parse first.
+  auto original_start = start;
+  Nibbler n (input.substr (original_start));
+  n.save ();
 
   if (parse_designated (n))
   {
@@ -614,6 +690,89 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
 
       resolve ();
       return true;
+    }
+  }
+
+  // Attempt a legacy format parse next.
+  n.restore ();
+
+  // Static and so preserved between calls.
+  static std::vector <std::string> units;
+  if (units.size () == 0)
+    for (unsigned int i = 0; i < NUM_DURATIONS; i++)
+      units.push_back (durations[i].unit);
+
+  std::string number;
+  std::string unit;
+
+  if (n.getOneOf (units, unit))
+  {
+    if (n.depleted ()                           ||
+        Lexer::isWhitespace         (n.next ()) ||
+        Lexer::isSingleCharOperator (n.next ()))
+    {
+      start = original_start + n.cursor ();
+
+      // Linear lookup - should be logarithmic.
+      for (unsigned int i = 0; i < NUM_DURATIONS; i++)
+      {
+        if (durations[i].unit == unit &&
+            durations[i].standalone == true)
+        {
+          _value = static_cast <int> (durations[i].seconds);
+          return true;
+        }
+      }
+    }
+  }
+
+  else if (n.getNumber (number) &&
+           number.find ('e') == std::string::npos &&
+           number.find ('E') == std::string::npos &&
+           (number.find ('+') == std::string::npos || number.find ('+') == 0) &&
+           (number.find ('-') == std::string::npos || number.find ('-') == 0))
+  {
+    n.skipWS ();
+    if (n.getOneOf (units, unit))
+    {
+      // The "d" unit is a special case, because it is the only one that can
+      // legitimately occur at the beginning of a UUID, and be followed by an
+      // operator:
+      //
+      //   1111111d-0000-0000-0000-000000000000
+      //
+      // Because Lexer::isDuration is higher precedence than Lexer::isUUID,
+      // the above UUID looks like:
+      //
+      //   <1111111d> <-> ...
+      //   duration   op  ...
+      //
+      // So as a special case, durations, with units of "d" are rejected if the
+      // quantity exceeds 10000.
+      //
+      if (unit == "d" &&
+          strtol (number.c_str (), NULL, 10) > 10000)
+        return false;
+
+      if (n.depleted ()                           ||
+          Lexer::isWhitespace         (n.next ()) ||
+          Lexer::isSingleCharOperator (n.next ()))
+      {
+        start = original_start + n.cursor ();
+        double quantity = strtod (number.c_str (), NULL);
+
+        // Linear lookup - should be logarithmic.
+        double seconds = 1;
+        for (unsigned int i = 0; i < NUM_DURATIONS; i++)
+        {
+          if (durations[i].unit == unit)
+          {
+            seconds = durations[i].seconds;
+            _value = static_cast <int> (quantity * static_cast <double> (seconds));
+            return true;
+          }
+        }
+      }
     }
   }
 
