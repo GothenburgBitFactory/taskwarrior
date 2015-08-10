@@ -258,9 +258,9 @@ int main (int argc, char** argv)
   testParse (t, "semiannual",     10,    0,  6,   0,  0,  0,         0,                       6 * month,              "P6M");
 
   testParse (t, "0sennight",       9,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
-  testParse (t, "2 sennight",     10,    0,  0,  28,  0,  0,         0,                        28 * day,             "P14D");
-  testParse (t, "10sennight",     10,    0,  0, 280,  0,  0,         0,                       280 * day,            "P140D");
-  testParse (t, "1.5sennight",    11,    0,  0,  21,  0,  0,         0,                        21 * day,         "P10DT12H");
+  testParse (t, "2 sennight",     10,    0,  0,   0,  0,  0,         0,                        28 * day,             "P28D");
+  testParse (t, "10sennight",     10,    0,  0,   0,  0,  0,         0,                       140 * day,            "P140D");
+  testParse (t, "1.5sennight",    11,    0,  0,   0,  0,  0,         0,                        21 * day,             "P21D");
 
   ISO8601p left, right;
 
