@@ -29,7 +29,7 @@
 #include <Context.h>
 #include <ColScheduled.h>
 #include <Date.h>
-#include <Duration.h>
+#include <ISO8601.h>
 #include <text.h>
 #include <i18n.h>
 
@@ -44,7 +44,7 @@ ColumnScheduled::ColumnScheduled ()
 
   Date now;
   now += 125;
-  _examples = {Duration (now - Date ()).formatCompact ()};
+  _examples = {ISO8601p (now - Date ()).format ()};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
