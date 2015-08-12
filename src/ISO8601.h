@@ -83,6 +83,7 @@ public:
   bool parse (const std::string&, std::string::size_type&);
   void clear ();
   const std::string format () const;
+  const std::string formatVague () const;
 
 private:
   bool parse_designated (Nibbler&);

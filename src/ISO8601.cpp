@@ -832,6 +832,24 @@ const std::string ISO8601p::format () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+const std::string ISO8601p::formatVague () const
+{
+  char formatted[24];
+  float days = (float) _value / 86400.0;
+
+       if (_value >= 86400 * 365) sprintf (formatted, "%.1fy", (days / 365.0));
+  else if (_value >= 86400 * 84)  sprintf (formatted, "%1dmo", (int) (days / 30));
+  else if (_value >= 86400 * 13)  sprintf (formatted, "%dw",   (int) (float) (days / 7.0));
+  else if (_value >= 86400)       sprintf (formatted, "%dd",   (int) days);
+  else if (_value >= 3600)        sprintf (formatted, "%dh",   (int) (_value / 3600));
+  else if (_value >= 60)          sprintf (formatted, "%dmin", (int) (_value / 60));
+  else if (_value >= 1)           sprintf (formatted, "%ds",   (int) _value);
+  else                            formatted[0] = '\0';
+
+  return std::string (formatted);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // 'P' [nn 'Y'] [nn 'M'] [nn 'D'] ['T' [nn 'H'] [nn 'M'] [nn 'S']]
 bool ISO8601p::parse_designated (Nibbler& n)
 {
