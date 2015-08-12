@@ -586,13 +586,16 @@ ISO8601p::ISO8601p ()
 
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601p::ISO8601p (time_t input)
-: _value (input)
 {
+  clear ();
+  _value = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601p::ISO8601p (const std::string& input)
 {
+  clear ();
+
   if (Lexer::isAllDigits (input))
   {
     time_t value = (time_t) strtol (input.c_str (), NULL, 10);
