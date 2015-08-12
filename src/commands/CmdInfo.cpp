@@ -32,7 +32,6 @@
 #include <Filter.h>
 #include <ISO8601.h>
 #include <Date.h>
-#include <Duration.h>
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
@@ -230,7 +229,7 @@ int CmdInfo::execute (std::string& output)
     if (created.length ())
     {
       Date dt (strtol (created.c_str (), NULL, 10));
-      age = Duration (now - dt).format ();
+      age = ISO8601p (now - dt).format ();
     }
 
     view.set (row, 1, entry + " (" + age + ")");
@@ -290,7 +289,7 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 0, STRING_CMD_INFO_MODIFIED);
 
       Date mod (task.get_date ("modified"));
-      std::string age = Duration (now - mod).format ();
+      std::string age = ISO8601p (now - mod).format ();
       view.set (row, 1, mod.toString (dateformat) + " (" + age + ")");
     }
 
@@ -374,17 +373,12 @@ int CmdInfo::execute (std::string& output)
             value = Date (value).toString (dateformat);
           else if (type == "duration")
           {
-            if (value[0] == 'P')
-            {
-              ISO8601p iso;
-              std::string::size_type cursor = 0;
-              if (iso.parse (value, cursor))
-                value = (std::string) Variant ((time_t) iso._value, Variant::type_duration);
-              else
-                value = "PT0S";
-            }
+            ISO8601p iso;
+            std::string::size_type cursor = 0;
+            if (iso.parse (value, cursor))
+              value = (std::string) Variant ((time_t) iso._value, Variant::type_duration);
             else
-              value = Duration (value).formatCompact ();
+              value = "PT0S";
           }
 
           view.set (row, 1, value);
