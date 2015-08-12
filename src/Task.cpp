@@ -39,7 +39,7 @@
 #include <Nibbler.h>
 #endif
 #include <Date.h>
-#include <Duration.h>
+#include <ISO8601.h>
 #include <Task.h>
 #ifdef PRODUCT_TASKWARRIOR
 #include <RX.h>
@@ -55,7 +55,6 @@
 #include <Variant.h>
 #include <Filter.h>
 #include <Dates.h>
-#include <ISO8601.h>
 
 #define APPROACHING_INFINITY 1000   // Close enough.  This isn't rocket surgery.
 
@@ -1467,7 +1466,7 @@ void Task::validate (bool applyDefault /* = true */)
     {
       if (context.columns["due"]->validate (Task::defaultDue))
       {
-        Duration dur (Task::defaultDue);
+        ISO8601p dur (Task::defaultDue);
         if ((time_t) dur != 0)
           set ("due", (Date () + dur).toEpoch ());
         else
@@ -1533,13 +1532,10 @@ void Task::validate (bool applyDefault /* = true */)
   if (has ("recur"))
   {
     std::string value = get ("recur");
-
-    Duration d;
-    std::string::size_type i = 0;
-    if (! d.parse (value, i))
+    if (value != "")
     {
-      i = 0;
       ISO8601p p;
+      std::string::size_type i = 0;
       if (! p.parse (value, i))
         throw format (STRING_TASK_VALID_RECUR, value);
     }
