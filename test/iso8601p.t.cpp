@@ -113,7 +113,7 @@ int main (int argc, char** argv)
   testParse (t, "PT1H1M1S",        8,    0,  0,   0,  1,  1,         1,                       h + m + 1,         "PT1H1M1S");
   testParse (t, "P1Y1M1DT1H1M1S", 14,    1,  1,   1,  1,  1,         1,  year + month + day + h + m + 1,     "P396DT1H1M1S");
   testParse (t, "PT24H",           5,    0,  0,   0, 24,  0,         0,                             day,              "P1D");
-  testParse (t, "PT40000000S",    11,    0,  0,   0,  0,  0,  40000000,                        40000000,     "P46DT7H6M40S");
+  testParse (t, "PT40000000S",    11,    0,  0,   0,  0,  0,  40000000,                        40000000,    "P462DT7H6M40S");
   testParse (t, "PT3600S",         7,    0,  0,   0,  0,  0,      3600,                               h,             "PT1H");
   testParse (t, "PT60M",           5,    0,  0,   0,  0, 60,         0,                               h,             "PT1H");
 
@@ -134,17 +134,17 @@ int main (int argc, char** argv)
 
   testParse (t, "0minutes",        8,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 minutes",       9,    0,  0,   0,  0,  0,         0,                           2 * m,             "PT2M");
-  testParse (t, "10minutes",       9,    0,  0,   0,  0,  0,         0,                          10 * m,            "PT10H");
+  testParse (t, "10minutes",       9,    0,  0,   0,  0,  0,         0,                          10 * m,            "PT10M");
   testParse (t, "1.5minutes",     10,    0,  0,   0,  0,  0,         0,                          m + 30,          "PT1M30S");
 
   testParse (t, "0minute",         7,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 minute",        8,    0,  0,   0,  0,  0,         0,                           2 * m,             "PT2M");
-  testParse (t, "10minute",        8,    0,  0,   0,  0,  0,         0,                          10 * m,            "PT10H");
+  testParse (t, "10minute",        8,    0,  0,   0,  0,  0,         0,                          10 * m,            "PT10M");
   testParse (t, "1.5minute",       9,    0,  0,   0,  0,  0,         0,                          m + 30,          "PT1M30S");
 
   testParse (t, "0min",            4,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 min",           5,    0,  0,   0,  0,  0,         0,                           2 * m,             "PT2M");
-  testParse (t, "10min",           5,    0,  0,   0,  0,  0,         0,                          10 * m,            "PT10H");
+  testParse (t, "10min",           5,    0,  0,   0,  0,  0,         0,                          10 * m,            "PT10M");
   testParse (t, "1.5min",          6,    0,  0,   0,  0,  0,         0,                          m + 30,          "PT1M30S");
 
   testParse (t, "0hours",          6,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
@@ -169,17 +169,17 @@ int main (int argc, char** argv)
   testParse (t, "0days",           5,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 days",          6,    0,  0,   0,  0,  0,         0,                         2 * day,              "P2D");
   testParse (t, "10days",          6,    0,  0,   0,  0,  0,         0,                        10 * day,             "P10D");
-  testParse (t, "1.5days",         7,    0,  0,   0,  0,  0,         0,                    day + 12 * h,           "P1D12H");
+  testParse (t, "1.5days",         7,    0,  0,   0,  0,  0,         0,                    day + 12 * h,          "P1DT12H");
 
   testParse (t, "0day",            4,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 day",           5,    0,  0,   0,  0,  0,         0,                         2 * day,              "P2D");
   testParse (t, "10day",           5,    0,  0,   0,  0,  0,         0,                        10 * day,             "P10D");
-  testParse (t, "1.5day",          6,    0,  0,   0,  0,  0,         0,                    day + 12 * h,           "P1D12H");
+  testParse (t, "1.5day",          6,    0,  0,   0,  0,  0,         0,                    day + 12 * h,          "P1DT12H");
 
   testParse (t, "0d",              2,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 d",             3,    0,  0,   0,  0,  0,         0,                         2 * day,              "P2D");
   testParse (t, "10d",             3,    0,  0,   0,  0,  0,         0,                        10 * day,             "P10D");
-  testParse (t, "1.5d",            4,    0,  0,   0,  0,  0,         0,                    day + 12 * h,           "P1D12H");
+  testParse (t, "1.5d",            4,    0,  0,   0,  0,  0,         0,                    day + 12 * h,          "P1DT12H");
 
   testParse (t, "weekly",          6,    0,  0,   0,  0,  0,         0,                         7 * day,              "P7D");
 
@@ -201,61 +201,61 @@ int main (int argc, char** argv)
   testParse (t, "monthly",         7,    0,  0,   0,  0,  0,         0,                        30 * day,             "P30D");
 
   testParse (t, "0months",         7,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
-  testParse (t, "2 months",        8,    0,  0,   0,  0,  0,         0,                       2 * month,             "P60D");
-  testParse (t, "10months",        8,    0,  0,   0,  0,  0,         0,                      10 * month,            "P300D");
-  testParse (t, "1.5months",       9,    0,  0,   0,  0,  0,         0,                month + 15 * day,             "P45D");
+  testParse (t, "2 months",        8,    0,  0,   0,  0,  0,         0,                        60 * day,             "P60D");
+  testParse (t, "10months",        8,    0,  0,   0,  0,  0,         0,                       300 * day,            "P300D");
+  testParse (t, "1.5months",       9,    0,  0,   0,  0,  0,         0,                        45 * day,             "P45D");
 
   testParse (t, "0month",          6,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
-  testParse (t, "2 month",         7,    0,  0,   0,  0,  0,         0,                       2 * month,             "P60D");
-  testParse (t, "10month",         7,    0,  0,   0,  0,  0,         0,                      10 * month,            "P300D");
-  testParse (t, "1.5month",        8,    0,  0,   0,  0,  0,         0,                month + 15 * day,             "P45D");
+  testParse (t, "2 month",         7,    0,  0,   0,  0,  0,         0,                        60 * day,             "P60D");
+  testParse (t, "10month",         7,    0,  0,   0,  0,  0,         0,                       300 * day,            "P300D");
+  testParse (t, "1.5month",        8,    0,  0,   0,  0,  0,         0,                        45 * day,             "P45D");
 
   testParse (t, "0mo",             3,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
-  testParse (t, "2 mo",            4,    0,  0,   0,  0,  0,         0,                       2 * month,             "P60D");
-  testParse (t, "10mo",            4,    0,  0,   0,  0,  0,         0,                      10 * month,            "P300D");
-  testParse (t, "1.5mo",           5,    0,  0,   0,  0,  0,         0,                month + 15 * day,             "P45D");
+  testParse (t, "2 mo",            4,    0,  0,   0,  0,  0,         0,                        60 * day,             "P60D");
+  testParse (t, "10mo",            4,    0,  0,   0,  0,  0,         0,                       300 * day,            "P300D");
+  testParse (t, "1.5mo",           5,    0,  0,   0,  0,  0,         0,                        45 * day,             "P45D");
 
   testParse (t, "quarterly",       9,    0,  0,   0,  0,  0,         0,                       3 * month,             "P90D");
 
   testParse (t, "0quarters",       9,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
-  testParse (t, "2 quarters",     10,    0,  0,   0,  0,  0,         0,                       6 * month,            "P182D");
-  testParse (t, "10quarters",     10,    0,  0,   0,  0,  0,         0,            2 * year + 6 * month,            "P910D");
-  testParse (t, "1.5quarters",    11,    0,  0,   0,  0,  0,         0,            4 * month + 15 * day,            "P135D");
+  testParse (t, "2 quarters",     10,    0,  0,   0,  0,  0,         0,                       182 * day,            "P182D");
+  testParse (t, "10quarters",     10,    0,  0,   0,  0,  0,         0,                       910 * day,            "P910D");
+  testParse (t, "1.5quarters",    11,    0,  0,   0,  0,  0,         0,                       135 * day,            "P135D");
 
   testParse (t, "0quarter",        8,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
-  testParse (t, "2 quarter",       9,    0,  0,   0,  0,  0,         0,                       6 * month,            "P182D");
-  testParse (t, "10quarter",       9,    0,  0,   0,  0,  0,         0,            2 * year + 6 * month,            "P913D");
-  testParse (t, "1.5quarter",     10,    0,  0,   0,  0,  0,         0,            4 * month + 15 * day,            "P135D");
+  testParse (t, "2 quarter",       9,    0,  0,   0,  0,  0,         0,                       182 * day,            "P182D");
+  testParse (t, "10quarter",       9,    0,  0,   0,  0,  0,         0,                       910 * day,            "P913D");
+  testParse (t, "1.5quarter",     10,    0,  0,   0,  0,  0,         0,                       135 * day,            "P135D");
 
   testParse (t, "0q",              2,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
-  testParse (t, "2 q",             3,    0,  0,   0,  0,  0,         0,                       6 * month,            "P182D");
-  testParse (t, "10q",             3,    0,  0,   0,  0,  0,         0,            2 * year + 6 * month,            "P910D");
-  testParse (t, "1.5q",            4,    0,  0,   0,  0,  0,         0,            4 * month + 15 * day,            "P135D");
+  testParse (t, "2 q",             3,    0,  0,   0,  0,  0,         0,                       183 * day,            "P182D");
+  testParse (t, "10q",             3,    0,  0,   0,  0,  0,         0,                       910 * day,            "P910D");
+  testParse (t, "1.5q",            4,    0,  0,   0,  0,  0,         0,                       135 * day,            "P135D");
 
   testParse (t, "yearly",          6,    0,  0,   0,  0,  0,         0,                            year,            "P365D");
 
   testParse (t, "0years",          6,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 years",         7,    0,  0,   0,  0,  0,         0,                        2 * year,            "P730D");
   testParse (t, "10years",         7,    0,  0,   0,  0,  0,         0,                       10 * year,           "P3650D");
-  testParse (t, "1.5years",        8,    0,  0,   0,  0,  0,         0,                year + 6 * month,            "P547D");
+  testParse (t, "1.5years",        8,    0,  0,   0,  0,  0,         0,                       547 * day,            "P547D");
 
   testParse (t, "0year",           5,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 year",          6,    0,  0,   0,  0,  0,         0,                        2 * year,            "P730D");
   testParse (t, "10year",          6,    0,  0,   0,  0,  0,         0,                       10 * year,           "P3650D");
-  testParse (t, "1.5year",         7,    0,  0,   0,  0,  0,         0,                year + 6 * month,            "P547D");
+  testParse (t, "1.5year",         7,    0,  0,   0,  0,  0,         0,                       547 * day,            "P547D");
 
   testParse (t, "0y",              2,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 y",             3,    0,  0,   0,  0,  0,         0,                        2 * year,            "P730D");
   testParse (t, "10y",             3,    0,  0,   0,  0,  0,         0,                       10 * year,           "P3650D");
-  testParse (t, "1.5y",            4,    0,  0,   0,  0,  0,         0,                year + 6 * month,            "P547D");
+  testParse (t, "1.5y",            4,    0,  0,   0,  0,  0,         0,                       547 * day,            "P547D");
 
   testParse (t, "annual",          6,    0,  0,   0,  0,  0,         0,                            year,            "P365D");
   testParse (t, "biannual",        8,    0,  0,   0,  0,  0,         0,                        2 * year,            "P730D");
-  testParse (t, "bimonthly",       9,    0,  0,   0,  0,  0,         0,                       2 * month,             "P60D");
+  testParse (t, "bimonthly",       9,    0,  0,   0,  0,  0,         0,                        61 * day,             "P61D");
   testParse (t, "biweekly",        8,    0,  0,   0,  0,  0,         0,                        14 * day,             "P14D");
   testParse (t, "biyearly",        8,    0,  0,   0,  0,  0,         0,                        2 * year,            "P730D");
   testParse (t, "fortnight",       9,    0,  0,   0,  0,  0,         0,                        14 * day,             "P14D");
-  testParse (t, "semiannual",     10,    0,  0,   0,  0,  0,         0,                       6 * month,            "P183D");
+  testParse (t, "semiannual",     10,    0,  0,   0,  0,  0,         0,                       183 * day,            "P183D");
 
   testParse (t, "0sennight",       9,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 sennight",     10,    0,  0,   0,  0,  0,         0,                        28 * day,             "P28D");
