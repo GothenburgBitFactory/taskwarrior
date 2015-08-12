@@ -31,7 +31,7 @@
 #include <cstring>
 #include <algorithm>
 #include <unistd.h>
-#include <Duration.h>
+#include <ISO8601.h>
 #include <Context.h>
 #include <Filter.h>
 #include <Nibbler.h>
@@ -184,8 +184,8 @@ std::string CmdEdit::formatDuration (
   std::string value = task.get (attribute);
   if (value.length ())
   {
-    Duration dur (value);
-    value = dur.formatSeconds ();
+    ISO8601p dur (value);
+    value = dur.format ();
   }
 
   return value;
@@ -546,9 +546,9 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
   {
     if (value != "")
     {
-      Duration d;
+      ISO8601p p;
       std::string::size_type idx = 0;
-      if (d.parse (value, idx))
+      if (p.parse (value, idx))
       {
         context.footnote (STRING_EDIT_RECUR_MOD);
         if (task.get ("due") != "")
@@ -686,7 +686,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
       if ((task.get (col.first) != value) && (type != "date" ||
            (task.get (col.first) != Date (value, dateformat).toEpochString ())) &&
            (type != "duration" ||
-           (task.get (col.first) != (std::string) Duration (value))))
+           (task.get (col.first) != (std::string) ISO8601p (value))))
       {
         if (value != "")
         {
@@ -708,13 +708,11 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
           }
           else if (type == "date")
           {
-            Date d (value, dateformat);
-            task.set (col.first, d.toEpochString ());
+            task.set (col.first, Date (value, dateformat).toEpochString ());
           }
           else if (type == "duration")
           {
-            Duration d (value);
-            task.set (col.first, (time_t) d);
+            task.set (col.first, (time_t) ISO8601p (value));
           }
         }
         else
