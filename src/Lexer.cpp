@@ -29,7 +29,6 @@
 #include <Lexer.h>
 #include <ISO8601.h>
 #include <Date.h>
-#include <Duration.h>
 #include <utf8.h>
 
 static const std::string uuid_pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
@@ -484,16 +483,6 @@ bool Lexer::isDuration (std::string& token, Lexer::Type& type)
   marker = 0;
   ISO8601p iso;
   if (iso.parse (_text.substr (_cursor), marker))
-  {
-    type = Lexer::Type::duration;
-    token = _text.substr (_cursor, marker);
-    _cursor += marker;
-    return true;
-  }
-
-  marker = 0;
-  Duration dur;
-  if (dur.parse (_text.substr (_cursor), marker))
   {
     type = Lexer::Type::duration;
     token = _text.substr (_cursor, marker);
