@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <Variant.h>
-#include <Duration.h>
+#include <ISO8601.h>
 #include <Task.h>
 #include <text.h>
 #include <i18n.h>
@@ -204,8 +204,8 @@ static bool sort_compare (int left, int right)
       if (left_string == right_string)
         continue;
 
-      Duration left_duration (left_string);
-      Duration right_duration (right_string);
+      ISO8601p left_duration (left_string);
+      ISO8601p right_duration (right_string);
       return ascending ? (left_duration < right_duration)
                        : (left_duration > right_duration);
     }
@@ -258,8 +258,8 @@ static bool sort_compare (int left, int right)
         if (left_string == right_string)
           continue;
 
-        Duration left_duration (left_string);
-        Duration right_duration (right_string);
+        ISO8601p left_duration (left_string);
+        ISO8601p right_duration (right_string);
         return ascending ? (left_duration < right_duration)
                          : (left_duration > right_duration);
       }
