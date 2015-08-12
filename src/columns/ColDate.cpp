@@ -29,7 +29,7 @@
 #include <Context.h>
 #include <ColDate.h>
 #include <Date.h>
-#include <Duration.h>
+#include <ISO8601.h>
 #include <text.h>
 #include <i18n.h>
 
@@ -56,9 +56,9 @@ ColumnDate::ColumnDate ()
                format (now.toJulian (), 13, 12),
                now.toEpochString (),
                now.toISO (),
-               Duration (Date () - now).formatCompact (),
+               ISO8601p (Date () - now).format (),
                "",
-               Duration (Date () - now).format ()};
+               ISO8601p (Date () - now).format ()};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +94,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     else if (_style == "countdown")
     {
       Date now;
-      minimum = maximum = Duration (now - date).format ().length ();
+      minimum = maximum = ISO8601p (now - date).format ().length ();
     }
     else if (_style == "julian")
     {
@@ -111,13 +111,13 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     else if (_style == "age")
     {
       Date now;
-      minimum = maximum = Duration (now - date).formatCompact ().length ();
+      minimum = maximum = ISO8601p (now - date).format ().length ();
     }
     else if (_style == "remaining")
     {
       Date now;
       if (date > now)
-        minimum = maximum = Duration (date - now).format ().length ();
+        minimum = maximum = ISO8601p (date - now).format ().length ();
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -160,7 +160,7 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           rightJustify (
-            Duration (now - date).format (), width)));
+            ISO8601p (now - date).format (), width)));
     }
     else if (_style == "julian")
     {
@@ -190,7 +190,7 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           leftJustify (
-            Duration (now - date).formatCompact (), width)));
+            ISO8601p (now - date).format (), width)));
     }
     else if (_style == "remaining")
     {
@@ -199,7 +199,7 @@ void ColumnDate::render (
         lines.push_back (
           color.colorize (
             rightJustify (
-              Duration (date - now).format (), width)));
+              ISO8601p (date - now).format (), width)));
     }
   }
 }
