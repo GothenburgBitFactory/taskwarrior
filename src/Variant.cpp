@@ -34,7 +34,6 @@
 #include <ISO8601.h>
 #include <Lexer.h>
 #include <Date.h>
-#include <Duration.h>
 #include <RX.h>
 #include <text.h>
 #include <i18n.h>
@@ -1955,15 +1954,6 @@ void Variant::cast (const enum type new_type)
           break;
         }
 
-        pos = 0;
-        Duration dur;
-        if (dur.parse (_string, pos) &&
-            pos == _string.length ())
-        {
-          _date = Date ().toEpoch () + (time_t) dur;
-          break;
-        }
-
         if (dateFormat != "")
         {
           _date = Date (_string, dateFormat).toEpoch ();
@@ -1974,22 +1964,12 @@ void Variant::cast (const enum type new_type)
     case type_duration:
       {
         _duration = 0;
-        Duration dur;
         std::string::size_type pos = 0;
-        if (dur.parse (_string, pos) &&
+        ISO8601p iso;
+        if (iso.parse (_string, pos) &&
             pos == _string.length ())
         {
-          _duration = (time_t) dur;
-        }
-        else
-        {
-          ISO8601p iso;
-          pos = 0;
-          if (iso.parse (_string, pos) &&
-              pos == _string.length ())
-          {
-            _duration = (time_t) iso;
-          }
+          _duration = (time_t) iso;
         }
       }
       break;
