@@ -29,7 +29,7 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <ViewText.h>
-#include <Duration.h>
+#include <ISO8601.h>
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
@@ -247,35 +247,35 @@ int CmdStats::execute (std::string& output)
 
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_USED_FOR);
-    view.set (row, 1, Duration (latest - earliest).format ());
+    view.set (row, 1, ISO8601p (latest - earliest).format ());
   }
 
   if (totalT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_ADD_EVERY);
-    view.set (row, 1, Duration (((latest - earliest) / totalT)).format ());
+    view.set (row, 1, ISO8601p (((latest - earliest) / totalT)).format ());
   }
 
   if (completedT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_COMP_EVERY);
-    view.set (row, 1, Duration ((latest - earliest) / completedT).format ());
+    view.set (row, 1, ISO8601p ((latest - earliest) / completedT).format ());
   }
 
   if (deletedT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_DEL_EVERY);
-    view.set (row, 1, Duration ((latest - earliest) / deletedT).format ());
+    view.set (row, 1, ISO8601p ((latest - earliest) / deletedT).format ());
   }
 
   if (pendingT || completedT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_AVG_PEND);
-    view.set (row, 1, Duration ((int) ((daysPending / (pendingT + completedT)) * 86400)).format ());
+    view.set (row, 1, ISO8601p ((int) ((daysPending / (pendingT + completedT)) * 86400)).format ());
   }
 
   if (totalT)
