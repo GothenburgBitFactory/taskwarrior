@@ -29,7 +29,6 @@
 #include <map>
 #include <stdlib.h>
 #include <Variant.h>
-#include <Duration.h>
 #include <Context.h>
 #include <Nibbler.h>
 #include <ISO8601.h>
@@ -235,7 +234,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
             value = Variant (numeric, Variant::type_date);
         }
         else if (column->type () == "duration" || canonical == "recur")
-          value = Variant ((time_t) Duration (task.get (canonical)), Variant::type_duration);
+          value = Variant ((time_t) ISO8601p (task.get (canonical)), Variant::type_duration);
         else if (column->type () == "numeric")
           value = Variant (task.get_float (canonical));
         else // string
@@ -322,7 +321,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
               if (iso.parse (period, cursor))
                 value = Variant ((time_t) iso._value, Variant::type_duration);
               else
-                value = Variant ((time_t) Duration (ref.get (canonical)), Variant::type_duration);
+                value = Variant ((time_t) ISO8601p (ref.get (canonical)), Variant::type_duration);
 
               context.debug ("value --> " + (std::string) value);
             }
