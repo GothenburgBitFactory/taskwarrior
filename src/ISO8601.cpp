@@ -713,7 +713,7 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
     {
       start = original_start + n.cursor ();
 
-      // Linear lookup - should be logarithmic.
+      // Linear lookup - should instead be logarithmic.
       for (unsigned int i = 0; i < NUM_DURATIONS; i++)
       {
         if (durations[i].unit == unit &&
@@ -761,7 +761,7 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
         start = original_start + n.cursor ();
         double quantity = strtod (number.c_str (), NULL);
 
-        // Linear lookup - should be logarithmic.
+        // Linear lookup - should instead be logarithmic.
         double seconds = 1;
         for (unsigned int i = 0; i < NUM_DURATIONS; i++)
         {
@@ -800,14 +800,10 @@ const std::string ISO8601p::format () const
     int seconds = t % 60; t /= 60;
     int minutes = t % 60; t /= 60;
     int hours   = t % 24; t /= 24;
-    int days    = t % 30; t /= 30;
-    int months  = t % 12; t /= 12;
-    int years   = t;
+    int days    = t;
 
     std::stringstream s;
     s << 'P';
-    if (years)  s << years  << 'Y';
-    if (months) s << months << 'M';
     if (days)   s << days   << 'D';
 
     if (hours || minutes || seconds)
