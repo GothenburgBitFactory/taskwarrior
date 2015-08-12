@@ -71,9 +71,10 @@ class ISO8601p
 {
 public:
   ISO8601p ();
+  ISO8601p (time_t);
+  ISO8601p (const std::string&);
   ~ISO8601p ();
   ISO8601p (const ISO8601p&);            // Unimplemented
-  ISO8601p (const std::string&);
   ISO8601p& operator= (const ISO8601p&);
   bool operator< (const ISO8601p&);
   bool operator> (const ISO8601p&);
