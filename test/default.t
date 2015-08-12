@@ -80,7 +80,7 @@ class TestDefaults(TestCase):
 
     def test_default_command(self):
         self.t("add foo")
-        code, out, err = self.t("")
+        code, out, err = self.t()
         self.assertIn("foo", out)
 
 
