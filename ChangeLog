@@ -6,6 +6,8 @@
 - TW-148  default.command options (thanks to David Patrick).
 - TW-158  JSON export should model dependencies as array (thanks to Nicholas E.
           Rabenau).
+- TW-263  Unexpected zsh autocomplete behaviour (thanks to Leon Feng, Marc
+          Cornellà).
 - TW-269  \t is not rendered correctly (thanks to Scott Kostyshak).
 - TW-283  Process rc.* items when executing config (thanks to Ben Armstrong).
 - TW-303  Ability for "import" to update existing tasks (thanks to Kosta
