@@ -220,17 +220,17 @@ int main (int argc, char** argv)
   testParse (t, "0quarters",       9,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 quarters",     10,    0,  0,   0,  0,  0,         0,                       182 * day,            "P182D");
   testParse (t, "10quarters",     10,    0,  0,   0,  0,  0,         0,                       910 * day,            "P910D");
-  testParse (t, "1.5quarters",    11,    0,  0,   0,  0,  0,         0,              135 * day + 12 * h,        "P135DT12H");
+  testParse (t, "1.5quarters",    11,    0,  0,   0,  0,  0,         0,              136 * day + 12 * h,        "P136DT12H");
 
   testParse (t, "0quarter",        8,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 quarter",       9,    0,  0,   0,  0,  0,         0,                       182 * day,            "P182D");
   testParse (t, "10quarter",       9,    0,  0,   0,  0,  0,         0,                       910 * day,            "P910D");
-  testParse (t, "1.5quarter",     10,    0,  0,   0,  0,  0,         0,              135 * day + 12 * h,        "P135DT12H");
+  testParse (t, "1.5quarter",     10,    0,  0,   0,  0,  0,         0,              136 * day + 12 * h,        "P136DT12H");
 
   testParse (t, "0q",              2,    0,  0,   0,  0,  0,         0,                               0,             "PT0S");
   testParse (t, "2 q",             3,    0,  0,   0,  0,  0,         0,                       182 * day,            "P182D");
   testParse (t, "10q",             3,    0,  0,   0,  0,  0,         0,                       910 * day,            "P910D");
-  testParse (t, "1.5q",            4,    0,  0,   0,  0,  0,         0,              135 * day + 12 * h,        "P135DT12H");
+  testParse (t, "1.5q",            4,    0,  0,   0,  0,  0,         0,              136 * day + 12 * h,        "P136DT12H");
 
   testParse (t, "yearly",          6,    0,  0,   0,  0,  0,         0,                            year,            "P365D");
 
