@@ -11,13 +11,13 @@ include_directories (${CMAKE_SOURCE_DIR}
 
 set (test_SRCS autocomplete.t col.t color.t config.t date.t fs.t i18n.t json.t
                list.t msg.t nibbler.t rx.t t.t t2.t t3.t tdb2.t text.t utf8.t
-               util.t view.t json_test lexer.t iso8601d.t iso8601p.t duration.t
+               util.t view.t json_test lexer.t iso8601d.t iso8601p.t eval.t
                variant_add.t variant_and.t variant_cast.t variant_divide.t
                variant_equal.t variant_exp.t variant_gt.t variant_gte.t
                variant_inequal.t variant_lt.t variant_lte.t variant_match.t
                variant_math.t variant_modulo.t variant_multiply.t
                variant_nomatch.t variant_not.t variant_or.t variant_partial.t
-               variant_subtract.t variant_xor.t eval.t dates.t)
+               variant_subtract.t variant_xor.t dates.t)
 
 add_custom_target (test ./run_all --verbose
                         DEPENDS ${test_SRCS} task_executable

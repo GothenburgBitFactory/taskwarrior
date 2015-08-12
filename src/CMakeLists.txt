@@ -12,7 +12,6 @@ set (task_SRCS CLI2.cpp CLI2.h
                DOM.cpp DOM.h
                Date.cpp Date.h
                Dates.cpp Dates.h
-               Duration.cpp Duration.h
                Eval.cpp Eval.h
                Filter.cpp Filter.h
                FS.cpp FS.h

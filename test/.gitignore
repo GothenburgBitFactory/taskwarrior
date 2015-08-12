@@ -9,7 +9,6 @@ color.t
 config.t
 date.t
 dates.t
-duration.t
 eval.t
 fs.t
 i18n.t
