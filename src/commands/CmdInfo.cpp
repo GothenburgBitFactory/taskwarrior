@@ -229,7 +229,7 @@ int CmdInfo::execute (std::string& output)
     if (created.length ())
     {
       Date dt (strtol (created.c_str (), NULL, 10));
-      age = ISO8601p (now - dt).format ();
+      age = ISO8601p (now - dt).formatVague ();
     }
 
     view.set (row, 1, entry + " (" + age + ")");
@@ -289,7 +289,7 @@ int CmdInfo::execute (std::string& output)
       view.set (row, 0, STRING_CMD_INFO_MODIFIED);
 
       Date mod (task.get_date ("modified"));
-      std::string age = ISO8601p (now - mod).format ();
+      std::string age = ISO8601p (now - mod).formatVague ();
       view.set (row, 1, mod.toString (dateformat) + " (" + age + ")");
     }
 

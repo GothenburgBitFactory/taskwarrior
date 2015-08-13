@@ -56,7 +56,7 @@ ColumnDate::ColumnDate ()
                format (now.toJulian (), 13, 12),
                now.toEpochString (),
                now.toISO (),
-               ISO8601p (Date () - now).format (),
+               ISO8601p (Date () - now).formatVague (),
                "",
                ISO8601p (Date () - now).format ()};
 }
@@ -94,7 +94,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     else if (_style == "countdown")
     {
       Date now;
-      minimum = maximum = ISO8601p (now - date).format ().length ();
+      minimum = maximum = ISO8601p (now - date).formatVague ().length ();
     }
     else if (_style == "julian")
     {
@@ -111,13 +111,13 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     else if (_style == "age")
     {
       Date now;
-      minimum = maximum = ISO8601p (now - date).format ().length ();
+      minimum = maximum = ISO8601p (now - date).formatVague ().length ();
     }
     else if (_style == "remaining")
     {
       Date now;
       if (date > now)
-        minimum = maximum = ISO8601p (date - now).format ().length ();
+        minimum = maximum = ISO8601p (date - now).formatVague ().length ();
     }
     else
       throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -160,7 +160,7 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           rightJustify (
-            ISO8601p (now - date).format (), width)));
+            ISO8601p (now - date).formatVague (), width)));
     }
     else if (_style == "julian")
     {
@@ -190,7 +190,7 @@ void ColumnDate::render (
       lines.push_back (
         color.colorize (
           leftJustify (
-            ISO8601p (now - date).format (), width)));
+            ISO8601p (now - date).formatVague (), width)));
     }
     else if (_style == "remaining")
     {
@@ -199,7 +199,7 @@ void ColumnDate::render (
         lines.push_back (
           color.colorize (
             rightJustify (
-              ISO8601p (date - now).format (), width)));
+              ISO8601p (date - now).formatVague (), width)));
     }
   }
 }

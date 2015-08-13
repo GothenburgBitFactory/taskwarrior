@@ -40,11 +40,6 @@ ColumnScheduled::ColumnScheduled ()
 {
   _name     = "scheduled";
   _label    = STRING_COLUMN_LABEL_SCHED;
-  _styles   = {"countdown"};
-
-  Date now;
-  now += 125;
-  _examples = {ISO8601p (now - Date ()).format ()};
 }
 
 ////////////////////////////////////////////////////////////////////////////////

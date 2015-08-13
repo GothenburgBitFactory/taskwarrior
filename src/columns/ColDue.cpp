@@ -40,10 +40,6 @@ ColumnDue::ColumnDue ()
 {
   _name      = "due";
   _label     = STRING_COLUMN_LABEL_DUE;
-
-  Date now;
-  now += 125;
-  _examples.push_back (ISO8601p (now - Date ()).format ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
