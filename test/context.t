@@ -404,6 +404,82 @@ class ContextEvaluationTest(TestCase):
         self.assertIn("work today task", out)
         self.assertNotIn("home today task", out)
 
+    def test_context_not_applied_on_id_filters(self):
+        """
+        Test that context is not applied when explicit ID
+        filters are used.
+        """
+
+        self.t('context home')
+
+        # Try task not included in context
+        output = self.t('1 list')[1]
+
+        # Assert that ID filter works even if it does not match the context
+        self.assertIn("work task", output)
+        self.assertNotIn("home task", output)
+        self.assertNotIn("work today task", output)
+        self.assertNotIn("home today task", output)
+
+        # Try task included in context
+        output = self.t('2 list')[1]
+
+        # Assert that ID filter works if it does match
+        # the context (sanity check)
+        self.assertNotIn("work task", output)
+        self.assertIn("home task", output)
+        self.assertNotIn("work today task", output)
+        self.assertNotIn("home today task", output)
+
+        # Test for combination of IDs
+        output = self.t('1 2 list')[1]
+
+        # Assert that ID filter works if it partly matches
+        # and partly does not match the context
+        self.assertIn("work task", output)
+        self.assertIn("home task", output)
+        self.assertNotIn("work today task", output)
+        self.assertNotIn("home today task", output)
+
+    def test_context_not_applied_on_uuid_filters(self):
+        """
+        Test that context is not applied when explicit UUID
+        filters are used.
+        """
+
+        self.t('context home')
+        first_uuid = self.t('_get 1.uuid')[1]
+        second_uuid = self.t('_get 2.uuid')[1]
+
+        # Try task not included in context
+        output = self.t('%s list' % first_uuid)[1]
+
+        # Assert that UUID filter works even if it does not match
+        # the context
+        self.assertIn("work task", output)
+        self.assertNotIn("home task", output)
+        self.assertNotIn("work today task", output)
+        self.assertNotIn("home today task", output)
+
+        # Try task included in context
+        output = self.t('%s list' % second_uuid)[1]
+
+        # Assert that UUID filter works if it does match
+        # the context (sanity check)
+        self.assertNotIn("work task", output)
+        self.assertIn("home task", output)
+        self.assertNotIn("work today task", output)
+        self.assertNotIn("home today task", output)
+
+        # Test for combination of UUIDs
+        output = self.t('%s %s list' % (first_uuid, second_uuid))[1]
+
+        # Assert that UUID filter works if it partly matches
+        # and partly does not match the context
+        self.assertIn("work task", output)
+        self.assertIn("home task", output)
+        self.assertNotIn("work today task", output)
+        self.assertNotIn("home today task", output)
 
 # TODO Prove context does not interfere with ID-based filters
 # TODO Prove context does not interfere with UUID-based filters

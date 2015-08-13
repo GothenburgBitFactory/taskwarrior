@@ -587,11 +587,11 @@ void CLI2::addContextFilter ()
   // Detect if UUID or ID is set, and bail out
   for (auto& a : _args)
   {
-    if ((a._lextype == Lexer::Type::uuid ||
-         a._lextype == Lexer::Type::set) &&
-        a.hasTag ("FILTER"))
+    if (a._lextype == Lexer::Type::uuid   ||
+        a._lextype == Lexer::Type::number ||
+        a._lextype == Lexer::Type::set)
     {
-      context.debug (format ("UUID/ID lexeme found '{1}', not applying context.", a.attribute ("raw")));
+      context.debug (format ("UUID/ID argument found '{1}', not applying context.", a.attribute ("raw")));
       return;
     }
   }
