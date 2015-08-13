@@ -481,8 +481,6 @@ class ContextEvaluationTest(TestCase):
         self.assertNotIn("work today task", output)
         self.assertNotIn("home today task", output)
 
-# TODO Prove context does not interfere with ID-based filters
-# TODO Prove context does not interfere with UUID-based filters
 # TODO Prove context does not interfere with export
 # TODO Prove context does not interfere with undo
 # TODO Prove context does not interfere with helper commands
