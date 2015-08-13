@@ -1,7 +1,10 @@
 #!/bin/sh
 
 # The on-exit event is triggered once, after all processing is complete.
-# This hooks script has no effect on processing.
+# This hook script has no effect on processing.
+
+# Input:
+# - line of JSON for each modified task
 
 # Output:
 # - Optional feedback/error.
