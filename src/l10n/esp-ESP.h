@@ -764,6 +764,7 @@
 #define STRING_ERROR_DETAILS         "El ajuste 'calendar.details.report' debe contener un único nombre de informe."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 #define STRING_ERROR_NO_MODS         "Command line modifications are not supported by this command."
+#define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "Ninguna tarea."

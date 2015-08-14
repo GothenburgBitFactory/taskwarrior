@@ -384,6 +384,7 @@
 #define STRING_CMD_DELETE_1          "Deleted {1} task."
 #define STRING_CMD_DELETE_N          "Deleted {1} tasks."
 
+
 #define STRING_CMD_DUPLICATE_USAGE   "Duplicates the specified tasks"
 #define STRING_CMD_DUPLICATE_REC     "Note: task {1} was a parent recurring task.  The duplicated task is too."
 #define STRING_CMD_DUPLICATE_NON_REC "Note: task {1} was a recurring task.  The duplicated task is not."
@@ -749,6 +750,7 @@
 #define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
 #define STRING_ERROR_NO_MODS         "Command line modifications are not supported by this command."
+#define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
 
 // Feedback
 #define STRING_FEEDBACK_NO_TASKS     "No tasks."

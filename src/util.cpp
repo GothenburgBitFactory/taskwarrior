@@ -45,6 +45,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include <pwd.h>
 #include <errno.h>
 #include <signal.h>
@@ -58,6 +59,16 @@
 
 extern Context context;
 
+//////////////////////////////////////////////////////////////////////////////// 
+static void signal_handler (int s)
+{
+  if (s == SIGINT)
+  {
+    std::cout << "\n\n" << STRING_ERROR_CONFIRM_SIGINT << "\n";
+    exit (1);
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Uses std::getline, because std::cin eats leading whitespace, and that means
 // that if a newline is entered, std::cin eats it and never returns from the
@@ -68,6 +79,8 @@ bool confirm (const std::string& question)
   std::vector <std::string> options {STRING_UTIL_CONFIRM_YES,
                                      STRING_UTIL_CONFIRM_NO};
   std::vector <std::string> matches;
+
+  signal (SIGINT, signal_handler);
 
   do
   {
@@ -83,6 +96,7 @@ bool confirm (const std::string& question)
   }
   while (! std::cin.eof () && matches.size () != 1);
 
+  signal (SIGINT, SIG_DFL);
   return matches.size () == 1 && matches[0] == STRING_UTIL_CONFIRM_YES ? true : false;
 }
 
@@ -101,6 +115,8 @@ int confirm4 (const std::string& question)
                                      STRING_UTIL_CONFIRM_QUIT};
   std::vector <std::string> matches;
 
+  signal (SIGINT, signal_handler);
+
   do
   {
     std::cout << question
@@ -118,6 +134,8 @@ int confirm4 (const std::string& question)
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }
   while (! std::cin.eof () && matches.size () != 1);
+
+  signal (SIGINT, SIG_DFL);
 
   if (matches.size () == 1)
   {
