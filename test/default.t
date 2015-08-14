@@ -46,7 +46,7 @@ class TestDefaults(TestCase):
         cls.t.config("default.due",          "eom")
 
     def test_all_defaults(self):
-        """Verify all defaults are emplyoed"""
+        """Verify all defaults are employed"""
         self.t("add all defaults")
         code, out, err = self.t("export")
         self.assertIn('"description":"all defaults"', out)
