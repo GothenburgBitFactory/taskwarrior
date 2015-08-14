@@ -19,6 +19,8 @@ New configuration options in Taskwarrior 2.4.5
     Both variations are imported.
   - The 'color.uda.<name>.none' is a color that is applieѕ to tasks that do
     not have a value for the UDA '<name>'.
+  - A Cygwin fix means that now we can default 'search.case.sensitive' to 'yes',
+    and all platforms are again equal.
 
 Newly deprecated features in Taskwarrior 2.4.5
 
