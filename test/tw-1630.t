@@ -44,8 +44,8 @@ class TestBug1630(TestCase):
         self.t("add two due:10d")
 
     def test_attribute_modifier_with_duration(self):
-        """Verify that 'due.before:10d' is correctly interpreted"""
-        code, out, err = self.t("due.before:10d list rc.verbose:nothing")
+        """Verify that 'due.before:9d' is correctly interpreted"""
+        code, out, err = self.t("due.before:9d list rc.verbose:nothing")
         self.assertNotIn("zero", out)
         self.assertIn("one", out)
         self.assertNotIn("two", out)
