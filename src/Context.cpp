@@ -220,10 +220,7 @@ int Context::initialize (int argc, const char** argv)
       if (combined.length ())
         combined += ' ';
 
-      if (a.attribute ("canonical") != "")
-        combined += a.attribute ("canonical");
-      else
-        combined += a.attribute ("raw");
+      combined += a.getToken ();
 
       if (a.hasTag ("DEFAULT"))
         foundDefault = true;
