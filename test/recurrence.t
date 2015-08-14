@@ -154,14 +154,11 @@ class TestRecurrenceUntil(TestCase):
         # Given that the original decision was arbitrary, this is no worse.
         # We shall preserve recent behavior.
         self.t.faketime("+24h")
-        code, out, err = self.t.runError("list rc.verbose:nothing")
-        self.assertEqual(out.count("one"), 0)
-        self.assertEqual(err.count("one"), 0)
-
-        # NOTE
-        #   'faketime' prior to 0.9.6, fails to propagate exit codes.
-        #   This causes the above 'self.t.runError' to exit with a 0.
-        #   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=750721
+        code, out, err = self.t("( status:pending or status:recurring ) count")
+        self.assertEqual("0\n", out)
+        self.assertIn("Task 2 'one' expired and was deleted.", err)
+        self.assertIn("Task 3 'one' expired and was deleted.", err)
+        self.assertIn("Task 4 'one' expired and was deleted.", err)
 
 
 class TestRecurrenceTasks(TestCase):
