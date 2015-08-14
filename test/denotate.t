@@ -68,7 +68,7 @@ class TestDenotate(TestCase):
         self.assertIn("Found annotation 'gamma' and deleted it.", out)
 
         # Failed partial match, one annotation
-        code, out, err = self.t.runError("2 denotate AL")
+        code, out, err = self.t.runError("rc.search.case.sensitive=yes 2 denotate AL")
         self.assertIn("Did not find any matching annotation to be deleted for 'AL'.", out)
 
         # Exact match, two annotations
