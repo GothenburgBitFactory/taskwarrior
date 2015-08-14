@@ -149,14 +149,19 @@ class TestRecurrenceUntil(TestCase):
         code, out, err = self.t("list rc.verbose:nothing")
         self.assertEqual(out.count("one"), 3)
 
-        # TODO This test currently failing, probably because the 'until' is
-        # propagated to the instances, and expires them also. This is certainly
-        # the way it has been behaving for a while, but is not the original
-        # intention. Perhaps it is now the de facto functionality, in which
-        # the 3 becomes a 0.
+        # This test verifies that 'until' propagates to the instances, which
+        # was not the original intention, but has been this way for a a while.
+        # Given that the original decision was arbitrary, this is no worse.
+        # We shall preserve recent behavior.
         self.t.faketime("+24h")
-        code, out, err = self.t("list rc.verbose:nothing")
+        code, out, err = self.t.runError("list rc.verbose:nothing")
         self.assertEqual(out.count("one"), 0)
+        self.assertEqual(err.count("one"), 0)
+
+        # NOTE
+        #   'faketime' prior to 0.9.6, fails to propagate exit codes.
+        #   This causes the above 'self.t.runError' to exit with a 0.
+        #   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=750721
 
 
 class TestRecurrenceTasks(TestCase):
