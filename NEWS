@@ -2,7 +2,7 @@
 New Features in Taskwarrior 2.4.5
 
   - The active context, if one is set, is now identified in "task context list"
-  - It is an error to attempt and add or remove of a virtual tag.
+  - It is an error to attempt adding or removing a virtual tag.
   - New 'UDA' and 'ORPHAN' virtual tags.
 
 New commands in Taskwarrior 2.4.5
@@ -33,7 +33,7 @@ Removed features in 2.4.5
     that 'YYYYMMDD' is no longer supported, but 'YYYY-MM-DD' is. For times,
     'hhmmss' is no longer supported, but 'hh:mm:ss' is. The non-enxtended
     forms all contain sequences of digits that make the identification of
-    IDs, UUIDs, and various date/time formats problematic.
+    IDs, UUIDs, and various date/time formats ambiguous.
   - Comma-separated UUID lists are no longer supported.
   - DOM references may no longer be abbreviated.
 

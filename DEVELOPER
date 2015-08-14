@@ -1,8 +1,8 @@
 How to Build Taskwarrior
 
   Satisfy the Requirements:
-    - gcc 4.7 or later, clang 3.3 or later or equivalent. This is because 2.4.4
-      will be utilizing C++11.
+    - gcc 4.7 or later, clang 3.3 or later or equivalent. This is because C++11
+      is now used.
     - libuuid
     - gnutls (optional)
     - python 2.7 or 3 (optional, for running the test suite)
@@ -92,7 +92,7 @@ General Statement
   - Spread the word. Help others become more effective at managing tasks.
 
   - Encouragement. Tell us what works for you, and what doesn't. Tell us about
-    your methodology for managing tasks. It's all good.
+    your methodology for managing tasks. It's all useful information.
 
   - Request a feature. This not only tells us that you think something is
     missing from the software, but gives us insights into how you use it.
@@ -134,7 +134,7 @@ Unit Tests Needed
      these kind of tests be extensive and thorough, because the software depends
      on this code the most.
 
-  The tests are written in Python, and all use TAP.
+  The tests are written in Python, Bash and C++, and all use TAP.
 
   Tests needed:
 
@@ -165,4 +165,4 @@ Current Codebase Condition
 
 ---
 
-2015-07-24 Updated for 2.4.5
+2015-08-14 Updated for 2.4.5
