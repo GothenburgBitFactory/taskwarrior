@@ -61,7 +61,15 @@ class TestBugNumber(TestCase):
         self.tap("Yay TAP diagnostics")
 
     def test_faketime(self):
-        """Running tests using libfaketime"""
+        """Running tests using libfaketime
+
+           WARNING:
+             faketime version 0.9.6 and later correctly propagates non-zero
+             exit codes.  Please don't combine faketime tests and
+             self.t.runError().
+
+             https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=750721
+        """
         self.t.faketime("-2y")
 
         command = ("add Testing")
