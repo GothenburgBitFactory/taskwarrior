@@ -351,10 +351,26 @@ class TestBug955(TestCase):
         code, out, err = self.t.runError("ls")
         self.assertIn("No matches", err)
 
+class TestUpgradeToRecurring(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_upgrade(self):
+        """Upgrade task to recurring"""
+        self.t("add foo")
+        self.t("1 modify due:tomorrow recur:weekly")
+        code, out, err = self.t("_get 1.status")
+        self.assertEqual("recurring\n", out)
+
+    def test_failed_upgrade(self):
+        """Attempt an upgrade, but omit the due date"""
+        self.t("add foo")
+        code, out, err = self.t.runError("1 modify recur:weekly")
+        self.assertIn("You cannot specify a recurring task without a due date.", err)
+
 
 # TODO Wait a recurring task
-# TODO Upgrade a task to a recurring task
-# TODO Upgrade a task to a recurring task, but omit the due date (error handling)
 # TODO Downgrade a recurring task to a regular task
 # TODO Duplicate a recurring child task
 # TODO Duplicate a recurring parent task
