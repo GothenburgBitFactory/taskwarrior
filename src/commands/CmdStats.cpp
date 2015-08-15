@@ -247,35 +247,35 @@ int CmdStats::execute (std::string& output)
 
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_USED_FOR);
-    view.set (row, 1, ISO8601p (latest - earliest).format ());
+    view.set (row, 1, ISO8601p (latest - earliest).formatVague ());
   }
 
   if (totalT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_ADD_EVERY);
-    view.set (row, 1, ISO8601p (((latest - earliest) / totalT)).format ());
+    view.set (row, 1, ISO8601p (((latest - earliest) / totalT)).formatVague ());
   }
 
   if (completedT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_COMP_EVERY);
-    view.set (row, 1, ISO8601p ((latest - earliest) / completedT).format ());
+    view.set (row, 1, ISO8601p ((latest - earliest) / completedT).formatVague ());
   }
 
   if (deletedT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_DEL_EVERY);
-    view.set (row, 1, ISO8601p ((latest - earliest) / deletedT).format ());
+    view.set (row, 1, ISO8601p ((latest - earliest) / deletedT).formatVague ());
   }
 
   if (pendingT || completedT)
   {
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_AVG_PEND);
-    view.set (row, 1, ISO8601p ((int) ((daysPending / (pendingT + completedT)) * 86400)).format ());
+    view.set (row, 1, ISO8601p ((int) ((daysPending / (pendingT + completedT)) * 86400)).formatVague ());
   }
 
   if (totalT)
@@ -284,14 +284,6 @@ int CmdStats::execute (std::string& output)
     view.set (row, 0, STRING_CMD_STATS_DESC_LEN);
     view.set (row, 1, format (STRING_CMD_STATS_CHARS, (int) (descLength / totalT)));
   }
-
-/*
-  // TODO Re-enable this when 2.3 has taskd support.  Until then, it makes no
-  //      sense to include this.
-  row = view.addRow ();
-  view.set (row, 0, STRING_CMD_STATS_LAST_SYNC);
-  view.set (row, 1, "-");
-*/
 
   // If an alternating row color is specified, notify the table.
   if (context.color ())

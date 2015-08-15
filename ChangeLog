@@ -20,7 +20,7 @@
 - TW-1389 tw will import same UUID n-times if part of same import (thanks to
           Markus Beppler).
 - TW-1419 On add '-tag' is considered a tag removal, which makes no sense.
-- Tw-1426 Adding a date in 1963 (why not?) stores a negative epoch, which fails
+- TW-1426 Adding a date in 1963 (why not?) stores a negative epoch, which fails
           to export (thanks to Black Ops Testing).
 - TW-1430 Slashes in project names don't work (thanks to Richard Boß).
 - TW-1432 start/stop can be issued on completed tasks  (thanks to Renato Alves).
@@ -67,7 +67,7 @@
 - TW-1553 Setting defaultheight:0 makes burndown command hang (thanks to Tomas
           Babej).
 - TW-1555 Project Names Converted to Dates (thanks to Ryan).
-- TW‐1566 Context is applied on 'task export' (thanks to Tomas Babej).
+- TW-1566 Context is applied on 'task export' (thanks to Tomas Babej).
 - TW-1569 update wait:<wait-date> manpage entry (thanks to David Patrick).
 - TW-1572 Better urgency inheritance (thanks to Jens Erat).
 - TW-1575 `task log` mangles URLs when quoted (thanks to Luke Macken).
