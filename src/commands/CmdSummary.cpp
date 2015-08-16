@@ -170,7 +170,7 @@ int CmdSummary::execute (std::string& output)
 
       view.set (row, 1, countPending[i.first]);
       if (counter[i.first])
-        view.set (row, 2, ISO8601p ((int) (sumEntry[i.first] / (double)counter[i.first])).format ());
+        view.set (row, 2, ISO8601p ((int) (sumEntry[i.first] / (double)counter[i.first])).formatVague ());
 
       int c = countCompleted[i.first];
       int p = countPending[i.first];
