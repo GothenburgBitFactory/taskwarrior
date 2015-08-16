@@ -364,7 +364,7 @@ Task::dateState Task::getDateState (const std::string& name) const
 bool Task::is_ready () const
 {
   return getStatus () == Task::pending &&
-         !is_blocked                   &&
+         ! is_blocked                  &&
          (! has ("scheduled")          ||
           Date ("now").operator> (get_date ("scheduled")));
 }
