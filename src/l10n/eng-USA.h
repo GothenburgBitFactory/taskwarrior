@@ -932,21 +932,27 @@
   "  end:            Date task was completed/deleted\n" \
   "  start:          Date task was started\n" \
   "  scheduled:      Date task is scheduled to start\n" \
+  "  modified:       Date task was last modified\n" \
   "  depends:        Other tasks that this task depends upon\n" \
   "\n" \
   "Attribute modifiers make filters more precise.  Supported modifiers are:\n" \
-  "  before     (synonyms under, below)\n" \
-  "  after      (synonyms over, above)\n" \
-  "  none\n" \
-  "  any\n" \
-  "  is         (synonym equals)\n" \
-  "  isnt       (synonym not)\n" \
-  "  has        (synonym contains)\n" \
-  "  hasnt\n" \
-  "  startswith (synonym left)\n" \
-  "  endswith   (synonym right)\n" \
-  "  word\n" \
-  "  noword\n" \
+  "\n" \
+  "  Modifiers         Example            Equivalent           Meaning\n" \
+  "  ----------------  -----------------  -------------------  -------------------------\n" \
+  "                    due:today          due = today          Fuzzy match\n" \
+  "  not               due.not:today      due != today         Fuzzy non-match\n" \
+  "  before, below     due.before:today   due < tomorrow       Exact date comparison\n" \
+  "  after, above      due.after:today    due > tomorrow       Exact date comparison\n" \
+  "  none              project.none:      project == ''        Empty\n" \
+  "  any               project.any:       project !== ''       Not empty\n" \
+  "  is, equals        project.is:x       project == x         Exact match\n" \
+  "  isnt              project.isnt:x     project !== x        Exact non-match\n" \
+  "  has, contains     desc.has:Hello     desc ~ Hello         Pattern match\n" \
+  "  hasnt,            desc.hasnt:Hello   desc !~ Hello        Pattern non-match\n" \
+  "  startswith, left  desc.left:Hel      desc ~ '^Hel'        Beginning match\n" \
+  "  endswith, right   desc.right:llo     desc ~ 'llo$'        End match\n" \
+  "  word              desc.word:Hello    desc ~ '\\bHello\\b'   Boundaried word match\n" \
+  "  noword            desc.noword:Hello  desc !~ '\\bHello\\b'  Boundaried word non-match\n" \
   "\n" \
   "Alternately algebraic expressions support:\n" \
   "  and  or  xor            Logical operators\n" \

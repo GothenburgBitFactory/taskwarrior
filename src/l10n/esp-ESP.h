@@ -962,21 +962,27 @@
   "  end:            Fecha en la que la tarea fue completada/eliminada\n" \
   "  start:          Fecha en la que la tarea fue comenzada\n" \
   "  scheduled:      Fecha programada para que la tarea comience\n" \
+  "  modified:       Date task was last modified\n" \
   "  depends:        Otras tareas de las que esta tarea depende\n" \
   "\n" \
   "Los modificadores de atributos hacen a los filtros más precisos. Modificadores soportados son:\n" \
-  "  before     (antes de; sinónimos under, below)\n" \
-  "  after      (después de; sinónimos over, above)\n" \
-  "  none       (nada)\n" \
-  "  any        (cualquiera)\n" \
-  "  is         (es; sinónimo equals)\n" \
-  "  isnt       (no es; sinónimo not)\n" \
-  "  has        (tiene; sinónimo contains)\n" \
-  "  hasnt      (no tiene)\n" \
-  "  startswith (comienza con; sinónimo left)\n" \
-  "  endswith   (se termina con; sinónimo right)\n" \
-  "  word       (contiene palabra)\n" \
-  "  noword     (no contiene palabra)\n" \
+  "\n" \
+  "  Modifiers         Example            Equivalent           Meaning\n" \
+  "  ----------------  -----------------  -------------------  -------------------------\n" \
+  "                    due:today          due = today          Fuzzy match\n" \
+  "  not               due.not:today      due != today         Fuzzy non-match\n" \
+  "  before, below     due.before:today   due < tomorrow       Exact date comparison\n" \
+  "  after, above      due.after:today    due > tomorrow       Exact date comparison\n" \
+  "  none              project.none:      project == ''        Empty\n" \
+  "  any               project.any:       project !== ''       Not empty\n" \
+  "  is, equals        project.is:x       project == x         Exact match\n" \
+  "  isnt              project.isnt:x     project !== x        Exact non-match\n" \
+  "  has, contains     desc.has:Hello     desc ~ Hello         Pattern match\n" \
+  "  hasnt,            desc.hasnt:Hello   desc !~ Hello        Pattern non-match\n" \
+  "  startswith, left  desc.left:Hel      desc ~ '^Hel'        Beginning match\n" \
+  "  endswith, right   desc.right:llo     desc ~ 'llo$'        End match\n" \
+  "  word              desc.word:Hello    desc ~ '\\bHello\\b'   Boundaried word match\n" \
+  "  noword            desc.noword:Hello  desc !~ '\\bHello\\b'  Boundaried word non-match\n" \
   "\n" \
   "Soporte de expresiones algebraicas alternativas:\n" \
   "  and  or  xor            Operadores lógicos\n" \
