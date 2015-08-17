@@ -1246,6 +1246,9 @@ This sort order now specifies that there is a listing break between each
 project. A listing break is simply a blank line, which provides a visual
 grouping.
 
+A special sort value of "none" indicates that no sorting is required, and tasks
+will be presented in the order (if any) in which they are selected.
+
 .TP
 .B report.X.filter
 This adds a filter to the report X so that only tasks matching the filter

@@ -97,14 +97,47 @@ int CmdCustom::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
-  // Sort the tasks.
   std::vector <int> sequence;
-  for (unsigned int i = 0; i < filtered.size (); ++i)
-    sequence.push_back (i);
+  if (sortOrder.size () &&
+      sortOrder[0] == "none")
+  {
+    // If context.cli2._id_ranges is [4,3,5], yield [1,0,2], which is the sort
+    // order of the filtereed list, which will contain [3,4,5].
 
-  if (sortOrder.size () != 0 &&
-      sortOrder[0] != "none")
-    sort_tasks (filtered, sequence, reportSort);
+    sortOrder.clear ();
+    for (auto& i : context.cli2._id_ranges)
+    {
+      int first  = strtol (i.first.c_str (),  NULL, 10);
+      int second = strtol (i.second.c_str (), NULL, 10);
+
+      if (first == second)
+      {
+        //sequence.push_back (first - 1);
+        for (unsigned int t = 0; t < filtered.size (); ++t)
+          if (filtered[t].id == first)
+            sequence.push_back (t);
+      }
+      else
+      {
+        for (int id = first; id <= second; id++)
+          //sequence.push_back (id - 1);
+          for (unsigned int t = 0; t < filtered.size (); ++t)
+            if (filtered[t].id == id)
+              sequence.push_back (t);
+      }
+    }
+  }
+  else
+  {
+    // There is a sortOrder, so sorting will take place, which means the initial
+    // order of sequence is ascending.
+    for (unsigned int i = 0; i < filtered.size (); ++i)
+      sequence.push_back (i);
+
+    // Sort the tasks.
+    if (sortOrder.size ())
+      sort_tasks (filtered, sequence, reportSort);
+  }
 
   // Configure the view.
   ViewTask view;
