@@ -1427,7 +1427,8 @@ void Task::validate (bool applyDefault /* = true */)
 
   // Tasks with a wait: date get a special status.
   else if (status == Task::pending &&
-           has ("wait"))
+           has ("wait")            &&
+           get ("wait") != "")
     status = Task::waiting;
 
   // By default, tasks are pending.
