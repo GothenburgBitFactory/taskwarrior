@@ -36,18 +36,22 @@ from basetest import Task, TestCase
 
 
 class TestUnique(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t("add one project:A")
+        cls.t("add two project:A")
+        cls.t("add three project:B")
+        cls.t("add four project:C")
+        cls.t("4 delete", input="y\n")
+        cls.t("log five project:D")
+
     def setUp(self):
         """Executed before each test in the class"""
-        self.t = Task()
 
     def test_unique_projects(self):
         """Verify that unique projects are correctly counted"""
-        self.t("add one project:A")
-        self.t("add two project:A")
-        self.t("add three project:B")
-        self.t("add four project:C")
-        self.t("4 delete", input="y\n")
-        self.t("log five project:D")
 
         code, out, err = self.t("_unique project")
         self.assertIn("A", out)
@@ -60,6 +64,22 @@ class TestUnique(TestCase):
         self.assertIn("B", out)
         self.assertNotIn("C", out)
         self.assertNotIn("D", out)
+
+    def test_unique_status(self):
+        """Verify that unique status values are correctly counted"""
+        code, out, err = self.t("_unique status")
+        self.assertIn("pending",   out)
+        self.assertIn("completed", out)
+        self.assertIn("deleted",   out)
+
+    def test_unique_description(self):
+        """Verify that unique description values are correctly counted"""
+        code, out, err = self.t("_unique description")
+        self.assertIn("one",   out)
+        self.assertIn("two",   out)
+        self.assertIn("three", out)
+        self.assertIn("four",  out)
+        self.assertIn("five",  out)
 
 
 if __name__ == "__main__":
