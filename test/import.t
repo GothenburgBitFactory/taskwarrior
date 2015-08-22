@@ -285,6 +285,12 @@ class TestImportValidate(TestCase):
         code, out, err = self.t.runError("import", input=j)
         self.assertIn("Not a valid UUID", err)
 
+    def test_import_invalid_status(self):
+        """Verify invalid status is caught"""
+        j = '{"status":"foo", "description":"bad"}'
+        code, out, err = self.t.runError("import", input=j)
+        self.assertIn("The status 'foo' is not valid.", err)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
