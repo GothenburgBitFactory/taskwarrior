@@ -657,11 +657,11 @@ void CLI2::prepareFilter ()
 
     // All MISCELLANEOUS args appear after the command.
     else if (cmd                             &&
+             cmd->accepts_miscellaneous ()   &&
              ! cmd->accepts_modifications () &&
              (foundCommand ||
               (! foundCommand &&
-               ! cmd->accepts_filter () &&
-               cmd->accepts_miscellaneous ())))
+               ! cmd->accepts_filter ())))
     {
       a.tag ("MISCELLANEOUS");
       changes = true;
@@ -681,7 +681,7 @@ void CLI2::prepareFilter ()
 
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::prepareFilter categorize"));
+    context.debug (dump ("CLI2::prepareFilter"));
 
   // Remove all the syntactic sugar for FILTERs.
   lexFilterArgs ();
