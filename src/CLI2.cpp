@@ -226,15 +226,16 @@ const std::string A2::dump () const
     if (tags.length ())
       tags += ' ';
 
-         if (tag == "BINARY")       tags += "\033[1;37;44m"           + tag + "\033[0m";
-    else if (tag == "CMD")          tags += "\033[1;37;46m"           + tag + "\033[0m";
-    else if (tag == "FILTER")       tags += "\033[1;37;42m"           + tag + "\033[0m";
-    else if (tag == "MODIFICATION") tags += "\033[1;37;43m"           + tag + "\033[0m";
-    else if (tag == "RC")           tags += "\033[1;37;41m"           + tag + "\033[0m";
-    else if (tag == "CONFIG")       tags += "\033[1;37;101m"          + tag + "\033[0m";
-    else if (tag == "PSEUDO")       tags += "\033[1;37;45m"           + tag + "\033[0m";
-    else if (tag == "?")            tags += "\033[38;5;255;48;5;232m" + tag + "\033[0m";
-    else                            tags += "\033[32m"                + tag + "\033[0m";
+         if (tag == "BINARY")        tags += "\033[1;37;44m"           + tag + "\033[0m";
+    else if (tag == "CMD")           tags += "\033[1;37;46m"           + tag + "\033[0m";
+    else if (tag == "FILTER")        tags += "\033[1;37;42m"           + tag + "\033[0m";
+    else if (tag == "MODIFICATION")  tags += "\033[1;37;43m"           + tag + "\033[0m";
+    else if (tag == "MISCELLANEOUS") tags += "\033[1;37;45m"           + tag + "\033[0m";
+    else if (tag == "RC")            tags += "\033[1;37;41m"           + tag + "\033[0m";
+    else if (tag == "CONFIG")        tags += "\033[1;37;101m"          + tag + "\033[0m";
+    else if (tag == "PSEUDO")        tags += "\033[1;37;45m"           + tag + "\033[0m";
+    else if (tag == "?")             tags += "\033[38;5;255;48;5;232m" + tag + "\033[0m";
+    else                             tags += "\033[32m"                + tag + "\033[0m";
   }
 
   if (tags.length ())
