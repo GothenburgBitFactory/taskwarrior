@@ -178,7 +178,7 @@ Task::status Task::textToStatus (const std::string& input)
   else if (input[0] == 'r') return Task::recurring;
   else if (input[0] == 'w') return Task::waiting;
 
-  return Task::pending;
+  throw format (STRING_ERROR_BAD_STATUS, input);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1401,7 +1401,9 @@ void Task::substitute (
 //
 void Task::validate (bool applyDefault /* = true */)
 {
-  Task::status status = getStatus ();
+  Task::status status = Task::pending;
+  if (get ("status") != "")
+    status = getStatus ();
 
   // 1) Provide missing attributes where possible
   // Provide a UUID if necessary. Validate if present.
