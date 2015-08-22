@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <iostream> // TODO Remove
 #include <sstream>
 #include <stdlib.h>
 #include <assert.h>
@@ -1969,6 +1970,8 @@ void Task::modify (modType type, bool text_required /* = false */)
     {
       if (a._lextype == Lexer::Type::pair)
       {
+//        std::cout << "# Task::modify " << a.dump () << "\n";
+
         // 'canonical' is the canonical name. Needs to be said.
         // 'value' requires eval.
         std::string name  = a.attribute ("canonical");
@@ -1987,11 +1990,10 @@ void Task::modify (modType type, bool text_required /* = false */)
         {
           Lexer::dequote (value);
 
-          // Get the column info.
+          // Get the column info. Some columns are not modifiable.
           Column* column = context.columns[name];
-
-          // Some columns are not modifiable.
-          if (! column->modifiable ())
+          if (! column ||
+              ! column->modifiable ())
             throw format (STRING_INVALID_MOD, name, value);
 
           // Dependencies are specified as IDs.
