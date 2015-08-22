@@ -148,23 +148,17 @@ int Context::initialize (int argc, const char** argv)
 
     ////////////////////////////////////////////////////////////////////////////
     //
-    // [3] Instantiate Command objects and capture entities.
+    // [3] Instantiate Command objects and capture command entities.
     //
     ////////////////////////////////////////////////////////////////////////////
 
     Command::factory (commands);
     for (auto& cmd : commands)
-    {
       cli2.entity ("cmd", cmd.first);
-      cli2.entity ((cmd.second->read_only () ? "readcmd" : "writecmd"), cmd.first);
-
-      if (cmd.first[0] == '_')
-        cli2.entity ("helper", cmd.first);
-    }
 
     ////////////////////////////////////////////////////////////////////////////
     //
-    // [4] Instantiate Column objects and capture entities.
+    // [4] Instantiate Column objects and capture column entities.
     //
     ////////////////////////////////////////////////////////////////////////////
 

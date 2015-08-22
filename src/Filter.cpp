@@ -278,7 +278,7 @@ bool Filter::pendingOnly ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Disaster avoidance mechanism. If a WRITECMD has no filter, then it can cause
+// Disaster avoidance mechanism. If a !READONLY has no filter, then it can cause
 // all tasks to be modified. This is usually not intended.
 void Filter::safety ()
 {
