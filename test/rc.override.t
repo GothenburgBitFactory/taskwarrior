@@ -52,6 +52,24 @@ class TestOverride(TestCase):
         self.assertRegexpMatches(out, r"regex +on")
 
 
+class TestRCSegfault(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_rchyphen_before(self):
+        "rc.hyphenated before"
+        # This segfaults, ...
+        code, our, err = self.t("rc.foo-bar:1 add Sample1")
+        self.assertEqual(code, 0)
+
+    def test_rchyphen_after(self):
+        "rc.hyphenated after"
+        # ... but this passes.
+        code, our, err = self.t("add Sample1 rc.foo-bar:1")
+        self.assertEqual(code, 0)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
