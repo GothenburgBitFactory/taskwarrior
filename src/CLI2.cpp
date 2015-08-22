@@ -625,10 +625,9 @@ void CLI2::prepareFilter ()
   if (cmd && cmd->uses_context ())
     addContextFilter ();
 
-  // Classify FILTER and MODIFICATION args, based on CMD and READCMD/WRITECMD.
+  // Classify FILTER, MODIFICATION and MISCELLANEOUS args, based on CMD DNA.
   bool changes = false;
   bool foundCommand = false;
-  bool readOnly = false;
 
   for (auto& a : _args)
   {
@@ -638,8 +637,6 @@ void CLI2::prepareFilter ()
     if (a.hasTag ("CMD"))
     {
       foundCommand = true;
-      if (a.hasTag ("READCMD"))
-        readOnly = true;
     }
     else if (a.hasTag ("BINARY") ||
              a.hasTag ("RC")     ||
@@ -647,12 +644,34 @@ void CLI2::prepareFilter ()
     {
       // NOP.
     }
-    else if (foundCommand && ! readOnly)
+
+    // All MODIFICATION args appear after the command.
+    else if (cmd                           &&
+             cmd->accepts_modifications () &&
+             foundCommand)
     {
       a.tag ("MODIFICATION");
       changes = true;
     }
-    else if (!foundCommand || (foundCommand && readOnly))
+
+    // All MISCELLANEOUS args appear after the command.
+    else if (cmd                             &&
+             ! cmd->accepts_modifications () &&
+             (foundCommand ||
+              (! foundCommand &&
+               ! cmd->accepts_filter () &&
+               cmd->accepts_miscellaneous ())))
+    {
+      a.tag ("MISCELLANEOUS");
+      changes = true;
+    }
+
+    else if (cmd                                &&
+             cmd->accepts_filter ()             &&
+             (! foundCommand                    ||
+              (foundCommand                     &&
+               (! cmd->accepts_modifications () ||
+                ! cmd->accepts_miscellaneous ()))))
     {
       a.tag ("FILTER");
       changes = true;
@@ -685,8 +704,8 @@ void CLI2::prepareFilter ()
 //   - --
 const std::vector <std::string> CLI2::getWords (bool filtered)
 {
-  auto binary = getBinary ();
-  auto command = getCommand ();
+  auto binary     = getBinary ();
+  auto command    = getCommand ();
   auto commandRaw = getCommand (false);
 
   std::vector <std::string> words;
@@ -972,8 +991,15 @@ bool CLI2::findCommand ()
     a.attribute ("canonical", canonical);
     a.tag ("CMD");
 
-    bool readOnly = ! exactMatch ("writecmd", canonical);
-    a.tag (readOnly ? "READCMD" : "WRITECMD");
+    // Apply command DNA as tags.
+    Command* command = context.commands[canonical];
+    if (command->read_only ())             a.tag ("READONLY");
+    if (command->displays_id ())           a.tag ("SHOWSID");
+    if (command->needs_gc ())              a.tag ("RUNSGC");
+    if (command->uses_context ())          a.tag ("USESCONTEXT");
+    if (command->accepts_filter ())        a.tag ("ALLOWSFILTER");
+    if (command->accepts_modifications ()) a.tag ("ALLOWSMODIFICATIONS");
+    if (command->accepts_miscellaneous ()) a.tag ("ALLOWSMISC");
 
     if (context.config.getInteger ("debug.parser") >= 3)
       context.debug (dump ("CLI2::analyze findCommand"));
@@ -1371,7 +1397,7 @@ void CLI2::findIDs ()
     }
 
     // If no IDs were found, and no filter was specified, look for number/set
-    // listed as a MODIFICATION for a WRITECMD.
+    // listed as a MODIFICATION.
     std::string command = getCommand ();
 
     if (! _id_ranges.size () &&

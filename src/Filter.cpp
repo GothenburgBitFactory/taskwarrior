@@ -288,7 +288,7 @@ void Filter::safety ()
     {
       if (a.hasTag ("CMD"))
       {
-        if (a.hasTag ("WRITECMD"))
+        if (! a.hasTag ("READONLY"))
         {
           if (! context.config.getBoolean ("allow.empty.filter"))
             throw std::string (STRING_TASK_SAFETY_ALLOW);
