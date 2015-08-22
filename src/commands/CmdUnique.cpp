@@ -42,7 +42,7 @@ CmdUnique::CmdUnique ()
   _keyword               = "_unique";
   _usage                 = "task <filter> _unique <attribute>";
   _description           = STRING_CMD_UNIQUE_USAGE;
-  _read_only             = false;
+  _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
   _uses_context          = true;
@@ -63,20 +63,12 @@ int CmdUnique::execute (std::string& output)
 
   // Find <attribute>.
   std::string attribute = "";
-  for (auto& a : context.cli2._args)
-  {
-    if ((a._lextype == Lexer::Type::word ||
-         a._lextype == Lexer::Type::dom) &&
-        a.hasTag ("MODIFICATION"))
-    {
-      // Stop at first matching arg.
-      attribute = a.attribute ("raw");
-      break;
-    }
-  }
 
-  if (attribute == "")
+  // Just the first arg.
+  auto words = context.cli2.getWords ();
+  if (words.size () == 0)
     throw std::string (STRING_CMD_UNIQUE_MISSING);
+  attribute = words[0];
 
   std::string canonical;
   if (! context.cli2.canonicalize (canonical, "attribute", attribute))
