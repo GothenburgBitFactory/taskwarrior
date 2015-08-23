@@ -876,6 +876,7 @@
 #define STRING_TDB2_UNDO_COMPLETE    "Undo complete."
 #define STRING_TDB2_UNDO_SYNCED      "Cannot undo change because the task was already synced.  Modify the task instead."
 #define STRING_TDB2_DIRTY_EXIT       "Exiting with unwritten changes to {1}"
+#define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
 
 // View
 #define STRING_VIEW_TOO_SMALL        "The report has a minimum width of {1} and does not fit in the available width of {2}."

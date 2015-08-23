@@ -878,6 +878,7 @@
 #define STRING_TDB2_UNDO_COMPLETE    "Reversão concluída."
 #define STRING_TDB2_UNDO_SYNCED      "Não é possível reverter a alteração porque a tarefa já foi syncronizada. Em vez disso modifique a tarefa."
 #define STRING_TDB2_DIRTY_EXIT       "Saindo com modificações por gravar de {1}"
+#define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
 
 // View
 #define STRING_VIEW_TOO_SMALL        "O relatório tem uma largura mínima de {1} e não cabe na largura disponível {2}."

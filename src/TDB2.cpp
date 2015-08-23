@@ -1190,6 +1190,9 @@ int TDB2::gc ()
           task.set ("status", "pending");
           task.remove ("wait");
           pending_changes = true;
+
+          if (context.verbose ("unwait"))
+            context.footnote (format (STRING_TDB2_UNWAIT, task.get ("description")));
         }
 
         pending_tasks_after.push_back (task);
@@ -1229,6 +1232,9 @@ int TDB2::gc ()
           pending_tasks_after.push_back (task);
           pending_changes = true;
           completed_changes = true;
+
+          if (context.verbose ("unwait"))
+            context.footnote (format (STRING_TDB2_UNWAIT, task.get ("description")));
         }
 
         pending_tasks_after.push_back (task);

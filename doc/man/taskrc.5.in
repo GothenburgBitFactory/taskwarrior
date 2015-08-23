@@ -274,8 +274,9 @@ control specific occasions when output is generated. This list may contain:
     project    Feedback about project status changes
     sync       Feedback about sync
     filter     Shows the filter used in the command
+    unwait     Notification when a task leaves the 'waiting' state
 
-"affected", "new-id", "new-uuid" and "project" imply "footnote".
+"affected", "new-id", "new-uuid" "project" and "unwait" imply "footnote".
 
 Note that the "on" setting is equivalent to all the tokens being specified,
 and the "nothing" setting is equivalent to none of the tokens being specified.
@@ -283,7 +284,7 @@ and the "nothing" setting is equivalent to none of the tokens being specified.
 Here are the shortcut equivalents:
 
     verbose=on
-    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync
+    verbose=blank,header,footnote,label,new-id,affected,edit,special,project,sync,filter,unwait
 
     verbose=off
     verbose=blank,label,new-id,edit

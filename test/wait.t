@@ -62,6 +62,8 @@ class TestWait(TestCase):
         self.assertIn("visible", out)
         self.assertIn("hidden", out)
 
+        self.assertIn("Un-waiting task 'hidden'", err)
+
 
 class TestBug434(TestCase):
     # Bug #434: Task should not prevent users from marking as done tasks with

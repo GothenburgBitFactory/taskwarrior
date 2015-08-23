@@ -878,6 +878,7 @@
 #define STRING_TDB2_UNDO_COMPLETE    "Rückgängig machen abgeschlossen."
 #define STRING_TDB2_UNDO_SYNCED      "Kann Änderung nicht rückgängig machen, weil die Aufgabe bereits abgeglichen wurde.  Aufgabe stattdessen löschen."
 #define STRING_TDB2_DIRTY_EXIT       "Beende mit ungeschriebenen Änderungen auf {1}"
+#define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
 
 // View
 #define STRING_VIEW_TOO_SMALL        "Dieser Report hat eine Mindestbreite von {1} und passt nicht in die Bildschirmbreite von {2}."
