@@ -628,7 +628,7 @@ void CLI2::prepareFilter ()
 
   // Classify FILTER, MODIFICATION and MISCELLANEOUS args, based on CMD DNA.
   bool changes = false;
-  bool foundCommand = false;
+  bool afterCommand = false;
 
   for (auto& a : _args)
   {
@@ -637,7 +637,7 @@ void CLI2::prepareFilter ()
 
     if (a.hasTag ("CMD"))
     {
-      foundCommand = true;
+      afterCommand = true;
     }
     else if (a.hasTag ("BINARY") ||
              a.hasTag ("RC")     ||
@@ -647,21 +647,20 @@ void CLI2::prepareFilter ()
     }
 
     // All MODIFICATION args appear after the command.
-    else if (cmd                           &&
-             cmd->accepts_modifications () &&
-             foundCommand)
+    else if (cmd                             &&
+             cmd->accepts_modifications ()   &&
+             ! cmd->accepts_miscellaneous () &&
+             afterCommand)
     {
       a.tag ("MODIFICATION");
       changes = true;
     }
 
-    // All MISCELLANEOUS args appear after the command.
     else if (cmd                             &&
              cmd->accepts_miscellaneous ()   &&
              ! cmd->accepts_modifications () &&
-             (foundCommand ||
-              (! foundCommand &&
-               ! cmd->accepts_filter ())))
+             (afterCommand                   ||
+              ! cmd->accepts_filter ()))
     {
       a.tag ("MISCELLANEOUS");
       changes = true;
@@ -669,10 +668,9 @@ void CLI2::prepareFilter ()
 
     else if (cmd                                &&
              cmd->accepts_filter ()             &&
-             (! foundCommand                    ||
-              (foundCommand                     &&
-               (! cmd->accepts_modifications () ||
-                ! cmd->accepts_miscellaneous ()))))
+             (! afterCommand                    ||
+              (! cmd->accepts_modifications ()  &&
+               ! cmd->accepts_miscellaneous ())))
     {
       a.tag ("FILTER");
       changes = true;
