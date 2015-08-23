@@ -444,7 +444,7 @@ int Context::dispatch (std::string &out)
 
     // This is something that is only needed for write commands with no other
     // filter processing.
-    if (! c->read_only () &&
+    if (c->accepts_modifications () &&
         ! c->accepts_filter ())
     {
       cli2.prepareFilter ();
@@ -455,7 +455,7 @@ int Context::dispatch (std::string &out)
     // tree.
     if (config.getBoolean ("debug") &&
         config.getInteger ("debug.parser") == 1)
-      debug (cli2.dump ("Parse Tree"));
+      debug (cli2.dump ("Parse Tree (before command-specifіc processing)"));
 
     return c->execute (out);
   }
