@@ -138,6 +138,9 @@ void handleRecurrence ()
       {
         t.set ("mask", mask);
         context.tdb2.modify (t);
+
+        if (context.verbose ("recur"))
+          context.footnote (format (STRING_RECUR_CREATE, t.get ("description")));
       }
     }
 

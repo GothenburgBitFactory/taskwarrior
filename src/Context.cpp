@@ -540,7 +540,8 @@ bool Context::verbose (const std::string& token)
           v != "project"  &&  //
           v != "sync"     &&  //
           v != "filter"   &&  //
-          v != "unwait")      //
+          v != "unwait"   &&  //
+          v != "recur")       //
       {
         // This list emulates rc.verbose=off in version 1.9.4.
         verbosity = {"blank", "label", "new-id", "edit"};
@@ -551,7 +552,7 @@ bool Context::verbose (const std::string& token)
     if (! verbosity.count ("footnote"))
     {
       // TODO: Some of these may not use footnotes yet.  They should.
-      for (auto flag : {"affected", "new-id", "new-uuid", "project", "unwait"})
+      for (auto flag : {"affected", "new-id", "new-uuid", "project", "unwait", "recur"})
       {
         if (verbosity.count (flag))
         {

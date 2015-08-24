@@ -385,6 +385,22 @@ class TestUpgradeToRecurring(TestCase):
         code, out, err = self.t.runError("1 modify recur:weekly")
         self.assertIn("You cannot specify a recurring task without a due date.", err)
 
+class TestRecurrenceNotification(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_notification(self):
+        """Test notification on task creation"""
+
+        self.t("add foo due:eow recur:daily")
+
+        code, out, err = self.t("list")
+        self.assertIn("Creating recurring task instance 'foo'", err)
+
+        code, out, err = self.t("list")
+        self.assertNotIn("Creating recurring task instance 'foo'", err)
+
 
 # TODO Wait a recurring task
 # TODO Downgrade a recurring task to a regular task

@@ -79,7 +79,7 @@ std::string Config::_defaults =
   "#verbose=no                                    # Provide regular feedback\n"
   "#verbose=nothing                               # Provide no feedback\n"
   "#                                              # Comma-separated list.  May contain any subset of:\n"
-  "#verbose=blank,header,footnote,label,new-id,new-uuid,affected,edit,special,project,sync,filter,unwait\n"
+  "#verbose=blank,header,footnote,label,new-id,new-uuid,affected,edit,special,project,sync,filter,unwait,recur\n"
   "confirmation=yes                               # Confirmation on delete, big changes\n"
   "recurrence=yes                                 # Enable recurrence\n"
   "recurrence.confirmation=prompt                 # Confirmation for propagating changes among recurring tasks (yes/no/prompt)\n"

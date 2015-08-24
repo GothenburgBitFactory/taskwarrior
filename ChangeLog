@@ -159,6 +159,10 @@
 - Improved feedback for tasks that do not have ID (thanks to Tomas Babej).
 - Comma-separated lists of UUIDs can no longer be used as a filter. Use the
   space character instead.
+- New 'recur' verbosity token generates a notification message when a recurring
+  task is created.
+- New 'unwait' verbosity token generates a notification message when a waiting
+  task becomes visible.
 
 ------ current release ---------------------------
 

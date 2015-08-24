@@ -893,6 +893,9 @@
 #define STRING_TDB2_DIRTY_EXIT       "Saliendo con cambios sin escribir a {1}"
 #define STRING_TDB2_UNWAIT           "Un-waiting task '{1}'"
 
+// recur.cpp
+#define STRING_RECUR_CREATE          "Creating recurring task instance '{1}'"
+
 // View
 #define STRING_VIEW_TOO_SMALL        "El informe tiene una anchura mínima de {1} y no cabe en la disponible, que es {2}."
 

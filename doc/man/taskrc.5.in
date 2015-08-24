@@ -275,6 +275,7 @@ control specific occasions when output is generated. This list may contain:
     sync       Feedback about sync
     filter     Shows the filter used in the command
     unwait     Notification when a task leaves the 'waiting' state
+    recur      Notification when a new recurrign task instance is created
 
 "affected", "new-id", "new-uuid" "project" and "unwait" imply "footnote".
 

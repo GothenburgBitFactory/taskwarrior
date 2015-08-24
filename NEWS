@@ -21,6 +21,10 @@ New configuration options in Taskwarrior 2.4.5
     not have a value for the UDA '<name>'.
   - A Cygwin fix means that now we can default 'search.case.sensitive' to 'yes',
     and all platforms are again equal.
+  - The new 'recur' verbosity token generates a message when a recurring task is
+    generated.
+  - The new 'unwait' verbosity token generates a message when a waiting task
+    becomes visible.
 
 Newly deprecated features in Taskwarrior 2.4.5
 
