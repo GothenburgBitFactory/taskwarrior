@@ -101,31 +101,14 @@ int CmdCustom::execute (std::string& output)
   if (sortOrder.size () &&
       sortOrder[0] == "none")
   {
-    // If context.cli2._id_ranges is [4,3,5], yield [1,0,2], which is the sort
-    // order of the filtereed list, which will contain [3,4,5].
-
+    // Assemble a sequence vector that represents the tasks listed in
+    // context.cli2._uuid_ranges, in the order in which they appear. This
+    // equates to no sorting, just a specified order.
     sortOrder.clear ();
-    for (auto& i : context.cli2._id_ranges)
-    {
-      int first  = strtol (i.first.c_str (),  NULL, 10);
-      int second = strtol (i.second.c_str (), NULL, 10);
-
-      if (first == second)
-      {
-        //sequence.push_back (first - 1);
-        for (unsigned int t = 0; t < filtered.size (); ++t)
-          if (filtered[t].id == first)
-            sequence.push_back (t);
-      }
-      else
-      {
-        for (int id = first; id <= second; id++)
-          //sequence.push_back (id - 1);
-          for (unsigned int t = 0; t < filtered.size (); ++t)
-            if (filtered[t].id == id)
-              sequence.push_back (t);
-      }
-    }
+    for (auto& i : context.cli2._uuid_list)
+      for (unsigned int t = 0; t < filtered.size (); ++t)
+        if (filtered[t].get ("uuid") == i)
+          sequence.push_back (t);
   }
   else
   {
