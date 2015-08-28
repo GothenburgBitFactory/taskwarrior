@@ -72,6 +72,7 @@ int CmdColumns::execute (std::string& output)
   ViewText formats;
   formats.width (context.getWidth ());
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_COLUMN));
+  formats.add (Column::factory ("string", STRING_COLUMN_LABEL_TYPE));
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_STYLES));
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_EXAMPLES));
 
@@ -94,19 +95,21 @@ int CmdColumns::execute (std::string& output)
       {
         int row = formats.addRow ();
         formats.set (row, 0, i == 0 ? name : "");
-        formats.set (row, 1, styles[i] + (i == 0 ? "*" : ""));
-        formats.set (row, 2, i < examples.size () ? examples[i] : "");
+        formats.set (row, 1, i == 0 ? context.columns[name]->type () : "");
+        formats.set (row, 2, styles[i] + (i == 0 ? "*" : ""));
+        formats.set (row, 3, i < examples.size () ? examples[i] : "");
       }
     }
   }
 
   int row = formats.addRow ();
   formats.set (row, 0, "<uda>");
-  formats.set (row, 1, "default*");
+  formats.set (row, 1, "<type>");
+  formats.set (row, 2, "default*");
 
   row = formats.addRow ();
   formats.set (row, 0, "");
-  formats.set (row, 1, "indicator");
+  formats.set (row, 2, "indicator");
 
   output = optionalBlankLine ()
          + formats.render ()
