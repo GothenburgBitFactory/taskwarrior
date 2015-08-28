@@ -219,6 +219,16 @@ bool Filter::hasModifications ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Filter::hasMiscellaneous ()
+{
+  for (auto& a : context.cli2._args)
+    if (a.hasTag ("MISCELLANEOUS"))
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // If the filter contains no 'or', 'xor' or 'not' operators, and only includes
 // status values 'pending', 'waiting' or 'recurring', then the filter is
 // guaranteed to only need data from pending.data.

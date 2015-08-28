@@ -44,6 +44,7 @@ public:
   void subset (std::vector <Task>&);
   bool hasFilter ();
   bool hasModifications ();
+  bool hasMiscellaneous ();
   bool pendingOnly ();
   void safety ();
   void disableSafety ();
