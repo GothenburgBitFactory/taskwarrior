@@ -127,6 +127,8 @@
           to Daniel Shahaf).
 - TW-1664 Notify of waiting→pending promotion (thanks to Daniel Shahaf).
 - TW-1666 import should reject invalid data (thanks to Daniel Shahaf).
+- TW-1670 Reversed ranges are parsed as a mathematician would expect (thanks to
+          Daniel Shahaf).
 - TW-1671 task add: segfault with foo-bar:1 (thanks to Daniel Shahaf).
 - TW-1675 project.not:something doesn't exclude project:something.subprojects
           (thanks to Ander).

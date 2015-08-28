@@ -1619,11 +1619,19 @@ void CLI2::insertIDExpr ()
           }
           else
           {
+            bool ascending = true;
+            int low  = strtol (r->first.c_str (),  NULL, 10);
+            int high = strtol (r->second.c_str (), NULL, 10);
+            if (low <= high)
+              ascending = true;
+            else
+              ascending = false;
+
             reconstructed.push_back (openParen);
             reconstructed.push_back (argID);
             reconstructed.push_back (opGTE);
 
-            A2 startValue (r->first, Lexer::Type::number);
+            A2 startValue ((ascending ? r->first : r->second), Lexer::Type::number);
             startValue.tag ("FILTER");
             reconstructed.push_back (startValue);
 
@@ -1631,7 +1639,7 @@ void CLI2::insertIDExpr ()
             reconstructed.push_back (argID);
             reconstructed.push_back (opLTE);
 
-            A2 endValue (r->second, Lexer::Type::number);
+            A2 endValue ((ascending ? r->second : r->first), Lexer::Type::number);
             endValue.tag ("FILTER");
             reconstructed.push_back (endValue);
 
