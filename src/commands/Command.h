@@ -56,7 +56,7 @@ public:
   {
     unassigned,
     // In presentation ("usefulness") order: frequently-used categories first.
-    interrogator,
+    metadata,
     report,
     operation,
     context,

@@ -50,7 +50,7 @@ CmdTags::CmdTags ()
   _accepts_filter        = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::interrogator;
+  _category              = Command::Category::metadata;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

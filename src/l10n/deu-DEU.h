@@ -232,12 +232,12 @@
 #define STRING_COLUMN_LABEL_COMMAND  "Command"
 #define STRING_COLUMN_LABEL_CATEGORY "Category"
 #define STRING_COLUMN_LABEL_RO       "R/W"
-#define STRING_COLUMN_LABEL_SHOWS_ID "ID?"
-#define STRING_COLUMN_LABEL_GC       "GC?"
-#define STRING_COLUMN_LABEL_CONTEXT  "Context?"
-#define STRING_COLUMN_LABEL_FILTER   "Filter?"
-#define STRING_COLUMN_LABEL_MODS     "Mods?"
-#define STRING_COLUMN_LABEL_MISC     "Other?"
+#define STRING_COLUMN_LABEL_SHOWS_ID "ID"
+#define STRING_COLUMN_LABEL_GC       "GC"
+#define STRING_COLUMN_LABEL_CONTEXT  "Context"
+#define STRING_COLUMN_LABEL_FILTER   "Filter"
+#define STRING_COLUMN_LABEL_MODS     "Mods"
+#define STRING_COLUMN_LABEL_MISC     "Misc"
 
 // Column Examples
 #define STRING_COLUMN_EXAMPLES_TAGS  "Haus @Hausarbeit next"

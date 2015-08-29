@@ -199,7 +199,7 @@ const std::map <Command::Category, std::string> Command::categoryNames =
 {
   // These strings are intentionally not l10n'd: they are used as identifiers.
    {Command::Category::unassigned,   "unassigned"} // should never happen
-  ,{Command::Category::interrogator, "interrogator"}
+  ,{Command::Category::metadata,     "metadata"}
   ,{Command::Category::report,       "report"}
   ,{Command::Category::operation,    "operation"}
   ,{Command::Category::context,      "context"}

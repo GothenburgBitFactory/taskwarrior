@@ -51,7 +51,7 @@ CmdCommands::CmdCommands ()
   _accepts_filter        = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category              = Command::Category::interrogator;
+  _category              = Command::Category::metadata;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +68,7 @@ int CmdCommands::execute (std::string& output)
   view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_FILTER));
   view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_MODS));
   view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_MISC));
+  view.add (Column::factory ("string.left",  STRING_COLUMN_LABEL_DESC));
 
   Color label (context.config.get ("color.label"));
   view.colorHeader (label);
@@ -98,16 +99,18 @@ int CmdCommands::execute (std::string& output)
       view.set (row, 4, "GC");
 
     if (command.second->uses_context ())
-      view.set (row, 5, "Context");
+      view.set (row, 5, "Ctxt");
 
     if (command.second->accepts_filter ())
-      view.set (row, 6, "Filter");
+      view.set (row, 6, "Filt");
 
     if (command.second->accepts_modifications ())
-      view.set (row, 7, "Modifications");
+      view.set (row, 7, "Mods");
 
     if (command.second->accepts_miscellaneous ())
-      view.set (row, 8, "Args");
+      view.set (row, 8, "Misc");
+
+    view.set (row, 9, command.second->description ());
   }
 
   output = optionalBlankLine ()
