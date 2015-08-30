@@ -223,6 +223,16 @@ class TestImport(TestCase):
         for _uuid in ["a1111111-a111-a111-a111-a11111111111","a2222222-a222-a222-a222-a22222222222"]:
             self.assertTrue((_t["depends"][0] == _uuid) or (_t["depends"][1] == _uuid))
 
+    def test_import_same_task_twice(self):
+        """Test import same task twice"""
+        _data = """{"uuid":"a1111111-a222-a333-a444-a55555555555","description":"data4"}"""
+        self.t("import", input=_data)
+        code, out1, err = self.t("export")
+        self.t.faketime('+1s')
+        self.t("import", input=_data)
+        code, out2, err = self.t("export")
+        self.assertEqual(out1, out2)
+
 
 class TestImportExportRoundtrip(TestCase):
     def setUp(self):
