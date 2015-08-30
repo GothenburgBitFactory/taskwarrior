@@ -19,8 +19,9 @@ function setup_taskrc {
        fi
     done
 
-    echo 'data.location=.'                 > taskrc
-    echo 'confirmation=off'               >> taskrc
+    export TASKDATA=.
+
+    echo 'confirmation=off'               > taskrc
     echo 'dateformat=m/d/Y'               >> taskrc
     echo 'color.debug=rgb025'             >> taskrc
     echo 'color.header=rgb025'            >> taskrc
