@@ -275,7 +275,7 @@ control specific occasions when output is generated. This list may contain:
     sync       Feedback about sync
     filter     Shows the filter used in the command
     unwait     Notification when a task leaves the 'waiting' state
-    recur      Notification when a new recurrign task instance is created
+    recur      Notification when a new recurring task instance is created
 
 "affected", "new-id", "new-uuid" "project" and "unwait" imply "footnote".
 
@@ -1407,7 +1407,7 @@ Context setting is a mechanism which allows the user to set a permanent filter,
 thus avoiding the need to specify one filter repeatedly. More details on usage
 can be found in the task(1) man page.
 
-The current context is stored in the taskrc file, along with definitions for
+The current context is stored in the .taskrc file, along with definitions for
 all user provided contexts.
 
 .TP
