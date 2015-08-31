@@ -1288,6 +1288,13 @@ int TDB2::next_id ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Latest ID is that of the last pending task.
+int TDB2::latest_id ()
+{
+  return _id - 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 const std::vector <Task> TDB2::all_tasks ()
 {
   std::vector <Task> all (pending._tasks.size () +

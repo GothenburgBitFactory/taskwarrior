@@ -1196,8 +1196,9 @@ bool Task::hasTag (const std::string& tag) const
   if (tag == "PENDING")   return get ("status") == "pending";
   if (tag == "COMPLETED") return get ("status") == "completed";
   if (tag == "DELETED")   return get ("status") == "deleted";
-  if (tag == "UDA")       return is_udaPresent();
-  if (tag == "ORPHAN")    return is_orphanPresent();
+  if (tag == "UDA")       return is_udaPresent ();
+  if (tag == "ORPHAN")    return is_orphanPresent ();
+  if (tag == "LATEST")    return id == context.tdb2.latest_id ();
 
   // Concrete tags.
   std::vector <std::string> tags;

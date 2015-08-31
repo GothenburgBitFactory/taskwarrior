@@ -107,6 +107,7 @@ public:
   void revert ();
   int  gc ();
   int  next_id ();
+  int  latest_id ();
 
   // Generalized task accessors.
   const std::vector <Task> all_tasks ();

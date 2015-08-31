@@ -337,6 +337,7 @@ int CmdInfo::execute (std::string& output)
       if (task.hasTag ("WEEK"))      virtualTags += "WEEK ";
       if (task.hasTag ("YEAR"))      virtualTags += "YEAR ";
       if (task.hasTag ("YESTERDAY")) virtualTags += "YESTERDAY ";
+      if (task.hasTag ("LATEST"))    virtualTags += "LATEST ";
       // If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
 
       row = view.addRow ();
