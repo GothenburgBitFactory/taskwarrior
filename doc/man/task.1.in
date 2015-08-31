@@ -665,11 +665,14 @@ are:
     DELETED      Matches if the task has deleted status
     DUE          Matches if the task is due
     DUETODAY     Matches if the task is due today
+    LATEST       Matches if the task is the newest added task
     MONTH        Matches if the task is due this month
     ORPHAN       Matches if the task has any orphaned UDA values
     OVERDUE      Matches if the task is overdue
     PARENT       Matches if the task is a parent
     PENDING      Matches if the task has pending status
+    PRIORITY     Matches if the task has a priority
+    PROJECT      Matches if the task has a project
     READY        Matches if the task is actionable
     SCHEDULED    Matches if the task is scheduled
     TAGGED       Matches if the task has tags
@@ -682,6 +685,7 @@ are:
     WEEK         Matches if the task is due this week
     YEAR         Matches if the task is due this year
     YESTERDAY    Matches if the task was due sometime yesterday
+
 .\" If you update the above list, update src/commands/CmdInfo.cpp and src/commands/CmdTags.cpp as well.
 
 You can use +BLOCKED to filter blocked tasks, or -BLOCKED for unblocked tasks.

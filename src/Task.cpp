@@ -32,6 +32,7 @@
 #include <string>
 #ifdef PRODUCT_TASKWARRIOR
 #include <math.h>
+#include <ctype.h>
 #include <cfloat>
 #endif
 #include <algorithm>
@@ -1170,35 +1171,40 @@ bool Task::hasTag (const std::string& tag) const
   // Synthetic tags - dynamically generated, but do not occupy storage space.
   // Note: This list must match that in CmdInfo::execute.
   // Note: This list must match that in ::feedback_reserved_tags.
-  if (tag == "BLOCKED")   return is_blocked;
-  if (tag == "UNBLOCKED") return !is_blocked;
-  if (tag == "BLOCKING")  return is_blocking;
+  if (isupper (tag[0]))
+  {
+    if (tag == "BLOCKED")   return is_blocked;
+    if (tag == "UNBLOCKED") return !is_blocked;
+    if (tag == "BLOCKING")  return is_blocking;
 #ifdef PRODUCT_TASKWARRIOR
-  if (tag == "READY")     return is_ready ();
-  if (tag == "DUE")       return is_due ();
-  if (tag == "DUETODAY")  return is_duetoday ();
-  if (tag == "TODAY")     return is_duetoday ();
-  if (tag == "YESTERDAY") return is_dueyesterday ();
-  if (tag == "TOMORROW")  return is_duetomorrow ();
-  if (tag == "OVERDUE")   return is_overdue ();
-  if (tag == "WEEK")      return is_dueweek ();
-  if (tag == "MONTH")     return is_duemonth ();
-  if (tag == "YEAR")      return is_dueyear ();
+    if (tag == "READY")     return is_ready ();
+    if (tag == "DUE")       return is_due ();
+    if (tag == "DUETODAY")  return is_duetoday ();
+    if (tag == "TODAY")     return is_duetoday ();
+    if (tag == "YESTERDAY") return is_dueyesterday ();
+    if (tag == "TOMORROW")  return is_duetomorrow ();
+    if (tag == "OVERDUE")   return is_overdue ();
+    if (tag == "WEEK")      return is_dueweek ();
+    if (tag == "MONTH")     return is_duemonth ();
+    if (tag == "YEAR")      return is_dueyear ();
 #endif
-  if (tag == "ACTIVE")    return has ("start");
-  if (tag == "SCHEDULED") return has ("scheduled");
-  if (tag == "CHILD")     return has ("parent");
-  if (tag == "UNTIL")     return has ("until");
-  if (tag == "ANNOTATED") return hasAnnotations ();
-  if (tag == "TAGGED")    return has ("tags");
-  if (tag == "PARENT")    return has ("mask");
-  if (tag == "WAITING")   return get ("status") == "waiting";
-  if (tag == "PENDING")   return get ("status") == "pending";
-  if (tag == "COMPLETED") return get ("status") == "completed";
-  if (tag == "DELETED")   return get ("status") == "deleted";
-  if (tag == "UDA")       return is_udaPresent ();
-  if (tag == "ORPHAN")    return is_orphanPresent ();
-  if (tag == "LATEST")    return id == context.tdb2.latest_id ();
+    if (tag == "ACTIVE")    return has ("start");
+    if (tag == "SCHEDULED") return has ("scheduled");
+    if (tag == "CHILD")     return has ("parent");
+    if (tag == "UNTIL")     return has ("until");
+    if (tag == "ANNOTATED") return hasAnnotations ();
+    if (tag == "TAGGED")    return has ("tags");
+    if (tag == "PARENT")    return has ("mask");
+    if (tag == "WAITING")   return get ("status") == "waiting";
+    if (tag == "PENDING")   return get ("status") == "pending";
+    if (tag == "COMPLETED") return get ("status") == "completed";
+    if (tag == "DELETED")   return get ("status") == "deleted";
+    if (tag == "UDA")       return is_udaPresent ();
+    if (tag == "ORPHAN")    return is_orphanPresent ();
+    if (tag == "LATEST")    return id == context.tdb2.latest_id ();
+    if (tag == "PROJECT")   return has ("project");
+    if (tag == "PRIORITY")  return has ("priority");
+  }
 
   // Concrete tags.
   std::vector <std::string> tags;

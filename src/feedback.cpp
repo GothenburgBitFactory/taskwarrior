@@ -357,30 +357,35 @@ void feedback_reserved_tags (const std::string& tag)
 {
   // Note: This list must match that in Task::hasTag.
   // Note: This list must match that in CmdInfo::execute.
-  if (tag == "BLOCKED"   ||
-      tag == "UNBLOCKED" ||
+  if (tag == "ACTIVE"    ||
+      tag == "ANNOTATED" ||
+      tag == "BLOCKED"   ||
       tag == "BLOCKING"  ||
-      tag == "READY"     ||
+      tag == "CHILD"     ||
+      tag == "COMPLETED" ||
+      tag == "DELETED"   ||
       tag == "DUE"       ||
       tag == "DUETODAY"  ||
-      tag == "TODAY"     ||
-      tag == "YESTERDAY" ||
-      tag == "TOMORROW"  ||
-      tag == "OVERDUE"   ||
-      tag == "WEEK"      ||
+      tag == "LATEST"    ||
       tag == "MONTH"     ||
-      tag == "YEAR"      ||
-      tag == "ACTIVE"    ||
-      tag == "SCHEDULED" ||
-      tag == "CHILD"     ||
-      tag == "UNTIL"     ||
-      tag == "ANNOTATED" ||
-      tag == "TAGGED"    ||
+      tag == "ORPHAN"    ||
+      tag == "OVERDUE"   ||
       tag == "PARENT"    ||
-      tag == "WAITING"   ||
       tag == "PENDING"   ||
-      tag == "COMPLETED" ||
-      tag == "DELETED")
+      tag == "PRIORITY"  ||
+      tag == "PROJECT"   ||
+      tag == "READY"     ||
+      tag == "SCHEDULED" ||
+      tag == "TAGGED"    ||
+      tag == "TODAY"     ||
+      tag == "TOMORROW"  ||
+      tag == "UDA"       ||
+      tag == "UNBLOCKED" ||
+      tag == "UNTIL"     ||
+      tag == "WAITING"   ||
+      tag == "WEEK"      ||
+      tag == "YEAR"      ||
+      tag == "YESTERDAY")
   {
     throw format (STRING_FEEDBACK_TAG_VIRTUAL, tag);
   }

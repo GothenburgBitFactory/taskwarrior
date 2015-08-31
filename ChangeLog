@@ -153,7 +153,7 @@
   Shahaf).
 - When multiple tasks are 'edit'ed, a failure causes the editing to stop (thanks
   to Daniel Shahaf).
-- New 'UDA' and 'ORPHAN' virtual tags.
+- New 'UDA', 'ORPHAN', 'PROJECT', 'PRIORITY' and 'LATEST' virtual tags.
 - Commands that do not accept filters or modifications now generate an error
   when extra arguments are specified.
 - Improved zsh support (thanks to Daniel Shahaf).
