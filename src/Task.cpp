@@ -80,7 +80,6 @@ float Task::urgencyWaitingCoefficient     = 0.0;
 float Task::urgencyBlockedCoefficient     = 0.0;
 float Task::urgencyAnnotationsCoefficient = 0.0;
 float Task::urgencyTagsCoefficient        = 0.0;
-float Task::urgencyNextCoefficient        = 0.0;
 float Task::urgencyDueCoefficient         = 0.0;
 float Task::urgencyBlockingCoefficient    = 0.0;
 float Task::urgencyAgeCoefficient         = 0.0;
@@ -1715,7 +1714,6 @@ float Task::urgency_c () const
   value += fabsf (Task::urgencyBlockedCoefficient)     > epsilon ? (urgency_blocked ()     * Task::urgencyBlockedCoefficient)     : 0.0;
   value += fabsf (Task::urgencyAnnotationsCoefficient) > epsilon ? (urgency_annotations () * Task::urgencyAnnotationsCoefficient) : 0.0;
   value += fabsf (Task::urgencyTagsCoefficient)        > epsilon ? (urgency_tags ()        * Task::urgencyTagsCoefficient)        : 0.0;
-  value += fabsf (Task::urgencyNextCoefficient)        > epsilon ? (urgency_next ()        * Task::urgencyNextCoefficient)        : 0.0;
   value += fabsf (Task::urgencyDueCoefficient)         > epsilon ? (urgency_due ()         * Task::urgencyDueCoefficient)         : 0.0;
   value += fabsf (Task::urgencyBlockingCoefficient)    > epsilon ? (urgency_blocking ()    * Task::urgencyBlockingCoefficient)    : 0.0;
   value += fabsf (Task::urgencyAgeCoefficient)         > epsilon ? (urgency_age ()         * Task::urgencyAgeCoefficient)         : 0.0;
@@ -1898,15 +1896,6 @@ float Task::urgency_tags () const
   case 2:  return 0.9;
   default: return 1.0;
   }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-float Task::urgency_next () const
-{
-  if (hasTag ("next"))
-    return 1.0;
-
-  return 0.0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

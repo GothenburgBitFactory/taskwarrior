@@ -432,7 +432,6 @@ int CmdInfo::execute (std::string& output)
       urgencyTerm (urgencyDetails, "blocking",    task.urgency_blocking (),    Task::urgencyBlockingCoefficient);
       urgencyTerm (urgencyDetails, "annotations", task.urgency_annotations (), Task::urgencyAnnotationsCoefficient);
       urgencyTerm (urgencyDetails, "tags",        task.urgency_tags (),        Task::urgencyTagsCoefficient);
-      urgencyTerm (urgencyDetails, "next",        task.urgency_next (),        Task::urgencyNextCoefficient);
       urgencyTerm (urgencyDetails, "due",         task.urgency_due (),         Task::urgencyDueCoefficient);
       urgencyTerm (urgencyDetails, "age",         task.urgency_age (),         Task::urgencyAgeCoefficient);
 

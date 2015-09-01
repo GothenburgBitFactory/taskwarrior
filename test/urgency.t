@@ -51,7 +51,7 @@ class TestUrgency(TestCase):
         cls.t.config("urgency.annotations.coefficient",          "10")
         cls.t.config("urgency.tags.coefficient",                 "10")
         cls.t.config("urgency.waiting.coefficient",              "-10")
-        cls.t.config("urgency.next.coefficient",                 "10")
+        cls.t.config("urgency.user.tag.next.coefficient",        "10")
         cls.t.config("urgency.user.project.PROJECT.coefficient", "10")
         cls.t.config("urgency.user.tag.TAG.coefficient",         "10")
         cls.t.config("confirmation",                             "off")

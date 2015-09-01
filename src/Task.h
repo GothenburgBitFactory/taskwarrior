@@ -51,7 +51,6 @@ public:
   static float urgencyBlockedCoefficient;
   static float urgencyAnnotationsCoefficient;
   static float urgencyTagsCoefficient;
-  static float urgencyNextCoefficient;
   static float urgencyDueCoefficient;
   static float urgencyBlockingCoefficient;
   static float urgencyAgeCoefficient;
@@ -174,7 +173,6 @@ public:
   float urgency_inherit () const;
   float urgency_annotations () const;
   float urgency_tags () const;
-  float urgency_next () const;
   float urgency_due () const;
   float urgency_blocking () const;
   float urgency_age () const;

@@ -140,7 +140,7 @@ std::string Config::_defaults =
   "dependency.confirmation=on                     # Should dependency chain repair be confirmed?\n"
   "\n"
   "# Urgency Coefficients\n"
-  "urgency.next.coefficient=15.0                  # Urgency coefficient for 'next' special tag\n"
+  "urgency.user.tag.next.coefficient=15.0         # Urgency coefficient for 'next' special tag\n"
   "urgency.due.coefficient=12.0                   # Urgency coefficient for due dates\n"
   "urgency.blocking.coefficient=8.0               # Urgency coefficient for blocking tasks\n"
   "urgency.active.coefficient=4.0                 # Urgency coefficient for active tasks\n"

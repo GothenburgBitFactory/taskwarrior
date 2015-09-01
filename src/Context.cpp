@@ -658,7 +658,6 @@ void Context::staticInitialization ()
   Task::urgencyBlockedCoefficient     = config.getReal ("urgency.blocked.coefficient");
   Task::urgencyAnnotationsCoefficient = config.getReal ("urgency.annotations.coefficient");
   Task::urgencyTagsCoefficient        = config.getReal ("urgency.tags.coefficient");
-  Task::urgencyNextCoefficient        = config.getReal ("urgency.next.coefficient");
   Task::urgencyDueCoefficient         = config.getReal ("urgency.due.coefficient");
   Task::urgencyBlockingCoefficient    = config.getReal ("urgency.blocking.coefficient");
   Task::urgencyAgeCoefficient         = config.getReal ("urgency.age.coefficient");
