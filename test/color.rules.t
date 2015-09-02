@@ -38,7 +38,7 @@ from basetest import Task, TestCase
 class TestColorRules(TestCase):
     @classmethod
     def setUpClass(cls):
-        """Executed once before any test in the class"""
+        """Executed only once, during class setup"""
         cls.t = Task()
 
         # Controlling peripheral color.
@@ -210,6 +210,41 @@ class TestColorRules(TestCase):
         """UDA Value color rule."""
         code, out, err = self.t('/uda_xxx_4/ rc.color.uda.xxx= info')
         self.assertIn('\x1b[34m', out)
+
+class TestColorRulesMerging(TestCase):
+
+    def setUp(self):
+        """Executed before every test in the class"""
+        self.t = Task()
+
+        # Controlling peripheral color.
+        self.t.config('_forcecolor',           'on')
+        self.t.config('fontunderline',         'off')        # label underlining complicates the tests.
+        self.t.config('color.alternate',       '')           # alternating color complicateѕ the tests.
+        self.t.config('default.command',       'list')
+
+        # Color rules. Only due and tagged affect resulting color.
+        self.t.config('color.due', 'red')
+        self.t.config('color.tagged','on white')
+        self.t.config('rule.color.precedence', 'due,tagged')
+
+        self.t('add due:today +home hometask')  # Task that matches both color rules
+
+    def test_colors_merge(self):
+        """Tests whether colors merge"""
+        code, out, err = self.t('hometask')
+
+        self.assertIn('\x1b[38;5;160', out)  # Red foreground applied
+        self.assertIn('\x1b[48;5;7', out)    # White background applied
+
+    def test_colors_merge_off(self):
+        """No color merge behaviour with rule.color.merge=no"""
+        self.t.config('rule.color.merge', 'no')
+
+        code, out, err = self.t('hometask')
+
+        self.assertIn('\x1b[38;5;160', out)  # Red foreground applied
+        self.assertNotIn('\x1b[48;5;7', out) # White background not applied
 
 
 if __name__ == "__main__":
