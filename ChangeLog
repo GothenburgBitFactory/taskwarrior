@@ -130,6 +130,7 @@
           David Patrick).
 - TW-1655 Inform "No changes made." when quitting early due to signal (thanks
           to Daniel Shahaf).
+- TW-1660 Disabled sorting option (thanks to David Patrick).
 - TW-1664 Notify of waiting→pending promotion (thanks to Daniel Shahaf).
 - TW-1666 import should reject invalid data (thanks to Daniel Shahaf).
 - TW-1670 Reversed ranges are parsed as a mathematician would expect (thanks to
