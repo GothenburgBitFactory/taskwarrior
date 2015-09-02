@@ -89,6 +89,8 @@
 - TW-1612 Spurious whitespace added in task descriptions around certain symbols
           (thanks to Denis Kasak).
 - TW-1615 Japanese translation for Taskwarrior(150513) (thanks to ribbon).
+- TW-1616 Intermittent lengthy delay when starting or completing a task (thanks
+          to Jeremy John Reeder).
 - TW-1617 Can't search for multi-word project (thanks to Audrey Easterday).
 - TW-1619 fish completion contain backspaces in fish master version (thanks to
           Johannes Wienke₎.
