@@ -661,6 +661,11 @@ const int Config::getInteger (const std::string& key)
 ////////////////////////////////////////////////////////////////////////////////
 const double Config::getReal (const std::string& key)
 {
+  //NOTE: Backwards compatible handling of next coefficient.
+  //TODO: Remove.
+  if (key == "urgency.user.tag.next.coefficient" and has("urgency.next.coefficient"))
+    return getReal("urgency.next.coefficient");
+
   if ((*this).find (key) != (*this).end ())
     return strtod ((*this)[key].c_str (), NULL);
 
