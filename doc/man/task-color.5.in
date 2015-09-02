@@ -240,6 +240,9 @@ It is possible to create a very colorful mix of rules.  With 256-color support,
 those colors can be made subtle, and complementary, but without care, this can
 be a visual mess.  Beware!
 
+In such cases, consider using the 'rule.color.merge=no' option to disable the
+color blending.
+
 The precedence for the color rules is determined by the configuration
 variable 'rule.precedence.color', which by default contains:
 

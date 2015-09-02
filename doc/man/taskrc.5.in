@@ -881,6 +881,22 @@ nothing, for example:
 .RE
 .RE
 
+.RS
+By default, colors produced by rules blend. This has the advantage of
+conveying additional information, by producing combinations that are not used
+by any particular rule directly.
+
+However, color blending can produce highlighting combinations which are not
+desired. In such cases, use the following option to disable this behaviour:
+.RE
+
+.TP
+.B rule.color.merge=yes
+Can be "yes" or "no". When "no", disables merging of colors produced by
+different color rules. Use if your color scheme produces unpleasing
+foreground and background combinations.
+
+
 See the task-color(5) man pages for color details.
 .RE
 

@@ -25,6 +25,9 @@ New configuration options in Taskwarrior 2.4.5
     generated.
   - The new 'unwait' verbosity token generates a message when a waiting task
     becomes visible.
+  - The new 'rule.color.merge' configuration option can disable merging of colors
+    produced by different color rules. Use if your color scheme produces
+    unpleasing foreground and background combinations.
 
 Newly deprecated features in Taskwarrior 2.4.5
 
