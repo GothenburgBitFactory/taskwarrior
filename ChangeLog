@@ -17,6 +17,8 @@
           (thanks to Onion).
 - TW-1344 Filter due:yyyy-mm-dd is failing to display daily recurring tasks if
           there is deleted task in the series.(thanks to Svetoslav Trochev).
+- TW-1375 Use of ^ in regex parsed as exponentiate operator (thanks to
+          lolilolicon).
 - TW-1389 tw will import same UUID n-times if part of same import (thanks to
           Markus Beppler).
 - TW-1419 On add '-tag' is considered a tag removal, which makes no sense.
