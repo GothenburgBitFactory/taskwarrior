@@ -447,35 +447,19 @@ std::string Color::colorize (const std::string& input)
   // 256 color
   if (_value & _COLOR_256)
   {
-    bool needTerminator = false;
-
     if (_value & _COLOR_UNDERLINE)
-    {
       result << "\033[4m";
-      needTerminator = true;
-    }
 
     if (_value & _COLOR_INVERSE)
-    {
       result << "\033[7m";
-      needTerminator = true;
-    }
 
     if (_value & _COLOR_HASFG)
-    {
       result << "\033[38;5;" << (_value & _COLOR_FG) << "m";
-      needTerminator = true;
-    }
 
     if (_value & _COLOR_HASBG)
-    {
       result << "\033[48;5;" << ((_value & _COLOR_BG) >> 8) << "m";
-      needTerminator = true;
-    }
 
-    result << input;
-    if (needTerminator)
-      result << "\033[0m";
+    result << input << "\033[0m";
 
     return result.str ();
   }
