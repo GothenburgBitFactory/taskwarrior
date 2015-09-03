@@ -100,11 +100,7 @@ Color::Color (const std::string& spec)
 : _value (0)
 {
 #ifdef FEATURE_COLOR
-  // By converting underscores to spaces, we inherently support the old "on_red"
-  // style of specifying background colors.  We consider underscores to be
-  // deprecated.
   std::string modifiable_spec = spec;
-  std::replace (modifiable_spec.begin (), modifiable_spec.end (), '_', ' ');
 
   // Split spec into words.
   std::vector <std::string> words;
