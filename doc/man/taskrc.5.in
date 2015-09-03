@@ -1084,10 +1084,6 @@ The urgency calculation uses a polynomial with several terms, each of which
 has a configurable coefficient. Those coefficients are:
 
 .TP
-.B urgency.next.coefficient=15.0
-.RS
-Urgency coefficient for 'next' special tag
-.RE
 .B urgency.blocking.coefficient=8.0
 .RS
 Urgency coefficient for blocking tasks
@@ -1135,6 +1131,10 @@ Maximum age in days. After this number of days has elapsed, the urgency of a tas
 .B urgency.user.tag.<tag>.coefficient=...
 .RS
 Specific tag coefficient.
+.RE
+.B urgency.user.tag.next.coefficient=15.0
+.RS
+Urgency coefficient for tag 'next'.
 .RE
 .B urgency.user.project.<project>.coefficient=...
 .RS
