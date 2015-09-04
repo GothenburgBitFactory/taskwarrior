@@ -176,6 +176,10 @@
   task becomes visible.
 - New 'rule.color.merge=yes|no' configuration option, that can optionally
   turn off color blending engine.
+- The 'urgency.next.coefficient' configuration option is deprecated in favor
+  of 'urgency.user.tag.next.coefficient'.
+- The long deprecated syntax of color values with underscores (i.e 'on_red')
+  is no longer supported.
 
 ------ current release ---------------------------
 
