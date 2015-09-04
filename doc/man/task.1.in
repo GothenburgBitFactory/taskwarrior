@@ -625,6 +625,16 @@ the reference from being interpreted as an override.
 Note that if the DOM reference is not valid, or the reference evaluates to a
 missing value, the command exits with 1.
 
+Additionally, some components of the attributes of particular types may be
+extracted by DOM references.
+
+  $ task _get 2.due.year
+  2015
+
+For a full list of supported attribute-specific DOM references, consult
+the online documentation at:
+<http://taskwarrior.org/docs/dom.html>
+
 .SH ATTRIBUTES AND METADATA
 
 .TP
