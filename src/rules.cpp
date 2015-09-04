@@ -218,7 +218,7 @@ static void colorizeUDA (Task& task, const std::string& rule, const Color& base,
   {
     const std::string uda = rule.substr (10, pos - 10);
     const std::string val = rule.substr (pos + 1);
-    if (val == "none" && ! task.has (uda) ||
+    if ((val == "none" && ! task.has (uda)) ||
         task.get (uda) == val)
       applyColor (base, c, merge);
   }
