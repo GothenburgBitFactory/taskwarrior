@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# The on-modify event is triggered separately for each task modified. This hook
+# script can accept/reject the modification. Processing will continue.
+
+# Input:
+# - line of JSON for the original task
+# - line of JSON for the modified task, the diff being the modification
+read original_task
+read modified_task
+
+# Output:
+# - JSON, modified or unmodified.
+# - Optional feedback/error.
+echo $original_task
+
+# Status:
+# - 0:     JSON accepted, non-JSON is feedback.
+# - non-0: JSON ignored, non-JSON is error.
+exit 0

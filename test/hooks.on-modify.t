@@ -155,6 +155,24 @@ class TestHooksOnModify(TestCase):
         logs = hook.get_logs()
         self.assertEqual(logs["output"]["msgs"][0], "FEEDBACK")
 
+    def test_onmodify_revert_changes(self):
+        """on-modify-revert - revert all user modifications."""
+        hookname = 'on-modify-revert'
+        self.t.hooks.add_default(hookname, log=True)
+
+        code, out, err = self.t("add foo")
+        before = self.t.export()
+        self.t.faketime("+5s")
+        code, out, err = self.t("1 modify bar")
+        after = self.t.export()
+
+        # There should be absolutely _no_ changes.
+        self.assertEqual(before, after)
+
+        hook = self.t.hooks[hookname]
+        hook.assertTriggeredCount(1)
+        hook.assertExitcode(0)
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
