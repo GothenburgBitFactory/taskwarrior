@@ -183,6 +183,7 @@ int CmdShow::execute (std::string& output)
     " regex"
     " reserved.lines"
     " row.padding"
+    " rule.color.merge"
     " rule.precedence.color"
     " search.case.sensitive"
     " shell.prompt"
