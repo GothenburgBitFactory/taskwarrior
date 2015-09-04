@@ -75,7 +75,7 @@ class TestZshCompletion(TestCase):
         code, out, err = self.t("_zshcommands")
 
         self.assertIn("\nfoobar:report:", out)
-        self.assertIn("\ninformation:interrogator:", out)
+        self.assertIn("\ninformation:metadata:", out)
         self.assertIn("\nexport:migration:", out)
         self.assertNotIn(":unassigned:", out)
 
