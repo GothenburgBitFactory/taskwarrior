@@ -620,66 +620,8 @@ void CLI2::prepareFilter ()
   _id_ranges.clear ();
   _uuid_list.clear ();
 
-  // Context is only applied for commands that request it.
-  std::string command = getCommand ();
-  Command* cmd = context.commands[command];
-  if (cmd && cmd->uses_context ())
-    addContextFilter ();
-
-  // Classify FILTER, MODIFICATION and MISCELLANEOUS args, based on CMD DNA.
-  bool changes = false;
-  bool afterCommand = false;
-
-  for (auto& a : _args)
-  {
-    if (a._lextype == Lexer::Type::separator)
-      continue;
-
-    if (a.hasTag ("CMD"))
-    {
-      afterCommand = true;
-    }
-    else if (a.hasTag ("BINARY") ||
-             a.hasTag ("RC")     ||
-             a.hasTag ("CONFIG"))
-    {
-      // NOP.
-    }
-
-    // All MODIFICATION args appear after the command.
-    else if (cmd                             &&
-             cmd->accepts_modifications ()   &&
-             ! cmd->accepts_miscellaneous () &&
-             afterCommand)
-    {
-      a.tag ("MODIFICATION");
-      changes = true;
-    }
-
-    else if (cmd                             &&
-             cmd->accepts_miscellaneous ()   &&
-             ! cmd->accepts_modifications () &&
-             (afterCommand                   ||
-              ! cmd->accepts_filter ()))
-    {
-      a.tag ("MISCELLANEOUS");
-      changes = true;
-    }
-
-    else if (cmd                                &&
-             cmd->accepts_filter ()             &&
-             (! afterCommand                    ||
-              (! cmd->accepts_modifications ()  &&
-               ! cmd->accepts_miscellaneous ())))
-    {
-      a.tag ("FILTER");
-      changes = true;
-    }
-  }
-
-  if (changes &&
-      context.config.getInteger ("debug.parser") >= 3)
-    context.debug (dump ("CLI2::prepareFilter"));
+  // Determine arg types: FILTER, MODIFICATION, MISCELLANEOUS.
+  categorizeArgs ();
 
   // Remove all the syntactic sugar for FILTERs.
   lexFilterArgs ();
@@ -962,6 +904,70 @@ void CLI2::canonicalizeNames ()
   if (changes &&
       context.config.getInteger ("debug.parser") >= 3)
     context.debug (dump ("CLI2::analyze canonicalizeNames"));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Categorize FILTER, MODIFICATION and MISCELLANEOUS args, based on CMD DNA.
+void CLI2::categorizeArgs ()
+{
+  // Context is only applied for commands that request it.
+  std::string command = getCommand ();
+  Command* cmd = context.commands[command];
+  if (cmd && cmd->uses_context ())
+    addContextFilter ();
+
+  bool changes = false;
+  bool afterCommand = false;
+  for (auto& a : _args)
+  {
+    if (a._lextype == Lexer::Type::separator)
+      continue;
+
+    if (a.hasTag ("CMD"))
+    {
+      afterCommand = true;
+    }
+    else if (a.hasTag ("BINARY") ||
+             a.hasTag ("RC")     ||
+             a.hasTag ("CONFIG"))
+    {
+      // NOP.
+    }
+
+    // All MODIFICATION args appear after the command.
+    else if (cmd                             &&
+             cmd->accepts_modifications ()   &&
+             ! cmd->accepts_miscellaneous () &&
+             afterCommand)
+    {
+      a.tag ("MODIFICATION");
+      changes = true;
+    }
+
+    else if (cmd                             &&
+             cmd->accepts_miscellaneous ()   &&
+             ! cmd->accepts_modifications () &&
+             (afterCommand                   ||
+              ! cmd->accepts_filter ()))
+    {
+      a.tag ("MISCELLANEOUS");
+      changes = true;
+    }
+
+    else if (cmd                                &&
+             cmd->accepts_filter ()             &&
+             (! afterCommand                    ||
+              (! cmd->accepts_modifications ()  &&
+               ! cmd->accepts_miscellaneous ())))
+    {
+      a.tag ("FILTER");
+      changes = true;
+    }
+  }
+
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 3)
+    context.debug (dump ("CLI2::analyze categorizeArgs"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -90,6 +90,7 @@ private:
   void demotion ();
   void aliasExpansion ();
   void canonicalizeNames ();
+  void categorizeArgs ();
   bool findCommand ();
   bool exactMatch (const std::string&, const std::string&) const;
   void desugarFilterTags ();
