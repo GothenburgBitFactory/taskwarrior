@@ -45,6 +45,8 @@ Removed features in 2.4.5
     IDs, UUIDs, and various date/time formats ambiguous.
   - Comma-separated UUID lists are no longer supported.
   - DOM references may no longer be abbreviated.
+  - The 'urgency.next.coefficient' configuration option is deprecated in favor
+    of 'urgency.user.tag.next.coefficient'.
   - The long deprecated syntax of color values with underscores (i.e 'on_red')
     is no longer supported.
 
