@@ -30,6 +30,7 @@ import sys
 import os
 import unittest
 import json
+import re
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -228,9 +229,18 @@ class TestImport(TestCase):
         _data = """{"uuid":"a1111111-a222-a333-a444-a55555555555","description":"data4"}"""
         self.t("import", input=_data)
         code, out1, err = self.t("export")
+
+        # Remove "entry":"..." and "modified":"..." because they may differ and
+        # are not important for this test.
+        out1 = re.sub(r'"entry":"\d{8}T\d{6}Z",', '', out1)
+        out1 = re.sub(r'"modified":"\d{8}T\d{6}Z",', '', out1)
+
         self.t.faketime('+1s')
         self.t("import", input=_data)
         code, out2, err = self.t("export")
+        out2 = re.sub(r'"entry":"\d{8}T\d{6}Z",', '', out2)
+        out2 = re.sub(r'"modified":"\d{8}T\d{6}Z",', '', out2)
+
         self.assertEqual(out1, out2)
 
 
