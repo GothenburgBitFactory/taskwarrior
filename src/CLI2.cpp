@@ -422,7 +422,7 @@ void CLI2::handleArg0 ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// All arguments must be individually, and wholly recognized by the Lexer. Any
+// All arguments must be individually and wholly recognized by the Lexer. Any
 // argument not recognized is considered a Lexer::Type::word.
 //
 // As a side effect, tags all arguments after a terminator ('--') with
@@ -494,11 +494,10 @@ void CLI2::lexArguments ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Until the Lexer gains access to CLI2::_entities, it can only guess at whether
-// a command is a DOM reference.
+// Scan all args for the 'add' and 'log' commands, and demote any
+// Lexer::Type::Tag args with sign '-' to Lexer::Type::word.
 //
-// [1] Scan all MODIFICATION args for the 'add' and 'log' commands, and demote
-//     any Lexer::Type::Tag args with sense '-' to Lexer::Type::word.
+// TODO This is obsolete, given FILTER, MODIFICATION, MISCELLANEOUS.
 void CLI2::demotion ()
 {
   bool changes = false;
