@@ -204,7 +204,6 @@ int CmdShow::execute (std::string& output)
     " urgency.blocked.coefficient"
     " urgency.blocking.coefficient"
     " urgency.due.coefficient"
-    " urgency.next.coefficient"
     " urgency.project.coefficient"
     " urgency.tags.coefficient"
     " urgency.waiting.coefficient"
