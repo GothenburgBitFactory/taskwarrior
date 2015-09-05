@@ -40,10 +40,24 @@ class TestDOM(TestCase):
     def setUpClass(cls):
         cls.t = Task()
         cls.t.config("dateformat", "YMD")
+
+        # Add string, date, duration and numeric udas
+        cls.t.config("uda.ticketdate.type", "date")
+        cls.t.config("uda.ticketest.type", "duration")
+        cls.t.config("uda.ticketnote.type", "string")
+        cls.t.config("uda.ticketnum.type", "numeric")
+
         cls.t("add one due:20110901")
         cls.t("add two due:1.due")
         cls.t("add three due:20110901 wait:due +tag1 +tag2")
         cls.t("3 annotate note")
+
+        # Add task containing UDA attributes
+        cls.t("add ticket task "
+              "ticketdate:2015-09-04 "
+              "ticketest:hour "
+              "ticketnote:comment "
+              "ticketnum:47")
 
     def test_dom_no_ref(self):
         """ DOM missing reference """
@@ -74,7 +88,7 @@ class TestDOM(TestCase):
 
     def test_dom_fail(self):
         """ DOM lookup of missing item """
-        code, out, err = self.t("_get 4.description")
+        code, out, err = self.t("_get 5.description")
         self.assertEqual("\n", out)
 
     def test_dom_tags(self):
@@ -199,6 +213,31 @@ class TestDOM(TestCase):
         """DOM 1.end (missing)"""
         code, out, err = self.t("_get 1.end")
         self.assertEqual("\n", out)
+
+    def test_dom_uda_numeric(self):
+        """DOM 1.<numeric UDA>"""
+        code, out, err = self.t("_get 4.ticketnum")
+        self.assertIn("47", out)
+
+    def test_dom_uda_string(self):
+        """DOM 1.<string UDA>"""
+        code, out, err = self.t("_get 4.ticketnote")
+        self.assertIn("comment", out)
+
+    def test_dom_uda_duration(self):
+        """DOM 1.<duration UDA>"""
+        code, out, err = self.t("_get 4.ticketest")
+        self.assertIn("PT1H", out)
+
+    def test_dom_uda_date(self):
+        """DOM 1.<date UDA>"""
+        code, out, err = self.t("_get 4.ticketdate")
+        self.assertIn("2015-09-04T00:00:00", out)
+
+    def test_dom_uda_date_year(self):
+        """ DOM 3.due.year """
+        code, out, err = self.t("_get 4.ticketdate.year")
+        self.assertEqual("2015\n", out)
 
 
 class TestDOMDirectReferencesOnAddition(TestCase):
