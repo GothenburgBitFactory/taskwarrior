@@ -176,17 +176,39 @@ void CmdImport::importSingleTask (json::object* obj)
 {
   // Parse the whole thing, validate the data.
   Task task (obj);
+
+  bool hasGeneratedEntry = not task.has ("entry");
+  bool hasExplicitEnd = task.has ("end");
+
   task.validate ();
+
+  bool hasGeneratedEnd = not hasExplicitEnd and task.has ("end");
 
   // Check whether the imported task is new or a modified existing task.
   Task before;
   if (context.tdb2.get (task.get ("uuid"), before))
   {
-    // "modified:" is automatically set to the current time when a task is
-    // changed.  If the imported task has a modification timestamp we need
-    // to ignore it in task comparison in order to check for meaningful
-    // differences.  Setting it to the previous value achieves just that.
+    // We need to neglect updates from attributes with dynamic defaults
+    // unless they have been explicitly specified on import.
+    //
+    // There are three attributes with dynamic defaults, besites uuid:
+    //   - modified: Ignored in any case.
+    //   - entry: Ignored if generated.
+    //   - end: Ignored if generated.
+
+    // The 'modified' attribute is ignored in any case, since if it
+    // were the only difference between the tasks, it would have been
+    // neglected anyway, since it is bumped on each modification.
     task.set ("modified", before.get ("modified"));
+
+    // Other generated values are replaced by values from existing task,
+    // so that they are ignored on comparison.
+    if (hasGeneratedEntry)
+      task.set ("entry", before.get ("entry"));
+
+    if (hasGeneratedEnd)
+      task.set ("end", before.get ("end"));
+
     if (before != task)
     {
       CmdModify modHelper;
