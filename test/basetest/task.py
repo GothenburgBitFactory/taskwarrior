@@ -156,6 +156,32 @@ class Task(object):
 
         return json.loads(out)
 
+    def export_one(self, export_filter=None):
+        """
+        Return a dictionary representing the exported task. Will
+        fail if mutliple tasks match the filter.
+        """
+
+        result = self.export(export_filter=export_filter)
+
+        if len(result) != 1:
+            descriptions = [task.get('description') or '[description-missing]'
+                            for task in result]
+
+            raise ValueError(
+                "One task should match the '{0}' filter, '{1}' "
+                "matches:\n    {2}".format(
+                    export_filter or '',
+                    len(result),
+                    '\n    '.join(descriptions)
+                ))
+
+        return result[0]
+
+    @property
+    def latest(self):
+        return self.export_one("+LATEST")
+
     @staticmethod
     def _split_string_args_if_string(args):
         """Helper function to parse and split into arguments a single string
