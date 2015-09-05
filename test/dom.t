@@ -201,6 +201,121 @@ class TestDOM(TestCase):
         self.assertEqual("\n", out)
 
 
+class TestDOMDirectReferencesOnAddition(TestCase):
+    """
+    This class tests that DOM references of the form
+    <id>.<attribute> are properly evaluated when new tasks
+    are created.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.t = Task()
+        # Add string, date, duration and numeric udas
+        cls.t.config("uda.ticketdate.type", "date")
+        cls.t.config("uda.ticketest.type", "duration")
+        cls.t.config("uda.ticketnote.type", "string")
+        cls.t.config("uda.ticketnum.type", "numeric")
+
+        # Add also string with limited number of values
+        cls.t.config("uda.ticketflag.type", "string")
+        cls.t.config("uda.ticketflag.values", "A,B,C")
+
+        # Create task that will contain all the data
+        cls.t(
+            "add basetask "
+            "due:2015-09-01T08:00:00Z "
+            "project:baseproject "
+            "+tag1 +tag2 "
+            "ticketdate:2015-09-03T08:00:00Z "
+            "ticketest:hour "
+            "ticketnum:42 "
+            "ticketflag:B "
+            "ticketnote:'This is awesome' "
+        )
+        cls.t("1 annotate First annotation")
+        cls.t("1 annotate Second annotation")
+
+    def test_dom_reference_due(self):
+        """ DOM reference on due in add command """
+        self.t("add test_due due:1.due")
+        latest = self.t.latest
+
+        self.assertEqual("test_due", latest['description'])
+        self.assertEqual("20150901T080000Z", latest['due'])
+
+    def test_dom_reference_project(self):
+        """ DOM reference on project in add command """
+        self.t("add test_project project:1.project")
+        latest = self.t.latest
+
+        self.assertEqual("test_project", latest['description'])
+        self.assertEqual("baseproject", latest['project'])
+
+    def test_dom_reference_tags_all(self):
+        """ DOM reference on tags in add command """
+        self.t("add test_tags_all tags:1.tags")
+        latest = self.t.latest
+
+        self.assertEqual("test_tags_all", latest['description'])
+        self.assertEqual(["tag1","tag2"], latest['tags'])
+
+    def test_dom_reference_tags_single(self):
+        """ DOM reference on specific tag in add command """
+        self.t("add test_tags_single tags:1.tags.tag1")
+        latest = self.t.latest
+
+        self.assertEqual("test_tags_single", latest['description'])
+        self.assertEqual(["tag1"], latest['tags'])
+
+    def test_dom_reference_annotation(self):
+        """ DOM reference on annotation description in add command """
+        self.t("add description:1.annotations.1.description")
+        latest = self.t.latest
+
+        self.assertEqual("Second annotation", latest['description'])
+
+    def test_dom_reference_numeric_uda(self):
+        """ DOM reference on numeric UDA in add command """
+        self.t("add test_numeric_uda ticketnum:1.ticketnum")
+        latest = self.t.latest
+
+        self.assertEqual("test_numeric_uda", latest['description'])
+        self.assertEqual(42, latest['ticketnum'])
+
+    def test_dom_reference_date_uda(self):
+        """ DOM reference on date UDA in add command """
+        self.t("add test_date_uda ticketdate:1.ticketdate")
+        latest = self.t.latest
+
+        self.assertEqual("test_date_uda", latest['description'])
+        self.assertEqual("20150903T080000Z", latest['ticketdate'])
+
+    def test_dom_reference_string_uda(self):
+        """ DOM reference on string UDA in add command """
+        self.t("add test_string_uda ticketnote:1.ticketnote")
+        latest = self.t.latest
+
+        self.assertEqual("test_string_uda", latest['description'])
+        self.assertEqual("This is awesome", latest['ticketnote'])
+
+    def test_dom_reference_string_value_uda(self):
+        """ DOM reference on string with limited values UDA in add command """
+        self.t("add test_string_value_uda ticketflag:1.ticketflag")
+        latest = self.t.latest
+
+        self.assertEqual("test_string_value_uda", latest['description'])
+        self.assertEqual("B", latest['ticketflag'])
+
+    def test_dom_reference_duration_uda(self):
+        """ DOM reference on duration UDA in add command """
+        self.t("add test_duration_uda ticketest:1.ticketest")
+        latest = self.t.latest
+
+        self.assertEqual("test_duration_uda", latest['description'])
+        self.assertEqual("PT1H", latest['ticketest'])
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
