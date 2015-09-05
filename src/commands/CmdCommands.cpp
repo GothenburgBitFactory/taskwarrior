@@ -70,12 +70,15 @@ int CmdCommands::execute (std::string& output)
   view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_MISC));
   view.add (Column::factory ("string.left",  STRING_COLUMN_LABEL_DESC));
 
-  Color label (context.config.get ("color.label"));
-  view.colorHeader (label);
+  if (context.color ())
+  {
+    Color label (context.config.get ("color.label"));
+    view.colorHeader (label);
 
-  Color alternate (context.config.get ("color.alternate"));
-  view.colorOdd (alternate);
-  view.intraColorOdd (alternate);
+    Color alternate (context.config.get ("color.alternate"));
+    view.colorOdd (alternate);
+    view.intraColorOdd (alternate);
+  }
 
   view.leftMargin (context.config.getInteger ("indent.report"));
   view.extraPadding (context.config.getInteger ("row.padding"));

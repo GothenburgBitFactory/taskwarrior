@@ -129,15 +129,22 @@ int CmdCustom::execute (std::string& output)
   view.extraPadding (context.config.getInteger ("row.padding"));
   view.intraPadding (context.config.getInteger ("column.padding"));
 
-  Color label (context.config.get ("color.label"));
-  view.colorHeader (label);
+  if (context.color ())
+  {
+    Color label (context.config.get ("color.label"));
+    view.colorHeader (label);
 
-  Color label_sort (context.config.get ("color.label.sort"));
-  view.colorSortHeader (label_sort);
+    Color label_sort (context.config.get ("color.label.sort"));
+    view.colorSortHeader (label_sort);
 
-  Color alternate (context.config.get ("color.alternate"));
-  view.colorOdd (alternate);
-  view.intraColorOdd (alternate);
+    // If an alternating row color is specified, notify the table.
+    Color alternate (context.config.get ("color.alternate"));
+    if (alternate.nontrivial ())
+    {
+      view.colorOdd (alternate);
+      view.intraColorOdd (alternate);
+    }
+  }
 
   // Capture columns that are sorted.
   std::vector <std::string> sortColumns;

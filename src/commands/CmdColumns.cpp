@@ -76,12 +76,15 @@ int CmdColumns::execute (std::string& output)
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_STYLES));
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_EXAMPLES));
 
-  Color label (context.config.get ("color.label"));
-  formats.colorHeader (label);
+  if (context.color ())
+  {
+    Color label (context.config.get ("color.label"));
+    formats.colorHeader (label);
 
-  Color alternate (context.config.get ("color.alternate"));
-  formats.colorOdd (alternate);
-  formats.intraColorOdd (alternate);
+    Color alternate (context.config.get ("color.alternate"));
+    formats.colorOdd (alternate);
+    formats.intraColorOdd (alternate);
+  }
 
   for (auto& name : names)
   {

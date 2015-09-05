@@ -123,6 +123,8 @@
           (thanks to Leon Feng).
 - TW-1647 descriptions that are stringified ids (thanks to Daniel Shahaf).
 - TW-1648 Typo in Documentation (thanks to Simon W. Jackson).
+- TW-1649 'columns' colorizes output when stdout is a pipe (thanks to Daniel
+          Shahaf).
 - TW-1651 Provide opt-out of filter parser's id treatment (thanks to Daniel
           Shahaf).
 - TW-1652 task rm misparsed (thanks to Daniel Shahaf).
