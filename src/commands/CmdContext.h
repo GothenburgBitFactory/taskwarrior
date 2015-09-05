@@ -35,14 +35,14 @@ class CmdContext : public Command
 public:
   CmdContext ();
   int execute (std::string&);
-  std::string joinWords (std::vector <std::string>& words, unsigned int from, unsigned int to = 0);
+  std::string joinWords (const std::vector <std::string>& words, unsigned int from, unsigned int to = 0);
   static std::vector <std::string> getContexts ();
-  int defineContext (std::vector <std::string>& words, std::stringstream& out);
-  int deleteContext (std::vector <std::string>& words, std::stringstream& out);
-  int listContexts (std::vector <std::string>& words, std::stringstream& out);
-  int setContext (std::vector <std::string>& words, std::stringstream& out);
-  int showContext (std::vector <std::string>& words, std::stringstream& out);
-  int unsetContext (std::vector <std::string>& words, std::stringstream& out);
+  int defineContext (const std::vector <std::string>& words, std::stringstream& out);
+  int deleteContext (const std::vector <std::string>& words, std::stringstream& out);
+  int listContexts (const std::vector <std::string>& words, std::stringstream& out);
+  int setContext (const std::vector <std::string>& words, std::stringstream& out);
+  int showContext (const std::vector <std::string>& words, std::stringstream& out);
+  int unsetContext (const std::vector <std::string>& words, std::stringstream& out);
 };
 
 class CmdCompletionContext : public Command

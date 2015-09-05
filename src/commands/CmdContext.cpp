@@ -41,7 +41,7 @@ extern Context context;
 CmdContext::CmdContext ()
 {
   _keyword               = "context";
-  _usage                 = "task          context [<name> | subcommand]";
+  _usage                 = "task          context [<name> | <subcommand>]";
   _description           = STRING_CMD_CONTEXT_USAGE;
   _read_only             = true;
   _displays_id           = false;
@@ -66,18 +66,12 @@ int CmdContext::execute (std::string& output)
   {
     std::string subcommand = words[0];
 
-    if (subcommand == "define")
-      rc = defineContext (words, out);
-    else if (subcommand == "delete")
-      rc = deleteContext (words, out);
-    else if (subcommand == "list")
-      rc = listContexts (words, out);
-    else if (subcommand == "none")
-      rc = unsetContext (words, out);
-    else if (subcommand == "show")
-      rc = showContext (words, out);
-    else
-      rc = setContext (words, out);
+         if (subcommand == "define") rc = defineContext (words, out);
+    else if (subcommand == "delete") rc = deleteContext (words, out);
+    else if (subcommand == "list")   rc = listContexts (words, out);
+    else if (subcommand == "none")   rc = unsetContext (words, out);
+    else if (subcommand == "show")   rc = showContext (words, out);
+    else                             rc = setContext (words, out);
   }
 
   output = out.str ();
@@ -90,7 +84,7 @@ int CmdContext::execute (std::string& output)
 //
 // If to is specified as 0 (default value), all the remaining words will be joined.
 //
-std::string CmdContext::joinWords (std::vector <std::string>& words, unsigned int from, unsigned int to /* = 0 */)
+std::string CmdContext::joinWords (const std::vector <std::string>& words, unsigned int from, unsigned int to /* = 0 */)
 {
   std::string value = "";
 
@@ -132,7 +126,7 @@ std::vector <std::string> CmdContext::getContexts ()
 // Invoked with: task context define <name> <filter>
 // Example:      task context define home project:Home
 //
-int CmdContext::defineContext (std::vector <std::string>& words, std::stringstream& out)
+int CmdContext::defineContext (const std::vector <std::string>& words, std::stringstream& out)
 {
   int rc = 0;
   bool confirmation = context.config.getBoolean ("confirmation");
@@ -194,7 +188,7 @@ int CmdContext::defineContext (std::vector <std::string>& words, std::stringstre
 // Invoked with: task context delete <name>
 // Example:      task context delete home
 //
-int CmdContext::deleteContext (std::vector <std::string>& words, std::stringstream& out)
+int CmdContext::deleteContext (const std::vector <std::string>& words, std::stringstream& out)
 {
   int rc = 0;
 
@@ -235,7 +229,7 @@ int CmdContext::deleteContext (std::vector <std::string>& words, std::stringstre
 // Invoked with: task context list
 // Example:      task context list
 //
-int CmdContext::listContexts (std::vector <std::string>& words, std::stringstream& out)
+int CmdContext::listContexts (const std::vector <std::string>& words, std::stringstream& out)
 {
   int rc = 0;
   std::vector <std::string> contexts = getContexts();
@@ -294,7 +288,7 @@ int CmdContext::listContexts (std::vector <std::string>& words, std::stringstrea
 // Invoked with: task context <name>
 // Example:      task context home
 //
-int CmdContext::setContext (std::vector <std::string>& words, std::stringstream& out)
+int CmdContext::setContext (const std::vector <std::string>& words, std::stringstream& out)
 {
   int rc = 0;
   std::string value = words[0];
@@ -327,7 +321,7 @@ int CmdContext::setContext (std::vector <std::string>& words, std::stringstream&
 // Invoked with: task context show
 // Example:      task context show
 //
-int CmdContext::showContext (std::vector <std::string>& words, std::stringstream& out)
+int CmdContext::showContext (const std::vector <std::string>& words, std::stringstream& out)
 {
   std::string currentContext = context.config.get ("context");
 
@@ -352,7 +346,7 @@ int CmdContext::showContext (std::vector <std::string>& words, std::stringstream
 // Invoked with: task context none
 // Example:      task context none
 //
-int CmdContext::unsetContext (std::vector <std::string>& words, std::stringstream& out)
+int CmdContext::unsetContext (const std::vector <std::string>& words, std::stringstream& out)
 {
   int rc = 0;
   int status = CmdConfig::unsetConfigVariable ("context", false);
