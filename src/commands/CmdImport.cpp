@@ -191,7 +191,7 @@ void CmdImport::importSingleTask (json::object* obj)
     // We need to neglect updates from attributes with dynamic defaults
     // unless they have been explicitly specified on import.
     //
-    // There are three attributes with dynamic defaults, besites uuid:
+    // There are three attributes with dynamic defaults, besides uuid:
     //   - modified: Ignored in any case.
     //   - entry: Ignored if generated.
     //   - end: Ignored if generated.
