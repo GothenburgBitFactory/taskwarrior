@@ -125,6 +125,16 @@ Task& Task::operator= (const Task& other)
 
 ////////////////////////////////////////////////////////////////////////////////
 // The uuid and id attributes must be exempt from comparison.
+//
+// This performs two tests which are sufficient and necessary for Task
+// object equality (neglecting uuid and id):
+//     - The attribute set sizes are the same
+//     - For each attribute in the first set, there exists a same
+//       attribute with a same value in the second set
+//
+// These two conditions are necessary. They are also sufficient, since there
+// can be no extra data attribute in the second set, due to the same attribute
+// set sizes.
 bool Task::operator== (const Task& other)
 {
   if (size () != other.size ())
