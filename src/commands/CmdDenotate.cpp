@@ -124,7 +124,7 @@ int CmdDenotate::execute (std::string& output)
       }
     }
 
-    if (taskDiff (before, task))
+    if (before != task)
     {
       std::string question = format (STRING_CMD_DENO_CONFIRM,
                                      task.id,

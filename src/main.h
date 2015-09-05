@@ -60,7 +60,6 @@ void dependencyChainOnComplete (Task&);
 void dependencyChainOnStart (Task&);
 
 // feedback.cpp
-bool taskDiff (const Task&, const Task&);
 std::string taskDifferences (const Task&, const Task&);
 std::string taskInfoDifferences (const Task&, const Task&, const std::string&, long&, const long);
 std::string renderAttribute (const std::string&, const std::string&, const std::string& format = "");

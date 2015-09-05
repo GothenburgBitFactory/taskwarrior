@@ -44,35 +44,6 @@ extern Context context;
 static void countTasks (const std::vector <Task>&, const std::string&, int&, int&);
 
 ////////////////////////////////////////////////////////////////////////////////
-bool taskDiff (const Task& before, const Task& after)
-{
-  // Attributes are all there is, so figure the different attribute names
-  // between before and after.
-  std::vector <std::string> beforeAtts;
-  for (auto& att : before)
-    beforeAtts.push_back (att.first);
-
-  std::vector <std::string> afterAtts;
-  for (auto& att : after)
-    afterAtts.push_back (att.first);
-
-  std::vector <std::string> beforeOnly;
-  std::vector <std::string> afterOnly;
-  listDiff (beforeAtts, afterAtts, beforeOnly, afterOnly);
-
-  if (beforeOnly.size () !=
-      afterOnly.size ())
-    return true;
-
-  for (auto& name : beforeAtts)
-    if (name              != "uuid" &&
-        before.get (name) != after.get (name))
-      return true;
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 std::string taskDifferences (const Task& before, const Task& after)
 {
   // Attributes are all there is, so figure the different attribute names

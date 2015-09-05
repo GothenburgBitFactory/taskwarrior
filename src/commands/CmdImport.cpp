@@ -184,10 +184,10 @@ void CmdImport::importSingleTask (json::object* obj)
   {
     // "modified:" is automatically set to the current time when a task is
     // changed.  If the imported task has a modification timestamp we need
-    // to ignore it in taskDiff() in order to check for meaningful
+    // to ignore it in task comparison in order to check for meaningful
     // differences.  Setting it to the previous value achieves just that.
     task.set ("modified", before.get ("modified"));
-    if (taskDiff (before, task))
+    if (before != task)
     {
       CmdModify modHelper;
       modHelper.checkConsistency (before, task);
