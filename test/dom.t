@@ -355,6 +355,82 @@ class TestDOMDirectReferencesOnAddition(TestCase):
         self.assertEqual("PT1H", latest['ticketest'])
 
 
+class TestDOMDirectReferencesFiltering(TestCase):
+    """
+    This class tests that DOM references of the form
+    <id>.<attribute> are properly evaluated when used
+    in the filter expressions.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.t = Task()
+        # Add string, date, duration and numeric udas
+        cls.t.config("uda.ticketdate.type", "date")
+        cls.t.config("uda.ticketest.type", "duration")
+        cls.t.config("uda.ticketnote.type", "string")
+        cls.t.config("uda.ticketnum.type", "numeric")
+
+        # Add also string with limited number of values
+        cls.t.config("uda.ticketflag.type", "string")
+        cls.t.config("uda.ticketflag.values", "A,B,C")
+
+        # Create task that will contain all the data
+        cls.t(
+            "add matching task "
+            "due:2015-09-01T08:00:00Z "
+            "project:baseproject "
+            "+tag1 +tag2 "
+            "ticketdate:2015-09-03T08:00:00Z "
+            "ticketest:hour "
+            "ticketnum:42 "
+            "ticketflag:B "
+            "ticketnote:'This is awesome' "
+        )
+
+        # Create another task for noise
+        cls.t("add non matching task")
+
+    def test_dom_filter_reference_due(self):
+        """ DOM reference on due in filter """
+        self.t.export_one("due:1.due")
+        self.assertEqual("matching task", result['description'])
+
+    def test_dom_filter_reference_project(self):
+        """ DOM reference on project in filter """
+        result = self.t.export_one("project:1.project")
+        self.assertEqual("matching task", result['description'])
+
+    def test_dom_filter_reference_tags_all(self):
+        """ DOM reference on tags in filter """
+        result = self.t.export_one("tags:1.tags")
+        self.assertEqual("matching task", result['description'])
+
+    def test_dom_filter_reference_numeric_uda(self):
+        """ DOM reference on numeric UDA in filter """
+        result = self.t.export_one("ticketnum:1.ticketnum")
+        self.assertEqual("matching task", result['description'])
+
+    def test_dom_filter_reference_date_uda(self):
+        """ DOM reference on date UDA in filter """
+        result = self.t.export_one("ticketdate:1.ticketdate")
+        self.assertEqual("matching task", result['description'])
+
+    def test_dom_filter_reference_string_uda(self):
+        """ DOM reference on string UDA in filter """
+        result = self.t.export_one("ticketnote:1.ticketnote")
+        self.assertEqual("matching task", result['description'])
+
+    def test_dom_filter_reference_string_value_uda(self):
+        """ DOM reference on string with limited values UDA in filter """
+        result = self.t.export_one("ticketflag:1.ticketflag")
+        self.assertEqual("matching task", result['description'])
+
+    def test_dom_filter_reference_duration_uda(self):
+        """ DOM reference on duration UDA in filter """
+        result = self.t.export_one("ticketest:1.ticketest")
+        self.assertEqual("matching task", result['description'])
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
