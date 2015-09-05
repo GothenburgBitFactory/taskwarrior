@@ -586,6 +586,10 @@ void TDB2::update (
   Task original;
   if (not addition && get (task.get ("uuid"), original))
   {
+    // Update only if the tasks differ
+    if (task == original)
+      return;
+
     if (add_to_backlog)
     {
       // All locally modified tasks are timestamped, implicitly overwriting any
