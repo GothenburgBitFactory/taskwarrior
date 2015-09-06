@@ -309,7 +309,7 @@ class TestDOMDirectReferencesOnAddition(TestCase):
 
     def test_dom_reference_annotation(self):
         """ DOM reference on annotation description in add command """
-        self.t("add description:1.annotations.1.description")
+        self.t("add description:1.annotations.2.description")
         latest = self.t.latest
 
         self.assertEqual("Second annotation", latest['description'])
