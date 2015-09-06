@@ -328,6 +328,7 @@ void CLI2::applyOverrides (int argc, const char** argv)
 
 ////////////////////////////////////////////////////////////////////////////////
 CLI2::CLI2 ()
+: _context_filter_added (false)
 {
 }
 
@@ -579,6 +580,10 @@ void CLI2::addFilter (const std::string& arg)
 //   - filter contains ID or UUID
 void CLI2::addContextFilter ()
 {
+  // Recursion block.
+  if (_context_filter_added)
+    return;
+
   // Detect if any context is set, and bail out if not
   std::string contextName = context.config.get ("context");
   if (contextName == "")
@@ -607,6 +612,7 @@ void CLI2::addContextFilter ()
     context.debug ("Context '" + contextName + "' not defined.");
   else
   {
+    _context_filter_added = true;
     addFilter (contextFilter);
     if (context.verbose ("context"))
       context.footnote (format ("Context '{1}' set. Use 'task context none' to remove.", contextName));
@@ -621,6 +627,7 @@ void CLI2::prepareFilter ()
   // Clear and re-populate.
   _id_ranges.clear ();
   _uuid_list.clear ();
+  _context_filter_added = false;
 
   // Remove all the syntactic sugar for FILTERs.
   lexFilterArgs ();
