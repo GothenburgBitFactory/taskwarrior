@@ -1965,7 +1965,7 @@ void CLI2::defaultCommand ()
     else
     {
       A2 info ("information", Lexer::Type::word);
-      info.tag ("DEFAULT");
+      info.tag ("ASSUMED");
       _args.push_back (info);
       changes = true;
     }
