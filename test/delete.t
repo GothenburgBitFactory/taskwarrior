@@ -126,7 +126,7 @@ class TestDelete(TestCase):
     def _validate_prompt_loop(self, input=""):
         """Helper method to check if task flooded stream on closed STDIN"""
         try:
-            code, out, err = self.t("/foo[1-3]/ delete", input=input, timeout=0.2)
+            code, out, err = self.t("/foo[1-3]/ delete", input=input, timeout=0.3)
         except CommandError as e:
             # If delete fails with a timeout, don't fail the test immediately
             code, out, err = e.code, e.out, e.err

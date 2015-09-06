@@ -90,7 +90,7 @@ class TestBulk(TestCase):
         # Test with 3 tasks.  3 is considered bulk. rc.confirmation has no effect on bulk
 
         # Delete task 1 'one'? (yes/no/all/quit) --> timeout
-        code, out, err = self.t.runError("1-3 delete rc.confirmation:off", timeout=0.2)
+        code, out, err = self.t.runError("1-3 delete rc.confirmation:off")
         self.assertNotIn("(yes/no)", out)
         self.assertIn("(yes/no/all/quit)", out)
         self.assertNotIn("Deleting task", out)
