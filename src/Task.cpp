@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream> // TODO Remove
 #include <sstream>
 #include <stdlib.h>
 #include <assert.h>
@@ -1979,8 +1978,6 @@ void Task::modify (modType type, bool text_required /* = false */)
     {
       if (a._lextype == Lexer::Type::pair)
       {
-//        std::cout << "# Task::modify " << a.dump () << "\n";
-
         // 'canonical' is the canonical name. Needs to be said.
         // 'value' requires eval.
         std::string name  = a.attribute ("canonical");
