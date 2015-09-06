@@ -232,19 +232,15 @@ class TestColorRulesMerging(TestCase):
 
     def test_colors_merge(self):
         """Tests whether colors merge"""
-        code, out, err = self.t('hometask')
-
-        self.assertIn('\x1b[38;5;160', out)  # Red foreground applied
-        self.assertIn('\x1b[48;5;7', out)    # White background applied
+        code, out, err = self.t('1 info')
+        self.assertIn('\x1b[31;47mhometask', out)  # Red on white
 
     def test_colors_merge_off(self):
         """No color merge behaviour with rule.color.merge=no"""
         self.t.config('rule.color.merge', 'no')
 
-        code, out, err = self.t('hometask')
-
-        self.assertIn('\x1b[38;5;160', out)  # Red foreground applied
-        self.assertNotIn('\x1b[48;5;7', out) # White background not applied
+        code, out, err = self.t('1 info')
+        self.assertIn('\x1b[31mhometask', out)  # Red
 
 
 if __name__ == "__main__":
