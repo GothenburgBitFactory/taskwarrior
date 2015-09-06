@@ -35,23 +35,6 @@
 class Command
 {
 public:
-  Command ();
-  virtual ~Command ();
-
-  static void factory (std::map <std::string, Command*>&);
-
-  std::string keyword () const;
-  std::string usage () const;
-  std::string description () const;
-  bool read_only () const;
-  bool displays_id () const;
-  bool needs_gc () const;
-  bool uses_context () const;
-  bool accepts_filter () const;
-  bool accepts_modifications () const;
-  bool accepts_miscellaneous () const;
-  virtual int execute (std::string&) = 0;
-
   enum class Category
   {
     unassigned,
@@ -68,7 +51,24 @@ public:
     UNDOCUMENTED,
     // Whenever you extend this enum, update categoryNames.
   };
-  Category _category;
+
+  Command ();
+  virtual ~Command ();
+
+  static void factory (std::map <std::string, Command*>&);
+
+  std::string keyword () const;
+  std::string usage () const;
+  std::string description () const;
+  bool read_only () const;
+  bool displays_id () const;
+  bool needs_gc () const;
+  bool uses_context () const;
+  bool accepts_filter () const;
+  bool accepts_modifications () const;
+  bool accepts_miscellaneous () const;
+  Category category () const;
+  virtual int execute (std::string&) = 0;
 
 protected:
   bool permission (const Task&, const std::string&, unsigned int);
@@ -86,6 +86,7 @@ protected:
   bool        _accepts_filter;
   bool        _accepts_modifications;
   bool        _accepts_miscellaneous;
+  Category    _category;
 
   // Permission support
   bool        _permission_quit;

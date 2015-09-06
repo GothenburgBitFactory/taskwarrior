@@ -88,7 +88,7 @@ int CmdCommands::execute (std::string& output)
   {
     int row = view.addRow ();
     view.set (row, 0, command.first);
-    view.set (row, 1, Command::categoryNames.at (command.second->_category));
+    view.set (row, 1, Command::categoryNames.at (command.second->category ()));
 
     if (command.second->read_only ())
       view.set (row, 2, "RO");
@@ -213,7 +213,7 @@ int CmdZshCommands::execute (std::string& output)
   std::vector <ZshCommand> commands;
   for (auto& command : context.commands)
   {
-    ZshCommand zshCommand {command.second->_category,
+    ZshCommand zshCommand {command.second->category (),
                            command.first,
                            command.second->description ()};
     commands.push_back (zshCommand);

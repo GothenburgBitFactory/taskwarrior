@@ -213,7 +213,7 @@ const std::map <Command::Category, std::string> Command::categoryNames =
 
 ////////////////////////////////////////////////////////////////////////////////
 Command::Command ()
-: _category(Category::unassigned)
+: _keyword ("")
 , _usage ("")
 , _description ("")
 , _read_only (true)
@@ -221,8 +221,10 @@ Command::Command ()
 , _needs_confirm (false)
 , _needs_gc (true)
 , _uses_context (false)
-, _accepts_filter (true)
-, _accepts_modifications (true)
+, _accepts_filter (false)
+, _accepts_modifications (false)
+, _accepts_miscellaneous (false)
+, _category(Category::unassigned)
 , _permission_quit (false)
 , _permission_all (false)
 , _first_iteration (true)
@@ -292,6 +294,12 @@ bool Command::accepts_modifications () const
 bool Command::accepts_miscellaneous () const
 {
   return _accepts_miscellaneous;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+Command::Category Command::category () const
+{
+  return _category;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
