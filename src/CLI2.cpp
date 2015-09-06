@@ -545,6 +545,9 @@ void CLI2::analyze ()
 
   demotion ();
   canonicalizeNames ();
+
+  // Determine arg types: FILTER, MODIFICATION, MISCELLANEOUS.
+  categorizeArgs ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -619,9 +622,6 @@ void CLI2::prepareFilter ()
   _id_ranges.clear ();
   _uuid_list.clear ();
 
-  // Determine arg types: FILTER, MODIFICATION, MISCELLANEOUS.
-  categorizeArgs ();
-
   // Remove all the syntactic sugar for FILTERs.
   lexFilterArgs ();
   findIDs ();
@@ -636,34 +636,13 @@ void CLI2::prepareFilter ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Get the original command line arguments, in pristine condition, but skipping:
-//   - BINARY
-//   - CMD
-//   - RC
-//   - CONFIG
-//   - --
+// Return all the MISCELLANEOUS args.
 const std::vector <std::string> CLI2::getWords (bool filtered)
 {
-  auto binary     = getBinary ();
-  auto command    = getCommand ();
-  auto commandRaw = getCommand (false);
-
   std::vector <std::string> words;
-  for (auto& a : _original_args)
-  {
-    if (a != binary         &&
-        a != command        &&
-        a != commandRaw     &&
-        a != "--")
-    {
-      if (! filtered ||
-          (a.find ("rc:") != 0 &&
-           a.find ("rc.") != 0))
-      {
-        words.push_back (a);
-      }
-    }
-  }
+  for (auto& a : _args)
+    if (a.hasTag ("MISCELLANEOUS"))
+      words.push_back (a.attribute ("raw"));
 
   if (context.config.getInteger ("debug.parser") >= 3)
   {
