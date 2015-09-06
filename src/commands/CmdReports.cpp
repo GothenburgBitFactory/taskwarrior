@@ -28,7 +28,6 @@
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
-#include <Filter.h>
 #include <ViewText.h>
 #include <text.h>
 #include <i18n.h>
@@ -55,12 +54,6 @@ CmdReports::CmdReports ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdReports::execute (std::string& output)
 {
-  Filter filter;
-  if (filter.hasFilter ())
-    throw std::string (STRING_ERROR_NO_FILTER);
-  if (filter.hasModifications ())
-    throw std::string (STRING_ERROR_NO_MODS);
-
   std::vector <std::string> reports;
 
   // Add custom reports.
