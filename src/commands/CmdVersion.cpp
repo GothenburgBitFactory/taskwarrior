@@ -28,7 +28,6 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
-#include <Filter.h>
 #include <ViewText.h>
 #ifdef HAVE_COMMIT
 #include <commit.h>
@@ -58,12 +57,6 @@ CmdVersion::CmdVersion ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdVersion::execute (std::string& output)
 {
-  Filter filter;
-  if (filter.hasFilter ())
-    throw std::string (STRING_ERROR_NO_FILTER);
-  if (filter.hasModifications ())
-    throw std::string (STRING_ERROR_NO_MODS);
-
   std::stringstream out;
 
   // Create a table for the disclaimer.
