@@ -107,6 +107,7 @@
 #define STRING_PARSER_UNKNOWN_ATTMOD "Błąd: nierozpoznany atrybut '{1}'."
 #define STRING_PARSER_ALTERNATE_RC   "Wczytanie alternatywnego pliku .taskrc {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Alternatywne data.location {1}"
+#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
 
 // Variant
 //

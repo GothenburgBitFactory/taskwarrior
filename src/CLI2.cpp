@@ -948,6 +948,14 @@ void CLI2::categorizeArgs ()
       a.tag ("FILTER");
       changes = true;
     }
+
+    else if (cmd &&
+             ! cmd->accepts_filter () &&
+             ! cmd->accepts_modifications () &&
+             ! cmd->accepts_miscellaneous ())
+    {
+      throw format (STRING_PARSER_UNEXPECTED_ARG, command, a.attribute ("raw"));
+    }
   }
 
   if (changes &&

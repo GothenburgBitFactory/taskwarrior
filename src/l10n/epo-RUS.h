@@ -107,6 +107,7 @@
 #define STRING_PARSER_UNKNOWN_ATTMOD "Eraro: nekonata atributa modifanto '{1}'."
 #define STRING_PARSER_ALTERNATE_RC   "Uzanta alterna .taskrc-dosiero {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Uzanta alterna data.location {1}"
+#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
 
 // Variant
 //

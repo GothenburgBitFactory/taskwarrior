@@ -107,6 +107,7 @@
 #define STRING_PARSER_UNKNOWN_ATTMOD "Error: unrecognized attribute modifier '{1}'."
 #define STRING_PARSER_ALTERNATE_RC   "Using alternate .taskrc file {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Using alternate data.location {1}"
+#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
 
 // Variant
 //

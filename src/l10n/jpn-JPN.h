@@ -107,6 +107,7 @@
 #define STRING_PARSER_UNKNOWN_ATTMOD "エラー: 不明な属性変更子 '{1}'."
 #define STRING_PARSER_ALTERNATE_RC   "代替の .taskrc ファイル {1} を使用"
 #define STRING_PARSER_ALTERNATE_DATA "代替の data.location {1} を使用"
+#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
 
 // Variant
 //

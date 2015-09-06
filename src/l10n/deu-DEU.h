@@ -107,6 +107,7 @@
 #define STRING_PARSER_UNKNOWN_ATTMOD "Fehler: Nicht erkannter Attribut-Operator '{1}'."
 #define STRING_PARSER_ALTERNATE_RC   "Verwende alternative .taskrc-Datei {1}"
 #define STRING_PARSER_ALTERNATE_DATA "Verwende alternative data.location {1}"
+#define STRING_PARSER_UNEXPECTED_ARG "The '{1}' command does not allow '{2}'."
 
 // Variant
 //
