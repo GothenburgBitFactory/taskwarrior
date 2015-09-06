@@ -2002,6 +2002,23 @@ void Task::modify (modType type, bool text_required /* = false */)
               ! column->modifiable ())
             throw format (STRING_INVALID_MOD, name, value);
 
+          // Try to evaluate 'value'.  It might work.
+          Variant evaluatedValue;
+          try
+          { 
+            Eval e;
+            e.addSource (domSource);
+            e.addSource (namedDates);
+            contextTask = *this;
+            e.evaluateInfixExpression (value, evaluatedValue);
+          }
+
+          // Ah, fuck it.
+          catch (...)
+          {
+            evaluatedValue = Variant (value);
+          }
+
           // Dependencies are specified as IDs.
           if (name == "depends")
           {
@@ -2039,9 +2056,29 @@ void Task::modify (modType type, bool text_required /* = false */)
 
             for (auto& tag : tags)
             {
-              addTag (tag);
-              context.debug (label + "tags <-- add '" + tag + "'");
-              addTag (tag);
+              // If it's a DOM ref, eval it first.
+              Lexer lexer (tag);
+              std::string domRef;
+              Lexer::Type type;
+              if (lexer.token (domRef, type) &&
+                  type == Lexer::Type::dom)
+              {
+                Eval e;
+                e.addSource (domSource);
+                e.addSource (namedDates);
+                contextTask = *this;
+
+                Variant v;
+                e.evaluateInfixExpression (value, v);
+                addTag ((std::string) v);
+                context.debug (label + "tags <-- '" + (std::string) v + "' <-- '" + tag + "'");
+              }
+              else
+              {
+                addTag (tag);
+                context.debug (label + "tags <-- '" + tag + "'");
+              }
+
               feedback_special_tags (*this, tag);
             }
 
@@ -2051,34 +2088,26 @@ void Task::modify (modType type, bool text_required /* = false */)
           // Dates are special, maybe.
           else if (column->type () == "date")
           {
-            Eval e;
-            e.addSource (domSource);
-            e.addSource (namedDates);
-            contextTask = *this;
-
-            Variant v;
-            e.evaluateInfixExpression (value, v);
-
             // If v is duration, add 'now' to it, else store as date.
-            if (v.type () == Variant::type_duration)
+            if (evaluatedValue.type () == Variant::type_duration)
             {
-              context.debug (label + name + " <-- '" + format ("{1}", format (v.get_duration ())) + "' <-- '" + (std::string) v + "' <-- '" + value + "'");
+              context.debug (label + name + " <-- '" + format ("{1}", format (evaluatedValue.get_duration ())) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + "'");
               Variant now;
               if (namedDates ("now", now))
-                v += now;
+                evaluatedValue += now;
             }
             else
             {
-              v.cast (Variant::type_date);
-              context.debug (label + name + " <-- '" + format ("{1}", v.get_date ()) + "' <-- '" + (std::string) v + "' <-- '" + value + "'");
+              evaluatedValue.cast (Variant::type_date);
+              context.debug (label + name + " <-- '" + format ("{1}", evaluatedValue.get_date ()) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + "'");
             }
 
             // If a date doesn't parse (2/29/2014) then it evaluates to zero.
             if (value != "" &&
-                v.get_date () == 0)
+                evaluatedValue.get_date () == 0)
               throw format (STRING_DATE_INVALID_FORMAT, value, Variant::dateFormat);
 
-            set (name, v.get_date ());
+            set (name, evaluatedValue.get_date ());
             ++modCount;
           }
 
@@ -2088,14 +2117,8 @@ void Task::modify (modType type, bool text_required /* = false */)
           {
             // The duration is stored in raw form, but it must still be valid,
             // and therefore is parsed first.
-            Eval e;
-            e.addSource (domSource);
-            e.addSource (namedDates);
-            contextTask = *this;
 
-            Variant v;
-            e.evaluateInfixExpression (value, v);
-            if (v.type () == Variant::type_duration)
+            if (evaluatedValue.type () == Variant::type_duration)
             {
               // Store the raw value, for 'recur'.
               context.debug (label + name + " <-- '" + value + "'");
@@ -2110,18 +2133,12 @@ void Task::modify (modType type, bool text_required /* = false */)
           {
             // The duration is stored in raw form, but it must still be valid,
             // and therefore is parsed first.
-            Eval e;
-            e.addSource (domSource);
-            e.addSource (namedDates);
-            contextTask = *this;
 
-            Variant v;
-            e.evaluateInfixExpression (value, v);
-            if (v.type () == Variant::type_duration)
+            if (evaluatedValue.type () == Variant::type_duration)
             {
               // Store the raw value, for 'recur'.
-              context.debug (label + name + " <-- " + (std::string)v + " <-- '" + value + "'");
-              set (name, v);
+              context.debug (label + name + " <-- " + (std::string) evaluatedValue + " <-- '" + value + "'");
+              set (name, evaluatedValue);
               ++modCount;
             }
             else
@@ -2131,39 +2148,33 @@ void Task::modify (modType type, bool text_required /* = false */)
           // Need handling for numeric types, used by UDAs.
           else if (column->type () == "numeric")
           {
-            Eval e;
-            e.addSource (domSource);
-            e.addSource (namedDates);
-            contextTask = *this;
-
-            Variant v;
-            e.evaluateInfixExpression (value, v);
-            context.debug (label + name + " <-- '" + v.get_string () + "' <-- '" + value + "'");
+            context.debug (label + name + " <-- '" + evaluatedValue.get_string () + "' <-- '" + value + "'");
 
             // If the result is not readily convertible to a numeric value,
             // then this is an error.
-            if (v.type () == Variant::type_string)
-              throw format (STRING_UDA_NUMERIC, v.get_string ());
+            if (evaluatedValue.type () == Variant::type_string)
+              throw format (STRING_UDA_NUMERIC, evaluatedValue.get_string ());
 
-            set (name, v);
+            set (name, evaluatedValue);
             ++modCount;
           }
 
           // String type columns are not eval'd.
           else if (column->type () == "string")
           {
-            if (column->validate (value))
+            std::string strValue = (std::string) evaluatedValue;
+            if (column->validate (strValue))
             {
               if (column->can_modify ())
               {
-                std::string col_value = column->modify (value);
-                context.debug (label + name + " <-- '" + col_value + "' <-- '" + value + "'");
+                std::string col_value = column->modify (strValue);
+                context.debug (label + name + " <-- '" + col_value + "' <-- '" + strValue + "' <-- '" + value + "'");
                 (*this).set (name, col_value);
               }
               else
               {
-                context.debug (label + name + " <-- '" + value + "'");
-                (*this).set (name, value);
+                context.debug (label + name + " <-- '" + strValue + "' <-- '" + value + "'");
+                (*this).set (name, strValue);
               }
 
               ++modCount;
