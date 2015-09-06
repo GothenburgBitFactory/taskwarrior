@@ -292,7 +292,6 @@
 #define STRING_CMD_INFO_MODIFIED     "Modifado lasta"
 #define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
 #define STRING_CMD_UNDO_USAGE        "Malfaras la plej malfrua modifado al tasko"
-#define STRING_CMD_UNDO_MODS         "La komando 'undo' ne permesos, ke oni pli modifus la taskojn."
 #define STRING_CMD_STATS_USAGE       "Montras statistikon de la taska datumbazo"
 #define STRING_CMD_STATS_CATEGORY    "Kategorio"
 #define STRING_CMD_STATS_DATA        "datumoj"
@@ -313,7 +312,6 @@
 #define STRING_CMD_STATS_AVG_PEND    "Meznª pendtempo"
 #define STRING_CMD_STATS_DESC_LEN    "Meznª priskriblongeco"
 #define STRING_CMD_STATS_CHARS       "{1} signojn"
-#define STRING_CMD_STATS_LAST_SYNC   "Lasta sinkronigado"
 #define STRING_CMD_STATS_BLOCKED     "Taskoj blokataj"
 #define STRING_CMD_STATS_BLOCKING    "Taskoj blokantaj"
 #define STRING_CMD_REPORTS_USAGE     "Listigas ĉian raporton subtenatan"
@@ -752,7 +750,6 @@
 #define STRING_TLS_INIT_FAIL         "Erara eko de TLS. {1}"
 #define STRING_ERROR_DETAILS         "Agordo 'calendar.details.report' devas enhavi sole unu raportnomon."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-#define STRING_ERROR_NO_MODS         "Command line modifications are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
 #define STRING_ERROR_BAD_STATUS      "The status '{1}' is not valid."
 

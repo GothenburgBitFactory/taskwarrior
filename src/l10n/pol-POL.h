@@ -292,7 +292,6 @@
 #define STRING_CMD_INFO_MODIFIED     "Ostatnio zmodyfikowane"
 #define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
 #define STRING_CMD_UNDO_USAGE        "Odwraca ostatnią zmianę w zadaniu"
-#define STRING_CMD_UNDO_MODS         "Polecenie cofnij nie pozwala na późniejsze modyfikacje zadania."
 #define STRING_CMD_STATS_USAGE       "Pokazuje statystyki bazy danych zadań"
 #define STRING_CMD_STATS_CATEGORY    "Kategoria"
 #define STRING_CMD_STATS_DATA        "Data"
@@ -313,7 +312,6 @@
 #define STRING_CMD_STATS_AVG_PEND    "Średni czas w toku"
 #define STRING_CMD_STATS_DESC_LEN    "Średnia długość opisu"
 #define STRING_CMD_STATS_CHARS       "{1} znaków"
-#define STRING_CMD_STATS_LAST_SYNC   "Ostatnia synchronizacja z serwerem"
 #define STRING_CMD_STATS_BLOCKED     "Zadania blokowane"
 #define STRING_CMD_STATS_BLOCKING    "Zadania blokujące"
 #define STRING_CMD_REPORTS_USAGE     "Lista wszystkich wspieranych raportów"
@@ -752,7 +750,6 @@
 #define STRING_TLS_INIT_FAIL         "Błąd inicjalizacji TLS."
 #define STRING_ERROR_DETAILS         "Zmienna 'calendar.details.report' musi zawierać nazwę raportu."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-#define STRING_ERROR_NO_MODS         "Command line modifications are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
 #define STRING_ERROR_BAD_STATUS      "The status '{1}' is not valid."
 

@@ -291,7 +291,6 @@
 #define STRING_CMD_INFO_MODIFIED     "Ultima modifica"
 #define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
 #define STRING_CMD_UNDO_USAGE        "Ritorna alla più recente modifica di un task"
-#define STRING_CMD_UNDO_MODS         "Il comando undo non ammette ulteriori modifiche al task."
 #define STRING_CMD_STATS_USAGE       "Mostra le statistiche sul task"
 #define STRING_CMD_STATS_CATEGORY    "Categoria"
 #define STRING_CMD_STATS_DATA        "Dati"
@@ -312,7 +311,6 @@
 #define STRING_CMD_STATS_AVG_PEND    "Tempo medio di attesa"
 #define STRING_CMD_STATS_DESC_LEN    "Lunghezza media delle descrizioni"
 #define STRING_CMD_STATS_CHARS       "{1} caratteri"
-#define STRING_CMD_STATS_LAST_SYNC   "Ultima sincronizzazione"
 #define STRING_CMD_STATS_BLOCKED     "Task bloccati"
 #define STRING_CMD_STATS_BLOCKING    "Task bloccanti"
 #define STRING_CMD_REPORTS_USAGE     "Lista dei report supportati"
@@ -751,7 +749,6 @@
 #define STRING_TLS_INIT_FAIL         "Error initializing TLS. {1}"
 #define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-#define STRING_ERROR_NO_MODS         "Command line modifications are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
 #define STRING_ERROR_BAD_STATUS      "The status '{1}' is not valid."
 

@@ -292,7 +292,6 @@
 #define STRING_CMD_INFO_MODIFIED     "Letzte Änderung"
 #define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
 #define STRING_CMD_UNDO_USAGE        "Macht die letzte Änderung an einer Aufgabe Rückgängig"
-#define STRING_CMD_UNDO_MODS         "Der undo-Befehl erlaubt keine weitere Aufgaben-Änderung."
 #define STRING_CMD_STATS_USAGE       "Zeigt Statistiken zur Aufgaben-Datenbank"
 #define STRING_CMD_STATS_CATEGORY    "Kategorie"
 #define STRING_CMD_STATS_DATA        "Daten"
@@ -313,7 +312,6 @@
 #define STRING_CMD_STATS_AVG_PEND    "Durchschnittliche Zeit im Offen-Status"
 #define STRING_CMD_STATS_DESC_LEN    "Durchschnittliche Beschreibungslänge"
 #define STRING_CMD_STATS_CHARS       "{1} Zeichen"
-#define STRING_CMD_STATS_LAST_SYNC   "Letzte Server-Synchronisation"
 #define STRING_CMD_STATS_BLOCKED     "Blockierte Aufgaben"
 #define STRING_CMD_STATS_BLOCKING    "Blockierende Aufgaben"
 #define STRING_CMD_REPORTS_USAGE     "Zeigt alle unterstützten Reports"
@@ -752,7 +750,6 @@
 #define STRING_TLS_INIT_FAIL         "Fehler bei der TLS-Initialisierung. {1}"
 #define STRING_ERROR_DETAILS         "Die Option 'calendar.details.report' muss einen einzelnen Report-Namen enthalten."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-#define STRING_ERROR_NO_MODS         "Command line modifications are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
 #define STRING_ERROR_BAD_STATUS      "The status '{1}' is not valid."
 

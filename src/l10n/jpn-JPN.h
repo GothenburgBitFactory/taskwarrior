@@ -292,7 +292,6 @@
 #define STRING_CMD_INFO_MODIFIED     "Last modified"
 #define STRING_CMD_INFO_VIRTUAL_TAGS "Virtual tags"
 #define STRING_CMD_UNDO_USAGE        "Reverts the most recent change to a task"
-#define STRING_CMD_UNDO_MODS         "The undo command does not allow further task modification."
 #define STRING_CMD_STATS_USAGE       "タスク データベース情報を表示"
 #define STRING_CMD_STATS_CATEGORY    "Category"
 #define STRING_CMD_STATS_DATA        "Data"
@@ -313,7 +312,6 @@
 #define STRING_CMD_STATS_AVG_PEND    "Average time pending"
 #define STRING_CMD_STATS_DESC_LEN    "Average desc length"
 #define STRING_CMD_STATS_CHARS       "{1} 文字"
-#define STRING_CMD_STATS_LAST_SYNC   "Last server synchronization"
 #define STRING_CMD_STATS_BLOCKED     "ブロックされたタスク"
 #define STRING_CMD_STATS_BLOCKING    "Blocking tasks"
 #define STRING_CMD_REPORTS_USAGE     "Lists all supported reports"
@@ -752,7 +750,6 @@
 #define STRING_TLS_INIT_FAIL         "TLS初期化でエラー。 {1}"
 #define STRING_ERROR_DETAILS         "The setting 'calendar.details.report' must contain a single report name."
 #define STRING_ERROR_NO_FILTER       "Command line filters are not supported by this command."
-#define STRING_ERROR_NO_MODS         "Command line modifications are not supported by this command."
 #define STRING_ERROR_CONFIRM_SIGINT  "Interrupted: No changes made."
 #define STRING_ERROR_BAD_STATUS      "The status '{1}' is not valid."
 
