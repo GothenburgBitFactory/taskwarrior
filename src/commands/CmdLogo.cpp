@@ -27,7 +27,6 @@
 #include <cmake.h>
 #include <CmdLogo.h>
 #include <Context.h>
-#include <Filter.h>
 #include <text.h>
 #include <i18n.h>
 
@@ -57,12 +56,6 @@ CmdLogo::CmdLogo ()
 //     extension.<uuid>=<JSON>
 int CmdLogo::execute (std::string& output)
 {
-  Filter filter;
-  if (filter.hasFilter ())
-    throw std::string (STRING_ERROR_NO_FILTER);
-  if (filter.hasModifications ())
-    throw std::string (STRING_ERROR_NO_MODS);
-
   static const char* data[] =
   {
     ".........ABDEF",
