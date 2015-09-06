@@ -45,7 +45,7 @@ CmdCompletionAliases::CmdCompletionAliases ()
   _accepts_filter        = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
-  _category    = Command::Category::internal;
+  _category              = Command::Category::internal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
