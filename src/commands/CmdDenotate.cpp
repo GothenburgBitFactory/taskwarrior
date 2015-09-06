@@ -73,7 +73,7 @@ int CmdDenotate::execute (std::string& output)
   std::string pattern = "";
   for (auto& a : context.cli2._args)
   {
-    if (a.hasTag ("MODIFICATION"))
+    if (a.hasTag ("MISCELLANEOUS"))
     {
       if (pattern != "")
         pattern += ' ';
