@@ -51,16 +51,6 @@ CmdUndo::CmdUndo ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdUndo::execute (std::string& output)
 {
-  Filter filter;
-  if (filter.hasFilter ())
-    throw std::string (STRING_ERROR_NO_FILTER);
-  if (filter.hasModifications ())
-    throw std::string (STRING_ERROR_NO_MODS);
-
-  // Detect attempts to modify the task.
-  if (context.cli2.getWords ().size ())
-    throw std::string (STRING_CMD_UNDO_MODS);
-
   context.tdb2.revert ();
   return 0;
 }
