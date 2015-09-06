@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <algorithm>
 #include <stdlib.h>
 #include <time.h>
 #include <text.h>
@@ -209,7 +210,7 @@ bool namedDates (const std::string& name, Variant& value)
   }
 
   else if (closeEnough ("later",   name, minimum) ||
-           closeEnough ("someday", name, minimum))
+           closeEnough ("someday", name, std::max (minimum, 4)))
   {
     t->tm_hour = t->tm_min = t->tm_sec = 0;
     t->tm_year = 138;
