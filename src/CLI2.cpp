@@ -908,10 +908,13 @@ void CLI2::categorizeArgs ()
     if (a._lextype == Lexer::Type::separator)
       continue;
 
+    // Record that the command has been found, it affects behavior.
     if (a.hasTag ("CMD"))
     {
       afterCommand = true;
     }
+
+    // Skip admin args.
     else if (a.hasTag ("BINARY") ||
              a.hasTag ("RC")     ||
              a.hasTag ("CONFIG"))
@@ -919,42 +922,88 @@ void CLI2::categorizeArgs ()
       // NOP.
     }
 
-    // All MODIFICATION args appear after the command.
+    // All combinations, with all 8 cases handled below.:
+    //
+    //   -- -- --   Error: found an arg, but none expected
+    //   -- -- Mi   task [Mi] <cmd> [Mi]
+    //   -- Mo --   task [Mo] <cmd> [Mo]
+    //   -- Mo Mi   Internally inconsistent
+    //   Fi -- --   task [Fi] <cmd> [Fi]
+    //   Fi -- Mi   task [Fi] <cmd> [Mi]
+    //   Fi Mo --   task [Fi] <cmd> [Mo]
+    //   Fi Mo Mi   Internally inconsistent
+    //
     else if (cmd                             &&
-             cmd->accepts_modifications ()   &&
-             ! cmd->accepts_miscellaneous () &&
-             afterCommand)
-    {
-      a.tag ("MODIFICATION");
-      changes = true;
-    }
-
-    else if (cmd                             &&
-             cmd->accepts_miscellaneous ()   &&
+             ! cmd->accepts_filter ()        &&
              ! cmd->accepts_modifications () &&
-             (afterCommand                   ||
-              ! cmd->accepts_filter ()))
+             ! cmd->accepts_miscellaneous ())
+    {
+      // No commands were expected --> error.
+      throw format (STRING_PARSER_UNEXPECTED_ARG, command, a.attribute ("raw"));
+    }
+    else if (cmd                             &&
+             ! cmd->accepts_filter ()        &&
+             ! cmd->accepts_modifications () &&
+               cmd->accepts_miscellaneous ())
     {
       a.tag ("MISCELLANEOUS");
       changes = true;
     }
-
-    else if (cmd                                &&
-             cmd->accepts_filter ()             &&
-             (! afterCommand                    ||
-              (! cmd->accepts_modifications ()  &&
-               ! cmd->accepts_miscellaneous ())))
+    else if (cmd                             &&
+             ! cmd->accepts_filter ()        &&
+               cmd->accepts_modifications () &&
+             ! cmd->accepts_miscellaneous ())
+    {
+      a.tag ("MODIFICATION");
+      changes = true;
+    }
+    else if (cmd                             &&
+             ! cmd->accepts_filter ()        &&
+               cmd->accepts_modifications () &&
+               cmd->accepts_miscellaneous ())
+    {
+      // Error: internally inconsistent.
+      throw std::string (STRING_UNKNOWN_ERROR);
+    }
+    else if (cmd                             &&
+               cmd->accepts_filter ()        &&
+             ! cmd->accepts_modifications () &&
+             ! cmd->accepts_miscellaneous ())
     {
       a.tag ("FILTER");
       changes = true;
     }
-
-    else if (cmd &&
-             ! cmd->accepts_filter () &&
+    else if (cmd                             &&
+               cmd->accepts_filter ()        &&
              ! cmd->accepts_modifications () &&
+               cmd->accepts_miscellaneous ())
+    {
+      if (!afterCommand)
+        a.tag ("FILTER");
+      else
+        a.tag ("MISCELLANEOUS");
+
+      changes = true;
+    }
+    else if (cmd                             &&
+               cmd->accepts_filter ()        &&
+               cmd->accepts_modifications () &&
              ! cmd->accepts_miscellaneous ())
     {
-      throw format (STRING_PARSER_UNEXPECTED_ARG, command, a.attribute ("raw"));
+      if (!afterCommand)
+        a.tag ("FILTER");
+      else
+        a.tag ("MODIFICATION");
+
+      changes = true;
+    }
+    else if (cmd                             &&
+               cmd->accepts_filter ()        &&
+               cmd->accepts_modifications () &&
+               cmd->accepts_miscellaneous ())
+    {
+      // Error: internally inconsistent.
+      throw std::string (STRING_UNKNOWN_ERROR);
     }
   }
 
