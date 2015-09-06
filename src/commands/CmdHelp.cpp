@@ -29,7 +29,6 @@
 #include <CmdHelp.h>
 #include <ViewText.h>
 #include <Context.h>
-#include <Filter.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
@@ -55,12 +54,6 @@ CmdHelp::CmdHelp ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdHelp::execute (std::string& output)
 {
-  Filter filter;
-  if (filter.hasFilter ())
-    throw std::string (STRING_ERROR_NO_FILTER);
-  if (filter.hasModifications ())
-    throw std::string (STRING_ERROR_NO_MODS);
-
   ViewText view;
   view.width (context.getWidth ());
   view.add (Column::factory ("string.left", ""));
