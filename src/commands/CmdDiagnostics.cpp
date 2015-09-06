@@ -32,7 +32,6 @@
 #include <time.h>
 #include <RX.h>
 #include <Context.h>
-#include <Filter.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
@@ -71,12 +70,6 @@ CmdDiagnostics::CmdDiagnostics ()
 // kind of questions we always have to ask whenever something is wrong.
 int CmdDiagnostics::execute (std::string& output)
 {
-  Filter filter;
-  if (filter.hasFilter ())
-    throw std::string (STRING_ERROR_NO_FILTER);
-  if (filter.hasModifications ())
-    throw std::string (STRING_ERROR_NO_MODS);
-
   Color bold;
   if (context.color ())
     bold = Color ("bold");
