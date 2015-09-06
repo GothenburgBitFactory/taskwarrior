@@ -62,9 +62,6 @@ int CmdExport::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
-  if (filter.hasModifications ())
-    throw std::string (STRING_ERROR_NO_MODS);
-
   // Obey 'limit:N'.
   int rows = 0;
   int lines = 0;
