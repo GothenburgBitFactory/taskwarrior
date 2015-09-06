@@ -77,11 +77,6 @@ int CmdUDAs::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
-  if (filter.hasFilter ())
-    throw std::string (STRING_ERROR_NO_FILTER);
-  if (filter.hasModifications ())
-    throw std::string (STRING_ERROR_NO_MODS);
-
   if (udas.size ())
   {
     std::sort (udas.begin (), udas.end ());
