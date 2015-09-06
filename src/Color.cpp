@@ -100,11 +100,9 @@ Color::Color (const std::string& spec)
 : _value (0)
 {
 #ifdef FEATURE_COLOR
-  std::string modifiable_spec = spec;
-
   // Split spec into words.
   std::vector <std::string> words;
-  split (words, modifiable_spec, ' ');
+  split (words, spec, ' ');
 
   // Construct the color as two separate colors, then blend them later.  This
   // make it possible to declare a color such as "color1 on black", and have
