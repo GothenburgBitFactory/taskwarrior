@@ -644,13 +644,20 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
         // if there is no corresponding id, then a new unique date is created).
         Date when (value.substr (0, gap), dateformat);
 
-        // This guarantees that if more than one annotation has the same date,
-        // that the seconds will be different, thus unique, thus not squashed.
-        // Bug #249
-        when += (const int) annotations.size ();
+        // If the map already contains a annotation for a given timestamp
+        // we need to increment until we find an unused key
+        int timestamp = (int) when.toEpoch ();
 
         std::stringstream name;
-        name << "annotation_" << when.toEpoch ();
+
+        do
+        {
+          name.str ("");  // Clear
+          name << "annotation_" << timestamp;
+          timestamp++;
+        }
+        while (annotations.find (name.str ()) != annotations.end ());
+
         std::string text = trim (value.substr (gap + 4), "\t ");
         annotations.insert (std::make_pair (name.str (), json::decode (text)));
       }
