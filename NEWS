@@ -17,7 +17,7 @@ New configuration options in Taskwarrior 2.5.0
   - The 'json.depends.array' setting controls whether dependencies are exported
     as a JSON array, of a comma-separated string.  Default is 'on'.
     Both variations are imported.
-  - The 'color.uda.<name>.none' is a color that is applieѕ to tasks that do
+  - The 'color.uda.<name>.none' is a color that is applied to tasks that do
     not have a value for the UDA '<name>'.
   - A Cygwin fix means that now we can default 'search.case.sensitive' to 'yes',
     and all platforms are again equal.
@@ -40,7 +40,7 @@ Removed features in 2.5.0
   - The script 'context' was removed, now that context is a core feature.
   - Non­extended forms of ISO-8601 date/time support is removed. This means
     that 'YYYYMMDD' is no longer supported, but 'YYYY-MM-DD' is. For times,
-    'hhmmss' is no longer supported, but 'hh:mm:ss' is. The non-enxtended
+    'hhmmss' is no longer supported, but 'hh:mm:ss' is. The non-extended
     forms all contain sequences of digits that make the identification of
     IDs, UUIDs, and various date/time formats ambiguous.
   - Comma-separated UUID lists are no longer supported.
