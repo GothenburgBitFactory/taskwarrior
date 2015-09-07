@@ -365,7 +365,6 @@ void Eval::evaluatePostfixStack (
         }
         break;
 
-
       case Lexer::Type::op:
         throw std::string (STRING_EVAL_OP_EXPECTED);
         break;
@@ -408,18 +407,6 @@ void Eval::evaluatePostfixStack (
         break;
 
       // Nothing to do.
-/*
-      case Lexer::Type::uuid:
-      case Lexer::Type::hex:
-      case Lexer::Type::url:
-      case Lexer::Type::pair:
-      case Lexer::Type::separator:
-      case Lexer::Type::tag:
-      case Lexer::Type::path:
-      case Lexer::Type::substitution:
-      case Lexer::Type::pattern:
-      case Lexer::Type::word:
-*/
       case Lexer::Type::string:
       default:
         if (_debug)
