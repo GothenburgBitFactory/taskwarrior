@@ -77,7 +77,7 @@ public:
   void addFilter (const std::string& arg);
   void addContextFilter ();
   void prepareFilter ();
-  const std::vector <std::string> getWords (bool filtered = true);
+  const std::vector <std::string> getWords ();
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   std::string getBinary () const;
   std::string getCommand (bool canonical = true) const;

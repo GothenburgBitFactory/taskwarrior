@@ -644,7 +644,7 @@ void CLI2::prepareFilter ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Return all the MISCELLANEOUS args.
-const std::vector <std::string> CLI2::getWords (bool filtered)
+const std::vector <std::string> CLI2::getWords ()
 {
   std::vector <std::string> words;
   for (auto& a : _args)
