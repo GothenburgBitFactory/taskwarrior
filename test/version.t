@@ -59,7 +59,7 @@ class TestVersion(TestCase):
 
     def slurp(self, file="../CMakeLists.txt"):
         number = "\.".join(["[0-9]+"] * 3)
-        ver = re.compile("^set \(PROJECT_VERSION \"({0})\"\)$".format(number))
+        ver = re.compile("^set \(PROJECT_VERSION \"({0}.+)\"\)$".format(number))
         with open(file) as fh:
             for line in fh:
                 if "PROJECT_VERSION" in line:
@@ -112,7 +112,7 @@ class TestVersion(TestCase):
     def test_version_option(self):
         """Verify that  'task --version' returnes something valid"""
         code, out, err = self.t("--version")
-        self.assertRegexpMatches(out, r'^\d\.\d+\.\d+$')
+        self.assertRegexpMatches(out, r'^\d\.\d+\.\d+(\.\w+)?$')
 
 
 if __name__ == "__main__":
