@@ -1324,6 +1324,20 @@ bool Lexer::isAllDigits (const std::string& text)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool Lexer::isDOM (const std::string& text)
+{
+  Lexer lex (text);
+  int count = 0;
+  std::string token;
+  Lexer::Type type;
+  while (lex.token (token, type))
+    ++count;
+
+  return count == 1 &&
+         type == Lexer::Type::dom;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Full implementation of a quoted word.  Includes:
 //   '\''
 //   '"'

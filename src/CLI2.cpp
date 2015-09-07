@@ -1141,7 +1141,7 @@ void CLI2::findStrayModifications ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <name>[.<mod>]:['"][<value>]['"] --> name = value
+// <name>[.<mod>]:['"][<value>]['"] --> name <op> value
 void CLI2::desugarFilterAttributes ()
 {
   bool changes = false;
@@ -1157,6 +1157,8 @@ void CLI2::desugarFilterAttributes ()
       std::string sep   = a.attribute ("separator");
       std::string value = a.attribute ("value");
 
+      // An unquoted string, while equivalent to an empty string, doesn't cause
+      // an operand shortage in eval.
       if (value == "")
         value = "''";
 
@@ -1304,8 +1306,14 @@ void CLI2::desugarFilterAttributes ()
         reconstructed.push_back (lhs);
         reconstructed.push_back (op);
 
+        // Do not modify this construct without full understanding.
         if (values.size () == 1 || ! evalSupported)
+        {
+          if (Lexer::isDOM (rhs.attribute ("raw")))
+            rhs._lextype = Lexer::Type::dom;
+
           reconstructed.push_back (rhs);
+        }
         else
           for (auto& v : values)
             reconstructed.push_back (v);

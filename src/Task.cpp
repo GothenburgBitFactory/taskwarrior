@@ -37,6 +37,7 @@
 #include <algorithm>
 #ifdef PRODUCT_TASKWARRIOR
 #include <Context.h>
+#include <Lexer.h>
 #include <Nibbler.h>
 #endif
 #include <Date.h>

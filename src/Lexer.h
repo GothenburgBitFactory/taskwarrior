@@ -75,6 +75,7 @@ public:
   static bool isHardBoundary                 (int, int);
   static bool isPunctuation                  (int);
   static bool isAllDigits                    (const std::string&);
+  static bool isDOM                          (const std::string&);
   static void dequote                        (std::string&, const std::string& quotes = "'\"");
   static bool wasQuoted                      (const std::string&);
   static bool readWord                       (const std::string&, const std::string&, std::string::size_type&, std::string&);
