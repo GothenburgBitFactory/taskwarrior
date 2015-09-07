@@ -393,7 +393,7 @@ class TestDOMDirectReferencesFiltering(TestCase):
 
     def test_dom_filter_reference_due(self):
         """ DOM reference on due in filter """
-        self.t.export_one("due:1.due")
+        result = self.t.export_one("due:1.due")
         self.assertEqual("matching task", result['description'])
 
     def test_dom_filter_reference_project(self):
