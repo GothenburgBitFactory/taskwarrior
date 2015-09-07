@@ -192,6 +192,7 @@ bool DOM::get (const std::string& name, Variant& value)
 //   annotations.<N>.entry
 //   annotations.<N>.description
 //
+// This code emphasizes speed, hence 'id' being evaluated first.
 bool DOM::get (const std::string& name, const Task& task, Variant& value)
 {
   // <attr>
@@ -210,8 +211,9 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
   // split name on '.'
   std::vector <std::string> elements;
   split (elements, name, '.');
+  auto size = elements.size ();
 
-  if (elements.size () == 1)
+  if (size == 1)
   {
     std::string canonical;
     if (task.size () && context.cli2.canonicalize (canonical, "attribute", name))
@@ -244,7 +246,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
       }
     }
   }
-  else if (elements.size () > 1)
+  else if (size > 1)
   {
     Task ref;
 
@@ -292,7 +294,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
       std::string canonical;
       if (context.cli2.canonicalize (canonical, "attribute", elements[1]))
       {
-        if (elements.size () == 2)
+        if (size == 2)
         {
           Column* column = context.columns[canonical];
           if (column)
@@ -333,7 +335,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
             return true;
           }
         }
-        else if (elements.size () == 3)
+        else if (size == 3)
         {
           // tags.<tag>
           if (canonical == "tags")
@@ -369,7 +371,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
       }
       else if (elements[1] == "annotations")
       {
-        if (elements.size () == 4)
+        if (size == 4)
         {
           std::map <std::string, std::string> annos;
           ref.getAnnotations (annos);
@@ -397,7 +399,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
             }
           }
         }
-        else if (elements.size () == 5)
+        else if (size == 5)
         {
           std::map <std::string, std::string> annos;
           ref.getAnnotations (annos);
