@@ -1,5 +1,8 @@
 2.4.5 () -
 
+- TW-20   Task edit loses annotation precision, causing journal updating code
+          to incorrectly indicate annotions are deleted and recreated (thanks
+          to Cory Donnelly).
 - TW-32   Unable to change annotations via task edit (thanks to Peter De
           Poorter).
 - TW-50   Creation time is lost after editing (thanks to Ben Boeckel).
