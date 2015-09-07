@@ -192,10 +192,11 @@ bool DOM::get (const std::string& name, Variant& value)
 //   annotations.<N>.entry
 //   annotations.<N>.description
 //
-// This code emphasizes speed, hence 'id' being evaluated first.
+// This code emphasizes speed, hence 'id' and 'urgecny' being evaluated first
+// as special cases.
 bool DOM::get (const std::string& name, const Task& task, Variant& value)
 {
-  // <attr>
+  // Quickly deal with the most common cases.
   if (task.size () && name == "id")
   {
     value = Variant (static_cast<int> (task.id));
@@ -211,229 +212,173 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
   // split name on '.'
   std::vector <std::string> elements;
   split (elements, name, '.');
+
+  Task ref (task);
+  Nibbler n (elements[0]);
+  n.save ();
+  int id;
+  std::string uuid;
+
+  // If elements[0] is a UUID, load that task (if necessary), and clobber ref.
+  if (n.getPartialUUID (uuid) && n.depleted ())
+  {
+    if (uuid != ref.get ("uuid"))
+      context.tdb2.get (uuid, ref);
+
+    // Eat elements[0]/UUID.
+    elements.erase (elements.begin ());
+  }
+  else
+  {
+    // If elements[0] is a ID, load that task (if necessary), and clobber ref.
+    if (n.getInt (id) && n.depleted ())
+    {
+      if (id != ref.id)
+        context.tdb2.get (id, ref);
+
+      // Eat elements[0]/ID.
+      elements.erase (elements.begin ());
+    }
+  }
+
   auto size = elements.size ();
 
-  if (size == 1)
+  std::string canonical;
+  if (context.cli2.canonicalize (canonical, "attribute", elements[0]))
   {
-    std::string canonical;
-    if (task.size () && context.cli2.canonicalize (canonical, "attribute", name))
+    // Now that 'ref' is the contextual task, and any ID/UUID is chopped off the
+    // elements vector, DOM resolution is now simple.
+    if (ref.size () && size == 1 && canonical == "id")
     {
-      Column* column = context.columns[canonical];
-      if (column)
+      value = Variant (static_cast<int> (ref.id));
+      return true;
+    }
+
+    if (ref.size () && size == 1 && canonical == "urgency")
+    {
+      value = Variant (ref.urgency_c ());
+      return true;
+    }
+
+    Column* column = context.columns[canonical];
+
+    if (ref.size () && size == 1 && column)
+    {
+      if (column->is_uda () && ! ref.has (canonical))
       {
-        if (column->is_uda () && ! task.has (canonical))
-        {
+        value = Variant ("");
+        return true;
+      }
+
+      if (column->type () == "date")
+      {
+        auto numeric = ref.get_date (canonical);
+        if (numeric == 0)
           value = Variant ("");
+        else
+          value = Variant (numeric, Variant::type_date);
+      }
+      else if (column->type () == "duration" || canonical == "recur")
+      {
+        auto period = ref.get (canonical);
+
+        ISO8601p iso;
+        std::string::size_type cursor = 0;
+        if (iso.parse (period, cursor))
+          value = Variant ((time_t) iso._value, Variant::type_duration);
+        else
+          value = Variant ((time_t) ISO8601p (ref.get (canonical)), Variant::type_duration);
+      }
+      else if (column->type () == "numeric")
+        value = Variant (ref.get_float (canonical));
+      else
+        value = Variant (ref.get (canonical));
+
+      return true;
+    }
+
+    if (ref.size () && size == 2 && canonical == "tags")
+    {
+      value = Variant (ref.hasTag (elements[1]) ? elements[1] : "");
+      return true;
+    }
+
+    if (ref.size () && size == 2 && column && column->type () == "date")
+    {
+      Date date (ref.get_date (canonical));
+           if (elements[1] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
+      else if (elements[1] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
+      else if (elements[1] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
+      else if (elements[1] == "week")    { value = Variant (static_cast<int> (date.week ()));      return true; }
+      else if (elements[1] == "weekday") { value = Variant (static_cast<int> (date.dayOfWeek ())); return true; }
+      else if (elements[1] == "julian")  { value = Variant (static_cast<int> (date.dayOfYear ())); return true; }
+      else if (elements[1] == "hour")    { value = Variant (static_cast<int> (date.hour ()));      return true; }
+      else if (elements[1] == "minute")  { value = Variant (static_cast<int> (date.minute ()));    return true; }
+      else if (elements[1] == "second")  { value = Variant (static_cast<int> (date.second ()));    return true; }
+    }
+  }
+
+  if (ref.size () && size == 3 && elements[0] == "annotations")
+  {
+    std::map <std::string, std::string> annos;
+    ref.getAnnotations (annos);
+
+    int a = strtol (elements[1].c_str (), NULL, 10);
+    int count = 0;
+
+    // Count off the 'a'th annotation.
+    for (auto& i : annos)
+    {
+      if (++count == a)
+      {
+        if (elements[2] == "entry")
+        {
+          // annotation_1234567890
+          // 0          ^11
+          value = Variant ((time_t) strtol (i.first.substr (11).c_str (), NULL, 10), Variant::type_date);
           return true;
         }
-
-        if (column->type () == "date")
+        else if (elements[2] == "description")
         {
-          auto numeric = task.get_date (canonical);
-          if (numeric == 0)
-            value = Variant ("");
-          else
-            value = Variant (numeric, Variant::type_date);
+          value = Variant (i.second);
+          return true;
         }
-        else if (column->type () == "duration" || canonical == "recur")
-          value = Variant ((time_t) ISO8601p (task.get (canonical)), Variant::type_duration);
-        else if (column->type () == "numeric")
-          value = Variant (task.get_float (canonical));
-        else // string
-          value = Variant (task.get (canonical));
-
-        return true;
       }
     }
   }
-  else if (size > 1)
+
+  if (ref.size () && size == 4 && elements[0] == "annotations" && elements[2] == "entry")
   {
-    Task ref;
+    std::map <std::string, std::string> annos;
+    ref.getAnnotations (annos);
 
-    Nibbler n (elements[0]);
-    n.save ();
-    int id;
-    std::string uuid;
-    bool proceed = false;
+    int a = strtol (elements[1].c_str (), NULL, 10);
+    int count = 0;
 
-    if (n.getPartialUUID (uuid) && n.depleted ())
+    // Count off the 'a'th annotation.
+    for (auto& i : annos)
     {
-      if (uuid == task.get ("uuid"))
-        ref = task;
-      else
-        context.tdb2.get (uuid, ref);
-
-      proceed = true;
-    }
-    else
-    {
-      if (n.getInt (id) && n.depleted ())
+      if (++count == a)
       {
-        if (id == task.id)
-          ref = task;
-        else
-          context.tdb2.get (id, ref);
-
-        proceed = true;
-      }
-    }
-
-    if (proceed)
-    {
-      if (elements[1] == "id")
-      {
-        value = Variant (static_cast<int> (ref.id));
-        return true;
-      }
-      else if (elements[1] == "urgency")
-      {
-        value = Variant (ref.urgency_c ());
-        return true;
-      }
-
-      std::string canonical;
-      if (context.cli2.canonicalize (canonical, "attribute", elements[1]))
-      {
-        if (size == 2)
-        {
-          Column* column = context.columns[canonical];
-          if (column)
-          {
-            if (column->is_uda () && ! ref.has (canonical))
-            {
-              value = Variant ("");
-              return true;
-            }
-
-            if (column->type () == "date")
-            {
-              auto numeric = ref.get_date (canonical);
-              if (numeric == 0)
-                value = Variant ("");
-              else
-                value = Variant (numeric, Variant::type_date);
-            }
-            else if (column->type () == "duration")
-            {
-              auto period = ref.get (canonical);
-              context.debug ("ref.get(" + canonical + ") --> " + period);
-
-              ISO8601p iso;
-              std::string::size_type cursor = 0;
-              if (iso.parse (period, cursor))
-                value = Variant ((time_t) iso._value, Variant::type_duration);
-              else
-                value = Variant ((time_t) ISO8601p (ref.get (canonical)), Variant::type_duration);
-
-              context.debug ("value --> " + (std::string) value);
-            }
-            else if (column->type () == "numeric")
-              value = Variant (ref.get_float (canonical));
-            else
-              value = Variant (ref.get (canonical));
-
-            return true;
-          }
-        }
-        else if (size == 3)
-        {
-          // tags.<tag>
-          if (canonical == "tags")
-          {
-            value = Variant (ref.hasTag (elements[2]) ? elements[2] : "");
-            return true;
-          }
-
-          Column* column = context.columns[canonical];
-          if (column && column->type () == "date")
-          {
-            // <date>.year
-            // <date>.month
-            // <date>.day
-            // <date>.week
-            // <date>.weekday
-            // <date>.julian
-            // <date>.hour
-            // <date>.minute
-            // <date>.second
-            Date date (ref.get_date (canonical));
-                 if (elements[2] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
-            else if (elements[2] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
-            else if (elements[2] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
-            else if (elements[2] == "week")    { value = Variant (static_cast<int> (date.week ()));      return true; }
-            else if (elements[2] == "weekday") { value = Variant (static_cast<int> (date.dayOfWeek ())); return true; }
-            else if (elements[2] == "julian")  { value = Variant (static_cast<int> (date.dayOfYear ())); return true; }
-            else if (elements[2] == "hour")    { value = Variant (static_cast<int> (date.hour ()));      return true; }
-            else if (elements[2] == "minute")  { value = Variant (static_cast<int> (date.minute ()));    return true; }
-            else if (elements[2] == "second")  { value = Variant (static_cast<int> (date.second ()));    return true; }
-          }
-        }
-      }
-      else if (elements[1] == "annotations")
-      {
-        if (size == 4)
-        {
-          std::map <std::string, std::string> annos;
-          ref.getAnnotations (annos);
-
-          int a = strtol (elements[2].c_str (), NULL, 10);
-          int count = 0;
-
-          // Count off the 'a'th annotation.
-          for (auto& i : annos)
-          {
-            if (++count == a)
-            {
-              if (elements[3] == "entry")
-              {
-                // annotation_1234567890
-                // 0          ^11
-                value = Variant ((time_t) strtol (i.first.substr (11).c_str (), NULL, 10), Variant::type_date);
-                return true;
-              }
-              else if (elements[3] == "description")
-              {
-                value = Variant (i.second);
-                return true;
-              }
-            }
-          }
-        }
-        else if (size == 5)
-        {
-          std::map <std::string, std::string> annos;
-          ref.getAnnotations (annos);
-
-          int a = strtol (elements[2].c_str (), NULL, 10);
-          int count = 0;
-
-          // Count off the 'a'th annotation.
-          for (auto& i : annos)
-          {
-            if (++count == a)
-            {
-              // <annotations>.<N>.entry.year
-              // <annotations>.<N>.entry.month
-              // <annotations>.<N>.entry.day
-              // <annotations>.<N>.entry.week
-              // <annotations>.<N>.entry.weekday
-              // <annotations>.<N>.entry.julian
-              // <annotations>.<N>.entry.hour
-              // <annotations>.<N>.entry.minute
-              // <annotations>.<N>.entry.second
-              Date date (i.first.substr (11));
-                   if (elements[4] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
-              else if (elements[4] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
-              else if (elements[4] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
-              else if (elements[4] == "week")    { value = Variant (static_cast<int> (date.week ()));      return true; }
-              else if (elements[4] == "weekday") { value = Variant (static_cast<int> (date.dayOfWeek ())); return true; }
-              else if (elements[4] == "julian")  { value = Variant (static_cast<int> (date.dayOfYear ())); return true; }
-              else if (elements[4] == "hour")    { value = Variant (static_cast<int> (date.hour ()));      return true; }
-              else if (elements[4] == "minute")  { value = Variant (static_cast<int> (date.minute ()));    return true; }
-              else if (elements[4] == "second")  { value = Variant (static_cast<int> (date.second ()));    return true; }
-            }
-          }
-        }
+        // <annotations>.<N>.entry.year
+        // <annotations>.<N>.entry.month
+        // <annotations>.<N>.entry.day
+        // <annotations>.<N>.entry.week
+        // <annotations>.<N>.entry.weekday
+        // <annotations>.<N>.entry.julian
+        // <annotations>.<N>.entry.hour
+        // <annotations>.<N>.entry.minute
+        // <annotations>.<N>.entry.second
+        Date date (i.first.substr (11));
+             if (elements[3] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
+        else if (elements[3] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
+        else if (elements[3] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
+        else if (elements[3] == "week")    { value = Variant (static_cast<int> (date.week ()));      return true; }
+        else if (elements[3] == "weekday") { value = Variant (static_cast<int> (date.dayOfWeek ())); return true; }
+        else if (elements[3] == "julian")  { value = Variant (static_cast<int> (date.dayOfYear ())); return true; }
+        else if (elements[3] == "hour")    { value = Variant (static_cast<int> (date.hour ()));      return true; }
+        else if (elements[3] == "minute")  { value = Variant (static_cast<int> (date.minute ()));    return true; }
+        else if (elements[3] == "second")  { value = Variant (static_cast<int> (date.second ()));    return true; }
       }
     }
   }
