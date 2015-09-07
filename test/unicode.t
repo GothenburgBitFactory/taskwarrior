@@ -90,7 +90,7 @@ class TestUnicode(TestCase):
         # Something in the launch code converts \\ --> \.
         # Taskwarrior sees \.
         #
-        #code, out, err = self.t("add rc.debug.parser=3 Price \\\\u20A43")
+        #code, out, err = self.t("add rc.debug.parser=2 Price \\\\u20A43")
         #self.tap(err)
 
         self.t("add Price \\\\u20A43")

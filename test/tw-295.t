@@ -47,7 +47,7 @@ class TestBug295(TestCase):
         # Taskwarrior sees /\/twp\//TWO/.
         #
         # Verify using:
-        # code, out, err = self.t('rc.debug.parser=3 1 modify /\\\\/two\\\\//TWO/')
+        # code, out, err = self.t('rc.debug.parser=2 1 modify /\\\\/two\\\\//TWO/')
         # self.tap(err)
 
         self.t('1 modify /\\\\/two\\\\//TWO/')

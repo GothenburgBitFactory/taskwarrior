@@ -79,7 +79,7 @@ class TestBug1472(TestCase):
 
     def test_startswith_regex(self):
         """Verify .startswith works with regexes"""
-        code, out, err = self.t("rc.regex:on rc.debug.parser=3 description.startswith:A ls")
+        code, out, err = self.t("rc.regex:on description.startswith:A ls")
         self.assertIn("A to Z", out)
         self.assertNotIn("Z to A", out)
 

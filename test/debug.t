@@ -53,6 +53,18 @@ class TestDebugMode(TestCase):
 
     def test_debug_parser_output(self):
         """Verify debug parser mode generates interesting output"""
+        code, out, err = self.t("list rc.debug.parser=2")
+
+        # Debug
+        self.assertIn("Config::load", err)
+        self.assertIn("Filtered 2 tasks --> 2 tasks [pending only]", err)
+        self.assertIn("Perf task", err)
+
+        # Parser
+        self.assertIn("CLI2::prepareFilter", err)
+
+    def test_debug_parser_eval_output(self):
+        """Verify debug parser + eval mode generates interesting output"""
         code, out, err = self.t("list rc.debug.parser=3")
 
         # Debug
