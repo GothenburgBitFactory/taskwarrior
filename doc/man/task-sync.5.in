@@ -1,4 +1,4 @@
-.TH task-sync 5 2015-05-10 "${PACKAGE_STRING}" "User Manuals"
+.TH task-sync 5 2015-09-07 "${PACKAGE_STRING}" "User Manuals"
 
 .SH NAME
 task-sync \- A discussion and tutorial for the various task(1) data
