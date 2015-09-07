@@ -450,7 +450,7 @@ int Context::dispatch (std::string &out)
       cli2.prepareFilter ();
     }
 
-    // With rc.debug.parser == 3, there are more tree dumps than you might want,
+    // With rc.debug.parser == 2, there are more tree dumps than you might want,
     // but we need the rc.debug.parser == 1 case covered also, with the final
     // tree.
     if (config.getBoolean ("debug") &&

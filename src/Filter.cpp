@@ -89,7 +89,7 @@ void Filter::subset (const std::vector <Task>& input, std::vector <Task>& output
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (context.config.getInteger ("debug.parser") >= 2 ? true : false);
+    eval.debug (context.config.getInteger ("debug.parser") >= 3 ? true : false);
     eval.compileExpression (precompiled);
 
     for (auto& task : input)
@@ -142,7 +142,7 @@ void Filter::subset (std::vector <Task>& output)
 
     // Debug output from Eval during compilation is useful.  During evaluation
     // it is mostly noise.
-    eval.debug (context.config.getInteger ("debug.parser") >= 2 ? true : false);
+    eval.debug (context.config.getInteger ("debug.parser") >= 3 ? true : false);
     eval.compileExpression (precompiled);
 
     output.clear ();
