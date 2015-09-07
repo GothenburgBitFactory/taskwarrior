@@ -2003,19 +2003,27 @@ void Task::modify (modType type, bool text_required /* = false */)
               ! column->modifiable ())
             throw format (STRING_INVALID_MOD, name, value);
 
-          // Try to evaluate 'value'.  It might work.
+          // String type attributes only get DOM resolution, no eval.
           Variant evaluatedValue;
-          try
-          { 
-            Eval e;
-            e.addSource (domSource);
-            e.addSource (namedDates);
-            contextTask = *this;
-            e.evaluateInfixExpression (value, evaluatedValue);
-          }
+          if (name != "project" || Lexer::isDOM (value))
+          {
+            // Try to evaluate 'value'.  It might work.
+            try
+            {
+              Eval e;
+              e.addSource (domSource);
+              e.addSource (namedDates);
+              contextTask = *this;
+              e.evaluateInfixExpression (value, evaluatedValue);
+            }
 
-          // Ah, fuck it.
-          catch (...)
+            // Ah, fuck it.
+            catch (...)
+            {
+              evaluatedValue = Variant (value);
+            }
+          }
+          else
           {
             evaluatedValue = Variant (value);
           }
@@ -2160,7 +2168,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             ++modCount;
           }
 
-          // String type columns are not eval'd.
+          // String type columns are not eval'd.  Welll, not much.
           else if (column->type () == "string")
           {
             std::string strValue = (std::string) evaluatedValue;
