@@ -10,7 +10,7 @@ How to Build Taskwarrior
   Obtain and build code:
     $ git clone https://git.tasktools.org/scm/tm/task.git task.git
     $ cd task.git
-    $ git checkout 2.4.5                 # Latest dev branch
+    $ git checkout 2.5.0                 # Latest dev branch
     $ cmake -DCMAKE_BUILD_TYPE=debug .   # debug or release. Default: neither.
     $ make VERBOSE=1                     # Shows details
 
@@ -160,9 +160,9 @@ Current Codebase Condition
   'master' branch:
     - 2.4.4 Current release, locked.
 
-  '2.4.5' branch:
+  '2.5.0' branch:
     - Current development branch no plans yet.
 
 ---
 
-2015-08-14 Updated for 2.4.5
+2015-09-07 Updated for 2.5.0
