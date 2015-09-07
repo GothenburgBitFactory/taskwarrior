@@ -29,6 +29,7 @@
 import sys
 import os
 import unittest
+import platform
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -230,12 +231,17 @@ class TestColorRulesMerging(TestCase):
 
         self.t('add due:today +home hometask')  # Task that matches both color rules
 
+    @unittest.skipIf('CYGWIN' in platform.system(), 'Skipping color merge test for Cygwin')
+    @unittest.skipIf('FREEBSD' in platform.system(), 'Skipping color merge test for FREEBSD')
     @unittest.expectedFailure
     def test_colors_merge(self):
         """Tests whether colors merge"""
         code, out, err = self.t('1 info')
         self.assertIn('\x1b[31;47mhometask', out)  # Red on white
 
+    @unittest.skipIf('CYGWIN' in platform.system(), 'Skipping color merge test for Cygwin')
+    @unittest.skipIf('FREEBSD' in platform.system(), 'Skipping color merge test for FREEBSD')
+    @unittest.expectedFailure
     @unittest.expectedFailure
     def test_colors_merge_off(self):
         """No color merge behaviour with rule.color.merge=no"""
