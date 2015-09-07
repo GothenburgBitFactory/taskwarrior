@@ -230,11 +230,13 @@ class TestColorRulesMerging(TestCase):
 
         self.t('add due:today +home hometask')  # Task that matches both color rules
 
+    @unittest.expectedFailure
     def test_colors_merge(self):
         """Tests whether colors merge"""
         code, out, err = self.t('1 info')
         self.assertIn('\x1b[31;47mhometask', out)  # Red on white
 
+    @unittest.expectedFailure
     def test_colors_merge_off(self):
         """No color merge behaviour with rule.color.merge=no"""
         self.t.config('rule.color.merge', 'no')
