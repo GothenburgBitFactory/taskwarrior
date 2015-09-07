@@ -83,11 +83,6 @@ class TestTaskEdit(TestCase):
         # Does not fail
         self.t("1 edit")
 
-    def test_command_line_modifications(self):
-        """Verify that the 'edit' command does not accept command line modifications"""
-        code, out, err = self.t.runError("1 edit +foo")
-        self.assertIn("Command line modifications are not supported by this command.", err)
-
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
