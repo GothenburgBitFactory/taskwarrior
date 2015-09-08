@@ -143,6 +143,8 @@
 - TW-1671 task add: segfault with foo-bar:1 (thanks to Daniel Shahaf).
 - TW-1675 project.not:something doesn't exclude project:something.subprojects
           (thanks to Ander).
+- TW-1684 make no-date > has-date for all date attributes (thanks to David
+          Patrick).
 - TW-1687 task add due:som appears to be interpreted as 'someday' (thanks to
           Alan Young).
 - Prevent potential task duplication during import for non-pending tasks.
