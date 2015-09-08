@@ -131,26 +131,8 @@ static bool sort_compare (int left, int right)
     }
 
     // Due Date.
-    else if (field == "due")
-    {
-      const std::string& left_string  = (*global_data)[left].get_ref  (field);
-      const std::string& right_string = (*global_data)[right].get_ref (field);
-
-      if (left_string != "" && right_string == "")
-        return true;
-
-      if (left_string == "" && right_string != "")
-        return false;
-
-      if (left_string == right_string)
-        continue;
-
-      return ascending ? (left_string < right_string)
-                       : (left_string > right_string);
-    }
-
-    // Date.
-    else if (field == "end"      ||
+    else if (field == "due"      ||
+             field == "end"      ||
              field == "entry"    ||
              field == "start"    ||
              field == "until"    ||
@@ -160,6 +142,12 @@ static bool sort_compare (int left, int right)
     {
       const std::string& left_string  = (*global_data)[left].get_ref  (field);
       const std::string& right_string = (*global_data)[right].get_ref (field);
+
+      if (left_string != "" && right_string == "")
+        return true;
+
+      if (left_string == "" && right_string != "")
+        return false;
 
       if (left_string == right_string)
         continue;
@@ -243,6 +231,12 @@ static bool sort_compare (int left, int right)
       {
         const std::string& left_string  = (*global_data)[left].get_ref  (field);
         const std::string& right_string = (*global_data)[right].get_ref (field);
+
+        if (left_string != "" && right_string == "")
+          return true;
+
+        if (left_string == "" && right_string != "")
+          return false;
 
         if (left_string == right_string)
           continue;

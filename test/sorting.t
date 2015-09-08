@@ -90,7 +90,7 @@ class TestSorting(TestCase):
         ('project-',                        ('(?:three.+four|four.+three).+two.+one.+zero',)),
         ('project+',                        ('zero.+one.+two.+(?:three.+four|four.+three)',)),
         ('start-',                          ('one.+zero', 'one.+two', 'one.+three', 'one.+four',)),
-        ('start+',                          ('zero.+one', 'two.+one', 'three.+one', 'four.+one',)),
+        ('start+',                          ('one.+zero', 'one.+two', 'one.+three', 'one.+four',)),
         ('due-',                            ('three.+(?:two.+four|four.+two).+one.+zero',)),
         ('due+',                            ('one.+(?:two.+four|four.+two).+three.+zero',)),
         ('description-',                    ('zero.+two.+three.+one.+four',)),
@@ -103,9 +103,9 @@ class TestSorting(TestCase):
         ('priority+,project+',              ('zero.+three.+two.+one.+four',)),
 
         ('priority-,start-',                ('one.+four.+two.+three.+zero',)),
-        ('priority-,start+',                ('four.+one.+two.+three.+zero',)),
+        ('priority-,start+',                ('one.+four.+two.+three.+zero',)),
         ('priority+,start-',                ('zero.+three.+two.+one.+four',)),
-        ('priority+,start+',                ('zero.+three.+two.+four.+one',)),
+        ('priority+,start+',                ('zero.+three.+two.+one.+four',)),
 
         ('priority-,due-',                  ('four.+one.+two.+three.+zero',)),
         ('priority-,due+',                  ('one.+four.+two.+three.+zero',)),
@@ -139,23 +139,23 @@ class TestSorting(TestCase):
 
         ('start-,priority-',                ('one.+four.+two.+three.+zero',)),
         ('start-,priority+',                ('one.+zero.+three.+two.+four',)),
-        ('start+,priority-',                ('four.+two.+three.+zero.+one',)),
-        ('start+,priority+',                ('zero.+three.+two.+four.+one',)),
+        ('start+,priority-',                ('one.+four.+two.+three.+zero',)),
+        ('start+,priority+',                ('one.+zero.+three.+two.+four',)),
 
         ('start-,project-',                 ('one.+(?:three.+four|four.+three).+two.+zero',)),
         ('start-,project+',                 ('one.+zero.+two.+(?:three.+four|four.+three)',)),
-        ('start+,project-',                 ('(?:three.+four|four.+three).+two.+zero.+one',)),
-        ('start+,project+',                 ('zero.+two.+(?:three.+four|four.+three).+one',)),
+        ('start+,project-',                 ('one.+(?:three.+four|four.+three).+two.+zero',)),
+        ('start+,project+',                 ('one.+zero.+two.+(?:three.+four|four.+three)',)),
 
         ('start-,due-',                     ('one.+three.+(?:four.+two|two.+four).+zero',)),
         ('start-,due+',                     ('one.+(?:four.+two|two.+four).+three.+zero',)),
-        ('start+,due-',                     ('three.+(?:four.+two|two.+four).+zero.+one',)),
-        ('start+,due+',                     ('(?:four.+two|two.+four).+three.+zero.+one',)),
+        ('start+,due-',                     ('one.+three.+(?:four.+two|two.+four).+zero',)),
+        ('start+,due+',                     ('one.+(?:four.+two|two.+four).+three.+zero',)),
 
         ('start-,description-',             ('one.+zero.+two.+three.+four',)),
         ('start-,description+',             ('one.+four.+three.+two.+zero',)),
-        ('start+,description-',             ('zero.+two.+three.+four.+one',)),
-        ('start+,description+',             ('four.+three.+two.+zero.+one',)),
+        ('start+,description-',             ('one.+zero.+two.+three.+four',)),
+        ('start+,description+',             ('one.+four.+three.+two.+zero',)),
 
         ('due-,priority-',                  ('three.+four.+two.+one.+zero',)),
         ('due-,priority+',                  ('three.+two.+four.+one.+zero',)),
@@ -198,7 +198,7 @@ class TestSorting(TestCase):
         ('description+,due+',               ('four.+one.+three.+two.+zero',)),
 
         # Four sort columns.
-        ('start+,project+,due+,priority+',  ('zero.+two.+four.+three.+one',)),
+        ('start+,project+,due+,priority+',  ('one.+zero.+two.+four.+three',)),
         ('project+,due+,priority+,start+',  ('zero.+one.+two.+four.+three',)),
     )
 
