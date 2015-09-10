@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <algorithm>
 #include <Context.h>
 #include <Column.h>
 #include <ColDepends.h>
