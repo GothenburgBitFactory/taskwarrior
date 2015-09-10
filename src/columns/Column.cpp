@@ -248,6 +248,16 @@ void Column::renderHeader (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Column::setStyle (const std::string& style)
+{
+  if (style != "default" &&
+      std::find (_styles.begin (), _styles.end (), style) == _styles.end ())
+    throw format (STRING_COLUMN_BAD_FORMAT, _name, style);
+
+  _style = style;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool Column::validate (std::string& input)
 {
   return input.length () ? true : false;

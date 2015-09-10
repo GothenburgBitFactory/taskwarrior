@@ -30,7 +30,7 @@
 - TW-1430 Slashes in project names don't work (thanks to Richard Boß).
 - TW-1432 start/stop can be issued on completed tasks  (thanks to Renato Alves).
 - TW-1440 "task import" from STDIN (thanks to Renato Alves).
-- TW-1448 Add possibility to modify newest task (thansk to Jens Erat).
+- TW-1448 Add possibility to modify newest task (thanks to Jens Erat).
 - TW-1452 The uuid:<uuid> filter does not work (thanks to Tomas Babej).
 - TW-1454 Redundant dependency should not stop modification  (thanks to Tomas
           Babej).
@@ -143,6 +143,7 @@
 - TW-1671 task add: segfault with foo-bar:1 (thanks to Daniel Shahaf).
 - TW-1675 project.not:something doesn't exclude project:something.subprojects
           (thanks to Ander).
+- TW-1678 segfault in ~ViewTask() (thanks to Daniel Shahaf).
 - TW-1684 make no-date > has-date for all date attributes (thanks to David
           Patrick).
 - TW-1687 task add due:som appears to be interpreted as 'someday' (thanks to

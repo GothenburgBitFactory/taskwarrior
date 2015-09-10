@@ -53,7 +53,7 @@ public:
   std::vector <std::string> styles () const   { return _styles;      }
   std::vector <std::string> examples () const { return _examples;    }
 
-  virtual void setStyle  (const std::string& value) { _style = value;  }
+  virtual void setStyle  (const std::string&);
   virtual void setLabel  (const std::string& value) { _label = value;  }
   virtual void setReport (const std::string& value) { _report = value; }
 
