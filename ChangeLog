@@ -144,6 +144,8 @@
 - TW-1675 project.not:something doesn't exclude project:something.subprojects
           (thanks to Ander).
 - TW-1678 segfault in ~ViewTask() (thanks to Daniel Shahaf).
+- TW-1683 Dom reference for project not properly evaluated (thanks to Tomas
+          Babej).
 - TW-1684 make no-date > has-date for all date attributes (thanks to David
           Patrick).
 - TW-1687 task add due:som appears to be interpreted as 'someday' (thanks to
