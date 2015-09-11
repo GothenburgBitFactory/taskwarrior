@@ -702,6 +702,28 @@ class TestBug1600(TestCase):
         self.assertNotIn("[foobar2]", out)
 
 
+class TestBug1656(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_report_filter_parenthesized(self):
+        """default report filter parenthesized"""
+        self.t('add task1 +work')
+        self.t('add task2 +work')
+        self.t('1 done')
+
+        # Sanity check, next does not display completed tasks
+        code, out, err = self.t("next")
+        self.assertNotIn("task1", out)
+        self.assertIn("task2", out)
+
+        # The or in the filter should not cause ignoring the implicit
+        # report filter
+        code, out, err = self.t("next +home or +work")
+        self.assertNotIn("task1", out)
+        self.assertIn("task2", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
