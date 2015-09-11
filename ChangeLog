@@ -5,6 +5,7 @@
           to Cory Donnelly).
 - TW-32   Unable to change annotations via task edit (thanks to Peter De
           Poorter).
+- TW-46   Circular dependency detection broken for missing tasks.
 - TW-50   Creation time is lost after editing (thanks to Ben Boeckel).
 - TW-148  default.command options (thanks to David Patrick).
 - TW-158  JSON export should model dependencies as array (thanks to Nicholas E.
