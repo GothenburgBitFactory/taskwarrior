@@ -177,7 +177,7 @@ class TestRunner(object):
         self.tap.flush()
 
         log.debug("Calling 'problems --summary' for report")
-        call([os.path.abspath("problems"), "--summary", cmd_args.tapfile])
+        return call([os.path.abspath("problems"), "--summary", cmd_args.tapfile])
 
 
 def parse_args():
@@ -197,8 +197,12 @@ def parse_args():
 def main():
     runner = TestRunner()
     runner.start()
+
+    # If we're producing summary report, propagate the return code
     if not cmd_args.verbose:
-        runner.show_report()
+        return runner.show_report()
+    else:
+        return 0
 
 
 if __name__ == "__main__":
@@ -222,7 +226,7 @@ if __name__ == "__main__":
     log.debug("Parsed commandline arguments: %s", cmd_args)
 
     try:
-        main()
+        sys.exit(main())
     except Exception as e:
         log.exception(e)
         sys.exit(1)

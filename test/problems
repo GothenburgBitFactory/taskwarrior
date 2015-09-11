@@ -127,3 +127,7 @@ if __name__ == "__main__":
         print()
         print(color(expected_str, "yellow"))
         print_category(expected)
+
+    # If we encoutered any failures, return non-zero code
+    if sum(errors.values()):
+        sys.exit(1)
