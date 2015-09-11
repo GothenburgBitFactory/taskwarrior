@@ -518,9 +518,9 @@ void CLI2::demotion ()
     }
   }
 
-  if (changes)
-    if (context.config.getInteger ("debug.parser") >= 2)
-      context.debug (dump ("CLI2::analyze demotion"));
+  if (changes &&
+      context.config.getInteger ("debug.parser") >= 2)
+    context.debug (dump ("CLI2::analyze demotion"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
