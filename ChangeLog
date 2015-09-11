@@ -150,6 +150,7 @@
           Patrick).
 - TW-1687 task add due:som appears to be interpreted as 'someday' (thanks to
           Alan Young).
+- TW-1688 task fails to import (thanks to Rainer Müller).
 - Prevent potential task duplication during import for non-pending tasks.
 - Show the active context in "context list", if any is active.
 - Fix "task edit" dropping annotation text after newlines.

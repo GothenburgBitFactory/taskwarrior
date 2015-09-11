@@ -42,7 +42,6 @@ class TestBug46(TestCase):
         self.t("add two")
         self.t("add three")
 
-    @unittest.expectedFailure
     def test_bug46(self):
         """Circular dependency detection broken by deletion of completed.data"""
         self.t("1 mod dep:2")
