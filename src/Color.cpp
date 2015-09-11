@@ -74,14 +74,12 @@ Color::Color (const Color& other)
 Color::Color (unsigned int c)
 : _value (0)
 {
-#ifdef FEATURE_COLOR
   if (!(c & _COLOR_HASFG)) _value &= ~_COLOR_FG;
   if (!(c & _COLOR_HASBG)) _value &= ~_COLOR_BG;
 
   _value = c & (_COLOR_256 | _COLOR_HASBG | _COLOR_HASFG |_COLOR_UNDERLINE |
                 _COLOR_INVERSE | _COLOR_BOLD | _COLOR_BRIGHT | _COLOR_BG |
                 _COLOR_FG);
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +97,6 @@ Color::Color (unsigned int c)
 Color::Color (const std::string& spec)
 : _value (0)
 {
-#ifdef FEATURE_COLOR
   // Split spec into words.
   std::vector <std::string> words;
   split (words, spec, ' ');
@@ -224,27 +221,23 @@ Color::Color (const std::string& spec)
   // Now combine the fg and bg into a single color.
   _value = fg_value;
   blend (Color (bg_value));
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Color::Color (color_id fg)
 : _value (0)
 {
-#ifdef FEATURE_COLOR
   if (fg != Color::nocolor)
   {
     _value |= _COLOR_HASFG;
     _value |= fg;
   }
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Color::Color (color_id fg, color_id bg)
 : _value (0)
 {
-#ifdef FEATURE_COLOR
   if (bg != Color::nocolor)
   {
     _value |= _COLOR_HASBG;
@@ -256,14 +249,12 @@ Color::Color (color_id fg, color_id bg)
     _value |= _COLOR_HASFG;
     _value |= fg;
   }
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 Color::Color (color_id fg, color_id bg, bool underline, bool bold, bool bright)
 : _value (0)
 {
-#ifdef FEATURE_COLOR
   _value |= ((underline ? 1 : 0) << 18)
          |  ((bold      ? 1 : 0) << 17)
          |  ((bright    ? 1 : 0) << 16);
@@ -279,7 +270,6 @@ Color::Color (color_id fg, color_id bg, bool underline, bool bold, bool bright)
     _value |= _COLOR_HASFG;
     _value |= fg;
   }
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -300,7 +290,6 @@ Color& Color::operator= (const Color& other)
 Color::operator std::string () const
 {
   std::string description;
-#ifdef FEATURE_COLOR
   if (_value & _COLOR_BOLD) description += "bold";
 
   if (_value & _COLOR_UNDERLINE)
@@ -321,7 +310,6 @@ Color::operator std::string () const
 
     description += " " + bg ();
   }
-#endif
 
   return description;
 }
@@ -337,7 +325,6 @@ Color::operator int () const
 // other take precedence.
 void Color::blend (const Color& other)
 {
-#ifdef FEATURE_COLOR
   if (!other.nontrivial ())
     return;
 
@@ -389,13 +376,11 @@ void Color::blend (const Color& other)
       _value |= (c._value & _COLOR_BG);        // Apply other color.
     }
   }
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Color::upgrade ()
 {
-#ifdef FEATURE_COLOR
   if (!(_value & _COLOR_256))
   {
     if (_value & _COLOR_HASFG)
@@ -418,7 +403,6 @@ void Color::upgrade ()
 
     _value |= _COLOR_256;
   }
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -435,7 +419,6 @@ void Color::upgrade ()
 //   256 bg               \033[48;5;Nm
 std::string Color::colorize (const std::string& input)
 {
-#ifdef FEATURE_COLOR
   if (!nontrivial ())
     return input;
 
@@ -500,7 +483,6 @@ std::string Color::colorize (const std::string& input)
     result << "m" << input << "\033[0m";
     return result.str ();
   }
-#endif
 
   return input;
 }
@@ -509,7 +491,6 @@ std::string Color::colorize (const std::string& input)
 // Remove color codes from a string.
 std::string Color::strip (const std::string& input)
 {
-#ifdef FEATURE_COLOR
   int length = input.length ();
   bool inside = false;
   std::string output;
@@ -530,20 +511,13 @@ std::string Color::strip (const std::string& input)
   }
 
   return output;
-#else
-  return input;
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 std::string Color::colorize (const std::string& input, const std::string& spec)
 {
-#ifdef FEATURE_COLOR
   Color c (spec);
   return c.colorize (input);
-#else
-  return input;
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -565,7 +539,6 @@ int Color::find (const std::string& input)
 ////////////////////////////////////////////////////////////////////////////////
 std::string Color::fg () const
 {
-#ifdef FEATURE_COLOR
   int index = _value & _COLOR_FG;
 
   if (_value & _COLOR_256)
@@ -583,7 +556,6 @@ std::string Color::fg () const
       if (allColors[i].index == index)
         return allColors[i].english_name;
   }
-#endif
 
   return "";
 }
@@ -591,7 +563,6 @@ std::string Color::fg () const
 ////////////////////////////////////////////////////////////////////////////////
 std::string Color::bg () const
 {
-#ifdef FEATURE_COLOR
   int index = (_value & _COLOR_BG) >> 8;
 
   if (_value & _COLOR_256)
@@ -609,7 +580,6 @@ std::string Color::bg () const
       if (allColors[i].index == index)
         return allColors[i].english_name;
   }
-#endif
 
   return "";
 }

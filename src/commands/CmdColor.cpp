@@ -57,7 +57,6 @@ int CmdColor::execute (std::string& output)
 {
   int rc = 0;
 
-#ifdef FEATURE_COLOR
   // Get the non-attribute, non-fancy command line arguments.
   bool legend = false;
   std::vector <std::string> words = context.cli2.getWords ();
@@ -263,10 +262,6 @@ int CmdColor::execute (std::string& output)
   }
 
   output = out.str ();
-#else
-  output = "Color not supported.\n";
-#endif
-
   return rc;
 }
 

@@ -27,8 +27,6 @@
 #ifndef INCLUDED_MAIN
 #define INCLUDED_MAIN
 
-#define FEATURE_COLOR  1                               // Enable color.
-
 #include <string>
 #include <vector>
 #include <map>
