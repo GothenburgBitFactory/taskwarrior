@@ -555,23 +555,22 @@ void CLI2::analyze ()
 // Process raw string.
 void CLI2::addFilter (const std::string& arg)
 {
-  std::vector <std::string> filter;
-
   if (arg.length ())
+  {
+    std::vector <std::string> filter;
     filter.push_back ("(");
 
-  std::string lexeme;
-  Lexer::Type type;
-  Lexer lex (arg);
+    std::string lexeme;
+    Lexer::Type type;
+    Lexer lex (arg);
 
-  while (lex.token (lexeme, type))
-    filter.push_back (lexeme);
+    while (lex.token (lexeme, type))
+      filter.push_back (lexeme);
 
-  if (arg.length ())
     filter.push_back (")");
-
-  add (filter);
-  analyze ();
+    add (filter);
+    analyze ();
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
