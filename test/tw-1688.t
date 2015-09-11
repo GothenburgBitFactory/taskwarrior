@@ -12,9 +12,7 @@
 task add one
 task log two depends:1
 
-JSON=$(mktemp /tmp/tw-1688.XXXXXXXXXX)
-task /two/ export > $JSON
+task /two/ export > JSON
 
-rm $TASKDATA/pending.data $TASKDATA/completed.data
-task import $JSON
-
+rm pending.data completed.data
+task import JSON
