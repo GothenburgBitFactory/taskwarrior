@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <iostream>
+#include <string>
 #include <set>
 #include <algorithm>
 #include <Context.h>
