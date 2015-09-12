@@ -91,6 +91,7 @@ private:
   void aliasExpansion ();
   void canonicalizeNames ();
   void categorizeArgs ();
+  void parenthesizeOriginalFilter ();
   bool findCommand ();
   bool exactMatch (const std::string&, const std::string&) const;
   void desugarFilterTags ();
@@ -109,7 +110,7 @@ private:
 public:
   std::multimap <std::string, std::string>           _entities;
   std::map <std::string, std::string>                _aliases;
-  std::vector <std::string>                          _original_args;
+  std::vector <A2>                                   _original_args;
   std::vector <A2>                                   _args;
 
   std::vector <std::pair <std::string, std::string>> _id_ranges;

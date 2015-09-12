@@ -344,7 +344,7 @@ int CmdCalendar::execute (std::string& output)
       //                 calendar --> taskendar
 
       // If the executable was "cal" or equivalent, replace it with "task".
-      std::string executable = context.cli2._original_args[0];
+      std::string executable = context.cli2._original_args[0].attribute ("raw");
       auto cal = executable.find ("cal");
       if (cal != std::string::npos)
         executable = executable.substr (0, cal) + PACKAGE;

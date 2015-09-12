@@ -360,7 +360,9 @@ void CLI2::entity (const std::string& category, const std::string& name)
 // Capture a single argument.
 void CLI2::add (const std::string& argument)
 {
-  _original_args.push_back (trim (argument));
+  A2 arg (trim (argument), Lexer::Type::word);
+  arg.tag ("ORIGINAL");
+  _original_args.push_back (arg);
 
   // Adding a new argument invalidates prior analysis.
   _args.clear ();
@@ -370,11 +372,11 @@ void CLI2::add (const std::string& argument)
 // Capture a set of arguments, inserted immediately after the binary.
 void CLI2::add (const std::vector <std::string>& arguments)
 {
-  std::vector <std::string> replacement;
+  std::vector <A2> replacement;
   replacement.push_back (_original_args[0]);
 
   for (auto& arg : arguments)
-    replacement.push_back (arg);
+    replacement.push_back (A2 (arg, Lexer::Type::word));
 
   for (unsigned int i = 1; i < _original_args.size (); ++i)
     replacement.push_back (_original_args[i]);
@@ -396,7 +398,7 @@ void CLI2::handleArg0 ()
 {
   // Capture arg0 separately, because it is the command that was run, and could
   // need special handling.
-  std::string raw = _original_args[0];
+  std::string raw = _original_args[0].attribute ("raw");
   A2 a (raw, Lexer::Type::word);
   a.tag ("BINARY");
 
@@ -435,11 +437,11 @@ void CLI2::lexArguments ()
   bool terminated = false;
   for (unsigned int i = 1; i < _original_args.size (); ++i)
   {
-    bool quoted = Lexer::wasQuoted (_original_args[i]);
+    bool quoted = Lexer::wasQuoted (_original_args[i].attribute ("raw"));
 
     std::string lexeme;
     Lexer::Type type;
-    Lexer lex (_original_args[i]);
+    Lexer lex (_original_args[i].attribute ("raw"));
     if (lex.token (lexeme, type) &&
         (lex.isEOS () ||                         // Token goes to EOS
          (quoted && type == Lexer::Type::pair))  // Quoted pairs automatically go to EOS
@@ -450,18 +452,21 @@ void CLI2::lexArguments ()
       else if (terminated)
         type = Lexer::Type::word;
 
-      A2 a (_original_args[i], type);
+      A2 a (_original_args[i].attribute ("raw"), type);
       if (terminated)
         a.tag ("TERMINATED");
       if (quoted)
         a.tag ("QUOTED");
+
+      if (_original_args[i].hasTag ("ORIGINAL"))
+        a.tag ("ORIGINAL");
 
       _args.push_back (a);
     }
     else
     {
       std::string quote = "'";
-      std::string escaped = _original_args[i];
+      std::string escaped = _original_args[i].attribute ("raw");
       str_replace (escaped, quote, "\\'");
 
       std::string::size_type cursor = 0;
@@ -470,8 +475,11 @@ void CLI2::lexArguments ()
       {
         Lexer::dequote (word);
         A2 unknown (word, Lexer::Type::word);
-        if (lex.wasQuoted (_original_args[i]))
+        if (lex.wasQuoted (_original_args[i].attribute ("raw")))
           unknown.tag ("QUOTED");
+
+        if (_original_args[i].hasTag ("ORIGINAL"))
+          unknown.tag ("ORIGINAL");
 
         _args.push_back (unknown);
       }
@@ -479,11 +487,14 @@ void CLI2::lexArguments ()
       // This branch may have no use-case.
       else
       {
-        A2 unknown (_original_args[i], Lexer::Type::word);
+        A2 unknown (_original_args[i].attribute ("raw"), Lexer::Type::word);
         unknown.tag ("UNKNOWN");
 
-        if (lex.wasQuoted (_original_args[i]))
+        if (lex.wasQuoted (_original_args[i].attribute ("raw")))
           unknown.tag ("QUOTED");
+
+        if (_original_args[i].hasTag ("ORIGINAL"))
+          unknown.tag ("ORIGINAL");
 
         _args.push_back (unknown);
       }
@@ -549,6 +560,7 @@ void CLI2::analyze ()
 
   // Determine arg types: FILTER, MODIFICATION, MISCELLANEOUS.
   categorizeArgs ();
+  parenthesizeOriginalFilter ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -734,11 +746,16 @@ const std::string CLI2::dump (const std::string& title) const
       << "  _original_args\n    ";
 
   Color colorArgs ("gray10 on gray4");
+  Color colorFilter ("black on rgb311");
   for (auto i = _original_args.begin (); i != _original_args.end (); ++i)
   {
     if (i != _original_args.begin ())
       out << ' ';
-    out << colorArgs.colorize (*i);
+
+    if (i->hasTag ("ORIGINAL"))
+      out << colorArgs.colorize (i->attribute ("raw"));
+    else
+      out << colorFilter.colorize (i->attribute ("raw"));
   }
   out << "\n";
 
@@ -815,24 +832,24 @@ void CLI2::aliasExpansion ()
 
     _args = reconstructed;
 
-    std::vector <std::string> reconstructedOriginals;
+    std::vector <A2> reconstructedOriginals;
     bool terminated = false;
     for (auto& i : _original_args)
     {
-      if (i == "--")
+      if (i.attribute ("raw") == "--")
         terminated = true;
 
       if (terminated)
       {
         reconstructedOriginals.push_back (i);
       }
-      else if (_aliases.find (i) != _aliases.end ())
+      else if (_aliases.find (i.attribute ("raw")) != _aliases.end ())
       {
         std::string lexeme;
         Lexer::Type type;
-        Lexer lex (_aliases[i]);
+        Lexer lex (_aliases[i.attribute ("raw")]);
         while (lex.token (lexeme, type))
-          reconstructedOriginals.push_back (lexeme);
+          reconstructedOriginals.push_back (A2 (lexeme, type));
 
         action = true;
         changes = true;
@@ -1009,6 +1026,76 @@ void CLI2::categorizeArgs ()
   if (changes &&
       context.config.getInteger ("debug.parser") >= 2)
     context.debug (dump ("CLI2::analyze categorizeArgs"));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The following command:
+//
+//    task +home or +work list
+//
+// Is reasonable, and does not work unless the filter is parenthesized. Ignoring
+// context, the 'list' report has a filter, which is inserted at the beginning
+// like this:
+//
+//   task ( status:pending ) +home or +work list
+//
+// Parenthesizing the user-provided (original) filter yields this:
+//
+//   task ( status:pending ) ( +home or +work ) list
+//
+// And when the conjunction is added:
+//
+//   task ( status:pending ) and ( +home or +work ) list
+//
+// the query is correct.
+void CLI2::parenthesizeOriginalFilter ()
+{
+  // Locate the first and last ORIGINAL FILTER args.
+  unsigned int firstOriginalFilter = 0;
+  unsigned int lastOriginalFilter = 0;
+  for (unsigned int i = 1; i < _args.size (); ++i)
+  {
+    if (_args[i].hasTag ("FILTER") &&
+        _args[i].hasTag ("ORIGINAL"))
+    {
+      if (firstOriginalFilter == 0)
+        firstOriginalFilter = i;
+
+      lastOriginalFilter = i;
+    }
+  }
+
+  // If found, parenthesize the arg list accordingly.
+  if (firstOriginalFilter &&
+      lastOriginalFilter)
+  {
+    std::vector <A2> reconstructed;
+    for (unsigned int i = 0; i < _args.size (); ++i)
+    {
+      if (i == firstOriginalFilter)
+      {
+        A2 openParen ("(", Lexer::Type::op);
+        openParen.tag ("ORIGINAL");
+        openParen.tag ("FILTER");
+        reconstructed.push_back (openParen);
+      }
+
+      reconstructed.push_back (_args[i]);
+
+      if (i == lastOriginalFilter)
+      {
+        A2 closeParen (")", Lexer::Type::op);
+        closeParen.tag ("ORIGINAL");
+        closeParen.tag ("FILTER");
+        reconstructed.push_back (closeParen);
+      }
+    }
+
+    _args = reconstructed;
+
+    if (context.config.getInteger ("debug.parser") >= 2)
+      context.debug (dump ("CLI2::analyze parenthesizeOriginalFilter"));
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1985,7 +2072,7 @@ void CLI2::defaultCommand ()
         // Modify _args, _original_args to be:
         //   <args0> [<def0> ...] <args1> [...]
 
-        std::vector <std::string> reconstructedOriginals {_original_args[0]};
+        std::vector <A2> reconstructedOriginals {_original_args[0]};
         std::vector <A2> reconstructed {_args[0]};
 
         std::string lexeme;
@@ -1994,7 +2081,7 @@ void CLI2::defaultCommand ()
 
         while (lex.token (lexeme, type))
         {
-          reconstructedOriginals.push_back (lexeme);
+          reconstructedOriginals.push_back (A2 (lexeme, type));
 
           A2 cmd (lexeme, type);
           cmd.tag ("DEFAULT");

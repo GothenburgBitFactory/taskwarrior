@@ -99,7 +99,14 @@ bool DOM::get (const std::string& name, Variant& value)
     else if (name == "context.args")
     {
       std::string commandLine;
-      join (commandLine, " ", context.cli2._original_args);
+      for (auto& arg : context.cli2._original_args)
+      {
+        if (commandLine != "")
+           commandLine += " ";
+
+        commandLine += arg.attribute("raw");
+      }
+
       value = Variant (commandLine);
       return true;
     }
