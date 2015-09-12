@@ -233,7 +233,6 @@ const std::string A2::dump () const
     else if (tag == "MISCELLANEOUS") tags += "\033[1;37;45m"           + tag + "\033[0m";
     else if (tag == "RC")            tags += "\033[1;37;41m"           + tag + "\033[0m";
     else if (tag == "CONFIG")        tags += "\033[1;37;101m"          + tag + "\033[0m";
-    else if (tag == "PSEUDO")        tags += "\033[1;37;45m"           + tag + "\033[0m";
     else if (tag == "?")             tags += "\033[38;5;255;48;5;232m" + tag + "\033[0m";
     else                             tags += "\033[32m"                + tag + "\033[0m";
   }
@@ -1274,17 +1273,7 @@ void CLI2::desugarFilterAttributes ()
 
       bool found = false;
       std::string canonical;
-      if (canonicalize (canonical, "pseudo", name))
-      {
-        // No eval.
-        A2 lhs (raw, Lexer::Type::identifier);
-        lhs.attribute ("canonical", canonical);
-        lhs.attribute ("value", value);
-        lhs.tag ("PSEUDO");
-        reconstructed.push_back (lhs);
-        found = true;
-      }
-      else if (canonicalize (canonical, "attribute", name))
+      if (canonicalize (canonical, "attribute", name))
       {
         // Certain attribute types do not suport math.
         //   string   --> no
@@ -1903,7 +1892,6 @@ void CLI2::desugarFilterPlainArgs ()
          prev->_lextype == Lexer::Type::word)      &&  // candidate
 
         prev->hasTag ("FILTER")                    &&  // candidate
-        ! prev->hasTag ("PSEUDO")                  &&  // non-candidate
 
         (a._lextype != Lexer::Type::op             ||  // argY
          raw == "("                                ||
@@ -1933,8 +1921,7 @@ void CLI2::desugarFilterPlainArgs ()
       (last._lextype == Lexer::Type::identifier    ||  // candidate
        last._lextype == Lexer::Type::word)         &&  // candidate
 
-      last.hasTag ("FILTER")                       &&  // candidate
-      ! last.hasTag ("PSEUDO"))                        // non-candidate
+      last.hasTag ("FILTER"))                          // candidate
   {
     last.tag ("PLAIN");
   }
