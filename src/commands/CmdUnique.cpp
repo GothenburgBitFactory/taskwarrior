@@ -79,6 +79,10 @@ int CmdUnique::execute (std::string& output)
   for (auto& task : filtered)
     if (task.has (canonical))
       values.insert (task.get (canonical));
+    else if (canonical == "id"                  &&
+             task.getStatus () != Task::deleted &&
+             task.getStatus () != Task::completed)
+      values.insert (std::to_string (task.id));
 
   // Generate list of unique values.
   for (auto& value : values)
