@@ -20,7 +20,7 @@ You will need a C++ compiler that supports full C++11, which includes:
 
 You will need the following libraries:
   - libuuid
-  - gnutls
+  - gnutls  (can be optional - see '"sync" command' below)
 
 It is HIGHLY RECOMMENDED that you build with a library that provides uuid_*
 functions, such as libuuid.
