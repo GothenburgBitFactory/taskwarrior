@@ -81,7 +81,6 @@ public:
   bool canonicalize (std::string&, const std::string&, const std::string&) const;
   std::string getBinary () const;
   std::string getCommand (bool canonical = true) const;
-  std::string getLimit () const;
   const std::string dump (const std::string& title = "CLI2 Parser") const;
 
 private:

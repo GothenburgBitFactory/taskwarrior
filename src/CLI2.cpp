@@ -506,10 +506,9 @@ void CLI2::lexArguments ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Scan all args for the 'add' and 'log' commands, and demote any
-// Lexer::Type::Tag args with sign '-' to Lexer::Type::word.
-//
-// TODO This is obsolete, given FILTER, MODIFICATION, MISCELLANEOUS.
+// [1] Scan all args for the 'add' and 'log' commands, and demote any
+//     Lexer::Type::Tag args with sign '-' to Lexer::Type::word.
+// [2] Convert any pseudo args name:value into config settings, and erase.
 void CLI2::demotion ()
 {
   bool changes = false;
@@ -527,6 +526,22 @@ void CLI2::demotion ()
         changes = true;
       }
     }
+  }
+
+  int count = 0;
+  for (auto& a : _args)
+  {
+    std::string canonical;
+    if (a._lextype == Lexer::Type::pair &&
+        canonicalize (canonical, "pseudo", a.attribute ("name")))
+    {
+      context.config.set (canonical, a.attribute ("value"));
+      changes = true;
+      _args.erase (_args.begin () + count);
+      break;
+    }
+
+    ++count;
   }
 
   if (changes &&
@@ -724,17 +739,6 @@ std::string CLI2::getCommand (bool canonical) const
       return a.attribute (canonical ? "canonical" : "raw");
 
   return "";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string CLI2::getLimit () const
-{
-  for (auto& a : _args)
-    if (a.hasTag ("PSEUDO") &&
-        a.attribute ("canonical") == "limit")
-      return a.attribute ("value");
-
-  return "0";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
