@@ -32,6 +32,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
+#include <text.h>
 #include <i18n.h>
 #include <CmdUnique.h>
 
@@ -83,7 +84,7 @@ int CmdUnique::execute (std::string& output)
     else if (canonical == "id"                  &&
              task.getStatus () != Task::deleted &&
              task.getStatus () != Task::completed)
-      values.insert (std::to_string (task.id));
+      values.insert (format (task.id));
 
   // Generate list of unique values.
   for (auto& value : values)
