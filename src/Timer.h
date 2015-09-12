@@ -45,6 +45,8 @@ public:
   unsigned long total () const;
   void subtract (unsigned long);
 
+  static unsigned long now ();
+
 private:
   std::string    _description;
   bool           _running;
