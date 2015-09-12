@@ -93,6 +93,7 @@ Context::~Context ()
 ////////////////////////////////////////////////////////////////////////////////
 int Context::initialize (int argc, const char** argv)
 {
+  timer_total.start ();
   timer_init.start ();
   int rc = 0;
 
@@ -315,6 +316,8 @@ int Context::run ()
     tdb2.commit ();           // Harmless if called when nothing changed.
     hooks.onExit ();          // No chance to update data.
 
+    timer_total.stop ();
+
     std::stringstream s;
     s << "Perf "
       << PACKAGE_STRING
@@ -335,7 +338,8 @@ int Context::run ()
       << " sort:"   << timer_sort.total ()
       << " render:" << timer_render.total ()
       << " hooks:"  << timer_hooks.total ()
-      << " total:"  << (timer_init.total ()   +
+      << " other:"  << timer_total.total ()   -
+                       (timer_init.total ()   +
                         timer_load.total ()   +
                         timer_gc.total ()     +
                         timer_filter.total () +
@@ -343,6 +347,7 @@ int Context::run ()
                         timer_sort.total ()   +
                         timer_render.total () +
                         timer_hooks.total ())
+      << " total:"  << timer_total.total ()
       << "\n";
     debug (s.str ());
   }
