@@ -65,6 +65,10 @@ DOM::~DOM ()
 //
 bool DOM::get (const std::string& name, Variant& value)
 {
+  // Special case, blank refs cause problems.
+  if (name == "")
+    return false;
+
   int len = name.length ();
   Nibbler n (name);
 
@@ -196,6 +200,10 @@ bool DOM::get (const std::string& name, Variant& value)
 // as special cases.
 bool DOM::get (const std::string& name, const Task& task, Variant& value)
 {
+  // Special case, blank refs cause problems.
+  if (name == "")
+    return false;
+
   // Quickly deal with the most common cases.
   if (task.size () && name == "id")
   {
