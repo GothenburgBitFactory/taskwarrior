@@ -50,7 +50,7 @@ class TestUDACustomSort(TestCase):
         cls.t('add one')
 
     def test_ascending(self):
-        """Ascending sort order"""
+        """Ascending custom sort order"""
         self.t.config('uda.foo.values', 'H,M,L,')
         code, out, err = self.t('rc.report.list.sort:foo+ list')
 
@@ -64,7 +64,7 @@ class TestUDACustomSort(TestCase):
         self.assertTrue(three < four)
 
     def test_descending(self):
-        """Descending sort order"""
+        """Descending custom sort order"""
         self.t.config('uda.foo.values', 'H,M,L,')
         code, out, err = self.t('rc.report.list.sort:foo- list')
 
@@ -78,7 +78,7 @@ class TestUDACustomSort(TestCase):
         self.assertTrue(two   < one)
 
     def test_ridiculous(self):
-        """Ridiculous sort order"""
+        """Ridiculous custom sort order"""
         self.t.config('uda.foo.values', 'H,M,,L')
         code, out, err = self.t('rc.report.list.sort:foo- list')
 
@@ -90,6 +90,41 @@ class TestUDACustomSort(TestCase):
         self.assertTrue(four  < three)
         self.assertTrue(three < one)
         self.assertTrue(one   < two)
+
+
+class TestUDADefaultSort(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.t = Task()
+        cls.t.config('uda.foo.type', 'string')
+        cls.t.config('uda.foo.label', 'Foo')
+        cls.t.config('report.list.columns', 'id,description,foo')
+        cls.t.config('report.list.labels', 'ID,Desc,Foo')
+        cls.t('add one foo:A')
+        cls.t('add three')
+        cls.t('add two foo:B')
+
+    def test_ascending(self):
+        """Ascending default sort order"""
+        code, out, err = self.t('rc.report.list.sort:foo+ list')
+
+        one   = out.find('one')
+        two   = out.find('two')
+        three = out.find('three')
+
+        self.assertTrue(one < two)
+        self.assertTrue(two < three)
+
+    def test_descending(self):
+        """Descending default sort order"""
+        code, out, err = self.t('rc.report.list.sort:foo- list')
+
+        one   = out.find('one')
+        two   = out.find('two')
+        three = out.find('three')
+
+        self.assertTrue(one < three)
+        self.assertTrue(two < one)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
