@@ -146,7 +146,7 @@ const std::string Lexer::typeName (const Lexer::Type& type)
 // Complete Unicode whitespace list.
 //
 // http://en.wikipedia.org/wiki/Whitespace_character
-// Updated 2013-11-18
+// Updated 2015-09-13
 // Static
 //
 // TODO This list should be derived from the Unicode database.
@@ -173,10 +173,14 @@ bool Lexer::isWhitespace (int c)
           c == 0x2008 ||   // punctuation space Common  Separator, space
           c == 0x2009 ||   // thin space  Common  Separator, space
           c == 0x200A ||   // hair space  Common  Separator, space
+          c == 0x200B ||   // zero width space
+          c == 0x200C ||   // zero width non-joiner
+          c == 0x200D ||   // zero width joiner
           c == 0x2028 ||   // line separator  Common  Separator, line
           c == 0x2029 ||   // paragraph separator Common  Separator, paragraph
           c == 0x202F ||   // narrow no-break space Common  Separator, space
           c == 0x205F ||   // medium mathematical space Common  Separator, space
+          c == 0x2060 ||   // word joiner
           c == 0x3000);    // ideographic space Common  Separator, space
 }
 
