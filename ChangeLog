@@ -150,6 +150,7 @@
           Babej).
 - TW-1684 make no-date > has-date for all date attributes (thanks to David
           Patrick).
+- TW-1686 Sorting not working on udas (thanks to Naga Kiran).
 - TW-1687 task add due:som appears to be interpreted as 'someday' (thanks to
           Alan Young).
 - TW-1688 task fails to import (thanks to Rainer Müller).
