@@ -22,9 +22,9 @@ failing tests, once you have run all the tests and produced an 'all.log' file.
 
 Any TAP harness may be used.
 
-Note that adding the '--serial' option to ./run_all, all tests are executed serially.
-The default runs Python, C++ and Bash tests in parallel. Using '--serial' will
-make for a slower test run.
+Note that adding the '--serial' option to ./run_all, all tests are executed
+serially.  The default runs Python, C++ and Bash tests in parallel. Using
+'--serial' will make for a slower test run.
 
 
 Architecture
@@ -147,9 +147,6 @@ For anyone looking for test-related tasks to take on, here are some suggestions:
   * Find and eliminate duplicate tests.
 
   * Using <attribute>.startswith:<value> with rc.regex:off still uses regex.
-
-  * Import JSON validates absolutely no attributes.  Create tests with bad data
-    in all fields, to exercise validation.
 
   * Crazy dateformat values are not tested.
 
