@@ -511,7 +511,9 @@ void CLI2::lexArguments ()
 void CLI2::demotion ()
 {
   bool changes = false;
+  std::vector <A2> replacement;
 
+  std::string canonical;
   for (auto& a : _args)
   {
     if (a._lextype == Lexer::Type::tag &&
@@ -525,22 +527,18 @@ void CLI2::demotion ()
         changes = true;
       }
     }
-  }
 
-  int count = 0;
-  for (auto& a : _args)
-  {
-    std::string canonical;
-    if (a._lextype == Lexer::Type::pair &&
+    else if (a._lextype == Lexer::Type::pair &&
         canonicalize (canonical, "pseudo", a.attribute ("name")))
     {
       context.config.set (canonical, a.attribute ("value"));
       changes = true;
-      _args.erase (_args.begin () + count);
-      break;
+
+      // Equivalent to erasing 'a'.
+      continue;
     }
 
-    ++count;
+    replacement.push_back (a);
   }
 
   if (changes &&
