@@ -1572,7 +1572,8 @@ void Task::validate_before (const std::string& left, const std::string& right)
     Date date_left (get_date (left));
     Date date_right (get_date (right));
 
-    if (date_left > date_right)
+    // if date is zero, then it is being removed (e.g. "due: wait:1day")
+    if (date_left > date_right && date_right != 0)
       context.footnote (format (STRING_TASK_VALID_BEFORE, left, right));
   }
 #endif

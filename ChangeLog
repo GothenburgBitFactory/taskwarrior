@@ -197,6 +197,8 @@
   of 'urgency.user.tag.next.coefficient'.
 - The long deprecated syntax of color values with underscores (i.e 'on_red')
   is no longer supported.
+- Correct a false-positive warning when a due date is removed and a wait is
+  added.
 
 ------ current release ---------------------------
 
