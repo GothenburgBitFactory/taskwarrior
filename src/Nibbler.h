@@ -36,6 +36,7 @@
 #include <string>
 #include <vector>
 #include <time.h>
+#include <memory>
 
 class Nibbler
 {
@@ -110,7 +111,7 @@ public:
   std::string dump ();
 
 private:
-  std::string _input;
+  std::shared_ptr<std::string> _input;
   std::string::size_type _length;
   std::string::size_type _cursor;
   std::string::size_type _saved;
