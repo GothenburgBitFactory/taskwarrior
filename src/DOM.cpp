@@ -259,7 +259,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
   auto size = elements.size ();
 
   std::string canonical;
-  if (context.cli2.canonicalize (canonical, "attribute", elements[0]))
+  if ((size == 1 || size == 2) && context.cli2.canonicalize (canonical, "attribute", elements[0]))
   {
     // Now that 'ref' is the contextual task, and any ID/UUID is chopped off the
     // elements vector, DOM resolution is now simple.
