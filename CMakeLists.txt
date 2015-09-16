@@ -7,7 +7,7 @@ include (CheckStructHasMember)
 set (HAVE_CMAKE true)
 
 project (task)
-set (PROJECT_VERSION "2.5.0.beta1")
+set (PROJECT_VERSION "2.5.0.beta2")
 
 OPTION (ENABLE_SYNC "Enable 'task sync' support" ON)
 
