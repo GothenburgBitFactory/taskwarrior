@@ -1,13 +1,20 @@
 #! /bin/bash
 
 echo 'Performance: setup'
-echo '  - This step will take several minutes'
 rm -f ./pending.data ./completed.data ./undo.data ./backlog.data perf.rc
-./load
+if [[ -e data/pending.data && -e data/completed.data ]]
+then
+  echo '  - Using existing data'
+  cp data/* .
+else
+  echo '  - This step will take several minutes'
+  ./load
+  mkdir -p data
+  cp *.data perf.rc data
+fi
 
-#TASK=/usr/local/bin/tw212
-#TASK=/usr/local/bin/tw220
-#TASK=/usr/local/bin/tw230
+#TASK=/usr/local/bin/tw244
+#TASK=/usr/local/bin/tw250b1
 TASK=../src/task
 
 # Run benchmarks.
