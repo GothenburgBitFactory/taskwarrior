@@ -671,6 +671,7 @@
 #define STRING_EDIT_NO_CHANGES       "Nie znaleziono żadnych edycji."
 #define STRING_EDIT_FAILED           "Editing failed with exit code {1}."
 #define STRING_EDIT_COMPLETE         "Edycja zakończona."
+#define STRING_EDIT_IN_PROGRESS      "Task is already being edited."
 #define STRING_EDIT_LAUNCHING        "Uruchamianie '{1}'..."
 #define STRING_EDIT_CHANGES          "Zmiany wykryte."
 #define STRING_EDIT_UNPARSEABLE      "Taskwarrior nie może wprowadzić twoich zmian. Czy chcesz spróbować jeszcze raz?"

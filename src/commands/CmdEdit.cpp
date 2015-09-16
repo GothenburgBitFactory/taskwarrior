@@ -756,7 +756,7 @@ CmdEdit::editResult CmdEdit::editFile (Task& task)
 
   // Create a temp file name in data.location.
   std::stringstream file;
-  file << "task." << getpid () << "." << task.id << ".task";
+  file << "task." << task.get ("uuid").substr (0, 8) << ".task";
 
   // Determine the output date format, which uses a hierarchy of definitions.
   //   rc.dateformat.edit
@@ -769,6 +769,11 @@ CmdEdit::editResult CmdEdit::editFile (Task& task)
   std::string current_dir = Directory::cwd ();
   int ignored = chdir (location._data.c_str ());
   ++ignored; // Keep compiler quiet.
+
+  // Check if the file already exists, if so, bail out
+  Path filepath = Path (file.str ());
+  if (filepath.exists ())
+    throw std::string (STRING_EDIT_IN_PROGRESS);
 
   // Format the contents, T -> text, write to a file.
   std::string before = formatTask (task, dateformat);

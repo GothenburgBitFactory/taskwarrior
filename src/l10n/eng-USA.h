@@ -669,6 +669,7 @@
 #define STRING_EDIT_NO_CHANGES       "No edits were detected."
 #define STRING_EDIT_FAILED           "Editing failed with exit code {1}."
 #define STRING_EDIT_COMPLETE         "Editing complete."
+#define STRING_EDIT_IN_PROGRESS      "Task is already being edited."
 #define STRING_EDIT_LAUNCHING        "Launching '{1}' now..."
 #define STRING_EDIT_CHANGES          "Edits were detected."
 #define STRING_EDIT_UNPARSEABLE      "Taskwarrior couldn't handle your edits.  Would you like to try again?"

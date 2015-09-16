@@ -671,6 +671,7 @@
 #define STRING_EDIT_NO_CHANGES       "Ne detektis nenian redakton."
 #define STRING_EDIT_FAILED           "Editing failed with exit code {1}."
 #define STRING_EDIT_COMPLETE         "Redaktis komplete."
+#define STRING_EDIT_IN_PROGRESS      "Task is already being edited."
 #define STRING_EDIT_LAUNCHING        "Lanĉanta nun '{1}'..."
 #define STRING_EDIT_CHANGES          "Detektis redaktojn."
 #define STRING_EDIT_UNPARSEABLE      "Taskwarrior ne povis trakti viaj redaktojn. Ĉu vi volas ripovi?"
