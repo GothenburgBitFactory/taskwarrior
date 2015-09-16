@@ -155,6 +155,7 @@
           Alan Young).
 - TW-1688 task fails to import (thanks to Rainer Müller).
 - TW-1692 42//' segfaults (thanks to Daniel Shahaf).
+- TW-1695 edit: Concurrent edits (thanks to Daniel Shahaf).
 - Prevent potential task duplication during import for non-pending tasks.
 - Show the active context in "context list", if any is active.
 - Fix "task edit" dropping annotation text after newlines.
