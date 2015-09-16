@@ -52,7 +52,7 @@ if __name__ == "__main__":
     unexpected = defaultdict(int)
     passed = defaultdict(int)
 
-    file = re.compile("^# (?:./)?(\S+\.t)$")
+    file = re.compile("^# (?:./)?(\S+\.t)(?:\.exe)?$")
     timestamp = re.compile("^# (\d+(?:\.\d+)?) ==>.*$")
     start = None
     stop = None
