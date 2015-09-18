@@ -337,45 +337,44 @@ int CmdDiagnostics::execute (std::string& output)
   // Verify UUIDs are all unique.
   out << bold.colorize (STRING_CMD_DIAG_TESTS)
       << "\n";
+
+  // Determine terminal details.
+  const char* term = getenv ("TERM");
+  out << "      $TERM: "
+      << (term ? term : STRING_CMD_DIAG_NONE)
+      << " ("
+      << context.getWidth ()
+      << "x"
+      << context.getHeight ()
+      << ")\n";
+
+  // Scan tasks for duplicate UUIDs.
+  std::vector <Task> all = context.tdb2.all_tasks ();
+  std::map <std::string, int> seen;
+  std::vector <std::string> dups;
+  std::string uuid;
+  for (auto& i : all)
   {
-    // Determine terminal details.
-    const char* term = getenv ("TERM");
-    out << "      $TERM: "
-        << (term ? term : STRING_CMD_DIAG_NONE)
-        << " ("
-        << context.getWidth ()
-        << "x"
-        << context.getHeight ()
-        << ")\n";
-
-    // Scan tasks for duplicate UUIDs.
-    std::vector <Task> all = context.tdb2.all_tasks ();
-    std::map <std::string, int> seen;
-    std::vector <std::string> dups;
-    std::string uuid;
-    for (auto& i : all)
-    {
-      uuid = i.get ("uuid");
-      if (seen.find (uuid) != seen.end ())
-        dups.push_back (uuid);
-      else
-         seen[uuid] = 0;
-    }
-
-    out << "       Dups: "
-        << format (STRING_CMD_DIAG_UUID_SCAN, all.size ())
-        << "\n";
-
-    if (dups.size ())
-    {
-      for (auto& d : dups)
-        out << "             " << format (STRING_CMD_DIAG_UUID_DUP, d) << "\n";
-    }
+    uuid = i.get ("uuid");
+    if (seen.find (uuid) != seen.end ())
+      dups.push_back (uuid);
     else
-    {
-      out << "             " << STRING_CMD_DIAG_UUID_NO_DUP
-          << "\n";
-    }
+       seen[uuid] = 0;
+  }
+
+  out << "       Dups: "
+      << format (STRING_CMD_DIAG_UUID_SCAN, all.size ())
+      << "\n";
+
+  if (dups.size ())
+  {
+    for (auto& d : dups)
+      out << "             " << format (STRING_CMD_DIAG_UUID_DUP, d) << "\n";
+  }
+  else
+  {
+    out << "             " << STRING_CMD_DIAG_UUID_NO_DUP
+        << "\n";
   }
 
   out << "\n";
