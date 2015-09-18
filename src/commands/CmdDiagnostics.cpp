@@ -377,6 +377,47 @@ int CmdDiagnostics::execute (std::string& output)
         << "\n";
   }
 
+
+  // Check all the UUID references
+
+  bool noBrokenRefs = true;
+  out << " Broken ref: "
+      << format (STRING_CMD_DIAG_REF_SCAN, all.size ())
+      << "\n";
+
+  for (auto& task : all)
+  {
+    // Check dependencies
+    std::vector <std::string> dependencies;
+    task.getDependencies(dependencies);
+
+    for (auto& uuid : dependencies)
+    {
+      if (! context.tdb2.has (uuid))
+      {
+        out << "             "
+            << format (STRING_CMD_DIAG_MISS_DEP, task.get ("uuid"), uuid)
+            << "\n";
+        noBrokenRefs = false;
+      }
+    }
+
+    // Check recurrence parent
+    std::string parentUUID = task.get ("parent");
+
+    if (parentUUID != "" && ! context.tdb2.has (parentUUID))
+    {
+      out << "             "
+          << format (STRING_CMD_DIAG_MISS_PAR, task.get ("uuid"), parentUUID)
+          << "\n";
+      noBrokenRefs = false;
+    }
+  }
+
+  if (noBrokenRefs)
+    out << "             " << STRING_CMD_DIAG_REF_OK
+        << "\n";
+
   out << "\n";
   output = out.str ();
   return 0;
