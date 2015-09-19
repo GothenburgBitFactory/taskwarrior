@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/pt-BR/2014.json
 # http://holidata.net/pt-BR/2015.json
+# http://holidata.net/pt-BR/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,80 +28,54 @@
 ###############################################################################
 
 holiday.pt-BR1.name=Confraternização Universal
-holiday.pt-BR1.date=20140101
+holiday.pt-BR1.date=20150101
 holiday.pt-BR2.name=Carnaval
-holiday.pt-BR2.date=20140303
+holiday.pt-BR2.date=20150216
 holiday.pt-BR3.name=Carnaval
-holiday.pt-BR3.date=20140304
+holiday.pt-BR3.date=20150217
 holiday.pt-BR4.name=Sexta-feira Santa
-holiday.pt-BR4.date=20140418
+holiday.pt-BR4.date=20150403
 holiday.pt-BR5.name=Páscoa
-holiday.pt-BR5.date=20140420
+holiday.pt-BR5.date=20150405
 holiday.pt-BR6.name=Tiradentes
-holiday.pt-BR6.date=20140421
+holiday.pt-BR6.date=20150421
 holiday.pt-BR7.name=Dia do Trabalho
-holiday.pt-BR7.date=20140501
+holiday.pt-BR7.date=20150501
 holiday.pt-BR8.name=Corpus Christi
-holiday.pt-BR8.date=20140619
+holiday.pt-BR8.date=20150604
 holiday.pt-BR9.name=Independência do Brasil
-holiday.pt-BR9.date=20140907
+holiday.pt-BR9.date=20150907
 holiday.pt-BR10.name=Nossa Senhora Aparecida
-holiday.pt-BR10.date=20141012
+holiday.pt-BR10.date=20151012
 holiday.pt-BR11.name=Finados
-holiday.pt-BR11.date=20141102
+holiday.pt-BR11.date=20151102
 holiday.pt-BR12.name=Proclamação da República
-holiday.pt-BR12.date=20141115
+holiday.pt-BR12.date=20151115
 holiday.pt-BR13.name=Natal
-holiday.pt-BR13.date=20141225
+holiday.pt-BR13.date=20151225
 holiday.pt-BR14.name=Confraternização Universal
-holiday.pt-BR14.date=20150101
+holiday.pt-BR14.date=20160101
 holiday.pt-BR15.name=Carnaval
-holiday.pt-BR15.date=20150216
+holiday.pt-BR15.date=20160208
 holiday.pt-BR16.name=Carnaval
-holiday.pt-BR16.date=20150217
+holiday.pt-BR16.date=20160209
 holiday.pt-BR17.name=Sexta-feira Santa
-holiday.pt-BR17.date=20150403
+holiday.pt-BR17.date=20160325
 holiday.pt-BR18.name=Páscoa
-holiday.pt-BR18.date=20150405
+holiday.pt-BR18.date=20160327
 holiday.pt-BR19.name=Tiradentes
-holiday.pt-BR19.date=20150421
+holiday.pt-BR19.date=20160421
 holiday.pt-BR20.name=Dia do Trabalho
-holiday.pt-BR20.date=20150501
+holiday.pt-BR20.date=20160501
 holiday.pt-BR21.name=Corpus Christi
-holiday.pt-BR21.date=20150604
+holiday.pt-BR21.date=20160526
 holiday.pt-BR22.name=Independência do Brasil
-holiday.pt-BR22.date=20150907
+holiday.pt-BR22.date=20160907
 holiday.pt-BR23.name=Nossa Senhora Aparecida
-holiday.pt-BR23.date=20151012
+holiday.pt-BR23.date=20161012
 holiday.pt-BR24.name=Finados
-holiday.pt-BR24.date=20151102
+holiday.pt-BR24.date=20161102
 holiday.pt-BR25.name=Proclamação da República
-holiday.pt-BR25.date=20151115
+holiday.pt-BR25.date=20161115
 holiday.pt-BR26.name=Natal
-holiday.pt-BR26.date=20151225
-holiday.pt-BR27.name=Confraternização Universal
-holiday.pt-BR27.date=20160101
-holiday.pt-BR28.name=Carnaval
-holiday.pt-BR28.date=20160208
-holiday.pt-BR29.name=Carnaval
-holiday.pt-BR29.date=20160209
-holiday.pt-BR30.name=Sexta-feira Santa
-holiday.pt-BR30.date=20160325
-holiday.pt-BR31.name=Páscoa
-holiday.pt-BR31.date=20160327
-holiday.pt-BR32.name=Tiradentes
-holiday.pt-BR32.date=20160421
-holiday.pt-BR33.name=Dia do Trabalho
-holiday.pt-BR33.date=20160501
-holiday.pt-BR34.name=Corpus Christi
-holiday.pt-BR34.date=20160526
-holiday.pt-BR35.name=Independência do Brasil
-holiday.pt-BR35.date=20160907
-holiday.pt-BR36.name=Nossa Senhora Aparecida
-holiday.pt-BR36.date=20161012
-holiday.pt-BR37.name=Finados
-holiday.pt-BR37.date=20161102
-holiday.pt-BR38.name=Proclamação da República
-holiday.pt-BR38.date=20161115
-holiday.pt-BR39.name=Natal
-holiday.pt-BR39.date=20161225
+holiday.pt-BR26.date=20161225

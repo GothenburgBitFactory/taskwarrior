@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/en-GL/2014.json
 # http://holidata.net/en-GL/2015.json
+# http://holidata.net/en-GL/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,80 +28,54 @@
 ###############################################################################
 
 holiday.en-GL1.name=New Year's Day
-holiday.en-GL1.date=20140101
+holiday.en-GL1.date=20150101
 holiday.en-GL2.name=Epiphany
-holiday.en-GL2.date=20140106
+holiday.en-GL2.date=20150106
 holiday.en-GL3.name=Maundy Thursday
-holiday.en-GL3.date=20140417
+holiday.en-GL3.date=20150402
 holiday.en-GL4.name=Good Friday
-holiday.en-GL4.date=20140318
+holiday.en-GL4.date=20150303
 holiday.en-GL5.name=Easter Monday
-holiday.en-GL5.date=20140421
+holiday.en-GL5.date=20150406
 holiday.en-GL6.name=General Prayer Day
-holiday.en-GL6.date=20140516
+holiday.en-GL6.date=20150501
 holiday.en-GL7.name=Ascension
-holiday.en-GL7.date=20140529
+holiday.en-GL7.date=20150514
 holiday.en-GL8.name=Whit Monday
-holiday.en-GL8.date=20140609
+holiday.en-GL8.date=20150525
 holiday.en-GL9.name=Ullortuneq
-holiday.en-GL9.date=20140621
+holiday.en-GL9.date=20150621
 holiday.en-GL10.name=Christmas Eve
-holiday.en-GL10.date=20141224
+holiday.en-GL10.date=20151224
 holiday.en-GL11.name=Christmas Day
-holiday.en-GL11.date=20141225
+holiday.en-GL11.date=20151225
 holiday.en-GL12.name=St Stephen's Day
-holiday.en-GL12.date=20141226
+holiday.en-GL12.date=20151226
 holiday.en-GL13.name=New Year's Eve
-holiday.en-GL13.date=20141231
+holiday.en-GL13.date=20151231
 holiday.en-GL14.name=New Year's Day
-holiday.en-GL14.date=20150101
+holiday.en-GL14.date=20160101
 holiday.en-GL15.name=Epiphany
-holiday.en-GL15.date=20150106
+holiday.en-GL15.date=20160106
 holiday.en-GL16.name=Maundy Thursday
-holiday.en-GL16.date=20150402
+holiday.en-GL16.date=20160324
 holiday.en-GL17.name=Good Friday
-holiday.en-GL17.date=20150303
+holiday.en-GL17.date=20160325
 holiday.en-GL18.name=Easter Monday
-holiday.en-GL18.date=20150406
+holiday.en-GL18.date=20160428
 holiday.en-GL19.name=General Prayer Day
-holiday.en-GL19.date=20150501
+holiday.en-GL19.date=20160422
 holiday.en-GL20.name=Ascension
-holiday.en-GL20.date=20150514
+holiday.en-GL20.date=20160505
 holiday.en-GL21.name=Whit Monday
-holiday.en-GL21.date=20150525
+holiday.en-GL21.date=20160516
 holiday.en-GL22.name=Ullortuneq
-holiday.en-GL22.date=20150621
+holiday.en-GL22.date=20160621
 holiday.en-GL23.name=Christmas Eve
-holiday.en-GL23.date=20151224
+holiday.en-GL23.date=20161224
 holiday.en-GL24.name=Christmas Day
-holiday.en-GL24.date=20151225
+holiday.en-GL24.date=20161225
 holiday.en-GL25.name=St Stephen's Day
-holiday.en-GL25.date=20151226
+holiday.en-GL25.date=20161226
 holiday.en-GL26.name=New Year's Eve
-holiday.en-GL26.date=20151231
-holiday.en-GL27.name=New Year's Day
-holiday.en-GL27.date=20160101
-holiday.en-GL28.name=Epiphany
-holiday.en-GL28.date=20160106
-holiday.en-GL29.name=Maundy Thursday
-holiday.en-GL29.date=20160324
-holiday.en-GL30.name=Good Friday
-holiday.en-GL30.date=20160325
-holiday.en-GL31.name=Easter Monday
-holiday.en-GL31.date=20160428
-holiday.en-GL32.name=General Prayer Day
-holiday.en-GL32.date=20160422
-holiday.en-GL33.name=Ascension
-holiday.en-GL33.date=20160505
-holiday.en-GL34.name=Whit Monday
-holiday.en-GL34.date=20160516
-holiday.en-GL35.name=Ullortuneq
-holiday.en-GL35.date=20160621
-holiday.en-GL36.name=Christmas Eve
-holiday.en-GL36.date=20161224
-holiday.en-GL37.name=Christmas Day
-holiday.en-GL37.date=20161225
-holiday.en-GL38.name=St Stephen's Day
-holiday.en-GL38.date=20161226
-holiday.en-GL39.name=New Year's Eve
-holiday.en-GL39.date=20161231
+holiday.en-GL26.date=20161231

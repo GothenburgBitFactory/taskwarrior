@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/es-MX/2014.json
 # http://holidata.net/es-MX/2015.json
+# http://holidata.net/es-MX/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,62 +28,42 @@
 ###############################################################################
 
 holiday.es-MX1.name=Año Nuevo
-holiday.es-MX1.date=20140101
+holiday.es-MX1.date=20150101
 holiday.es-MX2.name=Día de la Constitución
-holiday.es-MX2.date=20140203
+holiday.es-MX2.date=20150202
 holiday.es-MX3.name=Natalicio de Benito Juárez
-holiday.es-MX3.date=20140317
+holiday.es-MX3.date=20150316
 holiday.es-MX4.name=Jueves Santo
-holiday.es-MX4.date=20140417
+holiday.es-MX4.date=20150402
 holiday.es-MX5.name=Viernes Santo
-holiday.es-MX5.date=20140418
+holiday.es-MX5.date=20150403
 holiday.es-MX6.name=Día del Trabajo
-holiday.es-MX6.date=20140501
+holiday.es-MX6.date=20150501
 holiday.es-MX7.name=Día de la Independencia
-holiday.es-MX7.date=20140916
+holiday.es-MX7.date=20150916
 holiday.es-MX8.name=Día de la Revolución
-holiday.es-MX8.date=20141117
+holiday.es-MX8.date=20151116
 holiday.es-MX9.name=Nuestra Señora de Guadalupe
-holiday.es-MX9.date=20141212
+holiday.es-MX9.date=20151212
 holiday.es-MX10.name=Navidad
-holiday.es-MX10.date=20141225
+holiday.es-MX10.date=20151225
 holiday.es-MX11.name=Año Nuevo
-holiday.es-MX11.date=20150101
+holiday.es-MX11.date=20160101
 holiday.es-MX12.name=Día de la Constitución
-holiday.es-MX12.date=20150202
+holiday.es-MX12.date=20160201
 holiday.es-MX13.name=Natalicio de Benito Juárez
-holiday.es-MX13.date=20150316
+holiday.es-MX13.date=20160314
 holiday.es-MX14.name=Jueves Santo
-holiday.es-MX14.date=20150402
+holiday.es-MX14.date=20160324
 holiday.es-MX15.name=Viernes Santo
-holiday.es-MX15.date=20150403
+holiday.es-MX15.date=20160325
 holiday.es-MX16.name=Día del Trabajo
-holiday.es-MX16.date=20150501
+holiday.es-MX16.date=20160501
 holiday.es-MX17.name=Día de la Independencia
-holiday.es-MX17.date=20150916
+holiday.es-MX17.date=20160916
 holiday.es-MX18.name=Día de la Revolución
-holiday.es-MX18.date=20151116
+holiday.es-MX18.date=20161121
 holiday.es-MX19.name=Nuestra Señora de Guadalupe
-holiday.es-MX19.date=20151212
+holiday.es-MX19.date=20161212
 holiday.es-MX20.name=Navidad
-holiday.es-MX20.date=20151225
-holiday.es-MX21.name=Año Nuevo
-holiday.es-MX21.date=20160101
-holiday.es-MX22.name=Día de la Constitución
-holiday.es-MX22.date=20160201
-holiday.es-MX23.name=Natalicio de Benito Juárez
-holiday.es-MX23.date=20160314
-holiday.es-MX24.name=Jueves Santo
-holiday.es-MX24.date=20160324
-holiday.es-MX25.name=Viernes Santo
-holiday.es-MX25.date=20160325
-holiday.es-MX26.name=Día del Trabajo
-holiday.es-MX26.date=20160501
-holiday.es-MX27.name=Día de la Independencia
-holiday.es-MX27.date=20160916
-holiday.es-MX28.name=Día de la Revolución
-holiday.es-MX28.date=20161121
-holiday.es-MX29.name=Nuestra Señora de Guadalupe
-holiday.es-MX29.date=20161212
-holiday.es-MX30.name=Navidad
-holiday.es-MX30.date=20161225
+holiday.es-MX20.date=20161225

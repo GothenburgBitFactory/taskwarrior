@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/et-EE/2014.json
 # http://holidata.net/et-EE/2015.json
+# http://holidata.net/et-EE/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,74 +28,50 @@
 ###############################################################################
 
 holiday.et-EE1.name=uusaasta
-holiday.et-EE1.date=20140101
+holiday.et-EE1.date=20150101
 holiday.et-EE2.name=iseseisvuspäev
-holiday.et-EE2.date=20140224
+holiday.et-EE2.date=20150224
 holiday.et-EE3.name=suur reede
-holiday.et-EE3.date=20140418
+holiday.et-EE3.date=20150403
 holiday.et-EE4.name=ülestõusmispühade 1. püha
-holiday.et-EE4.date=20140420
+holiday.et-EE4.date=20150405
 holiday.et-EE5.name=kevadpüha
-holiday.et-EE5.date=20140501
+holiday.et-EE5.date=20150501
 holiday.et-EE6.name=nelipühade 1. püha
-holiday.et-EE6.date=20140608
+holiday.et-EE6.date=20150524
 holiday.et-EE7.name=võidupüha
-holiday.et-EE7.date=20140623
+holiday.et-EE7.date=20150623
 holiday.et-EE8.name=jaanipäev
-holiday.et-EE8.date=20140624
+holiday.et-EE8.date=20150624
 holiday.et-EE9.name=taasiseseisvumispäev
-holiday.et-EE9.date=20140820
+holiday.et-EE9.date=20150820
 holiday.et-EE10.name=jõululaupäev
-holiday.et-EE10.date=20141224
+holiday.et-EE10.date=20151224
 holiday.et-EE11.name=esimene jõulupüha
-holiday.et-EE11.date=20141225
+holiday.et-EE11.date=20151225
 holiday.et-EE12.name=teine jõulupüha
-holiday.et-EE12.date=20141226
+holiday.et-EE12.date=20151226
 holiday.et-EE13.name=uusaasta
-holiday.et-EE13.date=20150101
+holiday.et-EE13.date=20160101
 holiday.et-EE14.name=iseseisvuspäev
-holiday.et-EE14.date=20150224
+holiday.et-EE14.date=20160224
 holiday.et-EE15.name=suur reede
-holiday.et-EE15.date=20150403
+holiday.et-EE15.date=20160325
 holiday.et-EE16.name=ülestõusmispühade 1. püha
-holiday.et-EE16.date=20150405
+holiday.et-EE16.date=20160327
 holiday.et-EE17.name=kevadpüha
-holiday.et-EE17.date=20150501
+holiday.et-EE17.date=20160501
 holiday.et-EE18.name=nelipühade 1. püha
-holiday.et-EE18.date=20150524
+holiday.et-EE18.date=20160515
 holiday.et-EE19.name=võidupüha
-holiday.et-EE19.date=20150623
+holiday.et-EE19.date=20160623
 holiday.et-EE20.name=jaanipäev
-holiday.et-EE20.date=20150624
+holiday.et-EE20.date=20160624
 holiday.et-EE21.name=taasiseseisvumispäev
-holiday.et-EE21.date=20150820
+holiday.et-EE21.date=20160820
 holiday.et-EE22.name=jõululaupäev
-holiday.et-EE22.date=20151224
+holiday.et-EE22.date=20161224
 holiday.et-EE23.name=esimene jõulupüha
-holiday.et-EE23.date=20151225
+holiday.et-EE23.date=20161225
 holiday.et-EE24.name=teine jõulupüha
-holiday.et-EE24.date=20151226
-holiday.et-EE25.name=uusaasta
-holiday.et-EE25.date=20160101
-holiday.et-EE26.name=iseseisvuspäev
-holiday.et-EE26.date=20160224
-holiday.et-EE27.name=suur reede
-holiday.et-EE27.date=20160325
-holiday.et-EE28.name=ülestõusmispühade 1. püha
-holiday.et-EE28.date=20160327
-holiday.et-EE29.name=kevadpüha
-holiday.et-EE29.date=20160501
-holiday.et-EE30.name=nelipühade 1. püha
-holiday.et-EE30.date=20160515
-holiday.et-EE31.name=võidupüha
-holiday.et-EE31.date=20160623
-holiday.et-EE32.name=jaanipäev
-holiday.et-EE32.date=20160624
-holiday.et-EE33.name=taasiseseisvumispäev
-holiday.et-EE33.date=20160820
-holiday.et-EE34.name=jõululaupäev
-holiday.et-EE34.date=20161224
-holiday.et-EE35.name=esimene jõulupüha
-holiday.et-EE35.date=20161225
-holiday.et-EE36.name=teine jõulupüha
-holiday.et-EE36.date=20161226
+holiday.et-EE24.date=20161226

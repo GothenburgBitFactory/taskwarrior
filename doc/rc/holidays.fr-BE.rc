@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/fr-BE/2014.json
 # http://holidata.net/fr-BE/2015.json
+# http://holidata.net/fr-BE/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,74 +28,50 @@
 ###############################################################################
 
 holiday.fr-BE1.name=Nouvel An
-holiday.fr-BE1.date=20140101
+holiday.fr-BE1.date=20150101
 holiday.fr-BE2.name=Pâques
-holiday.fr-BE2.date=20140420
+holiday.fr-BE2.date=20150405
 holiday.fr-BE3.name=Lundi de Pâques
-holiday.fr-BE3.date=20140421
+holiday.fr-BE3.date=20150406
 holiday.fr-BE4.name=Fête du Travail
-holiday.fr-BE4.date=20140501
+holiday.fr-BE4.date=20150501
 holiday.fr-BE5.name=Ascension
-holiday.fr-BE5.date=20140529
+holiday.fr-BE5.date=20150514
 holiday.fr-BE6.name=Pentecôte
-holiday.fr-BE6.date=20140608
+holiday.fr-BE6.date=20150524
 holiday.fr-BE7.name=Lundi de Pentecôte
-holiday.fr-BE7.date=20140609
+holiday.fr-BE7.date=20150525
 holiday.fr-BE8.name=Fête nationale
-holiday.fr-BE8.date=20140721
+holiday.fr-BE8.date=20150721
 holiday.fr-BE9.name=Assomption
-holiday.fr-BE9.date=20140815
+holiday.fr-BE9.date=20150815
 holiday.fr-BE10.name=Toussaint
-holiday.fr-BE10.date=20141101
+holiday.fr-BE10.date=20151101
 holiday.fr-BE11.name=Jour de l'armistice
-holiday.fr-BE11.date=20141111
+holiday.fr-BE11.date=20151111
 holiday.fr-BE12.name=Noël
-holiday.fr-BE12.date=20141225
+holiday.fr-BE12.date=20151225
 holiday.fr-BE13.name=Nouvel An
-holiday.fr-BE13.date=20150101
+holiday.fr-BE13.date=20160101
 holiday.fr-BE14.name=Pâques
-holiday.fr-BE14.date=20150405
+holiday.fr-BE14.date=20160527
 holiday.fr-BE15.name=Lundi de Pâques
-holiday.fr-BE15.date=20150406
+holiday.fr-BE15.date=20160528
 holiday.fr-BE16.name=Fête du Travail
-holiday.fr-BE16.date=20150501
+holiday.fr-BE16.date=20160501
 holiday.fr-BE17.name=Ascension
-holiday.fr-BE17.date=20150514
+holiday.fr-BE17.date=20160505
 holiday.fr-BE18.name=Pentecôte
-holiday.fr-BE18.date=20150524
+holiday.fr-BE18.date=20160515
 holiday.fr-BE19.name=Lundi de Pentecôte
-holiday.fr-BE19.date=20150525
+holiday.fr-BE19.date=20160516
 holiday.fr-BE20.name=Fête nationale
-holiday.fr-BE20.date=20150721
+holiday.fr-BE20.date=20160721
 holiday.fr-BE21.name=Assomption
-holiday.fr-BE21.date=20150815
+holiday.fr-BE21.date=20160815
 holiday.fr-BE22.name=Toussaint
-holiday.fr-BE22.date=20151101
+holiday.fr-BE22.date=20161101
 holiday.fr-BE23.name=Jour de l'armistice
-holiday.fr-BE23.date=20151111
+holiday.fr-BE23.date=20161111
 holiday.fr-BE24.name=Noël
-holiday.fr-BE24.date=20151225
-holiday.fr-BE25.name=Nouvel An
-holiday.fr-BE25.date=20160101
-holiday.fr-BE26.name=Pâques
-holiday.fr-BE26.date=20160527
-holiday.fr-BE27.name=Lundi de Pâques
-holiday.fr-BE27.date=20160528
-holiday.fr-BE28.name=Fête du Travail
-holiday.fr-BE28.date=20160501
-holiday.fr-BE29.name=Ascension
-holiday.fr-BE29.date=20160505
-holiday.fr-BE30.name=Pentecôte
-holiday.fr-BE30.date=20160515
-holiday.fr-BE31.name=Lundi de Pentecôte
-holiday.fr-BE31.date=20160516
-holiday.fr-BE32.name=Fête nationale
-holiday.fr-BE32.date=20160721
-holiday.fr-BE33.name=Assomption
-holiday.fr-BE33.date=20160815
-holiday.fr-BE34.name=Toussaint
-holiday.fr-BE34.date=20161101
-holiday.fr-BE35.name=Jour de l'armistice
-holiday.fr-BE35.date=20161111
-holiday.fr-BE36.name=Noël
-holiday.fr-BE36.date=20161225
+holiday.fr-BE24.date=20161225

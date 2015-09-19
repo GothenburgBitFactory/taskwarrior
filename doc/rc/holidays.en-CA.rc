@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/en-CA/2014.json
 # http://holidata.net/en-CA/2015.json
+# http://holidata.net/en-CA/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,74 +28,50 @@
 ###############################################################################
 
 holiday.en-CA1.name=New Year's Day
-holiday.en-CA1.date=20140101
+holiday.en-CA1.date=20150101
 holiday.en-CA2.name=Family Day
-holiday.en-CA2.date=20140210
+holiday.en-CA2.date=20150209
 holiday.en-CA3.name=Good Friday
-holiday.en-CA3.date=20140418
+holiday.en-CA3.date=20150403
 holiday.en-CA4.name=Easter Monday
-holiday.en-CA4.date=20140421
+holiday.en-CA4.date=20150406
 holiday.en-CA5.name=Victoria Day
-holiday.en-CA5.date=20140519
+holiday.en-CA5.date=20150518
 holiday.en-CA6.name=Canada Day
-holiday.en-CA6.date=20140701
+holiday.en-CA6.date=20150701
 holiday.en-CA7.name=First Monday of August
-holiday.en-CA7.date=20140804
+holiday.en-CA7.date=20150803
 holiday.en-CA8.name=Labour Day
-holiday.en-CA8.date=20140901
+holiday.en-CA8.date=20150907
 holiday.en-CA9.name=Thanksgiving Day
-holiday.en-CA9.date=20141013
+holiday.en-CA9.date=20151012
 holiday.en-CA10.name=Remembrance Day
-holiday.en-CA10.date=20141111
+holiday.en-CA10.date=20151111
 holiday.en-CA11.name=Christmas Day
-holiday.en-CA11.date=20141225
+holiday.en-CA11.date=20151225
 holiday.en-CA12.name=Boxing Day
-holiday.en-CA12.date=20141226
+holiday.en-CA12.date=20151226
 holiday.en-CA13.name=New Year's Day
-holiday.en-CA13.date=20150101
+holiday.en-CA13.date=20160101
 holiday.en-CA14.name=Family Day
-holiday.en-CA14.date=20150209
+holiday.en-CA14.date=20160208
 holiday.en-CA15.name=Good Friday
-holiday.en-CA15.date=20150403
+holiday.en-CA15.date=20160325
 holiday.en-CA16.name=Easter Monday
-holiday.en-CA16.date=20150406
+holiday.en-CA16.date=20160328
 holiday.en-CA17.name=Victoria Day
-holiday.en-CA17.date=20150518
+holiday.en-CA17.date=20160523
 holiday.en-CA18.name=Canada Day
-holiday.en-CA18.date=20150701
+holiday.en-CA18.date=20160701
 holiday.en-CA19.name=First Monday of August
-holiday.en-CA19.date=20150803
+holiday.en-CA19.date=20160801
 holiday.en-CA20.name=Labour Day
-holiday.en-CA20.date=20150907
+holiday.en-CA20.date=20160905
 holiday.en-CA21.name=Thanksgiving Day
-holiday.en-CA21.date=20151012
+holiday.en-CA21.date=20161010
 holiday.en-CA22.name=Remembrance Day
-holiday.en-CA22.date=20151111
+holiday.en-CA22.date=20161111
 holiday.en-CA23.name=Christmas Day
-holiday.en-CA23.date=20151225
+holiday.en-CA23.date=20161225
 holiday.en-CA24.name=Boxing Day
-holiday.en-CA24.date=20151226
-holiday.en-CA25.name=New Year's Day
-holiday.en-CA25.date=20160101
-holiday.en-CA26.name=Family Day
-holiday.en-CA26.date=20160208
-holiday.en-CA27.name=Good Friday
-holiday.en-CA27.date=20160325
-holiday.en-CA28.name=Easter Monday
-holiday.en-CA28.date=20160328
-holiday.en-CA29.name=Victoria Day
-holiday.en-CA29.date=20160523
-holiday.en-CA30.name=Canada Day
-holiday.en-CA30.date=20160701
-holiday.en-CA31.name=First Monday of August
-holiday.en-CA31.date=20160801
-holiday.en-CA32.name=Labour Day
-holiday.en-CA32.date=20160905
-holiday.en-CA33.name=Thanksgiving Day
-holiday.en-CA33.date=20161010
-holiday.en-CA34.name=Remembrance Day
-holiday.en-CA34.date=20161111
-holiday.en-CA35.name=Christmas Day
-holiday.en-CA35.date=20161225
-holiday.en-CA36.name=Boxing Day
-holiday.en-CA36.date=20161226
+holiday.en-CA24.date=20161226

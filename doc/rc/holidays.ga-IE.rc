@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/ga-IE/2014.json
 # http://holidata.net/ga-IE/2015.json
+# http://holidata.net/ga-IE/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,56 +28,38 @@
 ###############################################################################
 
 holiday.ga-IE1.name=Lá Caille or Lá Bliana Nua
-holiday.ga-IE1.date=20140101
+holiday.ga-IE1.date=20150101
 holiday.ga-IE2.name=Lá Fhéile Pádraig
-holiday.ga-IE2.date=20140317
+holiday.ga-IE2.date=20150317
 holiday.ga-IE3.name=Luan Cásca
-holiday.ga-IE3.date=20140421
+holiday.ga-IE3.date=20150406
 holiday.ga-IE4.name=Lá an Lucht Oibre
-holiday.ga-IE4.date=20140505
+holiday.ga-IE4.date=20150504
 holiday.ga-IE5.name=Lá Saoire i mí Mheitheamh
-holiday.ga-IE5.date=20140602
+holiday.ga-IE5.date=20150601
 holiday.ga-IE6.name=Lá Saoire i mí Lúnasa
-holiday.ga-IE6.date=20140804
+holiday.ga-IE6.date=20150803
 holiday.ga-IE7.name=Lá Saoire i mí Dheireadh Fómhair
-holiday.ga-IE7.date=20141027
+holiday.ga-IE7.date=20151026
 holiday.ga-IE8.name=Lá Nollag
-holiday.ga-IE8.date=20141225
+holiday.ga-IE8.date=20151225
 holiday.ga-IE9.name=Lá Fhéile Stiofáin or Lá an Dreoilín
-holiday.ga-IE9.date=20141226
+holiday.ga-IE9.date=20151226
 holiday.ga-IE10.name=Lá Caille or Lá Bliana Nua
-holiday.ga-IE10.date=20150101
+holiday.ga-IE10.date=20160101
 holiday.ga-IE11.name=Lá Fhéile Pádraig
-holiday.ga-IE11.date=20150317
+holiday.ga-IE11.date=20160317
 holiday.ga-IE12.name=Luan Cásca
-holiday.ga-IE12.date=20150406
+holiday.ga-IE12.date=20160328
 holiday.ga-IE13.name=Lá an Lucht Oibre
-holiday.ga-IE13.date=20150504
+holiday.ga-IE13.date=20160502
 holiday.ga-IE14.name=Lá Saoire i mí Mheitheamh
-holiday.ga-IE14.date=20150601
+holiday.ga-IE14.date=20160606
 holiday.ga-IE15.name=Lá Saoire i mí Lúnasa
-holiday.ga-IE15.date=20150803
+holiday.ga-IE15.date=20160801
 holiday.ga-IE16.name=Lá Saoire i mí Dheireadh Fómhair
-holiday.ga-IE16.date=20151026
+holiday.ga-IE16.date=20161031
 holiday.ga-IE17.name=Lá Nollag
-holiday.ga-IE17.date=20151225
+holiday.ga-IE17.date=20161225
 holiday.ga-IE18.name=Lá Fhéile Stiofáin or Lá an Dreoilín
-holiday.ga-IE18.date=20151226
-holiday.ga-IE19.name=Lá Caille or Lá Bliana Nua
-holiday.ga-IE19.date=20160101
-holiday.ga-IE20.name=Lá Fhéile Pádraig
-holiday.ga-IE20.date=20160317
-holiday.ga-IE21.name=Luan Cásca
-holiday.ga-IE21.date=20160328
-holiday.ga-IE22.name=Lá an Lucht Oibre
-holiday.ga-IE22.date=20160502
-holiday.ga-IE23.name=Lá Saoire i mí Mheitheamh
-holiday.ga-IE23.date=20160606
-holiday.ga-IE24.name=Lá Saoire i mí Lúnasa
-holiday.ga-IE24.date=20160801
-holiday.ga-IE25.name=Lá Saoire i mí Dheireadh Fómhair
-holiday.ga-IE25.date=20161031
-holiday.ga-IE26.name=Lá Nollag
-holiday.ga-IE26.date=20161225
-holiday.ga-IE27.name=Lá Fhéile Stiofáin or Lá an Dreoilín
-holiday.ga-IE27.date=20161226
+holiday.ga-IE18.date=20161226

@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/ru-RU/2014.json
 # http://holidata.net/ru-RU/2015.json
+# http://holidata.net/ru-RU/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,56 +28,38 @@
 ###############################################################################
 
 holiday.ru-RU1.name=Новый Год
-holiday.ru-RU1.date=20140101
+holiday.ru-RU1.date=20150101
 holiday.ru-RU2.name=Рождество Христово
-holiday.ru-RU2.date=20140107
+holiday.ru-RU2.date=20150107
 holiday.ru-RU3.name=День защитника Отечества
-holiday.ru-RU3.date=20140223
+holiday.ru-RU3.date=20150223
 holiday.ru-RU4.name=Международный женский день
-holiday.ru-RU4.date=20140308
+holiday.ru-RU4.date=20150803
 holiday.ru-RU5.name=Пасха
-holiday.ru-RU5.date=20140420
+holiday.ru-RU5.date=20150412
 holiday.ru-RU6.name=Праздник весны и труда
-holiday.ru-RU6.date=20140501
+holiday.ru-RU6.date=20150501
 holiday.ru-RU7.name=День Победы
-holiday.ru-RU7.date=20140509
+holiday.ru-RU7.date=20150509
 holiday.ru-RU8.name=День России
-holiday.ru-RU8.date=20140612
+holiday.ru-RU8.date=20150612
 holiday.ru-RU9.name=День народного единства
-holiday.ru-RU9.date=20141104
+holiday.ru-RU9.date=20151104
 holiday.ru-RU10.name=Новый Год
-holiday.ru-RU10.date=20150101
+holiday.ru-RU10.date=20160101
 holiday.ru-RU11.name=Рождество Христово
-holiday.ru-RU11.date=20150107
+holiday.ru-RU11.date=20160107
 holiday.ru-RU12.name=День защитника Отечества
-holiday.ru-RU12.date=20150223
+holiday.ru-RU12.date=20160223
 holiday.ru-RU13.name=Международный женский день
-holiday.ru-RU13.date=20150308
+holiday.ru-RU13.date=20160803
 holiday.ru-RU14.name=Пасха
-holiday.ru-RU14.date=20150412
+holiday.ru-RU14.date=20160501
 holiday.ru-RU15.name=Праздник весны и труда
-holiday.ru-RU15.date=20150501
+holiday.ru-RU15.date=20160501
 holiday.ru-RU16.name=День Победы
-holiday.ru-RU16.date=20150509
+holiday.ru-RU16.date=20160509
 holiday.ru-RU17.name=День России
-holiday.ru-RU17.date=20150612
+holiday.ru-RU17.date=20160612
 holiday.ru-RU18.name=День народного единства
-holiday.ru-RU18.date=20151104
-holiday.ru-RU19.name=Новый Год
-holiday.ru-RU19.date=20160101
-holiday.ru-RU20.name=Рождество Христово
-holiday.ru-RU20.date=20160107
-holiday.ru-RU21.name=День защитника Отечества
-holiday.ru-RU21.date=20160223
-holiday.ru-RU22.name=Международный женский день
-holiday.ru-RU22.date=20160308
-holiday.ru-RU23.name=Пасха
-holiday.ru-RU23.date=20160501
-holiday.ru-RU24.name=Праздник весны и труда
-holiday.ru-RU24.date=20160501
-holiday.ru-RU25.name=День Победы
-holiday.ru-RU25.date=20160509
-holiday.ru-RU26.name=День России
-holiday.ru-RU26.date=20160612
-holiday.ru-RU27.name=День народного единства
-holiday.ru-RU27.date=20161104
+holiday.ru-RU18.date=20161104

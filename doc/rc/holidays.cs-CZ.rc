@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/cs-CZ/2014.json
 # http://holidata.net/cs-CZ/2015.json
+# http://holidata.net/cs-CZ/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,80 +28,54 @@
 ###############################################################################
 
 holiday.cs-CZ1.name=Nový rok
-holiday.cs-CZ1.date=20140101
+holiday.cs-CZ1.date=20150101
 holiday.cs-CZ2.name=Den obnovy samostatnosti českého státu
-holiday.cs-CZ2.date=20140101
+holiday.cs-CZ2.date=20150101
 holiday.cs-CZ3.name=Velikonoční pondělí
-holiday.cs-CZ3.date=20140421
+holiday.cs-CZ3.date=20150406
 holiday.cs-CZ4.name=Svátek práce
-holiday.cs-CZ4.date=20140501
+holiday.cs-CZ4.date=20150501
 holiday.cs-CZ5.name=Den vítězství
-holiday.cs-CZ5.date=20140508
+holiday.cs-CZ5.date=20150508
 holiday.cs-CZ6.name=Den slovanských věrozvěstů
-holiday.cs-CZ6.date=20140705
+holiday.cs-CZ6.date=20150705
 holiday.cs-CZ7.name=Den upálení mistra Jana Husa
-holiday.cs-CZ7.date=20140706
+holiday.cs-CZ7.date=20150706
 holiday.cs-CZ8.name=Den české státnosti
-holiday.cs-CZ8.date=20140928
+holiday.cs-CZ8.date=20150928
 holiday.cs-CZ9.name=Den vzniku samostatného československého státu
-holiday.cs-CZ9.date=20141028
+holiday.cs-CZ9.date=20151028
 holiday.cs-CZ10.name=Den boje za svobodu a demokracii
-holiday.cs-CZ10.date=20141117
+holiday.cs-CZ10.date=20151117
 holiday.cs-CZ11.name=Štědrý den
-holiday.cs-CZ11.date=20141224
+holiday.cs-CZ11.date=20151224
 holiday.cs-CZ12.name=1. svátek vánoční
-holiday.cs-CZ12.date=20141225
+holiday.cs-CZ12.date=20151225
 holiday.cs-CZ13.name=2. svátek vánoční
-holiday.cs-CZ13.date=20141226
+holiday.cs-CZ13.date=20151226
 holiday.cs-CZ14.name=Nový rok
-holiday.cs-CZ14.date=20150101
+holiday.cs-CZ14.date=20160101
 holiday.cs-CZ15.name=Den obnovy samostatnosti českého státu
-holiday.cs-CZ15.date=20150101
+holiday.cs-CZ15.date=20160101
 holiday.cs-CZ16.name=Velikonoční pondělí
-holiday.cs-CZ16.date=20150406
+holiday.cs-CZ16.date=20160328
 holiday.cs-CZ17.name=Svátek práce
-holiday.cs-CZ17.date=20150501
+holiday.cs-CZ17.date=20160501
 holiday.cs-CZ18.name=Den vítězství
-holiday.cs-CZ18.date=20150508
+holiday.cs-CZ18.date=20160508
 holiday.cs-CZ19.name=Den slovanských věrozvěstů
-holiday.cs-CZ19.date=20150705
+holiday.cs-CZ19.date=20160705
 holiday.cs-CZ20.name=Den upálení mistra Jana Husa
-holiday.cs-CZ20.date=20150706
+holiday.cs-CZ20.date=20160706
 holiday.cs-CZ21.name=Den české státnosti
-holiday.cs-CZ21.date=20150928
+holiday.cs-CZ21.date=20160928
 holiday.cs-CZ22.name=Den vzniku samostatného československého státu
-holiday.cs-CZ22.date=20151028
+holiday.cs-CZ22.date=20161028
 holiday.cs-CZ23.name=Den boje za svobodu a demokracii
-holiday.cs-CZ23.date=20151117
+holiday.cs-CZ23.date=20161117
 holiday.cs-CZ24.name=Štědrý den
-holiday.cs-CZ24.date=20151224
+holiday.cs-CZ24.date=20161224
 holiday.cs-CZ25.name=1. svátek vánoční
-holiday.cs-CZ25.date=20151225
+holiday.cs-CZ25.date=20161225
 holiday.cs-CZ26.name=2. svátek vánoční
-holiday.cs-CZ26.date=20151226
-holiday.cs-CZ27.name=Nový rok
-holiday.cs-CZ27.date=20160101
-holiday.cs-CZ28.name=Den obnovy samostatnosti českého státu
-holiday.cs-CZ28.date=20160101
-holiday.cs-CZ29.name=Velikonoční pondělí
-holiday.cs-CZ29.date=20160328
-holiday.cs-CZ30.name=Svátek práce
-holiday.cs-CZ30.date=20160501
-holiday.cs-CZ31.name=Den vítězství
-holiday.cs-CZ31.date=20160508
-holiday.cs-CZ32.name=Den slovanských věrozvěstů
-holiday.cs-CZ32.date=20160705
-holiday.cs-CZ33.name=Den upálení mistra Jana Husa
-holiday.cs-CZ33.date=20160706
-holiday.cs-CZ34.name=Den české státnosti
-holiday.cs-CZ34.date=20160928
-holiday.cs-CZ35.name=Den vzniku samostatného československého státu
-holiday.cs-CZ35.date=20161028
-holiday.cs-CZ36.name=Den boje za svobodu a demokracii
-holiday.cs-CZ36.date=20161117
-holiday.cs-CZ37.name=Štědrý den
-holiday.cs-CZ37.date=20161224
-holiday.cs-CZ38.name=1. svátek vánoční
-holiday.cs-CZ38.date=20161225
-holiday.cs-CZ39.name=2. svátek vánoční
-holiday.cs-CZ39.date=20161226
+holiday.cs-CZ26.date=20161226

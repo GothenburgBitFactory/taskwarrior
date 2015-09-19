@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/es-US/2014.json
 # http://holidata.net/es-US/2015.json
+# http://holidata.net/es-US/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,68 +28,46 @@
 ###############################################################################
 
 holiday.es-US1.name=Año Neuvo
-holiday.es-US1.date=20140101
+holiday.es-US1.date=20150101
 holiday.es-US2.name=Cumpleaños de Martin Luther King, Jr.
-holiday.es-US2.date=20140120
+holiday.es-US2.date=20150119
 holiday.es-US3.name=Día del Presidente
-holiday.es-US3.date=20140217
+holiday.es-US3.date=20150216
 holiday.es-US4.name=Día del Patriota
-holiday.es-US4.date=20140421
+holiday.es-US4.date=20150420
 holiday.es-US5.name=Día de los Caídos
-holiday.es-US5.date=20140526
+holiday.es-US5.date=20150525
 holiday.es-US6.name=Día de la Independiencia
-holiday.es-US6.date=20140704
+holiday.es-US6.date=20150704
 holiday.es-US7.name=Día del Trabajo
-holiday.es-US7.date=20140901
+holiday.es-US7.date=20150907
 holiday.es-US8.name=Día de Columbus
-holiday.es-US8.date=20141013
+holiday.es-US8.date=20151012
 holiday.es-US9.name=Día de los Veteranos
-holiday.es-US9.date=20141111
+holiday.es-US9.date=20151111
 holiday.es-US10.name=Día de Acción de Gracias
-holiday.es-US10.date=20141127
+holiday.es-US10.date=20151126
 holiday.es-US11.name=Navidad
-holiday.es-US11.date=20141225
+holiday.es-US11.date=20151225
 holiday.es-US12.name=Año Neuvo
-holiday.es-US12.date=20150101
+holiday.es-US12.date=20160101
 holiday.es-US13.name=Cumpleaños de Martin Luther King, Jr.
-holiday.es-US13.date=20150119
+holiday.es-US13.date=20160118
 holiday.es-US14.name=Día del Presidente
-holiday.es-US14.date=20150216
+holiday.es-US14.date=20160215
 holiday.es-US15.name=Día del Patriota
-holiday.es-US15.date=20150420
+holiday.es-US15.date=20160418
 holiday.es-US16.name=Día de los Caídos
-holiday.es-US16.date=20150525
+holiday.es-US16.date=20160530
 holiday.es-US17.name=Día de la Independiencia
-holiday.es-US17.date=20150704
+holiday.es-US17.date=20160704
 holiday.es-US18.name=Día del Trabajo
-holiday.es-US18.date=20150907
+holiday.es-US18.date=20160905
 holiday.es-US19.name=Día de Columbus
-holiday.es-US19.date=20151012
+holiday.es-US19.date=20161010
 holiday.es-US20.name=Día de los Veteranos
-holiday.es-US20.date=20151111
+holiday.es-US20.date=20161111
 holiday.es-US21.name=Día de Acción de Gracias
-holiday.es-US21.date=20151126
+holiday.es-US21.date=20161124
 holiday.es-US22.name=Navidad
-holiday.es-US22.date=20151225
-holiday.es-US23.name=Año Neuvo
-holiday.es-US23.date=20160101
-holiday.es-US24.name=Cumpleaños de Martin Luther King, Jr.
-holiday.es-US24.date=20160118
-holiday.es-US25.name=Día del Presidente
-holiday.es-US25.date=20160215
-holiday.es-US26.name=Día del Patriota
-holiday.es-US26.date=20160418
-holiday.es-US27.name=Día de los Caídos
-holiday.es-US27.date=20160530
-holiday.es-US28.name=Día de la Independiencia
-holiday.es-US28.date=20160704
-holiday.es-US29.name=Día del Trabajo
-holiday.es-US29.date=20160905
-holiday.es-US30.name=Día de Columbus
-holiday.es-US30.date=20161010
-holiday.es-US31.name=Día de los Veteranos
-holiday.es-US31.date=20161111
-holiday.es-US32.name=Día de Acción de Gracias
-holiday.es-US32.date=20161124
-holiday.es-US33.name=Navidad
-holiday.es-US33.date=20161225
+holiday.es-US22.date=20161225

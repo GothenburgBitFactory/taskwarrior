@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/pl-PL/2014.json
 # http://holidata.net/pl-PL/2015.json
+# http://holidata.net/pl-PL/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,86 +28,58 @@
 ###############################################################################
 
 holiday.pl-PL1.name=Nowy Rok
-holiday.pl-PL1.date=20140101
+holiday.pl-PL1.date=20150101
 holiday.pl-PL2.name=Trzech Króli
-holiday.pl-PL2.date=20140106
+holiday.pl-PL2.date=20150106
 holiday.pl-PL3.name=Wielkanoc
-holiday.pl-PL3.date=20140420
+holiday.pl-PL3.date=20150405
 holiday.pl-PL4.name=Poniedziałek Wielkanocny
-holiday.pl-PL4.date=20140421
+holiday.pl-PL4.date=20150406
 holiday.pl-PL5.name=Święto Pracy
-holiday.pl-PL5.date=20140501
+holiday.pl-PL5.date=20150501
 holiday.pl-PL6.name=Święto Konstytucji Trzeciego Maja
-holiday.pl-PL6.date=20140503
+holiday.pl-PL6.date=20150503
 holiday.pl-PL7.name=Zielone Świątki
-holiday.pl-PL7.date=20140608
+holiday.pl-PL7.date=20150524
 holiday.pl-PL8.name=Boże Ciało
-holiday.pl-PL8.date=20140619
+holiday.pl-PL8.date=20150604
 holiday.pl-PL9.name=Święto Wojska Polskiego
-holiday.pl-PL9.date=20140815
+holiday.pl-PL9.date=20150815
 holiday.pl-PL10.name=Wniebowzięcia NMP
-holiday.pl-PL10.date=20140815
+holiday.pl-PL10.date=20150815
 holiday.pl-PL11.name=Wszystkich Świętych
-holiday.pl-PL11.date=20141101
+holiday.pl-PL11.date=20151101
 holiday.pl-PL12.name=Dzień Niepodległości
-holiday.pl-PL12.date=20141111
+holiday.pl-PL12.date=20151111
 holiday.pl-PL13.name=Boże Narodzenie (pierwszy dzień)
-holiday.pl-PL13.date=20141225
+holiday.pl-PL13.date=20151225
 holiday.pl-PL14.name=Boże Narodzenie (drugi dzień)
-holiday.pl-PL14.date=20141226
+holiday.pl-PL14.date=20151226
 holiday.pl-PL15.name=Nowy Rok
-holiday.pl-PL15.date=20150101
+holiday.pl-PL15.date=20160101
 holiday.pl-PL16.name=Trzech Króli
-holiday.pl-PL16.date=20150106
+holiday.pl-PL16.date=20160106
 holiday.pl-PL17.name=Wielkanoc
-holiday.pl-PL17.date=20150405
+holiday.pl-PL17.date=20160327
 holiday.pl-PL18.name=Poniedziałek Wielkanocny
-holiday.pl-PL18.date=20150406
+holiday.pl-PL18.date=20160328
 holiday.pl-PL19.name=Święto Pracy
-holiday.pl-PL19.date=20150501
+holiday.pl-PL19.date=20160501
 holiday.pl-PL20.name=Święto Konstytucji Trzeciego Maja
-holiday.pl-PL20.date=20150503
+holiday.pl-PL20.date=20160503
 holiday.pl-PL21.name=Zielone Świątki
-holiday.pl-PL21.date=20150524
+holiday.pl-PL21.date=20160515
 holiday.pl-PL22.name=Boże Ciało
-holiday.pl-PL22.date=20150604
+holiday.pl-PL22.date=20160526
 holiday.pl-PL23.name=Święto Wojska Polskiego
-holiday.pl-PL23.date=20150815
+holiday.pl-PL23.date=20160815
 holiday.pl-PL24.name=Wniebowzięcia NMP
-holiday.pl-PL24.date=20150815
+holiday.pl-PL24.date=20160815
 holiday.pl-PL25.name=Wszystkich Świętych
-holiday.pl-PL25.date=20151101
+holiday.pl-PL25.date=20161101
 holiday.pl-PL26.name=Dzień Niepodległości
-holiday.pl-PL26.date=20151111
+holiday.pl-PL26.date=20161111
 holiday.pl-PL27.name=Boże Narodzenie (pierwszy dzień)
-holiday.pl-PL27.date=20151225
+holiday.pl-PL27.date=20161225
 holiday.pl-PL28.name=Boże Narodzenie (drugi dzień)
-holiday.pl-PL28.date=20151226
-holiday.pl-PL29.name=Nowy Rok
-holiday.pl-PL29.date=20160101
-holiday.pl-PL30.name=Trzech Króli
-holiday.pl-PL30.date=20160106
-holiday.pl-PL31.name=Wielkanoc
-holiday.pl-PL31.date=20160327
-holiday.pl-PL32.name=Poniedziałek Wielkanocny
-holiday.pl-PL32.date=20160328
-holiday.pl-PL33.name=Święto Pracy
-holiday.pl-PL33.date=20160501
-holiday.pl-PL34.name=Święto Konstytucji Trzeciego Maja
-holiday.pl-PL34.date=20160503
-holiday.pl-PL35.name=Zielone Świątki
-holiday.pl-PL35.date=20160515
-holiday.pl-PL36.name=Boże Ciało
-holiday.pl-PL36.date=20160526
-holiday.pl-PL37.name=Święto Wojska Polskiego
-holiday.pl-PL37.date=20160815
-holiday.pl-PL38.name=Wniebowzięcia NMP
-holiday.pl-PL38.date=20160815
-holiday.pl-PL39.name=Wszystkich Świętych
-holiday.pl-PL39.date=20161101
-holiday.pl-PL40.name=Dzień Niepodległości
-holiday.pl-PL40.date=20161111
-holiday.pl-PL41.name=Boże Narodzenie (pierwszy dzień)
-holiday.pl-PL41.date=20161225
-holiday.pl-PL42.name=Boże Narodzenie (drugi dzień)
-holiday.pl-PL42.date=20161226
+holiday.pl-PL28.date=20161226

@@ -1,7 +1,7 @@
 ###############################################################################
 # International Holiday Data provided by Holidata.net
-# http://holidata.net/be-BY/2014.json
 # http://holidata.net/be-BY/2015.json
+# http://holidata.net/be-BY/2016.json
 #
 # Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
 #
@@ -28,62 +28,42 @@
 ###############################################################################
 
 holiday.be-BY1.name=Новы Год
-holiday.be-BY1.date=20140101
+holiday.be-BY1.date=20150101
 holiday.be-BY2.name=Раство Хрыстова(праваслаўнае)
-holiday.be-BY2.date=20140107
+holiday.be-BY2.date=20150107
 holiday.be-BY3.name=Міжнародны жаночы дзень
-holiday.be-BY3.date=20140308
+holiday.be-BY3.date=20150803
 holiday.be-BY4.name=Пасха(праваслаўная)
-holiday.be-BY4.date=20140420
+holiday.be-BY4.date=20150420
 holiday.be-BY5.name=Радуніца
-holiday.be-BY5.date=20140429
+holiday.be-BY5.date=20150421
 holiday.be-BY6.name=Свята працы
-holiday.be-BY6.date=20140501
+holiday.be-BY6.date=20150501
 holiday.be-BY7.name=Дзень Перамогі
-holiday.be-BY7.date=20140509
+holiday.be-BY7.date=20150509
 holiday.be-BY8.name=Дзень незалежнаці
-holiday.be-BY8.date=20140703
+holiday.be-BY8.date=20150703
 holiday.be-BY9.name=Дзень Кастрычніцкай рэвалюцыі
-holiday.be-BY9.date=20141107
+holiday.be-BY9.date=20151107
 holiday.be-BY10.name=Раство Хрыстова(у заходніх хрысціян)
-holiday.be-BY10.date=20141225
+holiday.be-BY10.date=20151225
 holiday.be-BY11.name=Новы Год
-holiday.be-BY11.date=20150101
+holiday.be-BY11.date=20160101
 holiday.be-BY12.name=Раство Хрыстова(праваслаўнае)
-holiday.be-BY12.date=20150107
+holiday.be-BY12.date=20160107
 holiday.be-BY13.name=Міжнародны жаночы дзень
-holiday.be-BY13.date=20150308
+holiday.be-BY13.date=20160803
 holiday.be-BY14.name=Пасха(праваслаўная)
-holiday.be-BY14.date=20150420
+holiday.be-BY14.date=20160327
 holiday.be-BY15.name=Радуніца
-holiday.be-BY15.date=20150421
+holiday.be-BY15.date=20160510
 holiday.be-BY16.name=Свята працы
-holiday.be-BY16.date=20150501
+holiday.be-BY16.date=20160501
 holiday.be-BY17.name=Дзень Перамогі
-holiday.be-BY17.date=20150509
+holiday.be-BY17.date=20160509
 holiday.be-BY18.name=Дзень незалежнаці
-holiday.be-BY18.date=20150703
+holiday.be-BY18.date=20160703
 holiday.be-BY19.name=Дзень Кастрычніцкай рэвалюцыі
-holiday.be-BY19.date=20151107
+holiday.be-BY19.date=20161107
 holiday.be-BY20.name=Раство Хрыстова(у заходніх хрысціян)
-holiday.be-BY20.date=20151225
-holiday.be-BY21.name=Новы Год
-holiday.be-BY21.date=20160101
-holiday.be-BY22.name=Раство Хрыстова(праваслаўнае)
-holiday.be-BY22.date=20160107
-holiday.be-BY23.name=Міжнародны жаночы дзень
-holiday.be-BY23.date=20160308
-holiday.be-BY24.name=Пасха(праваслаўная)
-holiday.be-BY24.date=20160327
-holiday.be-BY25.name=Радуніца
-holiday.be-BY25.date=20160510
-holiday.be-BY26.name=Свята працы
-holiday.be-BY26.date=20160501
-holiday.be-BY27.name=Дзень Перамогі
-holiday.be-BY27.date=20160509
-holiday.be-BY28.name=Дзень незалежнаці
-holiday.be-BY28.date=20160703
-holiday.be-BY29.name=Дзень Кастрычніцкай рэвалюцыі
-holiday.be-BY29.date=20161107
-holiday.be-BY30.name=Раство Хрыстова(у заходніх хрысціян)
-holiday.be-BY30.date=20161225
+holiday.be-BY20.date=20161225
