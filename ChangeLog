@@ -200,6 +200,7 @@
   is no longer supported.
 - Correct a false-positive warning when a due date is removed and a wait is
   added.
+- When GC is turned off, disable the query shortcuts, which no longer apply.
 
 ------ current release ---------------------------
 

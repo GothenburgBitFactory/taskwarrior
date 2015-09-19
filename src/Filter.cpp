@@ -234,6 +234,10 @@ bool Filter::hasMiscellaneous ()
 // guaranteed to only need data from pending.data.
 bool Filter::pendingOnly ()
 {
+  // When GC is off, there are no shortcuts.
+  if (! context.config.getBoolean ("gc"))
+    return false;
+
   // To skip loading completed.data, there should be:
   // - 'status' in filter
   // - no 'completed'
