@@ -215,7 +215,7 @@ int Context::initialize (int argc, const char** argv)
       if (combined.length ())
         combined += ' ';
 
-      combined += a.getToken ();
+      combined += a.attribute ("raw");
 
       if (a.hasTag ("DEFAULT"))
         foundDefault = true;
