@@ -663,6 +663,23 @@ void CLI2::prepareFilter ()
   desugarFilterAttributes ();
   desugarFilterPatterns ();
   insertJunctions ();                 // Deliberately after all desugar calls.
+
+  if (context.verbose ("filter"))
+  {
+    std::string combined;
+    for (auto& a : _args)
+    {
+      if (a.hasTag ("FILTER"))
+      {
+        if (combined != "")
+          combined += " ";
+
+        combined += a.attribute ("raw");
+      }
+    }
+
+    context.footnote (std::string (STRING_COLUMN_LABEL_FILTER) + ": " + combined);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
