@@ -1429,7 +1429,7 @@ void Task::validate (bool applyDefault /* = true */)
     Lexer lex (uid);
     std::string token;
     Lexer::Type type;
-    if (! lex.isUUID (token, type, false))
+    if (! lex.isUUID (token, type, true))
       throw format (STRING_CMD_IMPORT_UUID_BAD, uid);
   }
   else
