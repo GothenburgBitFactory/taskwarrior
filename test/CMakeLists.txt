@@ -31,6 +31,8 @@ foreach (src_FILE ${test_SRCS})
   target_link_libraries (${src_FILE} task commands task columns ${TASK_LIBRARIES})
 endforeach (src_FILE)
 
+configure_file(run_all run_all COPYONLY)
+
 #SET(CMAKE_BUILD_TYPE gcov)
 #SET(CMAKE_CXX_FLAGS_GCOV "--coverage")
 #SET(CMAKE_C_FLAGS_GCOV "--coverage")
