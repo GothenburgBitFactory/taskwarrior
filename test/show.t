@@ -80,7 +80,7 @@ class TestShowHelperCommand(TestCase):
         """Verify _show command lists all with no arg provided"""
         code, out, err = self.t("_show")
         self.assertIn("debug=no\n", out)
-        self.assertIn("verbose=yes\n", out)
+        self.assertIn("verbose=", out)
 
 
 if __name__ == "__main__":
