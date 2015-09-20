@@ -138,6 +138,8 @@
           to Daniel Shahaf).
 - TW-1656 Implicitly parenthesize argv filter (thanks to Daniel Shahaf).
 - TW-1660 Disabled sorting option (thanks to David Patrick).
+- TW-1662 filter before add becomes description (thanks to Daniel
+          Shahaf).
 - TW-1664 Notify of waiting→pending promotion (thanks to Daniel Shahaf).
 - TW-1666 import should reject invalid data (thanks to Daniel Shahaf).
 - TW-1670 Reversed ranges are parsed as a mathematician would expect (thanks to
