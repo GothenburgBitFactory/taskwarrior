@@ -34,6 +34,8 @@ Newly Deprecated Features in Taskwarrior 2.5.0
   - The '_ids', '_projects', '_tags', '_uuids' helper commands are deprecated,
     and replaced by the new '_unique' helper command.
   - Comma-separated ID lists are deprecated.
+  - The 'new-uuid' verbosity token is deprecated. Its functionality will
+    be merged with the 'new-id' verbosity token.
 
 Removed Features in 2.5.0
 

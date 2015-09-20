@@ -267,7 +267,8 @@ control specific occasions when output is generated. This list may contain:
     footnote   Messages that appear after report output
     label      Column labels on tabular reports
     new-id     Provides feedback of any new task IDs
-    new-uuid   Provides feedback of any new task UUIDs
+    new-uuid   Provides feedback of any new task UUIDs. Deprecated, to be
+               merged with new-id.
     affected   Reports 'N tasks affected' and similar
     edit       Used the verbose template for the 'edit' command
     special    Feedback when applying special tags
