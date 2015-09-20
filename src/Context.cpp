@@ -525,7 +525,7 @@ bool Context::verbose (const std::string& token)
     // This odd test is to see if a Boolean-false value is a real one, which
     // means it is not 1/true/T/yes/on, but also should not be one of the
     // valid tokens either.
-    if (!verbosity_legacy && ! verbosity.empty ())
+    if (! verbosity_legacy && ! verbosity.empty ())
     {
       std::string v = *(verbosity.begin ());
       if (v != "nothing"  &&

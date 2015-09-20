@@ -5,14 +5,14 @@ New Features in Taskwarrior 2.5.0
   - It is an error to attempt adding or removing a virtual tag.
   - New 'UDA', 'ORPHAN', 'PROJECT', 'PRIORITY' and 'LATEST'  virtual tags.
 
-New commands in Taskwarrior 2.5.0
+New Commands in Taskwarrior 2.5.0
 
   - The '_unique' command shows a set of unique values for the specified
     attribute
   - The 'commands' command shows the supported commands, with additional
     details that determine some of their behavior.
 
-New configuration options in Taskwarrior 2.5.0
+New Configuration Options in Taskwarrior 2.5.0
 
   - The 'json.depends.array' setting controls whether dependencies are exported
     as a JSON array, of a comma-separated string.  Default is 'on'.
@@ -29,13 +29,13 @@ New configuration options in Taskwarrior 2.5.0
     produced by different color rules. Use if your color scheme produces
     unpleasing foreground and background combinations.
 
-Newly deprecated features in Taskwarrior 2.5.0
+Newly Deprecated Features in Taskwarrior 2.5.0
 
   - The '_ids', '_projects', '_tags', '_uuids' helper commands are deprecated,
     and replaced by the new '_unique' helper command.
   - Comma-separated ID lists are deprecated.
 
-Removed features in 2.5.0
+Removed Features in 2.5.0
 
   - The script 'context' was removed, now that context is a core feature.
   - Non­extended forms of ISO-8601 date/time support is removed. This means
