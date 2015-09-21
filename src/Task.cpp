@@ -2060,6 +2060,9 @@ void Task::modify (modType type, bool text_required /* = false */)
           // For those using the "tags:..." attribute directly.
           else if (name == "tags")
           {
+            // TW-1701
+            set ("tags", "");
+
             std::vector <std::string> tags;
             split (tags, value, ',');
 

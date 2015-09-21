@@ -488,6 +488,23 @@ class TestListAllTags(TestCase):
         self.assertIn("t2", out)
 
 
+class TestBug1700(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_tags_overwrite(self):
+        """Verify that 'tags:a,b' overwrites existing tags."""
+        self.t("add +tag1 +tag2 one")
+        code, out, err = self.t("_get 1.tags")
+        self.assertIn("tag1,tag2", out)
+        self.assertNotIn("tag3", out)
+
+        self.t("1 modify tags:tag2,tag3")
+        code, out, err = self.t("_get 1.tags")
+        self.assertNotIn("tag1", out)
+        self.assertIn("tag2,tag3", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
