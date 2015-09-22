@@ -28,6 +28,7 @@
 #define INCLUDED_TDB2
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include <stdio.h>
@@ -81,6 +82,12 @@ public:
   bool _has_ids;
   bool _auto_dep_scan;
   std::vector <Task> _tasks;
+
+  // _tasks_map was introduced mainly for speeding up "task import".
+  // Iterating over all _tasks for each imported task is slow, making use of
+  // appropriate data structures is fast.
+  std::unordered_map <std::string, Task> _tasks_map;
+
   std::vector <Task> _added_tasks;
   std::vector <Task> _modified_tasks;
   std::vector <std::string> _lines;

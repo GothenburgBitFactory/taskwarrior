@@ -121,12 +121,26 @@ bool TF2::get (const std::string& uuid, Task& task)
   if (! _loaded_tasks)
     load_tasks ();
 
-  for (auto& i : _tasks)
+  if (_tasks_map.size () > 0 && uuid.size () == 36)
   {
-    if (closeEnough (i.get ("uuid"), uuid, uuid.length ()))
+    // Fast lookup, same result as below. Only used during "task import".
+    auto i = _tasks_map.find (uuid);
+    if (i != _tasks_map.end ())
     {
-      task = i;
+      task = i->second;
       return true;
+    }
+  }
+  else
+  {
+    // Slow lookup, same result as above.
+    for (auto& i : _tasks)
+    {
+      if (closeEnough (i.get ("uuid"), uuid, uuid.length ()))
+      {
+        task = i;
+        return true;
+      }
     }
   }
 
@@ -152,6 +166,10 @@ void TF2::add_task (Task& task)
   _tasks.push_back (task);           // For subsequent queries
   _added_tasks.push_back (task);     // For commit/synch
 
+  // For faster lookup
+  if (context.cli2.getCommand () == "import")
+    _tasks_map.insert (std::pair<std::string, Task> (task.get("uuid"), task));
+
   Task::status status = task.getStatus ();
   if (task.id == 0 &&
       (status == Task::pending   ||
@@ -170,12 +188,23 @@ void TF2::add_task (Task& task)
 ////////////////////////////////////////////////////////////////////////////////
 bool TF2::modify_task (const Task& task)
 {
-  // Modify in-place.
   std::string uuid = task.get ("uuid");
+
+  if (context.cli2.getCommand () == "import")
+  {
+    // Update map used for faster lookup
+    auto i = _tasks_map.find (uuid);
+    if (i != _tasks_map.end ())
+    {
+      i->second = task;
+    }
+  }
+
   for (auto& i : _tasks)
   {
     if (i.get ("uuid") == uuid)
     {
+      // Modify in-place.
       i = task;
       _modified_tasks.push_back (task);
       _dirty = true;
@@ -302,6 +331,8 @@ void TF2::load_tasks ()
       }
 
       _tasks.push_back (task);
+      if (context.cli2.getCommand () == "import")  // For faster lookup only
+        _tasks_map.insert (std::pair<std::string, Task> (task.get("uuid"), task));
 
       // Maintain mapping for ease of link/dependency resolution.
       // Note that this mapping is not restricted by the filter, and is
