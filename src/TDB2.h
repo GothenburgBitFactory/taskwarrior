@@ -103,6 +103,8 @@ private:
 class TDB2
 {
 public:
+  static bool debug_mode;
+
   TDB2 ();
   ~TDB2 ();
 

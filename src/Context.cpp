@@ -622,7 +622,7 @@ void Context::getLimits (int& rows, int& lines)
 void Context::staticInitialization ()
 {
   CLI2::minimumMatchLength  = config.getInteger ("abbreviation.minimum");
-  Lexer::minimumMatchLength  = config.getInteger ("abbreviation.minimum");
+  Lexer::minimumMatchLength = config.getInteger ("abbreviation.minimum");
 
   Task::defaultProject      = config.get ("default.project");
   Task::defaultDue          = config.get ("default.due");
@@ -631,6 +631,8 @@ void Context::staticInitialization ()
   Task::regex               = Variant::searchUsingRegex    = config.getBoolean ("regex");
   Lexer::dateFormat         = Variant::dateFormat          = config.get ("dateformat");
   Lexer::isoEnabled         = Variant::isoEnabled          = config.getBoolean ("date.iso");
+
+  TDB2::debug_mode          = config.getBoolean ("debug");
 
   for (auto& rc : config)
   {

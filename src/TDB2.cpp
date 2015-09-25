@@ -43,6 +43,8 @@
 
 extern Context context;
 
+bool TDB2::debug_mode = false;
+
 ////////////////////////////////////////////////////////////////////////////////
 TF2::TF2 ()
 : _read_only (false)
@@ -57,7 +59,7 @@ TF2::TF2 ()
 ////////////////////////////////////////////////////////////////////////////////
 TF2::~TF2 ()
 {
-  if (_dirty && context.verbose ("debug"))
+  if (_dirty && TDB2::debug_mode)
     std::cout << format (STRING_TDB2_DIRTY_EXIT, std::string (_file))
               << "\n";
 }
