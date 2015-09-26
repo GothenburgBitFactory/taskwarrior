@@ -49,6 +49,7 @@ public:
   ISO8601d startOfDay () const;
   ISO8601d startOfWeek () const;
   ISO8601d startOfMonth () const;
+  ISO8601d startOfYear () const;
 
   static bool leapYear (int);
   static int daysInMonth (int, int);
