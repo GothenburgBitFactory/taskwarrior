@@ -46,6 +46,7 @@ public:
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
 
+  std::string toEpochString ();
   double toJulian ();
   void toMDY (int&, int&, int&);
 

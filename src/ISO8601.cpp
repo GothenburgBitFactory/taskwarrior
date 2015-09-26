@@ -841,6 +841,14 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string ISO8601d::toEpochString ()
+{
+  std::stringstream epoch;
+  epoch << _date;
+  return epoch.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 double ISO8601d::toJulian ()
 {
   return (_date / 86400.0) + 2440587.5;
