@@ -841,6 +841,12 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+ISO8601d ISO8601d::startOfDay () const
+{
+  return ISO8601d (month (), day (), year ());
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Static
 bool ISO8601d::leapYear (int year)
 {

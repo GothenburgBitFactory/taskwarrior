@@ -43,9 +43,10 @@ public:
   ISO8601d (const int, const int, const int, const int, const int, const int);
   ~ISO8601d ();
   ISO8601d (const ISO8601d&);                 // Unimplemented
-  ISO8601d& operator= (const ISO8601d&);      // Unimplemented
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
+
+  ISO8601d startOfDay () const;
 
   static bool leapYear (int);
   static int daysInMonth (int, int);
