@@ -47,25 +47,25 @@ void testParse (
   int in_seconds,
   int in_offset,
   bool in_utc,
-  time_t in_value)
+  time_t in_date)
 {
   std::string label = std::string ("parse (\"") + input + "\") --> ";
 
   ISO8601d iso;
   std::string::size_type start = 0;
 
-  t.ok (iso.parse (input, start),               label + "true");
-  t.is ((int) start,         in_start,          label + "[]");
-  t.is (iso._year,           in_year,           label + "_year");
-  t.is (iso._month,          in_month,          label + "_month");
-  t.is (iso._week,           in_week,           label + "_week");
-  t.is (iso._weekday,        in_weekday,        label + "_weekday");
-  t.is (iso._julian,         in_julian,         label + "_julian");
-  t.is (iso._day,            in_day,            label + "_day");
-  t.is (iso._seconds,        in_seconds,        label + "_seconds");
-  t.is (iso._offset,         in_offset,         label + "_offset");
-  t.is (iso._utc,            in_utc,            label + "_utc");
-  t.is ((size_t) iso._value, (size_t) in_value, label + "_value");
+  t.ok (iso.parse (input, start),             label + "true");
+  t.is ((int) start,        in_start,         label + "[]");
+  t.is (iso._year,          in_year,          label + "_year");
+  t.is (iso._month,         in_month,         label + "_month");
+  t.is (iso._week,          in_week,          label + "_week");
+  t.is (iso._weekday,       in_weekday,       label + "_weekday");
+  t.is (iso._julian,        in_julian,        label + "_julian");
+  t.is (iso._day,           in_day,           label + "_day");
+  t.is (iso._seconds,       in_seconds,       label + "_seconds");
+  t.is (iso._offset,        in_offset,        label + "_offset");
+  t.is (iso._utc,           in_utc,           label + "_utc");
+  t.is ((size_t) iso._date, (size_t) in_date, label + "_date");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

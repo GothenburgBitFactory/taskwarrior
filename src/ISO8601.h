@@ -64,7 +64,7 @@ public:
   int _seconds;
   int _offset;
   bool _utc;
-  time_t _value;
+  time_t _date;
 };
 
 // Period
