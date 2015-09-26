@@ -48,6 +48,8 @@ public:
   static int daysInMonth (int, int);
   static int daysInYear (int);
   static std::string monthName (int);
+  static void dayName (int, std::string&);
+  static std::string dayName (int);
 
   static int dayOfWeek (const std::string&);
 

@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (808);
+  UnitTest t (815);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -245,6 +245,14 @@ int main (int argc, char** argv)
     t.is (ISO8601d::monthName (10), "October",  "10 = October");
     t.is (ISO8601d::monthName (11), "November", "11 = November");
     t.is (ISO8601d::monthName (12), "December", "12 = December");
+
+    t.is (ISO8601d::dayName (0), "Sunday",    "0 == Sunday");
+    t.is (ISO8601d::dayName (1), "Monday",    "1 == Monday");
+    t.is (ISO8601d::dayName (2), "Tuesday",   "2 == Tuesday");
+    t.is (ISO8601d::dayName (3), "Wednesday", "3 == Wednesday");
+    t.is (ISO8601d::dayName (4), "Thursday",  "4 == Thursday");
+    t.is (ISO8601d::dayName (5), "Friday",    "5 == Friday");
+    t.is (ISO8601d::dayName (6), "Saturday",  "6 == Saturday");
 
     t.is (ISO8601d::dayOfWeek ("SUNDAY"),    0, "SUNDAY == 0");
     t.is (ISO8601d::dayOfWeek ("sunday"),    0, "sunday == 0");

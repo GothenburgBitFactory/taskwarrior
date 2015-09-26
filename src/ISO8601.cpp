@@ -851,6 +851,40 @@ std::string ISO8601d::monthName (int month)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void ISO8601d::dayName (int dow, std::string& name)
+{
+  static const char* days[7] =
+  {
+    STRING_DATE_SUNDAY,
+    STRING_DATE_MONDAY,
+    STRING_DATE_TUESDAY,
+    STRING_DATE_WEDNESDAY,
+    STRING_DATE_THURSDAY,
+    STRING_DATE_FRIDAY,
+    STRING_DATE_SATURDAY,
+  };
+
+  name = ucFirst (days[dow]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string ISO8601d::dayName (int dow)
+{
+  static const char* days[7] =
+  {
+    STRING_DATE_SUNDAY,
+    STRING_DATE_MONDAY,
+    STRING_DATE_TUESDAY,
+    STRING_DATE_WEDNESDAY,
+    STRING_DATE_THURSDAY,
+    STRING_DATE_FRIDAY,
+    STRING_DATE_SATURDAY,
+  };
+
+  return ucFirst (days[dow]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Static
 int ISO8601d::dayOfWeek (const std::string& input)
 {
