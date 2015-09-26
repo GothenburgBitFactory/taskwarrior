@@ -934,6 +934,27 @@ int ISO8601d::year () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+int ISO8601d::weekOfYear (int weekStart) const
+{
+  struct tm* t = localtime (&_date);
+  char   weekStr[3];
+
+  if (weekStart == 0)
+    strftime(weekStr, sizeof(weekStr), "%U", t);
+  else if (weekStart == 1)
+    strftime(weekStr, sizeof(weekStr), "%V", t);
+  else
+    throw std::string (STRING_DATE_BAD_WEEKSTART);
+
+  int weekNumber = atoi (weekStr);
+
+  if (weekStart == 0)
+    weekNumber += 1;
+
+  return weekNumber;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void ISO8601p::clear ()
 {
   _year    = 0;
