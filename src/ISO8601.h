@@ -85,6 +85,7 @@ public:
   ISO8601d& operator+= (const int);
   ISO8601d& operator-= (const int);
   time_t operator- (const ISO8601d&);
+  void operator-- ();    // Prefix
 
 private:
   void clear ();

@@ -1202,6 +1202,20 @@ time_t ISO8601d::operator- (const ISO8601d& rhs)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Prefix decrement by one day.
+void ISO8601d::operator-- ()
+{
+  ISO8601d yesterday = startOfDay () - 1;
+  yesterday = ISO8601d (yesterday.month (),
+                        yesterday.day (),
+                        yesterday.year (),
+                        hour (),
+                        minute (),
+                        second ());
+  _date = yesterday._date;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void ISO8601p::clear ()
 {
   _year    = 0;
