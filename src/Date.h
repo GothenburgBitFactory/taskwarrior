@@ -70,7 +70,6 @@ public:
   static bool valid (const int, const int, const int);
   static bool valid (const int, const int);
 
-  static time_t easter (int year);
   static bool leapYear (int);
   static int daysInMonth (int, int);
   static int daysInYear (int);
