@@ -88,6 +88,7 @@ public:
   void operator-- ();    // Prefix
   void operator-- (int); // Postfix
   void operator++ ();    // Prefix
+  void operator++ (int); // Postfix
 
 private:
   void clear ();

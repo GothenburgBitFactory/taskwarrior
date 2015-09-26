@@ -1244,6 +1244,20 @@ void ISO8601d::operator++ ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Postfix increment by one day.
+void ISO8601d::operator++ (int)
+{
+  ISO8601d tomorrow = (startOfDay () + 90001).startOfDay ();
+  tomorrow = ISO8601d (tomorrow.month (),
+                       tomorrow.day (),
+                       tomorrow.year (),
+                       hour (),
+                       minute (),
+                       second ());
+  _date = tomorrow._date;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void ISO8601p::clear ()
 {
   _year    = 0;
