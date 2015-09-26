@@ -77,7 +77,6 @@ public:
   static std::string monthName (int);
   static void dayName (int, std::string&);
   static std::string dayName (int);
-  static int weekOfYear (const std::string&);
   static int dayOfWeek (const std::string&);
   static int monthOfYear (const std::string&);
   static int length (const std::string&);
