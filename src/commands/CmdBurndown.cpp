@@ -630,7 +630,7 @@ Date Chart::increment (const Date& input)
   switch (_period)
   {
   case 'D':
-    if (++d > Date::daysInMonth (m, y))
+    if (++d > ISO8601d::daysInMonth (m, y))
     {
       d = 1;
 
@@ -644,7 +644,7 @@ Date Chart::increment (const Date& input)
 
   case 'W':
     d += 7;
-    days = Date::daysInMonth (m, y);
+    days = ISO8601d::daysInMonth (m, y);
     if (d > days)
     {
       d -= days;
@@ -689,7 +689,7 @@ Date Chart::decrement (const Date& input)
         --y;
       }
 
-      d = Date::daysInMonth (m, y);
+      d = ISO8601d::daysInMonth (m, y);
     }
     break;
 
@@ -703,7 +703,7 @@ Date Chart::decrement (const Date& input)
         y--;
       }
 
-      d += Date::daysInMonth (m, y);
+      d += ISO8601d::daysInMonth (m, y);
     }
     break;
 
