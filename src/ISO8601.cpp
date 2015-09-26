@@ -30,6 +30,7 @@
 #include <Lexer.h>
 #include <ISO8601.h>
 #include <Date.h>
+#include <text.h>
 #include <i18n.h>
 
 #define DAY    86400
@@ -794,6 +795,24 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
   }
 
   return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Static
+int ISO8601d::dayOfWeek (const std::string& input)
+{
+  if (ISO8601d::minimumMatchLength== 0)
+    minimumMatchLength= 3;
+
+       if (closeEnough (STRING_DATE_SUNDAY,    input, minimumMatchLength)) return 0;
+  else if (closeEnough (STRING_DATE_MONDAY,    input, minimumMatchLength)) return 1;
+  else if (closeEnough (STRING_DATE_TUESDAY,   input, minimumMatchLength)) return 2;
+  else if (closeEnough (STRING_DATE_WEDNESDAY, input, minimumMatchLength)) return 3;
+  else if (closeEnough (STRING_DATE_THURSDAY,  input, minimumMatchLength)) return 4;
+  else if (closeEnough (STRING_DATE_FRIDAY,    input, minimumMatchLength)) return 5;
+  else if (closeEnough (STRING_DATE_SATURDAY,  input, minimumMatchLength)) return 6;
+
+  return -1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

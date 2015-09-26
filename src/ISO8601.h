@@ -44,6 +44,8 @@ public:
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
 
+  static int dayOfWeek (const std::string&);
+
 private:
   void clear ();
   bool parse_date_time     (Nibbler&);
