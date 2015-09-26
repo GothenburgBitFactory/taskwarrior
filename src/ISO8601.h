@@ -111,6 +111,7 @@ private:
   int dayOfWeek (int, int, int);
   bool validate ();
   void resolve ();
+  bool isEpoch (const std::string&);
 
 public:
   int _year;
