@@ -58,6 +58,7 @@ public:
   int day () const;
   int year () const;
   int weekOfYear (int) const;
+  int dayOfWeek () const;
 
 private:
   void clear ();
