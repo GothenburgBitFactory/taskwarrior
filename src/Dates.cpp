@@ -30,6 +30,7 @@
 #include <time.h>
 #include <text.h>
 #include <Dates.h>
+#include <ISO8601.h>
 #include <Date.h>
 #include <Lexer.h>
 #include <CLI2.h>
@@ -302,7 +303,7 @@ bool namedDates (const std::string& name, Variant& value)
     t->tm_hour = 24;
     t->tm_min = 0;
     t->tm_sec = -1;
-    t->tm_mday = Date::daysInMonth (t->tm_mon + 1, t->tm_year + 1900);
+    t->tm_mday = ISO8601d::daysInMonth (t->tm_mon + 1, t->tm_year + 1900);
     t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
@@ -414,7 +415,7 @@ bool namedDates (const std::string& name, Variant& value)
 
         // If it is this month.
         if (d < number &&
-            number <= Date::daysInMonth (m, y))
+            number <= ISO8601d::daysInMonth (m, y))
         {
           t->tm_hour = t->tm_min = t->tm_sec = 0;
           t->tm_mon  = m - 1;
