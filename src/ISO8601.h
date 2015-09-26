@@ -65,6 +65,8 @@ public:
   int minute () const;
   int second () const;
 
+  bool operator== (const ISO8601d&) const;
+
 private:
   void clear ();
   bool parse_date_time     (Nibbler&);
