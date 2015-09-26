@@ -75,6 +75,7 @@ public:
   bool sameDay    (const ISO8601d&) const;
   bool sameWeek   (const ISO8601d&) const;
   bool sameMonth  (const ISO8601d&) const;
+  bool sameYear   (const ISO8601d&) const;
 
 private:
   void clear ();
