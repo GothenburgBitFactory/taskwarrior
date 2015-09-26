@@ -54,6 +54,7 @@ public:
   static int length (const std::string&);
 
   int month () const;
+  int week () const;
 
 private:
   void clear ();
