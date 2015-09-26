@@ -40,9 +40,9 @@ public:
   ISO8601d& operator= (const ISO8601d&);      // Unimplemented
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
-  void clear ();
 
 private:
+  void clear ();
   bool parse_date_time     (Nibbler&);
   bool parse_date_time_ext (Nibbler&);
   bool parse_date_ext      (Nibbler&);
@@ -82,11 +82,11 @@ public:
   operator std::string () const;
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&);
-  void clear ();
   const std::string format () const;
   const std::string formatVague () const;
 
 private:
+  void clear ();
   bool parse_designated (Nibbler&);
   bool validate ();
   void resolve ();
