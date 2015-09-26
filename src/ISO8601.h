@@ -53,6 +53,8 @@ public:
 
   static int length (const std::string&);
 
+  int month () const;
+
 private:
   void clear ();
   bool parse_date_time     (Nibbler&);
