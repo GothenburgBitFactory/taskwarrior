@@ -79,6 +79,7 @@ public:
   bool sameYear   (const ISO8601d&) const;
 
   ISO8601d operator+  (const int);
+  ISO8601d operator-  (const int);
 
 private:
   void clear ();
