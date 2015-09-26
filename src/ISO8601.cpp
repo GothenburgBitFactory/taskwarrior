@@ -167,7 +167,10 @@ ISO8601d::operator time_t () const
 //                 | 'R' [n] '/' datetime '/' datetime                # start end
 //                 ;
 //
-bool ISO8601d::parse (const std::string& input, std::string::size_type& start)
+bool ISO8601d::parse (
+  const std::string& input,
+  std::string::size_type& start,
+  const std::string& format /* = "" */)
 {
   auto i = start;
   Nibbler n (input.substr (i));

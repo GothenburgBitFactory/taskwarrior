@@ -23,6 +23,7 @@
 // http://www.opensource.org/licenses/mit-license.php
 //
 ////////////////////////////////////////////////////////////////////////////////
+
 #ifndef INCLUDED_ISO8601
 #define INCLUDED_ISO8601
 
@@ -38,7 +39,7 @@ public:
   ISO8601d (const ISO8601d&);                 // Unimplemented
   ISO8601d& operator= (const ISO8601d&);      // Unimplemented
   operator time_t () const;
-  bool parse (const std::string&, std::string::size_type&);
+  bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
   void clear ();
 
 private:
