@@ -62,6 +62,9 @@ int CmdExport::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
+  // Export == render.
+  context.timer_render.start ();
+
   // Obey 'limit:N'.
   int rows = 0;
   int lines = 0;
@@ -97,6 +100,7 @@ int CmdExport::execute (std::string& output)
   if (json_array)
     output += "]\n";
 
+  context.timer_render.stop ();
   return rc;
 }
 
