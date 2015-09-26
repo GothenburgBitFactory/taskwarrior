@@ -47,6 +47,7 @@ public:
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
 
   ISO8601d startOfDay () const;
+  ISO8601d startOfWeek () const;
 
   static bool leapYear (int);
   static int daysInMonth (int, int);

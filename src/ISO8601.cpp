@@ -847,6 +847,14 @@ ISO8601d ISO8601d::startOfDay () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+ISO8601d ISO8601d::startOfWeek () const
+{
+  ISO8601d sow (_date);
+  sow -= (dayOfWeek () * 86400);
+  return ISO8601d (sow.month (), sow.day (), sow.year ());
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Static
 bool ISO8601d::leapYear (int year)
 {
