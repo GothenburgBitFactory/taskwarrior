@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
+#include <ISO8601.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
@@ -317,7 +318,7 @@ int CmdCalendar::execute (std::string& output)
       details_mFrom = 12;
       --details_yFrom;
     }
-    int details_dFrom = Date::daysInMonth (details_mFrom, details_yFrom);
+    int details_dFrom = ISO8601d::daysInMonth (details_mFrom, details_yFrom);
 
     ++mTo;
     if (mTo == 13)
@@ -487,7 +488,7 @@ std::string CmdCalendar::renderMonths (
       years.push_back (++thisYear);
     }
     months.push_back (thisMonth);
-    daysInMonth.push_back (Date::daysInMonth (thisMonth++, thisYear));
+    daysInMonth.push_back (ISO8601d::daysInMonth (thisMonth++, thisYear));
   }
 
   int row = 0;
