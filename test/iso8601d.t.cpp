@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (758);
+  UnitTest t (767);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -215,6 +215,25 @@ int main (int argc, char** argv)
   // The only non-extended forms.
   testParse (t, "20131206T123456Z",          16, 2013, 12,  0, 0,   0,  6,   hms,     0,  true, utc6+hms  );
   testParse (t, "20131206T123456",           15, 2013, 12,  0, 0,   0,  6,   hms,     0, false, local6+hms);
+
+  try
+  {
+    t.is (ISO8601d::dayOfWeek ("SUNDAY"),    0, "SUNDAY == 0");
+    t.is (ISO8601d::dayOfWeek ("sunday"),    0, "sunday == 0");
+    t.is (ISO8601d::dayOfWeek ("Sunday"),    0, "Sunday == 0");
+    t.is (ISO8601d::dayOfWeek ("Monday"),    1, "Monday == 1");
+    t.is (ISO8601d::dayOfWeek ("Tuesday"),   2, "Tuesday == 2");
+    t.is (ISO8601d::dayOfWeek ("Wednesday"), 3, "Wednesday == 3");
+    t.is (ISO8601d::dayOfWeek ("Thursday"),  4, "Thursday == 4");
+    t.is (ISO8601d::dayOfWeek ("Friday"),    5, "Friday == 5");
+    t.is (ISO8601d::dayOfWeek ("Saturday"),  6, "Saturday == 6");
+  }
+
+  catch (const std::string& e)
+  {
+    t.fail ("Exception thrown.");
+    t.diag (e);
+  }
 
   return 0;
 }
