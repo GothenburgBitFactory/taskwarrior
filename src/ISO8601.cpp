@@ -106,7 +106,8 @@ static struct
 
 #define NUM_DURATIONS (sizeof (durations) / sizeof (durations[0]))
 
-std::string ISO8601d::weekstart = STRING_DATE_SUNDAY;
+std::string ISO8601d::weekstart  = STRING_DATE_SUNDAY;
+int ISO8601d::minimumMatchLength = 3;
 
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601d::ISO8601d ()

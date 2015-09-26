@@ -35,6 +35,7 @@ class ISO8601d
 {
 public:
   static std::string weekstart;
+  static int minimumMatchLength;
 
   ISO8601d ();
   ~ISO8601d ();

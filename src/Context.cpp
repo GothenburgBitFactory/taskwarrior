@@ -622,8 +622,9 @@ void Context::getLimits (int& rows, int& lines)
 // easier, it has been decoupled from Context.
 void Context::staticInitialization ()
 {
-  CLI2::minimumMatchLength  = config.getInteger ("abbreviation.minimum");
-  Lexer::minimumMatchLength = config.getInteger ("abbreviation.minimum");
+  CLI2::minimumMatchLength     = config.getInteger ("abbreviation.minimum");
+  Lexer::minimumMatchLength    = config.getInteger ("abbreviation.minimum");
+  ISO8601d::minimumMatchLength = config.getInteger ("abbreviation.minimum");
 
   Task::defaultProject      = config.get ("default.project");
   Task::defaultDue          = config.get ("default.due");
