@@ -55,6 +55,7 @@ public:
 
   int month () const;
   int week () const;
+  int day () const;
 
 private:
   void clear ();
