@@ -37,6 +37,7 @@
 #include <FS.h>
 #include <Eval.h>
 #include <Variant.h>
+#include <ISO8601.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -633,6 +634,8 @@ void Context::staticInitialization ()
   Lexer::isoEnabled         = Variant::isoEnabled          = config.getBoolean ("date.iso");
 
   TDB2::debug_mode          = config.getBoolean ("debug");
+
+  ISO8601d::weekstart       = config.get ("weekstart");
 
   for (auto& rc : config)
   {

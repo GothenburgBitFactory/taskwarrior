@@ -30,6 +30,7 @@
 #include <Lexer.h>
 #include <ISO8601.h>
 #include <Date.h>
+#include <i18n.h>
 
 #define DAY    86400
 #define HOUR    3600
@@ -104,6 +105,8 @@ static struct
 };
 
 #define NUM_DURATIONS (sizeof (durations) / sizeof (durations[0]))
+
+std::string ISO8601d::weekstart = STRING_DATE_SUNDAY;
 
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601d::ISO8601d ()

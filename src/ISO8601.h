@@ -34,6 +34,8 @@
 class ISO8601d
 {
 public:
+  static std::string weekstart;
+
   ISO8601d ();
   ~ISO8601d ();
   ISO8601d (const ISO8601d&);                 // Unimplemented
