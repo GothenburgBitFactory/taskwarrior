@@ -827,6 +827,7 @@ int ISO8601d::daysInYear (int year)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Static
 std::string ISO8601d::monthName (int month)
 {
   static const char* months[12] =
@@ -851,6 +852,7 @@ std::string ISO8601d::monthName (int month)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Static
 void ISO8601d::dayName (int dow, std::string& name)
 {
   static const char* days[7] =
@@ -868,6 +870,7 @@ void ISO8601d::dayName (int dow, std::string& name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Static
 std::string ISO8601d::dayName (int dow)
 {
   static const char* days[7] =
@@ -889,15 +892,38 @@ std::string ISO8601d::dayName (int dow)
 int ISO8601d::dayOfWeek (const std::string& input)
 {
   if (ISO8601d::minimumMatchLength== 0)
-    minimumMatchLength= 3;
+    ISO8601d::minimumMatchLength= 3;
 
-       if (closeEnough (STRING_DATE_SUNDAY,    input, minimumMatchLength)) return 0;
-  else if (closeEnough (STRING_DATE_MONDAY,    input, minimumMatchLength)) return 1;
-  else if (closeEnough (STRING_DATE_TUESDAY,   input, minimumMatchLength)) return 2;
-  else if (closeEnough (STRING_DATE_WEDNESDAY, input, minimumMatchLength)) return 3;
-  else if (closeEnough (STRING_DATE_THURSDAY,  input, minimumMatchLength)) return 4;
-  else if (closeEnough (STRING_DATE_FRIDAY,    input, minimumMatchLength)) return 5;
-  else if (closeEnough (STRING_DATE_SATURDAY,  input, minimumMatchLength)) return 6;
+       if (closeEnough (STRING_DATE_SUNDAY,    input, ISO8601d::minimumMatchLength)) return 0;
+  else if (closeEnough (STRING_DATE_MONDAY,    input, ISO8601d::minimumMatchLength)) return 1;
+  else if (closeEnough (STRING_DATE_TUESDAY,   input, ISO8601d::minimumMatchLength)) return 2;
+  else if (closeEnough (STRING_DATE_WEDNESDAY, input, ISO8601d::minimumMatchLength)) return 3;
+  else if (closeEnough (STRING_DATE_THURSDAY,  input, ISO8601d::minimumMatchLength)) return 4;
+  else if (closeEnough (STRING_DATE_FRIDAY,    input, ISO8601d::minimumMatchLength)) return 5;
+  else if (closeEnough (STRING_DATE_SATURDAY,  input, ISO8601d::minimumMatchLength)) return 6;
+
+  return -1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Static
+int ISO8601d::monthOfYear (const std::string& input)
+{
+  if (ISO8601d::minimumMatchLength== 0)
+    ISO8601d::minimumMatchLength= 3;
+
+       if (closeEnough (STRING_DATE_JANUARY,   input, ISO8601d::minimumMatchLength)) return 1;
+  else if (closeEnough (STRING_DATE_FEBRUARY,  input, ISO8601d::minimumMatchLength)) return 2;
+  else if (closeEnough (STRING_DATE_MARCH,     input, ISO8601d::minimumMatchLength)) return 3;
+  else if (closeEnough (STRING_DATE_APRIL,     input, ISO8601d::minimumMatchLength)) return 4;
+  else if (closeEnough (STRING_DATE_MAY,       input, ISO8601d::minimumMatchLength)) return 5;
+  else if (closeEnough (STRING_DATE_JUNE,      input, ISO8601d::minimumMatchLength)) return 6;
+  else if (closeEnough (STRING_DATE_JULY,      input, ISO8601d::minimumMatchLength)) return 7;
+  else if (closeEnough (STRING_DATE_AUGUST,    input, ISO8601d::minimumMatchLength)) return 8;
+  else if (closeEnough (STRING_DATE_SEPTEMBER, input, ISO8601d::minimumMatchLength)) return 9;
+  else if (closeEnough (STRING_DATE_OCTOBER,   input, ISO8601d::minimumMatchLength)) return 10;
+  else if (closeEnough (STRING_DATE_NOVEMBER,  input, ISO8601d::minimumMatchLength)) return 11;
+  else if (closeEnough (STRING_DATE_DECEMBER,  input, ISO8601d::minimumMatchLength)) return 12;
 
   return -1;
 }

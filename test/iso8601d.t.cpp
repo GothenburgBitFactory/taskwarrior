@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (815);
+  UnitTest t (827);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -245,6 +245,20 @@ int main (int argc, char** argv)
     t.is (ISO8601d::monthName (10), "October",  "10 = October");
     t.is (ISO8601d::monthName (11), "November", "11 = November");
     t.is (ISO8601d::monthName (12), "December", "12 = December");
+
+    // Names.
+    t.is (ISO8601d::monthOfYear ("January"),   1,  "January   =  1");
+    t.is (ISO8601d::monthOfYear ("February"),  2,  "February  =  2");
+    t.is (ISO8601d::monthOfYear ("March"),     3,  "March     =  3");
+    t.is (ISO8601d::monthOfYear ("April"),     4,  "April     =  4");
+    t.is (ISO8601d::monthOfYear ("May"),       5,  "May       =  5");
+    t.is (ISO8601d::monthOfYear ("June"),      6,  "June      =  6");
+    t.is (ISO8601d::monthOfYear ("July"),      7,  "July      =  7");
+    t.is (ISO8601d::monthOfYear ("August"),    8,  "August    =  8");
+    t.is (ISO8601d::monthOfYear ("September"), 9,  "September =  9");
+    t.is (ISO8601d::monthOfYear ("October"),   10, "October   = 10");
+    t.is (ISO8601d::monthOfYear ("November"),  11, "November  = 11");
+    t.is (ISO8601d::monthOfYear ("December"),  12, "December  = 12");
 
     t.is (ISO8601d::dayName (0), "Sunday",    "0 == Sunday");
     t.is (ISO8601d::dayName (1), "Monday",    "1 == Monday");
