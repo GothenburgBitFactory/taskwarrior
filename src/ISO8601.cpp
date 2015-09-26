@@ -1110,6 +1110,13 @@ bool ISO8601d::sameWeek (const ISO8601d& rhs) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool ISO8601d::sameMonth (const ISO8601d& rhs) const
+{
+  return this->year ()  == rhs.year () &&
+         this->month () == rhs.month ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void ISO8601p::clear ()
 {
   _year    = 0;
