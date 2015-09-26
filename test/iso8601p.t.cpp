@@ -44,7 +44,7 @@ void testParse (
   int in_hours,
   int in_minutes,
   int in_seconds,
-  time_t in_value,
+  time_t in_period,
   const std::string& output,
   const std::string& vague)
 {
@@ -53,17 +53,17 @@ void testParse (
   ISO8601p iso;
   std::string::size_type start = 0;
 
-  t.ok (iso.parse (input, start),               label + "true");
-  t.is ((int) start,         in_start,          label + "[]");
-  t.is (iso._year,           in_year,           label + "_year");
-  t.is (iso._month,          in_month,          label + "_month");
-  t.is (iso._day,            in_day,            label + "_day");
-  t.is (iso._hours,          in_hours,          label + "_hours");
-  t.is (iso._minutes,        in_minutes,        label + "_minutes");
-  t.is (iso._seconds,        in_seconds,        label + "_seconds");
-  t.is ((size_t) iso._value, (size_t) in_value, label + "_value");
-  t.is (iso.format (),       output,            label + " format");
-  t.is (iso.formatVague (),  vague,             label + " formatVague");
+  t.ok (iso.parse (input, start),                 label + "true");
+  t.is ((int) start,          in_start,           label + "[]");
+  t.is (iso._year,            in_year,            label + "_year");
+  t.is (iso._month,           in_month,           label + "_month");
+  t.is (iso._day,             in_day,             label + "_day");
+  t.is (iso._hours,           in_hours,           label + "_hours");
+  t.is (iso._minutes,         in_minutes,         label + "_minutes");
+  t.is (iso._seconds,         in_seconds,         label + "_seconds");
+  t.is ((size_t) iso._period, (size_t) in_period, label + "_period");
+  t.is (iso.format (),        output,             label + " format");
+  t.is (iso.formatVague (),   vague,              label + " formatVague");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

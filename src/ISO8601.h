@@ -98,7 +98,7 @@ public:
   int _hours;
   int _minutes;
   int _seconds;
-  time_t _value;
+  time_t _period;
 };
 
 // TODO Recurrence

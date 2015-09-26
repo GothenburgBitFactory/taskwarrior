@@ -592,7 +592,7 @@ ISO8601p::ISO8601p ()
 ISO8601p::ISO8601p (time_t input)
 {
   clear ();
-  _value = input;
+  _period = input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -605,7 +605,7 @@ ISO8601p::ISO8601p (const std::string& input)
     time_t value = (time_t) strtol (input.c_str (), NULL, 10);
     if (value == 0 || value > 60)
     {
-      _value = value;
+      _period = value;
       return;
     }
   }
@@ -630,7 +630,7 @@ ISO8601p& ISO8601p::operator= (const ISO8601p& other)
     _hours   = other._hours;
     _minutes = other._minutes;
     _seconds = other._seconds;
-    _value   = other._value;
+    _period  = other._period;
   }
 
   return *this;
@@ -639,27 +639,27 @@ ISO8601p& ISO8601p::operator= (const ISO8601p& other)
 ////////////////////////////////////////////////////////////////////////////////
 bool ISO8601p::operator< (const ISO8601p& other)
 {
-  return _value < other._value;
+  return _period < other._period;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool ISO8601p::operator> (const ISO8601p& other)
 {
-  return _value > other._value;
+  return _period > other._period;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601p::operator std::string () const
 {
   std::stringstream s;
-  s << _value;
+  s << _period;
   return s.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601p::operator time_t () const
 {
-  return _value;
+  return _period;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -732,7 +732,7 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
         if (durations[i].unit == unit &&
             durations[i].standalone == true)
         {
-          _value = static_cast <int> (durations[i].seconds);
+          _period = static_cast <int> (durations[i].seconds);
           return true;
         }
       }
@@ -781,7 +781,7 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
           if (durations[i].unit == unit)
           {
             seconds = durations[i].seconds;
-            _value = static_cast <int> (quantity * static_cast <double> (seconds));
+            _period = static_cast <int> (quantity * static_cast <double> (seconds));
             return true;
           }
         }
@@ -801,15 +801,15 @@ void ISO8601p::clear ()
   _hours   = 0;
   _minutes = 0;
   _seconds = 0;
-  _value   = 0;
+  _period  = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 const std::string ISO8601p::format () const
 {
-  if (_value)
+  if (_period)
   {
-    time_t t = _value;
+    time_t t = _period;
     int seconds = t % 60; t /= 60;
     int minutes = t % 60; t /= 60;
     int hours   = t % 24; t /= 24;
@@ -839,15 +839,15 @@ const std::string ISO8601p::format () const
 const std::string ISO8601p::formatVague () const
 {
   char formatted[24];
-  float days = (float) _value / 86400.0;
+  float days = (float) _period / 86400.0;
 
-       if (_value >= 86400 * 365) sprintf (formatted, "%.1fy", (days / 365.0));
-  else if (_value >= 86400 * 84)  sprintf (formatted, "%1dmo", (int) (days / 30));
-  else if (_value >= 86400 * 13)  sprintf (formatted, "%dw",   (int) (float) (days / 7.0));
-  else if (_value >= 86400)       sprintf (formatted, "%dd",   (int) days);
-  else if (_value >= 3600)        sprintf (formatted, "%dh",   (int) (_value / 3600));
-  else if (_value >= 60)          sprintf (formatted, "%dmin", (int) (_value / 60));
-  else if (_value >= 1)           sprintf (formatted, "%ds",   (int) _value);
+       if (_period >= 86400 * 365) sprintf (formatted, "%.1fy", (days / 365.0));
+  else if (_period >= 86400 * 84)  sprintf (formatted, "%1dmo", (int) (days / 30));
+  else if (_period >= 86400 * 13)  sprintf (formatted, "%dw",   (int) (float) (days / 7.0));
+  else if (_period >= 86400)       sprintf (formatted, "%dd",   (int) days);
+  else if (_period >= 3600)        sprintf (formatted, "%dh",   (int) (_period / 3600));
+  else if (_period >= 60)          sprintf (formatted, "%dmin", (int) (_period / 60));
+  else if (_period >= 1)           sprintf (formatted, "%ds",   (int) _period);
   else                            formatted[0] = '\0';
 
   return std::string (formatted);
@@ -923,12 +923,12 @@ bool ISO8601p::validate ()
 // Allow un-normalized values.
 void ISO8601p::resolve ()
 {
-  _value = (_year  * 365 * 86400) +
-           (_month  * 30 * 86400) +
-           (_day         * 86400) +
-           (_hours       *  3600) +
-           (_minutes     *    60) +
-           _seconds;
+  _period = (_year  * 365 * 86400) +
+            (_month  * 30 * 86400) +
+            (_day         * 86400) +
+            (_hours       *  3600) +
+            (_minutes     *    60) +
+            _seconds;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
