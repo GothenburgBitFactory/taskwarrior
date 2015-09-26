@@ -841,6 +841,16 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void ISO8601d::toMDY (int& m, int& d, int& y)
+{
+  struct tm* t = localtime (&_date);
+
+  m = t->tm_mon + 1;
+  d = t->tm_mday;
+  y = t->tm_year + 1900;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 ISO8601d ISO8601d::startOfDay () const
 {
   return ISO8601d (month (), day (), year ());

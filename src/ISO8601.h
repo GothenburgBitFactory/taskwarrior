@@ -46,6 +46,8 @@ public:
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
 
+  void toMDY (int&, int&, int&);
+
   ISO8601d startOfDay () const;
   ISO8601d startOfWeek () const;
   ISO8601d startOfMonth () const;
