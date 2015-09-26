@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <sstream>
+#include <iomanip>
 #include <stdlib.h>
 #include <assert.h>
 #include <Lexer.h>
@@ -852,6 +853,25 @@ std::string ISO8601d::toEpochString ()
   std::stringstream epoch;
   epoch << _date;
   return epoch.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// 19980119T070000Z =  YYYYMMDDThhmmssZ
+std::string ISO8601d::toISO ()
+{
+  struct tm* t = gmtime (&_date);
+
+  std::stringstream iso;
+  iso << std::setw (4) << std::setfill ('0') << t->tm_year + 1900
+      << std::setw (2) << std::setfill ('0') << t->tm_mon + 1
+      << std::setw (2) << std::setfill ('0') << t->tm_mday
+      << "T"
+      << std::setw (2) << std::setfill ('0') << t->tm_hour
+      << std::setw (2) << std::setfill ('0') << t->tm_min
+      << std::setw (2) << std::setfill ('0') << t->tm_sec
+      << "Z";
+
+  return iso.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -48,6 +48,7 @@ public:
 
   time_t toEpoch ();
   std::string toEpochString ();
+  std::string toISO ();
   double toJulian ();
   void toMDY (int&, int&, int&);
 
