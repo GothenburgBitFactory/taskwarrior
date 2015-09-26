@@ -73,6 +73,7 @@ public:
   bool operator>= (const ISO8601d&) const;
   bool sameHour   (const ISO8601d&) const;
   bool sameDay    (const ISO8601d&) const;
+  bool sameWeek   (const ISO8601d&) const;
 
 private:
   void clear ();
