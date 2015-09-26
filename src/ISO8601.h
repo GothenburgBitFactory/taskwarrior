@@ -39,6 +39,7 @@ public:
 
   ISO8601d ();
   ISO8601d (time_t);
+  ISO8601d (const int, const int, const int);
   ~ISO8601d ();
   ISO8601d (const ISO8601d&);                 // Unimplemented
   ISO8601d& operator= (const ISO8601d&);      // Unimplemented

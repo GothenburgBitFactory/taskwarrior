@@ -127,6 +127,21 @@ ISO8601d::ISO8601d (const time_t t)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+ISO8601d::ISO8601d (const int m, const int d, const int y)
+{
+  clear ();
+
+  // Error if not valid.
+  struct tm t = {0};
+  t.tm_isdst = -1;   // Requests that mktime determine summer time effect.
+  t.tm_mday  = d;
+  t.tm_mon   = m - 1;
+  t.tm_year  = y - 1900;
+
+  _date = mktime (&t);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 ISO8601d::~ISO8601d ()
 {
 }
