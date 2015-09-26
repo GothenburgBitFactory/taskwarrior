@@ -820,6 +820,13 @@ int ISO8601d::daysInMonth (int month, int year)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Static
+int ISO8601d::daysInYear (int year)
+{
+  return ISO8601d::leapYear (year) ? 366 : 365;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Static
 int ISO8601d::dayOfWeek (const std::string& input)
 {
   if (ISO8601d::minimumMatchLength== 0)

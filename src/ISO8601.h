@@ -46,6 +46,7 @@ public:
 
   static bool leapYear (int);
   static int daysInMonth (int, int);
+  static int daysInYear (int);
 
   static int dayOfWeek (const std::string&);
 

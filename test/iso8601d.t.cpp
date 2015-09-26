@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (794);
+  UnitTest t (796);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -223,6 +223,10 @@ int main (int argc, char** argv)
     t.notok (ISO8601d::leapYear (2007), "2007 is not a leap year");
     t.ok    (ISO8601d::leapYear (2000), "2000 is a leap year");
     t.notok (ISO8601d::leapYear (1900), "1900 is not a leap year");
+
+    // Days in year.
+    t.is (ISO8601d::daysInYear (2016), 366, "366 days in 2016");
+    t.is (ISO8601d::daysInYear (2015), 365, "365 days in 2015");
 
     // Days in month.
     t.is (ISO8601d::daysInMonth (2, 2008), 29, "29 days in February 2008");
