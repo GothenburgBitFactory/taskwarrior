@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (767);
+  UnitTest t (788);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -227,6 +227,30 @@ int main (int argc, char** argv)
     t.is (ISO8601d::dayOfWeek ("Thursday"),  4, "Thursday == 4");
     t.is (ISO8601d::dayOfWeek ("Friday"),    5, "Friday == 5");
     t.is (ISO8601d::dayOfWeek ("Saturday"),  6, "Saturday == 6");
+
+    // int ISO8601d::length (const std::string&);
+    t.is (ISO8601d::length ("m"), 2,  "length 'm' --> 2");
+    t.is (ISO8601d::length ("M"), 2,  "length 'M' --> 2");
+    t.is (ISO8601d::length ("d"), 2,  "length 'd' --> 2");
+    t.is (ISO8601d::length ("D"), 2,  "length 'D' --> 2");
+    t.is (ISO8601d::length ("y"), 2,  "length 'y' --> 2");
+    t.is (ISO8601d::length ("Y"), 4,  "length 'Y' --> 4");
+    t.is (ISO8601d::length ("a"), 3,  "length 'a' --> 3");
+    t.is (ISO8601d::length ("A"), 10, "length 'A' --> 10");
+    t.is (ISO8601d::length ("b"), 3,  "length 'b' --> 3");
+    t.is (ISO8601d::length ("B"), 10, "length 'B' --> 10");
+    t.is (ISO8601d::length ("v"), 2,  "length 'v' --> 2");
+    t.is (ISO8601d::length ("V"), 2,  "length 'V' --> 2");
+    t.is (ISO8601d::length ("h"), 2,  "length 'h' --> 2");
+    t.is (ISO8601d::length ("H"), 2,  "length 'H' --> 2");
+    t.is (ISO8601d::length ("n"), 2,  "length 'n' --> 2");
+    t.is (ISO8601d::length ("N"), 2,  "length 'N' --> 2");
+    t.is (ISO8601d::length ("s"), 2,  "length 's' --> 2");
+    t.is (ISO8601d::length ("S"), 2,  "length 'S' --> 2");
+    t.is (ISO8601d::length ("j"), 3,  "length 'j' --> 3");
+    t.is (ISO8601d::length ("J"), 3,  "length 'J' --> 3");
+
+    t.is (ISO8601d::length (" "), 1, "length ' ' --> 1");
   }
 
   catch (const std::string& e)

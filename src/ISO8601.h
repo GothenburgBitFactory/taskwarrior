@@ -46,6 +46,8 @@ public:
 
   static int dayOfWeek (const std::string&);
 
+  static int length (const std::string&);
+
 private:
   void clear ();
   bool parse_date_time     (Nibbler&);
