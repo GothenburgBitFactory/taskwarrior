@@ -68,6 +68,7 @@ public:
   bool operator== (const ISO8601d&) const;
   bool operator!= (const ISO8601d&) const;
   bool operator<  (const ISO8601d&) const;
+  bool operator>  (const ISO8601d&) const;
 
 private:
   void clear ();
