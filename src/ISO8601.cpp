@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <sstream>
 #include <stdlib.h>
+#include <assert.h>
 #include <Lexer.h>
 #include <ISO8601.h>
 #include <Date.h>
@@ -823,6 +824,30 @@ int ISO8601d::daysInMonth (int month, int year)
 int ISO8601d::daysInYear (int year)
 {
   return ISO8601d::leapYear (year) ? 366 : 365;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string ISO8601d::monthName (int month)
+{
+  static const char* months[12] =
+  {
+    STRING_DATE_JANUARY,
+    STRING_DATE_FEBRUARY,
+    STRING_DATE_MARCH,
+    STRING_DATE_APRIL,
+    STRING_DATE_MAY,
+    STRING_DATE_JUNE,
+    STRING_DATE_JULY,
+    STRING_DATE_AUGUST,
+    STRING_DATE_SEPTEMBER,
+    STRING_DATE_OCTOBER,
+    STRING_DATE_NOVEMBER,
+    STRING_DATE_DECEMBER,
+  };
+
+  assert (month > 0);
+  assert (month <= 12);
+  return ucFirst (months[month - 1]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

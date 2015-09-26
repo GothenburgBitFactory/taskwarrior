@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (796);
+  UnitTest t (808);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -231,6 +231,20 @@ int main (int argc, char** argv)
     // Days in month.
     t.is (ISO8601d::daysInMonth (2, 2008), 29, "29 days in February 2008");
     t.is (ISO8601d::daysInMonth (2, 2007), 28, "28 days in February 2007");
+
+    // Names.
+    t.is (ISO8601d::monthName (1), "January",   "1 = January");
+    t.is (ISO8601d::monthName (2), "February",  "2 = February");
+    t.is (ISO8601d::monthName (3), "March",     "3 = March");
+    t.is (ISO8601d::monthName (4), "April",     "4 = April");
+    t.is (ISO8601d::monthName (5), "May",       "5 = May");
+    t.is (ISO8601d::monthName (6), "June",      "6 = June");
+    t.is (ISO8601d::monthName (7), "July",      "7 = July");
+    t.is (ISO8601d::monthName (8), "August",    "8 = August");
+    t.is (ISO8601d::monthName (9), "September", "9 = September");
+    t.is (ISO8601d::monthName (10), "October",  "10 = October");
+    t.is (ISO8601d::monthName (11), "November", "11 = November");
+    t.is (ISO8601d::monthName (12), "December", "12 = December");
 
     t.is (ISO8601d::dayOfWeek ("SUNDAY"),    0, "SUNDAY == 0");
     t.is (ISO8601d::dayOfWeek ("sunday"),    0, "sunday == 0");
