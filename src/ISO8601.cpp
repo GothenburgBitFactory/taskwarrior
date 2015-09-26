@@ -841,6 +841,12 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+double ISO8601d::toJulian ()
+{
+  return (_date / 86400.0) + 2440587.5;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void ISO8601d::toMDY (int& m, int& d, int& y)
 {
   struct tm* t = localtime (&_date);

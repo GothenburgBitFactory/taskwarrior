@@ -46,6 +46,7 @@ public:
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
 
+  double toJulian ();
   void toMDY (int&, int&, int&);
 
   ISO8601d startOfDay () const;
