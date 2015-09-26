@@ -44,6 +44,8 @@ public:
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
 
+  static bool leapYear (int);
+
   static int dayOfWeek (const std::string&);
 
   static int length (const std::string&);

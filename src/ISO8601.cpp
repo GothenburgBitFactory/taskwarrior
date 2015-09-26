@@ -800,6 +800,14 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Static
+bool ISO8601d::leapYear (int year)
+{
+  return ((! (year % 4)) && (year % 100)) ||
+         ! (year % 400);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Static
 int ISO8601d::dayOfWeek (const std::string& input)
 {
   if (ISO8601d::minimumMatchLength== 0)
@@ -817,6 +825,7 @@ int ISO8601d::dayOfWeek (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Static
 int ISO8601d::length (const std::string& format)
 {
   int len = 0;
