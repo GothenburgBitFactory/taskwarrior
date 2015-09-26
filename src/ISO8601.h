@@ -80,6 +80,7 @@ public:
 
   ISO8601d operator+  (const int);
   ISO8601d operator-  (const int);
+  ISO8601d& operator+= (const int);
 
 private:
   void clear ();
