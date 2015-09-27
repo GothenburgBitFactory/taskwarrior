@@ -582,13 +582,21 @@ bool ISO8601d::parse_named (Nibbler& n)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Valid epoch values are unsigned integers after 1980-01-01T00:00:00Z. This
+// restriction means that '12' will not be identified as an epoch date.
 bool ISO8601d::parse_epoch (Nibbler& n)
 {
-/*
-  if (isEpoch (input))
-    return true;
-*/
+  n.save ();
 
+  int epoch;
+  if (n.getUnsignedInt (epoch) &&
+      epoch >= 315532800)
+  {
+    _date = static_cast <time_t> (epoch);
+    return true;
+  }
+
+  n.restore ();
   return false;
 }
 
