@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (827);
+  UnitTest t (828);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -218,6 +218,9 @@ int main (int argc, char** argv)
 
   try
   {
+    ISO8601d now;
+    t.ok (now.toISO ().find ("1969") == std::string::npos, "'now' != 1969");
+
     // Leap year.
     t.ok    (ISO8601d::leapYear (2008), "2008 is a leap year");
     t.notok (ISO8601d::leapYear (2007), "2007 is not a leap year");
