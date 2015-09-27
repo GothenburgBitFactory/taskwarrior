@@ -38,11 +38,11 @@ public:
   static int minimumMatchLength;
 
   ISO8601d ();
+  ISO8601d (const std::string&, const std::string& format = "");
   ISO8601d (time_t);
   ISO8601d (const int, const int, const int);
   ISO8601d (const int, const int, const int, const int, const int, const int);
   ~ISO8601d ();
-  ISO8601d (const ISO8601d&);                 // Unimplemented
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
 

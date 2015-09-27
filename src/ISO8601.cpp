@@ -120,6 +120,17 @@ ISO8601d::ISO8601d ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+ISO8601d::ISO8601d (const std::string& input, const std::string& format /*= ""*/)
+{
+  clear ();
+  std::string::size_type start = 0;
+  if (parse (input, start, format))
+    return;
+
+  throw ::format (STRING_DATE_INVALID_FORMAT, input, format);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 ISO8601d::ISO8601d (const time_t t)
 {
   clear ();
@@ -222,8 +233,20 @@ bool ISO8601d::parse (
   const std::string& format /* = "" */)
 {
   auto i = start;
-  Nibbler n (input.substr (i));
 
+  // Look for a formatted date, if a format is present.
+  if (format != "")
+  {
+    Nibbler n (input.substr (i));
+    if (n.getDate (format, _date))
+    {
+      start = n.cursor ();
+      return true;
+    }
+  }
+
+  // Look for an ISO date.
+  Nibbler n (input.substr (i));
   if (parse_date_time     (n)             ||   // Strictest first.
       parse_date_time_ext (n)             ||
       parse_date_ext      (n)             ||
