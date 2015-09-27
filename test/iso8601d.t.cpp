@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (848);
+  UnitTest t (850);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -313,6 +313,11 @@ int main (int argc, char** argv)
     t.is (m, 1, "1/1/2008 == January");
     t.is (d, 1, "1/1/2008 == 1");
     t.is (y, 2008, "1/1/2008 == 2008");
+
+    ISO8601d epoch (9, 8, 2001);
+    t.ok ((int)epoch.toEpoch () < 1000000000, "9/8/2001 < 1,000,000,000");
+    epoch += 172800;
+    t.ok ((int)epoch.toEpoch () > 1000000000, "9/10/2001 > 1,000,000,000");
 
     // int ISO8601d::length (const std::string&);
     t.is (ISO8601d::length ("m"), 2,  "length 'm' --> 2");
