@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (865);
+  UnitTest t (899);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -249,7 +249,6 @@ int main (int argc, char** argv)
     t.ok (relative_now.sameMonth (now), "Date ().sameMonth (Date (now))");
     t.ok (relative_now.sameYear (now),  "Date ().sameYear (Date (now))");
 
-/*
     // Loose comparisons.
     ISO8601d left ("7/4/2008", "m/d/Y");
     ISO8601d comp1 ("7/4/2008", "m/d/Y");
@@ -274,27 +273,22 @@ int main (int argc, char** argv)
     t.notok (left.sameWeek  (comp3), "7/4/2008 is not on the same week as 7/4/2009");
     t.notok (left.sameMonth (comp4), "7/4/2008 is not in the same month as 7/4/2009");
     t.notok (left.sameYear  (comp4), "7/4/2008 is not in the same year as 7/4/2009");
-*/
 
     // Validity.
     t.ok    (ISO8601d::valid (2, 29, 2008), "valid: 2/29/2008");
     t.notok (ISO8601d::valid (2, 29, 2007), "invalid: 2/29/2007");
 
-/*
-    t.ok    (Date::valid ("2/29/2008"), "valid: 2/29/2008");
-    t.notok (Date::valid ("2/29/2007"), "invalid: 2/29/2007");
-*/
+    t.ok    (ISO8601d::valid ("2/29/2008", "m/d/Y"), "valid: 2/29/2008");
+    t.notok (ISO8601d::valid ("2/29/2007", "m/d/Y"), "invalid: 2/29/2007");
 
     t.ok    (ISO8601d::valid (366, 2008), "valid: 366 days in 2008");
     t.notok (ISO8601d::valid (366, 2007), "invalid: 366 days in 2007");
 
-/*
     // Time validity.
-    t.ok    (Date::valid (2, 28, 2010,  0,  0,  0), "valid 2/28/2010 0:00:00");
-    t.ok    (Date::valid (2, 28, 2010, 23, 59, 59), "valid 2/28/2010 23:59:59");
-    t.notok (Date::valid (2, 28, 2010, 24, 59, 59), "valid 2/28/2010 24:59:59");
-    t.notok (Date::valid (2, 28, 2010, -1,  0,  0), "valid 2/28/2010 -1:00:00");
-*/
+    t.ok    (ISO8601d::valid (2, 28, 2010,  0,  0,  0), "valid 2/28/2010 0:00:00");
+    t.ok    (ISO8601d::valid (2, 28, 2010, 23, 59, 59), "valid 2/28/2010 23:59:59");
+    t.notok (ISO8601d::valid (2, 28, 2010, 24, 59, 59), "valid 2/28/2010 24:59:59");
+    t.notok (ISO8601d::valid (2, 28, 2010, -1,  0,  0), "valid 2/28/2010 -1:00:00");
 
     // Leap year.
     t.ok    (ISO8601d::leapYear (2008), "2008 is a leap year");
@@ -390,6 +384,7 @@ int main (int argc, char** argv)
     t.is (quant.startOfWeek ().toString ("YMDHNS"),  "20090208000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/8/2009 0:00:00");
     t.is (quant.startOfMonth ().toString ("YMDHNS"), "20090201000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/1/2009 0:00:00");
     t.is (quant.startOfYear ().toString ("YMDHNS"),  "20090101000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 1/1/2009 0:00:00");
+*/
 
     // Date parsing.
     ISO8601d fromString1 ("1/1/2008", "m/d/Y");
@@ -407,6 +402,7 @@ int main (int argc, char** argv)
     t.is (fromString3.day (),    31, "ctor (std::string) -> d");
     t.is (fromString3.year (), 2007, "ctor (std::string) -> y");
 
+/*
     ISO8601d fromString4 ("01/01/2008", "m/d/Y");
     t.is (fromString4.month (),   1, "ctor (std::string) -> m");
     t.is (fromString4.day (),     1, "ctor (std::string) -> d");
@@ -450,12 +446,14 @@ int main (int argc, char** argv)
     t.is (fromString10.hour (),     12, "ctor (std::string) -> h");
     t.is (fromString10.minute (),   34, "ctor (std::string) -> N");
     t.is (fromString1.second (),    56, "ctor (std::string) -> S");
+*/
 
     // Day of year
     t.is (ISO8601d ("1/1/2011",   "m/d/Y").dayOfYear (),   1, "dayOfYear (1/1/2011)   ->   1");
     t.is (ISO8601d ("5/1/2011",   "m/d/Y").dayOfYear (), 121, "dayOfYear (5/1/2011)   -> 121");
     t.is (ISO8601d ("12/31/2011", "m/d/Y").dayOfYear (), 365, "dayOfYear (12/31/2011) -> 365");
 
+/*
     // Relative dates.
     Date r1 ("today");
     t.ok (r1.sameDay (now), "today = now");
@@ -610,13 +608,13 @@ int main (int argc, char** argv)
 
     t.is (ISO8601d::length (" "), 1, "length ' ' --> 1");
 
-/*
     // Depletion requirement.
     ISO8601d r30 ("Mon Jun 30 2014", "a b D Y");
     t.is (r30.toString ("YMDHNS"), "20140630000000", "Depletion required on complex format with spaces");
 
+/*
     std::string::size_type i = 0;
-    ISO8601d r31 ("Mon Jun 30 2014 xxx", i, "a b D Y", false, false);
+    ISO8601d r31 ("Mon Jun 30 2014 xxx", i, "a b D Y");
     t.is (r31.toString ("YMDHNS"), "20140630000000", "Depletion not required on complex format with spaces");
     t.is ((int)i, 15,                                "Depletion not required on complex format with spaces, 15 chars");
 */
