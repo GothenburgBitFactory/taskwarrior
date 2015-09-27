@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (855);
+  UnitTest t (860);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -328,6 +328,28 @@ int main (int argc, char** argv)
     t.is (quant.startOfWeek ().toString ("YMDHNS"),  "20090208000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/8/2009 0:00:00");
     t.is (quant.startOfMonth ().toString ("YMDHNS"), "20090201000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/1/2009 0:00:00");
     t.is (quant.startOfYear ().toString ("YMDHNS"),  "20090101000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 1/1/2009 0:00:00");
+
+    // Date::operator-
+    ISO8601d r25 (1234567890);
+    t.is ((r25 - 1).toEpoch (), 1234567889, "1234567890 - 1 = 1234567889");
+
+    // ISO8601d::operator--
+    ISO8601d r26 (11, 7, 2010, 23, 59, 59);
+    r26--;
+    t.is (r26.toString ("YMDHNS"), "20101106235959", "decrement across fall DST boundary");
+
+    ISO8601d r27 (3, 14, 2010, 23, 59, 59);
+    r27--;
+    t.is (r27.toString ("YMDHNS"), "20100313235959", "decrement across spring DST boundary");
+
+    // ISO8601d::operator++
+    ISO8601d r28 (11, 6, 2010, 23, 59, 59);
+    r28++;
+    t.is (r28.toString ("YMDHNS"), "20101107235959", "increment across fall DST boundary");
+
+    ISO8601d r29 (3, 13, 2010, 23, 59, 59);
+    r29++;
+    t.is (r29.toString ("YMDHNS"), "20100314235959", "increment across spring DST boundary");
 
     // int ISO8601d::length (const std::string&);
     t.is (ISO8601d::length ("m"), 2,  "length 'm' --> 2");
