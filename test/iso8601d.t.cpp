@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (860);
+  UnitTest t (869);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -239,6 +239,22 @@ int main (int argc, char** argv)
     t.ok    (tomorrow != now,        "tomorrow != now");
     t.ok    (now      <= tomorrow,   "now <= tomorrow");
     t.ok    (now      <  tomorrow,   "now < tomorrow");
+
+    // Date::Date ("now")
+    context.config.set ("weekstart", "monday");
+    ISO8601d relative_now;
+    t.ok (relative_now.sameHour (now),  "Date ().sameHour (Date (now))");
+    t.ok (relative_now.sameDay (now),   "Date ().sameDay (Date (now))");
+    t.ok (relative_now.sameWeek (now),  "Date ().sameWeek (Date (now))");
+    t.ok (relative_now.sameMonth (now), "Date ().sameMonth (Date (now))");
+    t.ok (relative_now.sameYear (now),  "Date ().sameYear (Date (now))");
+
+    // Validity.
+    t.ok    (ISO8601d::valid (2, 29, 2008), "valid: 2/29/2008");
+    t.notok (ISO8601d::valid (2, 29, 2007), "invalid: 2/29/2007");
+
+    t.ok    (ISO8601d::valid (366, 2008), "valid: 366 days in 2008");
+    t.notok (ISO8601d::valid (366, 2007), "invalid: 366 days in 2007");
 
     // Leap year.
     t.ok    (ISO8601d::leapYear (2008), "2008 is a leap year");
