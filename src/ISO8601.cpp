@@ -31,7 +31,6 @@
 #include <assert.h>
 #include <Lexer.h>
 #include <ISO8601.h>
-#include <Date.h>
 #include <text.h>
 #include <utf8.h>
 #include <i18n.h>
@@ -502,14 +501,14 @@ int ISO8601d::dayOfWeek (int year, int month, int day)
 bool ISO8601d::validate ()
 {
   // _year;
-  if ((_year    && (_year    <   1900 || _year    >                              2200)) ||
-      (_month   && (_month   <      1 || _month   >                                12)) ||
-      (_week    && (_week    <      1 || _week    >                                53)) ||
-      (_weekday && (_weekday <      0 || _weekday >                                 6)) ||
-      (_julian  && (_julian  <      1 || _julian  >          Date::daysInYear (_year))) ||
-      (_day     && (_day     <      1 || _day     > Date::daysInMonth (_month, _year))) ||
-      (_seconds && (_seconds <      1 || _seconds >                             86400)) ||
-      (_offset  && (_offset  < -86400 || _offset  >                             86400)))
+  if ((_year    && (_year    <   1900 || _year    >                                  2200)) ||
+      (_month   && (_month   <      1 || _month   >                                    12)) ||
+      (_week    && (_week    <      1 || _week    >                                    53)) ||
+      (_weekday && (_weekday <      0 || _weekday >                                     6)) ||
+      (_julian  && (_julian  <      1 || _julian  >          ISO8601d::daysInYear (_year))) ||
+      (_day     && (_day     <      1 || _day     > ISO8601d::daysInMonth (_month, _year))) ||
+      (_seconds && (_seconds <      1 || _seconds >                                 86400)) ||
+      (_offset  && (_offset  < -86400 || _offset  >                                 86400)))
     return false;
 
   return true;
@@ -901,6 +900,50 @@ void ISO8601d::toMDY (int& m, int& d, int& y)
   m = t->tm_mon + 1;
   d = t->tm_mday;
   y = t->tm_year + 1900;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+const std::string ISO8601d::toString (
+  const std::string& format /*= "m/d/Y" */) const
+{
+  // Making this local copy seems to fix a bug.  Remove the local copy and
+  // you'll see segmentation faults and all kinds of gibberish.
+  std::string localFormat = format;
+
+  char buffer[12];
+  std::string formatted;
+  for (unsigned int i = 0; i < localFormat.length (); ++i)
+  {
+    int c = localFormat[i];
+    switch (c)
+    {
+    case 'm': sprintf (buffer, "%d",    this->month ());                        break;
+    case 'M': sprintf (buffer, "%02d",  this->month ());                        break;
+    case 'd': sprintf (buffer, "%d",    this->day ());                          break;
+    case 'D': sprintf (buffer, "%02d",  this->day ());                          break;
+    case 'y': sprintf (buffer, "%02d",  this->year () % 100);                   break;
+    case 'Y': sprintf (buffer, "%d",    this->year ());                         break;
+    case 'a': sprintf (buffer, "%.3s",  ISO8601d::dayName (dayOfWeek ()).c_str ()); break;
+    case 'A': sprintf (buffer, "%.10s", ISO8601d::dayName (dayOfWeek ()).c_str ()); break;
+    case 'b': sprintf (buffer, "%.3s",  ISO8601d::monthName (month ()).c_str ());   break;
+    case 'B': sprintf (buffer, "%.10s", ISO8601d::monthName (month ()).c_str ());   break;
+    case 'v': sprintf (buffer, "%d",    ISO8601d::weekOfYear (ISO8601d::dayOfWeek (ISO8601d::weekstart))); break;
+    case 'V': sprintf (buffer, "%02d",  ISO8601d::weekOfYear (ISO8601d::dayOfWeek (ISO8601d::weekstart))); break;
+    case 'h': sprintf (buffer, "%d",    this->hour ());                         break;
+    case 'H': sprintf (buffer, "%02d",  this->hour ());                         break;
+    case 'n': sprintf (buffer, "%d",    this->minute ());                       break;
+    case 'N': sprintf (buffer, "%02d",  this->minute ());                       break;
+    case 's': sprintf (buffer, "%d",    this->second ());                       break;
+    case 'S': sprintf (buffer, "%02d",  this->second ());                       break;
+    case 'j': sprintf (buffer, "%d",    this->dayOfYear ());                    break;
+    case 'J': sprintf (buffer, "%03d",  this->dayOfYear ());                    break;
+    default:  sprintf (buffer, "%c",    c);                                     break;
+    }
+
+    formatted += buffer;
+  }
+
+  return formatted;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
