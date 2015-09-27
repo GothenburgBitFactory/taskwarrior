@@ -234,14 +234,13 @@ bool ISO8601d::parse (
   auto i = start;
   Nibbler n (input.substr (i));
   if (parse_formatted     (n, format) ||
-      parse_date_time     (n)         ||   // Strictest first.
+      parse_date_time     (n)         || // Strictest first.
       parse_date_time_ext (n)         ||
       parse_date_ext      (n)         ||
       parse_time_utc_ext  (n)         ||
       parse_time_off_ext  (n)         ||
-      parse_time_ext      (n)         ||
-      parse_named         (n)         ||
-      parse_epoch         (n))             // Time last, as it is the most permissive.
+      parse_time_ext      (n)         || // Time last, as it is the most permissive.
+      parse_named         (n))
   {
     // Check the values and determine time_t.
     if (validate ())
@@ -252,6 +251,13 @@ bool ISO8601d::parse (
       resolve ();
       return true;
     }
+  }
+
+  // ::parse_epoch doesn't require ::validate and ::resolve.
+  else if (parse_epoch (n))
+  {
+    start = n.cursor ();
+    return true;
   }
 
   return false;
@@ -953,9 +959,9 @@ void ISO8601d::resolve ()
     seconds %= 86400;
   }
 
-    t.tm_hour = seconds / 3600;
-    t.tm_min = (seconds % 3600) / 60;
-    t.tm_sec = seconds % 60;
+  t.tm_hour = seconds / 3600;
+  t.tm_min = (seconds % 3600) / 60;
+  t.tm_sec = seconds % 60;
 
   _date = utc ? timegm (&t) : mktime (&t);
 }
