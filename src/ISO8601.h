@@ -69,6 +69,7 @@ public:
   static void dayName (int, std::string&);
   static std::string dayName (int);
   static int dayOfWeek (const std::string&);
+  static int dayOfWeek (int, int, int);
   static int monthOfYear (const std::string&);
   static int length (const std::string&);
 
@@ -116,7 +117,6 @@ private:
   bool parse_time_ext      (Nibbler&);
   bool parse_time_utc_ext  (Nibbler&);
   bool parse_time_off_ext  (Nibbler&);
-  int dayOfWeek (int, int, int);
   bool validate ();
   void resolve ();
   bool isEpoch (const std::string&);

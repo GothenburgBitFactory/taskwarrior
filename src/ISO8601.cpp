@@ -827,16 +827,6 @@ bool ISO8601d::parse_time_off_ext  (Nibbler& n)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Using Zeller's Congruence.
-int ISO8601d::dayOfWeek (int year, int month, int day)
-{
-  int adj = (14 - month) / 12;
-  int m = month + 12 * adj - 2;
-  int y = year - adj;
-  return (day + (13 * m - 1) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Validation via simple range checking.
 bool ISO8601d::validate ()
 {
@@ -1481,6 +1471,17 @@ int ISO8601d::dayOfWeek (const std::string& input)
   else if (closeEnough (STRING_DATE_SATURDAY,  input, ISO8601d::minimumMatchLength)) return 6;
 
   return -1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Using Zeller's Congruence.
+// Static
+int ISO8601d::dayOfWeek (int year, int month, int day)
+{
+  int adj = (14 - month) / 12;
+  int m = month + 12 * adj - 2;
+  int y = year - adj;
+  return (day + (13 * m - 1) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
