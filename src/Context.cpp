@@ -329,7 +329,7 @@ int Context::run ()
       << "-"
 #endif
       << " "
-      << Date ().toISO ()
+      << ISO8601d ().toISO ()
 
       << " init:"   << timer_init.total ()
       << " load:"   << timer_load.total ()
