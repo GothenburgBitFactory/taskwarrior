@@ -32,6 +32,7 @@
 #include <Lexer.h>
 #include <Nibbler.h>
 #ifdef NIBBLER_FEATURE_DATE
+#include <ISO8601.h>
 #include <Date.h>
 #endif
 #ifdef NIBBLER_FEATURE_REGEX
@@ -818,8 +819,8 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
           ! Lexer::isDigit ((*_input)[i + 1]) &&
           ! Lexer::isDigit ((*_input)[i + 2]))
       {
-        wday = Date::dayOfWeek (_input->substr (i, 3).c_str ());
-        i += (format[f] == 'a') ? 3 : Date::dayName (wday).size ();
+        wday = ISO8601d::dayOfWeek (_input->substr (i, 3).c_str ());
+        i += (format[f] == 'a') ? 3 : ISO8601d::dayName (wday).size ();
       }
       else
         return false;
@@ -834,8 +835,8 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
       {
         if (month != -1)
           return false;
-        month = Date::monthOfYear (_input->substr (i, 3).c_str());
-        i += (format[f] == 'b') ? 3 : Date::monthName (month).size ();
+        month = ISO8601d::monthOfYear (_input->substr (i, 3).c_str());
+        i += (format[f] == 'b') ? 3 : ISO8601d::monthName (month).size ();
       }
       else
         return false;

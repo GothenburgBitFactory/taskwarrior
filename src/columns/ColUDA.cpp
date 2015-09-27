@@ -27,7 +27,6 @@
 #include <cmake.h>
 #include <Context.h>
 #include <ISO8601.h>
-#include <Date.h>
 #include <ColUDA.h>
 #include <text.h>
 #include <utf8.h>
@@ -89,14 +88,14 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
           //   rc.report.<report>.dateformat
           //   rc.dateformat.report
           //   rc.dateformat
-          Date date ((time_t) strtol (value.c_str (), NULL, 10));
+          ISO8601d date ((time_t) strtol (value.c_str (), NULL, 10));
           std::string format = context.config.get ("report." + _report + ".dateformat");
           if (format == "")
             format = context.config.get ("dateformat.report");
           if (format == "")
             format = context.config.get ("dateformat");
 
-          minimum = maximum = Date::length (format);
+          minimum = maximum = ISO8601d::length (format);
         }
         else if (_type == "duration")
         {
@@ -153,8 +152,7 @@ void ColumnUDA::render (
         lines.push_back (
           color.colorize (
             leftJustify (
-              Date ((time_t) strtol (value.c_str (), NULL, 10))
-                .toString (format), width)));
+              ISO8601d ((time_t) strtol (value.c_str (), NULL, 10)).toString (format), width)));
       }
       else if (_type == "duration")
       {

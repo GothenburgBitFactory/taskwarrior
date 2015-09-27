@@ -32,6 +32,7 @@
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
+#include <ISO8601.h>
 #include <CmdHistory.h>
 
 extern Context context;
@@ -136,7 +137,7 @@ int CmdHistoryMonthly::execute (std::string& output)
       view.set (row, 0, y);
       priorYear = y;
     }
-    view.set (row, 1, Date::monthName(m));
+    view.set (row, 1, ISO8601d::monthName(m));
 
     int net = 0;
 
