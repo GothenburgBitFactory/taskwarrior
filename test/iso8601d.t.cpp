@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (850);
+  UnitTest t (855);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -318,6 +318,16 @@ int main (int argc, char** argv)
     t.ok ((int)epoch.toEpoch () < 1000000000, "9/8/2001 < 1,000,000,000");
     epoch += 172800;
     t.ok ((int)epoch.toEpoch () > 1000000000, "9/10/2001 > 1,000,000,000");
+
+    ISO8601d iso (1000000000);
+    t.is (iso.toISO (), "20010909T014640Z", "1,000,000,000 -> 20010909T014640Z");
+
+    // Quantization.
+    ISO8601d quant (1234526400);
+    t.is (quant.startOfDay ().toString ("YMDHNS"),   "20090213000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/13/2009 0:00:00");
+    t.is (quant.startOfWeek ().toString ("YMDHNS"),  "20090208000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/8/2009 0:00:00");
+    t.is (quant.startOfMonth ().toString ("YMDHNS"), "20090201000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/1/2009 0:00:00");
+    t.is (quant.startOfYear ().toString ("YMDHNS"),  "20090101000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 1/1/2009 0:00:00");
 
     // int ISO8601d::length (const std::string&);
     t.is (ISO8601d::length ("m"), 2,  "length 'm' --> 2");
