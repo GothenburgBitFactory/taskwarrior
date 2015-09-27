@@ -973,6 +973,73 @@ ISO8601d ISO8601d::startOfYear () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+/*
+bool ISO8601d::valid (const std::string& input, const std::string& format)
+{
+  try
+  {
+    ISO8601d test (input, format);
+  }
+
+  catch (...)
+  {
+    return false;
+  }
+
+  return true;
+}
+*/
+
+////////////////////////////////////////////////////////////////////////////////
+bool ISO8601d::valid (const int m, const int d, const int y, const int hr,
+                  const int mi, const int se)
+{
+  if (hr < 0 || hr > 23)
+    return false;
+
+  if (mi < 0 || mi > 59)
+    return false;
+
+  if (se < 0 || se > 59)
+    return false;
+
+  return ISO8601d::valid (m, d, y);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ISO8601d::valid (const int m, const int d, const int y)
+{
+  // Check that the year is valid.
+  if (y < 0)
+    return false;
+
+  // Check that the month is valid.
+  if (m < 1 || m > 12)
+    return false;
+
+  // Finally check that the days fall within the acceptable range for this
+  // month, and whether or not this is a leap year.
+  if (d < 1 || d > ISO8601d::daysInMonth (m, y))
+    return false;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Julian
+bool ISO8601d::valid (const int d, const int y)
+{
+  // Check that the year is valid.
+  if (y < 0)
+    return false;
+
+  if (d < 1 || d > ISO8601d::daysInYear (y))
+    return false;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Static
 bool ISO8601d::leapYear (int year)
 {

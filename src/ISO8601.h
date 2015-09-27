@@ -58,6 +58,10 @@ public:
   ISO8601d startOfMonth () const;
   ISO8601d startOfYear () const;
 
+//  static bool valid (const std::string&, const std::string& format = "m/d/Y");
+  static bool valid (const int, const int, const int, const int, const int, const int);
+  static bool valid (const int, const int, const int);
+  static bool valid (const int, const int);
   static bool leapYear (int);
   static int daysInMonth (int, int);
   static int daysInYear (int);
