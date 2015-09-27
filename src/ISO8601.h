@@ -58,7 +58,7 @@ public:
   ISO8601d startOfMonth () const;
   ISO8601d startOfYear () const;
 
-//  static bool valid (const std::string&, const std::string& format = "m/d/Y");
+  static bool valid (const std::string&, const std::string& format = "");
   static bool valid (const int, const int, const int, const int, const int, const int);
   static bool valid (const int, const int, const int);
   static bool valid (const int, const int);
@@ -106,6 +106,9 @@ public:
 
 private:
   void clear ();
+  bool parse_formatted     (Nibbler&, const std::string&);
+  bool parse_named         (Nibbler&);
+  bool parse_epoch         (Nibbler&);
   bool parse_date_time     (Nibbler&);
   bool parse_date_time_ext (Nibbler&);
   bool parse_date_ext      (Nibbler&);

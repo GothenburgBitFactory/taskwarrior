@@ -31,6 +31,7 @@
 #include <assert.h>
 #include <Lexer.h>
 #include <ISO8601.h>
+#include <Dates.h>
 #include <text.h>
 #include <utf8.h>
 #include <i18n.h>
@@ -124,10 +125,8 @@ ISO8601d::ISO8601d (const std::string& input, const std::string& format /*= ""*/
 {
   clear ();
   std::string::size_type start = 0;
-  if (parse (input, start, format))
-    return;
-
-  throw ::format (STRING_DATE_INVALID_FORMAT, input, format);
+  if (! parse (input, start, format))
+    throw ::format (STRING_DATE_INVALID_FORMAT, input, format);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -233,26 +232,16 @@ bool ISO8601d::parse (
   const std::string& format /* = "" */)
 {
   auto i = start;
-
-  // Look for a formatted date, if a format is present.
-  if (format != "")
-  {
-    Nibbler n (input.substr (i));
-    if (n.getDate (format, _date))
-    {
-      start = n.cursor ();
-      return true;
-    }
-  }
-
-  // Look for an ISO date.
   Nibbler n (input.substr (i));
-  if (parse_date_time     (n)             ||   // Strictest first.
-      parse_date_time_ext (n)             ||
-      parse_date_ext      (n)             ||
-      parse_time_utc_ext  (n)             ||
-      parse_time_off_ext  (n)             ||
-      parse_time_ext      (n))                 // Time last, as it is the most permissive.
+  if (parse_formatted     (n, format) ||
+      parse_date_time     (n)         ||   // Strictest first.
+      parse_date_time_ext (n)         ||
+      parse_date_ext      (n)         ||
+      parse_time_utc_ext  (n)         ||
+      parse_time_off_ext  (n)         ||
+      parse_time_ext      (n)         ||
+      parse_named         (n)         ||
+      parse_epoch         (n))             // Time last, as it is the most permissive.
   {
     // Check the values and determine time_t.
     if (validate ())
@@ -281,6 +270,326 @@ void ISO8601d::clear ()
   _offset          = 0;
   _utc             = false;
   _date            = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
+{
+  // Short-circuit on missing format.
+  if (format == "")
+    return false;
+
+  n.save ();
+
+  int month  = -1;   // So we can check later.
+  int day    = -1;
+  int year   = -1;
+  int hour   = -1;
+  int minute = -1;
+  int second = -1;
+
+  // For parsing, unused.
+  int wday   = -1;
+  int week   = -1;
+
+  for (unsigned int f = 0; f < format.length (); ++f)
+  {
+    switch (format[f])
+    {
+    case 'm':
+      if (n.getDigit (month))
+      {
+        if (month == 1)
+          if (n.getDigit (month))
+            month += 10;
+      }
+      else
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'M':
+      if (! n.getDigit2 (month))
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'd':
+      if (n.getDigit (day))
+      {
+        if (day == 1 || day == 2 || day == 3)
+        {
+          int tens = day;
+          if (n.getDigit (day))
+            day += 10 * tens;
+        }
+      }
+      else
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'D':
+      if (! n.getDigit2 (day))
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'y':
+      if (! n.getDigit2 (year))
+      {
+        n.restore ();
+        return false;
+      }
+      year += 2000;
+      break;
+
+    case 'Y':
+      if (! n.getDigit4 (year))
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'h':
+      if (n.getDigit (hour))
+      {
+        if (hour == 1 || hour == 2)
+        {
+          int tens = hour;
+          if (n.getDigit (hour))
+            hour += 10 * tens;
+        }
+      }
+      else
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'H':
+      if (! n.getDigit2 (hour))
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'n':
+      if (n.getDigit (minute))
+      {
+        if (minute < 6)
+        {
+          int tens = minute;
+          if (n.getDigit (minute))
+            minute += 10 * tens;
+        }
+      }
+      else
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'N':
+      if (! n.getDigit2 (minute))
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 's':
+      if (n.getDigit (second))
+      {
+        if (second < 6)
+        {
+          int tens = second;
+          if (n.getDigit (second))
+            second += 10 * tens;
+        }
+      }
+      else
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'S':
+      if (! n.getDigit2 (second))
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'v':
+      if (n.getDigit (week))
+      {
+        if (week < 6)
+        {
+          int tens = week;
+          if (n.getDigit (week))
+            week += 10 * tens;
+        }
+      }
+      else
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'V':
+      if (! n.getDigit2 (week))
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+
+    case 'a':
+      {
+        auto cursor = n.cursor ();
+        wday = ISO8601d::dayOfWeek (n.str ().substr (cursor, 3));
+        if (wday == -1)
+        {
+          n.restore ();
+          return false;
+        }
+
+        n.skipN (3);
+      }
+      break;
+
+    case 'A':
+      {
+        auto cursor = n.cursor ();
+        wday = ISO8601d::dayOfWeek (n.str ().substr (cursor));
+        if (wday == -1)
+        {
+          n.restore ();
+          return false;
+        }
+
+        n.skipN (ISO8601d::dayName (wday).size ());
+      }
+      break;
+
+    case 'b':
+      {
+        auto cursor = n.cursor ();
+        month = ISO8601d::monthOfYear (n.str ().substr (cursor, 3));
+        if (month == -1)
+        {
+          n.restore ();
+          return false;
+        }
+
+        n.skipN (3);
+      }
+      break;
+
+    case 'B':
+      {
+        auto cursor = n.cursor ();
+        month = ISO8601d::dayOfWeek (n.str ().substr (cursor));
+        if (month == -1)
+        {
+          n.restore ();
+          return false;
+        }
+
+        n.skipN (ISO8601d::monthName (month).size ());
+      }
+      break;
+
+    default:
+      if (! n.skip (format[f]))
+      {
+        n.restore ();
+        return false;
+      }
+      break;
+    }
+  }
+
+  // Missing values are filled in from the current date.
+  if (year == -1)
+  {
+    ISO8601d now;
+    year = now.year ();
+    if (month == -1)
+    {
+      month = now.month ();
+      if (day == -1)
+      {
+        day = now.day ();
+        if (hour == -1)
+        {
+          hour = now.hour ();
+          if (minute == -1)
+          {
+            minute = now.minute ();
+            if (second == -1)
+              second = now.second ();
+          }
+        }
+      }
+    }
+  }
+
+  // Any remaining undefined values are assigned defaults.
+  if (month  == -1) month  = 1;
+  if (day    == -1) day    = 1;
+  if (hour   == -1) hour   = 0;
+  if (minute == -1) minute = 0;
+  if (second == -1) second = 0;
+
+  _year    = year;
+  _month   = month;
+  _day     = day;
+  _seconds = (hour * 3600) + (minute * 60) + second;
+
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ISO8601d::parse_named (Nibbler& n)
+{
+/*
+  Variant v;
+  if (namedDates (input, v))
+  {
+    _date = v.get_date ();
+    return true;
+  }
+*/
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ISO8601d::parse_epoch (Nibbler& n)
+{
+/*
+  if (isEpoch (input))
+    return true;
+*/
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -996,8 +1305,7 @@ ISO8601d ISO8601d::startOfYear () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
-bool ISO8601d::valid (const std::string& input, const std::string& format)
+bool ISO8601d::valid (const std::string& input, const std::string& format /*= ""*/)
 {
   try
   {
@@ -1011,7 +1319,6 @@ bool ISO8601d::valid (const std::string& input, const std::string& format)
 
   return true;
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 bool ISO8601d::valid (const int m, const int d, const int y, const int hr,
