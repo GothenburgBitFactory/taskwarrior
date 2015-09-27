@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (899);
+  UnitTest t (904);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -243,11 +243,11 @@ int main (int argc, char** argv)
     // Date::Date ("now")
     context.config.set ("weekstart", "monday");
     ISO8601d relative_now;
-    t.ok (relative_now.sameHour (now),  "Date ().sameHour (Date (now))");
-    t.ok (relative_now.sameDay (now),   "Date ().sameDay (Date (now))");
-    t.ok (relative_now.sameWeek (now),  "Date ().sameWeek (Date (now))");
-    t.ok (relative_now.sameMonth (now), "Date ().sameMonth (Date (now))");
-    t.ok (relative_now.sameYear (now),  "Date ().sameYear (Date (now))");
+    t.ok (relative_now.sameHour (now),  "ISO8601d ().sameHour (ISO8601d (now))");
+    t.ok (relative_now.sameDay (now),   "ISO8601d ().sameDay (ISO8601d (now))");
+    t.ok (relative_now.sameWeek (now),  "ISO8601d ().sameWeek (ISO8601d (now))");
+    t.ok (relative_now.sameMonth (now), "ISO8601d ().sameMonth (ISO8601d (now))");
+    t.ok (relative_now.sameYear (now),  "ISO8601d ().sameYear (ISO8601d (now))");
 
     // Loose comparisons.
     ISO8601d left ("7/4/2008", "m/d/Y");
@@ -369,22 +369,18 @@ int main (int argc, char** argv)
     epoch += 172800;
     t.ok ((int)epoch.toEpoch () > 1000000000, "9/10/2001 > 1,000,000,000");
 
-/*
-    Date fromEpoch (epoch.toEpoch ());
+    ISO8601d fromEpoch (epoch.toEpoch ());
     t.is (fromEpoch.toString (), epoch.toString (), "ctor (time_t)");
-*/
 
     ISO8601d iso (1000000000);
     t.is (iso.toISO (), "20010909T014640Z", "1,000,000,000 -> 20010909T014640Z");
 
-/*
     // Quantization.
     ISO8601d quant (1234526400);
     t.is (quant.startOfDay ().toString ("YMDHNS"),   "20090213000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/13/2009 0:00:00");
     t.is (quant.startOfWeek ().toString ("YMDHNS"),  "20090208000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/8/2009 0:00:00");
     t.is (quant.startOfMonth ().toString ("YMDHNS"), "20090201000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/1/2009 0:00:00");
     t.is (quant.startOfYear ().toString ("YMDHNS"),  "20090101000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 1/1/2009 0:00:00");
-*/
 
     // Date parsing.
     ISO8601d fromString1 ("1/1/2008", "m/d/Y");
