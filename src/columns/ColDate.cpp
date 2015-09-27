@@ -89,7 +89,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
       if (format == "")
         format = context.config.get ("dateformat");
 
-      minimum = maximum = Date::length (format);
+      minimum = maximum = ISO8601d::length (format);
     }
     else if (_style == "countdown")
     {

@@ -478,7 +478,7 @@ int CmdGHistoryMonthly::execute (std::string& output)
         view.set (row, 0, y);
         priorYear = y;
       }
-      view.set (row, 1, Date::monthName(m));
+      view.set (row, 1, ISO8601d::monthName(m));
 
       unsigned int addedBar     = (widthOfBar *     addedGroup[i.first]) / maxLine;
       unsigned int completedBar = (widthOfBar * completedGroup[i.first]) / maxLine;

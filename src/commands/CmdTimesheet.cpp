@@ -30,6 +30,7 @@
 #include <Context.h>
 #include <Filter.h>
 #include <ViewText.h>
+#include <ISO8601.h>
 #include <Date.h>
 #include <main.h>
 #include <i18n.h>
@@ -64,7 +65,7 @@ int CmdTimesheet::execute (std::string& output)
   std::vector <Task> all = context.tdb2.all_tasks ();
 
   // What day of the week does the user consider the first?
-  int weekStart = Date::dayOfWeek (context.config.get ("weekstart"));
+  int weekStart = ISO8601d::dayOfWeek (context.config.get ("weekstart"));
   if (weekStart != 0 && weekStart != 1)
     throw std::string (STRING_DATE_BAD_WEEKSTART);
 

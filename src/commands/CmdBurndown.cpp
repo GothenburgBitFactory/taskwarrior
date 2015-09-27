@@ -744,7 +744,7 @@ void Chart::generateBars ()
     {
     case 'D': // month/day
       {
-        std::string month = Date::monthName (cursor.month ());
+        std::string month = ISO8601d::monthName (cursor.month ());
         bar._major_label = month.substr (0, 3);
 
         sprintf (str, "%02d", cursor.day ());
