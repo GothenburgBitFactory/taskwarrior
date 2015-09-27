@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (845);
+  UnitTest t (848);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -307,6 +307,12 @@ int main (int argc, char** argv)
     t.is (happyNewYear.year (),   2008, "1/1/2008 == 2008");
 
     t.is (happyNewYear.toString (), "1/1/2008", "toString 1/1/2008");
+
+    int m, d, y;
+    happyNewYear.toMDY (m, d, y);
+    t.is (m, 1, "1/1/2008 == January");
+    t.is (d, 1, "1/1/2008 == 1");
+    t.is (y, 2008, "1/1/2008 == 2008");
 
     // int ISO8601d::length (const std::string&);
     t.is (ISO8601d::length ("m"), 2,  "length 'm' --> 2");
