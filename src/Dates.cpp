@@ -31,7 +31,6 @@
 #include <text.h>
 #include <Dates.h>
 #include <ISO8601.h>
-#include <Date.h>
 #include <Lexer.h>
 #include <CLI2.h>
 #include <i18n.h>
@@ -39,14 +38,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 static bool isMonth (const std::string& name, int& i)
 {
-  i = Date::monthOfYear (name) - 1;
+  i = ISO8601d::monthOfYear (name) - 1;
   return i != -2 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static bool isDay (const std::string& name, int& i)
 {
-  i = Date::dayOfWeek (name);
+  i = ISO8601d::dayOfWeek (name);
   return i != -1 ? true : false;
 }
 
