@@ -961,19 +961,6 @@ void ISO8601d::resolve ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ISO8601d::isEpoch (const std::string& input)
-{
-  if (Lexer::isAllDigits (input) &&
-      input.length () <= 10 )
-  {
-    _date = (time_t) strtol (input.c_str (), NULL, 10);
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 ISO8601p::ISO8601p ()
 {
   clear ();

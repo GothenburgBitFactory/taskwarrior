@@ -119,7 +119,6 @@ private:
   bool parse_time_off_ext  (Nibbler&);
   bool validate ();
   void resolve ();
-  bool isEpoch (const std::string&);
 
 public:
   int _year;
