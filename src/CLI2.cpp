@@ -678,7 +678,8 @@ void CLI2::prepareFilter ()
       }
     }
 
-    context.footnote (std::string (STRING_COLUMN_LABEL_FILTER) + ": " + combined);
+    if (combined.size ())
+      context.footnote (std::string (STRING_COLUMN_LABEL_FILTER) + ": " + combined);
   }
 }
 
