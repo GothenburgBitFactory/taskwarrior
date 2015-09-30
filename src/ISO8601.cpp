@@ -28,6 +28,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <Lexer.h>
+#include <util.h>
 #include <ISO8601.h>
 #include <Date.h>
 

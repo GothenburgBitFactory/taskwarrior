@@ -31,6 +31,7 @@
 #include <inttypes.h>
 #include <Lexer.h>
 #include <Nibbler.h>
+#include <util.h>
 #ifdef NIBBLER_FEATURE_DATE
 #include <Date.h>
 #endif
