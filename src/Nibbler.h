@@ -57,10 +57,6 @@ public:
   bool getUntilEOL (std::string&);
   bool getUntilEOS (std::string&);
 
-/*
-  bool getAllOneOf (const std::string&, std::string&);
-*/
-
   bool getN (const int, std::string&);
   bool getQuoted (char, std::string&, bool quote = false);
   bool getDigit (int&);
