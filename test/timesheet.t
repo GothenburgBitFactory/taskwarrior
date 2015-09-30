@@ -54,7 +54,7 @@ class TestTimesheet(TestCase):
         #   C0   completed, this week
         #   C1   completed, last week
         #   C2   completed, 2wks ago
-        now      = time()
+        now      = int(time())
         seven    = now -  7 * 86400
         fourteen = now - 14 * 86400
 
