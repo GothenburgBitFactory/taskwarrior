@@ -31,6 +31,7 @@
 #include <cstring>
 #include <algorithm>
 #include <unistd.h>
+#include <Date.h>
 #include <ISO8601.h>
 #include <Context.h>
 #include <Filter.h>

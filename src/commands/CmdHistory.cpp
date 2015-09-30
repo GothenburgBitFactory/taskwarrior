@@ -32,6 +32,7 @@
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
+#include <Date.h>
 #include <ISO8601.h>
 #include <CmdHistory.h>
 

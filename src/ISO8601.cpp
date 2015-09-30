@@ -1695,6 +1695,12 @@ bool ISO8601d::sameYear (const ISO8601d& rhs) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+ISO8601d ISO8601d::operator+ (time_t delta)
+{
+  return ISO8601d (_date + delta);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 ISO8601d ISO8601d::operator+ (const int delta)
 {
   return ISO8601d (_date + delta);

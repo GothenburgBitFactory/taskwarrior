@@ -29,6 +29,7 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <ViewText.h>
+#include <Date.h>
 #include <ISO8601.h>
 #include <Context.h>
 #include <Filter.h>

@@ -32,13 +32,13 @@
 #include <map>
 #include <sys/types.h>
 #include <Context.h>
-#include <Date.h>
+#include <ISO8601.h>
 #include <Color.h>
 
 // recur.cpp
 void handleRecurrence ();
-Date getNextRecurrence (Date&, std::string&);
-bool generateDueDates (Task&, std::vector <Date>&);
+ISO8601d getNextRecurrence (ISO8601d&, std::string&);
+bool generateDueDates (Task&, std::vector <ISO8601d>&);
 void updateRecurrenceMask (Task&);
 bool nag (Task&);
 
