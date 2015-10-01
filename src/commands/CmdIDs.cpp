@@ -47,7 +47,7 @@ CmdIDs::CmdIDs ()
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
-  _uses_context          = true;
+  _uses_context          = false;
   _accepts_filter        = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
@@ -140,7 +140,7 @@ CmdCompletionIds::CmdCompletionIds ()
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
-  _uses_context          = true;
+  _uses_context          = false;
   _accepts_filter        = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
@@ -179,7 +179,7 @@ CmdZshCompletionIds::CmdZshCompletionIds ()
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
-  _uses_context          = true;
+  _uses_context          = false;
   _accepts_filter        = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
@@ -219,7 +219,7 @@ CmdUUIDs::CmdUUIDs ()
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
-  _uses_context          = true;
+  _uses_context          = false;
   _accepts_filter        = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
@@ -256,7 +256,7 @@ CmdCompletionUuids::CmdCompletionUuids ()
   _read_only             = true;
   _displays_id           = false;
   _needs_gc              = true;
-  _uses_context          = true;
+  _uses_context          = false;
   _accepts_filter        = true;
   _accepts_modifications = false;
   _accepts_miscellaneous = false;
