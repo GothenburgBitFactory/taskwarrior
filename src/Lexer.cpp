@@ -28,7 +28,6 @@
 #include <ctype.h>
 #include <Lexer.h>
 #include <ISO8601.h>
-#include <Date.h>
 #include <utf8.h>
 
 static const std::string uuid_pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
@@ -432,7 +431,7 @@ bool Lexer::isString (std::string& token, Lexer::Type& type, const std::string& 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::date
-//   <ISO8601d> | <Date>
+//   <ISO8601d>
 bool Lexer::isDate (std::string& token, Lexer::Type& type)
 {
   // Try an ISO date parse.
@@ -440,30 +439,13 @@ bool Lexer::isDate (std::string& token, Lexer::Type& type)
   {
     std::size_t iso_i = 0;
     ISO8601d iso;
-    if (iso.parse (_text.substr (_cursor), iso_i))
+    if (iso.parse (_text.substr (_cursor), iso_i, Lexer::dateFormat))
     {
       type = Lexer::Type::date;
       token = _text.substr (_cursor, iso_i);
       _cursor += iso_i;
       return true;
     }
-  }
-
-  // Try a legacy rc.dateformat parse here.
-  if (Lexer::dateFormat != "")
-  {
-    try
-    {
-      std::size_t legacy_i = 0;
-      Date legacyDate (_text.substr (_cursor), legacy_i, Lexer::dateFormat, false, false);
-
-      type = Lexer::Type::date;
-      token = _text.substr (_cursor, legacy_i);
-      _cursor += legacy_i;
-      return true;
-    }
-
-    catch (...) { /* Never mind. */ }
   }
 
   return false;
