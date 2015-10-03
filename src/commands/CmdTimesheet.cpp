@@ -31,7 +31,6 @@
 #include <Filter.h>
 #include <ViewText.h>
 #include <ISO8601.h>
-#include <Date.h>
 #include <main.h>
 #include <i18n.h>
 #include <text.h>
@@ -70,13 +69,13 @@ int CmdTimesheet::execute (std::string& output)
     throw std::string (STRING_DATE_BAD_WEEKSTART);
 
   // Determine the date of the first day of the most recent report.
-  Date today;
-  Date start;
+  ISO8601d today;
+  ISO8601d start;
   start -= (((today.dayOfWeek () - weekStart) + 7) % 7) * 86400;
 
   // Roll back to midnight.
-  start = Date (start.month (), start.day (), start.year ());
-  Date end = start + (7 * 86400);
+  start = ISO8601d (start.month (), start.day (), start.year ());
+  ISO8601d end = start + (7 * 86400);
 
   // Determine how many reports to run.
   int quantity = 1;
@@ -87,7 +86,7 @@ int CmdTimesheet::execute (std::string& output)
   std::stringstream out;
   for (int week = 0; week < quantity; ++week)
   {
-    Date endString (end);
+    ISO8601d endString (end);
     endString -= 86400;
 
     std::string title = start.toString (context.config.get ("dateformat"))
@@ -115,7 +114,7 @@ int CmdTimesheet::execute (std::string& output)
       // If task completed within range.
       if (task.getStatus () == Task::completed)
       {
-        Date compDate (task.get_date ("end"));
+        ISO8601d compDate (task.get_date ("end"));
         if (compDate >= start && compDate < end)
         {
           Color c;
@@ -130,7 +129,7 @@ int CmdTimesheet::execute (std::string& output)
 
           if(task.has ("due"))
           {
-            Date dt (task.get_date ("due"));
+            ISO8601d dt (task.get_date ("due"));
             completed.set (row, 2, dt.toString (format));
           }
 
@@ -142,7 +141,7 @@ int CmdTimesheet::execute (std::string& output)
           for (auto& ann : annotations)
             description += "\n"
                          + std::string (indent, ' ')
-                         + Date (ann.first.substr (11)).toString (context.config.get ("dateformat"))
+                         + ISO8601d (ann.first.substr (11)).toString (context.config.get ("dateformat"))
                          + " "
                          + ann.second;
 
@@ -172,7 +171,7 @@ int CmdTimesheet::execute (std::string& output)
       if (task.getStatus () == Task::pending &&
           task.has ("start"))
       {
-        Date startDate (task.get_date ("start"));
+        ISO8601d startDate (task.get_date ("start"));
         if (startDate >= start && startDate < end)
         {
           Color c;
@@ -187,7 +186,7 @@ int CmdTimesheet::execute (std::string& output)
 
           if (task.has ("due"))
           {
-            Date dt (task.get_date ("due"));
+            ISO8601d dt (task.get_date ("due"));
             started.set (row, 2, dt.toString (format));
           }
 
@@ -199,7 +198,7 @@ int CmdTimesheet::execute (std::string& output)
           for (auto& ann : annotations)
             description += "\n"
                          + std::string (indent, ' ')
-                         + Date (ann.first.substr (11)).toString (context.config.get ("dateformat"))
+                         + ISO8601d (ann.first.substr (11)).toString (context.config.get ("dateformat"))
                          + " "
                          + ann.second;
 
