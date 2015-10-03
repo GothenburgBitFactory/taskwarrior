@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
-#include <ISO8601.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
@@ -75,7 +74,7 @@ int CmdCalendar::execute (std::string& output)
   handleRecurrence ();
   auto tasks = context.tdb2.pending.get_tasks ();
 
-  Date today;
+  ISO8601d today;
   bool getpendingdate = false;
   int monthsToDisplay = 1;
   int mFrom = today.month ();
@@ -177,7 +176,7 @@ int CmdCalendar::execute (std::string& output)
   if (getpendingdate == true)
   {
     // Find the oldest pending due date.
-    Date oldest (12, 31, 2037);
+    ISO8601d oldest (12, 31, 2037);
     for (auto& task : tasks)
     {
       if (task.getStatus () == Task::pending)
@@ -186,7 +185,7 @@ int CmdCalendar::execute (std::string& output)
             !task.hasTag ("nocal"))
         {
           ++countDueDates;
-          Date d (task.get ("due"));
+          ISO8601d d (task.get ("due"));
           if (d < oldest) oldest = d;
         }
       }
@@ -327,10 +326,10 @@ int CmdCalendar::execute (std::string& output)
       ++yTo;
     }
 
-    Date date_after (details_mFrom, details_dFrom, details_yFrom);
+    ISO8601d date_after (details_mFrom, details_dFrom, details_yFrom);
     std::string after = date_after.toString (context.config.get ("dateformat"));
 
-    Date date_before (mTo, 1, yTo);
+    ISO8601d date_before (mTo, 1, yTo);
     std::string before = date_before.toString (context.config.get ("dateformat"));
 
     // Table with due date information
@@ -380,7 +379,7 @@ int CmdCalendar::execute (std::string& output)
           {
             std::string holName = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".name");
             std::string holDate = context.config.get ("holiday." + it.first.substr (8, it.first.size () - 13) + ".date");
-            Date hDate (holDate.c_str (), context.config.get ("dateformat.holiday"));
+            ISO8601d hDate (holDate.c_str (), context.config.get ("dateformat.holiday"));
 
             if (date_after < hDate && hDate < date_before)
               hm[hDate.toEpoch()].push_back(holName);
@@ -397,7 +396,7 @@ int CmdCalendar::execute (std::string& output)
       for (auto& hm_it : hm)
       {
         std::vector <std::string> v = hm_it.second;
-        Date hDate (hm_it.first);
+        ISO8601d hDate (hm_it.first);
         std::string d = hDate.toString (format);
         for (size_t i = 0; i < v.size(); i++)
         {
@@ -421,7 +420,7 @@ int CmdCalendar::execute (std::string& output)
 std::string CmdCalendar::renderMonths (
   int firstMonth,
   int firstYear,
-  const Date& today,
+  const ISO8601d& today,
   std::vector <Task>& all,
   int monthsPerLine)
 {
@@ -544,7 +543,7 @@ std::string CmdCalendar::renderMonths (
               if (hol.first.substr (hol.first.size () - 4) == "date")
               {
                 std::string value = hol.second;
-                Date holDate (value.c_str (), context.config.get ("dateformat.holiday"));
+                ISO8601d holDate (value.c_str (), context.config.get ("dateformat.holiday"));
                 if (holDate.day   () == d           &&
                     holDate.month () == months[mpl] &&
                     holDate.year  () == years[mpl])
@@ -569,7 +568,7 @@ std::string CmdCalendar::renderMonths (
                 task.has ("due"))
             {
               std::string due = task.get ("due");
-              Date duedmy (strtol (due.c_str(), NULL, 10));
+              ISO8601d duedmy (strtol (due.c_str(), NULL, 10));
 
               if (duedmy.day   () == d           &&
                   duedmy.month () == months[mpl] &&
