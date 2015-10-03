@@ -28,7 +28,6 @@
 #include <math.h>
 #include <Context.h>
 #include <ColDate.h>
-#include <Date.h>
 #include <ISO8601.h>
 #include <text.h>
 #include <i18n.h>
@@ -50,15 +49,15 @@ ColumnDate::ColumnDate ()
                 "remaining",
                 "countdown"};
 
-  Date now;
+  ISO8601d now;
   now -= 125; // So that "age" is non-zero.
   _examples = {now.toString (context.config.get ("dateformat")),
                format (now.toJulian (), 13, 12),
                now.toEpochString (),
                now.toISO (),
-               ISO8601p (Date () - now).formatVague (),
+               ISO8601p (ISO8601d () - now).formatVague (),
                "",
-               ISO8601p (Date () - now).format ()};
+               ISO8601p (ISO8601d () - now).format ()};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +73,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
 
   if (task.has (_name))
   {
-    Date date (task.get_date (_name));
+    ISO8601d date (task.get_date (_name));
 
     if (_style == "default" ||
         _style == "formatted")
@@ -93,7 +92,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     }
     else if (_style == "countdown")
     {
-      Date now;
+      ISO8601d now;
       minimum = maximum = ISO8601p (now - date).formatVague ().length ();
     }
     else if (_style == "julian")
@@ -110,12 +109,12 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
     }
     else if (_style == "age")
     {
-      Date now;
+      ISO8601d now;
       minimum = maximum = ISO8601p (now - date).formatVague ().length ();
     }
     else if (_style == "remaining")
     {
-      Date now;
+      ISO8601d now;
       if (date > now)
         minimum = maximum = ISO8601p (date - now).formatVague ().length ();
     }
@@ -133,7 +132,7 @@ void ColumnDate::render (
 {
   if (task.has (_name))
   {
-    Date date (task.get_date (_name));
+    ISO8601d date (task.get_date (_name));
 
     if (_style == "default" ||
         _style == "formatted")
@@ -155,7 +154,7 @@ void ColumnDate::render (
     }
     else if (_style == "countdown")
     {
-      Date now;
+      ISO8601d now;
 
       lines.push_back (
         color.colorize (
@@ -185,7 +184,7 @@ void ColumnDate::render (
     }
     else if (_style == "age")
     {
-      Date now;
+      ISO8601d now;
 
       lines.push_back (
         color.colorize (
@@ -194,7 +193,7 @@ void ColumnDate::render (
     }
     else if (_style == "remaining")
     {
-      Date now;
+      ISO8601d now;
       if (date > now)
         lines.push_back (
           color.colorize (
