@@ -32,7 +32,6 @@
 #include <Context.h>
 #include <Nibbler.h>
 #include <ISO8601.h>
-#include <Date.h>
 #include <text.h>
 #include <i18n.h>
 #include <DOM.h>
@@ -320,7 +319,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
 
     if (ref.size () && size == 2 && column && column->type () == "date")
     {
-      Date date (ref.get_date (canonical));
+      ISO8601d date (ref.get_date (canonical));
            if (elements[1] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
       else if (elements[1] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
       else if (elements[1] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
@@ -384,7 +383,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
         // <annotations>.<N>.entry.hour
         // <annotations>.<N>.entry.minute
         // <annotations>.<N>.entry.second
-        Date date (i.first.substr (11));
+        ISO8601d date (i.first.substr (11));
              if (elements[3] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
         else if (elements[3] == "month")   { value = Variant (static_cast<int> (date.month ()));     return true; }
         else if (elements[3] == "day")     { value = Variant (static_cast<int> (date.day ()));       return true; }
