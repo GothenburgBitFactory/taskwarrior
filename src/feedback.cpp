@@ -33,7 +33,6 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <Context.h>
-#include <Date.h>
 #include <ISO8601.h>
 #include <main.h>
 #include <text.h>
@@ -267,15 +266,11 @@ std::string renderAttribute (const std::string& name, const std::string& value, 
       col->type () == "date" &&
       value != "")
   {
-    Date d ((time_t)strtol (value.c_str (), NULL, 10));
+    ISO8601d d ((time_t)strtol (value.c_str (), NULL, 10));
     if (format == "")
-    {
       return d.toString (context.config.get ("dateformat"));
-    }
-    else
-    {
-      return d.toString (format);
-    }
+
+    return d.toString (format);
   }
 
   return value;
