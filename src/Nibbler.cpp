@@ -33,7 +33,6 @@
 #include <Nibbler.h>
 #ifdef NIBBLER_FEATURE_DATE
 #include <ISO8601.h>
-#include <Date.h>
 #endif
 #ifdef NIBBLER_FEATURE_REGEX
 #include <RX.h>
@@ -859,7 +858,7 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
   // now.
   if (year == -1)
   {
-    Date now = Date ();
+    ISO8601d now;
     year = now.year ();
     if (month == -1)
     {
@@ -890,7 +889,7 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
   second = (second == -1) ? 0 : second;
 
   // Check that values are correct
-  if (! Date::valid (month, day, year, hour, minute, second))
+  if (! ISO8601d::valid (month, day, year, hour, minute, second))
     return false;
 
   // Convert to epoch.
