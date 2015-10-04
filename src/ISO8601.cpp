@@ -611,6 +611,7 @@ bool ISO8601d::parse_epoch (Nibbler& n)
 
   int epoch;
   if (n.getUnsignedInt (epoch) &&
+      n.depleted ()            &&
       epoch >= 315532800)
   {
     _date = static_cast <time_t> (epoch);

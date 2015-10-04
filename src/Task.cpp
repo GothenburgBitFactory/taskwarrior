@@ -40,7 +40,6 @@
 #include <Lexer.h>
 #include <Nibbler.h>
 #endif
-#include <Date.h>
 #include <ISO8601.h>
 #include <Task.h>
 #ifdef PRODUCT_TASKWARRIOR
@@ -341,9 +340,9 @@ Task::dateState Task::getDateState (const std::string& name) const
   std::string value = get (name);
   if (value.length ())
   {
-    Date reference (value);
-    Date now;
-    Date today ("today");
+    ISO8601d reference (value);
+    ISO8601d now;
+    ISO8601d today ("today");
 
     if (reference < today)
       return dateBeforeToday;
@@ -360,7 +359,7 @@ Task::dateState Task::getDateState (const std::string& name) const
     if (imminentperiod == 0)
       return dateAfterToday;
 
-    Date imminentDay = today + imminentperiod * 86400;
+    ISO8601d imminentDay = today + imminentperiod * 86400;
     if (reference < imminentDay)
       return dateAfterToday;
   }
@@ -377,7 +376,7 @@ bool Task::is_ready () const
   return getStatus () == Task::pending &&
          ! is_blocked                  &&
          (! has ("scheduled")          ||
-          Date ("now").operator> (get_date ("scheduled")));
+          ISO8601d ("now").operator> (get_date ("scheduled")));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -411,7 +410,7 @@ bool Task::is_dueyesterday () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      if (Date ("yesterday").sameDay (get_date ("due")))
+      if (ISO8601d ("yesterday").sameDay (get_date ("due")))
         return true;
     }
   }
@@ -449,7 +448,7 @@ bool Task::is_duetomorrow () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      if (Date ("tomorrow").sameDay (get_date ("due")))
+      if (ISO8601d ("tomorrow").sameDay (get_date ("due")))
         return true;
     }
   }
@@ -467,9 +466,9 @@ bool Task::is_dueweek () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      Date due (get_date ("due"));
-      if (due >= Date ("socw") &&
-          due <= Date ("eocw"))
+      ISO8601d due (get_date ("due"));
+      if (due >= ISO8601d ("socw") &&
+          due <= ISO8601d ("eocw"))
         return true;
     }
   }
@@ -487,9 +486,9 @@ bool Task::is_duemonth () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      Date due (get_date ("due"));
-      if (due >= Date ("socm") &&
-          due <= Date ("eocm"))
+      ISO8601d due (get_date ("due"));
+      if (due >= ISO8601d ("socm") &&
+          due <= ISO8601d ("eocm"))
         return true;
     }
   }
@@ -507,8 +506,8 @@ bool Task::is_dueyear () const
     if (status != Task::completed &&
         status != Task::deleted)
     {
-      Date now;
-      Date due (get_date ("due"));
+      ISO8601d now;
+      ISO8601d due (get_date ("due"));
       if (now.year () == due.year ())
         return true;
     }
@@ -674,7 +673,7 @@ void Task::parseJSON (const json::object* root_obj)
       // TW-1274 Standardization.
       else if (i.first == "modification")
       {
-        Date d (unquoteText (i.second->dump ()));
+        ISO8601d d (unquoteText (i.second->dump ()));
         set ("modified", d.toEpochString ());
       }
 
@@ -682,7 +681,7 @@ void Task::parseJSON (const json::object* root_obj)
       else if (type == "date")
       {
         std::string text = unquoteText (i.second->dump ());
-        Date d (text);
+        ISO8601d d (text);
         set (i.first, text == "" ? "" : d.toEpochString ());
       }
 
@@ -747,7 +746,7 @@ void Task::parseJSON (const json::object* root_obj)
           if (! what)
             throw format (STRING_TASK_NO_DESC, root_obj->dump ());
 
-          std::string name = "annotation_" + Date (when->_data).toEpochString ();
+          std::string name = "annotation_" + ISO8601d (when->_data).toEpochString ();
           annos.insert (std::make_pair (name, json::decode (what->_data)));
         }
 
@@ -865,7 +864,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     // Date fields are written as ISO 8601.
     if (type == "date")
     {
-      Date d (i.second);
+      ISO8601d d (i.second);
       out << "\""
           << (i.first == "modification" ? "modified" : i.first)
           << "\":\""
@@ -960,7 +959,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
         if (annotations_written)
           out << ",";
 
-        Date d (i.first.substr (11));
+        ISO8601d d (i.first.substr (11));
         out << "{\"entry\":\""
             << d.toISO ()
             << "\",\"description\":\""
@@ -1487,9 +1486,9 @@ void Task::validate (bool applyDefault /* = true */)
       {
         ISO8601p dur (Task::defaultDue);
         if ((time_t) dur != 0)
-          set ("due", (Date () + dur).toEpoch ());
+          set ("due", (ISO8601d () + dur).toEpoch ());
         else
-          set ("due", Date (Task::defaultDue).toEpoch ());
+          set ("due", ISO8601d (Task::defaultDue).toEpoch ());
       }
     }
 
@@ -1568,11 +1567,11 @@ void Task::validate_before (const std::string& left, const std::string& right)
   if (has (left) &&
       has (right))
   {
-    Date date_left (get_date (left));
-    Date date_right (get_date (right));
+    ISO8601d date_left (get_date (left));
+    ISO8601d date_right (get_date (right));
 
     // if date is zero, then it is being removed (e.g. "due: wait:1day")
-    if (date_left > date_right && date_right != 0)
+    if (date_left > date_right && date_right.toEpoch () != 0)
       context.footnote (format (STRING_TASK_VALID_BEFORE, left, right));
   }
 #endif
@@ -1923,8 +1922,8 @@ float Task::urgency_due () const
 {
   if (has ("due"))
   {
-    Date now;
-    Date due (get_date ("due"));
+    ISO8601d now;
+    ISO8601d due (get_date ("due"));
 
     // Map a range of 21 days to the value 0.2 - 1.0
     float days_overdue = (now - due) / 86400.0;
@@ -1941,8 +1940,8 @@ float Task::urgency_age () const
 {
   assert (has ("entry"));
 
-  Date now;
-  Date entry (get_date ("entry"));
+  ISO8601d now;
+  ISO8601d entry (get_date ("entry"));
   int age = (now - entry) / 86400;  // in days
 
   if (Task::urgencyAgeMax == 0 || age > Task::urgencyAgeMax)
