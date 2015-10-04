@@ -239,8 +239,7 @@ bool ISO8601d::parse (
       parse_date_ext      (n)         ||
       parse_time_utc_ext  (n)         ||
       parse_time_off_ext  (n)         ||
-      parse_time_ext      (n)         || // Time last, as it is the most permissive.
-      parse_named         (n))
+      parse_time_ext      (n))           // Time last, as it is the most permissive.
   {
     // Check the values and determine time_t.
     if (validate ())
@@ -253,8 +252,9 @@ bool ISO8601d::parse (
     }
   }
 
-  // ::parse_epoch doesn't require ::validate and ::resolve.
-  else if (parse_epoch (n))
+  // ::parse_epoch and ::parse_named do not require ::validate and ::resolve.
+  else if (parse_epoch (n) ||
+           parse_named (n))
   {
     start = n.cursor ();
     return true;
@@ -575,14 +575,16 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
 ////////////////////////////////////////////////////////////////////////////////
 bool ISO8601d::parse_named (Nibbler& n)
 {
-/*
   Variant v;
-  if (namedDates (input, v))
+  if (namedDates (n.str ().substr (n.cursor ()), v))
   {
+    // Advance n by the length of the found item.
+    std::string dummy;
+    n.getUntilEOS (dummy);
+
     _date = v.get_date ();
     return true;
   }
-*/
 
   return false;
 }
