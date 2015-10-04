@@ -969,216 +969,6 @@ void ISO8601d::resolve ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601p::ISO8601p ()
-{
-  clear ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ISO8601p::ISO8601p (time_t input)
-{
-  clear ();
-  _period = input;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ISO8601p::ISO8601p (const std::string& input)
-{
-  clear ();
-
-  if (Lexer::isAllDigits (input))
-  {
-    time_t value = (time_t) strtol (input.c_str (), NULL, 10);
-    if (value == 0 || value > 60)
-    {
-      _period = value;
-      return;
-    }
-  }
-
-  std::string::size_type idx = 0;
-  parse (input, idx);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ISO8601p::~ISO8601p ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ISO8601p& ISO8601p::operator= (const ISO8601p& other)
-{
-  if (this != &other)
-  {
-    _year    = other._year;
-    _month   = other._month;
-    _day     = other._day;
-    _hours   = other._hours;
-    _minutes = other._minutes;
-    _seconds = other._seconds;
-    _period  = other._period;
-  }
-
-  return *this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool ISO8601p::operator< (const ISO8601p& other)
-{
-  return _period < other._period;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool ISO8601p::operator> (const ISO8601p& other)
-{
-  return _period > other._period;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ISO8601p::operator std::string () const
-{
-  std::stringstream s;
-  s << _period;
-  return s.str ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ISO8601p::operator time_t () const
-{
-  return _period;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Supported:
-//
-//    duration   ::= designated                                     # duration
-//
-//    designated ::= 'P' [nn 'Y'] [nn 'M'] [nn 'D'] ['T' [nn 'H'] [nn 'M'] [nn 'S']]
-//
-// Not supported:
-//
-//    duration   ::= designated '/' datetime-ext                    # duration end
-//                 | degignated '/' datetime                        # duration end
-//                 | designated                                     # duration
-//                 | 'P' datetime-ext '/' datetime-ext              # start end
-//                 | 'P' datetime '/' datetime                      # start end
-//                 | 'P' datetime-ext                               # start
-//                 | 'P' datetime                                   # start
-//                 | datetime-ext '/' designated                    # start duration
-//                 | datetime-ext '/' 'P' datetime-ext              # start end
-//                 | datetime-ext '/' datetime-ext                  # start end
-//                 | datetime '/' designated                        # start duration
-//                 | datetime '/' 'P' datetime                      # start end
-//                 | datetime '/' datetime                          # start end
-//                 ;
-//
-bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
-{
-  // Attempt and ISO parse first.
-  auto original_start = start;
-  Nibbler n (input.substr (original_start));
-  n.save ();
-
-  if (parse_designated (n))
-  {
-    // Check the values and determine time_t.
-    if (validate ())
-    {
-      // Record cursor position.
-      start = n.cursor ();
-
-      resolve ();
-      return true;
-    }
-  }
-
-  // Attempt a legacy format parse next.
-  n.restore ();
-
-  // Static and so preserved between calls.
-  static std::vector <std::string> units;
-  if (units.size () == 0)
-    for (unsigned int i = 0; i < NUM_DURATIONS; i++)
-      units.push_back (durations[i].unit);
-
-  std::string number;
-  std::string unit;
-
-  if (n.getOneOf (units, unit))
-  {
-    if (n.depleted ()                           ||
-        Lexer::isWhitespace         (n.next ()) ||
-        Lexer::isSingleCharOperator (n.next ()))
-    {
-      start = original_start + n.cursor ();
-
-      // Linear lookup - should instead be logarithmic.
-      for (unsigned int i = 0; i < NUM_DURATIONS; i++)
-      {
-        if (durations[i].unit == unit &&
-            durations[i].standalone == true)
-        {
-          _period = static_cast <int> (durations[i].seconds);
-          return true;
-        }
-      }
-    }
-  }
-
-  else if (n.getNumber (number) &&
-           number.find ('e') == std::string::npos &&
-           number.find ('E') == std::string::npos &&
-           (number.find ('+') == std::string::npos || number.find ('+') == 0) &&
-           (number.find ('-') == std::string::npos || number.find ('-') == 0))
-  {
-    n.skipWS ();
-    if (n.getOneOf (units, unit))
-    {
-      // The "d" unit is a special case, because it is the only one that can
-      // legitimately occur at the beginning of a UUID, and be followed by an
-      // operator:
-      //
-      //   1111111d-0000-0000-0000-000000000000
-      //
-      // Because Lexer::isDuration is higher precedence than Lexer::isUUID,
-      // the above UUID looks like:
-      //
-      //   <1111111d> <-> ...
-      //   duration   op  ...
-      //
-      // So as a special case, durations, with units of "d" are rejected if the
-      // quantity exceeds 10000.
-      //
-      if (unit == "d" &&
-          strtol (number.c_str (), NULL, 10) > 10000)
-        return false;
-
-      if (n.depleted ()                           ||
-          Lexer::isWhitespace         (n.next ()) ||
-          Lexer::isSingleCharOperator (n.next ()))
-      {
-        start = original_start + n.cursor ();
-        double quantity = strtod (number.c_str (), NULL);
-
-        // Linear lookup - should instead be logarithmic.
-        double seconds = 1;
-        for (unsigned int i = 0; i < NUM_DURATIONS; i++)
-        {
-          if (durations[i].unit == unit)
-          {
-            seconds = durations[i].seconds;
-            _period = static_cast <int> (quantity * static_cast <double> (seconds));
-            return true;
-          }
-        }
-      }
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 time_t ISO8601d::toEpoch ()
 {
   return _date;
@@ -1788,6 +1578,219 @@ void ISO8601d::operator++ (int)
                        minute (),
                        second ());
   _date = tomorrow._date;
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+ISO8601p::ISO8601p ()
+{
+  clear ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ISO8601p::ISO8601p (time_t input)
+{
+  clear ();
+  _period = input;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ISO8601p::ISO8601p (const std::string& input)
+{
+  clear ();
+
+  if (Lexer::isAllDigits (input))
+  {
+    time_t value = (time_t) strtol (input.c_str (), NULL, 10);
+    if (value == 0 || value > 60)
+    {
+      _period = value;
+      return;
+    }
+  }
+
+  std::string::size_type idx = 0;
+  parse (input, idx);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ISO8601p::~ISO8601p ()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ISO8601p& ISO8601p::operator= (const ISO8601p& other)
+{
+  if (this != &other)
+  {
+    _year    = other._year;
+    _month   = other._month;
+    _day     = other._day;
+    _hours   = other._hours;
+    _minutes = other._minutes;
+    _seconds = other._seconds;
+    _period  = other._period;
+  }
+
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ISO8601p::operator< (const ISO8601p& other)
+{
+  return _period < other._period;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ISO8601p::operator> (const ISO8601p& other)
+{
+  return _period > other._period;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ISO8601p::operator std::string () const
+{
+  std::stringstream s;
+  s << _period;
+  return s.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ISO8601p::operator time_t () const
+{
+  return _period;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Supported:
+//
+//    duration   ::= designated                                     # duration
+//
+//    designated ::= 'P' [nn 'Y'] [nn 'M'] [nn 'D'] ['T' [nn 'H'] [nn 'M'] [nn 'S']]
+//
+// Not supported:
+//
+//    duration   ::= designated '/' datetime-ext                    # duration end
+//                 | degignated '/' datetime                        # duration end
+//                 | designated                                     # duration
+//                 | 'P' datetime-ext '/' datetime-ext              # start end
+//                 | 'P' datetime '/' datetime                      # start end
+//                 | 'P' datetime-ext                               # start
+//                 | 'P' datetime                                   # start
+//                 | datetime-ext '/' designated                    # start duration
+//                 | datetime-ext '/' 'P' datetime-ext              # start end
+//                 | datetime-ext '/' datetime-ext                  # start end
+//                 | datetime '/' designated                        # start duration
+//                 | datetime '/' 'P' datetime                      # start end
+//                 | datetime '/' datetime                          # start end
+//                 ;
+//
+bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
+{
+  // Attempt and ISO parse first.
+  auto original_start = start;
+  Nibbler n (input.substr (original_start));
+  n.save ();
+
+  if (parse_designated (n))
+  {
+    // Check the values and determine time_t.
+    if (validate ())
+    {
+      // Record cursor position.
+      start = n.cursor ();
+
+      resolve ();
+      return true;
+    }
+  }
+
+  // Attempt a legacy format parse next.
+  n.restore ();
+
+  // Static and so preserved between calls.
+  static std::vector <std::string> units;
+  if (units.size () == 0)
+    for (unsigned int i = 0; i < NUM_DURATIONS; i++)
+      units.push_back (durations[i].unit);
+
+  std::string number;
+  std::string unit;
+
+  if (n.getOneOf (units, unit))
+  {
+    if (n.depleted ()                           ||
+        Lexer::isWhitespace         (n.next ()) ||
+        Lexer::isSingleCharOperator (n.next ()))
+    {
+      start = original_start + n.cursor ();
+
+      // Linear lookup - should instead be logarithmic.
+      for (unsigned int i = 0; i < NUM_DURATIONS; i++)
+      {
+        if (durations[i].unit == unit &&
+            durations[i].standalone == true)
+        {
+          _period = static_cast <int> (durations[i].seconds);
+          return true;
+        }
+      }
+    }
+  }
+
+  else if (n.getNumber (number) &&
+           number.find ('e') == std::string::npos &&
+           number.find ('E') == std::string::npos &&
+           (number.find ('+') == std::string::npos || number.find ('+') == 0) &&
+           (number.find ('-') == std::string::npos || number.find ('-') == 0))
+  {
+    n.skipWS ();
+    if (n.getOneOf (units, unit))
+    {
+      // The "d" unit is a special case, because it is the only one that can
+      // legitimately occur at the beginning of a UUID, and be followed by an
+      // operator:
+      //
+      //   1111111d-0000-0000-0000-000000000000
+      //
+      // Because Lexer::isDuration is higher precedence than Lexer::isUUID,
+      // the above UUID looks like:
+      //
+      //   <1111111d> <-> ...
+      //   duration   op  ...
+      //
+      // So as a special case, durations, with units of "d" are rejected if the
+      // quantity exceeds 10000.
+      //
+      if (unit == "d" &&
+          strtol (number.c_str (), NULL, 10) > 10000)
+        return false;
+
+      if (n.depleted ()                           ||
+          Lexer::isWhitespace         (n.next ()) ||
+          Lexer::isSingleCharOperator (n.next ()))
+      {
+        start = original_start + n.cursor ();
+        double quantity = strtod (number.c_str (), NULL);
+
+        // Linear lookup - should instead be logarithmic.
+        double seconds = 1;
+        for (unsigned int i = 0; i < NUM_DURATIONS; i++)
+        {
+          if (durations[i].unit == unit)
+          {
+            seconds = durations[i].seconds;
+            _period = static_cast <int> (quantity * static_cast <double> (seconds));
+            return true;
+          }
+        }
+      }
+    }
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
