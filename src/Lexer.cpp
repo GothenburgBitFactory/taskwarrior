@@ -34,7 +34,6 @@ static const std::string uuid_pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 static const unsigned int uuid_min_length = 8;
 
 std::string Lexer::dateFormat = "";
-bool Lexer::isoEnabled = true;
 std::string::size_type Lexer::minimumMatchLength = 3;
 std::map <std::string, std::string> Lexer::attributes;
 
@@ -435,17 +434,14 @@ bool Lexer::isString (std::string& token, Lexer::Type& type, const std::string& 
 bool Lexer::isDate (std::string& token, Lexer::Type& type)
 {
   // Try an ISO date parse.
-  if (Lexer::isoEnabled)
+  std::size_t iso_i = 0;
+  ISO8601d iso;
+  if (iso.parse (_text.substr (_cursor), iso_i, Lexer::dateFormat))
   {
-    std::size_t iso_i = 0;
-    ISO8601d iso;
-    if (iso.parse (_text.substr (_cursor), iso_i, Lexer::dateFormat))
-    {
-      type = Lexer::Type::date;
-      token = _text.substr (_cursor, iso_i);
-      _cursor += iso_i;
-      return true;
-    }
+    type = Lexer::Type::date;
+    token = _text.substr (_cursor, iso_i);
+    _cursor += iso_i;
+    return true;
   }
 
   return false;
