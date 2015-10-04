@@ -41,7 +41,6 @@
 std::string Variant::dateFormat = "";
 bool Variant::searchCaseSensitive = true;
 bool Variant::searchUsingRegex = true;
-bool Variant::isoEnabled = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant ()
@@ -1010,8 +1009,8 @@ bool Variant::operator_partial (const Variant& other) const
     case type_date:
       {
         left.cast (type_date);
-        Date left_date (left._date);
-        Date right_date (right._date);
+        ISO8601d left_date (left._date);
+        ISO8601d right_date (right._date);
         return left_date.sameDay (right_date);
       }
 
@@ -1031,8 +1030,8 @@ bool Variant::operator_partial (const Variant& other) const
     case type_date:
       {
         left.cast (type_date);
-        Date left_date (left._date);
-        Date right_date (right._date);
+        ISO8601d left_date (left._date);
+        ISO8601d right_date (right._date);
         return left_date.sameDay (right_date);
       }
 
@@ -1057,8 +1056,8 @@ bool Variant::operator_partial (const Variant& other) const
     case type_date:
       {
         left.cast (type_date);
-        Date left_date (left._date);
-        Date right_date (right._date);
+        ISO8601d left_date (left._date);
+        ISO8601d right_date (right._date);
         return left_date.sameDay (right_date);
       }
 
@@ -1100,8 +1099,8 @@ bool Variant::operator_partial (const Variant& other) const
     case type_date:
       {
         left.cast (type_date);
-        Date left_date (left._date);
-        Date right_date (right._date);
+        ISO8601d left_date (left._date);
+        ISO8601d right_date (right._date);
         return left_date.sameDay (right_date);
       }
 
@@ -1123,8 +1122,8 @@ bool Variant::operator_partial (const Variant& other) const
     case type_duration:
       {
         right.cast (type_date);
-        Date left_date (left._date);
-        Date right_date (right._date);
+        ISO8601d left_date (left._date);
+        ISO8601d right_date (right._date);
         return left_date.sameDay (right_date);
       }
     }
@@ -1933,30 +1932,27 @@ void Variant::cast (const enum type new_type)
     case type_date:
       {
         _date = 0;
-
         ISO8601d iso;
         std::string::size_type pos = 0;
-        if (isoEnabled               &&
-            iso.parse (_string, pos) &&
+        if (iso.parse (_string, pos, dateFormat) &&
             pos == _string.length ())
         {
-          _date = (time_t) iso;
+          _date = iso.toEpoch ();
           break;
         }
 
         pos = 0;
         ISO8601p isop;
-        if (isoEnabled                &&
-            isop.parse (_string, pos) &&
+        if (isop.parse (_string, pos) &&
             pos == _string.length ())
         {
-          _date = Date ().toEpoch () + (time_t) isop;
+          _date = ISO8601d ().toEpoch () + (time_t) isop;
           break;
         }
 
         if (dateFormat != "")
         {
-          _date = Date (_string, dateFormat).toEpoch ();
+          _date = ISO8601d (_string, dateFormat).toEpoch ();
           break;
         }
       }

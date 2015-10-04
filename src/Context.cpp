@@ -633,7 +633,6 @@ void Context::staticInitialization ()
   Task::regex               = Variant::searchUsingRegex    = config.getBoolean ("regex");
   Lexer::dateFormat         = Variant::dateFormat          = config.get ("dateformat");
   ISO8601p::isoEnabled      = ISO8601d::isoEnabled         = config.getBoolean ("date.iso");
-  Variant::isoEnabled       = config.getBoolean ("date.iso");
 
   TDB2::debug_mode          = config.getBoolean ("debug");
 
