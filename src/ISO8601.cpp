@@ -240,9 +240,7 @@ bool ISO8601d::parse (
     // Check the values and determine time_t.
     if (validate ())
     {
-      // Record cursor position.
       start = n.cursor ();
-
       resolve ();
       return true;
     }
@@ -259,9 +257,7 @@ bool ISO8601d::parse (
     // Check the values and determine time_t.
     if (validate ())
     {
-      // Record cursor position.
       start = n.cursor ();
-
       resolve ();
       return true;
     }
@@ -590,17 +586,19 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
 ////////////////////////////////////////////////////////////////////////////////
 bool ISO8601d::parse_named (Nibbler& n)
 {
-  Variant v;
-  if (namedDates (n.str ().substr (n.cursor ()), v))
+  n.save ();
+  std::string token;
+  if (n.getUntilWS (token))
   {
-    // Advance n by the length of the found item.
-    std::string dummy;
-    n.getUntilEOS (dummy);
-
-    _date = v.get_date ();
-    return true;
+    Variant v;
+    if (namedDates (token, v))
+    {
+      _date = v.get_date ();
+      return true;
+    }
   }
 
+  n.restore ();
   return false;
 }
 
