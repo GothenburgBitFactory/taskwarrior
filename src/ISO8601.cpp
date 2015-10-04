@@ -112,6 +112,8 @@ static struct
 
 std::string ISO8601d::weekstart  = STRING_DATE_SUNDAY;
 int ISO8601d::minimumMatchLength = 3;
+bool ISO8601d::isoEnabled = true;
+bool ISO8601p::isoEnabled = true;
 
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601d::ISO8601d ()
@@ -233,13 +235,7 @@ bool ISO8601d::parse (
 {
   auto i = start;
   Nibbler n (input.substr (i));
-  if (parse_formatted     (n, format) ||
-      parse_date_time     (n)         || // Strictest first.
-      parse_date_time_ext (n)         ||
-      parse_date_ext      (n)         ||
-      parse_time_utc_ext  (n)         ||
-      parse_time_off_ext  (n)         ||
-      parse_time_ext      (n))           // Time last, as it is the most permissive.
+  if (parse_formatted (n, format))
   {
     // Check the values and determine time_t.
     if (validate ())
@@ -252,10 +248,29 @@ bool ISO8601d::parse (
     }
   }
 
-  // ::parse_epoch and ::parse_named do not require ::validate and ::resolve.
+  else if (ISO8601d::isoEnabled &&
+           (parse_date_time     (n)   || // Strictest first.
+            parse_date_time_ext (n)   ||
+            parse_date_ext      (n)   ||
+            parse_time_utc_ext  (n)   ||
+            parse_time_off_ext  (n)   ||
+            parse_time_ext      (n)))    // Time last, as it is the most permissive.
+  {
+    // Check the values and determine time_t.
+    if (validate ())
+    {
+      // Record cursor position.
+      start = n.cursor ();
+
+      resolve ();
+      return true;
+    }
+  }
+
   else if (parse_epoch (n) ||
            parse_named (n))
   {
+    // ::validate and ::resolve are not needed in this case.
     start = n.cursor ();
     return true;
   }

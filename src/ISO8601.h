@@ -36,6 +36,7 @@ class ISO8601d
 public:
   static std::string weekstart;
   static int minimumMatchLength;
+  static bool isoEnabled;
 
   ISO8601d ();
   ISO8601d (const std::string&, const std::string& format = "");
@@ -138,6 +139,8 @@ public:
 class ISO8601p
 {
 public:
+  static bool isoEnabled;
+
   ISO8601p ();
   ISO8601p (time_t);
   ISO8601p (const std::string&);
