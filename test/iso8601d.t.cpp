@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (904);
+  UnitTest t (960);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -240,7 +240,7 @@ int main (int argc, char** argv)
     t.ok    (now      <= tomorrow,   "now <= tomorrow");
     t.ok    (now      <  tomorrow,   "now < tomorrow");
 
-    // Date::Date ("now")
+    // ctor ("now")
     context.config.set ("weekstart", "monday");
     ISO8601d relative_now;
     t.ok (relative_now.sameHour (now),  "ISO8601d ().sameHour (ISO8601d (now))");
@@ -382,7 +382,7 @@ int main (int argc, char** argv)
     t.is (quant.startOfMonth ().toString ("YMDHNS"), "20090201000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 2/1/2009 0:00:00");
     t.is (quant.startOfYear ().toString ("YMDHNS"),  "20090101000000", "1234526400 -> 2/13/2009 12:00:00 UTC -> 1/1/2009 0:00:00");
 
-    // Date parsing.
+    // Format parsing.
     ISO8601d fromString1 ("1/1/2008", "m/d/Y");
     t.is (fromString1.month (),   1, "ctor (std::string) -> m");
     t.is (fromString1.day (),     1, "ctor (std::string) -> d");
@@ -403,16 +403,19 @@ int main (int argc, char** argv)
     t.is (fromString4.month (),   1, "ctor (std::string) -> m");
     t.is (fromString4.day (),     1, "ctor (std::string) -> d");
     t.is (fromString4.year (), 2008, "ctor (std::string) -> y");
+*/
 
     ISO8601d fromString5 ("Tue 05 Feb 2008 (06)", "a D b Y (V)");
     t.is (fromString5.month (),   2, "ctor (std::string) -> m");
     t.is (fromString5.day (),     5, "ctor (std::string) -> d");
     t.is (fromString5.year (), 2008, "ctor (std::string) -> y");
 
+/*
     ISO8601d fromString6 ("Tuesday, February 5, 2008", "A, B d, Y");
     t.is (fromString6.month (),   2, "ctor (std::string) -> m");
     t.is (fromString6.day (),     5, "ctor (std::string) -> d");
     t.is (fromString6.year (), 2008, "ctor (std::string) -> y");
+*/
 
     ISO8601d fromString7 ("w01 Tue 2008-01-01", "wV a Y-M-D");
     t.is (fromString7.month (),   1, "ctor (std::string) -> m");
@@ -442,102 +445,100 @@ int main (int argc, char** argv)
     t.is (fromString10.hour (),     12, "ctor (std::string) -> h");
     t.is (fromString10.minute (),   34, "ctor (std::string) -> N");
     t.is (fromString1.second (),    56, "ctor (std::string) -> S");
-*/
 
     // Day of year
     t.is (ISO8601d ("1/1/2011",   "m/d/Y").dayOfYear (),   1, "dayOfYear (1/1/2011)   ->   1");
     t.is (ISO8601d ("5/1/2011",   "m/d/Y").dayOfYear (), 121, "dayOfYear (5/1/2011)   -> 121");
     t.is (ISO8601d ("12/31/2011", "m/d/Y").dayOfYear (), 365, "dayOfYear (12/31/2011) -> 365");
 
-/*
     // Relative dates.
-    Date r1 ("today");
+    ISO8601d r1 ("today");
     t.ok (r1.sameDay (now), "today = now");
 
-    Date r4 ("sunday");
+    ISO8601d r4 ("sunday");
     if (now.dayOfWeek () >= 0)
       t.ok (r4.sameDay (now + (0 - now.dayOfWeek () + 7) * 86400), "next sunday");
     else
       t.ok (r4.sameDay (now + (0 - now.dayOfWeek ()) * 86400), "next sunday");;
 
-    Date r5 ("monday");
+    ISO8601d r5 ("monday");
     if (now.dayOfWeek () >= 1)
       t.ok (r5.sameDay (now + (1 - now.dayOfWeek () + 7) * 86400), "next monday");
     else
       t.ok (r5.sameDay (now + (1 - now.dayOfWeek ()) * 86400), "next monday");;
 
-    Date r6 ("tuesday");
+    ISO8601d r6 ("tuesday");
     if (now.dayOfWeek () >= 2)
       t.ok (r6.sameDay (now + (2 - now.dayOfWeek () + 7) * 86400), "next tuesday");
     else
       t.ok (r6.sameDay (now + (2 - now.dayOfWeek ()) * 86400), "next tuesday");;
 
-    Date r7 ("wednesday");
+    ISO8601d r7 ("wednesday");
     if (now.dayOfWeek () >= 3)
       t.ok (r7.sameDay (now + (3 - now.dayOfWeek () + 7) * 86400), "next wednesday");
     else
       t.ok (r7.sameDay (now + (3 - now.dayOfWeek ()) * 86400), "next wednesday");;
 
-    Date r8 ("thursday");
+    ISO8601d r8 ("thursday");
     if (now.dayOfWeek () >= 4)
       t.ok (r8.sameDay (now + (4 - now.dayOfWeek () + 7) * 86400), "next thursday");
     else
       t.ok (r8.sameDay (now + (4 - now.dayOfWeek ()) * 86400), "next thursday");;
 
-    Date r9 ("friday");
+    ISO8601d r9 ("friday");
     if (now.dayOfWeek () >= 5)
       t.ok (r9.sameDay (now + (5 - now.dayOfWeek () + 7) * 86400), "next friday");
     else
       t.ok (r9.sameDay (now + (5 - now.dayOfWeek ()) * 86400), "next friday");;
 
-    Date r10 ("saturday");
+    ISO8601d r10 ("saturday");
     if (now.dayOfWeek () >= 6)
       t.ok (r10.sameDay (now + (6 - now.dayOfWeek () + 7) * 86400), "next saturday");
     else
       t.ok (r10.sameDay (now + (6 - now.dayOfWeek ()) * 86400), "next saturday");;
 
-    Date r11 ("eow");
+    ISO8601d r11 ("eow");
     t.ok (r11 < now + (8 * 86400), "eow < 7 days away");
 
-    Date r12 ("eocw");
+    ISO8601d r12 ("eocw");
     t.ok (r12 > now - (8 * 86400), "eocw < 7 days in the past");
 
-    Date r13 ("eom");
+    ISO8601d r13 ("eom");
     t.ok (r13.sameMonth (now), "eom in same month as now");
 
-    Date r14 ("eocm");
+    ISO8601d r14 ("eocm");
     t.ok (r14.sameMonth (now), "eocm in same month as now");
 
-    Date r15 ("eoy");
+    ISO8601d r15 ("eoy");
     t.ok (r15.sameYear (now), "eoy in same year as now");
 
-    Date r16 ("sow");
+    ISO8601d r16 ("sow");
     t.ok (r16 < now + (8 * 86400), "sow < 7 days away");
 
-    Date r23 ("socw");
+    ISO8601d r23 ("socw");
     t.ok (r23 > now - (8 * 86400), "sow < 7 days in the past");
 
-    Date r17 ("som");
+    ISO8601d r17 ("som");
     t.notok (r17.sameMonth (now), "som not in same month as now");
 
-    Date r18 ("socm");
+    ISO8601d r18 ("socm");
     t.ok (r18.sameMonth (now), "socm in same month as now");
 
-    Date r19 ("soy");
+    ISO8601d r19 ("soy");
     t.notok (r19.sameYear (now), "soy not in same year as now");
 
-    Date first ("1st");
+    ISO8601d first ("1st");
     t.notok (first.sameMonth (now), "1st not in same month as now");
     t.is (first.day (),   1, "1st day is 1");
 
-    Date later ("later");
+    ISO8601d later ("later");
     t.is (later.month (),   1, "later -> m = 1");
     t.is (later.day (),    18, "later -> d = 18");
     t.is (later.year (), 2038, "later -> y = 2038");
 
     // Quarters
-    Date soq ("soq");
-    Date eoq ("eoq");
+    ISO8601d soq ("soq");
+    ISO8601d eoq ("eoq");
     t.is (soq.day (),  1,      "soq is the first day of a month");
     t.is (eoq.day () / 10,  3, "eoq is the 30th or 31th of a month");
     t.is (soq.month () % 3, 1, "soq month is 1, 4, 7 or 10");
@@ -556,7 +557,6 @@ int main (int argc, char** argv)
 
     ISO8601d r22 ("6/7/2010 00:59:59", "m/d/Y H:N:S");
     t.notok (r20.sameHour (r22), "two dates not within the same hour");
-*/
 
     // ISO8601d::operator-
     ISO8601d r25 (1234567890);
@@ -608,12 +608,8 @@ int main (int argc, char** argv)
     ISO8601d r30 ("Mon Jun 30 2014", "a b D Y");
     t.is (r30.toString ("YMDHNS"), "20140630000000", "Depletion required on complex format with spaces");
 
-/*
-    std::string::size_type i = 0;
-    ISO8601d r31 ("Mon Jun 30 2014 xxx", i, "a b D Y");
+    ISO8601d r31 ("Mon Jun 30 2014 xxx", "a b D Y");
     t.is (r31.toString ("YMDHNS"), "20140630000000", "Depletion not required on complex format with spaces");
-    t.is ((int)i, 15,                                "Depletion not required on complex format with spaces, 15 chars");
-*/
   }
 
   catch (const std::string& e)
