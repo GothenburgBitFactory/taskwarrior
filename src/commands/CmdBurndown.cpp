@@ -32,7 +32,6 @@
 #include <math.h>
 #include <Context.h>
 #include <Filter.h>
-#include <Date.h>
 #include <ISO8601.h>
 #include <main.h>
 #include <i18n.h>
@@ -152,10 +151,10 @@ public:
 private:
   void generateBars ();
   void optimizeGrid ();
-  Date quantize (const Date&);
+  ISO8601d quantize (const ISO8601d&);
 
-  Date increment (const Date&);
-  Date decrement (const Date&);
+  ISO8601d increment (const ISO8601d&);
+  ISO8601d decrement (const ISO8601d&);
   void maxima ();
   void yLabels (std::vector <int>&);
   void calculateRates (std::vector <time_t>&);
@@ -173,7 +172,7 @@ public:
   int _estimated_bars;            // Estimated bar count
   int _actual_bars;               // Calculated bar count
   std::map <time_t, Bar> _bars;   // Epoch-indexed set of bars
-  Date _earliest;                 // Date of earliest estimated bar
+  ISO8601d _earliest;             // Date of earliest estimated bar
   int _carryover_done;            // Number of 'done' tasks prior to chart range
   char _period;                   // D, W, M
   std::string _title;             // Additional description
@@ -226,13 +225,13 @@ void Chart::scan (std::vector <Task>& tasks)
   generateBars ();
 
   // Not quantized, so that "while (xxx < now)" is inclusive.
-  Date now;
+  ISO8601d now;
 
   time_t epoch;
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
-    Date from = quantize (Date (task.get_date ("entry")));
+    ISO8601d from = quantize (ISO8601d (task.get_date ("entry")));
     epoch = from.toEpoch ();
 
     if (_bars.find (epoch) != _bars.end ())
@@ -246,7 +245,7 @@ void Chart::scan (std::vector <Task>& tasks)
     {
       if (task.has ("start"))
       {
-        Date start = quantize (Date (task.get_date ("start")));
+        ISO8601d start = quantize (ISO8601d (task.get_date ("start")));
         while (from < start)
         {
           epoch = from.toEpoch ();
@@ -280,7 +279,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::completed)
     {
       // Truncate history so it starts at 'earliest' for completed tasks.
-      Date end = quantize (Date (task.get_date ("end")));
+      ISO8601d end = quantize (ISO8601d (task.get_date ("end")));
       epoch = end.toEpoch ();
 
       if (_bars.find (epoch) != _bars.end ())
@@ -296,7 +295,7 @@ void Chart::scan (std::vector <Task>& tasks)
 
       if (task.has ("start"))
       {
-        Date start = quantize (Date (task.get_date ("start")));
+        ISO8601d start = quantize (ISO8601d (task.get_date ("start")));
         while (from < start)
         {
           epoch = from.toEpoch ();
@@ -323,7 +322,7 @@ void Chart::scan (std::vector <Task>& tasks)
       }
       else
       {
-        Date end = quantize (Date (task.get_date ("end")));
+        ISO8601d end = quantize (ISO8601d (task.get_date ("end")));
         while (from < end)
         {
           epoch = from.toEpoch ();
@@ -347,7 +346,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::deleted)
     {
       // Skip old deleted tasks.
-      Date end = quantize (Date (task.get_date ("end")));
+      ISO8601d end = quantize (ISO8601d (task.get_date ("end")));
       epoch = end.toEpoch ();
       if (_bars.find (epoch) != _bars.end ())
         ++_bars[epoch]._removed;
@@ -357,7 +356,7 @@ void Chart::scan (std::vector <Task>& tasks)
 
       if (task.has ("start"))
       {
-        Date start = quantize (Date (task.get_date ("start")));
+        ISO8601d start = quantize (ISO8601d (task.get_date ("start")));
         while (from < start)
         {
           epoch = from.toEpoch ();
@@ -376,7 +375,7 @@ void Chart::scan (std::vector <Task>& tasks)
       }
       else
       {
-        Date end = quantize (Date (task.get_date ("end")));
+        ISO8601d end = quantize (ISO8601d (task.get_date ("end")));
         while (from < end)
         {
           epoch = from.toEpoch ();
@@ -608,7 +607,7 @@ void Chart::optimizeGrid ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Date Chart::quantize (const Date& input)
+ISO8601d Chart::quantize (const ISO8601d& input)
 {
   if (_period == 'D') return input.startOfDay ();
   if (_period == 'W') return input.startOfWeek ();
@@ -618,7 +617,7 @@ Date Chart::quantize (const Date& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Date Chart::increment (const Date& input)
+ISO8601d Chart::increment (const ISO8601d& input)
 {
   // Move to the next period.
   int d = input.day ();
@@ -630,7 +629,7 @@ Date Chart::increment (const Date& input)
   switch (_period)
   {
   case 'D':
-    if (++d > Date::daysInMonth (m, y))
+    if (++d > ISO8601d::daysInMonth (m, y))
     {
       d = 1;
 
@@ -644,7 +643,7 @@ Date Chart::increment (const Date& input)
 
   case 'W':
     d += 7;
-    days = Date::daysInMonth (m, y);
+    days = ISO8601d::daysInMonth (m, y);
     if (d > days)
     {
       d -= days;
@@ -667,11 +666,11 @@ Date Chart::increment (const Date& input)
     break;
   }
 
-  return Date (m, d, y, 0, 0, 0);
+  return ISO8601d (m, d, y, 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Date Chart::decrement (const Date& input)
+ISO8601d Chart::decrement (const ISO8601d& input)
 {
   // Move to the previous period.
   int d = input.day ();
@@ -689,7 +688,7 @@ Date Chart::decrement (const Date& input)
         --y;
       }
 
-      d = Date::daysInMonth (m, y);
+      d = ISO8601d::daysInMonth (m, y);
     }
     break;
 
@@ -703,7 +702,7 @@ Date Chart::decrement (const Date& input)
         y--;
       }
 
-      d += Date::daysInMonth (m, y);
+      d += ISO8601d::daysInMonth (m, y);
     }
     break;
 
@@ -717,7 +716,7 @@ Date Chart::decrement (const Date& input)
     break;
   }
 
-  return Date (m, d, y, 0, 0, 0);
+  return ISO8601d (m, d, y, 0, 0, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -727,12 +726,12 @@ void Chart::generateBars ()
   Bar bar;
 
   // Determine the last bar date.
-  Date cursor;
+  ISO8601d cursor;
   switch (_period)
   {
-  case 'D': cursor = Date ().startOfDay ();   break;
-  case 'W': cursor = Date ().startOfWeek ();  break;
-  case 'M': cursor = Date ().startOfMonth (); break;
+  case 'D': cursor = ISO8601d ().startOfDay ();   break;
+  case 'W': cursor = ISO8601d ().startOfWeek ();  break;
+  case 'M': cursor = ISO8601d ().startOfMonth (); break;
   }
 
   // Iterate and determine all the other bar dates.
@@ -744,7 +743,7 @@ void Chart::generateBars ()
     {
     case 'D': // month/day
       {
-        std::string month = Date::monthName (cursor.month ());
+        std::string month = ISO8601d::monthName (cursor.month ());
         bar._major_label = month.substr (0, 3);
 
         sprintf (str, "%02d", cursor.day ());
@@ -934,7 +933,7 @@ void Chart::calculateRates (std::vector <time_t>& sequence)
     int current_pending = _bars[sequence.back ()]._pending;
     int remaining_days = (int) (current_pending / (_fix_rate - _find_rate));
 
-    Date now;
+    ISO8601d now;
     ISO8601p delta (remaining_days * 86400);
     now += delta;
 

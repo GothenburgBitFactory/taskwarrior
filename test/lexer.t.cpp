@@ -335,8 +335,6 @@ int main (int argc, char** argv)
     { "/long/path/to/file.txt",                       { { "/long/path/to/file.txt",                       Lexer::Type::path         }, NO, NO, NO, NO }, },
 
     // Word
-    { "9th",                                          { { "9th",                                          Lexer::Type::word         }, NO, NO, NO, NO }, },
-    { "10th",                                         { { "10th",                                         Lexer::Type::word         }, NO, NO, NO, NO }, },
     { "1.foo.bar",                                    { { "1.foo.bar",                                    Lexer::Type::word         }, NO, NO, NO, NO }, },
 
     // Identifier
@@ -348,10 +346,7 @@ int main (int argc, char** argv)
     { "foo.bar",                                      { { "foo.bar",                                      Lexer::Type::identifier   }, NO, NO, NO, NO }, },
     { "a1a1a1a1_a1a1_a1a1_a1a1_a1a1a1a1a1a1",         { { "a1a1a1a1_a1a1_a1a1_a1a1_a1a1a1a1a1a1",         Lexer::Type::identifier   }, NO, NO, NO, NO }, },
 
-      // Not a date, because Eval extracts named dates via data source, and Date/ISO8601d does not do that.
-    { "today",                                        { { "today",                                        Lexer::Type::identifier   }, NO, NO, NO, NO }, },
-
-      // Word that starts wih 'or', which is an operator, but should be ignored.
+    // Word that starts wih 'or', which is an operator, but should be ignored.
     { "ordinary",                                     { { "ordinary",                                     Lexer::Type::identifier   }, NO, NO, NO, NO }, },
 
     // DOM
@@ -458,6 +453,9 @@ int main (int argc, char** argv)
     { "2015-02-17",                                   { { "2015-02-17",                                   Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "2013-11-29T22:58:00Z",                         { { "2013-11-29T22:58:00Z",                         Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "20131129T225800Z",                             { { "20131129T225800Z",                             Lexer::Type::date         }, NO, NO, NO, NO }, },
+    { "9th",                                          { { "9th",                                          Lexer::Type::date         }, NO, NO, NO, NO }, },
+    { "10th",                                         { { "10th",                                         Lexer::Type::date         }, NO, NO, NO, NO }, },
+    { "today",                                        { { "today",                                        Lexer::Type::date         }, NO, NO, NO, NO }, },
 
     // Duration
     { "year",                                         { { "year",                                         Lexer::Type::duration     }, NO, NO, NO, NO }, },

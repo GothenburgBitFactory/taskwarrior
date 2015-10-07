@@ -51,7 +51,6 @@
 #include <signal.h>
 #include <sys/select.h>
 
-#include <Date.h>
 #include <text.h>
 #include <main.h>
 #include <i18n.h>

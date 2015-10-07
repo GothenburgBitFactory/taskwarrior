@@ -28,8 +28,6 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <ColScheduled.h>
-#include <Date.h>
-#include <ISO8601.h>
 #include <text.h>
 #include <i18n.h>
 

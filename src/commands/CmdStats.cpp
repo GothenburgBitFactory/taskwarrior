@@ -90,7 +90,7 @@ int CmdStats::execute (std::string& output)
   std::vector <Task> filtered;
   filter.subset (all, filtered);
 
-  Date now;
+  ISO8601d now;
   time_t earliest   = time (NULL);
   time_t latest     = 1;
   int totalT        = 0;
@@ -235,12 +235,12 @@ int CmdStats::execute (std::string& output)
 
   if (filtered.size ())
   {
-    Date e (earliest);
+    ISO8601d e (earliest);
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_OLDEST);
     view.set (row, 1, e.toString (dateformat));
 
-    Date l (latest);
+    ISO8601d l (latest);
     row = view.addRow ();
     view.set (row, 0, STRING_CMD_STATS_NEWEST);
     view.set (row, 1, l.toString (dateformat));

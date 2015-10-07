@@ -34,7 +34,7 @@
 #include <signal.h>
 #include <Context.h>
 #include <Color.h>
-#include <Date.h>
+#include <ISO8601.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
@@ -638,7 +638,7 @@ void TDB2::update (
     // old <task>
     // new <task>
     // ---
-    undo.add_line ("time " + Date ().toEpochString () + "\n");
+    undo.add_line ("time " + ISO8601d ().toEpochString () + "\n");
     undo.add_line ("old " + original.composeF4 () + "\n");
     undo.add_line ("new " + task.composeF4 () + "\n");
     undo.add_line ("---\n");
@@ -657,7 +657,7 @@ void TDB2::update (
     //   time <time>
     //   new <task>
     //   ---
-    undo.add_line ("time " + Date ().toEpochString () + "\n");
+    undo.add_line ("time " + ISO8601d ().toEpochString () + "\n");
     undo.add_line ("new " + task.composeF4 () + "\n");
     undo.add_line ("---\n");
   }
@@ -962,7 +962,7 @@ void TDB2::show_diff (
   const std::string& prior,
   const std::string& when)
 {
-  Date lastChange (strtol (when.c_str (), NULL, 10));
+  ISO8601d lastChange (strtol (when.c_str (), NULL, 10));
 
   // Set the colors.
   Color color_red   (context.color () ? context.config.get ("color.undo.before") : "");
@@ -1209,7 +1209,7 @@ int TDB2::gc ()
 
     // Scan all pending tasks, looking for any that need to be relocated to
     // completed, or need to be 'woken'.
-    Date now;
+    ISO8601d now;
     std::string status;
     for (auto& task : pending_tasks)
     {
@@ -1221,7 +1221,7 @@ int TDB2::gc ()
       }
       else if (status == "waiting")
       {
-        Date wait (task.get_date ("wait"));
+        ISO8601d wait (task.get_date ("wait"));
         if (wait < now)
         {
           task.set ("status", "pending");
@@ -1261,7 +1261,7 @@ int TDB2::gc ()
       }
       else if (status == "waiting")
       {
-        Date wait (task.get_date ("wait"));
+        ISO8601d wait (task.get_date ("wait"));
         if (wait < now)
         {
           task.set ("status", "pending");

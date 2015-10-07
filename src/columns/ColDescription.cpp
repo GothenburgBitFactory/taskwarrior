@@ -27,7 +27,7 @@
 #include <cmake.h>
 #include <stdlib.h>
 #include <Context.h>
-#include <Date.h>
+#include <ISO8601.h>
 #include <ColDescription.h>
 #include <text.h>
 #include <utf8.h>
@@ -55,7 +55,7 @@ ColumnDescription::ColumnDescription ()
   if (_dateformat == "")
     _dateformat = context.config.get ("dateformat");
 
-  std::string t  = Date ().toString (_dateformat);
+  std::string t  = ISO8601d ().toString (_dateformat);
   std::string d  = STRING_COLUMN_EXAMPLES_DESC;
   std::string a1 = STRING_COLUMN_EXAMPLES_ANNO1;
   std::string a2 = STRING_COLUMN_EXAMPLES_ANNO2;
@@ -102,7 +102,7 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
 
     if (task.annotation_count)
     {
-      unsigned int min_anno = _indent + Date::length (_dateformat);
+      unsigned int min_anno = _indent + ISO8601d::length (_dateformat);
       if (min_anno > minimum)
         minimum = min_anno;
 
@@ -132,7 +132,7 @@ void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int
 
     if (task.annotation_count)
     {
-      auto min_anno = Date::length (_dateformat);
+      auto min_anno = ISO8601d::length (_dateformat);
       std::map <std::string, std::string> annos;
       task.getAnnotations (annos);
       for (auto& i : annos)
@@ -187,7 +187,7 @@ void ColumnDescription::render (
     {
       for (auto& i : annos)
       {
-        Date dt (strtol (i.first.substr (11).c_str (), NULL, 10));
+        ISO8601d dt (strtol (i.first.substr (11).c_str (), NULL, 10));
         description += "\n" + std::string (_indent, ' ') + dt.toString (_dateformat) + " " + i.second;
       }
     }
@@ -218,7 +218,7 @@ void ColumnDescription::render (
     {
       for (auto& i : annos)
       {
-        Date dt (atoi (i.first.substr (11).c_str ()));
+        ISO8601d dt (strtol (i.first.substr (11).c_str (), NULL, 10));
         description += " " + dt.toString (_dateformat) + " " + i.second;
       }
     }

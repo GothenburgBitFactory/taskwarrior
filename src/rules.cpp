@@ -27,7 +27,7 @@
 #include <cmake.h>
 #include <stdlib.h>
 #include <Context.h>
-#include <Date.h>
+#include <ISO8601.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -36,7 +36,7 @@ extern Context context;
 
 static std::map <std::string, Color> gsColor;
 static std::vector <std::string> gsPrecedence;
-static Date now;
+static ISO8601d now;
 
 ////////////////////////////////////////////////////////////////////////////////
 void initializeColorRules ()
@@ -130,7 +130,7 @@ static void colorizeActive (Task& task, const Color& base, Color& c, bool merge)
 static void colorizeScheduled (Task& task, const Color& base, Color& c, bool merge)
 {
   if (task.has ("scheduled") &&
-      Date (task.get_date ("scheduled")) <= now)
+      ISO8601d (task.get_date ("scheduled")) <= now)
     applyColor (base, c, merge);
 }
 

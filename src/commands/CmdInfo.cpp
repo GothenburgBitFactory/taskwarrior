@@ -31,7 +31,6 @@
 #include <Context.h>
 #include <Filter.h>
 #include <ISO8601.h>
-#include <Date.h>
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
@@ -113,7 +112,7 @@ int CmdInfo::execute (std::string& output)
       view.colorHeader (label);
     }
 
-    Date now;
+    ISO8601d now;
 
     // id
     int row = view.addRow ();
@@ -133,7 +132,7 @@ int CmdInfo::execute (std::string& output)
     for (auto& anno : annotations)
       description += "\n"
                    + std::string (indent, ' ')
-                   + Date (anno.first.substr (11)).toString (dateformatanno)
+                   + ISO8601d (anno.first.substr (11)).toString (dateformatanno)
                    + " "
                    + anno.second;
 
@@ -221,14 +220,14 @@ int CmdInfo::execute (std::string& output)
     // entry
     row = view.addRow ();
     view.set (row, 0, STRING_COLUMN_LABEL_ENTERED);
-    Date dt (task.get_date ("entry"));
+    ISO8601d dt (task.get_date ("entry"));
     std::string entry = dt.toString (dateformat);
 
     std::string age;
     std::string created = task.get ("entry");
     if (created.length ())
     {
-      Date dt (strtol (created.c_str (), NULL, 10));
+      ISO8601d dt (strtol (created.c_str (), NULL, 10));
       age = ISO8601p (now - dt).formatVague ();
     }
 
@@ -239,7 +238,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_WAITING);
-      view.set (row, 1, Date (task.get_date ("wait")).toString (dateformat));
+      view.set (row, 1, ISO8601d (task.get_date ("wait")).toString (dateformat));
     }
 
     // scheduled
@@ -247,7 +246,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_SCHED);
-      view.set (row, 1, Date (task.get_date ("scheduled")).toString (dateformat));
+      view.set (row, 1, ISO8601d (task.get_date ("scheduled")).toString (dateformat));
     }
 
     // start
@@ -255,7 +254,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_START);
-      view.set (row, 1, Date (task.get_date ("start")).toString (dateformat));
+      view.set (row, 1, ISO8601d (task.get_date ("start")).toString (dateformat));
     }
 
     // due (colored)
@@ -263,7 +262,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_DUE);
-      view.set (row, 1, Date (task.get_date ("due")).toString (dateformat));
+      view.set (row, 1, ISO8601d (task.get_date ("due")).toString (dateformat));
     }
 
     // end
@@ -271,7 +270,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_COLUMN_LABEL_END);
-      view.set (row, 1, Date (task.get_date ("end")).toString (dateformat));
+      view.set (row, 1, ISO8601d (task.get_date ("end")).toString (dateformat));
     }
 
     // until
@@ -279,7 +278,7 @@ int CmdInfo::execute (std::string& output)
     {
       row = view.addRow ();
       view.set (row, 0, STRING_CMD_INFO_UNTIL);
-      view.set (row, 1, Date (task.get_date ("until")).toString (dateformat));
+      view.set (row, 1, ISO8601d (task.get_date ("until")).toString (dateformat));
     }
 
     // modified
@@ -288,7 +287,7 @@ int CmdInfo::execute (std::string& output)
       row = view.addRow ();
       view.set (row, 0, STRING_CMD_INFO_MODIFIED);
 
-      Date mod (task.get_date ("modified"));
+      ISO8601d mod (task.get_date ("modified"));
       std::string age = ISO8601p (now - mod).formatVague ();
       view.set (row, 1, mod.toString (dateformat) + " (" + age + ")");
     }
@@ -373,13 +372,13 @@ int CmdInfo::execute (std::string& output)
           view.set (row, 0, col->label ());
 
           if (type == "date")
-            value = Date (value).toString (dateformat);
+            value = ISO8601d (value).toString (dateformat);
           else if (type == "duration")
           {
             ISO8601p iso;
             std::string::size_type cursor = 0;
             if (iso.parse (value, cursor))
-              value = (std::string) Variant ((time_t) iso._value, Variant::type_duration);
+              value = (std::string) Variant ((time_t) iso, Variant::type_duration);
             else
               value = "PT0S";
           }
@@ -544,7 +543,7 @@ int CmdInfo::execute (std::string& output)
           {
             int row = journal.addRow ();
 
-            Date timestamp (strtol (when.substr (5).c_str (), NULL, 10));
+            ISO8601d timestamp (strtol (when.substr (5).c_str (), NULL, 10));
             journal.set (row, 0, timestamp.toString (dateformat));
 
             Task before (previous.substr (4));

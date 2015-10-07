@@ -40,7 +40,6 @@ class Lexer
 public:
   // These are overridable.
   static std::string dateFormat;
-  static bool isoEnabled;
   static std::string::size_type minimumMatchLength;
   static std::map <std::string, std::string> attributes;
 

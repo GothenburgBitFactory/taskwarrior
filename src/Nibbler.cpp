@@ -33,7 +33,7 @@
 #include <Nibbler.h>
 #include <util.h>
 #ifdef NIBBLER_FEATURE_DATE
-#include <Date.h>
+#include <ISO8601.h>
 #endif
 #ifdef NIBBLER_FEATURE_REGEX
 #include <RX.h>
@@ -708,7 +708,8 @@ bool Nibbler::getDateISO (time_t& t)
 // Parse the longest integer using the next 'limit' characters of 'result'
 // following position 'i' (when strict is true, the number of digits must be
 // equal to limit).
-bool Nibbler::parseDigits(std::string::size_type& i,
+bool Nibbler::parseDigits(
+  std::string::size_type& i,
   int& result,
   unsigned int limit,
   bool strict /* = true */)
@@ -819,8 +820,8 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
           ! Lexer::isDigit ((*_input)[i + 1]) &&
           ! Lexer::isDigit ((*_input)[i + 2]))
       {
-        wday = Date::dayOfWeek (_input->substr (i, 3).c_str ());
-        i += (format[f] == 'a') ? 3 : Date::dayName (wday).size ();
+        wday = ISO8601d::dayOfWeek (_input->substr (i, 3).c_str ());
+        i += (format[f] == 'a') ? 3 : ISO8601d::dayName (wday).size ();
       }
       else
         return false;
@@ -835,8 +836,8 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
       {
         if (month != -1)
           return false;
-        month = Date::monthOfYear (_input->substr (i, 3).c_str());
-        i += (format[f] == 'b') ? 3 : Date::monthName (month).size ();
+        month = ISO8601d::monthOfYear (_input->substr (i, 3).c_str());
+        i += (format[f] == 'b') ? 3 : ISO8601d::monthName (month).size ();
       }
       else
         return false;
@@ -858,7 +859,7 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
   // now.
   if (year == -1)
   {
-    Date now = Date ();
+    ISO8601d now;
     year = now.year ();
     if (month == -1)
     {
@@ -889,7 +890,7 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
   second = (second == -1) ? 0 : second;
 
   // Check that values are correct
-  if (! Date::valid (month, day, year, hour, minute, second))
+  if (! ISO8601d::valid (month, day, year, hour, minute, second))
     return false;
 
   // Convert to epoch.

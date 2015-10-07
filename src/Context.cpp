@@ -37,6 +37,7 @@
 #include <FS.h>
 #include <Eval.h>
 #include <Variant.h>
+#include <ISO8601.h>
 #include <text.h>
 #include <util.h>
 #include <main.h>
@@ -328,7 +329,7 @@ int Context::run ()
       << "-"
 #endif
       << " "
-      << Date ().toISO ()
+      << ISO8601d ().toISO ()
 
       << " init:"   << timer_init.total ()
       << " load:"   << timer_load.total ()
@@ -621,8 +622,9 @@ void Context::getLimits (int& rows, int& lines)
 // easier, it has been decoupled from Context.
 void Context::staticInitialization ()
 {
-  CLI2::minimumMatchLength  = config.getInteger ("abbreviation.minimum");
-  Lexer::minimumMatchLength = config.getInteger ("abbreviation.minimum");
+  CLI2::minimumMatchLength     = config.getInteger ("abbreviation.minimum");
+  Lexer::minimumMatchLength    = config.getInteger ("abbreviation.minimum");
+  ISO8601d::minimumMatchLength = config.getInteger ("abbreviation.minimum");
 
   Task::defaultProject      = config.get ("default.project");
   Task::defaultDue          = config.get ("default.due");
@@ -630,9 +632,11 @@ void Context::staticInitialization ()
   Task::searchCaseSensitive = Variant::searchCaseSensitive = config.getBoolean ("search.case.sensitive");
   Task::regex               = Variant::searchUsingRegex    = config.getBoolean ("regex");
   Lexer::dateFormat         = Variant::dateFormat          = config.get ("dateformat");
-  Lexer::isoEnabled         = Variant::isoEnabled          = config.getBoolean ("date.iso");
+  ISO8601p::isoEnabled      = ISO8601d::isoEnabled         = config.getBoolean ("date.iso");
 
   TDB2::debug_mode          = config.getBoolean ("debug");
+
+  ISO8601d::weekstart       = config.get ("weekstart");
 
   for (auto& rc : config)
   {

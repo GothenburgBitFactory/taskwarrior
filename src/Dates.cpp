@@ -30,7 +30,7 @@
 #include <time.h>
 #include <text.h>
 #include <Dates.h>
-#include <Date.h>
+#include <ISO8601.h>
 #include <Lexer.h>
 #include <CLI2.h>
 #include <i18n.h>
@@ -38,14 +38,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 static bool isMonth (const std::string& name, int& i)
 {
-  i = Date::monthOfYear (name) - 1;
+  i = ISO8601d::monthOfYear (name) - 1;
   return i != -2 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 static bool isDay (const std::string& name, int& i)
 {
-  i = Date::dayOfWeek (name);
+  i = ISO8601d::dayOfWeek (name);
   return i != -1 ? true : false;
 }
 
@@ -103,32 +103,33 @@ static void midsommarafton (struct tm* t)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// <day>
-// <month>
-// Nth
-// socy, eocy
-// socq, eocq
-// socm, eocm
-// som, eom
-// soq, eoq
-// soy, eoy
-// socw, eocw
-// sow, eow
-// soww, eoww
-// sod, eod
-// yesterday
-// today
-// now
-// tomorrow
-// later          = midnight, Jan 18th, 2038.
-// someday        = midnight, Jan 18th, 2038.
-// easter
-// eastermonday
-// ascension
-// pentecost
-// goodfriday
-// midsommar      = midnight, 1st Saturday after 20th June
-// midsommarafton = midnight, 1st Friday after 19th June
+// Note how these are all single words:
+//   <day>
+//   <month>
+//   Nth
+//   socy, eocy
+//   socq, eocq
+//   socm, eocm
+//   som, eom
+//   soq, eoq
+//   soy, eoy
+//   socw, eocw
+//   sow, eow
+//   soww, eoww
+//   sod, eod
+//   yesterday
+//   today
+//   now
+//   tomorrow
+//   later          = midnight, Jan 18th, 2038.
+//   someday        = midnight, Jan 18th, 2038.
+//   easter
+//   eastermonday
+//   ascension
+//   pentecost
+//   goodfriday
+//   midsommar      = midnight, 1st Saturday after 20th June
+//   midsommarafton = midnight, 1st Friday after 19th June
 //
 bool namedDates (const std::string& name, Variant& value)
 {
@@ -302,7 +303,7 @@ bool namedDates (const std::string& name, Variant& value)
     t->tm_hour = 24;
     t->tm_min = 0;
     t->tm_sec = -1;
-    t->tm_mday = Date::daysInMonth (t->tm_mon + 1, t->tm_year + 1900);
+    t->tm_mday = ISO8601d::daysInMonth (t->tm_mon + 1, t->tm_year + 1900);
     t->tm_isdst = -1;
     value = Variant (mktime (t), Variant::type_date);
   }
@@ -414,7 +415,7 @@ bool namedDates (const std::string& name, Variant& value)
 
         // If it is this month.
         if (d < number &&
-            number <= Date::daysInMonth (m, y))
+            number <= ISO8601d::daysInMonth (m, y))
         {
           t->tm_hour = t->tm_min = t->tm_sec = 0;
           t->tm_mon  = m - 1;
