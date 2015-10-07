@@ -444,7 +444,7 @@ int main (int argc, char** argv)
     t.is (fromString10.year (),   2010, "ctor (std::string) -> Y");
     t.is (fromString10.hour (),     12, "ctor (std::string) -> h");
     t.is (fromString10.minute (),   34, "ctor (std::string) -> N");
-    t.is (fromString1.second (),    56, "ctor (std::string) -> S");
+    t.is (fromString10.second (),   56, "ctor (std::string) -> S");
 
     // Day of year
     t.is (ISO8601d ("1/1/2011",   "m/d/Y").dayOfYear (),   1, "dayOfYear (1/1/2011)   ->   1");
