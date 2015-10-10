@@ -1,0 +1,105 @@
+###############################################################################
+# International Holiday Data provided by Holidata.net
+# http://holidata.net/es-CO/2015.json
+# http://holidata.net/es-CO/2016.json
+#
+# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# http://www.opensource.org/licenses/mit-license.php
+#
+###############################################################################
+
+holiday.es-CO1.name=Año Nuevo
+holiday.es-CO1.date=20150101
+holiday.es-CO2.name=Día de los Reyes Magos
+holiday.es-CO2.date=20150112
+holiday.es-CO3.name=Día de San José
+holiday.es-CO3.date=20150323
+holiday.es-CO4.name=Jueves Santo
+holiday.es-CO4.date=20150402
+holiday.es-CO5.name=Viernes Santo
+holiday.es-CO5.date=20150403
+holiday.es-CO6.name=Domingo de Pascua
+holiday.es-CO6.date=20150405
+holiday.es-CO7.name=Día del Trabajo
+holiday.es-CO7.date=20150501
+holiday.es-CO8.name=La Ascensión del Señor
+holiday.es-CO8.date=20150518
+holiday.es-CO9.name=Corpus Christi
+holiday.es-CO9.date=20150608
+holiday.es-CO10.name=El Sagrado Corazón de Jesús
+holiday.es-CO10.date=20150615
+holiday.es-CO11.name=San Pedro y San Pablo
+holiday.es-CO11.date=20150629
+holiday.es-CO12.name=Grito de Independencia
+holiday.es-CO12.date=20150720
+holiday.es-CO13.name=Batalla de Boyacá
+holiday.es-CO13.date=20150807
+holiday.es-CO14.name=Asunción de la Virgen
+holiday.es-CO14.date=20150817
+holiday.es-CO15.name=Día de la Raza
+holiday.es-CO15.date=20151012
+holiday.es-CO16.name=Todos los Santos
+holiday.es-CO16.date=20151102
+holiday.es-CO17.name=Independencia de Cartagena
+holiday.es-CO17.date=20151116
+holiday.es-CO18.name=Inmaculada Concepción
+holiday.es-CO18.date=20151208
+holiday.es-CO19.name=Navidad
+holiday.es-CO19.date=20151225
+holiday.es-CO20.name=Año Nuevo
+holiday.es-CO20.date=20160101
+holiday.es-CO21.name=Día de los Reyes Magos
+holiday.es-CO21.date=20160111
+holiday.es-CO22.name=Día de San José
+holiday.es-CO22.date=20160321
+holiday.es-CO23.name=Jueves Santo
+holiday.es-CO23.date=20160324
+holiday.es-CO24.name=Viernes Santo
+holiday.es-CO24.date=20160325
+holiday.es-CO25.name=Domingo de Pascua
+holiday.es-CO25.date=20160326
+holiday.es-CO26.name=Día del Trabajo
+holiday.es-CO26.date=20160501
+holiday.es-CO27.name=La Ascensión del Señor
+holiday.es-CO27.date=20160509
+holiday.es-CO28.name=Corpus Christi
+holiday.es-CO28.date=20160530
+holiday.es-CO29.name=El Sagrado Corazón de Jesús
+holiday.es-CO29.date=20160606
+holiday.es-CO30.name=San Pedro y San Pablo
+holiday.es-CO30.date=20160704
+holiday.es-CO31.name=Grito de Independencia
+holiday.es-CO31.date=20160720
+holiday.es-CO32.name=Batalla de Boyacá
+holiday.es-CO32.date=20160807
+holiday.es-CO33.name=Asunción de la Virgen
+holiday.es-CO33.date=20160815
+holiday.es-CO34.name=Día de la Raza
+holiday.es-CO34.date=20161017
+holiday.es-CO35.name=Todos los Santos
+holiday.es-CO35.date=20161107
+holiday.es-CO36.name=Independencia de Cartagena
+holiday.es-CO36.date=20161114
+holiday.es-CO37.name=Inmaculada Concepción
+holiday.es-CO37.date=20161208
+holiday.es-CO38.name=Navidad
+holiday.es-CO38.date=20161225
