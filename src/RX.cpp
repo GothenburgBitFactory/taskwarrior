@@ -30,6 +30,14 @@
 #include <RX.h>
 
 ////////////////////////////////////////////////////////////////////////////////
+RX::RX ()
+: _compiled (false)
+, _pattern ("")
+, _case_sensitive (false)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
 RX::RX (
   const std::string& pattern,
   bool case_sensitive /* = true */)
@@ -41,6 +49,14 @@ RX::RX (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+RX::RX (const RX& other)
+{
+  _compiled = false;
+  _pattern = other._pattern;
+  _case_sensitive = other._case_sensitive;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 RX::~RX ()
 {
   if (_compiled)
@@ -48,9 +64,22 @@ RX::~RX ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+RX& RX::operator= (const RX& other)
+{
+  if (this != &other)
+  {
+    _compiled = false;
+    _pattern = other._pattern;
+    _case_sensitive = other._case_sensitive;
+  }
+
+  return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void RX::compile ()
 {
-  if (!_compiled)
+  if (! _compiled)
   {
     memset (&_regex, 0, sizeof (regex_t));
 
@@ -75,7 +104,7 @@ void RX::compile ()
 ////////////////////////////////////////////////////////////////////////////////
 bool RX::match (const std::string& in)
 {
-  if (!_compiled)
+  if (! _compiled)
     compile ();
 
   return regexec (&_regex, in.c_str (), 0, NULL, 0) == 0 ? true : false;
@@ -86,7 +115,7 @@ bool RX::match (
   std::vector<std::string>& matches,
   const std::string& in)
 {
-  if (!_compiled)
+  if (! _compiled)
     compile ();
 
   regmatch_t rm[2];
@@ -112,7 +141,7 @@ bool RX::match (
   std::vector <int>& end,
   const std::string& in)
 {
-  if (!_compiled)
+  if (! _compiled)
     compile ();
 
   regmatch_t rm[2];

@@ -34,8 +34,11 @@
 class RX
 {
 public:
+  RX ();
   RX (const std::string&, bool caseSensitive = true);
+  RX (const RX&);
   ~RX ();
+  RX& operator= (const RX&);
 
   bool match (const std::string&);
   bool match (std::vector<std::string>&, const std::string&);
