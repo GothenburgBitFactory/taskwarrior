@@ -1302,7 +1302,8 @@ std::string Lexer::typeToString (Lexer::Type type)
 ////////////////////////////////////////////////////////////////////////////////
 bool Lexer::isAllDigits (const std::string& text)
 {
-  return text.find_first_not_of ("0123456789") == std::string::npos;
+  return text.length () &&
+         text.find_first_not_of ("0123456789") == std::string::npos;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
