@@ -317,6 +317,9 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
     case 'm':
       if (n.getDigit (month))
       {
+        if (month == 0)
+          n.getDigit (month);
+
         if (month == 1)
           if (n.getDigit (month))
             month += 10;
@@ -339,6 +342,9 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
     case 'd':
       if (n.getDigit (day))
       {
+        if (day == 0)
+          n.getDigit (day);
+
         if (day == 1 || day == 2 || day == 3)
         {
           int tens = day;
@@ -381,6 +387,9 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
     case 'h':
       if (n.getDigit (hour))
       {
+        if (hour == 0)
+          n.getDigit (hour);
+
         if (hour == 1 || hour == 2)
         {
           int tens = hour;
@@ -406,6 +415,9 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
     case 'n':
       if (n.getDigit (minute))
       {
+        if (minute == 0)
+          n.getDigit (minute);
+
         if (minute < 6)
         {
           int tens = minute;
@@ -431,6 +443,9 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
     case 's':
       if (n.getDigit (second))
       {
+        if (second == 0)
+          n.getDigit (second);
+
         if (second < 6)
         {
           int tens = second;
@@ -456,6 +471,9 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
     case 'v':
       if (n.getDigit (week))
       {
+        if (week == 0)
+          n.getDigit (week);
+
         if (week < 6)
         {
           int tens = week;
