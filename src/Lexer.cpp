@@ -313,13 +313,15 @@ bool Lexer::isPunctuation (int c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Assumes that quotes is a string containing a non-trivial set of quote
+// characters.
 void Lexer::dequote (std::string& input, const std::string& quotes)
 {
   int quote = input[0];
   if (quotes.find (quote) != std::string::npos)
   {
     size_t len = input.length ();
-    if (input[0] == input[len - 1])
+    if (quote == input[len - 1])
       input = input.substr (1, len - 2);
   }
 }
