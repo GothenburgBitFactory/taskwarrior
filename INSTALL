@@ -5,8 +5,8 @@ Please follow the instructions below to build and install Taskwarrior from
 source.
 
 
-Pre-requisites
---------------
+Dependencies
+------------
 
 You will need the CMake build system installed in order to build Taskwarrior
 from source. More information on cmake can be obtained at http://cmake.org
@@ -19,11 +19,8 @@ You will need a C++ compiler that supports full C++11, which includes:
   - clang 3.3 (released 2013-01-07)
 
 You will need the following libraries:
-  - libuuid
+  - libuuid (not needed for OSX)
   - gnutls  (can be optional - see '"sync" command' below)
-
-It is HIGHLY RECOMMENDED that you build with a library that provides uuid_*
-functions, such as libuuid.
 
 
 Basic Installation
@@ -94,19 +91,14 @@ get absolute installation directories:
 "sync" command
 --------------
 
-In order to enable the "sync" command, you will need to have GnuTLS available.
-
-cmake may fail with the following error message:
-   "Cannot find GnuTLS.  Use -DENABLE_SYNC=OFF to build Taskwarrior without
-    sync support.  See INSTALL for more information."
-
-This means that it cannot find your GnuTLS installation, and you will need to
-install GnuTLS as well as its header files.  For Debian based distributions,
-installing "libgnutls-dev" is usually sufficient.
+By default, GnuTLS support is required, which enables the "sync" command.
+For Debian based distributions, installing "libgnutls-dev" is sufficient.
 
 In order to build Taskwarrior without "sync" support, call cmake with the
 "-DENABLE_SYNC=OFF" flag:
+
    $ cmake . -DENABLE_SYNC=OFF
+
 and proceed as described in "Basic Installation".
 
 
