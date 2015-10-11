@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (960);
+  UnitTest t (966);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -408,12 +408,10 @@ int main (int argc, char** argv)
     t.is (fromString5.day (),     5, "ctor (std::string) -> d");
     t.is (fromString5.year (), 2008, "ctor (std::string) -> y");
 
-/*
     ISO8601d fromString6 ("Tuesday, February 5, 2008", "A, B d, Y");
     t.is (fromString6.month (),   2, "ctor (std::string) -> m");
     t.is (fromString6.day (),     5, "ctor (std::string) -> d");
     t.is (fromString6.year (), 2008, "ctor (std::string) -> y");
-*/
 
     ISO8601d fromString7 ("w01 Tue 2008-01-01", "wV a Y-M-D");
     t.is (fromString7.month (),   1, "ctor (std::string) -> m");
