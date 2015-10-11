@@ -512,15 +512,16 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
 
     case 'A':
       {
-        auto cursor = n.cursor ();
-        wday = ISO8601d::dayOfWeek (n.str ().substr (cursor));
-        if (wday == -1)
+        std::string dayName;
+        if (n.getUntil (format[f + 1], dayName))
         {
-          n.restore ();
-          return false;
+          wday = ISO8601d::dayOfWeek (lowerCase (dayName));
+          if (wday == -1)
+          {
+            n.restore ();
+            return false;
+          }
         }
-
-        n.skipN (ISO8601d::dayName (wday).size ());
       }
       break;
 
@@ -540,15 +541,16 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
 
     case 'B':
       {
-        auto cursor = n.cursor ();
-        month = ISO8601d::dayOfWeek (n.str ().substr (cursor));
-        if (month == -1)
+        std::string monthName;
+        if (n.getUntil (format[f + 1], monthName))
         {
-          n.restore ();
-          return false;
+          month = ISO8601d::monthOfYear (lowerCase (monthName));
+          if (month == -1)
+          {
+            n.restore ();
+            return false;
+          }
         }
-
-        n.skipN (ISO8601d::monthName (month).size ());
       }
       break;
 
@@ -1278,7 +1280,7 @@ std::string ISO8601d::dayName (int dow)
 int ISO8601d::dayOfWeek (const std::string& input)
 {
   if (ISO8601d::minimumMatchLength== 0)
-    ISO8601d::minimumMatchLength= 3;
+    ISO8601d::minimumMatchLength = 3;
 
        if (closeEnough (STRING_DATE_SUNDAY,    input, ISO8601d::minimumMatchLength)) return 0;
   else if (closeEnough (STRING_DATE_MONDAY,    input, ISO8601d::minimumMatchLength)) return 1;
