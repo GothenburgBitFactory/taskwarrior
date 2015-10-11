@@ -398,12 +398,10 @@ int main (int argc, char** argv)
     t.is (fromString3.day (),    31, "ctor (std::string) -> d");
     t.is (fromString3.year (), 2007, "ctor (std::string) -> y");
 
-/*
     ISO8601d fromString4 ("01/01/2008", "m/d/Y");
     t.is (fromString4.month (),   1, "ctor (std::string) -> m");
     t.is (fromString4.day (),     1, "ctor (std::string) -> d");
     t.is (fromString4.year (), 2008, "ctor (std::string) -> y");
-*/
 
     ISO8601d fromString5 ("Tue 05 Feb 2008 (06)", "a D b Y (V)");
     t.is (fromString5.month (),   2, "ctor (std::string) -> m");
