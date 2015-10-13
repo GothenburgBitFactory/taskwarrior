@@ -848,6 +848,9 @@ bool Variant::operator== (const Variant& other) const
       return left._string == right._string;
 
     case type_date:
+      if (left.trivial () || right.trivial ())
+        return false;
+
       left.cast (type_date);
       return left._date == right._date;
 
@@ -866,6 +869,9 @@ bool Variant::operator== (const Variant& other) const
     case type_string:
     case type_date:
     case type_duration:
+      if (left.trivial () || right.trivial ())
+        return false;
+
       right.cast (type_date);
       return left._date == right._date;
     }
@@ -1097,6 +1103,9 @@ bool Variant::operator_partial (const Variant& other) const
     // Same-day comparison.
     case type_date:
       {
+        if (left.trivial () || right.trivial ())
+          return false;
+
         left.cast (type_date);
         ISO8601d left_date (left._date);
         ISO8601d right_date (right._date);
@@ -1113,10 +1122,13 @@ bool Variant::operator_partial (const Variant& other) const
     switch (right._type)
     {
     // Same-day comparison.
+    case type_string:
+      if (left.trivial () || right.trivial ())
+        return false;
+
     case type_boolean:
     case type_integer:
     case type_real:
-    case type_string:
     case type_date:
     case type_duration:
       {
@@ -1540,7 +1552,6 @@ Variant& Variant::operator/= (const Variant& other)
 
   switch (_type)
   {
-
   case type_boolean:
     throw std::string (STRING_VARIANT_DIV_BOOL);
     break;
