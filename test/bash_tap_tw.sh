@@ -36,7 +36,7 @@ function find_task_binary {
     for t in "${bashtap_org_pwd}/task" "${bashtap_org_pwd}/src/task" "${bashtap_org_pwd}/../task" "${bashtap_org_pwd}/../src/task" "${bashtap_org_pwd}/../build/src/task"; do
         if [ -f "$t" ] && [ -x "$t" ]; then
             t_abs=$(bashtap_get_absolute_path "$t")
-            eval "function task { ${t_abs} rc:taskrc \$@; }"
+            eval "function task { ${t_abs} rc:taskrc \"\$@\"; }"
             return 0
         fi
     done
