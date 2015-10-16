@@ -2196,9 +2196,6 @@ void Task::modify (modType type, bool text_required /* = false */)
 
           else
             throw format (STRING_TASK_INVALID_COL_TYPE, column->type (), name);
-
-          // Warn about deprecated/obsolete attribute usage.
-          legacyAttributeCheck (name);
         }
       }
 

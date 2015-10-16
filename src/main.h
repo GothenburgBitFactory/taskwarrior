@@ -76,7 +76,6 @@ std::string onExpiration (Task&);
 void sort_tasks (std::vector <Task>&, std::vector <int>&, const std::string&);
 
 // legacy.cpp
-void legacyAttributeCheck (const std::string&);
 void legacyColumnMap (std::string&);
 void legacySortColumnMap (std::string&);
 std::string legacyCheckForDeprecatedVariables ();

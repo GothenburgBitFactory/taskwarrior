@@ -34,12 +34,6 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-void legacyAttributeCheck (const std::string& name)
-{
-  // 2013-07-25: Deprecated "fg" and "bg" removed.
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void legacyColumnMap (std::string& name)
 {
   // 2014-01-26: priority_long        --> priority.long        Mapping removed
