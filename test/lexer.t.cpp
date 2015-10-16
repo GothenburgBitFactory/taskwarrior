@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int argc, char** argv)
 {
-  UnitTest t (1207);
+  UnitTest t (1208);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -105,6 +105,10 @@ int main (int argc, char** argv)
   token = "'o\\'clock'";
   Lexer::dequote (token);
   t.is (token, "o\\'clock", "dequote 'o\\'clock' --> o\\'clock");
+
+  token = "abba";
+  Lexer::dequote (token, "a");
+  t.is (token, "bb", "dequote 'abba' (a) --> bb");
 
   // Should result in no tokens.
   Lexer l0 ("");
