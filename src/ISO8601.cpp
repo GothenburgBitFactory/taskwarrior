@@ -1620,16 +1620,17 @@ std::string ISO8601d::dump () const
 {
   std::stringstream s;
   s << "ISO8601d"
-    << " _year="    << _year
-    << " _month="   << _month
-    << " _week="    << _week
-    << " _weekday=" << _weekday
-    << " _julian="  << _julian
-    << " _day="     << _day
-    << " _seconds=" << _seconds
-    << " _offset="  << _offset
-    << " _utc="     << _utc
-    << " _date="    << _date;
+    << " y"   << _year
+    << " m"   << _month
+    << " w"   << _week
+    << " wd"  << _weekday
+    << " j"   << _julian
+    << " d"   << _day
+    << " s"   << _seconds
+    << " off" << _offset
+    << " utc" << _utc
+    << " ="   << _date
+    << "  "   << (_date ? toISO () : "");
 
   return s.str ();
 }
@@ -1988,13 +1989,14 @@ std::string ISO8601p::dump () const
 {
   std::stringstream s;
   s << "ISO8601p"
-    << " _year="    << _year
-    << " _month="   << _month
-    << " _day="     << _day
-    << " _hours="   << _hours
-    << " _minutes=" << _minutes
-    << " _seconds=" << _seconds
-    << " _period="  << _period;
+    << " y"  << _year
+    << " mo" << _month
+    << " d"  << _day
+    << " h"  << _hours
+    << " mi" << _minutes
+    << " s"  << _seconds
+    << " ="  << _period
+    << "  "         << (_period ? format () : "");
 
   return s.str ();
 }
