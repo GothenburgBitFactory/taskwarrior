@@ -145,7 +145,7 @@ ISO8601d::ISO8601d (const int m, const int d, const int y)
   clear ();
 
   // Error if not valid.
-  struct tm t = {0};
+  struct tm t {};
   t.tm_isdst = -1;   // Requests that mktime determine summer time effect.
   t.tm_mday  = d;
   t.tm_mon   = m - 1;
@@ -161,7 +161,7 @@ ISO8601d::ISO8601d (const int m,  const int d,  const int y,
   clear ();
 
   // Error if not valid.
-  struct tm t = {0};
+  struct tm t {};
   t.tm_isdst = -1;   // Requests that mktime determine summer time effect.
   t.tm_mday  = d;
   t.tm_mon   = m - 1;
@@ -983,7 +983,7 @@ void ISO8601d::resolve ()
     day = julian;
   }
 
-  struct tm t = {0};
+  struct tm t {};
   t.tm_isdst = -1;  // Requests that mktime/gmtime determine summer time effect.
   t.tm_year = year - 1900;
   t.tm_mon = month - 1;

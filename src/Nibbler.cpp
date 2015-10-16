@@ -684,7 +684,7 @@ bool Nibbler::getDateISO (time_t& t)
                  + ((*_input)[i + 14] - '0');
 
       // Convert to epoch.
-      struct tm tms = {0};
+      struct tm tms {};
       tms.tm_isdst  = -1;   // Requests that mktime determine summer time effect.
       tms.tm_mon    = month - 1;
       tms.tm_mday   = day;
@@ -894,7 +894,7 @@ bool Nibbler::getDate (const std::string& format, time_t& t)
     return false;
 
   // Convert to epoch.
-  struct tm tms = {0};
+  struct tm tms {};
   tms.tm_isdst = -1;   // Requests that mktime determine summer time effect.
   tms.tm_mon   = month - 1;
   tms.tm_mday  = day;

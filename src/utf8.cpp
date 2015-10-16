@@ -113,7 +113,7 @@ unsigned int utf8_next_char (const std::string& input, std::string::size_type& i
 // http://en.wikipedia.org/wiki/UTF-8
 std::string utf8_character (unsigned int codepoint)
 {
-  char sequence[5] = {0};
+  char sequence[5] {};
 
   // 0xxxxxxx -> 0xxxxxxx
   if (codepoint < 0x80)

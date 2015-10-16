@@ -235,7 +235,7 @@ const std::string uuid ()
 {
   uuid_t id;
   uuid_generate (id);
-  char buffer[100] = {0};
+  char buffer[100] {};
   uuid_unparse_lower (id, buffer);
 
   // Bug found by Steven de Brouwer.

@@ -168,7 +168,7 @@ bool Path::exists () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::is_directory () const
 {
-  struct stat s = {0};
+  struct stat s {};
   if (! stat (_data.c_str (), &s) &&
       S_ISDIR (s.st_mode))
     return true;
@@ -188,7 +188,7 @@ bool Path::is_absolute () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Path::is_link () const
 {
-  struct stat s = {0};
+  struct stat s {};
   if (! lstat (_data.c_str (), &s) &&
       S_ISLNK (s.st_mode))
     return true;

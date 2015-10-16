@@ -203,7 +203,7 @@ void TLSClient::connect (const std::string& host, const std::string& port)
   gnutls_session_set_ptr (_session, (void*) this);
 
   // use IPv4 or IPv6, does not matter.
-  struct addrinfo hints = {0};
+  struct addrinfo hints {};
   hints.ai_family   = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags    = AI_PASSIVE; // use my IP
@@ -434,7 +434,7 @@ void TLSClient::recv (std::string& data)
   int received = 0;
 
   // Get the encoded length.
-  unsigned char header[4] = {0};
+  unsigned char header[4] {};
   do
   {
     received = gnutls_record_recv (_session, header, 4);
