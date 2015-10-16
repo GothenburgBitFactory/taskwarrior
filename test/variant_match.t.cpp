@@ -35,7 +35,7 @@ Context context;
 Task task;
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int argc, char** argv)
+int main (int, char**)
 {
   UnitTest t (120);
 

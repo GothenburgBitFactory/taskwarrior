@@ -104,7 +104,7 @@ const char *negative_tests[] =
 #define NUM_NEGATIVE_TESTS (sizeof (negative_tests) / sizeof (negative_tests[0]))
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int argc, char** argv)
+int main (int, char**)
 {
   UnitTest t (NUM_POSITIVE_TESTS + NUM_NEGATIVE_TESTS + 22);
 

@@ -44,7 +44,7 @@ bool get (const std::string& name, Variant& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int argc, char** argv)
+int main (int, char**)
 {
   UnitTest t (52);
 

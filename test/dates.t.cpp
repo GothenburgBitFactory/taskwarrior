@@ -53,7 +53,7 @@ void testInit (UnitTest& t, const std::string& value, Variant& var)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int argc, char** argv)
+int main (int, char**)
 {
   UnitTest t (98);
 

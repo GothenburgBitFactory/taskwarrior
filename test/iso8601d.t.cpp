@@ -69,7 +69,7 @@ void testParse (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int argc, char** argv)
+int main (int, char**)
 {
   UnitTest t (966);
 

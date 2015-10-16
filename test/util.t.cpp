@@ -34,7 +34,7 @@
 Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-int main (int argc, char** argv)
+int main (int, char**)
 {
   UnitTest t (22);
 
