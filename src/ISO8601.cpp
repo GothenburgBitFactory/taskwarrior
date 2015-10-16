@@ -1615,8 +1615,24 @@ void ISO8601d::operator++ (int)
   _date = tomorrow._date;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+std::string ISO8601d::dump () const
+{
+  std::stringstream s;
+  s << "ISO8601d"
+    << " _year="    << _year
+    << " _month="   << _month
+    << " _week="    << _week
+    << " _weekday=" << _weekday
+    << " _julian="  << _julian
+    << " _day="     << _day
+    << " _seconds=" << _seconds
+    << " _offset="  << _offset
+    << " _utc="     << _utc
+    << " _date="    << _date;
 
-
+  return s.str ();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601p::ISO8601p ()
@@ -1965,6 +1981,22 @@ void ISO8601p::resolve ()
             (_hours       *  3600) +
             (_minutes     *    60) +
             _seconds;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string ISO8601p::dump () const
+{
+  std::stringstream s;
+  s << "ISO8601p"
+    << " _year="    << _year
+    << " _month="   << _month
+    << " _day="     << _day
+    << " _hours="   << _hours
+    << " _minutes=" << _minutes
+    << " _seconds=" << _seconds
+    << " _period="  << _period;
+
+  return s.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

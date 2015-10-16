@@ -121,6 +121,7 @@ private:
   bool parse_time_off_ext  (Nibbler&);
   bool validate ();
   void resolve ();
+  std::string dump () const;
 
 public:
   int _year;
@@ -160,6 +161,7 @@ private:
   bool parse_designated (Nibbler&);
   bool validate ();
   void resolve ();
+  std::string dump () const;
 
 public:
   int _year;
