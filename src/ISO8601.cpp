@@ -1004,13 +1004,13 @@ void ISO8601d::resolve ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-time_t ISO8601d::toEpoch ()
+time_t ISO8601d::toEpoch () const
 {
   return _date;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string ISO8601d::toEpochString ()
+std::string ISO8601d::toEpochString () const
 {
   std::stringstream epoch;
   epoch << _date;
@@ -1019,7 +1019,7 @@ std::string ISO8601d::toEpochString ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // 19980119T070000Z =  YYYYMMDDThhmmssZ
-std::string ISO8601d::toISO ()
+std::string ISO8601d::toISO () const
 {
   struct tm* t = gmtime (&_date);
 
@@ -1037,13 +1037,13 @@ std::string ISO8601d::toISO ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-double ISO8601d::toJulian ()
+double ISO8601d::toJulian () const
 {
   return (_date / 86400.0) + 2440587.5;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ISO8601d::toMDY (int& m, int& d, int& y)
+void ISO8601d::toMDY (int& m, int& d, int& y) const
 {
   struct tm* t = localtime (&_date);
 

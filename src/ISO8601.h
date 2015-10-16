@@ -47,11 +47,11 @@ public:
   operator time_t () const;
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
 
-  time_t toEpoch ();
-  std::string toEpochString ();
-  std::string toISO ();
-  double toJulian ();
-  void toMDY (int&, int&, int&);
+  time_t toEpoch () const;
+  std::string toEpochString () const;
+  std::string toISO () const;
+  double toJulian () const;
+  void toMDY (int&, int&, int&) const;
   const std::string toString (const std::string& format = "m/d/Y") const;
 
   ISO8601d startOfDay () const;
