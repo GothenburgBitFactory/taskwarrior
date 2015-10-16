@@ -634,20 +634,20 @@ void Config::clear ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const bool Config::has (const std::string& key)
+bool Config::has (const std::string& key)
 {
   return (*this).find (key) != (*this).end ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Return the configuration value given the specified key.
-const std::string Config::get (const std::string& key)
+std::string Config::get (const std::string& key)
 {
   return (*this)[key];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const int Config::getInteger (const std::string& key)
+int Config::getInteger (const std::string& key)
 {
   if ((*this).find (key) != (*this).end ())
     return strtoimax ((*this)[key].c_str (), NULL, 10);
@@ -656,7 +656,7 @@ const int Config::getInteger (const std::string& key)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const double Config::getReal (const std::string& key)
+double Config::getReal (const std::string& key)
 {
   //NOTE: Backwards compatible handling of next coefficient.
   //TODO: Remove.
@@ -670,7 +670,7 @@ const double Config::getReal (const std::string& key)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-const bool Config::getBoolean (const std::string& key)
+bool Config::getBoolean (const std::string& key)
 {
   if ((*this).find (key) != (*this).end ())
   {
