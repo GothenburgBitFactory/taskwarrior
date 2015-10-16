@@ -68,9 +68,9 @@ int CmdContext::execute (std::string& output)
 
          if (subcommand == "define") rc = defineContext (words, out);
     else if (subcommand == "delete") rc = deleteContext (words, out);
-    else if (subcommand == "list")   rc = listContexts (words, out);
-    else if (subcommand == "none")   rc = unsetContext (words, out);
-    else if (subcommand == "show")   rc = showContext (words, out);
+    else if (subcommand == "list")   rc = listContexts (out);
+    else if (subcommand == "none")   rc = unsetContext (out);
+    else if (subcommand == "show")   rc = showContext (out);
     else                             rc = setContext (words, out);
   }
 
@@ -229,7 +229,7 @@ int CmdContext::deleteContext (const std::vector <std::string>& words, std::stri
 // Invoked with: task context list
 // Example:      task context list
 //
-int CmdContext::listContexts (const std::vector <std::string>& words, std::stringstream& out)
+int CmdContext::listContexts (std::stringstream& out)
 {
   int rc = 0;
   std::vector <std::string> contexts = getContexts();
@@ -321,7 +321,7 @@ int CmdContext::setContext (const std::vector <std::string>& words, std::strings
 // Invoked with: task context show
 // Example:      task context show
 //
-int CmdContext::showContext (const std::vector <std::string>& words, std::stringstream& out)
+int CmdContext::showContext (std::stringstream& out)
 {
   std::string currentContext = context.config.get ("context");
 
@@ -346,7 +346,7 @@ int CmdContext::showContext (const std::vector <std::string>& words, std::string
 // Invoked with: task context none
 // Example:      task context none
 //
-int CmdContext::unsetContext (const std::vector <std::string>& words, std::stringstream& out)
+int CmdContext::unsetContext (std::stringstream& out)
 {
   int rc = 0;
   int status = CmdConfig::unsetConfigVariable ("context", false);

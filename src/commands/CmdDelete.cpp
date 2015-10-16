@@ -54,7 +54,7 @@ CmdDelete::CmdDelete ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdDelete::execute (std::string& output)
+int CmdDelete::execute (std::string&)
 {
   int rc = 0;
   int count = 0;
@@ -94,7 +94,7 @@ int CmdDelete::execute (std::string& output)
       if (! task.has ("end"))
         task.setAsNow ("end");
 
-      if (permission (task, question, filtered.size ()))
+      if (permission (question, filtered.size ()))
       {
         updateRecurrenceMask (task);
         ++count;

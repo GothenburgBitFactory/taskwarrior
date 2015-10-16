@@ -53,7 +53,7 @@ CmdStart::CmdStart ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdStart::execute (std::string& output)
+int CmdStart::execute (std::string&)
 {
   int rc = 0;
   int count = 0;
@@ -95,7 +95,7 @@ int CmdStart::execute (std::string& output)
       if (context.config.getBoolean ("journal.time"))
         task.addAnnotation (context.config.get ("journal.time.start.annotation"));
 
-      if (permission (task, taskDifferences (before, task) + question, filtered.size ()))
+      if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
         updateRecurrenceMask (task);
         context.tdb2.modify (task);

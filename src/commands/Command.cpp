@@ -312,7 +312,6 @@ Command::Category Command::category () const
 //   rc.confirmation
 //   this->_read_only
 bool Command::permission (
-  const Task& task,
   const std::string& question,
   unsigned int quantity)
 {

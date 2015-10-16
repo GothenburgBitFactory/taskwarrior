@@ -50,7 +50,7 @@ CmdExec::CmdExec ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdExec::execute (std::string& output)
+int CmdExec::execute (std::string&)
 {
   std::string command_line;
   join (command_line, " ", context.cli2.getWords ());

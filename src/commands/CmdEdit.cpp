@@ -65,7 +65,7 @@ CmdEdit::CmdEdit ()
 // Introducing the Silver Bullet.  This feature is the catch-all fixative for
 // various other ills.  This is like opening up the hood and going in with a
 // wrench.  To be used sparingly.
-int CmdEdit::execute (std::string& output)
+int CmdEdit::execute (std::string&)
 {
   // Filter the tasks.
   handleRecurrence ();

@@ -68,7 +68,7 @@ void ColumnMask::measure (Task& task, unsigned int& minimum, unsigned int& maxim
 void ColumnMask::render (
   std::vector <std::string>& lines,
   Task& task,
-  int width,
+  int,
   Color& color)
 {
   if (task.has (_name))

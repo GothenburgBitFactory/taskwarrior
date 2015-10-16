@@ -25,7 +25,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <iostream>
 #include <string>
 #include <set>
 #include <algorithm>
@@ -88,7 +87,7 @@ int CmdUnique::execute (std::string& output)
 
   // Generate list of unique values.
   for (auto& value : values)
-    std::cout << value << "\n";
+    output += value + "\n";
 
   context.headers.clear ();
   return 0;

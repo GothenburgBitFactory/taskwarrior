@@ -53,7 +53,7 @@ CmdModify::CmdModify ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdModify::execute (std::string& output)
+int CmdModify::execute (std::string&)
 {
   int rc = 0;
   int count = 0;
@@ -91,7 +91,7 @@ int CmdModify::execute (std::string& output)
                            task.get ("uuid"),
                            task.get ("description"));
 
-      if (permission (task, taskDifferences (before, task) + question, filtered.size ()))
+      if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
         count += modifyAndUpdate (before, task, &projectChanges);
       }

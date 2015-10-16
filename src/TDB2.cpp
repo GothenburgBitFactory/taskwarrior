@@ -584,7 +584,7 @@ void TDB2::add (Task& task, bool add_to_backlog /* = true */)
   if (add_to_backlog)
     context.hooks.onAdd (task);
 
-  update (uuid, task, add_to_backlog, true);
+  update (task, add_to_backlog, true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -602,12 +602,11 @@ void TDB2::modify (Task& task, bool add_to_backlog /* = true */)
     context.hooks.onModify (original, task);
   }
 
-  update (uuid, task, add_to_backlog);
+  update (task, add_to_backlog);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TDB2::update (
-  const std::string& uuid,
   Task& task,
   const bool add_to_backlog,
   const bool addition /* = false */)
@@ -775,10 +774,10 @@ void TDB2::revert ()
 
     // Modify other data files accordingly.
     std::vector <std::string> p = pending.get_lines ();
-    revert_pending (p, uuid, current, prior);
+    revert_pending (p, uuid, prior);
 
     std::vector <std::string> c = completed.get_lines ();
-    revert_completed (p, c, uuid, current, prior);
+    revert_completed (p, c, uuid, prior);
 
     std::vector <std::string> b = backlog.get_lines ();
     revert_backlog (b, uuid, current, prior);
@@ -837,7 +836,6 @@ void TDB2::revert_undo (
 void TDB2::revert_pending (
   std::vector <std::string>& p,
   const std::string& uuid,
-  const std::string& current,
   const std::string& prior)
 {
   std::string uuid_att = "uuid:\"" + uuid + "\"";
@@ -871,7 +869,6 @@ void TDB2::revert_completed (
   std::vector <std::string>& p,
   std::vector <std::string>& c,
   const std::string& uuid,
-  const std::string& current,
   const std::string& prior)
 {
   std::string uuid_att = "uuid:\"" + uuid + "\"";

@@ -71,7 +71,7 @@ public:
   virtual int execute (std::string&) = 0;
 
 protected:
-  bool permission (const Task&, const std::string&, unsigned int);
+  bool permission (const std::string&, unsigned int);
   static const std::map <Command::Category, std::string> categoryNames;
 
 protected:

@@ -53,7 +53,7 @@ CmdAnnotate::CmdAnnotate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdAnnotate::execute (std::string& output)
+int CmdAnnotate::execute (std::string&)
 {
   int rc = 0;
   int count = 0;
@@ -84,7 +84,7 @@ int CmdAnnotate::execute (std::string& output)
 
     task.modify (Task::modAnnotate, true);
 
-    if (permission (task, taskDifferences (before, task) + question, filtered.size ()))
+    if (permission (taskDifferences (before, task) + question, filtered.size ()))
     {
       context.tdb2.modify (task);
       ++count;

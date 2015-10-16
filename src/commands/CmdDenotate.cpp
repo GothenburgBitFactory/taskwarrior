@@ -53,7 +53,7 @@ CmdDenotate::CmdDenotate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdDenotate::execute (std::string& output)
+int CmdDenotate::execute (std::string&)
 {
   int rc = 0;
   int count = 0;
@@ -130,7 +130,7 @@ int CmdDenotate::execute (std::string& output)
                                      task.id,
                                      task.get ("description"));
 
-      if (permission (task, taskDifferences (before, task) + question, filtered.size ()))
+      if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {
         ++count;
         context.tdb2.modify (task);

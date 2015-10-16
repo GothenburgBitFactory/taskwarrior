@@ -55,7 +55,7 @@ CmdImport::CmdImport ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdImport::execute (std::string& output)
+int CmdImport::execute (std::string&)
 {
   int rc = 0;
   int count = 0;

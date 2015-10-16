@@ -53,7 +53,7 @@ CmdPrepend::CmdPrepend ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdPrepend::execute (std::string& output)
+int CmdPrepend::execute (std::string&)
 {
   int rc = 0;
   int count = 0;
@@ -84,7 +84,7 @@ int CmdPrepend::execute (std::string& output)
 
     task.modify (Task::modPrepend, true);
 
-    if (permission (task, taskDifferences (before, task) + question, filtered.size ()))
+    if (permission (taskDifferences (before, task) + question, filtered.size ()))
     {
       context.tdb2.modify (task);
       ++count;

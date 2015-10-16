@@ -39,7 +39,7 @@ Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Constants.
-bool get (const std::string& name, Variant& value)
+bool get (const std::string&, Variant&)
 {
 /*
   // An example, although a bad one because this is supported by default.

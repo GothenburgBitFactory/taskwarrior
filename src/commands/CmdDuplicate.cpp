@@ -53,7 +53,7 @@ CmdDuplicate::CmdDuplicate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdDuplicate::execute (std::string& output)
+int CmdDuplicate::execute (std::string&)
 {
   int rc = 0;
   int count = 0;
@@ -105,8 +105,7 @@ int CmdDuplicate::execute (std::string& output)
 
     dup.modify (Task::modAnnotate);
 
-    if (permission (dup,
-                    format (STRING_CMD_DUPLICATE_CONFIRM,
+    if (permission (format (STRING_CMD_DUPLICATE_CONFIRM,
                             task.id,
                             task.get ("description")),
                     filtered.size ()))

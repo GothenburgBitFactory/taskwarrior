@@ -49,7 +49,7 @@ CmdUndo::CmdUndo ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-int CmdUndo::execute (std::string& output)
+int CmdUndo::execute (std::string&)
 {
   context.tdb2.revert ();
   return 0;
