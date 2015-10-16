@@ -564,6 +564,14 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
     }
   }
 
+  // It is possible that the format='Y-M-D', and the input is Y-M-DTH:N:SZ, and
+  // this should not be considered a match.
+  if (! n.depleted () && ! Lexer::isWhitespace (n.next ()))
+  {
+    n.restore ();
+    return false;
+  }
+
   // Missing values are filled in from the current date.
   if (year == -1)
   {
