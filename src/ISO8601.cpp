@@ -247,13 +247,18 @@ bool ISO8601d::parse (
     }
   }
 
-  else if (ISO8601d::isoEnabled &&
-           (parse_date_time     (n)   || // Strictest first.
-            parse_date_time_ext (n)   ||
-            parse_date_ext      (n)   ||
-            parse_time_utc_ext  (n)   ||
-            parse_time_off_ext  (n)   ||
-            parse_time_ext      (n)))    // Time last, as it is the most permissive.
+  // Allow parse_date_time and parse_date_time_ext regardless of
+  // ISO8601d::isoEnabled setting, because these formats are relied upon by
+  // the 'import' command, JSON parser and hook system.
+  else if (parse_date_time     (n)   || // Strictest first.
+           parse_date_time_ext (n)   ||
+           (ISO8601d::isoEnabled &&
+            (parse_date_time     (n) ||
+             parse_date_time_ext (n) ||
+             parse_date_ext      (n) ||
+             parse_time_utc_ext  (n) ||
+             parse_time_off_ext  (n) ||
+             parse_time_ext      (n)))) // Time last, as it is the most permissive.
   {
     // Check the values and determine time_t.
     if (validate ())

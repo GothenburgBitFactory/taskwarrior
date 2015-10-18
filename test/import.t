@@ -302,6 +302,23 @@ class TestImportValidate(TestCase):
         self.assertIn("The status 'foo' is not valid.", err)
 
 
+class TestImportWithoutISO(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_import_with_iso_enabled(self):
+        j = '{"uuid":"a2a2a2a2-a2a2-a2a2-a2a2-a2a2a2a2a2a2", "description":"one", "entry":"20151018T144200"}'
+        self.t("import rc.date.iso=1", input=j)
+        code, out, err = self.t("_get 1.entry")
+        self.assertIn("2015-10-18T14:42:00\n", out)
+
+    def test_import_with_iso_disabled(self):
+        j = '{"uuid":"a2a2a2a2-a2a2-a2a2-a2a2-a2a2a2a2a2a2", "description":"one", "entry":"20151018T144200"}'
+        self.t("import rc.date.iso=0", input=j)
+        code, out, err = self.t("_get 1.entry")
+        self.assertIn("2015-10-18T14:42:00\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
