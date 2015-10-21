@@ -1,4 +1,4 @@
-2.5.0 (2015-10-21) -
+2.5.0 (2015-10-21) dd5968a61b1fab258b38879cfdbb7d67f1bcd550
 
 - TW-20   Task edit loses annotation precision, causing journal updating code
           to incorrectly indicate annotions are deleted and recreated (thanks
