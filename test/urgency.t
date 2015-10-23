@@ -281,6 +281,34 @@ class TestUrgency(TestCase):
         self.assertIn("task 30 ", out)
         self.assertIn("task 40 ", out)
 
+class TestBug837(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_unblocked_urgency(self):
+        """837: Verify urgency goes to zero after unblocking
+
+           Bug 837: When a task is completed, tasks that depended upon it do not
+                    have the correct urgency and depend on 0 when edited
+        """
+
+        self.t("add one")
+        self.t("add two dep:1")
+        self.t("list") # GC/handleRecurrence
+
+        code, out, err = self.t("_get 1.urgency")
+        self.assertEqual("8\n", out)
+
+        code, out, err = self.t("_get 2.urgency")
+        self.assertEqual("-5\n", out)
+
+        self.t("1 done")
+        self.t("list") # GC/handleRecurrence
+
+        code, out, err = self.t("_get 1.urgency")
+        self.assertEqual("0\n", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
