@@ -35,7 +35,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from basetest import Task, TestCase
 
 
-class TestCLI(TestCase):
+class TestQuoting(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
         # Used to initialize objects that should be re-initialized or
@@ -51,6 +51,22 @@ class TestCLI(TestCase):
         self.t("add '1-2'")
         code, out, err = self.t("_get 2.description")
         self.assertIn("1-2", out)
+
+class TestBug879(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_backslash_at_eol(self):
+        """879: Backslash at end of description/annotation causes problems"""
+        self.t("add one\\\\\\\\")
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("one\\\n", out)
+
+        self.t("1 annotate two\\\\\\\\")
+        code, out, err = self.t("long rc.verbose:nothing")
+        self.assertIn("one\\\n", out)
+        self.assertIn("two\\\n", out)
 
 
 if __name__ == "__main__":
