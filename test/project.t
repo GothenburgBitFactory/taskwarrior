@@ -354,6 +354,27 @@ class TestBug1455(TestCase):
         self.assertNotIn("zero", out)
 
 
+class TestBug899(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t.config("verbose", "on")
+
+    def test_log_project(self):
+        """899: Verify task log behaves correctly when logging into a project"""
+        code, out, err = self.t("add one pro:A")
+        self.assertRegexpMatches(err, " 0% complete \(1 task ")
+
+        code, out, err = self.t("add two pro:A")
+        self.assertRegexpMatches(err, " 0% complete \(2 of 2 ")
+
+        code, out, err = self.t("1 done")
+        self.assertRegexpMatches(err, " 50% complete \(1 of 2 ")
+
+        code, out, err = self.t("log three pro:A")
+        self.assertRegexpMatches(err, " 66% complete \(1 of 3 ")
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
