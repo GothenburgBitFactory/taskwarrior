@@ -211,7 +211,7 @@ class TestRecurrenceTasks(TestCase):
 
 class TestBug972(TestCase):
     def setUp(self):
-        """Executed before each test in the class"""
+        """972: Executed before each test in the class"""
         self.t = Task()
 
     def test_interpretation_of_seven(self):
@@ -502,6 +502,20 @@ class TestBugC001(TestCase):
 
         code, out, err = self.t("add two due:tomorrow recur:daily")
         self.assertIn("Created task 2.", out)
+
+class TestBug839(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_recurrence_value_mapping(self):
+        """839: Verify that importing a legacy recurrence value is ok"""
+        json = '{"description":"one","due":"1437579505","recur":"1m","status":"recurring","uuid":"ebeeab00-ccf8-464b-8b58-f7f2d606edfb"}'
+        self.t("import -", input=json)
+
+        code, out, err = self.t("list")
+        self.assertIn("one", out)
+        self.assertNotIn("The recurrence value '1m' is not valid.", out)
 
 
 # TODO Wait a recurring task
