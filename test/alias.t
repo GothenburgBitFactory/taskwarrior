@@ -149,12 +149,45 @@ class TestBug1652(TestCase):
         self.t("add one")
 
     def test_odd_alias(self):
-        """Verify that 'delete' is not lexed further"""
+        """1652: Verify that 'delete' is not lexed further"""
         self.t.config("alias.rm", "delete")
         self.t.config("confirmation", "off")
         code, out, err = self.t("1 rm")
         self.assertIn("Deleted 1 task.", out)
         self.assertNotIn("No matches.", err)
+
+class TestBug1031(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        # Used to initialize objects that should be re-initialized or
+        # re-created for each individual test
+        self.t = Task()
+
+        self.t.config("alias.from", "to")
+
+    def test_alias_to(self):
+        """1031: alias working as expected: 'from' -> 'to'"""
+        self.t("add from")
+        code, out, err = self.t("1 info")
+
+        expected = "Description\s+to"
+        self.assertRegexpMatches(out, expected)
+
+    def test_alias_to_to(self):
+        """1031: alias working as expected: 'from -- to' -> 'to to'"""
+        self.t("add from -- to")
+        code, out, err = self.t("1 info")
+
+        expected = "Description\s+to to"
+        self.assertRegexpMatches(out, expected)
+
+    def test_alias_to_from(self):
+        """1031: alias working as expected: 'to -- from' -> 'to from'"""
+        self.t("add to -- from")
+        code, out, err = self.t("1 info")
+
+        expected = "Description\s+to from"
+        self.assertRegexpMatches(out, expected)
 
 
 if __name__ == "__main__":
