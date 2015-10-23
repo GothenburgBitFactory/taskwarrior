@@ -49,6 +49,52 @@ class TestZshAttributes(TestCase):
              self.assertEqual(fields[0], fields[1])
 
 
+class TestZshCompletion(TestCase):
+    """Test _zshcommands and related completion subcommands"""
+
+    def setUp(self):
+        self.t = Task()
+        self.t.config("report.foobar.columns", "id")
+
+    def test_categories(self):
+        """test _zshcommands categories"""
+        code, out, err = self.t("_zshcommands")
+
+        self.assertIn("\nfoobar:report:", out)
+        self.assertIn("\ninformation:metadata:", out)
+        self.assertIn("\nexport:migration:", out)
+        self.assertNotIn(":unassigned:", out)
+
+
+class TestAliasesCompletion(TestCase):
+    """Aliases should be listed by '_aliases' not '_commands' or '_zshcommands'
+    reported as bug 1043
+    """
+    def setUp(self):
+        self.t = Task()
+        self.t.config("alias.samplealias", "long")
+
+    def test__aliases(self):
+        """samplealias in _aliases"""
+        code, out, err = self.t("_aliases")
+
+        self.assertIn("samplealias", out)
+
+    def test__commands(self):
+        """samplealias not in _commands"""
+        code, out, err = self.t("_commands")
+
+        self.assertIn("information", out)
+        self.assertNotIn("samplealias", out)
+
+    def test__zshcommands(self):
+        """samplealias not in _zshcommands"""
+        code, out, err = self.t("_zshcommands")
+
+        self.assertIn("information", out)
+        self.assertNotIn("samplealias", out)
+
+
 class TestBug956(TestCase):
     @classmethod
     def setUpClass(cls):
