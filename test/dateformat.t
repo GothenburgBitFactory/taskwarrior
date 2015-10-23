@@ -57,7 +57,6 @@ class TestDateformat(TestCase):
         self.assertEqual(out.count("20150704T000000"), 3)
 
 class TestBug886(TestCase):
-
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
@@ -72,6 +71,24 @@ class TestBug886(TestCase):
 
         code, out, err =self.t.runError("add two due:donkey")
         self.assertIn("'donkey' is not a valid date", err)
+
+
+class TestBug986(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_dateformat_precedence(self):
+        """986: Verify rc.dateformat.info takes precedence over rc.dateformat"""
+        self.t('add test')
+        self.t('1 start')
+
+        code, out, err = self.t('1 info rc.dateformat:XX rc.dateformat.info:__')
+        self.assertIn('__', out)
+        self.assertNotIn('XX', out)
+
+        code, out, err = self.t('1 info rc.dateformat:__ rc.dateformat.info:')
+        self.assertIn('__', out)
 
 
 if __name__ == "__main__":
