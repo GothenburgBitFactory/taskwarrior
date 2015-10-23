@@ -87,6 +87,18 @@ class TestInfoCommand(TestCase):
         self.assertIn("due", out)
         self.assertIn("UDA priority.H", out)
 
+class TestBug425(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_bug425(self):
+        """Make sure parser sees 'in' and not an abbreviated 'info'"""
+        self.t("add Foo")
+        self.t("1 modify Bar in Bar")
+
+        code, out, err = self.t("1 ls")
+        self.assertRegexpMatches(out, "1\s+Bar in Bar")
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
