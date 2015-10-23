@@ -56,6 +56,23 @@ class TestDateformat(TestCase):
         code, out, err = self.t("xxx rc.dateformat:YMDTHNS")
         self.assertEqual(out.count("20150704T000000"), 3)
 
+class TestBug886(TestCase):
+
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_invalid_day(self):
+        """886: Test invalid day synonym
+
+           Bug 886: tw doesn't warn the user if, e.g., a weekday cannot be resolved properly
+        """
+        code, out, err =self.t("add one due:sun")
+        self.assertIn("Created task 1.", out)
+
+        code, out, err =self.t.runError("add two due:donkey")
+        self.assertIn("'donkey' is not a valid date", err)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
