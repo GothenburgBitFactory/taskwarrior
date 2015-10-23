@@ -490,6 +490,19 @@ class TestBug649(TestCase):
         self.assertIn("is neither pending nor waiting", out)
         self.assertNotIn("Completed 1", out)
 
+class TestBugC001(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_id_increment(self):
+        """C001: Verify that entering two consecutive recurring tasks increments reported ID"""
+        code, out, err = self.t("add one due:tomorrow recur:daily")
+        self.assertIn("Created task 1.", out)
+
+        code, out, err = self.t("add two due:tomorrow recur:daily")
+        self.assertIn("Created task 2.", out)
+
 
 # TODO Wait a recurring task
 # TODO Downgrade a recurring task to a regular task
