@@ -92,7 +92,7 @@ class TestBug425(TestCase):
         self.t = Task()
 
     def test_bug425(self):
-        """Make sure parser sees 'in' and not an abbreviated 'info'"""
+        """425: Make sure parser sees 'in' and not an abbreviated 'info'"""
         self.t("add Foo")
         self.t("1 modify Bar in Bar")
 

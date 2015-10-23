@@ -89,7 +89,7 @@ class TestBug441(TestCase):
         self.t = Task()
 
     def test_bad_colon_replacement(self):
-        """Substitution containing a colon"""
+        """441: Substitution containing a colon"""
 
         self.t("add one two three")
         self.t("1 modify /two/two:/")

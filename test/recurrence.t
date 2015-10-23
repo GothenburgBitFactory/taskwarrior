@@ -289,7 +289,7 @@ class TestBug932(TestCase):
         self.t.config("report.id_pri_proj.labels", "ID,P,Proj")
 
     def test_modify_due_propagate(self):
-        """Verify due date modifications propagate"""
+        """932: Verify due date modifications propagate"""
 
         # add a recurring task with multiple child tasks
         # - modify a child task and test for propagation
@@ -319,7 +319,7 @@ class TestBug955(TestCase):
         self.assertRegexpMatches(out, re.compile("^2 tasks", re.MULTILINE))
 
     def test_no_prompt_for_parent_on_child_delete_confirmation_off(self):
-        """Deleting a child of a recurring task prompts for parent deletion (confirmation:off)
+        """955: Deleting a child of a recurring task prompts for parent deletion (confirmation:off)
 
         Previously bug.955.t
         """
@@ -412,7 +412,7 @@ class BaseTestBug360(TestCase):
 
 class TestBug360RemovalError(BaseTestBug360):
     def test_modify_recursive_project(self):
-        """Modifying a recursive task by adding project: also modifies parent
+        """360: Modifying a recursive task by adding project: also modifies parent
         """
         code, out, err = self.t("1 modify project:bar", input="y\n")
 
@@ -422,7 +422,7 @@ class TestBug360RemovalError(BaseTestBug360):
         self.assertNotIn(expected, err)
 
     def test_cannot_remove_recurrence(self):
-        """Cannot remove recurrence from recurring task
+        """360: Cannot remove recurrence from recurring task
         """
         # TODO Removing recur: from a recurring task should also remove imask
         # and parent.
@@ -435,7 +435,7 @@ class TestBug360RemovalError(BaseTestBug360):
         self.assertIn(expected, err)
 
     def test_cannot_remove_due_date(self):
-        """Cannot remove due date from recurring task
+        """360: Cannot remove due date from recurring task
         """
         # TODO Removing due: from a recurring task should also remove recur,
         # imask and parent
@@ -456,7 +456,7 @@ class TestBug360AllowedChanges(BaseTestBug360):
         self.t("add nonrecurring due:today")
 
     def test_allow_modify_due_in_nonrecurring(self):
-        """Allow modifying due date in non recurring task"""
+        """360: Allow modifying due date in non recurring task"""
         # Retrieve the id of the non recurring task
         code, out, err = self.t("ls")
 
@@ -477,6 +477,18 @@ class TestBug360AllowedChanges(BaseTestBug360):
         code, out, err = self.t.diag()
         expected = "No duplicates found"
         self.assertIn(expected, out)
+
+class TestBug649(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_delete_recurring_immediately(self):
+        """649: Verify that recurring tasks cannot be immediately marked completed"""
+        self.t("add one due:3d recur:1week")
+        code, out, err = self.t.runError("1 done")
+        self.assertIn("is neither pending nor waiting", out)
+        self.assertNotIn("Completed 1", out)
 
 
 # TODO Wait a recurring task
