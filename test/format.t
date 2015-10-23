@@ -47,62 +47,51 @@ class TestBug101(TestCase):
         # Find screen width in order to generate long enough string
         code, out, err = self.t("_get context.width")
         self.width = int(out)
+
         # Since task strips leading and trailing spaces, for the purposes
         # of these tests, ensure description contains no spaces so we know
         # exactly what string we are expecting
         self.short_description = "A_task_description_"
+
         # Generate long string
         self.long_description = self.short_description * int(math.ceil(float(self.width)/len(self.short_description)))
 
     def test_short_no_count(self):
         """Check short description with no annotations"""
         self.t(("add", self.short_description))
-
         code, out, err = self.t("bug101")
-
         expected = self.short_description
         self.assertIn(expected, out)
 
     def test_short_with_count(self):
         """Check short description with annotations"""
         self.t(("add", self.short_description))
-
         self.t("1 annotate 'A task annotation'")
-
         code, out, err = self.t("bug101")
-
         expected = self.short_description + " [1]"
         self.assertIn(expected, out)
 
     def test_long_no_count(self):
         """Check long description with no annotations"""
         self.t(("add", self.long_description))
-
         code, out, err = self.t("bug101")
-
         expected = self.long_description[:(self.width - 3)] + "..."
         self.assertIn(expected, out)
 
     def test_long_with_count(self):
         """Check long description with annotations"""
         self.t(("add", self.long_description))
-
         self.t("1 annotate 'A task annotation'")
-
         code, out, err = self.t("bug101")
-
         expected = self.long_description[:(self.width - 7)] + "... [1]"
         self.assertIn(expected, out)
 
     def test_long_with_double_digit_count(self):
         """Check long description with double digit amount of annotations"""
         self.t(("add", self.long_description))
-
         for i in range(10):
             self.t("1 annotate 'A task annotation'")
-
         code, out, err = self.t("bug101")
-
         expected = self.long_description[:(self.width - 8)] + "... [10]"
         self.assertIn(expected, out)
 
