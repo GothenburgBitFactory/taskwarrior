@@ -401,6 +401,82 @@ class TestRecurrenceNotification(TestCase):
         code, out, err = self.t("list")
         self.assertNotIn("Creating recurring task instance 'foo'", err)
 
+class BaseTestBug360(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t("add foo due:tomorrow recur:daily")
+        # This command forces a handleRecurrence() call to generate synthetic tasks.
+        self.t("ls")
+
+class TestBug360RemovalError(BaseTestBug360):
+    def test_modify_recursive_project(self):
+        """Modifying a recursive task by adding project: also modifies parent
+        """
+        code, out, err = self.t("1 modify project:bar", input="y\n")
+
+        expected = "Modified 2 tasks."
+        self.assertIn(expected, out)
+        expected = "You cannot remove the recurrence from a recurring task."
+        self.assertNotIn(expected, err)
+
+    def test_cannot_remove_recurrence(self):
+        """Cannot remove recurrence from recurring task
+        """
+        # TODO Removing recur: from a recurring task should also remove imask
+        # and parent.
+
+        code, out, err = self.t.runError("2 modify recur:")
+        # Expected non zero exit-code
+        self.assertEqual(code, 2)
+
+        expected = "You cannot remove the recurrence from a recurring task."
+        self.assertIn(expected, err)
+
+    def test_cannot_remove_due_date(self):
+        """Cannot remove due date from recurring task
+        """
+        # TODO Removing due: from a recurring task should also remove recur,
+        # imask and parent
+        code, out, err = self.t.runError("2 modify due:")
+        # Expected non zero exit-code
+        self.assertEqual(code, 2)
+
+        expected = "You cannot remove the due date from a recurring task."
+        self.assertIn(expected, err)
+
+
+class TestBug360AllowedChanges(BaseTestBug360):
+    def setUp(self):
+        """Executed before each test in the class"""
+        # Also do setUp from BaseTestBug360
+        super(TestBug360AllowedChanges, self).setUp()
+
+        self.t("add nonrecurring due:today")
+
+    def test_allow_modify_due_in_nonrecurring(self):
+        """Allow modifying due date in non recurring task"""
+        # Retrieve the id of the non recurring task
+        code, out, err = self.t("ls")
+
+        expected = "2 tasks"
+        self.assertIn(expected, out)
+
+        # NOTE: raw python string r"" avoids having to escape backslashes
+        id = re.search(r"(\d+)\s.+\snonrecurring", out).group(1)
+
+        code, out, err = self.t((id, "modify", "due:"))
+
+        expected = "Modified 1 task."
+        self.assertIn(expected, out)
+        expected = "You cannot remove the due date from a recurring task."
+        self.assertNotIn(expected, err)
+
+        # Make sure no duplicate tasks were created
+        code, out, err = self.t.diag()
+        expected = "No duplicates found"
+        self.assertIn(expected, out)
+
 
 # TODO Wait a recurring task
 # TODO Downgrade a recurring task to a regular task
