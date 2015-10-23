@@ -274,6 +274,21 @@ class TestBug1063(TestCase):
         self.assertRegexpMatches(out, expected)
 
 
+class TestBug21(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_almost_UDA(self):
+        """21: do not match a UDA if not followed by colon"""
+        self.t.config('uda.foo.type', 'string')
+        self.t.config('uda.foo.label', 'FOO')
+
+        self.t("add this is a foo bar")
+        code, out, err = self.t("1 info")
+
+        self.assertIn("this is a foo bar", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
