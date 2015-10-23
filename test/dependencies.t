@@ -195,6 +195,41 @@ class TestDependencies(TestCase):
         code, out, err = self.t("3 modify dep:-1,-%s" % uuid)
         self.assertIn("Modifying task 3 'three'.", out)
 
+class TestBug697(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    @unittest.expectedFailure
+    def test_blocking_to_recurring(self):
+        """697: Verify that making a blocking task into a recurring task breaks dependencies
+
+           Bug 697: Making a blocking task recur breaks dependency.
+             1. Create 2 tasks: "foo" and "bar".
+             2. Give "bar" a due date.
+             3. Make "foo" depend on "bar".
+             4. Make "bar" recur yearly.
+        """
+        self.t("add one")
+        self.t("add two")
+        self.t("2 modify due:eom")
+        self.t("1 modify depends:2")
+        self.t("2 modify recur:yearly")
+        self.t("list") # GC/handleRecurrence
+
+        # The problem is that although 1 --> 2, 2 is now a recurring parent, and as 1
+        # depends on the parent UUID, it is not something transferred to the child on
+        # generation, because the dependency belongs with 1, not 2.
+
+        code, out, err = self.t("_get 1.tag.BLOCKED")
+        self.assertEqual("BLOCKED\n", out)
+
+        code, out, err = self.t("_get 2.tag.BLOCKING")
+        self.assertEqual("BLOCKING\n", out)
+
+        code, out, err = self.t("_get 3.tag.BLOCKED")
+        self.assertEqual("BLOCKED\n", out)
+
 
 # TODO - test dependency.confirmation config variable
 # TODO - test undo on backing out chain gap repair
