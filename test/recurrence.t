@@ -603,6 +603,56 @@ class TestPeriod(TestCase):
        self.assertIn("No duplicates found", out)
 
 
+class TestBugAnnual(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_annual_creep(self):
+        """Verify 'annual' recurring tasks don't creep"""
+        self.t.config("dateformat",            "YMD")
+        self.t.config("report.annual.labels",  "ID,Due")
+        self.t.config("report.annual.columns", "id,due")
+        self.t.config("report.annual.filter",  "status:pending")
+        self.t.config("report.annual.sort",    "due+")
+
+        # If a task is added with a due date ten years ago, with an annual recurrence,
+        # then the synthetic tasks in between then and now have a due date that creeps.
+        #
+        # ID Due        Description
+        # -- ---------- -----------
+        #  4 1/1/2002   foo
+        #  5 1/1/2003   foo
+        #  6 1/1/2004   foo
+        #  7 1/1/2005   foo
+        #  8 1/1/2006   foo
+        #  9 1/1/2007   foo
+        # 10 1/1/2008   foo
+        # 11 1/1/2009   foo
+        # 12 1/1/2010   foo
+        #  2 1/1/2000   foo
+        #  3 1/1/2001   foo
+
+        self.t("add foo due:20000101 recur:annual until:20150101")
+        code, out, err = self.t("annual")
+        self.assertIn(" 2 20000101", out)
+        self.assertIn(" 3 20010101", out)
+        self.assertIn(" 4 20020101", out)
+        self.assertIn(" 5 20030101", out)
+        self.assertIn(" 6 20040101", out)
+        self.assertIn(" 7 20050101", out)
+        self.assertIn(" 8 20060101", out)
+        self.assertIn(" 9 20070101", out)
+        self.assertIn("10 20080101", out)
+        self.assertIn("11 20090101", out)
+        self.assertIn("12 20100101", out)
+        self.assertIn("13 20110101", out)
+        self.assertIn("14 20120101", out)
+        self.assertIn("15 20130101", out)
+        self.assertIn("16 20140101", out)
+        self.assertIn("17 20150101", out)
+
+
 # TODO Wait a recurring task
 # TODO Downgrade a recurring task to a regular task
 # TODO Duplicate a recurring child task
