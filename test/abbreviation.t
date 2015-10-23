@@ -60,8 +60,8 @@ class TestAbbreviation(TestCase):
 
     def test_uda_abbreviations(self):
         "Test uda attribute abbrevations"
-        # NOTE This will be an UDA when TW-1541 is closed, for now it's just
-        # one more attribute
+        # NOTE This will be a UDA when TW-1541 is closed, for now it is just
+        #      one more attribute
 
         self.verify_attribute("priority:H")
         self.verify_attribute("priorit:H")
@@ -85,6 +85,52 @@ class TestAbbreviation(TestCase):
         self.verify_command("ver")
         self.verify_command("ve")
         self.verify_command("v")
+
+
+class TestBug1006(TestCase):
+    """Bug with expansion of abbreviation "des" in task descriptions and annotations.
+       It happens for all the shortcuts for column attributes that are automatically
+       completed. This is because DOM elements are checked before standard words
+       when strings are tokenized.
+    """
+    def setUp(self):
+        self.t = Task()
+        self.t.config("verbose", "affected")
+
+    def initial_tasks(self):
+        self.t("add des")
+        self.t("1 annotate des")
+
+    def test_completion_of_des_inactive(self):
+        "1006: Check that the completion is inactive in task descriptions"
+
+        self.initial_tasks()
+        code, out, err = self.t("1 info")
+
+        expected = "Description +des\n"
+        errormsg = "Attribute not completed in description"
+        self.assertRegexpMatches(out, expected, msg=errormsg)
+
+        notexpected = "description"
+        self.assertNotIn(notexpected, out, msg=errormsg)
+
+    def test_completion_as_expected(self):
+        "1006: Check that the completion works when needed"
+
+        self.initial_tasks()
+        code, out, err = self.t("des:des")
+
+        errormsg = "Task found using its description"
+        self.assertIn("1 task", out, msg=errormsg)
+
+    def test_accented_chars(self):
+        "1006: Check that é in entrée remains untouched"
+
+        self.t("add entrée interdite")
+        code, out, err = self.t("list interdite")
+
+        errormsg = "'entrée' left intact"
+        self.assertIn("entrée interdite", out, msg=errormsg)
 
 
 if __name__ == "__main__":
