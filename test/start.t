@@ -127,6 +127,25 @@ class TestActiveTaskHandling(TestCase):
         self.assertIn("Task 1 'one' already started.", out)
 
 
+class TestFeature608(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_done_stop(self):
+        """608: Done should stop an active task"""
+        self.t("add foo")
+        self.t("1 start")
+        code, out, err = self.t("export")
+        self.assertIn('"start":', out)
+        self.assertNotIn('"end":', out)
+
+        self.t("1 done")
+        code, out, err = self.t("export")
+        self.assertNotIn('"start":', out)
+        self.assertIn('"end":', out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
