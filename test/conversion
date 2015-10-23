@@ -5,6 +5,6 @@ printf "Python:  %5d\n" $(head -n1 *.t | grep -a '\bpython' | wc -l)
 printf "Bash:    %5d\n" $(head -n1 *.t | grep -a '\bbash' | wc -l)
 echo
 printf "Feature  %5d\n" $(ls feature.*.t | wc -l)
-printf "Bug      %5d\n" $(ls tw-*.t bug.*.t | wc -l)
+printf "Bug      %5d\n" $(ls tw-*.t | wc -l)
 echo
 printf "Total:   %5d\n" $(ls *.t | wc -l)
