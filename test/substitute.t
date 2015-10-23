@@ -84,6 +84,19 @@ class TestSubstitutions(TestCase):
         code, out, err = self.t("_get 1.description")
         self.assertEqual("aaa BbB\n", out)
 
+class TestBug441(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_bad_colon_replacement(self):
+        """Substitution containing a colon"""
+
+        self.t("add one two three")
+        self.t("1 modify /two/two:/")
+
+        code, out, err = self.t("ls")
+        self.assertIn("one two: three", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
