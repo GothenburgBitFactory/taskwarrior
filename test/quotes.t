@@ -52,6 +52,21 @@ class TestQuoting(TestCase):
         code, out, err = self.t("_get 2.description")
         self.assertIn("1-2", out)
 
+
+class TestBug268(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_add_hyphenated(self):
+        """escaped backslashes do not work with 'modify'"""
+
+        self.t("add a b or c")
+        self.t('1 modify "/a b/a\/b/"')
+
+        code, out, err = self.t("1 info")
+        self.assertIn("a/b or c", out)
+
+
 class TestBug879(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
