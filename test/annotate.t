@@ -149,6 +149,38 @@ class TestAnnotationPropagation(TestCase):
         code, out, err = self.t("_get 2.annotations.1.description")
         self.assertEqual("bar\n", out)
 
+
+class TestAnnotation(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t.config("confirmation", "yes")
+
+    def test_blank_annotation(self):
+        """Verify blank annotations are prevented"""
+        self.t("add foo")
+
+        code, out, err = self.t.runError("1 annotate")
+        self.assertIn("Additional text must be provided", err)
+
+    def test_filterless_annotate_decline(self):
+        """Verify filterless annotation is trapped, declined"""
+        self.t("add foo")
+
+        code, out, err = self.t.runError("annotate bar", input="no\n")
+        self.assertIn("Command prevented from running", err)
+        self.assertNotIn("Command prevented from running", out)
+
+    def test_filterless_annotate(self):
+        """Verify filterless annotation is trapped, overridden"""
+        self.t("add foo")
+        code, out, err = self.t("annotate bar", input="yes\n")
+
+        self.assertNotIn("Command prevented from running", err)
+        self.assertNotIn("Command prevented from running", out)
+        self.assertIn("Annotated 1 task", out)
+
+
 class TestBug495(TestCase):
     def setUp(self):
         self.t = Task()
