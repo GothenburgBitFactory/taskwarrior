@@ -1676,10 +1676,10 @@ int Task::determineVersion (const std::string& line)
   //   X [tags] [attributes] description\n
   //
   // Scan for the first character being either the bracket or X.
-  else if (line.find ("X [") == 0 ||
-           line.find ("uuid") == std::string::npos ||
-           (line[0] == '[' &&
-            line.substr (line.length () - 1, 1) != "]"))
+  else if (line.find ("X [") == 0                      ||
+           (line[0] == '['                             &&
+            line.substr (line.length () - 1, 1) != "]" &&
+            line.length () > 3))
     return 1;
 
   // Version 5?

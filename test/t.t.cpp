@@ -34,7 +34,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest test (23);
+  UnitTest test (40);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -151,11 +151,71 @@ TODO Task::decode
   left.set ("one", "1.0");
   test.notok (left == right, "left == right -> false");
 
-  // Task::validate
-  Task bad ("[entry:1000000001 start:1000000000]");
+  ////////////////////////////////////////////////////////////////////////////////
+  Task task;
+
+  // (blank)
   good = true;
-  try { bad.validate (); } catch (...) { good = false; }
-  test.notok (good, "Task::validate entry <= start");
+  try {task = Task ("");}
+  catch (const std::string& e){test.diag (e); good = false;}
+  test.notok (good, "Task::Task ('')");
+
+  // []
+  good = true;
+  try {task = Task ("[]");}
+  catch (const std::string& e){test.diag (e); good = false;}
+  test.notok (good, "Task::Task ('[]')");
+
+  // [name:"value"]
+  good = true;
+  try {task = Task ("[name:\"value\"]");}
+  catch (const std::string& e){test.diag (e); good = false;}
+  test.ok (good, "Task::Task ('[name:\"value\"]')");
+  test.is (task.get ("name"), "value", "name=value");
+
+  // [name:"one two"]
+  good = true;
+  try {task = Task ("[name:\"one two\"]");}
+  catch (const std::string& e){test.diag (e); good = false;}
+  test.ok (good, "Task::Task ('[name:\"one two\"]')");
+  test.is (task.get ("name"), "one two", "name=one two");
+
+  // [one:two three:four]
+  good = true;
+  try {task = Task ("[one:\"two\" three:\"four\"]");}
+  catch (const std::string& e){test.diag (e); good = false;}
+  test.ok (good, "Task::Task ('[one:\"two\" three:\"four\"]')");
+  test.is (task.get ("one"), "two", "one=two");
+  test.is (task.get ("three"), "four", "three=four");
+
+  // Task::set
+  task.clear ();
+  task.set ("name", "value");
+  test.is (task.composeF4 (), "[name:\"value\"]", "Task::set");
+
+  // Task::has
+  test.ok    (task.has ("name"), "Task::has");
+  test.notok (task.has ("woof"), "Task::has not");
+
+  // Task::get_int
+  task.set ("one", 1);
+  test.is (task.composeF4 (), "[name:\"value\" one:\"1\"]", "Task::set");
+  test.is (task.get_int ("one"), 1, "Task::get_int");
+
+  // Task::get_ulong
+  task.set ("two", "4294967295");
+  test.is (task.composeF4 (), "[name:\"value\" one:\"1\" two:\"4294967295\"]", "Task::set");
+  test.is ((size_t)task.get_ulong ("two"), (size_t)4294967295UL, "Task::get_ulong");
+
+  // Task::remove
+  task.remove ("one");
+  task.remove ("two");
+  test.is (task.composeF4 (), "[name:\"value\"]", "Task::remove");
+
+  // Task::all
+  test.is (task.size (), (size_t)1, "Task::all size");
+
+  ////////////////////////////////////////////////////////////////////////////////
 
   return 0;
 }

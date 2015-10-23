@@ -839,7 +839,7 @@
 #define STRING_TASK_NO_FF1           "Taskwarrior no longer supports file format 1, originally used between 27 November 2006 and 31 December 2007."
 #define STRING_TASK_NO_FF2           "Taskwarrior no longer supports file format 2, originally used between 1 January 2008 and 12 April 2009."
 #define STRING_TASK_NO_FF3           "Taskwarrior no longer supports file format 3, originally used between 23 March 2009 and 16 May 2009."
-#define STRING_TASK_PARSE_UNREC_FF   "Unrecognized Taskwarrior file format."
+#define STRING_TASK_PARSE_UNREC_FF   "Unrecognized Taskwarrior file format or blank line in data."
 #define STRING_TASK_DEPEND_ITSELF    "A task cannot be dependent on itself."
 #define STRING_TASK_DEPEND_MISS_CREA "Could not create a dependency on task {1} - not found."
 #define STRING_TASK_DEPEND_MISS_DEL  "Could not delete a dependency on task {1} - not found."
