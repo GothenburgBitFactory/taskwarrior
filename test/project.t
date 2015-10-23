@@ -182,7 +182,7 @@ class TestBug299(TestCase):
         self.t("add project:three baz")
 
     def test_project_exclusion_isnt(self):
-        """check project exclusion using project.isnt:<name>
+        """299: check project exclusion using project.isnt:<name>
 
         Reported in bug 299
         """
@@ -197,7 +197,7 @@ class TestBug299(TestCase):
         self.assertRegexpMatches(out, "three.*baz")
 
     def test_project_exclusion_hasnt(self):
-        """check project exclusion using project.hasnt:<name>
+        """299: check project exclusion using project.hasnt:<name>
 
         Reported in bug 299
         """
@@ -217,7 +217,7 @@ class TestBug555(TestCase):
         self.t = Task()
 
     def test_log_with_project_segfault(self):
-        """log with a project causes a segfault
+        """555: log with a project causes a segfault
 
         Reported in bug 555
         """
@@ -233,7 +233,7 @@ class TestBug605(TestCase):
         self.t = Task()
 
     def test_delete_task_for_empty_project(self):
-        """Project correctly reports % completion when empty or all tasks completed
+        """605: Project correctly reports % completion when empty or all tasks completed
 
         Reported in bug 605
         """
@@ -247,12 +247,28 @@ class TestBug605(TestCase):
         self.assertIn("is 100% complete", err)
 
 
+class TestBug835(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_project_hierarchy_filter(self):
+        """835: Verify filter on project hierarchy, plus parentheses"""
+        self.t("add pro:main.subproject one")
+        code, out, err = self.t("ls")
+        self.assertIn("main.subproject", out)
+
+        code, out, err = self.t("(pro:main.subproject) ls")
+        self.assertIn("main.subproject", out)
+        self.assertNotIn("Mismatched parentheses in expression", out)
+
+
 class TestBug906(TestCase):
     def setUp(self):
         self.t = Task()
 
     def test_project_hierarchy_filter(self):
-        """Test project hierarchy filters
+        """906: Test project hierarchy filters
 
            Bug 906
         """
@@ -286,7 +302,7 @@ class TestBug856(TestCase):
         self.t = Task()
 
     def test_project_hierarchy_filter(self):
-        """Test project.none: works
+        """856: Test project.none: works
 
            Bug 856: "task list project.none:" does not work.
         """
@@ -311,7 +327,7 @@ class TestBug1511(TestCase):
         self.t = Task()
 
     def test_project_hierarchy_filter(self):
-        """Test project:one-two can be added and queried
+        """1511: Test project:one-two can be added and queried
 
            Bug 1511: Project titles not properly parsed if they contain hyphens
         """
@@ -327,7 +343,7 @@ class TestBug1455(TestCase):
         self.t = Task()
 
     def test_project_hierarchy_filter(self):
-        """Test project:school)
+        """1455: Test project:school)
 
            Bug 1455: Filter parser does not properly handle parentheses in attributes
         """
