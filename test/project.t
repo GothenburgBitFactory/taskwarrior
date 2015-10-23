@@ -171,6 +171,45 @@ class TestProjects(TestCase):
         self.assertIn("C", out)
 
 
+class TestSubprojects(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t("add project:abc abc")
+        cls.t("add project:ab ab")
+        cls.t("add project:a a")
+        cls.t("add project:b b")
+
+    def test_project_exact1(self):
+        """Verify single character exact"""
+        code, out, err = self.t("list project:b")
+        self.assertRegexpMatches(out, r"\bb\s")
+
+    def test_project_top1(self):
+        """Verify single character parent"""
+        code, out, err = self.t("list project:a")
+        self.assertRegexpMatches(out, r"\babc\s")
+        self.assertRegexpMatches(out, r"\bab\s")
+        self.assertRegexpMatches(out, r"\ba\s")
+
+    def test_project_top2(self):
+        """Verify double character parent"""
+        code, out, err = self.t("list project:ab")
+        self.assertRegexpMatches(out, r"\babc\s")
+        self.assertRegexpMatches(out, r"\bab\s")
+
+    def test_project_exact3(self):
+        """Verify triple character exact"""
+        code, out, err = self.t("list project:abc")
+        self.assertRegexpMatches(out, r"\babc\s")
+
+    def test_project_mismatch4(self):
+        """Verify quad character mismatch"""
+        code, out, err = self.t.runError("list project:abcd")
+        self.assertIn("No matches", err)
+
+
 class TestBug299(TestCase):
     def setUp(self):
         self.t = Task()
