@@ -68,6 +68,31 @@ class TestArgs(TestCase):
         self.assertIn("project:p pri:H +tag foo --\n", out, msg='add -- project:p pri:H +tag foo --')
 
 
+class TestIDPosition(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+
+        cls.t("add one")
+        cls.t("add two")
+
+    def test_id_read_cmd(self):
+        """Test id before and after read command"""
+        code, out, err = self.t("1 info")
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+
+        code, out, err = self.t("info 1")
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+
+    def test_id_write_cmd(self):
+        """Test id before write command"""
+        code, out, err = self.t("2 done")
+        self.assertIn("Completed task 2", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
