@@ -84,6 +84,29 @@ class TestMath(TestCase):
         code, out, err = self.t('_get 6.due')
         self.assertEqual(out, self.when)
 
+class TestBug851(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t('add past due:-2days')
+        cls.t('add future due:2days')
+
+    def setUp(self):
+        """Executed before each test in the class"""
+
+    def test_attribute_before_with_math(self):
+        """851: Test due.before:now+1d"""
+        code, out, err = self.t('due.before:now+1day ls')
+        self.assertIn("past", out)
+        self.assertNotIn("future", out)
+
+    def test_attribute_after_with_math(self):
+        """851: Test due.after:now+1d"""
+        code, out, err = self.t('due.after:now+1day ls')
+        self.assertNotIn("past", out)
+        self.assertIn("future", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
