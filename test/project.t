@@ -375,6 +375,28 @@ class TestBug899(TestCase):
         self.assertRegexpMatches(err, " 66% complete \(1 of 3 ")
 
 
+class TestBug1267(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_add_task_no_project_with_default(self):
+        """1267: Add a task without a project using direct rc change
+        """
+        project = "MakePudding"
+        self.t("rc.default.project={0} add proj: 'Add cream'".format(project))
+        code, out, err = self.t("ls")
+        self.assertNotIn(project, out)
+
+    def test_add_task_no_project_with_default_rcfile(self):
+        """1267: Add a task without a project writing to rc file
+        """
+        project = "MakePudding"
+        self.t.config("default.project", project)
+        self.t("add proj: 'Add cream'")
+        code, out, err = self.t("ls")
+        self.assertNotIn(project, out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
