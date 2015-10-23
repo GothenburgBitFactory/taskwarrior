@@ -242,6 +242,37 @@ class TestUdaValue(TestBaseUda):
         self.assertNotRegexpMatches(out, "1\s+toxic\s+two")
 
 
+class TestBug1063(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+        self.t.config("uda.foo.type", "numeric")
+        self.t.config("uda.foo.label", "Foo")
+        self.t.config("report.bar.columns", "foo,description")
+        self.t.config("report.bar.description", "Bar")
+        self.t.config("report.bar.labels", "Foo,Desc")
+        self.t.config("report.bar.sort", "foo-")
+
+    def test_sortable_uda(self):
+        """1063: numeric UDA fields are sortable
+
+        Reported as bug 1063
+        """
+
+        self.t("add four foo:4")
+        self.t("add one foo:1")
+        self.t("add three foo:3")
+        self.t("add two foo:2")
+
+        code, out, err = self.t("bar")
+        expected = re.compile("4.+3.+2.+1", re.DOTALL)  # dot matches \n too
+        self.assertRegexpMatches(out, expected)
+
+        code, out, err = self.t("bar rc.report.bar.sort=foo+")
+        expected = re.compile("1.+2.+3.+4", re.DOTALL)  # dot matches \n too
+        self.assertRegexpMatches(out, expected)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
