@@ -416,32 +416,32 @@ class Test285(TestCase):
         cls.t('add due_next_year     due:1year')
 
     def test_overdue(self):
-        """+OVERDUE"""
+        """285: +OVERDUE"""
         code, out, err = self.t("+OVERDUE count")
         self.assertEqual(out, "3\n", "+OVERDUE == 3 tasks")
 
     def test_yesterday(self):
-        """+YESTERDAY"""
+        """285: +YESTERDAY"""
         code, out, err = self.t("+YESTERDAY count")
         self.assertEqual(out, "1\n", "+YESTERDAY == 1 task")
 
     def test_due(self):
-        """+DUE"""
+        """285: +DUE"""
         code, out, err = self.t("+DUE count")
         self.assertEqual(out, "3\n", "+DUE == 3 task")
 
     def test_today(self):
-        """+TODAY"""
+        """285: +TODAY"""
         code, out, err = self.t("+TODAY count")
         self.assertEqual(out, "1\n", "+TODAY == 1 task")
 
     def test_duetoday(self):
-        """+DUETODAY"""
+        """285: +DUETODAY"""
         code, out, err = self.t("+DUETODAY count")
         self.assertEqual(out, "1\n", "+DUETODAY == 1 task")
 
     def test_tomorrow(self):
-        """+TOMORROW"""
+        """285: +TOMORROW"""
         code, out, err = self.t("+TOMORROW count")
         self.assertEqual(out, "1\n", "+TOMORROW == 1 task")
 
@@ -493,7 +493,7 @@ class TestBug1700(TestCase):
         self.t = Task()
 
     def test_tags_overwrite(self):
-        """Verify that 'tags:a,b' overwrites existing tags."""
+        """1700: Verify that 'tags:a,b' overwrites existing tags."""
         self.t("add +tag1 +tag2 one")
         code, out, err = self.t("_get 1.tags")
         self.assertIn("tag1,tag2", out)
@@ -503,6 +503,32 @@ class TestBug1700(TestCase):
         code, out, err = self.t("_get 1.tags")
         self.assertNotIn("tag1", out)
         self.assertIn("tag2,tag3", out)
+
+class TestBug818(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_tag_filter_partial_match(self):
+        """818: Filtering by tag counter-intuitively uses partial match"""
+        self.t("add +hannah +anna one")
+        code, out, err = self.t("+anna list")
+        self.assertIn("one", out)
+
+        self.t("add +anna +hannah two")
+        code, out, err = self.t("+anna list")
+        self.assertIn("one", out)
+
+        code, out, err = self.t("+hannah list")
+        self.assertIn("two", out)
+
+        self.t("add +hannah three")
+        self.t("add +anna four")
+        code, out, err = self.t("+anna list")
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+        self.assertNotIn("three", out)
+        self.assertIn("four", out)
 
 
 if __name__ == "__main__":
