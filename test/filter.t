@@ -741,6 +741,48 @@ class TestRange(TestCase):
         self.assertNotIn("three", out)
 
 
+class TestHasHasnt(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_has_hasnt(self):
+        """Verify the 'has' and 'hasnt' attribute modifiers"""
+        self.t("add foo")              # 1
+        self.t("add foo")              # 2
+        self.t("2 annotate bar")
+        self.t("add foo")              # 3
+        self.t("3 annotate bar")
+        self.t("3 annotate baz")
+        self.t("add bar")              # 4
+        self.t("add bar")              # 5
+        self.t("5 annotate foo")
+        self.t("add bar")              # 6
+        self.t("6 annotate foo")
+        self.t("6 annotate baz")
+        self.t("add one")              # 7
+        self.t("7 annotate two")
+        self.t("7 annotate three")
+
+        code, out, err = self.t("description.has:foo long")
+        self.assertIn("\n 1", out)
+        self.assertIn("\n 2", out)
+        self.assertIn("\n 3", out)
+        self.assertNotIn("\n 4", out)
+        self.assertIn("\n 5", out)
+        self.assertIn("\n 6", out)
+        self.assertNotIn("\n 7", out)
+
+        code, out, err = self.t("description.hasnt:foo long")
+        self.assertNotIn("\n 1", out)
+        self.assertNotIn("\n 2", out)
+        self.assertNotIn("\n 3", out)
+        self.assertIn("\n 4", out)
+        self.assertNotIn("\n 5", out)
+        self.assertNotIn("\n 6", out)
+        self.assertIn("\n 7", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
