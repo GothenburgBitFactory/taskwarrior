@@ -168,6 +168,45 @@ class TestBulk(TestCase):
         self.assertNotIn("Deleting task", out)
 
 
+class TestBugBulk(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("bulk", "3")
+
+        # Add some tasks with project, priority and due date, some with only
+        # due date.  Bulk add a project and priority to the tasks that are
+        # without.
+        cls.t("add t1 pro:p1 pri:H due:monday")
+        cls.t("add t2 pro:p1 pri:M due:tuesday")
+        cls.t("add t3 pro:p1 pri:L due:wednesday")
+        cls.t("add t4              due:thursday")
+        cls.t("add t5              due:friday")
+        cls.t("add t6              due:saturday")
+
+    def setUp(self):
+        """Executed before each test in the class"""
+
+    def test_bulk_quit(self):
+        """Verify 'quit' averts all bulk changes"""
+        code, out, err = self.t("4 5 6 modify pro:p1 pri:M", input="quit\n")
+        self.assertIn("Modified 0 tasks", out)
+
+    def test_bulk_all(self):
+        """Verify 'all' accepts all bulk changes"""
+        code, out, err = self.t("4 5 6 modify pro:p1 pri:M", input="All\n")
+        self.assertIn("Modifying task 4 't4'.", out)
+        self.assertIn("Modifying task 5 't5'.", out)
+        self.assertIn("Modifying task 6 't6'.", out)
+
+        code, out, err = self.t("_get 4.project 5.project 6.project")
+        self.assertEqual("p1 p1 p1\n", out)
+
+        code, out, err = self.t("_get 4.priority 5.priority 6.priority")
+        self.assertEqual("M M M\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
