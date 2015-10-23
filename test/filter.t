@@ -724,6 +724,23 @@ class TestBug1656(TestCase):
         self.assertIn("task2", out)
 
 
+class TestRange(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_date_range(self):
+        """Verify tasks can be selected by dates ranges"""
+        self.t("add one   due:2009-08-01")
+        self.t("add two   due:2009-08-03")
+        self.t("add three due:2009-08-05")
+
+        code, out, err = self.t("due.after:2009-08-02 due.before:2009-08-05 ls")
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
+        self.assertNotIn("three", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
