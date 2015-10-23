@@ -28,6 +28,7 @@
 
 import sys
 import os
+import re
 import unittest
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
