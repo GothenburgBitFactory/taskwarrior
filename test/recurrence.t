@@ -518,6 +518,91 @@ class TestBug839(TestCase):
         self.assertNotIn("The recurrence value '1m' is not valid.", out)
 
 
+class TestPeriod(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_recurrence_periods(self):
+       """Verify recurrence period special-case support
+
+       Date getNextRecurrence (Date& current, std::string& period)
+
+       Confirmed:
+         getNextRecurrence  convertDuration
+         -----------------  ---------------
+                            daily
+                            day
+                            weekly
+                            sennight
+                            biweekly
+                            fortnight
+         monthly            monthly
+         quarterly          quarterly
+         semiannual         semiannual
+         bimonthly          bimonthly
+         biannual           biannual
+         biyearly           biyearly
+                            annual
+                            yearly
+         *m                 *m
+         *q                 *q
+                            *d
+                            *w
+                            *y
+       """
+
+       self.t("add daily due:tomorrow recur:daily")
+       self.t("add 1day due:tomorrow recur:1day")
+       self.t("add weekly due:tomorrow recur:weekly")
+       self.t("add 1sennight due:tomorrow recur:1sennight")
+       self.t("add biweekly due:tomorrow recur:biweekly")
+       self.t("add fortnight due:tomorrow recur:fortnight")
+       self.t("add monthly due:tomorrow recur:monthly")
+       self.t("add quarterly due:tomorrow recur:quarterly")
+       self.t("add semiannual due:tomorrow recur:semiannual")
+       self.t("add bimonthly due:tomorrow recur:bimonthly")
+       self.t("add biannual due:tomorrow recur:biannual")
+       self.t("add biyearly due:tomorrow recur:biyearly")
+       self.t("add annual due:tomorrow recur:annual")
+       self.t("add yearly due:tomorrow recur:yearly")
+       self.t("add 2d due:tomorrow recur:2d")
+       self.t("add 2w due:tomorrow recur:2w")
+       self.t("add 2mo due:tomorrow recur:2mo")
+       self.t("add 2q due:tomorrow recur:2q")
+       self.t("add 2y due:tomorrow recur:2y")
+
+       # Verify that the recurring task instances were created.  One of each.
+       code, out, err = self.t("list")
+       self.assertIn(" daily ",      out);
+       self.assertIn(" 1day ",       out);
+       self.assertIn(" weekly ",     out);
+       self.assertIn(" 1sennight ",  out);
+       self.assertIn(" biweekly ",   out);
+       self.assertIn(" fortnight ",  out);
+       self.assertIn(" monthly ",    out);
+       self.assertIn(" quarterly ",  out);
+       self.assertIn(" semiannual ", out);
+       self.assertIn(" bimonthly ",  out);
+       self.assertIn(" biannual ",   out);
+       self.assertIn(" biyearly ",   out);
+       self.assertIn(" annual ",     out);
+       self.assertIn(" yearly ",     out);
+       self.assertIn(" 2d ",         out);
+       self.assertIn(" 2w ",         out);
+       self.assertIn(" 2mo ",        out);
+       self.assertIn(" 2q ",         out);
+       self.assertIn(" 2y ",         out);
+
+       # Duplicate check
+       code, out, err = self.t("diag")
+       self.assertIn("No duplicates found", out)
+
+
 # TODO Wait a recurring task
 # TODO Downgrade a recurring task to a regular task
 # TODO Duplicate a recurring child task
