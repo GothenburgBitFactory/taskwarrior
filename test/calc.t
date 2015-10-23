@@ -29,11 +29,12 @@
 import sys
 import os
 import re
+import signal
 import unittest
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from basetest import TestCase
+from basetest import Task, TestCase
 from basetest.utils import BIN_PREFIX, run_cmd_wait, run_cmd_wait_nofail
 
 CALC = os.path.join(BIN_PREFIX, "calc")
@@ -103,6 +104,33 @@ class TestCalc(TestCase):
         self.assertNotIn("Error: Unexpected stack size: 2", err)
         self.assertIn("Eval literal duration ↑'PT15M'", out)
         self.assertRegexpMatches(out, re.compile("^PT15M$", re.MULTILINE))
+
+
+class TestBug1254(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def run_command(self, args):
+        code, out, err = self.t(args)
+
+        # We should not see a segmentation fault
+        # (negative exit code == 128 - real_exit_code)
+        expected = -signal.SIGSEGV
+        self.assertNotEqual(expected, code, "Task segfaulted")
+
+        # Instead we expect a clean exit
+        expected = 0
+        self.assertEqual(expected, code, "Exit code was non-zero ({0})".format(code))
+
+    def test_no_segmentation_fault_calc_negative_multiplication(self):
+        """1254: calc can multiply zero and negative numbers
+        """
+        self.run_command("calc 0*-1")
+
+    def test_calc_positive_multiplication(self):
+        """1254: calc can multiply negative zero and positive
+        """
+        self.run_command("calc 0*1")
 
 
 if __name__ == "__main__":
