@@ -128,11 +128,24 @@ class TestBug1359(TestCase):
         self.t = Task()
 
     def test_add_hyphenated(self):
-        """1359: one-two-three" in description triggers Malformed ID error"""
+        """1359: one-two-three in description triggers Malformed ID error"""
         self.t("add 'one-two-three.ca'")
 
         code, out, err = self.t("1 info")
         self.assertIn("one-two-three.ca", out)
+
+
+class TestBug1419(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_add_with_remove_tag(self):
+        """1419: Verify that '-two' is not treated as a tag on add"""
+        self.t("add one -two")
+
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("one -two\n", out)
 
 
 if __name__ == "__main__":
