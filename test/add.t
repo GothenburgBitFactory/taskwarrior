@@ -57,7 +57,7 @@ class TestAdd(TestCase):
         self.assertEqual(out, "This a TEST\n")
 
     def test_floating_point_preservation(self):
-        """Verify that floating point numbers are unmolested
+        """924: Verify that floating point numbers are unmolested
 
            Bug 924: '1.0' --> '1.0000'
         """
@@ -75,7 +75,7 @@ class TestAdd(TestCase):
         self.assertEqual(out, "release 3.0\n")
 
     def test_escaped_quotes_are_preserved(self):
-        """Verify that escaped quotes are preserved
+        """917: Verify that escaped quotes are preserved
 
            Bug 917: escaping runs amok
         """
@@ -87,7 +87,7 @@ class TestAdd(TestCase):
         self.assertIn("four \"five\" six", out)
 
     def test_extra_space_in_path(self):
-        """Test that path-like args are preserved
+        """884: Test that path-like args are preserved
 
            Bug 884: Extra space in path name.
         """
@@ -99,7 +99,7 @@ class TestAdd(TestCase):
         self.assertIn("/four/five/six/", out)
 
     def test_parentheses_and_spaces_preserved(self):
-        """Test parentheses and spacing is preserved on add
+        """819: Test parentheses and spacing is preserved on add
 
            Bug 819: When I run "task add foo\'s bar." the description of the new task is "foo 's bar .".
         """
@@ -113,7 +113,7 @@ class TestAdd(TestCase):
         self.assertIn("baz (qux)", out)
 
     def test_single_quote_preserved(self):
-        """Test single quote in a terminated multi-word string is preserved
+        """1642: Test single quote in a terminated multi-word string is preserved
 
            TW-1642: After "--", an apostrophe unexpectedly ends the task description
         """
@@ -121,6 +121,18 @@ class TestAdd(TestCase):
 
         code, out, err = self.t ("_get 1.description")
         self.assertIn("Return Randy's stuff\n", out)
+
+
+class TestBug1359(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_add_hyphenated(self):
+        """1359: one-two-three" in description triggers Malformed ID error"""
+        self.t("add 'one-two-three.ca'")
+
+        code, out, err = self.t("1 info")
+        self.assertIn("one-two-three.ca", out)
 
 
 if __name__ == "__main__":
