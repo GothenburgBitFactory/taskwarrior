@@ -270,6 +270,33 @@ class TestBug1262(TestCase):
                 self.t.runError("list dep.contains:{0}".format(char))
 
 
+class TestFeature725(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_unbocked_feedback(self):
+        """725: Verify that when a task becomes unblocked, feedback is generated"""
+        self.t("add one")
+        self.t("add two")
+        self.t("add three")
+        self.t("add four")
+        self.t("1 modify depends:2,3")
+        self.t("4 modify depends:1")
+
+        # 2 does not unblock 1.
+        code, out, err = self.t("2 done")
+        self.assertNotIn("Unblocked", out)
+
+        # 2 and 3 do unblock 1.
+        code, out, err = self.t("3 done")
+        self.assertIn("Unblocked", out)
+
+        # 1 does unblock 4.
+        code, out, er = self.t("1 delete", input="y\n")
+        self.assertIn("Unblocked", out)
+
+
 # TODO - test dependency.confirmation config variable
 # TODO - test undo on backing out chain gap repair
 # TODO - test undo on backing out choice to not perform chain gap repair
