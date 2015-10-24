@@ -126,6 +126,30 @@ class TestUDADefaultSort(TestCase):
         self.assertTrue(one < three)
         self.assertTrue(two < one)
 
+
+class TestBug1319(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_uda_sorting(self):
+        """1319: Verify that UDAs are sorted according to defined order"""
+        self.t.config("uda.when.type",      "string")
+        self.t.config("uda.when.values",    "night,evening,noon,morning")
+
+        self.t.config("report.foo.columns", "id,when,description")
+        self.t.config("report.foo.labels",  "ID,WHEN,DESCRIPTION")
+        self.t.config("report.foo.sort",    "when+")
+
+        self.t("add one when:night")
+        self.t("add two when:evening")
+        self.t("add three when:noon")
+        self.t("add four when:morning")
+
+        code, out, err = self.t("rc.verbose:nothing foo")
+        self.assertRegexpMatches(out, "4\s+morning\s+four\s+3\s+noon\s+three\s+2\s+evening\s+two\s+1\s+night\s+one")
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
