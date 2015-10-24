@@ -104,6 +104,20 @@ class TestDefaults(TestCase):
         self.assertIn("foo", out)
 
 
+class TestBug1377(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_bad_tag_parser(self):
+        """1377: Task doesn't accept tags in default.command"""
+        self.t("add Something interesting")
+        self.t("add dep:1 NOTSHOWN")
+        self.t.config("default.command", "next -BLOCKED")
+
+        code, out, err = self.t()
+        self.assertNotIn("NOTSHOWN", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
