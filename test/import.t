@@ -319,6 +319,17 @@ class TestImportWithoutISO(TestCase):
         self.assertIn("2015-10-18T14:42:00\n", out)
 
 
+class TestBug1441(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_import_filename(self):
+        """1441: import fails if file doesn't exist"""
+        code, out, err = self.t.runError("import xxx_doesnotexist")
+
+        self.assertIn("File 'xxx_doesnotexist' not found.", err)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
