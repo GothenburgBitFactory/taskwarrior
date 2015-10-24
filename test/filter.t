@@ -888,6 +888,23 @@ class Test1452(TestCase):
         self.assertEqual(output['uuid'], self.task_uuid)
 
 
+class TestBug1456(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_quoted_expressions(self):
+        """1456: Verify that a multi-term quoted filter expression works"""
+        self.t("add zero")
+        self.t("add one")
+        self.t("add two")
+
+        code, out, err = self.t("'/one/ or /two/' list")
+        self.assertNotIn("zero", out)
+        self.assertIn("one", out)
+        self.assertIn("two", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
