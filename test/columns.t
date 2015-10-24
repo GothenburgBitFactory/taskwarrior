@@ -445,6 +445,26 @@ depends     list*             1 2 10
 start       active*           ✓
         """
 
+class TestFeature1061(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_columns(self):
+        """1061: Verify 'task columns' works"""
+        code, out, err = self.t("columns")
+        self.assertIn("description", out)
+        self.assertIn("uuid", out)
+        self.assertIn("project", out)
+
+    def test_columns_specific(self):
+        """1061: Verify 'task columns escr' works"""
+        code, out, err = self.t("columns escr")
+        self.assertIn("description", out)
+        self.assertNotIn("uuid", out)
+        self.assertNotIn("project", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
