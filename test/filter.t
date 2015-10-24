@@ -29,7 +29,7 @@
 import sys
 import os
 import unittest
-from datetime import datetime, timedelta
+import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -357,8 +357,8 @@ class TestFilterDue(TestCase):
         self.t.config("due",        "4")
         self.t.config("dateformat", "m/d/Y")
 
-        just = datetime.now() + timedelta(days=3)
-        almost = datetime.now() + timedelta(days=5)
+        just = datetime.datetime.now() + datetime.timedelta(days=3)
+        almost = datetime.datetime.now() + datetime.timedelta(days=5)
         # NOTE: %-m and %-d are unix only
         self.just = just.strftime("%-m/%-d/%Y")
         self.almost = almost.strftime("%-m/%-d/%Y")
@@ -834,6 +834,35 @@ class TestBefore(TestCase):
         code, out, err = self.t("start.after:2009-01-01 _ids")
         self.assertNotIn("1", out)
         self.assertIn("2", out)
+
+
+class Test1424(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_1824_days(self):
+        """1424: Check that due:1824d works"""
+        self.t('add foo due:1824d')
+        code, out, err = self.t('_get 1.due.year')
+        # NOTE This test has a possible race condition when run "during" EOY.
+        # If Taskwarrior is executed at 23:59:59 on new year's eve and the
+        # python code below runs at 00:00:00 on new year's day, the two will
+        # disagree on the proper year. Using libfaketime with a frozen time
+        # or the date set to $year-01-01 might be a good idea here.
+        plus_1824d = datetime.datetime.today() + datetime.timedelta(days=1824)
+        self.assertEqual(out, "%d\n" % (plus_1824d.year))
+
+    def test_3648_days(self):
+        """1424: Check that due:3648d works"""
+        self.t('add foo due:3648d')
+        code, out, err = self.t('_get 1.due.year')
+        # NOTE This test has a possible race condition when run "during" EOY.
+        # If Taskwarrior is executed at 23:59:59 on new year's eve and the
+        # python code below runs at 00:00:00 on new year's day, the two will
+        # disagree on the proper year. Using libfaketime with a frozen time
+        # or the date set to $year-01-01 might be a good idea here.
+        plus_3648d = datetime.datetime.today() + datetime.timedelta(days=3648)
+        self.assertEqual(out, "%d\n" % (plus_3648d.year))
 
 
 if __name__ == "__main__":
