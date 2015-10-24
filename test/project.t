@@ -436,6 +436,23 @@ class TestBug1267(TestCase):
         self.assertNotIn(project, out)
 
 
+class TestBug1430(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_project_names_with_dots(self):
+        """1430: Check that filtering works for project names with dots"""
+        self.t("add foo project:home.garden")
+        code, out, err = self.t("_get 1.project")
+        self.assertEqual("home.garden\n", out)
+
+    def test_project_names_with_slashes(self):
+        """1430: Check that filtering works for project names with slashes"""
+        self.t("add foo project:home/garden")
+        code, out, err = self.t("_get 1.project")
+        self.assertEqual("home/garden\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
