@@ -865,6 +865,29 @@ class Test1424(TestCase):
         self.assertEqual(out, "%d\n" % (plus_3648d.year))
 
 
+# TODO This does not look right, it adds one task, exports it, and checks the UUID.
+#      The 'uuid:' filter could be ignored, and this test might pass.
+class Test1452(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t('add task')
+        self.task_uuid = self.t.export_one()['uuid']
+
+    def test_get_task_by_uuid_with_prefix(self):
+        """1452: Tries to filter task simply by it's uuid, using uuid: prefix."""
+        output = self.t.export_one('uuid:%s' % self.task_uuid)
+
+        # Sanity check it is the correct one
+        self.assertEqual(output['uuid'], self.task_uuid)
+
+    def test_get_task_by_uuid_without_prefix(self):
+        """1452: Tries to filter task simply by it's uuid, without using uuid: prefix."""
+        output = self.t.export_one(self.task_uuid)
+
+        # Sanity check it is the correct one
+        self.assertEqual(output['uuid'], self.task_uuid)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
