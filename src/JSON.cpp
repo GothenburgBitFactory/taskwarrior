@@ -405,38 +405,45 @@ std::string json::encode (const std::string& input)
 std::string json::decode (const std::string& input)
 {
   std::string output;
-  for (unsigned int i = 0; i < input.length (); ++i)
+  size_t pos = 0;
+
+  while (pos < input.length ())
   {
-    if (input[i] == '\\')
+    if (input[pos] == '\\')
     {
-      ++i;
-      switch (input[i])
+      ++pos;
+      switch (input[pos])
       {
-      // Simple translations.
-      case '"':  output += '"';  break;
-      case '\\': output += '\\'; break;
-      case '/':  output += '/';  break;
-      case 'b':  output += '\b'; break;
-      case 'f':  output += '\f'; break;
-      case 'n':  output += '\n'; break;
-      case 'r':  output += '\r'; break;
-      case 't':  output += '\t'; break;
+        // Simple translations.
+        case '"':  output += '"';  break;
+        case '\\': output += '\\'; break;
+        case '/':  output += '/';  break;
+        case 'b':  output += '\b'; break;
+        case 'f':  output += '\f'; break;
+        case 'n':  output += '\n'; break;
+        case 'r':  output += '\r'; break;
+        case 't':  output += '\t'; break;
 
-      // Compose a UTF8 unicode character.
-      case 'u':
-        output += utf8_character (utf8_codepoint (input.substr (++i)));
-        i += 3;
-        break;
+        // Compose a UTF8 unicode character.
+        case 'u':
+          output += utf8_character (utf8_codepoint (input.substr (++pos)));
+          pos += 3;
+          break;
 
-      // If it is an unrecognized sequence, do nothing.
-      default:
-        output += '\\';
-        output += input[i];
-        break;
+        // If it is an unrecognized sequence, do nothing.
+        default:
+          output += '\\';
+          output += input[pos];
+          break;
       }
+      ++pos;
     }
     else
-      output += input[i];
+    {
+      size_t next_backslash = input.find ('\\', pos);
+      output.append (input, pos, next_backslash - pos);
+      pos = next_backslash;
+    }
   }
 
   return output;
