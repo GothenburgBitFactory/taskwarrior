@@ -244,7 +244,7 @@ class TestBug1262(TestCase):
         cls.t("add dep:" + ",".join(cls.DEPS) + '"Make fruit salad!"')
 
     def test_dependency_contains_matches_ID(self):
-        """dep.contains matches task IDs"""
+        """1262: dep.contains matches task IDs"""
         # NOTE: A more robust test is needed as alternative to this
         # If it happens that the UUID doesn't contain a 1 nor a 2 the test will
         # fail, which means it's actually using the UUID.
@@ -253,12 +253,12 @@ class TestBug1262(TestCase):
             self.t("list dep.contains:{0}".format(char))
 
     def test_dependency_contains_not_matches_other(self):
-        """dep.contains matches other characters not present in ID nor UUID"""
+        """1262: dep.contains matches other characters not present in ID nor UUID"""
         for char in set(string.letters).difference(string.hexdigits):
             self.t.runError("list dep.contains:{0}".format(char))
 
     def test_dependency_contains_not_UUID(self):
-        """dep.contains matches characters in the tasks' UUIDs"""
+        """1262: dep.contains matches characters in the tasks' UUIDs"""
         # Get the UUID of the task with description "Buy"
         code, out, err = self.t("uuid Buy")
 

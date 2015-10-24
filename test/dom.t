@@ -431,6 +431,23 @@ class TestDOMDirectReferencesFiltering(TestCase):
         result = self.t.export_one("ticketest:1.ticketest")
         self.assertEqual("matching task", result['description'])
 
+
+class TestBug1300(TestCase):
+    @classmethod
+    def setUp(cls):
+        cls.t = Task()
+
+    def test_dom_exit_status_good(self):
+        """1300: If the DOM recognizes a reference, it should return '0'
+        """
+        self.t("_get context.program")
+
+    def test_dom_exit_status_bad(self):
+        """1300: If the DOM does not recognize a reference, it should return '1'
+        """
+        self.t.runError("_get XYZ")
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
