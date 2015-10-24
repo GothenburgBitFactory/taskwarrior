@@ -77,6 +77,24 @@ class TestConfirmation(TestCase):
         self.assertIn("Deleted 0 tasks.", out)
 
 
+class TestBug1438(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_recurring_tasks_shouldn_ask_for_confirmation(self):
+        """1438: rc.confirmation=off still prompts while changing recurring tasks"""
+        code, out, err = self.t("add Sometimes due:tomorrow recur:daily")
+        self.assertIn("Created task 1", out)
+        code, out, err = self.t("list")
+        self.assertIn("Sometimes", out)
+
+        code, out, err = self.t("rc.confirmation=off rc.recurrence.confirmation=off 2 mod /Sometimes/Everytime/")
+        self.assertIn("Modified 1 task", out)
+        code, out, err = self.t("list")
+        self.assertIn("Everytime", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
