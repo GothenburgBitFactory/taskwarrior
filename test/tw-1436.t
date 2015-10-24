@@ -75,11 +75,8 @@ class TestBug1436(TestCase):
         self.echo = Task(taskw=utils.binary_location("/bin/echo"))
 
         code, out, err = self.echo("xxx \\\\\\\\yyy zzz")       # Shows as 'xxx \\yyy zzz'
-        self.tap(out)
         code, out, err = self.echo("xxx \\\\yyy zzz")           # Shows as 'xxx \yyy zzz'
-        self.tap(out)
         code, out, err = self.echo("xxx \\yyy zzz")             # Shows as 'xxx yyy zzz'
-        self.tap(out)
 
 
 if __name__ == "__main__":
