@@ -215,6 +215,35 @@ class TestBug954(TestCase):
         self.assertIn("No tasks specified.", err)
 
 
+class TestFeature891(TestCase):
+    @classmethod
+    def setUp(self):
+        self.t = Task()
+        self.t("add one")
+        self.t("add two")
+
+        # Sometimes this test fails because the 1.uuid starts with N hex digits
+        # such that those digits are all in the range [0-9], and therefore the
+        # UUID looks like an integer.
+        #
+        # The only solution that comes to mind is to repeat self.t("add one")
+        # until 1.uuid contains at least one [a-f] in the first N digits.
+
+        code, self.uuid, err = self.t("_get 1.uuid")
+        self.uuid = self.uuid.strip()
+
+    def test_uuid_filter(self):
+        """891: Test that a task is addressable using UUIDs of length 7 - 36"""
+        for i in range(35,7,-1):
+            code, out, err = self.t(self.uuid[0:i] + " list")
+            self.assertIn("one", out)
+            self.assertNotIn("two", out)
+
+        # TODO This should fail because a 7-character UUID is not a UUID, but
+        #      instead it blindly does nothing, and succeeds. Voodoo.
+        #code, out, err = self.t(self.uuid[0:6] + " list")
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
