@@ -45,6 +45,7 @@ class TestBug1381(TestCase):
         code, out, err = self.t("blocking")
 
         self.assertIn("blocks", out)
+        self.assertNotIn("blocked", out)
 
 
 if __name__ == "__main__":
