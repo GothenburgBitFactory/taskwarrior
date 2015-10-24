@@ -289,6 +289,20 @@ class TestBug21(TestCase):
         self.assertIn("this is a foo bar", out)
 
 
+class Test1447(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_filter_uda(self):
+        """1447: Verify ability to filter on empty UDA"""
+        self.t.config('uda.sep.type', 'string')
+        self.t('add one')
+        self.t('add two sep:foo')
+        code, out, err = self.t('sep: list')
+        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.assertIn('one', out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
