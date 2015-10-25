@@ -303,6 +303,31 @@ class Test1447(TestCase):
         self.assertIn('one', out)
 
 
+class Test1542(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t.config("uda.bugid.type", "numeric")
+        self.t.config("uda.bugid.label", "BugID")
+
+    def test_large_numeric_uda_retains_value(self):
+        """
+        1542: Make sure the numeric UDA value 1187962 does not get converted to
+        scientific notation on export.
+        """
+        self.t('add large bugid:1187962')
+        code, out, err = self.t('1 export')
+        self.assertIn("\"bugid\":1187962,", out)
+
+    def test_small_numeric_uda_retains_value(self):
+        """
+        1542: Make sure the numeric UDA value 43.21 does not get converted to
+        integer on export.
+        """
+        self.t('add small bugid:43.21')
+        code, out, err = self.t('1 export')
+        self.assertIn("\"bugid\":43.21", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
