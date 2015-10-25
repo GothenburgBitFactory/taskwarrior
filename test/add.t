@@ -148,6 +148,34 @@ class TestBug1419(TestCase):
         self.assertEqual("one -two\n", out)
 
 
+class TestBug1527(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def _validate(self):
+        code, out, err = self.t()
+
+        expected = "First/Second http://taskwarrior.org"
+        self.assertIn(expected, out)
+
+        notexpected = "First / Second http: / / taskwarrior.org"
+        self.assertNotIn(notexpected, out)
+        notexpected = "First / Second http://taskwarrior.org"
+        self.assertNotIn(notexpected, out)
+        notexpected = "First/Second http: / / taskwarrior.org"
+        self.assertNotIn(notexpected, out)
+
+    def test_add_slash_quoted(self):
+        """1527: Extra spaces added around slashes when quoted"""
+        self.t("add First/Second http://taskwarrior.org")
+        self._validate()
+
+    def test_add_slash_quoted_parser_stop(self):
+        """1527: Extra spaces added around slashes when quoted after parser stop"""
+        self.t("add -- First/Second http://taskwarrior.org")
+        self._validate()
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
