@@ -328,6 +328,20 @@ class Test1542(TestCase):
         self.assertIn("\"bugid\":43.21", out)
 
 
+class TestBug1622(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_uda_duration_expression(self):
+        """1622: Verify that a UDA of type 'duration' accepts an expression"""
+        self.t.config("uda.dur.type", "duration")
+        self.t("add Run 3 miles dur:33min+18s")
+
+        code, out, err = self.t("_get 1.dur")
+        self.assertEqual("PT33M18S\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
