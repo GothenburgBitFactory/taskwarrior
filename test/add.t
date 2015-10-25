@@ -195,6 +195,38 @@ class Test1549(TestCase):
         self.assertIn("Created task 1.", out)
 
 
+class TestBug1612(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_spurious_whitespace(self):
+        """1612: ensure that extra whitespace does not get added.
+
+           tw-1612: Spurious whitespace added in task descriptions around certain symbols
+        """
+        self.t("add 'foo-bar (http://baz.org/)'")
+        self.t("add 'spam (foo bar)'")
+        self.t("add '- (foo bar)'")
+        self.t("add 'a - (foo bar)'")
+        self.t("add '(bar) a / (foo bar)'")
+
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("foo-bar (http://baz.org/)\n", out)
+
+        code, out, err = self.t("_get 2.description")
+        self.assertEqual("spam (foo bar)\n", out)
+
+        code, out, err = self.t("_get 3.description")
+        self.assertEqual("- (foo bar)\n", out)
+
+        code, out, err = self.t("_get 4.description")
+        self.assertEqual("a - (foo bar)\n", out)
+
+        code, out, err = self.t("_get 5.description")
+        self.assertEqual("(bar) a / (foo bar)\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
