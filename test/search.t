@@ -244,6 +244,25 @@ class Test1469(TestCase):
         self.assertNotIn('foo', out)
 
 
+class TestBug1479(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_description_with_spaces(self):
+        """1479: Verify that a description of 'one two' is searchable"""
+        self.t("add project:P1 one")
+        self.t("add project:P2 one two")
+
+        code, out, err = self.t("description:one\ two list")
+        self.assertNotIn("P1", out)
+        self.assertIn("P2", out)
+
+        code, out, err = self.t("description:'one two' list")
+        self.assertNotIn("P1", out)
+        self.assertIn("P2", out)
+
+
 # TODO Search with patterns
 
 
