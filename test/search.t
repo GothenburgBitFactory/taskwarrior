@@ -29,6 +29,7 @@
 import sys
 import os
 import unittest
+import platform
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -175,6 +176,72 @@ class TestBug1472(TestCase):
         code, out, err = self.t("rc.regex:off description.endswith:Z ls")
         self.assertIn("A to Z", out)
         self.assertNotIn("Z to A", out)
+
+
+class Test1469(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t('add foo')
+        self.t('add "neue Badmöbel kaufen"')
+
+    def test_implicit_search_sensitive_regex(self):
+        """1469: Implicit search, case sensitive, regex """
+        code, out, err = self.t('list /möbel/ rc.search.case.sensitive=yes rc.regex=on')
+        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.assertIn('möbel', out)
+        self.assertNotIn('foo', out)
+
+    def test_implicit_search_sensitive_noregex(self):
+        """1469: Implicit search, case sensitive, no regex """
+        code, out, err = self.t('list /möbel/ rc.search.case.sensitive=yes rc.regex=off')
+        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.assertIn('möbel', out)
+        self.assertNotIn('foo', out)
+
+    @unittest.skipIf('CYGWIN' in platform.system(), 'Skipping regex case-insensitive test for Cygwin')
+    def test_implicit_search_insensitive_regex(self):
+        """1469: Implicit search, case insensitive, regex """
+        code, out, err = self.t('list /möbel/ rc.search.case.sensitive=no rc.regex=on')
+        self.assertEqual(0, code,
+                         "Exit code was non-zero ({0})".format(code))
+        self.assertIn('möbel', out)
+        self.assertNotIn('foo', out)
+
+    def test_implicit_search_insensitive_noregex(self):
+        """1469: Implicit search, case insensitive, no regex """
+        code, out, err = self.t('list /möbel/ rc.search.case.sensitive=no rc.regex=off')
+        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.assertIn('möbel', out)
+        self.assertNotIn('foo', out)
+
+    def test_explicit_search_sensitive_regex(self):
+        """1469: Explicit search, case sensitive, regex """
+        code, out, err = self.t('list /möbel/ rc.search.case.sensitive=yes rc.regex=on')
+        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.assertIn('möbel', out)
+        self.assertNotIn('foo', out)
+
+    def test_explicit_search_sensitive_noregex(self):
+        """1469: Explicit search, case sensitive, no regex """
+        code, out, err = self.t('list /möbel/ rc.search.case.sensitive=yes rc.regex=off')
+        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.assertIn('möbel', out)
+        self.assertNotIn('foo', out)
+
+    @unittest.skipIf('CYGWIN' in platform.system(), 'Skipping regex case-insensitive test for Cygwin')
+    def test_explicit_search_insensitive_regex(self):
+        """1469: Explicit search, case insensitive, regex """
+        code, out, err = self.t('list /möbel/ rc.search.case.sensitive=no rc.regex=on')
+        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.assertIn('möbel', out)
+        self.assertNotIn('foo', out)
+
+    def test_explicit_search_insensitive_noregex(self):
+        """1469: Explicit search, case insensitive, no regex """
+        code, out, err = self.t('list /möbel/ rc.search.case.sensitive=no rc.regex=off')
+        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.assertIn('möbel', out)
+        self.assertNotIn('foo', out)
 
 
 # TODO Search with patterns
