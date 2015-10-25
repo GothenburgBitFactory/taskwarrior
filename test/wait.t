@@ -72,7 +72,7 @@ class TestBug434(TestCase):
         self.t = Task()
 
     def test_complete_waiting(self):
-        """completion of waiting tasks"""
+        """434: completion of waiting tasks"""
         self.t("add One wait:tomorrow")
 
         code, out, err = self.t("1 done")
@@ -81,6 +81,23 @@ class TestBug434(TestCase):
         code, out, err = self.t.runError("ls")
         self.assertNotIn("One", out)
         self.assertIn("No matches", err)
+
+
+class Test1486(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_waiting(self):
+        """1486: Verify waiting report shows waiting tasks"""
+        self.t.config('uda.sep.type', 'string')
+
+        self.t('add regular')
+        self.t('add waited wait:later')
+
+        code, out, err = self.t('waiting')
+        self.assertEqual(0, code, "Exit code was non-zero ({0})".format(code))
+        self.assertIn('waited', out)
+        self.assertNotIn('regular', out)
 
 
 if __name__ == "__main__":
