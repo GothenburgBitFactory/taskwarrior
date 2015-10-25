@@ -36,7 +36,6 @@ from basetest import Task, TestCase
 
 
 class TestConfiguration(TestCase):
-
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
@@ -72,6 +71,27 @@ class TestConfiguration(TestCase):
         """Verify error handling with no change"""
         code, out, err = self.t.runError("config foo")
         self.assertIn("No entry named 'foo' found.", err)
+
+
+class TestBug1475(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_config_unmolested(self):
+        """1475: Verify that a config value is not borked by lex/eval"""
+        self.t.config("name", "one/two/three")
+
+        code, out, err = self.t("_get rc.name")
+        self.assertEqual("one/two/three\n", out)
+
+    def test_config_unmolested_2(self):
+        """1475: Verify that a config value is not borked by lex/eval - literal"""
+        self.t("config name one/two/three", input="y\n")
+
+        code, out, err = self.t("_get rc.name")
+        self.assertEqual("one/two/three\n", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
