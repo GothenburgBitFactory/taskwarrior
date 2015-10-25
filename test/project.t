@@ -468,6 +468,18 @@ class TestBug1617(TestCase):
         self.assertNotIn("one", out)
 
 
+class TestBug1627(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_project_eval(self):
+        """1627: Verify that a value of 'mon' is not eval'd to 'monday' for a project"""
+        self.t("add foo project:mon")
+        code, out, err = self.t("_get 1.project")
+        self.assertEqual("mon\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
