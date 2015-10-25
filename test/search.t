@@ -65,6 +65,81 @@ class TestSearch(TestCase):
         self.assertIn("one", out)
         self.assertNotIn("two", out)
 
+class Test1418(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    # Helper methods
+    def find_in_list(self, description):
+        code, out, err = self.t("list")
+        self.assertIn(description, out)
+
+    def search_task_pattern(self, description):
+        command = "/" + description.replace("/", "\\/") + "/"
+        code, out, err = self.t(command)
+        self.assertIn(description, out)
+
+    def add_search_task(self, description):
+        command = "add " + description
+        self.t(command)
+
+    def add_search_task_description(self, description):
+        command = "add description:'" + description + "'"
+        self.t(command)
+
+    def test_slash_in_description(self):
+        """1418: Check that you can search with a slash (/)"""
+        description = "foo/"
+        self.add_search_task(description)
+        self.find_in_list(description)
+        self.search_task_pattern(description)
+
+    def test_minus_in_description(self):
+        """1418: Check that you can search with a minus (-)"""
+        description = "foo-"
+        self.add_search_task(description)
+        self.find_in_list(description)
+        self.search_task_pattern(description)
+
+    def test_plus_in_description(self):
+        """1418: Check that you can search with a plus (+)"""
+        description = "foo+"
+        self.add_search_task(description)
+        self.find_in_list(description)
+        self.search_task_pattern(description)
+
+    def test_explicit_slash_in_description(self):
+        """1418: Can add a task with trailing slash (/) using description:"" """
+        description = "foo/"
+        self.add_search_task_description(description)
+        self.find_in_list(description)
+        self.search_task_pattern(description)
+
+    def test_explicit_minus_in_description(self):
+        """1418: Can add a task with trailing minus (-) using description:"" """
+        description = "foo-"
+        self.add_search_task_description(description)
+        self.find_in_list(description)
+        self.search_task_pattern(description)
+
+    def test_explicit_plus_in_description(self):
+        """1418: Can add a task with trailing plus (+) using description:"" """
+        description = "foo+"
+        self.add_search_task_description(description)
+        self.find_in_list(description)
+        self.search_task_pattern(description)
+
+    def test_slash_plus_in_description(self):
+        """1418: Can add and search a task with (+) in description"""
+        description = "foo+"
+        self.add_search_task(description)
+        self.find_in_list(description)
+
+        # Different from the other tests, because we want to escape the '+'
+        # in the regex, but not in the 'add' or 'list'
+        code, out, err = self.t("/foo\\+/")
+        self.assertIn(description, out)
+
 class TestBug1472(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -78,25 +153,25 @@ class TestBug1472(TestCase):
         """Executed before each test in the class"""
 
     def test_startswith_regex(self):
-        """Verify .startswith works with regexes"""
+        """1472: Verify .startswith works with regexes"""
         code, out, err = self.t("rc.regex:on description.startswith:A ls")
         self.assertIn("A to Z", out)
         self.assertNotIn("Z to A", out)
 
     def test_endswith_regex(self):
-        """Verify .endswith works with regexes"""
+        """1472: Verify .endswith works with regexes"""
         code, out, err = self.t("rc.regex:on description.endswith:Z ls")
         self.assertIn("A to Z", out)
         self.assertNotIn("Z to A", out)
 
     def test_startswith_no_regex(self):
-        """Verify .startswith works without regexes"""
+        """1472: Verify .startswith works without regexes"""
         code, out, err = self.t("rc.regex:off description.startswith:A ls")
         self.assertIn("A to Z", out)
         self.assertNotIn("Z to A", out)
 
     def test_endswith_no_regex(self):
-        """Verify .endswith works without regexes"""
+        """1472: Verify .endswith works without regexes"""
         code, out, err = self.t("rc.regex:off description.endswith:Z ls")
         self.assertIn("A to Z", out)
         self.assertNotIn("Z to A", out)
