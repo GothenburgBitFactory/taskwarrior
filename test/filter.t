@@ -966,6 +966,29 @@ class TestBug1609(TestCase):
         self.assertIn("two", out)
 
 
+class TestBug1630(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t("add zero")
+        self.t("add one due:7d")
+        self.t("add two due:10d")
+
+    def test_attribute_modifier_with_duration(self):
+        """1630: Verify that 'due.before:9d' is correctly interpreted"""
+        code, out, err = self.t("due.before:9d list rc.verbose:nothing")
+        self.assertNotIn("zero", out)
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+
+    def test_attribute_no_modifier_with_duration(self):
+        """1630: Verify that 'due:7d' is correctly interpreted"""
+        code, out, err = self.t("due:7d list rc.verbose:nothing")
+        self.assertNotIn("zero", out)
+        self.assertIn("one", out)
+        self.assertNotIn("two", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
