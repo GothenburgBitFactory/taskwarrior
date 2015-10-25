@@ -951,6 +951,21 @@ class TestBug1521(TestCase):
         self.assertIn("two", out)
 
 
+class TestBug1609(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_urgency_comparison(self):
+        """1609: Test that urgency is filterable"""
+        self.t("add one project:P due:yesterday +tag1 +tag2")
+        self.t("add two")
+
+        code, out, err = self.t("'urgency<10' next")
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
