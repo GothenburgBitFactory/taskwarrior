@@ -133,6 +133,30 @@ class TestBug1006(TestCase):
         self.assertIn("entrée interdite", out, msg=errormsg)
 
 
+class TestBug1687(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_som(self):
+        """1687: The named date 'som' should take precedence over 'someday', for an exact match"""
+        self.t("rc.abbreviation.minimum=2 add one due:som")
+        code, out, err = self.t("_get 1.due.year")
+        self.assertNotEqual("2038\n", out)
+
+        self.t("rc.abbreviation.minimum=3 add two due:som")
+        code, out, err = self.t("_get 2.due.year")
+        self.assertNotEqual("2038\n", out)
+
+        self.t("rc.abbreviation.minimum=4 add three due:som")
+        code, out, err = self.t("_get 3.due.year")
+        self.assertNotEqual("2038\n", out)
+
+        self.t("rc.abbreviation.minimum=4 add three due:some")
+        code, out, err = self.t("_get 4.due.year")
+        self.assertEqual("2038\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
