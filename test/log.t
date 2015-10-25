@@ -36,7 +36,6 @@ from basetest import Task, TestCase
 
 
 class TestLogCommand(TestCase):
-
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
@@ -56,6 +55,23 @@ class TestLogCommand(TestCase):
         """Verify that you cannot log a recurring task"""
         code, out, err = self.t.runError("log This is a test due:eom recur:weekly")
         self.assertIn("You cannot log recurring tasks.", err)
+
+
+class TestBug1575(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_spurious_whitespace_in_url(self):
+        """1575: ensure that extra whitespace does not get inserted into a URL.
+
+           tw-1575: `task log` mangles URLs when quoted
+        """
+        self.t("log testing123 https://bug.tasktools.org")
+
+        code, out, err = self.t("completed")
+        self.assertIn("testing123 https://bug.tasktools.org", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
