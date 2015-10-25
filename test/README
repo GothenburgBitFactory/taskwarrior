@@ -8,7 +8,9 @@ test suite.
 Running Tests
 -------------
 
-TL;DR  cd test && make && ./run_all && ./problems
+Do this to run all tests:
+
+  $ cd test && make && ./run_all && ./problems
 
 All unit tests produce TAP (Test Anything Protocol) output, and are run by the
 'run_all' test harness.
@@ -65,7 +67,7 @@ are:
     useful than feature tests, and more likely to contain overlapping coverage.
 
   * Eliminate obsolete tests, which are tests that have overlapping coverage.
-    This means migrate bug-specific tests to feature tests.
+    There is simply no point in testing a feature twice, in the same manner.
 
 
 What Makes a Good Test
@@ -81,18 +83,22 @@ Conventions for writing a test
 
 If you wish to contribute tests, please consider the following guidelines:
 
+  * For a new bug, an accompanying test is very helpful.  Suppose you write up
+    a bug, named TW-1234, then the test would be a script named tw-1234.t, and
+    based on the template.t example.
+
+    Over time, we will migrate the tests in tw-1234.t into a feature-specific
+    test script, such as filter.t, export.t, whichever is appropriate.
+
   * Tests created after bugs or feature requests should (ideally) have an entry
     on https://bug.tasktools.org/ and should include the issue ID in a
     docstring or comment.
-
-  * Tests should be added to the file that best matches the "thing" being
-    tested. For instance, a test on filters should live in filter.t
 
   * Class and method names should be descriptive of what they are testing.
     Example: TestFilterOnReports
 
   * Docstrings on Python tests are mandatory. The first line is used as title
-    of the test.
+    of the test. Include the issue ID - there are many examples of this.
 
   * Extra information and details should go into multi-line docstrings or
     comments.
@@ -124,7 +130,7 @@ Here are some guildelines that may help:
     in a script named tw-XXXX.t. Later, someone will incorporate that test
     script into higher-level feature tests.
 
-  * If the command line parser is not working, always blame the Lexer.
+  * If the command line parser is not working, start by blaming the Lexer.
 
   * While the lowest level (C++) tests should be exhaustive, higher level tests
     should not do the same by iterating over the entire problem space. It is a
