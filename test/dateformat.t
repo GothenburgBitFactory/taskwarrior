@@ -91,6 +91,23 @@ class TestBug986(TestCase):
         self.assertIn('__', out)
 
 
+class TestBug1620(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+        self.t.config('dateformat', 'YMD-HN')
+
+    def test_dateformat_overrides_iso(self):
+        """1620: Verify that a defined dateformat overrides the ISO interpretation"""
+        code, out, err = self.t ('add pro:vorhaben due:20150601-1415 tatusmeeting vorbereiten')
+
+        code, out, err = self.t ('_get 1.due')
+        self.assertEqual(out, "2015-06-01T14:15:00\n")
+
+        code, out, err = self.t ('long')
+        self.assertIn("20150601-1415", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
