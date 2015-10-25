@@ -176,6 +176,25 @@ class TestBug1527(TestCase):
         self._validate()
 
 
+class Test1549(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_lexer_state(self):
+        """1549: The token '1e ' left the lexer in a bad state.
+
+        +--------+    +----------+    +---------------------+    +--------------+
+        |        | -> |1         | -> |e                    | -> |<whitespace>  |
+        |typeNone|    |typeNumber|    |typeExponentIndicator|    |Missing 'else'|
+        +--------+    +----------+    +---------------------+    +--------------+
+
+        """
+
+        # This command will hang and therefore timeout in 2.4.1.
+        code, out, err = self.t('add 1e x')
+        self.assertIn("Created task 1.", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
