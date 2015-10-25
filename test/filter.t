@@ -926,6 +926,31 @@ class Test1468(TestCase):
         self.assertIn('mow the lawn', out)
 
 
+class TestBug1521(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Executed once before any test in the class"""
+        cls.t = Task()
+        cls.t.config("verbose", "nothing")
+        cls.t("add one project:WORK")
+        cls.t("add two project:HOME")
+
+    def setUp(self):
+        """Executed before each test in the class"""
+
+    def test_project_inequality(self):
+        """1521: Verify that 'project.not' works"""
+        code, out, err = self.t("project.not:WORK list")
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
+
+    def test_project_not_equal(self):
+        """1521: Verify that 'project !=' works"""
+        code, out, err = self.t("project != WORK list")
+        self.assertNotIn("one", out)
+        self.assertIn("two", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
