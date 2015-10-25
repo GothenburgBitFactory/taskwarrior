@@ -453,6 +453,21 @@ class TestBug1430(TestCase):
         self.assertEqual("home/garden\n", out)
 
 
+class TestBug1617(TestCase):
+    def setUp(self):
+        """Executed before each test in the class"""
+        self.t = Task()
+
+    def test_multi_word_project(self):
+        """1617: Verify search for multi-word project"""
+        self.t("add one")
+        self.t("add two project:'three four'")
+
+        code, out, err = self.t("project:'three four' list")
+        self.assertIn("two", out)
+        self.assertNotIn("one", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
