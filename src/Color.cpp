@@ -235,23 +235,6 @@ Color::Color (color_id fg)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Color::Color (color_id fg, color_id bg)
-: _value (0)
-{
-  if (bg != Color::nocolor)
-  {
-    _value |= _COLOR_HASBG;
-    _value |= (bg << 8);
-  }
-
-  if (fg != Color::nocolor)
-  {
-    _value |= _COLOR_HASFG;
-    _value |= fg;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
 Color::Color (color_id fg, color_id bg, bool underline, bool bold, bool bright)
 : _value (0)
 {
