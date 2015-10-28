@@ -84,9 +84,15 @@ class TestTaskEdit(TestCase):
         self.t.config("uda.ustring.label", "ustring")
         self.t.config("uda.unumeric.type", "numeric")
         self.t.config("uda.unumeric.label", "unumeric")
+        self.t.config("uda.uorphan.type", "string")
+        self.t.config("uda.uorphan.label", "uorphan")
 
-        self.t("add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy udate:now uduration:1day ustring:Hi unumeric:42")
+        self.t("add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy udate:now uduration:1day ustring:Hi unumeric:42 uorphan:Annie")
         self.t("1 annotate bar", input="n\n")
+
+        # Make the orphan.
+        self.t.del_config("uda.uorphan.type")
+        self.t.del_config("uda.uorphan.label")
 
         # Does not fail
         self.t("1 edit")
