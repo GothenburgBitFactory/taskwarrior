@@ -36,6 +36,24 @@ from basetest import Task, TestCase
 from basetest import Taskd, ServerTestCase
 
 
+# Test methods available:
+#     self.assertEqual(a, b)
+#     self.assertNotEqual(a, b)
+#     self.assertTrue(x)
+#     self.assertFalse(x)
+#     self.assertIs(a, b)
+#     self.assertIsNot(a, b)
+#     self.assertIsNone(x)
+#     self.assertIsNotNone(x)
+#     self.assertIn(a, b)
+#     self.assertNotIn(a, b)
+#     self.assertIsInstance(a, b)
+#     self.assertNotIsInstance(a, b)
+#     self.assertRaises(e)
+#     self.assertRegexpMatches(t, r)
+#     self.assertNotRegexpMatches(t, r)
+#     self.tap("")
+
 class TestBugNumber(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -56,6 +74,7 @@ class TestBugNumber(TestCase):
 
         expected = "Copyright \(C\) \d{4} - %d" % (2010,)
         self.assertRegexpMatches(out, expected)
+        self.assertNotRegexpMatches(out, "foo")
 
         # TAP diagnostics on the bas
         self.tap("Yay TAP diagnostics")
