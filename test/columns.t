@@ -457,6 +457,13 @@ class TestFeature1061(TestCase):
         self.assertIn("uuid", out)
         self.assertIn("project", out)
 
+    def test_columns_color(self):
+        """1061: Verify 'task columns rc._forcecolor:1' works"""
+        code, out, err = self.t("columns rc._forcecolor:1")
+        self.assertIn("description", out)
+        self.assertIn("uuid", out)
+        self.assertIn("project", out)
+
     def test_columns_specific(self):
         """1061: Verify 'task columns escr' works"""
         code, out, err = self.t("columns escr")
