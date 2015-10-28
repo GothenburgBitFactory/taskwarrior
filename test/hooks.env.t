@@ -62,6 +62,14 @@ class TestHooksOnLaunch(TestCase):
         self.assertEqual('data'    in taskenv, True, 'data:...')
         self.assertEqual('version' in taskenv, True, 'version:...')
 
+    def test_onlaunch_buildin_env_diag(self):
+        """Verify that 'diagnostics' can see hook details"""
+        hookname = 'on-launch-good-env'
+        self.t.hooks.add_default(hookname, log=True)
+
+        code, out, err = self.t("diagnostics")
+        self.assertIn("on-launch-good-env (executable)", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
