@@ -52,6 +52,13 @@ class TestPrepend(TestCase):
         """verify prepend of nothing is an error"""
         self.t("add bar")
         code, out, err = self.t.runError("1 prepend")
+        self.assertIn("Additional text must be provided.", err)
+
+    def test_prepend_no_filter(self):
+        """verify prepend with no filter is an error"""
+        self.t("add bar")
+        code, out, err = self.t.runError("999 prepend")
+        self.assertIn("No tasks specified.", err)
 
 
 if __name__ == "__main__":
