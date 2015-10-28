@@ -50,6 +50,10 @@ class TestNagging(TestCase):
         self.t("add priority:M four")
         self.t("add priority:L five")
         self.t("add six")
+        self.t("add seven +nonag")
+
+        code, out, err = self.t("7 done")
+        self.assertNotIn("NAG", err)
 
         code, out, err = self.t("6 done")
         self.assertIn("NAG", err)
