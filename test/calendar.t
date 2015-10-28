@@ -66,6 +66,12 @@ class TestCalendarCommandLine(TestCase):
         code, out, err = self.t("calendar rc.calendar.details:full rc.calendar.details.report:list")
         self.assertIn("task_with_due_date", out)
 
+    def test_basic_command_details_color(self):
+        """Verify 'calendar rc.calendar.details:full rc.calendar.details.report:list rc._forcecolor:on' does not fail"""
+        self.t("add task_with_due_date due:tomorrow")
+        code, out, err = self.t("calendar rc.calendar.details:full rc.calendar.details.report:list rc._forcecolor:on")
+        self.assertIn("task_with_due_date", out)
+
     def test_basic_command_holidays(self):
         """Verify 'calendar rc.calendar.holidays:full' does not fail"""
         code, out, err = self.t("calendar rc.calendar.holidays:full")
