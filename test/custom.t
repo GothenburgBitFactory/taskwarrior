@@ -36,7 +36,6 @@ from basetest import Task, TestCase
 
 
 class TestCustomReports(TestCase):
-
     def setUp(self):
         """Executed before each test in the class"""
         self.t = Task()
@@ -65,6 +64,16 @@ class TestCustomReports(TestCase):
         code, out, err = self.t("foo")
         self.assertIn("ID", out)
         self.assertIn("DESCRIPTION", out)
+
+class TestCustomErrorHandling(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_size_mismatch(self):
+        self.t.config("report.foo.columns", "id,description")
+        self.t.config("report.foo.labels",  "id")
+        code, out, err = self.t.runError("foo")
+        self.assertIn("There are different numbers of columns and labels for report 'foo'.", err)
 
 
 if __name__ == "__main__":
