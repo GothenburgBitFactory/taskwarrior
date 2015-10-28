@@ -41,9 +41,14 @@ class TestLogoCommand(TestCase):
         self.t = Task()
 
     def test_logo_command(self):
-        """Check that there are colors.  For coverage"""
+        """Check that there are colors. For coverage"""
         code, out, err = self.t("logo rc._forcecolor:on")
         self.assertRegexpMatches(out, ".\[48;5;\d+m  .\[0m")
+
+    def test_logo_command_no_color(self):
+        """Check that it only works with color. For coverage"""
+        code, out, err = self.t.runError("logo")
+        self.assertIn("The logo command requires that color support is enabled.", err)
 
 
 if __name__ == "__main__":
