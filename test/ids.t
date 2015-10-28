@@ -88,6 +88,12 @@ class TestIDs(TestCase):
         self.assertRegexpMatches(
             out, "{0}:one\n{0}:two\n{0}:three\n{0}:five".format(UUID_REGEXP))
 
+    def test_ids_ranges(self):
+        """Verify consecutive IDs are compressed into a range"""
+        code, out, err = self.t("1 2 3 4 5 ids")
+        self.assertIn("1-5", out)
+
+
 class TestIDMisParse(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
