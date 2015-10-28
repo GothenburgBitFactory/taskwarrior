@@ -47,7 +47,7 @@ class ContextManagementTest(TestCase):
         """With confirmation active, prompt if context filter matches no tasks"""
         self.t.config("confirmation", "on")
 
-        code, out, err = self.t.runError('context define work project:Work')
+        code, out, err = self.t.runError('context define work project:Work', input="y\n")
         self.assertIn("The filter 'project:Work' matches 0 pending tasks.", out)
         self.assertNotIn("Context 'work' defined.", out)
 
@@ -56,7 +56,7 @@ class ContextManagementTest(TestCase):
 
     def test_context_define(self):
         """Test simple context definition."""
-        code, out, err = self.t('context define work project:Work')
+        code, out, err = self.t('context define work project:Work', input="y\n")
         self.assertIn("Context 'work' defined.", out)
 
         # Assert the config contains context definition
@@ -505,6 +505,11 @@ class ContextErrorHandling(TestCase):
         """Verify 'task context missing' with no contexts yields error"""
         code, out, err = self.t.runError("context missing")
         self.assertIn("Context 'missing' not found.", err)
+
+    def test_set_multi(self):
+        """Verify 'task context one\\ two' with no contexts yields error"""
+        code, out, err = self.t.runError("context one\\ two")
+        self.assertIn("Context 'one two' not found.", err)
 
     def test_show_missing(self):
         """Verify 'task context show' with no contexts yields error"""
