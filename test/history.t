@@ -64,6 +64,10 @@ class TestHistoryMonthly(TestCase):
         self.assertRegexpMatches(out, "\s7.+\s1.+")
         self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
 
+        code, out, err = self.t("ghistory.monthly")
+        self.assertRegexpMatches(out, "2015 January\s+\++X+\s")
+        self.assertRegexpMatches(out, "\s+February\s+\++X+\-+")
+
 
 class TestHistoryAnnual(TestCase):
     @classmethod
@@ -98,6 +102,9 @@ class TestHistoryAnnual(TestCase):
         self.assertRegexpMatches(out, "\s7.+\s1.+")
         self.assertRegexpMatches(out, "\s2.+\s3.+\s3.+")
 
+        code, out, err = self.t("ghistory.annual")
+        self.assertRegexpMatches(out, "2014\s+\++X+\s")
+        self.assertRegexpMatches(out, "2015\s+\++X+\-+")
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
