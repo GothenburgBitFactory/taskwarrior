@@ -35,7 +35,7 @@ Context context;
 
 int main (int, char**)
 {
-  UnitTest t (111);
+  UnitTest t (112);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -283,6 +283,10 @@ int main (int, char**)
   t.notok (m & S_IXOTH,             "Directory::mode tmp/dir.perm --------x good");
   d10.remove ();
   t.notok (d10.exists (),           "Directory::remove temp/dir.perm file no longer exists");
+
+  // Directory::cd
+  Directory d11 ("/tmp");
+  t.ok (d11.cd (),                  "Directory::cd /tmp good");
 
   tmp.remove ();
   t.notok (tmp.exists (),           "tmp dir removed.");
