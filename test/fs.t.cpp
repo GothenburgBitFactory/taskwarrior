@@ -35,7 +35,7 @@ Context context;
 
 int main (int, char**)
 {
-  UnitTest t (110);
+  UnitTest t (111);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -122,6 +122,9 @@ int main (int, char**)
   t.ok    (p2.is_absolute (), "~ is_absolute (after expansion)");
   t.ok    (p3.is_absolute (), "/tmp is_absolute");
   t.ok    (p4.is_absolute (), "/a/b/c/file.ext is_absolute");
+
+  Path p5 ("~/file.ext");
+  t.notok (p5.name () == "~/file.ext", "~/file.ext --> ! ~/file.ext");
 
   Directory tmp ("tmp");
   tmp.create ();
