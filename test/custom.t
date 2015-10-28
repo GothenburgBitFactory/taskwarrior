@@ -65,6 +65,14 @@ class TestCustomReports(TestCase):
         self.assertIn("ID", out)
         self.assertIn("DESCRIPTION", out)
 
+    def test_custom_alternate(self):
+        """Verify that color.alternate is used"""
+        self.t("add zero")
+        self.t("add one project:A")
+        self.t.config("color.alternate", "on blue")
+        code, out, err = self.t("foo rc._forcecolor:on rc.report.foo.filter:")
+        self.assertIn("[44m", out)
+
 class TestCustomErrorHandling(TestCase):
     def setUp(self):
         self.t = Task()
