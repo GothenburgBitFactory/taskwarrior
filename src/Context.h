@@ -65,7 +65,6 @@ public:
   void footnote (const std::string&);  // Footnote message sink
   void debug (const std::string&);     // Debug message sink
   void error (const std::string&);     // Error message sink - non-maskable
-  void clearMessages ();
 
   void decomposeSortField (const std::string&, std::string&, bool&, bool&);
 
