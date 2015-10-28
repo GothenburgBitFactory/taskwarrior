@@ -71,8 +71,8 @@ class TestUndo(TestCase):
 class TestUndoStyle(TestCase):
     def setUp(self):
         self.t = Task()
-        self.t("add one")
-        self.t("1 modify +tag")
+        self.t("add one project:foo priority:H")
+        self.t("1 modify +tag project:bar priority:")
 
     def test_undo_side_style(self):
         """Test that 'rc.undo.style:side' generates the right output"""
