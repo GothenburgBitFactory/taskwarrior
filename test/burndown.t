@@ -40,10 +40,10 @@ class TestBurndownCommand(TestCase):
     def setUpClass(cls):
         """Executed once before any test in the class"""
         cls.t = Task()
-        cls.t("add one")
-        cls.t("add two")
+        cls.t("add one entry:-2y")
+        cls.t("add two entry:-1y")
         cls.t("2 start")
-        cls.t("add three")
+        cls.t("add three entry:soy")
         cls.t("3 delete", input="y\n")
         cls.t("add four")
         cls.t("4 start")
@@ -60,7 +60,6 @@ class TestBurndownCommand(TestCase):
         """Ensure burndown.daily generates a chart"""
         code, out, err = self.t("burndown.daily")
         self.assertIn("Daily Burndown ()", out)
-        self.assertIn("No convergence", out)
         self.assertIn(".", out)
         self.assertIn("+", out)
         self.assertIn("X", out)
@@ -69,14 +68,12 @@ class TestBurndownCommand(TestCase):
         """Ensure burndown.daily with color, generates a chart"""
         code, out, err = self.t("burndown.daily rc._forcecolor:on")
         self.assertIn("Daily Burndown ()", out)
-        self.assertIn("No convergence", out)
         self.assertNotIn("X", out)
 
     def test_burndown_weekly(self):
         """Ensure burndown.weekly generates a chart"""
         code, out, err = self.t("burndown.weekly")
         self.assertIn("Weekly Burndown ()", out)
-        self.assertIn("No convergence", out)
         self.assertIn(".", out)
         self.assertIn("+", out)
         self.assertIn("X", out)
@@ -85,7 +82,6 @@ class TestBurndownCommand(TestCase):
         """Ensure burndown.monthly generates a chart"""
         code, out, err = self.t("burndown.monthly")
         self.assertIn("Monthly Burndown ()", out)
-        self.assertIn("No convergence", out)
         self.assertIn(".", out)
         self.assertIn("+", out)
         self.assertIn("X", out)
