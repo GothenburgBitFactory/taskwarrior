@@ -44,6 +44,11 @@ class TestInfoCommand(TestCase):
         """Executed before each test in the class"""
         self.t = Task()
 
+    def test_missing_info(self):
+        """Verify bad filter yields error"""
+        code, out, err = self.t.runError("999 info")
+        self.assertIn("No matches.", err)
+
     def test_info_display(self):
         """Verify info command shows everything in the task"""
         self.t.config("uda.u_one.type", "date")
