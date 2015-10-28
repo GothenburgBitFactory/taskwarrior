@@ -48,6 +48,11 @@ class TestReportCommand(TestCase):
         self.assertIn("next", out)
         self.assertIn("Most urgent tasks", out)
 
+        code, out, err = self.t("reports rc._forcecolor:on")
+        self.assertIn("next", out)
+        self.assertIn("Most urgent tasks", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
