@@ -109,6 +109,23 @@ class TestCountdown(TestCase):
         self.assertRegexpMatches(out, " two\n.+ one\n")
 
 
+class TestFormatDepends(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t("add zero")
+        self.t("add one depends:1")
+
+    def test_depends_default(self):
+        self.t.config("report.formatdep.columns", "description,depends")
+        code, out, err = self.t("formatdep")
+        self.assertRegexpMatches(out, "one\s+1")
+
+    def test_depends_count(self):
+        self.t.config("report.formatdep.columns", "description,depends.count")
+        code, out, err = self.t("formatdep")
+        self.assertRegexpMatches(out, "one\s+\[1\]")
+
+
 class TestBug101(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
@@ -130,14 +147,14 @@ class TestBug101(TestCase):
         self.long_description = self.short_description * int(math.ceil(float(self.width)/len(self.short_description)))
 
     def test_short_no_count(self):
-        """Check short description with no annotations"""
+        """101: Check short description with no annotations"""
         self.t(("add", self.short_description))
         code, out, err = self.t("bug101")
         expected = self.short_description
         self.assertIn(expected, out)
 
     def test_short_with_count(self):
-        """Check short description with annotations"""
+        """101: Check short description with annotations"""
         self.t(("add", self.short_description))
         self.t("1 annotate 'A task annotation'")
         code, out, err = self.t("bug101")
@@ -145,14 +162,14 @@ class TestBug101(TestCase):
         self.assertIn(expected, out)
 
     def test_long_no_count(self):
-        """Check long description with no annotations"""
+        """101: Check long description with no annotations"""
         self.t(("add", self.long_description))
         code, out, err = self.t("bug101")
         expected = self.long_description[:(self.width - 3)] + "..."
         self.assertIn(expected, out)
 
     def test_long_with_count(self):
-        """Check long description with annotations"""
+        """101: Check long description with annotations"""
         self.t(("add", self.long_description))
         self.t("1 annotate 'A task annotation'")
         code, out, err = self.t("bug101")
@@ -160,7 +177,7 @@ class TestBug101(TestCase):
         self.assertIn(expected, out)
 
     def test_long_with_double_digit_count(self):
-        """Check long description with double digit amount of annotations"""
+        """101: Check long description with double digit amount of annotations"""
         self.t(("add", self.long_description))
         for i in range(10):
             self.t("1 annotate 'A task annotation'")
