@@ -55,6 +55,11 @@ class TestInfoCommand(TestCase):
         self.t.config("uda.u_one.label", "U_ONE")
         self.t.config("uda.u_two.type", "duration")
         self.t.config("uda.u_two.label", "U_TWO")
+
+        self.t.config("urgency.user.project.P.coefficient", "1.0")
+        self.t.config("urgency.user.keyword.foo.coefficient", "1.0")
+        self.t.config("urgency.uda.u_one.coefficient", "1.0")
+
         self.t("add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy u_one:now u_two:1day")
         self.t("1 annotate bar", input="n\n")
         code, out, err = self.t("1 info")
