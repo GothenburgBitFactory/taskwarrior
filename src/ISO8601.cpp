@@ -179,12 +179,6 @@ ISO8601d::~ISO8601d ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d::operator time_t () const
-{
-  return _date;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Supported:
 //
 //    result       ::= date 'T' time 'Z'                      # UTC
@@ -1254,24 +1248,6 @@ std::string ISO8601d::monthName (int month)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Static
-void ISO8601d::dayName (int dow, std::string& name)
-{
-  static const char* days[7] =
-  {
-    STRING_DATE_SUNDAY,
-    STRING_DATE_MONDAY,
-    STRING_DATE_TUESDAY,
-    STRING_DATE_WEDNESDAY,
-    STRING_DATE_THURSDAY,
-    STRING_DATE_FRIDAY,
-    STRING_DATE_SATURDAY,
-  };
-
-  name = ucFirst (days[dow]);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Static
 std::string ISO8601d::dayName (int dow)
 {
   static const char* days[7] =
@@ -1629,6 +1605,7 @@ void ISO8601d::operator++ (int)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+/*
 std::string ISO8601d::dump () const
 {
   std::stringstream s;
@@ -1647,6 +1624,7 @@ std::string ISO8601d::dump () const
 
   return s.str ();
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 ISO8601p::ISO8601p ()
@@ -1998,6 +1976,7 @@ void ISO8601p::resolve ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+/*
 std::string ISO8601p::dump () const
 {
   std::stringstream s;
@@ -2013,5 +1992,6 @@ std::string ISO8601p::dump () const
 
   return s.str ();
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////

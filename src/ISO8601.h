@@ -44,7 +44,6 @@ public:
   ISO8601d (const int, const int, const int);
   ISO8601d (const int, const int, const int, const int, const int, const int);
   ~ISO8601d ();
-  operator time_t () const;
   bool parse (const std::string&, std::string::size_type&, const std::string& format = "");
 
   time_t toEpoch () const;
@@ -67,7 +66,6 @@ public:
   static int daysInMonth (int, int);
   static int daysInYear (int);
   static std::string monthName (int);
-  static void dayName (int, std::string&);
   static std::string dayName (int);
   static int dayOfWeek (const std::string&);
   static int dayOfWeek (int, int, int);
