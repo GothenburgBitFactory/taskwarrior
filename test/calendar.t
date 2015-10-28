@@ -45,6 +45,27 @@ class TestCalendarCommandLine(TestCase):
         code, out, err = self.t("calendar")
         self.assertIn("Su Mo Tu We Th Fr Sa", out)
 
+    def test_basic_command(self):
+        """Verify 'calendar rc.weekstart:Monday' does not fail'"""
+        code, out, err = self.t("calendar rc.weekstart:Monday")
+        self.assertIn("Mo Tu We Th Fr Sa Su", out)
+
+    def test_basic_command_color(self):
+        """Verify 'calendar rc._forcecolor:on' does not fail"""
+        code, out, err = self.t("calendar rc._forcecolor:on")
+        self.assertRegexpMatches(out, "Su.+Mo.+Tu.+We.+Th.+Fr.+Sa")
+
+    def test_basic_command_details(self):
+        """Verify 'calendar rc.calendar.details:full rc.calendar.details.report:list' does not fail"""
+        self.t("add task_with_due_date due:tomorrow")
+        code, out, err = self.t("calendar rc.calendar.details:full rc.calendar.details.report:list")
+        self.assertIn("task_with_due_date", out)
+
+    def test_basic_command_holidays(self):
+        """Verify 'calendar rc.calendar.holidays:full' does not fail"""
+        code, out, err = self.t("calendar rc.calendar.holidays:full")
+        self.assertIn("Date Holiday", out)
+
     def test_y_argument(self):
         """Verify 'calendar y' does not fail"""
         code, out, err = self.t("calendar y")
