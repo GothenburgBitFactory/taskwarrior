@@ -481,6 +481,55 @@ class ContextEvaluationTest(TestCase):
         self.assertNotIn("work today task", output)
         self.assertNotIn("home today task", output)
 
+
+class ContextErrorHandling(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_list_empty(self):
+        """Verify 'task context list' with no contexts yields error"""
+        code, out, err = self.t.runError("context list")
+        self.assertIn("No contexts defined.", out)
+
+    def test_define_empty(self):
+        """Verify 'task context define' with no contexts yields error"""
+        code, out, err = self.t.runError("context define")
+        self.assertIn("Both context name and its definition must be provided.", out)
+
+    def test_delete_empty(self):
+        """Verify 'task context delete' with no contexts yields error"""
+        code, out, err = self.t.runError("context delete")
+        self.assertIn("Context name needs to be specified.", out)
+
+    def test_set_missing(self):
+        """Verify 'task context missing' with no contexts yields error"""
+        code, out, err = self.t.runError("context missing")
+        self.assertIn("Context 'missing' not found.", err)
+
+    def test_show_missing(self):
+        """Verify 'task context show' with no contexts yields error"""
+        code, out, err = self.t("context show")
+        self.assertIn("No context is currently applied.", out)
+
+    def test_show_present(self):
+        """Verify 'task context show' with contexts works"""
+        self.t.config("confirmation", "off")
+        code, out, err = self.t("context define work +work")
+        self.assertIn("Context 'work' defined. Use 'task context work' to activate.", out)
+
+        code, out, err = self.t("context work")
+        self.assertIn("Context 'work' set. Use 'task context none' to remove.", out)
+
+        code, out, err = self.t("context show")
+        self.assertIn("Context 'work' with filter '+work' is currently applied.", out)
+
+        code, out, err = self.t("context none")
+        self.assertIn("Context unset.", out)
+
+        code, out, err = self.t("context show")
+        self.assertIn("No context is currently applied.", out)
+
+
 # TODO Prove context does not interfere with export
 # TODO Prove context does not interfere with undo
 # TODO Prove context does not interfere with helper commands
