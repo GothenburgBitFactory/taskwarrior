@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (986);
+  UnitTest t (1006);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -629,6 +629,35 @@ int main (int, char**)
     t.is (r32.toString ("v"),        "44", "2015-10-28T12:55:00 -> v ->        44");
     t.is (r32.toString ("J"),       "301", "2015-10-28T12:55:00 -> J ->       301");
     t.is (r32.toString ("j"),       "301", "2015-10-28T12:55:00 -> j ->       301");
+
+    // Test all parse options.
+    ISO8601d r33 ("2015 10 28 19 28 01", "Y M D H N S");
+    t.is(r33.year (),   2015,         "Y works");
+    t.is(r33.month (),    10,         "M works");
+    t.is(r33.day (),      28,         "D works");
+    t.is(r33.hour (),     19,         "H works");
+    t.is(r33.minute (),   28,         "N works");
+    t.is(r33.second (),    1,         "S works");
+
+    ISO8601d r34 ("15 5 4 3 2 1", "y m d h n s");
+    t.is(r34.year (),   2015,         "y works");
+    t.is(r34.month (),     5,         "m works");
+    t.is(r34.day (),       4,         "d works");
+    t.is(r34.hour (),      3,         "h works");
+    t.is(r34.minute (),    2,         "n works");
+    t.is(r34.second (),    1,         "s works");
+
+    ISO8601d r35 ("Wednesday October 28 2015", "A B D Y");
+    t.is(r35.year (),    2015,        "Y works");
+    t.is(r35.month (),     10,        "B works");
+    t.is(r35.day (),       28,        "D works");
+    t.is(r35.dayOfWeek (),  3,        "A works");
+
+    ISO8601d r36 ("Wed Oct 28 15", "a b d y");
+    t.is(r36.year (),    2015,        "y works");
+    t.is(r36.month (),     10,        "b works");
+    t.is(r36.day (),       28,        "d works");
+    t.is(r36.dayOfWeek (),  3,        "a works");
   }
 
   catch (const std::string& e)
