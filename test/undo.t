@@ -68,6 +68,27 @@ class TestUndo(TestCase):
         self.assertIn("The 'undo' command does not allow '+tag'.", err)
 
 
+class TestUndoStyle(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t("add one")
+        self.t("1 modify +tag")
+
+    def test_undo_side_style(self):
+        """Test that 'rc.undo.style:side' generates the right output"""
+        self.t.config("undo.style", "side")
+        code, out, err = self.t("undo", input="n\n")
+        self.assertNotRegexpMatches(out, "-tags:\s*\n\+tags:\s+tag")
+        self.assertRegexpMatches(out, "tags\s+tag\s*")
+
+    def test_undo_diff_style(self):
+        """Test that 'rc.undo.style:diff' generates the right output"""
+        self.t.config("undo.style", "diff")
+        code, out, err = self.t("undo", input="n\n")
+        self.assertRegexpMatches(out, "-tags:\s*\n\+tags:\s+tag")
+        self.assertNotRegexpMatches(out, "tags\s+tag\s*")
+
+
 class TestBug634(TestCase):
     def setUp(self):
         self.t = Task()
