@@ -65,6 +65,13 @@ class TestBurndownCommand(TestCase):
         self.assertIn("+", out)
         self.assertIn("X", out)
 
+    def test_burndown_daily_color(self):
+        """Ensure burndown.daily with color, generates a chart"""
+        code, out, err = self.t("burndown.daily rc._forcecolor:on")
+        self.assertIn("Daily Burndown ()", out)
+        self.assertIn("No convergence", out)
+        self.assertNotIn("X", out)
+
     def test_burndown_weekly(self):
         """Ensure burndown.weekly generates a chart"""
         code, out, err = self.t("burndown.weekly")
