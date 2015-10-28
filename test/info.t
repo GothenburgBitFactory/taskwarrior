@@ -46,7 +46,11 @@ class TestInfoCommand(TestCase):
 
     def test_info_display(self):
         """Verify info command shows everything in the task"""
-        self.t("add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy")
+        self.t.config("uda.u_one.type", "date")
+        self.t.config("uda.u_one.label", "U_ONE")
+        self.t.config("uda.u_two.type", "duration")
+        self.t.config("uda.u_two.label", "U_TWO")
+        self.t("add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy u_one:now u_two:1day")
         self.t("1 annotate bar", input="n\n")
         code, out, err = self.t("1 info")
 
@@ -86,6 +90,8 @@ class TestInfoCommand(TestCase):
         self.assertIn("tags", out)
         self.assertIn("due", out)
         self.assertIn("UDA priority.H", out)
+        self.assertIn("U_ONE", out)
+        self.assertIn("U_TWO", out)
 
 class TestBug425(TestCase):
     def setUp(self):
