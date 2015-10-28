@@ -81,6 +81,15 @@ class TestUnique(TestCase):
         self.assertIn("four",  out)
         self.assertIn("five",  out)
 
+    def test_unique_id(self):
+        """Verify that unique id values are correctly counted"""
+        code, out, err = self.t("_unique id")
+        self.assertIn("1", out)
+        self.assertIn("2", out)
+        self.assertIn("3", out)
+        self.assertNotIn("4", out)
+        self.assertNotIn("5", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
