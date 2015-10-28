@@ -65,6 +65,26 @@ class TestUdaCommand(TestBaseUda):
         self.assertIn("extra", out)
 
 
+class TestUdaCommandOrphans(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_uda_command_orphans(self):
+        """The 'udas' command should list 'orphans'"""
+        # Create a task with a UDA.
+        self.t.config("uda.orphan.label", "orphan")
+        self.t.config("uda.orphan.type", "string")
+        self.t("add one orphan:Annie")
+
+        # Convert the UDA to an orphan.
+        self.t.del_config("uda.orphan.label")
+        self.t.del_config("uda.orphan.type")
+
+        code, out, err = self.t("udas")
+        self.assertIn("1 UDA defined", out)
+        self.assertIn("1 Orphan UDA", out)
+
+
 class TestUdaDate(TestBaseUda):
     def setUp(self):
         super(TestUdaDate, self).setUp()
