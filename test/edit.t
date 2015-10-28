@@ -77,7 +77,7 @@ class TestTaskEdit(TestCase):
     def test_fully_loaded_task_edit(self):
         """task edit - exercise all attributes possible"""
 
-        self.t("add foo project:P +tag priority:H active:now due:eom wait:eom scheduled:eom recur:P1M until:eoy")
+        self.t("add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy")
         self.t("1 annotate bar", input="n\n")
 
         # Does not fail
