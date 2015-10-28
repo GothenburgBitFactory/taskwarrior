@@ -54,6 +54,14 @@ class TestSummaryPercentage(TestCase):
         code, out, err = self.t("summary")
         self.assertIn(" 50%", out)
 
+        code, out, err = self.t("summary rc._forcecolor:on")
+        self.assertIn(" 50%", out)
+
+    def test_summary_no_tasks(self):
+        """Verify no tasks yields no report"""
+        code, out, err = self.t.runError("summary")
+        self.assertIn("No projects.", out)
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
