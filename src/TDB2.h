@@ -50,7 +50,6 @@ public:
 
   bool get (int, Task&);
   bool get (const std::string&, Task&);
-  bool has (const std::string&);
 
   void add_task (Task&);
   bool modify_task (const Task&);
@@ -122,7 +121,6 @@ public:
   const std::vector <Task> all_tasks ();
   bool get (int, Task&);
   bool get (const std::string&, Task&);
-  bool has (const std::string&);
   const std::vector <Task> siblings (Task&);
   const std::vector <Task> children (Task&);
 
