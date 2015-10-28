@@ -147,8 +147,6 @@ private:
   bool remove_directory (const std::string&) const;
 };
 
-std::ostream& operator<< (std::ostream&, const Path&);
-
 #endif
 ////////////////////////////////////////////////////////////////////////////////
 
