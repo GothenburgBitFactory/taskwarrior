@@ -53,6 +53,9 @@ class TestStatisticsCommand(TestCase):
         self.assertRegexpMatches(out, "Deleted\s+1\n")
         self.assertRegexpMatches(out, "Total\s+3\n")
 
+        code, out, err = self.t("stats rc._forcecolor:on")
+        self.assertRegexpMatches(out, "Pending\s+1\n")
+
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
