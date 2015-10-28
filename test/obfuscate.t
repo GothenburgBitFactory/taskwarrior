@@ -55,12 +55,20 @@ class TestObfuscation(TestCase):
         self.assertIn("xxxxxx", out)
         self.assertNotIn("SECRET", out)
 
+        code, out, err = self.t("rc.obfuscate:1 rc._forcecolor:1 1 info")
+        self.assertIn("xxxxxx", out)
+        self.assertNotIn("SECRET", out)
+
     def test_list_obfuscation(self):
         """Verify that obfuscation hides all text in a report"""
         code, out, err = self.t("list")
         self.assertIn("SECRET", out)
 
         code, out, err = self.t("rc.obfuscate:1 list")
+        self.assertIn("xxxxxx", out)
+        self.assertNotIn("SECRET", out)
+
+        code, out, err = self.t("rc.obfuscate:1 rc._forcecolor:1 list")
         self.assertIn("xxxxxx", out)
         self.assertNotIn("SECRET", out)
 
