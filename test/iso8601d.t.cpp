@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (966);
+  UnitTest t (986);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -606,6 +606,29 @@ int main (int, char**)
 
     ISO8601d r31 ("Mon Jun 30 2014 xxx", "a b D Y");
     t.is (r31.toString ("YMDHNS"), "20140630000000", "Depletion not required on complex format with spaces");
+
+    // Test all format options.
+    ISO8601d r32 ("2015-10-28T12:55:00");
+    t.is (r32.toString ("Y"),      "2015", "2015-10-28T12:55:00 -> Y ->      2015");
+    t.is (r32.toString ("y"),        "15", "2015-10-28T12:55:00 -> y ->        15");
+    t.is (r32.toString ("M"),        "10", "2015-10-28T12:55:00 -> M ->        10");
+    t.is (r32.toString ("m"),        "10", "2015-10-28T12:55:00 -> m ->        10");
+    t.is (r32.toString ("D"),        "28", "2015-10-28T12:55:00 -> D ->        28");
+    t.is (r32.toString ("d"),        "28", "2015-10-28T12:55:00 -> d ->        28");
+    t.is (r32.toString ("H"),        "12", "2015-10-28T12:55:00 -> H ->        12");
+    t.is (r32.toString ("h"),        "12", "2015-10-28T12:55:00 -> h ->        12");
+    t.is (r32.toString ("N"),        "55", "2015-10-28T12:55:00 -> N ->        55");
+    t.is (r32.toString ("n"),        "55", "2015-10-28T12:55:00 -> n ->        55");
+    t.is (r32.toString ("S"),        "00", "2015-10-28T12:55:00 -> S ->        00");
+    t.is (r32.toString ("s"),         "0", "2015-10-28T12:55:00 -> s ->         0");
+    t.is (r32.toString ("A"), "Wednesday", "2015-10-28T12:55:00 -> A -> Wednesday");
+    t.is (r32.toString ("a"),       "Wed", "2015-10-28T12:55:00 -> a ->       Wed");
+    t.is (r32.toString ("B"),   "October", "2015-10-28T12:55:00 -> B ->   October");
+    t.is (r32.toString ("b"),       "Oct", "2015-10-28T12:55:00 -> b ->       Oct");
+    t.is (r32.toString ("V"),        "44", "2015-10-28T12:55:00 -> V ->        44");
+    t.is (r32.toString ("v"),        "44", "2015-10-28T12:55:00 -> v ->        44");
+    t.is (r32.toString ("J"),       "301", "2015-10-28T12:55:00 -> J ->       301");
+    t.is (r32.toString ("j"),       "301", "2015-10-28T12:55:00 -> j ->       301");
   }
 
   catch (const std::string& e)
