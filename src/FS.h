@@ -81,7 +81,6 @@ public:
   virtual bool remove () const;
 
   bool open ();
-  bool openAndLock ();
   void close ();
 
   bool lock ();
