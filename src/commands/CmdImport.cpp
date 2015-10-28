@@ -60,10 +60,6 @@ int CmdImport::execute (std::string&)
   int rc = 0;
   int count = 0;
 
-  Filter filter;
-  if (filter.hasFilter ())
-    throw std::string (STRING_ERROR_NO_FILTER);
-
   // Get filenames from command line arguments.
   std::vector <std::string> words = context.cli2.getWords ();
   if (! words.size () || (words.size () == 1 && words[0] == "-"))
