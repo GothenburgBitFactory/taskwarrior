@@ -137,6 +137,12 @@ class Task(object):
         cmd = (self.taskw, "config", "--", var, value)
         return run_cmd_wait(cmd, env=self.env, input="y\n")
 
+    def del_config(self, var):
+        """Remove `var` from taskd config
+        """
+        cmd = (self.taskw, "config", var)
+        return run_cmd_wait(cmd, env=self.env, input="y\n")
+
     @property
     def taskrc_content(self):
         """
