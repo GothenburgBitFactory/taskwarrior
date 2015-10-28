@@ -630,25 +630,6 @@ bool File::create (const std::string& name, int mode /* = 0640 */)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string File::read (const std::string& name)
-{
-  std::string contents = "";
-
-  std::ifstream in (name.c_str ());
-  if (in.good ())
-  {
-    std::string line;
-    line.reserve (1024);
-    while (getline (in, line))
-      contents += line + "\n";
-
-    in.close ();
-  }
-
-  return contents;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool File::read (const std::string& name, std::string& contents)
 {
   contents = "";

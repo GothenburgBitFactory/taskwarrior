@@ -104,7 +104,6 @@ public:
   virtual time_t btime () const;
 
   static bool create (const std::string&, int mode = 0640);
-  static std::string read (const std::string&);
   static bool read (const std::string&, std::string&);
   static bool read (const std::string&, std::vector <std::string>&);
   static bool write (const std::string&, const std::string&);
