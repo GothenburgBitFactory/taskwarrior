@@ -293,51 +293,20 @@ void Chart::scan (std::vector <Task>& tasks)
         continue;
       }
 
-      if (task.has ("start"))
+      while (from < end)
       {
-        ISO8601d start = quantize (ISO8601d (task.get_date ("start")));
-        while (from < start)
-        {
-          epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._pending;
-          from = increment (from);
-        }
-
-        while (from < end)
-        {
-          epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._started;
-          from = increment (from);
-        }
-
-        while (from < now)
-        {
-          epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._done;
-          from = increment (from);
-        }
+        epoch = from.toEpoch ();
+        if (_bars.find (epoch) != _bars.end ())
+          ++_bars[epoch]._pending;
+        from = increment (from);
       }
-      else
-      {
-        ISO8601d end = quantize (ISO8601d (task.get_date ("end")));
-        while (from < end)
-        {
-          epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._pending;
-          from = increment (from);
-        }
 
-        while (from < now)
-        {
-          epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._done;
-          from = increment (from);
-        }
+      while (from < now)
+      {
+        epoch = from.toEpoch ();
+        if (_bars.find (epoch) != _bars.end ())
+          ++_bars[epoch]._done;
+        from = increment (from);
       }
     }
 
@@ -354,35 +323,12 @@ void Chart::scan (std::vector <Task>& tasks)
       if (end < _earliest)
         continue;
 
-      if (task.has ("start"))
+      while (from < end)
       {
-        ISO8601d start = quantize (ISO8601d (task.get_date ("start")));
-        while (from < start)
-        {
-          epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._pending;
-          from = increment (from);
-        }
-
-        while (from < end)
-        {
-          epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._started;
-          from = increment (from);
-        }
-      }
-      else
-      {
-        ISO8601d end = quantize (ISO8601d (task.get_date ("end")));
-        while (from < end)
-        {
-          epoch = from.toEpoch ();
-          if (_bars.find (epoch) != _bars.end ())
-            ++_bars[epoch]._pending;
-          from = increment (from);
-        }
+        epoch = from.toEpoch ();
+        if (_bars.find (epoch) != _bars.end ())
+          ++_bars[epoch]._pending;
+        from = increment (from);
       }
     }
   }
