@@ -76,8 +76,16 @@ class TestTaskEdit(TestCase):
 
     def test_fully_loaded_task_edit(self):
         """task edit - exercise all attributes possible"""
+        self.t.config("uda.udate.type", "date")
+        self.t.config("uda.udate.label", "udate")
+        self.t.config("uda.uduration.type", "duration")
+        self.t.config("uda.uduration.label", "uduration")
+        self.t.config("uda.ustring.type", "string")
+        self.t.config("uda.ustring.label", "ustring")
+        self.t.config("uda.unumeric.type", "numeric")
+        self.t.config("uda.unumeric.label", "unumeric")
 
-        self.t("add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy")
+        self.t("add foo project:P +tag priority:H start:now due:eom wait:eom scheduled:eom recur:P1M until:eoy udate:now uduration:1day ustring:Hi unumeric:42")
         self.t("1 annotate bar", input="n\n")
 
         # Does not fail
