@@ -45,6 +45,11 @@ class TestCalendarCommandLine(TestCase):
         code, out, err = self.t("calendar")
         self.assertIn("Su Mo Tu We Th Fr Sa", out)
 
+    def test_basic_command_offset(self):
+        """Verify 'calendar rc.calendar.offset:on rc.calendar.offset.value:1' does not fail"""
+        code, out, err = self.t("calendar rc.calendar.offset:on rc.calendar.offset.value:1")
+        self.assertIn("Su Mo Tu We Th Fr Sa", out)
+
     def test_basic_command(self):
         """Verify 'calendar rc.weekstart:Monday' does not fail'"""
         code, out, err = self.t("calendar rc.weekstart:Monday")
