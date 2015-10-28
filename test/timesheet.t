@@ -59,14 +59,14 @@ class TestTimesheet(TestCase):
         fourteen = now - 14 * 86400
 
         cls.t("add P0 entry:{0}".format(fourteen))
-        cls.t("add PS0 entry:{0} start:{1}".format(fourteen, now))
+        cls.t("add PS0 entry:{0} start:{1} due:{2}".format(fourteen, now, now))
         cls.t("add PS1 entry:{0} start:{1}".format(fourteen, seven))
         cls.t("add PS2 entry:{0} start:{0}".format(fourteen))
-        cls.t("add D0 entry:{0} end:{1}".format(fourteen, now))
+        cls.t("add D0 entry:{0} end:{1} due:{2}".format(fourteen, now, now))
         cls.t("add D1 entry:{0} end:{1}".format(fourteen, seven))
         cls.t("add D2 entry:{0} end:{0}".format(fourteen))
         cls.t("/D[0-2]/ delete", input="all\n")
-        cls.t("log C0 entry:{0} end:{1}".format(fourteen, now))
+        cls.t("log C0 entry:{0} end:{1} due:{2}".format(fourteen, now, now))
         cls.t("log C1 entry:{0} end:{1}".format(fourteen, seven))
         cls.t("log C2 entry:{0} end:{0}".format(fourteen))
 
