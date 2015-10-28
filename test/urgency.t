@@ -281,6 +281,15 @@ class TestUrgency(TestCase):
         self.assertIn("task 30 ", out)
         self.assertIn("task 40 ", out)
 
+    def test_urgency_uuid(self):
+        """Verify _urgency using UUID lookup"""
+        code, out, err = self.t("_get 1.uuid")
+        uuid = out.strip()
+
+        code, out, err = self.t(uuid + " _urgency")
+        self.assertEqual("task 1 urgency 0\n", out)
+
+
 class TestBug837(TestCase):
     def setUp(self):
         """Executed before each test in the class"""
