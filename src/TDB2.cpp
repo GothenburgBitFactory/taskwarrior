@@ -150,6 +150,19 @@ bool TF2::get (const std::string& uuid, Task& task)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+bool TF2::has (const std::string& uuid)
+{
+  if (! _loaded_tasks)
+    load_tasks ();
+
+  for (auto& i : _tasks)
+    if (i.get ("uuid") == uuid)
+      return true;
+
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void TF2::add_task (Task& task)
 {
   _tasks.push_back (task);           // For subsequent queries
@@ -1348,6 +1361,14 @@ bool TDB2::get (const std::string& uuid, Task& task)
 {
   return pending.get   (uuid, task) ||
          completed.get (uuid, task);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Locate task by UUID, wherever it is.
+bool TDB2::has (const std::string& uuid)
+{
+  return pending.has (uuid) ||
+         completed.has (uuid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
