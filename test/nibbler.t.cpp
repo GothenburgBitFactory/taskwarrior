@@ -36,9 +36,9 @@ Context context;
 int main (int, char**)
 {
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (346);
+  UnitTest t (339);
 #else
-  UnitTest t (322);
+  UnitTest t (315);
 #endif
 
   // Ensure environment has no influence.
@@ -51,8 +51,6 @@ int main (int, char**)
     std::string s;
     int i;
     double d;
-    time_t ti;
-
     std::vector <std::string> options;
 
     // Make sure the nibbler behaves itself with trivial input.
@@ -72,7 +70,6 @@ int main (int, char**)
     t.notok (n.getUnsignedInt (i),       "trivial: getUnsignedInt");
     t.notok (n.getUntilEOL (s),          "trivial: getUntilEOL");
     t.notok (n.getUntilEOS (s),          "trivial: getUntilEOS");
-    t.notok (n.getDateISO (ti),          "trivial: getDateISO");
     t.notok (n.getOneOf (options, s),    "trivial: getOneOf");
     t.ok    (n.depleted (),              "trivial: depleted");
 
@@ -498,18 +495,6 @@ int main (int, char**)
     t.ok (n.getPartialUUID (s),                      "partial uuid [8] found");
     t.is (s, "a0b1c2d3",                             "partial uuid [8] -> correct");
     t.ok (n.depleted (),                             "not depleted");
-
-    // bool getDateISO (time_t&);
-    t.diag ("Nibbler::getDateISO");
-    n = Nibbler ("19980119T070000Z");
-    t.ok    (n.getDateISO (ti),       "'19980119T070000Z': getDateISO ()  -> true");
-    t.is    (ti, 885193200,           "'19980119T070000Z': getDateISO ()  -> 885193200");
-    t.ok    (n.depleted (),           "depleted");
-
-    n = Nibbler ("20090213T233130Z");
-    t.ok    (n.getDateISO (ti),       "'20090213T233130Z': getDateISO ()  -> true");
-    t.is    (ti, 1234567890,          "'20090213T233130Z': getDateISO ()  -> 1234567890");
-    t.ok    (n.depleted (),           "depleted");
 
     // bool getOneOf (const std::vector <std::string>&, std::string&);
     t.diag ("Nibbler::getOneOf");

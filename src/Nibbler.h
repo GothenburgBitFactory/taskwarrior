@@ -71,7 +71,6 @@ public:
 #endif
   bool getUUID (std::string&);
   bool getPartialUUID (std::string&);
-  bool getDateISO (time_t&);
   bool parseDigits(std::string::size_type&, int&, unsigned int, bool strict = true);
   bool getOneOf (const std::vector <std::string>&, std::string&);
   bool getName (std::string&);
