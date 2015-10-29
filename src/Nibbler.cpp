@@ -633,48 +633,6 @@ bool Nibbler::getPartialUUID (std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Parse the longest integer using the next 'limit' characters of 'result'
-// following position 'i' (when strict is true, the number of digits must be
-// equal to limit).
-bool Nibbler::parseDigits(
-  std::string::size_type& i,
-  int& result,
-  unsigned int limit,
-  bool strict /* = true */)
-{
-  // If the result has already been set
-  if (result != -1)
-    return false;
-  for (unsigned int f = limit; f > 0; --f)
-  {
-    // Check that the nibbler has enough unparsed characters
-    if (i + f <= _length)
-    {
-      // Check that 'f' of them are digits
-      unsigned int g;
-      for (g = 0; g < f; g++)
-        if (! Lexer::isDigit ((*_input)[i + g]))
-            break;
-      // Parse the integer when it is the case
-      if (g == f)
-      {
-        if (f == 1)
-          result = (*_input)[i] - '0';
-        else
-          result = atoi (_input->substr (i, f).c_str ());
-        // Update the global cursor before returning
-        i += f;
-        return true;
-      }
-    }
-    // Do not try smaller limits if the option is strict on the size
-    if (strict)
-      break;
-  }
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Assumes that the options are sorted by decreasing length, so that if the
 // options contain 'fourteen' and 'four', the stream is first matched against
 // the longer entry.

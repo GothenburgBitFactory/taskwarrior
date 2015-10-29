@@ -71,7 +71,6 @@ public:
 #endif
   bool getUUID (std::string&);
   bool getPartialUUID (std::string&);
-  bool parseDigits(std::string::size_type&, int&, unsigned int, bool strict = true);
   bool getOneOf (const std::vector <std::string>&, std::string&);
   bool getName (std::string&);
   bool getWord (std::string&);
