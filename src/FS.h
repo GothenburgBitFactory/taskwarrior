@@ -89,9 +89,6 @@ public:
   void read (std::string&);
   void read (std::vector <std::string>&);
 
-  void write (const std::string&);
-  void write (const std::vector <std::string>&);
-
   void append (const std::string&);
   void append (const std::vector <std::string>&);
 
@@ -108,8 +105,6 @@ public:
   static bool read (const std::string&, std::vector <std::string>&);
   static bool write (const std::string&, const std::string&);
   static bool write (const std::string&, const std::vector <std::string>&, bool addNewlines = true);
-  static bool append (const std::string&, const std::string&);
-  static bool append (const std::string&, const std::vector <std::string>&, bool addNewlines = true);
   static bool remove (const std::string&);
 
 private:

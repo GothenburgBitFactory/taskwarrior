@@ -483,31 +483,6 @@ void File::read (std::vector <std::string>& contents)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Opens if necessary.
-void File::write (const std::string& line)
-{
-  if (!_fh)
-    open ();
-
-  if (_fh)
-    fputs (line.c_str (), _fh);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Opens if necessary.
-void File::write (const std::vector <std::string>& lines)
-{
-  if (!_fh)
-    open ();
-
-  if (_fh)
-  {
-    for (auto& line : lines)
-      fputs (line.c_str (), _fh);
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Opens if necessary.
 void File::append (const std::string& line)
 {
   if (!_fh)
@@ -692,46 +667,6 @@ bool File::write (
 {
   std::ofstream out (expand (name).c_str (),
                      std::ios_base::out | std::ios_base::trunc);
-  if (out.good ())
-  {
-    for (auto& line : lines)
-    {
-      out << line;
-
-      if (addNewlines)
-        out << "\n";
-    }
-
-    out.close ();
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool File::append (const std::string& name, const std::string& contents)
-{
-  std::ofstream out (expand (name).c_str (),
-                     std::ios_base::out | std::ios_base::app);
-  if (out.good ())
-  {
-    out << contents;
-    out.close ();
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-bool File::append (
-  const std::string& name,
-  const std::vector <std::string>& lines,
-  bool addNewlines /* = true */)
-{
-  std::ofstream out (expand (name).c_str (),
-                     std::ios_base::out | std::ios_base::app);
   if (out.good ())
   {
     for (auto& line : lines)
