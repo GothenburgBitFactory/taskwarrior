@@ -43,8 +43,6 @@ public:
   void subset (const std::vector <Task>&, std::vector <Task>&);
   void subset (std::vector <Task>&);
   bool hasFilter ();
-  bool hasModifications ();
-  bool hasMiscellaneous ();
   bool pendingOnly ();
   void safety ();
   void disableSafety ();
