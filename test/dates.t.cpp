@@ -55,7 +55,7 @@ void testInit (UnitTest& t, const std::string& value, Variant& var)
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (98);
+  UnitTest t (104);
 
   Variant sunday;    testInit (t, "sunday",    sunday);
   Variant monday;    testInit (t, "monday",    monday);
@@ -130,6 +130,8 @@ int main (int, char**)
   Variant eoy;            testInit (t, "eoy", eoy);
   Variant socm;           testInit (t, "socm", socm);
   Variant eocm;           testInit (t, "eocm", eocm);
+  Variant soww;           testInit (t, "soww", soww);
+  Variant eoww;           testInit (t, "eoww", eoww);
   Variant som;            testInit (t, "som", som);
   Variant eom;            testInit (t, "eom", eom);
   Variant later;          testInit (t, "later", later);
@@ -144,6 +146,10 @@ int main (int, char**)
   Variant var_false;      testInit (t, "false", var_false);
   Variant midsommar;      testInit (t, "midsommar", midsommar);
   Variant midsommarafton; testInit (t, "midsommarafton", midsommarafton);
+  Variant first;          testInit (t, "1st", first);
+  Variant second;         testInit (t, "2nd", second);
+  Variant third;          testInit (t, "3rd", third);
+  Variant fourth;         testInit (t, "4th", fourth);
 
   // Check abbreviations.
   // TW-1515: abbreviation.minimum does not apply to date recognition
