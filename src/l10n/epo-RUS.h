@@ -224,6 +224,8 @@
 #define STRING_COLUMN_LABEL_SCHED    "Fiksa"
 #define STRING_COLUMN_LABEL_UDA      "Nomo"
 #define STRING_COLUMN_LABEL_TYPE     "Tipo"
+#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
+#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
 #define STRING_COLUMN_LABEL_LABEL    "Rubriko"
 #define STRING_COLUMN_LABEL_DEFAULT  "Defaŭlto"
 #define STRING_COLUMN_LABEL_VALUES   "Valoroj permesataj"

@@ -224,6 +224,8 @@
 #define STRING_COLUMN_LABEL_SCHED    "Geplant"
 #define STRING_COLUMN_LABEL_UDA      "Name"
 #define STRING_COLUMN_LABEL_TYPE     "Typ"
+#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
+#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
 #define STRING_COLUMN_LABEL_LABEL    "Beschreibung"
 #define STRING_COLUMN_LABEL_DEFAULT  "Standard"
 #define STRING_COLUMN_LABEL_VALUES   "Erlaubte Werte"

@@ -224,6 +224,8 @@
 #define STRING_COLUMN_LABEL_SCHED    "Fissato"
 #define STRING_COLUMN_LABEL_UDA      "Nome"
 #define STRING_COLUMN_LABEL_TYPE     "Tipo"
+#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
+#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
 #define STRING_COLUMN_LABEL_LABEL    "Etichetta"
 #define STRING_COLUMN_LABEL_DEFAULT  "Predefinito"
 #define STRING_COLUMN_LABEL_VALUES   "Valori consentiti"

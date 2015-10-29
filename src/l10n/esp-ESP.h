@@ -225,6 +225,8 @@
 #define STRING_COLUMN_LABEL_SCHED    "Programada"
 #define STRING_COLUMN_LABEL_UDA      "Nombre"
 #define STRING_COLUMN_LABEL_TYPE     "Tipo"
+#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
+#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
 #define STRING_COLUMN_LABEL_LABEL    "Etiqueta"
 #define STRING_COLUMN_LABEL_DEFAULT  "Defecto"
 #define STRING_COLUMN_LABEL_VALUES   "Valores permitidos"

@@ -224,6 +224,8 @@
 #define STRING_COLUMN_LABEL_SCHED    "Zaplanowane"
 #define STRING_COLUMN_LABEL_UDA      "Nazwa"
 #define STRING_COLUMN_LABEL_TYPE     "Typ"
+#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
+#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
 #define STRING_COLUMN_LABEL_LABEL    "Etykieta"
 #define STRING_COLUMN_LABEL_DEFAULT  "Domyślne"
 #define STRING_COLUMN_LABEL_VALUES   "Dozwolone Wartości"

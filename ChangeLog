@@ -1,6 +1,7 @@
 2.5.1 () -
 
 - The default configuration is now 256-color only.
+- The 'columns' report now shows whether a column is modifiable or read only.
 
 ------ current release ---------------------------
 

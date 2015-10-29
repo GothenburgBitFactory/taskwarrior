@@ -2002,7 +2002,7 @@ void Task::modify (modType type, bool text_required /* = false */)
               ! column->modifiable ())
             throw format (STRING_INVALID_MOD, name, value);
 
-          // String type attributes only get DOM resolution, no eval.
+          // DOM resolution. If it evals, store that, otherwise raw.
           Variant evaluatedValue;
           if (name != "project" || Lexer::isDOM (value))
           {
@@ -2170,7 +2170,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             ++modCount;
           }
 
-          // String type columns are not eval'd.  Welll, not much.
+          // String type columns are not eval'd.  Well, not much.
           else if (column->type () == "string")
           {
             std::string strValue = (std::string) evaluatedValue;

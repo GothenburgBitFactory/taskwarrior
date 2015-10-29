@@ -225,6 +225,8 @@
 #define STRING_COLUMN_LABEL_SCHED    "Agendado"
 #define STRING_COLUMN_LABEL_UDA      "Nome"
 #define STRING_COLUMN_LABEL_TYPE     "Tipo"
+#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
+#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
 #define STRING_COLUMN_LABEL_LABEL    "Rótulo"
 #define STRING_COLUMN_LABEL_DEFAULT  "Por omissão"
 #define STRING_COLUMN_LABEL_VALUES   "Valores Permitidos"

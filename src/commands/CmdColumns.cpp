@@ -73,6 +73,7 @@ int CmdColumns::execute (std::string& output)
   formats.width (context.getWidth ());
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_COLUMN));
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_TYPE));
+  formats.add (Column::factory ("string", STRING_COLUMN_LABEL_MODIFY));
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_STYLES));
   formats.add (Column::factory ("string", STRING_COLUMN_LABEL_EXAMPLES));
 
@@ -99,8 +100,9 @@ int CmdColumns::execute (std::string& output)
         int row = formats.addRow ();
         formats.set (row, 0, i == 0 ? name : "");
         formats.set (row, 1, i == 0 ? context.columns[name]->type () : "");
-        formats.set (row, 2, styles[i] + (i == 0 ? "*" : ""));
-        formats.set (row, 3, i < examples.size () ? examples[i] : "");
+        formats.set (row, 2, i == 0 ? (context.columns[name]->modifiable () ? STRING_COLUMN_LABEL_MODIFY : STRING_COLUMN_LABEL_NOMODIFY) : "");
+        formats.set (row, 3, styles[i] + (i == 0 ? "*" : ""));
+        formats.set (row, 4, i < examples.size () ? examples[i] : "");
       }
     }
   }
@@ -108,11 +110,12 @@ int CmdColumns::execute (std::string& output)
   int row = formats.addRow ();
   formats.set (row, 0, "<uda>");
   formats.set (row, 1, "<type>");
-  formats.set (row, 2, "default*");
+  formats.set (row, 2, "Modifiable");
+  formats.set (row, 3, "default*");
 
   row = formats.addRow ();
   formats.set (row, 0, "");
-  formats.set (row, 2, "indicator");
+  formats.set (row, 3, "indicator");
 
   output = optionalBlankLine ()
          + formats.render ()

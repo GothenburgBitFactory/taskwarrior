@@ -224,6 +224,8 @@
 #define STRING_COLUMN_LABEL_SCHED    "Scheduled"
 #define STRING_COLUMN_LABEL_UDA      "Name"
 #define STRING_COLUMN_LABEL_TYPE     "Type"
+#define STRING_COLUMN_LABEL_MODIFY   "Modifiable"
+#define STRING_COLUMN_LABEL_NOMODIFY "Read Only"
 #define STRING_COLUMN_LABEL_LABEL    "Label"
 #define STRING_COLUMN_LABEL_DEFAULT  "Default"
 #define STRING_COLUMN_LABEL_VALUES   "Allowed Values"
