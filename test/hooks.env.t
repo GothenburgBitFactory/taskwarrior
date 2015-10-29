@@ -62,13 +62,25 @@ class TestHooksOnLaunch(TestCase):
         self.assertEqual('data'    in taskenv, True, 'data:...')
         self.assertEqual('version' in taskenv, True, 'version:...')
 
-    def test_onlaunch_buildin_env_diag(self):
+    def test_onlaunch_builtin_env_diag(self):
         """Verify that 'diagnostics' can see hook details"""
         hookname = 'on-launch-good-env'
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("diagnostics")
         self.assertIn("on-launch-good-env (executable)", out)
+
+    def test_onlaunch_builtin_env_debug(self):
+        """Verify that 'debug.hooks' shows hook details"""
+        hookname = 'on-launch-good-env'
+        self.t.hooks.add_default(hookname, log=True)
+
+        code, out, err = self.t("version rc.debug.hooks:2")
+        self.assertIn("api:", err)
+        self.assertIn("Found hook script", err)
+        self.assertIn("Hook: Completed with status 0", err)
+        self.assertIn("Hook: input", err)
+        self.assertIn("Hook: output", err)
 
 
 if __name__ == "__main__":
