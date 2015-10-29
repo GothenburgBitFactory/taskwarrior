@@ -17,7 +17,8 @@ Newly Deprecated Features in Taskwarrior 2.5.1
 
 Removed Features in 2.5.1
 
-  -
+  - There is no longer a 16-color default configuration for some platforms,
+    making all platforms 256-color.
 
 Known Issues
 

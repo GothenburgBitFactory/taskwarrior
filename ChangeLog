@@ -1,5 +1,7 @@
 2.5.1 () -
 
+- The default configuration is now 256-color only.
+
 ------ current release ---------------------------
 
 2.5.0 (2015-10-21) dd5968a61b1fab258b38879cfdbb7d67f1bcd550
