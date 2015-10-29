@@ -27,33 +27,19 @@
 #include <cmake.h>
 #include <iostream>
 #include <stdlib.h>
-#include <Context.h>
 #include <main.h>
 #include <test.h>
-
-Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (24);
-
-  // Ensure environment has no influence.
-  unsetenv ("TASKDATA");
-  unsetenv ("TASKRC");
+  UnitTest t (8);
 
   // 1,2,3  <=>  2,3,4
   std::vector <std::string> string_one {"1", "2", "3"};
   std::vector <std::string> string_two {"2", "3", "4"};
   std::vector <std::string> string_three {"2", "3", "4"};
   std::vector <std::string> string_four;
-
-  // Differences?
-  t.ok (!listDiff (string_one, string_one),   "std::string (1,2,3) == (1,2,3)");
-  t.ok (listDiff (string_one, string_two),    "std::string (1,2,3) != (2,3,4)");
-  t.ok (listDiff (string_one, string_three),  "std::string (1,2,3) != (2,3,4)");
-  t.ok (listDiff (string_one, string_four),   "std::string (1,2,3) != ()");
-  t.ok (!listDiff (string_four, string_four), "std::string () == ()");
 
   // What are the differences?
   std::vector<std::string> string_leftOnly;
@@ -65,13 +51,6 @@ int main (int, char**)
   t.is ((int) string_rightOnly.size (), 1, "std::string (1,2,3) <=> (2,3,4) = ->4");
   t.is (string_rightOnly[0], "4",          "std::string (1,2,3) <=> (2,3,4) = ->4");
 
-  // What is the intersection?
-  std::vector <std::string> string_join;
-  listIntersect (string_one, string_two, string_join);
-  t.is ((int) string_join.size (), 2, "std::string (1,2,3) intersect (2,3,4) = (2,3)");
-  t.is (string_join[0], "2",          "std::string (1,2,3) intersect (2,3,4) = (2,3)");
-  t.is (string_join[1], "3",          "std::string (1,2,3) intersect (2,3,4) = (2,3)");
-
   // Now do it all again, with integers.
 
   // 1,2,3  <=>  2,3,4
@@ -79,13 +58,6 @@ int main (int, char**)
   std::vector <int> int_two {2, 3, 4};
   std::vector <int> int_three {2, 3, 4};
   std::vector <int> int_four;
-
-  // Differences?
-  t.ok (!listDiff (int_one, int_one),   "int (1,2,3) == (1,2,3)");
-  t.ok (listDiff (int_one, int_two),    "int (1,2,3) != (2,3,4)");
-  t.ok (listDiff (int_one, int_three),  "int (1,2,3) != (2,3,4)");
-  t.ok (listDiff (int_one, int_four),   "int (1,2,3) != ()");
-  t.ok (!listDiff (int_four, int_four), "int () == ()");
 
   // What are the differences?
   std::vector<int> int_leftOnly;
@@ -96,13 +68,6 @@ int main (int, char**)
 
   t.is ((int) int_rightOnly.size (), 1, "int (1,2,3) <=> (2,3,4) = ->4");
   t.is (int_rightOnly[0], "4",          "int (1,2,3) <=> (2,3,4) = ->4");
-
-  // What is the intersection?
-  std::vector <int> int_join;
-  listIntersect (int_one, int_two, int_join);
-  t.is ((int) int_join.size (), 2, "int (1,2,3) intersect (2,3,4) = (2,3)");
-  t.is (int_join[0], "2",          "int (1,2,3) intersect (2,3,4) = (2,3)");
-  t.is (int_join[1], "3",          "int (1,2,3) intersect (2,3,4) = (2,3)");
 
   return 0;
 }

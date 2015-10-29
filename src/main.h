@@ -84,19 +84,6 @@ void legacyAttributeMap (std::string&);
 
 // list template
 ///////////////////////////////////////////////////////////////////////////////
-template <class T> bool listDiff (const T& left, const T& right)
-{
-  if (left.size () != right.size ())
-    return true;
-
-  for (unsigned int i = 0; i < left.size (); ++i)
-    if (left[i] != right[i])
-      return true;
-
-  return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////
 template <class T> void listDiff (
   const T& left, const T& right, T& leftOnly, T& rightOnly)
 {
@@ -133,24 +120,6 @@ template <class T> void listDiff (
 
     if (!found)
       rightOnly.push_back (right[r]);
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-template <class T> void listIntersect (const T& left, const T& right, T& join)
-{
-  join.clear ();
-
-  for (unsigned int l = 0; l < left.size (); ++l)
-  {
-    for (unsigned int r = 0; r < right.size (); ++r)
-    {
-      if (left[l] == right[r])
-      {
-        join.push_back (left[l]);
-        break;
-      }
-    }
   }
 }
 
