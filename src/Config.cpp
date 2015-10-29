@@ -478,13 +478,6 @@ Config::Config ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-Config::Config (const std::string& file)
-{
-  setDefaults ();
-  load (file);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Read the Configuration file and populate the *this map.  The file format is
 // simply lines with name=value pairs.  Whitespace between name, = and value is
 // not tolerated, but blank lines and comments starting with # are allowed.
