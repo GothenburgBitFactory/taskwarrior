@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (1208);
+  UnitTest t (1226);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -531,6 +531,25 @@ int main (int, char**)
       }
     }
   }
+
+  t.is (Lexer::typeName (Lexer::Type::uuid),         "uuid",         "Lexer::typeName (Lexer::Type::uuid)");
+  t.is (Lexer::typeName (Lexer::Type::number),       "number",       "Lexer::typeName (Lexer::Type::number)");
+  t.is (Lexer::typeName (Lexer::Type::hex),          "hex",          "Lexer::typeName (Lexer::Type::hex)");
+  t.is (Lexer::typeName (Lexer::Type::string),       "string",       "Lexer::typeName (Lexer::Type::string)");
+  t.is (Lexer::typeName (Lexer::Type::url),          "url",          "Lexer::typeName (Lexer::Type::url)");
+  t.is (Lexer::typeName (Lexer::Type::pair),         "pair",         "Lexer::typeName (Lexer::Type::pair)");
+  t.is (Lexer::typeName (Lexer::Type::set),          "set",          "Lexer::typeName (Lexer::Type::set)");
+  t.is (Lexer::typeName (Lexer::Type::separator),    "separator",    "Lexer::typeName (Lexer::Type::separator)");
+  t.is (Lexer::typeName (Lexer::Type::tag),          "tag",          "Lexer::typeName (Lexer::Type::tag)");
+  t.is (Lexer::typeName (Lexer::Type::path),         "path",         "Lexer::typeName (Lexer::Type::path)");
+  t.is (Lexer::typeName (Lexer::Type::substitution), "substitution", "Lexer::typeName (Lexer::Type::substitution)");
+  t.is (Lexer::typeName (Lexer::Type::pattern),      "pattern",      "Lexer::typeName (Lexer::Type::pattern)");
+  t.is (Lexer::typeName (Lexer::Type::op),           "op",           "Lexer::typeName (Lexer::Type::op)");
+  t.is (Lexer::typeName (Lexer::Type::dom),          "dom",          "Lexer::typeName (Lexer::Type::dom)");
+  t.is (Lexer::typeName (Lexer::Type::identifier),   "identifier",   "Lexer::typeName (Lexer::Type::identifier)");
+  t.is (Lexer::typeName (Lexer::Type::word),         "word",         "Lexer::typeName (Lexer::Type::word)");
+  t.is (Lexer::typeName (Lexer::Type::date),         "date",         "Lexer::typeName (Lexer::Type::date)");
+  t.is (Lexer::typeName (Lexer::Type::duration),     "duration",     "Lexer::typeName (Lexer::Type::duration)");
 
   return 0;
 }
