@@ -80,14 +80,9 @@ int CmdDelete::execute (std::string&)
     {
       // Delete the specified task.
       std::string question;
-      if (task.id)
-        question = format (STRING_CMD_DELETE_CONFIRM,
-                           task.id,
-                           task.get ("description"));
-      else
-        question = format (STRING_CMD_DELETE_CONFIRM,
-                           task.get ("uuid"),
-                           task.get ("description"));
+      question = format (STRING_CMD_DELETE_CONFIRM,
+                         task.identifier (true),
+                         task.get ("description"));
 
       task.modify (Task::modAnnotate);
       task.setStatus (Task::deleted);
@@ -173,7 +168,7 @@ int CmdDelete::execute (std::string&)
     else
     {
       std::cout << format (STRING_CMD_DELETE_NOT_DEL,
-                           task.id,
+                           task.identifier (true),
                            task.get ("description"))
           << "\n";
       rc = 1;

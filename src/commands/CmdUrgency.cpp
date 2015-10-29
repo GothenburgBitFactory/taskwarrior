@@ -70,19 +70,10 @@ int CmdUrgency::execute (std::string& output)
   std::stringstream out;
   for (auto& task : filtered)
   {
-    if (task.id)
-    {
-      out << format (STRING_CMD_URGENCY_RESULT,
-                     task.id, trim (format (task.urgency (), 6, 3)))
-          << "\n";
-    }
-    else
-    {
-      out << format (STRING_CMD_URGENCY_RESULT,
-                     task.get ("uuid"),
-                     trim (format (task.urgency (), 6, 3)))
-          << "\n";
-    }
+    out << format (STRING_CMD_URGENCY_RESULT,
+                   task.identifier (),
+                   trim (format (task.urgency (), 6, 3)))
+        << "\n";
   }
 
   output = out.str ();

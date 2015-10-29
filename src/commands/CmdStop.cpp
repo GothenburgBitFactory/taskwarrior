@@ -78,7 +78,7 @@ int CmdStop::execute (std::string&)
 
       // Stop the specified task.
       std::string question = format (STRING_CMD_STOP_CONFIRM,
-                                     task.id,
+                                     task.identifier (true),
                                      task.get ("description"));
 
       task.modify (Task::modAnnotate);
@@ -108,7 +108,7 @@ int CmdStop::execute (std::string&)
     else
     {
       std::cout << format (STRING_CMD_STOP_ALREADY,
-                           task.id,
+                           task.identifier (true),
                            task.get ("description"))
                 << "\n";
       rc = 1;

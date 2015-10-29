@@ -82,14 +82,9 @@ int CmdModify::execute (std::string&)
       checkConsistency(before, task);
 
       std::string question;
-      if (task.id != 0)
-        question = format (STRING_CMD_MODIFY_CONFIRM,
-                           task.id,
-                           task.get ("description"));
-      else
-        question = format (STRING_CMD_MODIFY_CONFIRM,
-                           task.get ("uuid"),
-                           task.get ("description"));
+      question = format (STRING_CMD_MODIFY_CONFIRM,
+                         task.identifier (true),
+                         task.get ("description"));
 
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
       {

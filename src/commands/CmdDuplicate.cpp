@@ -88,7 +88,7 @@ int CmdDuplicate::execute (std::string&)
       dup.remove ("recur");
       dup.remove ("until");
       dup.remove ("imask");
-      std::cout << format (STRING_CMD_DUPLICATE_NON_REC, task.id)
+      std::cout << format (STRING_CMD_DUPLICATE_NON_REC, task.identifier ())
           << "\n";
     }
 
@@ -96,7 +96,7 @@ int CmdDuplicate::execute (std::string&)
     else if (dup.getStatus () == Task::recurring)
     {
       dup.remove ("mask");
-      std::cout << format (STRING_CMD_DUPLICATE_REC, task.id)
+      std::cout << format (STRING_CMD_DUPLICATE_REC, task.identifier ())
           << "\n";
     }
 
@@ -106,7 +106,7 @@ int CmdDuplicate::execute (std::string&)
     dup.modify (Task::modAnnotate);
 
     if (permission (format (STRING_CMD_DUPLICATE_CONFIRM,
-                            task.id,
+                            task.identifier (true),
                             task.get ("description")),
                     filtered.size ()))
     {

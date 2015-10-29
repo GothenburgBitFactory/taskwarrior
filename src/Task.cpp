@@ -203,6 +203,20 @@ std::string Task::statusToText (Task::status s)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Returns a proper handle to the task. Tasks should not be referenced by UUIDs
+// as long as they have non-zero ID.
+//
+const std::string Task::identifier (bool shortened /* = false */) const
+{
+  if (this->id != 0)
+    return format (this->id);
+  else if (shortened)
+    return this->get ("uuid").substr (0, 8);
+  else
+    return this->get ("uuid");
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Task::setAsNow (const std::string& att)
 {
   char now[16];

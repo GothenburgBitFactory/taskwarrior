@@ -79,7 +79,7 @@ int CmdAppend::execute (std::string&)
 
     // Append to the specified task.
     std::string question = format (STRING_CMD_APPEND_CONFIRM,
-                                   task.id,
+                                   task.identifier (true),
                                    task.get ("description"));
 
     task.modify (Task::modAppend, true);

@@ -79,7 +79,7 @@ int CmdPrepend::execute (std::string&)
 
     // Prepend to the specified task.
     std::string question = format (STRING_CMD_PREPEND_CONFIRM,
-                                   task.id,
+                                   task.identifier (true),
                                    task.get ("description"));
 
     task.modify (Task::modPrepend, true);

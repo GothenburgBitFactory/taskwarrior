@@ -92,6 +92,7 @@ public:
   void setAsNow (const std::string&);
   bool has (const std::string&) const;
   std::vector <std::string> all ();
+  const std::string identifier (bool shortened = false) const;
   const std::string get (const std::string&) const;
   const std::string& get_ref (const std::string&) const;
   int get_int (const std::string&) const;

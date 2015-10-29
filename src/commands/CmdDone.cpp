@@ -81,7 +81,7 @@ int CmdDone::execute (std::string&)
     {
       // Complete the specified task.
       std::string question = format (STRING_CMD_DONE_CONFIRM,
-                                     task.id,
+                                     task.identifier (true),
                                      task.get ("description"));
 
       task.modify (Task::modAnnotate);
@@ -121,7 +121,7 @@ int CmdDone::execute (std::string&)
     else
     {
       std::cout << format (STRING_CMD_DONE_NOTPEND,
-                           task.id,
+                           task.identifier (true),
                            task.get ("description"))
                 << "\n";
       rc = 1;

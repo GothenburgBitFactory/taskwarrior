@@ -309,12 +309,10 @@ void feedback_affected (const std::string& effect, const Task& task)
 {
   if (context.verbose ("affected"))
   {
-    if (task.id)
-      std::cout << format (effect, task.id, task.get ("description"))
-                << "\n";
-    else
-      std::cout << format (effect, task.get ("uuid"), task.get ("description"))
-                << "\n";
+    std::cout << format (effect,
+                         task.identifier (true),
+                         task.get ("description"))
+              << "\n";
   }
 }
 
@@ -373,12 +371,8 @@ void feedback_special_tags (const Task& task, const std::string& tag)
 
     if (msg.length ())
     {
-      if (task.id)
-        std::cout << format (msg, task.id)
-                  << "\n";
-      else
-        std::cout << format (msg, task.get ("uuid"))
-                  << "\n";
+      std::cout << format (msg, task.identifier ())
+                << "\n";
     }
   }
 }
@@ -506,7 +500,9 @@ std::string onExpiration (Task& task)
   std::stringstream msg;
 
   if (context.verbose ("affected"))
-    msg << format (STRING_FEEDBACK_EXPIRED, task.id, task.get ("description"));
+    msg << format (STRING_FEEDBACK_EXPIRED,
+                   task.identifier (true),
+                   task.get ("description"));
 
   return msg.str ();
 }

@@ -80,7 +80,7 @@ int CmdStart::execute (std::string&)
 
       // Start the specified task.
       std::string question = format (STRING_CMD_START_CONFIRM,
-                                     task.id,
+                                     task.identifier (true),
                                      task.get ("description"));
       task.modify (Task::modAnnotate);
       task.setAsNow ("start");

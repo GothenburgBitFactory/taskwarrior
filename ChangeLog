@@ -1,5 +1,6 @@
 2.5.1 () -
 
+- TW-1704 Use Task::identifier to reference the Task in the output
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.
 

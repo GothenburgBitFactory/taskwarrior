@@ -127,7 +127,7 @@ int CmdDenotate::execute (std::string&)
     if (before != task)
     {
       std::string question = format (STRING_CMD_DENO_CONFIRM,
-                                     task.id,
+                                     task.identifier (true),
                                      task.get ("description"));
 
       if (permission (taskDifferences (before, task) + question, filtered.size ()))
