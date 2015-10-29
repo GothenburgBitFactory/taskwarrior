@@ -27,9 +27,6 @@
 #ifndef INCLUDED_NIBBLER
 #define INCLUDED_NIBBLER
 
-#define NIBBLER_FEATURE_DATE
-//#undef  NIBBLER_FEATURE_DATE
-
 #define NIBBLER_FEATURE_REGEX
 //#undef  NIBBLER_FEATURE_REGEX
 
@@ -76,9 +73,6 @@ public:
   bool getPartialUUID (std::string&);
   bool getDateISO (time_t&);
   bool parseDigits(std::string::size_type&, int&, unsigned int, bool strict = true);
-#ifdef NIBBLER_FEATURE_DATE
-  bool getDate (const std::string&, time_t&);
-#endif
   bool getOneOf (const std::vector <std::string>&, std::string&);
   bool getName (std::string&);
   bool getWord (std::string&);
