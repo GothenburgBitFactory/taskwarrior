@@ -27,9 +27,6 @@
 #ifndef INCLUDED_NIBBLER
 #define INCLUDED_NIBBLER
 
-#define NIBBLER_FEATURE_REGEX
-//#undef  NIBBLER_FEATURE_REGEX
-
 #include <string>
 #include <vector>
 #include <time.h>
@@ -63,9 +60,6 @@ public:
   bool getNumber (std::string&);
   bool getNumber (double&);
   bool getLiteral (const std::string&);
-#ifdef NIBBLER_FEATURE_REGEX
-  bool getRx (const std::string&, std::string&);
-#endif
   bool getUUID (std::string&);
   bool getPartialUUID (std::string&);
   bool getOneOf (const std::vector <std::string>&, std::string&);

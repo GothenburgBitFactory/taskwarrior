@@ -35,11 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-#ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (325);
-#else
   UnitTest t (315);
-#endif
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -289,22 +285,6 @@ int main (int, char**)
     t.notok (n.getLiteral ("foo"),    "     'bar' :     getLiteral ('foo')  -> false");
     t.ok    (n.getLiteral ("bar"),    "     'bar' :     getLiteral ('bar')  -> true");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
-
-#ifdef NIBBLER_FEATURE_REGEX
-    // bool getRx (const std::string&, std::string&);
-    t.diag ("Nibbler::getRx");
-    n = Nibbler ("one two three");
-    t.ok    (n.getRx ("^(o..)", s),   "'one two three' :   getRx ('^(o..)')  -> true");
-    t.is    (s, "one",                "'one two three' :   getRx ('^(o..)')  -> 'one'");
-    t.ok    (n.skip (' '),            "   ' two three' :         skip (' ')  -> true");
-    t.ok    (n.getRx ("t..", s),      "    'two three' :   getRx ('t..')     -> true");
-    t.is    (s, "two",                "    'two three' :   getRx ('t..')     -> 'two'");
-    t.notok (n.getRx ("th...", s),    "       ' three' :   getRx ('th...')   -> false");
-    t.ok    (n.skip (' '),            "       ' three' :         skip (' ')  -> true");
-    t.ok    (n.getRx ("th...", s),    "        'three' :   getRx ('th...')   -> true");
-    t.is    (s, "three",              "        'three' :   getRx ('th...')   -> 'three'");
-    t.ok    (n.depleted (),           "             '' :       depleted ()   -> true");
-#endif
 
     // bool getUUID (std::string&);
     t.diag ("Nibbler::getUUID");

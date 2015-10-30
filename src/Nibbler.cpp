@@ -32,9 +32,6 @@
 #include <Lexer.h>
 #include <Nibbler.h>
 #include <util.h>
-#ifdef NIBBLER_FEATURE_REGEX
-#include <RX.h>
-#endif
 #include <Lexer.h>
 #include <util.h>
 #include <memory>
@@ -491,34 +488,6 @@ bool Nibbler::getLiteral (const std::string& literal)
 
   return false;
 }
-
-////////////////////////////////////////////////////////////////////////////////
-#ifdef NIBBLER_FEATURE_REGEX
-bool Nibbler::getRx (const std::string& regex, std::string& result)
-{
-  if (_cursor < _length)
-  {
-    // Regex may be anchored to the beginning and include capturing parentheses,
-    // otherwise they are added.
-    std::string modified_regex;
-    if (regex.substr (0, 2) != "^(")
-      modified_regex = "^(" + regex + ")";
-    else
-      modified_regex = regex;
-
-    RX r (modified_regex, true);
-    std::vector <std::string> results;
-    if (r.match (results, _input->substr (_cursor)))
-    {
-      result = results[0];
-      _cursor += result.length ();
-      return true;
-    }
-  }
-
-  return false;
-}
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUUID (std::string& result)
