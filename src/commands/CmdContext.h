@@ -37,12 +37,12 @@ public:
   int execute (std::string&);
   std::string joinWords (const std::vector <std::string>&, unsigned int, unsigned int = 0);
   static std::vector <std::string> getContexts ();
-  int defineContext (const std::vector <std::string>&, std::stringstream&);
-  int deleteContext (const std::vector <std::string>&, std::stringstream&);
-  int listContexts (std::stringstream&);
-  int setContext (const std::vector <std::string>&, std::stringstream&);
-  int showContext (std::stringstream&);
-  int unsetContext (std::stringstream&);
+  void defineContext (const std::vector <std::string>&, std::stringstream&);
+  void deleteContext (const std::vector <std::string>&, std::stringstream&);
+  void listContexts (std::stringstream&);
+  void setContext (const std::vector <std::string>&, std::stringstream&);
+  void showContext (std::stringstream&);
+  void unsetContext (std::stringstream&);
 };
 
 class CmdCompletionContext : public Command

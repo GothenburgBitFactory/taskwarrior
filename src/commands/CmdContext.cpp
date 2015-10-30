@@ -56,7 +56,6 @@ CmdContext::CmdContext ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdContext::execute (std::string& output)
 {
-  int rc = 0;
   std::stringstream out;
 
   // Get the non-attribute, non-fancy command line arguments.
@@ -66,16 +65,16 @@ int CmdContext::execute (std::string& output)
   {
     std::string subcommand = words[0];
 
-         if (subcommand == "define") rc = defineContext (words, out);
-    else if (subcommand == "delete") rc = deleteContext (words, out);
-    else if (subcommand == "list")   rc = listContexts (out);
-    else if (subcommand == "none")   rc = unsetContext (out);
-    else if (subcommand == "show")   rc = showContext (out);
-    else                             rc = setContext (words, out);
+         if (subcommand == "define") defineContext (words, out);
+    else if (subcommand == "delete") deleteContext (words, out);
+    else if (subcommand == "list")   listContexts (out);
+    else if (subcommand == "none")   unsetContext (out);
+    else if (subcommand == "show")   showContext (out);
+    else                             setContext (words, out);
   }
 
   output = out.str ();
-  return rc;
+  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -126,9 +125,8 @@ std::vector <std::string> CmdContext::getContexts ()
 // Invoked with: task context define <name> <filter>
 // Example:      task context define home project:Home
 //
-int CmdContext::defineContext (const std::vector <std::string>& words, std::stringstream& out)
+void CmdContext::defineContext (const std::vector <std::string>& words, std::stringstream& out)
 {
-  int rc = 0;
   bool confirmation = context.config.getBoolean ("confirmation");
 
   if (words.size () > 2)
@@ -164,18 +162,11 @@ int CmdContext::defineContext (const std::vector <std::string>& words, std::stri
     if (success)
       out << format (STRING_CMD_CONTEXT_DEF_SUCC, words[1]) << "\n";
     else
-    {
-      out << format (STRING_CMD_CONTEXT_DEF_FAIL, words[1]) << "\n";
-      rc = 1;
-    }
+      throw format (STRING_CMD_CONTEXT_DEF_FAIL, words[1]);
   }
   else
-  {
-    out << STRING_CMD_CONTEXT_DEF_USAG << "\n";
-    rc = 1;
-  }
+    throw std::string (STRING_CMD_CONTEXT_DEF_USAG);
 
-  return rc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -188,17 +179,15 @@ int CmdContext::defineContext (const std::vector <std::string>& words, std::stri
 // Invoked with: task context delete <name>
 // Example:      task context delete home
 //
-int CmdContext::deleteContext (const std::vector <std::string>& words, std::stringstream& out)
+void CmdContext::deleteContext (const std::vector <std::string>& words, std::stringstream& out)
 {
-  int rc = 0;
-
   if (words.size () > 1)
   {
     // Delete the specified context
     std::string name = "context." + words[1];
 
     bool confirmation = context.config.getBoolean ("confirmation");
-    rc = CmdConfig::unsetConfigVariable(name, confirmation);
+    int rc = CmdConfig::unsetConfigVariable(name, confirmation);
 
     // If the currently set context was deleted, unset it
     std::string currentContext = context.config.get ("context");
@@ -210,15 +199,10 @@ int CmdContext::deleteContext (const std::vector <std::string>& words, std::stri
     if (rc == 0)
       out << format (STRING_CMD_CONTEXT_DEL_SUCC, words[1]) << "\n";
     else
-      out << format (STRING_CMD_CONTEXT_DEL_FAIL, words[1]) << "\n";
+      throw format (STRING_CMD_CONTEXT_DEL_FAIL, words[1]);
   }
   else
-  {
-    out << STRING_CMD_CONTEXT_DEL_USAG << "\n";
-    rc = 1;
-  }
-
-  return rc;
+    throw std::string(STRING_CMD_CONTEXT_DEL_USAG);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -229,9 +213,8 @@ int CmdContext::deleteContext (const std::vector <std::string>& words, std::stri
 // Invoked with: task context list
 // Example:      task context list
 //
-int CmdContext::listContexts (std::stringstream& out)
+void CmdContext::listContexts (std::stringstream& out)
 {
-  int rc = 0;
   std::vector <std::string> contexts = getContexts();
 
   if (contexts.size ())
@@ -269,12 +252,7 @@ int CmdContext::listContexts (std::stringstream& out)
         << optionalBlankLine ();
   }
   else
-  {
-    out << STRING_CMD_CONTEXT_LIST_EMPT << "\n";
-    rc = 1;
-  }
-
-  return rc;
+    throw std::string(STRING_CMD_CONTEXT_LIST_EMPT);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -288,9 +266,8 @@ int CmdContext::listContexts (std::stringstream& out)
 // Invoked with: task context <name>
 // Example:      task context home
 //
-int CmdContext::setContext (const std::vector <std::string>& words, std::stringstream& out)
+void CmdContext::setContext (const std::vector <std::string>& words, std::stringstream& out)
 {
-  int rc = 0;
   std::string value = words[0];
   std::vector <std::string> contexts = getContexts ();
 
@@ -305,12 +282,7 @@ int CmdContext::setContext (const std::vector <std::string>& words, std::strings
   if (success)
     out << format (STRING_CMD_CONTEXT_SET_SUCC, value) << "\n";
   else
-  {
-    out << format (STRING_CMD_CONTEXT_SET_FAIL, value) << "\n";
-    rc = 1;
-  }
-
-  return rc;
+    throw format (STRING_CMD_CONTEXT_SET_FAIL, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -321,7 +293,7 @@ int CmdContext::setContext (const std::vector <std::string>& words, std::strings
 // Invoked with: task context show
 // Example:      task context show
 //
-int CmdContext::showContext (std::stringstream& out)
+void CmdContext::showContext (std::stringstream& out)
 {
   std::string currentContext = context.config.get ("context");
 
@@ -332,8 +304,6 @@ int CmdContext::showContext (std::stringstream& out)
     std::string currentFilter = context.config.get ("context." + currentContext);
     out << format (STRING_CMD_CONTEXT_SHOW, currentContext, currentFilter) << "\n";
   }
-
-  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -346,20 +316,14 @@ int CmdContext::showContext (std::stringstream& out)
 // Invoked with: task context none
 // Example:      task context none
 //
-int CmdContext::unsetContext (std::stringstream& out)
+void CmdContext::unsetContext (std::stringstream& out)
 {
-  int rc = 0;
   int status = CmdConfig::unsetConfigVariable ("context", false);
 
   if (status == 0)
     out << STRING_CMD_CONTEXT_NON_SUCC << "\n";
   else
-  {
-    out << STRING_CMD_CONTEXT_NON_FAIL << "\n";
-    rc = 1;
-  }
-
-  return rc;
+    throw std::string(STRING_CMD_CONTEXT_NON_FAIL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
