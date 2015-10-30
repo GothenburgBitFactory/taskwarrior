@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (246);
+  UnitTest t (240);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -58,7 +58,6 @@ int main (int, char**)
     t.notok (n.skipN (123),              "trivial: skipN");
     t.notok (n.skip ('x'),               "trivial: skip");
     t.notok (n.skipAllOneOf ("abc"),     "trivial: skipAllOneOf");
-    t.notok (n.backN (1),                "trivial: backN");
     t.notok (n.getQuoted ('"', s),       "trivial: getQuoted");
     t.notok (n.getDigit (i),             "trivial: getDigit");
     t.notok (n.getInt (i),               "trivial: getInt"); // 10
@@ -143,15 +142,6 @@ int main (int, char**)
     t.ok    (n.getUntilEOS (s),       "     'foo' :    getUntilEOS ()       -> true");
     t.is    (s, "foo",                "     'foo' :    getUntilEOS ()       -> 'foo'");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
-
-    // bool backN (const int quantity = 1);
-    t.diag ("Nibbler::backN");
-    n = Nibbler ("/a/b/");
-    t.ok (n.getQuoted ('/', s),       "   '/a/b/' :         getQuoted ('/') -> true");
-    t.is (s, "a",                     "      'b/' :         getQuoted ('/') -> 'a'");
-    t.ok (n.backN (),                 "      'b/' :         backN ()        -> true");
-    t.ok (n.getQuoted ('/', s),       "     '/b/' :         getQuoted ('/') -> true");
-    t.is (s, "b",                     "     '/b/' :         getQuoted ('/') -> 'b'");
 
     // bool getQuoted (char, std::string&);
     t.diag ("Nibbler::getQuoted");

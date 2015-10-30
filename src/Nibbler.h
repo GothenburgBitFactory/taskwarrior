@@ -66,8 +66,6 @@ public:
   bool skipAllOneOf (const std::string&);
   bool skipWS ();
 
-  bool backN (const int quantity = 1);
-
   char next ();
   std::string next (const int quantity);
 

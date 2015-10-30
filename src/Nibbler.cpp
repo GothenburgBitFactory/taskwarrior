@@ -539,18 +539,6 @@ bool Nibbler::skipWS ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::backN (const int quantity /*= 1*/)
-{
-  if (_cursor >= (unsigned) quantity)
-  {
-    _cursor -= (unsigned) quantity;
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipAllOneOf (const std::string& chars)
 {
   if (_cursor < _length)
