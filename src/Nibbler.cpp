@@ -25,16 +25,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Nibbler.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <inttypes.h>
 #include <Lexer.h>
-#include <Nibbler.h>
 #include <util.h>
-#include <Lexer.h>
-#include <util.h>
-#include <memory>
 
 static const char*        _uuid_pattern    = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
 static const unsigned int _uuid_min_length = 8;
