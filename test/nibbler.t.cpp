@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (252);
+  UnitTest t (246);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -57,7 +57,6 @@ int main (int, char**)
     t.notok (n.getUntilOneOf ("ab", s),  "trivial: getUntilOneOf");
     t.notok (n.skipN (123),              "trivial: skipN");
     t.notok (n.skip ('x'),               "trivial: skip");
-    t.notok (n.skipAll ('x'),            "trivial: skipAll");
     t.notok (n.skipAllOneOf ("abc"),     "trivial: skipAllOneOf");
     t.notok (n.backN (1),                "trivial: backN");
     t.notok (n.getQuoted ('"', s),       "trivial: getQuoted");
@@ -126,15 +125,6 @@ int main (int, char**)
     t.notok (n.skip (' '),            "       'a' :           skip (' ')    -> false");
     t.notok (n.depleted (),           "       'a' :       depleted ()       -> false");
     t.ok    (n.skip ('a'),            "       'a' :           skip ('a')    -> true");
-    t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
-
-    // bool skipAll (char);
-    t.diag ("Nibbler::skipAll");
-    n = Nibbler ("aaaabb");
-    t.ok    (n.skipAll ('a'),         "  'aaaabb' :        skipAll ('a')    -> true");
-    t.notok (n.skipAll ('a'),         "      'bb' :        skipAll ('a')    -> false");
-    t.ok    (n.skipAll ('b'),         "      'bb' :        skipAll ('b')    -> true");
-    t.notok (n.skipAll ('b'),         "        '' :        skipAll ('b')    -> false");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
 
     // bool skipAllOneOf (const std::string&);

@@ -63,7 +63,6 @@ public:
 
   bool skipN (const int quantity = 1);
   bool skip (char);
-  bool skipAll (char);
   bool skipAllOneOf (const std::string&);
   bool skipWS ();
 

@@ -533,26 +533,6 @@ bool Nibbler::skip (char c)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::skipAll (char c)
-{
-  if (_cursor < _length)
-  {
-    auto i = _input->find_first_not_of (c, _cursor);
-    if (i == _cursor)
-      return false;
-
-    if (i == std::string::npos)
-      _cursor = _length;  // Yes, off the end.
-    else
-      _cursor = i;
-
-    return true;
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipWS ()
 {
   return this->skipAllOneOf (" \t\n\r\f");
