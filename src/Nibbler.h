@@ -60,7 +60,6 @@ public:
   bool getNumber (std::string&);
   bool getNumber (double&);
   bool getLiteral (const std::string&);
-  bool getUUID (std::string&);
   bool getPartialUUID (std::string&);
   bool getOneOf (const std::vector <std::string>&, std::string&);
   bool getName (std::string&);

@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (315);
+  UnitTest t (306);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -285,21 +285,6 @@ int main (int, char**)
     t.notok (n.getLiteral ("foo"),    "     'bar' :     getLiteral ('foo')  -> false");
     t.ok    (n.getLiteral ("bar"),    "     'bar' :     getLiteral ('bar')  -> true");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
-
-    // bool getUUID (std::string&);
-    t.diag ("Nibbler::getUUID");
-    n = Nibbler ("a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5");
-    t.ok (n.getUUID (s),                             "uuid 1 found");
-    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5", "uuid 1 -> correct");
-    t.ok (n.depleted (),                             "depleted");
-
-    n = Nibbler ("00000000-0000-0000-0000-000000000000,a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5");
-    t.ok (n.getUUID (s),                             "uuid 1 found");
-    t.is (s, "00000000-0000-0000-0000-000000000000", "uuid 1 -> correct");
-    t.ok (n.skip (','),                              "comma -> skipped");
-    t.ok (n.getUUID (s),                             "uuid 2 -> found");
-    t.is (s, "a0b1c2d3-e4f5-A6B7-C8D9-E0F1a2b3c4d5", "uuid 2 -> correct");
-    t.ok (n.depleted (),                             "depleted");
 
     // bool getPartialUUID (std::string&);
     t.diag ("Nibbler::getPartialUUID");

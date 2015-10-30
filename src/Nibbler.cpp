@@ -486,61 +486,6 @@ bool Nibbler::getLiteral (const std::string& literal)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getUUID (std::string& result)
-{
-  auto i = _cursor;
-
-  if (i < _length &&
-      _length - i >= 36)
-  {
-    // 88888888-4444-4444-4444-cccccccccccc
-    if (isxdigit ((*_input)[i + 0]) &&
-        isxdigit ((*_input)[i + 1]) &&
-        isxdigit ((*_input)[i + 2]) &&
-        isxdigit ((*_input)[i + 3]) &&
-        isxdigit ((*_input)[i + 4]) &&
-        isxdigit ((*_input)[i + 5]) &&
-        isxdigit ((*_input)[i + 6]) &&
-        isxdigit ((*_input)[i + 7]) &&
-        (*_input)[i + 8] == '-'     &&
-        isxdigit ((*_input)[i + 9]) &&
-        isxdigit ((*_input)[i + 10]) &&
-        isxdigit ((*_input)[i + 11]) &&
-        isxdigit ((*_input)[i + 12]) &&
-        (*_input)[i + 13] == '-'     &&
-        isxdigit ((*_input)[i + 14]) &&
-        isxdigit ((*_input)[i + 15]) &&
-        isxdigit ((*_input)[i + 16]) &&
-        isxdigit ((*_input)[i + 17]) &&
-        (*_input)[i + 18] == '-'     &&
-        isxdigit ((*_input)[i + 19]) &&
-        isxdigit ((*_input)[i + 20]) &&
-        isxdigit ((*_input)[i + 21]) &&
-        isxdigit ((*_input)[i + 22]) &&
-        (*_input)[i + 23] == '-'     &&
-        isxdigit ((*_input)[i + 24]) &&
-        isxdigit ((*_input)[i + 25]) &&
-        isxdigit ((*_input)[i + 26]) &&
-        isxdigit ((*_input)[i + 27]) &&
-        isxdigit ((*_input)[i + 28]) &&
-        isxdigit ((*_input)[i + 29]) &&
-        isxdigit ((*_input)[i + 30]) &&
-        isxdigit ((*_input)[i + 31]) &&
-        isxdigit ((*_input)[i + 32]) &&
-        isxdigit ((*_input)[i + 33]) &&
-        isxdigit ((*_input)[i + 34]) &&
-        isxdigit ((*_input)[i + 35]))
-    {
-      result = _input->substr (_cursor, 36);
-      _cursor = i + 36;
-      return true;
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getPartialUUID (std::string& result)
 {
   std::string::size_type i;
