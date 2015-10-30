@@ -536,32 +536,6 @@ bool Nibbler::getOneOf (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// A word is a contiguous string of non-space, non-digit, non-punct characters.
-bool Nibbler::getWord (std::string& result)
-{
-  auto i = _cursor;
-
-  if (i < _length)
-  {
-    while (!Lexer::isDigit       ((*_input)[i]) &&
-           !Lexer::isPunctuation ((*_input)[i]) &&
-           !Lexer::isWhitespace  ((*_input)[i]))
-    {
-      ++i;
-    }
-
-    if (i > _cursor)
-    {
-      result = _input->substr (_cursor, i - _cursor);
-      _cursor = i;
-      return true;
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::skipN (const int quantity /* = 1 */)
 {
   if (_cursor < _length &&

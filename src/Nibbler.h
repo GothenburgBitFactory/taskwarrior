@@ -62,7 +62,6 @@ public:
   bool getLiteral (const std::string&);
   bool getPartialUUID (std::string&);
   bool getOneOf (const std::vector <std::string>&, std::string&);
-  bool getWord (std::string&);
 
   bool skipN (const int quantity = 1);
   bool skip (char);

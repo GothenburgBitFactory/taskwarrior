@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (286);
+  UnitTest t (261);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -444,41 +444,6 @@ int main (int, char**)
     t.ok    (n.getOneOf (options, s),         "      'threefour':   getOneOf () -> true");
     t.is    (s, "three",                      "      'threefour':   getOneOf () -> three");
     t.notok (n.getOneOf (options, s),         "           'four':   getOneOf () -> false");
-
-    // bool getWord (std::string&);
-    t.diag ("Nibbler::getWord");
-    n = Nibbler ("one two th3ee");
-    t.ok (n.getWord (s),       "'one'              getWord -> ok");
-    t.is (s, "one",            "'one'              getWord -> 'one'");
-    t.ok (n.skipWS (),         "skipWS");
-    t.ok (n.getWord (s),       "'two'              getWord -> ok");
-    t.is (s, "two",            "'two'              getWord -> 'two'");
-    t.ok (n.skipWS (),         "skipWS");
-    t.ok (n.getWord (s),       "'th'               getWord -> ok");
-    t.is (s, "th",             "'th'               getWord -> 'th'");
-    t.ok (n.skip ('3'),        "skip(3)");
-    t.ok (n.getWord (s),       "'ee'               getWord -> ok");
-    t.is (s, "ee",             "'ee'               getWord -> 'ee'");
-    t.ok (n.depleted (),       "depleted");
-
-    t.diag ("Nibbler::getWord");
-    n = Nibbler ("one TWO,three,f ");
-    t.ok (n.getWord (s),              "'one TWO,three,f '   getWord  -> ok");
-    t.is (s, "one",                   "   ' TWO,three,f '   getWord  -> one");
-    t.ok (n.skipWS (),                "    'TWO,three,f '   skipWS   -> ok");
-
-    t.ok (n.getWord (s),              "    'TWO,three,f '   getWord  -> ok");
-    t.is (s, "TWO",                   "       ',three,f '   getWord  -> TWO");
-    t.ok (n.skip (','),               "        'three,f '   skip ,   -> ok");
-
-    t.ok (n.getWord (s),              "        'three,f '   getWord  -> ok");
-    t.is (s, "three",                 "             ',f '   getWord  -> three");
-    t.ok (n.skip (','),               "              'f '   skip ,   -> ok");
-
-    t.ok (n.getWord (s),              "              'f '   getWord  -> ok");
-    t.is (s, "f",                     "               ' '   getWord  -> f");
-    t.ok (n.skipWS (),                "                ''   skip ,   -> ok");
-    t.ok (n.depleted (),              "                ''   depleted -> true");
 
     // bool getN (int, std::string&);
     t.diag ("Nibbler::getN");
