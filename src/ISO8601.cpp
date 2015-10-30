@@ -1044,6 +1044,28 @@ std::string ISO8601d::toISO () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// 1998-01-19T07:00:00 =  YYYY-MM-DDThh:mm:ss
+std::string ISO8601d::toISOLocalExtended () const
+{
+  struct tm* t = localtime (&_date);
+
+  std::stringstream iso;
+  iso << std::setw (4) << std::setfill ('0') << t->tm_year + 1900
+      << "-"
+      << std::setw (2) << std::setfill ('0') << t->tm_mon + 1
+      << "-"
+      << std::setw (2) << std::setfill ('0') << t->tm_mday
+      << "T"
+      << std::setw (2) << std::setfill ('0') << t->tm_hour
+      << ":"
+      << std::setw (2) << std::setfill ('0') << t->tm_min
+      << ":"
+      << std::setw (2) << std::setfill ('0') << t->tm_sec;
+
+  return iso.str ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
 double ISO8601d::toJulian () const
 {
   return (_date / 86400.0) + 2440587.5;
