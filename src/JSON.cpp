@@ -377,6 +377,7 @@ json::value* json::parse (const std::string& input)
 std::string json::encode (const std::string& input)
 {
   std::string output;
+  output.reserve ((input.size () * 6) / 5);  // 20% increase.
 
   for (auto& i : input)
   {
@@ -405,6 +406,8 @@ std::string json::encode (const std::string& input)
 std::string json::decode (const std::string& input)
 {
   std::string output;
+  output.reserve (input.size ());  // Same size.
+
   size_t pos = 0;
 
   while (pos < input.length ())
