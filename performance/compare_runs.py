@@ -43,7 +43,7 @@ def get_best(tests):
     for command in tests:
         best[command] = {}
         for k in tests[command][0].timing:
-            best[command][k] = min(k, *[t.timing[k] for t in tests[command]])
+            best[command][k] = str(min(int(t.timing[k]) for t in tests[command]))
     return best
 
 
