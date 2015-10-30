@@ -1788,68 +1788,10 @@ Variant::operator std::string () const
     return _string;
 
   case type_date:
-    {
-      struct tm* t = localtime (&_date);
-
-      std::stringstream s;
-      s.width (4);
-      s << t->tm_year + 1900;
-      s << '-';
-      s.width (2);
-      s.fill ('0');
-      s << t->tm_mon + 1;
-      s << '-';
-      s.width (2);
-      s.fill ('0');
-      s << t->tm_mday;
-      s << 'T';
-      s.width (2);
-      s.fill ('0');
-      s << t->tm_hour;
-      s << ':';
-      s.width (2);
-      s.fill ('0');
-      s << t->tm_min;
-      s << ':';
-      s.width (2);
-      s.fill ('0');
-      s << t->tm_sec;
-      return s.str ();
-    }
+    return ISO8601d (_date).toISOLocalExtended ();
 
   case type_duration:
-    {
-      time_t t = _duration;
-      if (t)
-      {
-        std::stringstream s;
-        s << 'P';
-
-        int years = t / (365 * 86400);  t -= years * 365 * 86400;
-        int days  = t / 86400;          t -= days        * 86400;
-
-        if (years) s << years << 'Y';
-        if (days)  s << days  << 'D';
-
-        int hours   = t / 3600;           t -= hours   * 3600;
-        int minutes = t /   60;           t -= minutes *   60;
-        int seconds = t;
-
-        if (hours || minutes || seconds)
-        {
-          s << 'T';
-          if (hours)   s << hours   << 'H';
-          if (minutes) s << minutes << 'M';
-          if (seconds) s << seconds << 'S';
-        }
-
-        return s.str ();
-      }
-      else
-      {
-        return "PT0S";
-      }
-    }
+    return ISO8601p (_duration).format ();
   }
 
   return "";
