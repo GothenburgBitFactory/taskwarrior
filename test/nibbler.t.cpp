@@ -176,17 +176,6 @@ int main (int, char**)
     t.is    (s, "foo",                "     'foo' :    getUntilEOS ()       -> 'foo'");
     t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
 
-#ifdef NIBBLER_FEATURE_REGEX
-    // bool skipRx (const std::string&);
-    t.diag ("Nibbler::skipRx");
-    n = Nibbler ("one two");
-    t.ok    (n.skipRx ("o."),         " 'one two' :         skipRx ('o.')   -> true");
-    t.notok (n.skipRx ("A+"),         "   'e two' :         skipRx ('A+')   -> false");
-    t.ok    (n.skipRx ("e+"),         "   'e two' :         skipRx ('e+')   -> true");
-    t.ok    (n.skipRx ("...."),       "    ' two' :         skipRx ('....') -> true");
-    t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
-#endif
-
     // bool backN (const int quantity = 1);
     t.diag ("Nibbler::backN");
     n = Nibbler ("/a/b/");

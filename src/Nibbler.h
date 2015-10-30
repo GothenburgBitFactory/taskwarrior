@@ -80,9 +80,6 @@ public:
   bool skipAll (char);
   bool skipAllOneOf (const std::string&);
   bool skipWS ();
-#ifdef NIBBLER_FEATURE_REGEX
-  bool skipRx (const std::string&);
-#endif
 
   bool backN (const int quantity = 1);
 

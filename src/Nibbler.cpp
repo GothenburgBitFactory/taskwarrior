@@ -763,33 +763,6 @@ bool Nibbler::skipWS ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#ifdef NIBBLER_FEATURE_REGEX
-bool Nibbler::skipRx (const std::string& regex)
-{
-  if (_cursor < _length)
-  {
-    // Regex may be anchored to the beginning and include capturing parentheses,
-    // otherwise they are added.
-    std::string modified_regex;
-    if (regex.substr (0, 2) != "^(")
-      modified_regex = "^(" + regex + ")";
-    else
-      modified_regex = regex;
-
-    RX r (modified_regex, true);
-    std::vector <std::string> results;
-    if (r.match (results, _input->substr (_cursor)))
-    {
-      _cursor += results[0].length ();
-      return true;
-    }
-  }
-
-  return false;
-}
-#endif
-
-////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::backN (const int quantity /*= 1*/)
 {
   if (_cursor >= (unsigned) quantity)
