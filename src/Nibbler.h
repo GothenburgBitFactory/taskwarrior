@@ -50,7 +50,6 @@ public:
   bool getN (const int, std::string&);
   bool getQuoted (char, std::string&, bool quote = false);
   bool getDigit (int&);
-  bool getDigit6 (int&);
   bool getDigit4 (int&);
   bool getDigit3 (int&);
   bool getDigit2 (int&);

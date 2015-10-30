@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (254);
+  UnitTest t (252);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -218,12 +218,6 @@ int main (int, char**)
     t.ok    (n.getDigit (i),          "      '2x' :         getDigit ()     -> true");
     t.is    (i, 2,                    "      '2x' :         getDigit ()     -> 2");
     t.notok (n.getDigit (i),          "       'x' :         getDigit ()     -> false");
-
-    // bool getDigit6 (int&);
-    t.diag ("Nibbler::getDigit6");
-    n = Nibbler ("654321");
-    t.ok    (n.getDigit6 (i),         "    654321 :         getDigit6 ()    -> true");
-    t.is    (i, 654321,               "    654321 :         getDigit6 ()    -> 654321");
 
     // bool getDigit4 (int&);
     t.diag ("Nibbler::getDigit4");
