@@ -113,7 +113,7 @@ Color::Color (const std::string& spec)
   std::string word;
   for (auto& it : words)
   {
-    word = Lexer::lowerCase (trim (it));
+    word = Lexer::lowerCase (Lexer::trim (it));
 
          if (word == "bold")      fg_value |= _COLOR_BOLD;
     else if (word == "bright")    bg_value |= _COLOR_BRIGHT;

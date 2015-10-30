@@ -25,14 +25,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdUrgency.h>
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
 #include <Filter.h>
+#include <Lexer.h>
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
-#include <CmdUrgency.h>
 
 extern Context context;
 
@@ -72,7 +73,7 @@ int CmdUrgency::execute (std::string& output)
   {
     out << format (STRING_CMD_URGENCY_RESULT,
                    task.identifier (),
-                   trim (format (task.urgency (), 6, 3)))
+                   Lexer::trim (format (task.urgency (), 6, 3)))
         << "\n";
   }
 

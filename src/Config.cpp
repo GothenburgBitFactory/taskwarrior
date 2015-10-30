@@ -445,7 +445,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
     if (pound != std::string::npos)
       line = line.substr (0, pound);
 
-    line = trim (line, " \t"); // no i18n
+    line = Lexer::trim (line, " \t"); // no i18n
 
     // Skip empty lines.
     if (line.length () > 0)
@@ -453,8 +453,8 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
       auto equal = line.find ("="); // no i18n
       if (equal != std::string::npos)
       {
-        std::string key   = trim (line.substr (0, equal), " \t"); // no i18n
-        std::string value = trim (line.substr (equal+1, line.length () - equal), " \t"); // no i18n
+        std::string key   = Lexer::trim (line.substr (0, equal), " \t"); // no i18n
+        std::string value = Lexer::trim (line.substr (equal+1, line.length () - equal), " \t"); // no i18n
 
         (*this)[key] = json::decode (value);
       }
@@ -463,7 +463,7 @@ void Config::parse (const std::string& input, int nest /* = 1 */)
         auto include = line.find ("include"); // no i18n.
         if (include != std::string::npos)
         {
-          Path included (trim (line.substr (include + 7), " \t"));
+          Path included (Lexer::trim (line.substr (include + 7), " \t"));
           if (included.is_absolute ())
           {
             if (included.readable ())

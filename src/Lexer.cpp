@@ -507,6 +507,27 @@ std::string Lexer::ucFirst (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string Lexer::trimLeft (const std::string& in, const std::string& t /*= " "*/)
+{
+  std::string out = in;
+  return out.erase (0, in.find_first_not_of (t));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Lexer::trimRight (const std::string& in, const std::string& t /*= " "*/)
+{
+  std::string out = in;
+  return out.erase (out.find_last_not_of (t) + 1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Lexer::trim (const std::string& in, const std::string& t /*= " "*/)
+{
+  std::string out = in;
+  return trimLeft (trimRight (out, t), t);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::string
 //   '|"
 //   [ U+XXXX | \uXXXX | \" | \' | \\ | \/ | \b | \f | \n | \r | \t | . ]

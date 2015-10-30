@@ -90,6 +90,9 @@ public:
   static std::string commify                 (const std::string&);
   static std::string lowerCase               (const std::string&);
   static std::string ucFirst                 (const std::string&);
+  static std::string trimLeft                (const std::string& in, const std::string& t = " ");
+  static std::string trimRight               (const std::string& in, const std::string& t = " ");
+  static std::string trim                    (const std::string& in, const std::string& t = " ");
 
   // Stream Classifiers.
   bool isEOS          () const;

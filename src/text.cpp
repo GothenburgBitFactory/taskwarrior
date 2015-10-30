@@ -154,27 +154,6 @@ void join (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string trimLeft (const std::string& in, const std::string& t /*= " "*/)
-{
-  std::string out = in;
-  return out.erase (0, in.find_first_not_of (t));
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string trimRight (const std::string& in, const std::string& t /*= " "*/)
-{
-  std::string out = in;
-  return out.erase (out.find_last_not_of (t) + 1);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-std::string trim (const std::string& in, const std::string& t /*= " "*/)
-{
-  std::string out = in;
-  return trimLeft (trimRight (out, t), t);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Remove enclosing balanced quotes.  Assumes trimmed text.
 std::string unquoteText (const std::string& input)
 {

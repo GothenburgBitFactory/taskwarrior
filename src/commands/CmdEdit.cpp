@@ -102,7 +102,7 @@ std::string CmdEdit::findValue (
         found + name.length (),
         eol - (found + name.length ()));
 
-      return trim (value, "\t ");
+      return Lexer::trim (value, "\t ");
     }
   }
 
@@ -123,7 +123,7 @@ std::string CmdEdit::findMultilineValue (
     {
       std::string value = text.substr (start + startMarker.length (),
                                        end - (start + startMarker.length ()));
-      return trim (value, "\t ");
+      return Lexer::trim (value, "\t ");
     }
   }
   return "";
@@ -150,7 +150,7 @@ std::vector <std::string> CmdEdit::findValues (
           eol - (found + name.length ()));
 
         found = eol - 1;
-        results.push_back (trim (value, "\t "));
+        results.push_back (Lexer::trim (value, "\t "));
       }
     }
   }
@@ -629,7 +629,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     auto eol = after.find ("\n", found + 1);
     if (eol != std::string::npos)
     {
-      std::string value = trim (after.substr (
+      std::string value = Lexer::trim (after.substr (
         found,
         eol - found), "\t ");
 
@@ -659,7 +659,7 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
         }
         while (annotations.find (name.str ()) != annotations.end ());
 
-        std::string text = trim (value.substr (gap + 4), "\t ");
+        std::string text = Lexer::trim (value.substr (gap + 4), "\t ");
         annotations.insert (std::make_pair (name.str (), json::decode (text)));
       }
     }
@@ -736,8 +736,8 @@ void CmdEdit::parseTask (Task& task, const std::string& after, const std::string
     auto colon = orphan.find (':');
     if (colon != std::string::npos)
     {
-      std::string name  = trim (orphan.substr (0, colon),  "\t ");
-      std::string value = trim (orphan.substr (colon + 1), "\t ");
+      std::string name  = Lexer::trim (orphan.substr (0, colon),  "\t ");
+      std::string value = Lexer::trim (orphan.substr (colon + 1), "\t ");
 
       if (value != "")
         task.set (name, value);

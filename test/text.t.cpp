@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (198);
+  UnitTest t (177);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -201,33 +201,6 @@ int main (int, char**)
   join (joined, "-", unjoined2);
   t.is (joined.length (), (size_t) 5, "join 0 1 2 -> length 5");
   t.is (joined,           "0-1-2",    "join 0 1 2 -> '0-1-2'");
-
-  // std::string trimLeft (const std::string& in, const std::string& t /*= " "*/)
-  t.is (trimLeft (""),                     "",            "trimLeft '' -> ''");
-  t.is (trimLeft ("   "),                  "",            "trimLeft '   ' -> ''");
-  t.is (trimLeft ("",              " \t"), "",            "trimLeft '' -> ''");
-  t.is (trimLeft ("xxx"),                  "xxx",         "trimLeft 'xxx' -> 'xxx'");
-  t.is (trimLeft ("xxx",           " \t"), "xxx",         "trimLeft 'xxx' -> 'xxx'");
-  t.is (trimLeft ("  \t xxx \t  "),        "\t xxx \t  ", "trimLeft '  \\t xxx \\t  ' -> '\\t xxx \\t  '");
-  t.is (trimLeft ("  \t xxx \t  ", " \t"), "xxx \t  ",    "trimLeft '  \\t xxx \\t  ' -> 'xxx \\t  '");
-
-  // std::string trimRight (const std::string& in, const std::string& t /*= " "*/)
-  t.is (trimRight (""),                     "",            "trimRight '' -> ''");
-  t.is (trimRight ("   "),                  "",            "trimRight '   ' -> ''");
-  t.is (trimRight ("",              " \t"), "",            "trimRight '' -> ''");
-  t.is (trimRight ("xxx"),                  "xxx",         "trimRight 'xxx' -> 'xxx'");
-  t.is (trimRight ("xxx",           " \t"), "xxx",         "trimRight 'xxx' -> 'xxx'");
-  t.is (trimRight ("  \t xxx \t  "),        "  \t xxx \t", "trimRight '  \\t xxx \\t  ' -> '  \\t xxx \\t'");
-  t.is (trimRight ("  \t xxx \t  ", " \t"), "  \t xxx",    "trimRight '  \\t xxx \\t  ' -> '  \\t xxx'");
-
-  // std::string trim (const std::string& in, const std::string& t /*= " "*/)
-  t.is (trim (""),                     "",          "trim '' -> ''");
-  t.is (trim ("   "),                  "",          "trim '   ' -> ''");
-  t.is (trim ("",              " \t"), "",          "trim '' -> ''");
-  t.is (trim ("xxx"),                  "xxx",       "trim 'xxx' -> 'xxx'");
-  t.is (trim ("xxx",           " \t"), "xxx",       "trim 'xxx' -> 'xxx'");
-  t.is (trim ("  \t xxx \t  "),        "\t xxx \t", "trim '  \\t xxx \\t  ' -> '\\t xxx \\t'");
-  t.is (trim ("  \t xxx \t  ", " \t"), "xxx",       "trim '  \\t xxx \\t  ' -> 'xxx'");
 
   // std::string unquoteText (const std::string& text)
   t.is (unquoteText (""),         "",     "unquoteText '' -> ''");

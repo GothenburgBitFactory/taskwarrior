@@ -25,11 +25,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CLI2.h>
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
 #include <Context.h>
-#include <CLI2.h>
+#include <Lexer.h>
 #include <Color.h>
 #include <text.h>
 #include <util.h>
@@ -359,7 +360,7 @@ void CLI2::entity (const std::string& category, const std::string& name)
 // Capture a single argument.
 void CLI2::add (const std::string& argument)
 {
-  A2 arg (trim (argument), Lexer::Type::word);
+  A2 arg (Lexer::trim (argument), Lexer::Type::word);
   arg.tag ("ORIGINAL");
   _original_args.push_back (arg);
 
