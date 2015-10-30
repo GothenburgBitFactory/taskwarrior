@@ -107,7 +107,7 @@ class ContextManagementTest(TestCase):
     def test_context_delete_undefined(self):
         """Test deletion of undefined context."""
         code, out, err = self.t.runError('context delete work')
-        self.assertIn("Context 'work' not deleted.", out)
+        self.assertIn("Context 'work' not deleted.", err)
 
         # Assert that taskrc does not countain context work definition
         self.assertFalse(any('context.work=' in line for line in self.t.taskrc_content))
@@ -247,7 +247,7 @@ class ContextManagementTest(TestCase):
         code, out, err = self.t.runError('context none')
 
         # Assert expected output.
-        self.assertIn("Context not unset.", out)
+        self.assertIn("Context not unset.", err)
 
         # Assert no context definition in the taskrc
         contains_any_context = lambda line: re.match('^context=', line)
@@ -489,17 +489,17 @@ class ContextErrorHandling(TestCase):
     def test_list_empty(self):
         """Verify 'task context list' with no contexts yields error"""
         code, out, err = self.t.runError("context list")
-        self.assertIn("No contexts defined.", out)
+        self.assertIn("No contexts defined.", err)
 
     def test_define_empty(self):
         """Verify 'task context define' with no contexts yields error"""
         code, out, err = self.t.runError("context define")
-        self.assertIn("Both context name and its definition must be provided.", out)
+        self.assertIn("Both context name and its definition must be provided.", err)
 
     def test_delete_empty(self):
         """Verify 'task context delete' with no contexts yields error"""
         code, out, err = self.t.runError("context delete")
-        self.assertIn("Context name needs to be specified.", out)
+        self.assertIn("Context name needs to be specified.", err)
 
     def test_set_missing(self):
         """Verify 'task context missing' with no contexts yields error"""
@@ -512,7 +512,7 @@ class ContextErrorHandling(TestCase):
         self.assertIn("Context 'one two' not found.", err)
 
     def test_show_missing(self):
-        """Verify 'task context show' with no contexts yields error"""
+        """Verify 'task context show' with no contexts yields correct information"""
         code, out, err = self.t("context show")
         self.assertIn("No context is currently applied.", out)
 
