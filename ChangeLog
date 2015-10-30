@@ -1,6 +1,10 @@
 2.5.1 () -
 
+- TW-1703 When on-modify hook is installed, some messages print UUIDs
+          instead of IDs (thanks to Robin Green).
 - TW-1704 Use Task::identifier to reference the Task in the output
+- TW-1720 CmdContext uses a mix of both throw and std::cout to convey
+          errors (thanks to Paul Beckingham).
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.
 
