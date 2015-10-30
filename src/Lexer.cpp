@@ -25,8 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <ctype.h>
 #include <Lexer.h>
+#include <algorithm>
+#include <ctype.h>
 #include <ISO8601.h>
 #include <utf8.h>
 
