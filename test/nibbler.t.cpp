@@ -36,7 +36,7 @@ Context context;
 int main (int, char**)
 {
 #ifdef NIBBLER_FEATURE_REGEX
-  UnitTest t (339);
+  UnitTest t (325);
 #else
   UnitTest t (315);
 #endif
@@ -84,23 +84,6 @@ int main (int, char**)
     t.ok    (n.getUntil (' ', s),        "     'two' :       getUntil (' ')    -> 'two'");
     t.notok (n.getUntil (' ', s),        "        '' :       getUntil (' ')    -> false");
     t.ok    (n.depleted (),              "        '' :       depleted ()       -> true");
-
-#ifdef NIBBLER_FEATURE_REGEX
-    // bool getUntilRx (const std::string&, std::string&);
-    t.diag ("Nibbler::getUntilRx");
-    n = Nibbler ("one two");
-    t.ok    (n.getUntilRx ("th", s),     " 'one two' :     getUntilRx ('th')   -> true");
-    t.is    (s, "one two",               " 'one two' :     getUntilRx ('th')   -> 'one two'");
-
-    n = Nibbler ("one two");
-    t.ok    (n.getUntilRx ("e", s),      " 'one two' :     getUntilRx ('e')    -> true");
-    t.is    (s, "on",                    " 'one two' :     getUntilRx ('e')    -> 'on'"); // 30
-    t.ok    (n.getUntilRx ("tw", s),     "   'e two' :     getUntilRx ('tw')   -> true");
-    t.is    (s, "e ",                    "   'e two' :     getUntilRx ('tw')   -> 'e '");
-    t.ok    (n.getUntilRx ("$", s),      "     'two' :     getUntilRx ('$')    -> true");
-    t.is    (s, "two",                   "     'two' :     getUntilRx ('$')    -> 'two'");
-    t.ok    (n.depleted (),              "        '' :       depleted ()       -> true");
-#endif
 
     // bool getUntilOneOf (const std::string&, std::string&);
     t.diag ("Nibbler::getUntilOneOf");

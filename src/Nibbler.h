@@ -46,9 +46,6 @@ public:
 
   bool getUntil (char, std::string&);
   bool getUntil (const std::string&, std::string&);
-#ifdef NIBBLER_FEATURE_REGEX
-  bool getUntilRx (const std::string&, std::string&);
-#endif
   bool getUntilOneOf (const std::string&, std::string&);
   bool getUntilWS (std::string&);
   bool getUntilEOL (std::string&);

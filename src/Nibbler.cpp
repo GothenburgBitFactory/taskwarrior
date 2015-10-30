@@ -132,33 +132,6 @@ bool Nibbler::getUntil (const std::string& terminator, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#ifdef NIBBLER_FEATURE_REGEX
-bool Nibbler::getUntilRx (const std::string& regex, std::string& result)
-{
-  if (_cursor < _length)
-  {
-    RX r (regex, true);
-    std::vector <int> start;
-    std::vector <int> end;
-    if (r.match (start, end, _input->substr (_cursor)))
-    {
-      result = _input->substr (_cursor, start[0]);
-      _cursor += start[0];
-    }
-    else
-    {
-      result = _input->substr (_cursor);
-      _cursor = _length;
-    }
-
-    return true;
-  }
-
-  return false;
-}
-#endif
-
-////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUntilOneOf (const std::string& chars, std::string& result)
 {
   if (_cursor < _length)
