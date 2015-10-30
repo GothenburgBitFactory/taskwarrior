@@ -45,7 +45,6 @@ public:
   bool getUntil (const std::string&, std::string&);
   bool getUntilOneOf (const std::string&, std::string&);
   bool getUntilWS (std::string&);
-  bool getUntilEOL (std::string&);
   bool getUntilEOS (std::string&);
 
   bool getN (const int, std::string&);

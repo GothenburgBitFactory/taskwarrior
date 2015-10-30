@@ -154,12 +154,6 @@ bool Nibbler::getUntilWS (std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getUntilEOL (std::string& result)
-{
-  return getUntil ('\n', result);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getUntilEOS (std::string& result)
 {
   if (_cursor < _length)

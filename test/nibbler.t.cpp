@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (261);
+  UnitTest t (254);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -64,7 +64,6 @@ int main (int, char**)
     t.notok (n.getDigit (i),             "trivial: getDigit");
     t.notok (n.getInt (i),               "trivial: getInt"); // 10
     t.notok (n.getUnsignedInt (i),       "trivial: getUnsignedInt");
-    t.notok (n.getUntilEOL (s),          "trivial: getUntilEOL");
     t.notok (n.getUntilEOS (s),          "trivial: getUntilEOS");
     t.notok (n.getOneOf (options, s),    "trivial: getOneOf");
     t.ok    (n.depleted (),              "trivial: depleted");
@@ -455,16 +454,6 @@ int main (int, char**)
     t.ok (n.getN (1, s),              "       '3' : getN (1)         -> true");
     t.is (s, "3",                     "       '3' : getN (1)         -> '1'");
     t.ok    (n.depleted (),           "        '' : depleted ()      -> true");
-
-    // bool getUntilEOL (std::string&);
-    t.diag ("Nibbler::getUntilEOL");
-    n = Nibbler ("one\ntwo");
-    t.ok    (n.getUntilEOL (s),       "'one\\ntwo' :   getUntilEOL ()       -> true");
-    t.is    (s, "one",                "'one\\ntwo' :   getUntilEOL ()       -> 'one'");
-    t.ok    (n.skip ('\n'),           "   '\\ntwo' :          skip ('\\n')   -> true");
-    t.ok    (n.getUntilEOL (s),       "     'two' :    getUntilEOL ()       -> true");
-    t.is    (s, "two",                "     'two' :    getUntilEOL ()       -> 'two'");
-    t.ok    (n.depleted (),           "        '' :       depleted ()       -> true");
 
     // bool getUntilEOS (std::string&);
     t.diag ("Nibbler::getUntilEOS");
