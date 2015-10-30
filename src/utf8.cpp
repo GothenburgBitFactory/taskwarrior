@@ -79,7 +79,6 @@ unsigned int utf8_next_char (const std::string& input, std::string::size_type& i
 
   // How many bytes in the sequence?
   int length = utf8_sequence (input[i]);
-
   i += length;
 
   // 0xxxxxxx -> 0xxxxxxx
@@ -272,7 +271,7 @@ unsigned int utf8_text_width (const std::string& str)
 const std::string utf8_substr (
   const std::string& input,
   unsigned int start,
-  unsigned int length /*=0*/)
+  unsigned int length /* = 0 */)
 {
   // Find the starting index.
   std::string::size_type index_start = 0;
