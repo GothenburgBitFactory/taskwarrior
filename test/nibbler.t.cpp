@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (306);
+  UnitTest t (286);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -444,37 +444,6 @@ int main (int, char**)
     t.ok    (n.getOneOf (options, s),         "      'threefour':   getOneOf () -> true");
     t.is    (s, "three",                      "      'threefour':   getOneOf () -> three");
     t.notok (n.getOneOf (options, s),         "           'four':   getOneOf () -> false");
-
-    // bool getName (std::string&);
-    t.diag ("Nibbler::getName");
-    n = Nibbler ("a1 one one.two 9 foo_bar");
-    t.ok    (n.getName (s),       "'a1 one one.two 9 foo_bar' getName -> ok");
-    t.is    (s, "a1",             "  ' one one.two 9 foo_bar' getName -> 'a1'");
-    t.ok    (n.skipWS (),         "   'one one.two 9 foo_bar' skipWS  -> ok");
-
-    t.ok    (n.getName (s),       "   'one one.two 9 foo_bar' getName -> ok");
-    t.is    (s, "one",            "      ' one.two 9 foo_bar' getName -> 'one'");
-    t.ok    (n.skipWS (),         "       'one.two 9 foo_bar' skipWS  -> ok");
-
-    t.ok    (n.getName (s),       "       'one.two 9 foo_bar' getName -> ok");
-    t.is    (s, "one",            "          '.two 9 foo_bar' getName -> 'one'");
-    t.ok    (n.skip ('.'),        "           'two 9 foo_bar' skip .  -> ok");
-
-    t.ok    (n.getName (s),       "           'two 9 foo_bar' getName -> ok");
-    t.is    (s, "two",            "              ' 9 foo_bar' getName -> 'two'");
-    t.ok    (n.skipWS (),         "               '9 foo_bar' skipWS  -> ok");
-
-    t.notok (n.getName (s),       "               '9 foo_bar' getName -> not ok");
-    t.ok    (n.skip ('9'),        "                ' foo_bar' skip 9  -> ok");
-    t.ok    (n.skipWS (),         "                 'foo_bar' skipWS  -> ok");
-
-    t.ok    (n.getName (s),       "                 'foo_bar' getName -> ok");
-    t.is    (s, "foo_bar",        "                        '' getName -> 'foo_bar'");
-    t.ok    (n.depleted (),       "depleted");
-
-    n = Nibbler ("entrée");
-    t.ok (n.getName (s), "'entrée' -> ok");
-    t.is (s, "entrée",   "'entrée' -> 'entrée'");
 
     // bool getWord (std::string&);
     t.diag ("Nibbler::getWord");

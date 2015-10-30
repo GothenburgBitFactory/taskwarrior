@@ -536,38 +536,6 @@ bool Nibbler::getOneOf (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// A name is a string of alpha-numeric characters.
-bool Nibbler::getName (std::string& result)
-{
-  auto i = _cursor;
-
-  if (i < _length)
-  {
-    if (! Lexer::isDigit ((*_input)[i]) &&
-        ! ispunct ((*_input)[i]) &&
-        ! Lexer::isWhitespace ((*_input)[i]))
-    {
-      ++i;
-      while (i < _length &&
-             ((*_input)[i] == '_' || ! ispunct ((*_input)[i])) &&
-             ! Lexer::isWhitespace ((*_input)[i]))
-      {
-        ++i;
-      }
-    }
-
-    if (i > _cursor)
-    {
-      result = _input->substr (_cursor, i - _cursor);
-      _cursor = i;
-      return true;
-    }
-  }
-
-  return false;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // A word is a contiguous string of non-space, non-digit, non-punct characters.
 bool Nibbler::getWord (std::string& result)
 {
