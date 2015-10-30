@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
+#include <Lexer.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
@@ -98,7 +99,7 @@ int CmdCalendar::execute (std::string& output)
   // Set up a vector of months, for autoComplete.
   std::vector <std::string> monthNames;
   for (int i = 1; i <= 12; ++i)
-    monthNames.push_back (lowerCase (ISO8601d::monthName (i)));
+    monthNames.push_back (Lexer::lowerCase (ISO8601d::monthName (i)));
 
   // For autoComplete results.
   std::vector <std::string> matches;
@@ -113,15 +114,15 @@ int CmdCalendar::execute (std::string& output)
   for (auto& arg : words)
   {
     // Some version of "calendar".
-    if (autoComplete (lowerCase (arg), commandNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
+    if (autoComplete (Lexer::lowerCase (arg), commandNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
       continue;
 
     // "due".
-    else if (autoComplete (lowerCase (arg), keywordNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
+    else if (autoComplete (Lexer::lowerCase (arg), keywordNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
       getpendingdate = true;
 
     // "y".
-    else if (lowerCase (arg) == "y")
+    else if (Lexer::lowerCase (arg) == "y")
       argWholeYear = true;
 
     // YYYY.
@@ -137,7 +138,7 @@ int CmdCalendar::execute (std::string& output)
     }
 
     // "January" etc.
-    else if (autoComplete (lowerCase (arg), monthNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
+    else if (autoComplete (Lexer::lowerCase (arg), monthNames, matches, context.config.getInteger ("abbreviation.minimum")) == 1)
     {
       argMonth = ISO8601d::monthOfYear (matches[0]);
       if (argMonth == -1)

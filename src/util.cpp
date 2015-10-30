@@ -51,6 +51,7 @@
 #include <signal.h>
 #include <sys/select.h>
 
+#include <Lexer.h>
 #include <text.h>
 #include <main.h>
 #include <i18n.h>
@@ -89,7 +90,7 @@ bool confirm (const std::string& question)
     std::string answer {""};
     std::getline (std::cin, answer);
     context.debug ("STDIN '" + answer + "'");
-    answer = std::cin.eof () ? STRING_UTIL_CONFIRM_NO : lowerCase (trim (answer));
+    answer = std::cin.eof () ? STRING_UTIL_CONFIRM_NO : Lexer::lowerCase (trim (answer));
 
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }
@@ -129,7 +130,7 @@ int confirm4 (const std::string& question)
     std::string answer {""};
     std::getline (std::cin, answer);
     context.debug ("STDIN '" + answer + "'");
-    answer = std::cin.eof () ? STRING_UTIL_CONFIRM_QUIT : lowerCase (trim (answer));
+    answer = std::cin.eof () ? STRING_UTIL_CONFIRM_QUIT : Lexer::lowerCase (trim (answer));
     autoComplete (answer, options, matches, 1); // Hard-coded 1.
   }
   while (! std::cin.eof () && matches.size () != 1);
@@ -159,7 +160,7 @@ std::string formatBytes (size_t bytes)
   else if (bytes >=        995) sprintf (formatted, "%.1f %s", (bytes /       1000.0), STRING_UTIL_KIBIBYTES);
   else                          sprintf (formatted, "%d %s",   (int)bytes,             STRING_UTIL_BYTES);
 
-  return commify (formatted);
+  return Lexer::commify (formatted);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

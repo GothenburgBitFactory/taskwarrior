@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdEdit.h>
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
@@ -33,6 +34,7 @@
 #include <unistd.h>
 #include <ISO8601.h>
 #include <Context.h>
+#include <Lexer.h>
 #include <Filter.h>
 #include <Nibbler.h>
 #include <i18n.h>
@@ -40,7 +42,6 @@
 #include <util.h>
 #include <i18n.h>
 #include <main.h>
-#include <CmdEdit.h>
 #include <JSON.h>
 
 extern Context context;
@@ -213,12 +214,12 @@ std::string CmdEdit::formatTask (Task task, const std::string& dateformat)
 
   before << "# " << STRING_EDIT_TABLE_HEADER_1 << "\n"
          << "# " << STRING_EDIT_TABLE_HEADER_2 << "\n"
-         << "# ID:                " << task.id                                          << "\n"
-         << "# UUID:              " << task.get ("uuid")                                << "\n"
-         << "# Status:            " << ucFirst (Task::statusToText (task.getStatus ())) << "\n"  // L10N safe ucFirst.
-         << "# Mask:              " << task.get ("mask")                                << "\n"
-         << "# iMask:             " << task.get ("imask")                               << "\n"
-         << "  Project:           " << task.get ("project")                             << "\n";
+         << "# ID:                " << task.id                                                 << "\n"
+         << "# UUID:              " << task.get ("uuid")                                       << "\n"
+         << "# Status:            " << Lexer::ucFirst (Task::statusToText (task.getStatus ())) << "\n"
+         << "# Mask:              " << task.get ("mask")                                       << "\n"
+         << "# iMask:             " << task.get ("imask")                                      << "\n"
+         << "  Project:           " << task.get ("project")                                    << "\n";
 
   std::vector <std::string> tags;
   task.getTags (tags);

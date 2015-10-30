@@ -37,7 +37,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (1226);
+  UnitTest t (1253);
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -550,6 +550,37 @@ int main (int, char**)
   t.is (Lexer::typeName (Lexer::Type::word),         "word",         "Lexer::typeName (Lexer::Type::word)");
   t.is (Lexer::typeName (Lexer::Type::date),         "date",         "Lexer::typeName (Lexer::Type::date)");
   t.is (Lexer::typeName (Lexer::Type::duration),     "duration",     "Lexer::typeName (Lexer::Type::duration)");
+
+  // std::string Lexer::lowerCase (const std::string& input)
+  t.is (Lexer::lowerCase (""),            "",            "Lexer::lowerCase '' -> ''");
+  t.is (Lexer::lowerCase ("pre01_:POST"), "pre01_:post", "Lexer::lowerCase 'pre01_:POST' -> 'pre01_:post'");
+
+  // std::string Lexer::commify (const std::string& data)
+  t.is (Lexer::commify (""),           "",                  "Lexer::commify '' -> ''");
+  t.is (Lexer::commify ("1"),          "1",                 "Lexer::commify '1' -> '1'");
+  t.is (Lexer::commify ("12"),         "12",                "Lexer::commify '12' -> '12'");
+  t.is (Lexer::commify ("123"),        "123",               "Lexer::commify '123' -> '123'");
+  t.is (Lexer::commify ("1234"),       "1,234",             "Lexer::commify '1234' -> '1,234'");
+  t.is (Lexer::commify ("12345"),      "12,345",            "Lexer::commify '12345' -> '12,345'");
+  t.is (Lexer::commify ("123456"),     "123,456",           "Lexer::commify '123456' -> '123,456'");
+  t.is (Lexer::commify ("1234567"),    "1,234,567",         "Lexer::commify '1234567' -> '1,234,567'");
+  t.is (Lexer::commify ("12345678"),   "12,345,678",        "Lexer::commify '12345678' -> '12,345,678'");
+  t.is (Lexer::commify ("123456789"),  "123,456,789",       "Lexer::commify '123456789' -> '123,456,789'");
+  t.is (Lexer::commify ("1234567890"), "1,234,567,890",     "Lexer::commify '1234567890' -> '1,234,567,890'");
+  t.is (Lexer::commify ("1.0"),          "1.0",             "Lexer::commify '1.0' -> '1.0'");
+  t.is (Lexer::commify ("12.0"),         "12.0",            "Lexer::commify '12.0' -> '12.0'");
+  t.is (Lexer::commify ("123.0"),        "123.0",           "Lexer::commify '123.0' -> '123.0'");
+  t.is (Lexer::commify ("1234.0"),       "1,234.0",         "Lexer::commify '1234.0' -> '1,234.0'");
+  t.is (Lexer::commify ("12345.0"),      "12,345.0",        "Lexer::commify '12345.0' -> '12,345.0'");
+  t.is (Lexer::commify ("123456.0"),     "123,456.0",       "Lexer::commify '123456.0' -> '123,456.0'");
+  t.is (Lexer::commify ("1234567.0"),    "1,234,567.0",     "Lexer::commify '1234567.0' -> '1,234,567.0'");
+  t.is (Lexer::commify ("12345678.0"),   "12,345,678.0",    "Lexer::commify '12345678.0' -> '12,345,678.0'");
+  t.is (Lexer::commify ("123456789.0"),  "123,456,789.0",   "Lexer::commify '123456789.0' -> '123,456,789.0'");
+  t.is (Lexer::commify ("1234567890.0"), "1,234,567,890.0", "Lexer::commify '1234567890.0' -> '1,234,567,890.0'");
+  t.is (Lexer::commify ("pre"),         "pre",              "Lexer::commify 'pre' -> 'pre'");
+  t.is (Lexer::commify ("pre1234"),     "pre1,234",         "Lexer::commify 'pre1234' -> 'pre1,234'");
+  t.is (Lexer::commify ("1234post"),    "1,234post",        "Lexer::commify '1234post' -> '1,234post'");
+  t.is (Lexer::commify ("pre1234post"), "pre1,234post",     "Lexer::commify 'pre1234post' -> 'pre1,234post'");
 
   return 0;
 }

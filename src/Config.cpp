@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Config.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -37,7 +38,7 @@
 #include <FS.h>
 #include <Timer.h>
 #include <JSON.h>
-#include <Config.h>
+#include <Lexer.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
@@ -587,7 +588,7 @@ bool Config::getBoolean (const std::string& key)
 {
   if ((*this).find (key) != (*this).end ())
   {
-    std::string value = lowerCase ((*this)[key]);
+    std::string value = Lexer::lowerCase ((*this)[key]);
     if (value == "t"      ||  // TODO Deprecate
         value == "true"   ||
         value == "1"      ||

@@ -87,6 +87,9 @@ public:
   static int hexToInt                        (int, int, int, int);
   static std::string::size_type commonLength (const std::string&, const std::string&);
   static std::string::size_type commonLength (const std::string&, std::string::size_type, const std::string&, std::string::size_type);
+  static std::string commify                 (const std::string&);
+  static std::string lowerCase               (const std::string&);
+  static std::string ucFirst                 (const std::string&);
 
   // Stream Classifiers.
   bool isEOS          () const;

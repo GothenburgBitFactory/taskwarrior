@@ -413,6 +413,100 @@ std::string::size_type Lexer::commonLength (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string Lexer::commify (const std::string& data)
+{
+  // First scan for decimal point and end of digits.
+  int decimalPoint = -1;
+  int end          = -1;
+
+  int i;
+  for (int i = 0; i < (int) data.length (); ++i)
+  {
+    if (Lexer::isDigit (data[i]))
+      end = i;
+
+    if (data[i] == '.')
+      decimalPoint = i;
+  }
+
+  std::string result;
+  if (decimalPoint != -1)
+  {
+    // In reverse order, transfer all digits up to, and including the decimal
+    // point.
+    for (i = (int) data.length () - 1; i >= decimalPoint; --i)
+      result += data[i];
+
+    int consecutiveDigits = 0;
+    for (; i >= 0; --i)
+    {
+      if (Lexer::isDigit (data[i]))
+      {
+        result += data[i];
+
+        if (++consecutiveDigits == 3 && i && Lexer::isDigit (data[i - 1]))
+        {
+          result += ',';
+          consecutiveDigits = 0;
+        }
+      }
+      else
+        result += data[i];
+    }
+  }
+  else
+  {
+    // In reverse order, transfer all digits up to, but not including the last
+    // digit.
+    for (i = (int) data.length () - 1; i > end; --i)
+      result += data[i];
+
+    int consecutiveDigits = 0;
+    for (; i >= 0; --i)
+    {
+      if (Lexer::isDigit (data[i]))
+      {
+        result += data[i];
+
+        if (++consecutiveDigits == 3 && i && Lexer::isDigit (data[i - 1]))
+        {
+          result += ',';
+          consecutiveDigits = 0;
+        }
+      }
+      else
+        result += data[i];
+    }
+  }
+
+  // reverse result into data.
+  std::string done;
+  for (int i = (int) result.length () - 1; i >= 0; --i)
+    done += result[i];
+
+  return done;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Lexer::lowerCase (const std::string& input)
+{
+  std::string output = input;
+  std::transform (output.begin (), output.end (), output.begin (), tolower);
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string Lexer::ucFirst (const std::string& input)
+{
+  std::string output = input;
+
+  if (output.length () > 0)
+    output[0] = toupper (output[0]);
+
+  return output;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Lexer::Type::string
 //   '|"
 //   [ U+XXXX | \uXXXX | \" | \' | \\ | \/ | \b | \f | \n | \r | \t | . ]

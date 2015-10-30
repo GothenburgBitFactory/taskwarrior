@@ -514,7 +514,7 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
         std::string dayName;
         if (n.getUntil (format[f + 1], dayName))
         {
-          wday = ISO8601d::dayOfWeek (lowerCase (dayName));
+          wday = ISO8601d::dayOfWeek (Lexer::lowerCase (dayName));
           if (wday == -1)
           {
             n.restore ();
@@ -543,7 +543,7 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
         std::string monthName;
         if (n.getUntil (format[f + 1], monthName))
         {
-          month = ISO8601d::monthOfYear (lowerCase (monthName));
+          month = ISO8601d::monthOfYear (Lexer::lowerCase (monthName));
           if (month == -1)
           {
             n.restore ();
@@ -1265,7 +1265,7 @@ std::string ISO8601d::monthName (int month)
 
   assert (month > 0);
   assert (month <= 12);
-  return ucFirst (months[month - 1]);
+  return Lexer::ucFirst (months[month - 1]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1283,7 +1283,7 @@ std::string ISO8601d::dayName (int dow)
     STRING_DATE_SATURDAY,
   };
 
-  return ucFirst (days[dow]);
+  return Lexer::ucFirst (days[dow]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

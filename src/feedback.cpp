@@ -34,6 +34,7 @@
 #include <inttypes.h>
 #include <Context.h>
 #include <ISO8601.h>
+#include <Lexer.h>
 #include <main.h>
 #include <text.h>
 #include <util.h>
@@ -64,7 +65,7 @@ std::string taskDifferences (const Task& before, const Task& after)
   std::stringstream out;
   for (auto& name : beforeOnly)
     out << "  - "
-        << format (STRING_FEEDBACK_DELETED, ucFirst (name))
+        << format (STRING_FEEDBACK_DELETED, Lexer::ucFirst (name))
         << "\n";
 
   for (auto& name : afterOnly)
@@ -83,7 +84,7 @@ std::string taskDifferences (const Task& before, const Task& after)
     else
       out << "  - "
           << format (STRING_FEEDBACK_ATT_SET,
-                     ucFirst (name),
+                     Lexer::ucFirst (name),
                      renderAttribute (name, after.get (name)))
           << "\n";
   }
@@ -116,7 +117,7 @@ std::string taskDifferences (const Task& before, const Task& after)
       else
         out << "  - "
             << format (STRING_FEEDBACK_ATT_MOD,
-                       ucFirst (name),
+                       Lexer::ucFirst (name),
                        renderAttribute (name, before.get (name)),
                        renderAttribute (name, after.get (name)))
             << "\n";
@@ -175,13 +176,13 @@ std::string taskInfoDifferences (
     }
     else if (name == "start")
     {
-      out << format (STRING_FEEDBACK_ATT_DEL_DUR, ucFirst (name),
+      out << format (STRING_FEEDBACK_ATT_DEL_DUR, Lexer::ucFirst (name),
                      ISO8601p (current_timestamp - last_timestamp).format ())
           << "\n";
     }
     else
     {
-      out << format (STRING_FEEDBACK_ATT_DEL, ucFirst (name))
+      out << format (STRING_FEEDBACK_ATT_DEL, Lexer::ucFirst (name))
           << "\n";
     }
   }
@@ -209,7 +210,7 @@ std::string taskInfoDifferences (
           last_timestamp = current_timestamp;
 
       out << format (STRING_FEEDBACK_ATT_WAS_SET,
-                     ucFirst (name),
+                     Lexer::ucFirst (name),
                      renderAttribute (name, after.get (name), dateformat))
           << "\n";
     }
@@ -244,7 +245,7 @@ std::string taskInfoDifferences (
       }
       else
         out << format (STRING_FEEDBACK_ATT_WAS_MOD,
-                       ucFirst (name),
+                       Lexer::ucFirst (name),
                        renderAttribute (name, before.get (name), dateformat),
                        renderAttribute (name, after.get (name), dateformat))
             << "\n";

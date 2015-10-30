@@ -387,12 +387,12 @@ bool namedDates (const std::string& name, Variant& value)
     if (Lexer::isDigit (name[1]))
     {
       number = strtol (name.substr (0, 2).c_str (), NULL, 10);
-      ordinal = lowerCase (name.substr (2));
+      ordinal = Lexer::lowerCase (name.substr (2));
     }
     else
     {
       number = strtol (name.substr (0, 1).c_str (), NULL, 10);
-      ordinal = lowerCase (name.substr (1));
+      ordinal = Lexer::lowerCase (name.substr (1));
     }
 
     // Sanity check.

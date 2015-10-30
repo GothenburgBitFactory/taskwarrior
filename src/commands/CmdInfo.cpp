@@ -119,7 +119,7 @@ int CmdInfo::execute (std::string& output)
     view.set (row, 0, STRING_COLUMN_LABEL_ID);
     view.set (row, 1, (task.id ? format (task.id) : "-"));
 
-    std::string status = ucFirst (Task::statusToText (task.getStatus ()));  // L10N safe ucFirst.
+    std::string status = Lexer::ucFirst (Task::statusToText (task.getStatus ()));
 
     // description
     Color c;
