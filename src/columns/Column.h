@@ -66,8 +66,10 @@ public:
   virtual std::string modify (std::string& input)                                   { return input; };
 
 protected:
-  void renderInteger (std::vector <std::string>&, int, Color&, int);
-  void renderDouble  (std::vector <std::string>&, int, Color&, double);
+  void renderInteger     (std::vector <std::string>&, int, Color&, int);
+  void renderDouble      (std::vector <std::string>&, int, Color&, double);
+  void renderStringLeft  (std::vector <std::string>&, int, Color&, const std::string&);
+  void renderStringRight (std::vector <std::string>&, int, Color&, const std::string&);
 
 protected:
   std::string _name;

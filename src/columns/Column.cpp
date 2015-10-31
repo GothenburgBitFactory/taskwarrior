@@ -292,3 +292,27 @@ void Column::renderDouble (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Column::renderStringLeft (
+  std::vector <std::string>& lines,
+  int width,
+  Color& color,
+  const std::string& value)
+{
+  lines.push_back (
+    color.colorize (
+      leftJustify (value, width)));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Column::renderStringRight (
+  std::vector <std::string>& lines,
+  int width,
+  Color& color,
+  const std::string& value)
+{
+  lines.push_back (
+    color.colorize (
+      rightJustify (value, width)));
+}
+
+////////////////////////////////////////////////////////////////////////////////
