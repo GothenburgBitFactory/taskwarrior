@@ -96,18 +96,10 @@ void ColumnRecur::render (
   {
     if (_style == "default" ||
         _style == "duration")
-    {
-      lines.push_back (
-        color.colorize (
-          rightJustify (
-            ISO8601p (task.get ("recur")).format (), width)));
-    }
+      renderStringRight (lines, width, color, ISO8601p (task.get ("recur")).format ());
+
     else if (_style == "indicator")
-    {
-      lines.push_back (
-        color.colorize (
-          rightJustify (context.config.get ("recurrence.indicator"), width)));
-    }
+      renderStringRight (lines, width, color, context.config.get ("recurrence.indicator"));
   }
 }
 
