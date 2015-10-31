@@ -41,7 +41,7 @@ ColumnParent::ColumnParent ()
   _label      = STRING_COLUMN_LABEL_PARENT;
   _modifiable = false;
   _styles     = {"long", "short"};
-  _examples   = {"f30cb9c3-3fc0-483f-bfb2-3bf134f00694", "34f00694"};
+  _examples   = {"f30cb9c3-3fc0-483f-bfb2-3bf134f00694", "f30cb9c3"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,11 +75,12 @@ void ColumnParent::render (
   {
     // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
     //                             34f00694  short
-    if (_style == "default" || _style == "long")
+    if (_style == "default" ||
+        _style == "long")
       renderStringLeft (lines, width, color, task.get(_name));
 
     else if (_style == "short")
-      renderStringLeft (lines, width, color, task.get (_name).substr (28));
+      renderStringLeft (lines, width, color, task.get (_name).substr (0, 8));
   }
 }
 
