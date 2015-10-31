@@ -142,62 +142,39 @@ void ColumnTypeDate::render (
       //   rc.dateformat
       std::string format = context.config.get ("report." + _report + ".dateformat");
       if (format == "")
+      {
         format = context.config.get ("dateformat.report");
-      if (format == "")
-        format = context.config.get ("dateformat");
+        if (format == "")
+          format = context.config.get ("dateformat");
+      }
 
-      lines.push_back (
-        color.colorize (
-          leftJustify (
-            date.toString (format), width)));
+      renderStringLeft (lines, width, color, date.toString (format));
     }
     else if (_style == "countdown")
     {
       ISO8601d now;
-
-      lines.push_back (
-        color.colorize (
-          rightJustify (
-            ISO8601p (now - date).formatVague (), width)));
+      renderStringRight (lines, width, color, ISO8601p (now - date).formatVague ());
     }
     else if (_style == "julian")
-    {
-      lines.push_back (
-        color.colorize (
-          rightJustify (
-            format (date.toJulian (), 13, 12), width)));
-    }
+      renderStringRight (lines, width, color, format (date.toJulian (), 13, 12));
+
     else if (_style == "epoch")
-    {
-      lines.push_back (
-        color.colorize (
-          rightJustify (
-            date.toEpochString (), width)));
-    }
+      renderStringRight (lines, width, color, date.toEpochString ());
+
     else if (_style == "iso")
-    {
-      lines.push_back (
-        color.colorize (
-          leftJustify (
-            date.toISO (), width)));
-    }
+      renderStringLeft (lines, width, color, date.toISO ());
+
     else if (_style == "age")
     {
       ISO8601d now;
-
-      lines.push_back (
-        color.colorize (
-          leftJustify (
-            ISO8601p (now - date).formatVague (), width)));
+      renderStringLeft (lines, width, color, ISO8601p (now - date).formatVague ());
     }
+
     else if (_style == "remaining")
     {
       ISO8601d now;
       if (date > now)
-        lines.push_back (
-          color.colorize (
-            rightJustify (
-              ISO8601p (date - now).formatVague (), width)));
+        renderStringRight (lines, width, color, ISO8601p (date - now).formatVague ());
     }
   }
 }
