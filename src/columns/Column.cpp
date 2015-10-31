@@ -277,3 +277,16 @@ void Column::renderInteger (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Column::renderDouble (
+  std::vector <std::string>& lines,
+  int width,
+  Color& color,
+  double value)
+{
+  lines.push_back (
+    color.colorize (
+      rightJustify (
+        format (value, 4, 3), width)));
+}
+
+////////////////////////////////////////////////////////////////////////////////

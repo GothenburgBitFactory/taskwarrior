@@ -67,6 +67,7 @@ public:
 
 protected:
   void renderInteger (std::vector <std::string>&, int, Color&, int);
+  void renderDouble  (std::vector <std::string>&, int, Color&, double);
 
 protected:
   std::string _name;
