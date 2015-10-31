@@ -37,7 +37,6 @@ extern Context context;
 ColumnID::ColumnID ()
 {
   _name       = "id";
-  _type       = "numeric";
   _style      = "number";
   _label      = STRING_COLUMN_LABEL_ID;
   _modifiable = false;

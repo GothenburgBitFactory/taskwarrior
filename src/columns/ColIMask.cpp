@@ -37,7 +37,6 @@ extern Context context;
 ColumnIMask::ColumnIMask ()
 {
   _name       = "imask";
-  _type       = "numeric";
   _style      = "number";
   _label      = STRING_COLUMN_LABEL_MASK_IDX;
   _modifiable = false;
