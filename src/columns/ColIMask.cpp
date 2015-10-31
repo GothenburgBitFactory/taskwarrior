@@ -73,7 +73,7 @@ void ColumnIMask::render (
   Color& color)
 {
   if (task.has (_name))
-    lines.push_back (color.colorize (rightJustify (task.get ("imask"), width)));
+    renderStringRight (lines, width, color, task.get ("imask"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
