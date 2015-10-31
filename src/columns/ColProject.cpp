@@ -38,7 +38,6 @@ extern Context context;
 ColumnProject::ColumnProject ()
 {
   _name      = "project";
-  _type      = "string";
   _style     = "full";
   _label     = STRING_COLUMN_LABEL_PROJECT;
   _styles    = {"full", "parent", "indented"};

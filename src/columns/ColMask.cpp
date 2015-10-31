@@ -37,7 +37,6 @@ extern Context context;
 ColumnMask::ColumnMask ()
 {
   _name       = "mask";
-  _type       = "string";
   _style      = "default";
   _label      = STRING_COLUMN_LABEL_MASK;
   _modifiable = false;

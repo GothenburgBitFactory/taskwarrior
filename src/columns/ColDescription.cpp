@@ -40,7 +40,6 @@ extern Context context;
 ColumnDescription::ColumnDescription ()
 {
   _name  = "description";
-  _type  = "string";
   _style = "combined";
   _label = STRING_COLUMN_LABEL_DESC;
 

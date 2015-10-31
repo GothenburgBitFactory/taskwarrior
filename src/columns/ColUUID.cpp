@@ -37,7 +37,6 @@ extern Context context;
 ColumnUUID::ColumnUUID ()
 {
   _name       = "uuid";
-  _type       = "string";
   _style      = "long";
   _label      = STRING_COLUMN_LABEL_UUID;
   _modifiable = false;

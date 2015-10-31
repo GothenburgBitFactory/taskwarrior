@@ -38,7 +38,6 @@ extern Context context;
 ColumnTags::ColumnTags ()
 {
   _name      = "tags";
-  _type      = "string";
   _style     = "list";
   _label     = STRING_COLUMN_LABEL_TAGS;
   _styles    = {"list", "indicator", "count"};

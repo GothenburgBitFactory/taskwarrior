@@ -27,9 +27,11 @@
 #ifndef INCLUDED_COLRECUR
 #define INCLUDED_COLRECUR
 
-#include <ColTypeDuration.h>
+#include <ColTypeString.h>
 
-class ColumnRecur : public ColumnTypeDuration
+// This is 'string', and not 'duration' to force the value to be stored as a
+// raw duration, so that it can be reevaluated every time.
+class ColumnRecur : public ColumnTypeString
 {
 public:
   ColumnRecur ();

@@ -39,7 +39,6 @@ extern Context context;
 ColumnDepends::ColumnDepends ()
 {
   _name      = "depends";
-  _type      = "string";
   _style     = "list";
   _label     = STRING_COLUMN_LABEL_DEP;
   _styles    = {"list",

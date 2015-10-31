@@ -37,7 +37,6 @@ extern Context context;
 ColumnStatus::ColumnStatus ()
 {
   _name     = "status";
-  _type     = "string";
   _style    = "long";
   _label    = STRING_COLUMN_LABEL_STATUS;
   _styles   = {"long", "short"};
