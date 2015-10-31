@@ -107,7 +107,7 @@ void ColumnProject::render (
     wrapText (raw, project, width, _hyphenate);
 
     for (auto& i : raw)
-      lines.push_back (color.colorize (leftJustify (i, width)));
+      renderStringLeft (lines, width, color, i);
   }
 }
 
