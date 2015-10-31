@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLPROJECT
 #define INCLUDED_COLPROJECT
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeString.h>
 
-class ColumnProject : public Column
+class ColumnProject : public ColumnTypeString
 {
 public:
   ColumnProject ();

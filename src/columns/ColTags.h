@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLTAGS
 #define INCLUDED_COLTAGS
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeString.h>
 
-class ColumnTags : public Column
+class ColumnTags : public ColumnTypeString
 {
 public:
   ColumnTags ();

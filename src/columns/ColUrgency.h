@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLURGENCY
 #define INCLUDED_COLURGENCY
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeNumeric.h>
 
-class ColumnUrgency : public Column
+class ColumnUrgency : public ColumnTypeNumeric
 {
 public:
   ColumnUrgency ();

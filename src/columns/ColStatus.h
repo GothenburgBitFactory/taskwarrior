@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLSTATUS
 #define INCLUDED_COLSTATUS
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeString.h>
 
-class ColumnStatus : public Column
+class ColumnStatus : public ColumnTypeString
 {
 public:
   ColumnStatus ();

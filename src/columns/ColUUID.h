@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLUUID
 #define INCLUDED_COLUUID
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeString.h>
 
-class ColumnUUID : public Column
+class ColumnUUID : public ColumnTypeString
 {
 public:
   ColumnUUID ();

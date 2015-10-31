@@ -27,11 +27,7 @@
 #ifndef INCLUDED_COLUDA
 #define INCLUDED_COLUDA
 
-#include <vector>
-#include <string>
 #include <Column.h>
-#include <Color.h>
-#include <Task.h>
 
 class ColumnUDA : public Column
 {

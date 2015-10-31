@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLRECUR
 #define INCLUDED_COLRECUR
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeDuration.h>
 
-class ColumnRecur : public Column
+class ColumnRecur : public ColumnTypeDuration
 {
 public:
   ColumnRecur ();

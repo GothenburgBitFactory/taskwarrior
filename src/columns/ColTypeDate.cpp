@@ -25,9 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <math.h>
-#include <Context.h>
 #include <ColTypeDate.h>
+#include <Context.h>
 #include <ISO8601.h>
 #include <text.h>
 #include <i18n.h>

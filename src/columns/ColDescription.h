@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLDESCRIPTION
 #define INCLUDED_COLDESCRIPTION
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeString.h>
 
-class ColumnDescription : public Column
+class ColumnDescription : public ColumnTypeString
 {
 public:
   ColumnDescription ();

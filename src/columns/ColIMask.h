@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLIMASK
 #define INCLUDED_COLIMASK
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeNumeric.h>
 
-class ColumnIMask : public Column
+class ColumnIMask : public ColumnTypeNumeric
 {
 public:
   ColumnIMask ();

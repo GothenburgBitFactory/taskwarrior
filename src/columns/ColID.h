@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLID
 #define INCLUDED_COLID
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeNumeric.h>
 
-class ColumnID : public Column
+class ColumnID : public ColumnTypeNumeric
 {
 public:
   ColumnID ();

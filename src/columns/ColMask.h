@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLMASK
 #define INCLUDED_COLMASK
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeString.h>
 
-class ColumnMask : public Column
+class ColumnMask : public ColumnTypeString
 {
 public:
   ColumnMask ();

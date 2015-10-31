@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLPARENT
 #define INCLUDED_COLPARENT
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeString.h>
 
-class ColumnParent : public Column
+class ColumnParent : public ColumnTypeString
 {
 public:
   ColumnParent ();

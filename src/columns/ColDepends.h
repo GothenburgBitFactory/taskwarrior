@@ -27,13 +27,9 @@
 #ifndef INCLUDED_COLDEPENDS
 #define INCLUDED_COLDEPENDS
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
+#include <ColTypeString.h>
 
-class ColumnDepends : public Column
+class ColumnDepends : public ColumnTypeString
 {
 public:
   ColumnDepends ();
