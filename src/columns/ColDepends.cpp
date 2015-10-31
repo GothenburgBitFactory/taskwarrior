@@ -122,37 +122,31 @@ void ColumnDepends::render (
   if (task.has (_name))
   {
     if (_style == "indicator")
+      renderStringRight (lines, width, color, context.config.get ("dependency.indicator"));
+    else
     {
-      lines.push_back (
-        color.colorize (
-          rightJustify (context.config.get ("dependency.indicator"), width)));
-      return;
-    }
+      std::vector <Task> blocking;
+      dependencyGetBlocking (task, blocking);
 
-    std::vector <Task> blocking;
-    dependencyGetBlocking (task, blocking);
+      if (_style == "count")
+        renderStringRight (lines, width, color, "[" + format (static_cast <int>(blocking.size ())) + "]");
 
-    if (_style == "count")
-    {
-      lines.push_back (
-        color.colorize (
-          rightJustify ("[" + format ((int)blocking.size ()) + "]", width)));
-    }
-    else if (_style == "default" ||
-             _style == "list")
-    {
-      std::vector <int> blocking_ids;
-      for (auto& t : blocking)
-        blocking_ids.push_back (t.id);
+      else if (_style == "default" ||
+               _style == "list")
+      {
+        std::vector <int> blocking_ids;
+        for (auto& t : blocking)
+          blocking_ids.push_back (t.id);
 
-      std::string combined;
-      join (combined, " ", blocking_ids);
+        std::string combined;
+        join (combined, " ", blocking_ids);
 
-      std::vector <std::string> all;
-      wrapText (all, combined, width, _hyphenate);
+        std::vector <std::string> all;
+        wrapText (all, combined, width, _hyphenate);
 
-      for (auto& i : all)
-        lines.push_back (color.colorize (leftJustify (i, width)));
+        for (auto& i : all)
+          renderStringLeft (lines, width, color, i);
+      }
     }
   }
 }
