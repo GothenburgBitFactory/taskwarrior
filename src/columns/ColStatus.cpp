@@ -115,7 +115,7 @@ void ColumnStatus::render (
     else if (status == Task::recurring) value = STRING_COLUMN_LABEL_STAT_R;
   }
 
-  lines.push_back (color.colorize (leftJustify (value, width)));
+  renderStringLeft (lines, width, color, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
