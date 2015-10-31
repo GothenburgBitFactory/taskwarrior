@@ -66,6 +66,9 @@ public:
   virtual std::string modify (std::string& input)                                   { return input; };
 
 protected:
+  void renderInteger (std::vector <std::string>&, int, Color&, int);
+
+protected:
   std::string _name;
   std::string _type;
   std::string _style;

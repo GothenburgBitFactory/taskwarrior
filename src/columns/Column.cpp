@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Column.h>
 #include <algorithm>
 #include <Context.h>
-#include <Column.h>
 #include <ColDepends.h>
 #include <ColDescription.h>
 #include <ColDue.h>
@@ -262,6 +262,18 @@ void Column::setStyle (const std::string& style)
 bool Column::validate (std::string& input)
 {
   return input.length () ? true : false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void Column::renderInteger (
+  std::vector <std::string>& lines,
+  int width,
+  Color& color,
+  int value)
+{
+  lines.push_back (
+    color.colorize (
+      rightJustify (value, width)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
