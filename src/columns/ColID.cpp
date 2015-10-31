@@ -77,7 +77,7 @@ void ColumnID::render (
   Color& color)
 {
   if (task.id)
-    lines.push_back (color.colorize (rightJustify (task.id, width)));
+    renderInteger (lines, width, color, task.id);
   else
     lines.push_back (color.colorize (rightJustify ("-", width)));
 }
