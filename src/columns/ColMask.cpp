@@ -67,11 +67,11 @@ void ColumnMask::measure (Task& task, unsigned int& minimum, unsigned int& maxim
 void ColumnMask::render (
   std::vector <std::string>& lines,
   Task& task,
-  int,
+  int width,
   Color& color)
 {
   if (task.has (_name))
-    lines.push_back (color.colorize (task.get ("mask")));
+    renderStringLeft (lines, width, color, task.get ("mask"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
