@@ -98,7 +98,7 @@ void ColumnString::render (
     wrapText (raw, value, width, _hyphenate);
 
     for (auto& i : raw)
-      lines.push_back (color.colorize (leftJustify (i, width)));
+      renderStringLeft (lines, width, color, i);
   }
   else if (_style == "right")
   {
@@ -106,16 +106,14 @@ void ColumnString::render (
     wrapText (raw, value, width, _hyphenate);
 
     for (auto& i : raw)
-      lines.push_back (color.colorize (rightJustify (i, width)));
+      renderStringRight (lines, width, color, i);
   }
+
   else if (_style == "left_fixed")
-  {
-    lines.push_back (leftJustify (value, width));
-  }
+    renderStringLeft (lines, width, color, value);
+
   else if (_style == "right_fixed")
-  {
-    lines.push_back (rightJustify (value, width));
-  }
+    renderStringRight (lines, width, color, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
