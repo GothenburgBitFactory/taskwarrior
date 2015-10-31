@@ -51,15 +51,11 @@ ColumnUrgency::~ColumnUrgency ()
 // Set the minimum and maximum widths for the value.
 void ColumnUrgency::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
-  if (_style == "default" ||
-      _style == "real")
-  {
+  if (_style == "default" || _style == "real")
     minimum = maximum = format (task.urgency (), 4, 3).length ();
-  }
+
   else if (_style == "integer")
-  {
     minimum = maximum = format ((int)task.urgency ()).length ();
-  }
 
   else
     throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
@@ -72,21 +68,11 @@ void ColumnUrgency::render (
   int width,
   Color& color)
 {
-  if (_style == "default" ||
-      _style == "real")
-  {
-    lines.push_back (
-      color.colorize (
-        rightJustify (
-          format (task.urgency (), 4, 3), width)));
-  }
+  if (_style == "default" || _style == "real")
+    renderDouble (lines, width, color, task.urgency ());
+
   else if (_style == "integer")
-  {
-    lines.push_back (
-      color.colorize (
-        rightJustify (
-          format ((int)task.urgency ()), width)));
-  }
+    renderInteger (lines, width, color, static_cast <int> (task.urgency ()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
