@@ -66,14 +66,16 @@ void ColumnUUID::render (
   int width,
   Color& color)
 {
+  // No need to check the presence of UUID - all tasks have one.
+
   // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
   // f30cb9c3                              short
   if (_style == "default" ||
       _style == "long")
-    lines.push_back (color.colorize (leftJustify (task.get (_name), width)));
+    renderStringLeft (lines, width, color, task.get (_name));
 
   else if (_style == "short")
-    lines.push_back (color.colorize (leftJustify (task.get (_name).substr (0, 8), width)));
+    renderStringLeft (lines, width, color, task.get (_name).substr (0, 8));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
