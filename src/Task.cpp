@@ -2181,6 +2181,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             std::string strValue = (std::string) evaluatedValue;
             if (column->validate (strValue))
             {
+/*
               if (column->can_modify ())
               {
                 std::string col_value = column->modify (strValue);
@@ -2189,9 +2190,12 @@ void Task::modify (modType type, bool text_required /* = false */)
               }
               else
               {
+*/
                 context.debug (label + name + " <-- '" + strValue + "' <-- '" + value + "'");
                 (*this).set (name, strValue);
+/*
               }
+*/
 
               ++modCount;
             }
