@@ -265,6 +265,7 @@ bool Column::validate (std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// All integer values are right-justified.
 void Column::renderInteger (
   std::vector <std::string>& lines,
   int width,
@@ -277,6 +278,7 @@ void Column::renderInteger (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// All floating point values are right-justified.
 void Column::renderDouble (
   std::vector <std::string>& lines,
   int width,
