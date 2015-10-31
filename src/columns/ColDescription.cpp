@@ -195,7 +195,7 @@ void ColumnDescription::render (
     wrapText (raw, description, width, _hyphenate);
 
     for (auto& i : raw)
-      lines.push_back (color.colorize (leftJustify (i, width)));
+      renderStringLeft (lines, width, color, i);
   }
 
   // This is a description
@@ -205,7 +205,7 @@ void ColumnDescription::render (
     wrapText (raw, description, width, _hyphenate);
 
     for (auto& i : raw)
-      lines.push_back (color.colorize (leftJustify (i, width)));
+      renderStringLeft (lines, width, color, i);
   }
 
   // This is a description <date> <anno> ...
@@ -226,7 +226,7 @@ void ColumnDescription::render (
     wrapText (raw, description, width, _hyphenate);
 
     for (auto& i : raw)
-      lines.push_back (color.colorize (leftJustify (i, width)));
+      renderStringLeft (lines, width, color, i);
   }
 
   // This is a des...
@@ -234,9 +234,9 @@ void ColumnDescription::render (
   {
     int len = utf8_width (description);
     if (len > width)
-      lines.push_back (color.colorize (description.substr (0, width - 3) + "..."));
+      renderStringLeft (lines, width, color, description.substr (0, width - 3) + "...");
     else
-      lines.push_back (color.colorize (leftJustify (description, width)));
+      renderStringLeft (lines, width, color, description);
   }
 
   // This is a description [2]
@@ -252,7 +252,7 @@ void ColumnDescription::render (
     wrapText (raw, description, width, _hyphenate);
 
     for (auto& i : raw)
-      lines.push_back (color.colorize (leftJustify (i, width)));
+      renderStringLeft (lines, width, color, i);
   }
 
   // This is a des... [2]
@@ -272,9 +272,9 @@ void ColumnDescription::render (
     }
 
     if (len > width)
-      lines.push_back (color.colorize (description.substr (0, width - len_annos - 3) + "..." + annos_count));
+      renderStringLeft (lines, width, color, description.substr (0, width - len_annos - 3) + "..." + annos_count);
     else
-      lines.push_back (color.colorize (leftJustify (description + annos_count, width)));
+      renderStringLeft (lines, width, color, description + annos_count);
   }
 }
 
