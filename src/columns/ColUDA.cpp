@@ -145,42 +145,34 @@ void ColumnUDA::render (
         //   rc.dateformat.
         std::string format = context.config.get ("report." + _report + ".dateformat");
         if (format == "")
+        {
           format = context.config.get ("dateformat.report");
-        if (format == "")
-          format = context.config.get ("dateformat");
+          if (format == "")
+            format = context.config.get ("dateformat");
+        }
 
-        lines.push_back (
-          color.colorize (
-            leftJustify (
-              ISO8601d ((time_t) strtol (value.c_str (), NULL, 10)).toString (format), width)));
+        renderStringLeft (lines, width, color, ISO8601d ((time_t) strtol (value.c_str (), NULL, 10)).toString (format));
       }
       else if (_type == "duration")
-      {
-        lines.push_back (
-          color.colorize (
-            rightJustify (
-              ISO8601p (value).format (),
-              width)));
-      }
+        renderStringRight (lines, width, color, ISO8601p (value).format ());
+
       else if (_type == "string")
       {
         std::vector <std::string> raw;
         wrapText (raw, value, width, _hyphenate);
 
         for (auto& i : raw)
-          lines.push_back (color.colorize (leftJustify (i, width)));
+          renderStringLeft (lines, width, color, i);
       }
+
       else if (_type == "numeric")
-      {
-        lines.push_back (color.colorize (rightJustify (value, width)));
-      }
+        renderStringRight (lines, width, color, value);
+
     }
     else if (_style == "indicator")
     {
       if (task.has (_name))
-        lines.push_back (
-          color.colorize (
-            rightJustify (context.config.get ("uda." + _name + ".indicator"), width)));
+        renderStringRight (lines, width, color, context.config.get ("uda." + _name + ".indicator"));
     }
   }
 }
