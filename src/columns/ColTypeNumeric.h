@@ -24,8 +24,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COLTYPEDATE
-#define INCLUDED_COLTYPEDATE
+#ifndef INCLUDED_COLTYPENUMERIC
+#define INCLUDED_COLTYPENUMERIC
 
 #include <vector>
 #include <string>
@@ -33,11 +33,11 @@
 #include <Color.h>
 #include <Task.h>
 
-class ColumnTypeDate : public Column
+class ColumnTypeNumeric : public Column
 {
 public:
-  ColumnTypeDate ();
-  virtual ~ColumnTypeDate ();
+  ColumnTypeNumeric ();
+  virtual ~ColumnTypeNumeric ();
 
   virtual void measure (Task&, unsigned int&, unsigned int&);
   virtual void render (std::vector <std::string>&, Task&, int, Color&);

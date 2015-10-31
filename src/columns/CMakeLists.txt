@@ -6,7 +6,6 @@ include_directories (${CMAKE_SOURCE_DIR}
                      ${TASK_INCLUDE_DIRS})
 
 set (columns_SRCS Column.cpp Column.h
-                  ColTypeDate.cpp ColTypeDate.h
                   ColDepends.cpp ColDepends.h
                   ColDescription.cpp ColDescription.h
                   ColDue.cpp ColDue.h
@@ -24,6 +23,10 @@ set (columns_SRCS Column.cpp Column.h
                   ColStatus.cpp ColStatus.h
                   ColString.cpp ColString.h
                   ColTags.cpp ColTags.h
+                  ColTypeDate.cpp ColTypeDate.h
+                  ColTypeDuration.cpp ColTypeDuration.h
+                  ColTypeNumeric.cpp ColTypeNumeric.h
+                  ColTypeString.cpp ColTypeString.h
                   ColUntil.cpp ColUntil.h
                   ColUrgency.cpp ColUrgency.h
                   ColUDA.cpp ColUDA.h

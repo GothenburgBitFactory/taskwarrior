@@ -24,24 +24,32 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COLTYPEDATE
-#define INCLUDED_COLTYPEDATE
+#include <cmake.h>
+#include <ColTypeNumeric.h>
 
-#include <vector>
-#include <string>
-#include <Column.h>
-#include <Color.h>
-#include <Task.h>
-
-class ColumnTypeDate : public Column
+////////////////////////////////////////////////////////////////////////////////
+ColumnTypeNumeric::ColumnTypeNumeric ()
 {
-public:
-  ColumnTypeDate ();
-  virtual ~ColumnTypeDate ();
+}
 
-  virtual void measure (Task&, unsigned int&, unsigned int&);
-  virtual void render (std::vector <std::string>&, Task&, int, Color&);
-};
+////////////////////////////////////////////////////////////////////////////////
+ColumnTypeNumeric::~ColumnTypeNumeric ()
+{
+}
 
-#endif
+////////////////////////////////////////////////////////////////////////////////
+// Set the minimum and maximum widths for the value.
+void ColumnTypeNumeric::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnTypeNumeric::render (
+  std::vector <std::string>& lines,
+  Task& task,
+  int width,
+  Color& color)
+{
+}
+
 ////////////////////////////////////////////////////////////////////////////////
