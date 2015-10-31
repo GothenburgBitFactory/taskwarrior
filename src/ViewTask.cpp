@@ -354,7 +354,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
         if (c)
         {
           if (row_color.nontrivial ())
-            out += row_color.colorize (intra);
+            row_color._colorize (out, intra);
           else
             out += (odd ? intra_odd : intra_even);
         }
@@ -362,7 +362,7 @@ std::string ViewTask::render (std::vector <Task>& data, std::vector <int>& seque
         if (i < cells[c].size ())
           out += cells[c][i];
         else
-          out += row_color.colorize (std::string (widths[c], ' '));
+          row_color._colorize (out, std::string (widths[c], ' '));
       }
 
       out += (odd ? extra_odd : extra_even);

@@ -35,6 +35,39 @@
 #include <Lexer.h>
 #include <text.h>
 #include <i18n.h>
+#include <string>
+
+// uint to string lookup table for Color::_colorize()
+// _colorize() gets called _a lot_, having this lookup table is a cheap
+// performance optimization.
+const char *colorstring[] = {
+    "0",   "1",   "2",   "3",   "4",   "5",   "6",   "7",   "8",   "9",
+   "10",  "11",  "12",  "13",  "14",  "15",  "16",  "17",  "18",  "19",
+   "20",  "21",  "22",  "23",  "24",  "25",  "26",  "27",  "28",  "29",
+   "30",  "31",  "32",  "33",  "34",  "35",  "36",  "37",  "38",  "39",
+   "40",  "41",  "42",  "43",  "44",  "45",  "46",  "47",  "48",  "49",
+   "50",  "51",  "52",  "53",  "54",  "55",  "56",  "57",  "58",  "59",
+   "60",  "61",  "62",  "63",  "64",  "65",  "66",  "67",  "68",  "69",
+   "70",  "71",  "72",  "73",  "74",  "75",  "76",  "77",  "78",  "79",
+   "80",  "81",  "82",  "83",  "84",  "85",  "86",  "87",  "88",  "89",
+   "90",  "91",  "92",  "93",  "94",  "95",  "96",  "97",  "98",  "99",
+  "100", "101", "102", "103", "104", "105", "106", "107", "108", "109",
+  "110", "111", "112", "113", "114", "115", "116", "117", "118", "119",
+  "120", "121", "122", "123", "124", "125", "126", "127", "128", "129",
+  "130", "131", "132", "133", "134", "135", "136", "137", "138", "139",
+  "140", "141", "142", "143", "144", "145", "146", "147", "148", "149",
+  "150", "151", "152", "153", "154", "155", "156", "157", "158", "159",
+  "160", "161", "162", "163", "164", "165", "166", "167", "168", "169",
+  "170", "171", "172", "173", "174", "175", "176", "177", "178", "179",
+  "180", "181", "182", "183", "184", "185", "186", "187", "188", "189",
+  "190", "191", "192", "193", "194", "195", "196", "197", "198", "199",
+  "200", "201", "202", "203", "204", "205", "206", "207", "208", "209",
+  "210", "211", "212", "213", "214", "215", "216", "217", "218", "219",
+  "220", "221", "222", "223", "224", "225", "226", "227", "228", "229",
+  "230", "231", "232", "233", "234", "235", "236", "237", "238", "239",
+  "240", "241", "242", "243", "244", "245", "246", "247", "248", "249",
+  "250", "251", "252", "253", "254", "255"
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 static struct
@@ -390,6 +423,14 @@ void Color::upgrade ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string Color::colorize (const std::string& input)
+{
+  std::string result;
+  _colorize (result, input);
+  return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Sample color codes:
 //   red                  \033[31m
 //   bold red             \033[91m
@@ -401,74 +442,82 @@ void Color::upgrade ()
 //
 //   256 fg               \033[38;5;Nm
 //   256 bg               \033[48;5;Nm
-std::string Color::colorize (const std::string& input)
+void Color::_colorize (std::string &result, const std::string& input)
 {
   if (!nontrivial ())
-    return input;
+  {
+    result += input;
+    return;
+  }
 
   int count = 0;
-  std::stringstream result;
 
   // 256 color
   if (_value & _COLOR_256)
   {
     if (_value & _COLOR_UNDERLINE)
-      result << "\033[4m";
+      result += "\033[4m";
 
     if (_value & _COLOR_INVERSE)
-      result << "\033[7m";
+      result += "\033[7m";
 
     if (_value & _COLOR_HASFG)
-      result << "\033[38;5;" << (_value & _COLOR_FG) << "m";
+    {
+      result += "\033[38;5;";
+      result += colorstring[(_value & _COLOR_FG)];
+      result += "m";
+    }
 
     if (_value & _COLOR_HASBG)
-      result << "\033[48;5;" << ((_value & _COLOR_BG) >> 8) << "m";
+    {
+      result += "\033[48;5;";
+      result += colorstring[((_value & _COLOR_BG) >> 8)];
+      result += "m";
+    }
 
-    result << input << "\033[0m";
-
-    return result.str ();
+    result += input;
+    result += "\033[0m";
   }
 
   // 16 color
   else
   {
-    result << "\033[";
+    result += "\033[";
 
     if (_value & _COLOR_BOLD)
     {
-      if (count++) result << ";";
-      result << "1";
+      if (count++) result += ";";
+      result += "1";
     }
 
     if (_value & _COLOR_UNDERLINE)
     {
-      if (count++) result << ";";
-      result << "4";
+      if (count++) result += ";";
+      result += "4";
     }
 
     if (_value & _COLOR_INVERSE)
     {
-      if (count++) result << ";";
-      result << "7";
+      if (count++) result += ";";
+      result += "7";
     }
 
     if (_value & _COLOR_HASFG)
     {
-      if (count++) result << ";";
-      result << (29 + (_value & _COLOR_FG));
+      if (count++) result += ";";
+      result += colorstring[(29 + (_value & _COLOR_FG))];
     }
 
     if (_value & _COLOR_HASBG)
     {
-      if (count++) result << ";";
-      result << ((_value & _COLOR_BRIGHT ? 99 : 39) + ((_value & _COLOR_BG) >> 8));
+      if (count++) result += ";";
+      result += colorstring[((_value & _COLOR_BRIGHT ? 99 : 39) + ((_value & _COLOR_BG) >> 8))];
     }
 
-    result << "m" << input << "\033[0m";
-    return result.str ();
+    result += "m";
+    result += input;
+    result += "\033[0m";
   }
-
-  return input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
