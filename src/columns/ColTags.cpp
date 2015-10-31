@@ -135,21 +135,17 @@ void ColumnTags::render (
       wrapText (all, tags, width, _hyphenate);
 
       for (auto& i : all)
-        lines.push_back (color.colorize (leftJustify (i, width)));
+        renderStringLeft (lines, width, color, i);
     }
     else if (_style == "indicator")
     {
-      lines.push_back (
-        color.colorize (
-          rightJustify (context.config.get ("tag.indicator"), width)));
+      renderStringRight (lines, width, color, context.config.get ("tag.indicator"));
     }
     else if (_style == "count")
     {
       std::vector <std::string> all;
       split (all, tags, ',');
-      lines.push_back (
-        color.colorize (
-          rightJustify ("[" + format ((int)all.size ()) + "]", width)));
+      renderStringRight (lines, width, color, "[" + format (static_cast <int> (all.size ())) + "]");
     }
   }
 }
