@@ -79,7 +79,7 @@ void ColumnID::render (
   if (task.id)
     renderInteger (lines, width, color, task.id);
   else
-    lines.push_back (color.colorize (rightJustify ("-", width)));
+    renderStringRight (lines, width, color, "-");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
