@@ -33,11 +33,11 @@
 #include <Color.h>
 #include <Task.h>
 
-class ColumnDate : public Column
+class ColumnTypeDate : public Column
 {
 public:
-  ColumnDate ();
-  virtual ~ColumnDate ();
+  ColumnTypeDate ();
+  virtual ~ColumnTypeDate ();
 
   virtual void measure (Task&, unsigned int&, unsigned int&);
   virtual void render (std::vector <std::string>&, Task&, int, Color&);

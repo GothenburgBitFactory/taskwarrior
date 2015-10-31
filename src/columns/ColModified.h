@@ -27,9 +27,9 @@
 #ifndef INCLUDED_COLMODIFIED
 #define INCLUDED_COLMODIFIED
 
-#include <ColDate.h>
+#include <ColTypeDate.h>
 
-class ColumnModified : public ColumnDate
+class ColumnModified : public ColumnTypeDate
 {
 public:
   ColumnModified ();

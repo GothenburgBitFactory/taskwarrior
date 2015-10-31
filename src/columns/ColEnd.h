@@ -27,9 +27,9 @@
 #ifndef INCLUDED_COLEND
 #define INCLUDED_COLEND
 
-#include <ColDate.h>
+#include <ColTypeDate.h>
 
-class ColumnEnd : public ColumnDate
+class ColumnEnd : public ColumnTypeDate
 {
 public:
   ColumnEnd ();

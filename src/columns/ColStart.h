@@ -27,9 +27,9 @@
 #ifndef INCLUDED_COLSTART
 #define INCLUDED_COLSTART
 
-#include <ColDate.h>
+#include <ColTypeDate.h>
 
-class ColumnStart : public ColumnDate
+class ColumnStart : public ColumnTypeDate
 {
 public:
   ColumnStart ();

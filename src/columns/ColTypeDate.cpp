@@ -27,7 +27,7 @@
 #include <cmake.h>
 #include <math.h>
 #include <Context.h>
-#include <ColDate.h>
+#include <ColTypeDate.h>
 #include <ISO8601.h>
 #include <text.h>
 #include <i18n.h>
@@ -35,7 +35,7 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnDate::ColumnDate ()
+ColumnTypeDate::ColumnTypeDate ()
 {
   _name      = "";
   _type      = "date";
@@ -61,13 +61,13 @@ ColumnDate::ColumnDate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnDate::~ColumnDate ()
+ColumnTypeDate::~ColumnTypeDate ()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
+void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
 
@@ -124,7 +124,7 @@ void ColumnDate::measure (Task& task, unsigned int& minimum, unsigned int& maxim
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnDate::render (
+void ColumnTypeDate::render (
   std::vector <std::string>& lines,
   Task& task,
   int width,

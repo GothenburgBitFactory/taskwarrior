@@ -27,9 +27,9 @@
 #ifndef INCLUDED_COLSCHED
 #define INCLUDED_COLSCHED
 
-#include <ColDate.h>
+#include <ColTypeDate.h>
 
-class ColumnScheduled : public ColumnDate
+class ColumnScheduled : public ColumnTypeDate
 {
 public:
   ColumnScheduled ();

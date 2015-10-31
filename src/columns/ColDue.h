@@ -27,9 +27,9 @@
 #ifndef INCLUDED_COLDUE
 #define INCLUDED_COLDUE
 
-#include <ColDate.h>
+#include <ColTypeDate.h>
 
-class ColumnDue : public ColumnDate
+class ColumnDue : public ColumnTypeDate
 {
 public:
   ColumnDue ();

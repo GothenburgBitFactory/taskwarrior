@@ -27,9 +27,9 @@
 #ifndef INCLUDED_COLENTRY
 #define INCLUDED_COLENTRY
 
-#include <ColDate.h>
+#include <ColTypeDate.h>
 
-class ColumnEntry : public ColumnDate
+class ColumnEntry : public ColumnTypeDate
 {
 public:
   ColumnEntry ();

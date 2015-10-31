@@ -27,9 +27,9 @@
 #ifndef INCLUDED_COLUNTIL
 #define INCLUDED_COLUNTIL
 
-#include <ColDate.h>
+#include <ColTypeDate.h>
 
-class ColumnUntil : public ColumnDate
+class ColumnUntil : public ColumnTypeDate
 {
 public:
   ColumnUntil ();

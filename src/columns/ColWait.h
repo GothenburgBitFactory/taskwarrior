@@ -27,9 +27,9 @@
 #ifndef INCLUDED_COLWAIT
 #define INCLUDED_COLWAIT
 
-#include <ColDate.h>
+#include <ColTypeDate.h>
 
-class ColumnWait : public ColumnDate
+class ColumnWait : public ColumnTypeDate
 {
 public:
   ColumnWait ();

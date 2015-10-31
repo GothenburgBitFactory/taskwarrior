@@ -75,7 +75,7 @@ void ColumnStart::measure (Task& task, unsigned int& minimum, unsigned int& maxi
         minimum = maximum = 0;
     }
     else
-      ColumnDate::measure (task, minimum, maximum);
+      ColumnTypeDate::measure (task, minimum, maximum);
   }
 }
 
@@ -97,7 +97,7 @@ void ColumnStart::render (
               context.config.get ("active.indicator"), width)));
     }
     else
-      ColumnDate::render (lines, task, width, color);
+      ColumnTypeDate::render (lines, task, width, color);
   }
 }
 
