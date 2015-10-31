@@ -91,10 +91,7 @@ void ColumnStart::render (
     if (_style == "active")
     {
       if (! task.has ("end"))
-        lines.push_back (
-          color.colorize (
-            rightJustify (
-              context.config.get ("active.indicator"), width)));
+        renderStringRight (lines, width, color, context.config.get ("active.indicator"));
     }
     else
       ColumnTypeDate::render (lines, task, width, color);
