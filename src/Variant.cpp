@@ -1837,15 +1837,9 @@ void Variant::cast (const enum type new_type)
     case type_boolean:  _bool = _integer == 0 ? false : true;  break;
     case type_integer:                                         break;
     case type_real:     _real = static_cast<double>(_integer); break;
-    case type_string:
-      {
-        char temp[24];
-        sprintf (temp, "%d", _integer);
-        _string = temp;
-      }
-      break;
-    case type_date:     _date = (time_t) _integer;            break;
-    case type_duration: _duration = (time_t) _integer;        break;
+    case type_string:   _string = std::to_string (_integer);   break;
+    case type_date:     _date = (time_t) _integer;             break;
+    case type_duration: _duration = (time_t) _integer;         break;
     }
     break;
 
