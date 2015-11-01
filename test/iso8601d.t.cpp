@@ -71,7 +71,7 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (1006);
+  UnitTest t (1025);
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -305,18 +305,32 @@ int main (int, char**)
     t.is (ISO8601d::daysInMonth (2, 2007), 28, "28 days in February 2007");
 
     // Names.
-    t.is (ISO8601d::monthName (1), "January",   "1 = January");
-    t.is (ISO8601d::monthName (2), "February",  "2 = February");
-    t.is (ISO8601d::monthName (3), "March",     "3 = March");
-    t.is (ISO8601d::monthName (4), "April",     "4 = April");
-    t.is (ISO8601d::monthName (5), "May",       "5 = May");
-    t.is (ISO8601d::monthName (6), "June",      "6 = June");
-    t.is (ISO8601d::monthName (7), "July",      "7 = July");
-    t.is (ISO8601d::monthName (8), "August",    "8 = August");
-    t.is (ISO8601d::monthName (9), "September", "9 = September");
-    t.is (ISO8601d::monthName (10), "October",  "10 = October");
-    t.is (ISO8601d::monthName (11), "November", "11 = November");
-    t.is (ISO8601d::monthName (12), "December", "12 = December");
+    t.is (ISO8601d::monthName (1),  "January",   "1 = January");
+    t.is (ISO8601d::monthName (2),  "February",  "2 = February");
+    t.is (ISO8601d::monthName (3),  "March",     "3 = March");
+    t.is (ISO8601d::monthName (4),  "April",     "4 = April");
+    t.is (ISO8601d::monthName (5),  "May",       "5 = May");
+    t.is (ISO8601d::monthName (6),  "June",      "6 = June");
+    t.is (ISO8601d::monthName (7),  "July",      "7 = July");
+    t.is (ISO8601d::monthName (8),  "August",    "8 = August");
+    t.is (ISO8601d::monthName (9),  "September", "9 = September");
+    t.is (ISO8601d::monthName (10), "October",   "10 = October");
+    t.is (ISO8601d::monthName (11), "November",  "11 = November");
+    t.is (ISO8601d::monthName (12), "December",  "12 = December");
+
+    // Names.
+    t.is (ISO8601d::monthNameShort (1),  "Jan", "1 = Jan");
+    t.is (ISO8601d::monthNameShort (2),  "Feb", "2 = Feb");
+    t.is (ISO8601d::monthNameShort (3),  "Mar", "3 = Mar");
+    t.is (ISO8601d::monthNameShort (4),  "Apr", "4 = Apr");
+    t.is (ISO8601d::monthNameShort (5),  "May", "5 = May");
+    t.is (ISO8601d::monthNameShort (6),  "Jun", "6 = Jun");
+    t.is (ISO8601d::monthNameShort (7),  "Jul", "7 = Jul");
+    t.is (ISO8601d::monthNameShort (8),  "Aug", "8 = Aug");
+    t.is (ISO8601d::monthNameShort (9),  "Sep", "9 = Sep");
+    t.is (ISO8601d::monthNameShort (10), "Oct", "10 = Oct");
+    t.is (ISO8601d::monthNameShort (11), "Nov", "11 = Nov");
+    t.is (ISO8601d::monthNameShort (12), "Dec", "12 = Dec");
 
     // Names.
     t.is (ISO8601d::monthOfYear ("January"),   1,  "January   =  1");
@@ -339,6 +353,14 @@ int main (int, char**)
     t.is (ISO8601d::dayName (4), "Thursday",  "4 == Thursday");
     t.is (ISO8601d::dayName (5), "Friday",    "5 == Friday");
     t.is (ISO8601d::dayName (6), "Saturday",  "6 == Saturday");
+
+    t.is (ISO8601d::dayNameShort (0), "Sun",  "0 == Sun");
+    t.is (ISO8601d::dayNameShort (1), "Mon",  "1 == Mon");
+    t.is (ISO8601d::dayNameShort (2), "Tue",  "2 == Tue");
+    t.is (ISO8601d::dayNameShort (3), "Wed",  "3 == Wed");
+    t.is (ISO8601d::dayNameShort (4), "Thu",  "4 == Thu");
+    t.is (ISO8601d::dayNameShort (5), "Fri",  "5 == Fri");
+    t.is (ISO8601d::dayNameShort (6), "Sat",  "6 == Sat");
 
     t.is (ISO8601d::dayOfWeek ("SUNDAY"),    0, "SUNDAY == 0");
     t.is (ISO8601d::dayOfWeek ("sunday"),    0, "sunday == 0");

@@ -1266,6 +1266,31 @@ std::string ISO8601d::monthName (int month)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Static
+std::string ISO8601d::monthNameShort (int month)
+{
+  static const char* months[12] =
+  {
+    STRING_DATE_JANUARY,
+    STRING_DATE_FEBRUARY,
+    STRING_DATE_MARCH,
+    STRING_DATE_APRIL,
+    STRING_DATE_MAY,
+    STRING_DATE_JUNE,
+    STRING_DATE_JULY,
+    STRING_DATE_AUGUST,
+    STRING_DATE_SEPTEMBER,
+    STRING_DATE_OCTOBER,
+    STRING_DATE_NOVEMBER,
+    STRING_DATE_DECEMBER,
+  };
+
+  assert (month > 0);
+  assert (month <= 12);
+  return Lexer::ucFirst (months[month - 1]).substr (0, 3);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Static
 std::string ISO8601d::dayName (int dow)
 {
   static const char* days[7] =
@@ -1280,6 +1305,24 @@ std::string ISO8601d::dayName (int dow)
   };
 
   return Lexer::ucFirst (days[dow]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Static
+std::string ISO8601d::dayNameShort (int dow)
+{
+  static const char* days[7] =
+  {
+    STRING_DATE_SUNDAY,
+    STRING_DATE_MONDAY,
+    STRING_DATE_TUESDAY,
+    STRING_DATE_WEDNESDAY,
+    STRING_DATE_THURSDAY,
+    STRING_DATE_FRIDAY,
+    STRING_DATE_SATURDAY,
+  };
+
+  return Lexer::ucFirst (days[dow]).substr (0, 3);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -67,7 +67,9 @@ public:
   static int daysInMonth (int, int);
   static int daysInYear (int);
   static std::string monthName (int);
+  static std::string monthNameShort (int);
   static std::string dayName (int);
+  static std::string dayNameShort (int);
   static int dayOfWeek (const std::string&);
   static int dayOfWeek (int, int, int);
   static int monthOfYear (const std::string&);
