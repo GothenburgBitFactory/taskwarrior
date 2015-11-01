@@ -1085,40 +1085,37 @@ void ISO8601d::toMDY (int& m, int& d, int& y) const
 const std::string ISO8601d::toString (
   const std::string& format /*= "m/d/Y" */) const
 {
-  char buffer[12];
-  std::string formatted;
+  std::stringstream formatted;
   for (unsigned int i = 0; i < format.length (); ++i)
   {
     int c = format[i];
     switch (c)
     {
-    case 'm': sprintf (buffer, "%d",    this->month ());                        break;
-    case 'M': sprintf (buffer, "%02d",  this->month ());                        break;
-    case 'd': sprintf (buffer, "%d",    this->day ());                          break;
-    case 'D': sprintf (buffer, "%02d",  this->day ());                          break;
-    case 'y': sprintf (buffer, "%02d",  this->year () % 100);                   break;
-    case 'Y': sprintf (buffer, "%d",    this->year ());                         break;
-    case 'a': sprintf (buffer, "%.3s",  ISO8601d::dayName (dayOfWeek ()).c_str ()); break;
-    case 'A': sprintf (buffer, "%.10s", ISO8601d::dayName (dayOfWeek ()).c_str ()); break;
-    case 'b': sprintf (buffer, "%.3s",  ISO8601d::monthName (month ()).c_str ());   break;
-    case 'B': sprintf (buffer, "%.10s", ISO8601d::monthName (month ()).c_str ());   break;
-    case 'v': sprintf (buffer, "%d",    ISO8601d::weekOfYear (ISO8601d::dayOfWeek (ISO8601d::weekstart))); break;
-    case 'V': sprintf (buffer, "%02d",  ISO8601d::weekOfYear (ISO8601d::dayOfWeek (ISO8601d::weekstart))); break;
-    case 'h': sprintf (buffer, "%d",    this->hour ());                         break;
-    case 'H': sprintf (buffer, "%02d",  this->hour ());                         break;
-    case 'n': sprintf (buffer, "%d",    this->minute ());                       break;
-    case 'N': sprintf (buffer, "%02d",  this->minute ());                       break;
-    case 's': sprintf (buffer, "%d",    this->second ());                       break;
-    case 'S': sprintf (buffer, "%02d",  this->second ());                       break;
-    case 'j': sprintf (buffer, "%d",    this->dayOfYear ());                    break;
-    case 'J': sprintf (buffer, "%03d",  this->dayOfYear ());                    break;
-    default:  sprintf (buffer, "%c",    c);                                     break;
+    case 'm': formatted                                        << this->month ();         break;
+    case 'M': formatted << std::setw (2) << std::setfill ('0') << this->month ();         break;
+    case 'd': formatted                                        << this->day ();           break;
+    case 'D': formatted << std::setw (2) << std::setfill ('0') << this->day ();           break;
+    case 'y': formatted << std::setw (2) << std::setfill ('0') << (this->year () % 100);  break;
+    case 'Y': formatted                                        << this->year ();          break;
+    case 'a': formatted                                        << ISO8601d::dayNameShort (dayOfWeek ()); break;
+    case 'A': formatted                                        << ISO8601d::dayName (dayOfWeek ());      break;
+    case 'b': formatted                                        << ISO8601d::monthNameShort (month ());   break;
+    case 'B': formatted                                        << ISO8601d::monthName (month ());        break;
+    case 'v': formatted                                        << ISO8601d::weekOfYear (ISO8601d::dayOfWeek (ISO8601d::weekstart)); break;
+    case 'V': formatted << std::setw (2) << std::setfill ('0') << ISO8601d::weekOfYear (ISO8601d::dayOfWeek (ISO8601d::weekstart)); break;
+    case 'h': formatted                                        << this->hour ();          break;
+    case 'H': formatted << std::setw (2) << std::setfill ('0') << this->hour ();          break;
+    case 'n': formatted                                        << this->minute ();        break;
+    case 'N': formatted << std::setw (2) << std::setfill ('0') << this->minute ();        break;
+    case 's': formatted                                        << this->second ();        break;
+    case 'S': formatted << std::setw (2) << std::setfill ('0') << this->second ();        break;
+    case 'j': formatted                                        << this->dayOfYear ();     break;
+    case 'J': formatted << std::setw (3) << std::setfill ('0') << this->dayOfYear ();     break;
+    default:  formatted                                        << static_cast <char> (c); break;
     }
-
-    formatted += buffer;
   }
 
-  return formatted;
+  return formatted.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
