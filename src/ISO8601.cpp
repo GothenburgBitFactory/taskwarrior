@@ -1085,15 +1085,11 @@ void ISO8601d::toMDY (int& m, int& d, int& y) const
 const std::string ISO8601d::toString (
   const std::string& format /*= "m/d/Y" */) const
 {
-  // Making this local copy seems to fix a bug.  Remove the local copy and
-  // you'll see segmentation faults and all kinds of gibberish.
-  std::string localFormat = format;
-
   char buffer[12];
   std::string formatted;
-  for (unsigned int i = 0; i < localFormat.length (); ++i)
+  for (unsigned int i = 0; i < format.length (); ++i)
   {
-    int c = localFormat[i];
+    int c = format[i];
     switch (c)
     {
     case 'm': sprintf (buffer, "%d",    this->month ());                        break;
