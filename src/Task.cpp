@@ -219,10 +219,7 @@ const std::string Task::identifier (bool shortened /* = false */) const
 ////////////////////////////////////////////////////////////////////////////////
 void Task::setAsNow (const std::string& att)
 {
-  char now[16];
-  sprintf (now, "%u", (unsigned int) time (NULL));
-  set (att, now);
-
+  set (att, std::to_string (time (NULL)));
   recalc_urgency = true;
 }
 
@@ -310,15 +307,13 @@ time_t Task::get_date (const std::string& name) const
 void Task::set (const std::string& name, const std::string& value)
 {
   (*this)[name] = json::decode (value);
-
   recalc_urgency = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::set (const std::string& name, int value)
 {
-  (*this)[name] = format (value);
-
+  (*this)[name] = std::to_string (value);
   recalc_urgency = true;
 }
 
@@ -1018,7 +1013,7 @@ void Task::addAnnotation (const std::string& description)
 
   do
   {
-    key = "annotation_" + format ((int) now);
+    key = "annotation_" + std::to_string (now);
     ++now;
   }
   while (has (key));
