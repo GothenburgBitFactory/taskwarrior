@@ -79,18 +79,19 @@ int CmdExport::execute (std::string& output)
     output += "[\n";
 
   int counter = 0;
-  for (auto task = filtered.begin (); task != filtered.end (); ++task)
+  for (auto& task : filtered)
   {
-    if (task != filtered.begin ())
-      {
-        if (json_array)
-          output += ",";
-        output += "\n";
-      }
+    if (counter)
+    {
+      if (json_array)
+        output += ",";
+      output += "\n";
+    }
 
-    output += task->composeJSON (true);
+    output += task.composeJSON (true);
 
-    if (limit && ++counter >= limit)
+    ++counter;
+    if (limit && counter >= limit)
       break;
   }
 
