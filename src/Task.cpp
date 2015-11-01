@@ -534,7 +534,7 @@ bool Task::is_dueyear () const
 bool Task::is_udaPresent () const
 {
   for (auto& col : context.columns)
-    if (col.first.substr (0, 11) != "annotation_")
+    if (col.first.compare (0, 11, "annotation_", 11) != 0)
       if (col.second->is_uda () &&
           has (col.first))
         return true;
@@ -546,7 +546,7 @@ bool Task::is_udaPresent () const
 bool Task::is_orphanPresent () const
 {
   for (auto& att : *this)
-    if (att.first.substr (0, 11) != "annotation_")
+    if (att.first.compare (0, 11, "annotation_", 11) != 0)
       if (context.columns.find (att.first) == context.columns.end ())
         return true;
 
@@ -624,7 +624,7 @@ void Task::parse (const std::string& input)
           {
             legacyAttributeMap (name);
 
-            if (name.substr (0, 11) == "annotation_")
+            if (! name.compare (0, 11, "annotation_", 11))
               ++annotation_count;
 
             (*this)[name] = decode (json::decode (value));
@@ -861,7 +861,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
   for (auto& i : *this)
   {
     // Annotations are not written out here.
-    if (i.first.substr (0, 11) == "annotation_")
+    if (! i.first.compare (0, 11, "annotation_", 11))
       continue;
 
     // If value is an empty string, do not ever output it
@@ -968,7 +968,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     int annotations_written = 0;
     for (auto& i : *this)
     {
-      if (i.first.substr (0, 11) == "annotation_")
+      if (! i.first.compare (0, 11, "annotation_", 11))
       {
         if (annotations_written)
           out << ",";
@@ -1035,7 +1035,7 @@ void Task::removeAnnotations ()
   auto i = this->begin ();
   while (i != this->end ())
   {
-    if (i->first.substr (0, 11) == "annotation_")
+    if (! i->first.compare (0, 11, "annotation_", 11))
     {
       --annotation_count;
       this->erase (i++);
@@ -1053,7 +1053,7 @@ void Task::getAnnotations (std::map <std::string, std::string>& annotations) con
   annotations.clear ();
 
   for (auto& ann : *this)
-    if (ann.first.substr (0, 11) == "annotation_")
+    if (! ann.first.compare (0, 11, "annotation_", 11))
       annotations.insert (ann);
 }
 
@@ -1296,7 +1296,7 @@ void Task::removeTag (const std::string& tag)
 void Task::getUDAOrphans (std::vector <std::string>& names) const
 {
   for (auto& it : *this)
-    if (it.first.substr (0, 11) != "annotation_")
+    if (it.first.compare (0, 11, "annotation_", 11) != 0)
       if (context.columns.find (it.first) == context.columns.end ())
         names.push_back (it.first);
 }
@@ -1512,7 +1512,7 @@ void Task::validate (bool applyDefault /* = true */)
     std::vector <std::string> udas;
     for (auto& var : context.config)
     {
-      if (var.first.substr (0, 4) == "uda." &&
+      if (! var.first.compare (0, 4, "uda.", 4) &&
           var.first.find (".default") != std::string::npos)
       {
         auto period = var.first.find ('.', 4);
@@ -1737,7 +1737,7 @@ float Task::urgency_c () const
   {
     if (fabs (var.second) > epsilon)
     {
-      if (var.first.substr (0, 13) == "urgency.user.")
+      if (! var.first.compare (0, 13, "urgency.user.", 13))
       {
         // urgency.user.project.<project>.coefficient
         auto end = std::string::npos;
@@ -2281,9 +2281,7 @@ void Task::modify (modType type, bool text_required /* = false */)
     }
   }
   else if (modCount == 0 && text_required)
-  {
     throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

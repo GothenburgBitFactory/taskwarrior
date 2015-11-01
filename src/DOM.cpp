@@ -73,7 +73,7 @@ bool DOM::get (const std::string& name, Variant& value)
 
   // rc. --> context.config
   if (len > 3 &&
-      name.substr (0, 3) == "rc.")
+      ! name.compare (0, 3, "rc.", 3))
   {
     std::string key = name.substr (3);
     auto c = context.config.find (key);
@@ -88,7 +88,7 @@ bool DOM::get (const std::string& name, Variant& value)
 
   // context.*
   if (len > 8 &&
-           name.substr (0, 8) == "context.")
+      ! name.compare (0, 8, "context.", 8))
   {
     if (name == "context.program")
     {
@@ -131,7 +131,7 @@ bool DOM::get (const std::string& name, Variant& value)
 
   // system. --> Implement locally.
   if (len > 7 &&
-           name.substr (0, 7) == "system.")
+      ! name.compare (0, 7, "system.", 7))
   {
     // Taskwarrior version number.
     if (name == "system.version")

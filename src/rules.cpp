@@ -55,7 +55,7 @@ void initializeColorRules ()
     std::vector <std::string> rules;
     for (auto& v : context.config)
     {
-      if (v.first.substr (0, 6) == "color.")
+      if (! v.first.compare (0, 6, "color.", 6))
       {
         Color c (v.second);
         gsColor[v.first] = c;
@@ -194,7 +194,7 @@ static void colorizeKeyword (Task& task, const std::string& rule, const Color& b
   {
     for (auto& it : task)
     {
-      if (it.first.substr (0, 11) == "annotation_" &&
+      if (! it.first.compare (0, 11, "annotation_", 11) &&
           find (it.second, rule.substr (14), sensitive) != std::string::npos)
       {
         applyColor (base, c, merge);
@@ -307,26 +307,26 @@ void autoColorize (Task& task, Color& c)
     Color base = gsColor[*r];
     if (base.nontrivial ())
     {
-           if (*r == "color.blocked")                 colorizeBlocked      (task, base, c, merge);
-      else if (*r == "color.blocking")                colorizeBlocking     (task, base, c, merge);
-      else if (*r == "color.tagged")                  colorizeTagged       (task, base, c, merge);
-      else if (*r == "color.active")                  colorizeActive       (task, base, c, merge);
-      else if (*r == "color.scheduled")               colorizeScheduled    (task, base, c, merge);
-      else if (*r == "color.until")                   colorizeUntil        (task, base, c, merge);
-      else if (*r == "color.project.none")            colorizeProjectNone  (task, base, c, merge);
-      else if (*r == "color.tag.none")                colorizeTagNone      (task, base, c, merge);
-      else if (*r == "color.due")                     colorizeDue          (task, base, c, merge);
-      else if (*r == "color.due.today")               colorizeDueToday     (task, base, c, merge);
-      else if (*r == "color.overdue")                 colorizeOverdue      (task, base, c, merge);
-      else if (*r == "color.recurring")               colorizeRecurring    (task, base, c, merge);
-      else if (*r == "color.completed")               colorizeCompleted    (task, base, c, merge);
-      else if (*r == "color.deleted")                 colorizeDeleted      (task, base, c, merge);
+           if (*r == "color.blocked")                      colorizeBlocked      (task, base, c, merge);
+      else if (*r == "color.blocking")                     colorizeBlocking     (task, base, c, merge);
+      else if (*r == "color.tagged")                       colorizeTagged       (task, base, c, merge);
+      else if (*r == "color.active")                       colorizeActive       (task, base, c, merge);
+      else if (*r == "color.scheduled")                    colorizeScheduled    (task, base, c, merge);
+      else if (*r == "color.until")                        colorizeUntil        (task, base, c, merge);
+      else if (*r == "color.project.none")                 colorizeProjectNone  (task, base, c, merge);
+      else if (*r == "color.tag.none")                     colorizeTagNone      (task, base, c, merge);
+      else if (*r == "color.due")                          colorizeDue          (task, base, c, merge);
+      else if (*r == "color.due.today")                    colorizeDueToday     (task, base, c, merge);
+      else if (*r == "color.overdue")                      colorizeOverdue      (task, base, c, merge);
+      else if (*r == "color.recurring")                    colorizeRecurring    (task, base, c, merge);
+      else if (*r == "color.completed")                    colorizeCompleted    (task, base, c, merge);
+      else if (*r == "color.deleted")                      colorizeDeleted      (task, base, c, merge);
 
       // Wildcards
-      else if (r->substr (0, 10) == "color.tag.")     colorizeTag          (task, *r, base, c, merge);
-      else if (r->substr (0, 14) == "color.project.") colorizeProject      (task, *r, base, c, merge);
-      else if (r->substr (0, 14) == "color.keyword.") colorizeKeyword      (task, *r, base, c, merge);
-      else if (r->substr (0, 10) == "color.uda.")     colorizeUDA          (task, *r, base, c, merge);
+      else if (! r->compare (0, 10, "color.tag.", 10))     colorizeTag          (task, *r, base, c, merge);
+      else if (! r->compare (0, 14, "color.project.", 14)) colorizeProject      (task, *r, base, c, merge);
+      else if (! r->compare (0, 14, "color.keyword.", 14)) colorizeKeyword      (task, *r, base, c, merge);
+      else if (! r->compare (0, 10, "color.uda.", 10))     colorizeUDA          (task, *r, base, c, merge);
     }
   }
 

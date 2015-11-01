@@ -140,8 +140,8 @@ Color::Color (const std::string& spec)
     }
 
     // greyN/grayN, where 0 <= N <= 23.
-    else if (word.substr (0, 4) == "grey" ||
-             word.substr (0, 4) == "gray")
+    else if (! word.compare (0, 4, "grey", 4) ||
+             ! word.compare (0, 4, "gray", 4))
     {
       index = atoi (word.substr (4).c_str ());
       if (index < 0 || index > 23)
@@ -162,7 +162,7 @@ Color::Color (const std::string& spec)
     }
 
     // rgbRGB, where 0 <= R,G,B <= 5.
-    else if (word.substr (0, 3) == "rgb")
+    else if (! word.compare (0, 3, "rgb", 3))
     {
       index = atoi (word.substr (3).c_str ());
       if (word.length () != 6 ||
@@ -194,7 +194,7 @@ Color::Color (const std::string& spec)
     }
 
     // colorN, where 0 <= N <= 255.
-    else if (word.substr (0, 5) == "color")
+    else if (! word.compare (0, 5, "color", 5))
     {
       index = atoi (word.substr (5).c_str ());
       if (index < 0 || index > 255)
