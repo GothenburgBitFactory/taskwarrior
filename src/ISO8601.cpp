@@ -1900,19 +1900,18 @@ const std::string ISO8601p::format () const
 ////////////////////////////////////////////////////////////////////////////////
 const std::string ISO8601p::formatVague () const
 {
-  char formatted[24];
   float days = (float) _period / 86400.0;
 
-       if (_period >= 86400 * 365) sprintf (formatted, "%.1fy", (days / 365.0));
-  else if (_period >= 86400 * 84)  sprintf (formatted, "%1dmo", (int) (days / 30));
-  else if (_period >= 86400 * 13)  sprintf (formatted, "%dw",   (int) (float) (days / 7.0));
-  else if (_period >= 86400)       sprintf (formatted, "%dd",   (int) days);
-  else if (_period >= 3600)        sprintf (formatted, "%dh",   (int) (_period / 3600));
-  else if (_period >= 60)          sprintf (formatted, "%dmin", (int) (_period / 60));
-  else if (_period >= 1)           sprintf (formatted, "%ds",   (int) _period);
-  else                            formatted[0] = '\0';
+  std::stringstream formatted;
+       if (_period >= 86400 * 365) formatted << std::fixed << std::setprecision (1) << (days / 365) << "y";
+  else if (_period >= 86400 * 84)  formatted << static_cast <int> (days / 30)       << "mo";
+  else if (_period >= 86400 * 13)  formatted << static_cast <int> (days / 7)        << "w";
+  else if (_period >= 86400)       formatted << static_cast <int> (days)            << "d";
+  else if (_period >= 3600)        formatted << static_cast <int> (_period / 3600)  << "h";
+  else if (_period >= 60)          formatted << static_cast <int> (_period / 60)    << "min";
+  else if (_period >= 1)           formatted << static_cast <int> (_period)         << "s";
 
-  return std::string (formatted);
+  return formatted.str ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
