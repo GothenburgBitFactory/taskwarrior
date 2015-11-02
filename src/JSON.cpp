@@ -402,7 +402,6 @@ std::string json::encode (const std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// TODO Using a state machine would speed this up.
 std::string json::decode (const std::string& input)
 {
   std::string output;

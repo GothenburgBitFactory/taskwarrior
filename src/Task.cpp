@@ -813,12 +813,16 @@ std::string Task::composeF4 () const
   bool first = true;
   for (auto it : *this)
   {
+    std::string type = Task::attributes[it.first];
+    if (type == "")
+      type = "string";
+
     if (it.second != "")
     {
       ff4 += (first ? "" : " ")
            + it.first
            + ":\""
-           + encode (json::encode (it.second))
+           + (type == "string" ? encode (json::encode (it.second)) : it.second)
            + "\"";
 
       first = false;
@@ -897,12 +901,13 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
 
       out << "\"tags\":[";
 
-      for (auto i = tags.begin (); i != tags.end (); ++i)
+      int count = 0;
+      for (auto i : tags)
       {
-        if (i != tags.begin ())
+        if (count++)
           out << ",";
 
-        out << "\"" << *i << "\"";
+        out << "\"" << i << "\"";
       }
 
       out << "]";
@@ -918,12 +923,13 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
 
       out << "\"depends\":[";
 
-      for (auto i = deps.begin (); i != deps.end (); ++i)
+      int count = 0;
+      for (auto i : deps)
       {
-        if (i != deps.begin ())
+        if (count++)
           out << ",";
 
-        out << "\"" << *i << "\"";
+        out << "\"" << i << "\"";
       }
 
       out << "]";
@@ -936,7 +942,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
       out << "\""
           << i.first
           << "\":\""
-          << json::encode (i.second)
+          << (type == "string" ? json::encode (i.second) : i.second)
           << "\"";
 
       ++attributes_written;
