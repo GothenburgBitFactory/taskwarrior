@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <ColIMask.h>
 #include <math.h>
 #include <Context.h>
-#include <ColIMask.h>
 #include <text.h>
 #include <i18n.h>
 

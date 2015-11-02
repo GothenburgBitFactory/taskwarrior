@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <ColDue.h>
 #include <stdlib.h>
 #include <Context.h>
-#include <ColDue.h>
 #include <text.h>
 #include <i18n.h>
 

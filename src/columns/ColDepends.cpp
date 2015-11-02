@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <ColDepends.h>
 #include <algorithm>
 #include <Context.h>
-#include <ColDepends.h>
 #include <text.h>
 #include <utf8.h>
 #include <i18n.h>

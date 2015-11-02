@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <ColUUID.h>
 #include <math.h>
 #include <Context.h>
-#include <ColUUID.h>
 #include <text.h>
 #include <i18n.h>
 

@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <ColTags.h>
 #include <algorithm>
 #include <Context.h>
-#include <ColTags.h>
 #include <text.h>
 #include <i18n.h>
 #include <utf8.h>

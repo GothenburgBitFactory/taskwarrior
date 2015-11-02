@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <ColID.h>
 #include <math.h>
 #include <Context.h>
-#include <ColID.h>
 #include <text.h>
 #include <i18n.h>
 

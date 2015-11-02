@@ -25,8 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <Context.h>
 #include <ColUrgency.h>
+#include <Context.h>
 #include <text.h>
 #include <i18n.h>
 

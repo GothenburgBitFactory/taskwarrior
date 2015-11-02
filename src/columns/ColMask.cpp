@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <ColMask.h>
 #include <math.h>
 #include <Context.h>
-#include <ColMask.h>
 #include <text.h>
 #include <i18n.h>
 

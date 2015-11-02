@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <ColRecur.h>
 #include <Context.h>
 #include <ISO8601.h>
-#include <ColRecur.h>
 #include <text.h>
 #include <utf8.h>
 #include <i18n.h>

@@ -25,8 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <Context.h>
 #include <ColStatus.h>
+#include <Context.h>
 #include <text.h>
 #include <i18n.h>
 #include <utf8.h>
