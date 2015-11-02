@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdBurndown.h>
 #include <sstream>
 #include <algorithm>
 #include <limits>
@@ -37,7 +38,6 @@
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
-#include <CmdBurndown.h>
 
 extern Context context;
 

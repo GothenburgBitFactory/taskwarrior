@@ -25,12 +25,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <Context.h>
+#include <CmdCalc.h>
 #include <Filter.h>
 #include <Eval.h>
 #include <Dates.h>
 #include <main.h>
 #include <i18n.h>
-#include <CmdCalc.h>
 
 extern Context context;
 

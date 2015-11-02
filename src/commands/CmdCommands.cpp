@@ -25,13 +25,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdCommands.h>
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
 #include <Context.h>
 #include <ViewText.h>
 #include <Command.h>
-#include <CmdCommands.h>
 #include <ColString.h>
 #include <text.h>
 #include <i18n.h>

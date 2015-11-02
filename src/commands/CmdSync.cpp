@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdSync.h>
 #include <sstream>
 #include <inttypes.h>
 #include <signal.h>
@@ -34,7 +35,6 @@
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
-#include <CmdSync.h>
 
 extern Context context;
 

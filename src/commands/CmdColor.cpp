@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdColor.h>
 #include <sstream>
 #include <ViewText.h>
 #include <Context.h>
@@ -32,7 +33,6 @@
 #include <Color.h>
 #include <text.h>
 #include <i18n.h>
-#include <CmdColor.h>
 
 extern Context context;
 

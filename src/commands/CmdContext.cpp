@@ -25,6 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdContext.h>
+#include <CmdConfig.h>
 #include <Context.h>
 #include <Filter.h>
 #include <sstream>
@@ -32,8 +34,6 @@
 #include <i18n.h>
 #include <util.h>
 #include <text.h>
-#include <CmdContext.h>
-#include <CmdConfig.h>
 
 extern Context context;
 

@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdVersion.h>
 #include <sstream>
 #include <stdlib.h>
 #include <Context.h>
@@ -32,7 +33,6 @@
 #ifdef HAVE_COMMIT
 #include <commit.h>
 #endif
-#include <CmdVersion.h>
 #include <text.h>
 #include <i18n.h>
 

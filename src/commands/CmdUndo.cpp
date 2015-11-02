@@ -25,10 +25,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdUndo.h>
 #include <Context.h>
 #include <Filter.h>
 #include <i18n.h>
-#include <CmdUndo.h>
 
 extern Context context;
 

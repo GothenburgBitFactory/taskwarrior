@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdModify.h>
 #include <iostream>
 #include <Context.h>
 #include <Filter.h>
@@ -32,7 +33,6 @@
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
-#include <CmdModify.h>
 
 extern Context context;
 

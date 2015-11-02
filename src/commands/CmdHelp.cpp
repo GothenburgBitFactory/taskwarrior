@@ -25,8 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <algorithm>
 #include <CmdHelp.h>
+#include <algorithm>
 #include <ViewText.h>
 #include <Context.h>
 #include <i18n.h>

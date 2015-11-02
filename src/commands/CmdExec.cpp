@@ -25,11 +25,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdExec.h>
 #include <stdlib.h>
 #include <Context.h>
 #include <i18n.h>
 #include <text.h>
-#include <CmdExec.h>
 
 extern Context context;
 

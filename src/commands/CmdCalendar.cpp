@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdCalendar.h>
 #include <sstream>
 #include <iomanip>
 #include <stdlib.h>
@@ -36,7 +37,6 @@
 #include <util.h>
 #include <utf8.h>
 #include <main.h>
-#include <CmdCalendar.h>
 
 extern Context context;
 

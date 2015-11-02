@@ -25,13 +25,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdStop.h>
 #include <iostream>
 #include <Context.h>
 #include <Filter.h>
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
-#include <CmdStop.h>
 
 extern Context context;
 

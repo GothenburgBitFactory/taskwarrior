@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdColumns.h>
 #include <algorithm>
 #include <Context.h>
 #include <ViewText.h>
@@ -32,7 +33,6 @@
 #include <text.h>
 #include <i18n.h>
 #include <main.h>
-#include <CmdColumns.h>
 
 extern Context context;
 

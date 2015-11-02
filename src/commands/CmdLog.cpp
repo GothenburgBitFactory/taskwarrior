@@ -25,12 +25,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdLog.h>
 #include <Context.h>
 #include <text.h>
 #include <i18n.h>
 #include <util.h>
 #include <main.h>
-#include <CmdLog.h>
 
 extern Context context;
 

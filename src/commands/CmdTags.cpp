@@ -25,13 +25,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdTags.h>
 #include <sstream>
 #include <vector>
 #include <stdlib.h>
 #include <Context.h>
 #include <Filter.h>
 #include <ViewText.h>
-#include <CmdTags.h>
 #include <text.h>
 #include <i18n.h>
 

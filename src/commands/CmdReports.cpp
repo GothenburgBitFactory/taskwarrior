@@ -25,13 +25,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdReports.h>
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
 #include <ViewText.h>
 #include <text.h>
 #include <i18n.h>
-#include <CmdReports.h>
 
 extern Context context;
 

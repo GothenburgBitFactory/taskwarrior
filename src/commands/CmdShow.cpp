@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdShow.h>
 #include <vector>
 #include <sstream>
 #include <algorithm>
@@ -34,7 +35,6 @@
 #include <Context.h>
 #include <FS.h>
 #include <ViewText.h>
-#include <CmdShow.h>
 
 extern Context context;
 

@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdUDAs.h>
 #include <sstream>
 #include <algorithm>
 #include <Context.h>
@@ -34,7 +35,6 @@
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
-#include <CmdUDAs.h>
 
 extern Context context;
 

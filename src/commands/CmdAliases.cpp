@@ -25,9 +25,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdAliases.h>
 #include <Context.h>
 #include <Command.h>
-#include <CmdAliases.h>
 #include <i18n.h>
 
 extern Context context;

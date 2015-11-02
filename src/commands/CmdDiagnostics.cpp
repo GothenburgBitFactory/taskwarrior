@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <CmdDiagnostics.h>
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
@@ -43,7 +44,6 @@
 #include <gnutls/gnutls.h>
 #endif
 
-#include <CmdDiagnostics.h>
 
 extern Context context;
 
