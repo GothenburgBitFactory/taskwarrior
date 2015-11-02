@@ -268,7 +268,7 @@ int Task::get_int (const std::string& name) const
 {
   auto i = this->find (name);
   if (i != this->end ())
-    return strtol (i->second.c_str (), NULL, 10);
+    return std::stoi (i->second);
 
   return 0;
 }
@@ -278,7 +278,7 @@ unsigned long Task::get_ulong (const std::string& name) const
 {
   auto i = this->find (name);
   if (i != this->end ())
-    return strtoul (i->second.c_str (), NULL, 10);
+    return std::stoul (i->second);
 
   return 0;
 }
@@ -288,7 +288,7 @@ float Task::get_float (const std::string& name) const
 {
   auto i = this->find (name);
   if (i != this->end ())
-    return strtof (i->second.c_str (), NULL);
+    return std::stof (i->second);
 
   return 0.0;
 }
@@ -298,7 +298,7 @@ time_t Task::get_date (const std::string& name) const
 {
   auto i = this->find (name);
   if (i != this->end ())
-    return (time_t) strtoul (i->second.c_str (), NULL, 10);
+    return static_cast <time_t> (std::stoul (i->second));
 
   return 0;
 }
@@ -2031,14 +2031,14 @@ void Task::modify (modType type, bool text_required /* = false */)
                 if (dep.length () == 37)
                   removeDependency (context.tdb2.pending.id (dep.substr (1)));
                 else
-                  removeDependency (strtol (dep.substr (1).c_str (), NULL, 10));
+                  removeDependency (std::stoi (dep.substr (1)));
               }
               else
               {
                 if (dep.length () == 36)
                   addDependency (context.tdb2.pending.id (dep));
                 else
-                  addDependency (strtol (dep.c_str (), NULL, 10));
+                  addDependency (std::stoi (dep));
               }
             }
 
