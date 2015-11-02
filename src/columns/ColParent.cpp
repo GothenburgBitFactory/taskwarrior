@@ -74,7 +74,7 @@ void ColumnParent::render (
   if (task.has (_name))
   {
     // f30cb9c3-3fc0-483f-bfb2-3bf134f00694  default
-    //                             34f00694  short
+    // f30cb9c3                              short
     if (_style == "default" ||
         _style == "long")
       renderStringLeft (lines, width, color, task.get(_name));
