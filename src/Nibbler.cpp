@@ -28,6 +28,7 @@
 #include <Nibbler.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 #include <Lexer.h>
 #include <util.h>
 
@@ -263,7 +264,7 @@ bool Nibbler::getDigit4 (int& result)
         Lexer::isDigit ((*_input)[i + 2]) &&
         Lexer::isDigit ((*_input)[i + 3]))
     {
-      result = std::stoi (_input->substr (_cursor, 4));
+      result = strtoimax (_input->substr (_cursor, 4).c_str (), NULL, 10);
       _cursor += 4;
       return true;
     }
@@ -283,7 +284,7 @@ bool Nibbler::getDigit3 (int& result)
         Lexer::isDigit ((*_input)[i + 1]) &&
         Lexer::isDigit ((*_input)[i + 2]))
     {
-      result = std::stoi (_input->substr (_cursor, 3));
+      result = strtoimax (_input->substr (_cursor, 3).c_str (), NULL, 10);
       _cursor += 3;
       return true;
     }
@@ -302,7 +303,7 @@ bool Nibbler::getDigit2 (int& result)
     if (Lexer::isDigit ((*_input)[i + 0]) &&
         Lexer::isDigit ((*_input)[i + 1]))
     {
-      result = std::stoi (_input->substr (_cursor, 2));
+      result = strtoimax (_input->substr (_cursor, 2).c_str (), NULL, 10);
       _cursor += 2;
       return true;
     }
@@ -330,7 +331,7 @@ bool Nibbler::getInt (int& result)
 
   if (i > _cursor)
   {
-    result = std::stoi (_input->substr (_cursor, i - _cursor));
+    result = strtoimax (_input->substr (_cursor, i - _cursor).c_str (), NULL, 10);
     _cursor = i;
     return true;
   }
@@ -348,7 +349,7 @@ bool Nibbler::getUnsignedInt (int& result)
 
   if (i > _cursor)
   {
-    result = std::stoi (_input->substr (_cursor, i - _cursor));
+    result = strtoimax (_input->substr (_cursor, i - _cursor).c_str (), NULL, 10);
     _cursor = i;
     return true;
   }

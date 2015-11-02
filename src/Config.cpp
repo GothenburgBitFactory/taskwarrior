@@ -31,6 +31,7 @@
 #include <sstream>
 #include <algorithm>
 #include <sys/stat.h>
+#include <inttypes.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <ISO8601.h>
@@ -563,7 +564,7 @@ std::string Config::get (const std::string& key)
 int Config::getInteger (const std::string& key)
 {
   if ((*this).find (key) != (*this).end ())
-    return stoi ((*this)[key]);
+    return strtoimax ((*this)[key].c_str (), NULL, 10);
 
   return 0;
 }
