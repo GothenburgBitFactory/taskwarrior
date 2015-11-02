@@ -431,15 +431,14 @@ bool Nibbler::getNumber (std::string& result)
 ////////////////////////////////////////////////////////////////////////////////
 bool Nibbler::getNumber (double &result)
 {
-  bool isnumber;
   std::string s;
-
-  isnumber = getNumber (s);
-  if (isnumber)
+  if (getNumber (s))
   {
-    result = strtof (s.c_str (), NULL);
+    result = std::stod (s);
+    return true;
   }
-  return isnumber;
+
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
