@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <Column.h>
 #include <algorithm>
+#include <set>
 #include <Context.h>
 #include <ColDepends.h>
 #include <ColDescription.h>
@@ -148,24 +149,25 @@ void Column::factory (std::map <std::string, Column*>& all)
 void Column::uda (std::map <std::string, Column*>& all)
 {
   // For each UDA, instantiate and initialize ColumnUDA().
-  std::map <std::string, int> udas;
+  std::set <std::string> udas;
 
   for (auto& i : context.config)
   {
     if (i.first.substr (0, 4) == "uda.")
     {
-      std::string::size_type period = 4;
+      std::string::size_type period = 4; // One byte after the first '.'.
+
       if ((period = i.first.find ('.', period)) != std::string::npos)
-        udas[i.first.substr (4, period - 4)] = 0;
+        udas.insert (i.first.substr (4, period - 4));
     }
   }
 
   for (auto& uda : udas)
   {
-    if (all.find (uda.first) != all.end ())
-      throw format (STRING_UDA_COLLISION, uda.first);
+    if (all.find (uda) != all.end ())
+      throw format (STRING_UDA_COLLISION, uda);
 
-    Column* c = Column::uda (uda.first);
+    Column* c = Column::uda (uda);
     all[c->_name] = c;
   }
 }
