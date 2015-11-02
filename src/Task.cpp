@@ -579,27 +579,20 @@ bool Task::is_overdue () const
 //
 void Task::parse (const std::string& input)
 {
-  // TODO Is this simply a 'chomp'?
-  std::string copy;
-  if (input[input.length () - 1] == '\n')
-    copy = input.substr (0, input.length () - 1);
-  else
-    copy = input;
-
   try
   {
     // File format version 4, from 2009-5-16 - now, v1.7.1+
     // This is the parse format tried first, because it is most used.
     clear ();
 
-    if (copy[0] == '[')
+    if (input[0] == '[')
     {
-      Nibbler n (copy);
+      Nibbler n (input);
       std::string line;
       if (n.skip     ('[')       &&
           n.getUntil (']', line) &&
           n.skip     (']')       &&
-          n.depleted ())
+          (n.skip ('\n') || n.depleted ()))
       {
         if (line.length () == 0)
           throw std::string (STRING_RECORD_EMPTY);
@@ -630,15 +623,15 @@ void Task::parse (const std::string& input)
           throw std::string (STRING_RECORD_JUNK_AT_EOL);
       }
     }
-    else if (copy[0] == '{')
-      parseJSON (copy);
+    else if (input[0] == '{')
+      parseJSON (input);
     else
       throw std::string (STRING_RECORD_NOT_FF4);
   }
 
   catch (const std::string&)
   {
-    parseLegacy (copy);
+    parseLegacy (input);
   }
 
   recalc_urgency = true;
