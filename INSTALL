@@ -18,6 +18,8 @@ You will need a C++ compiler that supports full C++11, which includes:
   - gcc 4.7   (released 2012-03-23)
   - clang 3.3 (released 2013-01-07)
 
+For Cygwin, you will need gcc 4.9, for full C++11 compliance.
+
 You will need the following libraries:
   - libuuid (not needed for OSX)
   - gnutls  (can be optional - see '"sync" command' below)
