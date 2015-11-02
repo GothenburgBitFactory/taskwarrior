@@ -611,7 +611,7 @@ void Context::getLimits (int& rows, int& lines)
     }
     else
     {
-      rows = std::stoi (limit);
+      rows = (int) strtol (limit.c_str (), NULL, 10);
       lines = 0;
     }
   }
