@@ -202,8 +202,8 @@ static bool sort_compare (int left, int right)
       std::string type = column->type ();
       if (type == "numeric")
       {
-        const float left_real  = strtof (((*global_data)[left].get_ref  (field)).c_str (), NULL);
-        const float right_real = strtof (((*global_data)[right].get_ref (field)).c_str (), NULL);
+        const float left_real  = std::stof ((*global_data)[left].get_ref  (field));
+        const float right_real = std::stof ((*global_data)[right].get_ref (field));
 
         if (left_real == right_real)
           continue;
