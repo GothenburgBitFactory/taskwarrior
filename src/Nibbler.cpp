@@ -434,7 +434,7 @@ bool Nibbler::getNumber (double &result)
   std::string s;
   if (getNumber (s))
   {
-    result = std::stod (s);
+    result = strtof (s.c_str (), NULL);
     return true;
   }
 
