@@ -25,10 +25,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Timer.h>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <Timer.h>
 #include <Context.h>
 
 extern Context context;

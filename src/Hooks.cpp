@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Hooks.h>
 #include <algorithm>
 // If <iostream> is included, put it after <stdio.h>, because it includes
 // <stdio.h>, and therefore would ignore the _WITH_GETLINE.
@@ -37,7 +38,6 @@
 #include <sys/types.h>
 #include <Context.h>
 #include <JSON.h>
-#include <Hooks.h>
 #include <Timer.h>
 #include <text.h>
 #include <util.h>

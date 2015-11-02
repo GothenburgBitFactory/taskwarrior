@@ -25,12 +25,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Eval.h>
 #include <map>
 #include <time.h>
 #include <Context.h>
 #include <Task.h>
 #include <Color.h>
-#include <Eval.h>
 #include <text.h>
 #include <i18n.h>
 

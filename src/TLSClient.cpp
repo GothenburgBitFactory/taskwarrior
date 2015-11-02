@@ -28,6 +28,7 @@
 
 #ifdef HAVE_LIBGNUTLS
 
+#include <TLSClient.h>
 #include <iostream>
 #include <unistd.h>
 #include <stdio.h>
@@ -44,7 +45,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-#include <TLSClient.h>
 #include <gnutls/x509.h>
 #include <text.h>
 #include <i18n.h>

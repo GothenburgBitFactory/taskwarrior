@@ -25,12 +25,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Filter.h>
 #include <algorithm>
 #include <Context.h>
 #include <Eval.h>
 #include <Variant.h>
 #include <Dates.h>
-#include <Filter.h>
 #include <i18n.h>
 #include <text.h>
 #include <util.h>

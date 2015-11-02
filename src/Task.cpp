@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Task.h>
 #include <sstream>
 #include <stdlib.h>
 #include <assert.h>
@@ -41,7 +42,6 @@
 #include <Nibbler.h>
 #endif
 #include <ISO8601.h>
-#include <Task.h>
 #ifdef PRODUCT_TASKWARRIOR
 #include <RX.h>
 #endif

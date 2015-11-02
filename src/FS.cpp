@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <FS.h>
 #include <fstream>
 #include <glob.h>
 #include <sys/types.h>
@@ -40,7 +41,6 @@
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
-#include <FS.h>
 
 #if defined SOLARIS || defined NETBSD || defined FREEBSD
 #include <limits.h>

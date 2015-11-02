@@ -25,8 +25,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
-#include <numeric>
 #include <ViewTask.h>
+#include <numeric>
 #include <Context.h>
 #include <Timer.h>
 #include <text.h>

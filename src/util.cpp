@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <util.h>
 // If <iostream> is included, put it after <stdio.h>, because it includes
 // <stdio.h>, and therefore would ignore the _WITH_GETLINE.
 #ifdef FREEBSD
@@ -55,7 +56,6 @@
 #include <text.h>
 #include <main.h>
 #include <i18n.h>
-#include <util.h>
 
 extern Context context;
 

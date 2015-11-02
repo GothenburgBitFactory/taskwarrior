@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <DOM.h>
 #include <sstream>
 #include <map>
 #include <stdlib.h>
@@ -34,7 +35,6 @@
 #include <ISO8601.h>
 #include <text.h>
 #include <i18n.h>
-#include <DOM.h>
 
 extern Context context;
 

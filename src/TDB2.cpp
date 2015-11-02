@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <TDB2.h>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
@@ -39,7 +40,6 @@
 #include <text.h>
 #include <util.h>
 #include <main.h>
-#include <TDB2.h>
 
 extern Context context;
 

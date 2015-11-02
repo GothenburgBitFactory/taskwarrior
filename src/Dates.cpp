@@ -25,11 +25,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Dates.h>
 #include <algorithm>
 #include <stdlib.h>
 #include <time.h>
 #include <text.h>
-#include <Dates.h>
 #include <ISO8601.h>
 #include <Lexer.h>
 #include <CLI2.h>
