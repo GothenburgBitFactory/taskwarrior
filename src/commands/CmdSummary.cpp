@@ -110,7 +110,7 @@ int CmdSummary::execute (std::string& output)
       {
         ++countPending[parent];
 
-        time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
+        time_t entry = static_cast <time_t> (std::stoul (task.get ("entry")));
         if (entry)
           sumEntry[parent] = sumEntry[parent] + (double) (now - entry);
       }
@@ -122,8 +122,8 @@ int CmdSummary::execute (std::string& output)
       {
         ++countCompleted[parent];
 
-        time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
-        time_t end   = strtol (task.get ("end").c_str (), NULL, 10);
+        time_t entry = static_cast <time_t> (std::stoul (task.get ("entry")));
+        time_t end   = static_cast <time_t> (std::stoul (task.get ("end")));
         if (entry && end)
           sumEntry[parent] = sumEntry[parent] + (double) (end - entry);
       }
