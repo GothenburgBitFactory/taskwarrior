@@ -267,7 +267,7 @@ std::string renderAttribute (const std::string& name, const std::string& value, 
       col->type () == "date" &&
       value != "")
   {
-    ISO8601d d ((time_t)strtol (value.c_str (), NULL, 10));
+    ISO8601d d (static_cast <time_t> (std::stoul (value)));
     if (format == "")
       return d.toString (context.config.get ("dateformat"));
 
