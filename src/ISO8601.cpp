@@ -1704,7 +1704,7 @@ ISO8601p::ISO8601p (const std::string& input)
 
   if (Lexer::isAllDigits (input))
   {
-    time_t value = (time_t) strtol (input.c_str (), NULL, 10);
+    time_t value = static_cast <time_t> (std::stoul (input));
     if (value == 0 || value > 60)
     {
       _period = value;
@@ -1865,8 +1865,7 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
       // So as a special case, durations, with units of "d" are rejected if the
       // quantity exceeds 10000.
       //
-      if (unit == "d" &&
-          strtol (number.c_str (), NULL, 10) > 10000)
+      if (unit == "d" && std::stoi (number) > 10000)
         return false;
 
       if (n.depleted ()                           ||
