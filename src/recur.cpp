@@ -240,7 +240,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
   else if (Lexer::isDigit (period[0]) &&
            period[period.length () - 1] == 'm')
   {
-    int increment = std::stoi (period.substr (0, period.length () - 1));
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
 
     m += increment;
     while (m > 12)
@@ -259,7 +259,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
            Lexer::isAllDigits (period.substr (1, period.length () - 2)) &&
            period[period.length () - 1] == 'M')
   {
-    int increment = std::stoi (period.substr (0, period.length () - 1));
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
 
     m += increment;
     while (m > 12)
@@ -292,7 +292,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
 
   else if (Lexer::isDigit (period[0]) && period[period.length () - 1] == 'q')
   {
-    int increment = std::stoi (period.substr (0, period.length () - 1));
+    int increment = strtol (period.substr (0, period.length () - 1).c_str (), NULL, 10);
 
     m += 3 * increment;
     while (m > 12)
@@ -384,7 +384,7 @@ void updateRecurrenceMask (Task& task)
   if (uuid != "" &&
       context.tdb2.get (uuid, parent))
   {
-    unsigned int index = std::stoi (task.get ("imask"));
+    unsigned int index = strtol (task.get ("imask").c_str (), NULL, 10);
     std::string mask = parent.get ("mask");
     if (mask.length () > index)
     {
