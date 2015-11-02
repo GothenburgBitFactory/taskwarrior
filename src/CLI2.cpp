@@ -1772,8 +1772,8 @@ void CLI2::insertIDExpr ()
           else
           {
             bool ascending = true;
-            int low  = std::stoi (r->first);
-            int high = std::stoi (r->second);
+            int low  = strtol (r->first.c_str (),  NULL, 10);
+            int high = strtol (r->second.c_str (), NULL, 10);
             if (low <= high)
               ascending = true;
             else
