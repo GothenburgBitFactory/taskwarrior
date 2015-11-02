@@ -125,13 +125,13 @@ int CmdStats::execute (std::string& output)
     if (task.is_blocked)  ++blockedT;
     if (task.is_blocking) ++blockingT;
 
-    time_t entry = static_cast <time_t> (std::stoul (task.get ("entry")));
+    time_t entry = strtol (task.get ("entry").c_str (), NULL, 10);
     if (entry < earliest) earliest = entry;
     if (entry > latest)   latest   = entry;
 
     if (status == Task::completed)
     {
-      time_t end = static_cast <time_t> (std::stoul (task.get ("end")));
+      time_t end = strtol (task.get ("end").c_str (), NULL, 10);
       daysPending += (end - entry) / 86400.0;
     }
 
