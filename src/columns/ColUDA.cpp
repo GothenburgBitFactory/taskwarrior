@@ -88,7 +88,7 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
           //   rc.report.<report>.dateformat
           //   rc.dateformat.report
           //   rc.dateformat
-          ISO8601d date ((time_t) strtol (value.c_str (), NULL, 10));
+          ISO8601d date (static_cast <time_t> (std::stoul (value)));
           std::string format = context.config.get ("report." + _report + ".dateformat");
           if (format == "")
             format = context.config.get ("dateformat.report");
@@ -151,7 +151,7 @@ void ColumnUDA::render (
             format = context.config.get ("dateformat");
         }
 
-        renderStringLeft (lines, width, color, ISO8601d ((time_t) strtol (value.c_str (), NULL, 10)).toString (format));
+        renderStringLeft (lines, width, color, ISO8601d (static_cast <time_t> (std::stoul (value))).toString (format));
       }
       else if (_type == "duration")
         renderStringRight (lines, width, color, ISO8601p (value).format ());

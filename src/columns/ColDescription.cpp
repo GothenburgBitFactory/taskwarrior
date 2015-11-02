@@ -186,7 +186,7 @@ void ColumnDescription::render (
     {
       for (auto& i : annos)
       {
-        ISO8601d dt (strtol (i.first.substr (11).c_str (), NULL, 10));
+        ISO8601d dt (static_cast <time_t> (std::stoul (i.first.substr (11))));
         description += "\n" + std::string (_indent, ' ') + dt.toString (_dateformat) + " " + i.second;
       }
     }
@@ -217,7 +217,7 @@ void ColumnDescription::render (
     {
       for (auto& i : annos)
       {
-        ISO8601d dt (strtol (i.first.substr (11).c_str (), NULL, 10));
+        ISO8601d dt (static_cast <time_t> (std::stoul (i.first.substr (11))));
         description += " " + dt.toString (_dateformat) + " " + i.second;
       }
     }
