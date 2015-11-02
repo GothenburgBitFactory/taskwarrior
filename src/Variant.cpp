@@ -1871,7 +1871,7 @@ void Variant::cast (const enum type new_type)
                _string == "0.0") ? false : true;
       break;
     case type_integer:
-      _integer = std::stoi (_string, NULL, (_string.compare (0, 2, "0x", 2) ? 10 : 16));
+      _integer = (int) strtol (_string.c_str (), NULL, (_string.substr (0, 2) == "0x" ? 16 : 10));
       break;
     case type_real:     _real = std::stod (_string);         break;
     case type_string:                                        break;
