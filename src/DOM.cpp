@@ -349,7 +349,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
         {
           // annotation_1234567890
           // 0          ^11
-          value = Variant ((time_t) strtol (i.first.substr (11).c_str (), NULL, 10), Variant::type_date);
+          value = Variant (static_cast <time_t> (std::stoul (i.first.substr (11))), Variant::type_date);
           return true;
         }
         else if (elements[2] == "description")
@@ -366,7 +366,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
     std::map <std::string, std::string> annos;
     ref.getAnnotations (annos);
 
-    int a = strtol (elements[1].c_str (), NULL, 10);
+    int a = std::stoi (elements[1]);
     int count = 0;
 
     // Count off the 'a'th annotation.
