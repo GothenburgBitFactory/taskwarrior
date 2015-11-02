@@ -320,12 +320,8 @@ void Task::set (const std::string& name, int value)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::remove (const std::string& name)
 {
-  auto it = this->find (name);
-  if (it != this->end ())
-  {
-    this->erase (it);
+  if (this->erase (name))
     recalc_urgency = true;
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
