@@ -99,7 +99,7 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
         }
         else if (_type == "duration")
         {
-          minimum = maximum = utf8_width (ISO8601p (value).format ());
+          minimum = maximum = ISO8601p (value).format ().length ();
         }
         else if (_type == "string")
         {
@@ -109,7 +109,7 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
         }
         else if (_type == "numeric")
         {
-          minimum = maximum = utf8_width (value);
+          minimum = maximum = value.length ();
         }
       }
     }
@@ -167,7 +167,6 @@ void ColumnUDA::render (
 
       else if (_type == "numeric")
         renderStringRight (lines, width, color, value);
-
     }
     else if (_style == "indicator")
     {
