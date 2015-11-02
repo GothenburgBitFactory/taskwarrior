@@ -1874,7 +1874,7 @@ bool ISO8601p::parse (const std::string& input, std::string::size_type& start)
           Lexer::isSingleCharOperator (n.next ()))
       {
         start = original_start + n.cursor ();
-        double quantity = strtod (number.c_str (), NULL);
+        double quantity = std::stod (number);
 
         // Linear lookup - should instead be logarithmic.
         double seconds = 1;

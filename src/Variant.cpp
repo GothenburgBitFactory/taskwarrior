@@ -25,12 +25,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <cmake.h>
+#include <Variant.h>
 #include <sstream>
 #include <algorithm>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include <Variant.h>
 #include <ISO8601.h>
 #include <Lexer.h>
 #include <RX.h>
@@ -1873,8 +1873,8 @@ void Variant::cast (const enum type new_type)
     case type_integer:
       _integer = (int) strtol (_string.c_str (), NULL, (_string.substr (0, 2) == "0x" ? 16 : 10));
       break;
-    case type_real:     _real = strtod (_string.c_str (), NULL);              break;
-    case type_string:                                                         break;
+    case type_real:     _real = std::stod (_string);         break;
+    case type_string:                                        break;
     case type_date:
       {
         _date = 0;

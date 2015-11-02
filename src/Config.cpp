@@ -578,7 +578,7 @@ double Config::getReal (const std::string& key)
     return getReal("urgency.next.coefficient");
 
   if ((*this).find (key) != (*this).end ())
-    return strtod ((*this)[key].c_str (), NULL);
+    return std::stod ((*this)[key]);
 
   return 0.0;
 }
