@@ -205,15 +205,14 @@ std::string Task::statusToText (Task::status s)
 ////////////////////////////////////////////////////////////////////////////////
 // Returns a proper handle to the task. Tasks should not be referenced by UUIDs
 // as long as they have non-zero ID.
-//
 const std::string Task::identifier (bool shortened /* = false */) const
 {
-  if (this->id != 0)
-    return format (this->id);
+  if (id != 0)
+    return format (id);
   else if (shortened)
-    return this->get ("uuid").substr (0, 8);
+    return get ("uuid").substr (0, 8);
   else
-    return this->get ("uuid");
+    return get ("uuid");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -229,8 +228,7 @@ void Task::setAsNow (const std::string& att)
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::has (const std::string& name) const
 {
-  auto i = this->find (name);
-  if (i != this->end ())
+  if (find (name) != end ())
     return true;
 
   return false;
@@ -240,8 +238,8 @@ bool Task::has (const std::string& name) const
 std::vector <std::string> Task::all ()
 {
   std::vector <std::string> all;
-  for (auto i = this->begin (); i != this->end (); ++i)
-    all.push_back (i->first);
+  for (auto i : *this)
+    all.push_back (i.first);
 
   return all;
 }
@@ -249,8 +247,8 @@ std::vector <std::string> Task::all ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::string Task::get (const std::string& name) const
 {
-  auto i = this->find (name);
-  if (i != this->end ())
+  auto i = find (name);
+  if (i != end ())
     return i->second;
 
   return "";
@@ -259,8 +257,8 @@ const std::string Task::get (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 const std::string& Task::get_ref (const std::string& name) const
 {
-  auto i = this->find (name);
-  if (i != this->end ())
+  auto i = find (name);
+  if (i != end ())
     return i->second;
 
   return dummy;
@@ -269,8 +267,8 @@ const std::string& Task::get_ref (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 int Task::get_int (const std::string& name) const
 {
-  auto i = this->find (name);
-  if (i != this->end ())
+  auto i = find (name);
+  if (i != end ())
     return strtol (i->second.c_str (), NULL, 10);
 
   return 0;
@@ -279,8 +277,8 @@ int Task::get_int (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 unsigned long Task::get_ulong (const std::string& name) const
 {
-  auto i = this->find (name);
-  if (i != this->end ())
+  auto i = find (name);
+  if (i != end ())
     return strtoul (i->second.c_str (), NULL, 10);
 
   return 0;
@@ -289,8 +287,8 @@ unsigned long Task::get_ulong (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::get_float (const std::string& name) const
 {
-  auto i = this->find (name);
-  if (i != this->end ())
+  auto i = find (name);
+  if (i != end ())
     return strtof (i->second.c_str (), NULL);
 
   return 0.0;
@@ -299,8 +297,8 @@ float Task::get_float (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 time_t Task::get_date (const std::string& name) const
 {
-  auto i = this->find (name);
-  if (i != this->end ())
+  auto i = find (name);
+  if (i != end ())
     return (time_t) strtoul (i->second.c_str (), NULL, 10);
 
   return 0;
@@ -325,7 +323,7 @@ void Task::set (const std::string& name, int value)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::remove (const std::string& name)
 {
-  if (this->erase (name))
+  if (erase (name))
     recalc_urgency = true;
 }
 
@@ -1030,13 +1028,13 @@ void Task::addAnnotation (const std::string& description)
 void Task::removeAnnotations ()
 {
   // Erase old annotations.
-  auto i = this->begin ();
-  while (i != this->end ())
+  auto i = begin ();
+  while (i != end ())
   {
     if (! i->first.compare (0, 11, "annotation_", 11))
     {
       --annotation_count;
-      this->erase (i++);
+      erase (i++);
     }
     else
       i++;
@@ -1062,7 +1060,7 @@ void Task::setAnnotations (const std::map <std::string, std::string>& annotation
   removeAnnotations ();
 
   for (auto& anno : annotations)
-    this->insert (anno);
+    insert (anno);
 
   annotation_count = annotations.size ();
   recalc_urgency = true;
@@ -1070,17 +1068,17 @@ void Task::setAnnotations (const std::map <std::string, std::string>& annotation
 
 #ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
-void Task::addDependency (int id)
+void Task::addDependency (int depid)
 {
   // Check that id is resolvable.
-  std::string uuid = context.tdb2.pending.uuid (id);
+  std::string uuid = context.tdb2.pending.uuid (depid);
   if (uuid == "")
-    throw format (STRING_TASK_DEPEND_MISS_CREA, id);
+    throw format (STRING_TASK_DEPEND_MISS_CREA, depid);
 
   std::string depends = get ("depends");
   if (depends.find (uuid) != std::string::npos)
   {
-    context.footnote (format (STRING_TASK_DEPEND_DUP, this->id, id));
+    context.footnote (format (STRING_TASK_DEPEND_DUP, id, depid));
     return;
   }
 
@@ -1102,7 +1100,7 @@ void Task::addDependency (const std::string& uuid)
       set ("depends", depends + "," + uuid);
     else
     {
-      context.footnote (format (STRING_TASK_DEPEND_DUP, this->get ("uuid"), uuid));
+      context.footnote (format (STRING_TASK_DEPEND_DUP, get ("uuid"), uuid));
       return;
     }
   }
