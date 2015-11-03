@@ -824,11 +824,14 @@ std::string Task::composeF4 () const
 
     if (it.second != "")
     {
-      ff4 += (first ? "" : " ")
-           + it.first
-           + ":\""
-           + (type == "string" ? encode (json::encode (it.second)) : it.second)
-           + "\"";
+      ff4 += (first ? "" : " ");
+      ff4 += it.first;
+      ff4 += ":\"";
+      if (type == "string")
+        ff4 += encode (json::encode (it.second));
+      else
+        ff4 += it.second;
+      ff4 += "\"";
 
       first = false;
     }
