@@ -34,7 +34,7 @@
 #include <time.h>
 #include <JSON.h>
 
-class Task : public std::map <std::string, std::string>
+class Task
 {
 public:
   static std::string defaultProject;
@@ -58,12 +58,11 @@ public:
 
 public:
   Task ();                       // Default constructor
-  Task (const Task&);            // Copy constructor
-  Task& operator= (const Task&); // Assignment operator
   bool operator== (const Task&); // Comparison operator
   Task (const std::string&);     // Parse
   Task (const json::object*);    // Parse
-  ~Task ();                      // Destructor
+
+  std::map <std::string, std::string> data;
 
   void parse (const std::string&);
   std::string composeF4 () const;

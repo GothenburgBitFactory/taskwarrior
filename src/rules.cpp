@@ -192,7 +192,7 @@ static void colorizeKeyword (Task& task, const std::string& rule, const Color& b
   // first match.
   else
   {
-    for (auto& it : task)
+    for (auto& it : task.data)
     {
       if (! it.first.compare (0, 11, "annotation_", 11) &&
           find (it.second, rule.substr (14), sensitive) != std::string::npos)

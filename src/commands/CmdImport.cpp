@@ -205,7 +205,7 @@ void CmdImport::importSingleTask (json::object* obj)
     if (hasGeneratedEnd)
       task.set ("end", before.get ("end"));
 
-    if (before != task)
+    if (before.data != task.data)
     {
       CmdModify modHelper;
       modHelper.checkConsistency (before, task);

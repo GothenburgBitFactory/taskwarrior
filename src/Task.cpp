@@ -90,36 +90,14 @@ static const std::string dummy ("");
 
 ////////////////////////////////////////////////////////////////////////////////
 Task::Task ()
-: id (0)
+: data ()
+, id (0)
 , urgency_value (0.0)
 , recalc_urgency (true)
 , is_blocked (false)
 , is_blocking (false)
 , annotation_count (0)
 {
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Task::Task (const Task& other)
-{
-  *this = other;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Task& Task::operator= (const Task& other)
-{
-  if (this != &other)
-  {
-    std::map <std::string, std::string>::operator= (other);
-    id               = other.id;
-    urgency_value    = other.urgency_value;
-    recalc_urgency   = other.recalc_urgency;
-    is_blocked       = other.is_blocked;
-    is_blocking      = other.is_blocking;
-    annotation_count = other.annotation_count;
-  }
-
-  return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -136,10 +114,10 @@ Task& Task::operator= (const Task& other)
 // set sizes.
 bool Task::operator== (const Task& other)
 {
-  if (size () != other.size ())
+  if (data.size () != other.data.size ())
     return false;
 
-  for (auto& i : *this)
+  for (auto& i : data)
     if (i.first != "uuid" &&
         i.second != other.get (i.first))
       return false;
@@ -171,11 +149,6 @@ Task::Task (const json::object* obj)
   annotation_count = 0;
 
   parseJSON (obj);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-Task::~Task ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +201,7 @@ void Task::setAsNow (const std::string& att)
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::has (const std::string& name) const
 {
-  if (find (name) != end ())
+  if (data.find (name) != data.end ())
     return true;
 
   return false;
@@ -238,7 +211,7 @@ bool Task::has (const std::string& name) const
 std::vector <std::string> Task::all ()
 {
   std::vector <std::string> all;
-  for (auto i : *this)
+  for (auto i : data)
     all.push_back (i.first);
 
   return all;
@@ -247,8 +220,8 @@ std::vector <std::string> Task::all ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::string Task::get (const std::string& name) const
 {
-  auto i = find (name);
-  if (i != end ())
+  auto i = data.find (name);
+  if (i != data.end ())
     return i->second;
 
   return "";
@@ -257,8 +230,8 @@ const std::string Task::get (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 const std::string& Task::get_ref (const std::string& name) const
 {
-  auto i = find (name);
-  if (i != end ())
+  auto i = data.find (name);
+  if (i != data.end ())
     return i->second;
 
   return dummy;
@@ -267,8 +240,8 @@ const std::string& Task::get_ref (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 int Task::get_int (const std::string& name) const
 {
-  auto i = find (name);
-  if (i != end ())
+  auto i = data.find (name);
+  if (i != data.end ())
     return strtol (i->second.c_str (), NULL, 10);
 
   return 0;
@@ -277,8 +250,8 @@ int Task::get_int (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 unsigned long Task::get_ulong (const std::string& name) const
 {
-  auto i = find (name);
-  if (i != end ())
+  auto i = data.find (name);
+  if (i != data.end ())
     return strtoul (i->second.c_str (), NULL, 10);
 
   return 0;
@@ -287,8 +260,8 @@ unsigned long Task::get_ulong (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 float Task::get_float (const std::string& name) const
 {
-  auto i = find (name);
-  if (i != end ())
+  auto i = data.find (name);
+  if (i != data.end ())
     return strtof (i->second.c_str (), NULL);
 
   return 0.0;
@@ -297,8 +270,8 @@ float Task::get_float (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 time_t Task::get_date (const std::string& name) const
 {
-  auto i = find (name);
-  if (i != end ())
+  auto i = data.find (name);
+  if (i != data.end ())
     return (time_t) strtoul (i->second.c_str (), NULL, 10);
 
   return 0;
@@ -307,7 +280,7 @@ time_t Task::get_date (const std::string& name) const
 ////////////////////////////////////////////////////////////////////////////////
 void Task::set (const std::string& name, const std::string& value)
 {
-  (*this)[name] = json::decode (value);
+  data[name] = json::decode (value);
 
   recalc_urgency = true;
 }
@@ -315,7 +288,7 @@ void Task::set (const std::string& name, const std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::set (const std::string& name, int value)
 {
-  (*this)[name] = format (value);
+  data[name] = format (value);
 
   recalc_urgency = true;
 }
@@ -323,7 +296,7 @@ void Task::set (const std::string& name, int value)
 ////////////////////////////////////////////////////////////////////////////////
 void Task::remove (const std::string& name)
 {
-  if (erase (name))
+  if (data.erase (name))
     recalc_urgency = true;
 }
 
@@ -539,7 +512,7 @@ bool Task::is_udaPresent () const
 ////////////////////////////////////////////////////////////////////////////////
 bool Task::is_orphanPresent () const
 {
-  for (auto& att : *this)
+  for (auto& att : data)
     if (att.first.compare (0, 11, "annotation_", 11) != 0)
       if (context.columns.find (att.first) == context.columns.end ())
         return true;
@@ -586,7 +559,7 @@ void Task::parse (const std::string& input)
   {
     // File format version 4, from 2009-5-16 - now, v1.7.1+
     // This is the parse format tried first, because it is most used.
-    clear ();
+    data.clear ();
 
     if (input[0] == '[')
     {
@@ -614,7 +587,7 @@ void Task::parse (const std::string& input)
             if (! name.compare (0, 11, "annotation_", 11))
               ++annotation_count;
 
-            (*this)[name] = decode (json::decode (value));
+            data[name] = decode (json::decode (value));
           }
 
           nl.skip (' ');
@@ -814,7 +787,7 @@ std::string Task::composeF4 () const
   std::string ff4 = "[";
 
   bool first = true;
-  for (auto it : *this)
+  for (auto it : data)
   {
     std::string type = Task::attributes[it.first];
     if (type == "")
@@ -852,7 +825,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
 
   // First the non-annotations.
   int attributes_written = 0;
-  for (auto& i : *this)
+  for (auto& i : data)
   {
     // Annotations are not written out here.
     if (! i.first.compare (0, 11, "annotation_", 11))
@@ -962,7 +935,7 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
         << "\"annotations\":[";
 
     int annotations_written = 0;
-    for (auto& i : *this)
+    for (auto& i : data)
     {
       if (! i.first.compare (0, 11, "annotation_", 11))
       {
@@ -1019,7 +992,7 @@ void Task::addAnnotation (const std::string& description)
   }
   while (has (key));
 
-  (*this)[key] = json::decode (description);
+  data[key] = json::decode (description);
   ++annotation_count;
   recalc_urgency = true;
 }
@@ -1028,13 +1001,13 @@ void Task::addAnnotation (const std::string& description)
 void Task::removeAnnotations ()
 {
   // Erase old annotations.
-  auto i = begin ();
-  while (i != end ())
+  auto i = data.begin ();
+  while (i != data.end ())
   {
     if (! i->first.compare (0, 11, "annotation_", 11))
     {
       --annotation_count;
-      erase (i++);
+      data.erase (i++);
     }
     else
       i++;
@@ -1048,7 +1021,7 @@ void Task::getAnnotations (std::map <std::string, std::string>& annotations) con
 {
   annotations.clear ();
 
-  for (auto& ann : *this)
+  for (auto& ann : data)
     if (! ann.first.compare (0, 11, "annotation_", 11))
       annotations.insert (ann);
 }
@@ -1060,7 +1033,7 @@ void Task::setAnnotations (const std::map <std::string, std::string>& annotation
   removeAnnotations ();
 
   for (auto& anno : annotations)
-    insert (anno);
+    data.insert (anno);
 
   annotation_count = annotations.size ();
   recalc_urgency = true;
@@ -1291,7 +1264,7 @@ void Task::removeTag (const std::string& tag)
 // A UDA Orphan is an attribute that is not represented in context.columns.
 void Task::getUDAOrphans (std::vector <std::string>& names) const
 {
-  for (auto& it : *this)
+  for (auto& it : data)
     if (it.first.compare (0, 11, "annotation_", 11) != 0)
       if (context.columns.find (it.first) == context.columns.end ())
         names.push_back (it.first);

@@ -211,13 +211,13 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
     return false;
 
   // Quickly deal with the most common cases.
-  if (task.size () && name == "id")
+  if (task.data.size () && name == "id")
   {
     value = Variant (static_cast<int> (task.id));
     return true;
   }
 
-  if (task.size () && name == "urgency")
+  if (task.data.size () && name == "urgency")
   {
     value = Variant (task.urgency_c ());
     return true;
@@ -262,13 +262,13 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
   {
     // Now that 'ref' is the contextual task, and any ID/UUID is chopped off the
     // elements vector, DOM resolution is now simple.
-    if (ref.size () && size == 1 && canonical == "id")
+    if (ref.data.size () && size == 1 && canonical == "id")
     {
       value = Variant (static_cast<int> (ref.id));
       return true;
     }
 
-    if (ref.size () && size == 1 && canonical == "urgency")
+    if (ref.data.size () && size == 1 && canonical == "urgency")
     {
       value = Variant (ref.urgency_c ());
       return true;
@@ -276,7 +276,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
 
     Column* column = context.columns[canonical];
 
-    if (ref.size () && size == 1 && column)
+    if (ref.data.size () && size == 1 && column)
     {
       if (column->is_uda () && ! ref.has (canonical))
       {
@@ -311,13 +311,13 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
       return true;
     }
 
-    if (ref.size () && size == 2 && canonical == "tags")
+    if (ref.data.size () && size == 2 && canonical == "tags")
     {
       value = Variant (ref.hasTag (elements[1]) ? elements[1] : "");
       return true;
     }
 
-    if (ref.size () && size == 2 && column && column->type () == "date")
+    if (ref.data.size () && size == 2 && column && column->type () == "date")
     {
       ISO8601d date (ref.get_date (canonical));
            if (elements[1] == "year")    { value = Variant (static_cast<int> (date.year ()));      return true; }
@@ -332,7 +332,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
     }
   }
 
-  if (ref.size () && size == 3 && elements[0] == "annotations")
+  if (ref.data.size () && size == 3 && elements[0] == "annotations")
   {
     std::map <std::string, std::string> annos;
     ref.getAnnotations (annos);
@@ -361,7 +361,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
     }
   }
 
-  if (ref.size () && size == 4 && elements[0] == "annotations" && elements[2] == "entry")
+  if (ref.data.size () && size == 4 && elements[0] == "annotations" && elements[2] == "entry")
   {
     std::map <std::string, std::string> annos;
     ref.getAnnotations (annos);

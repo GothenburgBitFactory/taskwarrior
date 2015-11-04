@@ -76,7 +76,7 @@ int CmdModify::execute (std::string&)
     Task before (task);
     task.modify (Task::modReplace);
 
-    if (before != task)
+    if (before.data != task.data)
     {
       // Abort if change introduces inconsistencies.
       checkConsistency(before, task);

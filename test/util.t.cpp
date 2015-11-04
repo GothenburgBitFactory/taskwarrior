@@ -78,7 +78,7 @@ int main (int, char**)
   Task rightAgain (right);
 
   std::string output = taskDifferences (left, right);
-  t.ok (left != right,                                                              "Detected changes");
+  t.ok (left.data != right.data,                                                              "Detected changes");
   t.ok (output.find ("Zero will be changed from '0' to '00'") != std::string::npos, "Detected change zero:0 -> zero:00");
   t.ok (output.find ("One will be deleted")                   != std::string::npos, "Detected deletion one:1 ->");
   t.ok (output.find ("Two")                                   == std::string::npos, "Detected no change two:2 -> two:2");

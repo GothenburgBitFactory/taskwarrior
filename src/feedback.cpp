@@ -50,11 +50,11 @@ std::string taskDifferences (const Task& before, const Task& after)
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
   std::vector <std::string> beforeAtts;
-  for (auto& att : before)
+  for (auto& att : before.data)
     beforeAtts.push_back (att.first);
 
   std::vector <std::string> afterAtts;
-  for (auto& att : after)
+  for (auto& att : after.data)
     afterAtts.push_back (att.first);
 
   std::vector <std::string> beforeOnly;
@@ -144,11 +144,11 @@ std::string taskInfoDifferences (
   // Attributes are all there is, so figure the different attribute names
   // between before and after.
   std::vector <std::string> beforeAtts;
-  for (auto& att : before)
+  for (auto& att : before.data)
     beforeAtts.push_back (att.first);
 
   std::vector <std::string> afterAtts;
-  for (auto& att : after)
+  for (auto& att : after.data)
     afterAtts.push_back (att.first);
 
   std::vector <std::string> beforeOnly;

@@ -137,7 +137,7 @@ int CmdUDAs::execute (std::string& output)
   std::map <std::string, int> orphans;
   for (auto& i : filtered)
   {
-    for (auto& att : i)
+    for (auto& att : i.data)
       if (att.first.substr (0, 11) != "annotation_" &&
           context.columns.find (att.first) == context.columns.end ())
         orphans[att.first]++;
