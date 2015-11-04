@@ -95,8 +95,8 @@ public:
   File _file;
 
 private:
-  std::map <int, std::string> _I2U; // ID -> UUID map
-  std::map <std::string, int> _U2I; // UUID -> ID map
+  std::unordered_map <int, std::string> _I2U; // ID -> UUID map
+  std::unordered_map <std::string, int> _U2I; // UUID -> ID map
 };
 
 // TDB2 Class represents all the files in the task database.
