@@ -32,6 +32,7 @@
 #include <cstring>
 #include <algorithm>
 #include <unistd.h>
+#include <errno.h>
 #include <ISO8601.h>
 #include <Context.h>
 #include <Lexer.h>
