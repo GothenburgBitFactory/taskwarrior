@@ -37,7 +37,6 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <string.h>
-#include <errno.h>
 #include <text.h>
 #include <util.h>
 #include <i18n.h>
