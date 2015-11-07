@@ -1,7 +1,9 @@
 2.5.1 () -
 
-- TW-311 Estimated completion in burndown.daily shows impossible results
-         (thanks to  Michele Santullo).
+- TW-38   Dates in the far future give bad estimates in burndown
+          (thanks to Ben Boeckel).
+- TW-311  Estimated completion in burndown.daily shows impossible results
+          (thanks to Michele Santullo).
 - TW-1703 When on-modify hook is installed, some messages print UUIDs
           instead of IDs (thanks to Robin Green).
 - TW-1704 Use Task::identifier to reference the Task in the output
