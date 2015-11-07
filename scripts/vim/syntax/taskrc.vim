@@ -40,7 +40,6 @@ syn match taskrcGoodKey '^\s*\Vactive.indicator='he=e-1
 syn match taskrcGoodKey '^\s*\Valias.\S\{-}='he=e-1
 syn match taskrcGoodKey '^\s*\Vavoidlastcolumn='he=e-1
 syn match taskrcGoodKey '^\s*\Vbulk='he=e-1
-syn match taskrcGoodKey '^\s*\Vburndown.bias='he=e-1
 syn match taskrcGoodKey '^\s*\Vcalendar.details='he=e-1
 syn match taskrcGoodKey '^\s*\Vcalendar.details.report='he=e-1
 syn match taskrcGoodKey '^\s*\Vcalendar.holidays='he=e-1

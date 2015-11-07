@@ -27,6 +27,7 @@
 #include <cmake.h>
 #include <CmdBurndown.h>
 #include <sstream>
+#include <map>
 #include <algorithm>
 #include <limits>
 #include <string.h>
@@ -146,18 +147,19 @@ public:
   ~Chart ();
 
   void scan (std::vector <Task>&);
+  void scanForPeak (std::vector <Task>&);
   std::string render ();
 
 private:
   void generateBars ();
   void optimizeGrid ();
-  ISO8601d quantize (const ISO8601d&);
+  ISO8601d quantize (const ISO8601d&, char);
 
-  ISO8601d increment (const ISO8601d&);
-  ISO8601d decrement (const ISO8601d&);
+  ISO8601d increment (const ISO8601d&, char);
+  ISO8601d decrement (const ISO8601d&, char);
   void maxima ();
   void yLabels (std::vector <int>&);
-  void calculateRates (std::vector <time_t>&);
+  void calculateRates ();
   unsigned round_up_to (unsigned, unsigned);
   unsigned burndown_size (unsigned);
 
@@ -178,8 +180,10 @@ public:
   std::string _title;             // Additional description
   std::string _grid;              // String representing grid of characters
 
-  float _find_rate;               // Calculated find rate
-  float _fix_rate;                // Calculated fix rate
+  time_t _peak_epoch;             // Quantized (D) date of highest pending peak
+  int _peak_count;                // Corresponding peak pending count
+  int _current_count;             // Current pending count
+  float _net_fix_rate;            // Calculated fix rate
   std::string _completion;        // Estimated completion date
 };
 
@@ -204,8 +208,7 @@ Chart::Chart (char type)
   _carryover_done = 0;
 
   // Rates are calculated last.
-  _find_rate = 0.0;
-  _fix_rate = 0.0;
+  _net_fix_rate = 0.0;
 
   // Set the title.
   std::vector <std::string> words = context.cli2.getWords ();
@@ -220,6 +223,47 @@ Chart::~Chart ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Scan all tasks, quantize the dates by day, and find the peak pending count
+// and corresponding epoch.
+void Chart::scanForPeak (std::vector <Task>& tasks)
+{
+  std::map <time_t, int> pending;
+  for (auto& task : tasks)
+  {
+    // The entry date is when the counting starts.
+    ISO8601d entry = ISO8601d (task.get_date ("entry"));
+
+    ISO8601d end;
+    if (task.has ("end"))
+      end = ISO8601d (task.get_date ("end"));
+
+    while (entry < end)
+    {
+      time_t epoch = quantize (entry.toEpoch (), 'D').toEpoch ();
+      if (pending.find (epoch) != pending.end ())
+        ++pending[epoch];
+      else
+        pending[epoch] = 1;
+
+      entry = increment (entry, 'D');
+    }
+  }
+
+  // Find the peak, peak date and current.
+  _peak_count = 0;
+  for (auto& count : pending)
+  {
+    if (count.second > _peak_count)
+    {
+      _peak_count = count.second;
+      _peak_epoch = count.first;
+    }
+
+    _current_count = count.second;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Chart::scan (std::vector <Task>& tasks)
 {
   generateBars ();
@@ -231,7 +275,7 @@ void Chart::scan (std::vector <Task>& tasks)
   for (auto& task : tasks)
   {
     // The entry date is when the counting starts.
-    ISO8601d from = quantize (ISO8601d (task.get_date ("entry")));
+    ISO8601d from = quantize (ISO8601d (task.get_date ("entry")), _period);
     epoch = from.toEpoch ();
 
     if (_bars.find (epoch) != _bars.end ())
@@ -245,13 +289,13 @@ void Chart::scan (std::vector <Task>& tasks)
     {
       if (task.has ("start"))
       {
-        ISO8601d start = quantize (ISO8601d (task.get_date ("start")));
+        ISO8601d start = quantize (ISO8601d (task.get_date ("start")), _period);
         while (from < start)
         {
           epoch = from.toEpoch ();
           if (_bars.find (epoch) != _bars.end ())
             ++_bars[epoch]._pending;
-          from = increment (from);
+          from = increment (from, _period);
         }
 
         while (from < now)
@@ -259,7 +303,7 @@ void Chart::scan (std::vector <Task>& tasks)
           epoch = from.toEpoch ();
           if (_bars.find (epoch) != _bars.end ())
             ++_bars[epoch]._started;
-          from = increment (from);
+          from = increment (from, _period);
         }
       }
       else
@@ -269,7 +313,7 @@ void Chart::scan (std::vector <Task>& tasks)
           epoch = from.toEpoch ();
           if (_bars.find (epoch) != _bars.end ())
             ++_bars[epoch]._pending;
-          from = increment (from);
+          from = increment (from, _period);
         }
       }
     }
@@ -279,7 +323,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::completed)
     {
       // Truncate history so it starts at 'earliest' for completed tasks.
-      ISO8601d end = quantize (ISO8601d (task.get_date ("end")));
+      ISO8601d end = quantize (ISO8601d (task.get_date ("end")), _period);
       epoch = end.toEpoch ();
 
       if (_bars.find (epoch) != _bars.end ())
@@ -298,7 +342,7 @@ void Chart::scan (std::vector <Task>& tasks)
         epoch = from.toEpoch ();
         if (_bars.find (epoch) != _bars.end ())
           ++_bars[epoch]._pending;
-        from = increment (from);
+        from = increment (from, _period);
       }
 
       while (from < now)
@@ -306,7 +350,7 @@ void Chart::scan (std::vector <Task>& tasks)
         epoch = from.toEpoch ();
         if (_bars.find (epoch) != _bars.end ())
           ++_bars[epoch]._done;
-        from = increment (from);
+        from = increment (from, _period);
       }
     }
 
@@ -315,7 +359,7 @@ void Chart::scan (std::vector <Task>& tasks)
     else if (status == Task::deleted)
     {
       // Skip old deleted tasks.
-      ISO8601d end = quantize (ISO8601d (task.get_date ("end")));
+      ISO8601d end = quantize (ISO8601d (task.get_date ("end")), _period);
       epoch = end.toEpoch ();
       if (_bars.find (epoch) != _bars.end ())
         ++_bars[epoch]._removed;
@@ -328,7 +372,7 @@ void Chart::scan (std::vector <Task>& tasks)
         epoch = from.toEpoch ();
         if (_bars.find (epoch) != _bars.end ())
           ++_bars[epoch]._pending;
-        from = increment (from);
+        from = increment (from, _period);
       }
     }
   }
@@ -480,25 +524,18 @@ std::string Chart::render ()
   }
 
   // Draw rates.
-  calculateRates (bars_in_sequence);
+  calculateRates ();
   char rate[12];
-  if (_find_rate != 0.0)
-    sprintf (rate, "%.1f/d", _find_rate);
+  if (_net_fix_rate != 0.0)
+    sprintf (rate, "%.1f/d", _net_fix_rate);
   else
     strcpy (rate, "-");
 
-  _grid.replace (LOC (_height - 2, _max_label + 3), 18 + strlen (rate), std::string ("Add rate:         ") + rate);
-
-  if (_fix_rate != 0.0)
-    sprintf (rate, "%.1f/d", _fix_rate);
-  else
-    strcpy (rate, "-");
-
-  _grid.replace (LOC (_height - 1, _max_label + 3), 18 + strlen (rate), std::string ("Done/Delete rate: ") + rate);
+  _grid.replace (LOC (_height - 2, _max_label + 3), 22 + strlen (rate), std::string ("Net Fix Rate:         ") + rate);
 
   // Draw completion date.
   if (_completion.length ())
-    _grid.replace (LOC (_height - 2, _max_label + 32), 22 + _completion.length (), "Estimated completion: " + _completion);
+    _grid.replace (LOC (_height - 1, _max_label + 3), 22 + _completion.length (), "Estimated completion: " + _completion);
 
   optimizeGrid ();
 
@@ -553,17 +590,17 @@ void Chart::optimizeGrid ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d Chart::quantize (const ISO8601d& input)
+ISO8601d Chart::quantize (const ISO8601d& input, char period)
 {
-  if (_period == 'D') return input.startOfDay ();
-  if (_period == 'W') return input.startOfWeek ();
-  if (_period == 'M') return input.startOfMonth ();
+  if (period == 'D') return input.startOfDay ();
+  if (period == 'W') return input.startOfWeek ();
+  if (period == 'M') return input.startOfMonth ();
 
   return input;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d Chart::increment (const ISO8601d& input)
+ISO8601d Chart::increment (const ISO8601d& input, char period)
 {
   // Move to the next period.
   int d = input.day ();
@@ -572,7 +609,7 @@ ISO8601d Chart::increment (const ISO8601d& input)
 
   int days;
 
-  switch (_period)
+  switch (period)
   {
   case 'D':
     if (++d > ISO8601d::daysInMonth (m, y))
@@ -616,14 +653,14 @@ ISO8601d Chart::increment (const ISO8601d& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ISO8601d Chart::decrement (const ISO8601d& input)
+ISO8601d Chart::decrement (const ISO8601d& input, char period)
 {
   // Move to the previous period.
   int d = input.day ();
   int m = input.month ();
   int y = input.year ();
 
-  switch (_period)
+  switch (period)
   {
   case 'D':
     if (--d == 0)
@@ -721,7 +758,7 @@ void Chart::generateBars ()
     _earliest = cursor;
 
     // Move to the previous period.
-    cursor = decrement (cursor);
+    cursor = decrement (cursor, _period);
   }
 }
 
@@ -768,143 +805,73 @@ void Chart::yLabels (std::vector <int>& labels)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Chart::calculateRates (std::vector <time_t>& sequence)
+void Chart::calculateRates ()
 {
-  // If there are no current pending tasks, then it is meaningless to find
-  // rates or estimated completion date.
-  if (_bars[sequence.back ()]._pending == 0)
-    return;
-
-  // Calculate how many items we have.
-  int quantity = (int) sequence.size ();
-  int half     = quantity / 2;
-  int quarter  = quantity / 4;
-
-  // If the half and quarter indexes match, then there are too few data points
-  // to generate any meaningful rates.
-  if (half == quantity || half == 0 || quarter == 0)
-  {
-    context.debug ("Chart::calculateRates Insufficient data for rate calc");
-    return;
-  }
-
-  // How many days do these sums represent?
-  int half_days = 1;
-  int quarter_days = 1;
-  switch (_period)
-  {
-  case 'D':
-    half_days = half;
-    quarter_days = quarter;
-    break;
-
-  case 'W':
-    half_days = half * 7;
-    quarter_days = quarter * 7;
-    break;
-
-  case 'M':
-    half_days = half * 30;
-    quarter_days = quarter * 30;
-    break;
-  }
-
-  int total_added_50 = 0;
-  int total_added_75 = 0;
-  int total_removed_50 = 0;
-  int total_removed_75 = 0;
-
-  for (unsigned int i = half; i < sequence.size (); ++i)
-  {
-    total_added_50 += _bars[sequence[i]]._added;
-    total_removed_50 += _bars[sequence[i]]._removed;
-  }
-
-  for (unsigned int i = half + quarter; i < sequence.size (); ++i)
-  {
-    total_added_75 += _bars[sequence[i]]._added;
-    total_removed_75 += _bars[sequence[i]]._removed;
-  }
-
-  float find_rate_50 = 1.0 * total_added_50 / half_days;
-  float find_rate_75 = 1.0 * total_added_75 / quarter_days;
-  float fix_rate_50 = 1.0 * total_removed_50 / half_days;
-  float fix_rate_75 = 1.0 * total_removed_75 / quarter_days;
-
-  // Make configurable.
-  float bias = (float) context.config.getReal ("burndown.bias");
-
-  _find_rate = (find_rate_50 * (1.0 - bias) + find_rate_75 * bias);
-  _fix_rate  = (fix_rate_50  * (1.0 - bias) + fix_rate_75 * bias);
-
   // Q: Why is this equation written out as a debug message?
   // A: People are going to want to know how the rates and the completion date
   //    are calculated.  This may also help debugging.
-  std::stringstream rates;
-  rates << "Chart::calculateRates find rate: "
-        << "("
-        << total_added_50
-        << " added / "
-        << half_days
-        << " days) * (1.0 - "
-        << bias
-        << ") + ("
-        << total_added_75
-        << " added / "
-        << quarter_days
-        << " days) * "
-        << bias
-        << ") = "
-        << _find_rate
-        << "\nChart::calculateRates fix rate: "
-        << "("
-        << total_removed_50
-        << " removed / "
-        << half_days
-        << " days) * (1.0 - "
-        << bias
-        << ") + ("
-        << total_removed_75
-        << " added / "
-        << quarter_days
-        << " days) * "
-        << bias
-        << ") = "
-        << _fix_rate;
-  context.debug (rates.str ());
+  std::stringstream peak_message;
+  peak_message << "Chart::calculateRates Maximum of "
+               << _peak_count
+               << " pending tasks on "
+               << (ISO8601d (_peak_epoch).toISO ())
+               << ", with currently "
+               << _current_count
+               << " pending tasks";
+  context.debug (peak_message.str ());
 
-  // Estimate completion
-  if (_fix_rate > _find_rate)
+  // If there are no current pending tasks, then it is meaningless to find
+  // rates or estimated completion date.
+  if (_current_count == 0)
+    return;
+
+  // If there is a net fix rate, and the peak was at least three days ago.
+  ISO8601d now;
+  ISO8601d peak (_peak_epoch);
+  if (_peak_count > _current_count &&
+      (now - peak) > 3 * 86400)
   {
-    int current_pending = _bars[sequence.back ()]._pending;
-    int remaining_days = (int) (current_pending / (_fix_rate - _find_rate));
+    // Fixes per second.  Not a large number.
+    auto fix_rate = 1.0 * (_peak_count - _current_count) / (now.toEpoch () - _peak_epoch);
+    _net_fix_rate = fix_rate * 86400;
 
-    ISO8601d now;
-    ISO8601p delta (remaining_days * 86400);
-    now += delta;
+    std::stringstream rate_message;
+    rate_message << "Chart::calculateRates Net reduction is "
+                 << (_peak_count - _current_count)
+                 << " tasks in "
+                 << ISO8601p (now.toEpoch () - _peak_epoch).format ()
+                 << " = "
+                 << _net_fix_rate
+                 << " tasks/d";
+    context.debug (rate_message.str ());
+
+    ISO8601p delta (static_cast <time_t> (_current_count / fix_rate));
+    ISO8601d end = now + delta;
 
     // Prefer dateformat.report over dateformat.
     std::string format = context.config.get ("dateformat.report");
     if (format == "")
+    {
       format = context.config.get ("dateformat");
+      if (format == "")
+        format = "Y-M-D";
+    }
 
-    _completion = now.toString (format)
+    _completion = end.toString (format)
                + " ("
-               + delta.format ()
+               + delta.formatVague ()
                + ")";
 
-    std::stringstream est;
-    est << "Chart::calculateRates Completion: "
-         << current_pending
-         << " tasks / ("
-         << _fix_rate
-         << " - "
-         << _find_rate
-         << ") = "
-         << remaining_days
-         << " days = "
-         << _completion;
-    context.debug (est.str ());
+    std::stringstream completion_message;
+    completion_message << "Chart::calculateRates ("
+                       << _current_count
+                       << " tasks / "
+                       << _net_fix_rate
+                       << ") = "
+                       << delta.format ()
+                       << " --> "
+                       << end.toISO ();
+    context.debug (completion_message.str ());
   }
   else
   {
@@ -985,6 +952,7 @@ int CmdBurndownMonthly::execute (std::string& output)
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('M');
+  chart.scanForPeak (filtered);
   chart.scan (filtered);
   output = chart.render ();
   return rc;
@@ -1019,6 +987,7 @@ int CmdBurndownWeekly::execute (std::string& output)
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('W');
+  chart.scanForPeak (filtered);
   chart.scan (filtered);
   output = chart.render ();
   return rc;
@@ -1053,6 +1022,7 @@ int CmdBurndownDaily::execute (std::string& output)
 
   // Create a chart, scan the tasks, then render.
   Chart chart ('D');
+  chart.scanForPeak (filtered);
   chart.scan (filtered);
   output = chart.render ();
   return rc;

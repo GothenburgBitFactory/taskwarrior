@@ -95,7 +95,6 @@ std::string Config::_defaults =
   "recurrence.indicator=R                         # What to show as a task recurrence indicator\n"
   "recurrence.limit=1                             # Number of future recurring pending tasks\n"
   "undo.style=side                                # Undo style - can be 'side', or 'diff'\n"
-  "burndown.bias=0.666                            # Weighted mean bias toward recent data\n"
   "regex=yes                                      # Assume all search/filter strings are regexes\n"
   "xterm.title=no                                 # Sets xterm title for some commands\n"
   "expressions=infix                              # Prefer infix over postfix expressions\n"

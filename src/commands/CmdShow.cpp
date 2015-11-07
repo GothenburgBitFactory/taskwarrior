@@ -78,7 +78,6 @@ int CmdShow::execute (std::string& output)
     " allow.empty.filter"
     " avoidlastcolumn"
     " bulk"
-    " burndown.bias"
     " calendar.details"
     " calendar.details.report"
     " calendar.holidays"

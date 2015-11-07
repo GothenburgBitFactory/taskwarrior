@@ -474,16 +474,6 @@ values side-by-side in a table, or 'diff' style, which uses a format similar to
 the 'diff' command.
 
 .TP
-.B burndown.bias=0.666
-The burndown bias is a number that lies within the range 0 <= bias <= 1. The bias
-is the fraction of the find/fix rates derived from the short-term data (last
-25% of the report) versus the longer term data (last 50% of the report). A
-value of 0.666 (the default) means that the short-term rate has twice the weight
-of the longer-term rate. The calculation is as follows:
-
-    rate = (long-term-rate * (1 - bias)) + (short-term-rate * bias)
-
-.TP
 .B abbreviation.minimum=2
 Minimum length of any abbreviated command/value. This means that "ve", "ver",
 "vers", "versi", "versio" will all equate to "version", but "v" will not.

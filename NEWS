@@ -19,6 +19,10 @@ Removed Features in 2.5.1
 
   - There is no longer a 16-color default configuration for some platforms,
     making all platforms 256-color.
+  - The configuration setting 'burndown.bias' is no longer used.
+  - The algorithm used to estimate completion on the 'burndown' reports has
+    been replaced by something less icky. Estimates are now based on the net
+    completion rate after the peak number of pending tasks.
 
 Known Issues
 
