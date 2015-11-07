@@ -166,9 +166,8 @@ bool generateDueDates (Task& parent, std::vector <ISO8601d>& allDue)
   // Determine due date, recur period and until date.
   ISO8601d due (parent.get_date ("due"));
   if (due._date == 0)
-  {
     return false;
-  }
+
   std::string recur = parent.get ("recur");
 
   bool specificEnd = false;
@@ -215,6 +214,9 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
   int m = current.month ();
   int d = current.day ();
   int y = current.year ();
+  int ho = current.hour ();
+  int mi = current.minute ();
+  int se = current.second ();
 
   // Some periods are difficult, because they can be vague.
   if (period == "monthly" ||
@@ -229,7 +231,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
     while (! ISO8601d::valid (m, d, y))
       --d;
 
-    return ISO8601d (m, d, y);
+    return ISO8601d (m, d, y, ho, mi, se);
   }
 
   else if (period == "weekdays")
@@ -259,7 +261,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
     while (! ISO8601d::valid (m, d, y))
       --d;
 
-    return ISO8601d (m, d, y);
+    return ISO8601d (m, d, y, ho, mi, se);
   }
 
   else if (period[0] == 'P'                                            &&
@@ -294,7 +296,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
     while (! ISO8601d::valid (m, d, y))
       --d;
 
-    return ISO8601d (m, d, y);
+    return ISO8601d (m, d, y, ho, mi, se);
   }
 
   else if (Lexer::isDigit (period[0]) && period[period.length () - 1] == 'q')
@@ -311,7 +313,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
     while (! ISO8601d::valid (m, d, y))
       --d;
 
-    return ISO8601d (m, d, y);
+    return ISO8601d (m, d, y, ho, mi, se);
   }
 
   else if (period == "semiannual" ||
@@ -327,7 +329,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
     while (! ISO8601d::valid (m, d, y))
       --d;
 
-    return ISO8601d (m, d, y);
+    return ISO8601d (m, d, y, ho, mi, se);
   }
 
   else if (period == "bimonthly" ||
@@ -343,7 +345,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
     while (! ISO8601d::valid (m, d, y))
       --d;
 
-    return ISO8601d (m, d, y);
+    return ISO8601d (m, d, y, ho, mi, se);
   }
 
   else if (period == "biannual" ||
@@ -352,7 +354,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
   {
     y += 2;
 
-    return ISO8601d (m, d, y);
+    return ISO8601d (m, d, y, ho, mi, se);
   }
 
   else if (period == "annual" ||
@@ -366,7 +368,7 @@ ISO8601d getNextRecurrence (ISO8601d& current, std::string& period)
     if (m == 2 && d == 29)
       d = 28;
 
-    return ISO8601d (m, d, y);
+    return ISO8601d (m, d, y, ho, mi, se);
   }
 
   // Add the period to current, and we're done.

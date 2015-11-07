@@ -4,6 +4,8 @@
           (thanks to Ben Boeckel).
 - TW-311  Estimated completion in burndown.daily shows impossible results
           (thanks to Michele Santullo).
+- TW-1313 some recurring intervals reset due time to midnight
+          (thanks to James Dietrich).
 - TW-1446 Difference in how relative dates are specified in report filters since 2.3.0
           (thanks to atomicules).
 - TW-1703 When on-modify hook is installed, some messages print UUIDs
