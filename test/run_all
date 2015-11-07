@@ -198,11 +198,8 @@ def main():
     runner = TestRunner()
     runner.start()
 
-    # If we're producing summary report, propagate the return code
-    if not cmd_args.verbose:
-        return runner.show_report()
-    else:
-        return 0
+    # Propagate the return code
+    return runner.show_report()
 
 
 if __name__ == "__main__":
