@@ -4,6 +4,8 @@
           (thanks to Ben Boeckel).
 - TW-311  Estimated completion in burndown.daily shows impossible results
           (thanks to Michele Santullo).
+- TW-1446 Difference in how relative dates are specified in report filters since 2.3.0
+          (thanks to atomicules).
 - TW-1703 When on-modify hook is installed, some messages print UUIDs
           instead of IDs (thanks to Robin Green).
 - TW-1704 Use Task::identifier to reference the Task in the output
@@ -12,6 +14,8 @@
 - Fixed broken build for Cygwin and older GCC (thanks to Richard Boß).
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.
+- Numerous performance improvements. Taskwarrior 2.5.1 is between X% and
+  Y% faster than 2.5.0 when running various commands.
 
 ------ current release ---------------------------
 
