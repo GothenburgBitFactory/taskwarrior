@@ -29,6 +29,7 @@
 import sys
 import os
 import unittest
+from datetime import datetime
 # Ensure python finds the local simpletap module
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -72,9 +73,8 @@ class TestBugNumber(TestCase):
         """Copyright is current"""
         code, out, err = self.t("version")
 
-        expected = "Copyright \(C\) \d{4} - %d" % (2010,)
-        self.assertRegexpMatches(out, expected)
-        self.assertNotRegexpMatches(out, "foo")
+        expected = "Copyright \(C\) \d{4} - %d" % (datetime.now().year,)
+        self.assertRegexpMatches(out.decode("utf8"), expected)
 
         # TAP diagnostics on the bas
         self.tap("Yay TAP diagnostics")
