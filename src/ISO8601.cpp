@@ -32,7 +32,9 @@
 #include <assert.h>
 #include <Lexer.h>
 #include <util.h>
+#ifdef PRODUCT_TASKWARRIOR
 #include <Dates.h>
+#endif
 #include <text.h>
 #include <utf8.h>
 #include <i18n.h>
@@ -614,6 +616,7 @@ bool ISO8601d::parse_formatted (Nibbler& n, const std::string& format)
 ////////////////////////////////////////////////////////////////////////////////
 bool ISO8601d::parse_named (Nibbler& n)
 {
+#ifdef PRODUCT_TASKWARRIOR
   n.save ();
   std::string token;
   if (n.getUntilWS (token))
@@ -627,6 +630,8 @@ bool ISO8601d::parse_named (Nibbler& n)
   }
 
   n.restore ();
+#endif
+
   return false;
 }
 
