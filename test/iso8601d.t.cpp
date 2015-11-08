@@ -71,7 +71,11 @@ void testParse (
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
+#ifdef PRODUCT_TASKWARRIOR
   UnitTest t (1025);
+#else
+  UnitTest t (996);
+#endif
 
   ISO8601d iso;
   std::string::size_type start = 0;
@@ -469,6 +473,7 @@ int main (int, char**)
     t.is (ISO8601d ("5/1/2011",   "m/d/Y").dayOfYear (), 121, "dayOfYear (5/1/2011)   -> 121");
     t.is (ISO8601d ("12/31/2011", "m/d/Y").dayOfYear (), 365, "dayOfYear (12/31/2011) -> 365");
 
+#ifdef PRODUCT_TASKWARRIOR
     // Relative dates.
     ISO8601d r1 ("today");
     t.ok (r1.sameDay (now), "today = now");
@@ -567,6 +572,7 @@ int main (int, char**)
           (now.month () >= 10 &&
            soq.year () == now.year () + 1), "soq is in same year as now");
     t.ok (eoq.sameYear (now),  "eoq is in same year as now");
+#endif
 
     // ISO8601d::sameHour
     ISO8601d r20 ("6/7/2010 01:00:00", "m/d/Y H:N:S");

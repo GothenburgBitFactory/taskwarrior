@@ -37,7 +37,11 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
+#ifdef PRODUCT_TASKWARRIOR
   UnitTest t (1274);
+#else
+  UnitTest t (1256);
+#endif
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
   std::string token;
@@ -457,9 +461,11 @@ int main (int, char**)
     { "2015-02-17",                                   { { "2015-02-17",                                   Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "2013-11-29T22:58:00Z",                         { { "2013-11-29T22:58:00Z",                         Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "20131129T225800Z",                             { { "20131129T225800Z",                             Lexer::Type::date         }, NO, NO, NO, NO }, },
+#ifdef PRODUCT_TASKWARRIOR
     { "9th",                                          { { "9th",                                          Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "10th",                                         { { "10th",                                         Lexer::Type::date         }, NO, NO, NO, NO }, },
     { "today",                                        { { "today",                                        Lexer::Type::date         }, NO, NO, NO, NO }, },
+#endif
 
     // Duration
     { "year",                                         { { "year",                                         Lexer::Type::duration     }, NO, NO, NO, NO }, },
