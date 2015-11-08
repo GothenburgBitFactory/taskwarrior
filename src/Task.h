@@ -119,7 +119,9 @@ public:
   status getStatus () const;
   void setStatus (status);
 
+#ifdef PRODUCT_TASKWARRIOR
   dateState getDateState (const std::string&) const;
+#endif
 
   int getTagCount () const;
   bool hasTag (const std::string&) const;
@@ -136,7 +138,9 @@ public:
 
 #ifdef PRODUCT_TASKWARRIOR
   void addDependency (int);
+#endif
   void addDependency (const std::string&);
+#ifdef PRODUCT_TASKWARRIOR
   void removeDependency (int);
   void removeDependency (const std::string&);
   void getDependencies (std::vector <int>&) const;
@@ -152,8 +156,10 @@ public:
   float urgency_c () const;
   float urgency ();
 
+#ifdef PRODUCT_TASKWARRIOR
   enum modType {modReplace, modPrepend, modAppend, modAnnotate};
   void modify (modType, bool text_required = false);
+#endif
 
 private:
   int determineVersion (const std::string&);

@@ -33,12 +33,12 @@
 #ifdef PRODUCT_TASKWARRIOR
 #include <math.h>
 #include <ctype.h>
-#include <cfloat>
 #endif
+#include <cfloat>
 #include <algorithm>
+#include <Lexer.h>
 #ifdef PRODUCT_TASKWARRIOR
 #include <Context.h>
-#include <Lexer.h>
 #include <Nibbler.h>
 #endif
 #include <ISO8601.h>
@@ -314,6 +314,7 @@ void Task::setStatus (Task::status status)
   recalc_urgency = true;
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // Determines status of a date attribute.
 Task::dateState Task::getDateState (const std::string& name) const
@@ -348,7 +349,6 @@ Task::dateState Task::getDateState (const std::string& name) const
   return dateNotDue;
 }
 
-#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // Ready means pending, not blocked and either not scheduled or scheduled before
 // now.
@@ -582,7 +582,9 @@ void Task::parse (const std::string& input)
               nl.skip (':')           &&
               nl.getQuoted ('"', value))
           {
+#ifdef PRODUCT_TASKWARRIOR
             legacyAttributeMap (name);
+#endif
 
             if (! name.compare (0, 11, "annotation_", 11))
               ++annotation_count;
@@ -765,11 +767,13 @@ void Task::parseLegacy (const std::string& line)
     break;
 
   default:
+#ifdef PRODUCT_TASKWARRIOR
     std::stringstream message;
     message << "Invalid fileformat at line '"
             << line
             << "'";
     context.debug (message.str ());
+#endif
     throw std::string (STRING_TASK_PARSE_UNREC_FF);
     break;
   }
@@ -894,8 +898,11 @@ std::string Task::composeJSON (bool decorate /*= false*/) const
     }
 
     // Dependencies are an array by default.
-    else if (i.first == "depends" &&
-             context.config.getBoolean ("json.depends.array"))
+    else if (i.first == "depends"
+#ifdef PRODUCT_TASKWARRIOR
+             && context.config.getBoolean ("json.depends.array")
+#endif
+            )
     {
       std::vector <std::string> deps;
       split (deps, i.second, ',');
@@ -1057,6 +1064,7 @@ void Task::addDependency (int depid)
 
   addDependency(uuid);
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 void Task::addDependency (const std::string& uuid)
@@ -1073,7 +1081,9 @@ void Task::addDependency (const std::string& uuid)
       set ("depends", depends + "," + uuid);
     else
     {
+#ifdef PRODUCT_TASKWARRIOR
       context.footnote (format (STRING_TASK_DEPEND_DUP, get ("uuid"), uuid));
+#endif
       return;
     }
   }
@@ -1081,12 +1091,15 @@ void Task::addDependency (const std::string& uuid)
     set ("depends", uuid);
 
   // Prevent circular dependencies.
+#ifdef PRODUCT_TASKWARRIOR
   if (dependencyIsCircular (*this))
     throw std::string (STRING_TASK_DEPEND_CIRCULAR);
+#endif
 
   recalc_urgency = true;
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 void Task::removeDependency (const std::string& uuid)
 {
@@ -1190,9 +1203,11 @@ bool Task::hasTag (const std::string& tag) const
     if (tag == "PENDING")   return get ("status") == "pending";
     if (tag == "COMPLETED") return get ("status") == "completed";
     if (tag == "DELETED")   return get ("status") == "deleted";
+#ifdef PRODUCT_TASKWARRIOR
     if (tag == "UDA")       return is_udaPresent ();
     if (tag == "ORPHAN")    return is_orphanPresent ();
     if (tag == "LATEST")    return id == context.tdb2.latest_id ();
+#endif
     if (tag == "PROJECT")   return has ("project");
     if (tag == "PRIORITY")  return has ("priority");
   }
@@ -1800,7 +1815,9 @@ float Task::urgency_inherit () const
   // Calling dependencyGetBlocked is rather expensive.
   // It is called recursively for each dependency in the chain here.
   std::vector <Task> blocked;
+#ifdef PRODUCT_TASKWARRIOR
   dependencyGetBlocked (*this, blocked);
+#endif
 
   float v = FLT_MIN;
   for (auto& task : blocked)
@@ -1933,6 +1950,7 @@ float Task::urgency_blocking () const
   return 0.0;
 }
 
+#ifdef PRODUCT_TASKWARRIOR
 ////////////////////////////////////////////////////////////////////////////////
 // Arguably does not belong here. This method reads the parse tree and calls
 // Task methods. It could be a standalone function with no loss in access, as
@@ -2252,5 +2270,6 @@ void Task::modify (modType type, bool text_required /* = false */)
   else if (modCount == 0 && text_required)
     throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
