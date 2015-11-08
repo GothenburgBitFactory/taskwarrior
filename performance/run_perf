@@ -13,9 +13,11 @@ else
   cp *.data perf.rc data
 fi
 
-#TASK=/usr/local/bin/tw244
-#TASK=/usr/local/bin/tw250b1
-TASK=../src/task
+# Allow override.
+if [[ -z $TASK ]]
+then
+  TASK=../src/task
+fi
 
 # Run benchmarks.
 # Note that commands are run twice - warm cache testing.

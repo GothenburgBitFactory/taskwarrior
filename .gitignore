@@ -18,3 +18,4 @@ CPackConfig.cmake
 CPackSourceConfig.cmake
 patches
 *.exe
+tutorials
