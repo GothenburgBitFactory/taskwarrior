@@ -298,7 +298,71 @@ void TF2::commit ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TF2::load_tasks ()
+// Load a single Task object, handle necessary plumbing work
+Task TF2::load_task (const std::string& line)
+{
+  Task task (line);
+
+  // Some tasks get an ID.
+  if (_has_ids)
+  {
+    Task::status status = task.getStatus ();
+    // Completed / deleted tasks in pending.data get an ID if GC is off.
+    if (! context.run_gc ||
+        (status != Task::completed && status != Task::deleted))
+      task.id = context.tdb2.next_id ();
+  }
+
+  // Maintain mapping for ease of link/dependency resolution.
+  // Note that this mapping is not restricted by the filter, and is
+  // therefore a complete set.
+  if (task.id)
+  {
+    _I2U[task.id] = task.get ("uuid");
+    _U2I[task.get ("uuid")] = task.id;
+  }
+
+  return task;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Check whether task needs to be relocated to pending/completed,
+// or needs to be 'woken'.
+void TF2::load_gc (Task& task)
+{
+  ISO8601d now;
+
+  std::string status = task.get ("status");
+  if (status == "pending" ||
+      status == "recurring")
+  {
+    context.tdb2.pending._tasks.push_back (task);
+  }
+  else if (status == "waiting")
+  {
+    ISO8601d wait (task.get_date ("wait"));
+    if (wait < now)
+    {
+      task.set ("status", "pending");
+      task.remove ("wait");
+      // Unwaiting pending tasks is the only case not caught by the size()
+      // checks in TDB2::gc(), so we need to signal it here.
+      context.tdb2.pending._dirty = true;
+
+      if (context.verbose ("unwait"))
+        context.footnote (format (STRING_TDB2_UNWAIT, task.get ("description")));
+    }
+
+    context.tdb2.pending._tasks.push_back (task);
+  }
+  else
+  {
+    context.tdb2.completed._tasks.push_back (task);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void TF2::load_tasks (bool from_gc /* = false */)
 {
   context.timer_load.start ();
 
@@ -311,42 +375,29 @@ void TF2::load_tasks ()
       _lines.push_back (line);
   }
 
-  int line_number = 0;
+  // Reduce unnecessary allocations/copies.
+  // Calling it on _tasks is the right thing to do even when from_gc is set.
+  _tasks.reserve (_lines.size ());
+
+  int line_number = 0;  // Used for error message in catch block.
   try
   {
-    // Reduce unnecessary allocations/copies.
-    _tasks.reserve (_lines.size ());
-
     for (auto& line : _lines)
     {
       ++line_number;
-      Task task (line);
+      auto task = load_task (line);
 
-      // Some tasks get an ID.
-      if (_has_ids)
-      {
-        Task::status status = task.getStatus ();
-        // Completed / deleted tasks in pending.data get an ID if GC is off.
-        if (! context.run_gc ||
-            (status != Task::completed && status != Task::deleted))
-          task.id = context.tdb2.next_id ();
-      }
+      if (from_gc)
+        load_gc (task);
+      else
+        _tasks.push_back (task);
 
-      _tasks.push_back (task);
       if (context.cli2.getCommand () == "import")  // For faster lookup only
         _tasks_map.insert (std::pair<std::string, Task> (task.get("uuid"), task));
-
-      // Maintain mapping for ease of link/dependency resolution.
-      // Note that this mapping is not restricted by the filter, and is
-      // therefore a complete set.
-      if (task.id)
-      {
-        _I2U[task.id] = task.get ("uuid");
-        _U2I[task.get ("uuid")] = task.id;
-      }
     }
 
-    if (_auto_dep_scan)
+    // TDB2::gc() calls this after loading both pending and completed
+    if (_auto_dep_scan && !from_gc)
       dependency_scan ();
 
     _loaded_tasks = true;
@@ -1180,7 +1231,7 @@ void TDB2::show_diff (
 // - task in pending that needs to be in completed
 // - task in completed that needs to be in pending
 // - waiting task in pending that needs to be un-waited
-int TDB2::gc ()
+void TDB2::gc ()
 {
   context.timer_gc.start ();
   unsigned long load_start = context.timer_load.total ();
@@ -1188,103 +1239,38 @@ int TDB2::gc ()
   // Allowed as an override, but not recommended.
   if (context.config.getBoolean ("gc"))
   {
-    auto pending_tasks = pending.get_tasks ();
-
-    // TODO Thread.
-    auto completed_tasks = completed.get_tasks ();
-
-    // TODO Assume pending < completed, therefore there is room here to process
-    //      data before joining with the completed.data thread.
-
     bool pending_changes = false;
     bool completed_changes = false;
-    std::vector <Task> pending_tasks_after;
-    std::vector <Task> completed_tasks_after;
 
-    // Reduce unnecessary allocation/copies.
-    pending_tasks_after.reserve (pending_tasks.size ());
-
-    // Scan all pending tasks, looking for any that need to be relocated to
-    // completed, or need to be 'woken'.
-    ISO8601d now;
-    std::string status;
-    for (auto& task : pending_tasks)
+    // Load pending, check whether completed changes size
+    auto size_before = completed._tasks.size ();
+    pending.load_tasks (/*from_gc =*/ true);
+    if (size_before != completed._tasks.size ())
     {
-      status = task.get ("status");
-      if (status == "pending" ||
-          status == "recurring")
-      {
-        pending_tasks_after.push_back (task);
-      }
-      else if (status == "waiting")
-      {
-        ISO8601d wait (task.get_date ("wait"));
-        if (wait < now)
-        {
-          task.set ("status", "pending");
-          task.remove ("wait");
-          pending_changes = true;
-
-          if (context.verbose ("unwait"))
-            context.footnote (format (STRING_TDB2_UNWAIT, task.get ("description")));
-        }
-
-        pending_tasks_after.push_back (task);
-      }
-      else
-      {
-        completed_tasks_after.push_back (task);
-        pending_changes = true;
-        completed_changes = true;
-      }
+      // GC moved tasks from pending to completed
+      pending_changes = true;
+      completed_changes = true;
+    }
+    else if (pending._dirty)
+    {
+      // A waiting task in pending was woken up
+      pending_changes = true;
     }
 
-    // TODO Join completed.data thread.
-
-    // Reduce unnecessary allocation/copies.
-    completed_tasks_after.reserve (completed_tasks.size ());
-
-    // Scan all completed tasks, looking for any that need to be relocated to
-    // pending.
-    for (auto& task : completed_tasks)
+    // Load completed, check whether pending changes size
+    size_before = pending._tasks.size ();
+    completed.load_tasks (/*from_gc =*/ true);
+    if (size_before != pending._tasks.size ())
     {
-      status = task.get ("status");
-      if (status == "pending" ||
-          status == "recurring")
-      {
-        pending_tasks_after.push_back (task);
-        pending_changes = true;
-        completed_changes = true;
-      }
-      else if (status == "waiting")
-      {
-        ISO8601d wait (task.get_date ("wait"));
-        if (wait < now)
-        {
-          task.set ("status", "pending");
-          task.remove ("wait");
-          pending_tasks_after.push_back (task);
-          pending_changes = true;
-          completed_changes = true;
-
-          if (context.verbose ("unwait"))
-            context.footnote (format (STRING_TDB2_UNWAIT, task.get ("description")));
-        }
-
-        pending_tasks_after.push_back (task);
-      }
-      else
-      {
-        completed_tasks_after.push_back (task);
-      }
+      // GC moved tasks from completed to pending
+      pending_changes = true;
+      completed_changes = true;
     }
 
     // Only recreate the pending.data file if necessary.
     if (pending_changes)
     {
-      pending._tasks = pending_tasks_after;
       pending._dirty = true;
-      pending._loaded_tasks = true;
       _id = 1;
 
       for (auto& task : pending._tasks)
@@ -1296,22 +1282,22 @@ int TDB2::gc ()
     // Only recreate the completed.data file if necessary.
     if (completed_changes)
     {
-      completed._tasks = completed_tasks_after;
       completed._dirty = true;
-      completed._loaded_tasks = true;
 
       // Note: deliberately no commit.
     }
 
-    // TODO Remove dangling dependencies
+    // Update blocked/blocking status after GC is finished
+    if (pending._auto_dep_scan)
+      pending.dependency_scan ();
+    if (completed._auto_dep_scan)
+      completed.dependency_scan ();
   }
 
   // Stop and remove accumulated load time from the GC time, because they
   // overlap.
   context.timer_gc.stop ();
   context.timer_gc.subtract (context.timer_load.total () - load_start);
-
-  return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

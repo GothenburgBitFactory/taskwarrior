@@ -59,7 +59,9 @@ public:
   void clear_lines ();
   void commit ();
 
-  void load_tasks ();
+  Task load_task (const std::string&);
+  void load_gc (Task&);
+  void load_tasks (bool from_gc = false);
   void load_lines ();
 
   // ID <--> UUID mapping.
@@ -71,10 +73,8 @@ public:
   void clear ();
   const std::string dump ();
 
-private:
   void dependency_scan ();
 
-public:
   bool _read_only;
   bool _dirty;
   bool _loaded_tasks;
@@ -114,7 +114,7 @@ public:
   void commit ();
   void get_changes (std::vector <Task>&);
   void revert ();
-  int  gc ();
+  void gc ();
   int  next_id ();
   int  latest_id ();
 
