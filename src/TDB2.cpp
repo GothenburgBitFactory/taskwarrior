@@ -1271,10 +1271,6 @@ void TDB2::gc ()
     if (pending_changes)
     {
       pending._dirty = true;
-      _id = 1;
-
-      for (auto& task : pending._tasks)
-        task.id = _id++;
 
       // Note: deliberately no commit.
     }
