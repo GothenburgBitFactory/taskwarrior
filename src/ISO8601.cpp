@@ -232,7 +232,16 @@ bool ISO8601d::parse (
 {
   auto i = start;
   Nibbler n (input.substr (i));
-  if (parse_formatted (n, format))
+
+  // Parse epoch first, as it's the most common scenario.
+  if (parse_epoch (n))
+  {
+    // ::validate and ::resolve are not needed in this case.
+    start = n.cursor ();
+    return true;
+  }
+
+  else if (parse_formatted (n, format))
   {
     // Check the values and determine time_t.
     if (validate ())
@@ -265,8 +274,7 @@ bool ISO8601d::parse (
     }
   }
 
-  else if (parse_epoch (n) ||
-           parse_named (n))
+  else if (parse_named (n))
   {
     // ::validate and ::resolve are not needed in this case.
     start = n.cursor ();
