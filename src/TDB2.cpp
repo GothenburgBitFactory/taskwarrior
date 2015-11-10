@@ -1239,22 +1239,19 @@ void TDB2::gc ()
   // Allowed as an override, but not recommended.
   if (context.config.getBoolean ("gc"))
   {
-    bool pending_changes = false;
-    bool completed_changes = false;
-
     // Load pending, check whether completed changes size
     auto size_before = completed._tasks.size ();
     pending.load_tasks (/*from_gc =*/ true);
     if (size_before != completed._tasks.size ())
     {
       // GC moved tasks from pending to completed
-      pending_changes = true;
-      completed_changes = true;
+      pending._dirty = true;
+      completed._dirty = true;
     }
     else if (pending._dirty)
     {
       // A waiting task in pending was woken up
-      pending_changes = true;
+      pending._dirty = true;
     }
 
     // Load completed, check whether pending changes size
@@ -1263,24 +1260,8 @@ void TDB2::gc ()
     if (size_before != pending._tasks.size ())
     {
       // GC moved tasks from completed to pending
-      pending_changes = true;
-      completed_changes = true;
-    }
-
-    // Only recreate the pending.data file if necessary.
-    if (pending_changes)
-    {
       pending._dirty = true;
-
-      // Note: deliberately no commit.
-    }
-
-    // Only recreate the completed.data file if necessary.
-    if (completed_changes)
-    {
       completed._dirty = true;
-
-      // Note: deliberately no commit.
     }
 
     // Update blocked/blocking status after GC is finished
