@@ -505,7 +505,19 @@ void File::append (const std::vector <std::string>& lines)
   {
     fseek (_fh, 0, SEEK_END);
     for (auto& line : lines)
-      fputs ((line + "\n").c_str (), _fh);
+      fputs (line.c_str (), _fh);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void File::write_raw (const std::string& line)
+{
+  if (!_fh)
+    open ();
+
+  if (_fh)
+  {
+    fputs (line.c_str (), _fh);
   }
 }
 

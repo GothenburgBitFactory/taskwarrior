@@ -257,14 +257,14 @@ void TF2::commit ()
           _file.lock ();
 
         // Write out all the added tasks.
+        _file.append (std::string(""));  // Seek to end of file
         for (auto& task : _added_tasks)
-          _file.append (task.composeF4 () + "\n");
+          _file.write_raw (task.composeF4 () + "\n");
 
         _added_tasks.clear ();
 
         // Write out all the added lines.
-        for (auto& line : _added_lines)
-          _file.append (line);
+        _file.append (_added_lines);
 
         _added_lines.clear ();
         _file.close ();
@@ -282,12 +282,12 @@ void TF2::commit ()
         _file.truncate ();
 
         // Only write out _tasks, because any deltas have already been applied.
+        _file.append (std::string(""));  // Seek to end of file
         for (auto& task : _tasks)
-          _file.append (task.composeF4 () + "\n");
+          _file.write_raw (task.composeF4 () + "\n");
 
         // Write out all the added lines.
-        for (auto& line : _added_lines)
-          _file.append (line);
+        _file.append (_added_lines);
 
         _added_lines.clear ();
         _file.close ();

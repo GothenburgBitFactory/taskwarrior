@@ -91,6 +91,7 @@ public:
 
   void append (const std::string&);
   void append (const std::vector <std::string>&);
+  void write_raw (const std::string&);
 
   void truncate ();
 
