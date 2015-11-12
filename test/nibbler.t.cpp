@@ -35,7 +35,7 @@ Context context;
 ////////////////////////////////////////////////////////////////////////////////
 int main (int, char**)
 {
-  UnitTest t (236);
+  UnitTest t (234);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
