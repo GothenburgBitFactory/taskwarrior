@@ -66,7 +66,7 @@ json::string::string (const std::string& other)
 json::string* json::string::parse (Nibbler& nibbler)
 {
   std::string value;
-  if (nibbler.getQuoted ('"', value, false))
+  if (nibbler.getQuoted ('"', value))
   {
     json::string* s = new json::string ();
     s->_data = value;
@@ -303,7 +303,7 @@ bool json::object::parse_pair (
 {
   Nibbler n (nibbler);
 
-  if (n.getQuoted ('"', name, false))
+  if (n.getQuoted ('"', name))
   {
     n.skipWS ();
     if (n.skip (':'))

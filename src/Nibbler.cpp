@@ -180,10 +180,7 @@ bool Nibbler::getN (const int quantity, std::string& result)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Nibbler::getQuoted (
-  char c,
-  std::string& result,
-  bool quote /* = false */)
+bool Nibbler::getQuoted (char c, std::string& result)
 {
   bool inquote = false;
   bool inescape = false;
@@ -210,9 +207,6 @@ bool Nibbler::getQuoted (
 
     if (current == c && !inescape)
     {
-      if (quote)
-        result += current;
-
       if (!inquote)
       {
         inquote = true;

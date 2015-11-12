@@ -48,7 +48,7 @@ public:
   bool getUntilEOS (std::string&);
 
   bool getN (const int, std::string&);
-  bool getQuoted (char, std::string&, bool quote = false);
+  bool getQuoted (char, std::string&);
   bool getDigit (int&);
   bool getDigit4 (int&);
   bool getDigit3 (int&);
