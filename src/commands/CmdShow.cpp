@@ -265,11 +265,16 @@ int CmdShow::execute (std::string& output)
   view.add (Column::factory ("string", STRING_CMD_SHOW_CONF_VAR));
   view.add (Column::factory ("string", STRING_CMD_SHOW_CONF_VALUE));
 
-  Color error (context.config.get ("color.error"));
-  Color warning (context.config.get ("color.warning"));
-  Color label (context.config.get ("color.label"));
+  Color error;
+  Color warning;
+  if (context.color ())
+  {
+    error   = Color (context.config.get ("color.error"));
+    warning = Color (context.config.get ("color.warning"));
 
-  view.colorHeader (label);
+    Color label (context.config.get ("color.label"));
+    view.colorHeader (label);
+  }
 
   bool issue_error = false;
   bool issue_warning = false;
@@ -326,7 +331,7 @@ int CmdShow::execute (std::string& output)
   {
     out << STRING_CMD_SHOW_DIFFER << "\n";
 
-    if (context.color ())
+    if (context.color () && warning.nontrivial ())
       out << "  "
           << format (STRING_CMD_SHOW_DIFFER_COLOR, warning.colorize ("color"))
           << "\n\n";
@@ -340,7 +345,7 @@ int CmdShow::execute (std::string& output)
     for (auto& i : unrecognized)
       out << "  " << i << "\n";
 
-    if (context.color ())
+    if (context.color () && error.nontrivial ())
       out << "\n" << format (STRING_CMD_SHOW_DIFFER_COLOR, error.colorize ("color"));
 
     out << "\n\n";
