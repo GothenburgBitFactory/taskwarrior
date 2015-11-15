@@ -227,8 +227,11 @@ void CmdContext::listContexts (std::stringstream& out)
     view.add (Column::factory ("string", "Definition"));
     view.add (Column::factory ("string", "Active"));
 
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
+    if (context.color ())
+    {
+      Color label (context.config.get ("color.label"));
+      view.colorHeader (label);
+    }
 
     std::string activeContext = context.config.get ("context");
 
