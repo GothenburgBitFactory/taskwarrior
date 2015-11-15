@@ -93,9 +93,12 @@ int CmdTimesheet::execute (std::string& output)
                         + " - "
                         + endString.toString (context.config.get ("dateformat"));
 
-    Color bold (Color::nocolor, Color::nocolor, false, true, false);
+    Color bold;
+    if (context.color ())
+      bold = Color ("bold");
+
     out << "\n"
-        << (context.color () ? bold.colorize (title) : title)
+        << bold.colorize (title)
         << "\n";
 
     // Render the completed table.
@@ -106,8 +109,12 @@ int CmdTimesheet::execute (std::string& output)
     completed.add (Column::factory ("string.right", STRING_COLUMN_LABEL_DUE));
     completed.add (Column::factory ("string",       STRING_COLUMN_LABEL_DESC));
 
-    Color label (context.config.get ("color.label"));
-    completed.colorHeader (label);
+    Color label;
+    if (context.color ())
+    {
+      label = Color (context.config.get ("color.label"));
+      completed.colorHeader (label);
+    }
 
     for (auto& task : all)
     {
@@ -118,8 +125,7 @@ int CmdTimesheet::execute (std::string& output)
         if (compDate >= start && compDate < end)
         {
           Color c;
-          if (context.color ())
-            autoColorize (task, c);
+          autoColorize (task, c);
 
           int row = completed.addRow ();
           std::string format = context.config.get ("dateformat.report");
@@ -175,8 +181,7 @@ int CmdTimesheet::execute (std::string& output)
         if (startDate >= start && startDate < end)
         {
           Color c;
-          if (context.color ())
-            autoColorize (task, c);
+          autoColorize (task, c);
 
           int row = started.addRow ();
           std::string format = context.config.get ("dateformat.report");
