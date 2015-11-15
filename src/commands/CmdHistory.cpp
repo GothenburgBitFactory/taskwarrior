@@ -111,8 +111,11 @@ int CmdHistoryMonthly::execute (std::string& output)
   view.add (Column::factory ("string.right", STRING_CMD_HISTORY_DEL));
   view.add (Column::factory ("string.right", STRING_CMD_HISTORY_NET));
 
-  Color label (context.config.get ("color.label"));
-  view.colorHeader (label);
+  if (context.color ())
+  {
+    Color label (context.config.get ("color.label"));
+    view.colorHeader (label);
+  }
 
   int totalAdded     = 0;
   int totalCompleted = 0;
@@ -272,8 +275,11 @@ int CmdHistoryAnnual::execute (std::string& output)
   view.add (Column::factory ("string.right", STRING_CMD_HISTORY_DEL));
   view.add (Column::factory ("string.right", STRING_CMD_HISTORY_NET));
 
-  Color label (context.config.get ("color.label"));
-  view.colorHeader (label);
+  if (context.color ())
+  {
+    Color label (context.config.get ("color.label"));
+    view.colorHeader (label);
+  }
 
   int totalAdded     = 0;
   int totalCompleted = 0;
