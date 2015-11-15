@@ -289,7 +289,7 @@ static void colorizeDeleted (Task& task, const Color& base, Color& c, bool merge
 void autoColorize (Task& task, Color& c)
 {
   // The special tag 'nocolor' overrides all auto and specific colorization.
-  if (!context.color () ||
+  if (! context.color () ||
       task.hasTag ("nocolor"))
   {
     c = Color ();

@@ -182,8 +182,13 @@ int CmdSync::execute (std::string& output)
     std::string code = response.get ("code");
     if (code == "200")
     {
-      Color colorAdded    (context.config.get ("color.sync.added"));
-      Color colorChanged  (context.config.get ("color.sync.changed"));
+      Color colorAdded;
+      Color colorChanged;
+      if (context.color ())
+      {
+        colorAdded   = Color (context.config.get ("color.sync.added"));
+        colorChanged = Color (context.config.get ("color.sync.changed"));
+      }
 
       int download_count = 0;
       payload = response.getPayload ();
