@@ -17,6 +17,7 @@
 - TW-1704 Use Task::identifier to reference the Task in the output
 - TW-1720 CmdContext uses a mix of both throw and std::cout to convey
           errors (thanks to Paul Beckingham).
+- TW-1723 task info causes segfault (thanks to Roman Golovin).
 - Fixed broken build for Cygwin and older GCC (thanks to Richard Boß).
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.

@@ -262,16 +262,19 @@ std::string taskInfoDifferences (
 ////////////////////////////////////////////////////////////////////////////////
 std::string renderAttribute (const std::string& name, const std::string& value, const std::string& format /* = "" */)
 {
-  Column* col = context.columns[name];
-  if (col                    &&
-      col->type () == "date" &&
-      value != "")
+  if (context.columns.find (name) != context.columns.end ())
   {
-    ISO8601d d ((time_t)strtol (value.c_str (), NULL, 10));
-    if (format == "")
-      return d.toString (context.config.get ("dateformat"));
+    Column* col = context.columns[name];
+    if (col                    &&
+        col->type () == "date" &&
+        value != "")
+    {
+      ISO8601d d ((time_t)strtol (value.c_str (), NULL, 10));
+      if (format == "")
+        return d.toString (context.config.get ("dateformat"));
 
-    return d.toString (format);
+      return d.toString (format);
+    }
   }
 
   return value;

@@ -362,28 +362,31 @@ int CmdInfo::execute (std::string& output)
     std::string type;
     for (auto& att: all)
     {
-      Column* col = context.columns[att];
-      if (col && col->is_uda ())
+      if (context.columns.find (att) != context.columns.end ())
       {
-        std::string value = task.get (att);
-        if (value != "")
+        Column* col = context.columns[att];
+        if (col->is_uda ())
         {
-          row = view.addRow ();
-          view.set (row, 0, col->label ());
-
-          if (type == "date")
-            value = ISO8601d (value).toString (dateformat);
-          else if (type == "duration")
+          std::string value = task.get (att);
+          if (value != "")
           {
-            ISO8601p iso;
-            std::string::size_type cursor = 0;
-            if (iso.parse (value, cursor))
-              value = (std::string) Variant ((time_t) iso, Variant::type_duration);
-            else
-              value = "PT0S";
-          }
+            row = view.addRow ();
+            view.set (row, 0, col->label ());
 
-          view.set (row, 1, value);
+            if (type == "date")
+              value = ISO8601d (value).toString (dateformat);
+            else if (type == "duration")
+            {
+              ISO8601p iso;
+              std::string::size_type cursor = 0;
+              if (iso.parse (value, cursor))
+                value = (std::string) Variant ((time_t) iso, Variant::type_duration);
+              else
+                value = "PT0S";
+            }
+
+            view.set (row, 1, value);
+          }
         }
       }
     }
@@ -393,7 +396,7 @@ int CmdInfo::execute (std::string& output)
     for (auto& att : all)
     {
       if (att.substr (0, 11) != "annotation_" &&
-          ! context.columns[att])
+          context.columns.find (att) == context.columns.end ())
       {
          row = view.addRow ();
          view.set (row, 0, "[" + att);

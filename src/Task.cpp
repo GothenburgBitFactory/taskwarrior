@@ -501,10 +501,9 @@ bool Task::is_dueyear () const
 bool Task::is_udaPresent () const
 {
   for (auto& col : context.columns)
-    if (col.first.compare (0, 11, "annotation_", 11) != 0)
-      if (col.second->is_uda () &&
-          has (col.first))
-        return true;
+    if (col.second->is_uda () &&
+        has (col.first))
+      return true;
 
   return false;
 }
