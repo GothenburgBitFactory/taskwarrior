@@ -927,8 +927,13 @@ Colors any task that does not have the user defined attribute X.
 .RE
 
 .TP
-.B color.error=green
+.B color.error=white on red
 Colors any of the error messages.
+.RE
+
+.TP
+.B color.warning=bold red
+Colors any of the warning messages.
 .RE
 
 .TP
