@@ -32,7 +32,7 @@ color.label.sort=
 color.alternate=on gray2
 color.header=rgb013
 color.footnote=rgb013
-color.warning=
+color.warning=white on rgb103
 color.error=white on red
 color.debug=blue
 

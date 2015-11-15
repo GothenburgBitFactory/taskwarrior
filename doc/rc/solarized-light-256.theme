@@ -49,7 +49,7 @@ color.label.sort=
 color.alternate=on color7
 color.header=color2
 color.footnote=color2
-color.warning=
+color.warning=color7 on color3
 color.error=color2
 color.debug=color3
 
