@@ -139,11 +139,16 @@ int CmdSummary::execute (std::string& output)
   view.add (Column::factory ("string.right",      STRING_CMD_SUMMARY_COMPLETE));
   view.add (Column::factory ("string.left_fixed", "0%                        100%"));
 
-  Color bar_color (context.config.get ("color.summary.bar"));
-  Color bg_color  (context.config.get ("color.summary.background"));
-  Color label     (context.config.get ("color.label"));
+  Color bar_color;
+  Color bg_color;
+  if (context.color ())
+  {
+    bar_color = Color (context.config.get ("color.summary.bar"));
+    bg_color  = Color (context.config.get ("color.summary.background"));
 
-  view.colorHeader (label);
+    Color label (context.config.get ("color.label"));
+    view.colorHeader (label);
+  }
 
   int barWidth = 30;
   std::vector <std::string> processed;
