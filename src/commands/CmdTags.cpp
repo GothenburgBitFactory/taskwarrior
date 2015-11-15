@@ -96,10 +96,15 @@ int CmdTags::execute (std::string& output)
     view.add (Column::factory ("string", STRING_COLUMN_LABEL_TAG));
     view.add (Column::factory ("string.right", STRING_COLUMN_LABEL_COUNT));
 
-    Color label (context.config.get ("color.label"));
-    view.colorHeader (label);
+    Color bold;
+    if (context.color ())
+    {
+      bold = Color ("bold");
 
-    Color bold ("bold");
+      Color label (context.config.get ("color.label"));
+      view.colorHeader (label);
+    }
+
     bool special = false;
     for (auto& i : unique)
     {
