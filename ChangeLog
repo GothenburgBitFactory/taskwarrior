@@ -8,6 +8,8 @@
           (thanks to James Dietrich).
 - TW-1446 Difference in how relative dates are specified in report filters since 2.3.0
           (thanks to atomicules).
+- TW-1500 Dates formatted as ".age", ".remaining", or ".countdown" often give
+          blank results (thanks to Jeremy John Reeder).
 - TW-1582 Wrong urgency for first report after reviving task with
           "mod status:pending"
 - TW-1698 tests: 'make test' should exit non-zero if tests failed

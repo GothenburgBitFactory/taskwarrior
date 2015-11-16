@@ -92,7 +92,8 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
     else if (_style == "countdown")
     {
       ISO8601d now;
-      minimum = maximum = ISO8601p (now - date).formatVague ().length ();
+      if (now > date)
+        minimum = maximum = ISO8601p (now - date).formatVague ().length ();
     }
     else if (_style == "julian")
     {
@@ -109,7 +110,10 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
     else if (_style == "age")
     {
       ISO8601d now;
-      minimum = maximum = ISO8601p (now - date).formatVague ().length ();
+      if (now > date)
+        minimum = maximum = ISO8601p (now - date).formatVague ().length ();
+      else
+        minimum = maximum = ISO8601p (date - now).formatVague ().length () + 1;
     }
     else if (_style == "remaining")
     {
@@ -153,7 +157,8 @@ void ColumnTypeDate::render (
     else if (_style == "countdown")
     {
       ISO8601d now;
-      renderStringRight (lines, width, color, ISO8601p (now - date).formatVague ());
+      if (now > date)
+        renderStringRight (lines, width, color, ISO8601p (now - date).formatVague ());
     }
     else if (_style == "julian")
       renderStringRight (lines, width, color, format (date.toJulian (), 13, 12));
@@ -167,7 +172,10 @@ void ColumnTypeDate::render (
     else if (_style == "age")
     {
       ISO8601d now;
-      renderStringLeft (lines, width, color, ISO8601p (now - date).formatVague ());
+      if (now > date)
+        renderStringLeft (lines, width, color, ISO8601p (now - date).formatVague ());
+      else
+        renderStringLeft (lines, width, color, "-" + ISO8601p (date - now).formatVague ());
     }
 
     else if (_style == "remaining")
