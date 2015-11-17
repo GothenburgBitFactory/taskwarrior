@@ -40,6 +40,7 @@
 - Removed unused 'dom' and 'shell.prompt' configuration settings.
 - Numerous performance improvements. Taskwarrior 2.5.1 is between X% and
   Y% faster than 2.5.0 when running various commands.
+- New formatting specifier 'relative' for columns of Date type was introduced.
 
 ------ current release ---------------------------
 

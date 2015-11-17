@@ -45,6 +45,7 @@ ColumnTypeDate::ColumnTypeDate ()
                 "epoch", 
                 "iso",
                 "age",
+                "relative",
                 "remaining",
                 "countdown"};
 
@@ -55,6 +56,7 @@ ColumnTypeDate::ColumnTypeDate ()
                now.toEpochString (),
                now.toISO (),
                ISO8601p (ISO8601d () - now).formatVague (),
+               "-" + ISO8601p (ISO8601d () - now).formatVague (),
                "",
                ISO8601p (ISO8601d () - now).format ()};
 }
@@ -114,6 +116,14 @@ void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& m
         minimum = maximum = ISO8601p (now - date).formatVague ().length ();
       else
         minimum = maximum = ISO8601p (date - now).formatVague ().length () + 1;
+    }
+    else if (_style == "relative")
+    {
+      ISO8601d now;
+      if (now < date)
+        minimum = maximum = ISO8601p (date - now).formatVague ().length ();
+      else
+        minimum = maximum = ISO8601p (now - date).formatVague ().length () + 1;
     }
     else if (_style == "remaining")
     {
@@ -176,6 +186,14 @@ void ColumnTypeDate::render (
         renderStringLeft (lines, width, color, ISO8601p (now - date).formatVague ());
       else
         renderStringLeft (lines, width, color, "-" + ISO8601p (date - now).formatVague ());
+    }
+    else if (_style == "relative")
+    {
+      ISO8601d now;
+      if (now < date)
+        renderStringLeft (lines, width, color, ISO8601p (date - now).formatVague ());
+      else
+        renderStringLeft (lines, width, color, "-" + ISO8601p (now - date).formatVague ());
     }
 
     else if (_style == "remaining")
