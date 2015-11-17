@@ -175,6 +175,8 @@ class TestRunner(object):
 
     def show_report(self):
         self.tap.flush()
+        sys.stdout.flush()
+        sys.stderr.flush()
 
         log.debug("Calling 'problems --summary' for report")
         return call([os.path.abspath("problems"), "--summary", cmd_args.tapfile])
