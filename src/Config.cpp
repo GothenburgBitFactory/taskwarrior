@@ -353,7 +353,7 @@ std::string Config::_defaults =
   "\n"
   "report.next.description=Most urgent tasks\n"
   "report.next.labels=ID,Active,Age,Deps,P,Project,Tag,Recur,S,Due,Until,Description,Urg\n"
-  "report.next.columns=id,start.age,entry.age,depends,priority,project,tags,recur,scheduled.countdown,due.remaining,until.remaining,description,urgency\n"
+  "report.next.columns=id,start.age,entry.age,depends,priority,project,tags,recur,scheduled.countdown,due.relative,until.remaining,description,urgency\n"
   "report.next.filter=status:pending limit:page\n"
   "report.next.sort=urgency-\n"
   "\n"
@@ -377,7 +377,7 @@ std::string Config::_defaults =
   "\n"
   "report.blocking.description=Blocking tasks\n"
   "report.blocking.labels=ID,UUID,A,Deps,Project,Tags,R,W,Sch,Due,Until,Description,Urg\n"
-  "report.blocking.columns=id,uuid.short,start.active,depends,project,tags,recur,wait,scheduled.remaining,due.remaining,until.remaining,description.count,urgency\n"
+  "report.blocking.columns=id,uuid.short,start.active,depends,project,tags,recur,wait,scheduled.remaining,due.relative,until.remaining,description.count,urgency\n"
   "report.blocking.sort=urgency-,due+,entry+\n"
   "report.blocking.filter= status:pending +BLOCKING\n"
   "\n";
