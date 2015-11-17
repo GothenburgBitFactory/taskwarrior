@@ -306,7 +306,6 @@ class Test1481(TestCase):
         self.child1_uuid = self.t.export_one(2)['uuid']
         self.child2_uuid = self.t.export_one(3)['uuid']
 
-    @unittest.expectedFailure
     def test_set_dependency_on_first_completed_task(self):
         """1481: Sets dependency on task which has been just completed."""
         self.t('2 done')
@@ -317,7 +316,6 @@ class Test1481(TestCase):
         # Set the dependency
         self.t('1 modify depends:%s' % self.child1_uuid)
 
-    @unittest.expectedFailure
     def test_set_dependency_on_second_completed_task(self):
         """
         1481: Sets dependency on task which has been completed
@@ -333,7 +331,6 @@ class Test1481(TestCase):
         # Set the dependencies
         self.t('1 modify depends:%s' % self.child2_uuid)
 
-    @unittest.expectedFailure
     def test_set_dependency_on_two_completed_tasks(self):
         """ 1481: Sets dependency on two most recent completed tasks. """
         self.t('2 done')

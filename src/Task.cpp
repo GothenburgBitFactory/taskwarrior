@@ -2031,14 +2031,14 @@ void Task::modify (modType type, bool text_required /* = false */)
               if (dep[0] == '-')
               {
                 if (dep.length () == 37)
-                  removeDependency (context.tdb2.pending.id (dep.substr (1)));
+                  removeDependency (dep.substr (1));
                 else
                   removeDependency (strtol (dep.substr (1).c_str (), NULL, 10));
               }
               else
               {
                 if (dep.length () == 36)
-                  addDependency (context.tdb2.pending.id (dep));
+                  addDependency (dep);
                 else
                   addDependency (strtol (dep.c_str (), NULL, 10));
               }
