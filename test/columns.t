@@ -372,8 +372,8 @@ class TestDateFormats(TestCase):
     def test_date_format_age(self):
         """Verify due.age formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.age")
-        self.assertRegexpMatches(out, r'1\s+1d')
-        self.assertRegexpMatches(out, r'2\s+-16h')
+        self.assertRegexpMatches(out, r'1\s+[0-9.]+d')
+        self.assertRegexpMatches(out, r'2\s+-[0-9.]+h')
 
     def test_date_format_remaining(self):
         """Verify due.remaining formatting"""

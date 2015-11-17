@@ -1951,14 +1951,24 @@ const std::string ISO8601p::format () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Range      Representation
+// ---------  ---------------------
+// >= 365d    {n.n}y
+// >= 90d     {n}mo
+// >= 14d     {n}w
+// >= 1d      {n}d
+// >= 1h      {n}h
+// >= 1min    {n}min
+//            {n}s
+//
 const std::string ISO8601p::formatVague () const
 {
   float days = (float) _period / 86400.0;
 
   std::stringstream formatted;
        if (_period >= 86400 * 365) formatted << std::fixed << std::setprecision (1) << (days / 365) << "y";
-  else if (_period >= 86400 * 84)  formatted << static_cast <int> (days / 30)       << "mo";
-  else if (_period >= 86400 * 13)  formatted << static_cast <int> (days / 7)        << "w";
+  else if (_period >= 86400 * 90)  formatted << static_cast <int> (days / 30)       << "mo";
+  else if (_period >= 86400 * 14)  formatted << static_cast <int> (days / 7)        << "w";
   else if (_period >= 86400)       formatted << static_cast <int> (days)            << "d";
   else if (_period >= 3600)        formatted << static_cast <int> (_period / 3600)  << "h";
   else if (_period >= 60)          formatted << static_cast <int> (_period / 60)    << "min";
