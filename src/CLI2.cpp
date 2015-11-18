@@ -254,7 +254,7 @@ void CLI2::getOverride (int argc, const char** argv, std::string& home, File& rc
     if (raw == "--")
       return;
 
-    if (raw.length () > 3 &&
+    if (raw.length () >= 3 &&
         raw.substr (0, 3) == "rc:")
     {
       rc = raw.substr (3);

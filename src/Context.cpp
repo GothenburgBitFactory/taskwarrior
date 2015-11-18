@@ -683,7 +683,7 @@ void Context::staticInitialization ()
 void Context::createDefaultConfig ()
 {
   // Do we need to create a default rc?
-  if (! rc_file.exists ())
+  if (rc_file._data != "" && ! rc_file.exists ())
   {
     if (config.getBoolean ("confirmation") &&
         !confirm (format (STRING_CONTEXT_CREATE_RC, home_dir, rc_file._data)))
