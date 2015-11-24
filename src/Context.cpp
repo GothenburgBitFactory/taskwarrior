@@ -339,15 +339,15 @@ int Context::run ()
       << " sort:"   << timer_sort.total ()
       << " render:" << timer_render.total ()
       << " hooks:"  << timer_hooks.total ()
-      << " other:"  << timer_total.total ()   -
-                       (timer_init.total ()   +
-                        timer_load.total ()   +
-                        timer_gc.total ()     +
-                        timer_filter.total () +
-                        timer_commit.total () +
-                        timer_sort.total ()   +
-                        timer_render.total () +
-                        timer_hooks.total ())
+      << " other:"  << timer_total.total ()  -
+                       timer_init.total ()   -
+                       timer_load.total ()   -
+                       timer_gc.total ()     -
+                       timer_filter.total () -
+                       timer_commit.total () -
+                       timer_sort.total ()   -
+                       timer_render.total () -
+                       timer_hooks.total ()
       << " total:"  << timer_total.total ()
       << "\n";
     debug (s.str ());
