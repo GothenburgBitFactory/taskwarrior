@@ -524,33 +524,32 @@ int CmdInfo::execute (std::string& output)
     if (context.config.getBoolean ("journal.info") &&
         undo.size () > 3)
     {
-      // Scan the undo data for entries matching this task.
-      std::string when;
-      std::string previous;
-      std::string current;
+      // Scan the undo data for entries matching this task, without making
+      // copies.
       unsigned int i = 0;
       long last_timestamp = 0;
       while (i < undo.size ())
       {
-        when = undo[i++];
-        previous = "";
-        if (undo[i].substr (0, 3) == "old")
-          previous = undo[i++];
+        int when = i++;
+        int previous = -1;
 
-        current = undo[i++];
+        if (! undo[i].compare (0, 3, "old", 3))
+          previous = i++;
+
+        int current = i++;
         i++; // Separator
 
-        if (current.find ("uuid:\"" + uuid) != std::string::npos)
+        if (undo[current].find ("uuid:\"" + uuid) != std::string::npos)
         {
-          if (previous != "")
+          if (previous != -1)
           {
             int row = journal.addRow ();
 
-            ISO8601d timestamp (strtol (when.substr (5).c_str (), NULL, 10));
+            ISO8601d timestamp (strtol (undo[when].substr (5).c_str (), NULL, 10));
             journal.set (row, 0, timestamp.toString (dateformat));
 
-            Task before (previous.substr (4));
-            Task after (current.substr (4));
+            Task before (undo[previous].substr (4));
+            Task after (undo[current].substr (4));
             journal.set (row, 1, taskInfoDifferences (before, after, dateformat, last_timestamp, timestamp.toEpoch()));
           }
         }
