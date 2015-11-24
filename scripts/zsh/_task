@@ -26,7 +26,6 @@
 typeset -g _task_cmds _task_projects _task_tags _task_config _task_modifiers
 _task_projects=($(task _projects))
 _task_tags=($(task _tags))
-_task_ids=($(task _ids))
 _task_zshids=( ${(f)"$(task _zshids)"} )
 _task_config=($(task _config))
 _task_columns=($(task _columns))
