@@ -138,8 +138,10 @@ task_dates=(
 )
 
 local -a task_zshids
-_regex_words values 'task IDs' $_task_zshids
-task_zshids=("$reply[@]")
+if (( $#_task_zshids )); then
+  _regex_words values 'task IDs' $_task_zshids
+  task_zshids=("$reply[@]")
+fi
 
 _regex_words values 'task frequencies' \
   'daily:Every day' \
