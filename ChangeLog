@@ -26,6 +26,8 @@
           errors (thanks to Paul Beckingham).
 - TW-1723 task info causes segfault (thanks to Roman Golovin).
 - TW-1724 some commands show color codes when redirected (thanks to Alan Young).
+- TW-1729 zsh completion: zregexparse:4: not enough regex argument (thanks to
+          Daniel Shahaf).
 - Fixed broken build for Cygwin and older GCC (thanks to Richard Boß).
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.
