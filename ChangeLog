@@ -31,6 +31,7 @@
 - Fixed broken build for Cygwin and older GCC (thanks to Richard Boß).
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.
+- UDA indicator column did not properly default to 'U' (thanks to JDufault).
 - Numerous performance improvements. Taskwarrior 2.5.1 is between X% and
   Y% faster than 2.5.0 when running various commands.
 

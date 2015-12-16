@@ -116,7 +116,13 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
     else if (_style == "indicator")
     {
       if (task.has (_name))
-        minimum = maximum = utf8_width (context.config.get ("uda." + _name + ".indicator"));
+      {
+        auto indicator = context.config.get ("uda." + _name + ".indicator");
+        if (indicator == "")
+          indicator = "U";
+
+        minimum = maximum = utf8_width (indicator);
+      }
       else
         minimum = maximum = 0;
     }
@@ -171,7 +177,13 @@ void ColumnUDA::render (
     else if (_style == "indicator")
     {
       if (task.has (_name))
-        renderStringRight (lines, width, color, context.config.get ("uda." + _name + ".indicator"));
+      {
+        auto indicator = context.config.get ("uda." + _name + ".indicator");
+        if (indicator == "")
+          indicator = "U";
+
+        renderStringRight (lines, width, color, indicator);
+      }
     }
   }
 }
