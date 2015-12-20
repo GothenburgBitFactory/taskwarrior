@@ -32,6 +32,8 @@
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.
 - UDA indicator column did not properly default to 'U' (thanks to JDufault).
+- Removed task.fish arguments until TW-1404 is fixed (thanks to Roman
+  Inflianskas)
 - Numerous performance improvements. Taskwarrior 2.5.1 is between X% and
   Y% faster than 2.5.0 when running various commands.
 

@@ -179,7 +179,9 @@ function __fish.task.list.attr_value_by_name
 end
 
 function __fish.task.list._command
-  __fish.task.zsh commands $argv
+  # Removed args until TW-1404 is fixed.
+  #__fish.task.zsh commands $argv
+  __fish.task.zsh commands
 end
 
 function __fish.task.list.command
