@@ -27,6 +27,7 @@
 #ifndef INCLUDED_MAIN
 #define INCLUDED_MAIN
 
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <map>
