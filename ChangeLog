@@ -28,6 +28,7 @@
 - TW-1724 some commands show color codes when redirected (thanks to Alan Young).
 - TW-1729 zsh completion: zregexparse:4: not enough regex argument (thanks to
           Daniel Shahaf).
+- TW-1733 taskwarrior 2.5.0 can not compile FreeBSD 10.1 (thanks to ribbon).
 - TW-1738 add defined languages JAPANESE (thanks to ribbon).
 - Fixed broken build for Cygwin and older GCC (thanks to Richard Boß).
 - The default configuration is now 256-color only.
