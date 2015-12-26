@@ -30,7 +30,7 @@ Briefly, these shell commands will unpack, build and install Taskwarrior:
 
   $ tar xzf task-X.Y.Z.tar.gz                   [1]
   $ cd task-X.Y.Z                               [2]
-  $ cmake .                                     [3]
+  $ cmake -DCMAKE_BUILD_TYPE=release .          [3]
   $ make                                        [4]
   $ sudo make install                           [5]
   $ cd .. ; rm -r task-X.Y.Z                    [6]
@@ -43,7 +43,8 @@ These commands are explained below:
   2. Change directory to the root of the distribution.
 
   3. Invokes CMake to scan for dependencies and machine-specific details, then
-     generate the makefiles.  This may take a minute.
+     generate the makefiles.  Requests an optimized build, which will run faster
+     and be more compact.  This may take a minute.
 
   4. Builds Taskwarrior.  This may take a minute.
 
