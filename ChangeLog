@@ -30,6 +30,7 @@
           Daniel Shahaf).
 - TW-1733 taskwarrior 2.5.0 can not compile FreeBSD 10.1 (thanks to ribbon).
 - TW-1738 add defined languages JAPANESE (thanks to ribbon).
+- TW-1742 Indian Holiday Calendar (Master HolidayFile) (thanks to Sunil Joshi).
 - Fixed broken build for Cygwin and older GCC (thanks to Richard Boß).
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.
