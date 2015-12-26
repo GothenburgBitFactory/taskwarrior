@@ -185,7 +185,6 @@ int CmdShow::execute (std::string& output)
     " rule.color.merge"
     " rule.precedence.color"
     " search.case.sensitive"
-    " shell.prompt"
     " sugar"
     " summary.all.projects"
     " tag.indicator"

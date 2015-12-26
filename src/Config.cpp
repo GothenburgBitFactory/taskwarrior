@@ -260,7 +260,6 @@ std::string Config::_defaults =
   "sugar=yes                                      # Syntactic sugar\n"
   "obfuscate=no                                   # Obfuscate data for error reporting\n"
   "fontunderline=yes                              # Uses underlines rather than -------\n"
-  "shell.prompt=task>                             # Prompt used by the shell command\n"
   "\n"
   "# WARNING: Please read the documentation (man task-sync) before setting up\n"
   "#          Taskwarrior for Taskserver synchronization.\n"

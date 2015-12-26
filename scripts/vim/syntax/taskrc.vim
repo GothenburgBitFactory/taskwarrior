@@ -138,7 +138,6 @@ syn match taskrcGoodKey '^\s*\Vreserved.lines='he=e-1
 syn match taskrcGoodKey '^\s*\Vrow.padding='he=e-1
 syn match taskrcGoodKey '^\s*\Vrule.precedence.color='he=e-1
 syn match taskrcGoodKey '^\s*\Vsearch.case.sensitive='he=e-1
-syn match taskrcGoodKey '^\s*\Vshell.prompt='he=e-1
 syn match taskrcGoodKey '^\s*\Vtag.indicator='he=e-1
 syn match taskrcGoodKey '^\s*\Vtaskd.\(server\|credentials\|certificate\|key\|ca\|trust\|ciphers\)='he=e-1
 syn match taskrcGoodKey '^\s*\Vuda.\S\{-}.\(default\|type\|label\|values\)='he=e-1
