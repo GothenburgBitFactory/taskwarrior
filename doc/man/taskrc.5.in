@@ -392,11 +392,6 @@ Sets a preference for infix expressions (1 + 2) or postfix expressions (1 2 +).
 Defaults to infix.
 
 .TP
-.B dom=on
-Enables or disables access to Taskwarrior internals and task metadata on the
-command line. Defaults to on.
-
-.TP
 .B json.array=on
 Determines whether the export command encloses the JSON output in '[...]' and
 adds ',' after each exported task object to create a properly-formed JSON

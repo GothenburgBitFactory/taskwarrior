@@ -151,7 +151,6 @@ int CmdShow::execute (std::string& output)
     " dependency.reminder"
     " detection"
     " displayweeknumber"
-    " dom"
     " due"
     " editor"
     " exit.on.missing.db"

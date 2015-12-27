@@ -37,6 +37,7 @@
 - UDA indicator column did not properly default to 'U' (thanks to JDufault).
 - Removed task.fish arguments until TW-1404 is fixed (thanks to Roman
   Inflianskas)
+- Removed unused 'dom' and 'shell.prompt' configuration settings.
 - Numerous performance improvements. Taskwarrior 2.5.1 is between X% and
   Y% faster than 2.5.0 when running various commands.
 
