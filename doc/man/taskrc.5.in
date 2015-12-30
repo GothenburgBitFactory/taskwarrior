@@ -533,7 +533,7 @@ the 'history' report, for example, or 'export'.
 .B report.X.dateformat=Y-M-D
 This is a string of characters that defines how Taskwarrior formats date values.
 The precedence order for the configuration variable is report.X.dateformat then
-dateformat.report then dateformat for formating the due dates in reports.
+dateformat.report then dateformat for formatting the due dates in reports.
 If both report.X.dateformat and dateformat.report are not set then dateformat
 will be applied
 to the date. Entered dates as well as all other displayed dates in reports
@@ -748,7 +748,7 @@ variable.
 
 .RS
 The following holidays are computed automatically: Good Friday (goodfriday),
-Easter (easter), Easter monday (eastermonday), Ascension (ascension), Pentecost
+Easter (easter), Easter Monday (eastermonday), Ascension (ascension), Pentecost
 (pentecost). The date for these holidays is the given keyword:
 .RE
 
