@@ -33,6 +33,8 @@
 - TW-1742 Indian Holiday Calendar (Master HolidayFile) (thanks to Sunil Joshi).
 - TW-1749 PATH_MAX isn't defined in FS.cpp in some versions of OS X (thanks to
           Misty De Meo).
+- TW-1750 REG_ENHANCED, used in RX.cpp, isn't defined in all versions of Darwin
+          (thanks to Misty De Meo).
 - Fixed broken build for Cygwin and older GCC (thanks to Richard Boß).
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.
