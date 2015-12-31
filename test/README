@@ -61,7 +61,7 @@ code is ready for release. There are goals that shape these changes, and they
 are:
 
   * Increase test coverage by testing more features, more thoroughly. The test
-    coverage level is (as of 2015-07-24) at 86.5%.
+    coverage level is (as of 2016-07-24) at 86.5%.
 
   * Write fewer bug regression tests. Over time, bug regression tests are less
     useful than feature tests, and more likely to contain overlapping coverage.

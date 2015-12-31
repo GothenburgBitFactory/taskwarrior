@@ -1488,7 +1488,7 @@ Default is "NORMAL". See GnuTLS documentation for full details.
 .RE
 
 .SH "CREDITS & COPYRIGHTS"
-Copyright (C) 2006 \- 2015 P. Beckingham, F. Hernandez.
+Copyright (C) 2006 \- 2016 P. Beckingham, F. Hernandez.
 
 This man page was originally written by Federico Hernandez.
 

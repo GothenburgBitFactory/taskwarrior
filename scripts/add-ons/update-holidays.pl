@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 ################################################################################
 ##
-## Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+## Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
 ##
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -189,7 +189,7 @@ if (open my $fh, '>:utf8', $file)
         "# ${url_current}\n",
         "# ${url_next}\n",
         "#\n",
-        "# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.\n",
+        "# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.\n",
         "#\n",
         "# Permission is hereby granted, free of charge, to any person obtaining a copy\n",
         "# of this software and associated documentation files (the \"Software\"), to deal\n",

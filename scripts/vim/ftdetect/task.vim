@@ -4,7 +4,7 @@
 " Maintainer:   John Florian <jflorian@doubledog.org>
 " Updated:	Thu Dec 10 18:28:26 EST 2009
 "
-" Copyright 2009 - 2015 John Florian
+" Copyright 2009 - 2016 John Florian
 "
 " This file is available under the MIT license.
 " For the full text of this license, see COPYING.
