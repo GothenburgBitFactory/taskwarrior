@@ -85,7 +85,7 @@ void RX::compile ()
 
     int result;
     if ((result = regcomp (&_regex, _pattern.c_str (),
-#ifdef DARWIN
+#if defined REG_ENHANCED
                            REG_ENHANCED | REG_EXTENDED | REG_NEWLINE |
 #else
                            REG_EXTENDED | REG_NEWLINE |
