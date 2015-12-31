@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-# Copyright 2006 - 2015, Paul Beckingham, Federico Hernandez.
+# Copyright 2006 - 2016, Paul Beckingham, Federico Hernandez.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -264,7 +264,6 @@ class TestVirtualTags(TestCase):
         self.assertIn("maximal", out)
         self.assertNotIn("blocked", out)
         self.assertIn("due_eom", out)
-        self.assertIn("due_eow", out)
 
         code, out, err = self.t("-YEAR all")
         self.assertIn("completed", out)
@@ -273,7 +272,6 @@ class TestVirtualTags(TestCase):
         self.assertNotIn("maximal", out)
         self.assertIn("blocked", out)
         self.assertNotIn("due_eom", out)
-        self.assertNotIn("due_eow", out)
 
     def test_virtual_tag_MONTH(self):
         """Verify 'MONTH' appears when expected"""
