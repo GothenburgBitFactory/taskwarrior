@@ -45,6 +45,10 @@
 #include <limits.h>
 #endif
 
+#if defined __APPLE__
+#include <sys/syslimits.h>
+#endif
+
 // Fixes build with musl libc.
 #ifndef GLOB_TILDE
 #define GLOB_TILDE 0
