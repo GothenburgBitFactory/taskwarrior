@@ -1120,7 +1120,7 @@ To unset any context, use the 'none' subcommand.
 Context can be defined using the 'define' subcommand, specifying both the name
 of the new context, and it's assigned filter.
 
-    $ task context define home
+    $ task context define home project:Home
     Are you sure you want to add 'context.home' with a value of 'project:Home'? (yes/no) yes
     Context 'home' successfully defined.
 
