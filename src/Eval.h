@@ -36,7 +36,6 @@ class Eval
 {
 public:
   Eval ();
-  virtual ~Eval ();
   Eval (const Eval&);            // Not implemented.
   Eval& operator= (const Eval&); // Not implemented.
   bool operator== (const Eval&); // Not implemented.
