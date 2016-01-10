@@ -33,7 +33,6 @@ class ColumnUntil : public ColumnTypeDate
 {
 public:
   ColumnUntil ();
-  ~ColumnUntil ();
 };
 
 #endif
