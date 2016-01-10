@@ -33,8 +33,6 @@ class ColumnTags : public ColumnTypeString
 {
 public:
   ColumnTags ();
-  ~ColumnTags ();
-
   void setStyle (const std::string&);
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);

@@ -48,11 +48,6 @@ ColumnTags::ColumnTags ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnTags::~ColumnTags ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
 void ColumnTags::setStyle (const std::string& value)
