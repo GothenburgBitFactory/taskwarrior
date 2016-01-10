@@ -33,7 +33,6 @@ class ColumnWait : public ColumnTypeDate
 {
 public:
   ColumnWait ();
-  ~ColumnWait ();
 };
 
 #endif
