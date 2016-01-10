@@ -596,13 +596,6 @@ TDB2::TDB2 ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Deliberately no file writes on destruct.  Commit should have been already
-// called, if data is to be preserved.
-TDB2::~TDB2 ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Once a location is known, the files can be set up.  Note that they are not
 // read.
 void TDB2::set_location (const std::string& location)

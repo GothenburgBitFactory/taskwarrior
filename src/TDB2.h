@@ -106,7 +106,6 @@ public:
   static bool debug_mode;
 
   TDB2 ();
-  ~TDB2 ();
 
   void set_location (const std::string&);
   void add (Task&, bool add_to_backlog = true);
