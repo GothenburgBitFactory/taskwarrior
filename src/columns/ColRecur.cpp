@@ -45,11 +45,6 @@ ColumnRecur::ColumnRecur ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnRecur::~ColumnRecur ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
 void ColumnRecur::setStyle (const std::string& value)
