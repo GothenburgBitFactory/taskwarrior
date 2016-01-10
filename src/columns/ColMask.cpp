@@ -27,11 +27,8 @@
 #include <cmake.h>
 #include <ColMask.h>
 #include <math.h>
-#include <Context.h>
 #include <text.h>
 #include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnMask::ColumnMask ()
@@ -42,11 +39,6 @@ ColumnMask::ColumnMask ()
   _modifiable = false;
   _styles     = {"default"};
   _examples   = {"++++---"};
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ColumnMask::~ColumnMask ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////

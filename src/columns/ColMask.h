@@ -33,8 +33,6 @@ class ColumnMask : public ColumnTypeString
 {
 public:
   ColumnMask ();
-  ~ColumnMask ();
-
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
 
