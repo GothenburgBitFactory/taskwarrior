@@ -38,7 +38,6 @@ class Filter
 {
 public:
   Filter ();
-  ~Filter ();
 
   void subset (const std::vector <Task>&, std::vector <Task>&);
   void subset (std::vector <Task>&);
