@@ -33,8 +33,6 @@ class ColumnUrgency : public ColumnTypeNumeric
 {
 public:
   ColumnUrgency ();
-  ~ColumnUrgency ();
-
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
 

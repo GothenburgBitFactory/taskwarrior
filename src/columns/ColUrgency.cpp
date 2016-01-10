@@ -26,11 +26,8 @@
 
 #include <cmake.h>
 #include <ColUrgency.h>
-#include <Context.h>
 #include <text.h>
 #include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnUrgency::ColumnUrgency ()
@@ -40,11 +37,6 @@ ColumnUrgency::ColumnUrgency ()
   _label    = STRING_COLUMN_LABEL_URGENCY;
   _styles   = {"real", "integer"};
   _examples = {"4.6", "4"};
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ColumnUrgency::~ColumnUrgency ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////
