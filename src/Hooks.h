@@ -34,10 +34,9 @@
 class Hooks
 {
 public:
-  Hooks ();                         // Default constructor
-  ~Hooks ();                        // Destructor
-  Hooks (const Hooks&);             // Deliberately unimplemented
-  Hooks& operator= (const Hooks&);  // Deliberately unimplemented
+  Hooks ();
+  Hooks (const Hooks&) = delete;
+  Hooks& operator= (const Hooks&) = delete;
 
   void initialize ();
   bool enable (bool);
