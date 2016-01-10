@@ -33,8 +33,6 @@ class ColumnUUID : public ColumnTypeString
 {
 public:
   ColumnUUID ();
-  ~ColumnUUID ();
-
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
 
