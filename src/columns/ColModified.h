@@ -33,7 +33,6 @@ class ColumnModified : public ColumnTypeDate
 {
 public:
   ColumnModified ();
-  ~ColumnModified ();
 };
 
 #endif
