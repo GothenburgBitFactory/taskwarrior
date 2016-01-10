@@ -33,7 +33,6 @@ class ColumnEnd : public ColumnTypeDate
 {
 public:
   ColumnEnd ();
-  ~ColumnEnd ();
 };
 
 #endif
