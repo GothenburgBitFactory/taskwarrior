@@ -80,11 +80,6 @@ ColumnDescription::ColumnDescription ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnDescription::~ColumnDescription ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnDescription::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
