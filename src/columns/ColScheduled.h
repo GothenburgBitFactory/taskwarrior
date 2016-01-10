@@ -33,8 +33,6 @@ class ColumnScheduled : public ColumnTypeDate
 {
 public:
   ColumnScheduled ();
-  ~ColumnScheduled ();
-
   void setStyle (const std::string&);
 };
 
