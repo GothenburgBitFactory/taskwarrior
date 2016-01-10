@@ -62,11 +62,6 @@ ColumnTypeDate::ColumnTypeDate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnTypeDate::~ColumnTypeDate ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnTypeDate::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {

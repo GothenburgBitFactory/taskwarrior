@@ -37,8 +37,6 @@ class ColumnTypeDate : public Column
 {
 public:
   ColumnTypeDate ();
-  virtual ~ColumnTypeDate ();
-
   virtual void measure (Task&, unsigned int&, unsigned int&);
   virtual void render (std::vector <std::string>&, Task&, int, Color&);
 };
