@@ -35,9 +35,6 @@
 class DOM
 {
 public:
-  DOM ();
-  ~DOM ();
-
   bool get (const std::string&, Variant&);
   bool get (const std::string&, const Task&, Variant&);
 
