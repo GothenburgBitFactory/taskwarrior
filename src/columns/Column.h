@@ -41,6 +41,7 @@ public:
   static Column* uda (const std::string&);
 
   Column ();
+  virtual ~Column ();
 
   const std::string& name () const            { return _name;        }
   const std::string& style () const           { return _style;       }
