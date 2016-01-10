@@ -34,11 +34,6 @@ ColumnTypeNumeric::ColumnTypeNumeric ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnTypeNumeric::~ColumnTypeNumeric ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnTypeNumeric::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {

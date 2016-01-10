@@ -37,8 +37,6 @@ class ColumnTypeNumeric : public Column
 {
 public:
   ColumnTypeNumeric ();
-  virtual ~ColumnTypeNumeric ();
-
   virtual void measure (Task&, unsigned int&, unsigned int&);
   virtual void render (std::vector <std::string>&, Task&, int, Color&);
 };
