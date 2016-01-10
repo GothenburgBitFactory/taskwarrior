@@ -33,8 +33,6 @@ class ColumnProject : public ColumnTypeString
 {
 public:
   ColumnProject ();
-  ~ColumnProject ();
-
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
 

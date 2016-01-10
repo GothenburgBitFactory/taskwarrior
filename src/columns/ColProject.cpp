@@ -48,11 +48,6 @@ ColumnProject::ColumnProject ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnProject::~ColumnProject ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 void ColumnProject::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
