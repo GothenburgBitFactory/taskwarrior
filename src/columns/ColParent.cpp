@@ -27,11 +27,8 @@
 #include <cmake.h>
 #include <ColParent.h>
 #include <math.h>
-#include <Context.h>
 #include <text.h>
 #include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnParent::ColumnParent ()
@@ -42,11 +39,6 @@ ColumnParent::ColumnParent ()
   _modifiable = false;
   _styles     = {"long", "short"};
   _examples   = {"f30cb9c3-3fc0-483f-bfb2-3bf134f00694", "f30cb9c3"};
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ColumnParent::~ColumnParent ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////

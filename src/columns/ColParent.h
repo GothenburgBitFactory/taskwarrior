@@ -33,8 +33,6 @@ class ColumnParent : public ColumnTypeString
 {
 public:
   ColumnParent ();
-  ~ColumnParent ();
-
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
 
