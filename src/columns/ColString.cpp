@@ -51,11 +51,6 @@ ColumnString::ColumnString ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnString::~ColumnString ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // ColumnString is unique - it copies the report name into the label.  This is
 // a kludgy reuse of an otherwise unused member.
 void ColumnString::setReport (const std::string& value)
