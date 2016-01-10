@@ -26,12 +26,9 @@
 
 #include <cmake.h>
 #include <ColStatus.h>
-#include <Context.h>
 #include <text.h>
 #include <i18n.h>
 #include <utf8.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnStatus::ColumnStatus ()
@@ -42,11 +39,6 @@ ColumnStatus::ColumnStatus ()
   _styles   = {"long", "short"};
   _examples = {STRING_COLUMN_LABEL_STAT_PE,
                STRING_COLUMN_LABEL_STAT_P};
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ColumnStatus::~ColumnStatus ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////

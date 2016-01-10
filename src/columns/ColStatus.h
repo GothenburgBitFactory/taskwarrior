@@ -33,8 +33,6 @@ class ColumnStatus : public ColumnTypeString
 {
 public:
   ColumnStatus ();
-  ~ColumnStatus ();
-
   void setStyle (const std::string&);
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
