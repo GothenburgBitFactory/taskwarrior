@@ -52,11 +52,6 @@ ColumnDepends::ColumnDepends ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnDepends::~ColumnDepends ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Overriden so that style <----> label are linked.
 // Note that you can not determine which gets called first.
 void ColumnDepends::setStyle (const std::string& value)

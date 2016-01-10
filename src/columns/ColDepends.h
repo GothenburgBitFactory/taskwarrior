@@ -33,7 +33,6 @@ class ColumnDepends : public ColumnTypeString
 {
 public:
   ColumnDepends ();
-  ~ColumnDepends ();
 
   void setStyle (const std::string&);
   void measure (Task&, unsigned int&, unsigned int&);
