@@ -33,8 +33,6 @@ class ColumnIMask : public ColumnTypeNumeric
 {
 public:
   ColumnIMask ();
-  ~ColumnIMask ();
-
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
 

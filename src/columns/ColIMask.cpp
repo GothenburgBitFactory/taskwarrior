@@ -27,11 +27,8 @@
 #include <cmake.h>
 #include <ColIMask.h>
 #include <math.h>
-#include <Context.h>
 #include <text.h>
 #include <i18n.h>
-
-extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnIMask::ColumnIMask ()
@@ -42,11 +39,6 @@ ColumnIMask::ColumnIMask ()
   _modifiable = false;
   _styles     = {"number"};
   _examples   = {"12"};
-}
-
-////////////////////////////////////////////////////////////////////////////////
-ColumnIMask::~ColumnIMask ()
-{
 }
 
 ////////////////////////////////////////////////////////////////////////////////
