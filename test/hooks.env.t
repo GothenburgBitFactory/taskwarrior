@@ -68,7 +68,7 @@ class TestHooksOnLaunch(TestCase):
         self.t.hooks.add_default(hookname, log=True)
 
         code, out, err = self.t("diagnostics")
-        self.assertIn("on-launch-good-env (executable)", out)
+        self.assertRegexpMatches(out, r"on-launch-good-env\s+\(executable\)")
 
     def test_onlaunch_builtin_env_debug(self):
         """Verify that 'debug.hooks' shows hook details"""
