@@ -1212,6 +1212,9 @@ intact, so you can use:
 $ task add project:\\'Three Word Project\\' description
 .RE
 
+Taskwarrior supports Unicode using only the UTF8 encoding, with no Byte Order
+Marks in the data files.
+
 .SH CONFIGURATION FILE AND OVERRIDE OPTIONS
 Taskwarrior stores its configuration in a file in the user's home directory:
 ~/.taskrc. The default configuration file can be overridden with:

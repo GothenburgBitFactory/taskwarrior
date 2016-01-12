@@ -376,6 +376,17 @@ bool File::remove () const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+std::string File::removeBOM (const std::string& input)
+{
+  if (input[0] && input[0] == '\xEF' &&
+      input[1] && input[1] == '\xBB' &&
+      input[2] && input[2] == '\xBF')
+    return input.substr (3);
+
+  return input;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 bool File::open ()
 {
   if (_data != "")
@@ -457,10 +468,20 @@ void File::read (std::string& contents)
   std::ifstream in (_data.c_str ());
   if (in.good ())
   {
+    bool first = true;
     std::string line;
     line.reserve (512 * 1024);
     while (getline (in, line))
+    {
+      // Detect forbidden BOM on first line.
+      if (first)
+      {
+        line = File::removeBOM (line);
+        first = false;
+      }
+
       contents += line + "\n";
+    }
 
     in.close ();
   }
@@ -475,10 +496,20 @@ void File::read (std::vector <std::string>& contents)
   std::ifstream in (_data.c_str ());
   if (in.good ())
   {
+    bool first = true;
     std::string line;
     line.reserve (512 * 1024);
     while (getline (in, line))
+    {
+      // Detect forbidden BOM on first line.
+      if (first)
+      {
+        line = File::removeBOM (line);
+        first = false;
+      }
+
       contents.push_back (line);
+    }
 
     in.close ();
   }
@@ -627,10 +658,20 @@ bool File::read (const std::string& name, std::string& contents)
   std::ifstream in (name.c_str ());
   if (in.good ())
   {
+    bool first = true;
     std::string line;
     line.reserve (1024);
     while (getline (in, line))
+    {
+      // Detect forbidden BOM on first line.
+      if (first)
+      {
+        line = File::removeBOM (line);
+        first = false;
+      }
+
       contents += line + "\n";
+    }
 
     in.close ();
     return true;
@@ -647,10 +688,20 @@ bool File::read (const std::string& name, std::vector <std::string>& contents)
   std::ifstream in (name.c_str ());
   if (in.good ())
   {
+    bool first = true;
     std::string line;
     line.reserve (1024);
     while (getline (in, line))
+    {
+      // Detect forbidden BOM on first line.
+      if (first)
+      {
+        line = File::removeBOM (line);
+        first = false;
+      }
+
       contents.push_back (line);
+    }
 
     in.close ();
     return true;

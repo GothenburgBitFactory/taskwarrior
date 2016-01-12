@@ -26,6 +26,7 @@
 
 #include <cmake.h>
 #include <algorithm>
+#include <string>
 #include <stdlib.h>
 #include <Context.h>
 #include <FS.h>
@@ -35,7 +36,7 @@ Context context;
 
 int main (int, char**)
 {
-  UnitTest t (112);
+  UnitTest t (116);
 
   // Ensure environment has no influence.
   unsetenv ("TASKDATA");
@@ -290,6 +291,19 @@ int main (int, char**)
 
   tmp.remove ();
   t.notok (tmp.exists (),           "tmp dir removed.");
+
+  // File::removeBOM
+  std::string line = "Should not be modified.";
+  t.is (File::removeBOM (line), line,  "File::removeBOM 'Should not be modified' --> 'Should not be modified'");
+
+  line = "no";
+  t.is (File::removeBOM (line), line,  "File::removeBOM 'no' --> 'no'");
+
+  line = "";
+  t.is (File::removeBOM (line), line,  "File::removeBOM '' --> ''");
+
+  line = {'\xEF', '\xBB', '\xBF', 'F', 'o', 'o'};
+  t.is (File::removeBOM (line), "Foo",  "File::removeBOM '<BOM>Foo' --> 'Foo'");
 
   return 0;
 }

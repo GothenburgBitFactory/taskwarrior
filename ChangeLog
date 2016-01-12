@@ -31,6 +31,7 @@
 - TW-1733 taskwarrior 2.5.0 can not compile FreeBSD 10.1 (thanks to ribbon).
 - TW-1735 context with no subcommand should do something (thanks to Simon
           Michael).
+- TW-1736 Error on detection of BOM in files.
 - TW-1738 add defined languages JAPANESE (thanks to ribbon).
 - TW-1741 Warning "ignoring return value of ‘int ftruncate" while doing make on
           xubuntu15.10 (thanks to Sunil Joshi).
