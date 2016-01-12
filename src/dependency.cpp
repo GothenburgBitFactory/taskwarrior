@@ -44,8 +44,8 @@ void dependencyGetBlocked (const Task& task, std::vector <Task>& blocked)
 
   auto all = context.tdb2.pending.get_tasks ();
   for (auto& it : all)
-    if ((it.getStatus () == Task::pending  ||
-         it.getStatus () == Task::waiting) &&
+    if (it.getStatus () != Task::completed &&
+        it.getStatus () != Task::deleted   &&
         it.has ("depends")                 &&
         it.get ("depends").find (uuid) != std::string::npos)
       blocked.push_back (it);
@@ -57,8 +57,8 @@ void dependencyGetBlocking (const Task& task, std::vector <Task>& blocking)
   std::string depends = task.get ("depends");
   if (depends != "")
     for (auto& it : context.tdb2.pending.get_tasks ())
-      if ((it.getStatus () == Task::pending  ||
-           it.getStatus () == Task::waiting) &&
+      if (it.getStatus () != Task::completed &&
+          it.getStatus () != Task::deleted   &&
           depends.find (it.get ("uuid")) != std::string::npos)
         blocking.push_back (it);
 }
