@@ -440,11 +440,7 @@ bool namedDates (const std::string& name, Variant& value)
           value = Variant (mktime (t), Variant::type_date);
         }
       }
-      else
-        throw std::string (STRING_DATES_ORD_MISMATCH);
     }
-    else
-      throw std::string (STRING_DATES_MONTH_31);
   }
 
   else if (closeEnough ("easter",       name, minimum) ||

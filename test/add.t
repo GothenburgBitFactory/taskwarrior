@@ -227,6 +227,22 @@ class TestBug1612(TestCase):
         self.assertEqual("(bar) a / (foo bar)\n", out)
 
 
+class TestBug1719(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_improper_ordinals(self):
+        """1719: Description cannot contain improper ordinals"""
+        self.t("add one 1th");
+        self.t("add two 23rd");
+
+        code, out, err = self.t("_get 1.description")
+        self.assertEqual("one 1th\n", out)
+
+        code, out, err = self.t("_get 2.description")
+        self.assertEqual("two 23rd\n", out)
+
+
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
     unittest.main(testRunner=TAPTestRunner())
