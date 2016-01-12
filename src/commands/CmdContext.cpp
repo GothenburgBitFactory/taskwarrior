@@ -59,19 +59,20 @@ int CmdContext::execute (std::string& output)
   std::stringstream out;
 
   // Get the non-attribute, non-fancy command line arguments.
-  std::vector <std::string> words = context.cli2.getWords ();
-
+  auto words = context.cli2.getWords ();
   if (words.size () > 0)
   {
-    std::string subcommand = words[0];
+    auto subcommand = words[0];
 
          if (subcommand == "define") defineContext (words, out);
     else if (subcommand == "delete") deleteContext (words, out);
     else if (subcommand == "list")   listContexts (out);
     else if (subcommand == "none")   unsetContext (out);
     else if (subcommand == "show")   showContext (out);
-    else                             setContext (words, out);
+    else if (words.size ())          setContext (words, out);
   }
+  else
+    listContexts (out);
 
   output = out.str ();
   return 0;
@@ -127,12 +128,12 @@ std::vector <std::string> CmdContext::getContexts ()
 //
 void CmdContext::defineContext (const std::vector <std::string>& words, std::stringstream& out)
 {
-  bool confirmation = context.config.getBoolean ("confirmation");
+  auto confirmation = context.config.getBoolean ("confirmation");
 
   if (words.size () > 2)
   {
-    std::string name = "context." + words[1];
-    std::string value = joinWords (words, 2);
+    auto name = "context." + words[1];
+    auto value = joinWords (words, 2);
 
     // Check if the value is a proper filter by filtering current pending.data
     Filter filter;
@@ -159,14 +160,13 @@ void CmdContext::defineContext (const std::vector <std::string>& words, std::str
     // Set context definition config variable
     bool success = CmdConfig::setConfigVariable (name, value, confirmation);
 
-    if (success)
-      out << format (STRING_CMD_CONTEXT_DEF_SUCC, words[1]) << "\n";
-    else
+    if (!success)
       throw format (STRING_CMD_CONTEXT_DEF_FAIL, words[1]);
+
+    out << format (STRING_CMD_CONTEXT_DEF_SUCC, words[1]) << "\n";
   }
   else
     throw std::string (STRING_CMD_CONTEXT_DEF_USAG);
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -184,22 +184,20 @@ void CmdContext::deleteContext (const std::vector <std::string>& words, std::str
   if (words.size () > 1)
   {
     // Delete the specified context
-    std::string name = "context." + words[1];
+    auto name = "context." + words[1];
 
-    bool confirmation = context.config.getBoolean ("confirmation");
-    int rc = CmdConfig::unsetConfigVariable(name, confirmation);
+    auto confirmation = context.config.getBoolean ("confirmation");
+    auto rc = CmdConfig::unsetConfigVariable(name, confirmation);
 
     // If the currently set context was deleted, unset it
-    std::string currentContext = context.config.get ("context");
-
-    if (currentContext == words[1])
+    if (context.config.get ("context") == words[1])
       CmdConfig::unsetConfigVariable("context", false);
 
     // Output feedback
-    if (rc == 0)
-      out << format (STRING_CMD_CONTEXT_DEL_SUCC, words[1]) << "\n";
-    else
+    if (rc != 0)
       throw format (STRING_CMD_CONTEXT_DEL_FAIL, words[1]);
+
+    out << format (STRING_CMD_CONTEXT_DEL_SUCC, words[1]) << "\n";
   }
   else
     throw std::string(STRING_CMD_CONTEXT_DEL_USAG);
@@ -215,8 +213,7 @@ void CmdContext::deleteContext (const std::vector <std::string>& words, std::str
 //
 void CmdContext::listContexts (std::stringstream& out)
 {
-  std::vector <std::string> contexts = getContexts();
-
+  auto contexts = getContexts();
   if (contexts.size ())
   {
     std::sort (contexts.begin (), contexts.end ());
@@ -237,16 +234,13 @@ void CmdContext::listContexts (std::stringstream& out)
 
     for (auto& userContext : contexts)
     {
-      std::string definition = context.config.get ("context." + userContext);
-
       std::string active = "no";
-
       if (userContext == activeContext)
           active = "yes";
 
       int row = view.addRow ();
       view.set (row, 0, userContext);
-      view.set (row, 1, definition);
+      view.set (row, 1, context.config.get ("context." + userContext));
       view.set (row, 2, active);
     }
 
@@ -271,8 +265,8 @@ void CmdContext::listContexts (std::stringstream& out)
 //
 void CmdContext::setContext (const std::vector <std::string>& words, std::stringstream& out)
 {
-  std::string value = words[0];
-  std::vector <std::string> contexts = getContexts ();
+  auto value = words[0];
+  auto contexts = getContexts ();
 
   // Check that the specified context is defined
   if (std::find (contexts.begin (), contexts.end (), value) == contexts.end ())
@@ -282,10 +276,10 @@ void CmdContext::setContext (const std::vector <std::string>& words, std::string
   // Should always succeed, as we do not require confirmation.
   bool success = CmdConfig::setConfigVariable ("context", value, false);
 
-  if (success)
-    out << format (STRING_CMD_CONTEXT_SET_SUCC, value) << "\n";
-  else
+  if (! success)
     throw format (STRING_CMD_CONTEXT_SET_FAIL, value);
+
+  out << format (STRING_CMD_CONTEXT_SET_SUCC, value) << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -298,7 +292,7 @@ void CmdContext::setContext (const std::vector <std::string>& words, std::string
 //
 void CmdContext::showContext (std::stringstream& out)
 {
-  std::string currentContext = context.config.get ("context");
+  auto currentContext = context.config.get ("context");
 
   if (currentContext == "")
     out << STRING_CMD_CONTEXT_SHOW_EMPT << "\n";
@@ -321,12 +315,10 @@ void CmdContext::showContext (std::stringstream& out)
 //
 void CmdContext::unsetContext (std::stringstream& out)
 {
-  int status = CmdConfig::unsetConfigVariable ("context", false);
-
-  if (status == 0)
-    out << STRING_CMD_CONTEXT_NON_SUCC << "\n";
-  else
+  if (CmdConfig::unsetConfigVariable ("context", false))
     throw std::string(STRING_CMD_CONTEXT_NON_FAIL);
+
+  out << STRING_CMD_CONTEXT_NON_SUCC << "\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -348,10 +340,8 @@ CmdCompletionContext::CmdCompletionContext ()
 ////////////////////////////////////////////////////////////////////////////////
 int CmdCompletionContext::execute (std::string& output)
 {
-  std::vector <std::string> userContexts = CmdContext::getContexts ();
-
-  for (auto& userContext : userContexts)
-    output += userContext + "\n";
+  for (auto& contet : CmdContext::getContexts ())
+    output += contet + "\n";
 
   return 0;
 }
