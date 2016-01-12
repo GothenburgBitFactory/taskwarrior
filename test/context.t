@@ -534,6 +534,17 @@ class ContextErrorHandling(TestCase):
         code, out, err = self.t("context show")
         self.assertIn("No context is currently applied.", out)
 
+class TestBug1734(TestCase):
+    def setUp(self):
+        self.t = Task()
+        self.t("add zero")
+        self.t("add one +tag")
+        self.t("context define foo +tag", input="y\n")
+
+    def test_calendar(self):
+        """The 'calendar' command should not fail when a context is active"""
+        code, out, err = self.t("calendar")
+
 
 # TODO Prove context does not interfere with export
 # TODO Prove context does not interfere with undo

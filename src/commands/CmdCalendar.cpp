@@ -49,7 +49,7 @@ CmdCalendar::CmdCalendar ()
   _read_only             = true;
   _displays_id           = true;
   _needs_gc              = true;
-  _uses_context          = true;
+  _uses_context          = false;
   _accepts_filter        = false;
   _accepts_modifications = false;
   _accepts_miscellaneous = true;
