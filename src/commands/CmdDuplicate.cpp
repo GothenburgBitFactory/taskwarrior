@@ -114,9 +114,14 @@ int CmdDuplicate::execute (std::string&)
       ++count;
       feedback_affected (STRING_CMD_DUPLICATE_TASK, task);
 
-      if (context.verbose ("new-id"))
+      auto status = dup.getStatus ();
+      if (context.verbose ("new-id") &&
+          (status == Task::pending ||
+           status == Task::waiting))
         std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.id) + "\n";
-      else if (context.verbose ("new-uuid"))
+
+      else if (context.verbose ("new-uuid") &&
+               status != Task::recurring)
         std::cout << format (STRING_CMD_ADD_FEEDBACK, dup.get ("uuid")) + "\n";
 
       if (context.verbose ("project"))

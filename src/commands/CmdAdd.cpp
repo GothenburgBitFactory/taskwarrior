@@ -59,9 +59,14 @@ int CmdAdd::execute (std::string& output)
   context.tdb2.add (task);
 
   // Do not display ID 0, users cannot query by that
-  if (context.verbose ("new-id") && task.id != 0)
+  auto status = task.getStatus ();
+  if (context.verbose ("new-id") &&
+      (status == Task::pending ||
+       status == Task::waiting))
     output += format (STRING_CMD_ADD_FEEDBACK, task.id) + "\n";
-  else if (context.verbose ("new-uuid"))
+
+  else if (context.verbose ("new-uuid") &&
+           status != Task::recurring)
     output += format (STRING_CMD_ADD_FEEDBACK, task.get ("uuid")) + "\n";
 
   if (context.verbose ("project"))

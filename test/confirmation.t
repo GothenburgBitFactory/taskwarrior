@@ -85,7 +85,6 @@ class TestBug1438(TestCase):
     def test_recurring_tasks_shouldn_ask_for_confirmation(self):
         """1438: rc.confirmation=off still prompts while changing recurring tasks"""
         code, out, err = self.t("add Sometimes due:tomorrow recur:daily")
-        self.assertIn("Created task 1", out)
         code, out, err = self.t("list")
         self.assertIn("Sometimes", out)
 
