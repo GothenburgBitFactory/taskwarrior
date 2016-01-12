@@ -331,22 +331,24 @@ int CmdDiagnostics::execute (std::string& output)
     for (auto& hook : hooks)
     {
       Path p (hook);
-
-      std::string name = p.name ();
-
-      if (p.executable () &&
-          (name.substr (0, 6) == "on-add"    ||
-           name.substr (0, 9) == "on-modify" ||
-           name.substr (0, 9) == "on-launch" ||
-           name.substr (0, 7) == "on-exit"))
+      if (! p.is_directory ())
       {
-        out << (count++ ? "             " : "");
+        std::string name = p.name ();
 
-        out.width (longest);
-        out << std::left << name
-            << format (" ({1})", STRING_CMD_DIAG_HOOK_EXEC)
-            << (p.is_link () ? format (" ({1})", STRING_CMD_DIAG_HOOK_SYMLINK) : "")
-            << "\n";
+        if (p.executable () &&
+            (name.substr (0, 6) == "on-add"    ||
+             name.substr (0, 9) == "on-modify" ||
+             name.substr (0, 9) == "on-launch" ||
+             name.substr (0, 7) == "on-exit"))
+        {
+          out << (count++ ? "             " : "");
+
+          out.width (longest);
+          out << std::left << name
+              << format (" ({1})", STRING_CMD_DIAG_HOOK_EXEC)
+              << (p.is_link () ? format (" ({1})", STRING_CMD_DIAG_HOOK_SYMLINK) : "")
+              << "\n";
+        }
       }
     }
 
@@ -355,25 +357,28 @@ int CmdDiagnostics::execute (std::string& output)
     for (auto& hook : hooks)
     {
       Path p (hook);
-      std::string name = p.name ();
-
-      if (! p.executable () ||
-          (name.substr (0, 6) != "on-add"    &&
-           name.substr (0, 9) != "on-modify" &&
-           name.substr (0, 9) != "on-launch" &&
-           name.substr (0, 7) != "on-exit"))
+      if (! p.is_directory ())
       {
-        out << (count++ ? "             " : "");
+        std::string name = p.name ();
 
-        out.width (longest);
-        out << std::left << name
-            << (p.executable () ? format (" ({1})", STRING_CMD_DIAG_HOOK_EXEC) : format (" ({1})", STRING_CMD_DIAG_HOOK_NO_EXEC))
-            << (p.is_link () ? format (" ({1})", STRING_CMD_DIAG_HOOK_SYMLINK) : "")
-            << ((name.substr (0, 6) == "on-add" ||
-                 name.substr (0, 9) == "on-modify" ||
-                 name.substr (0, 9) == "on-launch" ||
-                 name.substr (0, 7) == "on-exit") ? "" : format (" ({1})", STRING_CMD_DIAG_HOOK_NAME))
-            << "\n";
+        if (! p.executable () ||
+            (name.substr (0, 6) != "on-add"    &&
+             name.substr (0, 9) != "on-modify" &&
+             name.substr (0, 9) != "on-launch" &&
+             name.substr (0, 7) != "on-exit"))
+        {
+          out << (count++ ? "             " : "");
+
+          out.width (longest);
+          out << std::left << name
+              << (p.executable () ? format (" ({1})", STRING_CMD_DIAG_HOOK_EXEC) : format (" ({1})", STRING_CMD_DIAG_HOOK_NO_EXEC))
+              << (p.is_link () ? format (" ({1})", STRING_CMD_DIAG_HOOK_SYMLINK) : "")
+              << ((name.substr (0, 6) == "on-add" ||
+                   name.substr (0, 9) == "on-modify" ||
+                   name.substr (0, 9) == "on-launch" ||
+                   name.substr (0, 7) == "on-exit") ? "" : format (" ({1})", STRING_CMD_DIAG_HOOK_NAME))
+              << "\n";
+        }
       }
     }
   }

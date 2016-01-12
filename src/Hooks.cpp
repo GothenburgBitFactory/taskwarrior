@@ -71,14 +71,17 @@ void Hooks::initialize ()
       for (auto& i : _scripts)
       {
         Path p (i);
-        std::string name = p.name ();
-        if (name.substr (0, 6) == "on-add"    ||
-            name.substr (0, 9) == "on-modify" ||
-            name.substr (0, 9) == "on-launch" ||
-            name.substr (0, 7) == "on-exit")
-          context.debug ("Found hook script " + i);
-        else
-          context.debug ("Found misnamed hook script " + i);
+        if (! p.is_directory ())
+        {
+          std::string name = p.name ();
+          if (name.substr (0, 6) == "on-add"    ||
+              name.substr (0, 9) == "on-modify" ||
+              name.substr (0, 9) == "on-launch" ||
+              name.substr (0, 7) == "on-exit")
+            context.debug ("Found hook script " + i);
+          else
+            context.debug ("Found misnamed hook script " + i);
+        }
       }
     }
   }

@@ -22,6 +22,8 @@
 - TW-1703 When on-modify hook is installed, some messages print UUIDs
           instead of IDs (thanks to Robin Green).
 - TW-1704 Use Task::identifier to reference the Task in the output
+- TW-1705 Directories in .task/hooks should not be reported as invalid hooks
+          (thanks to Tomas Babej).
 - TW-1720 CmdContext uses a mix of both throw and std::cout to convey
           errors (thanks to Paul Beckingham).
 - TW-1723 task info causes segfault (thanks to Roman Golovin).
