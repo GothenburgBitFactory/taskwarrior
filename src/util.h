@@ -32,7 +32,7 @@
 #include <vector>
 #include <map>
 #include <sys/types.h>
-#ifdef FREEBSD
+#if defined(FREEBSD) || defined(OPENBSD)
 #include <uuid.h>
 #else
 #include <uuid/uuid.h>
