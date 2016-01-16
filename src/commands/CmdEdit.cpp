@@ -44,6 +44,7 @@
 #include <i18n.h>
 #include <main.h>
 #include <JSON.h>
+#include <cerrno>
 
 extern Context context;
 
