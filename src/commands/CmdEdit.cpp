@@ -28,11 +28,11 @@
 #include <CmdEdit.h>
 #include <iostream>
 #include <sstream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cstring>
 #include <algorithm>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 #include <ISO8601.h>
 #include <Context.h>
 #include <Lexer.h>
@@ -44,7 +44,6 @@
 #include <i18n.h>
 #include <main.h>
 #include <JSON.h>
-#include <cerrno>
 
 extern Context context;
 
