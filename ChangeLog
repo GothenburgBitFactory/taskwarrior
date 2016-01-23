@@ -7,6 +7,8 @@
 - TW-1313 some recurring intervals reset due time to midnight
           (thanks to James Dietrich).
 - TW-1425 The 'age' format rounds in odd ways (thanks to Black Ops testing).
+- TW-1435 Ability to sync the full history of tasks including completed ones
+          (thanks to Renato Alves).
 - TW-1446 Difference in how relative dates are specified in report filters since 2.3.0
           (thanks to atomicules).
 - TW-1481 Unable to assign a completed task as dependency (thanks to Tomas

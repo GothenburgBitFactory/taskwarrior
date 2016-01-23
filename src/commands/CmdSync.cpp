@@ -125,8 +125,8 @@ int CmdSync::execute (std::string& output)
   if (! key.exists ())
     throw std::string (STRING_CMD_SYNC_BAD_KEY);
 
-  // If this is a first-time initialization, send pending.data, not
-  // backlog.data.
+  // If this is a first-time initialization, send pending.data and
+  // completed.data, but not backlog.data.
   std::string payload = "";
   int upload_count = 0;
   if (first_time_init)
@@ -135,8 +135,8 @@ int CmdSync::execute (std::string& output)
     // deltas is meaningless.
     context.tdb2.backlog._file.truncate ();
 
-    auto pending = context.tdb2.pending.get_tasks ();
-    for (auto& i : pending)
+    auto all_tasks = context.tdb2.all_tasks ();
+    for (auto& i : all_tasks)
     {
       payload += i.composeJSON () + "\n";
       ++upload_count;
@@ -161,6 +161,11 @@ int CmdSync::execute (std::string& output)
   request.set ("org",      credentials[0]);
   request.set ("user",     credentials[1]);
   request.set ("key",      credentials[2]);
+
+  // Tell the server that this is a full upload, allowing it to perhaps compact
+  // its data.
+  if (first_time_init)
+    request.set ("subtype", "init");
 
   request.setPayload (payload);
 
