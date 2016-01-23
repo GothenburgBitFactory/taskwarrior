@@ -273,27 +273,31 @@ void Filter::safety ()
 {
   if (_safety)
   {
+    bool readonly = true;
+    bool filter = false;
     for (auto& a : context.cli2._args)
     {
-      if (a.hasTag ("CMD"))
-      {
-        if (! a.hasTag ("READONLY"))
-        {
-          if (! context.config.getBoolean ("allow.empty.filter"))
-            throw std::string (STRING_TASK_SAFETY_ALLOW);
+      if (a.hasTag ("CMD") &&
+          ! a.hasTag ("READONLY"))
+        readonly = false;
 
-          // If user is willing to be asked, this can be avoided.
-          if (context.config.getBoolean ("confirmation") &&
-              confirm (STRING_TASK_SAFETY_VALVE))
-            return;
+      if (a.hasTag ("FILTER"))
+        filter = true;
+    }
 
-          // Sounds the alarm.
-          throw std::string (STRING_TASK_SAFETY_FAIL);
-        }
+    if (! readonly &&
+        ! filter)
+    {
+      if (! context.config.getBoolean ("allow.empty.filter"))
+         throw std::string (STRING_TASK_SAFETY_ALLOW);
 
-        // CMD was found.
+      // If user is willing to be asked, this can be avoided.
+      if (context.config.getBoolean ("confirmation") &&
+          confirm (STRING_TASK_SAFETY_VALVE))
         return;
-      }
+
+      // Sound the alarm.
+      throw std::string (STRING_TASK_SAFETY_FAIL);
     }
   }
 }
