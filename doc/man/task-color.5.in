@@ -104,7 +104,7 @@ after 'on' are background.
 
 There is an additional 'underline' attribute that may be used:
 
-    underline bright red on black
+    underline bold red on black
 
 And an 'inverse' attribute:
 
@@ -113,7 +113,7 @@ And an 'inverse' attribute:
 Taskwarrior has a command that helps you visualize these color combinations.
 Try this:
 
-    $ task color underline bright red on black
+    $ task color underline bold red on black
 
 You can use this command to see how the various color combinations work.  You
 will also see some sample colors displayed, like the ones above, in addition to
