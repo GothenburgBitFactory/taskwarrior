@@ -35,7 +35,10 @@ ColumnTypeString::ColumnTypeString ()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
-void ColumnTypeString::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
+void ColumnTypeString::measure (
+  Task& task,
+  unsigned int& minimum,
+  unsigned int& maximum)
 {
 }
 
