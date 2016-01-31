@@ -1950,7 +1950,7 @@ void Task::modify (modType type, bool text_required /* = false */)
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
   std::string text = "";
-  int modCount = 0;
+  bool mods = false;
   for (auto& a : context.cli2._args)
   {
     if (a.hasTag ("MODIFICATION"))
@@ -1969,7 +1969,7 @@ void Task::modify (modType type, bool text_required /* = false */)
           // the attribute will prevent ::validate from applying defaults.
           set (name, "");
           context.debug (label + name + " <-- ''");
-          ++modCount;
+          mods = true;
         }
         else
         {
@@ -2010,7 +2010,7 @@ void Task::modify (modType type, bool text_required /* = false */)
           if (name == "depends")
           {
             column->modify (*this, value);
-            ++modCount;
+            mods = true;
           }
 
           // For those using the "tags:..." attribute directly.
@@ -2050,7 +2050,7 @@ void Task::modify (modType type, bool text_required /* = false */)
               feedback_special_tags (*this, tag);
             }
 
-            ++modCount;
+            mods = true;
           }
 
           // Dates are special, maybe.
@@ -2076,7 +2076,7 @@ void Task::modify (modType type, bool text_required /* = false */)
               throw format (STRING_DATE_INVALID_FORMAT, value, Variant::dateFormat);
 
             set (name, evaluatedValue.get_date ());
-            ++modCount;
+            mods = true;
           }
 
           // Special case: type duration.
@@ -2091,7 +2091,7 @@ void Task::modify (modType type, bool text_required /* = false */)
               // Store the raw value, for 'recur'.
               context.debug (label + name + " <-- '" + value + "'");
               set (name, value);
-              ++modCount;
+              mods = true;
             }
             else
               throw format (STRING_TASK_INVALID_DUR, value);
@@ -2107,7 +2107,7 @@ void Task::modify (modType type, bool text_required /* = false */)
               // Store the raw value, for 'recur'.
               context.debug (label + name + " <-- " + (std::string) evaluatedValue + " <-- '" + value + "'");
               set (name, evaluatedValue);
-              ++modCount;
+              mods = true;
             }
             else
               throw format (STRING_TASK_INVALID_DUR, value);
@@ -2124,7 +2124,7 @@ void Task::modify (modType type, bool text_required /* = false */)
               throw format (STRING_UDA_NUMERIC, evaluatedValue.get_string ());
 
             set (name, evaluatedValue);
-            ++modCount;
+            mods = true;
           }
 
           // String type columns are not eval'd.  Well, not much.
@@ -2149,7 +2149,7 @@ void Task::modify (modType type, bool text_required /* = false */)
               }
 */
 
-              ++modCount;
+              mods = true;
             }
             else
               throw format (STRING_INVALID_MOD, name, value);
@@ -2167,7 +2167,7 @@ void Task::modify (modType type, bool text_required /* = false */)
         substitute (a.attribute ("from"),
                     a.attribute ("to"),
                     a.attribute ("flags"));
-        ++modCount;
+        mods = true;
       }
 
       // Tags need special handling because they are essentially a vector stored
@@ -2190,7 +2190,7 @@ void Task::modify (modType type, bool text_required /* = false */)
           removeTag (tag);
         }
 
-        ++modCount;
+        mods = true;
       }
 
       // Unknown args are accumulated as though they were WORDs.
@@ -2232,7 +2232,7 @@ void Task::modify (modType type, bool text_required /* = false */)
       break;
     }
   }
-  else if (modCount == 0 && text_required)
+  else if (! mods && text_required)
     throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
 }
 #endif
