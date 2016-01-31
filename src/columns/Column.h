@@ -63,7 +63,8 @@ public:
   virtual void renderHeader (std::vector <std::string>&, int, Color&);
   virtual void render (std::vector <std::string>&, const std::string&, int, Color&) {};
   virtual void render (std::vector <std::string>&, Task&, int, Color&)              {};
-  virtual std::string modify (std::string& input)                                   { return input; };
+
+  virtual void modify (Task&, const std::string&);
 
 protected:
   void renderInteger     (std::vector <std::string>&, int, Color&, int);
