@@ -28,11 +28,17 @@
 #include <ColTags.h>
 #include <algorithm>
 #include <Context.h>
+#include <Eval.h>
+#include <Variant.h>
+#include <Filter.h>
+#include <Dates.h>
 #include <text.h>
 #include <i18n.h>
 #include <utf8.h>
+#include <main.h>
 
 extern Context context;
+extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTags::ColumnTags ()
@@ -142,6 +148,46 @@ void ColumnTags::render (
       split (all, tags, ',');
       renderStringRight (lines, width, color, "[" + format (static_cast <int> (all.size ())) + "]");
     }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnTags::modify (Task& task, const std::string& value)
+{
+  std::string label = "  [1;37;43mMODIFICATION[0m ";
+
+  // TW-1701
+  task.set ("tags", "");
+
+  std::vector <std::string> tags;
+  split (tags, value, ',');
+
+  for (auto& tag : tags)
+  {
+    // If it's a DOM ref, eval it first.
+    Lexer lexer (tag);
+    std::string domRef;
+    Lexer::Type type;
+    if (lexer.token (domRef, type) &&
+        type == Lexer::Type::dom)
+    {
+      Eval e;
+      e.addSource (domSource);
+      e.addSource (namedDates);
+      contextTask = task;
+
+      Variant v;
+      e.evaluateInfixExpression (value, v);
+      task.addTag ((std::string) v);
+      context.debug (label + "tags <-- '" + (std::string) v + "' <-- '" + tag + "'");
+    }
+    else
+    {
+      task.addTag (tag);
+      context.debug (label + "tags <-- '" + tag + "'");
+    }
+
+    feedback_special_tags (task, tag);
   }
 }
 

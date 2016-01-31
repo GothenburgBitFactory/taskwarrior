@@ -2006,50 +2006,11 @@ void Task::modify (modType type, bool text_required /* = false */)
             evaluatedValue = Variant (value);
           }
 
-          // Dependencies are specified as IDs.
-          if (name == "depends")
+          // Dependencies are specified as IDs or UUIDs.
+          if (name == "depends" ||
+              name == "tags")
           {
             column->modify (*this, value);
-            mods = true;
-          }
-
-          // For those using the "tags:..." attribute directly.
-          else if (name == "tags")
-          {
-            // TW-1701
-            set ("tags", "");
-
-            std::vector <std::string> tags;
-            split (tags, value, ',');
-
-            for (auto& tag : tags)
-            {
-              // If it's a DOM ref, eval it first.
-              Lexer lexer (tag);
-              std::string domRef;
-              Lexer::Type type;
-              if (lexer.token (domRef, type) &&
-                  type == Lexer::Type::dom)
-              {
-                Eval e;
-                e.addSource (domSource);
-                e.addSource (namedDates);
-                contextTask = *this;
-
-                Variant v;
-                e.evaluateInfixExpression (value, v);
-                addTag ((std::string) v);
-                context.debug (label + "tags <-- '" + (std::string) v + "' <-- '" + tag + "'");
-              }
-              else
-              {
-                addTag (tag);
-                context.debug (label + "tags <-- '" + tag + "'");
-              }
-
-              feedback_special_tags (*this, tag);
-            }
-
             mods = true;
           }
 
