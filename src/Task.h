@@ -57,12 +57,10 @@ public:
   static float urgencyAgeMax;
 
 public:
-  Task ();                       // Default constructor
+  Task () = default;             // Default constructor
   bool operator== (const Task&); // Comparison operator
   Task (const std::string&);     // Parse
   Task (const json::object*);    // Parse
-
-  std::map <std::string, std::string> data;
 
   void parse (const std::string&);
   std::string composeF4 () const;
@@ -75,14 +73,13 @@ public:
   enum dateState {dateNotDue, dateAfterToday, dateLaterToday, dateEarlierToday, dateBeforeToday};
 
   // Public data.
-  int id;
-  float urgency_value;
-  bool recalc_urgency;
-
-  bool is_blocked;
-  bool is_blocking;
-
-  int annotation_count;
+  std::map <std::string, std::string> data {};
+  int id                                   {0};
+  float urgency_value                      {0.0};
+  bool recalc_urgency                      {true};
+  bool is_blocked                          {false};
+  bool is_blocking                         {false};
+  int annotation_count                     {0};
 
   // Series of helper functions.
   static status textToStatus (const std::string&);

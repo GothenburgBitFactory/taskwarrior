@@ -89,18 +89,6 @@ std::map <std::string, std::vector <std::string>> Task::customOrder;
 static const std::string dummy ("");
 
 ////////////////////////////////////////////////////////////////////////////////
-Task::Task ()
-: data ()
-, id (0)
-, urgency_value (0.0)
-, recalc_urgency (true)
-, is_blocked (false)
-, is_blocking (false)
-, annotation_count (0)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // The uuid and id attributes must be exempt from comparison.
 //
 // This performs two tests which are sufficient and necessary for Task
