@@ -57,10 +57,10 @@ public:
   static float urgencyAgeMax;
 
 public:
-  Task () = default;             // Default constructor
-  bool operator== (const Task&); // Comparison operator
-  Task (const std::string&);     // Parse
-  Task (const json::object*);    // Parse
+  Task () = default;
+  bool operator== (const Task&);
+  Task (const std::string&);
+  Task (const json::object*);
 
   void parse (const std::string&);
   std::string composeF4 () const;
