@@ -32,6 +32,7 @@
 #include <utf8.h>
 #include <i18n.h>
 #include <main.h>
+#include <stdlib.h>
 
 extern Context context;
 
@@ -142,6 +143,33 @@ void ColumnDepends::render (
         for (auto& i : all)
           renderStringLeft (lines, width, color, i);
       }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnDepends::modify (Task& task, const std::string& value)
+{
+  // Parse IDs
+  std::vector <std::string> deps;
+  split (deps, value, ',');
+
+  // Apply or remove dendencies in turn.
+  for (auto& dep : deps)
+  {
+    if (dep[0] == '-')
+    {
+      if (dep.length () == 37)
+        task.removeDependency (dep.substr (1));
+      else
+        task.removeDependency (strtol (dep.substr (1).c_str (), NULL, 10));
+    }
+    else
+    {
+      if (dep.length () == 36)
+        task.addDependency (dep);
+      else
+        task.addDependency (strtol (dep.c_str (), NULL, 10));
     }
   }
 }

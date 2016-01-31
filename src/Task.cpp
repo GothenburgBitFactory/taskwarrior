@@ -2009,29 +2009,7 @@ void Task::modify (modType type, bool text_required /* = false */)
           // Dependencies are specified as IDs.
           if (name == "depends")
           {
-            // Parse IDs
-            std::vector <std::string> deps;
-            split (deps, value, ',');
-
-            // Apply or remove dendencies in turn.
-            for (auto& dep : deps)
-            {
-              if (dep[0] == '-')
-              {
-                if (dep.length () == 37)
-                  removeDependency (dep.substr (1));
-                else
-                  removeDependency (strtol (dep.substr (1).c_str (), NULL, 10));
-              }
-              else
-              {
-                if (dep.length () == 36)
-                  addDependency (dep);
-                else
-                  addDependency (strtol (dep.c_str (), NULL, 10));
-              }
-            }
-
+            column->modify (*this, value);
             ++modCount;
           }
 
