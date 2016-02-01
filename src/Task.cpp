@@ -1981,125 +1981,17 @@ void Task::modify (modType type, bool text_required /* = false */)
               ! column->modifiable ())
             throw format (STRING_INVALID_MOD, name, value);
 
-          // TODO This eval section will go away soon...
-          // DOM resolution. If it evals, store that, otherwise raw.
-          Variant evaluatedValue;
-          if (name != "project" || Lexer::isDOM (value))
-          {
-            // Try to evaluate 'value'.  It might work.
-            try
-            {
-              Eval e;
-              e.addSource (domSource);
-              e.addSource (namedDates);
-              contextTask = *this;
-              e.evaluateInfixExpression (value, evaluatedValue);
-            }
-
-            // Ah, fuck it.
-            catch (...)
-            {
-              evaluatedValue = Variant (value);
-            }
-          }
-          else
-          {
-            evaluatedValue = Variant (value);
-          }
-
           // Delegate modification to the column object or their base classes.
-          if (name == "depends" ||
-              name == "tags"    ||
-              name == "recur")
+          if (name == "depends"             ||
+              name == "tags"                ||
+              name == "recur"               ||
+              column->type () == "date"     ||
+              column->type () == "duration" ||
+              column->type () == "numeric"  ||
+              column->type () == "string")
           {
             column->modify (*this, value);
             mods = true;
-          }
-
-          // Dates are special, maybe.
-          else if (column->type () == "date")
-          {
-/*
-            column->modify (*this, value);
-            mods = true;
-*/
-            // If v is duration, add 'now' to it, else store as date.
-            if (evaluatedValue.type () == Variant::type_duration)
-            {
-              context.debug (label + name + " <-- '" + format ("{1}", format (evaluatedValue.get_duration ())) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + "'");
-              Variant now;
-              if (namedDates ("now", now))
-                evaluatedValue += now;
-            }
-            else
-            {
-              evaluatedValue.cast (Variant::type_date);
-              context.debug (label + name + " <-- '" + format ("{1}", evaluatedValue.get_date ()) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + "'");
-            }
-
-            // If a date doesn't parse (2/29/2014) then it evaluates to zero.
-            if (value != "" &&
-                evaluatedValue.get_date () == 0)
-              throw format (STRING_DATE_INVALID_FORMAT, value, Variant::dateFormat);
-
-            set (name, evaluatedValue.get_date ());
-            mods = true;
-          }
-
-          else if (column->type () == "duration")
-          {
-/*
-            column->modify (*this, value);
-            mods = true;
-*/
-            // The duration is stored in raw form, but it must still be valid,
-            // and therefore is parsed first.
-
-            if (evaluatedValue.type () == Variant::type_duration)
-            {
-              // Store the raw value, for 'recur'.
-              context.debug (label + name + " <-- " + (std::string) evaluatedValue + " <-- '" + value + "'");
-              set (name, evaluatedValue);
-              mods = true;
-            }
-            else
-              throw format (STRING_TASK_INVALID_DUR, value);
-          }
-
-          // Need handling for numeric types, used by UDAs.
-          else if (column->type () == "numeric")
-          {
-/*
-            column->modify (*this, value);
-            mods = true;
-*/
-            context.debug (label + name + " <-- '" + evaluatedValue.get_string () + "' <-- '" + value + "'");
-
-            // If the result is not readily convertible to a numeric value,
-            // then this is an error.
-            if (evaluatedValue.type () == Variant::type_string)
-              throw format (STRING_UDA_NUMERIC, evaluatedValue.get_string ());
-
-            set (name, evaluatedValue);
-            mods = true;
-          }
-
-          // String type columns are not eval'd.  Well, not much.
-          else if (column->type () == "string")
-          {
-/*
-            column->modify (*this, value);
-            mods = true;
-*/
-            std::string strValue = (std::string) evaluatedValue;
-            if (column->validate (strValue))
-            {
-              context.debug (label + name + " <-- '" + strValue + "' <-- '" + value + "'");
-              (*this).set (name, strValue);
-              mods = true;
-            }
-            else
-              throw format (STRING_INVALID_MOD, name, value);
           }
 
           else
