@@ -373,7 +373,7 @@ class TestDateFormats(TestCase):
         """Verify due.age formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.age")
         self.assertRegexpMatches(out, r'1\s+[0-9.]+d')
-        self.assertRegexpMatches(out, r'2\s+-[0-9.]+h')
+        self.assertRegexpMatches(out, r'2\s+-[0-9.]+[hmin]+')
 
     def test_date_format_remaining(self):
         """Verify due.remaining formatting"""
@@ -385,7 +385,7 @@ class TestDateFormats(TestCase):
         """Verify due.relative formatting"""
         code, out, err = self.t("xxx rc.report.xxx.columns:id,due.relative")
         self.assertRegexpMatches(out, r'1\s+-[0-9.]+d')
-        self.assertRegexpMatches(out, r'2\s+[0-9.]+h')
+        self.assertRegexpMatches(out, r'2\s+[0-9.]+[hmin]+')
 
     def test_date_format_countdown(self):
         """Verify due.countdown formatting"""

@@ -49,6 +49,7 @@
 - TW-1750 REG_ENHANCED, used in RX.cpp, isn't defined in all versions of Darwin
           (thanks to Misty De Meo).
 - TW-1752 cleanup of diag output (thanks to David Patrick).
+- TW-1756 The columns.t unit test fails two tests after 2300 local.
 - Fixed broken build for Cygwin and older GCC (thanks to Richard Boß).
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.
