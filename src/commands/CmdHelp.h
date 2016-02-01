@@ -35,6 +35,9 @@ class CmdHelp : public Command
 public:
   CmdHelp ();
   int execute (std::string&);
+
+private:
+  std::string composeUsage () const;
 };
 
 #endif

@@ -1,11 +1,14 @@
 
 New Features in Taskwarrior 2.5.1
 
-  - None, this is a bug-fix, code cleanup and performance release only.
+  - As a bug-fix, code cleanup and performance release, new features are
+    limited to only small tweaks.
+  - The 'help' command now takes a 'usage' argument, which displays only the
+    command usage.
 
 New Commands in Taskwarrior 2.5.1
 
-  - None, this is a bug-fix, code cleanup and performance release only.
+  - None.
 
 New Configuration Options in Taskwarrior 2.5.1
 

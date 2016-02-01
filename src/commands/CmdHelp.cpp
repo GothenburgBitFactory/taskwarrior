@@ -32,6 +32,7 @@
 #include <i18n.h>
 #include <text.h>
 #include <util.h>
+#include <iostream> // TODO Remove
 
 extern Context context;
 
@@ -39,7 +40,7 @@ extern Context context;
 CmdHelp::CmdHelp ()
 {
   _keyword               = "help";
-  _usage                 = "task          help";
+  _usage                 = "task          help ['usage']";
   _description           = STRING_CMD_HELP_USAGE;
   _read_only             = true;
   _displays_id           = false;
@@ -47,12 +48,29 @@ CmdHelp::CmdHelp ()
   _uses_context          = false;
   _accepts_filter        = false;
   _accepts_modifications = false;
-  _accepts_miscellaneous = false;
+  _accepts_miscellaneous = true;
   _category              = Command::Category::misc;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int CmdHelp::execute (std::string& output)
+{
+  auto words = context.cli2.getWords ();
+  if (words.size () == 1 && closeEnough ("usage", words[0]))
+    output = "\n"
+           + composeUsage ()
+           + "\n";
+  else
+    output = "\n"
+           + composeUsage ()
+           + "\n"
+           + STRING_CMD_HELP_TEXT;
+
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+std::string CmdHelp::composeUsage () const
 {
   ViewText view;
   view.width (context.getWidth ());
@@ -110,12 +128,7 @@ int CmdHelp::execute (std::string& output)
     }
   }
 
-  output = "\n"
-         + view.render ()
-         + "\n"
-         + STRING_CMD_HELP_TEXT;
-
-  return 0;
+  return view.render ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
