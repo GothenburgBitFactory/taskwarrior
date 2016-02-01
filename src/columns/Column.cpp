@@ -168,7 +168,8 @@ void Column::uda (std::map <std::string, Column*>& all)
       throw format (STRING_UDA_COLLISION, uda);
 
     Column* c = Column::uda (uda);
-    all[c->_name] = c;
+    if (c)
+      all[c->_name] = c;
   }
 }
 
