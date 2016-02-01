@@ -151,7 +151,7 @@ void Column::uda (std::map <std::string, Column*>& all)
   // For each UDA, instantiate and initialize ColumnUDA().
   std::set <std::string> udas;
 
-  for (auto& i : context.config)
+  for (const auto& i : context.config)
   {
     if (i.first.substr (0, 4) == "uda.")
     {
@@ -162,7 +162,7 @@ void Column::uda (std::map <std::string, Column*>& all)
     }
   }
 
-  for (auto& uda : udas)
+  for (const auto& uda : udas)
   {
     if (all.find (uda) != all.end ())
       throw format (STRING_UDA_COLLISION, uda);
