@@ -59,9 +59,6 @@ public:
 
 public:
   std::vector <std::string> _values;
-
-private:
-  bool _hyphenate;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,9 +72,6 @@ public:
 
 public:
   std::vector <std::string> _values;
-
-private:
-  bool _hyphenate;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,9 +85,6 @@ public:
 
 public:
   std::vector <std::string> _values;
-
-private:
-  bool _hyphenate;
 };
 
 #endif

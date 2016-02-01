@@ -139,7 +139,6 @@ ColumnUDANumeric::ColumnUDANumeric ()
   _style     = "default";
   _label     = "";
   _uda       = true;
-  _hyphenate = false;
   _styles    = {_style, "indicator"};
 }
 
@@ -228,7 +227,6 @@ ColumnUDADate::ColumnUDADate ()
   _style     = "default";
   _label     = "";
   _uda       = true;
-  _hyphenate = false;
   _styles    = {_style, "indicator"};
 }
 
@@ -343,7 +341,6 @@ ColumnUDADuration::ColumnUDADuration ()
   _style     = "default";
   _label     = "";
   _uda       = true;
-  _hyphenate = false;
   _styles    = {_style, "indicator"};
 }
 
