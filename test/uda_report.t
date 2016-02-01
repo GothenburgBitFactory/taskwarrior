@@ -45,12 +45,12 @@ class TestUdaReports(TestCase):
         cls.t.config("report.good.description", "Test report")
         cls.t.config("report.good.filter", "")
         cls.t.config("report.good.labels", "ID,Extra")
-        cls.t.config("report.good.sort", "ID")
+        cls.t.config("report.good.sort", "id")
         cls.t.config("report.bad.columns", "id,extra2")
         cls.t.config("report.bad.description", "Test report2")
         cls.t.config("report.bad.filter", "")
         cls.t.config("report.bad.labels", "ID,Extra2")
-        cls.t.config("report.bad.sort", "ID")
+        cls.t.config("report.bad.sort", "id")
 
         cls.t("add one extra:foo")
 
@@ -65,7 +65,7 @@ class TestUdaReports(TestCase):
 
         code, out, err = self.t.runError("bad")
         self.assertNotIn("foo", out)
-        self.assertIn("Unrecognized column name", err)
+        self.assertIn("Unrecognized column name 'extra2'.", err)
 
 
 if __name__ == "__main__":
