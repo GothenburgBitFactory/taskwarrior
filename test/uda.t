@@ -206,8 +206,7 @@ class TestUdaNumeric(TestBaseUda):
         """Add tasks with an invalid UDA numeric"""
         code, out, err = self.t.runError("add bad extra:bad_numeric")
         self.assertNotIn("Created task", out)
-        self.assertIn("The value 'bad_numeric' is not a valid numeric value",
-                      err)
+        self.assertIn("The value 'bad_numeric' is not a valid numeric value", err)
 
 
 class TestUdaString(TestBaseUda):
