@@ -104,7 +104,7 @@ Column* Column::factory (const std::string& name, const std::string& report)
   else if (column_name == "string")      c = new ColumnString ();
 
   // UDA.
-  else if (context.config.get ("uda." + column_name + ".type") != "")
+  else if (context.config.has ("uda." + column_name + ".type"))
     c = Column::uda (column_name);
 
   else
