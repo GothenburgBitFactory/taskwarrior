@@ -26,6 +26,16 @@
 
 #include <cmake.h>
 #include <ColTypeString.h>
+#include <Context.h>
+#include <Eval.h>
+#include <Variant.h>
+#include <Filter.h>
+#include <Dates.h>
+#include <text.h>
+#include <i18n.h>
+
+extern Context context;
+extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTypeString::ColumnTypeString ()
@@ -54,7 +64,31 @@ void ColumnTypeString::render (
 ////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeString::modify (Task& task, const std::string& value)
 {
-  task.set (_name, value);
+  // Try to evaluate 'value'.  It might work.
+  Variant evaluatedValue;
+  try
+  {
+    Eval e;
+    e.addSource (domSource);
+    e.addSource (namedDates);
+    contextTask = task;
+    e.evaluateInfixExpression (value, evaluatedValue);
+  }
+
+  catch (...)
+  {
+    evaluatedValue = Variant (value);
+  }
+
+  std::string label = "  [1;37;43mMODIFICATION[0m ";
+  std::string strValue = (std::string) evaluatedValue;
+  if (validate (strValue))
+  {
+    context.debug (label + _name + " <-- '" + strValue + "' <-- '" + value + "'");
+    task.set (_name, strValue);
+  }
+  else
+    throw format (STRING_INVALID_MOD, _name, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
