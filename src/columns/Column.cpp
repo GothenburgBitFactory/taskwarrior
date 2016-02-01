@@ -175,29 +175,49 @@ void Column::uda (std::map <std::string, Column*>& all)
 ////////////////////////////////////////////////////////////////////////////////
 Column* Column::uda (const std::string& name)
 {
-  ColumnUDA* c = new ColumnUDA ();
-  c->_name = name;
+  auto type   = context.config.get ("uda." + name + ".type");
+  auto label  = context.config.get ("uda." + name + ".label");
+  auto values = context.config.get ("uda." + name + ".values");
 
-  std::string key = "uda." + name + ".type";
-  c->_type = context.config.get (key);
-  if (c->_type == "")
-    context.error (format  (STRING_UDA_TYPE_MISSING, name));
+  if (type == "string")
+  {
+    auto c = new ColumnUDAString ();
+    c->_name = name;
+    c->_label = label;
+    if (values != "")
+      split (c->_values, values, ',');
+    return c;
+  }
+  else if (type == "numeric")
+  {
+    auto c = new ColumnUDANumeric ();
+    c->_name = name;
+    c->_label = label;
+    if (values != "")
+      split (c->_values, values, ',');
+    return c;
+  }
+  else if (type == "date")
+  {
+    auto c = new ColumnUDADate ();
+    c->_name = name;
+    c->_label = label;
+    if (values != "")
+      split (c->_values, values, ',');
+    return c;
+  }
+  else if (type == "duration")
+  {
+    auto c = new ColumnUDADuration ();
+    c->_name = name;
+    c->_label = label;
+    if (values != "")
+      split (c->_values, values, ',');
+    return c;
+  }
 
-  if (c->_type != "string"   &&
-      c->_type != "date"     &&
-      c->_type != "duration" &&
-      c->_type != "numeric")
-    context.error (STRING_UDA_TYPE);
-
-  key = "uda." + name + ".label";
-  if (context.config.get (key) != "")
-    c->_label = context.config.get (key);
-
-  key = "uda." + name + ".values";
-  if (context.config.get (key) != "")
-    split (c->_values, context.config.get (key), ',');
-
-  return c;
+  throw std::string (STRING_UDA_TYPE);
+  return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -27,12 +27,64 @@
 #ifndef INCLUDED_COLUDA
 #define INCLUDED_COLUDA
 
-#include <Column.h>
+#include <ColTypeString.h>
+#include <ColTypeNumeric.h>
+#include <ColTypeDate.h>
+#include <ColTypeDuration.h>
 
-class ColumnUDA : public Column
+////////////////////////////////////////////////////////////////////////////////
+class ColumnUDAString : public ColumnTypeString
 {
 public:
-  ColumnUDA ();
+  ColumnUDAString ();
+  bool validate (std::string&);
+  void measure (Task&, unsigned int&, unsigned int&);
+  void render (std::vector <std::string>&, Task&, int, Color&);
+
+public:
+  std::vector <std::string> _values;
+
+private:
+  bool _hyphenate;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+class ColumnUDANumeric : public ColumnTypeNumeric
+{
+public:
+  ColumnUDANumeric ();
+  bool validate (std::string&);
+  void measure (Task&, unsigned int&, unsigned int&);
+  void render (std::vector <std::string>&, Task&, int, Color&);
+
+public:
+  std::vector <std::string> _values;
+
+private:
+  bool _hyphenate;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+class ColumnUDADate : public ColumnTypeDate
+{
+public:
+  ColumnUDADate ();
+  bool validate (std::string&);
+  void measure (Task&, unsigned int&, unsigned int&);
+  void render (std::vector <std::string>&, Task&, int, Color&);
+
+public:
+  std::vector <std::string> _values;
+
+private:
+  bool _hyphenate;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+class ColumnUDADuration : public ColumnTypeDuration
+{
+public:
+  ColumnUDADuration ();
   bool validate (std::string&);
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);

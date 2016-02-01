@@ -36,19 +36,18 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-ColumnUDA::ColumnUDA ()
+ColumnUDAString::ColumnUDAString ()
 {
   _name      = "<uda>";
-  _type      = "string";
   _style     = "default";
   _label     = "";
   _uda       = true;
-  _hyphenate = (_type == "string") ? true : false;
+  _hyphenate = true;
   _styles    = {_style, "indicator"};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnUDA::validate (std::string& value)
+bool ColumnUDAString::validate (std::string& value)
 {
   // No restrictions.
   if (_values.size () == 0)
@@ -66,7 +65,7 @@ bool ColumnUDA::validate (std::string& value)
 ////////////////////////////////////////////////////////////////////////////////
 // Set the minimum and maximum widths for the value.
 //
-void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
+void ColumnUDAString::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
 {
   minimum = maximum = 0;
 
@@ -77,35 +76,9 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
       std::string value = task.get (_name);
       if (value != "")
       {
-        if (_type == "date")
-        {
-          // Determine the output date format, which uses a hierarchy of definitions.
-          //   rc.report.<report>.dateformat
-          //   rc.dateformat.report
-          //   rc.dateformat
-          ISO8601d date ((time_t) strtol (value.c_str (), NULL, 10));
-          std::string format = context.config.get ("report." + _report + ".dateformat");
-          if (format == "")
-            format = context.config.get ("dateformat.report");
-          if (format == "")
-            format = context.config.get ("dateformat");
-
-          minimum = maximum = ISO8601d::length (format);
-        }
-        else if (_type == "duration")
-        {
-          minimum = maximum = ISO8601p (value).format ().length ();
-        }
-        else if (_type == "string")
-        {
-          std::string stripped = Color::strip (value);
-          maximum = longestLine (stripped);
-          minimum = longestWord (stripped);
-        }
-        else if (_type == "numeric")
-        {
-          minimum = maximum = value.length ();
-        }
+        std::string stripped = Color::strip (value);
+        maximum = longestLine (stripped);
+        minimum = longestWord (stripped);
       }
     }
     else if (_style == "indicator")
@@ -127,7 +100,7 @@ void ColumnUDA::measure (Task& task, unsigned int& minimum, unsigned int& maximu
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void ColumnUDA::render (
+void ColumnUDAString::render (
   std::vector <std::string>& lines,
   Task& task,
   int width,
@@ -138,36 +111,304 @@ void ColumnUDA::render (
     if (_style == "default")
     {
       std::string value = task.get (_name);
-      if (_type == "date")
+      std::vector <std::string> raw;
+      wrapText (raw, value, width, _hyphenate);
+
+      for (auto& i : raw)
+        renderStringLeft (lines, width, color, i);
+    }
+    else if (_style == "indicator")
+    {
+      if (task.has (_name))
+      {
+        auto indicator = context.config.get ("uda." + _name + ".indicator");
+        if (indicator == "")
+          indicator = "U";
+
+        renderStringRight (lines, width, color, indicator);
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ColumnUDANumeric::ColumnUDANumeric ()
+{
+  _name      = "<uda>";
+  _type      = "numeric";
+  _style     = "default";
+  _label     = "";
+  _uda       = true;
+  _hyphenate = false;
+  _styles    = {_style, "indicator"};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnUDANumeric::validate (std::string& value)
+{
+  // No restrictions.
+  if (_values.size () == 0)
+    return true;
+
+  // Look for exact match value.
+  for (auto& i : _values)
+    if (i == value)
+      return true;
+
+  // Fail if not found.
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Set the minimum and maximum widths for the value.
+//
+void ColumnUDANumeric::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
+{
+  minimum = maximum = 0;
+
+  if (task.has (_name))
+  {
+    if (_style == "default")
+    {
+      std::string value = task.get (_name);
+      if (value != "")
+        minimum = maximum = value.length ();
+    }
+    else if (_style == "indicator")
+    {
+      if (task.has (_name))
+      {
+        auto indicator = context.config.get ("uda." + _name + ".indicator");
+        if (indicator == "")
+          indicator = "U";
+
+        minimum = maximum = utf8_width (indicator);
+      }
+      else
+        minimum = maximum = 0;
+    }
+    else
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnUDANumeric::render (
+  std::vector <std::string>& lines,
+  Task& task,
+  int width,
+  Color& color)
+{
+  if (task.has (_name))
+  {
+    if (_style == "default")
+    {
+      std::string value = task.get (_name);
+      renderStringRight (lines, width, color, value);
+    }
+    else if (_style == "indicator")
+    {
+      if (task.has (_name))
+      {
+        auto indicator = context.config.get ("uda." + _name + ".indicator");
+        if (indicator == "")
+          indicator = "U";
+
+        renderStringRight (lines, width, color, indicator);
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ColumnUDADate::ColumnUDADate ()
+{
+  _name      = "<uda>";
+  _type      = "date";
+  _style     = "default";
+  _label     = "";
+  _uda       = true;
+  _hyphenate = false;
+  _styles    = {_style, "indicator"};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnUDADate::validate (std::string& value)
+{
+  // No restrictions.
+  if (_values.size () == 0)
+    return true;
+
+  // Look for exact match value.
+  for (auto& i : _values)
+    if (i == value)
+      return true;
+
+  // Fail if not found.
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Set the minimum and maximum widths for the value.
+//
+void ColumnUDADate::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
+{
+  minimum = maximum = 0;
+
+  if (task.has (_name))
+  {
+    if (_style == "default")
+    {
+      std::string value = task.get (_name);
+      if (value != "")
       {
         // Determine the output date format, which uses a hierarchy of definitions.
         //   rc.report.<report>.dateformat
         //   rc.dateformat.report
-        //   rc.dateformat.
+        //   rc.dateformat
+        ISO8601d date ((time_t) strtol (value.c_str (), NULL, 10));
         std::string format = context.config.get ("report." + _report + ".dateformat");
         if (format == "")
-        {
           format = context.config.get ("dateformat.report");
-          if (format == "")
-            format = context.config.get ("dateformat");
-        }
+        if (format == "")
+          format = context.config.get ("dateformat");
 
-        renderStringLeft (lines, width, color, ISO8601d ((time_t) strtol (value.c_str (), NULL, 10)).toString (format));
+        minimum = maximum = ISO8601d::length (format);
       }
-      else if (_type == "duration")
-        renderStringRight (lines, width, color, ISO8601p (value).format ());
-
-      else if (_type == "string")
+    }
+    else if (_style == "indicator")
+    {
+      if (task.has (_name))
       {
-        std::vector <std::string> raw;
-        wrapText (raw, value, width, _hyphenate);
+        auto indicator = context.config.get ("uda." + _name + ".indicator");
+        if (indicator == "")
+          indicator = "U";
 
-        for (auto& i : raw)
-          renderStringLeft (lines, width, color, i);
+        minimum = maximum = utf8_width (indicator);
+      }
+      else
+        minimum = maximum = 0;
+    }
+    else
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnUDADate::render (
+  std::vector <std::string>& lines,
+  Task& task,
+  int width,
+  Color& color)
+{
+  if (task.has (_name))
+  {
+    if (_style == "default")
+    {
+      std::string value = task.get (_name);
+
+      // Determine the output date format, which uses a hierarchy of definitions.
+      //   rc.report.<report>.dateformat
+      //   rc.dateformat.report
+      //   rc.dateformat.
+      std::string format = context.config.get ("report." + _report + ".dateformat");
+      if (format == "")
+      {
+        format = context.config.get ("dateformat.report");
+        if (format == "")
+          format = context.config.get ("dateformat");
       }
 
-      else if (_type == "numeric")
-        renderStringRight (lines, width, color, value);
+      renderStringLeft (lines, width, color, ISO8601d ((time_t) strtol (value.c_str (), NULL, 10)).toString (format));
+    }
+    else if (_style == "indicator")
+    {
+      if (task.has (_name))
+      {
+        auto indicator = context.config.get ("uda." + _name + ".indicator");
+        if (indicator == "")
+          indicator = "U";
+
+        renderStringRight (lines, width, color, indicator);
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+ColumnUDADuration::ColumnUDADuration ()
+{
+  _name      = "<uda>";
+  _type      = "duration";
+  _style     = "default";
+  _label     = "";
+  _uda       = true;
+  _hyphenate = false;
+  _styles    = {_style, "indicator"};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+bool ColumnUDADuration::validate (std::string& value)
+{
+  // No restrictions.
+  if (_values.size () == 0)
+    return true;
+
+  // Look for exact match value.
+  for (auto& i : _values)
+    if (i == value)
+      return true;
+
+  // Fail if not found.
+  return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Set the minimum and maximum widths for the value.
+//
+void ColumnUDADuration::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
+{
+  minimum = maximum = 0;
+
+  if (task.has (_name))
+  {
+    if (_style == "default")
+    {
+      std::string value = task.get (_name);
+      if (value != "")
+        minimum = maximum = ISO8601p (value).format ().length ();
+    }
+    else if (_style == "indicator")
+    {
+      if (task.has (_name))
+      {
+        auto indicator = context.config.get ("uda." + _name + ".indicator");
+        if (indicator == "")
+          indicator = "U";
+
+        minimum = maximum = utf8_width (indicator);
+      }
+      else
+        minimum = maximum = 0;
+    }
+    else
+      throw format (STRING_COLUMN_BAD_FORMAT, _name, _style);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnUDADuration::render (
+  std::vector <std::string>& lines,
+  Task& task,
+  int width,
+  Color& color)
+{
+  if (task.has (_name))
+  {
+    if (_style == "default")
+    {
+      std::string value = task.get (_name);
+      renderStringRight (lines, width, color, ISO8601p (value).format ());
     }
     else if (_style == "indicator")
     {
