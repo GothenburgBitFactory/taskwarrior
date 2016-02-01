@@ -267,12 +267,6 @@ bool Column::validate (std::string& input)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void Column::modify (Task& task, const std::string& value)
-{
-  task.set (_name, value);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // All integer values are right-justified.
 void Column::renderInteger (
   std::vector <std::string>& lines,
