@@ -2019,12 +2019,39 @@ void Task::modify (modType type, bool text_required /* = false */)
           // Dates are special, maybe.
           else if (column->type () == "date")
           {
+/*
             column->modify (*this, value);
+            mods = true;
+*/
+            // If v is duration, add 'now' to it, else store as date.
+            if (evaluatedValue.type () == Variant::type_duration)
+            {
+              context.debug (label + name + " <-- '" + format ("{1}", format (evaluatedValue.get_duration ())) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + "'");
+              Variant now;
+              if (namedDates ("now", now))
+                evaluatedValue += now;
+            }
+            else
+            {
+              evaluatedValue.cast (Variant::type_date);
+              context.debug (label + name + " <-- '" + format ("{1}", evaluatedValue.get_date ()) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + "'");
+            }
+
+            // If a date doesn't parse (2/29/2014) then it evaluates to zero.
+            if (value != "" &&
+                evaluatedValue.get_date () == 0)
+              throw format (STRING_DATE_INVALID_FORMAT, value, Variant::dateFormat);
+
+            set (name, evaluatedValue.get_date ());
             mods = true;
           }
 
           else if (column->type () == "duration")
           {
+/*
+            column->modify (*this, value);
+            mods = true;
+*/
             // The duration is stored in raw form, but it must still be valid,
             // and therefore is parsed first.
 
@@ -2042,6 +2069,10 @@ void Task::modify (modType type, bool text_required /* = false */)
           // Need handling for numeric types, used by UDAs.
           else if (column->type () == "numeric")
           {
+/*
+            column->modify (*this, value);
+            mods = true;
+*/
             context.debug (label + name + " <-- '" + evaluatedValue.get_string () + "' <-- '" + value + "'");
 
             // If the result is not readily convertible to a numeric value,
@@ -2056,6 +2087,10 @@ void Task::modify (modType type, bool text_required /* = false */)
           // String type columns are not eval'd.  Well, not much.
           else if (column->type () == "string")
           {
+/*
+            column->modify (*this, value);
+            mods = true;
+*/
             std::string strValue = (std::string) evaluatedValue;
             if (column->validate (strValue))
             {
