@@ -28,10 +28,15 @@
 #include <ColTypeDate.h>
 #include <Context.h>
 #include <ISO8601.h>
+#include <Eval.h>
+#include <Variant.h>
+#include <Filter.h>
+#include <Dates.h>
 #include <text.h>
 #include <i18n.h>
 
 extern Context context;
+extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTypeDate::ColumnTypeDate ()
@@ -203,7 +208,43 @@ void ColumnTypeDate::render (
 ////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeDate::modify (Task& task, const std::string& value)
 {
-  task.set (_name, value);
+  // Try to evaluate 'value'.  It might work.
+  Variant evaluatedValue;
+  try
+  {
+    Eval e;
+    e.addSource (domSource);
+    e.addSource (namedDates);
+    contextTask = task;
+    e.evaluateInfixExpression (value, evaluatedValue);
+  }
+
+  catch (...)
+  {
+    evaluatedValue = Variant (value);
+  }
+
+  // If v is duration, add 'now' to it, else store as date.
+  std::string label = "  [1;37;43mMODIFICATION[0m ";
+  if (evaluatedValue.type () == Variant::type_duration)
+  {
+    context.debug (label + _name + " <-- '" + format ("{1}", format (evaluatedValue.get_duration ())) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + "'");
+    Variant now;
+    if (namedDates ("now", now))
+      evaluatedValue += now;
+  }
+  else
+  {
+    evaluatedValue.cast (Variant::type_date);
+    context.debug (label + _name + " <-- '" + format ("{1}", evaluatedValue.get_date ()) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + "'");
+  }
+
+  // If a date doesn't parse (2/29/2014) then it evaluates to zero.
+  if (value != "" &&
+      evaluatedValue.get_date () == 0)
+    throw format (STRING_DATE_INVALID_FORMAT, value, Variant::dateFormat);
+
+  task.set (_name, evaluatedValue.get_date ());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
