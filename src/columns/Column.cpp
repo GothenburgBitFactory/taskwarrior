@@ -216,8 +216,9 @@ Column* Column::uda (const std::string& name)
       split (c->_values, values, ',');
     return c;
   }
+  else if (type != "")
+    throw std::string (STRING_UDA_TYPE);
 
-  throw std::string (STRING_UDA_TYPE);
   return NULL;
 }
 
