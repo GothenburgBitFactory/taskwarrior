@@ -2007,7 +2007,7 @@ void Task::modify (modType type, bool text_required /* = false */)
             evaluatedValue = Variant (value);
           }
 
-          // Dependencies are specified as IDs or UUIDs.
+          // Delegate modification to the column object or their base classes.
           if (name == "depends" ||
               name == "tags"    ||
               name == "recur")
@@ -2019,26 +2019,7 @@ void Task::modify (modType type, bool text_required /* = false */)
           // Dates are special, maybe.
           else if (column->type () == "date")
           {
-            // If v is duration, add 'now' to it, else store as date.
-            if (evaluatedValue.type () == Variant::type_duration)
-            {
-              context.debug (label + name + " <-- '" + format ("{1}", format (evaluatedValue.get_duration ())) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + "'");
-              Variant now;
-              if (namedDates ("now", now))
-                evaluatedValue += now;
-            }
-            else
-            {
-              evaluatedValue.cast (Variant::type_date);
-              context.debug (label + name + " <-- '" + format ("{1}", evaluatedValue.get_date ()) + "' <-- '" + (std::string) evaluatedValue + "' <-- '" + value + "'");
-            }
-
-            // If a date doesn't parse (2/29/2014) then it evaluates to zero.
-            if (value != "" &&
-                evaluatedValue.get_date () == 0)
-              throw format (STRING_DATE_INVALID_FORMAT, value, Variant::dateFormat);
-
-            set (name, evaluatedValue.get_date ());
+            column->modify (*this, value);
             mods = true;
           }
 
@@ -2078,22 +2059,8 @@ void Task::modify (modType type, bool text_required /* = false */)
             std::string strValue = (std::string) evaluatedValue;
             if (column->validate (strValue))
             {
-/*
-              if (column->can_modify ())
-              {
-                std::string col_value = column->modify (strValue);
-                context.debug (label + name + " <-- '" + col_value + "' <-- '" + strValue + "' <-- '" + value + "'");
-                (*this).set (name, col_value);
-              }
-              else
-              {
-*/
-                context.debug (label + name + " <-- '" + strValue + "' <-- '" + value + "'");
-                (*this).set (name, strValue);
-/*
-              }
-*/
-
+              context.debug (label + name + " <-- '" + strValue + "' <-- '" + value + "'");
+              (*this).set (name, strValue);
               mods = true;
             }
             else
