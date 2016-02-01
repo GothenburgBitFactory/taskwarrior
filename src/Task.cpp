@@ -1981,6 +1981,7 @@ void Task::modify (modType type, bool text_required /* = false */)
               ! column->modifiable ())
             throw format (STRING_INVALID_MOD, name, value);
 
+          // TODO This eval section will go away soon...
           // DOM resolution. If it evals, store that, otherwise raw.
           Variant evaluatedValue;
           if (name != "project" || Lexer::isDOM (value))
@@ -2008,7 +2009,8 @@ void Task::modify (modType type, bool text_required /* = false */)
 
           // Dependencies are specified as IDs or UUIDs.
           if (name == "depends" ||
-              name == "tags")
+              name == "tags"    ||
+              name == "recur")
           {
             column->modify (*this, value);
             mods = true;
@@ -2038,24 +2040,6 @@ void Task::modify (modType type, bool text_required /* = false */)
 
             set (name, evaluatedValue.get_date ());
             mods = true;
-          }
-
-          // Special case: type duration.
-          // Note: "recur" is marked as type "string" to force storage in raw form.
-          else if (name == "recur")
-          {
-            // The duration is stored in raw form, but it must still be valid,
-            // and therefore is parsed first.
-
-            if (evaluatedValue.type () == Variant::type_duration)
-            {
-              // Store the raw value, for 'recur'.
-              context.debug (label + name + " <-- '" + value + "'");
-              set (name, value);
-              mods = true;
-            }
-            else
-              throw format (STRING_TASK_INVALID_DUR, value);
           }
 
           else if (column->type () == "duration")
