@@ -26,6 +26,16 @@
 
 #include <cmake.h>
 #include <ColTypeDuration.h>
+#include <Context.h>
+#include <Eval.h>
+#include <Variant.h>
+#include <Filter.h>
+#include <Dates.h>
+#include <text.h>
+#include <i18n.h>
+
+extern Context context;
+extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnTypeDuration::ColumnTypeDuration ()
@@ -51,7 +61,33 @@ void ColumnTypeDuration::render (
 ////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeDuration::modify (Task& task, const std::string& value)
 {
-  task.set (_name, value);
+  // Try to evaluate 'value'.  It might work.
+  Variant evaluatedValue;
+  try
+  {
+    Eval e;
+    e.addSource (domSource);
+    e.addSource (namedDates);
+    contextTask = task;
+    e.evaluateInfixExpression (value, evaluatedValue);
+  }
+
+  catch (...)
+  {
+    evaluatedValue = Variant (value);
+  }
+
+  // The duration is stored in raw form, but it must still be valid,
+  // and therefore is parsed first.
+  std::string label = "  [1;37;43mMODIFICATION[0m ";
+  if (evaluatedValue.type () == Variant::type_duration)
+  {
+    // Store the raw value, for 'recur'.
+    context.debug (label + _name + " <-- " + (std::string) evaluatedValue + " <-- '" + value + "'");
+    task.set (_name, evaluatedValue);
+  }
+  else
+    throw format (STRING_TASK_INVALID_DUR, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
