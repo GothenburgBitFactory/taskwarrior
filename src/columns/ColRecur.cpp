@@ -28,11 +28,17 @@
 #include <ColRecur.h>
 #include <Context.h>
 #include <ISO8601.h>
+#include <Eval.h>
+#include <Variant.h>
+#include <Lexer.h>
+#include <Filter.h>
+#include <Dates.h>
 #include <text.h>
 #include <utf8.h>
 #include <i18n.h>
 
 extern Context context;
+extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnRecur::ColumnRecur ()
@@ -96,6 +102,38 @@ void ColumnRecur::render (
     else if (_style == "indicator")
       renderStringRight (lines, width, color, context.config.get ("recurrence.indicator"));
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// The duration is stored in raw form, but it must still be valid,
+// and therefore is parsed first.
+void ColumnRecur::modify (Task& task, const std::string& value)
+{
+  // Try to evaluate 'value'.  It might work.
+  Variant evaluatedValue;
+  try
+  {
+    Eval e;
+    e.addSource (domSource);
+    e.addSource (namedDates);
+    contextTask = task;
+    e.evaluateInfixExpression (value, evaluatedValue);
+  }
+
+  catch (...)
+  {
+    evaluatedValue = Variant (value);
+  }
+
+  if (evaluatedValue.type () == Variant::type_duration)
+  {
+    // Store the raw value, for 'recur'.
+    std::string label = "  [1;37;43mMODIFICATION[0m ";
+    context.debug (label + _name + " <-- '" + value + "'");
+    task.set (_name, value);
+  }
+  else
+    throw format (STRING_TASK_INVALID_DUR, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
