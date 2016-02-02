@@ -56,7 +56,6 @@ CmdModify::CmdModify ()
 int CmdModify::execute (std::string&)
 {
   int rc = 0;
-  int count = 0;
 
   // Apply filter.
   Filter filter;
@@ -71,6 +70,7 @@ int CmdModify::execute (std::string&)
   // Accumulated project change notifications.
   std::map <std::string, std::string> projectChanges;
 
+  int count = 0;
   for (auto& task : filtered)
   {
     Task before (task);
@@ -135,26 +135,23 @@ int CmdModify::modifyAndUpdate (
   Task &before, Task &after,
   std::map <std::string, std::string> *projectChanges /* = NULL */)
 {
-  int count = 0;
+  // This task.
+  int count = 1;
 
   updateRecurrenceMask (after);
-  ++count;
   feedback_affected (STRING_CMD_MODIFY_TASK, after);
   feedback_unblocked (after);
   context.tdb2.modify (after);
   if (context.verbose ("project") && projectChanges)
     (*projectChanges)[after.get ("project")] = onProjectChange (before, after);
 
+  // Task has siblings - modify them.
   if (after.has ("parent"))
-  {
-    // Task has siblings - modify them.
     count += modifyRecurrenceSiblings (after, projectChanges);
-  }
+
+  // Task has child tasks - modify them.
   else if (after.get ("status") == "recurring")
-  {
-    // Task has child tasks - modify them.
     count += modifyRecurrenceParent (after, projectChanges);
-  }
 
   return count;
 }
