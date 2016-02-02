@@ -2,72 +2,94 @@
 
 - TW-38   Dates in the far future give bad estimates in burndown
           (thanks to Ben Boeckel).
-- TW-188  short help text (thanks to David Patrick).
+- TW-188  short help text
+          (thanks to David Patrick).
 - TW-311  Estimated completion in burndown.daily shows impossible results
           (thanks to Michele Santullo).
 - TW-1313 some recurring intervals reset due time to midnight
           (thanks to James Dietrich).
-- TW-1425 The 'age' format rounds in odd ways (thanks to Black Ops testing).
+- TW-1425 The 'age' format rounds in odd ways
+          (thanks to Black Ops testing).
 - TW-1435 Ability to sync the full history of tasks including completed ones
           (thanks to Renato Alves).
 - TW-1446 Difference in how relative dates are specified in report filters since 2.3.0
           (thanks to atomicules).
-- TW-1481 Unable to assign a completed task as dependency (thanks to Tomas
-          Babej).
+- TW-1481 Unable to assign a completed task as dependency
+          (thanks to Tomas Babej).
 - TW-1500 Dates formatted as ".age", ".remaining", or ".countdown" often give
-          blank results (thanks to Jeremy John Reeder).
+          blank results
+          (thanks to Jeremy John Reeder).
 - TW-1582 Wrong urgency for first report after reviving task with
           "mod status:pending"
-- TW-1658 rc override to non-existent alternate rc quietly uses default (thanks
-          to David Patrick).
+- TW-1658 rc override to non-existent alternate rc quietly uses default
+          (thanks to David Patrick).
+- TW-1697 Inconsistent failure mode on invalid task id
+          (thanks to Daniel Shahaf).
 - TW-1698 tests: 'make test' should exit non-zero if tests failed
           (thanks to Daniel Shahaf).
-- TW-1703 When on-modify hook is installed, some messages print UUIDs
-          instead of IDs (thanks to Robin Green).
+- TW-1703 When on-modify hook is installed, some messages print UUIDs instead of
+          IDs
+          (thanks to Robin Green).
 - TW-1704 Use Task::identifier to reference the Task in the output
 - TW-1705 Directories in .task/hooks should not be reported as invalid hooks
           (thanks to Tomas Babej).
-- TW-1714 Starting recurring task starts all recurrences (thanks to Robin Green).
-- TW-1718 String UDA not passed through unchanged (thanks to Wim Schuermann).
-- TW-1719 Description cannot contain improper ordinals (thanks to Ben Boeckel).
-- TW-1720 CmdContext uses a mix of both throw and std::cout to convey
-          errors (thanks to Paul Beckingham).
-- TW-1723 task info causes segfault (thanks to Roman Golovin).
-- TW-1724 some commands show color codes when redirected (thanks to Alan Young).
-- TW-1729 zsh completion: zregexparse:4: not enough regex argument (thanks to
-          Daniel Shahaf).
-- TW-1733 taskwarrior 2.5.0 can not compile FreeBSD 10.1 (thanks to ribbon).
-- TW-1734 calendar gives an error when context is set (thanks to Simon Michael).
-- TW-1735 context with no subcommand should do something (thanks to Simon
-          Michael).
+- TW-1714 Starting recurring task starts all recurrences
+          (thanks to Robin Green).
+- TW-1718 String UDA not passed through unchanged
+          (thanks to Wim Schuermann).
+- TW-1719 Description cannot contain improper ordinals
+          (thanks to Ben Boeckel).
+- TW-1720 CmdContext uses a mix of both throw and std::cout to convey errors
+          (thanks to Paul Beckingham).
+- TW-1723 task info causes segfault
+          (thanks to Roman Golovin).
+- TW-1724 some commands show color codes when redirected
+          (thanks to Alan Young).
+- TW-1729 zsh completion: zregexparse:4: not enough regex argument
+          (thanks to Daniel Shahaf).
+- TW-1733 taskwarrior 2.5.0 can not compile FreeBSD 10.1
+          (thanks to ribbon).
+- TW-1734 calendar gives an error when context is set
+          (thanks to Simon Michael).
+- TW-1735 context with no subcommand should do something
+          (thanks to Simon Michael).
 - TW-1736 Error on detection of BOM in files.
-- TW-1738 add defined languages JAPANESE (thanks to ribbon).
+- TW-1738 add defined languages JAPANESE
+          (thanks to ribbon).
 - TW-1741 Warning "ignoring return value of ‘int ftruncate" while doing make on
-          xubuntu15.10 (thanks to Sunil Joshi).
-- TW-1742 Indian Holiday Calendar (Master HolidayFile) (thanks to Sunil Joshi).
-- TW-1748 CMakeLists shouldn't hardcode libc++ on Darwin (thanks to Misty De Meo).
-- TW-1749 PATH_MAX isn't defined in FS.cpp in some versions of OS X (thanks to
-          Misty De Meo).
+          xubuntu15.10
+          (thanks to Sunil Joshi).
+- TW-1742 Indian Holiday Calendar (Master HolidayFile)
+          (thanks to Sunil Joshi).
+- TW-1748 CMakeLists shouldn't hardcode libc++ on Darwin
+          (thanks to Misty De Meo).
+- TW-1749 PATH_MAX isn't defined in FS.cpp in some versions of OS X
+          (thanks to Misty De Meo).
 - TW-1750 REG_ENHANCED, used in RX.cpp, isn't defined in all versions of Darwin
           (thanks to Misty De Meo).
-- TW-1752 cleanup of diag output (thanks to David Patrick).
+- TW-1752 cleanup of diag output
+          (thanks to David Patrick).
 - TW-1756 The columns.t unit test fails two tests after 2300 local.
 - TW-1763 Removing the due date of a task with no due date modifies the task
           (thanks to Scott Kostyshak).
-- Fixed broken build for Cygwin and older GCC (thanks to Richard Boß).
+- Fixed broken build for Cygwin and older GCC
+          (thanks to Richard Boß).
 - The default configuration is now 256-color only.
 - The 'columns' report now shows whether a column is modifiable or read only.
-- UDA indicator column did not properly default to 'U' (thanks to JDufault).
-- Removed task.fish arguments until TW-1404 is fixed (thanks to Roman
-  Inflianskas)
+- UDA indicator column did not properly default to 'U'
+          (thanks to JDufault).
+- Removed task.fish arguments until TW-1404 is fixed
+          (thanks to Roman Inflianskas)
 - Removed unused 'dom' and 'shell.prompt' configuration settings.
 - Numerous performance improvements. Taskwarrior 2.5.1 is between X% and
   Y% faster than 2.5.0 when running various commands.
 - New formatting specifier 'relative' for columns of Date type was introduced.
-- Fixed bug where 'rc.allow.empty.filter' was not behaving properly (thanks to
-  Scott Kostyshak).
-- Fixed man page bugs (thanks to pawprint).
-- Improved OpenBSD support (thanks to Kent R. Spillner).
+- Fixed bug where 'rc.allow.empty.filter' was not behaving properly
+          (thanks to Scott Kostyshak).
+- Fixed man page bugs
+          (thanks to pawprint).
+- Improved OpenBSD support
+          (thanks to Kent R. Spillner).
 
 ------ current release ---------------------------
 

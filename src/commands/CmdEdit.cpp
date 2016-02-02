@@ -75,6 +75,12 @@ int CmdEdit::execute (std::string&)
   std::vector <Task> filtered;
   filter.subset (filtered);
 
+  if (! filtered.size ())
+  {
+    context.footnote (STRING_FEEDBACK_NO_MATCH);
+    return 1;
+  }
+
   // Find number of matching tasks.
   for (auto& task : filtered)
   {
