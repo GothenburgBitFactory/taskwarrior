@@ -33,7 +33,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from basetest import Task, TestCase
 
-
 class TestBug1306(TestCase):
     def setUp(self):
         self.t = Task()
@@ -43,6 +42,16 @@ class TestBug1306(TestCase):
         self.t("project:PROJ add foo")
         code, out, err = self.t("1 info")
         self.assertIn("PROJ", out)
+
+class TestBug1763(TestCase):
+    def setUp(self):
+        self.t = Task()
+
+    def test_mod_nop(self):
+        """Removing the due date of a task with no due date modifies the task"""
+        self.t("add foo")
+        code, out, err = self.t("1 modify due:")
+        self.assertIn("Modified 0 tasks.", out)
 
 if __name__ == "__main__":
     from simpletap import TAPTestRunner
