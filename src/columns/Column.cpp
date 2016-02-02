@@ -283,7 +283,7 @@ void Column::setStyle (const std::string& style)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool Column::validate (std::string& input)
+bool Column::validate (const std::string& input) const
 {
   return input.length () ? true : false;
 }

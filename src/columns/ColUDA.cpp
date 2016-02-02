@@ -47,7 +47,7 @@ ColumnUDAString::ColumnUDAString ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnUDAString::validate (std::string& value)
+bool ColumnUDAString::validate (const std::string& value) const
 {
   // No restrictions.
   if (_values.size () == 0)
@@ -143,7 +143,7 @@ ColumnUDANumeric::ColumnUDANumeric ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnUDANumeric::validate (std::string& value)
+bool ColumnUDANumeric::validate (const std::string& value) const
 {
   // No restrictions.
   if (_values.size () == 0)
@@ -231,7 +231,7 @@ ColumnUDADate::ColumnUDADate ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnUDADate::validate (std::string& value)
+bool ColumnUDADate::validate (const std::string& value) const
 {
   // No restrictions.
   if (_values.size () == 0)
@@ -345,7 +345,7 @@ ColumnUDADuration::ColumnUDADuration ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool ColumnUDADuration::validate (std::string& value)
+bool ColumnUDADuration::validate (const std::string& value) const
 {
   // No restrictions.
   if (_values.size () == 0)

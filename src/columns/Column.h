@@ -57,7 +57,7 @@ public:
   virtual void setLabel  (const std::string& value) { _label = value;  }
   virtual void setReport (const std::string& value) { _report = value; }
 
-  virtual bool validate (std::string&);
+  virtual bool validate (const std::string&) const;
   virtual void measure (const std::string&, unsigned int&, unsigned int&)           {};
   virtual void measure (Task&, unsigned int&, unsigned int&)                        {};
   virtual void renderHeader (std::vector <std::string>&, int, Color&);
