@@ -105,7 +105,7 @@ bool Task::operator== (const Task& other)
   if (data.size () != other.data.size ())
     return false;
 
-  for (auto& i : data)
+  for (const auto& i : data)
     if (i.first != "uuid" &&
         i.second != other.get (i.first))
       return false;
@@ -780,10 +780,12 @@ std::string Task::composeF4 () const
   bool first = true;
   for (auto it : data)
   {
+    // Orphans have no type, treat as string.
     std::string type = Task::attributes[it.first];
     if (type == "")
       type = "string";
 
+    // If there is a value.
     if (it.second != "")
     {
       ff4 += (first ? "" : " ");
@@ -1967,9 +1969,15 @@ void Task::modify (modType type, bool text_required /* = false */)
         {
           // ::composeF4 will skip if the value is blank, but the presence of
           // the attribute will prevent ::validate from applying defaults.
-          set (name, "");
+          if ((has (name) && get (name) != "") ||
+              (name == "due"     && context.config.has ("default.due")) ||
+              (name == "project" && context.config.has ("default.project")))
+          {
+            mods = true;
+            set (name, "");
+          }
+
           context.debug (label + name + " <-- ''");
-          mods = true;
         }
         else
         {
