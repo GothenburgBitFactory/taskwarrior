@@ -554,14 +554,19 @@ bool Config::has (const std::string& key)
 // Return the configuration value given the specified key.
 std::string Config::get (const std::string& key)
 {
-  return (*this)[key];
+  auto found = find (key);
+  if (found != end ())
+    return found->second;
+
+  return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 int Config::getInteger (const std::string& key)
 {
-  if ((*this).find (key) != (*this).end ())
-    return strtoimax ((*this)[key].c_str (), NULL, 10);
+  auto found = find (key);
+  if (found != end ())
+    return strtoimax (found->second.c_str (), nullptr, 10);
 
   return 0;
 }
@@ -571,11 +576,12 @@ double Config::getReal (const std::string& key)
 {
   //NOTE: Backwards compatible handling of next coefficient.
   //TODO: Remove.
-  if (key == "urgency.user.tag.next.coefficient" and has("urgency.next.coefficient"))
-    return getReal("urgency.next.coefficient");
+  if (key == "urgency.user.tag.next.coefficient" and has ("urgency.next.coefficient"))
+    return getReal ("urgency.next.coefficient");
 
-  if ((*this).find (key) != (*this).end ())
-    return strtod ((*this)[key].c_str (), NULL);
+  auto found = find (key);
+  if (found != end ())
+    return strtod (found->second.c_str (), nullptr);
 
   return 0.0;
 }
@@ -583,7 +589,8 @@ double Config::getReal (const std::string& key)
 ////////////////////////////////////////////////////////////////////////////////
 bool Config::getBoolean (const std::string& key)
 {
-  if ((*this).find (key) != (*this).end ())
+  auto found = find (key);
+  if (found != end ())
   {
     std::string value = Lexer::lowerCase ((*this)[key]);
     if (value == "t"      ||  // TODO Deprecate

@@ -51,6 +51,7 @@ class TestBaseUda(TestCase):
 class TestUdaCommand(TestBaseUda):
     def setUp(self):
         super(TestUdaCommand, self).setUp()
+        self.t.config("uda.extra.type", "string")
 
     def test_uda_command(self):
         """The 'udas' command should list 'priority' and 'extra'"""

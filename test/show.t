@@ -54,6 +54,7 @@ class TestShowCommand(TestCase):
 
     def test_show_one_arg(self):
         """Verify show command lists one result with an arg provided"""
+        self.t.config("default.due", "tomorrow")
         code, out, err = self.t("show default.due")
         self.assertNotIn("default.command", out)
         self.assertIn("default.due", out)
