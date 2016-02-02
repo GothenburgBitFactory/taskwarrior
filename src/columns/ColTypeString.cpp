@@ -64,31 +64,41 @@ void ColumnTypeString::render (
 ////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeString::modify (Task& task, const std::string& value)
 {
-  // Try to evaluate 'value'.  It might work.
-  Variant evaluatedValue;
-  try
+  std::string label = "  [1;37;43mMODIFICATION[0m ";
+
+  // Only if it's a DOM ref, eval it first.
+  Lexer lexer (value);
+  std::string domRef;
+  Lexer::Type type;
+  if (lexer.token (domRef, type) &&
+      type == Lexer::Type::dom)
   {
     Eval e;
     e.addSource (domSource);
     e.addSource (namedDates);
     contextTask = task;
-    e.evaluateInfixExpression (value, evaluatedValue);
-  }
 
-  catch (...)
-  {
-    evaluatedValue = Variant (value);
-  }
-
-  std::string label = "  [1;37;43mMODIFICATION[0m ";
-  std::string strValue = (std::string) evaluatedValue;
-  if (validate (strValue))
-  {
-    context.debug (label + _name + " <-- '" + strValue + "' <-- '" + value + "'");
-    task.set (_name, strValue);
+    Variant v;
+    e.evaluateInfixExpression (value, v);
+    std::string strValue = (std::string) v;
+    if (validate (strValue))
+    {
+      task.set (_name, strValue);
+      context.debug (label + _name + " <-- '" + strValue + "' <-- '" + value + "'");
+    }
+    else
+      throw format (STRING_INVALID_MOD, _name, value);
   }
   else
-    throw format (STRING_INVALID_MOD, _name, value);
+  {
+    if (validate (value))
+    {
+      task.set (_name, value);
+      context.debug (label + _name + " <-- '" + value + "'");
+    }
+    else
+      throw format (STRING_INVALID_MOD, _name, value);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

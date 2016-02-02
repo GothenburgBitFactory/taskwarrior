@@ -28,6 +28,7 @@
 - TW-1705 Directories in .task/hooks should not be reported as invalid hooks
           (thanks to Tomas Babej).
 - TW-1714 Starting recurring task starts all recurrences (thanks to Robin Green).
+- TW-1718 String UDA not passed through unchanged (thanks to Wim Schuermann).
 - TW-1719 Description cannot contain improper ordinals (thanks to Ben Boeckel).
 - TW-1720 CmdContext uses a mix of both throw and std::cout to convey
           errors (thanks to Paul Beckingham).
