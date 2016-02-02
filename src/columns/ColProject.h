@@ -35,6 +35,7 @@ public:
   ColumnProject ();
   void measure (Task&, unsigned int&, unsigned int&);
   void render (std::vector <std::string>&, Task&, int, Color&);
+  void modify (Task&, const std::string&);
 
 private:
   bool _hyphenate;

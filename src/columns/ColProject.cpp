@@ -27,12 +27,18 @@
 #include <cmake.h>
 #include <ColProject.h>
 #include <Context.h>
+#include <Eval.h>
+#include <Variant.h>
+#include <Lexer.h>
+#include <Filter.h>
+#include <Dates.h>
 #include <text.h>
 #include <utf8.h>
 #include <util.h>
 #include <i18n.h>
 
 extern Context context;
+extern Task& contextTask;
 
 ////////////////////////////////////////////////////////////////////////////////
 ColumnProject::ColumnProject ()
@@ -103,6 +109,35 @@ void ColumnProject::render (
 
     for (auto& i : raw)
       renderStringLeft (lines, width, color, i);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+void ColumnProject::modify (Task& task, const std::string& value)
+{
+  std::string label = "  [1;37;43mMODIFICATION[0m ";
+
+  // Only if it's a DOM ref, eval it first.
+  Lexer lexer (value);
+  std::string domRef;
+  Lexer::Type type;
+  if (lexer.token (domRef, type) &&
+      type == Lexer::Type::dom)
+  {
+    Eval e;
+    e.addSource (domSource);
+    e.addSource (namedDates);
+    contextTask = task;
+
+    Variant v;
+    e.evaluateInfixExpression (value, v);
+    task.set (_name, (std::string) v);
+    context.debug (label + _name + " <-- '" + (std::string) v + "' <-- '" + value + "'");
+  }
+  else
+  {
+    task.set (_name, value);
+    context.debug (label + _name + " <-- '" + value + "'");
   }
 }
 
