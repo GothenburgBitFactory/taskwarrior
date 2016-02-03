@@ -291,6 +291,9 @@ void Task::remove (const std::string& name)
 ////////////////////////////////////////////////////////////////////////////////
 Task::status Task::getStatus () const
 {
+  if (! has ("status"))
+    return Task::pending;
+
   return textToStatus (get ("status"));
 }
 
