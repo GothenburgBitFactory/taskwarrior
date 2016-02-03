@@ -539,6 +539,7 @@
 #define STRING_CMD_MODIFY_CONFIRM    "Modificare il task {1} '{2}'?"
 #define STRING_CMD_MODIFY_RECUR      "Questo è un task periodico. Modificare tutti i task associati?"
 #define STRING_CMD_MODIFY_NEED_TEXT  "Testo aggiunti da specificare."
+#define STRING_CMD_MODIFY_INACTIVE   "Note: Modified task {1} is {2}.  You may wish to make this task pending with: task {3} modify status:pending"
 
 #define STRING_CMD_COLOR_USAGE       "Tutti i colori, un esempio, o una legenda"
 #define STRING_CMD_COLOR_HERE        "Coloti in uso:"

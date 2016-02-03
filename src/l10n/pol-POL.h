@@ -540,6 +540,7 @@
 #define STRING_CMD_MODIFY_CONFIRM    "Zmienić zadanie {1} '{2}'?"
 #define STRING_CMD_MODIFY_RECUR      "To zadanie jest cykliczne. Czy chcesz zmodyfikować kolejne zadania w cyklu?"
 #define STRING_CMD_MODIFY_NEED_TEXT  "Należy podać tekst"
+#define STRING_CMD_MODIFY_INACTIVE   "Note: Modified task {1} is {2}.  You may wish to make this task pending with: task {3} modify status:pending"
 
 #define STRING_CMD_COLOR_USAGE       "Wszystkie kolory, próbki lub legenda"
 #define STRING_CMD_COLOR_HERE        "To są aktualnie używane kolory:"

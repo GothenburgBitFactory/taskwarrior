@@ -551,6 +551,7 @@
 #define STRING_CMD_MODIFY_RECUR      "Esta es una tarea recurrente. ¿Quiere modificar todas las recurrencias pendientes de esta misma tarea?"
 #define STRING_CMD_MODIFY_NEED_TEXT  "Se debe proveer texto adicional."
 //#define STRING_CMD_MODIFY_NEED_TEXT  "Additional text must be provided."  COMPROBAR adicional
+#define STRING_CMD_MODIFY_INACTIVE   "Note: Modified task {1} is {2}.  You may wish to make this task pending with: task {3} modify status:pending"
 
 #define STRING_CMD_COLOR_USAGE       "Todos los colores, una muestra, o una leyenda"
 #define STRING_CMD_COLOR_HERE        "Aquí están los colores en uso actualmente:"

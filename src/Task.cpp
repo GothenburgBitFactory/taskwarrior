@@ -1954,6 +1954,9 @@ void Task::modify (modType type, bool text_required /* = false */)
   context.debug ("Task::modify");
   std::string label = "  [1;37;43mMODIFICATION[0m ";
 
+  // Need this for later comparison.
+  auto originalStatus = getStatus ();
+
   std::string text = "";
   bool mods = false;
   for (auto& a : context.cli2._args)
@@ -2084,6 +2087,15 @@ void Task::modify (modType type, bool text_required /* = false */)
   }
   else if (! mods && text_required)
     throw std::string (STRING_CMD_MODIFY_NEED_TEXT);
+
+  // Modifying completed/deleted tasks generates a message, if the modification
+  // does not change status.
+  if ((getStatus () == Task::completed || getStatus () == Task::deleted) &&
+      getStatus () == originalStatus)
+  {
+    auto uuid = get ("uuid").substr (0, 8);
+    context.footnote (format (STRING_CMD_MODIFY_INACTIVE, uuid, get ("status"), uuid));
+  }
 }
 #endif
 

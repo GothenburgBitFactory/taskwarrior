@@ -540,6 +540,7 @@
 #define STRING_CMD_MODIFY_CONFIRM    "Modificar tarefa {1} '{2}'?"
 #define STRING_CMD_MODIFY_RECUR      "Esta é uma tarefa recorrente. Deseja modificar todas as recorrências pendentes da mesma?"
 #define STRING_CMD_MODIFY_NEED_TEXT  "É necessário fornecer mais informação."
+#define STRING_CMD_MODIFY_INACTIVE   "Note: Modified task {1} is {2}.  You may wish to make this task pending with: task {3} modify status:pending"
 
 #define STRING_CMD_COLOR_USAGE       "Todas as cores, uma amostra ou a legenda"
 #define STRING_CMD_COLOR_HERE        "Estas são as cores actualmente em uso:"

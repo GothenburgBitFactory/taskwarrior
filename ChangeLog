@@ -33,6 +33,8 @@
 - TW-1704 Use Task::identifier to reference the Task in the output
 - TW-1705 Directories in .task/hooks should not be reported as invalid hooks
           (thanks to Tomas Babej).
+- TW-1710 Setting wait date on status:completed / status:deleted
+          (thanks to Daniel Shahaf).
 - TW-1714 Starting recurring task starts all recurrences
           (thanks to Robin Green).
 - TW-1718 String UDA not passed through unchanged
