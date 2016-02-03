@@ -38,9 +38,9 @@ Context context;
 int main (int, char**)
 {
 #ifdef PRODUCT_TASKWARRIOR
-  UnitTest t (1274);
+  UnitTest t (1280);
 #else
-  UnitTest t (1256);
+  UnitTest t (1262);
 #endif
 
   std::vector <std::pair <std::string, Lexer::Type>> tokens;
@@ -413,6 +413,7 @@ int main (int, char**)
     { "rc.name=value",                                { { "rc.name=value",                                Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "rc.name:=value",                               { { "rc.name:=value",                               Lexer::Type::pair         }, NO, NO, NO, NO }, },
     { "due:='eow - 2d'",                              { { "due:='eow - 2d'",                              Lexer::Type::pair         }, NO, NO, NO, NO }, },
+    { "name:'foo\nbar'",                              { { "name:'foo\nbar'",                              Lexer::Type::pair         }, NO, NO, NO, NO }, },
 
     // Operator - complete set
     { "^",                                            { { "^",                                            Lexer::Type::op           }, NO, NO, NO, NO }, },
