@@ -84,7 +84,7 @@ int CmdEdit::execute (std::string&)
   // Find number of matching tasks.
   for (auto& task : filtered)
   {
-    CmdEdit::editResult result = editFile (task);
+    auto result = editFile (task);
     if (result == CmdEdit::editResult::error)
       break;
     else if (result == CmdEdit::editResult::changes)
@@ -130,7 +130,7 @@ std::string CmdEdit::findMultilineValue (
     {
       std::string value = text.substr (start + startMarker.length (),
                                        end - (start + startMarker.length ()));
-      return Lexer::trim (value, "\t ");
+      return Lexer::trim (value, "\\\t ");
     }
   }
   return "";
