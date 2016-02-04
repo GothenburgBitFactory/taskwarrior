@@ -352,6 +352,9 @@ int CmdDiagnostics::execute (std::string& output)
       }
     }
 
+    if (! count)
+      out << "\n";
+
     out << "   Inactive: ";
     count = 0;
     for (auto& hook : hooks)
@@ -381,6 +384,9 @@ int CmdDiagnostics::execute (std::string& output)
         }
       }
     }
+
+    if (! count)
+      out << "\n";
   }
   else
     out << format ("             ({1})\n", STRING_CMD_DIAG_NONE);
