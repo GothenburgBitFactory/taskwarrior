@@ -26,8 +26,6 @@
 
 #include <cmake.h>
 #include <Color.h>
-#include <iostream>
-#include <iomanip>
 #include <sstream>
 #include <vector>
 #include <algorithm>
@@ -143,10 +141,9 @@ Color::Color (const std::string& spec)
 
   bool bg = false;
   int index;
-  std::string word;
-  for (auto& it : words)
+  for (auto& word : words)
   {
-    word = Lexer::lowerCase (Lexer::trim (it));
+    word = Lexer::lowerCase (Lexer::trim (word));
 
          if (word == "bold")      fg_value |= _COLOR_BOLD;
     else if (word == "bright")    bg_value |= _COLOR_BRIGHT;
@@ -176,9 +173,9 @@ Color::Color (const std::string& spec)
     else if (! word.compare (0, 4, "grey", 4) ||
              ! word.compare (0, 4, "gray", 4))
     {
-      index = atoi (word.substr (4).c_str ());
+      index = strtol (word.substr (4).c_str (), nullptr, 10);
       if (index < 0 || index > 23)
-        throw format (STRING_COLOR_UNRECOGNIZED, it);
+        throw format (STRING_COLOR_UNRECOGNIZED, word);
 
       if (bg)
       {
@@ -197,18 +194,18 @@ Color::Color (const std::string& spec)
     // rgbRGB, where 0 <= R,G,B <= 5.
     else if (! word.compare (0, 3, "rgb", 3))
     {
-      index = atoi (word.substr (3).c_str ());
+      index = strtol (word.substr (3).c_str (), nullptr, 10);
       if (word.length () != 6 ||
           index < 0 || index > 555)
-        throw format (STRING_COLOR_UNRECOGNIZED, it);
+        throw format (STRING_COLOR_UNRECOGNIZED, word);
 
-      int r = atoi (word.substr (3, 1).c_str ());
-      int g = atoi (word.substr (4, 1).c_str ());
-      int b = atoi (word.substr (5, 1).c_str ());
+      int r = strtol (word.substr (3, 1).c_str (), nullptr, 10);
+      int g = strtol (word.substr (4, 1).c_str (), nullptr, 10);
+      int b = strtol (word.substr (5, 1).c_str (), nullptr, 10);
       if (r < 0 || r > 5 ||
           g < 0 || g > 5 ||
           b < 0 || b > 5)
-        throw format (STRING_COLOR_UNRECOGNIZED, it);
+        throw format (STRING_COLOR_UNRECOGNIZED, word);
 
       index = 16 + r*36 + g*6 + b;
 
@@ -229,9 +226,9 @@ Color::Color (const std::string& spec)
     // colorN, where 0 <= N <= 255.
     else if (! word.compare (0, 5, "color", 5))
     {
-      index = atoi (word.substr (5).c_str ());
+      index = strtol (word.substr (5).c_str (), nullptr, 10);
       if (index < 0 || index > 255)
-        throw format (STRING_COLOR_UNRECOGNIZED, it);
+        throw format (STRING_COLOR_UNRECOGNIZED, word);
 
       upgrade ();
 
@@ -249,7 +246,7 @@ Color::Color (const std::string& spec)
       }
     }
     else if (word != "")
-      throw format (STRING_COLOR_UNRECOGNIZED, it);
+      throw format (STRING_COLOR_UNRECOGNIZED, word);
   }
 
   // Now combine the fg and bg into a single color.
@@ -409,7 +406,7 @@ void Color::upgrade ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string Color::colorize (const std::string& input)
+std::string Color::colorize (const std::string& input) const
 {
   std::string result;
   _colorize (result, input);
@@ -428,7 +425,7 @@ std::string Color::colorize (const std::string& input)
 //
 //   256 fg               \033[38;5;Nm
 //   256 bg               \033[48;5;Nm
-void Color::_colorize (std::string &result, const std::string& input)
+void Color::_colorize (std::string &result, const std::string& input) const
 {
   if (!nontrivial ())
   {
