@@ -52,11 +52,6 @@ A2::A2 (const std::string& raw, Lexer::Type lextype)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-A2::~A2 ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 A2::A2 (const A2& other)
 : _lextype (other._lextype)
 , _tags (other._tags)
@@ -67,23 +62,16 @@ A2::A2 (const A2& other)
 ////////////////////////////////////////////////////////////////////////////////
 A2& A2::operator= (const A2& other)
 {
-  if (this != &other)
-  {
-    _lextype    = other._lextype;
-    _tags       = other._tags;
-    _attributes = other._attributes;
-  }
-
+  _lextype    = other._lextype;
+  _tags       = other._tags;
+  _attributes = other._attributes;
   return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 bool A2::hasTag (const std::string& tag) const
 {
-  if (std::find (_tags.begin (), _tags.end (), tag) != _tags.end ())
-    return true;
-
-  return false;
+  return std::find (_tags.begin (), _tags.end (), tag) != _tags.end ();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,13 +85,11 @@ void A2::tag (const std::string& tag)
 void A2::unTag (const std::string& tag)
 {
   for (auto i = _tags.begin (); i != _tags.end (); ++i)
-  {
     if (*i == tag)
     {
       _tags.erase (i);
       break;
     }
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -205,43 +191,29 @@ void A2::decompose ()
 ////////////////////////////////////////////////////////////////////////////////
 const std::string A2::dump () const
 {
-  std::string output = Lexer::typeToString (_lextype);
+  auto output = Lexer::typeToString (_lextype);
 
   // Dump attributes.
   std::string atts;
-  for (auto a = _attributes.begin (); a != _attributes.end (); ++a)
-  {
-    if (a != _attributes.begin ())
-      atts += " ";
-
-    atts += a->first + "='\033[33m" + a->second + "\033[0m'";
-  }
-
-  if (atts.length ())
-    output += " " + atts;
+  for (const auto& a : _attributes)
+    atts += a.first + "='\033[33m" + a.second + "\033[0m' ";
 
   // Dump tags.
   std::string tags;
-  for (auto& tag : _tags)
+  for (const auto& tag : _tags)
   {
-    if (tags.length ())
-      tags += ' ';
-
-         if (tag == "BINARY")        tags += "\033[1;37;44m"           + tag + "\033[0m";
-    else if (tag == "CMD")           tags += "\033[1;37;46m"           + tag + "\033[0m";
-    else if (tag == "FILTER")        tags += "\033[1;37;42m"           + tag + "\033[0m";
-    else if (tag == "MODIFICATION")  tags += "\033[1;37;43m"           + tag + "\033[0m";
-    else if (tag == "MISCELLANEOUS") tags += "\033[1;37;45m"           + tag + "\033[0m";
-    else if (tag == "RC")            tags += "\033[1;37;41m"           + tag + "\033[0m";
-    else if (tag == "CONFIG")        tags += "\033[1;37;101m"          + tag + "\033[0m";
-    else if (tag == "?")             tags += "\033[38;5;255;48;5;232m" + tag + "\033[0m";
-    else                             tags += "\033[32m"                + tag + "\033[0m";
+         if (tag == "BINARY")        tags += "\033[1;37;44m"           + tag + "\033[0m ";
+    else if (tag == "CMD")           tags += "\033[1;37;46m"           + tag + "\033[0m ";
+    else if (tag == "FILTER")        tags += "\033[1;37;42m"           + tag + "\033[0m ";
+    else if (tag == "MODIFICATION")  tags += "\033[1;37;43m"           + tag + "\033[0m ";
+    else if (tag == "MISCELLANEOUS") tags += "\033[1;37;45m"           + tag + "\033[0m ";
+    else if (tag == "RC")            tags += "\033[1;37;41m"           + tag + "\033[0m ";
+    else if (tag == "CONFIG")        tags += "\033[1;37;101m"          + tag + "\033[0m ";
+    else if (tag == "?")             tags += "\033[38;5;255;48;5;232m" + tag + "\033[0m ";
+    else                             tags += "\033[32m"                + tag + "\033[0m ";
   }
 
-  if (tags.length ())
-    output += ' ' + tags;
-
-  return output;
+  return output + " " + atts + tags;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -327,20 +299,9 @@ void CLI2::applyOverrides (int argc, const char** argv)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CLI2::CLI2 ()
-: _context_filter_added (false)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-CLI2::~CLI2 ()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void CLI2::alias (const std::string& name, const std::string& value)
 {
-  _aliases.insert (std::pair <std::string, std::string> (name, value));
+  _aliases[name] = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -372,10 +333,9 @@ void CLI2::add (const std::string& argument)
 // Capture a set of arguments, inserted immediately after the binary.
 void CLI2::add (const std::vector <std::string>& arguments)
 {
-  std::vector <A2> replacement;
-  replacement.push_back (_original_args[0]);
+  std::vector <A2> replacement {_original_args[0]};
 
-  for (auto& arg : arguments)
+  for (const auto& arg : arguments)
     replacement.push_back (A2 (arg, Lexer::Type::word));
 
   for (unsigned int i = 1; i < _original_args.size (); ++i)
@@ -398,7 +358,7 @@ void CLI2::handleArg0 ()
 {
   // Capture arg0 separately, because it is the command that was run, and could
   // need special handling.
-  std::string raw = _original_args[0].attribute ("raw");
+  auto raw = _original_args[0].attribute ("raw");
   A2 a (raw, Lexer::Type::word);
   a.tag ("BINARY");
 
@@ -444,8 +404,7 @@ void CLI2::lexArguments ()
     Lexer lex (_original_args[i].attribute ("raw"));
     if (lex.token (lexeme, type) &&
         (lex.isEOS () ||                         // Token goes to EOS
-         (quoted && type == Lexer::Type::pair))  // Quoted pairs automatically go to EOS
-       )
+         (quoted && type == Lexer::Type::pair))) // Quoted pairs automatically go to EOS
     {
       if (! terminated && type == Lexer::Type::separator)
         terminated = true;
@@ -668,7 +627,7 @@ void CLI2::prepareFilter ()
   if (context.verbose ("filter"))
   {
     std::string combined;
-    for (auto& a : _args)
+    for (const auto& a : _args)
     {
       if (a.hasTag ("FILTER"))
       {
@@ -689,7 +648,7 @@ void CLI2::prepareFilter ()
 const std::vector <std::string> CLI2::getWords ()
 {
   std::vector <std::string> words;
-  for (auto& a : _args)
+  for (const auto& a : _args)
     if (a.hasTag ("MISCELLANEOUS"))
       words.push_back (a.attribute ("raw"));
 
@@ -697,7 +656,7 @@ const std::vector <std::string> CLI2::getWords ()
   {
     Color colorOrigArgs ("gray10 on gray4");
     std::string message = " ";
-    for (auto& word : words)
+    for (const auto& word : words)
       message += colorOrigArgs.colorize (word) + " ";
     context.debug ("CLI2::getWords" + message);
   }
@@ -750,7 +709,7 @@ std::string CLI2::getBinary () const
 ////////////////////////////////////////////////////////////////////////////////
 std::string CLI2::getCommand (bool canonical) const
 {
-  for (auto& a : _args)
+  for (const auto& a : _args)
     if (a.hasTag ("CMD"))
       return a.attribute (canonical ? "canonical" : "raw");
 
@@ -777,19 +736,20 @@ const std::string CLI2::dump (const std::string& title) const
     else
       out << colorFilter.colorize (i->attribute ("raw"));
   }
+
   out << "\n";
 
   if (_args.size ())
   {
     out << "  _args\n";
-    for (auto& a : _args)
+    for (const auto& a : _args)
       out << "    " << a.dump () << "\n";
   }
 
   if (_id_ranges.size ())
   {
     out << "  _id_ranges\n    ";
-    for (auto& range : _id_ranges)
+    for (const auto& range : _id_ranges)
     {
       if (range.first != range.second)
         out << colorArgs.colorize (range.first + "-" + range.second) << " ";
@@ -803,7 +763,7 @@ const std::string CLI2::dump (const std::string& title) const
   if (_uuid_list.size ())
   {
     out << "  _uuid_list\n    ";
-    for (auto& uuid : _uuid_list)
+    for (const auto& uuid : _uuid_list)
       out << colorArgs.colorize (uuid) << " ";
 
     out << "\n";
@@ -826,7 +786,7 @@ void CLI2::aliasExpansion ()
     std::vector <A2> reconstructed;
 
     std::string raw;
-    for (auto& i : _args)
+    for (const auto& i : _args)
     {
       raw = i.attribute ("raw");
       if (i.hasTag ("TERMINATED"))
@@ -854,7 +814,7 @@ void CLI2::aliasExpansion ()
 
     std::vector <A2> reconstructedOriginals;
     bool terminated = false;
-    for (auto& i : _original_args)
+    for (const auto& i : _original_args)
     {
       if (i.attribute ("raw") == "--")
         terminated = true;
@@ -1187,7 +1147,7 @@ void CLI2::desugarFilterTags ()
 {
   bool changes = false;
   std::vector <A2> reconstructed;
-  for (auto& a : _args)
+  for (const auto& a : _args)
   {
     if (a._lextype == Lexer::Type::tag &&
         a.hasTag ("FILTER"))
@@ -1226,7 +1186,7 @@ void CLI2::findStrayModifications ()
 {
   bool changes = false;
 
-  std::string command = getCommand ();
+  auto command = getCommand ();
   if (command == "add" ||
       command == "log")
   {
@@ -1450,7 +1410,7 @@ void CLI2::desugarFilterPatterns ()
 {
   bool changes = false;
   std::vector <A2> reconstructed;
-  for (auto& a : _args)
+  for (const auto& a : _args)
   {
     if (a._lextype == Lexer::Type::pattern &&
         a.hasTag ("FILTER"))
@@ -1501,15 +1461,15 @@ void CLI2::findIDs ()
     bool previousFilterArgWasAnOperator = false;
     int filterCount = 0;
 
-    for (auto& a : _args)
+    for (const auto& a : _args)
     {
       if (a.hasTag ("FILTER"))
       {
         ++filterCount;
 
         if (a._lextype == Lexer::Type::number)
-          {
-        // Skip any number that was preceded by an operator.
+        {
+          // Skip any number that was preceded by an operator.
           if (! previousFilterArgWasAnOperator)
           {
             changes = true;
@@ -1528,13 +1488,9 @@ void CLI2::findIDs ()
             changes = true;
             auto hyphen = element.find ("-");
             if (hyphen != std::string::npos)
-            {
               _id_ranges.push_back (std::pair <std::string, std::string> (element.substr (0, hyphen), element.substr (hyphen + 1)));
-            }
             else
-            {
               _id_ranges.push_back (std::pair <std::string, std::string> (element, element));
-            }
           }
         }
 
@@ -1583,18 +1539,14 @@ void CLI2::findIDs ()
             std::vector <std::string> elements;
             split (elements, raw, ',');
 
-            for (auto& element : elements)
+            for (const auto& element : elements)
             {
               changes = true;
               auto hyphen = element.find ("-");
               if (hyphen != std::string::npos)
-              {
                 _id_ranges.push_back (std::pair <std::string, std::string> (element.substr (0, hyphen), element.substr (hyphen + 1)));
-              }
               else
-              {
                 _id_ranges.push_back (std::pair <std::string, std::string> (element, element));
-              }
             }
           }
         }
@@ -1606,7 +1558,7 @@ void CLI2::findIDs ()
   else
   {
     std::vector <A2> reconstructed;
-    for (auto& a : _args)
+    for (const auto& a : _args)
     {
       if (a.hasTag ("FILTER") &&
           a._lextype == Lexer::Type::number)
@@ -1637,7 +1589,7 @@ void CLI2::findUUIDs ()
 
   if (context.config.getBoolean ("sugar"))
   {
-    for (auto& a : _args)
+    for (const auto& a : _args)
     {
       if (a._lextype == Lexer::Type::uuid &&
           a.hasTag ("FILTER"))
@@ -1667,7 +1619,7 @@ void CLI2::findUUIDs ()
   else
   {
     std::vector <A2> reconstructed;
-    for (auto& a : _args)
+    for (const auto& a : _args)
     {
       if (a.hasTag ("FILTER") &&
           a._lextype == Lexer::Type::uuid)
@@ -1705,7 +1657,7 @@ void CLI2::insertIDExpr ()
   bool changes = false;
   bool foundID = false;
   std::vector <A2> reconstructed;
-  for (auto& a : _args)
+  for (const auto& a : _args)
   {
     if ((a._lextype == Lexer::Type::set ||
          a._lextype == Lexer::Type::number ||
@@ -1846,7 +1798,7 @@ void CLI2::lexFilterArgs ()
 {
   bool changes = false;
   std::vector <A2> reconstructed;
-  for (auto& a : _args)
+  for (const auto& a : _args)
   {
     if (a._lextype == Lexer::Type::word &&
         a.hasTag ("FILTER"))
@@ -1943,11 +1895,10 @@ void CLI2::desugarFilterPlainArgs ()
     last.tag ("PLAIN");
   }
 
-
   // Walk the list again, upgrading PLAIN args.
   bool changes = false;
   std::vector <A2> reconstructed;
-  for (auto& a : _args)
+  for (const auto& a : _args)
   {
     if (a.hasTag ("PLAIN"))
     {
@@ -2055,7 +2006,7 @@ void CLI2::defaultCommand ()
   bool found_command    = false;
   bool found_sequence   = false;
 
-  for (auto& a : _args)
+  for (const auto& a : _args)
   {
     std::string raw = a.attribute ("raw");
 

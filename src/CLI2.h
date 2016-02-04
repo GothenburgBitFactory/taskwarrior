@@ -37,7 +37,6 @@ class A2
 {
 public:
   A2 (const std::string&, Lexer::Type);
-  ~A2 ();
   A2 (const A2&);
   A2& operator= (const A2&);
   bool hasTag (const std::string&) const;
@@ -50,9 +49,9 @@ public:
   void decompose ();
 
 public:
-  Lexer::Type                         _lextype;
-  std::vector <std::string>           _tags;
-  std::map <std::string, std::string> _attributes;
+  Lexer::Type                         _lextype     {Lexer::Type::word};
+  std::vector <std::string>           _tags        {};
+  std::map <std::string, std::string> _attributes  {};
 };
 
 // Represents the command line.
@@ -66,8 +65,7 @@ public:
   static void applyOverrides (int, const char**);
 
 public:
-  CLI2 ();
-  ~CLI2 ();
+  CLI2 () = default;
   void alias (const std::string&, const std::string&);
   void entity (const std::string&, const std::string&);
 
@@ -107,14 +105,14 @@ private:
   std::vector <A2> lexExpression (const std::string&);
 
 public:
-  std::multimap <std::string, std::string>           _entities;
-  std::map <std::string, std::string>                _aliases;
-  std::vector <A2>                                   _original_args;
-  std::vector <A2>                                   _args;
+  std::multimap <std::string, std::string>           _entities             {};
+  std::map <std::string, std::string>                _aliases              {};
+  std::vector <A2>                                   _original_args        {};
+  std::vector <A2>                                   _args                 {};
 
-  std::vector <std::pair <std::string, std::string>> _id_ranges;
-  std::vector <std::string>                          _uuid_list;
-  bool                                               _context_filter_added;
+  std::vector <std::pair <std::string, std::string>> _id_ranges            {};
+  std::vector <std::string>                          _uuid_list            {};
+  bool                                               _context_filter_added {false};
 };
 
 #endif
