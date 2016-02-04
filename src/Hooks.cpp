@@ -46,13 +46,6 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-Hooks::Hooks ()
-: _enabled (true)
-, _debug (0)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void Hooks::initialize ()
 {
   _debug = context.config.getInteger ("debug.hooks");
@@ -111,7 +104,7 @@ bool Hooks::enable (bool value)
 // - all emitted non-JSON lines are considered feedback or error messages
 //   depending on the status code.
 //
-void Hooks::onLaunch ()
+void Hooks::onLaunch () const
 {
   if (! _enabled)
     return;
@@ -164,7 +157,7 @@ void Hooks::onLaunch ()
 // - all emitted non-JSON lines are considered feedback or error messages
 //   depending on the status code.
 //
-void Hooks::onExit ()
+void Hooks::onExit () const
 {
   if (! _enabled)
     return;
@@ -226,7 +219,7 @@ void Hooks::onExit ()
 // - all emitted non-JSON lines are considered feedback or error messages
 //   depending on the status code.
 //
-void Hooks::onAdd (Task& task)
+void Hooks::onAdd (Task& task) const
 {
   if (! _enabled)
     return;
@@ -292,7 +285,7 @@ void Hooks::onAdd (Task& task)
 // - all emitted non-JSON lines are considered feedback or error messages
 //   depending on the status code.
 //
-void Hooks::onModify (const Task& before, Task& after)
+void Hooks::onModify (const Task& before, Task& after) const
 {
   if (! _enabled)
     return;
@@ -346,16 +339,16 @@ void Hooks::onModify (const Task& before, Task& after)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string> Hooks::list ()
+std::vector <std::string> Hooks::list () const
 {
   return _scripts;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string> Hooks::scripts (const std::string& event)
+std::vector <std::string> Hooks::scripts (const std::string& event) const
 {
   std::vector <std::string> matching;
-  for (auto& i : _scripts)
+  for (const auto& i : _scripts)
   {
     if (i.find ("/" + event) != std::string::npos)
     {
@@ -500,7 +493,7 @@ void Hooks::assertFeedback (const std::vector <std::string>& input) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector <std::string>& Hooks::buildHookScriptArgs (std::vector <std::string>& args)
+std::vector <std::string>& Hooks::buildHookScriptArgs (std::vector <std::string>& args) const
 {
   Variant v;
 
@@ -530,7 +523,7 @@ std::vector <std::string>& Hooks::buildHookScriptArgs (std::vector <std::string>
 int Hooks::callHookScript (
   const std::string& script,
   const std::vector <std::string>& input,
-  std::vector <std::string>& output)
+  std::vector <std::string>& output) const
 {
   if (_debug >= 1)
     context.debug ("Hook: Calling " + script);
@@ -538,12 +531,12 @@ int Hooks::callHookScript (
   if (_debug >= 2)
   {
     context.debug ("Hook: input");
-    for (auto& i : input)
+    for (const auto& i : input)
       context.debug ("  " + i);
   }
 
   std::string inputStr;
-  for (auto& i : input)
+  for (const auto& i : input)
     inputStr += i + "\n";
 
   std::vector <std::string> args;
@@ -551,7 +544,7 @@ int Hooks::callHookScript (
   if (_debug >= 2)
   {
     context.debug ("Hooks: args");
-    for (auto& arg: args)
+    for (const auto& arg: args)
       context.debug ("  " + arg);
   }
 
@@ -573,7 +566,7 @@ int Hooks::callHookScript (
   if (_debug >= 2)
   {
     context.debug ("Hook: output");
-    for (auto& i : output)
+    for (const auto& i : output)
       if (i != "")
         context.debug ("  " + i);
 

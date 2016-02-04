@@ -34,36 +34,30 @@
 class Hooks
 {
 public:
-  Hooks ();
-  Hooks (const Hooks&) = delete;
-  Hooks& operator= (const Hooks&) = delete;
-
+  Hooks () = default;
   void initialize ();
   bool enable (bool);
-
-  void onLaunch ();
-  void onExit ();
-  void onAdd (Task&);
-  void onModify (const Task&, Task&);
-
-  std::vector <std::string> list ();
+  void onLaunch () const;
+  void onExit () const;
+  void onAdd (Task&) const;
+  void onModify (const Task&, Task&) const;
+  std::vector <std::string> list () const;
 
 private:
-  std::vector <std::string> scripts (const std::string&);
+  std::vector <std::string> scripts (const std::string&) const;
   void separateOutput (const std::vector <std::string>&, std::vector <std::string>&, std::vector <std::string>&) const;
   bool isJSON (const std::string&) const;
   void assertValidJSON (const std::vector <std::string>&) const;
   void assertNTasks (const std::vector <std::string>&, unsigned int) const;
   void assertSameTask (const std::vector <std::string>&, const Task&) const;
   void assertFeedback (const std::vector <std::string>&) const;
-  std::vector <std::string>& buildHookScriptArgs (std::vector <std::string>&);
-  int callHookScript (const std::string&, const std::vector <std::string>&, std::vector <std::string>&);
+  std::vector <std::string>& buildHookScriptArgs (std::vector <std::string>&) const;
+  int callHookScript (const std::string&, const std::vector <std::string>&, std::vector <std::string>&) const;
 
 private:
-  bool                      _enabled;
-  int                       _debug;
-  std::vector <std::string> _scripts;
+  bool                      _enabled {true};
+  int                       _debug   {0};
+  std::vector <std::string> _scripts {};
 };
 
 #endif
-////////////////////////////////////////////////////////////////////////////////
