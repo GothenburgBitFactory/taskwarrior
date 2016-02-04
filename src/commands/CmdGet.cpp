@@ -28,6 +28,7 @@
 #include <CmdGet.h>
 #include <Variant.h>
 #include <Context.h>
+#include <DOM.h>
 #include <main.h>
 #include <text.h>
 #include <i18n.h>
@@ -67,7 +68,7 @@ int CmdGet::execute (std::string& output)
       {
         Task t;
         Variant result;
-        if (context.dom.get (arg.attribute ("raw"), t, result))
+        if (getDOM (arg.attribute ("raw"), t, result))
           results.push_back ((std::string) result);
         else
           results.push_back ("");

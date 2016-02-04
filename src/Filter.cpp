@@ -28,6 +28,7 @@
 #include <Filter.h>
 #include <algorithm>
 #include <Context.h>
+#include <DOM.h>
 #include <Eval.h>
 #include <Variant.h>
 #include <Dates.h>
@@ -45,7 +46,7 @@ Task& contextTask = dummy;
 ////////////////////////////////////////////////////////////////////////////////
 bool domSource (const std::string& identifier, Variant& value)
 {
-  if (context.dom.get (identifier, contextTask, value))
+  if (getDOM (identifier, contextTask, value))
   {
     value.source (identifier);
     return true;

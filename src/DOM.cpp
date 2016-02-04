@@ -52,7 +52,7 @@ extern Context context;
 //   system.version
 //   system.os
 //
-bool DOM::get (const std::string& name, Variant& value)
+bool getDOM (const std::string& name, Variant& value)
 {
   // Special case, blank refs cause problems.
   if (name == "")
@@ -194,7 +194,7 @@ bool DOM::get (const std::string& name, Variant& value)
 //
 // This code emphasizes speed, hence 'id' and 'urgecny' being evaluated first
 // as special cases.
-bool DOM::get (const std::string& name, const Task& task, Variant& value)
+bool getDOM (const std::string& name, const Task& task, Variant& value)
 {
   // Special case, blank refs cause problems.
   if (name == "")
@@ -331,7 +331,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
     int count = 0;
 
     // Count off the 'a'th annotation.
-    for (auto& i : annos)
+    for (const auto& i : annos)
     {
       if (++count == a)
       {
@@ -360,7 +360,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
     int count = 0;
 
     // Count off the 'a'th annotation.
-    for (auto& i : annos)
+    for (const auto& i : annos)
     {
       if (++count == a)
       {
@@ -388,7 +388,7 @@ bool DOM::get (const std::string& name, const Task& task, Variant& value)
   }
 
   // Delegate to the context-free version of DOM::get.
-  return this->get (name, value);
+  return getDOM (name, value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -30,16 +30,8 @@
 #include <string>
 #include <Variant.h>
 #include <Task.h>
-#include <time.h>
 
-class DOM
-{
-public:
-  bool get (const std::string&, Variant&);
-  bool get (const std::string&, const Task&, Variant&);
-
-private:
-};
+bool getDOM (const std::string&, Variant&);
+bool getDOM (const std::string&, const Task&, Variant&);
 
 #endif
-////////////////////////////////////////////////////////////////////////////////

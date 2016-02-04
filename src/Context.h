@@ -33,7 +33,6 @@
 #include <Task.h>
 #include <TDB2.h>
 #include <Hooks.h>
-#include <DOM.h>
 #include <FS.h>
 #include <CLI2.h>
 #include <Timer.h>
@@ -85,7 +84,6 @@ public:
 
   TDB2                                tdb2;
   Hooks                               hooks;
-  DOM                                 dom;
 
   bool                                determine_color_use;
   bool                                use_color;

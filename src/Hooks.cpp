@@ -37,6 +37,8 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <Context.h>
+#include <Variant.h>
+#include <DOM.h>
 #include <JSON.h>
 #include <Timer.h>
 #include <text.h>
@@ -501,7 +503,7 @@ std::vector <std::string>& Hooks::buildHookScriptArgs (std::vector <std::string>
   args.push_back ("api:2");
 
   // Command line Taskwarrior was called with.
-  context.dom.get ("context.args", v);
+  getDOM ("context.args", v);
   args.push_back ("args:" + std::string (v));
 
   // Command to be executed.
