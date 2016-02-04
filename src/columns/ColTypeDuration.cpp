@@ -44,21 +44,6 @@ ColumnTypeDuration::ColumnTypeDuration ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Set the minimum and maximum widths for the value.
-void ColumnTypeDuration::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ColumnTypeDuration::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeDuration::modify (Task& task, const std::string& value)
 {
   // Try to evaluate 'value'.  It might work.
