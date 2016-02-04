@@ -27,18 +27,14 @@
 #ifndef INCLUDED_COLTYPENUMERIC
 #define INCLUDED_COLTYPENUMERIC
 
-#include <vector>
 #include <string>
 #include <Column.h>
-#include <Color.h>
 #include <Task.h>
 
 class ColumnTypeNumeric : public Column
 {
 public:
   ColumnTypeNumeric ();
-  virtual void measure (Task&, unsigned int&, unsigned int&);
-  virtual void render (std::vector <std::string>&, Task&, int, Color&);
   virtual void modify (Task&, const std::string&);
 };
 

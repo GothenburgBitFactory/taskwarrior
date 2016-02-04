@@ -44,21 +44,6 @@ ColumnTypeNumeric::ColumnTypeNumeric ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Set the minimum and maximum widths for the value.
-void ColumnTypeNumeric::measure (Task& task, unsigned int& minimum, unsigned int& maximum)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ColumnTypeNumeric::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeNumeric::modify (Task& task, const std::string& value)
 {
   // Try to evaluate 'value'.  It might work.
