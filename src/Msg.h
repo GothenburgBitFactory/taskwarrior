@@ -34,21 +34,19 @@
 class Msg
 {
 public:
-  Msg ();
-  ~Msg ();
-
   void set (const std::string&, const std::string&);
-  void setPayload (const std::string&);
   std::string get (const std::string&) const;
+
+  void setPayload (const std::string&);
   std::string getPayload () const;
 
-  void all (std::vector <std::string>&) const;
+  std::vector <std::string> all () const;
   std::string serialize () const;
   bool parse (const std::string&);
 
 private:
-  std::map <std::string, std::string> _header;
-  std::string _payload;
+  std::map <std::string, std::string> _header {};
+  std::string _payload                        {""};
 };
 
 #endif

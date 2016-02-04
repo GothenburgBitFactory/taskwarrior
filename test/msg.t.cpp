@@ -37,32 +37,35 @@ int main (int, char**)
   UnitTest t (13);
 
   Msg m;
-  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\n\n\n", "Msg::serialize '' --> '\\n\\n'");
+  t.is (m.serialize (), "\n\n",        "Msg::serialize '' --> '\\n\\n'");
 
   m.set ("name", "value");
-  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\nname: value\n\n\n", "Msg::serialize 1 var");
+  t.is (m.serialize (), "name: value\n\n\n",
+                                       "Msg::serialize 1 var");
 
   m.set ("foo", "bar");
-  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\nfoo: bar\nname: value\n\n\n", "Msg::serialize 2 vars");
+  t.is (m.serialize (), "foo: bar\nname: value\n\n\n",
+                                       "Msg::serialize 2 vars");
 
   m.setPayload ("payload");
-  t.is (m.serialize (), std::string ("client: ") + PACKAGE_STRING + "\nfoo: bar\nname: value\n\npayload\n", "Msg::serialize 2 vars + payload");
+  t.is (m.serialize (), "foo: bar\nname: value\n\npayload\n",
+                                       "Msg::serialize 2 vars + payload");
 
   Msg m2;
-  t.ok (m2.parse ("foo: bar\nname: value\n\npayload\n"),  "Msg::parse ok");
-  t.is (m2.get ("foo"),   "bar",                          "Msg::get");
-  t.is (m2.get ("name"),  "value",                        "Msg::get");
-  t.is (m2.getPayload (), "payload\n",                    "Msg::getPayload");
+  t.ok (m2.parse ("foo: bar\nname: value\n\npayload\n"),
+                                       "Msg::parse ok");
+  t.is (m2.get ("foo"),   "bar",       "Msg::get");
+  t.is (m2.get ("name"),  "value",     "Msg::get");
+  t.is (m2.getPayload (), "payload\n", "Msg::getPayload");
 
   Msg m3;
-  t.ok (m3.parse ("foo:bar\nname:   value\n\npayload\n"), "Msg::parse ok");
-  t.is (m3.get ("foo"),   "bar",                          "Msg::get");
-  t.is (m3.get ("name"),  "value",                        "Msg::get");
-  t.is (m3.getPayload (), "payload\n",                    "Msg::getPayload");
-
-  std::vector <std::string> vars;
-  m3.all (vars);
-  t.ok (vars.size () == 2,                                "Msg::all --> 2 vars");
+  t.ok (m3.parse ("foo:bar\nname:   value\n\npayload\n"),
+                                       "Msg::parse ok");
+  t.is (m3.get ("foo"),   "bar",       "Msg::get");
+  t.is (m3.get ("name"),  "value",     "Msg::get");
+  t.is (m3.getPayload (), "payload\n", "Msg::getPayload");
+  t.ok (m3.all () == std::vector <std::string> {"foo", "name"},
+                                       "Msg::all --> {'foo', 'name'}");
 
   return 0;
 }
