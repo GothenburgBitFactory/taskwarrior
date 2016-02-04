@@ -35,10 +35,8 @@ class Timer
 {
 public:
   Timer ();
-  Timer (const std::string&);
+  explicit Timer (const std::string&);
   ~Timer ();
-  Timer (const Timer&);
-  Timer& operator= (const Timer&);
 
   void start ();
   void stop ();
@@ -48,12 +46,10 @@ public:
   static unsigned long now ();
 
 private:
-  std::string    _description;
-  bool           _running;
-  struct timeval _start;
-  unsigned long  _total;
+  std::string    _description {"-"};
+  bool           _running     {false};
+  struct timeval _start       {};
+  unsigned long  _total       {0};
 };
 
 #endif
-
-////////////////////////////////////////////////////////////////////////////////

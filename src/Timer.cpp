@@ -34,11 +34,7 @@
 extern Context context;
 
 ////////////////////////////////////////////////////////////////////////////////
-// Timer starts when the object is constructed.
 Timer::Timer ()
-: _description ("-")
-, _running (false)
-, _total (0)
 {
 }
 
@@ -46,8 +42,6 @@ Timer::Timer ()
 // Timer starts when the object is constructed with a description.
 Timer::Timer (const std::string& description)
 : _description (description)
-, _running (false)
-, _total (0)
 {
   start ();
 }
@@ -59,14 +53,11 @@ Timer::~Timer ()
   stop ();
 
   std::stringstream s;
-  s << "Timer " // No i18n
+  s << "Timer "
     << _description
     << " "
     << std::setprecision (6)
-#ifndef HAIKU
-    // Haiku fails on this - don't know why.
     << std::fixed
-#endif
     << _total / 1000000.0
     << " sec";
 
@@ -78,7 +69,7 @@ void Timer::start ()
 {
   if (!_running)
   {
-    gettimeofday (&_start, NULL);
+    gettimeofday (&_start, nullptr);
     _running = true;
   }
 }
@@ -89,7 +80,7 @@ void Timer::stop ()
   if (_running)
   {
     struct timeval end;
-    gettimeofday (&end, NULL);
+    gettimeofday (&end, nullptr);
     _running = false;
     _total += (end.tv_sec - _start.tv_sec) * 1000000
             + (end.tv_usec - _start.tv_usec);
@@ -115,7 +106,7 @@ void Timer::subtract (unsigned long value)
 unsigned long Timer::now ()
 {
   struct timeval now;
-  gettimeofday (&now, NULL);
+  gettimeofday (&now, nullptr);
   return now.tv_sec * 1000000 + now.tv_usec;
 }
 
