@@ -27,18 +27,14 @@
 #ifndef INCLUDED_COLTYPESTRING
 #define INCLUDED_COLTYPESTRING
 
-#include <vector>
 #include <string>
 #include <Column.h>
-#include <Color.h>
 #include <Task.h>
 
 class ColumnTypeString : public Column
 {
 public:
   ColumnTypeString ();
-  virtual void measure (Task&, unsigned int&, unsigned int&);
-  virtual void render (std::vector <std::string>&, Task&, int, Color&);
   virtual void modify (Task&, const std::string&);
 };
 

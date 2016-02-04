@@ -44,24 +44,6 @@ ColumnTypeString::ColumnTypeString ()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Set the minimum and maximum widths for the value.
-void ColumnTypeString::measure (
-  Task& task,
-  unsigned int& minimum,
-  unsigned int& maximum)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void ColumnTypeString::render (
-  std::vector <std::string>& lines,
-  Task& task,
-  int width,
-  Color& color)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 void ColumnTypeString::modify (Task& task, const std::string& value)
 {
   std::string label = "  [1;37;43mMODIFICATION[0m ";
