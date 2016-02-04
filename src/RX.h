@@ -48,9 +48,9 @@ private:
   void compile ();
 
 private:
-  bool _compiled;
-  std::string _pattern;
-  bool _case_sensitive;
+  bool _compiled       {false};
+  std::string _pattern {};
+  bool _case_sensitive {false};
   regex_t _regex;
 };
 

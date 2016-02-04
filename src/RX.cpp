@@ -26,14 +26,11 @@
 
 #include <cmake.h>
 #include <RX.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 ////////////////////////////////////////////////////////////////////////////////
 RX::RX ()
-: _compiled (false)
-, _pattern ("")
-, _case_sensitive (false)
 {
 }
 
@@ -51,8 +48,8 @@ RX::RX (
 ////////////////////////////////////////////////////////////////////////////////
 RX::RX (const RX& other)
 {
-  _compiled = false;
-  _pattern = other._pattern;
+  _compiled       = false;
+  _pattern        = other._pattern;
   _case_sensitive = other._case_sensitive;
 }
 
@@ -66,12 +63,9 @@ RX::~RX ()
 ////////////////////////////////////////////////////////////////////////////////
 RX& RX::operator= (const RX& other)
 {
-  if (this != &other)
-  {
-    _compiled = false;
-    _pattern = other._pattern;
-    _case_sensitive = other._case_sensitive;
-  }
+  _compiled       = false;
+  _pattern        = other._pattern;
+  _case_sensitive = other._case_sensitive;
 
   return *this;
 }
@@ -107,7 +101,7 @@ bool RX::match (const std::string& in)
   if (! _compiled)
     compile ();
 
-  return regexec (&_regex, in.c_str (), 0, NULL, 0) == 0 ? true : false;
+  return regexec (&_regex, in.c_str (), 0, nullptr, 0) == 0 ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
