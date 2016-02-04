@@ -104,7 +104,6 @@ static bool namedConstants (const std::string& name, Variant& value)
 
 ////////////////////////////////////////////////////////////////////////////////
 Eval::Eval ()
-: _debug (false)
 {
   addSource (namedConstants);
 }
@@ -225,8 +224,7 @@ void Eval::evaluatePostfixStack (
 
   // This is stack used by the postfix evaluator.
   std::vector <Variant> values;
-
-  for (auto& token : tokens)
+  for (const auto& token : tokens)
   {
     // Unary operators.
     if (token.second == Lexer::Type::op &&
@@ -861,4 +859,3 @@ std::string Eval::dump (
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-

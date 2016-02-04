@@ -36,9 +36,6 @@ class Eval
 {
 public:
   Eval ();
-  Eval (const Eval&);            // Not implemented.
-  Eval& operator= (const Eval&); // Not implemented.
-  bool operator== (const Eval&); // Not implemented.
 
   void addSource (bool (*fn)(const std::string&, Variant&));
   void evaluateInfixExpression (const std::string&, Variant&) const;
@@ -69,13 +66,9 @@ private:
   std::string dump (std::vector <std::pair <std::string, Lexer::Type>>&) const;
 
 private:
-  std::vector <bool (*)(const std::string&, Variant&)> _sources;
-  bool _debug;
-  std::vector <std::pair <std::string, Lexer::Type>> _compiled;
+  std::vector <bool (*)(const std::string&, Variant&)> _sources {};
+  bool _debug                                                   {false};
+  std::vector <std::pair <std::string, Lexer::Type>> _compiled  {};
 };
 
-
-
 #endif
-
-////////////////////////////////////////////////////////////////////////////////
